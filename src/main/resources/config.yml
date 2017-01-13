@@ -1,0 +1,1080 @@
+#######################################################################
+#                          PetBlocks                                  #
+# 		            	   by Shynixn							      #
+#######################################################################
+
+# Permission:
+# LEVEL		 DESCRIPTION									PERMISSION
+# user       Access to the /petblock command 				petblocks.use
+# user       Allows to have all pet types				    petblocks.pet.type.all
+# user       Allows to have a specific pet type				petblocks.pet.type.<name>
+# user       Allows to rename your pet 	       			    petblocks.pet.rename
+# user       Allows to ride your pet 	                    petblocks.pet.ride
+# user       Allows to wear your pet 	                    petblocks.pet.wear
+# user       Allows to change the skin name 	            petblocks.pet.skin
+# user       Allows to shoot your pet                       petblocks.pet.cannon
+# user       Allows to use every default costume 	        petblocks.pet.defaultcostumes.all
+# user       Allows to use specific default costumes	    petblocks.pet.defaultcostumes.<number>
+# user       Allows to use every color costume   		    petblocks.pet.colorcostumes.all
+# user       Allows to use specific color costumes   		petblocks.pet.colorcostumes.<number>
+# user       Allows to use every custom costume   		    petblocks.pet.customcostumes.all
+# user       Allows to use specific custom costumes  		petblocks.pet.customcostumes.<number>
+# user       Allows to use every particle					petblocks.pet.particles.all
+# user 		 Allows to use a specific particle				petblocks.pet.particles.<number>
+# admin      Reloads config and lang file 				    petblocks.reload
+# admin 	 Allows to use own skulls ingame*				petblocks.inventory.costume
+# admin 	 Access to the /petblocks command			    petblocks.commands
+
+
+# MySQL settings
+# Where is my database configuration?
+# PetBlocks uses the internal database handling from the server. Open the bukkit.yml file and scroll down to database to change it.
+# You can find a sample configuration on the plugin page.
+
+sql-enabled: false
+
+# Command settings
+# Choose your wanted command (dynamic command engine).
+
+# <command> = selected command
+
+petblocks-gui:
+  enabled: true
+  command: petblock
+  useage: /<command>
+  description: Opens the pet GUI.
+  permission: petblocks.use
+  permission-message: You don't have permission
+petblocks-configuration:
+  enabled: true
+  command: petblocks
+  useage: /<command>
+  description: Command to configure pets.
+  permission: petblocks.commands
+  permission-message: You don't have permission
+
+# Pet settings
+
+# age: Small-Ticks -> Amount of ticks until the pet grows up. #Large-Ticks -> Amount of ticks until the pet dies.
+# age: Max-Ticks -> Amount of ticks until the pet stops aging. #Death on maxticks -> If the pet dies after reaching maxticks.
+
+# combat: Invincible -> PetBlocks cannot die by punching it.
+# combat: Health -> Amount of health of a pet.
+
+# follow: Teleport-fall -> Lets pets fall off the owner's head on teleport
+# follow: Max-range-teleport -> Max distance between the player and the pet until the pet teleports to the player.
+# follow: Carry -> Allows to carry pets in your hand.
+
+# design: Max-petname-length -> Max length of a pet's name when using the nametag to rename a pet.
+# design: Show-damage-animation -> Block turns red when it gets hit. Doesn't work for server above 1.8.8.
+# design: Sounds-other-players -> Allows other players to hear sounds of your pet.
+
+# modifer: Riding-speed -> Modifys the riding speed. (1 = default speed, 0.5 = half speed,...)
+# modifer: Walking-speed -> Modifys the walking speed. (1 = default speed, 0.5 = half speed,...)
+# modifer: Climbing-height -> Modifys the climbing height. (1 = default height, 0.5 = half height,...)
+
+pet:
+  age:
+     small-ticks: 0
+     large-ticks: 1
+     max-ticks: 1
+     death-on-maxticks: false
+  combat:
+     invincible: true
+     health: 20.0
+  warp:
+     teleports-in-seconds: 0
+  flee:
+     flees-in-combat: false
+     reappears-in-seconds: 15
+  follow:
+     teleport-fall: true
+     max-range-teleport: 50
+     carry: false
+     flying-wall-colliding: true
+     afraid-water: false
+     afraid-water-particles: false
+  design:
+     max-petname-length: 20
+     show-damage-animation: true
+     sounds-other-players: true
+  modifier:
+     riding-speed: 1.0
+     walking-speed: 1.0
+     climbing-height: 1.0
+
+# World and region settings
+
+# world: all -> Allows to use petblocks in all worlds.
+# world: worlds -> Allows to use petblocks in specific worlds.
+
+# region: all -> Allows to use petblocks in all world-guard-regions.
+# region: regions -> Allows to use petblocks in specific world-guard-regions.
+
+world:
+    all: true
+    worlds:
+     - world
+     - world_nether
+     - world_the_end
+region:
+    all: true
+    regions:
+      - example_region
+      - another_example_region
+#--
+
+# Join Server settings
+
+# Enabled -> Enable custom join settings
+# Overwrite-previous-pet -> Even if a player already got a pet it get's overwritten.
+# settings: all stored pet settings.
+
+join:
+  enabled: false
+  overwrite-previous-pet: false
+  settings:
+    petname: 'Default pet'
+    type: DOG
+    id: 2
+    durability: 0
+    skullname: ''
+    enabled: true
+    age: 1
+    moving: WALKING
+    particle:
+      name: reddust
+      x: 255.0
+      y: 0.0
+      z: 0.0
+      speed: 0.01
+      amount: 20
+      block:
+        id: -1
+        damage: 0
+
+# Chat settings
+
+# Async -> Handle chat messages asynchronly.
+# Highest-priority -> Give petblock messages the highest priority.
+
+chat:
+  async: true
+  highest-priority: true
+
+# GUI settings
+
+# settings: Copy-skin --> Copies the skin of the clicket pet soul
+# settings: Lore --> Displays lore lines in the GUI.
+# settings: Click-empty-slot-back --> Allows to return to the previous menu by clicking a dummy slot.
+
+# general: my-pet --> All settings for the item My pet
+# general: default-apperance --> All settings for the first appearance of the pet. (Grassblock)
+# general: enable-pet --> All settings for the item enable pet
+# general: enable-pet --> All settings for the item disable pet
+# general: enable-pet --> All settings for the item empty slot
+# general: enable-pet --> All settings for the item previous page
+# general: enable-pet --> All settings for the item next page
+
+# items: default-costume --> All settings for the item costume categorie default
+# items: default-costume --> All settings for the item costume categorie color
+# items: default-costume --> All settings for the item costume categorie costume
+# item: ...
+
+# souls: pig-soul -> All settings for the item soul pig
+# souls: ...
+
+# Name of the skin owner or link of the skin ("Shynixn"/"textures.minecraft.net/texture/797884d451dc7b7729de2076cd6c4912865ade70391d1ccec3e95fb39f8c5e1")
+
+# Movements: HOPPING, CRAWLING
+# Types: WALKING, FLYING
+
+gui:
+  settings:
+    copy-skin: true
+    lore: true
+    click-empty-slot-back: true
+  general:
+    my-pet:
+      position: 36
+    default-appearance:
+      id: 2
+      damage: 0
+      owner: ''
+    enable-pet:
+      enabled: true
+      id: 123
+      damage: 0
+      owner: 'none'
+      position: 37
+    disable-pet:
+      enabled: true
+      id: 89
+      damage: 0
+      owner: 'none'
+      position: 37
+    empty-slot:
+      enabled: true
+      id: 160
+      damage: 15
+      owner: 'none'
+      lore: ''
+    previous-page:
+        enabled: true
+        id: 397
+        damage: 3
+        owner: 'textures.minecraft.net/texture/3ebf907494a935e955bfcadab81beafb90fb9be49c7026ba97d798d5f1a23'
+        position: 45
+        lore: ''
+    next-page:
+        enabled: true
+        id: 397
+        damage: 3
+        owner: 'textures.minecraft.net/texture/1b6f1a25b6bc199946472aedb370522584ff6f4e83221e5946bd2e41b5ca13b'
+        position: 53
+        lore: ''
+  items:
+    sounds-enabled-pet:
+      enabled: true
+      id: 19
+      damage: 0
+      owner: 'none'
+      position: 39
+    sounds-disabled-pet:
+      enabled: true
+      id: 19
+      damage: 1
+      owner: 'none'
+      position: 39
+    default-costume:
+      enabled: true
+      id: 351
+      damage: 1
+      owner: 'none'
+      position: 40
+    color-costume:
+      enabled: true
+      id: 351
+      damage: 2
+      owner: 'none'
+      position: 41
+    custom-costume:
+      enabled: true
+      id: 351
+      damage: 3
+      owner: 'none'
+      position: 42
+    call-pet:
+      enabled: true
+      id: 370
+      damage: 0
+      owner: 'none'
+      position: 43
+    particle-pet:
+      enabled: true
+      id: 331
+      damage: 0
+      owner: 'none'
+      position: 44
+    cancel-pet:
+      enabled: true
+      id: 166
+      damage: 0
+      owner: 'none'
+      position: 48
+    cannon-pet:
+      enabled: true
+      id: 332
+      damage: 0
+      owner: 'none'
+      position: 49
+    skullnaming-pet:
+      enabled: true
+      id: 145
+      damage: 0
+      owner: 'none'
+      position: 50
+    naming-pet:
+      enabled: true
+      id: 421
+      damage: 0
+      owner: 'none'
+      position: 51
+    hat-pet:
+      enabled: true
+      id: 260
+      damage: 0
+      owner: 'none'
+      position: 52
+    riding-pet:
+      enabled: true
+      id: 329
+      damage: 0
+      owner: 'none'
+      position: 53
+  souls:
+     pig-soul:
+       enabled: true
+       id: 397
+       damage: 3
+       owner: 'textures.minecraft.net/texture/621668ef7cb79dd9c22ce3d1f3f4cb6e2559893b6df4a469514e667c16aa4'
+       position: 0
+       type: WALKING
+       movement: HOPPING
+       lore: '&ePermission: <permission>'
+     chicken-soul:
+       enabled: true
+       id: 397
+       damage: 3
+       owner: 'textures.minecraft.net/texture/1638469a599ceef7207537603248a9ab11ff591fd378bea4735b346a7fae893'
+       position: 1
+       type: WALKING
+       movement: HOPPING
+       lore: '&ePermission: <permission>'
+     dog-soul:
+       enabled: true
+       id: 397
+       damage: 3
+       owner: 'textures.minecraft.net/texture/e95cbb4f75ea87617f2f713c6d49dac3209ba1bd4b9369654b1459ea15317'
+       position: 2
+       type: WALKING
+       movement: HOPPING
+       lore: '&ePermission: <permission>'
+     cat-soul:
+       enabled: true
+       id: 397
+       damage: 3
+       owner: 'textures.minecraft.net/texture/5657cd5c2989ff97570fec4ddcdc6926a68a3393250c1be1f0b114a1db1'
+       position: 3
+       type: WALKING
+       movement: HOPPING
+       lore: '&ePermission: <permission>'
+     cow-soul:
+       enabled: true
+       id: 397
+       damage: 3
+       owner: 'textures.minecraft.net/texture/5d6c6eda942f7f5f71c3161c7306f4aed307d82895f9d2b07ab4525718edc5'
+       position: 4
+       type: WALKING
+       movement: HOPPING
+       lore: '&ePermission: <permission>'
+     sheep-soul:
+       enabled: true
+       id: 397
+       damage: 3
+       owner: 'textures.minecraft.net/texture/f31f9ccc6b3e32ecf13b8a11ac29cd33d18c95fc73db8a66c5d657ccb8be70'
+       position: 5
+       type: WALKING
+       movement: HOPPING
+       lore: '&ePermission: <permission>'
+     horse-soul:
+       enabled: true
+       id: 397
+       damage: 3
+       owner: 'textures.minecraft.net/texture/61902898308730c4747299cb5a5da9c25838b1d059fe46fc36896fee662729'
+       position: 6
+       type: WALKING
+       movement: HOPPING
+       lore: '&ePermission: <permission>'
+     bird-soul:
+       enabled: true
+       id: 397
+       damage: 3
+       owner: 'textures.minecraft.net/texture/f2542c19cbcd964274244af6bed1ac8560b3f36fd3b3268061f8a614a9b59e35'
+       position: 7
+       type: FLYING
+       movement: HOPPING
+       lore: '&ePermission: <permission>'
+     bat-soul:
+       enabled: true
+       id: 397
+       damage: 3
+       owner: 'textures.minecraft.net/texture/4cf1b3b3f539d2f63c172e94cacfaa391e8b385cdd633f3b991c74e44b28'
+       position: 8
+       type: FLYING
+       movement: HOPPING
+       lore: '&ePermission: <permission>'
+     zombie-soul:
+       enabled: true
+       id: 397
+       damage: 3
+       owner: 'textures.minecraft.net/texture/56fc854bb84cf4b7697297973e02b79bc10698460b51a639c60e5e417734e11'
+       position: 9
+       type: WALKING
+       movement: HOPPING
+       lore: '&ePermission: <permission>'
+     skeleton-soul:
+       enabled: true
+       id: 397
+       damage: 3
+       owner: 'textures.minecraft.net/texture/2e5be6a3c0159d2c1f3b1e4e1d8384b6f7ebac993d58b10b9f8989c78a232'
+       position: 10
+       type: WALKING
+       movement: HOPPING
+       lore: '&ePermission: <permission>'
+     creeper-soul:
+       enabled: true
+       id: 397
+       damage: 3
+       owner: 'textures.minecraft.net/texture/295ef836389af993158aba27ff37b6567185f7a721ca90fdfeb937a7cb5747'
+       position: 11
+       type: WALKING
+       movement: HOPPING
+       lore: '&ePermission: <permission>'
+     spider-soul:
+       enabled: true
+       id: 397
+       damage: 3
+       owner: 'textures.minecraft.net/texture/cd541541daaff50896cd258bdbdd4cf80c3ba816735726078bfe393927e57f1'
+       position: 12
+       type: WALKING
+       movement: HOPPING
+       lore: '&ePermission: <permission>'
+     enderman-soul:
+       enabled: true
+       id: 397
+       damage: 3
+       owner: 'textures.minecraft.net/texture/7a59bb0a7a32965b3d90d8eafa899d1835f424509eadd4e6b709ada50b9cf'
+       position: 13
+       type: WALKING
+       movement: HOPPING
+       lore: '&ePermission: <permission>'
+     slime-soul:
+       enabled: true
+       id: 397
+       damage: 3
+       owner: 'textures.minecraft.net/texture/16ad20fc2d579be250d3db659c832da2b478a73a698b7ea10d18c9162e4d9b5'
+       position: 14
+       type: WALKING
+       movement: HOPPING
+       lore: '&ePermission: <permission>'
+     lavaslime-soul:
+       enabled: true
+       id: 397
+       damage: 3
+       owner: 'textures.minecraft.net/texture/38957d5023c937c4c41aa2412d43410bda23cf79a9f6ab36b76fef2d7c429'
+       position: 15
+       type: WALKING
+       movement: HOPPING
+       lore: '&ePermission: <permission>'
+     pigzombie-soul:
+       enabled: true
+       id: 397
+       damage: 3
+       owner: 'textures.minecraft.net/texture/74e9c6e98582ffd8ff8feb3322cd1849c43fb16b158abb11ca7b42eda7743eb'
+       position: 16
+       type: WALKING
+       movement: HOPPING
+       lore: '&ePermission: <permission>'
+     dragon-soul:
+       enabled: true
+       id: 397
+       damage: 3
+       owner: 'textures.minecraft.net/texture/c52264ac4e5621668c43e87aed7918ed6b883abc5018769c9536d27b77f'
+       position: 17
+       type: FLYING
+       movement: HOPPING
+       lore: '&ePermission: <permission>'
+     human-soul:
+       enabled: true
+       id: 397
+       damage: 3
+       owner: 'textures.minecraft.net/texture/456eec1c2169c8c60a7ae436abcd2dc5417d56f8adef84f11343dc1188fe138'
+       position: 18
+       type: WALKING
+       movement: HOPPING
+       lore: '&ePermission: <permission>'
+     villager-soul:
+       enabled: true
+       id: 397
+       damage: 3
+       owner: 'textures.minecraft.net/texture/822d8e751c8f2fd4c8942c44bdb2f5ca4d8ae8e575ed3eb34c18a86e93b'
+       position: 19
+       type: WALKING
+       movement: HOPPING
+       lore: '&ePermission: <permission>'
+     irongolem-soul:
+       enabled: true
+       id: 397
+       damage: 3
+       owner: 'textures.minecraft.net/texture/89091d79ea0f59ef7ef94d7bba6e5f17f2f7d4572c44f90f76c4819a714'
+       position: 20
+       type: WALKING
+       movement: HOPPING
+       lore: '&ePermission: <permission>'
+     silverfish-soul:
+       enabled: true
+       id: 397
+       damage: 3
+       owner: 'textures.minecraft.net/texture/ce663a1949db253da3a6f2a69e35da9a524ee3d958a3807ce2bdabcd6f7f5'
+       position: 21
+       type: WALKING
+       movement: HOPPING
+       lore: '&ePermission: <permission>'
+     ghast-soul:
+       enabled: true
+       id: 397
+       damage: 3
+       owner: 'textures.minecraft.net/texture/8b6a72138d69fbbd2fea3fa251cabd87152e4f1c97e5f986bf685571db3cc0'
+       position: 22
+       type: FLYING
+       movement: HOPPING
+       lore: '&ePermission: <permission>'
+     blaze-soul:
+       enabled: true
+       id: 397
+       damage: 3
+       owner: 'textures.minecraft.net/texture/b78ef2e4cf2c41a2d14bfde9caff10219f5b1bf5b35a49eb51c6467882cb5f0'
+       position: 23
+       type: FLYING
+       movement: HOPPING
+       lore: '&ePermission: <permission>'
+     wither-soul:
+       enabled: true
+       id: 397
+       damage: 3
+       owner: 'textures.minecraft.net/texture/233b41fa79cd53a230e2db942863843183a70404533bbc01fab744769bcb'
+       position: 24
+       type: FLYING
+       movement: HOPPING
+       lore: '&ePermission: <permission>'
+#--
+
+# Costumes settings
+
+# default --> All ids (including damage or owner) for the categorie default
+# color --> All ids (including damage or owner) for the categorie color
+# custom --> All ids (including damage or owner) for the categorie custom
+
+# How to add a lore?
+# Samples:
+
+# - '1:lore:&eThat is my custom lore'
+# - '1:2:lore:&aLore line 1:&eLore line2:Lore line3'
+# - 'skull:MHF_Pig:lore:&4That is another lore'
+
+# How to add unbreakable tag?
+# - '1:unbreakable'
+# - '1:1:unbreakable'
+# - 'skull:MHF_Pig:unbreakable'
+
+# Warning! If you use both lore and unbreakable add the unbreakable tag before the lore.
+# - '1:unbreakable:lore:&eThat is my custom lore'
+
+costumes:
+  default:
+    - '1'
+    - '1:1'
+    - '1:2'
+    - '1:3'
+    - '1:4'
+    - '1:5'
+    - '1:6'
+    - '2'
+    - '3'
+    - '3:1'
+    - '3:2'
+    - '4'
+    - '5'
+    - '5:1'
+    - '5:2'
+    - '5:3'
+    - '5:4'
+    - '5:5'
+    - '7'
+    - '12'
+    - '12:1'
+    - '13'
+    - '14'
+    - '15'
+    - '16'
+    - '17'
+    - '17:1'
+    - '17:2'
+    - '17:3'
+    - '18'
+    - '18:1'
+    - '18:2'
+    - '18:3'
+    - '19'
+    - '19:1'
+    - '20'
+    - '21'
+    - '22'
+    - '23'
+    - '24'
+    - '24:1'
+    - '24:2'
+    - '25'
+    - '29'
+    - '33'
+    - '41'
+    - '42'
+    - '44'
+    - '45'
+    - '57'
+    - '80'
+    - '82'
+    - '87'
+    - '88'
+  color:
+    - '35:12'
+    - '35:1'
+    - '35:2'
+    - '35:3'
+    - '35:4'
+    - '35:5'
+    - '35:6'
+    - '35:7'
+    - '35:8'
+    - '35:9'
+    - '35:10'
+    - '35:11'
+    - '35:12'
+    - '35:13'
+    - '35:14'
+    - '35:15'
+    - '95'
+    - '95:1'
+    - '95:2'
+    - '95:3'
+    - '95:4'
+    - '95:5'
+    - '95:6'
+    - '95:7'
+    - '95:8'
+    - '95:9'
+    - '95:10'
+    - '95:11'
+    - '95:12'
+    - '95:13'
+    - '95:14'
+    - '95:15'
+    - '159'
+    - '159:1'
+    - '159:2'
+    - '159:3'
+    - '159:4'
+    - '159:5'
+    - '159:6'
+    - '159:7'
+    - '159:8'
+    - '159:9'
+    - '159:10'
+    - '159:11'
+    - '159:12'
+    - '159:13'
+    - '159:14'
+    - '159:15'
+  custom:
+    - 'skull:textures.minecraft.net/texture/621668ef7cb79dd9c22ce3d1f3f4cb6e2559893b6df4a469514e667c16aa4'
+    - 'skull:textures.minecraft.net/texture/1638469a599ceef7207537603248a9ab11ff591fd378bea4735b346a7fae893'
+    - 'skull:textures.minecraft.net/texture/5657cd5c2989ff97570fec4ddcdc6926a68a3393250c1be1f0b114a1db1'
+    - 'skull:textures.minecraft.net/texture/e95cbb4f75ea87617f2f713c6d49dac3209ba1bd4b9369654b1459ea15317'
+    - 'skull:textures.minecraft.net/texture/f2542c19cbcd964274244af6bed1ac8560b3f36fd3b3268061f8a614a9b59e35'
+    - 'skull:textures.minecraft.net/texture/c52264ac4e5621668c43e87aed7918ed6b883abc5018769c9536d27b77f'
+    - 'skull:textures.minecraft.net/texture/295ef836389af993158aba27ff37b6567185f7a721ca90fdfeb937a7cb5747'
+    - 'skull:textures.minecraft.net/texture/38957d5023c937c4c41aa2412d43410bda23cf79a9f6ab36b76fef2d7c429'
+    - 'skull:textures.minecraft.net/texture/cd541541daaff50896cd258bdbdd4cf80c3ba816735726078bfe393927e57f1'
+    - 'skull:textures.minecraft.net/texture/a0c2549a893726988f3428bef799875ba871688ae64eb0cfdc43f7d6e24c6c'
+    - 'skull:textures.minecraft.net/texture/b6ad46433a34ed66ccbafb46778ae493f2b3a2a5fdc693f8bffeb3386ccdf3CAPEurl'
+    - 'skull:textures.minecraft.net/texture/5fc8b863995fb84685c273c859548c75d94f9b82cce41b1efff454fe03cc123'
+    - 'skull:textures.minecraft.net/texture/4b62d1dbf94e8cbb3c5327d96aac121d20677338924a5ed6de4cbf578a73d'
+    - 'skull:textures.minecraft.net/texture/f6c5ee57717f561fc12b9f8878fbe0d0d62c72facfad61c0d27cade54e818c14'
+    - 'skull:textures.minecraft.net/texture/538992fa71d5d98789d5061ddd68e2b7af9efc253b39e1b346343d7789f8dc'
+    - 'skull:textures.minecraft.net/texture/c99ec943b48c6f82f32acd9e8626546de8416cce4da41cbaa02c69feefbea'
+    - 'skull:textures.minecraft.net/texture/f53ebc976cb6771f3e95117b326842ff7812c740bece96bb8858346d841'
+    - 'skull:textures.minecraft.net/texture/d9e0b56996f494adabebac9ea2a52c64ac486a5e0b8a89e485945dcca2b'
+    - 'skull:textures.minecraft.net/texture/f06555706b641fdaf436c07663f923afc5ee72146f90195fb337b9de766588d'
+    - 'skull:textures.minecraft.net/texture/b26f0b5e52337c76b5a80e3d971477a8e38b0d71390f13defe1316ad6a0a67c'
+    - 'skull:textures.minecraft.net/texture/d7ab62fb77189352541dd95a8ee7e3631f7c1658f463f661680c283493d8a'
+    - 'skull:textures.minecraft.net/texture/9a29335ffad5bdf825a96be8eb4c1a803dace929fc8e1178475f8f8d9c5668'
+    - 'skull:textures.minecraft.net/texture/f71cc917159f14565f6afe22b9e33d5a23e423ecd8cb5dfba0b3f66d825389ca'
+    - 'skull:textures.minecraft.net/texture/6837a48ee530cfe35aca37969e4ea71d875237d2cb7a81b1ae80a75dc76e5a'
+    - 'skull:textures.minecraft.net/texture/dfd71e20fc50abf0de2ef7decfc01ce27ad51955759e072ceaab96355f594f0'
+    - 'skull:textures.minecraft.net/texture/819f948d17718adace5dd6e050c586229653fef645d7113ab94d17b639cc466'
+    - 'skull:textures.minecraft.net/texture/b0e38c176dbf7df9b0632c256eeb6c5aaca99e1c8c1a530656eaff0417aed22'
+    - 'skull:textures.minecraft.net/texture/37ca2aa8a9f5d3246ee7f2d07e1d5fd4819125ecddf5a72e2f675355a3b9bcc'
+    - 'skull:textures.minecraft.net/texture/52284e132bfd659bc6ada497c4fa3094cd93231a6b505a12ce7cd5135ba8ff93'
+    - 'skull:textures.minecraft.net/texture/5685be67be3089dcccc73c4ddc44886e6666e0aa9817aacd4546ef58196038'
+    - 'skull:textures.minecraft.net/texture/c535ff84f4b6d85626b92ca5d2619fd5599a96a585d851727d6633227a654'
+    - 'skull:textures.minecraft.net/texture/68f54244604274927974e579d222f0c931278e0eceead31872c81c8e6f441'
+    - 'skull:textures.minecraft.net/texture/c9c0b6aa32b5a2c2d77f15dad54af3c2f201f818c7fa3ef83760648264fee2'
+    - 'skull:textures.minecraft.net/texture/4251d1e46d4d5fda32665da1f6cce29fd1c113491451c955f7668de32d37ae6'
+    - 'skull:textures.minecraft.net/texture/b0bcbea8d2ecce2e43daf5997e597b02c605f1babc11971ce4870342e3e1551'
+    - 'skull:textures.minecraft.net/texture/9fec991891f4143d40f013b98dc38dc53ed14ca75ebd32866efb126a32842a1'
+    - 'skull:textures.minecraft.net/texture/a116e69a845e227f7ca1fdde8c357c8c821ebd4ba619382ea4a1f87d4ae94'
+    - 'skull:textures.minecraft.net/texture/3a22126c8187c352bf4dac5af2afe48dbf0d4e5f98542bdd9f6c5f52f5169b'
+    - 'skull:textures.minecraft.net/texture/14e424b1676feec3a3f8ebade9e7d6a6f71f7756a869f36f7df0fc182d436e'
+    - 'skull:textures.minecraft.net/texture/98b7ca3c7d314a61abed8fc18d797fc30b6efc8445425c4e250997e52e6cb'
+    - 'skull:textures.minecraft.net/texture/d357444ade64ec6cea645ec57e775864d67c5fa62299786e03799317ee4ad'
+    - 'skull:textures.minecraft.net/texture/42bc2de782fd6d7c50e9b3edb133487191d8f5546644c25be357cca2685db'
+    - 'skull:textures.minecraft.net/texture/fb3329b3c82ddfcd19255c42712eca7bc24472c03f78668faff7d8431997d693'
+    - 'skull:textures.minecraft.net/texture/797884d451dc7b7729de2076cd6c4912865ade70391d1ccec3e95fb39f8c5e1'
+#--
+
+# Particles settings
+
+# 0 -> Number of the particle in GUI (Simple add new numbers to add new particles)
+
+particles:
+  0:
+     id: 95
+     damage: 8
+     owner: 'none'
+     effect:
+         name: 'explode'
+         speed: 0.01
+         amount: 2
+         offx: 0.5
+         offy: 0.5
+         offz: 0.5
+  1:
+     id: 95
+     damage: 7
+     owner: 'none'
+     effect:
+         name: 'largesmoke'
+         speed: 0.01
+         amount: 2
+         offx: 0.5
+         offy: 0.5
+         offz: 0.5
+  2:
+     id: 95
+     damage: 13
+     owner: 'none'
+     effect:
+         name: 'crit'
+         speed: 0.01
+         amount: 2
+         offx: 0.5
+         offy: 0.5
+         offz: 0.5
+  3:
+     id: 351
+     damage: 12
+     owner: 'none'
+     effect:
+         name: 'reddust'
+         speed: 0.01
+         amount: 20
+         red: 0
+         green: 0
+         blue: 255
+  4:
+     id: 351
+     damage: 1
+     owner: 'none'
+     effect:
+         name: 'reddust'
+         speed: 0.01
+         amount: 20
+         red: 255
+         green: 0
+         blue: 0
+  5:
+     id: 351
+     damage: 10
+     owner: 'none'
+     effect:
+         name: 'reddust'
+         speed: 0.01
+         amount: 20
+         red: 0
+         green: 255
+         blue: 0
+  6:
+     id: 152
+     damage: 0
+     owner: 'none'
+     effect:
+         name: 'blockcrack'
+         amount: 2
+         speed: 0.01
+         offx: 0.5
+         offy: 0.5
+         offz: 0.5
+         id: 166
+         damage: 0
+  7:
+     id: 12
+     damage: 0
+     owner: 'none'
+     effect:
+         name: 'blockdust'
+         speed: 0.01
+         amount: 2
+         offx: 0.5
+         offy: 0.5
+         offz: 0.5
+         id: 12
+         damage: 0
+  8:
+     id: 18
+     damage: 0
+     owner: 'none'
+     effect:
+         name: 'blockdust'
+         speed: 0.01
+         amount: 2
+         offx: 0.5
+         offy: 0.5
+         offz: 0.5
+         id: 18
+         damage: 0
+  9:
+     id: 95
+     damage: 0
+     owner: 'none'
+     effect:
+         name: 'spell'
+         speed: 0.01
+         amount: 2
+         offx: 0.5
+         offy: 0.5
+         offz: 0.5
+  10:
+     id: 95
+     damage: 11
+     owner: 'none'
+     effect:
+         name: 'splash'
+         speed: 0.01
+         amount: 2
+         offx: 0.5
+         offy: 0.5
+         offz: 0.5
+  11:
+     id: 95
+     damage: 2
+     owner: 'none'
+     effect:
+         name: 'portal'
+         speed: 0.01
+         amount: 2
+         offx: 0.5
+         offy: 0.5
+         offz: 0.5
+  12:
+     id: 351
+     damage: 11
+     owner: 'none'
+     effect:
+         name: 'reddust'
+         speed: 0.01
+         amount: 20
+         red: 255
+         green: 185
+         blue: 15
+  13:
+     id: 351
+     damage: 13
+     owner: 'none'
+     effect:
+         name: 'reddust'
+         speed: 0.01
+         amount: 20
+         red: 139
+         green: 0
+         blue: 139
+  14:
+     id: 351
+     damage: 14
+     owner: 'none'
+     effect:
+         name: 'reddust'
+         speed: 0.01
+         amount: 20
+         red: 238
+         green: 118
+         blue: 0
+  15:
+     id: 42
+     damage: 0
+     owner: 'none'
+     effect:
+         name: 'blockdust'
+         amount: 2
+         speed: 0.01
+         offx: 0.5
+         offy: 0.5
+         offz: 0.5
+         id: 42
+         damage: 0
+  16:
+     id: 41
+     damage: 0
+     owner: 'none'
+     effect:
+         name: 'blockdust'
+         speed: 0.01
+         amount: 2
+         offx: 0.5
+         offy: 0.5
+         offz: 0.5
+         id: 41
+         damage: 0
+  17:
+     id: 57
+     damage: 0
+     owner: 'none'
+     effect:
+         name: 'blockdust'
+         speed: 0.01
+         amount: 2
+         offx: 0.5
+         offy: 0.5
+         offz: 0.5
+         id: 57
+         damage: 0
+  18:
+     id: 95
+     damage: 1
+     owner: 'none'
+     effect:
+         name: 'flame'
+         speed: 0.01
+         amount: 2
+         offx: 0.5
+         offy: 0.5
+         offz: 0.5
+  19:
+     id: 95
+     damage: 5
+     owner: 'none'
+     effect:
+         name: 'happyVillager'
+         speed: 0.01
+         amount: 1
+         offx: 0.5
+         offy: 0.5
+         offz: 0.5
+  20:
+     id: 95
+     damage: 14
+     owner: ''
+     effect:
+         name: 'heart'
+         speed: 4.0
+         amount: 1
+         offx: 0.5
+         offy: 0.5
+         offz: 0.5
+  21:
+     id: 351
+     damage: 3
+     owner: 'none'
+     effect:
+         name: 'reddust'
+         speed: 0.01
+         amount: 20
+         red: 139
+         green: 69
+         blue: 19
+  22:
+     id: 351
+     damage: 15
+     owner: 'none'
+     effect:
+         name: 'reddust'
+         speed: 0.01
+         amount: 20
+         red: 255
+         green: 255
+         blue: 255
+  23:
+     id: 351
+     damage: 0
+     owner: 'none'
+     effect:
+         name: 'reddust'
+         speed: 0.01
+         amount: 20
+         red: 0
+         green: 0
+         blue: 0
+  24:
+     id: 1
+     damage: 0
+     owner: 'none'
+     effect:
+         name: 'blockdust'
+         amount: 2
+         speed: 0.01
+         offx: 0.5
+         offy: 0.5
+         offz: 0.5
+         id: 1
+         damage: 0
+  25:
+     id: 2
+     damage: 0
+     owner: 'none'
+     effect:
+         name: 'blockdust'
+         speed: 0.01
+         amount: 2
+         offx: 0.5
+         offy: 0.5
+         offz: 0.5
+         id: 2
+         damage: 0
+  26:
+     id: 5
+     damage: 0
+     owner: 'none'
+     effect:
+         name: 'blockdust'
+         speed: 0.01
+         amount: 2
+         offx: 0.5
+         offy: 0.5
+         offz: 0.5
+         id: 5
+         damage: 0
+#---
+# Particle list (Color/material particles require the color/material template to work)
+#******************
+# explode
+# largeexplode
+# hugeexplosion
+# fireworksSpark
+# bubble
+# splash
+# wake
+# suspended
+# depthSuspend
+# crit
+# magicCrit
+# smoke
+# largesmoke
+# spell
+# instantSpell
+# mobSpell [Color]
+# mobSpellAmbient [Color]
+# witchMagic
+# dripWater
+# dripLava
+# angryVillager
+# happyVillager
+# townaura
+# note [Color]
+# portal
+# enchantmenttable
+# flame
+# lava
+# footstep
+# cloud
+# reddust [Color]
+# snowballpoof
+# snowshovel
+# slime
+# heart
+# barrier
+# iconcrack [Material]
+# blockcrack [Material]
+# blockdust [Material]
+# droplet
+# take
+# mobappearance
