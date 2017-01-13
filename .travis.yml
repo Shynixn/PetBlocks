@@ -4,7 +4,7 @@ install:
     - cd /home/travis/build/Shynixn/PetBlocks/
     - mkdir lib
     - wget https://hub.spigotmc.org/jenkins/job/BuildTools/lastStableBuild/artifact/target/BuildTools.jar -P /home/travis/build/Shynixn/PetBlocks/lib/
-    - wget https://www.spigotmc.org/resources/supervanish-be-invisible.1331/download?version=118177 -P /home/travis/build/Shynixn/PetBlocks/lib/
+    - wget https://github.com/MyzelYam/SuperVanish/releases/download/v5.7.0/SuperVanish.jar -P /home/travis/build/Shynixn/PetBlocks/lib/
 script:
     - cd /home/travis/build/Shynixn/PetBlocks/lib/
     - java -jar BuildTools.jar --rev 1.8
