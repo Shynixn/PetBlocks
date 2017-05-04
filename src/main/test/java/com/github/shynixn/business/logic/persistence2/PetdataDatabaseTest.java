@@ -3,6 +3,7 @@ package com.github.shynixn.business.logic.persistence2;
 import ch.vorburger.exec.ManagedProcessException;
 import ch.vorburger.mariadb4j.DB;
 import com.github.shynixn.petblocks.business.logic.persistence2.Factory;
+import com.github.shynixn.petblocks.business.logic.persistence2.IPetDataController;
 import com.github.shynixn.petblocks.business.logic.persistence2.PetData;
 import com.github.shynixn.petblocks.business.logic.persistence2.PlayerData;
 import com.github.shynixn.petblocks.lib.util.IController;
@@ -10,9 +11,9 @@ import com.github.shynixn.petblocks.lib.util.IDatabaseController;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.mockito.invocation.InvocationOnMock;
@@ -47,12 +48,9 @@ public class PetdataDatabaseTest {
         Plugin plugin = mock(Plugin.class);
         when(plugin.getDataFolder()).thenReturn(new File("PetBlocks"));
         when(plugin.getConfig()).thenReturn(configuration);
-        when(plugin.getResource(any(String.class))).thenAnswer(new Answer<InputStream>() {
-            @Override
-            public InputStream answer(InvocationOnMock invocationOnMock) throws Throwable {
-                String file = invocationOnMock.getArgument(0);
-                return Thread.currentThread().getContextClassLoader().getResourceAsStream(file);
-            }
+        when(plugin.getResource(any(String.class))).thenAnswer(invocationOnMock -> {
+            String file = invocationOnMock.getArgument(0);
+            return Thread.currentThread().getContextClassLoader().getResourceAsStream(file);
         });
         return plugin;
     }

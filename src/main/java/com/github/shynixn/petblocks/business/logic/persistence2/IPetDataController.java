@@ -6,11 +6,18 @@ import org.bukkit.entity.Player;
 /**
  * Created by Shynixn
  */
-public interface IPetDataController<T> extends IDatabaseController<T> {
+public interface IPetDataController extends IDatabaseController<PetData> {
     /**
      * Returns the petdata from the given player
      * @param player player
      * @return petData
      */
     PetData getByPlayer(Player player);
+
+    /**
+     * Creates a petdata from the given player
+     * @param player player
+     * @return petdata
+     */
+    PetData create(Player player);
 }

@@ -1,12 +1,14 @@
 package com.github.shynixn.petblocks.lib;
 
 import com.github.shynixn.petblocks.business.bukkit.nms.NMSRegistry;
+import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.defaults.BukkitCommand;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
+import java.util.logging.Level;
 
 /**
  * Created by Shynixn
@@ -21,7 +23,11 @@ public abstract class DynamicCommandHelper extends BukkitCommand {
         this.usageMessage = c.getUseage();
         this.setPermission(c.getPermission());
         this.setAliases(new ArrayList<String>());
-        NMSRegistry.registerDynamicCommand(c.getCommand(), this);
+        try {
+            NMSRegistry.registerDynamicCommand(c.getCommand(), this);
+        } catch (Exception ex) {
+            Bukkit.getLogger().log(Level.WARNING,"Cannot register command.", ex);
+        }
     }
 
     @Override
@@ -35,7 +41,6 @@ public abstract class DynamicCommandHelper extends BukkitCommand {
     }
 
     public abstract void onCommandSend(CommandSender sender, String[] args);
-
 
     public String getText(String[] args) {
         String s = "";

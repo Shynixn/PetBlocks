@@ -17,7 +17,7 @@ import java.util.List;
 /**
  * Created by Shynixn
  */
-public class PetRepository extends DataBaseRepository<PetData> implements IPetDataController<PetData> {
+public class PetRepository extends DataBaseRepository<PetData> implements IPetDataController {
 
     private DbConnectionContext dbContext;
     private SQLProvider sqlProvider;
@@ -27,7 +27,6 @@ public class PetRepository extends DataBaseRepository<PetData> implements IPetDa
         this.dbContext = dbContext;
         this.sqlProvider = sqlProvider;
     }
-
 
     /**
      * Returns the petdata from the given player
@@ -50,6 +49,17 @@ public class PetRepository extends DataBaseRepository<PetData> implements IPetDa
             e.printStackTrace();
         }
         return null;
+    }
+
+    /**
+     * Creates a petdata from the given player
+     *
+     * @param player player
+     * @return petdata
+     */
+    @Override
+    public PetData create(Player player) {
+        return PetData.from(PlayerData.from(player));
     }
 
     /**

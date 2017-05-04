@@ -1,5 +1,7 @@
 package com.github.shynixn.petblocks.business.logic.persistence2;
 
+import org.bukkit.entity.Player;
+
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
@@ -34,6 +36,14 @@ public class PetData {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+
+    public static PetData from(PlayerData playerData)
+    {
+        final PetData petData = new PetData();
+        petData.setPlayerId(playerData.getId());
+        return petData;
     }
 
     public static PetData from(ResultSet resultSet) throws SQLException {

@@ -40,9 +40,15 @@ public class PlayerData {
         this.uuid = uuid;
     }
 
-    public Player getPlayer()
-    {
+    public Player getPlayer() {
         return Bukkit.getPlayer(this.uuid);
+    }
+
+    public static PlayerData from(Player player) {
+        PlayerData playerStats = new PlayerData();
+        playerStats.setName(player.getName());
+        playerStats.setUuid(player.getUniqueId());
+        return playerStats;
     }
 
     public static PlayerData from(ResultSet resultSet) throws SQLException {

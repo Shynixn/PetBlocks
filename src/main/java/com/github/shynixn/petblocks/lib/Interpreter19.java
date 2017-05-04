@@ -46,7 +46,7 @@ public class Interpreter19 {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        throw new RuntimeException("Sounds Interpreter19 has got problems!");
+        return null;
     }
 
     public static ItemStack getItemInHand19(Player player, boolean offHand) {

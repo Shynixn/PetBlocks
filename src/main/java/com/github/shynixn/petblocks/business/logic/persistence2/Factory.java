@@ -23,7 +23,7 @@ public class Factory {
     private static DbConnectionContext connectionContext;
     private static SQLProvider sqlProvider;
 
-    public static IPetDataController<PetData> createPetDataController() {
+    public static IPetDataController createPetDataController() {
         if (sqlProvider == null)
             throw new IllegalArgumentException("Factory is disabled!");
         if (Bukkit.getServer() != null && Bukkit.getServer().isPrimaryThread())
