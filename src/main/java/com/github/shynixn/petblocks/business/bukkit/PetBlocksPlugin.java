@@ -62,7 +62,7 @@ public final class PetBlocksPlugin extends JavaPlugin {
 		this.saveDefaultConfig();
 		if(this.getConfig().getBoolean("sql-enabled")) {
 			if(BukkitUtilities.isVersionSupported()) {
-				list.add(ReflectionLib.getClassFromName("com.github.shynixn.petblocks.business.logic.persistence.PetData"));
+				list.add(ReflectionLib.getClassFromName("com.github.shynixn.petblocks.business.logic.persistence.entity.PetData"));
 			}
 		}
 		return list;

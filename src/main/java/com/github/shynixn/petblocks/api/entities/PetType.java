@@ -95,10 +95,13 @@ public enum PetType {
     }
 
     public static PetType getPetTypeFromName(String name) {
-        for (final PetType pet : PetType.values()) {
+        for (final PetType pet : PetType.values())
+        {
+            System.out.println("IS " + pet.name() + " VS " + name);
             if (pet.name().equalsIgnoreCase(name))
                 return pet;
         }
+        System.out.println("NO QUERY");
         return null;
     }
 }

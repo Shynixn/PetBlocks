@@ -251,7 +251,7 @@ class PetBlockCommandExecutor extends DynamicCommandHelper {
 
     private void setPet(Player player, PetType petType, ItemStack itemStack) {
         final PetMeta meta = this.manager.dataManager.createPetMeta(player, petType);
-        this.manager.dataManager.addPetMeta(meta);
+        this.manager.dataManager.persist((com.github.shynixn.petblocks.api.persistence.entity.PetMeta)meta);
         if (itemStack.getType() == Material.SKULL_ITEM) {
             final SkullMeta skullMeta = (SkullMeta) itemStack.getItemMeta();
             if (skullMeta.getOwner() == null) {

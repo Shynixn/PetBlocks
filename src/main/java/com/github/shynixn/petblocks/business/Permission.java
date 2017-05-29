@@ -1,5 +1,7 @@
 package com.github.shynixn.petblocks.business;
 
+import java.util.*;
+
 public enum Permission {
     ALLPETTYPES("petblocks.pet.type.all"),
     SINGLEPETTYPE("petblocks.pet.type."),
@@ -27,4 +29,5 @@ public enum Permission {
     public String get() {
         return perm;
     }
+
 }

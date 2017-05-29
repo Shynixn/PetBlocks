@@ -70,7 +70,14 @@ public class Interpreter19 {
     }
 
     private static boolean isAbove18() {
-        return BukkitUtilities.getServerVersion().equals("v1_9_R1")
+        try
+        {
+            BukkitUtilities.getServerVersion();
+        }catch (RuntimeException ex)
+        {
+            return false;
+        }
+        return  BukkitUtilities.getServerVersion().equals("v1_9_R1")
                 || BukkitUtilities.getServerVersion().equals("v1_9_R2")
                 || BukkitUtilities.getServerVersion().equals("v1_10_R1")
                 || BukkitUtilities.getServerVersion().equals("v1_11_R1");

@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.github.shynixn.petblocks.business.logic.persistence.PetDataManager;
 import com.github.shynixn.petblocks.api.events.PetBlockDeathEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;

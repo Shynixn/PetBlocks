@@ -166,6 +166,13 @@
             <systemPath>${basedir}/lib/spigot-1.11.2.jar</systemPath>
         </dependency>
         <dependency>
+            <groupId>net</groupId>
+            <artifactId>minecraft112-PRE-R1</artifactId>
+            <scope>system</scope>
+            <version>1.0</version>
+            <systemPath>${basedir}/lib/spigot-1.12-pre5.jar</systemPath>
+        </dependency>
+        <dependency>
             <groupId>de.myzelyam</groupId>
             <artifactId>supervanish</artifactId>
             <scope>system</scope>
@@ -213,9 +220,15 @@
             <version>2.2.2</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-api</artifactId>
+            <version>RELEASE</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
-    <scm>
+  <!--  <scm>
         <connection>scm:git:git://github.com/Shynixn/PetBlocks.git</connection>
         <developerConnection>scm:git:ssh://github.com:Shynixn/PetBlocks.git</developerConnection>
         <url>http://github.com/Shynixn/PetBlocks.git/tree/master</url>
@@ -230,5 +243,5 @@
             <id>ossrh</id>
             <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
         </repository>
-    </distributionManagement>
+    </distributionManagement>-->
 </project>

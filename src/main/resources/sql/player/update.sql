@@ -1,1 +1,1 @@
-UPDATE SHY_PLAYER SET name=? WHERE id=?
+UPDATE SHY_PLAYER SET uuid=?, name=? WHERE id=?

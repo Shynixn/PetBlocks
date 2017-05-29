@@ -1,1 +1,1 @@
-INSERT INTO SHY_PETBLOCK (name, shy_player_id ) VALUES (?,?)
+INSERT INTO SHY_PETBLOCK (shy_player_id, shy_particle_effect_id, name, type, material, data, skull, enabled, age, unbreakable, play_sounds, moving_type, movement_type) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)

@@ -5,6 +5,7 @@ import org.bukkit.entity.Player;
 
 import java.io.Serializable;
 
+@Deprecated
 public interface PetMeta extends Serializable {
     Movement getMovementType();
 
@@ -12,19 +13,13 @@ public interface PetMeta extends Serializable {
 
     PetType getType();
 
-    Player getOwner();
-
     boolean isUnbreakable();
 
     void setUnbreakable(boolean unbreakable);
 
-    Particle getParticleEffect();
-
     void setSoundsEnabled(boolean enabled);
 
     boolean isSoundsEnabled();
-
-    void setParticleEffect(Particle particle);
 
     void setHidden(boolean enabled);
 
@@ -67,4 +62,13 @@ public interface PetMeta extends Serializable {
     int getAgeInTicks();
 
     Age getAge();
+
+    @Deprecated
+    Player getOwner();
+
+    @Deprecated
+    void setParticleEffect(Particle particle);
+
+    @Deprecated
+    Particle getParticleEffect();
 }
