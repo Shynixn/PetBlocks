@@ -22,10 +22,10 @@ public abstract class DynamicCommandHelper extends BukkitCommand {
         this.description = c.getDescription();
         this.usageMessage = c.getUseage();
         this.setPermission(c.getPermission());
-        this.setAliases(new ArrayList<String>());
+        this.setAliases(new ArrayList<>());
         try {
             NMSRegistry.registerDynamicCommand(c.getCommand(), this);
-        } catch (Exception ex) {
+        } catch (final Exception ex) {
             Bukkit.getLogger().log(Level.WARNING,"Cannot register command.", ex);
         }
     }
@@ -44,7 +44,7 @@ public abstract class DynamicCommandHelper extends BukkitCommand {
 
     public String getText(String[] args) {
         String s = "";
-        for (String k : args) {
+        for (final String k : args) {
             if (!s.equalsIgnoreCase(""))
                 s += " ";
             s += k;

@@ -46,7 +46,7 @@ public class ConfigParticle {
         }
         final ItemStack[] itemStacks = new ItemStack[54];
         for (int i = 0; i < itemStacks.length; i++) {
-            for (CustomItemContainer.ParticleItemContainer container : containers) {
+            for (final CustomItemContainer.ParticleItemContainer container : containers) {
                 if (container.getPosition() == i) {
                     itemStacks[i] = container.generate();
                     BukkitUtilities.nameItemDisplay(itemStacks[i], Language.NUMBER_PREFIX + "" + i + "");
@@ -67,7 +67,7 @@ public class ConfigParticle {
 
     private CustomItemContainer.ParticleItemContainer getParticleItemContainer(int number, FileConfiguration c) {
         try {
-            final String s = "particles." + number + ".";
+            final String s = "particles." + number + '.';
             final String a = s + "effect.";
             return new CustomItemContainer.ParticleItemContainer(c.getInt(s + "id"), c.getInt(s + "damage"), c.getString(s + "owner"), number, c.getString(s + "lore"), true, "", this.getParticleForContainer(a, c));
         } catch (final Exception e) {

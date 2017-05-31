@@ -173,7 +173,7 @@ public final class PetBlockHelper
 
     public static void setItemConsideringAge(PetBlock petBlock) {
         final Age age = petBlock.getPetMeta().getAge();
-        ItemStack itemStack;
+        final ItemStack itemStack;
         if(petBlock.getPetMeta().getSkin() != null) {
             if(petBlock.getPetMeta().getSkin().contains("http")) {
                 itemStack = NMSRegistry.changeSkullSkin(new ItemStack(petBlock.getPetMeta().getSkinMaterial(), 1, petBlock.getPetMeta().getSkinDurability()),petBlock.getPetMeta().getSkin());
@@ -212,15 +212,10 @@ public final class PetBlockHelper
             petBlock.jump();
             if(petBlock.getArmorStand() != null && !petBlock.getArmorStand().isDead())
                 petBlock.getArmorStand().setHeadPose(new EulerAngle(0,1,0));
-            Bukkit.getPluginManager().getPlugin("PetBlocks").getServer().getScheduler().runTaskLater(Bukkit.getPluginManager().getPlugin("PetBlocks"), new Runnable()
-            {
-                @Override
-                public void run()
-                {
-                    final Particle particle = new ParticleBuilder(ParticleEffect.CLOUD,1,1,1,0.1,100).build();
-                    particle.play(petBlock.getLocation());
-                    petBlock.remove();
-                }
+            Bukkit.getPluginManager().getPlugin("PetBlocks").getServer().getScheduler().runTaskLater(Bukkit.getPluginManager().getPlugin("PetBlocks"), () -> {
+                final Particle particle = new ParticleBuilder(ParticleEffect.CLOUD,1,1,1,0.1,100).build();
+                particle.play(petBlock.getLocation());
+                petBlock.remove();
             },20*2);
             return true;
         }
@@ -304,6 +299,7 @@ public final class PetBlockHelper
             petBlock.getArmorStand().remove();
     }
 
+    @FunctionalInterface
     public interface TickCallBack {
         void run(Location location);
     }

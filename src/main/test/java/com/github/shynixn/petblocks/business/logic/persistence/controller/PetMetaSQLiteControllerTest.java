@@ -18,13 +18,11 @@ import org.bukkit.plugin.Plugin;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.junit.jupiter.api.function.Executable;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
 
 import java.io.File;
-import java.io.InputStream;
 import java.util.UUID;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -42,16 +40,13 @@ public class PetMetaSQLiteControllerTest {
         configuration.set("sql.database", "db");
         configuration.set("sql.username", "root");
         configuration.set("sql.password", "");
-        Plugin plugin = mock(Plugin.class);
+        final Plugin plugin = mock(Plugin.class);
         new File("PetBlocks.db").delete();
         when(plugin.getDataFolder()).thenReturn(new File("PetBlocks"));
         when(plugin.getConfig()).thenReturn(configuration);
-        when(plugin.getResource(any(String.class))).thenAnswer(new Answer<InputStream>() {
-            @Override
-            public InputStream answer(InvocationOnMock invocationOnMock) throws Throwable {
-                final String file = invocationOnMock.getArgument(0);
-                return Thread.currentThread().getContextClassLoader().getResourceAsStream(file);
-            }
+        when(plugin.getResource(any(String.class))).thenAnswer(invocationOnMock -> {
+            final String file = invocationOnMock.getArgument(0);
+            return Thread.currentThread().getContextClassLoader().getResourceAsStream(file);
         });
         return plugin;
     }
@@ -74,12 +69,12 @@ public class PetMetaSQLiteControllerTest {
                     for (final PetMeta item : controller.getAll()) {
                         controller.remove(item);
                     }
-                    PetMeta meta = new PetData();
+                    final PetMeta meta = new PetData();
                     meta.setDisplayName("Notch");
                     assertThrows(IllegalArgumentException.class, () -> controller.store(meta));
                     assertEquals(0, controller.size());
 
-                    ParticleEffectMeta particleEffectMeta = particleController.create();
+                    final ParticleEffectMeta particleEffectMeta = particleController.create();
                     particleEffectMeta.setEffectType(ParticleEffectMeta.ParticleEffectType.END_ROD);
                     particleController.store(particleEffectMeta);
                     meta.setParticleEffectMeta(particleEffectMeta);
@@ -87,7 +82,7 @@ public class PetMetaSQLiteControllerTest {
                     assertThrows(IllegalArgumentException.class, () -> controller.store(meta));
                     assertEquals(0, controller.size());
 
-                    PlayerMeta playerMeta = playerController.create(player);
+                    final PlayerMeta playerMeta = playerController.create(player);
                     playerController.store(playerMeta);
                     meta.setPlayerMeta(playerMeta);
                     assertThrows(IllegalArgumentException.class, () -> controller.store(meta));
@@ -102,8 +97,8 @@ public class PetMetaSQLiteControllerTest {
                     assertEquals("Notch", controller.getByPlayer(player).getDisplayName());
                 }
             }
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (final Exception e) {
+            Logger.getLogger(this.getClass().getSimpleName()).log(Level.WARNING, "Failed to run test.", e);
             Assert.fail();
         }
     }
@@ -132,12 +127,12 @@ public class PetMetaSQLiteControllerTest {
                     meta.setMoveType(MoveType.FLYING);
                     meta.setMovementType(Movement.CRAWLING);
 
-                    ParticleEffectMeta particleEffectMeta = particleController.create();
+                    final ParticleEffectMeta particleEffectMeta = particleController.create();
                     particleEffectMeta.setEffectType(ParticleEffectMeta.ParticleEffectType.END_ROD);
                     particleController.store(particleEffectMeta);
                     meta.setParticleEffectMeta(particleEffectMeta);
 
-                    PlayerMeta playerMeta = playerController.create(player);
+                    final PlayerMeta playerMeta = playerController.create(player);
                     playerController.store(playerMeta);
                     meta.setPlayerMeta(playerMeta);
                     controller.store(meta);
@@ -182,8 +177,8 @@ public class PetMetaSQLiteControllerTest {
                     assertEquals(Movement.HOPPING, meta.getMovementType());
                 }
             }
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (final Exception e) {
+            Logger.getLogger(this.getClass().getSimpleName()).log(Level.WARNING, "Failed to run test.", e);
             Assert.fail();
         }
     }

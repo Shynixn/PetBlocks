@@ -209,7 +209,7 @@ class PetDataListener extends BukkitEvents {
         if (Config.getInstance().isJoin_enabled()) {
             if (!this.manager.hasPetMeta(event.getPlayer()) || Config.getInstance().isJoin_overwriteExistingPet()) {
                 final PetMeta meta = this.manager.createPetMeta(event.getPlayer(), PetType.CAT);
-                Config.getInstance().fixJoinDefaultPet(meta);
+                Config.getInstance().fixJoinDefaultPet((com.github.shynixn.petblocks.api.persistence.entity.PetMeta)meta);
                 this.manager.persist((com.github.shynixn.petblocks.api.persistence.entity.PetMeta)meta);
             }
         } else {

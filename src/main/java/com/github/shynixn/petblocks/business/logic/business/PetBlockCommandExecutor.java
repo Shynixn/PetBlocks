@@ -158,7 +158,7 @@ class PetBlockCommandExecutor extends DynamicCommandHelper {
         }
         if (nearest != null) {
             nearest.remove();
-            sender.sendMessage(Language.PREFIX + "" + ChatColor.GREEN + "You removed entity " + nearest.getType() + ".");
+            sender.sendMessage(Language.PREFIX + "" + ChatColor.GREEN + "You removed entity " + nearest.getType() + '.');
         }
     }
 

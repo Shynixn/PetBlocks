@@ -11,6 +11,7 @@ public class PetBlockEvent extends SpigotEvent {
     private final PetBlock petBlock;
 
     public PetBlockEvent(PetBlock petBlock) {
+        super();
         if (petBlock == null)
             throw new IllegalArgumentException("PetBlock cannot be null!");
         this.petBlock = petBlock;

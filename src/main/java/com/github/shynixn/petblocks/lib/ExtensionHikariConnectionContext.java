@@ -43,7 +43,7 @@ public class ExtensionHikariConnectionContext implements AutoCloseable {
     public static final String SQLITE_DRIVER = "org.sqlite.JDBC";
     public static final String MYSQL_DRIVER = "com.mysql.jdbc.Driver";
     private HikariDataSource ds;
-    private SQlRetriever retriever;
+    private final SQlRetriever retriever;
     private Map<String, String> cache = new HashMap<>();
 
     /**
@@ -199,7 +199,6 @@ public class ExtensionHikariConnectionContext implements AutoCloseable {
             throw new IllegalArgumentException("Connection cannot be null!");
         if (connection.isClosed())
             throw new IllegalArgumentException("Connection is closed. Cannot create statement!");
-        System.out.println("UPDATE: " + sql);
         try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             this.setParameters(preparedStatement, parameters);
             return preparedStatement.executeUpdate();
@@ -342,6 +341,7 @@ public class ExtensionHikariConnectionContext implements AutoCloseable {
         }
     }
 
+    @FunctionalInterface
     public interface SQlRetriever {
         /**
          * Loads a sqlStatement from the givenFile

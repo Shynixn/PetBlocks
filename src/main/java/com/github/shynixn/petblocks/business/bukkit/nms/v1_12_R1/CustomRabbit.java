@@ -1,14 +1,14 @@
 package com.github.shynixn.petblocks.business.bukkit.nms.v1_12_R1;
 
-import com.github.shynixn.petblocks.business.logic.configuration.ConfigPet;
-import com.google.common.collect.Sets;
 import com.github.shynixn.petblocks.api.entities.CustomEntity;
 import com.github.shynixn.petblocks.api.entities.PetMeta;
 import com.github.shynixn.petblocks.business.bukkit.nms.helper.PetBlockHelper;
-import net.minecraft.server.v1_11_R1.*;
+import com.github.shynixn.petblocks.business.logic.configuration.ConfigPet;
+import com.google.common.collect.Sets;
+import net.minecraft.server.v1_12_R1.*;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.craftbukkit.v1_11_R1.CraftWorld;
+import org.bukkit.craftbukkit.v1_12_R1.CraftWorld;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Rabbit;
 import org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason;
@@ -18,6 +18,7 @@ import org.bukkit.potion.PotionEffectType;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
+import java.util.logging.Level;
 
 public final class CustomRabbit extends EntityRabbit implements CustomEntity {
     private Player player;
@@ -32,8 +33,8 @@ public final class CustomRabbit extends EntityRabbit implements CustomEntity {
         super(((CraftWorld) player.getWorld()).getHandle());
         this.setSilent(true);
         try {
-            Field bField = PathfinderGoalSelector.class.getDeclaredField("b");
-            Field cField = PathfinderGoalSelector.class.getDeclaredField("c");
+            final Field bField = PathfinderGoalSelector.class.getDeclaredField("b");
+            final Field cField = PathfinderGoalSelector.class.getDeclaredField("c");
             this.ignoreFinalField(bField);
             this.ignoreFinalField(cField);
             cField.setAccessible(true);
@@ -44,8 +45,8 @@ public final class CustomRabbit extends EntityRabbit implements CustomEntity {
             this.goalSelector.a(0, new PathfinderGoalFloat(this));
             this.goalSelector.a(1, new OwnerPathfinder(this, player));
             this.getAttributeInstance(GenericAttributes.MOVEMENT_SPEED).setValue(0.30000001192092896D * ConfigPet.getInstance().getModifier_petwalking());
-        } catch (Exception exc) {
-            exc.printStackTrace();
+        } catch (final Exception exc) {
+            Bukkit.getLogger().log(Level.WARNING, "EntityNMS exception.", exc);
         }
         this.player = player;
         this.petData = meta;
@@ -54,20 +55,20 @@ public final class CustomRabbit extends EntityRabbit implements CustomEntity {
 
     private void ignoreFinalField(Field field) throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
         field.setAccessible(true);
-        Field modifiersField = Field.class.getDeclaredField("modifiers");
+        final Field modifiersField = Field.class.getDeclaredField("modifiers");
         modifiersField.setAccessible(true);
         modifiersField.setInt(field, field.getModifiers() & ~Modifier.FINAL);
     }
 
     @Override
-    protected SoundEffect di() {
+    protected SoundEffect dk() {
         this.playedMovingSound = PetBlockHelper.executeMovingSound(this.getBukkitEntity(), this.player, this.petData, this.playedMovingSound);
-        return super.di();
+        return super.dk();
     }
 
     @Override
     public void spawn(Location location) {
-        World mcWorld = ((CraftWorld) location.getWorld()).getHandle();
+        final World mcWorld = ((CraftWorld) location.getWorld()).getHandle();
         this.setPosition(location.getX(), location.getY(), location.getZ());
         mcWorld.addEntity(this, SpawnReason.CUSTOM);
         this.getSpigotEntity().addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, 9999999, 1));

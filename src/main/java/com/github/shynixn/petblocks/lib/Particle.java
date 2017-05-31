@@ -138,6 +138,7 @@ public class Particle implements com.github.shynixn.petblocks.api.entities.Parti
         private final Player[] players;
 
         SendParticleRunnable(Location location, Player... players) {
+            super();
             this.location = location;
             this.players = players;
         }
@@ -145,15 +146,15 @@ public class Particle implements com.github.shynixn.petblocks.api.entities.Parti
         @Override
         public void run() {
             if (Particle.this.effect == ParticleEffect.SPELL_MOB || Particle.this.effect == ParticleEffect.SPELL_MOB_AMBIENT || Particle.this.effect == ParticleEffect.REDSTONE)
-                Particle.this.effect.display(new ParticleEffect.OrdinaryColor((int) Particle.this.x, (int) Particle.this.z, (int) Particle.this.y), location, Arrays.asList(players));
+                Particle.this.effect.display(new ParticleEffect.OrdinaryColor((int) Particle.this.x, (int) Particle.this.z, (int) Particle.this.y), this.location, Arrays.asList(this.players));
             else if (Particle.this.effect == ParticleEffect.NOTE)
-                Particle.this.effect.display(new ParticleEffect.NoteColor((int) Particle.this.x), location, Arrays.asList(players));
+                Particle.this.effect.display(new ParticleEffect.NoteColor((int) Particle.this.x), this.location, Arrays.asList(this.players));
             else if (Particle.this.effect == ParticleEffect.BLOCK_CRACK || Particle.this.effect == ParticleEffect.BLOCK_DUST)
-                Particle.this.effect.display(new ParticleEffect.BlockData(Particle.this.material, Particle.this.data), (float) Particle.this.x, (float) Particle.this.y, (float) Particle.this.z, (float) Particle.this.speed, Particle.this.amount, location, Arrays.asList(players));
+                Particle.this.effect.display(new ParticleEffect.BlockData(Particle.this.material, Particle.this.data), (float) Particle.this.x, (float) Particle.this.y, (float) Particle.this.z, (float) Particle.this.speed, Particle.this.amount, this.location, Arrays.asList(this.players));
             else if (Particle.this.effect == ParticleEffect.ITEM_CRACK)
-                Particle.this.effect.display(new ParticleEffect.ItemData(Particle.this.material, Particle.this.data), (float) Particle.this.x, (float) Particle.this.y, (float) Particle.this.z, (float) Particle.this.speed, Particle.this.amount, location, Arrays.asList(players));
+                Particle.this.effect.display(new ParticleEffect.ItemData(Particle.this.material, Particle.this.data), (float) Particle.this.x, (float) Particle.this.y, (float) Particle.this.z, (float) Particle.this.speed, Particle.this.amount, this.location, Arrays.asList(this.players));
             else
-                Particle.this.effect.display((float) Particle.this.x, (float) Particle.this.y, (float) Particle.this.z, (float) Particle.this.speed, Particle.this.amount, location, Arrays.asList(players));
+                Particle.this.effect.display((float) Particle.this.x, (float) Particle.this.y, (float) Particle.this.z, (float) Particle.this.speed, Particle.this.amount, this.location, Arrays.asList(this.players));
         }
     }
 }

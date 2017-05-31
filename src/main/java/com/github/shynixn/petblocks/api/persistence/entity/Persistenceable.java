@@ -1,5 +1,6 @@
 package com.github.shynixn.petblocks.api.persistence.entity;
 
+@FunctionalInterface
 public interface Persistenceable {
 
     /**

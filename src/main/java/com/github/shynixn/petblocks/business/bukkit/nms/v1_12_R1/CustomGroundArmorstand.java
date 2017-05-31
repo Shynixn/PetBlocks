@@ -1,23 +1,11 @@
 package com.github.shynixn.petblocks.business.bukkit.nms.v1_12_R1;
 
 import com.github.shynixn.petblocks.api.entities.*;
+import com.github.shynixn.petblocks.api.events.PetBlockSpawnEvent;
 import com.github.shynixn.petblocks.business.bukkit.nms.NMSRegistry;
 import com.github.shynixn.petblocks.business.bukkit.nms.helper.PetBlockHelper;
 import com.github.shynixn.petblocks.business.logic.configuration.ConfigPet;
-import com.github.shynixn.petblocks.api.events.PetBlockSpawnEvent;
-import net.minecraft.server.v1_12_R1.Entity;
-import net.minecraft.server.v1_12_R1.EntityArmorStand;
-import net.minecraft.server.v1_12_R1.EntityHuman;
-import net.minecraft.server.v1_12_R1.EntityLiving;
-import net.minecraft.server.v1_12_R1.EntityPlayer;
-import net.minecraft.server.v1_12_R1.MathHelper;
-import net.minecraft.server.v1_12_R1.MovingObjectPosition;
-import net.minecraft.server.v1_12_R1.NBTTagCompound;
-import net.minecraft.server.v1_12_R1.PacketPlayOutAnimation;
-import net.minecraft.server.v1_12_R1.PacketPlayOutEntityTeleport;
-import net.minecraft.server.v1_12_R1.PacketPlayOutMount;
-import net.minecraft.server.v1_12_R1.Vec3D;
-import net.minecraft.server.v1_12_R1.World;
+import net.minecraft.server.v1_12_R1.*;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.craftbukkit.v1_12_R1.CraftWorld;
@@ -32,7 +20,6 @@ import org.bukkit.util.Vector;
 
 import java.lang.reflect.Field;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 final class CustomGroundArmorstand extends EntityArmorStand implements PetBlock {
     private PetMeta petMeta;
@@ -79,14 +66,14 @@ final class CustomGroundArmorstand extends EntityArmorStand implements PetBlock 
             }
             return false;
         } catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException e1) {
-            Bukkit.getLogger().log(Level.WARNING, "Failed to inject jumping.", e1);
+            Bukkit.getLogger().log(Level.WARNING, "EntityNMS exception.", e1);
         }
         return false;
     }
 
     private EntityHuman hasHumanPassenger() {
         if (this.passengers != null) {
-            for (Entity entity : this.passengers) {
+            for (final Entity entity : this.passengers) {
                 if (entity instanceof EntityHuman)
                     return (EntityHuman) entity;
             }
@@ -109,7 +96,7 @@ final class CustomGroundArmorstand extends EntityArmorStand implements PetBlock 
     }
 
     @Override
-    public void a(float sideMot, float forMot, float unknown) {
+    public void a(float sideMot, float forMot, float f2) {
         if (this.isSpecial) {
             if (this.hasHumanPassenger() != null) {
                 if (this.petMeta.getMoveType() == MoveType.WALKING) {
@@ -118,23 +105,22 @@ final class CustomGroundArmorstand extends EntityArmorStand implements PetBlock 
                     this.setYawPitch(this.yaw, this.pitch);
                     this.aP = (this.aN = this.yaw);
                     sideMot = this.hasHumanPassenger().be * 0.5F;
-                    forMot = this.hasHumanPassenger().bf;
+                    forMot = this.hasHumanPassenger().bg;
                     if (forMot <= 0.0F) {
                         forMot *= 0.25F;
                     }
                     if (this.onGround && this.isJumping()) {
-                        double jumpHeight = 0.5D;
-                        this.motY = jumpHeight;
+                        this.motY = 0.5D;
                     }
                     this.P = (float) ConfigPet.getInstance().getModifier_petclimbing();
-                //    this.aR = (this.cq() * 0.1F);
+                    this.aR = (this.cw() * 0.1F);
                     if (!this.world.isClientSide) {
-                //        this.l(0.35F);
+                        this.m(0.35F);
                         super.g(sideMot * (float) ConfigPet.getInstance().getModifier_petriding(), forMot * (float) ConfigPet.getInstance().getModifier_petriding());
                     }
                     this.aF = this.aG;
-                    double d0 = this.locX - this.lastX;
-                    double d1 = this.locZ - this.lastZ;
+                    final double d0 = this.locX - this.lastX;
+                    final double d1 = this.locZ - this.lastZ;
                     float f4 = MathHelper.sqrt(d0 * d0 + d1 * d1) * 4.0F;
 
                     if (f4 > 1.0F) {
@@ -144,10 +130,10 @@ final class CustomGroundArmorstand extends EntityArmorStand implements PetBlock 
                     this.aG += (f4 - this.aG) * 0.4F;
                     this.aH += this.aG;
                 } else {
-                    float side = this.hasHumanPassenger().be * 0.5F;
-                    float forw = this.hasHumanPassenger().bf;
-                    Vector v = new Vector();
-                    Location l = new Location(this.world.getWorld(), this.locX, this.locY, this.locZ);
+                    final float side = this.hasHumanPassenger().be * 0.5F;
+                    final float forw = this.hasHumanPassenger().bf;
+                    final Vector v = new Vector();
+                    final Location l = new Location(this.world.getWorld(), this.locX, this.locY, this.locZ);
                     if (side < 0.0F) {
                         l.setYaw(this.hasHumanPassenger().yaw - 90);
                         v.add(l.getDirection().normalize().multiply(-0.5));
@@ -187,9 +173,9 @@ final class CustomGroundArmorstand extends EntityArmorStand implements PetBlock 
                         l.add(v.multiply(2.25).multiply(ConfigPet.getInstance().getModifier_petriding()));
                         this.setPosition(l.getX(), l.getY(), l.getZ());
                     }
-                    Vec3D vec3d = new Vec3D(this.locX, this.locY, this.locZ);
-                    Vec3D vec3d1 = new Vec3D(this.locX + this.motX, this.locY + this.motY, this.locZ + this.motZ);
-                    MovingObjectPosition movingobjectposition = this.world.rayTrace(vec3d, vec3d1);
+                    final Vec3D vec3d = new Vec3D(this.locX, this.locY, this.locZ);
+                    final Vec3D vec3d1 = new Vec3D(this.locX + this.motX, this.locY + this.motY, this.locZ + this.motZ);
+                    final MovingObjectPosition movingobjectposition = this.world.rayTrace(vec3d, vec3d1);
                     if (movingobjectposition == null) {
                         this.bumper = l.toVector();
                     } else {
@@ -207,15 +193,15 @@ final class CustomGroundArmorstand extends EntityArmorStand implements PetBlock 
     private Vector bumper;
 
     public void spawn(Location location) {
-        PetBlockSpawnEvent event = new PetBlockSpawnEvent(this);
+        final PetBlockSpawnEvent event = new PetBlockSpawnEvent(this);
         Bukkit.getPluginManager().callEvent(event);
         if (!event.isCanceled()) {
             NMSRegistry.accessWorldGuardSpawn(location);
             this.rabbit.spawn(location);
-            World mcWorld = ((CraftWorld) location.getWorld()).getHandle();
+            final World mcWorld = ((CraftWorld) location.getWorld()).getHandle();
             this.setPosition(location.getX(), location.getY(), location.getZ());
             mcWorld.addEntity(this, SpawnReason.CUSTOM);
-            NBTTagCompound compound = new NBTTagCompound();
+            final NBTTagCompound compound = new NBTTagCompound();
             compound.setBoolean("invulnerable", true);
             compound.setBoolean("Invisible", true);
             compound.setBoolean("PersistenceRequired", true);
@@ -239,10 +225,10 @@ final class CustomGroundArmorstand extends EntityArmorStand implements PetBlock 
 
     @Override
     public void teleportWithOwner(Location location) {
-        EntityPlayer player = ((CraftPlayer) this.owner).getHandle();
+        final EntityPlayer player = ((CraftPlayer) this.owner).getHandle();
         player.setPositionRotation(location.getX(), location.getY(), location.getZ(), location.getYaw(), location.getPitch());
-        PacketPlayOutEntityTeleport teleport = new PacketPlayOutEntityTeleport(player);
-        for (Player player1 : this.owner.getWorld().getPlayers()) {
+        final PacketPlayOutEntityTeleport teleport = new PacketPlayOutEntityTeleport(player);
+        for (final Player player1 : this.owner.getWorld().getPlayers()) {
             ((CraftPlayer) player1).getHandle().playerConnection.sendPacket(teleport);
         }
     }
@@ -252,13 +238,10 @@ final class CustomGroundArmorstand extends EntityArmorStand implements PetBlock 
         if (amount < -1.0) {
             this.hitflor = true;
         } else {
-            this.health = PetBlockHelper.setDamage(this, this.health, amount, new PetBlockHelper.TickCallBack() {
-                @Override
-                public void run(Location location) {
-                    PacketPlayOutAnimation animation = new PacketPlayOutAnimation(CustomGroundArmorstand.this, 1);
-                    for (Player player : CustomGroundArmorstand.this.getArmorStand().getWorld().getPlayers()) {
-                        ((CraftPlayer) player).getHandle().playerConnection.sendPacket(animation);
-                    }
+            this.health = PetBlockHelper.setDamage(this, this.health, amount, location -> {
+                final PacketPlayOutAnimation animation = new PacketPlayOutAnimation(CustomGroundArmorstand.this, 1);
+                for (final Player player : CustomGroundArmorstand.this.getArmorStand().getWorld().getPlayers()) {
+                    ((CraftPlayer) player).getHandle().playerConnection.sendPacket(animation);
                 }
             });
         }
@@ -266,12 +249,7 @@ final class CustomGroundArmorstand extends EntityArmorStand implements PetBlock 
 
     @Override
     public void respawn() {
-        PetBlockHelper.respawn(this, new PetBlockHelper.TickCallBack() {
-            @Override
-            public void run(Location location) {
-                CustomGroundArmorstand.this.spawn(location);
-            }
-        });
+        PetBlockHelper.respawn(this, CustomGroundArmorstand.this::spawn);
     }
 
     @Override
@@ -343,13 +321,10 @@ final class CustomGroundArmorstand extends EntityArmorStand implements PetBlock 
 
     @Override
     public void wear(final Player player) {
-        PetBlockHelper.wear(this, player, new PetBlockHelper.TickCallBack() {
-            @Override
-            public void run(Location location) {
-                PacketPlayOutMount animation = new PacketPlayOutMount(((CraftPlayer) player).getHandle());
-                for (Player player2 : CustomGroundArmorstand.this.getArmorStand().getWorld().getPlayers()) {
-                    ((CraftPlayer) player2).getHandle().playerConnection.sendPacket(animation);
-                }
+        PetBlockHelper.wear(this, player, location -> {
+            final PacketPlayOutMount animation = new PacketPlayOutMount(((CraftPlayer) player).getHandle());
+            for (final Player player2 : CustomGroundArmorstand.this.getArmorStand().getWorld().getPlayers()) {
+                ((CraftPlayer) player2).getHandle().playerConnection.sendPacket(animation);
             }
         });
     }
@@ -366,13 +341,10 @@ final class CustomGroundArmorstand extends EntityArmorStand implements PetBlock 
 
     @Override
     public void eject(final Player player) {
-        PetBlockHelper.eject(this, player, new PetBlockHelper.TickCallBack() {
-            @Override
-            public void run(Location location) {
-                PacketPlayOutMount animation = new PacketPlayOutMount(((CraftPlayer) player).getHandle());
-                for (Player player2 : CustomGroundArmorstand.this.getArmorStand().getWorld().getPlayers()) {
-                    ((CraftPlayer) player2).getHandle().playerConnection.sendPacket(animation);
-                }
+        PetBlockHelper.eject(this, player, location -> {
+            final PacketPlayOutMount animation = new PacketPlayOutMount(((CraftPlayer) player).getHandle());
+            for (final Player player2 : CustomGroundArmorstand.this.getArmorStand().getWorld().getPlayers()) {
+                ((CraftPlayer) player2).getHandle().playerConnection.sendPacket(animation);
             }
         });
     }

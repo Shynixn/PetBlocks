@@ -18,6 +18,7 @@ import org.bukkit.util.EulerAngle;
 import org.bukkit.util.Vector;
 
 import java.lang.reflect.Field;
+import java.util.logging.Level;
 
 final class CustomGroundArmorstand extends EntityArmorStand implements PetBlock {
     private PetMeta petMeta;
@@ -55,13 +56,13 @@ final class CustomGroundArmorstand extends EntityArmorStand implements PetBlock 
     }
 
     private boolean isJumping() {
-        Field jump;
+        final Field jump;
         try {
             jump = EntityLiving.class.getDeclaredField("aW");
             jump.setAccessible(true);
             return jump.getBoolean(this.passenger);
         } catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException e1) {
-            e1.printStackTrace();
+            Bukkit.getLogger().log(Level.WARNING, "EntityNMS exception.", e1);
         }
         return false;
     }
@@ -69,14 +70,11 @@ final class CustomGroundArmorstand extends EntityArmorStand implements PetBlock 
     @Override
     protected void doTick() {
         if (this.isSpecial) {
-            this.counter = PetBlockHelper.doTick(this.counter, this, new PetBlockHelper.TickCallBack() {
-                @Override
-                public void run(Location location) {
-                    CustomGroundArmorstand.this.setPositionRotation(location.getX(), location.getY(), location.getZ(), location.getYaw(), location.getPitch());
-                    PacketPlayOutEntityTeleport animation = new PacketPlayOutEntityTeleport(CustomGroundArmorstand.this);
-                    for (Player player : CustomGroundArmorstand.this.getArmorStand().getWorld().getPlayers()) {
-                        ((CraftPlayer) player).getHandle().playerConnection.sendPacket(animation);
-                    }
+            this.counter = PetBlockHelper.doTick(this.counter, this, location -> {
+                CustomGroundArmorstand.this.setPositionRotation(location.getX(), location.getY(), location.getZ(), location.getYaw(), location.getPitch());
+                final PacketPlayOutEntityTeleport animation = new PacketPlayOutEntityTeleport(CustomGroundArmorstand.this);
+                for (final Player player : CustomGroundArmorstand.this.getArmorStand().getWorld().getPlayers()) {
+                    ((CraftPlayer) player).getHandle().playerConnection.sendPacket(animation);
                 }
             });
         }
@@ -108,8 +106,8 @@ final class CustomGroundArmorstand extends EntityArmorStand implements PetBlock 
                     }
 
                     this.ay = this.az;
-                    double d0 = this.locX - this.lastX;
-                    double d1 = this.locZ - this.lastZ;
+                    final double d0 = this.locX - this.lastX;
+                    final double d1 = this.locZ - this.lastZ;
                     float f4 = MathHelper.sqrt(d0 * d0 + d1 * d1) * 4.0F;
 
                     if (f4 > 1.0F) {
@@ -119,10 +117,10 @@ final class CustomGroundArmorstand extends EntityArmorStand implements PetBlock 
                     this.az += (f4 - this.az) * 0.4F;
                     this.aA += this.az;
                 } else {
-                    float side = ((EntityLiving) this.passenger).aX * 0.5F;
-                    float forw = ((EntityLiving) this.passenger).aY;
-                    Vector v = new Vector();
-                    Location l = new Location(this.world.getWorld(), this.locX, this.locY, this.locZ);
+                    final float side = ((EntityLiving) this.passenger).aX * 0.5F;
+                    final float forw = ((EntityLiving) this.passenger).aY;
+                    final Vector v = new Vector();
+                    final Location l = new Location(this.world.getWorld(), this.locX, this.locY, this.locZ);
                     if (side < 0.0F) {
                         l.setYaw(this.passenger.yaw - 90);
                         v.add(l.getDirection().normalize().multiply(-0.5));
@@ -162,9 +160,9 @@ final class CustomGroundArmorstand extends EntityArmorStand implements PetBlock 
                         l.add(v.multiply(2.25).multiply(ConfigPet.getInstance().getModifier_petriding()));
                         this.setPosition(l.getX(), l.getY(), l.getZ());
                     }
-                    Vec3D vec3d = new Vec3D(this.locX, this.locY, this.locZ);
-                    Vec3D vec3d1 = new Vec3D(this.locX + this.motX, this.locY + this.motY, this.locZ + this.motZ);
-                    MovingObjectPosition movingobjectposition = this.world.rayTrace(vec3d, vec3d1);
+                    final Vec3D vec3d = new Vec3D(this.locX, this.locY, this.locZ);
+                    final Vec3D vec3d1 = new Vec3D(this.locX + this.motX, this.locY + this.motY, this.locZ + this.motZ);
+                    final MovingObjectPosition movingobjectposition = this.world.rayTrace(vec3d, vec3d1);
                     if (movingobjectposition == null) {
                         this.bumper = l.toVector();
                     } else {
@@ -182,15 +180,15 @@ final class CustomGroundArmorstand extends EntityArmorStand implements PetBlock 
     private Vector bumper;
 
     public void spawn(Location location) {
-        PetBlockSpawnEvent event = new PetBlockSpawnEvent(this);
+        final PetBlockSpawnEvent event = new PetBlockSpawnEvent(this);
         Bukkit.getPluginManager().callEvent(event);
         if (!event.isCanceled()) {
             NMSRegistry.accessWorldGuardSpawn(location);
             this.rabbit.spawn(location);
-            net.minecraft.server.v1_8_R1.World mcWorld = ((org.bukkit.craftbukkit.v1_8_R1.CraftWorld) location.getWorld()).getHandle();
+            final net.minecraft.server.v1_8_R1.World mcWorld = ((org.bukkit.craftbukkit.v1_8_R1.CraftWorld) location.getWorld()).getHandle();
             this.setPosition(location.getX(), location.getY(), location.getZ());
             mcWorld.addEntity(this, SpawnReason.CUSTOM);
-            net.minecraft.server.v1_8_R1.NBTTagCompound compound = new net.minecraft.server.v1_8_R1.NBTTagCompound();
+            final net.minecraft.server.v1_8_R1.NBTTagCompound compound = new net.minecraft.server.v1_8_R1.NBTTagCompound();
             compound.setBoolean("invulnerable", true);
             compound.setBoolean("Invisible", true);
             compound.setBoolean("PersistenceRequired", true);
@@ -214,10 +212,10 @@ final class CustomGroundArmorstand extends EntityArmorStand implements PetBlock 
 
     @Override
     public void teleportWithOwner(Location location) {
-        EntityPlayer player = ((CraftPlayer) this.owner).getHandle();
+        final EntityPlayer player = ((CraftPlayer) this.owner).getHandle();
         player.setPositionRotation(location.getX(), location.getY(), location.getZ(), location.getYaw(), location.getPitch());
-        PacketPlayOutEntityTeleport teleport = new PacketPlayOutEntityTeleport(player);
-        for (Player player1 : this.owner.getWorld().getPlayers()) {
+        final PacketPlayOutEntityTeleport teleport = new PacketPlayOutEntityTeleport(player);
+        for (final Player player1 : this.owner.getWorld().getPlayers()) {
             ((CraftPlayer) player1).getHandle().playerConnection.sendPacket(teleport);
         }
     }
@@ -227,13 +225,10 @@ final class CustomGroundArmorstand extends EntityArmorStand implements PetBlock 
         if (amount < -1.0) {
             this.hitflor = true;
         } else {
-            this.health = PetBlockHelper.setDamage(this, this.health, amount, new PetBlockHelper.TickCallBack() {
-                @Override
-                public void run(Location location) {
-                    PacketPlayOutAnimation animation = new PacketPlayOutAnimation(CustomGroundArmorstand.this, 1);
-                    for (Player player : CustomGroundArmorstand.this.getArmorStand().getWorld().getPlayers()) {
-                        ((CraftPlayer) player).getHandle().playerConnection.sendPacket(animation);
-                    }
+            this.health = PetBlockHelper.setDamage(this, this.health, amount, location -> {
+                final PacketPlayOutAnimation animation = new PacketPlayOutAnimation(CustomGroundArmorstand.this, 1);
+                for (final Player player : CustomGroundArmorstand.this.getArmorStand().getWorld().getPlayers()) {
+                    ((CraftPlayer) player).getHandle().playerConnection.sendPacket(animation);
                 }
             });
         }
@@ -241,12 +236,7 @@ final class CustomGroundArmorstand extends EntityArmorStand implements PetBlock 
 
     @Override
     public void respawn() {
-        PetBlockHelper.respawn(this, new PetBlockHelper.TickCallBack() {
-            @Override
-            public void run(Location location) {
-                CustomGroundArmorstand.this.spawn(location);
-            }
-        });
+        PetBlockHelper.respawn(this, CustomGroundArmorstand.this::spawn);
     }
 
     @Override

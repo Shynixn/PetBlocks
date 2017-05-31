@@ -16,6 +16,7 @@ public class BukkitEvents implements Listener {
     }
 
     public BukkitEvents(JavaPlugin plugin) {
+        super();
         Bukkit.getPluginManager().registerEvents(this, plugin);
         this.plugin = plugin;
     }

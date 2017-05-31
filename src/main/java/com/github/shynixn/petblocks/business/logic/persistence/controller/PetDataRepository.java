@@ -8,6 +8,7 @@ import com.github.shynixn.petblocks.api.persistence.entity.PetMeta;
 import com.github.shynixn.petblocks.business.logic.persistence.entity.PetData;
 import com.github.shynixn.petblocks.lib.DataBaseRepository;
 import com.github.shynixn.petblocks.lib.ExtensionHikariConnectionContext;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
@@ -18,6 +19,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 
 /**
  * Created by Shynixn
@@ -43,13 +45,12 @@ public class PetDataRepository extends DataBaseRepository<PetMeta> implements Pe
             try (PreparedStatement preparedStatement = this.dbContext.executeStoredQuery("petblock/selectbyplayer", connection,
                     player.getUniqueId().toString())) {
                 try (ResultSet resultSet = preparedStatement.executeQuery()) {
-                    while (resultSet.next()) {
-                        return from(resultSet);
-                    }
+                    resultSet.next();
+                    return this.from(resultSet);
                 }
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
+        } catch (final SQLException e) {
+            Bukkit.getLogger().log(Level.WARNING, "Database error occurred.", e);
         }
         return null;
     }
@@ -66,13 +67,11 @@ public class PetDataRepository extends DataBaseRepository<PetMeta> implements Pe
             try (PreparedStatement preparedStatement = this.dbContext.executeStoredQuery("petblock/selectentrybyplayer", connection,
                     player.getUniqueId().toString())) {
                 try (ResultSet resultSet = preparedStatement.executeQuery()) {
-                    while (resultSet.next()) {
-                        return true;
-                    }
+                    return resultSet.next();
                 }
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
+        } catch (final SQLException e) {
+            Bukkit.getLogger().log(Level.WARNING, "Database error occurred.", e);
         }
         return false;
     }
@@ -89,13 +88,12 @@ public class PetDataRepository extends DataBaseRepository<PetMeta> implements Pe
             try (PreparedStatement preparedStatement = this.dbContext.executeStoredQuery("petblock/selectbyid", connection,
                     id)) {
                 try (ResultSet resultSet = preparedStatement.executeQuery()) {
-                    while (resultSet.next()) {
-                        return from(resultSet);
-                    }
+                    resultSet.next();
+                    return this.from(resultSet);
                 }
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
+        } catch (final SQLException e) {
+            Bukkit.getLogger().log(Level.WARNING, "Database error occurred.", e);
         }
         return null;
     }
@@ -123,13 +121,13 @@ public class PetDataRepository extends DataBaseRepository<PetMeta> implements Pe
             try (PreparedStatement preparedStatement = this.dbContext.executeStoredQuery("petblock/selectall", connection)) {
                 try (ResultSet resultSet = preparedStatement.executeQuery()) {
                     while (resultSet.next()) {
-                        final PetMeta petData = from(resultSet);
+                        final PetMeta petData = this.from(resultSet);
                         petList.add(petData);
                     }
                 }
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
+        } catch (final SQLException e) {
+            Bukkit.getLogger().log(Level.WARNING, "Database error occurred.", e);
         }
         return petList;
     }
@@ -148,7 +146,6 @@ public class PetDataRepository extends DataBaseRepository<PetMeta> implements Pe
         if(item.getSkinMaterial() == null)
             throw new IllegalArgumentException("SkinMaterial cannot be null!");
         try (Connection connection = this.dbContext.getConnection()) {
-            System.out.println("UPDATE TYPE: " + item.getType().name());
             this.dbContext.executeStoredUpdate("petblock/update", connection,
                     item.getDisplayName(),
                     item.getType().name(),
@@ -163,8 +160,8 @@ public class PetDataRepository extends DataBaseRepository<PetMeta> implements Pe
                     item.getMovementType().name(),
                     item.getId()
                     );
-        } catch (SQLException e) {
-            e.printStackTrace();
+        } catch (final SQLException e) {
+            Bukkit.getLogger().log(Level.WARNING, "Database error occurred.", e);
         }
     }
 
@@ -178,8 +175,8 @@ public class PetDataRepository extends DataBaseRepository<PetMeta> implements Pe
         try (Connection connection = this.dbContext.getConnection()) {
             this.dbContext.executeStoredUpdate("petblock/delete", connection,
                     item.getId());
-        } catch (SQLException e) {
-            e.printStackTrace();
+        } catch (final SQLException e) {
+            Bukkit.getLogger().log(Level.WARNING, "Database error occurred.", e);
         }
     }
 
@@ -213,9 +210,8 @@ public class PetDataRepository extends DataBaseRepository<PetMeta> implements Pe
                     item.getMovementType().name()
                     );
             ((PetData)item).setId(id);
-            System.out.println("SUCCESS");
-        } catch (SQLException e) {
-            e.printStackTrace();
+        } catch (final SQLException e) {
+            Bukkit.getLogger().log(Level.WARNING, "Database error occurred.", e);
         }
     }
 
@@ -227,13 +223,12 @@ public class PetDataRepository extends DataBaseRepository<PetMeta> implements Pe
      */
     @Override
     public PetMeta from(ResultSet resultSet) throws SQLException {
-        PetData petMeta = new PetData();
+        final PetData petMeta = new PetData();
         petMeta.setId(resultSet.getLong("id"));
         petMeta.setPlayerId(resultSet.getLong("shy_player_id"));
         petMeta.setParticleId(resultSet.getLong("shy_particle_effect_id"));
         petMeta.setDisplayName(resultSet.getString("name"));
         petMeta.setPetType(PetType.getPetTypeFromName(resultSet.getString("type")));
-        System.out.println("TYPE: " + petMeta.getType());
         petMeta.setSkin(Material.getMaterial(resultSet.getString("material")), (byte) resultSet.getInt("data"), resultSet.getString("skull"));
         petMeta.setEnabled(resultSet.getBoolean("enabled"));
         petMeta.setAgeInTicks(resultSet.getInt("age"));
@@ -252,13 +247,12 @@ public class PetDataRepository extends DataBaseRepository<PetMeta> implements Pe
         try (Connection connection = this.dbContext.getConnection()) {
             try (PreparedStatement preparedStatement = this.dbContext.executeStoredQuery("petblock/count", connection)) {
                 try (ResultSet resultSet = preparedStatement.executeQuery()) {
-                    while (resultSet.next()) {
-                        return resultSet.getInt(1);
-                    }
+                    resultSet.next();
+                    return resultSet.getInt(1);
                 }
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
+        } catch (final SQLException e) {
+            Bukkit.getLogger().log(Level.WARNING, "Database error occurred.", e);
         }
         return 0;
     }

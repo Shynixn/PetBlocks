@@ -1,14 +1,15 @@
 package com.github.shynixn.petblocks.business;
 
 import com.github.shynixn.petblocks.api.entities.*;
+import com.github.shynixn.petblocks.api.persistence.entity.PetMeta;
+import com.github.shynixn.petblocks.business.bukkit.nms.NMSRegistry;
+import com.github.shynixn.petblocks.business.logic.configuration.ConfigCommands;
 import com.github.shynixn.petblocks.business.logic.configuration.ConfigGUI;
 import com.github.shynixn.petblocks.business.logic.configuration.ConfigParticle;
 import com.github.shynixn.petblocks.business.logic.configuration.ConfigPet;
-import com.github.shynixn.petblocks.lib.ParticleEffect;
-import com.github.shynixn.petblocks.business.bukkit.nms.NMSRegistry;
-import com.github.shynixn.petblocks.business.logic.configuration.ConfigCommands;
 import com.github.shynixn.petblocks.lib.BukkitUtilities;
 import com.github.shynixn.petblocks.lib.ParticleBuilder;
+import com.github.shynixn.petblocks.lib.ParticleEffect;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -18,7 +19,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
-import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.logging.Level;
 
@@ -39,6 +39,7 @@ public final class Config {
     private boolean join_overwriteExistingPet;
 
     private Config(Plugin plugin) {
+        super();
         Config.plugin = plugin;
         this.reload();
     }
@@ -60,10 +61,10 @@ public final class Config {
             this.chat_highestpriority = c.getBoolean("chat.highest-priority");
 
             this.world_allowInAllWorlds = plugin.getConfig().getBoolean("world.all");
-            this.world_worlds = plugin.getConfig().getStringList("world.worlds").toArray(new String[0]);
+            this.world_worlds = plugin.getConfig().getStringList("world.worlds").toArray(new String[plugin.getConfig().getStringList("world.worlds").size()]);
 
             this.region_allowInAllRegions = plugin.getConfig().getBoolean("region.all");
-            this.region_regions = plugin.getConfig().getStringList("region.regions").toArray(new String[0]);
+            this.region_regions = plugin.getConfig().getStringList("region.regions").toArray(new String[plugin.getConfig().getStringList("region.regions").size()]);
 
             this.join_enabled = c.getBoolean("join.enabled");
             this.join_overwriteExistingPet = plugin.getConfig().getBoolean("join.overwrite-previous-pet");
@@ -72,7 +73,7 @@ public final class Config {
             ConfigGUI.getInstance().load(c);
             ConfigParticle.getInstance().load(c);
             ConfigPet.getInstance().load(c);
-        } catch (Exception ex) {
+        } catch (final Exception ex) {
             Bukkit.getLogger().log(Level.WARNING, "Failed to reload config.", ex);
         }
     }
@@ -100,7 +101,7 @@ public final class Config {
         else
             petMeta.setMoveType(MoveType.getMoveTypeFromName(c.getString("join.settings.moving")));
         if (!c.getString("join.settings.particle.name").equalsIgnoreCase("none") && ParticleEffect.getParticleEffectFromName(c.getString("join.settings.particle.name")) != null) {
-            Particle particle = new ParticleBuilder()
+            final Particle particle = new ParticleBuilder()
                     .setEffect(ParticleEffect.getParticleEffectFromName(c.getString("join.settings.particle.name")))
                     .setOffset(c.getDouble("join.settings.particle.x"), c.getDouble("join.settings.particle.y"), c.getDouble("join.settings.particle.z"))
                     .setSpeed(c.getDouble("join.settings.particle.speed"))

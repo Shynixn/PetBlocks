@@ -11,12 +11,11 @@ import org.bukkit.plugin.Plugin;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
 
 import java.io.File;
-import java.io.InputStream;
 import java.util.UUID;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -34,16 +33,13 @@ public class PlayerMetaSQLiteControllerTest {
         configuration.set("sql.database", "db");
         configuration.set("sql.username", "root");
         configuration.set("sql.password", "");
-        Plugin plugin = mock(Plugin.class);
+        final Plugin plugin = mock(Plugin.class);
         new File("PetBlocks.db").delete();
         when(plugin.getDataFolder()).thenReturn(new File("PetBlocks"));
         when(plugin.getConfig()).thenReturn(configuration);
-        when(plugin.getResource(any(String.class))).thenAnswer(new Answer<InputStream>() {
-            @Override
-            public InputStream answer(InvocationOnMock invocationOnMock) throws Throwable {
-                final String file = invocationOnMock.getArgument(0);
-                return Thread.currentThread().getContextClassLoader().getResourceAsStream(file);
-            }
+        when(plugin.getResource(any(String.class))).thenAnswer(invocationOnMock -> {
+            final String file = invocationOnMock.getArgument(0);
+            return Thread.currentThread().getContextClassLoader().getResourceAsStream(file);
         });
         return plugin;
     }
@@ -65,8 +61,8 @@ public class PlayerMetaSQLiteControllerTest {
             for (final PlayerMeta item : controller.getAll()) {
                 controller.remove(item);
             }
-            UUID uuid = UUID.randomUUID();
-            PlayerMeta playerMeta = new PlayerData();
+            final UUID uuid = UUID.randomUUID();
+            final PlayerMeta playerMeta = new PlayerData();
             assertThrows(IllegalArgumentException.class, () -> controller.store(playerMeta));
             assertEquals(0, controller.size());
 
@@ -78,8 +74,8 @@ public class PlayerMetaSQLiteControllerTest {
             controller.store(playerMeta);
             assertEquals(1, controller.size());
             assertEquals(uuid, controller.getById(playerMeta.getId()).getUUID());
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (final Exception e) {
+            Logger.getLogger(this.getClass().getSimpleName()).log(Level.WARNING, "Failed to run test.", e);
             Assert.fail();
         }
     }
@@ -116,8 +112,8 @@ public class PlayerMetaSQLiteControllerTest {
             playerMeta = controller.getAll().get(0);
             assertEquals(uuid, playerMeta.getUUID());
             assertEquals("Shynixn", playerMeta.getName());
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (final Exception e) {
+            Logger.getLogger(this.getClass().getSimpleName()).log(Level.WARNING, "Failed to run test.", e);
             Assert.fail();
         }
     }

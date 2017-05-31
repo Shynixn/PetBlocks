@@ -2,12 +2,12 @@ package com.github.shynixn.petblocks.business.bukkit.nms.v1_12_R1;
 
 import com.github.shynixn.petblocks.business.bukkit.nms.helper.PetBlockHelper;
 import com.github.shynixn.petblocks.business.logic.configuration.ConfigPet;
-import net.minecraft.server.v1_11_R1.EntityInsentient;
-import net.minecraft.server.v1_11_R1.NBTTagCompound;
-import net.minecraft.server.v1_11_R1.PathEntity;
-import net.minecraft.server.v1_11_R1.PathfinderGoal;
+import net.minecraft.server.v1_12_R1.EntityInsentient;
+import net.minecraft.server.v1_12_R1.NBTTagCompound;
+import net.minecraft.server.v1_12_R1.PathEntity;
+import net.minecraft.server.v1_12_R1.PathfinderGoal;
 import org.bukkit.Location;
-import org.bukkit.craftbukkit.v1_11_R1.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.v1_12_R1.inventory.CraftItemStack;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
@@ -23,6 +23,7 @@ public final class OwnerPathfinder extends PathfinderGoal {
     private int counter;
 
     public OwnerPathfinder(EntityInsentient entitycreature, Player player) {
+        super();
         this.entity = entitycreature;
         this.player = player;
     }
@@ -36,8 +37,8 @@ public final class OwnerPathfinder extends PathfinderGoal {
             this.entity.getBukkitEntity().teleport(this.player.getLocation());
         } else if (this.entity.getBukkitEntity().getLocation().distance(this.player.getLocation()) > 2) {
             this.counter2 = PetBlockHelper.afraidWaterEffect(this.entity.getBukkitEntity(), this.counter2);
-            Location targetLocation = this.player.getLocation();
-            this.entity.getNavigation().n();
+            final Location targetLocation = this.player.getLocation();
+            this.entity.getNavigation().o();
             this.entity.getNavigation();
             this.path = this.entity.getNavigation().a(targetLocation.getX() + 1, targetLocation.getY(), targetLocation.getZ() + 1);
             this.entity.getNavigation();
@@ -68,14 +69,14 @@ public final class OwnerPathfinder extends PathfinderGoal {
     }
 
     public static boolean isUnbreakable(ItemStack itemStack) {
-        net.minecraft.server.v1_11_R1.ItemStack stack = CraftItemStack.asNMSCopy(itemStack);
+        final net.minecraft.server.v1_12_R1.ItemStack stack = CraftItemStack.asNMSCopy(itemStack);
         return stack.getTag() != null && stack.getTag().hasKey("Unbreakable") && stack.getTag().getBoolean("Unbreakable");
     }
 
     public static ItemStack setItemstackTag(ItemStack itemStack, Map<String, Object> tags) {
-        net.minecraft.server.v1_11_R1.ItemStack stack = CraftItemStack.asNMSCopy(itemStack);
-        for (String tag : tags.keySet()) {
-            NBTTagCompound nbtTagCompound;
+        final net.minecraft.server.v1_12_R1.ItemStack stack = CraftItemStack.asNMSCopy(itemStack);
+        for (final String tag : tags.keySet()) {
+            final NBTTagCompound nbtTagCompound;
             if (stack.getTag() == null)
                 nbtTagCompound = new NBTTagCompound();
             else

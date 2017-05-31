@@ -16,6 +16,7 @@ public abstract class BukkitCommands implements org.bukkit.command.CommandExecut
     }
 
     public BukkitCommands(String command, JavaPlugin plugin) {
+        super();
         plugin.getCommand(command).setExecutor(this);
         this.plugin = plugin;
     }

@@ -14,9 +14,11 @@ public final class ParticleBuilder {
     private byte data;
 
     public ParticleBuilder() {
+        super();
     }
 
     public ParticleBuilder(ParticleEffect effect, double x, double y, double z, double speed, int amount) {
+        super();
         this.effect = effect;
         this.x = x;
         this.y = y;
@@ -43,33 +45,33 @@ public final class ParticleBuilder {
     }
 
     public ParticleBuilder setColor(int red, int green, int blue) {
-        setGreen(green);
-        setBlue(blue);
-        setRed(red);
+        this.setGreen(green);
+        this.setBlue(blue);
+        this.setRed(red);
         return this;
     }
 
     public int getRed() {
-        return (int) x;
+        return (int) this.x;
     }
 
     public int getBlue() {
-        return (int) y;
+        return (int) this.y;
     }
 
     public int getGreen() {
-        return (int) z;
+        return (int) this.z;
     }
 
     public ParticleBuilder setNoteColor(int color) {
         if (color > 20 || color < 0)
             color = 5;
-        setRed(color);
+        this.setRed(color);
         return this;
     }
 
     public ParticleEffect getEffect() {
-        return effect;
+        return this.effect;
     }
 
     public ParticleBuilder setEffect(ParticleEffect effect) {
@@ -78,7 +80,7 @@ public final class ParticleBuilder {
     }
 
     public int getAmount() {
-        return amount;
+        return this.amount;
     }
 
     public ParticleBuilder setAmount(int amount) {
@@ -87,7 +89,7 @@ public final class ParticleBuilder {
     }
 
     public double getX() {
-        return x;
+        return this.x;
     }
 
     public ParticleBuilder setX(double x) {
@@ -96,7 +98,7 @@ public final class ParticleBuilder {
     }
 
     public double getY() {
-        return y;
+        return this.y;
     }
 
     public ParticleBuilder setY(double y) {
@@ -105,7 +107,7 @@ public final class ParticleBuilder {
     }
 
     public double getZ() {
-        return z;
+        return this.z;
     }
 
     public ParticleBuilder setZ(double z) {
@@ -114,14 +116,14 @@ public final class ParticleBuilder {
     }
 
     public ParticleBuilder setOffset(double x, double y, double z) {
-        setX(x);
-        setY(y);
-        setZ(z);
+        this.setX(x);
+        this.setY(y);
+        this.setZ(z);
         return this;
     }
 
     public double getSpeed() {
-        return speed;
+        return this.speed;
     }
 
     public ParticleBuilder setSpeed(double speed) {
@@ -130,7 +132,7 @@ public final class ParticleBuilder {
     }
 
     public Material getMaterial() {
-        return material;
+        return this.material;
     }
 
     public ParticleBuilder setMaterial(Material material) {
@@ -139,8 +141,8 @@ public final class ParticleBuilder {
     }
 
     public int getMaterialId() {
-        if (material != null)
-            return material.getId();
+        if (this.material != null)
+            return this.material.getId();
         return -1;
     }
 
@@ -157,7 +159,7 @@ public final class ParticleBuilder {
     }
 
     public byte getData() {
-        return data;
+        return this.data;
     }
 
     public ParticleBuilder setData(byte data) {
@@ -166,33 +168,27 @@ public final class ParticleBuilder {
     }
 
     public boolean isColorParticleEffect() {
-        if (effect == ParticleEffect.SPELL_MOB || effect == ParticleEffect.SPELL_MOB_AMBIENT || effect == ParticleEffect.REDSTONE || effect == ParticleEffect.NOTE)
-            return true;
-        return false;
+        return this.effect == ParticleEffect.SPELL_MOB || this.effect == ParticleEffect.SPELL_MOB_AMBIENT || this.effect == ParticleEffect.REDSTONE || this.effect == ParticleEffect.NOTE;
     }
 
     public boolean isNoteParticleEffect() {
-        if (effect == ParticleEffect.NOTE)
-            return true;
-        return false;
+        return this.effect == ParticleEffect.NOTE;
     }
 
     public boolean isMaterialParticleEffect() {
-        if (effect == ParticleEffect.BLOCK_CRACK || effect == ParticleEffect.BLOCK_DUST || effect == ParticleEffect.ITEM_CRACK)
-            return true;
-        return false;
+        return this.effect == ParticleEffect.BLOCK_CRACK || this.effect == ParticleEffect.BLOCK_DUST || this.effect == ParticleEffect.ITEM_CRACK;
     }
 
     @SuppressWarnings("deprecation")
     @Override
     public String toString() {
-        String sdefault = "Name:" + effect.getName() + " Amount:" + amount + " Speed:" + speed + " OffsetX: " + x + " OffsetY: " + y + " OffsetZ" + z;
-        if (isColorParticleEffect())
-            sdefault = "Name:" + effect.getName() + " Amount:" + amount + " Speed:" + speed + " Red:" + getRed() + " Green:" + getGreen() + " Blue:" + getBlue();
-        else if (isNoteParticleEffect())
-            sdefault = "Name:" + effect.getName() + " Amount:" + amount + " Speed:" + speed + " Color:" + getRed();
-        else if (isMaterialParticleEffect() && material != null)
-            sdefault += " Id:" + material.getId() + " Data:" + data;
+        String sdefault = "Name:" + this.effect.getName() + " Amount:" + this.amount + " Speed:" + this.speed + " OffsetX: " + this.x + " OffsetY: " + this.y + " OffsetZ" + this.z;
+        if (this.isColorParticleEffect())
+            sdefault = "Name:" + this.effect.getName() + " Amount:" + this.amount + " Speed:" + this.speed + " Red:" + this.getRed() + " Green:" + this.getGreen() + " Blue:" + this.getBlue();
+        else if (this.isNoteParticleEffect())
+            sdefault = "Name:" + this.effect.getName() + " Amount:" + this.amount + " Speed:" + this.speed + " Color:" + this.getRed();
+        else if (this.isMaterialParticleEffect() && this.material != null)
+            sdefault += " Id:" + this.material.getId() + " Data:" + this.data;
         return sdefault;
     }
 }

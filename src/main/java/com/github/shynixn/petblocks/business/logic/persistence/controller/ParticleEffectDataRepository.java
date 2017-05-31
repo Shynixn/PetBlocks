@@ -5,6 +5,7 @@ import com.github.shynixn.petblocks.api.persistence.entity.ParticleEffectMeta;
 import com.github.shynixn.petblocks.business.logic.persistence.entity.ParticleEffectData;
 import com.github.shynixn.petblocks.lib.DataBaseRepository;
 import com.github.shynixn.petblocks.lib.ExtensionHikariConnectionContext;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 
 import java.io.Closeable;
@@ -14,6 +15,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 
 public class ParticleEffectDataRepository extends DataBaseRepository<ParticleEffectMeta> implements ParticleEffectMetaController {
 
@@ -45,13 +47,12 @@ public class ParticleEffectDataRepository extends DataBaseRepository<ParticleEff
             try (PreparedStatement preparedStatement = this.dbContext.executeStoredQuery("particle/selectbyid", connection,
                     id)) {
                 try (ResultSet resultSet = preparedStatement.executeQuery()) {
-                    while (resultSet.next()) {
-                        return this.from(resultSet);
-                    }
+                    resultSet.next();
+                    return this.from(resultSet);
                 }
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
+        } catch (final SQLException e) {
+            Bukkit.getLogger().log(Level.WARNING, "Database error occurred.", e);
         }
         return null;
     }
@@ -79,13 +80,13 @@ public class ParticleEffectDataRepository extends DataBaseRepository<ParticleEff
             try (PreparedStatement preparedStatement = this.dbContext.executeStoredQuery("particle/selectall", connection)) {
                 try (ResultSet resultSet = preparedStatement.executeQuery()) {
                     while (resultSet.next()) {
-                        final ParticleEffectMeta data = from(resultSet);
+                        final ParticleEffectMeta data = this.from(resultSet);
                         items.add(data);
                     }
                 }
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
+        } catch (final SQLException e) {
+            Bukkit.getLogger().log(Level.WARNING, "Database error occurred.", e);
         }
         return  items;
     }
@@ -111,8 +112,8 @@ public class ParticleEffectDataRepository extends DataBaseRepository<ParticleEff
                     materialName,
                     (int)item.getData(),
             item.getId());
-        } catch (SQLException e) {
-            e.printStackTrace();
+        } catch (final SQLException e) {
+            Bukkit.getLogger().log(Level.WARNING, "Database error occurred.", e);
         }
     }
 
@@ -123,13 +124,11 @@ public class ParticleEffectDataRepository extends DataBaseRepository<ParticleEff
      */
     @Override
     public void delete(ParticleEffectMeta item) {
-        System.out.println("EXEUCTED DELETE OF " + item.getId());
         try (Connection connection = this.dbContext.getConnection()) {
             this.dbContext.executeStoredUpdate("particle/delete", connection,
                     item.getId());
-            System.out.println("EXEUCTED DELETE OF " + item.getId());
-        } catch (SQLException e) {
-            e.printStackTrace();
+        } catch (final SQLException e) {
+            Bukkit.getLogger().log(Level.WARNING, "Database error occurred.", e);
         }
     }
 
@@ -154,8 +153,8 @@ public class ParticleEffectDataRepository extends DataBaseRepository<ParticleEff
                     materialName,
                     item.getData());
             ((ParticleEffectData)item).setId(id);
-        } catch (SQLException e) {
-            e.printStackTrace();
+        } catch (final SQLException e) {
+            Bukkit.getLogger().log(Level.WARNING, "Database error occurred.", e);
         }
     }
 
@@ -167,13 +166,12 @@ public class ParticleEffectDataRepository extends DataBaseRepository<ParticleEff
         try (Connection connection = this.dbContext.getConnection()) {
             try (PreparedStatement preparedStatement = this.dbContext.executeStoredQuery("particle/count", connection)) {
                 try (ResultSet resultSet = preparedStatement.executeQuery()) {
-                    while (resultSet.next()) {
-                        return resultSet.getInt(1);
-                    }
+                    resultSet.next();
+                    return resultSet.getInt(1);
                 }
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
+        } catch (final SQLException e) {
+            Bukkit.getLogger().log(Level.WARNING, "Database error occurred.", e);
         }
         return 0;
     }

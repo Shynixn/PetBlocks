@@ -105,9 +105,9 @@ class CustomItemContainer implements ItemContainer {
             return null;
         if (this.loreName != null && this.loreName.contains("<permission>")) {
             if (this.hasPermission(player, permission))
-                return this.toLines(this.loreName.toString().replace("<permission>", Language.ICO_PERMS_YES));
+                return this.toLines(this.loreName.replace("<permission>", Language.ICO_PERMS_YES));
             else
-                return this.toLines(this.loreName.toString().replace("<permission>", Language.ICO_PERMS_NO));
+                return this.toLines(this.loreName.replace("<permission>", Language.ICO_PERMS_NO));
         }
         return this.toLines(this.loreName);
     }
@@ -118,9 +118,9 @@ class CustomItemContainer implements ItemContainer {
             return null;
         if (this.loreName != null && this.loreName.contains("<permission>")) {
             if (this.hasPermission(player, permission))
-                return this.toLines(this.loreName.toString().replace("<permission>", Language.ICO_PERMS_YES));
+                return this.toLines(this.loreName.replace("<permission>", Language.ICO_PERMS_YES));
             else
-                return this.toLines(this.loreName.toString().replace("<permission>", Language.ICO_PERMS_NO));
+                return this.toLines(this.loreName.replace("<permission>", Language.ICO_PERMS_NO));
         }
         return this.toLines(this.loreName);
     }
@@ -153,7 +153,7 @@ class CustomItemContainer implements ItemContainer {
                     if (this.skullName.contains("textures.minecraft.net")) {
                         itemStack = NMSRegistry.changeSkullSkin(itemStack, "http://" + this.skullName);
                     } else {
-                        SkullMeta meta = (SkullMeta) itemStack.getItemMeta();
+                        final SkullMeta meta = (SkullMeta) itemStack.getItemMeta();
                         meta.setOwner(this.skullName);
                         itemStack.setItemMeta(meta);
                     }

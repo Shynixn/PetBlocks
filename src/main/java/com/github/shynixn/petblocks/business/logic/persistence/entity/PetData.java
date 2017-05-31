@@ -39,6 +39,7 @@ public class PetData extends PersistenceObject implements PetMeta {
     private long particleId;
 
     public PetData(Player player, PetType petType, String name, ItemStack itemStack, String owner) {
+        super();
         this.petType = petType;
         this.displayName = name;
         this.playerInfo = PlayerData.from(player);
@@ -48,13 +49,14 @@ public class PetData extends PersistenceObject implements PetMeta {
             if (!owner.contains("http://"))
                 owner = "http://" + owner;
         }
-        if (owner != null && !owner.equals(""))
+        if (owner != null && !owner.isEmpty())
             this.skullName = owner;
         this.ageTicks = Age.SMALL.getTicks();
         this.sounds = true;
     }
 
     public PetData() {
+        super();
     }
 
     /**
@@ -356,6 +358,7 @@ public class PetData extends PersistenceObject implements PetMeta {
 
     //region Deprecated
 
+    @Override
     @Deprecated
     public Player getOwner() {
         return this.playerInfo.getPlayer();
@@ -378,7 +381,7 @@ public class PetData extends PersistenceObject implements PetMeta {
 
     @Deprecated
     public PetData copy() {
-        PetData petData = new PetData();
+        final PetData petData = new PetData();
         petData.displayName = this.displayName;
         petData.petType = this.petType;
         petData.costume = this.costume;
@@ -403,6 +406,7 @@ public class PetData extends PersistenceObject implements PetMeta {
         return petData;
     }
 
+    @Override
     @Deprecated
     public void setParticleEffect(Particle particle) {
         try {
@@ -414,7 +418,7 @@ public class PetData extends PersistenceObject implements PetMeta {
             this.setAmount(particle.getAmount());
             this.setMaterial(particle.getMaterial());
             this.setData(particle.getData());
-        } catch (Exception ex) {
+        } catch (final Exception ex) {
             this.setEffect(null);
             this.setX(0);
             this.setY(0);
@@ -426,6 +430,7 @@ public class PetData extends PersistenceObject implements PetMeta {
         }
     }
 
+    @Override
     @Deprecated
     public Particle getParticleEffect() {
         try {
@@ -433,7 +438,7 @@ public class PetData extends PersistenceObject implements PetMeta {
                 return null;
             return new ParticleBuilder().setEffect(this.getEffect())
                     .setOffset(this.getX(), this.getY(), this.getZ()).setSpeed(this.getSpeed()).setAmount(this.getAmount()).setMaterial(this.getMaterial()).setData(this.getData()).build();
-        } catch (Exception ex) {
+        } catch (final Exception ex) {
             return null;
         }
     }

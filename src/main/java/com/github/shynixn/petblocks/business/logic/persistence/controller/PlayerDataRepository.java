@@ -5,6 +5,7 @@ import com.github.shynixn.petblocks.api.persistence.entity.PlayerMeta;
 import com.github.shynixn.petblocks.business.logic.persistence.entity.PlayerData;
 import com.github.shynixn.petblocks.lib.DataBaseRepository;
 import com.github.shynixn.petblocks.lib.ExtensionHikariConnectionContext;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import java.io.Closeable;
@@ -15,6 +16,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.logging.Level;
 
 /**
  * Created by Shynixn
@@ -52,13 +54,12 @@ public class PlayerDataRepository extends DataBaseRepository<PlayerMeta> impleme
             try (PreparedStatement preparedStatement = this.dbContext.executeStoredQuery("player/selectbyid", connection,
                     id)) {
                 try (ResultSet resultSet = preparedStatement.executeQuery()) {
-                    while (resultSet.next()) {
-                        return from(resultSet);
-                    }
+                    resultSet.next();
+                    return this.from(resultSet);
                 }
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
+        } catch (final SQLException e) {
+            Bukkit.getLogger().log(Level.WARNING, "Database error occurred.", e);
         }
         return null;
     }
@@ -86,16 +87,14 @@ public class PlayerDataRepository extends DataBaseRepository<PlayerMeta> impleme
             try (PreparedStatement preparedStatement = this.dbContext.executeStoredQuery("player/selectall", connection)) {
                 try (ResultSet resultSet = preparedStatement.executeQuery()) {
                     while (resultSet.next()) {
-                        final PlayerData playerData = from(resultSet);
-                        System.out.println("PLAYERDATA: " + playerData.getId());
+                        final PlayerData playerData = this.from(resultSet);
                         playerList.add(playerData);
                     }
                 }
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
+        } catch (final SQLException e) {
+            Bukkit.getLogger().log(Level.WARNING, "Database error occurred.", e);
         }
-        System.out.println("RETURN");
         return playerList;
     }
 
@@ -111,8 +110,8 @@ public class PlayerDataRepository extends DataBaseRepository<PlayerMeta> impleme
                     item.getUUID().toString(),
                     item.getName(),
                     item.getId());
-        } catch (SQLException e) {
-            e.printStackTrace();
+        } catch (final SQLException e) {
+            Bukkit.getLogger().log(Level.WARNING, "Database error occurred.", e);
         }
     }
 
@@ -123,13 +122,11 @@ public class PlayerDataRepository extends DataBaseRepository<PlayerMeta> impleme
      */
     @Override
     public void delete(PlayerMeta item) {
-        System.out.println("EXEUCTED DELETE OF " + item.getId());
         try (Connection connection = this.dbContext.getConnection()) {
             this.dbContext.executeStoredUpdate("player/delete", connection,
                     item.getId());
-            System.out.println("EXEUCTED DELETE OF " + item.getId());
-        } catch (SQLException e) {
-            e.printStackTrace();
+        } catch (final SQLException e) {
+            Bukkit.getLogger().log(Level.WARNING, "Database error occurred.", e);
         }
     }
 
@@ -146,8 +143,8 @@ public class PlayerDataRepository extends DataBaseRepository<PlayerMeta> impleme
             final long id = this.dbContext.executeStoredInsert("player/insert", connection,
                     item.getName(), item.getUUID().toString());
             ((PlayerData)item).setId(id);
-        } catch (SQLException e) {
-            e.printStackTrace();
+        } catch (final SQLException e) {
+            Bukkit.getLogger().log(Level.WARNING, "Database error occurred.", e);
         }
     }
 
@@ -174,13 +171,12 @@ public class PlayerDataRepository extends DataBaseRepository<PlayerMeta> impleme
         try (Connection connection = this.dbContext.getConnection()) {
             try (PreparedStatement preparedStatement = this.dbContext.executeStoredQuery("player/count", connection)) {
                 try (ResultSet resultSet = preparedStatement.executeQuery()) {
-                    while (resultSet.next()) {
-                        return resultSet.getInt(1);
-                    }
+                    resultSet.next();
+                    return resultSet.getInt(1);
                 }
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
+        } catch (final SQLException e) {
+            Bukkit.getLogger().log(Level.WARNING, "Database error occurred.", e);
         }
         return 0;
     }

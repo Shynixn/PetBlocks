@@ -70,7 +70,7 @@ public final class PetBlocksApi {
         if (player == null)
             throw new IllegalArgumentException("Player cannot be null!");
         if (dataManager.hasPetMeta(player))
-            dataManager.remove((com.github.shynixn.petblocks.api.persistence.entity.PetMeta)getPetMeta(player));
+            dataManager.remove(getPetMeta(player));
     }
 
     public static void setPetMeta(Player player, PetType petType) {

@@ -7,7 +7,7 @@ import org.bukkit.entity.Player;
 public class SoundData {
     private double pitch;
     private double volume;
-    private Sound sound;
+    private final Sound sound;
 
     public SoundData(Sound sound, double pitch, double volume) {
         super();
@@ -31,18 +31,19 @@ public class SoundData {
     }
 
     public SoundData(String name) {
+        super();
         this.pitch = 1.0;
         this.volume = 1.0;
         this.sound = Interpreter19.interPretSounds19(name);
     }
 
     public void playTo(Player player) {
-        player.playSound(player.getLocation(), sound, (float) pitch, (float) volume);
+        player.playSound(player.getLocation(), this.sound, (float) this.pitch, (float) this.volume);
     }
 
     public void play(Location location) {
         for (final Player player : location.getWorld().getPlayers()) {
-            player.playSound(location, sound, (float) pitch, (float) volume);
+            player.playSound(location, this.sound, (float) this.pitch, (float) this.volume);
         }
     }
 }

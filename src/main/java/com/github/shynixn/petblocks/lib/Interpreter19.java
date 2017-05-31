@@ -1,8 +1,11 @@
 package com.github.shynixn.petblocks.lib;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+
+import java.util.logging.Level;
 
 /**
  * Created by Shynixn
@@ -42,9 +45,9 @@ public class Interpreter19 {
                 return Sound.valueOf("ENTITY_ENDERDRAGON_FLAP");
             if (sound.toUpperCase().equals("ENDERDRAGON_GROWL"))
                 return Sound.valueOf("ENTITY_ENDERDRAGON_GROWL");
-            throw new RuntimeException("Sounds Betainterpreter19 cannot translate the sounds. " + sound + ".");
-        } catch (Exception e) {
-            e.printStackTrace();
+            throw new RuntimeException("Sounds Betainterpreter19 cannot translate the sounds. " + sound + '.');
+        } catch (final Exception e) {
+            Bukkit.getLogger().log(Level.WARNING, "Failed to interpret sounds above 1_9.", e);
         }
         return null;
     }
@@ -73,13 +76,14 @@ public class Interpreter19 {
         try
         {
             BukkitUtilities.getServerVersion();
-        }catch (RuntimeException ex)
+        }catch (final RuntimeException ex)
         {
             return false;
         }
         return  BukkitUtilities.getServerVersion().equals("v1_9_R1")
                 || BukkitUtilities.getServerVersion().equals("v1_9_R2")
                 || BukkitUtilities.getServerVersion().equals("v1_10_R1")
-                || BukkitUtilities.getServerVersion().equals("v1_11_R1");
+                || BukkitUtilities.getServerVersion().equals("v1_11_R1")
+                || BukkitUtilities.getServerVersion().equals("v1_12_R1");
     }
 }

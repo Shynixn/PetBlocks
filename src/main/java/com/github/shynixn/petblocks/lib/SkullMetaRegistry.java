@@ -3,7 +3,9 @@ package com.github.shynixn.petblocks.lib;
 import java.lang.reflect.Field;
 import java.util.Collection;
 import java.util.UUID;
+import java.util.logging.Level;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -31,7 +33,7 @@ public final class SkullMetaRegistry {
                 itemStack.setItemMeta(meta);
                 itemStack = setDisplayName(itemStack, "TMP");
             } catch (ClassNotFoundException | IllegalArgumentException | IllegalAccessException | NoSuchFieldException | SecurityException e) {
-                e.printStackTrace();
+                Bukkit.getLogger().log(Level.WARNING, "Failed to convert skin to skull.", e);
             }
         }
         return itemStack;
@@ -69,7 +71,7 @@ public final class SkullMetaRegistry {
                 }
             }
         } catch (ClassNotFoundException | IllegalArgumentException | IllegalAccessException | NoSuchFieldException | SecurityException e) {
-            e.printStackTrace();
+            Bukkit.getLogger().log(Level.WARNING, "Failed to obtain link from skull.", e);
         }
         return null;
     }

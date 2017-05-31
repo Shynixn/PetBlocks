@@ -18,7 +18,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 @SuppressWarnings({"ResultOfMethodCallIgnored", "SameParameterValue"})
 public final class BukkitUtilities {
@@ -29,9 +28,7 @@ public final class BukkitUtilities {
     public static List<Player> getOnlinePlayers() {
         final List<Player> players = new ArrayList<>();
         for (final World world : Bukkit.getWorlds()) {
-            for (final Player player : world.getPlayers()) {
-                players.add(player);
-            }
+            players.addAll(world.getPlayers());
         }
         return players;
     }
@@ -58,7 +55,7 @@ public final class BukkitUtilities {
             if (lore != null) {
                 im.setLore(Arrays.asList(lore));
             } else {
-                im.setLore(new ArrayList<String>());
+                im.setLore(new ArrayList<>());
             }
             item.setItemMeta(im);
             return item;
@@ -79,13 +76,14 @@ public final class BukkitUtilities {
 
     public static boolean copyFile(InputStream in, File file) {
         try {
-            final OutputStream out = new FileOutputStream(file);
-            final byte[] buf = new byte[1024];
-            int len;
-            while ((len = in.read(buf)) > 0) {
-                out.write(buf, 0, len);
+            try(final OutputStream out = new FileOutputStream(file))
+            {
+                final byte[] buf = new byte[1024];
+                int len;
+                while ((len = in.read(buf)) > 0) {
+                    out.write(buf, 0, len);
+                }
             }
-            out.close();
             in.close();
         } catch (final Exception e) {
             Bukkit.getLogger().log(Level.WARNING, e.getMessage());
@@ -138,7 +136,8 @@ public final class BukkitUtilities {
                 || getServerVersion().equals("v1_9_R1")
                 || getServerVersion().equals("v1_9_R2")
                 || getServerVersion().equals("v1_10_R1")
-                || getServerVersion().equals("v1_11_R1");
+                || getServerVersion().equals("v1_11_R1")
+                || getServerVersion().equals("v1_12_R1");
     }
 
     public static String replaceServerVersion(String text) {
@@ -162,7 +161,6 @@ public final class BukkitUtilities {
             }
         } catch (final Exception e) {
             Bukkit.getLogger().log(Level.WARNING, e.getMessage());
-            ;
         }
         return itemStack;
     }

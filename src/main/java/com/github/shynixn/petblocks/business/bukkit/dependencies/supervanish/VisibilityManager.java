@@ -24,7 +24,7 @@ class VisibilityManager {
             @Override
             public void run() {
                 if (!VisibilityManager.this.hiddenValues.containsKey(petBlock))
-                    VisibilityManager.this.hiddenValues.put(petBlock, new ArrayList<Player>());
+                    VisibilityManager.this.hiddenValues.put(petBlock, new ArrayList<>());
                 for (final Player player : players) {
                     VisibilityManager.this.sendDestroyPacket(player, petBlock.getArmorStand());
                     VisibilityManager.this.sendDestroyPacket(player, petBlock.getMovementEntity());
@@ -87,7 +87,7 @@ class VisibilityManager {
             final Object playerConnection = entityPlayer.getClass().getField("playerConnection").get(entityPlayer);
             ReflectionLib.invokeMethodByObject(playerConnection, "sendPacket", packet);
         } catch (final Exception e) {
-            Bukkit.getLogger().log(Level.WARNING, "Cannot send packet " + packet.getClass().getSimpleName() + ".", e);
+            Bukkit.getLogger().log(Level.WARNING, "Cannot send packet " + packet.getClass().getSimpleName() + '.', e);
         }
     }
 }

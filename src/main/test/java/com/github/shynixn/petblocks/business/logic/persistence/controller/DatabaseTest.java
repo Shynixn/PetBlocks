@@ -9,26 +9,25 @@ import org.junit.Test;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.Statement;
-
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.mock;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class DatabaseTest {
 
     @Test
     public void enableDatabaseSQLiteTest() {
         try {
-            HikariConfig config = new HikariConfig();
+            final HikariConfig config = new HikariConfig();
             config.setDriverClassName("org.sqlite.JDBC");
             config.setConnectionTestQuery("SELECT 1");
             config.setJdbcUrl("jdbc:sqlite:PetBlocks.db");
             config.setMaxLifetime(60000);
             config.setIdleTimeout(45000);
             config.setMaximumPoolSize(50);
-            HikariDataSource ds = new HikariDataSource(config);
+            final HikariDataSource ds = new HikariDataSource(config);
             ds.close();
-        } catch (Exception ex) {
-            ex.printStackTrace();
+        } catch (final Exception ex) {
+            Logger.getLogger(this.getClass().getSimpleName()).log(Level.WARNING, "Failed to enable database.", ex);
             Assert.fail();
         }
     }
@@ -44,18 +43,18 @@ public class DatabaseTest {
                 }
             }
 
-            HikariConfig config = new HikariConfig();
+            final HikariConfig config = new HikariConfig();
             config.setDriverClassName("com.mysql.jdbc.Driver");
             config.setConnectionTestQuery("SELECT 1");
             config.setJdbcUrl("jdbc:mysql://localhost:3306/db");
             config.setMaxLifetime(60000);
             config.setIdleTimeout(45000);
             config.setMaximumPoolSize(50);
-            HikariDataSource ds = new HikariDataSource(config);
+            final HikariDataSource ds = new HikariDataSource(config);
             ds.close();
             database.stop();
-        } catch (Exception ex) {
-            ex.printStackTrace();
+        } catch (final Exception ex) {
+            Logger.getLogger(this.getClass().getSimpleName()).log(Level.WARNING, "Failed to enable database.", ex);
             Assert.fail();
         }
     }

@@ -15,11 +15,11 @@ public enum LightRegistry {
     RABBIT(101, "RABBIT", "Rabbit", "rabbit", "EntityRabbit"),
     ZOMBIE(54, "ZOMBIE", "Zombie", "zombie", "EntityZombie");
 
-    int entityId;
-    String name;
-    String saveGame_18_19_10;
-    String saveGame_11;
-    Class<?> nmsClass;
+    final int entityId;
+    final String name;
+    final String saveGame_18_19_10;
+    final String saveGame_11;
+    final Class<?> nmsClass;
 
     static EntityRegistry entityRegistry;
 
@@ -29,9 +29,10 @@ public enum LightRegistry {
             this.name = name;
             this.saveGame_18_19_10 = saveGame_18_19_10;
             this.saveGame_11 = saveGame_11;
-            this.nmsClass = Class.forName("net.minecraft.server." + getServerVersion() + "." + nmsClassName);
+            this.nmsClass = Class.forName("net.minecraft.server." + getServerVersion() + '.' + nmsClassName);
         } catch (final Exception ex) {
             Bukkit.getLogger().log(Level.WARNING, "Wrong PowerRegistryType configuration. ", ex);
+            throw new RuntimeException(ex);
         }
     }
 
@@ -89,7 +90,7 @@ public enum LightRegistry {
         @Override
         public void unregister() throws Exception {
             final Class<?> entityTypeClazz = Class.forName("net.minecraft.server.VERSION.EntityTypes".replace("VERSION", getServerVersion()));
-            if (!getServerVersion().equals("v1_11_R1")) {
+            if (!getServerVersion().equals("v1_11_R1") && !getServerVersion().equals("v1_12_R1")) {
                 for (final Class<?> customEntityClazz : types.keySet()) {
                     final LightRegistry powerRegistry = types.get(customEntityClazz);
                     this.<Class<?>, String>getMap(entityTypeClazz, "d").remove(customEntityClazz);
@@ -112,7 +113,7 @@ public enum LightRegistry {
 
         private void modify(Class<?> clazz, String saveGameId, int entityId) throws Exception {
             final Class<?> entityTypeClazz = Class.forName("net.minecraft.server.VERSION.EntityTypes".replace("VERSION", getServerVersion()));
-            if (!getServerVersion().equals("v1_11_R1")) {
+            if (!getServerVersion().equals("v1_11_R1") && !getServerVersion().equals("v1_12_R1")) {
                 this.<String, Class<?>>getMap(entityTypeClazz, "c").put(saveGameId, clazz);
                 this.<Class<?>, String>getMap(entityTypeClazz, "d").put(clazz, saveGameId);
                 this.<Integer, Class<?>>getMap(entityTypeClazz, "e").put(entityId, clazz);

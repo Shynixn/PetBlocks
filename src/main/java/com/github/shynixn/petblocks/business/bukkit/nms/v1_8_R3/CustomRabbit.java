@@ -1,6 +1,7 @@
 package com.github.shynixn.petblocks.business.bukkit.nms.v1_8_R3;
 
 import java.lang.reflect.Field;
+import java.util.logging.Level;
 
 import com.github.shynixn.petblocks.api.entities.CustomEntity;
 import com.github.shynixn.petblocks.api.entities.PetMeta;
@@ -33,9 +34,9 @@ public final class CustomRabbit extends EntityRabbit implements CustomEntity {
         super(((CraftWorld) player.getWorld()).getHandle());
         this.b(true);
         try {
-            Field bField = PathfinderGoalSelector.class.getDeclaredField("b");
+            final Field bField = PathfinderGoalSelector.class.getDeclaredField("b");
             bField.setAccessible(true);
-            Field cField = PathfinderGoalSelector.class.getDeclaredField("c");
+            final Field cField = PathfinderGoalSelector.class.getDeclaredField("c");
             cField.setAccessible(true);
             bField.set(this.goalSelector, new UnsafeList<PathfinderGoalSelector>());
             bField.set(this.targetSelector, new UnsafeList<PathfinderGoalSelector>());
@@ -45,8 +46,8 @@ public final class CustomRabbit extends EntityRabbit implements CustomEntity {
 
             this.goalSelector.a(0, new PathfinderGoalFloat(this));
             this.goalSelector.a(1, new OwnerPathfinder(this, player));
-        } catch (Exception exc) {
-            exc.printStackTrace();
+        } catch (final Exception exc) {
+            Bukkit.getLogger().log(Level.WARNING, "EntityNMS exception.", exc);
         }
         this.player = player;
         this.petData = meta;
@@ -61,7 +62,7 @@ public final class CustomRabbit extends EntityRabbit implements CustomEntity {
 
     @Override
     public void spawn(Location location) {
-        net.minecraft.server.v1_8_R3.World mcWorld = ((CraftWorld) location.getWorld()).getHandle();
+        final net.minecraft.server.v1_8_R3.World mcWorld = ((CraftWorld) location.getWorld()).getHandle();
         this.setPosition(location.getX(), location.getY(), location.getZ());
         mcWorld.addEntity(this, SpawnReason.CUSTOM);
         this.getSpigotEntity().addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, 9999999, 1));

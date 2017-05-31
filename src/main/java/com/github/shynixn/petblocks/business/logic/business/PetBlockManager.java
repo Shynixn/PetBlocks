@@ -50,12 +50,7 @@ public final class PetBlockManager {
             if (delay == 0) {
                 this.petblocks.put(player, NMSRegistry.createPetBlock(player.getLocation(), petMeta));
             } else {
-                this.plugin.getServer().getScheduler().runTaskLater(this.plugin, new Runnable() {
-                    @Override
-                    public void run() {
-                        PetBlockManager.this.petblocks.put(player, NMSRegistry.createPetBlock(player.getLocation(), petMeta));
-                    }
-                }, 20 * delay);
+                this.plugin.getServer().getScheduler().runTaskLater(this.plugin, () -> PetBlockManager.this.petblocks.put(player, NMSRegistry.createPetBlock(player.getLocation(), petMeta)), 20 * delay);
             }
         }
     }

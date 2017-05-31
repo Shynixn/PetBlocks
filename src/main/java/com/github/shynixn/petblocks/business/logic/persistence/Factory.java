@@ -46,19 +46,19 @@ public class Factory {
             return;
         if (plugin == null)
             throw new IllegalArgumentException("Plugin cannot be null!");
-        ExtensionHikariConnectionContext.SQlRetriever retriever = (ExtensionHikariConnectionContext.SQlRetriever) fileName -> {
+        final ExtensionHikariConnectionContext.SQlRetriever retriever = fileName -> {
             try (InputStream stream = plugin.getResource("sql/" + fileName + ".sql")) {
                 return IOUtils.toString(stream, "UTF-8");
             } catch (final IOException e) {
                 Bukkit.getLogger().log(Level.WARNING, "Cannot read file.", fileName);
-                throw new RuntimeException();
+                throw new RuntimeException(e);
             }
         };
         if (plugin.getConfig().getBoolean("sql.local")) {
             try {
                 if (!plugin.getDataFolder().exists())
                     plugin.getDataFolder().mkdir();
-                File file = new File(plugin.getDataFolder(), "PetBlocks.db");
+                final File file = new File(plugin.getDataFolder(), "PetBlocks.db");
                 if (!file.exists())
                     file.createNewFile();
                 connectionContext = ExtensionHikariConnectionContext.from(ExtensionHikariConnectionContext.SQLITE_DRIVER, "jdbc:sqlite:" + file.getAbsolutePath(), retriever);
@@ -71,15 +71,14 @@ public class Factory {
                 Bukkit.getLogger().log(Level.WARNING, "Cannot read file.", e);
             }
             try (Connection connection = connectionContext.getConnection()) {
-                for (String data : connectionContext.getStringFromFile("create-sqlite").split(Pattern.quote(";"))) {
-                    System.out.println("EXECUTE " + data);
+                for (final String data : connectionContext.getStringFromFile("create-sqlite").split(Pattern.quote(";"))) {
                     connectionContext.executeUpdate(data, connection);
                 }
-            } catch (Exception e) {
+            } catch (final Exception e) {
                 Bukkit.getLogger().log(Level.WARNING, "Cannot execute exception.", e);
             }
         } else {
-            FileConfiguration c = plugin.getConfig();
+            final FileConfiguration c = plugin.getConfig();
             try {
                 connectionContext = ExtensionHikariConnectionContext.from(ExtensionHikariConnectionContext.MYSQL_DRIVER, "jdbc:mysql://"
                         , c.getString("sql.host")
@@ -88,17 +87,14 @@ public class Factory {
                         , c.getString("sql.username")
                         , c.getString("sql.password")
                         , retriever);
-            } catch (IOException e) {
-                e.printStackTrace();
+            } catch (final IOException e) {
                 Bukkit.getLogger().log(Level.WARNING, "Cannot read file.", e);
             }
             try (Connection connection = connectionContext.getConnection()) {
-                for (String data : connectionContext.getStringFromFile("create-mysql").split(Pattern.quote(";"))) {
-                    System.out.println("EXECUTE " + data);
+                for (final String data : connectionContext.getStringFromFile("create-mysql").split(Pattern.quote(";"))) {
                     connectionContext.executeUpdate(data, connection);
                 }
-            } catch (Exception e) {
-                e.printStackTrace();
+            } catch (final Exception e) {
                 Bukkit.getLogger().log(Level.WARNING, "Cannot execute exception.", e);
             }
         }

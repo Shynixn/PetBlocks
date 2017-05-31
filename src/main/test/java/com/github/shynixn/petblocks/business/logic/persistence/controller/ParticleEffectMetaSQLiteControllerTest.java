@@ -2,7 +2,6 @@ package com.github.shynixn.petblocks.business.logic.persistence.controller;
 
 import com.github.shynixn.petblocks.api.persistence.controller.ParticleEffectMetaController;
 import com.github.shynixn.petblocks.api.persistence.controller.PetMetaController;
-import com.github.shynixn.petblocks.api.persistence.controller.PlayerMetaController;
 import com.github.shynixn.petblocks.api.persistence.entity.ParticleEffectMeta;
 import com.github.shynixn.petblocks.api.persistence.entity.PetMeta;
 import com.github.shynixn.petblocks.business.logic.persistence.Factory;
@@ -12,11 +11,10 @@ import org.bukkit.plugin.Plugin;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
 
 import java.io.File;
-import java.io.InputStream;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
@@ -33,16 +31,13 @@ public class ParticleEffectMetaSQLiteControllerTest {
         configuration.set("sql.database", "db");
         configuration.set("sql.username", "root");
         configuration.set("sql.password", "");
-        Plugin plugin = mock(Plugin.class);
+        final Plugin plugin = mock(Plugin.class);
         new File("PetBlocks.db").delete();
         when(plugin.getDataFolder()).thenReturn(new File("PetBlocks"));
         when(plugin.getConfig()).thenReturn(configuration);
-        when(plugin.getResource(any(String.class))).thenAnswer(new Answer<InputStream>() {
-            @Override
-            public InputStream answer(InvocationOnMock invocationOnMock) throws Throwable {
-                final String file = invocationOnMock.getArgument(0);
-                return Thread.currentThread().getContextClassLoader().getResourceAsStream(file);
-            }
+        when(plugin.getResource(any(String.class))).thenAnswer(invocationOnMock -> {
+            final String file = invocationOnMock.getArgument(0);
+            return Thread.currentThread().getContextClassLoader().getResourceAsStream(file);
         });
         return plugin;
     }
@@ -64,15 +59,15 @@ public class ParticleEffectMetaSQLiteControllerTest {
             for (final ParticleEffectMeta item : controller.getAll()) {
                 controller.remove(item);
             }
-            ParticleEffectMeta meta = controller.create();
+            final ParticleEffectMeta meta = controller.create();
             controller.store(meta);
             assertEquals(0, controller.size());
             meta.setEffectType(ParticleEffectMeta.ParticleEffectType.CLOUD);
             controller.store(meta);
             assertEquals(1, controller.size());
             assertEquals(ParticleEffectMeta.ParticleEffectType.CLOUD, controller.getById(meta.getId()).getEffectType());
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (final Exception e) {
+            Logger.getLogger(this.getClass().getSimpleName()).log(Level.WARNING, "Failed to run test.", e);
             Assert.fail();
         }
     }
@@ -129,8 +124,8 @@ public class ParticleEffectMetaSQLiteControllerTest {
             assertEquals(5.24, meta.getZ());
             assertEquals(Material.BARRIER, meta.getMaterial());
             assertEquals((byte)7, (byte)meta.getData());
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (final Exception e) {
+            Logger.getLogger(this.getClass().getSimpleName()).log(Level.WARNING, "Failed to run test.", e);
             Assert.fail();
         }
     }

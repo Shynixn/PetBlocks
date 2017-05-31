@@ -115,13 +115,7 @@ class PetBlockListener extends BukkitEvents {
     public void onPlayerRespawnEvent(final PlayerRespawnEvent event) {
         if (this.manager.hasPetBlock(event.getPlayer())) {
             this.manager.removePetBlock(event.getPlayer());
-            this.getPlugin().getServer().getScheduler().runTaskLater(this.getPlugin(), new Runnable() {
-
-                @Override
-                public void run() {
-                    PetBlockListener.this.manager.setPetBlock(event.getPlayer(), PetBlockListener.this.manager.dataManager.getPetMeta(event.getPlayer()), ConfigPet.getInstance().getWarpDelay());
-                }
-            }, 60L);
+            this.getPlugin().getServer().getScheduler().runTaskLater(this.getPlugin(), () -> PetBlockListener.this.manager.setPetBlock(event.getPlayer(), PetBlockListener.this.manager.dataManager.getPetMeta(event.getPlayer()), ConfigPet.getInstance().getWarpDelay()), 60L);
         }
     }
 
@@ -164,12 +158,7 @@ class PetBlockListener extends BukkitEvents {
                     else
                         Interpreter19.getItemInHand19(event.getPlayer(), false).setAmount(Interpreter19.getItemInHand19(event.getPlayer(), false).getAmount() - 1);
                     if (!this.jumped.contains(petBlock)) {
-                        this.getPlugin().getServer().getScheduler().runTaskLater(this.getPlugin(), new Runnable() {
-                            @Override
-                            public void run() {
-                                PetBlockListener.this.jumped.remove(PetBlockListener.this.getPet(event.getRightClicked()));
-                            }
-                        }, 20L);
+                        this.getPlugin().getServer().getScheduler().runTaskLater(this.getPlugin(), () -> PetBlockListener.this.jumped.remove(PetBlockListener.this.getPet(event.getRightClicked())), 20L);
                         this.jumped.add(this.getPet(event.getRightClicked()));
                         petBlock.jump();
                     }
@@ -342,9 +331,9 @@ class PetBlockListener extends BukkitEvents {
                 }
             }
             if (counter == 1)
-                BukkitUtilities.sendColorMessage("PetHunter " + ChatColor.GREEN + ">" + ChatColor.YELLOW + " Removed " + counter + " pet.", ChatColor.YELLOW, PetBlocksPlugin.PREFIX_CONSOLE);
+                BukkitUtilities.sendColorMessage("PetHunter " + ChatColor.GREEN + '>' + ChatColor.YELLOW + " Removed " + counter + " pet.", ChatColor.YELLOW, PetBlocksPlugin.PREFIX_CONSOLE);
             else if (counter > 0)
-                BukkitUtilities.sendColorMessage("PetHunter " + ChatColor.GREEN + ">" + ChatColor.YELLOW + " Removed " + counter + " pet.", ChatColor.YELLOW, PetBlocksPlugin.PREFIX_CONSOLE);
+                BukkitUtilities.sendColorMessage("PetHunter " + ChatColor.GREEN + '>' + ChatColor.YELLOW + " Removed " + counter + " pet.", ChatColor.YELLOW, PetBlocksPlugin.PREFIX_CONSOLE);
         }
     }
 }

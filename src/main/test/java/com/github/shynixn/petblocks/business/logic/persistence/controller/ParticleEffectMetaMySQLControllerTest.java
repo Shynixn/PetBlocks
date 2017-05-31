@@ -12,15 +12,14 @@ import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
 
 import java.io.File;
-import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
@@ -37,16 +36,13 @@ public class ParticleEffectMetaMySQLControllerTest {
         configuration.set("sql.database", "db");
         configuration.set("sql.username", "root");
         configuration.set("sql.password", "");
-        Plugin plugin = mock(Plugin.class);
+        final Plugin plugin = mock(Plugin.class);
         new File("PetBlocks.db").delete();
         when(plugin.getDataFolder()).thenReturn(new File("PetBlocks"));
         when(plugin.getConfig()).thenReturn(configuration);
-        when(plugin.getResource(any(String.class))).thenAnswer(new Answer<InputStream>() {
-            @Override
-            public InputStream answer(InvocationOnMock invocationOnMock) throws Throwable {
-                final String file = invocationOnMock.getArgument(0);
-                return Thread.currentThread().getContextClassLoader().getResourceAsStream(file);
-            }
+        when(plugin.getResource(any(String.class))).thenAnswer(invocationOnMock -> {
+            final String file = invocationOnMock.getArgument(0);
+            return Thread.currentThread().getContextClassLoader().getResourceAsStream(file);
         });
         return plugin;
     }
@@ -58,8 +54,8 @@ public class ParticleEffectMetaMySQLControllerTest {
     {
         try {
             database.stop();
-        } catch (ManagedProcessException e) {
-            e.printStackTrace();
+        } catch (final ManagedProcessException e) {
+            Logger.getLogger(ParticleEffectMetaMySQLControllerTest.class.getSimpleName()).log(Level.WARNING, "Failed to stop maria db.", e);
         }
     }
 
@@ -75,26 +71,26 @@ public class ParticleEffectMetaMySQLControllerTest {
                 }
             }
         } catch (SQLException | ManagedProcessException e) {
-            e.printStackTrace();
+            Logger.getLogger(ParticleEffectMetaMySQLControllerTest.class.getSimpleName()).log(Level.WARNING, "Failed to start maria db.", e);
         }
     }
 
     @Test
     public void insertSelectParticleEffectMetaTest() throws ClassNotFoundException {
-        Plugin plugin = mockPlugin();
+        final Plugin plugin = mockPlugin();
         plugin.getConfig().set("sql.local", false);
         Factory.initialize(plugin);
         try (ParticleEffectMetaController controller = Factory.createParticleEffectController()) {
             for (final ParticleEffectMeta item : controller.getAll()) {
                 controller.remove(item);
             }
-            ParticleEffectMeta meta = controller.create();
+            final ParticleEffectMeta meta = controller.create();
             meta.setEffectType(ParticleEffectMeta.ParticleEffectType.CLOUD);
             controller.store(meta);
             assertEquals(1, controller.size());
             assertEquals(ParticleEffectMeta.ParticleEffectType.CLOUD, controller.getById(meta.getId()).getEffectType());
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (final Exception e) {
+            Logger.getLogger(ParticleEffectMetaMySQLControllerTest.class.getSimpleName()).log(Level.WARNING, "Failed to run test.", e);
             Assert.fail();
         }
     }
@@ -102,7 +98,7 @@ public class ParticleEffectMetaMySQLControllerTest {
 
     @Test
     public void storeLoadParticleEffectMetaTest() throws ClassNotFoundException {
-        Plugin plugin = mockPlugin();
+        final Plugin plugin = mockPlugin();
         plugin.getConfig().set("sql.local", false);
         Factory.initialize(plugin);
         try (ParticleEffectMetaController controller = Factory.createParticleEffectController()) {
@@ -148,8 +144,8 @@ public class ParticleEffectMetaMySQLControllerTest {
             assertEquals(5.24, meta.getZ());
             assertEquals(Material.BARRIER, meta.getMaterial());
             assertEquals((byte)7, (byte)meta.getData());
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (final Exception e) {
+            Logger.getLogger(ParticleEffectMetaMySQLControllerTest.class.getSimpleName()).log(Level.WARNING, "Failed to run test.", e);
             Assert.fail();
         }
     }

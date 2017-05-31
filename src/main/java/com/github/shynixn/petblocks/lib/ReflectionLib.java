@@ -18,7 +18,7 @@ public final class ReflectionLib {
                 try {
                     constructor.setAccessible(true);
                     return constructor.newInstance(params);
-                } catch (Exception ignored) {
+                } catch (final Exception ignored) {
 
                 }
             }
@@ -36,7 +36,7 @@ public final class ReflectionLib {
                         method.setAccessible(true);
                         return method.invoke(object, params);
                     }
-                } catch (Exception ignored) {
+                } catch (final Exception ignored) {
 
                 }
             }
@@ -48,11 +48,11 @@ public final class ReflectionLib {
                 if (method.getName().equalsIgnoreCase(name)) {
                     Bukkit.getLogger().log(Level.WARNING, "Unknown: [" + method.getName() + "] " + method.getParameterTypes().length);
                     Bukkit.getLogger().log(Level.WARNING, "Calling params: ");
-                    for (Object param : params) {
+                    for (final Object param : params) {
                         Bukkit.getLogger().log(Level.WARNING, param.getClass().getName());
                     }
                     Bukkit.getLogger().log(Level.WARNING, "Method params: ");
-                    for (Class<?> cl : method.getParameterTypes()) {
+                    for (final Class<?> cl : method.getParameterTypes()) {
                         Bukkit.getLogger().log(Level.WARNING, cl.getName());
                     }
                 }
@@ -71,7 +71,7 @@ public final class ReflectionLib {
                     try {
                         return field.get(object);
                     } catch (final IllegalAccessException e) {
-                        e.printStackTrace();
+                        Bukkit.getLogger().log(Level.WARNING, "Access violation.", e);
                     }
                 }
             }
@@ -88,7 +88,7 @@ public final class ReflectionLib {
                         method.setAccessible(true);
                         return method.invoke(null, params);
                     }
-                } catch (Exception ignored) {
+                } catch (final Exception ignored) {
 
                 }
             }
@@ -100,7 +100,7 @@ public final class ReflectionLib {
     public static Class<?> getClassFromName(String name) {
         try {
             return Class.forName(name.replace("VERSION", BukkitUtilities.getServerVersion()));
-        } catch (Exception e) {
+        } catch (final Exception e) {
             throw new RuntimeException("Cannot find correct class [" + name + "] " + e.getMessage());
         }
     }

@@ -2,7 +2,9 @@ package com.github.shynixn.petblocks.business;
 
 import java.io.File;
 import java.lang.reflect.Field;
+import java.util.logging.Level;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -92,19 +94,19 @@ public final class Language {
                 PREFIX = ChatColor.translateAlternateColorCodes('&', config.getString("prefix"));
                 NUMBER_PREFIX = ChatColor.translateAlternateColorCodes('&', config.getString("number-prefix"));
             }
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (final Exception e) {
+            Bukkit.getLogger().log(Level.WARNING, "Failed to read lang.yml! Recreate it!", e);
             BukkitUtilities.sendColorMessage("Recreate your lang.yml!", ChatColor.RED, PetBlocksPlugin.PREFIX_CONSOLE);
         }
     }
 
     public static String getDisplayName(String petName) {
-        for (Field field : Language.class.getDeclaredFields()) {
+        for (final Field field : Language.class.getDeclaredFields()) {
             if (field.getName().contains("DISPLAYNAME") && field.getName().toUpperCase().contains(petName.toUpperCase()))
                 try {
                     return (String) field.get(null);
                 } catch (IllegalArgumentException | IllegalAccessException e) {
-                    e.printStackTrace();
+                    Bukkit.getLogger().log(Level.WARNING, "Failed to obtain value of field.", e);
                 }
         }
         throw new RuntimeException("Cannot find displaName");
