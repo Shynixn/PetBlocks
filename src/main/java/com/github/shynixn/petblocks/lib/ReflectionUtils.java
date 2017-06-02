@@ -62,6 +62,8 @@ public final class ReflectionUtils {
      * @param clazz clazz
      * @param <T>   returnType
      * @return instance
+     * @throws java.lang.IllegalAccessException exception
+     * @throws InstantiationException exceptionInstance
      */
     public static <T> T invokeDefaultConstructor(Class<T> clazz) throws IllegalAccessException, InstantiationException {
         if (clazz == null)
@@ -194,6 +196,8 @@ public final class ReflectionUtils {
      * @param instance instance
      * @param name     name
      * @param <T>      returnType
+     * @throws NoSuchFieldException exception
+     * @throws IllegalAccessException exceptionInstance
      * @return returnValue
      */
     public static <T> T invokeFieldByObject(Object instance, String name) throws NoSuchFieldException, IllegalAccessException {
@@ -207,6 +211,8 @@ public final class ReflectionUtils {
      * @param name     name
      * @param clazz    clazz
      * @param <T>      returnType
+     * @throws NoSuchFieldException exception
+     * @throws IllegalAccessException exceptionInstance
      * @return returnValue
      */
     public static <T> T invokeFieldByObject(Object instance, String name, Class<?> clazz) throws NoSuchFieldException, IllegalAccessException {

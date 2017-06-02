@@ -1,7 +1,5 @@
 package com.github.shynixn.petblocks.business.logic.persistence.controller;
 
-import ch.vorburger.exec.ManagedProcessException;
-import ch.vorburger.mariadb4j.DB;
 import com.github.shynixn.petblocks.api.entities.MoveType;
 import com.github.shynixn.petblocks.api.entities.Movement;
 import com.github.shynixn.petblocks.api.entities.PetType;
@@ -17,16 +15,12 @@ import org.bukkit.Material;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
-import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 import java.io.File;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -37,7 +31,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-public class PetMetaMySQLControllerTest {
+public class PetMetaSQLiteControllerTest {
 
     private static Plugin mockPlugin() {
         final YamlConfiguration configuration = new YamlConfiguration();
@@ -58,39 +52,13 @@ public class PetMetaMySQLControllerTest {
         return plugin;
     }
 
-
-    private static DB database;
-
-    @AfterClass
-    public static void stopMariaDB()
-    {
-        try {
-            database.stop();
-        } catch (final ManagedProcessException e) {
-            Logger.getLogger(PetMetaMySQLControllerTest.class.getSimpleName()).log(Level.WARNING, "Failed stop maria db.", e);
-        }
-    }
-
-    @BeforeClass
-    public static void startMariaDB() {
-        try {
-            Factory.disable();
-            database = DB.newEmbeddedDB(3306);
-            database.start();
-            try (Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/?user=root&password=")) {
-                try (Statement statement = conn.createStatement()) {
-                    statement.executeUpdate("CREATE DATABASE db");
-                }
-            }
-        } catch (SQLException | ManagedProcessException e) {
-            Logger.getLogger(PetMetaMySQLControllerTest.class.getSimpleName()).log(Level.WARNING, "Failed start maria db.", e);
-        }
+    @BeforeAll
+    public static void disableFactory() {
+        Factory.disable();
     }
 
     @Test
-    public void insertSelectPlayerMetaTest() throws ClassNotFoundException {
-        final Plugin plugin = mockPlugin();
-        plugin.getConfig().set("sql.local", false);
+    public void insertSelectPetMetaTest() throws ClassNotFoundException {
         Factory.initialize(mockPlugin());
         final UUID uuid = UUID.randomUUID();
         final Player player = mock(Player.class);
@@ -123,7 +91,7 @@ public class PetMetaMySQLControllerTest {
                     meta.setPetType(PetType.BAT);
                     assertThrows(IllegalArgumentException.class, () -> controller.store(meta));
 
-                    meta.setSkin(Material.STONE, (short) 5, null);
+                    meta.setSkin(Material.STONE, (short)5, null);
                     controller.store(meta);
 
                     assertEquals(1, controller.size());
@@ -136,11 +104,8 @@ public class PetMetaMySQLControllerTest {
         }
     }
 
-
     @Test
-    public void storeLoadPlayerMetaTest() throws ClassNotFoundException {
-        final Plugin plugin = mockPlugin();
-        plugin.getConfig().set("sql.local", false);
+    public void storeLoadPetMetaTest() throws ClassNotFoundException {
         Factory.initialize(mockPlugin());
         final UUID uuid = UUID.randomUUID();
         final Player player = mock(Player.class);

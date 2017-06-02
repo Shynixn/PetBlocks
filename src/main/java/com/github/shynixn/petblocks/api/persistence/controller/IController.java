@@ -48,6 +48,7 @@ public interface IController<T> extends AutoCloseable {
 
     /**
      * Returns the amount of items in the repository
+    *  @return size
      */
     int size();
 
@@ -55,6 +56,6 @@ public interface IController<T> extends AutoCloseable {
      * Returns all items from the repository as unmodifiableList
      *
      * @return items
-     */
+    */
     List<T> getAll();
 }

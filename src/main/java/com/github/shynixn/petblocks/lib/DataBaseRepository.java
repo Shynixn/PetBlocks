@@ -110,6 +110,7 @@ public abstract class DataBaseRepository<T> implements IDatabaseController<T> {
      * Generates the entity from the given resultSet
      * @param resultSet resultSet
      * @return entity
+     * @throws java.sql.SQLException exception
      */
     public abstract T from(ResultSet resultSet) throws SQLException;
 }

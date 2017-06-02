@@ -266,7 +266,6 @@ public class ExtensionHikariConnectionContext implements AutoCloseable {
      *
      * @param statementName statementName
      * @return sqlStatement
-     * @throws IOException exception
      */
     public String getStringFromFile(String statementName) {
         if (statementName == null)
@@ -282,6 +281,7 @@ public class ExtensionHikariConnectionContext implements AutoCloseable {
      *
      * @param driver driver
      * @param url    url
+     * @param retriever retriever
      * @return DbConnectionContext
      * @throws IOException exception
      */
@@ -313,6 +313,7 @@ public class ExtensionHikariConnectionContext implements AutoCloseable {
      * @param database database
      * @param userName userName
      * @param password password
+     * @param retriever retriever
      * @return DbConnectionContext
      * @throws IOException exception
      */
