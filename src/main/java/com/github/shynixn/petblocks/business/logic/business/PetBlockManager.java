@@ -8,6 +8,7 @@ import java.util.Map;
 import com.github.shynixn.petblocks.api.events.PetBlockDeathEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import com.github.shynixn.petblocks.api.entities.PetBlock;
@@ -16,19 +17,21 @@ import com.github.shynixn.petblocks.business.bukkit.nms.NMSRegistry;
 import com.github.shynixn.petblocks.lib.Interpreter19;
 
 public final class PetBlockManager {
-    private final JavaPlugin plugin;
+    private final Plugin plugin;
     Map<Player, PetBlock> petblocks = new HashMap<>();
     PetDataManager dataManager;
     List<Player> carryingPet = new ArrayList<>();
     Map<Player, Integer> timeBlocked = new HashMap<>();
 
-    public PetBlockManager(PetDataManager dataManager, JavaPlugin plugin) {
+    public PetBlockManager(PetDataManager dataManager, Plugin plugin) {
         super();
         this.plugin = plugin;
         this.dataManager = dataManager;
-        new PetBlockListener(this, plugin);
-        new PetBlockCommandExecutor(this);
-        new PetBlockReloadCommandExecutor("petblockreload", plugin);
+        if (plugin.getPluginLoader() != null) {
+            new PetBlockListener(this, plugin);
+            new PetBlockCommandExecutor(this);
+            new PetBlockReloadCommandExecutor("petblockreload", plugin);
+        }
     }
 
     public boolean hasPetBlock(Player player) {

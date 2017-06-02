@@ -41,7 +41,7 @@ public final class NMSRegistry {
         return (ItemStack) ReflectionLib.invokeMethodByClazz(clazz, "setItemstackTag", itemStack, tags);
     }
 
-    public static void registerListener19(List<Player> players, JavaPlugin plugin) {
+    public static void registerListener19(List<Player> players, Plugin plugin) {
         if (BukkitUtilities.getServerVersion().equalsIgnoreCase("v1_9_R1")
                 || BukkitUtilities.getServerVersion().equalsIgnoreCase("v1_9_R2")
                 || BukkitUtilities.getServerVersion().equalsIgnoreCase("v1_10_R1")

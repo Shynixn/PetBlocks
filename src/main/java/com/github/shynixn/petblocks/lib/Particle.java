@@ -10,6 +10,7 @@ import java.util.Arrays;
  * Created by Shynixn
  */
 
+@Deprecated
 public class Particle implements com.github.shynixn.petblocks.api.entities.Particle {
     private static final Long serialVersionUID = 1L;
 

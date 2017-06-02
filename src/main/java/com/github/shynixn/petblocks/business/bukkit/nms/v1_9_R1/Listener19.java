@@ -1,20 +1,18 @@
 package com.github.shynixn.petblocks.business.bukkit.nms.v1_9_R1;
 
-import com.github.shynixn.petblocks.lib.BukkitEvents;
+import com.github.shynixn.petblocks.lib.SimpleListener;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.player.PlayerSwapHandItemsEvent;
-import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.plugin.Plugin;
 
 import java.util.List;
 
-/**
- * Created by Shynixn
- */
-public final class Listener19 extends BukkitEvents {
+
+public final class Listener19 extends SimpleListener {
     private final List<Player> carryingPet;
 
-    public Listener19(List<Player> carryingPet, JavaPlugin plugin) {
+    public Listener19(List<Player> carryingPet, Plugin plugin) {
         super(plugin);
         this.carryingPet = carryingPet;
     }

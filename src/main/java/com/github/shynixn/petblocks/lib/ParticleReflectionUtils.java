@@ -25,6 +25,7 @@ import org.bukkit.Bukkit;
  * @author DarkBlade12
  * @version 1.1
  */
+@Deprecated
 public final class ParticleReflectionUtils {
 	// Prevent accidental construction
 	private ParticleReflectionUtils() {

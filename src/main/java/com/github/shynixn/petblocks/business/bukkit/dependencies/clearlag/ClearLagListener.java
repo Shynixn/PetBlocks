@@ -1,6 +1,6 @@
 package com.github.shynixn.petblocks.business.bukkit.dependencies.clearlag;
 
-import com.github.shynixn.petblocks.lib.BukkitEvents;
+import com.github.shynixn.petblocks.lib.SimpleListener;
 import me.minebuilders.clearlag.events.EntityRemoveEvent;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Entity;
@@ -8,7 +8,7 @@ import org.bukkit.entity.Rabbit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.plugin.java.JavaPlugin;
 
-public final class ClearLagListener extends BukkitEvents {
+public final class ClearLagListener extends SimpleListener {
     public ClearLagListener(JavaPlugin plugin) {
         super(plugin);
     }

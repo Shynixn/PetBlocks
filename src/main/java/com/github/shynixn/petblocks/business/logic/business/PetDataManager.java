@@ -13,6 +13,7 @@ import com.github.shynixn.petblocks.business.logic.persistence.entity.PetData;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import com.github.shynixn.petblocks.api.PetBlocksApi;
@@ -25,11 +26,14 @@ public final class PetDataManager {
     Map<Player, GUI.GuiPageContainer> pages = new HashMap<>();
     GUI gui;
 
-    public PetDataManager(JavaPlugin plugin) {
+    public PetDataManager(Plugin plugin) {
         super();
         this.gui = new GUI(this);
-        new PetDataCommandExecutor(this);
-        new PetDataListener(this, plugin);
+        if (plugin.getPluginLoader() != null) {
+            new PetDataCommandExecutor(this);
+            new PetDataListener(this, plugin);
+        }
+        Factory.initialize(plugin);
         this.petDataController = Factory.createPetDataController();
     }
 
@@ -47,14 +51,8 @@ public final class PetDataManager {
             throw new IllegalArgumentException("PetMeta cannot be null!");
         if (PetBlocksApi.hasPetBlock(petMeta.getOwner()))
             petMeta.setEnabled(true);
-
-
-
-
-
         this.petDataController.store(petMeta);
     }
-
 
     public void remove(PetMeta petMeta) {
         if (petMeta == null)

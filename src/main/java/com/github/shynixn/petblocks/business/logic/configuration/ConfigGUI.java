@@ -182,6 +182,7 @@ public final class ConfigGUI {
     }
 
     public ItemContainer getGeneral_defaultAppearanceContainer() {
+        System.out.println("EXIST: " + this.general_defaultAppearanceContainer);
         return this.general_defaultAppearanceContainer;
     }
 
@@ -239,7 +240,9 @@ public final class ConfigGUI {
 
     private ItemStack[] resolveItems(List<String> texts) {
         final ArrayList<ItemStack> itemStacks = new ArrayList<>();
+        System.out.println("TESTS: " + texts.size());
         for (final String s : texts) {
+            System.out.println("TEST: " + s);
             try {
                 int i = 0;
                 ItemStack itemStack = null;
@@ -299,6 +302,7 @@ public final class ConfigGUI {
             }
         }
         for (int i = 0; i < itemStacks.size(); i++) {
+            System.out.println("HEK");
             BukkitUtilities.nameItemDisplay(itemStacks.get(i), Language.NUMBER_PREFIX + "" + i + "");
         }
         return itemStacks.toArray(new ItemStack[itemStacks.size()]);

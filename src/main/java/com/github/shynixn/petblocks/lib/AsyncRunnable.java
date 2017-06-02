@@ -2,9 +2,7 @@ package com.github.shynixn.petblocks.lib;
 
 import org.bukkit.plugin.java.JavaPlugin;
 
-/**
- * Created by Shynixn
- */
+@Deprecated
 public abstract class AsyncRunnable implements Runnable {
     @PluginLoader.PluginLoad
     private static JavaPlugin plugin;

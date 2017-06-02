@@ -21,18 +21,19 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.player.*;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.ArrayList;
 import java.util.List;
 
-class PetBlockListener extends BukkitEvents {
+class PetBlockListener extends SimpleListener {
     private final PetBlockManager manager;
     private final List<PetBlock> jumped = new ArrayList<>();
 
     private boolean running;
 
-    PetBlockListener(PetBlockManager manager, JavaPlugin plugin) {
+    PetBlockListener(PetBlockManager manager, Plugin plugin) {
         super(plugin);
         this.manager = manager;
         NMSRegistry.registerListener19(manager.carryingPet, plugin);
@@ -42,8 +43,8 @@ class PetBlockListener extends BukkitEvents {
     private void run() {
         if (!this.running) {
             this.running = true;
-            this.getPlugin().getServer().getScheduler().scheduleSyncRepeatingTask(this.getPlugin(), new ParticleRunnable(), 0L, 60L);
-            this.getPlugin().getServer().getScheduler().runTaskTimer(this.getPlugin(), new PetHunterRunnable(), 0L, 20);
+            this.plugin.getServer().getScheduler().scheduleSyncRepeatingTask(this.plugin, new ParticleRunnable(), 0L, 60L);
+            this.plugin.getServer().getScheduler().runTaskTimer(this.plugin, new PetHunterRunnable(), 0L, 20);
         }
     }
 
@@ -115,7 +116,7 @@ class PetBlockListener extends BukkitEvents {
     public void onPlayerRespawnEvent(final PlayerRespawnEvent event) {
         if (this.manager.hasPetBlock(event.getPlayer())) {
             this.manager.removePetBlock(event.getPlayer());
-            this.getPlugin().getServer().getScheduler().runTaskLater(this.getPlugin(), () -> PetBlockListener.this.manager.setPetBlock(event.getPlayer(), PetBlockListener.this.manager.dataManager.getPetMeta(event.getPlayer()), ConfigPet.getInstance().getWarpDelay()), 60L);
+            this.plugin.getServer().getScheduler().runTaskLater(this.plugin, () -> PetBlockListener.this.manager.setPetBlock(event.getPlayer(), PetBlockListener.this.manager.dataManager.getPetMeta(event.getPlayer()), ConfigPet.getInstance().getWarpDelay()), 60L);
         }
     }
 
@@ -158,7 +159,7 @@ class PetBlockListener extends BukkitEvents {
                     else
                         Interpreter19.getItemInHand19(event.getPlayer(), false).setAmount(Interpreter19.getItemInHand19(event.getPlayer(), false).getAmount() - 1);
                     if (!this.jumped.contains(petBlock)) {
-                        this.getPlugin().getServer().getScheduler().runTaskLater(this.getPlugin(), () -> PetBlockListener.this.jumped.remove(PetBlockListener.this.getPet(event.getRightClicked())), 20L);
+                        this.plugin.getServer().getScheduler().runTaskLater(this.plugin, () -> PetBlockListener.this.jumped.remove(PetBlockListener.this.getPet(event.getRightClicked())), 20L);
                         this.jumped.add(this.getPet(event.getRightClicked()));
                         petBlock.jump();
                     }

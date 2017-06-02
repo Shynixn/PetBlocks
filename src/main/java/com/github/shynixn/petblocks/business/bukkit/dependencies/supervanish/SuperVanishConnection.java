@@ -1,9 +1,9 @@
 package com.github.shynixn.petblocks.business.bukkit.dependencies.supervanish;
 
 import com.github.shynixn.petblocks.api.entities.PetBlock;
-import com.github.shynixn.petblocks.lib.BukkitEvents;
 import com.github.shynixn.petblocks.api.PetBlocksApi;
 import com.github.shynixn.petblocks.lib.BukkitUtilities;
+import com.github.shynixn.petblocks.lib.SimpleListener;
 import de.myzelyam.api.vanish.PlayerHideEvent;
 import de.myzelyam.api.vanish.PlayerShowEvent;
 import org.bukkit.entity.Player;
@@ -41,7 +41,7 @@ public final class SuperVanishConnection {
         PetBlocksApi.getPetMeta(petBlock.getOwner()).setHidden(false);
     }
 
-    private static class SuperVanishListener extends BukkitEvents {
+    private static class SuperVanishListener extends SimpleListener {
         SuperVanishListener(JavaPlugin plugin) {
             super(plugin);
         }

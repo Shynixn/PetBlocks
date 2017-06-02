@@ -9,6 +9,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import com.github.shynixn.petblocks.business.bukkit.PetBlocksPlugin;
@@ -16,7 +17,7 @@ import com.github.shynixn.petblocks.lib.BukkitChatColor;
 import com.github.shynixn.petblocks.lib.BukkitUtilities;
 
 public final class Language {
-    public static void reload(JavaPlugin plugin) {
+    public static void reload(Plugin plugin) {
         final File file = new File(plugin.getDataFolder(), "lang.yml");
         if (!file.exists())
             BukkitUtilities.copyFile(plugin.getResource("lang.yml"), file);

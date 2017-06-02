@@ -2,23 +2,22 @@ package com.github.shynixn.petblocks.api;
 
 import com.github.shynixn.petblocks.api.entities.PetBlock;
 import com.github.shynixn.petblocks.api.entities.PetMeta;
+import com.github.shynixn.petblocks.api.entities.PetType;
 import com.github.shynixn.petblocks.business.logic.business.PetBlockManager;
 import com.github.shynixn.petblocks.business.logic.business.PetDataManager;
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.java.JavaPlugin;
-
-import com.github.shynixn.petblocks.api.entities.PetType;
+import org.bukkit.plugin.Plugin;
 
 public final class PetBlocksApi {
     private static PetBlockManager petBlockManager;
     private static PetDataManager dataManager;
 
-    private static void init(JavaPlugin plugin) {
+    private static void init(Plugin plugin) {
         dataManager = new PetDataManager(plugin);
         petBlockManager = new PetBlockManager(dataManager, plugin);
     }
 
-    private static void dispose(JavaPlugin plugin) {
+    private static void dispose(Plugin plugin) {
         if (petBlockManager != null) {
             petBlockManager.killAll();
         }

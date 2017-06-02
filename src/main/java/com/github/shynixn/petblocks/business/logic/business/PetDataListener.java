@@ -14,7 +14,7 @@ import com.github.shynixn.petblocks.business.bukkit.nms.NMSRegistry;
 import com.github.shynixn.petblocks.business.logic.configuration.ConfigGUI;
 import com.github.shynixn.petblocks.business.logic.configuration.ConfigParticle;
 import com.github.shynixn.petblocks.business.logic.configuration.ConfigPet;
-import com.github.shynixn.petblocks.lib.BukkitEvents;
+import com.github.shynixn.petblocks.lib.SimpleListener;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -27,18 +27,19 @@ import org.bukkit.event.player.PlayerChatEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.meta.SkullMeta;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.util.Vector;
 
 import com.github.shynixn.petblocks.lib.BukkitUtilities;
 
 @SuppressWarnings("deprecation")
-class PetDataListener extends BukkitEvents {
+class PetDataListener extends SimpleListener {
     private final PetDataManager manager;
     private final List<Player> namingPlayers = new ArrayList<>();
     private final List<Player> namingSkull = new ArrayList<>();
 
-    PetDataListener(PetDataManager manager, JavaPlugin plugin) {
+    PetDataListener(PetDataManager manager, Plugin plugin) {
         super(plugin);
         this.manager = manager;
     }
@@ -216,7 +217,7 @@ class PetDataListener extends BukkitEvents {
             this.manager.hasPetMeta(event.getPlayer());
         }
         if ((petMeta = PetBlocksApi.getPetMeta(event.getPlayer())) != null && petMeta.isEnabled()) {
-            this.getPlugin().getServer().getScheduler().runTaskLater(this.getPlugin(), () -> {
+            this.plugin.getServer().getScheduler().runTaskLater(this.plugin, () -> {
                 PetBlocksApi.removePetBlock(event.getPlayer());
                 PetBlocksApi.setPetBlock(event.getPlayer(), PetDataListener.this.manager.getPetMeta(event.getPlayer()));
             }, 2L);
@@ -258,7 +259,7 @@ class PetDataListener extends BukkitEvents {
         if (Config.getInstance().isChat_async() && Config.getInstance().isChat_highestpriority()) {
             if (this.namingPlayers.contains(event.getPlayer()) || this.namingSkull.contains(event.getPlayer()))
                 event.setCancelled(true);
-            this.getPlugin().getServer().getScheduler().runTaskLater(this.getPlugin(), () -> PetDataListener.this.handleChatMessage(new PlayerChatEvent(event.getPlayer(), event.getMessage())), 1L);
+            this.plugin.getServer().getScheduler().runTaskLater(this.plugin, () -> PetDataListener.this.handleChatMessage(new PlayerChatEvent(event.getPlayer(), event.getMessage())), 1L);
         }
     }
 
@@ -267,7 +268,7 @@ class PetDataListener extends BukkitEvents {
         if (Config.getInstance().isChat_async() && !Config.getInstance().isChat_highestpriority()) {
             if (this.namingPlayers.contains(event.getPlayer()) || this.namingSkull.contains(event.getPlayer()))
                 event.setCancelled(true);
-            this.getPlugin().getServer().getScheduler().runTaskLater(this.getPlugin(), () -> PetDataListener.this.handleChatMessage(new PlayerChatEvent(event.getPlayer(), event.getMessage())), 1L);
+            this.plugin.getServer().getScheduler().runTaskLater(this.plugin, () -> PetDataListener.this.handleChatMessage(new PlayerChatEvent(event.getPlayer(), event.getMessage())), 1L);
         }
     }
 

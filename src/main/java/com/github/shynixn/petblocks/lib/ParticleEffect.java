@@ -17,6 +17,7 @@ import java.util.Map.Entry;
 import java.util.regex.Pattern;
 
 //Darkblade12
+@Deprecated
 public enum ParticleEffect {
     EXPLOSION_NORMAL("explode", 0, -1, ParticleProperty.DIRECTIONAL),
 

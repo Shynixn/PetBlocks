@@ -2,6 +2,7 @@ package com.github.shynixn.petblocks.lib;
 
 import org.bukkit.Material;
 
+@Deprecated
 public final class ParticleBuilder {
     private ParticleEffect effect;
     private double x;
