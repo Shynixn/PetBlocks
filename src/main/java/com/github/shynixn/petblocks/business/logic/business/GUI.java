@@ -1,6 +1,6 @@
 package com.github.shynixn.petblocks.business.logic.business;
 
-import com.github.shynixn.petblocks.api.PetBlocksApi;
+import com.github.shynixn.petblocks.api.entities.PetMeta;
 import com.github.shynixn.petblocks.business.Config;
 import com.github.shynixn.petblocks.business.Permission;
 import com.github.shynixn.petblocks.business.logic.configuration.ConfigGUI;
@@ -33,7 +33,8 @@ class GUI {
         }
     }
 
-    void setMainItems(Player player, PetType petType, boolean enabled, boolean refresh) {
+    void setMainItems(Player player, PetType petType, boolean enabled, boolean refresh, PetMeta petMeta) {
+        //Thread safe
         if (this.manager.inventories.containsKey(player)) {
             if (this.manager.pages.get(player).page != GuiPage.MAIN)
                 this.setMainItems(player);
@@ -58,7 +59,7 @@ class GUI {
             Config.getInstance().setMyContainer(inventory, Language.COLOR_COSTUME, ConfigGUI.getInstance().getItems_colorcostumeContainer(), (Permission) null);
             Config.getInstance().setMyContainer(inventory, Language.CUSTOM_COSTUME, ConfigGUI.getInstance().getItems_customcostumeContainer(), (Permission) null);
 
-            if (PetBlocksApi.getPetMeta(player).isSoundsEnabled())
+            if (petMeta.isSoundsEnabled())
                 Config.getInstance().setMyContainer(inventory, Language.MUTE, ConfigGUI.getInstance().getItems_soundEnabledContainer(), (Permission) null);
             else
                 Config.getInstance().setMyContainer(inventory, Language.UNMUTE, ConfigGUI.getInstance().getItems_soundDisabledContainer(), (Permission) null);

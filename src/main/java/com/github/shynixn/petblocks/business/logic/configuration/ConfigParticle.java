@@ -62,7 +62,7 @@ public class ConfigParticle {
             if (container.getPosition() == slot)
                 return container.getParticle().build();
         }
-        return null;
+        return new ParticleBuilder().setEffect(null).build();
     }
 
     private CustomItemContainer.ParticleItemContainer getParticleItemContainer(int number, FileConfiguration c) {

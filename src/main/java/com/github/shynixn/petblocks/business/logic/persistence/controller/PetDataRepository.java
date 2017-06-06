@@ -45,8 +45,9 @@ public class PetDataRepository extends DataBaseRepository<PetMeta> implements Pe
             try (PreparedStatement preparedStatement = this.dbContext.executeStoredQuery("petblock/selectbyplayer", connection,
                     player.getUniqueId().toString())) {
                 try (ResultSet resultSet = preparedStatement.executeQuery()) {
-                    resultSet.next();
-                    return this.from(resultSet);
+                    if (resultSet.next()) {
+                        return this.from(resultSet);
+                    }
                 }
             }
         } catch (final SQLException e) {
@@ -88,8 +89,9 @@ public class PetDataRepository extends DataBaseRepository<PetMeta> implements Pe
             try (PreparedStatement preparedStatement = this.dbContext.executeStoredQuery("petblock/selectbyid", connection,
                     id)) {
                 try (ResultSet resultSet = preparedStatement.executeQuery()) {
-                    resultSet.next();
-                    return this.from(resultSet);
+                    if (resultSet.next()) {
+                        return this.from(resultSet);
+                    }
                 }
             }
         } catch (final SQLException e) {
@@ -139,11 +141,11 @@ public class PetDataRepository extends DataBaseRepository<PetMeta> implements Pe
      */
     @Override
     public void update(PetMeta item) {
-        if(item == null)
+        if (item == null)
             throw new IllegalArgumentException("Meta has to be an instance of PetData");
-        if(item.getType() == null)
+        if (item.getType() == null)
             throw new IllegalArgumentException("PetType cannot be null!");
-        if(item.getSkinMaterial() == null)
+        if (item.getSkinMaterial() == null)
             throw new IllegalArgumentException("SkinMaterial cannot be null!");
         try (Connection connection = this.dbContext.getConnection()) {
             this.dbContext.executeStoredUpdate("petblock/update", connection,
@@ -159,7 +161,7 @@ public class PetDataRepository extends DataBaseRepository<PetMeta> implements Pe
                     item.getMoveType().name(),
                     item.getMovementType().name(),
                     item.getId()
-                    );
+            );
         } catch (final SQLException e) {
             Bukkit.getLogger().log(Level.WARNING, "Database error occurred.", e);
         }
@@ -187,15 +189,15 @@ public class PetDataRepository extends DataBaseRepository<PetMeta> implements Pe
      */
     @Override
     public void insert(PetMeta item) {
-        if(item == null)
+        if (item == null)
             throw new IllegalArgumentException("Meta has to be an instance of PetData");
-        if(item.getType() == null)
+        if (item.getType() == null)
             throw new IllegalArgumentException("PetType cannot be null!");
-        if(item.getSkinMaterial() == null)
+        if (item.getSkinMaterial() == null)
             throw new IllegalArgumentException("SkinMaterial cannot be null!");
         try (Connection connection = this.dbContext.getConnection()) {
             final long id = this.dbContext.executeStoredInsert("petblock/insert", connection,
-                        item.getPlayerId(),
+                    item.getPlayerId(),
                     item.getParticleId(),
                     item.getDisplayName(),
                     item.getType().name(),
@@ -208,8 +210,8 @@ public class PetDataRepository extends DataBaseRepository<PetMeta> implements Pe
                     item.isSoundsEnabled(),
                     item.getMoveType().name(),
                     item.getMovementType().name()
-                    );
-            ((PetData)item).setId(id);
+            );
+            ((PetData) item).setId(id);
         } catch (final SQLException e) {
             Bukkit.getLogger().log(Level.WARNING, "Database error occurred.", e);
         }
@@ -261,6 +263,7 @@ public class PetDataRepository extends DataBaseRepository<PetMeta> implements Pe
      * Closes this resource, relinquishing any underlying resources.
      * This method is invoked automatically on objects managed by the
      * {@code try}-with-resources statement.
+     *
      * @throws Exception if this resource cannot be closed
      */
     @Override

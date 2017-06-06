@@ -43,6 +43,29 @@ public class PlayerDataRepository extends DataBaseRepository<PlayerMeta> impleme
     }
 
     /**
+     * Returns the playerMeta of the given uuid
+     *
+     * @param uuid uuid
+     * @return playerMeta
+     */
+    @Override
+    public PlayerMeta getByUUID(UUID uuid) {
+        try (Connection connection = this.dbContext.getConnection()) {
+            try (PreparedStatement preparedStatement = this.dbContext.executeStoredQuery("player/selectbyuuid", connection,
+                    uuid.toString())) {
+                try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                    if (resultSet.next()) {
+                        return this.from(resultSet);
+                    }
+                }
+            }
+        } catch (final SQLException e) {
+            Bukkit.getLogger().log(Level.WARNING, "Database error occurred.", e);
+        }
+        return null;
+    }
+
+    /**
      * Returns the item of the given id
      *
      * @param id id
@@ -54,8 +77,9 @@ public class PlayerDataRepository extends DataBaseRepository<PlayerMeta> impleme
             try (PreparedStatement preparedStatement = this.dbContext.executeStoredQuery("player/selectbyid", connection,
                     id)) {
                 try (ResultSet resultSet = preparedStatement.executeQuery()) {
-                    resultSet.next();
-                    return this.from(resultSet);
+                    if (resultSet.next()) {
+                        return this.from(resultSet);
+                    }
                 }
             }
         } catch (final SQLException e) {

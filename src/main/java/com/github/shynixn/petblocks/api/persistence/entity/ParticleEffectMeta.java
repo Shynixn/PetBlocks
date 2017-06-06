@@ -313,6 +313,7 @@ public interface ParticleEffectMeta extends Persistenceable{
      * ParticleEffectTypes
      */
     enum ParticleEffectType {
+        NONE("none", -1),
         EXPLOSION_NORMAL("explode", 0),
         EXPLOSION_LARGE("largeexplode", 1),
         EXPLOSION_HUGE("hugeexplosion", 2),

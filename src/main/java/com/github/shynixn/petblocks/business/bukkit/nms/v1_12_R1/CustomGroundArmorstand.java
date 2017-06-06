@@ -85,11 +85,14 @@ final class CustomGroundArmorstand extends EntityArmorStand implements PetBlock 
     protected void doTick() {
         if (this.isSpecial) {
             this.counter = PetBlockHelper.doTick(this.counter, this, location -> {
+
+                System.out.println("TELTEPORT TO RABBIT");
                 CustomGroundArmorstand.this.setPositionRotation(location.getX(), location.getY(), location.getZ(), location.getYaw(), location.getPitch());
                 final PacketPlayOutEntityTeleport animation = new PacketPlayOutEntityTeleport(CustomGroundArmorstand.this);
                 for (final Player player : CustomGroundArmorstand.this.getArmorStand().getWorld().getPlayers()) {
                     ((CraftPlayer) player).getHandle().playerConnection.sendPacket(animation);
                 }
+
             });
         }
         super.doTick();
@@ -97,9 +100,16 @@ final class CustomGroundArmorstand extends EntityArmorStand implements PetBlock 
 
     @Override
     public void a(float sideMot, float forMot, float f2) {
+
+
+
+        System.out.println("MOVE 1" + sideMot +"." + forMot + "." +  f2);
         if (this.isSpecial) {
+            System.out.println("MOVE 2");
             if (this.hasHumanPassenger() != null) {
+                System.out.println("MOVE 3");
                 if (this.petMeta.getMoveType() == MoveType.WALKING) {
+                    System.out.println("1");
                     this.lastYaw = (this.yaw = this.hasHumanPassenger().yaw);
                     this.pitch = (this.hasHumanPassenger().pitch * 0.5F);
                     this.setYawPitch(this.yaw, this.pitch);
@@ -286,6 +296,18 @@ final class CustomGroundArmorstand extends EntityArmorStand implements PetBlock 
 
     @Override
     public void remove() {
+
+
+        try
+        {
+            throw new Exception("I ORDED THE REMOVE OF THIS PETBLOCK");
+        }
+        catch (Exception ex)
+        {
+            ex.printStackTrace();
+        }
+
+
         PetBlockHelper.remove(this);
     }
 

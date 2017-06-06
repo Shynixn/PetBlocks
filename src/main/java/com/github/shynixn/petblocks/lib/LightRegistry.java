@@ -91,6 +91,7 @@ public enum LightRegistry {
         public void unregister() throws Exception {
             final Class<?> entityTypeClazz = Class.forName("net.minecraft.server.VERSION.EntityTypes".replace("VERSION", getServerVersion()));
             if (!getServerVersion().equals("v1_11_R1") && !getServerVersion().equals("v1_12_R1")) {
+                System.out.println("USE OLD REGISTERING");
                 for (final Class<?> customEntityClazz : types.keySet()) {
                     final LightRegistry powerRegistry = types.get(customEntityClazz);
                     this.<Class<?>, String>getMap(entityTypeClazz, "d").remove(customEntityClazz);
@@ -98,6 +99,7 @@ public enum LightRegistry {
                     this.modify(powerRegistry.nmsClass, powerRegistry.saveGame_18_19_10, powerRegistry.entityId);
                 }
             } else {
+                System.out.println("USE NEW REGISTRERING");
                 final Field fieldRegistry = entityTypeClazz.getField("b");
                 fieldRegistry.setAccessible(true);
                 final Object registry = fieldRegistry.get(null);
@@ -114,12 +116,14 @@ public enum LightRegistry {
         private void modify(Class<?> clazz, String saveGameId, int entityId) throws Exception {
             final Class<?> entityTypeClazz = Class.forName("net.minecraft.server.VERSION.EntityTypes".replace("VERSION", getServerVersion()));
             if (!getServerVersion().equals("v1_11_R1") && !getServerVersion().equals("v1_12_R1")) {
+                System.out.println("USE OLD REGISTERING");
                 this.<String, Class<?>>getMap(entityTypeClazz, "c").put(saveGameId, clazz);
                 this.<Class<?>, String>getMap(entityTypeClazz, "d").put(clazz, saveGameId);
                 this.<Integer, Class<?>>getMap(entityTypeClazz, "e").put(entityId, clazz);
                 this.<Class<?>, Integer>getMap(entityTypeClazz, "f").put(clazz, entityId);
                 this.<String, Integer>getMap(entityTypeClazz, "f").put(saveGameId, entityId);
             } else {
+                System.out.println("USE NEW REGISTRERING");
                 final Field field = entityTypeClazz.getField("b");
                 field.setAccessible(true);
                 final Object registry = field.get(null);

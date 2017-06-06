@@ -47,8 +47,9 @@ public class ParticleEffectDataRepository extends DataBaseRepository<ParticleEff
             try (PreparedStatement preparedStatement = this.dbContext.executeStoredQuery("particle/selectbyid", connection,
                     id)) {
                 try (ResultSet resultSet = preparedStatement.executeQuery()) {
-                    resultSet.next();
-                    return this.from(resultSet);
+                    if (resultSet.next()) {
+                        return this.from(resultSet);
+                    }
                 }
             }
         } catch (final SQLException e) {

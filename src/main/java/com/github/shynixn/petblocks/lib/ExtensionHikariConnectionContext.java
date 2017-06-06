@@ -67,7 +67,10 @@ public class ExtensionHikariConnectionContext implements AutoCloseable {
         config.addDataSourceProperty("cachePrepStmts", "true");
         config.addDataSourceProperty("prepStmtCacheSize", "250");
         config.addDataSourceProperty("prepStmtCacheSqlLimit", "2048");
-        config.setMaximumPoolSize(10);
+        if(driver.equals(SQLITE_DRIVER))
+             config.setMaximumPoolSize(1);
+        else
+            config.setMaximumPoolSize(10);
         this.ds = new HikariDataSource(config);
         Logger.getLogger(this.getClass().getSimpleName()).log(Level.INFO, "Connected to " + url);
     }

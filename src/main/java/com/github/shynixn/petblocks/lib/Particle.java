@@ -1,8 +1,10 @@
 package com.github.shynixn.petblocks.lib;
 
+import com.github.shynixn.petblocks.business.bukkit.PetBlocksPlugin;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.Arrays;
 
@@ -81,7 +83,7 @@ public class Particle implements com.github.shynixn.petblocks.api.entities.Parti
     @Override
     public void play(final Location location, final Player... players) {
         try {
-            AsyncRunnable.toAsynchroneThread(new SendParticleRunnable(location, players));
+            JavaPlugin.getPlugin(PetBlocksPlugin.class).getServer().getScheduler().runTaskAsynchronously(JavaPlugin.getPlugin(PetBlocksPlugin.class), new SendParticleRunnable(location, players));
         } catch (final Exception ignored) {
 
         }
@@ -134,7 +136,7 @@ public class Particle implements com.github.shynixn.petblocks.api.entities.Parti
         return this.data;
     }
 
-    private class SendParticleRunnable extends AsyncRunnable {
+    private class SendParticleRunnable implements Runnable {
         private final Location location;
         private final Player[] players;
 
@@ -146,6 +148,8 @@ public class Particle implements com.github.shynixn.petblocks.api.entities.Parti
 
         @Override
         public void run() {
+            if(Particle.this.effect == null)
+                return;
             if (Particle.this.effect == ParticleEffect.SPELL_MOB || Particle.this.effect == ParticleEffect.SPELL_MOB_AMBIENT || Particle.this.effect == ParticleEffect.REDSTONE)
                 Particle.this.effect.display(new ParticleEffect.OrdinaryColor((int) Particle.this.x, (int) Particle.this.z, (int) Particle.this.y), this.location, Arrays.asList(this.players));
             else if (Particle.this.effect == ParticleEffect.NOTE)

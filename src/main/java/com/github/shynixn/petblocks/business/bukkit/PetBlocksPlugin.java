@@ -4,7 +4,6 @@ import com.github.shynixn.petblocks.api.PetBlocksApi;
 import com.github.shynixn.petblocks.business.Config;
 import com.github.shynixn.petblocks.business.Language;
 import com.github.shynixn.petblocks.business.bukkit.nms.NMSRegistry;
-import com.github.shynixn.petblocks.lib.AsyncRunnable;
 import com.github.shynixn.petblocks.lib.BukkitUtilities;
 import com.github.shynixn.petblocks.lib.PluginLoader;
 import com.github.shynixn.petblocks.lib.ReflectionLib;
@@ -38,7 +37,6 @@ public final class PetBlocksPlugin extends JavaPlugin {
 		}
 		else {
 			BukkitUtilities.sendColorMessage("Loading PetBlocks ...", ChatColor.GREEN, PREFIX_CONSOLE);
-			PluginLoader.load(this, AsyncRunnable.class);
 			Language.reload(this);
 			Config.initiliaze(this);
 			NMSRegistry.registerAll();

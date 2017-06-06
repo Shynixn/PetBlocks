@@ -10,6 +10,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+
 import java.util.UUID;
 
 public class PetData extends PersistenceObject implements PetMeta {
@@ -53,6 +54,8 @@ public class PetData extends PersistenceObject implements PetMeta {
             this.skullName = owner;
         this.ageTicks = Age.SMALL.getTicks();
         this.sounds = true;
+        this.particleEffectBuilder = new ParticleEffectData();
+        this.particleEffectBuilder.setEffectType(ParticleEffectMeta.ParticleEffectType.NONE);
     }
 
     public PetData() {
@@ -106,6 +109,8 @@ public class PetData extends PersistenceObject implements PetMeta {
      */
     @Override
     public void setParticleEffectMeta(ParticleEffectMeta meta) {
+        if(meta == null)
+            throw new IllegalArgumentException("Meta cannot be null!");
         this.particleId = meta.getId();
         this.particleEffectBuilder = meta;
     }
@@ -180,14 +185,6 @@ public class PetData extends PersistenceObject implements PetMeta {
 
     @Override
     public int getAgeInTicks() {
-        return this.ageTicks;
-    }
-
-    public void setAgeTicks(int ticks) {
-        this.ageTicks = ticks;
-    }
-
-    public int getAgeTicks() {
         return this.ageTicks;
     }
 
@@ -460,7 +457,11 @@ public class PetData extends PersistenceObject implements PetMeta {
 
     @Deprecated
     public void setEffect(ParticleEffect effect) {
-        this.particleEffectBuilder.setEffectName(effect.getName());
+        if (effect == null) {
+            this.particleEffectBuilder.setEffectType(ParticleEffectMeta.ParticleEffectType.NONE);
+        } else {
+            this.particleEffectBuilder.setEffectName(effect.getName());
+        }
     }
 
     @Deprecated

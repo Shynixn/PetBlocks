@@ -62,6 +62,8 @@ public final class PetBlockManager {
         if (this.hasPetBlock(player)) {
             final PetBlockDeathEvent event = new PetBlockDeathEvent(this.petblocks.get(player));
             Bukkit.getPluginManager().callEvent(event);
+            final com.github.shynixn.petblocks.api.persistence.entity.PetMeta petMeta = (com.github.shynixn.petblocks.api.persistence.entity.PetMeta) this.petblocks.get(player).getPetMeta();
+            this.plugin.getServer().getScheduler().runTaskAsynchronously(this.plugin, () -> this.dataManager.persist(petMeta));
             if (!event.isCanceled()) {
                 this.petblocks.get(player).remove();
                 this.petblocks.remove(player);
