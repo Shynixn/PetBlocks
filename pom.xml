@@ -31,7 +31,7 @@
 
     <build>
         <plugins>
-        <!--  <plugin>
+            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-source-plugin</artifactId>
                 <version>2.2.1</version>
@@ -86,7 +86,7 @@
                         </goals>
                     </execution>
                 </executions>
-            </plugin>    -->
+            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -245,7 +245,7 @@
         </dependency>
     </dependencies>
 
-  <!--  <scm>
+    <scm>
         <connection>scm:git:git://github.com/Shynixn/PetBlocks.git</connection>
         <developerConnection>scm:git:ssh://github.com:Shynixn/PetBlocks.git</developerConnection>
         <url>http://github.com/Shynixn/PetBlocks.git/tree/master</url>
@@ -260,5 +260,6 @@
             <id>ossrh</id>
             <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
         </repository>
-    </distributionManagement>-->
+    </distributionManagement>
+
 </project>
