@@ -12,14 +12,14 @@ Spigot plugin to use blocks as pets in minecraft.
 
 * Use blocks as pets in minecraft.
 * Customizable UI.
-* Version support 1.8.R1 - 1.11.R1
+* Version support 1.8.R1 - 1.12.R1
 * Check out the [PetBlocks-Spigot-Page](https://www.spigotmc.org/resources/petblocks-mysql-bungeecord-customizeable-gui-1-8-1-9-1-10-1-11.12056/) to get more information. 
 
 ## Installation
 
 * [Download the plugin PetBlocks](https://github.com/Shynixn/PetBlocks/releases)
 * Put the plugin into your plugin folder
-* Start the server (1.8.0 - 1.11.2, Java 7/Java 8)
+* Start the server (1.8.0 - 1.12.0, Java 8)
 * Join and play :)
 
 ## API
