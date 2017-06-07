@@ -30,7 +30,7 @@ public class ParticleEffectMetaMySQLControllerTest {
 
     private static Plugin mockPlugin() {
         final YamlConfiguration configuration = new YamlConfiguration();
-        configuration.set("sql.local", true);
+        configuration.set("sql.enabled", false);
         configuration.set("sql.host", "localhost");
         configuration.set("sql.port", 3306);
         configuration.set("sql.database", "db");
@@ -76,7 +76,7 @@ public class ParticleEffectMetaMySQLControllerTest {
     @Test
     public void insertSelectParticleEffectMetaTest() throws ClassNotFoundException {
         final Plugin plugin = mockPlugin();
-        plugin.getConfig().set("sql.local", false);
+        plugin.getConfig().set("sql.enabled", true);
         Factory.initialize(plugin);
         try (ParticleEffectMetaController controller = Factory.createParticleEffectController()) {
             for (final ParticleEffectMeta item : controller.getAll()) {
@@ -97,7 +97,7 @@ public class ParticleEffectMetaMySQLControllerTest {
     @Test
     public void storeLoadParticleEffectMetaTest() throws ClassNotFoundException {
         final Plugin plugin = mockPlugin();
-        plugin.getConfig().set("sql.local", false);
+        plugin.getConfig().set("sql.enabled",true);
         Factory.initialize(plugin);
         try (ParticleEffectMetaController controller = Factory.createParticleEffectController()) {
             for (final ParticleEffectMeta item : controller.getAll()) {

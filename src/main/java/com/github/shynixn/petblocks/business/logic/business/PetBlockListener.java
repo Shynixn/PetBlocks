@@ -52,7 +52,6 @@ class PetBlockListener extends SimpleListener {
 
     @EventHandler
     public void onEntityToggleSneakEvent(final PlayerToggleSneakEvent event) {
-        //Thread Safe
         final PetBlock petBlock;
         if (event.getPlayer().getPassenger() != null && this.isPet(event.getPlayer().getPassenger()) && (petBlock = this.manager.getPetBlock(event.getPlayer())) != null) {
             petBlock.eject(event.getPlayer());
@@ -306,7 +305,7 @@ class PetBlockListener extends SimpleListener {
                 PetBlockListener.this.manager.timeBlocked.put(player, PetBlockListener.this.manager.timeBlocked.get(player) - 1);
                 if (PetBlockListener.this.manager.timeBlocked.get(player) <= 0) {
                     PetBlockListener.this.manager.timeBlocked.remove(player);
-                    providePet(player, (petMeta, petBlock) -> PetBlockListener.this.manager.setPetBlock(player, petMeta));
+                    PetBlockListener.this.providePet(player, (petMeta, petBlock) -> PetBlockListener.this.manager.setPetBlock(player, petMeta));
 
                 }
             }
@@ -350,6 +349,7 @@ class PetBlockListener extends SimpleListener {
         }
     }
 
+    @FunctionalInterface
     interface PetRunnable {
         void run(PetMeta petMeta, PetBlock petBlock);
     }

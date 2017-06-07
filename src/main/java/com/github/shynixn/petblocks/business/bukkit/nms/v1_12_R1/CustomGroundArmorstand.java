@@ -85,8 +85,6 @@ final class CustomGroundArmorstand extends EntityArmorStand implements PetBlock 
     protected void doTick() {
         if (this.isSpecial) {
             this.counter = PetBlockHelper.doTick(this.counter, this, location -> {
-
-                System.out.println("TELTEPORT TO RABBIT");
                 CustomGroundArmorstand.this.setPositionRotation(location.getX(), location.getY(), location.getZ(), location.getYaw(), location.getPitch());
                 final PacketPlayOutEntityTeleport animation = new PacketPlayOutEntityTeleport(CustomGroundArmorstand.this);
                 for (final Player player : CustomGroundArmorstand.this.getArmorStand().getWorld().getPlayers()) {
@@ -98,18 +96,14 @@ final class CustomGroundArmorstand extends EntityArmorStand implements PetBlock 
         super.doTick();
     }
 
+
+
+
     @Override
-    public void a(float sideMot, float forMot, float f2) {
-
-
-
-        System.out.println("MOVE 1" + sideMot +"." + forMot + "." +  f2);
+    public void a(float sideMot,float f2, float forMot) {
         if (this.isSpecial) {
-            System.out.println("MOVE 2");
             if (this.hasHumanPassenger() != null) {
-                System.out.println("MOVE 3");
                 if (this.petMeta.getMoveType() == MoveType.WALKING) {
-                    System.out.println("1");
                     this.lastYaw = (this.yaw = this.hasHumanPassenger().yaw);
                     this.pitch = (this.hasHumanPassenger().pitch * 0.5F);
                     this.setYawPitch(this.yaw, this.pitch);
@@ -124,10 +118,12 @@ final class CustomGroundArmorstand extends EntityArmorStand implements PetBlock 
                     }
                     this.P = (float) ConfigPet.getInstance().getModifier_petclimbing();
                     this.aR = (this.cw() * 0.1F);
+
                     if (!this.world.isClientSide) {
                         this.m(0.35F);
-                        super.g(sideMot * (float) ConfigPet.getInstance().getModifier_petriding(), forMot * (float) ConfigPet.getInstance().getModifier_petriding());
+                        super.a(sideMot * (float) ConfigPet.getInstance().getModifier_petriding(), f2, forMot * (float) ConfigPet.getInstance().getModifier_petriding());
                     }
+
                     this.aF = this.aG;
                     final double d0 = this.locX - this.lastX;
                     final double d1 = this.locZ - this.lastZ;
@@ -141,7 +137,7 @@ final class CustomGroundArmorstand extends EntityArmorStand implements PetBlock 
                     this.aH += this.aG;
                 } else {
                     final float side = this.hasHumanPassenger().be * 0.5F;
-                    final float forw = this.hasHumanPassenger().bf;
+                    final float forw = this.hasHumanPassenger().bg;
                     final Vector v = new Vector();
                     final Location l = new Location(this.world.getWorld(), this.locX, this.locY, this.locZ);
                     if (side < 0.0F) {
@@ -196,7 +192,7 @@ final class CustomGroundArmorstand extends EntityArmorStand implements PetBlock 
             } else
                 this.firstRide = true;
         } else {
-            super.g(sideMot, forMot);
+            super.a(sideMot, f2, forMot);
         }
     }
 
@@ -296,18 +292,6 @@ final class CustomGroundArmorstand extends EntityArmorStand implements PetBlock 
 
     @Override
     public void remove() {
-
-
-        try
-        {
-            throw new Exception("I ORDED THE REMOVE OF THIS PETBLOCK");
-        }
-        catch (Exception ex)
-        {
-            ex.printStackTrace();
-        }
-
-
         PetBlockHelper.remove(this);
     }
 

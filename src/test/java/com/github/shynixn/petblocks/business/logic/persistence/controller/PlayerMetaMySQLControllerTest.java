@@ -32,7 +32,7 @@ public class PlayerMetaMySQLControllerTest {
 
     private static Plugin mockPlugin() {
         final YamlConfiguration configuration = new YamlConfiguration();
-        configuration.set("sql.local", true);
+        configuration.set("sql.enabled", false);
         configuration.set("sql.host", "localhost");
         configuration.set("sql.port", 3306);
         configuration.set("sql.database", "db");
@@ -81,7 +81,7 @@ public class PlayerMetaMySQLControllerTest {
     @Test
     public void insertSelectPlayerMetaTest() throws ClassNotFoundException {
         final Plugin plugin = mockPlugin();
-        plugin.getConfig().set("sql.local", false);
+        plugin.getConfig().set("sql.enabled", true);
         Factory.initialize(plugin);
         try (PlayerMetaController controller = Factory.createPlayerDataController()) {
             for (final PlayerMeta item : controller.getAll()) {
@@ -111,7 +111,7 @@ public class PlayerMetaMySQLControllerTest {
     @Test
     public void storeLoadPlayerMetaTest() throws ClassNotFoundException {
         final Plugin plugin = mockPlugin();
-        plugin.getConfig().set("sql.local", false);
+        plugin.getConfig().set("sql.enabled", true);
         Factory.initialize(plugin);
         try (PlayerMetaController controller = Factory.createPlayerDataController()) {
             for (final PlayerMeta item : controller.getAll()) {

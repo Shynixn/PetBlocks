@@ -54,7 +54,7 @@ public class Factory {
                 throw new RuntimeException(e);
             }
         };
-        if (plugin.getConfig().getBoolean("sql.local")) {
+        if (!plugin.getConfig().getBoolean("sql.enabled")) {
             try {
                 if (!plugin.getDataFolder().exists())
                     plugin.getDataFolder().mkdir();
@@ -75,7 +75,7 @@ public class Factory {
                     connectionContext.executeUpdate(data, connection);
                 }
             } catch (final Exception e) {
-                Bukkit.getLogger().log(Level.WARNING, "Cannot execute exception.", e);
+                Bukkit.getLogger().log(Level.WARNING, "Cannot execute creation.", e);
             }
         } else {
             final FileConfiguration c = plugin.getConfig();
@@ -88,14 +88,24 @@ public class Factory {
                         , c.getString("sql.password")
                         , retriever);
             } catch (final IOException e) {
-                Bukkit.getLogger().log(Level.WARNING, "Cannot read file.", e);
+                Bukkit.getLogger().log(Level.WARNING, "Cannot connect to MySQL database!", e);
+                Bukkit.getLogger().log(Level.WARNING, "Trying to connect to SQLite database....", e);
+                connectionContext = null;
+                plugin.getConfig().set("sql.enabled", false);
+                Factory.initialize(plugin);
+                return;
             }
             try (Connection connection = connectionContext.getConnection()) {
                 for (final String data : connectionContext.getStringFromFile("create-mysql").split(Pattern.quote(";"))) {
                     connectionContext.executeUpdate(data, connection);
                 }
             } catch (final Exception e) {
-                Bukkit.getLogger().log(Level.WARNING, "Cannot execute exception.", e);
+                Bukkit.getLogger().log(Level.WARNING, "Cannot execute creation.", e);
+                Bukkit.getLogger().log(Level.WARNING, "Trying to connect to SQLite database....", e);
+                connectionContext = null;
+                plugin.getConfig().set("sql.enabled", false);
+                Factory.initialize(plugin);
+                return;
             }
         }
     }

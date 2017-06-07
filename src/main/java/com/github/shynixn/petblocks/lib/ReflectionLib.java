@@ -91,7 +91,6 @@ public final class ReflectionLib {
                         return method.invoke(null, params);
                     }
                 } catch (final Exception ignored) {
-                    ignored.printStackTrace();
                 }
             }
             clazz = clazz.getSuperclass();

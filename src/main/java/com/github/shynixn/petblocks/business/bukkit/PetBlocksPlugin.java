@@ -5,7 +5,6 @@ import com.github.shynixn.petblocks.business.Config;
 import com.github.shynixn.petblocks.business.Language;
 import com.github.shynixn.petblocks.business.bukkit.nms.NMSRegistry;
 import com.github.shynixn.petblocks.lib.BukkitUtilities;
-import com.github.shynixn.petblocks.lib.PluginLoader;
 import com.github.shynixn.petblocks.lib.ReflectionLib;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -64,9 +63,5 @@ public final class PetBlocksPlugin extends JavaPlugin {
 			}
 		}
 		return list;
-	}
-
-	public void setupDatabase() {
-		this.installDDL();
 	}
 }

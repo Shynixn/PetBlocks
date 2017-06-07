@@ -30,7 +30,7 @@
 # Database configuration
 
 sql:
-  local: true
+  enabled: false
   host: localhost
   port: 3306
   database: ''

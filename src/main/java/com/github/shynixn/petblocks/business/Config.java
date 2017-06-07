@@ -74,7 +74,6 @@ public final class Config {
             ConfigParticle.getInstance().load(c);
             ConfigPet.getInstance().load(c);
         } catch (final Exception ex) {
-            ex.printStackTrace();
             Bukkit.getLogger().log(Level.WARNING, "Failed to reload config.", ex);
         }
     }

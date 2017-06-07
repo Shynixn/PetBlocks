@@ -116,7 +116,7 @@ class PetBlockCommandExecutor extends DynamicCommandHelper {
 
     private void setLore(Player player, String nameBump, int line) {
         this.providePet(player, (meta, petBlock) -> {
-            String name = nameBump.replace('_', ' ');
+            final String name = nameBump.replace('_', ' ');
             try {
                 if (meta.getHeadLore() == null) {
                     meta.setHeadLore(new String[line + 1]);
@@ -141,7 +141,7 @@ class PetBlockCommandExecutor extends DynamicCommandHelper {
     }
 
     private void setSkullName(Player player, String name) {
-        String bname = name.replace('_', ' ');
+        final String bname = name.replace('_', ' ');
         this.providePet(player, (meta, petBlock) -> {
             meta.setHeadDisplayName(ChatColor.translateAlternateColorCodes('&', bname));
             this.persistAsynchronously(meta);
@@ -215,7 +215,6 @@ class PetBlockCommandExecutor extends DynamicCommandHelper {
                     petBlock.respawn();
             });
         } catch (final Exception e) {
-            e.printStackTrace();
             player.sendMessage(Language.PREFIX + Language.NAME_ERROR_MESSAGE);
         }
     }

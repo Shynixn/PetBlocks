@@ -11,6 +11,8 @@ import com.github.shynixn.petblocks.business.bukkit.nms.NMSRegistry;
 import com.github.shynixn.petblocks.business.logic.configuration.ConfigGUI;
 import com.github.shynixn.petblocks.business.logic.configuration.ConfigParticle;
 import com.github.shynixn.petblocks.business.logic.configuration.ConfigPet;
+import com.github.shynixn.petblocks.business.logic.persistence.entity.ParticleEffectData;
+import com.github.shynixn.petblocks.business.logic.persistence.entity.PetData;
 import com.github.shynixn.petblocks.lib.BukkitUtilities;
 import com.github.shynixn.petblocks.lib.SimpleListener;
 import org.bukkit.ChatColor;
@@ -144,17 +146,19 @@ class PetDataListener extends SimpleListener {
                 this.changingPlayers.add(player);
                 this.plugin.getServer().getScheduler().runTaskAsynchronously(this.plugin, () -> {
                     final com.github.shynixn.petblocks.api.persistence.entity.PetMeta meta = this.manager.getPetMeta(player);
-                    if (meta != null) {
-                        this.manager.remove(meta);
-                    }
                     this.plugin.getServer().getScheduler().runTask(this.plugin, () -> {
                         final com.github.shynixn.petblocks.api.persistence.entity.PetMeta currentPetMeta = PetDataListener.this.manager.createPetMeta(player, type);
+                        if (meta != null) {
+                            currentPetMeta.setParticleId(meta.getParticleId());
+                            currentPetMeta.setPlayerId(meta.getPlayerId());
+                            currentPetMeta.setPlayerMeta(meta.getPlayerMeta());
+                            currentPetMeta.setParticleEffectMeta(meta.getParticleEffectMeta());
+                            ((PetData)currentPetMeta).setId(meta.getId());
+                        }
                         if (ConfigGUI.getInstance().isSettings_copyskin()) {
                             currentPetMeta.setSkin(Material.SKULL_ITEM, (short) 3, ConfigGUI.getInstance().getContainer(currentPetMeta.getType()).getSkullName());
                         }
-                        System.out.println("REFRESH TO NOT ENABLED");
                         PetDataListener.this.manager.gui.setMainItems(player, currentPetMeta.getType(), false, true, currentPetMeta);
-
                         PetDataListener.this.plugin.getServer().getScheduler().runTaskAsynchronously(PetDataListener.this.plugin, () -> {
                             PetDataListener.this.manager.persist(currentPetMeta);
                             PetDataListener.this.plugin.getServer().getScheduler().runTask(PetDataListener.this.plugin, () -> PetDataListener.this.changingPlayers.remove(player));

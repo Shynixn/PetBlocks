@@ -33,7 +33,7 @@ public class ParticleEffectMetaSQLiteControllerTest {
         if(Bukkit.getServer() == null)
             Bukkit.setServer(server);
         final YamlConfiguration configuration = new YamlConfiguration();
-        configuration.set("sql.local", true);
+        configuration.set("sql.enabled",false);
         configuration.set("sql.host", "localhost");
         configuration.set("sql.port", 3306);
         configuration.set("sql.database", "db");

@@ -70,7 +70,6 @@ public final class PetDataManager {
             throw new RuntimeException("This method has to be accessed asynchronously.");
         petMeta.getPlayerMeta().setName(petMeta.getPlayerMeta().getPlayer().getName());
         if (petMeta.getPlayerMeta().getId() == 0) {
-            System.out.println("FIRST TIME BUT FOUND PLAYER META");
             final PlayerMeta playerMeta;
             if ((playerMeta = this.playerMetaController.getByUUID(petMeta.getPlayerMeta().getPlayer().getUniqueId())) != null) {
                 petMeta.setPlayerMeta(playerMeta);
@@ -88,7 +87,6 @@ public final class PetDataManager {
             throw new IllegalArgumentException("PetMeta cannot be null!");
         if (Thread.currentThread().getId() == this.mainThreadId)
             throw new RuntimeException("This method has to be accessed asynchronously.");
-        System.out.println("REMOVING DATA");
         this.petDataController.remove(petMeta);
         this.particleEffectMetaController.remove(petMeta.getParticleEffectMeta());
     }
