@@ -89,10 +89,7 @@ class PetDataListener extends SimpleListener {
 
     @EventHandler
     public void playerQuitEvent(PlayerQuitEvent event) {
-        if (this.manager.hasPetMeta(event.getPlayer())) {
-            this.manager.persist(this.manager.getPetMeta(event.getPlayer()));
-            PetBlocksApi.removePetBlock(event.getPlayer());
-        }
+        PetBlocksApi.removePetBlock(event.getPlayer());
     }
 
     @EventHandler

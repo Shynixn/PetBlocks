@@ -64,15 +64,15 @@ public final class PetDataManager {
     public void persist(PetMeta petMeta) {
         if (petMeta == null)
             throw new IllegalArgumentException("PetMeta cannot be null!");
-        if (PetBlocksApi.hasPetBlock(petMeta.getOwner()))
-            petMeta.setEnabled(true);
         if (Thread.currentThread().getId() == this.mainThreadId)
             throw new RuntimeException("This method has to be accessed asynchronously.");
-        petMeta.getPlayerMeta().setName(petMeta.getPlayerMeta().getPlayer().getName());
-        if (petMeta.getPlayerMeta().getId() == 0) {
-            final PlayerMeta playerMeta;
-            if ((playerMeta = this.playerMetaController.getByUUID(petMeta.getPlayerMeta().getPlayer().getUniqueId())) != null) {
-                petMeta.setPlayerMeta(playerMeta);
+        if (petMeta.getOwner() != null) {
+            petMeta.getPlayerMeta().setName(petMeta.getPlayerMeta().getPlayer().getName());
+            if (petMeta.getPlayerMeta().getId() == 0) {
+                final PlayerMeta playerMeta;
+                if ((playerMeta = this.playerMetaController.getByUUID(petMeta.getPlayerMeta().getPlayer().getUniqueId())) != null) {
+                    petMeta.setPlayerMeta(playerMeta);
+                }
             }
         }
         PetDataManager.this.playerMetaController.store(petMeta.getPlayerMeta());
