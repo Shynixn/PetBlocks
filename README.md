@@ -60,12 +60,12 @@ Spigot plugin to use blocks as pets in minecraft.
     }
 ```
 
-* Check out the [BlockBall-Spigot-Page](https://www.spigotmc.org/resources/blockball-minigame-bungeecord-soccer-football-1-8-1-9-1-10-1-11.15320/) to get more information. 
+* Check out the [PetBlocks-Spigot-Page](https://www.spigotmc.org/resources/petblocks-mysql-bungeecord-customizeable-gui-1-8-1-9-1-10-1-11.12056/) to get more information. 
 
 ## Screenshots
 
-![alt tag](http://www.mediafire.com/convkey/0fc6/c5wd0rfxbc01xm7zg.jpg)
-![alt tag](http://www.mediafire.com/convkey/a253/ur76bhb6doccomvzg.jpg)
+![alt tag](http://www.mediafire.com/convkey/9d02/r92bshjdva755d3zg.jpg)
+![alt tag](http://www.mediafire.com/convkey/697e/ddk043hgdj57d7jzg.jpg)
 
 ## Licence
 
