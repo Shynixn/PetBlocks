@@ -28,7 +28,7 @@ public final class PetBlocksPlugin extends JavaPlugin {
 		if(!BukkitUtilities.isVersionSupported()) {
 			BukkitUtilities.sendColorMessage("================================================", ChatColor.RED, PREFIX_CONSOLE);
 			BukkitUtilities.sendColorMessage("Petblocks does not support your server version", ChatColor.RED, PREFIX_CONSOLE);
-			BukkitUtilities.sendColorMessage("Install v1.8.0 - v1.11.0", ChatColor.RED, PREFIX_CONSOLE);
+			BukkitUtilities.sendColorMessage("Install v1.8.0 - v1.12.0", ChatColor.RED, PREFIX_CONSOLE);
 			BukkitUtilities.sendColorMessage("Plugin gets now disabled!", ChatColor.RED, PREFIX_CONSOLE);
 			BukkitUtilities.sendColorMessage("================================================", ChatColor.RED, PREFIX_CONSOLE);
 			this.disabled = true;
