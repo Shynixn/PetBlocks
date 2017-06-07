@@ -4,9 +4,6 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
-/**
- * Created by Shynixn
- */
 public interface ParticleEffectMeta extends Persistenceable{
     /**
      * Sets the RGB colors of the particleEffect

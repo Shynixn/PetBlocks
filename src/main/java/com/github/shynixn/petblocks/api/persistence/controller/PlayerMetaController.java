@@ -5,9 +5,6 @@ import org.bukkit.entity.Player;
 
 import java.util.UUID;
 
-/**
- * Created by Shynixn
- */
 public interface PlayerMetaController extends IDatabaseController<PlayerMeta> {
 
     /**

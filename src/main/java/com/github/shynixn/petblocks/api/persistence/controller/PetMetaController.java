@@ -3,9 +3,6 @@ package com.github.shynixn.petblocks.api.persistence.controller;
 import com.github.shynixn.petblocks.api.persistence.entity.PetMeta;
 import org.bukkit.entity.Player;
 
-/**
- * Created by Shynixn
- */
 public interface PetMetaController extends IDatabaseController<PetMeta> {
     /**
      * Returns the petdata from the given player
