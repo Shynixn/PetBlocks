@@ -34,5 +34,6 @@ public abstract class BukkitCommands implements org.bukkit.command.CommandExecut
     }
 
     public void playerSendCommandEvent(Player player, String[] args) {
+        //
     }
 }
