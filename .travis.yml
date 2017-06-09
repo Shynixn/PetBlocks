@@ -7,13 +7,13 @@ install:
     - wget https://github.com/MyzelYam/SuperVanish/releases/download/v5.7.0/SuperVanish.jar -P /home/travis/build/Shynixn/PetBlocks/lib/
 script:
     - cd /home/travis/build/Shynixn/PetBlocks/lib/
-    - java -jar BuildTools.jar --rev 1.8 > /dev/null #Test Build Because travis fails on large log
-    - java -jar BuildTools.jar --rev 1.8.3
-    - java -jar BuildTools.jar --rev 1.8.8
-    - java -jar BuildTools.jar --rev 1.9
-    - java -jar BuildTools.jar --rev 1.9.4
-    - java -jar BuildTools.jar --rev 1.10
-    - java -jar BuildTools.jar --rev 1.11
+    - java -jar BuildTools.jar --rev 1.8 > /dev/null
+    - java -jar BuildTools.jar --rev 1.8.3 > /dev/null
+    - java -jar BuildTools.jar --rev 1.8.8 > /dev/null
+    - java -jar BuildTools.jar --rev 1.9 > /dev/null
+    - java -jar BuildTools.jar --rev 1.9.4 > /dev/null
+    - java -jar BuildTools.jar --rev 1.10 > /dev/null
+    - java -jar BuildTools.jar --rev 1.11 > /dev/null
     - java -jar BuildTools.jar --rev 1.12
     - cd -
     - mvn compile test
