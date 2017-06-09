@@ -179,7 +179,7 @@
             <artifactId>minecraft111R1</artifactId>
             <scope>system</scope>
             <version>1.0</version>
-            <systemPath>${basedir}/lib/spigot-1.11.2.jar</systemPath>
+            <systemPath>${basedir}/lib/spigot-1.11.jar</systemPath>
         </dependency>
         <dependency>
             <groupId>net</groupId>
