@@ -61,9 +61,9 @@ public final class CustomRabbit extends EntityRabbit implements CustomEntity {
     }
 
     @Override
-    protected SoundEffect dk() {
+    protected SoundEffect dm() {
         this.playedMovingSound = PetBlockHelper.executeMovingSound(this.getBukkitEntity(), this.player, this.petData, this.playedMovingSound);
-        return super.dk();
+        return super.dm();
     }
 
     @Override

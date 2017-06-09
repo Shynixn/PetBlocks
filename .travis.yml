@@ -13,8 +13,8 @@ script:
     - java -jar BuildTools.jar --rev 1.9
     - java -jar BuildTools.jar --rev 1.9.4
     - java -jar BuildTools.jar --rev 1.10
-    - java -jar BuildTools.jar
-    - java -jar BuildTools.jar --dev
+    - java -jar BuildTools.jar --rev 1.11
+    - java -jar BuildTools.jar --rev 1.12
     - cd -
     - mvn compile test
 jdk:

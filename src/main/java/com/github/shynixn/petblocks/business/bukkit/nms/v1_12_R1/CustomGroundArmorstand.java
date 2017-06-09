@@ -96,9 +96,6 @@ final class CustomGroundArmorstand extends EntityArmorStand implements PetBlock 
         super.doTick();
     }
 
-
-
-
     @Override
     public void a(float sideMot,float f2, float forMot) {
         if (this.isSpecial) {
@@ -117,10 +114,10 @@ final class CustomGroundArmorstand extends EntityArmorStand implements PetBlock 
                         this.motY = 0.5D;
                     }
                     this.P = (float) ConfigPet.getInstance().getModifier_petclimbing();
-                    this.aR = (this.cw() * 0.1F);
+                    this.aR = (this.cy() * 0.1F);
 
                     if (!this.world.isClientSide) {
-                        this.m(0.35F);
+                        this.k(0.35F);
                         super.a(sideMot * (float) ConfigPet.getInstance().getModifier_petriding(), f2, forMot * (float) ConfigPet.getInstance().getModifier_petriding());
                     }
 

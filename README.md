@@ -5,6 +5,8 @@
 | master        | [![Build Status](https://travis-ci.org/Shynixn/PetBlocks.svg?branch=master)](https://travis-ci.org/Shynixn/PetBlocks) |[Download latest release (recommend)](https://github.com/Shynixn/PetBlocks/releases)|
 | workflow      | [![Build Status](https://travis-ci.org/Shynixn/PetBlocks.svg?branch=workflow)](https://travis-ci.org/Shynixn/PetBlocks) | [Download snapshots](https://oss.sonatype.org/content/repositories/snapshots/com/github/shynixn/petblocks/) |
 
+JavaDocs: https://shynixn.github.io/PetBlocks/apidocs/
+
 ## Description
 Spigot plugin to use blocks as pets in minecraft.
 
@@ -33,7 +35,7 @@ Spigot plugin to use blocks as pets in minecraft.
 <dependency>
      <groupId>com.github.shynixn</groupId>
      <artifactId>petblocks</artifactId>
-     <version>5.7.0</version>
+     <version>6.0.0</version>
 </dependency>
 ```
 
