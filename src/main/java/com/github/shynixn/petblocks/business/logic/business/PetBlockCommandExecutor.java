@@ -5,6 +5,7 @@ import com.github.shynixn.petblocks.api.entities.PetBlock;
 import com.github.shynixn.petblocks.api.entities.PetMeta;
 import com.github.shynixn.petblocks.api.entities.PetType;
 import com.github.shynixn.petblocks.business.Language;
+import com.github.shynixn.petblocks.business.bukkit.PetBlocksPlugin;
 import com.github.shynixn.petblocks.business.bukkit.nms.NMSRegistry;
 import com.github.shynixn.petblocks.business.logic.configuration.ConfigCommands;
 import com.github.shynixn.petblocks.business.logic.configuration.ConfigGUI;
@@ -19,13 +20,17 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
+import org.bukkit.plugin.Plugin;
+import org.bukkit.plugin.java.JavaPlugin;
 
 class PetBlockCommandExecutor extends DynamicCommandHelper {
     private final PetBlockManager manager;
+    private final Plugin plugin;
 
     PetBlockCommandExecutor(PetBlockManager manager) {
         super(ConfigCommands.getInstance().getPetblocksConfigurationCommandContainer());
         this.manager = manager;
+        this.plugin = JavaPlugin.getPlugin(PetBlocksPlugin.class);
     }
 
     @Override
@@ -103,16 +108,15 @@ class PetBlockCommandExecutor extends DynamicCommandHelper {
     }
 
     private void toggleSounds(Player player) {
-        if (PetBlocksApi.hasPetMeta(player)) {
-            final PetMeta petMeta = PetBlocksApi.getPetMeta(player);
+        this.providePet(player, (petMeta, petBlock) -> {
             petMeta.setSoundsEnabled(!petMeta.isSoundsEnabled());
-        }
+            this.persistAsynchronously(petMeta);
+        });
     }
 
-    private void setLore(Player player, String name, int line) {
-        if (PetBlocksApi.hasPetMeta(player)) {
-            final PetMeta meta = PetBlocksApi.getPetMeta(player);
-            name = name.replace('_', ' ');
+    private void setLore(Player player, String nameBump, int line) {
+        this.providePet(player, (meta, petBlock) -> {
+            final String name = nameBump.replace('_', ' ');
             try {
                 if (meta.getHeadLore() == null) {
                     meta.setHeadLore(new String[line + 1]);
@@ -130,21 +134,20 @@ class PetBlockCommandExecutor extends DynamicCommandHelper {
             } catch (final Exception ex) {
                 meta.setHeadLore(null);
             }
-            final PetBlock petBlock;
-            if ((petBlock = PetBlocksApi.getPetBlock(player)) != null)
+            this.persistAsynchronously(meta);
+            if (petBlock != null)
                 petBlock.refreshHeadMeta();
-        }
+        });
     }
 
     private void setSkullName(Player player, String name) {
-        if (PetBlocksApi.hasPetMeta(player)) {
-            name = name.replace('_', ' ');
-            final PetMeta meta = PetBlocksApi.getPetMeta(player);
-            meta.setHeadDisplayName(ChatColor.translateAlternateColorCodes('&', name));
-            final PetBlock petBlock;
-            if ((petBlock = PetBlocksApi.getPetBlock(player)) != null)
+        final String bname = name.replace('_', ' ');
+        this.providePet(player, (meta, petBlock) -> {
+            meta.setHeadDisplayName(ChatColor.translateAlternateColorCodes('&', bname));
+            this.persistAsynchronously(meta);
+            if (petBlock != null)
                 petBlock.refreshHeadMeta();
-        }
+        });
     }
 
     private void killNextCommand(Player sender) {
@@ -158,7 +161,7 @@ class PetBlockCommandExecutor extends DynamicCommandHelper {
         }
         if (nearest != null) {
             nearest.remove();
-            sender.sendMessage(Language.PREFIX + "" + ChatColor.GREEN + "You removed entity " + nearest.getType() + ".");
+            sender.sendMessage(Language.PREFIX + "" + ChatColor.GREEN + "You removed entity " + nearest.getType() + '.');
         }
     }
 
@@ -176,29 +179,28 @@ class PetBlockCommandExecutor extends DynamicCommandHelper {
 
     private void setParticleCommand(Player player, int number) {
         if (ConfigParticle.getInstance().getParticleItemStacks().length > number && number >= 0 && ConfigParticle.getInstance().getParticle(number) != null) {
-            if (PetBlocksApi.hasPetMeta(player)) {
-                final PetMeta petMeta = PetBlocksApi.getPetMeta(player);
-                petMeta.setParticleEffect(ConfigParticle.getInstance().getParticle(number));
-                final PetBlock petBlock;
-                if ((petBlock = PetBlocksApi.getPetBlock(player)) != null)
+            this.providePet(player, (meta, petBlock) -> {
+                meta.setParticleEffect(ConfigParticle.getInstance().getParticle(number));
+                this.persistAsynchronously(meta);
+                if (petBlock != null)
                     petBlock.respawn();
-            }
+            });
         }
     }
 
-    private void changePetSkinCommand(Player player, String skin) {
+    private void changePetSkinCommand(Player player, String skinBump) {
         try {
-            if (PetBlocksApi.hasPetMeta(player)) {
-                final PetMeta petMeta = PetBlocksApi.getPetMeta(player);
+            this.providePet(player, (meta, petBlock) -> {
+                String skin = skinBump;
                 if (skin.contains("textures.minecraft")) {
                     if (!skin.contains("http://"))
                         skin = "http://" + skin;
                 }
-                petMeta.setSkin(Material.SKULL_ITEM, (short) 3, skin);
-                final PetBlock petBlock;
-                if ((petBlock = PetBlocksApi.getPetBlock(player)) != null)
+                meta.setSkin(Material.SKULL_ITEM, (short) 3, skin);
+                this.persistAsynchronously(meta);
+                if (petBlock != null)
                     petBlock.respawn();
-            }
+            });
         } catch (final Exception e) {
             player.sendMessage(Language.PREFIX + Language.NAME_ERROR_MESSAGE);
         }
@@ -206,13 +208,12 @@ class PetBlockCommandExecutor extends DynamicCommandHelper {
 
     private void namePetCommand(Player player, String name) {
         try {
-            if (PetBlocksApi.hasPetMeta(player)) {
-                final PetMeta petMeta = PetBlocksApi.getPetMeta(player);
-                petMeta.setDisplayName(name);
-                final PetBlock petBlock;
-                if ((petBlock = PetBlocksApi.getPetBlock(player)) != null)
+            this.providePet(player, (meta, petBlock) -> {
+                meta.setDisplayName(name);
+                this.persistAsynchronously(meta);
+                if (petBlock != null)
                     petBlock.respawn();
-            }
+            });
         } catch (final Exception e) {
             player.sendMessage(Language.PREFIX + Language.NAME_ERROR_MESSAGE);
         }
@@ -221,8 +222,9 @@ class PetBlockCommandExecutor extends DynamicCommandHelper {
     private void togglePetCommand(Player player) {
         if (this.manager.hasPetBlock(player))
             this.manager.removePetBlock(player);
-        else if (this.manager.dataManager.hasPetMeta(player))
-            PetBlocksApi.setPetBlock(player, this.manager.dataManager.getPetMeta(player));
+        this.providePet(player, (meta, petBlock) -> {
+            PetBlocksApi.setPetBlock(player, meta);
+        });
     }
 
     private void removePetCommand(Player player) {
@@ -250,18 +252,27 @@ class PetBlockCommandExecutor extends DynamicCommandHelper {
     }
 
     private void setPet(Player player, PetType petType, ItemStack itemStack) {
-        final PetMeta meta = this.manager.dataManager.createPetMeta(player, petType);
-        this.manager.dataManager.addPetMeta(meta);
-        if (itemStack.getType() == Material.SKULL_ITEM) {
-            final SkullMeta skullMeta = (SkullMeta) itemStack.getItemMeta();
-            if (skullMeta.getOwner() == null) {
-                meta.setSkin(itemStack.getType(), itemStack.getDurability(), NMSRegistry.getSkinUrl(itemStack));
-            } else {
-                meta.setSkin(itemStack.getType(), itemStack.getDurability(), ((SkullMeta) itemStack.getItemMeta()).getOwner());
+        this.plugin.getServer().getScheduler().runTaskAsynchronously(this.plugin, () -> {
+            if (PetBlocksApi.hasPetMeta(player)) {
+                PetBlocksApi.removePetMeta(player);
             }
-        } else {
-            meta.setSkin(itemStack.getType(), itemStack.getDurability(), null);
-        }
+            this.plugin.getServer().getScheduler().runTask(this.plugin, () -> {
+                final PetMeta meta = this.manager.dataManager.createPetMeta(player, petType);
+                if (itemStack.getType() == Material.SKULL_ITEM) {
+                    final SkullMeta skullMeta = (SkullMeta) itemStack.getItemMeta();
+                    if (skullMeta.getOwner() == null) {
+                        meta.setSkin(itemStack.getType(), itemStack.getDurability(), NMSRegistry.getSkinUrl(itemStack));
+                    } else {
+                        meta.setSkin(itemStack.getType(), itemStack.getDurability(), ((SkullMeta) itemStack.getItemMeta()).getOwner());
+                    }
+                } else {
+                    meta.setSkin(itemStack.getType(), itemStack.getDurability(), null);
+                }
+                this.persistAsynchronously((com.github.shynixn.petblocks.api.persistence.entity.PetMeta) meta);
+                if(PetBlocksApi.getPetBlock(player) != null)
+                    PetBlocksApi.getPetBlock(player).respawn();
+            });
+        });
     }
 
     private Player getOnlinePlayer(String name) {
@@ -270,5 +281,23 @@ class PetBlockCommandExecutor extends DynamicCommandHelper {
                 return player;
         }
         return null;
+    }
+
+    private void persistAsynchronously(com.github.shynixn.petblocks.api.persistence.entity.PetMeta petMeta) {
+        this.plugin.getServer().getScheduler().runTaskAsynchronously(this.plugin, () -> this.manager.dataManager.persist(petMeta));
+    }
+
+    private void providePet(Player player, PetBlockListener.PetRunnable runnable) {
+        if (PetBlocksApi.hasPetBlock(player)) {
+            final PetBlock petBlock = PetBlocksApi.getPetBlock(player);
+            runnable.run((com.github.shynixn.petblocks.api.persistence.entity.PetMeta) petBlock.getPetMeta(), petBlock);
+        } else {
+            this.plugin.getServer().getScheduler().runTaskAsynchronously(this.plugin, () -> {
+                if (!PetBlocksApi.hasPetMeta(player))
+                    return;
+                final com.github.shynixn.petblocks.api.persistence.entity.PetMeta petMeta = PetBlocksApi.getPetMeta(player);
+                this.plugin.getServer().getScheduler().runTask(this.plugin, () -> runnable.run(petMeta, null));
+            });
+        }
     }
 }

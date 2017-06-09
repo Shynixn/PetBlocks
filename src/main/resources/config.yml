@@ -26,12 +26,17 @@
 # admin 	 Access to the /petblocks command			    petblocks.commands
 
 
-# MySQL settings
-# Where is my database configuration?
-# PetBlocks uses the internal database handling from the server. Open the bukkit.yml file and scroll down to database to change it.
-# You can find a sample configuration on the plugin page.
+# Storage settings
+# Database configuration
 
-sql-enabled: false
+sql:
+  enabled: false
+  host: localhost
+  port: 3306
+  database: ''
+  username: ''
+  password: ''
+
 
 # Command settings
 # Choose your wanted command (dynamic command engine).

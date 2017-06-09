@@ -17,6 +17,7 @@ import java.util.Map.Entry;
 import java.util.regex.Pattern;
 
 //Darkblade12
+@Deprecated
 public enum ParticleEffect {
     EXPLOSION_NORMAL("explode", 0, -1, ParticleProperty.DIRECTIONAL),
 
@@ -102,8 +103,8 @@ public enum ParticleEffect {
 
     MOB_APPEARANCE("mobappearance", 41, 8);
 
-    private static final Map<String, ParticleEffect> NAME_MAP = new HashMap<String, ParticleEffect>();
-    private static final Map<Integer, ParticleEffect> ID_MAP = new HashMap<Integer, ParticleEffect>();
+    private static final Map<String, ParticleEffect> NAME_MAP = new HashMap<>();
+    private static final Map<Integer, ParticleEffect> ID_MAP = new HashMap<>();
     private final String name;
     private final int id;
     private final int requiredVersion;
@@ -111,14 +112,14 @@ public enum ParticleEffect {
 
     // Initialize map for quick name and id lookup
     static {
-        for (ParticleEffect effect : values()) {
+        for (final ParticleEffect effect : values()) {
             NAME_MAP.put(effect.name, effect);
             ID_MAP.put(effect.id, effect);
         }
     }
 
 
-    private ParticleEffect(String name, int id, int requiredVersion, ParticleProperty... properties) {
+    ParticleEffect(String name, int id, int requiredVersion, ParticleProperty... properties) {
         this.name = name;
         this.id = id;
         this.requiredVersion = requiredVersion;
@@ -127,35 +128,31 @@ public enum ParticleEffect {
 
 
     public String getName() {
-        return name;
+        return this.name;
     }
 
 
     public int getId() {
-        return id;
+        return this.id;
     }
 
 
     public int getRequiredVersion() {
-        return requiredVersion;
+        return this.requiredVersion;
     }
 
 
     public boolean hasProperty(ParticleProperty property) {
-        return properties.contains(property);
+        return this.properties.contains(property);
     }
 
 
     public boolean isSupported() {
-        if (requiredVersion == -1) {
-            return true;
-        }
-        return ParticlePacket.getVersion() >= requiredVersion;
+        return this.requiredVersion == -1 || ParticlePacket.getVersion() >= this.requiredVersion;
     }
 
-
     public static ParticleEffect fromName(String name) {
-        for (Entry<String, ParticleEffect> entry : NAME_MAP.entrySet()) {
+        for (final Entry<String, ParticleEffect> entry : NAME_MAP.entrySet()) {
             if (!entry.getKey().equalsIgnoreCase(name)) {
                 continue;
             }
@@ -166,7 +163,7 @@ public enum ParticleEffect {
 
 
     public static ParticleEffect fromId(int id) {
-        for (Entry<Integer, ParticleEffect> entry : ID_MAP.entrySet()) {
+        for (final Entry<Integer, ParticleEffect> entry : ID_MAP.entrySet()) {
             if (entry.getKey() != id) {
                 continue;
             }
@@ -177,15 +174,15 @@ public enum ParticleEffect {
 
 
     private static boolean isWater(Location location) {
-        Material material = location.getBlock().getType();
+        final Material material = location.getBlock().getType();
         return material == Material.WATER || material == Material.STATIONARY_WATER;
     }
 
 
     private static boolean isLongDistance(Location location, List<Player> players) {
-        String world = location.getWorld().getName();
-        for (Player player : players) {
-            Location playerLocation = player.getLocation();
+        final String world = location.getWorld().getName();
+        for (final Player player : players) {
+            final Location playerLocation = player.getLocation();
             if (!world.equals(playerLocation.getWorld().getName()) || playerLocation.distanceSquared(location) < 65536) {
                 continue;
             }
@@ -206,13 +203,13 @@ public enum ParticleEffect {
 
 
     public void display(float offsetX, float offsetY, float offsetZ, float speed, int amount, Location center, double range) throws ParticleVersionException, ParticleDataException, IllegalArgumentException {
-        if (!isSupported()) {
+        if (!this.isSupported()) {
             throw new ParticleVersionException("This particle effect is not supported by your server version");
         }
-        if (hasProperty(ParticleProperty.REQUIRES_DATA)) {
+        if (this.hasProperty(ParticleProperty.REQUIRES_DATA)) {
             throw new ParticleDataException("This particle effect requires additional data");
         }
-        if (hasProperty(ParticleProperty.REQUIRES_WATER) && !isWater(center)) {
+        if (this.hasProperty(ParticleProperty.REQUIRES_WATER) && !isWater(center)) {
             throw new IllegalArgumentException("There is no water at the center location");
         }
         new ParticlePacket(this, offsetX, offsetY, offsetZ, speed, amount, range > 256, null).sendTo(center, range);
@@ -220,13 +217,13 @@ public enum ParticleEffect {
 
 
     public void display(float offsetX, float offsetY, float offsetZ, float speed, int amount, Location center, List<Player> players) throws ParticleVersionException, ParticleDataException, IllegalArgumentException {
-        if (!isSupported()) {
+        if (!this.isSupported()) {
             throw new ParticleVersionException("This particle effect is not supported by your server version");
         }
-        if (hasProperty(ParticleProperty.REQUIRES_DATA)) {
+        if (this.hasProperty(ParticleProperty.REQUIRES_DATA)) {
             throw new ParticleDataException("This particle effect requires additional data");
         }
-        if (hasProperty(ParticleProperty.REQUIRES_WATER) && !isWater(center)) {
+        if (this.hasProperty(ParticleProperty.REQUIRES_WATER) && !isWater(center)) {
             throw new IllegalArgumentException("There is no water at the center location");
         }
         new ParticlePacket(this, offsetX, offsetY, offsetZ, speed, amount, isLongDistance(center, players), null).sendTo(center, players);
@@ -234,21 +231,21 @@ public enum ParticleEffect {
 
 
     public void display(float offsetX, float offsetY, float offsetZ, float speed, int amount, Location center, Player... players) throws ParticleVersionException, ParticleDataException, IllegalArgumentException {
-        display(offsetX, offsetY, offsetZ, speed, amount, center, Arrays.asList(players));
+        this.display(offsetX, offsetY, offsetZ, speed, amount, center, Arrays.asList(players));
     }
 
 
     public void display(Vector direction, float speed, Location center, double range) throws ParticleVersionException, ParticleDataException, IllegalArgumentException {
-        if (!isSupported()) {
+        if (!this.isSupported()) {
             throw new ParticleVersionException("This particle effect is not supported by your server version");
         }
-        if (hasProperty(ParticleProperty.REQUIRES_DATA)) {
+        if (this.hasProperty(ParticleProperty.REQUIRES_DATA)) {
             throw new ParticleDataException("This particle effect requires additional data");
         }
-        if (!hasProperty(ParticleProperty.DIRECTIONAL)) {
+        if (!this.hasProperty(ParticleProperty.DIRECTIONAL)) {
             throw new IllegalArgumentException("This particle effect is not directional");
         }
-        if (hasProperty(ParticleProperty.REQUIRES_WATER) && !isWater(center)) {
+        if (this.hasProperty(ParticleProperty.REQUIRES_WATER) && !isWater(center)) {
             throw new IllegalArgumentException("There is no water at the center location");
         }
         new ParticlePacket(this, direction, speed, range > 256, null).sendTo(center, range);
@@ -256,16 +253,16 @@ public enum ParticleEffect {
 
 
     public void display(Vector direction, float speed, Location center, List<Player> players) throws ParticleVersionException, ParticleDataException, IllegalArgumentException {
-        if (!isSupported()) {
+        if (!this.isSupported()) {
             throw new ParticleVersionException("This particle effect is not supported by your server version");
         }
-        if (hasProperty(ParticleProperty.REQUIRES_DATA)) {
+        if (this.hasProperty(ParticleProperty.REQUIRES_DATA)) {
             throw new ParticleDataException("This particle effect requires additional data");
         }
-        if (!hasProperty(ParticleProperty.DIRECTIONAL)) {
+        if (!this.hasProperty(ParticleProperty.DIRECTIONAL)) {
             throw new IllegalArgumentException("This particle effect is not directional");
         }
-        if (hasProperty(ParticleProperty.REQUIRES_WATER) && !isWater(center)) {
+        if (this.hasProperty(ParticleProperty.REQUIRES_WATER) && !isWater(center)) {
             throw new IllegalArgumentException("There is no water at the center location");
         }
         new ParticlePacket(this, direction, speed, isLongDistance(center, players), null).sendTo(center, players);
@@ -273,15 +270,15 @@ public enum ParticleEffect {
 
 
     public void display(Vector direction, float speed, Location center, Player... players) throws ParticleVersionException, ParticleDataException, IllegalArgumentException {
-        display(direction, speed, center, Arrays.asList(players));
+        this.display(direction, speed, center, Arrays.asList(players));
     }
 
 
     public void display(ParticleColor color, Location center, double range) throws ParticleVersionException, ParticleColorException {
-        if (!isSupported()) {
+        if (!this.isSupported()) {
             throw new ParticleVersionException("This particle effect is not supported by your server version");
         }
-        if (!hasProperty(ParticleProperty.COLORABLE)) {
+        if (!this.hasProperty(ParticleProperty.COLORABLE)) {
             throw new ParticleColorException("This particle effect is not colorable");
         }
         if (!isColorCorrect(this, color)) {
@@ -292,10 +289,10 @@ public enum ParticleEffect {
 
 
     public void display(ParticleColor color, Location center, List<Player> players) throws ParticleVersionException, ParticleColorException {
-        if (!isSupported()) {
+        if (!this.isSupported()) {
             throw new ParticleVersionException("This particle effect is not supported by your server version");
         }
-        if (!hasProperty(ParticleProperty.COLORABLE)) {
+        if (!this.hasProperty(ParticleProperty.COLORABLE)) {
             throw new ParticleColorException("This particle effect is not colorable");
         }
         if (!isColorCorrect(this, color)) {
@@ -306,15 +303,15 @@ public enum ParticleEffect {
 
 
     public void display(ParticleColor color, Location center, Player... players) throws ParticleVersionException, ParticleColorException {
-        display(color, center, Arrays.asList(players));
+        this.display(color, center, Arrays.asList(players));
     }
 
 
     public void display(ParticleData data, float offsetX, float offsetY, float offsetZ, float speed, int amount, Location center, double range) throws ParticleVersionException, ParticleDataException {
-        if (!isSupported()) {
+        if (!this.isSupported()) {
             throw new ParticleVersionException("This particle effect is not supported by your server version");
         }
-        if (!hasProperty(ParticleProperty.REQUIRES_DATA)) {
+        if (!this.hasProperty(ParticleProperty.REQUIRES_DATA)) {
             throw new ParticleDataException("This particle effect does not require additional data");
         }
         if (!isDataCorrect(this, data)) {
@@ -325,10 +322,10 @@ public enum ParticleEffect {
 
 
     public void display(ParticleData data, float offsetX, float offsetY, float offsetZ, float speed, int amount, Location center, List<Player> players) throws ParticleVersionException, ParticleDataException {
-        if (!isSupported()) {
+        if (!this.isSupported()) {
             throw new ParticleVersionException("This particle effect is not supported by your server version");
         }
-        if (!hasProperty(ParticleProperty.REQUIRES_DATA)) {
+        if (!this.hasProperty(ParticleProperty.REQUIRES_DATA)) {
             throw new ParticleDataException("This particle effect does not require additional data");
         }
         if (!isDataCorrect(this, data)) {
@@ -339,15 +336,15 @@ public enum ParticleEffect {
 
 
     public void display(ParticleData data, float offsetX, float offsetY, float offsetZ, float speed, int amount, Location center, Player... players) throws ParticleVersionException, ParticleDataException {
-        display(data, offsetX, offsetY, offsetZ, speed, amount, center, Arrays.asList(players));
+        this.display(data, offsetX, offsetY, offsetZ, speed, amount, center, Arrays.asList(players));
     }
 
 
     public void display(ParticleData data, Vector direction, float speed, Location center, double range) throws ParticleVersionException, ParticleDataException {
-        if (!isSupported()) {
+        if (!this.isSupported()) {
             throw new ParticleVersionException("This particle effect is not supported by your server version");
         }
-        if (!hasProperty(ParticleProperty.REQUIRES_DATA)) {
+        if (!this.hasProperty(ParticleProperty.REQUIRES_DATA)) {
             throw new ParticleDataException("This particle effect does not require additional data");
         }
         if (!isDataCorrect(this, data)) {
@@ -358,10 +355,10 @@ public enum ParticleEffect {
 
 
     public void display(ParticleData data, Vector direction, float speed, Location center, List<Player> players) throws ParticleVersionException, ParticleDataException {
-        if (!isSupported()) {
+        if (!this.isSupported()) {
             throw new ParticleVersionException("This particle effect is not supported by your server version");
         }
-        if (!hasProperty(ParticleProperty.REQUIRES_DATA)) {
+        if (!this.hasProperty(ParticleProperty.REQUIRES_DATA)) {
             throw new ParticleDataException("This particle effect does not require additional data");
         }
         if (!isDataCorrect(this, data)) {
@@ -372,11 +369,11 @@ public enum ParticleEffect {
 
 
     public void display(ParticleData data, Vector direction, float speed, Location center, Player... players) throws ParticleVersionException, ParticleDataException {
-        display(data, direction, speed, center, Arrays.asList(players));
+        this.display(data, direction, speed, center, Arrays.asList(players));
     }
 
 
-    public static enum ParticleProperty {
+    public enum ParticleProperty {
 
         REQUIRES_WATER,
 
@@ -384,7 +381,7 @@ public enum ParticleEffect {
 
         DIRECTIONAL,
 
-        COLORABLE;
+        COLORABLE
     }
 
 
@@ -396,6 +393,7 @@ public enum ParticleEffect {
 
         @SuppressWarnings("deprecation")
         public ParticleData(Material material, byte data) {
+            super();
             this.material = material;
             this.data = data;
             this.packetData = new int[]{material.getId(), data};
@@ -403,22 +401,22 @@ public enum ParticleEffect {
 
 
         public Material getMaterial() {
-            return material;
+            return this.material;
         }
 
 
         public byte getData() {
-            return data;
+            return this.data;
         }
 
 
         public int[] getPacketData() {
-            return packetData;
+            return this.packetData;
         }
 
 
         public String getPacketDataString() {
-            return "_" + packetData[0] + "_" + packetData[1];
+            return "_" + this.packetData[0] + '_' + this.packetData[1];
         }
     }
 
@@ -461,6 +459,7 @@ public enum ParticleEffect {
 
 
         public OrdinaryColor(int red, int green, int blue) throws IllegalArgumentException {
+            super();
             if (red < 0) {
                 throw new IllegalArgumentException("The red value is lower than 0");
             }
@@ -491,35 +490,35 @@ public enum ParticleEffect {
 
 
         public int getRed() {
-            return red;
+            return this.red;
         }
 
 
         public int getGreen() {
-            return green;
+            return this.green;
         }
 
 
         public int getBlue() {
-            return blue;
+            return this.blue;
         }
 
 
         @Override
         public float getValueX() {
-            return (float) red / 255F;
+            return (float) this.red / 255F;
         }
 
 
         @Override
         public float getValueY() {
-            return (float) green / 255F;
+            return (float) this.green / 255F;
         }
 
 
         @Override
         public float getValueZ() {
-            return (float) blue / 255F;
+            return (float) this.blue / 255F;
         }
     }
 
@@ -529,6 +528,7 @@ public enum ParticleEffect {
 
 
         public NoteColor(int note) throws IllegalArgumentException {
+            super();
             if (note < 0) {
                 throw new IllegalArgumentException("The note value is lower than 0");
             }
@@ -541,7 +541,7 @@ public enum ParticleEffect {
 
         @Override
         public float getValueX() {
-            return (float) note / 24F;
+            return (float) this.note / 24F;
         }
 
 
@@ -609,6 +609,7 @@ public enum ParticleEffect {
 
 
         public ParticlePacket(ParticleEffect effect, float offsetX, float offsetY, float offsetZ, float speed, int amount, boolean longDistance, ParticleData data) throws IllegalArgumentException {
+            super();
             initialize();
             if (speed < 0) {
                 throw new IllegalArgumentException("The speed is lower than 0");
@@ -635,7 +636,7 @@ public enum ParticleEffect {
         public ParticlePacket(ParticleEffect effect, ParticleColor color, boolean longDistance) {
             this(effect, color.getValueX(), color.getValueY(), color.getValueZ(), 1, 0, longDistance, null);
             if (effect == ParticleEffect.REDSTONE && color instanceof OrdinaryColor && ((OrdinaryColor) color).getRed() == 0) {
-                offsetX = Float.MIN_NORMAL;
+                this.offsetX = Float.MIN_NORMAL;
             }
         }
 
@@ -644,16 +645,16 @@ public enum ParticleEffect {
                 return;
             }
             try {
-                version = Integer.parseInt(ReflectionUtils.PackageType.getServerVersion().split(Pattern.quote("_"))[1]);
+                version = Integer.parseInt(ParticleReflectionUtils.PackageType.getServerVersion().split(Pattern.quote("_"))[1]);
                 if (version > 7) {
-                    enumParticle = ReflectionUtils.PackageType.MINECRAFT_SERVER.getClass("EnumParticle");
+                    enumParticle = ParticleReflectionUtils.PackageType.MINECRAFT_SERVER.getClass("EnumParticle");
                 }
-                Class<?> packetClass = ReflectionUtils.PackageType.MINECRAFT_SERVER.getClass(version < 7 ? "Packet63WorldParticles" : "PacketPlayOutWorldParticles");
-                packetConstructor = ReflectionUtils.getConstructor(packetClass);
-                getHandle = ReflectionUtils.getMethod("CraftPlayer", ReflectionUtils.PackageType.CRAFTBUKKIT_ENTITY, "getHandle");
-                playerConnection = ReflectionUtils.getField("EntityPlayer", ReflectionUtils.PackageType.MINECRAFT_SERVER, false, "playerConnection");
-                sendPacket = ReflectionUtils.getMethod(playerConnection.getType(), "sendPacket", ReflectionUtils.PackageType.MINECRAFT_SERVER.getClass("Packet"));
-            } catch (Exception exception) {
+                final Class<?> packetClass = ParticleReflectionUtils.PackageType.MINECRAFT_SERVER.getClass(version < 7 ? "Packet63WorldParticles" : "PacketPlayOutWorldParticles");
+                packetConstructor = ParticleReflectionUtils.getConstructor(packetClass);
+                getHandle = ParticleReflectionUtils.getMethod("CraftPlayer", ParticleReflectionUtils.PackageType.CRAFTBUKKIT_ENTITY, "getHandle");
+                playerConnection = ParticleReflectionUtils.getField("EntityPlayer", ParticleReflectionUtils.PackageType.MINECRAFT_SERVER, false, "playerConnection");
+                sendPacket = ParticleReflectionUtils.getMethod(playerConnection.getType(), "sendPacket", ParticleReflectionUtils.PackageType.MINECRAFT_SERVER.getClass("Packet"));
+            } catch (final Exception exception) {
                 throw new VersionIncompatibleException("Your current bukkit version seems to be incompatible with this library", exception);
             }
             initialized = true;
@@ -674,45 +675,45 @@ public enum ParticleEffect {
 
 
         private void initializePacket(Location center) throws PacketInstantiationException {
-            if (packet != null) {
+            if (this.packet != null) {
                 return;
             }
             try {
-                packet = packetConstructor.newInstance();
+                this.packet = packetConstructor.newInstance();
                 if (version < 8) {
-                    String name = effect.getName();
-                    if (data != null) {
-                        name += data.getPacketDataString();
+                    String name = this.effect.getName();
+                    if (this.data != null) {
+                        name += this.data.getPacketDataString();
                     }
-                    ReflectionUtils.setValue(packet, true, "a", name);
+                    ParticleReflectionUtils.setValue(this.packet, true, "a", name);
                 } else {
-                    ReflectionUtils.setValue(packet, true, "a", enumParticle.getEnumConstants()[effect.getId()]);
-                    ReflectionUtils.setValue(packet, true, "j", longDistance);
-                    if (data != null) {
-                        int[] packetData = data.getPacketData();
-                        ReflectionUtils.setValue(packet, true, "k", effect == ParticleEffect.ITEM_CRACK ? packetData : new int[]{packetData[0] | (packetData[1] << 12)});
+                    ParticleReflectionUtils.setValue(this.packet, true, "a", enumParticle.getEnumConstants()[this.effect.getId()]);
+                    ParticleReflectionUtils.setValue(this.packet, true, "j", this.longDistance);
+                    if (this.data != null) {
+                        final int[] packetData = this.data.getPacketData();
+                        ParticleReflectionUtils.setValue(this.packet, true, "k", this.effect == ParticleEffect.ITEM_CRACK ? packetData : new int[]{packetData[0] | (packetData[1] << 12)});
                     }
                 }
-                ReflectionUtils.setValue(packet, true, "b", (float) center.getX());
-                ReflectionUtils.setValue(packet, true, "c", (float) center.getY());
-                ReflectionUtils.setValue(packet, true, "d", (float) center.getZ());
-                ReflectionUtils.setValue(packet, true, "e", offsetX);
-                ReflectionUtils.setValue(packet, true, "f", offsetY);
-                ReflectionUtils.setValue(packet, true, "g", offsetZ);
-                ReflectionUtils.setValue(packet, true, "h", speed);
-                ReflectionUtils.setValue(packet, true, "i", amount);
-            } catch (Exception exception) {
+                ParticleReflectionUtils.setValue(this.packet, true, "b", (float) center.getX());
+                ParticleReflectionUtils.setValue(this.packet, true, "c", (float) center.getY());
+                ParticleReflectionUtils.setValue(this.packet, true, "d", (float) center.getZ());
+                ParticleReflectionUtils.setValue(this.packet, true, "e", this.offsetX);
+                ParticleReflectionUtils.setValue(this.packet, true, "f", this.offsetY);
+                ParticleReflectionUtils.setValue(this.packet, true, "g", this.offsetZ);
+                ParticleReflectionUtils.setValue(this.packet, true, "h", this.speed);
+                ParticleReflectionUtils.setValue(this.packet, true, "i", this.amount);
+            } catch (final Exception exception) {
                 throw new PacketInstantiationException("Packet instantiation failed", exception);
             }
         }
 
 
         public void sendTo(Location center, Player player) throws PacketInstantiationException, PacketSendingException {
-            initializePacket(center);
+            this.initializePacket(center);
             try {
-                sendPacket.invoke(playerConnection.get(getHandle.invoke(player)), packet);
-            } catch (Exception exception) {
-                throw new PacketSendingException("Failed to send the packet to player '" + player.getName() + "'", exception);
+                sendPacket.invoke(playerConnection.get(getHandle.invoke(player)), this.packet);
+            } catch (final Exception exception) {
+                throw new PacketSendingException("Failed to send the packet to player '" + player.getName() + '\'', exception);
             }
         }
 
@@ -721,8 +722,8 @@ public enum ParticleEffect {
             if (players.isEmpty()) {
                 return;
             }
-            for (Player player : players) {
-                sendTo(center, player);
+            for (final Player player : players) {
+                this.sendTo(center, player);
             }
         }
 
@@ -731,13 +732,13 @@ public enum ParticleEffect {
             if (range < 1) {
                 throw new IllegalArgumentException("The range is lower than 1");
             }
-            String worldName = center.getWorld().getName();
-            double squared = range * range;
-            for (Player player : BukkitUtilities.getOnlinePlayers()) {
+            final String worldName = center.getWorld().getName();
+            final double squared = range * range;
+            for (final Player player : BukkitUtilities.getOnlinePlayers()) {
                 if (!player.getWorld().getName().equals(worldName) || player.getLocation().distanceSquared(center) > squared) {
                     continue;
                 }
-                sendTo(center, player);
+                this.sendTo(center, player);
             }
         }
 
@@ -773,7 +774,7 @@ public enum ParticleEffect {
     }
 
     public static ParticleEffect getParticleEffectFromName(String name) {
-        for (ParticleEffect particleEffect : ParticleEffect.values()) {
+        for (final ParticleEffect particleEffect : ParticleEffect.values()) {
             if (particleEffect.getName().equalsIgnoreCase(name))
                 return particleEffect;
         }

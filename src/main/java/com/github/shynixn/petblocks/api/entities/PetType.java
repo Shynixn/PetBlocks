@@ -87,7 +87,7 @@ public enum PetType {
     }
 
     public static String[] getNames() {
-        String[] names = new String[PetType.values().length];
+        final String[] names = new String[PetType.values().length];
         for (int i = 0; i < names.length; i++) {
             names[i] = PetType.values()[i].name();
         }
@@ -95,7 +95,8 @@ public enum PetType {
     }
 
     public static PetType getPetTypeFromName(String name) {
-        for (final PetType pet : PetType.values()) {
+        for (final PetType pet : PetType.values())
+        {
             if (pet.name().equalsIgnoreCase(name))
                 return pet;
         }

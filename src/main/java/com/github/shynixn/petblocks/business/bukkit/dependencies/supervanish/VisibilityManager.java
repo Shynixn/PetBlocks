@@ -1,11 +1,12 @@
 package com.github.shynixn.petblocks.business.bukkit.dependencies.supervanish;
 
-import com.github.shynixn.petblocks.lib.AsyncRunnable;
+import com.github.shynixn.petblocks.business.bukkit.PetBlocksPlugin;
 import com.github.shynixn.petblocks.api.entities.PetBlock;
 import com.github.shynixn.petblocks.lib.ReflectionLib;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -20,30 +21,24 @@ class VisibilityManager {
     private final Map<PetBlock, List<Player>> hiddenValues = new HashMap<>();
 
     void hidePetBlock(final PetBlock petBlock, final Player... players) {
-        AsyncRunnable.toAsynchroneThread(new AsyncRunnable() {
-            @Override
-            public void run() {
-                if (!VisibilityManager.this.hiddenValues.containsKey(petBlock))
-                    VisibilityManager.this.hiddenValues.put(petBlock, new ArrayList<Player>());
-                for (final Player player : players) {
-                    VisibilityManager.this.sendDestroyPacket(player, petBlock.getArmorStand());
-                    VisibilityManager.this.sendDestroyPacket(player, petBlock.getMovementEntity());
-                    VisibilityManager.this.hiddenValues.get(petBlock).add(player);
-                }
+        Bukkit.getServer().getScheduler().runTaskAsynchronously(JavaPlugin.getPlugin(PetBlocksPlugin.class), () -> {
+            if (!VisibilityManager.this.hiddenValues.containsKey(petBlock))
+                VisibilityManager.this.hiddenValues.put(petBlock, new ArrayList<>());
+            for (final Player player : players) {
+                VisibilityManager.this.sendDestroyPacket(player, petBlock.getArmorStand());
+                VisibilityManager.this.sendDestroyPacket(player, petBlock.getMovementEntity());
+                VisibilityManager.this.hiddenValues.get(petBlock).add(player);
             }
         });
     }
 
     void showPetBlock(final PetBlock petBlock, final Player... players) {
-        AsyncRunnable.toAsynchroneThread(new AsyncRunnable() {
-            @Override
-            public void run() {
-                if (VisibilityManager.this.hiddenValues.containsKey(petBlock)) {
-                    for (final Player player : players) {
-                        VisibilityManager.this.sendSpawnPacket(player, petBlock.getArmorStand());
-                        VisibilityManager.this.sendSpawnPacket(player, petBlock.getMovementEntity());
-                        VisibilityManager.this.hiddenValues.get(petBlock).add(player);
-                    }
+        Bukkit.getServer().getScheduler().runTaskAsynchronously(JavaPlugin.getPlugin(PetBlocksPlugin.class), () -> {
+            if (VisibilityManager.this.hiddenValues.containsKey(petBlock)) {
+                for (final Player player : players) {
+                    VisibilityManager.this.sendSpawnPacket(player, petBlock.getArmorStand());
+                    VisibilityManager.this.sendSpawnPacket(player, petBlock.getMovementEntity());
+                    VisibilityManager.this.hiddenValues.get(petBlock).add(player);
                 }
             }
         });
@@ -87,7 +82,7 @@ class VisibilityManager {
             final Object playerConnection = entityPlayer.getClass().getField("playerConnection").get(entityPlayer);
             ReflectionLib.invokeMethodByObject(playerConnection, "sendPacket", packet);
         } catch (final Exception e) {
-            Bukkit.getLogger().log(Level.WARNING, "Cannot send packet " + packet.getClass().getSimpleName() + ".", e);
+            Bukkit.getLogger().log(Level.WARNING, "Cannot send packet " + packet.getClass().getSimpleName() + '.', e);
         }
     }
 }

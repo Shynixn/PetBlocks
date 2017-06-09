@@ -1,15 +1,16 @@
 package com.github.shynixn.petblocks.business;
 
-
 import com.github.shynixn.petblocks.api.entities.*;
+import com.github.shynixn.petblocks.api.persistence.entity.PetMeta;
+import com.github.shynixn.petblocks.business.bukkit.nms.NMSRegistry;
+import com.github.shynixn.petblocks.business.logic.configuration.ConfigCommands;
 import com.github.shynixn.petblocks.business.logic.configuration.ConfigGUI;
 import com.github.shynixn.petblocks.business.logic.configuration.ConfigParticle;
 import com.github.shynixn.petblocks.business.logic.configuration.ConfigPet;
-import com.github.shynixn.petblocks.lib.ParticleEffect;
-import com.github.shynixn.petblocks.business.bukkit.nms.NMSRegistry;
-import com.github.shynixn.petblocks.business.logic.configuration.ConfigCommands;
 import com.github.shynixn.petblocks.lib.BukkitUtilities;
 import com.github.shynixn.petblocks.lib.ParticleBuilder;
+import com.github.shynixn.petblocks.lib.ParticleEffect;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -17,10 +18,12 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.plugin.Plugin;
+
+import java.util.logging.Level;
 
 public final class Config {
-    private static JavaPlugin plugin;
+    private static Plugin plugin;
     private static Config instance;
     private static FileConfiguration c;
 
@@ -35,12 +38,13 @@ public final class Config {
     private boolean join_enabled;
     private boolean join_overwriteExistingPet;
 
-    private Config(JavaPlugin plugin) {
+    private Config(Plugin plugin) {
+        super();
         Config.plugin = plugin;
         this.reload();
     }
 
-    public static void initiliaze(JavaPlugin plugin) {
+    public static void initiliaze(Plugin plugin) {
         instance = new Config(plugin);
     }
 
@@ -49,25 +53,29 @@ public final class Config {
     }
 
     public void reload() {
-        plugin.reloadConfig();
-        c = plugin.getConfig();
+        try {
+            plugin.reloadConfig();
+            c = plugin.getConfig();
 
-        this.chat_async = c.getBoolean("chat.async");
-        this.chat_highestpriority = c.getBoolean("chat.highest-priority");
+            this.chat_async = c.getBoolean("chat.async");
+            this.chat_highestpriority = c.getBoolean("chat.highest-priority");
 
-        this.world_allowInAllWorlds = plugin.getConfig().getBoolean("world.all");
-        this.world_worlds = plugin.getConfig().getStringList("world.worlds").toArray(new String[0]);
+            this.world_allowInAllWorlds = plugin.getConfig().getBoolean("world.all");
+            this.world_worlds = plugin.getConfig().getStringList("world.worlds").toArray(new String[plugin.getConfig().getStringList("world.worlds").size()]);
 
-        this.region_allowInAllRegions = plugin.getConfig().getBoolean("region.all");
-        this.region_regions = plugin.getConfig().getStringList("region.regions").toArray(new String[0]);
+            this.region_allowInAllRegions = plugin.getConfig().getBoolean("region.all");
+            this.region_regions = plugin.getConfig().getStringList("region.regions").toArray(new String[plugin.getConfig().getStringList("region.regions").size()]);
 
-        this.join_enabled = c.getBoolean("join.enabled");
-        this.join_overwriteExistingPet = plugin.getConfig().getBoolean("join.overwrite-previous-pet");
+            this.join_enabled = c.getBoolean("join.enabled");
+            this.join_overwriteExistingPet = plugin.getConfig().getBoolean("join.overwrite-previous-pet");
 
-        ConfigCommands.getInstance().load(c);
-        ConfigGUI.getInstance().load(c);
-        ConfigParticle.getInstance().load(c);
-        ConfigPet.getInstance().load(c);
+            ConfigCommands.getInstance().load(c);
+            ConfigGUI.getInstance().load(c);
+            ConfigParticle.getInstance().load(c);
+            ConfigPet.getInstance().load(c);
+        } catch (final Exception ex) {
+            Bukkit.getLogger().log(Level.WARNING, "Failed to reload config.", ex);
+        }
     }
 
     public boolean allowPetSpawning(Location location) {
@@ -93,7 +101,7 @@ public final class Config {
         else
             petMeta.setMoveType(MoveType.getMoveTypeFromName(c.getString("join.settings.moving")));
         if (!c.getString("join.settings.particle.name").equalsIgnoreCase("none") && ParticleEffect.getParticleEffectFromName(c.getString("join.settings.particle.name")) != null) {
-            Particle particle = new ParticleBuilder()
+            final Particle particle = new ParticleBuilder()
                     .setEffect(ParticleEffect.getParticleEffectFromName(c.getString("join.settings.particle.name")))
                     .setOffset(c.getDouble("join.settings.particle.x"), c.getDouble("join.settings.particle.y"), c.getDouble("join.settings.particle.z"))
                     .setSpeed(c.getDouble("join.settings.particle.speed"))

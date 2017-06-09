@@ -4,9 +4,7 @@ import com.github.shynixn.petblocks.api.PetBlocksApi;
 import com.github.shynixn.petblocks.business.Config;
 import com.github.shynixn.petblocks.business.Language;
 import com.github.shynixn.petblocks.business.bukkit.nms.NMSRegistry;
-import com.github.shynixn.petblocks.lib.AsyncRunnable;
 import com.github.shynixn.petblocks.lib.BukkitUtilities;
-import com.github.shynixn.petblocks.lib.PluginLoader;
 import com.github.shynixn.petblocks.lib.ReflectionLib;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -30,7 +28,7 @@ public final class PetBlocksPlugin extends JavaPlugin {
 		if(!BukkitUtilities.isVersionSupported()) {
 			BukkitUtilities.sendColorMessage("================================================", ChatColor.RED, PREFIX_CONSOLE);
 			BukkitUtilities.sendColorMessage("Petblocks does not support your server version", ChatColor.RED, PREFIX_CONSOLE);
-			BukkitUtilities.sendColorMessage("Install v1.8.0 - v1.11.0", ChatColor.RED, PREFIX_CONSOLE);
+			BukkitUtilities.sendColorMessage("Install v1.8.0 - v1.12.0", ChatColor.RED, PREFIX_CONSOLE);
 			BukkitUtilities.sendColorMessage("Plugin gets now disabled!", ChatColor.RED, PREFIX_CONSOLE);
 			BukkitUtilities.sendColorMessage("================================================", ChatColor.RED, PREFIX_CONSOLE);
 			this.disabled = true;
@@ -38,7 +36,6 @@ public final class PetBlocksPlugin extends JavaPlugin {
 		}
 		else {
 			BukkitUtilities.sendColorMessage("Loading PetBlocks ...", ChatColor.GREEN, PREFIX_CONSOLE);
-			PluginLoader.load(this, AsyncRunnable.class);
 			Language.reload(this);
 			Config.initiliaze(this);
 			NMSRegistry.registerAll();
@@ -62,13 +59,9 @@ public final class PetBlocksPlugin extends JavaPlugin {
 		this.saveDefaultConfig();
 		if(this.getConfig().getBoolean("sql-enabled")) {
 			if(BukkitUtilities.isVersionSupported()) {
-				list.add(ReflectionLib.getClassFromName("com.github.shynixn.petblocks.business.logic.persistence.PetData"));
+				list.add(ReflectionLib.getClassFromName("com.github.shynixn.petblocks.business.logic.persistence.entity.PetData"));
 			}
 		}
 		return list;
-	}
-
-	public void setupDatabase() {
-		this.installDDL();
 	}
 }

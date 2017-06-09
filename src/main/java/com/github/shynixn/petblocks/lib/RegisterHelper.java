@@ -4,14 +4,13 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 
 import java.util.HashMap;
-import java.util.logging.Level;
 
 /**
  * Created by Shynixn
  */
 public final class RegisterHelper {
     public static String PREFIX;
-    private static HashMap<String, String> registered = new HashMap<>();
+    private static final HashMap<String, String> registered = new HashMap<>();
 
     public static boolean register(String pluginName) {
         return register(pluginName, null, null);
@@ -26,31 +25,25 @@ public final class RegisterHelper {
     }
 
     public static boolean isRegistered(String pluginName, char version) {
-        if (registered.containsKey(pluginName) == false)
+        if (!registered.containsKey(pluginName))
             return false;
-        if (registered.get(pluginName).charAt(0) != version) {
-            return false;
-        }
-        return true;
+        return registered.get(pluginName).charAt(0) == version;
     }
 
     public static boolean isRegistered(String pluginName, String version) {
         if (!registered.containsKey(pluginName))
             return false;
-        if (version != null && !registered.get(pluginName).equals(version)) {
-            return false;
-        }
-        return true;
+        return !(version != null && !registered.get(pluginName).equals(version));
     }
 
     public static boolean register(String pluginName, String path, char version) {
         boolean canregister = true;
         if (pluginName != null && Bukkit.getPluginManager().getPlugin(pluginName) != null) {
-            Bukkit.getServer().getConsoleSender().sendMessage(PREFIX + ChatColor.GRAY + "found dependency [" + pluginName + "] " + version + ".");
+            Bukkit.getServer().getConsoleSender().sendMessage(PREFIX + ChatColor.GRAY + "found dependency [" + pluginName + "] " + version + '.');
             if (path != null) {
                 try {
                     Class.forName(path);
-                } catch (ClassNotFoundException e) {
+                } catch (final ClassNotFoundException e) {
                     canregister = false;
                 }
             }
@@ -59,10 +52,10 @@ public final class RegisterHelper {
             }
             if (canregister) {
                 registered.put(pluginName, Bukkit.getPluginManager().getPlugin(pluginName).getDescription().getVersion());
-                Bukkit.getServer().getConsoleSender().sendMessage(PREFIX + ChatColor.DARK_GREEN + "hooked successfully into [" + pluginName + "] " + version + ".");
+                Bukkit.getServer().getConsoleSender().sendMessage(PREFIX + ChatColor.DARK_GREEN + "hooked successfully into [" + pluginName + "] " + version + '.');
                 return true;
             } else {
-                Bukkit.getServer().getConsoleSender().sendMessage(PREFIX + ChatColor.DARK_RED + "failed to hook into [" + pluginName + "] " + version + ".");
+                Bukkit.getServer().getConsoleSender().sendMessage(PREFIX + ChatColor.DARK_RED + "failed to hook into [" + pluginName + "] " + version + '.');
             }
         }
         return false;
@@ -75,7 +68,7 @@ public final class RegisterHelper {
             if (path != null) {
                 try {
                     Class.forName(path);
-                } catch (ClassNotFoundException e) {
+                } catch (final ClassNotFoundException e) {
                     canregister = false;
                 }
             }

@@ -18,6 +18,7 @@ import org.bukkit.potion.PotionEffectType;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
+import java.util.logging.Level;
 
 /**
  * Created by Shynixn
@@ -35,8 +36,8 @@ public final class CustomZombie extends EntityZombie implements CustomEntity {
         super(((CraftWorld) player.getWorld()).getHandle());
         this.c(true);
         try {
-            Field bField = PathfinderGoalSelector.class.getDeclaredField("b");
-            Field cField = PathfinderGoalSelector.class.getDeclaredField("c");
+            final Field bField = PathfinderGoalSelector.class.getDeclaredField("b");
+            final Field cField = PathfinderGoalSelector.class.getDeclaredField("c");
             this.ignoreFinalField(bField);
             this.ignoreFinalField(cField);
             cField.setAccessible(true);
@@ -47,8 +48,8 @@ public final class CustomZombie extends EntityZombie implements CustomEntity {
             this.goalSelector.a(0, new PathfinderGoalFloat(this));
             this.goalSelector.a(1, new OwnerPathfinder(this, player));
             this.getAttributeInstance(GenericAttributes.MOVEMENT_SPEED).setValue(0.30000001192092896D * ConfigPet.getInstance().getModifier_petwalking());
-        } catch (Exception exc) {
-            exc.printStackTrace();
+        } catch (final Exception exc) {
+            Bukkit.getLogger().log(Level.WARNING, "EntityNMS exception.", exc);
         }
         this.player = player;
         this.petMeta = meta;
@@ -57,7 +58,7 @@ public final class CustomZombie extends EntityZombie implements CustomEntity {
 
     @Override
     public void spawn(Location location) {
-        World mcWorld = ((CraftWorld) location.getWorld()).getHandle();
+        final World mcWorld = ((CraftWorld) location.getWorld()).getHandle();
         this.setPosition(location.getX(), location.getY(), location.getZ());
         mcWorld.addEntity(this, CreatureSpawnEvent.SpawnReason.CUSTOM);
         this.getSpigotEntity().addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, 9999999, 1));
@@ -83,7 +84,7 @@ public final class CustomZombie extends EntityZombie implements CustomEntity {
 
     private void ignoreFinalField(Field field) throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
         field.setAccessible(true);
-        Field modifiersField = Field.class.getDeclaredField("modifiers");
+        final Field modifiersField = Field.class.getDeclaredField("modifiers");
         modifiersField.setAccessible(true);
         modifiersField.setInt(field, field.getModifiers() & ~Modifier.FINAL);
     }

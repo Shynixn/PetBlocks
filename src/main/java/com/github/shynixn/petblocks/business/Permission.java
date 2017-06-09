@@ -18,13 +18,13 @@ public enum Permission {
     SINGLEPARTICLE("petblocks.pet.particles."),
     OWNINGAMECOSTUMES("petblocks.inventory.costume");
 
-    private String perm;
+    private final String perm;
 
     Permission(String perm) {
         this.perm = perm;
     }
 
     public String get() {
-        return perm;
+        return this.perm;
     }
 }

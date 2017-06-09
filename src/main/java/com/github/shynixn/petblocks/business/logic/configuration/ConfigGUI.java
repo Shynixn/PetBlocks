@@ -5,6 +5,7 @@ import com.github.shynixn.petblocks.api.entities.PetType;
 import com.github.shynixn.petblocks.business.Language;
 import com.github.shynixn.petblocks.business.bukkit.nms.NMSRegistry;
 import com.github.shynixn.petblocks.lib.BukkitUtilities;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -15,6 +16,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
 
 /**
  * Created by Shynixn
@@ -236,15 +238,15 @@ public final class ConfigGUI {
     }
 
     private ItemStack[] resolveItems(List<String> texts) {
-        ArrayList<ItemStack> itemStacks = new ArrayList<>();
-        for (String s : texts) {
+        final ArrayList<ItemStack> itemStacks = new ArrayList<>();
+        for (final String s : texts) {
             try {
                 int i = 0;
                 ItemStack itemStack = null;
                 if (BukkitUtilities.tryParseInt(s)) {
                     itemStack = new ItemStack(Material.getMaterial(Integer.parseInt(s)));
                 } else if (s.contains(":")) {
-                    String[] parts = s.split(":");
+                    final String[] parts = s.split(":");
                     boolean skull = false;
                     if (parts[0].equalsIgnoreCase("skull")) {
                         skull = true;
@@ -259,13 +261,13 @@ public final class ConfigGUI {
                     }
                     for (; i < parts.length; i++) {
                         if (parts[i].equalsIgnoreCase("unbreakable")) {
-                            Map<String, Object> data = new HashMap<>();
+                            final Map<String, Object> data = new HashMap<>();
                             data.put("Unbreakable", true);
                             itemStack = NMSRegistry.setItemStackTag(itemStack, data);
                         }
                         if (parts[i].equalsIgnoreCase("lore")) {
                             i++;
-                            List<String> lore = new ArrayList<>();
+                            final List<String> lore = new ArrayList<>();
                             for (; i < parts.length; i++) {
                                 if (parts[i].equalsIgnoreCase("unbreakable")) {
                                     i--;
@@ -275,7 +277,7 @@ public final class ConfigGUI {
                                 }
                             }
                             if (itemStack != null) {
-                                ItemMeta meta = itemStack.getItemMeta();
+                                final ItemMeta meta = itemStack.getItemMeta();
                                 meta.setLore(lore);
                                 itemStack.setItemMeta(meta);
                             }
@@ -292,13 +294,13 @@ public final class ConfigGUI {
                     }
                 }
                 itemStacks.add(itemStack);
-            } catch (Exception e) {
-                e.printStackTrace();
+            } catch (final Exception e) {
+                Bukkit.getLogger().log(Level.WARNING, "Failed to enable registry.", e);
             }
         }
         for (int i = 0; i < itemStacks.size(); i++) {
             BukkitUtilities.nameItemDisplay(itemStacks.get(i), Language.NUMBER_PREFIX + "" + i + "");
         }
-        return itemStacks.toArray(new ItemStack[0]);
+        return itemStacks.toArray(new ItemStack[itemStacks.size()]);
     }
 }

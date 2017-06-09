@@ -6,7 +6,7 @@ import com.github.shynixn.petblocks.api.entities.PetBlock;
  * Created by Shynixn
  */
 public class PetBlockRideEvent extends PetBlockCancelAbleEvent {
-    private boolean isRiding;
+    private final boolean isRiding;
 
     public PetBlockRideEvent(PetBlock petBlock, boolean isRiding) {
         super(petBlock);

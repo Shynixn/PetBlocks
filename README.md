@@ -5,6 +5,8 @@
 | master        | [![Build Status](https://travis-ci.org/Shynixn/PetBlocks.svg?branch=master)](https://travis-ci.org/Shynixn/PetBlocks) |[Download latest release (recommend)](https://github.com/Shynixn/PetBlocks/releases)|
 | workflow      | [![Build Status](https://travis-ci.org/Shynixn/PetBlocks.svg?branch=workflow)](https://travis-ci.org/Shynixn/PetBlocks) | [Download snapshots](https://oss.sonatype.org/content/repositories/snapshots/com/github/shynixn/petblocks/) |
 
+JavaDocs: https://shynixn.github.io/PetBlocks/apidocs/
+
 ## Description
 Spigot plugin to use blocks as pets in minecraft.
 
@@ -12,14 +14,14 @@ Spigot plugin to use blocks as pets in minecraft.
 
 * Use blocks as pets in minecraft.
 * Customizable UI.
-* Version support 1.8.R1 - 1.11.R1
+* Version support 1.8.R1 - 1.12.R1
 * Check out the [PetBlocks-Spigot-Page](https://www.spigotmc.org/resources/petblocks-mysql-bungeecord-customizeable-gui-1-8-1-9-1-10-1-11.12056/) to get more information. 
 
 ## Installation
 
 * [Download the plugin PetBlocks](https://github.com/Shynixn/PetBlocks/releases)
 * Put the plugin into your plugin folder
-* Start the server (1.8.0 - 1.11.2, Java 7/Java 8)
+* Start the server (1.8.0 - 1.12.0, Java 8)
 * Join and play :)
 
 ## API
@@ -33,7 +35,7 @@ Spigot plugin to use blocks as pets in minecraft.
 <dependency>
      <groupId>com.github.shynixn</groupId>
      <artifactId>petblocks</artifactId>
-     <version>5.7.0</version>
+     <version>6.0.0</version>
 </dependency>
 ```
 
@@ -44,10 +46,10 @@ Spigot plugin to use blocks as pets in minecraft.
 ```java
     Player player = Bukkit.getPlayer("Shynixn");
     if(PetBlocksApi.hasPetMeta(player)){
-        //Stored data of the entity
-        PetMeta petMeta = PetBlocksApi.getPetMeta(player);
-        petMeta.setDisplayName(ChatColor.RED + "That's my new petname");
-        PetBlocksApi.persistPetMeta(petMeta);
+         //Stored data of the entity
+          PetMeta petMeta = PetBlocksApi.getPetMeta(player);
+          petMeta.setDisplayName(ChatColor.RED + "That's my new petname");
+          PetBlocksApi.persistPetMeta(petMeta);
     }
 ```
 #### Set Petblock

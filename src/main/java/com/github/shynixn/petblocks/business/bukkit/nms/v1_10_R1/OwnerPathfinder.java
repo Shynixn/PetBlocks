@@ -20,6 +20,7 @@ public final class OwnerPathfinder extends PathfinderGoal {
     private int counter;
 
     public OwnerPathfinder(EntityInsentient entitycreature, Player player) {
+        super();
         this.entity = entitycreature;
         this.player = player;
     }
@@ -33,7 +34,7 @@ public final class OwnerPathfinder extends PathfinderGoal {
             this.entity.getBukkitEntity().teleport(this.player.getLocation());
         } else if (this.entity.getBukkitEntity().getLocation().distance(this.player.getLocation()) > 2) {
             this.counter2 = PetBlockHelper.afraidWaterEffect(this.entity.getBukkitEntity(), this.counter2);
-            Location targetLocation = this.player.getLocation();
+            final Location targetLocation = this.player.getLocation();
             this.entity.getNavigation().n();
             this.entity.getNavigation();
             this.path = this.entity.getNavigation().a(targetLocation.getX() + 1, targetLocation.getY(), targetLocation.getZ() + 1);
@@ -65,14 +66,14 @@ public final class OwnerPathfinder extends PathfinderGoal {
     }
 
     public static boolean isUnbreakable(ItemStack itemStack) {
-        net.minecraft.server.v1_10_R1.ItemStack stack = CraftItemStack.asNMSCopy(itemStack);
+        final net.minecraft.server.v1_10_R1.ItemStack stack = CraftItemStack.asNMSCopy(itemStack);
         return stack.getTag() != null && stack.getTag().hasKey("Unbreakable") && stack.getTag().getBoolean("Unbreakable");
     }
 
     public static ItemStack setItemstackTag(ItemStack itemStack, Map<String, Object> tags) {
-        net.minecraft.server.v1_10_R1.ItemStack stack = CraftItemStack.asNMSCopy(itemStack);
-        for (String tag : tags.keySet()) {
-            NBTTagCompound nbtTagCompound;
+        final net.minecraft.server.v1_10_R1.ItemStack stack = CraftItemStack.asNMSCopy(itemStack);
+        for (final String tag : tags.keySet()) {
+            final NBTTagCompound nbtTagCompound;
             if (stack.getTag() == null)
                 nbtTagCompound = new NBTTagCompound();
             else

@@ -5,10 +5,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.github.shynixn.petblocks.business.logic.persistence.PetDataManager;
 import com.github.shynixn.petblocks.api.events.PetBlockDeathEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import com.github.shynixn.petblocks.api.entities.PetBlock;
@@ -17,19 +17,21 @@ import com.github.shynixn.petblocks.business.bukkit.nms.NMSRegistry;
 import com.github.shynixn.petblocks.lib.Interpreter19;
 
 public final class PetBlockManager {
-    private final JavaPlugin plugin;
+    private final Plugin plugin;
     Map<Player, PetBlock> petblocks = new HashMap<>();
     PetDataManager dataManager;
     List<Player> carryingPet = new ArrayList<>();
     Map<Player, Integer> timeBlocked = new HashMap<>();
 
-    public PetBlockManager(PetDataManager dataManager, JavaPlugin plugin) {
+    public PetBlockManager(PetDataManager dataManager, Plugin plugin) {
         super();
         this.plugin = plugin;
         this.dataManager = dataManager;
-        new PetBlockListener(this, plugin);
-        new PetBlockCommandExecutor(this);
-        new PetBlockReloadCommandExecutor("petblockreload", plugin);
+        if (plugin.getPluginLoader() != null) {
+            new PetBlockListener(this, plugin);
+            new PetBlockCommandExecutor(this);
+            new PetBlockReloadCommandExecutor("petblockreload", plugin);
+        }
     }
 
     public boolean hasPetBlock(Player player) {
@@ -51,12 +53,7 @@ public final class PetBlockManager {
             if (delay == 0) {
                 this.petblocks.put(player, NMSRegistry.createPetBlock(player.getLocation(), petMeta));
             } else {
-                this.plugin.getServer().getScheduler().runTaskLater(this.plugin, new Runnable() {
-                    @Override
-                    public void run() {
-                        PetBlockManager.this.petblocks.put(player, NMSRegistry.createPetBlock(player.getLocation(), petMeta));
-                    }
-                }, 20 * delay);
+                this.plugin.getServer().getScheduler().runTaskLater(this.plugin, () -> PetBlockManager.this.petblocks.put(player, NMSRegistry.createPetBlock(player.getLocation(), petMeta)), 20 * delay);
             }
         }
     }
@@ -65,6 +62,8 @@ public final class PetBlockManager {
         if (this.hasPetBlock(player)) {
             final PetBlockDeathEvent event = new PetBlockDeathEvent(this.petblocks.get(player));
             Bukkit.getPluginManager().callEvent(event);
+            final com.github.shynixn.petblocks.api.persistence.entity.PetMeta petMeta = (com.github.shynixn.petblocks.api.persistence.entity.PetMeta) this.petblocks.get(player).getPetMeta();
+            this.plugin.getServer().getScheduler().runTaskAsynchronously(this.plugin, () -> this.dataManager.persist(petMeta));
             if (!event.isCanceled()) {
                 this.petblocks.get(player).remove();
                 this.petblocks.remove(player);

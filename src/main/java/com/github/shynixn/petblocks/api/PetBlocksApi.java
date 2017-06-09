@@ -2,26 +2,24 @@ package com.github.shynixn.petblocks.api;
 
 import com.github.shynixn.petblocks.api.entities.PetBlock;
 import com.github.shynixn.petblocks.api.entities.PetMeta;
-import com.github.shynixn.petblocks.business.logic.business.PetBlockManager;
-import com.github.shynixn.petblocks.business.logic.persistence.PetDataManager;
-import org.bukkit.entity.Player;
-import org.bukkit.plugin.java.JavaPlugin;
-
 import com.github.shynixn.petblocks.api.entities.PetType;
+import com.github.shynixn.petblocks.business.logic.business.PetBlockManager;
+import com.github.shynixn.petblocks.business.logic.business.PetDataManager;
+import org.bukkit.entity.Player;
+import org.bukkit.plugin.Plugin;
 
 public final class PetBlocksApi {
     private static PetBlockManager petBlockManager;
     private static PetDataManager dataManager;
 
-    private static void init(JavaPlugin plugin) {
+    private static void init(Plugin plugin) {
         dataManager = new PetDataManager(plugin);
         petBlockManager = new PetBlockManager(dataManager, plugin);
     }
 
-    private static void dispose(JavaPlugin plugin) {
+    private static void dispose(Plugin plugin) {
         if (petBlockManager != null) {
             petBlockManager.killAll();
-            dataManager.dispose();
         }
     }
 
@@ -61,10 +59,9 @@ public final class PetBlocksApi {
         return null;
     }
 
-    public static PetMeta getPetMeta(Player player) {
+    public static com.github.shynixn.petblocks.api.persistence.entity.PetMeta getPetMeta(Player player) {
         if (player == null)
             throw new IllegalArgumentException("Player cannot be null!");
-        dataManager.hasPetMeta(player);
         return dataManager.getPetMeta(player);
     }
 
@@ -81,14 +78,13 @@ public final class PetBlocksApi {
         if (petType == null)
             throw new IllegalArgumentException("Type cannot be null!");
         final PetMeta meta = dataManager.createPetMeta(player, petType);
-        dataManager.addPetMeta(meta);
-        dataManager.persist(meta);
+        dataManager.persist((com.github.shynixn.petblocks.api.persistence.entity.PetMeta)meta);
     }
 
     public static void persistPetMeta(PetMeta petMeta) {
         if (petMeta == null)
             throw new IllegalArgumentException("Meta cannot be null!");
-        dataManager.persist(petMeta);
+        dataManager.persist((com.github.shynixn.petblocks.api.persistence.entity.PetMeta)petMeta);
     }
 
     public static boolean hasPetMeta(Player player) {
