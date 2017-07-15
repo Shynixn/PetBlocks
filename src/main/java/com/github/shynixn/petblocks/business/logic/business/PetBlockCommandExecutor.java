@@ -85,7 +85,15 @@ class PetBlockCommandExecutor extends DynamicCommandHelper {
 
         else if (args.length == 1 && args[0].equalsIgnoreCase("killnext") && sender instanceof Player && sender.hasPermission("petblocks.reload"))
             this.killNextCommand((Player) sender);
-        else {
+        else if (args.length == 1 && args[0].equalsIgnoreCase("helmetinfo") && sender instanceof Player && sender.hasPermission("petblocks.reload")) {
+            final Player player = (Player) sender;
+            if (PetBlocksApi.hasPetBlock(player)) {
+                final PetBlock petBlock = PetBlocksApi.getPetBlock(player);
+                final net.minecraft.server.v1_12_R1.ItemStack itemStack = org.bukkit.craftbukkit.v1_12_R1.inventory.CraftItemStack.asNMSCopy(petBlock.getArmorStand().getHelmet());
+                player.sendMessage("PetInfo: ");
+                player.sendMessage("Unbreakable: " + itemStack.getTag().hasKey("Unbreakable"));
+            }
+        } else {
             sender.sendMessage("");
             sender.sendMessage(BukkitChatColor.DARK_GREEN + "" + ChatColor.UNDERLINE + "                   PetBlocks " + "                       ");
             sender.sendMessage("");
@@ -101,6 +109,7 @@ class PetBlockCommandExecutor extends DynamicCommandHelper {
             sender.sendMessage(Language.PREFIX + "/petblocks skullname <name> [player]");
             sender.sendMessage(Language.PREFIX + "/petblocks skulllore <line> <lore> [player]");
             sender.sendMessage(Language.PREFIX + "/petblocks killnext - Kills nearest entity");
+            sender.sendMessage(Language.PREFIX + "/petblocks helmetinfo - Displays infos about the item on the pet");
             sender.sendMessage("");
             sender.sendMessage(BukkitChatColor.DARK_GREEN + "" + ChatColor.UNDERLINE + "                           ┌1/1┐                            ");
             sender.sendMessage("");
@@ -269,7 +278,7 @@ class PetBlockCommandExecutor extends DynamicCommandHelper {
                     meta.setSkin(itemStack.getType(), itemStack.getDurability(), null);
                 }
                 this.persistAsynchronously((com.github.shynixn.petblocks.api.persistence.entity.PetMeta) meta);
-                if(PetBlocksApi.getPetBlock(player) != null)
+                if (PetBlocksApi.getPetBlock(player) != null)
                     PetBlocksApi.getPetBlock(player).respawn();
             });
         });
