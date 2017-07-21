@@ -231,7 +231,7 @@ public class PetDataRepository extends DataBaseRepository<PetMeta> implements Pe
         petMeta.setParticleId(resultSet.getLong("shy_particle_effect_id"));
         petMeta.setDisplayName(resultSet.getString("name"));
         petMeta.setPetType(PetType.getPetTypeFromName(resultSet.getString("type")));
-        petMeta.setSkin(Material.getMaterial(resultSet.getString("material")), (byte) resultSet.getInt("data"), resultSet.getString("skull"));
+        petMeta.setSkin(Material.getMaterial(resultSet.getString("material")), (short) resultSet.getInt("data"), resultSet.getString("skull"));
         petMeta.setEnabled(resultSet.getBoolean("enabled"));
         petMeta.setAgeInTicks(resultSet.getInt("age"));
         petMeta.setUnbreakable(resultSet.getBoolean("unbreakable"));
