@@ -89,7 +89,7 @@ class PetBlockCommandExecutor extends DynamicCommandHelper {
             final Player player = (Player) sender;
             if (PetBlocksApi.hasPetBlock(player)) {
                 final PetBlock petBlock = PetBlocksApi.getPetBlock(player);
-                final net.minecraft.server.v1_12_R1.ItemStack itemStack = org.bukkit.craftbukkit.v1_12_R1.inventory.CraftItemStack.asNMSCopy(petBlock.getArmorStand().getHelmet());
+                final net.minecraft.server.v1_10_R1.ItemStack itemStack = org.bukkit.craftbukkit.v1_10_R1.inventory.CraftItemStack.asNMSCopy(petBlock.getArmorStand().getHelmet());
                 player.sendMessage("PetInfo: ");
                 player.sendMessage("Unbreakable: " + itemStack.getTag().hasKey("Unbreakable"));
             }
