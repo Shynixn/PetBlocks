@@ -1,6 +1,8 @@
 package com.github.shynixn.petblocks.api.entities;
 
+import com.github.shynixn.petblocks.business.bukkit.nms.VersionSupport;
 import org.bukkit.Location;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 
 import com.github.shynixn.petblocks.lib.SoundData;
@@ -49,16 +51,32 @@ public enum PetType {
     BLAZE(null, new SoundData("BLAZE_BREATH"), MoveType.FLYING),
     WITHER(null, new SoundData("WITHER_IDLE"), MoveType.FLYING),
 
+    // Pack 8 (1.9)
+    SHULKER(null, new SoundData("SHULKER_IDLE"), MoveType.WALKING, VersionSupport.VERSION_1_9_R1),
+
     DRAGON(new SoundData("ENDERDRAGON_WINGS"), new SoundData("ENDERDRAGON_GROWL"), MoveType.FLYING);
 
     private final SoundData movingSound;
     private final SoundData randomSound;
     private final MoveType type;
+    private final VersionSupport version;
 
     PetType(SoundData movingSound, SoundData randomSound, MoveType type) {
         this.movingSound = movingSound;
         this.randomSound = randomSound;
         this.type = type;
+        this.version = VersionSupport.VERSION_1_8_R1;
+    }
+
+    PetType(SoundData movingSound, SoundData randomSound, MoveType type,VersionSupport version) {
+        this.movingSound = movingSound;
+        this.randomSound = randomSound;
+        this.type = type;
+        this.version = version;
+    }
+
+    public VersionSupport getVersion() {
+        return this.version;
     }
 
     @Deprecated

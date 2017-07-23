@@ -52,6 +52,7 @@ public final class Language {
             GHAST_DISPLAYNAME = ChatColor.translateAlternateColorCodes('&', config.getString("ghast-name"));
             BLAZE_DISPLAYNAME = ChatColor.translateAlternateColorCodes('&', config.getString("blaze-name"));
             WITHER_DISPLAYNAME = ChatColor.translateAlternateColorCodes('&', config.getString("wither-name"));
+            SHULKER_DISPLAYNAME = ChatColor.translateAlternateColorCodes('&', config.getString("shulker-name"));
 
             ENABLE_PET = ChatColor.translateAlternateColorCodes('&', config.getString("enable-pet"));
             DISABLE_PET = ChatColor.translateAlternateColorCodes('&', config.getString("disable-pet"));
@@ -146,6 +147,7 @@ public final class Language {
     public static String GHAST_DISPLAYNAME = BukkitChatColor.WHITE + "Ghast";
     public static String BLAZE_DISPLAYNAME = BukkitChatColor.YELLOW + "Blaze";
     public static String WITHER_DISPLAYNAME = BukkitChatColor.DARK_GRAY + "Wither";
+    public static String SHULKER_DISPLAYNAME = BukkitChatColor.DARK_PURPLE + "Shulker";
 
     public static String ENABLE_PET = BukkitChatColor.GREEN + "Enable Petblock";
     public static String DISABLE_PET = BukkitChatColor.RED + "Disable Petblock";

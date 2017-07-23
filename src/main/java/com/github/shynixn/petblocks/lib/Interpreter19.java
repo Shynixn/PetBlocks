@@ -10,9 +10,18 @@ import java.util.logging.Level;
 /**
  * Created by Shynixn
  */
+@Deprecated
 public class Interpreter19 {
     public static Sound interPretSounds19(String sound) {
         try {
+            if (sound.contains("SHULKER")) {
+                if (!isAbove18())
+                    return null;
+                else {
+                    if (sound.toUpperCase().equals("SHULKER_IDLE"))
+                        return Sound.valueOf("ENTITY_SHULKER_AMBIENT");
+                }
+            }
             if (!isAbove18())
                 return Sound.valueOf(sound);
             if (sound.toUpperCase().equals("ENDERMAN_IDLE"))
@@ -73,14 +82,12 @@ public class Interpreter19 {
     }
 
     private static boolean isAbove18() {
-        try
-        {
+        try {
             BukkitUtilities.getServerVersion();
-        }catch (final RuntimeException ex)
-        {
+        } catch (final RuntimeException ex) {
             return false;
         }
-        return  BukkitUtilities.getServerVersion().equals("v1_9_R1")
+        return BukkitUtilities.getServerVersion().equals("v1_9_R1")
                 || BukkitUtilities.getServerVersion().equals("v1_9_R2")
                 || BukkitUtilities.getServerVersion().equals("v1_10_R1")
                 || BukkitUtilities.getServerVersion().equals("v1_11_R1")

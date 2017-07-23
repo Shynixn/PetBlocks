@@ -28,6 +28,8 @@ public final class ConfigGUI {
     private boolean settings_copyskin = true;
     private boolean settings_allowLore = true;
     private boolean settings_clickemptyback = true;
+    private boolean settings_onlyDisableItem;
+
     //General
     private ItemContainer general_myContainer;
     private ItemContainer general_defaultAppearanceContainer;
@@ -71,6 +73,7 @@ public final class ConfigGUI {
         this.settings_copyskin = c.getBoolean("gui.settings.copy-skin");
         this.settings_allowLore = c.getBoolean("gui.settings.lore");
         this.settings_clickemptyback = c.getBoolean("gui.settings.click-empty-slot-back");
+        this.settings_onlyDisableItem = c.getBoolean("gui.settings.use-only-disable-pet-item");
 
         this.general_myContainer = new CustomItemContainer(-253, -1, "none", c.getInt("gui.general." + "my-pet" + ".position"), c.getString("gui.general." + "my-pet" + ".lore"), true, "", null);
         this.general_defaultAppearanceContainer = CustomItemContainer.resolveItemContainer("gui.general.default-appearance", c);
@@ -120,6 +123,7 @@ public final class ConfigGUI {
         this.souls_Container.put(PetType.GHAST, CustomItemContainer.resolveItemContainer("gui.souls.ghast-soul", c));
         this.souls_Container.put(PetType.BLAZE, CustomItemContainer.resolveItemContainer("gui.souls.blaze-soul", c));
         this.souls_Container.put(PetType.WITHER, CustomItemContainer.resolveItemContainer("gui.souls.wither-soul", c));
+        this.souls_Container.put(PetType.SHULKER, CustomItemContainer.resolveItemContainer("gui.souls.shulker-soul", c));
 
         this.general_defaultAppearanceContainer.setEnabled(true);
         this.costumes_default = this.resolveItems(c.getStringList("costumes.default"));
@@ -181,6 +185,10 @@ public final class ConfigGUI {
         return this.settings_clickemptyback;
     }
 
+    public boolean isSettings_onlyDisableItem() {
+        return this.settings_onlyDisableItem;
+    }
+
     public ItemContainer getGeneral_defaultAppearanceContainer() {
         return this.general_defaultAppearanceContainer;
     }
@@ -238,7 +246,7 @@ public final class ConfigGUI {
     }
 
     private ItemStack[] resolveItems(List<String> texts) {
-        final ArrayList<ItemStack> itemStacks = new ArrayList<>();
+        final List<ItemStack> itemStacks = new ArrayList<>();
         for (final String s : texts) {
             try {
                 int i = 0;

@@ -2,6 +2,7 @@ package com.github.shynixn.petblocks.lib;
 
 import org.bukkit.ChatColor;
 
+@Deprecated
 public enum BukkitChatColor {
     AQUA(ChatColor.AQUA + "" + ChatColor.BOLD),
     BLACK(ChatColor.BLACK + "" + ChatColor.BOLD),

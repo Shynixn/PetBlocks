@@ -308,6 +308,11 @@ final class CustomGroundArmorstand extends EntityArmorStand implements PetBlock 
 
     @Override
     public void wear(Player player) {
+        final NBTTagCompound compound = new NBTTagCompound();
+        this.b(compound);
+        compound.setBoolean("Marker", true);
+        this.a(compound);
+        this.setCustomNameVisible(false);
         PetBlockHelper.wear(this, player, null);
     }
 
@@ -323,6 +328,11 @@ final class CustomGroundArmorstand extends EntityArmorStand implements PetBlock 
 
     @Override
     public void eject(Player player) {
+        final NBTTagCompound compound = new NBTTagCompound();
+        this.b(compound);
+        compound.setBoolean("Marker", false);
+        this.a(compound);
+        this.setCustomNameVisible(true);
         PetBlockHelper.eject(this, player, null);
     }
 

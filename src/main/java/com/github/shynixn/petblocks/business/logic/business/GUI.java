@@ -3,6 +3,8 @@ package com.github.shynixn.petblocks.business.logic.business;
 import com.github.shynixn.petblocks.api.entities.PetMeta;
 import com.github.shynixn.petblocks.business.Config;
 import com.github.shynixn.petblocks.business.Permission;
+import com.github.shynixn.petblocks.business.bukkit.nms.NMSRegistry;
+import com.github.shynixn.petblocks.business.bukkit.nms.VersionSupport;
 import com.github.shynixn.petblocks.business.logic.configuration.ConfigGUI;
 import com.github.shynixn.petblocks.business.logic.configuration.ConfigParticle;
 import org.bukkit.Bukkit;
@@ -41,11 +43,15 @@ class GUI {
             final Inventory inventory = this.manager.inventories.get(player);
             if (inventory.getItem(ConfigGUI.getInstance().getGeneral_myContainer().getPosition()) == null || refresh || inventory.getItem(ConfigGUI.getInstance().getGeneral_myContainer().getPosition()).getType() != Material.SKULL_ITEM)
                 inventory.setItem(ConfigGUI.getInstance().getGeneral_myContainer().getPosition(), BukkitUtilities.nameItem(this.getItemStack(player, petType), Language.MY_PET, null));
-            if (!enabled)
-                Config.getInstance().setMyContainer(inventory, Language.ENABLE_PET, ConfigGUI.getInstance().getGeneral_enablePetContainer(), (Permission) null);
-            else
+            if (!enabled) {
+                if (!ConfigGUI.getInstance().isSettings_onlyDisableItem()) {
+                    Config.getInstance().setMyContainer(inventory, Language.ENABLE_PET, ConfigGUI.getInstance().getGeneral_enablePetContainer(), (Permission) null);
+                } else {
+                    inventory.setItem(ConfigGUI.getInstance().getGeneral_enablePetContainer().getPosition(), BukkitUtilities.nameItemDisplay(ConfigGUI.getInstance().getGeneral_emptyslotContainer().generate(), Language.EMPTY));
+                }
+            } else {
                 Config.getInstance().setMyContainer(inventory, Language.DISABLE_PET, ConfigGUI.getInstance().getGeneral_disablePetContainer(), (Permission) null);
-
+            }
             Config.getInstance().setMyContainer(inventory, Language.CANCEL, ConfigGUI.getInstance().getItems_cancelpetContainer(), (Permission) null);
             Config.getInstance().setMyContainer(inventory, Language.CANNON, ConfigGUI.getInstance().getItems_cannonpetContainer(), Permission.CANNON);
             Config.getInstance().setMyContainer(inventory, Language.CALL, ConfigGUI.getInstance().getItems_callpetContainer(), (Permission) null);
@@ -73,9 +79,12 @@ class GUI {
         if (this.manager.inventories.containsKey(player)) {
             this.clearInventory(this.manager.inventories.get(player));
             final Inventory inventory = this.manager.inventories.get(player);
+            final VersionSupport serverVersion = VersionSupport.getServerVersion();
             for (final PetType petType : PetType.values()) {
-                final String name = petType.name();
-                Config.getInstance().setMyContainer(inventory, Language.getDisplayName(name), ConfigGUI.getInstance().getContainer(petType), (Permission.SINGLEPETTYPE.get() + name.toLowerCase()), Permission.ALLPETTYPES.get());
+                if (serverVersion.isVersionSameOrGreaterThan(petType.getVersion())) {
+                    final String name = petType.name();
+                    Config.getInstance().setMyContainer(inventory, Language.getDisplayName(name), ConfigGUI.getInstance().getContainer(petType), (Permission.SINGLEPETTYPE.get() + name.toLowerCase()), Permission.ALLPETTYPES.get());
+                }
             }
             this.manager.pages.put(player, new GuiPageContainer(GuiPage.MAIN));
         }

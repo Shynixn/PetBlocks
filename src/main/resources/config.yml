@@ -74,9 +74,9 @@ petblocks-configuration:
 # design: Show-damage-animation -> Block turns red when it gets hit. Doesn't work for server above 1.8.8.
 # design: Sounds-other-players -> Allows other players to hear sounds of your pet.
 
-# modifer: Riding-speed -> Modifys the riding speed. (1 = default speed, 0.5 = half speed,...)
-# modifer: Walking-speed -> Modifys the walking speed. (1 = default speed, 0.5 = half speed,...)
-# modifer: Climbing-height -> Modifys the climbing height. (1 = default height, 0.5 = half height,...)
+# modifier: Riding-speed -> Modifies the riding speed. (1 = default speed, 0.5 = half speed,...)
+# modifier: Walking-speed -> Modifies the walking speed. (1 = default speed, 0.5 = half speed,...)
+# modifier: Climbing-height -> Modifies the climbing height. (1 = default height, 0.5 = half height,...)
 
 pet:
   age:
@@ -160,7 +160,7 @@ join:
 
 # Chat settings
 
-# Async -> Handle chat messages asynchronly.
+# Async -> Handle chat messages asynchronously.
 # Highest-priority -> Give petblock messages the highest priority.
 
 chat:
@@ -169,12 +169,15 @@ chat:
 
 # GUI settings
 
+# use-only-disable-pet-item --> Removes the enable block from the GUI and uses the pet item to spawn the pet. The disable pet buttons appears
+#                               after pet being enabled
+
 # settings: Copy-skin --> Copies the skin of the clicket pet soul
 # settings: Lore --> Displays lore lines in the GUI.
 # settings: Click-empty-slot-back --> Allows to return to the previous menu by clicking a dummy slot.
 
 # general: my-pet --> All settings for the item My pet
-# general: default-apperance --> All settings for the first appearance of the pet. (Grassblock)
+# general: default-appearance --> All settings for the first appearance of the pet. (Grassblock)
 # general: enable-pet --> All settings for the item enable pet
 # general: enable-pet --> All settings for the item disable pet
 # general: enable-pet --> All settings for the item empty slot
@@ -199,6 +202,7 @@ gui:
     copy-skin: true
     lore: true
     click-empty-slot-back: true
+    use-only-disable-pet-item: false
   general:
     my-pet:
       position: 36
@@ -541,6 +545,15 @@ gui:
        owner: 'textures.minecraft.net/texture/233b41fa79cd53a230e2db942863843183a70404533bbc01fab744769bcb'
        position: 24
        type: FLYING
+       movement: HOPPING
+       lore: '&ePermission: <permission>'
+     shulker-soul:
+       enabled: true
+       id: 397
+       damage: 3
+       owner: 'textures.minecraft.net/texture/b1d3534d21fe8499262de87affbeac4d25ffde35c8bdca069e61e1787ff2f'
+       position: 25
+       type: WALKING
        movement: HOPPING
        lore: '&ePermission: <permission>'
 #--

@@ -13,6 +13,7 @@ import java.util.logging.Level;
 /**
  * Created by Shynixn
  */
+@Deprecated
 public abstract class DynamicCommandHelper extends BukkitCommand {
     private final CommandContainer c;
 

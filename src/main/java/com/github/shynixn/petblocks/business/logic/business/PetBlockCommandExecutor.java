@@ -269,7 +269,7 @@ class PetBlockCommandExecutor extends DynamicCommandHelper {
                     meta.setSkin(itemStack.getType(), itemStack.getDurability(), null);
                 }
                 this.persistAsynchronously((com.github.shynixn.petblocks.api.persistence.entity.PetMeta) meta);
-                if(PetBlocksApi.getPetBlock(player) != null)
+                if (PetBlocksApi.getPetBlock(player) != null)
                     PetBlocksApi.getPetBlock(player).respawn();
             });
         });
