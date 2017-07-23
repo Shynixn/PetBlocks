@@ -52,7 +52,7 @@ public enum PetType {
     WITHER(null, new SoundData("WITHER_IDLE"), MoveType.FLYING),
 
     // Pack 8 (1.9)
-    SHULKER(new SoundData("SHULKER_WELK"), new SoundData("SHULKER_IDLE"), MoveType.WALKING, VersionSupport.VERSION_1_9_R1),
+    SHULKER(null, new SoundData("SHULKER_IDLE"), MoveType.WALKING, VersionSupport.VERSION_1_9_R1),
 
     DRAGON(new SoundData("ENDERDRAGON_WINGS"), new SoundData("ENDERDRAGON_GROWL"), MoveType.FLYING);
 
