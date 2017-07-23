@@ -10,6 +10,7 @@ import java.util.logging.Level;
 /**
  * Created by Shynixn
  */
+@Deprecated
 public class Interpreter19 {
     public static Sound interPretSounds19(String sound) {
         try {

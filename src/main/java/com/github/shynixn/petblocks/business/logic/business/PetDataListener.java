@@ -11,7 +11,6 @@ import com.github.shynixn.petblocks.business.bukkit.nms.NMSRegistry;
 import com.github.shynixn.petblocks.business.logic.configuration.ConfigGUI;
 import com.github.shynixn.petblocks.business.logic.configuration.ConfigParticle;
 import com.github.shynixn.petblocks.business.logic.configuration.ConfigPet;
-import com.github.shynixn.petblocks.business.logic.persistence.entity.ParticleEffectData;
 import com.github.shynixn.petblocks.business.logic.persistence.entity.PetData;
 import com.github.shynixn.petblocks.lib.BukkitUtilities;
 import com.github.shynixn.petblocks.lib.SimpleListener;
@@ -42,9 +41,23 @@ class PetDataListener extends SimpleListener {
     private final List<Player> namingSkull = new ArrayList<>();
     private final Set<Player> changingPlayers = new HashSet<>();
 
+    /**
+     * Initializes a new PetDataListener
+     * @param manager manager
+     * @param plugin plugin
+     */
     PetDataListener(PetDataManager manager, Plugin plugin) {
         super(plugin);
         this.manager = manager;
+    }
+
+    /**
+     * Removes the petblock from the player when he leaves the server
+     * @param event playerQuitEvent
+     */
+    @EventHandler
+    public void playerQuitEvent(PlayerQuitEvent event) {
+        PetBlocksApi.removePetBlock(event.getPlayer());
     }
 
     @EventHandler
@@ -88,11 +101,6 @@ class PetDataListener extends SimpleListener {
     }
 
     @EventHandler
-    public void playerQuitEvent(PlayerQuitEvent event) {
-        PetBlocksApi.removePetBlock(event.getPlayer());
-    }
-
-    @EventHandler
     public void inventoryCloseEvent(InventoryCloseEvent event) {
         final Player player = (Player) event.getPlayer();
         if (this.manager.inventories.containsKey(player)) {
@@ -133,7 +141,7 @@ class PetDataListener extends SimpleListener {
     }
 
     private void handleClick(InventoryClickEvent event, Player player, com.github.shynixn.petblocks.api.persistence.entity.PetMeta petMeta, PetBlock petBlock) {
-        if(this.changingPlayers.contains(player))
+        if (this.changingPlayers.contains(player))
             return;
         if (this.manager.gui.getPetType(event.getCurrentItem()) != null) {
             final PetType type = this.manager.gui.getPetType(event.getCurrentItem());
@@ -150,7 +158,7 @@ class PetDataListener extends SimpleListener {
                             currentPetMeta.setPlayerId(meta.getPlayerId());
                             currentPetMeta.setPlayerMeta(meta.getPlayerMeta());
                             currentPetMeta.setParticleEffectMeta(meta.getParticleEffectMeta());
-                            ((PetData)currentPetMeta).setId(meta.getId());
+                            ((PetData) currentPetMeta).setId(meta.getId());
                         }
                         if (ConfigGUI.getInstance().isSettings_copyskin()) {
                             currentPetMeta.setSkin(Material.SKULL_ITEM, (short) 3, ConfigGUI.getInstance().getContainer(currentPetMeta.getType()).getSkullName());
@@ -166,27 +174,35 @@ class PetDataListener extends SimpleListener {
                 player.sendMessage(Language.PREFIX + Language.NO_PERMISSION);
             }
         } else if (BukkitUtilities.compareItemName(event.getCurrentItem(), Language.MY_PET)) {
-            if (ConfigGUI.getInstance().isSettings_copyskin()) {
-                petMeta.setSkin(Material.SKULL_ITEM, (short) 3, ConfigGUI.getInstance().getContainer(petMeta.getType()).getSkullName());
-            } else {
-                petMeta.setSkin(Material.getMaterial(ConfigGUI.getInstance().getItems_defaultcostumeContainer().getId()), (short) ConfigGUI.getInstance().getItems_defaultcostumeContainer().getDamage(), ConfigGUI.getInstance().getItems_defaultcostumeContainer().getSkullName());
+            if (!PetBlocksApi.hasPetBlock(player) && ConfigGUI.getInstance().isSettings_onlyDisableItem()) {
+                petMeta.setEnabled(true);
+                PetBlocksApi.setPetBlock(player, petMeta);
+                PetDataListener.this.manager.gui.setMainItems(player, petMeta.getType(), true, false, petMeta);
+                this.persistAsynchronously(petMeta);
             }
-            petMeta.setParticleEffect(null);
-            if (petBlock != null) {
-                petBlock.respawn();
+            else {
+                if (ConfigGUI.getInstance().isSettings_copyskin()) {
+                    petMeta.setSkin(Material.SKULL_ITEM, (short) 3, ConfigGUI.getInstance().getContainer(petMeta.getType()).getSkullName());
+                } else {
+                    petMeta.setSkin(Material.getMaterial(ConfigGUI.getInstance().getItems_defaultcostumeContainer().getId()), (short) ConfigGUI.getInstance().getItems_defaultcostumeContainer().getDamage(), ConfigGUI.getInstance().getItems_defaultcostumeContainer().getSkullName());
+                }
+                petMeta.setParticleEffect(null);
+                if (petBlock != null) {
+                    petBlock.respawn();
+                }
+                this.persistAsynchronously(petMeta);
             }
-            this.persistAsynchronously(petMeta);
         } else if (BukkitUtilities.compareItemName(event.getCurrentItem(), Language.ENABLE_PET) && petMeta != null) {
             petMeta.setEnabled(true);
             PetBlocksApi.setPetBlock(player, petMeta);
             PetDataListener.this.manager.gui.setMainItems(player, petMeta.getType(), true, false, petMeta);
             this.persistAsynchronously(petMeta);
-        } else if (BukkitUtilities.compareItemName(event.getCurrentItem(), Language.DISABLE_PET)&& petMeta != null) {
+        } else if (BukkitUtilities.compareItemName(event.getCurrentItem(), Language.DISABLE_PET) && petMeta != null) {
             petMeta.setEnabled(false);
             PetBlocksApi.removePetBlock(player);
             this.manager.gui.setMainItems(player, petMeta.getType(), false, false, petMeta);
             this.persistAsynchronously(petMeta);
-        } else if (BukkitUtilities.compareItemName(event.getCurrentItem(), Language.MUTE)&& petMeta != null) {
+        } else if (BukkitUtilities.compareItemName(event.getCurrentItem(), Language.MUTE) && petMeta != null) {
             petMeta.setSoundsEnabled(false);
             this.manager.gui.setMainItems(player, petMeta.getType(), PetBlocksApi.hasPetBlock(player), false, petMeta);
             this.persistAsynchronously(petMeta);
@@ -209,7 +225,7 @@ class PetDataListener extends SimpleListener {
         } else if (BukkitUtilities.compareItemName(event.getCurrentItem(), Language.CALL) && petBlock != null) {
             petBlock.teleport(player);
             player.closeInventory();
-        } else if (BukkitUtilities.compareItemName(event.getCurrentItem(), Language.HAT) && petBlock != null)  {
+        } else if (BukkitUtilities.compareItemName(event.getCurrentItem(), Language.HAT) && petBlock != null) {
             if (player.hasPermission(Permission.WEARPET.get())) {
                 petBlock.wear(player);
             } else {

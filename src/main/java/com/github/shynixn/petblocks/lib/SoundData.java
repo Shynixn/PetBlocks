@@ -4,6 +4,7 @@ import org.bukkit.Location;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 
+@Deprecated
 public class SoundData {
     private double pitch;
     private double volume;

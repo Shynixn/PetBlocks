@@ -41,11 +41,15 @@ class GUI {
             final Inventory inventory = this.manager.inventories.get(player);
             if (inventory.getItem(ConfigGUI.getInstance().getGeneral_myContainer().getPosition()) == null || refresh || inventory.getItem(ConfigGUI.getInstance().getGeneral_myContainer().getPosition()).getType() != Material.SKULL_ITEM)
                 inventory.setItem(ConfigGUI.getInstance().getGeneral_myContainer().getPosition(), BukkitUtilities.nameItem(this.getItemStack(player, petType), Language.MY_PET, null));
-            if (!enabled)
-                Config.getInstance().setMyContainer(inventory, Language.ENABLE_PET, ConfigGUI.getInstance().getGeneral_enablePetContainer(), (Permission) null);
-            else
+            if (!enabled) {
+                if (!ConfigGUI.getInstance().isSettings_onlyDisableItem()) {
+                    Config.getInstance().setMyContainer(inventory, Language.ENABLE_PET, ConfigGUI.getInstance().getGeneral_enablePetContainer(), (Permission) null);
+                } else {
+                    inventory.setItem(ConfigGUI.getInstance().getGeneral_enablePetContainer().getPosition(), BukkitUtilities.nameItemDisplay(ConfigGUI.getInstance().getGeneral_emptyslotContainer().generate(), Language.EMPTY));
+                }
+            } else {
                 Config.getInstance().setMyContainer(inventory, Language.DISABLE_PET, ConfigGUI.getInstance().getGeneral_disablePetContainer(), (Permission) null);
-
+            }
             Config.getInstance().setMyContainer(inventory, Language.CANCEL, ConfigGUI.getInstance().getItems_cancelpetContainer(), (Permission) null);
             Config.getInstance().setMyContainer(inventory, Language.CANNON, ConfigGUI.getInstance().getItems_cannonpetContainer(), Permission.CANNON);
             Config.getInstance().setMyContainer(inventory, Language.CALL, ConfigGUI.getInstance().getItems_callpetContainer(), (Permission) null);

@@ -8,6 +8,7 @@ import java.util.HashMap;
 /**
  * Created by Shynixn
  */
+@Deprecated
 public final class RegisterHelper {
     public static String PREFIX;
     private static final HashMap<String, String> registered = new HashMap<>();

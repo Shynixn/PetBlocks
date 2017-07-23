@@ -20,6 +20,7 @@ import java.util.Random;
 import java.util.logging.Level;
 
 @SuppressWarnings({"ResultOfMethodCallIgnored", "SameParameterValue"})
+@Deprecated
 public final class BukkitUtilities {
     private BukkitUtilities() {
         super();
