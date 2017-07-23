@@ -14,6 +14,8 @@ import java.util.logging.Level;
 public class Interpreter19 {
     public static Sound interPretSounds19(String sound) {
         try {
+            if(sound.contains("SHULKER"))
+                return null;
             if (!isAbove18())
                 return Sound.valueOf(sound);
             if (sound.toUpperCase().equals("ENDERMAN_IDLE"))
@@ -46,6 +48,10 @@ public class Interpreter19 {
                 return Sound.valueOf("ENTITY_ENDERDRAGON_FLAP");
             if (sound.toUpperCase().equals("ENDERDRAGON_GROWL"))
                 return Sound.valueOf("ENTITY_ENDERDRAGON_GROWL");
+            if(sound.toUpperCase().equals("SHULKER_WELK"))
+                return Sound.valueOf("ENTITY_SHULKER_TELEPORT");
+            if(sound.toUpperCase().equals("SHULKER_IDLE"))
+                return Sound.valueOf("ENTITY_SHULKER_AMBIENT");
             throw new RuntimeException("Sounds Betainterpreter19 cannot translate the sounds. " + sound + '.');
         } catch (final Exception e) {
             Bukkit.getLogger().log(Level.WARNING, "Failed to interpret sounds above 1_9.", e);

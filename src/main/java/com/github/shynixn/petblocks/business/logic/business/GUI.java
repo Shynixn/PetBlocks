@@ -3,6 +3,8 @@ package com.github.shynixn.petblocks.business.logic.business;
 import com.github.shynixn.petblocks.api.entities.PetMeta;
 import com.github.shynixn.petblocks.business.Config;
 import com.github.shynixn.petblocks.business.Permission;
+import com.github.shynixn.petblocks.business.bukkit.nms.NMSRegistry;
+import com.github.shynixn.petblocks.business.bukkit.nms.VersionSupport;
 import com.github.shynixn.petblocks.business.logic.configuration.ConfigGUI;
 import com.github.shynixn.petblocks.business.logic.configuration.ConfigParticle;
 import org.bukkit.Bukkit;
@@ -77,9 +79,12 @@ class GUI {
         if (this.manager.inventories.containsKey(player)) {
             this.clearInventory(this.manager.inventories.get(player));
             final Inventory inventory = this.manager.inventories.get(player);
+            final VersionSupport serverVersion = VersionSupport.getServerVersion();
             for (final PetType petType : PetType.values()) {
-                final String name = petType.name();
-                Config.getInstance().setMyContainer(inventory, Language.getDisplayName(name), ConfigGUI.getInstance().getContainer(petType), (Permission.SINGLEPETTYPE.get() + name.toLowerCase()), Permission.ALLPETTYPES.get());
+                if (serverVersion.isVersionSameOrGreaterThan(petType.getVersion())) {
+                    final String name = petType.name();
+                    Config.getInstance().setMyContainer(inventory, Language.getDisplayName(name), ConfigGUI.getInstance().getContainer(petType), (Permission.SINGLEPETTYPE.get() + name.toLowerCase()), Permission.ALLPETTYPES.get());
+                }
             }
             this.manager.pages.put(player, new GuiPageContainer(GuiPage.MAIN));
         }

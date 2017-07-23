@@ -30,6 +30,7 @@ lavaslime-name: '&4&lLavaslime'
 ghast-name: '&f&lGhast'
 blaze-name: '&e&lBlaze'
 wither-name: '&8&lWither'
+shulker-name: '&5&lShulker'
 
 enable-pet: '&a&lEnable Petblock'
 disable-pet: '&c&lDisable Petblock'

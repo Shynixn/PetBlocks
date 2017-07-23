@@ -123,6 +123,7 @@ public final class ConfigGUI {
         this.souls_Container.put(PetType.GHAST, CustomItemContainer.resolveItemContainer("gui.souls.ghast-soul", c));
         this.souls_Container.put(PetType.BLAZE, CustomItemContainer.resolveItemContainer("gui.souls.blaze-soul", c));
         this.souls_Container.put(PetType.WITHER, CustomItemContainer.resolveItemContainer("gui.souls.wither-soul", c));
+        this.souls_Container.put(PetType.SHULKER, CustomItemContainer.resolveItemContainer("gui.souls.shulker-soul", c));
 
         this.general_defaultAppearanceContainer.setEnabled(true);
         this.costumes_default = this.resolveItems(c.getStringList("costumes.default"));

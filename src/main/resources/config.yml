@@ -547,6 +547,15 @@ gui:
        type: FLYING
        movement: HOPPING
        lore: '&ePermission: <permission>'
+     shulker-soul:
+       enabled: true
+       id: 397
+       damage: 3
+       owner: 'textures.minecraft.net/texture/b1d3534d21fe8499262de87affbeac4d25ffde35c8bdca069e61e1787ff2f'
+       position: 25
+       type: WALKING
+       movement: HOPPING
+       lore: '&ePermission: <permission>'
 #--
 
 # Costumes settings
