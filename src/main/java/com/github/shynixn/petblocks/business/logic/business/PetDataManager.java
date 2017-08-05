@@ -47,15 +47,12 @@ public final class PetDataManager implements AutoCloseable {
         if (plugin.getPluginLoader() != null) {
             new PetDataCommandExecutor(this);
             new PetDataListener(this, plugin);
-            System.out.println("ADDING FILTER");
             this.filter = PetBlockFilter.create();
-            System.out.println("LOAD");
         }
         Factory.initialize(plugin);
         this.petDataController = Factory.createPetDataController();
         this.playerMetaController = Factory.createPlayerDataController();
         this.particleEffectMetaController = Factory.createParticleEffectController();
-        System.out.println("FINISHED");
     }
 
     public PetMeta createPetMeta(Player player, PetType petType) {

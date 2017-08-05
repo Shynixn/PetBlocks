@@ -38,6 +38,8 @@ public final class Config {
     private boolean join_enabled;
     private boolean join_overwriteExistingPet;
 
+    private boolean metrics = true;
+
     private Config(Plugin plugin) {
         super();
         Config.plugin = plugin;
@@ -56,6 +58,8 @@ public final class Config {
         try {
             plugin.reloadConfig();
             c = plugin.getConfig();
+
+            this.metrics = c.getBoolean("metrics");
 
             this.chat_async = c.getBoolean("chat.async");
             this.chat_highestpriority = c.getBoolean("chat.highest-priority");
@@ -159,5 +163,14 @@ public final class Config {
                 return true;
         }
         return false;
+    }
+
+    /**
+     * Returns if metrics is enabled
+     *
+     * @return enabled
+     */
+    public boolean isMetricsEnabled() {
+        return this.metrics;
     }
 }
