@@ -39,6 +39,7 @@ public final class Config {
     private boolean join_overwriteExistingPet;
 
     private boolean metrics = true;
+    private boolean allowRidingOnRegionChanging;
 
     private Config(Plugin plugin) {
         super();
@@ -72,6 +73,8 @@ public final class Config {
 
             this.join_enabled = c.getBoolean("join.enabled");
             this.join_overwriteExistingPet = plugin.getConfig().getBoolean("join.overwrite-previous-pet");
+
+            this.allowRidingOnRegionChanging = c.getBoolean("region.allow-riding-on");
 
             ConfigCommands.getInstance().load(c);
             ConfigGUI.getInstance().load(c);
@@ -155,6 +158,10 @@ public final class Config {
 
     public boolean isChat_highestpriority() {
         return this.chat_highestpriority;
+    }
+
+    public boolean allowRidingOnRegionChanging() {
+        return this.allowRidingOnRegionChanging;
     }
 
     private boolean isInWorld(World world) {

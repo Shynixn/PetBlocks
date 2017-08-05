@@ -26,6 +26,27 @@ public final class NMSRegistry {
         super();
     }
 
+    /**
+     * Checks if the player is allowed to enter a region when he is riding his pet
+     *
+     * @param player player
+     * @return isAllowed
+     */
+    public static boolean canEnterRegionOnPetRiding(Player player, boolean spawn) {
+        if (RegisterHelper.isRegistered("WorldGuard")) {
+            try {
+                if (RegisterHelper.isRegistered("WorldGuard", '6')) {
+                    return WorldGuardConnection6.isAllowedToEnterRegionByRiding(player, spawn, getWorldGuard());
+                } else if (RegisterHelper.isRegistered("WorldGuard", '5')) {
+                    return WorldGuardConnection5.isAllowedToEnterRegionByRiding(player, spawn, getWorldGuard());
+                }
+            } catch (final Exception ex) {
+                Bukkit.getServer().getConsoleSender().sendMessage(PetBlocksPlugin.PREFIX_CONSOLE + ChatColor.DARK_RED + "Crashed while connecting to worldguard." + ex.getMessage());
+            }
+        }
+        return true;
+    }
+
     public static PetBlock createPetBlock(Location location, PetMeta meta) {
         final Class<?> clazz = ReflectionLib.getClassFromName("com.github.shynixn.petblocks.business.bukkit.nms.VERSION.CustomGroundArmorstand");
         return (PetBlock) ReflectionLib.invokeConstructor(clazz, location, meta);
