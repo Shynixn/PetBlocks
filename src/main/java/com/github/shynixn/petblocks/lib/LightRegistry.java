@@ -1,6 +1,5 @@
 package com.github.shynixn.petblocks.lib;
 
-import net.minecraft.server.v1_12_R1.EntityTypes;
 import org.bukkit.Bukkit;
 
 import java.lang.reflect.Field;
@@ -91,25 +90,29 @@ public enum LightRegistry {
 
         @Override
         public void unregister() throws Exception {
-            final Class<?> entityTypeClazz = Class.forName("net.minecraft.server.VERSION.EntityTypes".replace("VERSION", getServerVersion()));
-            if (!getServerVersion().equals("v1_11_R1") && !getServerVersion().equals("v1_12_R1")) {
-                for (final Class<?> customEntityClazz : types.keySet()) {
-                    final LightRegistry powerRegistry = types.get(customEntityClazz);
-                    this.<Class<?>, String>getMap(entityTypeClazz, "d").remove(customEntityClazz);
-                    this.<Class<?>, String>getMap(entityTypeClazz, "f").remove(customEntityClazz);
-                    this.modify(powerRegistry.nmsClass, powerRegistry.saveGame_18_19_10, powerRegistry.entityId);
+            try {
+                final Class<?> entityTypeClazz = Class.forName("net.minecraft.server.VERSION.EntityTypes".replace("VERSION", getServerVersion()));
+                if (!getServerVersion().equals("v1_11_R1") && !getServerVersion().equals("v1_12_R1")) {
+                    for (final Class<?> customEntityClazz : types.keySet()) {
+                        final LightRegistry powerRegistry = types.get(customEntityClazz);
+                        this.<Class<?>, String>getMap(entityTypeClazz, "d").remove(customEntityClazz);
+                        this.<Class<?>, String>getMap(entityTypeClazz, "f").remove(customEntityClazz);
+                        this.modify(powerRegistry.nmsClass, powerRegistry.saveGame_18_19_10, powerRegistry.entityId);
+                    }
+                } else {
+                    final Field fieldRegistry = entityTypeClazz.getField("b");
+                    fieldRegistry.setAccessible(true);
+                    final Object registry = fieldRegistry.get(null);
+                    final Field fieldMap = registry.getClass().getSuperclass().getDeclaredField("c");
+                    fieldMap.setAccessible(true);
+                    final Map<?, ?> map = (Map<?, ?>) fieldMap.get(registry);
+                    for (final Object key : saveKey) {
+                        map.remove(key);
+                    }
+                    saveKey.clear();
                 }
-            } else {
-                final Field fieldRegistry = entityTypeClazz.getField("b");
-                fieldRegistry.setAccessible(true);
-                final Object registry = fieldRegistry.get(null);
-                final Field fieldMap = registry.getClass().getSuperclass().getDeclaredField("c");
-                fieldMap.setAccessible(true);
-                final Map<?, ?> map = (Map<?, ?>) fieldMap.get(registry);
-                for (final Object key : saveKey) {
-                    map.remove(key);
-                }
-                saveKey.clear();
+            } catch (final Exception ignored) {
+                //Ignored because of other bukkit versions
             }
         }
 
@@ -135,7 +138,7 @@ public enum LightRegistry {
 
         private Object generateMinecraftKey(String id) throws Exception {
             final Class<?> minecraftKeyGeneration = Class.forName("net.minecraft.server.VERSION.MinecraftKey".replace("VERSION", getServerVersion()));
-            return ReflectionLib.invokeConstructor(minecraftKeyGeneration, new String [] {"PetBlocks", id});
+            return ReflectionLib.invokeConstructor(minecraftKeyGeneration, new String[]{"PetBlocks", id});
         }
 
         @SuppressWarnings("unchecked")
