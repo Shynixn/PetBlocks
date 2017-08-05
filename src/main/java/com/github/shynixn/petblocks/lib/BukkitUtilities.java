@@ -111,13 +111,6 @@ public final class BukkitUtilities {
         return 1;
     }
 
-    public static void startFiltering() {
-        try {
-            Filtering.filterMessages();
-        } catch (final Exception ignored) {
-        }
-    }
-
     public static boolean compareItemName(ItemStack itemStack, String displayname) {
         try {
             if (itemStack != null) {

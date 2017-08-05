@@ -5,8 +5,11 @@ import com.github.shynixn.petblocks.api.entities.PetMeta;
 import com.github.shynixn.petblocks.api.entities.PetType;
 import com.github.shynixn.petblocks.business.logic.business.PetBlockManager;
 import com.github.shynixn.petblocks.business.logic.business.PetDataManager;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
+
+import java.util.logging.Level;
 
 public final class PetBlocksApi {
     private static PetBlockManager petBlockManager;
@@ -17,14 +20,21 @@ public final class PetBlocksApi {
         petBlockManager = new PetBlockManager(dataManager, plugin);
     }
 
-    private static void dispose(Plugin plugin) {
+    private static void dispose() {
         if (petBlockManager != null) {
             petBlockManager.killAll();
+        }
+        if (dataManager != null) {
+            try {
+                dataManager.close();
+            } catch (final Exception e) {
+                Bukkit.getLogger().log(Level.WARNING, "Cannot close manager.", e);
+            }
         }
     }
 
     public static void setPetBlock(Player player, PetMeta petMeta) {
-        setPetBlock(player, petMeta,0);
+        setPetBlock(player, petMeta, 0);
     }
 
     public static void setPetBlock(Player player, PetMeta petMeta, int delay) {
@@ -78,13 +88,13 @@ public final class PetBlocksApi {
         if (petType == null)
             throw new IllegalArgumentException("Type cannot be null!");
         final PetMeta meta = dataManager.createPetMeta(player, petType);
-        dataManager.persist((com.github.shynixn.petblocks.api.persistence.entity.PetMeta)meta);
+        dataManager.persist((com.github.shynixn.petblocks.api.persistence.entity.PetMeta) meta);
     }
 
     public static void persistPetMeta(PetMeta petMeta) {
         if (petMeta == null)
             throw new IllegalArgumentException("Meta cannot be null!");
-        dataManager.persist((com.github.shynixn.petblocks.api.persistence.entity.PetMeta)petMeta);
+        dataManager.persist((com.github.shynixn.petblocks.api.persistence.entity.PetMeta) petMeta);
     }
 
     public static boolean hasPetMeta(Player player) {
