@@ -138,7 +138,7 @@ public enum LightRegistry {
 
         private Object generateMinecraftKey(String id) throws Exception {
             final Class<?> minecraftKeyGeneration = Class.forName("net.minecraft.server.VERSION.MinecraftKey".replace("VERSION", getServerVersion()));
-            return ReflectionLib.invokeConstructor(minecraftKeyGeneration, new String[]{"PetBlocks", id});
+            return ReflectionUtils.invokeConstructor(minecraftKeyGeneration, new Class[] {String.class, String.class}, new Object[] {"PetBlocks", id});
         }
 
         @SuppressWarnings("unchecked")

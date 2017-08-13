@@ -65,6 +65,7 @@ public final class PetBlocksPlugin extends JavaPlugin {
             if (Config.getInstance().isMetricsEnabled()) {
                 new Metrics(this);
             }
+
             NMSRegistry.registerAll();
             try {
                 ReflectionUtils.invokeMethodByClass(PetBlocksApi.class, "init", new Class[]{Plugin.class}, new Object[]{this});

@@ -1,10 +1,12 @@
 package com.github.shynixn.petblocks.lib;
 
+import com.github.shynixn.petblocks.business.bukkit.nms.VersionSupport;
 import org.bukkit.Bukkit;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.logging.Level;
 
 /**
@@ -15,14 +17,14 @@ public class Interpreter19 {
     public static Sound interPretSounds19(String sound) {
         try {
             if (sound.contains("SHULKER")) {
-                if (!isAbove18())
+                if (!VersionSupport.getServerVersion().isVersionSameOrGreaterThan(VersionSupport.VERSION_1_9_R1))
                     return null;
                 else {
                     if (sound.toUpperCase().equals("SHULKER_IDLE"))
                         return Sound.valueOf("ENTITY_SHULKER_AMBIENT");
                 }
             }
-            if (!isAbove18())
+            if (!VersionSupport.getServerVersion().isVersionSameOrGreaterThan(VersionSupport.VERSION_1_9_R1))
                 return Sound.valueOf(sound);
             if (sound.toUpperCase().equals("ENDERMAN_IDLE"))
                 return Sound.valueOf("ENTITY_ENDERMEN_AMBIENT");
@@ -62,35 +64,31 @@ public class Interpreter19 {
     }
 
     public static ItemStack getItemInHand19(Player player, boolean offHand) {
-        if (!isAbove18()) {
-            return (ItemStack) ReflectionLib.invokeMethodByObject(player, "getItemInHand", new Object[0]);
+        try {
+            if (!VersionSupport.getServerVersion().isVersionSameOrGreaterThan(VersionSupport.VERSION_1_9_R1)) {
+                return ReflectionUtils.invokeMethodByObject(player, "getItemInHand", new Class[]{}, new Object[]{});
+            }
+            if (offHand) {
+                return ReflectionUtils.invokeMethodByObject(player.getInventory(), "getItemInOffHand", new Class[]{}, new Object[]{});
+            }
+            return ReflectionUtils.invokeMethodByObject(player.getInventory(), "getItemInMainHand", new Class[]{}, new Object[]{});
+        } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
+            Bukkit.getLogger().log(Level.WARNING, "Failed to gather item in 19 hand.", e);
+            return null;
         }
-        if (offHand) {
-            return (ItemStack) ReflectionLib.invokeMethodByObject(player.getInventory(), "getItemInOffHand", new Object[0]);
-        }
-        return (ItemStack) ReflectionLib.invokeMethodByObject(player.getInventory(), "getItemInMainHand", new Object[0]);
     }
 
     public static void setItemInHand19(Player player, ItemStack itemStack, boolean offHand) {
-        if (!isAbove18()) {
-            ReflectionLib.invokeMethodByObject(player, "setItemInHand", new Object[]{itemStack});
-        } else if (offHand) {
-            ReflectionLib.invokeMethodByObject(player.getInventory(), "setItemInOffHand", new Object[]{itemStack});
-        } else {
-            ReflectionLib.invokeMethodByObject(player.getInventory(), "setItemInMainHand", new Object[]{itemStack});
-        }
-    }
-
-    private static boolean isAbove18() {
         try {
-            BukkitUtilities.getServerVersion();
-        } catch (final RuntimeException ex) {
-            return false;
+            if (!VersionSupport.getServerVersion().isVersionSameOrGreaterThan(VersionSupport.VERSION_1_9_R1)) {
+                ReflectionUtils.invokeMethodByObject(player, "setItemInHand", new Class[]{itemStack.getClass()}, new Object[]{itemStack});
+            } else if (offHand) {
+                ReflectionUtils.invokeMethodByObject(player.getInventory(), "setItemInOffHand", new Class[]{itemStack.getClass()}, new Object[]{itemStack});
+            } else {
+                ReflectionUtils.invokeMethodByObject(player.getInventory(), "setItemInMainHand", new Class[]{itemStack.getClass()}, new Object[]{itemStack});
+            }
+        } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
+            Bukkit.getLogger().log(Level.WARNING, "Failed to set item in 19 hand.", e);
         }
-        return BukkitUtilities.getServerVersion().equals("v1_9_R1")
-                || BukkitUtilities.getServerVersion().equals("v1_9_R2")
-                || BukkitUtilities.getServerVersion().equals("v1_10_R1")
-                || BukkitUtilities.getServerVersion().equals("v1_11_R1")
-                || BukkitUtilities.getServerVersion().equals("v1_12_R1");
     }
 }

@@ -7,6 +7,7 @@ import org.bukkit.entity.Player;
 
 import com.github.shynixn.petblocks.lib.SoundData;
 
+@Deprecated
 public enum PetType {
     PIG(new SoundData("PIG_WALK"), new SoundData("PIG_IDLE"), MoveType.WALKING),
     CHICKEN(new SoundData("CHICKEN_WALK"), new SoundData("CHICKEN_IDLE"), MoveType.WALKING),

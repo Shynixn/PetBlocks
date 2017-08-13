@@ -1,23 +1,22 @@
 package com.github.shynixn.petblocks.business.bukkit.dependencies.worldguard;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.*;
-
 import com.github.shynixn.petblocks.api.PetBlocksApi;
 import com.github.shynixn.petblocks.api.entities.PetBlock;
 import com.github.shynixn.petblocks.business.Config;
-import com.github.shynixn.petblocks.lib.ReflectionLib;
-import org.bukkit.Location;
-import org.bukkit.entity.Player;
-import org.bukkit.plugin.Plugin;
-
+import com.github.shynixn.petblocks.lib.ReflectionUtils;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import com.sk89q.worldguard.protection.ApplicableRegionSet;
 import com.sk89q.worldguard.protection.flags.DefaultFlag;
 import com.sk89q.worldguard.protection.flags.StateFlag.State;
 import com.sk89q.worldguard.protection.managers.RegionManager;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.entity.Player;
+
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.*;
 
 public final class WorldGuardConnection6 {
     private WorldGuardConnection6() {
@@ -27,10 +26,10 @@ public final class WorldGuardConnection6 {
     private static final ArrayList<ProtectedRegion> flags = new ArrayList<>();
     private static final Map<Player, Collection<ProtectedRegion>> cache = new HashMap<>();
 
-    public synchronized static void allowSpawn(Location location, Plugin plugin) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
-        final WorldGuardPlugin worldGuard = (WorldGuardPlugin) plugin;
+    public synchronized static void allowSpawn(Location location) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException {
+        final WorldGuardPlugin worldGuard = getWorldGuard();
         final RegionManager regionManager = worldGuard.getRegionManager(location.getWorld());
-        final ApplicableRegionSet set = (ApplicableRegionSet) ReflectionLib.invokeMethodByObject(regionManager, "getApplicableRegions", location);
+        final ApplicableRegionSet set = ReflectionUtils.invokeMethodByObject(regionManager, "getApplicableRegions", new Class[]{location.getClass()}, new Object[]{location});
         final Iterable<ProtectedRegion> regions = (Iterable<ProtectedRegion>) getMethod(set.getClass(), "getRegions").invoke(set);
         for (final ProtectedRegion region : regions) {
             if (region.getFlag(DefaultFlag.MOB_SPAWNING) == State.DENY) {
@@ -43,20 +42,21 @@ public final class WorldGuardConnection6 {
     /**
      * Checks if the player is riding his pet and entering a different region. Returns false if he isn't the owner of the region
      *
-     * @param player player
-     * @param plugin plugin
+     * @param player     player
+     * @param cacheSpawn cacheSpawn
      * @return success
      * @throws InvocationTargetException exception
      * @throws IllegalAccessException    exception
+     * @throws NoSuchMethodException     exception
      */
-    public static boolean isAllowedToEnterRegionByRiding(Player player, boolean cacheSpawn, Plugin plugin) throws InvocationTargetException, IllegalAccessException {
+    public static boolean isAllowedToEnterRegionByRiding(Player player, boolean cacheSpawn) throws InvocationTargetException, IllegalAccessException, NoSuchMethodException {
         if (!Config.getInstance().allowRidingOnRegionChanging() && PetBlocksApi.hasPetBlock(player)) {
             final PetBlock petBlock = PetBlocksApi.getPetBlock(player);
             if ((petBlock.getArmorStand().getPassenger() != null && petBlock.getArmorStand().getPassenger().equals(player)) || cacheSpawn) {
                 final Location location = player.getLocation();
-                final WorldGuardPlugin worldGuard = (WorldGuardPlugin) plugin;
+                final WorldGuardPlugin worldGuard = getWorldGuard();
                 final RegionManager regionManager = worldGuard.getRegionManager(location.getWorld());
-                final ApplicableRegionSet set = (ApplicableRegionSet) ReflectionLib.invokeMethodByObject(regionManager, "getApplicableRegions", location);
+                final ApplicableRegionSet set = ReflectionUtils.invokeMethodByObject(regionManager, "getApplicableRegions", new Class[]{location.getClass()}, new Object[]{location});
                 final Iterable<ProtectedRegion> regions = (Iterable<ProtectedRegion>) getMethod(set.getClass(), "getRegions").invoke(set);
                 List<ProtectedRegion> regionsList = null;
                 if (cacheSpawn) {
@@ -80,10 +80,10 @@ public final class WorldGuardConnection6 {
         return true;
     }
 
-    public static boolean canSpawnInRegion(String[] regionList, Location location, Plugin plugin) throws InvocationTargetException, IllegalAccessException {
-        final WorldGuardPlugin worldGuard = (WorldGuardPlugin) plugin;
+    public static boolean canSpawnInRegion(String[] regionList, Location location) throws InvocationTargetException, IllegalAccessException, NoSuchMethodException {
+        final WorldGuardPlugin worldGuard = getWorldGuard();
         final RegionManager regionManager = worldGuard.getRegionManager(location.getWorld());
-        final ApplicableRegionSet set = (ApplicableRegionSet) ReflectionLib.invokeMethodByObject(regionManager, "getApplicableRegions", location);
+        final ApplicableRegionSet set = ReflectionUtils.invokeMethodByObject(regionManager, "getApplicableRegions", new Class[]{location.getClass()}, new Object[]{location});
         final Iterable<ProtectedRegion> regions = (Iterable<ProtectedRegion>) getMethod(set.getClass(), "getRegions").invoke(set);
         for (final Object region1 : regions) {
             final ProtectedRegion region = (ProtectedRegion) region1;
@@ -108,5 +108,9 @@ public final class WorldGuardConnection6 {
             region.setFlag(DefaultFlag.MOB_SPAWNING, State.DENY);
         }
         flags.clear();
+    }
+
+    private static WorldGuardPlugin getWorldGuard() {
+        return (WorldGuardPlugin) Bukkit.getServer().getPluginManager().getPlugin("WorldGuard");
     }
 }
