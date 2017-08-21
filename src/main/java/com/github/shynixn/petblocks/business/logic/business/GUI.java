@@ -1,21 +1,19 @@
 package com.github.shynixn.petblocks.business.logic.business;
 
 import com.github.shynixn.petblocks.api.entities.PetMeta;
+import com.github.shynixn.petblocks.api.entities.PetType;
 import com.github.shynixn.petblocks.business.Config;
+import com.github.shynixn.petblocks.business.Language;
 import com.github.shynixn.petblocks.business.Permission;
-import com.github.shynixn.petblocks.business.bukkit.nms.NMSRegistry;
 import com.github.shynixn.petblocks.business.bukkit.nms.VersionSupport;
 import com.github.shynixn.petblocks.business.logic.configuration.ConfigGUI;
 import com.github.shynixn.petblocks.business.logic.configuration.ConfigParticle;
+import com.github.shynixn.petblocks.lib.BukkitUtilities;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-
-import com.github.shynixn.petblocks.api.entities.PetType;
-import com.github.shynixn.petblocks.business.Language;
-import com.github.shynixn.petblocks.lib.BukkitUtilities;
 
 class GUI {
     private final PetDataManager manager;

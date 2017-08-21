@@ -1,20 +1,18 @@
 package com.github.shynixn.petblocks.business;
 
-import java.io.File;
-import java.lang.reflect.Field;
-import java.util.logging.Level;
-
+import com.github.shynixn.petblocks.business.bukkit.PetBlocksPlugin;
+import com.github.shynixn.petblocks.lib.BukkitChatColor;
+import com.github.shynixn.petblocks.lib.BukkitUtilities;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
-import org.bukkit.plugin.java.JavaPlugin;
 
-import com.github.shynixn.petblocks.business.bukkit.PetBlocksPlugin;
-import com.github.shynixn.petblocks.lib.BukkitChatColor;
-import com.github.shynixn.petblocks.lib.BukkitUtilities;
+import java.io.File;
+import java.lang.reflect.Field;
+import java.util.logging.Level;
 
 public final class Language {
     public static void reload(Plugin plugin) {

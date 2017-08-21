@@ -1,32 +1,24 @@
 package com.github.shynixn.petblocks.business.logic.business;
 
-import java.io.Closeable;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.Future;
-import java.util.concurrent.RunnableFuture;
-
+import com.github.shynixn.petblocks.api.PetBlocksApi;
 import com.github.shynixn.petblocks.api.entities.PetType;
 import com.github.shynixn.petblocks.api.persistence.controller.ParticleEffectMetaController;
+import com.github.shynixn.petblocks.api.persistence.controller.PetMetaController;
 import com.github.shynixn.petblocks.api.persistence.controller.PlayerMetaController;
 import com.github.shynixn.petblocks.api.persistence.entity.PetMeta;
 import com.github.shynixn.petblocks.api.persistence.entity.PlayerMeta;
 import com.github.shynixn.petblocks.business.Config;
+import com.github.shynixn.petblocks.business.Language;
 import com.github.shynixn.petblocks.business.logic.configuration.ConfigGUI;
-import com.github.shynixn.petblocks.api.persistence.controller.PetMetaController;
 import com.github.shynixn.petblocks.business.logic.persistence.Factory;
-import com.github.shynixn.petblocks.business.logic.persistence.controller.PlayerDataRepository;
 import com.github.shynixn.petblocks.business.logic.persistence.entity.PetData;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
-import org.bukkit.plugin.java.JavaPlugin;
 
-import com.github.shynixn.petblocks.api.PetBlocksApi;
-
-import com.github.shynixn.petblocks.business.Language;
+import java.util.HashMap;
+import java.util.Map;
 
 public final class PetDataManager implements AutoCloseable {
     private final PetMetaController petDataController;

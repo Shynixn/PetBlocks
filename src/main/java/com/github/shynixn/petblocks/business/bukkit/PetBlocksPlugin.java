@@ -61,7 +61,7 @@ public final class PetBlocksPlugin extends JavaPlugin {
         } else {
             Bukkit.getServer().getConsoleSender().sendMessage(PREFIX_CONSOLE + ChatColor.GREEN + "Loading PetBlocks ...");
             Language.reload(this);
-            Config.initiliaze(this);
+            Config.initialize(this);
             if (Config.getInstance().isMetricsEnabled()) {
                 new Metrics(this);
             }

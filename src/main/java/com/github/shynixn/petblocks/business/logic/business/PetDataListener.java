@@ -110,21 +110,21 @@ class PetDataListener extends SimpleListener {
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void playerChatEvent(PlayerChatEvent event) {
-        if (!Config.getInstance().isChat_async() && Config.getInstance().isChat_highestpriority()) {
+        if (!Config.getInstance().isChat_async() && Config.getInstance().isChatHighestPriority()) {
             this.handleChatMessage(event);
         }
     }
 
     @EventHandler(priority = EventPriority.LOWEST)
     public void playerChatEvent2(PlayerChatEvent event) {
-        if (!Config.getInstance().isChat_async() && !Config.getInstance().isChat_highestpriority()) {
+        if (!Config.getInstance().isChat_async() && !Config.getInstance().isChatHighestPriority()) {
             this.handleChatMessage(event);
         }
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void playerChatEvent3(final AsyncPlayerChatEvent event) {
-        if (Config.getInstance().isChat_async() && Config.getInstance().isChat_highestpriority()) {
+        if (Config.getInstance().isChat_async() && Config.getInstance().isChatHighestPriority()) {
             if (this.namingPlayers.contains(event.getPlayer()) || this.namingSkull.contains(event.getPlayer()))
                 event.setCancelled(true);
             this.plugin.getServer().getScheduler().runTaskLater(this.plugin, () -> PetDataListener.this.handleChatMessage(new PlayerChatEvent(event.getPlayer(), event.getMessage())), 1L);
@@ -133,7 +133,7 @@ class PetDataListener extends SimpleListener {
 
     @EventHandler(priority = EventPriority.LOW)
     public void playerChatEvent4(final AsyncPlayerChatEvent event) {
-        if (Config.getInstance().isChat_async() && !Config.getInstance().isChat_highestpriority()) {
+        if (Config.getInstance().isChat_async() && !Config.getInstance().isChatHighestPriority()) {
             if (this.namingPlayers.contains(event.getPlayer()) || this.namingSkull.contains(event.getPlayer()))
                 event.setCancelled(true);
             this.plugin.getServer().getScheduler().runTaskLater(this.plugin, () -> PetDataListener.this.handleChatMessage(new PlayerChatEvent(event.getPlayer(), event.getMessage())), 1L);

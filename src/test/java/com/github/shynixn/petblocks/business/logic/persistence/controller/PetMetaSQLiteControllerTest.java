@@ -16,7 +16,6 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.junit.Assert;
-import org.junit.BeforeClass;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 

@@ -1,15 +1,15 @@
 package com.github.shynixn.petblocks.business.logic.business;
 
 import com.github.shynixn.petblocks.api.PetBlocksApi;
+import com.github.shynixn.petblocks.api.entities.PetBlock;
 import com.github.shynixn.petblocks.api.events.PetBlockMoveEvent;
 import com.github.shynixn.petblocks.api.events.PetBlockRideEvent;
 import com.github.shynixn.petblocks.api.persistence.entity.PetMeta;
 import com.github.shynixn.petblocks.business.Config;
-import com.github.shynixn.petblocks.business.logic.configuration.ConfigPet;
-import com.github.shynixn.petblocks.lib.*;
-import com.github.shynixn.petblocks.api.entities.PetBlock;
 import com.github.shynixn.petblocks.business.bukkit.PetBlocksPlugin;
 import com.github.shynixn.petblocks.business.bukkit.nms.NMSRegistry;
+import com.github.shynixn.petblocks.business.logic.configuration.ConfigPet;
+import com.github.shynixn.petblocks.lib.*;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -26,7 +26,6 @@ import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.player.*;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
-import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.ArrayList;
 import java.util.List;

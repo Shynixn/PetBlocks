@@ -1,11 +1,9 @@
 package com.github.shynixn.petblocks.api.entities;
 
 import com.github.shynixn.petblocks.business.bukkit.nms.VersionSupport;
-import org.bukkit.Location;
-import org.bukkit.Sound;
-import org.bukkit.entity.Player;
-
 import com.github.shynixn.petblocks.lib.SoundData;
+import org.bukkit.Location;
+import org.bukkit.entity.Player;
 
 @Deprecated
 public enum PetType {

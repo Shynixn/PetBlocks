@@ -222,9 +222,7 @@ class PetBlockCommandExecutor extends DynamicCommandHelper {
     private void togglePetCommand(Player player) {
         if (this.manager.hasPetBlock(player))
             this.manager.removePetBlock(player);
-        this.providePet(player, (meta, petBlock) -> {
-            PetBlocksApi.setPetBlock(player, meta);
-        });
+        this.providePet(player, (meta, petBlock) -> PetBlocksApi.setPetBlock(player, meta));
     }
 
     private void removePetCommand(Player player) {

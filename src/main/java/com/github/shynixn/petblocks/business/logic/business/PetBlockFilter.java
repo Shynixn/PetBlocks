@@ -45,7 +45,7 @@ class PetBlockFilter implements Filter, AutoCloseable {
      * Initializes a new filter
      */
     private PetBlockFilter() {
-
+        super();
     }
 
     /**

@@ -99,11 +99,11 @@ public final class BukkitUtilities {
         return 1;
     }
 
-    public static boolean compareItemName(ItemStack itemStack, String displayname) {
+    public static boolean compareItemName(ItemStack itemStack, String displayName) {
         try {
             if (itemStack != null) {
                 if (itemStack.getItemMeta() != null) {
-                    return itemStack.getItemMeta().getDisplayName().equals(displayname);
+                    return itemStack.getItemMeta().getDisplayName().equals(displayName);
                 }
             }
         } catch (final Exception ignored) {
