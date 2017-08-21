@@ -25,8 +25,8 @@
 # admin 	 Allows to use own skulls ingame*				petblocks.inventory.costume
 # admin 	 Access to the /petblocks command			    petblocks.commands
 
-# Sends anonymous stats to https://bstats.org/plugin/bukkit/BlockBall.
-# As this does not have an impact on your BlockBall experience at all I would like you to set it on true as knowing that my
+# Sends anonymous stats to https://bstats.org/plugin/bukkit/PetBlocks.
+# As this does not have an impact on your PetBlocks experience at all I would like you to set it on true as knowing that my
 # plugin gets used by many server helps me focusing on new updates ;)
 metrics: true
 
