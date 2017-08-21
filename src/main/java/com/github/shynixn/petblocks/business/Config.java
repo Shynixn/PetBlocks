@@ -39,7 +39,7 @@ public final class Config {
     private boolean join_overwriteExistingPet;
 
     private boolean metrics = true;
-    private boolean allowRidingOnRegionChanging;
+    private boolean allowRidingOnRegionChanging = true;
 
     private Config(Plugin plugin) {
         super();
@@ -74,7 +74,7 @@ public final class Config {
             this.join_enabled = c.getBoolean("join.enabled");
             this.join_overwriteExistingPet = plugin.getConfig().getBoolean("join.overwrite-previous-pet");
 
-            this.allowRidingOnRegionChanging = c.getBoolean("region.allow-riding-on");
+            // this.allowRidingOnRegionChanging = c.getBoolean("region.allow-riding-on");
 
             ConfigCommands.getInstance().load(c);
             ConfigGUI.getInstance().load(c);

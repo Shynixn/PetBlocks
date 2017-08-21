@@ -127,7 +127,6 @@ world:
      - world_nether
      - world_the_end
 region:
-    allow-riding-on: true
     all: true
     regions:
       - example_region
