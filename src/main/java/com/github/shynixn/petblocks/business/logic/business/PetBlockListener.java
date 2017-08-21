@@ -1,13 +1,15 @@
 package com.github.shynixn.petblocks.business.logic.business;
 
 import com.github.shynixn.petblocks.api.PetBlocksApi;
+import com.github.shynixn.petblocks.api.entities.PetBlock;
+import com.github.shynixn.petblocks.api.events.PetBlockMoveEvent;
+import com.github.shynixn.petblocks.api.events.PetBlockRideEvent;
 import com.github.shynixn.petblocks.api.persistence.entity.PetMeta;
 import com.github.shynixn.petblocks.business.Config;
-import com.github.shynixn.petblocks.business.logic.configuration.ConfigPet;
-import com.github.shynixn.petblocks.lib.*;
-import com.github.shynixn.petblocks.api.entities.PetBlock;
 import com.github.shynixn.petblocks.business.bukkit.PetBlocksPlugin;
 import com.github.shynixn.petblocks.business.bukkit.nms.NMSRegistry;
+import com.github.shynixn.petblocks.business.logic.configuration.ConfigPet;
+import com.github.shynixn.petblocks.lib.*;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -24,7 +26,6 @@ import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.player.*;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
-import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -47,6 +48,28 @@ class PetBlockListener extends SimpleListener {
             this.running = true;
             this.plugin.getServer().getScheduler().scheduleSyncRepeatingTask(this.plugin, new ParticleRunnable(), 0L, 60L);
             this.plugin.getServer().getScheduler().runTaskTimer(this.plugin, new PetHunterRunnable(), 0L, 20);
+        }
+    }
+
+    /**
+     * Gets called when the player starts riding and caches the regions he has spawned in
+     *
+     * @param event event
+     */
+    @EventHandler
+    public void onPetBlockRideEvent(PetBlockRideEvent event) {
+        NMSRegistry.canEnterRegionOnPetRiding(event.getPlayer(), true);
+    }
+
+    /**
+     * Gets called when the petblock moves and kicks the player off the pet when he enters a region with a different owner
+     *
+     * @param event event
+     */
+    @EventHandler
+    public void onPetBlockMoveEvent(PetBlockMoveEvent event) {
+        if (!NMSRegistry.canEnterRegionOnPetRiding(event.getPlayer(), false)) {
+            event.getPetBlock().getArmorStand().eject();
         }
     }
 

@@ -63,7 +63,7 @@ public final class ReflectionUtils {
      * @param <T>   returnType
      * @return instance
      * @throws java.lang.IllegalAccessException exception
-     * @throws InstantiationException exceptionInstance
+     * @throws InstantiationException           exceptionInstance
      */
     public static <T> T invokeDefaultConstructor(Class<T> clazz) throws IllegalAccessException, InstantiationException {
         if (clazz == null)
@@ -77,21 +77,20 @@ public final class ReflectionUtils {
      * @param clazz      clazz
      * @param paramTypes paramTypes
      * @param params     params
-     * @param <T>        classType
      * @return instance
      * @throws IllegalAccessException    exception
      * @throws InvocationTargetException exception
      * @throws InstantiationException    exception
      * @throws NoSuchMethodException     exception
      */
-    public static <T> T invokeConstructor(Class<T> clazz, Class<?>[] paramTypes, Object[] params) throws IllegalAccessException, InvocationTargetException, InstantiationException, NoSuchMethodException {
+    public static Object invokeConstructor(Class<?> clazz, Class<?>[] paramTypes, Object[] params) throws IllegalAccessException, InvocationTargetException, InstantiationException, NoSuchMethodException {
         if (clazz == null)
             throw new IllegalArgumentException("Class cannot be null!");
         if (paramTypes == null)
             throw new IllegalArgumentException("ParamTypes cannot be null");
         if (params == null)
             throw new IllegalArgumentException("Params cannot be null!");
-        final Constructor<T> constructor = clazz.getDeclaredConstructor(paramTypes);
+        final Constructor constructor = clazz.getDeclaredConstructor(paramTypes);
         constructor.setAccessible(true);
         return constructor.newInstance(params);
     }
@@ -196,9 +195,9 @@ public final class ReflectionUtils {
      * @param instance instance
      * @param name     name
      * @param <T>      returnType
-     * @throws NoSuchFieldException exception
-     * @throws IllegalAccessException exceptionInstance
      * @return returnValue
+     * @throws NoSuchFieldException   exception
+     * @throws IllegalAccessException exceptionInstance
      */
     public static <T> T invokeFieldByObject(Object instance, String name) throws NoSuchFieldException, IllegalAccessException {
         return invokeFieldByObject(instance, name, instance.getClass());
@@ -211,9 +210,9 @@ public final class ReflectionUtils {
      * @param name     name
      * @param clazz    clazz
      * @param <T>      returnType
-     * @throws NoSuchFieldException exception
-     * @throws IllegalAccessException exceptionInstance
      * @return returnValue
+     * @throws NoSuchFieldException   exception
+     * @throws IllegalAccessException exceptionInstance
      */
     public static <T> T invokeFieldByObject(Object instance, String name, Class<?> clazz) throws NoSuchFieldException, IllegalAccessException {
         if (instance == null)

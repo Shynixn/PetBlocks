@@ -1,20 +1,18 @@
 package com.github.shynixn.petblocks.business.logic.business;
 
+import com.github.shynixn.petblocks.api.entities.PetBlock;
+import com.github.shynixn.petblocks.api.entities.PetMeta;
+import com.github.shynixn.petblocks.api.events.PetBlockDeathEvent;
+import com.github.shynixn.petblocks.business.bukkit.nms.NMSRegistry;
+import com.github.shynixn.petblocks.lib.Interpreter19;
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
+import org.bukkit.plugin.Plugin;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import com.github.shynixn.petblocks.api.events.PetBlockDeathEvent;
-import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
-import org.bukkit.plugin.Plugin;
-import org.bukkit.plugin.java.JavaPlugin;
-
-import com.github.shynixn.petblocks.api.entities.PetBlock;
-import com.github.shynixn.petblocks.api.entities.PetMeta;
-import com.github.shynixn.petblocks.business.bukkit.nms.NMSRegistry;
-import com.github.shynixn.petblocks.lib.Interpreter19;
 
 public final class PetBlockManager {
     private final Plugin plugin;

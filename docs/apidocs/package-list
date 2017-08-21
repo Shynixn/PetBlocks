@@ -23,4 +23,5 @@ com.github.shynixn.petblocks.business.logic.configuration
 com.github.shynixn.petblocks.business.logic.persistence
 com.github.shynixn.petblocks.business.logic.persistence.controller
 com.github.shynixn.petblocks.business.logic.persistence.entity
+com.github.shynixn.petblocks.business.metrics
 com.github.shynixn.petblocks.lib

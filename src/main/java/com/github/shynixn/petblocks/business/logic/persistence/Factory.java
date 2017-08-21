@@ -105,7 +105,6 @@ public class Factory {
                 connectionContext = null;
                 plugin.getConfig().set("sql.enabled", false);
                 Factory.initialize(plugin);
-                return;
             }
         }
     }

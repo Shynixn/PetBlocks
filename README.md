@@ -21,13 +21,13 @@ Spigot plugin to use blocks as pets in minecraft.
 
 * [Download the plugin PetBlocks](https://github.com/Shynixn/PetBlocks/releases)
 * Put the plugin into your plugin folder
-* Start the server (1.8.0 - 1.12.0, Java 8)
+* Start the server (1.8.0 - 1.12.1, Java 8)
 * Join and play :)
 
 ## API
 
 * Reference the PetBlocks.jar in your own projects.
-* If you are using maven you can add it from the central maven repository
+* If you are using maven or gradle you can add it from the central maven repository
 
 ### Maven
 
@@ -35,8 +35,16 @@ Spigot plugin to use blocks as pets in minecraft.
 <dependency>
      <groupId>com.github.shynixn</groupId>
      <artifactId>petblocks</artifactId>
-     <version>6.0.1</version>
+     <version>6.0.2</version>
 </dependency>
+```
+
+### Gradle
+
+```xml
+dependencies {
+    compileOnly 'com.github.shynixn:petblocks:6.0.2'
+}
 ```
 
 ## How to use the it

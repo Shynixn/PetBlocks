@@ -93,52 +93,22 @@ public final class BukkitUtilities {
         return true;
     }
 
-    public static File createFile(File file) {
-        try {
-            if (file.exists())
-                file.delete();
-            file.createNewFile();
-            return file;
-        } catch (final Exception e) {
-            Bukkit.getLogger().log(Level.WARNING, e.getMessage());
-        }
-        return null;
-    }
-
     public static int isNegative(Random rand) {
         if (rand.nextInt(2) == 0)
             return -1;
         return 1;
     }
 
-    public static void startFiltering() {
-        try {
-            Filtering.filterMessages();
-        } catch (final Exception ignored) {
-        }
-    }
-
-    public static boolean compareItemName(ItemStack itemStack, String displayname) {
+    public static boolean compareItemName(ItemStack itemStack, String displayName) {
         try {
             if (itemStack != null) {
                 if (itemStack.getItemMeta() != null) {
-                    return itemStack.getItemMeta().getDisplayName().equals(displayname);
+                    return itemStack.getItemMeta().getDisplayName().equals(displayName);
                 }
             }
         } catch (final Exception ignored) {
         }
         return false;
-    }
-
-    public static boolean isVersionSupported() {
-        return getServerVersion().equals("v1_8_R1")
-                || getServerVersion().equals("v1_8_R2")
-                || getServerVersion().equals("v1_8_R3")
-                || getServerVersion().equals("v1_9_R1")
-                || getServerVersion().equals("v1_9_R2")
-                || getServerVersion().equals("v1_10_R1")
-                || getServerVersion().equals("v1_11_R1")
-                || getServerVersion().equals("v1_12_R1");
     }
 
     public static String replaceServerVersion(String text) {

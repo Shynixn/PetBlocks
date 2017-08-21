@@ -1,36 +1,30 @@
 package com.github.shynixn.petblocks.business.logic.business;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.Future;
-import java.util.concurrent.RunnableFuture;
-
+import com.github.shynixn.petblocks.api.PetBlocksApi;
 import com.github.shynixn.petblocks.api.entities.PetType;
 import com.github.shynixn.petblocks.api.persistence.controller.ParticleEffectMetaController;
+import com.github.shynixn.petblocks.api.persistence.controller.PetMetaController;
 import com.github.shynixn.petblocks.api.persistence.controller.PlayerMetaController;
 import com.github.shynixn.petblocks.api.persistence.entity.PetMeta;
 import com.github.shynixn.petblocks.api.persistence.entity.PlayerMeta;
 import com.github.shynixn.petblocks.business.Config;
+import com.github.shynixn.petblocks.business.Language;
 import com.github.shynixn.petblocks.business.logic.configuration.ConfigGUI;
-import com.github.shynixn.petblocks.api.persistence.controller.PetMetaController;
 import com.github.shynixn.petblocks.business.logic.persistence.Factory;
-import com.github.shynixn.petblocks.business.logic.persistence.controller.PlayerDataRepository;
 import com.github.shynixn.petblocks.business.logic.persistence.entity.PetData;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
-import org.bukkit.plugin.java.JavaPlugin;
 
-import com.github.shynixn.petblocks.api.PetBlocksApi;
+import java.util.HashMap;
+import java.util.Map;
 
-import com.github.shynixn.petblocks.business.Language;
-
-public final class PetDataManager {
+public final class PetDataManager implements AutoCloseable {
     private final PetMetaController petDataController;
     private final PlayerMetaController playerMetaController;
     private final ParticleEffectMetaController particleEffectMetaController;
+    private PetBlockFilter filter;
 
     private final long mainThreadId;
 
@@ -45,6 +39,7 @@ public final class PetDataManager {
         if (plugin.getPluginLoader() != null) {
             new PetDataCommandExecutor(this);
             new PetDataListener(this, plugin);
+            this.filter = PetBlockFilter.create();
         }
         Factory.initialize(plugin);
         this.petDataController = Factory.createPetDataController();
@@ -112,5 +107,21 @@ public final class PetDataManager {
         if (Thread.currentThread().getId() == this.mainThreadId)
             throw new RuntimeException("This method has to be accessed asynchronly.");
         return this.petDataController.hasEntry(player);
+    }
+
+    /**
+     * Closes this resource, relinquishing any underlying resources.
+     * This method is invoked automatically on objects managed by the
+     * {@code try}-with-resources statement.
+     * @throws Exception if this resource cannot be closed
+     */
+    @Override
+    public void close() throws Exception {
+        this.filter.close();
+        this.petDataController.close();
+        this.playerMetaController.close();
+        this.particleEffectMetaController.close();
+        this.pages.clear();
+        this.inventories.clear();
     }
 }

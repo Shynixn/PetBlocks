@@ -1,13 +1,8 @@
 package com.github.shynixn.petblocks.business.logic.persistence.controller;
 
 import com.github.shynixn.petblocks.business.bukkit.nms.VersionSupport;
-import com.zaxxer.hikari.HikariConfig;
-import com.zaxxer.hikari.HikariDataSource;
 import org.junit.Assert;
 import org.junit.jupiter.api.Test;
-
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * Copyright 2017 Shynixn

@@ -12,41 +12,118 @@ import com.github.shynixn.petblocks.lib.*;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.command.Command;
 import org.bukkit.command.defaults.BukkitCommand;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
 
 public final class NMSRegistry {
     private NMSRegistry() {
         super();
     }
 
+    /**
+     * Creates a new petblock from the given location and meta
+     *
+     * @param location location
+     * @param meta     meta
+     * @return petblock
+     */
     public static PetBlock createPetBlock(Location location, PetMeta meta) {
-        final Class<?> clazz = ReflectionLib.getClassFromName("com.github.shynixn.petblocks.business.bukkit.nms.VERSION.CustomGroundArmorstand");
-        return (PetBlock) ReflectionLib.invokeConstructor(clazz, location, meta);
+        try {
+            return (PetBlock) ReflectionUtils.invokeConstructor(findClassFromVersion("com.github.shynixn.petblocks.business.bukkit.nms.VERSION.CustomGroundArmorstand")
+                    , new Class[]{location.getClass(), PetMeta.class}, new Object[]{location, meta});
+        } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException | InstantiationException | ClassNotFoundException e) {
+            Bukkit.getLogger().log(Level.WARNING, "Cannot create petblock.", e);
+            return null;
+        }
     }
 
+    /**
+     * Checks if the itemStack is unbreakable
+     *
+     * @param itemStack itemStack
+     * @return isUnbreakable
+     */
+    @Deprecated
     public static boolean isUnbreakable(ItemStack itemStack) {
-        final Class<?> clazz = ReflectionLib.getClassFromName("com.github.shynixn.petblocks.business.bukkit.nms.VERSION.OwnerPathfinder");
-        return (boolean) ReflectionLib.invokeMethodByClazz(clazz, "isUnbreakable", itemStack);
+        try {
+            return ReflectionUtils.invokeMethodByClass(
+                    findClassFromVersion("com.github.shynixn.petblocks.business.bukkit.nms.VERSION.OwnerPathfinder"),
+                    "isUnbreakable", new Class[]{ItemStack.class}, new Object[]{itemStack});
+        } catch (NoSuchMethodException | ClassNotFoundException | IllegalAccessException | InvocationTargetException e) {
+            Bukkit.getLogger().log(Level.WARNING, "Failed to check unbreakable stage of itemstack.", e);
+            return false;
+        }
     }
 
+    /**
+     * Sets the tags of the itemStack
+     *
+     * @param itemStack itemStack
+     * @param tags      tags
+     * @return itemStack
+     */
+    @Deprecated
     public static ItemStack setItemStackTag(ItemStack itemStack, Map<String, Object> tags) {
-        final Class<?> clazz = ReflectionLib.getClassFromName("com.github.shynixn.petblocks.business.bukkit.nms.VERSION.OwnerPathfinder");
-        return (ItemStack) ReflectionLib.invokeMethodByClazz(clazz, "setItemstackTag", itemStack, tags);
+        try {
+            return ReflectionUtils.invokeMethodByClass(
+                    findClassFromVersion("com.github.shynixn.petblocks.business.bukkit.nms.VERSION.OwnerPathfinder"),
+                    "setItemstackTag", new Class[]{ItemStack.class, Map.class}, new Object[]{itemStack, tags});
+        } catch (NoSuchMethodException | ClassNotFoundException | IllegalAccessException | InvocationTargetException e) {
+            Bukkit.getLogger().log(Level.WARNING, "Failed to set tags of the itemStack.", e);
+            return null;
+        }
+    }
+
+    /**
+     * Registers a dynamic command
+     *
+     * @param command command
+     * @param clazz   clazz
+     */
+    @Deprecated
+    public static void registerDynamicCommand(String command, BukkitCommand clazz) {
+        try {
+            final Object craftServer = findClassFromVersion("org.bukkit.craftbukkit.VERSION.CraftServer").cast(Bukkit.getServer());
+            final Object commandMap = ReflectionUtils.invokeMethodByObject(craftServer, "getCommandMap", new Class[]{}, new Object[]{});
+            ReflectionUtils.invokeMethodByObject(commandMap, "register", new Class[]{command.getClass(), Command.class}, new Object[]{command, clazz});
+        } catch (ClassNotFoundException | NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
+            Bukkit.getLogger().log(Level.WARNING, "Failed to register dynamic command.", e);
+        }
+    }
+
+    /**
+     * Checks if the player is allowed to enter a region when he is riding his pet
+     *
+     * @param player player
+     * @param spawn  spawn
+     * @return isAllowed
+     */
+    public static boolean canEnterRegionOnPetRiding(Player player, boolean spawn) {
+        if (RegisterHelper.isRegistered("WorldGuard")) {
+            try {
+                if (RegisterHelper.isRegistered("WorldGuard", '6')) {
+                    return WorldGuardConnection6.isAllowedToEnterRegionByRiding(player, spawn);
+                } else if (RegisterHelper.isRegistered("WorldGuard", '5')) {
+                    return WorldGuardConnection5.isAllowedToEnterRegionByRiding(player, spawn);
+                }
+            } catch (final Exception ex) {
+                Bukkit.getServer().getConsoleSender().sendMessage(PetBlocksPlugin.PREFIX_CONSOLE + ChatColor.DARK_RED + "Crashed while connecting to worldguard." + ex.getMessage());
+            }
+        }
+        return true;
     }
 
     public static void registerListener19(List<Player> players, Plugin plugin) {
-        if (BukkitUtilities.getServerVersion().equalsIgnoreCase("v1_9_R1")
-                || BukkitUtilities.getServerVersion().equalsIgnoreCase("v1_9_R2")
-                || BukkitUtilities.getServerVersion().equalsIgnoreCase("v1_10_R1")
-                || BukkitUtilities.getServerVersion().equalsIgnoreCase("v1_11_R1")
-                || BukkitUtilities.getServerVersion().equalsIgnoreCase("v1_12_R1")) {
+        if (VersionSupport.getServerVersion().isVersionSameOrGreaterThan(VersionSupport.VERSION_1_9_R1)) {
             try {
                 Class.forName("org.bukkit.event.player.PlayerSwapHandItemsEvent");
             } catch (final ClassNotFoundException e) {
@@ -60,14 +137,8 @@ public final class NMSRegistry {
         LightRegistry.unregister();
     }
 
-    public static void registerDynamicCommand(String command, BukkitCommand clazz) {
-        Object obj = ReflectionLib.getClassFromName("org.bukkit.craftbukkit.VERSION.CraftServer").cast(Bukkit.getServer());
-        obj = ReflectionLib.invokeMethodByObject(obj, "getCommandMap");
-        ReflectionLib.invokeMethodByObject(obj, "register", command, clazz);
-    }
-
     public static ItemStack changeSkullSkin(ItemStack itemStack, String skinUrl) {
-        return SkullMetaRegistry.convertToSkinSkull(itemStack, skinUrl, BukkitUtilities.replaceServerVersion("org.bukkit.craftbukkit.VERSION.inventory.CraftMetaSkull"));
+        return SkullMetaRegistry.convertToSkinSkull(itemStack, skinUrl, "org.bukkit.craftbukkit.VERSION.inventory.CraftMetaSkull".replace("VERSION", VersionSupport.getServerVersion().getVersionText()));
     }
 
     public static String getSkinUrl(ItemStack itemStack) {
@@ -100,9 +171,9 @@ public final class NMSRegistry {
         if (RegisterHelper.isRegistered("WorldGuard")) {
             try {
                 if (RegisterHelper.isRegistered("WorldGuard", '6'))
-                    WorldGuardConnection6.allowSpawn(location, getWorldGuard());
+                    WorldGuardConnection6.allowSpawn(location);
                 else if (RegisterHelper.isRegistered("WorldGuard", '5'))
-                    WorldGuardConnection5.allowSpawn(location, getWorldGuard());
+                    WorldGuardConnection5.allowSpawn(location);
             } catch (final Exception ex) {
                 Bukkit.getServer().getConsoleSender().sendMessage(PetBlocksPlugin.PREFIX_CONSOLE + ChatColor.DARK_RED + "Crashed while connecting to worldguard." + ex.getMessage());
             }
@@ -113,9 +184,9 @@ public final class NMSRegistry {
         if (RegisterHelper.isRegistered("WorldGuard")) {
             try {
                 if (RegisterHelper.isRegistered("WorldGuard", '6'))
-                    return WorldGuardConnection6.canSpawnInRegion(regionList, location, getWorldGuard());
+                    return WorldGuardConnection6.canSpawnInRegion(regionList, location);
                 else if (RegisterHelper.isRegistered("WorldGuard", '5'))
-                    return WorldGuardConnection5.canSpawnInRegion(regionList, location, getWorldGuard());
+                    return WorldGuardConnection5.canSpawnInRegion(regionList, location);
             } catch (final Exception ex) {
                 Bukkit.getServer().getConsoleSender().sendMessage(PetBlocksPlugin.PREFIX_CONSOLE + ChatColor.DARK_RED + "Crashed while connecting to worldguard." + ex.getMessage());
             }
@@ -136,7 +207,14 @@ public final class NMSRegistry {
         }
     }
 
-    private static Plugin getWorldGuard() {
-        return Bukkit.getServer().getPluginManager().getPlugin("WorldGuard");
+    /**
+     * Returns the class managed by version
+     *
+     * @param path path
+     * @return class
+     * @throws ClassNotFoundException exception
+     */
+    public static Class<?> findClassFromVersion(String path) throws ClassNotFoundException {
+        return Class.forName(path.replace("VERSION", VersionSupport.getServerVersion().getVersionText()));
     }
 }

@@ -28,7 +28,7 @@ public final class Config {
     private static FileConfiguration c;
 
     private boolean chat_async = true;
-    private boolean chat_highestpriority = true;
+    private boolean chatHighestPriority = true;
 
     private boolean world_allowInAllWorlds = true;
     private String[] world_worlds;
@@ -38,13 +38,16 @@ public final class Config {
     private boolean join_enabled;
     private boolean join_overwriteExistingPet;
 
+    private boolean metrics = true;
+    private boolean allowRidingOnRegionChanging = true;
+
     private Config(Plugin plugin) {
         super();
         Config.plugin = plugin;
         this.reload();
     }
 
-    public static void initiliaze(Plugin plugin) {
+    public static void initialize(Plugin plugin) {
         instance = new Config(plugin);
     }
 
@@ -57,8 +60,10 @@ public final class Config {
             plugin.reloadConfig();
             c = plugin.getConfig();
 
+            this.metrics = c.getBoolean("metrics");
+
             this.chat_async = c.getBoolean("chat.async");
-            this.chat_highestpriority = c.getBoolean("chat.highest-priority");
+            this.chatHighestPriority = c.getBoolean("chat.highest-priority");
 
             this.world_allowInAllWorlds = plugin.getConfig().getBoolean("world.all");
             this.world_worlds = plugin.getConfig().getStringList("world.worlds").toArray(new String[plugin.getConfig().getStringList("world.worlds").size()]);
@@ -68,6 +73,8 @@ public final class Config {
 
             this.join_enabled = c.getBoolean("join.enabled");
             this.join_overwriteExistingPet = plugin.getConfig().getBoolean("join.overwrite-previous-pet");
+
+            // this.allowRidingOnRegionChanging = c.getBoolean("region.allow-riding-on");
 
             ConfigCommands.getInstance().load(c);
             ConfigGUI.getInstance().load(c);
@@ -149,8 +156,12 @@ public final class Config {
         return this.chat_async;
     }
 
-    public boolean isChat_highestpriority() {
-        return this.chat_highestpriority;
+    public boolean isChatHighestPriority() {
+        return this.chatHighestPriority;
+    }
+
+    public boolean allowRidingOnRegionChanging() {
+        return this.allowRidingOnRegionChanging;
     }
 
     private boolean isInWorld(World world) {
@@ -159,5 +170,14 @@ public final class Config {
                 return true;
         }
         return false;
+    }
+
+    /**
+     * Returns if metrics is enabled
+     *
+     * @return enabled
+     */
+    public boolean isMetricsEnabled() {
+        return this.metrics;
     }
 }
