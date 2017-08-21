@@ -43,7 +43,7 @@ Spigot plugin to use blocks as pets in minecraft.
 
 ```xml
 dependencies {
-    compileOnly 'com.github.shynixn:petblocks:6.0.02'
+    compileOnly 'com.github.shynixn:petblocks:6.0.2'
 }
 ```
 
