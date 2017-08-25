@@ -80,6 +80,24 @@ public final class WorldGuardConnection6 {
         return true;
     }
 
+    /**
+     * Checks if the player should be kicked off his pet
+     *
+     * @param player   player
+     * @param regionId regionId
+     * @return kickOff
+     */
+    public static boolean shouldKickOffPet(Player player, String regionId) {
+        if (cache.containsKey(player)) {
+            for (final ProtectedRegion protectedRegion : cache.get(player)) {
+                if (protectedRegion.getId().equals(regionId)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
     public static boolean canSpawnInRegion(String[] regionList, Location location) throws InvocationTargetException, IllegalAccessException, NoSuchMethodException {
         final WorldGuardPlugin worldGuard = getWorldGuard();
         final RegionManager regionManager = worldGuard.getRegionManager(location.getWorld());

@@ -122,6 +122,27 @@ public final class NMSRegistry {
         return true;
     }
 
+    /**
+     * Checks if the player should be kicked off his pet
+     *
+     * @param player   player
+     * @param regionId regionId
+     * @return kickOff
+     */
+    public static boolean shouldKickOffPet(Player player, String regionId) {
+        if (RegisterHelper.isRegistered("WorldGuard")) {
+            try {
+                if (RegisterHelper.isRegistered("WorldGuard", '6'))
+                    return WorldGuardConnection6.shouldKickOffPet(player, regionId);
+                else if (RegisterHelper.isRegistered("WorldGuard", '5'))
+                    return WorldGuardConnection5.shouldKickOffPet(player, regionId);
+            } catch (final Exception ex) {
+                Bukkit.getServer().getConsoleSender().sendMessage(PetBlocksPlugin.PREFIX_CONSOLE + ChatColor.DARK_RED + "Crashed while connecting to worldguard." + ex.getMessage());
+            }
+        }
+        return false;
+    }
+
     public static void registerListener19(List<Player> players, Plugin plugin) {
         if (VersionSupport.getServerVersion().isVersionSameOrGreaterThan(VersionSupport.VERSION_1_9_R1)) {
             try {

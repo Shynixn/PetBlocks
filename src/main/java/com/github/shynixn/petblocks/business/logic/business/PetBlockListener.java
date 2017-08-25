@@ -29,6 +29,8 @@ import org.bukkit.plugin.Plugin;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.regex.Pattern;
 
 class PetBlockListener extends SimpleListener {
     private final PetBlockManager manager;
@@ -70,6 +72,31 @@ class PetBlockListener extends SimpleListener {
     public void onPetBlockMoveEvent(PetBlockMoveEvent event) {
         if (!NMSRegistry.canEnterRegionOnPetRiding(event.getPlayer(), false)) {
             event.getPetBlock().getArmorStand().eject();
+        }
+    }
+
+    /**
+     * Kicks a player off the pet when the region he is membership of gets modified
+     *
+     * @param event event
+     */
+    @EventHandler
+    public void onCommandEvent(PlayerCommandPreprocessEvent event) {
+        if (!Config.getInstance().allowRidingOnRegionChanging() && event.getMessage().contains("removemember")) {
+            try {
+                final String[] data = event.getMessage().split(Pattern.quote(" "));
+                final String playerName = data[3];
+                final String regionName = data[2];
+                final Player player;
+                if ((player = Bukkit.getPlayer(playerName)) != null) {
+                    final PetBlock petBlock;
+                    if ((petBlock = PetBlocksApi.getPetBlock(player)) != null && NMSRegistry.shouldKickOffPet(player, regionName)) {
+                        petBlock.getArmorStand().eject();
+                    }
+                }
+            } catch (final Exception ex) {
+                Bukkit.getLogger().log(Level.WARNING, "Failed to kick member from pet.");
+            }
         }
     }
 
