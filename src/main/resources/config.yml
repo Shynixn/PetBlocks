@@ -97,6 +97,7 @@ pet:
      flees-in-combat: false
      reappears-in-seconds: 15
   follow:
+     amount-blocks-away: 2
      teleport-fall: true
      max-range-teleport: 50
      carry: false
