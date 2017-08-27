@@ -198,32 +198,32 @@ class PetBlockListener extends SimpleListener {
     @EventHandler(priority = EventPriority.HIGHEST)
     public void entityRightClickEvent(final PlayerInteractAtEntityEvent event) {
         if (this.manager.carryingPet.contains(event.getPlayer())) {
-            Interpreter19.setItemInHand19(event.getPlayer(), null, true);
+            NMSRegistry.setItemInHand19(event.getPlayer(), null, true);
             if (this.manager.hasPetBlock(event.getPlayer()))
                 this.manager.petblocks.remove(event.getPlayer());
             event.setCancelled(true);
         } else if (this.isPet(event.getRightClicked())) {
             final PetBlock petBlock = this.getPet(event.getRightClicked());
             if (petBlock != null && petBlock.getOwner().equals(event.getPlayer())) {
-                if (Interpreter19.getItemInHand19(event.getPlayer(), false) != null && Interpreter19.getItemInHand19(event.getPlayer(), false).getType() == Material.CARROT_ITEM) {
+                if (NMSRegistry.getItemInHand19(event.getPlayer(), false) != null && NMSRegistry.getItemInHand19(event.getPlayer(), false).getType() == Material.CARROT_ITEM) {
                     ParticleEffect.HEART.display(1F, 1F, 1F, 0.1F, 20, event.getRightClicked().getLocation(), event.getRightClicked().getWorld().getPlayers());
                     try {
                         this.eatingSound.apply(event.getRightClicked().getLocation());
                     } catch (final Exception e) {
                         Bukkit.getLogger().log(Level.WARNING, "Failed to play sound.", e);
                     }
-                    if (Interpreter19.getItemInHand19(event.getPlayer(), false).getAmount() == 1)
+                    if (NMSRegistry.getItemInHand19(event.getPlayer(), false).getAmount() == 1)
                         event.getPlayer().getInventory().setItem(event.getPlayer().getInventory().getHeldItemSlot(), new ItemStack(Material.AIR));
                     else
-                        Interpreter19.getItemInHand19(event.getPlayer(), false).setAmount(Interpreter19.getItemInHand19(event.getPlayer(), false).getAmount() - 1);
+                        NMSRegistry.getItemInHand19(event.getPlayer(), false).setAmount(NMSRegistry.getItemInHand19(event.getPlayer(), false).getAmount() - 1);
                     if (!this.jumped.contains(petBlock)) {
                         this.plugin.getServer().getScheduler().runTaskLater(this.plugin, () -> PetBlockListener.this.jumped.remove(PetBlockListener.this.getPet(event.getRightClicked())), 20L);
                         this.jumped.add(this.getPet(event.getRightClicked()));
                         petBlock.jump();
                     }
                 }
-                if (ConfigPet.getInstance().isFollow_carry() && (event.getPlayer().getInventory() == null || Interpreter19.getItemInHand19(event.getPlayer(), true).getType() == Material.AIR)) {
-                    Interpreter19.setItemInHand19(event.getPlayer(), petBlock.getArmorStand().getHelmet().clone(), true);
+                if (ConfigPet.getInstance().isFollow_carry() && (event.getPlayer().getInventory() == null || NMSRegistry.getItemInHand19(event.getPlayer(), true).getType() == Material.AIR)) {
+                    NMSRegistry.setItemInHand19(event.getPlayer(), petBlock.getArmorStand().getHelmet().clone(), true);
                     this.manager.removePetBlock(event.getPlayer());
                     this.manager.carryingPet.add(event.getPlayer());
                 }
@@ -274,7 +274,7 @@ class PetBlockListener extends SimpleListener {
     @EventHandler
     public void onPlayerQuitEvent(PlayerQuitEvent event) {
         if (this.manager.carryingPet.contains(event.getPlayer())) {
-            Interpreter19.setItemInHand19(event.getPlayer(), null, true);
+            NMSRegistry.setItemInHand19(event.getPlayer(), null, true);
             this.manager.carryingPet.remove(event.getPlayer());
         }
     }
@@ -389,7 +389,7 @@ class PetBlockListener extends SimpleListener {
         this.providePet(player, (petMeta, petBlock) -> {
             if (petBlock == null)
                 this.manager.setPetBlock(player, petMeta);
-            Interpreter19.setItemInHand19(player, null, true);
+            NMSRegistry.setItemInHand19(player, null, true);
             this.manager.carryingPet.remove(player);
         });
     }
