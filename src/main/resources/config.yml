@@ -129,7 +129,6 @@ world:
      - world_the_end
 region:
     all: true
-    allow-riding-on: true
     regions:
       - example_region
       - another_example_region

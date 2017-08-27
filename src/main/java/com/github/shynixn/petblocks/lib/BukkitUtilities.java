@@ -75,7 +75,7 @@ public final class BukkitUtilities {
         return item;
     }
 
-    public static boolean copyFile(InputStream in, File file) {
+    public static void copyFile(InputStream in, File file) {
         try {
             try(final OutputStream out = new FileOutputStream(file))
             {
@@ -88,9 +88,7 @@ public final class BukkitUtilities {
             in.close();
         } catch (final Exception e) {
             Bukkit.getLogger().log(Level.WARNING, e.getMessage());
-            return false;
         }
-        return true;
     }
 
     public static int isNegative(Random rand) {

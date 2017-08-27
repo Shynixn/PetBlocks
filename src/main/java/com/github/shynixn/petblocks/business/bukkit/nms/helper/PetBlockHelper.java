@@ -31,7 +31,7 @@ import java.util.logging.Level;
  */
 public final class PetBlockHelper {
     private static final Random random = new Random();
-    private static SoundMeta explosionSound = new SoundBuilder("EXPLODE", 1.0F, 2.0F);
+    private static final SoundMeta explosionSound = new SoundBuilder("EXPLODE", 1.0F, 2.0F);
 
     private PetBlockHelper() {
         super();

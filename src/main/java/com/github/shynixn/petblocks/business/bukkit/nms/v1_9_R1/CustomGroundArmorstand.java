@@ -61,10 +61,8 @@ final class CustomGroundArmorstand extends EntityArmorStand implements PetBlock 
         try {
             jump = EntityLiving.class.getDeclaredField("bc");
             jump.setAccessible(true);
-            for (final net.minecraft.server.v1_9_R1.Entity entity : this.passengers) {
-                return jump.getBoolean(entity);
-            }
-            return false;
+            return !this.passengers.isEmpty() && jump.getBoolean(this.passengers.get(0));
+
         } catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException e1) {
             Bukkit.getLogger().log(Level.WARNING, "EntityNMS exception.", e1);
         }

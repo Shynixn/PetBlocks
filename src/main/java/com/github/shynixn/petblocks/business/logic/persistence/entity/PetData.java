@@ -109,7 +109,7 @@ public class PetData extends PersistenceObject implements PetMeta {
      */
     @Override
     public void setParticleEffectMeta(ParticleEffectMeta meta) {
-        if(meta == null)
+        if (meta == null)
             throw new IllegalArgumentException("Meta cannot be null!");
         this.particleId = meta.getId();
         this.particleEffectBuilder = meta;
@@ -266,12 +266,18 @@ public class PetData extends PersistenceObject implements PetMeta {
 
     @Override
     public String[] getHeadLore() {
-        return this.headLore;
+        if (this.headLore == null)
+            return null;
+        return this.headLore.clone();
     }
 
     @Override
     public void setHeadLore(String[] headLore) {
-        this.headLore = headLore;
+        if (this.headLore != null) {
+            this.headLore = headLore.clone();
+        } else {
+            this.headLore = null;
+        }
     }
 
     @Override

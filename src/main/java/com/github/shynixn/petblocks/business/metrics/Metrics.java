@@ -318,9 +318,9 @@ public class Metrics {
             return null;
         }
         final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        final GZIPOutputStream gzip = new GZIPOutputStream(outputStream);
-        gzip.write(str.getBytes("UTF-8"));
-        gzip.close();
+        try (GZIPOutputStream gzip = new GZIPOutputStream(outputStream)) {
+            gzip.write(str.getBytes("UTF-8"));
+        }
         return outputStream.toByteArray();
     }
 
