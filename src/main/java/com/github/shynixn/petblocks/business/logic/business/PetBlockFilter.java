@@ -4,6 +4,7 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Marker;
 import org.apache.logging.log4j.core.Filter;
+import org.apache.logging.log4j.core.LifeCycle;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.message.Message;
@@ -39,7 +40,9 @@ import java.io.Closeable;
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class PetBlockFilter implements Filter, AutoCloseable {
+class PetBlockFilter implements Filter, AutoCloseable, LifeCycle {
+
+    private boolean started;
 
     /**
      * Initializes a new filter
@@ -117,12 +120,39 @@ class PetBlockFilter implements Filter, AutoCloseable {
     }
 
     /**
+     * LifeCycle start
+     */
+    @Override
+    public void start() {
+        this.started = true;
+    }
+
+    /**
+     * LifeCycle stop
+     */
+    @Override
+    public void stop() {
+        this.started = false;
+    }
+
+    /**
+     * Is started LifeCycler
+     *
+     * @return started
+     */
+    @Override
+    public boolean isStarted() {
+        return this.started;
+    }
+
+    /**
      * Creates a new logger
      *
      * @return logger
      */
     public static PetBlockFilter create() {
         final PetBlockFilter petBlockFilter = new PetBlockFilter();
+        petBlockFilter.start();
         ((org.apache.logging.log4j.core.Logger) LogManager.getRootLogger()).addFilter(petBlockFilter);
         return petBlockFilter;
     }

@@ -3,6 +3,7 @@ package com.github.shynixn.petblocks.business.logic.configuration;
 import com.github.shynixn.petblocks.api.entities.ItemContainer;
 import com.github.shynixn.petblocks.api.entities.PetType;
 import com.github.shynixn.petblocks.business.Language;
+import com.github.shynixn.petblocks.business.bukkit.PetBlocksPlugin;
 import com.github.shynixn.petblocks.business.bukkit.nms.NMSRegistry;
 import com.github.shynixn.petblocks.lib.BukkitUtilities;
 import org.bukkit.Bukkit;
@@ -11,12 +12,26 @@ import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.plugin.java.JavaPlugin;
+import org.yaml.snakeyaml.external.biz.base64Coder.Base64Coder;
 
+import javax.crypto.Cipher;
+import javax.crypto.CipherInputStream;
+import javax.crypto.NoSuchPaddingException;
+import javax.crypto.spec.IvParameterSpec;
+import javax.crypto.spec.SecretKeySpec;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.security.InvalidAlgorithmParameterException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
+import java.util.regex.Pattern;
 
 /**
  * Created by Shynixn
@@ -58,6 +73,7 @@ public final class ConfigGUI {
     private ItemStack[] costumes_default;
     private ItemStack[] costumes_color;
     private ItemStack[] costumes_custom;
+    private ItemStack[] costumes_minecraftHeads;
 
     private ConfigGUI() {
         super();
@@ -129,6 +145,7 @@ public final class ConfigGUI {
         this.costumes_default = this.resolveItems(c.getStringList("costumes.default"));
         this.costumes_color = this.resolveItems(c.getStringList("costumes.color"));
         this.costumes_custom = this.resolveItems(c.getStringList("costumes.custom"));
+        this.costumes_minecraftHeads = this.resolveMinecraftHeadItems();
     }
 
     public ItemContainer getContainer(PetType petType) {
@@ -143,6 +160,15 @@ public final class ConfigGUI {
 
     public ItemContainer getItems_soundDisabledContainer() {
         return this.items_soundDisabledContainer;
+    }
+
+    /**
+     * Returns the itemStacks for the minecraftHeads
+     *
+     * @return itemStacks
+     */
+    public ItemStack[] getMinecraftHeadsItemStacks() {
+        return this.costumes_minecraftHeads;
     }
 
     public ItemStack[] getColoredItemStacks() {
@@ -243,6 +269,34 @@ public final class ConfigGUI {
 
     public ItemContainer getItems_ridingpetContainer() {
         return this.items_ridingpetContainer;
+    }
+
+    public ItemStack[] resolveMinecraftHeadItems() {
+        final List<ItemStack> itemStacks = new ArrayList<>();
+        try {
+            final Cipher decipher = Cipher.getInstance("AES/CBC/PKCS5PADDING");
+            decipher.init(Cipher.DECRYPT_MODE, new SecretKeySpec(Base64Coder.decode("vcnhus0kpQAIokFsEoT+0g=="), "AES"), new IvParameterSpec("RandomInitVector".getBytes("UTF-8")));
+            try (BufferedReader reader = new BufferedReader(new InputStreamReader(new CipherInputStream(JavaPlugin.getPlugin(PetBlocksPlugin.class).getResource("minecraftheads.db"), decipher)))) {
+                String s;
+                final String splitter = Pattern.quote(",");
+                while ((s = reader.readLine()) != null) {
+                    final String[] tags = s.split(splitter);
+                    if (tags.length == 3 && tags[2].length() %4 ==0) {
+                        ItemStack itemStack = new ItemStack(Material.SKULL_ITEM, 1, (short) 3);
+                        final String line = Base64Coder.decodeString(tags[2]).replace("{\"textures\":{\"SKIN\":{\"url\":\"", "");
+                        final String url = line.substring(0, line.indexOf("\""));
+                        itemStack = NMSRegistry.changeSkullSkin(itemStack, url);
+                        itemStacks.add(itemStack);
+                    }
+                }
+            }
+        } catch (IOException | InvalidAlgorithmParameterException | InvalidKeyException | NoSuchAlgorithmException | NoSuchPaddingException e) {
+            Bukkit.getLogger().log(Level.WARNING, "Failed to read minecraft-heads.com skins.");
+        }
+        for (int i = 0; i < itemStacks.size(); i++) {
+            BukkitUtilities.nameItemDisplay(itemStacks.get(i), Language.NUMBER_PREFIX + "" + i + "");
+        }
+        return itemStacks.toArray(new ItemStack[itemStacks.size()]);
     }
 
     private ItemStack[] resolveItems(List<String> texts) {

@@ -185,6 +185,8 @@ public enum VersionSupport {
      * @return serverVersion
      */
     public static VersionSupport getServerVersion() {
+        if(Bukkit.getServer() == null || Bukkit.getServer().getClass().getPackage() == null)
+            return null;
         final String version = Bukkit.getServer().getClass().getPackage().getName().replace(".", ",").split(",")[3];
         for (final VersionSupport versionSupport : VersionSupport.values()) {
             if (versionSupport.getVersionText().equals(version))

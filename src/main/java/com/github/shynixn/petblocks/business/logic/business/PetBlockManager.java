@@ -4,7 +4,6 @@ import com.github.shynixn.petblocks.api.entities.PetBlock;
 import com.github.shynixn.petblocks.api.entities.PetMeta;
 import com.github.shynixn.petblocks.api.events.PetBlockDeathEvent;
 import com.github.shynixn.petblocks.business.bukkit.nms.NMSRegistry;
-import com.github.shynixn.petblocks.lib.Interpreter19;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
@@ -74,7 +73,7 @@ public final class PetBlockManager {
             petBlock.remove();
         }
         for (final Player player : this.carryingPet) {
-            Interpreter19.setItemInHand19(player, null, true);
+            NMSRegistry.setItemInHand19(player, null, true);
         }
         this.carryingPet.clear();
         this.petblocks.clear();

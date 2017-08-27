@@ -74,7 +74,7 @@ public final class Config {
             this.join_enabled = c.getBoolean("join.enabled");
             this.join_overwriteExistingPet = plugin.getConfig().getBoolean("join.overwrite-previous-pet");
 
-            // this.allowRidingOnRegionChanging = c.getBoolean("region.allow-riding-on");
+          //  this.allowRidingOnRegionChanging = c.getBoolean("region.allow-riding-on");
 
             ConfigCommands.getInstance().load(c);
             ConfigGUI.getInstance().load(c);

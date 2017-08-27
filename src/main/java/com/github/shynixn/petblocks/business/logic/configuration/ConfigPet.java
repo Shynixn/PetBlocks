@@ -27,6 +27,7 @@ public class ConfigPet {
     private boolean follow_wallcolliding = true;
     private boolean afraidOfwater;
     private boolean afraidwaterParticles;
+    private int blocksAwayFromPlayer = 2;
     //Design
     private int design_maxPetNameLength = 20;
     private boolean design_showDamageAnimation = true;
@@ -60,6 +61,7 @@ public class ConfigPet {
         this.fleesInCombat = c.getBoolean("pet.flee.flees-in-combat");
         this.reappearsInSeconds = c.getInt("pet.flee.reappears-in-seconds");
 
+        this.blocksAwayFromPlayer = c.getInt("pet.follow.amount-blocks-away");
         this.follow_maxRangeTeleport = c.getInt("pet.follow.max-range-teleport");
         this.follow_carry = c.getBoolean("pet.follow.carry");
         this.follow_fallOffHead = c.getBoolean("pet.follow.teleport-fall");
@@ -74,6 +76,15 @@ public class ConfigPet {
         this.modifier_petriding = c.getDouble("pet.modifier.riding-speed");
         this.modifier_petwalking = c.getDouble("pet.modifier.walking-speed");
         this.modifier_petclimbing = c.getDouble("pet.modifier.climbing-height");
+    }
+
+    /**
+     * Returns the amount of blocks the pet has to stay away from the player
+     *
+     * @return amount
+     */
+    public int getBlocksAwayFromPlayer() {
+        return this.blocksAwayFromPlayer;
     }
 
     public boolean isAfraidOfwater() {

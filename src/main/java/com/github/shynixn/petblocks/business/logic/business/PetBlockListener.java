@@ -5,10 +5,12 @@ import com.github.shynixn.petblocks.api.entities.PetBlock;
 import com.github.shynixn.petblocks.api.events.PetBlockMoveEvent;
 import com.github.shynixn.petblocks.api.events.PetBlockRideEvent;
 import com.github.shynixn.petblocks.api.persistence.entity.PetMeta;
+import com.github.shynixn.petblocks.api.persistence.entity.SoundMeta;
 import com.github.shynixn.petblocks.business.Config;
 import com.github.shynixn.petblocks.business.bukkit.PetBlocksPlugin;
 import com.github.shynixn.petblocks.business.bukkit.nms.NMSRegistry;
 import com.github.shynixn.petblocks.business.logic.configuration.ConfigPet;
+import com.github.shynixn.petblocks.business.logic.persistence.entity.SoundBuilder;
 import com.github.shynixn.petblocks.lib.*;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -29,12 +31,15 @@ import org.bukkit.plugin.Plugin;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.regex.Pattern;
 
 class PetBlockListener extends SimpleListener {
     private final PetBlockManager manager;
     private final List<PetBlock> jumped = new ArrayList<>();
 
     private boolean running;
+    private final SoundMeta eatingSound = new SoundBuilder("EAT");
 
     PetBlockListener(PetBlockManager manager, Plugin plugin) {
         super(plugin);
@@ -70,6 +75,31 @@ class PetBlockListener extends SimpleListener {
     public void onPetBlockMoveEvent(PetBlockMoveEvent event) {
         if (!NMSRegistry.canEnterRegionOnPetRiding(event.getPlayer(), false)) {
             event.getPetBlock().getArmorStand().eject();
+        }
+    }
+
+    /**
+     * Kicks a player off the pet when the region he is membership of gets modified
+     *
+     * @param event event
+     */
+    @EventHandler
+    public void onCommandEvent(PlayerCommandPreprocessEvent event) {
+        if (!Config.getInstance().allowRidingOnRegionChanging() && event.getMessage().contains("removemember")) {
+            try {
+                final String[] data = event.getMessage().split(Pattern.quote(" "));
+                final String playerName = data[3];
+                final String regionName = data[2];
+                final Player player;
+                if ((player = Bukkit.getPlayer(playerName)) != null) {
+                    final PetBlock petBlock;
+                    if ((petBlock = PetBlocksApi.getPetBlock(player)) != null && NMSRegistry.shouldKickOffPet(player, regionName)) {
+                        petBlock.getArmorStand().eject();
+                    }
+                }
+            } catch (final Exception ex) {
+                Bukkit.getLogger().log(Level.WARNING, "Failed to kick member from pet.");
+            }
         }
     }
 
@@ -168,28 +198,32 @@ class PetBlockListener extends SimpleListener {
     @EventHandler(priority = EventPriority.HIGHEST)
     public void entityRightClickEvent(final PlayerInteractAtEntityEvent event) {
         if (this.manager.carryingPet.contains(event.getPlayer())) {
-            Interpreter19.setItemInHand19(event.getPlayer(), null, true);
+            NMSRegistry.setItemInHand19(event.getPlayer(), null, true);
             if (this.manager.hasPetBlock(event.getPlayer()))
                 this.manager.petblocks.remove(event.getPlayer());
             event.setCancelled(true);
         } else if (this.isPet(event.getRightClicked())) {
             final PetBlock petBlock = this.getPet(event.getRightClicked());
             if (petBlock != null && petBlock.getOwner().equals(event.getPlayer())) {
-                if (Interpreter19.getItemInHand19(event.getPlayer(), false) != null && Interpreter19.getItemInHand19(event.getPlayer(), false).getType() == Material.CARROT_ITEM) {
+                if (NMSRegistry.getItemInHand19(event.getPlayer(), false) != null && NMSRegistry.getItemInHand19(event.getPlayer(), false).getType() == Material.CARROT_ITEM) {
                     ParticleEffect.HEART.display(1F, 1F, 1F, 0.1F, 20, event.getRightClicked().getLocation(), event.getRightClicked().getWorld().getPlayers());
-                    new SoundData("EAT").play(event.getRightClicked().getLocation());
-                    if (Interpreter19.getItemInHand19(event.getPlayer(), false).getAmount() == 1)
+                    try {
+                        this.eatingSound.apply(event.getRightClicked().getLocation());
+                    } catch (final Exception e) {
+                        Bukkit.getLogger().log(Level.WARNING, "Failed to play sound.", e);
+                    }
+                    if (NMSRegistry.getItemInHand19(event.getPlayer(), false).getAmount() == 1)
                         event.getPlayer().getInventory().setItem(event.getPlayer().getInventory().getHeldItemSlot(), new ItemStack(Material.AIR));
                     else
-                        Interpreter19.getItemInHand19(event.getPlayer(), false).setAmount(Interpreter19.getItemInHand19(event.getPlayer(), false).getAmount() - 1);
+                        NMSRegistry.getItemInHand19(event.getPlayer(), false).setAmount(NMSRegistry.getItemInHand19(event.getPlayer(), false).getAmount() - 1);
                     if (!this.jumped.contains(petBlock)) {
                         this.plugin.getServer().getScheduler().runTaskLater(this.plugin, () -> PetBlockListener.this.jumped.remove(PetBlockListener.this.getPet(event.getRightClicked())), 20L);
                         this.jumped.add(this.getPet(event.getRightClicked()));
                         petBlock.jump();
                     }
                 }
-                if (ConfigPet.getInstance().isFollow_carry() && (event.getPlayer().getInventory() == null || Interpreter19.getItemInHand19(event.getPlayer(), true).getType() == Material.AIR)) {
-                    Interpreter19.setItemInHand19(event.getPlayer(), petBlock.getArmorStand().getHelmet().clone(), true);
+                if (ConfigPet.getInstance().isFollow_carry() && (event.getPlayer().getInventory() == null || NMSRegistry.getItemInHand19(event.getPlayer(), true).getType() == Material.AIR)) {
+                    NMSRegistry.setItemInHand19(event.getPlayer(), petBlock.getArmorStand().getHelmet().clone(), true);
                     this.manager.removePetBlock(event.getPlayer());
                     this.manager.carryingPet.add(event.getPlayer());
                 }
@@ -240,7 +274,7 @@ class PetBlockListener extends SimpleListener {
     @EventHandler
     public void onPlayerQuitEvent(PlayerQuitEvent event) {
         if (this.manager.carryingPet.contains(event.getPlayer())) {
-            Interpreter19.setItemInHand19(event.getPlayer(), null, true);
+            NMSRegistry.setItemInHand19(event.getPlayer(), null, true);
             this.manager.carryingPet.remove(event.getPlayer());
         }
     }
@@ -355,7 +389,7 @@ class PetBlockListener extends SimpleListener {
         this.providePet(player, (petMeta, petBlock) -> {
             if (petBlock == null)
                 this.manager.setPetBlock(player, petMeta);
-            Interpreter19.setItemInHand19(player, null, true);
+            NMSRegistry.setItemInHand19(player, null, true);
             this.manager.carryingPet.remove(player);
         });
     }

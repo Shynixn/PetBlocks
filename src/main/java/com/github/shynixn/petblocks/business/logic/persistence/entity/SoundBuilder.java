@@ -1,8 +1,9 @@
-package com.github.shynixn.petblocks.lib;
+package com.github.shynixn.petblocks.business.logic.persistence.entity;
 
+import com.github.shynixn.petblocks.api.persistence.entity.SoundMeta;
+import com.github.shynixn.petblocks.business.bukkit.nms.VersionSupport;
 import org.bukkit.Location;
 import org.bukkit.Sound;
-import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.entity.Player;
 
 import java.util.Collection;
@@ -38,7 +39,7 @@ import java.util.Map;
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-public class SoundBuilder implements ConfigurationSerializable {
+public class SoundBuilder implements SoundMeta {
 
     private String text;
     private float volume;
@@ -54,6 +55,19 @@ public class SoundBuilder implements ConfigurationSerializable {
     /**
      * Initializes a new soundBuilder
      *
+     * @param text text
+     */
+    public SoundBuilder(String text) {
+        super();
+        this.text = text;
+        this.volume = 1.0F;
+        this.pitch = 1.0F;
+        this.convertSounds();
+    }
+
+    /**
+     * Initializes a new soundBuilder
+     *
      * @param text   text
      * @param volume volume
      * @param pitch  pitch
@@ -63,6 +77,7 @@ public class SoundBuilder implements ConfigurationSerializable {
         this.text = text;
         this.volume = (float) volume;
         this.pitch = (float) pitch;
+        this.convertSounds();
     }
 
     /**
@@ -84,6 +99,7 @@ public class SoundBuilder implements ConfigurationSerializable {
      * @param players players
      * @throws Exception exception
      */
+    @Override
     public void apply(Collection<Player> players) throws Exception {
         this.apply(players.toArray(new Player[players.size()]));
     }
@@ -94,9 +110,10 @@ public class SoundBuilder implements ConfigurationSerializable {
      * @param players players
      * @throws Exception exception
      */
+    @Override
     public void apply(Player... players) throws Exception {
         for (final Player player : players) {
-            player.playSound(player.getLocation(), Sound.valueOf(this.text), this.pitch, this.volume);
+            player.playSound(player.getLocation(), Sound.valueOf(this.text), this.volume, this.pitch);
         }
     }
 
@@ -106,9 +123,10 @@ public class SoundBuilder implements ConfigurationSerializable {
      * @param location location
      * @throws Exception exception
      */
+    @Override
     public void apply(Location location) throws Exception {
         for (final Player player : location.getWorld().getPlayers()) {
-            player.playSound(location, Sound.valueOf(this.text), this.pitch, this.volume);
+            player.playSound(location, Sound.valueOf(this.text), this.volume, this.pitch);
         }
     }
 
@@ -119,6 +137,7 @@ public class SoundBuilder implements ConfigurationSerializable {
      * @param players  players
      * @throws Exception exception
      */
+    @Override
     public void apply(Location location, Collection<Player> players) throws Exception {
         this.apply(location, players.toArray(new Player[players.size()]));
     }
@@ -130,9 +149,10 @@ public class SoundBuilder implements ConfigurationSerializable {
      * @param players  players
      * @throws Exception exception
      */
+    @Override
     public void apply(Location location, Player... players) throws Exception {
         for (final Player player : players) {
-            player.playSound(location, Sound.valueOf(this.text), this.pitch, this.volume);
+            player.playSound(location, Sound.valueOf(this.text), this.volume, this.pitch);
         }
     }
 
@@ -141,6 +161,7 @@ public class SoundBuilder implements ConfigurationSerializable {
      *
      * @return name
      */
+    @Override
     public String getName() {
         return this.text;
     }
@@ -151,6 +172,7 @@ public class SoundBuilder implements ConfigurationSerializable {
      * @param name name
      * @return builder
      */
+    @Override
     public SoundBuilder setName(String name) {
         this.text = name;
         return this;
@@ -162,6 +184,7 @@ public class SoundBuilder implements ConfigurationSerializable {
      * @return sound
      * @throws Exception exception
      */
+    @Override
     public Sound getSound() throws Exception {
         return Sound.valueOf(this.text);
     }
@@ -172,6 +195,7 @@ public class SoundBuilder implements ConfigurationSerializable {
      * @param sound sound
      * @return builder
      */
+    @Override
     public SoundBuilder setSound(Sound sound) {
         this.text = sound.name();
         return this;
@@ -182,6 +206,7 @@ public class SoundBuilder implements ConfigurationSerializable {
      *
      * @return volume
      */
+    @Override
     public double getVolume() {
         return this.volume;
     }
@@ -192,6 +217,7 @@ public class SoundBuilder implements ConfigurationSerializable {
      * @param volume volume
      * @return builder
      */
+    @Override
     public SoundBuilder setVolume(double volume) {
         this.volume = (float) volume;
         return this;
@@ -202,6 +228,7 @@ public class SoundBuilder implements ConfigurationSerializable {
      *
      * @return pitch
      */
+    @Override
     public double getPitch() {
         return this.pitch;
     }
@@ -212,6 +239,7 @@ public class SoundBuilder implements ConfigurationSerializable {
      * @param pitch pitch
      * @return builder
      */
+    @Override
     public SoundBuilder setPitch(double pitch) {
         this.pitch = (float) pitch;
         return this;
@@ -229,5 +257,123 @@ public class SoundBuilder implements ConfigurationSerializable {
         items.put("volume", this.volume);
         items.put("pitch", this.pitch);
         return items;
+    }
+
+    /**
+     * Converts the sounds to 1.9 sounds
+     */
+    private void convertSounds() {
+        if (VersionSupport.getServerVersion() != null
+                && VersionSupport.getServerVersion().isVersionSameOrGreaterThan(VersionSupport.VERSION_1_9_R1)) {
+            switch (this.text) {
+                case "ENDERMAN_IDLE": {
+                    this.text = "ENTITY_ENDERMEN_AMBIENT";
+                    break;
+                }
+                case "MAGMACUBE_WALK": {
+                    this.text = "ENTITY_MAGMACUBE_JUMP";
+                    break;
+                }
+                case "SLIME_WALK": {
+                    this.text = "ENTITY_SLIME_JUMP";
+                    break;
+                }
+                case "EXPLODE": {
+                    this.text = "ENTITY_GENERIC_EXPLODE";
+                    break;
+                }
+
+                case "EAT": {
+                    this.text = "ENTITY_GENERIC_EAT";
+                    break;
+                }
+                case "WOLF_GROWL": {
+                    this.text = "ENTITY_WOLF_GROWL";
+                    break;
+                }
+                case "CAT_MEOW": {
+                    this.text = "ENTITY_CAT_PURREOW";
+                    break;
+                }
+                case "HORSE_GALLOP": {
+                    this.text = "ENTITY_GENERIC_EXPLODE";
+                    break;
+                }
+                case "ENTITY_HORSE_GALLOP": {
+                    this.text = "ENTITY_GENERIC_EXPLODE";
+                    break;
+                }
+                case "BAT_LOOP": {
+                    this.text = "ENTITY_BAT_LOOP";
+                    break;
+                }
+                case "GHAST_SCREAM": {
+                    this.text = "ENTITY_GHAST_SCREAM";
+                    break;
+                }
+                case "BLAZE_BREATH": {
+                    this.text = "ENTITY_BLAZE_AMBIENT";
+                    break;
+                }
+                case "ENDERDRAGON_WINGS": {
+                    this.text = "ENTITY_ENDERDRAGON_FLAP";
+                    break;
+                }
+                case "ENDERDRAGON_GROWL": {
+                    this.text = "ENTITY_ENDERDRAGON_GROWL";
+                    break;
+                }
+                default: {
+                    if(this.text.contains("WALK")) {
+                        this.text = "ENTITY_" + this.text.toUpperCase().split("_")[0] + "_STEP";
+                        return;
+                    }
+                    else if(this.text.contains("IDLE")) {
+                        this.text = "ENTITY_" + this.text.toUpperCase().split("_")[0] + "_AMBIENT";
+                        return;
+                    }
+                    throw new RuntimeException("Failed to interpret sounds.");
+                }
+            }
+        }
+    }
+    /**
+     * Returns the sound from the given name
+     *
+     * @param name name
+     * @return sounds
+     */
+    public static Sound getSoundFromName(String name) {
+        for (final Sound sound : Sound.values()) {
+            if (sound.name().equalsIgnoreCase(name))
+                return sound;
+        }
+        return null;
+    }
+
+    /**
+     * Returns all available sound names
+     *
+     * @return text
+     */
+    public static String getAvailableSounds() {
+        final StringBuilder s = new StringBuilder();
+        for (final Sound sound : Sound.values()) {
+            if (s.length() != 0) {
+                s.append(", ");
+            }
+            s.append(sound.name().toLowerCase());
+        }
+        return s.toString();
+    }
+
+    /**
+     * Returns the id of the object
+     *
+     * @return id
+     */
+    @Override
+    public long getId() {
+        return this.hashCode();
     }
 }

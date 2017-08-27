@@ -122,6 +122,70 @@ public final class NMSRegistry {
         return true;
     }
 
+    /**
+     * Checks if the player should be kicked off his pet
+     *
+     * @param player   player
+     * @param regionId regionId
+     * @return kickOff
+     */
+    public static boolean shouldKickOffPet(Player player, String regionId) {
+        if (RegisterHelper.isRegistered("WorldGuard")) {
+            try {
+                if (RegisterHelper.isRegistered("WorldGuard", '6'))
+                    return WorldGuardConnection6.shouldKickOffPet(player, regionId);
+                else if (RegisterHelper.isRegistered("WorldGuard", '5'))
+                    return WorldGuardConnection5.shouldKickOffPet(player, regionId);
+            } catch (final Exception ex) {
+                Bukkit.getServer().getConsoleSender().sendMessage(PetBlocksPlugin.PREFIX_CONSOLE + ChatColor.DARK_RED + "Crashed while connecting to worldguard." + ex.getMessage());
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Returns the item in hand by being compatible to lower than 1.9
+     *
+     * @param player  player
+     * @param offHand offHand
+     * @return itemStack
+     */
+    public static ItemStack getItemInHand19(Player player, boolean offHand) {
+        try {
+            if (!VersionSupport.getServerVersion().isVersionSameOrGreaterThan(VersionSupport.VERSION_1_9_R1)) {
+                return ReflectionUtils.invokeMethodByObject(player, "getItemInHand", new Class[]{}, new Object[]{});
+            }
+            if (offHand) {
+                return ReflectionUtils.invokeMethodByObject(player.getInventory(), "getItemInOffHand", new Class[]{}, new Object[]{});
+            }
+            return ReflectionUtils.invokeMethodByObject(player.getInventory(), "getItemInMainHand", new Class[]{}, new Object[]{});
+        } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
+            Bukkit.getLogger().log(Level.WARNING, "Failed to gather item in 19 hand.", e);
+            return null;
+        }
+    }
+
+    /**
+     * Sets the item in hand by being compatible to lower than 1.9
+     *
+     * @param player    player
+     * @param itemStack itemStack
+     * @param offHand   offHand
+     */
+    public static void setItemInHand19(Player player, ItemStack itemStack, boolean offHand) {
+        try {
+            if (!VersionSupport.getServerVersion().isVersionSameOrGreaterThan(VersionSupport.VERSION_1_9_R1)) {
+                ReflectionUtils.invokeMethodByObject(player, "setItemInHand", new Class[]{itemStack.getClass()}, new Object[]{itemStack});
+            } else if (offHand) {
+                ReflectionUtils.invokeMethodByObject(player.getInventory(), "setItemInOffHand", new Class[]{itemStack.getClass()}, new Object[]{itemStack});
+            } else {
+                ReflectionUtils.invokeMethodByObject(player.getInventory(), "setItemInMainHand", new Class[]{itemStack.getClass()}, new Object[]{itemStack});
+            }
+        } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
+            Bukkit.getLogger().log(Level.WARNING, "Failed to set item in 19 hand.", e);
+        }
+    }
+
     public static void registerListener19(List<Player> players, Plugin plugin) {
         if (VersionSupport.getServerVersion().isVersionSameOrGreaterThan(VersionSupport.VERSION_1_9_R1)) {
             try {

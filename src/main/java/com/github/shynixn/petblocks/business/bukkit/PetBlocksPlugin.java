@@ -7,11 +7,13 @@ import com.github.shynixn.petblocks.business.bukkit.nms.NMSRegistry;
 import com.github.shynixn.petblocks.business.bukkit.nms.VersionSupport;
 import com.github.shynixn.petblocks.business.metrics.Metrics;
 import com.github.shynixn.petblocks.lib.ReflectionUtils;
+import com.github.shynixn.petblocks.lib.UpdateUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.logging.Level;
 
@@ -46,6 +48,7 @@ import java.util.logging.Level;
  */
 public final class PetBlocksPlugin extends JavaPlugin {
     public static final String PREFIX_CONSOLE = ChatColor.AQUA + "[PetBlocks] ";
+    private static final long SPIGOT_RESOURCEID = 12056;
     private static final String PLUGIN_NAME = "PetBlocks";
     private boolean disabled;
 
@@ -65,7 +68,13 @@ public final class PetBlocksPlugin extends JavaPlugin {
             if (Config.getInstance().isMetricsEnabled()) {
                 new Metrics(this);
             }
-
+            this.getServer().getScheduler().runTaskAsynchronously(this, () -> {
+                try {
+                    UpdateUtils.checkPluginUpToDateAndPrintMessage(SPIGOT_RESOURCEID, PREFIX_CONSOLE, PLUGIN_NAME, PetBlocksPlugin.this);
+                } catch (final IOException e) {
+                    Bukkit.getLogger().log(Level.WARNING, "Failed to check for updates.");
+                }
+            });
             NMSRegistry.registerAll();
             try {
                 ReflectionUtils.invokeMethodByClass(PetBlocksApi.class, "init", new Class[]{Plugin.class}, new Object[]{this});
