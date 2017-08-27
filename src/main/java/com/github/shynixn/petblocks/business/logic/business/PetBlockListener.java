@@ -5,10 +5,12 @@ import com.github.shynixn.petblocks.api.entities.PetBlock;
 import com.github.shynixn.petblocks.api.events.PetBlockMoveEvent;
 import com.github.shynixn.petblocks.api.events.PetBlockRideEvent;
 import com.github.shynixn.petblocks.api.persistence.entity.PetMeta;
+import com.github.shynixn.petblocks.api.persistence.entity.SoundMeta;
 import com.github.shynixn.petblocks.business.Config;
 import com.github.shynixn.petblocks.business.bukkit.PetBlocksPlugin;
 import com.github.shynixn.petblocks.business.bukkit.nms.NMSRegistry;
 import com.github.shynixn.petblocks.business.logic.configuration.ConfigPet;
+import com.github.shynixn.petblocks.business.logic.persistence.entity.SoundBuilder;
 import com.github.shynixn.petblocks.lib.*;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -37,6 +39,7 @@ class PetBlockListener extends SimpleListener {
     private final List<PetBlock> jumped = new ArrayList<>();
 
     private boolean running;
+    private final SoundMeta eatingSound = new SoundBuilder("EAT");
 
     PetBlockListener(PetBlockManager manager, Plugin plugin) {
         super(plugin);
@@ -204,7 +207,11 @@ class PetBlockListener extends SimpleListener {
             if (petBlock != null && petBlock.getOwner().equals(event.getPlayer())) {
                 if (Interpreter19.getItemInHand19(event.getPlayer(), false) != null && Interpreter19.getItemInHand19(event.getPlayer(), false).getType() == Material.CARROT_ITEM) {
                     ParticleEffect.HEART.display(1F, 1F, 1F, 0.1F, 20, event.getRightClicked().getLocation(), event.getRightClicked().getWorld().getPlayers());
-                    new SoundData("EAT").play(event.getRightClicked().getLocation());
+                    try {
+                        this.eatingSound.apply(event.getRightClicked().getLocation());
+                    } catch (final Exception e) {
+                        Bukkit.getLogger().log(Level.WARNING, "Failed to play sound.", e);
+                    }
                     if (Interpreter19.getItemInHand19(event.getPlayer(), false).getAmount() == 1)
                         event.getPlayer().getInventory().setItem(event.getPlayer().getInventory().getHeldItemSlot(), new ItemStack(Material.AIR));
                     else

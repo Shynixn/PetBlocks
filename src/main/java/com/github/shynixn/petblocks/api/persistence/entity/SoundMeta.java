@@ -1,13 +1,12 @@
-package com.github.shynixn.petblocks.lib;
+package com.github.shynixn.petblocks.api.persistence.entity;
 
+import com.github.shynixn.petblocks.business.logic.persistence.entity.SoundBuilder;
 import org.bukkit.Location;
 import org.bukkit.Sound;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.entity.Player;
 
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Copyright 2017 Shynixn
@@ -38,45 +37,14 @@ import java.util.Map;
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-public class SoundBuilder implements ConfigurationSerializable {
-
-    private String text;
-    private float volume;
-    private float pitch;
-
+public interface SoundMeta extends ConfigurationSerializable, Persistenceable {
     /**
-     * Initializes a new soundBuilder
-     */
-    public SoundBuilder() {
-        super();
-    }
-
-    /**
-     * Initializes a new soundBuilder
+     * Plays the sound to all given players at their location
      *
-     * @param text   text
-     * @param volume volume
-     * @param pitch  pitch
-     */
-    public SoundBuilder(String text, double volume, double pitch) {
-        super();
-        this.text = text;
-        this.volume = (float) volume;
-        this.pitch = (float) pitch;
-    }
-
-    /**
-     * Initializes a new soundBuilder from serialized Content
-     *
-     * @param items items
+     * @param players players
      * @throws Exception exception
      */
-    public SoundBuilder(Map<String, Object> items) throws Exception {
-        super();
-        this.text = (String) items.get("name");
-        this.volume = (float) items.get("volume");
-        this.pitch = (float) items.get("pitch");
-    }
+    void apply(Collection<Player> players) throws Exception;
 
     /**
      * Plays the sound to all given players at their location
@@ -84,21 +52,7 @@ public class SoundBuilder implements ConfigurationSerializable {
      * @param players players
      * @throws Exception exception
      */
-    public void apply(Collection<Player> players) throws Exception {
-        this.apply(players.toArray(new Player[players.size()]));
-    }
-
-    /**
-     * Plays the sound to all given players at their location
-     *
-     * @param players players
-     * @throws Exception exception
-     */
-    public void apply(Player... players) throws Exception {
-        for (final Player player : players) {
-            player.playSound(player.getLocation(), Sound.valueOf(this.text), this.pitch, this.volume);
-        }
-    }
+    void apply(Player... players) throws Exception;
 
     /**
      * Plays the sound to all players in the world at the given location. Players to far away cannot hear the sound.
@@ -106,11 +60,7 @@ public class SoundBuilder implements ConfigurationSerializable {
      * @param location location
      * @throws Exception exception
      */
-    public void apply(Location location) throws Exception {
-        for (final Player player : location.getWorld().getPlayers()) {
-            player.playSound(location, Sound.valueOf(this.text), this.pitch, this.volume);
-        }
-    }
+    void apply(Location location) throws Exception;
 
     /**
      * Plays the sound to the given players at the given location. Given players to far away cannot hear the sound.
@@ -119,9 +69,7 @@ public class SoundBuilder implements ConfigurationSerializable {
      * @param players  players
      * @throws Exception exception
      */
-    public void apply(Location location, Collection<Player> players) throws Exception {
-        this.apply(location, players.toArray(new Player[players.size()]));
-    }
+    void apply(Location location, Collection<Player> players) throws Exception;
 
     /**
      * Plays the sound to the given players at the given location. Given players to far away cannot hear the sound.
@@ -130,20 +78,14 @@ public class SoundBuilder implements ConfigurationSerializable {
      * @param players  players
      * @throws Exception exception
      */
-    public void apply(Location location, Player... players) throws Exception {
-        for (final Player player : players) {
-            player.playSound(location, Sound.valueOf(this.text), this.pitch, this.volume);
-        }
-    }
+    void apply(Location location, Player... players) throws Exception;
 
     /**
      * Returns the name of the sound
      *
      * @return name
      */
-    public String getName() {
-        return this.text;
-    }
+    String getName();
 
     /**
      * Sets the name of the sound
@@ -151,10 +93,7 @@ public class SoundBuilder implements ConfigurationSerializable {
      * @param name name
      * @return builder
      */
-    public SoundBuilder setName(String name) {
-        this.text = name;
-        return this;
-    }
+    SoundBuilder setName(String name);
 
     /**
      * Returns the sound and throws exception if the sound does not exist
@@ -162,9 +101,7 @@ public class SoundBuilder implements ConfigurationSerializable {
      * @return sound
      * @throws Exception exception
      */
-    public Sound getSound() throws Exception {
-        return Sound.valueOf(this.text);
-    }
+    Sound getSound() throws Exception;
 
     /**
      * Sets the bukkit sound of the sound
@@ -172,19 +109,14 @@ public class SoundBuilder implements ConfigurationSerializable {
      * @param sound sound
      * @return builder
      */
-    public SoundBuilder setSound(Sound sound) {
-        this.text = sound.name();
-        return this;
-    }
+    SoundBuilder setSound(Sound sound);
 
     /**
      * Returns the volume of the sound
      *
      * @return volume
      */
-    public double getVolume() {
-        return this.volume;
-    }
+    double getVolume();
 
     /**
      * Sets the volume of the sound
@@ -192,19 +124,14 @@ public class SoundBuilder implements ConfigurationSerializable {
      * @param volume volume
      * @return builder
      */
-    public SoundBuilder setVolume(double volume) {
-        this.volume = (float) volume;
-        return this;
-    }
+    SoundBuilder setVolume(double volume);
 
     /**
      * Returns the pitch of the sound
      *
      * @return pitch
      */
-    public double getPitch() {
-        return this.pitch;
-    }
+    double getPitch();
 
     /**
      * Sets the pitch of the sound
@@ -212,22 +139,5 @@ public class SoundBuilder implements ConfigurationSerializable {
      * @param pitch pitch
      * @return builder
      */
-    public SoundBuilder setPitch(double pitch) {
-        this.pitch = (float) pitch;
-        return this;
-    }
-
-    /**
-     * Serializes the builder
-     *
-     * @return serializedContent
-     */
-    @Override
-    public Map<String, Object> serialize() {
-        final Map<String, Object> items = new HashMap<>();
-        items.put("name", this.text);
-        items.put("volume", this.volume);
-        items.put("pitch", this.pitch);
-        return items;
-    }
+    SoundBuilder setPitch(double pitch);
 }

@@ -1,32 +1,36 @@
 package com.github.shynixn.petblocks.api.entities;
 
+import com.github.shynixn.petblocks.api.persistence.entity.SoundMeta;
 import com.github.shynixn.petblocks.business.bukkit.nms.VersionSupport;
-import com.github.shynixn.petblocks.lib.SoundData;
+import com.github.shynixn.petblocks.business.logic.persistence.entity.SoundBuilder;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
+import java.util.logging.Level;
+
 @Deprecated
 public enum PetType {
-    PIG(new SoundData("PIG_WALK"), new SoundData("PIG_IDLE"), MoveType.WALKING),
-    CHICKEN(new SoundData("CHICKEN_WALK"), new SoundData("CHICKEN_IDLE"), MoveType.WALKING),
-    DOG(new SoundData("WOLF_WALK"), new SoundData("WOLF_GROWL"), MoveType.WALKING),
-    CAT(new SoundData("WOLF_WALK"), new SoundData("CAT_MEOW"), MoveType.WALKING),
-    BIRD(new SoundData("CHICKEN_WALK", 0.3, 1), new SoundData("BAT_IDLE", 1, 0), MoveType.FLYING),
+    PIG(new SoundBuilder("PIG_WALK"), new SoundBuilder("PIG_IDLE"), MoveType.WALKING),
+    CHICKEN(new SoundBuilder("CHICKEN_WALK"), new SoundBuilder("CHICKEN_IDLE"), MoveType.WALKING),
+    DOG(new SoundBuilder("WOLF_WALK"), new SoundBuilder("WOLF_GROWL"), MoveType.WALKING),
+    CAT(new SoundBuilder("WOLF_WALK"), new SoundBuilder("CAT_MEOW"), MoveType.WALKING),
+    BIRD(new SoundBuilder("CHICKEN_WALK", 0.3, 1), new SoundBuilder("BAT_IDLE", 1, 0), MoveType.FLYING),
 
     // PACK 1
-    COW(new SoundData("COW_WALK"), new SoundData("COW_IDLE"), MoveType.WALKING),
-    SHEEP(new SoundData("SHEEP_WALK"), new SoundData("SHEEP_IDLE"), MoveType.WALKING),
-    IRONGOLEM(new SoundData("IRONGOLEM_WALK"), null, MoveType.WALKING),
+    COW(new SoundBuilder("COW_WALK"), new SoundBuilder("COW_IDLE"), MoveType.WALKING),
+    SHEEP(new SoundBuilder("SHEEP_WALK"), new SoundBuilder("SHEEP_IDLE"), MoveType.WALKING),
+    IRONGOLEM(new SoundBuilder("IRONGOLEM_WALK"), null, MoveType.WALKING),
     //
     // PACK 2
-    ZOMBIE(new SoundData("ZOMBIE_WALK"), new SoundData("ZOMBIE_IDLE"), MoveType.WALKING),
-    SKELETON(new SoundData("SKELETON_WALK"), new SoundData("SKELETON_IDLE"), MoveType.WALKING),
+    ZOMBIE(new SoundBuilder("ZOMBIE_WALK"), new SoundBuilder("ZOMBIE_IDLE"), MoveType.WALKING),
+    SKELETON(new SoundBuilder("SKELETON_WALK"), new SoundBuilder("SKELETON_IDLE"), MoveType.WALKING),
     CREEPER(null, null, MoveType.WALKING),
     //
     // PACK 3
-    SPIDER(new SoundData("SPIDER_WALK"), new SoundData("SPIDER_IDLE"), MoveType.WALKING),
-    VILLAGER(null, new SoundData("VILLAGER_IDLE"), MoveType.WALKING),
-    HORSE(new SoundData("HORSE_GALLOP"), new SoundData("HORSE_IDLE"), MoveType.WALKING),
+    SPIDER(new SoundBuilder("SPIDER_WALK"), new SoundBuilder("SPIDER_IDLE"), MoveType.WALKING),
+    VILLAGER(null, new SoundBuilder("VILLAGER_IDLE"), MoveType.WALKING),
+    HORSE(new SoundBuilder("HORSE_GALLOP"), new SoundBuilder("HORSE_IDLE"), MoveType.WALKING),
     //
 
     // PACK 4
@@ -34,40 +38,40 @@ public enum PetType {
     //
 
     //Pack 5
-    ENDERMAN(null, new SoundData("ENDERMAN_IDLE"), MoveType.WALKING),
-    SILVERFISH(new SoundData("SILVERFISH_WALK"), new SoundData("SILVERFISH_IDLE"), MoveType.WALKING),
-    BAT(new SoundData("BAT_LOOP"), new SoundData("BAT_IDLE"), MoveType.FLYING),
+    ENDERMAN(null, new SoundBuilder("ENDERMAN_IDLE"), MoveType.WALKING),
+    SILVERFISH(new SoundBuilder("SILVERFISH_WALK"), new SoundBuilder("SILVERFISH_IDLE"), MoveType.WALKING),
+    BAT(new SoundBuilder("BAT_LOOP"), new SoundBuilder("BAT_IDLE"), MoveType.FLYING),
     //
 
     //Pack 6
-    SLIME(new SoundData("SLIME_WALK"), null, MoveType.WALKING),
-    LAVASLIME(new SoundData("MAGMACUBE_WALK"), null, MoveType.WALKING),
-    PIGZOMBIE(new SoundData("PIG_WALK"), new SoundData("PIG_IDLE"), MoveType.WALKING),
+    SLIME(new SoundBuilder("SLIME_WALK"), null, MoveType.WALKING),
+    LAVASLIME(new SoundBuilder("MAGMACUBE_WALK"), null, MoveType.WALKING),
+    PIGZOMBIE(new SoundBuilder("PIG_WALK"), new SoundBuilder("PIG_IDLE"), MoveType.WALKING),
     //
 
     // Pack 7
-    GHAST(null, new SoundData("GHAST_SCREAM"), MoveType.FLYING),
-    BLAZE(null, new SoundData("BLAZE_BREATH"), MoveType.FLYING),
-    WITHER(null, new SoundData("WITHER_IDLE"), MoveType.FLYING),
+    GHAST(null, new SoundBuilder("GHAST_SCREAM"), MoveType.FLYING),
+    BLAZE(null, new SoundBuilder("BLAZE_BREATH"), MoveType.FLYING),
+    WITHER(null, new SoundBuilder("WITHER_IDLE"), MoveType.FLYING),
 
     // Pack 8 (1.9)
-    SHULKER(null, new SoundData("SHULKER_IDLE"), MoveType.WALKING, VersionSupport.VERSION_1_9_R1),
+    SHULKER(null, new SoundBuilder("SHULKER_IDLE"), MoveType.WALKING, VersionSupport.VERSION_1_9_R1),
 
-    DRAGON(new SoundData("ENDERDRAGON_WINGS"), new SoundData("ENDERDRAGON_GROWL"), MoveType.FLYING);
+    DRAGON(new SoundBuilder("ENDERDRAGON_WINGS"), new SoundBuilder("ENDERDRAGON_GROWL"), MoveType.FLYING);
 
-    private final SoundData movingSound;
-    private final SoundData randomSound;
+    private final SoundMeta movingSound;
+    private final SoundMeta randomSound;
     private final MoveType type;
     private final VersionSupport version;
 
-    PetType(SoundData movingSound, SoundData randomSound, MoveType type) {
+    PetType(SoundMeta movingSound, SoundMeta randomSound, MoveType type) {
         this.movingSound = movingSound;
         this.randomSound = randomSound;
         this.type = type;
         this.version = VersionSupport.VERSION_1_8_R1;
     }
 
-    PetType(SoundData movingSound, SoundData randomSound, MoveType type,VersionSupport version) {
+    PetType(SoundMeta movingSound, SoundMeta randomSound, MoveType type, VersionSupport version) {
         this.movingSound = movingSound;
         this.randomSound = randomSound;
         this.type = type;
@@ -84,23 +88,55 @@ public enum PetType {
     }
 
     public void playMovingSound(Location location) {
-        if (this.movingSound != null)
-            this.movingSound.play(location);
+        if (this.movingSound != null) {
+            if(!this.canPlaySpecificSounds())
+                return;
+            try {
+                this.movingSound.apply(location);
+            } catch (final Exception e) {
+                Bukkit.getLogger().log(Level.WARNING, "Failed to play sound.", e);
+            }
+        }
     }
 
     public void playMovingSound(Player player) {
-        if (this.movingSound != null)
-            this.movingSound.playTo(player);
+        if (this.movingSound != null) {
+            if(!this.canPlaySpecificSounds())
+                return;
+            try {
+                this.movingSound.apply(player);
+            } catch (final Exception e) {
+                Bukkit.getLogger().log(Level.WARNING, "Failed to play sound.", e);
+            }
+        }
     }
 
     public void playRandomSound(Player player) {
-        if (this.randomSound != null)
-            this.randomSound.playTo(player);
+        if (this.randomSound != null) {
+            if(!this.canPlaySpecificSounds())
+                return;
+            try {
+                this.randomSound.apply(player);
+            } catch (final Exception e) {
+                Bukkit.getLogger().log(Level.WARNING, "Failed to play sound.", e);
+            }
+        }
     }
 
     public void playRandomSound(Location location) {
-        if (this.randomSound != null)
-            this.randomSound.play(location);
+        if (this.randomSound != null) {
+            if(!this.canPlaySpecificSounds())
+                return;
+            try {
+                this.randomSound.apply(location);
+            } catch (final Exception e) {
+                Bukkit.getLogger().log(Level.WARNING, "Failed to play sound.", e);
+            }
+        }
+    }
+
+    private boolean canPlaySpecificSounds() {
+        return !(this.movingSound.getName().contains("SHULKER") && VersionSupport.getServerVersion().isVersionLowerThan(VersionSupport.VERSION_1_9_R1));
     }
 
     public static String[] getNames() {
@@ -112,8 +148,7 @@ public enum PetType {
     }
 
     public static PetType getPetTypeFromName(String name) {
-        for (final PetType pet : PetType.values())
-        {
+        for (final PetType pet : PetType.values()) {
             if (pet.name().equalsIgnoreCase(name))
                 return pet;
         }
