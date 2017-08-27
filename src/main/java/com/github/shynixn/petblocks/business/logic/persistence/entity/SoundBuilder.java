@@ -263,7 +263,8 @@ public class SoundBuilder implements SoundMeta {
      * Converts the sounds to 1.9 sounds
      */
     private void convertSounds() {
-        if (VersionSupport.getServerVersion().isVersionSameOrGreaterThan(VersionSupport.VERSION_1_9_R1)) {
+        if (VersionSupport.getServerVersion() != null
+                && VersionSupport.getServerVersion().isVersionSameOrGreaterThan(VersionSupport.VERSION_1_9_R1)) {
             switch (this.text) {
                 case "ENDERMAN_IDLE": {
                     this.text = "ENTITY_ENDERMEN_AMBIENT";
