@@ -210,7 +210,7 @@ gui:
     use-only-disable-pet-item: false
   general:
     my-pet:
-      position: 36
+      position: 9
     default-appearance:
       id: 2
       damage: 0
@@ -220,19 +220,25 @@ gui:
       id: 123
       damage: 0
       owner: 'none'
-      position: 37
+      position: 10
     disable-pet:
       enabled: true
       id: 89
       damage: 0
       owner: 'none'
-      position: 37
+      position: 10
     empty-slot:
       enabled: true
       id: 160
       damage: 15
       owner: 'none'
       lore: ''
+    wardrobe:
+      enabled: true
+      id: 116
+      damage: 1
+      owner: 'none'
+      position: 27
     previous-page:
         enabled: true
         id: 397
@@ -253,86 +259,109 @@ gui:
       id: 19
       damage: 0
       owner: 'none'
-      position: 39
+      position: 38
+      page: 'MAIN'
     sounds-disabled-pet:
       enabled: true
       id: 19
       damage: 1
       owner: 'none'
-      position: 39
+      position: 38
+      page: 'MAIN'
     default-costume:
       enabled: true
       id: 351
       damage: 1
       owner: 'none'
-      position: 40
+      position: 20
+      page: 'WARDROBE'
+      lore: '&eOrdinary block-costumes'
     color-costume:
       enabled: true
       id: 351
       damage: 2
       owner: 'none'
-      position: 41
+      position: 21
+      page: 'WARDROBE'
+      lore: '&6Colored block-costumes'
     custom-costume:
       enabled: true
       id: 351
       damage: 3
       owner: 'none'
-      position: 42
+      position: 22
+      page: 'WARDROBE'
+      lore: '&5Rare block-costumes'
+    minecraft-heads-costume:
+      enabled: true
+      id: 397
+      damage: 3
+      owner: 'textures.minecraft.net/texture/fec052be76e39148a27f255ec537dff92018c79744202d60c51bc67d618ae36a'
+      position: 23
+      page: 'WARDROBE'
     call-pet:
       enabled: true
       id: 370
       damage: 0
       owner: 'none'
-      position: 43
+      position: 36
+      page: 'MAIN'
     particle-pet:
       enabled: true
       id: 331
       damage: 0
       owner: 'none'
-      position: 44
+      position: 37
+      page: 'WARDROBE'
     cancel-pet:
       enabled: true
       id: 166
       damage: 0
       owner: 'none'
-      position: 48
+      position: 45
+      page: 'MAIN'
     cannon-pet:
       enabled: true
       id: 332
       damage: 0
       owner: 'none'
-      position: 49
+      position: 37
+      page: 'MAIN'
     skullnaming-pet:
       enabled: true
       id: 145
       damage: 0
       owner: 'none'
-      position: 50
+      position: 29
+      page: 'MAIN'
     naming-pet:
       enabled: true
       id: 421
       damage: 0
       owner: 'none'
-      position: 51
+      position: 28
+      page: 'MAIN'
     hat-pet:
       enabled: true
       id: 260
       damage: 0
       owner: 'none'
-      position: 52
+      position: 46
+      page: 'MAIN'
     riding-pet:
       enabled: true
       id: 329
       damage: 0
       owner: 'none'
-      position: 53
+      position: 47
+      page: 'MAIN'
   souls:
      pig-soul:
        enabled: true
        id: 397
        damage: 3
        owner: 'textures.minecraft.net/texture/621668ef7cb79dd9c22ce3d1f3f4cb6e2559893b6df4a469514e667c16aa4'
-       position: 0
+       position: 4
        type: WALKING
        movement: HOPPING
        lore: '&ePermission: <permission>'
@@ -341,7 +370,7 @@ gui:
        id: 397
        damage: 3
        owner: 'textures.minecraft.net/texture/1638469a599ceef7207537603248a9ab11ff591fd378bea4735b346a7fae893'
-       position: 1
+       position: 5
        type: WALKING
        movement: HOPPING
        lore: '&ePermission: <permission>'
@@ -350,7 +379,7 @@ gui:
        id: 397
        damage: 3
        owner: 'textures.minecraft.net/texture/e95cbb4f75ea87617f2f713c6d49dac3209ba1bd4b9369654b1459ea15317'
-       position: 2
+       position: 6
        type: WALKING
        movement: HOPPING
        lore: '&ePermission: <permission>'
@@ -359,7 +388,7 @@ gui:
        id: 397
        damage: 3
        owner: 'textures.minecraft.net/texture/5657cd5c2989ff97570fec4ddcdc6926a68a3393250c1be1f0b114a1db1'
-       position: 3
+       position: 7
        type: WALKING
        movement: HOPPING
        lore: '&ePermission: <permission>'
@@ -368,7 +397,7 @@ gui:
        id: 397
        damage: 3
        owner: 'textures.minecraft.net/texture/5d6c6eda942f7f5f71c3161c7306f4aed307d82895f9d2b07ab4525718edc5'
-       position: 4
+       position: 8
        type: WALKING
        movement: HOPPING
        lore: '&ePermission: <permission>'
@@ -377,7 +406,7 @@ gui:
        id: 397
        damage: 3
        owner: 'textures.minecraft.net/texture/f31f9ccc6b3e32ecf13b8a11ac29cd33d18c95fc73db8a66c5d657ccb8be70'
-       position: 5
+       position: 13
        type: WALKING
        movement: HOPPING
        lore: '&ePermission: <permission>'
@@ -386,7 +415,7 @@ gui:
        id: 397
        damage: 3
        owner: 'textures.minecraft.net/texture/61902898308730c4747299cb5a5da9c25838b1d059fe46fc36896fee662729'
-       position: 6
+       position: 14
        type: WALKING
        movement: HOPPING
        lore: '&ePermission: <permission>'
@@ -395,7 +424,7 @@ gui:
        id: 397
        damage: 3
        owner: 'textures.minecraft.net/texture/f2542c19cbcd964274244af6bed1ac8560b3f36fd3b3268061f8a614a9b59e35'
-       position: 7
+       position: 15
        type: FLYING
        movement: HOPPING
        lore: '&ePermission: <permission>'
@@ -404,7 +433,7 @@ gui:
        id: 397
        damage: 3
        owner: 'textures.minecraft.net/texture/4cf1b3b3f539d2f63c172e94cacfaa391e8b385cdd633f3b991c74e44b28'
-       position: 8
+       position: 16
        type: FLYING
        movement: HOPPING
        lore: '&ePermission: <permission>'
@@ -413,7 +442,7 @@ gui:
        id: 397
        damage: 3
        owner: 'textures.minecraft.net/texture/56fc854bb84cf4b7697297973e02b79bc10698460b51a639c60e5e417734e11'
-       position: 9
+       position: 17
        type: WALKING
        movement: HOPPING
        lore: '&ePermission: <permission>'
@@ -422,7 +451,7 @@ gui:
        id: 397
        damage: 3
        owner: 'textures.minecraft.net/texture/2e5be6a3c0159d2c1f3b1e4e1d8384b6f7ebac993d58b10b9f8989c78a232'
-       position: 10
+       position: 22
        type: WALKING
        movement: HOPPING
        lore: '&ePermission: <permission>'
@@ -431,7 +460,7 @@ gui:
        id: 397
        damage: 3
        owner: 'textures.minecraft.net/texture/295ef836389af993158aba27ff37b6567185f7a721ca90fdfeb937a7cb5747'
-       position: 11
+       position: 23
        type: WALKING
        movement: HOPPING
        lore: '&ePermission: <permission>'
@@ -440,7 +469,7 @@ gui:
        id: 397
        damage: 3
        owner: 'textures.minecraft.net/texture/cd541541daaff50896cd258bdbdd4cf80c3ba816735726078bfe393927e57f1'
-       position: 12
+       position: 24
        type: WALKING
        movement: HOPPING
        lore: '&ePermission: <permission>'
@@ -449,7 +478,7 @@ gui:
        id: 397
        damage: 3
        owner: 'textures.minecraft.net/texture/7a59bb0a7a32965b3d90d8eafa899d1835f424509eadd4e6b709ada50b9cf'
-       position: 13
+       position: 25
        type: WALKING
        movement: HOPPING
        lore: '&ePermission: <permission>'
@@ -458,7 +487,7 @@ gui:
        id: 397
        damage: 3
        owner: 'textures.minecraft.net/texture/16ad20fc2d579be250d3db659c832da2b478a73a698b7ea10d18c9162e4d9b5'
-       position: 14
+       position: 26
        type: WALKING
        movement: HOPPING
        lore: '&ePermission: <permission>'
@@ -467,7 +496,7 @@ gui:
        id: 397
        damage: 3
        owner: 'textures.minecraft.net/texture/38957d5023c937c4c41aa2412d43410bda23cf79a9f6ab36b76fef2d7c429'
-       position: 15
+       position: 31
        type: WALKING
        movement: HOPPING
        lore: '&ePermission: <permission>'
@@ -476,7 +505,7 @@ gui:
        id: 397
        damage: 3
        owner: 'textures.minecraft.net/texture/74e9c6e98582ffd8ff8feb3322cd1849c43fb16b158abb11ca7b42eda7743eb'
-       position: 16
+       position: 32
        type: WALKING
        movement: HOPPING
        lore: '&ePermission: <permission>'
@@ -485,7 +514,7 @@ gui:
        id: 397
        damage: 3
        owner: 'textures.minecraft.net/texture/c52264ac4e5621668c43e87aed7918ed6b883abc5018769c9536d27b77f'
-       position: 17
+       position: 33
        type: FLYING
        movement: HOPPING
        lore: '&ePermission: <permission>'
@@ -494,7 +523,7 @@ gui:
        id: 397
        damage: 3
        owner: 'textures.minecraft.net/texture/456eec1c2169c8c60a7ae436abcd2dc5417d56f8adef84f11343dc1188fe138'
-       position: 18
+       position: 34
        type: WALKING
        movement: HOPPING
        lore: '&ePermission: <permission>'
@@ -503,7 +532,7 @@ gui:
        id: 397
        damage: 3
        owner: 'textures.minecraft.net/texture/822d8e751c8f2fd4c8942c44bdb2f5ca4d8ae8e575ed3eb34c18a86e93b'
-       position: 19
+       position: 35
        type: WALKING
        movement: HOPPING
        lore: '&ePermission: <permission>'
@@ -512,7 +541,7 @@ gui:
        id: 397
        damage: 3
        owner: 'textures.minecraft.net/texture/89091d79ea0f59ef7ef94d7bba6e5f17f2f7d4572c44f90f76c4819a714'
-       position: 20
+       position: 40
        type: WALKING
        movement: HOPPING
        lore: '&ePermission: <permission>'
@@ -521,7 +550,7 @@ gui:
        id: 397
        damage: 3
        owner: 'textures.minecraft.net/texture/ce663a1949db253da3a6f2a69e35da9a524ee3d958a3807ce2bdabcd6f7f5'
-       position: 21
+       position: 41
        type: WALKING
        movement: HOPPING
        lore: '&ePermission: <permission>'
@@ -530,7 +559,7 @@ gui:
        id: 397
        damage: 3
        owner: 'textures.minecraft.net/texture/8b6a72138d69fbbd2fea3fa251cabd87152e4f1c97e5f986bf685571db3cc0'
-       position: 22
+       position: 42
        type: FLYING
        movement: HOPPING
        lore: '&ePermission: <permission>'
@@ -539,7 +568,7 @@ gui:
        id: 397
        damage: 3
        owner: 'textures.minecraft.net/texture/b78ef2e4cf2c41a2d14bfde9caff10219f5b1bf5b35a49eb51c6467882cb5f0'
-       position: 23
+       position: 43
        type: FLYING
        movement: HOPPING
        lore: '&ePermission: <permission>'
@@ -548,7 +577,7 @@ gui:
        id: 397
        damage: 3
        owner: 'textures.minecraft.net/texture/233b41fa79cd53a230e2db942863843183a70404533bbc01fab744769bcb'
-       position: 24
+       position: 44
        type: FLYING
        movement: HOPPING
        lore: '&ePermission: <permission>'
@@ -557,7 +586,7 @@ gui:
        id: 397
        damage: 3
        owner: 'textures.minecraft.net/texture/b1d3534d21fe8499262de87affbeac4d25ffde35c8bdca069e61e1787ff2f'
-       position: 25
+       position: 49
        type: WALKING
        movement: HOPPING
        lore: '&ePermission: <permission>'

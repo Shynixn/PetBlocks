@@ -1,5 +1,6 @@
 package com.github.shynixn.petblocks.api.entities;
 
+import com.github.shynixn.petblocks.api.business.enumeration.GUIPage;
 import com.github.shynixn.petblocks.business.Permission;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -29,4 +30,11 @@ public interface ItemContainer {
     int getDamage();
 
     Movement getMovement();
+
+    /**
+     * Returns the guiPage of this container
+     *
+     * @return guiPage
+     */
+    GUIPage getGUIPage();
 }

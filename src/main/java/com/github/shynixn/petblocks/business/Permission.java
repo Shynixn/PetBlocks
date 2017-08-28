@@ -14,6 +14,8 @@ public enum Permission {
     SINGLECOLORCOSTUME("petblocks.pet.colorcostumes."),
     ALLCUSTOMCOSTUMES("petblocks.pet.customcostumes.all"),
     SINGLECUSTOMCOSTUME("petblocks.pet.customcostumes."),
+    ALLMINECRAFTHEADSCOSTUMES("petblocks.pet.minecraft-heads-costumes.all"),
+    SINGLEMINECRAFTHEADSCOSTUME("petblocks.pet.minecraft-heads-costumes."),
     ALLPARTICLES("petblocks.pet.particles.all"),
     SINGLEPARTICLE("petblocks.pet.particles."),
     OWNINGAMECOSTUMES("petblocks.inventory.costume");

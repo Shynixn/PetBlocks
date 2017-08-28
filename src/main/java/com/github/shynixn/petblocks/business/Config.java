@@ -1,5 +1,6 @@
 package com.github.shynixn.petblocks.business;
 
+import com.github.shynixn.petblocks.api.business.enumeration.GUIPage;
 import com.github.shynixn.petblocks.api.entities.*;
 import com.github.shynixn.petblocks.api.persistence.entity.PetMeta;
 import com.github.shynixn.petblocks.business.bukkit.nms.NMSRegistry;
@@ -39,7 +40,7 @@ public final class Config {
     private boolean join_overwriteExistingPet;
 
     private boolean metrics = true;
-    private boolean allowRidingOnRegionChanging = true;
+    private final boolean allowRidingOnRegionChanging = true;
 
     private Config(Plugin plugin) {
         super();
@@ -74,7 +75,7 @@ public final class Config {
             this.join_enabled = c.getBoolean("join.enabled");
             this.join_overwriteExistingPet = plugin.getConfig().getBoolean("join.overwrite-previous-pet");
 
-          //  this.allowRidingOnRegionChanging = c.getBoolean("region.allow-riding-on");
+            //  this.allowRidingOnRegionChanging = c.getBoolean("region.allow-riding-on");
 
             ConfigCommands.getInstance().load(c);
             ConfigGUI.getInstance().load(c);
@@ -119,18 +120,24 @@ public final class Config {
         }
     }
 
-    public void setMyContainer(Inventory inventory, String title, ItemContainer container, Permission... permission) {
-        if (permission == null)
+    public void setMyContainer(GUIPage guiPage, Inventory inventory, String title, ItemContainer container, Permission... permission) {
+        if(!this.canSetMyContainer(guiPage, container))
+            return;
+        if (permission == null) {
             inventory.setItem(container.getPosition(), BukkitUtilities.nameItem(container.generate(), title, container.getLore()));
-        else
+        } else {
             inventory.setItem(container.getPosition(), BukkitUtilities.nameItem(container.generate(), title, container.getLore((Player) inventory.getHolder(), permission)));
+        }
     }
 
-    public void setMyContainer(Inventory inventory, String title, ItemContainer container, String... permission) {
-        if (permission == null)
+    public void setMyContainer(GUIPage guiPage, Inventory inventory, String title, ItemContainer container, String... permission) {
+        if(!this.canSetMyContainer(guiPage, container))
+            return;
+        if (permission == null) {
             inventory.setItem(container.getPosition(), BukkitUtilities.nameItem(container.generate(), title, container.getLore()));
-        else
+        } else {
             inventory.setItem(container.getPosition(), BukkitUtilities.nameItem(container.generate(), title, container.getLore((Player) inventory.getHolder(), permission)));
+        }
     }
 
     public ItemStack getMyItemStack(Player player, String title, ItemContainer container, String... permission) {
@@ -179,5 +186,21 @@ public final class Config {
      */
     public boolean isMetricsEnabled() {
         return this.metrics;
+    }
+
+    /**
+     * Returns if my container should be set
+     *
+     * @param guiPage   guiPage
+     * @param container container
+     * @return should be set
+     */
+    private boolean canSetMyContainer(GUIPage guiPage, ItemContainer container) {
+        if (guiPage == GUIPage.MAIN && (container.getGUIPage() == null))
+            return true;
+        else if ((guiPage == GUIPage.MAIN && container.getGUIPage() == GUIPage.MAIN)
+                || (guiPage == GUIPage.WARDROBE && container.getGUIPage() == GUIPage.WARDROBE))
+            return true;
+        return false;
     }
 }

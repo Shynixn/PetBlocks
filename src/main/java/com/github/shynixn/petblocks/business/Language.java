@@ -55,10 +55,12 @@ public final class Language {
             ENABLE_PET = ChatColor.translateAlternateColorCodes('&', config.getString("enable-pet"));
             DISABLE_PET = ChatColor.translateAlternateColorCodes('&', config.getString("disable-pet"));
             MY_PET = ChatColor.translateAlternateColorCodes('&', config.getString("my-pet"));
+            WARDROBE = ChatColor.translateAlternateColorCodes('&', config.getString("wardrobe"));
 
             COSTUME = ChatColor.translateAlternateColorCodes('&', config.getString("costumes"));
             COLOR_COSTUME = ChatColor.translateAlternateColorCodes('&', config.getString("color-costumes"));
             CUSTOM_COSTUME = ChatColor.translateAlternateColorCodes('&', config.getString("custom-costumes"));
+            MINECRAFT_HEADS_COSTUME = ChatColor.translateAlternateColorCodes('&', config.getString("minecraft-heads-costumes"));
             NAMING = ChatColor.translateAlternateColorCodes('&', config.getString("naming"));
             RIDING = ChatColor.translateAlternateColorCodes('&', config.getString("riding"));
             HAT = ChatColor.translateAlternateColorCodes('&', config.getString("hat"));
@@ -150,10 +152,12 @@ public final class Language {
     public static String ENABLE_PET = BukkitChatColor.GREEN + "Enable Petblock";
     public static String DISABLE_PET = BukkitChatColor.RED + "Disable Petblock";
     public static String MY_PET = BukkitChatColor.DARK_GREEN + "My Pet";
+    public static String WARDROBE = BukkitChatColor.YELLOW + "Wardrobe";
 
     public static String COSTUME = BukkitChatColor.GREEN + "Costumes";
     public static String COLOR_COSTUME = BukkitChatColor.YELLOW + "Color Costumes";
     public static String CUSTOM_COSTUME = BukkitChatColor.BLUE + "Custom Costumes";
+    public static String MINECRAFT_HEADS_COSTUME = BukkitChatColor.DARK_GREEN + "Exclusive Skins";
     public static String NAMING = BukkitChatColor.RED + "Change Name";
     public static String RIDING = BukkitChatColor.LIGHT_PURPLE + "Ride Pet";
     public static String HAT = BukkitChatColor.GOLD + "Wear your pet as hat";

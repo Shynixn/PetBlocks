@@ -1,5 +1,6 @@
 package com.github.shynixn.petblocks.business.logic.configuration;
 
+import com.github.shynixn.petblocks.api.business.enumeration.GUIPage;
 import com.github.shynixn.petblocks.api.entities.MoveType;
 import com.github.shynixn.petblocks.business.Permission;
 import com.github.shynixn.petblocks.business.bukkit.nms.NMSRegistry;
@@ -9,6 +10,7 @@ import com.github.shynixn.petblocks.business.Language;
 import com.github.shynixn.petblocks.business.bukkit.PetBlocksPlugin;
 import com.github.shynixn.petblocks.lib.BukkitUtilities;
 import com.github.shynixn.petblocks.lib.ParticleBuilder;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -16,6 +18,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
 
+import java.util.logging.Level;
 import java.util.regex.Pattern;
 
 /**
@@ -33,6 +36,7 @@ class CustomItemContainer implements ItemContainer {
     private String loreName;
     private MoveType type = MoveType.WALKING;
     private Movement movement = Movement.HOPPING;
+    private GUIPage guiPage;
 
     CustomItemContainer(int id, int damage, String skullName, int position, String lore, boolean enabled, String type, String movement) {
         super();
@@ -50,12 +54,31 @@ class CustomItemContainer implements ItemContainer {
     }
 
     static ItemContainer resolveItemContainer(String identifier, FileConfiguration c) {
-        return new CustomItemContainer(c.getInt(identifier + ".id"), c.getInt(identifier + ".damage"), c.getString(identifier + ".owner"), c.getInt(identifier + ".position"), c.getString(identifier + ".lore"), c.getBoolean(identifier + ".enabled"), c.getString(identifier + ".type"), c.getString(identifier + ".movement"));
+        final CustomItemContainer container = new CustomItemContainer(c.getInt(identifier + ".id"), c.getInt(identifier + ".damage"), c.getString(identifier + ".owner"), c.getInt(identifier + ".position"), c.getString(identifier + ".lore"), c.getBoolean(identifier + ".enabled"), c.getString(identifier + ".type"), c.getString(identifier + ".movement"));
+        if (c.contains(identifier + ".page")) {
+            final String pageName = c.getString(identifier + ".page");
+            final GUIPage guiPage = GUIPage.getGUIPageFromName(pageName);
+            if (guiPage == null) {
+                Bukkit.getLogger().log(Level.WARNING, "Cannot find page named " + pageName + ".");
+            }
+            container.guiPage = guiPage;
+        }
+        return container;
     }
 
     @Override
     public Movement getMovement() {
         return this.movement;
+    }
+
+    /**
+     * Returns the guiPage of this container
+     *
+     * @return guiPage
+     */
+    @Override
+    public GUIPage getGUIPage() {
+        return this.guiPage;
     }
 
     @Override
@@ -114,6 +137,10 @@ class CustomItemContainer implements ItemContainer {
 
     @Override
     public String[] getLore(Player player, String... permission) {
+        if(permission.length > 0)
+        if (permission != null && permission.length == 1 && permission[0].equals("minecraft-heads")) {
+            return new String[]{ChatColor.GRAY + "sponsored by | Minecraft-Heads.com"};
+        }
         if (!ConfigGUI.getInstance().isSettings_allowLore())
             return null;
         if (this.loreName != null && this.loreName.contains("<permission>")) {

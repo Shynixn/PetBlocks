@@ -53,10 +53,12 @@ public final class ConfigGUI {
     private ItemContainer general_emptyslotContainer;
     private ItemContainer general_previouspageContainer;
     private ItemContainer general_nextpageContainer;
+    private ItemContainer general_wardrobe;
     //Item
     private ItemContainer items_defaultcostumeContainer;
     private ItemContainer items_colorcostumeContainer;
     private ItemContainer items_customcostumeContainer;
+    private ItemContainer items_minecraftheadscostumeContainer;
     private ItemContainer items_soundEnabledContainer;
     private ItemContainer items_soundDisabledContainer;
     private ItemContainer items_callpetContainer;
@@ -98,6 +100,7 @@ public final class ConfigGUI {
         this.general_emptyslotContainer = CustomItemContainer.resolveItemContainer("gui.general.empty-slot", c);
         this.general_previouspageContainer = CustomItemContainer.resolveItemContainer("gui.general.previous-page", c);
         this.general_nextpageContainer = CustomItemContainer.resolveItemContainer("gui.general.next-page", c);
+        this.general_wardrobe = CustomItemContainer.resolveItemContainer("gui.general.wardrobe", c);
 
         this.items_soundDisabledContainer = CustomItemContainer.resolveItemContainer("gui.items.sounds-disabled-pet", c);
         this.items_soundEnabledContainer = CustomItemContainer.resolveItemContainer("gui.items.sounds-enabled-pet", c);
@@ -105,6 +108,7 @@ public final class ConfigGUI {
         this.items_defaultcostumeContainer = CustomItemContainer.resolveItemContainer("gui.items.default-costume", c);
         this.items_colorcostumeContainer = CustomItemContainer.resolveItemContainer("gui.items.color-costume", c);
         this.items_customcostumeContainer = CustomItemContainer.resolveItemContainer("gui.items.custom-costume", c);
+        this.items_minecraftheadscostumeContainer = CustomItemContainer.resolveItemContainer("gui.items.minecraft-heads-costume", c);
         this.items_callpetContainer = CustomItemContainer.resolveItemContainer("gui.items.call-pet", c);
         this.items_particlepetContainer = CustomItemContainer.resolveItemContainer("gui.items.particle-pet", c);
         this.items_cancelpetContainer = CustomItemContainer.resolveItemContainer("gui.items.cancel-pet", c);
@@ -169,6 +173,24 @@ public final class ConfigGUI {
      */
     public ItemStack[] getMinecraftHeadsItemStacks() {
         return this.costumes_minecraftHeads;
+    }
+
+    /**
+     * Returns the container of the wardrobe
+     *
+     * @return container
+     */
+    public ItemContainer getWardrobeContainer() {
+        return this.general_wardrobe;
+    }
+
+    /**
+     * Returns the container of minecraft-heads-cosumes
+     *
+     * @return container
+     */
+    public ItemContainer getMinecraftheadscostumeContainer() {
+        return this.items_minecraftheadscostumeContainer;
     }
 
     public ItemStack[] getColoredItemStacks() {
@@ -281,7 +303,7 @@ public final class ConfigGUI {
                 final String splitter = Pattern.quote(",");
                 while ((s = reader.readLine()) != null) {
                     final String[] tags = s.split(splitter);
-                    if (tags.length == 3 && tags[2].length() %4 ==0) {
+                    if (tags.length == 3 && tags[2].length() % 4 == 0) {
                         ItemStack itemStack = new ItemStack(Material.SKULL_ITEM, 1, (short) 3);
                         final String line = Base64Coder.decodeString(tags[2]).replace("{\"textures\":{\"SKIN\":{\"url\":\"", "");
                         final String url = line.substring(0, line.indexOf("\""));

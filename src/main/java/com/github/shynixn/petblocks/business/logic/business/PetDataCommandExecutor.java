@@ -1,6 +1,7 @@
 package com.github.shynixn.petblocks.business.logic.business;
 
 import com.github.shynixn.petblocks.api.PetBlocksApi;
+import com.github.shynixn.petblocks.api.business.enumeration.GUIPage;
 import com.github.shynixn.petblocks.api.entities.PetBlock;
 import com.github.shynixn.petblocks.api.entities.PetMeta;
 import com.github.shynixn.petblocks.business.Config;
@@ -54,11 +55,11 @@ class PetDataCommandExecutor extends DynamicCommandHelper {
             this.handleNaming(player, args[1], true);
         } else {
             this.manager.gui.open(player);
-            this.manager.gui.setMainItems(player);
+            this.manager.gui.setPetTypeItems(player);
             this.plugin.getServer().getScheduler().runTaskAsynchronously(this.plugin, () -> {
                 final PetMeta petMeta;
                 if ((petMeta = this.manager.getPetMeta(player)) != null) {
-                    this.plugin.getServer().getScheduler().runTask(this.plugin, () -> this.manager.gui.setMainItems(player, petMeta.getType(), PetBlocksApi.hasPetBlock(player), true, petMeta));
+                    this.plugin.getServer().getScheduler().runTask(this.plugin, () -> this.manager.gui.setItems(GUIPage.MAIN, player, petMeta.getType(), PetBlocksApi.hasPetBlock(player), true, petMeta));
                 }
             });
         }

@@ -1,5 +1,6 @@
 package com.github.shynixn.petblocks.business.logic.business;
 
+import com.github.shynixn.petblocks.api.business.enumeration.GUIPage;
 import com.github.shynixn.petblocks.api.entities.PetMeta;
 import com.github.shynixn.petblocks.api.entities.PetType;
 import com.github.shynixn.petblocks.business.Config;
@@ -10,6 +11,7 @@ import com.github.shynixn.petblocks.business.logic.configuration.ConfigGUI;
 import com.github.shynixn.petblocks.business.logic.configuration.ConfigParticle;
 import com.github.shynixn.petblocks.lib.BukkitUtilities;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
@@ -18,62 +20,105 @@ import org.bukkit.inventory.ItemStack;
 class GUI {
     private final PetDataManager manager;
 
+    /**
+     * Initializes a new gui
+     *
+     * @param manager manager
+     */
     GUI(PetDataManager manager) {
         super();
         this.manager = manager;
     }
 
+    /**
+     * Opens the gui for a player
+     *
+     * @param player player
+     */
     void open(Player player) {
         if (!this.manager.inventories.containsKey(player)) {
-            if (player.getOpenInventory() != null)
+            if (player.getOpenInventory() != null) {
                 player.closeInventory();
+            }
             final Inventory inventory = Bukkit.getServer().createInventory(player, 54, Language.GUI_TITLE);
             this.manager.inventories.put(player, inventory);
             player.openInventory(inventory);
         }
     }
 
-    void setMainItems(Player player, PetType petType, boolean enabled, boolean refresh, PetMeta petMeta) {
-        //Thread safe
-        if (this.manager.inventories.containsKey(player)) {
-            if (this.manager.pages.get(player).page != GuiPage.MAIN)
-                this.setMainItems(player);
-            final Inventory inventory = this.manager.inventories.get(player);
-            if (inventory.getItem(ConfigGUI.getInstance().getGeneral_myContainer().getPosition()) == null || refresh || inventory.getItem(ConfigGUI.getInstance().getGeneral_myContainer().getPosition()).getType() != Material.SKULL_ITEM)
+    /**
+     * Sets the items of the given gui page
+     *
+     * @param guiPage guiPage
+     * @param player  player
+     * @param petType petType
+     * @param enabled enabled
+     * @param refresh refresh
+     * @param petMeta petMeta
+     */
+    void setItems(GUIPage guiPage, Player player, PetType petType, boolean enabled, boolean refresh, PetMeta petMeta) {
+        if (!this.manager.inventories.containsKey(player)) {
+            return;
+        }
+        if (guiPage == null) {
+            if (this.manager.pages.containsKey(player)) {
+                guiPage = this.manager.pages.get(player).page;
+            } else {
+                guiPage = GUIPage.MAIN;
+            }
+        }
+        final Inventory inventory = this.manager.inventories.get(player);
+        if (guiPage != this.manager.pages.get(player).page) {
+            this.clearInventory(inventory);
+        }
+        if (guiPage == GUIPage.MAIN) {
+            if (this.manager.pages.get(player).page != GUIPage.MAIN) {
+                this.setPetTypeItems(player);
+            }
+            if (inventory.getItem(ConfigGUI.getInstance().getGeneral_myContainer().getPosition()) == null || refresh || inventory.getItem(ConfigGUI.getInstance().getGeneral_myContainer().getPosition()).getType() != Material.SKULL_ITEM) {
                 inventory.setItem(ConfigGUI.getInstance().getGeneral_myContainer().getPosition(), BukkitUtilities.nameItem(this.getItemStack(player, petType), Language.MY_PET, null));
+            }
             if (!enabled) {
                 if (!ConfigGUI.getInstance().isSettings_onlyDisableItem()) {
-                    Config.getInstance().setMyContainer(inventory, Language.ENABLE_PET, ConfigGUI.getInstance().getGeneral_enablePetContainer(), (Permission) null);
+                    Config.getInstance().setMyContainer(guiPage, inventory, Language.ENABLE_PET, ConfigGUI.getInstance().getGeneral_enablePetContainer(), (Permission) null);
                 } else {
                     inventory.setItem(ConfigGUI.getInstance().getGeneral_enablePetContainer().getPosition(), BukkitUtilities.nameItemDisplay(ConfigGUI.getInstance().getGeneral_emptyslotContainer().generate(), Language.EMPTY));
                 }
             } else {
-                Config.getInstance().setMyContainer(inventory, Language.DISABLE_PET, ConfigGUI.getInstance().getGeneral_disablePetContainer(), (Permission) null);
+                Config.getInstance().setMyContainer(guiPage, inventory, Language.DISABLE_PET, ConfigGUI.getInstance().getGeneral_disablePetContainer(), (Permission) null);
             }
-            Config.getInstance().setMyContainer(inventory, Language.CANCEL, ConfigGUI.getInstance().getItems_cancelpetContainer(), (Permission) null);
-            Config.getInstance().setMyContainer(inventory, Language.CANNON, ConfigGUI.getInstance().getItems_cannonpetContainer(), Permission.CANNON);
-            Config.getInstance().setMyContainer(inventory, Language.CALL, ConfigGUI.getInstance().getItems_callpetContainer(), (Permission) null);
-
-            Config.getInstance().setMyContainer(inventory, Language.SKULL_NAMING, ConfigGUI.getInstance().getItems_skullNamingContainer(), Permission.RENAMESKULL);
-            Config.getInstance().setMyContainer(inventory, Language.NAMING, ConfigGUI.getInstance().getItems_namingContainer(), Permission.RENAMEPET);
-            Config.getInstance().setMyContainer(inventory, Language.HAT, ConfigGUI.getInstance().getItems_hatpetContainer(), Permission.WEARPET);
-            Config.getInstance().setMyContainer(inventory, Language.RIDING, ConfigGUI.getInstance().getItems_ridingpetContainer(), Permission.RIDEPET);
-
-            Config.getInstance().setMyContainer(inventory, Language.COSTUME, ConfigGUI.getInstance().getItems_defaultcostumeContainer(), (Permission) null);
-            Config.getInstance().setMyContainer(inventory, Language.COLOR_COSTUME, ConfigGUI.getInstance().getItems_colorcostumeContainer(), (Permission) null);
-            Config.getInstance().setMyContainer(inventory, Language.CUSTOM_COSTUME, ConfigGUI.getInstance().getItems_customcostumeContainer(), (Permission) null);
-
-            if (petMeta.isSoundsEnabled())
-                Config.getInstance().setMyContainer(inventory, Language.MUTE, ConfigGUI.getInstance().getItems_soundEnabledContainer(), (Permission) null);
-            else
-                Config.getInstance().setMyContainer(inventory, Language.UNMUTE, ConfigGUI.getInstance().getItems_soundDisabledContainer(), (Permission) null);
-
-            Config.getInstance().setMyContainer(inventory, Language.PARTICLE, ConfigGUI.getInstance().getItems_particlepetContainer(), (Permission) null);
-            this.fillEmptySlots(inventory);
+            Config.getInstance().setMyContainer(guiPage, inventory, Language.WARDROBE, ConfigGUI.getInstance().getWardrobeContainer(), (Permission) null);
         }
+        Config.getInstance().setMyContainer(guiPage, inventory, Language.CANCEL, ConfigGUI.getInstance().getItems_cancelpetContainer(), (Permission) null);
+        Config.getInstance().setMyContainer(guiPage, inventory, Language.CANNON, ConfigGUI.getInstance().getItems_cannonpetContainer(), Permission.CANNON);
+        Config.getInstance().setMyContainer(guiPage, inventory, Language.CALL, ConfigGUI.getInstance().getItems_callpetContainer(), (Permission) null);
+
+        Config.getInstance().setMyContainer(guiPage, inventory, Language.SKULL_NAMING, ConfigGUI.getInstance().getItems_skullNamingContainer(), Permission.RENAMESKULL);
+        Config.getInstance().setMyContainer(guiPage, inventory, Language.NAMING, ConfigGUI.getInstance().getItems_namingContainer(), Permission.RENAMEPET);
+        Config.getInstance().setMyContainer(guiPage, inventory, Language.HAT, ConfigGUI.getInstance().getItems_hatpetContainer(), Permission.WEARPET);
+        Config.getInstance().setMyContainer(guiPage, inventory, Language.RIDING, ConfigGUI.getInstance().getItems_ridingpetContainer(), Permission.RIDEPET);
+
+        Config.getInstance().setMyContainer(guiPage, inventory, Language.COSTUME, ConfigGUI.getInstance().getItems_defaultcostumeContainer(), (Permission) null);
+        Config.getInstance().setMyContainer(guiPage, inventory, Language.COLOR_COSTUME, ConfigGUI.getInstance().getItems_colorcostumeContainer(), (Permission) null);
+        Config.getInstance().setMyContainer(guiPage, inventory, Language.CUSTOM_COSTUME, ConfigGUI.getInstance().getItems_customcostumeContainer(), (Permission) null);
+        Config.getInstance().setMyContainer(guiPage, inventory, Language.MINECRAFT_HEADS_COSTUME, ConfigGUI.getInstance().getMinecraftheadscostumeContainer(), "minecraft-heads");
+
+        if (petMeta.isSoundsEnabled())
+            Config.getInstance().setMyContainer(guiPage, inventory, Language.MUTE, ConfigGUI.getInstance().getItems_soundEnabledContainer(), (Permission) null);
+        else
+            Config.getInstance().setMyContainer(guiPage, inventory, Language.UNMUTE, ConfigGUI.getInstance().getItems_soundDisabledContainer(), (Permission) null);
+
+        Config.getInstance().setMyContainer(guiPage, inventory, Language.PARTICLE, ConfigGUI.getInstance().getItems_particlepetContainer(), (Permission) null);
+        this.fillEmptySlots(inventory);
+        this.manager.pages.put(player, new GuiPageContainer(guiPage, this.manager.pages.get(player).page));
     }
 
-    void setMainItems(Player player) {
+    /**
+     * Initializes the pet types on the current menu page
+     *
+     * @param player player
+     */
+    void setPetTypeItems(Player player) {
         if (this.manager.inventories.containsKey(player)) {
             this.clearInventory(this.manager.inventories.get(player));
             final Inventory inventory = this.manager.inventories.get(player);
@@ -81,33 +126,54 @@ class GUI {
             for (final PetType petType : PetType.values()) {
                 if (serverVersion.isVersionSameOrGreaterThan(petType.getVersion())) {
                     final String name = petType.name();
-                    Config.getInstance().setMyContainer(inventory, Language.getDisplayName(name), ConfigGUI.getInstance().getContainer(petType), (Permission.SINGLEPETTYPE.get() + name.toLowerCase()), Permission.ALLPETTYPES.get());
+                    Config.getInstance().setMyContainer(GUIPage.MAIN, inventory, Language.getDisplayName(name), ConfigGUI.getInstance().getContainer(petType), (Permission.SINGLEPETTYPE.get() + name.toLowerCase()), Permission.ALLPETTYPES.get());
                 }
             }
-            this.manager.pages.put(player, new GuiPageContainer(GuiPage.MAIN));
+            this.manager.pages.put(player, new GuiPageContainer(GUIPage.MAIN, null));
         }
     }
 
     void setDefaultCostumeItems(Player player) {
-        this.setCostumes(player, ConfigGUI.getInstance().getDefaultItemStacks(), GuiPage.DEFAULTCOSTUMES, 0);
+        this.setCostumes(player, ConfigGUI.getInstance().getDefaultItemStacks(), GUIPage.DEFAULT_COSTUMES, 0);
     }
 
     void setColorCostumeItems(Player player) {
-        this.setCostumes(player, ConfigGUI.getInstance().getColoredItemStacks(), GuiPage.COLORCOSTUMES, 0);
+        this.setCostumes(player, ConfigGUI.getInstance().getColoredItemStacks(), GUIPage.COLOR_COSTUMES, 0);
     }
 
     void setCustomCostumeItems(Player player) {
-        this.setCostumes(player, ConfigGUI.getInstance().getCustomItemStacks(), GuiPage.CUSTOMCOSTUMES, 0);
+        this.setCostumes(player, ConfigGUI.getInstance().getCustomItemStacks(), GUIPage.CUSTOM_COSTUMES, 0);
     }
 
-    void setParticleCostumeItems(Player player) {
+    /**
+     * Sets all minecraft-heads costumes
+     *
+     * @param player player
+     */
+    void setMinecraftHeadsCostumeItems(Player player) {
+        try {
+            final net.md_5.bungee.api.chat.TextComponent message = new net.md_5.bungee.api.chat.TextComponent(Language.PREFIX + "Pets collected by ");
+            final net.md_5.bungee.api.chat.TextComponent head = new net.md_5.bungee.api.chat.TextComponent("Minecraft-Heads.com ");
+            head.setUnderlined(true);
+            head.setClickEvent(new net.md_5.bungee.api.chat.ClickEvent(net.md_5.bungee.api.chat.ClickEvent.Action.OPEN_URL, "http://minecraft-heads.com"));
+            head.setHoverEvent(new net.md_5.bungee.api.chat.HoverEvent(net.md_5.bungee.api.chat.HoverEvent.Action.SHOW_TEXT, new net.md_5.bungee.api.chat.ComponentBuilder("Goto the Minecraft-Heads website!").create()));
+            head.setColor(net.md_5.bungee.api.ChatColor.YELLOW);
+            message.addExtra(head);
+            player.spigot().sendMessage(message);
+        } catch (final Exception ex) {
+            player.sendMessage(Language.PREFIX + "Pets collected by " + ChatColor.YELLOW + ChatColor.UNDERLINE + " http://minecraft-heads.com");
+        }
+        this.setCostumes(player, ConfigGUI.getInstance().getMinecraftHeadsItemStacks(), GUIPage.MINECRAFTHEADS_COSTUMES, 0);
+    }
+
+    void setParticleItems(Player player) {
         if (this.manager.inventories.containsKey(player)) {
             final Inventory inventory = this.costumePreparation(player);
             for (int i = 0; i < 54 && i < ConfigParticle.getInstance().getParticleItemStacks().length; i++) {
                 inventory.setItem(i, ConfigParticle.getInstance().getParticleItemStacks()[i]);
             }
             this.fillEmptySlots(inventory);
-            this.manager.pages.put(player, new GuiPageContainer(GuiPage.PARTICLES));
+            this.manager.pages.put(player, new GuiPageContainer(GUIPage.PARTICLES, this.manager.pages.get(player).page));
         }
     }
 
@@ -120,7 +186,7 @@ class GUI {
         return null;
     }
 
-    void setCostumes(Player player, ItemStack[] itemStacks, GuiPage page, int type) {
+    void setCostumes(Player player, ItemStack[] itemStacks, GUIPage page, int type) {
         if (this.manager.inventories.containsKey(player)) {
             int count;
             final GuiPageContainer container;
@@ -143,7 +209,7 @@ class GUI {
                 }
                 current.next = null;
             } else {
-                container = new GuiPageContainer(page);
+                container = new GuiPageContainer(page, this.manager.pages.get(player).page);
                 current = container;
             }
 
@@ -162,35 +228,35 @@ class GUI {
             GuiPageContainer runRef = container;
             while (runRef.next != null)
                 runRef = runRef.next;
-            runRef.next = new GuiPageContainer(page);
+            runRef.next = new GuiPageContainer(page, this.manager.pages.get(player).page);
             runRef.next.startCount = count;
             this.manager.pages.put(player, container);
         }
     }
 
-    ItemStack[] getItemstackFromPage(GuiPage page) {
-        if (page == GuiPage.COLORCOSTUMES)
+    ItemStack[] getItemstackFromPage(GUIPage page) {
+        if (page == GUIPage.COLOR_COSTUMES)
             return ConfigGUI.getInstance().getColoredItemStacks();
-        else if (page == GuiPage.DEFAULTCOSTUMES)
+        else if (page == GUIPage.DEFAULT_COSTUMES)
             return ConfigGUI.getInstance().getDefaultItemStacks();
-        else if (page == GuiPage.CUSTOMCOSTUMES)
+        else if (page == GUIPage.CUSTOM_COSTUMES)
             return ConfigGUI.getInstance().getCustomItemStacks();
+        else if (page == GUIPage.MINECRAFTHEADS_COSTUMES)
+            return ConfigGUI.getInstance().getMinecraftHeadsItemStacks();
         return new ItemStack[0];
     }
 
     static class GuiPageContainer {
-        GuiPage page;
+        GUIPage previousPage;
+        GUIPage page;
         int startCount;
         GuiPageContainer next;
 
-        GuiPageContainer(GuiPage page) {
+        GuiPageContainer(GUIPage page, GUIPage previousPage) {
             super();
             this.page = page;
+            this.previousPage = previousPage;
         }
-    }
-
-    enum GuiPage {
-        MAIN, DEFAULTCOSTUMES, COLORCOSTUMES, CUSTOMCOSTUMES, PARTICLES
     }
 
     private Inventory costumePreparation(Player player) {

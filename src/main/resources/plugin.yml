@@ -1,5 +1,5 @@
 name: PetBlocks
-version: 6.1.0
+version: 6.2.0-SNAPSHOT
 author: Shynixn
 main: com.github.shynixn.petblocks.business.bukkit.PetBlocksPlugin
 softdepend: [WorldGuard, SuperVanish, PremiumVanish, ClearLag]
