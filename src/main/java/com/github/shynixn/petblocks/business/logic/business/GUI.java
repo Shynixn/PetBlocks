@@ -6,16 +6,19 @@ import com.github.shynixn.petblocks.api.entities.PetType;
 import com.github.shynixn.petblocks.business.Config;
 import com.github.shynixn.petblocks.business.Language;
 import com.github.shynixn.petblocks.business.Permission;
+import com.github.shynixn.petblocks.business.bukkit.PetBlocksPlugin;
 import com.github.shynixn.petblocks.business.bukkit.nms.VersionSupport;
 import com.github.shynixn.petblocks.business.logic.configuration.ConfigGUI;
 import com.github.shynixn.petblocks.business.logic.configuration.ConfigParticle;
 import com.github.shynixn.petblocks.lib.BukkitUtilities;
+import com.github.shynixn.petblocks.lib.ChatBuilder;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.plugin.java.JavaPlugin;
 
 class GUI {
     private final PetDataManager manager;
@@ -158,17 +161,15 @@ class GUI {
      * @param player player
      */
     void setMinecraftHeadsCostumeItems(Player player) {
-        try {
-            final net.md_5.bungee.api.chat.TextComponent message = new net.md_5.bungee.api.chat.TextComponent(Language.PREFIX + "Pets collected by ");
-            final net.md_5.bungee.api.chat.TextComponent head = new net.md_5.bungee.api.chat.TextComponent(">>Minecraft-Heads.com<< ");
-            head.setClickEvent(new net.md_5.bungee.api.chat.ClickEvent(net.md_5.bungee.api.chat.ClickEvent.Action.OPEN_URL, "http://minecraft-heads.com"));
-            head.setHoverEvent(new net.md_5.bungee.api.chat.HoverEvent(net.md_5.bungee.api.chat.HoverEvent.Action.SHOW_TEXT, new net.md_5.bungee.api.chat.ComponentBuilder("Goto the Minecraft-Heads website!").create()));
-            head.setColor(net.md_5.bungee.api.ChatColor.YELLOW);
-            message.addExtra(head);
-            player.spigot().sendMessage(message);
-        } catch (final Exception ex) {
-            player.sendMessage(Language.PREFIX + "Pets collected by " + ChatColor.YELLOW + ChatColor.UNDERLINE + " http://minecraft-heads.com");
-        }
+        Bukkit.getServer().getScheduler().runTaskAsynchronously(JavaPlugin.getPlugin(PetBlocksPlugin.class), () -> {
+            new ChatBuilder().text(Language.PREFIX)
+                    .text("Pets collected by ")
+                    .component(">>Minecraft-Heads.com<<")
+                    .setColor(ChatColor.YELLOW)
+                    .setClickAction(ChatBuilder.ClickAction.OPEN_URL, "http://minecraft-heads.com")
+                    .setHoverText("Goto the Minecraft-Heads website!")
+                    .builder().sendMessage(player);
+        });
         this.setCostumes(player, ConfigGUI.getInstance().getMinecraftHeadsItemStacks(), GUIPage.MINECRAFTHEADS_COSTUMES, 0);
     }
 

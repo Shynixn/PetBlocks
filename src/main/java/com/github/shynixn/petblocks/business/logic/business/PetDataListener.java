@@ -8,12 +8,14 @@ import com.github.shynixn.petblocks.api.entities.PetType;
 import com.github.shynixn.petblocks.business.Config;
 import com.github.shynixn.petblocks.business.Language;
 import com.github.shynixn.petblocks.business.Permission;
+import com.github.shynixn.petblocks.business.bukkit.PetBlocksPlugin;
 import com.github.shynixn.petblocks.business.bukkit.nms.NMSRegistry;
 import com.github.shynixn.petblocks.business.logic.configuration.ConfigGUI;
 import com.github.shynixn.petblocks.business.logic.configuration.ConfigParticle;
 import com.github.shynixn.petblocks.business.logic.configuration.ConfigPet;
 import com.github.shynixn.petblocks.business.logic.persistence.entity.PetData;
 import com.github.shynixn.petblocks.lib.BukkitUtilities;
+import com.github.shynixn.petblocks.lib.ChatBuilder;
 import com.github.shynixn.petblocks.lib.SimpleListener;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -30,6 +32,7 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.plugin.Plugin;
+import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.util.Vector;
 
 import java.util.HashSet;
@@ -242,35 +245,31 @@ class PetDataListener extends SimpleListener {
         } else if (BukkitUtilities.compareItemName(event.getCurrentItem(), Language.MINECRAFT_HEADS_COSTUME)) {
             this.manager.gui.setMinecraftHeadsCostumeItems(player);
         } else if (BukkitUtilities.compareItemName(event.getCurrentItem(), Language.SUGGEST_HEADS)) {
-            try {
-                final net.md_5.bungee.api.chat.TextComponent message = new net.md_5.bungee.api.chat.TextComponent(Language.PREFIX + "Click here: ");
-                final net.md_5.bungee.api.chat.TextComponent head = new net.md_5.bungee.api.chat.TextComponent(">>Submit skins<<");
-                head.setClickEvent(new net.md_5.bungee.api.chat.ClickEvent(net.md_5.bungee.api.chat.ClickEvent.Action.OPEN_URL, "http://minecraft-heads.com/forum/suggesthead"));
-                head.setHoverEvent(new net.md_5.bungee.api.chat.HoverEvent(net.md_5.bungee.api.chat.HoverEvent.Action.SHOW_TEXT, new net.md_5.bungee.api.chat.ComponentBuilder("Goto the Minecraft-Heads website!").create()));
-                head.setColor(net.md_5.bungee.api.ChatColor.YELLOW);
-                message.addExtra(head);
-                player.spigot().sendMessage(message);
-            } catch (final Exception ex) {
-                player.sendMessage(Language.PREFIX + "Submit skins here " + ChatColor.YELLOW + ChatColor.UNDERLINE + " http://minecraft-heads.com/forum/suggesthead");
-            }
+            Bukkit.getServer().getScheduler().runTaskAsynchronously(JavaPlugin.getPlugin(PetBlocksPlugin.class), () -> {
+                new ChatBuilder().text(Language.PREFIX)
+                        .text("Click here: ")
+                        .component(">>Submit skins<<")
+                        .setColor(ChatColor.YELLOW)
+                        .setClickAction(ChatBuilder.ClickAction.OPEN_URL, "http://minecraft-heads.com/forum/suggesthead")
+                        .setHoverText("Goto the Minecraft-Heads website!")
+                        .builder().sendMessage(player);
+            });
             player.closeInventory();
         } else if (BukkitUtilities.compareItemName(event.getCurrentItem(), Language.HEAD_DATABASE_COSTUME) && player.hasPermission(Permission.ALLHEADATABASECOSTUMES.get())) {
             player.closeInventory();
             this.plugin.getServer().getScheduler().runTaskLater(this.plugin, () -> {
                 final Plugin plugin = Bukkit.getPluginManager().getPlugin("HeadDatabase");
                 if (plugin == null) {
-                    try {
-                        final net.md_5.bungee.api.chat.TextComponent message = new net.md_5.bungee.api.chat.TextComponent(Language.PREFIX + "Download the plugin ");
-                        final net.md_5.bungee.api.chat.TextComponent head = new net.md_5.bungee.api.chat.TextComponent(">>Head Database<<");
-                        head.setClickEvent(new net.md_5.bungee.api.chat.ClickEvent(net.md_5.bungee.api.chat.ClickEvent.Action.OPEN_URL, "https://www.spigotmc.org/resources/14280/"));
-                        head.setHoverEvent(new net.md_5.bungee.api.chat.HoverEvent(net.md_5.bungee.api.chat.HoverEvent.Action.SHOW_TEXT, new net.md_5.bungee.api.chat.ComponentBuilder("A valid spigot account is required!").create()));
-                        head.setColor(net.md_5.bungee.api.ChatColor.YELLOW);
-                        message.addExtra(head);
-                        player.spigot().sendMessage(message);
-                    } catch (final Exception ex) {
-                        player.sendMessage(Language.PREFIX + "Download " + ChatColor.YELLOW + ChatColor.UNDERLINE + " https://www.spigotmc.org/resources/14280/");
-                    }
-                    player.sendMessage(Language.PREFIX + ChatColor.GRAY + "Please consider that PetBlocks is not responsible for any legal agreements between the author of Head Database and yourself.");
+                    Bukkit.getServer().getScheduler().runTaskAsynchronously(JavaPlugin.getPlugin(PetBlocksPlugin.class), () -> {
+                        new ChatBuilder().text(Language.PREFIX)
+                                .text("Download the plugin ")
+                                .component(">>Head Database<<")
+                                .setColor(ChatColor.YELLOW)
+                                .setClickAction(ChatBuilder.ClickAction.OPEN_URL, "https://www.spigotmc.org/resources/14280/")
+                                .setHoverText("A valid spigot account is required!")
+                                .builder().sendMessage(player);
+                        player.sendMessage(Language.PREFIX + ChatColor.GRAY + "Please consider that PetBlocks is not responsible for any legal agreements between the author of Head Database and yourself.");
+                    });
                 } else {
                     this.manager.headDatabasePlayers.add(player);
                     player.performCommand("hdb");
