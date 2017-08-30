@@ -19,6 +19,9 @@
 # user       Allows to use specific color costumes   		petblocks.pet.colorcostumes.<number>
 # user       Allows to use every custom costume   		    petblocks.pet.customcostumes.all
 # user       Allows to use specific custom costumes  		petblocks.pet.customcostumes.<number>
+# user       Allows to use every exclusive costume          petblocks.pet.minecraft-heads-costumes.all
+# user       Allows to use specific exclusive costume       petblocks.pet.minecraft-heads-costumes.<number>
+# user       Allows to use head-database for a costumes     petblocks.pet.head-database-costumes.all
 # user       Allows to use every particle					petblocks.pet.particles.all
 # user 		 Allows to use a specific particle				petblocks.pet.particles.<number>
 # admin      Reloads config and lang file 				    petblocks.reload
@@ -299,6 +302,14 @@ gui:
       owner: 'textures.minecraft.net/texture/fec052be76e39148a27f255ec537dff92018c79744202d60c51bc67d618ae36a'
       position: 23
       page: 'WARDROBE'
+    head-database-costume:
+      enabled: true
+      id: 397
+      damage: 3
+      owner: 'textures.minecraft.net/texture/3bb612eb495ede2c5ca5178d2d1ecf1ca5a255d25dfc3c254bc47f6848791d8'
+      position: 24
+      page: 'WARDROBE'
+      lore: '&eExternal database with regular updates'
     call-pet:
       enabled: true
       id: 370
@@ -313,6 +324,15 @@ gui:
       owner: 'none'
       position: 37
       page: 'WARDROBE'
+      lore: '&eSpecial particle effects'
+    suggest-heads:
+      enabled: true
+      id: 386
+      damage: 0
+      owner: 'none'
+      position: 43
+      page: 'WARDROBE'
+      lore: '&aSubmit skins for pets'
     cancel-pet:
       enabled: true
       id: 166

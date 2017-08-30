@@ -61,6 +61,7 @@ public final class Language {
             COLOR_COSTUME = ChatColor.translateAlternateColorCodes('&', config.getString("color-costumes"));
             CUSTOM_COSTUME = ChatColor.translateAlternateColorCodes('&', config.getString("custom-costumes"));
             MINECRAFT_HEADS_COSTUME = ChatColor.translateAlternateColorCodes('&', config.getString("minecraft-heads-costumes"));
+            HEAD_DATABASE_COSTUME =  ChatColor.translateAlternateColorCodes('&', config.getString("head-database-costumes"));
             NAMING = ChatColor.translateAlternateColorCodes('&', config.getString("naming"));
             RIDING = ChatColor.translateAlternateColorCodes('&', config.getString("riding"));
             HAT = ChatColor.translateAlternateColorCodes('&', config.getString("hat"));
@@ -157,7 +158,8 @@ public final class Language {
     public static String COSTUME = BukkitChatColor.GREEN + "Costumes";
     public static String COLOR_COSTUME = BukkitChatColor.YELLOW + "Color Costumes";
     public static String CUSTOM_COSTUME = BukkitChatColor.BLUE + "Custom Costumes";
-    public static String MINECRAFT_HEADS_COSTUME = BukkitChatColor.DARK_GREEN + "Exclusive Skins";
+    public static String MINECRAFT_HEADS_COSTUME = BukkitChatColor.DARK_GREEN + "Exclusive Costumes";
+    public static String HEAD_DATABASE_COSTUME = BukkitChatColor.RED + "Head Database [7000+ Heads]";
     public static String NAMING = BukkitChatColor.RED + "Change Name";
     public static String RIDING = BukkitChatColor.LIGHT_PURPLE + "Ride Pet";
     public static String HAT = BukkitChatColor.GOLD + "Wear your pet as hat";
@@ -165,6 +167,7 @@ public final class Language {
     public static String SKULL_NAMING = BukkitChatColor.YELLOW + "Change Skin";
     public static String CANCEL = BukkitChatColor.DARK_RED + "Cancel";
     public static String CALL = BukkitChatColor.DARK_GREEN + "Call";
+    public static String SUGGEST_HEADS = BukkitChatColor.AQUA + "Suggest Heads";
     public static String PARTICLE = BukkitChatColor.DARK_RED + "Particles";
     public static String EMPTY = ChatColor.GRAY + "Empty";
     public static String NEXT = ChatColor.GREEN + "Next";

@@ -8,6 +8,7 @@ import com.github.shynixn.petblocks.api.entities.ItemContainer;
 import com.github.shynixn.petblocks.api.entities.Movement;
 import com.github.shynixn.petblocks.business.Language;
 import com.github.shynixn.petblocks.business.bukkit.PetBlocksPlugin;
+import com.github.shynixn.petblocks.lib.BukkitChatColor;
 import com.github.shynixn.petblocks.lib.BukkitUtilities;
 import com.github.shynixn.petblocks.lib.ParticleBuilder;
 import org.bukkit.Bukkit;
@@ -17,6 +18,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
+import org.bukkit.plugin.Plugin;
 
 import java.util.logging.Level;
 import java.util.regex.Pattern;
@@ -30,7 +32,7 @@ class CustomItemContainer implements ItemContainer {
 
     private final int id;
     private final int damage;
-    private final String skullName;
+    private String skullName;
     private final int position;
     private boolean enabled;
     private String loreName;
@@ -137,9 +139,15 @@ class CustomItemContainer implements ItemContainer {
 
     @Override
     public String[] getLore(Player player, String... permission) {
-        if(permission.length > 0)
-        if (permission != null && permission.length == 1 && permission[0].equals("minecraft-heads")) {
-            return new String[]{ChatColor.GRAY + "sponsored by | Minecraft-Heads.com"};
+        if (permission.length > 0)
+            if (permission != null && permission.length == 1 && permission[0].equals("minecraft-heads")) {
+                return new String[]{ChatColor.GRAY + "sponsored by | Minecraft-Heads.com"};
+            }
+        if (permission != null && permission.length == 1 && permission[0].equals("head-database")) {
+            final Plugin plugin = Bukkit.getPluginManager().getPlugin("HeadDatabase");
+            if (plugin == null) {
+                return new String[]{ChatColor.DARK_RED +""+  ChatColor.ITALIC + "Plugin is not installed - "+ ChatColor.YELLOW + "Click me!"};
+            }
         }
         if (!ConfigGUI.getInstance().isSettings_allowLore())
             return null;

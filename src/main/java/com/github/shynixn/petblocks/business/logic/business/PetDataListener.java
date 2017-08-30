@@ -15,6 +15,7 @@ import com.github.shynixn.petblocks.business.logic.configuration.ConfigPet;
 import com.github.shynixn.petblocks.business.logic.persistence.entity.PetData;
 import com.github.shynixn.petblocks.lib.BukkitUtilities;
 import com.github.shynixn.petblocks.lib.SimpleListener;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -26,20 +27,21 @@ import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerChatEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.util.Vector;
 
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 class PetDataListener extends SimpleListener {
     private final PetDataManager manager;
-    private final List<Player> namingPlayers = new ArrayList<>();
-    private final List<Player> namingSkull = new ArrayList<>();
+    private final Set<Player> namingPlayers = new HashSet<>();
+    private final Set<Player> namingSkull = new HashSet<>();
     private final Set<Player> changingPlayers = new HashSet<>();
+    private String headDatabaseTitle;
+    private String headDatabaseSearch;
 
     /**
      * Initializes a new PetDataListener
@@ -59,6 +61,9 @@ class PetDataListener extends SimpleListener {
      */
     @EventHandler
     public void playerQuitEvent(PlayerQuitEvent event) {
+        if (this.manager.headDatabasePlayers.contains(event.getPlayer())) {
+            this.manager.headDatabasePlayers.remove(event.getPlayer());
+        }
         PetBlocksApi.removePetBlock(event.getPlayer());
     }
 
@@ -77,6 +82,17 @@ class PetDataListener extends SimpleListener {
                     this.plugin.getServer().getScheduler().runTask(this.plugin, () -> this.handleClick(event, player, petMeta, null));
                 });
             }
+        } else if (this.manager.headDatabasePlayers.contains(player)) {
+            if (this.headDatabaseTitle == null) {
+                final Plugin plugin = Bukkit.getPluginManager().getPlugin("HeadDatabase");
+                this.headDatabaseTitle = this.constructPrefix(ChatColor.translateAlternateColorCodes('&', plugin.getConfig().getString("messages.database")));
+                this.headDatabaseSearch = this.constructPrefix(ChatColor.translateAlternateColorCodes('&', plugin.getConfig().getString("messages.search")));
+            }
+            final String currentTitle = ChatColor.stripColor(event.getView().getTopInventory().getTitle());
+            if (!currentTitle.startsWith(this.headDatabaseTitle) && !currentTitle.startsWith(this.headDatabaseSearch))
+                return;
+            this.linkHeadDatabaseItemToPetBlocks(event.getCurrentItem(), player);
+            event.setCancelled(true);
         }
     }
 
@@ -225,6 +241,41 @@ class PetDataListener extends SimpleListener {
             this.manager.gui.setParticleItems(player);
         } else if (BukkitUtilities.compareItemName(event.getCurrentItem(), Language.MINECRAFT_HEADS_COSTUME)) {
             this.manager.gui.setMinecraftHeadsCostumeItems(player);
+        } else if (BukkitUtilities.compareItemName(event.getCurrentItem(), Language.SUGGEST_HEADS)) {
+            try {
+                final net.md_5.bungee.api.chat.TextComponent message = new net.md_5.bungee.api.chat.TextComponent(Language.PREFIX + "Click here: ");
+                final net.md_5.bungee.api.chat.TextComponent head = new net.md_5.bungee.api.chat.TextComponent(">>Submit skins<<");
+                head.setClickEvent(new net.md_5.bungee.api.chat.ClickEvent(net.md_5.bungee.api.chat.ClickEvent.Action.OPEN_URL, "http://minecraft-heads.com/forum/suggesthead"));
+                head.setHoverEvent(new net.md_5.bungee.api.chat.HoverEvent(net.md_5.bungee.api.chat.HoverEvent.Action.SHOW_TEXT, new net.md_5.bungee.api.chat.ComponentBuilder("Goto the Minecraft-Heads website!").create()));
+                head.setColor(net.md_5.bungee.api.ChatColor.YELLOW);
+                message.addExtra(head);
+                player.spigot().sendMessage(message);
+            } catch (final Exception ex) {
+                player.sendMessage(Language.PREFIX + "Submit skins here " + ChatColor.YELLOW + ChatColor.UNDERLINE + " http://minecraft-heads.com/forum/suggesthead");
+            }
+            player.closeInventory();
+        } else if (BukkitUtilities.compareItemName(event.getCurrentItem(), Language.HEAD_DATABASE_COSTUME) && player.hasPermission(Permission.ALLHEADATABASECOSTUMES.get())) {
+            player.closeInventory();
+            this.plugin.getServer().getScheduler().runTaskLater(this.plugin, () -> {
+                final Plugin plugin = Bukkit.getPluginManager().getPlugin("HeadDatabase");
+                if (plugin == null) {
+                    try {
+                        final net.md_5.bungee.api.chat.TextComponent message = new net.md_5.bungee.api.chat.TextComponent(Language.PREFIX + "Download the plugin ");
+                        final net.md_5.bungee.api.chat.TextComponent head = new net.md_5.bungee.api.chat.TextComponent(">>Head Database<<");
+                        head.setClickEvent(new net.md_5.bungee.api.chat.ClickEvent(net.md_5.bungee.api.chat.ClickEvent.Action.OPEN_URL, "https://www.spigotmc.org/resources/14280/"));
+                        head.setHoverEvent(new net.md_5.bungee.api.chat.HoverEvent(net.md_5.bungee.api.chat.HoverEvent.Action.SHOW_TEXT, new net.md_5.bungee.api.chat.ComponentBuilder("A valid spigot account is required!").create()));
+                        head.setColor(net.md_5.bungee.api.ChatColor.YELLOW);
+                        message.addExtra(head);
+                        player.spigot().sendMessage(message);
+                    } catch (final Exception ex) {
+                        player.sendMessage(Language.PREFIX + "Download " + ChatColor.YELLOW + ChatColor.UNDERLINE + " https://www.spigotmc.org/resources/14280/");
+                    }
+                    player.sendMessage(Language.PREFIX + ChatColor.GRAY + "Please consider that PetBlocks is not responsible for any legal agreements between the author of Head Database and yourself.");
+                } else {
+                    this.manager.headDatabasePlayers.add(player);
+                    player.performCommand("hdb");
+                }
+            }, 10L);
         } else if (BukkitUtilities.compareItemName(event.getCurrentItem(), Language.WARDROBE)) {
             this.manager.gui.setItems(GUIPage.WARDROBE, player, petMeta.getType(), PetBlocksApi.hasPetBlock(player), true, petMeta);
         } else if (BukkitUtilities.compareItemName(event.getCurrentItem(), Language.CALL) && petBlock != null) {
@@ -302,11 +353,9 @@ class PetDataListener extends SimpleListener {
                 player.sendMessage(Language.PREFIX + Language.NO_PERMISSION);
             } else if (this.manager.pages.get(player).page == GUIPage.CUSTOM_COSTUMES && (!player.hasPermission(Permission.ALLCUSTOMCOSTUMES.get()) && !player.hasPermission(Permission.SINGLECUSTOMCOSTUME.get() + "" + number))) {
                 player.sendMessage(Language.PREFIX + Language.NO_PERMISSION);
-            }
-            else if (this.manager.pages.get(player).page == GUIPage.MINECRAFTHEADS_COSTUMES && (!player.hasPermission(Permission.ALLMINECRAFTHEADSCOSTUMES.get()) && !player.hasPermission(Permission.SINGLEMINECRAFTHEADSCOSTUME.get() + "" + number))) {
+            } else if (this.manager.pages.get(player).page == GUIPage.MINECRAFTHEADS_COSTUMES && (!player.hasPermission(Permission.ALLMINECRAFTHEADSCOSTUMES.get()) && !player.hasPermission(Permission.SINGLEMINECRAFTHEADSCOSTUME.get() + "" + number))) {
                 player.sendMessage(Language.PREFIX + Language.NO_PERMISSION);
-            }
-            else if (event.getClickedInventory().equals(event.getView().getTopInventory()) || player.hasPermission(Permission.OWNINGAMECOSTUMES.get())) {
+            } else if (event.getClickedInventory().equals(event.getView().getTopInventory()) || player.hasPermission(Permission.OWNINGAMECOSTUMES.get())) {
                 if (petMeta == null)
                     return;
                 if (event.getCurrentItem().getType() != Material.SKULL_ITEM)
@@ -331,6 +380,9 @@ class PetDataListener extends SimpleListener {
             }
         } else if (ConfigGUI.getInstance().isSettings_clickemptyback() && BukkitUtilities.compareItemName(event.getCurrentItem(), Language.EMPTY)) {
             if (this.manager.pages.containsKey(player) && this.manager.pages.get(player).page != GUIPage.MAIN) {
+                if (this.manager.pages.get(player).page == GUIPage.WARDROBE) {
+                    this.manager.gui.setItems(GUIPage.MAIN, player, petMeta.getType(), PetBlocksApi.hasPetBlock(player), true, petMeta);
+                }
                 if (petMeta != null) {
                     this.manager.gui.setItems(this.manager.pages.get(player).previousPage, player, petMeta.getType(), PetBlocksApi.hasPetBlock(player), true, petMeta);
                 }
@@ -376,6 +428,42 @@ class PetDataListener extends SimpleListener {
         }
     }
 
+    /**
+     * Sets the given itemStack as petMeta skin if it full fills the skull requirements
+     *
+     * @param itemStack itemStack
+     * @param player    player
+     * @return success
+     */
+    private boolean linkHeadDatabaseItemToPetBlocks(ItemStack itemStack, Player player) {
+        if (itemStack != null
+                && itemStack.getType() == Material.SKULL_ITEM
+                && itemStack.getItemMeta() != null
+                && itemStack.getItemMeta().getDisplayName() != null
+                && itemStack.getItemMeta().getDisplayName().startsWith(ChatColor.BLUE.toString())) {
+            player.closeInventory();
+            this.plugin.getServer().getScheduler().runTaskAsynchronously(this.plugin, () -> {
+                final com.github.shynixn.petblocks.api.persistence.entity.PetMeta petMeta = this.manager.getPetMeta(player);
+                this.plugin.getServer().getScheduler().runTask(this.plugin, () -> {
+                            final SkullMeta meta = (SkullMeta) itemStack.getItemMeta();
+                            if (meta.getOwner() == null) {
+                                petMeta.setSkin(itemStack.getType(), itemStack.getDurability(), NMSRegistry.getSkinUrl(itemStack));
+                            } else {
+                                petMeta.setSkin(itemStack.getType(), itemStack.getDurability(), ((SkullMeta) itemStack.getItemMeta()).getOwner());
+                            }
+                            this.persistAsynchronously(petMeta);
+                            if (PetBlocksApi.hasPetBlock(player)) {
+                                PetBlocksApi.getPetBlock(player).respawn();
+                            }
+                            player.performCommand("petblock");
+                        }
+                );
+            });
+            return true;
+        }
+        return false;
+    }
+
     private void handleChatMessage(PlayerChatEvent event) {
         if (this.namingPlayers.contains(event.getPlayer()) || this.namingSkull.contains(event.getPlayer()))
             event.setCancelled(true);
@@ -396,6 +484,25 @@ class PetDataListener extends SimpleListener {
                 }
             });
         }
+    }
+
+    /**
+     * Constructs a prefix from the given source
+     *
+     * @param source source
+     * @return prefix
+     */
+    private String constructPrefix(String source) {
+        final StringBuilder b = new StringBuilder();
+        for (int i = 0; i < source.length(); i++) {
+            final char t = source.charAt(i);
+            if (t != '%') {
+                b.append(t);
+            } else {
+                break;
+            }
+        }
+        return ChatColor.stripColor(b.toString());
     }
 
     private Vector getDirection(Player player) {

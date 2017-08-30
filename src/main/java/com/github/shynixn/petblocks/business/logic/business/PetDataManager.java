@@ -18,7 +18,9 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 public final class PetDataManager implements AutoCloseable {
     private final PetMetaController petDataController;
@@ -28,6 +30,7 @@ public final class PetDataManager implements AutoCloseable {
 
     private final long mainThreadId;
 
+    Set<Player> headDatabasePlayers = new HashSet<>();
     Map<Player, Inventory> inventories = new HashMap<>();
     Map<Player, GUI.GuiPageContainer> pages = new HashMap<>();
     GUI gui;

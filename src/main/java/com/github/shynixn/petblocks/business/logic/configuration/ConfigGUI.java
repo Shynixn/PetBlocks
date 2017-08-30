@@ -59,6 +59,8 @@ public final class ConfigGUI {
     private ItemContainer items_colorcostumeContainer;
     private ItemContainer items_customcostumeContainer;
     private ItemContainer items_minecraftheadscostumeContainer;
+    private ItemContainer items_headdatabasecostumeContainer;
+    private ItemContainer items_suggestHeadsContainer;
     private ItemContainer items_soundEnabledContainer;
     private ItemContainer items_soundDisabledContainer;
     private ItemContainer items_callpetContainer;
@@ -109,6 +111,7 @@ public final class ConfigGUI {
         this.items_colorcostumeContainer = CustomItemContainer.resolveItemContainer("gui.items.color-costume", c);
         this.items_customcostumeContainer = CustomItemContainer.resolveItemContainer("gui.items.custom-costume", c);
         this.items_minecraftheadscostumeContainer = CustomItemContainer.resolveItemContainer("gui.items.minecraft-heads-costume", c);
+        this.items_headdatabasecostumeContainer = CustomItemContainer.resolveItemContainer("gui.items.head-database-costume", c);
         this.items_callpetContainer = CustomItemContainer.resolveItemContainer("gui.items.call-pet", c);
         this.items_particlepetContainer = CustomItemContainer.resolveItemContainer("gui.items.particle-pet", c);
         this.items_cancelpetContainer = CustomItemContainer.resolveItemContainer("gui.items.cancel-pet", c);
@@ -117,6 +120,7 @@ public final class ConfigGUI {
         this.items_namingContainer = CustomItemContainer.resolveItemContainer("gui.items.naming-pet", c);
         this.items_hatpetContainer = CustomItemContainer.resolveItemContainer("gui.items.hat-pet", c);
         this.items_ridingpetContainer = CustomItemContainer.resolveItemContainer("gui.items.riding-pet", c);
+        this.items_suggestHeadsContainer = CustomItemContainer.resolveItemContainer("gui.items.suggest-heads", c);
 
         this.souls_Container.put(PetType.PIG, CustomItemContainer.resolveItemContainer("gui.souls.pig-soul", c));
         this.souls_Container.put(PetType.CHICKEN, CustomItemContainer.resolveItemContainer("gui.souls.chicken-soul", c));
@@ -185,12 +189,30 @@ public final class ConfigGUI {
     }
 
     /**
-     * Returns the container of minecraft-heads-cosumes
+     * Returns the container of minecraft-heads-costumes
      *
      * @return container
      */
     public ItemContainer getMinecraftheadscostumeContainer() {
         return this.items_minecraftheadscostumeContainer;
+    }
+
+    /**
+     * Returns the container of the head-database-costumes
+     *
+     * @return container
+     */
+    public ItemContainer getHeaddatabasecostumeContainer() {
+        return this.items_headdatabasecostumeContainer;
+    }
+
+    /**
+     * Returns the container for suggesting heads
+     *
+     * @return container
+     */
+    public ItemContainer getItemsuggestHeadsContainer() {
+        return this.items_suggestHeadsContainer;
     }
 
     public ItemStack[] getColoredItemStacks() {

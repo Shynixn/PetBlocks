@@ -40,6 +40,9 @@ class GUI {
             if (player.getOpenInventory() != null) {
                 player.closeInventory();
             }
+            if (this.manager.headDatabasePlayers.contains(player)) {
+                this.manager.headDatabasePlayers.remove(player);
+            }
             final Inventory inventory = Bukkit.getServer().createInventory(player, 54, Language.GUI_TITLE);
             this.manager.inventories.put(player, inventory);
             player.openInventory(inventory);
@@ -70,6 +73,7 @@ class GUI {
         final Inventory inventory = this.manager.inventories.get(player);
         if (guiPage != this.manager.pages.get(player).page) {
             this.clearInventory(inventory);
+            player.updateInventory();
         }
         if (guiPage == GUIPage.MAIN) {
             if (this.manager.pages.get(player).page != GUIPage.MAIN) {
@@ -102,6 +106,8 @@ class GUI {
         Config.getInstance().setMyContainer(guiPage, inventory, Language.COLOR_COSTUME, ConfigGUI.getInstance().getItems_colorcostumeContainer(), (Permission) null);
         Config.getInstance().setMyContainer(guiPage, inventory, Language.CUSTOM_COSTUME, ConfigGUI.getInstance().getItems_customcostumeContainer(), (Permission) null);
         Config.getInstance().setMyContainer(guiPage, inventory, Language.MINECRAFT_HEADS_COSTUME, ConfigGUI.getInstance().getMinecraftheadscostumeContainer(), "minecraft-heads");
+        Config.getInstance().setMyContainer(guiPage, inventory, Language.HEAD_DATABASE_COSTUME, ConfigGUI.getInstance().getHeaddatabasecostumeContainer(), "head-database");
+        Config.getInstance().setMyContainer(guiPage, inventory, Language.SUGGEST_HEADS, ConfigGUI.getInstance().getItemsuggestHeadsContainer(), (Permission) null);
 
         if (petMeta.isSoundsEnabled())
             Config.getInstance().setMyContainer(guiPage, inventory, Language.MUTE, ConfigGUI.getInstance().getItems_soundEnabledContainer(), (Permission) null);
@@ -111,6 +117,7 @@ class GUI {
         Config.getInstance().setMyContainer(guiPage, inventory, Language.PARTICLE, ConfigGUI.getInstance().getItems_particlepetContainer(), (Permission) null);
         this.fillEmptySlots(inventory);
         this.manager.pages.put(player, new GuiPageContainer(guiPage, this.manager.pages.get(player).page));
+        player.updateInventory();
     }
 
     /**
@@ -153,8 +160,7 @@ class GUI {
     void setMinecraftHeadsCostumeItems(Player player) {
         try {
             final net.md_5.bungee.api.chat.TextComponent message = new net.md_5.bungee.api.chat.TextComponent(Language.PREFIX + "Pets collected by ");
-            final net.md_5.bungee.api.chat.TextComponent head = new net.md_5.bungee.api.chat.TextComponent("Minecraft-Heads.com ");
-            head.setUnderlined(true);
+            final net.md_5.bungee.api.chat.TextComponent head = new net.md_5.bungee.api.chat.TextComponent(">>Minecraft-Heads.com<< ");
             head.setClickEvent(new net.md_5.bungee.api.chat.ClickEvent(net.md_5.bungee.api.chat.ClickEvent.Action.OPEN_URL, "http://minecraft-heads.com"));
             head.setHoverEvent(new net.md_5.bungee.api.chat.HoverEvent(net.md_5.bungee.api.chat.HoverEvent.Action.SHOW_TEXT, new net.md_5.bungee.api.chat.ComponentBuilder("Goto the Minecraft-Heads website!").create()));
             head.setColor(net.md_5.bungee.api.ChatColor.YELLOW);
