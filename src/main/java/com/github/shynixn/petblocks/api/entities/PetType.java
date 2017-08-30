@@ -136,7 +136,7 @@ public enum PetType {
     }
 
     private boolean canPlaySpecificSounds() {
-        return !(this.movingSound.getName().contains("SHULKER") && VersionSupport.getServerVersion().isVersionLowerThan(VersionSupport.VERSION_1_9_R1));
+        return this.movingSound != null && !(this.movingSound.getName().contains("SHULKER") && VersionSupport.getServerVersion().isVersionLowerThan(VersionSupport.VERSION_1_9_R1));
     }
 
     public static String[] getNames() {
