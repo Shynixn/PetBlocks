@@ -24,6 +24,7 @@ import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
@@ -68,7 +69,7 @@ public class PetMetaSQLiteControllerTest {
                     for (final PetMeta item : controller.getAll()) {
                         controller.remove(item);
                     }
-                    final PetMeta meta = new PetData();
+                    final PetData meta = new PetData();
                     meta.setDisplayName("Notch");
                     assertThrows(IllegalArgumentException.class, () -> controller.store(meta));
                     assertEquals(0, controller.size());
@@ -115,14 +116,14 @@ public class PetMetaSQLiteControllerTest {
                     for (final PetMeta item : controller.getAll()) {
                         controller.remove(item);
                     }
-                    PetMeta meta = new PetData();
+                    PetData meta = new PetData();
                     meta.setDisplayName("Me");
                     meta.setSkin(Material.BIRCH_DOOR_ITEM,(short)5 , "This is my long skin.");
                     meta.setPetType(PetType.SHEEP);
                     meta.setEnabled(true);
                     meta.setAgeInTicks(500);
                     meta.setUnbreakable(true);
-                    meta.setSoundsEnabled(true);
+                    meta.setSoundEnabled(true);
                     meta.setMoveType(MoveType.FLYING);
                     meta.setMovementType(Movement.CRAWLING);
 
@@ -137,7 +138,7 @@ public class PetMetaSQLiteControllerTest {
                     controller.store(meta);
 
                     assertEquals(1, controller.size());
-                    meta = controller.getById(meta.getId());
+                    meta = (PetData) controller.getById(meta.getId());
                     assertEquals("Me", meta.getDisplayName());
                     assertEquals(Material.BIRCH_DOOR_ITEM, meta.getSkinMaterial());
                     assertEquals((short)5, meta.getSkinDurability());
@@ -146,7 +147,7 @@ public class PetMetaSQLiteControllerTest {
                     assertEquals(true, meta.isEnabled());
                     assertEquals(500, meta.getAgeInTicks());
                     assertEquals(true, meta.isUnbreakable());
-                    assertEquals(true, meta.isSoundsEnabled());
+                    assertEquals(true, meta.isSoundEnabled());
                     assertEquals(MoveType.FLYING, meta.getMoveType());
                     assertEquals(Movement.CRAWLING, meta.getMovementType());
 
@@ -156,13 +157,13 @@ public class PetMetaSQLiteControllerTest {
                     meta.setEnabled(false);
                     meta.setAgeInTicks(250);
                     meta.setUnbreakable(false);
-                    meta.setSoundsEnabled(false);
+                    meta.setSoundEnabled(false);
                     meta.setMoveType(MoveType.WALKING);
                     meta.setMovementType(Movement.HOPPING);
                     controller.store(meta);
 
                     assertEquals(1, controller.size());
-                    meta = controller.getById(meta.getId());
+                    meta = (PetData) controller.getById(meta.getId());
                     assertEquals("PikaPet", meta.getDisplayName());
                     assertEquals(Material.ARROW, meta.getSkinMaterial());
                     assertEquals((short)7, meta.getSkinDurability());
@@ -171,7 +172,7 @@ public class PetMetaSQLiteControllerTest {
                     assertEquals(false, meta.isEnabled());
                     assertEquals(250, meta.getAgeInTicks());
                     assertEquals(false, meta.isUnbreakable());
-                    assertEquals(false, meta.isSoundsEnabled());
+                    assertEquals(false, meta.isSoundEnabled());
                     assertEquals(MoveType.WALKING, meta.getMoveType());
                     assertEquals(Movement.HOPPING, meta.getMovementType());
                 }

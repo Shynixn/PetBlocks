@@ -1,5 +1,6 @@
 package com.github.shynixn.petblocks.business.logic.persistence.entity;
 
+import com.github.shynixn.petblocks.api.entities.*;
 import com.github.shynixn.petblocks.api.persistence.entity.ParticleEffectMeta;
 import com.github.shynixn.petblocks.api.persistence.entity.PetMeta;
 import com.github.shynixn.petblocks.api.persistence.entity.PlayerMeta;
@@ -13,8 +14,6 @@ import org.bukkit.inventory.ItemStack;
 import java.util.UUID;
 
 public class PetData extends PersistenceObject implements PetMeta {
-    private static final Long serialVersionUID = 1L;
-
     private String displayName;
     private PetType petType;
     private Material costume;
@@ -161,7 +160,6 @@ public class PetData extends PersistenceObject implements PetMeta {
         this.sounds = sounds;
     }
 
-    @Override
     public void setSkin(Material material, short durability, String skin) {
         if (skin != null && skin.contains("textures.minecraft")) {
             if (!skin.contains("http://"))
@@ -172,22 +170,18 @@ public class PetData extends PersistenceObject implements PetMeta {
         this.skullName = skin;
     }
 
-    @Override
     public void setAge(Age age) {
         this.ageTicks = age.getTicks();
     }
 
-    @Override
     public void setAgeInTicks(int ticks) {
         this.ageTicks = ticks;
     }
 
-    @Override
     public int getAgeInTicks() {
         return this.ageTicks;
     }
 
-    @Override
     public Age getAge() {
         return Age.getAgeFromTicks(this.ageTicks);
     }
@@ -205,72 +199,51 @@ public class PetData extends PersistenceObject implements PetMeta {
         this.movement = movement;
     }
 
-    @Override
     public Movement getMovementType() {
         if (this.movement == null)
             this.movement = Movement.HOPPING.name().toUpperCase();
         return Movement.getMovementFromName(this.movement);
     }
 
-    @Override
     public void setMovementType(Movement movementType) {
         if (movementType != null)
             this.movement = movementType.name().toUpperCase();
     }
 
-    @Override
     public PetType getType() {
         return this.petType;
     }
 
-    @Override
     public boolean isHidden() {
         return this.hidden;
     }
 
-    @Override
     public void setHidden(boolean isHidden) {
         this.hidden = isHidden;
     }
 
-    @Override
-    public void setSoundsEnabled(boolean enabled) {
-        this.sounds = enabled;
-    }
-
-    @Override
-    public boolean isSoundsEnabled() {
-        return this.sounds;
-    }
-
-    @Override
     public boolean isUnbreakable() {
         return this.unbreakable;
     }
 
-    @Override
     public void setUnbreakable(boolean unbreakable) {
         this.unbreakable = unbreakable;
     }
 
-    @Override
     public String getHeadDisplayName() {
         return this.headDisplayName;
     }
 
-    @Override
     public void setHeadDisplayName(String headDisplayName) {
         this.headDisplayName = headDisplayName;
     }
 
-    @Override
     public String[] getHeadLore() {
         if (this.headLore == null)
             return null;
         return this.headLore.clone();
     }
 
-    @Override
     public void setHeadLore(String[] headLore) {
         if (this.headLore != null) {
             this.headLore = headLore.clone();
@@ -279,19 +252,76 @@ public class PetData extends PersistenceObject implements PetMeta {
         }
     }
 
-    @Override
     public String getSkin() {
         return this.skullName;
     }
 
-    @Override
     public String getDisplayName() {
         return this.displayName;
     }
 
-    @Override
     public void setPetType(PetType petType) {
         this.petType = petType;
+    }
+
+    /**
+     * Returns if the pet is visible to other players
+     *
+     * @return visible
+     */
+    @Override
+    public boolean isVisible() {
+        return !this.hidden;
+    }
+
+    /**
+     * Sets if the pet should be visible to other players
+     *
+     * @param enabled enabled
+     */
+    @Override
+    public void setVisible(boolean enabled) {
+        this.hidden = !enabled;
+    }
+
+    /**
+     * Sets the pet sound enabled
+     *
+     * @param enabled enabled
+     */
+    @Override
+    public void setSoundEnabled(boolean enabled) {
+        this.sounds = enabled;
+    }
+
+    /**
+     * Returns if the pet-sound is enabled
+     *
+     * @return enabled
+     */
+    @Override
+    public boolean isSoundEnabled() {
+        return this.sounds;
+    }
+
+    /**
+     * Sets the itemStack unbreakable
+     *
+     * @param enabled enabled
+     */
+    @Override
+    public void setItemStackUnbreakable(boolean enabled) {
+
+    }
+
+    /**
+     * Returns if the itemStack is unbreakable
+     *
+     * @return unbreakable
+     */
+    @Override
+    public boolean isItemStackUnbreakable() {
+        return false;
     }
 
     @Override
@@ -301,12 +331,10 @@ public class PetData extends PersistenceObject implements PetMeta {
         this.displayName = ChatColor.translateAlternateColorCodes('&', name);
     }
 
-    @Override
     public MoveType getMoveType() {
         return this.moveType;
     }
 
-    @Override
     public void setMoveType(MoveType moveType) {
         this.moveType = moveType;
         if (this.moveType == null)
@@ -314,22 +342,18 @@ public class PetData extends PersistenceObject implements PetMeta {
 
     }
 
-    @Override
     public Material getSkinMaterial() {
         return this.costume;
     }
 
-    @Override
     public short getSkinDurability() {
         return this.durability;
     }
 
-    @Override
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
     }
 
-    @Override
     public boolean isEnabled() {
         return this.enabled;
     }
@@ -360,7 +384,6 @@ public class PetData extends PersistenceObject implements PetMeta {
 
     //region Deprecated
 
-    @Override
     @Deprecated
     public Player getOwner() {
         return this.playerInfo.getPlayer();
@@ -408,7 +431,6 @@ public class PetData extends PersistenceObject implements PetMeta {
         return petData;
     }
 
-    @Override
     @Deprecated
     public void setParticleEffect(Particle particle) {
         try {
@@ -432,7 +454,6 @@ public class PetData extends PersistenceObject implements PetMeta {
         }
     }
 
-    @Override
     @Deprecated
     public Particle getParticleEffect() {
         try {
@@ -521,11 +542,15 @@ public class PetData extends PersistenceObject implements PetMeta {
 
     @Deprecated
     public Material getMaterial() {
-        return this.particleEffectBuilder.getMaterial();
+        return Material.getMaterial(this.particleEffectBuilder.getMaterial());
     }
 
     @Deprecated
     public void setMaterial(Material material) {
-        this.particleEffectBuilder.setMaterial(material);
+        if (material == null) {
+            this.particleEffectBuilder.setMaterial(0);
+        } else {
+            this.particleEffectBuilder.setMaterial(material.getId());
+        }
     }
 }

@@ -1,9 +1,9 @@
 package com.github.shynixn.petblocks.business.logic.persistence.entity;
 
+import com.github.shynixn.petblocks.api.persistence.entity.IPosition;
 import com.github.shynixn.petblocks.api.persistence.entity.ParticleEffectMeta;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.entity.Player;
 
@@ -286,12 +286,8 @@ public class ParticleEffectData extends PersistenceObject implements Configurati
      * @return builder
      */
     @Override
-    public ParticleEffectData setMaterial(Material material) {
-        if (material != null) {
-            this.material = material.getId();
-        } else {
-            this.material = null;
-        }
+    public ParticleEffectData setMaterial(Integer material) {
+        this.material = material;
         return this;
     }
 
@@ -413,10 +409,8 @@ public class ParticleEffectData extends PersistenceObject implements Configurati
      * @return material
      */
     @Override
-    public Material getMaterial() {
-        if (this.material == null || Material.getMaterial(this.material) == null)
-            return null;
-        return Material.getMaterial(this.material);
+    public Integer getMaterial() {
+        return this.material;
     }
 
     /**
@@ -507,13 +501,13 @@ public class ParticleEffectData extends PersistenceObject implements Configurati
      * @param players  players
      */
     @Override
-    public void apply(Location location, Player... players) {
+    public <T> void apply(IPosition location, T... players) {
         if (location == null)
             throw new IllegalArgumentException("Location cannot be null!");
         if (players.length == 0)
-            ParticleUtils.sendParticle(this, location);
+            ParticleUtils.sendParticle(this, ((LocationBuilder)location).toLocation());
         else
-            ParticleUtils.sendParticle(this, location, players);
+            ParticleUtils.sendParticle(this, ((LocationBuilder)location).toLocation(), (Player[]) players);
     }
 
     /**
@@ -697,9 +691,9 @@ public class ParticleEffectData extends PersistenceObject implements Configurati
                 int[] additionalInfo = null;
                 if (particleBuilder.getMaterial() != null) {
                     if (particleBuilder.getEffectType() == ParticleEffectData.ParticleEffectType.ITEM_CRACK)
-                        additionalInfo = new int[]{particleBuilder.getMaterial().getId(), particleBuilder.getData()};
+                        additionalInfo = new int[]{particleBuilder.getMaterial(), particleBuilder.getData()};
                     else
-                        additionalInfo = new int[]{particleBuilder.getMaterial().getId(), particleBuilder.getData() << 12};
+                        additionalInfo = new int[]{particleBuilder.getMaterial(), particleBuilder.getData() << 12};
                 }
                 final net.minecraft.server.v1_8_R1.PacketPlayOutWorldParticles packet = new net.minecraft.server.v1_8_R1.PacketPlayOutWorldParticles(
                         particle,
@@ -732,9 +726,9 @@ public class ParticleEffectData extends PersistenceObject implements Configurati
                 int[] additionalInfo = null;
                 if (particleBuilder.getMaterial() != null) {
                     if (particleBuilder.getEffectType() == ParticleEffectData.ParticleEffectType.ITEM_CRACK)
-                        additionalInfo = new int[]{particleBuilder.getMaterial().getId(), particleBuilder.getData()};
+                        additionalInfo = new int[]{particleBuilder.getMaterial(), particleBuilder.getData()};
                     else
-                        additionalInfo = new int[]{particleBuilder.getMaterial().getId(), particleBuilder.getData() << 12};
+                        additionalInfo = new int[]{particleBuilder.getMaterial(), particleBuilder.getData() << 12};
                 }
                 final net.minecraft.server.v1_8_R2.PacketPlayOutWorldParticles packet = new net.minecraft.server.v1_8_R2.PacketPlayOutWorldParticles(
                         particle,
@@ -767,9 +761,9 @@ public class ParticleEffectData extends PersistenceObject implements Configurati
                 int[] additionalInfo = null;
                 if (particleBuilder.getMaterial() != null) {
                     if (particleBuilder.getEffectType() == ParticleEffectData.ParticleEffectType.ITEM_CRACK)
-                        additionalInfo = new int[]{particleBuilder.getMaterial().getId(), particleBuilder.getData()};
+                        additionalInfo = new int[]{particleBuilder.getMaterial(), particleBuilder.getData()};
                     else
-                        additionalInfo = new int[]{particleBuilder.getMaterial().getId(), particleBuilder.getData() << 12};
+                        additionalInfo = new int[]{particleBuilder.getMaterial(), particleBuilder.getData() << 12};
                 }
                 final net.minecraft.server.v1_8_R3.PacketPlayOutWorldParticles packet = new net.minecraft.server.v1_8_R3.PacketPlayOutWorldParticles(
                         particle,
@@ -802,9 +796,9 @@ public class ParticleEffectData extends PersistenceObject implements Configurati
                 int[] additionalInfo = null;
                 if (particleBuilder.getMaterial() != null) {
                     if (particleBuilder.getEffectType() == ParticleEffectData.ParticleEffectType.ITEM_CRACK)
-                        additionalInfo = new int[]{particleBuilder.getMaterial().getId(), particleBuilder.getData()};
+                        additionalInfo = new int[]{particleBuilder.getMaterial(), particleBuilder.getData()};
                     else
-                        additionalInfo = new int[]{particleBuilder.getMaterial().getId(), particleBuilder.getData() << 12};
+                        additionalInfo = new int[]{particleBuilder.getMaterial(), particleBuilder.getData() << 12};
                 }
                 final net.minecraft.server.v1_9_R1.PacketPlayOutWorldParticles packet = new net.minecraft.server.v1_9_R1.PacketPlayOutWorldParticles(
                         particle,
@@ -837,9 +831,9 @@ public class ParticleEffectData extends PersistenceObject implements Configurati
                 int[] additionalInfo = null;
                 if (particleBuilder.getMaterial() != null) {
                     if (particleBuilder.getEffectType() == ParticleEffectData.ParticleEffectType.ITEM_CRACK)
-                        additionalInfo = new int[]{particleBuilder.getMaterial().getId(), particleBuilder.getData()};
+                        additionalInfo = new int[]{particleBuilder.getMaterial(), particleBuilder.getData()};
                     else
-                        additionalInfo = new int[]{particleBuilder.getMaterial().getId(), particleBuilder.getData() << 12};
+                        additionalInfo = new int[]{particleBuilder.getMaterial(), particleBuilder.getData() << 12};
                 }
                 final net.minecraft.server.v1_9_R2.PacketPlayOutWorldParticles packet = new net.minecraft.server.v1_9_R2.PacketPlayOutWorldParticles(
                         particle,
@@ -872,9 +866,9 @@ public class ParticleEffectData extends PersistenceObject implements Configurati
                 int[] additionalInfo = null;
                 if (particleBuilder.getMaterial() != null) {
                     if (particleBuilder.getEffectType() == ParticleEffectData.ParticleEffectType.ITEM_CRACK)
-                        additionalInfo = new int[]{particleBuilder.getMaterial().getId(), particleBuilder.getData()};
+                        additionalInfo = new int[]{particleBuilder.getMaterial(), particleBuilder.getData()};
                     else
-                        additionalInfo = new int[]{particleBuilder.getMaterial().getId(), particleBuilder.getData() << 12};
+                        additionalInfo = new int[]{particleBuilder.getMaterial(), particleBuilder.getData() << 12};
                 }
                 final net.minecraft.server.v1_10_R1.PacketPlayOutWorldParticles packet = new net.minecraft.server.v1_10_R1.PacketPlayOutWorldParticles(
                         particle,
@@ -907,9 +901,9 @@ public class ParticleEffectData extends PersistenceObject implements Configurati
                 int[] additionalInfo = null;
                 if (particleBuilder.getMaterial() != null) {
                     if (particleBuilder.getEffectType() == ParticleEffectData.ParticleEffectType.ITEM_CRACK)
-                        additionalInfo = new int[]{particleBuilder.getMaterial().getId(), particleBuilder.getData()};
+                        additionalInfo = new int[]{particleBuilder.getMaterial(), particleBuilder.getData()};
                     else
-                        additionalInfo = new int[]{particleBuilder.getMaterial().getId(), particleBuilder.getData() << 12};
+                        additionalInfo = new int[]{particleBuilder.getMaterial(), particleBuilder.getData() << 12};
                 }
                 final net.minecraft.server.v1_11_R1.PacketPlayOutWorldParticles packet = new net.minecraft.server.v1_11_R1.PacketPlayOutWorldParticles(
                         particle,
@@ -942,9 +936,9 @@ public class ParticleEffectData extends PersistenceObject implements Configurati
                 int[] additionalInfo = null;
                 if (particleBuilder.getMaterial() != null) {
                     if (particleBuilder.getEffectType() == ParticleEffectData.ParticleEffectType.ITEM_CRACK)
-                        additionalInfo = new int[]{particleBuilder.getMaterial().getId(), particleBuilder.getData()};
+                        additionalInfo = new int[]{particleBuilder.getMaterial(), particleBuilder.getData()};
                     else
-                        additionalInfo = new int[]{particleBuilder.getMaterial().getId(), particleBuilder.getData() << 12};
+                        additionalInfo = new int[]{particleBuilder.getMaterial(), particleBuilder.getData() << 12};
                 }
                 final net.minecraft.server.v1_12_R1.PacketPlayOutWorldParticles packet = new net.minecraft.server.v1_12_R1.PacketPlayOutWorldParticles(
                         particle,

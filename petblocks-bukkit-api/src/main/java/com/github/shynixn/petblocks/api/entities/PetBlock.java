@@ -50,7 +50,7 @@ public interface PetBlock {
 
     Location getLocation();
 
-    PetMeta getPetMeta();
+    com.github.shynixn.petblocks.api.persistence.entity.PetMeta getPetMeta();
 
     void teleportWithOwner(Location location);
 

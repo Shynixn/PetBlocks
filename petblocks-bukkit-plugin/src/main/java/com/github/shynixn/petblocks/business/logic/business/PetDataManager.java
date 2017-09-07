@@ -64,11 +64,11 @@ public final class PetDataManager implements AutoCloseable {
             throw new IllegalArgumentException("PetMeta cannot be null!");
         if (Thread.currentThread().getId() == this.mainThreadId)
             throw new RuntimeException("This method has to be accessed asynchronously.");
-        if (petMeta.getOwner() != null) {
-            petMeta.getPlayerMeta().setName(petMeta.getPlayerMeta().getPlayer().getName());
+        if (((PetData)petMeta).getOwner() != null) {
+            petMeta.getPlayerMeta().setName(((Player)petMeta.getPlayerMeta().getPlayer()).getName());
             if (petMeta.getPlayerMeta().getId() == 0) {
                 final PlayerMeta playerMeta;
-                if ((playerMeta = this.playerMetaController.getByUUID(petMeta.getPlayerMeta().getPlayer().getUniqueId())) != null) {
+                if ((playerMeta = this.playerMetaController.getByUUID(((Player)petMeta.getPlayerMeta().getPlayer()).getUniqueId())) != null) {
                     petMeta.setPlayerMeta(playerMeta);
                 }
             }

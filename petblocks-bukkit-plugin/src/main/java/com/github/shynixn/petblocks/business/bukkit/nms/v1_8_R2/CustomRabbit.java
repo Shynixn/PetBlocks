@@ -1,7 +1,7 @@
 package com.github.shynixn.petblocks.business.bukkit.nms.v1_8_R2;
 
 import com.github.shynixn.petblocks.api.entities.CustomEntity;
-import com.github.shynixn.petblocks.api.entities.PetMeta;
+import com.github.shynixn.petblocks.api.persistence.entity.PetMeta;
 import com.github.shynixn.petblocks.business.bukkit.nms.helper.PetBlockHelper;
 import com.github.shynixn.petblocks.business.logic.configuration.ConfigPet;
 import net.minecraft.server.v1_8_R2.*;

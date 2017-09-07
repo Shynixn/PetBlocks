@@ -6,7 +6,6 @@ import com.github.shynixn.petblocks.api.entities.PetType;
 import com.github.shynixn.petblocks.api.persistence.controller.PetMetaController;
 import com.github.shynixn.petblocks.api.persistence.entity.PetMeta;
 import com.github.shynixn.petblocks.business.logic.persistence.entity.PetData;
-import com.github.shynixn.petblocks.lib.DataBaseRepository;
 import com.github.shynixn.petblocks.lib.ExtensionHikariConnectionContext;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -39,10 +38,10 @@ public class PetDataRepository extends DataBaseRepository<PetMeta> implements Pe
      * @return petData
      */
     @Override
-    public PetMeta getByPlayer(Player player) {
+    public <T> PetMeta getByPlayer(T player) {
         try (Connection connection = this.dbContext.getConnection()) {
             try (PreparedStatement preparedStatement = this.dbContext.executeStoredQuery("petblock/selectbyplayer", connection,
-                    player.getUniqueId().toString())) {
+                    ((Player)player).getUniqueId().toString())) {
                 try (ResultSet resultSet = preparedStatement.executeQuery()) {
                     if (resultSet.next()) {
                         return this.from(resultSet);
@@ -62,10 +61,10 @@ public class PetDataRepository extends DataBaseRepository<PetMeta> implements Pe
      * @return hasEntry
      */
     @Override
-    public boolean hasEntry(Player player) {
+    public <T> boolean hasEntry(T player) {
         try (Connection connection = this.dbContext.getConnection()) {
             try (PreparedStatement preparedStatement = this.dbContext.executeStoredQuery("petblock/selectentrybyplayer", connection,
-                    player.getUniqueId().toString())) {
+                    ((Player)player).getUniqueId().toString())) {
                 try (ResultSet resultSet = preparedStatement.executeQuery()) {
                     return resultSet.next();
                 }
@@ -136,10 +135,11 @@ public class PetDataRepository extends DataBaseRepository<PetMeta> implements Pe
     /**
      * Updates the item inside of the database
      *
-     * @param item item
+     * @param itemMeta item
      */
     @Override
-    public void update(PetMeta item) {
+    public void update(PetMeta itemMeta) {
+        final PetData item = (PetData) itemMeta;
         if (item == null)
             throw new IllegalArgumentException("Meta has to be an instance of PetData");
         if (item.getType() == null)
@@ -156,7 +156,7 @@ public class PetDataRepository extends DataBaseRepository<PetMeta> implements Pe
                     item.isEnabled(),
                     item.getAgeInTicks(),
                     item.isUnbreakable(),
-                    item.isSoundsEnabled(),
+                    item.isSoundEnabled(),
                     item.getMoveType().name(),
                     item.getMovementType().name(),
                     item.getId()
@@ -184,10 +184,11 @@ public class PetDataRepository extends DataBaseRepository<PetMeta> implements Pe
     /**
      * Inserts the item into the database and sets the id
      *
-     * @param item item
+     * @param itemMeta item
      */
     @Override
-    public void insert(PetMeta item) {
+    public void insert(PetMeta itemMeta) {
+        final PetData item = (PetData) itemMeta;
         if (item == null)
             throw new IllegalArgumentException("Meta has to be an instance of PetData");
         if (item.getType() == null)
@@ -206,11 +207,11 @@ public class PetDataRepository extends DataBaseRepository<PetMeta> implements Pe
                     item.isEnabled(),
                     item.getAgeInTicks(),
                     item.isUnbreakable(),
-                    item.isSoundsEnabled(),
+                    item.isSoundEnabled(),
                     item.getMoveType().name(),
                     item.getMovementType().name()
             );
-            ((PetData) item).setId(id);
+            item.setId(id);
         } catch (final SQLException e) {
             Bukkit.getLogger().log(Level.WARNING, "Database error occurred.", e);
         }
@@ -234,7 +235,7 @@ public class PetDataRepository extends DataBaseRepository<PetMeta> implements Pe
         petMeta.setEnabled(resultSet.getBoolean("enabled"));
         petMeta.setAgeInTicks(resultSet.getInt("age"));
         petMeta.setUnbreakable(resultSet.getBoolean("unbreakable"));
-        petMeta.setSoundsEnabled(resultSet.getBoolean("play_sounds"));
+        petMeta.setSoundEnabled(resultSet.getBoolean("play_sounds"));
         petMeta.setMoveType(MoveType.getMoveTypeFromName(resultSet.getString("moving_type")));
         petMeta.setMovementType(Movement.getMovementFromName(resultSet.getString("movement_type")));
         return petMeta;

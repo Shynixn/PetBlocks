@@ -1,10 +1,11 @@
 package com.github.shynixn.petblocks.business.bukkit.nms.v1_12_R1;
 
 import com.github.shynixn.petblocks.api.entities.CustomEntity;
-import com.github.shynixn.petblocks.api.entities.PetMeta;
+import com.github.shynixn.petblocks.api.persistence.entity.PetMeta;
 import com.github.shynixn.petblocks.business.bukkit.nms.helper.PetBlockHelper;
 import com.github.shynixn.petblocks.business.logic.configuration.ConfigPet;
 import com.google.common.collect.Sets;
+import net.minecraft.server.v1_12_R1.*;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.craftbukkit.v1_12_R1.CraftWorld;

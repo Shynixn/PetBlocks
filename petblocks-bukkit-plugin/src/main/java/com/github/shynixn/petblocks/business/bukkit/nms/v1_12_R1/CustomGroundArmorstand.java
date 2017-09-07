@@ -1,9 +1,16 @@
 package com.github.shynixn.petblocks.business.bukkit.nms.v1_12_R1;
 
-import com.github.shynixn.petblocks.api.events.PetBlockSpawnEvent;
+import com.github.shynixn.petblocks.api.bukkit.event.PetBlockSpawnEvent;
+import com.github.shynixn.petblocks.api.entities.CustomEntity;
+import com.github.shynixn.petblocks.api.entities.MoveType;
+import com.github.shynixn.petblocks.api.entities.Movement;
+import com.github.shynixn.petblocks.api.entities.PetBlock;
+import com.github.shynixn.petblocks.api.persistence.entity.PetMeta;
 import com.github.shynixn.petblocks.business.bukkit.nms.NMSRegistry;
 import com.github.shynixn.petblocks.business.bukkit.nms.helper.PetBlockHelper;
 import com.github.shynixn.petblocks.business.logic.configuration.ConfigPet;
+import com.github.shynixn.petblocks.business.logic.persistence.entity.PetData;
+import net.minecraft.server.v1_12_R1.*;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.craftbukkit.v1_12_R1.CraftWorld;
@@ -20,7 +27,7 @@ import java.lang.reflect.Field;
 import java.util.logging.Level;
 
 final class CustomGroundArmorstand extends EntityArmorStand implements PetBlock {
-    private PetMeta petMeta;
+    private PetData petMeta;
     private Player owner;
 
     private boolean isSpecial;
@@ -41,11 +48,11 @@ final class CustomGroundArmorstand extends EntityArmorStand implements PetBlock 
     public CustomGroundArmorstand(Location location, PetMeta meta) {
         super(((CraftWorld) location.getWorld()).getHandle());
         this.isSpecial = true;
-        this.petMeta = meta;
-        this.owner = meta.getOwner();
-        if (meta.getMovementType() == Movement.HOPPING)
+        this.petMeta = (PetData) meta;
+        this.owner = petMeta.getOwner();
+        if (petMeta.getMovementType() == Movement.HOPPING)
             this.rabbit = new CustomRabbit(this.owner, meta);
-        else if (meta.getMovementType() == Movement.CRAWLING)
+        else if (petMeta.getMovementType() == Movement.CRAWLING)
             this.rabbit = new CustomZombie(this.owner, meta);
         this.spawn(location);
     }

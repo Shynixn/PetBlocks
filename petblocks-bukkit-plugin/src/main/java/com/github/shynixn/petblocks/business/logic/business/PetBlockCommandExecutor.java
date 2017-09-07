@@ -2,7 +2,6 @@ package com.github.shynixn.petblocks.business.logic.business;
 
 import com.github.shynixn.petblocks.api.PetBlocksApi;
 import com.github.shynixn.petblocks.api.entities.PetBlock;
-import com.github.shynixn.petblocks.api.entities.PetMeta;
 import com.github.shynixn.petblocks.api.entities.PetType;
 import com.github.shynixn.petblocks.business.Language;
 import com.github.shynixn.petblocks.business.bukkit.PetBlocksPlugin;
@@ -10,6 +9,7 @@ import com.github.shynixn.petblocks.business.bukkit.nms.NMSRegistry;
 import com.github.shynixn.petblocks.business.logic.configuration.ConfigCommands;
 import com.github.shynixn.petblocks.business.logic.configuration.ConfigGUI;
 import com.github.shynixn.petblocks.business.logic.configuration.ConfigParticle;
+import com.github.shynixn.petblocks.business.logic.persistence.entity.PetData;
 import com.github.shynixn.petblocks.lib.BukkitChatColor;
 import com.github.shynixn.petblocks.lib.BukkitUtilities;
 import com.github.shynixn.petblocks.lib.DynamicCommandHelper;
@@ -109,30 +109,31 @@ class PetBlockCommandExecutor extends DynamicCommandHelper {
 
     private void toggleSounds(Player player) {
         this.providePet(player, (petMeta, petBlock) -> {
-            petMeta.setSoundsEnabled(!petMeta.isSoundsEnabled());
+            petMeta.setSoundEnabled(!petMeta.isSoundEnabled());
             this.persistAsynchronously(petMeta);
         });
     }
 
     private void setLore(Player player, String nameBump, int line) {
         this.providePet(player, (meta, petBlock) -> {
+            PetData petData = (PetData) meta;
             final String name = nameBump.replace('_', ' ');
             try {
-                if (meta.getHeadLore() == null) {
-                    meta.setHeadLore(new String[line + 1]);
+                if (petData.getHeadLore() == null) {
+                    petData.setHeadLore(new String[line + 1]);
                 }
-                if (meta.getHeadLore().length <= line) {
+                if (petData.getHeadLore().length <= line) {
                     final String[] data = new String[line + 1];
-                    for (int i = 0; i < meta.getHeadLore().length; i++) {
-                        data[i] = meta.getHeadLore()[i];
+                    for (int i = 0; i < petData.getHeadLore().length; i++) {
+                        data[i] = petData.getHeadLore()[i];
                     }
-                    meta.setHeadLore(data);
+                    petData.setHeadLore(data);
                 }
-                final String[] data = meta.getHeadLore();
+                final String[] data = petData.getHeadLore();
                 data[line] = ChatColor.translateAlternateColorCodes('&', name);
-                meta.setHeadLore(data);
+                petData.setHeadLore(data);
             } catch (final Exception ex) {
-                meta.setHeadLore(null);
+                petData.setHeadLore(null);
             }
             this.persistAsynchronously(meta);
             if (petBlock != null)
@@ -143,7 +144,8 @@ class PetBlockCommandExecutor extends DynamicCommandHelper {
     private void setSkullName(Player player, String name) {
         final String bname = name.replace('_', ' ');
         this.providePet(player, (meta, petBlock) -> {
-            meta.setHeadDisplayName(ChatColor.translateAlternateColorCodes('&', bname));
+            final PetData petData = (PetData) meta;
+            petData.setHeadDisplayName(ChatColor.translateAlternateColorCodes('&', bname));
             this.persistAsynchronously(meta);
             if (petBlock != null)
                 petBlock.refreshHeadMeta();
@@ -180,7 +182,8 @@ class PetBlockCommandExecutor extends DynamicCommandHelper {
     private void setParticleCommand(Player player, int number) {
         if (ConfigParticle.getInstance().getParticleItemStacks().length > number && number >= 0 && ConfigParticle.getInstance().getParticle(number) != null) {
             this.providePet(player, (meta, petBlock) -> {
-                meta.setParticleEffect(ConfigParticle.getInstance().getParticle(number));
+                PetData petData = (PetData) meta;
+                petData.setParticleEffect(ConfigParticle.getInstance().getParticle(number));
                 this.persistAsynchronously(meta);
                 if (petBlock != null)
                     petBlock.respawn();
@@ -196,7 +199,8 @@ class PetBlockCommandExecutor extends DynamicCommandHelper {
                     if (!skin.contains("http://"))
                         skin = "http://" + skin;
                 }
-                meta.setSkin(Material.SKULL_ITEM, (short) 3, skin);
+                PetData petData = (PetData) meta;
+                petData.setSkin(Material.SKULL_ITEM, (short) 3, skin);
                 this.persistAsynchronously(meta);
                 if (petBlock != null)
                     petBlock.respawn();
@@ -255,7 +259,8 @@ class PetBlockCommandExecutor extends DynamicCommandHelper {
                 PetBlocksApi.removePetMeta(player);
             }
             this.plugin.getServer().getScheduler().runTask(this.plugin, () -> {
-                final PetMeta meta = this.manager.dataManager.createPetMeta(player, petType);
+
+                final PetData meta = (PetData) this.manager.dataManager.createPetMeta(player, petType);
                 if (itemStack.getType() == Material.SKULL_ITEM) {
                     final SkullMeta skullMeta = (SkullMeta) itemStack.getItemMeta();
                     if (skullMeta.getOwner() == null) {
@@ -266,7 +271,7 @@ class PetBlockCommandExecutor extends DynamicCommandHelper {
                 } else {
                     meta.setSkin(itemStack.getType(), itemStack.getDurability(), null);
                 }
-                this.persistAsynchronously((com.github.shynixn.petblocks.api.persistence.entity.PetMeta) meta);
+                this.persistAsynchronously(meta);
                 if (PetBlocksApi.getPetBlock(player) != null)
                     PetBlocksApi.getPetBlock(player).respawn();
             });

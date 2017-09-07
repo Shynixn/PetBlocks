@@ -1,7 +1,6 @@
-package com.github.shynixn.petblocks.api.persistence.controller;
+package com.github.shynixn.petblocks.api.persistence.entity;
 
-import com.github.shynixn.petblocks.api.persistence.entity.PetMeta;
-import org.bukkit.entity.Player;
+import java.util.UUID;
 
 /**
  * Copyright 2017 Shynixn
@@ -32,18 +31,35 @@ import org.bukkit.entity.Player;
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-public interface PetMetaController extends IDatabaseController<PetMeta> {
-    /**
-     * Returns the petdata from the given player
-     * @param player player
-     * @return petData
-     */
-    PetMeta getByPlayer(Player player);
+public interface PlayerMeta extends Persistenceable{
 
     /**
-     * Checks if the player has got an entry in the database
-     * @param player player
-     * @return hasEntry
+     * Returns the name of the playerData
+     * @return playerData
      */
-    boolean hasEntry(Player player);
+    String getName();
+
+    /**
+     * Sets the name of the playerData
+     * @param name name
+     */
+    void setName(String name);
+
+    /**
+     * Returns the uuid of the playerData
+     * @return uuid
+     */
+    UUID getUUID();
+
+    /**
+     * Sets the uuid of the playerData
+     * @param uuid uuid
+     */
+    void setUuid(UUID uuid);
+
+    /**
+     * Returns the player of the playerData
+     * @return player
+     */
+    <T> T getPlayer();
 }

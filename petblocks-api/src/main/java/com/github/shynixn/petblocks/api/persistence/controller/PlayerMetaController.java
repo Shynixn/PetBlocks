@@ -1,7 +1,6 @@
 package com.github.shynixn.petblocks.api.persistence.controller;
 
 import com.github.shynixn.petblocks.api.persistence.entity.PlayerMeta;
-import org.bukkit.entity.Player;
 
 import java.util.UUID;
 
@@ -41,7 +40,7 @@ public interface PlayerMetaController extends IDatabaseController<PlayerMeta> {
      * @param player player
      * @return playerData
      */
-    PlayerMeta create(Player player);
+    <T> PlayerMeta create(T player);
 
     /**
      * Returns the playerMeta of the given uuid

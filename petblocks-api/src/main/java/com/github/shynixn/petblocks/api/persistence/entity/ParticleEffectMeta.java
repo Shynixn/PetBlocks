@@ -139,10 +139,10 @@ public interface ParticleEffectMeta extends Persistenceable{
     /**
      * Sets the material of the particleEffect
      *
-     * @param materialIdjj material
+     * @param materialId material
      * @return builder
      */
-    ParticleEffectMeta setMaterial(int materialId);
+    ParticleEffectMeta setMaterial(Integer materialId);
 
     /**
      * Sets the data of the material of the particleEffect
@@ -227,7 +227,7 @@ public interface ParticleEffectMeta extends Persistenceable{
      *
      * @return material
      */
-    Material getMaterial();
+    Integer getMaterial();
 
     /**
      * Returns the data of the particleEffect
@@ -258,12 +258,12 @@ public interface ParticleEffectMeta extends Persistenceable{
     boolean isMaterialParticleEffect();
 
     /**
-     * Plays the effect at the given location to the given players.
+     * Plays the effect at the given position to the given players.
      *
      * @param location location
      * @param players  players
      */
-    void apply(Location location, Player... players);
+    <T> void apply(IPosition location, T... players);
 
     /**
      * ParticleColors

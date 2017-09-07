@@ -1,9 +1,9 @@
 package com.github.shynixn.petblocks.business.logic.business;
 
 import com.github.shynixn.petblocks.api.PetBlocksApi;
+import com.github.shynixn.petblocks.api.bukkit.event.PetBlockMoveEvent;
+import com.github.shynixn.petblocks.api.bukkit.event.PetBlockRideEvent;
 import com.github.shynixn.petblocks.api.entities.PetBlock;
-import com.github.shynixn.petblocks.api.events.PetBlockMoveEvent;
-import com.github.shynixn.petblocks.api.events.PetBlockRideEvent;
 import com.github.shynixn.petblocks.api.persistence.entity.PetMeta;
 import com.github.shynixn.petblocks.api.persistence.entity.SoundMeta;
 import com.github.shynixn.petblocks.business.Config;
@@ -11,6 +11,9 @@ import com.github.shynixn.petblocks.business.bukkit.PetBlocksPlugin;
 import com.github.shynixn.petblocks.business.bukkit.nms.NMSRegistry;
 import com.github.shynixn.petblocks.business.logic.configuration.ConfigPet;
 import com.github.shynixn.petblocks.business.logic.persistence.entity.SoundBuilder;
+import com.github.shynixn.petblocks.lib.BukkitUtilities;
+import com.github.shynixn.petblocks.lib.ParticleEffect;
+import com.github.shynixn.petblocks.lib.SimpleListener;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -207,7 +210,7 @@ class PetBlockListener extends SimpleListener {
                 if (NMSRegistry.getItemInHand19(event.getPlayer(), false) != null && NMSRegistry.getItemInHand19(event.getPlayer(), false).getType() == Material.CARROT_ITEM) {
                     ParticleEffect.HEART.display(1F, 1F, 1F, 0.1F, 20, event.getRightClicked().getLocation(), event.getRightClicked().getWorld().getPlayers());
                     try {
-                        this.eatingSound.apply(event.getRightClicked().getLocation());
+                        ((SoundBuilder)this.eatingSound).apply(event.getRightClicked().getLocation());
                     } catch (final Exception e) {
                         Bukkit.getLogger().log(Level.WARNING, "Failed to play sound.", e);
                     }
@@ -396,7 +399,7 @@ class PetBlockListener extends SimpleListener {
     private void providePet(Player player, PetRunnable runnable) {
         if (PetBlocksApi.hasPetBlock(player)) {
             final PetBlock petBlock = PetBlocksApi.getPetBlock(player);
-            runnable.run((PetMeta) petBlock.getPetMeta(), petBlock);
+            runnable.run(petBlock.getPetMeta(), petBlock);
         } else {
             this.plugin.getServer().getScheduler().runTaskAsynchronously(this.plugin, () -> {
                 final PetMeta petMeta = PetBlocksApi.getPetMeta(player);

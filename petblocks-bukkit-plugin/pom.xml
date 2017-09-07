@@ -11,6 +11,7 @@
 
     <version>${petblocks.bukkit.version}</version>
     <artifactId>petblocks-bukkit-plugin</artifactId>
+    <packaging>jar</packaging>
 
     <repositories>
         <repository>
@@ -28,6 +29,11 @@
     </repositories>
 
     <dependencies>
+        <dependency>
+            <groupId>com.github.shynixn.petblocks</groupId>
+            <artifactId>petblocks-bukkit-api</artifactId>
+            <version>${petblocks.bukkit.version}</version>
+        </dependency>
         <dependency>
             <groupId>de.myzelyam</groupId>
             <artifactId>supervanish</artifactId>
@@ -55,4 +61,25 @@
         </dependency>
     </dependencies>
 
+    <build>
+        <plugins>
+            <plugin>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <outputDirectory>${petblocks.bukkit.test-server-path}</outputDirectory>
+                    <descriptorRefs>
+                        <descriptorRef>jar-with-dependencies</descriptorRef>
+                    </descriptorRefs>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 </project>

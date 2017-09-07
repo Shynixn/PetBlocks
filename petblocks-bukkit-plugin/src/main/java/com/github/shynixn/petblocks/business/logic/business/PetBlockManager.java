@@ -1,8 +1,8 @@
 package com.github.shynixn.petblocks.business.logic.business;
 
+import com.github.shynixn.petblocks.api.bukkit.event.PetBlockDeathEvent;
 import com.github.shynixn.petblocks.api.entities.PetBlock;
-import com.github.shynixn.petblocks.api.entities.PetMeta;
-import com.github.shynixn.petblocks.api.events.PetBlockDeathEvent;
+import com.github.shynixn.petblocks.api.persistence.entity.PetMeta;
 import com.github.shynixn.petblocks.business.bukkit.nms.NMSRegistry;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;

@@ -3,13 +3,14 @@ package com.github.shynixn.petblocks.business.logic.business;
 import com.github.shynixn.petblocks.api.PetBlocksApi;
 import com.github.shynixn.petblocks.api.business.enumeration.GUIPage;
 import com.github.shynixn.petblocks.api.entities.PetBlock;
-import com.github.shynixn.petblocks.api.entities.PetMeta;
+import com.github.shynixn.petblocks.api.persistence.entity.PetMeta;
 import com.github.shynixn.petblocks.business.Config;
 import com.github.shynixn.petblocks.business.Language;
 import com.github.shynixn.petblocks.business.Permission;
 import com.github.shynixn.petblocks.business.bukkit.PetBlocksPlugin;
 import com.github.shynixn.petblocks.business.logic.configuration.ConfigCommands;
 import com.github.shynixn.petblocks.business.logic.configuration.ConfigPet;
+import com.github.shynixn.petblocks.business.logic.persistence.entity.PetData;
 import com.github.shynixn.petblocks.lib.DynamicCommandHelper;
 import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
@@ -59,7 +60,7 @@ class PetDataCommandExecutor extends DynamicCommandHelper {
             this.plugin.getServer().getScheduler().runTaskAsynchronously(this.plugin, () -> {
                 final PetMeta petMeta;
                 if ((petMeta = this.manager.getPetMeta(player)) != null) {
-                    this.plugin.getServer().getScheduler().runTask(this.plugin, () -> this.manager.gui.setItems(GUIPage.MAIN, player, petMeta.getType(), PetBlocksApi.hasPetBlock(player), true, petMeta));
+                    this.plugin.getServer().getScheduler().runTask(this.plugin, () -> this.manager.gui.setItems(GUIPage.MAIN, player, ((PetData)petMeta).getType(), PetBlocksApi.hasPetBlock(player), true, petMeta));
                 }
             });
         }
@@ -69,9 +70,9 @@ class PetDataCommandExecutor extends DynamicCommandHelper {
         if (PetBlocksApi.hasPetBlock(player)) {
             final PetBlock petBlock = PetBlocksApi.getPetBlock(player);
             if (skullNaming) {
-                this.renameSkull(player, message, (com.github.shynixn.petblocks.api.persistence.entity.PetMeta) petBlock.getPetMeta(), petBlock);
+                this.renameSkull(player, message, petBlock.getPetMeta(), petBlock);
             } else {
-                this.renameName(player, message, (com.github.shynixn.petblocks.api.persistence.entity.PetMeta) petBlock.getPetMeta(), petBlock);
+                this.renameName(player, message, petBlock.getPetMeta(), petBlock);
 
             }
         } else {
@@ -107,7 +108,7 @@ class PetDataCommandExecutor extends DynamicCommandHelper {
             player.sendMessage(Language.PREFIX + Language.SNAME_ERROR_MESSAGE);
         } else {
             try {
-                petMeta.setSkin(Material.SKULL_ITEM, (short) 3, message);
+                ((PetData)petMeta).setSkin(Material.SKULL_ITEM, (short) 3, message);
                 this.persistAsynchronously(petMeta);
                 if (petBlock != null)
                     petBlock.respawn();

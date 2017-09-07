@@ -92,7 +92,7 @@ public enum PetType {
             if(!this.canPlaySpecificSounds())
                 return;
             try {
-                this.movingSound.apply(location);
+                ((SoundBuilder)this.movingSound).apply(location);
             } catch (final Exception e) {
                 Bukkit.getLogger().log(Level.WARNING, "Failed to play sound.", e);
             }
@@ -104,7 +104,7 @@ public enum PetType {
             if(!this.canPlaySpecificSounds())
                 return;
             try {
-                this.movingSound.apply(player);
+                ((SoundBuilder)this.movingSound).apply(player);
             } catch (final Exception e) {
                 Bukkit.getLogger().log(Level.WARNING, "Failed to play sound.", e);
             }
@@ -116,7 +116,7 @@ public enum PetType {
             if(!this.canPlaySpecificSounds())
                 return;
             try {
-                this.randomSound.apply(player);
+                ((SoundBuilder)this.randomSound).apply(player);
             } catch (final Exception e) {
                 Bukkit.getLogger().log(Level.WARNING, "Failed to play sound.", e);
             }
@@ -128,7 +128,7 @@ public enum PetType {
             if(!this.canPlaySpecificSounds())
                 return;
             try {
-                this.randomSound.apply(location);
+                ((SoundBuilder)this.randomSound).apply(location);
             } catch (final Exception e) {
                 Bukkit.getLogger().log(Level.WARNING, "Failed to play sound.", e);
             }

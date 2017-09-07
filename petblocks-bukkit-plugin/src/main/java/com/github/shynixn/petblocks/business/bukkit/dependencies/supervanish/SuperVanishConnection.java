@@ -29,7 +29,7 @@ public final class SuperVanishConnection {
                 visibilityManager.hidePetBlock(petBlock, player);
             }
         }
-        PetBlocksApi.getPetMeta(petBlock.getOwner()).setHidden(true);
+        PetBlocksApi.getPetMeta(petBlock.getOwner()).setVisible(false);
     }
 
     private static void showToAll(PetBlock petBlock) {
@@ -38,7 +38,7 @@ public final class SuperVanishConnection {
                 visibilityManager.showPetBlock(petBlock, player);
             }
         }
-        PetBlocksApi.getPetMeta(petBlock.getOwner()).setHidden(false);
+        PetBlocksApi.getPetMeta(petBlock.getOwner()).setVisible(true);
     }
 
     private static class SuperVanishListener extends SimpleListener {
@@ -75,7 +75,7 @@ public final class SuperVanishConnection {
         public void onPlayerJoinEvent(PlayerJoinEvent event) {
             final Player player = event.getPlayer();
             for (final PetBlock petBlock : this.getPetBlocks()) {
-                if (petBlock.getPetMeta().isHidden()) {
+                if (!petBlock.getPetMeta().isVisible()) {
                     visibilityManager.hidePetBlock(petBlock, player);
                 }
             }

@@ -3,7 +3,6 @@ package com.github.shynixn.petblocks.business.logic.persistence.controller;
 import com.github.shynixn.petblocks.api.persistence.controller.PlayerMetaController;
 import com.github.shynixn.petblocks.api.persistence.entity.PlayerMeta;
 import com.github.shynixn.petblocks.business.logic.persistence.entity.PlayerData;
-import com.github.shynixn.petblocks.lib.DataBaseRepository;
 import com.github.shynixn.petblocks.lib.ExtensionHikariConnectionContext;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -37,8 +36,8 @@ public class PlayerDataRepository extends DataBaseRepository<PlayerMeta> impleme
      * @return playerData
      */
     @Override
-    public PlayerMeta create(Player player) {
-        return PlayerData.from(player);
+    public <T> PlayerMeta create(T player) {
+        return PlayerData.from((Player) player);
     }
 
     /**

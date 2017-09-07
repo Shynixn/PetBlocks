@@ -99,7 +99,7 @@ public class ParticleEffectMetaSQLiteControllerTest {
                     .setY(3.75)
                     .setZ(11.24)
                     .setSpeed(0.0001)
-                    .setMaterial(Material.BONE)
+                    .setMaterial(Material.BONE.getId())
                     .setData((byte)5);
             controller.store(meta);
             assertEquals(1, controller.size());
@@ -110,7 +110,7 @@ public class ParticleEffectMetaSQLiteControllerTest {
             assertEquals(2.25, meta.getX());
             assertEquals(3.75, meta.getY());
             assertEquals(11.24, meta.getZ());
-            assertEquals(Material.BONE, meta.getMaterial());
+            assertEquals(new Integer(Material.BONE.getId()), meta.getMaterial());
             assertEquals((byte)5, (byte)meta.getData());
 
             meta.setAmount(7)
@@ -119,7 +119,7 @@ public class ParticleEffectMetaSQLiteControllerTest {
                     .setY(7.75)
                     .setZ(5.24)
                     .setSpeed(0.002)
-                    .setMaterial(Material.BARRIER)
+                    .setMaterial(Material.BARRIER.getId())
                     .setData((byte)7);
             controller.store(meta);
 
@@ -129,7 +129,7 @@ public class ParticleEffectMetaSQLiteControllerTest {
             assertEquals(4.25, meta.getX());
             assertEquals(7.75, meta.getY());
             assertEquals(5.24, meta.getZ());
-            assertEquals(Material.BARRIER, meta.getMaterial());
+            assertEquals(new Integer(Material.BARRIER.getId()), meta.getMaterial());
             assertEquals((byte)7, (byte)meta.getData());
         } catch (final Exception e) {
             Logger.getLogger(this.getClass().getSimpleName()).log(Level.WARNING, "Failed to run test.", e);

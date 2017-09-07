@@ -1,13 +1,16 @@
 package com.github.shynixn.petblocks.business.bukkit.nms.helper;
 
 import com.github.shynixn.petblocks.api.PetBlocksApi;
-import com.github.shynixn.petblocks.api.events.PetBlockCannonEvent;
-import com.github.shynixn.petblocks.api.events.PetBlockMoveEvent;
-import com.github.shynixn.petblocks.api.events.PetBlockRideEvent;
-import com.github.shynixn.petblocks.api.events.PetBlockWearEvent;
+import com.github.shynixn.petblocks.api.bukkit.event.PetBlockCannonEvent;
+import com.github.shynixn.petblocks.api.bukkit.event.PetBlockMoveEvent;
+import com.github.shynixn.petblocks.api.bukkit.event.PetBlockRideEvent;
+import com.github.shynixn.petblocks.api.bukkit.event.PetBlockWearEvent;
+import com.github.shynixn.petblocks.api.entities.*;
+import com.github.shynixn.petblocks.api.persistence.entity.PetMeta;
 import com.github.shynixn.petblocks.api.persistence.entity.SoundMeta;
 import com.github.shynixn.petblocks.business.bukkit.nms.NMSRegistry;
 import com.github.shynixn.petblocks.business.logic.configuration.ConfigPet;
+import com.github.shynixn.petblocks.business.logic.persistence.entity.PetData;
 import com.github.shynixn.petblocks.business.logic.persistence.entity.SoundBuilder;
 import com.github.shynixn.petblocks.lib.BukkitUtilities;
 import com.github.shynixn.petblocks.lib.ParticleBuilder;
@@ -64,21 +67,23 @@ public final class PetBlockHelper {
 
     private static ItemStack setWithUnbreakable(PetMeta petMeta, ItemStack itemStack) {
         final Map<String, Object> data = new HashMap<>();
-        data.put("Unbreakable", petMeta.isUnbreakable());
+        data.put("Unbreakable", petMeta.isItemStackUnbreakable());
         itemStack = NMSRegistry.setItemStackTag(itemStack, data);
         return itemStack;
     }
 
     public static long executeMovingSound(Entity entity, Player owner, PetMeta petMeta, long previous) {
+
+        PetData petData = (PetData) petMeta;
         if (petMeta == null)
             return previous;
         final long milli = System.currentTimeMillis();
         if (milli - previous > 500) {
-            if (petMeta.isSoundsEnabled()) {
-                if (ConfigPet.getInstance().isDesign_allowOtherHearSound() && !petMeta.isHidden())
-                    petMeta.getType().playMovingSound(entity.getLocation());
+            if (petMeta.isSoundEnabled()) {
+                if (ConfigPet.getInstance().isDesign_allowOtherHearSound() && !petData.isHidden())
+                    petData.getType().playMovingSound(entity.getLocation());
                 else
-                    petMeta.getType().playMovingSound(owner);
+                    petData.getType().playMovingSound(owner);
             }
             return milli;
         }
@@ -91,13 +96,14 @@ public final class PetBlockHelper {
     }
 
     public static int doTick(int counter, PetBlock petBlock, TickCallBack callBack) {
+        PetData petData = (PetData) petBlock.getPetMeta();
+
         if (!petBlock.getArmorStand().isDead() && petBlock.getArmorStand().getPassenger() == null && petBlock.getMovementEntity() != null && petBlock.getArmorStand().getVehicle() == null) {
             Location location = null;
-            if (petBlock.getPetMeta().getAge() == Age.LARGE)
+            if (petData.getAge() == Age.LARGE)
                 location = new Location(petBlock.getMovementEntity().getLocation().getWorld(), petBlock.getMovementEntity().getLocation().getX(), petBlock.getMovementEntity().getLocation().getY() - 1.2, petBlock.getMovementEntity().getLocation().getZ(), petBlock.getMovementEntity().getLocation().getYaw(), petBlock.getMovementEntity().getLocation().getPitch());
-            else if (petBlock.getPetMeta().getAge() == Age.SMALL)
+            else if (petData.getAge() == Age.SMALL)
                 location = new Location(petBlock.getMovementEntity().getLocation().getWorld(), petBlock.getMovementEntity().getLocation().getX(), petBlock.getMovementEntity().getLocation().getY() - 0.7, petBlock.getMovementEntity().getLocation().getZ(), petBlock.getMovementEntity().getLocation().getYaw(), petBlock.getMovementEntity().getLocation().getPitch());
-
             if (location != null)
                 callBack.run(location);
             counter = doTickSounds(counter, petBlock);
@@ -105,14 +111,14 @@ public final class PetBlockHelper {
             petBlock.getMovementEntity().teleport(petBlock.getArmorStand().getLocation());
         }
         try {
-            if (petBlock.getPetMeta().getAgeInTicks() >= ConfigPet.getInstance().getAge_maxticks()) {
+            if (petData.getAgeInTicks() >= ConfigPet.getInstance().getAge_maxticks()) {
                 if (ConfigPet.getInstance().isAge_deathOnMaxTicks() && !petBlock.isDieing()) {
                     petBlock.setDieing();
                 }
             } else {
-                final Age age = petBlock.getPetMeta().getAge();
-                petBlock.getPetMeta().setAgeInTicks(petBlock.getPetMeta().getAgeInTicks() + 1);
-                if (petBlock.getPetMeta().getAge() != age) {
+                final Age age = petData.getAge();
+                petData.setAgeInTicks(petData.getAgeInTicks() + 1);
+                if (petData.getAge() != age) {
                     petBlock.respawn();
                 }
             }
@@ -127,14 +133,15 @@ public final class PetBlockHelper {
     }
 
     private static int doTickSounds(int counter, PetBlock petBlock) {
+        PetData petData = (PetData) petBlock.getPetMeta();
         if (counter <= 0) {
             final Random random = new Random();
-            if (!petBlock.getMovementEntity().isOnGround() || petBlock.getPetMeta().getMovementType() == Movement.CRAWLING) {
-                if (petBlock.getPetMeta().isSoundsEnabled()) {
+            if (!petBlock.getMovementEntity().isOnGround() || petData.getMovementType() == Movement.CRAWLING) {
+                if (petBlock.getPetMeta().isSoundEnabled()) {
                     if (ConfigPet.getInstance().isDesign_allowOtherHearSound())
-                        petBlock.getPetMeta().getType().playRandomSound(petBlock.getMovementEntity().getLocation());
+                        petData.getType().playRandomSound(petBlock.getMovementEntity().getLocation());
                     else
-                        petBlock.getPetMeta().getType().playRandomSound(petBlock.getOwner());
+                        petData.getType().playRandomSound(petBlock.getOwner());
                 }
             }
             counter = 20 * random.nextInt(20) + 1;
@@ -142,11 +149,11 @@ public final class PetBlockHelper {
         if (petBlock.getMovementEntity().isDead()) {
             PetBlocksApi.removePetBlock(petBlock.getOwner());
         }
-        if (petBlock.getPetMeta().getParticleEffect() != null) {
-            if (petBlock.getPetMeta().isHidden()) {
-                petBlock.getPetMeta().getParticleEffect().play(petBlock.getArmorStand().getLocation().add(0, 1, 0), petBlock.getOwner());
+        if (petData.getParticleEffect() != null) {
+            if (!petBlock.getPetMeta().isVisible()) {
+                petData.getParticleEffect().play(petBlock.getArmorStand().getLocation().add(0, 1, 0), petBlock.getOwner());
             } else {
-                petBlock.getPetMeta().getParticleEffect().play(petBlock.getArmorStand().getLocation().add(0, 1, 0));
+                petData.getParticleEffect().play(petBlock.getArmorStand().getLocation().add(0, 1, 0));
             }
         }
         counter--;
@@ -154,13 +161,14 @@ public final class PetBlockHelper {
     }
 
     public static void refreshHeadItemMeta(PetBlock petBlock, ItemStack itemStack) {
+        final PetData petData = (PetData) petBlock.getPetMeta();
         final String name;
-        if (petBlock.getPetMeta().getHeadDisplayName() == null)
+        if (petData.getHeadDisplayName() == null)
             name = petBlock.getDisplayName();
         else
-            name = petBlock.getPetMeta().getHeadDisplayName();
-        if (petBlock.getPetMeta().getHeadLore() != null)
-            itemStack = BukkitUtilities.nameItem(itemStack, name, petBlock.getPetMeta().getHeadLore());
+            name = petData.getHeadDisplayName();
+        if (petData.getHeadLore() != null)
+            itemStack = BukkitUtilities.nameItem(itemStack, name, petData.getHeadLore());
         else
             itemStack = BukkitUtilities.nameItem(itemStack, name, null);
         itemStack = setWithUnbreakable(petBlock.getPetMeta(), itemStack);
@@ -168,16 +176,17 @@ public final class PetBlockHelper {
     }
 
     public static void setItemConsideringAge(PetBlock petBlock) {
-        final Age age = petBlock.getPetMeta().getAge();
+        final PetData petData = (PetData) petBlock.getPetMeta();
+        final Age age = petData.getAge();
         final ItemStack itemStack;
-        if (petBlock.getPetMeta().getSkin() != null) {
-            if (petBlock.getPetMeta().getSkin().contains("http")) {
-                itemStack = NMSRegistry.changeSkullSkin(new ItemStack(petBlock.getPetMeta().getSkinMaterial(), 1, petBlock.getPetMeta().getSkinDurability()), petBlock.getPetMeta().getSkin());
+        if (petData.getSkin() != null) {
+            if (petData.getSkin().contains("http")) {
+                itemStack = NMSRegistry.changeSkullSkin(new ItemStack(petData.getSkinMaterial(), 1, petData.getSkinDurability()), petData.getSkin());
             } else {
-                itemStack = BukkitUtilities.activateHead(petBlock.getPetMeta().getSkin(), new ItemStack(petBlock.getPetMeta().getSkinMaterial(), 1, petBlock.getPetMeta().getSkinDurability()));
+                itemStack = BukkitUtilities.activateHead(petData.getSkin(), new ItemStack(petData.getSkinMaterial(), 1, petData.getSkinDurability()));
             }
         } else {
-            itemStack = new ItemStack(petBlock.getPetMeta().getSkinMaterial(), 1, petBlock.getPetMeta().getSkinDurability());
+            itemStack = new ItemStack(petData.getSkinMaterial(), 1, petData.getSkinDurability());
         }
         if (age == Age.SMALL) {
             refreshHeadItemMeta(petBlock, itemStack);
@@ -233,9 +242,9 @@ public final class PetBlockHelper {
         Bukkit.getPluginManager().callEvent(event);
         if (!event.isCanceled()) {
             petBlock.getMovementEntity().setVelocity(vector);
-            if (petBlock.getPetMeta().isSoundsEnabled()) {
+            if (petBlock.getPetMeta().isSoundEnabled()) {
                 try {
-                    explosionSound.apply(petBlock.getOwner().getLocation());
+                    ((SoundBuilder)explosionSound).apply(petBlock.getOwner().getLocation());
                 } catch (final Exception e) {
                     Bukkit.getLogger().log(Level.WARNING, "Cannot play sound.", e);
                 }

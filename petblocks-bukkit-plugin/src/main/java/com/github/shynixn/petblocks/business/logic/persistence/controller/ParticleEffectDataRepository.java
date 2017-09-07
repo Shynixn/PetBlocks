@@ -3,7 +3,6 @@ package com.github.shynixn.petblocks.business.logic.persistence.controller;
 import com.github.shynixn.petblocks.api.persistence.controller.ParticleEffectMetaController;
 import com.github.shynixn.petblocks.api.persistence.entity.ParticleEffectMeta;
 import com.github.shynixn.petblocks.business.logic.persistence.entity.ParticleEffectData;
-import com.github.shynixn.petblocks.lib.DataBaseRepository;
 import com.github.shynixn.petblocks.lib.ExtensionHikariConnectionContext;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -27,6 +26,7 @@ public class ParticleEffectDataRepository extends DataBaseRepository<ParticleEff
 
     /**
      * Creates a new particleEffectMeta
+     *
      * @return meta
      */
     @Override
@@ -88,7 +88,7 @@ public class ParticleEffectDataRepository extends DataBaseRepository<ParticleEff
         } catch (final SQLException e) {
             Bukkit.getLogger().log(Level.WARNING, "Database error occurred.", e);
         }
-        return  items;
+        return items;
     }
 
     /**
@@ -100,8 +100,8 @@ public class ParticleEffectDataRepository extends DataBaseRepository<ParticleEff
     public void update(ParticleEffectMeta item) {
         try (Connection connection = this.dbContext.getConnection()) {
             String materialName = null;
-            if(item.getMaterial() != null)
-                materialName = item.getMaterial().name();
+            if (item.getMaterial() != null)
+                materialName = Material.getMaterial(item.getMaterial()).name();
             this.dbContext.executeStoredUpdate("particle/update", connection,
                     item.getEffectName(),
                     item.getAmount(),
@@ -110,8 +110,8 @@ public class ParticleEffectDataRepository extends DataBaseRepository<ParticleEff
                     item.getY(),
                     item.getZ(),
                     materialName,
-                    (int)item.getData(),
-            item.getId());
+                    (int) item.getData(),
+                    item.getId());
         } catch (final SQLException e) {
             Bukkit.getLogger().log(Level.WARNING, "Database error occurred.", e);
         }
@@ -141,8 +141,8 @@ public class ParticleEffectDataRepository extends DataBaseRepository<ParticleEff
     public void insert(ParticleEffectMeta item) {
         try (Connection connection = this.dbContext.getConnection()) {
             String materialName = null;
-            if(item.getMaterial() != null)
-                materialName = item.getMaterial().name();
+            if (item.getMaterial() != null)
+                materialName = Material.getMaterial(item.getMaterial()).name();
             final long id = this.dbContext.executeStoredInsert("particle/insert", connection,
                     item.getEffectName(),
                     item.getAmount(),
@@ -152,7 +152,7 @@ public class ParticleEffectDataRepository extends DataBaseRepository<ParticleEff
                     item.getZ(),
                     materialName,
                     item.getData());
-            ((ParticleEffectData)item).setId(id);
+            ((ParticleEffectData) item).setId(id);
         } catch (final SQLException e) {
             Bukkit.getLogger().log(Level.WARNING, "Database error occurred.", e);
         }
@@ -183,7 +183,7 @@ public class ParticleEffectDataRepository extends DataBaseRepository<ParticleEff
      * @return entity
      */
     @Override
-    public ParticleEffectMeta from(ResultSet resultSet) throws SQLException{
+    public ParticleEffectMeta from(ResultSet resultSet) throws SQLException {
         final ParticleEffectData particleEffectData = new ParticleEffectData();
         particleEffectData.setId(resultSet.getLong("id"));
         particleEffectData.setEffectName(resultSet.getString("name"));
@@ -192,7 +192,9 @@ public class ParticleEffectDataRepository extends DataBaseRepository<ParticleEff
         particleEffectData.setX(resultSet.getDouble("x"));
         particleEffectData.setY(resultSet.getDouble("y"));
         particleEffectData.setZ(resultSet.getDouble("z"));
-        particleEffectData.setMaterial(Material.getMaterial(resultSet.getString("material")));
+        if (resultSet.getString("material") != null) {
+            particleEffectData.setMaterial(Material.getMaterial(resultSet.getString("material")).getId());
+        }
         particleEffectData.setData((byte) resultSet.getInt("data"));
         return particleEffectData;
     }

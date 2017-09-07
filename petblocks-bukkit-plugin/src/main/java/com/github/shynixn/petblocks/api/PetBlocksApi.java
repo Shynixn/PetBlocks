@@ -1,10 +1,11 @@
 package com.github.shynixn.petblocks.api;
 
 import com.github.shynixn.petblocks.api.entities.PetBlock;
-import com.github.shynixn.petblocks.api.entities.PetMeta;
 import com.github.shynixn.petblocks.api.entities.PetType;
+import com.github.shynixn.petblocks.api.persistence.entity.PetMeta;
 import com.github.shynixn.petblocks.business.logic.business.PetBlockManager;
 import com.github.shynixn.petblocks.business.logic.business.PetDataManager;
+import com.github.shynixn.petblocks.business.logic.persistence.entity.PetData;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
@@ -43,7 +44,7 @@ public final class PetBlocksApi {
             throw new IllegalArgumentException("Player cannot be null!");
         if (petMeta == null)
             throw new IllegalArgumentException("PetMeta cannot be null!");
-        if (!petMeta.getOwner().equals(player))
+        if (!((PetData)petMeta).getOwner().equals(player))
             throw new IllegalArgumentException("PetMeta cannot be applied to this player!");
         if (delay < 0)
             throw new IllegalArgumentException("Delay cannot be less than 0.");

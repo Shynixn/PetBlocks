@@ -1,12 +1,14 @@
 package com.github.shynixn.petblocks.business;
 
 import com.github.shynixn.petblocks.api.business.enumeration.GUIPage;
+import com.github.shynixn.petblocks.api.entities.*;
 import com.github.shynixn.petblocks.api.persistence.entity.PetMeta;
 import com.github.shynixn.petblocks.business.bukkit.nms.NMSRegistry;
 import com.github.shynixn.petblocks.business.logic.configuration.ConfigCommands;
 import com.github.shynixn.petblocks.business.logic.configuration.ConfigGUI;
 import com.github.shynixn.petblocks.business.logic.configuration.ConfigParticle;
 import com.github.shynixn.petblocks.business.logic.configuration.ConfigPet;
+import com.github.shynixn.petblocks.business.logic.persistence.entity.PetData;
 import com.github.shynixn.petblocks.lib.BukkitUtilities;
 import com.github.shynixn.petblocks.lib.ParticleBuilder;
 import com.github.shynixn.petblocks.lib.ParticleEffect;
@@ -97,7 +99,8 @@ public final class Config {
         return -1;
     }
 
-    public void fixJoinDefaultPet(PetMeta petMeta) {
+    public void fixJoinDefaultPet(PetMeta petData) {
+        final PetData petMeta = (PetData) petData;
         petMeta.setSkin(Material.getMaterial(c.getInt("join.settings.id")), (short) c.getInt("join.settings.durability"), c.getString("join.settings.skullname"));
         petMeta.setPetType(PetType.getPetTypeFromName(c.getString("join.settings.type")));
         petMeta.setDisplayName(c.getString("join.settings.petname"));

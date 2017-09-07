@@ -1,4 +1,4 @@
-package com.github.shynixn.petblocks.api.events;
+package com.github.shynixn.petblocks.api.bukkit.event;
 
 import com.github.shynixn.petblocks.api.entities.PetBlock;
 

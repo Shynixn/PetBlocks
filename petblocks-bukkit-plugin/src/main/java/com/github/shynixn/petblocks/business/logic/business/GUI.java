@@ -1,8 +1,8 @@
 package com.github.shynixn.petblocks.business.logic.business;
 
 import com.github.shynixn.petblocks.api.business.enumeration.GUIPage;
-import com.github.shynixn.petblocks.api.entities.PetMeta;
 import com.github.shynixn.petblocks.api.entities.PetType;
+import com.github.shynixn.petblocks.api.persistence.entity.PetMeta;
 import com.github.shynixn.petblocks.business.Config;
 import com.github.shynixn.petblocks.business.Language;
 import com.github.shynixn.petblocks.business.Permission;
@@ -112,7 +112,7 @@ class GUI {
         Config.getInstance().setMyContainer(guiPage, inventory, Language.HEAD_DATABASE_COSTUME, ConfigGUI.getInstance().getHeaddatabasecostumeContainer(), "head-database");
         Config.getInstance().setMyContainer(guiPage, inventory, Language.SUGGEST_HEADS, ConfigGUI.getInstance().getItemsuggestHeadsContainer(), (Permission) null);
 
-        if (petMeta.isSoundsEnabled())
+        if (petMeta.isSoundEnabled())
             Config.getInstance().setMyContainer(guiPage, inventory, Language.MUTE, ConfigGUI.getInstance().getItems_soundEnabledContainer(), (Permission) null);
         else
             Config.getInstance().setMyContainer(guiPage, inventory, Language.UNMUTE, ConfigGUI.getInstance().getItems_soundDisabledContainer(), (Permission) null);

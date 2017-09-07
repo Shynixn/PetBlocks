@@ -1,13 +1,14 @@
 package com.github.shynixn.petblocks.business.bukkit.nms;
 
 import com.github.shynixn.petblocks.api.entities.PetBlock;
-import com.github.shynixn.petblocks.api.entities.PetMeta;
+import com.github.shynixn.petblocks.api.persistence.entity.PetMeta;
 import com.github.shynixn.petblocks.business.bukkit.PetBlocksPlugin;
 import com.github.shynixn.petblocks.business.bukkit.dependencies.clearlag.ClearLagListener;
 import com.github.shynixn.petblocks.business.bukkit.dependencies.supervanish.SuperVanishConnection;
 import com.github.shynixn.petblocks.business.bukkit.dependencies.worldguard.WorldGuardConnection5;
 import com.github.shynixn.petblocks.business.bukkit.dependencies.worldguard.WorldGuardConnection6;
 import com.github.shynixn.petblocks.business.bukkit.nms.v1_9_R1.Listener19;
+import com.github.shynixn.petblocks.lib.*;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;

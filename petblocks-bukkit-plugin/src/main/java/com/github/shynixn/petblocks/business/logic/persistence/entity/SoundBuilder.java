@@ -99,7 +99,6 @@ public class SoundBuilder implements SoundMeta {
      * @param players players
      * @throws Exception exception
      */
-    @Override
     public void apply(Collection<Player> players) throws Exception {
         this.apply(players.toArray(new Player[players.size()]));
     }
@@ -110,7 +109,6 @@ public class SoundBuilder implements SoundMeta {
      * @param players players
      * @throws Exception exception
      */
-    @Override
     public void apply(Player... players) throws Exception {
         for (final Player player : players) {
             player.playSound(player.getLocation(), Sound.valueOf(this.text), this.volume, this.pitch);
@@ -123,7 +121,6 @@ public class SoundBuilder implements SoundMeta {
      * @param location location
      * @throws Exception exception
      */
-    @Override
     public void apply(Location location) throws Exception {
         for (final Player player : location.getWorld().getPlayers()) {
             player.playSound(location, Sound.valueOf(this.text), this.volume, this.pitch);
@@ -137,7 +134,6 @@ public class SoundBuilder implements SoundMeta {
      * @param players  players
      * @throws Exception exception
      */
-    @Override
     public void apply(Location location, Collection<Player> players) throws Exception {
         this.apply(location, players.toArray(new Player[players.size()]));
     }
@@ -149,7 +145,6 @@ public class SoundBuilder implements SoundMeta {
      * @param players  players
      * @throws Exception exception
      */
-    @Override
     public void apply(Location location, Player... players) throws Exception {
         for (final Player player : players) {
             player.playSound(location, Sound.valueOf(this.text), this.volume, this.pitch);
@@ -184,7 +179,6 @@ public class SoundBuilder implements SoundMeta {
      * @return sound
      * @throws Exception exception
      */
-    @Override
     public Sound getSound() throws Exception {
         return Sound.valueOf(this.text);
     }
@@ -195,7 +189,6 @@ public class SoundBuilder implements SoundMeta {
      * @param sound sound
      * @return builder
      */
-    @Override
     public SoundBuilder setSound(Sound sound) {
         this.text = sound.name();
         return this;
@@ -250,7 +243,6 @@ public class SoundBuilder implements SoundMeta {
      *
      * @return serializedContent
      */
-    @Override
     public Map<String, Object> serialize() {
         final Map<String, Object> items = new HashMap<>();
         items.put("name", this.text);

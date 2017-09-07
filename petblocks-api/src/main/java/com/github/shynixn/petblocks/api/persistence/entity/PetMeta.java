@@ -29,51 +29,116 @@ package com.github.shynixn.petblocks.api.persistence.entity;
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-public interface PetMeta extends com.github.shynixn.petblocks.api.entities.PetMeta, Persistenceable{
+public interface PetMeta extends Persistenceable {
+
+    /**
+     * Returns if the pet is visible to other players
+     *
+     * @return visible
+     */
+    boolean isVisible();
+
+    /**
+     * Sets if the pet should be visible to other players
+     *
+     * @param enabled enabled
+     */
+    void setVisible(boolean enabled);
+
+    /**
+     * Sets the pet sound enabled
+     *
+     * @param enabled enabled
+     */
+    void setSoundEnabled(boolean enabled);
+
+    /**
+     * Returns if the pet-sound is enabled
+     *
+     * @return enabled
+     */
+    boolean isSoundEnabled();
+
+    /**
+     * Sets the itemStack unbreakable
+     *
+     * @param enabled enabled
+     */
+    void setItemStackUnbreakable(boolean enabled);
+
+    /**
+     * Returns if the itemStack is unbreakable
+     *
+     * @return unbreakable
+     */
+    boolean isItemStackUnbreakable();
+
+    /**
+     * Sets the stored display name of the pet which appears above it's head on respawn
+     *
+     * @param name name
+     */
+    void setDisplayName(String name);
+
+    /**
+     * Returns the stored display name of the pet which appear above it's head on respawn
+     *
+     * @return name
+     */
+    String getDisplayName();
+
     /**
      * Returns the id of the player
+     *
      * @return playerId
      */
     long getPlayerId();
 
     /**
      * Sets the id of the player
+     *
      * @param id id
      */
     void setPlayerId(long id);
 
     /**
      * Returns the id of the particle
+     *
      * @return particleId
      */
     long getParticleId();
 
     /**
      * Sets the id of the particle
+     *
      * @param id id
      */
     void setParticleId(long id);
 
     /**
      * Sets the particleEffect meta
+     *
      * @param meta meta
      */
     void setParticleEffectMeta(ParticleEffectMeta meta);
 
     /**
      * Returns the particleEffect meta
+     *
      * @return meta
      */
     ParticleEffectMeta getParticleEffectMeta();
 
     /**
      * Sets the own meta
+     *
      * @param meta meta
      */
     void setPlayerMeta(PlayerMeta meta);
 
     /**
      * Returns the meta of the owner
+     *
      * @return player
      */
     PlayerMeta getPlayerMeta();
