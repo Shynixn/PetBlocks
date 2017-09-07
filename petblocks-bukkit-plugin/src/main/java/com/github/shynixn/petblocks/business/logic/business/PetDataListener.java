@@ -248,11 +248,18 @@ class PetDataListener extends SimpleListener {
             Bukkit.getServer().getScheduler().runTaskAsynchronously(JavaPlugin.getPlugin(PetBlocksPlugin.class), () -> {
                 new ChatBuilder().text(Language.PREFIX)
                         .text("Click here: ")
-                        .component(">>Submit skins<<")
+                        .component(">>Submit skin<<")
+                        .setColor(ChatColor.YELLOW)
+                        .setClickAction(ChatBuilder.ClickAction.OPEN_URL, "http://minecraft-heads.com/custom/heads-generator")
+                        .setHoverText("Goto the Minecraft-Heads website!")
+                        .builder()
+                        .text(" ")
+                        .component(">>Suggest new pet<<")
                         .setColor(ChatColor.YELLOW)
                         .setClickAction(ChatBuilder.ClickAction.OPEN_URL, "http://minecraft-heads.com/forum/suggesthead")
                         .setHoverText("Goto the Minecraft-Heads website!")
-                        .builder().sendMessage(player);
+                        .builder()
+                        .sendMessage(player);
             });
             player.closeInventory();
         } else if (BukkitUtilities.compareItemName(event.getCurrentItem(), Language.HEAD_DATABASE_COSTUME) && player.hasPermission(Permission.ALLHEADATABASECOSTUMES.get())) {

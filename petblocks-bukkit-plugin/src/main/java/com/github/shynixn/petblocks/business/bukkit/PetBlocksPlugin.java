@@ -85,13 +85,6 @@ public final class PetBlocksPlugin extends JavaPlugin {
         }
     }
 
-    public static void main(String[] args) throws IOException {
-        while (true) {
-
-        }
-
-    }
-
     /**
      * Disables the plugin PetBlocks
      */

@@ -140,7 +140,7 @@ class CustomItemContainer implements ItemContainer {
     public String[] getLore(Player player, String... permission) {
         if (permission.length > 0)
             if (permission != null && permission.length == 1 && permission[0].equals("minecraft-heads")) {
-                return new String[]{ChatColor.GRAY + "sponsored by | Minecraft-Heads.com"};
+                return new String[]{ChatColor.GRAY + "sponsored by", ChatColor.GRAY + "Minecraft-Heads.com"};
             }
         if (permission != null && permission.length == 1 && permission[0].equals("head-database")) {
             final Plugin plugin = Bukkit.getPluginManager().getPlugin("HeadDatabase");

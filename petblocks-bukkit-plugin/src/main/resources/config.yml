@@ -332,7 +332,7 @@ gui:
       owner: 'none'
       position: 43
       page: 'WARDROBE'
-      lore: '&aSubmit skins for pets'
+      lore: '&aSubmit skins for pets or\n&amake a suggestion for a new pet.'
     cancel-pet:
       enabled: true
       id: 166
