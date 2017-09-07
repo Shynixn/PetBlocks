@@ -261,6 +261,7 @@ public interface ParticleEffectMeta extends Persistenceable{
      * Plays the effect at the given position to the given players.
      *
      * @param location location
+     * @param <T> type
      * @param players  players
      */
     <T> void apply(IPosition location, T... players);

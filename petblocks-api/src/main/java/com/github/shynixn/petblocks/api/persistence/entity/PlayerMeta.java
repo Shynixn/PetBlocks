@@ -59,6 +59,7 @@ public interface PlayerMeta extends Persistenceable{
 
     /**
      * Returns the player of the playerData
+     * @param <T> type
      * @return player
      */
     <T> T getPlayer();

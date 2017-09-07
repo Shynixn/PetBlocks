@@ -1,7 +1,5 @@
 package com.github.shynixn.petblocks.api.persistence.entity;
 
-import java.util.Collection;
-
 /**
  * Copyright 2017 Shynixn
  * <p>

@@ -35,6 +35,7 @@ public interface PetMetaController extends IDatabaseController<PetMeta> {
     /**
      * Returns the petdata from the given player
      * @param player player
+     * @param <T> type
      * @return petData
      */
     <T> PetMeta getByPlayer(T player);
@@ -42,6 +43,7 @@ public interface PetMetaController extends IDatabaseController<PetMeta> {
     /**
      * Checks if the player has got an entry in the database
      * @param player player
+     * @param <T> type
      * @return hasEntry
      */
     <T> boolean hasEntry(T player);

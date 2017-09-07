@@ -38,6 +38,7 @@ public interface PlayerMetaController extends IDatabaseController<PlayerMeta> {
     /**
      * Creates a new playerData from the given player
      * @param player player
+     * @param <T> type
      * @return playerData
      */
     <T> PlayerMeta create(T player);
