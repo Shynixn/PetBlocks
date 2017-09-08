@@ -1,6 +1,5 @@
 package com.github.shynixn.petblocks.business;
 
-import com.github.shynixn.petblocks.api.business.enumeration.GUIPage;
 import com.github.shynixn.petblocks.api.entities.*;
 import com.github.shynixn.petblocks.api.persistence.entity.PetMeta;
 import com.github.shynixn.petblocks.business.bukkit.nms.NMSRegistry;
@@ -9,7 +8,6 @@ import com.github.shynixn.petblocks.business.logic.configuration.ConfigGUI;
 import com.github.shynixn.petblocks.business.logic.configuration.ConfigParticle;
 import com.github.shynixn.petblocks.business.logic.configuration.ConfigPet;
 import com.github.shynixn.petblocks.business.logic.persistence.entity.PetData;
-import com.github.shynixn.petblocks.lib.BukkitUtilities;
 import com.github.shynixn.petblocks.lib.ParticleBuilder;
 import com.github.shynixn.petblocks.lib.ParticleEffect;
 import org.bukkit.Bukkit;
@@ -17,9 +15,6 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.entity.Player;
-import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 
 import java.util.logging.Level;
@@ -122,33 +117,6 @@ public final class Config {
         }
     }
 
-    public void setMyContainer(GUIPage guiPage, Inventory inventory, String title, ItemContainer container, Permission... permission) {
-        if(!this.canSetMyContainer(guiPage, container))
-            return;
-        if (permission == null) {
-            inventory.setItem(container.getPosition(), BukkitUtilities.nameItem(container.generate(), title, container.getLore()));
-        } else {
-            inventory.setItem(container.getPosition(), BukkitUtilities.nameItem(container.generate(), title, container.getLore((Player) inventory.getHolder(), permission)));
-        }
-    }
-
-    public void setMyContainer(GUIPage guiPage, Inventory inventory, String title, ItemContainer container, String... permission) {
-        if(!this.canSetMyContainer(guiPage, container))
-            return;
-        if (permission == null) {
-            inventory.setItem(container.getPosition(), BukkitUtilities.nameItem(container.generate(), title, container.getLore()));
-        } else {
-            inventory.setItem(container.getPosition(), BukkitUtilities.nameItem(container.generate(), title, container.getLore((Player) inventory.getHolder(), permission)));
-        }
-    }
-
-    public ItemStack getMyItemStack(Player player, String title, ItemContainer container, String... permission) {
-        if (permission == null)
-            return BukkitUtilities.nameItem(container.generate(), title, container.getLore());
-        else
-            return BukkitUtilities.nameItem(container.generate(), title, container.getLore(player, permission));
-    }
-
     public MoveType getMovingType(PetType petType) {
         return ConfigGUI.getInstance().getContainer(petType).getMoveType();
     }
@@ -188,21 +156,5 @@ public final class Config {
      */
     public boolean isMetricsEnabled() {
         return this.metrics;
-    }
-
-    /**
-     * Returns if my container should be set
-     *
-     * @param guiPage   guiPage
-     * @param container container
-     * @return should be set
-     */
-    private boolean canSetMyContainer(GUIPage guiPage, ItemContainer container) {
-        if (guiPage == GUIPage.MAIN && (container.getGUIPage() == null))
-            return true;
-        else if ((guiPage == GUIPage.MAIN && container.getGUIPage() == GUIPage.MAIN)
-                || (guiPage == GUIPage.WARDROBE && container.getGUIPage() == GUIPage.WARDROBE))
-            return true;
-        return false;
     }
 }

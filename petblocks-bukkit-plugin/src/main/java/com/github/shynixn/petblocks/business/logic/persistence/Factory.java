@@ -1,8 +1,12 @@
 package com.github.shynixn.petblocks.business.logic.persistence;
 
+import com.github.shynixn.petblocks.api.persistence.controller.IFileController;
 import com.github.shynixn.petblocks.api.persistence.controller.ParticleEffectMetaController;
 import com.github.shynixn.petblocks.api.persistence.controller.PetMetaController;
 import com.github.shynixn.petblocks.api.persistence.controller.PlayerMetaController;
+import com.github.shynixn.petblocks.api.persistence.entity.EngineContainer;
+import com.github.shynixn.petblocks.business.bukkit.PetBlocksPlugin;
+import com.github.shynixn.petblocks.business.logic.persistence.controller.EngineRepository;
 import com.github.shynixn.petblocks.business.logic.persistence.controller.ParticleEffectDataRepository;
 import com.github.shynixn.petblocks.business.logic.persistence.controller.PetDataRepository;
 import com.github.shynixn.petblocks.business.logic.persistence.controller.PlayerDataRepository;
@@ -11,6 +15,7 @@ import org.apache.commons.io.IOUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.Plugin;
+import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
 import java.io.IOException;
@@ -30,6 +35,10 @@ public class Factory {
 
     public static ParticleEffectMetaController createParticleEffectController() {
         return new ParticleEffectDataRepository(connectionContext);
+    }
+
+    public static IFileController<EngineContainer> createEngineController() {
+        return new EngineRepository(JavaPlugin.getPlugin(PetBlocksPlugin.class));
     }
 
     public static PetMetaController createPetDataController() {

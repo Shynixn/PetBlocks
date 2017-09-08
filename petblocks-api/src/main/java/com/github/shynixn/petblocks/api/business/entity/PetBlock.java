@@ -1,6 +1,4 @@
-package com.github.shynixn.petblocks.api.bukkit.event;
-
-import com.github.shynixn.petblocks.api.business.entity.PetBlock;
+package com.github.shynixn.petblocks.api.business.entity;
 
 /**
  * Copyright 2017 Shynixn
@@ -31,25 +29,12 @@ import com.github.shynixn.petblocks.api.business.entity.PetBlock;
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-public class PetBlockWearEvent extends PetBlockCancelAbleEvent {
-    private final boolean wearing;
+public interface PetBlock {
 
     /**
-     * Initializes a new petblock event
+     * Returns the owner of the petblock
      *
-     * @param petBlock petblock
+     * @return player
      */
-    public PetBlockWearEvent(PetBlock petBlock, boolean wearing) {
-        super(petBlock);
-        this.wearing = wearing;
-    }
-
-    /**
-     * Returns if the owner of the petblock is currently wearing his pet
-     *
-     * @return isWearing
-     */
-    public boolean isWearing() {
-        return this.wearing;
-    }
+    Object getPlayer();
 }

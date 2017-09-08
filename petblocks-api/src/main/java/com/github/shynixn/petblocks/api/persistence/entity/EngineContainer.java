@@ -1,9 +1,7 @@
-package com.github.shynixn.petblocks.api.bukkit.event;
+package com.github.shynixn.petblocks.api.persistence.entity;
 
-import com.github.shynixn.petblocks.api.business.entity.PetBlock;
-import org.bukkit.entity.Player;
-import org.bukkit.event.Event;
-import org.bukkit.event.HandlerList;
+import com.github.shynixn.petblocks.api.business.enumeration.RideType;
+import org.bukkit.entity.EntityType;
 
 /**
  * Copyright 2017 Shynixn
@@ -34,57 +32,33 @@ import org.bukkit.event.HandlerList;
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-public class PetBlockEvent extends Event {
-
-    private final static HandlerList handlers = new HandlerList();
-    private final PetBlock petBlock;
+public interface EngineContainer {
 
     /**
-     * Initializes a new petblock event
+     * Returns the walking sound
      *
-     * @param petBlock petblock
+     * @return walkingSound
      */
-    public PetBlockEvent(PetBlock petBlock) {
-        super();
-        if (petBlock == null)
-            throw new IllegalArgumentException("PetBlock cannot be null!");
-        this.petBlock = petBlock;
-    }
+    SoundMeta getWalkingSound();
 
     /**
-     * Returns the petblock which triggered the event
+     * Returns the ambient sound
      *
-     * @return petblock
+     * @return ambientSound
      */
-    public PetBlock getPetBlock() {
-        return this.petBlock;
-    }
+    SoundMeta getAmbientSound();
 
     /**
-     * Returns the player who owns the petblock
+     * Returns the rideType
      *
-     * @return player
+     * @return rideType
      */
-    public Player getPlayer() {
-        return (Player) this.petBlock.getPlayer();
-    }
+    RideType getRideType();
 
     /**
-     * Bukkit implementation
+     * Returns the entityType
      *
-     * @return handler
+     * @return entityType
      */
-    @Override
-    public HandlerList getHandlers() {
-        return handlers;
-    }
-
-    /**
-     * Bukkit implementation
-     *
-     * @return
-     */
-    public static HandlerList getHandlerList() {
-        return handlers;
-    }
+    String getEntityType();
 }

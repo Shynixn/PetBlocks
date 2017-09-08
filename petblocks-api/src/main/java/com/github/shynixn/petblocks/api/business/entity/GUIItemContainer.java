@@ -1,9 +1,8 @@
-package com.github.shynixn.petblocks.api.bukkit.event;
+package com.github.shynixn.petblocks.api.business.entity;
 
-import com.github.shynixn.petblocks.api.business.entity.PetBlock;
-import org.bukkit.entity.Player;
-import org.bukkit.event.Event;
-import org.bukkit.event.HandlerList;
+import com.github.shynixn.petblocks.api.business.enumeration.GUIPage;
+
+import java.util.Optional;
 
 /**
  * Copyright 2017 Shynixn
@@ -34,57 +33,56 @@ import org.bukkit.event.HandlerList;
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-public class PetBlockEvent extends Event {
-
-    private final static HandlerList handlers = new HandlerList();
-    private final PetBlock petBlock;
+public interface GUIItemContainer {
 
     /**
-     * Initializes a new petblock event
+     * Returns if the itemContainer is enabled
      *
-     * @param petBlock petblock
+     * @return enabled
      */
-    public PetBlockEvent(PetBlock petBlock) {
-        super();
-        if (petBlock == null)
-            throw new IllegalArgumentException("PetBlock cannot be null!");
-        this.petBlock = petBlock;
-    }
+    boolean isEnabled();
 
     /**
-     * Returns the petblock which triggered the event
+     * Sets the itemContainer enabled
      *
-     * @return petblock
+     * @param enabled enabled
      */
-    public PetBlock getPetBlock() {
-        return this.petBlock;
-    }
+    void setEnabled(boolean enabled);
 
     /**
-     * Returns the player who owns the petblock
+     * Generates a new itemStack for the player and his permissions
      *
-     * @return player
+     * @param player      player
+     * @param permissions permission
+     * @return itemStack
      */
-    public Player getPlayer() {
-        return (Player) this.petBlock.getPlayer();
-    }
+    Object generate(Object player, String... permissions);
 
     /**
-     * Bukkit implementation
+     * Returns the displayName of the itemStack if present
      *
-     * @return handler
+     * @return displayName
      */
-    @Override
-    public HandlerList getHandlers() {
-        return handlers;
-    }
+    Optional<String> getDisplayName();
 
     /**
-     * Bukkit implementation
+     * Returns the lore of the itemStack if present
      *
-     * @return
+     * @return lore
      */
-    public static HandlerList getHandlerList() {
-        return handlers;
-    }
+    Optional<String[]> getLore();
+
+    /**
+     * Returns the position of the itemStack in the ui
+     *
+     * @return position
+     */
+    int getPosition();
+
+    /**
+     * Returns the guiPage of this container
+     *
+     * @return guiPage
+     */
+    GUIPage getPage();
 }

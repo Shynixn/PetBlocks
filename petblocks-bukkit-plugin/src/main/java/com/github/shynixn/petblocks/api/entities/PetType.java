@@ -11,26 +11,10 @@ import java.util.logging.Level;
 
 @Deprecated
 public enum PetType {
-    PIG(new SoundBuilder("PIG_WALK"), new SoundBuilder("PIG_IDLE"), MoveType.WALKING),
-    CHICKEN(new SoundBuilder("CHICKEN_WALK"), new SoundBuilder("CHICKEN_IDLE"), MoveType.WALKING),
-    DOG(new SoundBuilder("WOLF_WALK"), new SoundBuilder("WOLF_GROWL"), MoveType.WALKING),
-    CAT(new SoundBuilder("WOLF_WALK"), new SoundBuilder("CAT_MEOW"), MoveType.WALKING),
-    BIRD(new SoundBuilder("CHICKEN_WALK", 0.3, 1), new SoundBuilder("BAT_IDLE", 1, 0), MoveType.FLYING),
-
-    // PACK 1
-    COW(new SoundBuilder("COW_WALK"), new SoundBuilder("COW_IDLE"), MoveType.WALKING),
-    SHEEP(new SoundBuilder("SHEEP_WALK"), new SoundBuilder("SHEEP_IDLE"), MoveType.WALKING),
     IRONGOLEM(new SoundBuilder("IRONGOLEM_WALK"), null, MoveType.WALKING),
     //
-    // PACK 2
-    ZOMBIE(new SoundBuilder("ZOMBIE_WALK"), new SoundBuilder("ZOMBIE_IDLE"), MoveType.WALKING),
-    SKELETON(new SoundBuilder("SKELETON_WALK"), new SoundBuilder("SKELETON_IDLE"), MoveType.WALKING),
-    CREEPER(null, null, MoveType.WALKING),
-    //
     // PACK 3
-    SPIDER(new SoundBuilder("SPIDER_WALK"), new SoundBuilder("SPIDER_IDLE"), MoveType.WALKING),
     VILLAGER(null, new SoundBuilder("VILLAGER_IDLE"), MoveType.WALKING),
-    HORSE(new SoundBuilder("HORSE_GALLOP"), new SoundBuilder("HORSE_IDLE"), MoveType.WALKING),
     //
 
     // PACK 4
@@ -38,14 +22,10 @@ public enum PetType {
     //
 
     //Pack 5
-    ENDERMAN(null, new SoundBuilder("ENDERMAN_IDLE"), MoveType.WALKING),
     SILVERFISH(new SoundBuilder("SILVERFISH_WALK"), new SoundBuilder("SILVERFISH_IDLE"), MoveType.WALKING),
-    BAT(new SoundBuilder("BAT_LOOP"), new SoundBuilder("BAT_IDLE"), MoveType.FLYING),
     //
 
     //Pack 6
-    SLIME(new SoundBuilder("SLIME_WALK"), null, MoveType.WALKING),
-    LAVASLIME(new SoundBuilder("MAGMACUBE_WALK"), null, MoveType.WALKING),
     PIGZOMBIE(new SoundBuilder("PIG_WALK"), new SoundBuilder("PIG_IDLE"), MoveType.WALKING),
     //
 

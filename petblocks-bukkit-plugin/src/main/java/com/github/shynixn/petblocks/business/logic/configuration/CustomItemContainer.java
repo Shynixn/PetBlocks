@@ -1,5 +1,6 @@
 package com.github.shynixn.petblocks.business.logic.configuration;
 
+import com.github.shynixn.petblocks.api.business.entity.GUIItemContainer;
 import com.github.shynixn.petblocks.api.business.enumeration.GUIPage;
 import com.github.shynixn.petblocks.api.entities.ItemContainer;
 import com.github.shynixn.petblocks.api.entities.MoveType;
@@ -8,7 +9,6 @@ import com.github.shynixn.petblocks.business.Language;
 import com.github.shynixn.petblocks.business.Permission;
 import com.github.shynixn.petblocks.business.bukkit.PetBlocksPlugin;
 import com.github.shynixn.petblocks.business.bukkit.nms.NMSRegistry;
-import com.github.shynixn.petblocks.lib.BukkitUtilities;
 import com.github.shynixn.petblocks.lib.ParticleBuilder;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -16,46 +16,68 @@ import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.plugin.Plugin;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
 import java.util.logging.Level;
-import java.util.regex.Pattern;
 
 /**
  * Created by Shynixn
  */
 
-class CustomItemContainer implements ItemContainer {
+public class CustomItemContainer implements ItemContainer, GUIItemContainer {
     private ItemStack cache;
 
     private final int id;
     private final int damage;
-    private String skullName;
+    private final String skullName;
     private final int position;
     private boolean enabled;
-    private String loreName;
     private MoveType type = MoveType.WALKING;
     private Movement movement = Movement.HOPPING;
-    private GUIPage guiPage;
 
-    CustomItemContainer(int id, int damage, String skullName, int position, String lore, boolean enabled, String type, String movement) {
+    private GUIPage guiPage;
+    private String[] lore;
+    private String displayName;
+
+    CustomItemContainer(int id, int damage, String skullName, int position, boolean enabled, String type, String movement) {
         super();
         this.id = id;
         this.damage = damage;
         this.skullName = skullName;
         this.position = position;
         this.enabled = enabled;
-        if (lore != null)
-            this.loreName = ChatColor.translateAlternateColorCodes('&', lore);
         if (MoveType.getMoveTypeFromName(type) != null)
             this.type = MoveType.getMoveTypeFromName(type);
         if (Movement.getMovementFromName(movement) != null)
             this.movement = Movement.getMovementFromName(movement);
     }
 
-    static ItemContainer resolveItemContainer(String identifier, FileConfiguration c) {
-        final CustomItemContainer container = new CustomItemContainer(c.getInt(identifier + ".id"), c.getInt(identifier + ".damage"), c.getString(identifier + ".owner"), c.getInt(identifier + ".position"), c.getString(identifier + ".lore"), c.getBoolean(identifier + ".enabled"), c.getString(identifier + ".type"), c.getString(identifier + ".movement"));
+    public static GUIItemContainer from(int id, int damage, String skin, String displayName, String[] lore)
+    {
+        return null;
+    }
+
+
+
+
+
+    static CustomItemContainer resolveItemContainer(String identifier, FileConfiguration c) {
+        final CustomItemContainer container = new CustomItemContainer(c.getInt(identifier + ".id"), c.getInt(identifier + ".damage"), c.getString(identifier + ".owner"), c.getInt(identifier + ".position"), c.getBoolean(identifier + ".enabled"), c.getString(identifier + ".type"), c.getString(identifier + ".movement"));
+        if (c.contains(identifier + ".lore")) {
+            final List<String> data = c.getStringList(identifier + ".lore");
+            container.lore = new String[data.size()];
+            for (int i = 0; i < data.size(); i++) {
+                container.lore[i] = ChatColor.translateAlternateColorCodes('&', data.get(i));
+            }
+        }
+        if (c.contains(identifier + ".name")) {
+            container.displayName = ChatColor.translateAlternateColorCodes('&', c.getString(identifier + ".name"));
+        }
         if (c.contains(identifier + ".page")) {
             final String pageName = c.getString(identifier + ".page");
             final GUIPage guiPage = GUIPage.getGUIPageFromName(pageName);
@@ -78,7 +100,7 @@ class CustomItemContainer implements ItemContainer {
      * @return guiPage
      */
     @Override
-    public GUIPage getGUIPage() {
+    public GUIPage getPage() {
         return this.guiPage;
     }
 
@@ -103,60 +125,8 @@ class CustomItemContainer implements ItemContainer {
     }
 
     @Override
-    public String[] getLore() {
-        if (!ConfigGUI.getInstance().isSettings_allowLore())
-            return null;
-        return this.toLines(this.loreName);
-    }
-
-    @Override
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
-    }
-
-    private String[] toLines(String lore) {
-        if (lore == null)
-            return null;
-        if (ChatColor.stripColor(lore).contains("\\n")) {
-            return lore.split(Pattern.quote("\\n"));
-        }
-        return new String[]{lore};
-    }
-
-    @Override
-    public String[] getLore(Player player, Permission... permission) {
-        if (!ConfigGUI.getInstance().isSettings_allowLore())
-            return null;
-        if (this.loreName != null && this.loreName.contains("<permission>")) {
-            if (this.hasPermission(player, permission))
-                return this.toLines(this.loreName.replace("<permission>", Language.ICO_PERMS_YES));
-            else
-                return this.toLines(this.loreName.replace("<permission>", Language.ICO_PERMS_NO));
-        }
-        return this.toLines(this.loreName);
-    }
-
-    @Override
-    public String[] getLore(Player player, String... permission) {
-        if (permission.length > 0)
-            if (permission != null && permission.length == 1 && permission[0].equals("minecraft-heads")) {
-                return new String[]{ChatColor.GRAY + "sponsored by", ChatColor.GRAY + "Minecraft-Heads.com"};
-            }
-        if (permission != null && permission.length == 1 && permission[0].equals("head-database")) {
-            final Plugin plugin = Bukkit.getPluginManager().getPlugin("HeadDatabase");
-            if (plugin == null) {
-                return new String[]{ChatColor.DARK_RED +""+  ChatColor.ITALIC + "Plugin is not installed - "+ ChatColor.YELLOW + "Click me!"};
-            }
-        }
-        if (!ConfigGUI.getInstance().isSettings_allowLore())
-            return null;
-        if (this.loreName != null && this.loreName.contains("<permission>")) {
-            if (this.hasPermission(player, permission))
-                return this.toLines(this.loreName.replace("<permission>", Language.ICO_PERMS_YES));
-            else
-                return this.toLines(this.loreName.replace("<permission>", Language.ICO_PERMS_NO));
-        }
-        return this.toLines(this.loreName);
     }
 
     private boolean hasPermission(Player player, String... permissions) {
@@ -175,11 +145,19 @@ class CustomItemContainer implements ItemContainer {
         return false;
     }
 
+    /**
+     * Generates a new itemStack for the player and his permissions
+     *
+     * @param player      player
+     * @param permissions permission
+     * @return itemStack
+     */
     @Override
-    @SuppressWarnings("deprecation")
-    public ItemStack generate() {
-        if (this.cache != null)
+    public ItemStack generate(Player player, String... permissions) {
+        if (this.cache != null) {
+            this.updateLore(player, permissions);
             return this.cache.clone();
+        }
         try {
             if (this.enabled) {
                 ItemStack itemStack = new ItemStack(Material.getMaterial(this.id), 1, (short) this.damage);
@@ -192,25 +170,93 @@ class CustomItemContainer implements ItemContainer {
                         itemStack.setItemMeta(meta);
                     }
                 }
+                final ItemMeta itemMeta = itemStack.getItemMeta();
+                itemMeta.setDisplayName(this.displayName);
+                itemStack.setItemMeta(itemMeta);
                 this.cache = itemStack;
+                this.updateLore(player, permissions);
                 return itemStack;
             }
         } catch (final Exception ex) {
-            BukkitUtilities.sendColorMessage("Invalid config file. Consider recreating it! " + ex.getMessage(), ChatColor.RED, PetBlocksPlugin.PREFIX_CONSOLE);
+            Bukkit.getConsoleSender().sendMessage(PetBlocksPlugin.PREFIX_CONSOLE + ChatColor.RED + "Invalid config file. Fix the following error or recreate it!");
+            Bukkit.getLogger().log(Level.WARNING, "Failed to generate itemStack.", ex);
         }
         return new ItemStack(Material.AIR);
     }
 
+    /**
+     * Returns the displayName of the itemStack if present
+     *
+     * @return displayName
+     */
+    @Override
+    public Optional<String> getDisplayName() {
+        return Optional.ofNullable(this.displayName);
+    }
+
+    /**
+     * Returns the lore of the itemStack if present
+     *
+     * @return lore
+     */
+    @Override
+    public Optional<String[]> getLore() {
+        return Optional.ofNullable(this.lore);
+    }
+
+    /**
+     * Returns the position of the itemStack in the ui
+     *
+     * @return position
+     */
     @Override
     public int getPosition() {
         return this.position;
     }
 
+    private void updateLore(Player player, String... permissions) {
+        final String[] lore = this.provideLore(player, permissions);
+        if (lore != null) {
+            final ItemMeta meta = this.cache.getItemMeta();
+            meta.setLore(Arrays.asList(lore));
+            this.cache.setItemMeta(meta);
+        }
+    }
+
+    private String[] provideLore(Player player, String... permissions) {
+        if (!ConfigGUI.getInstance().isLoreEnabled()) {
+            return null;
+        }
+        if (permissions != null) {
+            if (permissions.length == 1 && permissions[0].equals("minecraft-heads")) {
+                return new String[]{ChatColor.GRAY + "sponsored by", ChatColor.GRAY + "Minecraft-Heads.com"};
+            }
+            if (permissions.length == 1 && permissions[0].equals("head-database")) {
+                final Plugin plugin = Bukkit.getPluginManager().getPlugin("HeadDatabase");
+                if (plugin == null) {
+                    return new String[]{ChatColor.DARK_RED + "" + ChatColor.ITALIC + "Plugin is not installed - " + ChatColor.YELLOW + "Click me!"};
+                }
+            }
+        }
+        final String[] modifiedLore = new String[this.lore.length];
+        for (int i = 0; i < modifiedLore.length; i++) {
+            modifiedLore[i] = this.lore[i];
+            if (this.lore[i].contains("<permission>")) {
+                if (permissions != null && this.hasPermission(player, permissions)) {
+                    modifiedLore[i] = this.lore[i].replace("<permission>", Language.ICO_PERMS_YES);
+                } else {
+                    modifiedLore[i] = this.lore[i].replace("<permission>", Language.ICO_PERMS_NO);
+                }
+            }
+        }
+        return modifiedLore;
+    }
+
     protected static class ParticleItemContainer extends CustomItemContainer {
         private final ParticleBuilder particle;
 
-        ParticleItemContainer(int id, int damage, String skullName, int position, String lore, boolean enabled, String type, ParticleBuilder particle) {
-            super(id, damage, skullName, position, lore, enabled, type, null);
+        ParticleItemContainer(int id, int damage, String skullName, int position, boolean enabled, String type, ParticleBuilder particle) {
+            super(id, damage, skullName, position, enabled, type, null);
             this.particle = particle;
         }
 

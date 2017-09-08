@@ -181,7 +181,7 @@ class PetDataListener extends SimpleListener {
                             currentPetMeta.setParticleEffectMeta(meta.getParticleEffectMeta());
                             ((PetData) currentPetMeta).setId(meta.getId());
                         }
-                        if (ConfigGUI.getInstance().isSettings_copyskin()) {
+                        if (ConfigGUI.getInstance().isCopySkinEnabled()) {
                             ((PetData)currentPetMeta).setSkin(Material.SKULL_ITEM, (short) 3, ConfigGUI.getInstance().getContainer(((PetData)currentPetMeta).getType()).getSkullName());
                         }
                         PetDataListener.this.manager.gui.setItems(GUIPage.MAIN, player, ((PetData)currentPetMeta).getType(), false, true, currentPetMeta);
@@ -195,13 +195,13 @@ class PetDataListener extends SimpleListener {
                 player.sendMessage(Language.PREFIX + Language.NO_PERMISSION);
             }
         } else if (BukkitUtilities.compareItemName(event.getCurrentItem(), Language.MY_PET)) {
-            if (!PetBlocksApi.hasPetBlock(player) && ConfigGUI.getInstance().isSettings_onlyDisableItem()) {
+            if (!PetBlocksApi.hasPetBlock(player) && ConfigGUI.getInstance().isOnlyDisableItemEnabled()) {
                 ((PetData)petMeta).setEnabled(true);
                 PetBlocksApi.setPetBlock(player, petMeta);
                 PetDataListener.this.manager.gui.setItems(GUIPage.MAIN, player, ((PetData)petMeta).getType(), true, false, petMeta);
                 this.persistAsynchronously(petMeta);
             } else {
-                if (ConfigGUI.getInstance().isSettings_copyskin()) {
+                if (ConfigGUI.getInstance().isCopySkinEnabled()) {
                     ((PetData)petMeta).setSkin(Material.SKULL_ITEM, (short) 3, ConfigGUI.getInstance().getContainer(((PetData)petMeta).getType()).getSkullName());
                 } else {
                     ((PetData)petMeta).setSkin(Material.getMaterial(ConfigGUI.getInstance().getItems_defaultcostumeContainer().getId()), (short) ConfigGUI.getInstance().getItems_defaultcostumeContainer().getDamage(), ConfigGUI.getInstance().getItems_defaultcostumeContainer().getSkullName());
@@ -384,7 +384,7 @@ class PetDataListener extends SimpleListener {
             } else {
                 player.sendMessage(Language.PREFIX + Language.NO_PERMISSION);
             }
-        } else if (ConfigGUI.getInstance().isSettings_clickemptyback() && BukkitUtilities.compareItemName(event.getCurrentItem(), Language.EMPTY)) {
+        } else if (ConfigGUI.getInstance().isEmptyClickBackEnabled() && BukkitUtilities.compareItemName(event.getCurrentItem(), Language.EMPTY)) {
             if (this.manager.pages.containsKey(player) && this.manager.pages.get(player).page != GUIPage.MAIN) {
                 if (this.manager.pages.get(player).page == GUIPage.WARDROBE) {
                     this.manager.gui.setItems(GUIPage.MAIN, player,((PetData)petMeta).getType(), PetBlocksApi.hasPetBlock(player), true, petMeta);

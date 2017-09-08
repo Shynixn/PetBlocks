@@ -1,9 +1,4 @@
-package com.github.shynixn.petblocks.api.bukkit.event;
-
-import com.github.shynixn.petblocks.api.business.entity.PetBlock;
-import org.bukkit.entity.Player;
-import org.bukkit.event.Event;
-import org.bukkit.event.HandlerList;
+package com.github.shynixn.petblocks.api.business.entity;
 
 /**
  * Copyright 2017 Shynixn
@@ -34,57 +29,23 @@ import org.bukkit.event.HandlerList;
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-public class PetBlockEvent extends Event {
-
-    private final static HandlerList handlers = new HandlerList();
-    private final PetBlock petBlock;
+public interface PetBlockEntity {
+    /**
+     * Returns the entity hidden by this object
+     *
+     * @return spigotEntity
+     */
+    Object getEntity();
 
     /**
-     * Initializes a new petblock event
+     * Spawns the entity at the given location
      *
-     * @param petBlock petblock
+     * @param location location
      */
-    public PetBlockEvent(PetBlock petBlock) {
-        super();
-        if (petBlock == null)
-            throw new IllegalArgumentException("PetBlock cannot be null!");
-        this.petBlock = petBlock;
-    }
+    void spawn(Object location);
 
     /**
-     * Returns the petblock which triggered the event
-     *
-     * @return petblock
+     * Removes the entity from the world
      */
-    public PetBlock getPetBlock() {
-        return this.petBlock;
-    }
-
-    /**
-     * Returns the player who owns the petblock
-     *
-     * @return player
-     */
-    public Player getPlayer() {
-        return (Player) this.petBlock.getPlayer();
-    }
-
-    /**
-     * Bukkit implementation
-     *
-     * @return handler
-     */
-    @Override
-    public HandlerList getHandlers() {
-        return handlers;
-    }
-
-    /**
-     * Bukkit implementation
-     *
-     * @return
-     */
-    public static HandlerList getHandlerList() {
-        return handlers;
-    }
+    void remove();
 }
