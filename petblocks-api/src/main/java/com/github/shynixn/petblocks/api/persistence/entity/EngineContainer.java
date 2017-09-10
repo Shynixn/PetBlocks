@@ -1,7 +1,6 @@
 package com.github.shynixn.petblocks.api.persistence.entity;
 
 import com.github.shynixn.petblocks.api.business.enumeration.RideType;
-import org.bukkit.entity.EntityType;
 
 /**
  * Copyright 2017 Shynixn

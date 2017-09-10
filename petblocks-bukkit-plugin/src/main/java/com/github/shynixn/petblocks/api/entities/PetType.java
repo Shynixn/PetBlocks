@@ -11,33 +11,21 @@ import java.util.logging.Level;
 
 @Deprecated
 public enum PetType {
-    IRONGOLEM(new SoundBuilder("IRONGOLEM_WALK"), null, MoveType.WALKING),
-    //
-    // PACK 3
-    VILLAGER(null, new SoundBuilder("VILLAGER_IDLE"), MoveType.WALKING),
-    //
-
-    // PACK 4
-    HUMAN(null, null, MoveType.WALKING),
-    //
-
-    //Pack 5
-    SILVERFISH(new SoundBuilder("SILVERFISH_WALK"), new SoundBuilder("SILVERFISH_IDLE"), MoveType.WALKING),
+    SILVERFISH(new SoundBuilder(""), new SoundBuilder(""), MoveType.WALKING),
     //
 
     //Pack 6
-    PIGZOMBIE(new SoundBuilder("PIG_WALK"), new SoundBuilder("PIG_IDLE"), MoveType.WALKING),
+    PIGZOMBIE(new SoundBuilder(), new SoundBuilder(""), MoveType.WALKING),
     //
 
     // Pack 7
-    GHAST(null, new SoundBuilder("GHAST_SCREAM"), MoveType.FLYING),
-    BLAZE(null, new SoundBuilder("BLAZE_BREATH"), MoveType.FLYING),
-    WITHER(null, new SoundBuilder("WITHER_IDLE"), MoveType.FLYING),
+    GHAST(null, new SoundBuilder(""), MoveType.FLYING),
+    BLAZE(null, new SoundBuilder(""), MoveType.FLYING),
+    WITHER(null, new SoundBuilder(""), MoveType.FLYING),
 
     // Pack 8 (1.9)
-    SHULKER(null, new SoundBuilder("SHULKER_IDLE"), MoveType.WALKING, VersionSupport.VERSION_1_9_R1),
+    SHULKER(null, new SoundBuilder(""), MoveType.WALKING, VersionSupport.VERSION_1_9_R1),
 
-    DRAGON(new SoundBuilder("ENDERDRAGON_WINGS"), new SoundBuilder("ENDERDRAGON_GROWL"), MoveType.FLYING);
 
     private final SoundMeta movingSound;
     private final SoundMeta randomSound;
@@ -135,3 +123,57 @@ public enum PetType {
         return null;
     }
 }
+
+
+    - '35:12'
+            - '35:1'
+            - '35:2'
+            - '35:3'
+            - '35:4'
+            - '35:5'
+            - '35:6'
+            - '35:7'
+            - '35:8'
+            - '35:9'
+            - '35:10'
+            - '35:11'
+            - '35:12'
+            - '35:13'
+            - '35:14'
+            - '35:15'
+            - '95'
+            - '95:1'
+            - '95:2'
+            - '95:3'
+            - '95:4'
+            - '95:5'
+            - '95:6'
+            - '95:7'
+            - '95:8'
+            - '95:9'
+            - '95:10'
+            - '95:11'
+            - '95:12'
+            - '95:13'
+            - '95:14'
+            - '95:15'
+            - '159'
+            - '159:1'
+            - '159:2'
+            - '159:3'
+            - '159:4'
+            - '159:5'
+            - '159:6'
+            - '159:7'
+            - '159:8'
+            - '159:9'
+            - '159:10'
+            - '159:11'
+            - '159:12'
+            - '159:13'
+            - '159:14'
+            - '159:15'
+
+
+
+

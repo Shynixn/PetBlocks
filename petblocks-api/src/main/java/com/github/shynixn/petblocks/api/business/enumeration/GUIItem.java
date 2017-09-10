@@ -1,7 +1,6 @@
 package com.github.shynixn.petblocks.api.business.enumeration;
 
 import com.github.shynixn.petblocks.api.business.entity.GUIItemContainer;
-import org.bukkit.configuration.file.FileConfiguration;
 
 import java.util.Optional;
 
