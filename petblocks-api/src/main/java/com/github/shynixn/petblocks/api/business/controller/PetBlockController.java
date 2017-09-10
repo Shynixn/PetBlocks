@@ -1,4 +1,8 @@
-package com.github.shynixn.petblocks.api.persistence.entity;
+package com.github.shynixn.petblocks.api.business.controller;
+
+import com.github.shynixn.petblocks.api.business.entity.PetBlock;
+import com.github.shynixn.petblocks.api.persistence.controller.IController;
+import com.github.shynixn.petblocks.api.persistence.entity.PetMeta;
 
 /**
  * Copyright 2017 Shynixn
@@ -29,64 +33,22 @@ package com.github.shynixn.petblocks.api.persistence.entity;
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-public interface SoundMeta extends Persistenceable {
+public interface PetBlockController extends IController<PetBlock> {
 
     /**
-     * Applies the sound at the given location
+     * Creates a new petblock for the given player and meta
      *
-     * @param location location
+     * @param player  player
+     * @param petMeta meta
+     * @return petblock
      */
-    void applyToLocation(Object location) throws Exception;
+    PetBlock create(Object player, PetMeta petMeta);
 
     /**
-     * Applies the sound to the given player
+     * Returns the petblock of the given player
      *
-     * @param players players
+     * @param player player
+     * @return petblock
      */
-    void applyToPlayers(Object... players) throws Exception;
-
-    /**
-     * Returns the name of the sound
-     *
-     * @return name
-     */
-    String getName();
-
-    /**
-     * Sets the name of the sound
-     *
-     * @param name name
-     * @return builder
-     */
-    SoundMeta setName(String name);
-
-    /**
-     * Returns the volume of the sound
-     *
-     * @return volume
-     */
-    double getVolume();
-
-    /**
-     * Sets the volume of the sound
-     *
-     * @param volume volume
-     * @return builder
-     */
-    SoundMeta setVolume(double volume);
-
-    /**
-     * Returns the pitch of the sound
-     *
-     * @return pitch
-     */
-    double getPitch();
-
-    /**
-     * Sets the pitch of the sound
-     *
-     * @param pitch pitch
-     * @return builder
-     */
-    SoundMeta setPitch(double pitch);
+    PetBlock getByPlayer(Object player);
 }

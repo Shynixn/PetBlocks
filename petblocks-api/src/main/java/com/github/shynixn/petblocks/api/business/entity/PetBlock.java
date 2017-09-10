@@ -1,5 +1,8 @@
 package com.github.shynixn.petblocks.api.business.entity;
 
+import com.github.shynixn.petblocks.api.persistence.entity.IPosition;
+import com.github.shynixn.petblocks.api.persistence.entity.PetMeta;
+
 /**
  * Copyright 2017 Shynixn
  * <p>
@@ -31,10 +34,148 @@ package com.github.shynixn.petblocks.api.business.entity;
  */
 public interface PetBlock {
 
+    @Deprecated
+    void setSkin(String skin);
+
+    @Deprecated
+    void setSkin(Object material, byte data);
+
+    @Deprecated
+    void setDieing();
+
+    @Deprecated
+    void teleportWithOwner(Object location);
+
+    @Deprecated
+    boolean isDieing();
+
+    @Deprecated
+    void refreshHeadMeta();
+
+    /**
+     * Returns the meta of the petblock
+     *
+     * @return meta
+     */
+    PetMeta getMeta();
+
     /**
      * Returns the owner of the petblock
      *
      * @return player
      */
     Object getPlayer();
+
+    /**
+     * Removes the petblock
+     */
+    void remove();
+
+    /**
+     * Lets the given player ride on the petblock
+     *
+     * @param player player
+     */
+    void ride(Object player);
+
+    /**
+     * Lets the given player wear the petblock
+     *
+     * @param player oplayer
+     */
+    void wear(Object player);
+
+    /**
+     * Ejects the given player riding from the petblock
+     *
+     * @param player player
+     */
+    void eject(Object player);
+
+    /**
+     * Sets the displayName of the petblock
+     *
+     * @param name name
+     */
+    void setDisplayName(String name);
+
+    /**
+     * Returns the displayName of the petblock
+     *
+     * @return name
+     */
+    String getDisplayName();
+
+    /**
+     * Respawns the petblock
+     */
+    void respawn();
+
+    /**
+     * Returns if the petblock is already removed or dead
+     *
+     * @return dead
+     */
+    boolean isDead();
+
+    /**
+     * Returns the armorstand of the petblock
+     *
+     * @return armorstand
+     */
+    Object getArmorStand();
+
+    /**
+     * Returns the entity being used as engine
+     *
+     * @return entity
+     */
+    Object getEngineEntity();
+
+    /**
+     * Returns the location of the entity
+     *
+     * @return position
+     */
+    Object getLocation();
+
+    /**
+     * Sets the skin of the petblock
+     *
+     * @param itemStack itemStack
+     */
+    void setSkin(Object itemStack);
+
+    /**
+     * Damages the petblock the given amount of damage
+     *
+     * @param amount amont
+     */
+    void damage(double amount);
+
+    /**
+     * Lets the petblock perform a jump
+     */
+    void jump();
+
+    /**
+     * Sets the velocity of the petblock
+     *
+     * @param vector vecotr
+     */
+    void setVelocity(IPosition vector);
+
+    /**
+     * Teleports the the petblock to the given location
+     *
+     * @param location location
+     */
+    void teleport(IPosition location);
+
+    /**
+     * Teleports the petblock to the given entity-location
+     *
+     * @param entity entity
+     */
+    void teleport(Object entity);
 }

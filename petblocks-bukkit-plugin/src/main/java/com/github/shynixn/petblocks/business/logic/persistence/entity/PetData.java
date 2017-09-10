@@ -1,11 +1,10 @@
 package com.github.shynixn.petblocks.business.logic.persistence.entity;
 
-import com.github.shynixn.petblocks.api.entities.*;
+import com.github.shynixn.petblocks.api.persistence.entity.EngineContainer;
 import com.github.shynixn.petblocks.api.persistence.entity.ParticleEffectMeta;
 import com.github.shynixn.petblocks.api.persistence.entity.PetMeta;
 import com.github.shynixn.petblocks.api.persistence.entity.PlayerMeta;
-import com.github.shynixn.petblocks.lib.ParticleBuilder;
-import com.github.shynixn.petblocks.lib.ParticleEffect;
+import com.github.shynixn.petblocks.business.logic.configuration.ConfigPet;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -15,13 +14,11 @@ import java.util.UUID;
 
 public class PetData extends PersistenceObject implements PetMeta {
     private String displayName;
-    private PetType petType;
     private Material costume;
     private short durability;
     private String skullName;
     private boolean hidden;
-    private MoveType moveType = MoveType.WALKING;
-    private int ageTicks;
+    private long ageTicks;
     private String movement;
     private boolean unbreakable;
     private boolean enabled;
@@ -37,23 +34,26 @@ public class PetData extends PersistenceObject implements PetMeta {
     private ParticleEffectMeta particleEffectBuilder;
     private long particleId;
 
-    public PetData(Player player, PetType petType, String name, ItemStack itemStack, String owner) {
+    public PetData(Player player, String name, ItemStack itemStack, String owner) {
         super();
-        this.petType = petType;
         this.displayName = name;
         this.playerInfo = PlayerData.from(player);
         this.costume = itemStack.getType();
         this.durability = itemStack.getDurability();
-        if (owner != null && owner.contains("textures.minecraft")) {
-            if (!owner.contains("http://"))
-                owner = "http://" + owner;
+        if (owner != null && owner.contains("textures.minecraft") && !owner.contains("http://")) {
+            owner = "http://" + owner;
         }
         if (owner != null && !owner.isEmpty())
             this.skullName = owner;
-        this.ageTicks = Age.SMALL.getTicks();
+        this.ageTicks = ConfigPet.getInstance().getAge_smallticks();
         this.sounds = true;
         this.particleEffectBuilder = new ParticleEffectData();
         this.particleEffectBuilder.setEffectType(ParticleEffectMeta.ParticleEffectType.NONE);
+    }
+
+    public void setEngineContainer(EngineContainer engineContainer)
+    {
+
     }
 
     public PetData() {
@@ -170,50 +170,6 @@ public class PetData extends PersistenceObject implements PetMeta {
         this.skullName = skin;
     }
 
-    public void setAge(Age age) {
-        this.ageTicks = age.getTicks();
-    }
-
-    public void setAgeInTicks(int ticks) {
-        this.ageTicks = ticks;
-    }
-
-    public int getAgeInTicks() {
-        return this.ageTicks;
-    }
-
-    public Age getAge() {
-        return Age.getAgeFromTicks(this.ageTicks);
-    }
-
-    @Deprecated
-    public PetType getPetType() {
-        return this.petType;
-    }
-
-    public String getMovement() {
-        return this.movement;
-    }
-
-    public void setMovement(String movement) {
-        this.movement = movement;
-    }
-
-    public Movement getMovementType() {
-        if (this.movement == null)
-            this.movement = Movement.HOPPING.name().toUpperCase();
-        return Movement.getMovementFromName(this.movement);
-    }
-
-    public void setMovementType(Movement movementType) {
-        if (movementType != null)
-            this.movement = movementType.name().toUpperCase();
-    }
-
-    public PetType getType() {
-        return this.petType;
-    }
-
     public boolean isHidden() {
         return this.hidden;
     }
@@ -260,8 +216,34 @@ public class PetData extends PersistenceObject implements PetMeta {
         return this.displayName;
     }
 
-    public void setPetType(PetType petType) {
-        this.petType = petType;
+    /**
+     * Returns the age in ticks
+     *
+     * @return age
+     */
+    @Override
+    public long getAge() {
+        return this.ageTicks;
+    }
+
+    /**
+     * Sets the age in ticks
+     *
+     * @param ticks ticks
+     */
+    @Override
+    public void setAge(long ticks) {
+        this.ageTicks = ticks;
+    }
+
+    /**
+     * Returns the data of the engine
+     *
+     * @return engine
+     */
+    @Override
+    public EngineContainer getEngine() {
+        return null;
     }
 
     /**
@@ -331,17 +313,6 @@ public class PetData extends PersistenceObject implements PetMeta {
         this.displayName = ChatColor.translateAlternateColorCodes('&', name);
     }
 
-    public MoveType getMoveType() {
-        return this.moveType;
-    }
-
-    public void setMoveType(MoveType moveType) {
-        this.moveType = moveType;
-        if (this.moveType == null)
-            this.moveType = MoveType.WALKING;
-
-    }
-
     public Material getSkinMaterial() {
         return this.costume;
     }
@@ -402,155 +373,5 @@ public class PetData extends PersistenceObject implements PetMeta {
     @Deprecated
     public void setUuid(String uuid) {
         this.playerInfo.setUuid(UUID.fromString(uuid));
-    }
-
-    @Deprecated
-    public PetData copy() {
-        final PetData petData = new PetData();
-        petData.displayName = this.displayName;
-        petData.petType = this.petType;
-        petData.costume = this.costume;
-        petData.durability = this.durability;
-        petData.skullName = this.skullName;
-        petData.enabled = this.enabled;
-        petData.hidden = this.hidden;
-        petData.sounds = this.sounds;
-        petData.moveType = this.moveType;
-        petData.ageTicks = this.ageTicks;
-
-        petData.setEffect(this.getEffect());
-        petData.setX(this.getX());
-        petData.setY(this.getY());
-        petData.setZ(this.getZ());
-
-        petData.setSpeed(this.getSpeed());
-        petData.setAmount(this.getAmount());
-        petData.setMaterial(this.getMaterial());
-        petData.setData(this.getData());
-        petData.build = this.build;
-        return petData;
-    }
-
-    @Deprecated
-    public void setParticleEffect(Particle particle) {
-        try {
-            this.setEffect(particle.getEffect());
-            this.setX(particle.getX());
-            this.setY(particle.getY());
-            this.setZ(particle.getZ());
-            this.setSpeed(particle.getSpeed());
-            this.setAmount(particle.getAmount());
-            this.setMaterial(particle.getMaterial());
-            this.setData(particle.getData());
-        } catch (final Exception ex) {
-            this.setEffect(null);
-            this.setX(0);
-            this.setY(0);
-            this.setZ(0);
-            this.setSpeed(0);
-            this.setAmount(0);
-            this.setMaterial(null);
-            this.setData((byte) 0);
-        }
-    }
-
-    @Deprecated
-    public Particle getParticleEffect() {
-        try {
-            if (this.particleEffectBuilder == null)
-                return null;
-            return new ParticleBuilder().setEffect(this.getEffect())
-                    .setOffset(this.getX(), this.getY(), this.getZ()).setSpeed(this.getSpeed()).setAmount(this.getAmount()).setMaterial(this.getMaterial()).setData(this.getData()).build();
-        } catch (final Exception ex) {
-            return null;
-        }
-    }
-
-    @Deprecated
-    public byte getData() {
-        return this.particleEffectBuilder.getData();
-    }
-
-    @Deprecated
-    public void setData(byte data) {
-        this.particleEffectBuilder.setData(data);
-    }
-
-    @Deprecated
-    public ParticleEffect getEffect() {
-        return ParticleEffect.getParticleEffectFromName(this.particleEffectBuilder.getEffectName());
-    }
-
-    @Deprecated
-    public void setEffect(ParticleEffect effect) {
-        if (effect == null) {
-            this.particleEffectBuilder.setEffectType(ParticleEffectMeta.ParticleEffectType.NONE);
-        } else {
-            this.particleEffectBuilder.setEffectName(effect.getName());
-        }
-    }
-
-    @Deprecated
-    public double getX() {
-        return this.particleEffectBuilder.getX();
-    }
-
-    @Deprecated
-    public void setX(double x) {
-        this.particleEffectBuilder.setX(x);
-    }
-
-    @Deprecated
-    public double getY() {
-        return this.particleEffectBuilder.getY();
-    }
-
-    @Deprecated
-    public void setY(double y) {
-        this.particleEffectBuilder.setY(y);
-    }
-
-    @Deprecated
-    public double getZ() {
-        return this.particleEffectBuilder.getZ();
-    }
-
-    @Deprecated
-    public void setZ(double z) {
-        this.particleEffectBuilder.setZ(z);
-    }
-
-    @Deprecated
-    public double getSpeed() {
-        return this.particleEffectBuilder.getSpeed();
-    }
-
-    @Deprecated
-    public void setSpeed(double speed) {
-        this.particleEffectBuilder.setSpeed(speed);
-    }
-
-    @Deprecated
-    public int getAmount() {
-        return this.particleEffectBuilder.getAmount();
-    }
-
-    @Deprecated
-    public void setAmount(int amount) {
-        this.particleEffectBuilder.setAmount(amount);
-    }
-
-    @Deprecated
-    public Material getMaterial() {
-        return Material.getMaterial(this.particleEffectBuilder.getMaterial());
-    }
-
-    @Deprecated
-    public void setMaterial(Material material) {
-        if (material == null) {
-            this.particleEffectBuilder.setMaterial(0);
-        } else {
-            this.particleEffectBuilder.setMaterial(material.getId());
-        }
     }
 }

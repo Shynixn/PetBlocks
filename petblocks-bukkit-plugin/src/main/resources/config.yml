@@ -238,6 +238,28 @@ chat:
   async: true
   highest-priority: true
 
+
+############################
+
+# Messages settings
+
+# Settings to adjust the messages
+
+############################
+
+messages:
+  prefix: '&2[&aPetBlocks&2]&a '
+  default-petname: ":player's pet"
+  naming-message: '&eEnter the name the of your pet:'
+  naming-success: '&aYou changed the name of your pet.'
+  naming-error: '&cYou cannot name your pet like that.'
+  skullnaming-message: '&eEnter the name of your skin:'
+  skullnaming-success: '&aYou changed the skin of your pet.'
+  skullnaming-error: '&eThis skin is invalid.'
+  perms-ico-yes: '&aYes'
+  perms-ico-no: '&cNo'
+  no-perms: '&cYou do not have permissions.'
+
 ############################
 
 # GUI-settings
@@ -263,6 +285,7 @@ chat:
 
 gui:
   settings:
+    title: 'PetBlocks'
     copy-skin: true
     use-only-disable-pet-item: false
     my-pet:

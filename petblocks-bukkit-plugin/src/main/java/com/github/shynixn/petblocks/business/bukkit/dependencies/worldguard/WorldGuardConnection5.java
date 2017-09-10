@@ -1,8 +1,8 @@
 package com.github.shynixn.petblocks.business.bukkit.dependencies.worldguard;
 
 import com.github.shynixn.petblocks.api.PetBlocksApi;
-import com.github.shynixn.petblocks.api.entities.PetBlock;
-import com.github.shynixn.petblocks.business.Config;
+import com.github.shynixn.petblocks.api.business.entity.PetBlock;
+import com.github.shynixn.petblocks.business.logic.configuration.Config;
 import com.github.shynixn.petblocks.lib.ReflectionUtils;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import com.sk89q.worldguard.protection.flags.DefaultFlag;
@@ -11,6 +11,7 @@ import com.sk89q.worldguard.protection.managers.RegionManager;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Player;
 
 import java.lang.reflect.InvocationTargetException;
@@ -48,9 +49,9 @@ public final class WorldGuardConnection5 {
      * @throws NoSuchMethodException     exception
      */
     public static boolean isAllowedToEnterRegionByRiding(Player player, boolean cacheSpawn) throws InvocationTargetException, IllegalAccessException, NoSuchMethodException {
-        if (!Config.getInstance().allowRidingOnRegionChanging() && PetBlocksApi.hasPetBlock(player)) {
-            final PetBlock petBlock = PetBlocksApi.getPetBlock(player);
-            if ((petBlock.getArmorStand().getPassenger() != null && petBlock.getArmorStand().getPassenger().equals(player)) || cacheSpawn) {
+        PetBlock petBlock;
+        if (!Config.getInstance().allowRidingOnRegionChanging() && ((petBlock = PetBlocksApi.getDefaultPetBlockController().getByPlayer(player)) != null)) {
+            if (((ArmorStand)petBlock.getArmorStand()).getPassenger() != null && ((ArmorStand)petBlock.getArmorStand()).getPassenger().equals(player) || cacheSpawn) {
                 final Location location = player.getLocation();
                 final WorldGuardPlugin worldGuard = getWorldGuard();
                 final RegionManager regionManager = worldGuard.getRegionManager(location.getWorld());

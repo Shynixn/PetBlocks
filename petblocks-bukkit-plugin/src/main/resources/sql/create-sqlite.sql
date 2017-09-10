@@ -25,7 +25,7 @@ CREATE TABLE IF NOT EXISTS SHY_PETBLOCK
   shy_player_id REFERENCES SHY_PLAYER(id),
   shy_particle_effect_id REFERENCES SHY_PARTICLE_EFFECT(id),
   name VARCHAR(32) NOT NULL,
-  type VARCHAR (32) NOT NULL,
+  engine INTEGER,
   material VARCHAR(32),
   data CHAR(4),
   skull TEXT,
@@ -33,8 +33,9 @@ CREATE TABLE IF NOT EXISTS SHY_PETBLOCK
   age INTEGER,
   unbreakable INTEGER,
   play_sounds INTEGER,
-  moving_type VARCHAR(32) NOT NULL,
-  movement_type VARCHAR(32) NOT NULL,
   CONSTRAINT foreignkey_player_id_cs FOREIGN KEY (shy_player_id) REFERENCES SHY_PLAYER(id),
   CONSTRAINT foreignkey_particle_id_cs FOREIGN KEY (shy_particle_effect_id) REFERENCES SHY_PARTICLE_EFFECT(id)
 );
+
+
+

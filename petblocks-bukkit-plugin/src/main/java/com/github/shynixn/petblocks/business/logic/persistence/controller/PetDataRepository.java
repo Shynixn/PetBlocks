@@ -1,8 +1,6 @@
 package com.github.shynixn.petblocks.business.logic.persistence.controller;
 
-import com.github.shynixn.petblocks.api.entities.MoveType;
-import com.github.shynixn.petblocks.api.entities.Movement;
-import com.github.shynixn.petblocks.api.entities.PetType;
+import com.github.shynixn.petblocks.api.persistence.controller.EngineController;
 import com.github.shynixn.petblocks.api.persistence.controller.PetMetaController;
 import com.github.shynixn.petblocks.api.persistence.entity.PetMeta;
 import com.github.shynixn.petblocks.business.logic.persistence.entity.PetData;
@@ -19,12 +17,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 
-/**
- * Created by Shynixn
- */
 public class PetDataRepository extends DataBaseRepository<PetMeta> implements PetMetaController {
 
     private ExtensionHikariConnectionContext dbContext;
+    private EngineController engineController;
 
     public PetDataRepository(ExtensionHikariConnectionContext connectionContext) {
         super();
@@ -142,23 +138,19 @@ public class PetDataRepository extends DataBaseRepository<PetMeta> implements Pe
         final PetData item = (PetData) itemMeta;
         if (item == null)
             throw new IllegalArgumentException("Meta has to be an instance of PetData");
-        if (item.getType() == null)
-            throw new IllegalArgumentException("PetType cannot be null!");
         if (item.getSkinMaterial() == null)
             throw new IllegalArgumentException("SkinMaterial cannot be null!");
         try (Connection connection = this.dbContext.getConnection()) {
             this.dbContext.executeStoredUpdate("petblock/update", connection,
                     item.getDisplayName(),
-                    item.getType().name(),
+                    item.getEngine().getId(),
                     item.getSkinMaterial().name(),
                     item.getSkinDurability(),
                     item.getSkin(),
                     item.isEnabled(),
-                    item.getAgeInTicks(),
+                    item.getAge(),
                     item.isUnbreakable(),
                     item.isSoundEnabled(),
-                    item.getMoveType().name(),
-                    item.getMovementType().name(),
                     item.getId()
             );
         } catch (final SQLException e) {
@@ -191,8 +183,6 @@ public class PetDataRepository extends DataBaseRepository<PetMeta> implements Pe
         final PetData item = (PetData) itemMeta;
         if (item == null)
             throw new IllegalArgumentException("Meta has to be an instance of PetData");
-        if (item.getType() == null)
-            throw new IllegalArgumentException("PetType cannot be null!");
         if (item.getSkinMaterial() == null)
             throw new IllegalArgumentException("SkinMaterial cannot be null!");
         try (Connection connection = this.dbContext.getConnection()) {
@@ -200,16 +190,14 @@ public class PetDataRepository extends DataBaseRepository<PetMeta> implements Pe
                     item.getPlayerId(),
                     item.getParticleId(),
                     item.getDisplayName(),
-                    item.getType().name(),
+                    item.getEngine().getId(),
                     item.getSkinMaterial().name(),
                     item.getSkinDurability(),
                     item.getSkin(),
                     item.isEnabled(),
-                    item.getAgeInTicks(),
+                    item.getAge(),
                     item.isUnbreakable(),
-                    item.isSoundEnabled(),
-                    item.getMoveType().name(),
-                    item.getMovementType().name()
+                    item.isSoundEnabled()
             );
             item.setId(id);
         } catch (final SQLException e) {
@@ -230,14 +218,12 @@ public class PetDataRepository extends DataBaseRepository<PetMeta> implements Pe
         petMeta.setPlayerId(resultSet.getLong("shy_player_id"));
         petMeta.setParticleId(resultSet.getLong("shy_particle_effect_id"));
         petMeta.setDisplayName(resultSet.getString("name"));
-        petMeta.setPetType(PetType.getPetTypeFromName(resultSet.getString("type")));
+        petMeta.setEngineContainer(this.engineController.getById(resultSet.getInt("engine")));
         petMeta.setSkin(Material.getMaterial(resultSet.getString("material")), (short) resultSet.getInt("data"), resultSet.getString("skull"));
         petMeta.setEnabled(resultSet.getBoolean("enabled"));
-        petMeta.setAgeInTicks(resultSet.getInt("age"));
+        petMeta.setAge(resultSet.getInt("age"));
         petMeta.setUnbreakable(resultSet.getBoolean("unbreakable"));
         petMeta.setSoundEnabled(resultSet.getBoolean("play_sounds"));
-        petMeta.setMoveType(MoveType.getMoveTypeFromName(resultSet.getString("moving_type")));
-        petMeta.setMovementType(Movement.getMovementFromName(resultSet.getString("movement_type")));
         return petMeta;
     }
 

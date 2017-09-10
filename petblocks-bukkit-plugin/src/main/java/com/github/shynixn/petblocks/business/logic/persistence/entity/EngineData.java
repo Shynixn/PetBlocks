@@ -40,7 +40,7 @@ import java.util.Map;
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-public class EngineData implements EngineContainer {
+public class EngineData extends PersistenceObject implements EngineContainer {
 
     private final int position;
     private final GUIPage page;
@@ -57,7 +57,8 @@ public class EngineData implements EngineContainer {
      * @param data data
      * @throws Exception exception
      */
-    public EngineData(Map<String, Object> data) throws Exception {
+    public EngineData(long id, Map<String, Object> data) throws Exception {
+        this.setId(id);
         this.position = (int) data.get("gui.position");
         this.page = GUIPage.getGUIPageFromName((String) data.get("gui.page"));
         this.itemContainer = CustomItemContainer.from((int) data.get("gui.id")

@@ -1,5 +1,7 @@
 package com.github.shynixn.petblocks.api.persistence.entity;
 
+import java.util.Collection;
+
 /**
  * Copyright 2017 Shynixn
  * <p>
@@ -29,7 +31,7 @@ package com.github.shynixn.petblocks.api.persistence.entity;
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-public interface ParticleEffectMeta extends Persistenceable{
+public interface ParticleEffectMeta extends Persistenceable {
     /**
      * Sets the RGB colors of the particleEffect
      *
@@ -73,28 +75,38 @@ public interface ParticleEffectMeta extends Persistenceable{
     ParticleEffectMeta setSpeed(double speed);
 
     /**
-     * Sets the x coordinate of the particleEffect
+     * Sets the offsetX of the particleEffect
      *
-     * @param x x
+     * @param offsetX offsetX
      * @return builder
      */
-    ParticleEffectMeta setX(double x);
+    ParticleEffectMeta setOffsetX(double offsetX);
 
     /**
-     * Sets the y coordinate of the particleEffect
+     * Sets the offsetY of the particleEffect
      *
-     * @param y y
+     * @param offsetY offsetY
      * @return builder
      */
-    ParticleEffectMeta setY(double y);
+    ParticleEffectMeta setOffsetY(double offsetY);
 
     /**
-     * Sets the z coordinate of the particleEffect
+     * Sets the offsetZ of the particleEffect
      *
-     * @param z z
+     * @param offsetZ offsetZ
      * @return builder
      */
-    ParticleEffectMeta setZ(double z);
+    ParticleEffectMeta setOffsetZ(double offsetZ);
+
+    /**
+     * Sets the offset of the particleEffect
+     *
+     * @param offsetX offsetX
+     * @param offsetY offsetY
+     * @param offsetZ offsetZ
+     * @return instance
+     */
+    ParticleEffectMeta setOffset(double offsetX, double offsetY, double offsetZ);
 
     /**
      * Sets the effectType of the particleEffect
@@ -139,10 +151,10 @@ public interface ParticleEffectMeta extends Persistenceable{
     /**
      * Sets the material of the particleEffect
      *
-     * @param materialId material
+     * @param material material
      * @return builder
      */
-    ParticleEffectMeta setMaterial(Integer materialId);
+    ParticleEffectMeta setMaterial(Object material);
 
     /**
      * Sets the data of the material of the particleEffect
@@ -181,25 +193,25 @@ public interface ParticleEffectMeta extends Persistenceable{
     double getSpeed();
 
     /**
-     * Returns the x coordinate of the particleEffect
+     * Returns the offsetX of the particleEffect
      *
-     * @return x
+     * @return offsetX
      */
-    double getX();
+    double getOffsetX();
 
     /**
-     * Returns the y coordinate of the particleEffect
+     * Returns the offsetY of the particleEffect
      *
-     * @return y
+     * @return offsetY
      */
-    double getY();
+    double getOffsetY();
 
     /**
-     * Returns the z coordinate of the particleEffect
+     * Returns the offsetZ of the particleEffect
      *
-     * @return z
+     * @return offsetZ
      */
-    double getZ();
+    double getOffsetZ();
 
     /**
      * Returns the RGB color blue of the particleEffect
@@ -227,7 +239,7 @@ public interface ParticleEffectMeta extends Persistenceable{
      *
      * @return material
      */
-    Integer getMaterial();
+    Object getMaterial();
 
     /**
      * Returns the data of the particleEffect
@@ -235,6 +247,13 @@ public interface ParticleEffectMeta extends Persistenceable{
      * @return data
      */
     Byte getData();
+
+    /**
+     * Copies the current builder
+     *
+     * @return copyOfBuilder
+     */
+    ParticleEffectMeta clone();
 
     /**
      * Returns if the particleEffect is a color particleEffect
@@ -258,13 +277,20 @@ public interface ParticleEffectMeta extends Persistenceable{
     boolean isMaterialParticleEffect();
 
     /**
-     * Plays the effect at the given position to the given players.
+     * Plays the effect at the given location to the given players.
      *
      * @param location location
-     * @param <T> type
      * @param players  players
      */
-    <T> void apply(IPosition location, T... players);
+    void apply(Object location, Collection<Object> players);
+
+    /**
+     * Plays the effect at the given location to the given players.
+     *
+     * @param location location
+     * @param players  players
+     */
+    void apply(Object location, Object... players);
 
     /**
      * ParticleColors
@@ -336,7 +362,6 @@ public interface ParticleEffectMeta extends Persistenceable{
      * ParticleEffectTypes
      */
     enum ParticleEffectType {
-        NONE("none", -1),
         EXPLOSION_NORMAL("explode", 0),
         EXPLOSION_LARGE("largeexplode", 1),
         EXPLOSION_HUGE("hugeexplosion", 2),
@@ -385,6 +410,7 @@ public interface ParticleEffectMeta extends Persistenceable{
         SWEEP_ATTACK("sweepAttack", 45),
         FALLING_DUST("fallingdust", 46),
         TOTEM("totem", 47),
+        NONE("none", 102),
         SPIT("spit", 48);
 
         private final String simpleName;

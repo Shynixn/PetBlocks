@@ -1,4 +1,7 @@
-package com.github.shynixn.petblocks.api.persistence.entity;
+package com.github.shynixn.petblocks.api;
+
+import com.github.shynixn.petblocks.api.business.controller.PetBlockController;
+import com.github.shynixn.petblocks.api.persistence.controller.PetMetaController;
 
 /**
  * Copyright 2017 Shynixn
@@ -29,64 +32,33 @@ package com.github.shynixn.petblocks.api.persistence.entity;
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-public interface SoundMeta extends Persistenceable {
+public class PetBlocksApi {
+
+    private static PetMetaController metaController;
+    private static PetBlockController petBlockController;
 
     /**
-     * Applies the sound at the given location
-     *
-     * @param location location
+     * Initializes the api
      */
-    void applyToLocation(Object location) throws Exception;
+    private static void initialize() {
+
+    }
 
     /**
-     * Applies the sound to the given player
+     * Returns the default meta controller
      *
-     * @param players players
+     * @return metaController
      */
-    void applyToPlayers(Object... players) throws Exception;
+    public static PetMetaController getDefaultPetMetaController() {
+        return metaController;
+    }
 
     /**
-     * Returns the name of the sound
+     * Returns the petBlock controller
      *
-     * @return name
+     * @return petBlockController
      */
-    String getName();
-
-    /**
-     * Sets the name of the sound
-     *
-     * @param name name
-     * @return builder
-     */
-    SoundMeta setName(String name);
-
-    /**
-     * Returns the volume of the sound
-     *
-     * @return volume
-     */
-    double getVolume();
-
-    /**
-     * Sets the volume of the sound
-     *
-     * @param volume volume
-     * @return builder
-     */
-    SoundMeta setVolume(double volume);
-
-    /**
-     * Returns the pitch of the sound
-     *
-     * @return pitch
-     */
-    double getPitch();
-
-    /**
-     * Sets the pitch of the sound
-     *
-     * @param pitch pitch
-     * @return builder
-     */
-    SoundMeta setPitch(double pitch);
+    public static PetBlockController getDefaultPetBlockController() {
+        return petBlockController;
+    }
 }

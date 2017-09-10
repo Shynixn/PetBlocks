@@ -1,6 +1,6 @@
 package com.github.shynixn.petblocks.business.logic.business;
 
-import com.github.shynixn.petblocks.business.Config;
+import com.github.shynixn.petblocks.business.logic.configuration.Config;
 import com.github.shynixn.petblocks.business.Language;
 import com.github.shynixn.petblocks.lib.SimpleCommandExecutor;
 import org.bukkit.entity.Player;

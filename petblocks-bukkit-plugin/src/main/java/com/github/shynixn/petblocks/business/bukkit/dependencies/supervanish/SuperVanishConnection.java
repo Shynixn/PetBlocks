@@ -1,7 +1,7 @@
 package com.github.shynixn.petblocks.business.bukkit.dependencies.supervanish;
 
 import com.github.shynixn.petblocks.api.PetBlocksApi;
-import com.github.shynixn.petblocks.api.entities.PetBlock;
+import com.github.shynixn.petblocks.api.business.entity.PetBlock;
 import com.github.shynixn.petblocks.lib.BukkitUtilities;
 import com.github.shynixn.petblocks.lib.SimpleListener;
 import de.myzelyam.api.vanish.PlayerHideEvent;
@@ -25,20 +25,20 @@ public final class SuperVanishConnection {
 
     private static void hideFromAll(PetBlock petBlock) {
         for (final Player player : BukkitUtilities.getOnlinePlayers()) {
-            if (!player.equals(petBlock.getOwner())) {
+            if (!player.equals(petBlock.getPlayer())) {
                 visibilityManager.hidePetBlock(petBlock, player);
             }
         }
-        PetBlocksApi.getPetMeta(petBlock.getOwner()).setVisible(false);
+        petBlock.getMeta().setVisible(false);
     }
 
     private static void showToAll(PetBlock petBlock) {
         for (final Player player : BukkitUtilities.getOnlinePlayers()) {
-            if (!player.equals(petBlock.getOwner())) {
+            if (!player.equals(petBlock.getPlayer())) {
                 visibilityManager.showPetBlock(petBlock, player);
             }
         }
-        PetBlocksApi.getPetMeta(petBlock.getOwner()).setVisible(true);
+        petBlock.getMeta().setVisible(true);
     }
 
     private static class SuperVanishListener extends SimpleListener {
@@ -48,34 +48,36 @@ public final class SuperVanishConnection {
 
         @EventHandler
         public void onPlayerHideEvent(PlayerHideEvent event) {
-            if (PetBlocksApi.hasPetBlock(event.getPlayer())) {
-                hideFromAll(PetBlocksApi.getPetBlock(event.getPlayer()));
+            final PetBlock petBlock;
+            if ((petBlock = this.getPetBlock(event.getPlayer())) != null) {
+                hideFromAll(petBlock);
             }
         }
 
         @EventHandler
         public void onPlayerShowEvent(PlayerShowEvent event) {
-            if (PetBlocksApi.hasPetBlock(event.getPlayer())) {
-                showToAll(PetBlocksApi.getPetBlock(event.getPlayer()));
+            final PetBlock petBlock;
+            if ((petBlock = this.getPetBlock(event.getPlayer())) != null) {
+                showToAll(petBlock);
             }
         }
 
         private PetBlock[] getPetBlocks() {
             final List<PetBlock> petBlocks = new ArrayList<>();
+            PetBlock petBlock;
             for (final Player player : BukkitUtilities.getOnlinePlayers()) {
-                if (PetBlocksApi.hasPetBlock(player)) {
-                    petBlocks.add(PetBlocksApi.getPetBlock(player));
+                if ((petBlock = this.getPetBlock(player)) != null) {
+                    petBlocks.add(petBlock);
                 }
             }
             return petBlocks.toArray(new PetBlock[petBlocks.size()]);
         }
 
-
         @EventHandler
         public void onPlayerJoinEvent(PlayerJoinEvent event) {
             final Player player = event.getPlayer();
             for (final PetBlock petBlock : this.getPetBlocks()) {
-                if (!petBlock.getPetMeta().isVisible()) {
+                if (!petBlock.getMeta().isVisible()) {
                     visibilityManager.hidePetBlock(petBlock, player);
                 }
             }
@@ -87,6 +89,10 @@ public final class SuperVanishConnection {
             for (final PetBlock petBlock : this.getPetBlocks()) {
                 visibilityManager.showPetBlock(petBlock, player);
             }
+        }
+
+        private PetBlock getPetBlock(Player player) {
+            return PetBlocksApi.getDefaultPetBlockController().getByPlayer(player);
         }
     }
 }

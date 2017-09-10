@@ -101,14 +101,14 @@ public class ParticleEffectDataRepository extends DataBaseRepository<ParticleEff
         try (Connection connection = this.dbContext.getConnection()) {
             String materialName = null;
             if (item.getMaterial() != null)
-                materialName = Material.getMaterial(item.getMaterial()).name();
+                materialName = ((Material)item.getMaterial()).name();
             this.dbContext.executeStoredUpdate("particle/update", connection,
                     item.getEffectName(),
                     item.getAmount(),
                     item.getSpeed(),
-                    item.getX(),
-                    item.getY(),
-                    item.getZ(),
+                    item.getOffsetX(),
+                    item.getOffsetY(),
+                    item.getOffsetZ(),
                     materialName,
                     (int) item.getData(),
                     item.getId());
@@ -142,14 +142,14 @@ public class ParticleEffectDataRepository extends DataBaseRepository<ParticleEff
         try (Connection connection = this.dbContext.getConnection()) {
             String materialName = null;
             if (item.getMaterial() != null)
-                materialName = Material.getMaterial(item.getMaterial()).name();
+                materialName = ((Material)item.getMaterial()).name();
             final long id = this.dbContext.executeStoredInsert("particle/insert", connection,
                     item.getEffectName(),
                     item.getAmount(),
                     item.getSpeed(),
-                    item.getX(),
-                    item.getY(),
-                    item.getZ(),
+                    item.getOffsetX(),
+                    item.getOffsetY(),
+                    item.getOffsetZ(),
                     materialName,
                     item.getData());
             ((ParticleEffectData) item).setId(id);
@@ -189,9 +189,9 @@ public class ParticleEffectDataRepository extends DataBaseRepository<ParticleEff
         particleEffectData.setEffectName(resultSet.getString("name"));
         particleEffectData.setAmount(resultSet.getInt("amount"));
         particleEffectData.setSpeed(resultSet.getDouble("speed"));
-        particleEffectData.setX(resultSet.getDouble("x"));
-        particleEffectData.setY(resultSet.getDouble("y"));
-        particleEffectData.setZ(resultSet.getDouble("z"));
+        particleEffectData.setOffsetX((resultSet.getDouble("x")));
+        particleEffectData.setOffsetY(resultSet.getDouble("y"));
+        particleEffectData.setOffsetZ(resultSet.getDouble("z"));
         if (resultSet.getString("material") != null) {
             particleEffectData.setMaterial(Material.getMaterial(resultSet.getString("material")).getId());
         }

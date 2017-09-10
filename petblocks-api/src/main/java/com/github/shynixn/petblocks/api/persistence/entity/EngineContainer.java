@@ -31,7 +31,7 @@ import com.github.shynixn.petblocks.api.business.enumeration.RideType;
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-public interface EngineContainer {
+public interface EngineContainer extends Persistenceable {
 
     /**
      * Returns the walking sound

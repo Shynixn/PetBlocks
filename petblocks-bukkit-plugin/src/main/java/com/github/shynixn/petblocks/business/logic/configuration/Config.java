@@ -1,12 +1,8 @@
-package com.github.shynixn.petblocks.business;
+package com.github.shynixn.petblocks.business.logic.configuration;
 
 import com.github.shynixn.petblocks.api.entities.*;
 import com.github.shynixn.petblocks.api.persistence.entity.PetMeta;
 import com.github.shynixn.petblocks.business.bukkit.nms.NMSRegistry;
-import com.github.shynixn.petblocks.business.logic.configuration.ConfigCommands;
-import com.github.shynixn.petblocks.business.logic.configuration.ConfigGUI;
-import com.github.shynixn.petblocks.business.logic.configuration.ConfigParticle;
-import com.github.shynixn.petblocks.business.logic.configuration.ConfigPet;
 import com.github.shynixn.petblocks.business.logic.persistence.entity.PetData;
 import com.github.shynixn.petblocks.lib.ParticleBuilder;
 import com.github.shynixn.petblocks.lib.ParticleEffect;
@@ -51,6 +47,9 @@ public final class Config {
     public static Config getInstance() {
         return instance;
     }
+
+
+
 
     public void reload() {
         try {

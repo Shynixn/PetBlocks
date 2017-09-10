@@ -6,7 +6,6 @@ import com.github.shynixn.petblocks.api.entities.ItemContainer;
 import com.github.shynixn.petblocks.api.entities.MoveType;
 import com.github.shynixn.petblocks.api.entities.Movement;
 import com.github.shynixn.petblocks.business.Language;
-import com.github.shynixn.petblocks.business.Permission;
 import com.github.shynixn.petblocks.business.bukkit.PetBlocksPlugin;
 import com.github.shynixn.petblocks.business.bukkit.nms.NMSRegistry;
 import com.github.shynixn.petblocks.lib.ParticleBuilder;

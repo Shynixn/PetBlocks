@@ -32,6 +32,27 @@ package com.github.shynixn.petblocks.api.persistence.entity;
 public interface PetMeta extends Persistenceable {
 
     /**
+     * Returns the age in ticks
+     *
+     * @return age
+     */
+    long getAge();
+
+    /**
+     * Sets the age in ticks
+     *
+     * @param ticks ticks
+     */
+    void setAge(long ticks);
+
+    /**
+     * Returns the data of the engine
+     *
+     * @return engine
+     */
+    EngineContainer getEngine();
+
+    /**
      * Returns if the pet is visible to other players
      *
      * @return visible

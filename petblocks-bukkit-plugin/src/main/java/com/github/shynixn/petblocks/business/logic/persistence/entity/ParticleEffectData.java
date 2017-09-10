@@ -1,16 +1,18 @@
 package com.github.shynixn.petblocks.business.logic.persistence.entity;
 
-import com.github.shynixn.petblocks.api.persistence.entity.IPosition;
 import com.github.shynixn.petblocks.api.persistence.entity.ParticleEffectMeta;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.entity.Player;
 
-import java.util.Arrays;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.*;
+import java.util.logging.Level;
 
 /**
  * Copyright 2017 Shynixn
@@ -41,13 +43,13 @@ import java.util.Map;
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-public class ParticleEffectData extends PersistenceObject implements ConfigurationSerializable, ParticleEffectMeta {
+public class ParticleEffectData extends PersistenceObject implements ParticleEffectMeta, ConfigurationSerializable {
     private String effect;
     private int amount;
     private double speed;
-    private double x;
-    private double y;
-    private double z;
+    private float offsetX;
+    private float offsetY;
+    private float offsetZ;
 
     private Integer material;
     private Byte data;
@@ -65,11 +67,11 @@ public class ParticleEffectData extends PersistenceObject implements Configurati
      * @param effectName effect
      * @param amount     amount
      * @param speed      speed
-     * @param x          x
-     * @param y          y
-     * @param z          u
+     * @param offsetX    x
+     * @param offsetY    y
+     * @param offsetZ    z
      */
-    public ParticleEffectData(String effectName, int amount, double speed, double x, double y, double z) {
+    public ParticleEffectData(String effectName, int amount, double speed, double offsetX, double offsetY, double offsetZ) {
         super();
         if (effectName == null)
             throw new IllegalArgumentException("Effect cannot be null!");
@@ -80,9 +82,9 @@ public class ParticleEffectData extends PersistenceObject implements Configurati
         this.effect = effectName;
         this.amount = amount;
         this.speed = speed;
-        this.x = x;
-        this.y = y;
-        this.z = z;
+        this.offsetX = (float) offsetX;
+        this.offsetY = (float) offsetY;
+        this.offsetZ = (float) offsetZ;
     }
 
     /**
@@ -96,9 +98,9 @@ public class ParticleEffectData extends PersistenceObject implements Configurati
         this.effect = (String) items.get("effect");
         this.amount = (int) items.get("amount");
         this.speed = (double) items.get("speed");
-        this.x = (double) items.get("size.x");
-        this.y = (double) items.get("size.y");
-        this.z = (double) items.get("size.z");
+        this.offsetX = (float) (double) items.get("size.x");
+        this.offsetY = (float) (double) items.get("size.y");
+        this.offsetZ = ((float) (double) items.get("size.z"));
         if (items.containsKey("block.material"))
             this.material = (Integer) items.get("block.material");
         if (items.containsKey("block.damage"))
@@ -118,7 +120,6 @@ public class ParticleEffectData extends PersistenceObject implements Configurati
         this.setRed(red);
         this.setBlue(blue);
         this.setGreen(green);
-        this.setAmount(0);
         return this;
     }
 
@@ -129,7 +130,7 @@ public class ParticleEffectData extends PersistenceObject implements Configurati
      * @return builder
      */
     @Override
-    public ParticleEffectData setColor(ParticleColor particleColor) {
+    public ParticleEffectData setColor(ParticleEffectData.ParticleColor particleColor) {
         if (particleColor == null)
             throw new IllegalArgumentException("Color cannot be null!");
         this.setColor(particleColor.getRed(), particleColor.getGreen(), particleColor.getBlue());
@@ -144,10 +145,11 @@ public class ParticleEffectData extends PersistenceObject implements Configurati
      */
     @Override
     public ParticleEffectData setNoteColor(int color) {
-        if (color > 20 || color < 0)
-            this.x = 5;
-        else
-            this.x = color;
+        if (color > 20 || color < 0) {
+            this.offsetX = 5;
+        } else {
+            this.offsetX = color;
+        }
         return this;
     }
 
@@ -178,38 +180,54 @@ public class ParticleEffectData extends PersistenceObject implements Configurati
     }
 
     /**
-     * Sets the x coordinate of the particleEffect
+     * Sets the offsetX of the particleEffect
      *
-     * @param x x
+     * @param offsetX offsetX
      * @return builder
      */
     @Override
-    public ParticleEffectData setX(double x) {
-        this.x = x;
+    public ParticleEffectData setOffsetX(double offsetX) {
+        this.offsetX = (float) offsetX;
         return this;
     }
 
     /**
-     * Sets the y coordinate of the particleEffect
+     * Sets the offsetY of the particleEffect
      *
-     * @param y y
+     * @param offsetY offsetY
      * @return builder
      */
     @Override
-    public ParticleEffectData setY(double y) {
-        this.y = y;
+    public ParticleEffectData setOffsetY(double offsetY) {
+        this.offsetY = (float) offsetY;
         return this;
     }
 
     /**
-     * Sets the z coordinate of the particleEffect
+     * Sets the offsetZ of the particleEffect
      *
-     * @param z z
+     * @param offsetZ offsetZ
      * @return builder
      */
     @Override
-    public ParticleEffectData setZ(double z) {
-        this.z = z;
+    public ParticleEffectData setOffsetZ(double offsetZ) {
+        this.offsetZ = (float) offsetZ;
+        return this;
+    }
+
+    /**
+     * Sets the offset of the particleEffect
+     *
+     * @param offsetX offsetX
+     * @param offsetY offsetY
+     * @param offsetZ offsetZ
+     * @return instance
+     */
+    @Override
+    public ParticleEffectData setOffset(double offsetX, double offsetY, double offsetZ) {
+        this.setOffsetX(offsetX);
+        this.setOffsetY(offsetY);
+        this.setOffsetZ(offsetZ);
         return this;
     }
 
@@ -234,7 +252,7 @@ public class ParticleEffectData extends PersistenceObject implements Configurati
      * @return builder
      */
     @Override
-    public ParticleEffectData setEffectType(ParticleEffectType type) {
+    public ParticleEffectData setEffectType(ParticleEffectData.ParticleEffectType type) {
         if (type == null)
             throw new IllegalArgumentException("Type cannot be null!");
         this.effect = type.getSimpleName();
@@ -249,7 +267,7 @@ public class ParticleEffectData extends PersistenceObject implements Configurati
      */
     @Override
     public ParticleEffectData setBlue(int blue) {
-        this.z = (double) blue / 255.0;
+        this.offsetZ = blue / 255.0F;
         return this;
     }
 
@@ -261,9 +279,10 @@ public class ParticleEffectData extends PersistenceObject implements Configurati
      */
     @Override
     public ParticleEffectData setRed(int red) {
-        this.x = (double) red / 255.0;
-        if (red == 0)
-            this.x = Float.MIN_NORMAL;
+        this.offsetX = red / 255.0F;
+        if (red == 0) {
+            this.offsetX = Float.MIN_NORMAL;
+        }
         return this;
     }
 
@@ -275,7 +294,7 @@ public class ParticleEffectData extends PersistenceObject implements Configurati
      */
     @Override
     public ParticleEffectData setGreen(int green) {
-        this.y = green / 255.0;
+        this.offsetY = green / 255.0F;
         return this;
     }
 
@@ -286,8 +305,12 @@ public class ParticleEffectData extends PersistenceObject implements Configurati
      * @return builder
      */
     @Override
-    public ParticleEffectData setMaterial(Integer material) {
-        this.material = material;
+    public ParticleEffectData setMaterial(Object material) {
+        if (material != null) {
+            this.material = ((Material)material).getId();
+        } else {
+            this.material = null;
+        }
         return this;
     }
 
@@ -319,7 +342,7 @@ public class ParticleEffectData extends PersistenceObject implements Configurati
      * @return effectType
      */
     @Override
-    public ParticleEffectType getEffectType() {
+    public ParticleEffectData.ParticleEffectType getEffectType() {
         return getParticleEffectFromName(this.effect);
     }
 
@@ -344,33 +367,33 @@ public class ParticleEffectData extends PersistenceObject implements Configurati
     }
 
     /**
-     * Returns the x coordinate of the particleEffect
+     * Returns the offsetX of the particleEffect
      *
-     * @return x
+     * @return offsetX
      */
     @Override
-    public double getX() {
-        return this.x;
+    public double getOffsetX() {
+        return this.offsetX;
     }
 
     /**
-     * Returns the y coordinate of the particleEffect
+     * Returns the offsetY of the particleEffect
      *
-     * @return y
+     * @return offsetY
      */
     @Override
-    public double getY() {
-        return this.y;
+    public double getOffsetY() {
+        return this.offsetY;
     }
 
     /**
-     * Returns the z coordinate of the particleEffect
+     * Returns the offsetZ of the particleEffect
      *
-     * @return z
+     * @return offsetZ
      */
     @Override
-    public double getZ() {
-        return this.z;
+    public double getOffsetZ() {
+        return this.offsetZ;
     }
 
     /**
@@ -380,7 +403,7 @@ public class ParticleEffectData extends PersistenceObject implements Configurati
      */
     @Override
     public int getBlue() {
-        return (int) this.z * 255;
+        return (int) this.offsetZ * 255;
     }
 
     /**
@@ -390,7 +413,7 @@ public class ParticleEffectData extends PersistenceObject implements Configurati
      */
     @Override
     public int getRed() {
-        return (int) this.x * 255;
+        return (int) this.offsetX * 255;
     }
 
     /**
@@ -400,7 +423,7 @@ public class ParticleEffectData extends PersistenceObject implements Configurati
      */
     @Override
     public int getGreen() {
-        return (int) this.y * 255;
+        return (int) this.offsetY * 255;
     }
 
     /**
@@ -409,8 +432,10 @@ public class ParticleEffectData extends PersistenceObject implements Configurati
      * @return material
      */
     @Override
-    public Integer getMaterial() {
-        return this.material;
+    public Object getMaterial() {
+        if (this.material == null || Material.getMaterial(this.material) == null)
+            return null;
+        return Material.getMaterial(this.material);
     }
 
     /**
@@ -428,13 +453,14 @@ public class ParticleEffectData extends PersistenceObject implements Configurati
      *
      * @return copyOfBuilder
      */
-    public ParticleEffectData copy() {
+    @Override
+    public ParticleEffectData clone() {
         final ParticleEffectData particle = new ParticleEffectData();
         particle.effect = this.effect;
         particle.amount = this.amount;
-        particle.x = this.x;
-        particle.y = this.y;
-        particle.z = this.z;
+        particle.offsetX = this.offsetX;
+        particle.offsetY = this.offsetY;
+        particle.offsetZ = this.offsetZ;
         particle.speed = this.speed;
         particle.material = this.material;
         particle.data = this.data;
@@ -466,10 +492,10 @@ public class ParticleEffectData extends PersistenceObject implements Configurati
      */
     @Override
     public boolean isColorParticleEffect() {
-        return this.effect.equalsIgnoreCase(ParticleEffectType.SPELL_MOB.getSimpleName())
-                || this.effect.equalsIgnoreCase(ParticleEffectType.SPELL_MOB_AMBIENT.getSimpleName())
-                || this.effect.equalsIgnoreCase(ParticleEffectType.REDSTONE.getSimpleName())
-                || this.effect.equalsIgnoreCase(ParticleEffectType.NOTE.getSimpleName());
+        return this.effect.equalsIgnoreCase(ParticleEffectData.ParticleEffectType.SPELL_MOB.getSimpleName())
+                || this.effect.equalsIgnoreCase(ParticleEffectData.ParticleEffectType.SPELL_MOB_AMBIENT.getSimpleName())
+                || this.effect.equalsIgnoreCase(ParticleEffectData.ParticleEffectType.REDSTONE.getSimpleName())
+                || this.effect.equalsIgnoreCase(ParticleEffectData.ParticleEffectType.NOTE.getSimpleName());
     }
 
     /**
@@ -479,7 +505,7 @@ public class ParticleEffectData extends PersistenceObject implements Configurati
      */
     @Override
     public boolean isNoteParticleEffect() {
-        return this.effect.equalsIgnoreCase(ParticleEffectType.NOTE.getSimpleName());
+        return this.effect.equalsIgnoreCase(ParticleEffectData.ParticleEffectType.NOTE.getSimpleName());
     }
 
     /**
@@ -489,9 +515,9 @@ public class ParticleEffectData extends PersistenceObject implements Configurati
      */
     @Override
     public boolean isMaterialParticleEffect() {
-        return this.effect.equalsIgnoreCase(ParticleEffectType.BLOCK_CRACK.getSimpleName())
-                || this.effect.equalsIgnoreCase(ParticleEffectType.BLOCK_DUST.getSimpleName())
-                || this.effect.equalsIgnoreCase(ParticleEffectType.ITEM_CRACK.getSimpleName());
+        return this.effect.equalsIgnoreCase(ParticleEffectData.ParticleEffectType.BLOCK_CRACK.getSimpleName())
+                || this.effect.equalsIgnoreCase(ParticleEffectData.ParticleEffectType.BLOCK_DUST.getSimpleName())
+                || this.effect.equalsIgnoreCase(ParticleEffectData.ParticleEffectType.ITEM_CRACK.getSimpleName());
     }
 
     /**
@@ -501,13 +527,80 @@ public class ParticleEffectData extends PersistenceObject implements Configurati
      * @param players  players
      */
     @Override
-    public <T> void apply(IPosition location, T... players) {
-        if (location == null)
-            throw new IllegalArgumentException("Location cannot be null!");
-        if (players.length == 0)
-            ParticleUtils.sendParticle(this, ((LocationBuilder)location).toLocation());
-        else
-            ParticleUtils.sendParticle(this, ((LocationBuilder)location).toLocation(), (Player[]) players);
+    public void apply(Object location, Collection<Object> players) {
+        if (players == null)
+            throw new IllegalArgumentException("Players cannot be null!");
+        this.apply(location, players.toArray(new Player[players.size()]));
+    }
+
+    /**
+     * Plays the effect at the given location to the given players.
+     *
+     * @param mLocation location
+     * @param mPlayers  players
+     */
+    @Override
+    public void apply(Object mLocation, Object... mPlayers) {
+        try {
+            final Location location = (Location) mLocation;
+            final Player[] players = (Player[]) mPlayers;
+            if (location == null)
+                throw new IllegalArgumentException("Location cannot be null!");
+            final Player[] playingPlayers;
+            if (players.length == 0) {
+                playingPlayers = location.getWorld().getPlayers().toArray(new Player[location.getWorld().getPlayers().size()]);
+            } else {
+                playingPlayers = players;
+            }
+            final float speed;
+            final int amount;
+            if (this.effect.equals(ParticleEffectData.ParticleEffectType.REDSTONE.getSimpleName()) ||this.effect.equals(ParticleEffectData.ParticleEffectType.NOTE.getSimpleName())) {
+                amount = 0;
+                speed = 1.0F;
+            } else {
+                amount = this.getAmount();
+                speed = (float) this.getSpeed();
+            }
+            final Object enumParticle = invokeMethod(null, findClass("net.minecraft.server.VERSION.EnumParticle"), "valueOf", new Class[]{String.class}, new Object[]{this.getEffectType().name().toUpperCase()});
+            int[] additionalInfo = null;
+            if (this.getMaterial() != null) {
+                if (this.getEffectType() == ParticleEffectData.ParticleEffectType.ITEM_CRACK) {
+                    additionalInfo = new int[]{((Material)this.getMaterial()).getId(), this.getData()};
+                } else {
+                    additionalInfo = new int[]{((Material)this.getMaterial()).getId(), this.getData() << 12};
+                }
+            }
+            final Object packet = invokeConstructor(findClass("net.minecraft.server.VERSION.PacketPlayOutWorldParticles"), new Class[]{
+                    enumParticle.getClass(),
+                    boolean.class,
+                    float.class,
+                    float.class,
+                    float.class,
+                    float.class,
+                    float.class,
+                    float.class,
+                    float.class,
+                    int.class,
+                    int[].class
+            }, new Object[]{
+                    enumParticle,
+                    isLongDistance(location, players),
+                    (float) location.getX(),
+                    (float) location.getY(),
+                    (float) location.getZ(),
+                    (float) this.getOffsetX(),
+                    (float) this.getOffsetY(),
+                    (float) this.getOffsetZ(),
+                    speed,
+                    amount,
+                    additionalInfo
+            });
+            for (final Player player : playingPlayers) {
+                sendPacket(player, packet);
+            }
+        } catch (InstantiationException | NoSuchMethodException | InvocationTargetException | ClassNotFoundException | IllegalAccessException | NoSuchFieldException e) {
+            Bukkit.getLogger().log(Level.WARNING, "Failed to send packet.", e);
+        }
     }
 
     /**
@@ -523,11 +616,11 @@ public class ParticleEffectData extends PersistenceObject implements Configurati
         final ParticleEffectData that = (ParticleEffectData) o;
         return this.amount == that.amount
                 && Double.compare(that.speed, this.speed) == 0
-                && Double.compare(that.x, this.x) == 0
-                && Double.compare(that.y, this.y) == 0
-                && Double.compare(that.z, this.z) == 0
+                && Double.compare(that.offsetX, this.offsetX) == 0
+                && Double.compare(that.offsetY, this.offsetY) == 0
+                && Double.compare(that.offsetZ, this.offsetZ) == 0
                 & (this.effect != null ? this.effect.equals(that.effect) : that.effect == null)
-                && this.material == that.material && (this.data != null ? this.data.equals(that.data) : that.data == null);
+                && Objects.equals(this.material, that.material) && (this.data != null ? this.data.equals(that.data) : that.data == null);
     }
 
     /**
@@ -537,7 +630,7 @@ public class ParticleEffectData extends PersistenceObject implements Configurati
      */
     @Override
     public String toString() {
-        return "effect {" + "name " + this.effect + " amound " + this.amount + " speed " + this.speed + '}';
+        return "effect {" + "name " + this.effect + " amound " + this.amount + " speed " + this.speed + "}";
     }
 
     /**
@@ -552,9 +645,9 @@ public class ParticleEffectData extends PersistenceObject implements Configurati
         map.put("amount", this.amount);
         map.put("speed", this.speed);
         final Map<String, Object> tmp3 = new LinkedHashMap<>();
-        tmp3.put("x", this.x);
-        tmp3.put("y", this.y);
-        tmp3.put("z", this.z);
+        tmp3.put("x", this.offsetX);
+        tmp3.put("y", this.offsetY);
+        tmp3.put("z", this.offsetZ);
         map.put("size", tmp3);
         final Map<String, Object> tmp2 = new LinkedHashMap<>();
         if (this.material != null)
@@ -572,14 +665,14 @@ public class ParticleEffectData extends PersistenceObject implements Configurati
      * @return potionEffects
      */
     public static String getParticlesText() {
-        String s = "";
-        for (final ParticleEffectType particleEffect : ParticleEffectType.values()) {
-            if (s.isEmpty())
-                s += particleEffect.getSimpleName();
-            else
-                s += ", " + particleEffect.getSimpleName();
+        final StringBuilder builder = new StringBuilder();
+        for (final ParticleEffectData.ParticleEffectType particleEffect : ParticleEffectData.ParticleEffectType.values()) {
+            if (builder.length() != 0) {
+                builder.append(", ");
+            }
+            builder.append(particleEffect.getSimpleName());
         }
-        return s;
+        return builder.toString();
     }
 
     /**
@@ -588,8 +681,8 @@ public class ParticleEffectData extends PersistenceObject implements Configurati
      * @param name name
      * @return particleEffectType
      */
-    public static ParticleEffectType getParticleEffectFromName(String name) {
-        for (final ParticleEffectType particleEffect : ParticleEffectType.values()) {
+    public static ParticleEffectData.ParticleEffectType getParticleEffectFromName(String name) {
+        for (final ParticleEffectData.ParticleEffectType particleEffect : ParticleEffectData.ParticleEffectType.values()) {
             if (name != null && particleEffect.getSimpleName().equalsIgnoreCase(name))
                 return particleEffect;
         }
@@ -597,365 +690,91 @@ public class ParticleEffectData extends PersistenceObject implements Configurati
     }
 
     /**
-     * Particle Utils
+     * Sends a packet to the client player
+     *
+     * @param player player
+     * @param packet packet
+     * @throws ClassNotFoundException    exception
+     * @throws IllegalAccessException    exception
+     * @throws NoSuchMethodException     exception
+     * @throws InvocationTargetException exception
+     * @throws NoSuchFieldException      exception
      */
-    private static class ParticleUtils {
 
-        /**
-         * Sends a particleEffect
-         *
-         * @param builder  builder
-         * @param location location
-         * @return hasBeenSend
-         */
-        static boolean sendParticle(ParticleEffectData builder, Location location) {
-            return sendParticle(builder, location, location.getWorld().getPlayers().toArray(new Player[location.getWorld().getPlayers().size()]));
-        }
-
-        /**
-         * Sends a particleEffect
-         *
-         * @param builder  builder
-         * @param location location
-         * @param players  players
-         * @return hasBeenSend
-         */
-        static boolean sendParticle(ParticleEffectData builder, Location location, Player[] players) {
-            switch (getServerVersion()) {
-                case "v1_12_R1":
-                    ParticleUtils12R1.sendParticle(builder, location, players);
-                    break;
-                case "v1_11_R1":
-                    ParticleUtils11R1.sendParticle(builder, location, players);
-                    break;
-                case "v1_10_R1":
-                    ParticleUtils10R1.sendParticle(builder, location, players);
-                    break;
-                case "v1_9_R2":
-                    ParticleUtils9R2.sendParticle(builder, location, players);
-                    break;
-                case "v1_9_R1":
-                    ParticleUtils9R1.sendParticle(builder, location, players);
-                    break;
-                case "v1_8_R3":
-                    ParticleUtils8R3.sendParticle(builder, location, players);
-                    break;
-                case "v1_8_R2":
-                    ParticleUtils8R2.sendParticle(builder, location, players);
-                    break;
-                case "v1_8_R1":
-                    ParticleUtils8R1.sendParticle(builder, location, players);
-                    break;
-                default:
-                    return false;
-            }
-            return true;
-        }
-
-        /**
-         * Checks if longDistance attribute is necessary
-         *
-         * @param location location
-         * @param players  players
-         * @return isNecessary
-         */
-        private static boolean isLongDistance(Location location, List<Player> players) {
-            for (final Player player : players) {
-                if (location.getWorld().getName().equals(player.getLocation().getWorld().getName())
-                        && player.getLocation().distanceSquared(location) > 65536) {
-                    return true;
-                }
-            }
-            return false;
-        }
-
-        /**
-         * Returns the server version.
-         *
-         * @return version
-         */
-        private static String getServerVersion() {
-            return Bukkit.getServer().getClass().getPackage().getName().replace(".", ",").split(",")[3];
-        }
-
-        static class ParticleUtils8R1 {
-            /**
-             * Sends a particleEffect for v1_8_R1
-             *
-             * @param particleBuilder particleBuilder
-             * @param location        location
-             * @param players         players
-             */
-            static void sendParticle(ParticleEffectData particleBuilder, Location location, Player[] players) {
-                final net.minecraft.server.v1_8_R1.EnumParticle particle = net.minecraft.server.v1_8_R1.EnumParticle.valueOf(particleBuilder.getEffectType().name().toUpperCase());
-                int[] additionalInfo = null;
-                if (particleBuilder.getMaterial() != null) {
-                    if (particleBuilder.getEffectType() == ParticleEffectData.ParticleEffectType.ITEM_CRACK)
-                        additionalInfo = new int[]{particleBuilder.getMaterial(), particleBuilder.getData()};
-                    else
-                        additionalInfo = new int[]{particleBuilder.getMaterial(), particleBuilder.getData() << 12};
-                }
-                final net.minecraft.server.v1_8_R1.PacketPlayOutWorldParticles packet = new net.minecraft.server.v1_8_R1.PacketPlayOutWorldParticles(
-                        particle,
-                        isLongDistance(location, Arrays.asList(players)),
-                        (float) location.getX(),
-                        (float) location.getY(),
-                        (float) location.getZ(),
-                        (float) particleBuilder.getX(),
-                        (float) particleBuilder.getY(),
-                        (float) particleBuilder.getZ(),
-                        (float) particleBuilder.getSpeed(),
-                        particleBuilder.getAmount(),
-                        additionalInfo);
-                for (final Player player : players) {
-                    ((org.bukkit.craftbukkit.v1_8_R1.entity.CraftPlayer) player).getHandle().playerConnection.sendPacket(packet);
-                }
-            }
-        }
-
-        static class ParticleUtils8R2 {
-            /**
-             * Sends a particleEffect for v1_8_R2
-             *
-             * @param particleBuilder particleBuilder
-             * @param location        location
-             * @param players         players
-             */
-            static void sendParticle(ParticleEffectData particleBuilder, Location location, Player[] players) {
-                final net.minecraft.server.v1_8_R2.EnumParticle particle = net.minecraft.server.v1_8_R2.EnumParticle.valueOf(particleBuilder.getEffectType().name().toUpperCase());
-                int[] additionalInfo = null;
-                if (particleBuilder.getMaterial() != null) {
-                    if (particleBuilder.getEffectType() == ParticleEffectData.ParticleEffectType.ITEM_CRACK)
-                        additionalInfo = new int[]{particleBuilder.getMaterial(), particleBuilder.getData()};
-                    else
-                        additionalInfo = new int[]{particleBuilder.getMaterial(), particleBuilder.getData() << 12};
-                }
-                final net.minecraft.server.v1_8_R2.PacketPlayOutWorldParticles packet = new net.minecraft.server.v1_8_R2.PacketPlayOutWorldParticles(
-                        particle,
-                        isLongDistance(location, Arrays.asList(players)),
-                        (float) location.getX(),
-                        (float) location.getY(),
-                        (float) location.getZ(),
-                        (float) particleBuilder.getX(),
-                        (float) particleBuilder.getY(),
-                        (float) particleBuilder.getZ(),
-                        (float) particleBuilder.getSpeed(),
-                        particleBuilder.getAmount(),
-                        additionalInfo);
-                for (final Player player : players) {
-                    ((org.bukkit.craftbukkit.v1_8_R2.entity.CraftPlayer) player).getHandle().playerConnection.sendPacket(packet);
-                }
-            }
-        }
-
-        static class ParticleUtils8R3 {
-            /**
-             * Sends a particleEffect for v1_8_R3
-             *
-             * @param particleBuilder particleBuilder
-             * @param location        location
-             * @param players         players
-             */
-            static void sendParticle(ParticleEffectData particleBuilder, Location location, Player[] players) {
-                final net.minecraft.server.v1_8_R3.EnumParticle particle = net.minecraft.server.v1_8_R3.EnumParticle.valueOf(particleBuilder.getEffectType().name().toUpperCase());
-                int[] additionalInfo = null;
-                if (particleBuilder.getMaterial() != null) {
-                    if (particleBuilder.getEffectType() == ParticleEffectData.ParticleEffectType.ITEM_CRACK)
-                        additionalInfo = new int[]{particleBuilder.getMaterial(), particleBuilder.getData()};
-                    else
-                        additionalInfo = new int[]{particleBuilder.getMaterial(), particleBuilder.getData() << 12};
-                }
-                final net.minecraft.server.v1_8_R3.PacketPlayOutWorldParticles packet = new net.minecraft.server.v1_8_R3.PacketPlayOutWorldParticles(
-                        particle,
-                        isLongDistance(location, Arrays.asList(players)),
-                        (float) location.getX(),
-                        (float) location.getY(),
-                        (float) location.getZ(),
-                        (float) particleBuilder.getX(),
-                        (float) particleBuilder.getY(),
-                        (float) particleBuilder.getZ(),
-                        (float) particleBuilder.getSpeed(),
-                        particleBuilder.getAmount(),
-                        additionalInfo);
-                for (final Player player : players) {
-                    ((org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer) player).getHandle().playerConnection.sendPacket(packet);
-                }
-            }
-        }
-
-        static class ParticleUtils9R1 {
-            /**
-             * Sends a particleEffect for v1_9_R1
-             *
-             * @param particleBuilder particleBuilder
-             * @param location        location
-             * @param players         players
-             */
-            static void sendParticle(ParticleEffectData particleBuilder, Location location, Player[] players) {
-                final net.minecraft.server.v1_9_R1.EnumParticle particle = net.minecraft.server.v1_9_R1.EnumParticle.valueOf(particleBuilder.getEffectType().name().toUpperCase());
-                int[] additionalInfo = null;
-                if (particleBuilder.getMaterial() != null) {
-                    if (particleBuilder.getEffectType() == ParticleEffectData.ParticleEffectType.ITEM_CRACK)
-                        additionalInfo = new int[]{particleBuilder.getMaterial(), particleBuilder.getData()};
-                    else
-                        additionalInfo = new int[]{particleBuilder.getMaterial(), particleBuilder.getData() << 12};
-                }
-                final net.minecraft.server.v1_9_R1.PacketPlayOutWorldParticles packet = new net.minecraft.server.v1_9_R1.PacketPlayOutWorldParticles(
-                        particle,
-                        isLongDistance(location, Arrays.asList(players)),
-                        (float) location.getX(),
-                        (float) location.getY(),
-                        (float) location.getZ(),
-                        (float) particleBuilder.getX(),
-                        (float) particleBuilder.getY(),
-                        (float) particleBuilder.getZ(),
-                        (float) particleBuilder.getSpeed(),
-                        particleBuilder.getAmount(),
-                        additionalInfo);
-                for (final Player player : players) {
-                    ((org.bukkit.craftbukkit.v1_9_R1.entity.CraftPlayer) player).getHandle().playerConnection.sendPacket(packet);
-                }
-            }
-        }
-
-        static class ParticleUtils9R2 {
-            /**
-             * Sends a particleEffect for v1_9_R2
-             *
-             * @param particleBuilder particleBuilder
-             * @param location        location
-             * @param players         players
-             */
-            static void sendParticle(ParticleEffectData particleBuilder, Location location, Player[] players) {
-                final net.minecraft.server.v1_9_R2.EnumParticle particle = net.minecraft.server.v1_9_R2.EnumParticle.valueOf(particleBuilder.getEffectType().name().toUpperCase());
-                int[] additionalInfo = null;
-                if (particleBuilder.getMaterial() != null) {
-                    if (particleBuilder.getEffectType() == ParticleEffectData.ParticleEffectType.ITEM_CRACK)
-                        additionalInfo = new int[]{particleBuilder.getMaterial(), particleBuilder.getData()};
-                    else
-                        additionalInfo = new int[]{particleBuilder.getMaterial(), particleBuilder.getData() << 12};
-                }
-                final net.minecraft.server.v1_9_R2.PacketPlayOutWorldParticles packet = new net.minecraft.server.v1_9_R2.PacketPlayOutWorldParticles(
-                        particle,
-                        isLongDistance(location, Arrays.asList(players)),
-                        (float) location.getX(),
-                        (float) location.getY(),
-                        (float) location.getZ(),
-                        (float) particleBuilder.getX(),
-                        (float) particleBuilder.getY(),
-                        (float) particleBuilder.getZ(),
-                        (float) particleBuilder.getSpeed(),
-                        particleBuilder.getAmount(),
-                        additionalInfo);
-                for (final Player player : players) {
-                    ((org.bukkit.craftbukkit.v1_9_R2.entity.CraftPlayer) player).getHandle().playerConnection.sendPacket(packet);
-                }
-            }
-        }
-
-        static class ParticleUtils10R1 {
-            /**
-             * Sends a particleEffect for v1_11_R1
-             *
-             * @param particleBuilder particleBuilder
-             * @param location        location
-             * @param players         players
-             */
-            static void sendParticle(ParticleEffectData particleBuilder, Location location, Player[] players) {
-                final net.minecraft.server.v1_10_R1.EnumParticle particle = net.minecraft.server.v1_10_R1.EnumParticle.valueOf(particleBuilder.getEffectType().name().toUpperCase());
-                int[] additionalInfo = null;
-                if (particleBuilder.getMaterial() != null) {
-                    if (particleBuilder.getEffectType() == ParticleEffectData.ParticleEffectType.ITEM_CRACK)
-                        additionalInfo = new int[]{particleBuilder.getMaterial(), particleBuilder.getData()};
-                    else
-                        additionalInfo = new int[]{particleBuilder.getMaterial(), particleBuilder.getData() << 12};
-                }
-                final net.minecraft.server.v1_10_R1.PacketPlayOutWorldParticles packet = new net.minecraft.server.v1_10_R1.PacketPlayOutWorldParticles(
-                        particle,
-                        isLongDistance(location, Arrays.asList(players)),
-                        (float) location.getX(),
-                        (float) location.getY(),
-                        (float) location.getZ(),
-                        (float) particleBuilder.getX(),
-                        (float) particleBuilder.getY(),
-                        (float) particleBuilder.getZ(),
-                        (float) particleBuilder.getSpeed(),
-                        particleBuilder.getAmount(),
-                        additionalInfo);
-                for (final Player player : players) {
-                    ((org.bukkit.craftbukkit.v1_10_R1.entity.CraftPlayer) player).getHandle().playerConnection.sendPacket(packet);
-                }
-            }
-        }
-
-        static class ParticleUtils11R1 {
-            /**
-             * Sends a particleEffect for v1_11_R1
-             *
-             * @param particleBuilder particleBuilder
-             * @param location        location
-             * @param players         players
-             */
-            static void sendParticle(ParticleEffectData particleBuilder, Location location, Player[] players) {
-                final net.minecraft.server.v1_11_R1.EnumParticle particle = net.minecraft.server.v1_11_R1.EnumParticle.valueOf(particleBuilder.getEffectType().name().toUpperCase());
-                int[] additionalInfo = null;
-                if (particleBuilder.getMaterial() != null) {
-                    if (particleBuilder.getEffectType() == ParticleEffectData.ParticleEffectType.ITEM_CRACK)
-                        additionalInfo = new int[]{particleBuilder.getMaterial(), particleBuilder.getData()};
-                    else
-                        additionalInfo = new int[]{particleBuilder.getMaterial(), particleBuilder.getData() << 12};
-                }
-                final net.minecraft.server.v1_11_R1.PacketPlayOutWorldParticles packet = new net.minecraft.server.v1_11_R1.PacketPlayOutWorldParticles(
-                        particle,
-                        isLongDistance(location, Arrays.asList(players)),
-                        (float) location.getX(),
-                        (float) location.getY(),
-                        (float) location.getZ(),
-                        (float) particleBuilder.getX(),
-                        (float) particleBuilder.getY(),
-                        (float) particleBuilder.getZ(),
-                        (float) particleBuilder.getSpeed(),
-                        particleBuilder.getAmount(),
-                        additionalInfo);
-                for (final Player player : players) {
-                    ((org.bukkit.craftbukkit.v1_11_R1.entity.CraftPlayer) player).getHandle().playerConnection.sendPacket(packet);
-                }
-            }
-        }
-
-        static class ParticleUtils12R1 {
-            /**
-             * Sends a particleEffect for v1_12_R1
-             *
-             * @param particleBuilder particleBuilder
-             * @param location        location
-             * @param players         players
-             */
-            static void sendParticle(ParticleEffectData particleBuilder, Location location, Player[] players) {
-                final net.minecraft.server.v1_12_R1.EnumParticle particle = net.minecraft.server.v1_12_R1.EnumParticle.valueOf(particleBuilder.getEffectType().name().toUpperCase());
-                int[] additionalInfo = null;
-                if (particleBuilder.getMaterial() != null) {
-                    if (particleBuilder.getEffectType() == ParticleEffectData.ParticleEffectType.ITEM_CRACK)
-                        additionalInfo = new int[]{particleBuilder.getMaterial(), particleBuilder.getData()};
-                    else
-                        additionalInfo = new int[]{particleBuilder.getMaterial(), particleBuilder.getData() << 12};
-                }
-                final net.minecraft.server.v1_12_R1.PacketPlayOutWorldParticles packet = new net.minecraft.server.v1_12_R1.PacketPlayOutWorldParticles(
-                        particle,
-                        isLongDistance(location, Arrays.asList(players)),
-                        (float) location.getX(),
-                        (float) location.getY(),
-                        (float) location.getZ(),
-                        (float) particleBuilder.getX(),
-                        (float) particleBuilder.getY(),
-                        (float) particleBuilder.getZ(),
-                        (float) particleBuilder.getSpeed(),
-                        particleBuilder.getAmount(),
-                        additionalInfo);
-                for (final Player player : players) {
-                    ((org.bukkit.craftbukkit.v1_12_R1.entity.CraftPlayer) player).getHandle().playerConnection.sendPacket(packet);
-                }
-            }
-        }
+    private static void sendPacket(Player player, Object packet) throws ClassNotFoundException, IllegalAccessException, NoSuchMethodException, InvocationTargetException, NoSuchFieldException {
+        final Object craftPlayer = findClass("org.bukkit.craftbukkit.VERSION.entity.CraftPlayer").cast(player);
+        final Object entityPlayer = invokeMethod(craftPlayer, craftPlayer.getClass(), "getHandle", new Class[]{}, new Object[]{});
+        final Field field = entityPlayer.getClass().getDeclaredField("playerConnection");
+        field.setAccessible(true);
+        final Object connection = field.get(entityPlayer);
+        invokeMethod(connection, connection.getClass(), "sendPacket", new Class[]{packet.getClass().getInterfaces()[0]}, new Object[]{packet});
     }
+
+    /**
+     * Invokes a constructor by the given parameters
+     *
+     * @param clazz      clazz
+     * @param paramTypes paramTypes
+     * @param params     params
+     * @return instance
+     * @throws NoSuchMethodException     exception
+     * @throws IllegalAccessException    exception
+     * @throws InvocationTargetException exception
+     * @throws InstantiationException    exception
+     */
+    private static Object invokeConstructor(Class<?> clazz, Class[] paramTypes, Object[] params) throws
+            NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
+        final Constructor constructor = clazz.getDeclaredConstructor(paramTypes);
+        constructor.setAccessible(true);
+        return constructor.newInstance(params);
+    }
+
+    /**
+     * Invokes a method by the given parameters
+     *
+     * @param instance   instance
+     * @param clazz      clazz
+     * @param name       name
+     * @param paramTypes paramTypes
+     * @param params     params
+     * @return returnedObject
+     * @throws InvocationTargetException exception
+     * @throws IllegalAccessException    exception
+     * @throws NoSuchMethodException     exception
+     */
+    private static Object invokeMethod(Object instance, Class<?> clazz, String name, Class[] paramTypes, Object[]
+            params) throws InvocationTargetException, IllegalAccessException, NoSuchMethodException {
+        final Method method = clazz.getDeclaredMethod(name, paramTypes);
+        method.setAccessible(true);
+        return method.invoke(instance, params);
+    }
+
+    /**
+     * Finds a class regarding of the server Version
+     *
+     * @param name name
+     * @return clazz
+     * @throws ClassNotFoundException exception
+     */
+    private static Class<?> findClass(String name) throws ClassNotFoundException {
+        return Class.forName(name.replace("VERSION", Bukkit.getServer().getClass().getPackage().getName().replace(".", ",").split(",")[3]));
+    }
+
+    /**
+     * Checks if longDistance attribute is necessary
+     *
+     * @param location location
+     * @param players  players
+     * @return isNecessary
+     */
+    private static boolean isLongDistance(Location location, Player[] players) {
+        for (final Player player : players) {
+            if (location.getWorld().getName().equals(player.getLocation().getWorld().getName())
+                    && player.getLocation().distanceSquared(location) > 65536) {
+                return true;
+            }
+        }
+        return false;
+    }
+
 }

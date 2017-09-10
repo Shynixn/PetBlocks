@@ -5,19 +5,21 @@ import com.github.shynixn.petblocks.api.bukkit.event.PetBlockCannonEvent;
 import com.github.shynixn.petblocks.api.bukkit.event.PetBlockMoveEvent;
 import com.github.shynixn.petblocks.api.bukkit.event.PetBlockRideEvent;
 import com.github.shynixn.petblocks.api.bukkit.event.PetBlockWearEvent;
-import com.github.shynixn.petblocks.api.entities.*;
+import com.github.shynixn.petblocks.api.business.entity.PetBlock;
+import com.github.shynixn.petblocks.api.persistence.entity.ParticleEffectMeta;
 import com.github.shynixn.petblocks.api.persistence.entity.PetMeta;
 import com.github.shynixn.petblocks.api.persistence.entity.SoundMeta;
 import com.github.shynixn.petblocks.business.bukkit.nms.NMSRegistry;
 import com.github.shynixn.petblocks.business.logic.configuration.ConfigPet;
+import com.github.shynixn.petblocks.business.logic.persistence.entity.ParticleEffectData;
 import com.github.shynixn.petblocks.business.logic.persistence.entity.PetData;
 import com.github.shynixn.petblocks.business.logic.persistence.entity.SoundBuilder;
 import com.github.shynixn.petblocks.lib.BukkitUtilities;
-import com.github.shynixn.petblocks.lib.ParticleBuilder;
-import com.github.shynixn.petblocks.lib.ParticleEffect;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.EulerAngle;
@@ -34,7 +36,16 @@ import java.util.logging.Level;
 public final class PetBlockHelper {
     private static final Random random = new Random();
     private static final SoundMeta explosionSound = new SoundBuilder("EXPLODE", 1.0F, 2.0F);
-
+    private static final ParticleEffectMeta angryParticle = new ParticleEffectData()
+            .setEffectType(ParticleEffectMeta.ParticleEffectType.VILLAGER_ANGRY)
+            .setOffset(2, 2, 2)
+            .setSpeed(0.1)
+            .setAmount(2);
+    private static final ParticleEffectMeta cloud  = new ParticleEffectData()
+            .setEffectType(ParticleEffectMeta.ParticleEffectType.CLOUD)
+            .setOffset(1, 1, 1)
+            .setSpeed(0.1)
+            .setAmount(100);
     private PetBlockHelper() {
         super();
     }
@@ -44,8 +55,9 @@ public final class PetBlockHelper {
             if (entity.getLocation().getBlock().isLiquid() && counter <= 0) {
                 final Vector vec = new Vector(random.nextInt(3) * BukkitUtilities.isNegative(random), random.nextInt(3) * BukkitUtilities.isNegative(random), random.nextInt(3) * BukkitUtilities.isNegative(random));
                 entity.setVelocity(vec);
-                if (ConfigPet.getInstance().isAfraidwaterParticles())
-                    new ParticleBuilder(ParticleEffect.VILLAGER_ANGRY, 2, 2, 2, 0.1, 2).build().play(entity.getLocation());
+                if (ConfigPet.getInstance().isAfraidwaterParticles()) {
+                    angryParticle.apply(entity.getLocation());
+                }
                 counter = 20;
             }
             counter--;
@@ -73,17 +85,17 @@ public final class PetBlockHelper {
     }
 
     public static long executeMovingSound(Entity entity, Player owner, PetMeta petMeta, long previous) {
-
-        PetData petData = (PetData) petMeta;
+        final PetData petData = (PetData) petMeta;
         if (petMeta == null)
             return previous;
         final long milli = System.currentTimeMillis();
         if (milli - previous > 500) {
             if (petMeta.isSoundEnabled()) {
-                if (ConfigPet.getInstance().isDesign_allowOtherHearSound() && !petData.isHidden())
-                    petData.getType().playMovingSound(entity.getLocation());
-                else
-                    petData.getType().playMovingSound(owner);
+                if (ConfigPet.getInstance().isDesign_allowOtherHearSound() && !petData.isHidden()) {
+                    petData.getEngine().getWalkingSound().applyToLocation(entity.getLocation());
+                } else {
+                    petData.getEngine().getWalkingSound().applyToPlayers(owner);
+                }
             }
             return milli;
         }
@@ -96,64 +108,68 @@ public final class PetBlockHelper {
     }
 
     public static int doTick(int counter, PetBlock petBlock, TickCallBack callBack) {
-        PetData petData = (PetData) petBlock.getPetMeta();
+        PetData petData = (PetData) petBlock.getMeta();
 
-        if (!petBlock.getArmorStand().isDead() && petBlock.getArmorStand().getPassenger() == null && petBlock.getMovementEntity() != null && petBlock.getArmorStand().getVehicle() == null) {
+        if (!getArmorstand(petBlock).isDead() && getArmorstand(petBlock).getPassenger() == null && getEngineEntity(petBlock) != null && getArmorstand(petBlock).getVehicle() == null) {
             Location location = null;
-            if (petData.getAge() == Age.LARGE)
-                location = new Location(petBlock.getMovementEntity().getLocation().getWorld(), petBlock.getMovementEntity().getLocation().getX(), petBlock.getMovementEntity().getLocation().getY() - 1.2, petBlock.getMovementEntity().getLocation().getZ(), petBlock.getMovementEntity().getLocation().getYaw(), petBlock.getMovementEntity().getLocation().getPitch());
-            else if (petData.getAge() == Age.SMALL)
-                location = new Location(petBlock.getMovementEntity().getLocation().getWorld(), petBlock.getMovementEntity().getLocation().getX(), petBlock.getMovementEntity().getLocation().getY() - 0.7, petBlock.getMovementEntity().getLocation().getZ(), petBlock.getMovementEntity().getLocation().getYaw(), petBlock.getMovementEntity().getLocation().getPitch());
+            if (petData.getAge() >= ConfigPet.getInstance().getAge_largeticks())
+                location = new Location(getEngineEntity(petBlock).getLocation().getWorld(), getEngineEntity(petBlock).getLocation().getX(), getEngineEntity(petBlock).getLocation().getY() - 1.2, getEngineEntity(petBlock).getLocation().getZ(), getEngineEntity(petBlock).getLocation().getYaw(), getEngineEntity(petBlock).getLocation().getPitch());
+            else if (petData.getAge() <= ConfigPet.getInstance().getAge_smallticks())
+                location = new Location(getEngineEntity(petBlock).getLocation().getWorld(), getEngineEntity(petBlock).getLocation().getX(), getEngineEntity(petBlock).getLocation().getY() - 0.7, getEngineEntity(petBlock).getLocation().getZ(), getEngineEntity(petBlock).getLocation().getYaw(), getEngineEntity(petBlock).getLocation().getPitch());
             if (location != null)
                 callBack.run(location);
             counter = doTickSounds(counter, petBlock);
-        } else if (petBlock.getMovementEntity() != null) {
-            petBlock.getMovementEntity().teleport(petBlock.getArmorStand().getLocation());
+        } else if (getEngineEntity(petBlock) != null) {
+            getEngineEntity(petBlock).teleport(getArmorstand(petBlock).getLocation());
         }
         try {
-            if (petData.getAgeInTicks() >= ConfigPet.getInstance().getAge_maxticks()) {
+            if (petData.getAge() >= ConfigPet.getInstance().getAge_maxticks()) {
                 if (ConfigPet.getInstance().isAge_deathOnMaxTicks() && !petBlock.isDieing()) {
                     petBlock.setDieing();
                 }
             } else {
-                final Age age = petData.getAge();
-                petData.setAgeInTicks(petData.getAgeInTicks() + 1);
-                if (petData.getAge() != age) {
+                boolean respawn = false;
+                if (petData.getAge() < ConfigPet.getInstance().getAge_largeticks()) {
+                    respawn = true;
+                }
+                petData.setAge(petData.getAge() + 1);
+                if (petData.getAge() >= ConfigPet.getInstance().getAge_largeticks() && respawn) {
                     petBlock.respawn();
                 }
             }
         } catch (final Exception ex) {
             Bukkit.getLogger().log(Level.WARNING, "Catcher prevented server crash, please report the following error to author Shynixn!", ex);
         }
-        petBlock.getArmorStand().setFireTicks(0);
-        if (petBlock.getMovementEntity() != null)
-            petBlock.getMovementEntity().setFireTicks(0);
+        getArmorstand(petBlock).setFireTicks(0);
+        if (getEngineEntity(petBlock) != null)
+            getEngineEntity(petBlock).setFireTicks(0);
         Bukkit.getPluginManager().callEvent(new PetBlockMoveEvent(petBlock));
         return counter;
     }
 
     private static int doTickSounds(int counter, PetBlock petBlock) {
-        PetData petData = (PetData) petBlock.getPetMeta();
+        PetData petData = (PetData) petBlock.getMeta();
         if (counter <= 0) {
             final Random random = new Random();
-            if (!petBlock.getMovementEntity().isOnGround() || petData.getMovementType() == Movement.CRAWLING) {
-                if (petBlock.getPetMeta().isSoundEnabled()) {
-                    if (ConfigPet.getInstance().isDesign_allowOtherHearSound())
-                        petData.getType().playRandomSound(petBlock.getMovementEntity().getLocation());
-                    else
-                        petData.getType().playRandomSound(petBlock.getOwner());
+            if (!getEngineEntity(petBlock).isOnGround() || petData.getEngine().getEntityType().equalsIgnoreCase("ZOMBIE")) {
+                if (petBlock.getMeta().isSoundEnabled()) {
+                    if (ConfigPet.getInstance().isDesign_allowOtherHearSound()) {
+                        petData.getEngine().getAmbientSound().applyToLocation(getEngineEntity(petBlock).getLocation());
+                    } else {
+                        petData.getEngine().getAmbientSound().applyToLocation(petBlock.getPlayer());
+                    }
                 }
             }
             counter = 20 * random.nextInt(20) + 1;
         }
-        if (petBlock.getMovementEntity().isDead()) {
-            PetBlocksApi.removePetBlock(petBlock.getOwner());
+        if (getEngineEntity(petBlock).isDead()) {
+            PetBlocksApi.getDefaultPetBlockController().remove(petBlock);
         }
         if (petData.getParticleEffect() != null) {
-            if (!petBlock.getPetMeta().isVisible()) {
-                petData.getParticleEffect().play(petBlock.getArmorStand().getLocation().add(0, 1, 0), petBlock.getOwner());
+            if (!petBlock.getMeta().isVisible()) {
+                petData.getParticleEffectMeta().apply(getArmorstand(petBlock).getLocation().add(0, 1, 0), petBlock.getPlayer());
             } else {
-                petData.getParticleEffect().play(petBlock.getArmorStand().getLocation().add(0, 1, 0));
+                petData.getParticleEffectMeta().apply(getArmorstand(petBlock).getLocation().add(0, 1, 0));
             }
         }
         counter--;
@@ -161,7 +177,7 @@ public final class PetBlockHelper {
     }
 
     public static void refreshHeadItemMeta(PetBlock petBlock, ItemStack itemStack) {
-        final PetData petData = (PetData) petBlock.getPetMeta();
+        final PetData petData = (PetData) petBlock.getMeta();
         final String name;
         if (petData.getHeadDisplayName() == null)
             name = petBlock.getDisplayName();
@@ -171,13 +187,12 @@ public final class PetBlockHelper {
             itemStack = BukkitUtilities.nameItem(itemStack, name, petData.getHeadLore());
         else
             itemStack = BukkitUtilities.nameItem(itemStack, name, null);
-        itemStack = setWithUnbreakable(petBlock.getPetMeta(), itemStack);
-        petBlock.getArmorStand().setHelmet(itemStack);
+        itemStack = setWithUnbreakable(petBlock.getMeta(), itemStack);
+        getArmorstand(petBlock).setHelmet(itemStack);
     }
 
     public static void setItemConsideringAge(PetBlock petBlock) {
-        final PetData petData = (PetData) petBlock.getPetMeta();
-        final Age age = petData.getAge();
+        final PetData petData = (PetData) petBlock.getMeta();
         final ItemStack itemStack;
         if (petData.getSkin() != null) {
             if (petData.getSkin().contains("http")) {
@@ -188,22 +203,23 @@ public final class PetBlockHelper {
         } else {
             itemStack = new ItemStack(petData.getSkinMaterial(), 1, petData.getSkinDurability());
         }
-        if (age == Age.SMALL) {
+        if (petData.getAge() >= ConfigPet.getInstance().getAge_largeticks()) {
             refreshHeadItemMeta(petBlock, itemStack);
-            petBlock.getArmorStand().setSmall(true);
-        } else if (age == Age.LARGE) {
+            getArmorstand(petBlock).setSmall(false);
+
+        } else {
             refreshHeadItemMeta(petBlock, itemStack);
-            petBlock.getArmorStand().setSmall(false);
+            getArmorstand(petBlock).setSmall(true);
         }
     }
 
     public static void setRiding(PetBlock petBlock, Player player) {
-        if (petBlock.getArmorStand().getPassenger() == null && player.getPassenger() == null) {
+        if (getArmorstand(petBlock).getPassenger() == null && player.getPassenger() == null) {
             final PetBlockRideEvent event = new PetBlockRideEvent(petBlock, true);
             Bukkit.getPluginManager().callEvent(event);
             if (!event.isCanceled()) {
-                petBlock.getArmorStand().setVelocity(new Vector(0, 1, 0));
-                petBlock.getArmorStand().setPassenger(player);
+                getArmorstand(petBlock).setVelocity(new Vector(0, 1, 0));
+                getArmorstand(petBlock).setPassenger(player);
                 player.closeInventory();
             }
         }
@@ -212,11 +228,10 @@ public final class PetBlockHelper {
     public static boolean setDieing(final PetBlock petBlock) {
         if (!petBlock.isDieing()) {
             petBlock.jump();
-            if (petBlock.getArmorStand() != null && !petBlock.getArmorStand().isDead())
-                petBlock.getArmorStand().setHeadPose(new EulerAngle(0, 1, 0));
+            if (petBlock.getArmorStand() != null && !getArmorstand(petBlock).isDead())
+                getArmorstand(petBlock).setHeadPose(new EulerAngle(0, 1, 0));
             Bukkit.getPluginManager().getPlugin("PetBlocks").getServer().getScheduler().runTaskLater(Bukkit.getPluginManager().getPlugin("PetBlocks"), () -> {
-                final Particle particle = new ParticleBuilder(ParticleEffect.CLOUD, 1, 1, 1, 0.1, 100).build();
-                particle.play(petBlock.getLocation());
+                cloud.apply(petBlock.getLocation());
                 petBlock.remove();
             }, 20 * 2);
             return true;
@@ -241,10 +256,10 @@ public final class PetBlockHelper {
         final PetBlockCannonEvent event = new PetBlockCannonEvent(petBlock);
         Bukkit.getPluginManager().callEvent(event);
         if (!event.isCanceled()) {
-            petBlock.getMovementEntity().setVelocity(vector);
-            if (petBlock.getPetMeta().isSoundEnabled()) {
+            getEngineEntity(petBlock).setVelocity(vector);
+            if (petBlock.getMeta().isSoundEnabled()) {
                 try {
-                    ((SoundBuilder)explosionSound).apply(petBlock.getOwner().getLocation());
+                    ((SoundBuilder) explosionSound).apply(((Player) petBlock.getPlayer()).getLocation());
                 } catch (final Exception e) {
                     Bukkit.getLogger().log(Level.WARNING, "Cannot play sound.", e);
                 }
@@ -253,11 +268,11 @@ public final class PetBlockHelper {
     }
 
     public static void wear(PetBlock petBlock, Player player, TickCallBack callBack) {
-        if (petBlock.getArmorStand().getPassenger() == null && player.getPassenger() == null) {
+        if (getArmorstand(petBlock).getPassenger() == null && player.getPassenger() == null) {
             final PetBlockWearEvent event = new PetBlockWearEvent(petBlock, true);
             Bukkit.getPluginManager().callEvent(event);
             if (!event.isCanceled()) {
-                player.setPassenger(petBlock.getArmorStand());
+                player.setPassenger(getArmorstand(petBlock));
                 player.closeInventory();
                 if (callBack != null)
                     callBack.run(null);
@@ -266,22 +281,25 @@ public final class PetBlockHelper {
     }
 
     public static void jump(PetBlock petBlock) {
-        petBlock.getMovementEntity().setVelocity(new Vector(0, 0.5, 0));
+        getEngineEntity(petBlock).setVelocity(new Vector(0, 0.5, 0));
     }
 
     public static void teleport(PetBlock petBlock, Location location) {
-        petBlock.getMovementEntity().teleport(location);
-        petBlock.getArmorStand().teleport(location);
+        getEngineEntity(petBlock).teleport(location);
+        getArmorstand(petBlock).teleport(location);
     }
 
     public static boolean isDead(PetBlock petBlock) {
-        return (petBlock.getMovementEntity().isDead() || petBlock.getArmorStand().isDead()) || (petBlock.getMovementEntity().getWorld().getName().equals(petBlock.getArmorStand().getWorld().getName()) && petBlock.getMovementEntity().getLocation().distance(petBlock.getArmorStand().getLocation()) > 10);
+        return (getEngineEntity(petBlock).isDead()
+                || getArmorstand(petBlock).isDead())
+                || (getEngineEntity(petBlock).getWorld().getName().equals(getArmorstand(petBlock).getWorld().getName())
+                && getEngineEntity(petBlock).getLocation().distance(getArmorstand(petBlock).getLocation()) > 10);
     }
 
     public static void setDisplayName(PetBlock petBlock, String name) {
-        petBlock.getArmorStand().setCustomName(name);
-        petBlock.getArmorStand().setCustomNameVisible(true);
-        final ItemStack itemStack = petBlock.getArmorStand().getHelmet();
+        getArmorstand(petBlock).setCustomName(name);
+        getArmorstand(petBlock).setCustomNameVisible(true);
+        final ItemStack itemStack = getArmorstand(petBlock).getHelmet();
         refreshHeadItemMeta(petBlock, itemStack);
     }
 
@@ -296,16 +314,26 @@ public final class PetBlockHelper {
     }
 
     public static void respawn(PetBlock petBlock, TickCallBack callBack) {
-        final Location location = petBlock.getLocation().clone();
+        final Location location = ((Location) petBlock.getLocation()).clone();
         petBlock.remove();
         callBack.run(location);
     }
 
     public static void remove(PetBlock petBlock) {
-        if (petBlock.getMovementEntity() != null && !petBlock.getMovementEntity().isDead())
-            petBlock.getMovementEntity().remove();
-        if (!petBlock.getArmorStand().isDead())
-            petBlock.getArmorStand().remove();
+        if (petBlock.getEngineEntity() != null && !((LivingEntity) petBlock.getEngineEntity()).isDead()) {
+            ((LivingEntity) petBlock.getEngineEntity()).remove();
+        }
+        if (!((LivingEntity) petBlock.getArmorStand()).isDead()) {
+            ((LivingEntity) petBlock.getArmorStand()).remove();
+        }
+    }
+
+    private static ArmorStand getArmorstand(PetBlock petBlock) {
+        return (ArmorStand) petBlock.getArmorStand();
+    }
+
+    private static LivingEntity getEngineEntity(PetBlock petBlock) {
+        return (LivingEntity) petBlock.getEngineEntity();
     }
 
     @FunctionalInterface

@@ -1,4 +1,6 @@
-package com.github.shynixn.petblocks.api.persistence.entity;
+package com.github.shynixn.petblocks.api.persistence.controller;
+
+import com.github.shynixn.petblocks.api.persistence.entity.EngineContainer;
 
 /**
  * Copyright 2017 Shynixn
@@ -29,64 +31,12 @@ package com.github.shynixn.petblocks.api.persistence.entity;
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-public interface SoundMeta extends Persistenceable {
+public interface EngineController extends IController<EngineContainer>{
 
     /**
-     * Applies the sound at the given location
-     *
-     * @param location location
+     * Returns the engineContainer with the given id
+     * @param id id
+     * @return engineContainer
      */
-    void applyToLocation(Object location) throws Exception;
-
-    /**
-     * Applies the sound to the given player
-     *
-     * @param players players
-     */
-    void applyToPlayers(Object... players) throws Exception;
-
-    /**
-     * Returns the name of the sound
-     *
-     * @return name
-     */
-    String getName();
-
-    /**
-     * Sets the name of the sound
-     *
-     * @param name name
-     * @return builder
-     */
-    SoundMeta setName(String name);
-
-    /**
-     * Returns the volume of the sound
-     *
-     * @return volume
-     */
-    double getVolume();
-
-    /**
-     * Sets the volume of the sound
-     *
-     * @param volume volume
-     * @return builder
-     */
-    SoundMeta setVolume(double volume);
-
-    /**
-     * Returns the pitch of the sound
-     *
-     * @return pitch
-     */
-    double getPitch();
-
-    /**
-     * Sets the pitch of the sound
-     *
-     * @param pitch pitch
-     * @return builder
-     */
-    SoundMeta setPitch(double pitch);
+    EngineContainer getById(int id);
 }

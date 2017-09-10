@@ -1,6 +1,6 @@
 package com.github.shynixn.petblocks.business.bukkit.dependencies.supervanish;
 
-import com.github.shynixn.petblocks.api.entities.PetBlock;
+import com.github.shynixn.petblocks.api.business.entity.PetBlock;
 import com.github.shynixn.petblocks.business.bukkit.PetBlocksPlugin;
 import com.github.shynixn.petblocks.business.bukkit.nms.NMSRegistry;
 import com.github.shynixn.petblocks.lib.ReflectionUtils;
@@ -28,8 +28,8 @@ class VisibilityManager {
                 VisibilityManager.this.hiddenValues.put(petBlock, new ArrayList<>());
             for (final Player player : players) {
                 try {
-                    VisibilityManager.this.sendDestroyPacket(player, petBlock.getArmorStand());
-                    VisibilityManager.this.sendDestroyPacket(player, petBlock.getMovementEntity());
+                    VisibilityManager.this.sendDestroyPacket(player, (Entity) petBlock.getArmorStand());
+                    VisibilityManager.this.sendDestroyPacket(player, (Entity) petBlock.getEngineEntity());
                     VisibilityManager.this.hiddenValues.get(petBlock).add(player);
                 } catch (ClassNotFoundException | IllegalAccessException | InstantiationException | NoSuchMethodException | InvocationTargetException e) {
                     Bukkit.getLogger().log(Level.WARNING, "Failed to send visibilty packet.", e);
@@ -42,8 +42,8 @@ class VisibilityManager {
         Bukkit.getServer().getScheduler().runTaskAsynchronously(JavaPlugin.getPlugin(PetBlocksPlugin.class), () -> {
             if (VisibilityManager.this.hiddenValues.containsKey(petBlock)) {
                 for (final Player player : players) {
-                    VisibilityManager.this.sendSpawnPacket(player, petBlock.getArmorStand());
-                    VisibilityManager.this.sendSpawnPacket(player, petBlock.getMovementEntity());
+                    VisibilityManager.this.sendSpawnPacket(player, (Entity) petBlock.getArmorStand());
+                    VisibilityManager.this.sendSpawnPacket(player, (Entity) petBlock.getEngineEntity());
                     VisibilityManager.this.hiddenValues.get(petBlock).add(player);
                 }
             }

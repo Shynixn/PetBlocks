@@ -1,8 +1,7 @@
 package com.github.shynixn.petblocks.business.bukkit;
 
 import com.github.shynixn.petblocks.api.PetBlocksApi;
-import com.github.shynixn.petblocks.business.Config;
-import com.github.shynixn.petblocks.business.Language;
+import com.github.shynixn.petblocks.business.logic.configuration.Config;
 import com.github.shynixn.petblocks.business.bukkit.nms.NMSRegistry;
 import com.github.shynixn.petblocks.business.bukkit.nms.VersionSupport;
 import com.github.shynixn.petblocks.business.metrics.Metrics;
@@ -63,7 +62,6 @@ public final class PetBlocksPlugin extends JavaPlugin {
             Bukkit.getPluginManager().disablePlugin(this);
         } else {
             Bukkit.getServer().getConsoleSender().sendMessage(PREFIX_CONSOLE + ChatColor.GREEN + "Loading PetBlocks ...");
-            Language.reload(this);
             Config.initialize(this);
             if (Config.getInstance().isMetricsEnabled()) {
                 new Metrics(this);

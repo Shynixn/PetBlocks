@@ -6,7 +6,7 @@ import com.github.shynixn.petblocks.api.bukkit.event.PetBlockRideEvent;
 import com.github.shynixn.petblocks.api.entities.PetBlock;
 import com.github.shynixn.petblocks.api.persistence.entity.PetMeta;
 import com.github.shynixn.petblocks.api.persistence.entity.SoundMeta;
-import com.github.shynixn.petblocks.business.Config;
+import com.github.shynixn.petblocks.business.logic.configuration.Config;
 import com.github.shynixn.petblocks.business.bukkit.PetBlocksPlugin;
 import com.github.shynixn.petblocks.business.bukkit.nms.NMSRegistry;
 import com.github.shynixn.petblocks.business.logic.configuration.ConfigPet;

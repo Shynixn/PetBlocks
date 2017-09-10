@@ -115,7 +115,7 @@ public class EngineRepository implements IFileController<EngineContainer> {
         for (final String key : data.keySet()) {
             final Map<String, Object> content = ((MemorySection) this.plugin.getConfig().get("engine." + key)).getValues(true);
             try {
-                this.engineContainers.add(new EngineData(content));
+                this.engineContainers.add(new EngineData(Long.parseLong(key), content));
             } catch (final Exception e) {
                 Bukkit.getLogger().log(Level.WARNING, "Failed to add content " + key + ".");
             }

@@ -1,6 +1,6 @@
 package com.github.shynixn.petblocks.business.bukkit.nms;
 
-import com.github.shynixn.petblocks.api.entities.PetBlock;
+import com.github.shynixn.petblocks.api.business.entity.PetBlock;
 import com.github.shynixn.petblocks.api.persistence.entity.PetMeta;
 import com.github.shynixn.petblocks.business.bukkit.PetBlocksPlugin;
 import com.github.shynixn.petblocks.business.bukkit.dependencies.clearlag.ClearLagListener;
