@@ -1,6 +1,4 @@
-package com.github.shynixn.petblocks.api.persistence.controller;
-
-import com.github.shynixn.petblocks.api.persistence.entity.EngineContainer;
+package com.github.shynixn.petblocks.api.business.entity;
 
 /**
  * Copyright 2017 Shynixn
@@ -31,12 +29,23 @@ import com.github.shynixn.petblocks.api.persistence.entity.EngineContainer;
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-public interface EngineController extends IFileController<EngineContainer>{
+public interface PetBlockPartEntity {
+    /**
+     * Returns the entity hidden by this object
+     *
+     * @return spigotEntity
+     */
+    Object getEntity();
 
     /**
-     * Returns the engineContainer with the given id
-     * @param id id
-     * @return engineContainer
+     * Spawns the entity at the given location
+     *
+     * @param location location
      */
-    EngineContainer getById(int id);
+    void spawn(Object location);
+
+    /**
+     * Removes the entity from the world
+     */
+    void remove();
 }

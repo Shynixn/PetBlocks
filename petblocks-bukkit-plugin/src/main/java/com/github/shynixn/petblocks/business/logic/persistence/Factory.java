@@ -1,12 +1,10 @@
 package com.github.shynixn.petblocks.business.logic.persistence;
 
-import com.github.shynixn.petblocks.api.persistence.controller.IFileController;
-import com.github.shynixn.petblocks.api.persistence.controller.ParticleEffectMetaController;
-import com.github.shynixn.petblocks.api.persistence.controller.PetMetaController;
-import com.github.shynixn.petblocks.api.persistence.controller.PlayerMetaController;
+import com.github.shynixn.petblocks.api.business.entity.GUIItemContainer;
+import com.github.shynixn.petblocks.api.persistence.controller.*;
 import com.github.shynixn.petblocks.api.persistence.entity.EngineContainer;
 import com.github.shynixn.petblocks.business.bukkit.PetBlocksPlugin;
-import com.github.shynixn.petblocks.business.logic.persistence.controller.EngineRepository;
+import com.github.shynixn.petblocks.business.logic.configuration.*;
 import com.github.shynixn.petblocks.business.logic.persistence.controller.ParticleEffectDataRepository;
 import com.github.shynixn.petblocks.business.logic.persistence.controller.PetDataRepository;
 import com.github.shynixn.petblocks.business.logic.persistence.controller.PlayerDataRepository;
@@ -37,12 +35,28 @@ public class Factory {
         return new ParticleEffectDataRepository(connectionContext);
     }
 
-    public static IFileController<EngineContainer> createEngineController() {
-        return new EngineRepository(JavaPlugin.getPlugin(PetBlocksPlugin.class));
+    public static EngineController createEngineController() {
+        return new EngineConfiguration(JavaPlugin.getPlugin(PetBlocksPlugin.class));
+    }
+
+    public static CostumeController createCostumesController(String category) {
+        return new CostumeConfiguration(category, JavaPlugin.getPlugin(PetBlocksPlugin.class));
+    }
+
+    public static CostumeController createMinecraftHeadsCostumesController() {
+        return new MinecraftHeadConfiguration(JavaPlugin.getPlugin(PetBlocksPlugin.class));
     }
 
     public static PetMetaController createPetDataController() {
         return new PetDataRepository(connectionContext);
+    }
+
+    public static OtherGUIItemsController createGUIItemsController() {
+        return new FixedItemConfiguration(JavaPlugin.getPlugin(PetBlocksPlugin.class));
+    }
+
+    public static IFileController<GUIItemContainer> createParticleConfiguration() {
+        return new ParticleConfiguration(JavaPlugin.getPlugin(PetBlocksPlugin.class));
     }
 
     public static void disable() {
@@ -119,4 +133,5 @@ public class Factory {
             }
         }
     }
+
 }

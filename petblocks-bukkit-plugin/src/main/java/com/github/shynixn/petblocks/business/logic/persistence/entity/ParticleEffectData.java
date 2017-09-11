@@ -95,16 +95,25 @@ public class ParticleEffectData extends PersistenceObject implements ParticleEff
      */
     public ParticleEffectData(Map<String, Object> items) throws Exception {
         super();
-        this.effect = (String) items.get("effect");
+        this.effect = (String) items.get("name");
         this.amount = (int) items.get("amount");
         this.speed = (double) items.get("speed");
-        this.offsetX = (float) (double) items.get("size.x");
-        this.offsetY = (float) (double) items.get("size.y");
-        this.offsetZ = ((float) (double) items.get("size.z"));
-        if (items.containsKey("block.material"))
-            this.material = (Integer) items.get("block.material");
-        if (items.containsKey("block.damage"))
-            this.data = (Byte) items.get("block.damage");
+        if (items.containsKey("offx"))
+            this.offsetX = (float) (double) items.get("offx");
+        if (items.containsKey("offy"))
+            this.offsetY = (float) (double) items.get("offy");
+        if (items.containsKey("offz"))
+            this.offsetZ = ((float) (double) items.get("offz"));
+        if (items.containsKey("id"))
+            this.material = (Integer) items.get("id");
+        if (items.containsKey("damage"))
+            this.data = (Byte) items.get("damage");
+        if (items.containsKey("red"))
+            this.setRed((Integer) items.get("red"));
+        if (items.containsKey("green"))
+            this.setGreen((Integer) items.get("green"));
+        if (items.containsKey("blue"))
+            this.setBlue((Integer) items.get("blue"));
     }
 
     /**
@@ -307,7 +316,7 @@ public class ParticleEffectData extends PersistenceObject implements ParticleEff
     @Override
     public ParticleEffectData setMaterial(Object material) {
         if (material != null) {
-            this.material = ((Material)material).getId();
+            this.material = ((Material) material).getId();
         } else {
             this.material = null;
         }
@@ -554,7 +563,7 @@ public class ParticleEffectData extends PersistenceObject implements ParticleEff
             }
             final float speed;
             final int amount;
-            if (this.effect.equals(ParticleEffectData.ParticleEffectType.REDSTONE.getSimpleName()) ||this.effect.equals(ParticleEffectData.ParticleEffectType.NOTE.getSimpleName())) {
+            if (this.effect.equals(ParticleEffectData.ParticleEffectType.REDSTONE.getSimpleName()) || this.effect.equals(ParticleEffectData.ParticleEffectType.NOTE.getSimpleName())) {
                 amount = 0;
                 speed = 1.0F;
             } else {
@@ -565,9 +574,9 @@ public class ParticleEffectData extends PersistenceObject implements ParticleEff
             int[] additionalInfo = null;
             if (this.getMaterial() != null) {
                 if (this.getEffectType() == ParticleEffectData.ParticleEffectType.ITEM_CRACK) {
-                    additionalInfo = new int[]{((Material)this.getMaterial()).getId(), this.getData()};
+                    additionalInfo = new int[]{((Material) this.getMaterial()).getId(), this.getData()};
                 } else {
-                    additionalInfo = new int[]{((Material)this.getMaterial()).getId(), this.getData() << 12};
+                    additionalInfo = new int[]{((Material) this.getMaterial()).getId(), this.getData() << 12};
                 }
             }
             final Object packet = invokeConstructor(findClass("net.minecraft.server.VERSION.PacketPlayOutWorldParticles"), new Class[]{

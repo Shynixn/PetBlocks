@@ -1,10 +1,9 @@
 package com.github.shynixn.petblocks.business.bukkit.nms.v1_8_R1;
 
 import com.github.shynixn.petblocks.api.bukkit.event.PetBlockSpawnEvent;
-import com.github.shynixn.petblocks.api.entities.CustomEntity;
-import com.github.shynixn.petblocks.api.entities.MoveType;
-import com.github.shynixn.petblocks.api.entities.Movement;
-import com.github.shynixn.petblocks.api.entities.PetBlock;
+import com.github.shynixn.petblocks.api.business.entity.PetBlock;
+import com.github.shynixn.petblocks.api.business.entity.PetBlockPartEntity;
+import com.github.shynixn.petblocks.api.business.enumeration.RideType;
 import com.github.shynixn.petblocks.api.persistence.entity.PetMeta;
 import com.github.shynixn.petblocks.business.bukkit.nms.NMSRegistry;
 import com.github.shynixn.petblocks.business.bukkit.nms.helper.PetBlockHelper;
@@ -16,7 +15,6 @@ import org.bukkit.Location;
 import org.bukkit.craftbukkit.v1_8_R1.CraftWorld;
 import org.bukkit.craftbukkit.v1_8_R1.entity.CraftPlayer;
 import org.bukkit.entity.ArmorStand;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason;
@@ -34,7 +32,7 @@ final class CustomGroundArmorstand extends EntityArmorStand implements PetBlock 
     private boolean isSpecial;
     private boolean isGround;
     private boolean firstRide = true;
-    private CustomEntity rabbit;
+    private PetBlockPartEntity rabbit;
     private int counter;
 
     private double health = 20.0;
@@ -47,9 +45,9 @@ final class CustomGroundArmorstand extends EntityArmorStand implements PetBlock 
         this.isSpecial = true;
         this.petMeta = (PetData) meta;
         this.owner = meta.getPlayerMeta().getPlayer();
-        if (petMeta.getMovementType() == Movement.HOPPING)
+        if (this.petMeta.getEngine().getEntityType().equalsIgnoreCase("RABBIT"))
             this.rabbit = new CustomRabbit(this.owner, meta);
-        else if (petMeta.getMovementType() == Movement.CRAWLING)
+        else if (this.petMeta.getEngine().getEntityType().equalsIgnoreCase("ZOMBIE"))
             this.rabbit = new CustomZombie(this.owner, meta);
         this.spawn(location);
     }
@@ -80,7 +78,7 @@ final class CustomGroundArmorstand extends EntityArmorStand implements PetBlock 
             this.counter = PetBlockHelper.doTick(this.counter, this, location -> {
                 CustomGroundArmorstand.this.setPositionRotation(location.getX(), location.getY(), location.getZ(), location.getYaw(), location.getPitch());
                 final PacketPlayOutEntityTeleport animation = new PacketPlayOutEntityTeleport(CustomGroundArmorstand.this);
-                for (final Player player : CustomGroundArmorstand.this.getArmorStand().getWorld().getPlayers()) {
+                for (final Player player : ((ArmorStand)this.getArmorStand()).getWorld().getPlayers()) {
                     ((CraftPlayer) player).getHandle().playerConnection.sendPacket(animation);
                 }
             });
@@ -92,7 +90,7 @@ final class CustomGroundArmorstand extends EntityArmorStand implements PetBlock 
     public void g(float sideMot, float forMot) {
         if (this.isSpecial) {
             if (this.passenger != null && this.passenger instanceof EntityHuman) {
-                if (this.petMeta.getMoveType() == MoveType.WALKING) {
+                if (this.petMeta.getEngine().getRideType() == RideType.RUNNING) {
                     this.lastYaw = (this.yaw = this.passenger.yaw);
                     this.pitch = (this.passenger.pitch * 0.5F);
                     this.setYawPitch(this.yaw, this.pitch);
@@ -202,14 +200,14 @@ final class CustomGroundArmorstand extends EntityArmorStand implements PetBlock 
             compound.setBoolean("ShowArms", true);
             compound.setBoolean("NoBasePlate", true);
             this.a(compound);
-            this.getArmorStand().setBodyPose(new EulerAngle(0, 0, 2878));
-            this.getArmorStand().setLeftArmPose(new EulerAngle(2878, 0, 0));
-            this.getArmorStand().setMetadata("keep", this.getKeepField());
+            ((ArmorStand)this.getArmorStand()).setBodyPose(new EulerAngle(0, 0, 2878));
+            ((ArmorStand)this.getArmorStand()).setLeftArmPose(new EulerAngle(2878, 0, 0));
+            ((ArmorStand)this.getArmorStand()).setMetadata("keep", this.getKeepField());
             NMSRegistry.rollbackWorldGuardSpawn(location);
-            this.getArmorStand().setCustomNameVisible(true);
-            this.getArmorStand().setCustomName(this.petMeta.getDisplayName());
-            this.getArmorStand().setRemoveWhenFarAway(false);
-            this.rabbit.getSpigotEntity().setRemoveWhenFarAway(false);
+            ((ArmorStand)this.getArmorStand()).setCustomNameVisible(true);
+            ((ArmorStand)this.getArmorStand()).setCustomName(this.petMeta.getDisplayName());
+            ((ArmorStand)this.getArmorStand()).setRemoveWhenFarAway(false);
+            ((LivingEntity) this.rabbit.getEntity()).setRemoveWhenFarAway(false);
             this.health = ConfigPet.getInstance().getCombat_health();
             if (this.petMeta == null)
                 return;
@@ -218,7 +216,8 @@ final class CustomGroundArmorstand extends EntityArmorStand implements PetBlock 
     }
 
     @Override
-    public void teleportWithOwner(Location location) {
+    public void teleportWithOwner(Object mLocation) {
+        final Location location = (Location) mLocation;
         final EntityPlayer player = ((CraftPlayer) this.owner).getHandle();
         player.setPositionRotation(location.getX(), location.getY(), location.getZ(), location.getYaw(), location.getPitch());
         final PacketPlayOutEntityTeleport teleport = new PacketPlayOutEntityTeleport(player);
@@ -234,7 +233,7 @@ final class CustomGroundArmorstand extends EntityArmorStand implements PetBlock 
         } else {
             this.health = PetBlockHelper.setDamage(this, this.health, amount, location -> {
                 final PacketPlayOutAnimation animation = new PacketPlayOutAnimation(CustomGroundArmorstand.this, 1);
-                for (final Player player : CustomGroundArmorstand.this.getArmorStand().getWorld().getPlayers()) {
+                for (final Player player : ((ArmorStand)this.getArmorStand()).getWorld().getPlayers()) {
                     ((CraftPlayer) player).getHandle().playerConnection.sendPacket(animation);
                 }
             });
@@ -244,13 +243,6 @@ final class CustomGroundArmorstand extends EntityArmorStand implements PetBlock 
     @Override
     public void respawn() {
         PetBlockHelper.respawn(this, CustomGroundArmorstand.this::spawn);
-    }
-
-    @Override
-    public LivingEntity getMovementEntity() {
-        if (this.rabbit == null)
-            return null;
-        return this.rabbit.getSpigotEntity();
     }
 
     @Override
@@ -265,104 +257,185 @@ final class CustomGroundArmorstand extends EntityArmorStand implements PetBlock 
 
     @Override
     public void refreshHeadMeta() {
-        PetBlockHelper.refreshHeadItemMeta(this, this.getArmorStand().getHelmet());
+        PetBlockHelper.refreshHeadItemMeta(this, ((ArmorStand)this.getArmorStand()).getHelmet());
     }
 
     @Override
     public void setSkin(String skin) {
-        PetBlockHelper.setSkin(this, skin);
+        PetBlockHelper.setSkin(this,skin);
     }
 
     @Override
-    public void setSkin(org.bukkit.Material material, byte data) {
-        PetBlockHelper.setSkin(this, material, data);
+    public void setSkin(Object material, byte data) {
+        PetBlockHelper.setSkin(this, (org.bukkit.Material) material, data);
     }
 
-    @Override
-    public void remove() {
-        PetBlockHelper.remove(this);
-    }
-
-    @Override
-    public void ride(Player player) {
-        PetBlockHelper.setRiding(this, player);
-    }
-
-    @Override
-    public boolean isDead() {
-        return PetBlockHelper.isDead(this);
-    }
-
-    @Override
-    public void teleport(Location location) {
-        PetBlockHelper.teleport(this, location);
-    }
-
-    @Override
-    public void teleport(Entity entity) {
-        this.teleport(entity.getLocation());
-    }
-
+    /**
+     * Lets the petblock perform a jump
+     */
     @Override
     public void jump() {
         PetBlockHelper.jump(this);
     }
 
+    /**
+     * Returns if the petblock is already removed or dead
+     *
+     * @return dead
+     */
     @Override
-    public void launch(Vector vector) {
-        PetBlockHelper.launch(this, vector);
+    public boolean isDead() {
+        return PetBlockHelper.isDead(this);
     }
 
+
+    /**
+     * Lets the given player ride on the petblock
+     *
+     * @param player player
+     */
     @Override
-    public void wear(Player player) {
+    public void ride(Object player) {
+        PetBlockHelper.setRiding(this, (Player) player);
+    }
+
+    /**
+     * Lets the given player wear the petblock
+     *
+     * @param player oplayer
+     */
+    @Override
+    public void wear(Object player) {
         final NBTTagCompound compound = new NBTTagCompound();
         this.b(compound);
         compound.setBoolean("Marker", true);
         this.a(compound);
         this.setCustomNameVisible(false);
-        PetBlockHelper.wear(this, player, null);
+        PetBlockHelper.wear(this, (Player) player, null);
     }
 
+    /**
+     * Ejects the given player riding from the petblock
+     *
+     * @param player player
+     */
     @Override
-    public void setDisplayName(String name) {
-        PetBlockHelper.setDisplayName(this, name);
-    }
-
-    @Override
-    public ArmorStand getArmorStand() {
-        return (ArmorStand) this.getBukkitEntity();
-    }
-
-    @Override
-    public void eject(Player player) {
+    public void eject(Object player) {
         final NBTTagCompound compound = new NBTTagCompound();
         this.b(compound);
         compound.setBoolean("Marker", false);
         this.a(compound);
         this.setCustomNameVisible(true);
-        PetBlockHelper.eject(this, player, null);
+        PetBlockHelper.eject(this, (Player) player, null);
     }
 
+    /**
+     * Sets the displayName of the petblock
+     *
+     * @param name name
+     */
     @Override
-    public Player getOwner() {
-        return this.owner;
+    public void setDisplayName(String name) {
+        PetBlockHelper.setDisplayName(this, name);
     }
 
+
+    /**
+     * Returns the armorstand of the petblock
+     *
+     * @return armorstand
+     */
+    @Override
+    public Object getArmorStand() {
+        return this.getBukkitEntity();
+    }
+
+
+    /**
+     * Sets the velocity of the petblock
+     *
+     * @param vector vector
+     */
+    @Override
+    public void setVelocity(Object vector) {
+        PetBlockHelper.launch(this, (Vector) vector);
+    }
+
+    /**
+     * Teleports the the petblock to the given location
+     *
+     * @param location location
+     */
+    @Override
+    public void teleport(Object location) {
+        PetBlockHelper.teleport(this, (Location) location);
+    }
+
+    /**
+     * Returns the displayName of the petblock
+     *
+     * @return name
+     */
     @Override
     public String getDisplayName() {
-        return this.getArmorStand().getCustomName();
+        return ((ArmorStand)this.getArmorStand()).getCustomName();
     }
 
+    /**
+     * Returns the meta of the petblock
+     *
+     * @return meta
+     */
     @Override
-    public Location getLocation() {
-        return this.getArmorStand().getLocation();
-    }
-
-    @Override
-    public PetMeta getPetMeta() {
+    public PetMeta getMeta() {
         return this.petMeta;
     }
 
+    /**
+     * Returns the owner of the petblock
+     *
+     * @return player
+     */
+    @Override
+    public Object getPlayer() {
+        return this.owner;
+    }
+
+    /**
+     * Removes the petblock
+     */
+    @Override
+    public void remove() {
+        PetBlockHelper.remove(this);
+    }
+
+    /**
+     * Returns the entity being used as engine
+     *
+     * @return entity
+     */
+    @Override
+    public Object getEngineEntity() {
+        if (this.rabbit == null)
+            return null;
+        return this.rabbit.getEntity();
+    }
+
+    /**
+     * Returns the location of the entity
+     *
+     * @return position
+     */
+    @Override
+    public Object getLocation() {
+        return ((ArmorStand)this.getArmorStand()).getLocation();
+    }
+
+    /**
+     * Returns the fixedMetaDataValue
+     *
+     * @return value
+     */
     private FixedMetadataValue getKeepField() {
         return new FixedMetadataValue(Bukkit.getPluginManager().getPlugin("PetBlocks"), true);
     }

@@ -1,12 +1,14 @@
-package com.github.shynixn.petblocks.business.logic.business;
+package com.github.shynixn.petblocks.business.logic.configuration;
 
-import com.github.shynixn.petblocks.api.bukkit.event.PetBlockDeathEvent;
-import com.github.shynixn.petblocks.api.business.controller.PetBlockController;
-import com.github.shynixn.petblocks.api.business.entity.PetBlock;
-import com.github.shynixn.petblocks.api.persistence.entity.PetMeta;
-import com.github.shynixn.petblocks.business.bukkit.nms.NMSRegistry;
+import com.github.shynixn.petblocks.api.business.entity.GUIItemContainer;
+import com.github.shynixn.petblocks.api.persistence.controller.IFileController;
+import com.github.shynixn.petblocks.api.persistence.entity.EngineContainer;
+import com.github.shynixn.petblocks.api.persistence.entity.ParticleEffectMeta;
+import com.github.shynixn.petblocks.business.logic.persistence.entity.EngineData;
+import com.github.shynixn.petblocks.business.logic.persistence.entity.ParticleEffectData;
 import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
+import org.bukkit.configuration.MemorySection;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.Plugin;
 
 import java.io.Closeable;
@@ -42,60 +44,20 @@ import java.util.logging.Level;
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-public final class PetBlockManager implements PetBlockController {
-    Map<Player, PetBlock> petblocks = new HashMap<>();
+public class ParticleConfiguration implements IFileController<GUIItemContainer> {
 
-    private final Plugin plugin;
-    PetDataManager dataManager;
-    Set<Player> carryingPet = new HashSet<>();
-    Map<Player, Integer> timeBlocked = new HashMap<>();
+    private Plugin plugin;
+    private final Map<GUIItemContainer, ParticleEffectMeta> particleCache = new HashMap<>();
 
     /**
-     * Initializes a new petblock manager
+     * Initializes a new engine repository
      *
-     * @param dataManager dataManager
-     * @param plugin      plugin
+     * @param plugin plugin
      */
-    public PetBlockManager(PetDataManager dataManager, Plugin plugin) {
-        super();
+    public ParticleConfiguration(Plugin plugin) {
+        if (plugin == null)
+            throw new IllegalArgumentException("Plugin cannot be null!");
         this.plugin = plugin;
-        this.dataManager = dataManager;
-        if (plugin.getPluginLoader() != null) {
-            new PetBlockListener(this, plugin);
-            try {
-                new PetBlockCommandExecutor(this);
-            } catch (final Exception e) {
-                Bukkit.getLogger().log(Level.WARNING, "Failed to initialize commandExecutor.", e);
-            }
-            new PetBlockReloadCommandExecutor(plugin);
-        }
-    }
-
-    /**
-     * Creates a new petblock for the given player and meta
-     *
-     * @param player  player
-     * @param petMeta meta
-     * @return petblock
-     */
-    @Override
-    public PetBlock create(Object player, PetMeta petMeta) {
-        final Player mPlayer = (Player) player;
-        return NMSRegistry.createPetBlock(mPlayer.getLocation(), petMeta);
-    }
-
-    /**
-     * Returns the petblock of the given player
-     *
-     * @param player player
-     * @return petblock
-     */
-    @Override
-    public PetBlock getByPlayer(Object player) {
-        if (this.petblocks.containsKey(player)) {
-            return this.petblocks.get(player);
-        }
-        return null;
     }
 
     /**
@@ -104,11 +66,8 @@ public final class PetBlockManager implements PetBlockController {
      * @param item item
      */
     @Override
-    public void store(PetBlock item) {
-        final Player mPlayer = (Player) item.getPlayer();
-        if (!this.petblocks.containsKey(mPlayer) && !this.timeBlocked.containsKey(mPlayer)) {
-            this.petblocks.put(mPlayer, item);
-        }
+    public void store(GUIItemContainer item) {
+        throw new RuntimeException("Not implemented!");
     }
 
     /**
@@ -117,17 +76,9 @@ public final class PetBlockManager implements PetBlockController {
      * @param item item
      */
     @Override
-    public void remove(PetBlock item) {
-        final Player player = (Player) item.getPlayer();
-        if (this.petblocks.containsKey(player)) {
-            final PetBlockDeathEvent event = new PetBlockDeathEvent(this.petblocks.get(player));
-            Bukkit.getPluginManager().callEvent(event);
-            final com.github.shynixn.petblocks.api.persistence.entity.PetMeta petMeta = this.petblocks.get(player).getMeta();
-            this.plugin.getServer().getScheduler().runTaskAsynchronously(this.plugin, () -> this.dataManager.persist(petMeta));
-            if (!event.isCanceled()) {
-                this.petblocks.get(player).remove();
-                this.petblocks.remove(player);
-            }
+    public void remove(GUIItemContainer item) {
+        if (this.particleCache.containsKey(item)) {
+            this.particleCache.remove(item);
         }
     }
 
@@ -138,7 +89,7 @@ public final class PetBlockManager implements PetBlockController {
      */
     @Override
     public int size() {
-        return this.petblocks.size();
+        return this.particleCache.size();
     }
 
     /**
@@ -147,8 +98,27 @@ public final class PetBlockManager implements PetBlockController {
      * @return items
      */
     @Override
-    public List<PetBlock> getAll() {
-        return new ArrayList<>(this.petblocks.values());
+    public List<GUIItemContainer> getAll() {
+        return new ArrayList<>(this.particleCache.keySet());
+    }
+
+    /**
+     * Reloads the content from the fileSystem
+     */
+    @Override
+    public void reload() {
+        this.particleCache.clear();
+        this.plugin.reloadConfig();
+        final Map<String, Object> data = ((MemorySection) this.plugin.getConfig().get("particles")).getValues(false);
+        for (final String key : data.keySet()) {
+            try {
+                final GUIItemContainer container = new ItemContainer(Integer.parseInt(key), ((MemorySection) data.get(key)).getValues(false));
+                final ParticleEffectMeta meta = new ParticleEffectData(((MemorySection) data.get("effect")).getValues(false));
+                this.particleCache.put(container, meta);
+            } catch (final Exception e) {
+                Bukkit.getLogger().log(Level.WARNING, "Failed to load particle " + key + ".");
+            }
+        }
     }
 
     /**
@@ -198,13 +168,7 @@ public final class PetBlockManager implements PetBlockController {
      */
     @Override
     public void close() throws Exception {
-        for (final Player player : this.petblocks.keySet()) {
-            this.petblocks.get(player).remove();
-        }
-        for (final Player player : this.carryingPet) {
-            NMSRegistry.setItemInHand19(player, null, true);
-        }
-        this.carryingPet.clear();
-        this.petblocks.clear();
+        this.plugin = null;
+        this.particleCache.clear();
     }
 }

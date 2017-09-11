@@ -7,9 +7,11 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.SimpleCommandMap;
 import org.bukkit.command.defaults.BukkitCommand;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.ArrayList;
+import java.util.Map;
 import java.util.logging.Level;
 
 /**
@@ -122,6 +124,21 @@ public class SimpleCommandExecutor {
          */
         public UnRegistered(String command, String plugin) {
             this(command,(JavaPlugin) Bukkit.getPluginManager().getPlugin(plugin));
+        }
+
+        /**
+         * Initializes a new commandExecutor by using the config configuration
+         * @param configuration configuration
+         * @param plugin plugin
+         * @throws Exception exception
+         */
+        public UnRegistered(Map<String, Object> configuration, JavaPlugin plugin) throws Exception
+        {
+            this((String)configuration.get("command")
+                    ,(String) configuration.get("useage")
+                    ,(String) configuration.get("description")
+                    , (String)configuration.get("permission")
+                    , (String)configuration.get("permission-message"), plugin);
         }
 
         /**

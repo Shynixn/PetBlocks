@@ -204,23 +204,19 @@ join:
   overwrite-previous-pet: false
   settings:
     petname: 'Default pet'
-    type: DOG
+    engine: 1
     id: 2
     durability: 0
     skullname: ''
     enabled: true
     age: 1
-    moving: WALKING
-    particle:
-      name: reddust
-      x: 255.0
-      y: 0.0
-      z: 0.0
-      speed: 0.01
-      amount: 20
-      block:
-        id: -1
-        damage: 0
+    effect:
+       name: 'largesmoke'
+       speed: 0.01
+       amount: 2
+       offx: 0.5
+       offy: 0.5
+       offz: 0.5
 
 ############################
 
@@ -288,6 +284,7 @@ gui:
     title: 'PetBlocks'
     copy-skin: true
     use-only-disable-pet-item: false
+  items:
     my-pet:
       position: 9
     default-appearance:
@@ -334,7 +331,6 @@ gui:
       unbreakable: false
       lore:
         - ''
-  items:
     enable-pet:
       enabled: true
       position: 10

@@ -5,10 +5,9 @@ import com.github.shynixn.petblocks.api.business.enumeration.GUIPage;
 import com.github.shynixn.petblocks.api.business.enumeration.RideType;
 import com.github.shynixn.petblocks.api.persistence.entity.EngineContainer;
 import com.github.shynixn.petblocks.api.persistence.entity.SoundMeta;
-import com.github.shynixn.petblocks.business.logic.configuration.CustomItemContainer;
-import org.bukkit.inventory.ItemStack;
+import com.github.shynixn.petblocks.business.logic.configuration.ItemContainer;
+import org.bukkit.configuration.MemorySection;
 
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -61,12 +60,7 @@ public class EngineData extends PersistenceObject implements EngineContainer {
         this.setId(id);
         this.position = (int) data.get("gui.position");
         this.page = GUIPage.getGUIPageFromName((String) data.get("gui.page"));
-        this.itemContainer = CustomItemContainer.from((int) data.get("gui.id")
-                , (int) data.get("gui.damage")
-                , (String) data.get("gui.skin")
-                , (String) data.get("gui.name")
-                , ((List<String>) data.get("gui.lore")).toArray(new String[0]));
-
+        this.itemContainer = new ItemContainer(0, ((MemorySection)data.get("gui")).getValues(false));
         this.entity = (String) data.get("behaviour.entity");
         this.rideType = RideType.valueOf((String) data.get("behaviour.riding"));
         this.ambientSound = new SoundBuilder((String) data.get("sound.ambient.name"), (double) data.get("sound.ambient.volume"), (double) data.get("sound.ambient.pitch"));

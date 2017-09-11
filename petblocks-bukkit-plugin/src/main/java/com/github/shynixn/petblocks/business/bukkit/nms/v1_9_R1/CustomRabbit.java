@@ -1,6 +1,6 @@
 package com.github.shynixn.petblocks.business.bukkit.nms.v1_9_R1;
 
-import com.github.shynixn.petblocks.api.entities.CustomEntity;
+import com.github.shynixn.petblocks.api.business.entity.PetBlockPartEntity;
 import com.github.shynixn.petblocks.api.persistence.entity.PetMeta;
 import com.github.shynixn.petblocks.business.bukkit.nms.helper.PetBlockHelper;
 import com.github.shynixn.petblocks.business.logic.configuration.ConfigPet;
@@ -9,8 +9,8 @@ import net.minecraft.server.v1_9_R1.*;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.craftbukkit.v1_9_R1.CraftWorld;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
-import org.bukkit.entity.Rabbit;
 import org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.potion.PotionEffect;
@@ -20,7 +20,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.logging.Level;
 
-public final class CustomRabbit extends EntityRabbit implements CustomEntity {
+public final class CustomRabbit extends EntityRabbit implements PetBlockPartEntity {
     private Player player;
     private PetMeta petData;
 
@@ -54,36 +54,69 @@ public final class CustomRabbit extends EntityRabbit implements CustomEntity {
         this.P = (float) ConfigPet.getInstance().getModifier_petclimbing();
     }
 
-    private void ignoreFinalField(Field field) throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
-        field.setAccessible(true);
-        final Field modifiersField = Field.class.getDeclaredField("modifiers");
-        modifiersField.setAccessible(true);
-        modifiersField.setInt(field, field.getModifiers() & ~Modifier.FINAL);
-    }
-
     @Override
     protected SoundEffect da() {
         this.playedMovingSound = PetBlockHelper.executeMovingSound(this.getBukkitEntity(), this.player, this.petData, this.playedMovingSound);
         return super.da();
     }
 
+    /**
+     * Returns the entity hidden by this object
+     *
+     * @return spigotEntity
+     */
     @Override
-    public void spawn(Location location) {
+    public Object getEntity() {
+        return this.getBukkitEntity();
+    }
+
+    /**
+     * Spawns the entity at the given location
+     *
+     * @param mLocation location
+     */
+    @Override
+    public void spawn(Object mLocation) {
+        final Location location = (Location) mLocation;
+        final LivingEntity entity = (LivingEntity) this.getEntity();
         final net.minecraft.server.v1_9_R1.World mcWorld = ((CraftWorld) location.getWorld()).getHandle();
         this.setPosition(location.getX(), location.getY(), location.getZ());
         mcWorld.addEntity(this, SpawnReason.CUSTOM);
-        this.getSpigotEntity().addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, 9999999, 1));
-        this.getSpigotEntity().setMetadata("keep", this.getKeepField());
-        this.getSpigotEntity().setCustomNameVisible(false);
-        this.getSpigotEntity().setCustomName("PetBlockIdentifier");
+        entity.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, 9999999, 1));
+        entity.setMetadata("keep", this.getKeepField());
+        entity.setCustomNameVisible(false);
+        entity.setCustomName("PetBlockIdentifier");
     }
 
+    /**
+     * Removes the entity from the world
+     */
     @Override
-    public Rabbit getSpigotEntity() {
-        return (Rabbit) this.getBukkitEntity();
+    public void remove() {
+        ((LivingEntity) this.getEntity()).remove();
     }
 
+    /**
+     * Returns the keepField
+     *
+     * @return keepField
+     */
     private FixedMetadataValue getKeepField() {
         return new FixedMetadataValue(Bukkit.getPluginManager().getPlugin("PetBlocks"), true);
+    }
+    /**
+     * Ignores any final field value
+     *
+     * @param field field
+     * @throws NoSuchFieldException     exception
+     * @throws SecurityException        exception
+     * @throws IllegalArgumentException exception
+     * @throws IllegalAccessException   exception
+     */
+    private void ignoreFinalField(Field field) throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
+        field.setAccessible(true);
+        final Field modifiersField = Field.class.getDeclaredField("modifiers");
+        modifiersField.setAccessible(true);
+        modifiersField.setInt(field, field.getModifiers() & ~Modifier.FINAL);
     }
 }

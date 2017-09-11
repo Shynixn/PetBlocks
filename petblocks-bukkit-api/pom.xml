@@ -16,7 +16,7 @@
         <dependency>
             <groupId>com.github.shynixn.petblocks</groupId>
             <artifactId>petblocks-api</artifactId>
-            <version>${petblocks.bukkit.version}</version>
+            <version>${petblocks.api.version}</version>
         </dependency>
         <dependency>
             <groupId>com.github.shynixn.petblocks</groupId>

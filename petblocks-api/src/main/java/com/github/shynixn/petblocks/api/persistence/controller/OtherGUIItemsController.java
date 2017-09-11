@@ -1,6 +1,6 @@
 package com.github.shynixn.petblocks.api.persistence.controller;
 
-import com.github.shynixn.petblocks.api.persistence.entity.EngineContainer;
+import com.github.shynixn.petblocks.api.business.entity.GUIItemContainer;
 
 /**
  * Copyright 2017 Shynixn
@@ -31,12 +31,13 @@ import com.github.shynixn.petblocks.api.persistence.entity.EngineContainer;
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-public interface EngineController extends IFileController<EngineContainer>{
+public interface OtherGUIItemsController extends IFileController<GUIItemContainer> {
 
     /**
-     * Returns the engineContainer with the given id
-     * @param id id
-     * @return engineContainer
+     * Returns the guiItem by the given name
+     *
+     * @param name name
+     * @return item
      */
-    EngineContainer getById(int id);
+    GUIItemContainer getGUIItemByName(String name);
 }

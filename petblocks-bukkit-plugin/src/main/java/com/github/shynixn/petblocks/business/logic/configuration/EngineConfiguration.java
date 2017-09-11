@@ -1,5 +1,6 @@
-package com.github.shynixn.petblocks.business.logic.persistence.controller;
+package com.github.shynixn.petblocks.business.logic.configuration;
 
+import com.github.shynixn.petblocks.api.persistence.controller.EngineController;
 import com.github.shynixn.petblocks.api.persistence.controller.IController;
 import com.github.shynixn.petblocks.api.persistence.controller.IFileController;
 import com.github.shynixn.petblocks.api.persistence.entity.EngineContainer;
@@ -44,7 +45,7 @@ import java.util.logging.Level;
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-public class EngineRepository implements IFileController<EngineContainer> {
+public class EngineConfiguration implements EngineController {
 
     private Plugin plugin;
     private final List<EngineContainer> engineContainers = new ArrayList<>();
@@ -54,7 +55,7 @@ public class EngineRepository implements IFileController<EngineContainer> {
      *
      * @param plugin plugin
      */
-    public EngineRepository(Plugin plugin) {
+    public EngineConfiguration(Plugin plugin) {
         if (plugin == null)
             throw new IllegalArgumentException("Plugin cannot be null!");
         this.plugin = plugin;
@@ -102,6 +103,22 @@ public class EngineRepository implements IFileController<EngineContainer> {
     @Override
     public List<EngineContainer> getAll() {
         return Collections.unmodifiableList(this.engineContainers);
+    }
+
+    /**
+     * Returns the engineContainer with the given id
+     *
+     * @param id id
+     * @return engineContainer
+     */
+    @Override
+    public EngineContainer getById(int id) {
+        for (final EngineContainer container : this.engineContainers) {
+            if (container.getId() == id) {
+                return container;
+            }
+        }
+        return null;
     }
 
     /**

@@ -1,151 +1,193 @@
 package com.github.shynixn.petblocks.business.logic.configuration;
 
-import com.github.shynixn.petblocks.api.entities.*;
+import com.github.shynixn.petblocks.api.business.entity.GUIItemContainer;
+import com.github.shynixn.petblocks.api.persistence.controller.*;
+import com.github.shynixn.petblocks.api.persistence.entity.ParticleEffectMeta;
 import com.github.shynixn.petblocks.api.persistence.entity.PetMeta;
-import com.github.shynixn.petblocks.business.bukkit.nms.NMSRegistry;
+import com.github.shynixn.petblocks.business.logic.persistence.Factory;
+import com.github.shynixn.petblocks.business.logic.persistence.entity.ParticleEffectData;
 import com.github.shynixn.petblocks.business.logic.persistence.entity.PetData;
-import com.github.shynixn.petblocks.lib.ParticleBuilder;
-import com.github.shynixn.petblocks.lib.ParticleEffect;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.World;
-import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.plugin.Plugin;
+import org.bukkit.configuration.MemorySection;
 
+import java.util.List;
 import java.util.logging.Level;
 
-public final class Config {
-    private static Plugin plugin;
-    private static Config instance;
-    private static FileConfiguration c;
+public final class Config extends SimpleConfig {
+    private static final Config instance = new Config();
+    private final EngineController engineController = Factory.createEngineController();
+    private final OtherGUIItemsController guiItemsController = Factory.createGUIItemsController();
+    private final IFileController<GUIItemContainer> particleController = Factory.createParticleConfiguration();
+    private final CostumeController ordinaryCostumesController = Factory.createCostumesController("ordinary");
+    private final CostumeController colorCostumesController = Factory.createCostumesController("color");
+    private final CostumeController rareCostumesController = Factory.createCostumesController("rare");
+    private final CostumeController minecraftHeadsCostumesController = Factory.createMinecraftHeadsCostumesController();
 
-    private boolean chat_async = true;
-    private boolean chatHighestPriority = true;
-
-    private boolean world_allowInAllWorlds = true;
-    private String[] world_worlds;
-    private boolean region_allowInAllRegions = true;
-    private String[] region_regions;
-
-    private boolean join_enabled;
-    private boolean join_overwriteExistingPet;
-
-    private boolean metrics = true;
-    private final boolean allowRidingOnRegionChanging = true;
-
-    private Config(Plugin plugin) {
+    private Config() {
         super();
-        Config.plugin = plugin;
-        this.reload();
-    }
-
-    public static void initialize(Plugin plugin) {
-        instance = new Config(plugin);
     }
 
     public static Config getInstance() {
         return instance;
     }
 
-
-
-
+    /**
+     * Reloads the config
+     */
+    @Override
     public void reload() {
-        try {
-            plugin.reloadConfig();
-            c = plugin.getConfig();
-
-            this.metrics = c.getBoolean("metrics");
-
-            this.chat_async = c.getBoolean("chat.async");
-            this.chatHighestPriority = c.getBoolean("chat.highest-priority");
-
-            this.world_allowInAllWorlds = plugin.getConfig().getBoolean("world.all");
-            this.world_worlds = plugin.getConfig().getStringList("world.worlds").toArray(new String[plugin.getConfig().getStringList("world.worlds").size()]);
-
-            this.region_allowInAllRegions = plugin.getConfig().getBoolean("region.all");
-            this.region_regions = plugin.getConfig().getStringList("region.regions").toArray(new String[plugin.getConfig().getStringList("region.regions").size()]);
-
-            this.join_enabled = c.getBoolean("join.enabled");
-            this.join_overwriteExistingPet = plugin.getConfig().getBoolean("join.overwrite-previous-pet");
-
-            //  this.allowRidingOnRegionChanging = c.getBoolean("region.allow-riding-on");
-
-            ConfigCommands.getInstance().load(c);
-            ConfigGUI.getInstance().load(c);
-            ConfigParticle.getInstance().load(c);
-            ConfigPet.getInstance().load(c);
-        } catch (final Exception ex) {
-            Bukkit.getLogger().log(Level.WARNING, "Failed to reload config.", ex);
-        }
+        super.reload();
+        ConfigPet.getInstance().reload();
+        this.ordinaryCostumesController.reload();
+        this.colorCostumesController.reload();
+        this.rareCostumesController.reload();
+        this.minecraftHeadsCostumesController.reload();
     }
 
-    public boolean allowPetSpawning(Location location) {
-        return location != null && (this.world_allowInAllWorlds || this.isInWorld(location.getWorld())) && (this.region_allowInAllRegions || NMSRegistry.canSpawnInRegion(this.region_regions, location));
+    public ParticleController getParticleController() {
+        return this.particleController;
     }
 
-    public int getTicksFromAge(Age age) {
-        if (age == Age.LARGE)
-            return ConfigPet.getInstance().getAge_largeticks();
-        if (age == Age.SMALL)
-            return ConfigPet.getInstance().getAge_smallticks();
-        return -1;
+    public OtherGUIItemsController getGuiItemsController() {
+        return this.guiItemsController;
     }
 
-    public void fixJoinDefaultPet(PetMeta petData) {
-        final PetData petMeta = (PetData) petData;
-        petMeta.setSkin(Material.getMaterial(c.getInt("join.settings.id")), (short) c.getInt("join.settings.durability"), c.getString("join.settings.skullname"));
-        petMeta.setPetType(PetType.getPetTypeFromName(c.getString("join.settings.type")));
-        petMeta.setDisplayName(c.getString("join.settings.petname"));
-        petMeta.setEnabled(c.getBoolean("join.settings.enabled"));
-        petMeta.setAgeInTicks(c.getInt("join.settings.age"));
-        if (MoveType.getMoveTypeFromName(c.getString("join.settings.moving")) == null)
-            petMeta.setMoveType(MoveType.WALKING);
-        else
-            petMeta.setMoveType(MoveType.getMoveTypeFromName(c.getString("join.settings.moving")));
-        if (!c.getString("join.settings.particle.name").equalsIgnoreCase("none") && ParticleEffect.getParticleEffectFromName(c.getString("join.settings.particle.name")) != null) {
-            final Particle particle = new ParticleBuilder()
-                    .setEffect(ParticleEffect.getParticleEffectFromName(c.getString("join.settings.particle.name")))
-                    .setOffset(c.getDouble("join.settings.particle.x"), c.getDouble("join.settings.particle.y"), c.getDouble("join.settings.particle.z"))
-                    .setSpeed(c.getDouble("join.settings.particle.speed"))
-                    .setAmount(c.getInt("join.settings.particle.amount"))
-                    .setMaterialId(c.getInt("join.settings.particle.block.id"))
-                    .setData((byte) c.getInt("join.settings.particle.block.damage")).build();
-            petMeta.setParticleEffect(particle);
-        }
+    public EngineController getEngineController() {
+        return this.engineController;
     }
 
-    public MoveType getMovingType(PetType petType) {
-        return ConfigGUI.getInstance().getContainer(petType).getMoveType();
+    public CostumeController getOrdinaryCostumesController() {
+        return this.ordinaryCostumesController;
+    }
+
+    public CostumeController getColorCostumesController() {
+        return this.colorCostumesController;
+    }
+
+    public CostumeController getRareCostumesController() {
+        return this.rareCostumesController;
+    }
+
+    public CostumeController getMinecraftHeadsCostumesController() {
+        return this.minecraftHeadsCostumesController;
+    }
+
+    /**
+     * Returns if copySkin is enabled
+     *
+     * @return copySkin
+     */
+    public boolean isCopySkinEnabled() {
+        return this.plugin.getConfig().getBoolean("gui.settings.copy-skin");
+    }
+
+    /**
+     * Returns if lore is enabled
+     *
+     * @return lore
+     */
+    boolean isLoreEnabled() {
+        return this.plugin.getConfig().getBoolean("gui.settings.lore");
+    }
+
+    /**
+     * Returns if emptyClickBack is enabled
+     *
+     * @return enabled
+     */
+    public boolean isEmptyClickBackEnabled() {
+        return this.plugin.getConfig().getBoolean("gui.settings.click-empty-slot-back");
+    }
+
+    /**
+     * Returns if disable item is enabled
+     *
+     * @return displayItem
+     */
+    public boolean isOnlyDisableItemEnabled() {
+        return this.getData("gui.settings.use-only-disable-pet-item");
+    }
+
+    public String getPermissionIconYes() {
+        return this.getData("messages.perms-ico-yes");
+    }
+
+    public String getPermissionIconNo() {
+        return this.getData("messages.perms-ico-no");
+    }
+
+    public String getNoPermission() {
+        return this.getData("messages.no-perms");
+    }
+
+    public String getGUITitle() {
+        return this.getData("gui.settings.title");
+    }
+
+    public String getPrefix() {
+        return this.getData("messages.prefix");
+    }
+
+    public String getDefaultPetName() {
+        return this.getData("messages.default-petname");
+    }
+
+    public String getNamingMessage() {
+        return this.getData("messages.naming-message");
+    }
+
+    public String getNamingSuccessMessage() {
+        return this.getData("messages.naming-success");
+    }
+
+    public String getNamingErrorMessage() {
+        return this.getData("messages.naming-error");
+    }
+
+    public String getSkullNamingMessage() {
+        return this.getData("messages.skullnaming-message");
+    }
+
+    public String getSkullNamingSuccessMessage() {
+        return this.getData("messages.skullnaming-success");
+    }
+
+    public String getSkullNamingErrorMessage() {
+        return this.getData("messages.skullnaming-error");
     }
 
     public boolean isJoin_enabled() {
-        return this.join_enabled;
+        return (boolean) this.getData("join.enabled");
     }
 
     public boolean isJoin_overwriteExistingPet() {
-        return this.join_overwriteExistingPet;
+        return (boolean) this.getData("join.overwrite-previous-pet");
     }
 
     public boolean isChat_async() {
-        return this.chat_async;
+        return (boolean) this.getData("chat.async");
     }
 
     public boolean isChatHighestPriority() {
-        return this.chatHighestPriority;
+        return (boolean) this.getData("chat.highest-priority");
     }
 
-    public boolean allowRidingOnRegionChanging() {
-        return this.allowRidingOnRegionChanging;
+    public String[] getExcludedWorlds() {
+        return this.getDataAsStringArray("world.excluded");
     }
 
-    private boolean isInWorld(World world) {
-        for (final String s : this.world_worlds) {
-            if (world.getName().equalsIgnoreCase(s))
-                return true;
-        }
-        return false;
+    public String[] getIncludedWorlds() {
+        return this.getDataAsStringArray("world.included");
+    }
+
+    public String[] getExcludedRegion() {
+        return this.getDataAsStringArray("region.excluded");
+    }
+
+    public String[] getIncludedRegions() {
+        return this.getDataAsStringArray("region.included");
     }
 
     /**
@@ -154,6 +196,36 @@ public final class Config {
      * @return enabled
      */
     public boolean isMetricsEnabled() {
-        return this.metrics;
+        return (boolean) this.getData("metrics");
+    }
+
+    public void fixJoinDefaultPet(PetMeta petData) {
+        final PetData petMeta = (PetData) petData;
+        petMeta.setSkin(Material.getMaterial((Integer) this.getData("join.settings.id")), (short) (int) this.getData("join.settings.durability"), this.getData("join.settings.skullname"));
+        petMeta.setEngineContainer(this.engineController.getById(this.getData("join.settings.engine")));
+        petMeta.setDisplayName(this.getData("join.settings.petname"));
+        petMeta.setEnabled(this.getData("join.settings.enabled"));
+        petMeta.setAge(this.getData("join.settings.age"));
+        if (!((String) this.getData("join.settings.particle.name")).equalsIgnoreCase("none")) {
+            final ParticleEffectMeta meta;
+            try {
+                meta = new ParticleEffectData(((MemorySection) this.getData("effect")).getValues(false));
+                petMeta.setParticleEffectMeta(meta);
+            } catch (Exception e) {
+                Bukkit.getLogger().log(Level.WARNING, "Failed to load particle effect for join pet.");
+            }
+        }
+    }
+
+    private String[] getDataAsStringArray(String path) {
+        return ((List<String>) this.getData(path)).toArray(new String[0]);
+    }
+
+    public boolean allowRidingOnRegionChanging() {
+        return true;
+    }
+
+    public boolean allowPetSpawning(Location location) {
+        throw new RuntimeException();
     }
 }

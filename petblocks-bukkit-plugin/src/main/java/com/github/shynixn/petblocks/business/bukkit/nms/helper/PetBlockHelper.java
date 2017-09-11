@@ -41,11 +41,12 @@ public final class PetBlockHelper {
             .setOffset(2, 2, 2)
             .setSpeed(0.1)
             .setAmount(2);
-    private static final ParticleEffectMeta cloud  = new ParticleEffectData()
+    private static final ParticleEffectMeta cloud = new ParticleEffectData()
             .setEffectType(ParticleEffectMeta.ParticleEffectType.CLOUD)
             .setOffset(1, 1, 1)
             .setSpeed(0.1)
             .setAmount(100);
+
     private PetBlockHelper() {
         super();
     }
@@ -91,10 +92,19 @@ public final class PetBlockHelper {
         final long milli = System.currentTimeMillis();
         if (milli - previous > 500) {
             if (petMeta.isSoundEnabled()) {
-                if (ConfigPet.getInstance().isDesign_allowOtherHearSound() && !petData.isHidden()) {
-                    petData.getEngine().getWalkingSound().applyToLocation(entity.getLocation());
-                } else {
-                    petData.getEngine().getWalkingSound().applyToPlayers(owner);
+                try {
+                    if (ConfigPet.getInstance().isDesign_allowOtherHearSound() && !petData.isHidden()) {
+
+                        petData.getEngine().getWalkingSound().applyToLocation(entity.getLocation());
+
+                    } else {
+                        petData.getEngine().getWalkingSound().applyToPlayers(owner);
+                    }
+                } catch (final Exception e) {
+                    Bukkit.getLogger()
+                            .log(Level.WARNING, "Cannot play walking sound "
+                                    + petData.getEngine().getWalkingSound().getName()
+                                    + " of " + petData.getEngine().getEntityType() + ".");
                 }
             }
             return milli;
@@ -153,10 +163,19 @@ public final class PetBlockHelper {
             final Random random = new Random();
             if (!getEngineEntity(petBlock).isOnGround() || petData.getEngine().getEntityType().equalsIgnoreCase("ZOMBIE")) {
                 if (petBlock.getMeta().isSoundEnabled()) {
-                    if (ConfigPet.getInstance().isDesign_allowOtherHearSound()) {
-                        petData.getEngine().getAmbientSound().applyToLocation(getEngineEntity(petBlock).getLocation());
-                    } else {
-                        petData.getEngine().getAmbientSound().applyToLocation(petBlock.getPlayer());
+                    try
+                    {
+                        if (ConfigPet.getInstance().isDesign_allowOtherHearSound()) {
+                            petData.getEngine().getAmbientSound().applyToLocation(getEngineEntity(petBlock).getLocation());
+                        } else {
+                            petData.getEngine().getAmbientSound().applyToLocation(petBlock.getPlayer());
+                        }
+                    }
+                    catch (final Exception e) {
+                        Bukkit.getLogger()
+                                .log(Level.WARNING, "Cannot play ambient sound "
+                                        + petData.getEngine().getWalkingSound().getName()
+                                        + " of " + petData.getEngine().getEntityType() + ".");
                     }
                 }
             }
@@ -165,7 +184,7 @@ public final class PetBlockHelper {
         if (getEngineEntity(petBlock).isDead()) {
             PetBlocksApi.getDefaultPetBlockController().remove(petBlock);
         }
-        if (petData.getParticleEffect() != null) {
+        if (petData.getParticleEffectMeta() != null) {
             if (!petBlock.getMeta().isVisible()) {
                 petData.getParticleEffectMeta().apply(getArmorstand(petBlock).getLocation().add(0, 1, 0), petBlock.getPlayer());
             } else {

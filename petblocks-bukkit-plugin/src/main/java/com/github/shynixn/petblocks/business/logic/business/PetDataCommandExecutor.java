@@ -1,52 +1,57 @@
 package com.github.shynixn.petblocks.business.logic.business;
 
 import com.github.shynixn.petblocks.api.PetBlocksApi;
+import com.github.shynixn.petblocks.api.business.entity.PetBlock;
 import com.github.shynixn.petblocks.api.business.enumeration.GUIPage;
-import com.github.shynixn.petblocks.api.entities.PetBlock;
 import com.github.shynixn.petblocks.api.persistence.entity.PetMeta;
-import com.github.shynixn.petblocks.business.logic.configuration.Config;
-import com.github.shynixn.petblocks.business.Language;
-import com.github.shynixn.petblocks.business.logic.configuration.Permission;
 import com.github.shynixn.petblocks.business.bukkit.PetBlocksPlugin;
-import com.github.shynixn.petblocks.business.logic.configuration.ConfigCommands;
+import com.github.shynixn.petblocks.business.logic.configuration.Config;
 import com.github.shynixn.petblocks.business.logic.configuration.ConfigPet;
+import com.github.shynixn.petblocks.business.logic.configuration.Permission;
 import com.github.shynixn.petblocks.business.logic.persistence.entity.PetData;
-import com.github.shynixn.petblocks.lib.DynamicCommandHelper;
+import com.github.shynixn.petblocks.lib.SimpleCommandExecutor;
 import org.bukkit.Material;
-import org.bukkit.command.CommandSender;
+import org.bukkit.configuration.MemorySection;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
-class PetDataCommandExecutor extends DynamicCommandHelper {
+class PetDataCommandExecutor extends SimpleCommandExecutor.UnRegistered {
     private final PetDataManager manager;
     private final Plugin plugin;
 
-    PetDataCommandExecutor(PetDataManager petDataManager) {
-        super(ConfigCommands.getInstance().getPetblockGuiCommandContainer());
+    PetDataCommandExecutor(PetDataManager petDataManager) throws Exception {
+        super(((MemorySection) JavaPlugin.getPlugin(PetBlocksPlugin.class).getConfig().get("petblocks-gui")).getValues(false)
+                , JavaPlugin.getPlugin(PetBlocksPlugin.class));
         this.manager = petDataManager;
         this.plugin = JavaPlugin.getPlugin(PetBlocksPlugin.class);
     }
 
+    /**
+     * Can be overwritten to listen to player executed commands
+     *
+     * @param player player
+     * @param args   args
+     */
     @Override
-    public void onCommandSend(CommandSender sender, String[] args) {
-        if (!(sender instanceof Player))
-            return;
-        final Player player = (Player) sender;
+    public void onPlayerExecuteCommand(Player player, String[] args) {
         if (!Config.getInstance().allowPetSpawning(player.getLocation()))
             return;
         if (args.length == 1 && args[0].equalsIgnoreCase("call")) {
             final PetBlock petBlock;
-            if ((petBlock = PetBlocksApi.getPetBlock(player)) != null)
+            if ((petBlock = PetBlocksApi.getDefaultPetBlockController().getByPlayer(player)) != null)
                 petBlock.teleport(player);
         } else if (args.length == 1 && args[0].equalsIgnoreCase("toggle")) {
-            if (PetBlocksApi.hasPetBlock(player))
-                PetBlocksApi.removePetBlock(player);
+            if (PetBlocksApi.getDefaultPetBlockController().getByPlayer(player) != null)
+                PetBlocksApi.getDefaultPetBlockController().remove(PetBlocksApi.getDefaultPetBlockController().getByPlayer(player));
             else {
                 this.plugin.getServer().getScheduler().runTaskAsynchronously(this.plugin, () -> {
                     final com.github.shynixn.petblocks.api.persistence.entity.PetMeta petMeta = PetDataCommandExecutor.this.manager.getPetMeta(player);
                     if (petMeta != null) {
-                        this.plugin.getServer().getScheduler().runTask(this.plugin, () -> PetBlocksApi.setPetBlock(player, petMeta));
+                        this.plugin.getServer().getScheduler().runTask(this.plugin, () -> {
+                            final PetBlock petBlock = PetBlocksApi.getDefaultPetBlockController().create(player, petMeta);
+                            PetBlocksApi.getDefaultPetBlockController().store(petBlock);
+                        });
                     }
                 });
             }
@@ -56,23 +61,23 @@ class PetDataCommandExecutor extends DynamicCommandHelper {
             this.handleNaming(player, args[1], true);
         } else {
             this.manager.gui.open(player);
-            this.manager.gui.setPetTypeItems(player);
             this.plugin.getServer().getScheduler().runTaskAsynchronously(this.plugin, () -> {
                 final PetMeta petMeta;
                 if ((petMeta = this.manager.getPetMeta(player)) != null) {
-                    this.plugin.getServer().getScheduler().runTask(this.plugin, () -> this.manager.gui.setItems(GUIPage.MAIN, player, ((PetData)petMeta).getType(), PetBlocksApi.hasPetBlock(player), true, petMeta));
+                    this.plugin.getServer().getScheduler().runTask(this.plugin, () -> {
+                        this.manager.gui.setPage(player, GUIPage.MAIN, petMeta);
+                    });
                 }
             });
         }
     }
-
     private void handleNaming(Player player, String message, boolean skullNaming) {
-        if (PetBlocksApi.hasPetBlock(player)) {
-            final PetBlock petBlock = PetBlocksApi.getPetBlock(player);
+        PetBlock petBlock;
+        if ((petBlock = PetBlocksApi.getDefaultPetBlockController().getByPlayer(player)) != null) {
             if (skullNaming) {
-                this.renameSkull(player, message, petBlock.getPetMeta(), petBlock);
+                this.renameSkull(player, message, petBlock.getMeta(), petBlock);
             } else {
-                this.renameName(player, message, petBlock.getPetMeta(), petBlock);
+                this.renameName(player, message, petBlock.getMeta(), petBlock);
 
             }
         } else {
@@ -89,32 +94,32 @@ class PetDataCommandExecutor extends DynamicCommandHelper {
 
     private void renameName(Player player, String message, com.github.shynixn.petblocks.api.persistence.entity.PetMeta petMeta, PetBlock petBlock) {
         if (message.length() > ConfigPet.getInstance().getDesign_maxPetNameLength()) {
-            player.sendMessage(Language.PREFIX + Language.NAME_ERROR_MESSAGE);
+            player.sendMessage(Config.getInstance().getPrefix() + Config.getInstance().getNamingErrorMessage());
         } else {
             try {
                 petMeta.setDisplayName(message);
                 this.persistAsynchronously(petMeta);
                 if (petBlock != null)
                     petBlock.respawn();
-                player.sendMessage(Language.PREFIX + Language.NAME_SUCCES_MESSAGE);
+                player.sendMessage(Config.getInstance().getPrefix() + Config.getInstance().getNamingSuccessMessage());
             } catch (final Exception e) {
-                player.sendMessage(Language.PREFIX + Language.NAME_ERROR_MESSAGE);
+                player.sendMessage(Config.getInstance().getPrefix() + Config.getInstance().getNamingErrorMessage());
             }
         }
     }
 
     private void renameSkull(Player player, String message, com.github.shynixn.petblocks.api.persistence.entity.PetMeta petMeta, PetBlock petBlock) {
         if (message.length() > 20) {
-            player.sendMessage(Language.PREFIX + Language.SNAME_ERROR_MESSAGE);
+            player.sendMessage(Config.getInstance().getPrefix() + Config.getInstance().getSkullNamingErrorMessage());
         } else {
             try {
                 ((PetData)petMeta).setSkin(Material.SKULL_ITEM, (short) 3, message);
                 this.persistAsynchronously(petMeta);
                 if (petBlock != null)
                     petBlock.respawn();
-                player.sendMessage(Language.PREFIX + Language.SNAME_SUCCES_MESSAGE);
+                player.sendMessage(Config.getInstance().getPrefix() + Config.getInstance().getSkullNamingSuccessMessage());
             } catch (final Exception e) {
-                player.sendMessage(Language.PREFIX + Language.SNAME_ERROR_MESSAGE);
+                player.sendMessage(Config.getInstance().getPrefix() +Config.getInstance().getSkullNamingErrorMessage());
             }
         }
     }

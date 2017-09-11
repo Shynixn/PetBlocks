@@ -1,16 +1,16 @@
-package com.github.shynixn.petblocks.business.logic.business;
+package com.github.shynixn.petblocks.business.logic.configuration;
 
-import com.github.shynixn.petblocks.api.bukkit.event.PetBlockDeathEvent;
-import com.github.shynixn.petblocks.api.business.controller.PetBlockController;
-import com.github.shynixn.petblocks.api.business.entity.PetBlock;
-import com.github.shynixn.petblocks.api.persistence.entity.PetMeta;
-import com.github.shynixn.petblocks.business.bukkit.nms.NMSRegistry;
+import com.github.shynixn.petblocks.api.business.entity.GUIItemContainer;
+import com.github.shynixn.petblocks.api.persistence.controller.CostumeController;
 import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
+import org.bukkit.configuration.MemorySection;
 import org.bukkit.plugin.Plugin;
 
 import java.io.Closeable;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 
 /**
@@ -42,60 +42,22 @@ import java.util.logging.Level;
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-public final class PetBlockManager implements PetBlockController {
-    Map<Player, PetBlock> petblocks = new HashMap<>();
+public class CostumeConfiguration implements CostumeController {
 
-    private final Plugin plugin;
-    PetDataManager dataManager;
-    Set<Player> carryingPet = new HashSet<>();
-    Map<Player, Integer> timeBlocked = new HashMap<>();
+    private Plugin plugin;
+    private final String costumeCategory;
+    final List<GUIItemContainer> items = new ArrayList<>();
 
     /**
-     * Initializes a new petblock manager
+     * Initializes a new engine repository
      *
-     * @param dataManager dataManager
-     * @param plugin      plugin
+     * @param plugin plugin
      */
-    public PetBlockManager(PetDataManager dataManager, Plugin plugin) {
-        super();
+    public CostumeConfiguration(String costumeCategory, Plugin plugin) {
+        if (plugin == null)
+            throw new IllegalArgumentException("Plugin cannot be null!");
         this.plugin = plugin;
-        this.dataManager = dataManager;
-        if (plugin.getPluginLoader() != null) {
-            new PetBlockListener(this, plugin);
-            try {
-                new PetBlockCommandExecutor(this);
-            } catch (final Exception e) {
-                Bukkit.getLogger().log(Level.WARNING, "Failed to initialize commandExecutor.", e);
-            }
-            new PetBlockReloadCommandExecutor(plugin);
-        }
-    }
-
-    /**
-     * Creates a new petblock for the given player and meta
-     *
-     * @param player  player
-     * @param petMeta meta
-     * @return petblock
-     */
-    @Override
-    public PetBlock create(Object player, PetMeta petMeta) {
-        final Player mPlayer = (Player) player;
-        return NMSRegistry.createPetBlock(mPlayer.getLocation(), petMeta);
-    }
-
-    /**
-     * Returns the petblock of the given player
-     *
-     * @param player player
-     * @return petblock
-     */
-    @Override
-    public PetBlock getByPlayer(Object player) {
-        if (this.petblocks.containsKey(player)) {
-            return this.petblocks.get(player);
-        }
-        return null;
+        this.costumeCategory = costumeCategory;
     }
 
     /**
@@ -104,11 +66,11 @@ public final class PetBlockManager implements PetBlockController {
      * @param item item
      */
     @Override
-    public void store(PetBlock item) {
-        final Player mPlayer = (Player) item.getPlayer();
-        if (!this.petblocks.containsKey(mPlayer) && !this.timeBlocked.containsKey(mPlayer)) {
-            this.petblocks.put(mPlayer, item);
+    public void store(GUIItemContainer item) {
+        if (this.getContainerByPosition(item.getPosition()) != null) {
+            throw new IllegalArgumentException("Item at this position already exists!");
         }
+        this.items.add(item);
     }
 
     /**
@@ -117,17 +79,9 @@ public final class PetBlockManager implements PetBlockController {
      * @param item item
      */
     @Override
-    public void remove(PetBlock item) {
-        final Player player = (Player) item.getPlayer();
-        if (this.petblocks.containsKey(player)) {
-            final PetBlockDeathEvent event = new PetBlockDeathEvent(this.petblocks.get(player));
-            Bukkit.getPluginManager().callEvent(event);
-            final com.github.shynixn.petblocks.api.persistence.entity.PetMeta petMeta = this.petblocks.get(player).getMeta();
-            this.plugin.getServer().getScheduler().runTaskAsynchronously(this.plugin, () -> this.dataManager.persist(petMeta));
-            if (!event.isCanceled()) {
-                this.petblocks.get(player).remove();
-                this.petblocks.remove(player);
-            }
+    public void remove(GUIItemContainer item) {
+        if (this.items.contains(item)) {
+            this.items.remove(item);
         }
     }
 
@@ -138,7 +92,7 @@ public final class PetBlockManager implements PetBlockController {
      */
     @Override
     public int size() {
-        return this.petblocks.size();
+        return this.items.size();
     }
 
     /**
@@ -147,8 +101,42 @@ public final class PetBlockManager implements PetBlockController {
      * @return items
      */
     @Override
-    public List<PetBlock> getAll() {
-        return new ArrayList<>(this.petblocks.values());
+    public List<GUIItemContainer> getAll() {
+        return Collections.unmodifiableList(this.items);
+    }
+
+    /**
+     * Reloads the content from the fileSystem
+     */
+    @Override
+    public void reload() {
+        this.items.clear();
+        this.plugin.reloadConfig();
+        final Map<String, Object> data = ((MemorySection) ((MemorySection) this.plugin.getConfig().get("wardrobe")).get(this.costumeCategory)).getValues(false);
+        for (final String key : data.keySet()) {
+            try {
+                final GUIItemContainer container = new ItemContainer(Integer.parseInt(key), ((MemorySection) data.get(key)).getValues(false));
+                this.items.add(container);
+            } catch (final Exception e) {
+                Bukkit.getLogger().log(Level.WARNING, "Failed to load guiItem " + this.costumeCategory + "." + key + ".");
+            }
+        }
+    }
+
+    /**
+     * Returns the container by the given order id
+     *
+     * @param position position
+     * @return container
+     */
+    @Override
+    public GUIItemContainer getContainerByPosition(int position) {
+        for (final GUIItemContainer guiItemContainer : this.items) {
+            if (guiItemContainer.getPosition() == position) {
+                return guiItemContainer;
+            }
+        }
+        return null;
     }
 
     /**
@@ -198,13 +186,7 @@ public final class PetBlockManager implements PetBlockController {
      */
     @Override
     public void close() throws Exception {
-        for (final Player player : this.petblocks.keySet()) {
-            this.petblocks.get(player).remove();
-        }
-        for (final Player player : this.carryingPet) {
-            NMSRegistry.setItemInHand19(player, null, true);
-        }
-        this.carryingPet.clear();
-        this.petblocks.clear();
+        this.plugin = null;
+        this.items.clear();
     }
 }

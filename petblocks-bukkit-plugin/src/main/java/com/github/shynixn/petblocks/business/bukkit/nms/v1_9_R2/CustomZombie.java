@@ -1,6 +1,6 @@
 package com.github.shynixn.petblocks.business.bukkit.nms.v1_9_R2;
 
-import com.github.shynixn.petblocks.api.entities.CustomEntity;
+import com.github.shynixn.petblocks.api.business.entity.PetBlockPartEntity;
 import com.github.shynixn.petblocks.api.persistence.entity.PetMeta;
 import com.github.shynixn.petblocks.business.bukkit.nms.helper.PetBlockHelper;
 import com.github.shynixn.petblocks.business.logic.configuration.ConfigPet;
@@ -20,10 +20,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.logging.Level;
 
-/**
- * Created by Shynixn
- */
-public final class CustomZombie extends EntityZombie implements CustomEntity {
+public final class CustomZombie extends EntityZombie implements PetBlockPartEntity {
     private long playedMovingSound = 100000;
     private PetMeta petMeta;
     private Player player;
@@ -57,31 +54,65 @@ public final class CustomZombie extends EntityZombie implements CustomEntity {
     }
 
     @Override
-    public void spawn(Location location) {
-        final World mcWorld = ((CraftWorld) location.getWorld()).getHandle();
-        this.setPosition(location.getX(), location.getY(), location.getZ());
-        mcWorld.addEntity(this, CreatureSpawnEvent.SpawnReason.CUSTOM);
-        this.getSpigotEntity().addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, 9999999, 1));
-        this.getSpigotEntity().setMetadata("keep", this.getKeepField());
-        this.getSpigotEntity().setCustomNameVisible(false);
-        this.getSpigotEntity().setCustomName("PetBlockIdentifier");
-    }
-
-    @Override
     protected void a(BlockPosition blockposition, Block block) {
         this.playedMovingSound = PetBlockHelper.executeMovingSound(this.getBukkitEntity(), this.player, this.petMeta, this.playedMovingSound);
         super.a(blockposition, block);
     }
 
+    /**
+     * Returns the entity hidden by this object
+     *
+     * @return spigotEntity
+     */
     @Override
-    public LivingEntity getSpigotEntity() {
-        return (LivingEntity) this.getBukkitEntity();
+    public Object getEntity() {
+        return this.getBukkitEntity();
     }
 
+    /**
+     * Spawns the entity at the given location
+     *
+     * @param mLocation location
+     */
+    @Override
+    public void spawn(Object mLocation) {
+        final Location location = (Location) mLocation;
+        final LivingEntity entity = (LivingEntity) this.getEntity();
+        final net.minecraft.server.v1_9_R2.World mcWorld = ((CraftWorld) location.getWorld()).getHandle();
+        this.setPosition(location.getX(), location.getY(), location.getZ());
+        mcWorld.addEntity(this, CreatureSpawnEvent.SpawnReason.CUSTOM);
+        entity.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, 9999999, 1));
+        entity.setMetadata("keep", this.getKeepField());
+        entity.setCustomNameVisible(false);
+        entity.setCustomName("PetBlockIdentifier");
+    }
+
+    /**
+     * Removes the entity from the world
+     */
+    @Override
+    public void remove() {
+        ((LivingEntity) this.getEntity()).remove();
+    }
+
+    /**
+     * Returns the keepField
+     *
+     * @return keepField
+     */
     private FixedMetadataValue getKeepField() {
         return new FixedMetadataValue(Bukkit.getPluginManager().getPlugin("PetBlocks"), true);
     }
 
+    /**
+     * Ignores any final field value
+     *
+     * @param field field
+     * @throws NoSuchFieldException     exception
+     * @throws SecurityException        exception
+     * @throws IllegalArgumentException exception
+     * @throws IllegalAccessException   exception
+     */
     private void ignoreFinalField(Field field) throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
         field.setAccessible(true);
         final Field modifiersField = Field.class.getDeclaredField("modifiers");

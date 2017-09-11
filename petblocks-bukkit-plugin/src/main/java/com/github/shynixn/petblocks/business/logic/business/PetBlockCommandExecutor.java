@@ -1,44 +1,52 @@
 package com.github.shynixn.petblocks.business.logic.business;
 
-import com.github.shynixn.petblocks.api.PetBlocksApi;
-import com.github.shynixn.petblocks.api.entities.PetBlock;
-import com.github.shynixn.petblocks.api.entities.PetType;
-import com.github.shynixn.petblocks.business.Language;
+import com.github.shynixn.petblocks.api.business.entity.GUIItemContainer;
+import com.github.shynixn.petblocks.api.business.entity.PetBlock;
+import com.github.shynixn.petblocks.api.business.enumeration.GUIItem;
+import com.github.shynixn.petblocks.api.persistence.entity.EngineContainer;
+import com.github.shynixn.petblocks.api.persistence.entity.PetMeta;
 import com.github.shynixn.petblocks.business.bukkit.PetBlocksPlugin;
 import com.github.shynixn.petblocks.business.bukkit.nms.NMSRegistry;
-import com.github.shynixn.petblocks.business.logic.configuration.ConfigCommands;
-import com.github.shynixn.petblocks.business.logic.configuration.ConfigGUI;
-import com.github.shynixn.petblocks.business.logic.configuration.ConfigParticle;
+import com.github.shynixn.petblocks.business.logic.configuration.Config;
 import com.github.shynixn.petblocks.business.logic.persistence.entity.PetData;
 import com.github.shynixn.petblocks.lib.BukkitChatColor;
 import com.github.shynixn.petblocks.lib.BukkitUtilities;
-import com.github.shynixn.petblocks.lib.DynamicCommandHelper;
+import com.github.shynixn.petblocks.lib.SimpleCommandExecutor;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
+import org.bukkit.configuration.MemorySection;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
-import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
-class PetBlockCommandExecutor extends DynamicCommandHelper {
+class PetBlockCommandExecutor extends SimpleCommandExecutor.UnRegistered {
     private final PetBlockManager manager;
-    private final Plugin plugin;
 
-    PetBlockCommandExecutor(PetBlockManager manager) {
-        super(ConfigCommands.getInstance().getPetblocksConfigurationCommandContainer());
+    PetBlockCommandExecutor(PetBlockManager manager) throws Exception {
+        super(((MemorySection) JavaPlugin.getPlugin(PetBlocksPlugin.class).getConfig().get("petblocks-configuration")).getValues(false)
+                , JavaPlugin.getPlugin(PetBlocksPlugin.class));
         this.manager = manager;
-        this.plugin = JavaPlugin.getPlugin(PetBlocksPlugin.class);
     }
 
+    /**
+     * Can be overwritten to listener to all executed commands
+     *
+     * @param sender sender
+     * @param args   args
+     */
     @Override
-    public void onCommandSend(CommandSender sender, String[] args) {
-        if (args.length == 4 && args[0].equalsIgnoreCase("set") && BukkitUtilities.tryParseInt(args[3]) && sender instanceof Player)
-            this.setPetPlayerCommand((Player) sender, args[1], args[2], Integer.parseInt(args[3]));
-        else if (args.length == 5 && args[0].equalsIgnoreCase("set") && this.getOnlinePlayer(args[4]) != null)
-            this.setPetPlayerCommand(this.getOnlinePlayer(args[4]), args[1], args[2], Integer.parseInt(args[3]));
+    public void onCommandSenderExecuteCommand(CommandSender sender, String[] args) {
+        if (args.length == 2 && args[0].equalsIgnoreCase("engine") && sender instanceof Player && BukkitUtilities.tryParseInt(args[1]))
+            this.setEngineCommand((Player) sender, Integer.parseInt(args[1]));
+        else if (args.length == 3 && args[0].equalsIgnoreCase("engine") && this.getOnlinePlayer(args[2]) != null && BukkitUtilities.tryParseInt(args[1]))
+            this.setEngineCommand(this.getOnlinePlayer(args[2]), Integer.parseInt(args[1]));
+        else if (args.length == 3 && args[0].equalsIgnoreCase("costume") && sender instanceof Player && BukkitUtilities.tryParseInt(args[2]))
+            this.setCostumeCommand((Player) sender, args[1], Integer.parseInt(args[1]));
+        else if (args.length == 4 && args[0].equalsIgnoreCase("costume") && this.getOnlinePlayer(args[3]) != null && BukkitUtilities.tryParseInt(args[2]))
+            this.setCostumeCommand(this.getOnlinePlayer(args[3]), args[1], Integer.parseInt(args[1]));
         else if (args.length == 1 && args[0].equalsIgnoreCase("disable") && sender instanceof Player)
             this.removePetCommand((Player) sender);
         else if (args.length == 2 && args[0].equalsIgnoreCase("disable") && this.getOnlinePlayer(args[1]) != null)
@@ -89,22 +97,62 @@ class PetBlockCommandExecutor extends DynamicCommandHelper {
             sender.sendMessage("");
             sender.sendMessage(BukkitChatColor.DARK_GREEN + "" + ChatColor.UNDERLINE + "                   PetBlocks " + "                       ");
             sender.sendMessage("");
-            sender.sendMessage(Language.PREFIX + "/petblocks set <soul> <default/color/custom> <number> [player]");
-            sender.sendMessage(Language.PREFIX + "/petblocks name <name> [player]");
-            sender.sendMessage(Language.PREFIX + "/petblocks skin <account/url> [player]");
-            sender.sendMessage(Language.PREFIX + "/petblocks particle <number> [player]");
-            sender.sendMessage(Language.PREFIX + "/petblocks disable [player]");
-            sender.sendMessage(Language.PREFIX + "/petblocks toggle [player]");
-            sender.sendMessage(Language.PREFIX + "/petblocks hat [player]");
-            sender.sendMessage(Language.PREFIX + "/petblocks ride [player]");
-            sender.sendMessage(Language.PREFIX + "/petblocks togglesounds [player]");
-            sender.sendMessage(Language.PREFIX + "/petblocks skullname <name> [player]");
-            sender.sendMessage(Language.PREFIX + "/petblocks skulllore <line> <lore> [player]");
-            sender.sendMessage(Language.PREFIX + "/petblocks killnext - Kills nearest entity");
+            sender.sendMessage(Config.getInstance().getPrefix() + "/petblocks engine <number> [player]");
+            sender.sendMessage(Config.getInstance().getPrefix() + "/petblocks costume <category> <number> [player]");
+            sender.sendMessage(Config.getInstance().getPrefix() + "/petblocks name <name> [player]");
+            sender.sendMessage(Config.getInstance().getPrefix() + "/petblocks skin <account/url> [player]");
+            sender.sendMessage(Config.getInstance().getPrefix() + "/petblocks particle <number> [player]");
+            sender.sendMessage(Config.getInstance().getPrefix() + "/petblocks disable [player]");
+            sender.sendMessage(Config.getInstance().getPrefix() + "/petblocks toggle [player]");
+            sender.sendMessage(Config.getInstance().getPrefix() + "/petblocks hat [player]");
+            sender.sendMessage(Config.getInstance().getPrefix() + "/petblocks ride [player]");
+            sender.sendMessage(Config.getInstance().getPrefix() + "/petblocks togglesounds [player]");
+            sender.sendMessage(Config.getInstance().getPrefix() + "/petblocks skullname <name> [player]");
+            sender.sendMessage(Config.getInstance().getPrefix() + "/petblocks skulllore <line> <lore> [player]");
+            sender.sendMessage(Config.getInstance().getPrefix() + "/petblocks killnext - Kills nearest entity");
             sender.sendMessage("");
             sender.sendMessage(BukkitChatColor.DARK_GREEN + "" + ChatColor.UNDERLINE + "                           ┌1/1┐                            ");
             sender.sendMessage("");
         }
+    }
+
+    private void setCostumeCommand(Player player, String category, int number) {
+        this.providePet(player, (petMeta, petBlock) -> {
+            GUIItemContainer item;
+            if (category.equalsIgnoreCase("rare")) {
+                item = Config.getInstance().getRareCostumesController().getContainerByPosition(number);
+            } else if (category.equalsIgnoreCase("ordinary")) {
+                item = Config.getInstance().getOrdinaryCostumesController().getContainerByPosition(number);
+            } else if (category.equalsIgnoreCase("color")) {
+                item = Config.getInstance().getColorCostumesController().getContainerByPosition(number);
+            } else {
+                return;
+            }
+            ItemStack itemStack = (ItemStack) item.generate(player);
+            ((PetData) petMeta).setSkin(itemStack.getType(), itemStack.getDurability(), item.getSkin());
+        });
+    }
+
+    private void setEngineCommand(Player player, int number) {
+        this.providePet(player, (petMeta, petBlock) -> {
+            final EngineContainer container = Config.getInstance().getEngineController().getById(number);
+            if (container == null) {
+                player.sendMessage(Config.getInstance().getPrefix() + "Engine not found.");
+            } else {
+                petMeta.setEngine(container);
+            }
+        });
+    }
+
+    private void setParticleCommand(Player player, int number) {
+        this.providePet(player, (petMeta, petBlock) -> {
+            final GUIItemContainer container = Config.getInstance().getParticleController().getContainerByPosition(number);
+            if (container == null) {
+                player.sendMessage(Config.getInstance().getPrefix() + "Particle not found.");
+            } else {
+                petMeta.setParticleEffectMeta(Config.getInstance().getParticleController().getByItem(container));
+            }
+        });
     }
 
     private void toggleSounds(Player player) {
@@ -163,32 +211,20 @@ class PetBlockCommandExecutor extends DynamicCommandHelper {
         }
         if (nearest != null) {
             nearest.remove();
-            sender.sendMessage(Language.PREFIX + "" + ChatColor.GREEN + "You removed entity " + nearest.getType() + '.');
+            sender.sendMessage(Config.getInstance().getPrefix() + "" + ChatColor.GREEN + "You removed entity " + nearest.getType() + '.');
         }
     }
 
     private void ridePetCommand(Player player) {
         final PetBlock petBlock;
-        if ((petBlock = PetBlocksApi.getPetBlock(player)) != null)
+        if ((petBlock = this.manager.getByPlayer(player)) != null)
             petBlock.ride(player);
     }
 
     private void hatPetCommand(Player player) {
         final PetBlock petBlock;
-        if ((petBlock = PetBlocksApi.getPetBlock(player)) != null)
+        if ((petBlock = this.manager.getByPlayer(player)) != null)
             petBlock.wear(player);
-    }
-
-    private void setParticleCommand(Player player, int number) {
-        if (ConfigParticle.getInstance().getParticleItemStacks().length > number && number >= 0 && ConfigParticle.getInstance().getParticle(number) != null) {
-            this.providePet(player, (meta, petBlock) -> {
-                PetData petData = (PetData) meta;
-                petData.setParticleEffect(ConfigParticle.getInstance().getParticle(number));
-                this.persistAsynchronously(meta);
-                if (petBlock != null)
-                    petBlock.respawn();
-            });
-        }
     }
 
     private void changePetSkinCommand(Player player, String skinBump) {
@@ -206,7 +242,7 @@ class PetBlockCommandExecutor extends DynamicCommandHelper {
                     petBlock.respawn();
             });
         } catch (final Exception e) {
-            player.sendMessage(Language.PREFIX + Language.NAME_ERROR_MESSAGE);
+            player.sendMessage(Config.getInstance().getPrefix() + Config.getInstance().getSkullNamingErrorMessage());
         }
     }
 
@@ -219,48 +255,33 @@ class PetBlockCommandExecutor extends DynamicCommandHelper {
                     petBlock.respawn();
             });
         } catch (final Exception e) {
-            player.sendMessage(Language.PREFIX + Language.NAME_ERROR_MESSAGE);
+            player.sendMessage(Config.getInstance().getPrefix() + Config.getInstance().getNamingErrorMessage());
         }
     }
 
     private void togglePetCommand(Player player) {
-        if (this.manager.hasPetBlock(player))
-            this.manager.removePetBlock(player);
-        this.providePet(player, (meta, petBlock) -> PetBlocksApi.setPetBlock(player, meta));
+        this.removePetCommand(player);
+        this.providePet(player, (meta, petBlock) -> {
+            final PetBlock petBlock1 = this.manager.create(player, meta);
+            this.manager.store(petBlock1);
+        });
     }
 
     private void removePetCommand(Player player) {
-        if (this.manager.hasPetBlock(player))
-            this.manager.removePetBlock(player);
-    }
-
-    private void setPetPlayerCommand(Player player, String soul, String costume, int number) {
-        if (PetType.getPetTypeFromName(soul) == null) {
-            player.sendMessage(Language.PREFIX + ChatColor.RED + "This soul does not exist.");
-        } else if (!costume.equalsIgnoreCase("color") && !costume.equalsIgnoreCase("default") && !costume.equalsIgnoreCase("custom")) {
-            player.sendMessage(Language.PREFIX + ChatColor.RED + "Select a valid costume type.");
-        } else if (costume.equalsIgnoreCase("color") && ConfigGUI.getInstance().getColoredItemStacks().length > number && number >= 0 && ConfigGUI.getInstance().getColoredItemStacks()[number] != null) {
-            final ItemStack itemStack = ConfigGUI.getInstance().getColoredItemStacks()[number];
-            this.setPet(player, PetType.getPetTypeFromName(soul), itemStack);
-        } else if (costume.equalsIgnoreCase("default") && ConfigGUI.getInstance().getDefaultItemStacks().length > number && number >= 0 && ConfigGUI.getInstance().getDefaultItemStacks()[number] != null) {
-            final ItemStack itemStack = ConfigGUI.getInstance().getDefaultItemStacks()[number];
-            this.setPet(player, PetType.getPetTypeFromName(soul), itemStack);
-        } else if (costume.equalsIgnoreCase("custom") && ConfigGUI.getInstance().getCustomItemStacks().length > number && number >= 0 && ConfigGUI.getInstance().getCustomItemStacks()[number] != null) {
-            final ItemStack itemStack = ConfigGUI.getInstance().getCustomItemStacks()[number];
-            this.setPet(player, PetType.getPetTypeFromName(soul), itemStack);
-        } else {
-            player.sendMessage(Language.PREFIX + ChatColor.RED + "You can't set a pet with that costume number.");
+        PetBlock petBlock;
+        if ((petBlock = this.manager.getByPlayer(player)) != null) {
+            this.manager.remove(petBlock);
         }
     }
 
-    private void setPet(Player player, PetType petType, ItemStack itemStack) {
+    private void setPet(Player player, ItemStack itemStack) {
         this.plugin.getServer().getScheduler().runTaskAsynchronously(this.plugin, () -> {
-            if (PetBlocksApi.hasPetMeta(player)) {
-                PetBlocksApi.removePetMeta(player);
+            if (this.manager.dataManager.hasPetMeta(player)) {
+                this.manager.dataManager.remove(this.manager.dataManager.getPetMeta(player));
             }
             this.plugin.getServer().getScheduler().runTask(this.plugin, () -> {
 
-                final PetData meta = (PetData) this.manager.dataManager.createPetMeta(player, petType);
+                final PetData meta = (PetData) this.manager.dataManager.createPetMeta(player);
                 if (itemStack.getType() == Material.SKULL_ITEM) {
                     final SkullMeta skullMeta = (SkullMeta) itemStack.getItemMeta();
                     if (skullMeta.getOwner() == null) {
@@ -272,8 +293,10 @@ class PetBlockCommandExecutor extends DynamicCommandHelper {
                     meta.setSkin(itemStack.getType(), itemStack.getDurability(), null);
                 }
                 this.persistAsynchronously(meta);
-                if (PetBlocksApi.getPetBlock(player) != null)
-                    PetBlocksApi.getPetBlock(player).respawn();
+                PetBlock petBlock;
+                if ((petBlock = this.manager.getByPlayer(player)) != null) {
+                    petBlock.respawn();
+                }
             });
         });
     }
@@ -291,14 +314,14 @@ class PetBlockCommandExecutor extends DynamicCommandHelper {
     }
 
     private void providePet(Player player, PetBlockListener.PetRunnable runnable) {
-        if (PetBlocksApi.hasPetBlock(player)) {
-            final PetBlock petBlock = PetBlocksApi.getPetBlock(player);
-            runnable.run((com.github.shynixn.petblocks.api.persistence.entity.PetMeta) petBlock.getPetMeta(), petBlock);
+        PetBlock petBlock;
+        if ((petBlock = this.manager.getByPlayer(player)) != null) {
+            runnable.run(petBlock.getMeta(), petBlock);
         } else {
             this.plugin.getServer().getScheduler().runTaskAsynchronously(this.plugin, () -> {
-                if (!PetBlocksApi.hasPetMeta(player))
+                if (!this.manager.dataManager.hasPetMeta(player))
                     return;
-                final com.github.shynixn.petblocks.api.persistence.entity.PetMeta petMeta = PetBlocksApi.getPetMeta(player);
+                final PetMeta petMeta = this.manager.dataManager.getPetMeta(player);
                 this.plugin.getServer().getScheduler().runTask(this.plugin, () -> runnable.run(petMeta, null));
             });
         }

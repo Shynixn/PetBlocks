@@ -1,4 +1,6 @@
-package com.github.shynixn.petblocks.api.business.entity;
+package com.github.shynixn.petblocks.api.persistence.controller;
+
+import com.github.shynixn.petblocks.api.business.entity.GUIItemContainer;
 
 /**
  * Copyright 2017 Shynixn
@@ -29,23 +31,13 @@ package com.github.shynixn.petblocks.api.business.entity;
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-public interface PetBlockEntity {
-    /**
-     * Returns the entity hidden by this object
-     *
-     * @return spigotEntity
-     */
-    Object getEntity();
+public interface CostumeController extends IFileController<GUIItemContainer> {
 
     /**
-     * Spawns the entity at the given location
+     * Returns the container by the given order id
      *
-     * @param location location
+     * @param id id
+     * @return container
      */
-    void spawn(Object location);
-
-    /**
-     * Removes the entity from the world
-     */
-    void remove();
+    GUIItemContainer getContainerByPosition(int id);
 }

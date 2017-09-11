@@ -1,15 +1,12 @@
 package com.github.shynixn.petblocks.business.logic.business;
 
 import com.github.shynixn.petblocks.api.PetBlocksApi;
-import com.github.shynixn.petblocks.api.entities.PetType;
 import com.github.shynixn.petblocks.api.persistence.controller.ParticleEffectMetaController;
 import com.github.shynixn.petblocks.api.persistence.controller.PetMetaController;
 import com.github.shynixn.petblocks.api.persistence.controller.PlayerMetaController;
 import com.github.shynixn.petblocks.api.persistence.entity.PetMeta;
 import com.github.shynixn.petblocks.api.persistence.entity.PlayerMeta;
 import com.github.shynixn.petblocks.business.logic.configuration.Config;
-import com.github.shynixn.petblocks.business.Language;
-import com.github.shynixn.petblocks.business.logic.configuration.ConfigGUI;
 import com.github.shynixn.petblocks.business.logic.persistence.Factory;
 import com.github.shynixn.petblocks.business.logic.persistence.entity.PetData;
 import org.bukkit.entity.Player;
@@ -50,11 +47,9 @@ public final class PetDataManager implements AutoCloseable {
         this.particleEffectMetaController = Factory.createParticleEffectController();
     }
 
-    public PetMeta createPetMeta(Player player, PetType petType) {
-        final ItemStack itemStack = ConfigGUI.getInstance().getGeneral_defaultAppearanceContainer().generate();
-        final PetData petData = new PetData(player, petType, Language.getDefaultPetName(player), itemStack, ConfigGUI.getInstance().getGeneral_defaultAppearanceContainer().getSkullName());
-        petData.setMoveType(Config.getInstance().getMovingType(petType));
-        petData.setMovementType(ConfigGUI.getInstance().getContainer(petType).getMovement());
+    public PetMeta createPetMeta(Player player) {
+        final ItemStack itemStack = (ItemStack) Config.getInstance().getGuiItemsController().getGUIItemByName("default-appearance").generate(player);
+        final PetData petData = new PetData(player, Config.getInstance().getDefaultPetName(), itemStack, player.getName());
         petData.setIsBuild(true);
         return petData;
     }
@@ -64,11 +59,11 @@ public final class PetDataManager implements AutoCloseable {
             throw new IllegalArgumentException("PetMeta cannot be null!");
         if (Thread.currentThread().getId() == this.mainThreadId)
             throw new RuntimeException("This method has to be accessed asynchronously.");
-        if (((PetData)petMeta).getOwner() != null) {
-            petMeta.getPlayerMeta().setName(((Player)petMeta.getPlayerMeta().getPlayer()).getName());
+        if (((PetData) petMeta).getOwner() != null) {
+            petMeta.getPlayerMeta().setName(((Player) petMeta.getPlayerMeta().getPlayer()).getName());
             if (petMeta.getPlayerMeta().getId() == 0) {
                 final PlayerMeta playerMeta;
-                if ((playerMeta = this.playerMetaController.getByUUID(((Player)petMeta.getPlayerMeta().getPlayer()).getUniqueId())) != null) {
+                if ((playerMeta = this.playerMetaController.getByUUID(((Player) petMeta.getPlayerMeta().getPlayer()).getUniqueId())) != null) {
                     petMeta.setPlayerMeta(playerMeta);
                 }
             }
@@ -94,8 +89,8 @@ public final class PetDataManager implements AutoCloseable {
             throw new IllegalArgumentException("Player cannot be null!");
         if (Thread.currentThread().getId() == this.mainThreadId)
             throw new RuntimeException("This method has to be accessed asynchronously.");
-        if (PetBlocksApi.getPetBlock(player) != null)
-            return (PetMeta) PetBlocksApi.getPetBlock(player).getPetMeta();
+        if (PetBlocksApi.getDefaultPetBlockController().getByPlayer(player) != null)
+            return PetBlocksApi.getDefaultPetBlockController().getByPlayer(player).getMeta();
         final PetMeta petMeta = this.petDataController.getByPlayer(player);
         if (petMeta == null)
             return null;
@@ -116,6 +111,7 @@ public final class PetDataManager implements AutoCloseable {
      * Closes this resource, relinquishing any underlying resources.
      * This method is invoked automatically on objects managed by the
      * {@code try}-with-resources statement.
+     *
      * @throws Exception if this resource cannot be closed
      */
     @Override

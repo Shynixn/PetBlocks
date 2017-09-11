@@ -1,7 +1,6 @@
 package com.github.shynixn.petblocks.business.logic.business;
 
 import com.github.shynixn.petblocks.business.logic.configuration.Config;
-import com.github.shynixn.petblocks.business.Language;
 import com.github.shynixn.petblocks.lib.SimpleCommandExecutor;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
@@ -11,11 +10,10 @@ class PetBlockReloadCommandExecutor extends SimpleCommandExecutor.Registered {
     /**
      * Initializes a new commandExecutor by command, plugin
      *
-     * @param command command
      * @param plugin  plugin
      */
-    PetBlockReloadCommandExecutor(String command, Plugin plugin) {
-        super(command, (JavaPlugin) plugin);
+    PetBlockReloadCommandExecutor(Plugin plugin) {
+        super("petblockreload", (JavaPlugin) plugin);
     }
 
     /**
@@ -27,7 +25,6 @@ class PetBlockReloadCommandExecutor extends SimpleCommandExecutor.Registered {
     @Override
     public void onPlayerExecuteCommand(Player player, String[] args) {
         Config.getInstance().reload();
-        Language.reload(this.plugin);
-        player.sendMessage(Language.PREFIX + "Reloaded PetBlocks.");
+        player.sendMessage(Config.getInstance().getPrefix() + "Reloaded PetBlocks.");
     }
 }

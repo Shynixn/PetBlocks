@@ -1,81 +1,24 @@
 package com.github.shynixn.petblocks.business.logic.configuration;
 
-import org.bukkit.configuration.file.FileConfiguration;
-
-/**
- * Created by Shynixn
- */
-public class ConfigPet {
+public class ConfigPet extends SimpleConfig {
     private static ConfigPet instance;
-    //Age
-    private int age_smallticks;
-    private int age_largeticks = 1000;
-    private int age_maxticks = 1200;
-    private boolean age_deathOnMaxTicks = true;
-    //Combat
-    private double combat_health = 20.0;
-    private boolean combat_invincible = true;
-    //Flee
-    private boolean fleesInCombat;
-    private int reappearsInSeconds;
-    //Warp
-    private int warpDelay;
-    //Follow
-    private int follow_maxRangeTeleport = 50;
-    private boolean follow_fallOffHead = true;
-    private boolean follow_carry;
-    private boolean follow_wallcolliding = true;
-    private boolean afraidOfwater;
-    private boolean afraidwaterParticles;
-    private int blocksAwayFromPlayer = 2;
-    //Design
-    private int design_maxPetNameLength = 20;
-    private boolean design_showDamageAnimation = true;
-    private boolean design_allowOtherHearSound = true;
-    //Modifer
-    private double modifier_petriding;
-    private double modifier_petwalking;
-    private double modifier_petclimbing;
 
+    /**
+     * Initializes a new pet config
+     */
     private ConfigPet() {
         super();
     }
 
+    /**
+     * Returns the config pet instance
+     *
+     * @return instance
+     */
     public static ConfigPet getInstance() {
         if (instance == null)
             instance = new ConfigPet();
         return instance;
-    }
-
-    public void load(FileConfiguration c) {
-        this.age_smallticks = c.getInt("pet.age.small-ticks");
-        this.age_maxticks = c.getInt("pet.age.max-ticks");
-        this.age_largeticks = c.getInt("pet.age.large-ticks");
-        this.age_deathOnMaxTicks = c.getBoolean("pet.age.death-on-maxticks");
-
-        this.combat_health = c.getDouble("pet.combat.health");
-        this.combat_invincible = c.getBoolean("pet.combat.invincible");
-
-        this.warpDelay = c.getInt("pet.warp.teleports-in-seconds");
-
-        this.fleesInCombat = c.getBoolean("pet.flee.flees-in-combat");
-        this.reappearsInSeconds = c.getInt("pet.flee.reappears-in-seconds");
-
-        this.blocksAwayFromPlayer = c.getInt("pet.follow.amount-blocks-away");
-        this.follow_maxRangeTeleport = c.getInt("pet.follow.max-range-teleport");
-        this.follow_carry = c.getBoolean("pet.follow.carry");
-        this.follow_fallOffHead = c.getBoolean("pet.follow.teleport-fall");
-        this.follow_wallcolliding = c.getBoolean("pet.follow.flying-wall-colliding");
-        this.afraidOfwater = c.getBoolean("pet.follow.afraid-water");
-        this.afraidwaterParticles = c.getBoolean("pet.follow.afraid-water-particles");
-
-        this.design_allowOtherHearSound = c.getBoolean("pet.design.sounds-other-players");
-        this.design_maxPetNameLength = c.getInt("pet.design.max-petname-length");
-        this.design_showDamageAnimation = c.getBoolean("pet.design.show-damage-animation");
-
-        this.modifier_petriding = c.getDouble("pet.modifier.riding-speed");
-        this.modifier_petwalking = c.getDouble("pet.modifier.walking-speed");
-        this.modifier_petclimbing = c.getDouble("pet.modifier.climbing-height");
     }
 
     /**
@@ -84,90 +27,90 @@ public class ConfigPet {
      * @return amount
      */
     public int getBlocksAwayFromPlayer() {
-        return this.blocksAwayFromPlayer;
+        return (int) this.getData("pet.follow.amount-blocks-away");
     }
 
     public boolean isAfraidOfwater() {
-        return this.afraidOfwater;
+        return (boolean) this.getData("pet.follow.afraid-water");
     }
 
     public boolean isAfraidwaterParticles() {
-        return this.afraidwaterParticles;
+        return (boolean) this.getData("pet.follow.afraid-water-particles");
     }
 
     public int getAge_smallticks() {
-        return this.age_smallticks;
+        return (int) this.getData("pet.age.small-ticks");
     }
 
     public int getAge_largeticks() {
-        return this.age_largeticks;
+        return (int) this.getData("pet.age.large-ticks");
     }
 
     public int getAge_maxticks() {
-        return this.age_maxticks;
+        return (int) this.getData("pet.age.max-ticks");
     }
 
     public boolean isAge_deathOnMaxTicks() {
-        return this.age_deathOnMaxTicks;
+        return (boolean) this.getData("pet.age.death-on-maxticks");
     }
 
     public double getCombat_health() {
-        return this.combat_health;
+        return (double) this.getData("pet.combat.health");
     }
 
     public boolean isCombat_invincible() {
-        return this.combat_invincible;
+        return (boolean) this.getData("pet.combat.invincible");
     }
 
     public int getFollow_maxRangeTeleport() {
-        return this.follow_maxRangeTeleport;
+        return (int) this.getData("pet.follow.max-range-teleport");
     }
 
     public boolean isFollow_fallOffHead() {
-        return this.follow_fallOffHead;
+        return (boolean) this.getData("pet.follow.teleport-fall");
     }
 
     public boolean isFollow_carry() {
-        return this.follow_carry;
+        return (boolean) this.getData("pet.follow.carry");
     }
 
     public int getDesign_maxPetNameLength() {
-        return this.design_maxPetNameLength;
+        return (int) this.getData("pet.design.max-petname-length");
     }
 
     public boolean isDesign_showDamageAnimation() {
-        return this.design_showDamageAnimation;
+        return (boolean) this.getData("pet.design.show-damage-animation");
     }
 
     public boolean isDesign_allowOtherHearSound() {
-        return this.design_allowOtherHearSound;
+        return (boolean) this.getData("pet.design.sounds-other-players");
     }
 
     public double getModifier_petriding() {
-        return this.modifier_petriding;
+        return (double) this.getData("pet.modifier.riding-speed");
     }
 
     public double getModifier_petwalking() {
-        return this.modifier_petwalking;
+        return (double) this.getData("pet.modifier.walking-speed");
     }
 
     public double getModifier_petclimbing() {
-        return this.modifier_petclimbing;
+        return (double) this.getData("pet.modifier.climbing-height");
     }
 
     public boolean isFollow_wallcolliding() {
-        return this.follow_wallcolliding;
+        return (boolean) this.getData("pet.follow.flying-wall-colliding");
     }
 
     public boolean isFleesInCombat() {
-        return this.fleesInCombat;
+        return (boolean) this.getData("pet.flee.flees-in-combat");
     }
 
     public int getReappearsInSeconds() {
-        return this.reappearsInSeconds;
+        return (int) this.getData("pet.flee.reappears-in-seconds");
     }
 
     public int getWarpDelay() {
-        return this.warpDelay;
+        return (int) this.getData("pet.warp.teleports-in-seconds");
     }
 }

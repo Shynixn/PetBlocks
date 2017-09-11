@@ -1,6 +1,7 @@
 package com.github.shynixn.petblocks.api.persistence.controller;
 
-import com.github.shynixn.petblocks.api.persistence.entity.EngineContainer;
+import com.github.shynixn.petblocks.api.business.entity.GUIItemContainer;
+import com.github.shynixn.petblocks.api.persistence.entity.ParticleEffectMeta;
 
 /**
  * Copyright 2017 Shynixn
@@ -31,12 +32,13 @@ import com.github.shynixn.petblocks.api.persistence.entity.EngineContainer;
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-public interface EngineController extends IFileController<EngineContainer>{
+public interface ParticleController extends CostumeController {
 
     /**
-     * Returns the engineContainer with the given id
-     * @param id id
-     * @return engineContainer
+     * Returns the particleEffect by the given container
+     *
+     * @param container container
+     * @return particleEffect
      */
-    EngineContainer getById(int id);
+    ParticleEffectMeta getByItem(GUIItemContainer container);
 }

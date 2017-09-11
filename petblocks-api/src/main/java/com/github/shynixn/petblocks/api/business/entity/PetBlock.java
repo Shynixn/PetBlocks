@@ -1,6 +1,5 @@
 package com.github.shynixn.petblocks.api.business.entity;
 
-import com.github.shynixn.petblocks.api.persistence.entity.IPosition;
 import com.github.shynixn.petblocks.api.persistence.entity.PetMeta;
 
 /**
@@ -140,13 +139,6 @@ public interface PetBlock {
     Object getLocation();
 
     /**
-     * Sets the skin of the petblock
-     *
-     * @param itemStack itemStack
-     */
-    void setSkin(Object itemStack);
-
-    /**
      * Damages the petblock the given amount of damage
      *
      * @param amount amont
@@ -163,19 +155,12 @@ public interface PetBlock {
      *
      * @param vector vecotr
      */
-    void setVelocity(IPosition vector);
+    void setVelocity(Object vector);
 
     /**
      * Teleports the the petblock to the given location
      *
      * @param location location
      */
-    void teleport(IPosition location);
-
-    /**
-     * Teleports the petblock to the given entity-location
-     *
-     * @param entity entity
-     */
-    void teleport(Object entity);
+    void teleport(Object location);
 }

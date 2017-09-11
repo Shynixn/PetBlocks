@@ -32,6 +32,7 @@
     </licenses>
 
     <properties>
+        <petblocks.api.version>1.0.0-SNAPSHOT</petblocks.api.version>
         <petblocks.bukkit.version>6.2.0-SNAPSHOT</petblocks.bukkit.version>
         <petblocks.bukkit.test-server-path>D:/Temp/plugins</petblocks.bukkit.test-server-path>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

@@ -9,6 +9,6 @@
         <version>${petblocks.bukkit.version}</version>
     </parent>
 
-    <version>${petblocks.bukkit.version}</version>
+    <version>${petblocks.api.version}</version>
     <artifactId>petblocks-api</artifactId>
 </project>

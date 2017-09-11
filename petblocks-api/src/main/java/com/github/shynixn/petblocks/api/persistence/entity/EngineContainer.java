@@ -1,5 +1,6 @@
 package com.github.shynixn.petblocks.api.persistence.entity;
 
+import com.github.shynixn.petblocks.api.business.entity.GUIItemContainer;
 import com.github.shynixn.petblocks.api.business.enumeration.RideType;
 
 /**
@@ -60,4 +61,11 @@ public interface EngineContainer extends Persistenceable {
      * @return entityType
      */
     String getEntityType();
+
+    /**
+     * Returns the guiItem of the engine
+     *
+     * @return guiItem
+     */
+    GUIItemContainer getGUIItem();
 }

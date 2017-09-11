@@ -1,6 +1,9 @@
-package com.github.shynixn.petblocks.api.persistence.controller;
+package com.github.shynixn.petblocks.business.logic.configuration;
 
-import com.github.shynixn.petblocks.api.persistence.entity.EngineContainer;
+import com.github.shynixn.petblocks.business.bukkit.PetBlocksPlugin;
+import org.bukkit.ChatColor;
+import org.bukkit.plugin.Plugin;
+import org.bukkit.plugin.java.JavaPlugin;
 
 /**
  * Copyright 2017 Shynixn
@@ -31,12 +34,28 @@ import com.github.shynixn.petblocks.api.persistence.entity.EngineContainer;
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-public interface EngineController extends IFileController<EngineContainer>{
+public class SimpleConfig {
+    Plugin plugin;
 
     /**
-     * Returns the engineContainer with the given id
-     * @param id id
-     * @return engineContainer
+     * Reloads the config
      */
-    EngineContainer getById(int id);
+    public void reload() {
+        this.plugin = JavaPlugin.getPlugin(PetBlocksPlugin.class);
+        this.plugin.reloadConfig();
+    }
+
+    /**
+     * Returns data
+     *
+     * @param path path
+     * @return data
+     */
+    <T> T getData(String path) {
+        Object data = this.plugin.getConfig().get(path);
+        if (data instanceof String) {
+            data = ChatColor.translateAlternateColorCodes('&', (String) data);
+        }
+        return (T) data;
+    }
 }

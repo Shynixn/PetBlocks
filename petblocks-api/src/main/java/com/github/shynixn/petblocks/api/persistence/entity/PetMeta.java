@@ -53,6 +53,13 @@ public interface PetMeta extends Persistenceable {
     EngineContainer getEngine();
 
     /**
+     * Sets the data of the engine
+     *
+     * @param engine engine
+     */
+    void setEngine(EngineContainer engine);
+
+    /**
      * Returns if the pet is visible to other players
      *
      * @return visible
