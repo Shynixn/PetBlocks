@@ -4,18 +4,16 @@ import com.github.shynixn.petblocks.api.PetBlocksApi;
 import com.github.shynixn.petblocks.api.bukkit.event.PetBlockMoveEvent;
 import com.github.shynixn.petblocks.api.bukkit.event.PetBlockRideEvent;
 import com.github.shynixn.petblocks.api.business.entity.PetBlock;
+import com.github.shynixn.petblocks.api.persistence.entity.ParticleEffectMeta;
 import com.github.shynixn.petblocks.api.persistence.entity.PetMeta;
 import com.github.shynixn.petblocks.api.persistence.entity.SoundMeta;
-import com.github.shynixn.petblocks.business.bukkit.PetBlocksPlugin;
 import com.github.shynixn.petblocks.business.bukkit.nms.NMSRegistry;
 import com.github.shynixn.petblocks.business.logic.configuration.Config;
 import com.github.shynixn.petblocks.business.logic.configuration.ConfigPet;
+import com.github.shynixn.petblocks.business.logic.persistence.entity.ParticleEffectData;
 import com.github.shynixn.petblocks.business.logic.persistence.entity.SoundBuilder;
-import com.github.shynixn.petblocks.lib.BukkitUtilities;
-import com.github.shynixn.petblocks.lib.ParticleEffect;
 import com.github.shynixn.petblocks.lib.SimpleListener;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.entity.ArmorStand;
@@ -42,6 +40,12 @@ class PetBlockListener extends SimpleListener {
 
     private boolean running;
     private final SoundMeta eatingSound = new SoundBuilder("EAT");
+
+    private final ParticleEffectMeta heartParticles = new ParticleEffectData()
+            .setEffectType(ParticleEffectMeta.ParticleEffectType.HEART)
+            .setOffset(1, 1, 1)
+            .setSpeed(0.1)
+            .setAmount(20);
 
     PetBlockListener(PetBlockManager manager, Plugin plugin) {
         super(plugin);
@@ -218,7 +222,7 @@ class PetBlockListener extends SimpleListener {
             final PetBlock petBlock = this.getPet(event.getRightClicked());
             if (petBlock != null && petBlock.getPlayer().equals(event.getPlayer())) {
                 if (NMSRegistry.getItemInHand19(event.getPlayer(), false) != null && NMSRegistry.getItemInHand19(event.getPlayer(), false).getType() == Material.CARROT_ITEM) {
-                    ParticleEffect.HEART.display(1F, 1F, 1F, 0.1F, 20, event.getRightClicked().getLocation(), event.getRightClicked().getWorld().getPlayers());
+                    this.heartParticles.apply(event.getRightClicked().getLocation(), event.getRightClicked().getWorld().getPlayers());
                     try {
                         ((SoundBuilder) this.eatingSound).apply(event.getRightClicked().getLocation());
                     } catch (final Exception e) {
@@ -348,9 +352,8 @@ class PetBlockListener extends SimpleListener {
     private class ParticleRunnable implements Runnable {
         @Override
         public void run() {
-            //ThreadSafe
             for (final Player player : PetBlockListener.this.manager.carryingPet.toArray(new Player[PetBlockListener.this.manager.carryingPet.size()])) {
-                ParticleEffect.HEART.display(0.5F, 0.5F, 0.5F, 0.1F, 1, player.getLocation().add(0, 1, 0), player.getWorld().getPlayers());
+                PetBlockListener.this.heartParticles.apply(player.getLocation().add(0, 1, 0), player.getWorld().getPlayers());
             }
             for (final Player player : PetBlockListener.this.manager.petblocks.keySet().toArray(new Player[PetBlockListener.this.manager.petblocks.size()])) {
                 if (PetBlockListener.this.manager.petblocks.get(player).isDead() || !Config.getInstance().allowPetSpawning(player.getLocation())) {
@@ -378,22 +381,15 @@ class PetBlockListener extends SimpleListener {
 
                 }
             }
-            int counter = 0;
             for (final World world : Bukkit.getWorlds()) {
                 for (final Entity entity : world.getEntities()) {
                     if (entity instanceof ArmorStand && PetBlockListener.this.isDeadPet(entity)) {
                         entity.remove();
-                        counter++;
                     } else if (!PetBlockListener.this.isPet(entity) && entity.getCustomName() != null && entity.getCustomName().equals("PetBlockIdentifier")) {
                         entity.remove();
-                        counter++;
                     }
                 }
             }
-            if (counter == 1)
-                BukkitUtilities.sendColorMessage("PetHunter " + ChatColor.GREEN + '>' + ChatColor.YELLOW + " Removed " + counter + " pet.", ChatColor.YELLOW, PetBlocksPlugin.PREFIX_CONSOLE);
-            else if (counter > 0)
-                BukkitUtilities.sendColorMessage("PetHunter " + ChatColor.GREEN + '>' + ChatColor.YELLOW + " Removed " + counter + " pet.", ChatColor.YELLOW, PetBlocksPlugin.PREFIX_CONSOLE);
         }
     }
 

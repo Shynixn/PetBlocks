@@ -2,10 +2,11 @@ package com.github.shynixn.petblocks.business.bukkit.dependencies.supervanish;
 
 import com.github.shynixn.petblocks.api.PetBlocksApi;
 import com.github.shynixn.petblocks.api.business.entity.PetBlock;
-import com.github.shynixn.petblocks.lib.BukkitUtilities;
 import com.github.shynixn.petblocks.lib.SimpleListener;
 import de.myzelyam.api.vanish.PlayerHideEvent;
 import de.myzelyam.api.vanish.PlayerShowEvent;
+import org.bukkit.Bukkit;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -24,7 +25,7 @@ public final class SuperVanishConnection {
     }
 
     private static void hideFromAll(PetBlock petBlock) {
-        for (final Player player : BukkitUtilities.getOnlinePlayers()) {
+        for (final Player player :getOnlinePlayers()) {
             if (!player.equals(petBlock.getPlayer())) {
                 visibilityManager.hidePetBlock(petBlock, player);
             }
@@ -32,8 +33,17 @@ public final class SuperVanishConnection {
         petBlock.getMeta().setVisible(false);
     }
 
+    private static List<Player> getOnlinePlayers() {
+        final List<Player> players = new ArrayList<>();
+        for (final World world : Bukkit.getWorlds()) {
+            players.addAll(world.getPlayers());
+        }
+        return players;
+    }
+
+
     private static void showToAll(PetBlock petBlock) {
-        for (final Player player : BukkitUtilities.getOnlinePlayers()) {
+        for (final Player player : getOnlinePlayers()) {
             if (!player.equals(petBlock.getPlayer())) {
                 visibilityManager.showPetBlock(petBlock, player);
             }
@@ -65,7 +75,7 @@ public final class SuperVanishConnection {
         private PetBlock[] getPetBlocks() {
             final List<PetBlock> petBlocks = new ArrayList<>();
             PetBlock petBlock;
-            for (final Player player : BukkitUtilities.getOnlinePlayers()) {
+            for (final Player player : getOnlinePlayers()) {
                 if ((petBlock = this.getPetBlock(player)) != null) {
                     petBlocks.add(petBlock);
                 }

@@ -20,7 +20,6 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
@@ -207,7 +206,7 @@ public final class NMSRegistry {
     }
 
     public static String getSkinUrl(ItemStack itemStack) {
-        return SkullMetaRegistry.getLink(itemStack, BukkitUtilities.replaceServerVersion("org.bukkit.craftbukkit.VERSION.inventory.CraftMetaSkull"));
+        return SkullMetaRegistry.getLink(itemStack, "org.bukkit.craftbukkit.VERSION.inventory.CraftMetaSkull".replace("VERSION", VersionSupport.getServerVersion().getVersionText()));
     }
 
     public static void registerAll() {

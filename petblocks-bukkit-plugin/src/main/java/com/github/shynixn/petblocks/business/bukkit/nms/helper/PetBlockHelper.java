@@ -14,20 +14,20 @@ import com.github.shynixn.petblocks.business.logic.configuration.ConfigPet;
 import com.github.shynixn.petblocks.business.logic.persistence.entity.ParticleEffectData;
 import com.github.shynixn.petblocks.business.logic.persistence.entity.PetData;
 import com.github.shynixn.petblocks.business.logic.persistence.entity.SoundBuilder;
-import com.github.shynixn.petblocks.lib.BukkitUtilities;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.util.EulerAngle;
 import org.bukkit.util.Vector;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
 import java.util.logging.Level;
 
 /**
@@ -54,7 +54,7 @@ public final class PetBlockHelper {
     public static int afraidWaterEffect(Entity entity, int counter) {
         if (ConfigPet.getInstance().isAfraidOfwater()) {
             if (entity.getLocation().getBlock().isLiquid() && counter <= 0) {
-                final Vector vec = new Vector(random.nextInt(3) * BukkitUtilities.isNegative(random), random.nextInt(3) * BukkitUtilities.isNegative(random), random.nextInt(3) * BukkitUtilities.isNegative(random));
+                final Vector vec = new Vector(random.nextInt(3) * isNegative(random), random.nextInt(3) * isNegative(random), random.nextInt(3) * isNegative(random));
                 entity.setVelocity(vec);
                 if (ConfigPet.getInstance().isAfraidwaterParticles()) {
                     angryParticle.apply(entity.getLocation());
@@ -66,6 +66,12 @@ public final class PetBlockHelper {
         return counter;
     }
 
+    public static int isNegative(Random rand) {
+        if (rand.nextInt(2) == 0)
+            return -1;
+        return 1;
+    }
+
     public static void setSkin(PetBlock petBlock, String skin) {
         final ItemStack itemStack;
         if (skin.contains("textures.minecraft")) {
@@ -73,7 +79,7 @@ public final class PetBlockHelper {
                 skin = "http://" + skin;
             itemStack = NMSRegistry.changeSkullSkin(new ItemStack(org.bukkit.Material.SKULL_ITEM, 1, (byte) 3), skin);
         } else {
-            itemStack = BukkitUtilities.activateHead(skin, new ItemStack(org.bukkit.Material.SKULL_ITEM, 1, (byte) 3));
+            itemStack = activateHead(skin, new ItemStack(org.bukkit.Material.SKULL_ITEM, 1, (byte) 3));
         }
         refreshHeadItemMeta(petBlock, itemStack);
     }
@@ -203,11 +209,28 @@ public final class PetBlockHelper {
         else
             name = petData.getHeadDisplayName();
         if (petData.getHeadLore() != null)
-            itemStack = BukkitUtilities.nameItem(itemStack, name, petData.getHeadLore());
+            itemStack = nameItem(itemStack, name, petData.getHeadLore());
         else
-            itemStack = BukkitUtilities.nameItem(itemStack, name, null);
+            itemStack = nameItem(itemStack, name, null);
         itemStack = setWithUnbreakable(petBlock.getMeta(), itemStack);
         getArmorstand(petBlock).setHelmet(itemStack);
+    }
+
+    private static ItemStack nameItem(ItemStack item, String name, String[] lore) {
+        if (item.getType() != Material.AIR) {
+            final ItemMeta im = item.getItemMeta();
+            if (name != null) {
+                im.setDisplayName(name);
+            }
+            if (lore != null) {
+                im.setLore(Arrays.asList(lore));
+            } else {
+                im.setLore(new ArrayList<>());
+            }
+            item.setItemMeta(im);
+            return item;
+        }
+        return item;
     }
 
     public static void setItemConsideringAge(PetBlock petBlock) {
@@ -217,7 +240,7 @@ public final class PetBlockHelper {
             if (petData.getSkin().contains("http")) {
                 itemStack = NMSRegistry.changeSkullSkin(new ItemStack(petData.getSkinMaterial(), 1, petData.getSkinDurability()), petData.getSkin());
             } else {
-                itemStack = BukkitUtilities.activateHead(petData.getSkin(), new ItemStack(petData.getSkinMaterial(), 1, petData.getSkinDurability()));
+                itemStack = activateHead(petData.getSkin(), new ItemStack(petData.getSkinMaterial(), 1, petData.getSkinDurability()));
             }
         } else {
             itemStack = new ItemStack(petData.getSkinMaterial(), 1, petData.getSkinDurability());
@@ -256,6 +279,19 @@ public final class PetBlockHelper {
             return true;
         }
         return petBlock.isDieing();
+    }
+
+    private static ItemStack activateHead(String name, ItemStack itemStack) {
+        try {
+            if (itemStack.getItemMeta() instanceof SkullMeta) {
+                final SkullMeta meta = (SkullMeta) itemStack.getItemMeta();
+                meta.setOwner(name);
+                itemStack.setItemMeta(meta);
+            }
+        } catch (final Exception e) {
+            Bukkit.getLogger().log(Level.WARNING, e.getMessage());
+        }
+        return itemStack;
     }
 
     public static double setDamage(PetBlock petBlock, double health, double damage, TickCallBack callBack) {

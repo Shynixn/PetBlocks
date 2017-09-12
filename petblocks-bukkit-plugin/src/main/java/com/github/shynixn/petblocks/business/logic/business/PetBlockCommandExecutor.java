@@ -2,18 +2,17 @@ package com.github.shynixn.petblocks.business.logic.business;
 
 import com.github.shynixn.petblocks.api.business.entity.GUIItemContainer;
 import com.github.shynixn.petblocks.api.business.entity.PetBlock;
-import com.github.shynixn.petblocks.api.business.enumeration.GUIItem;
 import com.github.shynixn.petblocks.api.persistence.entity.EngineContainer;
 import com.github.shynixn.petblocks.api.persistence.entity.PetMeta;
 import com.github.shynixn.petblocks.business.bukkit.PetBlocksPlugin;
 import com.github.shynixn.petblocks.business.bukkit.nms.NMSRegistry;
 import com.github.shynixn.petblocks.business.logic.configuration.Config;
 import com.github.shynixn.petblocks.business.logic.persistence.entity.PetData;
-import com.github.shynixn.petblocks.lib.BukkitChatColor;
-import com.github.shynixn.petblocks.lib.BukkitUtilities;
 import com.github.shynixn.petblocks.lib.SimpleCommandExecutor;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.MemorySection;
 import org.bukkit.entity.Entity;
@@ -39,13 +38,13 @@ class PetBlockCommandExecutor extends SimpleCommandExecutor.UnRegistered {
      */
     @Override
     public void onCommandSenderExecuteCommand(CommandSender sender, String[] args) {
-        if (args.length == 2 && args[0].equalsIgnoreCase("engine") && sender instanceof Player && BukkitUtilities.tryParseInt(args[1]))
+        if (args.length == 2 && args[0].equalsIgnoreCase("engine") && sender instanceof Player && tryParseInt(args[1]))
             this.setEngineCommand((Player) sender, Integer.parseInt(args[1]));
-        else if (args.length == 3 && args[0].equalsIgnoreCase("engine") && this.getOnlinePlayer(args[2]) != null && BukkitUtilities.tryParseInt(args[1]))
+        else if (args.length == 3 && args[0].equalsIgnoreCase("engine") && this.getOnlinePlayer(args[2]) != null && tryParseInt(args[1]))
             this.setEngineCommand(this.getOnlinePlayer(args[2]), Integer.parseInt(args[1]));
-        else if (args.length == 3 && args[0].equalsIgnoreCase("costume") && sender instanceof Player && BukkitUtilities.tryParseInt(args[2]))
+        else if (args.length == 3 && args[0].equalsIgnoreCase("costume") && sender instanceof Player && tryParseInt(args[2]))
             this.setCostumeCommand((Player) sender, args[1], Integer.parseInt(args[1]));
-        else if (args.length == 4 && args[0].equalsIgnoreCase("costume") && this.getOnlinePlayer(args[3]) != null && BukkitUtilities.tryParseInt(args[2]))
+        else if (args.length == 4 && args[0].equalsIgnoreCase("costume") && this.getOnlinePlayer(args[3]) != null && tryParseInt(args[2]))
             this.setCostumeCommand(this.getOnlinePlayer(args[3]), args[1], Integer.parseInt(args[1]));
         else if (args.length == 1 && args[0].equalsIgnoreCase("disable") && sender instanceof Player)
             this.removePetCommand((Player) sender);
@@ -63,9 +62,9 @@ class PetBlockCommandExecutor extends SimpleCommandExecutor.UnRegistered {
             this.changePetSkinCommand((Player) sender, args[1]);
         else if (args.length == 3 && args[0].equalsIgnoreCase("skin") && this.getOnlinePlayer(args[2]) != null)
             this.changePetSkinCommand(this.getOnlinePlayer(args[2]), args[1]);
-        else if (args.length == 2 && args[0].equalsIgnoreCase("particle") && sender instanceof Player && BukkitUtilities.tryParseInt(args[1]))
+        else if (args.length == 2 && args[0].equalsIgnoreCase("particle") && sender instanceof Player && tryParseInt(args[1]))
             this.setParticleCommand((Player) sender, Integer.parseInt(args[1]));
-        else if (args.length == 3 && args[0].equalsIgnoreCase("particle") && this.getOnlinePlayer(args[2]) != null && BukkitUtilities.tryParseInt(args[1]))
+        else if (args.length == 3 && args[0].equalsIgnoreCase("particle") && this.getOnlinePlayer(args[2]) != null && tryParseInt(args[1]))
             this.setParticleCommand(this.getOnlinePlayer(args[2]), Integer.parseInt(args[1]));
         else if (args.length == 1 && args[0].equalsIgnoreCase("hat") && sender instanceof Player)
             this.hatPetCommand((Player) sender);
@@ -86,16 +85,16 @@ class PetBlockCommandExecutor extends SimpleCommandExecutor.UnRegistered {
         else if (args.length == 2 && args[0].equalsIgnoreCase("togglesounds") && this.getOnlinePlayer(args[1]) != null)
             this.toggleSounds(this.getOnlinePlayer(args[2]));
 
-        else if (args.length == 3 && args[0].equalsIgnoreCase("skulllore") && sender instanceof Player && BukkitUtilities.tryParseInt(args[1]))
+        else if (args.length == 3 && args[0].equalsIgnoreCase("skulllore") && sender instanceof Player && tryParseInt(args[1]))
             this.setLore((Player) sender, args[2], Integer.parseInt(args[1]));
-        else if (args.length == 4 && args[0].equalsIgnoreCase("skulllore") && this.getOnlinePlayer(args[3]) != null && BukkitUtilities.tryParseInt(args[1]))
+        else if (args.length == 4 && args[0].equalsIgnoreCase("skulllore") && this.getOnlinePlayer(args[3]) != null && tryParseInt(args[1]))
             this.setLore(this.getOnlinePlayer(args[3]), args[2], Integer.parseInt(args[1]));
 
         else if (args.length == 1 && args[0].equalsIgnoreCase("killnext") && sender instanceof Player && sender.hasPermission("petblocks.reload"))
             this.killNextCommand((Player) sender);
         else {
             sender.sendMessage("");
-            sender.sendMessage(BukkitChatColor.DARK_GREEN + "" + ChatColor.UNDERLINE + "                   PetBlocks " + "                       ");
+            sender.sendMessage(ChatColor.DARK_GREEN + "" + ChatColor.BOLD + ChatColor.UNDERLINE + "                   PetBlocks " + "                       ");
             sender.sendMessage("");
             sender.sendMessage(Config.getInstance().getPrefix() + "/petblocks engine <number> [player]");
             sender.sendMessage(Config.getInstance().getPrefix() + "/petblocks costume <category> <number> [player]");
@@ -111,7 +110,7 @@ class PetBlockCommandExecutor extends SimpleCommandExecutor.UnRegistered {
             sender.sendMessage(Config.getInstance().getPrefix() + "/petblocks skulllore <line> <lore> [player]");
             sender.sendMessage(Config.getInstance().getPrefix() + "/petblocks killnext - Kills nearest entity");
             sender.sendMessage("");
-            sender.sendMessage(BukkitChatColor.DARK_GREEN + "" + ChatColor.UNDERLINE + "                           ┌1/1┐                            ");
+            sender.sendMessage(ChatColor.DARK_GREEN + "" + ChatColor.BOLD + "" + ChatColor.UNDERLINE + "                           ┌1/1┐                            ");
             sender.sendMessage("");
         }
     }
@@ -302,9 +301,11 @@ class PetBlockCommandExecutor extends SimpleCommandExecutor.UnRegistered {
     }
 
     private Player getOnlinePlayer(String name) {
-        for (final Player player : BukkitUtilities.getOnlinePlayers()) {
-            if (player.getName().equals(name))
-                return player;
+        for (final World world : Bukkit.getWorlds()) {
+            for (final Player player : world.getPlayers()) {
+                if (player.getName().equals(name))
+                    return player;
+            }
         }
         return null;
     }
@@ -325,5 +326,14 @@ class PetBlockCommandExecutor extends SimpleCommandExecutor.UnRegistered {
                 this.plugin.getServer().getScheduler().runTask(this.plugin, () -> runnable.run(petMeta, null));
             });
         }
+    }
+
+    private static boolean tryParseInt(String value) {
+        try {
+            Integer.parseInt(value);
+        } catch (final NumberFormatException nfe) {
+            return false;
+        }
+        return true;
     }
 }
