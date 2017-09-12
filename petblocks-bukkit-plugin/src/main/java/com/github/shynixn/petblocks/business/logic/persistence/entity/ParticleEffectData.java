@@ -47,9 +47,9 @@ public class ParticleEffectData extends PersistenceObject implements ParticleEff
     private String effect;
     private int amount;
     private double speed;
-    private float offsetX;
-    private float offsetY;
-    private float offsetZ;
+    private double offsetX;
+    private double offsetY;
+    private double offsetZ;
 
     private Integer material;
     private Byte data;
@@ -196,7 +196,7 @@ public class ParticleEffectData extends PersistenceObject implements ParticleEff
      */
     @Override
     public ParticleEffectData setOffsetX(double offsetX) {
-        this.offsetX = (float) offsetX;
+        this.offsetX = offsetX;
         return this;
     }
 
@@ -208,7 +208,7 @@ public class ParticleEffectData extends PersistenceObject implements ParticleEff
      */
     @Override
     public ParticleEffectData setOffsetY(double offsetY) {
-        this.offsetY = (float) offsetY;
+        this.offsetY = offsetY;
         return this;
     }
 
@@ -220,7 +220,7 @@ public class ParticleEffectData extends PersistenceObject implements ParticleEff
      */
     @Override
     public ParticleEffectData setOffsetZ(double offsetZ) {
-        this.offsetZ = (float) offsetZ;
+        this.offsetZ = offsetZ;
         return this;
     }
 
@@ -315,7 +315,10 @@ public class ParticleEffectData extends PersistenceObject implements ParticleEff
      */
     @Override
     public ParticleEffectData setMaterial(Object material) {
-        if (material != null) {
+        if (material != null && material instanceof Integer) {
+            this.material = (Integer) material;
+        }
+        else if (material != null) {
             this.material = ((Material) material).getId();
         } else {
             this.material = null;

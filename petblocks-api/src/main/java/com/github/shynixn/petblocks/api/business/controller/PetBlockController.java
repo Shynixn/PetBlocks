@@ -51,4 +51,11 @@ public interface PetBlockController extends IController<PetBlock> {
      * @return petblock
      */
     PetBlock getByPlayer(Object player);
+
+    /**
+     * Removes the petblock of the given player
+     *
+     * @param player player
+     */
+    void removeByPlayer(Object player);
 }

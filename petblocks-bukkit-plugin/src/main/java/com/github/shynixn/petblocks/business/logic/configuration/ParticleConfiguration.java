@@ -2,6 +2,7 @@ package com.github.shynixn.petblocks.business.logic.configuration;
 
 import com.github.shynixn.petblocks.api.business.entity.GUIItemContainer;
 import com.github.shynixn.petblocks.api.persistence.controller.IFileController;
+import com.github.shynixn.petblocks.api.persistence.controller.ParticleController;
 import com.github.shynixn.petblocks.api.persistence.entity.EngineContainer;
 import com.github.shynixn.petblocks.api.persistence.entity.ParticleEffectMeta;
 import com.github.shynixn.petblocks.business.logic.persistence.entity.EngineData;
@@ -44,7 +45,7 @@ import java.util.logging.Level;
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-public class ParticleConfiguration implements IFileController<GUIItemContainer> {
+public class ParticleConfiguration implements ParticleController {
 
     private Plugin plugin;
     private final Map<GUIItemContainer, ParticleEffectMeta> particleCache = new HashMap<>();
@@ -100,6 +101,29 @@ public class ParticleConfiguration implements IFileController<GUIItemContainer> 
     @Override
     public List<GUIItemContainer> getAll() {
         return new ArrayList<>(this.particleCache.keySet());
+    }
+
+
+    /**
+     * Returns the container by the given order id
+     *
+     * @param id id
+     * @return container
+     */
+    @Override
+    public GUIItemContainer getContainerByPosition(int id) {
+        return null;
+    }
+
+    /**
+     * Returns the particleEffect by the given container
+     *
+     * @param container container
+     * @return particleEffect
+     */
+    @Override
+    public ParticleEffectMeta getByItem(GUIItemContainer container) {
+        return null;
     }
 
     /**

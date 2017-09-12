@@ -99,6 +99,16 @@ public final class PetBlockManager implements PetBlockController {
     }
 
     /**
+     * Removes the petblock of the given player
+     *
+     * @param player player
+     */
+    @Override
+    public void removeByPlayer(Object player) {
+
+    }
+
+    /**
      * Stores a new a item in the repository
      *
      * @param item item

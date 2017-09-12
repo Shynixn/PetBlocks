@@ -4,6 +4,7 @@ import com.github.shynixn.petblocks.api.business.entity.GUIItemContainer;
 import com.github.shynixn.petblocks.api.persistence.controller.OtherGUIItemsController;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.MemorySection;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 
 import java.io.Closeable;
@@ -124,9 +125,26 @@ public class FixedItemConfiguration implements OtherGUIItemsController {
      */
     @Override
     public GUIItemContainer getGUIItemByName(String name) {
-        if(this.items.containsKey(name))
+        if (this.items.containsKey(name))
             return this.items.get(name);
         return null;
+    }
+
+    /**
+     * Returns if the given itemStack is a guiItemStack with the given name
+     *
+     * @param itemStack itemStack
+     * @param name      name
+     * @return itemStack
+     */
+    @Override
+    public boolean isGUIItem(Object itemStack, String name) {
+        if (itemStack == null || name == null)
+            return false;
+        final ItemStack mItemStack = (ItemStack) itemStack;
+        return mItemStack.getItemMeta() != null
+                && mItemStack.getItemMeta().getDisplayName() != null
+                && mItemStack.getItemMeta().getDisplayName().equalsIgnoreCase(name);
     }
 
     /**

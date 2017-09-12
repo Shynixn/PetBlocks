@@ -30,6 +30,12 @@ package com.github.shynixn.petblocks.api.persistence.entity;
  * SOFTWARE.
  */
 public interface PetMeta extends Persistenceable {
+    /**
+     * Sets the petblock enabled
+     *
+     * @param enabled enabled
+     */
+    void setEnabled(boolean enabled);
 
     /**
      * Returns the age in ticks
@@ -88,18 +94,21 @@ public interface PetMeta extends Persistenceable {
     boolean isSoundEnabled();
 
     /**
-     * Sets the itemStack unbreakable
-     *
-     * @param enabled enabled
-     */
-    void setItemStackUnbreakable(boolean enabled);
-
-    /**
      * Returns if the itemStack is unbreakable
      *
      * @return unbreakable
      */
     boolean isItemStackUnbreakable();
+
+    /**
+     * Sets the itemStack
+     *
+     * @param id          id
+     * @param damage      damage
+     * @param skin        skin
+     * @param unbreakable unbreakable
+     */
+    void setSkin(int id, int damage, String skin, boolean unbreakable);
 
     /**
      * Sets the stored display name of the pet which appears above it's head on respawn

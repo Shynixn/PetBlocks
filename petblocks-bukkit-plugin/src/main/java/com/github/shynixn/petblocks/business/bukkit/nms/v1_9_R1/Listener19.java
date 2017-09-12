@@ -6,12 +6,12 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.player.PlayerSwapHandItemsEvent;
 import org.bukkit.plugin.Plugin;
 
-import java.util.List;
+import java.util.Set;
 
 public final class Listener19 extends SimpleListener {
-    private final List<Player> carryingPet;
+    private final Set<Player> carryingPet;
 
-    public Listener19(List<Player> carryingPet, Plugin plugin) {
+    public Listener19(Set<Player> carryingPet, Plugin plugin) {
         super(plugin);
         this.carryingPet = carryingPet;
     }

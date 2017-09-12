@@ -367,7 +367,7 @@ gui:
     sounds-enabled-pet:
       enabled: true
       position: 38
-
+      page: 'MAIN'
       id: 19
       damage: 0
       skin: 'none'
@@ -386,7 +386,7 @@ gui:
       unbreakable: false
       lore:
         - ''
-    default-costume:
+    ordinary-costume:
       enabled: true
       position: 20
       page: 'WARDROBE'
@@ -408,7 +408,7 @@ gui:
       unbreakable: false
       lore:
         - ''
-    custom-costume:
+    rare-costume:
       enabled: true
       position: 22
       page: 'WARDROBE'

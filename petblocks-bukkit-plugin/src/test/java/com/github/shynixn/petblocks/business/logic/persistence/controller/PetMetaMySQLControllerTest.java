@@ -2,9 +2,6 @@ package com.github.shynixn.petblocks.business.logic.persistence.controller;
 
 import ch.vorburger.exec.ManagedProcessException;
 import ch.vorburger.mariadb4j.DB;
-import com.github.shynixn.petblocks.api.entities.MoveType;
-import com.github.shynixn.petblocks.api.entities.Movement;
-import com.github.shynixn.petblocks.api.entities.PetType;
 import com.github.shynixn.petblocks.api.persistence.controller.ParticleEffectMetaController;
 import com.github.shynixn.petblocks.api.persistence.controller.PetMetaController;
 import com.github.shynixn.petblocks.api.persistence.controller.PlayerMetaController;
@@ -120,7 +117,7 @@ public class PetMetaMySQLControllerTest {
                     meta.setPlayerMeta(playerMeta);
                     assertThrows(IllegalArgumentException.class, () -> controller.store(meta));
 
-                    meta.setPetType(PetType.BAT);
+                    meta.setEngineId(1);
                     assertThrows(IllegalArgumentException.class, () -> controller.store(meta));
 
                     meta.setSkin(Material.STONE, (short) 5, null);
@@ -155,13 +152,10 @@ public class PetMetaMySQLControllerTest {
                     PetData meta = new PetData();
                     meta.setDisplayName("Me");
                     meta.setSkin(Material.BIRCH_DOOR_ITEM,(short)5 , "This is my long skin.");
-                    meta.setPetType(PetType.SHEEP);
                     meta.setEnabled(true);
-                    meta.setAgeInTicks(500);
+                    meta.setAge(500);
                     meta.setUnbreakable(true);
                     meta.setSoundEnabled(true);
-                    meta.setMoveType(MoveType.FLYING);
-                    meta.setMovementType(Movement.CRAWLING);
 
                     final ParticleEffectMeta particleEffectMeta = particleController.create();
                     particleEffectMeta.setEffectType(ParticleEffectMeta.ParticleEffectType.END_ROD);
@@ -179,23 +173,19 @@ public class PetMetaMySQLControllerTest {
                     assertEquals(Material.BIRCH_DOOR_ITEM, meta.getSkinMaterial());
                     assertEquals((short)5, meta.getSkinDurability());
                     assertEquals("This is my long skin.", meta.getSkin());
-                    assertEquals(PetType.SHEEP, meta.getType());
+                    assertEquals(0, meta.getEngineId());
                     assertEquals(true, meta.isEnabled());
-                    assertEquals(500, meta.getAgeInTicks());
+                    assertEquals(500, meta.getAge());
                     assertEquals(true, meta.isUnbreakable());
                     assertEquals(true, meta.isSoundEnabled());
-                    assertEquals(MoveType.FLYING, meta.getMoveType());
-                    assertEquals(Movement.CRAWLING, meta.getMovementType());
 
                     meta.setDisplayName("PikaPet");
                     meta.setSkin(Material.ARROW,(short)7 , "http://Skin.com");
-                    meta.setPetType(PetType.DRAGON);
+                    meta.setEngineId(2);
                     meta.setEnabled(false);
-                    meta.setAgeInTicks(250);
+                    meta.setAge(250);
                     meta.setUnbreakable(false);
                     meta.setSoundEnabled(false);
-                    meta.setMoveType(MoveType.WALKING);
-                    meta.setMovementType(Movement.HOPPING);
                     controller.store(meta);
 
                     assertEquals(1, controller.size());
@@ -204,13 +194,11 @@ public class PetMetaMySQLControllerTest {
                     assertEquals(Material.ARROW, meta.getSkinMaterial());
                     assertEquals((short)7, meta.getSkinDurability());
                     assertEquals("http://Skin.com", meta.getSkin());
-                    assertEquals(PetType.DRAGON, meta.getType());
+                    assertEquals(2, meta.getEngineId());
                     assertEquals(false, meta.isEnabled());
-                    assertEquals(250, meta.getAgeInTicks());
+                    assertEquals(250, meta.getAge());
                     assertEquals(false, meta.isUnbreakable());
-                    assertEquals(false, meta.isSoundEnabled());
-                    assertEquals(MoveType.WALKING, meta.getMoveType());
-                    assertEquals(Movement.HOPPING, meta.getMovementType());
+                    assertEquals(false, meta.isSoundEnabled());;
                 }
             }
         } catch (final Exception e) {

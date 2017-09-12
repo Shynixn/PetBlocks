@@ -19,7 +19,7 @@ public final class Config extends SimpleConfig {
     private static final Config instance = new Config();
     private final EngineController engineController = Factory.createEngineController();
     private final OtherGUIItemsController guiItemsController = Factory.createGUIItemsController();
-    private final IFileController<GUIItemContainer> particleController = Factory.createParticleConfiguration();
+    private final ParticleController particleController = Factory.createParticleConfiguration();
     private final CostumeController ordinaryCostumesController = Factory.createCostumesController("ordinary");
     private final CostumeController colorCostumesController = Factory.createCostumesController("color");
     private final CostumeController rareCostumesController = Factory.createCostumesController("rare");
@@ -202,7 +202,7 @@ public final class Config extends SimpleConfig {
     public void fixJoinDefaultPet(PetMeta petData) {
         final PetData petMeta = (PetData) petData;
         petMeta.setSkin(Material.getMaterial((Integer) this.getData("join.settings.id")), (short) (int) this.getData("join.settings.durability"), this.getData("join.settings.skullname"));
-        petMeta.setEngineContainer(this.engineController.getById(this.getData("join.settings.engine")));
+        petMeta.setEngine(this.engineController.getById(this.getData("join.settings.engine")));
         petMeta.setDisplayName(this.getData("join.settings.petname"));
         petMeta.setEnabled(this.getData("join.settings.enabled"));
         petMeta.setAge(this.getData("join.settings.age"));

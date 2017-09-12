@@ -180,6 +180,46 @@ public class ItemContainer implements GUIItemContainer {
     }
 
     /**
+     * Returns the skin of the itemStack
+     *
+     * @return skin
+     */
+    @Override
+    public String getSkin() {
+        return null;
+    }
+
+    /**
+     * Returns the id of the item
+     *
+     * @return itemId
+     */
+    @Override
+    public int getItemId() {
+        return 0;
+    }
+
+    /**
+     * Returns the damage of the item
+     *
+     * @return itemDamage
+     */
+    @Override
+    public int getItemDamage() {
+        return 0;
+    }
+
+    /**
+     * Returns if the item is unbreakable
+     *
+     * @return unbreakable
+     */
+    @Override
+    public boolean isItemUnbreakable() {
+        return false;
+    }
+
+    /**
      * Returns the displayName of the itemStack if present
      *
      * @return displayName
@@ -207,6 +247,16 @@ public class ItemContainer implements GUIItemContainer {
     @Override
     public int getPosition() {
         return this.position;
+    }
+
+    /**
+     * Returns the permission
+     *
+     * @return permission
+     */
+    @Override
+    public String getPermission() {
+        return null;
     }
 
     private void updateLore(Player player, String... permissions) {

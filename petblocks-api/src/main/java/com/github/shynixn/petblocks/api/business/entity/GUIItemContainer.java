@@ -97,4 +97,22 @@ public interface GUIItemContainer {
      * @return skin
      */
     String getSkin();
+
+    /**
+     * Returns the id of the item
+     * @return itemId
+     */
+    int getItemId();
+
+    /**
+     * Returns the damage of the item
+     * @return itemDamage
+     */
+    int getItemDamage();
+
+    /**
+     * Returns if the item is unbreakable
+     * @return unbreakable
+     */
+    boolean isItemUnbreakable();
 }

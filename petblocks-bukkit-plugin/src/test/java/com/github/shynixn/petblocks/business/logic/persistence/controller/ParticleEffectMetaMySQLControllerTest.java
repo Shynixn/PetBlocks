@@ -106,9 +106,9 @@ public class ParticleEffectMetaMySQLControllerTest {
             ParticleEffectMeta meta = controller.create();
             meta.setEffectType(ParticleEffectMeta.ParticleEffectType.DAMAGE_INDICATOR);
             meta.setAmount(5)
-                    .setX(2.25)
-                    .setY(3.75)
-                    .setZ(11.24)
+                    .setOffsetX(2.25)
+                    .setOffsetY(3.75)
+                    .setOffsetZ(11.24)
                     .setSpeed(0.0001)
                     .setMaterial(Material.BONE.getId())
                     .setData((byte)5);
@@ -118,17 +118,17 @@ public class ParticleEffectMetaMySQLControllerTest {
             meta = controller.getById(meta.getId());
             assertEquals(ParticleEffectMeta.ParticleEffectType.DAMAGE_INDICATOR, meta.getEffectType());
             assertEquals(5, meta.getAmount());
-            assertEquals(2.25, meta.getX());
-            assertEquals(3.75, meta.getY());
-            assertEquals(11.24, meta.getZ());
-            assertEquals(new Integer(Material.BONE.getId()), meta.getMaterial());
+            assertEquals(2.25, meta.getOffsetX());
+            assertEquals(3.75, meta.getOffsetY());
+            assertEquals(11.24, meta.getOffsetZ());
+            assertEquals(Material.BONE, meta.getMaterial());
             assertEquals((byte)5, (byte)meta.getData());
 
             meta.setAmount(7)
                     .setEffectType(ParticleEffectMeta.ParticleEffectType.BARRIER)
-                    .setX(4.25)
-                    .setY(7.75)
-                    .setZ(5.24)
+                    .setOffsetX(4.25)
+                    .setOffsetY(7.75)
+                    .setOffsetZ(5.24)
                     .setSpeed(0.002)
                     .setMaterial(Material.BARRIER.getId())
                     .setData((byte)7);
@@ -137,10 +137,10 @@ public class ParticleEffectMetaMySQLControllerTest {
             meta = controller.getById(meta.getId());
             assertEquals(ParticleEffectMeta.ParticleEffectType.BARRIER, meta.getEffectType());
             assertEquals(7, meta.getAmount());
-            assertEquals(4.25, meta.getX());
-            assertEquals(7.75, meta.getY());
-            assertEquals(5.24, meta.getZ());
-            assertEquals(new Integer(Material.BARRIER.getId()), meta.getMaterial());
+            assertEquals(4.25, meta.getOffsetX());
+            assertEquals(7.75, meta.getOffsetY());
+            assertEquals(5.24, meta.getOffsetZ());
+            assertEquals(Material.BARRIER, meta.getMaterial());
             assertEquals((byte)7, (byte)meta.getData());
         } catch (final Exception e) {
             Logger.getLogger(ParticleEffectMetaMySQLControllerTest.class.getSimpleName()).log(Level.WARNING, "Failed to run test.", e);

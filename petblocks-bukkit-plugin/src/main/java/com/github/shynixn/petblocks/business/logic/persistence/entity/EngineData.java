@@ -106,4 +106,14 @@ public class EngineData extends PersistenceObject implements EngineContainer {
     public String getEntityType() {
         return this.entity;
     }
+
+    /**
+     * Returns the guiItem of the engine
+     *
+     * @return guiItem
+     */
+    @Override
+    public GUIItemContainer getGUIItem() {
+        return null;
+    }
 }

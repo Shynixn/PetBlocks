@@ -20,7 +20,6 @@ import java.util.logging.Level;
 public class PetDataRepository extends DataBaseRepository<PetMeta> implements PetMetaController {
 
     private ExtensionHikariConnectionContext dbContext;
-    private EngineController engineController;
 
     public PetDataRepository(ExtensionHikariConnectionContext connectionContext) {
         super();
@@ -143,7 +142,7 @@ public class PetDataRepository extends DataBaseRepository<PetMeta> implements Pe
         try (Connection connection = this.dbContext.getConnection()) {
             this.dbContext.executeStoredUpdate("petblock/update", connection,
                     item.getDisplayName(),
-                    item.getEngine().getId(),
+                    item.getEngineId(),
                     item.getSkinMaterial().name(),
                     item.getSkinDurability(),
                     item.getSkin(),
@@ -190,7 +189,7 @@ public class PetDataRepository extends DataBaseRepository<PetMeta> implements Pe
                     item.getPlayerId(),
                     item.getParticleId(),
                     item.getDisplayName(),
-                    item.getEngine().getId(),
+                    item.getEngineId(),
                     item.getSkinMaterial().name(),
                     item.getSkinDurability(),
                     item.getSkin(),
@@ -201,6 +200,7 @@ public class PetDataRepository extends DataBaseRepository<PetMeta> implements Pe
             );
             item.setId(id);
         } catch (final SQLException e) {
+            e.printStackTrace();
             Bukkit.getLogger().log(Level.WARNING, "Database error occurred.", e);
         }
     }
@@ -218,7 +218,7 @@ public class PetDataRepository extends DataBaseRepository<PetMeta> implements Pe
         petMeta.setPlayerId(resultSet.getLong("shy_player_id"));
         petMeta.setParticleId(resultSet.getLong("shy_particle_effect_id"));
         petMeta.setDisplayName(resultSet.getString("name"));
-        petMeta.setEngineContainer(this.engineController.getById(resultSet.getInt("engine")));
+        petMeta.setEngineId(resultSet.getInt("engine"));
         petMeta.setSkin(Material.getMaterial(resultSet.getString("material")), (short) resultSet.getInt("data"), resultSet.getString("skull"));
         petMeta.setEnabled(resultSet.getBoolean("enabled"));
         petMeta.setAge(resultSet.getInt("age"));

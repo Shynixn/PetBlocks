@@ -1,8 +1,6 @@
 package com.github.shynixn.petblocks.business.logic.persistence;
 
-import com.github.shynixn.petblocks.api.business.entity.GUIItemContainer;
 import com.github.shynixn.petblocks.api.persistence.controller.*;
-import com.github.shynixn.petblocks.api.persistence.entity.EngineContainer;
 import com.github.shynixn.petblocks.business.bukkit.PetBlocksPlugin;
 import com.github.shynixn.petblocks.business.logic.configuration.*;
 import com.github.shynixn.petblocks.business.logic.persistence.controller.ParticleEffectDataRepository;
@@ -55,7 +53,7 @@ public class Factory {
         return new FixedItemConfiguration(JavaPlugin.getPlugin(PetBlocksPlugin.class));
     }
 
-    public static IFileController<GUIItemContainer> createParticleConfiguration() {
+    public static ParticleController createParticleConfiguration() {
         return new ParticleConfiguration(JavaPlugin.getPlugin(PetBlocksPlugin.class));
     }
 
@@ -100,6 +98,7 @@ public class Factory {
                     connectionContext.executeUpdate(data, connection);
                 }
             } catch (final Exception e) {
+                e.printStackTrace();
                 Bukkit.getLogger().log(Level.WARNING, "Cannot execute creation.", e);
             }
         } else {

@@ -37,7 +37,11 @@ public final class PetDataManager implements AutoCloseable {
         this.mainThreadId = Thread.currentThread().getId();
         this.gui = new GUI(this);
         if (plugin.getPluginLoader() != null) {
-            new PetDataCommandExecutor(this);
+            try {
+                new PetDataCommandExecutor(this);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
             new PetDataListener(this, plugin);
             this.filter = PetBlockFilter.create();
         }

@@ -69,6 +69,17 @@ class GUI {
         player.updateInventory();
     }
 
+   void moveSubPage(Player player, int page)
+   {
+
+   }
+
+   void backPage(Player player)
+   {
+
+   }
+
+
     private void setDefaultCostumeItems(Player player) {
         this.setCostumes(player, Config.getInstance().getOrdinaryCostumesController().getAll(), GUIPage.DEFAULT_COSTUMES, 0);
     }

@@ -1,8 +1,5 @@
 package com.github.shynixn.petblocks.business.logic.persistence.controller;
 
-import com.github.shynixn.petblocks.api.entities.MoveType;
-import com.github.shynixn.petblocks.api.entities.Movement;
-import com.github.shynixn.petblocks.api.entities.PetType;
 import com.github.shynixn.petblocks.api.persistence.controller.ParticleEffectMetaController;
 import com.github.shynixn.petblocks.api.persistence.controller.PetMetaController;
 import com.github.shynixn.petblocks.api.persistence.controller.PlayerMetaController;
@@ -11,7 +8,9 @@ import com.github.shynixn.petblocks.api.persistence.entity.PetMeta;
 import com.github.shynixn.petblocks.api.persistence.entity.PlayerMeta;
 import com.github.shynixn.petblocks.business.logic.persistence.Factory;
 import com.github.shynixn.petblocks.business.logic.persistence.entity.PetData;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.Server;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
@@ -33,8 +32,12 @@ import static org.mockito.Mockito.when;
 public class PetMetaSQLiteControllerTest {
 
     private static Plugin mockPlugin() {
+        final Server server = mock(Server.class);
+        when(server.getLogger()).thenReturn(Logger.getGlobal());
+        if(Bukkit.getServer() == null)
+            Bukkit.setServer(server);
         final YamlConfiguration configuration = new YamlConfiguration();
-        configuration.set("sql.enabled", false);
+        configuration.set("sql.enabled",false);
         configuration.set("sql.host", "localhost");
         configuration.set("sql.port", 3306);
         configuration.set("sql.database", "db");
@@ -87,7 +90,7 @@ public class PetMetaSQLiteControllerTest {
                     meta.setPlayerMeta(playerMeta);
                     assertThrows(IllegalArgumentException.class, () -> controller.store(meta));
 
-                    meta.setPetType(PetType.BAT);
+                    meta.setEngineId(4);
                     assertThrows(IllegalArgumentException.class, () -> controller.store(meta));
 
                     meta.setSkin(Material.STONE, (short)5, null);
@@ -119,14 +122,11 @@ public class PetMetaSQLiteControllerTest {
                     PetData meta = new PetData();
                     meta.setDisplayName("Me");
                     meta.setSkin(Material.BIRCH_DOOR_ITEM,(short)5 , "This is my long skin.");
-                    meta.setPetType(PetType.SHEEP);
+                    meta.setEngineId(4);
                     meta.setEnabled(true);
-                    meta.setAgeInTicks(500);
+                    meta.setAge(500);
                     meta.setUnbreakable(true);
                     meta.setSoundEnabled(true);
-                    meta.setMoveType(MoveType.FLYING);
-                    meta.setMovementType(Movement.CRAWLING);
-
                     final ParticleEffectMeta particleEffectMeta = particleController.create();
                     particleEffectMeta.setEffectType(ParticleEffectMeta.ParticleEffectType.END_ROD);
                     particleController.store(particleEffectMeta);
@@ -143,23 +143,19 @@ public class PetMetaSQLiteControllerTest {
                     assertEquals(Material.BIRCH_DOOR_ITEM, meta.getSkinMaterial());
                     assertEquals((short)5, meta.getSkinDurability());
                     assertEquals("This is my long skin.", meta.getSkin());
-                    assertEquals(PetType.SHEEP, meta.getType());
+                    assertEquals(4, meta.getEngineId());
                     assertEquals(true, meta.isEnabled());
-                    assertEquals(500, meta.getAgeInTicks());
+                    assertEquals(500, meta.getAge());
                     assertEquals(true, meta.isUnbreakable());
                     assertEquals(true, meta.isSoundEnabled());
-                    assertEquals(MoveType.FLYING, meta.getMoveType());
-                    assertEquals(Movement.CRAWLING, meta.getMovementType());
 
                     meta.setDisplayName("PikaPet");
                     meta.setSkin(Material.ARROW,(short)7 , "http://Skin.com");
-                    meta.setPetType(PetType.DRAGON);
+                    meta.setEngineId(1);
                     meta.setEnabled(false);
-                    meta.setAgeInTicks(250);
+                    meta.setAge(250);
                     meta.setUnbreakable(false);
                     meta.setSoundEnabled(false);
-                    meta.setMoveType(MoveType.WALKING);
-                    meta.setMovementType(Movement.HOPPING);
                     controller.store(meta);
 
                     assertEquals(1, controller.size());
@@ -168,13 +164,11 @@ public class PetMetaSQLiteControllerTest {
                     assertEquals(Material.ARROW, meta.getSkinMaterial());
                     assertEquals((short)7, meta.getSkinDurability());
                     assertEquals("http://Skin.com", meta.getSkin());
-                    assertEquals(PetType.DRAGON, meta.getType());
+                    assertEquals(1, meta.getEngineId());
                     assertEquals(false, meta.isEnabled());
-                    assertEquals(250, meta.getAgeInTicks());
+                    assertEquals(250, meta.getAge());
                     assertEquals(false, meta.isUnbreakable());
                     assertEquals(false, meta.isSoundEnabled());
-                    assertEquals(MoveType.WALKING, meta.getMoveType());
-                    assertEquals(Movement.HOPPING, meta.getMovementType());
                 }
             }
         } catch (final Exception e) {

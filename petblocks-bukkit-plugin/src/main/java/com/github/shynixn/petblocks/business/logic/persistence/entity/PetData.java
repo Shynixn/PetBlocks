@@ -33,6 +33,9 @@ public class PetData extends PersistenceObject implements PetMeta {
 
     private ParticleEffectMeta particleEffectBuilder;
     private long particleId;
+    private int engineId;
+
+    private EngineContainer engineContainer;
 
     public PetData(Player player, String name, ItemStack itemStack, String owner) {
         super();
@@ -51,9 +54,12 @@ public class PetData extends PersistenceObject implements PetMeta {
         this.particleEffectBuilder.setEffectType(ParticleEffectMeta.ParticleEffectType.NONE);
     }
 
-    public void setEngineContainer(EngineContainer engineContainer)
-    {
+    public void setEngineId(int engineId) {
+        this.engineId = engineId;
+    }
 
+    public int getEngineId() {
+        return this.engineId;
     }
 
     public PetData() {
@@ -144,20 +150,8 @@ public class PetData extends PersistenceObject implements PetMeta {
         return this.playerInfo;
     }
 
-    public boolean isBuild() {
-        return this.build;
-    }
-
     public void setIsBuild(boolean isBuild) {
         this.build = isBuild;
-    }
-
-    public boolean isSounds() {
-        return this.sounds;
-    }
-
-    public void setSounds(boolean sounds) {
-        this.sounds = sounds;
     }
 
     public void setSkin(Material material, short durability, String skin) {
@@ -212,6 +206,7 @@ public class PetData extends PersistenceObject implements PetMeta {
         return this.skullName;
     }
 
+    @Override
     public String getDisplayName() {
         return this.displayName;
     }
@@ -244,6 +239,16 @@ public class PetData extends PersistenceObject implements PetMeta {
     @Override
     public EngineContainer getEngine() {
         return null;
+    }
+
+    /**
+     * Sets the data of the engine
+     *
+     * @param engine engine
+     */
+    @Override
+    public void setEngine(EngineContainer engine) {
+        this.engineContainer = engine;
     }
 
     /**
@@ -287,16 +292,6 @@ public class PetData extends PersistenceObject implements PetMeta {
     }
 
     /**
-     * Sets the itemStack unbreakable
-     *
-     * @param enabled enabled
-     */
-    @Override
-    public void setItemStackUnbreakable(boolean enabled) {
-
-    }
-
-    /**
      * Returns if the itemStack is unbreakable
      *
      * @return unbreakable
@@ -304,6 +299,19 @@ public class PetData extends PersistenceObject implements PetMeta {
     @Override
     public boolean isItemStackUnbreakable() {
         return false;
+    }
+
+    /**
+     * Sets the itemStack
+     *
+     * @param id          id
+     * @param damage      damage
+     * @param skin        skin
+     * @param unbreakable unbreakable
+     */
+    @Override
+    public void setSkin(int id, int damage, String skin, boolean unbreakable) {
+
     }
 
     @Override
@@ -321,6 +329,7 @@ public class PetData extends PersistenceObject implements PetMeta {
         return this.durability;
     }
 
+    @Override
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
     }
