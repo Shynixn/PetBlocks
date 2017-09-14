@@ -3,10 +3,12 @@ package com.github.shynixn.petblocks.business.logic.business.configuration;
 import com.github.shynixn.petblocks.api.persistence.controller.*;
 import com.github.shynixn.petblocks.api.persistence.entity.ParticleEffectMeta;
 import com.github.shynixn.petblocks.api.persistence.entity.PetMeta;
+import com.github.shynixn.petblocks.business.bukkit.PetBlocksPlugin;
 import com.github.shynixn.petblocks.business.logic.Factory;
 import com.github.shynixn.petblocks.business.logic.persistence.entity.ParticleEffectData;
 import com.github.shynixn.petblocks.business.logic.persistence.entity.PetData;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.configuration.MemorySection;
@@ -43,6 +45,7 @@ public final class Config extends SimpleConfig {
         this.colorCostumesController.reload();
         this.rareCostumesController.reload();
         this.minecraftHeadsCostumesController.reload();
+        this.guiItemsController.reload();
     }
 
     public ParticleController getParticleController() {
@@ -173,20 +176,20 @@ public final class Config extends SimpleConfig {
         return (boolean) this.getData("chat.highest-priority");
     }
 
-    public String[] getExcludedWorlds() {
-        return this.getDataAsStringArray("world.excluded");
+    public List<String> getExcludedWorlds() {
+        return this.getDataAsStringList("world.excluded");
     }
 
-    public String[] getIncludedWorlds() {
-        return this.getDataAsStringArray("world.included");
+    public List<String> getIncludedWorlds() {
+        return this.getDataAsStringList("world.included");
     }
 
-    public String[] getExcludedRegion() {
-        return this.getDataAsStringArray("region.excluded");
+    public List<String> getExcludedRegion() {
+        return this.getDataAsStringList("region.excluded");
     }
 
-    public String[] getIncludedRegions() {
-        return this.getDataAsStringArray("region.included");
+    public List<String> getIncludedRegions() {
+        return this.getDataAsStringList("region.included");
     }
 
     /**
@@ -220,11 +223,37 @@ public final class Config extends SimpleConfig {
         return ((List<String>) this.getData(path)).toArray(new String[0]);
     }
 
+    private List<String> getDataAsStringList(String path) {
+        return ((List<String>) this.getData(path));
+    }
+
     public boolean allowRidingOnRegionChanging() {
         return true;
     }
 
     public boolean allowPetSpawning(Location location) {
-        throw new RuntimeException();
+        final List<String> includedWorlds = this.getIncludedWorlds();
+        final List<String> excludedWorlds = this.getExcludedWorlds();
+        if (includedWorlds.contains("all")) {
+            return !excludedWorlds.contains(location.getWorld().getName()) && this.handleRegionSpawn(location);
+        } else if (excludedWorlds.contains("all")) {
+            return includedWorlds.contains(location.getWorld().getName()) && this.handleRegionSpawn(location);
+        } else {
+            Bukkit.getConsoleSender().sendMessage(PetBlocksPlugin.PREFIX_CONSOLE + ChatColor.RED + "Please add 'all' to excluded or included worlds inside of the config.yml");
+        }
+        return true;
+    }
+
+    private boolean handleRegionSpawn(Location location) {
+        final List<String> includedRegions = this.getIncludedRegions();
+        final List<String> excludedRegions = this.getExcludedRegion();
+        if (includedRegions.contains("all")) {
+            return !excludedRegions.contains(location.getWorld().getName());
+        } else if (excludedRegions.contains("all")) {
+            return includedRegions.contains(location.getWorld().getName());
+        } else {
+            Bukkit.getConsoleSender().sendMessage(PetBlocksPlugin.PREFIX_CONSOLE + ChatColor.RED + "Please add 'all' to excluded or included regions inside of the config.yml");
+        }
+        return true;
     }
 }

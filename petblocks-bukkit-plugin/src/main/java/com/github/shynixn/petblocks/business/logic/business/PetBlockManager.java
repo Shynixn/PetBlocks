@@ -11,6 +11,7 @@ import com.github.shynixn.petblocks.business.logic.business.entity.GuiPageContai
 import com.github.shynixn.petblocks.business.logic.business.filter.PetBlockFilter;
 import com.github.shynixn.petblocks.business.logic.business.listener.PetBlockListener;
 import com.github.shynixn.petblocks.business.logic.business.listener.PetDataListener;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.plugin.Plugin;
@@ -20,6 +21,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Level;
 
 /**
  * Copyright 2017 Shynixn
@@ -52,7 +54,6 @@ import java.util.Set;
  */
 public class PetBlockManager implements AutoCloseable {
 
-    Plugin plugin;
     public Set<Player> carryingPet = new HashSet<>();
     public Map<Player, Integer> timeBlocked = new HashMap<>();
     public Set<Player> headDatabasePlayers = new HashSet<>();
@@ -66,7 +67,6 @@ public class PetBlockManager implements AutoCloseable {
 
     public PetBlockManager(Plugin plugin) {
         super();
-        this.plugin = plugin;
 
         Factory.initialize(plugin);
         this.petBlockController = Factory.createPetBlockController();
@@ -78,9 +78,9 @@ public class PetBlockManager implements AutoCloseable {
             new PetDataListener(this, plugin);
             new PetBlockListener(this, plugin);
             this.filter = PetBlockFilter.create();
-
-        } catch (Exception e) {
-            e.printStackTrace();
+            this.gui = new GUI(this);
+        } catch (final Exception e) {
+            Bukkit.getLogger().log(Level.WARNING, "Failed to initialize petblockmanager.", e);
         }
     }
 
@@ -142,6 +142,12 @@ public class PetBlockManager implements AutoCloseable {
         for (final Player player : this.carryingPet) {
             NMSRegistry.setItemInHand19(player, null, true);
         }
+        this.timeBlocked.clear();
+        this.headDatabasePlayers.clear();
+        this.inventories.clear();
+        this.pages.clear();
+        this.petBlockController.close();
+        this.petMetaController.close();
         this.filter.close();
         this.carryingPet.clear();
     }

@@ -62,12 +62,14 @@ public final class PetDataCommandExecutor extends SimpleCommandExecutor.UnRegist
         } else {
             this.manager.gui.open(player);
             this.plugin.getServer().getScheduler().runTaskAsynchronously(this.plugin, () -> {
-                final PetMeta petMeta;
-                if ((petMeta = this.manager.getPetMetaController().getByPlayer(player)) != null) {
-                    this.plugin.getServer().getScheduler().runTask(this.plugin, () -> {
-                        this.manager.gui.setPage(player, GUIPage.MAIN, petMeta);
-                    });
+                PetMeta petMeta;
+                if ((petMeta = this.manager.getPetMetaController().getByPlayer(player)) == null) {
+                    petMeta = this.manager.getPetMetaController().create(player);
+                    this.manager.getPetMetaController().store(petMeta);
                 }
+                final PetMeta meta = petMeta;
+                this.plugin.getServer().getScheduler().runTask(this.plugin, () -> this.manager.gui.setPage(player, GUIPage.MAIN, meta));
+
             });
         }
     }

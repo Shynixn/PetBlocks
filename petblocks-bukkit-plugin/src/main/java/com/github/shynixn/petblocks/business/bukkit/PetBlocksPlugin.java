@@ -96,9 +96,9 @@ public final class PetBlocksPlugin extends JavaPlugin {
         if (!this.disabled) {
             NMSRegistry.unregisterAll();
             try {
-                ReflectionUtils.invokeMethodByClass(PetBlocksApi.class, "dispose", new Class[]{}, new Object[]{});
-            } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
-                Bukkit.getLogger().log(Level.WARNING, "Failed to disable plugin.", e);
+                this.petBlockManager.close();
+            } catch (Exception e) {
+                Bukkit.getLogger().log(Level.WARNING, "Failed to disable petblocks.", e);
             }
         }
     }

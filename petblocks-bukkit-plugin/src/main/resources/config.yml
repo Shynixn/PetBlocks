@@ -470,6 +470,7 @@ gui:
       id: 386
       damage: 0
       skin: 'none'
+      unbreakable: false
       lore:
         - ''
     cannon-pet:

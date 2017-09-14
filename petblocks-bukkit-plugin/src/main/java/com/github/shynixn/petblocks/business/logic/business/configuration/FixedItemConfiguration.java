@@ -111,9 +111,10 @@ public class FixedItemConfiguration implements OtherGUIItemsController {
         for (final String key : data.keySet()) {
             try {
                 final GUIItemContainer container = new ItemContainer(0, ((MemorySection) data.get(key)).getValues(false));
+                System.out.println("LOADED: " + key);
                 this.items.put(key, container);
             } catch (final Exception e) {
-                Bukkit.getLogger().log(Level.WARNING, "Failed to load guiItem " + key + ".");
+                Bukkit.getLogger().log(Level.WARNING, "Failed to load guiItem " + key + ".", e);
             }
         }
     }

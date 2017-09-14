@@ -56,12 +56,12 @@ public class ItemContainer implements GUIItemContainer {
     private boolean enabled;
     private int position = -1;
     private GUIPage page;
-    private final int id;
-    private final int damage;
-    private final String skin;
-    private final boolean unbreakable;
+    private int id;
+    private int damage;
+    private String skin;
+    private boolean unbreakable;
     private String name;
-    private final String[] lore;
+    private String[] lore;
 
     /**
      * Initializes a new itemContainer
@@ -100,18 +100,26 @@ public class ItemContainer implements GUIItemContainer {
             this.enabled = (boolean) data.get("enabled");
         if (data.containsKey("position"))
             this.position = (int) data.get("position");
-        if(data.containsKey("page"))
+        if (data.containsKey("page"))
             this.page = GUIPage.valueOf((String) data.get("page"));
-        this.id = (int) data.get("id");
-        this.damage = (int) data.get("damage");
-        this.skin = (String) data.get("skin");
-        if(data.containsKey("name"))
+        if(data.containsKey("id"))
+            this.id = (int) data.get("id");
+        if(data.containsKey("damage"))
+            this.damage = (int) data.get("damage");
+        if(data.containsKey("skin"))
+            this.skin = (String) data.get("skin");
+        if (data.containsKey("name"))
             this.name = ChatColor.translateAlternateColorCodes('&', (String) data.get("name"));
-        this.unbreakable = (boolean) data.get("unbreakable");
-        final List<String> m = (List<String>) data.get("lore");
-        this.lore = new String[m.size()];
-        for (int i = 0; i < this.lore.length; i++) {
-            this.lore[i] = ChatColor.translateAlternateColorCodes('&', m.get(i));
+        if (data.containsKey("unbreakable"))
+            this.unbreakable = (boolean) data.get("unbreakable");
+        if (data.containsKey("lore")) {
+            final List<String> m = (List<String>) data.get("lore");
+            if (m != null) {
+                this.lore = new String[m.size()];
+                for (int i = 0; i < this.lore.length; i++) {
+                    this.lore[i] = ChatColor.translateAlternateColorCodes('&', m.get(i));
+                }
+            }
         }
     }
 
@@ -181,7 +189,7 @@ public class ItemContainer implements GUIItemContainer {
      */
     @Override
     public GUIPage getPage() {
-        return null;
+        return this.page;
     }
 
     /**
@@ -191,7 +199,7 @@ public class ItemContainer implements GUIItemContainer {
      */
     @Override
     public String getSkin() {
-        return null;
+        return this.skin;
     }
 
     /**
@@ -201,7 +209,7 @@ public class ItemContainer implements GUIItemContainer {
      */
     @Override
     public int getItemId() {
-        return 0;
+        return this.id;
     }
 
     /**
@@ -211,7 +219,7 @@ public class ItemContainer implements GUIItemContainer {
      */
     @Override
     public int getItemDamage() {
-        return 0;
+        return this.damage;
     }
 
     /**
@@ -221,7 +229,7 @@ public class ItemContainer implements GUIItemContainer {
      */
     @Override
     public boolean isItemUnbreakable() {
-        return false;
+        return this.unbreakable;
     }
 
     /**
@@ -274,7 +282,7 @@ public class ItemContainer implements GUIItemContainer {
     }
 
     private String[] provideLore(Player player, String... permissions) {
-        if (permissions != null) {
+        if (permissions != null && permissions.length == 1 && permissions[0] != null) {
             if (permissions.length == 1 && permissions[0].equals("minecraft-heads")) {
                 return new String[]{ChatColor.GRAY + "sponsored by", ChatColor.GRAY + "Minecraft-Heads.com"};
             }

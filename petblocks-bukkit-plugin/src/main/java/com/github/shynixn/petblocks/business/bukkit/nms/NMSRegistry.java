@@ -20,6 +20,8 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
@@ -244,18 +246,18 @@ public final class NMSRegistry {
         }
     }
 
-    public static boolean canSpawnInRegion(String[] regionList, Location location) {
+    public static List<String> getWorldGuardRegionsFromLocation(Location location) {
         if (RegisterHelper.isRegistered("WorldGuard")) {
             try {
                 if (RegisterHelper.isRegistered("WorldGuard", '6'))
-                    return WorldGuardConnection6.canSpawnInRegion(regionList, location);
+                    return WorldGuardConnection6.getRegionsFromLocation(location);
                 else if (RegisterHelper.isRegistered("WorldGuard", '5'))
-                    return WorldGuardConnection5.canSpawnInRegion(regionList, location);
+                    return WorldGuardConnection5.getRegionsFromLocation(location);
             } catch (final Exception ex) {
                 Bukkit.getServer().getConsoleSender().sendMessage(PetBlocksPlugin.PREFIX_CONSOLE + ChatColor.DARK_RED + "Crashed while connecting to worldguard." + ex.getMessage());
             }
         }
-        return true;
+        return new ArrayList<>();
     }
 
     public static void rollbackWorldGuardSpawn(Location location) {

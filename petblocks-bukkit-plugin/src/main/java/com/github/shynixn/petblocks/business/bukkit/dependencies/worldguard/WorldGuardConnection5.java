@@ -51,7 +51,7 @@ public final class WorldGuardConnection5 {
     public static boolean isAllowedToEnterRegionByRiding(Player player, boolean cacheSpawn) throws InvocationTargetException, IllegalAccessException, NoSuchMethodException {
         PetBlock petBlock;
         if (!Config.getInstance().allowRidingOnRegionChanging() && ((petBlock = PetBlocksApi.getDefaultPetBlockController().getByPlayer(player)) != null)) {
-            if (((ArmorStand)petBlock.getArmorStand()).getPassenger() != null && ((ArmorStand)petBlock.getArmorStand()).getPassenger().equals(player) || cacheSpawn) {
+            if (((ArmorStand) petBlock.getArmorStand()).getPassenger() != null && ((ArmorStand) petBlock.getArmorStand()).getPassenger().equals(player) || cacheSpawn) {
                 final Location location = player.getLocation();
                 final WorldGuardPlugin worldGuard = getWorldGuard();
                 final RegionManager regionManager = worldGuard.getRegionManager(location.getWorld());
@@ -97,18 +97,20 @@ public final class WorldGuardConnection5 {
         return false;
     }
 
-    public static boolean canSpawnInRegion(String[] regionList, Location location) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
+    public static List<String> getRegionsFromLocation(Location location) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
+        List<String> regionList = new ArrayList<>();
         final WorldGuardPlugin worldGuard = getWorldGuard();
         final RegionManager regionManager = worldGuard.getRegionManager(location.getWorld());
         final Iterable<?> set = ReflectionUtils.invokeMethodByObject(regionManager, "getApplicableRegions", new Class[]{location.getClass()}, new Object[]{location});
         for (final Object region1 : set) {
             final ProtectedRegion region = (ProtectedRegion) region1;
             for (final String s : regionList) {
-                if (region.getId().equalsIgnoreCase(s))
-                    return true;
+                if (region.getId().equalsIgnoreCase(s)) {
+                    regionList.add(region.getId());
+                }
             }
         }
-        return false;
+        return regionList;
     }
 
     public synchronized static void rollBack() {

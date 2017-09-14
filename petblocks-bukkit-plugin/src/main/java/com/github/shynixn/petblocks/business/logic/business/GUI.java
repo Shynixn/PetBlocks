@@ -50,6 +50,7 @@ public class GUI {
     }
 
     public void setPage(Player player, GUIPage page, PetMeta petMeta) {
+        System.out.println("SETING PAGE");
         if (!this.manager.inventories.containsKey(player)) {
             return;
         }
@@ -60,14 +61,16 @@ public class GUI {
             }
         }
         if (petMeta.isSoundEnabled()) {
-            final GUIItemContainer container = Config.getInstance().getGuiItemsController().getGUIItemByName("sound-enabled");
+            final GUIItemContainer container = Config.getInstance().getGuiItemsController().getGUIItemByName("sounds-enabled-pet");
             inventory.setItem(container.getPosition(), (ItemStack) container.generate(player, container.getPermission()));
         } else {
-            final GUIItemContainer container = Config.getInstance().getGuiItemsController().getGUIItemByName("sound-disabled");
+            final GUIItemContainer container = Config.getInstance().getGuiItemsController().getGUIItemByName("sounds-disabled-pet");
             inventory.setItem(container.getPosition(), (ItemStack) container.generate(player, container.getPermission()));
         }
+        manager.pages.put(player, new GuiPageContainer(GUIPage.MAIN, null));
         this.fillEmptySlots(inventory);
         player.updateInventory();
+        System.out.println("FINISHED");
     }
 
    public void moveSubPage(Player player, int page)
