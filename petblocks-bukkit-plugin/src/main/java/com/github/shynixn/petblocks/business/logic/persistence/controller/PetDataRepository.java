@@ -56,8 +56,8 @@ public class PetDataRepository extends DataBaseRepository<PetMeta> implements Pe
         }
         this.playerMetaController.store(item.getPlayerMeta());
         this.particleEffectMetaController.store(item.getParticleEffectMeta());
-        item.setParticleId(item.getParticleEffectMeta().getId());
-        item.setPlayerId(item.getPlayerMeta().getId());
+        ((PetData)item).setParticleId(item.getParticleEffectMeta().getId());
+        ((PetData)item).setPlayerId(item.getPlayerMeta().getId());
         super.store(item);
     }
 
@@ -113,14 +113,17 @@ public class PetDataRepository extends DataBaseRepository<PetMeta> implements Pe
                         petMeta = this.from(resultSet);
                         if (petMeta == null)
                             return null;
+                    } else {
+                        return null;
                     }
                 }
             }
         } catch (final SQLException e) {
             Bukkit.getLogger().log(Level.WARNING, "Database error occurred.", e);
         }
-        petMeta.setParticleEffectMeta(this.particleEffectMetaController.getById(petMeta.getParticleId()));
-        petMeta.setPlayerMeta(this.playerMetaController.getById(petMeta.getPlayerId()));
+        petMeta.setEngine(Config.getInstance().getEngineController().getById(((PetData)petMeta).getEngineId()));
+        petMeta.setParticleEffectMeta(this.particleEffectMetaController.getById(((PetData)petMeta).getParticleId()));
+        petMeta.setPlayerMeta(this.playerMetaController.getById(((PetData)petMeta).getPlayerId()));
         return petMeta;
     }
 
@@ -225,7 +228,7 @@ public class PetDataRepository extends DataBaseRepository<PetMeta> implements Pe
         try (Connection connection = this.dbContext.getConnection()) {
             this.dbContext.executeStoredUpdate("petblock/update", connection,
                     item.getPetDisplayName(),
-                    item.getEngineId(),
+                    item.getEngine().getId(),
                     Material.getMaterial(itemMeta.getItemId()).name(),
                     item.getItemDamage(),
                     item.getSkin(),
@@ -263,6 +266,7 @@ public class PetDataRepository extends DataBaseRepository<PetMeta> implements Pe
     @Override
     public void insert(PetMeta itemMeta) {
         final PetData item = (PetData) itemMeta;
+        System.out.println("INSERT" + item.getEngine() + "." + item.getEngine().getGUIItem().getPosition());
         if (item == null)
             throw new IllegalArgumentException("Meta has to be an instance of PetData");
         try (Connection connection = this.dbContext.getConnection()) {
@@ -270,7 +274,7 @@ public class PetDataRepository extends DataBaseRepository<PetMeta> implements Pe
                     item.getPlayerId(),
                     item.getParticleId(),
                     item.getPetDisplayName(),
-                    item.getEngineId(),
+                    item.getEngine().getId(),
                     Material.getMaterial(itemMeta.getItemId()).name(),
                     item.getItemDamage(),
                     item.getSkin(),
@@ -300,7 +304,7 @@ public class PetDataRepository extends DataBaseRepository<PetMeta> implements Pe
         petMeta.setParticleId(resultSet.getLong("shy_particle_effect_id"));
         petMeta.setPetDisplayName(resultSet.getString("name"));
         petMeta.setEngineId(resultSet.getInt("engine"));
-        petMeta.setSkin(Material.getMaterial(resultSet.getString("material")).getId(), resultSet.getInt("data"), resultSet.getString("skull"),resultSet.getBoolean("unbreakable"));
+        petMeta.setSkin(Material.getMaterial(resultSet.getString("material")).getId(), resultSet.getInt("data"), resultSet.getString("skull"), resultSet.getBoolean("unbreakable"));
         petMeta.setEnabled(resultSet.getBoolean("enabled"));
         petMeta.setAge(resultSet.getInt("age"));
         petMeta.setSoundEnabled(resultSet.getBoolean("play_sounds"));

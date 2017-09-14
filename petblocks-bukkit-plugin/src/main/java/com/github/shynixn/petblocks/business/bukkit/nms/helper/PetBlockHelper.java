@@ -192,7 +192,7 @@ public final class PetBlockHelper {
         }
         if (petData.getParticleEffectMeta() != null) {
             if (!petBlock.getMeta().isVisible()) {
-                petData.getParticleEffectMeta().apply(getArmorstand(petBlock).getLocation().add(0, 1, 0), petBlock.getPlayer());
+                petData.getParticleEffectMeta().apply(getArmorstand(petBlock).getLocation().add(0, 1, 0), Arrays.asList(petBlock.getPlayer()));
             } else {
                 petData.getParticleEffectMeta().apply(getArmorstand(petBlock).getLocation().add(0, 1, 0));
             }

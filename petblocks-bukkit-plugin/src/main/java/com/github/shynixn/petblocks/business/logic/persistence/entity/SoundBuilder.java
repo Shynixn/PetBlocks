@@ -110,6 +110,8 @@ public class SoundBuilder implements SoundMeta {
      * @throws Exception exception
      */
     public void apply(Player... players) throws Exception {
+        if(this.text.equals("none"))
+            return;
         for (final Player player : players) {
             player.playSound(player.getLocation(), Sound.valueOf(this.text), this.volume, this.pitch);
         }
@@ -122,6 +124,8 @@ public class SoundBuilder implements SoundMeta {
      * @throws Exception exception
      */
     public void apply(Location location) throws Exception {
+        if(this.text.equals("none"))
+            return;
         for (final Player player : location.getWorld().getPlayers()) {
             player.playSound(location, Sound.valueOf(this.text), this.volume, this.pitch);
         }
@@ -147,6 +151,8 @@ public class SoundBuilder implements SoundMeta {
      */
     public void apply(Location location, Player... players) throws Exception {
         for (final Player player : players) {
+            if(this.text.equals("none"))
+                return;
             player.playSound(location, Sound.valueOf(this.text), this.volume, this.pitch);
         }
     }
@@ -335,6 +341,10 @@ public class SoundBuilder implements SoundMeta {
                     this.text = "ENTITY_ENDERDRAGON_GROWL";
                     break;
                 }
+                case "none": {
+                    this.text = "none";
+                    break;
+                }
                 default: {
                     if(this.text.contains("WALK")) {
                         this.text = "ENTITY_" + this.text.toUpperCase().split("_")[0] + "_STEP";
@@ -344,7 +354,7 @@ public class SoundBuilder implements SoundMeta {
                         this.text = "ENTITY_" + this.text.toUpperCase().split("_")[0] + "_AMBIENT";
                         return;
                     }
-                    throw new RuntimeException("Failed to interpret sounds.");
+                    throw new RuntimeException("Failed to interpret sounds. [" + this.text + "]");
                 }
             }
         }

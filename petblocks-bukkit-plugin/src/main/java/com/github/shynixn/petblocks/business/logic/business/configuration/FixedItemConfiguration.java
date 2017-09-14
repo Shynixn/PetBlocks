@@ -143,10 +143,11 @@ public class FixedItemConfiguration implements OtherGUIItemsController {
     public boolean isGUIItem(Object itemStack, String name) {
         if (itemStack == null || name == null)
             return false;
+        final GUIItemContainer container = this.getGUIItemByName(name);
         final ItemStack mItemStack = (ItemStack) itemStack;
-        return mItemStack.getItemMeta() != null
+        return mItemStack.getItemMeta() != null && container.getDisplayName().isPresent()
                 && mItemStack.getItemMeta().getDisplayName() != null
-                && mItemStack.getItemMeta().getDisplayName().equalsIgnoreCase(name);
+                && mItemStack.getItemMeta().getDisplayName().equalsIgnoreCase(container.getDisplayName().get());
     }
 
     /**

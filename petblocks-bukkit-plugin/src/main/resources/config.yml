@@ -297,10 +297,10 @@ gui:
       id: 160
       damage: 15
       skin: 'none'
-      name: '&c&lDisable Petblock'
+      name: 'none'
       unbreakable: false
       lore:
-        - ''
+        - 'none'
     previous-page:
       enabled: true
       position: 45

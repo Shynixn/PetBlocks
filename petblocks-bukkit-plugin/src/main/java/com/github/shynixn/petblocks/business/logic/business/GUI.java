@@ -67,22 +67,27 @@ public class GUI {
             final GUIItemContainer container = Config.getInstance().getGuiItemsController().getGUIItemByName("sounds-disabled-pet");
             inventory.setItem(container.getPosition(), (ItemStack) container.generate(player, container.getPermission()));
         }
+        final GUIItemContainer backGuiItemContainer = Config.getInstance().getGuiItemsController().getGUIItemByName("back");
+        inventory.setItem(backGuiItemContainer.getPosition(), (ItemStack) backGuiItemContainer.generate(player, backGuiItemContainer.getPermission()));
+
         manager.pages.put(player, new GuiPageContainer(GUIPage.MAIN, null));
         this.fillEmptySlots(inventory);
         player.updateInventory();
         System.out.println("FINISHED");
     }
 
-   public void moveSubPage(Player player, int page)
-   {
+    public void moveSubPage(Player player, int page) {
 
-   }
+    }
 
-   public void backPage(Player player)
-   {
+    public void backPage(Player player) {
+        System.out.println("BACK PAGE");
+        GuiPageContainer container = manager.pages.get(player);
+        if (container.page == GUIPage.MAIN) {
+            player.closeInventory();
+        }
 
-   }
-
+    }
 
     private void setDefaultCostumeItems(Player player) {
         this.setCostumes(player, Config.getInstance().getOrdinaryCostumesController().getAll(), GUIPage.DEFAULT_COSTUMES, 0);
@@ -168,8 +173,6 @@ public class GUI {
             this.manager.pages.put(player, container);
         }
     }
-
-
 
     private Inventory costumePreparation(Player player) {
         this.clearInventory(this.manager.inventories.get(player));

@@ -41,7 +41,6 @@ import java.util.Map;
  */
 public class EngineData extends PersistenceObject implements EngineContainer {
 
-    private final int position;
     private final GUIPage page;
     private final GUIItemContainer itemContainer;
 
@@ -58,7 +57,6 @@ public class EngineData extends PersistenceObject implements EngineContainer {
      */
     public EngineData(long id, Map<String, Object> data) throws Exception {
         this.setId(id);
-        this.position = (int) data.get("gui.position");
         this.page = GUIPage.getGUIPageFromName((String) data.get("gui.page"));
         this.itemContainer = new ItemContainer(0, ((MemorySection)data.get("gui")).getValues(false));
         this.entity = (String) data.get("behaviour.entity");
@@ -114,6 +112,6 @@ public class EngineData extends PersistenceObject implements EngineContainer {
      */
     @Override
     public GUIItemContainer getGUIItem() {
-        return null;
+        return this.itemContainer;
     }
 }

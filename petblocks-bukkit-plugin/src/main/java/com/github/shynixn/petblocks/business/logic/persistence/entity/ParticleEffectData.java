@@ -317,8 +317,7 @@ public class ParticleEffectData extends PersistenceObject implements ParticleEff
     public ParticleEffectData setMaterial(Object material) {
         if (material != null && material instanceof Integer) {
             this.material = (Integer) material;
-        }
-        else if (material != null) {
+        } else if (material != null) {
             this.material = ((Material) material).getId();
         } else {
             this.material = null;
@@ -542,22 +541,31 @@ public class ParticleEffectData extends PersistenceObject implements ParticleEff
     public void apply(Object location, Collection<Object> players) {
         if (players == null)
             throw new IllegalArgumentException("Players cannot be null!");
-        this.apply(location, players.toArray(new Player[players.size()]));
+        this.applyTo((Location) location, players.toArray(new Player[players.size()]));
     }
 
     /**
      * Plays the effect at the given location to the given players.
      *
-     * @param mLocation location
-     * @param mPlayers  players
+     * @param location location
      */
     @Override
-    public void apply(Object mLocation, Object... mPlayers) {
+    public void apply(Object location) {
+        this.applyTo((Location) location);
+    }
+
+    /**
+     * Plays the effect at the given location to the given players.
+     *
+     * @param location location
+     * @param players  players
+     */
+    public void applyTo(Location location, Player... players) {
         try {
-            final Location location = (Location) mLocation;
-            final Player[] players = (Player[]) mPlayers;
             if (location == null)
                 throw new IllegalArgumentException("Location cannot be null!");
+            if(this.effect.equals("none"))
+                return;
             final Player[] playingPlayers;
             if (players.length == 0) {
                 playingPlayers = location.getWorld().getPlayers().toArray(new Player[location.getWorld().getPlayers().size()]);

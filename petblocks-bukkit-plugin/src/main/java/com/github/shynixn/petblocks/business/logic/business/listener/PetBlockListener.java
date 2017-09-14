@@ -31,6 +31,7 @@ import org.bukkit.event.player.*;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Level;
@@ -224,7 +225,7 @@ public class PetBlockListener extends SimpleListener {
             final PetBlock petBlock = this.getPet(event.getRightClicked());
             if (petBlock != null && petBlock.getPlayer().equals(event.getPlayer())) {
                 if (NMSRegistry.getItemInHand19(event.getPlayer(), false) != null && NMSRegistry.getItemInHand19(event.getPlayer(), false).getType() == Material.CARROT_ITEM) {
-                    this.heartParticles.apply(event.getRightClicked().getLocation(), event.getRightClicked().getWorld().getPlayers());
+                    this.heartParticles.apply(event.getRightClicked().getLocation(), Arrays.asList(event.getRightClicked().getWorld().getPlayers()));
                     try {
                         ((SoundBuilder) this.eatingSound).apply(event.getRightClicked().getLocation());
                     } catch (final Exception e) {
@@ -355,7 +356,7 @@ public class PetBlockListener extends SimpleListener {
         @Override
         public void run() {
             for (final Player player : PetBlockListener.this.manager.carryingPet.toArray(new Player[PetBlockListener.this.manager.carryingPet.size()])) {
-                PetBlockListener.this.heartParticles.apply(player.getLocation().add(0, 1, 0), player.getWorld().getPlayers());
+                PetBlockListener.this.heartParticles.apply(player.getLocation().add(0, 1, 0),  Arrays.asList(player.getWorld().getPlayers()));
             }
             for (final PetBlock petBlock : manager.getPetBlockController().getAll()) {
                 if (petBlock.isDead() || !Config.getInstance().allowPetSpawning(((Player)petBlock.getPlayer()).getLocation())) {

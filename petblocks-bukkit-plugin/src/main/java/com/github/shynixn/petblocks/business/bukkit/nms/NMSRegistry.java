@@ -40,6 +40,8 @@ public final class NMSRegistry {
      */
     public static PetBlock createPetBlock(Location location, PetMeta meta) {
         try {
+            System.out.println("LOCATION " + location);
+            System.out.println("PETMETA" + meta);
             return (PetBlock) ReflectionUtils.invokeConstructor(findClassFromVersion("com.github.shynixn.petblocks.business.bukkit.nms.VERSION.CustomGroundArmorstand")
                     , new Class[]{location.getClass(), PetMeta.class}, new Object[]{location, meta});
         } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException | InstantiationException | ClassNotFoundException e) {

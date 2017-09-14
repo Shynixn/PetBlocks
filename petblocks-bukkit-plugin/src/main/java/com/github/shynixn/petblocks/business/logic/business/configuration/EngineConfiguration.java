@@ -114,6 +114,7 @@ public class EngineConfiguration implements EngineController {
     @Override
     public EngineContainer getById(int id) {
         for (final EngineContainer container : this.engineContainers) {
+            System.out.println("GET!!!!");
             if (container.getId() == id) {
                 return container;
             }
@@ -128,13 +129,13 @@ public class EngineConfiguration implements EngineController {
     public void reload() {
         this.engineContainers.clear();
         this.plugin.reloadConfig();
-        final Map<String, Object> data = ((MemorySection) this.plugin.getConfig().get("engine")).getValues(false);
+        final Map<String, Object> data = ((MemorySection) this.plugin.getConfig().get("engines")).getValues(false);
         for (final String key : data.keySet()) {
-            final Map<String, Object> content = ((MemorySection) this.plugin.getConfig().get("engine." + key)).getValues(true);
+            final Map<String, Object> content = ((MemorySection) this.plugin.getConfig().get("engines." + key)).getValues(true);
             try {
-                this.engineContainers.add(new EngineData(Long.parseLong(key), content));
+                this.engineContainers.add(new EngineData(Integer.parseInt(key), content));
             } catch (final Exception e) {
-                Bukkit.getLogger().log(Level.WARNING, "Failed to add content " + key + ".");
+                Bukkit.getLogger().log(Level.WARNING, "Failed to add content " + key + ".", e);
             }
         }
     }

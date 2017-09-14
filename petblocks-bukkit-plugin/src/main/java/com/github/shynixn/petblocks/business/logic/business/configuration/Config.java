@@ -46,6 +46,7 @@ public final class Config extends SimpleConfig {
         this.rareCostumesController.reload();
         this.minecraftHeadsCostumesController.reload();
         this.guiItemsController.reload();
+        this.engineController.reload();
     }
 
     public ParticleController getParticleController() {
@@ -74,6 +75,10 @@ public final class Config extends SimpleConfig {
 
     public CostumeController getMinecraftHeadsCostumesController() {
         return this.minecraftHeadsCostumesController;
+    }
+
+    public int getDefaultEngine() {
+        return this.plugin.getConfig().getInt("gui.settings.default-engine");
     }
 
     /**

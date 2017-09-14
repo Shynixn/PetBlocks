@@ -14,10 +14,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.plugin.Plugin;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.logging.Level;
 
 /**
@@ -98,27 +95,40 @@ public class ItemContainer implements GUIItemContainer {
         this.position = orderNumber;
         if (data.containsKey("enabled"))
             this.enabled = (boolean) data.get("enabled");
+        else
+            this.enabled = true;
         if (data.containsKey("position"))
             this.position = (int) data.get("position");
         if (data.containsKey("page"))
             this.page = GUIPage.valueOf((String) data.get("page"));
-        if(data.containsKey("id"))
+        if (data.containsKey("id"))
             this.id = (int) data.get("id");
-        if(data.containsKey("damage"))
+        if (data.containsKey("damage"))
             this.damage = (int) data.get("damage");
-        if(data.containsKey("skin"))
+        if (data.containsKey("skin") && !data.get("skin").equals("none"))
             this.skin = (String) data.get("skin");
-        if (data.containsKey("name"))
-            this.name = ChatColor.translateAlternateColorCodes('&', (String) data.get("name"));
+        if (data.containsKey("name")) {
+            if (data.get("name").equals("default")) {
+                this.name = null;
+            } else if (data.get("name").equals("none")) {
+                System.out.println("NAME: " + name);
+                this.name = " ";
+            } else {
+                this.name = ChatColor.translateAlternateColorCodes('&', (String) data.get("name"));
+            }
+        }
+
         if (data.containsKey("unbreakable"))
             this.unbreakable = (boolean) data.get("unbreakable");
         if (data.containsKey("lore")) {
             final List<String> m = (List<String>) data.get("lore");
             if (m != null) {
-                this.lore = new String[m.size()];
-                for (int i = 0; i < this.lore.length; i++) {
-                    this.lore[i] = ChatColor.translateAlternateColorCodes('&', m.get(i));
+                List<String> lore = new ArrayList<>();
+                for (String s : m) {
+                    if (!s.equals("none"))
+                        lore.add(ChatColor.translateAlternateColorCodes('&', s));
                 }
+                this.lore = lore.toArray(new String[lore.size()]);
             }
         }
     }
@@ -149,6 +159,7 @@ public class ItemContainer implements GUIItemContainer {
                     }
                 }
                 final ItemMeta itemMeta = itemStack.getItemMeta();
+                System.out.println("SET NAME " + this.name);
                 itemMeta.setDisplayName(this.name);
                 itemStack.setItemMeta(itemMeta);
                 this.cache = itemStack;

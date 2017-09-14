@@ -4,6 +4,7 @@ import com.github.shynixn.petblocks.api.persistence.entity.EngineContainer;
 import com.github.shynixn.petblocks.api.persistence.entity.ParticleEffectMeta;
 import com.github.shynixn.petblocks.api.persistence.entity.PetMeta;
 import com.github.shynixn.petblocks.api.persistence.entity.PlayerMeta;
+import com.github.shynixn.petblocks.business.logic.business.configuration.Config;
 import com.github.shynixn.petblocks.business.logic.business.configuration.ConfigPet;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -44,6 +45,10 @@ public class PetData extends PersistenceObject implements PetMeta {
         this.sounds = true;
         this.particleEffectBuilder = new ParticleEffectData();
         this.particleEffectBuilder.setEffectType(ParticleEffectMeta.ParticleEffectType.NONE);
+        this.engineContainer = Config.getInstance().getEngineController().getById(Config.getInstance().getDefaultEngine());
+        if (this.engineContainer == null) {
+            throw new RuntimeException("Engine cannot be null!");
+        }
     }
 
     public void setEngineId(int engineId) {
@@ -63,7 +68,6 @@ public class PetData extends PersistenceObject implements PetMeta {
      *
      * @return playerId
      */
-    @Override
     public long getPlayerId() {
         return this.playerId;
     }
@@ -73,7 +77,6 @@ public class PetData extends PersistenceObject implements PetMeta {
      *
      * @param id id
      */
-    @Override
     public void setPlayerId(long id) {
         this.playerId = id;
     }
@@ -83,7 +86,6 @@ public class PetData extends PersistenceObject implements PetMeta {
      *
      * @return particleId
      */
-    @Override
     public long getParticleId() {
         return this.particleId;
     }
@@ -93,7 +95,6 @@ public class PetData extends PersistenceObject implements PetMeta {
      *
      * @param id id
      */
-    @Override
     public void setParticleId(long id) {
         this.particleId = id;
     }
@@ -210,7 +211,6 @@ public class PetData extends PersistenceObject implements PetMeta {
         }
     }
 
-
     @Override
     public String getPetDisplayName() {
         return this.petDisplayName;
@@ -273,7 +273,7 @@ public class PetData extends PersistenceObject implements PetMeta {
      */
     @Override
     public EngineContainer getEngine() {
-        return null;
+        return this.engineContainer;
     }
 
     /**

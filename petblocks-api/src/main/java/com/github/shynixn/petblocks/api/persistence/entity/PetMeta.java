@@ -140,34 +140,6 @@ public interface PetMeta extends Persistenceable {
     String getPetDisplayName();
 
     /**
-     * Returns the id of the player
-     *
-     * @return playerId
-     */
-    long getPlayerId();
-
-    /**
-     * Sets the id of the player
-     *
-     * @param id id
-     */
-    void setPlayerId(long id);
-
-    /**
-     * Returns the id of the particle
-     *
-     * @return particleId
-     */
-    long getParticleId();
-
-    /**
-     * Sets the id of the particle
-     *
-     * @param id id
-     */
-    void setParticleId(long id);
-
-    /**
      * Sets the particleEffect meta
      *
      * @param meta meta
