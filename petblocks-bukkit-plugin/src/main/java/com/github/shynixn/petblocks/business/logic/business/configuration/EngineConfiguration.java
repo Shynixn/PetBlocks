@@ -1,5 +1,6 @@
 package com.github.shynixn.petblocks.business.logic.business.configuration;
 
+import com.github.shynixn.petblocks.api.business.entity.GUIItemContainer;
 import com.github.shynixn.petblocks.api.persistence.controller.EngineController;
 import com.github.shynixn.petblocks.api.persistence.controller.IController;
 import com.github.shynixn.petblocks.api.persistence.controller.IFileController;
@@ -120,6 +121,20 @@ public class EngineConfiguration implements EngineController {
             }
         }
         return null;
+    }
+
+    /**
+     * Returns all gui items
+     *
+     * @return gui items
+     */
+    @Override
+    public List<GUIItemContainer> getAllGUIItems() {
+        List<GUIItemContainer> items = new ArrayList<>();
+        for (final EngineContainer container : this.getAll()) {
+            items.add(container.getGUIItem());
+        }
+        return items;
     }
 
     /**

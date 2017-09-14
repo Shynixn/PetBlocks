@@ -68,8 +68,9 @@ public final class PetBlockRepository implements PetBlockController {
      */
     @Override
     public PetBlock getByPlayer(Object player) {
-        if (this.petblocks.containsKey(player)) {
-            return this.petblocks.get(player);
+        final Player mPlayer = (Player) player;
+        if (this.petblocks.containsKey(mPlayer)) {
+            return this.petblocks.get(mPlayer);
         }
         return null;
     }

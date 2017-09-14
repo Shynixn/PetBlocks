@@ -107,7 +107,7 @@ public class ParticleEffectData extends PersistenceObject implements ParticleEff
         if (items.containsKey("id"))
             this.material = (Integer) items.get("id");
         if (items.containsKey("damage"))
-            this.data = (Byte) items.get("damage");
+            this.data = (byte) (int) (Integer) items.get("damage");
         if (items.containsKey("red"))
             this.setRed((Integer) items.get("red"));
         if (items.containsKey("green"))
@@ -564,7 +564,7 @@ public class ParticleEffectData extends PersistenceObject implements ParticleEff
         try {
             if (location == null)
                 throw new IllegalArgumentException("Location cannot be null!");
-            if(this.effect.equals("none"))
+            if (this.effect.equals("none"))
                 return;
             final Player[] playingPlayers;
             if (players.length == 0) {

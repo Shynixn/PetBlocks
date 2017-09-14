@@ -97,9 +97,10 @@ public class ParticleConfiguration implements ParticleController {
      */
     @Override
     public List<GUIItemContainer> getAll() {
-        return new ArrayList<>(this.particleCache.keySet());
+        final List<GUIItemContainer> containers = new ArrayList<>(this.particleCache.keySet());
+        containers.sort((o1, o2) -> new Integer(o1.getPosition()).compareTo(o2.getPosition()));
+        return containers;
     }
-
 
     /**
      * Returns the container by the given order id
@@ -109,6 +110,11 @@ public class ParticleConfiguration implements ParticleController {
      */
     @Override
     public GUIItemContainer getContainerByPosition(int id) {
+        for (final GUIItemContainer guiItemContainer : this.particleCache.keySet()) {
+            if (guiItemContainer.getPosition() == id) {
+                return guiItemContainer;
+            }
+        }
         return null;
     }
 
@@ -120,6 +126,9 @@ public class ParticleConfiguration implements ParticleController {
      */
     @Override
     public ParticleEffectMeta getByItem(GUIItemContainer container) {
+        if (this.particleCache.containsKey(container)) {
+            return this.particleCache.get(container);
+        }
         return null;
     }
 
@@ -134,10 +143,10 @@ public class ParticleConfiguration implements ParticleController {
         for (final String key : data.keySet()) {
             try {
                 final GUIItemContainer container = new ItemContainer(Integer.parseInt(key), ((MemorySection) data.get(key)).getValues(false));
-                final ParticleEffectMeta meta = new ParticleEffectData(((MemorySection) data.get("effect")).getValues(false));
+                final ParticleEffectMeta meta = new ParticleEffectData(((MemorySection) ((MemorySection) data.get(key)).getValues(false).get("effect")).getValues(true));
                 this.particleCache.put(container, meta);
             } catch (final Exception e) {
-                Bukkit.getLogger().log(Level.WARNING, "Failed to load particle " + key + ".");
+                Bukkit.getLogger().log(Level.WARNING, "Failed to load particle " + key + ".", e);
             }
         }
     }

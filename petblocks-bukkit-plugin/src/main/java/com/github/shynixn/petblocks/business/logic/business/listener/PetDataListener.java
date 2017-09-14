@@ -95,8 +95,8 @@ public class PetDataListener extends SimpleListener {
                 && this.manager.inventories.get(player).equals(event.getInventory())) {
             event.setCancelled(true);
             ((Player) event.getWhoClicked()).updateInventory();
-            final PetBlock petBlock = null;
-            if ((PetBlocksApi.getDefaultPetBlockController().getByPlayer(player)) != null) {
+            PetBlock petBlock;
+            if ((petBlock = PetBlocksApi.getDefaultPetBlockController().getByPlayer(player)) != null) {
                 this.handleClick(event, player, petBlock.getMeta(), petBlock);
             } else {
                 this.plugin.getServer().getScheduler().runTaskAsynchronously(this.plugin, () -> {
@@ -246,6 +246,8 @@ public class PetDataListener extends SimpleListener {
             this.manager.gui.setPage(player, GUIPage.PARTICLES, petMeta);
         } else if (this.isGUIItem(currentItem, "wardrobe")) {
             this.manager.gui.setPage(player, GUIPage.WARDROBE, petMeta);
+        } else if (this.isGUIItem(currentItem, "engine-settings")) {
+            this.manager.gui.setPage(player, GUIPage.ENGINES, petMeta);
         } else if (this.isGUIItem(currentItem, "call-pet")) {
             petBlock.teleport(player.getLocation());
             player.closeInventory();
@@ -272,16 +274,9 @@ public class PetDataListener extends SimpleListener {
             petBlock.setVelocity(this.getDirection(player));
             player.closeInventory();
         } else if (this.isGUIItem(currentItem, "back")) {
-            this.manager.gui.backPage(player);
+            this.manager.gui.backPage(player, petMeta);
         } else if (this.manager.pages.get(player).page == GUIPage.PARTICLES && this.hasPermission(player, Permission.ALLPARTICLES.get(), Permission.SINGLEPARTICLE.get() + "" + event.getSlot())) {
-            final GUIItemContainer container = Config.getInstance().getParticleController().getContainerByPosition(event.getSlot());
-            petMeta.setParticleEffectMeta(Config.getInstance().getParticleController().getByItem(container));
-            this.persistAsynchronously(petMeta);
-            if (petBlock != null) {
-                petBlock.respawn();
-            }
-        } else if (this.manager.pages.get(player).page == GUIPage.PARTICLES && this.hasPermission(player, Permission.ALLPARTICLES.get(), Permission.SINGLEPARTICLE.get() + "" + event.getSlot())) {
-            final GUIItemContainer container = Config.getInstance().getParticleController().getContainerByPosition(event.getSlot());
+            final GUIItemContainer container = Config.getInstance().getParticleController().getContainerByPosition(event.getSlot()+1);
             petMeta.setParticleEffectMeta(Config.getInstance().getParticleController().getByItem(container));
             this.persistAsynchronously(petMeta);
             if (petBlock != null) {
@@ -354,7 +349,7 @@ public class PetDataListener extends SimpleListener {
             this.manager.gui.setPage(player, GUIPage.MAIN, petMeta);
         } else {
             if (Config.getInstance().isCopySkinEnabled()) {
-                petMeta.setSkin(Material.SKULL_ITEM.getId(),  3, this.getGUIItem("my-pet").getSkin(), this.getGUIItem("my-pet").isItemUnbreakable());
+                petMeta.setSkin(Material.SKULL_ITEM.getId(), 3, this.getGUIItem("my-pet").getSkin(), this.getGUIItem("my-pet").isItemUnbreakable());
             } else {
                 final GUIItemContainer c = this.getGUIItem("default-appearance");
                 petMeta.setSkin(c.getItemId(), c.getItemDamage(), c.getSkin(), c.isItemUnbreakable());
@@ -390,7 +385,7 @@ public class PetDataListener extends SimpleListener {
         } else {
             try {
                 this.namingSkull.remove(player);
-                petMeta.setSkin(Material.SKULL_ITEM.getId(),  3, message, false);
+                petMeta.setSkin(Material.SKULL_ITEM.getId(), 3, message, false);
                 this.persistAsynchronously(petMeta);
                 if (petBlock != null)
                     petBlock.respawn();
@@ -517,7 +512,7 @@ public class PetDataListener extends SimpleListener {
     private PetBlock setPetBlock(Player player, PetMeta petMeta) {
         petMeta.setEnabled(true);
         final PetBlock petBlock = PetBlocksApi.getDefaultPetBlockController().create(player, petMeta);
-        PetBlocksApi.getDefaultPetBlockController().remove(petBlock);
+        PetBlocksApi.getDefaultPetBlockController().store(petBlock);
         this.persistAsynchronously(petMeta);
         return petBlock;
     }

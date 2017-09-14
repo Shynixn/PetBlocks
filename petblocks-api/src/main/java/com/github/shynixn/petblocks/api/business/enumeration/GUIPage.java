@@ -30,7 +30,7 @@ package com.github.shynixn.petblocks.api.business.enumeration;
  * SOFTWARE.
  */
 public enum GUIPage {
-    MAIN, WARDROBE, DEFAULT_COSTUMES, COLOR_COSTUMES, CUSTOM_COSTUMES, MINECRAFTHEADS_COSTUMES, PARTICLES;
+    MAIN, WARDROBE, DEFAULT_COSTUMES, COLOR_COSTUMES, CUSTOM_COSTUMES, MINECRAFTHEADS_COSTUMES, PARTICLES, ENGINES;
 
     /**
      * Returns the gui page from name

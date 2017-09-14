@@ -46,6 +46,7 @@ public final class Config extends SimpleConfig {
         this.rareCostumesController.reload();
         this.minecraftHeadsCostumesController.reload();
         this.guiItemsController.reload();
+        this.particleController.reload();
         this.engineController.reload();
     }
 

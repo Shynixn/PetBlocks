@@ -39,7 +39,7 @@ public class PetData extends PersistenceObject implements PetMeta {
 
     public PetData(Player player, String name) {
         super();
-        this.petDisplayName = name;
+        this.petDisplayName = name.replace(":player", player.getName());
         this.playerInfo = PlayerData.from(player);
         this.ageTicks = ConfigPet.getInstance().getAge_smallticks();
         this.sounds = true;
