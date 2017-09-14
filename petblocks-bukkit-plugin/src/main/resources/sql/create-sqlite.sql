@@ -35,7 +35,7 @@ CREATE TABLE IF NOT EXISTS SHY_PETBLOCK
   play_sounds INTEGER,
   CONSTRAINT foreignkey_player_id_cs FOREIGN KEY (shy_player_id) REFERENCES SHY_PLAYER(id),
   CONSTRAINT foreignkey_particle_id_cs FOREIGN KEY (shy_particle_effect_id) REFERENCES SHY_PARTICLE_EFFECT(id)
-);
+)
 
 
 

@@ -96,10 +96,6 @@ public class ItemContainer implements GUIItemContainer {
      */
     public ItemContainer(int orderNumber, Map<String, Object> data) throws Exception {
         this.position = orderNumber;
-
-        for (String key : data.keySet()) {
-            System.out.println(key + " : " + data.get(key));
-        }
         if (data.containsKey("enabled"))
             this.enabled = (boolean) data.get("enabled");
         if (data.containsKey("position"))

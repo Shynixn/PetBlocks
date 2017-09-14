@@ -113,7 +113,6 @@ public class CostumeConfiguration implements CostumeController {
     public void reload() {
         this.items.clear();
         this.plugin.reloadConfig();
-        System.out.println("COSTUME: " + this.costumeCategory);
         final Map<String, Object> data = ((MemorySection) this.plugin.getConfig().get("wardrobe."+ this.costumeCategory)).getValues(false);
         for (final String key : data.keySet()) {
             try {
