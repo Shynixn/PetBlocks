@@ -131,7 +131,6 @@ public class PetDataListener extends SimpleListener {
             }
             if ((petMeta = PetBlocksApi.getDefaultPetMetaController().getByPlayer(event.getPlayer())) != null && petMeta.isEnabled()) {
                 this.plugin.getServer().getScheduler().runTaskLater(this.plugin, () -> {
-                    PetBlocksApi.getDefaultPetBlockController().removeByPlayer(event.getPlayer());
                     final PetBlock petBlock = PetBlocksApi.getDefaultPetBlockController().create(event.getPlayer(), petMeta);
                     PetBlocksApi.getDefaultPetBlockController().store(petBlock);
                 }, 2L);
@@ -231,9 +230,9 @@ public class PetDataListener extends SimpleListener {
             this.refreshGUI(player, petMeta);
             this.persistAsynchronously(petMeta);
         } else if (this.isGUIItem(currentItem, "next-page")) {
-            this.manager.gui.moveSubPage(player, 1);
+            this.manager.gui.moveList(player, true);
         } else if (this.isGUIItem(currentItem, "previous-page")) {
-            this.manager.gui.moveSubPage(player, -1);
+            this.manager.gui.moveList(player, false);
         } else if (this.isGUIItem(currentItem, "ordinary-costume")) {
             this.manager.gui.setPage(player, GUIPage.DEFAULT_COSTUMES, petMeta);
         } else if (this.isGUIItem(currentItem, "color-costume")) {

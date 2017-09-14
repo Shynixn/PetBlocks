@@ -4,6 +4,7 @@ import com.github.shynixn.petblocks.api.business.entity.GUIItemContainer;
 import com.github.shynixn.petblocks.api.persistence.controller.OtherGUIItemsController;
 import com.github.shynixn.petblocks.business.logic.business.entity.ItemContainer;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.configuration.MemorySection;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
@@ -112,6 +113,9 @@ public class FixedItemConfiguration implements OtherGUIItemsController {
             try {
                 final GUIItemContainer container = new ItemContainer(0, ((MemorySection) data.get(key)).getValues(false));
                 System.out.println("LOADED: " + key);
+                if (key.equals("suggest-heads")) {
+                    ((ItemContainer) container).setDisplayName(ChatColor.AQUA + "" + ChatColor.BOLD + "Suggest Heads");
+                }
                 this.items.put(key, container);
             } catch (final Exception e) {
                 Bukkit.getLogger().log(Level.WARNING, "Failed to load guiItem " + key + ".", e);

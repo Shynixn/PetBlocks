@@ -74,6 +74,8 @@ public class ItemContainer implements GUIItemContainer {
      * @param lore        lore
      */
     public ItemContainer(boolean enabled, int position, GUIPage page, int id, int damage, String skin, boolean unbreakable, String name, String[] lore) {
+        System.out.println(id + "-" + damage + "-" + skin);
+
         this.enabled = enabled;
         this.position = position;
         this.page = page;
@@ -159,7 +161,7 @@ public class ItemContainer implements GUIItemContainer {
                     }
                 }
                 final ItemMeta itemMeta = itemStack.getItemMeta();
-                System.out.println("SET NAME " + this.name);
+                System.out.println("SET NAME " + this.skin);
                 itemMeta.setDisplayName(this.name);
                 itemStack.setItemMeta(itemMeta);
                 this.cache = itemStack;
@@ -171,6 +173,10 @@ public class ItemContainer implements GUIItemContainer {
             Bukkit.getLogger().log(Level.WARNING, "Failed to generate itemStack.", ex);
         }
         return new ItemStack(Material.AIR);
+    }
+
+    public void setDisplayName(String displayName) {
+        this.name = displayName;
     }
 
     /**
