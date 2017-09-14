@@ -1,15 +1,15 @@
-package com.github.shynixn.petblocks.business.logic.configuration;
+package com.github.shynixn.petblocks.business.logic.business.configuration;
 
 import com.github.shynixn.petblocks.api.business.entity.GUIItemContainer;
-import com.github.shynixn.petblocks.api.persistence.controller.OtherGUIItemsController;
+import com.github.shynixn.petblocks.api.persistence.controller.CostumeController;
+import com.github.shynixn.petblocks.business.logic.business.entity.ItemContainer;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.MemorySection;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 
 import java.io.Closeable;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
@@ -43,20 +43,22 @@ import java.util.logging.Level;
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-public class FixedItemConfiguration implements OtherGUIItemsController {
+public class CostumeConfiguration implements CostumeController {
 
     private Plugin plugin;
-    private final Map<String, GUIItemContainer> items = new HashMap<>();
+    private final String costumeCategory;
+    final List<GUIItemContainer> items = new ArrayList<>();
 
     /**
      * Initializes a new engine repository
      *
      * @param plugin plugin
      */
-    public FixedItemConfiguration(Plugin plugin) {
+    public CostumeConfiguration(String costumeCategory, Plugin plugin) {
         if (plugin == null)
             throw new IllegalArgumentException("Plugin cannot be null!");
         this.plugin = plugin;
+        this.costumeCategory = costumeCategory;
     }
 
     /**
@@ -66,7 +68,10 @@ public class FixedItemConfiguration implements OtherGUIItemsController {
      */
     @Override
     public void store(GUIItemContainer item) {
-        throw new RuntimeException("Not implemented");
+        if (this.getContainerByPosition(item.getPosition()) != null) {
+            throw new IllegalArgumentException("Item at this position already exists!");
+        }
+        this.items.add(item);
     }
 
     /**
@@ -76,7 +81,9 @@ public class FixedItemConfiguration implements OtherGUIItemsController {
      */
     @Override
     public void remove(GUIItemContainer item) {
-        throw new RuntimeException("Not implemented");
+        if (this.items.contains(item)) {
+            this.items.remove(item);
+        }
     }
 
     /**
@@ -96,7 +103,7 @@ public class FixedItemConfiguration implements OtherGUIItemsController {
      */
     @Override
     public List<GUIItemContainer> getAll() {
-        return new ArrayList<>(this.items.values());
+        return Collections.unmodifiableList(this.items);
     }
 
     /**
@@ -106,45 +113,33 @@ public class FixedItemConfiguration implements OtherGUIItemsController {
     public void reload() {
         this.items.clear();
         this.plugin.reloadConfig();
-        final Map<String, Object> data = ((MemorySection) this.plugin.getConfig().get("gui.items")).getValues(false);
+        System.out.println("COSTUME: " + this.costumeCategory);
+        final Map<String, Object> data = ((MemorySection) this.plugin.getConfig().get("wardrobe."+ this.costumeCategory)).getValues(false);
         for (final String key : data.keySet()) {
             try {
-                final GUIItemContainer container = new ItemContainer(0, ((MemorySection) data.get(key)).getValues(false));
-                this.items.put(key, container);
+                final GUIItemContainer container = new ItemContainer(Integer.parseInt(key), ((MemorySection) data.get(key)).getValues(true));
+                this.items.add(container);
             } catch (final Exception e) {
-                Bukkit.getLogger().log(Level.WARNING, "Failed to load guiItem " + key + ".");
+                e.printStackTrace();
+                Bukkit.getLogger().log(Level.WARNING, "Failed to load guiItem " + this.costumeCategory + "." + key + ".");
             }
         }
     }
 
     /**
-     * Returns the guiItem by the given name
+     * Returns the container by the given order id
      *
-     * @param name name
-     * @return item
+     * @param position position
+     * @return container
      */
     @Override
-    public GUIItemContainer getGUIItemByName(String name) {
-        if (this.items.containsKey(name))
-            return this.items.get(name);
+    public GUIItemContainer getContainerByPosition(int position) {
+        for (final GUIItemContainer guiItemContainer : this.items) {
+            if (guiItemContainer.getPosition() == position) {
+                return guiItemContainer;
+            }
+        }
         return null;
-    }
-
-    /**
-     * Returns if the given itemStack is a guiItemStack with the given name
-     *
-     * @param itemStack itemStack
-     * @param name      name
-     * @return itemStack
-     */
-    @Override
-    public boolean isGUIItem(Object itemStack, String name) {
-        if (itemStack == null || name == null)
-            return false;
-        final ItemStack mItemStack = (ItemStack) itemStack;
-        return mItemStack.getItemMeta() != null
-                && mItemStack.getItemMeta().getDisplayName() != null
-                && mItemStack.getItemMeta().getDisplayName().equalsIgnoreCase(name);
     }
 
     /**

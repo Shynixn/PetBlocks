@@ -30,6 +30,14 @@ package com.github.shynixn.petblocks.api.persistence.entity;
  * SOFTWARE.
  */
 public interface PetMeta extends Persistenceable {
+
+    /**
+     * Returns if the petblock is enabled
+     *
+     * @return enabled
+     */
+    boolean isEnabled();
+
     /**
      * Sets the petblock enabled
      *
@@ -43,6 +51,13 @@ public interface PetMeta extends Persistenceable {
      * @return age
      */
     long getAge();
+
+    /**
+     * Returns the skin of the pet
+     *
+     * @return skin
+     */
+    String getSkin();
 
     /**
      * Sets the age in ticks
@@ -115,14 +130,14 @@ public interface PetMeta extends Persistenceable {
      *
      * @param name name
      */
-    void setDisplayName(String name);
+    void setPetDisplayName(String name);
 
     /**
      * Returns the stored display name of the pet which appear above it's head on respawn
      *
      * @return name
      */
-    String getDisplayName();
+    String getPetDisplayName();
 
     /**
      * Returns the id of the player
@@ -179,4 +194,25 @@ public interface PetMeta extends Persistenceable {
      * @return player
      */
     PlayerMeta getPlayerMeta();
+
+    /**
+     * Returns the id of the item
+     *
+     * @return itemId
+     */
+    int getItemId();
+
+    /**
+     * Returns the damage of the item
+     *
+     * @return itemDamage
+     */
+    int getItemDamage();
+
+    /**
+     * Returns if the item is unbreakable
+     *
+     * @return unbreakable
+     */
+    boolean isItemUnbreakable();
 }

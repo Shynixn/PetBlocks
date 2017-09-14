@@ -10,7 +10,7 @@ import com.github.shynixn.petblocks.api.persistence.entity.ParticleEffectMeta;
 import com.github.shynixn.petblocks.api.persistence.entity.PetMeta;
 import com.github.shynixn.petblocks.api.persistence.entity.SoundMeta;
 import com.github.shynixn.petblocks.business.bukkit.nms.NMSRegistry;
-import com.github.shynixn.petblocks.business.logic.configuration.ConfigPet;
+import com.github.shynixn.petblocks.business.logic.business.configuration.ConfigPet;
 import com.github.shynixn.petblocks.business.logic.persistence.entity.ParticleEffectData;
 import com.github.shynixn.petblocks.business.logic.persistence.entity.PetData;
 import com.github.shynixn.petblocks.business.logic.persistence.entity.SoundBuilder;
@@ -238,12 +238,12 @@ public final class PetBlockHelper {
         final ItemStack itemStack;
         if (petData.getSkin() != null) {
             if (petData.getSkin().contains("http")) {
-                itemStack = NMSRegistry.changeSkullSkin(new ItemStack(petData.getSkinMaterial(), 1, petData.getSkinDurability()), petData.getSkin());
+                itemStack = NMSRegistry.changeSkullSkin(new ItemStack(Material.getMaterial(petData.getItemId()), 1, (short) petData.getItemDamage()), petData.getSkin());
             } else {
-                itemStack = activateHead(petData.getSkin(), new ItemStack(petData.getSkinMaterial(), 1, petData.getSkinDurability()));
+                itemStack = activateHead(petData.getSkin(), new ItemStack(Material.getMaterial(petData.getItemId()), 1, (short) petData.getItemDamage()));
             }
         } else {
-            itemStack = new ItemStack(petData.getSkinMaterial(), 1, petData.getSkinDurability());
+            itemStack = new ItemStack(petData.getItemId(), 1,(short) petData.getItemDamage());
         }
         if (petData.getAge() >= ConfigPet.getInstance().getAge_largeticks()) {
             refreshHeadItemMeta(petBlock, itemStack);

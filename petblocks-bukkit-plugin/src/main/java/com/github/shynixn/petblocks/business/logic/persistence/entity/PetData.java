@@ -4,29 +4,28 @@ import com.github.shynixn.petblocks.api.persistence.entity.EngineContainer;
 import com.github.shynixn.petblocks.api.persistence.entity.ParticleEffectMeta;
 import com.github.shynixn.petblocks.api.persistence.entity.PetMeta;
 import com.github.shynixn.petblocks.api.persistence.entity.PlayerMeta;
-import com.github.shynixn.petblocks.business.logic.configuration.ConfigPet;
+import com.github.shynixn.petblocks.business.logic.business.configuration.ConfigPet;
 import org.bukkit.ChatColor;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
 
 import java.util.UUID;
 
 public class PetData extends PersistenceObject implements PetMeta {
-    private String displayName;
-    private Material costume;
-    private short durability;
-    private String skullName;
+
+    private String petDisplayName;
+
+    private String skin;
+    private int id;
+    private int damage;
+    private boolean unbreakable;
+
     private boolean hidden;
     private long ageTicks;
-    private String movement;
-    private boolean unbreakable;
     private boolean enabled;
     private boolean sounds;
 
     private transient String headDisplayName;
     private transient String[] headLore;
-    private boolean build;
 
     private PlayerMeta playerInfo;
     private long playerId;
@@ -37,17 +36,10 @@ public class PetData extends PersistenceObject implements PetMeta {
 
     private EngineContainer engineContainer;
 
-    public PetData(Player player, String name, ItemStack itemStack, String owner) {
+    public PetData(Player player, String name) {
         super();
-        this.displayName = name;
+        this.petDisplayName = name;
         this.playerInfo = PlayerData.from(player);
-        this.costume = itemStack.getType();
-        this.durability = itemStack.getDurability();
-        if (owner != null && owner.contains("textures.minecraft") && !owner.contains("http://")) {
-            owner = "http://" + owner;
-        }
-        if (owner != null && !owner.isEmpty())
-            this.skullName = owner;
         this.ageTicks = ConfigPet.getInstance().getAge_smallticks();
         this.sounds = true;
         this.particleEffectBuilder = new ParticleEffectData();
@@ -150,18 +142,34 @@ public class PetData extends PersistenceObject implements PetMeta {
         return this.playerInfo;
     }
 
-    public void setIsBuild(boolean isBuild) {
-        this.build = isBuild;
+    /**
+     * Returns the id of the item
+     *
+     * @return itemId
+     */
+    @Override
+    public int getItemId() {
+        return this.id;
     }
 
-    public void setSkin(Material material, short durability, String skin) {
-        if (skin != null && skin.contains("textures.minecraft")) {
-            if (!skin.contains("http://"))
-                skin = "http://" + skin;
-        }
-        this.costume = material;
-        this.durability = durability;
-        this.skullName = skin;
+    /**
+     * Returns the damage of the item
+     *
+     * @return itemDamage
+     */
+    @Override
+    public int getItemDamage() {
+        return this.damage;
+    }
+
+    /**
+     * Returns if the item is unbreakable
+     *
+     * @return unbreakable
+     */
+    @Override
+    public boolean isItemUnbreakable() {
+        return this.unbreakable;
     }
 
     public boolean isHidden() {
@@ -202,13 +210,30 @@ public class PetData extends PersistenceObject implements PetMeta {
         }
     }
 
-    public String getSkin() {
-        return this.skullName;
-    }
 
     @Override
-    public String getDisplayName() {
-        return this.displayName;
+    public String getPetDisplayName() {
+        return this.petDisplayName;
+    }
+
+    /**
+     * Returns if the petblock is enabled
+     *
+     * @return enabled
+     */
+    @Override
+    public boolean isEnabled() {
+        return this.enabled;
+    }
+
+    /**
+     * Sets the petblock enabled
+     *
+     * @param enabled enabled
+     */
+    @Override
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
     }
 
     /**
@@ -219,6 +244,16 @@ public class PetData extends PersistenceObject implements PetMeta {
     @Override
     public long getAge() {
         return this.ageTicks;
+    }
+
+    /**
+     * Returns the skin of the pet
+     *
+     * @return skin
+     */
+    @Override
+    public String getSkin() {
+        return this.skin;
     }
 
     /**
@@ -298,7 +333,7 @@ public class PetData extends PersistenceObject implements PetMeta {
      */
     @Override
     public boolean isItemStackUnbreakable() {
-        return false;
+        return this.unbreakable;
     }
 
     /**
@@ -311,67 +346,21 @@ public class PetData extends PersistenceObject implements PetMeta {
      */
     @Override
     public void setSkin(int id, int damage, String skin, boolean unbreakable) {
-
+        if (skin != null && skin.contains("textures.minecraft")) {
+            if (!skin.contains("http://")) {
+                skin = "http://" + skin;
+            }
+        }
+        this.id = id;
+        this.damage = damage;
+        this.skin = skin;
     }
 
     @Override
-    public void setDisplayName(String name) {
+    public void setPetDisplayName(String name) {
         if (name == null)
             return;
-        this.displayName = ChatColor.translateAlternateColorCodes('&', name);
-    }
-
-    public Material getSkinMaterial() {
-        return this.costume;
-    }
-
-    public short getSkinDurability() {
-        return this.durability;
-    }
-
-    @Override
-    public void setEnabled(boolean enabled) {
-        this.enabled = enabled;
-    }
-
-    public boolean isEnabled() {
-        return this.enabled;
-    }
-
-    public Material getCostume() {
-        return this.costume;
-    }
-
-    public void setCostume(Material costume) {
-        this.costume = costume;
-    }
-
-    public short getDurability() {
-        return this.durability;
-    }
-
-    public void setDurability(short durability) {
-        this.durability = durability;
-    }
-
-    public String getSkullName() {
-        return this.skullName;
-    }
-
-    public void setSkullName(String skullName) {
-        this.skullName = skullName;
-    }
-
-    //region Deprecated
-
-    @Deprecated
-    public Player getOwner() {
-        return this.playerInfo.getPlayer();
-    }
-
-    @Deprecated
-    public void setOwner(Player player) {
-        this.playerInfo.setUuid(player.getUniqueId());
+        this.petDisplayName = ChatColor.translateAlternateColorCodes('&', name);
     }
 
     @Deprecated

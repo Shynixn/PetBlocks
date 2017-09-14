@@ -6,7 +6,7 @@ import com.github.shynixn.petblocks.api.persistence.controller.PlayerMetaControl
 import com.github.shynixn.petblocks.api.persistence.entity.ParticleEffectMeta;
 import com.github.shynixn.petblocks.api.persistence.entity.PetMeta;
 import com.github.shynixn.petblocks.api.persistence.entity.PlayerMeta;
-import com.github.shynixn.petblocks.business.logic.persistence.Factory;
+import com.github.shynixn.petblocks.business.logic.Factory;
 import com.github.shynixn.petblocks.business.logic.persistence.entity.PetData;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -73,7 +73,7 @@ public class PetMetaSQLiteControllerTest {
                         controller.remove(item);
                     }
                     final PetData meta = new PetData();
-                    meta.setDisplayName("Notch");
+                    meta.setPetDisplayName("Notch");
                     assertThrows(IllegalArgumentException.class, () -> controller.store(meta));
                     assertEquals(0, controller.size());
 
@@ -93,11 +93,11 @@ public class PetMetaSQLiteControllerTest {
                     meta.setEngineId(4);
                     assertThrows(IllegalArgumentException.class, () -> controller.store(meta));
 
-                    meta.setSkin(Material.STONE, (short)5, null);
+                    meta.setSkin(Material.STONE.getId(), (short)5, null, false);
                     controller.store(meta);
 
                     assertEquals(1, controller.size());
-                    assertEquals("Notch", controller.getByPlayer(player).getDisplayName());
+                    assertEquals("Notch", controller.getByPlayer(player).getPetDisplayName());
                 }
             }
         } catch (final Exception e) {
@@ -120,8 +120,8 @@ public class PetMetaSQLiteControllerTest {
                         controller.remove(item);
                     }
                     PetData meta = new PetData();
-                    meta.setDisplayName("Me");
-                    meta.setSkin(Material.BIRCH_DOOR_ITEM,(short)5 , "This is my long skin.");
+                    meta.setPetDisplayName("Me");
+                    meta.setSkin(Material.BIRCH_DOOR_ITEM.getId(),5 , "This is my long skin.", false);
                     meta.setEngineId(4);
                     meta.setEnabled(true);
                     meta.setAge(500);
@@ -139,9 +139,9 @@ public class PetMetaSQLiteControllerTest {
 
                     assertEquals(1, controller.size());
                     meta = (PetData) controller.getById(meta.getId());
-                    assertEquals("Me", meta.getDisplayName());
-                    assertEquals(Material.BIRCH_DOOR_ITEM, meta.getSkinMaterial());
-                    assertEquals((short)5, meta.getSkinDurability());
+                    assertEquals("Me", meta.getPetDisplayName());
+                    assertEquals(Material.BIRCH_DOOR_ITEM.getId(), meta.getItemId());
+                    assertEquals(5, meta.getItemDamage());
                     assertEquals("This is my long skin.", meta.getSkin());
                     assertEquals(4, meta.getEngineId());
                     assertEquals(true, meta.isEnabled());
@@ -149,8 +149,8 @@ public class PetMetaSQLiteControllerTest {
                     assertEquals(true, meta.isUnbreakable());
                     assertEquals(true, meta.isSoundEnabled());
 
-                    meta.setDisplayName("PikaPet");
-                    meta.setSkin(Material.ARROW,(short)7 , "http://Skin.com");
+                    meta.setPetDisplayName("PikaPet");
+                    meta.setSkin(Material.ARROW.getId(),7 , "http://Skin.com", false);
                     meta.setEngineId(1);
                     meta.setEnabled(false);
                     meta.setAge(250);
@@ -160,9 +160,9 @@ public class PetMetaSQLiteControllerTest {
 
                     assertEquals(1, controller.size());
                     meta = (PetData) controller.getById(meta.getId());
-                    assertEquals("PikaPet", meta.getDisplayName());
-                    assertEquals(Material.ARROW, meta.getSkinMaterial());
-                    assertEquals((short)7, meta.getSkinDurability());
+                    assertEquals("PikaPet", meta.getPetDisplayName());
+                    assertEquals(Material.ARROW.getId(), meta.getItemId());
+                    assertEquals(7, meta.getItemDamage());
                     assertEquals("http://Skin.com", meta.getSkin());
                     assertEquals(1, meta.getEngineId());
                     assertEquals(false, meta.isEnabled());

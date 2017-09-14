@@ -32,19 +32,37 @@ import com.github.shynixn.petblocks.api.persistence.entity.PetMeta;
  * SOFTWARE.
  */
 public interface PetMetaController extends IDatabaseController<PetMeta> {
+
+    /**
+     * Creates a petMeta for the given player
+     *
+     * @param player player
+     * @return petMeta
+     */
+    PetMeta create(Object player);
+
     /**
      * Returns the petdata from the given player
+     *
      * @param player player
-     * @param <T> type
+     * @param <T>    type
      * @return petData
      */
     <T> PetMeta getByPlayer(T player);
 
     /**
      * Checks if the player has got an entry in the database
+     *
      * @param player player
-     * @param <T> type
+     * @param <T>    type
      * @return hasEntry
      */
     <T> boolean hasEntry(T player);
+
+    /**
+     * Removes the petMeta of the given player
+     *
+     * @param player player
+     */
+    void removeByPlayer(Object player);
 }

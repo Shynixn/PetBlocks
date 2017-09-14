@@ -1,25 +1,15 @@
-package com.github.shynixn.petblocks.business.logic.business;
+package com.github.shynixn.petblocks.business.logic.business.filter;
 
-import com.github.shynixn.petblocks.api.business.controller.PetBlockController;
-import com.github.shynixn.petblocks.api.persistence.controller.PetMetaController;
-import com.github.shynixn.petblocks.business.bukkit.nms.NMSRegistry;
-import com.github.shynixn.petblocks.business.logic.Factory;
-import com.github.shynixn.petblocks.business.logic.business.commandexecutor.PetBlockCommandExecutor;
-import com.github.shynixn.petblocks.business.logic.business.commandexecutor.PetBlockReloadCommandExecutor;
-import com.github.shynixn.petblocks.business.logic.business.commandexecutor.PetDataCommandExecutor;
-import com.github.shynixn.petblocks.business.logic.business.entity.GuiPageContainer;
-import com.github.shynixn.petblocks.business.logic.business.filter.PetBlockFilter;
-import com.github.shynixn.petblocks.business.logic.business.listener.PetBlockListener;
-import com.github.shynixn.petblocks.business.logic.business.listener.PetDataListener;
-import org.bukkit.entity.Player;
-import org.bukkit.inventory.Inventory;
-import org.bukkit.plugin.Plugin;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Marker;
+import org.apache.logging.log4j.core.Filter;
+import org.apache.logging.log4j.core.LifeCycle;
+import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.Logger;
+import org.apache.logging.log4j.message.Message;
 
 import java.io.Closeable;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
 
 /**
  * Copyright 2017 Shynixn
@@ -50,46 +40,121 @@ import java.util.Set;
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-public class PetBlockManager implements AutoCloseable {
+public class PetBlockFilter implements Filter, AutoCloseable, LifeCycle {
 
-    Plugin plugin;
-    public Set<Player> carryingPet = new HashSet<>();
-    public Map<Player, Integer> timeBlocked = new HashMap<>();
-    public Set<Player> headDatabasePlayers = new HashSet<>();
-    public Map<Player, Inventory> inventories = new HashMap<>();
-    public Map<Player, GuiPageContainer> pages = new HashMap<>();
-    public GUI gui;
+    private boolean started;
 
-    private PetBlockFilter filter;
-    private final PetBlockController petBlockController;
-    private final PetMetaController petMetaController;
-
-    public PetBlockManager(Plugin plugin) {
+    /**
+     * Initializes a new filter
+     */
+    private PetBlockFilter() {
         super();
-        this.plugin = plugin;
+    }
 
-        Factory.initialize(plugin);
-        this.petBlockController = Factory.createPetBlockController();
-        this.petMetaController = Factory.createPetDataController();
-        try {
-            new PetDataCommandExecutor(this);
-            new PetBlockCommandExecutor(this);
-            new PetBlockReloadCommandExecutor(plugin);
-            new PetDataListener(this, plugin);
-            new PetBlockListener(this, plugin);
-            this.filter = PetBlockFilter.create();
+    /**
+     * Ignore
+     *
+     * @return result
+     */
+    @Override
+    public Result getOnMismatch() {
+        return null;
+    }
 
-        } catch (Exception e) {
-            e.printStackTrace();
+    /**
+     * Ignore
+     *
+     * @return result
+     */
+    @Override
+    public Result getOnMatch() {
+        return null;
+    }
+
+    /**
+     * Ignore
+     *
+     * @return result
+     */
+    @Override
+    public Result filter(Logger logger, Level level, Marker marker, String s, Object... objects) {
+        return null;
+    }
+
+    /**
+     * Ignore
+     *
+     * @return result
+     */
+    @Override
+    public Result filter(Logger logger, Level level, Marker marker, Object o, Throwable throwable) {
+        return null;
+    }
+
+    /**
+     * Ignore
+     *
+     * @return result
+     */
+    @Override
+    public Result filter(Logger logger, Level level, Marker marker, Message message, Throwable throwable) {
+        return null;
+    }
+
+    /**
+     * Result filtering as PetBlocks manages these error messages after it gets loaded. Bukkit unfortunately prints these
+     * messages before PetBlocks can clean up the server so it's ok to filter this messages.
+     *
+     * @return result
+     */
+    @Override
+    public Result filter(LogEvent event) {
+        if (event.getMessage().toString().contains("Wrong location for CustomRabbit")
+                || event.getMessage().toString().contains("Wrong location for CustomGroundArmorstand")
+                || event.getMessage().toString().contains("but was stored in chunk")
+                || event.getMessage().toString().contains("Attempted Double World add on CustomGroundArmorstand")
+                || event.getMessage().toString().contains("Attempted Double World add on CustomRabbit")) {
+            return Result.DENY;
         }
+        return null;
     }
 
-    public PetBlockController getPetBlockController() {
-        return this.petBlockController;
+    /**
+     * LifeCycle start
+     */
+    @Override
+    public void start() {
+        this.started = true;
     }
 
-    public PetMetaController getPetMetaController() {
-        return this.petMetaController;
+    /**
+     * LifeCycle stop
+     */
+    @Override
+    public void stop() {
+        this.started = false;
+    }
+
+    /**
+     * Is started LifeCycler
+     *
+     * @return started
+     */
+    @Override
+    public boolean isStarted() {
+        return this.started;
+    }
+
+    /**
+     * Creates a new logger
+     *
+     * @return logger
+     */
+    public static PetBlockFilter create() {
+        final PetBlockFilter petBlockFilter = new PetBlockFilter();
+        petBlockFilter.start();
+        ((org.apache.logging.log4j.core.Logger) LogManager.getRootLogger()).addFilter(petBlockFilter);
+        return petBlockFilter;
     }
 
     /**
@@ -139,10 +204,6 @@ public class PetBlockManager implements AutoCloseable {
      */
     @Override
     public void close() throws Exception {
-        for (final Player player : this.carryingPet) {
-            NMSRegistry.setItemInHand19(player, null, true);
-        }
-        this.filter.close();
-        this.carryingPet.clear();
+        ((org.apache.logging.log4j.core.Logger) LogManager.getRootLogger()).getContext().removeFilter(this);
     }
 }

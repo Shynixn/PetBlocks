@@ -1,4 +1,4 @@
-package com.github.shynixn.petblocks.business.logic.business;
+package com.github.shynixn.petblocks.business.logic.business.listener;
 
 import com.github.shynixn.petblocks.api.PetBlocksApi;
 import com.github.shynixn.petblocks.api.bukkit.event.PetBlockMoveEvent;
@@ -7,9 +7,11 @@ import com.github.shynixn.petblocks.api.business.entity.PetBlock;
 import com.github.shynixn.petblocks.api.persistence.entity.ParticleEffectMeta;
 import com.github.shynixn.petblocks.api.persistence.entity.PetMeta;
 import com.github.shynixn.petblocks.api.persistence.entity.SoundMeta;
+import com.github.shynixn.petblocks.business.logic.business.PetBlockManager;
 import com.github.shynixn.petblocks.business.bukkit.nms.NMSRegistry;
-import com.github.shynixn.petblocks.business.logic.configuration.Config;
-import com.github.shynixn.petblocks.business.logic.configuration.ConfigPet;
+import com.github.shynixn.petblocks.business.logic.business.configuration.Config;
+import com.github.shynixn.petblocks.business.logic.business.configuration.ConfigPet;
+import com.github.shynixn.petblocks.business.logic.business.PetRunnable;
 import com.github.shynixn.petblocks.business.logic.persistence.entity.ParticleEffectData;
 import com.github.shynixn.petblocks.business.logic.persistence.entity.SoundBuilder;
 import com.github.shynixn.petblocks.lib.SimpleListener;
@@ -34,7 +36,7 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.regex.Pattern;
 
-class PetBlockListener extends SimpleListener {
+public class PetBlockListener extends SimpleListener {
     private final PetBlockManager manager;
     private final Set<PetBlock> jumped = new HashSet<>();
 
@@ -47,7 +49,7 @@ class PetBlockListener extends SimpleListener {
             .setSpeed(0.1)
             .setAmount(20);
 
-    PetBlockListener(PetBlockManager manager, Plugin plugin) {
+    public PetBlockListener(PetBlockManager manager, Plugin plugin) {
         super(plugin);
         this.manager = manager;
         NMSRegistry.registerListener19(manager.carryingPet, plugin);
@@ -112,7 +114,7 @@ class PetBlockListener extends SimpleListener {
     @EventHandler
     public void onEntityToggleSneakEvent(final PlayerToggleSneakEvent event) {
         final PetBlock petBlock;
-        if (event.getPlayer().getPassenger() != null && this.isPet(event.getPlayer().getPassenger()) && (petBlock = this.manager.getByPlayer(event.getPlayer())) != null) {
+        if (event.getPlayer().getPassenger() != null && this.isPet(event.getPlayer().getPassenger()) && (petBlock = this.manager.getPetBlockController().getByPlayer(event.getPlayer())) != null) {
             petBlock.eject(event.getPlayer());
         }
     }
@@ -133,12 +135,12 @@ class PetBlockListener extends SimpleListener {
             }
         }
         if (ConfigPet.getInstance().isFleesInCombat()) {
-            if (event.getDamager() instanceof Player && this.manager.getByPlayer(event.getDamager()) != null) {
+            if (event.getDamager() instanceof Player && this.manager.getPetBlockController().getByPlayer(event.getDamager()) != null) {
                 this.manager.timeBlocked.put((Player) event.getDamager(), ConfigPet.getInstance().getReappearsInSeconds());
-                this.manager.removeByPlayer(event.getDamager());
-            } else if (event.getEntity() instanceof Player && this.manager.getByPlayer(event.getEntity()) != null) {
+                this.manager.getPetBlockController().removeByPlayer(event.getDamager());
+            } else if (event.getEntity() instanceof Player && this.manager.getPetBlockController().getByPlayer(event.getEntity()) != null) {
                 this.manager.timeBlocked.put((Player) event.getEntity(), ConfigPet.getInstance().getReappearsInSeconds());
-                this.manager.removeByPlayer(event.getEntity());
+                this.manager.getPetBlockController().removeByPlayer(event.getEntity());
             }
         }
     }
@@ -152,25 +154,25 @@ class PetBlockListener extends SimpleListener {
 
     @EventHandler
     public void onPlayerTeleportEvent(final PlayerTeleportEvent event) {
-        if (this.manager.getByPlayer(event.getPlayer()) != null) {
+        if (this.manager.getPetBlockController().getByPlayer(event.getPlayer()) != null) {
             if (!event.getTo().getWorld().getName().equals(event.getFrom().getWorld().getName())) {
-                this.manager.removeByPlayer(event.getPlayer());
+                this.manager.getPetBlockController().removeByPlayer(event.getPlayer());
                 if (Config.getInstance().allowPetSpawning(event.getTo())) {
                     this.providePet(event.getPlayer(), (petMeta, petBlock) -> {
                         Bukkit.getServer().getScheduler().runTaskLater(this.plugin, () -> {
-                            final PetBlock petBlock1 = this.manager.create(event.getPlayer(), petMeta);
-                            this.manager.store(petBlock1);
+                            final PetBlock petBlock1 = this.manager.getPetBlockController().create(event.getPlayer(), petMeta);
+                            this.manager.getPetBlockController().store(petBlock1);
                         }, ConfigPet.getInstance().getWarpDelay() * 20L);
                     });
                 }
             } else if (event.getPlayer().getPassenger() != null && this.isPet(event.getPlayer().getPassenger())) {
                 if (!ConfigPet.getInstance().isFollow_fallOffHead()) {
-                    final PetBlock petBlock = this.manager.getByPlayer(event.getPlayer());
+                    final PetBlock petBlock = this.manager.getPetBlockController().getByPlayer(event.getPlayer());
                     if (petBlock != null)
                         petBlock.teleportWithOwner(event.getTo());
                     event.setCancelled(true);
                 } else {
-                    final PetBlock petBlock = this.manager.getByPlayer(event.getPlayer());
+                    final PetBlock petBlock = this.manager.getPetBlockController().getByPlayer(event.getPlayer());
                     if (petBlock != null)
                         petBlock.eject(event.getPlayer());
                 }
@@ -180,12 +182,12 @@ class PetBlockListener extends SimpleListener {
 
     @EventHandler
     public void onPlayerRespawnEvent(final PlayerRespawnEvent event) {
-        if (this.manager.getByPlayer(event.getPlayer()) != null) {
-            this.manager.remove(this.manager.getByPlayer(event.getPlayer()));
+        if (this.manager.getPetBlockController().getByPlayer(event.getPlayer()) != null) {
+            this.manager.getPetBlockController().remove(this.manager.getPetBlockController().getByPlayer(event.getPlayer()));
             this.plugin.getServer().getScheduler().runTaskLater(this.plugin, () -> this.providePet(event.getPlayer(), (petMeta, petBlock) -> {
                 Bukkit.getServer().getScheduler().runTaskLater(this.plugin, () -> {
-                    final PetBlock petBlock1 = this.manager.create(event.getPlayer(), petMeta);
-                    this.manager.store(petBlock1);
+                    final PetBlock petBlock1 = this.manager.getPetBlockController().create(event.getPlayer(), petMeta);
+                    this.manager.getPetBlockController().store(petBlock1);
                 }, ConfigPet.getInstance().getWarpDelay() * 20L);
             }), 60L);
         }
@@ -215,8 +217,8 @@ class PetBlockListener extends SimpleListener {
     public void entityRightClickEvent(final PlayerInteractAtEntityEvent event) {
         if (this.manager.carryingPet.contains(event.getPlayer())) {
             NMSRegistry.setItemInHand19(event.getPlayer(), null, true);
-            if (this.manager.getByPlayer(event.getPlayer()) != null)
-                this.manager.petblocks.remove(event.getPlayer());
+            if (this.manager.getPetBlockController().getByPlayer(event.getPlayer()) != null)
+                this.manager.getPetBlockController().removeByPlayer(event.getPlayer());
             event.setCancelled(true);
         } else if (this.isPet(event.getRightClicked())) {
             final PetBlock petBlock = this.getPet(event.getRightClicked());
@@ -240,7 +242,7 @@ class PetBlockListener extends SimpleListener {
                 }
                 if (ConfigPet.getInstance().isFollow_carry() && (event.getPlayer().getInventory() == null || NMSRegistry.getItemInHand19(event.getPlayer(), true).getType() == Material.AIR)) {
                     NMSRegistry.setItemInHand19(event.getPlayer(), ((ArmorStand) petBlock.getArmorStand()).getHelmet().clone(), true);
-                    this.manager.remove(petBlock);
+                    this.manager.getPetBlockController().remove(petBlock);
                     this.manager.carryingPet.add(event.getPlayer());
                 }
             }
@@ -336,7 +338,7 @@ class PetBlockListener extends SimpleListener {
 
     private PetBlock getPet(Entity entity) {
         try {
-            for (final PetBlock block : this.manager.petblocks.values()) {
+            for (final PetBlock block : this.manager.getPetBlockController().getAll()) {
                 if (block != null && entity != null && block.getArmorStand() != null && block.getEngineEntity() != null && (block.getArmorStand().equals(entity) || block.getEngineEntity().equals(entity)))
                     return block;
             }
@@ -355,13 +357,13 @@ class PetBlockListener extends SimpleListener {
             for (final Player player : PetBlockListener.this.manager.carryingPet.toArray(new Player[PetBlockListener.this.manager.carryingPet.size()])) {
                 PetBlockListener.this.heartParticles.apply(player.getLocation().add(0, 1, 0), player.getWorld().getPlayers());
             }
-            for (final Player player : PetBlockListener.this.manager.petblocks.keySet().toArray(new Player[PetBlockListener.this.manager.petblocks.size()])) {
-                if (PetBlockListener.this.manager.petblocks.get(player).isDead() || !Config.getInstance().allowPetSpawning(player.getLocation())) {
-                    PetBlockListener.this.manager.remove(PetBlockListener.this.manager.getByPlayer(player));
-                    if (player.isOnline() && Config.getInstance().allowPetSpawning(player.getLocation())) {
+            for (final PetBlock petBlock : manager.getPetBlockController().getAll()) {
+                if (petBlock.isDead() || !Config.getInstance().allowPetSpawning(((Player)petBlock.getPlayer()).getLocation())) {
+                    PetBlockListener.this.manager.getPetBlockController().remove(petBlock);
+                    if (((Player)petBlock.getPlayer()).isOnline() && Config.getInstance().allowPetSpawning(((Player)petBlock.getPlayer()).getLocation())) {
                         PetBlockListener.this.plugin.getServer().getScheduler().runTaskAsynchronously(PetBlockListener.this.plugin, () -> {
-                            final PetMeta petMeta = PetBlockListener.this.manager.dataManager.getPetMeta(player);
-                            PetBlockListener.this.plugin.getServer().getScheduler().runTask(PetBlockListener.this.plugin, () -> PetBlockListener.this.setPetBlock(player, petMeta));
+                            final PetMeta petMeta = PetBlockListener.this.manager.getPetMetaController().getByPlayer(petBlock.getPlayer());
+                            PetBlockListener.this.plugin.getServer().getScheduler().runTask(PetBlockListener.this.plugin, () -> PetBlockListener.this.setPetBlock((Player) petBlock.getPlayer(), petMeta));
                         });
                     }
 
@@ -404,24 +406,19 @@ class PetBlockListener extends SimpleListener {
     }
 
     private void setPetBlock(Player player, PetMeta petMeta) {
-        final PetBlock petBlock = this.manager.create(player, petMeta);
-        this.manager.store(petBlock);
+        final PetBlock petBlock = this.manager.getPetBlockController().create(player, petMeta);
+        this.manager.getPetBlockController().store(petBlock);
     }
 
     private void providePet(Player player, PetRunnable runnable) {
         final PetBlock petBlock;
-        if ((petBlock = this.manager.getByPlayer(player)) != null) {
+        if ((petBlock = this.manager.getPetBlockController().getByPlayer(player)) != null) {
             runnable.run(petBlock.getMeta(), petBlock);
         } else {
             this.plugin.getServer().getScheduler().runTaskAsynchronously(this.plugin, () -> {
-                final PetMeta petMeta = this.manager.dataManager.getPetMeta(player);
+                final PetMeta petMeta = this.manager.getPetMetaController().getByPlayer(player);
                 this.plugin.getServer().getScheduler().runTask(this.plugin, () -> runnable.run(petMeta, null));
             });
         }
-    }
-
-    @FunctionalInterface
-    interface PetRunnable {
-        void run(PetMeta petMeta, PetBlock petBlock);
     }
 }

@@ -4,7 +4,7 @@ import com.github.shynixn.petblocks.api.persistence.controller.ParticleEffectMet
 import com.github.shynixn.petblocks.api.persistence.controller.PetMetaController;
 import com.github.shynixn.petblocks.api.persistence.entity.ParticleEffectMeta;
 import com.github.shynixn.petblocks.api.persistence.entity.PetMeta;
-import com.github.shynixn.petblocks.business.logic.persistence.Factory;
+import com.github.shynixn.petblocks.business.logic.Factory;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Server;

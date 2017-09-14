@@ -1,4 +1,4 @@
-package com.github.shynixn.petblocks.business.logic.configuration;
+package com.github.shynixn.petblocks.business.logic.business.configuration;
 
 import com.github.shynixn.petblocks.business.bukkit.PetBlocksPlugin;
 import org.bukkit.ChatColor;

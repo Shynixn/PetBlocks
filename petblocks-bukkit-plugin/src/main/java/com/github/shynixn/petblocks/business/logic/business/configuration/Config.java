@@ -1,10 +1,9 @@
-package com.github.shynixn.petblocks.business.logic.configuration;
+package com.github.shynixn.petblocks.business.logic.business.configuration;
 
-import com.github.shynixn.petblocks.api.business.entity.GUIItemContainer;
 import com.github.shynixn.petblocks.api.persistence.controller.*;
 import com.github.shynixn.petblocks.api.persistence.entity.ParticleEffectMeta;
 import com.github.shynixn.petblocks.api.persistence.entity.PetMeta;
-import com.github.shynixn.petblocks.business.logic.persistence.Factory;
+import com.github.shynixn.petblocks.business.logic.Factory;
 import com.github.shynixn.petblocks.business.logic.persistence.entity.ParticleEffectData;
 import com.github.shynixn.petblocks.business.logic.persistence.entity.PetData;
 import org.bukkit.Bukkit;
@@ -201,9 +200,9 @@ public final class Config extends SimpleConfig {
 
     public void fixJoinDefaultPet(PetMeta petData) {
         final PetData petMeta = (PetData) petData;
-        petMeta.setSkin(Material.getMaterial((Integer) this.getData("join.settings.id")), (short) (int) this.getData("join.settings.durability"), this.getData("join.settings.skullname"));
+        petMeta.setSkin(this.getData("join.settings.id"), (short) (int) this.getData("join.settings.damage"), this.getData("join.settings.skin"), this.getData("unbreakable"));
         petMeta.setEngine(this.engineController.getById(this.getData("join.settings.engine")));
-        petMeta.setDisplayName(this.getData("join.settings.petname"));
+        petMeta.setPetDisplayName(this.getData("join.settings.petname"));
         petMeta.setEnabled(this.getData("join.settings.enabled"));
         petMeta.setAge(this.getData("join.settings.age"));
         if (!((String) this.getData("join.settings.particle.name")).equalsIgnoreCase("none")) {

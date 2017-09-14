@@ -1,19 +1,18 @@
-package com.github.shynixn.petblocks.business.logic.configuration;
+package com.github.shynixn.petblocks.business.logic.business.configuration;
 
 import com.github.shynixn.petblocks.api.business.entity.GUIItemContainer;
-import com.github.shynixn.petblocks.api.persistence.controller.IFileController;
-import com.github.shynixn.petblocks.api.persistence.controller.ParticleController;
-import com.github.shynixn.petblocks.api.persistence.entity.EngineContainer;
-import com.github.shynixn.petblocks.api.persistence.entity.ParticleEffectMeta;
-import com.github.shynixn.petblocks.business.logic.persistence.entity.EngineData;
-import com.github.shynixn.petblocks.business.logic.persistence.entity.ParticleEffectData;
+import com.github.shynixn.petblocks.api.persistence.controller.OtherGUIItemsController;
+import com.github.shynixn.petblocks.business.logic.business.entity.ItemContainer;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.MemorySection;
-import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 
 import java.io.Closeable;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 
 /**
@@ -45,17 +44,17 @@ import java.util.logging.Level;
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-public class ParticleConfiguration implements ParticleController {
+public class FixedItemConfiguration implements OtherGUIItemsController {
 
     private Plugin plugin;
-    private final Map<GUIItemContainer, ParticleEffectMeta> particleCache = new HashMap<>();
+    private final Map<String, GUIItemContainer> items = new HashMap<>();
 
     /**
      * Initializes a new engine repository
      *
      * @param plugin plugin
      */
-    public ParticleConfiguration(Plugin plugin) {
+    public FixedItemConfiguration(Plugin plugin) {
         if (plugin == null)
             throw new IllegalArgumentException("Plugin cannot be null!");
         this.plugin = plugin;
@@ -68,7 +67,7 @@ public class ParticleConfiguration implements ParticleController {
      */
     @Override
     public void store(GUIItemContainer item) {
-        throw new RuntimeException("Not implemented!");
+        throw new RuntimeException("Not implemented");
     }
 
     /**
@@ -78,9 +77,7 @@ public class ParticleConfiguration implements ParticleController {
      */
     @Override
     public void remove(GUIItemContainer item) {
-        if (this.particleCache.containsKey(item)) {
-            this.particleCache.remove(item);
-        }
+        throw new RuntimeException("Not implemented");
     }
 
     /**
@@ -90,7 +87,7 @@ public class ParticleConfiguration implements ParticleController {
      */
     @Override
     public int size() {
-        return this.particleCache.size();
+        return this.items.size();
     }
 
     /**
@@ -100,30 +97,7 @@ public class ParticleConfiguration implements ParticleController {
      */
     @Override
     public List<GUIItemContainer> getAll() {
-        return new ArrayList<>(this.particleCache.keySet());
-    }
-
-
-    /**
-     * Returns the container by the given order id
-     *
-     * @param id id
-     * @return container
-     */
-    @Override
-    public GUIItemContainer getContainerByPosition(int id) {
-        return null;
-    }
-
-    /**
-     * Returns the particleEffect by the given container
-     *
-     * @param container container
-     * @return particleEffect
-     */
-    @Override
-    public ParticleEffectMeta getByItem(GUIItemContainer container) {
-        return null;
+        return new ArrayList<>(this.items.values());
     }
 
     /**
@@ -131,18 +105,47 @@ public class ParticleConfiguration implements ParticleController {
      */
     @Override
     public void reload() {
-        this.particleCache.clear();
+        this.items.clear();
         this.plugin.reloadConfig();
-        final Map<String, Object> data = ((MemorySection) this.plugin.getConfig().get("particles")).getValues(false);
+        final Map<String, Object> data = ((MemorySection) this.plugin.getConfig().get("gui.items")).getValues(false);
         for (final String key : data.keySet()) {
             try {
-                final GUIItemContainer container = new ItemContainer(Integer.parseInt(key), ((MemorySection) data.get(key)).getValues(false));
-                final ParticleEffectMeta meta = new ParticleEffectData(((MemorySection) data.get("effect")).getValues(false));
-                this.particleCache.put(container, meta);
+                final GUIItemContainer container = new ItemContainer(0, ((MemorySection) data.get(key)).getValues(false));
+                this.items.put(key, container);
             } catch (final Exception e) {
-                Bukkit.getLogger().log(Level.WARNING, "Failed to load particle " + key + ".");
+                Bukkit.getLogger().log(Level.WARNING, "Failed to load guiItem " + key + ".");
             }
         }
+    }
+
+    /**
+     * Returns the guiItem by the given name
+     *
+     * @param name name
+     * @return item
+     */
+    @Override
+    public GUIItemContainer getGUIItemByName(String name) {
+        if (this.items.containsKey(name))
+            return this.items.get(name);
+        return null;
+    }
+
+    /**
+     * Returns if the given itemStack is a guiItemStack with the given name
+     *
+     * @param itemStack itemStack
+     * @param name      name
+     * @return itemStack
+     */
+    @Override
+    public boolean isGUIItem(Object itemStack, String name) {
+        if (itemStack == null || name == null)
+            return false;
+        final ItemStack mItemStack = (ItemStack) itemStack;
+        return mItemStack.getItemMeta() != null
+                && mItemStack.getItemMeta().getDisplayName() != null
+                && mItemStack.getItemMeta().getDisplayName().equalsIgnoreCase(name);
     }
 
     /**
@@ -193,6 +196,6 @@ public class ParticleConfiguration implements ParticleController {
     @Override
     public void close() throws Exception {
         this.plugin = null;
-        this.particleCache.clear();
+        this.items.clear();
     }
 }

@@ -1,19 +1,16 @@
-package com.github.shynixn.petblocks.business.logic.configuration;
+package com.github.shynixn.petblocks.business.logic.business.configuration;
 
-import com.github.shynixn.petblocks.api.persistence.controller.EngineController;
-import com.github.shynixn.petblocks.api.persistence.controller.IController;
-import com.github.shynixn.petblocks.api.persistence.controller.IFileController;
-import com.github.shynixn.petblocks.api.persistence.entity.EngineContainer;
-import com.github.shynixn.petblocks.business.logic.persistence.entity.EngineData;
+import com.github.shynixn.petblocks.api.business.entity.GUIItemContainer;
+import com.github.shynixn.petblocks.api.persistence.controller.ParticleController;
+import com.github.shynixn.petblocks.api.persistence.entity.ParticleEffectMeta;
+import com.github.shynixn.petblocks.business.logic.business.entity.ItemContainer;
+import com.github.shynixn.petblocks.business.logic.persistence.entity.ParticleEffectData;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.MemorySection;
 import org.bukkit.plugin.Plugin;
 
 import java.io.Closeable;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.logging.Level;
 
 /**
@@ -45,17 +42,17 @@ import java.util.logging.Level;
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-public class EngineConfiguration implements EngineController {
+public class ParticleConfiguration implements ParticleController {
 
     private Plugin plugin;
-    private final List<EngineContainer> engineContainers = new ArrayList<>();
+    private final Map<GUIItemContainer, ParticleEffectMeta> particleCache = new HashMap<>();
 
     /**
      * Initializes a new engine repository
      *
      * @param plugin plugin
      */
-    public EngineConfiguration(Plugin plugin) {
+    public ParticleConfiguration(Plugin plugin) {
         if (plugin == null)
             throw new IllegalArgumentException("Plugin cannot be null!");
         this.plugin = plugin;
@@ -67,10 +64,8 @@ public class EngineConfiguration implements EngineController {
      * @param item item
      */
     @Override
-    public void store(EngineContainer item) {
-        if (item != null && !this.engineContainers.contains(item)) {
-            this.engineContainers.add(item);
-        }
+    public void store(GUIItemContainer item) {
+        throw new RuntimeException("Not implemented!");
     }
 
     /**
@@ -79,9 +74,9 @@ public class EngineConfiguration implements EngineController {
      * @param item item
      */
     @Override
-    public void remove(EngineContainer item) {
-        if (this.engineContainers.contains(item)) {
-            this.engineContainers.remove(item);
+    public void remove(GUIItemContainer item) {
+        if (this.particleCache.containsKey(item)) {
+            this.particleCache.remove(item);
         }
     }
 
@@ -92,7 +87,7 @@ public class EngineConfiguration implements EngineController {
      */
     @Override
     public int size() {
-        return this.engineContainers.size();
+        return this.particleCache.size();
     }
 
     /**
@@ -101,23 +96,30 @@ public class EngineConfiguration implements EngineController {
      * @return items
      */
     @Override
-    public List<EngineContainer> getAll() {
-        return Collections.unmodifiableList(this.engineContainers);
+    public List<GUIItemContainer> getAll() {
+        return new ArrayList<>(this.particleCache.keySet());
+    }
+
+
+    /**
+     * Returns the container by the given order id
+     *
+     * @param id id
+     * @return container
+     */
+    @Override
+    public GUIItemContainer getContainerByPosition(int id) {
+        return null;
     }
 
     /**
-     * Returns the engineContainer with the given id
+     * Returns the particleEffect by the given container
      *
-     * @param id id
-     * @return engineContainer
+     * @param container container
+     * @return particleEffect
      */
     @Override
-    public EngineContainer getById(int id) {
-        for (final EngineContainer container : this.engineContainers) {
-            if (container.getId() == id) {
-                return container;
-            }
-        }
+    public ParticleEffectMeta getByItem(GUIItemContainer container) {
         return null;
     }
 
@@ -126,15 +128,16 @@ public class EngineConfiguration implements EngineController {
      */
     @Override
     public void reload() {
-        this.engineContainers.clear();
+        this.particleCache.clear();
         this.plugin.reloadConfig();
-        final Map<String, Object> data = ((MemorySection) this.plugin.getConfig().get("engine")).getValues(false);
+        final Map<String, Object> data = ((MemorySection) this.plugin.getConfig().get("particles")).getValues(false);
         for (final String key : data.keySet()) {
-            final Map<String, Object> content = ((MemorySection) this.plugin.getConfig().get("engine." + key)).getValues(true);
             try {
-                this.engineContainers.add(new EngineData(Long.parseLong(key), content));
+                final GUIItemContainer container = new ItemContainer(Integer.parseInt(key), ((MemorySection) data.get(key)).getValues(false));
+                final ParticleEffectMeta meta = new ParticleEffectData(((MemorySection) data.get("effect")).getValues(false));
+                this.particleCache.put(container, meta);
             } catch (final Exception e) {
-                Bukkit.getLogger().log(Level.WARNING, "Failed to add content " + key + ".");
+                Bukkit.getLogger().log(Level.WARNING, "Failed to load particle " + key + ".");
             }
         }
     }
@@ -187,6 +190,6 @@ public class EngineConfiguration implements EngineController {
     @Override
     public void close() throws Exception {
         this.plugin = null;
-        this.engineContainers.clear();
+        this.particleCache.clear();
     }
 }

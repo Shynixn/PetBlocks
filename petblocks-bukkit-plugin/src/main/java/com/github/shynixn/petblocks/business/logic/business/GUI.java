@@ -3,8 +3,9 @@ package com.github.shynixn.petblocks.business.logic.business;
 import com.github.shynixn.petblocks.api.business.entity.GUIItemContainer;
 import com.github.shynixn.petblocks.api.business.enumeration.GUIPage;
 import com.github.shynixn.petblocks.api.persistence.entity.PetMeta;
-import com.github.shynixn.petblocks.business.logic.configuration.Config;
+import com.github.shynixn.petblocks.business.logic.business.configuration.Config;
 import com.github.shynixn.petblocks.business.bukkit.PetBlocksPlugin;
+import com.github.shynixn.petblocks.business.logic.business.entity.GuiPageContainer;
 import com.github.shynixn.petblocks.lib.ChatBuilder;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -16,15 +17,15 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.List;
 
-class GUI {
-    private final PetDataManager manager;
+public class GUI {
+    private final PetBlockManager manager;
 
     /**
      * Initializes a new gui
      *
      * @param manager manager
      */
-    GUI(PetDataManager manager) {
+    GUI(PetBlockManager manager) {
         super();
         this.manager = manager;
     }
@@ -34,7 +35,7 @@ class GUI {
      *
      * @param player player
      */
-    void open(Player player) {
+    public void open(Player player) {
         if (!this.manager.inventories.containsKey(player)) {
             if (player.getOpenInventory() != null) {
                 player.closeInventory();
@@ -48,7 +49,7 @@ class GUI {
         }
     }
 
-    void setPage(Player player, GUIPage page, PetMeta petMeta) {
+    public void setPage(Player player, GUIPage page, PetMeta petMeta) {
         if (!this.manager.inventories.containsKey(player)) {
             return;
         }
@@ -69,12 +70,12 @@ class GUI {
         player.updateInventory();
     }
 
-   void moveSubPage(Player player, int page)
+   public void moveSubPage(Player player, int page)
    {
 
    }
 
-   void backPage(Player player)
+   public void backPage(Player player)
    {
 
    }
@@ -165,18 +166,7 @@ class GUI {
         }
     }
 
-    static class GuiPageContainer {
-        GUIPage previousPage;
-        GUIPage page;
-        int startCount;
-        GuiPageContainer next;
 
-        GuiPageContainer(GUIPage page, GUIPage previousPage) {
-            super();
-            this.page = page;
-            this.previousPage = previousPage;
-        }
-    }
 
     private Inventory costumePreparation(Player player) {
         this.clearInventory(this.manager.inventories.get(player));

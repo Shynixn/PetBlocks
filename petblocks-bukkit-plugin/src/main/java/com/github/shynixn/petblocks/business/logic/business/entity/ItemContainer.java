@@ -1,10 +1,10 @@
-package com.github.shynixn.petblocks.business.logic.configuration;
+package com.github.shynixn.petblocks.business.logic.business.entity;
 
 import com.github.shynixn.petblocks.api.business.entity.GUIItemContainer;
 import com.github.shynixn.petblocks.api.business.enumeration.GUIPage;
 import com.github.shynixn.petblocks.business.bukkit.PetBlocksPlugin;
+import com.github.shynixn.petblocks.business.logic.business.configuration.Config;
 import com.github.shynixn.petblocks.business.bukkit.nms.NMSRegistry;
-import com.github.shynixn.petblocks.business.logic.configuration.Config;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -55,26 +55,27 @@ public class ItemContainer implements GUIItemContainer {
 
     private boolean enabled;
     private int position = -1;
-    private final GUIPage page;
+    private GUIPage page;
     private final int id;
     private final int damage;
     private final String skin;
     private final boolean unbreakable;
-    private final String name;
+    private String name;
     private final String[] lore;
 
     /**
      * Initializes a new itemContainer
-     * @param enabled enabled
-     * @param position position
-     * @param page page
-     * @param id id
-     * @param damage damage
-     * @param skin skin
+     *
+     * @param enabled     enabled
+     * @param position    position
+     * @param page        page
+     * @param id          id
+     * @param damage      damage
+     * @param skin        skin
      * @param unbreakable unbreakablöe
-     * @param name name
-     * @param lore lore
-     * */
+     * @param name        name
+     * @param lore        lore
+     */
     public ItemContainer(boolean enabled, int position, GUIPage page, int id, int damage, String skin, boolean unbreakable, String name, String[] lore) {
         this.enabled = enabled;
         this.position = position;
@@ -95,13 +96,21 @@ public class ItemContainer implements GUIItemContainer {
      */
     public ItemContainer(int orderNumber, Map<String, Object> data) throws Exception {
         this.position = orderNumber;
-        this.enabled = (boolean) data.get("enabled");
-        this.position = (int) data.get("position");
-        this.page = GUIPage.valueOf((String) data.get("page"));
+
+        for (String key : data.keySet()) {
+            System.out.println(key + " : " + data.get(key));
+        }
+        if (data.containsKey("enabled"))
+            this.enabled = (boolean) data.get("enabled");
+        if (data.containsKey("position"))
+            this.position = (int) data.get("position");
+        if(data.containsKey("page"))
+            this.page = GUIPage.valueOf((String) data.get("page"));
         this.id = (int) data.get("id");
         this.damage = (int) data.get("damage");
         this.skin = (String) data.get("skin");
-        this.name = ChatColor.translateAlternateColorCodes('&', (String) data.get("name"));
+        if(data.containsKey("name"))
+            this.name = ChatColor.translateAlternateColorCodes('&', (String) data.get("name"));
         this.unbreakable = (boolean) data.get("unbreakable");
         final List<String> m = (List<String>) data.get("lore");
         this.lore = new String[m.size()];

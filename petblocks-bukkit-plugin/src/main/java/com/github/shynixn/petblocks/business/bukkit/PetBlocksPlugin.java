@@ -1,7 +1,10 @@
 package com.github.shynixn.petblocks.business.bukkit;
 
 import com.github.shynixn.petblocks.api.PetBlocksApi;
-import com.github.shynixn.petblocks.business.logic.configuration.Config;
+import com.github.shynixn.petblocks.api.business.controller.PetBlockController;
+import com.github.shynixn.petblocks.api.persistence.controller.PetMetaController;
+import com.github.shynixn.petblocks.business.logic.business.PetBlockManager;
+import com.github.shynixn.petblocks.business.logic.business.configuration.Config;
 import com.github.shynixn.petblocks.business.bukkit.nms.NMSRegistry;
 import com.github.shynixn.petblocks.business.bukkit.nms.VersionSupport;
 import com.github.shynixn.petblocks.business.metrics.Metrics;
@@ -9,7 +12,6 @@ import com.github.shynixn.petblocks.lib.ReflectionUtils;
 import com.github.shynixn.petblocks.lib.UpdateUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.IOException;
@@ -51,6 +53,8 @@ public final class PetBlocksPlugin extends JavaPlugin {
     private static final String PLUGIN_NAME = "PetBlocks";
     private boolean disabled;
 
+    private PetBlockManager petBlockManager;
+
     /**
      * Enables the plugin PetBlocks
      */
@@ -75,7 +79,8 @@ public final class PetBlocksPlugin extends JavaPlugin {
             });
             NMSRegistry.registerAll();
             try {
-                ReflectionUtils.invokeMethodByClass(PetBlocksApi.class, "init", new Class[]{Plugin.class}, new Object[]{this});
+                this.petBlockManager = new PetBlockManager(this);
+                ReflectionUtils.invokeMethodByClass(PetBlocksApi.class, "initialize", new Class[]{PetMetaController.class, PetBlockController.class}, new Object[]{petBlockManager.getPetMetaController(), petBlockManager.getPetBlockController()});
                 Bukkit.getServer().getConsoleSender().sendMessage(PREFIX_CONSOLE + ChatColor.GREEN + "Enabled PetBlocks " + this.getDescription().getVersion() + " by Shynixn");
             } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
                 Bukkit.getLogger().log(Level.WARNING, "Failed to enable plugin.", e);

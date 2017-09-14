@@ -1,17 +1,19 @@
-package com.github.shynixn.petblocks.business.logic.configuration;
+package com.github.shynixn.petblocks.business.logic.business.controller;
 
-import com.github.shynixn.petblocks.api.business.entity.GUIItemContainer;
-import com.github.shynixn.petblocks.api.persistence.controller.CostumeController;
+import com.github.shynixn.petblocks.api.bukkit.event.PetBlockDeathEvent;
+import com.github.shynixn.petblocks.api.business.controller.PetBlockController;
+import com.github.shynixn.petblocks.api.business.entity.PetBlock;
+import com.github.shynixn.petblocks.api.persistence.entity.PetMeta;
+import com.github.shynixn.petblocks.business.bukkit.nms.NMSRegistry;
 import org.bukkit.Bukkit;
-import org.bukkit.configuration.MemorySection;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
 import java.io.Closeable;
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
 
 /**
  * Copyright 2017 Shynixn
@@ -42,22 +44,44 @@ import java.util.logging.Level;
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-public class CostumeConfiguration implements CostumeController {
-
-    private Plugin plugin;
-    private final String costumeCategory;
-    final List<GUIItemContainer> items = new ArrayList<>();
+public final class PetBlockRepository implements PetBlockController {
+    private final Map<Player, PetBlock> petblocks = new HashMap<>();
 
     /**
-     * Initializes a new engine repository
+     * Creates a new petblock for the given player and meta
      *
-     * @param plugin plugin
+     * @param player  player
+     * @param petMeta meta
+     * @return petblock
      */
-    public CostumeConfiguration(String costumeCategory, Plugin plugin) {
-        if (plugin == null)
-            throw new IllegalArgumentException("Plugin cannot be null!");
-        this.plugin = plugin;
-        this.costumeCategory = costumeCategory;
+    @Override
+    public PetBlock create(Object player, PetMeta petMeta) {
+        final Player mPlayer = (Player) player;
+        return NMSRegistry.createPetBlock(mPlayer.getLocation(), petMeta);
+    }
+
+    /**
+     * Returns the petblock of the given player
+     *
+     * @param player player
+     * @return petblock
+     */
+    @Override
+    public PetBlock getByPlayer(Object player) {
+        if (this.petblocks.containsKey(player)) {
+            return this.petblocks.get(player);
+        }
+        return null;
+    }
+
+    /**
+     * Removes the petblock of the given player
+     *
+     * @param player player
+     */
+    @Override
+    public void removeByPlayer(Object player) {
+        this.remove(this.getByPlayer(player));
     }
 
     /**
@@ -66,11 +90,11 @@ public class CostumeConfiguration implements CostumeController {
      * @param item item
      */
     @Override
-    public void store(GUIItemContainer item) {
-        if (this.getContainerByPosition(item.getPosition()) != null) {
-            throw new IllegalArgumentException("Item at this position already exists!");
+    public void store(PetBlock item) {
+        final Player mPlayer = (Player) item.getPlayer();
+        if (!this.petblocks.containsKey(mPlayer)) {
+            this.petblocks.put(mPlayer, item);
         }
-        this.items.add(item);
     }
 
     /**
@@ -79,9 +103,15 @@ public class CostumeConfiguration implements CostumeController {
      * @param item item
      */
     @Override
-    public void remove(GUIItemContainer item) {
-        if (this.items.contains(item)) {
-            this.items.remove(item);
+    public void remove(PetBlock item) {
+        final Player player = (Player) item.getPlayer();
+        if (this.petblocks.containsKey(player)) {
+            final PetBlockDeathEvent event = new PetBlockDeathEvent(this.petblocks.get(player));
+            Bukkit.getPluginManager().callEvent(event);
+            if (!event.isCanceled()) {
+                this.petblocks.get(player).remove();
+                this.petblocks.remove(player);
+            }
         }
     }
 
@@ -92,7 +122,7 @@ public class CostumeConfiguration implements CostumeController {
      */
     @Override
     public int size() {
-        return this.items.size();
+        return this.petblocks.size();
     }
 
     /**
@@ -101,42 +131,8 @@ public class CostumeConfiguration implements CostumeController {
      * @return items
      */
     @Override
-    public List<GUIItemContainer> getAll() {
-        return Collections.unmodifiableList(this.items);
-    }
-
-    /**
-     * Reloads the content from the fileSystem
-     */
-    @Override
-    public void reload() {
-        this.items.clear();
-        this.plugin.reloadConfig();
-        final Map<String, Object> data = ((MemorySection) ((MemorySection) this.plugin.getConfig().get("wardrobe")).get(this.costumeCategory)).getValues(false);
-        for (final String key : data.keySet()) {
-            try {
-                final GUIItemContainer container = new ItemContainer(Integer.parseInt(key), ((MemorySection) data.get(key)).getValues(false));
-                this.items.add(container);
-            } catch (final Exception e) {
-                Bukkit.getLogger().log(Level.WARNING, "Failed to load guiItem " + this.costumeCategory + "." + key + ".");
-            }
-        }
-    }
-
-    /**
-     * Returns the container by the given order id
-     *
-     * @param position position
-     * @return container
-     */
-    @Override
-    public GUIItemContainer getContainerByPosition(int position) {
-        for (final GUIItemContainer guiItemContainer : this.items) {
-            if (guiItemContainer.getPosition() == position) {
-                return guiItemContainer;
-            }
-        }
-        return null;
+    public List<PetBlock> getAll() {
+        return new ArrayList<>(this.petblocks.values());
     }
 
     /**
@@ -186,7 +182,9 @@ public class CostumeConfiguration implements CostumeController {
      */
     @Override
     public void close() throws Exception {
-        this.plugin = null;
-        this.items.clear();
+        for (final Player player : this.petblocks.keySet()) {
+            this.petblocks.get(player).remove();
+        }
+        this.petblocks.clear();
     }
 }

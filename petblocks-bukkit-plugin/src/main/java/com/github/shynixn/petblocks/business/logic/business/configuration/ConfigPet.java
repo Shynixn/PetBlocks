@@ -1,4 +1,4 @@
-package com.github.shynixn.petblocks.business.logic.configuration;
+package com.github.shynixn.petblocks.business.logic.business.configuration;
 
 public class ConfigPet extends SimpleConfig {
     private static ConfigPet instance;

@@ -5,7 +5,7 @@ import com.github.shynixn.petblocks.api.business.enumeration.GUIPage;
 import com.github.shynixn.petblocks.api.business.enumeration.RideType;
 import com.github.shynixn.petblocks.api.persistence.entity.EngineContainer;
 import com.github.shynixn.petblocks.api.persistence.entity.SoundMeta;
-import com.github.shynixn.petblocks.business.logic.configuration.ItemContainer;
+import com.github.shynixn.petblocks.business.logic.business.entity.ItemContainer;
 import org.bukkit.configuration.MemorySection;
 
 import java.util.Map;

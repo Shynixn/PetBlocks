@@ -1,15 +1,16 @@
-package com.github.shynixn.petblocks.business.logic.business;
+package com.github.shynixn.petblocks.business.logic.business.listener;
 
 import com.github.shynixn.petblocks.api.PetBlocksApi;
 import com.github.shynixn.petblocks.api.business.entity.GUIItemContainer;
 import com.github.shynixn.petblocks.api.business.entity.PetBlock;
 import com.github.shynixn.petblocks.api.business.enumeration.GUIPage;
 import com.github.shynixn.petblocks.api.persistence.entity.PetMeta;
-import com.github.shynixn.petblocks.business.logic.configuration.Config;
-import com.github.shynixn.petblocks.business.logic.configuration.Permission;
+import com.github.shynixn.petblocks.business.logic.business.configuration.Config;
+import com.github.shynixn.petblocks.api.business.enumeration.Permission;
 import com.github.shynixn.petblocks.business.bukkit.PetBlocksPlugin;
+import com.github.shynixn.petblocks.business.logic.business.PetBlockManager;
 import com.github.shynixn.petblocks.business.bukkit.nms.NMSRegistry;
-import com.github.shynixn.petblocks.business.logic.configuration.ConfigPet;
+import com.github.shynixn.petblocks.business.logic.business.configuration.ConfigPet;
 import com.github.shynixn.petblocks.business.logic.persistence.entity.PetData;
 import com.github.shynixn.petblocks.lib.ChatBuilder;
 import com.github.shynixn.petblocks.lib.SimpleListener;
@@ -34,8 +35,8 @@ import org.bukkit.util.Vector;
 import java.util.HashSet;
 import java.util.Set;
 
-class PetDataListener extends SimpleListener {
-    private final PetDataManager manager;
+public class PetDataListener extends SimpleListener {
+    private final PetBlockManager manager;
     private final Set<Player> namingPlayers = new HashSet<>();
     private final Set<Player> namingSkull = new HashSet<>();
     private final Set<Player> changingPlayers = new HashSet<>();
@@ -68,7 +69,7 @@ class PetDataListener extends SimpleListener {
      * @param manager manager
      * @param plugin  plugin
      */
-    PetDataListener(PetDataManager manager, Plugin plugin) {
+    public PetDataListener(PetBlockManager manager, Plugin plugin) {
         super(plugin);
         this.manager = manager;
     }
@@ -99,7 +100,7 @@ class PetDataListener extends SimpleListener {
                 this.handleClick(event, player, petBlock.getMeta(), petBlock);
             } else {
                 this.plugin.getServer().getScheduler().runTaskAsynchronously(this.plugin, () -> {
-                    final com.github.shynixn.petblocks.api.persistence.entity.PetMeta petMeta = this.manager.getPetMeta(player);
+                    final com.github.shynixn.petblocks.api.persistence.entity.PetMeta petMeta = this.manager.getPetMetaController().getByPlayer(player);
                     this.plugin.getServer().getScheduler().runTask(this.plugin, () -> this.handleClick(event, player, petMeta, null));
                 });
             }
@@ -122,15 +123,13 @@ class PetDataListener extends SimpleListener {
         this.plugin.getServer().getScheduler().runTaskAsynchronously(this.plugin, () -> {
             final PetMeta petMeta;
             if (Config.getInstance().isJoin_enabled()) {
-                if (!this.manager.hasPetMeta(event.getPlayer()) || Config.getInstance().isJoin_overwriteExistingPet()) {
-                    final PetMeta meta = this.manager.createPetMeta(event.getPlayer());
+                if (this.manager.getPetMetaController().getByPlayer(event.getPlayer()) == null || Config.getInstance().isJoin_overwriteExistingPet()) {
+                    final PetMeta meta = this.manager.getPetMetaController().create(event.getPlayer());
                     Config.getInstance().fixJoinDefaultPet(meta);
-                    this.manager.persist(meta);
+                    this.manager.getPetMetaController().store(meta);
                 }
-            } else {
-                this.manager.hasPetMeta(event.getPlayer());
             }
-            if ((petMeta = PetBlocksApi.getDefaultPetMetaController().getByPlayer(event.getPlayer())) != null && ((PetData) petMeta).isEnabled()) {
+            if ((petMeta = PetBlocksApi.getDefaultPetMetaController().getByPlayer(event.getPlayer())) != null && petMeta.isEnabled()) {
                 this.plugin.getServer().getScheduler().runTaskLater(this.plugin, () -> {
                     PetBlocksApi.getDefaultPetBlockController().removeByPlayer(event.getPlayer());
                     final PetBlock petBlock = PetBlocksApi.getDefaultPetBlockController().create(event.getPlayer(), petMeta);
@@ -215,7 +214,7 @@ class PetDataListener extends SimpleListener {
                 player.sendMessage(Language.PREFIX + Language.NO_PERMISSION);
             }
         }*/
-        else if (manager.pages.get(player).page == GUIPage.MAIN && this.getGUIItem("my-pet").getPosition() == event.getSlot()) {
+        else if (this.manager.pages.get(player).page == GUIPage.MAIN && this.getGUIItem("my-pet").getPosition() == event.getSlot()) {
             this.handleClickOnMyPetItem(player, petMeta);
         } else if (this.isGUIItem(currentItem, "enable-pet")) {
             this.setPetBlock(player, petMeta);
@@ -355,7 +354,7 @@ class PetDataListener extends SimpleListener {
             this.manager.gui.setPage(player, GUIPage.MAIN, petMeta);
         } else {
             if (Config.getInstance().isCopySkinEnabled()) {
-                ((PetData) petMeta).setSkin(Material.SKULL_ITEM, (short) 3, this.getGUIItem("my-pet").getSkin());
+                petMeta.setSkin(Material.SKULL_ITEM.getId(),  3, this.getGUIItem("my-pet").getSkin(), this.getGUIItem("my-pet").isItemUnbreakable());
             } else {
                 final GUIItemContainer c = this.getGUIItem("default-appearance");
                 petMeta.setSkin(c.getItemId(), c.getItemDamage(), c.getSkin(), c.isItemUnbreakable());
@@ -374,7 +373,7 @@ class PetDataListener extends SimpleListener {
         } else {
             try {
                 this.namingPlayers.remove(player);
-                petMeta.setDisplayName(message);
+                petMeta.setPetDisplayName(message);
                 this.persistAsynchronously(petMeta);
                 if (petBlock != null)
                     petBlock.respawn();
@@ -391,7 +390,7 @@ class PetDataListener extends SimpleListener {
         } else {
             try {
                 this.namingSkull.remove(player);
-                ((PetData) petMeta).setSkin(Material.SKULL_ITEM, (short) 3, message);
+                petMeta.setSkin(Material.SKULL_ITEM.getId(),  3, message, false);
                 this.persistAsynchronously(petMeta);
                 if (petBlock != null)
                     petBlock.respawn();
@@ -417,17 +416,17 @@ class PetDataListener extends SimpleListener {
                 && itemStack.getItemMeta().getDisplayName().startsWith(ChatColor.BLUE.toString())) {
             player.closeInventory();
             this.plugin.getServer().getScheduler().runTaskAsynchronously(this.plugin, () -> {
-                final com.github.shynixn.petblocks.api.persistence.entity.PetMeta petMeta = this.manager.getPetMeta(player);
+                final com.github.shynixn.petblocks.api.persistence.entity.PetMeta petMeta = this.manager.getPetMetaController().getByPlayer(player);
                 this.plugin.getServer().getScheduler().runTask(this.plugin, () -> {
                             final SkullMeta meta = (SkullMeta) itemStack.getItemMeta();
                             if (meta.getOwner() == null) {
-                                ((PetData) petMeta).setSkin(itemStack.getType(), itemStack.getDurability(), NMSRegistry.getSkinUrl(itemStack));
+                                ((PetData) petMeta).setSkin(itemStack.getType().getId(), itemStack.getDurability(), NMSRegistry.getSkinUrl(itemStack), false);
                             } else {
-                                ((PetData) petMeta).setSkin(itemStack.getType(), itemStack.getDurability(), ((SkullMeta) itemStack.getItemMeta()).getOwner());
+                                ((PetData) petMeta).setSkin(itemStack.getType().getId(), itemStack.getDurability(), ((SkullMeta) itemStack.getItemMeta()).getOwner(), false);
                             }
                             this.persistAsynchronously(petMeta);
                             PetBlock petBlock;
-                            if ((petBlock = getPetBlock(player)) != null) {
+                            if ((petBlock = this.getPetBlock(player)) != null) {
                                 petBlock.respawn();
                             }
                             player.performCommand("petblock");
@@ -443,7 +442,7 @@ class PetDataListener extends SimpleListener {
         if (this.namingPlayers.contains(event.getPlayer()) || this.namingSkull.contains(event.getPlayer()))
             event.setCancelled(true);
         final PetBlock petBlock;
-        if ((petBlock = getPetBlock(event.getPlayer())) != null) {
+        if ((petBlock = this.getPetBlock(event.getPlayer())) != null) {
             if (this.namingSkull.contains(event.getPlayer())) {
                 this.renameSkull(event.getPlayer(), event.getMessage(), petBlock.getMeta(), petBlock);
             } else if (this.namingPlayers.contains(event.getPlayer())) {
@@ -451,7 +450,7 @@ class PetDataListener extends SimpleListener {
             }
         } else {
             this.plugin.getServer().getScheduler().runTaskAsynchronously(this.plugin, () -> {
-                final com.github.shynixn.petblocks.api.persistence.entity.PetMeta petMeta = this.manager.getPetMeta(event.getPlayer());
+                final com.github.shynixn.petblocks.api.persistence.entity.PetMeta petMeta = this.manager.getPetMetaController().getByPlayer(event.getPlayer());
                 if (this.namingSkull.contains(event.getPlayer())) {
                     this.plugin.getServer().getScheduler().runTask(this.plugin, () -> this.renameSkull(event.getPlayer(), event.getMessage(), petMeta, null));
                 } else if (this.namingPlayers.contains(event.getPlayer())) {
@@ -584,6 +583,6 @@ class PetDataListener extends SimpleListener {
      * @param petMeta petMeta
      */
     private void persistAsynchronously(PetMeta petMeta) {
-        this.plugin.getServer().getScheduler().runTaskAsynchronously(this.plugin, () -> this.manager.persist(petMeta));
+        this.plugin.getServer().getScheduler().runTaskAsynchronously(this.plugin, () -> this.manager.getPetMetaController().store(petMeta));
     }
 }

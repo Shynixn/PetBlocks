@@ -40,8 +40,9 @@ public class PetBlocksApi {
     /**
      * Initializes the api
      */
-    private static void initialize() {
-
+    private static void initialize(PetMetaController petMetaController, PetBlockController petBlockController) {
+        PetBlocksApi.metaController = petMetaController;
+        PetBlocksApi.petBlockController = petBlockController;
     }
 
 

@@ -1,4 +1,4 @@
-package com.github.shynixn.petblocks.business.logic.configuration;
+package com.github.shynixn.petblocks.api.business.enumeration;
 
 public enum Permission {
     ALLPETTYPES("petblocks.pet.type.all"),

@@ -7,7 +7,7 @@ import com.github.shynixn.petblocks.api.business.enumeration.RideType;
 import com.github.shynixn.petblocks.api.persistence.entity.PetMeta;
 import com.github.shynixn.petblocks.business.bukkit.nms.NMSRegistry;
 import com.github.shynixn.petblocks.business.bukkit.nms.helper.PetBlockHelper;
-import com.github.shynixn.petblocks.business.logic.configuration.ConfigPet;
+import com.github.shynixn.petblocks.business.logic.business.configuration.ConfigPet;
 import com.github.shynixn.petblocks.business.logic.persistence.entity.PetData;
 import net.minecraft.server.v1_8_R3.*;
 import org.bukkit.Bukkit;
@@ -52,7 +52,7 @@ final class CustomGroundArmorstand extends EntityArmorStand implements PetBlock 
         super(((CraftWorld) location.getWorld()).getHandle());
         this.isSpecial = true;
         this.petMeta = (PetData) meta;
-        this.owner = this.petMeta.getOwner();
+        this.owner = petMeta.getPlayerMeta().getPlayer();
         if (this.petMeta.getEngine().getEntityType().equalsIgnoreCase("RABBIT"))
             this.rabbit = new CustomRabbit(this.owner, meta);
         else if (this.petMeta.getEngine().getEntityType().equalsIgnoreCase("ZOMBIE"))
@@ -205,7 +205,7 @@ final class CustomGroundArmorstand extends EntityArmorStand implements PetBlock 
             ((ArmorStand)this.getArmorStand()).setMetadata("keep", this.getKeepField());
             NMSRegistry.rollbackWorldGuardSpawn(location);
             ((ArmorStand)this.getArmorStand()).setCustomNameVisible(true);
-            ((ArmorStand)this.getArmorStand()).setCustomName(this.petMeta.getDisplayName());
+            ((ArmorStand)this.getArmorStand()).setCustomName(this.petMeta.getPetDisplayName());
             ((ArmorStand)this.getArmorStand()).setRemoveWhenFarAway(false);
             ((LivingEntity) this.getEngineEntity()).setRemoveWhenFarAway(false);
             this.health = ConfigPet.getInstance().getCombat_health();

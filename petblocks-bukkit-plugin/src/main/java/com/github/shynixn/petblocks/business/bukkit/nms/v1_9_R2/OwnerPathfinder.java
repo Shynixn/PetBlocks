@@ -1,7 +1,7 @@
 package com.github.shynixn.petblocks.business.bukkit.nms.v1_9_R2;
 
 import com.github.shynixn.petblocks.business.bukkit.nms.helper.PetBlockHelper;
-import com.github.shynixn.petblocks.business.logic.configuration.ConfigPet;
+import com.github.shynixn.petblocks.business.logic.business.configuration.ConfigPet;
 import net.minecraft.server.v1_9_R2.EntityInsentient;
 import net.minecraft.server.v1_9_R2.NBTTagCompound;
 import net.minecraft.server.v1_9_R2.PathEntity;

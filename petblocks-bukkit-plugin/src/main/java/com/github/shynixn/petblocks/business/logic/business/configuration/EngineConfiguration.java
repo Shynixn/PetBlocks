@@ -1,15 +1,20 @@
-package com.github.shynixn.petblocks.business.logic.business;
+package com.github.shynixn.petblocks.business.logic.business.configuration;
 
-import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Marker;
-import org.apache.logging.log4j.core.Filter;
-import org.apache.logging.log4j.core.LifeCycle;
-import org.apache.logging.log4j.core.LogEvent;
-import org.apache.logging.log4j.core.Logger;
-import org.apache.logging.log4j.message.Message;
+import com.github.shynixn.petblocks.api.persistence.controller.EngineController;
+import com.github.shynixn.petblocks.api.persistence.controller.IController;
+import com.github.shynixn.petblocks.api.persistence.controller.IFileController;
+import com.github.shynixn.petblocks.api.persistence.entity.EngineContainer;
+import com.github.shynixn.petblocks.business.logic.persistence.entity.EngineData;
+import org.bukkit.Bukkit;
+import org.bukkit.configuration.MemorySection;
+import org.bukkit.plugin.Plugin;
 
 import java.io.Closeable;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.logging.Level;
 
 /**
  * Copyright 2017 Shynixn
@@ -40,121 +45,98 @@ import java.io.Closeable;
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class PetBlockFilter implements Filter, AutoCloseable, LifeCycle {
+public class EngineConfiguration implements EngineController {
 
-    private boolean started;
+    private Plugin plugin;
+    private final List<EngineContainer> engineContainers = new ArrayList<>();
 
     /**
-     * Initializes a new filter
+     * Initializes a new engine repository
+     *
+     * @param plugin plugin
      */
-    private PetBlockFilter() {
-        super();
+    public EngineConfiguration(Plugin plugin) {
+        if (plugin == null)
+            throw new IllegalArgumentException("Plugin cannot be null!");
+        this.plugin = plugin;
     }
 
     /**
-     * Ignore
+     * Stores a new a item in the repository
      *
-     * @return result
+     * @param item item
      */
     @Override
-    public Result getOnMismatch() {
-        return null;
+    public void store(EngineContainer item) {
+        if (item != null && !this.engineContainers.contains(item)) {
+            this.engineContainers.add(item);
+        }
     }
 
     /**
-     * Ignore
+     * Removes an item from the repository
      *
-     * @return result
+     * @param item item
      */
     @Override
-    public Result getOnMatch() {
-        return null;
+    public void remove(EngineContainer item) {
+        if (this.engineContainers.contains(item)) {
+            this.engineContainers.remove(item);
+        }
     }
 
     /**
-     * Ignore
+     * Returns the amount of items in the repository
      *
-     * @return result
+     * @return size
      */
     @Override
-    public Result filter(Logger logger, Level level, Marker marker, String s, Object... objects) {
-        return null;
+    public int size() {
+        return this.engineContainers.size();
     }
 
     /**
-     * Ignore
+     * Returns all items from the repository as unmodifiableList
      *
-     * @return result
+     * @return items
      */
     @Override
-    public Result filter(Logger logger, Level level, Marker marker, Object o, Throwable throwable) {
-        return null;
+    public List<EngineContainer> getAll() {
+        return Collections.unmodifiableList(this.engineContainers);
     }
 
     /**
-     * Ignore
+     * Returns the engineContainer with the given id
      *
-     * @return result
+     * @param id id
+     * @return engineContainer
      */
     @Override
-    public Result filter(Logger logger, Level level, Marker marker, Message message, Throwable throwable) {
-        return null;
-    }
-
-    /**
-     * Result filtering as PetBlocks manages these error messages after it gets loaded. Bukkit unfortunately prints these
-     * messages before PetBlocks can clean up the server so it's ok to filter this messages.
-     *
-     * @return result
-     */
-    @Override
-    public Result filter(LogEvent event) {
-        if (event.getMessage().toString().contains("Wrong location for CustomRabbit")
-                || event.getMessage().toString().contains("Wrong location for CustomGroundArmorstand")
-                || event.getMessage().toString().contains("but was stored in chunk")
-                || event.getMessage().toString().contains("Attempted Double World add on CustomGroundArmorstand")
-                || event.getMessage().toString().contains("Attempted Double World add on CustomRabbit")) {
-            return Result.DENY;
+    public EngineContainer getById(int id) {
+        for (final EngineContainer container : this.engineContainers) {
+            if (container.getId() == id) {
+                return container;
+            }
         }
         return null;
     }
 
     /**
-     * LifeCycle start
+     * Reloads the content from the fileSystem
      */
     @Override
-    public void start() {
-        this.started = true;
-    }
-
-    /**
-     * LifeCycle stop
-     */
-    @Override
-    public void stop() {
-        this.started = false;
-    }
-
-    /**
-     * Is started LifeCycler
-     *
-     * @return started
-     */
-    @Override
-    public boolean isStarted() {
-        return this.started;
-    }
-
-    /**
-     * Creates a new logger
-     *
-     * @return logger
-     */
-    public static PetBlockFilter create() {
-        final PetBlockFilter petBlockFilter = new PetBlockFilter();
-        petBlockFilter.start();
-        ((org.apache.logging.log4j.core.Logger) LogManager.getRootLogger()).addFilter(petBlockFilter);
-        return petBlockFilter;
+    public void reload() {
+        this.engineContainers.clear();
+        this.plugin.reloadConfig();
+        final Map<String, Object> data = ((MemorySection) this.plugin.getConfig().get("engine")).getValues(false);
+        for (final String key : data.keySet()) {
+            final Map<String, Object> content = ((MemorySection) this.plugin.getConfig().get("engine." + key)).getValues(true);
+            try {
+                this.engineContainers.add(new EngineData(Long.parseLong(key), content));
+            } catch (final Exception e) {
+                Bukkit.getLogger().log(Level.WARNING, "Failed to add content " + key + ".");
+            }
+        }
     }
 
     /**
@@ -204,6 +186,7 @@ class PetBlockFilter implements Filter, AutoCloseable, LifeCycle {
      */
     @Override
     public void close() throws Exception {
-        ((org.apache.logging.log4j.core.Logger) LogManager.getRootLogger()).getContext().removeFilter(this);
+        this.plugin = null;
+        this.engineContainers.clear();
     }
 }

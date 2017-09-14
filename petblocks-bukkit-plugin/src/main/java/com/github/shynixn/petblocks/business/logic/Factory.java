@@ -1,8 +1,10 @@
-package com.github.shynixn.petblocks.business.logic.persistence;
+package com.github.shynixn.petblocks.business.logic;
 
+import com.github.shynixn.petblocks.api.business.controller.PetBlockController;
 import com.github.shynixn.petblocks.api.persistence.controller.*;
 import com.github.shynixn.petblocks.business.bukkit.PetBlocksPlugin;
-import com.github.shynixn.petblocks.business.logic.configuration.*;
+import com.github.shynixn.petblocks.business.logic.business.configuration.*;
+import com.github.shynixn.petblocks.business.logic.business.controller.PetBlockRepository;
 import com.github.shynixn.petblocks.business.logic.persistence.controller.ParticleEffectDataRepository;
 import com.github.shynixn.petblocks.business.logic.persistence.controller.PetDataRepository;
 import com.github.shynixn.petblocks.business.logic.persistence.controller.PlayerDataRepository;
@@ -35,6 +37,10 @@ public class Factory {
 
     public static EngineController createEngineController() {
         return new EngineConfiguration(JavaPlugin.getPlugin(PetBlocksPlugin.class));
+    }
+
+    public static PetBlockController createPetBlockController() {
+        return new PetBlockRepository();
     }
 
     public static CostumeController createCostumesController(String category) {
