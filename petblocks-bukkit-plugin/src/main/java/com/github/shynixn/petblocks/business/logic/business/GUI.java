@@ -70,7 +70,7 @@ public class GUI {
             this.setListAble(player, page, 0);
         }
         final GUIItemContainer backGuiItemContainer = Config.getInstance().getGuiItemsController().getGUIItemByName("back");
-        inventory.setItem(backGuiItemContainer.getPosition(), (ItemStack) backGuiItemContainer.generate(player, backGuiItemContainer.getPermission()));
+        inventory.setItem(backGuiItemContainer.getPosition(), (ItemStack) backGuiItemContainer.generate(player));
         this.fillEmptySlots(inventory);
         player.updateInventory();
     }
@@ -113,7 +113,7 @@ public class GUI {
     private void setOtherItems(Player player, Inventory inventory, PetMeta petMeta, GUIPage page) {
         for (final GUIItemContainer guiItemContainer : Config.getInstance().getGuiItemsController().getAll()) {
             if (guiItemContainer.getPage() == page) {
-                inventory.setItem(guiItemContainer.getPosition(), (ItemStack) guiItemContainer.generate(player, guiItemContainer.getPermission()));
+                inventory.setItem(guiItemContainer.getPosition(), (ItemStack) guiItemContainer.generate(player));
             }
         }
         if (page == GUIPage.MAIN) {
@@ -123,23 +123,23 @@ public class GUI {
         if (petMeta.isSoundEnabled()) {
             final GUIItemContainer container = Config.getInstance().getGuiItemsController().getGUIItemByName("sounds-enabled-pet");
             if (page == container.getPage()) {
-                inventory.setItem(container.getPosition(), (ItemStack) container.generate(player, container.getPermission()));
+                inventory.setItem(container.getPosition(), (ItemStack) container.generate(player));
             }
         } else {
             final GUIItemContainer container = Config.getInstance().getGuiItemsController().getGUIItemByName("sounds-disabled-pet");
             if (page == container.getPage()) {
-                inventory.setItem(container.getPosition(), (ItemStack) container.generate(player, container.getPermission()));
+                inventory.setItem(container.getPosition(), (ItemStack) container.generate(player));
             }
         }
         if (!petMeta.isEnabled()) {
             final GUIItemContainer container = Config.getInstance().getGuiItemsController().getGUIItemByName("enable-pet");
             if (page == container.getPage()) {
-                inventory.setItem(container.getPosition(), (ItemStack) container.generate(player, container.getPermission()));
+                inventory.setItem(container.getPosition(), (ItemStack) container.generate(player));
             }
         } else {
             final GUIItemContainer container = Config.getInstance().getGuiItemsController().getGUIItemByName("disable-pet");
             if (page == container.getPage()) {
-                inventory.setItem(container.getPosition(), (ItemStack) container.generate(player, container.getPermission()));
+                inventory.setItem(container.getPosition(), (ItemStack) container.generate(player));
             }
         }
         final GUIItemContainer container = Config.getInstance().getGuiItemsController().getGUIItemByName("minecraft-heads-costume");
@@ -149,23 +149,23 @@ public class GUI {
     }
 
     private void setEngineItems(Player player, int type) {
-        this.setCostumes(player, Config.getInstance().getEngineController().getAllGUIItems(), GUIPage.ENGINES, type);
+        this.setCostumes(player, Config.getInstance().getEngineController().getAllGUIItems(), GUIPage.ENGINES, type, Permission.ALLPETTYPES.get());
     }
 
     private void setDefaultCostumeItems(Player player, int type) {
-        this.setCostumes(player, Config.getInstance().getOrdinaryCostumesController().getAll(), GUIPage.DEFAULT_COSTUMES, type);
+        this.setCostumes(player, Config.getInstance().getOrdinaryCostumesController().getAll(), GUIPage.DEFAULT_COSTUMES, type, Permission.ALLDEFAULTCOSTUMES.get());
     }
 
     private void setColorCostumeItems(Player player, int type) {
-        this.setCostumes(player, Config.getInstance().getColorCostumesController().getAll(), GUIPage.COLOR_COSTUMES, type);
+        this.setCostumes(player, Config.getInstance().getColorCostumesController().getAll(), GUIPage.COLOR_COSTUMES, type, Permission.ALLCOLORCOSTUMES.get());
     }
 
     private void setCustomCostumeItems(Player player, int type) {
-        this.setCostumes(player, Config.getInstance().getRareCostumesController().getAll(), GUIPage.CUSTOM_COSTUMES, type);
+        this.setCostumes(player, Config.getInstance().getRareCostumesController().getAll(), GUIPage.CUSTOM_COSTUMES, type, Permission.ALLCUSTOMCOSTUMES.get());
     }
 
     private void setParticleItems(Player player, int type) {
-        this.setCostumes(player, Config.getInstance().getParticleController().getAll(), GUIPage.PARTICLES, type);
+        this.setCostumes(player, Config.getInstance().getParticleController().getAll(), GUIPage.PARTICLES, type, Permission.ALLPARTICLES.get());
     }
 
     /**
@@ -183,10 +183,10 @@ public class GUI {
                     .setHoverText("Goto the Minecraft-Heads website!")
                     .builder().sendMessage(player);
         });
-        this.setCostumes(player, Config.getInstance().getMinecraftHeadsCostumesController().getAll(), GUIPage.MINECRAFTHEADS_COSTUMES, type);
+        this.setCostumes(player, Config.getInstance().getMinecraftHeadsCostumesController().getAll(), GUIPage.MINECRAFTHEADS_COSTUMES, type, Permission.ALLMINECRAFTHEADSCOSTUMES.get());
     }
 
-    private void setCostumes(Player player, List<GUIItemContainer> containers, GUIPage page, int type) {
+    private void setCostumes(Player player, List<GUIItemContainer> containers, GUIPage page, int type, String groupPermission) {
         if (this.manager.inventories.containsKey(player)) {
             final GuiPageContainer previousContainer = this.manager.pages.get(player);
             final GuiPageContainer container;
@@ -226,7 +226,7 @@ public class GUI {
                     }
                     Bukkit.getScheduler().runTaskLater(this.plugin, () -> {
                         if (container.currentCount == mountBlock && currentPage == manager.pages.get(player).page) {
-                            inventory.setItem(slot, (ItemStack) containers.get(containerSlot).generate(player));
+                            inventory.setItem(slot, (ItemStack) containers.get(containerSlot).generate(player, groupPermission));
                         }
                     }, scheduleCounter);
                 }
@@ -235,7 +235,7 @@ public class GUI {
             final GUIItemContainer nextPage = Config.getInstance().getGuiItemsController().getGUIItemByName("next-page");
             final GUIItemContainer previousPage = Config.getInstance().getGuiItemsController().getGUIItemByName("previous-page");
             final GUIItemContainer backGuiItemContainer = Config.getInstance().getGuiItemsController().getGUIItemByName("back");
-            inventory.setItem(backGuiItemContainer.getPosition(), (ItemStack) backGuiItemContainer.generate(player, backGuiItemContainer.getPermission()));
+            inventory.setItem(backGuiItemContainer.getPosition(), (ItemStack) backGuiItemContainer.generate(player));
             inventory.setItem(nextPage.getPosition(), (ItemStack) nextPage.generate(player));
             inventory.setItem(previousPage.getPosition(), (ItemStack) previousPage.generate(player));
             this.fillEmptySlots(inventory);

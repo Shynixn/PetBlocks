@@ -4,6 +4,7 @@ import com.github.shynixn.petblocks.api.PetBlocksApi;
 import com.github.shynixn.petblocks.api.business.entity.GUIItemContainer;
 import com.github.shynixn.petblocks.api.business.entity.PetBlock;
 import com.github.shynixn.petblocks.api.business.enumeration.GUIPage;
+import com.github.shynixn.petblocks.api.persistence.entity.EngineContainer;
 import com.github.shynixn.petblocks.api.persistence.entity.ParticleEffectMeta;
 import com.github.shynixn.petblocks.api.persistence.entity.PetMeta;
 import com.github.shynixn.petblocks.business.logic.business.configuration.Config;
@@ -246,6 +247,15 @@ public class PetDataListener extends SimpleListener {
             player.closeInventory();
         } else if (this.isGUIItem(currentItem, "back")) {
             this.manager.gui.backPage(player, petMeta);
+        } else if (this.manager.pages.get(player).page == GUIPage.ENGINES && this.hasPermission(player, Permission.ALLPETTYPES.get(), Permission.SINGLEPETTYPE.get() + "" + itemSlot)) {
+            final EngineContainer engineContainer = Config.getInstance().getEngineController().getById(itemSlot);
+            if(engineContainer == null)
+                return;
+            petMeta.setEngine(engineContainer);
+            this.persistAsynchronously(petMeta);
+            if (petBlock != null) {
+                petBlock.respawn();
+            }
         } else if (this.manager.pages.get(player).page == GUIPage.PARTICLES && this.hasPermission(player, Permission.ALLPARTICLES.get(), Permission.SINGLEPARTICLE.get() + "" + itemSlot)) {
             final GUIItemContainer container = Config.getInstance().getParticleController().getContainerByPosition(itemSlot);
             if (container == null)

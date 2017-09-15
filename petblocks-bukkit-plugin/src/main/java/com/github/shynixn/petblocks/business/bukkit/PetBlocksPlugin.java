@@ -12,6 +12,7 @@ import com.github.shynixn.petblocks.lib.ReflectionUtils;
 import com.github.shynixn.petblocks.lib.UpdateUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Sound;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.IOException;

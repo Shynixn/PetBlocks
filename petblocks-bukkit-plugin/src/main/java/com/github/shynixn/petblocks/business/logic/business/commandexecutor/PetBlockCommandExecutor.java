@@ -3,6 +3,7 @@ package com.github.shynixn.petblocks.business.logic.business.commandexecutor;
 import com.github.shynixn.petblocks.api.business.entity.GUIItemContainer;
 import com.github.shynixn.petblocks.api.business.entity.PetBlock;
 import com.github.shynixn.petblocks.api.persistence.entity.EngineContainer;
+import com.github.shynixn.petblocks.api.persistence.entity.ParticleEffectMeta;
 import com.github.shynixn.petblocks.api.persistence.entity.PetMeta;
 import com.github.shynixn.petblocks.business.bukkit.PetBlocksPlugin;
 import com.github.shynixn.petblocks.business.logic.business.PetBlockManager;
@@ -150,7 +151,14 @@ public final class PetBlockCommandExecutor extends SimpleCommandExecutor.UnRegis
             if (container == null) {
                 player.sendMessage(Config.getInstance().getPrefix() + "Particle not found.");
             } else {
-                petMeta.setParticleEffectMeta(Config.getInstance().getParticleController().getByItem(container));
+                final ParticleEffectMeta transfer = Config.getInstance().getParticleController().getByItem(container);
+                petMeta.getParticleEffectMeta().setEffectType(transfer.getEffectType());
+                petMeta.getParticleEffectMeta().setSpeed(transfer.getSpeed());
+                petMeta.getParticleEffectMeta().setAmount(transfer.getAmount());
+                petMeta.getParticleEffectMeta().setOffset(transfer.getOffsetX(), transfer.getOffsetY(), transfer.getOffsetZ());
+                petMeta.getParticleEffectMeta().setMaterial(transfer.getMaterial());
+                petMeta.getParticleEffectMeta().setData(transfer.getData());
+                this.persistAsynchronously(petMeta);
             }
         });
     }

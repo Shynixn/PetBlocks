@@ -58,7 +58,7 @@ public class EngineData extends PersistenceObject implements EngineContainer {
     public EngineData(long id, Map<String, Object> data) throws Exception {
         this.setId(id);
         this.page = GUIPage.getGUIPageFromName((String) data.get("gui.page"));
-        this.itemContainer = new ItemContainer(0, ((MemorySection)data.get("gui")).getValues(false));
+        this.itemContainer = new ItemContainer((int) id, ((MemorySection)data.get("gui")).getValues(false));
         this.entity = (String) data.get("behaviour.entity");
         this.rideType = RideType.valueOf((String) data.get("behaviour.riding"));
         this.ambientSound = new SoundBuilder((String) data.get("sound.ambient.name"), (double) data.get("sound.ambient.volume"), (double) data.get("sound.ambient.pitch"));

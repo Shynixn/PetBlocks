@@ -93,6 +93,7 @@ public class ItemContainer implements GUIItemContainer {
      */
     public ItemContainer(int orderNumber, Map<String, Object> data) throws Exception {
         this.position = orderNumber;
+        System.out.println("POSITON : " + this.position);
         if (data.containsKey("enabled"))
             this.enabled = (boolean) data.get("enabled");
         else
@@ -108,6 +109,7 @@ public class ItemContainer implements GUIItemContainer {
         if (data.containsKey("skin") && !data.get("skin").equals("none"))
             this.skin = (String) data.get("skin");
         if (data.containsKey("name")) {
+            System.out.println(data.get("name"));
             if (data.get("name").equals("default")) {
                 this.name = null;
             } else if (data.get("name").equals("none")) {
@@ -275,16 +277,6 @@ public class ItemContainer implements GUIItemContainer {
         return this.position;
     }
 
-    /**
-     * Returns the permission
-     *
-     * @return permission
-     */
-    @Override
-    public String getPermission() {
-        return null;
-    }
-
     private void updateLore(Player player, String... permissions) {
         final String[] lore = this.provideLore(player, permissions);
         if (lore != null) {
@@ -310,7 +302,8 @@ public class ItemContainer implements GUIItemContainer {
         for (int i = 0; i < modifiedLore.length; i++) {
             modifiedLore[i] = this.lore[i];
             if (this.lore[i].contains("<permission>")) {
-                if (permissions != null && this.hasPermission(player, permissions)) {
+                System.out.println("PLAYER HAS PERMISSION " + permissions.length);
+                if (permissions != null && (permissions.length == 0 || this.hasPermission(player, permissions))) {
                     modifiedLore[i] = this.lore[i].replace("<permission>", Config.getInstance().getPermissionIconYes());
                 } else {
                     modifiedLore[i] = this.lore[i].replace("<permission>", Config.getInstance().getPermissionIconNo());
@@ -322,6 +315,12 @@ public class ItemContainer implements GUIItemContainer {
 
     private boolean hasPermission(Player player, String... permissions) {
         for (final String permission : permissions) {
+            if (permission.endsWith(".all")) {
+                final String subPermission = permission.substring(0, permission.indexOf("all")) + this.position;
+                if (player.hasPermission(subPermission)) {
+                    return true;
+                }
+            }
             if (player.hasPermission(permission))
                 return true;
         }

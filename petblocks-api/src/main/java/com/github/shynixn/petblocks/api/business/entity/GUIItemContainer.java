@@ -80,12 +80,6 @@ public interface GUIItemContainer {
     int getPosition();
 
     /**
-     * Returns the permission
-     * @return permission
-     */
-    String getPermission();
-
-    /**
      * Returns the guiPage of this container
      *
      * @return guiPage
