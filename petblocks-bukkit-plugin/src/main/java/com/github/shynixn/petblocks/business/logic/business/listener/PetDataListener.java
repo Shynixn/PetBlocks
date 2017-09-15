@@ -62,6 +62,13 @@ public class PetDataListener extends SimpleListener {
             .setClickAction(ChatBuilder.ClickAction.OPEN_URL, "https://www.spigotmc.org/resources/14280/")
             .setHoverText("A valid spigot account is required!")
             .builder();
+    private final ChatBuilder collectedMinecraftHeads = new ChatBuilder().text(Config.getInstance().getPrefix())
+            .text("Pets collected by ")
+            .component(">>Minecraft-Heads.com<<")
+            .setColor(ChatColor.YELLOW)
+            .setClickAction(ChatBuilder.ClickAction.OPEN_URL, "http://minecraft-heads.com")
+            .setHoverText("Goto the Minecraft-Heads website!")
+            .builder();
 
     /**
      * Initializes a new PetDataListener
@@ -211,6 +218,7 @@ public class PetDataListener extends SimpleListener {
         } else if (this.isGUIItem(currentItem, "rare-costume")) {
             this.manager.gui.setPage(player, GUIPage.CUSTOM_COSTUMES, petMeta);
         } else if (this.isGUIItem(currentItem, "minecraft-heads-costume")) {
+            Bukkit.getServer().getScheduler().runTaskAsynchronously(JavaPlugin.getPlugin(PetBlocksPlugin.class), () -> this.collectedMinecraftHeads.sendMessage(player));
             this.manager.gui.setPage(player, GUIPage.MINECRAFTHEADS_COSTUMES, petMeta);
         } else if (this.isGUIItem(currentItem, "particle-pet")) {
             this.manager.gui.setPage(player, GUIPage.PARTICLES, petMeta);
