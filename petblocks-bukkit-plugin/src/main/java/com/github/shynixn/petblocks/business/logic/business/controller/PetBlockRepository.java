@@ -110,6 +110,7 @@ public final class PetBlockRepository implements PetBlockController {
             final PetBlockDeathEvent event = new PetBlockDeathEvent(this.petblocks.get(player));
             Bukkit.getPluginManager().callEvent(event);
             if (!event.isCanceled()) {
+                item.getMeta().setEnabled(false);
                 this.petblocks.get(player).remove();
                 this.petblocks.remove(player);
             }

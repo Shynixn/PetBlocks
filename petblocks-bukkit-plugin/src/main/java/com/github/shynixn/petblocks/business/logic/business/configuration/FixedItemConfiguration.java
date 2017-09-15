@@ -112,7 +112,6 @@ public class FixedItemConfiguration implements OtherGUIItemsController {
         for (final String key : data.keySet()) {
             try {
                 final GUIItemContainer container = new ItemContainer(0, ((MemorySection) data.get(key)).getValues(false));
-                System.out.println("LOADED: " + key);
                 if (key.equals("suggest-heads")) {
                     ((ItemContainer) container).setDisplayName(ChatColor.AQUA + "" + ChatColor.BOLD + "Suggest Heads");
                 }

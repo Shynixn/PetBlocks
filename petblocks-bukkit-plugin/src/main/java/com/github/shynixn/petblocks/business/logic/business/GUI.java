@@ -52,7 +52,6 @@ public class GUI {
     }
 
     public void setPage(Player player, GUIPage page, PetMeta petMeta) {
-        System.out.println("SETING PAGE");
         if (!this.manager.inventories.containsKey(player)) {
             return;
         }
@@ -71,7 +70,6 @@ public class GUI {
         inventory.setItem(backGuiItemContainer.getPosition(), (ItemStack) backGuiItemContainer.generate(player, backGuiItemContainer.getPermission()));
         this.fillEmptySlots(inventory);
         player.updateInventory();
-        System.out.println("FINISHED");
     }
 
     private void setListAble(Player player, GUIPage page, int type) {
@@ -91,12 +89,10 @@ public class GUI {
     }
 
     public void backPage(Player player, PetMeta petMeta) {
-        System.out.println("BACK PAGE");
         GuiPageContainer container = this.manager.pages.get(player);
         if (container.page == GUIPage.MAIN) {
             player.closeInventory();
         } else {
-            System.out.println("PREVIOUS: " + container.previousPage.page);
             if (container.previousPage != null && container.previousPage.previousPage != null)
                 this.manager.pages.put(player, container.previousPage.previousPage);
             this.setPage(player, container.previousPage.page, petMeta);
@@ -117,13 +113,28 @@ public class GUI {
                 inventory.setItem(guiItemContainer.getPosition(), (ItemStack) guiItemContainer.generate(player, guiItemContainer.getPermission()));
             }
         }
-        if (petMeta.isSoundEnabled()) {
+        if (page == GUIPage.MAIN) {
+            final GUIItemContainer myPetContainer = Config.getInstance().getGuiItemsController().getGUIItemByName("my-pet");
+            inventory.setItem(myPetContainer.getPosition(), (ItemStack) petMeta.getHeadItemStack());
+        }
+        if (!petMeta.isSoundEnabled()) {
             final GUIItemContainer container = Config.getInstance().getGuiItemsController().getGUIItemByName("sounds-enabled-pet");
             if (page == container.getPage()) {
                 inventory.setItem(container.getPosition(), (ItemStack) container.generate(player, container.getPermission()));
             }
         } else {
             final GUIItemContainer container = Config.getInstance().getGuiItemsController().getGUIItemByName("sounds-disabled-pet");
+            if (page == container.getPage()) {
+                inventory.setItem(container.getPosition(), (ItemStack) container.generate(player, container.getPermission()));
+            }
+        }
+        if (!petMeta.isEnabled()) {
+            final GUIItemContainer container = Config.getInstance().getGuiItemsController().getGUIItemByName("enable-pet");
+            if (page == container.getPage()) {
+                inventory.setItem(container.getPosition(), (ItemStack) container.generate(player, container.getPermission()));
+            }
+        } else {
+            final GUIItemContainer container = Config.getInstance().getGuiItemsController().getGUIItemByName("disable-pet");
             if (page == container.getPage()) {
                 inventory.setItem(container.getPosition(), (ItemStack) container.generate(player, container.getPermission()));
             }
@@ -189,17 +200,11 @@ public class GUI {
                     container = container.next;
                     container.pre = pre;
                 }
-                System.out.println("NEXT ");
             } else if (type == 2) {
-
                 while (container.next != null) {
-
-                    System.out.println("CONTAINER: " + container.startCount);
-                    final GuiPageContainer pre = container;
                     container = container.next;
                 }
                 container = container.pre;
-                System.out.println("PRE");
             }
 
             if (container == null) {
@@ -208,7 +213,6 @@ public class GUI {
 
             int count = container.startCount;
             final Inventory inventory = this.costumePreparation(player);
-            System.out.println("STARTCOUNT: " + count);
             int i;
             for (i = 0; i < 45 && (i + container.startCount) < containers.size(); i++) {
                 if (inventory.getItem(i) == null || inventory.getItem(i).getType() == Material.AIR) {
@@ -216,13 +220,7 @@ public class GUI {
                     count++;
                 }
             }
-
-            System.out.println("STARCOUNT: " + container.startCount);
-            System.out.println("NEXT: " + count + ":" + containers.size());
-            if ((i + container.startCount) >= containers.size()) {
-                System.out.println("REACHED MAX");
-            } else {
-                System.out.println("NOT MAX");
+            if (!((i + container.startCount) >= containers.size())){
                 container.next = new GuiPageContainer(page, container);
                 container.next.startCount = count;
             }
@@ -234,7 +232,6 @@ public class GUI {
             inventory.setItem(nextPage.getPosition(), (ItemStack) nextPage.generate(player));
             inventory.setItem(previousPage.getPosition(), (ItemStack) previousPage.generate(player));
             this.fillEmptySlots(inventory);
-            System.out.println("STORE INTERNAL NEW CONTAINER");
         }
     }
 

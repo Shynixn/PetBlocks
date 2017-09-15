@@ -187,4 +187,10 @@ public interface PetMeta extends Persistenceable {
      * @return unbreakable
      */
     boolean isItemUnbreakable();
+
+    /**
+     * Returns the itemStack for the head
+     * @return headItemStack
+     */
+    Object getHeadItemStack();
 }

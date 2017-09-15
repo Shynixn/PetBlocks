@@ -4,11 +4,18 @@ import com.github.shynixn.petblocks.api.persistence.entity.EngineContainer;
 import com.github.shynixn.petblocks.api.persistence.entity.ParticleEffectMeta;
 import com.github.shynixn.petblocks.api.persistence.entity.PetMeta;
 import com.github.shynixn.petblocks.api.persistence.entity.PlayerMeta;
+import com.github.shynixn.petblocks.business.bukkit.nms.NMSRegistry;
 import com.github.shynixn.petblocks.business.logic.business.configuration.Config;
 import com.github.shynixn.petblocks.business.logic.business.configuration.ConfigPet;
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.SkullMeta;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 public class PetData extends PersistenceObject implements PetMeta {
@@ -171,6 +178,37 @@ public class PetData extends PersistenceObject implements PetMeta {
     @Override
     public boolean isItemUnbreakable() {
         return this.unbreakable;
+    }
+
+    /**
+     * Returns the itemStack for the head
+     *
+     * @return headItemStack
+     */
+    @Override
+    public Object getHeadItemStack() {
+        ItemStack itemStack;
+        if (this.getSkin() != null) {
+            if (this.getSkin().contains("textures.minecraft")) {
+                itemStack = NMSRegistry.changeSkullSkin(new ItemStack(Material.getMaterial(this.getItemId()), 1, (short) this.getItemDamage()), this.getSkin());
+            } else {
+                itemStack = new ItemStack(Material.getMaterial(this.getItemId()), 1, (short) this.getItemDamage());
+                final ItemMeta meta = itemStack.getItemMeta();
+                if (meta instanceof SkullMeta) {
+                    ((SkullMeta) meta).setOwner(this.skin);
+                }
+                itemStack.setItemMeta(meta);
+            }
+        } else {
+            itemStack = new ItemStack(this.getItemId(), 1, (short) this.getItemDamage());
+        }
+        final ItemMeta meta = itemStack.getItemMeta();
+        meta.setDisplayName(this.petDisplayName);
+        itemStack.setItemMeta(meta);
+        final Map<String, Object> data = new HashMap<>();
+        data.put("Unbreakable", this.isItemStackUnbreakable());
+        itemStack = NMSRegistry.setItemStackTag(itemStack, data);
+        return itemStack;
     }
 
     public boolean isHidden() {

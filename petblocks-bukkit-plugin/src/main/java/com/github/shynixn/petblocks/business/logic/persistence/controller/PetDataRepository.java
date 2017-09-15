@@ -84,7 +84,6 @@ public class PetDataRepository extends DataBaseRepository<PetMeta> implements Pe
     public PetMeta create(Object player) {
         final GUIItemContainer container = Config.getInstance().getGuiItemsController().getGUIItemByName("default-appearance");
         final PetData petData = new PetData((Player) player, Config.getInstance().getDefaultPetName());
-        System.out.println("CONTAINER: " + container + ":" + petData);
         petData.setSkin(container.getItemId(), container.getItemDamage(), container.getSkin(), container.isItemUnbreakable());
         return petData;
     }
@@ -98,18 +97,13 @@ public class PetDataRepository extends DataBaseRepository<PetMeta> implements Pe
     @Override
     public <T> PetMeta getByPlayer(T player) {
         PetMeta petMeta = null;
-        System.out.println("1");
         if (PetBlocksApi.getDefaultPetBlockController().getByPlayer(player) != null)
             return PetBlocksApi.getDefaultPetBlockController().getByPlayer(player).getMeta();
-        System.out.println("2");
         try (Connection connection = this.dbContext.getConnection()) {
-            System.out.println("3");
             try (PreparedStatement preparedStatement = this.dbContext.executeStoredQuery("petblock/selectbyplayer", connection,
                     ((Player) player).getUniqueId().toString())) {
                 try (ResultSet resultSet = preparedStatement.executeQuery()) {
-                    System.out.println("4");
                     if (resultSet.next()) {
-                        System.out.println("5");
                         petMeta = this.from(resultSet);
                         if (petMeta == null)
                             return null;
@@ -121,6 +115,7 @@ public class PetDataRepository extends DataBaseRepository<PetMeta> implements Pe
         } catch (final SQLException e) {
             Bukkit.getLogger().log(Level.WARNING, "Database error occurred.", e);
         }
+        petMeta.setEnabled(PetBlocksApi.getDefaultPetBlockController().getByPlayer(player) != null);
         petMeta.setEngine(Config.getInstance().getEngineController().getById(((PetData)petMeta).getEngineId()));
         petMeta.setParticleEffectMeta(this.particleEffectMetaController.getById(((PetData)petMeta).getParticleId()));
         petMeta.setPlayerMeta(this.playerMetaController.getById(((PetData)petMeta).getPlayerId()));
@@ -266,7 +261,6 @@ public class PetDataRepository extends DataBaseRepository<PetMeta> implements Pe
     @Override
     public void insert(PetMeta itemMeta) {
         final PetData item = (PetData) itemMeta;
-        System.out.println("INSERT" + item.getEngine() + "." + item.getEngine().getGUIItem().getPosition());
         if (item == null)
             throw new IllegalArgumentException("Meta has to be an instance of PetData");
         try (Connection connection = this.dbContext.getConnection()) {

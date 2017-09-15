@@ -115,7 +115,6 @@ public class EngineConfiguration implements EngineController {
     @Override
     public EngineContainer getById(int id) {
         for (final EngineContainer container : this.engineContainers) {
-            System.out.println("GET!!!!");
             if (container.getId() == id) {
                 return container;
             }

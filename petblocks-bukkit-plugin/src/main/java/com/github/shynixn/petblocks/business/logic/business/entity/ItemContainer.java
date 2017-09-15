@@ -74,8 +74,6 @@ public class ItemContainer implements GUIItemContainer {
      * @param lore        lore
      */
     public ItemContainer(boolean enabled, int position, GUIPage page, int id, int damage, String skin, boolean unbreakable, String name, String[] lore) {
-        System.out.println(id + "-" + damage + "-" + skin);
-
         this.enabled = enabled;
         this.position = position;
         this.page = page;
@@ -113,7 +111,6 @@ public class ItemContainer implements GUIItemContainer {
             if (data.get("name").equals("default")) {
                 this.name = null;
             } else if (data.get("name").equals("none")) {
-                System.out.println("NAME: " + name);
                 this.name = " ";
             } else {
                 this.name = ChatColor.translateAlternateColorCodes('&', (String) data.get("name"));
@@ -161,7 +158,6 @@ public class ItemContainer implements GUIItemContainer {
                     }
                 }
                 final ItemMeta itemMeta = itemStack.getItemMeta();
-                System.out.println("SET NAME " + this.skin);
                 itemMeta.setDisplayName(this.name);
                 itemStack.setItemMeta(itemMeta);
                 this.cache = itemStack;

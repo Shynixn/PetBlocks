@@ -91,7 +91,6 @@ public final class ReflectionUtils {
         if (params == null)
             throw new IllegalArgumentException("Params cannot be null!");
         final Constructor constructor = clazz.getDeclaredConstructor(paramTypes);
-        System.out.println("FOUD CONSTRUCTOR");
         constructor.setAccessible(true);
         return constructor.newInstance(params);
     }
