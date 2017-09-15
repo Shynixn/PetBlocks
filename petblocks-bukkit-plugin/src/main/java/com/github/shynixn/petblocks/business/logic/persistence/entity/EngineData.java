@@ -1,7 +1,6 @@
 package com.github.shynixn.petblocks.business.logic.persistence.entity;
 
 import com.github.shynixn.petblocks.api.business.entity.GUIItemContainer;
-import com.github.shynixn.petblocks.api.business.enumeration.GUIPage;
 import com.github.shynixn.petblocks.api.business.enumeration.RideType;
 import com.github.shynixn.petblocks.api.persistence.entity.EngineContainer;
 import com.github.shynixn.petblocks.api.persistence.entity.SoundMeta;
@@ -41,16 +40,17 @@ import java.util.Map;
  */
 public class EngineData extends PersistenceObject implements EngineContainer {
 
-    private final GUIItemContainer itemContainer;
+    private GUIItemContainer itemContainer;
 
-    private final String entity;
-    private final RideType rideType;
+    private String entity;
+    private RideType rideType;
 
-    private final SoundMeta ambientSound;
-    private final SoundMeta walkingSound;
+    private SoundMeta ambientSound;
+    private SoundMeta walkingSound;
 
     /**
      * Initializes a new engine data
+     *
      * @param data data
      * @throws Exception exception
      */
@@ -62,6 +62,16 @@ public class EngineData extends PersistenceObject implements EngineContainer {
         this.rideType = RideType.valueOf((String) data.get("behaviour.riding"));
         this.ambientSound = new SoundBuilder((String) data.get("sound.ambient.name"), (double) data.get("sound.ambient.volume"), (double) data.get("sound.ambient.pitch"));
         this.walkingSound = new SoundBuilder((String) data.get("sound.walking.name"), (double) data.get("sound.walking.volume"), (double) data.get("sound.walking.pitch"));
+    }
+
+    /**
+     * Initializes a new engine data
+     *
+     * @param id id
+     */
+    public EngineData(long id) {
+        super();
+        this.setId(id);
     }
 
     /**

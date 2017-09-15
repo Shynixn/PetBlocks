@@ -391,6 +391,7 @@ public class PetData extends PersistenceObject implements PetMeta {
         this.id = id;
         this.damage = damage;
         this.skin = skin;
+        this.unbreakable = unbreakable;
     }
 
     @Override

@@ -127,11 +127,13 @@ public class ParticleEffectDataRepository extends DataBaseRepository<ParticleEff
      */
     @Override
     public void delete(ParticleEffectMeta item) {
-        try (Connection connection = this.dbContext.getConnection()) {
-            this.dbContext.executeStoredUpdate("particle/delete", connection,
-                    item.getId());
-        } catch (final SQLException e) {
-            Bukkit.getLogger().log(Level.WARNING, "Database error occurred.", e);
+        if (item != null) {
+            try (Connection connection = this.dbContext.getConnection()) {
+                this.dbContext.executeStoredUpdate("particle/delete", connection,
+                        item.getId());
+            } catch (final SQLException e) {
+                Bukkit.getLogger().log(Level.WARNING, "Database error occurred.", e);
+            }
         }
     }
 

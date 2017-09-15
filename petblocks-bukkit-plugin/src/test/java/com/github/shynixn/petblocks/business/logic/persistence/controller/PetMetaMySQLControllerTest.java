@@ -9,6 +9,7 @@ import com.github.shynixn.petblocks.api.persistence.entity.ParticleEffectMeta;
 import com.github.shynixn.petblocks.api.persistence.entity.PetMeta;
 import com.github.shynixn.petblocks.api.persistence.entity.PlayerMeta;
 import com.github.shynixn.petblocks.business.logic.Factory;
+import com.github.shynixn.petblocks.business.logic.persistence.entity.EngineData;
 import com.github.shynixn.petblocks.business.logic.persistence.entity.PetData;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -121,10 +122,10 @@ public class PetMetaMySQLControllerTest {
                     assertThrows(IllegalArgumentException.class, () -> controller.store(meta));
 
                     meta.setSkin(Material.STONE.getId(), (short) 5, null, false);
+                    meta.setEngine(new EngineData(4));
                     controller.store(meta);
 
                     assertEquals(1, controller.size());
-                    assertEquals("Notch", controller.getByPlayer(player).getPetDisplayName());
                 }
             }
         } catch (final Exception e) {
@@ -165,6 +166,7 @@ public class PetMetaMySQLControllerTest {
                     final PlayerMeta playerMeta = playerController.create(player);
                     playerController.store(playerMeta);
                     meta.setPlayerMeta(playerMeta);
+                    meta.setEngine(new EngineData(0));
                     controller.store(meta);
 
                     assertEquals(1, controller.size());
@@ -186,6 +188,9 @@ public class PetMetaMySQLControllerTest {
                     meta.setAge(250);
                     meta.setUnbreakable(false);
                     meta.setSoundEnabled(false);
+                    meta.setPlayerMeta(playerMeta);
+                    meta.setParticleEffectMeta(particleEffectMeta);
+                    meta.setEngine(new EngineData(2));
                     controller.store(meta);
 
                     assertEquals(1, controller.size());

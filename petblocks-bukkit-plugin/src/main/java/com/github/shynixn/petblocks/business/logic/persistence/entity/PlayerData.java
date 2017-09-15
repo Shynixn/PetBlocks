@@ -12,6 +12,7 @@ public class PlayerData extends PersistenceObject implements PlayerMeta {
 
     /**
      * Returns the name of the playerData
+     *
      * @return playerData
      */
     @Override
@@ -21,6 +22,7 @@ public class PlayerData extends PersistenceObject implements PlayerMeta {
 
     /**
      * Sets the name of the playerData
+     *
      * @param name name
      */
     @Override
@@ -30,6 +32,7 @@ public class PlayerData extends PersistenceObject implements PlayerMeta {
 
     /**
      * Returns the uuid of the playerData
+     *
      * @return uuid
      */
     @Override
@@ -39,6 +42,7 @@ public class PlayerData extends PersistenceObject implements PlayerMeta {
 
     /**
      * Sets the uuid of the playerData
+     *
      * @param uuid uuid
      */
     @Override
@@ -48,15 +52,21 @@ public class PlayerData extends PersistenceObject implements PlayerMeta {
 
     /**
      * Returns the player of the playerData
+     *
      * @return player
      */
     @Override
     public Player getPlayer() {
-        return Bukkit.getPlayer(this.uuid);
+        try {
+            return Bukkit.getPlayer(this.uuid);
+        } catch (final Exception ex) {
+            return null;
+        }
     }
 
     /**
      * Generates the playerData from a player
+     *
      * @param player player
      * @return playerData
      */
