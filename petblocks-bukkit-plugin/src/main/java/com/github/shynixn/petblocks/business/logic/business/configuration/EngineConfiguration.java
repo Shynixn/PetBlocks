@@ -147,7 +147,6 @@ public class EngineConfiguration implements EngineController {
         for (final String key : data.keySet()) {
             final Map<String, Object> content = ((MemorySection) this.plugin.getConfig().get("engines." + key)).getValues(true);
             try {
-                System.out.println("KEY:" + key);
                 this.engineContainers.add(new EngineData(Integer.parseInt(key), content));
             } catch (final Exception e) {
                 Bukkit.getLogger().log(Level.WARNING, "Failed to add content " + key + ".", e);
