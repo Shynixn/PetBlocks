@@ -3,16 +3,15 @@ package com.github.shynixn.petblocks.business.bukkit;
 import com.github.shynixn.petblocks.api.PetBlocksApi;
 import com.github.shynixn.petblocks.api.business.controller.PetBlockController;
 import com.github.shynixn.petblocks.api.persistence.controller.PetMetaController;
-import com.github.shynixn.petblocks.business.logic.business.PetBlockManager;
-import com.github.shynixn.petblocks.business.logic.business.configuration.Config;
 import com.github.shynixn.petblocks.business.bukkit.nms.NMSRegistry;
 import com.github.shynixn.petblocks.business.bukkit.nms.VersionSupport;
+import com.github.shynixn.petblocks.business.logic.business.PetBlockManager;
+import com.github.shynixn.petblocks.business.logic.business.configuration.Config;
 import com.github.shynixn.petblocks.business.metrics.Metrics;
 import com.github.shynixn.petblocks.lib.ReflectionUtils;
 import com.github.shynixn.petblocks.lib.UpdateUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.Sound;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.IOException;
@@ -81,7 +80,7 @@ public final class PetBlocksPlugin extends JavaPlugin {
             NMSRegistry.registerAll();
             try {
                 this.petBlockManager = new PetBlockManager(this);
-                ReflectionUtils.invokeMethodByClass(PetBlocksApi.class, "initialize", new Class[]{PetMetaController.class, PetBlockController.class}, new Object[]{petBlockManager.getPetMetaController(), petBlockManager.getPetBlockController()});
+                ReflectionUtils.invokeMethodByClass(PetBlocksApi.class, "initialize", new Class[]{PetMetaController.class, PetBlockController.class}, new Object[]{this.petBlockManager.getPetMetaController(), this.petBlockManager.getPetBlockController()});
                 Bukkit.getServer().getConsoleSender().sendMessage(PREFIX_CONSOLE + ChatColor.GREEN + "Enabled PetBlocks " + this.getDescription().getVersion() + " by Shynixn");
             } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
                 Bukkit.getLogger().log(Level.WARNING, "Failed to enable plugin.", e);
@@ -98,7 +97,7 @@ public final class PetBlocksPlugin extends JavaPlugin {
             NMSRegistry.unregisterAll();
             try {
                 this.petBlockManager.close();
-            } catch (Exception e) {
+            } catch (final Exception e) {
                 Bukkit.getLogger().log(Level.WARNING, "Failed to disable petblocks.", e);
             }
         }

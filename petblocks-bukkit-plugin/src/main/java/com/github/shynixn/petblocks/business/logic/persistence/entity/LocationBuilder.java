@@ -90,41 +90,13 @@ public class LocationBuilder implements ConfigurationSerializable, IPosition {
     }
 
     /**
-     * Initializes a new LocationBuilder with the given params
-     *
-     * @param worldName worldName
-     * @param x         x
-     * @param y         y
-     * @param z         z
-     */
-    public LocationBuilder(String worldName, double x, double y, double z) {
-        this(worldName, x, y, z, 0, 0);
-    }
-
-    /**
-     * Initializes a new LocationBuilder from the given BukkitLocation
-     *
-     * @param location location
-     */
-    public LocationBuilder(Location location) {
-        super();
-        if (location == null)
-            throw new IllegalArgumentException("Location cannot be null!");
-        this.world = location.getWorld().getName();
-        this.x = location.getX();
-        this.y = location.getY();
-        this.z = location.getZ();
-        this.yaw = location.getYaw();
-        this.pitch = location.getPitch();
-    }
-
-    /**
      * Parses the location out of the map
      *
      * @param items items
      * @throws Exception mapParseException
      */
     public LocationBuilder(Map<String, Object> items) throws Exception {
+        super();
         this.x = (double) items.get("x");
         this.y = (double) items.get("y");
         this.z = (double) items.get("z");
@@ -452,8 +424,8 @@ public class LocationBuilder implements ConfigurationSerializable, IPosition {
     @Override
     public String toString() {
         if (this.getWorld() == null)
-            return "location {" + " w unloaded" + " x " + this.getBlockX() + " y " + this.getBlockY() + " z " + this.getBlockZ() + "}";
-        return "location {" + " w " + this.getWorldName() + " x " + this.getBlockX() + " y " + this.getBlockY() + " z " + this.getBlockZ() + "}";
+            return "location {" + " w unloaded" + " x " + this.getBlockX() + " y " + this.getBlockY() + " z " + this.getBlockZ() + '}';
+        return "location {" + " w " + this.getWorldName() + " x " + this.getBlockX() + " y " + this.getBlockY() + " z " + this.getBlockZ() + '}';
     }
 
     /**

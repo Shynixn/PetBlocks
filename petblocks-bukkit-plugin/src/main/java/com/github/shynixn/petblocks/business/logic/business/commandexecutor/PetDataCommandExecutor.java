@@ -74,7 +74,7 @@ public final class PetDataCommandExecutor extends SimpleCommandExecutor.UnRegist
         }
     }
     private void handleNaming(Player player, String message, boolean skullNaming) {
-        PetBlock petBlock;
+        final PetBlock petBlock;
         if ((petBlock = PetBlocksApi.getDefaultPetBlockController().getByPlayer(player)) != null) {
             if (skullNaming) {
                 this.renameSkull(player, message, petBlock.getMeta(), petBlock);

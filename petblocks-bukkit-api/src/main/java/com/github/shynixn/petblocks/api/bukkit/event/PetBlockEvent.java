@@ -82,7 +82,7 @@ public class PetBlockEvent extends Event {
     /**
      * Bukkit implementation
      *
-     * @return
+     * @return handlerList
      */
     public static HandlerList getHandlerList() {
         return handlers;

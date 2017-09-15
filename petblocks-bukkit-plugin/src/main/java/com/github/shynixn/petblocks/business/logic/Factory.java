@@ -105,7 +105,6 @@ public class Factory {
                     connectionContext.executeUpdate(data, connection);
                 }
             } catch (final Exception e) {
-                e.printStackTrace();
                 Bukkit.getLogger().log(Level.WARNING, "Cannot execute creation.", e);
             }
         } else {
@@ -136,7 +135,7 @@ public class Factory {
                         oldData = true;
                     }
                 }
-            } catch (SQLException ignored) {
+            } catch (final SQLException ignored) {
 
             }
             if (oldData) {
@@ -146,8 +145,8 @@ public class Factory {
                     connectionContext.executeUpdate("DROP TABLE shy_particle_effect", connection);
                     connectionContext.executeUpdate("DROP TABLE shy_player", connection);
                     Bukkit.getLogger().log(Level.WARNING, "Finished deleting data.");
-                } catch (SQLException e) {
-                    e.printStackTrace();
+                } catch (final SQLException e) {
+                    Bukkit.getLogger().log(Level.WARNING, "Failed removing old data.", e);
                 }
             }
             try (Connection connection = connectionContext.getConnection()) {

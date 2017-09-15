@@ -278,7 +278,6 @@ public class PetDataRepository extends DataBaseRepository<PetMeta> implements Pe
             );
             item.setId(id);
         } catch (final SQLException e) {
-            e.printStackTrace();
             Bukkit.getLogger().log(Level.WARNING, "Database error occurred.", e);
         }
     }
@@ -299,8 +298,6 @@ public class PetDataRepository extends DataBaseRepository<PetMeta> implements Pe
         petMeta.setEngineId(resultSet.getInt("engine"));
         petMeta.setSkin(Material.getMaterial(resultSet.getString("material")).getId(), resultSet.getInt("data"), resultSet.getString("skull"), resultSet.getBoolean("unbreakable"));
         petMeta.setEnabled(resultSet.getBoolean("enabled"));
-        System.out.println("ENABLED: " +resultSet.getBoolean("enabled") );
-
         petMeta.setAge(resultSet.getInt("age"));
         petMeta.setSoundEnabled(resultSet.getBoolean("play_sounds"));
         return petMeta;

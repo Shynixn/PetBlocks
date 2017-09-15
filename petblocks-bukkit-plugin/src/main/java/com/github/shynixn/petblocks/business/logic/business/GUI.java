@@ -4,10 +4,9 @@ import com.github.shynixn.petblocks.api.business.entity.GUIItemContainer;
 import com.github.shynixn.petblocks.api.business.enumeration.GUIPage;
 import com.github.shynixn.petblocks.api.business.enumeration.Permission;
 import com.github.shynixn.petblocks.api.persistence.entity.PetMeta;
-import com.github.shynixn.petblocks.business.logic.business.configuration.Config;
 import com.github.shynixn.petblocks.business.bukkit.PetBlocksPlugin;
+import com.github.shynixn.petblocks.business.logic.business.configuration.Config;
 import com.github.shynixn.petblocks.business.logic.business.entity.GuiPageContainer;
-import com.github.shynixn.petblocks.business.logic.business.entity.ItemContainer;
 import com.github.shynixn.petblocks.lib.ChatBuilder;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -92,7 +91,7 @@ public class GUI {
     }
 
     public void backPage(Player player, PetMeta petMeta) {
-        GuiPageContainer container = this.manager.pages.get(player);
+        final GuiPageContainer container = this.manager.pages.get(player);
         if (container.page == GUIPage.MAIN) {
             player.closeInventory();
         } else {
@@ -177,15 +176,13 @@ public class GUI {
      * @param player player
      */
     private void setMinecraftHeadsCostumeItems(Player player, int type) {
-        Bukkit.getServer().getScheduler().runTaskAsynchronously(JavaPlugin.getPlugin(PetBlocksPlugin.class), () -> {
-            new ChatBuilder().text(Config.getInstance().getPrefix())
-                    .text("Pets collected by ")
-                    .component(">>Minecraft-Heads.com<<")
-                    .setColor(ChatColor.YELLOW)
-                    .setClickAction(ChatBuilder.ClickAction.OPEN_URL, "http://minecraft-heads.com")
-                    .setHoverText("Goto the Minecraft-Heads website!")
-                    .builder().sendMessage(player);
-        });
+        Bukkit.getServer().getScheduler().runTaskAsynchronously(JavaPlugin.getPlugin(PetBlocksPlugin.class), () -> new ChatBuilder().text(Config.getInstance().getPrefix())
+                .text("Pets collected by ")
+                .component(">>Minecraft-Heads.com<<")
+                .setColor(ChatColor.YELLOW)
+                .setClickAction(ChatBuilder.ClickAction.OPEN_URL, "http://minecraft-heads.com")
+                .setHoverText("Goto the Minecraft-Heads website!")
+                .builder().sendMessage(player));
         this.setCostumes(player, Config.getInstance().getMinecraftHeadsCostumesController().getAll(), GUIPage.MINECRAFTHEADS_COSTUMES, type, Permission.ALLMINECRAFTHEADSCOSTUMES.get());
     }
 

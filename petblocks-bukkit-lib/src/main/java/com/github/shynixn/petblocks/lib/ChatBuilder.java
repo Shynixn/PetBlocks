@@ -1,6 +1,5 @@
 package com.github.shynixn.petblocks.lib;
 
-import net.minecraft.server.v1_12_R1.PacketPlayOutChat;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -46,13 +45,6 @@ import java.util.logging.Level;
 public class ChatBuilder {
 
     private final List<Object> components = new ArrayList<>();
-
-    /**
-     * Initializes a new chatBuilder
-     */
-    public ChatBuilder() {
-        super();
-    }
 
     /**
      * Adds a text

@@ -119,8 +119,8 @@ public final class PetBlockCommandExecutor extends SimpleCommandExecutor.UnRegis
     }
 
     private void setCostumeCommand(Player player, String category, int number) {
-        this.providePet(player, (PetRunnable) (petMeta, petBlock) -> {
-            GUIItemContainer item;
+        this.providePet(player, (petMeta, petBlock) -> {
+            final GUIItemContainer item;
             if (category.equalsIgnoreCase("rare")) {
                 item = Config.getInstance().getRareCostumesController().getContainerByPosition(number);
             } else if (category.equalsIgnoreCase("ordinary")) {
@@ -243,7 +243,7 @@ public final class PetBlockCommandExecutor extends SimpleCommandExecutor.UnRegis
                     if (!skin.contains("http://"))
                         skin = "http://" + skin;
                 }
-                PetData petData = (PetData) meta;
+                final PetData petData = (PetData) meta;
                 petData.setSkin(Material.SKULL_ITEM.getId(), (short) 3, skin, false);
                 this.persistAsynchronously(meta);
                 if (petBlock != null)
@@ -276,7 +276,7 @@ public final class PetBlockCommandExecutor extends SimpleCommandExecutor.UnRegis
     }
 
     private void removePetCommand(Player player) {
-        PetBlock petBlock;
+        final PetBlock petBlock;
         if ((petBlock = this.manager.getPetBlockController().getByPlayer(player)) != null) {
             this.manager.getPetBlockController().remove(petBlock);
         }
@@ -301,7 +301,7 @@ public final class PetBlockCommandExecutor extends SimpleCommandExecutor.UnRegis
                     meta.setSkin(itemStack.getType().getId(), itemStack.getDurability(), null, false);
                 }
                 this.persistAsynchronously(meta);
-                PetBlock petBlock;
+                final PetBlock petBlock;
                 if ((petBlock = this.manager.getPetBlockController().getByPlayer(player)) != null) {
                     petBlock.respawn();
                 }
@@ -324,7 +324,7 @@ public final class PetBlockCommandExecutor extends SimpleCommandExecutor.UnRegis
     }
 
     private void providePet(Player player, PetRunnable runnable) {
-        PetBlock petBlock;
+        final PetBlock petBlock;
         if ((petBlock = this.manager.getPetBlockController().getByPlayer(player)) != null) {
             runnable.run(petBlock.getMeta(), petBlock);
         } else {

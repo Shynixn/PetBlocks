@@ -4,17 +4,15 @@ import com.github.shynixn.petblocks.api.PetBlocksApi;
 import com.github.shynixn.petblocks.api.business.entity.GUIItemContainer;
 import com.github.shynixn.petblocks.api.business.entity.PetBlock;
 import com.github.shynixn.petblocks.api.business.enumeration.GUIPage;
+import com.github.shynixn.petblocks.api.business.enumeration.Permission;
 import com.github.shynixn.petblocks.api.persistence.entity.EngineContainer;
 import com.github.shynixn.petblocks.api.persistence.entity.ParticleEffectMeta;
 import com.github.shynixn.petblocks.api.persistence.entity.PetMeta;
-import com.github.shynixn.petblocks.business.logic.business.configuration.Config;
-import com.github.shynixn.petblocks.api.business.enumeration.Permission;
 import com.github.shynixn.petblocks.business.bukkit.PetBlocksPlugin;
-import com.github.shynixn.petblocks.business.logic.business.PetBlockManager;
 import com.github.shynixn.petblocks.business.bukkit.nms.NMSRegistry;
+import com.github.shynixn.petblocks.business.logic.business.PetBlockManager;
+import com.github.shynixn.petblocks.business.logic.business.configuration.Config;
 import com.github.shynixn.petblocks.business.logic.business.configuration.ConfigPet;
-import com.github.shynixn.petblocks.business.logic.business.entity.GuiPageContainer;
-import com.github.shynixn.petblocks.business.logic.persistence.entity.PetData;
 import com.github.shynixn.petblocks.lib.ChatBuilder;
 import com.github.shynixn.petblocks.lib.SimpleListener;
 import org.bukkit.Bukkit;
@@ -42,7 +40,6 @@ public class PetDataListener extends SimpleListener {
     private final PetBlockManager manager;
     private final Set<Player> namingPlayers = new HashSet<>();
     private final Set<Player> namingSkull = new HashSet<>();
-    private final Set<Player> changingPlayers = new HashSet<>();
     private String headDatabaseTitle;
     private String headDatabaseSearch;
     private final ChatBuilder suggestHeadMessage = new ChatBuilder().text(Config.getInstance().getPrefix())
@@ -98,7 +95,7 @@ public class PetDataListener extends SimpleListener {
                 && this.manager.inventories.get(player).equals(event.getInventory())) {
             event.setCancelled(true);
             ((Player) event.getWhoClicked()).updateInventory();
-            PetBlock petBlock;
+            final PetBlock petBlock;
             if ((petBlock = PetBlocksApi.getDefaultPetBlockController().getByPlayer(player)) != null) {
                 this.handleClick(event, player, petBlock.getMeta(), petBlock);
             } else {
@@ -134,7 +131,6 @@ public class PetDataListener extends SimpleListener {
             }
 
             if ((petMeta = PetBlocksApi.getDefaultPetMetaController().getByPlayer(event.getPlayer())) != null) {
-                System.out.println(petMeta.isEnabled());
                 if (petMeta.isEnabled()) {
                     this.plugin.getServer().getScheduler().runTaskLater(this.plugin, () -> {
                         final PetBlock petBlock = PetBlocksApi.getDefaultPetBlockController().create(event.getPlayer(), petMeta);
@@ -186,11 +182,9 @@ public class PetDataListener extends SimpleListener {
     }
 
     private void handleClick(InventoryClickEvent event, Player player, PetMeta petMeta, PetBlock petBlock) {
-        ItemStack currentItem = event.getCurrentItem();
-        int itemSlot = event.getSlot() + manager.pages.get(player).currentCount + 1;
-        if (this.changingPlayers.contains(player))
-            return;
-        else if (this.manager.pages.get(player).page == GUIPage.MAIN && this.getGUIItem("my-pet").getPosition() == event.getSlot()) {
+        final ItemStack currentItem = event.getCurrentItem();
+        final int itemSlot = event.getSlot() + this.manager.pages.get(player).currentCount + 1;
+        if (this.manager.pages.get(player).page == GUIPage.MAIN && this.getGUIItem("my-pet").getPosition() == event.getSlot()) {
             this.handleClickOnMyPetItem(player, petMeta);
         } else if (this.isGUIItem(currentItem, "enable-pet")) {
             this.setPetBlock(player, petMeta);
@@ -232,9 +226,7 @@ public class PetDataListener extends SimpleListener {
         } else if (this.isGUIItem(currentItem, "riding-pet") && this.hasPermission(player, Permission.RIDEPET) && petBlock != null) {
             petBlock.ride(player);
         } else if (this.isGUIItem(currentItem, "suggest-heads")) {
-            Bukkit.getServer().getScheduler().runTaskAsynchronously(JavaPlugin.getPlugin(PetBlocksPlugin.class), () -> {
-                this.suggestHeadMessage.sendMessage(player);
-            });
+            Bukkit.getServer().getScheduler().runTaskAsynchronously(JavaPlugin.getPlugin(PetBlocksPlugin.class), () -> this.suggestHeadMessage.sendMessage(player));
             player.closeInventory();
         } else if (this.isGUIItem(currentItem, "head-database-costume") && this.hasPermission(player, Permission.ALLHEADATABASECOSTUMES)) {
             this.handleClickItemHeadDatabaseCostumes(player);
@@ -415,7 +407,7 @@ public class PetDataListener extends SimpleListener {
                                 petMeta.setSkin(itemStack.getType().getId(), itemStack.getDurability(), ((SkullMeta) itemStack.getItemMeta()).getOwner(), false);
                             }
                             this.persistAsynchronously(petMeta);
-                            PetBlock petBlock;
+                            final PetBlock petBlock;
                             if ((petBlock = this.getPetBlock(player)) != null) {
                                 petBlock.respawn();
                             }

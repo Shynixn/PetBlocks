@@ -650,7 +650,7 @@ public class ParticleEffectData extends PersistenceObject implements ParticleEff
      */
     @Override
     public String toString() {
-        return "effect {" + "name " + this.effect + " amound " + this.amount + " speed " + this.speed + "}";
+        return "effect {" + "name " + this.effect + " amound " + this.amount + " speed " + this.speed + '}';
     }
 
     /**

@@ -56,6 +56,7 @@ public class FixedItemConfiguration implements OtherGUIItemsController {
      * @param plugin plugin
      */
     public FixedItemConfiguration(Plugin plugin) {
+        super();
         if (plugin == null)
             throw new IllegalArgumentException("Plugin cannot be null!");
         this.plugin = plugin;
@@ -117,7 +118,7 @@ public class FixedItemConfiguration implements OtherGUIItemsController {
                 }
                 this.items.put(key, container);
             } catch (final Exception e) {
-                Bukkit.getLogger().log(Level.WARNING, "Failed to load guiItem " + key + ".", e);
+                Bukkit.getLogger().log(Level.WARNING, "Failed to load guiItem " + key + '.', e);
             }
         }
     }

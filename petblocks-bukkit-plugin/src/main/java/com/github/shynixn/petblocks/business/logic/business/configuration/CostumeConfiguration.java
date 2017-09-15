@@ -55,6 +55,7 @@ public class CostumeConfiguration implements CostumeController {
      * @param plugin plugin
      */
     public CostumeConfiguration(String costumeCategory, Plugin plugin) {
+        super();
         if (plugin == null)
             throw new IllegalArgumentException("Plugin cannot be null!");
         this.plugin = plugin;
@@ -119,8 +120,7 @@ public class CostumeConfiguration implements CostumeController {
                 final GUIItemContainer container = new ItemContainer(Integer.parseInt(key), ((MemorySection) data.get(key)).getValues(true));
                 this.items.add(container);
             } catch (final Exception e) {
-                e.printStackTrace();
-                Bukkit.getLogger().log(Level.WARNING, "Failed to load guiItem " + this.costumeCategory + "." + key + ".");
+                Bukkit.getLogger().log(Level.WARNING, "Failed to load guiItem " + this.costumeCategory + '.' + key + '.');
             }
         }
     }

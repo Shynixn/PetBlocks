@@ -48,7 +48,7 @@ final class CustomGroundArmorstand extends EntityArmorStand implements PetBlock 
         super(((CraftWorld) location.getWorld()).getHandle());
         this.isSpecial = true;
         this.petMeta = (PetData) meta;
-        this.owner = petMeta.getPlayerMeta().getPlayer();
+        this.owner = this.petMeta.getPlayerMeta().getPlayer();
         if (this.petMeta.getEngine().getEntityType().equalsIgnoreCase("RABBIT"))
             this.rabbit = new CustomRabbit(this.owner, meta);
         else if (this.petMeta.getEngine().getEntityType().equalsIgnoreCase("ZOMBIE"))
@@ -232,7 +232,7 @@ final class CustomGroundArmorstand extends EntityArmorStand implements PetBlock 
 
     @Override
     public void teleportWithOwner(Object mLocation) {
-        Location location = (Location) mLocation;
+        final Location location = (Location) mLocation;
         final EntityPlayer player = ((CraftPlayer) this.owner).getHandle();
         player.setPositionRotation(location.getX(), location.getY(), location.getZ(), location.getYaw(), location.getPitch());
         final PacketPlayOutEntityTeleport teleport = new PacketPlayOutEntityTeleport(player);

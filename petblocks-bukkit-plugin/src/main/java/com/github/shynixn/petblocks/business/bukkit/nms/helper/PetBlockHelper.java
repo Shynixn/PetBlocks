@@ -110,7 +110,7 @@ public final class PetBlockHelper {
                     Bukkit.getLogger()
                             .log(Level.WARNING, "Cannot play walking sound "
                                     + petData.getEngine().getWalkingSound().getName()
-                                    + " of " + petData.getEngine().getEntityType() + ".");
+                                    + " of " + petData.getEngine().getEntityType() + '.');
                 }
             }
             return milli;
@@ -124,8 +124,7 @@ public final class PetBlockHelper {
     }
 
     public static int doTick(int counter, PetBlock petBlock, TickCallBack callBack) {
-        PetData petData = (PetData) petBlock.getMeta();
-
+        final PetData petData = (PetData) petBlock.getMeta();
         if (!getArmorstand(petBlock).isDead() && getArmorstand(petBlock).getPassenger() == null && getEngineEntity(petBlock) != null && getArmorstand(petBlock).getVehicle() == null) {
             Location location = null;
             if (petData.getAge() >= ConfigPet.getInstance().getAge_largeticks())
@@ -181,7 +180,7 @@ public final class PetBlockHelper {
                         Bukkit.getLogger()
                                 .log(Level.WARNING, "Cannot play ambient sound "
                                         + petData.getEngine().getWalkingSound().getName()
-                                        + " of " + petData.getEngine().getEntityType() + ".");
+                                        + " of " + petData.getEngine().getEntityType() + '.');
                     }
                 }
             }

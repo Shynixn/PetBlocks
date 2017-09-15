@@ -2,8 +2,6 @@ package com.github.shynixn.petblocks.business.logic.business.configuration;
 
 import com.github.shynixn.petblocks.api.business.entity.GUIItemContainer;
 import com.github.shynixn.petblocks.api.persistence.controller.EngineController;
-import com.github.shynixn.petblocks.api.persistence.controller.IController;
-import com.github.shynixn.petblocks.api.persistence.controller.IFileController;
 import com.github.shynixn.petblocks.api.persistence.entity.EngineContainer;
 import com.github.shynixn.petblocks.business.logic.persistence.entity.EngineData;
 import org.bukkit.Bukkit;
@@ -57,6 +55,7 @@ public class EngineConfiguration implements EngineController {
      * @param plugin plugin
      */
     public EngineConfiguration(Plugin plugin) {
+        super();
         if (plugin == null)
             throw new IllegalArgumentException("Plugin cannot be null!");
         this.plugin = plugin;
@@ -129,7 +128,7 @@ public class EngineConfiguration implements EngineController {
      */
     @Override
     public List<GUIItemContainer> getAllGUIItems() {
-        List<GUIItemContainer> items = new ArrayList<>();
+        final List<GUIItemContainer> items = new ArrayList<>();
         for (final EngineContainer container : this.getAll()) {
             items.add(container.getGUIItem());
         }
@@ -149,7 +148,7 @@ public class EngineConfiguration implements EngineController {
             try {
                 this.engineContainers.add(new EngineData(Integer.parseInt(key), content));
             } catch (final Exception e) {
-                Bukkit.getLogger().log(Level.WARNING, "Failed to add content " + key + ".", e);
+                Bukkit.getLogger().log(Level.WARNING, "Failed to add content " + key + '.', e);
             }
         }
     }

@@ -74,6 +74,7 @@ public class ItemContainer implements GUIItemContainer {
      * @param lore        lore
      */
     public ItemContainer(boolean enabled, int position, GUIPage page, int id, int damage, String skin, boolean unbreakable, String name, String[] lore) {
+        super();
         this.enabled = enabled;
         this.position = position;
         this.page = page;
@@ -92,11 +93,9 @@ public class ItemContainer implements GUIItemContainer {
      * @throws Exception exception
      */
     public ItemContainer(int orderNumber, Map<String, Object> data) throws Exception {
+        super();
         this.position = orderNumber;
-        if (data.containsKey("enabled"))
-            this.enabled = (boolean) data.get("enabled");
-        else
-            this.enabled = true;
+        this.enabled = !data.containsKey("enabled") || (boolean) data.get("enabled");
         if (data.containsKey("position"))
             this.position = (int) data.get("position");
         if (data.containsKey("page"))
@@ -122,8 +121,8 @@ public class ItemContainer implements GUIItemContainer {
         if (data.containsKey("lore")) {
             final List<String> m = (List<String>) data.get("lore");
             if (m != null) {
-                List<String> lore = new ArrayList<>();
-                for (String s : m) {
+                final List<String> lore = new ArrayList<>();
+                for (final String s : m) {
                     if (!s.equals("none"))
                         lore.add(ChatColor.translateAlternateColorCodes('&', s));
                 }

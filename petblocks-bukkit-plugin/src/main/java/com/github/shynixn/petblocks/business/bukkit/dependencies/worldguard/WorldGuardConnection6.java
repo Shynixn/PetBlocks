@@ -51,7 +51,7 @@ public final class WorldGuardConnection6 {
      * @throws NoSuchMethodException     exception
      */
     public static boolean isAllowedToEnterRegionByRiding(Player player, boolean cacheSpawn) throws InvocationTargetException, IllegalAccessException, NoSuchMethodException {
-        PetBlock petBlock;
+        final PetBlock petBlock;
         if (!Config.getInstance().allowRidingOnRegionChanging() && ((petBlock = PetBlocksApi.getDefaultPetBlockController().getByPlayer(player)) != null)) {
             if (((ArmorStand) petBlock.getArmorStand()).getPassenger() != null && ((ArmorStand) petBlock.getArmorStand()).getPassenger().equals(player) || cacheSpawn) {
                 final Location location = player.getLocation();

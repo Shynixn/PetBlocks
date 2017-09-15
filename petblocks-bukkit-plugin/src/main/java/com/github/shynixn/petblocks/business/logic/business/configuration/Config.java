@@ -1,6 +1,9 @@
 package com.github.shynixn.petblocks.business.logic.business.configuration;
 
-import com.github.shynixn.petblocks.api.persistence.controller.*;
+import com.github.shynixn.petblocks.api.persistence.controller.CostumeController;
+import com.github.shynixn.petblocks.api.persistence.controller.EngineController;
+import com.github.shynixn.petblocks.api.persistence.controller.OtherGUIItemsController;
+import com.github.shynixn.petblocks.api.persistence.controller.ParticleController;
 import com.github.shynixn.petblocks.api.persistence.entity.ParticleEffectMeta;
 import com.github.shynixn.petblocks.api.persistence.entity.PetMeta;
 import com.github.shynixn.petblocks.business.bukkit.PetBlocksPlugin;
@@ -11,7 +14,6 @@ import com.github.shynixn.petblocks.business.logic.persistence.entity.PetData;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.configuration.MemorySection;
 
 import java.util.List;
@@ -220,14 +222,10 @@ public final class Config extends SimpleConfig {
             try {
                 meta = new ParticleEffectData(((MemorySection) this.getData("effect")).getValues(false));
                 petMeta.setParticleEffectMeta(meta);
-            } catch (Exception e) {
+            } catch (final Exception e) {
                 Bukkit.getLogger().log(Level.WARNING, "Failed to load particle effect for join pet.");
             }
         }
-    }
-
-    private String[] getDataAsStringArray(String path) {
-        return ((List<String>) this.getData(path)).toArray(new String[0]);
     }
 
     private List<String> getDataAsStringList(String path) {
@@ -255,9 +253,7 @@ public final class Config extends SimpleConfig {
         final List<String> includedRegions = this.getIncludedRegions();
         final List<String> excludedRegions = this.getExcludedRegion();
         if (includedRegions.contains("all")) {
-            System.out.println("REGIONS");
             for (final String k : NMSRegistry.getWorldGuardRegionsFromLocation(location)) {
-                System.out.println("REGION: " + k);
                 if (excludedRegions.contains(k))
                 {
                     return false;

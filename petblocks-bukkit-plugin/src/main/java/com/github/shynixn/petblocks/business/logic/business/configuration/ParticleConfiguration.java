@@ -53,6 +53,7 @@ public class ParticleConfiguration implements ParticleController {
      * @param plugin plugin
      */
     public ParticleConfiguration(Plugin plugin) {
+        super();
         if (plugin == null)
             throw new IllegalArgumentException("Plugin cannot be null!");
         this.plugin = plugin;
@@ -146,7 +147,7 @@ public class ParticleConfiguration implements ParticleController {
                 final ParticleEffectMeta meta = new ParticleEffectData(((MemorySection) ((MemorySection) data.get(key)).getValues(false).get("effect")).getValues(true));
                 this.particleCache.put(container, meta);
             } catch (final Exception e) {
-                Bukkit.getLogger().log(Level.WARNING, "Failed to load particle " + key + ".", e);
+                Bukkit.getLogger().log(Level.WARNING, "Failed to load particle " + key + '.', e);
             }
         }
     }

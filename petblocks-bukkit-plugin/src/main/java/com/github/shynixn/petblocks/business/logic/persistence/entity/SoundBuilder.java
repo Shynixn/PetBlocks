@@ -354,7 +354,7 @@ public class SoundBuilder implements SoundMeta {
                         this.text = "ENTITY_" + this.text.toUpperCase().split("_")[0] + "_AMBIENT";
                         return;
                     }
-                    throw new RuntimeException("Failed to interpret sounds. [" + this.text + "]");
+                    throw new RuntimeException("Failed to interpret sounds. [" + this.text + ']');
                 }
             }
         }
