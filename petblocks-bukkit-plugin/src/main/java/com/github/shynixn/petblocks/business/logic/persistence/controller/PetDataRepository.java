@@ -115,7 +115,6 @@ public class PetDataRepository extends DataBaseRepository<PetMeta> implements Pe
         } catch (final SQLException e) {
             Bukkit.getLogger().log(Level.WARNING, "Database error occurred.", e);
         }
-        petMeta.setEnabled(PetBlocksApi.getDefaultPetBlockController().getByPlayer(player) != null);
         petMeta.setEngine(Config.getInstance().getEngineController().getById(((PetData)petMeta).getEngineId()));
         ((PetData)petMeta).setParticleEffectMeta(this.particleEffectMetaController.getById(((PetData)petMeta).getParticleId()));
         ((PetData)petMeta).setPlayerMeta(this.playerMetaController.getById(((PetData)petMeta).getPlayerId()));
@@ -300,6 +299,8 @@ public class PetDataRepository extends DataBaseRepository<PetMeta> implements Pe
         petMeta.setEngineId(resultSet.getInt("engine"));
         petMeta.setSkin(Material.getMaterial(resultSet.getString("material")).getId(), resultSet.getInt("data"), resultSet.getString("skull"), resultSet.getBoolean("unbreakable"));
         petMeta.setEnabled(resultSet.getBoolean("enabled"));
+        System.out.println("ENABLED: " +resultSet.getBoolean("enabled") );
+
         petMeta.setAge(resultSet.getInt("age"));
         petMeta.setSoundEnabled(resultSet.getBoolean("play_sounds"));
         return petMeta;

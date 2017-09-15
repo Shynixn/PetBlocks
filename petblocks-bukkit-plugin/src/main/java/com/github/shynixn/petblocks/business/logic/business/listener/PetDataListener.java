@@ -132,11 +132,15 @@ public class PetDataListener extends SimpleListener {
                     this.manager.getPetMetaController().store(meta);
                 }
             }
-            if ((petMeta = PetBlocksApi.getDefaultPetMetaController().getByPlayer(event.getPlayer())) != null && petMeta.isEnabled()) {
-                this.plugin.getServer().getScheduler().runTaskLater(this.plugin, () -> {
-                    final PetBlock petBlock = PetBlocksApi.getDefaultPetBlockController().create(event.getPlayer(), petMeta);
-                    PetBlocksApi.getDefaultPetBlockController().store(petBlock);
-                }, 2L);
+
+            if ((petMeta = PetBlocksApi.getDefaultPetMetaController().getByPlayer(event.getPlayer())) != null) {
+                System.out.println(petMeta.isEnabled());
+                if (petMeta.isEnabled()) {
+                    this.plugin.getServer().getScheduler().runTaskLater(this.plugin, () -> {
+                        final PetBlock petBlock = PetBlocksApi.getDefaultPetBlockController().create(event.getPlayer(), petMeta);
+                        PetBlocksApi.getDefaultPetBlockController().store(petBlock);
+                    }, 2L);
+                }
             }
         });
     }
@@ -249,7 +253,7 @@ public class PetDataListener extends SimpleListener {
             this.manager.gui.backPage(player, petMeta);
         } else if (this.manager.pages.get(player).page == GUIPage.ENGINES && this.hasPermission(player, Permission.ALLPETTYPES.get(), Permission.SINGLEPETTYPE.get() + "" + itemSlot)) {
             final EngineContainer engineContainer = Config.getInstance().getEngineController().getById(itemSlot);
-            if(engineContainer == null)
+            if (engineContainer == null)
                 return;
             petMeta.setEngine(engineContainer);
             this.persistAsynchronously(petMeta);

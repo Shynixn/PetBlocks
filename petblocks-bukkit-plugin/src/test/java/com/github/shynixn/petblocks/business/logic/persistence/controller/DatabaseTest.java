@@ -43,7 +43,12 @@ public class DatabaseTest {
                 }
             }
 
-            final HikariConfig config = new HikariConfig();
+            while (true)
+            {
+                Thread.sleep(5000);
+            }
+
+        /*    final HikariConfig config = new HikariConfig();
             config.setDriverClassName("com.mysql.jdbc.Driver");
             config.setConnectionTestQuery("SELECT 1");
             config.setJdbcUrl("jdbc:mysql://localhost:3306/db");
@@ -52,7 +57,7 @@ public class DatabaseTest {
             config.setMaximumPoolSize(50);
             final HikariDataSource ds = new HikariDataSource(config);
             ds.close();
-            database.stop();
+            database.stop();*/
         } catch (final Exception ex) {
             Logger.getLogger(this.getClass().getSimpleName()).log(Level.WARNING, "Failed to enable database.", ex);
             Assert.fail();

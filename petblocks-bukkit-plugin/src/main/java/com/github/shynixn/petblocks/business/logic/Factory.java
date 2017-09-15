@@ -19,6 +19,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Connection;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.regex.Pattern;
@@ -124,6 +125,30 @@ public class Factory {
                 plugin.getConfig().set("sql.enabled", false);
                 Factory.initialize(plugin);
                 return;
+            }
+
+            boolean oldData = false;
+            try (Connection connection = connectionContext.getConnection()) {
+                final ResultSet set = connectionContext.executeQuery("SELECT * FROM shy_petblock", connection).executeQuery();
+                for (int i = 1; i <= set.getMetaData().getColumnCount(); i++) {
+                    final String name = set.getMetaData().getColumnName(i);
+                    if (name.equals("movement_type")) {
+                        oldData = true;
+                    }
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+            if (oldData) {
+                Bukkit.getLogger().log(Level.WARNING, "Found old table data. Deleting previous entries...");
+                try (Connection connection = connectionContext.getConnection()) {
+                    connectionContext.executeUpdate("DROP TABLE shy_petblock", connection);
+                    connectionContext.executeUpdate("DROP TABLE shy_particle_effect", connection);
+                    connectionContext.executeUpdate("DROP TABLE shy_player", connection);
+                    Bukkit.getLogger().log(Level.WARNING, "Finished deleting data.");
+                } catch (SQLException ignored) {
+
+                }
             }
             try (Connection connection = connectionContext.getConnection()) {
                 for (final String data : connectionContext.getStringFromFile("create-mysql").split(Pattern.quote(";"))) {
