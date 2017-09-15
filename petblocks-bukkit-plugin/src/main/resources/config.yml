@@ -287,7 +287,7 @@ gui:
     default-engine: 1
   items:
     my-pet:
-      position: 9
+      position: 22
     default-appearance:
       id: 2
       damage: 0
@@ -308,20 +308,20 @@ gui:
       id: 397
       damage: 3
       skin: 'textures.minecraft.net/texture/3ebf907494a935e955bfcadab81beafb90fb9be49c7026ba97d798d5f1a23'
-      name: '&c&lDisable Petblock'
+      name: '&aPrevious page'
       unbreakable: false
       lore:
-        - ''
+        - 'none'
     next-page:
       enabled: true
       position: 53
       id: 397
       damage: 3
       skin: 'textures.minecraft.net/texture/1b6f1a25b6bc199946472aedb370522584ff6f4e83221e5946bd2e41b5ca13b'
-      name: '&c&lDisable Petblock'
+      name: '&aNext page'
       unbreakable: false
       lore:
-        - ''
+        - 'none'
     back:
       enabled: true
       position: 49
@@ -331,10 +331,10 @@ gui:
       name: '&cBack'
       unbreakable: false
       lore:
-        - '&eCloses the current window'
+        - '&7Closes the current window.'
     enable-pet:
       enabled: true
-      position: 10
+      position: 31
       page: 'MAIN'
       id: 397
       damage: 3
@@ -342,10 +342,10 @@ gui:
       name: '&a&lEnable Petblock'
       unbreakable: false
       lore:
-        - '&eSpawn your petblock'
+        - '&7Spawn your pet.'
     disable-pet:
       enabled: true
-      position: 10
+      position: 31
       page: 'MAIN'
       id: 397
       damage: 3
@@ -353,51 +353,51 @@ gui:
       name: '&c&lDisable Petblock'
       unbreakable: false
       lore:
-        - '&eRemove your petblock'
+        - '&7Remove your pet.'
     engine-settings:
       enabled: true
-      position: 17
+      position: 18
       page: 'MAIN'
       id: 397
       damage: 3
       skin: 'textures.minecraft.net/texture/8f14f3179b86f69b3efa7472dacaeb2339f6290d2d817362793348abd98e021'
-      name: '&aEngine-Settings'
+      name: '&a&lEngines'
       unbreakable: false
       lore:
-        - '&eCustomize the behaviour of your pet.'
+        - '&7Customize the behaviour of your pet.'
     wardrobe:
       enabled: true
-      position: 27
+      position: 26
       page: 'MAIN'
       id: 116
       damage: 1
       skin: 'none'
-      name: '&c&lDisable Petblock'
+      name: '&6&lWardrobe'
       unbreakable: false
       lore:
-        - '&eRemove your petblock'
+        - '&7Change the appearance of your pet.'
     sounds-enabled-pet:
       enabled: true
-      position: 38
+      position: 27
       page: 'MAIN'
-      id: 19
-      damage: 0
-      skin: 'none'
-      name: '&c&lDisable Petblock'
+      id: 397
+      damage: 3
+      skin: 'textures.minecraft.net/texture/f72b5cf4fb2e3d9158a4f5ece714970bcc1371ca029e645555927fd156e184'
+      name: '&9&lMute'
       unbreakable: false
       lore:
-        - ''
+        - '&7Disable sounds for your pet.'
     sounds-disabled-pet:
       enabled: true
-      position: 38
+      position: 27
       page: 'MAIN'
-      id: 19
-      damage: 1
-      skin: 'none'
-      name: '&c&lDisable Petblock'
+      id: 397
+      damage: 3
+      skin: 'textures.minecraft.net/texture/70951389f173328e8b26c08f7116a455118da3f17d985c4f4b5a5c7da76df1'
+      name: '&9&lUnmute'
       unbreakable: false
       lore:
-        - ''
+        - '&7Enable sounds for your pet.'
     ordinary-costume:
       enabled: true
       position: 20
@@ -405,10 +405,10 @@ gui:
       id: 351
       damage: 1
       skin: 'none'
-      name: '&c&lDisable Petblock'
+      name: '&e&lOrdinary Costumes'
       unbreakable: false
       lore:
-        - ''
+        - '&7Simple costumes'
     color-costume:
       enabled: true
       position: 21
@@ -416,10 +416,10 @@ gui:
       id: 351
       damage: 2
       skin: 'none'
-      name: '&c&lDisable Petblock'
+      name: '&a&lColored Costumes'
       unbreakable: false
       lore:
-        - ''
+        - '&7All colored costumes'
     rare-costume:
       enabled: true
       position: 22
@@ -427,21 +427,21 @@ gui:
       id: 351
       damage: 3
       skin: 'none'
-      name: '&c&lDisable Petblock'
+      name: '&d&lRare Costumes'
       unbreakable: false
       lore:
-        - ''
+        - '&7Exclusive costumes'
     minecraft-heads-costume:
       enabled: true
       position: 23
       page: 'WARDROBE'
       id: 397
       damage: 3
-      name: '&c&lDisable Petblock'
+      name: '&9&lMinecraft-Heads Costumes'
       unbreakable: false
       skin: 'textures.minecraft.net/texture/fec052be76e39148a27f255ec537dff92018c79744202d60c51bc67d618ae36a'
       lore:
-        - ''
+        - 'none'
     head-database-costume:
       enabled: true
       position: 24
@@ -449,32 +449,32 @@ gui:
       id: 397
       damage: 3
       skin: 'textures.minecraft.net/texture/3bb612eb495ede2c5ca5178d2d1ecf1ca5a255d25dfc3c254bc47f6848791d8'
-      name: '&c&lDisable Petblock'
+      name: '&c&lHeaddatabase Costumes'
       unbreakable: false
       lore:
-        - '&eExternal database with regular updates'
+        - '&7External head-database'
     call-pet:
       enabled: true
-      position: 36
+      position: 38
       page: 'MAIN'
       id: 370
       damage: 0
       skin: 'none'
-      name: '&c&lDisable Petblock'
+      name: '&2&lCall'
       unbreakable: false
       lore:
-        - ''
+        - '&7Teleports your pet to you.'
     particle-pet:
       enabled: true
-      position: 26
+      position: 35
       page: 'MAIN'
       id: 331
       damage: 0
       skin: 'none'
-      name: '&cParticleeffect-Settings'
+      name: '&4&lParticles'
       unbreakable: false
       lore:
-        - '&eCustomize the effects of your pet.'
+        - '&7Customize the effects of your pet.'
     suggest-heads:
       enabled: true
       position: 43
@@ -484,62 +484,63 @@ gui:
       skin: 'none'
       unbreakable: false
       lore:
-        - ''
+        - '&7Submit skins for pets or'
+        - '&7make a suggestion for a new pet.'
     cannon-pet:
       enabled: true
-      position: 37
+      position: 11
       page: 'MAIN'
       id: 332
       damage: 0
       skin: 'none'
-      name: '&c&lDisable Petblock'
+      name: '&f&lLaunch'
       unbreakable: false
       lore:
-        - ''
+        - '&7Shoot your pet like a cannon.'
     skullnaming-pet:
       enabled: true
-      position: 29
-      page: 'MAIN'
+      position: 37
+      page: 'WARDROBE'
       id: 145
       damage: 0
       skin: 'none'
-      name: '&c&lDisable Petblock'
+      name: '&2&lCustom'
       unbreakable: false
       lore:
-        - ''
+        - '&7Enter the skin of your pet.'
     naming-pet:
       enabled: true
+      position: 4
       unbreakable: false
-      position: 28
       id: 421
       damage: 0
       skin: 'none'
-      name: '&c&lDisable Petblock'
+      name: '&5&lRename'
       page: 'MAIN'
       lore:
-        - ''
+        - '&7Change the name of your pet.'
     hat-pet:
       enabled: true
-      position: 46
+      position: 15
       page: 'MAIN'
       id: 260
       damage: 0
       skin: 'none'
-      name: '&c&lDisable Petblock'
+      name: '&b&lHat'
       unbreakable: false
       lore:
-        - ''
+        - '&7Wear your pet like a hat.'
     riding-pet:
       enabled: true
-      position: 47
+      position: 42
       page: 'MAIN'
       id: 329
       damage: 0
       skin: 'none'
-      name: '&c&lDisable Petblock'
+      name: '&e&lRide'
       unbreakable: false
       lore:
-        - ''
+        - '&7Starts riding your pet.'
 #--- DO NOT COPY ITEMS
 
 ############################
@@ -1128,1181 +1129,1181 @@ wardrobe:
      1:
       id: 1
       damage: 0
-      skin: ''
-      name: ''
+      skin: 'none'
+      name: 'none'
       unbreakable: false
       lore:
-        - ''
+        - 'none'
      2:
       id: 1
       damage: 1
-      skin: ''
-      name: ''
+      skin: 'none'
+      name: 'none'
       unbreakable: false
       lore:
-        - ''
+        - 'none'
      3:
       id: 1
       damage: 2
-      skin: ''
-      name: ''
+      skin: 'none'
+      name: 'none'
       unbreakable: false
       lore:
-        - ''
+        - 'none'
      4:
       id: 1
       damage: 3
-      skin: ''
-      name: ''
+      skin: 'none'
+      name: 'none'
       unbreakable: false
       lore:
-        - ''
+        - 'none'
      5:
       id: 1
       damage: 4
-      skin: ''
-      name: ''
+      skin: 'none'
+      name: 'none'
       unbreakable: false
       lore:
-        - ''
+        - 'none'
      6:
       id: 1
       damage: 5
-      skin: ''
-      name: ''
+      skin: 'none'
+      name: 'none'
       unbreakable: false
       lore:
-        - ''
+        - 'none'
      7:
       id: 1
       damage: 6
-      skin: ''
-      name: ''
+      skin: 'none'
+      name: 'none'
       unbreakable: false
       lore:
-        - ''
+        - 'none'
      8:
       id: 2
       damage: 0
-      skin: ''
-      name: ''
+      skin: 'none'
+      name: 'none'
       unbreakable: false
       lore:
-        - ''
+        - 'none'
      9:
       id: 3
       damage: 0
-      skin: ''
-      name: ''
+      skin: 'none'
+      name: 'none'
       unbreakable: false
       lore:
-        - ''
+        - 'none'
      10:
       id: 3
       damage: 1
-      skin: ''
-      name: ''
+      skin: 'none'
+      name: 'none'
       unbreakable: false
       lore:
-        - ''
+        - 'none'
      11:
       id: 3
       damage: 2
-      skin: ''
-      name: ''
+      skin: 'none'
+      name: 'none'
       unbreakable: false
       lore:
-        - ''
+        - 'none'
      12:
       id: 4
       damage: 0
-      skin: ''
-      name: ''
+      skin: 'none'
+      name: 'none'
       unbreakable: false
       lore:
-        - ''
+        - 'none'
      13:
       id: 5
       damage: 0
-      skin: ''
-      name: ''
+      skin: 'none'
+      name: 'none'
       unbreakable: false
       lore:
-        - ''
+        - 'none'
      14:
       id: 5
       damage: 1
-      skin: ''
-      name: ''
+      skin: 'none'
+      name: 'none'
       unbreakable: false
       lore:
-        - ''
+        - 'none'
      15:
       id: 5
       damage: 2
-      skin: ''
-      name: ''
+      skin: 'none'
+      name: 'none'
       unbreakable: false
       lore:
-        - ''
+        - 'none'
      16:
       id: 5
       damage: 3
-      skin: ''
-      name: ''
+      skin: 'none'
+      name: 'none'
       unbreakable: false
       lore:
-        - ''
+        - 'none'
      17:
       id: 5
       damage: 4
-      skin: ''
-      name: ''
+      skin: 'none'
+      name: 'none'
       unbreakable: false
       lore:
-        - ''
+        - 'none'
      18:
       id: 5
       damage: 5
-      skin: ''
-      name: ''
+      skin: 'none'
+      name: 'none'
       unbreakable: false
       lore:
-        - ''
+        - 'none'
      19:
       id: 7
       damage: 0
-      skin: ''
-      name: ''
+      skin: 'none'
+      name: 'none'
       unbreakable: false
       lore:
-        - ''
+        - 'none'
      20:
       id: 12
       damage: 0
-      skin: ''
-      name: ''
+      skin: 'none'
+      name: 'none'
       unbreakable: false
       lore:
-        - ''
+        - 'none'
      21:
       id: 12
       damage: 1
-      skin: ''
-      name: ''
+      skin: 'none'
+      name: 'none'
       unbreakable: false
       lore:
-        - ''
+        - 'none'
      22:
       id: 13
       damage: 0
-      skin: ''
-      name: ''
+      skin: 'none'
+      name: 'none'
       unbreakable: false
       lore:
-        - ''
+        - 'none'
      23:
       id: 14
       damage: 0
-      skin: ''
-      name: ''
+      skin: 'none'
+      name: 'none'
       unbreakable: false
       lore:
-        - ''
+        - 'none'
      24:
       id: 15
       damage: 0
-      skin: ''
-      name: ''
+      skin: 'none'
+      name: 'none'
       unbreakable: false
       lore:
-        - ''
+        - 'none'
      25:
       id: 16
       damage: 0
-      skin: ''
-      name: ''
+      skin: 'none'
+      name: 'none'
       unbreakable: false
       lore:
-        - ''
+        - 'none'
      26:
       id: 17
       damage: 0
-      skin: ''
-      name: ''
+      skin: 'none'
+      name: 'none'
       unbreakable: false
       lore:
-        - ''
+        - 'none'
      27:
       id: 17
       damage: 1
-      skin: ''
-      name: ''
+      skin: 'none'
+      name: 'none'
       unbreakable: false
       lore:
-        - ''
+        - 'none'
      28:
       id: 17
       damage: 2
-      skin: ''
-      name: ''
+      skin: 'none'
+      name: 'none'
       unbreakable: false
       lore:
-        - ''
+        - 'none'
      29:
       id: 17
       damage: 2
-      skin: ''
-      name: ''
+      skin: 'none'
+      name: 'none'
       unbreakable: false
       lore:
-        - ''
+        - 'none'
      30:
       id: 17
       damage: 3
-      skin: ''
-      name: ''
+      skin: 'none'
+      name: 'none'
       unbreakable: false
       lore:
-        - ''
+        - 'none'
      31:
       id: 18
       damage: 0
-      skin: ''
-      name: ''
+      skin: 'none'
+      name: 'none'
       unbreakable: false
       lore:
-        - ''
+        - 'none'
      32:
       id: 18
       damage: 1
-      skin: ''
-      name: ''
+      skin: 'none'
+      name: 'none'
       unbreakable: false
       lore:
-        - ''
+        - 'none'
      33:
       id: 18
       damage: 2
-      skin: ''
-      name: ''
+      skin: 'none'
+      name: 'none'
       unbreakable: false
       lore:
-        - ''
+        - 'none'
      34:
       id: 18
       damage: 3
-      skin: ''
-      name: ''
+      skin: 'none'
+      name: 'none'
       unbreakable: false
       lore:
-        - ''
+        - 'none'
      35:
       id: 19
       damage: 0
-      skin: ''
-      name: ''
+      skin: 'none'
+      name: 'none'
       unbreakable: false
       lore:
-        - ''
+        - 'none'
      36:
       id: 19
       damage: 1
-      skin: ''
-      name: ''
+      skin: 'none'
+      name: 'none'
       unbreakable: false
       lore:
-        - ''
+        - 'none'
      37:
       id: 20
       damage: 0
-      skin: ''
-      name: ''
+      skin: 'none'
+      name: 'none'
       unbreakable: false
       lore:
-        - ''
+        - 'none'
      38:
       id: 21
       damage: 0
-      skin: ''
-      name: ''
+      skin: 'none'
+      name: 'none'
       unbreakable: false
       lore:
-        - ''
+        - 'none'
      39:
       id: 22
       damage: 0
-      skin: ''
-      name: ''
+      skin: 'none'
+      name: 'none'
       unbreakable: false
       lore:
-        - ''
+        - 'none'
      40:
       id: 23
       damage: 0
-      skin: ''
-      name: ''
+      skin: 'none'
+      name: 'none'
       unbreakable: false
       lore:
-        - ''
+        - 'none'
      41:
       id: 24
       damage: 0
-      skin: ''
-      name: ''
+      skin: 'none'
+      name: 'none'
       unbreakable: false
       lore:
-        - ''
+        - 'none'
      42:
       id: 24
       damage: 1
-      skin: ''
-      name: ''
+      skin: 'none'
+      name: 'none'
       unbreakable: false
       lore:
-        - ''
+        - 'none'
      43:
       id: 24
       damage: 2
-      skin: ''
-      name: ''
+      skin: 'none'
+      name: 'none'
       unbreakable: false
       lore:
-        - ''
+        - 'none'
      44:
       id: 25
       damage: 0
-      skin: ''
-      name: ''
+      skin: 'none'
+      name: 'none'
       unbreakable: false
       lore:
-        - ''
+        - 'none'
      45:
       id: 29
       damage: 0
-      skin: ''
-      name: ''
+      skin: 'none'
+      name: 'none'
       unbreakable: false
       lore:
-        - ''
+        - 'none'
      46:
       id: 33
       damage: 0
-      skin: ''
-      name: ''
+      skin: 'none'
+      name: 'none'
       unbreakable: false
       lore:
-        - ''
+        - 'none'
      47:
       id: 41
       damage: 0
-      skin: ''
-      name: ''
+      skin: 'none'
+      name: 'none'
       unbreakable: false
       lore:
-        - ''
+        - 'none'
      48:
       id: 42
       damage: 0
-      skin: ''
-      name: ''
+      skin: 'none'
+      name: 'none'
       unbreakable: false
       lore:
-        - ''
+        - 'none'
      49:
       id: 44
       damage: 0
-      skin: ''
-      name: ''
+      skin: 'none'
+      name: 'none'
       unbreakable: false
       lore:
-        - ''
+        - 'none'
      50:
       id: 45
       damage: 0
-      skin: ''
-      name: ''
+      skin: 'none'
+      name: 'none'
       unbreakable: false
       lore:
-        - ''
+        - 'none'
      51:
       id: 57
       damage: 0
-      skin: ''
-      name: ''
+      skin: 'none'
+      name: 'none'
       unbreakable: false
       lore:
-        - ''
+        - 'none'
      52:
       id: 80
       damage: 0
-      skin: ''
-      name: ''
+      skin: 'none'
+      name: 'none'
       unbreakable: false
       lore:
-        - ''
+        - 'none'
      53:
       id: 82
       damage: 0
-      skin: ''
-      name: ''
+      skin: 'none'
+      name: 'none'
       unbreakable: false
       lore:
-        - ''
+        - 'none'
      54:
       id: 87
       damage: 0
-      skin: ''
-      name: ''
+      skin: 'none'
+      name: 'none'
       unbreakable: false
       lore:
-        - ''
+        - 'none'
      55:
       id: 88
       damage: 0
-      skin: ''
-      name: ''
+      skin: 'none'
+      name: 'none'
       unbreakable: false
       lore:
-        - ''
+        - 'none'
    color:
      1:
       id: 35
       damage: 12
-      skin: ''
-      name: ''
+      skin: 'none'
+      name: 'none'
       unbreakable: false
       lore:
-        - ''
+        - 'none'
      2:
       id: 35
       damage: 1
-      skin: ''
-      name: ''
+      skin: 'none'
+      name: 'none'
       unbreakable: false
       lore:
-        - ''
+        - 'none'
      3:
       id: 35
       damage: 2
-      skin: ''
-      name: ''
+      skin: 'none'
+      name: 'none'
       unbreakable: false
       lore:
-        - ''
+        - 'none'
      4:
       id: 35
       damage: 3
-      skin: ''
-      name: ''
+      skin: 'none'
+      name: 'none'
       unbreakable: false
       lore:
-        - ''
+        - 'none'
      5:
       id: 35
       damage: 4
-      skin: ''
-      name: ''
+      skin: 'none'
+      name: 'none'
       unbreakable: false
       lore:
-        - ''
+        - 'none'
      6:
       id: 35
       damage: 5
-      skin: ''
-      name: ''
+      skin: 'none'
+      name: 'none'
       unbreakable: false
       lore:
-        - ''
+        - 'none'
      7:
       id: 35
       damage: 6
-      skin: ''
-      name: ''
+      skin: 'none'
+      name: 'none'
       unbreakable: false
       lore:
-        - ''
+        - 'none'
      8:
       id: 35
       damage: 7
-      skin: ''
-      name: ''
+      skin: 'none'
+      name: 'none'
       unbreakable: false
       lore:
-        - ''
+        - 'none'
      9:
       id: 35
       damage: 8
-      skin: ''
-      name: ''
+      skin: 'none'
+      name: 'none'
       unbreakable: false
       lore:
-        - ''
+        - 'none'
      10:
       id: 35
       damage: 9
-      skin: ''
-      name: ''
+      skin: 'none'
+      name: 'none'
       unbreakable: false
       lore:
-        - ''
+        - 'none'
      11:
       id: 35
       damage: 10
-      skin: ''
-      name: ''
+      skin: 'none'
+      name: 'none'
       unbreakable: false
       lore:
-        - ''
+        - 'none'
      12:
       id: 35
       damage: 11
-      skin: ''
-      name: ''
+      skin: 'none'
+      name: 'none'
       unbreakable: false
       lore:
-        - ''
+        - 'none'
      13:
       id: 35
       damage: 12
-      skin: ''
-      name: ''
+      skin: 'none'
+      name: 'none'
       unbreakable: false
       lore:
-        - ''
+        - 'none'
      14:
       id: 35
       damage: 13
-      skin: ''
-      name: ''
+      skin: 'none'
+      name: 'none'
       unbreakable: false
       lore:
-        - ''
+        - 'none'
      15:
       id: 35
       damage: 14
-      skin: ''
-      name: ''
+      skin: 'none'
+      name: 'none'
       unbreakable: false
       lore:
-        - ''
+        - 'none'
      16:
       id: 35
       damage: 15
-      skin: ''
-      name: ''
+      skin: 'none'
+      name: 'none'
       unbreakable: false
       lore:
-        - ''
+        - 'none'
      17:
       id: 95
       damage: 0
-      skin: ''
-      name: ''
+      skin: 'none'
+      name: 'none'
       unbreakable: false
       lore:
-        - ''
+        - 'none'
      18:
       id: 95
       damage: 1
-      skin: ''
-      name: ''
+      skin: 'none'
+      name: 'none'
       unbreakable: false
       lore:
-        - ''
+        - 'none'
      19:
       id: 95
       damage: 2
-      skin: ''
-      name: ''
+      skin: 'none'
+      name: 'none'
       unbreakable: false
       lore:
-        - ''
+        - 'none'
      20:
       id: 95
       damage: 3
-      skin: ''
-      name: ''
+      skin: 'none'
+      name: 'none'
       unbreakable: false
       lore:
-        - ''
+        - 'none'
      21:
       id: 95
       damage: 4
-      skin: ''
-      name: ''
+      skin: 'none'
+      name: 'none'
       unbreakable: false
       lore:
-        - ''
+        - 'none'
      22:
       id: 95
       damage: 5
-      skin: ''
-      name: ''
+      skin: 'none'
+      name: 'none'
       unbreakable: false
       lore:
-        - ''
+        - 'none'
      23:
       id: 95
       damage: 6
-      skin: ''
-      name: ''
+      skin: 'none'
+      name: 'none'
       unbreakable: false
       lore:
-        - ''
+        - 'none'
      24:
       id: 95
       damage: 7
-      skin: ''
-      name: ''
+      skin: 'none'
+      name: 'none'
       unbreakable: false
       lore:
-        - ''
+        - 'none'
      25:
       id: 95
       damage: 8
-      skin: ''
-      name: ''
+      skin: 'none'
+      name: 'none'
       unbreakable: false
       lore:
-        - ''
+        - 'none'
      26:
       id: 95
       damage: 9
-      skin: ''
-      name: ''
+      skin: 'none'
+      name: 'none'
       unbreakable: false
       lore:
-        - ''
+        - 'none'
      27:
       id: 95
       damage: 10
-      skin: ''
-      name: ''
+      skin: 'none'
+      name: 'none'
       unbreakable: false
       lore:
-        - ''
+        - 'none'
      28:
       id: 95
       damage: 11
-      skin: ''
-      name: ''
+      skin: 'none'
+      name: 'none'
       unbreakable: false
       lore:
-        - ''
+        - 'none'
      29:
       id: 95
       damage: 12
-      skin: ''
-      name: ''
+      skin: 'none'
+      name: 'none'
       unbreakable: false
       lore:
-        - ''
+        - 'none'
      30:
       id: 95
       damage: 13
-      skin: ''
-      name: ''
+      skin: 'none'
+      name: 'none'
       unbreakable: false
       lore:
-        - ''
+        - 'none'
      31:
       id: 95
       damage: 14
-      skin: ''
-      name: ''
+      skin: 'none'
+      name: 'none'
       unbreakable: false
       lore:
-        - ''
+        - 'none'
      32:
       id: 95
       damage: 15
-      skin: ''
-      name: ''
+      skin: 'none'
+      name: 'none'
       unbreakable: false
       lore:
-        - ''
+        - 'none'
      33:
       id: 159
       damage: 0
-      skin: ''
-      name: ''
+      skin: 'none'
+      name: 'none'
       unbreakable: false
       lore:
-        - ''
+        - 'none'
      34:
       id: 159
       damage: 1
-      skin: ''
-      name: ''
+      skin: 'none'
+      name: 'none'
       unbreakable: false
       lore:
-        - ''
+        - 'none'
      35:
       id: 159
       damage: 2
-      skin: ''
-      name: ''
+      skin: 'none'
+      name: 'none'
       unbreakable: false
       lore:
-        - ''
+        - 'none'
      36:
       id: 159
       damage: 3
-      skin: ''
-      name: ''
+      skin: 'none'
+      name: 'none'
       unbreakable: false
       lore:
-        - ''
+        - 'none'
      37:
       id: 159
       damage: 4
-      skin: ''
-      name: ''
+      skin: 'none'
+      name: 'none'
       unbreakable: false
       lore:
-        - ''
+        - 'none'
      38:
       id: 159
       damage: 5
-      skin: ''
-      name: ''
+      skin: 'none'
+      name: 'none'
       unbreakable: false
       lore:
-        - ''
+        - 'none'
      39:
       id: 159
       damage: 6
-      skin: ''
-      name: ''
+      skin: 'none'
+      name: 'none'
       unbreakable: false
       lore:
-        - ''
+        - 'none'
      40:
       id: 159
       damage: 7
-      skin: ''
-      name: ''
+      skin: 'none'
+      name: 'none'
       unbreakable: false
       lore:
-        - ''
+        - 'none'
      41:
       id: 159
       damage: 8
-      skin: ''
-      name: ''
+      skin: 'none'
+      name: 'none'
       unbreakable: false
       lore:
-        - ''
+        - 'none'
      42:
       id: 159
       damage: 9
-      skin: ''
-      name: ''
+      skin: 'none'
+      name: 'none'
       unbreakable: false
       lore:
-        - ''
+        - 'none'
      43:
       id: 159
       damage: 10
-      skin: ''
-      name: ''
+      skin: 'none'
+      name: 'none'
       unbreakable: false
       lore:
-        - ''
+        - 'none'
      44:
       id: 159
       damage: 11
-      skin: ''
-      name: ''
+      skin: 'none'
+      name: 'none'
       unbreakable: false
       lore:
-        - ''
+        - 'none'
      45:
       id: 159
       damage: 12
-      skin: ''
-      name: ''
+      skin: 'none'
+      name: 'none'
       unbreakable: false
       lore:
-        - ''
+        - 'none'
      46:
       id: 159
       damage: 13
-      skin: ''
-      name: ''
+      skin: 'none'
+      name: 'none'
       unbreakable: false
       lore:
-        - ''
+        - 'none'
      47:
       id: 159
       damage: 14
-      skin: ''
-      name: ''
+      skin: 'none'
+      name: 'none'
       unbreakable: false
       lore:
-        - ''
+        - 'none'
      48:
       id: 159
       damage: 15
-      skin: ''
-      name: ''
+      skin: 'none'
+      name: 'none'
       unbreakable: false
       lore:
-        - ''
+        - 'none'
    rare:
      1:
       id: 397
       damage: 3
       skin: 'textures.minecraft.net/texture/621668ef7cb79dd9c22ce3d1f3f4cb6e2559893b6df4a469514e667c16aa4'
-      name: ''
+      name: 'Pig'
       unbreakable: false
       lore:
-        - ''
+        - 'none'
      2:
       id: 397
       damage: 3
       skin: 'textures.minecraft.net/texture/1638469a599ceef7207537603248a9ab11ff591fd378bea4735b346a7fae893'
-      name: ''
+      name: 'Chicken'
       unbreakable: false
       lore:
-        - ''
+        - 'none'
      3:
       id: 397
       damage: 3
       skin: 'textures.minecraft.net/texture/5657cd5c2989ff97570fec4ddcdc6926a68a3393250c1be1f0b114a1db1'
-      name: ''
+      name: 'Cat'
       unbreakable: false
       lore:
-        - ''
+        - 'none'
      4:
       id: 397
       damage: 3
       skin: 'textures.minecraft.net/texture/e95cbb4f75ea87617f2f713c6d49dac3209ba1bd4b9369654b1459ea15317'
-      name: ''
+      name: 'Wolf'
       unbreakable: false
       lore:
-        - ''
+        - 'none'
      5:
       id: 397
       damage: 3
       skin: 'textures.minecraft.net/texture/f2542c19cbcd964274244af6bed1ac8560b3f36fd3b3268061f8a614a9b59e35'
-      name: ''
+      name: 'Bird'
       unbreakable: false
       lore:
-        - ''
+        - 'none'
      6:
       id: 397
       damage: 3
       skin: 'textures.minecraft.net/texture/c52264ac4e5621668c43e87aed7918ed6b883abc5018769c9536d27b77f'
-      name: ''
+      name: 'Dragon'
       unbreakable: false
       lore:
-        - ''
+        - 'none'
      7:
       id: 397
       damage: 3
       skin: 'textures.minecraft.net/texture/295ef836389af993158aba27ff37b6567185f7a721ca90fdfeb937a7cb5747'
-      name: ''
+      name: 'Creeper'
       unbreakable: false
       lore:
-        - ''
+        - 'none'
      8:
       id: 397
       damage: 3
       skin: 'textures.minecraft.net/texture/38957d5023c937c4c41aa2412d43410bda23cf79a9f6ab36b76fef2d7c429'
-      name: ''
+      name: 'Magma Slime'
       unbreakable: false
       lore:
-        - ''
+        - 'none'
      9:
       id: 397
       damage: 3
       skin: 'textures.minecraft.net/texture/cd541541daaff50896cd258bdbdd4cf80c3ba816735726078bfe393927e57f1'
-      name: ''
+      name: 'Spider'
       unbreakable: false
       lore:
-        - ''
+        - 'none'
      10:
       id: 397
       damage: 3
       skin: 'textures.minecraft.net/texture/a0c2549a893726988f3428bef799875ba871688ae64eb0cfdc43f7d6e24c6c'
-      name: ''
+      name: 'Mario'
       unbreakable: false
       lore:
-        - ''
+        - 'none'
      11:
       id: 397
       damage: 3
       skin: 'textures.minecraft.net/texture/b6ad46433a34ed66ccbafb46778ae493f2b3a2a5fdc693f8bffeb3386ccdf3CAPEurl'
-      name: ''
+      name: 'Human'
       unbreakable: false
       lore:
-        - ''
+        - 'none'
      12:
       id: 397
       damage: 3
       skin: 'textures.minecraft.net/texture/5fc8b863995fb84685c273c859548c75d94f9b82cce41b1efff454fe03cc123'
-      name: ''
+      name: 'Yoshi'
       unbreakable: false
       lore:
-        - ''
+        - 'none'
      13:
       id: 397
       damage: 3
       skin: 'textures.minecraft.net/texture/4b62d1dbf94e8cbb3c5327d96aac121d20677338924a5ed6de4cbf578a73d'
-      name: ''
+      name: 'Pokeball'
       unbreakable: false
       lore:
-        - ''
+        - 'none'
      14:
       id: 397
       damage: 3
       skin: 'textures.minecraft.net/texture/f6c5ee57717f561fc12b9f8878fbe0d0d62c72facfad61c0d27cade54e818c14'
-      name: ''
+      name: 'Pikachu'
       unbreakable: false
       lore:
-        - ''
+        - 'none'
      15:
       id: 397
       damage: 3
       skin: 'textures.minecraft.net/texture/538992fa71d5d98789d5061ddd68e2b7af9efc253b39e1b346343d7789f8dc'
-      name: ''
+      name: 'Charmander'
       unbreakable: false
       lore:
-        - ''
+        - 'none'
      16:
       id: 397
       damage: 3
       skin: 'textures.minecraft.net/texture/c99ec943b48c6f82f32acd9e8626546de8416cce4da41cbaa02c69feefbea'
-      name: ''
+      name: 'Bulbasaur'
       unbreakable: false
       lore:
-        - ''
+        - 'none'
      17:
       id: 397
       damage: 3
       skin: 'textures.minecraft.net/texture/f53ebc976cb6771f3e95117b326842ff7812c740bece96bb8858346d841'
-      name: ''
+      name: 'Squirtle'
       unbreakable: false
       lore:
-        - ''
+        - 'none'
      18:
       id: 397
       damage: 3
       skin: 'textures.minecraft.net/texture/d9e0b56996f494adabebac9ea2a52c64ac486a5e0b8a89e485945dcca2b'
-      name: ''
+      name: 'Mewto'
       unbreakable: false
       lore:
-        - ''
+        - 'none'
      19:
       id: 397
       damage: 3
       skin: 'textures.minecraft.net/texture/f06555706b641fdaf436c07663f923afc5ee72146f90195fb337b9de766588d'
-      name: ''
+      name: 'Food'
       unbreakable: false
       lore:
-        - ''
+        - 'none'
      20:
       id: 397
       damage: 3
       skin: 'textures.minecraft.net/texture/b26f0b5e52337c76b5a80e3d971477a8e38b0d71390f13defe1316ad6a0a67c'
-      name: ''
+      name: 'Burger'
       unbreakable: false
       lore:
-        - ''
+        - 'none'
      21:
       id: 397
       damage: 3
       skin: 'textures.minecraft.net/texture/d7ab62fb77189352541dd95a8ee7e3631f7c1658f463f661680c283493d8a'
-      name: ''
+      name: 'Milk'
       unbreakable: false
       lore:
-        - ''
+        - 'none'
      22:
       id: 397
       damage: 3
       skin: 'textures.minecraft.net/texture/9a29335ffad5bdf825a96be8eb4c1a803dace929fc8e1178475f8f8d9c5668'
-      name: ''
+      name: 'Bread'
       unbreakable: false
       lore:
-        - ''
+        - 'none'
      23:
       id: 397
       damage: 3
       skin: 'textures.minecraft.net/texture/f71cc917159f14565f6afe22b9e33d5a23e423ecd8cb5dfba0b3f66d825389ca'
-      name: ''
+      name: 'Fruit'
       unbreakable: false
       lore:
-        - ''
+        - 'none'
      24:
       id: 397
       damage: 3
       skin: 'textures.minecraft.net/texture/6837a48ee530cfe35aca37969e4ea71d875237d2cb7a81b1ae80a75dc76e5a'
-      name: ''
+      name: 'Fruit'
       unbreakable: false
       lore:
-        - ''
+        - 'none'
      25:
       id: 397
       damage: 3
       skin: 'textures.minecraft.net/texture/dfd71e20fc50abf0de2ef7decfc01ce27ad51955759e072ceaab96355f594f0'
-      name: ''
+      name: 'Sweet'
       unbreakable: false
       lore:
-        - ''
+        - 'none'
      26:
       id: 397
       damage: 3
       skin: 'textures.minecraft.net/texture/819f948d17718adace5dd6e050c586229653fef645d7113ab94d17b639cc466'
-      name: ''
+      name: 'Sweet'
       unbreakable: false
       lore:
-        - ''
+        - 'none'
      27:
       id: 397
       damage: 3
       skin: 'textures.minecraft.net/texture/b0e38c176dbf7df9b0632c256eeb6c5aaca99e1c8c1a530656eaff0417aed22'
-      name: ''
+      name: 'Burger'
       unbreakable: false
       lore:
-        - ''
+        - 'none'
      28:
       id: 397
       damage: 3
       skin: 'textures.minecraft.net/texture/37ca2aa8a9f5d3246ee7f2d07e1d5fd4819125ecddf5a72e2f675355a3b9bcc'
-      name: ''
+      name: 'Stormtrooper'
       unbreakable: false
       lore:
-        - ''
+        - 'none'
      29:
       id: 397
       damage: 3
       skin: 'textures.minecraft.net/texture/52284e132bfd659bc6ada497c4fa3094cd93231a6b505a12ce7cd5135ba8ff93'
-      name: ''
+      name: 'Stormtrooper'
       unbreakable: false
       lore:
-        - ''
+        - 'none'
      30:
       id: 397
       damage: 3
       skin: 'textures.minecraft.net/texture/5685be67be3089dcccc73c4ddc44886e6666e0aa9817aacd4546ef58196038'
-      name: ''
+      name: 'Stormtrooper'
       unbreakable: false
       lore:
-        - ''
+        - 'none'
      31:
       id: 397
       damage: 3
       skin: 'textures.minecraft.net/texture/c535ff84f4b6d85626b92ca5d2619fd5599a96a585d851727d6633227a654'
-      name: ''
+      name: 'Boba Fett'
       unbreakable: false
       lore:
-        - ''
+        - 'none'
      32:
       id: 397
       damage: 3
       skin: 'textures.minecraft.net/texture/68f54244604274927974e579d222f0c931278e0eceead31872c81c8e6f441'
-      name: ''
+      name: 'Jabba The Hutt'
       unbreakable: false
       lore:
-        - ''
+        - 'none'
      33:
       id: 397
       damage: 3
       skin: 'textures.minecraft.net/texture/c9c0b6aa32b5a2c2d77f15dad54af3c2f201f818c7fa3ef83760648264fee2'
-      name: ''
+      name: 'Wookie'
       unbreakable: false
       lore:
-        - ''
+        - 'none'
      34:
       id: 397
       damage: 3
       skin: 'textures.minecraft.net/texture/4251d1e46d4d5fda32665da1f6cce29fd1c113491451c955f7668de32d37ae6'
-      name: ''
+      name: 'Yoda'
       unbreakable: false
       lore:
-        - ''
+        - 'none'
      35:
       id: 397
       damage: 3
       skin: 'textures.minecraft.net/texture/b0bcbea8d2ecce2e43daf5997e597b02c605f1babc11971ce4870342e3e1551'
-      name: ''
+      name: 'R2D2'
       unbreakable: false
       lore:
-        - ''
+        - 'none'
      36:
       id: 397
       damage: 3
       skin: 'textures.minecraft.net/texture/9fec991891f4143d40f013b98dc38dc53ed14ca75ebd32866efb126a32842a1'
-      name: ''
+      name: 'C3PO'
       unbreakable: false
       lore:
-        - ''
+        - 'none'
      37:
       id: 397
       damage: 3
       skin: 'textures.minecraft.net/texture/a116e69a845e227f7ca1fdde8c357c8c821ebd4ba619382ea4a1f87d4ae94'
-      name: ''
+      name: 'Notch'
       unbreakable: false
       lore:
-        - ''
+        - 'none'
      38:
       id: 397
       damage: 3
       skin: 'textures.minecraft.net/texture/3a22126c8187c352bf4dac5af2afe48dbf0d4e5f98542bdd9f6c5f52f5169b'
-      name: ''
+      name: 'Shynixn'
       unbreakable: false
       lore:
-        - ''
+        - 'none'
      39:
       id: 397
       damage: 3
       skin: 'textures.minecraft.net/texture/14e424b1676feec3a3f8ebade9e7d6a6f71f7756a869f36f7df0fc182d436e'
-      name: ''
+      name: 'Santa'
       unbreakable: false
       lore:
-        - ''
+        - 'none'
      40:
       id: 397
       damage: 3
       skin: 'textures.minecraft.net/texture/98b7ca3c7d314a61abed8fc18d797fc30b6efc8445425c4e250997e52e6cb'
-      name: ''
+      name: 'Herobrine'
       unbreakable: false
       lore:
-        - ''
+        - 'none'
      41:
       id: 397
       damage: 3
       skin: 'textures.minecraft.net/texture/d357444ade64ec6cea645ec57e775864d67c5fa62299786e03799317ee4ad'
-      name: ''
+      name: 'Miner'
       unbreakable: false
       lore:
-        - ''
+        - 'none'
      42:
       id: 397
       damage: 3
       skin: 'textures.minecraft.net/texture/42bc2de782fd6d7c50e9b3edb133487191d8f5546644c25be357cca2685db'
-      name: ''
+      name: 'Sonic'
       unbreakable: false
       lore:
-        - ''
+        - 'none'
      43:
       id: 397
       damage: 3
       skin: 'textures.minecraft.net/texture/fb3329b3c82ddfcd19255c42712eca7bc24472c03f78668faff7d8431997d693'
-      name: ''
+      name: 'Reaper'
       unbreakable: false
       lore:
-        - ''
+        - 'none'
      44:
       id: 397
       damage: 3
       skin: 'textures.minecraft.net/texture/797884d451dc7b7729de2076cd6c4912865ade70391d1ccec3e95fb39f8c5e1'
-      name: ''
+      name: 'Crazy'
       unbreakable: false
       lore:
-        - ''
+        - 'none'
 #--- Copy one of the items increment the number and add it above this line
 
 ############################

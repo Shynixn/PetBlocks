@@ -6,8 +6,7 @@ public class GuiPageContainer {
     public GuiPageContainer previousPage;
     public GUIPage page;
     public int startCount;
-    public GuiPageContainer next;
-    public GuiPageContainer pre;
+    public int currentCount;
 
     public GuiPageContainer(GUIPage page, GuiPageContainer previousPage) {
         super();

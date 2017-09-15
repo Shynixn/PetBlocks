@@ -105,6 +105,8 @@ public final class PetBlockRepository implements PetBlockController {
      */
     @Override
     public void remove(PetBlock item) {
+        if(item == null)
+            return;
         final Player player = (Player) item.getPlayer();
         if (this.petblocks.containsKey(player)) {
             final PetBlockDeathEvent event = new PetBlockDeathEvent(this.petblocks.get(player));

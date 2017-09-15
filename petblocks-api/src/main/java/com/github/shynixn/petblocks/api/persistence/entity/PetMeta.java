@@ -140,25 +140,11 @@ public interface PetMeta extends Persistenceable {
     String getPetDisplayName();
 
     /**
-     * Sets the particleEffect meta
-     *
-     * @param meta meta
-     */
-    void setParticleEffectMeta(ParticleEffectMeta meta);
-
-    /**
      * Returns the particleEffect meta
      *
      * @return meta
      */
     ParticleEffectMeta getParticleEffectMeta();
-
-    /**
-     * Sets the own meta
-     *
-     * @param meta meta
-     */
-    void setPlayerMeta(PlayerMeta meta);
 
     /**
      * Returns the meta of the owner
@@ -190,6 +176,7 @@ public interface PetMeta extends Persistenceable {
 
     /**
      * Returns the itemStack for the head
+     *
      * @return headItemStack
      */
     Object getHeadItemStack();

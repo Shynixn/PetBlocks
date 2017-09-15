@@ -111,10 +111,10 @@ public class PetData extends PersistenceObject implements PetMeta {
      *
      * @param meta meta
      */
-    @Override
     public void setParticleEffectMeta(ParticleEffectMeta meta) {
-        if (meta == null)
-            throw new IllegalArgumentException("Meta cannot be null!");
+        if (meta == null) {
+            throw new IllegalArgumentException("ParticleEffectMeta cannot be null!");
+        }
         this.particleId = meta.getId();
         this.particleEffectBuilder = meta;
     }
@@ -134,7 +134,6 @@ public class PetData extends PersistenceObject implements PetMeta {
      *
      * @param meta meta
      */
-    @Override
     public void setPlayerMeta(PlayerMeta meta) {
         this.playerId = meta.getId();
         this.playerInfo = meta;

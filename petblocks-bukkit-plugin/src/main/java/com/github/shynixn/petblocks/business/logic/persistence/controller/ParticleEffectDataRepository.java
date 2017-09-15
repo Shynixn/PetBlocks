@@ -101,7 +101,10 @@ public class ParticleEffectDataRepository extends DataBaseRepository<ParticleEff
         try (Connection connection = this.dbContext.getConnection()) {
             String materialName = null;
             if (item.getMaterial() != null)
-                materialName = ((Material)item.getMaterial()).name();
+                materialName = ((Material) item.getMaterial()).name();
+            int data = -1;
+            if (item.getData() != null)
+                data = item.getData();
             this.dbContext.executeStoredUpdate("particle/update", connection,
                     item.getEffectName(),
                     item.getAmount(),
@@ -110,7 +113,7 @@ public class ParticleEffectDataRepository extends DataBaseRepository<ParticleEff
                     item.getOffsetY(),
                     item.getOffsetZ(),
                     materialName,
-                    (int) item.getData(),
+                    data,
                     item.getId());
         } catch (final SQLException e) {
             Bukkit.getLogger().log(Level.WARNING, "Database error occurred.", e);
@@ -142,7 +145,7 @@ public class ParticleEffectDataRepository extends DataBaseRepository<ParticleEff
         try (Connection connection = this.dbContext.getConnection()) {
             String materialName = null;
             if (item.getMaterial() != null)
-                materialName = ((Material)item.getMaterial()).name();
+                materialName = ((Material) item.getMaterial()).name();
             final long id = this.dbContext.executeStoredInsert("particle/insert", connection,
                     item.getEffectName(),
                     item.getAmount(),
@@ -195,7 +198,11 @@ public class ParticleEffectDataRepository extends DataBaseRepository<ParticleEff
         if (resultSet.getString("material") != null) {
             particleEffectData.setMaterial(Material.getMaterial(resultSet.getString("material")).getId());
         }
-        particleEffectData.setData((byte) resultSet.getInt("data"));
+        if (resultSet.getInt("data") == -1) {
+            particleEffectData.setData(null);
+        } else {
+            particleEffectData.setData((byte) resultSet.getInt("data"));
+        }
         return particleEffectData;
     }
 

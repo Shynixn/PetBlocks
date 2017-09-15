@@ -15,12 +15,14 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.List;
 
 public class GUI {
     private final PetBlockManager manager;
+    private final Plugin plugin;
 
     /**
      * Initializes a new gui
@@ -30,6 +32,7 @@ public class GUI {
     GUI(PetBlockManager manager) {
         super();
         this.manager = manager;
+        this.plugin = JavaPlugin.getPlugin(PetBlocksPlugin.class);
     }
 
     /**
@@ -84,7 +87,7 @@ public class GUI {
         } else if (page == GUIPage.CUSTOM_COSTUMES) {
             this.setCustomCostumeItems(player, type);
         } else if (page == GUIPage.MINECRAFTHEADS_COSTUMES) {
-            this.setMinecraftHeadsCostumeItems(player);
+            this.setMinecraftHeadsCostumeItems(player, type);
         }
     }
 
@@ -101,9 +104,9 @@ public class GUI {
 
     public void moveList(Player player, boolean forward) {
         if (forward) {
-            setListAble(player, manager.pages.get(player).page, 1);
+            this.setListAble(player, this.manager.pages.get(player).page, 1);
         } else {
-            setListAble(player, manager.pages.get(player).page, 2);
+            this.setListAble(player, this.manager.pages.get(player).page, 2);
         }
     }
 
@@ -117,7 +120,7 @@ public class GUI {
             final GUIItemContainer myPetContainer = Config.getInstance().getGuiItemsController().getGUIItemByName("my-pet");
             inventory.setItem(myPetContainer.getPosition(), (ItemStack) petMeta.getHeadItemStack());
         }
-        if (!petMeta.isSoundEnabled()) {
+        if (petMeta.isSoundEnabled()) {
             final GUIItemContainer container = Config.getInstance().getGuiItemsController().getGUIItemByName("sounds-enabled-pet");
             if (page == container.getPage()) {
                 inventory.setItem(container.getPosition(), (ItemStack) container.generate(player, container.getPermission()));
@@ -170,7 +173,7 @@ public class GUI {
      *
      * @param player player
      */
-    private void setMinecraftHeadsCostumeItems(Player player) {
+    private void setMinecraftHeadsCostumeItems(Player player, int type) {
         Bukkit.getServer().getScheduler().runTaskAsynchronously(JavaPlugin.getPlugin(PetBlocksPlugin.class), () -> {
             new ChatBuilder().text(Config.getInstance().getPrefix())
                     .text("Pets collected by ")
@@ -180,51 +183,55 @@ public class GUI {
                     .setHoverText("Goto the Minecraft-Heads website!")
                     .builder().sendMessage(player);
         });
-        this.setCostumes(player, Config.getInstance().getMinecraftHeadsCostumesController().getAll(), GUIPage.MINECRAFTHEADS_COSTUMES, 0);
+        this.setCostumes(player, Config.getInstance().getMinecraftHeadsCostumesController().getAll(), GUIPage.MINECRAFTHEADS_COSTUMES, type);
     }
 
     private void setCostumes(Player player, List<GUIItemContainer> containers, GUIPage page, int type) {
         if (this.manager.inventories.containsKey(player)) {
             final GuiPageContainer previousContainer = this.manager.pages.get(player);
-            GuiPageContainer container;
+            final GuiPageContainer container;
             if (previousContainer.page != page) {
                 container = new GuiPageContainer(page, previousContainer);
                 this.manager.pages.put(player, container);
             } else {
                 container = this.manager.pages.get(player);
             }
-            if (type == 1) {
-
-                while (container.next != null) {
-                    final GuiPageContainer pre = container;
-                    container = container.next;
-                    container.pre = pre;
-                }
-            } else if (type == 2) {
-                while (container.next != null) {
-                    container = container.next;
-                }
-                container = container.pre;
+            if (type == 1 && (container.startCount % 45 != 0 || containers.size() == container.startCount)) {
+                return;
             }
-
-            if (container == null) {
-                container = this.manager.pages.get(player);
+            if (type == 2) {
+                if (container.currentCount == 0) {
+                    return;
+                }
+                container.startCount = container.currentCount - 45;
             }
 
             int count = container.startCount;
+            if (count < 0)
+                count = 0;
+            container.currentCount = container.startCount;
             final Inventory inventory = this.costumePreparation(player);
             int i;
+            int scheduleCounter = 0;
             for (i = 0; i < 45 && (i + container.startCount) < containers.size(); i++) {
                 if (inventory.getItem(i) == null || inventory.getItem(i).getType() == Material.AIR) {
-                    inventory.setItem(i, (ItemStack) containers.get((i + container.startCount)).generate(player));
+
+                    final int slot = i;
+                    final int containerSlot = (i + container.startCount);
+                    final int mountBlock = container.currentCount;
+                    final GUIPage currentPage = container.page;
                     count++;
+                    if (i % 2 == 0) {
+                        scheduleCounter++;
+                    }
+                    Bukkit.getScheduler().runTaskLater(this.plugin, () -> {
+                        if (container.currentCount == mountBlock && currentPage == manager.pages.get(player).page) {
+                            inventory.setItem(slot, (ItemStack) containers.get(containerSlot).generate(player));
+                        }
+                    }, scheduleCounter);
                 }
             }
-            if (!((i + container.startCount) >= containers.size())){
-                container.next = new GuiPageContainer(page, container);
-                container.next.startCount = count;
-            }
-
+            container.startCount = count;
             final GUIItemContainer nextPage = Config.getInstance().getGuiItemsController().getGUIItemByName("next-page");
             final GUIItemContainer previousPage = Config.getInstance().getGuiItemsController().getGUIItemByName("previous-page");
             final GUIItemContainer backGuiItemContainer = Config.getInstance().getGuiItemsController().getGUIItemByName("back");

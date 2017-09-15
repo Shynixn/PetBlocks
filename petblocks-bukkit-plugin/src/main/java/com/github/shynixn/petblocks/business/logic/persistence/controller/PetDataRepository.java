@@ -50,7 +50,7 @@ public class PetDataRepository extends DataBaseRepository<PetMeta> implements Pe
             if (item.getPlayerMeta().getId() == 0) {
                 final PlayerMeta playerMeta;
                 if ((playerMeta = this.playerMetaController.getByUUID(((Player) item.getPlayerMeta().getPlayer()).getUniqueId())) != null) {
-                    item.setPlayerMeta(playerMeta);
+                    ((PetData)playerMeta).setPlayerMeta(playerMeta);
                 }
             }
         }
@@ -117,8 +117,8 @@ public class PetDataRepository extends DataBaseRepository<PetMeta> implements Pe
         }
         petMeta.setEnabled(PetBlocksApi.getDefaultPetBlockController().getByPlayer(player) != null);
         petMeta.setEngine(Config.getInstance().getEngineController().getById(((PetData)petMeta).getEngineId()));
-        petMeta.setParticleEffectMeta(this.particleEffectMetaController.getById(((PetData)petMeta).getParticleId()));
-        petMeta.setPlayerMeta(this.playerMetaController.getById(((PetData)petMeta).getPlayerId()));
+        ((PetData)petMeta).setParticleEffectMeta(this.particleEffectMetaController.getById(((PetData)petMeta).getParticleId()));
+        ((PetData)petMeta).setPlayerMeta(this.playerMetaController.getById(((PetData)petMeta).getPlayerId()));
         return petMeta;
     }
 

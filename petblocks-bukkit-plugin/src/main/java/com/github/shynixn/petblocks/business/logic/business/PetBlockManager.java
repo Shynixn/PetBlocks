@@ -61,6 +61,8 @@ public class PetBlockManager implements AutoCloseable {
     public Map<Player, GuiPageContainer> pages = new HashMap<>();
     public GUI gui;
 
+
+
     private PetBlockFilter filter;
     private final PetBlockController petBlockController;
     private final PetMetaController petMetaController;

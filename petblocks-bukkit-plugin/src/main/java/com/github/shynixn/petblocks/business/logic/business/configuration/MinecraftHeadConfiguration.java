@@ -83,7 +83,8 @@ public class MinecraftHeadConfiguration extends CostumeConfiguration {
                         i++;
                         final String line = Base64Coder.decodeString(tags[2]).replace("{\"textures\":{\"SKIN\":{\"url\":\"", "");
                         final String url = line.substring(0, line.indexOf("\""));
-                        GUIItemContainer container = new ItemContainer(true, i, GUIPage.MINECRAFTHEADS_COSTUMES, 397, 3, url, false, tags[1], new String[0]);
+                        final String texture = url.substring(7, url.length());
+                        final GUIItemContainer container = new ItemContainer(true, i, GUIPage.MINECRAFTHEADS_COSTUMES, 397, 3, texture , false, tags[1].replace("\"", ""), new String[0]);
                         this.items.add(container);
                     }
                 }

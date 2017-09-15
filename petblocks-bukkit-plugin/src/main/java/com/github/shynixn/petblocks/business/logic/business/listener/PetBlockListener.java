@@ -210,6 +210,9 @@ public class PetBlockListener extends SimpleListener {
             if (xidentifier == 2877 && (identifier == 2877 || lidentifier == 2877)) {
                 return true;
             }
+            if (Math.floor(stand.getBodyPose().getZ() * 1000) == 301) {
+                return true;
+            }
         }
         return false;
     }
@@ -356,12 +359,12 @@ public class PetBlockListener extends SimpleListener {
         @Override
         public void run() {
             for (final Player player : PetBlockListener.this.manager.carryingPet.toArray(new Player[PetBlockListener.this.manager.carryingPet.size()])) {
-                PetBlockListener.this.heartParticles.apply(player.getLocation().add(0, 1, 0),  Arrays.asList(player.getWorld().getPlayers()));
+                PetBlockListener.this.heartParticles.apply(player.getLocation().add(0, 1, 0), Arrays.asList(player.getWorld().getPlayers()));
             }
             for (final PetBlock petBlock : manager.getPetBlockController().getAll()) {
-                if (petBlock.isDead() || !Config.getInstance().allowPetSpawning(((Player)petBlock.getPlayer()).getLocation())) {
+                if (petBlock.isDead() || !Config.getInstance().allowPetSpawning(((Player) petBlock.getPlayer()).getLocation())) {
                     PetBlockListener.this.manager.getPetBlockController().remove(petBlock);
-                    if (((Player)petBlock.getPlayer()).isOnline() && Config.getInstance().allowPetSpawning(((Player)petBlock.getPlayer()).getLocation())) {
+                    if (((Player) petBlock.getPlayer()).isOnline() && Config.getInstance().allowPetSpawning(((Player) petBlock.getPlayer()).getLocation())) {
                         PetBlockListener.this.plugin.getServer().getScheduler().runTaskAsynchronously(PetBlockListener.this.plugin, () -> {
                             final PetMeta petMeta = PetBlockListener.this.manager.getPetMetaController().getByPlayer(petBlock.getPlayer());
                             PetBlockListener.this.plugin.getServer().getScheduler().runTask(PetBlockListener.this.plugin, () -> PetBlockListener.this.setPetBlock((Player) petBlock.getPlayer(), petMeta));
