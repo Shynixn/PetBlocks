@@ -4,6 +4,7 @@ import com.github.shynixn.petblocks.api.persistence.controller.*;
 import com.github.shynixn.petblocks.api.persistence.entity.ParticleEffectMeta;
 import com.github.shynixn.petblocks.api.persistence.entity.PetMeta;
 import com.github.shynixn.petblocks.business.bukkit.PetBlocksPlugin;
+import com.github.shynixn.petblocks.business.bukkit.nms.NMSRegistry;
 import com.github.shynixn.petblocks.business.logic.Factory;
 import com.github.shynixn.petblocks.business.logic.persistence.entity.ParticleEffectData;
 import com.github.shynixn.petblocks.business.logic.persistence.entity.PetData;
@@ -254,9 +255,22 @@ public final class Config extends SimpleConfig {
         final List<String> includedRegions = this.getIncludedRegions();
         final List<String> excludedRegions = this.getExcludedRegion();
         if (includedRegions.contains("all")) {
-            return !excludedRegions.contains(location.getWorld().getName());
+            System.out.println("REGIONS");
+            for (final String k : NMSRegistry.getWorldGuardRegionsFromLocation(location)) {
+                System.out.println("REGION: " + k);
+                if (excludedRegions.contains(k))
+                {
+                    return false;
+                }
+            }
+            return true;
         } else if (excludedRegions.contains("all")) {
-            return includedRegions.contains(location.getWorld().getName());
+            for (final String k : NMSRegistry.getWorldGuardRegionsFromLocation(location)) {
+                if (includedRegions.contains(k)) {
+                    return true;
+                }
+            }
+            return false;
         } else {
             Bukkit.getConsoleSender().sendMessage(PetBlocksPlugin.PREFIX_CONSOLE + ChatColor.RED + "Please add 'all' to excluded or included regions inside of the config.yml");
         }

@@ -111,6 +111,9 @@ public class GUI {
     }
 
     private void setOtherItems(Player player, Inventory inventory, PetMeta petMeta, GUIPage page) {
+        if (this.manager.getPetBlockController().getByPlayer(player) == null) {
+            petMeta.setEnabled(false);
+        }
         for (final GUIItemContainer guiItemContainer : Config.getInstance().getGuiItemsController().getAll()) {
             if (guiItemContainer.getPage() == page) {
                 inventory.setItem(guiItemContainer.getPosition(), (ItemStack) guiItemContainer.generate(player));
@@ -225,7 +228,7 @@ public class GUI {
                         scheduleCounter++;
                     }
                     Bukkit.getScheduler().runTaskLater(this.plugin, () -> {
-                        if (container.currentCount == mountBlock && currentPage == manager.pages.get(player).page) {
+                        if (container.currentCount == mountBlock && currentPage == this.manager.pages.get(player).page) {
                             inventory.setItem(slot, (ItemStack) containers.get(containerSlot).generate(player, groupPermission));
                         }
                     }, scheduleCounter);

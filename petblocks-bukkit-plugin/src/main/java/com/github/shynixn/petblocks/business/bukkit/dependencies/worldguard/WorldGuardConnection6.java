@@ -105,12 +105,8 @@ public final class WorldGuardConnection6 {
         final RegionManager regionManager = worldGuard.getRegionManager(location.getWorld());
         final ApplicableRegionSet set = ReflectionUtils.invokeMethodByObject(regionManager, "getApplicableRegions", new Class[]{location.getClass()}, new Object[]{location});
         final Iterable<ProtectedRegion> regions = (Iterable<ProtectedRegion>) getMethod(set.getClass(), "getRegions").invoke(set);
-        for (final Object region1 : regions) {
-            final ProtectedRegion region = (ProtectedRegion) region1;
-            for (final String s : regionList) {
-                if (region.getId().equalsIgnoreCase(s))
-                    regionList.add(region.getId());
-            }
+        for (final ProtectedRegion region : regions) {
+            regionList.add(region.getId());
         }
         return regionList;
     }

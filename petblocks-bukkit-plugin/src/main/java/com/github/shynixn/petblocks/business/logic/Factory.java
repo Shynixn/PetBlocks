@@ -136,8 +136,8 @@ public class Factory {
                         oldData = true;
                     }
                 }
-            } catch (SQLException e) {
-                e.printStackTrace();
+            } catch (SQLException ignored) {
+
             }
             if (oldData) {
                 Bukkit.getLogger().log(Level.WARNING, "Found old table data. Deleting previous entries...");
@@ -146,8 +146,8 @@ public class Factory {
                     connectionContext.executeUpdate("DROP TABLE shy_particle_effect", connection);
                     connectionContext.executeUpdate("DROP TABLE shy_player", connection);
                     Bukkit.getLogger().log(Level.WARNING, "Finished deleting data.");
-                } catch (SQLException ignored) {
-
+                } catch (SQLException e) {
+                    e.printStackTrace();
                 }
             }
             try (Connection connection = connectionContext.getConnection()) {
