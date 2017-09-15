@@ -306,12 +306,14 @@ final class CustomGroundArmorstand extends EntityArmorStand implements PetBlock 
      */
     @Override
     public void wear(Object player) {
-        final NBTTagCompound compound = new NBTTagCompound();
-        this.b(compound);
-        compound.setBoolean("Marker", true);
-        this.a(compound);
-        this.setCustomNameVisible(false);
-        PetBlockHelper.wear(this, (Player) player, null);
+        if (this.getBukkitEntity().getPassenger() == null && ((Player)player).getPassenger() == null) {
+            final NBTTagCompound compound = new NBTTagCompound();
+            this.b(compound);
+            compound.setBoolean("Marker", true);
+            this.a(compound);
+            this.setCustomNameVisible(false);
+            PetBlockHelper.wear(this, (Player) player, null);
+        }
     }
 
     /**
