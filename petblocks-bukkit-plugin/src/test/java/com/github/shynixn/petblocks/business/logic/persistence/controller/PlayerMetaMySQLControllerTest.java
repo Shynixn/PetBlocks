@@ -6,6 +6,8 @@ import com.github.shynixn.petblocks.api.persistence.controller.PlayerMetaControl
 import com.github.shynixn.petblocks.api.persistence.entity.PlayerMeta;
 import com.github.shynixn.petblocks.business.logic.Factory;
 import com.github.shynixn.petblocks.business.logic.persistence.entity.PlayerData;
+import org.bukkit.Bukkit;
+import org.bukkit.Server;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.Plugin;
 import org.junit.Assert;
@@ -39,6 +41,11 @@ public class PlayerMetaMySQLControllerTest {
         configuration.set("sql.username", "root");
         configuration.set("sql.password", "");
         final Plugin plugin = mock(Plugin.class);
+        if (Bukkit.getServer() == null) {
+            final Server server = mock(Server.class);
+            when(server.getLogger()).thenReturn(Logger.getGlobal());
+            Bukkit.setServer(server);
+        }
         new File("PetBlocks.db").delete();
         when(plugin.getDataFolder()).thenReturn(new File("PetBlocks"));
         when(plugin.getConfig()).thenReturn(configuration);
@@ -49,12 +56,10 @@ public class PlayerMetaMySQLControllerTest {
         return plugin;
     }
 
-
     private static DB database;
 
     @AfterAll
-    public static void stopMariaDB()
-    {
+    public static void stopMariaDB() {
         try {
             database.stop();
         } catch (final ManagedProcessException e) {
@@ -106,7 +111,6 @@ public class PlayerMetaMySQLControllerTest {
             Assert.fail();
         }
     }
-
 
     @Test
     public void storeLoadPlayerMetaTest() throws ClassNotFoundException {

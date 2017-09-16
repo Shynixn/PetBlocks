@@ -1,14 +1,19 @@
 language: java
 sudo: true
 install:
+    - echo "Downloading libraries..."
     - cd /home/travis/build/Shynixn/PetBlocks/
     - mkdir lib
     - wget https://hub.spigotmc.org/jenkins/job/BuildTools/lastStableBuild/artifact/target/BuildTools.jar -P /home/travis/build/Shynixn/PetBlocks/lib/
     - wget https://github.com/MyzelYam/SuperVanish/releases/download/v5.7.0/SuperVanish.jar -P /home/travis/build/Shynixn/PetBlocks/lib/
+    - echo "Downloaded all required libraries."
 before_script:
+  - echo "Stopping MYSQL database if already running..."
   - sudo /etc/init.d/mysql stop
+  - echo "Stopped MYSQL database."
 script:
     - cd /home/travis/build/Shynixn/PetBlocks/lib/
+    - echo "Installing Spigot libraries..."
     - java -jar BuildTools.jar --rev 1.8 > /dev/null
     - java -jar BuildTools.jar --rev 1.8.3 > /dev/null
     - java -jar BuildTools.jar --rev 1.8.8 > /dev/null
@@ -16,11 +21,12 @@ script:
     - java -jar BuildTools.jar --rev 1.9.4 > /dev/null
     - java -jar BuildTools.jar --rev 1.10 > /dev/null
     - java -jar BuildTools.jar --rev 1.11 > /dev/null
-    - java -jar BuildTools.jar --rev 1.12
+    - java -jar BuildTools.jar --rev 1.12 > /dev/null
     - cd -
-    - mvn compile test
+    - echo "Finished installing libraries."
+    - echo "<settings><servers><server><id>ossrh</id><username>\${env.OSSRH_USER}</username><password>\${env.OSSRH_PASS}</password></server></servers></settings>" > ~/settings.xml
+    - mvn deploy --settings ~/settings.xml
 jdk:
   - oraclejdk8
-#jdk 8
 
 
