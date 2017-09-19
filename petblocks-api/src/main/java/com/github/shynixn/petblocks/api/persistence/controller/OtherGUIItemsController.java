@@ -45,7 +45,8 @@ public interface OtherGUIItemsController extends IFileController<GUIItemContaine
      * Returns if the given itemStack is a guiItemStack with the given name
      *
      * @param itemStack itemStack
-     * @return itemStack
+     * @param name      name
+     * @return isGuiItem
      */
     boolean isGUIItem(Object itemStack, String name);
 }

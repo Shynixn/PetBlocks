@@ -10,7 +10,7 @@
     </parent>
 
     <version>${petblocks.bukkit.version}</version>
-    <artifactId>petblocks-bukkit-api</artifactId>
+    <artifactId>${petblocks.api.version}</artifactId>
 
     <dependencies>
         <dependency>
