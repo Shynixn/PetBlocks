@@ -338,7 +338,7 @@ gui:
       page: 'MAIN'
       id: 397
       damage: 3
-      skin: 'textures.minecraft.net/texture/dfab7daeb8f333c7886a70ef30caf4dec4a8cd10493f23802f1516bdd23fcd'
+      skin: 'textures.minecraft.net/texture/f45c9acea8da71b4f252cd4deb5943f49e7dbc0764274b25a6a6f5875baea3'
       name: '&a&lEnable Petblock'
       unbreakable: false
       lore:
@@ -349,7 +349,7 @@ gui:
       page: 'MAIN'
       id: 397
       damage: 3
-      skin: 'textures.minecraft.net/texture/61856c7b378d350262143843d1f9fbb21911a71983ba7b39a4d4ba5b66bedc6'
+      skin: 'textures.minecraft.net/texture/ad5fcd31287d63e7826ea760a7ed154f685dfdc7f3465732a96e619b2e1347'
       name: '&c&lDisable Petblock'
       unbreakable: false
       lore:
@@ -382,7 +382,7 @@ gui:
       page: 'MAIN'
       id: 397
       damage: 3
-      skin: 'textures.minecraft.net/texture/f72b5cf4fb2e3d9158a4f5ece714970bcc1371ca029e645555927fd156e184'
+      skin: 'textures.minecraft.net/texture/ae7215c45d97d7bc55d9dfa58fcc73f4af74e4b3f5a15b4419127424c4268e'
       name: '&9&lMute'
       unbreakable: false
       lore:
@@ -393,7 +393,7 @@ gui:
       page: 'MAIN'
       id: 397
       damage: 3
-      skin: 'textures.minecraft.net/texture/70951389f173328e8b26c08f7116a455118da3f17d985c4f4b5a5c7da76df1'
+      skin: 'textures.minecraft.net/texture/cb9c706c85572f05efc4170ada791154de2b5378e6252aadc8d43b19c5564'
       name: '&9&lUnmute'
       unbreakable: false
       lore:
@@ -402,42 +402,42 @@ gui:
       enabled: true
       position: 20
       page: 'WARDROBE'
-      id: 351
-      damage: 1
-      skin: 'none'
-      name: '&e&lOrdinary Costumes'
+      id: 397
+      damage: 3
+      skin: 'textures.minecraft.net/texture/c95d37993e594082678472bf9d86823413c250d4332a2c7d8c52de4976b362'
+      name: '&e&lSimple block costumes'
       unbreakable: false
       lore:
-        - '&7Simple costumes'
+        - '&7Use Minecraft blocks as costume.'
     color-costume:
       enabled: true
       position: 21
       page: 'WARDROBE'
-      id: 351
-      damage: 2
-      skin: 'none'
-      name: '&a&lColored Costumes'
+      id: 397
+      damage: 3
+      skin: 'textures.minecraft.net/texture/f1af46febd45c0f4d81e8fa1b66b275d89e272b2ad55c978553a99c733e1ff'
+      name: '&a&lColored block costumes'
       unbreakable: false
       lore:
-        - '&7All colored costumes'
+        - '&7Use colored Minecraft blocks as costume.'
     rare-costume:
       enabled: true
       position: 22
       page: 'WARDROBE'
-      id: 351
+      id: 397
       damage: 3
-      skin: 'none'
-      name: '&d&lRare Costumes'
+      skin: 'textures.minecraft.net/texture/a0c2549a893726988f3428bef799875ba871688ae64eb0cfdc43f7d6e24c6c'
+      name: '&d&lPlayer head costumes'
       unbreakable: false
       lore:
-        - '&7Exclusive costumes'
+        - '&7Use player heads as costume.'
     minecraft-heads-costume:
       enabled: true
       position: 23
       page: 'WARDROBE'
       id: 397
       damage: 3
-      name: '&9&lExclusive Costumes'
+      name: '&9&lPet costumes'
       unbreakable: false
       skin: 'textures.minecraft.net/texture/fec052be76e39148a27f255ec537dff92018c79744202d60c51bc67d618ae36a'
       lore:
@@ -449,15 +449,15 @@ gui:
       id: 397
       damage: 3
       skin: 'textures.minecraft.net/texture/3bb612eb495ede2c5ca5178d2d1ecf1ca5a255d25dfc3c254bc47f6848791d8'
-      name: '&c&lHeaddatabase Costumes'
+      name: '&c&lHead Database costumes'
       unbreakable: false
       lore:
-        - '&7External head-database'
+        - '&7Use heads from an external plugin as costume.'
     call-pet:
       enabled: true
       position: 38
       page: 'MAIN'
-      id: 370
+      id: 420
       damage: 0
       skin: 'none'
       name: '&2&lCall'
@@ -490,9 +490,9 @@ gui:
       enabled: true
       position: 11
       page: 'MAIN'
-      id: 332
-      damage: 0
-      skin: 'none'
+      id: 397
+      damage: 3
+      skin: 'textures.minecraft.net/texture/996754d330435345aae3a9f063cfca42afb28b7c5c4bb9f294ed2527d961'
       name: '&f&lLaunch'
       unbreakable: false
       lore:
@@ -501,13 +501,13 @@ gui:
       enabled: true
       position: 37
       page: 'WARDROBE'
-      id: 145
-      damage: 0
+      id: 397
+      damage: 3
       skin: 'none'
-      name: '&2&lCustom'
+      name: '&2&lCustom costume'
       unbreakable: false
       lore:
-        - '&7Enter the skin of your pet.'
+        - '&7Use the skin of another player as costume.'
     naming-pet:
       enabled: true
       position: 4
@@ -523,9 +523,9 @@ gui:
       enabled: true
       position: 15
       page: 'MAIN'
-      id: 260
-      damage: 0
-      skin: 'none'
+      id: 397
+      damage: 3
+      skin: 'textures.minecraft.net/texture/ed15ac32473997c6b3e6ab1cb28f577fc2cfd0a32b2c665acc384231aa4495b4'
       name: '&b&lHat'
       unbreakable: false
       lore:

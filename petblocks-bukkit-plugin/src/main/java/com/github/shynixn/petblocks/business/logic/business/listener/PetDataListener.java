@@ -40,6 +40,8 @@ public class PetDataListener extends SimpleListener {
     private final PetBlockManager manager;
     private final Set<Player> namingPlayers = new HashSet<>();
     private final Set<Player> namingSkull = new HashSet<>();
+    private final Set<Player> spamProtection = new HashSet<>();
+
     private String headDatabaseTitle;
     private String headDatabaseSearch;
     private final ChatBuilder suggestHeadMessage = new ChatBuilder().text(Config.getInstance().getPrefix())
@@ -90,6 +92,9 @@ public class PetDataListener extends SimpleListener {
     public void playerQuitEvent(PlayerQuitEvent event) {
         if (this.manager.headDatabasePlayers.contains(event.getPlayer())) {
             this.manager.headDatabasePlayers.remove(event.getPlayer());
+        }
+        if (this.spamProtection.contains(event.getPlayer())) {
+            this.spamProtection.remove(event.getPlayer());
         }
         PetBlocksApi.getDefaultPetBlockController().removeByPlayer(event.getPlayer());
     }
@@ -194,11 +199,17 @@ public class PetDataListener extends SimpleListener {
         if (this.manager.pages.get(player).page == GUIPage.MAIN && this.getGUIItem("my-pet").getPosition() == event.getSlot()) {
             this.handleClickOnMyPetItem(player, petMeta);
         } else if (this.isGUIItem(currentItem, "enable-pet")) {
-            this.setPetBlock(player, petMeta);
-            this.refreshGUI(player, petMeta);
+            if (!this.spamProtection.contains(player)) {
+                this.setPetBlock(player, petMeta);
+                this.refreshGUI(player, petMeta);
+            }
+            this.handleSpamProtection(player);
         } else if (this.isGUIItem(currentItem, "disable-pet")) {
-            this.removePetBlock(player, petMeta);
-            this.refreshGUI(player, petMeta);
+            if (!this.spamProtection.contains(player)) {
+                this.removePetBlock(player, petMeta);
+                this.refreshGUI(player, petMeta);
+            }
+            this.handleSpamProtection(player);
         } else if (this.isGUIItem(currentItem, "sounds-enabled-pet")) {
             petMeta.setSoundEnabled(false);
             this.refreshGUI(player, petMeta);
@@ -447,6 +458,18 @@ public class PetDataListener extends SimpleListener {
                     this.plugin.getServer().getScheduler().runTask(this.plugin, () -> this.renameName(event.getPlayer(), event.getMessage(), petMeta, null));
                 }
             });
+        }
+    }
+
+    /**
+     * Handles spaming protection
+     *
+     * @param player player
+     */
+    private void handleSpamProtection(Player player) {
+        if (!this.spamProtection.contains(player)) {
+            this.spamProtection.add(player);
+            Bukkit.getScheduler().runTaskLater(this.plugin, () -> this.spamProtection.remove(player), 30L);
         }
     }
 
