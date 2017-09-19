@@ -38,6 +38,7 @@ public class PetBlockRideEvent extends PetBlockCancelAbleEvent {
      * Initializes a new petblock event
      *
      * @param petBlock petblock
+     * @param isRiding isRiding
      */
     public PetBlockRideEvent(PetBlock petBlock, boolean isRiding) {
         super(petBlock);

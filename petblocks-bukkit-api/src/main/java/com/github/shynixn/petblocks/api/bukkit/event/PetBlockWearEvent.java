@@ -38,6 +38,7 @@ public class PetBlockWearEvent extends PetBlockCancelAbleEvent {
      * Initializes a new petblock event
      *
      * @param petBlock petblock
+     * @param wearing isWearing
      */
     public PetBlockWearEvent(PetBlock petBlock, boolean wearing) {
         super(petBlock);
