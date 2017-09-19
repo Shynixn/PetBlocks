@@ -40,7 +40,7 @@ public enum VersionSupport {
     VERSION_1_9_R2("v1_9_R2", "1.9.4", 1.092),
     VERSION_1_10_R1("v1_10_R1", "1.10.2", 1.10),
     VERSION_1_11_R1("v1_11_R1", "1.11.2", 1.11),
-    VERSION_1_12_R1("v1_12_R1", "1.12.0", 1.12);
+    VERSION_1_12_R1("v1_12_R1", "1.12.2", 1.12);
 
     private final String versionText;
     private final String simpleVersionText;
@@ -185,7 +185,7 @@ public enum VersionSupport {
      * @return serverVersion
      */
     public static VersionSupport getServerVersion() {
-        if(Bukkit.getServer() == null || Bukkit.getServer().getClass().getPackage() == null)
+        if (Bukkit.getServer() == null || Bukkit.getServer().getClass().getPackage() == null)
             return null;
         final String version = Bukkit.getServer().getClass().getPackage().getName().replace(".", ",").split(",")[3];
         for (final VersionSupport versionSupport : VersionSupport.values()) {
