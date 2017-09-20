@@ -35,6 +35,7 @@ Spigot plugin to use blocks as pets in minecraft.
      <groupId>com.github.shynixn.petblocks</groupId>
      <artifactId>petblocks-api</artifactId>
      <version>1.0.0</version>
+     <scope>provided</scope>
 </dependency>
 ```
 
@@ -51,6 +52,7 @@ dependencies {
      <groupId>com.github.shynixn.petblocks</groupId>
      <artifactId>petblocks-bukkit-api</artifactId>
      <version>1.0.0</version>
+     <scope>provided</scope>
 </dependency>
 ```
 
@@ -105,6 +107,7 @@ public void onPetBlockSpawnEvent(PetBlockSpawnEvent event) {
      <groupId>com.github.shynixn.petblocks</groupId>
      <artifactId>petblocks-bukkit-plugin</artifactId>
      <version>6.2.0</version>
+     <scope>provided</scope>
 </dependency>
 ```
 
