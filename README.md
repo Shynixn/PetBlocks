@@ -29,45 +29,80 @@ Spigot plugin to use blocks as pets in minecraft.
 * Reference the PetBlocks.jar in your own projects.
 * If you are using maven or gradle you can add it from the central maven repository
 
-### Maven
-
+### Framework independent API
 ```xml
 <dependency>
-     <groupId>com.github.shynixn</groupId>
-     <artifactId>petblocks</artifactId>
-     <version>6.1.0</version>
+     <groupId>com.github.shynixn.petblocks</groupId>
+     <artifactId>petblocks-api</artifactId>
+     <version>1.0.0</version>
 </dependency>
 ```
 
-### Gradle
-
 ```xml
 dependencies {
-    compileOnly 'com.github.shynixn:petblocks:6.1.0'
+    compileOnly 'com.github.shynixn.petblocks:petblocks-api:1.0.0'
 }
 ```
 
+### Bukkit API
+```xml
+<dependency>
+     <groupId>com.github.shynixn.petblocks</groupId>
+     <artifactId>petblocks-bukkit-api</artifactId>
+     <version>1.0.0</version>
+</dependency>
+```
+
+```xml
+dependencies {
+    compileOnly 'com.github.shynixn.petblocks:petblocks-bukkit-api:1.0.0'
+}
+```
+
+### PetBlocks Plugin
+
+```xml
+<dependency>
+     <groupId>com.github.shynixn.petblocks</groupId>
+     <artifactId>petblocks-bukkit-plugin</artifactId>
+     <version>6.2.0</version>
+</dependency>
+```
+
+```xml
+dependencies {
+    compileOnly 'com.github.shynixn.petblocks:petblocks-bukkit-plugin:6.2.0'
+}
+```
+
+
 ## How to use the it
 
-#### Set Petmeta
+#### Modify the PetMetadata
 
 ```java
-    Player player = Bukkit.getPlayer("Shynixn");
-    if(PetBlocksApi.hasPetMeta(player)){
-         //Stored data of the entity
-          PetMeta petMeta = PetBlocksApi.getPetMeta(player);
-          petMeta.setDisplayName(ChatColor.RED + "That's my new petname");
-          PetBlocksApi.persistPetMeta(petMeta);
+Plugin plugin; //Your plugin instance
+Player player = Bukkit.getPlayer("Shynixn"); 
+
+//Create and manipulate data
+PetMetaController petMetaController = PetBlocksApi.getDefaultPetMetaController();
+PetMeta petMeta = petMetaController.create(player);
+petMeta.setPetDisplayName(ChatColor.BLACK + "Amazing Pet"); //Modify the petMeta
+Bukkit.getScheduler().runTaskAsynchronously(plugin, new Runnable() {
+    @Override
+    public void run() {
+        petMetaController.store(petMeta);   //It is recommend to save the petMeta asynchronously into the database
     }
+});
 ```
-#### Set Petblock
+#### Teleport the PetBlock to a location
 
 ```java
-    if(PetBlocksApi.hasPetBlock(player)){
-        //The current entity petblock
-        PetBlock petblock = PetBlocksApi.getPetBlock(player);
-        petblock.teleport(player);
-    }
+ Location location = new Location(Bukkit.getWorld("world"), 20, 100, 20); //Target
+ PetBlockController petBlockController = PetBlocksApi.getDefaultPetBlockController();
+ PetBlock petBlock = petBlockController.create(player, petMeta);
+ petBlockController.store(petBlock); //Store the petblock to be managed by the plugin. Does not involve a database so it can be used on the main thread.
+ petBlock.teleport(petBlock); //Teleport the petblock
 ```
 
 * Check out the [PetBlocks-Spigot-Page](https://www.spigotmc.org/resources/petblocks-mysql-bungeecord-customizeable-gui-1-8-1-9-1-10-1-11.12056/) to get more information. 
