@@ -9,8 +9,6 @@ import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.message.Message;
 
-import java.io.Closeable;
-
 /**
  * Copyright 2017 Shynixn
  * <p>

@@ -8,7 +8,6 @@ import com.github.shynixn.petblocks.business.bukkit.nms.NMSRegistry;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
-import java.io.Closeable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;

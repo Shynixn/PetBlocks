@@ -163,7 +163,7 @@ public final class PetBlockHelper {
     }
 
     private static int doTickSounds(int counter, PetBlock petBlock) {
-        PetData petData = (PetData) petBlock.getMeta();
+        final PetData petData = (PetData) petBlock.getMeta();
         if (counter <= 0) {
             final Random random = new Random();
             if (!getEngineEntity(petBlock).isOnGround() || petData.getEngine().getEntityType().equalsIgnoreCase("ZOMBIE")) {

@@ -287,7 +287,7 @@ public class ItemContainer implements GUIItemContainer {
     private String[] provideLore(Player player, String... permissions) {
         if (permissions != null && permissions.length == 1 && permissions[0] != null) {
             if (permissions.length == 1 && permissions[0].equals("minecraft-heads")) {
-                return new String[]{ChatColor.GRAY + "Use exclusive pet heads as costume.", ChatColor.GRAY + "Sponsored by Minecraft-Heads.com"};
+                return new String[]{ChatColor.GRAY + "Use exclusive pet heads as costume.", ChatColor.YELLOW + "Sponsored by Minecraft-Heads.com"};
             }
             if (permissions.length == 1 && permissions[0].equals("head-database")) {
                 final Plugin plugin = Bukkit.getPluginManager().getPlugin("HeadDatabase");

@@ -9,7 +9,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.configuration.MemorySection;
 import org.bukkit.plugin.Plugin;
 
-import java.io.Closeable;
 import java.util.*;
 import java.util.logging.Level;
 
@@ -99,7 +98,7 @@ public class ParticleConfiguration implements ParticleController {
     @Override
     public List<GUIItemContainer> getAll() {
         final List<GUIItemContainer> containers = new ArrayList<>(this.particleCache.keySet());
-        containers.sort((o1, o2) -> new Integer(o1.getPosition()).compareTo(o2.getPosition()));
+        containers.sort(Comparator.comparingInt(GUIItemContainer::getPosition));
         return containers;
     }
 

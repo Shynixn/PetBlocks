@@ -16,7 +16,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.plugin.Plugin;
 
-import java.io.Closeable;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;

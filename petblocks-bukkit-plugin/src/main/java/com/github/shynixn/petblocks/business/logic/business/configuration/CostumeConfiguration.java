@@ -7,7 +7,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.configuration.MemorySection;
 import org.bukkit.plugin.Plugin;
 
-import java.io.Closeable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
