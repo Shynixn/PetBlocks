@@ -1,8 +1,8 @@
 package com.github.shynixn.petblocks.business.logic.persistence.controller;
 
-import ch.vorburger.exec.ManagedProcessException;
-import ch.vorburger.mariadb4j.DB;
+import com.github.shynixn.petblocks.api.persistence.controller.PetMetaController;
 import com.github.shynixn.petblocks.api.persistence.controller.PlayerMetaController;
+import com.github.shynixn.petblocks.api.persistence.entity.PetMeta;
 import com.github.shynixn.petblocks.api.persistence.entity.PlayerMeta;
 import com.github.shynixn.petblocks.business.logic.Factory;
 import com.github.shynixn.petblocks.business.logic.persistence.entity.PlayerData;
@@ -11,15 +11,10 @@ import org.bukkit.Server;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.Plugin;
 import org.junit.Assert;
-import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -30,7 +25,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-public class PlayerMetaMySQLControllerTest {
+public class PlayerMetaSQLiteControllerIT {
 
     private static Plugin mockPlugin() {
         final YamlConfiguration configuration = new YamlConfiguration();
@@ -56,45 +51,25 @@ public class PlayerMetaMySQLControllerTest {
         return plugin;
     }
 
-    private static DB database;
-
-    @AfterAll
-    public static void stopMariaDB() {
-        try {
-            database.stop();
-        } catch (final ManagedProcessException e) {
-            Logger.getLogger(PlayerMetaMySQLControllerTest.class.getSimpleName()).log(Level.WARNING, "Failed to stop mariadb.", e);
-        }
-    }
-
     @BeforeAll
-    public static void startMariaDB() {
-        try {
-            Factory.disable();
-            database = DB.newEmbeddedDB(3306);
-            database.start();
-            try (Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/?user=root&password=")) {
-                try (Statement statement = conn.createStatement()) {
-                    statement.executeUpdate("CREATE DATABASE db");
-                }
-            }
-        } catch (SQLException | ManagedProcessException e) {
-            Logger.getLogger(PlayerMetaMySQLControllerTest.class.getSimpleName()).log(Level.WARNING, "Failed to start mariadb.", e);
-        }
+    public static void disableFactory() {
+       Factory.disable();
     }
 
     @Test
     public void insertSelectPlayerMetaTest() throws ClassNotFoundException {
-        final Plugin plugin = mockPlugin();
-        plugin.getConfig().set("sql.enabled", true);
-        Factory.initialize(plugin);
+        Factory.initialize(mockPlugin());
         try (PlayerMetaController controller = Factory.createPlayerDataController()) {
+            try (PetMetaController petController = Factory.createPetDataController()) {
+                for (final PetMeta item : petController.getAll()) {
+                    petController.remove(item);
+                }
+            }
             for (final PlayerMeta item : controller.getAll()) {
                 controller.remove(item);
             }
             final UUID uuid = UUID.randomUUID();
             final PlayerMeta playerMeta = new PlayerData();
-
             assertThrows(IllegalArgumentException.class, () -> controller.store(playerMeta));
             assertEquals(0, controller.size());
 
@@ -112,12 +87,16 @@ public class PlayerMetaMySQLControllerTest {
         }
     }
 
+
     @Test
     public void storeLoadPlayerMetaTest() throws ClassNotFoundException {
-        final Plugin plugin = mockPlugin();
-        plugin.getConfig().set("sql.enabled", true);
-        Factory.initialize(plugin);
+        Factory.initialize(mockPlugin());
         try (PlayerMetaController controller = Factory.createPlayerDataController()) {
+            try (PetMetaController petController = Factory.createPetDataController()) {
+                for (final PetMeta item : petController.getAll()) {
+                    petController.remove(item);
+                }
+            }
             for (final PlayerMeta item : controller.getAll()) {
                 controller.remove(item);
             }

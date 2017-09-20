@@ -33,7 +33,7 @@ import org.junit.jupiter.api.Test;
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-public class VersionSupportTest {
+public class VersionSupportIT {
 
     @Test
     public void versionSameOrGreaterSupportTest() {
