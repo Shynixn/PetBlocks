@@ -44,6 +44,22 @@ dependencies {
 }
 ```
 
+### Bukkit API (Includes Framework independent API)
+
+```xml
+<dependency>
+     <groupId>com.github.shynixn.petblocks</groupId>
+     <artifactId>petblocks-bukkit-api</artifactId>
+     <version>1.0.0</version>
+</dependency>
+```
+
+```xml
+dependencies {
+    compileOnly 'com.github.shynixn.petblocks:petblocks-bukkit-api:1.0.0'
+}
+```
+
 #### Modify the PetMetadata 
 
 ```java
@@ -73,23 +89,7 @@ Bukkit.getScheduler().runTaskAsynchronously(plugin, new Runnable() {
  petBlock.teleport(petBlock); //Teleport the petblock
 ```
 
-### Bukkit API (Includes Framework independent API)
-
 #### Listen to PetBlock-Events (Checkout the Javadocs for all events)
-
-```xml
-<dependency>
-     <groupId>com.github.shynixn.petblocks</groupId>
-     <artifactId>petblocks-bukkit-api</artifactId>
-     <version>1.0.0</version>
-</dependency>
-```
-
-```xml
-dependencies {
-    compileOnly 'com.github.shynixn.petblocks:petblocks-bukkit-api:1.0.0'
-}
-```
 
 ```java
 @EventHandler
