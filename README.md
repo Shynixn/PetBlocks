@@ -106,14 +106,14 @@ public void onPetBlockSpawnEvent(PetBlockSpawnEvent event) {
 <dependency>
      <groupId>com.github.shynixn.petblocks</groupId>
      <artifactId>petblocks-bukkit-plugin</artifactId>
-     <version>6.2.0</version>
+     <version>6.2.1</version>
      <scope>provided</scope>
 </dependency>
 ```
 
 ```xml
 dependencies {
-    compileOnly 'com.github.shynixn.petblocks:petblocks-bukkit-plugin:6.2.0'
+    compileOnly 'com.github.shynixn.petblocks:petblocks-bukkit-plugin:6.2.1'
 }
 ```
 
