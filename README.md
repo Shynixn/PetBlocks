@@ -44,7 +44,7 @@ dependencies {
 }
 ```
 
-### Bukkit API (Includes Framework independent API)
+### Bukkit API
 
 ```xml
 <dependency>
@@ -98,7 +98,7 @@ public void onPetBlockSpawnEvent(PetBlockSpawnEvent event) {
 }
 ```
 
-### PetBlocks Plugin (Includes all APIs but changes more more frequently)
+### PetBlocks Plugin (Includes all APIs but changes more frequently)
 
 ```xml
 <dependency>
