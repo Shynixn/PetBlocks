@@ -99,7 +99,7 @@ public class PetDataListener extends SimpleListener {
         PetBlocksApi.getDefaultPetBlockController().removeByPlayer(event.getPlayer());
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.LOWEST)
     public void playerClickEvent(final InventoryClickEvent event) {
         final Player player = (Player) event.getWhoClicked();
         if (event.getView().getTopInventory().getTitle().equals(Config.getInstance().getGUITitle())
@@ -125,8 +125,20 @@ public class PetDataListener extends SimpleListener {
             final String currentTitle = ChatColor.stripColor(event.getView().getTopInventory().getTitle());
             if (!currentTitle.startsWith(this.headDatabaseTitle) && !currentTitle.startsWith(this.headDatabaseSearch))
                 return;
-            this.linkHeadDatabaseItemToPetBlocks(event.getCurrentItem(), player);
             event.setCancelled(true);
+            this.linkHeadDatabaseItemToPetBlocks(event.getCurrentItem(), player);
+            for (final ItemStack itemStack : event.getWhoClicked().getInventory().getContents()) {
+                if (itemStack != null
+                        && itemStack.getItemMeta() != null
+                        && itemStack.getItemMeta().getDisplayName() != null) {
+                    if (itemStack.getItemMeta().getDisplayName().equals(event.getCurrentItem().getItemMeta().getDisplayName())) {
+                        final Player player1 = (Player) event.getWhoClicked();
+                        player1.getInventory().remove(itemStack);
+                        player1.updateInventory();
+                        return;
+                    }
+                }
+            }
         }
     }
 
@@ -419,14 +431,14 @@ public class PetDataListener extends SimpleListener {
             player.closeInventory();
             this.plugin.getServer().getScheduler().runTaskAsynchronously(this.plugin, () -> {
                 final com.github.shynixn.petblocks.api.persistence.entity.PetMeta petMeta = this.manager.getPetMetaController().getByPlayer(player);
+                final SkullMeta meta = (SkullMeta) itemStack.getItemMeta();
+                if (meta.getOwner() == null) {
+                    petMeta.setSkin(itemStack.getType().getId(), itemStack.getDurability(), NMSRegistry.getSkinUrl(itemStack), false);
+                } else {
+                    petMeta.setSkin(itemStack.getType().getId(), itemStack.getDurability(), ((SkullMeta) itemStack.getItemMeta()).getOwner(), false);
+                }
+                this.manager.getPetMetaController().store(petMeta);
                 this.plugin.getServer().getScheduler().runTask(this.plugin, () -> {
-                            final SkullMeta meta = (SkullMeta) itemStack.getItemMeta();
-                            if (meta.getOwner() == null) {
-                                petMeta.setSkin(itemStack.getType().getId(), itemStack.getDurability(), NMSRegistry.getSkinUrl(itemStack), false);
-                            } else {
-                                petMeta.setSkin(itemStack.getType().getId(), itemStack.getDurability(), ((SkullMeta) itemStack.getItemMeta()).getOwner(), false);
-                            }
-                            this.persistAsynchronously(petMeta);
                             final PetBlock petBlock;
                             if ((petBlock = this.getPetBlock(player)) != null) {
                                 petBlock.respawn();
