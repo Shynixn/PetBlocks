@@ -1,1 +1,0 @@
-UPDATE SHY_PETBLOCK SET name=?, type=?, material=?, data=?, skull=?, enabled=?, age=?, unbreakable=?, play_sounds=?, moving_type=?, movement_type=?  WHERE id=?;

@@ -3,7 +3,7 @@
 | branch        | status        | download      |
 | ------------- | --------------| --------------| 
 | master        | [![Build Status](https://travis-ci.org/Shynixn/PetBlocks.svg?branch=master)](https://travis-ci.org/Shynixn/PetBlocks) |[Download latest release (recommend)](https://github.com/Shynixn/PetBlocks/releases)|
-| workflow      | [![Build Status](https://travis-ci.org/Shynixn/PetBlocks.svg?branch=workflow)](https://travis-ci.org/Shynixn/PetBlocks) | [Download snapshots](https://oss.sonatype.org/content/repositories/snapshots/com/github/shynixn/petblocks/) |
+| workflow      | [![Build Status](https://travis-ci.org/Shynixn/PetBlocks.svg?branch=workflow)](https://travis-ci.org/Shynixn/PetBlocks) | [Download snapshots](https://oss.sonatype.org/content/repositories/snapshots/com/github/shynixn/petblocks/petblocks-bukkit-plugin/) |
 
 JavaDocs: https://shynixn.github.io/PetBlocks/apidocs/
 
@@ -21,7 +21,7 @@ Spigot plugin to use blocks as pets in minecraft.
 
 * [Download the plugin PetBlocks](https://github.com/Shynixn/PetBlocks/releases)
 * Put the plugin into your plugin folder
-* Start the server (1.8.0 - 1.12.1, Java 8)
+* Start the server (1.8.0 - 1.12.2, Java 8)
 * Join and play :)
 
 ## API
@@ -29,52 +29,99 @@ Spigot plugin to use blocks as pets in minecraft.
 * Reference the PetBlocks.jar in your own projects.
 * If you are using maven or gradle you can add it from the central maven repository
 
-### Maven
-
+### Framework independent API
 ```xml
 <dependency>
-     <groupId>com.github.shynixn</groupId>
-     <artifactId>petblocks</artifactId>
-     <version>6.1.0</version>
+     <groupId>com.github.shynixn.petblocks</groupId>
+     <artifactId>petblocks-api</artifactId>
+     <version>1.0.0</version>
+     <scope>provided</scope>
 </dependency>
 ```
 
-### Gradle
-
 ```xml
 dependencies {
-    compileOnly 'com.github.shynixn:petblocks:6.1.0'
+    compileOnly 'com.github.shynixn.petblocks:petblocks-api:1.0.0'
 }
 ```
 
-## How to use the it
+### Bukkit API
 
-#### Set Petmeta
-
-```java
-    Player player = Bukkit.getPlayer("Shynixn");
-    if(PetBlocksApi.hasPetMeta(player)){
-         //Stored data of the entity
-          PetMeta petMeta = PetBlocksApi.getPetMeta(player);
-          petMeta.setDisplayName(ChatColor.RED + "That's my new petname");
-          PetBlocksApi.persistPetMeta(petMeta);
-    }
+```xml
+<dependency>
+     <groupId>com.github.shynixn.petblocks</groupId>
+     <artifactId>petblocks-bukkit-api</artifactId>
+     <version>1.0.0</version>
+     <scope>provided</scope>
+</dependency>
 ```
-#### Set Petblock
+
+```xml
+dependencies {
+    compileOnly 'com.github.shynixn.petblocks:petblocks-bukkit-api:1.0.0'
+}
+```
+
+#### Modify the PetMetadata 
 
 ```java
-    if(PetBlocksApi.hasPetBlock(player)){
-        //The current entity petblock
-        PetBlock petblock = PetBlocksApi.getPetBlock(player);
-        petblock.teleport(player);
+Plugin plugin; //Your plugin instance
+Player player; //Your player instance
+
+//Create and manipulate data
+PetMetaController petMetaController = PetBlocksApi.getDefaultPetMetaController();
+PetMeta petMeta = petMetaController.create(player);
+petMeta.setPetDisplayName(ChatColor.BLACK + "Amazing Pet"); //Modify the petMeta
+Bukkit.getScheduler().runTaskAsynchronously(plugin, new Runnable() {
+    @Override
+    public void run() {
+        petMetaController.store(petMeta);   //It is recommend to save the petMeta asynchronously into the database
     }
+});
+```
+#### Teleport the PetBlock to a location
+
+```java
+ Player player; //Your player instance
+ PetMeta petMeta; //Your PetMeta instance
+ Location location; //Target location instance
+ PetBlockController petBlockController = PetBlocksApi.getDefaultPetBlockController();
+ PetBlock petBlock = petBlockController.create(player, petMeta);
+ petBlockController.store(petBlock); //Store the petblock to be managed by the plugin. Does not involve a database so it can be used on the main thread.
+ petBlock.teleport(petBlock); //Teleport the petblock
+```
+
+#### Listen to PetBlock-Events (Checkout the Javadocs for all events)
+
+```java
+@EventHandler
+public void onPetBlockSpawnEvent(PetBlockSpawnEvent event) {
+     Bukkit.getLogger().log(Level.INFO, "PetBlock " + event.getPetBlock().getDisplayName() + " has spawned.");
+}
+```
+
+### PetBlocks Plugin (Includes all APIs but changes more frequently)
+
+```xml
+<dependency>
+     <groupId>com.github.shynixn.petblocks</groupId>
+     <artifactId>petblocks-bukkit-plugin</artifactId>
+     <version>6.2.0</version>
+     <scope>provided</scope>
+</dependency>
+```
+
+```xml
+dependencies {
+    compileOnly 'com.github.shynixn.petblocks:petblocks-bukkit-plugin:6.2.0'
+}
 ```
 
 * Check out the [PetBlocks-Spigot-Page](https://www.spigotmc.org/resources/petblocks-mysql-bungeecord-customizeable-gui-1-8-1-9-1-10-1-11.12056/) to get more information. 
 
 ## Screenshots
 
-![alt tag](http://www.mediafire.com/convkey/9d02/r92bshjdva755d3zg.jpg)
+![alt tag](http://www.mediafire.com/convkey/8bb0/lfn9h2l6tn338otzg.jpg)
 ![alt tag](http://www.mediafire.com/convkey/697e/ddk043hgdj57d7jzg.jpg)
 
 ## Licence
