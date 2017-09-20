@@ -44,7 +44,7 @@ dependencies {
 }
 ```
 
-#### Modify the PetMetadata
+#### Modify the PetMetadata 
 
 ```java
 Plugin plugin; //Your plugin instance
@@ -75,7 +75,7 @@ Bukkit.getScheduler().runTaskAsynchronously(plugin, new Runnable() {
 
 ### Bukkit API (Includes Framework independent API)
 
-### Listen to PetBlock-Events (Checkout the Javadocs for all events)
+#### Listen to PetBlock-Events (Checkout the Javadocs for all events)
 
 ```xml
 <dependency>
