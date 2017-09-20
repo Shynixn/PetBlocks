@@ -14,7 +14,7 @@
         <module>petblocks-bukkit-plugin</module>
         <module>petblocks-bukkit-lib</module>
     </modules>
-    <version>${petblocks.bukkit.version}</version>
+    <version>6.2.2</version>
     <packaging>pom</packaging>
 
 
@@ -32,8 +32,6 @@
     </licenses>
 
     <properties>
-        <petblocks.api.version>1.0.0</petblocks.api.version>
-        <petblocks.bukkit.version>6.2.1</petblocks.bukkit.version>
         <petblocks.bukkit.test-server-path>D:/Temp/plugins</petblocks.bukkit.test-server-path>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
