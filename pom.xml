@@ -32,8 +32,8 @@
     </licenses>
 
     <properties>
-        <petblocks.api.version>1.0.0-SNAPSHOT</petblocks.api.version>
-        <petblocks.bukkit.version>6.2.0-SNAPSHOT</petblocks.bukkit.version>
+        <petblocks.api.version>1.0.0</petblocks.api.version>
+        <petblocks.bukkit.version>6.2.0</petblocks.bukkit.version>
         <petblocks.bukkit.test-server-path>D:/Temp/plugins</petblocks.bukkit.test-server-path>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
@@ -113,6 +113,13 @@
                         <phase>verify</phase>
                         <goals>
                             <goal>jar</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>aggregate</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>aggregate</goal>
                         </goals>
                     </execution>
                 </executions>
