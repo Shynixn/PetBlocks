@@ -223,12 +223,16 @@ public class GUI {
                 }
             }
             container.startCount = count;
-            final GUIItemContainer nextPage = Config.getInstance().getGuiItemsController().getGUIItemByName("next-page");
-            final GUIItemContainer previousPage = Config.getInstance().getGuiItemsController().getGUIItemByName("previous-page");
             final GUIItemContainer backGuiItemContainer = Config.getInstance().getGuiItemsController().getGUIItemByName("back");
             inventory.setItem(backGuiItemContainer.getPosition(), (ItemStack) backGuiItemContainer.generate(player));
-            inventory.setItem(nextPage.getPosition(), (ItemStack) nextPage.generate(player));
-            inventory.setItem(previousPage.getPosition(), (ItemStack) previousPage.generate(player));
+            if (!(container.startCount % 45 != 0 || containers.size() == container.startCount)) {
+                final GUIItemContainer nextPage = Config.getInstance().getGuiItemsController().getGUIItemByName("next-page");
+                inventory.setItem(nextPage.getPosition(), (ItemStack) nextPage.generate(player));
+            }
+            if (container.currentCount != 0) {
+                final GUIItemContainer previousPage = Config.getInstance().getGuiItemsController().getGUIItemByName("previous-page");
+                inventory.setItem(previousPage.getPosition(), (ItemStack) previousPage.generate(player));
+            }
             this.fillEmptySlots(inventory);
         }
     }

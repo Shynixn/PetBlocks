@@ -249,7 +249,7 @@ messages:
   naming-message: '&eEnter the name the of your pet:'
   naming-success: '&aYou changed the name of your pet.'
   naming-error: '&cYou cannot name your pet like that.'
-  skullnaming-message: '&eEnter the name of your skin:'
+  skullnaming-message: '&eEnter the name of the player:'
   skullnaming-success: '&aYou changed the skin of your pet.'
   skullnaming-error: '&eThis skin is invalid.'
   perms-ico-yes: '&aYes'
@@ -281,13 +281,13 @@ messages:
 
 gui:
   settings:
-    title: '&9PetBlocks &r- Customize'
+    title: 'PetBlocks'
     copy-skin: true
     use-only-disable-pet-item: false
     default-engine: 1
   items:
     my-pet:
-      position: 22
+      position: 4
     default-appearance:
       id: 2
       damage: 0
@@ -334,70 +334,70 @@ gui:
         - '&7Closes the current window.'
     enable-pet:
       enabled: true
-      position: 31
-      page: 'MAIN'
-      id: 397
-      damage: 3
-      skin: 'textures.minecraft.net/texture/f45c9acea8da71b4f252cd4deb5943f49e7dbc0764274b25a6a6f5875baea3'
-      name: '&a&lEnable Petblock'
-      unbreakable: false
-      lore:
-        - '&7Spawn your pet.'
-    disable-pet:
-      enabled: true
-      position: 31
+      position: 22
       page: 'MAIN'
       id: 397
       damage: 3
       skin: 'textures.minecraft.net/texture/ad5fcd31287d63e7826ea760a7ed154f685dfdc7f3465732a96e619b2e1347'
-      name: '&c&lDisable Petblock'
+      name: '&c&lPetblock disabled'
       unbreakable: false
       lore:
-        - '&7Remove your pet.'
+        - '&7Click to enable the pet.'
+    disable-pet:
+      enabled: true
+      position: 22
+      page: 'MAIN'
+      id: 397
+      damage: 3
+      skin: 'textures.minecraft.net/texture/f45c9acea8da71b4f252cd4deb5943f49e7dbc0764274b25a6a6f5875baea3'
+      name: '&a&lPetblock enabled'
+      unbreakable: false
+      lore:
+        - '&7Click to disable the pet.'
     engine-settings:
       enabled: true
-      position: 18
+      position: 26
       page: 'MAIN'
       id: 397
       damage: 3
       skin: 'textures.minecraft.net/texture/8f14f3179b86f69b3efa7472dacaeb2339f6290d2d817362793348abd98e021'
-      name: '&a&lEngines'
+      name: '&6&lEngines'
       unbreakable: false
       lore:
         - '&7Customize the behaviour of your pet.'
     wardrobe:
       enabled: true
-      position: 26
+      position: 18
       page: 'MAIN'
-      id: 116
-      damage: 1
-      skin: 'none'
+      id: 397
+      damage: 3
+      skin: 'textures.minecraft.net/texture/55507d6517eff952dd38fa8bc551dd6d6a7a5e4ea134519b44650ac1ffa59c3'
       name: '&6&lWardrobe'
       unbreakable: false
       lore:
         - '&7Change the appearance of your pet.'
     sounds-enabled-pet:
       enabled: true
-      position: 27
-      page: 'MAIN'
-      id: 397
-      damage: 3
-      skin: 'textures.minecraft.net/texture/ae7215c45d97d7bc55d9dfa58fcc73f4af74e4b3f5a15b4419127424c4268e'
-      name: '&9&lMute'
-      unbreakable: false
-      lore:
-        - '&7Disable sounds for your pet.'
-    sounds-disabled-pet:
-      enabled: true
-      position: 27
+      position: 31
       page: 'MAIN'
       id: 397
       damage: 3
       skin: 'textures.minecraft.net/texture/cb9c706c85572f05efc4170ada791154de2b5378e6252aadc8d43b19c5564'
-      name: '&9&lUnmute'
+      name: '&a&lPet unmuted'
       unbreakable: false
       lore:
-        - '&7Enable sounds for your pet.'
+        - '&7Click to disable the sounds of your pet.'
+    sounds-disabled-pet:
+      enabled: true
+      position: 31
+      page: 'MAIN'
+      id: 397
+      damage: 3
+      skin: 'textures.minecraft.net/texture/ae7215c45d97d7bc55d9dfa58fcc73f4af74e4b3f5a15b4419127424c4268e'
+      name: '&c&lPet muted'
+      unbreakable: false
+      lore:
+        - '&7Click to enable the sounds of your pet.'
     ordinary-costume:
       enabled: true
       position: 20
@@ -471,7 +471,7 @@ gui:
       id: 331
       damage: 0
       skin: 'none'
-      name: '&4&lParticles'
+      name: '&6&lParticles'
       unbreakable: false
       lore:
         - '&7Customize the effects of your pet.'
@@ -493,7 +493,7 @@ gui:
       id: 397
       damage: 3
       skin: 'textures.minecraft.net/texture/996754d330435345aae3a9f063cfca42afb28b7c5c4bb9f294ed2527d961'
-      name: '&f&lLaunch'
+      name: '&2&lLaunch'
       unbreakable: false
       lore:
         - '&7Shoot your pet like a cannon.'
@@ -510,12 +510,12 @@ gui:
         - '&7Use the skin of another player as costume.'
     naming-pet:
       enabled: true
-      position: 4
+      position: 27
       unbreakable: false
       id: 421
       damage: 0
       skin: 'none'
-      name: '&5&lRename'
+      name: '&6&lRename'
       page: 'MAIN'
       lore:
         - '&7Change the name of your pet.'
@@ -525,8 +525,8 @@ gui:
       page: 'MAIN'
       id: 397
       damage: 3
-      skin: 'textures.minecraft.net/texture/ed15ac32473997c6b3e6ab1cb28f577fc2cfd0a32b2c665acc384231aa4495b4'
-      name: '&b&lHat'
+      skin: 'textures.minecraft.net/texture/9b5f247a7f5b37bbfa488ab4efaddcbad2e526e94fc542b1fe2f7cfeb6e'
+      name: '&2&lHat'
       unbreakable: false
       lore:
         - '&7Wear your pet like a hat.'
@@ -537,10 +537,10 @@ gui:
       id: 329
       damage: 0
       skin: 'none'
-      name: '&e&lRide'
+      name: '&2&lRide'
       unbreakable: false
       lore:
-        - '&7Starts riding your pet.'
+        - '&7Start to ride your pet.'
 #--- DO NOT COPY ITEMS
 
 ############################
