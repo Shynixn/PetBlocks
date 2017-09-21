@@ -34,14 +34,14 @@ Spigot plugin to use blocks as pets in minecraft.
 <dependency>
      <groupId>com.github.shynixn.petblocks</groupId>
      <artifactId>petblocks-api</artifactId>
-     <version>1.0.0</version>
+     <version>6.2.2</version>
      <scope>provided</scope>
 </dependency>
 ```
 
 ```xml
 dependencies {
-    compileOnly 'com.github.shynixn.petblocks:petblocks-api:1.0.0'
+    compileOnly 'com.github.shynixn.petblocks:petblocks-api:6.2.2'
 }
 ```
 
@@ -51,14 +51,14 @@ dependencies {
 <dependency>
      <groupId>com.github.shynixn.petblocks</groupId>
      <artifactId>petblocks-bukkit-api</artifactId>
-     <version>1.0.0</version>
+     <version>6.2.2</version>
      <scope>provided</scope>
 </dependency>
 ```
 
 ```xml
 dependencies {
-    compileOnly 'com.github.shynixn.petblocks:petblocks-bukkit-api:1.0.0'
+    compileOnly 'com.github.shynixn.petblocks:petblocks-bukkit-api:6.2.2'
 }
 ```
 
@@ -91,7 +91,7 @@ Bukkit.getScheduler().runTaskAsynchronously(plugin, new Runnable() {
  petBlock.teleport(petBlock); //Teleport the petblock
 ```
 
-#### Listen to PetBlock-Events (Checkout the Javadocs for all events)
+#### Listen to PetBlock-Events (Checkout the [JavaDocs](https://shynixn.github.io/PetBlocks/apidocs/) for all events)
 
 ```java
 @EventHandler
@@ -106,14 +106,14 @@ public void onPetBlockSpawnEvent(PetBlockSpawnEvent event) {
 <dependency>
      <groupId>com.github.shynixn.petblocks</groupId>
      <artifactId>petblocks-bukkit-plugin</artifactId>
-     <version>6.2.1</version>
+     <version>6.2.2</version>
      <scope>provided</scope>
 </dependency>
 ```
 
 ```xml
 dependencies {
-    compileOnly 'com.github.shynixn.petblocks:petblocks-bukkit-plugin:6.2.1'
+    compileOnly 'com.github.shynixn.petblocks:petblocks-bukkit-plugin:6.2.2'
 }
 ```
 
@@ -121,7 +121,7 @@ dependencies {
 
 ## Screenshots
 
-![alt tag](http://www.mediafire.com/convkey/8bb0/lfn9h2l6tn338otzg.jpg)
+![alt tag](http://www.mediafire.com/convkey/2c79/3c4a0jhycshdd2zzg.jpg)
 ![alt tag](http://www.mediafire.com/convkey/697e/ddk043hgdj57d7jzg.jpg)
 
 ## Licence
