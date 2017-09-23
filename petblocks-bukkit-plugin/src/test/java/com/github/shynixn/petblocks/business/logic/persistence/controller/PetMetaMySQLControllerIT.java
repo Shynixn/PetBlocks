@@ -8,6 +8,7 @@ import com.github.shynixn.petblocks.api.persistence.controller.PlayerMetaControl
 import com.github.shynixn.petblocks.api.persistence.entity.ParticleEffectMeta;
 import com.github.shynixn.petblocks.api.persistence.entity.PetMeta;
 import com.github.shynixn.petblocks.api.persistence.entity.PlayerMeta;
+import com.github.shynixn.petblocks.business.bukkit.PetBlocksPlugin;
 import com.github.shynixn.petblocks.business.logic.Factory;
 import com.github.shynixn.petblocks.business.logic.persistence.entity.EngineData;
 import com.github.shynixn.petblocks.business.logic.persistence.entity.PetData;
@@ -21,6 +22,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
+import java.lang.reflect.Field;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -45,6 +47,13 @@ public class PetMetaMySQLControllerIT {
         configuration.set("sql.database", "db");
         configuration.set("sql.username", "root");
         configuration.set("sql.password", "");
+        try {
+            final Field field = PetBlocksPlugin.class.getDeclaredField("logger");
+            field.setAccessible(true);
+            field.set(null, Logger.getGlobal());
+        } catch (IllegalAccessException | NoSuchFieldException e) {
+            e.printStackTrace();
+        }
         final Plugin plugin = mock(Plugin.class);
         new File("PetBlocks.db").delete();
         when(plugin.getDataFolder()).thenReturn(new File("PetBlocks"));

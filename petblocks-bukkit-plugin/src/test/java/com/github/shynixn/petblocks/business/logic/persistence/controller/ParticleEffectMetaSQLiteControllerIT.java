@@ -4,6 +4,7 @@ import com.github.shynixn.petblocks.api.persistence.controller.ParticleEffectMet
 import com.github.shynixn.petblocks.api.persistence.controller.PetMetaController;
 import com.github.shynixn.petblocks.api.persistence.entity.ParticleEffectMeta;
 import com.github.shynixn.petblocks.api.persistence.entity.PetMeta;
+import com.github.shynixn.petblocks.business.bukkit.PetBlocksPlugin;
 import com.github.shynixn.petblocks.business.logic.Factory;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -15,6 +16,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
+import java.lang.reflect.Field;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -30,6 +32,13 @@ public class ParticleEffectMetaSQLiteControllerIT {
         when(server.getLogger()).thenReturn(Logger.getGlobal());
         if(Bukkit.getServer() == null)
             Bukkit.setServer(server);
+        try {
+            final Field field = PetBlocksPlugin.class.getDeclaredField("logger");
+            field.setAccessible(true);
+            field.set(null, Logger.getGlobal());
+        } catch (IllegalAccessException | NoSuchFieldException e) {
+            e.printStackTrace();
+        }
         final YamlConfiguration configuration = new YamlConfiguration();
         configuration.set("sql.enabled",false);
         configuration.set("sql.host", "localhost");
