@@ -88,7 +88,7 @@ Bukkit.getScheduler().runTaskAsynchronously(plugin, new Runnable() {
  PetBlockController petBlockController = PetBlocksApi.getDefaultPetBlockController();
  PetBlock petBlock = petBlockController.create(player, petMeta);
  petBlockController.store(petBlock); //Store the petblock to be managed by the plugin. Does not involve a database so it can be used on the main thread.
- petBlock.teleport(petBlock); //Teleport the petblock
+ petBlock.teleport(location); //Teleport the petblock
 ```
 
 #### Listen to PetBlock-Events (Checkout the [JavaDocs](https://shynixn.github.io/PetBlocks/apidocs/) for all events)
