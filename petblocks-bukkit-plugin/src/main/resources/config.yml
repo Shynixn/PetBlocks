@@ -1173,8 +1173,28 @@ engines:
           name: 'none'
           volume: 1.0
           pitch: 1.0
+   29:
+     gui:
+        id: 397
+        damage: 3
+        skin: 'textures.minecraft.net/texture/707dab2cbebea539b64d5ad246f9ccc1fcda7aa94b88e59fc2829852f46071'
+        name: '&c&lParrot'
+        unbreakable: false
+        lore:
+          - '&7Permission: <permission>'
+     behaviour:
+        entity: 'RABBIT'
+        riding: 'FLYING'
+     sound:
+        ambient:
+          name: 'ENTITY_PARROT_AMBIENT'
+          volume: 1.0
+          pitch: 1.0
+        walking:
+          name: 'ENTITY_PARROT_FLY'
+          volume: 1.0
+          pitch: 1.0
 #--- Copy one of the items increment the number and add it above this line
-
 ############################
 
 # Wardrobe-settings
