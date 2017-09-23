@@ -5,6 +5,7 @@ import com.github.shynixn.petblocks.api.business.entity.PetBlock;
 import com.github.shynixn.petblocks.api.business.entity.PetBlockPartEntity;
 import com.github.shynixn.petblocks.api.business.enumeration.RideType;
 import com.github.shynixn.petblocks.api.persistence.entity.PetMeta;
+import com.github.shynixn.petblocks.business.bukkit.PetBlocksPlugin;
 import com.github.shynixn.petblocks.business.bukkit.nms.NMSRegistry;
 import com.github.shynixn.petblocks.business.bukkit.nms.helper.PetBlockHelper;
 import com.github.shynixn.petblocks.business.logic.business.configuration.ConfigPet;
@@ -70,7 +71,7 @@ final class CustomGroundArmorstand extends EntityArmorStand implements PetBlock 
             jump.setAccessible(true);
             return !this.passengers.isEmpty() && jump.getBoolean(this.passengers.get(0));
         } catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException e1) {
-            Bukkit.getLogger().log(Level.WARNING, "EntityNMS exception.", e1);
+            PetBlocksPlugin.logger().log(Level.WARNING, "EntityNMS exception.", e1);
         }
         return false;
     }

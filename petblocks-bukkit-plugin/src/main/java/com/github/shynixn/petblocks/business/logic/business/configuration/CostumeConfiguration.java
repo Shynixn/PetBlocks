@@ -2,6 +2,7 @@ package com.github.shynixn.petblocks.business.logic.business.configuration;
 
 import com.github.shynixn.petblocks.api.business.entity.GUIItemContainer;
 import com.github.shynixn.petblocks.api.persistence.controller.CostumeController;
+import com.github.shynixn.petblocks.business.bukkit.PetBlocksPlugin;
 import com.github.shynixn.petblocks.business.logic.business.entity.ItemContainer;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.MemorySection;
@@ -120,7 +121,7 @@ public class CostumeConfiguration implements CostumeController {
                 final GUIItemContainer container = new ItemContainer(Integer.parseInt(key), ((MemorySection) data.get(key)).getValues(true));
                 this.items.add(container);
             } catch (final Exception e) {
-                Bukkit.getLogger().log(Level.WARNING, "Failed to load guiItem " + this.costumeCategory + '.' + key + '.');
+                PetBlocksPlugin.logger().log(Level.WARNING, "Failed to load guiItem " + this.costumeCategory + '.' + key + '.');
             }
         }
     }

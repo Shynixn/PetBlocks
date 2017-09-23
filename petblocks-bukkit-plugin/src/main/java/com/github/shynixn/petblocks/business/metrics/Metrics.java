@@ -1,5 +1,6 @@
 package com.github.shynixn.petblocks.business.metrics;
 
+import com.github.shynixn.petblocks.business.bukkit.PetBlocksPlugin;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
@@ -357,7 +358,7 @@ public class Metrics {
                 chart.put("data", data);
             } catch (final Throwable t) {
                 if (logFailedRequests) {
-                    Bukkit.getLogger().log(Level.WARNING, "Failed to get data for custom chart with id " + this.chartId, t);
+                    PetBlocksPlugin.logger().log(Level.WARNING, "Failed to get data for custom chart with id " + this.chartId, t);
                 }
                 return null;
             }

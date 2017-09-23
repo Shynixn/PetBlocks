@@ -80,7 +80,7 @@ public class Factory {
             try (InputStream stream = plugin.getResource("sql/" + fileName + ".sql")) {
                 return IOUtils.toString(stream, "UTF-8");
             } catch (final IOException e) {
-                Bukkit.getLogger().log(Level.WARNING, "Cannot read file.", fileName);
+                PetBlocksPlugin.logger().log(Level.WARNING, "Cannot read file.", fileName);
                 throw new RuntimeException(e);
             }
         };
@@ -96,16 +96,16 @@ public class Factory {
                     connectionContext.execute("PRAGMA foreign_keys=ON", connection);
                 }
             } catch (final SQLException e) {
-                Bukkit.getLogger().log(Level.WARNING, "Cannot execute statement.", e);
+                PetBlocksPlugin.logger().log(Level.WARNING, "Cannot execute statement.", e);
             } catch (final IOException e) {
-                Bukkit.getLogger().log(Level.WARNING, "Cannot read file.", e);
+                PetBlocksPlugin.logger().log(Level.WARNING, "Cannot read file.", e);
             }
             try (Connection connection = connectionContext.getConnection()) {
                 for (final String data : connectionContext.getStringFromFile("create-sqlite").split(Pattern.quote(";"))) {
                     connectionContext.executeUpdate(data, connection);
                 }
             } catch (final Exception e) {
-                Bukkit.getLogger().log(Level.WARNING, "Cannot execute creation.", e);
+                PetBlocksPlugin.logger().log(Level.WARNING, "Cannot execute creation.", e);
             }
         } else {
             final FileConfiguration c = plugin.getConfig();
@@ -118,8 +118,8 @@ public class Factory {
                         , c.getString("sql.password")
                         , retriever);
             } catch (final IOException e) {
-                Bukkit.getLogger().log(Level.WARNING, "Cannot connect to MySQL database!", e);
-                Bukkit.getLogger().log(Level.WARNING, "Trying to connect to SQLite database....", e);
+                PetBlocksPlugin.logger().log(Level.WARNING, "Cannot connect to MySQL database!", e);
+                PetBlocksPlugin.logger().log(Level.WARNING, "Trying to connect to SQLite database....", e);
                 connectionContext = null;
                 plugin.getConfig().set("sql.enabled", false);
                 Factory.initialize(plugin);
@@ -139,14 +139,14 @@ public class Factory {
 
             }
             if (oldData) {
-                Bukkit.getLogger().log(Level.WARNING, "Found old table data. Deleting previous entries...");
+                PetBlocksPlugin.logger().log(Level.WARNING, "Found old table data. Deleting previous entries...");
                 try (Connection connection = connectionContext.getConnection()) {
                     connectionContext.executeUpdate("DROP TABLE shy_petblock", connection);
                     connectionContext.executeUpdate("DROP TABLE shy_particle_effect", connection);
                     connectionContext.executeUpdate("DROP TABLE shy_player", connection);
-                    Bukkit.getLogger().log(Level.WARNING, "Finished deleting data.");
+                    PetBlocksPlugin.logger().log(Level.WARNING, "Finished deleting data.");
                 } catch (final SQLException e) {
-                    Bukkit.getLogger().log(Level.WARNING, "Failed removing old data.", e);
+                    PetBlocksPlugin.logger().log(Level.WARNING, "Failed removing old data.", e);
                 }
             }
             try (Connection connection = connectionContext.getConnection()) {
@@ -154,8 +154,8 @@ public class Factory {
                     connectionContext.executeUpdate(data, connection);
                 }
             } catch (final Exception e) {
-                Bukkit.getLogger().log(Level.WARNING, "Cannot execute creation.", e);
-                Bukkit.getLogger().log(Level.WARNING, "Trying to connect to SQLite database....", e);
+                PetBlocksPlugin.logger().log(Level.WARNING, "Cannot execute creation.", e);
+                PetBlocksPlugin.logger().log(Level.WARNING, "Trying to connect to SQLite database....", e);
                 connectionContext = null;
                 plugin.getConfig().set("sql.enabled", false);
                 Factory.initialize(plugin);

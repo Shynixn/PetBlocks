@@ -2,6 +2,7 @@ package com.github.shynixn.petblocks.business.logic.business;
 
 import com.github.shynixn.petblocks.api.business.controller.PetBlockController;
 import com.github.shynixn.petblocks.api.persistence.controller.PetMetaController;
+import com.github.shynixn.petblocks.business.bukkit.PetBlocksPlugin;
 import com.github.shynixn.petblocks.business.bukkit.nms.NMSRegistry;
 import com.github.shynixn.petblocks.business.logic.Factory;
 import com.github.shynixn.petblocks.business.logic.business.commandexecutor.PetBlockCommandExecutor;
@@ -81,7 +82,7 @@ public class PetBlockManager implements AutoCloseable {
             this.filter = PetBlockFilter.create();
             this.gui = new GUI(this);
         } catch (final Exception e) {
-            Bukkit.getLogger().log(Level.WARNING, "Failed to initialize petblockmanager.", e);
+            PetBlocksPlugin.logger().log(Level.WARNING, "Failed to initialize petblockmanager.", e);
         }
     }
 

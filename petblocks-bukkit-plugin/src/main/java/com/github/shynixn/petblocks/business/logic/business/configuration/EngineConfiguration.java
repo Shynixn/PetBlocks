@@ -3,6 +3,7 @@ package com.github.shynixn.petblocks.business.logic.business.configuration;
 import com.github.shynixn.petblocks.api.business.entity.GUIItemContainer;
 import com.github.shynixn.petblocks.api.persistence.controller.EngineController;
 import com.github.shynixn.petblocks.api.persistence.entity.EngineContainer;
+import com.github.shynixn.petblocks.business.bukkit.PetBlocksPlugin;
 import com.github.shynixn.petblocks.business.logic.persistence.entity.EngineData;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.MemorySection;
@@ -147,7 +148,7 @@ public class EngineConfiguration implements EngineController {
             try {
                 this.engineContainers.add(new EngineData(Integer.parseInt(key), content));
             } catch (final Exception e) {
-                Bukkit.getLogger().log(Level.WARNING, "Failed to add content " + key + '.', e);
+                PetBlocksPlugin.logger().log(Level.WARNING, "Failed to add content " + key + '.', e);
             }
         }
     }

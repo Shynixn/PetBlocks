@@ -17,6 +17,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Copyright 2017 Shynixn
@@ -51,6 +52,7 @@ public final class PetBlocksPlugin extends JavaPlugin {
     public static final String PREFIX_CONSOLE = ChatColor.AQUA + "[PetBlocks] ";
     private static final long SPIGOT_RESOURCEID = 12056;
     private static final String PLUGIN_NAME = "PetBlocks";
+    private static Logger logger;
     private boolean disabled;
 
     private PetBlockManager petBlockManager;
@@ -61,6 +63,7 @@ public final class PetBlocksPlugin extends JavaPlugin {
     @Override
     public void onEnable() {
         this.saveDefaultConfig();
+        logger = this.getLogger();
         if (!VersionSupport.isServerVersionSupported(PLUGIN_NAME, PREFIX_CONSOLE)) {
             this.disabled = true;
             Bukkit.getPluginManager().disablePlugin(this);
@@ -74,7 +77,7 @@ public final class PetBlocksPlugin extends JavaPlugin {
                 try {
                     UpdateUtils.checkPluginUpToDateAndPrintMessage(SPIGOT_RESOURCEID, PREFIX_CONSOLE, PLUGIN_NAME, PetBlocksPlugin.this);
                 } catch (final IOException e) {
-                    Bukkit.getLogger().log(Level.WARNING, "Failed to check for updates.");
+                    PetBlocksPlugin.logger().log(Level.WARNING, "Failed to check for updates.");
                 }
             });
             NMSRegistry.registerAll();
@@ -83,7 +86,7 @@ public final class PetBlocksPlugin extends JavaPlugin {
                 ReflectionUtils.invokeMethodByClass(PetBlocksApi.class, "initialize", new Class[]{PetMetaController.class, PetBlockController.class}, new Object[]{this.petBlockManager.getPetMetaController(), this.petBlockManager.getPetBlockController()});
                 Bukkit.getServer().getConsoleSender().sendMessage(PREFIX_CONSOLE + ChatColor.GREEN + "Enabled PetBlocks " + this.getDescription().getVersion() + " by Shynixn");
             } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
-                Bukkit.getLogger().log(Level.WARNING, "Failed to enable plugin.", e);
+                PetBlocksPlugin.logger().log(Level.WARNING, "Failed to enable plugin.", e);
             }
         }
     }
@@ -98,8 +101,17 @@ public final class PetBlocksPlugin extends JavaPlugin {
             try {
                 this.petBlockManager.close();
             } catch (final Exception e) {
-                Bukkit.getLogger().log(Level.WARNING, "Failed to disable petblocks.", e);
+                PetBlocksPlugin.logger().log(Level.WARNING, "Failed to disable petblocks.", e);
             }
         }
+    }
+
+    /**
+     * Returns the logger of the petblocks plugin
+     *
+     * @return logger
+     */
+    public static Logger logger() {
+        return logger;
     }
 }

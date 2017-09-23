@@ -9,12 +9,14 @@ import com.github.shynixn.petblocks.api.business.entity.PetBlock;
 import com.github.shynixn.petblocks.api.persistence.entity.ParticleEffectMeta;
 import com.github.shynixn.petblocks.api.persistence.entity.PetMeta;
 import com.github.shynixn.petblocks.api.persistence.entity.SoundMeta;
+import com.github.shynixn.petblocks.business.bukkit.PetBlocksPlugin;
 import com.github.shynixn.petblocks.business.bukkit.nms.NMSRegistry;
 import com.github.shynixn.petblocks.business.logic.business.configuration.ConfigPet;
 import com.github.shynixn.petblocks.business.logic.persistence.entity.ParticleEffectData;
 import com.github.shynixn.petblocks.business.logic.persistence.entity.PetData;
 import com.github.shynixn.petblocks.business.logic.persistence.entity.SoundBuilder;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.ArmorStand;
@@ -107,10 +109,11 @@ public final class PetBlockHelper {
                         petData.getEngine().getWalkingSound().applyToPlayers(owner);
                     }
                 } catch (final Exception e) {
-                    Bukkit.getLogger()
+                    PetBlocksPlugin.logger()
                             .log(Level.WARNING, "Cannot play walking sound "
                                     + petData.getEngine().getWalkingSound().getName()
-                                    + " of " + petData.getEngine().getEntityType() + '.');
+                                    + " of " + ChatColor.stripColor(petData.getEngine().getGUIItem().getDisplayName().get()) + '.');
+                    PetBlocksPlugin.logger().log(Level.WARNING, "Is this entity or sound supported by your server version? Disable it in the config.yml");
                 }
             }
             return milli;
@@ -153,7 +156,7 @@ public final class PetBlockHelper {
                 }
             }
         } catch (final Exception ex) {
-            Bukkit.getLogger().log(Level.WARNING, "Catcher prevented server crash, please report the following error to author Shynixn!", ex);
+            PetBlocksPlugin.logger().log(Level.WARNING, "Catcher prevented server crash, please report the following error to author Shynixn!", ex);
         }
         getArmorstand(petBlock).setFireTicks(0);
         if (getEngineEntity(petBlock) != null)
@@ -168,19 +171,18 @@ public final class PetBlockHelper {
             final Random random = new Random();
             if (!getEngineEntity(petBlock).isOnGround() || petData.getEngine().getEntityType().equalsIgnoreCase("ZOMBIE")) {
                 if (petBlock.getMeta().isSoundEnabled()) {
-                    try
-                    {
+                    try {
                         if (ConfigPet.getInstance().isDesign_allowOtherHearSound()) {
                             petData.getEngine().getAmbientSound().applyToLocation(getEngineEntity(petBlock).getLocation());
                         } else {
                             petData.getEngine().getAmbientSound().applyToLocation(petBlock.getPlayer());
                         }
-                    }
-                    catch (final Exception e) {
-                        Bukkit.getLogger()
+                    } catch (final Exception e) {
+                        PetBlocksPlugin.logger()
                                 .log(Level.WARNING, "Cannot play ambient sound "
-                                        + petData.getEngine().getWalkingSound().getName()
-                                        + " of " + petData.getEngine().getEntityType() + '.');
+                                        + petData.getEngine().getAmbientSound().getName()
+                                        + " of " + ChatColor.stripColor(petData.getEngine().getGUIItem().getDisplayName().get()) + '.');
+                        PetBlocksPlugin.logger().log(Level.WARNING, "Is this entity or sound supported by your server version? Disable it in the config.yml");
                     }
                 }
             }
@@ -242,7 +244,7 @@ public final class PetBlockHelper {
                 itemStack = activateHead(petData.getSkin(), new ItemStack(Material.getMaterial(petData.getItemId()), 1, (short) petData.getItemDamage()));
             }
         } else {
-            itemStack = new ItemStack(petData.getItemId(), 1,(short) petData.getItemDamage());
+            itemStack = new ItemStack(petData.getItemId(), 1, (short) petData.getItemDamage());
         }
         if (petData.getAge() >= ConfigPet.getInstance().getAge_largeticks()) {
             refreshHeadItemMeta(petBlock, itemStack);
@@ -288,7 +290,7 @@ public final class PetBlockHelper {
                 itemStack.setItemMeta(meta);
             }
         } catch (final Exception e) {
-            Bukkit.getLogger().log(Level.WARNING, e.getMessage());
+            PetBlocksPlugin.logger().log(Level.WARNING, e.getMessage());
         }
         return itemStack;
     }
@@ -315,7 +317,7 @@ public final class PetBlockHelper {
                 try {
                     ((SoundBuilder) explosionSound).apply(((Player) petBlock.getPlayer()).getLocation());
                 } catch (final Exception e) {
-                    Bukkit.getLogger().log(Level.WARNING, "Cannot play sound.", e);
+                    PetBlocksPlugin.logger().log(Level.WARNING, "Cannot play sound.", e);
                 }
             }
         }

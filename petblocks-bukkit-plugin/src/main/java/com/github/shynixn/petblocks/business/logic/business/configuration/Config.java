@@ -223,7 +223,7 @@ public final class Config extends SimpleConfig {
                 meta = new ParticleEffectData(((MemorySection) this.getData("effect")).getValues(false));
                 petMeta.setParticleEffectMeta(meta);
             } catch (final Exception e) {
-                Bukkit.getLogger().log(Level.WARNING, "Failed to load particle effect for join pet.");
+                PetBlocksPlugin.logger().log(Level.WARNING, "Failed to load particle effect for join pet.");
             }
         }
     }

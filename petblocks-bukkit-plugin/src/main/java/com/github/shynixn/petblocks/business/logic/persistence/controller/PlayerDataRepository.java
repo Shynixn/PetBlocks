@@ -2,6 +2,7 @@ package com.github.shynixn.petblocks.business.logic.persistence.controller;
 
 import com.github.shynixn.petblocks.api.persistence.controller.PlayerMetaController;
 import com.github.shynixn.petblocks.api.persistence.entity.PlayerMeta;
+import com.github.shynixn.petblocks.business.bukkit.PetBlocksPlugin;
 import com.github.shynixn.petblocks.business.logic.persistence.entity.PlayerData;
 import com.github.shynixn.petblocks.lib.ExtensionHikariConnectionContext;
 import org.bukkit.Bukkit;
@@ -58,7 +59,7 @@ public class PlayerDataRepository extends DataBaseRepository<PlayerMeta> impleme
                 }
             }
         } catch (final SQLException e) {
-            Bukkit.getLogger().log(Level.WARNING, "Database error occurred.", e);
+            PetBlocksPlugin.logger().log(Level.WARNING, "Database error occurred.", e);
         }
         return null;
     }
@@ -81,7 +82,7 @@ public class PlayerDataRepository extends DataBaseRepository<PlayerMeta> impleme
                 }
             }
         } catch (final SQLException e) {
-            Bukkit.getLogger().log(Level.WARNING, "Database error occurred.", e);
+            PetBlocksPlugin.logger().log(Level.WARNING, "Database error occurred.", e);
         }
         return null;
     }
@@ -115,7 +116,7 @@ public class PlayerDataRepository extends DataBaseRepository<PlayerMeta> impleme
                 }
             }
         } catch (final SQLException e) {
-            Bukkit.getLogger().log(Level.WARNING, "Database error occurred.", e);
+            PetBlocksPlugin.logger().log(Level.WARNING, "Database error occurred.", e);
         }
         return playerList;
     }
@@ -133,7 +134,7 @@ public class PlayerDataRepository extends DataBaseRepository<PlayerMeta> impleme
                     item.getName(),
                     item.getId());
         } catch (final SQLException e) {
-            Bukkit.getLogger().log(Level.WARNING, "Database error occurred.", e);
+            PetBlocksPlugin.logger().log(Level.WARNING, "Database error occurred.", e);
         }
     }
 
@@ -148,7 +149,7 @@ public class PlayerDataRepository extends DataBaseRepository<PlayerMeta> impleme
             this.dbContext.executeStoredUpdate("player/delete", connection,
                     item.getId());
         } catch (final SQLException e) {
-            Bukkit.getLogger().log(Level.WARNING, "Database error occurred.", e);
+            PetBlocksPlugin.logger().log(Level.WARNING, "Database error occurred.", e);
         }
     }
 
@@ -166,7 +167,7 @@ public class PlayerDataRepository extends DataBaseRepository<PlayerMeta> impleme
                     item.getName(), item.getUUID().toString());
             ((PlayerData)item).setId(id);
         } catch (final SQLException e) {
-            Bukkit.getLogger().log(Level.WARNING, "Database error occurred.", e);
+            PetBlocksPlugin.logger().log(Level.WARNING, "Database error occurred.", e);
         }
     }
 
@@ -198,7 +199,7 @@ public class PlayerDataRepository extends DataBaseRepository<PlayerMeta> impleme
                 }
             }
         } catch (final SQLException e) {
-            Bukkit.getLogger().log(Level.WARNING, "Database error occurred.", e);
+            PetBlocksPlugin.logger().log(Level.WARNING, "Database error occurred.", e);
         }
         return 0;
     }

@@ -2,6 +2,7 @@ package com.github.shynixn.petblocks.business.logic.persistence.controller;
 
 import com.github.shynixn.petblocks.api.persistence.controller.ParticleEffectMetaController;
 import com.github.shynixn.petblocks.api.persistence.entity.ParticleEffectMeta;
+import com.github.shynixn.petblocks.business.bukkit.PetBlocksPlugin;
 import com.github.shynixn.petblocks.business.logic.persistence.entity.ParticleEffectData;
 import com.github.shynixn.petblocks.lib.ExtensionHikariConnectionContext;
 import org.bukkit.Bukkit;
@@ -52,7 +53,7 @@ public class ParticleEffectDataRepository extends DataBaseRepository<ParticleEff
                 }
             }
         } catch (final SQLException e) {
-            Bukkit.getLogger().log(Level.WARNING, "Database error occurred.", e);
+            PetBlocksPlugin.logger().log(Level.WARNING, "Database error occurred.", e);
         }
         return null;
     }
@@ -86,7 +87,7 @@ public class ParticleEffectDataRepository extends DataBaseRepository<ParticleEff
                 }
             }
         } catch (final SQLException e) {
-            Bukkit.getLogger().log(Level.WARNING, "Database error occurred.", e);
+            PetBlocksPlugin.logger().log(Level.WARNING, "Database error occurred.", e);
         }
         return items;
     }
@@ -116,7 +117,7 @@ public class ParticleEffectDataRepository extends DataBaseRepository<ParticleEff
                     data,
                     item.getId());
         } catch (final SQLException e) {
-            Bukkit.getLogger().log(Level.WARNING, "Database error occurred.", e);
+            PetBlocksPlugin.logger().log(Level.WARNING, "Database error occurred.", e);
         }
     }
 
@@ -132,7 +133,7 @@ public class ParticleEffectDataRepository extends DataBaseRepository<ParticleEff
                 this.dbContext.executeStoredUpdate("particle/delete", connection,
                         item.getId());
             } catch (final SQLException e) {
-                Bukkit.getLogger().log(Level.WARNING, "Database error occurred.", e);
+                PetBlocksPlugin.logger().log(Level.WARNING, "Database error occurred.", e);
             }
         }
     }
@@ -159,7 +160,7 @@ public class ParticleEffectDataRepository extends DataBaseRepository<ParticleEff
                     item.getData());
             ((ParticleEffectData) item).setId(id);
         } catch (final SQLException e) {
-            Bukkit.getLogger().log(Level.WARNING, "Database error occurred.", e);
+            PetBlocksPlugin.logger().log(Level.WARNING, "Database error occurred.", e);
         }
     }
 
@@ -176,7 +177,7 @@ public class ParticleEffectDataRepository extends DataBaseRepository<ParticleEff
                 }
             }
         } catch (final SQLException e) {
-            Bukkit.getLogger().log(Level.WARNING, "Database error occurred.", e);
+            PetBlocksPlugin.logger().log(Level.WARNING, "Database error occurred.", e);
         }
         return 0;
     }

@@ -32,7 +32,7 @@ class VisibilityManager {
                     VisibilityManager.this.sendDestroyPacket(player, (Entity) petBlock.getEngineEntity());
                     VisibilityManager.this.hiddenValues.get(petBlock).add(player);
                 } catch (ClassNotFoundException | IllegalAccessException | InstantiationException | NoSuchMethodException | InvocationTargetException e) {
-                    Bukkit.getLogger().log(Level.WARNING, "Failed to send visibilty packet.", e);
+                    PetBlocksPlugin.logger().log(Level.WARNING, "Failed to send visibilty packet.", e);
                 }
             }
         });
@@ -88,7 +88,7 @@ class VisibilityManager {
             final Object playerConnection = entityPlayer.getClass().getField("playerConnection").get(entityPlayer);
             ReflectionUtils.invokeMethodByObject(playerConnection, "sendPacket", new Class[]{packet.getClass()}, new Object[]{packet});
         } catch (final Exception e) {
-            Bukkit.getLogger().log(Level.WARNING, "Cannot send packet " + packet.getClass().getSimpleName() + '.', e);
+            PetBlocksPlugin.logger().log(Level.WARNING, "Cannot send packet " + packet.getClass().getSimpleName() + '.', e);
         }
     }
 }

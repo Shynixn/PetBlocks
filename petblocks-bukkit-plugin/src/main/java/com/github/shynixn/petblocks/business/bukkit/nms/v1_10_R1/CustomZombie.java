@@ -2,6 +2,7 @@ package com.github.shynixn.petblocks.business.bukkit.nms.v1_10_R1;
 
 import com.github.shynixn.petblocks.api.business.entity.PetBlockPartEntity;
 import com.github.shynixn.petblocks.api.persistence.entity.PetMeta;
+import com.github.shynixn.petblocks.business.bukkit.PetBlocksPlugin;
 import com.github.shynixn.petblocks.business.bukkit.nms.helper.PetBlockHelper;
 import com.github.shynixn.petblocks.business.logic.business.configuration.ConfigPet;
 import com.google.common.collect.Sets;
@@ -46,7 +47,7 @@ public final class CustomZombie extends EntityZombie implements PetBlockPartEnti
             this.goalSelector.a(1, new OwnerPathfinder(this, player));
             this.getAttributeInstance(GenericAttributes.MOVEMENT_SPEED).setValue(0.30000001192092896D * ConfigPet.getInstance().getModifier_petwalking());
         } catch (final Exception exc) {
-            Bukkit.getLogger().log(Level.WARNING, "EntityNMS exception.", exc);
+            PetBlocksPlugin.logger().log(Level.WARNING, "EntityNMS exception.", exc);
         }
         this.player = player;
         this.petMeta = meta;

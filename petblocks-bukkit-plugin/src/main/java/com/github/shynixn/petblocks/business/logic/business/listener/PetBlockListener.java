@@ -7,6 +7,7 @@ import com.github.shynixn.petblocks.api.business.entity.PetBlock;
 import com.github.shynixn.petblocks.api.persistence.entity.ParticleEffectMeta;
 import com.github.shynixn.petblocks.api.persistence.entity.PetMeta;
 import com.github.shynixn.petblocks.api.persistence.entity.SoundMeta;
+import com.github.shynixn.petblocks.business.bukkit.PetBlocksPlugin;
 import com.github.shynixn.petblocks.business.logic.business.PetBlockManager;
 import com.github.shynixn.petblocks.business.bukkit.nms.NMSRegistry;
 import com.github.shynixn.petblocks.business.logic.business.configuration.Config;
@@ -107,7 +108,7 @@ public class PetBlockListener extends SimpleListener {
                     }
                 }
             } catch (final Exception ex) {
-                Bukkit.getLogger().log(Level.WARNING, "Failed to kick member from pet.");
+                PetBlocksPlugin.logger().log(Level.WARNING, "Failed to kick member from pet.");
             }
         }
     }
@@ -228,7 +229,7 @@ public class PetBlockListener extends SimpleListener {
                     try {
                         ((SoundBuilder) this.eatingSound).apply(event.getRightClicked().getLocation());
                     } catch (final Exception e) {
-                        Bukkit.getLogger().log(Level.WARNING, "Failed to play sound.", e);
+                        PetBlocksPlugin.logger().log(Level.WARNING, "Failed to play sound.", e);
                     }
                     if (NMSRegistry.getItemInHand19(event.getPlayer(), false).getAmount() == 1)
                         event.getPlayer().getInventory().setItem(event.getPlayer().getInventory().getHeldItemSlot(), new ItemStack(Material.AIR));

@@ -46,7 +46,7 @@ public final class NMSRegistry {
             return (PetBlock) ReflectionUtils.invokeConstructor(findClassFromVersion("com.github.shynixn.petblocks.business.bukkit.nms.VERSION.CustomGroundArmorstand")
                     , new Class[]{location.getClass(), PetMeta.class}, new Object[]{location, meta});
         } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException | InstantiationException | ClassNotFoundException e) {
-            Bukkit.getLogger().log(Level.WARNING, "Cannot create petblock.", e);
+            PetBlocksPlugin.logger().log(Level.WARNING, "Cannot create petblock.", e);
             return null;
         }
     }
@@ -64,7 +64,7 @@ public final class NMSRegistry {
                     findClassFromVersion("com.github.shynixn.petblocks.business.bukkit.nms.VERSION.OwnerPathfinder"),
                     "isUnbreakable", new Class[]{ItemStack.class}, new Object[]{itemStack});
         } catch (NoSuchMethodException | ClassNotFoundException | IllegalAccessException | InvocationTargetException e) {
-            Bukkit.getLogger().log(Level.WARNING, "Failed to check unbreakable stage of itemstack.", e);
+            PetBlocksPlugin.logger().log(Level.WARNING, "Failed to check unbreakable stage of itemstack.", e);
             return false;
         }
     }
@@ -83,7 +83,7 @@ public final class NMSRegistry {
                     findClassFromVersion("com.github.shynixn.petblocks.business.bukkit.nms.VERSION.OwnerPathfinder"),
                     "setItemstackTag", new Class[]{ItemStack.class, Map.class}, new Object[]{itemStack, tags});
         } catch (NoSuchMethodException | ClassNotFoundException | IllegalAccessException | InvocationTargetException e) {
-            Bukkit.getLogger().log(Level.WARNING, "Failed to set tags of the itemStack.", e);
+            PetBlocksPlugin.logger().log(Level.WARNING, "Failed to set tags of the itemStack.", e);
             return null;
         }
     }
@@ -101,7 +101,7 @@ public final class NMSRegistry {
             final Object commandMap = ReflectionUtils.invokeMethodByObject(craftServer, "getCommandMap", new Class[]{}, new Object[]{});
             ReflectionUtils.invokeMethodByObject(commandMap, "register", new Class[]{command.getClass(), Command.class}, new Object[]{command, clazz});
         } catch (ClassNotFoundException | NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
-            Bukkit.getLogger().log(Level.WARNING, "Failed to register dynamic command.", e);
+            PetBlocksPlugin.logger().log(Level.WARNING, "Failed to register dynamic command.", e);
         }
     }
 
@@ -165,7 +165,7 @@ public final class NMSRegistry {
             }
             return ReflectionUtils.invokeMethodByObject(player.getInventory(), "getItemInMainHand", new Class[]{}, new Object[]{});
         } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
-            Bukkit.getLogger().log(Level.WARNING, "Failed to gather item in 19 hand.", e);
+            PetBlocksPlugin.logger().log(Level.WARNING, "Failed to gather item in 19 hand.", e);
             return null;
         }
     }
@@ -187,7 +187,7 @@ public final class NMSRegistry {
                 ReflectionUtils.invokeMethodByObject(player.getInventory(), "setItemInMainHand", new Class[]{itemStack.getClass()}, new Object[]{itemStack});
             }
         } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
-            Bukkit.getLogger().log(Level.WARNING, "Failed to set item in 19 hand.", e);
+            PetBlocksPlugin.logger().log(Level.WARNING, "Failed to set item in 19 hand.", e);
         }
     }
 

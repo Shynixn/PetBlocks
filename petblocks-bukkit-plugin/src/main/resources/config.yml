@@ -559,6 +559,8 @@ gui:
 # gui unbreakable: item unbreakable tag in the GUI
 # gui lore: item lore in the GUI (Multiple lines support)
 
+# behaviour entity types: RABBIT (HOPPING), ZOMBIE (WALKING)
+
 ############################
 
 engines:
@@ -1102,6 +1104,69 @@ engines:
      sound:
         ambient:
           name: 'SHULKER_IDLE'
+          volume: 1.0
+          pitch: 1.0
+        walking:
+          name: 'none'
+          volume: 1.0
+          pitch: 1.0
+   26:
+     gui:
+        id: 397
+        damage: 3
+        skin: 'textures.minecraft.net/texture/442123ac15effa1ba46462472871b88f1b09c1db467621376e2f71656d3fbc'
+        name: '&f&lPolar Bear'
+        unbreakable: false
+        lore:
+          - '&7Permission: <permission>'
+     behaviour:
+        entity: 'RABBIT'
+        riding: 'RUNNING'
+     sound:
+        ambient:
+          name: 'ENTITY_POLAR_BEAR_AMBIENT'
+          volume: 1.0
+          pitch: 1.0
+        walking:
+          name: 'ENTITY_POLAR_BEAR_STEP'
+          volume: 1.0
+          pitch: 1.0
+   27:
+     gui:
+        id: 397
+        damage: 3
+        skin: 'textures.minecraft.net/texture/818cd457fbaf327fa39f10b5b36166fd018264036865164c02d9e5ff53f45'
+        name: '&6&lLlama'
+        unbreakable: false
+        lore:
+          - '&7Permission: <permission>'
+     behaviour:
+        entity: 'RABBIT'
+        riding: 'RUNNING'
+     sound:
+        ambient:
+          name: 'ENTITY_LLAMA_AMBIENT'
+          volume: 1.0
+          pitch: 1.0
+        walking:
+          name: 'ENTITY_LLAMA_STEP'
+          volume: 1.0
+          pitch: 1.0
+   28:
+     gui:
+        id: 397
+        damage: 3
+        skin: 'textures.minecraft.net/texture/c2ec5a516617ff1573cd2f9d5f3969f56d5575c4ff4efefabd2a18dc7ab98cd'
+        name: '&8&lVex'
+        unbreakable: false
+        lore:
+          - '&7Permission: <permission>'
+     behaviour:
+        entity: 'RABBIT'
+        riding: 'FLYING'
+     sound:
+        ambient:
+          name: 'ENTITY_VEX_AMBIENT'
           volume: 1.0
           pitch: 1.0
         walking:

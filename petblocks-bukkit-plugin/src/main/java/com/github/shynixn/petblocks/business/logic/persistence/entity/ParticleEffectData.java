@@ -1,6 +1,7 @@
 package com.github.shynixn.petblocks.business.logic.persistence.entity;
 
 import com.github.shynixn.petblocks.api.persistence.entity.ParticleEffectMeta;
+import com.github.shynixn.petblocks.business.bukkit.PetBlocksPlugin;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -619,7 +620,7 @@ public class ParticleEffectData extends PersistenceObject implements ParticleEff
                 sendPacket(player, packet);
             }
         } catch (InstantiationException | NoSuchMethodException | InvocationTargetException | ClassNotFoundException | IllegalAccessException | NoSuchFieldException e) {
-            Bukkit.getLogger().log(Level.WARNING, "Failed to send packet.", e);
+            PetBlocksPlugin.logger().log(Level.WARNING, "Failed to send packet.", e);
         }
     }
 

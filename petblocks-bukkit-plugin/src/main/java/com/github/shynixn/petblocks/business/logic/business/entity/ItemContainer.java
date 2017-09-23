@@ -166,7 +166,7 @@ public class ItemContainer implements GUIItemContainer {
             }
         } catch (final Exception ex) {
             Bukkit.getConsoleSender().sendMessage(PetBlocksPlugin.PREFIX_CONSOLE + ChatColor.RED + "Invalid config file. Fix the following error or recreate it!");
-            Bukkit.getLogger().log(Level.WARNING, "Failed to generate itemStack.", ex);
+            PetBlocksPlugin.logger().log(Level.WARNING, "Failed to generate itemStack.", ex);
         }
         return new ItemStack(Material.AIR);
     }

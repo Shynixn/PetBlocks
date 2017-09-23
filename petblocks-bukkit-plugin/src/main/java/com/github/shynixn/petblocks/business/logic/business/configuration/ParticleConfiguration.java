@@ -3,6 +3,7 @@ package com.github.shynixn.petblocks.business.logic.business.configuration;
 import com.github.shynixn.petblocks.api.business.entity.GUIItemContainer;
 import com.github.shynixn.petblocks.api.persistence.controller.ParticleController;
 import com.github.shynixn.petblocks.api.persistence.entity.ParticleEffectMeta;
+import com.github.shynixn.petblocks.business.bukkit.PetBlocksPlugin;
 import com.github.shynixn.petblocks.business.logic.business.entity.ItemContainer;
 import com.github.shynixn.petblocks.business.logic.persistence.entity.ParticleEffectData;
 import org.bukkit.Bukkit;
@@ -146,7 +147,7 @@ public class ParticleConfiguration implements ParticleController {
                 final ParticleEffectMeta meta = new ParticleEffectData(((MemorySection) ((MemorySection) data.get(key)).getValues(false).get("effect")).getValues(true));
                 this.particleCache.put(container, meta);
             } catch (final Exception e) {
-                Bukkit.getLogger().log(Level.WARNING, "Failed to load particle " + key + '.', e);
+                PetBlocksPlugin.logger().log(Level.WARNING, "Failed to load particle " + key + '.', e);
             }
         }
     }

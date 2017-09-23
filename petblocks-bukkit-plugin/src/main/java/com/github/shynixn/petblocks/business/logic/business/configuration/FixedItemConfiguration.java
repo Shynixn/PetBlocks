@@ -2,6 +2,7 @@ package com.github.shynixn.petblocks.business.logic.business.configuration;
 
 import com.github.shynixn.petblocks.api.business.entity.GUIItemContainer;
 import com.github.shynixn.petblocks.api.persistence.controller.OtherGUIItemsController;
+import com.github.shynixn.petblocks.business.bukkit.PetBlocksPlugin;
 import com.github.shynixn.petblocks.business.logic.business.entity.ItemContainer;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -117,7 +118,7 @@ public class FixedItemConfiguration implements OtherGUIItemsController {
                 }
                 this.items.put(key, container);
             } catch (final Exception e) {
-                Bukkit.getLogger().log(Level.WARNING, "Failed to load guiItem " + key + '.', e);
+                PetBlocksPlugin.logger().log(Level.WARNING, "Failed to load guiItem " + key + '.', e);
             }
         }
     }
