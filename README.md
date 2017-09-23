@@ -3,7 +3,7 @@
 | branch        | status        | download      |
 | ------------- | --------------| --------------| 
 | master        | [![Build Status](https://travis-ci.org/Shynixn/PetBlocks.svg?branch=master)](https://travis-ci.org/Shynixn/PetBlocks) |[Download latest release (recommend)](https://github.com/Shynixn/PetBlocks/releases)|
-| workflow      | [![Build Status](https://travis-ci.org/Shynixn/PetBlocks.svg?branch=workflow)](https://travis-ci.org/Shynixn/PetBlocks) | [Download snapshots](https://oss.sonatype.org/content/repositories/snapshots/com/github/shynixn/petblocks/petblocks-bukkit-plugin/) |
+| development   | [![Build Status](https://travis-ci.org/Shynixn/PetBlocks.svg?branch=workflow)](https://travis-ci.org/Shynixn/PetBlocks) | [Download snapshots](https://oss.sonatype.org/content/repositories/snapshots/com/github/shynixn/petblocks/petblocks-bukkit-plugin/) |
 
 JavaDocs: https://shynixn.github.io/PetBlocks/apidocs/
 
