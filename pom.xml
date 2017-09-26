@@ -14,7 +14,7 @@
         <module>petblocks-bukkit-plugin</module>
         <module>petblocks-bukkit-lib</module>
     </modules>
-    <version>6.2.2</version>
+    <version>6.2.3</version>
     <packaging>pom</packaging>
 
 
@@ -121,6 +121,9 @@
                         </goals>
                     </execution>
                 </executions>
+                <configuration>
+                    <outputDirectory>${basedir}/../docs/apidocs</outputDirectory>
+                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

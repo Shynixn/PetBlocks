@@ -3,12 +3,12 @@
 | branch        | status        | download      |
 | ------------- | --------------| --------------| 
 | master        | [![Build Status](https://travis-ci.org/Shynixn/PetBlocks.svg?branch=master)](https://travis-ci.org/Shynixn/PetBlocks) |[Download latest release (recommend)](https://github.com/Shynixn/PetBlocks/releases)|
-| workflow      | [![Build Status](https://travis-ci.org/Shynixn/PetBlocks.svg?branch=workflow)](https://travis-ci.org/Shynixn/PetBlocks) | [Download snapshots](https://oss.sonatype.org/content/repositories/snapshots/com/github/shynixn/petblocks/petblocks-bukkit-plugin/) |
+| development   | [![Build Status](https://travis-ci.org/Shynixn/PetBlocks.svg?branch=workflow)](https://travis-ci.org/Shynixn/PetBlocks) | [Download snapshots](https://oss.sonatype.org/content/repositories/snapshots/com/github/shynixn/petblocks/petblocks-bukkit-plugin/) |
 
 JavaDocs: https://shynixn.github.io/PetBlocks/apidocs/
 
 ## Description
-Spigot plugin to use blocks as pets in minecraft.
+PetBlocks is a spigot plugin to use blocks and custom heads as pets in Minecraft.
 
 ## Features
 
@@ -21,7 +21,7 @@ Spigot plugin to use blocks as pets in minecraft.
 
 * [Download the plugin PetBlocks](https://github.com/Shynixn/PetBlocks/releases)
 * Put the plugin into your plugin folder
-* Start the server (1.8.0 - 1.12.2, Java 8)
+* Start the server (1.8.0 - 1.12.2, Java 8/Java 9)
 * Join and play :)
 
 ## API
@@ -34,14 +34,14 @@ Spigot plugin to use blocks as pets in minecraft.
 <dependency>
      <groupId>com.github.shynixn.petblocks</groupId>
      <artifactId>petblocks-api</artifactId>
-     <version>6.2.2</version>
+     <version>6.2.3</version>
      <scope>provided</scope>
 </dependency>
 ```
 
 ```xml
 dependencies {
-    compileOnly 'com.github.shynixn.petblocks:petblocks-api:6.2.2'
+    compileOnly 'com.github.shynixn.petblocks:petblocks-api:6.2.3'
 }
 ```
 
@@ -51,14 +51,14 @@ dependencies {
 <dependency>
      <groupId>com.github.shynixn.petblocks</groupId>
      <artifactId>petblocks-bukkit-api</artifactId>
-     <version>6.2.2</version>
+     <version>6.2.3</version>
      <scope>provided</scope>
 </dependency>
 ```
 
 ```xml
 dependencies {
-    compileOnly 'com.github.shynixn.petblocks:petblocks-bukkit-api:6.2.2'
+    compileOnly 'com.github.shynixn.petblocks:petblocks-bukkit-api:6.2.3'
 }
 ```
 
@@ -88,7 +88,7 @@ Bukkit.getScheduler().runTaskAsynchronously(plugin, new Runnable() {
  PetBlockController petBlockController = PetBlocksApi.getDefaultPetBlockController();
  PetBlock petBlock = petBlockController.create(player, petMeta);
  petBlockController.store(petBlock); //Store the petblock to be managed by the plugin. Does not involve a database so it can be used on the main thread.
- petBlock.teleport(petBlock); //Teleport the petblock
+ petBlock.teleport(location); //Teleport the petblock
 ```
 
 #### Listen to PetBlock-Events (Checkout the [JavaDocs](https://shynixn.github.io/PetBlocks/apidocs/) for all events)
@@ -106,14 +106,14 @@ public void onPetBlockSpawnEvent(PetBlockSpawnEvent event) {
 <dependency>
      <groupId>com.github.shynixn.petblocks</groupId>
      <artifactId>petblocks-bukkit-plugin</artifactId>
-     <version>6.2.2</version>
+     <version>6.2.3</version>
      <scope>provided</scope>
 </dependency>
 ```
 
 ```xml
 dependencies {
-    compileOnly 'com.github.shynixn.petblocks:petblocks-bukkit-plugin:6.2.2'
+    compileOnly 'com.github.shynixn.petblocks:petblocks-bukkit-plugin:6.2.3'
 }
 ```
 
