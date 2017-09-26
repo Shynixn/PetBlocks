@@ -21,7 +21,7 @@ Spigot plugin to use blocks as pets in minecraft.
 
 * [Download the plugin PetBlocks](https://github.com/Shynixn/PetBlocks/releases)
 * Put the plugin into your plugin folder
-* Start the server (1.8.0 - 1.12.2, Java 8)
+* Start the server (1.8.0 - 1.12.2, Java 8/Java 9)
 * Join and play :)
 
 ## API
@@ -34,14 +34,14 @@ Spigot plugin to use blocks as pets in minecraft.
 <dependency>
      <groupId>com.github.shynixn.petblocks</groupId>
      <artifactId>petblocks-api</artifactId>
-     <version>6.2.2</version>
+     <version>6.2.3</version>
      <scope>provided</scope>
 </dependency>
 ```
 
 ```xml
 dependencies {
-    compileOnly 'com.github.shynixn.petblocks:petblocks-api:6.2.2'
+    compileOnly 'com.github.shynixn.petblocks:petblocks-api:6.2.3'
 }
 ```
 
@@ -51,14 +51,14 @@ dependencies {
 <dependency>
      <groupId>com.github.shynixn.petblocks</groupId>
      <artifactId>petblocks-bukkit-api</artifactId>
-     <version>6.2.2</version>
+     <version>6.2.3</version>
      <scope>provided</scope>
 </dependency>
 ```
 
 ```xml
 dependencies {
-    compileOnly 'com.github.shynixn.petblocks:petblocks-bukkit-api:6.2.2'
+    compileOnly 'com.github.shynixn.petblocks:petblocks-bukkit-api:6.2.3'
 }
 ```
 
@@ -106,14 +106,14 @@ public void onPetBlockSpawnEvent(PetBlockSpawnEvent event) {
 <dependency>
      <groupId>com.github.shynixn.petblocks</groupId>
      <artifactId>petblocks-bukkit-plugin</artifactId>
-     <version>6.2.2</version>
+     <version>6.2.3</version>
      <scope>provided</scope>
 </dependency>
 ```
 
 ```xml
 dependencies {
-    compileOnly 'com.github.shynixn.petblocks:petblocks-bukkit-plugin:6.2.2'
+    compileOnly 'com.github.shynixn.petblocks:petblocks-bukkit-plugin:6.2.3'
 }
 ```
 
