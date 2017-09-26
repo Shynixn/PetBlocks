@@ -1,15 +1,7 @@
-com.github.shynixn.petblocks.api
-com.github.shynixn.petblocks.api.bukkit.event
-com.github.shynixn.petblocks.api.business.controller
-com.github.shynixn.petblocks.api.business.entity
-com.github.shynixn.petblocks.api.business.enumeration
-com.github.shynixn.petblocks.api.persistence.controller
-com.github.shynixn.petblocks.api.persistence.entity
 com.github.shynixn.petblocks.bukkit
 com.github.shynixn.petblocks.bukkit.dependencies.clearlag
 com.github.shynixn.petblocks.bukkit.dependencies.supervanish
 com.github.shynixn.petblocks.bukkit.dependencies.worldguard
-com.github.shynixn.petblocks.bukkit.lib
 com.github.shynixn.petblocks.bukkit.logic
 com.github.shynixn.petblocks.bukkit.logic.business
 com.github.shynixn.petblocks.bukkit.logic.business.commandexecutor
