@@ -1,7 +1,7 @@
 name: PetBlocks
 version: 6.2.3-SNAPSHOT
 author: Shynixn
-main: com.github.shynixn.petblocks.business.bukkit.PetBlocksPlugin
+main: com.github.shynixn.petblocks.bukkit.PetBlocksPlugin
 softdepend: [WorldGuard, SuperVanish, PremiumVanish, ClearLag]
 database: true
 commands:
