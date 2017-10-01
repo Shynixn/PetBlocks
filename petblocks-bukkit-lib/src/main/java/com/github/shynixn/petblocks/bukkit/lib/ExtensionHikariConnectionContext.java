@@ -50,7 +50,7 @@ public class ExtensionHikariConnectionContext implements AutoCloseable {
      * Initializes a new databaseConnectionContext for the given url, userName and password
      *
      * @param url      url
-     * @param userName userName
+     * @param userName userNames
      * @param password password
      */
     private ExtensionHikariConnectionContext(String driver, String url, String userName, String password, SQlRetriever retriever) {
