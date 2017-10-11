@@ -248,11 +248,6 @@ public class PetData extends PersistenceObject implements PetMeta {
         }
     }
 
-    @Override
-    public String getPetDisplayName() {
-        return this.petDisplayName;
-    }
-
     /**
      * Returns if the petblock is enabled
      *
@@ -394,11 +389,31 @@ public class PetData extends PersistenceObject implements PetMeta {
         this.unbreakable = unbreakable;
     }
 
+    /**
+     * Sets the stored display name of the pet which appears above it's head on respawn.
+     *
+     * @param name name
+     */
     @Override
     public void setPetDisplayName(String name) {
         if (name == null)
             return;
+        for (final String blackName : ConfigPet.getInstance().getPetNameBlackList()) {
+            if (name.toUpperCase().contains(blackName.toUpperCase())) {
+                throw new RuntimeException("Name is not valid!");
+            }
+        }
         this.petDisplayName = ChatColor.translateAlternateColorCodes('&', name);
+    }
+
+    /**
+     * Returns the stored display name of the pet which appear above it's head on respawn.
+     *
+     * @return name
+     */
+    @Override
+    public String getPetDisplayName() {
+        return this.petDisplayName;
     }
 
     @Deprecated

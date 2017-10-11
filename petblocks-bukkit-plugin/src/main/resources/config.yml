@@ -118,6 +118,7 @@ petblocks-configuration:
 # design-max-petname-length: The max amount of letters a name can be
 # design-show-damage-animation: Should the petlock display damage animation when being hit? (Works only for below 1.8.x)
 # design-sounds-other-players: Should the petblock sounds be audible for other players?
+# design-petname-blacklist: Names which are forbidden to use as pet names!
 
 # modifier-riding-speed: Speed of the petblock when the owner is riding on it (1 = default speed, 0.5 = half speed,...)
 # modifier-walking-speed: Speed of the petblock when it casually follows the owner (1 = default speed, 0.5 = half speed,...)
@@ -151,6 +152,9 @@ pet:
     max-petname-length: 20
     show-damage-animation: true
     sounds-other-players: true
+    petname-blacklist:
+      - 'petty'
+      - 'shitty'
   modifier:
     riding-speed: 1.0
     walking-speed: 1.0
