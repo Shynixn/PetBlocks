@@ -6,15 +6,13 @@ import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
 /**
- * Copyright 2017 Shynixn
+ * Sub instance of all PetBlock events.
  * <p>
- * Do not remove this header!
- * <p>
- * Version 1.0
+ * Version 1.1
  * <p>
  * MIT License
  * <p>
- * Copyright (c) 2017
+ * Copyright (c) 2017 by Shynixn
  * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -40,7 +38,7 @@ public class PetBlockEvent extends Event {
     private final PetBlock petBlock;
 
     /**
-     * Initializes a new petblock event
+     * Initializes a new petblock event.
      *
      * @param petBlock petblock
      */
@@ -52,7 +50,7 @@ public class PetBlockEvent extends Event {
     }
 
     /**
-     * Returns the petblock which triggered the event
+     * Returns the petblock which triggered the event.
      *
      * @return petblock
      */
@@ -61,7 +59,7 @@ public class PetBlockEvent extends Event {
     }
 
     /**
-     * Returns the player who owns the petblock
+     * Returns the player who owns the petblock.
      *
      * @return player
      */
@@ -70,7 +68,7 @@ public class PetBlockEvent extends Event {
     }
 
     /**
-     * Bukkit implementation
+     * Bukkit implementation.
      *
      * @return handler
      */
@@ -80,7 +78,7 @@ public class PetBlockEvent extends Event {
     }
 
     /**
-     * Bukkit implementation
+     * Bukkit implementation.
      *
      * @return handlerList
      */
