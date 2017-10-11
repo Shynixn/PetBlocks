@@ -52,6 +52,8 @@ public class SimpleConfig {
      * @return data
      */
     <T> T getData(String path) {
+        if(this.plugin == null)
+            return null;
         Object data = this.plugin.getConfig().get(path);
         if (data instanceof String) {
             data = ChatColor.translateAlternateColorCodes('&', (String) data);

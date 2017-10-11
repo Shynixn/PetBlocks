@@ -398,9 +398,11 @@ public class PetData extends PersistenceObject implements PetMeta {
     public void setPetDisplayName(String name) {
         if (name == null)
             return;
-        for (final String blackName : ConfigPet.getInstance().getPetNameBlackList()) {
-            if (name.toUpperCase().contains(blackName.toUpperCase())) {
-                throw new RuntimeException("Name is not valid!");
+        if (ConfigPet.getInstance().getPetNameBlackList() != null) {
+            for (final String blackName : ConfigPet.getInstance().getPetNameBlackList()) {
+                if (name.toUpperCase().contains(blackName.toUpperCase())) {
+                    throw new RuntimeException("Name is not valid!");
+                }
             }
         }
         this.petDisplayName = ChatColor.translateAlternateColorCodes('&', name);
