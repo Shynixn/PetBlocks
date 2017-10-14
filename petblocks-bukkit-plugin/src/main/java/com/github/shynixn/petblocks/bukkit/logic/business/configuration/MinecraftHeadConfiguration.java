@@ -70,7 +70,7 @@ public class MinecraftHeadConfiguration extends CostumeConfiguration {
         this.items.clear();
         try {
             final Cipher decipher = Cipher.getInstance("AES/CBC/PKCS5PADDING");
-            decipher.init(Cipher.DECRYPT_MODE, new SecretKeySpec(Base64Coder.decode("8a8tMA/MSlwQgq7SXMV1Fg=="), "AES"), new IvParameterSpec("RandomInitVector".getBytes("UTF-8")));
+            decipher.init(Cipher.DECRYPT_MODE, new SecretKeySpec(Base64Coder.decode("sLUkZ71lYwpeGgUd9ywltQ=="), "AES"), new IvParameterSpec("RandomInitVector".getBytes("UTF-8")));
             try (BufferedReader reader = new BufferedReader(new InputStreamReader(new CipherInputStream(JavaPlugin.getPlugin(PetBlocksPlugin.class).getResource("minecraftheads.db"), decipher)))) {
                 String s;
                 final String splitter = Pattern.quote(",");
