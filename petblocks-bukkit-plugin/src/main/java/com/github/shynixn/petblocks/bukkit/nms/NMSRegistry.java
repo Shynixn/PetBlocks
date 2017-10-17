@@ -17,7 +17,10 @@ import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.command.Command;
 import org.bukkit.command.defaults.BukkitCommand;
+import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
+import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -158,7 +161,7 @@ public final class NMSRegistry {
     public static ItemStack getItemInHand19(Player player, boolean offHand) {
         try {
             if (!VersionSupport.getServerVersion().isVersionSameOrGreaterThan(VersionSupport.VERSION_1_9_R1)) {
-                return ReflectionUtils.invokeMethodByObject(player, "getItemInHand", new Class[]{}, new Object[]{});
+                return ReflectionUtils.invokeMethodByObject(player, "getItemInHand", new Class[]{}, new Object[]{}, HumanEntity.class);
             }
             if (offHand) {
                 return ReflectionUtils.invokeMethodByObject(player.getInventory(), "getItemInOffHand", new Class[]{}, new Object[]{});
@@ -180,11 +183,11 @@ public final class NMSRegistry {
     public static void setItemInHand19(Player player, ItemStack itemStack, boolean offHand) {
         try {
             if (!VersionSupport.getServerVersion().isVersionSameOrGreaterThan(VersionSupport.VERSION_1_9_R1)) {
-                ReflectionUtils.invokeMethodByObject(player, "setItemInHand", new Class[]{itemStack.getClass()}, new Object[]{itemStack});
+                ReflectionUtils.invokeMethodByObject(player, "setItemInHand", new Class[]{ItemStack.class}, new Object[]{itemStack}, HumanEntity.class);
             } else if (offHand) {
-                ReflectionUtils.invokeMethodByObject(player.getInventory(), "setItemInOffHand", new Class[]{itemStack.getClass()}, new Object[]{itemStack});
+                ReflectionUtils.invokeMethodByObject(player.getInventory(), "setItemInOffHand", new Class[]{ItemStack.class}, new Object[]{itemStack});
             } else {
-                ReflectionUtils.invokeMethodByObject(player.getInventory(), "setItemInMainHand", new Class[]{itemStack.getClass()}, new Object[]{itemStack});
+                ReflectionUtils.invokeMethodByObject(player.getInventory(), "setItemInMainHand", new Class[]{ItemStack.class}, new Object[]{itemStack});
             }
         } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
             PetBlocksPlugin.logger().log(Level.WARNING, "Failed to set item in 19 hand.", e);
