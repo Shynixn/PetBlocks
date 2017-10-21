@@ -37,6 +37,33 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.regex.Pattern;
 
+/**
+ * Listens to events related to the petblock entity.
+ * <p>
+ * Version 1.1
+ * <p>
+ * MIT License
+ * <p>
+ * Copyright (c) 2017 by Shynixn
+ * <p>
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ * <p>
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ * <p>
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
 public class PetBlockListener extends SimpleListener {
     private final PetBlockManager manager;
     private final Set<PetBlock> jumped = new HashSet<>();
@@ -213,8 +240,8 @@ public class PetBlockListener extends SimpleListener {
         } else if (this.isPet(event.getRightClicked())) {
             final PetBlock petBlock = this.getPet(event.getRightClicked());
             if (petBlock != null && petBlock.getPlayer().equals(event.getPlayer())) {
-                if (ConfigPet.getInstance().isFeedingEnabled() &&  NMSRegistry.getItemInHand19(event.getPlayer(), false) != null && NMSRegistry.getItemInHand19(event.getPlayer(), false).getType() == Material.CARROT_ITEM) {
-                    ConfigPet.getInstance().getFeedingClickParticleEffect().apply(event.getRightClicked().getLocation(),(Collection<Object>) (Object)event.getRightClicked().getWorld().getPlayers());
+                if (ConfigPet.getInstance().isFeedingEnabled() && NMSRegistry.getItemInHand19(event.getPlayer(), false) != null && NMSRegistry.getItemInHand19(event.getPlayer(), false).getType() == Material.CARROT_ITEM) {
+                    ConfigPet.getInstance().getFeedingClickParticleEffect().apply(event.getRightClicked().getLocation(), (Collection<Object>) (Object) event.getRightClicked().getWorld().getPlayers());
                     try {
                         ((SoundBuilder) ConfigPet.getInstance().getFeedingClickSound()).apply(event.getRightClicked().getLocation());
                     } catch (final Exception e) {
@@ -394,7 +421,7 @@ public class PetBlockListener extends SimpleListener {
             this.manager.carryingPet.remove(player);
             if (launch) {
                 final PetBlock managedPetBlock = this.manager.getPetBlockController().getByPlayer(player);
-                ((LivingEntity)managedPetBlock.getEngineEntity()).setVelocity(this.getDirection(player));
+                ((LivingEntity) managedPetBlock.getEngineEntity()).setVelocity(this.getDirection(player));
             }
         });
     }

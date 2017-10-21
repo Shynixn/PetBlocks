@@ -187,9 +187,9 @@ public class SimpleCommandExecutor {
                 throw new IllegalArgumentException("PermissionMessage cannot be null!");
             if (plugin == null)
                 throw new IllegalArgumentException("Plugin cannot be null!");
-            this.description = description;
-            this.usageMessage = useAge;
             this.plugin = plugin;
+            this.setDescription(description);
+            this.setUsage(useAge);
             this.setPermission(permission);
             this.setPermissionMessage(permissionMessage);
             this.setAliases(new ArrayList<>());

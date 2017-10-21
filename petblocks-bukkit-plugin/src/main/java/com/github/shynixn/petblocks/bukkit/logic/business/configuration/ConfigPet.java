@@ -5,7 +5,6 @@ import com.github.shynixn.petblocks.api.persistence.entity.SoundMeta;
 import com.github.shynixn.petblocks.bukkit.PetBlocksPlugin;
 import com.github.shynixn.petblocks.bukkit.logic.persistence.entity.ParticleEffectData;
 import com.github.shynixn.petblocks.bukkit.logic.persistence.entity.SoundBuilder;
-import org.bukkit.configuration.MemoryConfiguration;
 import org.bukkit.configuration.MemorySection;
 
 import java.util.List;
