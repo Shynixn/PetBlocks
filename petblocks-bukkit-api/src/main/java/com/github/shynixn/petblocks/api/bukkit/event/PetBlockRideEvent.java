@@ -3,15 +3,13 @@ package com.github.shynixn.petblocks.api.bukkit.event;
 import com.github.shynixn.petblocks.api.business.entity.PetBlock;
 
 /**
- * Copyright 2017 Shynixn
+ * PetBlock event which gets called when the player starts or stops riding his petblock.
  * <p>
- * Do not remove this header!
- * <p>
- * Version 1.0
+ * Version 1.1
  * <p>
  * MIT License
  * <p>
- * Copyright (c) 2017
+ * Copyright (c) 2017 by Shynixn
  * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -35,7 +33,7 @@ public class PetBlockRideEvent extends PetBlockCancelAbleEvent {
     private final boolean isRiding;
 
     /**
-     * Initializes a new petblock event
+     * Initializes a new petblock event.
      *
      * @param petBlock petblock
      * @param isRiding isRiding
@@ -46,7 +44,7 @@ public class PetBlockRideEvent extends PetBlockCancelAbleEvent {
     }
 
     /**
-     * Returns if the owner is currently riding the petblock
+     * Returns if the owner is currently riding the petblock.
      *
      * @return isRiding
      */

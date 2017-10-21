@@ -300,7 +300,11 @@ public class PetDataRepository extends DataBaseRepository<PetMeta> implements Pe
         petMeta.setId(resultSet.getLong("id"));
         petMeta.setPlayerId(resultSet.getLong("shy_player_id"));
         petMeta.setParticleId(resultSet.getLong("shy_particle_effect_id"));
-        petMeta.setPetDisplayName(resultSet.getString("name"));
+        try {
+            petMeta.setPetDisplayName(resultSet.getString("name"));
+        } catch (final Exception ex) {
+            petMeta.setPetDisplayName(Config.getInstance().getDefaultPetName().replace(":player", "Player"));
+        }
         petMeta.setEngineId(resultSet.getInt("engine"));
         petMeta.setSkin(Material.getMaterial(resultSet.getString("material")).getId(), resultSet.getInt("data"), resultSet.getString("skull"), resultSet.getBoolean("unbreakable"));
         petMeta.setEnabled(resultSet.getBoolean("enabled"));

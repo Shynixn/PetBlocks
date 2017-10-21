@@ -3,15 +3,13 @@ package com.github.shynixn.petblocks.api.bukkit.event;
 import com.github.shynixn.petblocks.api.business.entity.PetBlock;
 
 /**
- * Copyright 2017 Shynixn
+ * PetBlock event which can be cancelled.
  * <p>
- * Do not remove this header!
- * <p>
- * Version 1.0
+ * Version 1.1
  * <p>
  * MIT License
  * <p>
- * Copyright (c) 2017
+ * Copyright (c) 2017 by Shynixn
  * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -35,7 +33,7 @@ public class PetBlockCancelAbleEvent extends PetBlockEvent {
     private boolean isCanceled;
 
     /**
-     * Initializes a new petblock event
+     * Initializes a new petblock event.
      *
      * @param petBlock petblock
      */
@@ -44,7 +42,7 @@ public class PetBlockCancelAbleEvent extends PetBlockEvent {
     }
 
     /**
-     * Returns if the event is cancelled
+     * Returns if the event is cancelled.
      *
      * @return isCancelled
      */
@@ -53,7 +51,7 @@ public class PetBlockCancelAbleEvent extends PetBlockEvent {
     }
 
     /**
-     * Sets the event cancelled
+     * Sets the event cancelled.
      *
      * @param isCanceled cancelled
      */

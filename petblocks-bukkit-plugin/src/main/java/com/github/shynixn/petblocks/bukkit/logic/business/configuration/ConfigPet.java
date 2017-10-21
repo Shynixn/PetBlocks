@@ -1,7 +1,47 @@
 package com.github.shynixn.petblocks.bukkit.logic.business.configuration;
 
+import com.github.shynixn.petblocks.api.persistence.entity.ParticleEffectMeta;
+import com.github.shynixn.petblocks.api.persistence.entity.SoundMeta;
+import com.github.shynixn.petblocks.bukkit.PetBlocksPlugin;
+import com.github.shynixn.petblocks.bukkit.logic.persistence.entity.ParticleEffectData;
+import com.github.shynixn.petblocks.bukkit.logic.persistence.entity.SoundBuilder;
+import org.bukkit.configuration.MemorySection;
+
+import java.util.List;
+import java.util.logging.Level;
+
+/**
+ * Configuration access to the pet related settings.
+ * <p>
+ * Version 1.1
+ * <p>
+ * MIT License
+ * <p>
+ * Copyright (c) 2017 by Shynixn
+ * <p>
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ * <p>
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ * <p>
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
 public class ConfigPet extends SimpleConfig {
     private static ConfigPet instance;
+
+    private ParticleEffectMeta feedingClickParticleCache;
+    private SoundMeta feedingClickSoundCache;
 
     /**
      * Initializes a new pet config
@@ -22,12 +62,71 @@ public class ConfigPet extends SimpleConfig {
     }
 
     /**
-     * Returns the amount of blocks the pet has to stay away from the player
+     * Reloads the config.
+     */
+    @Override
+    public void reload() {
+        super.reload();
+        this.feedingClickParticleCache = null;
+        this.feedingClickSoundCache = null;
+    }
+
+    /**
+     * Returns the forbidden pet names.
+     *
+     * @return names
+     */
+    public List<String> getPetNameBlackList() {
+        return this.getData("pet.design.petname-blacklist");
+    }
+
+    /**
+     * Returns the amount of blocks the pet has to stay away from the player.
      *
      * @return amount
      */
     public int getBlocksAwayFromPlayer() {
         return (int) this.getData("pet.follow.amount-blocks-away");
+    }
+
+    /**
+     * Returns if feeding is enabled.
+     * @return feeding
+     */
+    public boolean isFeedingEnabled() {
+        return this.getData("pet.feeding.enabled");
+    }
+
+    /**
+     * Returns the feeding click sound.
+     *
+     * @return sound
+     */
+    public SoundMeta getFeedingClickSound() {
+        if (this.feedingClickSoundCache == null) {
+            try {
+                this.feedingClickSoundCache = new SoundBuilder(((MemorySection) this.getData("pet.feeding.click-sound")).getValues(false));
+            } catch (final Exception e) {
+                PetBlocksPlugin.logger().log(Level.WARNING, "Failed to load feeding click-sound.", e);
+            }
+        }
+        return this.feedingClickSoundCache;
+    }
+
+    /**
+     * Returns the feeding particleEffect.
+     *
+     * @return particleEffect
+     */
+    public ParticleEffectMeta getFeedingClickParticleEffect() {
+        if (this.feedingClickParticleCache == null) {
+            try {
+                this.feedingClickParticleCache = new ParticleEffectData(((MemorySection) this.getData("pet.feeding.click-particle")).getValues(false));
+            } catch (final Exception e) {
+                PetBlocksPlugin.logger().log(Level.WARNING, "Failed to load feeding click-sound.", e);
+            }
+        }
+        return this.feedingClickParticleCache;
     }
 
     public boolean isAfraidOfwater() {

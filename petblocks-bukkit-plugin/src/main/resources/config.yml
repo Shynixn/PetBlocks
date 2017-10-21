@@ -115,9 +115,14 @@ petblocks-configuration:
 # follow-afraid-water: Should the pet be afraid of water?
 # follow-afraid-water: Should the pet display angry particles when getting in touch with water?
 
+# feeding-enabled: Should feeding pets be possible?
+# feeding-click-particle: Particle effect which gets displayed when a player feeds his pet with a carrot.
+# feeding-click-sound: Sound which gets played when a player feeds his pet with a carrot.
+
 # design-max-petname-length: The max amount of letters a name can be
 # design-show-damage-animation: Should the petlock display damage animation when being hit? (Works only for below 1.8.x)
 # design-sounds-other-players: Should the petblock sounds be audible for other players?
+# design-petname-blacklist: Names which are forbidden to use as pet names!
 
 # modifier-riding-speed: Speed of the petblock when the owner is riding on it (1 = default speed, 0.5 = half speed,...)
 # modifier-walking-speed: Speed of the petblock when it casually follows the owner (1 = default speed, 0.5 = half speed,...)
@@ -143,14 +148,30 @@ pet:
     amount-blocks-away: 2
     teleport-fall: true
     max-range-teleport: 50
-    carry: false
+    carry: true
     flying-wall-colliding: true
     afraid-water: false
     afraid-water-particles: false
+  feeding:
+    enabled: true
+    click-particle:
+       name: 'heart'
+       speed: 0.1
+       amount: 20
+       offx: 1.0
+       offy: 1.0
+       offz: 1.0
+    click-sound:
+       name: 'EAT'
+       volume: 1.0
+       pitch: 1.0
   design:
     max-petname-length: 20
     show-damage-animation: true
     sounds-other-players: true
+    petname-blacklist:
+      - 'petty'
+      - 'shitty'
   modifier:
     riding-speed: 1.0
     walking-speed: 1.0

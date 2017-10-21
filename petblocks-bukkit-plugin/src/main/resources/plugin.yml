@@ -1,9 +1,8 @@
 name: PetBlocks
-version: 6.2.3
+version: 6.3.0
 author: Shynixn
 main: com.github.shynixn.petblocks.bukkit.PetBlocksPlugin
 softdepend: [WorldGuard, SuperVanish, PremiumVanish, ClearLag]
-database: true
 commands:
    petblockreload:
       description: Reloads the petblock config and lang file.
