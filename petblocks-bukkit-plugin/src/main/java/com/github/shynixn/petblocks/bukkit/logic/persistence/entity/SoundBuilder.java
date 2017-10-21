@@ -89,8 +89,9 @@ public class SoundBuilder implements SoundMeta {
     public SoundBuilder(Map<String, Object> items) throws Exception {
         super();
         this.text = (String) items.get("name");
-        this.volume = (float) items.get("volume");
-        this.pitch = (float) items.get("pitch");
+        this.volume = (float) (double) items.get("volume");
+        this.pitch = (float) (double) items.get("pitch");
+        this.convertSounds();
     }
 
     /**
