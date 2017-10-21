@@ -34,14 +34,14 @@ PetBlocks is a spigot plugin to use blocks and custom heads as pets in Minecraft
 <dependency>
      <groupId>com.github.shynixn.petblocks</groupId>
      <artifactId>petblocks-api</artifactId>
-     <version>6.2.3</version>
+     <version>6.3.0</version>
      <scope>provided</scope>
 </dependency>
 ```
 
 ```xml
 dependencies {
-    compileOnly 'com.github.shynixn.petblocks:petblocks-api:6.2.3'
+    compileOnly 'com.github.shynixn.petblocks:petblocks-api:6.3.0'
 }
 ```
 
@@ -51,14 +51,14 @@ dependencies {
 <dependency>
      <groupId>com.github.shynixn.petblocks</groupId>
      <artifactId>petblocks-bukkit-api</artifactId>
-     <version>6.2.3</version>
+     <version>6.3.0</version>
      <scope>provided</scope>
 </dependency>
 ```
 
 ```xml
 dependencies {
-    compileOnly 'com.github.shynixn.petblocks:petblocks-bukkit-api:6.2.3'
+    compileOnly 'com.github.shynixn.petblocks:petblocks-bukkit-api:6.3.0'
 }
 ```
 
@@ -106,14 +106,14 @@ public void onPetBlockSpawnEvent(PetBlockSpawnEvent event) {
 <dependency>
      <groupId>com.github.shynixn.petblocks</groupId>
      <artifactId>petblocks-bukkit-plugin</artifactId>
-     <version>6.2.3</version>
+     <version>6.3.0</version>
      <scope>provided</scope>
 </dependency>
 ```
 
 ```xml
 dependencies {
-    compileOnly 'com.github.shynixn.petblocks:petblocks-bukkit-plugin:6.2.3'
+    compileOnly 'com.github.shynixn.petblocks:petblocks-bukkit-plugin:6.3.0'
 }
 ```
 
