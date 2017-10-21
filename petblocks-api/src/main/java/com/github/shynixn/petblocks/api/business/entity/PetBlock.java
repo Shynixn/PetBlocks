@@ -151,9 +151,9 @@ public interface PetBlock {
     void jump();
 
     /**
-     * Sets the velocity of the petblock
+     * Sets the velocity of the petblock.
      *
-     * @param vector vecotr
+     * @param vector vector
      */
     void setVelocity(Object vector);
 

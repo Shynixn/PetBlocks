@@ -143,12 +143,12 @@ pet:
     teleports-in-seconds: 0
   flee:
     flees-in-combat: false
-    reappears-in-seconds: 15z
+    reappears-in-seconds: 15
   follow:
     amount-blocks-away: 2
     teleport-fall: true
     max-range-teleport: 50
-    carry: false
+    carry: true
     flying-wall-colliding: true
     afraid-water: false
     afraid-water-particles: false

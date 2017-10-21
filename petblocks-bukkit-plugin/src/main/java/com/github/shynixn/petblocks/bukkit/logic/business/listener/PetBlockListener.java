@@ -18,6 +18,7 @@ import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -30,7 +31,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.util.Vector;
 
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
@@ -393,7 +393,8 @@ public class PetBlockListener extends SimpleListener {
             NMSRegistry.setItemInHand19(player, null, true);
             this.manager.carryingPet.remove(player);
             if (launch) {
-                petBlock.setVelocity(this.getDirection(player));
+                final PetBlock managedPetBlock = this.manager.getPetBlockController().getByPlayer(player);
+                ((LivingEntity)managedPetBlock.getEngineEntity()).setVelocity(this.getDirection(player));
             }
         });
     }
@@ -441,7 +442,6 @@ public class PetBlockListener extends SimpleListener {
         final double h = Math.cos(Math.toRadians(rotY));
         vector.setX(-h * Math.sin(Math.toRadians(rotX)));
         vector.setZ(h * Math.cos(Math.toRadians(rotX)));
-        vector.setY(0.5);
         return vector.multiply(1.2);
     }
 }
