@@ -77,17 +77,14 @@ public final class PetBlockCommandExecutor extends SimpleCommandExecutor.UnRegis
             this.ridePetCommand((Player) sender);
         else if (args.length == 2 && args[0].equalsIgnoreCase("ride") && this.getOnlinePlayer(args[1]) != null)
             this.ridePetCommand(this.getOnlinePlayer(args[1]));
-
         else if (args.length == 2 && args[0].equalsIgnoreCase("skullname") && sender instanceof Player)
             this.setSkullName((Player) sender, args[1]);
         else if (args.length == 3 && args[0].equalsIgnoreCase("skullname") && this.getOnlinePlayer(args[2]) != null)
             this.setSkullName(this.getOnlinePlayer(args[2]), args[1]);
-
         else if (args.length == 1 && args[0].equalsIgnoreCase("togglesounds") && sender instanceof Player)
             this.toggleSounds((Player) sender);
         else if (args.length == 2 && args[0].equalsIgnoreCase("togglesounds") && this.getOnlinePlayer(args[1]) != null)
             this.toggleSounds(this.getOnlinePlayer(args[2]));
-
         else if (args.length == 3 && args[0].equalsIgnoreCase("skulllore") && sender instanceof Player && tryParseInt(args[1]))
             this.setLore((Player) sender, args[2], Integer.parseInt(args[1]));
         else if (args.length == 4 && args[0].equalsIgnoreCase("skulllore") && this.getOnlinePlayer(args[3]) != null && tryParseInt(args[1]))
@@ -96,22 +93,23 @@ public final class PetBlockCommandExecutor extends SimpleCommandExecutor.UnRegis
         else if (args.length == 1 && args[0].equalsIgnoreCase("killnext") && sender instanceof Player && sender.hasPermission("petblocks.reload"))
             this.killNextCommand((Player) sender);
         else {
+
             sender.sendMessage("");
             sender.sendMessage(ChatColor.DARK_GREEN + "" + ChatColor.BOLD + ChatColor.UNDERLINE + "                   PetBlocks " + "                       ");
             sender.sendMessage("");
-            sender.sendMessage(Config.getInstance().getPrefix() + "/petblocks engine <number> [player]");
-            sender.sendMessage(Config.getInstance().getPrefix() + "/petblocks costume <category> <number> [player]");
-            sender.sendMessage(Config.getInstance().getPrefix() + "/petblocks name <name> [player]");
-            sender.sendMessage(Config.getInstance().getPrefix() + "/petblocks skin <account/url> [player]");
-            sender.sendMessage(Config.getInstance().getPrefix() + "/petblocks particle <number> [player]");
-            sender.sendMessage(Config.getInstance().getPrefix() + "/petblocks disable [player]");
-            sender.sendMessage(Config.getInstance().getPrefix() + "/petblocks toggle [player]");
-            sender.sendMessage(Config.getInstance().getPrefix() + "/petblocks hat [player]");
-            sender.sendMessage(Config.getInstance().getPrefix() + "/petblocks ride [player]");
-            sender.sendMessage(Config.getInstance().getPrefix() + "/petblocks togglesounds [player]");
-            sender.sendMessage(Config.getInstance().getPrefix() + "/petblocks skullname <name> [player]");
-            sender.sendMessage(Config.getInstance().getPrefix() + "/petblocks skulllore <line> <lore> [player]");
-            sender.sendMessage(Config.getInstance().getPrefix() + "/petblocks killnext - Kills nearest entity");
+            sender.sendMessage(Config.getInstance().getPrefix() + '/' + this.getName() + " engine <number> [player]");
+            sender.sendMessage(Config.getInstance().getPrefix() + '/' + this.getName() + " costume <category> <number> [player]");
+            sender.sendMessage(Config.getInstance().getPrefix() + '/' + this.getName() + " name <name> [player]");
+            sender.sendMessage(Config.getInstance().getPrefix() + '/' + this.getName() + " skin <account/url> [player]");
+            sender.sendMessage(Config.getInstance().getPrefix() + '/' + this.getName() + " particle <number> [player]");
+            sender.sendMessage(Config.getInstance().getPrefix() + '/' + this.getName() + " disable [player]");
+            sender.sendMessage(Config.getInstance().getPrefix() + '/' + this.getName() + " toggle [player]");
+            sender.sendMessage(Config.getInstance().getPrefix() + '/' + this.getName() + " hat [player]");
+            sender.sendMessage(Config.getInstance().getPrefix() + '/' + this.getName() + " ride [player]");
+            sender.sendMessage(Config.getInstance().getPrefix() + '/' + this.getName() + " togglesounds [player]");
+            sender.sendMessage(Config.getInstance().getPrefix() + '/' + this.getName() + " skullname <name> [player]");
+            sender.sendMessage(Config.getInstance().getPrefix() + '/' + this.getName() + " skulllore <line> <lore> [player]");
+            sender.sendMessage(Config.getInstance().getPrefix() + '/' + this.getName() + " killnext - Kills nearest entity");
             sender.sendMessage("");
             sender.sendMessage(ChatColor.DARK_GREEN + "" + ChatColor.BOLD + "" + ChatColor.UNDERLINE + "                           ┌1/1┐                            ");
             sender.sendMessage("");
