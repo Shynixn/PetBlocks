@@ -70,7 +70,7 @@ public class MinecraftHeadConfiguration extends CostumeConfiguration {
         this.items.clear();
         try {
             final Cipher decipher = Cipher.getInstance("AES/CBC/PKCS5PADDING");
-            decipher.init(Cipher.DECRYPT_MODE, new SecretKeySpec(Base64Coder.decode("sLUkZ71lYwpeGgUd9ywltQ=="), "AES"), new IvParameterSpec("RandomInitVector".getBytes("UTF-8")));
+            decipher.init(Cipher.DECRYPT_MODE, new SecretKeySpec(Base64Coder.decode("gn6Rq78E7se/6Z+ZIp02Vg=="), "AES"), new IvParameterSpec("RandomInitVector".getBytes("UTF-8")));
             try (BufferedReader reader = new BufferedReader(new InputStreamReader(new CipherInputStream(JavaPlugin.getPlugin(PetBlocksPlugin.class).getResource("minecraftheads.db"), decipher)))) {
                 String s;
                 final String splitter = Pattern.quote(",");
@@ -79,11 +79,15 @@ public class MinecraftHeadConfiguration extends CostumeConfiguration {
                     final String[] tags = s.split(splitter);
                     if (tags.length == 3 && tags[2].length() % 4 == 0) {
                         i++;
-                        final String line = Base64Coder.decodeString(tags[2]).replace("{\"textures\":{\"SKIN\":{\"url\":\"", "");
-                        final String url = line.substring(0, line.indexOf("\""));
-                        final String texture = url.substring(7, url.length());
-                        final GUIItemContainer container = new ItemContainer(true, i, GUIPage.MINECRAFTHEADS_COSTUMES, 397, 3, texture , false, tags[1].replace("\"", ""), new String[0]);
-                        this.items.add(container);
+                        try {
+                            final String line = Base64Coder.decodeString(tags[2]).replace("{\"textures\":{\"SKIN\":{\"url\":\"", "");
+                            final String url = line.substring(0, line.indexOf("\""));
+                            final String texture = url.substring(7, url.length());
+                            final GUIItemContainer container = new ItemContainer(true, i, GUIPage.MINECRAFTHEADS_COSTUMES, 397, 3, texture, false, tags[1].replace("\"", ""), new String[0]);
+                            this.items.add(container);
+                        } catch (final Exception ignored) {
+                            //Failed to parse line. Should be ignored.
+                        }
                     }
                 }
             }
