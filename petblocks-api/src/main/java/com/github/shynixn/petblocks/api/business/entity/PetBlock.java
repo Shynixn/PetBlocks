@@ -3,15 +3,13 @@ package com.github.shynixn.petblocks.api.business.entity;
 import com.github.shynixn.petblocks.api.persistence.entity.PetMeta;
 
 /**
- * Copyright 2017 Shynixn
+ * PetBlock entity which can be perform the defined actions.
  * <p>
- * Do not remove this header!
- * <p>
- * Version 1.0
+ * Version 1.1
  * <p>
  * MIT License
  * <p>
- * Copyright (c) 2017
+ * Copyright (c) 2017 by Shynixn
  * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -52,54 +50,54 @@ public interface PetBlock {
     void refreshHeadMeta();
 
     /**
-     * Returns the meta of the petblock
+     * Returns the meta of the petblock.
      *
      * @return meta
      */
     PetMeta getMeta();
 
     /**
-     * Returns the owner of the petblock
+     * Returns the owner of the petblock.
      *
      * @return player
      */
     Object getPlayer();
 
     /**
-     * Removes the petblock
+     * Removes the petblock.
      */
     void remove();
 
     /**
-     * Lets the given player ride on the petblock
+     * Lets the given player ride on the petblock.
      *
      * @param player player
      */
     void ride(Object player);
 
     /**
-     * Lets the given player wear the petblock
+     * Lets the given player wear the petblock.
      *
-     * @param player oplayer
+     * @param player player
      */
     void wear(Object player);
 
     /**
-     * Ejects the given player riding from the petblock
+     * Ejects the given player riding from the petblock.
      *
      * @param player player
      */
     void eject(Object player);
 
     /**
-     * Sets the displayName of the petblock
+     * Sets the displayName of the petblock.
      *
      * @param name name
      */
     void setDisplayName(String name);
 
     /**
-     * Returns the displayName of the petblock
+     * Returns the displayName of the petblock.
      *
      * @return name
      */
@@ -111,42 +109,42 @@ public interface PetBlock {
     void respawn();
 
     /**
-     * Returns if the petblock is already removed or dead
+     * Returns if the petblock is already removed or dead.
      *
      * @return dead
      */
     boolean isDead();
 
     /**
-     * Returns the armorstand of the petblock
+     * Returns the armorstand of the petblock.
      *
      * @return armorstand
      */
     Object getArmorStand();
 
     /**
-     * Returns the entity being used as engine
+     * Returns the entity being used as engine.
      *
      * @return entity
      */
     Object getEngineEntity();
 
     /**
-     * Returns the location of the entity
+     * Returns the location of the entity.
      *
      * @return position
      */
     Object getLocation();
 
     /**
-     * Damages the petblock the given amount of damage
+     * Damages the petblock the given amount of damage.
      *
-     * @param amount amont
+     * @param amount amount
      */
     void damage(double amount);
 
     /**
-     * Lets the petblock perform a jump
+     * Lets the petblock perform a jump.
      */
     void jump();
 
@@ -158,7 +156,7 @@ public interface PetBlock {
     void setVelocity(Object vector);
 
     /**
-     * Teleports the the petblock to the given location
+     * Teleports the the petblock to the given location.
      *
      * @param location location
      */

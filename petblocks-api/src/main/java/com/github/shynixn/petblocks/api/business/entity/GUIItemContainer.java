@@ -5,15 +5,13 @@ import com.github.shynixn.petblocks.api.business.enumeration.GUIPage;
 import java.util.Optional;
 
 /**
- * Copyright 2017 Shynixn
+ * Holds general info about the UI items.
  * <p>
- * Do not remove this header!
- * <p>
- * Version 1.0
+ * Version 1.1
  * <p>
  * MIT License
  * <p>
- * Copyright (c) 2017
+ * Copyright (c) 2017 by Shynixn
  * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -36,21 +34,21 @@ import java.util.Optional;
 public interface GUIItemContainer {
 
     /**
-     * Returns if the itemContainer is enabled
+     * Returns if the itemContainer is enabled.
      *
      * @return enabled
      */
     boolean isEnabled();
 
     /**
-     * Sets the itemContainer enabled
+     * Sets the itemContainer enabled.
      *
      * @param enabled enabled
      */
     void setEnabled(boolean enabled);
 
     /**
-     * Generates a new itemStack for the player and his permissions
+     * Generates a new itemStack for the player and his permissions.
      *
      * @param player      player
      * @param permissions permission
@@ -59,53 +57,53 @@ public interface GUIItemContainer {
     Object generate(Object player, String... permissions);
 
     /**
-     * Returns the displayName of the itemStack if present
+     * Returns the displayName of the itemStack if present.
      *
      * @return displayName
      */
     Optional<String> getDisplayName();
 
     /**
-     * Returns the lore of the itemStack if present
+     * Returns the lore of the itemStack if present.
      *
      * @return lore
      */
     Optional<String[]> getLore();
 
     /**
-     * Returns the position of the itemStack in the ui
+     * Returns the position of the itemStack in the ui.
      *
      * @return position
      */
     int getPosition();
 
     /**
-     * Returns the guiPage of this container
+     * Returns the guiPage of this container.
      *
      * @return guiPage
      */
     GUIPage getPage();
 
     /**
-     * Returns the skin of the itemStack
+     * Returns the skin of the itemStack.
      * @return skin
      */
     String getSkin();
 
     /**
-     * Returns the id of the item
+     * Returns the id of the item.
      * @return itemId
      */
     int getItemId();
 
     /**
-     * Returns the damage of the item
+     * Returns the damage of the item.
      * @return itemDamage
      */
     int getItemDamage();
 
     /**
-     * Returns if the item is unbreakable
+     * Returns if the item is unbreakable.
      * @return unbreakable
      */
     boolean isItemUnbreakable();
