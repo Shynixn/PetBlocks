@@ -37,7 +37,7 @@ import java.util.List;
 public interface EngineController extends IFileController<EngineContainer> {
 
     /**
-     * Returns the engineContainer with the given id
+     * Returns the engineContainer with the given id.
      *
      * @param id id
      * @return engineContainer
@@ -45,7 +45,7 @@ public interface EngineController extends IFileController<EngineContainer> {
     EngineContainer getById(int id);
 
     /**
-     * Returns all gui items
+     * Returns all gui items.
      *
      * @return gui items
      */

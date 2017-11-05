@@ -35,7 +35,7 @@ import com.github.shynixn.petblocks.api.persistence.entity.ParticleEffectMeta;
 public interface ParticleController extends CostumeController {
 
     /**
-     * Returns the particleEffect by the given container
+     * Returns the particleEffect by the given container.
      *
      * @param container container
      * @return particleEffect

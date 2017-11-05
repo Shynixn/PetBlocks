@@ -34,7 +34,7 @@ import com.github.shynixn.petblocks.api.persistence.entity.PetMeta;
 public interface PetMetaController extends IDatabaseController<PetMeta> {
 
     /**
-     * Creates a petMeta for the given player
+     * Creates a petMeta for the given player.
      *
      * @param player player
      * @return petMeta
@@ -42,7 +42,7 @@ public interface PetMetaController extends IDatabaseController<PetMeta> {
     PetMeta create(Object player);
 
     /**
-     * Returns the petdata from the given player
+     * Returns the petData from the given player.
      *
      * @param player player
      * @param <T>    type
@@ -51,7 +51,7 @@ public interface PetMetaController extends IDatabaseController<PetMeta> {
     <T> PetMeta getByPlayer(T player);
 
     /**
-     * Checks if the player has got an entry in the database
+     * Checks if the player has got an entry in the database.
      *
      * @param player player
      * @param <T>    type
@@ -60,7 +60,7 @@ public interface PetMetaController extends IDatabaseController<PetMeta> {
     <T> boolean hasEntry(T player);
 
     /**
-     * Removes the petMeta of the given player
+     * Removes the petMeta of the given player.
      *
      * @param player player
      */

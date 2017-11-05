@@ -33,7 +33,7 @@ import java.util.Collection;
  */
 public interface ParticleEffectMeta extends Persistenceable {
     /**
-     * Sets the RGB colors of the particleEffect
+     * Sets the RGB colors of the particleEffect.
      *
      * @param red   red
      * @param green green
@@ -43,7 +43,7 @@ public interface ParticleEffectMeta extends Persistenceable {
     ParticleEffectMeta setColor(int red, int green, int blue);
 
     /**
-     * Sets the color of the particleEffect
+     * Sets the color of the particleEffect.
      *
      * @param particleColor particleColor
      * @return builder
@@ -51,7 +51,7 @@ public interface ParticleEffectMeta extends Persistenceable {
     ParticleEffectMeta setColor(ParticleColor particleColor);
 
     /**
-     * Sets the color for note particleEffect
+     * Sets the color for note particleEffect.
      *
      * @param color color
      * @return builder
@@ -59,7 +59,7 @@ public interface ParticleEffectMeta extends Persistenceable {
     ParticleEffectMeta setNoteColor(int color);
 
     /**
-     * Sets the amount of particles of the particleEffect
+     * Sets the amount of particles of the particleEffect.
      *
      * @param amount amount
      * @return builder
@@ -67,7 +67,7 @@ public interface ParticleEffectMeta extends Persistenceable {
     ParticleEffectMeta setAmount(int amount);
 
     /**
-     * Sets the speed of the particleEffect
+     * Sets the speed of the particleEffect.
      *
      * @param speed speed
      * @return builder
@@ -75,7 +75,7 @@ public interface ParticleEffectMeta extends Persistenceable {
     ParticleEffectMeta setSpeed(double speed);
 
     /**
-     * Sets the offsetX of the particleEffect
+     * Sets the offsetX of the particleEffect.
      *
      * @param offsetX offsetX
      * @return builder
@@ -83,7 +83,7 @@ public interface ParticleEffectMeta extends Persistenceable {
     ParticleEffectMeta setOffsetX(double offsetX);
 
     /**
-     * Sets the offsetY of the particleEffect
+     * Sets the offsetY of the particleEffect.
      *
      * @param offsetY offsetY
      * @return builder
@@ -91,7 +91,7 @@ public interface ParticleEffectMeta extends Persistenceable {
     ParticleEffectMeta setOffsetY(double offsetY);
 
     /**
-     * Sets the offsetZ of the particleEffect
+     * Sets the offsetZ of the particleEffect.
      *
      * @param offsetZ offsetZ
      * @return builder
@@ -99,7 +99,7 @@ public interface ParticleEffectMeta extends Persistenceable {
     ParticleEffectMeta setOffsetZ(double offsetZ);
 
     /**
-     * Sets the offset of the particleEffect
+     * Sets the offset of the particleEffect.
      *
      * @param offsetX offsetX
      * @param offsetY offsetY
@@ -109,7 +109,7 @@ public interface ParticleEffectMeta extends Persistenceable {
     ParticleEffectMeta setOffset(double offsetX, double offsetY, double offsetZ);
 
     /**
-     * Sets the effectType of the particleEffect
+     * Sets the effectType of the particleEffect.
      *
      * @param name name
      * @return builder
@@ -117,7 +117,7 @@ public interface ParticleEffectMeta extends Persistenceable {
     ParticleEffectMeta setEffectName(String name);
 
     /**
-     * Sets the effectType of the particlEffect
+     * Sets the effectType of the particleEffect.
      *
      * @param type type
      * @return builder
@@ -125,7 +125,7 @@ public interface ParticleEffectMeta extends Persistenceable {
     ParticleEffectMeta setEffectType(ParticleEffectType type);
 
     /**
-     * Sets the blue of the RGB color
+     * Sets the blue of the RGB color.
      *
      * @param blue blue
      * @return builder
@@ -133,7 +133,7 @@ public interface ParticleEffectMeta extends Persistenceable {
     ParticleEffectMeta setBlue(int blue);
 
     /**
-     * Sets the red of the RGB color
+     * Sets the red of the RGB color.
      *
      * @param red red
      * @return builder
@@ -141,7 +141,7 @@ public interface ParticleEffectMeta extends Persistenceable {
     ParticleEffectMeta setRed(int red);
 
     /**
-     * Sets the green of the RGB color
+     * Sets the green of the RGB color.
      *
      * @param green green
      * @return builder
@@ -149,7 +149,7 @@ public interface ParticleEffectMeta extends Persistenceable {
     ParticleEffectMeta setGreen(int green);
 
     /**
-     * Sets the material of the particleEffect
+     * Sets the material of the particleEffect.
      *
      * @param material material
      * @return builder
@@ -157,7 +157,7 @@ public interface ParticleEffectMeta extends Persistenceable {
     ParticleEffectMeta setMaterial(Object material);
 
     /**
-     * Sets the data of the material of the particleEffect
+     * Sets the data of the material of the particleEffect.
      *
      * @param data data
      * @return builder
@@ -165,112 +165,112 @@ public interface ParticleEffectMeta extends Persistenceable {
     ParticleEffectMeta setData(Byte data);
 
     /**
-     * Returns the effect of the particleEffect
+     * Returns the effect of the particleEffect.
      *
      * @return effectName
      */
     String getEffectName();
 
     /**
-     * Returns the particleEffectType of the particleEffect
+     * Returns the particleEffectType of the particleEffect.
      *
      * @return effectType
      */
     ParticleEffectType getEffectType();
 
     /**
-     * Returns the amount of particles of the particleEffect
+     * Returns the amount of particles of the particleEffect.
      *
      * @return amount
      */
     int getAmount();
 
     /**
-     * Returns the speed of the particleEffect
+     * Returns the speed of the particleEffect.
      *
      * @return speed
      */
     double getSpeed();
 
     /**
-     * Returns the offsetX of the particleEffect
+     * Returns the offsetX of the particleEffect.
      *
      * @return offsetX
      */
     double getOffsetX();
 
     /**
-     * Returns the offsetY of the particleEffect
+     * Returns the offsetY of the particleEffect.
      *
      * @return offsetY
      */
     double getOffsetY();
 
     /**
-     * Returns the offsetZ of the particleEffect
+     * Returns the offsetZ of the particleEffect.
      *
      * @return offsetZ
      */
     double getOffsetZ();
 
     /**
-     * Returns the RGB color blue of the particleEffect
+     * Returns the RGB color blue of the particleEffect.
      *
      * @return blue
      */
     int getBlue();
 
     /**
-     * Returns the RGB color red of the particleEffect
+     * Returns the RGB color red of the particleEffect.
      *
      * @return red
      */
     int getRed();
 
     /**
-     * Returns the RGB color green of the particleEffect
+     * Returns the RGB color green of the particleEffect.
      *
      * @return green
      */
     int getGreen();
 
     /**
-     * Returns the material of the particleEffect
+     * Returns the material of the particleEffect.
      *
      * @return material
      */
     Object getMaterial();
 
     /**
-     * Returns the data of the particleEffect
+     * Returns the data of the particleEffect.
      *
      * @return data
      */
     Byte getData();
 
     /**
-     * Copies the current builder
+     * Copies the current builder.
      *
      * @return copyOfBuilder
      */
     ParticleEffectMeta clone();
 
     /**
-     * Returns if the particleEffect is a color particleEffect
+     * Returns if the particleEffect is a color particleEffect.
      *
      * @return isColor
      */
     boolean isColorParticleEffect();
 
     /**
-     * Returns if the particleEffect is a note particleEffect
+     * Returns if the particleEffect is a note particleEffect.
      *
      * @return isNote
      */
     boolean isNoteParticleEffect();
 
     /**
-     * Returns if the particleEffect is a materialParticleEffect
+     * Returns if the particleEffect is a materialParticleEffect.
      *
      * @return isMaterial
      */
@@ -317,7 +317,7 @@ public interface ParticleEffectMeta extends Persistenceable {
         private final int blue;
 
         /**
-         * Initializes a new particleColor
+         * Initializes a new particleColor.
          *
          * @param red   red
          * @param green green
@@ -330,7 +330,7 @@ public interface ParticleEffectMeta extends Persistenceable {
         }
 
         /**
-         * Returns the RGB value red
+         * Returns the RGB value red.
          *
          * @return red
          */
@@ -339,7 +339,7 @@ public interface ParticleEffectMeta extends Persistenceable {
         }
 
         /**
-         * Returns the RGB value green
+         * Returns the RGB value green.
          *
          * @return green
          */
@@ -348,7 +348,7 @@ public interface ParticleEffectMeta extends Persistenceable {
         }
 
         /**
-         * Returns the RGB value blue
+         * Returns the RGB value blue.
          *
          * @return blue
          */
@@ -416,7 +416,7 @@ public interface ParticleEffectMeta extends Persistenceable {
         private final int id;
 
         /**
-         * Initializes a new particleEffectType
+         * Initializes a new particleEffectType.
          *
          * @param name name
          * @param id   id
@@ -427,7 +427,7 @@ public interface ParticleEffectMeta extends Persistenceable {
         }
 
         /**
-         * Returns the id of the particleEffectType
+         * Returns the id of the particleEffectType.
          *
          * @return id
          */
@@ -436,7 +436,7 @@ public interface ParticleEffectMeta extends Persistenceable {
         }
 
         /**
-         * Returns the name of the particleEffectType
+         * Returns the name of the particleEffectType.
          *
          * @return name
          */

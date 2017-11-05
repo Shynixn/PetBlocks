@@ -31,7 +31,7 @@ public enum GUIPage {
     MAIN, WARDROBE, DEFAULT_COSTUMES, COLOR_COSTUMES, CUSTOM_COSTUMES, MINECRAFTHEADS_COSTUMES, PARTICLES, ENGINES;
 
     /**
-     * Returns the gui page from name
+     * Returns the gui page from name.
      *
      * @param name name
      * @return guiPage

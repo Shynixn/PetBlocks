@@ -32,91 +32,91 @@ package com.github.shynixn.petblocks.api.persistence.entity;
 public interface PetMeta extends Persistenceable {
 
     /**
-     * Returns if the petblock is enabled
+     * Returns if the petblock is enabled.
      *
      * @return enabled
      */
     boolean isEnabled();
 
     /**
-     * Sets the petblock enabled
+     * Sets the petblock enabled.
      *
      * @param enabled enabled
      */
     void setEnabled(boolean enabled);
 
     /**
-     * Returns the age in ticks
+     * Returns the age in ticks.
      *
      * @return age
      */
     long getAge();
 
     /**
-     * Returns the skin of the pet
+     * Returns the skin of the pet.
      *
      * @return skin
      */
     String getSkin();
 
     /**
-     * Sets the age in ticks
+     * Sets the age in ticks.
      *
      * @param ticks ticks
      */
     void setAge(long ticks);
 
     /**
-     * Returns the data of the engine
+     * Returns the data of the engine.
      *
      * @return engine
      */
     EngineContainer getEngine();
 
     /**
-     * Sets the data of the engine
+     * Sets the data of the engine.
      *
      * @param engine engine
      */
     void setEngine(EngineContainer engine);
 
     /**
-     * Returns if the pet is visible to other players
+     * Returns if the pet is visible to other players.
      *
      * @return visible
      */
     boolean isVisible();
 
     /**
-     * Sets if the pet should be visible to other players
+     * Sets if the pet should be visible to other players.
      *
      * @param enabled enabled
      */
     void setVisible(boolean enabled);
 
     /**
-     * Sets the pet sound enabled
+     * Sets the pet sound enabled.
      *
      * @param enabled enabled
      */
     void setSoundEnabled(boolean enabled);
 
     /**
-     * Returns if the pet-sound is enabled
+     * Returns if the pet-sound is enabled.
      *
      * @return enabled
      */
     boolean isSoundEnabled();
 
     /**
-     * Returns if the itemStack is unbreakable
+     * Returns if the itemStack is unbreakable.
      *
      * @return unbreakable
      */
     boolean isItemStackUnbreakable();
 
     /**
-     * Sets the itemStack
+     * Sets the itemStack.
      *
      * @param id          id
      * @param damage      damage
@@ -140,42 +140,42 @@ public interface PetMeta extends Persistenceable {
     String getPetDisplayName();
 
     /**
-     * Returns the particleEffect meta
+     * Returns the particleEffect meta.
      *
      * @return meta
      */
     ParticleEffectMeta getParticleEffectMeta();
 
     /**
-     * Returns the meta of the owner
+     * Returns the meta of the owner.
      *
      * @return player
      */
     PlayerMeta getPlayerMeta();
 
     /**
-     * Returns the id of the item
+     * Returns the id of the item.
      *
      * @return itemId
      */
     int getItemId();
 
     /**
-     * Returns the damage of the item
+     * Returns the damage of the item.
      *
      * @return itemDamage
      */
     int getItemDamage();
 
     /**
-     * Returns if the item is unbreakable
+     * Returns if the item is unbreakable.
      *
      * @return unbreakable
      */
     boolean isItemUnbreakable();
 
     /**
-     * Returns the itemStack for the head
+     * Returns the itemStack for the head.
      *
      * @return headItemStack
      */

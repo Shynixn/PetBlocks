@@ -51,7 +51,7 @@ public enum Permission {
     private final String perm;
 
     /**
-     * Initializes a new permission
+     * Initializes a new permission.
      *
      * @param perm permission
      */
@@ -60,7 +60,7 @@ public enum Permission {
     }
 
     /**
-     * Returns the permission string
+     * Returns the permission string.
      *
      * @return permission
      */

@@ -34,7 +34,7 @@ import com.github.shynixn.petblocks.api.business.entity.GUIItemContainer;
 public interface OtherGUIItemsController extends IFileController<GUIItemContainer> {
 
     /**
-     * Returns the guiItem by the given name
+     * Returns the guiItem by the given name.
      *
      * @param name name
      * @return item
@@ -42,7 +42,7 @@ public interface OtherGUIItemsController extends IFileController<GUIItemContaine
     GUIItemContainer getGUIItemByName(String name);
 
     /**
-     * Returns if the given itemStack is a guiItemStack with the given name
+     * Returns if the given itemStack is a guiItemStack with the given name.
      *
      * @param itemStack itemStack
      * @param name      name

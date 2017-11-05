@@ -34,7 +34,7 @@ import com.github.shynixn.petblocks.api.business.entity.GUIItemContainer;
 public interface CostumeController extends IFileController<GUIItemContainer> {
 
     /**
-     * Returns the container by the given order id
+     * Returns the container by the given order id.
      *
      * @param id id
      * @return container

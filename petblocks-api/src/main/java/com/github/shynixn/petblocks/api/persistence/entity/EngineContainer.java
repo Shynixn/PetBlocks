@@ -35,35 +35,35 @@ import com.github.shynixn.petblocks.api.business.enumeration.RideType;
 public interface EngineContainer extends Persistenceable {
 
     /**
-     * Returns the walking sound
+     * Returns the walking sound.
      *
      * @return walkingSound
      */
     SoundMeta getWalkingSound();
 
     /**
-     * Returns the ambient sound
+     * Returns the ambient sound.
      *
      * @return ambientSound
      */
     SoundMeta getAmbientSound();
 
     /**
-     * Returns the rideType
+     * Returns the rideType.
      *
      * @return rideType
      */
     RideType getRideType();
 
     /**
-     * Returns the entityType
+     * Returns the entityType.
      *
      * @return entityType
      */
     String getEntityType();
 
     /**
-     * Returns the guiItem of the engine
+     * Returns the guiItem of the engine.
      *
      * @return guiItem
      */

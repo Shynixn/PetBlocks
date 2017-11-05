@@ -38,7 +38,7 @@ public class PetBlocksApi {
     private static PetBlockController petBlockController;
 
     /**
-     * Initializes the api
+     * Initializes the api.
      */
     private static void initialize(PetMetaController petMetaController, PetBlockController petBlockController) {
         PetBlocksApi.metaController = petMetaController;
@@ -47,7 +47,7 @@ public class PetBlocksApi {
 
 
     /**
-     * Returns the default meta controller
+     * Returns the default meta controller.
      *
      * @return metaController
      */
@@ -56,7 +56,7 @@ public class PetBlocksApi {
     }
 
     /**
-     * Returns the petBlock controller
+     * Returns the petBlock controller.
      *
      * @return petBlockController
      */
