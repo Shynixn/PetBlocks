@@ -157,6 +157,9 @@ public class ItemContainer implements GUIItemContainer {
                         itemStack.setItemMeta(meta);
                     }
                 }
+                final Map<String, Object> data = new HashMap<>();
+                data.put("Unbreakable", this.isItemUnbreakable());
+                itemStack = NMSRegistry.setItemStackTag(itemStack, data);
                 final ItemMeta itemMeta = itemStack.getItemMeta();
                 itemMeta.setDisplayName(this.name);
                 itemStack.setItemMeta(itemMeta);
