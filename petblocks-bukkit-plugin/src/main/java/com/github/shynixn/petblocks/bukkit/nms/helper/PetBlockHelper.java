@@ -32,9 +32,6 @@ import org.bukkit.util.Vector;
 import java.util.*;
 import java.util.logging.Level;
 
-/**
- * Created by Shynixn
- */
 public final class PetBlockHelper {
     private static final Random random = new Random();
     private static final SoundMeta explosionSound = new SoundBuilder("EXPLODE", 1.0F, 2.0F);
@@ -108,12 +105,15 @@ public final class PetBlockHelper {
                     } else {
                         petData.getEngine().getWalkingSound().applyToPlayers(owner);
                     }
-                } catch (final Exception e) {
+                } catch (final IllegalArgumentException e) {
                     PetBlocksPlugin.logger()
                             .log(Level.WARNING, "Cannot play walking sound "
                                     + petData.getEngine().getWalkingSound().getName()
                                     + " of " + ChatColor.stripColor(petData.getEngine().getGUIItem().getDisplayName().get()) + '.');
                     PetBlocksPlugin.logger().log(Level.WARNING, "Is this entity or sound supported by your server version? Disable it in the config.yml");
+                } catch (final Exception e) {
+                    PetBlocksPlugin.logger()
+                            .log(Level.WARNING, "Failed playing walking sound.", e);
                 }
             }
             return milli;
@@ -177,12 +177,15 @@ public final class PetBlockHelper {
                         } else {
                             petData.getEngine().getAmbientSound().applyToLocation(petBlock.getPlayer());
                         }
-                    } catch (final Exception e) {
+                    } catch (final IllegalArgumentException e) {
                         PetBlocksPlugin.logger()
                                 .log(Level.WARNING, "Cannot play ambient sound "
                                         + petData.getEngine().getAmbientSound().getName()
                                         + " of " + ChatColor.stripColor(petData.getEngine().getGUIItem().getDisplayName().get()) + '.');
                         PetBlocksPlugin.logger().log(Level.WARNING, "Is this entity or sound supported by your server version? Disable it in the config.yml");
+                    } catch (final Exception e) {
+                        PetBlocksPlugin.logger()
+                                .log(Level.WARNING, "Failed playing ambient sound.", e);
                     }
                 }
             }
