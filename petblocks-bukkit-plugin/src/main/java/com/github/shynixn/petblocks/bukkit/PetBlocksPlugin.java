@@ -97,8 +97,8 @@ public final class PetBlocksPlugin extends JavaPlugin {
     @Override
     public void onDisable() {
         if (!this.disabled) {
-            NMSRegistry.unregisterAll();
             try {
+                NMSRegistry.unregisterCustomEntities();
                 this.petBlockManager.close();
             } catch (final Exception e) {
                 PetBlocksPlugin.logger().log(Level.WARNING, "Failed to disable petblocks.", e);

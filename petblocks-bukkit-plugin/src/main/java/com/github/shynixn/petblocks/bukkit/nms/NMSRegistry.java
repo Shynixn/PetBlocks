@@ -7,7 +7,6 @@ import com.github.shynixn.petblocks.bukkit.dependencies.clearlag.ClearLagListene
 import com.github.shynixn.petblocks.bukkit.dependencies.supervanish.SuperVanishConnection;
 import com.github.shynixn.petblocks.bukkit.dependencies.worldguard.WorldGuardConnection5;
 import com.github.shynixn.petblocks.bukkit.dependencies.worldguard.WorldGuardConnection6;
-import com.github.shynixn.petblocks.bukkit.lib.LightRegistry;
 import com.github.shynixn.petblocks.bukkit.lib.ReflectionUtils;
 import com.github.shynixn.petblocks.bukkit.lib.RegisterHelper;
 import com.github.shynixn.petblocks.bukkit.lib.SkullMetaRegistry;
@@ -31,6 +30,20 @@ import java.util.Set;
 import java.util.logging.Level;
 
 public final class NMSRegistry {
+
+    private static CustomEntityType.WrappedRegistry wrappedRegistry;
+    private static final Class<?> rabbitClazz;
+    private static final Class<?> zombieClazz;
+
+    static {
+        try {
+            rabbitClazz = findClassFromVersion("com.github.shynixn.petblocks.bukkit.nms.VERSION.CustomRabbit");
+            zombieClazz = findClassFromVersion("com.github.shynixn.petblocks.bukkit.nms.VERSION.CustomZombie");
+        } catch (final ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     private NMSRegistry() {
         super();
     }
@@ -44,11 +57,37 @@ public final class NMSRegistry {
      */
     public static PetBlock createPetBlock(Location location, PetMeta meta) {
         try {
+            if (wrappedRegistry == null) {
+                if (VersionSupport.getServerVersion().isVersionLowerThan(VersionSupport.VERSION_1_11_R1)) {
+                    wrappedRegistry = new CustomEntityType.Registry10();
+                } else {
+                    wrappedRegistry = new CustomEntityType.Registry11();
+                }
+            }
+            if (!wrappedRegistry.isRegistered(rabbitClazz)) {
+                wrappedRegistry.register(rabbitClazz, CustomEntityType.RABBIT);
+                wrappedRegistry.register(zombieClazz, CustomEntityType.ZOMBIE);
+            }
             return (PetBlock) ReflectionUtils.invokeConstructor(findClassFromVersion("com.github.shynixn.petblocks.bukkit.nms.VERSION.CustomGroundArmorstand")
                     , new Class[]{location.getClass(), PetMeta.class}, new Object[]{location, meta});
         } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException | InstantiationException | ClassNotFoundException e) {
             PetBlocksPlugin.logger().log(Level.WARNING, "Cannot create petblock.", e);
             return null;
+        } catch (final Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * Unregisters all custom entities.
+     *
+     * @throws Exception exception
+     */
+    public static void unregisterCustomEntities() throws Exception {
+        if (wrappedRegistry != null) {
+            wrappedRegistry.unregister(rabbitClazz, CustomEntityType.RABBIT);
+            wrappedRegistry.unregister(zombieClazz, CustomEntityType.ZOMBIE);
+            wrappedRegistry = null;
         }
     }
 
@@ -203,10 +242,6 @@ public final class NMSRegistry {
         }
     }
 
-    public static void unregisterAll() {
-        LightRegistry.unregister();
-    }
-
     public static ItemStack changeSkullSkin(ItemStack itemStack, String skinUrl) {
         return SkullMetaRegistry.convertToSkinSkull(itemStack, skinUrl, "org.bukkit.craftbukkit.VERSION.inventory.CraftMetaSkull".replace("VERSION", VersionSupport.getServerVersion().getVersionText()));
     }
@@ -216,8 +251,6 @@ public final class NMSRegistry {
     }
 
     public static void registerAll() {
-        LightRegistry.RABBIT.register("com.github.shynixn.petblocks.bukkit.nms.VERSION.CustomRabbit");
-        LightRegistry.ZOMBIE.register("com.github.shynixn.petblocks.bukkit.nms.VERSION.CustomZombie");
         RegisterHelper.PREFIX = PetBlocksPlugin.PREFIX_CONSOLE;
         RegisterHelper.register("WorldGuard", "com.sk89q.worldguard.protection.ApplicableRegionSet", '5');
         RegisterHelper.register("WorldGuard", "com.sk89q.worldguard.protection.ApplicableRegionSet", '6');
