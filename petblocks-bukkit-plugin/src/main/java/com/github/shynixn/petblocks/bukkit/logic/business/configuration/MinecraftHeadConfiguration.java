@@ -86,7 +86,7 @@ public class MinecraftHeadConfiguration extends CostumeConfiguration {
                             final GUIItemContainer container = new ItemContainer(true, i, GUIPage.MINECRAFTHEADS_COSTUMES, 397, 3, texture, false, tags[0].replace("\"", ""), new String[0]);
                             this.items.add(container);
                         } catch (final Exception ignored) {
-                            ignored.printStackTrace();
+                            PetBlocksPlugin.logger().log(Level.WARNING, "Failed parsing minecraftheads.com head.", ignored);
                         }
                     }
                 }

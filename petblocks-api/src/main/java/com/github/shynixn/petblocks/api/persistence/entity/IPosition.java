@@ -1,15 +1,13 @@
 package com.github.shynixn.petblocks.api.persistence.entity;
 
 /**
- * Copyright 2017 Shynixn
+ * Position entity to manage calculations between positions and velocities.
  * <p>
- * Do not remove this header!
- * <p>
- * Version 1.0
+ * Version 1.1
  * <p>
  * MIT License
  * <p>
- * Copyright (c) 2017
+ * Copyright (c) 2017 by Shynixn
  * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -29,7 +27,7 @@ package com.github.shynixn.petblocks.api.persistence.entity;
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-public interface IPosition extends Persistenceable{
+public interface IPosition extends Persistenceable {
     /**
      * Sets the coordinates x, y, z.
      *
