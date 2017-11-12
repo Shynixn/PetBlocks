@@ -1,15 +1,13 @@
 package com.github.shynixn.petblocks.api.persistence.controller;
 
 /**
- * Copyright 2017 Shynixn
+ * File controller interface.
  * <p>
- * Do not remove this header!
- * <p>
- * Version 1.0
+ * Version 1.1
  * <p>
  * MIT License
  * <p>
- * Copyright (c) 2017
+ * Copyright (c) 2017 by Shynixn
  * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -31,7 +29,7 @@ package com.github.shynixn.petblocks.api.persistence.controller;
  */
 public interface IFileController<T> extends IController<T> {
     /**
-     * Reloads the content from the fileSystem
+     * Reloads the content from the fileSystem.
      */
     void reload();
 }

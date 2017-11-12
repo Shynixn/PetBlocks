@@ -1,15 +1,13 @@
 package com.github.shynixn.petblocks.api.persistence.entity;
 
 /**
- * Copyright 2017 Shynixn
+ * Metadata about sounds.
  * <p>
- * Do not remove this header!
- * <p>
- * Version 1.0
+ * Version 1.1
  * <p>
  * MIT License
  * <p>
- * Copyright (c) 2017
+ * Copyright (c) 2017 by Shynixn
  * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -32,7 +30,7 @@ package com.github.shynixn.petblocks.api.persistence.entity;
 public interface SoundMeta extends Persistenceable {
 
     /**
-     * Applies the sound at the given location
+     * Applies the sound at the given location.
      *
      * @param location location
      * @throws Exception ex
@@ -40,7 +38,7 @@ public interface SoundMeta extends Persistenceable {
     void applyToLocation(Object location) throws Exception;
 
     /**
-     * Applies the sound to the given player
+     * Applies the sound to the given player.
      *
      * @param players players
      * @throws Exception ex
@@ -48,14 +46,14 @@ public interface SoundMeta extends Persistenceable {
     void applyToPlayers(Object... players) throws Exception;
 
     /**
-     * Returns the name of the sound
+     * Returns the name of the sound.
      *
      * @return name
      */
     String getName();
 
     /**
-     * Sets the name of the sound
+     * Sets the name of the sound.
      *
      * @param name name
      * @return builder
@@ -63,14 +61,14 @@ public interface SoundMeta extends Persistenceable {
     SoundMeta setName(String name);
 
     /**
-     * Returns the volume of the sound
+     * Returns the volume of the sound.
      *
      * @return volume
      */
     double getVolume();
 
     /**
-     * Sets the volume of the sound
+     * Sets the volume of the sound.
      *
      * @param volume volume
      * @return builder
@@ -78,14 +76,14 @@ public interface SoundMeta extends Persistenceable {
     SoundMeta setVolume(double volume);
 
     /**
-     * Returns the pitch of the sound
+     * Returns the pitch of the sound.
      *
      * @return pitch
      */
     double getPitch();
 
     /**
-     * Sets the pitch of the sound
+     * Sets the pitch of the sound.
      *
      * @param pitch pitch
      * @return builder

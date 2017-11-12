@@ -4,15 +4,13 @@ import com.github.shynixn.petblocks.api.business.entity.GUIItemContainer;
 import com.github.shynixn.petblocks.api.persistence.entity.ParticleEffectMeta;
 
 /**
- * Copyright 2017 Shynixn
+ * Controller for particle gui items.
  * <p>
- * Do not remove this header!
- * <p>
- * Version 1.0
+ * Version 1.1
  * <p>
  * MIT License
  * <p>
- * Copyright (c) 2017
+ * Copyright (c) 2017 by Shynixn
  * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -35,7 +33,7 @@ import com.github.shynixn.petblocks.api.persistence.entity.ParticleEffectMeta;
 public interface ParticleController extends CostumeController {
 
     /**
-     * Returns the particleEffect by the given container
+     * Returns the particleEffect by the given container.
      *
      * @param container container
      * @return particleEffect

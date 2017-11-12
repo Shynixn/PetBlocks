@@ -85,11 +85,17 @@ public class Factory {
         };
         if (!plugin.getConfig().getBoolean("sql.enabled")) {
             try {
-                if (!plugin.getDataFolder().exists())
-                    plugin.getDataFolder().mkdir();
+                if (!plugin.getDataFolder().exists()) {
+                    if (!plugin.getDataFolder().mkdir()) {
+                        throw new IOException("Creating directory failed.");
+                    }
+                }
                 final File file = new File(plugin.getDataFolder(), "PetBlocks.db");
-                if (!file.exists())
-                    file.createNewFile();
+                if (!file.exists()) {
+                    if (!file.createNewFile()) {
+                        throw new IOException("Creating database file failed.");
+                    }
+                }
                 connectionContext = ExtensionHikariConnectionContext.from(ExtensionHikariConnectionContext.SQLITE_DRIVER, "jdbc:sqlite:" + file.getAbsolutePath(), retriever);
                 try (Connection connection = connectionContext.getConnection()) {
                     connectionContext.execute("PRAGMA foreign_keys=ON", connection);

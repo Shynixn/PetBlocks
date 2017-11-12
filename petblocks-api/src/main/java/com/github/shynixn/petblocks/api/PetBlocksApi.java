@@ -4,15 +4,13 @@ import com.github.shynixn.petblocks.api.business.controller.PetBlockController;
 import com.github.shynixn.petblocks.api.persistence.controller.PetMetaController;
 
 /**
- * Copyright 2017 Shynixn
+ * PetBlocksApi for accessing and modifying PetBlocks and PetMeta.
  * <p>
- * Do not remove this header!
- * <p>
- * Version 1.0
+ * Version 1.1
  * <p>
  * MIT License
  * <p>
- * Copyright (c) 2017
+ * Copyright (c) 2017 by Shynixn
  * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -38,16 +36,15 @@ public class PetBlocksApi {
     private static PetBlockController petBlockController;
 
     /**
-     * Initializes the api
+     * Initializes the api.
      */
     private static void initialize(PetMetaController petMetaController, PetBlockController petBlockController) {
         PetBlocksApi.metaController = petMetaController;
         PetBlocksApi.petBlockController = petBlockController;
     }
 
-
     /**
-     * Returns the default meta controller
+     * Returns the default meta controller.
      *
      * @return metaController
      */
@@ -56,7 +53,7 @@ public class PetBlocksApi {
     }
 
     /**
-     * Returns the petBlock controller
+     * Returns the petBlock controller.
      *
      * @return petBlockController
      */

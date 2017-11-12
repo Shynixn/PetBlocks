@@ -5,15 +5,13 @@ import com.github.shynixn.petblocks.api.persistence.entity.PlayerMeta;
 import java.util.UUID;
 
 /**
- * Copyright 2017 Shynixn
+ * Controller for the player properties and meta data.
  * <p>
- * Do not remove this header!
- * <p>
- * Version 1.0
+ * Version 1.1
  * <p>
  * MIT License
  * <p>
- * Copyright (c) 2017
+ * Copyright (c) 2017 by Shynixn
  * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -36,15 +34,17 @@ import java.util.UUID;
 public interface PlayerMetaController extends IDatabaseController<PlayerMeta> {
 
     /**
-     * Creates a new playerData from the given player
+     * Creates a new playerData from the given player.
+     *
      * @param player player
-     * @param <T> type
+     * @param <T>    type
      * @return playerData
      */
     <T> PlayerMeta create(T player);
 
     /**
-     * Returns the playerMeta of the given uuid
+     * Returns the playerMeta of the given uuid.
+     *
      * @param uuid uuid
      * @return playerMeta
      */

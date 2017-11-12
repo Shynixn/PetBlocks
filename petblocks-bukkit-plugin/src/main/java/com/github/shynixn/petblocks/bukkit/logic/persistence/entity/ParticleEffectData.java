@@ -725,7 +725,7 @@ public class ParticleEffectData extends PersistenceObject implements ParticleEff
     private static void sendPacket(Player player, Object packet) throws ClassNotFoundException, IllegalAccessException, NoSuchMethodException, InvocationTargetException, NoSuchFieldException {
         final Object craftPlayer = findClass("org.bukkit.craftbukkit.VERSION.entity.CraftPlayer").cast(player);
         final Object entityPlayer = invokeMethod(craftPlayer, craftPlayer.getClass(), "getHandle", new Class[]{}, new Object[]{});
-        final Field field = entityPlayer.getClass().getDeclaredField("playerConnection");
+        final Field field = findClass("net.minecraft.server.VERSION.EntityPlayer").getDeclaredField("playerConnection");
         field.setAccessible(true);
         final Object connection = field.get(entityPlayer);
         invokeMethod(connection, connection.getClass(), "sendPacket", new Class[]{packet.getClass().getInterfaces()[0]}, new Object[]{packet});

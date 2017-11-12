@@ -1,15 +1,13 @@
 package com.github.shynixn.petblocks.api.business.entity;
 
 /**
- * Copyright 2017 Shynixn
+ * Part of the Petblock entity which has to implement these aspects.
  * <p>
- * Do not remove this header!
- * <p>
- * Version 1.0
+ * Version 1.1
  * <p>
  * MIT License
  * <p>
- * Copyright (c) 2017
+ * Copyright (c) 2017 by Shynixn
  * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -31,21 +29,21 @@ package com.github.shynixn.petblocks.api.business.entity;
  */
 public interface PetBlockPartEntity {
     /**
-     * Returns the entity hidden by this object
+     * Returns the entity hidden by this object.
      *
      * @return spigotEntity
      */
     Object getEntity();
 
     /**
-     * Spawns the entity at the given location
+     * Spawns the entity at the given location.
      *
      * @param location location
      */
     void spawn(Object location);
 
     /**
-     * Removes the entity from the world
+     * Removes the entity from the world.
      */
     void remove();
 }

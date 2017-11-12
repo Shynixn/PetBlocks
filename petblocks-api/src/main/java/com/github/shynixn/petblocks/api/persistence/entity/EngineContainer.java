@@ -4,15 +4,13 @@ import com.github.shynixn.petblocks.api.business.entity.GUIItemContainer;
 import com.github.shynixn.petblocks.api.business.enumeration.RideType;
 
 /**
- * Copyright 2017 Shynixn
+ * Properties of engines.
  * <p>
- * Do not remove this header!
- * <p>
- * Version 1.0
+ * Version 1.1
  * <p>
  * MIT License
  * <p>
- * Copyright (c) 2017
+ * Copyright (c) 2017 by Shynixn
  * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -35,35 +33,35 @@ import com.github.shynixn.petblocks.api.business.enumeration.RideType;
 public interface EngineContainer extends Persistenceable {
 
     /**
-     * Returns the walking sound
+     * Returns the walking sound.
      *
      * @return walkingSound
      */
     SoundMeta getWalkingSound();
 
     /**
-     * Returns the ambient sound
+     * Returns the ambient sound.
      *
      * @return ambientSound
      */
     SoundMeta getAmbientSound();
 
     /**
-     * Returns the rideType
+     * Returns the rideType.
      *
      * @return rideType
      */
     RideType getRideType();
 
     /**
-     * Returns the entityType
+     * Returns the entityType.
      *
      * @return entityType
      */
     String getEntityType();
 
     /**
-     * Returns the guiItem of the engine
+     * Returns the guiItem of the engine.
      *
      * @return guiItem
      */

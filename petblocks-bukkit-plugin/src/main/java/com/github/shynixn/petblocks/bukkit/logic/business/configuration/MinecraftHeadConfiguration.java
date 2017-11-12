@@ -70,20 +70,24 @@ public class MinecraftHeadConfiguration extends CostumeConfiguration {
         this.items.clear();
         try {
             final Cipher decipher = Cipher.getInstance("AES/CBC/PKCS5PADDING");
-            decipher.init(Cipher.DECRYPT_MODE, new SecretKeySpec(Base64Coder.decode("sLUkZ71lYwpeGgUd9ywltQ=="), "AES"), new IvParameterSpec("RandomInitVector".getBytes("UTF-8")));
+            decipher.init(Cipher.DECRYPT_MODE, new SecretKeySpec(Base64Coder.decode("NTk50mqoZMw9ZTxcQJlVhA=="), "AES"), new IvParameterSpec("RandomInitVector".getBytes("UTF-8")));
             try (BufferedReader reader = new BufferedReader(new InputStreamReader(new CipherInputStream(JavaPlugin.getPlugin(PetBlocksPlugin.class).getResource("minecraftheads.db"), decipher)))) {
                 String s;
                 final String splitter = Pattern.quote(",");
                 int i = 0;
                 while ((s = reader.readLine()) != null) {
                     final String[] tags = s.split(splitter);
-                    if (tags.length == 3 && tags[2].length() % 4 == 0) {
+                    if (tags.length == 2 && tags[1].length() % 4 == 0) {
                         i++;
-                        final String line = Base64Coder.decodeString(tags[2]).replace("{\"textures\":{\"SKIN\":{\"url\":\"", "");
-                        final String url = line.substring(0, line.indexOf("\""));
-                        final String texture = url.substring(7, url.length());
-                        final GUIItemContainer container = new ItemContainer(true, i, GUIPage.MINECRAFTHEADS_COSTUMES, 397, 3, texture , false, tags[1].replace("\"", ""), new String[0]);
-                        this.items.add(container);
+                        try {
+                            final String line = Base64Coder.decodeString(tags[1]).replace("{\"textures\":{\"SKIN\":{\"url\":\"", "");
+                            final String url = line.substring(0, line.indexOf("\""));
+                            final String texture = url.substring(7, url.length());
+                            final GUIItemContainer container = new ItemContainer(true, i, GUIPage.MINECRAFTHEADS_COSTUMES, 397, 3, texture, false, tags[0].replace("\"", ""), new String[0]);
+                            this.items.add(container);
+                        } catch (final Exception ignored) {
+                            PetBlocksPlugin.logger().log(Level.WARNING, "Failed parsing minecraftheads.com head.", ignored);
+                        }
                     }
                 }
             }

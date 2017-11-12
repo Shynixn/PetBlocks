@@ -283,6 +283,7 @@ messages:
 
 # Settings for the petblock-gui
 
+# settings-title: GUI title
 # settings-copy-skin: Should the skin of petblock-engine be applied when being selected?
 # settings-use-only-disable-pet-item: Removes the enable block from the GUI and uses the pet-item instead to spawn the pet.
 # settings-my-pet-position: Position in the GUI to show the currently selected pet

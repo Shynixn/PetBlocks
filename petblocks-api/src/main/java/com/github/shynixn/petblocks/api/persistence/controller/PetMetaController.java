@@ -3,15 +3,13 @@ package com.github.shynixn.petblocks.api.persistence.controller;
 import com.github.shynixn.petblocks.api.persistence.entity.PetMeta;
 
 /**
- * Copyright 2017 Shynixn
+ * Controller for the pet properties and meta data.
  * <p>
- * Do not remove this header!
- * <p>
- * Version 1.0
+ * Version 1.1
  * <p>
  * MIT License
  * <p>
- * Copyright (c) 2017
+ * Copyright (c) 2017 by Shynixn
  * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -34,7 +32,7 @@ import com.github.shynixn.petblocks.api.persistence.entity.PetMeta;
 public interface PetMetaController extends IDatabaseController<PetMeta> {
 
     /**
-     * Creates a petMeta for the given player
+     * Creates a petMeta for the given player.
      *
      * @param player player
      * @return petMeta
@@ -42,7 +40,7 @@ public interface PetMetaController extends IDatabaseController<PetMeta> {
     PetMeta create(Object player);
 
     /**
-     * Returns the petdata from the given player
+     * Returns the petData from the given player.
      *
      * @param player player
      * @param <T>    type
@@ -51,7 +49,7 @@ public interface PetMetaController extends IDatabaseController<PetMeta> {
     <T> PetMeta getByPlayer(T player);
 
     /**
-     * Checks if the player has got an entry in the database
+     * Checks if the player has got an entry in the database.
      *
      * @param player player
      * @param <T>    type
@@ -60,7 +58,7 @@ public interface PetMetaController extends IDatabaseController<PetMeta> {
     <T> boolean hasEntry(T player);
 
     /**
-     * Removes the petMeta of the given player
+     * Removes the petMeta of the given player.
      *
      * @param player player
      */

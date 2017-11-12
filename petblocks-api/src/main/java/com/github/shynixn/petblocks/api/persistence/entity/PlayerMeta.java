@@ -3,15 +3,13 @@ package com.github.shynixn.petblocks.api.persistence.entity;
 import java.util.UUID;
 
 /**
- * Copyright 2017 Shynixn
+ * Information about the players.
  * <p>
- * Do not remove this header!
- * <p>
- * Version 1.0
+ * Version 1.1
  * <p>
  * MIT License
  * <p>
- * Copyright (c) 2017
+ * Copyright (c) 2017 by Shynixn
  * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -34,31 +32,31 @@ import java.util.UUID;
 public interface PlayerMeta extends Persistenceable{
 
     /**
-     * Returns the name of the playerData
+     * Returns the name of the playerData.
      * @return playerData
      */
     String getName();
 
     /**
-     * Sets the name of the playerData
+     * Sets the name of the playerData.
      * @param name name
      */
     void setName(String name);
 
     /**
-     * Returns the uuid of the playerData
+     * Returns the uuid of the playerData.
      * @return uuid
      */
     UUID getUUID();
 
     /**
-     * Sets the uuid of the playerData
+     * Sets the uuid of the playerData.
      * @param uuid uuid
      */
     void setUuid(UUID uuid);
 
     /**
-     * Returns the player of the playerData
+     * Returns the player of the playerData.
      * @param <T> type
      * @return player
      */
