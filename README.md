@@ -71,7 +71,7 @@ Player player; //Your player instance
 //Create and manipulate data
 PetMetaController petMetaController = PetBlocksApi.getDefaultPetMetaController();
 PetMeta petMeta = petMetaController.create(player);
-petMeta.setPetDisplayName(ChatColor.BLACK + "Amazing Pet"); //Modify the petMeta
+petMeta.setPetDisplayName(ChatColor.GREEN + "Amazing Pet"); //Modify the petMeta
 Bukkit.getScheduler().runTaskAsynchronously(plugin, new Runnable() {
     @Override
     public void run() {
