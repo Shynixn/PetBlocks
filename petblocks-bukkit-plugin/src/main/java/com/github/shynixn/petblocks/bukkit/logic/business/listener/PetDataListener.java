@@ -169,23 +169,33 @@ public class PetDataListener extends SimpleListener {
         }
     }
 
+    /**
+     * Gets called when a player joins a server. Overrides existing pets if enabled in the config.yml and
+     * spawns the petblock of the player when his pet was enabled when he left the server the last time.
+     *
+     * @param event event
+     */
     @EventHandler
     public void playerJoinEvent(final PlayerJoinEvent event) {
         this.plugin.getServer().getScheduler().runTaskAsynchronously(this.plugin, () -> {
             final PetMeta petMeta;
             if (Config.getInstance().isJoin_enabled()) {
                 if (this.manager.getPetMetaController().getByPlayer(event.getPlayer()) == null || Config.getInstance().isJoin_overwriteExistingPet()) {
-                    final PetMeta meta = this.manager.getPetMetaController().create(event.getPlayer());
-                    Config.getInstance().fixJoinDefaultPet(meta);
-                    this.manager.getPetMetaController().store(meta);
+                    if (event.getPlayer().getWorld() != null) {
+                        final PetMeta meta = this.manager.getPetMetaController().create(event.getPlayer());
+                        Config.getInstance().fixJoinDefaultPet(meta);
+                        this.manager.getPetMetaController().store(meta);
+                    }
                 }
             }
 
             if ((petMeta = PetBlocksApi.getDefaultPetMetaController().getByPlayer(event.getPlayer())) != null) {
                 if (petMeta.isEnabled()) {
                     this.plugin.getServer().getScheduler().runTaskLater(this.plugin, () -> {
-                        final PetBlock petBlock = PetBlocksApi.getDefaultPetBlockController().create(event.getPlayer(), petMeta);
-                        PetBlocksApi.getDefaultPetBlockController().store(petBlock);
+                        if (event.getPlayer().getWorld() != null) {
+                            final PetBlock petBlock = PetBlocksApi.getDefaultPetBlockController().create(event.getPlayer(), petMeta);
+                            PetBlocksApi.getDefaultPetBlockController().store(petBlock);
+                        }
                     }, 2L);
                 }
             }
@@ -330,13 +340,13 @@ public class PetDataListener extends SimpleListener {
         } else if (event.getSlot() < 45 && this.manager.pages.get(player).page == GUIPage.DEFAULT_COSTUMES && this.hasPermission(player, Permission.ALLDEFAULTCOSTUMES.get(), Permission.SINGLEDEFAULTCOSTUME.get() + "" + itemSlot)) {
             final GUIItemContainer container = Config.getInstance().getOrdinaryCostumesController().getContainerByPosition(itemSlot);
             this.setCostumeSkin(player, petMeta, petBlock, container);
-        } else if (event.getSlot() < 45 &&this.manager.pages.get(player).page == GUIPage.COLOR_COSTUMES && this.hasPermission(player, Permission.ALLCOLORCOSTUMES.get(), Permission.SINGLECOLORCOSTUME.get() + "" + itemSlot)) {
+        } else if (event.getSlot() < 45 && this.manager.pages.get(player).page == GUIPage.COLOR_COSTUMES && this.hasPermission(player, Permission.ALLCOLORCOSTUMES.get(), Permission.SINGLECOLORCOSTUME.get() + "" + itemSlot)) {
             final GUIItemContainer container = Config.getInstance().getColorCostumesController().getContainerByPosition(itemSlot);
             this.setCostumeSkin(player, petMeta, petBlock, container);
-        } else if (event.getSlot() < 45 &&this.manager.pages.get(player).page == GUIPage.CUSTOM_COSTUMES && this.hasPermission(player, Permission.ALLCUSTOMCOSTUMES.get(), Permission.SINGLECUSTOMCOSTUME.get() + "" + itemSlot)) {
+        } else if (event.getSlot() < 45 && this.manager.pages.get(player).page == GUIPage.CUSTOM_COSTUMES && this.hasPermission(player, Permission.ALLCUSTOMCOSTUMES.get(), Permission.SINGLECUSTOMCOSTUME.get() + "" + itemSlot)) {
             final GUIItemContainer container = Config.getInstance().getRareCostumesController().getContainerByPosition(itemSlot);
             this.setCostumeSkin(player, petMeta, petBlock, container);
-        } else if (event.getSlot() < 45 &&this.manager.pages.get(player).page == GUIPage.MINECRAFTHEADS_COSTUMES && this.hasPermission(player, Permission.ALLHEADATABASECOSTUMES.get(), Permission.SINGLEMINECRAFTHEADSCOSTUME.get() + "" + itemSlot)) {
+        } else if (event.getSlot() < 45 && this.manager.pages.get(player).page == GUIPage.MINECRAFTHEADS_COSTUMES && this.hasPermission(player, Permission.ALLHEADATABASECOSTUMES.get(), Permission.SINGLEMINECRAFTHEADSCOSTUME.get() + "" + itemSlot)) {
             final GUIItemContainer container = Config.getInstance().getMinecraftHeadsCostumesController().getContainerByPosition(itemSlot);
             this.setCostumeSkin(player, petMeta, petBlock, container);
         }
