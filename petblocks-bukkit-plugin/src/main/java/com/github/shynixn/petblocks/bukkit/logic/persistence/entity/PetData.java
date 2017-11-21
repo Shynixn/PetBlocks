@@ -32,9 +32,6 @@ public class PetData extends PersistenceObject implements PetMeta {
     private boolean enabled;
     private boolean sounds;
 
-    private transient String headDisplayName;
-    private transient String[] headLore;
-
     private PlayerMeta playerInfo;
     private long playerId;
 
@@ -224,28 +221,6 @@ public class PetData extends PersistenceObject implements PetMeta {
 
     public void setUnbreakable(boolean unbreakable) {
         this.unbreakable = unbreakable;
-    }
-
-    public String getHeadDisplayName() {
-        return this.headDisplayName;
-    }
-
-    public void setHeadDisplayName(String headDisplayName) {
-        this.headDisplayName = headDisplayName;
-    }
-
-    public String[] getHeadLore() {
-        if (this.headLore == null)
-            return null;
-        return this.headLore.clone();
-    }
-
-    public void setHeadLore(String[] headLore) {
-        if (this.headLore != null) {
-            this.headLore = headLore.clone();
-        } else {
-            this.headLore = null;
-        }
     }
 
     /**

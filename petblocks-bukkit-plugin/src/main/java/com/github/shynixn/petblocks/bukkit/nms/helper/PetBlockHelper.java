@@ -208,14 +208,8 @@ public final class PetBlockHelper {
     public static void refreshHeadItemMeta(PetBlock petBlock, ItemStack itemStack) {
         final PetData petData = (PetData) petBlock.getMeta();
         final String name;
-        if (petData.getHeadDisplayName() == null)
-            name = petBlock.getDisplayName();
-        else
-            name = petData.getHeadDisplayName();
-        if (petData.getHeadLore() != null)
-            itemStack = nameItem(itemStack, name, petData.getHeadLore());
-        else
-            itemStack = nameItem(itemStack, name, null);
+        name = petBlock.getDisplayName();
+        itemStack = nameItem(itemStack, name, null);
         itemStack = setWithUnbreakable(petBlock.getMeta(), itemStack);
         getArmorstand(petBlock).setHelmet(itemStack);
     }

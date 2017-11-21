@@ -9,12 +9,13 @@ import com.github.shynixn.petblocks.api.persistence.entity.EngineContainer;
 import com.github.shynixn.petblocks.api.persistence.entity.ParticleEffectMeta;
 import com.github.shynixn.petblocks.api.persistence.entity.PetMeta;
 import com.github.shynixn.petblocks.bukkit.PetBlocksPlugin;
+import com.github.shynixn.petblocks.bukkit.lib.ChatBuilder;
+import com.github.shynixn.petblocks.bukkit.lib.SimpleListener;
 import com.github.shynixn.petblocks.bukkit.logic.business.PetBlockManager;
 import com.github.shynixn.petblocks.bukkit.logic.business.configuration.Config;
 import com.github.shynixn.petblocks.bukkit.logic.business.configuration.ConfigPet;
+import com.github.shynixn.petblocks.bukkit.logic.business.helper.PetBlockModifyHelper;
 import com.github.shynixn.petblocks.bukkit.nms.NMSRegistry;
-import com.github.shynixn.petblocks.bukkit.lib.ChatBuilder;
-import com.github.shynixn.petblocks.bukkit.lib.SimpleListener;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -313,29 +314,13 @@ public class PetDataListener extends SimpleListener {
             this.manager.gui.backPage(player, petMeta);
         } else if (this.manager.pages.get(player).page == GUIPage.ENGINES && this.hasPermission(player, Permission.ALLPETTYPES.get(), Permission.SINGLEPETTYPE.get() + "" + itemSlot)) {
             final EngineContainer engineContainer = Config.getInstance().getEngineController().getById(itemSlot);
-            if (engineContainer == null)
-                return;
-            petMeta.setEngine(engineContainer);
+            PetBlockModifyHelper.setEngine(petMeta, petBlock, engineContainer);
             this.persistAsynchronously(petMeta);
-            if (petBlock != null) {
-                petBlock.respawn();
-            }
             this.manager.gui.setPage(player, GUIPage.MAIN, petMeta);
         } else if (this.manager.pages.get(player).page == GUIPage.PARTICLES && this.hasPermission(player, Permission.ALLPARTICLES.get(), Permission.SINGLEPARTICLE.get() + "" + itemSlot)) {
             final GUIItemContainer container = Config.getInstance().getParticleController().getContainerByPosition(itemSlot);
-            if (container == null)
-                return;
-            final ParticleEffectMeta transfer = Config.getInstance().getParticleController().getByItem(container);
-            petMeta.getParticleEffectMeta().setEffectType(transfer.getEffectType());
-            petMeta.getParticleEffectMeta().setSpeed(transfer.getSpeed());
-            petMeta.getParticleEffectMeta().setAmount(transfer.getAmount());
-            petMeta.getParticleEffectMeta().setOffset(transfer.getOffsetX(), transfer.getOffsetY(), transfer.getOffsetZ());
-            petMeta.getParticleEffectMeta().setMaterial(transfer.getMaterial());
-            petMeta.getParticleEffectMeta().setData(transfer.getData());
+            PetBlockModifyHelper.setParticleEffect(petMeta, petBlock, container);
             this.persistAsynchronously(petMeta);
-            if (petBlock != null) {
-                petBlock.respawn();
-            }
             this.manager.gui.setPage(player, GUIPage.MAIN, petMeta);
         } else if (event.getSlot() < 45 && this.manager.pages.get(player).page == GUIPage.DEFAULT_COSTUMES && this.hasPermission(player, Permission.ALLDEFAULTCOSTUMES.get(), Permission.SINGLEDEFAULTCOSTUME.get() + "" + itemSlot)) {
             final GUIItemContainer container = Config.getInstance().getOrdinaryCostumesController().getContainerByPosition(itemSlot);
@@ -360,13 +345,8 @@ public class PetDataListener extends SimpleListener {
      * @param container container
      */
     private void setCostumeSkin(Player player, PetMeta petMeta, PetBlock petBlock, GUIItemContainer container) {
-        if (container == null)
-            return;
-        petMeta.setSkin(container.getItemId(), container.getItemDamage(), container.getSkin(), container.isItemUnbreakable());
+        PetBlockModifyHelper.setCostume(petMeta, petBlock, container);
         this.persistAsynchronously(petMeta);
-        if (petBlock != null) {
-            petBlock.respawn();
-        }
         this.manager.gui.setPage(player, GUIPage.MAIN, petMeta);
     }
 

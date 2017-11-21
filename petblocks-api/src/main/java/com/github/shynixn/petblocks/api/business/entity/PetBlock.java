@@ -46,9 +46,6 @@ public interface PetBlock {
     @Deprecated
     boolean isDieing();
 
-    @Deprecated
-    void refreshHeadMeta();
-
     /**
      * Returns the meta of the petblock.
      *
