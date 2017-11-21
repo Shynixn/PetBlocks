@@ -73,6 +73,13 @@ public class PetBlockModifyHelper {
         }
     }
 
+    /**
+     * Renames the petblock with the given name.
+     *
+     * @param petMeta  petMeta
+     * @param petBlock petBlock
+     * @param name     name
+     */
     public static void rename(PetMeta petMeta, PetBlock petBlock, String name) {
         petMeta.setPetDisplayName(name);
         if (petBlock != null) {
@@ -80,6 +87,13 @@ public class PetBlockModifyHelper {
         }
     }
 
+    /**
+     * Sets the particleEffect for the given petMeta and petblock.
+     *
+     * @param petMeta   petMeta
+     * @param petBlock  petblock
+     * @param container container
+     */
     public static void setParticleEffect(PetMeta petMeta, PetBlock petBlock, GUIItemContainer container) {
         if (container == null)
             return;
@@ -95,6 +109,13 @@ public class PetBlockModifyHelper {
         }
     }
 
+    /**
+     * Sets the skin for the given petMeta and petblock.
+     *
+     * @param petMeta  petMeta
+     * @param petBlock petBlock
+     * @param skin     skin
+     */
     public static void setSkin(PetMeta petMeta, PetBlock petBlock, String skin) {
         String petSkin = skin;
         if (petSkin.contains("textures.minecraft") && !petSkin.contains("http://")) {

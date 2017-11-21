@@ -3,21 +3,17 @@ package com.github.shynixn.petblocks.bukkit.logic.business.commandexecutor;
 import com.github.shynixn.petblocks.api.business.entity.GUIItemContainer;
 import com.github.shynixn.petblocks.api.business.entity.PetBlock;
 import com.github.shynixn.petblocks.api.persistence.entity.EngineContainer;
-import com.github.shynixn.petblocks.api.persistence.entity.ParticleEffectMeta;
 import com.github.shynixn.petblocks.api.persistence.entity.PetMeta;
 import com.github.shynixn.petblocks.bukkit.PetBlocksPlugin;
 import com.github.shynixn.petblocks.bukkit.lib.ChatBuilder;
+import com.github.shynixn.petblocks.bukkit.lib.SimpleCommandExecutor;
+import com.github.shynixn.petblocks.bukkit.logic.business.PetBlockManager;
 import com.github.shynixn.petblocks.bukkit.logic.business.PetRunnable;
+import com.github.shynixn.petblocks.bukkit.logic.business.configuration.Config;
 import com.github.shynixn.petblocks.bukkit.logic.business.configuration.ConfigPet;
 import com.github.shynixn.petblocks.bukkit.logic.business.helper.PetBlockModifyHelper;
-import com.github.shynixn.petblocks.bukkit.logic.persistence.entity.PetData;
-import com.github.shynixn.petblocks.bukkit.logic.business.PetBlockManager;
-import com.github.shynixn.petblocks.bukkit.nms.NMSRegistry;
-import com.github.shynixn.petblocks.bukkit.logic.business.configuration.Config;
-import com.github.shynixn.petblocks.bukkit.lib.SimpleCommandExecutor;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.MemorySection;
@@ -26,11 +22,9 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 public final class PetBlockCommandExecutor extends SimpleCommandExecutor.UnRegistered {
@@ -342,12 +336,11 @@ public final class PetBlockCommandExecutor extends SimpleCommandExecutor.UnRegis
             this.providePet(player, (meta, petBlock) -> {
                 if (petBlock != null) {
                     final ArmorStand armorStand = (ArmorStand) petBlock.getArmorStand();
-                    ItemStack itemStack = armorStand.getHelmet();
+                    final ItemStack itemStack = armorStand.getHelmet();
                     final ItemMeta itemMeta = itemStack.getItemMeta();
                     itemMeta.setDisplayName(ChatColor.translateAlternateColorCodes('&', text));
                     itemStack.setItemMeta(itemMeta);
                     armorStand.setHelmet(itemStack);
-                    System.out.println("UPDATED");
                 }
             });
         }
@@ -439,10 +432,8 @@ public final class PetBlockCommandExecutor extends SimpleCommandExecutor.UnRegis
     private void togglePetCommand(Player player) {
         this.providePet(player, (meta, petBlock) -> {
             if (petBlock == null) {
-                System.out.println("SET");
                 this.setPetCommand(player);
             } else {
-                System.out.println("REMOVE");
                 this.removePetCommand(player);
             }
         });
@@ -461,33 +452,6 @@ public final class PetBlockCommandExecutor extends SimpleCommandExecutor.UnRegis
         if ((petBlock = this.manager.getPetBlockController().getByPlayer(player)) != null) {
             this.manager.getPetBlockController().remove(petBlock);
         }
-    }
-
-    private void setPet(Player player, ItemStack itemStack) {
-        this.plugin.getServer().getScheduler().runTaskAsynchronously(this.plugin, () -> {
-            if (this.manager.getPetMetaController().hasEntry(player)) {
-                this.manager.getPetMetaController().remove(this.manager.getPetMetaController().getByPlayer(player));
-            }
-            this.plugin.getServer().getScheduler().runTask(this.plugin, () -> {
-
-                final PetData meta = (PetData) this.manager.getPetMetaController().create(player);
-                if (itemStack.getType() == Material.SKULL_ITEM) {
-                    final SkullMeta skullMeta = (SkullMeta) itemStack.getItemMeta();
-                    if (skullMeta.getOwner() == null) {
-                        meta.setSkin(itemStack.getType().getId(), itemStack.getDurability(), NMSRegistry.getSkinUrl(itemStack), false);
-                    } else {
-                        meta.setSkin(itemStack.getType().getId(), itemStack.getDurability(), ((SkullMeta) itemStack.getItemMeta()).getOwner(), false);
-                    }
-                } else {
-                    meta.setSkin(itemStack.getType().getId(), itemStack.getDurability(), null, false);
-                }
-                this.persistAsynchronously(meta);
-                final PetBlock petBlock;
-                if ((petBlock = this.manager.getPetBlockController().getByPlayer(player)) != null) {
-                    petBlock.respawn();
-                }
-            });
-        });
     }
 
     private Player getOnlinePlayer(String name) {

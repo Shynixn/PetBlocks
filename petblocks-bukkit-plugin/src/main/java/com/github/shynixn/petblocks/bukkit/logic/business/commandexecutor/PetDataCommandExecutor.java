@@ -6,10 +6,12 @@ import com.github.shynixn.petblocks.api.business.enumeration.GUIPage;
 import com.github.shynixn.petblocks.api.business.enumeration.Permission;
 import com.github.shynixn.petblocks.api.persistence.entity.PetMeta;
 import com.github.shynixn.petblocks.bukkit.PetBlocksPlugin;
+import com.github.shynixn.petblocks.bukkit.logic.business.PetRunnable;
 import com.github.shynixn.petblocks.bukkit.logic.business.configuration.ConfigPet;
 import com.github.shynixn.petblocks.bukkit.logic.business.PetBlockManager;
 import com.github.shynixn.petblocks.bukkit.logic.business.configuration.Config;
 import com.github.shynixn.petblocks.bukkit.lib.SimpleCommandExecutor;
+import com.github.shynixn.petblocks.bukkit.logic.business.helper.PetBlockModifyHelper;
 import org.bukkit.Material;
 import org.bukkit.configuration.MemorySection;
 import org.bukkit.entity.Player;
@@ -56,8 +58,8 @@ public final class PetDataCommandExecutor extends SimpleCommandExecutor.UnRegist
                     }
                 });
             }
-        } else if (args.length == 2 && args[0].equalsIgnoreCase("rename") && player.hasPermission(Permission.RENAMEPET.get())) {
-            this.handleNaming(player, args[1], false);
+        } else if (args.length >= 2 && args[0].equalsIgnoreCase("rename") && player.hasPermission(Permission.RENAMEPET.get())) {
+            this.renameNameCommand(player, args);
         } else if (args.length == 2 && args[0].equalsIgnoreCase("skin") && player.hasPermission(Permission.RENAMESKULL.get())) {
             this.handleNaming(player, args[1], true);
         } else {
@@ -80,35 +82,31 @@ public final class PetDataCommandExecutor extends SimpleCommandExecutor.UnRegist
         if ((petBlock = PetBlocksApi.getDefaultPetBlockController().getByPlayer(player)) != null) {
             if (skullNaming) {
                 this.renameSkull(player, message, petBlock.getMeta(), petBlock);
-            } else {
-                this.renameName(player, message, petBlock.getMeta(), petBlock);
-
             }
         } else {
             this.plugin.getServer().getScheduler().runTaskAsynchronously(this.plugin, () -> {
                 final com.github.shynixn.petblocks.api.persistence.entity.PetMeta petMeta = this.manager.getPetMetaController().getByPlayer(player);
                 if (skullNaming) {
                     this.plugin.getServer().getScheduler().runTask(this.plugin, () -> this.renameSkull(player, message, petMeta, null));
-                } else {
-                    this.plugin.getServer().getScheduler().runTask(this.plugin, () -> this.renameName(player, message, petMeta, null));
                 }
             });
         }
     }
 
-    private void renameName(Player player, String message, com.github.shynixn.petblocks.api.persistence.entity.PetMeta petMeta, PetBlock petBlock) {
-        if (message.length() > ConfigPet.getInstance().getDesign_maxPetNameLength()) {
-            player.sendMessage(Config.getInstance().getPrefix() + Config.getInstance().getNamingErrorMessage());
-        } else {
-            try {
-                petMeta.setPetDisplayName(message);
-                this.persistAsynchronously(petMeta);
-                if (petBlock != null)
-                    petBlock.respawn();
-                player.sendMessage(Config.getInstance().getPrefix() + Config.getInstance().getNamingSuccessMessage());
-            } catch (final Exception e) {
+    private void renameNameCommand(Player player, String[] args) {
+        try {
+            final String message = this.mergeArgs(args, 1);
+            if (message.length() > ConfigPet.getInstance().getDesign_maxPetNameLength()) {
                 player.sendMessage(Config.getInstance().getPrefix() + Config.getInstance().getNamingErrorMessage());
+            } else {
+                this.providePetblock(player, (meta, petBlock) -> {
+                    PetBlockModifyHelper.rename(meta, petBlock, message);
+                    player.sendMessage(Config.getInstance().getPrefix() + Config.getInstance().getNamingSuccessMessage());
+                    this.persistAsynchronously(meta);
+                });
             }
+        } catch (final Exception e) {
+            player.sendMessage(Config.getInstance().getPrefix() + Config.getInstance().getNamingErrorMessage());
         }
     }
 
@@ -126,6 +124,31 @@ public final class PetDataCommandExecutor extends SimpleCommandExecutor.UnRegist
                 player.sendMessage(Config.getInstance().getPrefix() + Config.getInstance().getSkullNamingErrorMessage());
             }
         }
+    }
+
+    private void providePetblock(Player player, PetRunnable runnable) {
+        final PetBlock petBlock;
+        if ((petBlock = this.manager.getPetBlockController().getByPlayer(player)) != null) {
+            runnable.run(petBlock.getMeta(), petBlock);
+        } else {
+            this.plugin.getServer().getScheduler().runTaskAsynchronously(this.plugin, () -> {
+                if (!this.manager.getPetMetaController().hasEntry(player))
+                    return;
+                final PetMeta petMeta = this.manager.getPetMetaController().getByPlayer(player);
+                this.plugin.getServer().getScheduler().runTask(this.plugin, () -> runnable.run(petMeta, null));
+            });
+        }
+    }
+
+    private String mergeArgs(String[] args, int up) {
+        final StringBuilder builder = new StringBuilder();
+        for (int i = up; i < args.length; i++) {
+            if (builder.length() != 0) {
+                builder.append(' ');
+            }
+            builder.append(args[i]);
+        }
+        return builder.toString();
     }
 
     private void persistAsynchronously(com.github.shynixn.petblocks.api.persistence.entity.PetMeta petMeta) {

@@ -46,7 +46,7 @@ public final class PetBlockRepository implements PetBlockController {
     private final Map<Player, PetBlock> petblocks = new HashMap<>();
 
     /**
-     * Creates a new petblock for the given player and meta
+     * Creates a new petblock for the given player and meta.
      *
      * @param player  player
      * @param petMeta meta
@@ -59,7 +59,7 @@ public final class PetBlockRepository implements PetBlockController {
     }
 
     /**
-     * Returns the petblock of the given player
+     * Returns the petblock of the given player.
      *
      * @param player player
      * @return petblock
@@ -74,7 +74,7 @@ public final class PetBlockRepository implements PetBlockController {
     }
 
     /**
-     * Removes the petblock of the given player
+     * Removes the petblock of the given player.
      *
      * @param player player
      */
@@ -84,7 +84,7 @@ public final class PetBlockRepository implements PetBlockController {
     }
 
     /**
-     * Stores a new a item in the repository
+     * Stores a new a item in the repository.
      *
      * @param item item
      */
@@ -97,7 +97,7 @@ public final class PetBlockRepository implements PetBlockController {
     }
 
     /**
-     * Removes an item from the repository
+     * Removes an item from the repository.
      *
      * @param item item
      */
@@ -117,7 +117,7 @@ public final class PetBlockRepository implements PetBlockController {
     }
 
     /**
-     * Returns the amount of items in the repository
+     * Returns the amount of items in the repository.
      *
      * @return size
      */
@@ -127,7 +127,7 @@ public final class PetBlockRepository implements PetBlockController {
     }
 
     /**
-     * Returns all items from the repository as unmodifiableList
+     * Returns all items from the repository as unmodifiableList.
      *
      * @return items
      */
