@@ -39,8 +39,9 @@ public final class PetDataCommandExecutor extends SimpleCommandExecutor.UnRegist
             return;
         if (args.length == 1 && args[0].equalsIgnoreCase("call")) {
             final PetBlock petBlock;
-            if ((petBlock = PetBlocksApi.getDefaultPetBlockController().getByPlayer(player)) != null)
-                petBlock.teleport(player);
+            if ((petBlock = PetBlocksApi.getDefaultPetBlockController().getByPlayer(player)) != null) {
+                petBlock.teleport(player.getLocation());
+            }
         } else if (args.length == 1 && args[0].equalsIgnoreCase("toggle")) {
             if (PetBlocksApi.getDefaultPetBlockController().getByPlayer(player) != null)
                 PetBlocksApi.getDefaultPetBlockController().remove(PetBlocksApi.getDefaultPetBlockController().getByPlayer(player));
@@ -73,6 +74,7 @@ public final class PetDataCommandExecutor extends SimpleCommandExecutor.UnRegist
             });
         }
     }
+
     private void handleNaming(Player player, String message, boolean skullNaming) {
         final PetBlock petBlock;
         if ((petBlock = PetBlocksApi.getDefaultPetBlockController().getByPlayer(player)) != null) {
@@ -115,13 +117,13 @@ public final class PetDataCommandExecutor extends SimpleCommandExecutor.UnRegist
             player.sendMessage(Config.getInstance().getPrefix() + Config.getInstance().getSkullNamingErrorMessage());
         } else {
             try {
-                petMeta.setSkin(Material.SKULL_ITEM.getId(),  3, message, false);
+                petMeta.setSkin(Material.SKULL_ITEM.getId(), 3, message, false);
                 this.persistAsynchronously(petMeta);
                 if (petBlock != null)
                     petBlock.respawn();
                 player.sendMessage(Config.getInstance().getPrefix() + Config.getInstance().getSkullNamingSuccessMessage());
             } catch (final Exception e) {
-                player.sendMessage(Config.getInstance().getPrefix() +Config.getInstance().getSkullNamingErrorMessage());
+                player.sendMessage(Config.getInstance().getPrefix() + Config.getInstance().getSkullNamingErrorMessage());
             }
         }
     }
