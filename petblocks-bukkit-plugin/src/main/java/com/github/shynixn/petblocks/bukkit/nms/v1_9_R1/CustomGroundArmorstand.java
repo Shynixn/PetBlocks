@@ -267,11 +267,6 @@ final class CustomGroundArmorstand extends EntityArmorStand implements PetBlock 
     }
 
     @Override
-    public void refreshHeadMeta() {
-        PetBlockHelper.refreshHeadItemMeta(this, ((ArmorStand)this.getArmorStand()).getHelmet());
-    }
-
-    @Override
     public void setSkin(String skin) {
         PetBlockHelper.setSkin(this,skin);
     }

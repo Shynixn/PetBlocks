@@ -43,14 +43,14 @@ public class PetBlockFilter implements Filter, AutoCloseable, LifeCycle {
     private boolean started;
 
     /**
-     * Initializes a new filter
+     * Initializes a new filter.
      */
     private PetBlockFilter() {
         super();
     }
 
     /**
-     * Ignore
+     * Ignore.
      *
      * @return result
      */
@@ -60,7 +60,7 @@ public class PetBlockFilter implements Filter, AutoCloseable, LifeCycle {
     }
 
     /**
-     * Ignore
+     * Ignore.
      *
      * @return result
      */
@@ -70,7 +70,7 @@ public class PetBlockFilter implements Filter, AutoCloseable, LifeCycle {
     }
 
     /**
-     * Ignore
+     * Ignore.
      *
      * @return result
      */
@@ -80,7 +80,7 @@ public class PetBlockFilter implements Filter, AutoCloseable, LifeCycle {
     }
 
     /**
-     * Ignore
+     * Ignore.
      *
      * @return result
      */
@@ -90,7 +90,7 @@ public class PetBlockFilter implements Filter, AutoCloseable, LifeCycle {
     }
 
     /**
-     * Ignore
+     * Ignore.
      *
      * @return result
      */
@@ -118,7 +118,7 @@ public class PetBlockFilter implements Filter, AutoCloseable, LifeCycle {
     }
 
     /**
-     * LifeCycle start
+     * LifeCycle start.
      */
     @Override
     public void start() {
@@ -126,7 +126,7 @@ public class PetBlockFilter implements Filter, AutoCloseable, LifeCycle {
     }
 
     /**
-     * LifeCycle stop
+     * LifeCycle stop.
      */
     @Override
     public void stop() {
@@ -134,7 +134,7 @@ public class PetBlockFilter implements Filter, AutoCloseable, LifeCycle {
     }
 
     /**
-     * Is started LifeCycler
+     * Is started LifeCycle.
      *
      * @return started
      */
@@ -144,7 +144,7 @@ public class PetBlockFilter implements Filter, AutoCloseable, LifeCycle {
     }
 
     /**
-     * Creates a new logger
+     * Creates a new logger.
      *
      * @return logger
      */

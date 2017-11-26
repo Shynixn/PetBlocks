@@ -131,11 +131,10 @@ public class PetMetaSQLiteControllerIT {
                     }
                     PetData meta = new PetData();
                     meta.setPetDisplayName("Me");
-                    meta.setSkin(Material.BIRCH_DOOR_ITEM.getId(),5 , "This is my long skin.", false);
+                    meta.setSkin(Material.BIRCH_DOOR_ITEM.getId(),5 , "This is my long skin.", true);
                     meta.setEngine(new EngineData(4));
                     meta.setEnabled(true);
                     meta.setAge(500);
-                    meta.setUnbreakable(true);
                     meta.setSoundEnabled(true);
                     final ParticleEffectMeta particleEffectMeta = particleController.create();
                     particleEffectMeta.setEffectType(ParticleEffectMeta.ParticleEffectType.END_ROD);
@@ -156,7 +155,7 @@ public class PetMetaSQLiteControllerIT {
                     assertEquals(4, meta.getEngineId());
                     assertEquals(true, meta.isEnabled());
                     assertEquals(500, meta.getAge());
-                    assertEquals(true, meta.isUnbreakable());
+                    assertEquals(true, meta.isItemStackUnbreakable());
                     assertEquals(true, meta.isSoundEnabled());
 
                     meta.setPetDisplayName("PikaPet");
@@ -164,7 +163,6 @@ public class PetMetaSQLiteControllerIT {
                     meta.setEngineId(1);
                     meta.setEnabled(false);
                     meta.setAge(250);
-                    meta.setUnbreakable(false);
                     meta.setSoundEnabled(false);
                     meta.setPlayerMeta(playerMeta);
                     meta.setParticleEffectMeta(particleEffectMeta);
@@ -180,7 +178,7 @@ public class PetMetaSQLiteControllerIT {
                     assertEquals(1, meta.getEngineId());
                     assertEquals(false, meta.isEnabled());
                     assertEquals(250, meta.getAge());
-                    assertEquals(false, meta.isUnbreakable());
+                    assertEquals(false, meta.isItemStackUnbreakable());
                     assertEquals(false, meta.isSoundEnabled());
                 }
             }

@@ -371,9 +371,6 @@ public class PetBlockListener extends SimpleListener {
     private class ParticleRunnable implements Runnable {
         @Override
         public void run() {
-            for (final Player player : PetBlockListener.this.manager.carryingPet.toArray(new Player[PetBlockListener.this.manager.carryingPet.size()])) {
-                //PetBlockListener.this.heartParticles.apply(player.getLocation().add(0, 1, 0), (Collection<Object>) (Object) player.getWorld().getPlayers());
-            }
             for (final PetBlock petBlock : PetBlockListener.this.manager.getPetBlockController().getAll()) {
                 if (petBlock.isDead() || !Config.getInstance().allowPetSpawning(((Player) petBlock.getPlayer()).getLocation())) {
                     PetBlockListener.this.manager.getPetBlockController().remove(petBlock);

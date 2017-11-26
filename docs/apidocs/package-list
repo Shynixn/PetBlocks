@@ -17,6 +17,7 @@ com.github.shynixn.petblocks.bukkit.logic.business.configuration
 com.github.shynixn.petblocks.bukkit.logic.business.controller
 com.github.shynixn.petblocks.bukkit.logic.business.entity
 com.github.shynixn.petblocks.bukkit.logic.business.filter
+com.github.shynixn.petblocks.bukkit.logic.business.helper
 com.github.shynixn.petblocks.bukkit.logic.business.listener
 com.github.shynixn.petblocks.bukkit.logic.persistence.controller
 com.github.shynixn.petblocks.bukkit.logic.persistence.entity

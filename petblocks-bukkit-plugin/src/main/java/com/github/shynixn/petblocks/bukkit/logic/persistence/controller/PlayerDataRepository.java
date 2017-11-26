@@ -28,7 +28,6 @@ public class PlayerDataRepository extends DataBaseRepository<PlayerMeta> impleme
         this.dbContext = connectionContext;
     }
 
-
     /**
      * Creates a new playerData from the given player
      *
@@ -48,14 +47,11 @@ public class PlayerDataRepository extends DataBaseRepository<PlayerMeta> impleme
      */
     @Override
     public PlayerMeta getByUUID(UUID uuid) {
-        try (Connection connection = this.dbContext.getConnection()) {
-            try (PreparedStatement preparedStatement = this.dbContext.executeStoredQuery("player/selectbyuuid", connection,
-                    uuid.toString())) {
-                try (ResultSet resultSet = preparedStatement.executeQuery()) {
-                    if (resultSet.next()) {
-                        return this.from(resultSet);
-                    }
-                }
+        try (Connection connection = this.dbContext.getConnection();
+             PreparedStatement preparedStatement = this.dbContext.executeStoredQuery("player/selectbyuuid", connection,
+                     uuid.toString()); ResultSet resultSet = preparedStatement.executeQuery()) {
+            if (resultSet.next()) {
+                return this.from(resultSet);
             }
         } catch (final SQLException e) {
             PetBlocksPlugin.logger().log(Level.WARNING, "Database error occurred.", e);
@@ -71,14 +67,10 @@ public class PlayerDataRepository extends DataBaseRepository<PlayerMeta> impleme
      */
     @Override
     public PlayerMeta getById(long id) {
-        try (Connection connection = this.dbContext.getConnection()) {
-            try (PreparedStatement preparedStatement = this.dbContext.executeStoredQuery("player/selectbyid", connection,
-                    id)) {
-                try (ResultSet resultSet = preparedStatement.executeQuery()) {
-                    if (resultSet.next()) {
-                        return this.from(resultSet);
-                    }
-                }
+        try (Connection connection = this.dbContext.getConnection(); PreparedStatement preparedStatement = this.dbContext.executeStoredQuery("player/selectbyid", connection,
+                id); ResultSet resultSet = preparedStatement.executeQuery()) {
+            if (resultSet.next()) {
+                return this.from(resultSet);
             }
         } catch (final SQLException e) {
             PetBlocksPlugin.logger().log(Level.WARNING, "Database error occurred.", e);
@@ -105,14 +97,12 @@ public class PlayerDataRepository extends DataBaseRepository<PlayerMeta> impleme
     @Override
     public List<PlayerMeta> select() {
         final List<PlayerMeta> playerList = new ArrayList<>();
-        try (Connection connection = this.dbContext.getConnection()) {
-            try (PreparedStatement preparedStatement = this.dbContext.executeStoredQuery("player/selectall", connection)) {
-                try (ResultSet resultSet = preparedStatement.executeQuery()) {
-                    while (resultSet.next()) {
-                        final PlayerData playerData = this.from(resultSet);
-                        playerList.add(playerData);
-                    }
-                }
+        try (Connection connection = this.dbContext.getConnection();
+             PreparedStatement preparedStatement = this.dbContext.executeStoredQuery("player/selectall", connection);
+             ResultSet resultSet = preparedStatement.executeQuery()) {
+            while (resultSet.next()) {
+                final PlayerData playerData = this.from(resultSet);
+                playerList.add(playerData);
             }
         } catch (final SQLException e) {
             PetBlocksPlugin.logger().log(Level.WARNING, "Database error occurred.", e);
@@ -160,11 +150,11 @@ public class PlayerDataRepository extends DataBaseRepository<PlayerMeta> impleme
     @Override
     public void insert(PlayerMeta item) {
         try (Connection connection = this.dbContext.getConnection()) {
-            if(item.getUUID() == null)
+            if (item.getUUID() == null)
                 throw new IllegalArgumentException("UUId cannot be null!");
             final long id = this.dbContext.executeStoredInsert("player/insert", connection,
                     item.getName(), item.getUUID().toString());
-            ((PlayerData)item).setId(id);
+            ((PlayerData) item).setId(id);
         } catch (final SQLException e) {
             PetBlocksPlugin.logger().log(Level.WARNING, "Database error occurred.", e);
         }
@@ -190,13 +180,11 @@ public class PlayerDataRepository extends DataBaseRepository<PlayerMeta> impleme
      */
     @Override
     public int size() {
-        try (Connection connection = this.dbContext.getConnection()) {
-            try (PreparedStatement preparedStatement = this.dbContext.executeStoredQuery("player/count", connection)) {
-                try (ResultSet resultSet = preparedStatement.executeQuery()) {
-                    resultSet.next();
-                    return resultSet.getInt(1);
-                }
-            }
+        try (Connection connection = this.dbContext.getConnection();
+             PreparedStatement preparedStatement = this.dbContext.executeStoredQuery("player/count", connection);
+             ResultSet resultSet = preparedStatement.executeQuery()) {
+            resultSet.next();
+            return resultSet.getInt(1);
         } catch (final SQLException e) {
             PetBlocksPlugin.logger().log(Level.WARNING, "Database error occurred.", e);
         }
@@ -207,6 +195,7 @@ public class PlayerDataRepository extends DataBaseRepository<PlayerMeta> impleme
      * Closes this resource, relinquishing any underlying resources.
      * This method is invoked automatically on objects managed by the
      * {@code try}-with-resources statement.
+     *
      * @throws Exception if this resource cannot be closed
      */
     @Override
