@@ -16,8 +16,34 @@ import org.bukkit.inventory.meta.SkullMeta;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 
+/**
+ * Implementation of the petMeta interface which is persistence able to the database.
+ * <p>
+ * Version 1.1
+ * <p>
+ * MIT License
+ * <p>
+ * Copyright (c) 2017 by Shynixn
+ * <p>
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ * <p>
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ * <p>
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
 public class PetData extends PersistenceObject implements PetMeta {
 
     private String petDisplayName;
@@ -27,7 +53,7 @@ public class PetData extends PersistenceObject implements PetMeta {
     private int damage;
     private boolean unbreakable;
 
-    private boolean hidden;
+    private boolean visible = true;
     private long ageTicks;
     private boolean enabled;
     private boolean sounds;
@@ -37,10 +63,16 @@ public class PetData extends PersistenceObject implements PetMeta {
 
     private ParticleEffectMeta particleEffectBuilder;
     private long particleId;
-    private int engineId;
 
     private EngineContainer engineContainer;
+    private int engineId;
 
+    /**
+     * Initializes a new default petData which is ready to be used.
+     *
+     * @param player player
+     * @param name   nameOfThePet
+     */
     public PetData(Player player, String name) {
         super();
         this.petDisplayName = name.replace(":player", player.getName());
@@ -55,16 +87,29 @@ public class PetData extends PersistenceObject implements PetMeta {
         }
     }
 
+    /**
+     * Initializes a new petData.
+     */
+    public PetData() {
+        super();
+    }
+
+    /**
+     * Sets the id of the engine.
+     *
+     * @param engineId id
+     */
     public void setEngineId(int engineId) {
         this.engineId = engineId;
     }
 
+    /**
+     * Returns the id of the engine.
+     *
+     * @return id
+     */
     public int getEngineId() {
         return this.engineId;
-    }
-
-    public PetData() {
-        super();
     }
 
     /**
@@ -104,6 +149,16 @@ public class PetData extends PersistenceObject implements PetMeta {
     }
 
     /**
+     * Sets the own meta
+     *
+     * @param meta meta
+     */
+    public void setPlayerMeta(PlayerMeta meta) {
+        this.playerId = meta.getId();
+        this.playerInfo = meta;
+    }
+
+    /**
      * Sets the particleEffect meta
      *
      * @param meta meta
@@ -124,16 +179,6 @@ public class PetData extends PersistenceObject implements PetMeta {
     @Override
     public ParticleEffectMeta getParticleEffectMeta() {
         return this.particleEffectBuilder;
-    }
-
-    /**
-     * Sets the own meta
-     *
-     * @param meta meta
-     */
-    public void setPlayerMeta(PlayerMeta meta) {
-        this.playerId = meta.getId();
-        this.playerInfo = meta;
     }
 
     /**
@@ -174,53 +219,6 @@ public class PetData extends PersistenceObject implements PetMeta {
     @Override
     public boolean isItemUnbreakable() {
         return this.unbreakable;
-    }
-
-    /**
-     * Returns the itemStack for the head
-     *
-     * @return headItemStack
-     */
-    @Override
-    public Object getHeadItemStack() {
-        ItemStack itemStack;
-        if (this.getSkin() != null) {
-            if (this.getSkin().contains("textures.minecraft")) {
-                itemStack = NMSRegistry.changeSkullSkin(new ItemStack(Material.getMaterial(this.getItemId()), 1, (short) this.getItemDamage()), this.getSkin());
-            } else {
-                itemStack = new ItemStack(Material.getMaterial(this.getItemId()), 1, (short) this.getItemDamage());
-                final ItemMeta meta = itemStack.getItemMeta();
-                if (meta instanceof SkullMeta) {
-                    ((SkullMeta) meta).setOwner(this.skin);
-                }
-                itemStack.setItemMeta(meta);
-            }
-        } else {
-            itemStack = new ItemStack(this.getItemId(), 1, (short) this.getItemDamage());
-        }
-        final ItemMeta meta = itemStack.getItemMeta();
-        meta.setDisplayName(this.petDisplayName);
-        itemStack.setItemMeta(meta);
-        final Map<String, Object> data = new HashMap<>();
-        data.put("Unbreakable", this.isItemStackUnbreakable());
-        itemStack = NMSRegistry.setItemStackTag(itemStack, data);
-        return itemStack;
-    }
-
-    public boolean isHidden() {
-        return this.hidden;
-    }
-
-    public void setHidden(boolean isHidden) {
-        this.hidden = isHidden;
-    }
-
-    public boolean isUnbreakable() {
-        return this.unbreakable;
-    }
-
-    public void setUnbreakable(boolean unbreakable) {
-        this.unbreakable = unbreakable;
     }
 
     /**
@@ -294,27 +292,27 @@ public class PetData extends PersistenceObject implements PetMeta {
     }
 
     /**
-     * Returns if the pet is visible to other players
+     * Returns if the pet is visible to other players.
      *
      * @return visible
      */
     @Override
     public boolean isVisible() {
-        return !this.hidden;
+        return this.visible;
     }
 
     /**
-     * Sets if the pet should be visible to other players
+     * Sets if the pet should be visible to other players.
      *
      * @param enabled enabled
      */
     @Override
     public void setVisible(boolean enabled) {
-        this.hidden = !enabled;
+        this.visible = enabled;
     }
 
     /**
-     * Sets the pet sound enabled
+     * Sets the pet sound enabled.
      *
      * @param enabled enabled
      */
@@ -324,7 +322,7 @@ public class PetData extends PersistenceObject implements PetMeta {
     }
 
     /**
-     * Returns if the pet-sound is enabled
+     * Returns if the pet-sound is enabled.
      *
      * @return enabled
      */
@@ -334,7 +332,7 @@ public class PetData extends PersistenceObject implements PetMeta {
     }
 
     /**
-     * Returns if the itemStack is unbreakable
+     * Returns if the itemStack is unbreakable.
      *
      * @return unbreakable
      */
@@ -344,7 +342,7 @@ public class PetData extends PersistenceObject implements PetMeta {
     }
 
     /**
-     * Sets the itemStack
+     * Sets the itemStack.
      *
      * @param id          id
      * @param damage      damage
@@ -353,15 +351,47 @@ public class PetData extends PersistenceObject implements PetMeta {
      */
     @Override
     public void setSkin(int id, int damage, String skin, boolean unbreakable) {
-        if (skin != null && skin.contains("textures.minecraft")) {
-            if (!skin.contains("http://")) {
-                skin = "http://" + skin;
+        String s = skin;
+        if (s != null && s.contains("textures.minecraft")) {
+            if (!s.contains("http://")) {
+                s = "http://" + s;
             }
         }
         this.id = id;
         this.damage = damage;
-        this.skin = skin;
+        this.skin = s;
         this.unbreakable = unbreakable;
+    }
+
+    /**
+     * Returns the itemStack for the head
+     *
+     * @return headItemStack
+     */
+    @Override
+    public Object getHeadItemStack() {
+        ItemStack itemStack;
+        if (this.getSkin() != null) {
+            if (this.getSkin().contains("textures.minecraft")) {
+                itemStack = NMSRegistry.changeSkullSkin(new ItemStack(Material.getMaterial(this.getItemId()), 1, (short) this.getItemDamage()), this.getSkin());
+            } else {
+                itemStack = new ItemStack(Material.getMaterial(this.getItemId()), 1, (short) this.getItemDamage());
+                final ItemMeta meta = itemStack.getItemMeta();
+                if (meta instanceof SkullMeta) {
+                    ((SkullMeta) meta).setOwner(this.skin);
+                }
+                itemStack.setItemMeta(meta);
+            }
+        } else {
+            itemStack = new ItemStack(this.getItemId(), 1, (short) this.getItemDamage());
+        }
+        final ItemMeta meta = itemStack.getItemMeta();
+        meta.setDisplayName(this.petDisplayName);
+        itemStack.setItemMeta(meta);
+        final Map<String, Object> data = new HashMap<>();
+        data.put("Unbreakable", this.isItemStackUnbreakable());
+        itemStack = NMSRegistry.setItemStackTag(itemStack, data);
+        return itemStack;
     }
 
     /**
@@ -391,15 +421,5 @@ public class PetData extends PersistenceObject implements PetMeta {
     @Override
     public String getPetDisplayName() {
         return this.petDisplayName;
-    }
-
-    @Deprecated
-    public String getUuid() {
-        return this.playerInfo.getUUID().toString();
-    }
-
-    @Deprecated
-    public void setUuid(String uuid) {
-        this.playerInfo.setUuid(UUID.fromString(uuid));
     }
 }

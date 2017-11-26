@@ -232,7 +232,7 @@ public class PetDataRepository extends DataBaseRepository<PetMeta> implements Pe
                     item.getSkin(),
                     item.isEnabled(),
                     item.getAge(),
-                    item.isUnbreakable(),
+                    item.isItemStackUnbreakable(),
                     item.isSoundEnabled(),
                     item.getId()
             );
@@ -279,7 +279,7 @@ public class PetDataRepository extends DataBaseRepository<PetMeta> implements Pe
                     item.getSkin(),
                     item.isEnabled(),
                     item.getAge(),
-                    item.isUnbreakable(),
+                    item.isItemStackUnbreakable(),
                     item.isSoundEnabled()
             );
             item.setId(id);

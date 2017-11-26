@@ -91,25 +91,22 @@ public final class PetBlockHelper {
     }
 
     public static long executeMovingSound(Entity entity, Player owner, PetMeta petMeta, long previous) {
-        final PetData petData = (PetData) petMeta;
         if (petMeta == null)
             return previous;
         final long milli = System.currentTimeMillis();
         if (milli - previous > 500) {
             if (petMeta.isSoundEnabled()) {
                 try {
-                    if (ConfigPet.getInstance().isDesign_allowOtherHearSound() && !petData.isHidden()) {
-
-                        petData.getEngine().getWalkingSound().applyToLocation(entity.getLocation());
-
+                    if (ConfigPet.getInstance().isDesign_allowOtherHearSound() && petMeta.isVisible()) {
+                        petMeta.getEngine().getWalkingSound().applyToLocation(entity.getLocation());
                     } else {
-                        petData.getEngine().getWalkingSound().applyToPlayers(owner);
+                        petMeta.getEngine().getWalkingSound().applyToPlayers(owner);
                     }
                 } catch (final IllegalArgumentException e) {
                     PetBlocksPlugin.logger()
                             .log(Level.WARNING, "Cannot play walking sound "
-                                    + petData.getEngine().getWalkingSound().getName()
-                                    + " of " + ChatColor.stripColor(petData.getEngine().getGUIItem().getDisplayName().get()) + '.');
+                                    + petMeta.getEngine().getWalkingSound().getName()
+                                    + " of " + ChatColor.stripColor(petMeta.getEngine().getGUIItem().getDisplayName().get()) + '.');
                     PetBlocksPlugin.logger().log(Level.WARNING, "Is this entity or sound supported by your server version? Disable it in the config.yml");
                 } catch (final Exception e) {
                     PetBlocksPlugin.logger()

@@ -441,7 +441,7 @@ public class PetDataListener extends SimpleListener {
      * @param player    player
      * @return success
      */
-    private boolean linkHeadDatabaseItemToPetBlocks(ItemStack itemStack, Player player) {
+    private void linkHeadDatabaseItemToPetBlocks(ItemStack itemStack, Player player) {
         if (itemStack != null
                 && itemStack.getType() == Material.SKULL_ITEM
                 && itemStack.getItemMeta() != null
@@ -466,9 +466,7 @@ public class PetDataListener extends SimpleListener {
                         }
                 );
             });
-            return true;
         }
-        return false;
     }
 
     private void handleChatMessage(PlayerChatEvent event) {
@@ -494,7 +492,7 @@ public class PetDataListener extends SimpleListener {
     }
 
     /**
-     * Handles spaming protection
+     * Handles spamming protection.
      *
      * @param player player
      */
@@ -559,12 +557,11 @@ public class PetDataListener extends SimpleListener {
      * @param petMeta petMeta
      * @return petblock
      */
-    private PetBlock setPetBlock(Player player, PetMeta petMeta) {
+    private void setPetBlock(Player player, PetMeta petMeta) {
         petMeta.setEnabled(true);
         final PetBlock petBlock = PetBlocksApi.getDefaultPetBlockController().create(player, petMeta);
         PetBlocksApi.getDefaultPetBlockController().store(petBlock);
         this.persistAsynchronously(petMeta);
-        return petBlock;
     }
 
     /**
