@@ -7,3 +7,8 @@ The articles in this section explain how to resolve the most common questions.
  notspawning
  selling
  support
+ howcustomskin
+ howmysql
+ howbungee
+ canpetwal
+ caniusereload
