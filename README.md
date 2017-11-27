@@ -5,11 +5,13 @@
 | master        | [![Build Status](https://travis-ci.org/Shynixn/PetBlocks.svg?branch=master)](https://travis-ci.org/Shynixn/PetBlocks) |[Download latest release (recommend)](https://github.com/Shynixn/PetBlocks/releases)|
 | development   | [![Build Status](https://travis-ci.org/Shynixn/PetBlocks.svg?branch=workflow)](https://travis-ci.org/Shynixn/PetBlocks) | [Download snapshots](https://oss.sonatype.org/content/repositories/snapshots/com/github/shynixn/petblocks/petblocks-bukkit-plugin/) |
 
+
+Documentation:  https://shynixn.github.io/PetBlocks/
 JavaDocs: https://shynixn.github.io/PetBlocks/apidocs/
 
 ## Description
 PetBlocks is a spigot plugin to use blocks and custom heads as pets in Minecraft.
-
+https://shynixn.github.io/PetBlocks/apidocs/
 ## Features
 
 * Use blocks as pets in minecraft.
@@ -19,105 +21,7 @@ PetBlocks is a spigot plugin to use blocks and custom heads as pets in Minecraft
 
 ## Installation
 
-* [Download the plugin PetBlocks](https://github.com/Shynixn/PetBlocks/releases)
-* Put the plugin into your plugin folder
-* Start the server (1.8.0 - 1.12.2, Java 8/Java 9)
-* Join and play :)
-
-## API
-
-* Reference the PetBlocks.jar in your own projects.
-* If you are using maven or gradle you can add it from the central maven repository
-
-### Framework independent API
-```xml
-<dependency>
-     <groupId>com.github.shynixn.petblocks</groupId>
-     <artifactId>petblocks-api</artifactId>
-     <version>6.4.0</version>
-     <scope>provided</scope>
-</dependency>
-```
-
-```xml
-dependencies {
-    compileOnly 'com.github.shynixn.petblocks:petblocks-api:6.4.0'
-}
-```
-
-### Bukkit API
-
-```xml
-<dependency>
-     <groupId>com.github.shynixn.petblocks</groupId>
-     <artifactId>petblocks-bukkit-api</artifactId>
-     <version>6.4.0</version>
-     <scope>provided</scope>
-</dependency>
-```
-
-```xml
-dependencies {
-    compileOnly 'com.github.shynixn.petblocks:petblocks-bukkit-api:6.4.0'
-}
-```
-
-#### Modify the PetMetadata 
-
-```java
-Plugin plugin; //Your plugin instance
-Player player; //Your player instance
-
-//Create and manipulate data
-PetMetaController petMetaController = PetBlocksApi.getDefaultPetMetaController();
-PetMeta petMeta = petMetaController.create(player);
-petMeta.setPetDisplayName(ChatColor.GREEN + "Amazing Pet"); //Modify the petMeta
-Bukkit.getScheduler().runTaskAsynchronously(plugin, new Runnable() {
-    @Override
-    public void run() {
-        petMetaController.store(petMeta);   //It is recommend to save the petMeta asynchronously into the database
-    }
-});
-```
-#### Teleport the PetBlock to a location
-
-```java
- Player player; //Your player instance
- PetMeta petMeta; //Your PetMeta instance
- Location location; //Target location instance
- PetBlockController petBlockController = PetBlocksApi.getDefaultPetBlockController();
- PetBlock petBlock = petBlockController.create(player, petMeta);
- petBlockController.store(petBlock); //Store the petblock to be managed by the plugin. Does not involve a database so it can be used on the main thread.
- petBlock.teleport(location); //Teleport the petblock
-```
-
-#### Listen to PetBlock-Events (Checkout the [JavaDocs](https://shynixn.github.io/PetBlocks/apidocs/) for all events)
-
-```java
-@EventHandler
-public void onPetBlockSpawnEvent(PetBlockSpawnEvent event) {
-     Bukkit.getLogger().log(Level.INFO, "PetBlock " + event.getPetBlock().getDisplayName() + " has spawned.");
-}
-```
-
-### PetBlocks Plugin (Includes all APIs but changes more frequently)
-
-```xml
-<dependency>
-     <groupId>com.github.shynixn.petblocks</groupId>
-     <artifactId>petblocks-bukkit-plugin</artifactId>
-     <version>6.4.0</version>
-     <scope>provided</scope>
-</dependency>
-```
-
-```xml
-dependencies {
-    compileOnly 'com.github.shynixn.petblocks:petblocks-bukkit-plugin:6.4.0'
-}
-```
-
-* Check out the [PetBlocks-Spigot-Page](https://www.spigotmc.org/resources/petblocks-mysql-bungeecord-customizeable-gui-1-8-1-9-1-10-1-11.12056/) to get more information. 
+* Please check out the [PetBlocks Documentation](https://shynixn.github.io/PetBlocks/apidocs/) for further information.
 
 ## Screenshots
 

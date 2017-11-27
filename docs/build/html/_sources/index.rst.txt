@@ -7,7 +7,7 @@ Introduction
 
 Welcome to PetBlocksDocs, the official documentation for the open-source `PetBlocks <https://www.spigotmc.org/resources/12056/>`__ project.
 
-PetBlocks is a spigot plugin to use blocks and custom heads as pets in Minecraft. <ddd
+PetBlocks is a spigot plugin to use blocks and custom heads as pets in Minecraft.
 
 Contents
 ========
