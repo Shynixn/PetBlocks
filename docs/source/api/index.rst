@@ -1,12 +1,11 @@
 Developer API
-======
+=============
 
 .. toctree::
- index
 
 
 JavaDocs
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~
 
 https://shynixn.github.io/PetBlocks/apidocs/
 
@@ -48,7 +47,7 @@ Your plugin requires PetBlocks to work.
     depend: [PetBlocks]
 
 Modifying PetMeta and PetBlock
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
 **Creating a new PetMeta for a player:**
@@ -152,7 +151,7 @@ However, for applying the changes you need to respawn the PetBlock:
     petBlock.respawn();
 
 Listen to Events
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~
 
 There are many PetBlock events in order to listen to actions. Please take a look into the `JavaDocs <https://shynixn.github.io/PetBlocks/apidocs/>`__  for all events:
 ::

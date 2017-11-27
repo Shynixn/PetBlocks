@@ -1,8 +1,8 @@
 How can you sell costumes/skins?
-============================
+================================
 
 PetBlock does not contain a system for selling items. However, a common method to achieve this
-feature is by selling permissions to each skin/costume/engines etc.
+feature is by selling permissions to each skin/costume/engine etc.
 
 For example:
 

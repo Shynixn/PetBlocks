@@ -1,5 +1,5 @@
 How to use the MySQL database?
-========================================
+==============================
 
 First of all, make sure you thought about the reason why you want to use this option.
 
