@@ -19,7 +19,7 @@ PetBlocks is using maven as build system but you can include the api via differe
     <dependency>
         <groupId>com.github.shynixn.petblocks</groupId>
         <artifactId>petblocks-bukkit-api</artifactId>
-        <version>6.3.1</version>
+        <version>6.4.0</version>
         <scope>provided</scope>
     </dependency>
 
@@ -27,7 +27,7 @@ PetBlocks is using maven as build system but you can include the api via differe
 **Gradle**:
 ::
     dependencies {
-        compileOnly 'com.github.shynixn.petblocks:petblocks-bukkit-api:6.3.1'
+        compileOnly 'com.github.shynixn.petblocks:petblocks-bukkit-api:6.4.0'
     }
 
 **Reference the jar file**:
