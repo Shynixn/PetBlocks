@@ -7,11 +7,13 @@
 
 
 Documentation:  https://shynixn.github.io/PetBlocks/
+
 JavaDocs: https://shynixn.github.io/PetBlocks/apidocs/
 
 ## Description
+
 PetBlocks is a spigot plugin to use blocks and custom heads as pets in Minecraft.
-https://shynixn.github.io/PetBlocks/apidocs/
+
 ## Features
 
 * Use blocks as pets in minecraft.
@@ -21,7 +23,7 @@ https://shynixn.github.io/PetBlocks/apidocs/
 
 ## Installation
 
-* Please check out the [PetBlocks Documentation](https://shynixn.github.io/PetBlocks/apidocs/) for further information.
+* Please check out the [PetBlocks Documentation](https://shynixn.github.io/PetBlocks/) for further information.
 
 ## Screenshots
 
