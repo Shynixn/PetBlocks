@@ -1,5 +1,5 @@
 How to use a custom skin URL?
-========================================
+=============================
 
 For example you received this command from a site like https://minecraft-heads.com
 

@@ -1,5 +1,5 @@
 Playing
-=========
+=======
 
 Congrats the only thing you need to is to join your server and type **/petblock** in the chat. The GUI will pop up.
 

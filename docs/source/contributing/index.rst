@@ -2,11 +2,10 @@ Contributing to PetBlock
 ========================
 
 .. toctree::
- index
 
 
 Leave a like/review/diamond...
-~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 The easiest thing is to rate the plugin on spigotmc.org, planetminecraft.com or github.com. It encourages me to continue supporting PetBlocks. :)
 
@@ -16,7 +15,7 @@ The easiest thing is to rate the plugin on spigotmc.org, planetminecraft.com or 
 Donating...
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Patreon page?
+Todo?
 
 New feature idea? Bug report?
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -27,7 +26,7 @@ The easiest option to suggest new features or report bugs is to submit a new iss
 private messages on spigot.
 
 Developer? How can I customize PetBlocks?
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 If you want to customize PetBlocks to your own needs,  consider using the Developer Api.
 

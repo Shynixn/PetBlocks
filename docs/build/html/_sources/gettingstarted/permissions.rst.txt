@@ -1,13 +1,12 @@
 Configuring Permissions
-=========
+=======================
 
 .. toctree::
-    permissions
 
 Before you start using PetBlocks on your server, you should also configure the permissions for your players.
 
 Admin
-~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~
 
 Recommend permissions for administrators or moderators:
 
@@ -15,7 +14,7 @@ Recommend permissions for administrators or moderators:
 * **petblocks.reload** - Allows to reload config.yml
 
 Users
-~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~
 
 There are many different ways how to setup your permissions. These 2 examples only show the most common setups:
 Split it up into groups/players etc.
@@ -50,7 +49,7 @@ Sample 2 for restricted access to costumes:
 * **petblocks.pet.colorcostumes.all** - Allows to use every color costume
 
 Permissionlist
-~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~
 
 * **petblocks.use** -  Allows to use the /petblock command
 * **petblocks.pet.type.all** - Allows to have all pet engines

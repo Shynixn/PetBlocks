@@ -1,15 +1,14 @@
 Commands
-======
+========
 
 The articles in this section explain how to use the /petblocks administration commands.
 
 
 .. toctree::
- index
 
 
 Rename Commands
-~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~
 
 Even though this fits more into customizing, it is important to know that you are allowed to rename commands:
 ::
@@ -41,7 +40,7 @@ Even though this fits more into customizing, it is important to know that you ar
 
 
 Useage
-~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~
 
 The commands displayed when using /petblocks are very special kinds of commands. They can be executed by the following things:
 
@@ -49,8 +48,8 @@ The commands displayed when using /petblocks are very special kinds of commands.
 * Server console ✔
 * Command blocks ✔
 
-Commandslist
-~~~~~~~~~~~~~~~~~~~~~~~~~
+Commandlist
+~~~~~~~~~~~
 
 This guide does not contain a full list of all commands as they are listed ingame with a very detail description.
 

@@ -166,5 +166,12 @@ texinfo_documents = [
      'Miscellaneous'),
 ]
 
+html_context = {
+    "display_github": True,
+    "github_user": "Shynixn",
+    "github_repo": "PetBlocks",
+    "github_version": "tree/master",
+    "conf_py_path": "/docs/source/",
+}
 
 
