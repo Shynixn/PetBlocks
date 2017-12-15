@@ -1,11 +1,13 @@
 package com.github.shynixn.petblocks.bukkit.nms.v1_10_R1;
 
 import com.github.shynixn.petblocks.api.bukkit.event.PetBlockSpawnEvent;
+import com.github.shynixn.petblocks.api.business.entity.EffectPipeline;
 import com.github.shynixn.petblocks.api.business.entity.PetBlock;
 import com.github.shynixn.petblocks.api.business.entity.PetBlockPartEntity;
 import com.github.shynixn.petblocks.api.business.enumeration.RideType;
 import com.github.shynixn.petblocks.api.persistence.entity.PetMeta;
 import com.github.shynixn.petblocks.bukkit.PetBlocksPlugin;
+import com.github.shynixn.petblocks.bukkit.logic.business.entity.Pipeline;
 import com.github.shynixn.petblocks.bukkit.nms.NMSRegistry;
 import com.github.shynixn.petblocks.bukkit.nms.helper.PetBlockHelper;
 import com.github.shynixn.petblocks.bukkit.logic.business.configuration.ConfigPet;
@@ -41,6 +43,8 @@ final class CustomGroundArmorstand extends EntityArmorStand implements PetBlock 
 
     private boolean hitflor;
 
+    private Pipeline pipeline;
+
     public CustomGroundArmorstand(World world) {
         super(world);
     }
@@ -51,9 +55,11 @@ final class CustomGroundArmorstand extends EntityArmorStand implements PetBlock 
         this.petMeta = (PetData) meta;
         this.owner = this.petMeta.getPlayerMeta().getPlayer();
         if (this.petMeta.getEngine().getEntityType().equalsIgnoreCase("RABBIT"))
-            this.rabbit = new CustomRabbit(this.owner, meta);
+            this.rabbit = new CustomRabbit(this.owner, this);
         else if (this.petMeta.getEngine().getEntityType().equalsIgnoreCase("ZOMBIE"))
-            this.rabbit = new CustomZombie(this.owner, meta);
+            this.rabbit = new CustomZombie(this.owner, this);
+
+        this.pipeline = new Pipeline(this);
         this.spawn(location);
     }
 
@@ -263,6 +269,16 @@ final class CustomGroundArmorstand extends EntityArmorStand implements PetBlock 
     @Override
     public boolean isDieing() {
         return this.isDieing;
+    }
+
+    /**
+     * Returns the pipeline for managed effect playing.
+     *
+     * @return effectPipeLine
+     */
+    @Override
+    public EffectPipeline getEffectPipeline() {
+        return this.pipeline;
     }
 
     @Override

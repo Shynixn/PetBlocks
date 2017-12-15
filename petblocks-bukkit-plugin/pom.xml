@@ -44,13 +44,6 @@
             <version>6.4.1-SNAPSHOT</version>
         </dependency>
         <dependency>
-            <groupId>de.myzelyam</groupId>
-            <artifactId>supervanish</artifactId>
-            <scope>system</scope>
-            <version>1.0</version>
-            <systemPath>${basedir}/../lib/SuperVanish.jar</systemPath>
-        </dependency>
-        <dependency>
             <groupId>org.bstats</groupId>
             <artifactId>bstats-bukkit</artifactId>
             <version>RELEASE</version>

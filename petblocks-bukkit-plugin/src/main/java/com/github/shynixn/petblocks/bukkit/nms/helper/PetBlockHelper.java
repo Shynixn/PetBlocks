@@ -9,6 +9,7 @@ import com.github.shynixn.petblocks.api.business.entity.PetBlock;
 import com.github.shynixn.petblocks.api.persistence.entity.ParticleEffectMeta;
 import com.github.shynixn.petblocks.api.persistence.entity.PetMeta;
 import com.github.shynixn.petblocks.api.persistence.entity.SoundMeta;
+import com.github.shynixn.petblocks.bukkit.logic.business.configuration.Config;
 import com.github.shynixn.petblocks.bukkit.nms.NMSRegistry;
 import com.github.shynixn.petblocks.bukkit.PetBlocksPlugin;
 import com.github.shynixn.petblocks.bukkit.logic.business.configuration.ConfigPet;
@@ -26,6 +27,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
+import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.util.EulerAngle;
 import org.bukkit.util.Vector;
 
@@ -50,13 +52,44 @@ public final class PetBlockHelper {
         super();
     }
 
-    public static int afraidWaterEffect(Entity entity, int counter) {
+    public static void playParticleEffectForPipeline(Location location, ParticleEffectMeta particleEffectMeta, PetBlock petBlock) {
+        if (ConfigPet.getInstance().areParticlesForOtherPlayersVisible()) {
+            for (final Player player : location.getWorld().getPlayers()) {
+                Bukkit.getServer().getScheduler().runTaskAsynchronously(JavaPlugin.getPlugin(PetBlocksPlugin.class), () -> ((ParticleEffectData) particleEffectMeta).applyTo(location, player));
+            }
+        } else {
+            Bukkit.getServer().getScheduler().runTaskAsynchronously(JavaPlugin.getPlugin(PetBlocksPlugin.class), () -> ((ParticleEffectData) particleEffectMeta).applyTo(location, (Player) petBlock.getPlayer()));
+        }
+    }
+
+    public static void playSoundEffectForPipeline(Location location, SoundMeta soundMeta, PetBlock petBlock) {
+        if (!petBlock.getMeta().isSoundEnabled())
+            return;
+        try {
+            if (ConfigPet.getInstance().isSoundForOtherPlayersHearable()) {
+                for (final Player player : location.getWorld().getPlayers()) {
+                    ((SoundBuilder) soundMeta).apply(location, player);
+                }
+            } else {
+                ((SoundBuilder) soundMeta).apply(location, (Player) petBlock.getPlayer());
+            }
+        } catch (final IllegalArgumentException e) {
+            PetBlocksPlugin.logger().log(Level.WARNING, "Cannot play sound " + soundMeta.getName() + " of " + ChatColor.stripColor(petBlock.getMeta().getEngine().getGUIItem().getDisplayName().get()) + '.');
+            PetBlocksPlugin.logger().log(Level.WARNING, "Is this entity or sound supported by your server version? Disable it in the config.yml");
+        } catch (final Exception e1) {
+            PetBlocksPlugin.logger()
+                    .log(Level.WARNING, "Failed playing w sound.", e1);
+        }
+    }
+
+    public static int afraidWaterEffect(PetBlock petBlock, int counter) {
+        final Entity entity = (Entity) petBlock.getEngineEntity();
         if (ConfigPet.getInstance().isAfraidOfwater()) {
             if (entity.getLocation().getBlock().isLiquid() && counter <= 0) {
                 final Vector vec = new Vector(random.nextInt(3) * isNegative(random), random.nextInt(3) * isNegative(random), random.nextInt(3) * isNegative(random));
                 entity.setVelocity(vec);
                 if (ConfigPet.getInstance().isAfraidwaterParticles()) {
-                    angryParticle.apply(entity.getLocation());
+                    petBlock.getEffectPipeline().playParticleEffect(entity.getLocation(), angryParticle);
                 }
                 counter = 20;
             }
@@ -90,29 +123,12 @@ public final class PetBlockHelper {
         return itemStack;
     }
 
-    public static long executeMovingSound(Entity entity, Player owner, PetMeta petMeta, long previous) {
-        if (petMeta == null)
+    public static long executeMovingSound(PetBlock petBlock, long previous) {
+        if (petBlock.getMeta() == null)
             return previous;
         final long milli = System.currentTimeMillis();
         if (milli - previous > 500) {
-            if (petMeta.isSoundEnabled()) {
-                try {
-                    if (ConfigPet.getInstance().isDesign_allowOtherHearSound() && petMeta.isVisible()) {
-                        petMeta.getEngine().getWalkingSound().applyToLocation(entity.getLocation());
-                    } else {
-                        petMeta.getEngine().getWalkingSound().applyToPlayers(owner);
-                    }
-                } catch (final IllegalArgumentException e) {
-                    PetBlocksPlugin.logger()
-                            .log(Level.WARNING, "Cannot play walking sound "
-                                    + petMeta.getEngine().getWalkingSound().getName()
-                                    + " of " + ChatColor.stripColor(petMeta.getEngine().getGUIItem().getDisplayName().get()) + '.');
-                    PetBlocksPlugin.logger().log(Level.WARNING, "Is this entity or sound supported by your server version? Disable it in the config.yml");
-                } catch (final Exception e) {
-                    PetBlocksPlugin.logger()
-                            .log(Level.WARNING, "Failed playing walking sound.", e);
-                }
-            }
+            petBlock.getEffectPipeline().playSound(petBlock.getLocation(), petBlock.getMeta().getEngine().getWalkingSound());
             return milli;
         }
         return previous;
@@ -163,28 +179,11 @@ public final class PetBlockHelper {
     }
 
     private static int doTickSounds(int counter, PetBlock petBlock) {
-        final PetData petData = (PetData) petBlock.getMeta();
+        final PetMeta petData = petBlock.getMeta();
         if (counter <= 0) {
             final Random random = new Random();
             if (!getEngineEntity(petBlock).isOnGround() || petData.getEngine().getEntityType().equalsIgnoreCase("ZOMBIE")) {
-                if (petBlock.getMeta().isSoundEnabled()) {
-                    try {
-                        if (ConfigPet.getInstance().isDesign_allowOtherHearSound()) {
-                            petData.getEngine().getAmbientSound().applyToLocation(getEngineEntity(petBlock).getLocation());
-                        } else {
-                            petData.getEngine().getAmbientSound().applyToLocation(petBlock.getPlayer());
-                        }
-                    } catch (final IllegalArgumentException e) {
-                        PetBlocksPlugin.logger()
-                                .log(Level.WARNING, "Cannot play ambient sound "
-                                        + petData.getEngine().getAmbientSound().getName()
-                                        + " of " + ChatColor.stripColor(petData.getEngine().getGUIItem().getDisplayName().get()) + '.');
-                        PetBlocksPlugin.logger().log(Level.WARNING, "Is this entity or sound supported by your server version? Disable it in the config.yml");
-                    } catch (final Exception e) {
-                        PetBlocksPlugin.logger()
-                                .log(Level.WARNING, "Failed playing ambient sound.", e);
-                    }
-                }
+                petBlock.getEffectPipeline().playSound(petBlock.getLocation(), petBlock.getMeta().getEngine().getAmbientSound());
             }
             counter = 20 * random.nextInt(20) + 1;
         }
@@ -192,18 +191,13 @@ public final class PetBlockHelper {
             PetBlocksApi.getDefaultPetBlockController().remove(petBlock);
         }
         if (petData.getParticleEffectMeta() != null) {
-            if (!petBlock.getMeta().isVisible()) {
-                petData.getParticleEffectMeta().apply(getArmorstand(petBlock).getLocation().add(0, 1, 0), Arrays.asList(petBlock.getPlayer()));
-            } else {
-                petData.getParticleEffectMeta().apply(getArmorstand(petBlock).getLocation().add(0, 1, 0));
-            }
+            petBlock.getEffectPipeline().playParticleEffect(getArmorstand(petBlock).getLocation().add(0, 1, 0), petData.getParticleEffectMeta());
         }
         counter--;
         return counter;
     }
 
     public static void refreshHeadItemMeta(PetBlock petBlock, ItemStack itemStack) {
-        final PetData petData = (PetData) petBlock.getMeta();
         final String name;
         name = petBlock.getDisplayName();
         itemStack = nameItem(itemStack, name, null);
@@ -268,7 +262,7 @@ public final class PetBlockHelper {
             if (petBlock.getArmorStand() != null && !getArmorstand(petBlock).isDead())
                 getArmorstand(petBlock).setHeadPose(new EulerAngle(0, 1, 0));
             Bukkit.getPluginManager().getPlugin("PetBlocks").getServer().getScheduler().runTaskLater(Bukkit.getPluginManager().getPlugin("PetBlocks"), () -> {
-                cloud.apply(petBlock.getLocation());
+                petBlock.getEffectPipeline().playParticleEffect(petBlock.getLocation(), cloud);
                 petBlock.remove();
             }, 20 * 2);
             return true;
@@ -307,13 +301,7 @@ public final class PetBlockHelper {
         Bukkit.getPluginManager().callEvent(event);
         if (!event.isCanceled()) {
             getEngineEntity(petBlock).setVelocity(vector);
-            if (petBlock.getMeta().isSoundEnabled()) {
-                try {
-                    ((SoundBuilder) explosionSound).apply(((Player) petBlock.getPlayer()).getLocation());
-                } catch (final Exception e) {
-                    PetBlocksPlugin.logger().log(Level.WARNING, "Cannot play sound.", e);
-                }
-            }
+            petBlock.getEffectPipeline().playSound(((Player) petBlock.getPlayer()).getLocation(), explosionSound);
         }
     }
 

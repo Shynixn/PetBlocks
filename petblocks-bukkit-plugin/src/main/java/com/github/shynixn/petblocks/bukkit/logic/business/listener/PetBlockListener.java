@@ -241,12 +241,8 @@ public class PetBlockListener extends SimpleListener {
             final PetBlock petBlock = this.getPet(event.getRightClicked());
             if (petBlock != null && petBlock.getPlayer().equals(event.getPlayer())) {
                 if (ConfigPet.getInstance().isFeedingEnabled() && NMSRegistry.getItemInHand19(event.getPlayer(), false) != null && NMSRegistry.getItemInHand19(event.getPlayer(), false).getType() == Material.CARROT_ITEM) {
-                    ConfigPet.getInstance().getFeedingClickParticleEffect().apply(event.getRightClicked().getLocation(), (Collection<Object>) (Object) event.getRightClicked().getWorld().getPlayers());
-                    try {
-                        ((SoundBuilder) ConfigPet.getInstance().getFeedingClickSound()).apply(event.getRightClicked().getLocation());
-                    } catch (final Exception e) {
-                        PetBlocksPlugin.logger().log(Level.WARNING, "Failed to play sound.", e);
-                    }
+                    petBlock.getEffectPipeline().playParticleEffect(event.getRightClicked().getLocation(), ConfigPet.getInstance().getFeedingClickParticleEffect());
+                    petBlock.getEffectPipeline().playSound(event.getRightClicked().getLocation(), ConfigPet.getInstance().getFeedingClickSound());
                     if (NMSRegistry.getItemInHand19(event.getPlayer(), false).getAmount() == 1)
                         event.getPlayer().getInventory().setItem(event.getPlayer().getInventory().getHeldItemSlot(), new ItemStack(Material.AIR));
                     else

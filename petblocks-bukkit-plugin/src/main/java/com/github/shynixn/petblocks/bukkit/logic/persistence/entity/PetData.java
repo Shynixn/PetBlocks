@@ -53,7 +53,6 @@ public class PetData extends PersistenceObject implements PetMeta {
     private int damage;
     private boolean unbreakable;
 
-    private boolean visible = true;
     private long ageTicks;
     private boolean enabled;
     private boolean sounds;
@@ -289,26 +288,6 @@ public class PetData extends PersistenceObject implements PetMeta {
     @Override
     public void setEngine(EngineContainer engine) {
         this.engineContainer = engine;
-    }
-
-    /**
-     * Returns if the pet is visible to other players.
-     *
-     * @return visible
-     */
-    @Override
-    public boolean isVisible() {
-        return this.visible;
-    }
-
-    /**
-     * Sets if the pet should be visible to other players.
-     *
-     * @param enabled enabled
-     */
-    @Override
-    public void setVisible(boolean enabled) {
-        this.visible = enabled;
     }
 
     /**

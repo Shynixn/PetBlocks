@@ -4,7 +4,6 @@ import com.github.shynixn.petblocks.api.business.entity.PetBlock;
 import com.github.shynixn.petblocks.api.persistence.entity.PetMeta;
 import com.github.shynixn.petblocks.bukkit.PetBlocksPlugin;
 import com.github.shynixn.petblocks.bukkit.dependencies.clearlag.ClearLagListener;
-import com.github.shynixn.petblocks.bukkit.dependencies.supervanish.SuperVanishConnection;
 import com.github.shynixn.petblocks.bukkit.dependencies.worldguard.WorldGuardConnection5;
 import com.github.shynixn.petblocks.bukkit.dependencies.worldguard.WorldGuardConnection6;
 import com.github.shynixn.petblocks.bukkit.lib.ReflectionUtils;
@@ -254,13 +253,6 @@ public final class NMSRegistry {
         RegisterHelper.PREFIX = PetBlocksPlugin.PREFIX_CONSOLE;
         RegisterHelper.register("WorldGuard", "com.sk89q.worldguard.protection.ApplicableRegionSet", '5');
         RegisterHelper.register("WorldGuard", "com.sk89q.worldguard.protection.ApplicableRegionSet", '6');
-        if ((RegisterHelper.register("SuperVanish") || RegisterHelper.register("PremiumVanish"))) {
-            try {
-                SuperVanishConnection.register((JavaPlugin) Bukkit.getPluginManager().getPlugin("PetBlocks"));
-            } catch (final Exception ex) {
-                Bukkit.getServer().getConsoleSender().sendMessage(PetBlocksPlugin.PREFIX_CONSOLE + ChatColor.DARK_RED + "Manual hook failed. No interacting with [SuperVanish or PremiumVanish]");
-            }
-        }
         if (RegisterHelper.register("ClearLag")) {
             try {
                 new ClearLagListener((JavaPlugin) Bukkit.getPluginManager().getPlugin("PetBlocks"));

@@ -1,5 +1,6 @@
 package com.github.shynixn.petblocks.bukkit.nms.v1_8_R3;
 
+import com.github.shynixn.petblocks.api.business.entity.PetBlock;
 import com.github.shynixn.petblocks.api.business.entity.PetBlockPartEntity;
 import com.github.shynixn.petblocks.api.persistence.entity.PetMeta;
 import com.github.shynixn.petblocks.bukkit.PetBlocksPlugin;
@@ -21,8 +22,7 @@ import java.lang.reflect.Field;
 import java.util.logging.Level;
 
 public final class CustomRabbit extends EntityRabbit implements PetBlockPartEntity {
-    private Player player;
-    private PetMeta petData;
+    private PetBlock petBlock;
 
     private long playedMovingSound = 100000;
 
@@ -30,7 +30,7 @@ public final class CustomRabbit extends EntityRabbit implements PetBlockPartEnti
         super(world);
     }
 
-    public CustomRabbit(Player player, PetMeta meta) {
+    public CustomRabbit(Player player,PetBlock petBlock) {
         super(((CraftWorld) player.getWorld()).getHandle());
         this.b(true);
         try {
@@ -45,18 +45,17 @@ public final class CustomRabbit extends EntityRabbit implements PetBlockPartEnti
             this.getAttributeInstance(GenericAttributes.MOVEMENT_SPEED).setValue(0.30000001192092896D * ConfigPet.getInstance().getModifier_petwalking());
 
             this.goalSelector.a(0, new PathfinderGoalFloat(this));
-            this.goalSelector.a(1, new OwnerPathfinder(this, player));
+            this.goalSelector.a(1, new OwnerPathfinder(this,petBlock));
         } catch (final Exception exc) {
             PetBlocksPlugin.logger().log(Level.WARNING, "EntityNMS exception.", exc);
         }
-        this.player = player;
-        this.petData = meta;
+        this.petBlock = petBlock;
         this.S = (float) ConfigPet.getInstance().getModifier_petclimbing();
     }
 
     @Override
     protected String cm() {
-        this.playedMovingSound = PetBlockHelper.executeMovingSound(this.getBukkitEntity(), this.player, this.petData, this.playedMovingSound);
+        this.playedMovingSound = PetBlockHelper.executeMovingSound(this.petBlock, this.playedMovingSound);
         return "mob.rabbit.hop";
     }
 

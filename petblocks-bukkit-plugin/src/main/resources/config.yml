@@ -169,6 +169,7 @@ pet:
     max-petname-length: 20
     show-damage-animation: true
     sounds-other-players: true
+    particles-other-players: true
     petname-blacklist:
       - 'petty'
       - 'shitty'

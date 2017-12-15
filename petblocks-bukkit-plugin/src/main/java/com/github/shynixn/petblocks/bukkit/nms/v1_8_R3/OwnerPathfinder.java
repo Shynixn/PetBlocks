@@ -1,5 +1,6 @@
 package com.github.shynixn.petblocks.bukkit.nms.v1_8_R3;
 
+import com.github.shynixn.petblocks.api.business.entity.PetBlock;
 import com.github.shynixn.petblocks.bukkit.nms.helper.PetBlockHelper;
 import com.github.shynixn.petblocks.bukkit.logic.business.configuration.ConfigPet;
 import net.minecraft.server.v1_8_R3.EntityInsentient;
@@ -20,11 +21,13 @@ public final class OwnerPathfinder extends PathfinderGoal {
     private final Player player;
     private int counter;
     private int counter2;
+    private final PetBlock petBlock;
 
-    public OwnerPathfinder(EntityInsentient entitycreature, Player player) {
+    public OwnerPathfinder(EntityInsentient entitycreature, PetBlock petBlock) {
         super();
         this.entity = entitycreature;
-        this.player = player;
+        this.player = (Player) petBlock.getPlayer();
+        this.petBlock = petBlock;
     }
 
     @Override
@@ -35,7 +38,7 @@ public final class OwnerPathfinder extends PathfinderGoal {
         if (!this.entity.getWorld().getWorldData().getName().equals(this.player.getWorld().getName())) {
             this.entity.getBukkitEntity().teleport(this.player.getLocation());
         } else if (this.entity.getBukkitEntity().getLocation().distance(this.player.getLocation()) > ConfigPet.getInstance().getBlocksAwayFromPlayer()) {
-            this.counter2 = PetBlockHelper.afraidWaterEffect(this.entity.getBukkitEntity(), this.counter2);
+            this.counter2 = PetBlockHelper.afraidWaterEffect(petBlock, this.counter2);
             final Location targetLocation = this.player.getLocation();
             this.entity.getNavigation().m();
             this.entity.getNavigation();

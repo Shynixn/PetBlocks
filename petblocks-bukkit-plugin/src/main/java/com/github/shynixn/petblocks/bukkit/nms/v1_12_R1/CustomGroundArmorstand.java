@@ -1,17 +1,25 @@
 package com.github.shynixn.petblocks.bukkit.nms.v1_12_R1;
 
 import com.github.shynixn.petblocks.api.bukkit.event.PetBlockSpawnEvent;
+import com.github.shynixn.petblocks.api.business.entity.EffectPipeline;
 import com.github.shynixn.petblocks.api.business.entity.PetBlock;
 import com.github.shynixn.petblocks.api.business.entity.PetBlockPartEntity;
 import com.github.shynixn.petblocks.api.business.enumeration.RideType;
+import com.github.shynixn.petblocks.api.persistence.entity.ParticleEffectMeta;
 import com.github.shynixn.petblocks.api.persistence.entity.PetMeta;
+import com.github.shynixn.petblocks.api.persistence.entity.SoundMeta;
 import com.github.shynixn.petblocks.bukkit.PetBlocksPlugin;
+import com.github.shynixn.petblocks.bukkit.logic.business.configuration.Config;
+import com.github.shynixn.petblocks.bukkit.logic.business.entity.Pipeline;
+import com.github.shynixn.petblocks.bukkit.logic.persistence.entity.ParticleEffectData;
+import com.github.shynixn.petblocks.bukkit.logic.persistence.entity.SoundBuilder;
 import com.github.shynixn.petblocks.bukkit.nms.NMSRegistry;
 import com.github.shynixn.petblocks.bukkit.nms.helper.PetBlockHelper;
 import com.github.shynixn.petblocks.bukkit.logic.business.configuration.ConfigPet;
 import com.github.shynixn.petblocks.bukkit.logic.persistence.entity.PetData;
 import net.minecraft.server.v1_12_R1.*;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.craftbukkit.v1_12_R1.CraftWorld;
 import org.bukkit.craftbukkit.v1_12_R1.entity.CraftPlayer;
@@ -20,10 +28,13 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason;
 import org.bukkit.metadata.FixedMetadataValue;
+import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.util.EulerAngle;
 import org.bukkit.util.Vector;
 
 import java.lang.reflect.Field;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.logging.Level;
 
 final class CustomGroundArmorstand extends EntityArmorStand implements PetBlock {
@@ -41,6 +52,8 @@ final class CustomGroundArmorstand extends EntityArmorStand implements PetBlock 
 
     private boolean hitflor;
 
+    private Pipeline pipeline;
+
     public CustomGroundArmorstand(World world) {
         super(world);
     }
@@ -51,12 +64,13 @@ final class CustomGroundArmorstand extends EntityArmorStand implements PetBlock 
         this.petMeta = (PetData) meta;
         this.owner = this.petMeta.getPlayerMeta().getPlayer();
         if (this.petMeta.getEngine().getEntityType().equalsIgnoreCase("RABBIT"))
-            this.rabbit = new CustomRabbit(this.owner, meta);
+            this.rabbit = new CustomRabbit(this.owner, this);
         else if (this.petMeta.getEngine().getEntityType().equalsIgnoreCase("ZOMBIE"))
-            this.rabbit = new CustomZombie(this.owner, meta);
+            this.rabbit = new CustomZombie(this.owner, this);
         else
             throw new RuntimeException("Cannot find engine!");
 
+        this.pipeline = new Pipeline(this);
         this.spawn(location);
     }
 
@@ -102,7 +116,7 @@ final class CustomGroundArmorstand extends EntityArmorStand implements PetBlock 
     }
 
     @Override
-    public void a(float sideMot,float f2, float forMot) {
+    public void a(float sideMot, float f2, float forMot) {
         if (this.isSpecial) {
             if (this.hasHumanPassenger() != null) {
                 if (this.petMeta.getEngine().getRideType() == RideType.RUNNING) {
@@ -216,13 +230,13 @@ final class CustomGroundArmorstand extends EntityArmorStand implements PetBlock 
             compound.setBoolean("ShowArms", true);
             compound.setBoolean("NoBasePlate", true);
             this.a(compound);
-            ((ArmorStand)this.getArmorStand()).setBodyPose(new EulerAngle(0, 0, 2878));
-            ((ArmorStand)this.getArmorStand()).setLeftArmPose(new EulerAngle(2878, 0, 0));
-            ((ArmorStand)this.getArmorStand()).setMetadata("keep", this.getKeepField());
+            ((ArmorStand) this.getArmorStand()).setBodyPose(new EulerAngle(0, 0, 2878));
+            ((ArmorStand) this.getArmorStand()).setLeftArmPose(new EulerAngle(2878, 0, 0));
+            ((ArmorStand) this.getArmorStand()).setMetadata("keep", this.getKeepField());
             NMSRegistry.rollbackWorldGuardSpawn(location);
-            ((ArmorStand)this.getArmorStand()).setCustomNameVisible(true);
-            ((ArmorStand)this.getArmorStand()).setCustomName(this.petMeta.getPetDisplayName());
-            ((ArmorStand)this.getArmorStand()).setRemoveWhenFarAway(false);
+            ((ArmorStand) this.getArmorStand()).setCustomNameVisible(true);
+            ((ArmorStand) this.getArmorStand()).setCustomName(this.petMeta.getPetDisplayName());
+            ((ArmorStand) this.getArmorStand()).setRemoveWhenFarAway(false);
             ((LivingEntity) this.getEngineEntity()).setRemoveWhenFarAway(false);
             this.health = ConfigPet.getInstance().getCombat_health();
             if (this.petMeta == null)
@@ -271,9 +285,19 @@ final class CustomGroundArmorstand extends EntityArmorStand implements PetBlock 
         return this.isDieing;
     }
 
+    /**
+     * Returns the pipeline for managed effect playing.
+     *
+     * @return effectPipeLine
+     */
+    @Override
+    public EffectPipeline getEffectPipeline() {
+        return this.pipeline;
+    }
+
     @Override
     public void setSkin(String skin) {
-        PetBlockHelper.setSkin(this,skin);
+        PetBlockHelper.setSkin(this, skin);
     }
 
     @Override
@@ -299,7 +323,6 @@ final class CustomGroundArmorstand extends EntityArmorStand implements PetBlock 
         return PetBlockHelper.isDead(this);
     }
 
-
     /**
      * Lets the given player ride on the petblock
      *
@@ -317,7 +340,7 @@ final class CustomGroundArmorstand extends EntityArmorStand implements PetBlock 
      */
     @Override
     public void wear(Object player) {
-        if (this.getBukkitEntity().getPassenger() == null && ((Player)player).getPassenger() == null) {
+        if (this.getBukkitEntity().getPassenger() == null && ((Player) player).getPassenger() == null) {
             final NBTTagCompound compound = new NBTTagCompound();
             this.b(compound);
             compound.setBoolean("Marker", true);
@@ -352,7 +375,6 @@ final class CustomGroundArmorstand extends EntityArmorStand implements PetBlock 
         PetBlockHelper.setDisplayName(this, name);
     }
 
-
     /**
      * Returns the armorstand of the petblock
      *
@@ -362,7 +384,6 @@ final class CustomGroundArmorstand extends EntityArmorStand implements PetBlock 
     public Object getArmorStand() {
         return this.getBukkitEntity();
     }
-
 
     /**
      * Sets the velocity of the petblock
@@ -391,7 +412,7 @@ final class CustomGroundArmorstand extends EntityArmorStand implements PetBlock 
      */
     @Override
     public String getDisplayName() {
-        return ((ArmorStand)this.getArmorStand()).getCustomName();
+        return ((ArmorStand) this.getArmorStand()).getCustomName();
     }
 
     /**
@@ -441,7 +462,7 @@ final class CustomGroundArmorstand extends EntityArmorStand implements PetBlock 
      */
     @Override
     public Object getLocation() {
-        return ((ArmorStand)this.getArmorStand()).getLocation();
+        return ((ArmorStand) this.getArmorStand()).getLocation();
     }
 
     /**
