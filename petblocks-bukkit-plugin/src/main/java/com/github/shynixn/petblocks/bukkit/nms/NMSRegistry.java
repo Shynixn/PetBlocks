@@ -13,8 +13,6 @@ import com.github.shynixn.petblocks.bukkit.nms.v1_9_R1.Listener19;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
-import org.bukkit.command.Command;
-import org.bukkit.command.defaults.BukkitCommand;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -24,7 +22,6 @@ import org.bukkit.plugin.java.JavaPlugin;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 
@@ -48,7 +45,7 @@ public final class NMSRegistry {
     }
 
     /**
-     * Creates a new petblock from the given location and meta
+     * Creates a new petblock from the given location and meta.
      *
      * @param location location
      * @param meta     meta
@@ -87,60 +84,6 @@ public final class NMSRegistry {
             wrappedRegistry.unregister(rabbitClazz, CustomEntityType.RABBIT);
             wrappedRegistry.unregister(zombieClazz, CustomEntityType.ZOMBIE);
             wrappedRegistry = null;
-        }
-    }
-
-    /**
-     * Checks if the itemStack is unbreakable
-     *
-     * @param itemStack itemStack
-     * @return isUnbreakable
-     */
-    @Deprecated
-    public static boolean isUnbreakable(ItemStack itemStack) {
-        try {
-            return ReflectionUtils.invokeMethodByClass(
-                    findClassFromVersion("com.github.shynixn.petblocks.bukkit.nms.VERSION.OwnerPathfinder"),
-                    "isUnbreakable", new Class[]{ItemStack.class}, new Object[]{itemStack});
-        } catch (NoSuchMethodException | ClassNotFoundException | IllegalAccessException | InvocationTargetException e) {
-            PetBlocksPlugin.logger().log(Level.WARNING, "Failed to check unbreakable stage of itemstack.", e);
-            return false;
-        }
-    }
-
-    /**
-     * Sets the tags of the itemStack
-     *
-     * @param itemStack itemStack
-     * @param tags      tags
-     * @return itemStack
-     */
-    @Deprecated
-    public static ItemStack setItemStackTag(ItemStack itemStack, Map<String, Object> tags) {
-        try {
-            return ReflectionUtils.invokeMethodByClass(
-                    findClassFromVersion("com.github.shynixn.petblocks.bukkit.nms.VERSION.OwnerPathfinder"),
-                    "setItemstackTag", new Class[]{ItemStack.class, Map.class}, new Object[]{itemStack, tags});
-        } catch (NoSuchMethodException | ClassNotFoundException | IllegalAccessException | InvocationTargetException e) {
-            PetBlocksPlugin.logger().log(Level.WARNING, "Failed to set tags of the itemStack.", e);
-            return null;
-        }
-    }
-
-    /**
-     * Registers a dynamic command
-     *
-     * @param command command
-     * @param clazz   clazz
-     */
-    @Deprecated
-    public static void registerDynamicCommand(String command, BukkitCommand clazz) {
-        try {
-            final Object craftServer = findClassFromVersion("org.bukkit.craftbukkit.VERSION.CraftServer").cast(Bukkit.getServer());
-            final Object commandMap = ReflectionUtils.invokeMethodByObject(craftServer, "getCommandMap", new Class[]{}, new Object[]{});
-            ReflectionUtils.invokeMethodByObject(commandMap, "register", new Class[]{command.getClass(), Command.class}, new Object[]{command, clazz});
-        } catch (ClassNotFoundException | NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
-            PetBlocksPlugin.logger().log(Level.WARNING, "Failed to register dynamic command.", e);
         }
     }
 
@@ -309,7 +252,7 @@ public final class NMSRegistry {
      * @return class
      * @throws ClassNotFoundException exception
      */
-    public static Class<?> findClassFromVersion(String path) throws ClassNotFoundException {
+    private static Class<?> findClassFromVersion(String path) throws ClassNotFoundException {
         return Class.forName(path.replace("VERSION", VersionSupport.getServerVersion().getVersionText()));
     }
 }

@@ -10,6 +10,7 @@ import com.github.shynixn.petblocks.api.persistence.entity.ParticleEffectMeta;
 import com.github.shynixn.petblocks.api.persistence.entity.PetMeta;
 import com.github.shynixn.petblocks.api.persistence.entity.SoundMeta;
 import com.github.shynixn.petblocks.bukkit.logic.business.configuration.Config;
+import com.github.shynixn.petblocks.bukkit.logic.business.helper.PetBlockModifyHelper;
 import com.github.shynixn.petblocks.bukkit.nms.NMSRegistry;
 import com.github.shynixn.petblocks.bukkit.PetBlocksPlugin;
 import com.github.shynixn.petblocks.bukkit.logic.business.configuration.ConfigPet;
@@ -119,7 +120,7 @@ public final class PetBlockHelper {
     private static ItemStack setWithUnbreakable(PetMeta petMeta, ItemStack itemStack) {
         final Map<String, Object> data = new HashMap<>();
         data.put("Unbreakable", petMeta.isItemStackUnbreakable());
-        itemStack = NMSRegistry.setItemStackTag(itemStack, data);
+        itemStack = PetBlockModifyHelper.setItemStackNBTTag(itemStack, data);
         return itemStack;
     }
 

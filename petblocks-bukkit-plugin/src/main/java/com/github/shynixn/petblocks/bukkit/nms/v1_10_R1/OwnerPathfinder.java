@@ -70,36 +70,4 @@ public final class OwnerPathfinder extends PathfinderGoal {
         else
             this.entity.getNavigation().a(this.path, 1D);
     }
-
-    public static boolean isUnbreakable(ItemStack itemStack) {
-        final net.minecraft.server.v1_10_R1.ItemStack stack = CraftItemStack.asNMSCopy(itemStack);
-        return stack.getTag() != null && stack.getTag().hasKey("Unbreakable") && stack.getTag().getBoolean("Unbreakable");
-    }
-
-    public static ItemStack setItemstackTag(ItemStack itemStack, Map<String, Object> tags) {
-        final net.minecraft.server.v1_10_R1.ItemStack stack = CraftItemStack.asNMSCopy(itemStack);
-        for (final String tag : tags.keySet()) {
-            final NBTTagCompound nbtTagCompound;
-            if (stack.getTag() == null)
-                nbtTagCompound = new NBTTagCompound();
-            else
-                nbtTagCompound = stack.getTag();
-            if (tags.get(tag) instanceof String)
-                nbtTagCompound.setString(tag, (String) tags.get(tag));
-            else if (tags.get(tag) instanceof Boolean)
-                nbtTagCompound.setBoolean(tag, (Boolean) tags.get(tag));
-            else if (tags.get(tag) instanceof Integer)
-                nbtTagCompound.setInt(tag, (Integer) tags.get(tag));
-            else if (tags.get(tag) instanceof Float)
-                nbtTagCompound.setFloat(tag, (Float) tags.get(tag));
-            else if (tags.get(tag) instanceof Double)
-                nbtTagCompound.setDouble(tag, (Double) tags.get(tag));
-            else if (tags.get(tag) instanceof Long)
-                nbtTagCompound.setLong(tag, (Long) tags.get(tag));
-            else if (tags.get(tag) instanceof Byte)
-                nbtTagCompound.setByte(tag, (Byte) tags.get(tag));
-            stack.setTag(nbtTagCompound);
-        }
-        return CraftItemStack.asCraftMirror(stack);
-    }
 }

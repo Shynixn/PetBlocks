@@ -4,6 +4,7 @@ import com.github.shynixn.petblocks.api.business.entity.GUIItemContainer;
 import com.github.shynixn.petblocks.api.business.enumeration.GUIPage;
 import com.github.shynixn.petblocks.bukkit.PetBlocksPlugin;
 import com.github.shynixn.petblocks.bukkit.logic.business.configuration.Config;
+import com.github.shynixn.petblocks.bukkit.logic.business.helper.PetBlockModifyHelper;
 import com.github.shynixn.petblocks.bukkit.nms.NMSRegistry;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -159,7 +160,7 @@ public class ItemContainer implements GUIItemContainer {
                 }
                 final Map<String, Object> data = new HashMap<>();
                 data.put("Unbreakable", this.isItemUnbreakable());
-                itemStack = NMSRegistry.setItemStackTag(itemStack, data);
+                itemStack = PetBlockModifyHelper.setItemStackNBTTag(itemStack, data);
                 final ItemMeta itemMeta = itemStack.getItemMeta();
                 itemMeta.setDisplayName(this.name);
                 itemStack.setItemMeta(itemMeta);
