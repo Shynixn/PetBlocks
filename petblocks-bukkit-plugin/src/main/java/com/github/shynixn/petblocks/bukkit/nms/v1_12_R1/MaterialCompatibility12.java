@@ -1,12 +1,9 @@
-package com.github.shynixn.petblocks.api.persistence.controller;
+package com.github.shynixn.petblocks.bukkit.nms.v1_12_R1;
 
-import com.github.shynixn.petblocks.api.persistence.entity.PlayerMeta;
-
-import java.util.Optional;
-import java.util.UUID;
+import org.bukkit.Material;
 
 /**
- * Controller for the player properties and meta data.
+ * Created by Shynixn 2017.
  * <p>
  * Version 1.1
  * <p>
@@ -32,31 +29,27 @@ import java.util.UUID;
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-public interface PlayerMetaController extends IDatabaseController<PlayerMeta> {
+public final class MaterialCompatibility12 {
 
     /**
-     * Creates a new playerData from the given player.
+     * Handles changes for minecraft 1.13.
+     * Returns the material from the given id.
      *
-     * @param player player
-     * @param <T>    type
-     * @return playerData
+     * @param id id
+     * @return material
      */
-    <T> PlayerMeta create(T player);
+    public static Material getMaterialFromId(int id) {
+        return Material.getMaterial(id);
+    }
 
     /**
-     * Returns the playerMeta of the given uuid.
+     * Handle changes for minecraft 1.13.
+     * Returns the id of the given material
      *
-     * @param uuid uuid
-     * @return playerMeta
+     * @param material material
+     * @return id
      */
-    @Deprecated
-    PlayerMeta getByUUID(UUID uuid);
-
-    /**
-     * Returns the playerMeta of the given uuid.
-     *
-     * @param uuid uuid
-     * @return playerMeta
-     */
-    Optional<PlayerMeta> getFromUUID(UUID uuid);
+    public static int getIdFromMaterial(Material material) {
+        return material.getId();
+    }
 }

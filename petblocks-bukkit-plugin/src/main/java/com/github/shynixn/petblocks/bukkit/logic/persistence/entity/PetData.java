@@ -4,12 +4,12 @@ import com.github.shynixn.petblocks.api.persistence.entity.EngineContainer;
 import com.github.shynixn.petblocks.api.persistence.entity.ParticleEffectMeta;
 import com.github.shynixn.petblocks.api.persistence.entity.PetMeta;
 import com.github.shynixn.petblocks.api.persistence.entity.PlayerMeta;
-import com.github.shynixn.petblocks.bukkit.logic.business.helper.PetBlockModifyHelper;
-import com.github.shynixn.petblocks.bukkit.nms.NMSRegistry;
 import com.github.shynixn.petblocks.bukkit.logic.business.configuration.Config;
 import com.github.shynixn.petblocks.bukkit.logic.business.configuration.ConfigPet;
+import com.github.shynixn.petblocks.bukkit.logic.business.helper.PetBlockModifyHelper;
+import com.github.shynixn.petblocks.bukkit.logic.business.helper.SkinHelper;
+import com.github.shynixn.petblocks.bukkit.nms.v1_12_R1.MaterialCompatibility12;
 import org.bukkit.ChatColor;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -353,9 +353,10 @@ public class PetData extends PersistenceObject implements PetMeta {
         ItemStack itemStack;
         if (this.getSkin() != null) {
             if (this.getSkin().contains("textures.minecraft")) {
-                itemStack = NMSRegistry.changeSkullSkin(new ItemStack(Material.getMaterial(this.getItemId()), 1, (short) this.getItemDamage()), this.getSkin());
+                itemStack = new ItemStack(MaterialCompatibility12.getMaterialFromId(this.getItemId()), 1, (short) this.getItemDamage());
+                SkinHelper.setItemStackSkin(itemStack, this.getSkin());
             } else {
-                itemStack = new ItemStack(Material.getMaterial(this.getItemId()), 1, (short) this.getItemDamage());
+                itemStack = new ItemStack(MaterialCompatibility12.getMaterialFromId(this.getItemId()), 1, (short) this.getItemDamage());
                 final ItemMeta meta = itemStack.getItemMeta();
                 if (meta instanceof SkullMeta) {
                     ((SkullMeta) meta).setOwner(this.skin);
@@ -363,7 +364,7 @@ public class PetData extends PersistenceObject implements PetMeta {
                 itemStack.setItemMeta(meta);
             }
         } else {
-            itemStack = new ItemStack(this.getItemId(), 1, (short) this.getItemDamage());
+            itemStack = new ItemStack(MaterialCompatibility12.getMaterialFromId(this.getItemId()), 1, (short) this.getItemDamage());
         }
         final ItemMeta meta = itemStack.getItemMeta();
         meta.setDisplayName(this.petDisplayName);

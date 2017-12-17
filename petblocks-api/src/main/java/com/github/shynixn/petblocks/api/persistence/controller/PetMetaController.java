@@ -2,6 +2,8 @@ package com.github.shynixn.petblocks.api.persistence.controller;
 
 import com.github.shynixn.petblocks.api.persistence.entity.PetMeta;
 
+import java.util.Optional;
+
 /**
  * Controller for the pet properties and meta data.
  * <p>
@@ -46,7 +48,17 @@ public interface PetMetaController extends IDatabaseController<PetMeta> {
      * @param <T>    type
      * @return petData
      */
+    @Deprecated
     <T> PetMeta getByPlayer(T player);
+
+    /**
+     * Returns the petData from the given player.
+     *
+     * @param player player
+     * @param <T>    type
+     * @return petData
+     */
+    <T> Optional<PetMeta> getFromPlayer(T player);
 
     /**
      * Checks if the player has got an entry in the database.

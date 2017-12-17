@@ -12,6 +12,7 @@ public class Pipeline implements EffectPipeline {
     private final PetBlock petBlock;
 
     public Pipeline(PetBlock petBlock) {
+        super();
         this.petBlock = petBlock;
     }
 

@@ -180,27 +180,6 @@ public class SimpleCommandExecutor {
         final protected JavaPlugin plugin;
 
         /**
-         * Initializes a new commandExecutor by testing parameters and pluginName.
-         *
-         * @param command    command
-         * @param pluginName plugin
-         */
-        public UnRegistered(String command, String pluginName) {
-            this(command, (JavaPlugin) Bukkit.getPluginManager().getPlugin(pluginName));
-        }
-
-        /**
-         * Initializes a new commandExecutor by testing parameters and pluginClass.
-         *
-         * @param command     command
-         * @param pluginClass pluginClass
-         * @param <T>         pluginClassType
-         */
-        public <T extends JavaPlugin> UnRegistered(String command, Class<T> pluginClass) {
-            this(command, JavaPlugin.getPlugin(pluginClass));
-        }
-
-        /**
          * Initializes a new commandExecutor by testing parameters and plugin.
          *
          * @param command command
@@ -209,29 +188,6 @@ public class SimpleCommandExecutor {
         public UnRegistered(String command, JavaPlugin plugin) {
             this(command, '/' + command, "", command + ".admin", "You are not allowed to use this command.", plugin);
             Bukkit.getLogger().log(Level.WARNING, "This is only for production useage and should be replaced in the release version.");
-        }
-
-        /**
-         * Initializes a new commandExecutor by using the given config configuration and pluginName.
-         *
-         * @param configuration configuration
-         * @param pluginName    pluginName
-         * @throws Exception exception
-         */
-        public UnRegistered(Object configuration, String pluginName) throws Exception {
-            this(configuration, (JavaPlugin) Bukkit.getPluginManager().getPlugin(pluginName));
-        }
-
-        /**
-         * Initializes a new commandExecutor by using the given config configuration and pluginClass.
-         *
-         * @param configuration configuration
-         * @param pluginClass   pluginClass
-         * @param <T>           pluginClassType
-         * @throws Exception exception
-         */
-        public <T extends JavaPlugin> UnRegistered(Object configuration, Class<T> pluginClass) throws Exception {
-            this(configuration, JavaPlugin.getPlugin(pluginClass));
         }
 
         /**

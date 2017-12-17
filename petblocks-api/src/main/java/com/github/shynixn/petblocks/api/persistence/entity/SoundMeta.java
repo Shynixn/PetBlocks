@@ -35,6 +35,7 @@ public interface SoundMeta extends Persistenceable {
      * @param location location
      * @throws Exception ex
      */
+    @Deprecated
     void applyToLocation(Object location) throws Exception;
 
     /**
@@ -43,6 +44,7 @@ public interface SoundMeta extends Persistenceable {
      * @param players players
      * @throws Exception ex
      */
+    @Deprecated
     void applyToPlayers(Object... players) throws Exception;
 
     /**

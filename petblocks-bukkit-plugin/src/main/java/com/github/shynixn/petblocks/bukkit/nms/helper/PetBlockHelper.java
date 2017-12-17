@@ -9,14 +9,14 @@ import com.github.shynixn.petblocks.api.business.entity.PetBlock;
 import com.github.shynixn.petblocks.api.persistence.entity.ParticleEffectMeta;
 import com.github.shynixn.petblocks.api.persistence.entity.PetMeta;
 import com.github.shynixn.petblocks.api.persistence.entity.SoundMeta;
-import com.github.shynixn.petblocks.bukkit.logic.business.configuration.Config;
-import com.github.shynixn.petblocks.bukkit.logic.business.helper.PetBlockModifyHelper;
-import com.github.shynixn.petblocks.bukkit.nms.NMSRegistry;
 import com.github.shynixn.petblocks.bukkit.PetBlocksPlugin;
 import com.github.shynixn.petblocks.bukkit.logic.business.configuration.ConfigPet;
+import com.github.shynixn.petblocks.bukkit.logic.business.helper.PetBlockModifyHelper;
+import com.github.shynixn.petblocks.bukkit.logic.business.helper.SkinHelper;
 import com.github.shynixn.petblocks.bukkit.logic.persistence.entity.ParticleEffectData;
 import com.github.shynixn.petblocks.bukkit.logic.persistence.entity.PetData;
 import com.github.shynixn.petblocks.bukkit.logic.persistence.entity.SoundBuilder;
+import com.github.shynixn.petblocks.bukkit.nms.v1_12_R1.MaterialCompatibility12;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -110,7 +110,8 @@ public final class PetBlockHelper {
         if (skin.contains("textures.minecraft")) {
             if (!skin.startsWith("http://"))
                 skin = "http://" + skin;
-            itemStack = NMSRegistry.changeSkullSkin(new ItemStack(org.bukkit.Material.SKULL_ITEM, 1, (byte) 3), skin);
+            itemStack = new ItemStack(org.bukkit.Material.SKULL_ITEM, 1, (byte) 3);
+            SkinHelper.setItemStackSkin(itemStack, skin);
         } else {
             itemStack = activateHead(skin, new ItemStack(org.bukkit.Material.SKULL_ITEM, 1, (byte) 3));
         }
@@ -228,12 +229,13 @@ public final class PetBlockHelper {
         final ItemStack itemStack;
         if (petData.getSkin() != null) {
             if (petData.getSkin().contains("http")) {
-                itemStack = NMSRegistry.changeSkullSkin(new ItemStack(Material.getMaterial(petData.getItemId()), 1, (short) petData.getItemDamage()), petData.getSkin());
+                itemStack = new ItemStack(MaterialCompatibility12.getMaterialFromId(petData.getItemId()), 1, (short) petData.getItemDamage());
+                SkinHelper.setItemStackSkin(itemStack, petData.getSkin());
             } else {
-                itemStack = activateHead(petData.getSkin(), new ItemStack(Material.getMaterial(petData.getItemId()), 1, (short) petData.getItemDamage()));
+                itemStack = activateHead(petData.getSkin(), new ItemStack(MaterialCompatibility12.getMaterialFromId(petData.getItemId()), 1, (short) petData.getItemDamage()));
             }
         } else {
-            itemStack = new ItemStack(petData.getItemId(), 1, (short) petData.getItemDamage());
+            itemStack = new ItemStack(MaterialCompatibility12.getMaterialFromId(petData.getItemId()), 1, (short) petData.getItemDamage());
         }
         if (petData.getAge() >= ConfigPet.getInstance().getAge_largeticks()) {
             refreshHeadItemMeta(petBlock, itemStack);

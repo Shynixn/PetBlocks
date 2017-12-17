@@ -8,10 +8,7 @@ import com.github.shynixn.petblocks.bukkit.nms.NMSRegistry;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Copyright 2017 Shynixn
@@ -54,6 +51,10 @@ public final class PetBlockRepository implements PetBlockController {
      */
     @Override
     public PetBlock create(Object player, PetMeta petMeta) {
+        if(player == null)
+            throw new IllegalArgumentException("Player cannot be null!");
+        if(petMeta == null)
+            throw new IllegalArgumentException("PetMeta cannot be null!");
         final Player mPlayer = (Player) player;
         return NMSRegistry.createPetBlock(mPlayer.getLocation(), petMeta);
     }
@@ -74,12 +75,31 @@ public final class PetBlockRepository implements PetBlockController {
     }
 
     /**
+     * Returns the petblock of the given player.
+     *
+     * @param player player
+     * @return petblock
+     */
+    @Override
+    public Optional<PetBlock> getFromPlayer(Object player) {
+        if(player == null)
+            throw new IllegalArgumentException("Player cannot be null!");
+        final Player mPlayer = (Player) player;
+        if (this.petblocks.containsKey(mPlayer)) {
+            return Optional.of(this.petblocks.get(mPlayer));
+        }
+        return Optional.empty();
+    }
+
+    /**
      * Removes the petblock of the given player.
      *
      * @param player player
      */
     @Override
     public void removeByPlayer(Object player) {
+        if(player == null)
+            throw new IllegalArgumentException("Player cannot be null!");
         this.remove(this.getByPlayer(player));
     }
 
@@ -90,6 +110,8 @@ public final class PetBlockRepository implements PetBlockController {
      */
     @Override
     public void store(PetBlock item) {
+        if(item == null)
+            throw new IllegalArgumentException("Item cannot be null!");
         final Player mPlayer = (Player) item.getPlayer();
         if (!this.petblocks.containsKey(mPlayer)) {
             this.petblocks.put(mPlayer, item);

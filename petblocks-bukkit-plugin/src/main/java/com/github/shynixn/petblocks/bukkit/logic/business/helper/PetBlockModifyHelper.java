@@ -6,6 +6,7 @@ import com.github.shynixn.petblocks.api.persistence.entity.EngineContainer;
 import com.github.shynixn.petblocks.api.persistence.entity.ParticleEffectMeta;
 import com.github.shynixn.petblocks.api.persistence.entity.PetMeta;
 import com.github.shynixn.petblocks.bukkit.logic.business.configuration.Config;
+import com.github.shynixn.petblocks.bukkit.nms.v1_12_R1.MaterialCompatibility12;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -13,6 +14,7 @@ import org.bukkit.inventory.ItemStack;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Map;
+import java.util.Optional;
 import java.util.logging.Level;
 
 /**
@@ -67,15 +69,18 @@ public class PetBlockModifyHelper {
                 }
 
                 if (value instanceof String) {
-                    nbtSetString.invoke(nbtTag, key, value);
+                    final String dataValue = (String) value;
+                    nbtSetString.invoke(nbtTag, key, dataValue);
                 } else if (value instanceof Integer) {
-                    nbtSetInteger.invoke(nbtTag, key, value);
+                    final int dataValue = (int) value;
+                    nbtSetInteger.invoke(nbtTag, key, dataValue);
                 } else if (value instanceof Boolean) {
-                    nbtSetBoolean.invoke(nbtTag, key, value);
+                    final boolean dataValue = (boolean) value;
+                    nbtSetBoolean.invoke(nbtTag, key, dataValue);
                 }
                 setNBTTag.invoke(nmsItemStack, nbtTag);
-                return (ItemStack) bukkitCopyMethod.invoke(null, nmsItemStack);
             }
+            return (ItemStack) bukkitCopyMethod.invoke(null, nmsItemStack);
         } catch (NoSuchMethodException | ClassNotFoundException | InvocationTargetException | IllegalAccessException | InstantiationException e) {
             Bukkit.getLogger().log(Level.WARNING, "Failed to set nbt tag.", e);
         }
@@ -147,7 +152,10 @@ public class PetBlockModifyHelper {
     public static void setParticleEffect(PetMeta petMeta, PetBlock petBlock, GUIItemContainer container) {
         if (container == null)
             return;
-        final ParticleEffectMeta transfer = Config.getInstance().getParticleController().getByItem(container);
+        final Optional<ParticleEffectMeta> transferOpt = Config.getInstance().getParticleController().getFromItem(container);
+        if (!transferOpt.isPresent())
+            return;
+        final ParticleEffectMeta transfer = transferOpt.get();
         petMeta.getParticleEffectMeta().setEffectType(transfer.getEffectType());
         petMeta.getParticleEffectMeta().setSpeed(transfer.getSpeed());
         petMeta.getParticleEffectMeta().setAmount(transfer.getAmount());
@@ -171,7 +179,7 @@ public class PetBlockModifyHelper {
         if (petSkin.contains("textures.minecraft") && !petSkin.contains("http://")) {
             petSkin = "http://" + skin;
         }
-        petMeta.setSkin(Material.SKULL_ITEM.getId(), (short) 3, petSkin, false);
+        petMeta.setSkin(MaterialCompatibility12.getIdFromMaterial(Material.SKULL_ITEM), (short) 3, petSkin, false);
         if (petBlock != null) {
             petBlock.respawn();
         }

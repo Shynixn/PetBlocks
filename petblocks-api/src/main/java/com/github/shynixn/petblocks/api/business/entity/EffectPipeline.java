@@ -4,7 +4,7 @@ import com.github.shynixn.petblocks.api.persistence.entity.ParticleEffectMeta;
 import com.github.shynixn.petblocks.api.persistence.entity.SoundMeta;
 
 /**
- * Created by Shynixn 2017.
+ * Pipeline to correctly handle particle or sound effects.
  * <p>
  * Version 1.1
  * <p>

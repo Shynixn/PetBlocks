@@ -15,7 +15,7 @@ import com.github.shynixn.petblocks.bukkit.logic.business.PetBlockManager;
 import com.github.shynixn.petblocks.bukkit.logic.business.configuration.Config;
 import com.github.shynixn.petblocks.bukkit.logic.business.configuration.ConfigPet;
 import com.github.shynixn.petblocks.bukkit.logic.business.helper.PetBlockModifyHelper;
-import com.github.shynixn.petblocks.bukkit.nms.NMSRegistry;
+import com.github.shynixn.petblocks.bukkit.logic.business.helper.SkinHelper;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -35,6 +35,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.util.Vector;
 
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 
 /**
@@ -135,13 +136,13 @@ public class PetDataListener extends SimpleListener {
                 && this.manager.inventories.get(player).equals(event.getInventory())) {
             event.setCancelled(true);
             ((Player) event.getWhoClicked()).updateInventory();
-            final PetBlock petBlock;
-            if ((petBlock = PetBlocksApi.getDefaultPetBlockController().getByPlayer(player)) != null) {
-                this.handleClick(event, player, petBlock.getMeta(), petBlock);
+            final Optional<PetBlock> optPetblock;
+            if ((optPetblock = PetBlocksApi.getDefaultPetBlockController().getFromPlayer(player)).isPresent()) {
+                this.handleClick(event, player, optPetblock.get().getMeta(), optPetblock.get());
             } else {
                 this.plugin.getServer().getScheduler().runTaskAsynchronously(this.plugin, () -> {
-                    final com.github.shynixn.petblocks.api.persistence.entity.PetMeta petMeta = this.manager.getPetMetaController().getByPlayer(player);
-                    this.plugin.getServer().getScheduler().runTask(this.plugin, () -> this.handleClick(event, player, petMeta, null));
+                    final Optional<PetMeta> optPetMeta = this.manager.getPetMetaController().getFromPlayer(player);
+                    optPetMeta.ifPresent(petMeta -> this.plugin.getServer().getScheduler().runTask(this.plugin, () -> this.handleClick(event, player, petMeta, null)));
                 });
             }
         } else if (this.manager.headDatabasePlayers.contains(player)) {
@@ -181,7 +182,7 @@ public class PetDataListener extends SimpleListener {
         this.plugin.getServer().getScheduler().runTaskAsynchronously(this.plugin, () -> {
             final PetMeta petMeta;
             if (Config.getInstance().isJoin_enabled()) {
-                if (this.manager.getPetMetaController().getByPlayer(event.getPlayer()) == null || Config.getInstance().isJoin_overwriteExistingPet()) {
+                if (!this.manager.getPetMetaController().getFromPlayer(event.getPlayer()).isPresent() || Config.getInstance().isJoin_overwriteExistingPet()) {
                     if (event.getPlayer().getWorld() != null) {
                         final PetMeta meta = this.manager.getPetMetaController().create(event.getPlayer());
                         Config.getInstance().fixJoinDefaultPet(meta);
@@ -439,7 +440,6 @@ public class PetDataListener extends SimpleListener {
      *
      * @param itemStack itemStack
      * @param player    player
-     * @return success
      */
     private void linkHeadDatabaseItemToPetBlocks(ItemStack itemStack, Player player) {
         if (itemStack != null
@@ -452,7 +452,7 @@ public class PetDataListener extends SimpleListener {
                 final com.github.shynixn.petblocks.api.persistence.entity.PetMeta petMeta = this.manager.getPetMetaController().getByPlayer(player);
                 final SkullMeta meta = (SkullMeta) itemStack.getItemMeta();
                 if (meta.getOwner() == null) {
-                    petMeta.setSkin(itemStack.getType().getId(), itemStack.getDurability(), NMSRegistry.getSkinUrl(itemStack), false);
+                    petMeta.setSkin(itemStack.getType().getId(), itemStack.getDurability(), SkinHelper.getItemStackSkin(itemStack).get(), false);
                 } else {
                     petMeta.setSkin(itemStack.getType().getId(), itemStack.getDurability(), ((SkullMeta) itemStack.getItemMeta()).getOwner(), false);
                 }
@@ -516,7 +516,7 @@ public class PetDataListener extends SimpleListener {
             if (t != '%') {
                 b.append(t);
             } else {
-                break;
+                return ChatColor.stripColor(b.toString());
             }
         }
         return ChatColor.stripColor(b.toString());
@@ -555,7 +555,6 @@ public class PetDataListener extends SimpleListener {
      *
      * @param player  player
      * @param petMeta petMeta
-     * @return petblock
      */
     private void setPetBlock(Player player, PetMeta petMeta) {
         petMeta.setEnabled(true);

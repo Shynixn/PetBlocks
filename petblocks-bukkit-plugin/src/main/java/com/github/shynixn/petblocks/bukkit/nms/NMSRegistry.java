@@ -8,7 +8,6 @@ import com.github.shynixn.petblocks.bukkit.dependencies.worldguard.WorldGuardCon
 import com.github.shynixn.petblocks.bukkit.dependencies.worldguard.WorldGuardConnection6;
 import com.github.shynixn.petblocks.bukkit.lib.ReflectionUtils;
 import com.github.shynixn.petblocks.bukkit.lib.RegisterHelper;
-import com.github.shynixn.petblocks.bukkit.lib.SkullMetaRegistry;
 import com.github.shynixn.petblocks.bukkit.nms.v1_9_R1.Listener19;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -182,14 +181,6 @@ public final class NMSRegistry {
             }
             new Listener19(players, plugin);
         }
-    }
-
-    public static ItemStack changeSkullSkin(ItemStack itemStack, String skinUrl) {
-        return SkullMetaRegistry.convertToSkinSkull(itemStack, skinUrl, "org.bukkit.craftbukkit.VERSION.inventory.CraftMetaSkull".replace("VERSION", VersionSupport.getServerVersion().getVersionText()));
-    }
-
-    public static String getSkinUrl(ItemStack itemStack) {
-        return SkullMetaRegistry.getLink(itemStack, "org.bukkit.craftbukkit.VERSION.inventory.CraftMetaSkull".replace("VERSION", VersionSupport.getServerVersion().getVersionText()));
     }
 
     public static void registerAll() {

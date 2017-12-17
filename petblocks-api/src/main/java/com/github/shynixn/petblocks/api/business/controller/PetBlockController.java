@@ -4,6 +4,8 @@ import com.github.shynixn.petblocks.api.business.entity.PetBlock;
 import com.github.shynixn.petblocks.api.persistence.controller.IController;
 import com.github.shynixn.petblocks.api.persistence.entity.PetMeta;
 
+import java.util.Optional;
+
 /**
  * Registers petblocks to manage their action and behavior.
  * <p>
@@ -48,7 +50,16 @@ public interface PetBlockController extends IController<PetBlock> {
      * @param player player
      * @return petblock
      */
+    @Deprecated
     PetBlock getByPlayer(Object player);
+
+    /**
+     * Returns the petblock of the given player.
+     *
+     * @param player player
+     * @return petblock
+     */
+    Optional<PetBlock> getFromPlayer(Object player);
 
     /**
      * Removes the petblock of the given player.

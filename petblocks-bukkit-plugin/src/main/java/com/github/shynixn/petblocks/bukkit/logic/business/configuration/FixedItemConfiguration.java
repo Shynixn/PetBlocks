@@ -9,10 +9,7 @@ import org.bukkit.configuration.MemorySection;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.logging.Level;
 
 /**
@@ -129,10 +126,25 @@ public class FixedItemConfiguration implements OtherGUIItemsController {
      * @return item
      */
     @Override
+    @Deprecated
     public GUIItemContainer getGUIItemByName(String name) {
         if (this.items.containsKey(name))
             return this.items.get(name);
         return null;
+    }
+
+    /**
+     * Returns the guiItem by the given name.
+     *
+     * @param name name
+     * @return item
+     */
+    @Override
+    public Optional<GUIItemContainer> getGUIItemFromName(String name) {
+        if (this.items.containsKey(name)) {
+            return Optional.of(this.items.get(name));
+        }
+        return Optional.empty();
     }
 
     /**

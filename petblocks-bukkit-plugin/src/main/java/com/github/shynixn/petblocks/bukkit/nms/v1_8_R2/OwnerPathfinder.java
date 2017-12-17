@@ -71,7 +71,7 @@ public final class OwnerPathfinder extends PathfinderGoal {
         if (!this.entity.getWorld().getWorldData().getName().equals(this.player.getWorld().getName())) {
             this.entity.getBukkitEntity().teleport(this.player.getLocation());
         } else if (this.entity.getBukkitEntity().getLocation().distance(this.player.getLocation()) > ConfigPet.getInstance().getBlocksAwayFromPlayer()) {
-            this.counter2 = PetBlockHelper.afraidWaterEffect(petBlock, this.counter2);
+            this.counter2 = PetBlockHelper.afraidWaterEffect(this.petBlock, this.counter2);
             final Location targetLocation = this.player.getLocation();
             this.entity.getNavigation().m();
             this.entity.getNavigation();

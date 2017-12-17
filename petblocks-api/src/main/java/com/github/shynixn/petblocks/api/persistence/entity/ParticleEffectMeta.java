@@ -280,6 +280,7 @@ public interface ParticleEffectMeta extends Persistenceable {
      * @param location location
      * @param players  players
      */
+    @Deprecated
     void apply(Object location, Collection<Object> players);
 
     /**
@@ -287,6 +288,7 @@ public interface ParticleEffectMeta extends Persistenceable {
      *
      * @param location location
      */
+    @Deprecated
     void apply(Object location);
 
     /**

@@ -96,10 +96,6 @@
                         <goals>
                             <goal>shade</goal>
                         </goals>
-                        <configuration>
-                            <finalName>PetBlocks-${project.version}</finalName>
-                            <outputDirectory>${petblocks.bukkit.test-server-path}</outputDirectory>
-                        </configuration>
                     </execution>
                 </executions>
             </plugin>
