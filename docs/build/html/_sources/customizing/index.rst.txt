@@ -2,5 +2,4 @@ Customizing
 ===========
 
 .. toctree::
-
-Todo?
+   gui
