@@ -4,7 +4,9 @@ import com.github.shynixn.petblocks.api.business.entity.GUIItemContainer;
 import com.github.shynixn.petblocks.api.business.enumeration.GUIPage;
 import com.github.shynixn.petblocks.bukkit.PetBlocksPlugin;
 import com.github.shynixn.petblocks.bukkit.logic.business.configuration.Config;
-import com.github.shynixn.petblocks.bukkit.nms.NMSRegistry;
+import com.github.shynixn.petblocks.bukkit.logic.business.helper.PetBlockModifyHelper;
+import com.github.shynixn.petblocks.bukkit.logic.business.helper.SkinHelper;
+import com.github.shynixn.petblocks.bukkit.nms.v1_12_R1.MaterialCompatibility12;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -147,10 +149,10 @@ public class ItemContainer implements GUIItemContainer {
         }
         try {
             if (this.enabled) {
-                ItemStack itemStack = new ItemStack(Material.getMaterial(this.id), 1, (short) this.damage);
-                if (this.id == Material.SKULL_ITEM.getId() && this.skin != null) {
+                ItemStack itemStack = new ItemStack(MaterialCompatibility12.getMaterialFromId(this.id), 1, (short) this.damage);
+                if (this.id == MaterialCompatibility12.getIdFromMaterial(Material.SKULL_ITEM) && this.skin != null) {
                     if (this.skin.contains("textures.minecraft.net")) {
-                        itemStack = NMSRegistry.changeSkullSkin(itemStack, "http://" + this.skin);
+                        SkinHelper.setItemStackSkin(itemStack, "http://" + this.skin);
                     } else {
                         final SkullMeta meta = (SkullMeta) itemStack.getItemMeta();
                         meta.setOwner(this.skin);
@@ -159,7 +161,7 @@ public class ItemContainer implements GUIItemContainer {
                 }
                 final Map<String, Object> data = new HashMap<>();
                 data.put("Unbreakable", this.isItemUnbreakable());
-                itemStack = NMSRegistry.setItemStackTag(itemStack, data);
+                itemStack = PetBlockModifyHelper.setItemStackNBTTag(itemStack, data);
                 final ItemMeta itemMeta = itemStack.getItemMeta();
                 itemMeta.setDisplayName(this.name);
                 itemStack.setItemMeta(itemMeta);

@@ -7,10 +7,7 @@ import com.github.shynixn.petblocks.bukkit.logic.business.entity.ItemContainer;
 import org.bukkit.configuration.MemorySection;
 import org.bukkit.plugin.Plugin;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.logging.Level;
 
 /**
@@ -69,7 +66,7 @@ public class CostumeConfiguration implements CostumeController {
      */
     @Override
     public void store(GUIItemContainer item) {
-        if (this.getContainerByPosition(item.getPosition()) != null) {
+        if (this.getContainerFromPosition(item.getPosition()).isPresent()) {
             throw new IllegalArgumentException("Item at this position already exists!");
         }
         this.items.add(item);
@@ -132,13 +129,26 @@ public class CostumeConfiguration implements CostumeController {
      * @return container
      */
     @Override
+    @Deprecated
     public GUIItemContainer getContainerByPosition(int position) {
+        final Optional<GUIItemContainer> tmp = this.getContainerFromPosition(position);
+        return tmp.orElse(null);
+    }
+
+    /**
+     * Returns the container by the given order id.
+     *
+     * @param position position
+     * @return container
+     */
+    @Override
+    public Optional<GUIItemContainer> getContainerFromPosition(int position) {
         for (final GUIItemContainer guiItemContainer : this.items) {
             if (guiItemContainer.getPosition() == position) {
-                return guiItemContainer;
+                return Optional.of(guiItemContainer);
             }
         }
-        return null;
+        return Optional.empty();
     }
 
     /**

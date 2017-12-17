@@ -13,77 +13,72 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.logging.Level;
 
+/**
+ * DatabaseRepository for particleEffects.
+ * <p>
+ * Version 1.1
+ * <p>
+ * MIT License
+ * <p>
+ * Copyright (c) 2017 by Shynixn
+ * <p>
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ * <p>
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ * <p>
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
 public class ParticleEffectDataRepository extends DataBaseRepository<ParticleEffectMeta> implements ParticleEffectMetaController {
 
-    private ExtensionHikariConnectionContext dbContext;
-
+    /**
+     * Initializes a new particleEffect repository.
+     *
+     * @param connectionContext connectionContext
+     */
     public ParticleEffectDataRepository(ExtensionHikariConnectionContext connectionContext) {
-        super();
-        this.dbContext = connectionContext;
+        super(connectionContext);
     }
 
     /**
-     * Creates a new particleEffectMeta
-     *
-     * @return meta
-     */
-    @Override
-    public ParticleEffectMeta create() {
-        return new ParticleEffectData();
-    }
-
-    /**
-     * Returns the item of the given id
-     *
-     * @param id id
-     * @return item
-     */
-    @Override
-    public ParticleEffectMeta getById(long id) {
-        try (Connection connection = this.dbContext.getConnection()) {
-            try (PreparedStatement preparedStatement = this.dbContext.executeStoredQuery("particle/selectbyid", connection,
-                    id)) {
-                try (ResultSet resultSet = preparedStatement.executeQuery()) {
-                    if (resultSet.next()) {
-                        return this.from(resultSet);
-                    }
-                }
-            }
-        } catch (final SQLException e) {
-            PetBlocksPlugin.logger().log(Level.WARNING, "Database error occurred.", e);
-        }
-        return null;
-    }
-
-    /**
-     * Checks if the item has got an valid databaseId
+     * Checks if the item has got an valid databaseId.
      *
      * @param item item
      * @return hasGivenId
      */
     @Override
-    public boolean hasId(ParticleEffectMeta item) {
+    protected boolean hasId(ParticleEffectMeta item) {
         return item.getId() != 0;
     }
 
     /**
-     * Selects all items from the database into the list
+     * Selects all items from the database into the list.
      *
      * @return listOfItems
      */
     @Override
-    public List<ParticleEffectMeta> select() {
+    protected List<ParticleEffectMeta> select() {
         final List<ParticleEffectMeta> items = new ArrayList<>();
-        try (Connection connection = this.dbContext.getConnection()) {
-            try (PreparedStatement preparedStatement = this.dbContext.executeStoredQuery("particle/selectall", connection)) {
-                try (ResultSet resultSet = preparedStatement.executeQuery()) {
-                    while (resultSet.next()) {
-                        final ParticleEffectMeta data = this.from(resultSet);
-                        items.add(data);
-                    }
-                }
+        try (Connection connection = this.dbContext.getConnection();
+             PreparedStatement preparedStatement = this.dbContext.executeStoredQuery("particle/selectall", connection);
+             ResultSet resultSet = preparedStatement.executeQuery()) {
+            while (resultSet.next()) {
+                final ParticleEffectMeta data = this.from(resultSet);
+                items.add(data);
             }
         } catch (final SQLException e) {
             PetBlocksPlugin.logger().log(Level.WARNING, "Database error occurred.", e);
@@ -92,12 +87,12 @@ public class ParticleEffectDataRepository extends DataBaseRepository<ParticleEff
     }
 
     /**
-     * Updates the item inside of the database
+     * Updates the item inside of the database.
      *
      * @param item item
      */
     @Override
-    public void update(ParticleEffectMeta item) {
+    protected void update(ParticleEffectMeta item) {
         try (Connection connection = this.dbContext.getConnection()) {
             String materialName = null;
             if (item.getMaterial() != null)
@@ -121,12 +116,42 @@ public class ParticleEffectDataRepository extends DataBaseRepository<ParticleEff
     }
 
     /**
-     * Deletes the item from the database
+     * Creates a new particleEffectMeta.
+     *
+     * @return meta
+     */
+    @Override
+    public ParticleEffectMeta create() {
+        return new ParticleEffectData();
+    }
+
+    /**
+     * Returns the item of the given id.
+     *
+     * @param id id
+     * @return item
+     */
+    @Override
+    public Optional<ParticleEffectMeta> getFromId(long id) {
+        try (Connection connection = this.dbContext.getConnection();
+             PreparedStatement preparedStatement = this.dbContext.executeStoredQuery("particle/selectbyid", connection, id);
+             ResultSet resultSet = preparedStatement.executeQuery()) {
+            if (resultSet.next()) {
+                return Optional.of(this.from(resultSet));
+            }
+        } catch (final SQLException e) {
+            PetBlocksPlugin.logger().log(Level.WARNING, "Database error occurred.", e);
+        }
+        return Optional.empty();
+    }
+
+    /**
+     * Deletes the item from the database.
      *
      * @param item item
      */
     @Override
-    public void delete(ParticleEffectMeta item) {
+    protected void delete(ParticleEffectMeta item) {
         if (item != null) {
             try (Connection connection = this.dbContext.getConnection()) {
                 this.dbContext.executeStoredUpdate("particle/delete", connection,
@@ -138,12 +163,12 @@ public class ParticleEffectDataRepository extends DataBaseRepository<ParticleEff
     }
 
     /**
-     * Inserts the item into the database and sets the id
+     * Inserts the item into the database and sets the id.
      *
      * @param item item
      */
     @Override
-    public void insert(ParticleEffectMeta item) {
+    protected void insert(ParticleEffectMeta item) {
         try (Connection connection = this.dbContext.getConnection()) {
             String materialName = null;
             if (item.getMaterial() != null)
@@ -164,17 +189,15 @@ public class ParticleEffectDataRepository extends DataBaseRepository<ParticleEff
     }
 
     /**
-     * Returns the amount of items in the repository
+     * Returns the amount of items in the repository.
      */
     @Override
     public int size() {
-        try (Connection connection = this.dbContext.getConnection()) {
-            try (PreparedStatement preparedStatement = this.dbContext.executeStoredQuery("particle/count", connection)) {
-                try (ResultSet resultSet = preparedStatement.executeQuery()) {
-                    resultSet.next();
-                    return resultSet.getInt(1);
-                }
-            }
+        try (Connection connection = this.dbContext.getConnection();
+             PreparedStatement preparedStatement = this.dbContext.executeStoredQuery("particle/count", connection);
+             ResultSet resultSet = preparedStatement.executeQuery()) {
+            resultSet.next();
+            return resultSet.getInt(1);
         } catch (final SQLException e) {
             PetBlocksPlugin.logger().log(Level.WARNING, "Database error occurred.", e);
         }
@@ -182,13 +205,13 @@ public class ParticleEffectDataRepository extends DataBaseRepository<ParticleEff
     }
 
     /**
-     * Generates the entity from the given resultSet
+     * Generates the entity from the given resultSet.
      *
      * @param resultSet resultSet
      * @return entity
      */
     @Override
-    public ParticleEffectMeta from(ResultSet resultSet) throws SQLException {
+    protected ParticleEffectMeta from(ResultSet resultSet) throws SQLException {
         final ParticleEffectData particleEffectData = new ParticleEffectData();
         particleEffectData.setId(resultSet.getLong("id"));
         particleEffectData.setEffectName(resultSet.getString("name"));

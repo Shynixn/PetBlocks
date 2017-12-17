@@ -1,10 +1,10 @@
 package com.github.shynixn.petblocks.bukkit.nms.v1_8_R2;
 
+import com.github.shynixn.petblocks.api.business.entity.PetBlock;
 import com.github.shynixn.petblocks.api.business.entity.PetBlockPartEntity;
-import com.github.shynixn.petblocks.api.persistence.entity.PetMeta;
 import com.github.shynixn.petblocks.bukkit.PetBlocksPlugin;
-import com.github.shynixn.petblocks.bukkit.nms.helper.PetBlockHelper;
 import com.github.shynixn.petblocks.bukkit.logic.business.configuration.ConfigPet;
+import com.github.shynixn.petblocks.bukkit.nms.helper.PetBlockHelper;
 import net.minecraft.server.v1_8_R2.*;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -22,14 +22,13 @@ import java.util.logging.Level;
 
 public final class CustomZombie extends EntityZombie implements PetBlockPartEntity {
     private long playedMovingSound = 100000;
-    private PetMeta petMeta;
-    private Player player;
+    private PetBlock petBlock;
 
     public CustomZombie(World world) {
         super(world);
     }
 
-    public CustomZombie(Player player, PetMeta meta) {
+    public CustomZombie(Player player, PetBlock petBlock) {
         super(((CraftWorld) player.getWorld()).getHandle());
         this.b(true);
         try {
@@ -44,18 +43,17 @@ public final class CustomZombie extends EntityZombie implements PetBlockPartEnti
             this.getAttributeInstance(GenericAttributes.d).setValue(0.30000001192092896D * ConfigPet.getInstance().getModifier_petwalking());
 
             this.goalSelector.a(0, new PathfinderGoalFloat(this));
-            this.goalSelector.a(1, new OwnerPathfinder(this, player));
+            this.goalSelector.a(1, new OwnerPathfinder(this,petBlock));
         } catch (final Exception exc) {
             PetBlocksPlugin.logger().log(Level.WARNING, "EntityNMS exception.", exc);
         }
-        this.player = player;
-        this.petMeta = meta;
+        this.petBlock = petBlock;
         this.S = (float) ConfigPet.getInstance().getModifier_petclimbing();
     }
 
     @Override
     protected void a(BlockPosition blockposition, Block block) {
-        this.playedMovingSound = PetBlockHelper.executeMovingSound(this.getBukkitEntity(), this.player, this.petMeta, this.playedMovingSound);
+        this.playedMovingSound = PetBlockHelper.executeMovingSound(this.petBlock, this.playedMovingSound);
         super.a(blockposition, block);
     }
     /**

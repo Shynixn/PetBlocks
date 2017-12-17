@@ -181,8 +181,18 @@ public class ConfigPet extends SimpleConfig {
         return (boolean) this.getData("pet.design.show-damage-animation");
     }
 
-    public boolean isDesign_allowOtherHearSound() {
+    public boolean isSoundForOtherPlayersHearable() {
         return (boolean) this.getData("pet.design.sounds-other-players");
+    }
+
+
+    /**
+     * Returns if particles are visible for other players.
+     *
+     * @return visible
+     */
+    public boolean areParticlesForOtherPlayersVisible() {
+        return this.getData("pet.design.particles-other-players");
     }
 
     public double getModifier_petriding() {

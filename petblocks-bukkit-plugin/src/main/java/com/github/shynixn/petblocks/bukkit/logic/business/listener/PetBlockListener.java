@@ -11,7 +11,6 @@ import com.github.shynixn.petblocks.bukkit.logic.business.PetBlockManager;
 import com.github.shynixn.petblocks.bukkit.logic.business.PetRunnable;
 import com.github.shynixn.petblocks.bukkit.logic.business.configuration.Config;
 import com.github.shynixn.petblocks.bukkit.logic.business.configuration.ConfigPet;
-import com.github.shynixn.petblocks.bukkit.logic.persistence.entity.SoundBuilder;
 import com.github.shynixn.petblocks.bukkit.nms.NMSRegistry;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -31,7 +30,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.util.Vector;
 
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Level;
@@ -241,12 +239,8 @@ public class PetBlockListener extends SimpleListener {
             final PetBlock petBlock = this.getPet(event.getRightClicked());
             if (petBlock != null && petBlock.getPlayer().equals(event.getPlayer())) {
                 if (ConfigPet.getInstance().isFeedingEnabled() && NMSRegistry.getItemInHand19(event.getPlayer(), false) != null && NMSRegistry.getItemInHand19(event.getPlayer(), false).getType() == Material.CARROT_ITEM) {
-                    ConfigPet.getInstance().getFeedingClickParticleEffect().apply(event.getRightClicked().getLocation(), (Collection<Object>) (Object) event.getRightClicked().getWorld().getPlayers());
-                    try {
-                        ((SoundBuilder) ConfigPet.getInstance().getFeedingClickSound()).apply(event.getRightClicked().getLocation());
-                    } catch (final Exception e) {
-                        PetBlocksPlugin.logger().log(Level.WARNING, "Failed to play sound.", e);
-                    }
+                    petBlock.getEffectPipeline().playParticleEffect(event.getRightClicked().getLocation(), ConfigPet.getInstance().getFeedingClickParticleEffect());
+                    petBlock.getEffectPipeline().playSound(event.getRightClicked().getLocation(), ConfigPet.getInstance().getFeedingClickSound());
                     if (NMSRegistry.getItemInHand19(event.getPlayer(), false).getAmount() == 1)
                         event.getPlayer().getInventory().setItem(event.getPlayer().getInventory().getHeldItemSlot(), new ItemStack(Material.AIR));
                     else
@@ -257,7 +251,7 @@ public class PetBlockListener extends SimpleListener {
                         petBlock.jump();
                     }
                 }
-                if (ConfigPet.getInstance().isFollow_carry() && (event.getPlayer().getInventory() == null || NMSRegistry.getItemInHand19(event.getPlayer(), true).getType() == Material.AIR)) {
+                else if (ConfigPet.getInstance().isFollow_carry() && (event.getPlayer().getInventory() == null || NMSRegistry.getItemInHand19(event.getPlayer(), true).getType() == Material.AIR)) {
                     NMSRegistry.setItemInHand19(event.getPlayer(), ((ArmorStand) petBlock.getArmorStand()).getHelmet().clone(), true);
                     this.manager.getPetBlockController().remove(petBlock);
                     this.manager.carryingPet.add(event.getPlayer());

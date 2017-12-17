@@ -7,9 +7,9 @@ import com.github.shynixn.petblocks.bukkit.nms.NMSRegistry;
 import com.github.shynixn.petblocks.bukkit.nms.VersionSupport;
 import com.github.shynixn.petblocks.bukkit.logic.business.PetBlockManager;
 import com.github.shynixn.petblocks.bukkit.logic.business.configuration.Config;
-import com.github.shynixn.petblocks.bukkit.metrics.Metrics;
 import com.github.shynixn.petblocks.bukkit.lib.ReflectionUtils;
 import com.github.shynixn.petblocks.bukkit.lib.UpdateUtils;
+import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -58,7 +58,7 @@ public final class PetBlocksPlugin extends JavaPlugin {
     private PetBlockManager petBlockManager;
 
     /**
-     * Enables the plugin PetBlocks
+     * Enables the plugin PetBlocks.
      */
     @Override
     public void onEnable() {

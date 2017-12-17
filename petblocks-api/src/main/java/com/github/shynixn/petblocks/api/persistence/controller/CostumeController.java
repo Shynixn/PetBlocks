@@ -2,6 +2,8 @@ package com.github.shynixn.petblocks.api.persistence.controller;
 
 import com.github.shynixn.petblocks.api.business.entity.GUIItemContainer;
 
+import java.util.Optional;
+
 /**
  * Controller for different kind of costume categories.
  * <p>
@@ -37,5 +39,14 @@ public interface CostumeController extends IFileController<GUIItemContainer> {
      * @param id id
      * @return container
      */
+    @Deprecated
     GUIItemContainer getContainerByPosition(int id);
+
+    /**
+     * Returns the container by the given order id.
+     *
+     * @param id id
+     * @return container
+     */
+    Optional<GUIItemContainer> getContainerFromPosition(int id);
 }

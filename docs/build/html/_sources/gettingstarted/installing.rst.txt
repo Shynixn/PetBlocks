@@ -13,7 +13,7 @@ Spigot/CraftBukkit/Sponge
 
 * Spigot ✔
 * PaperSpigot ✔
-* CraftBukkit ✘ (not tested)
+* CraftBukkit ✔
 * Sponge ✘ (not compatible)
 
 Download

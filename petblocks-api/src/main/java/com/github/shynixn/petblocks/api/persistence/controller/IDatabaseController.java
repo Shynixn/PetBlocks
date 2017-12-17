@@ -1,5 +1,7 @@
 package com.github.shynixn.petblocks.api.persistence.controller;
 
+import java.util.Optional;
+
 /**
  * Database Controller interface.
  * <p>
@@ -34,5 +36,14 @@ public interface IDatabaseController<T> extends IController<T> {
      * @param id id
      * @return item
      */
+    @Deprecated
     T getById(long id);
+
+    /**
+     * Returns the item of the given id.
+     *
+     * @param id id
+     * @return item
+     */
+    Optional<T> getFromId(long id);
 }

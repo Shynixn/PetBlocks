@@ -28,7 +28,6 @@ package com.github.shynixn.petblocks.api.persistence.entity;
  * SOFTWARE.
  */
 public interface PetMeta extends Persistenceable {
-
     /**
      * Returns if the petblock is enabled.
      *
@@ -77,20 +76,6 @@ public interface PetMeta extends Persistenceable {
      * @param engine engine
      */
     void setEngine(EngineContainer engine);
-
-    /**
-     * Returns if the pet is visible to other players.
-     *
-     * @return visible
-     */
-    boolean isVisible();
-
-    /**
-     * Sets if the pet should be visible to other players.
-     *
-     * @param enabled enabled
-     */
-    void setVisible(boolean enabled);
 
     /**
      * Sets the pet sound enabled.

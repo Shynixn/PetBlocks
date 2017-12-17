@@ -36,6 +36,7 @@ public enum GUIPage {
      * @param name name
      * @return guiPage
      */
+    @Deprecated
     public static GUIPage getGUIPageFromName(String name) {
         for (final GUIPage page : GUIPage.values()) {
             if (page.name().equalsIgnoreCase(name)) {

@@ -1,10 +1,10 @@
 package com.github.shynixn.petblocks.bukkit.nms.v1_9_R1;
 
+import com.github.shynixn.petblocks.api.business.entity.PetBlock;
 import com.github.shynixn.petblocks.api.business.entity.PetBlockPartEntity;
-import com.github.shynixn.petblocks.api.persistence.entity.PetMeta;
 import com.github.shynixn.petblocks.bukkit.PetBlocksPlugin;
-import com.github.shynixn.petblocks.bukkit.nms.helper.PetBlockHelper;
 import com.github.shynixn.petblocks.bukkit.logic.business.configuration.ConfigPet;
+import com.github.shynixn.petblocks.bukkit.nms.helper.PetBlockHelper;
 import com.google.common.collect.Sets;
 import net.minecraft.server.v1_9_R1.*;
 import org.bukkit.Bukkit;
@@ -22,8 +22,7 @@ import java.lang.reflect.Modifier;
 import java.util.logging.Level;
 
 public final class CustomRabbit extends EntityRabbit implements PetBlockPartEntity {
-    private Player player;
-    private PetMeta petData;
+    private PetBlock petBlock;
 
     private long playedMovingSound = 100000;
 
@@ -31,7 +30,7 @@ public final class CustomRabbit extends EntityRabbit implements PetBlockPartEnti
         super(world);
     }
 
-    public CustomRabbit(Player player, PetMeta meta) {
+    public CustomRabbit(Player player, PetBlock petBlock) {
         super(((CraftWorld) player.getWorld()).getHandle());
         this.c(true);
         try {
@@ -45,19 +44,18 @@ public final class CustomRabbit extends EntityRabbit implements PetBlockPartEnti
             cField.set(this.goalSelector, Sets.newLinkedHashSet());
             cField.set(this.targetSelector, Sets.newLinkedHashSet());
             this.goalSelector.a(0, new PathfinderGoalFloat(this));
-            this.goalSelector.a(1, new OwnerPathfinder(this, player));
+            this.goalSelector.a(1, new OwnerPathfinder(this,petBlock));
             this.getAttributeInstance(GenericAttributes.MOVEMENT_SPEED).setValue(0.30000001192092896D * ConfigPet.getInstance().getModifier_petwalking());
         } catch (final Exception exc) {
             PetBlocksPlugin.logger().log(Level.WARNING, "EntityNMS exception.", exc);
         }
-        this.player = player;
-        this.petData = meta;
+        this.petBlock = petBlock;
         this.P = (float) ConfigPet.getInstance().getModifier_petclimbing();
     }
 
     @Override
     protected SoundEffect da() {
-        this.playedMovingSound = PetBlockHelper.executeMovingSound(this.getBukkitEntity(), this.player, this.petData, this.playedMovingSound);
+        this.playedMovingSound = PetBlockHelper.executeMovingSound(this.petBlock, this.playedMovingSound);
         return super.da();
     }
 

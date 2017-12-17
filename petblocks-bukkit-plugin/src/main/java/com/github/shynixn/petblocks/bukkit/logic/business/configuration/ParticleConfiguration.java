@@ -109,6 +109,7 @@ public class ParticleConfiguration implements ParticleController {
      * @return container
      */
     @Override
+    @Deprecated
     public GUIItemContainer getContainerByPosition(int id) {
         for (final GUIItemContainer guiItemContainer : this.particleCache.keySet()) {
             if (guiItemContainer.getPosition() == id) {
@@ -116,6 +117,22 @@ public class ParticleConfiguration implements ParticleController {
             }
         }
         return null;
+    }
+
+    /**
+     * Returns the container by the given order id.
+     *
+     * @param id id
+     * @return container
+     */
+    @Override
+    public Optional<GUIItemContainer> getContainerFromPosition(int id) {
+        for (final GUIItemContainer guiItemContainer : this.particleCache.keySet()) {
+            if (guiItemContainer.getPosition() == id) {
+                return Optional.of(guiItemContainer);
+            }
+        }
+        return Optional.empty();
     }
 
     /**
@@ -130,6 +147,20 @@ public class ParticleConfiguration implements ParticleController {
             return this.particleCache.get(container);
         }
         return null;
+    }
+
+    /**
+     * Returns the particleEffect by the given container.
+     *
+     * @param container container
+     * @return particleEffect
+     */
+    @Override
+    public Optional<ParticleEffectMeta> getFromItem(GUIItemContainer container) {
+        if (this.particleCache.containsKey(container)) {
+            return Optional.of(this.particleCache.get(container));
+        }
+        return Optional.empty();
     }
 
     /**

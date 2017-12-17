@@ -19,7 +19,7 @@ PetBlocks is using maven as build system but you can include the api via differe
     <dependency>
         <groupId>com.github.shynixn.petblocks</groupId>
         <artifactId>petblocks-bukkit-api</artifactId>
-        <version>6.4.0</version>
+        <version>6.4.1</version>
         <scope>provided</scope>
     </dependency>
 
@@ -27,7 +27,7 @@ PetBlocks is using maven as build system but you can include the api via differe
 **Gradle**:
 ::
     dependencies {
-        compileOnly 'com.github.shynixn.petblocks:petblocks-bukkit-api:6.4.0'
+        compileOnly 'com.github.shynixn.petblocks:petblocks-bukkit-api:6.4.1'
     }
 
 **Reference the jar file**:
@@ -71,50 +71,51 @@ Modifying PetMeta and PetBlock
 You can see that this gets easily very complicated if
 you need to manage asynchronous and synchronous server tasks.
 ::
-    final Player player; //Any player instance
-    final Plugin plugin; //Any plugin instance
-    PetMetaController metaController = PetBlocksApi.getDefaultPetMetaController();
+            final Player player; //Any player instance
+            final Plugin plugin; //Any plugin instance
+            PetMetaController metaController = PetBlocksApi.getDefaultPetMetaController();
 
-    Bukkit.getServer().getScheduler().runTaskAsynchronously(plugin, new Runnable() {
+            Bukkit.getServer().getScheduler().runTaskAsynchronously(plugin, new Runnable() {
 
-            @Override
-            public void run() {
-                PetMeta petMeta = metaController.getByPlayer(player);   //Acquire the PetMeta async from the database.
-                if (petMeta != null) { //Check if the player has got a petMeta?
-                    Bukkit.getServer().getScheduler().runTask(plugin, new Runnable() {
+                @Override
+                public void run() {
+                    Optional<PetMeta> optPetMeta = metaController.getFromPlayer(player);   //Acquire the PetMeta async from the database.
+                    if (optPetMeta.isPresent()) { //Check if the player has got a petMeta?
+                        Bukkit.getServer().getScheduler().runTask(plugin, new Runnable() {
+                            @Override
+                            public void run() {
+                                PetMeta petMeta = optPetMeta.get();
+                                petMeta.setSkin(5, 0, null, false); //Change skin to a wooden block
 
-                        @Override
-                        public void run() {
-                            petMeta.setSkin(5, 0, null, false); //Change skin to a wooden block
-
-                            Bukkit.getServer().getScheduler().runTaskAsynchronously(plugin, new Runnable() {
-                                @Override
-                                public void run() {
-                                    metaController.store(petMeta);
-                                }
-                            });
-                        }
-                    });
+                                Bukkit.getServer().getScheduler().runTaskAsynchronously(plugin, new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        metaController.store(petMeta);
+                                    }
+                                });
+                            }
+                        });
+                    }
                 }
-            }
-        });
+            });
 ::
 
 Using lamda expressions can reduce the code above significantly.
 ::
-    final Player player; //Any player instance
-    final Plugin plugin; //Any plugin instance
-    PetMetaController metaController = PetBlocksApi.getDefaultPetMetaController();
+            final Player player; //Any player instance
+            final Plugin plugin; //Any plugin instance
+            PetMetaController metaController = PetBlocksApi.getDefaultPetMetaController();
 
-    Bukkit.getServer().getScheduler().runTaskAsynchronously(plugin, () -> {
-        final PetMeta petMeta = metaController.getByPlayer(player);  //Acquire the PetMeta async from the database.
-        if (petMeta != null) { //Check if the player has got a petMeta?
-            Bukkit.getServer().getScheduler().runTask(plugin, () -> {
-                petMeta.setSkin(5, 0, null, false); //Change skin to a wooden block
-                Bukkit.getServer().getScheduler().runTaskAsynchronously(plugin, () -> metaController.store(petMeta));
+            Bukkit.getServer().getScheduler().runTaskAsynchronously(plugin, () -> {
+                Optional<PetMeta> optPetMeta = metaController.getFromPlayer(player);   //Acquire the PetMeta async from the database.
+                if (optPetMeta.isPresent()) { //Check if the player has got a petMeta?
+                    Bukkit.getServer().getScheduler().runTask(plugin, () -> {
+                        PetMeta petMeta = optPetMeta.get();
+                        petMeta.setSkin(5, 0, null, false); //Change skin to a wooden block
+                        Bukkit.getServer().getScheduler().runTaskAsynchronously(plugin, () -> metaController.store(petMeta));
+                    });
+                }
             });
-        }
-    });
 
 **Spawning a petblock for a player:**
 ::
@@ -130,13 +131,15 @@ Using lamda expressions can reduce the code above significantly.
 
 **Obtaining an existing petblock for a player:**
 ::
-    final Player player; //Any player instance
-    final Location location; //Any target location
+            final Player player; //Any player instance
+            final Location location; //Any target location
 
-    final PetBlockController petBlockController = PetBlocksApi.getDefaultPetBlockController();
-    final PetBlock petBlock = petBlockController.getByPlayer(player); //PetBlock is already managed
-
-    petBlock.teleport(location);    //Teleport the petblock to the target location
+            final PetBlockController petBlockController = PetBlocksApi.getDefaultPetBlockController();
+            final Optional<PetBlock> optPetBlock = petBlockController.getFromPlayer(player); //PetBlock is already managed
+            if (optPetBlock.isPresent()) {
+                final PetBlock petBlock = optPetBlock.get();
+                petBlock.teleport(location);    //Teleport the petblock to the target location
+            }
 
 **Applying changes to the PetBlock**
 

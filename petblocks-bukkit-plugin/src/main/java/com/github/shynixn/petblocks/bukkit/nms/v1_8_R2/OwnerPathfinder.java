@@ -1,32 +1,68 @@
 package com.github.shynixn.petblocks.bukkit.nms.v1_8_R2;
 
-import com.github.shynixn.petblocks.bukkit.nms.helper.PetBlockHelper;
+import com.github.shynixn.petblocks.api.business.entity.PetBlock;
 import com.github.shynixn.petblocks.bukkit.logic.business.configuration.ConfigPet;
+import com.github.shynixn.petblocks.bukkit.nms.helper.PetBlockHelper;
 import net.minecraft.server.v1_8_R2.EntityInsentient;
-import net.minecraft.server.v1_8_R2.NBTTagCompound;
 import net.minecraft.server.v1_8_R2.PathEntity;
 import net.minecraft.server.v1_8_R2.PathfinderGoal;
 import org.bukkit.Location;
-import org.bukkit.craftbukkit.v1_8_R2.inventory.CraftItemStack;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
-import java.util.Map;
-
+/**
+ * Pathfinder for the PetBlock.
+ * <p>
+ * Version 1.1
+ * <p>
+ * MIT License
+ * <p>
+ * Copyright (c) 2017 by Shynixn
+ * <p>
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ * <p>
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ * <p>
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
 public final class OwnerPathfinder extends PathfinderGoal {
     private final EntityInsentient entity;
     private PathEntity path;
     private final Player player;
     private int counter;
     private int counter2;
+    private final PetBlock petBlock;
 
-    public OwnerPathfinder(EntityInsentient entitycreature, Player player) {
+    /**
+     * Initializes a new petblock owner pathfinder.
+     *
+     * @param entityCreature creatureUsingPath
+     * @param petBlock       petblock
+     */
+    public OwnerPathfinder(EntityInsentient entityCreature, PetBlock petBlock) {
         super();
-        this.entity = entitycreature;
-        this.player = player;
+        this.entity = entityCreature;
+        this.player = (Player) petBlock.getPlayer();
+        this.petBlock = petBlock;
     }
 
+    /**
+     * Calculates the navigation path and returns true if found.
+     *
+     * @return success
+     */
     @Override
     public boolean a() {
         if (this.player == null) {
@@ -35,7 +71,7 @@ public final class OwnerPathfinder extends PathfinderGoal {
         if (!this.entity.getWorld().getWorldData().getName().equals(this.player.getWorld().getName())) {
             this.entity.getBukkitEntity().teleport(this.player.getLocation());
         } else if (this.entity.getBukkitEntity().getLocation().distance(this.player.getLocation()) > ConfigPet.getInstance().getBlocksAwayFromPlayer()) {
-            this.counter2 = PetBlockHelper.afraidWaterEffect(this.entity.getBukkitEntity(), this.counter2);
+            this.counter2 = PetBlockHelper.afraidWaterEffect(this.petBlock, this.counter2);
             final Location targetLocation = this.player.getLocation();
             this.entity.getNavigation().m();
             this.entity.getNavigation();
@@ -59,40 +95,11 @@ public final class OwnerPathfinder extends PathfinderGoal {
         return this.path != null;
     }
 
+    /**
+     * Abstract navigation.
+     */
     @Override
     public void c() {
         this.entity.getNavigation().a(this.path, 1D);
-    }
-
-    public static boolean isUnbreakable(ItemStack itemStack) {
-        final net.minecraft.server.v1_8_R2.ItemStack stack = CraftItemStack.asNMSCopy(itemStack);
-        return stack.getTag() != null && stack.getTag().hasKey("Unbreakable") && stack.getTag().getBoolean("Unbreakable");
-    }
-
-    public static ItemStack setItemstackTag(ItemStack itemStack, Map<String, Object> tags) {
-        final net.minecraft.server.v1_8_R2.ItemStack stack = CraftItemStack.asNMSCopy(itemStack);
-        for (final String tag : tags.keySet()) {
-            final NBTTagCompound nbtTagCompound;
-            if (stack.getTag() == null)
-                nbtTagCompound = new NBTTagCompound();
-            else
-                nbtTagCompound = stack.getTag();
-            if (tags.get(tag) instanceof String)
-                nbtTagCompound.setString(tag, (String) tags.get(tag));
-            else if (tags.get(tag) instanceof Boolean)
-                nbtTagCompound.setBoolean(tag, (Boolean) tags.get(tag));
-            else if (tags.get(tag) instanceof Integer)
-                nbtTagCompound.setInt(tag, (Integer) tags.get(tag));
-            else if (tags.get(tag) instanceof Float)
-                nbtTagCompound.setFloat(tag, (Float) tags.get(tag));
-            else if (tags.get(tag) instanceof Double)
-                nbtTagCompound.setDouble(tag, (Double) tags.get(tag));
-            else if (tags.get(tag) instanceof Long)
-                nbtTagCompound.setLong(tag, (Long) tags.get(tag));
-            else if (tags.get(tag) instanceof Byte)
-                nbtTagCompound.setByte(tag, (Byte) tags.get(tag));
-            stack.setTag(nbtTagCompound);
-        }
-        return CraftItemStack.asCraftMirror(stack);
     }
 }

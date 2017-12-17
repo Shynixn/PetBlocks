@@ -134,11 +134,18 @@ public class Factory {
             boolean oldData = false;
             try (Connection connection = connectionContext.getConnection()) {
                 final ResultSet set = connectionContext.executeQuery("SELECT * FROM shy_petblock", connection).executeQuery();
+                boolean foundEngineColumn = false;
                 for (int i = 1; i <= set.getMetaData().getColumnCount(); i++) {
                     final String name = set.getMetaData().getColumnName(i);
                     if (name.equals("movement_type")) {
                         oldData = true;
                     }
+                    if (name.equals("engine")) {
+                        foundEngineColumn = true;
+                    }
+                }
+                if (!foundEngineColumn) {
+                    oldData = true;
                 }
             } catch (final SQLException ignored) {
 

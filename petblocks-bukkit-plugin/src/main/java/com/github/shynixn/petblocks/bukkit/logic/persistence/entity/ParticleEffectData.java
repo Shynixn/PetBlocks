@@ -2,6 +2,7 @@ package com.github.shynixn.petblocks.bukkit.logic.persistence.entity;
 
 import com.github.shynixn.petblocks.api.persistence.entity.ParticleEffectMeta;
 import com.github.shynixn.petblocks.bukkit.PetBlocksPlugin;
+import com.github.shynixn.petblocks.bukkit.nms.v1_12_R1.MaterialCompatibility12;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -319,7 +320,7 @@ public class ParticleEffectData extends PersistenceObject implements ParticleEff
         if (material != null && material instanceof Integer) {
             this.material = (Integer) material;
         } else if (material != null) {
-            this.material = ((Material) material).getId();
+            this.material = MaterialCompatibility12.getIdFromMaterial((Material) material);
         } else {
             this.material = null;
         }
@@ -445,9 +446,9 @@ public class ParticleEffectData extends PersistenceObject implements ParticleEff
      */
     @Override
     public Object getMaterial() {
-        if (this.material == null || Material.getMaterial(this.material) == null)
+        if (this.material == null || MaterialCompatibility12.getMaterialFromId(this.material) == null)
             return null;
-        return Material.getMaterial(this.material);
+        return MaterialCompatibility12.getMaterialFromId(this.material);
     }
 
     /**
@@ -586,9 +587,9 @@ public class ParticleEffectData extends PersistenceObject implements ParticleEff
             int[] additionalInfo = null;
             if (this.getMaterial() != null) {
                 if (this.getEffectType() == ParticleEffectData.ParticleEffectType.ITEM_CRACK) {
-                    additionalInfo = new int[]{((Material) this.getMaterial()).getId(), this.getData()};
+                    additionalInfo = new int[]{this.material, this.getData()};
                 } else {
-                    additionalInfo = new int[]{((Material) this.getMaterial()).getId(), this.getData() << 12};
+                    additionalInfo = new int[]{this.material, this.getData() << 12};
                 }
             }
             final Object packet = invokeConstructor(findClass("net.minecraft.server.VERSION.PacketPlayOutWorldParticles"), new Class[]{

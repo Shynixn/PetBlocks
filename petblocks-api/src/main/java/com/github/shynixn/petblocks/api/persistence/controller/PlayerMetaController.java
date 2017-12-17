@@ -2,6 +2,7 @@ package com.github.shynixn.petblocks.api.persistence.controller;
 
 import com.github.shynixn.petblocks.api.persistence.entity.PlayerMeta;
 
+import java.util.Optional;
 import java.util.UUID;
 
 /**
@@ -48,5 +49,14 @@ public interface PlayerMetaController extends IDatabaseController<PlayerMeta> {
      * @param uuid uuid
      * @return playerMeta
      */
+    @Deprecated
     PlayerMeta getByUUID(UUID uuid);
+
+    /**
+     * Returns the playerMeta of the given uuid.
+     *
+     * @param uuid uuid
+     * @return playerMeta
+     */
+    Optional<PlayerMeta> getFromUUID(UUID uuid);
 }
