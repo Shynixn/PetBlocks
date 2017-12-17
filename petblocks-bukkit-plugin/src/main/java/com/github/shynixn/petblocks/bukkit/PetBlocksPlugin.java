@@ -58,7 +58,7 @@ public final class PetBlocksPlugin extends JavaPlugin {
     private PetBlockManager petBlockManager;
 
     /**
-     * Enables the plugin PetBlocks
+     * Enables the plugin PetBlocks.
      */
     @Override
     public void onEnable() {
