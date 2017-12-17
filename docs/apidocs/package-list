@@ -7,7 +7,6 @@ com.github.shynixn.petblocks.api.persistence.controller
 com.github.shynixn.petblocks.api.persistence.entity
 com.github.shynixn.petblocks.bukkit
 com.github.shynixn.petblocks.bukkit.dependencies.clearlag
-com.github.shynixn.petblocks.bukkit.dependencies.supervanish
 com.github.shynixn.petblocks.bukkit.dependencies.worldguard
 com.github.shynixn.petblocks.bukkit.lib
 com.github.shynixn.petblocks.bukkit.logic
@@ -21,7 +20,6 @@ com.github.shynixn.petblocks.bukkit.logic.business.helper
 com.github.shynixn.petblocks.bukkit.logic.business.listener
 com.github.shynixn.petblocks.bukkit.logic.persistence.controller
 com.github.shynixn.petblocks.bukkit.logic.persistence.entity
-com.github.shynixn.petblocks.bukkit.metrics
 com.github.shynixn.petblocks.bukkit.nms
 com.github.shynixn.petblocks.bukkit.nms.helper
 com.github.shynixn.petblocks.bukkit.nms.v1_10_R1

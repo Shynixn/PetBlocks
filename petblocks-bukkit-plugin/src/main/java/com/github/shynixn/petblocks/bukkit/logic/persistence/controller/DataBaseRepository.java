@@ -87,8 +87,6 @@ public abstract class DataBaseRepository<T> implements IDatabaseController<T> {
      */
     @Override
     public void remove(T item) {
-        if (item == null)
-            throw new IllegalArgumentException("Item cannot be null!");
         this.delete(item);
     }
 
