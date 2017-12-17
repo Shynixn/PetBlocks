@@ -1,0 +1,13 @@
+GUI
+==========
+
+Let's customize our gui to give it a decent touch for our server!
+
+Take a look:
+
+.. image:: ../_static/images/cust1.jpg
+
+
+
+
+
