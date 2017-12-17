@@ -251,7 +251,7 @@ public class PetBlockListener extends SimpleListener {
                         petBlock.jump();
                     }
                 }
-                if (ConfigPet.getInstance().isFollow_carry() && (event.getPlayer().getInventory() == null || NMSRegistry.getItemInHand19(event.getPlayer(), true).getType() == Material.AIR)) {
+                else if (ConfigPet.getInstance().isFollow_carry() && (event.getPlayer().getInventory() == null || NMSRegistry.getItemInHand19(event.getPlayer(), true).getType() == Material.AIR)) {
                     NMSRegistry.setItemInHand19(event.getPlayer(), ((ArmorStand) petBlock.getArmorStand()).getHelmet().clone(), true);
                     this.manager.getPetBlockController().remove(petBlock);
                     this.manager.carryingPet.add(event.getPlayer());
