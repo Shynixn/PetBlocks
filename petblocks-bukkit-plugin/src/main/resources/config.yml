@@ -5,8 +5,8 @@
 
 # Permission:
 # LEVEL		 DESCRIPTION									PERMISSION
-# user       Access to the /petblock command 				petblocks.use
-# user       Allows to have all pet engines			        petblocks.pet.type.all
+# user       Allows to use the /petblock command			petblocks.commands.use
+# user       Allows to have all pet engines	        petblocks.pet.type.all
 # user       Allows to have a specific pet engine			petblocks.pet.type.<number>
 # user       Allows to rename your pet 	       			    petblocks.pet.rename
 # user       Allows to ride your pet 	                    petblocks.pet.ride
@@ -24,8 +24,8 @@
 # user       Allows to use head-database for a costumes     petblocks.pet.head-database-costumes.all
 # user       Allows to use every particle					petblocks.pet.particles.all
 # user 		 Allows to use a specific particle				petblocks.pet.particles.<number>
+
 # admin      Reloads config and lang file 				    petblocks.reload
-# admin 	 Allows to use own skulls ingame 				petblocks.inventory.costume
 # admin 	 Access to the /petblocks command			    petblocks.commands
 
 ############################
