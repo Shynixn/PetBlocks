@@ -78,6 +78,6 @@ Allows to use a single player head costume           petblocks.pet.customcostume
 Allows to use all pet costumes                       petblocks.pet.minecraft-heads-costumes.all         petblocks.selection.petcostumes.all
 Allows to use a single pet costume                   petblocks.pet.minecraft-heads-costumes.<number>    petblocks.selection.petcostumes.<number>
 Allows to use all particles                          petblocks.pet.particles.all                        petblocks.selection.particles.all
-Allows to use a single particle                      petblocks.pet.particles.<number>                   petblocks.pet.particles.<number
+Allows to use a single particle                      petblocks.pet.particles.<number>                   petblocks.selection.particles.<number
 Allows to use all head database costumes             petblocks.pet.head-database-costumes.all           petblocks.selection.headdatabasecostumes.all
 ===================================================  =================================================  =======
