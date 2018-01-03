@@ -57,7 +57,12 @@ public final class CustomRabbit extends EntityRabbit implements PetBlockPartEnti
 
     @Override
     protected String ck() {
-        this.playedMovingSound = PetBlockHelper.executeMovingSound(this.petBlock, this.playedMovingSound);
+        try {
+            this.playedMovingSound = PetBlockHelper.executeMovingSound(this.petBlock, this.playedMovingSound);
+        } catch (final Exception ex) {
+            this.remove();
+            PetBlocksPlugin.logger().log(Level.WARNING, "Detected invalid rabbit entity. Removed entity.");
+        }
         return "mob.rabbit.hop";
     }
 
