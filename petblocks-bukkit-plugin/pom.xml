@@ -96,10 +96,6 @@
                         <goals>
                             <goal>shade</goal>
                         </goals>
-                        <configuration>
-                            <finalName>${project.artifactId}-${project.version}-shader</finalName>
-                            <outputDirectory>D:/Temp/plugins</outputDirectory>
-                        </configuration>
                     </execution>
                 </executions>
             </plugin>
