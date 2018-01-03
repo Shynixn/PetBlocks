@@ -58,9 +58,9 @@ public final class PetDataCommandExecutor extends SimpleCommandExecutor.UnRegist
                     }
                 });
             }
-        } else if (args.length >= 2 && args[0].equalsIgnoreCase("rename") && player.hasPermission(Permission.RENAMEPET.get())) {
+        } else if (args.length >= 2 && args[0].equalsIgnoreCase("rename") && PetBlockModifyHelper.hasPermission(player, Permission.ACTION_RENAME)) {
             this.renameNameCommand(player, args);
-        } else if (args.length == 2 && args[0].equalsIgnoreCase("skin") && player.hasPermission(Permission.RENAMESKULL.get())) {
+        } else if (args.length == 2 && args[0].equalsIgnoreCase("skin") && PetBlockModifyHelper.hasPermission(player, Permission.ACTION_CUSTOMSKULL)) {
             this.handleNaming(player, args[1], true);
         } else {
             this.manager.gui.open(player);

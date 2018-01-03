@@ -16,6 +16,7 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.List;
+import java.util.Optional;
 
 public class GUI {
     private final PetBlockManager manager;
@@ -189,7 +190,7 @@ public class GUI {
      * @param type   type
      */
     private void setEngineItems(Player player, int type) {
-        this.setCostumes(player, Config.getInstance().getEngineController().getAllGUIItems(), GUIPage.ENGINES, type, Permission.ALLPETTYPES.get());
+        this.setCostumes(player, Config.getInstance().getEngineController().getAllGUIItems(), GUIPage.ENGINES, type, Permission.ALL_ENGINES);
     }
 
     /**
@@ -199,7 +200,7 @@ public class GUI {
      * @param type   type
      */
     private void setSimpleBlockItems(Player player, int type) {
-        this.setCostumes(player, Config.getInstance().getOrdinaryCostumesController().getAll(), GUIPage.DEFAULT_COSTUMES, type, Permission.ALLDEFAULTCOSTUMES.get());
+        this.setCostumes(player, Config.getInstance().getOrdinaryCostumesController().getAll(), GUIPage.DEFAULT_COSTUMES, type, Permission.ALL_SIMPLEBLOCKCOSTUMES);
     }
 
     /**
@@ -209,7 +210,7 @@ public class GUI {
      * @param type   type
      */
     private void setColorBlockItems(Player player, int type) {
-        this.setCostumes(player, Config.getInstance().getColorCostumesController().getAll(), GUIPage.COLOR_COSTUMES, type, Permission.ALLCOLORCOSTUMES.get());
+        this.setCostumes(player, Config.getInstance().getColorCostumesController().getAll(), GUIPage.COLOR_COSTUMES, type, Permission.ALL_COLOREDBLOCKCOSTUMES);
     }
 
     /**
@@ -219,7 +220,7 @@ public class GUI {
      * @param type   type
      */
     private void setPlayerHeadItems(Player player, int type) {
-        this.setCostumes(player, Config.getInstance().getRareCostumesController().getAll(), GUIPage.CUSTOM_COSTUMES, type, Permission.ALLCUSTOMCOSTUMES.get());
+        this.setCostumes(player, Config.getInstance().getRareCostumesController().getAll(), GUIPage.CUSTOM_COSTUMES, type, Permission.ALL_PLAYERHEADCOSTUMES);
     }
 
     /**
@@ -229,7 +230,7 @@ public class GUI {
      * @param type   type
      */
     private void setParticleItems(Player player, int type) {
-        this.setCostumes(player, Config.getInstance().getParticleController().getAll(), GUIPage.PARTICLES, type, Permission.ALLPARTICLES.get());
+        this.setCostumes(player, Config.getInstance().getParticleController().getAll(), GUIPage.PARTICLES, type, Permission.ALL_PARTICLES);
     }
 
     /**
@@ -238,7 +239,7 @@ public class GUI {
      * @param player player
      */
     private void setMinecraftHeadsCostumeItems(Player player, int type) {
-        this.setCostumes(player, Config.getInstance().getMinecraftHeadsCostumesController().getAll(), GUIPage.MINECRAFTHEADS_COSTUMES, type, Permission.ALLMINECRAFTHEADSCOSTUMES.get());
+        this.setCostumes(player, Config.getInstance().getMinecraftHeadsCostumesController().getAll(), GUIPage.MINECRAFTHEADS_COSTUMES, type, Permission.ALL_MINECRAFTHEADCOSTUMES);
     }
 
     /**
@@ -250,7 +251,7 @@ public class GUI {
      * @param type            type
      * @param groupPermission groupPermissions
      */
-    private void setCostumes(Player player, List<GUIItemContainer> containers, GUIPage page, int type, String groupPermission) {
+    private void setCostumes(Player player, List<GUIItemContainer> containers, GUIPage page, int type, Permission groupPermission) {
         if (this.manager.inventories.containsKey(player)) {
             final GuiPageContainer previousContainer = this.manager.pages.get(player);
             final GuiPageContainer container;
@@ -290,7 +291,7 @@ public class GUI {
                     }
                     Bukkit.getScheduler().runTaskLater(this.plugin, () -> {
                         if (container.currentCount == mountBlock && currentPage == this.manager.pages.get(player).page) {
-                            inventory.setItem(slot, (ItemStack) containers.get(containerSlot).generate(player, groupPermission));
+                            inventory.setItem(slot, (ItemStack) containers.get(containerSlot).generate(player, groupPermission.getPermission()));
                         }
                     }, scheduleCounter);
                 }
@@ -329,7 +330,12 @@ public class GUI {
     private void fillEmptySlots(Inventory inventory) {
         for (int i = 0; i < inventory.getContents().length; i++) {
             if (inventory.getItem(i) == null || inventory.getItem(i).getType() == Material.AIR) {
-                inventory.setItem(i, (ItemStack) Config.getInstance().getGuiItemsController().getGUIItemByName("empty-slot").generate(inventory.getHolder()));
+                final Optional<GUIItemContainer> optEmptySlot = Config.getInstance().getGuiItemsController().getGUIItemFromName("empty-slot");
+                if (!optEmptySlot.isPresent()) {
+                    throw new RuntimeException("PetBlocks gui item 'empty-slot' is not correctly loaded.");
+                } else {
+                    inventory.setItem(i, (ItemStack) optEmptySlot.get().generate(inventory.getHolder()));
+                }
             }
         }
     }

@@ -2,6 +2,7 @@ package com.github.shynixn.petblocks.bukkit.logic.business.helper;
 
 import com.github.shynixn.petblocks.api.business.entity.GUIItemContainer;
 import com.github.shynixn.petblocks.api.business.entity.PetBlock;
+import com.github.shynixn.petblocks.api.business.enumeration.Permission;
 import com.github.shynixn.petblocks.api.persistence.entity.EngineContainer;
 import com.github.shynixn.petblocks.api.persistence.entity.ParticleEffectMeta;
 import com.github.shynixn.petblocks.api.persistence.entity.PetMeta;
@@ -9,6 +10,7 @@ import com.github.shynixn.petblocks.bukkit.logic.business.configuration.Config;
 import com.github.shynixn.petblocks.bukkit.nms.v1_12_R1.MaterialCompatibility12;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import java.lang.reflect.InvocationTargetException;
@@ -183,5 +185,26 @@ public class PetBlockModifyHelper {
         if (petBlock != null) {
             petBlock.respawn();
         }
+    }
+
+    /**
+     * Checks if the player has got the required permission.
+     *
+     * @param player     player
+     * @param permission permission
+     * @return hasPermission
+     */
+    public static boolean hasPermission(Player player, Permission permission, String... placeholder) {
+        for (final String s : permission.getPermission()) {
+            String perm = s;
+            for (int i = 0; i < placeholder.length; i++) {
+                final String plc = "$" + i;
+                perm = perm.replace(plc, placeholder[i]);
+            }
+            if (player.hasPermission(perm)) {
+                return true;
+            }
+        }
+        return false;
     }
 }
