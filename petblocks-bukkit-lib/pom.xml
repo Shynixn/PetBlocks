@@ -6,10 +6,10 @@
     <parent>
         <artifactId>root</artifactId>
         <groupId>com.github.shynixn.petblocks</groupId>
-        <version>6.4.1</version>
+        <version>6.4.2-SNAPSHOT</version>
     </parent>
 
-    <version>6.4.1</version>
+    <version>6.4.2-SNAPSHOT</version>
     <artifactId>petblocks-bukkit-lib</artifactId>
 
     <dependencies>
