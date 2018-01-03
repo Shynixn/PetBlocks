@@ -5,6 +5,7 @@ import com.github.shynixn.petblocks.api.persistence.entity.ParticleEffectMeta;
 import com.github.shynixn.petblocks.bukkit.PetBlocksPlugin;
 import com.github.shynixn.petblocks.bukkit.logic.persistence.entity.ParticleEffectData;
 import com.github.shynixn.petblocks.bukkit.lib.ExtensionHikariConnectionContext;
+import com.github.shynixn.petblocks.bukkit.nms.v1_12_R1.MaterialCompatibility12;
 import org.bukkit.Material;
 
 import java.sql.Connection;
@@ -221,7 +222,7 @@ public class ParticleEffectDataRepository extends DataBaseRepository<ParticleEff
         particleEffectData.setOffsetY(resultSet.getDouble("y"));
         particleEffectData.setOffsetZ(resultSet.getDouble("z"));
         if (resultSet.getString("material") != null) {
-            particleEffectData.setMaterial(Material.getMaterial(resultSet.getString("material")).getId());
+            particleEffectData.setMaterial(MaterialCompatibility12.getIdFromMaterial(Material.getMaterial(resultSet.getString("material"))));
         }
         if (resultSet.getInt("data") == -1) {
             particleEffectData.setData(null);

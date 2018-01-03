@@ -18,13 +18,21 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 
 public final class WorldGuardConnection5 {
+    private static final List<ProtectedRegion> flags = new ArrayList<>();
+    private static final Map<Player, Collection<ProtectedRegion>> cache = new HashMap<>();
+
     private WorldGuardConnection5() {
         super();
     }
 
-    private static final ArrayList<ProtectedRegion> flags = new ArrayList<>();
-    private static final Map<Player, Collection<ProtectedRegion>> cache = new HashMap<>();
-
+    /**
+     * Modifies the worldguard regions at the given location to allow spawning for PetBlocks.
+     *
+     * @param location location
+     * @throws NoSuchMethodException     exception
+     * @throws IllegalAccessException    exception
+     * @throws InvocationTargetException exception
+     */
     public synchronized static void allowSpawn(Location location) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
         final WorldGuardPlugin worldGuard = getWorldGuard();
         final RegionManager regionManager = worldGuard.getRegionManager(location.getWorld());
@@ -39,7 +47,7 @@ public final class WorldGuardConnection5 {
     }
 
     /**
-     * Checks if the player is riding his pet and entering a different region. Returns false if he isn't the owner of the region
+     * Checks if the player is riding his pet and entering a different region. Returns false if he isn't the owner of the region.
      *
      * @param player     player
      * @param cacheSpawn cacheSpawn
@@ -49,9 +57,9 @@ public final class WorldGuardConnection5 {
      * @throws NoSuchMethodException     exception
      */
     public static boolean isAllowedToEnterRegionByRiding(Player player, boolean cacheSpawn) throws InvocationTargetException, IllegalAccessException, NoSuchMethodException {
-        final PetBlock petBlock;
-        if (!Config.getInstance().allowRidingOnRegionChanging() && ((petBlock = PetBlocksApi.getDefaultPetBlockController().getByPlayer(player)) != null)) {
-            if (((ArmorStand) petBlock.getArmorStand()).getPassenger() != null && ((ArmorStand) petBlock.getArmorStand()).getPassenger().equals(player) || cacheSpawn) {
+        final Optional<PetBlock> optPetBlock;
+        if (!Config.getInstance().allowRidingOnRegionChanging() && ((optPetBlock = PetBlocksApi.getDefaultPetBlockController().getFromPlayer(player)).isPresent())) {
+            if (((ArmorStand) optPetBlock.get().getArmorStand()).getPassenger() != null && ((ArmorStand) optPetBlock.get().getArmorStand()).getPassenger().equals(player) || cacheSpawn) {
                 final Location location = player.getLocation();
                 final WorldGuardPlugin worldGuard = getWorldGuard();
                 final RegionManager regionManager = worldGuard.getRegionManager(location.getWorld());
@@ -80,7 +88,7 @@ public final class WorldGuardConnection5 {
     }
 
     /**
-     * Checks if the player should be kicked off his pet
+     * Checks if the player should be kicked off his pet.
      *
      * @param player   player
      * @param regionId regionId
@@ -97,6 +105,15 @@ public final class WorldGuardConnection5 {
         return false;
     }
 
+    /**
+     * Returns a list of worldguard regions from the given location.
+     *
+     * @param location location
+     * @return list
+     * @throws NoSuchMethodException     exception
+     * @throws IllegalAccessException    exception
+     * @throws InvocationTargetException exception
+     */
     public static List<String> getRegionsFromLocation(Location location) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
         final List<String> regionList = new ArrayList<>();
         final WorldGuardPlugin worldGuard = getWorldGuard();
@@ -109,6 +126,9 @@ public final class WorldGuardConnection5 {
         return regionList;
     }
 
+    /**
+     * Rolls all modified regions back to their original state.
+     */
     public synchronized static void rollBack() {
         for (final ProtectedRegion region : flags.toArray(new ProtectedRegion[flags.size()])) {
             region.setFlag(DefaultFlag.MOB_SPAWNING, State.DENY);
