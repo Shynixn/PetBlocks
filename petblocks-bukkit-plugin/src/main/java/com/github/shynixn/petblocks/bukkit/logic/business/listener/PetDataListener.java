@@ -298,8 +298,12 @@ public class PetDataListener extends SimpleListener {
         } else if (this.isGUIItem(currentItem, "suggest-heads")) {
             Bukkit.getServer().getScheduler().runTaskAsynchronously(JavaPlugin.getPlugin(PetBlocksPlugin.class), () -> this.suggestHeadMessage.sendMessage(player));
             player.closeInventory();
-        } else if (this.isGUIItem(currentItem, "head-database-costume") && PetBlockModifyHelper.hasPermission(player, Permission.ALL_HEADDATABASECOSTUMES)) {
-            this.handleClickItemHeadDatabaseCostumes(player);
+        } else if (this.isGUIItem(currentItem, "head-database-costume")) {
+            if (PetBlockModifyHelper.hasPermission(player, Permission.ALL_HEADDATABASECOSTUMES)) {
+                this.handleClickItemHeadDatabaseCostumes(player);
+            } else {
+                player.sendMessage(Config.getInstance().getPrefix() + Config.getInstance().getNoPermission());
+            }
         } else if (this.isGUIItem(currentItem, "naming-pet") && PetBlockModifyHelper.hasPermission(player, Permission.ACTION_RENAME)) {
             this.namingPlayers.add(player);
             player.closeInventory();
@@ -332,7 +336,7 @@ public class PetDataListener extends SimpleListener {
         } else if (event.getSlot() < 45 && this.manager.pages.get(player).page == GUIPage.CUSTOM_COSTUMES && this.hasPermission(player, Permission.ALL_PLAYERHEADCOSTUMES, Permission.SINGLE_PLAYERHEADCOSTUME, itemSlot)) {
             final GUIItemContainer container = Config.getInstance().getRareCostumesController().getContainerByPosition(itemSlot);
             this.setCostumeSkin(player, petMeta, petBlock, container);
-        } else if (event.getSlot() < 45 && this.manager.pages.get(player).page == GUIPage.MINECRAFTHEADS_COSTUMES && this.hasPermission(player, Permission.ALL_HEADDATABASECOSTUMES, Permission.SINGLE_MINECRAFTHEADCOSTUME, itemSlot)) {
+        } else if (event.getSlot() < 45 && this.manager.pages.get(player).page == GUIPage.MINECRAFTHEADS_COSTUMES && this.hasPermission(player, Permission.ALL_MINECRAFTHEADCOSTUMES, Permission.SINGLE_MINECRAFTHEADCOSTUME, itemSlot)) {
             final GUIItemContainer container = Config.getInstance().getMinecraftHeadsCostumesController().getContainerByPosition(itemSlot);
             this.setCostumeSkin(player, petMeta, petBlock, container);
         }
