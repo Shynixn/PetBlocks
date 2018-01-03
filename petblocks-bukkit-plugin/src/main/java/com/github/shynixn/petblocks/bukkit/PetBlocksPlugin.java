@@ -92,7 +92,7 @@ public final class PetBlocksPlugin extends JavaPlugin {
     }
 
     /**
-     * Disables the plugin PetBlocks
+     * Disables the plugin PetBlocks.
      */
     @Override
     public void onDisable() {
