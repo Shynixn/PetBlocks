@@ -3,30 +3,8 @@
 # 		            	   by Shynixn							      #
 #######################################################################
 
-# Permission:
-# LEVEL		 DESCRIPTION									PERMISSION
-# user       Access to the /petblock command 				petblocks.use
-# user       Allows to have all pet engines			        petblocks.pet.type.all
-# user       Allows to have a specific pet engine			petblocks.pet.type.<number>
-# user       Allows to rename your pet 	       			    petblocks.pet.rename
-# user       Allows to ride your pet 	                    petblocks.pet.ride
-# user       Allows to wear your pet 	                    petblocks.pet.wear
-# user       Allows to change the skin name 	            petblocks.pet.skin
-# user       Allows to shoot your pet                       petblocks.pet.cannon
-# user       Allows to use every ordinary costume 	        petblocks.pet.defaultcostumes.all
-# user       Allows to use specific ordinary costumes	    petblocks.pet.defaultcostumes.<number>
-# user       Allows to use every color costume   		    petblocks.pet.colorcostumes.all
-# user       Allows to use specific color costumes   		petblocks.pet.colorcostumes.<number>
-# user       Allows to use every rare costume   		    petblocks.pet.customcostumes.all
-# user       Allows to use specific rare costumes  		    petblocks.pet.customcostumes.<number>
-# user       Allows to use every exclusive costume          petblocks.pet.minecraft-heads-costumes.all
-# user       Allows to use specific exclusive costume       petblocks.pet.minecraft-heads-costumes.<number>
-# user       Allows to use head-database for a costumes     petblocks.pet.head-database-costumes.all
-# user       Allows to use every particle					petblocks.pet.particles.all
-# user 		 Allows to use a specific particle				petblocks.pet.particles.<number>
-# admin      Reloads config and lang file 				    petblocks.reload
-# admin 	 Allows to use own skulls ingame 				petblocks.inventory.costume
-# admin 	 Access to the /petblocks command			    petblocks.commands
+# You can  find the permissions at the official documentation.
+# https://shynixn.github.io/PetBlocks/build/html/gettingstarted/permissions.html#permissionlist
 
 ############################
 

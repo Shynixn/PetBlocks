@@ -4,15 +4,13 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 
 /**
- * Copyright 2017 Shynixn
+ * Enum to check for supported server versions.
  * <p>
- * Do not remove this header!
- * <p>
- * Version 1.0
+ * Version 1.2
  * <p>
  * MIT License
  * <p>
- * Copyright (c) 2017
+ * Copyright (c) 2018 by Shynixn
  * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal

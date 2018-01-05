@@ -291,48 +291,52 @@ public class PetDataListener extends SimpleListener {
         } else if (this.isGUIItem(currentItem, "call-pet") && petBlock != null) {
             petBlock.teleport(player.getLocation());
             player.closeInventory();
-        } else if (this.isGUIItem(currentItem, "hat-pet") && this.hasPermission(player, Permission.WEARPET) && petBlock != null) {
+        } else if (this.isGUIItem(currentItem, "hat-pet") && PetBlockModifyHelper.hasPermission(player, Permission.ACTION_WEAR) && petBlock != null) {
             petBlock.wear(player);
-        } else if (this.isGUIItem(currentItem, "riding-pet") && this.hasPermission(player, Permission.RIDEPET) && petBlock != null) {
+        } else if (this.isGUIItem(currentItem, "riding-pet") && PetBlockModifyHelper.hasPermission(player, Permission.ACTION_RIDE) && petBlock != null) {
             petBlock.ride(player);
         } else if (this.isGUIItem(currentItem, "suggest-heads")) {
             Bukkit.getServer().getScheduler().runTaskAsynchronously(JavaPlugin.getPlugin(PetBlocksPlugin.class), () -> this.suggestHeadMessage.sendMessage(player));
             player.closeInventory();
-        } else if (this.isGUIItem(currentItem, "head-database-costume") && this.hasPermission(player, Permission.ALLHEADATABASECOSTUMES)) {
-            this.handleClickItemHeadDatabaseCostumes(player);
-        } else if (this.isGUIItem(currentItem, "naming-pet") && this.hasPermission(player, Permission.RENAMEPET)) {
+        } else if (this.isGUIItem(currentItem, "head-database-costume")) {
+            if (PetBlockModifyHelper.hasPermission(player, Permission.ALL_HEADDATABASECOSTUMES)) {
+                this.handleClickItemHeadDatabaseCostumes(player);
+            } else {
+                player.sendMessage(Config.getInstance().getPrefix() + Config.getInstance().getNoPermission());
+            }
+        } else if (this.isGUIItem(currentItem, "naming-pet") && PetBlockModifyHelper.hasPermission(player, Permission.ACTION_RENAME)) {
             this.namingPlayers.add(player);
             player.closeInventory();
             player.sendMessage(Config.getInstance().getPrefix() + Config.getInstance().getNamingMessage());
-        } else if (this.isGUIItem(currentItem, "skullnaming-pet") && this.hasPermission(player, Permission.RENAMESKULL)) {
+        } else if (this.isGUIItem(currentItem, "skullnaming-pet") && PetBlockModifyHelper.hasPermission(player, Permission.ACTION_CUSTOMSKULL)) {
             this.namingSkull.add(player);
             player.closeInventory();
             player.sendMessage(Config.getInstance().getPrefix() + Config.getInstance().getSkullNamingMessage());
-        } else if (this.isGUIItem(currentItem, "cannon-pet") && this.hasPermission(player, Permission.CANNON) && petBlock != null) {
+        } else if (this.isGUIItem(currentItem, "cannon-pet") && PetBlockModifyHelper.hasPermission(player, Permission.ACTION_CANNON) && petBlock != null) {
             petBlock.setVelocity(this.getDirection(player));
             player.closeInventory();
         } else if (this.isGUIItem(currentItem, "back")) {
             this.manager.gui.backPage(player, petMeta);
-        } else if (this.manager.pages.get(player).page == GUIPage.ENGINES && this.hasPermission(player, Permission.ALLPETTYPES.get(), Permission.SINGLEPETTYPE.get() + "" + itemSlot)) {
+        } else if (this.manager.pages.get(player).page == GUIPage.ENGINES && this.hasPermission(player, Permission.ALL_ENGINES, Permission.SINGLE_ENGINE, itemSlot)) {
             final EngineContainer engineContainer = Config.getInstance().getEngineController().getById(itemSlot);
             PetBlockModifyHelper.setEngine(petMeta, petBlock, engineContainer);
             this.persistAsynchronously(petMeta);
             this.manager.gui.setPage(player, GUIPage.MAIN, petMeta);
-        } else if (this.manager.pages.get(player).page == GUIPage.PARTICLES && this.hasPermission(player, Permission.ALLPARTICLES.get(), Permission.SINGLEPARTICLE.get() + "" + itemSlot)) {
+        } else if (this.manager.pages.get(player).page == GUIPage.PARTICLES && this.hasPermission(player, Permission.ALL_PARTICLES, Permission.SINGLE_PARTICLE, itemSlot)) {
             final GUIItemContainer container = Config.getInstance().getParticleController().getContainerByPosition(itemSlot);
             PetBlockModifyHelper.setParticleEffect(petMeta, petBlock, container);
             this.persistAsynchronously(petMeta);
             this.manager.gui.setPage(player, GUIPage.MAIN, petMeta);
-        } else if (event.getSlot() < 45 && this.manager.pages.get(player).page == GUIPage.DEFAULT_COSTUMES && this.hasPermission(player, Permission.ALLDEFAULTCOSTUMES.get(), Permission.SINGLEDEFAULTCOSTUME.get() + "" + itemSlot)) {
+        } else if (event.getSlot() < 45 && this.manager.pages.get(player).page == GUIPage.DEFAULT_COSTUMES && this.hasPermission(player, Permission.ALL_SIMPLEBLOCKCOSTUMES, Permission.SINGLE_SIMPLEBLOCKCOSTUME, itemSlot)) {
             final GUIItemContainer container = Config.getInstance().getOrdinaryCostumesController().getContainerByPosition(itemSlot);
             this.setCostumeSkin(player, petMeta, petBlock, container);
-        } else if (event.getSlot() < 45 && this.manager.pages.get(player).page == GUIPage.COLOR_COSTUMES && this.hasPermission(player, Permission.ALLCOLORCOSTUMES.get(), Permission.SINGLECOLORCOSTUME.get() + "" + itemSlot)) {
+        } else if (event.getSlot() < 45 && this.manager.pages.get(player).page == GUIPage.COLOR_COSTUMES && this.hasPermission(player, Permission.ALL_COLOREDBLOCKCOSTUMES, Permission.SINGLE_COLOREDBLOCKCOSTUME, itemSlot)) {
             final GUIItemContainer container = Config.getInstance().getColorCostumesController().getContainerByPosition(itemSlot);
             this.setCostumeSkin(player, petMeta, petBlock, container);
-        } else if (event.getSlot() < 45 && this.manager.pages.get(player).page == GUIPage.CUSTOM_COSTUMES && this.hasPermission(player, Permission.ALLCUSTOMCOSTUMES.get(), Permission.SINGLECUSTOMCOSTUME.get() + "" + itemSlot)) {
+        } else if (event.getSlot() < 45 && this.manager.pages.get(player).page == GUIPage.CUSTOM_COSTUMES && this.hasPermission(player, Permission.ALL_PLAYERHEADCOSTUMES, Permission.SINGLE_PLAYERHEADCOSTUME, itemSlot)) {
             final GUIItemContainer container = Config.getInstance().getRareCostumesController().getContainerByPosition(itemSlot);
             this.setCostumeSkin(player, petMeta, petBlock, container);
-        } else if (event.getSlot() < 45 && this.manager.pages.get(player).page == GUIPage.MINECRAFTHEADS_COSTUMES && this.hasPermission(player, Permission.ALLHEADATABASECOSTUMES.get(), Permission.SINGLEMINECRAFTHEADSCOSTUME.get() + "" + itemSlot)) {
+        } else if (event.getSlot() < 45 && this.manager.pages.get(player).page == GUIPage.MINECRAFTHEADS_COSTUMES && this.hasPermission(player, Permission.ALL_MINECRAFTHEADCOSTUMES, Permission.SINGLE_MINECRAFTHEADCOSTUME, itemSlot)) {
             final GUIItemContainer container = Config.getInstance().getMinecraftHeadsCostumesController().getContainerByPosition(itemSlot);
             this.setCostumeSkin(player, petMeta, petBlock, container);
         }
@@ -575,22 +579,14 @@ public class PetDataListener extends SimpleListener {
         this.persistAsynchronously(petMeta);
     }
 
-    private boolean hasPermission(Player player, Permission permission) {
-        if (!player.hasPermission(permission.get())) {
-            player.sendMessage(Config.getInstance().getPrefix() + Config.getInstance().getNoPermission());
-            return false;
-        }
-        return true;
-    }
-
-    private boolean hasPermission(Player player, String... permissions) {
-        for (final String permission : permissions) {
-            if (player.hasPermission(permission)) {
-                return true;
+    private boolean hasPermission(Player player, Permission groupPermission, Permission singlePermission, int slot) {
+        if (!PetBlockModifyHelper.hasPermission(player, groupPermission)) {
+            if (!PetBlockModifyHelper.hasPermission(player, singlePermission, String.valueOf(slot))) {
+                player.sendMessage(Config.getInstance().getPrefix() + Config.getInstance().getNoPermission());
+                return false;
             }
         }
-        player.sendMessage(Config.getInstance().getPrefix() + Config.getInstance().getNoPermission());
-        return false;
+        return true;
     }
 
     private GUIItemContainer getGUIItem(String name) {

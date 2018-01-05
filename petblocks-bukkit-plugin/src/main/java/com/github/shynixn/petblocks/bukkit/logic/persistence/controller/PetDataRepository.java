@@ -84,9 +84,9 @@ public class PetDataRepository extends DataBaseRepository<PetMeta> implements Pe
         if (item.getPlayerMeta().getPlayer() != null) {
             item.getPlayerMeta().setName(((Player) item.getPlayerMeta().getPlayer()).getName());
             if (item.getPlayerMeta().getId() == 0) {
-                final PlayerMeta playerMeta;
-                if ((playerMeta = this.playerMetaController.getByUUID(((Player) item.getPlayerMeta().getPlayer()).getUniqueId())) != null) {
-                    ((PetData) item).setPlayerMeta(playerMeta);
+                final Optional<PlayerMeta> optPlayerMeta;
+                if ((optPlayerMeta = this.playerMetaController.getFromUUID(((Player) item.getPlayerMeta().getPlayer()).getUniqueId())).isPresent()) {
+                    ((PetData) item).setPlayerMeta(optPlayerMeta.get());
                 }
             }
         }

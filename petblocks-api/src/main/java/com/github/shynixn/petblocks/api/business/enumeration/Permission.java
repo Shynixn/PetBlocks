@@ -28,35 +28,44 @@ package com.github.shynixn.petblocks.api.business.enumeration;
  * SOFTWARE.
  */
 public enum Permission {
-    ALLPETTYPES("petblocks.pet.type.all"),
-    SINGLEPETTYPE("petblocks.pet.type."),
-    RENAMEPET("petblocks.pet.rename"),
-    RENAMESKULL("petblocks.pet.skin"),
-    CANNON("petblocks.pet.cannon"),
-    RIDEPET("petblocks.pet.ride"),
-    WEARPET("petblocks.pet.wear"),
-    ALLDEFAULTCOSTUMES("petblocks.pet.defaultcostumes.all"),
-    SINGLEDEFAULTCOSTUME("petblocks.pet.defaultcostumes."),
-    ALLCOLORCOSTUMES("petblocks.pet.colorcostumes.all"),
-    SINGLECOLORCOSTUME("petblocks.pet.colorcostumes."),
-    ALLCUSTOMCOSTUMES("petblocks.pet.customcostumes.all"),
-    SINGLECUSTOMCOSTUME("petblocks.pet.customcostumes."),
-    ALLMINECRAFTHEADSCOSTUMES("petblocks.pet.minecraft-heads-costumes.all"),
-    SINGLEMINECRAFTHEADSCOSTUME("petblocks.pet.minecraft-heads-costumes."),
-    ALLHEADATABASECOSTUMES("petblocks.pet.head-database-costumes.all"),
-    ALLPARTICLES("petblocks.pet.particles.all"),
-    SINGLEPARTICLE("petblocks.pet.particles."),
-    OWNINGAMECOSTUMES("petblocks.inventory.costume");
+    ALL_ENGINES("petblocks.pet.type.all", "petblocks.selection.engines.all"),
+    SINGLE_ENGINE("petblocks.pet.type.$0", "petblocks.selection.engines.$0"),
+    ALL_SIMPLEBLOCKCOSTUMES("petblocks.pet.defaultcostumes.all", "petblocks.selection.simpleblockcostumes.all"),
+    SINGLE_SIMPLEBLOCKCOSTUME("petblocks.pet.defaultcostumes.$0", "petblocks.selection.simpleblockcostumes.$0"),
+    ALL_COLOREDBLOCKCOSTUMES("petblocks.pet.colorcostumes.all", "petblocks.selection.coloredblockcostumes.all"),
+    SINGLE_COLOREDBLOCKCOSTUME("petblocks.pet.colorcostumes.$0", "petblocks.selection.coloredblockcostumes.$0"),
+    ALL_PLAYERHEADCOSTUMES("petblocks.pet.customcostumes.all", "petblocks.selection.playerheadcostumes.all"),
+    SINGLE_PLAYERHEADCOSTUME("petblocks.pet.customcostumes.$0", "petblocks.selection.playerheadcostumes.$0"),
+    ALL_MINECRAFTHEADCOSTUMES("petblocks.pet.minecraft-heads-costumes.all", "petblocks.selection.petcostumes.all"),
+    SINGLE_MINECRAFTHEADCOSTUME("petblocks.pet.minecraft-heads-costumes.$0", "petblocks.selection.petcostumes.$0"),
+    ALL_HEADDATABASECOSTUMES("petblocks.pet.head-database-costumes.all", "petblocks.selection.headdatabasecostumes.all"),
+    ALL_PARTICLES("petblocks.pet.particles.all", "petblocks.selection.particles.all"),
+    SINGLE_PARTICLE("petblocks.pet.particles.$0", "petblocks.selection.particles.$0"),
 
-    private final String perm;
+    ACTION_RENAME("petblocks.pet.rename", "petblocks.action.rename"),
+    ACTION_CUSTOMSKULL("petblocks.pet.skin", "petblocks.action.customskin"),
+    ACTION_CANNON("petblocks.pet.cannon", "petblocks.action.cannon"),
+    ACTION_RIDE("petblocks.pet.ride", "petblocks.action.ride"),
+    ACTION_WEAR("petblocks.pet.wear", "petblocks.action.wear");
+
+    private final String[] perm;
 
     /**
      * Initializes a new permission.
      *
      * @param perm permission
      */
-    Permission(String perm) {
+    Permission(String... perm) {
         this.perm = perm;
+    }
+
+    /**
+     * Returns all permission in an array.
+     *
+     * @return permission
+     */
+    public String[] getPermission() {
+        return this.perm.clone();
     }
 
     /**
@@ -64,7 +73,8 @@ public enum Permission {
      *
      * @return permission
      */
+    @Deprecated
     public String get() {
-        return this.perm;
+        return this.perm[0];
     }
 }

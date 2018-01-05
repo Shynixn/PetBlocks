@@ -481,24 +481,6 @@ public class ParticleEffectData extends PersistenceObject implements ParticleEff
     }
 
     /**
-     * Converts the effect to a bukkitParticle
-     *
-     * @param clazz Clazz to be given for compatibility
-     * @param <T>   Particle
-     * @return bukkitParticle
-     */
-    public <T extends Enum<T>> T toParticle(Class<?> clazz) {
-        if (clazz == null)
-            throw new IllegalArgumentException("Class cannot be null!");
-        for (final Object item : clazz.getEnumConstants()) {
-            final Enum<T> eItem = (Enum<T>) item;
-            if (eItem.name().equalsIgnoreCase(this.effect))
-                return (T) eItem;
-        }
-        return null;
-    }
-
-    /**
      * Returns if the particleEffect is a color particleEffect
      *
      * @return isColor

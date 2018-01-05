@@ -53,7 +53,12 @@ public final class CustomZombie extends EntityZombie implements PetBlockPartEnti
 
     @Override
     protected void a(BlockPosition blockposition, Block block) {
-        this.playedMovingSound = PetBlockHelper.executeMovingSound(this.petBlock, this.playedMovingSound);
+        try {
+            this.playedMovingSound = PetBlockHelper.executeMovingSound(this.petBlock, this.playedMovingSound);
+        } catch (final Exception ex) {
+            this.remove();
+            PetBlocksPlugin.logger().log(Level.WARNING, "Detected invalid zombie entity. Removed entity.");
+        }
         super.a(blockposition, block);
     }
     /**

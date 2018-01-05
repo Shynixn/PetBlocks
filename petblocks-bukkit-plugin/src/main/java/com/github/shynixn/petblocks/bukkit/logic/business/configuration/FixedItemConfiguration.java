@@ -158,11 +158,14 @@ public class FixedItemConfiguration implements OtherGUIItemsController {
     public boolean isGUIItem(Object itemStack, String name) {
         if (itemStack == null || name == null)
             return false;
-        final GUIItemContainer container = this.getGUIItemByName(name);
+        final Optional<GUIItemContainer> optGUIContainer = this.getGUIItemFromName(name);
+        if (!optGUIContainer.isPresent()) {
+            throw new RuntimeException("GUIItem for PetBlocks with the name " + name + " is not loaded correctly!");
+        }
         final ItemStack mItemStack = (ItemStack) itemStack;
-        return mItemStack.getItemMeta() != null && container.getDisplayName().isPresent()
+        return mItemStack.getItemMeta() != null && optGUIContainer.get().getDisplayName().isPresent()
                 && mItemStack.getItemMeta().getDisplayName() != null
-                && mItemStack.getItemMeta().getDisplayName().equalsIgnoreCase(container.getDisplayName().get());
+                && mItemStack.getItemMeta().getDisplayName().equalsIgnoreCase(optGUIContainer.get().getDisplayName().get());
     }
 
     /**

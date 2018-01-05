@@ -43,7 +43,7 @@ public final class CustomZombie extends EntityZombie implements PetBlockPartEnti
             cField.set(this.goalSelector, Sets.newLinkedHashSet());
             cField.set(this.targetSelector, Sets.newLinkedHashSet());
             this.goalSelector.a(0, new PathfinderGoalFloat(this));
-            this.goalSelector.a(1, new OwnerPathfinder(this,petBlock));
+            this.goalSelector.a(1, new OwnerPathfinder(this, petBlock));
             this.getAttributeInstance(GenericAttributes.MOVEMENT_SPEED).setValue(0.30000001192092896D * ConfigPet.getInstance().getModifier_petwalking());
         } catch (final Exception exc) {
             PetBlocksPlugin.logger().log(Level.WARNING, "EntityNMS exception.", exc);
@@ -54,7 +54,12 @@ public final class CustomZombie extends EntityZombie implements PetBlockPartEnti
 
     @Override
     protected void a(BlockPosition blockposition, Block block) {
-        this.playedMovingSound = PetBlockHelper.executeMovingSound(this.petBlock, this.playedMovingSound);
+        try {
+            this.playedMovingSound = PetBlockHelper.executeMovingSound(this.petBlock, this.playedMovingSound);
+        } catch (final Exception ex) {
+            this.remove();
+            PetBlocksPlugin.logger().log(Level.WARNING, "Detected invalid zombie entity. Removed entity.");
+        }
         super.a(blockposition, block);
     }
 

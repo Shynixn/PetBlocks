@@ -5,76 +5,109 @@ Configuring Permissions
 
 Before you start using PetBlocks on your server, you should also configure the permissions for your players.
 
+Please notice that the permissions changed at the beginning of 2018. `Click here <../updating/index.html>`_ to update your permissions if
+these permissions do not match with your configuration.
+
 Admin
 ~~~~~
 
-Recommend permissions for administrators or moderators:
+These are the recommend permissions for administrators or moderators.
 
-* **petblocks.commands** - Allows to use the /petblocks command (Administration commands)
-* **petblocks.reload** - Allows to reload config.yml
+=======================================================  =======
+Description                                              Permission
+=======================================================  =======
+Allows to use the **/petblocks** administration command  petblocks.command.admin
+Allows to use the **/petblockreload** command            petblocks.command.reload
+=======================================================  =======
 
 Users
 ~~~~~
 
-There are many different ways how to setup your permissions. These 2 examples only show the most common setups:
-Split it up into groups/players etc.
+There are many different ways how to setup your permissions. You can split it up in groups, ranks, etc.
+These 2 examples only show the most common setups:
 
-Sample 1 for full access to all engines/costumes/particles:
+**Sample 1 for full access to all options the plugin offers.**
 
-* **petblocks.use** -  Allows to use the /petblock command
-* **petblocks.pet.type.all** - Allows to have all pet engines
-* **petblocks.pet.rename** - Allows to rename your pet
-* **petblocks.pet.ride** -  Allows to ride your pet
-* **petblocks.pet.wear** - Allows to wear your pet
-* **petblocks.pet.skin** - Allows to use any skin what a player enters in chat
-* **petblocks.pet.cannon** - Allows to shoot your pet
-* **petblocks.pet.defaultcostumes.all** - Allows to use every default costume
-* **petblocks.pet.colorcostumes.all** - Allows to use every color costume
-* **petblocks.pet.customcostumes.all** - Allows to use every custom costume
-* **petblocks.pet.minecraft-heads-costumes.all** - Allows to use every minecraft-heads-costume
-* **petblocks.pet.head-database-costumes.all** - Allows to use head-database for a costumes
-* **petblocks.pet.particles.all** - Allows to use every particle
+===================================================  ================================================
+Description                                          Permission
+===================================================  ================================================
+Allows to use the /petblock command                  petblocks.command.use
+Allows to rename your pet                            petblocks.action.rename
+Allows to use any skin what a player enters in chat  petblocks.action.customskin
+Allows to ride your pet                              petblocks.action.ride
+Allows to wear your pet                              petblocks.action.wear
+Allows to shoot your pet                             petblocks.action.cannon
+Allows to use all pet engines                        petblocks.selection.engines.all
+Allows to use all simple block costumes              petblocks.selection.simpleblockcostumes.all
+Allows to use all colored block costumes             petblocks.selection.coloredblockcostumes.all
+Allows to use all player head costumes               petblocks.selection.playerheadcostumes.all
+Allows to use all pet costumes                       petblocks.selection.petcostumes.all
+Allows to use all particles                          petblocks.selection.particles.all
+===================================================  ================================================
 
-Sample 2 for restricted access to costumes:
 
-* **petblocks.use** -  Allows to use the /petblock command
-* **petblocks.pet.type.all** - Allows to have all pet engines
-* **petblocks.pet.rename** - Allows to rename your pet
-* **petblocks.pet.ride** -  Allows to ride your pet
-* **petblocks.pet.wear** - Allows to wear your pet
-* **petblocks.pet.skin** - Allows to use any skin what a player enters in chat
-* **petblocks.pet.cannon** - Allows to shoot your pet
-* **petblocks.pet.defaultcostumes.5** - Allows to use the default costume number 5
-* **petblocks.pet.defaultcostumes.8** - Allows to use the default costume number 8
-* **petblocks.pet.colorcostumes.all** - Allows to use every color costume
+**Sample 2 for restricted access to costumes.**
+
+===================================================  ================================================
+Description                                          Permission
+===================================================  ================================================
+Allows to use the /petblock command                  petblocks.command.use
+Allows to rename your pet                            petblocks.action.rename
+Allows to use any skin what a player enters in chat  petblocks.action.customskin
+Allows to ride your pet                              petblocks.action.ride
+Allows to wear your pet                              petblocks.action.wear
+Allows to shoot your pet                             petblocks.action.cannon
+Allows to use all pet engines                        petblocks.selection.engines.all
+Allows to use the simple block costume at slot 3     petblocks.selection.simpleblockcostumes.3
+Allows to use the simple block costume at slot 5     petblocks.selection.simpleblockcostumes.5
+Allows to use all colored block costumes             petblocks.selection.coloredblockcostumes.all
+Allows to use all particles                          petblocks.selection.particles.all
+===================================================  ================================================
 
 Permissionlist
 ~~~~~~~~~~~~~~
 
-* **petblocks.use** -  Allows to use the /petblock command
-* **petblocks.pet.type.all** - Allows to have all pet engines
-* **petblocks.pet.type.<number>** - Allows to have a specific pet engine
-* **petblocks.pet.rename** - Allows to rename your pet
-* **petblocks.pet.ride** -  Allows to ride your pet
-* **petblocks.pet.wear** - Allows to wear your pet
-* **petblocks.pet.skin** - Allows to use any skin what a player enters in chat
-* **petblocks.pet.cannon** - Allows to shoot your pet
-* **petblocks.pet.defaultcostumes.all** - Allows to use every default costume
-* **petblocks.pet.defaultcostumes.<number>** - Allows to use a specific default costume
-* **petblocks.pet.colorcostumes.all** - Allows to use every color costume
-* **petblocks.pet.colorcostumes.<number>** - Allows to use a specific color costume
-* **petblocks.pet.customcostumes.all** - Allows to use every custom costume
-* **petblocks.pet.customcostumes.<number>** - Allows to use a specific custom costumes
-* **petblocks.pet.minecraft-heads-costumes.all** - Allows to use every minecraft-heads-costume
-* **petblocks.pet.minecraft-heads-costumes.<number>** - Allows to use a specific minecraft-heads-costume
-* **petblocks.pet.head-database-costumes.all** - Allows to use head-database for a costumes
-* **petblocks.pet.particles.all** - Allows to use every particle
-* **petblocks.pet.particles.<number>** - Allows to use a specific particle
-* **petblocks.commands** - Allows to use the /petblocks command
-* **petblocks.reload** - Allows to reload config.yml
+**Permissions for commands**
 
+===================================================  =======
+Description                                          Permission
+===================================================  =======
+Allows to use the /petblock command                  petblocks.command.use
+Allows to use the /petblocks administration command  petblocks.command.admin
+Allows to use the /petblockreload command            petblocks.command.reload
+===================================================  =======
 
+**Permissions for actions**
 
+===================================================  =======
+Description                                          Permission
+===================================================  =======
+Allows to rename your pet                            petblocks.action.rename
+Allows to use any skin what a player enters in chat  petblocks.action.customskin
+Allows to ride your pet                              petblocks.action.ride
+Allows to wear your pet                              petblocks.action.wear
+Allows to shoot your pet                             petblocks.action.cannon
+===================================================  =======
+
+**Permissions for selections**
+
+===================================================  =======
+Description                                          Permission
+===================================================  =======
+Allows to use all pet engines                        petblocks.selection.engines.all
+Allows to use a single pet engine                    petblocks.selection.engines.<number>
+Allows to use all simple block costumes              petblocks.selection.simpleblockcostumes.all
+Allows to use a single simple block costume          petblocks.selection.simpleblockcostumes.<number>
+Allows to use all colored block costumes             petblocks.selection.coloredblockcostumes.all
+Allows to use a single colored block costume         petblocks.selection.coloredblockcostumes.<number>
+Allows to use all player head costumes               petblocks.selection.playerheadcostumes.all
+Allows to use a single player head costume           petblocks.selection.playerheadcostumes.<number>
+Allows to use all pet costumes                       petblocks.selection.petcostumes.all
+Allows to use a single pet costume                   petblocks.selection.petcostumes.<number>
+Allows to use all particles                          petblocks.selection.particles.all
+Allows to use a single particle                      petblocks.pet.particles.<number
+Allows to use all head database costumes             petblocks.selection.headdatabasecostumes.all
+===================================================  =======
 
 
 

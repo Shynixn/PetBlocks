@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Configuring Permissions &mdash; PetBlocks 6.4.1 documentation</title>
+  <title>Configuring Permissions &mdash; PetBlocks 6.4.2 documentation</title>
   
 
   
@@ -35,7 +35,7 @@
         <link rel="index" title="Index"
               href="../genindex.html"/>
         <link rel="search" title="Search" href="../search.html"/>
-    <link rel="top" title="PetBlocks 6.4.1 documentation" href="../index.html"/>
+    <link rel="top" title="PetBlocks 6.4.2 documentation" href="../index.html"/>
         <link rel="up" title="Getting Started" href="index.html"/>
         <link rel="next" title="Playing" href="playing.html"/>
         <link rel="prev" title="Installing" href="installing.html"/> 
@@ -70,7 +70,7 @@
             
             
               <div class="version">
-                6.4.1
+                6.4.2
               </div>
             
           
@@ -184,73 +184,240 @@
 <div class="toctree-wrapper compound">
 </div>
 <p>Before you start using PetBlocks on your server, you should also configure the permissions for your players.</p>
+<p>Please notice that the permissions changed at the beginning of 2018. <a class="reference external" href="../updating/index.html">Click here</a> to update your permissions if
+these permissions do not match with your configuration.</p>
 <div class="section" id="admin">
 <h2>Admin<a class="headerlink" href="#admin" title="Permalink to this headline">¶</a></h2>
-<p>Recommend permissions for administrators or moderators:</p>
-<ul class="simple">
-<li><strong>petblocks.commands</strong> - Allows to use the /petblocks command (Administration commands)</li>
-<li><strong>petblocks.reload</strong> - Allows to reload config.yml</li>
-</ul>
+<p>These are the recommend permissions for administrators or moderators.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="70%" />
+<col width="30%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Description</th>
+<th class="head">Permission</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>Allows to use the <strong>/petblocks</strong> administration command</td>
+<td>petblocks.command.admin</td>
+</tr>
+<tr class="row-odd"><td>Allows to use the <strong>/petblockreload</strong> command</td>
+<td>petblocks.command.reload</td>
+</tr>
+</tbody>
+</table>
 </div>
 <div class="section" id="users">
 <h2>Users<a class="headerlink" href="#users" title="Permalink to this headline">¶</a></h2>
-<p>There are many different ways how to setup your permissions. These 2 examples only show the most common setups:
-Split it up into groups/players etc.</p>
-<p>Sample 1 for full access to all engines/costumes/particles:</p>
-<ul class="simple">
-<li><strong>petblocks.use</strong> -  Allows to use the /petblock command</li>
-<li><strong>petblocks.pet.type.all</strong> - Allows to have all pet engines</li>
-<li><strong>petblocks.pet.rename</strong> - Allows to rename your pet</li>
-<li><strong>petblocks.pet.ride</strong> -  Allows to ride your pet</li>
-<li><strong>petblocks.pet.wear</strong> - Allows to wear your pet</li>
-<li><strong>petblocks.pet.skin</strong> - Allows to use any skin what a player enters in chat</li>
-<li><strong>petblocks.pet.cannon</strong> - Allows to shoot your pet</li>
-<li><strong>petblocks.pet.defaultcostumes.all</strong> - Allows to use every default costume</li>
-<li><strong>petblocks.pet.colorcostumes.all</strong> - Allows to use every color costume</li>
-<li><strong>petblocks.pet.customcostumes.all</strong> - Allows to use every custom costume</li>
-<li><strong>petblocks.pet.minecraft-heads-costumes.all</strong> - Allows to use every minecraft-heads-costume</li>
-<li><strong>petblocks.pet.head-database-costumes.all</strong> - Allows to use head-database for a costumes</li>
-<li><strong>petblocks.pet.particles.all</strong> - Allows to use every particle</li>
-</ul>
-<p>Sample 2 for restricted access to costumes:</p>
-<ul class="simple">
-<li><strong>petblocks.use</strong> -  Allows to use the /petblock command</li>
-<li><strong>petblocks.pet.type.all</strong> - Allows to have all pet engines</li>
-<li><strong>petblocks.pet.rename</strong> - Allows to rename your pet</li>
-<li><strong>petblocks.pet.ride</strong> -  Allows to ride your pet</li>
-<li><strong>petblocks.pet.wear</strong> - Allows to wear your pet</li>
-<li><strong>petblocks.pet.skin</strong> - Allows to use any skin what a player enters in chat</li>
-<li><strong>petblocks.pet.cannon</strong> - Allows to shoot your pet</li>
-<li><strong>petblocks.pet.defaultcostumes.5</strong> - Allows to use the default costume number 5</li>
-<li><strong>petblocks.pet.defaultcostumes.8</strong> - Allows to use the default costume number 8</li>
-<li><strong>petblocks.pet.colorcostumes.all</strong> - Allows to use every color costume</li>
-</ul>
+<p>There are many different ways how to setup your permissions. You can split it up in groups, ranks, etc.
+These 2 examples only show the most common setups:</p>
+<p><strong>Sample 1 for full access to all options the plugin offers.</strong></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="52%" />
+<col width="48%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Description</th>
+<th class="head">Permission</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>Allows to use the /petblock command</td>
+<td>petblocks.command.use</td>
+</tr>
+<tr class="row-odd"><td>Allows to rename your pet</td>
+<td>petblocks.action.rename</td>
+</tr>
+<tr class="row-even"><td>Allows to use any skin what a player enters in chat</td>
+<td>petblocks.action.customskin</td>
+</tr>
+<tr class="row-odd"><td>Allows to ride your pet</td>
+<td>petblocks.action.ride</td>
+</tr>
+<tr class="row-even"><td>Allows to wear your pet</td>
+<td>petblocks.action.wear</td>
+</tr>
+<tr class="row-odd"><td>Allows to shoot your pet</td>
+<td>petblocks.action.cannon</td>
+</tr>
+<tr class="row-even"><td>Allows to use all pet engines</td>
+<td>petblocks.selection.engines.all</td>
+</tr>
+<tr class="row-odd"><td>Allows to use all simple block costumes</td>
+<td>petblocks.selection.simpleblockcostumes.all</td>
+</tr>
+<tr class="row-even"><td>Allows to use all colored block costumes</td>
+<td>petblocks.selection.coloredblockcostumes.all</td>
+</tr>
+<tr class="row-odd"><td>Allows to use all player head costumes</td>
+<td>petblocks.selection.playerheadcostumes.all</td>
+</tr>
+<tr class="row-even"><td>Allows to use all pet costumes</td>
+<td>petblocks.selection.petcostumes.all</td>
+</tr>
+<tr class="row-odd"><td>Allows to use all particles</td>
+<td>petblocks.selection.particles.all</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Sample 2 for restricted access to costumes.</strong></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="52%" />
+<col width="48%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Description</th>
+<th class="head">Permission</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>Allows to use the /petblock command</td>
+<td>petblocks.command.use</td>
+</tr>
+<tr class="row-odd"><td>Allows to rename your pet</td>
+<td>petblocks.action.rename</td>
+</tr>
+<tr class="row-even"><td>Allows to use any skin what a player enters in chat</td>
+<td>petblocks.action.customskin</td>
+</tr>
+<tr class="row-odd"><td>Allows to ride your pet</td>
+<td>petblocks.action.ride</td>
+</tr>
+<tr class="row-even"><td>Allows to wear your pet</td>
+<td>petblocks.action.wear</td>
+</tr>
+<tr class="row-odd"><td>Allows to shoot your pet</td>
+<td>petblocks.action.cannon</td>
+</tr>
+<tr class="row-even"><td>Allows to use all pet engines</td>
+<td>petblocks.selection.engines.all</td>
+</tr>
+<tr class="row-odd"><td>Allows to use the simple block costume at slot 3</td>
+<td>petblocks.selection.simpleblockcostumes.3</td>
+</tr>
+<tr class="row-even"><td>Allows to use the simple block costume at slot 5</td>
+<td>petblocks.selection.simpleblockcostumes.5</td>
+</tr>
+<tr class="row-odd"><td>Allows to use all colored block costumes</td>
+<td>petblocks.selection.coloredblockcostumes.all</td>
+</tr>
+<tr class="row-even"><td>Allows to use all particles</td>
+<td>petblocks.selection.particles.all</td>
+</tr>
+</tbody>
+</table>
 </div>
 <div class="section" id="permissionlist">
 <h2>Permissionlist<a class="headerlink" href="#permissionlist" title="Permalink to this headline">¶</a></h2>
-<ul class="simple">
-<li><strong>petblocks.use</strong> -  Allows to use the /petblock command</li>
-<li><strong>petblocks.pet.type.all</strong> - Allows to have all pet engines</li>
-<li><strong>petblocks.pet.type.&lt;number&gt;</strong> - Allows to have a specific pet engine</li>
-<li><strong>petblocks.pet.rename</strong> - Allows to rename your pet</li>
-<li><strong>petblocks.pet.ride</strong> -  Allows to ride your pet</li>
-<li><strong>petblocks.pet.wear</strong> - Allows to wear your pet</li>
-<li><strong>petblocks.pet.skin</strong> - Allows to use any skin what a player enters in chat</li>
-<li><strong>petblocks.pet.cannon</strong> - Allows to shoot your pet</li>
-<li><strong>petblocks.pet.defaultcostumes.all</strong> - Allows to use every default costume</li>
-<li><strong>petblocks.pet.defaultcostumes.&lt;number&gt;</strong> - Allows to use a specific default costume</li>
-<li><strong>petblocks.pet.colorcostumes.all</strong> - Allows to use every color costume</li>
-<li><strong>petblocks.pet.colorcostumes.&lt;number&gt;</strong> - Allows to use a specific color costume</li>
-<li><strong>petblocks.pet.customcostumes.all</strong> - Allows to use every custom costume</li>
-<li><strong>petblocks.pet.customcostumes.&lt;number&gt;</strong> - Allows to use a specific custom costumes</li>
-<li><strong>petblocks.pet.minecraft-heads-costumes.all</strong> - Allows to use every minecraft-heads-costume</li>
-<li><strong>petblocks.pet.minecraft-heads-costumes.&lt;number&gt;</strong> - Allows to use a specific minecraft-heads-costume</li>
-<li><strong>petblocks.pet.head-database-costumes.all</strong> - Allows to use head-database for a costumes</li>
-<li><strong>petblocks.pet.particles.all</strong> - Allows to use every particle</li>
-<li><strong>petblocks.pet.particles.&lt;number&gt;</strong> - Allows to use a specific particle</li>
-<li><strong>petblocks.commands</strong> - Allows to use the /petblocks command</li>
-<li><strong>petblocks.reload</strong> - Allows to reload config.yml</li>
-</ul>
+<p><strong>Permissions for commands</strong></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="68%" />
+<col width="32%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Description</th>
+<th class="head">Permission</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>Allows to use the /petblock command</td>
+<td>petblocks.command.use</td>
+</tr>
+<tr class="row-odd"><td>Allows to use the /petblocks administration command</td>
+<td>petblocks.command.admin</td>
+</tr>
+<tr class="row-even"><td>Allows to use the /petblockreload command</td>
+<td>petblocks.command.reload</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Permissions for actions</strong></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="65%" />
+<col width="35%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Description</th>
+<th class="head">Permission</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>Allows to rename your pet</td>
+<td>petblocks.action.rename</td>
+</tr>
+<tr class="row-odd"><td>Allows to use any skin what a player enters in chat</td>
+<td>petblocks.action.customskin</td>
+</tr>
+<tr class="row-even"><td>Allows to ride your pet</td>
+<td>petblocks.action.ride</td>
+</tr>
+<tr class="row-odd"><td>Allows to wear your pet</td>
+<td>petblocks.action.wear</td>
+</tr>
+<tr class="row-even"><td>Allows to shoot your pet</td>
+<td>petblocks.action.cannon</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Permissions for selections</strong></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="51%" />
+<col width="49%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Description</th>
+<th class="head">Permission</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>Allows to use all pet engines</td>
+<td>petblocks.selection.engines.all</td>
+</tr>
+<tr class="row-odd"><td>Allows to use a single pet engine</td>
+<td>petblocks.selection.engines.&lt;number&gt;</td>
+</tr>
+<tr class="row-even"><td>Allows to use all simple block costumes</td>
+<td>petblocks.selection.simpleblockcostumes.all</td>
+</tr>
+<tr class="row-odd"><td>Allows to use a single simple block costume</td>
+<td>petblocks.selection.simpleblockcostumes.&lt;number&gt;</td>
+</tr>
+<tr class="row-even"><td>Allows to use all colored block costumes</td>
+<td>petblocks.selection.coloredblockcostumes.all</td>
+</tr>
+<tr class="row-odd"><td>Allows to use a single colored block costume</td>
+<td>petblocks.selection.coloredblockcostumes.&lt;number&gt;</td>
+</tr>
+<tr class="row-even"><td>Allows to use all player head costumes</td>
+<td>petblocks.selection.playerheadcostumes.all</td>
+</tr>
+<tr class="row-odd"><td>Allows to use a single player head costume</td>
+<td>petblocks.selection.playerheadcostumes.&lt;number&gt;</td>
+</tr>
+<tr class="row-even"><td>Allows to use all pet costumes</td>
+<td>petblocks.selection.petcostumes.all</td>
+</tr>
+<tr class="row-odd"><td>Allows to use a single pet costume</td>
+<td>petblocks.selection.petcostumes.&lt;number&gt;</td>
+</tr>
+<tr class="row-even"><td>Allows to use all particles</td>
+<td>petblocks.selection.particles.all</td>
+</tr>
+<tr class="row-odd"><td>Allows to use a single particle</td>
+<td>petblocks.pet.particles.&lt;number</td>
+</tr>
+<tr class="row-even"><td>Allows to use all head database costumes</td>
+<td>petblocks.selection.headdatabasecostumes.all</td>
+</tr>
+</tbody>
+</table>
 </div>
 </div>
 
@@ -276,7 +443,7 @@ Split it up into groups/players etc.</p>
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2017, Shynixn.
+        &copy; Copyright 2015 - 2018, Shynixn.
 
     </p>
   </div>
@@ -297,7 +464,7 @@ Split it up into groups/players etc.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'6.4.1',
+            VERSION:'6.4.2',
             LANGUAGE:'None',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',

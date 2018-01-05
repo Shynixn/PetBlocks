@@ -32,7 +32,7 @@ PetBlocks is a spigot plugin to use blocks and custom heads as pets in Minecraft
 
 ## Licence
 
-Copyright 2017 Shynixn
+Copyright 2015-2018 Shynixn
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.

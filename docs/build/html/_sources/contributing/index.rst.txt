@@ -35,7 +35,7 @@ You can also add new features by simply forking the plugin on github:
 * Press Fork on github
 * git clone the repository to your local pc
 * Create a lib folder at the same folder level as docs and petblocks-api
-* Put the all spigot libraries from spigot-1.8 - spigot-1.12 into it. Also, put a version from SuperVanish into it.
+* Put the all spigot libraries from spigot-1.8 - spigot-1.12 into it.
 * Use maven to compile the plugin.
 
 When you are finish you can also submit a pull request to merge your feature into the official repository.

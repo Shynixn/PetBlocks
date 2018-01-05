@@ -112,7 +112,7 @@ public class SkinHelper {
         } catch (IllegalArgumentException | IllegalAccessException | NoSuchFieldException | SecurityException | ClassNotFoundException e) {
             Bukkit.getLogger().log(Level.WARNING, "Failed to set url of itemstack.", e);
         }
-        return null;
+        return Optional.empty();
     }
 
     private static Class<?> createClass(String path) throws ClassNotFoundException {
