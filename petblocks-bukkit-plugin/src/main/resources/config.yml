@@ -3,7 +3,7 @@
 # 		            	   by Shynixn							      #
 #######################################################################
 
-# You can  find the permissions at the official documentation.
+# You can find the permissions at the official documentation.
 # https://shynixn.github.io/PetBlocks/build/html/gettingstarted/permissions.html#permissionlist
 
 ############################
@@ -55,14 +55,14 @@ petblocks-gui:
   command: petblock
   useage: /<command>
   description: Opens the pet GUI.
-  permission: petblocks.use
+  permission: petblocks.command.use
   permission-message: You don't have permission
 petblocks-configuration:
   enabled: true
   command: petblocks
   useage: /<command>
   description: Command to configure pets.
-  permission: petblocks.commands
+  permission: petblocks.command.admin
   permission-message: You don't have permission
 
 
