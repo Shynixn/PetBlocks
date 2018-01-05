@@ -20,7 +20,7 @@ import java.util.Optional;
 import java.util.logging.Level;
 
 /**
- * Created by Shynixn 2017.
+ * Collection of helper methods to reduce the amount of duplicated code.
  * <p>
  * Version 1.1
  * <p>
@@ -48,6 +48,17 @@ import java.util.logging.Level;
  */
 public class PetBlockModifyHelper {
 
+    private PetBlockModifyHelper() {
+        super();
+    }
+
+    /**
+     * Sets the given nbtTags to the itemStack and returns the new itemStack.
+     *
+     * @param itemStack itemStack
+     * @param nbtTags   nbtTags
+     * @return itemstack
+     */
     public static ItemStack setItemStackNBTTag(ItemStack itemStack, Map<String, Object> nbtTags) {
         try {
             final Method nmsCopyMethod = createClass("org.bukkit.craftbukkit.VERSION.inventory.CraftItemStack").getDeclaredMethod("asNMSCopy", ItemStack.class);
@@ -87,11 +98,6 @@ public class PetBlockModifyHelper {
             Bukkit.getLogger().log(Level.WARNING, "Failed to set nbt tag.", e);
         }
         return null;
-    }
-
-    private static Class<?> createClass(String path) throws ClassNotFoundException {
-        final String version = Bukkit.getServer().getClass().getPackage().getName().replace(".", ",").split(",")[3];
-        return Class.forName(path.replace("VERSION", version));
     }
 
     /**
@@ -188,10 +194,11 @@ public class PetBlockModifyHelper {
     }
 
     /**
-     * Checks if the player has got the required permission.
+     * * Checks if the player has got the required permission.
      *
-     * @param player     player
-     * @param permission permission
+     * @param player      player
+     * @param permission  permission
+     * @param placeholder placeholder
      * @return hasPermission
      */
     public static boolean hasPermission(Player player, Permission permission, String... placeholder) {
@@ -206,5 +213,10 @@ public class PetBlockModifyHelper {
             }
         }
         return false;
+    }
+
+    private static Class<?> createClass(String path) throws ClassNotFoundException {
+        final String version = Bukkit.getServer().getClass().getPackage().getName().replace(".", ",").split(",")[3];
+        return Class.forName(path.replace("VERSION", version));
     }
 }

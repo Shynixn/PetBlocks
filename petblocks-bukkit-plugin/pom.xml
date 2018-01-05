@@ -6,10 +6,10 @@
     <parent>
         <artifactId>root</artifactId>
         <groupId>com.github.shynixn.petblocks</groupId>
-        <version>6.4.2-SNAPSHOT</version>
+        <version>6.4.2</version>
     </parent>
 
-    <version>6.4.2-SNAPSHOT</version>
+    <version>6.4.2</version>
     <artifactId>petblocks-bukkit-plugin</artifactId>
     <packaging>jar</packaging>
 
@@ -36,12 +36,12 @@
         <dependency>
             <groupId>com.github.shynixn.petblocks</groupId>
             <artifactId>petblocks-bukkit-api</artifactId>
-            <version>6.4.2-SNAPSHOT</version>
+            <version>6.4.2</version>
         </dependency>
         <dependency>
             <groupId>com.github.shynixn.petblocks</groupId>
             <artifactId>petblocks-bukkit-lib</artifactId>
-            <version>6.4.2-SNAPSHOT</version>
+            <version>6.4.2</version>
         </dependency>
         <dependency>
             <groupId>org.bstats</groupId>
