@@ -26,6 +26,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public final class PetBlockCommandExecutor extends SimpleCommandExecutor.UnRegistered {
     private final PetBlockManager manager;
@@ -98,33 +99,33 @@ public final class PetBlockCommandExecutor extends SimpleCommandExecutor.UnRegis
             sender.sendMessage("");
             this.sendMessage(sender, "hat [player]", new String[]{ChatColor.BLUE + "Description:" + ChatColor.RESET
                     , "Starts wearing the PetBlock."
-                    ,ChatColor.YELLOW + "Examples:" + ChatColor.RESET
+                    , ChatColor.YELLOW + "Examples:" + ChatColor.RESET
                     , this.getCommandName() + "hat"
                     , this.getCommandName() + "hat " + sender.getName()
                     , ChatColor.GOLD + "<<Click me>>"});
             this.sendMessage(sender, "ride [player]", new String[]{ChatColor.BLUE + "Description:" + ChatColor.RESET
                     , "Starts riding the PetBlock."
-                    ,ChatColor.YELLOW + "Examples:" + ChatColor.RESET
+                    , ChatColor.YELLOW + "Examples:" + ChatColor.RESET
                     , this.getCommandName() + "ride"
                     , this.getCommandName() + "ride " + sender.getName()
                     , ChatColor.GOLD + "<<Click me>>"});
             this.sendMessage(sender, "item-name <text> [player]", new String[]{ChatColor.BLUE + "Description:" + ChatColor.RESET
                     , "Changes the name of the PetBlock item when it is inside of the inventory of the player."
-                    ,ChatColor.YELLOW + "Examples:" + ChatColor.RESET
+                    , ChatColor.YELLOW + "Examples:" + ChatColor.RESET
                     , this.getCommandName() + "item-name Petblock"
                     , this.getCommandName() + "item-name Amazing Beast"
                     , this.getCommandName() + "item-name My block " + sender.getName()
                     , ChatColor.GOLD + "<<Click me>>"});
             this.sendMessage(sender, "item-lore <line> <text> [player]", new String[]{ChatColor.BLUE + "Description:" + ChatColor.RESET
                     , "Changes the lore of the PetBlock item when it is inside of the inventory of the player."
-                    ,ChatColor.YELLOW + "Examples:" + ChatColor.RESET
+                    , ChatColor.YELLOW + "Examples:" + ChatColor.RESET
                     , this.getCommandName() + "item-lore 1 Beast"
                     , this.getCommandName() + "item-lore 2 This is my pet"
                     , this.getCommandName() + "item-lore 2 PetBlock " + sender.getName()
                     , ChatColor.GOLD + "<<Click me>>"});
             this.sendMessage(sender, "killnext", new String[]{ChatColor.BLUE + "Description:" + ChatColor.RESET
                     , "Kills the nearest entity to the player. Does not kill other players."
-                    ,ChatColor.YELLOW + "Examples:" + ChatColor.RESET
+                    , ChatColor.YELLOW + "Examples:" + ChatColor.RESET
                     , this.getCommandName() + "killnext"
                     , ChatColor.GOLD + "<<Click me>>"});
             sender.sendMessage("");
@@ -136,13 +137,13 @@ public final class PetBlockCommandExecutor extends SimpleCommandExecutor.UnRegis
             sender.sendMessage("");
             this.sendMessage(sender, "engine <number> [player]", new String[]{ChatColor.BLUE + "Description:" + ChatColor.RESET
                     , "Changes the engine being used of the PetBlock."
-                    ,ChatColor.YELLOW + "Examples:" + ChatColor.RESET
+                    , ChatColor.YELLOW + "Examples:" + ChatColor.RESET
                     , this.getCommandName() + "engine 1"
                     , this.getCommandName() + "engine 2 " + sender.getName()
                     , ChatColor.GOLD + "<<Click me>>"});
             this.sendMessage(sender, "costume <category> <number> [player]", new String[]{ChatColor.BLUE + "Description:" + ChatColor.RESET
                     , "Changes the costume of the PetBlock."
-                    ,ChatColor.YELLOW + "Examples:" + ChatColor.RESET
+                    , ChatColor.YELLOW + "Examples:" + ChatColor.RESET
                     , this.getCommandName() + "costume simple-blocks 1"
                     , this.getCommandName() + "costume simple-blocks 1 " + sender.getName()
                     , this.getCommandName() + "costume colored-blocks 2"
@@ -151,21 +152,21 @@ public final class PetBlockCommandExecutor extends SimpleCommandExecutor.UnRegis
                     , ChatColor.GOLD + "<<Click me>>"});
             this.sendMessage(sender, "rename <name> [player]", new String[]{ChatColor.BLUE + "Description:" + ChatColor.RESET
                     , "Renames the PetBlock."
-                    ,ChatColor.YELLOW + "Examples:" + ChatColor.RESET
+                    , ChatColor.YELLOW + "Examples:" + ChatColor.RESET
                     , this.getCommandName() + "rename Beast"
                     , this.getCommandName() + "rename My awesome Pet"
                     , this.getCommandName() + "rename My Pet " + sender.getName()
                     , ChatColor.GOLD + "<<Click me>>"});
             this.sendMessage(sender, "skin <account/url> [player]", new String[]{ChatColor.BLUE + "Description:" + ChatColor.RESET
                     , "Replaces the costume of the PetBlock with the given skin."
-                    ,ChatColor.YELLOW + "Examples:" + ChatColor.RESET
+                    , ChatColor.YELLOW + "Examples:" + ChatColor.RESET
                     , this.getCommandName() + "skin Shynixn"
                     , this.getCommandName() + "skin Shynixn " + sender.getName()
                     , this.getCommandName() + "skin http://textures.minecraft.net/texture/707dab2cbebea539b64d5ad246f9ccc1fcda7aa94b88e59fc2829852f46071"
                     , ChatColor.GOLD + "<<Click me>>"});
             this.sendMessage(sender, "particle <number> [player]", new String[]{ChatColor.BLUE + "Description:" + ChatColor.RESET
                     , "Changes the particle of the PetBlock."
-                    ,ChatColor.YELLOW + "Examples:" + ChatColor.RESET
+                    , ChatColor.YELLOW + "Examples:" + ChatColor.RESET
                     , this.getCommandName() + "particle 2"
                     , this.getCommandName() + "particle 3 " + sender.getName()
                     , ChatColor.GOLD + "<<Click me>>"});
@@ -177,12 +178,12 @@ public final class PetBlockCommandExecutor extends SimpleCommandExecutor.UnRegis
             sender.sendMessage(ChatColor.DARK_GREEN + "" + ChatColor.BOLD + ChatColor.UNDERLINE + "                   PetBlocks " + "                       ");
             if (sender instanceof Player) {
                 sender.sendMessage("");
-                sender.sendMessage(ChatColor.DARK_GREEN + "" +ChatColor.ITALIC + "Move your mouse over the commands to display tooltips!");
+                sender.sendMessage(ChatColor.DARK_GREEN + "" + ChatColor.ITALIC + "Move your mouse over the commands to display tooltips!");
             }
             sender.sendMessage("");
             this.sendMessage(sender, "enable [player]", new String[]{ChatColor.BLUE + "Description:" + ChatColor.RESET
                     , "Respawns the PetBlock of the given player."
-                    ,ChatColor.YELLOW + "Examples:" + ChatColor.RESET
+                    , ChatColor.YELLOW + "Examples:" + ChatColor.RESET
                     , this.getCommandName() + "enable"
                     , this.getCommandName() + "enable " + sender.getName()
                     , ChatColor.GOLD + "<<Click me>>"});
@@ -274,11 +275,11 @@ public final class PetBlockCommandExecutor extends SimpleCommandExecutor.UnRegis
 
     private void setParticleCommand(Player player, int number) {
         this.providePet(player, (petMeta, petBlock) -> {
-            final GUIItemContainer container = Config.getInstance().getParticleController().getContainerByPosition(number);
-            if (container == null) {
+            final Optional<GUIItemContainer> guiItemContainer = Config.getInstance().getParticleController().getContainerFromPosition(number);
+            if (!guiItemContainer.isPresent()) {
                 player.sendMessage(Config.getInstance().getPrefix() + "Particle not found.");
             } else {
-                PetBlockModifyHelper.setParticleEffect(petMeta, petBlock, container);
+                PetBlockModifyHelper.setParticleEffect(petMeta, petBlock, guiItemContainer.get());
                 this.persistAsynchronously(petMeta);
             }
         });
@@ -362,16 +363,16 @@ public final class PetBlockCommandExecutor extends SimpleCommandExecutor.UnRegis
     }
 
     private void ridePetCommand(Player player) {
-        final PetBlock petBlock;
-        if ((petBlock = this.manager.getPetBlockController().getByPlayer(player)) != null) {
-            petBlock.ride(player);
+        final Optional<PetBlock> petBlock;
+        if ((petBlock = this.manager.getPetBlockController().getFromPlayer(player)).isPresent()) {
+            petBlock.get().ride(player);
         }
     }
 
     private void hatPetCommand(Player player) {
-        final PetBlock petBlock;
-        if ((petBlock = this.manager.getPetBlockController().getByPlayer(player)) != null) {
-            petBlock.wear(player);
+        final Optional<PetBlock> petBlock;
+        if ((petBlock = this.manager.getPetBlockController().getFromPlayer(player)).isPresent()) {
+            petBlock.get().wear(player);
         }
     }
 
@@ -448,9 +449,9 @@ public final class PetBlockCommandExecutor extends SimpleCommandExecutor.UnRegis
     }
 
     private void removePetCommand(Player player) {
-        final PetBlock petBlock;
-        if ((petBlock = this.manager.getPetBlockController().getByPlayer(player)) != null) {
-            this.manager.getPetBlockController().remove(petBlock);
+        final Optional<PetBlock> petBlock;
+        if ((petBlock = this.manager.getPetBlockController().getFromPlayer(player)).isPresent()) {
+            this.manager.getPetBlockController().remove(petBlock.get());
         }
     }
 
@@ -469,14 +470,18 @@ public final class PetBlockCommandExecutor extends SimpleCommandExecutor.UnRegis
     }
 
     private void providePet(Player player, PetRunnable runnable) {
-        final PetBlock petBlock;
-        if ((petBlock = this.manager.getPetBlockController().getByPlayer(player)) != null) {
-            runnable.run(petBlock.getMeta(), petBlock);
+        final Optional<PetBlock> petBlock;
+        if ((petBlock = this.manager.getPetBlockController().getFromPlayer(player)).isPresent()) {
+            runnable.run(petBlock.get().getMeta(), petBlock.get());
         } else {
             this.plugin.getServer().getScheduler().runTaskAsynchronously(this.plugin, () -> {
-                if (!this.manager.getPetMetaController().hasEntry(player))
-                    return;
-                final PetMeta petMeta = this.manager.getPetMetaController().getByPlayer(player);
+                final PetMeta petMeta;
+                if (!this.manager.getPetMetaController().hasEntry(player)) {
+                    petMeta = this.manager.getPetMetaController().create(player);
+                    this.manager.getPetMetaController().store(petMeta);
+                } else {
+                    petMeta = this.manager.getPetMetaController().getFromPlayer(player).get();
+                }
                 this.plugin.getServer().getScheduler().runTask(this.plugin, () -> runnable.run(petMeta, null));
             });
         }
