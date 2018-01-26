@@ -96,7 +96,7 @@ public class Factory {
                         throw new IOException("Creating database file failed.");
                     }
                 }
-                connectionContext = ExtensionHikariConnectionContext.from(ExtensionHikariConnectionContext.SQLITE_DRIVER, "jdbc:sqlite:" + file.getAbsolutePath(), retriever);
+                connectionContext = ExtensionHikariConnectionContext.from(ExtensionHikariConnectionContext.SQLITE_DRIVER, "jdbc:sqlite:" + file.getAbsolutePath(), false,retriever);
                 try (Connection connection = connectionContext.getConnection()) {
                     connectionContext.execute("PRAGMA foreign_keys=ON", connection);
                 }
@@ -121,6 +121,7 @@ public class Factory {
                         , c.getString("sql.database")
                         , c.getString("sql.username")
                         , c.getString("sql.password")
+                        , c.getBoolean("sql.usessl")
                         , retriever);
             } catch (final IOException e) {
                 PetBlocksPlugin.logger().log(Level.WARNING, "Cannot connect to MySQL database!", e);
