@@ -230,7 +230,7 @@ public class PetBlockListener extends SimpleListener {
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void entityRightClickEvent(final PlayerInteractAtEntityEvent event) {
-        if (this.manager.carryingPet.contains(event.getPlayer())) {
+        if (this.manager.carryingPet.containsKey(event.getPlayer())) {
             NMSRegistry.setItemInHand19(event.getPlayer(), null, true);
             if (this.manager.getPetBlockController().getByPlayer(event.getPlayer()) != null)
                 this.manager.getPetBlockController().removeByPlayer(event.getPlayer());
@@ -250,11 +250,11 @@ public class PetBlockListener extends SimpleListener {
                         this.jumped.add(this.getPet(event.getRightClicked()));
                         petBlock.jump();
                     }
-                }
-                else if (ConfigPet.getInstance().isFollow_carry() && (event.getPlayer().getInventory() == null || NMSRegistry.getItemInHand19(event.getPlayer(), true).getType() == Material.AIR)) {
-                    NMSRegistry.setItemInHand19(event.getPlayer(), ((ArmorStand) petBlock.getArmorStand()).getHelmet().clone(), true);
+                } else if (ConfigPet.getInstance().isFollow_carry() && (event.getPlayer().getInventory() == null || NMSRegistry.getItemInHand19(event.getPlayer(), true).getType() == Material.AIR)) {
+                    final ItemStack itemStack = ((ArmorStand) petBlock.getArmorStand()).getHelmet().clone();
+                    NMSRegistry.setItemInHand19(event.getPlayer(), itemStack, true);
                     this.manager.getPetBlockController().remove(petBlock);
-                    this.manager.carryingPet.add(event.getPlayer());
+                    this.manager.carryingPet.put((Player) petBlock.getPlayer(), itemStack);
                 }
             }
             event.setCancelled(true);
@@ -263,7 +263,7 @@ public class PetBlockListener extends SimpleListener {
 
     @EventHandler
     public void onPlayerInteractEvent(PlayerInteractEvent event) {
-        if (this.manager.carryingPet.contains(event.getPlayer())) {
+        if (this.manager.carryingPet.containsKey(event.getPlayer())) {
             this.removePetFromArm(event.getPlayer(), true);
             event.setCancelled(true);
         }
@@ -271,7 +271,7 @@ public class PetBlockListener extends SimpleListener {
 
     @EventHandler
     public void onPlayerCommandEvent(PlayerCommandPreprocessEvent event) {
-        if (this.manager.carryingPet.contains(event.getPlayer())) {
+        if (this.manager.carryingPet.containsKey(event.getPlayer())) {
             event.setCancelled(true);
         }
     }
@@ -279,7 +279,7 @@ public class PetBlockListener extends SimpleListener {
     @EventHandler
     public void onInventoryOpenEvent(InventoryOpenEvent event) {
         final Player player = (Player) event.getPlayer();
-        if (this.manager.carryingPet.contains(player)) {
+        if (this.manager.carryingPet.containsKey(player)) {
             event.setCancelled(true);
             event.getPlayer().closeInventory();
         }
@@ -287,7 +287,7 @@ public class PetBlockListener extends SimpleListener {
 
     @EventHandler
     public void onPlayerEntityEvent(PlayerInteractEntityEvent event) {
-        if (this.manager.carryingPet.contains(event.getPlayer())) {
+        if (this.manager.carryingPet.containsKey(event.getPlayer())) {
             this.removePetFromArm(event.getPlayer(), false);
             event.setCancelled(true);
         }
@@ -295,14 +295,16 @@ public class PetBlockListener extends SimpleListener {
 
     @EventHandler
     public void onPlayerDeathEvent(PlayerDeathEvent event) {
-        if (this.manager.carryingPet.contains(event.getEntity())) {
+        if (this.manager.carryingPet.containsKey(event.getEntity())) {
+            final ItemStack itemStack = this.manager.carryingPet.get(event.getEntity());
+            event.getDrops().remove(itemStack);
             this.removePetFromArm(event.getEntity(), false);
         }
     }
 
     @EventHandler
     public void onPlayerQuitEvent(PlayerQuitEvent event) {
-        if (this.manager.carryingPet.contains(event.getPlayer())) {
+        if (this.manager.carryingPet.containsKey(event.getPlayer())) {
             NMSRegistry.setItemInHand19(event.getPlayer(), null, true);
             this.manager.carryingPet.remove(event.getPlayer());
         }
@@ -311,7 +313,7 @@ public class PetBlockListener extends SimpleListener {
     @EventHandler
     public void onInventoryOpen(InventoryClickEvent event) {
         final Player player = (Player) event.getWhoClicked();
-        if (this.manager.carryingPet.contains(player)) {
+        if (this.manager.carryingPet.containsKey(player)) {
             this.removePetFromArm((Player) event.getWhoClicked(), false);
             event.setCancelled(true);
         }
@@ -319,7 +321,7 @@ public class PetBlockListener extends SimpleListener {
 
     @EventHandler
     public void onPlayerDropItem(PlayerDropItemEvent event) {
-        if (this.manager.carryingPet.contains(event.getPlayer())) {
+        if (this.manager.carryingPet.containsKey(event.getPlayer())) {
             this.removePetFromArm(event.getPlayer(), false);
             event.getItemDrop().remove();
         }
@@ -327,7 +329,7 @@ public class PetBlockListener extends SimpleListener {
 
     @EventHandler
     public void onSlotChange(PlayerItemHeldEvent event) {
-        if (this.manager.carryingPet.contains(event.getPlayer())) {
+        if (this.manager.carryingPet.containsKey(event.getPlayer())) {
             this.removePetFromArm(event.getPlayer(), false);
             event.getPlayer().getInventory().setItem(event.getPreviousSlot(), null);
         }

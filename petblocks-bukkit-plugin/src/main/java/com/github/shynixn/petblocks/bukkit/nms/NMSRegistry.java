@@ -21,6 +21,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 
@@ -172,7 +173,7 @@ public final class NMSRegistry {
         }
     }
 
-    public static void registerListener19(Set<Player> players, Plugin plugin) {
+    public static void registerListener19(Map<Player, ItemStack> players, Plugin plugin) {
         if (VersionSupport.getServerVersion().isVersionSameOrGreaterThan(VersionSupport.VERSION_1_9_R1)) {
             try {
                 Class.forName("org.bukkit.event.player.PlayerSwapHandItemsEvent");

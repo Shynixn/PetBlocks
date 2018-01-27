@@ -14,6 +14,7 @@ import com.github.shynixn.petblocks.bukkit.nms.NMSRegistry;
 import com.github.shynixn.petblocks.bukkit.logic.business.listener.PetDataListener;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 
 import java.util.HashMap;
@@ -53,7 +54,7 @@ import java.util.logging.Level;
  */
 public class PetBlockManager implements AutoCloseable {
 
-    public final Set<Player> carryingPet = new HashSet<>();
+    public final Map<Player, ItemStack> carryingPet = new HashMap<>();
     public final Map<Player, Integer> timeBlocked = new HashMap<>();
     public final Set<Player> headDatabasePlayers = new HashSet<>();
     public final Map<Player, Inventory> inventories = new HashMap<>();
@@ -102,7 +103,7 @@ public class PetBlockManager implements AutoCloseable {
      */
     @Override
     public void close() throws Exception {
-        for (final Player player : this.carryingPet) {
+        for (final Player player : this.carryingPet.keySet()) {
             NMSRegistry.setItemInHand19(player, null, true);
         }
         this.timeBlocked.clear();
