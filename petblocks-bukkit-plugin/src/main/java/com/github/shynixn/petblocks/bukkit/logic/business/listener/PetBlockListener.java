@@ -341,7 +341,7 @@ public class PetBlockListener extends SimpleListener {
             final PetBlock petBlock = this.getPet(event.getEntity());
             if (petBlock == null)
                 return;
-            if (event.getCause() != DamageCause.FALL)
+            if (event.getCause() != DamageCause.FALL && event.getCause() != DamageCause.SUFFOCATION)
                 petBlock.damage(event.getFinalDamage());
             else if (event.getCause() == DamageCause.FALL)
                 petBlock.damage(-2.0);
