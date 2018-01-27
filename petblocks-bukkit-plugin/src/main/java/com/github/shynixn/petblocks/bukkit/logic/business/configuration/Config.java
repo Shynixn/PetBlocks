@@ -206,14 +206,6 @@ public final class Config extends SimpleConfig {
         return (boolean) this.getData("join.overwrite-previous-pet");
     }
 
-    public boolean isChat_async() {
-        return (boolean) this.getData("chat.async");
-    }
-
-    public boolean isChatHighestPriority() {
-        return (boolean) this.getData("chat.highest-priority");
-    }
-
     public List<String> getExcludedWorlds() {
         return this.getDataAsStringList("world.excluded");
     }

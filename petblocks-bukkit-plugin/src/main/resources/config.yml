@@ -221,23 +221,6 @@ join:
 
 ############################
 
-# Chat settings
-
-# Settings to manage entered pet-names into the chat
-# Changing these settings are only recommend when there are issues with entering pet-names or pet-skins into the chat
-
-# chat-async : Should chat messages be handled asynchronously?
-# Highest-priority : Should petblock chat message get the highest priority?
-
-############################
-
-chat:
-  async: true
-  highest-priority: true
-
-
-############################
-
 # Messages settings
 
 # Settings to adjust the messages

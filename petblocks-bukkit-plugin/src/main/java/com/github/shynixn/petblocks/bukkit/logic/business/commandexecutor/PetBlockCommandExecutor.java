@@ -443,6 +443,8 @@ public final class PetBlockCommandExecutor extends SimpleCommandExecutor.UnRegis
     private void setPetCommand(Player player) {
         this.removePetCommand(player);
         this.providePet(player, (meta, petBlock) -> {
+            meta.setEnabled(true);
+            this.persistAsynchronously(meta);
             final PetBlock petBlock1 = this.manager.getPetBlockController().create(player, meta);
             this.manager.getPetBlockController().store(petBlock1);
         });
@@ -477,11 +479,10 @@ public final class PetBlockCommandExecutor extends SimpleCommandExecutor.UnRegis
             this.plugin.getServer().getScheduler().runTaskAsynchronously(this.plugin, () -> {
                 final PetMeta petMeta;
                 if (!this.manager.getPetMetaController().hasEntry(player)) {
-                    petMeta = this.manager.getPetMetaController().create(player);
-                    this.manager.getPetMetaController().store(petMeta);
-                } else {
-                    petMeta = this.manager.getPetMetaController().getFromPlayer(player).get();
+                    final PetMeta petMeta2 = this.manager.getPetMetaController().create(player);
+                    this.manager.getPetMetaController().store(petMeta2);
                 }
+                petMeta = this.manager.getPetMetaController().getFromPlayer(player).get();
                 this.plugin.getServer().getScheduler().runTask(this.plugin, () -> runnable.run(petMeta, null));
             });
         }
