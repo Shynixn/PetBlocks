@@ -62,7 +62,7 @@ public class PetBlockManager implements AutoCloseable {
     public GUI gui;
 
     private PetBlockFilter filter;
-    private final PetBlockController petBlockController;
+    private final PetBlockController<Player> petBlockController;
     private final PetMetaController petMetaController;
 
     public PetBlockManager(Plugin plugin) {
@@ -84,11 +84,11 @@ public class PetBlockManager implements AutoCloseable {
         }
     }
 
-    public PetBlockController getPetBlockController() {
+    public PetBlockController<Player> getPetBlockController() {
         return this.petBlockController;
     }
 
-    public PetMetaController getPetMetaController() {
+    public PetMetaController<Player> getPetMetaController() {
         return this.petMetaController;
     }
 

@@ -14,6 +14,7 @@ import com.github.shynixn.petblocks.bukkit.logic.business.PetBlockManager;
 import com.github.shynixn.petblocks.bukkit.logic.business.configuration.Config;
 import com.github.shynixn.petblocks.bukkit.logic.business.helper.PetBlockModifyHelper;
 import com.github.shynixn.petblocks.bukkit.logic.business.helper.SkinHelper;
+import com.github.shynixn.petblocks.bukkit.nms.v1_12_R1.MaterialCompatibility12;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -292,22 +293,32 @@ public class PetDataListener extends SimpleListener {
             this.persistAsynchronously(petMeta);
             this.manager.gui.setPage(player, GUIPage.MAIN, petMeta);
         } else if (this.manager.pages.get(player).page == GUIPage.PARTICLES && this.hasPermission(player, Permission.ALL_PARTICLES, Permission.SINGLE_PARTICLE, itemSlot)) {
-            final GUIItemContainer container = Config.getInstance().getParticleController().getContainerByPosition(itemSlot);
-            PetBlockModifyHelper.setParticleEffect(petMeta, petBlock, container);
+            final Optional<GUIItemContainer> container = Config.getInstance().getParticleController().getContainerFromPosition(itemSlot);
+            if(!container.isPresent())
+                throw new IllegalArgumentException("Particle " + itemSlot + " could not be loaded correctly.");
+            PetBlockModifyHelper.setParticleEffect(petMeta, petBlock, container.get());
             this.persistAsynchronously(petMeta);
             this.manager.gui.setPage(player, GUIPage.MAIN, petMeta);
         } else if (event.getSlot() < 45 && this.manager.pages.get(player).page == GUIPage.DEFAULT_COSTUMES && this.hasPermission(player, Permission.ALL_SIMPLEBLOCKCOSTUMES, Permission.SINGLE_SIMPLEBLOCKCOSTUME, itemSlot)) {
-            final GUIItemContainer container = Config.getInstance().getOrdinaryCostumesController().getContainerByPosition(itemSlot);
-            this.setCostumeSkin(player, petMeta, petBlock, container);
+            final Optional<GUIItemContainer> container = Config.getInstance().getOrdinaryCostumesController().getContainerFromPosition(itemSlot);
+            if(!container.isPresent())
+                throw new IllegalArgumentException("Skin " + itemSlot + " could not be loaded correctly.");
+            this.setCostumeSkin(player, petMeta, petBlock, container.get());
         } else if (event.getSlot() < 45 && this.manager.pages.get(player).page == GUIPage.COLOR_COSTUMES && this.hasPermission(player, Permission.ALL_COLOREDBLOCKCOSTUMES, Permission.SINGLE_COLOREDBLOCKCOSTUME, itemSlot)) {
-            final GUIItemContainer container = Config.getInstance().getColorCostumesController().getContainerByPosition(itemSlot);
-            this.setCostumeSkin(player, petMeta, petBlock, container);
+            final Optional<GUIItemContainer> container = Config.getInstance().getColorCostumesController().getContainerFromPosition(itemSlot);
+            if(!container.isPresent())
+                throw new IllegalArgumentException("Skin " + itemSlot + " could not be loaded correctly.");
+            this.setCostumeSkin(player, petMeta, petBlock, container.get());
         } else if (event.getSlot() < 45 && this.manager.pages.get(player).page == GUIPage.CUSTOM_COSTUMES && this.hasPermission(player, Permission.ALL_PLAYERHEADCOSTUMES, Permission.SINGLE_PLAYERHEADCOSTUME, itemSlot)) {
-            final GUIItemContainer container = Config.getInstance().getRareCostumesController().getContainerByPosition(itemSlot);
-            this.setCostumeSkin(player, petMeta, petBlock, container);
+            final Optional<GUIItemContainer> container = Config.getInstance().getRareCostumesController().getContainerFromPosition(itemSlot);
+            if(!container.isPresent())
+                throw new IllegalArgumentException("Skin " + itemSlot + " could not be loaded correctly.");
+            this.setCostumeSkin(player, petMeta, petBlock, container.get());
         } else if (event.getSlot() < 45 && this.manager.pages.get(player).page == GUIPage.MINECRAFTHEADS_COSTUMES && this.hasPermission(player, Permission.ALL_MINECRAFTHEADCOSTUMES, Permission.SINGLE_MINECRAFTHEADCOSTUME, itemSlot)) {
-            final GUIItemContainer container = Config.getInstance().getMinecraftHeadsCostumesController().getContainerByPosition(itemSlot);
-            this.setCostumeSkin(player, petMeta, petBlock, container);
+            final Optional<GUIItemContainer> container = Config.getInstance().getMinecraftHeadsCostumesController().getContainerFromPosition(itemSlot);
+            if(!container.isPresent())
+                throw new IllegalArgumentException("Skin " + itemSlot + " could not be loaded correctly.");
+            this.setCostumeSkin(player, petMeta, petBlock, container.get());
         }
     }
 
@@ -361,7 +372,7 @@ public class PetDataListener extends SimpleListener {
             this.manager.gui.setPage(player, GUIPage.MAIN, petMeta);
         } else {
             if (Config.getInstance().isCopySkinEnabled()) {
-                petMeta.setSkin(Material.SKULL_ITEM.getId(), 3, this.getGUIItem("my-pet").getSkin(), this.getGUIItem("my-pet").isItemUnbreakable());
+                petMeta.setSkin(MaterialCompatibility12.getIdFromMaterial(Material.SKULL_ITEM), 3, this.getGUIItem("my-pet").getSkin(), this.getGUIItem("my-pet").isItemUnbreakable());
             } else {
                 final GUIItemContainer c = this.getGUIItem("default-appearance");
                 petMeta.setSkin(c.getItemId(), c.getItemDamage(), c.getSkin(), c.isItemUnbreakable());
@@ -391,9 +402,9 @@ public class PetDataListener extends SimpleListener {
                     return;
                 final SkullMeta meta = (SkullMeta) itemStack.getItemMeta();
                 if (meta.getOwner() == null) {
-                    petMeta.get().setSkin(itemStack.getType().getId(), itemStack.getDurability(), SkinHelper.getItemStackSkin(itemStack).get(), false);
+                    petMeta.get().setSkin(MaterialCompatibility12.getIdFromMaterial(itemStack.getType()), itemStack.getDurability(), SkinHelper.getItemStackSkin(itemStack).get(), false);
                 } else {
-                    petMeta.get().setSkin(itemStack.getType().getId(), itemStack.getDurability(), ((SkullMeta) itemStack.getItemMeta()).getOwner(), false);
+                    petMeta.get().setSkin(MaterialCompatibility12.getIdFromMaterial(itemStack.getType()), itemStack.getDurability(), ((SkullMeta) itemStack.getItemMeta()).getOwner(), false);
                 }
                 this.manager.getPetMetaController().store(petMeta.get());
                 this.plugin.getServer().getScheduler().runTask(this.plugin, () -> {

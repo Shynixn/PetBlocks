@@ -31,7 +31,7 @@ import java.util.Optional;
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-public interface PetMetaController extends IDatabaseController<PetMeta> {
+public interface PetMetaController<Player> extends IDatabaseController<PetMeta> {
 
     /**
      * Creates a petMeta for the given player.
@@ -39,7 +39,7 @@ public interface PetMetaController extends IDatabaseController<PetMeta> {
      * @param player player
      * @return petMeta
      */
-    PetMeta create(Object player);
+    PetMeta create(Player player);
 
     /**
      * Returns the petData from the given player.
@@ -55,24 +55,22 @@ public interface PetMetaController extends IDatabaseController<PetMeta> {
      * Returns the petData from the given player.
      *
      * @param player player
-     * @param <T>    type
      * @return petData
      */
-    <T> Optional<PetMeta> getFromPlayer(T player);
+    Optional<PetMeta> getFromPlayer(Player player);
 
     /**
      * Checks if the player has got an entry in the database.
      *
      * @param player player
-     * @param <T>    type
      * @return hasEntry
      */
-    <T> boolean hasEntry(T player);
+    boolean hasEntry(Player player);
 
     /**
      * Removes the petMeta of the given player.
      *
      * @param player player
      */
-    void removeByPlayer(Object player);
+    void removeByPlayer(Player player);
 }

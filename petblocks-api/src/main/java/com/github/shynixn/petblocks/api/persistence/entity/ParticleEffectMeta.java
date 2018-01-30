@@ -247,11 +247,18 @@ public interface ParticleEffectMeta extends Persistenceable {
     Byte getData();
 
     /**
-     * Copies the current builder.
+     * Copies the current builder. Deprecated use copy() instead.
      *
      * @return copyOfBuilder
      */
+    @Deprecated
     ParticleEffectMeta clone();
+
+    /**
+     * Copies the current object.
+     * @return copy.
+     */
+    ParticleEffectMeta copy();
 
     /**
      * Returns if the particleEffect is a color particleEffect.

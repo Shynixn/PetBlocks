@@ -44,7 +44,7 @@ import java.util.logging.Level;
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-public class PlayerDataRepository extends DataBaseRepository<PlayerMeta> implements PlayerMetaController {
+public class PlayerDataRepository extends DataBaseRepository<PlayerMeta> implements PlayerMetaController<Player> {
 
     /**
      * Initializes a new playerData repository.
@@ -62,10 +62,10 @@ public class PlayerDataRepository extends DataBaseRepository<PlayerMeta> impleme
      * @return playerData
      */
     @Override
-    public <T> PlayerMeta create(T player) {
+    public PlayerMeta create(Player player) {
         if (player == null)
             throw new IllegalArgumentException("Player cannot be null!");
-        return PlayerData.from((Player) player);
+        return PlayerData.from(player);
     }
 
     /**

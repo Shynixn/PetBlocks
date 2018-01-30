@@ -134,7 +134,7 @@ public class SimpleCommandExecutor {
          * @param player player
          * @param args   args
          */
-        public void onPlayerExecuteCommand(Player player, String[] args) {
+        protected void onPlayerExecuteCommand(Player player, String[] args) {
 
         }
 
@@ -144,7 +144,7 @@ public class SimpleCommandExecutor {
          * @param sender sender
          * @param args   args
          */
-        public void onCommandSenderExecuteCommand(CommandSender sender, String[] args) {
+        protected void onCommandSenderExecuteCommand(CommandSender sender, String[] args) {
 
         }
     }
@@ -296,7 +296,7 @@ public class SimpleCommandExecutor {
          * @param player player
          * @param args   args
          */
-        public void onPlayerExecuteCommand(Player player, String[] args) {
+        protected void onPlayerExecuteCommand(Player player, String[] args) {
 
         }
 
@@ -306,7 +306,7 @@ public class SimpleCommandExecutor {
          * @param sender sender
          * @param args   args
          */
-        public void onCommandSenderExecuteCommand(CommandSender sender, String[] args) {
+        protected void onCommandSenderExecuteCommand(CommandSender sender, String[] args) {
 
         }
 

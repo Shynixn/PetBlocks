@@ -9,6 +9,7 @@ import com.github.shynixn.petblocks.bukkit.logic.persistence.entity.PlayerData;
 import org.bukkit.Bukkit;
 import org.bukkit.Server;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.junit.Assert;
 import org.junit.jupiter.api.AfterAll;
@@ -88,7 +89,7 @@ public class PlayerMetaMySQLControllerIT {
         final Plugin plugin = mockPlugin();
         plugin.getConfig().set("sql.enabled", true);
         Factory.initialize(plugin);
-        try (PlayerMetaController controller = Factory.createPlayerDataController()) {
+        try (PlayerMetaController<Player> controller = Factory.createPlayerDataController()) {
             for (final PlayerMeta item : controller.getAll()) {
                 controller.remove(item);
             }
@@ -117,7 +118,7 @@ public class PlayerMetaMySQLControllerIT {
         final Plugin plugin = mockPlugin();
         plugin.getConfig().set("sql.enabled", true);
         Factory.initialize(plugin);
-        try (PlayerMetaController controller = Factory.createPlayerDataController()) {
+        try (PlayerMetaController<Player> controller = Factory.createPlayerDataController()) {
             for (final PlayerMeta item : controller.getAll()) {
                 controller.remove(item);
             }

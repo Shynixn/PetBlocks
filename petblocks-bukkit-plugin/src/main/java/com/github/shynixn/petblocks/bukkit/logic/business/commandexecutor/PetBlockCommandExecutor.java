@@ -44,7 +44,7 @@ public final class PetBlockCommandExecutor extends SimpleCommandExecutor.UnRegis
      * @param args   args
      */
     @Override
-    public void onCommandSenderExecuteCommand(CommandSender sender, String[] args) {
+    protected void onCommandSenderExecuteCommand(CommandSender sender, String[] args) {
         if (args.length == 2 && args[0].equalsIgnoreCase("engine") && sender instanceof Player && tryParseInt(args[1]))
             this.setEngineCommand((Player) sender, Integer.parseInt(args[1]));
         else if (args.length == 3 && args[0].equalsIgnoreCase("engine") && this.getOnlinePlayer(args[2]) != null && tryParseInt(args[1]))
@@ -244,20 +244,22 @@ public final class PetBlockCommandExecutor extends SimpleCommandExecutor.UnRegis
 
     private void setCostumeCommand(Player player, String category, int number) {
         this.providePet(player, (petMeta, petBlock) -> {
-            final GUIItemContainer item;
+            final Optional<GUIItemContainer> item;
             if (category.equalsIgnoreCase("simple-blocks")) {
-                item = Config.getInstance().getOrdinaryCostumesController().getContainerByPosition(number);
+                item = Config.getInstance().getOrdinaryCostumesController().getContainerFromPosition(number);
             } else if (category.equalsIgnoreCase("colored-blocks")) {
-                item = Config.getInstance().getColorCostumesController().getContainerByPosition(number);
+                item = Config.getInstance().getColorCostumesController().getContainerFromPosition(number);
             } else if (category.equalsIgnoreCase("player-heads")) {
-                item = Config.getInstance().getRareCostumesController().getContainerByPosition(number);
+                item = Config.getInstance().getRareCostumesController().getContainerFromPosition(number);
             } else if (category.equalsIgnoreCase("minecraft-heads")) {
-                item = Config.getInstance().getMinecraftHeadsCostumesController().getContainerByPosition(number);
+                item = Config.getInstance().getMinecraftHeadsCostumesController().getContainerFromPosition(number);
             } else {
                 return;
             }
-            PetBlockModifyHelper.setCostume(petMeta, petBlock, item);
-            this.persistAsynchronously(petMeta);
+            item.ifPresent(guiItemContainer -> {
+                PetBlockModifyHelper.setCostume(petMeta, petBlock, guiItemContainer);
+                this.persistAsynchronously(petMeta);
+            });
         });
     }
 

@@ -75,7 +75,7 @@ public final class PetBlockHelper {
                 ((SoundBuilder) soundMeta).apply(location, (Player) petBlock.getPlayer());
             }
         } catch (final IllegalArgumentException e) {
-            PetBlocksPlugin.logger().log(Level.WARNING, "Cannot play sound " + soundMeta.getName() + " of " + ChatColor.stripColor(petBlock.getMeta().getEngine().getGUIItem().getDisplayName().get()) + '.');
+            PetBlocksPlugin.logger().log(Level.WARNING, "Cannot play sound " + soundMeta.getName() + " of " + ChatColor.stripColor((String) petBlock.getMeta().getEngine().getGUIItem().getDisplayName().get()) + '.');
             PetBlocksPlugin.logger().log(Level.WARNING, "Is this entity or sound supported by your server version? Disable it in the config.yml");
         } catch (final Exception e1) {
             PetBlocksPlugin.logger()

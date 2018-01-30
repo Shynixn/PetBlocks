@@ -3,7 +3,7 @@ package com.github.shynixn.petblocks.bukkit.logic.persistence.entity;
 import com.github.shynixn.petblocks.api.persistence.entity.Persistenceable;
 
 public class PersistenceObject implements Persistenceable {
-    long id;
+    private long id;
     /**
      * Returns the id of the object
      *

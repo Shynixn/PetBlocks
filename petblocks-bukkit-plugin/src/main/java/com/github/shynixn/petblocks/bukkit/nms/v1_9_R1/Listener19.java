@@ -8,7 +8,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 
 import java.util.Map;
-import java.util.Set;
 
 public final class Listener19 extends SimpleListener {
     private final Map<Player, ItemStack> carryingPet;

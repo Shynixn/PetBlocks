@@ -129,7 +129,7 @@ public final class Config extends SimpleConfig {
      */
     public ChatBuilder getPetNamingMessage() {
         return new ChatBuilder()
-                .text(getPrefix())
+                .text(this.getPrefix())
                 .component(this.getData("messages.naming-suggest-prefix")).builder()
                 .component(this.getData("messages.naming-suggest-clickable"))
                 .setClickAction(ChatBuilder.ClickAction.SUGGEST_COMMAND, "/" + this.getData("petblocks-gui.command") + " rename ")
@@ -144,7 +144,7 @@ public final class Config extends SimpleConfig {
      */
     public ChatBuilder getPetSkinNamingMessage() {
         return new ChatBuilder()
-                .text(getPrefix())
+                .text(this.getPrefix())
                 .component(this.getData("messages.skullnaming-suggest-prefix")).builder()
                 .component(this.getData("messages.skullnaming-suggest-clickable"))
                 .setClickAction(ChatBuilder.ClickAction.SUGGEST_COMMAND, "/" + this.getData("petblocks-gui.command") + " skin ")

@@ -165,7 +165,7 @@ public class FixedItemConfiguration implements OtherGUIItemsController {
         final ItemStack mItemStack = (ItemStack) itemStack;
         return mItemStack.getItemMeta() != null && optGUIContainer.get().getDisplayName().isPresent()
                 && mItemStack.getItemMeta().getDisplayName() != null
-                && mItemStack.getItemMeta().getDisplayName().equalsIgnoreCase(optGUIContainer.get().getDisplayName().get());
+                && mItemStack.getItemMeta().getDisplayName().equalsIgnoreCase((String) optGUIContainer.get().getDisplayName().get());
     }
 
     /**

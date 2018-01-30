@@ -10,6 +10,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Server;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.junit.Assert;
 import org.junit.jupiter.api.BeforeAll;
@@ -66,7 +67,7 @@ public class ParticleEffectMetaSQLiteControllerIT {
     public void insertSelectParticleEffectMetaTest() throws ClassNotFoundException {
         Factory.initialize(mockPlugin());
         try (ParticleEffectMetaController controller = Factory.createParticleEffectController()) {
-            try (PetMetaController petController = Factory.createPetDataController()) {
+            try (PetMetaController<Player> petController = Factory.createPetDataController()) {
                 for (final PetMeta item : petController.getAll()) {
                     petController.remove(item);
                 }
@@ -92,7 +93,7 @@ public class ParticleEffectMetaSQLiteControllerIT {
     public void storeLoadParticleEffectMetaTest() throws ClassNotFoundException {
         Factory.initialize(mockPlugin());
         try (ParticleEffectMetaController controller = Factory.createParticleEffectController()) {
-            try (PetMetaController petController = Factory.createPetDataController()) {
+            try (PetMetaController<Player> petController = Factory.createPetDataController()) {
                 for (final PetMeta item : petController.getAll()) {
                     petController.remove(item);
                 }
