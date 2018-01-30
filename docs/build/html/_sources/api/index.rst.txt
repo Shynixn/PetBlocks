@@ -19,7 +19,7 @@ PetBlocks is using maven as build system but you can include the api via differe
     <dependency>
         <groupId>com.github.shynixn.petblocks</groupId>
         <artifactId>petblocks-bukkit-api</artifactId>
-        <version>6.4.3</version>
+        <version>6.5.0</version>
         <scope>provided</scope>
     </dependency>
 
@@ -27,7 +27,7 @@ PetBlocks is using maven as build system but you can include the api via differe
 **Gradle**:
 ::
     dependencies {
-        compileOnly 'com.github.shynixn.petblocks:petblocks-bukkit-api:6.4.3'
+        compileOnly 'com.github.shynixn.petblocks:petblocks-bukkit-api:6.5.0'
     }
 
 **Reference the jar file**:
@@ -55,7 +55,7 @@ Modifying PetMeta and PetBlock
     Player player; //Any player instance
     Plugin plugin; //Any plugin instance
 
-    PetMetaController metaController = PetBlocksApi.getDefaultPetMetaController();
+    PetMetaController<Player> metaController = PetBlocksApi.getDefaultPetMetaController();
     PetMeta petMeta = metaController.create(player);
     petMeta.setPetDisplayName(ChatColor.GREEN + "This is my new pet."); //Modify the petMeta
 
@@ -73,7 +73,7 @@ you need to manage asynchronous and synchronous server tasks.
 ::
             final Player player; //Any player instance
             final Plugin plugin; //Any plugin instance
-            PetMetaController metaController = PetBlocksApi.getDefaultPetMetaController();
+            PetMetaController<Player> metaController = PetBlocksApi.getDefaultPetMetaController();
 
             Bukkit.getServer().getScheduler().runTaskAsynchronously(plugin, new Runnable() {
 
@@ -104,7 +104,7 @@ Using lamda expressions can reduce the code above significantly.
 ::
             final Player player; //Any player instance
             final Plugin plugin; //Any plugin instance
-            PetMetaController metaController = PetBlocksApi.getDefaultPetMetaController();
+            PetMetaController<Player> metaController = PetBlocksApi.getDefaultPetMetaController();
 
             Bukkit.getServer().getScheduler().runTaskAsynchronously(plugin, () -> {
                 Optional<PetMeta> optPetMeta = metaController.getFromPlayer(player);   //Acquire the PetMeta async from the database.
@@ -123,7 +123,7 @@ Using lamda expressions can reduce the code above significantly.
     final PetMeta petMeta; //Any PetMeta instance
     final Location location; //Any target location
 
-    final PetBlockController petBlockController = PetBlocksApi.getDefaultPetBlockController();
+    final PetBlockController<Player> petBlockController = PetBlocksApi.getDefaultPetBlockController();
     final PetBlock petBlock = petBlockController.create(player, petMeta); //Spawn PetBlock
     petBlockController.store(petBlock); //Set it managed by the PetBlocks plugin
 
@@ -134,7 +134,7 @@ Using lamda expressions can reduce the code above significantly.
             final Player player; //Any player instance
             final Location location; //Any target location
 
-            final PetBlockController petBlockController = PetBlocksApi.getDefaultPetBlockController();
+            final PetBlockController<Player> petBlockController = PetBlocksApi.getDefaultPetBlockController();
             final Optional<PetBlock> optPetBlock = petBlockController.getFromPlayer(player); //PetBlock is already managed
             if (optPetBlock.isPresent()) {
                 final PetBlock petBlock = optPetBlock.get();

@@ -28,11 +28,14 @@ It is recommend to use the MySQL support if:
       host: localhost
       port: 3306
       database: ''
+      usessl: false
       username: ''
       password: ''
 
 
 You can get the data from your MySQL database host.
+
+Please notice that you append **additional database parameters** by appending it to the database name at sql.database.
 
 **after**
 ::
@@ -52,5 +55,6 @@ You can get the data from your MySQL database host.
       host: 'your_db_host_address'
       port: 3306
       database: 'your_db_name'
+      usessl: false
       username: 'your_db_login_username'
       password: 'your_db_login_password'
