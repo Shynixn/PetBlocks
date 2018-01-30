@@ -53,7 +53,7 @@ public class ExtensionHikariConnectionContext implements AutoCloseable {
      * @param userName userNames
      * @param password password
      */
-    private ExtensionHikariConnectionContext(String driver, String url, String userName, String password, SQlRetriever retriever) {
+    private ExtensionHikariConnectionContext(String driver, String url, String userName, String password,boolean useSSL, SQlRetriever retriever) {
         super();
         this.retriever = retriever;
         final HikariConfig config = new HikariConfig();
@@ -64,6 +64,7 @@ public class ExtensionHikariConnectionContext implements AutoCloseable {
             config.setUsername(userName);
         if (password != null)
             config.setPassword(password);
+        config.addDataSourceProperty("useSSL", useSSL);
         config.addDataSourceProperty("cachePrepStmts", "true");
         config.addDataSourceProperty("prepStmtCacheSize", "250");
         config.addDataSourceProperty("prepStmtCacheSqlLimit", "2048");
@@ -288,7 +289,7 @@ public class ExtensionHikariConnectionContext implements AutoCloseable {
      * @return DbConnectionContext
      * @throws IOException exception
      */
-    public static ExtensionHikariConnectionContext from(String driver, String url, SQlRetriever retriever) throws IOException {
+    public static ExtensionHikariConnectionContext from(String driver, String url, boolean useSSL, SQlRetriever retriever) throws IOException {
         if (driver == null)
             throw new IllegalArgumentException("Driver cannot be null!");
         if (url == null)
@@ -297,7 +298,7 @@ public class ExtensionHikariConnectionContext implements AutoCloseable {
             throw new IllegalArgumentException("Retriever cannot be null!");
         try {
             Class.forName(driver);
-            return new ExtensionHikariConnectionContext(driver, url, null, null, retriever);
+            return new ExtensionHikariConnectionContext(driver, url, null, null, useSSL,retriever);
         } catch (final ClassNotFoundException ex) {
             Logger.getLogger(ExtensionHikariConnectionContext.class.getSimpleName()).log(Level.WARNING, "JDBC Driver not found!");
             throw new IOException(ex);
@@ -321,7 +322,7 @@ public class ExtensionHikariConnectionContext implements AutoCloseable {
      * @return DbConnectionContext
      * @throws IOException exception
      */
-    public static ExtensionHikariConnectionContext from(String driver, String urlPrefix, String ip, int port, String database, String userName, String password, SQlRetriever retriever) throws IOException {
+    public static ExtensionHikariConnectionContext from(String driver, String urlPrefix, String ip, int port, String database, String userName, String password, boolean useSSL, SQlRetriever retriever) throws IOException {
         if (driver == null)
             throw new IllegalArgumentException("Driver cannot be null!");
         if (ip == null)
@@ -336,7 +337,7 @@ public class ExtensionHikariConnectionContext implements AutoCloseable {
             throw new IllegalArgumentException("Retriever cannot be null!");
         try {
             Class.forName(driver);
-            return new ExtensionHikariConnectionContext(driver, urlPrefix + ip + ':' + port + '/' + database, userName, password, retriever);
+            return new ExtensionHikariConnectionContext(driver, urlPrefix + ip + ':' + port + '/' + database, userName, password, useSSL, retriever);
         } catch (final ClassNotFoundException ex) {
             Logger.getLogger(ExtensionHikariConnectionContext.class.getSimpleName()).log(Level.WARNING, "JDBC Driver not found!");
             throw new IOException(ex);

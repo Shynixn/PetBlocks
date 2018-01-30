@@ -44,7 +44,7 @@ public abstract class DataBaseRepository<T> implements IDatabaseController<T> {
      *
      * @param connectionContext connectionContext
      */
-    public DataBaseRepository(ExtensionHikariConnectionContext connectionContext) {
+    DataBaseRepository(ExtensionHikariConnectionContext connectionContext) {
         super();
         if (connectionContext == null)
             throw new IllegalArgumentException("ConnectionContext cannot be null!");

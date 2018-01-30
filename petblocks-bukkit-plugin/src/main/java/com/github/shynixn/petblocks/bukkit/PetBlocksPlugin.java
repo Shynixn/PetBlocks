@@ -3,12 +3,12 @@ package com.github.shynixn.petblocks.bukkit;
 import com.github.shynixn.petblocks.api.PetBlocksApi;
 import com.github.shynixn.petblocks.api.business.controller.PetBlockController;
 import com.github.shynixn.petblocks.api.persistence.controller.PetMetaController;
-import com.github.shynixn.petblocks.bukkit.nms.NMSRegistry;
-import com.github.shynixn.petblocks.bukkit.nms.VersionSupport;
-import com.github.shynixn.petblocks.bukkit.logic.business.PetBlockManager;
-import com.github.shynixn.petblocks.bukkit.logic.business.configuration.Config;
 import com.github.shynixn.petblocks.bukkit.lib.ReflectionUtils;
 import com.github.shynixn.petblocks.bukkit.lib.UpdateUtils;
+import com.github.shynixn.petblocks.bukkit.logic.business.PetBlockManager;
+import com.github.shynixn.petblocks.bukkit.logic.business.configuration.Config;
+import com.github.shynixn.petblocks.bukkit.nms.NMSRegistry;
+import com.github.shynixn.petblocks.bukkit.nms.VersionSupport;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -69,7 +69,13 @@ public final class PetBlocksPlugin extends JavaPlugin {
             Bukkit.getServer().getConsoleSender().sendMessage(PREFIX_CONSOLE + ChatColor.GREEN + "Loading PetBlocks ...");
             Config.getInstance().reload();
             if (Config.getInstance().isMetricsEnabled()) {
-                new Metrics(this);
+                final Metrics metrics = new Metrics(this);
+                metrics.addCustomChart(new Metrics.SimplePie("storage", () -> {
+                    if (PetBlocksPlugin.this.getConfig().getBoolean("sql.enabled")) {
+                        return "MySQL";
+                    }
+                    return "SQLite";
+                }));
             }
             this.getServer().getScheduler().runTaskAsynchronously(this, () -> {
                 try {

@@ -91,6 +91,24 @@ final class CustomGroundArmorstand extends EntityArmorStand implements PetBlock 
         return null;
     }
 
+    private boolean isGroundRiding;
+
+    @Override
+    public void move(EnumMoveType enummovetype, double d0, double d1, double d2) {
+        super.move(enummovetype, d0, d1, d2);
+        this.recalculatePosition();
+    }
+
+    private void recalculatePosition() {
+        if (this.hasHumanPassenger() != null) {
+            final AxisAlignedBB localAxisAlignedBB = this.getBoundingBox();
+            this.locX = ((localAxisAlignedBB.a + localAxisAlignedBB.d) / 2.0D);
+            this.locZ = ((localAxisAlignedBB.c + localAxisAlignedBB.f) / 2.0D);
+            this.locY = (localAxisAlignedBB.b - 1.5D);
+            this.isGroundRiding = true;
+        }
+    }
+
     @Override
     protected void doTick() {
         if (this.isSpecial) {
@@ -100,8 +118,11 @@ final class CustomGroundArmorstand extends EntityArmorStand implements PetBlock 
                 for (final Player player : ((ArmorStand) this.getArmorStand()).getWorld().getPlayers()) {
                     ((CraftPlayer) player).getHandle().playerConnection.sendPacket(animation);
                 }
-
             });
+            if (this.isGroundRiding && this.hasHumanPassenger()  == null) {
+                ((org.bukkit.entity.Entity) this.getEngineEntity()).teleport(((org.bukkit.entity.Entity) this.getEngineEntity()).getLocation().add(0, 2, 0));
+                this.isGroundRiding = false;
+            }
         }
         super.doTick();
     }

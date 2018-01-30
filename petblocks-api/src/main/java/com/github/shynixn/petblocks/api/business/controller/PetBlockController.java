@@ -33,7 +33,7 @@ import java.util.Optional;
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-public interface PetBlockController extends IController<PetBlock> {
+public interface PetBlockController<Player> extends IController<PetBlock> {
 
     /**
      * Creates a new petblock for the given player and meta.
@@ -42,7 +42,7 @@ public interface PetBlockController extends IController<PetBlock> {
      * @param petMeta meta
      * @return petblock
      */
-    PetBlock create(Object player, PetMeta petMeta);
+    PetBlock create(Player player, PetMeta petMeta);
 
     /**
      * Returns the petblock of the given player.
@@ -59,12 +59,12 @@ public interface PetBlockController extends IController<PetBlock> {
      * @param player player
      * @return petblock
      */
-    Optional<PetBlock> getFromPlayer(Object player);
+    Optional<PetBlock> getFromPlayer(Player player);
 
     /**
      * Removes the petblock of the given player.
      *
      * @param player player
      */
-    void removeByPlayer(Object player);
+    void removeByPlayer(Player player);
 }

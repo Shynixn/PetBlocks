@@ -9,6 +9,7 @@ import com.github.shynixn.petblocks.bukkit.logic.persistence.entity.PlayerData;
 import org.bukkit.Bukkit;
 import org.bukkit.Server;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.junit.Assert;
 import org.junit.jupiter.api.BeforeAll;
@@ -59,8 +60,8 @@ public class PlayerMetaSQLiteControllerIT {
     @Test
     public void insertSelectPlayerMetaTest() throws ClassNotFoundException {
         Factory.initialize(mockPlugin());
-        try (PlayerMetaController controller = Factory.createPlayerDataController()) {
-            try (PetMetaController petController = Factory.createPetDataController()) {
+        try (PlayerMetaController<Player> controller = Factory.createPlayerDataController()) {
+            try (PetMetaController<Player> petController = Factory.createPetDataController()) {
                 for (final PetMeta item : petController.getAll()) {
                     petController.remove(item);
                 }
@@ -91,8 +92,8 @@ public class PlayerMetaSQLiteControllerIT {
     @Test
     public void storeLoadPlayerMetaTest() throws ClassNotFoundException {
         Factory.initialize(mockPlugin());
-        try (PlayerMetaController controller = Factory.createPlayerDataController()) {
-            try (PetMetaController petController = Factory.createPetDataController()) {
+        try (PlayerMetaController<Player> controller = Factory.createPlayerDataController()) {
+            try (PetMetaController<Player> petController = Factory.createPetDataController()) {
                 for (final PetMeta item : petController.getAll()) {
                     petController.remove(item);
                 }

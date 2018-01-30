@@ -7,6 +7,7 @@ import com.github.shynixn.petblocks.api.persistence.controller.ParticleControlle
 import com.github.shynixn.petblocks.api.persistence.entity.ParticleEffectMeta;
 import com.github.shynixn.petblocks.api.persistence.entity.PetMeta;
 import com.github.shynixn.petblocks.bukkit.PetBlocksPlugin;
+import com.github.shynixn.petblocks.bukkit.lib.ChatBuilder;
 import com.github.shynixn.petblocks.bukkit.logic.Factory;
 import com.github.shynixn.petblocks.bukkit.logic.persistence.entity.ParticleEffectData;
 import com.github.shynixn.petblocks.bukkit.logic.persistence.entity.PetData;
@@ -113,12 +114,42 @@ public final class Config extends SimpleConfig {
     }
 
     /**
-     * Returns if disable item is enabled
+     * Returns if disable item is enabled.
      *
      * @return displayItem
      */
     public boolean isOnlyDisableItemEnabled() {
         return this.getData("gui.settings.use-only-disable-pet-item");
+    }
+
+    /**
+     * Returns the pet naming message.
+     *
+     * @return message
+     */
+    public ChatBuilder getPetNamingMessage() {
+        return new ChatBuilder()
+                .text(this.getPrefix())
+                .component(this.getData("messages.naming-suggest-prefix")).builder()
+                .component(this.getData("messages.naming-suggest-clickable"))
+                .setClickAction(ChatBuilder.ClickAction.SUGGEST_COMMAND, "/" + this.getData("petblocks-gui.command") + " rename ")
+                .setHoverText(this.getData("messages.naming-suggest-hover")).builder()
+                .component(this.getData("messages.naming-suggest-suffix")).builder();
+    }
+
+    /**
+     * Returns the skin naming message.
+     *
+     * @return message
+     */
+    public ChatBuilder getPetSkinNamingMessage() {
+        return new ChatBuilder()
+                .text(this.getPrefix())
+                .component(this.getData("messages.skullnaming-suggest-prefix")).builder()
+                .component(this.getData("messages.skullnaming-suggest-clickable"))
+                .setClickAction(ChatBuilder.ClickAction.SUGGEST_COMMAND, "/" + this.getData("petblocks-gui.command") + " skin ")
+                .setHoverText(this.getData("messages.skullnaming-suggest-hover")).builder()
+                .component(this.getData("messages.skullnaming-suggest-suffix")).builder();
     }
 
     public String getPermissionIconYes() {
@@ -175,14 +206,6 @@ public final class Config extends SimpleConfig {
 
     public boolean isJoin_overwriteExistingPet() {
         return (boolean) this.getData("join.overwrite-previous-pet");
-    }
-
-    public boolean isChat_async() {
-        return (boolean) this.getData("chat.async");
-    }
-
-    public boolean isChatHighestPriority() {
-        return (boolean) this.getData("chat.highest-priority");
     }
 
     public List<String> getExcludedWorlds() {
@@ -254,8 +277,7 @@ public final class Config extends SimpleConfig {
         final List<String> excludedRegions = this.getExcludedRegion();
         if (includedRegions.contains("all")) {
             for (final String k : NMSRegistry.getWorldGuardRegionsFromLocation(location)) {
-                if (excludedRegions.contains(k))
-                {
+                if (excludedRegions.contains(k)) {
                     return false;
                 }
             }

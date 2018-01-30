@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Developer API &mdash; PetBlocks 6.4.3 documentation</title>
+  <title>Developer API &mdash; PetBlocks 6.5.0 documentation</title>
   
 
   
@@ -35,7 +35,7 @@
         <link rel="index" title="Index"
               href="../genindex.html"/>
         <link rel="search" title="Search" href="../search.html"/>
-    <link rel="top" title="PetBlocks 6.4.3 documentation" href="../index.html"/>
+    <link rel="top" title="PetBlocks 6.5.0 documentation" href="../index.html"/>
         <link rel="next" title="FAQ" href="../faq/index.html"/>
         <link rel="prev" title="Commands" href="../commands/index.html"/> 
 
@@ -69,7 +69,7 @@
             
             
               <div class="version">
-                6.4.3
+                6.5.0
               </div>
             
           
@@ -188,14 +188,14 @@
 <div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">dependency</span><span class="o">&gt;</span>
     <span class="o">&lt;</span><span class="n">groupId</span><span class="o">&gt;</span><span class="n">com</span><span class="o">.</span><span class="n">github</span><span class="o">.</span><span class="n">shynixn</span><span class="o">.</span><span class="n">petblocks</span><span class="o">&lt;/</span><span class="n">groupId</span><span class="o">&gt;</span>
     <span class="o">&lt;</span><span class="n">artifactId</span><span class="o">&gt;</span><span class="n">petblocks</span><span class="o">-</span><span class="n">bukkit</span><span class="o">-</span><span class="n">api</span><span class="o">&lt;/</span><span class="n">artifactId</span><span class="o">&gt;</span>
-    <span class="o">&lt;</span><span class="n">version</span><span class="o">&gt;</span><span class="mf">6.4</span><span class="o">.</span><span class="mi">3</span><span class="o">&lt;/</span><span class="n">version</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="n">version</span><span class="o">&gt;</span><span class="mf">6.5</span><span class="o">.</span><span class="mi">0</span><span class="o">&lt;/</span><span class="n">version</span><span class="o">&gt;</span>
     <span class="o">&lt;</span><span class="n">scope</span><span class="o">&gt;</span><span class="n">provided</span><span class="o">&lt;/</span><span class="n">scope</span><span class="o">&gt;</span>
 <span class="o">&lt;/</span><span class="n">dependency</span><span class="o">&gt;</span>
 </pre></div>
 </div>
 <p><strong>Gradle</strong>:</p>
 <div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">dependencies</span> <span class="p">{</span>
-    <span class="n">compileOnly</span> <span class="s1">&#39;com.github.shynixn.petblocks:petblocks-bukkit-api:6.4.3&#39;</span>
+    <span class="n">compileOnly</span> <span class="s1">&#39;com.github.shynixn.petblocks:petblocks-bukkit-api:6.5.0&#39;</span>
 <span class="p">}</span>
 </pre></div>
 </div>
@@ -220,7 +220,7 @@ api from the <a class="reference external" href="https://oss.sonatype.org/conten
 <div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">Player</span> <span class="n">player</span><span class="p">;</span> <span class="o">//</span><span class="n">Any</span> <span class="n">player</span> <span class="n">instance</span>
 <span class="n">Plugin</span> <span class="n">plugin</span><span class="p">;</span> <span class="o">//</span><span class="n">Any</span> <span class="n">plugin</span> <span class="n">instance</span>
 
-<span class="n">PetMetaController</span> <span class="n">metaController</span> <span class="o">=</span> <span class="n">PetBlocksApi</span><span class="o">.</span><span class="n">getDefaultPetMetaController</span><span class="p">();</span>
+<span class="n">PetMetaController</span><span class="o">&lt;</span><span class="n">Player</span><span class="o">&gt;</span> <span class="n">metaController</span> <span class="o">=</span> <span class="n">PetBlocksApi</span><span class="o">.</span><span class="n">getDefaultPetMetaController</span><span class="p">();</span>
 <span class="n">PetMeta</span> <span class="n">petMeta</span> <span class="o">=</span> <span class="n">metaController</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">player</span><span class="p">);</span>
 <span class="n">petMeta</span><span class="o">.</span><span class="n">setPetDisplayName</span><span class="p">(</span><span class="n">ChatColor</span><span class="o">.</span><span class="n">GREEN</span> <span class="o">+</span> <span class="s2">&quot;This is my new pet.&quot;</span><span class="p">);</span> <span class="o">//</span><span class="n">Modify</span> <span class="n">the</span> <span class="n">petMeta</span>
 
@@ -237,7 +237,7 @@ api from the <a class="reference external" href="https://oss.sonatype.org/conten
 you need to manage asynchronous and synchronous server tasks.</p>
 <div class="highlight-default"><div class="highlight"><pre><span></span>final Player player; //Any player instance
 final Plugin plugin; //Any plugin instance
-PetMetaController metaController = PetBlocksApi.getDefaultPetMetaController();
+PetMetaController&lt;Player&gt; metaController = PetBlocksApi.getDefaultPetMetaController();
 
 Bukkit.getServer().getScheduler().runTaskAsynchronously(plugin, new Runnable() {
 
@@ -267,7 +267,7 @@ Bukkit.getServer().getScheduler().runTaskAsynchronously(plugin, new Runnable() {
 <p>Using lamda expressions can reduce the code above significantly.</p>
 <div class="highlight-default"><div class="highlight"><pre><span></span>final Player player; //Any player instance
 final Plugin plugin; //Any plugin instance
-PetMetaController metaController = PetBlocksApi.getDefaultPetMetaController();
+PetMetaController&lt;Player&gt; metaController = PetBlocksApi.getDefaultPetMetaController();
 
 Bukkit.getServer().getScheduler().runTaskAsynchronously(plugin, () -&gt; {
     Optional&lt;PetMeta&gt; optPetMeta = metaController.getFromPlayer(player);   //Acquire the PetMeta async from the database.
@@ -286,7 +286,7 @@ Bukkit.getServer().getScheduler().runTaskAsynchronously(plugin, () -&gt; {
 <span class="n">final</span> <span class="n">PetMeta</span> <span class="n">petMeta</span><span class="p">;</span> <span class="o">//</span><span class="n">Any</span> <span class="n">PetMeta</span> <span class="n">instance</span>
 <span class="n">final</span> <span class="n">Location</span> <span class="n">location</span><span class="p">;</span> <span class="o">//</span><span class="n">Any</span> <span class="n">target</span> <span class="n">location</span>
 
-<span class="n">final</span> <span class="n">PetBlockController</span> <span class="n">petBlockController</span> <span class="o">=</span> <span class="n">PetBlocksApi</span><span class="o">.</span><span class="n">getDefaultPetBlockController</span><span class="p">();</span>
+<span class="n">final</span> <span class="n">PetBlockController</span><span class="o">&lt;</span><span class="n">Player</span><span class="o">&gt;</span> <span class="n">petBlockController</span> <span class="o">=</span> <span class="n">PetBlocksApi</span><span class="o">.</span><span class="n">getDefaultPetBlockController</span><span class="p">();</span>
 <span class="n">final</span> <span class="n">PetBlock</span> <span class="n">petBlock</span> <span class="o">=</span> <span class="n">petBlockController</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">player</span><span class="p">,</span> <span class="n">petMeta</span><span class="p">);</span> <span class="o">//</span><span class="n">Spawn</span> <span class="n">PetBlock</span>
 <span class="n">petBlockController</span><span class="o">.</span><span class="n">store</span><span class="p">(</span><span class="n">petBlock</span><span class="p">);</span> <span class="o">//</span><span class="n">Set</span> <span class="n">it</span> <span class="n">managed</span> <span class="n">by</span> <span class="n">the</span> <span class="n">PetBlocks</span> <span class="n">plugin</span>
 
@@ -297,7 +297,7 @@ Bukkit.getServer().getScheduler().runTaskAsynchronously(plugin, () -&gt; {
 <div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">final</span> <span class="n">Player</span> <span class="n">player</span><span class="p">;</span> <span class="o">//</span><span class="n">Any</span> <span class="n">player</span> <span class="n">instance</span>
 <span class="n">final</span> <span class="n">Location</span> <span class="n">location</span><span class="p">;</span> <span class="o">//</span><span class="n">Any</span> <span class="n">target</span> <span class="n">location</span>
 
-<span class="n">final</span> <span class="n">PetBlockController</span> <span class="n">petBlockController</span> <span class="o">=</span> <span class="n">PetBlocksApi</span><span class="o">.</span><span class="n">getDefaultPetBlockController</span><span class="p">();</span>
+<span class="n">final</span> <span class="n">PetBlockController</span><span class="o">&lt;</span><span class="n">Player</span><span class="o">&gt;</span> <span class="n">petBlockController</span> <span class="o">=</span> <span class="n">PetBlocksApi</span><span class="o">.</span><span class="n">getDefaultPetBlockController</span><span class="p">();</span>
 <span class="n">final</span> <span class="n">Optional</span><span class="o">&lt;</span><span class="n">PetBlock</span><span class="o">&gt;</span> <span class="n">optPetBlock</span> <span class="o">=</span> <span class="n">petBlockController</span><span class="o">.</span><span class="n">getFromPlayer</span><span class="p">(</span><span class="n">player</span><span class="p">);</span> <span class="o">//</span><span class="n">PetBlock</span> <span class="ow">is</span> <span class="n">already</span> <span class="n">managed</span>
 <span class="k">if</span> <span class="p">(</span><span class="n">optPetBlock</span><span class="o">.</span><span class="n">isPresent</span><span class="p">())</span> <span class="p">{</span>
     <span class="n">final</span> <span class="n">PetBlock</span> <span class="n">petBlock</span> <span class="o">=</span> <span class="n">optPetBlock</span><span class="o">.</span><span class="n">get</span><span class="p">();</span>
@@ -375,7 +375,7 @@ Bukkit.getServer().getScheduler().runTaskAsynchronously(plugin, () -&gt; {
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'6.4.3',
+            VERSION:'6.5.0',
             LANGUAGE:'None',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',

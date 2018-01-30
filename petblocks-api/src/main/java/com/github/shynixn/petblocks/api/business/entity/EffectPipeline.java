@@ -30,7 +30,7 @@ import com.github.shynixn.petblocks.api.persistence.entity.SoundMeta;
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-public interface EffectPipeline {
+public interface EffectPipeline<Location> {
 
     /**
      * Plays the given particleEffect and watches for invisibility, other players and actions.
@@ -38,7 +38,7 @@ public interface EffectPipeline {
      * @param location           location
      * @param particleEffectMeta particleEffectMeta
      */
-    void playParticleEffect(Object location, ParticleEffectMeta particleEffectMeta);
+    void playParticleEffect(Location location, ParticleEffectMeta particleEffectMeta);
 
     /**
      * Plays the given sound and watches for invisibility, other players and actions.
@@ -46,5 +46,5 @@ public interface EffectPipeline {
      * @param location  location
      * @param soundMeta soundMeta
      */
-    void playSound(Object location, SoundMeta soundMeta);
+    void playSound(Location location, SoundMeta soundMeta);
 }

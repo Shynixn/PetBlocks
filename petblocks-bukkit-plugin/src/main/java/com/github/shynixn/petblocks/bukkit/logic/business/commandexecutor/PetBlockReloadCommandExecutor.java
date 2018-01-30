@@ -23,7 +23,7 @@ public final class PetBlockReloadCommandExecutor extends SimpleCommandExecutor.R
      * @param args   args
      */
     @Override
-    public void onPlayerExecuteCommand(Player player, String[] args) {
+    protected void onPlayerExecuteCommand(Player player, String[] args) {
         Config.getInstance().reload();
         player.sendMessage(Config.getInstance().getPrefix() + "Reloaded PetBlocks.");
     }

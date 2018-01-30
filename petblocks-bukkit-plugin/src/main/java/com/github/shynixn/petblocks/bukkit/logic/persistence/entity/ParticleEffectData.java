@@ -467,7 +467,18 @@ public class ParticleEffectData extends PersistenceObject implements ParticleEff
      * @return copyOfBuilder
      */
     @Override
+    @Deprecated
     public ParticleEffectData clone() {
+       return (ParticleEffectData) this.copy();
+    }
+
+    /**
+     * Copies the current object.
+     *
+     * @return copy.
+     */
+    @Override
+    public ParticleEffectMeta copy() {
         final ParticleEffectData particle = new ParticleEffectData();
         particle.effect = this.effect;
         particle.amount = this.amount;

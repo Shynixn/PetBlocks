@@ -39,7 +39,7 @@ import java.util.*;
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-public final class PetBlockRepository implements PetBlockController {
+public final class PetBlockRepository implements PetBlockController<Player> {
     private final Map<Player, PetBlock> petblocks = new HashMap<>();
 
     /**
@@ -50,13 +50,12 @@ public final class PetBlockRepository implements PetBlockController {
      * @return petblock
      */
     @Override
-    public PetBlock create(Object player, PetMeta petMeta) {
-        if(player == null)
+    public PetBlock create(Player player, PetMeta petMeta) {
+        if (player == null)
             throw new IllegalArgumentException("Player cannot be null!");
-        if(petMeta == null)
+        if (petMeta == null)
             throw new IllegalArgumentException("PetMeta cannot be null!");
-        final Player mPlayer = (Player) player;
-        return NMSRegistry.createPetBlock(mPlayer.getLocation(), petMeta);
+        return NMSRegistry.createPetBlock(player.getLocation(), petMeta);
     }
 
     /**
@@ -66,6 +65,7 @@ public final class PetBlockRepository implements PetBlockController {
      * @return petblock
      */
     @Override
+    @Deprecated
     public PetBlock getByPlayer(Object player) {
         final Player mPlayer = (Player) player;
         if (this.petblocks.containsKey(mPlayer)) {
@@ -81,12 +81,11 @@ public final class PetBlockRepository implements PetBlockController {
      * @return petblock
      */
     @Override
-    public Optional<PetBlock> getFromPlayer(Object player) {
-        if(player == null)
+    public Optional<PetBlock> getFromPlayer(Player player) {
+        if (player == null)
             throw new IllegalArgumentException("Player cannot be null!");
-        final Player mPlayer = (Player) player;
-        if (this.petblocks.containsKey(mPlayer)) {
-            return Optional.of(this.petblocks.get(mPlayer));
+        if (this.petblocks.containsKey(player)) {
+            return Optional.of(this.petblocks.get(player));
         }
         return Optional.empty();
     }
@@ -97,10 +96,11 @@ public final class PetBlockRepository implements PetBlockController {
      * @param player player
      */
     @Override
-    public void removeByPlayer(Object player) {
-        if(player == null)
+    public void removeByPlayer(Player player) {
+        if (player == null)
             throw new IllegalArgumentException("Player cannot be null!");
-        this.remove(this.getByPlayer(player));
+        final Optional<PetBlock> optPetBlock = this.getFromPlayer(player);
+        optPetBlock.ifPresent(this::remove);
     }
 
     /**
@@ -110,7 +110,7 @@ public final class PetBlockRepository implements PetBlockController {
      */
     @Override
     public void store(PetBlock item) {
-        if(item == null)
+        if (item == null)
             throw new IllegalArgumentException("Item cannot be null!");
         final Player mPlayer = (Player) item.getPlayer();
         if (!this.petblocks.containsKey(mPlayer)) {

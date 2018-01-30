@@ -34,6 +34,7 @@ sql:
   host: localhost
   port: 3306
   database: ''
+  usessl: false
   username: ''
   password: ''
 
@@ -220,23 +221,6 @@ join:
 
 ############################
 
-# Chat settings
-
-# Settings to manage entered pet-names into the chat
-# Changing these settings are only recommend when there are issues with entering pet-names or pet-skins into the chat
-
-# chat-async : Should chat messages be handled asynchronously?
-# Highest-priority : Should petblock chat message get the highest priority?
-
-############################
-
-chat:
-  async: true
-  highest-priority: true
-
-
-############################
-
 # Messages settings
 
 # Settings to adjust the messages
@@ -246,10 +230,16 @@ chat:
 messages:
   prefix: '&2[&aPetBlocks&2]&a '
   default-petname: ":player's pet"
-  naming-message: '&eEnter the name the of your pet:'
+  naming-suggest-prefix: ''
+  naming-suggest-clickable: '&e<<Click here>> '
+  naming-suggest-suffix: 'to rename your pet.'
+  naming-suggest-hover: 'Click me to rename your pet.'
   naming-success: '&aYou changed the name of your pet.'
   naming-error: '&cYou cannot name your pet like that.'
-  skullnaming-message: '&eEnter the name of the player:'
+  skullnaming-suggest-prefix: ''
+  skullnaming-suggest-clickable: '&e<<Click here>> '
+  skullnaming-suggest-suffix: 'to change the skin of your pet.'
+  skullnaming-suggest-hover: 'Click me to change the skin of your pet.'
   skullnaming-success: '&aYou changed the skin of your pet.'
   skullnaming-error: '&eThis skin is invalid.'
   perms-ico-yes: '&aYes'

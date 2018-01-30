@@ -32,16 +32,15 @@ import java.util.UUID;
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-public interface PlayerMetaController extends IDatabaseController<PlayerMeta> {
+public interface PlayerMetaController<Player> extends IDatabaseController<PlayerMeta> {
 
     /**
      * Creates a new playerData from the given player.
      *
      * @param player player
-     * @param <T>    type
      * @return playerData
      */
-    <T> PlayerMeta create(T player);
+    PlayerMeta create(Player player);
 
     /**
      * Returns the playerMeta of the given uuid.

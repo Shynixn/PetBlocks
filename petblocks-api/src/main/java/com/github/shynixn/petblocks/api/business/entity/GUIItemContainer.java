@@ -31,7 +31,7 @@ import java.util.Optional;
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-public interface GUIItemContainer {
+public interface GUIItemContainer<Player> {
 
     /**
      * Returns if the itemContainer is enabled.
@@ -54,7 +54,7 @@ public interface GUIItemContainer {
      * @param permissions permission
      * @return itemStack
      */
-    Object generate(Object player, String... permissions);
+    Object generate(Player player, String... permissions);
 
     /**
      * Returns the displayName of the itemStack if present.

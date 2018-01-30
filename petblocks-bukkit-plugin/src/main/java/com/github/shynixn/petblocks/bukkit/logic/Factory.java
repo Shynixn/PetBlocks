@@ -11,6 +11,7 @@ import com.github.shynixn.petblocks.bukkit.logic.persistence.controller.PlayerDa
 import com.github.shynixn.petblocks.bukkit.lib.ExtensionHikariConnectionContext;
 import org.apache.commons.io.IOUtils;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -27,7 +28,7 @@ public class Factory {
 
     private static ExtensionHikariConnectionContext connectionContext;
 
-    public static PlayerMetaController createPlayerDataController() {
+    public static PlayerMetaController<Player> createPlayerDataController() {
         return new PlayerDataRepository(connectionContext);
     }
 
@@ -39,7 +40,7 @@ public class Factory {
         return new EngineConfiguration(JavaPlugin.getPlugin(PetBlocksPlugin.class));
     }
 
-    public static PetBlockController createPetBlockController() {
+    public static PetBlockController<Player> createPetBlockController() {
         return new PetBlockRepository();
     }
 
@@ -51,7 +52,7 @@ public class Factory {
         return new MinecraftHeadConfiguration(JavaPlugin.getPlugin(PetBlocksPlugin.class));
     }
 
-    public static PetMetaController createPetDataController() {
+    public static PetMetaController<Player> createPetDataController() {
         return new PetDataRepository(connectionContext);
     }
 
@@ -96,7 +97,7 @@ public class Factory {
                         throw new IOException("Creating database file failed.");
                     }
                 }
-                connectionContext = ExtensionHikariConnectionContext.from(ExtensionHikariConnectionContext.SQLITE_DRIVER, "jdbc:sqlite:" + file.getAbsolutePath(), retriever);
+                connectionContext = ExtensionHikariConnectionContext.from(ExtensionHikariConnectionContext.SQLITE_DRIVER, "jdbc:sqlite:" + file.getAbsolutePath(), false,retriever);
                 try (Connection connection = connectionContext.getConnection()) {
                     connectionContext.execute("PRAGMA foreign_keys=ON", connection);
                 }
@@ -121,6 +122,7 @@ public class Factory {
                         , c.getString("sql.database")
                         , c.getString("sql.username")
                         , c.getString("sql.password")
+                        , c.getBoolean("sql.usessl")
                         , retriever);
             } catch (final IOException e) {
                 PetBlocksPlugin.logger().log(Level.WARNING, "Cannot connect to MySQL database!", e);

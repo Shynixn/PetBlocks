@@ -74,8 +74,10 @@ public class GUI {
         } else {
             this.setListAble(player, page, 0);
         }
-        final GUIItemContainer backGuiItemContainer = Config.getInstance().getGuiItemsController().getGUIItemByName("back");
-        inventory.setItem(backGuiItemContainer.getPosition(), (ItemStack) backGuiItemContainer.generate(player));
+        final Optional<GUIItemContainer> optBackGuiItemContainer = Config.getInstance().getGuiItemsController().getGUIItemFromName("back");
+        if (!optBackGuiItemContainer.isPresent())
+            throw new IllegalArgumentException("Gui item back could not be loaded correctly!");
+        inventory.setItem(optBackGuiItemContainer.get().getPosition(), (ItemStack) optBackGuiItemContainer.get().generate(player));
         this.fillEmptySlots(inventory);
         player.updateInventory();
     }
@@ -143,7 +145,7 @@ public class GUI {
      * @param page      page
      */
     private void setOtherItems(Player player, Inventory inventory, PetMeta petMeta, GUIPage page) {
-        if (this.manager.getPetBlockController().getByPlayer(player) == null) {
+        if (!this.manager.getPetBlockController().getFromPlayer(player).isPresent()) {
             petMeta.setEnabled(false);
         }
         for (final GUIItemContainer guiItemContainer : Config.getInstance().getGuiItemsController().getAll()) {
@@ -152,34 +154,46 @@ public class GUI {
             }
         }
         if (page == GUIPage.MAIN) {
-            final GUIItemContainer myPetContainer = Config.getInstance().getGuiItemsController().getGUIItemByName("my-pet");
-            inventory.setItem(myPetContainer.getPosition(), (ItemStack) petMeta.getHeadItemStack());
+            final Optional<GUIItemContainer> container = Config.getInstance().getGuiItemsController().getGUIItemFromName("my-pet");
+            if (!container.isPresent())
+                throw new IllegalArgumentException("Gui item my-pet could not be loaded correctly!");
+            inventory.setItem(container.get().getPosition(), (ItemStack) petMeta.getHeadItemStack());
         }
         if (petMeta.isSoundEnabled()) {
-            final GUIItemContainer container = Config.getInstance().getGuiItemsController().getGUIItemByName("sounds-enabled-pet");
-            if (page == container.getPage()) {
-                inventory.setItem(container.getPosition(), (ItemStack) container.generate(player));
+            final Optional<GUIItemContainer> container = Config.getInstance().getGuiItemsController().getGUIItemFromName("sounds-enabled-pet");
+            if (!container.isPresent())
+                throw new IllegalArgumentException("Gui item sounds-enabled-pet could not be loaded correctly!");
+            if (page == container.get().getPage()) {
+                inventory.setItem(container.get().getPosition(), (ItemStack) container.get().generate(player));
             }
         } else {
-            final GUIItemContainer container = Config.getInstance().getGuiItemsController().getGUIItemByName("sounds-disabled-pet");
-            if (page == container.getPage()) {
-                inventory.setItem(container.getPosition(), (ItemStack) container.generate(player));
+            final Optional<GUIItemContainer> container = Config.getInstance().getGuiItemsController().getGUIItemFromName("sounds-disabled-pet");
+            if (!container.isPresent())
+                throw new IllegalArgumentException("Gui item sounds-disabled-pet could not be loaded correctly!");
+            if (page == container.get().getPage()) {
+                inventory.setItem(container.get().getPosition(), (ItemStack) container.get().generate(player));
             }
         }
         if (!petMeta.isEnabled()) {
-            final GUIItemContainer container = Config.getInstance().getGuiItemsController().getGUIItemByName("enable-pet");
-            if (page == container.getPage()) {
-                inventory.setItem(container.getPosition(), (ItemStack) container.generate(player));
+            final Optional<GUIItemContainer> container = Config.getInstance().getGuiItemsController().getGUIItemFromName("enable-pet");
+            if (!container.isPresent())
+                throw new IllegalArgumentException("Gui item enable-pet could not be loaded correctly!");
+            if (page == container.get().getPage()) {
+                inventory.setItem(container.get().getPosition(), (ItemStack) container.get().generate(player));
             }
         } else {
-            final GUIItemContainer container = Config.getInstance().getGuiItemsController().getGUIItemByName("disable-pet");
-            if (page == container.getPage()) {
-                inventory.setItem(container.getPosition(), (ItemStack) container.generate(player));
+            final Optional<GUIItemContainer> container = Config.getInstance().getGuiItemsController().getGUIItemFromName("disable-pet");
+            if (!container.isPresent())
+                throw new IllegalArgumentException("Gui item disable-pet could not be loaded correctly!");
+            if (page == container.get().getPage()) {
+                inventory.setItem(container.get().getPosition(), (ItemStack) container.get().generate(player));
             }
         }
-        final GUIItemContainer container = Config.getInstance().getGuiItemsController().getGUIItemByName("minecraft-heads-costume");
-        if (page == container.getPage()) {
-            inventory.setItem(container.getPosition(), (ItemStack) container.generate(player, "minecraft-heads"));
+        final Optional<GUIItemContainer> container = Config.getInstance().getGuiItemsController().getGUIItemFromName("minecraft-heads-costume");
+        if (!container.isPresent())
+            throw new IllegalArgumentException("Gui item \"minecraft-heads-costume could not be loaded correctly!");
+        if (page == container.get().getPage()) {
+            inventory.setItem(container.get().getPosition(), (ItemStack) container.get().generate(player, "minecraft-heads"));
         }
     }
 
@@ -297,15 +311,21 @@ public class GUI {
                 }
             }
             container.startCount = count;
-            final GUIItemContainer backGuiItemContainer = Config.getInstance().getGuiItemsController().getGUIItemByName("back");
-            inventory.setItem(backGuiItemContainer.getPosition(), (ItemStack) backGuiItemContainer.generate(player));
+            final Optional<GUIItemContainer> optBackGuiItemContainer = Config.getInstance().getGuiItemsController().getGUIItemFromName("back");
+            if (!optBackGuiItemContainer.isPresent())
+                throw new IllegalArgumentException("Gui item back could not be loaded correctly!");
+            inventory.setItem(optBackGuiItemContainer.get().getPosition(), (ItemStack) optBackGuiItemContainer.get().generate(player));
             if (!(container.startCount % 45 != 0 || containers.size() == container.startCount)) {
-                final GUIItemContainer nextPage = Config.getInstance().getGuiItemsController().getGUIItemByName("next-page");
-                inventory.setItem(nextPage.getPosition(), (ItemStack) nextPage.generate(player));
+                final Optional<GUIItemContainer> optNextPage = Config.getInstance().getGuiItemsController().getGUIItemFromName("next-page");
+                if (!optNextPage.isPresent())
+                    throw new IllegalArgumentException("Gui item next-page could not be loaded correctly!");
+                inventory.setItem(optNextPage.get().getPosition(), (ItemStack) optNextPage.get().generate(player));
             }
             if (container.currentCount != 0) {
-                final GUIItemContainer previousPage = Config.getInstance().getGuiItemsController().getGUIItemByName("previous-page");
-                inventory.setItem(previousPage.getPosition(), (ItemStack) previousPage.generate(player));
+                final Optional<GUIItemContainer> optPreviousPage = Config.getInstance().getGuiItemsController().getGUIItemFromName("previous-page");
+                if (!optPreviousPage.isPresent())
+                    throw new IllegalArgumentException("Gui item previous-page could not be loaded correctly!");
+                inventory.setItem(optPreviousPage.get().getPosition(), (ItemStack) optPreviousPage.get().generate(player));
             }
             this.fillEmptySlots(inventory);
         }

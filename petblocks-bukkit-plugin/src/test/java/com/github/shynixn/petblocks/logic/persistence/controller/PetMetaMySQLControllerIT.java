@@ -103,7 +103,7 @@ public class PetMetaMySQLControllerIT {
         final Player player = mock(Player.class);
         when(player.getName()).thenReturn("Shynixn");
         when(player.getUniqueId()).thenReturn(uuid);
-        try (PetMetaController controller = Factory.createPetDataController()) {
+        try (PetMetaController<Player> controller = Factory.createPetDataController()) {
             try (ParticleEffectMetaController particleController = Factory.createParticleEffectController()) {
                 try (PlayerMetaController playerController = Factory.createPlayerDataController()) {
                     for (final PetMeta item : controller.getAll()) {
@@ -153,7 +153,7 @@ public class PetMetaMySQLControllerIT {
         final Player player = mock(Player.class);
         when(player.getName()).thenReturn("Shynixn");
         when(player.getUniqueId()).thenReturn(uuid);
-        try (PetMetaController controller = Factory.createPetDataController()) {
+        try (PetMetaController<Player> controller = Factory.createPetDataController()) {
             try (ParticleEffectMetaController particleController = Factory.createParticleEffectController()) {
                 try (PlayerMetaController playerController = Factory.createPlayerDataController()) {
                     for (final PetMeta item : controller.getAll()) {
