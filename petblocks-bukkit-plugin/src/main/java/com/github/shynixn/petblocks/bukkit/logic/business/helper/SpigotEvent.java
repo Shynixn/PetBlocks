@@ -1,4 +1,4 @@
-package com.github.shynixn.petblocks.bukkit.lib;
+package com.github.shynixn.petblocks.bukkit.logic.business.helper;
 
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;

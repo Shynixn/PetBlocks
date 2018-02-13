@@ -3,7 +3,7 @@ package com.github.shynixn.petblocks.bukkit.dependencies.worldguard;
 import com.github.shynixn.petblocks.api.PetBlocksApi;
 import com.github.shynixn.petblocks.api.business.entity.PetBlock;
 import com.github.shynixn.petblocks.bukkit.logic.business.configuration.Config;
-import com.github.shynixn.petblocks.bukkit.lib.ReflectionUtils;
+import com.github.shynixn.petblocks.bukkit.logic.business.helper.ReflectionUtils;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import com.sk89q.worldguard.protection.flags.DefaultFlag;
 import com.sk89q.worldguard.protection.flags.StateFlag.State;

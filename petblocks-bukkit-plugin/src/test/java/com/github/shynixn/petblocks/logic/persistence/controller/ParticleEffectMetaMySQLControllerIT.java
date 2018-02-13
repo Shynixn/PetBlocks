@@ -86,7 +86,7 @@ public class ParticleEffectMetaMySQLControllerIT {
             meta.setEffectType(ParticleEffectMeta.ParticleEffectType.CLOUD);
             controller.store(meta);
             assertEquals(1, controller.size());
-            assertEquals(ParticleEffectMeta.ParticleEffectType.CLOUD, controller.getById(meta.getId()).getEffectType());
+            assertEquals(ParticleEffectMeta.ParticleEffectType.CLOUD, controller.getFromId(meta.getId()).get().getEffectType());
         } catch (final Exception e) {
             Logger.getLogger(ParticleEffectMetaMySQLControllerIT.class.getSimpleName()).log(Level.WARNING, "Failed to run test.", e);
             Assert.fail();
@@ -115,7 +115,7 @@ public class ParticleEffectMetaMySQLControllerIT {
             controller.store(meta);
             assertEquals(1, controller.size());
 
-            meta = controller.getById(meta.getId());
+            meta = controller.getFromId(meta.getId()).get();
             assertEquals(ParticleEffectMeta.ParticleEffectType.DAMAGE_INDICATOR, meta.getEffectType());
             assertEquals(5, meta.getAmount());
             assertEquals(2.25, meta.getOffsetX());
@@ -134,7 +134,7 @@ public class ParticleEffectMetaMySQLControllerIT {
                     .setData((byte)7);
             controller.store(meta);
 
-            meta = controller.getById(meta.getId());
+            meta = controller.getFromId(meta.getId()).get();
             assertEquals(ParticleEffectMeta.ParticleEffectType.BARRIER, meta.getEffectType());
             assertEquals(7, meta.getAmount());
             assertEquals(4.25, meta.getOffsetX());

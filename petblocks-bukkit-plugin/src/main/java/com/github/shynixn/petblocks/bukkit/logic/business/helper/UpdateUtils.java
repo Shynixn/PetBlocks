@@ -1,4 +1,4 @@
-package com.github.shynixn.petblocks.bukkit.lib;
+package com.github.shynixn.petblocks.bukkit.logic.business.helper;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;

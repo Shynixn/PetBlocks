@@ -12,9 +12,8 @@
         <module>petblocks-api</module>
         <module>petblocks-bukkit-api</module>
         <module>petblocks-bukkit-plugin</module>
-        <module>petblocks-bukkit-lib</module>
     </modules>
-    <version>6.5.0</version>
+    <version>6.5.1-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <developers>
