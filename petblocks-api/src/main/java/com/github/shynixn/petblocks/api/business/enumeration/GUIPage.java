@@ -29,20 +29,4 @@ package com.github.shynixn.petblocks.api.business.enumeration;
  */
 public enum GUIPage {
     MAIN, WARDROBE, DEFAULT_COSTUMES, COLOR_COSTUMES, CUSTOM_COSTUMES, MINECRAFTHEADS_COSTUMES, PARTICLES, ENGINES;
-
-    /**
-     * Returns the gui page from name.
-     *
-     * @param name name
-     * @return guiPage
-     */
-    @Deprecated
-    public static GUIPage getGUIPageFromName(String name) {
-        for (final GUIPage page : GUIPage.values()) {
-            if (page.name().equalsIgnoreCase(name)) {
-                return page;
-            }
-        }
-        return null;
-    }
 }

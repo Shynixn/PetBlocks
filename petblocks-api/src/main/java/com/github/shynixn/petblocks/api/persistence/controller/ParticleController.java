@@ -1,6 +1,5 @@
 package com.github.shynixn.petblocks.api.persistence.controller;
 
-import com.github.shynixn.petblocks.api.business.entity.GUIItemContainer;
 import com.github.shynixn.petblocks.api.persistence.entity.ParticleEffectMeta;
 
 import java.util.Optional;
@@ -32,22 +31,12 @@ import java.util.Optional;
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-public interface ParticleController extends CostumeController {
-
+public interface ParticleController<T> extends CostumeController<T> {
     /**
      * Returns the particleEffect by the given container.
      *
      * @param container container
      * @return particleEffect
      */
-    @Deprecated
-    ParticleEffectMeta getByItem(GUIItemContainer container);
-
-    /**
-     * Returns the particleEffect by the given container.
-     *
-     * @param container container
-     * @return particleEffect
-     */
-    Optional<ParticleEffectMeta> getFromItem(GUIItemContainer container);
+    Optional<ParticleEffectMeta> getFromItem(T container);
 }

@@ -50,15 +50,6 @@ public interface PetBlockController<Player> extends IController<PetBlock> {
      * @param player player
      * @return petblock
      */
-    @Deprecated
-    PetBlock getByPlayer(Object player);
-
-    /**
-     * Returns the petblock of the given player.
-     *
-     * @param player player
-     * @return petblock
-     */
     Optional<PetBlock> getFromPlayer(Player player);
 
     /**

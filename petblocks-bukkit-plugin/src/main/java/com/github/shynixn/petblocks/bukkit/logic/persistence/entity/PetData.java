@@ -1,5 +1,6 @@
 package com.github.shynixn.petblocks.bukkit.logic.persistence.entity;
 
+import com.github.shynixn.petblocks.api.business.entity.GUIItemContainer;
 import com.github.shynixn.petblocks.api.persistence.entity.EngineContainer;
 import com.github.shynixn.petblocks.api.persistence.entity.ParticleEffectMeta;
 import com.github.shynixn.petblocks.api.persistence.entity.PetMeta;
@@ -17,6 +18,7 @@ import org.bukkit.inventory.meta.SkullMeta;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * Implementation of the petMeta interface which is persistence able to the database.
@@ -75,16 +77,22 @@ public class PetData extends PersistenceObject implements PetMeta {
      */
     public PetData(Player player, String name) {
         super();
+        if (player == null)
+            throw new IllegalArgumentException("Player cannot be null!");
+        if (name == null)
+            throw new IllegalArgumentException("Petname cannot be null!");
         this.petDisplayName = name.replace(":player", player.getName());
         this.playerInfo = PlayerData.from(player);
         this.ageTicks = ConfigPet.getInstance().getAge_smallticks();
         this.sounds = true;
         this.particleEffectBuilder = new ParticleEffectData();
         this.particleEffectBuilder.setEffectType(ParticleEffectMeta.ParticleEffectType.NONE);
-        this.engineContainer = Config.getInstance().getEngineController().getById(Config.getInstance().getDefaultEngine());
-        if (this.engineContainer == null) {
-            throw new RuntimeException("Engine cannot be null!");
+        final Optional<EngineContainer<GUIItemContainer<Player>>> engineContainer = Config.getInstance().getEngineController()
+                .getContainerFromPosition(Config.getInstance().getDefaultEngine());
+        if (!engineContainer.isPresent()) {
+            throw new RuntimeException("Default engine could not be loaded correctly!");
         }
+        this.engineContainer = engineContainer.get();
     }
 
     /**
@@ -277,7 +285,7 @@ public class PetData extends PersistenceObject implements PetMeta {
      * @return engine
      */
     @Override
-    public EngineContainer getEngine() {
+    public <T> EngineContainer<T> getEngine() {
         return this.engineContainer;
     }
 
@@ -287,7 +295,7 @@ public class PetData extends PersistenceObject implements PetMeta {
      * @param engine engine
      */
     @Override
-    public void setEngine(EngineContainer engine) {
+    public <T> void setEngine(EngineContainer<T> engine) {
         this.engineContainer = engine;
     }
 

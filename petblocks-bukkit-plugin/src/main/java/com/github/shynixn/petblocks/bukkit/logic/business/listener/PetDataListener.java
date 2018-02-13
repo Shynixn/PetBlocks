@@ -288,35 +288,38 @@ public class PetDataListener extends SimpleListener {
         } else if (this.isGUIItem(currentItem, "back")) {
             this.manager.gui.backPage(player, petMeta);
         } else if (this.manager.pages.get(player).page == GUIPage.ENGINES && this.hasPermission(player, Permission.ALL_ENGINES, Permission.SINGLE_ENGINE, itemSlot)) {
-            final EngineContainer engineContainer = Config.getInstance().getEngineController().getById(itemSlot);
-            PetBlockModifyHelper.setEngine(petMeta, petBlock, engineContainer);
+            final Optional<EngineContainer<GUIItemContainer<Player>>> optEngineContainer = Config.getInstance().getEngineController().getContainerFromPosition(itemSlot);
+            if (!optEngineContainer.isPresent()) {
+                throw new IllegalArgumentException("Engine " + itemSlot + " could not be loaded correctly!");
+            }
+            PetBlockModifyHelper.setEngine(petMeta, petBlock, optEngineContainer.get());
             this.persistAsynchronously(petMeta);
             this.manager.gui.setPage(player, GUIPage.MAIN, petMeta);
         } else if (this.manager.pages.get(player).page == GUIPage.PARTICLES && this.hasPermission(player, Permission.ALL_PARTICLES, Permission.SINGLE_PARTICLE, itemSlot)) {
-            final Optional<GUIItemContainer> container = Config.getInstance().getParticleController().getContainerFromPosition(itemSlot);
-            if(!container.isPresent())
+            final Optional<GUIItemContainer<Player>> container = Config.getInstance().getParticleController().getContainerFromPosition(itemSlot);
+            if (!container.isPresent())
                 throw new IllegalArgumentException("Particle " + itemSlot + " could not be loaded correctly.");
             PetBlockModifyHelper.setParticleEffect(petMeta, petBlock, container.get());
             this.persistAsynchronously(petMeta);
             this.manager.gui.setPage(player, GUIPage.MAIN, petMeta);
         } else if (event.getSlot() < 45 && this.manager.pages.get(player).page == GUIPage.DEFAULT_COSTUMES && this.hasPermission(player, Permission.ALL_SIMPLEBLOCKCOSTUMES, Permission.SINGLE_SIMPLEBLOCKCOSTUME, itemSlot)) {
-            final Optional<GUIItemContainer> container = Config.getInstance().getOrdinaryCostumesController().getContainerFromPosition(itemSlot);
-            if(!container.isPresent())
+            final Optional<GUIItemContainer<Player>> container = Config.getInstance().getOrdinaryCostumesController().getContainerFromPosition(itemSlot);
+            if (!container.isPresent())
                 throw new IllegalArgumentException("Skin " + itemSlot + " could not be loaded correctly.");
             this.setCostumeSkin(player, petMeta, petBlock, container.get());
         } else if (event.getSlot() < 45 && this.manager.pages.get(player).page == GUIPage.COLOR_COSTUMES && this.hasPermission(player, Permission.ALL_COLOREDBLOCKCOSTUMES, Permission.SINGLE_COLOREDBLOCKCOSTUME, itemSlot)) {
-            final Optional<GUIItemContainer> container = Config.getInstance().getColorCostumesController().getContainerFromPosition(itemSlot);
-            if(!container.isPresent())
+            final Optional<GUIItemContainer<Player>> container = Config.getInstance().getColorCostumesController().getContainerFromPosition(itemSlot);
+            if (!container.isPresent())
                 throw new IllegalArgumentException("Skin " + itemSlot + " could not be loaded correctly.");
             this.setCostumeSkin(player, petMeta, petBlock, container.get());
         } else if (event.getSlot() < 45 && this.manager.pages.get(player).page == GUIPage.CUSTOM_COSTUMES && this.hasPermission(player, Permission.ALL_PLAYERHEADCOSTUMES, Permission.SINGLE_PLAYERHEADCOSTUME, itemSlot)) {
-            final Optional<GUIItemContainer> container = Config.getInstance().getRareCostumesController().getContainerFromPosition(itemSlot);
-            if(!container.isPresent())
+            final Optional<GUIItemContainer<Player>> container = Config.getInstance().getRareCostumesController().getContainerFromPosition(itemSlot);
+            if (!container.isPresent())
                 throw new IllegalArgumentException("Skin " + itemSlot + " could not be loaded correctly.");
             this.setCostumeSkin(player, petMeta, petBlock, container.get());
         } else if (event.getSlot() < 45 && this.manager.pages.get(player).page == GUIPage.MINECRAFTHEADS_COSTUMES && this.hasPermission(player, Permission.ALL_MINECRAFTHEADCOSTUMES, Permission.SINGLE_MINECRAFTHEADCOSTUME, itemSlot)) {
-            final Optional<GUIItemContainer> container = Config.getInstance().getMinecraftHeadsCostumesController().getContainerFromPosition(itemSlot);
-            if(!container.isPresent())
+            final Optional<GUIItemContainer<Player>> container = Config.getInstance().getMinecraftHeadsCostumesController().getContainerFromPosition(itemSlot);
+            if (!container.isPresent())
                 throw new IllegalArgumentException("Skin " + itemSlot + " could not be loaded correctly.");
             this.setCostumeSkin(player, petMeta, petBlock, container.get());
         }
@@ -513,8 +516,8 @@ public class PetDataListener extends SimpleListener {
         return true;
     }
 
-    private GUIItemContainer getGUIItem(String name) {
-        final Optional<GUIItemContainer> guiItemContainer = Config.getInstance().getGuiItemsController().getGUIItemFromName(name);
+    private GUIItemContainer<Player> getGUIItem(String name) {
+        final Optional<GUIItemContainer<Player>> guiItemContainer = Config.getInstance().getGuiItemsController().getGUIItemFromName(name);
         if (!guiItemContainer.isPresent())
             throw new IllegalArgumentException("Guiitem " + name + " could not be loaded correctly!");
         return guiItemContainer.get();

@@ -63,11 +63,15 @@ public class PetBlockManager implements AutoCloseable {
 
     private PetBlockFilter filter;
     private final PetBlockController<Player> petBlockController;
-    private final PetMetaController petMetaController;
+    private final PetMetaController<Player> petMetaController;
 
+    /**
+     * Initializes a new manager with the given plugin.
+     *
+     * @param plugin plugin
+     */
     public PetBlockManager(Plugin plugin) {
         super();
-
         Factory.initialize(plugin);
         this.petBlockController = Factory.createPetBlockController();
         this.petMetaController = Factory.createPetDataController();
@@ -84,10 +88,22 @@ public class PetBlockManager implements AutoCloseable {
         }
     }
 
+    /**
+     * Returns the default petblock controller.
+     *
+     * @return petblockController   private MaterialCompatibility12() {
+     * super();
+     * }
+     */
     public PetBlockController<Player> getPetBlockController() {
         return this.petBlockController;
     }
 
+    /**
+     * Returns the default meta controller.
+     *
+     * @return metaController
+     */
     public PetMetaController<Player> getPetMetaController() {
         return this.petMetaController;
     }

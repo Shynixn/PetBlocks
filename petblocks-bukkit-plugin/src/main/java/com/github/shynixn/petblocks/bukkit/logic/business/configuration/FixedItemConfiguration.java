@@ -6,6 +6,7 @@ import com.github.shynixn.petblocks.bukkit.PetBlocksPlugin;
 import com.github.shynixn.petblocks.bukkit.logic.business.entity.ItemContainer;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.MemorySection;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 
@@ -41,10 +42,10 @@ import java.util.logging.Level;
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-public class FixedItemConfiguration implements OtherGUIItemsController {
+public class FixedItemConfiguration implements OtherGUIItemsController<GUIItemContainer<Player>> {
 
     private Plugin plugin;
-    private final Map<String, GUIItemContainer> items = new HashMap<>();
+    private final Map<String, GUIItemContainer<Player>> items = new HashMap<>();
 
     /**
      * Initializes a new engine repository
@@ -94,7 +95,7 @@ public class FixedItemConfiguration implements OtherGUIItemsController {
      * @return items
      */
     @Override
-    public List<GUIItemContainer> getAll() {
+    public List<GUIItemContainer<Player>> getAll() {
         return new ArrayList<>(this.items.values());
     }
 
@@ -108,7 +109,7 @@ public class FixedItemConfiguration implements OtherGUIItemsController {
         final Map<String, Object> data = ((MemorySection) this.plugin.getConfig().get("gui.items")).getValues(false);
         for (final String key : data.keySet()) {
             try {
-                final GUIItemContainer container = new ItemContainer(0, ((MemorySection) data.get(key)).getValues(false));
+                final GUIItemContainer<Player> container = new ItemContainer(0, ((MemorySection) data.get(key)).getValues(false));
                 if (key.equals("suggest-heads")) {
                     ((ItemContainer) container).setDisplayName(ChatColor.AQUA + "" + ChatColor.BOLD + "Suggest Heads");
                 }
@@ -120,27 +121,13 @@ public class FixedItemConfiguration implements OtherGUIItemsController {
     }
 
     /**
-     * Returns the guiItem by the given name
-     *
-     * @param name name
-     * @return item
-     */
-    @Override
-    @Deprecated
-    public GUIItemContainer getGUIItemByName(String name) {
-        if (this.items.containsKey(name))
-            return this.items.get(name);
-        return null;
-    }
-
-    /**
      * Returns the guiItem by the given name.
      *
      * @param name name
      * @return item
      */
     @Override
-    public Optional<GUIItemContainer> getGUIItemFromName(String name) {
+    public Optional<GUIItemContainer<Player>> getGUIItemFromName(String name) {
         if (this.items.containsKey(name)) {
             return Optional.of(this.items.get(name));
         }
@@ -158,14 +145,14 @@ public class FixedItemConfiguration implements OtherGUIItemsController {
     public boolean isGUIItem(Object itemStack, String name) {
         if (itemStack == null || name == null)
             return false;
-        final Optional<GUIItemContainer> optGUIContainer = this.getGUIItemFromName(name);
+        final Optional<GUIItemContainer<Player>> optGUIContainer = this.getGUIItemFromName(name);
         if (!optGUIContainer.isPresent()) {
             throw new RuntimeException("GUIItem for PetBlocks with the name " + name + " is not loaded correctly!");
         }
         final ItemStack mItemStack = (ItemStack) itemStack;
         return mItemStack.getItemMeta() != null && optGUIContainer.get().getDisplayName().isPresent()
                 && mItemStack.getItemMeta().getDisplayName() != null
-                && mItemStack.getItemMeta().getDisplayName().equalsIgnoreCase((String) optGUIContainer.get().getDisplayName().get());
+                && mItemStack.getItemMeta().getDisplayName().equalsIgnoreCase(optGUIContainer.get().getDisplayName().get());
     }
 
     /**

@@ -27,13 +27,13 @@ package com.github.shynixn.petblocks.api.business.entity;
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-public interface PetBlockPartEntity {
+public interface PetBlockPartEntity<Entity> {
     /**
      * Returns the entity hidden by this object.
      *
      * @return spigotEntity
      */
-    Object getEntity();
+    Entity getEntity();
 
     /**
      * Spawns the entity at the given location.

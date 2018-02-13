@@ -36,14 +36,5 @@ public interface IDatabaseController<T> extends IController<T> {
      * @param id id
      * @return item
      */
-    @Deprecated
-    T getById(long id);
-
-    /**
-     * Returns the item of the given id.
-     *
-     * @param id id
-     * @return item
-     */
     Optional<T> getFromId(long id);
 }

@@ -6,6 +6,7 @@ import com.github.shynixn.petblocks.api.persistence.entity.EngineContainer;
 import com.github.shynixn.petblocks.api.persistence.entity.SoundMeta;
 import com.github.shynixn.petblocks.bukkit.logic.business.entity.ItemContainer;
 import org.bukkit.configuration.MemorySection;
+import org.bukkit.entity.Player;
 
 import java.util.Map;
 
@@ -38,9 +39,9 @@ import java.util.Map;
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-public class EngineData extends PersistenceObject implements EngineContainer {
+public class EngineData extends PersistenceObject implements EngineContainer<GUIItemContainer<Player>> {
 
-    private GUIItemContainer itemContainer;
+    private GUIItemContainer<Player> itemContainer;
 
     private String entity;
     private RideType rideType;
@@ -121,7 +122,7 @@ public class EngineData extends PersistenceObject implements EngineContainer {
      * @return guiItem
      */
     @Override
-    public GUIItemContainer getGUIItem() {
+    public GUIItemContainer<Player> getGUIItem() {
         return this.itemContainer;
     }
 }

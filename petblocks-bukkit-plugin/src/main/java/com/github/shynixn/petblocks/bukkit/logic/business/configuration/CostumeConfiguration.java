@@ -5,6 +5,7 @@ import com.github.shynixn.petblocks.api.persistence.controller.CostumeController
 import com.github.shynixn.petblocks.bukkit.PetBlocksPlugin;
 import com.github.shynixn.petblocks.bukkit.logic.business.entity.ItemContainer;
 import org.bukkit.configuration.MemorySection;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
 import java.util.*;
@@ -39,23 +40,19 @@ import java.util.logging.Level;
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-public class CostumeConfiguration implements CostumeController {
-
-    private Plugin plugin;
+public class CostumeConfiguration extends ContainerConfiguration<GUIItemContainer<Player>> implements CostumeController<GUIItemContainer<Player>> {
     private final String costumeCategory;
-    final List<GUIItemContainer> items = new ArrayList<>();
 
     /**
-     * Initializes a new engine repository
+     * Initializes a new costume repository.
      *
      * @param costumeCategory costume
      * @param plugin          plugin
      */
     public CostumeConfiguration(String costumeCategory, Plugin plugin) {
-        super();
-        if (plugin == null)
-            throw new IllegalArgumentException("Plugin cannot be null!");
-        this.plugin = plugin;
+        super(plugin);
+        if (costumeCategory == null)
+            throw new IllegalArgumentException("CostumeCategory cannot be null!");
         this.costumeCategory = costumeCategory;
     }
 
@@ -65,43 +62,13 @@ public class CostumeConfiguration implements CostumeController {
      * @param item item
      */
     @Override
-    public void store(GUIItemContainer item) {
-        if (this.getContainerFromPosition(item.getPosition()).isPresent()) {
-            throw new IllegalArgumentException("Item at this position already exists!");
+    public void store(GUIItemContainer<Player> item) {
+        if (item != null) {
+            if (this.getContainerFromPosition(item.getPosition()).isPresent()) {
+                throw new IllegalArgumentException("Item at this position already exists!");
+            }
+            this.items.add(item);
         }
-        this.items.add(item);
-    }
-
-    /**
-     * Removes an item from the repository
-     *
-     * @param item item
-     */
-    @Override
-    public void remove(GUIItemContainer item) {
-        if (this.items.contains(item)) {
-            this.items.remove(item);
-        }
-    }
-
-    /**
-     * Returns the amount of items in the repository
-     *
-     * @return size
-     */
-    @Override
-    public int size() {
-        return this.items.size();
-    }
-
-    /**
-     * Returns all items from the repository as unmodifiableList
-     *
-     * @return items
-     */
-    @Override
-    public List<GUIItemContainer> getAll() {
-        return Collections.unmodifiableList(this.items);
     }
 
     /**
@@ -114,7 +81,7 @@ public class CostumeConfiguration implements CostumeController {
         final Map<String, Object> data = ((MemorySection) this.plugin.getConfig().get("wardrobe." + this.costumeCategory)).getValues(false);
         for (final String key : data.keySet()) {
             try {
-                final GUIItemContainer container = new ItemContainer(Integer.parseInt(key), ((MemorySection) data.get(key)).getValues(true));
+                final GUIItemContainer<Player> container = new ItemContainer(Integer.parseInt(key), ((MemorySection) data.get(key)).getValues(true));
                 this.items.add(container);
             } catch (final Exception e) {
                 PetBlocksPlugin.logger().log(Level.WARNING, "Failed to load guiItem " + this.costumeCategory + '.' + key + '.');
@@ -123,44 +90,18 @@ public class CostumeConfiguration implements CostumeController {
     }
 
     /**
-     * Returns the container by the given order id
-     *
-     * @param position position
-     * @return container
-     */
-    @Override
-    @Deprecated
-    public GUIItemContainer getContainerByPosition(int position) {
-        final Optional<GUIItemContainer> tmp = this.getContainerFromPosition(position);
-        return tmp.orElse(null);
-    }
-
-    /**
      * Returns the container by the given order id.
      *
-     * @param position position
+     * @param id id
      * @return container
      */
     @Override
-    public Optional<GUIItemContainer> getContainerFromPosition(int position) {
-        for (final GUIItemContainer guiItemContainer : this.items) {
-            if (guiItemContainer.getPosition() == position) {
+    public Optional<GUIItemContainer<Player>> getContainerFromPosition(int id) {
+        for (final GUIItemContainer<Player> guiItemContainer : this.getAll()) {
+            if (guiItemContainer.getPosition() == id) {
                 return Optional.of(guiItemContainer);
             }
         }
         return Optional.empty();
-    }
-
-    /**
-     * Closes this resource, relinquishing any underlying resources.
-     * This method is invoked automatically on objects managed by the
-     * {@code try}-with-resources statement.
-     *
-     * @throws Exception if this resource cannot be closed
-     */
-    @Override
-    public void close() throws Exception {
-        this.plugin = null;
-        this.items.clear();
     }
 }

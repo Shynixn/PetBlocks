@@ -107,12 +107,12 @@ public class PetBlockModifyHelper {
      * @param petBlock        petblock
      * @param engineContainer engineData
      */
-    public static void setEngine(PetMeta petMeta, PetBlock petBlock, EngineContainer engineContainer) {
+    public static void setEngine(PetMeta petMeta, PetBlock petBlock, EngineContainer<GUIItemContainer<Player>> engineContainer) {
         if (engineContainer == null)
             return;
         petMeta.setEngine(engineContainer);
         if (Config.getInstance().isCopySkinEnabled()) {
-            final GUIItemContainer container = engineContainer.getGUIItem();
+            final GUIItemContainer<Player> container = engineContainer.getGUIItem();
             petMeta.setSkin(container.getItemId(), container.getItemDamage(), container.getSkin(), container.isItemUnbreakable());
         }
         if (petBlock != null) {

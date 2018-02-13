@@ -48,7 +48,7 @@ import java.util.logging.Level;
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-public class ItemContainer implements GUIItemContainer {
+public class ItemContainer implements GUIItemContainer<Player> {
 
     private ItemStack cache;
 
@@ -142,9 +142,9 @@ public class ItemContainer implements GUIItemContainer {
      * @return itemStack
      */
     @Override
-    public Object generate(Object player, String... permissions) {
+    public Object generate(Player player, String... permissions) {
         if (this.cache != null) {
-            this.updateLore((Player) player, permissions);
+            this.updateLore(player, permissions);
             return this.cache.clone();
         }
         try {
@@ -166,7 +166,7 @@ public class ItemContainer implements GUIItemContainer {
                 itemMeta.setDisplayName(this.name);
                 itemStack.setItemMeta(itemMeta);
                 this.cache = itemStack;
-                this.updateLore((Player) player, permissions);
+                this.updateLore(player, permissions);
                 return itemStack;
             }
         } catch (final Exception ex) {

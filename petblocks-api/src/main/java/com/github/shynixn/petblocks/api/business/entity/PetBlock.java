@@ -51,7 +51,7 @@ public interface PetBlock {
      *
      * @return effectPipeLine
      */
-    EffectPipeline getEffectPipeline();
+    <Location> EffectPipeline<Location> getEffectPipeline();
 
     /**
      * Returns the meta of the petblock.

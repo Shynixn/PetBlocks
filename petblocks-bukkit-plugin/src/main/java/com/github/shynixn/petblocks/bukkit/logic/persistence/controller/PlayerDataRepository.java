@@ -75,19 +75,6 @@ public class PlayerDataRepository extends DataBaseRepository<PlayerMeta> impleme
      * @return playerMeta
      */
     @Override
-    @Deprecated
-    public PlayerMeta getByUUID(UUID uuid) {
-        final Optional<PlayerMeta> tmp = this.getFromUUID(uuid);
-        return tmp.orElse(null);
-    }
-
-    /**
-     * Returns the playerMeta of the given uuid.
-     *
-     * @param uuid uuid
-     * @return playerMeta
-     */
-    @Override
     public Optional<PlayerMeta> getFromUUID(UUID uuid) {
         if (uuid == null)
             throw new IllegalArgumentException("UUID cannot be null!");

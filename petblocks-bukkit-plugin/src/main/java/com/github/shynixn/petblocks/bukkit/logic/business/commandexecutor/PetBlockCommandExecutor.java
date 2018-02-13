@@ -45,13 +45,13 @@ public final class PetBlockCommandExecutor extends SimpleCommandExecutor.UnRegis
      */
     @Override
     protected void onCommandSenderExecuteCommand(CommandSender sender, String[] args) {
-        if (args.length == 2 && args[0].equalsIgnoreCase("engine") && sender instanceof Player && tryParseInt(args[1]))
+        if (args.length == 2 && args[0].equalsIgnoreCase("engine") && sender instanceof Player && toIntOrNull(args[1]) != null)
             this.setEngineCommand((Player) sender, Integer.parseInt(args[1]));
-        else if (args.length == 3 && args[0].equalsIgnoreCase("engine") && this.getOnlinePlayer(args[2]) != null && tryParseInt(args[1]))
+        else if (args.length == 3 && args[0].equalsIgnoreCase("engine") && this.getOnlinePlayer(args[2]) != null && toIntOrNull(args[1]) != null)
             this.setEngineCommand(this.getOnlinePlayer(args[2]), Integer.parseInt(args[1]));
-        else if (args.length == 3 && args[0].equalsIgnoreCase("costume") && sender instanceof Player && tryParseInt(args[2]))
+        else if (args.length == 3 && args[0].equalsIgnoreCase("costume") && sender instanceof Player && toIntOrNull(args[2]) != null)
             this.setCostumeCommand((Player) sender, args[1], Integer.parseInt(args[2]));
-        else if (args.length == 4 && args[0].equalsIgnoreCase("costume") && this.getOnlinePlayer(args[3]) != null && tryParseInt(args[2]))
+        else if (args.length == 4 && args[0].equalsIgnoreCase("costume") && this.getOnlinePlayer(args[3]) != null && toIntOrNull(args[2]) != null)
             this.setCostumeCommand(this.getOnlinePlayer(args[3]), args[1], Integer.parseInt(args[2]));
         else if (args.length == 1 && args[0].equalsIgnoreCase("enable") && sender instanceof Player)
             this.setPetCommand((Player) sender);
@@ -71,9 +71,9 @@ public final class PetBlockCommandExecutor extends SimpleCommandExecutor.UnRegis
             this.changePetSkinCommand((Player) sender, args[1]);
         else if (args.length == 3 && args[0].equalsIgnoreCase("skin") && this.getOnlinePlayer(args[2]) != null)
             this.changePetSkinCommand(this.getOnlinePlayer(args[2]), args[1]);
-        else if (args.length == 2 && args[0].equalsIgnoreCase("particle") && sender instanceof Player && tryParseInt(args[1]))
+        else if (args.length == 2 && args[0].equalsIgnoreCase("particle") && sender instanceof Player && toIntOrNull(args[1]) != null)
             this.setParticleCommand((Player) sender, Integer.parseInt(args[1]));
-        else if (args.length == 3 && args[0].equalsIgnoreCase("particle") && this.getOnlinePlayer(args[2]) != null && tryParseInt(args[1]))
+        else if (args.length == 3 && args[0].equalsIgnoreCase("particle") && this.getOnlinePlayer(args[2]) != null && toIntOrNull(args[1]) != null)
             this.setParticleCommand(this.getOnlinePlayer(args[2]), Integer.parseInt(args[1]));
         else if (args.length == 1 && args[0].equalsIgnoreCase("hat") && sender instanceof Player)
             this.hatPetCommand((Player) sender);
@@ -85,7 +85,7 @@ public final class PetBlockCommandExecutor extends SimpleCommandExecutor.UnRegis
             this.ridePetCommand(this.getOnlinePlayer(args[1]));
         else if (args.length >= 2 && args[0].equalsIgnoreCase("item-name"))
             this.setSkullName(sender, args);
-        else if (args.length >= 3 && args[0].equalsIgnoreCase("item-lore") && sender instanceof Player && tryParseInt(args[1]))
+        else if (args.length >= 3 && args[0].equalsIgnoreCase("item-lore") && sender instanceof Player && toIntOrNull(args[1]) != null)
             this.setLore(sender, args);
         else if (args.length == 1 && args[0].equalsIgnoreCase("toggle-sound") && sender instanceof Player)
             this.toggleSounds((Player) sender);
@@ -244,7 +244,7 @@ public final class PetBlockCommandExecutor extends SimpleCommandExecutor.UnRegis
 
     private void setCostumeCommand(Player player, String category, int number) {
         this.providePet(player, (petMeta, petBlock) -> {
-            final Optional<GUIItemContainer> item;
+            final Optional<GUIItemContainer<Player>> item;
             if (category.equalsIgnoreCase("simple-blocks")) {
                 item = Config.getInstance().getOrdinaryCostumesController().getContainerFromPosition(number);
             } else if (category.equalsIgnoreCase("colored-blocks")) {
@@ -265,11 +265,11 @@ public final class PetBlockCommandExecutor extends SimpleCommandExecutor.UnRegis
 
     private void setEngineCommand(Player player, int number) {
         this.providePet(player, (petMeta, petBlock) -> {
-            final EngineContainer container = Config.getInstance().getEngineController().getById(number);
-            if (container == null) {
-                player.sendMessage(Config.getInstance().getPrefix() + "Engine not found.");
+            final Optional<EngineContainer<GUIItemContainer<Player>>> optEngine = Config.getInstance().getEngineController().getContainerFromPosition(number);
+            if (!optEngine.isPresent()) {
+                player.sendMessage(Config.getInstance().getPrefix() + "Engine " + number + " could not be loaded correctly.");
             } else {
-                PetBlockModifyHelper.setEngine(petMeta, petBlock, container);
+                PetBlockModifyHelper.setEngine(petMeta, petBlock, optEngine.get());
                 this.persistAsynchronously(petMeta);
             }
         });
@@ -277,7 +277,7 @@ public final class PetBlockCommandExecutor extends SimpleCommandExecutor.UnRegis
 
     private void setParticleCommand(Player player, int number) {
         this.providePet(player, (petMeta, petBlock) -> {
-            final Optional<GUIItemContainer> guiItemContainer = Config.getInstance().getParticleController().getContainerFromPosition(number);
+            final Optional<GUIItemContainer<Player>> guiItemContainer = Config.getInstance().getParticleController().getContainerFromPosition(number);
             if (!guiItemContainer.isPresent()) {
                 player.sendMessage(Config.getInstance().getPrefix() + "Particle not found.");
             } else {
@@ -490,12 +490,11 @@ public final class PetBlockCommandExecutor extends SimpleCommandExecutor.UnRegis
         }
     }
 
-    private static boolean tryParseInt(String value) {
+    private static Integer toIntOrNull(String value) {
         try {
-            Integer.parseInt(value);
+            return Integer.parseInt(value);
         } catch (final NumberFormatException nfe) {
-            return false;
+            return null;
         }
-        return true;
     }
 }

@@ -67,14 +67,4 @@ public enum Permission {
     public String[] getPermission() {
         return this.perm.clone();
     }
-
-    /**
-     * Returns the permission string.
-     *
-     * @return permission
-     */
-    @Deprecated
-    public String get() {
-        return this.perm[0];
-    }
 }
