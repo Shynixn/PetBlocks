@@ -60,7 +60,7 @@ public class MinecraftHeadConfiguration extends CostumeConfiguration {
      * @param plugin plugin
      */
     public MinecraftHeadConfiguration(Plugin plugin) {
-        super(null, plugin);
+        super("minecraftheads", plugin);
     }
 
     /**

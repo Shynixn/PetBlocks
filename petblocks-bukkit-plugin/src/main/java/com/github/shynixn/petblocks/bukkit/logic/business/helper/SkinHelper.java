@@ -106,7 +106,7 @@ public class SkinHelper {
                             s.append(text.charAt(i));
                         }
                     }
-                    return Optional.of(s.toString());
+                    return Optional.of(s.toString().substring(s.indexOf("http://"), s.length()));
                 }
             }
         } catch (IllegalArgumentException | IllegalAccessException | NoSuchFieldException | SecurityException | ClassNotFoundException e) {

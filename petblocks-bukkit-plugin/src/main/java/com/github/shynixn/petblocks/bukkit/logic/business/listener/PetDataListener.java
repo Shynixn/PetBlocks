@@ -147,26 +147,28 @@ public class PetDataListener extends SimpleListener {
         } else if (this.manager.headDatabasePlayers.contains(player)) {
             if (this.headDatabaseTitle == null) {
                 final Plugin plugin = Bukkit.getPluginManager().getPlugin("HeadDatabase");
-                this.headDatabaseTitle = this.constructPrefix(ChatColor.translateAlternateColorCodes('&', plugin.getConfig().getString("messages.database")));
-                this.headDatabaseSearch = this.constructPrefix(ChatColor.translateAlternateColorCodes('&', plugin.getConfig().getString("messages.search")));
+                this.headDatabaseTitle = this.constructPrefix(ChatColor.translateAlternateColorCodes('&', "&4&r" + plugin.getConfig().getString("messages.database").split("%count%")[0]));
+                this.headDatabaseSearch = this.constructPrefix(ChatColor.translateAlternateColorCodes('&', "&4&r" + plugin.getConfig().getString("messages.search").split("%count%")[0]));
             }
             final String currentTitle = ChatColor.stripColor(event.getView().getTopInventory().getTitle());
             if (!currentTitle.startsWith(this.headDatabaseTitle) && !currentTitle.startsWith(this.headDatabaseSearch))
                 return;
             event.setCancelled(true);
             this.linkHeadDatabaseItemToPetBlocks(event.getCurrentItem(), player);
-            for (final ItemStack itemStack : event.getWhoClicked().getInventory().getContents()) {
-                if (itemStack != null
-                        && itemStack.getItemMeta() != null
-                        && itemStack.getItemMeta().getDisplayName() != null) {
-                    if (itemStack.getItemMeta().getDisplayName().equals(event.getCurrentItem().getItemMeta().getDisplayName())) {
-                        final Player player1 = (Player) event.getWhoClicked();
-                        player1.getInventory().remove(itemStack);
-                        player1.updateInventory();
-                        return;
+            this.plugin.getServer().getScheduler().runTaskLater(this.plugin, () -> {
+                for (final ItemStack itemStack : event.getWhoClicked().getInventory().getContents()) {
+                    if (itemStack != null
+                            && itemStack.getItemMeta() != null
+                            && itemStack.getItemMeta().getDisplayName() != null) {
+                        if (itemStack.getItemMeta().getDisplayName().equals(event.getCurrentItem().getItemMeta().getDisplayName())) {
+                            final Player player1 = (Player) event.getWhoClicked();
+                            player1.getInventory().remove(itemStack);
+                            player1.updateInventory();
+                            return;
+                        }
                     }
                 }
-            }
+            }, 5L);
         }
     }
 
