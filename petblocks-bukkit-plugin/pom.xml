@@ -84,6 +84,7 @@
                             <shadedPattern>com.github.shynixn.petblocks.lib.org.bstats</shadedPattern>
                         </relocation>
                     </relocations>
+                    <outputDirectory>D:\Temp\plugins</outputDirectory>
                 </configuration>
                 <executions>
                     <execution>

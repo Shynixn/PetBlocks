@@ -51,6 +51,12 @@ final class CustomGroundArmorstand extends EntityArmorStand implements PetBlock 
         this.isSpecial = true;
         this.petMeta = (PetData) meta;
         this.owner = meta.getPlayerMeta().getPlayer();
+
+        if (this.owner == null) {
+            this.remove();
+            return;
+        }
+
         if (this.petMeta.getEngine().getEntityType().equalsIgnoreCase("RABBIT"))
             this.rabbit = new CustomRabbit(this.owner, this);
         else if (this.petMeta.getEngine().getEntityType().equalsIgnoreCase("ZOMBIE"))
