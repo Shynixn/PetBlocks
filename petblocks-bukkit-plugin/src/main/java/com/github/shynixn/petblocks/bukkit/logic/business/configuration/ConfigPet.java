@@ -91,6 +91,7 @@ public class ConfigPet extends SimpleConfig {
 
     /**
      * Returns if feeding is enabled.
+     *
      * @return feeding
      */
     public boolean isFeedingEnabled() {
@@ -127,6 +128,15 @@ public class ConfigPet extends SimpleConfig {
             }
         }
         return this.feedingClickParticleCache;
+    }
+
+    /**
+     * Returns the value of the hitbox y axe modification.
+     *
+     * @return value
+     */
+    public double getHitBoxYAxeModification() {
+        return this.getData("pet.follow.running-hitbox-height");
     }
 
     public boolean isAfraidOfwater() {
@@ -184,7 +194,6 @@ public class ConfigPet extends SimpleConfig {
     public boolean isSoundForOtherPlayersHearable() {
         return (boolean) this.getData("pet.design.sounds-other-players");
     }
-
 
     /**
      * Returns if particles are visible for other players.

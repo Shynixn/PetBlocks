@@ -91,7 +91,7 @@ public final class Config extends SimpleConfig {
     }
 
     /**
-     * Returns if copySkin is enabled
+     * Returns if copySkin is enabled.
      *
      * @return copySkin
      */
@@ -100,7 +100,7 @@ public final class Config extends SimpleConfig {
     }
 
     /**
-     * Returns if lore is enabled
+     * Returns if lore is enabled.
      *
      * @return lore
      */
@@ -109,7 +109,7 @@ public final class Config extends SimpleConfig {
     }
 
     /**
-     * Returns if emptyClickBack is enabled
+     * Returns if emptyClickBack is enabled.
      *
      * @return enabled
      */
