@@ -1,7 +1,5 @@
 package com.github.shynixn.petblocks.api.persistence.controller;
 
-import com.github.shynixn.petblocks.api.business.entity.GUIItemContainer;
-
 import java.util.Optional;
 
 /**
