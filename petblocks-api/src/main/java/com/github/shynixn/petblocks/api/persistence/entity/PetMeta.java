@@ -66,6 +66,7 @@ public interface PetMeta extends Persistenceable {
     /**
      * Returns the data of the engine.
      *
+     * @param <T> type of engineContainer type.
      * @return engine
      */
     <T> EngineContainer<T> getEngine();
@@ -73,6 +74,7 @@ public interface PetMeta extends Persistenceable {
     /**
      * Sets the data of the engine.
      *
+     * @param <T> type of engineContainer type.
      * @param engine engine
      */
     <T> void setEngine(EngineContainer<T> engine);

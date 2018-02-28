@@ -285,6 +285,7 @@ public class ExtensionHikariConnectionContext implements AutoCloseable {
      *
      * @param driver    driver
      * @param url       url
+     * @param useSSL useSSL
      * @param retriever retriever
      * @return DbConnectionContext
      * @throws IOException exception
@@ -319,6 +320,7 @@ public class ExtensionHikariConnectionContext implements AutoCloseable {
      * @param userName  userName
      * @param password  password
      * @param retriever retriever
+     * @param useSSL useSSL
      * @return DbConnectionContext
      * @throws IOException exception
      */
