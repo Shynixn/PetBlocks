@@ -65,22 +65,6 @@ public final class PetBlockRepository implements PetBlockController<Player> {
      * @return petblock
      */
     @Override
-    @Deprecated
-    public PetBlock getByPlayer(Object player) {
-        final Player mPlayer = (Player) player;
-        if (this.petblocks.containsKey(mPlayer)) {
-            return this.petblocks.get(mPlayer);
-        }
-        return null;
-    }
-
-    /**
-     * Returns the petblock of the given player.
-     *
-     * @param player player
-     * @return petblock
-     */
-    @Override
     public Optional<PetBlock> getFromPlayer(Player player) {
         if (player == null)
             throw new IllegalArgumentException("Player cannot be null!");

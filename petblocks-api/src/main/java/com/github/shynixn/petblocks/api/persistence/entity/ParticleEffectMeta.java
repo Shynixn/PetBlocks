@@ -1,7 +1,5 @@
 package com.github.shynixn.petblocks.api.persistence.entity;
 
-import java.util.Collection;
-
 /**
  * ParticleEffect entity.
  * <p>
@@ -247,14 +245,6 @@ public interface ParticleEffectMeta extends Persistenceable {
     Byte getData();
 
     /**
-     * Copies the current builder. Deprecated use copy() instead.
-     *
-     * @return copyOfBuilder
-     */
-    @Deprecated
-    ParticleEffectMeta clone();
-
-    /**
      * Copies the current object.
      * @return copy.
      */
@@ -280,23 +270,6 @@ public interface ParticleEffectMeta extends Persistenceable {
      * @return isMaterial
      */
     boolean isMaterialParticleEffect();
-
-    /**
-     * Plays the effect at the given location to the given players.
-     *
-     * @param location location
-     * @param players  players
-     */
-    @Deprecated
-    void apply(Object location, Collection<Object> players);
-
-    /**
-     * Plays the effect at the given location to the given players.
-     *
-     * @param location location
-     */
-    @Deprecated
-    void apply(Object location);
 
     /**
      * ParticleColors

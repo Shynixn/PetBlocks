@@ -46,6 +46,7 @@ public class PetBlocksApi {
     /**
      * Returns the default meta controller.
      *
+     * @param <T> type of petMetaController.
      * @return metaController
      */
     public static <T> PetMetaController<T> getDefaultPetMetaController() {
@@ -55,6 +56,7 @@ public class PetBlocksApi {
     /**
      * Returns the petBlock controller.
      *
+     * @param <T> type of petblockController.
      * @return petBlockController
      */
     public static <T> PetBlockController<T> getDefaultPetBlockController() {

@@ -3,7 +3,7 @@ package com.github.shynixn.petblocks.bukkit.logic.persistence.controller;
 import com.github.shynixn.petblocks.api.persistence.controller.PlayerMetaController;
 import com.github.shynixn.petblocks.api.persistence.entity.PlayerMeta;
 import com.github.shynixn.petblocks.bukkit.PetBlocksPlugin;
-import com.github.shynixn.petblocks.bukkit.lib.ExtensionHikariConnectionContext;
+import com.github.shynixn.petblocks.bukkit.logic.business.helper.ExtensionHikariConnectionContext;
 import com.github.shynixn.petblocks.bukkit.logic.persistence.entity.PlayerData;
 import org.bukkit.entity.Player;
 
@@ -66,19 +66,6 @@ public class PlayerDataRepository extends DataBaseRepository<PlayerMeta> impleme
         if (player == null)
             throw new IllegalArgumentException("Player cannot be null!");
         return PlayerData.from(player);
-    }
-
-    /**
-     * Returns the playerMeta of the given uuid.
-     *
-     * @param uuid uuid
-     * @return playerMeta
-     */
-    @Override
-    @Deprecated
-    public PlayerMeta getByUUID(UUID uuid) {
-        final Optional<PlayerMeta> tmp = this.getFromUUID(uuid);
-        return tmp.orElse(null);
     }
 
     /**

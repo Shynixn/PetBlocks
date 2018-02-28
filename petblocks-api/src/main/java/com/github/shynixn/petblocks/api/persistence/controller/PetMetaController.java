@@ -45,16 +45,6 @@ public interface PetMetaController<Player> extends IDatabaseController<PetMeta> 
      * Returns the petData from the given player.
      *
      * @param player player
-     * @param <T>    type
-     * @return petData
-     */
-    @Deprecated
-    <T> PetMeta getByPlayer(T player);
-
-    /**
-     * Returns the petData from the given player.
-     *
-     * @param player player
      * @return petData
      */
     Optional<PetMeta> getFromPlayer(Player player);

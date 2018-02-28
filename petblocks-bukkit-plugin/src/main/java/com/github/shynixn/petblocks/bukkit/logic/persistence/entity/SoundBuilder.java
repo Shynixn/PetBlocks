@@ -159,26 +159,6 @@ public class SoundBuilder implements SoundMeta {
     }
 
     /**
-     * Applies the sound at the given location
-     *
-     * @param location location
-     */
-    @Override
-    public void applyToLocation(Object location) throws Exception {
-        this.apply((Location)location);
-    }
-
-    /**
-     * Applies the sound to the given player
-     *
-     * @param players players
-     */
-    @Override
-    public void applyToPlayers(Object... players) throws Exception {
-        this.apply((Player[]) players);
-    }
-
-    /**
      * Returns the name of the sound
      *
      * @return name

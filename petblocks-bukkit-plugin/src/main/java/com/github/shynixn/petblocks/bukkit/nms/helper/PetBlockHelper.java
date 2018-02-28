@@ -5,6 +5,7 @@ import com.github.shynixn.petblocks.api.bukkit.event.PetBlockCannonEvent;
 import com.github.shynixn.petblocks.api.bukkit.event.PetBlockMoveEvent;
 import com.github.shynixn.petblocks.api.bukkit.event.PetBlockRideEvent;
 import com.github.shynixn.petblocks.api.bukkit.event.PetBlockWearEvent;
+import com.github.shynixn.petblocks.api.business.entity.GUIItemContainer;
 import com.github.shynixn.petblocks.api.business.entity.PetBlock;
 import com.github.shynixn.petblocks.api.persistence.entity.ParticleEffectMeta;
 import com.github.shynixn.petblocks.api.persistence.entity.PetMeta;
@@ -75,7 +76,7 @@ public final class PetBlockHelper {
                 ((SoundBuilder) soundMeta).apply(location, (Player) petBlock.getPlayer());
             }
         } catch (final IllegalArgumentException e) {
-            PetBlocksPlugin.logger().log(Level.WARNING, "Cannot play sound " + soundMeta.getName() + " of " + ChatColor.stripColor((String) petBlock.getMeta().getEngine().getGUIItem().getDisplayName().get()) + '.');
+            PetBlocksPlugin.logger().log(Level.WARNING, "Cannot play sound " + soundMeta.getName() + " of " + ChatColor.stripColor(petBlock.getMeta().<GUIItemContainer<Player>>getEngine().getGUIItem().getDisplayName().get()) + '.');
             PetBlocksPlugin.logger().log(Level.WARNING, "Is this entity or sound supported by your server version? Disable it in the config.yml");
         } catch (final Exception e1) {
             PetBlocksPlugin.logger()
@@ -202,22 +203,18 @@ public final class PetBlockHelper {
     public static void refreshHeadItemMeta(PetBlock petBlock, ItemStack itemStack) {
         final String name;
         name = petBlock.getDisplayName();
-        itemStack = nameItem(itemStack, name, null);
+        itemStack = nameItem(itemStack, name);
         itemStack = setWithUnbreakable(petBlock.getMeta(), itemStack);
         getArmorstand(petBlock).setHelmet(itemStack);
     }
 
-    private static ItemStack nameItem(ItemStack item, String name, String[] lore) {
+    private static ItemStack nameItem(ItemStack item, String name) {
         if (item.getType() != Material.AIR) {
             final ItemMeta im = item.getItemMeta();
             if (name != null) {
                 im.setDisplayName(name);
             }
-            if (lore != null) {
-                im.setLore(Arrays.asList(lore));
-            } else {
-                im.setLore(new ArrayList<>());
-            }
+            im.setLore(new ArrayList<>());
             item.setItemMeta(im);
             return item;
         }

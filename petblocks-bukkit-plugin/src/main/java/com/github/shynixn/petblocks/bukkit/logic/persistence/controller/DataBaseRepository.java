@@ -1,13 +1,12 @@
 package com.github.shynixn.petblocks.bukkit.logic.persistence.controller;
 
 import com.github.shynixn.petblocks.api.persistence.controller.IDatabaseController;
-import com.github.shynixn.petblocks.bukkit.lib.ExtensionHikariConnectionContext;
+import com.github.shynixn.petblocks.bukkit.logic.business.helper.ExtensionHikariConnectionContext;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 
 /**
  * Database Controller implementation.
@@ -65,19 +64,6 @@ public abstract class DataBaseRepository<T> implements IDatabaseController<T> {
         } else {
             this.insert(item);
         }
-    }
-
-    /**
-     * Returns the item of the given id
-     *
-     * @param id id
-     * @return item
-     */
-    @Override
-    @Deprecated
-    public T getById(long id) {
-        final Optional<T> tmp = this.getFromId(id);
-        return tmp.orElse(null);
     }
 
     /**

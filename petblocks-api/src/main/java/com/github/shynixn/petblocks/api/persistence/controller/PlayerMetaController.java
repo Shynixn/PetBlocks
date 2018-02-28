@@ -48,14 +48,5 @@ public interface PlayerMetaController<Player> extends IDatabaseController<Player
      * @param uuid uuid
      * @return playerMeta
      */
-    @Deprecated
-    PlayerMeta getByUUID(UUID uuid);
-
-    /**
-     * Returns the playerMeta of the given uuid.
-     *
-     * @param uuid uuid
-     * @return playerMeta
-     */
     Optional<PlayerMeta> getFromUUID(UUID uuid);
 }

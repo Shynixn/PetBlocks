@@ -2,6 +2,9 @@ package com.github.shynixn.petblocks.bukkit.nms.v1_12_R1;
 
 import org.bukkit.Material;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+
 /**
  * Created by Shynixn 2017.
  * <p>
@@ -30,6 +33,21 @@ import org.bukkit.Material;
  * SOFTWARE.
  */
 public final class MaterialCompatibility12 {
+    private static final Method getMaterialFromIdMethod;
+    private static final Method getIdFromMaterialMethod;
+
+    static {
+        try {
+            getMaterialFromIdMethod = Material.class.getDeclaredMethod("getMaterial", int.class);
+            getIdFromMaterialMethod = Material.class.getDeclaredMethod("getId");
+        } catch (final NoSuchMethodException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private MaterialCompatibility12() {
+        super();
+    }
 
     /**
      * Handles changes for minecraft 1.13.
@@ -39,7 +57,11 @@ public final class MaterialCompatibility12 {
      * @return material
      */
     public static Material getMaterialFromId(int id) {
-        return Material.getMaterial(id);
+        try {
+            return (Material) getMaterialFromIdMethod.invoke(null, id);
+        } catch (IllegalAccessException | InvocationTargetException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     /**
@@ -50,6 +72,10 @@ public final class MaterialCompatibility12 {
      * @return id
      */
     public static int getIdFromMaterial(Material material) {
-        return material.getId();
+        try {
+            return (int) getIdFromMaterialMethod.invoke(material);
+        } catch (IllegalAccessException | InvocationTargetException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

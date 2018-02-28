@@ -1,6 +1,6 @@
 package com.github.shynixn.petblocks.bukkit.dependencies.clearlag;
 
-import com.github.shynixn.petblocks.bukkit.lib.SimpleListener;
+import com.github.shynixn.petblocks.bukkit.logic.business.listener.SimpleListener;
 import me.minebuilders.clearlag.events.EntityRemoveEvent;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Entity;

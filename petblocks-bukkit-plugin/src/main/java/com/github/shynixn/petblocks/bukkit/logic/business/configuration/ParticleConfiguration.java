@@ -7,6 +7,7 @@ import com.github.shynixn.petblocks.bukkit.PetBlocksPlugin;
 import com.github.shynixn.petblocks.bukkit.logic.business.entity.ItemContainer;
 import com.github.shynixn.petblocks.bukkit.logic.persistence.entity.ParticleEffectData;
 import org.bukkit.configuration.MemorySection;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
 import java.util.*;
@@ -41,10 +42,10 @@ import java.util.logging.Level;
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-public class ParticleConfiguration implements ParticleController {
+public class ParticleConfiguration implements ParticleController<GUIItemContainer<Player>> {
 
     private Plugin plugin;
-    private final Map<GUIItemContainer, ParticleEffectMeta> particleCache = new HashMap<>();
+    private final Map<GUIItemContainer<Player>, ParticleEffectMeta> particleCache = new HashMap<>();
 
     /**
      * Initializes a new engine repository
@@ -64,7 +65,7 @@ public class ParticleConfiguration implements ParticleController {
      * @param item item
      */
     @Override
-    public void store(GUIItemContainer item) {
+    public void store(GUIItemContainer<Player> item) {
         throw new RuntimeException("Not implemented!");
     }
 
@@ -74,7 +75,7 @@ public class ParticleConfiguration implements ParticleController {
      * @param item item
      */
     @Override
-    public void remove(GUIItemContainer item) {
+    public void remove(GUIItemContainer<Player> item) {
         if (this.particleCache.containsKey(item)) {
             this.particleCache.remove(item);
         }
@@ -96,27 +97,10 @@ public class ParticleConfiguration implements ParticleController {
      * @return items
      */
     @Override
-    public List<GUIItemContainer> getAll() {
-        final List<GUIItemContainer> containers = new ArrayList<>(this.particleCache.keySet());
+    public List<GUIItemContainer<Player>> getAll() {
+        final List<GUIItemContainer<Player>> containers = new ArrayList<>(this.particleCache.keySet());
         containers.sort(Comparator.comparingInt(GUIItemContainer::getPosition));
         return containers;
-    }
-
-    /**
-     * Returns the container by the given order id
-     *
-     * @param id id
-     * @return container
-     */
-    @Override
-    @Deprecated
-    public GUIItemContainer getContainerByPosition(int id) {
-        for (final GUIItemContainer guiItemContainer : this.particleCache.keySet()) {
-            if (guiItemContainer.getPosition() == id) {
-                return guiItemContainer;
-            }
-        }
-        return null;
     }
 
     /**
@@ -126,27 +110,13 @@ public class ParticleConfiguration implements ParticleController {
      * @return container
      */
     @Override
-    public Optional<GUIItemContainer> getContainerFromPosition(int id) {
-        for (final GUIItemContainer guiItemContainer : this.particleCache.keySet()) {
+    public Optional<GUIItemContainer<Player>> getContainerFromPosition(int id) {
+        for (final GUIItemContainer<Player> guiItemContainer : this.particleCache.keySet()) {
             if (guiItemContainer.getPosition() == id) {
                 return Optional.of(guiItemContainer);
             }
         }
         return Optional.empty();
-    }
-
-    /**
-     * Returns the particleEffect by the given container
-     *
-     * @param container container
-     * @return particleEffect
-     */
-    @Override
-    public ParticleEffectMeta getByItem(GUIItemContainer container) {
-        if (this.particleCache.containsKey(container)) {
-            return this.particleCache.get(container);
-        }
-        return null;
     }
 
     /**
@@ -173,7 +143,7 @@ public class ParticleConfiguration implements ParticleController {
         final Map<String, Object> data = ((MemorySection) this.plugin.getConfig().get("particles")).getValues(false);
         for (final String key : data.keySet()) {
             try {
-                final GUIItemContainer container = new ItemContainer(Integer.parseInt(key), ((MemorySection) data.get(key)).getValues(false));
+                final GUIItemContainer<Player> container = new ItemContainer(Integer.parseInt(key), ((MemorySection) data.get(key)).getValues(false));
                 final ParticleEffectMeta meta = new ParticleEffectData(((MemorySection) ((MemorySection) data.get(key)).getValues(false).get("effect")).getValues(true));
                 this.particleCache.put(container, meta);
             } catch (final Exception e) {

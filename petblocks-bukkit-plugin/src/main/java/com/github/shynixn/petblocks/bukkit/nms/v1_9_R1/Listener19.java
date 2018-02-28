@@ -1,6 +1,6 @@
 package com.github.shynixn.petblocks.bukkit.nms.v1_9_R1;
 
-import com.github.shynixn.petblocks.bukkit.lib.SimpleListener;
+import com.github.shynixn.petblocks.bukkit.logic.business.listener.SimpleListener;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.player.PlayerSwapHandItemsEvent;

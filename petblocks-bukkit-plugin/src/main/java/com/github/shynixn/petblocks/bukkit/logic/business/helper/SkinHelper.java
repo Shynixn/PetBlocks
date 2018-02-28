@@ -55,7 +55,7 @@ public class SkinHelper {
                 newSkin = "http://" + newSkin;
             }
             try {
-                final Class<?> cls = createClass("org.bukkit.craftbukkit.VERSION.inventory.CraftMetaSkull");
+                final Class<?> cls = createCraftMetaClass();
                 final Object real = cls.cast(meta);
                 final Field field = real.getClass().getDeclaredField("profile");
                 field.setAccessible(true);
@@ -88,7 +88,7 @@ public class SkinHelper {
 
     private static Optional<String> obtainSkinFromSkull(ItemMeta meta) {
         try {
-            final Class<?> cls = createClass("org.bukkit.craftbukkit.VERSION.inventory.CraftMetaSkull");
+            final Class<?> cls = createCraftMetaClass();
             final Object real = cls.cast(meta);
             final Field field = real.getClass().getDeclaredField("profile");
             field.setAccessible(true);
@@ -106,7 +106,7 @@ public class SkinHelper {
                             s.append(text.charAt(i));
                         }
                     }
-                    return Optional.of(s.toString());
+                    return Optional.of(s.toString().substring(s.indexOf("http://"), s.length()));
                 }
             }
         } catch (IllegalArgumentException | IllegalAccessException | NoSuchFieldException | SecurityException | ClassNotFoundException e) {
@@ -115,9 +115,9 @@ public class SkinHelper {
         return Optional.empty();
     }
 
-    private static Class<?> createClass(String path) throws ClassNotFoundException {
+    private static Class<?> createCraftMetaClass() throws ClassNotFoundException {
         final String version = Bukkit.getServer().getClass().getPackage().getName().replace(".", ",").split(",")[3];
-        return Class.forName(path.replace("VERSION", version));
+        return Class.forName("org.bukkit.craftbukkit.VERSION.inventory.CraftMetaSkull".replace("VERSION", version));
     }
 
     private static GameProfile getNonPlayerProfile(String skinUrl) {

@@ -129,6 +129,7 @@ pet:
     max-range-teleport: 50
     carry: true
     flying-wall-colliding: true
+    running-hitbox-height: -1.5
     afraid-water: false
     afraid-water-particles: false
   feeding:

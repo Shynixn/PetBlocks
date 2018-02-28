@@ -4,7 +4,7 @@ import com.github.shynixn.petblocks.api.persistence.controller.ParticleEffectMet
 import com.github.shynixn.petblocks.api.persistence.entity.ParticleEffectMeta;
 import com.github.shynixn.petblocks.bukkit.PetBlocksPlugin;
 import com.github.shynixn.petblocks.bukkit.logic.persistence.entity.ParticleEffectData;
-import com.github.shynixn.petblocks.bukkit.lib.ExtensionHikariConnectionContext;
+import com.github.shynixn.petblocks.bukkit.logic.business.helper.ExtensionHikariConnectionContext;
 import com.github.shynixn.petblocks.bukkit.nms.v1_12_R1.MaterialCompatibility12;
 import org.bukkit.Material;
 

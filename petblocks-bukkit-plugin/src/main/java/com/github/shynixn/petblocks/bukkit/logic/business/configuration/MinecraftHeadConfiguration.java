@@ -4,6 +4,7 @@ import com.github.shynixn.petblocks.api.business.entity.GUIItemContainer;
 import com.github.shynixn.petblocks.api.business.enumeration.GUIPage;
 import com.github.shynixn.petblocks.bukkit.PetBlocksPlugin;
 import com.github.shynixn.petblocks.bukkit.logic.business.entity.ItemContainer;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.yaml.snakeyaml.external.biz.base64Coder.Base64Coder;
@@ -59,7 +60,7 @@ public class MinecraftHeadConfiguration extends CostumeConfiguration {
      * @param plugin plugin
      */
     public MinecraftHeadConfiguration(Plugin plugin) {
-        super(null, plugin);
+        super("minecraftheads", plugin);
     }
 
     /**
@@ -83,7 +84,7 @@ public class MinecraftHeadConfiguration extends CostumeConfiguration {
                             final String line = Base64Coder.decodeString(tags[1]).replace("{\"textures\":{\"SKIN\":{\"url\":\"", "");
                             final String url = line.substring(0, line.indexOf("\""));
                             final String texture = url.substring(7, url.length());
-                            final GUIItemContainer container = new ItemContainer(true, i, GUIPage.MINECRAFTHEADS_COSTUMES, 397, 3, texture, false, tags[0].replace("\"", ""), new String[0]);
+                            final GUIItemContainer<Player> container = new ItemContainer(true, i, GUIPage.MINECRAFTHEADS_COSTUMES, 397, 3, texture, false, tags[0].replace("\"", ""), new String[0]);
                             this.items.add(container);
                         } catch (final Exception ignored) {
                             PetBlocksPlugin.logger().log(Level.WARNING, "Failed parsing minecraftheads.com head.", ignored);

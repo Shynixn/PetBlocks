@@ -6,17 +6,17 @@
     <parent>
         <artifactId>root</artifactId>
         <groupId>com.github.shynixn.petblocks</groupId>
-        <version>6.5.0</version>
+        <version>6.5.1</version>
     </parent>
 
-    <version>6.5.0</version>
+    <version>6.5.1</version>
     <artifactId>petblocks-bukkit-api</artifactId>
 
     <dependencies>
         <dependency>
             <groupId>com.github.shynixn.petblocks</groupId>
             <artifactId>petblocks-api</artifactId>
-            <version>6.5.0</version>
+            <version>6.5.1</version>
         </dependency>
         <dependency>
             <groupId>net</groupId>

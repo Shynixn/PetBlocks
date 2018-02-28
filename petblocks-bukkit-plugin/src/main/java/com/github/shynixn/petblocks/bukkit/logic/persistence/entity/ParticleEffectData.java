@@ -462,17 +462,6 @@ public class ParticleEffectData extends PersistenceObject implements ParticleEff
     }
 
     /**
-     * Copies the current builder
-     *
-     * @return copyOfBuilder
-     */
-    @Override
-    @Deprecated
-    public ParticleEffectData clone() {
-       return (ParticleEffectData) this.copy();
-    }
-
-    /**
      * Copies the current object.
      *
      * @return copy.
@@ -524,29 +513,6 @@ public class ParticleEffectData extends PersistenceObject implements ParticleEff
         return this.effect.equalsIgnoreCase(ParticleEffectData.ParticleEffectType.BLOCK_CRACK.getSimpleName())
                 || this.effect.equalsIgnoreCase(ParticleEffectData.ParticleEffectType.BLOCK_DUST.getSimpleName())
                 || this.effect.equalsIgnoreCase(ParticleEffectData.ParticleEffectType.ITEM_CRACK.getSimpleName());
-    }
-
-    /**
-     * Plays the effect at the given location to the given players.
-     *
-     * @param location location
-     * @param players  players
-     */
-    @Override
-    public void apply(Object location, Collection<Object> players) {
-        if (players == null)
-            throw new IllegalArgumentException("Players cannot be null!");
-        this.applyTo((Location) location, players.toArray(new Player[players.size()]));
-    }
-
-    /**
-     * Plays the effect at the given location to the given players.
-     *
-     * @param location location
-     */
-    @Override
-    public void apply(Object location) {
-        this.applyTo((Location) location);
     }
 
     /**

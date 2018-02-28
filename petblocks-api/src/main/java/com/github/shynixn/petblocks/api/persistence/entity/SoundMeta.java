@@ -28,25 +28,6 @@ package com.github.shynixn.petblocks.api.persistence.entity;
  * SOFTWARE.
  */
 public interface SoundMeta extends Persistenceable {
-
-    /**
-     * Applies the sound at the given location.
-     *
-     * @param location location
-     * @throws Exception ex
-     */
-    @Deprecated
-    void applyToLocation(Object location) throws Exception;
-
-    /**
-     * Applies the sound to the given player.
-     *
-     * @param players players
-     * @throws Exception ex
-     */
-    @Deprecated
-    void applyToPlayers(Object... players) throws Exception;
-
     /**
      * Returns the name of the sound.
      *

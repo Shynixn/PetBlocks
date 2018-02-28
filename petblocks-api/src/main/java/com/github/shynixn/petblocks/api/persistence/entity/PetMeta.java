@@ -66,16 +66,18 @@ public interface PetMeta extends Persistenceable {
     /**
      * Returns the data of the engine.
      *
+     * @param <T> type of engineContainer type.
      * @return engine
      */
-    EngineContainer getEngine();
+    <T> EngineContainer<T> getEngine();
 
     /**
      * Sets the data of the engine.
      *
+     * @param <T> type of engineContainer type.
      * @param engine engine
      */
-    void setEngine(EngineContainer engine);
+    <T> void setEngine(EngineContainer<T> engine);
 
     /**
      * Sets the pet sound enabled.

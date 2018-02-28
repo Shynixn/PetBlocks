@@ -106,7 +106,7 @@ public class PlayerMetaMySQLControllerIT {
             playerMeta.setName("Sample");
             controller.store(playerMeta);
             assertEquals(1, controller.size());
-            assertEquals(uuid, controller.getById(playerMeta.getId()).getUUID());
+            assertEquals(uuid, controller.getFromId(playerMeta.getId()).get().getUUID());
         } catch (final Exception e) {
             Logger.getLogger(this.getClass().getSimpleName()).log(Level.WARNING, "Failed to run test.", e);
             Assert.fail();

@@ -1,6 +1,5 @@
 package com.github.shynixn.petblocks.api.persistence.entity;
 
-import com.github.shynixn.petblocks.api.business.entity.GUIItemContainer;
 import com.github.shynixn.petblocks.api.business.enumeration.RideType;
 
 /**
@@ -30,7 +29,7 @@ import com.github.shynixn.petblocks.api.business.enumeration.RideType;
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-public interface EngineContainer extends Persistenceable {
+public interface EngineContainer<T> extends Persistenceable {
 
     /**
      * Returns the walking sound.
@@ -65,5 +64,5 @@ public interface EngineContainer extends Persistenceable {
      *
      * @return guiItem
      */
-    GUIItemContainer getGUIItem();
+    T getGUIItem();
 }

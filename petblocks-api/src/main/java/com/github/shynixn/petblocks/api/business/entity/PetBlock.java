@@ -48,10 +48,10 @@ public interface PetBlock {
 
     /**
      * Returns the pipeline for managed effect playing.
-     *
-     * @return effectPipeLine
+     * @param <Location> location type
+     * @return pipeline
      */
-    EffectPipeline getEffectPipeline();
+    <Location> EffectPipeline<Location> getEffectPipeline();
 
     /**
      * Returns the meta of the petblock.

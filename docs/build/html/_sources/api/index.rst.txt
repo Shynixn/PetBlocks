@@ -1,9 +1,6 @@
 Developer API
 =============
 
-.. toctree::
-
-
 JavaDocs
 ~~~~~~~~
 
@@ -19,7 +16,7 @@ PetBlocks is using maven as build system but you can include the api via differe
     <dependency>
         <groupId>com.github.shynixn.petblocks</groupId>
         <artifactId>petblocks-bukkit-api</artifactId>
-        <version>6.5.0</version>
+        <version>6.5.1</version>
         <scope>provided</scope>
     </dependency>
 
@@ -27,7 +24,7 @@ PetBlocks is using maven as build system but you can include the api via differe
 **Gradle**:
 ::
     dependencies {
-        compileOnly 'com.github.shynixn.petblocks:petblocks-bukkit-api:6.5.0'
+        compileOnly 'com.github.shynixn.petblocks:petblocks-bukkit-api:6.5.1'
     }
 
 **Reference the jar file**:
@@ -167,3 +164,39 @@ There are many PetBlock events in order to listen to actions. Please take a look
     }
 
 ::
+
+
+Setup your personal PetBlocks Workspace
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+It is sometimes necessary to customize PetBlocks itself instead of using the Developer API. The following steps
+help you to get started with developing for PetBlocks.
+
+Before you continue you should be familiar with **git**, **github**, **maven** and any preferred **Java IDE**.
+
+1. Open `PetBlocks on github <https://github.com/Shynixn/PetBlocks>`__
+2. Log in or create a github account and press the **Fork** button in the top right corner.
+3. Github will create a new repository with PetBlocks on your account
+4. Click on the green **Clone or download** button and copy the text inside of the textbox
+5. Open a terminal on your pc, go into a target folder and enter the command
+
+Terminal:
+::
+   git clone <your copied text>
+::
+
+6. After PetBlocks folder is created you can open the Project with any Java IDE supporting **Maven**
+7. Create a new **lib** folder in your PetBlocks folder (ignore the .idea, docs and headdatabase folder)
+8. Download all spigot libraries from 1.8.0 until the latest version and put it into the lib folder
+
+.. image:: ../_static/images/help1.jpg
+
+9. Try to compile the root project with **mvn compile**
+10. If successful you can start editing the source code and create jar files via **mvn package**
+
+**Optional**
+
+11. To share your changes with the world push your committed changes into your github repository.
+12. Click on the **New pull request** button and start a pull request against PetBlocks
+
+(base:fork Shynixn/PetBlocks, base: development <- head fork: <your repository> ...)

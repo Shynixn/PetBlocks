@@ -1,13 +1,15 @@
 package com.github.shynixn.petblocks.bukkit.logic.business.configuration;
 
+import com.github.shynixn.petblocks.api.business.entity.GUIItemContainer;
 import com.github.shynixn.petblocks.api.persistence.controller.CostumeController;
 import com.github.shynixn.petblocks.api.persistence.controller.EngineController;
 import com.github.shynixn.petblocks.api.persistence.controller.OtherGUIItemsController;
 import com.github.shynixn.petblocks.api.persistence.controller.ParticleController;
+import com.github.shynixn.petblocks.api.persistence.entity.EngineContainer;
 import com.github.shynixn.petblocks.api.persistence.entity.ParticleEffectMeta;
 import com.github.shynixn.petblocks.api.persistence.entity.PetMeta;
 import com.github.shynixn.petblocks.bukkit.PetBlocksPlugin;
-import com.github.shynixn.petblocks.bukkit.lib.ChatBuilder;
+import com.github.shynixn.petblocks.bukkit.logic.business.helper.ChatBuilder;
 import com.github.shynixn.petblocks.bukkit.logic.Factory;
 import com.github.shynixn.petblocks.bukkit.logic.persistence.entity.ParticleEffectData;
 import com.github.shynixn.petblocks.bukkit.logic.persistence.entity.PetData;
@@ -16,19 +18,21 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.configuration.MemorySection;
+import org.bukkit.entity.Player;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.logging.Level;
 
 public final class Config extends SimpleConfig {
     private static final Config instance = new Config();
-    private final EngineController engineController = Factory.createEngineController();
-    private final OtherGUIItemsController guiItemsController = Factory.createGUIItemsController();
-    private final ParticleController particleController = Factory.createParticleConfiguration();
-    private final CostumeController ordinaryCostumesController = Factory.createCostumesController("ordinary");
-    private final CostumeController colorCostumesController = Factory.createCostumesController("color");
-    private final CostumeController rareCostumesController = Factory.createCostumesController("rare");
-    private final CostumeController minecraftHeadsCostumesController = Factory.createMinecraftHeadsCostumesController();
+    private final EngineController<EngineContainer<GUIItemContainer<Player>>, GUIItemContainer<Player>> engineController = Factory.createEngineController();
+    private final OtherGUIItemsController<GUIItemContainer<Player>> guiItemsController = Factory.createGUIItemsController();
+    private final ParticleController<GUIItemContainer<Player>> particleController = Factory.createParticleConfiguration();
+    private final CostumeController<GUIItemContainer<Player>> ordinaryCostumesController = Factory.createCostumesController("ordinary");
+    private final CostumeController<GUIItemContainer<Player>> colorCostumesController = Factory.createCostumesController("color");
+    private final CostumeController<GUIItemContainer<Player>> rareCostumesController = Factory.createCostumesController("rare");
+    private final CostumeController<GUIItemContainer<Player>> minecraftHeadsCostumesController = Factory.createMinecraftHeadsCostumesController();
 
     private Config() {
         super();
@@ -54,31 +58,31 @@ public final class Config extends SimpleConfig {
         this.engineController.reload();
     }
 
-    public ParticleController getParticleController() {
+    public ParticleController<GUIItemContainer<Player>> getParticleController() {
         return this.particleController;
     }
 
-    public OtherGUIItemsController getGuiItemsController() {
+    public OtherGUIItemsController<GUIItemContainer<Player>> getGuiItemsController() {
         return this.guiItemsController;
     }
 
-    public EngineController getEngineController() {
+    public EngineController<EngineContainer<GUIItemContainer<Player>>, GUIItemContainer<Player>> getEngineController() {
         return this.engineController;
     }
 
-    public CostumeController getOrdinaryCostumesController() {
+    public CostumeController<GUIItemContainer<Player>> getOrdinaryCostumesController() {
         return this.ordinaryCostumesController;
     }
 
-    public CostumeController getColorCostumesController() {
+    public CostumeController<GUIItemContainer<Player>> getColorCostumesController() {
         return this.colorCostumesController;
     }
 
-    public CostumeController getRareCostumesController() {
+    public CostumeController<GUIItemContainer<Player>> getRareCostumesController() {
         return this.rareCostumesController;
     }
 
-    public CostumeController getMinecraftHeadsCostumesController() {
+    public CostumeController<GUIItemContainer<Player>> getMinecraftHeadsCostumesController() {
         return this.minecraftHeadsCostumesController;
     }
 
@@ -87,7 +91,7 @@ public final class Config extends SimpleConfig {
     }
 
     /**
-     * Returns if copySkin is enabled
+     * Returns if copySkin is enabled.
      *
      * @return copySkin
      */
@@ -96,7 +100,7 @@ public final class Config extends SimpleConfig {
     }
 
     /**
-     * Returns if lore is enabled
+     * Returns if lore is enabled.
      *
      * @return lore
      */
@@ -105,7 +109,7 @@ public final class Config extends SimpleConfig {
     }
 
     /**
-     * Returns if emptyClickBack is enabled
+     * Returns if emptyClickBack is enabled.
      *
      * @return enabled
      */
@@ -236,7 +240,11 @@ public final class Config extends SimpleConfig {
     public void fixJoinDefaultPet(PetMeta petData) {
         final PetData petMeta = (PetData) petData;
         petMeta.setSkin(this.getData("join.settings.id"), (short) (int) this.getData("join.settings.damage"), this.getData("join.settings.skin"), this.getData("unbreakable"));
-        petMeta.setEngine(this.engineController.getById(this.getData("join.settings.engine")));
+        final Optional<EngineContainer<GUIItemContainer<Player>>> optEngineContainer = this.engineController.getContainerFromPosition(this.getData("join.settings.engine"));
+        if (!optEngineContainer.isPresent()) {
+            throw new IllegalArgumentException("Join.settings.engine engine could not be loaded!");
+        }
+        petMeta.setEngine(optEngineContainer.get());
         petMeta.setPetDisplayName(this.getData("join.settings.petname"));
         petMeta.setEnabled(this.getData("join.settings.enabled"));
         petMeta.setAge(this.getData("join.settings.age"));

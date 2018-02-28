@@ -2,18 +2,18 @@ package com.github.shynixn.petblocks.bukkit.logic.persistence.controller;
 
 import com.github.shynixn.petblocks.api.PetBlocksApi;
 import com.github.shynixn.petblocks.api.business.entity.GUIItemContainer;
-import com.github.shynixn.petblocks.api.business.entity.PetBlock;
 import com.github.shynixn.petblocks.api.persistence.controller.ParticleEffectMetaController;
 import com.github.shynixn.petblocks.api.persistence.controller.PetMetaController;
 import com.github.shynixn.petblocks.api.persistence.controller.PlayerMetaController;
+import com.github.shynixn.petblocks.api.persistence.entity.EngineContainer;
 import com.github.shynixn.petblocks.api.persistence.entity.ParticleEffectMeta;
 import com.github.shynixn.petblocks.api.persistence.entity.PetMeta;
 import com.github.shynixn.petblocks.api.persistence.entity.PlayerMeta;
 import com.github.shynixn.petblocks.bukkit.PetBlocksPlugin;
+import com.github.shynixn.petblocks.bukkit.logic.business.helper.ExtensionHikariConnectionContext;
 import com.github.shynixn.petblocks.bukkit.logic.Factory;
-import com.github.shynixn.petblocks.bukkit.logic.persistence.entity.PetData;
 import com.github.shynixn.petblocks.bukkit.logic.business.configuration.Config;
-import com.github.shynixn.petblocks.bukkit.lib.ExtensionHikariConnectionContext;
+import com.github.shynixn.petblocks.bukkit.logic.persistence.entity.PetData;
 import com.github.shynixn.petblocks.bukkit.nms.v1_12_R1.MaterialCompatibility12;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -56,7 +56,7 @@ import java.util.logging.Level;
  */
 public class PetDataRepository extends DataBaseRepository<PetMeta> implements PetMetaController<Player> {
 
-    private final PlayerMetaController playerMetaController;
+    private final PlayerMetaController<Player> playerMetaController;
     private final ParticleEffectMetaController particleEffectMetaController;
 
     /**
@@ -122,7 +122,7 @@ public class PetDataRepository extends DataBaseRepository<PetMeta> implements Pe
     public PetMeta create(Player player) {
         if (player == null)
             throw new IllegalArgumentException("Player cannot be null!");
-        final Optional<GUIItemContainer> containerOpt = Config.getInstance().getGuiItemsController().getGUIItemFromName("default-appearance");
+        final Optional<GUIItemContainer<Player>> containerOpt = Config.getInstance().getGuiItemsController().getGUIItemFromName("default-appearance");
         if (!containerOpt.isPresent())
             throw new IllegalArgumentException("Default appearance could not be loaded from the config.yml!");
         final PetData petData = new PetData(player, Config.getInstance().getDefaultPetName());
@@ -137,28 +137,15 @@ public class PetDataRepository extends DataBaseRepository<PetMeta> implements Pe
      * @return petData
      */
     @Override
-    @Deprecated
-    public <T> PetMeta getByPlayer(T player) {
-        final Optional<PetMeta> tmp = this.getFromPlayer((Player) player);
-        return tmp.orElse(null);
-    }
-
-    /**
-     * Returns the petData from the given player.
-     *
-     * @param player player
-     * @return petData
-     */
-    @Override
     public Optional<PetMeta> getFromPlayer(Player player) {
         if (player == null)
             throw new IllegalArgumentException("Player cannot be null!");
         PetMeta petMeta = null;
         if (PetBlocksApi.getDefaultPetBlockController() != null && PetBlocksApi.getDefaultPetBlockController().getFromPlayer(player).isPresent()) {
-            return Optional.ofNullable(((PetBlock) PetBlocksApi.getDefaultPetBlockController().getFromPlayer(player).get()).getMeta());
+            return Optional.ofNullable(PetBlocksApi.getDefaultPetBlockController().getFromPlayer(player).get().getMeta());
         }
         try (Connection connection = this.dbContext.getConnection();
-             PreparedStatement preparedStatement = this.dbContext.executeStoredQuery("petblock/selectbyplayer", connection, ((Player) player).getUniqueId().toString());
+             PreparedStatement preparedStatement = this.dbContext.executeStoredQuery("petblock/selectbyplayer", connection, player.getUniqueId().toString());
              ResultSet resultSet = preparedStatement.executeQuery()) {
             if (resultSet.next()) {
                 petMeta = this.from(resultSet);
@@ -170,7 +157,11 @@ public class PetDataRepository extends DataBaseRepository<PetMeta> implements Pe
         } catch (final SQLException e) {
             PetBlocksPlugin.logger().log(Level.WARNING, "Database error occurred.", e);
         }
-        petMeta.setEngine(Config.getInstance().getEngineController().getById(((PetData) petMeta).getEngineId()));
+        final Optional<EngineContainer<GUIItemContainer<Player>>> optEngineContainer = Config.getInstance().getEngineController().getContainerFromPosition(((PetData) petMeta).getEngineId());
+        if (!optEngineContainer.isPresent()) {
+            throw new IllegalArgumentException("Engine with id " + ((PetData) petMeta).getEngineId() + " could not be loaded correctly!");
+        }
+        petMeta.setEngine(optEngineContainer.get());
         final PetData petData = (PetData) petMeta;
         final Optional<ParticleEffectMeta> optParticleEffectMeta;
         final Optional<PlayerMeta> optPlayerMeta;

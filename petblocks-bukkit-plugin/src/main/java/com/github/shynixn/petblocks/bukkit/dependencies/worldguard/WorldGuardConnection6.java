@@ -3,7 +3,7 @@ package com.github.shynixn.petblocks.bukkit.dependencies.worldguard;
 import com.github.shynixn.petblocks.api.PetBlocksApi;
 import com.github.shynixn.petblocks.api.business.entity.PetBlock;
 import com.github.shynixn.petblocks.bukkit.logic.business.configuration.Config;
-import com.github.shynixn.petblocks.bukkit.lib.ReflectionUtils;
+import com.github.shynixn.petblocks.bukkit.logic.business.helper.ReflectionUtils;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import com.sk89q.worldguard.protection.ApplicableRegionSet;
 import com.sk89q.worldguard.protection.flags.DefaultFlag;
@@ -31,7 +31,7 @@ public final class WorldGuardConnection6 {
         final WorldGuardPlugin worldGuard = getWorldGuard();
         final RegionManager regionManager = worldGuard.getRegionManager(location.getWorld());
         final ApplicableRegionSet set = ReflectionUtils.invokeMethodByObject(regionManager, "getApplicableRegions", new Class[]{location.getClass()}, new Object[]{location});
-        final Iterable<ProtectedRegion> regions = (Iterable<ProtectedRegion>) getMethod(set.getClass(), "getRegions").invoke(set);
+        final Iterable<ProtectedRegion> regions = (Iterable<ProtectedRegion>) getRegionMethod(set.getClass()).invoke(set);
         for (final ProtectedRegion region : regions) {
             if (region.getFlag(DefaultFlag.MOB_SPAWNING) == State.DENY) {
                 region.setFlag(DefaultFlag.MOB_SPAWNING, State.ALLOW);
@@ -58,7 +58,7 @@ public final class WorldGuardConnection6 {
                 final WorldGuardPlugin worldGuard = getWorldGuard();
                 final RegionManager regionManager = worldGuard.getRegionManager(location.getWorld());
                 final ApplicableRegionSet set = ReflectionUtils.invokeMethodByObject(regionManager, "getApplicableRegions", new Class[]{location.getClass()}, new Object[]{location});
-                final Iterable<ProtectedRegion> regions = (Iterable<ProtectedRegion>) getMethod(set.getClass(), "getRegions").invoke(set);
+                final Iterable<ProtectedRegion> regions = (Iterable<ProtectedRegion>) getRegionMethod(set.getClass()).invoke(set);
                 List<ProtectedRegion> regionsList = null;
                 if (cacheSpawn) {
                     regionsList = new ArrayList<>();
@@ -104,16 +104,16 @@ public final class WorldGuardConnection6 {
         final WorldGuardPlugin worldGuard = getWorldGuard();
         final RegionManager regionManager = worldGuard.getRegionManager(location.getWorld());
         final ApplicableRegionSet set = ReflectionUtils.invokeMethodByObject(regionManager, "getApplicableRegions", new Class[]{location.getClass()}, new Object[]{location});
-        final Iterable<ProtectedRegion> regions = (Iterable<ProtectedRegion>) getMethod(set.getClass(), "getRegions").invoke(set);
+        final Iterable<ProtectedRegion> regions = (Iterable<ProtectedRegion>)getRegionMethod(set.getClass()).invoke(set);
         for (final ProtectedRegion region : regions) {
             regionList.add(region.getId());
         }
         return regionList;
     }
 
-    private static Method getMethod(Class<?> class1, String name) {
+    private static Method getRegionMethod(Class<?> class1) {
         for (final Method method : class1.getDeclaredMethods()) {
-            if (method.getName().equalsIgnoreCase(name))
+            if (method.getName().equalsIgnoreCase("getRegions"))
                 return method;
         }
         throw new RuntimeException("Cannot hook into WorldGuard");

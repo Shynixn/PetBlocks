@@ -6,12 +6,10 @@ import com.github.shynixn.petblocks.api.persistence.entity.EngineContainer;
 import com.github.shynixn.petblocks.bukkit.PetBlocksPlugin;
 import com.github.shynixn.petblocks.bukkit.logic.persistence.entity.EngineData;
 import org.bukkit.configuration.MemorySection;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.logging.Level;
 
 /**
@@ -43,21 +41,14 @@ import java.util.logging.Level;
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-public class EngineConfiguration implements EngineController {
-
-    private Plugin plugin;
-    private final List<EngineContainer> engineContainers = new ArrayList<>();
-
+public class EngineConfiguration extends ContainerConfiguration<EngineContainer<GUIItemContainer<Player>>> implements EngineController<EngineContainer<GUIItemContainer<Player>>, GUIItemContainer<Player>> {
     /**
      * Initializes a new engine repository
      *
      * @param plugin plugin
      */
     public EngineConfiguration(Plugin plugin) {
-        super();
-        if (plugin == null)
-            throw new IllegalArgumentException("Plugin cannot be null!");
-        this.plugin = plugin;
+        super(plugin);
     }
 
     /**
@@ -66,72 +57,10 @@ public class EngineConfiguration implements EngineController {
      * @param item item
      */
     @Override
-    public void store(EngineContainer item) {
-        if (item != null && !this.engineContainers.contains(item)) {
-            this.engineContainers.add(item);
+    public void store(EngineContainer<GUIItemContainer<Player>> item) {
+        if (item != null && !this.items.contains(item)) {
+            this.items.add(item);
         }
-    }
-
-    /**
-     * Removes an item from the repository
-     *
-     * @param item item
-     */
-    @Override
-    public void remove(EngineContainer item) {
-        if (this.engineContainers.contains(item)) {
-            this.engineContainers.remove(item);
-        }
-    }
-
-    /**
-     * Returns the amount of items in the repository
-     *
-     * @return size
-     */
-    @Override
-    public int size() {
-        return this.engineContainers.size();
-    }
-
-    /**
-     * Returns all items from the repository as unmodifiableList
-     *
-     * @return items
-     */
-    @Override
-    public List<EngineContainer> getAll() {
-        return Collections.unmodifiableList(this.engineContainers);
-    }
-
-    /**
-     * Returns the engineContainer with the given id
-     *
-     * @param id id
-     * @return engineContainer
-     */
-    @Override
-    public EngineContainer getById(int id) {
-        for (final EngineContainer container : this.engineContainers) {
-            if (container.getId() == id) {
-                return container;
-            }
-        }
-        return null;
-    }
-
-    /**
-     * Returns all gui items
-     *
-     * @return gui items
-     */
-    @Override
-    public List<GUIItemContainer> getAllGUIItems() {
-        final List<GUIItemContainer> items = new ArrayList<>();
-        for (final EngineContainer container : this.getAll()) {
-            items.add(container.getGUIItem());
-        }
-        return items;
     }
 
     /**
@@ -139,13 +68,13 @@ public class EngineConfiguration implements EngineController {
      */
     @Override
     public void reload() {
-        this.engineContainers.clear();
+        this.items.clear();
         this.plugin.reloadConfig();
         final Map<String, Object> data = ((MemorySection) this.plugin.getConfig().get("engines")).getValues(false);
         for (final String key : data.keySet()) {
             final Map<String, Object> content = ((MemorySection) this.plugin.getConfig().get("engines." + key)).getValues(true);
             try {
-                this.engineContainers.add(new EngineData(Integer.parseInt(key), content));
+                this.items.add(new EngineData(Integer.parseInt(key), content));
             } catch (final Exception e) {
                 PetBlocksPlugin.logger().log(Level.WARNING, "Failed to add content " + key + '.', e);
             }
@@ -153,17 +82,32 @@ public class EngineConfiguration implements EngineController {
     }
 
     /**
-     * Closes this resource, relinquishing any underlying resources.
-     * This method is invoked automatically on objects managed by the
-     * {@code try}-with-resources statement.
-     * However, implementers of this interface are strongly encouraged
-     * to make their {@code close} methods idempotent.
+     * Returns the container by the given order id.
      *
-     * @throws Exception if this resource cannot be closed
+     * @param id id
+     * @return container
      */
     @Override
-    public void close() throws Exception {
-        this.plugin = null;
-        this.engineContainers.clear();
+    public Optional<EngineContainer<GUIItemContainer<Player>>> getContainerFromPosition(int id) {
+        for (final EngineContainer<GUIItemContainer<Player>> container : this.getAll()) {
+            if (container.getId() == id) {
+                return Optional.of(container);
+            }
+        }
+        return Optional.empty();
+    }
+
+    /**
+     * Returns all gui items.
+     *
+     * @return gui items
+     */
+    @Override
+    public List<GUIItemContainer<Player>> getAllGUIItems() {
+        final List<GUIItemContainer<Player>> items = new ArrayList<>();
+        for (final EngineContainer<GUIItemContainer<Player>> container : this.getAll()) {
+            items.add(container.getGUIItem());
+        }
+        return items;
     }
 }

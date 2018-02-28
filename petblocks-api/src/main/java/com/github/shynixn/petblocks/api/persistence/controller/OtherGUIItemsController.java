@@ -1,7 +1,5 @@
 package com.github.shynixn.petblocks.api.persistence.controller;
 
-import com.github.shynixn.petblocks.api.business.entity.GUIItemContainer;
-
 import java.util.Optional;
 
 /**
@@ -31,24 +29,14 @@ import java.util.Optional;
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-public interface OtherGUIItemsController extends IFileController<GUIItemContainer> {
-
+public interface OtherGUIItemsController<T> extends IFileController<T> {
     /**
      * Returns the guiItem by the given name.
      *
      * @param name name
      * @return item
      */
-    @Deprecated
-    GUIItemContainer getGUIItemByName(String name);
-
-    /**
-     * Returns the guiItem by the given name.
-     *
-     * @param name name
-     * @return item
-     */
-    Optional<GUIItemContainer> getGUIItemFromName(String name);
+    Optional<T> getGUIItemFromName(String name);
 
     /**
      * Returns if the given itemStack is a guiItemStack with the given name.

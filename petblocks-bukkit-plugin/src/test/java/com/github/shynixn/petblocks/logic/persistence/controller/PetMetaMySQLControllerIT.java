@@ -178,7 +178,7 @@ public class PetMetaMySQLControllerIT {
                     controller.store(meta);
 
                     assertEquals(1, controller.size());
-                    meta = (PetData) controller.getById(meta.getId());
+                    meta = (PetData) controller.getFromId(meta.getId()).get();
                     assertEquals("Me", meta.getPetDisplayName());
                     assertEquals(Material.BIRCH_DOOR_ITEM.getId(), meta.getItemId());
                     assertEquals((short)5, meta.getItemDamage());
@@ -201,7 +201,7 @@ public class PetMetaMySQLControllerIT {
                     controller.store(meta);
 
                     assertEquals(1, controller.size());
-                    meta = (PetData) controller.getById(meta.getId());
+                    meta = (PetData) controller.getFromId(meta.getId()).get();
                     assertEquals("PikaPet", meta.getPetDisplayName());
                     assertEquals(Material.ARROW.getId(), meta.getItemId());
                     assertEquals((short)7, meta.getItemDamage());

@@ -59,6 +59,12 @@ final class CustomGroundArmorstand extends EntityArmorStand implements PetBlock 
         this.isSpecial = true;
         this.petMeta = (PetData) meta;
         this.owner = this.petMeta.getPlayerMeta().getPlayer();
+
+        if (this.owner == null) {
+            this.remove();
+            return;
+        }
+
         if (this.petMeta.getEngine().getEntityType().equalsIgnoreCase("RABBIT"))
             this.rabbit = new CustomRabbit(this.owner, this);
         else if (this.petMeta.getEngine().getEntityType().equalsIgnoreCase("ZOMBIE"))
@@ -207,7 +213,7 @@ final class CustomGroundArmorstand extends EntityArmorStand implements PetBlock 
             final AxisAlignedBB localAxisAlignedBB = this.getBoundingBox();
             this.locX = ((localAxisAlignedBB.a + localAxisAlignedBB.d) / 2.0D);
             this.locZ = ((localAxisAlignedBB.c + localAxisAlignedBB.f) / 2.0D);
-            this.locY = (localAxisAlignedBB.b - 1.5D);
+            this.locY = (localAxisAlignedBB.b + ConfigPet.getInstance().getHitBoxYAxeModification());
             this.isGroundRiding = true;
         }
     }

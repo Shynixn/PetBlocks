@@ -6,7 +6,6 @@ import com.github.shynixn.petblocks.api.bukkit.event.PetBlockRideEvent;
 import com.github.shynixn.petblocks.api.business.entity.PetBlock;
 import com.github.shynixn.petblocks.api.persistence.entity.PetMeta;
 import com.github.shynixn.petblocks.bukkit.PetBlocksPlugin;
-import com.github.shynixn.petblocks.bukkit.lib.SimpleListener;
 import com.github.shynixn.petblocks.bukkit.logic.business.PetBlockManager;
 import com.github.shynixn.petblocks.bukkit.logic.business.PetRunnable;
 import com.github.shynixn.petblocks.bukkit.logic.business.configuration.Config;
@@ -130,6 +129,11 @@ public class PetBlockListener extends SimpleListener {
         }
     }
 
+    /**
+     * Gets called when a player presses the sneak button and removes the pet of the players head if present.
+     *
+     * @param event event
+     */
     @EventHandler
     public void onEntityToggleSneakEvent(final PlayerToggleSneakEvent event) {
         final Optional<PetBlock> optPetblock;
@@ -138,6 +142,11 @@ public class PetBlockListener extends SimpleListener {
         }
     }
 
+    /**
+     * Gets called when an animal gets leashed and cancels it for all pet entities.
+     *
+     * @param event event
+     */
     @EventHandler
     public void onEntityLeashEvent(PlayerLeashEntityEvent event) {
         if (this.isPet(event.getEntity())) {
@@ -145,6 +154,11 @@ public class PetBlockListener extends SimpleListener {
         }
     }
 
+    /**
+     * Gets called when a pet damages another entity and cancels it. Also let's the pet flee if it is being attacked.
+     *
+     * @param event event
+     */
     @EventHandler
     public void onEntityDamageByEntityEvent(EntityDamageByEntityEvent event) {
         if (this.isPet(event.getDamager())) {
@@ -164,6 +178,11 @@ public class PetBlockListener extends SimpleListener {
         }
     }
 
+    /**
+     * Cancels the entity interact event for pets.
+     *
+     * @param event event
+     */
     @EventHandler
     public void onEntityDamageByEntityEvent(EntityInteractEvent event) {
         if (this.isPet(event.getEntity()) && event.getBlock().getType() == Material.SOIL) {
@@ -211,22 +230,6 @@ public class PetBlockListener extends SimpleListener {
         if (this.isDeadPet(event.getRightClicked())) {
             event.setCancelled(true);
         }
-    }
-
-    private boolean isDeadPet(Entity entity) {
-        if (entity instanceof ArmorStand && !this.isPet(entity)) {
-            final ArmorStand stand = (ArmorStand) entity;
-            final int xidentifier = (int) stand.getBodyPose().getZ();
-            final int identifier = (int) stand.getRightArmPose().getX();
-            final int lidentifier = (int) stand.getLeftArmPose().getX();
-            if (xidentifier == 2877 && (identifier == 2877 || lidentifier == 2877)) {
-                return true;
-            }
-            if (Math.floor(stand.getBodyPose().getZ() * 1000) == 301) {
-                return true;
-            }
-        }
-        return false;
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
@@ -406,6 +409,22 @@ public class PetBlockListener extends SimpleListener {
         }
     }
 
+    private boolean isDeadPet(Entity entity) {
+        if (entity instanceof ArmorStand && !this.isPet(entity)) {
+            final ArmorStand stand = (ArmorStand) entity;
+            final int xidentifier = (int) stand.getBodyPose().getZ();
+            final int identifier = (int) stand.getRightArmPose().getX();
+            final int lidentifier = (int) stand.getLeftArmPose().getX();
+            if (xidentifier == 2877 && (identifier == 2877 || lidentifier == 2877)) {
+                return true;
+            }
+            if (Math.floor(stand.getBodyPose().getZ() * 1000) == 301) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     private void removePetFromArm(Player player, boolean launch) {
         this.providePet(player, (petMeta, petBlock) -> {
             if (petBlock == null) {
@@ -432,7 +451,7 @@ public class PetBlockListener extends SimpleListener {
     }
 
     /**
-     * Gets the pet meta and petblock and calls the callBack .
+     * Gets the pet meta and petblock and calls the callBack.
      *
      * @param player   player
      * @param runnable Runnable

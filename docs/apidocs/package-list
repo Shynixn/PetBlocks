@@ -8,7 +8,6 @@ com.github.shynixn.petblocks.api.persistence.entity
 com.github.shynixn.petblocks.bukkit
 com.github.shynixn.petblocks.bukkit.dependencies.clearlag
 com.github.shynixn.petblocks.bukkit.dependencies.worldguard
-com.github.shynixn.petblocks.bukkit.lib
 com.github.shynixn.petblocks.bukkit.logic
 com.github.shynixn.petblocks.bukkit.logic.business
 com.github.shynixn.petblocks.bukkit.logic.business.commandexecutor
