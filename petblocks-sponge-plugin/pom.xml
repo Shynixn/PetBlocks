@@ -16,26 +16,24 @@
     <build>
         <plugins>
             <plugin>
-                <groupId>com.github.shynixn.anchornms</groupId>
-                <artifactId>anchornms-maven-plugin</artifactId>
-                <version>1.3-SNAPSHOT</version>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>obfuscate-jar</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <spongeVersions>
-                        <spongeVersion>1.12</spongeVersion>
-                        <spongeVersion>1.11</spongeVersion>
-                    </spongeVersions>
-                </configuration>
-            </plugin>
-            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
+                <configuration>
+                    <relocations>
+                        <relocation>
+                            <pattern>com.zaxxer</pattern>
+                            <shadedPattern>com.github.shynixn.petblocks.lib.com.zaxxer</shadedPattern>
+                        </relocation>
+                        <relocation>
+                            <pattern>org.slf4j</pattern>
+                            <shadedPattern>com.github.shynixn.petblocks.lib.org.slf4j</shadedPattern>
+                        </relocation>
+                        <relocation>
+                            <pattern>org.bstats</pattern>
+                            <shadedPattern>com.github.shynixn.petblocks.lib.org.bstats</shadedPattern>
+                        </relocation>
+                    </relocations>
+                </configuration>
                 <executions>
                     <execution>
                         <phase>package</phase>
@@ -44,6 +42,24 @@
                         </goals>
                     </execution>
                 </executions>
+            </plugin>
+            <plugin>
+                <groupId>com.github.shynixn.anchornms</groupId>
+                <artifactId>anchornms-maven-plugin</artifactId>
+                <version>1.0</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>obfuscate-jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <versions>
+                        <version>1.11</version>
+                        <version>1.12</version>
+                    </versions>
+                </configuration>
             </plugin>
         </plugins>
     </build>

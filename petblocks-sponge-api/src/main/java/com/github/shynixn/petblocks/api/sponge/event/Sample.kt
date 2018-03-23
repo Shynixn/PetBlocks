@@ -33,12 +33,12 @@ class Sample {
     fun doSomething()
     {
         println("HELLO WORLD")
-        var silentArmorstand : net.minecraft.server.v1_11_mcpR1.entity.item.EntityArmorStand? = null
+        var silentArmorstand : net.minecraft.anchor.v1_12_mcpR1.entity.item.EntityArmorStand? = null
 
         silentArmorstand!!.canBeAttackedWithItem();
 
 
-        var silentArmorstand2 : net.minecraft.server.v1_12_mcpR1.entity.item.EntityArmorStand? = null
+        var silentArmorstand2 : net.minecraft.anchor.v1_11_mcpR1.entity.item.EntityArmorStand? = null
 
         silentArmorstand!!.hasNoBasePlate()
     }
