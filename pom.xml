@@ -12,8 +12,12 @@
         <module>petblocks-api</module>
         <module>petblocks-bukkit-api</module>
         <module>petblocks-bukkit-plugin</module>
+        <module>petblocks-sponge-api</module>
+        <module>petblocks-sponge-plugin</module>
+        <module>petblocks-universal-plugin</module>
+        <module>petblocks-core</module>
     </modules>
-    <version>6.5.1</version>
+    <version>7.0.0-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <developers>
@@ -33,6 +37,7 @@
         <petblocks.bukkit.test-server-path>D:/Temp/plugins</petblocks.bukkit.test-server-path>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <kotlin.version>1.2.21</kotlin.version>
     </properties>
 
     <profiles>
