@@ -56,6 +56,20 @@
             <version>${kotlin.version}</version>
             <scope>compile</scope>
         </dependency>
+        <dependency>
+            <groupId>mcp</groupId>
+            <artifactId>minecraft111R1</artifactId>
+            <scope>system</scope>
+            <version>1.0</version>
+            <systemPath>${basedir}/../lib/mcp-1.11.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>mcp</groupId>
+            <artifactId>minecraft112R1</artifactId>
+            <scope>system</scope>
+            <version>1.0</version>
+            <systemPath>${basedir}/../lib/mcp-1.12.jar</systemPath>
+        </dependency>
     </dependencies>
 
 
