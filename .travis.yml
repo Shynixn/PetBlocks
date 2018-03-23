@@ -8,7 +8,7 @@ before_script:
   - sudo /etc/init.d/mysql stop
 script:
     - cd /home/travis/build/Shynixn/PetBlocks/petblocks-sponge-plugin
-    - cd mvn anchornms:generate-sponge-libraries
+    - mvn anchornms:generate-sponge-libraries
     - cp target/nms-tools/mcp-1.11.jar /home/travis/build/Shynixn/PetBlocks/lib/mcp-1.11.jar
     - cp target/nms-tools/mcp-1.12.jar /home/travis/build/Shynixn/PetBlocks/lib/mcp-1.12.jar
     - cd /home/travis/build/Shynixn/PetBlocks/lib
