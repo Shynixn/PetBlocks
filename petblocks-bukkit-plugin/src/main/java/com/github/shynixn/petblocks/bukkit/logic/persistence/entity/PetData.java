@@ -10,6 +10,7 @@ import com.github.shynixn.petblocks.bukkit.logic.business.configuration.ConfigPe
 import com.github.shynixn.petblocks.bukkit.logic.business.helper.PetBlockModifyHelper;
 import com.github.shynixn.petblocks.bukkit.logic.business.helper.SkinHelper;
 import com.github.shynixn.petblocks.bukkit.nms.v1_12_R1.MaterialCompatibility12;
+import com.github.shynixn.petblocks.core.logic.persistence.entity.ParticleEffectData;
 import com.github.shynixn.petblocks.core.logic.persistence.entity.PersistenceObject;
 import com.github.shynixn.petblocks.core.logic.persistence.entity.PlayerData;
 import org.bukkit.Bukkit;
@@ -97,7 +98,7 @@ public class PetData extends PersistenceObject implements PetMeta {
         };
         this.ageTicks = ConfigPet.getInstance().getAge_smallticks();
         this.sounds = true;
-        this.particleEffectBuilder = new ParticleEffectData();
+        this.particleEffectBuilder = createParticleComp();
         this.particleEffectBuilder.setEffectType(ParticleEffectMeta.ParticleEffectType.NONE);
         final Optional<EngineContainer<GUIItemContainer<Player>>> engineContainer = Config.getInstance().getEngineController()
                 .getContainerFromPosition(Config.getInstance().getDefaultEngine());
@@ -105,6 +106,15 @@ public class PetData extends PersistenceObject implements PetMeta {
             throw new RuntimeException("Default engine could not be loaded correctly!");
         }
         this.engineContainer = engineContainer.get();
+    }
+
+    public static ParticleEffectMeta createParticleComp() {
+        try {
+            final Class<?> clazz = Class.forName("com.github.shynixn.petblocks.bukkit.logic.persistence.entity.BukkitParticleEffect");
+            return (ParticleEffectMeta) clazz.newInstance();
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     /**

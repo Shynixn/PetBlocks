@@ -7,7 +7,6 @@ import com.github.shynixn.petblocks.api.persistence.entity.EngineContainer;
 import com.github.shynixn.petblocks.bukkit.PetBlocksPlugin;
 import com.github.shynixn.petblocks.bukkit.logic.business.configuration.*;
 import com.github.shynixn.petblocks.bukkit.logic.business.controller.PetBlockRepository;
-import com.github.shynixn.petblocks.bukkit.logic.persistence.controller.ParticleEffectDataRepository;
 import com.github.shynixn.petblocks.bukkit.logic.persistence.controller.PetDataRepository;
 import com.github.shynixn.petblocks.core.logic.business.helper.ExtensionHikariConnectionContext;
 import org.apache.commons.io.IOUtils;
@@ -42,11 +41,22 @@ public class Factory {
     }
 
     public static ParticleEffectMetaController createParticleEffectController() {
-        return new ParticleEffectDataRepository(connectionContext);
+        try {
+            final Class<?> clazz = Class.forName("com.github.shynixn.petblocks.bukkit.logic.persistence.controller.BukkitParticleEffectDataRepository");
+            final Constructor constructor = clazz.getDeclaredConstructor(ExtensionHikariConnectionContext.class);
+            return (ParticleEffectMetaController) constructor.newInstance(connectionContext);
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public static EngineController<EngineContainer<GUIItemContainer<Player>>, GUIItemContainer<Player>> createEngineController() {
-        return new EngineConfiguration(JavaPlugin.getPlugin(PetBlocksPlugin.class));
+        try {
+            final Class<?> clazz = Class.forName("com.github.shynixn.petblocks.bukkit.logic.persistence.configuration.BukkitEngineConfiguration");
+            return (EngineController<EngineContainer<GUIItemContainer<Player>>, GUIItemContainer<Player>>) clazz.newInstance();
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public static PetBlockController<Player> createPetBlockController() {
@@ -70,7 +80,12 @@ public class Factory {
     }
 
     public static ParticleController<GUIItemContainer<Player>> createParticleConfiguration() {
-        return new ParticleConfiguration(JavaPlugin.getPlugin(PetBlocksPlugin.class));
+        try {
+            final Class<?> clazz = Class.forName("com.github.shynixn.petblocks.bukkit.logic.persistence.configuration.BukkitParticleConfiguration");
+            return (ParticleController<GUIItemContainer<Player>>) clazz.newInstance();
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public static void disable() {

@@ -1,17 +1,10 @@
-package com.github.shynixn.petblocks.bukkit.logic.business.configuration;
+package com.github.shynixn.petblocks.core.logic.persistence.configuration;
 
 import com.github.shynixn.petblocks.api.business.entity.GUIItemContainer;
 import com.github.shynixn.petblocks.api.persistence.controller.ParticleController;
 import com.github.shynixn.petblocks.api.persistence.entity.ParticleEffectMeta;
-import com.github.shynixn.petblocks.bukkit.PetBlocksPlugin;
-import com.github.shynixn.petblocks.bukkit.logic.business.entity.ItemContainer;
-import com.github.shynixn.petblocks.bukkit.logic.persistence.entity.ParticleEffectData;
-import org.bukkit.configuration.MemorySection;
-import org.bukkit.entity.Player;
-import org.bukkit.plugin.Plugin;
 
 import java.util.*;
-import java.util.logging.Level;
 
 /**
  * Copyright 2017 Shynixn
@@ -42,22 +35,9 @@ import java.util.logging.Level;
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-public class ParticleConfiguration implements ParticleController<GUIItemContainer<Player>> {
+public abstract class ParticleConfiguration<Player> implements ParticleController<GUIItemContainer<Player>> {
 
-    private Plugin plugin;
-    private final Map<GUIItemContainer<Player>, ParticleEffectMeta> particleCache = new HashMap<>();
-
-    /**
-     * Initializes a new engine repository
-     *
-     * @param plugin plugin
-     */
-    public ParticleConfiguration(Plugin plugin) {
-        super();
-        if (plugin == null)
-            throw new IllegalArgumentException("Plugin cannot be null!");
-        this.plugin = plugin;
-    }
+    protected final Map<GUIItemContainer<Player>, ParticleEffectMeta> particleCache = new HashMap<>();
 
     /**
      * Stores a new a item in the repository
@@ -126,30 +106,11 @@ public class ParticleConfiguration implements ParticleController<GUIItemContaine
      * @return particleEffect
      */
     @Override
-    public Optional<ParticleEffectMeta> getFromItem(GUIItemContainer container) {
+    public Optional<ParticleEffectMeta> getFromItem(GUIItemContainer<Player> container) {
         if (this.particleCache.containsKey(container)) {
             return Optional.of(this.particleCache.get(container));
         }
         return Optional.empty();
-    }
-
-    /**
-     * Reloads the content from the fileSystem
-     */
-    @Override
-    public void reload() {
-        this.particleCache.clear();
-        this.plugin.reloadConfig();
-        final Map<String, Object> data = ((MemorySection) this.plugin.getConfig().get("particles")).getValues(false);
-        for (final String key : data.keySet()) {
-            try {
-                final GUIItemContainer<Player> container = new ItemContainer(Integer.parseInt(key), ((MemorySection) data.get(key)).getValues(false));
-                final ParticleEffectMeta meta = new ParticleEffectData(((MemorySection) ((MemorySection) data.get(key)).getValues(false).get("effect")).getValues(true));
-                this.particleCache.put(container, meta);
-            } catch (final Exception e) {
-                PetBlocksPlugin.logger().log(Level.WARNING, "Failed to load particle " + key + '.', e);
-            }
-        }
     }
 
     /**
@@ -163,7 +124,6 @@ public class ParticleConfiguration implements ParticleController<GUIItemContaine
      */
     @Override
     public void close() throws Exception {
-        this.plugin = null;
         this.particleCache.clear();
     }
 }

@@ -1,15 +1,13 @@
-package com.github.shynixn.petblocks.bukkit.logic.business.configuration;
+package com.github.shynixn.petblocks.core.logic.persistence.configuration;
 
 import com.github.shynixn.petblocks.api.business.entity.GUIItemContainer;
 import com.github.shynixn.petblocks.api.persistence.controller.EngineController;
 import com.github.shynixn.petblocks.api.persistence.entity.EngineContainer;
-import com.github.shynixn.petblocks.bukkit.PetBlocksPlugin;
-import com.github.shynixn.petblocks.bukkit.logic.persistence.entity.EngineData;
-import org.bukkit.configuration.MemorySection;
-import org.bukkit.entity.Player;
-import org.bukkit.plugin.Plugin;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.logging.Level;
 
 /**
@@ -41,16 +39,7 @@ import java.util.logging.Level;
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-public class EngineConfiguration extends ContainerConfiguration<EngineContainer<GUIItemContainer<Player>>> implements EngineController<EngineContainer<GUIItemContainer<Player>>, GUIItemContainer<Player>> {
-    /**
-     * Initializes a new engine repository
-     *
-     * @param plugin plugin
-     */
-    public EngineConfiguration(Plugin plugin) {
-        super(plugin);
-    }
-
+public abstract class EngineConfiguration<Player> extends ContainerConfiguration<EngineContainer<GUIItemContainer<Player>>> implements EngineController<EngineContainer<GUIItemContainer<Player>>, GUIItemContainer<Player>> {
     /**
      * Stores a new a item in the repository
      *
@@ -60,24 +49,6 @@ public class EngineConfiguration extends ContainerConfiguration<EngineContainer<
     public void store(EngineContainer<GUIItemContainer<Player>> item) {
         if (item != null && !this.items.contains(item)) {
             this.items.add(item);
-        }
-    }
-
-    /**
-     * Reloads the content from the fileSystem
-     */
-    @Override
-    public void reload() {
-        this.items.clear();
-        this.plugin.reloadConfig();
-        final Map<String, Object> data = ((MemorySection) this.plugin.getConfig().get("engines")).getValues(false);
-        for (final String key : data.keySet()) {
-            final Map<String, Object> content = ((MemorySection) this.plugin.getConfig().get("engines." + key)).getValues(true);
-            try {
-                this.items.add(new EngineData(Integer.parseInt(key), content));
-            } catch (final Exception e) {
-                PetBlocksPlugin.logger().log(Level.WARNING, "Failed to add content " + key + '.', e);
-            }
         }
     }
 

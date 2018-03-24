@@ -1,21 +1,9 @@
-package com.github.shynixn.petblocks.bukkit.logic.persistence.entity;
+package com.github.shynixn.petblocks.core.logic.persistence.entity;
 
 import com.github.shynixn.petblocks.api.persistence.entity.ParticleEffectMeta;
-import com.github.shynixn.petblocks.bukkit.PetBlocksPlugin;
-import com.github.shynixn.petblocks.bukkit.nms.v1_12_R1.MaterialCompatibility12;
-import com.github.shynixn.petblocks.core.logic.persistence.entity.PersistenceObject;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.configuration.serialization.ConfigurationSerializable;
-import org.bukkit.entity.Player;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.*;
-import java.util.logging.Level;
+import java.util.Map;
+import java.util.Objects;
 
 /**
  * Copyright 2017 Shynixn
@@ -46,15 +34,15 @@ import java.util.logging.Level;
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-public class ParticleEffectData extends PersistenceObject implements ParticleEffectMeta, ConfigurationSerializable {
-    private String effect;
+public abstract class ParticleEffectData extends PersistenceObject implements ParticleEffectMeta{
+    protected String effect;
     private int amount;
     private double speed;
     private double offsetX;
     private double offsetY;
     private double offsetZ;
 
-    private Integer material;
+    protected Integer materialId;
     private Byte data;
 
     /**
@@ -108,7 +96,7 @@ public class ParticleEffectData extends PersistenceObject implements ParticleEff
         if (items.containsKey("offz"))
             this.offsetZ = ((float) (double) items.get("offz"));
         if (items.containsKey("id"))
-            this.material = (Integer) items.get("id");
+            this.materialId = (Integer) items.get("id");
         if (items.containsKey("damage"))
             this.data = (byte) (int) (Integer) items.get("damage");
         if (items.containsKey("red"))
@@ -118,6 +106,8 @@ public class ParticleEffectData extends PersistenceObject implements ParticleEff
         if (items.containsKey("blue"))
             this.setBlue((Integer) items.get("blue"));
     }
+
+    public abstract <Location, Player> void applyTo(Location location, Player... players);
 
     /**
      * Sets the RGB colors of the particleEffect
@@ -142,7 +132,7 @@ public class ParticleEffectData extends PersistenceObject implements ParticleEff
      * @return builder
      */
     @Override
-    public ParticleEffectData setColor(ParticleEffectData.ParticleColor particleColor) {
+    public ParticleEffectData setColor(ParticleColor particleColor) {
         if (particleColor == null)
             throw new IllegalArgumentException("Color cannot be null!");
         this.setColor(particleColor.getRed(), particleColor.getGreen(), particleColor.getBlue());
@@ -264,7 +254,7 @@ public class ParticleEffectData extends PersistenceObject implements ParticleEff
      * @return builder
      */
     @Override
-    public ParticleEffectData setEffectType(ParticleEffectData.ParticleEffectType type) {
+    public ParticleEffectData setEffectType(ParticleEffectType type) {
         if (type == null)
             throw new IllegalArgumentException("Type cannot be null!");
         this.effect = type.getSimpleName();
@@ -311,24 +301,6 @@ public class ParticleEffectData extends PersistenceObject implements ParticleEff
     }
 
     /**
-     * Sets the material of the particleEffect
-     *
-     * @param material material
-     * @return builder
-     */
-    @Override
-    public ParticleEffectData setMaterial(Object material) {
-        if (material != null && material instanceof Integer) {
-            this.material = (Integer) material;
-        } else if (material != null) {
-            this.material = MaterialCompatibility12.getIdFromMaterial((Material) material);
-        } else {
-            this.material = null;
-        }
-        return this;
-    }
-
-    /**
      * Sets the data of the material of the particleEffect
      *
      * @param data data
@@ -356,7 +328,7 @@ public class ParticleEffectData extends PersistenceObject implements ParticleEff
      * @return effectType
      */
     @Override
-    public ParticleEffectData.ParticleEffectType getEffectType() {
+    public ParticleEffectType getEffectType() {
         return getParticleEffectFromName(this.effect);
     }
 
@@ -441,18 +413,6 @@ public class ParticleEffectData extends PersistenceObject implements ParticleEff
     }
 
     /**
-     * Returns the material of the particleEffect
-     *
-     * @return material
-     */
-    @Override
-    public Object getMaterial() {
-        if (this.material == null || MaterialCompatibility12.getMaterialFromId(this.material) == null)
-            return null;
-        return MaterialCompatibility12.getMaterialFromId(this.material);
-    }
-
-    /**
      * Returns the data of the particleEffect
      *
      * @return data
@@ -463,35 +423,16 @@ public class ParticleEffectData extends PersistenceObject implements ParticleEff
     }
 
     /**
-     * Copies the current object.
-     *
-     * @return copy.
-     */
-    @Override
-    public ParticleEffectMeta copy() {
-        final ParticleEffectData particle = new ParticleEffectData();
-        particle.effect = this.effect;
-        particle.amount = this.amount;
-        particle.offsetX = this.offsetX;
-        particle.offsetY = this.offsetY;
-        particle.offsetZ = this.offsetZ;
-        particle.speed = this.speed;
-        particle.material = this.material;
-        particle.data = this.data;
-        return particle;
-    }
-
-    /**
      * Returns if the particleEffect is a color particleEffect
      *
      * @return isColor
      */
     @Override
     public boolean isColorParticleEffect() {
-        return this.effect.equalsIgnoreCase(ParticleEffectData.ParticleEffectType.SPELL_MOB.getSimpleName())
-                || this.effect.equalsIgnoreCase(ParticleEffectData.ParticleEffectType.SPELL_MOB_AMBIENT.getSimpleName())
-                || this.effect.equalsIgnoreCase(ParticleEffectData.ParticleEffectType.REDSTONE.getSimpleName())
-                || this.effect.equalsIgnoreCase(ParticleEffectData.ParticleEffectType.NOTE.getSimpleName());
+        return this.effect.equalsIgnoreCase(ParticleEffectType.SPELL_MOB.getSimpleName())
+                || this.effect.equalsIgnoreCase(ParticleEffectType.SPELL_MOB_AMBIENT.getSimpleName())
+                || this.effect.equalsIgnoreCase(ParticleEffectType.REDSTONE.getSimpleName())
+                || this.effect.equalsIgnoreCase(ParticleEffectType.NOTE.getSimpleName());
     }
 
     /**
@@ -501,7 +442,7 @@ public class ParticleEffectData extends PersistenceObject implements ParticleEff
      */
     @Override
     public boolean isNoteParticleEffect() {
-        return this.effect.equalsIgnoreCase(ParticleEffectData.ParticleEffectType.NOTE.getSimpleName());
+        return this.effect.equalsIgnoreCase(ParticleEffectType.NOTE.getSimpleName());
     }
 
     /**
@@ -511,78 +452,9 @@ public class ParticleEffectData extends PersistenceObject implements ParticleEff
      */
     @Override
     public boolean isMaterialParticleEffect() {
-        return this.effect.equalsIgnoreCase(ParticleEffectData.ParticleEffectType.BLOCK_CRACK.getSimpleName())
-                || this.effect.equalsIgnoreCase(ParticleEffectData.ParticleEffectType.BLOCK_DUST.getSimpleName())
-                || this.effect.equalsIgnoreCase(ParticleEffectData.ParticleEffectType.ITEM_CRACK.getSimpleName());
-    }
-
-    /**
-     * Plays the effect at the given location to the given players.
-     *
-     * @param location location
-     * @param players  players
-     */
-    public void applyTo(Location location, Player... players) {
-        try {
-            if (location == null)
-                throw new IllegalArgumentException("Location cannot be null!");
-            if (this.effect.equals("none"))
-                return;
-            final Player[] playingPlayers;
-            if (players.length == 0) {
-                playingPlayers = location.getWorld().getPlayers().toArray(new Player[location.getWorld().getPlayers().size()]);
-            } else {
-                playingPlayers = players;
-            }
-            final float speed;
-            final int amount;
-            if (this.effect.equals(ParticleEffectData.ParticleEffectType.REDSTONE.getSimpleName()) || this.effect.equals(ParticleEffectData.ParticleEffectType.NOTE.getSimpleName())) {
-                amount = 0;
-                speed = 1.0F;
-            } else {
-                amount = this.getAmount();
-                speed = (float) this.getSpeed();
-            }
-            final Object enumParticle = invokeMethod(null, findClass("net.minecraft.server.VERSION.EnumParticle"), "valueOf", new Class[]{String.class}, new Object[]{this.getEffectType().name().toUpperCase()});
-            int[] additionalInfo = null;
-            if (this.getMaterial() != null) {
-                if (this.getEffectType() == ParticleEffectData.ParticleEffectType.ITEM_CRACK) {
-                    additionalInfo = new int[]{this.material, this.getData()};
-                } else {
-                    additionalInfo = new int[]{this.material, this.getData() << 12};
-                }
-            }
-            final Object packet = invokeConstructor(findClass("net.minecraft.server.VERSION.PacketPlayOutWorldParticles"), new Class[]{
-                    enumParticle.getClass(),
-                    boolean.class,
-                    float.class,
-                    float.class,
-                    float.class,
-                    float.class,
-                    float.class,
-                    float.class,
-                    float.class,
-                    int.class,
-                    int[].class
-            }, new Object[]{
-                    enumParticle,
-                    isLongDistance(location, players),
-                    (float) location.getX(),
-                    (float) location.getY(),
-                    (float) location.getZ(),
-                    (float) this.getOffsetX(),
-                    (float) this.getOffsetY(),
-                    (float) this.getOffsetZ(),
-                    speed,
-                    amount,
-                    additionalInfo
-            });
-            for (final Player player : playingPlayers) {
-                sendPacket(player, packet);
-            }
-        } catch (InstantiationException | NoSuchMethodException | InvocationTargetException | ClassNotFoundException | IllegalAccessException | NoSuchFieldException e) {
-            PetBlocksPlugin.logger().log(Level.WARNING, "Failed to send packet.", e);
-        }
+        return this.effect.equalsIgnoreCase(ParticleEffectType.BLOCK_CRACK.getSimpleName())
+                || this.effect.equalsIgnoreCase(ParticleEffectType.BLOCK_DUST.getSimpleName())
+                || this.effect.equalsIgnoreCase(ParticleEffectType.ITEM_CRACK.getSimpleName());
     }
 
     /**
@@ -602,7 +474,7 @@ public class ParticleEffectData extends PersistenceObject implements ParticleEff
                 && Double.compare(that.offsetY, this.offsetY) == 0
                 && Double.compare(that.offsetZ, this.offsetZ) == 0
                 & (this.effect != null ? this.effect.equals(that.effect) : that.effect == null)
-                && Objects.equals(this.material, that.material) && (this.data != null ? this.data.equals(that.data) : that.data == null);
+                && Objects.equals(this.materialId, that.materialId) && (this.data != null ? this.data.equals(that.data) : that.data == null);
     }
 
     /**
@@ -615,31 +487,7 @@ public class ParticleEffectData extends PersistenceObject implements ParticleEff
         return "effect {" + "name " + this.effect + " amound " + this.amount + " speed " + this.speed + '}';
     }
 
-    /**
-     * Serializes the particleEffect data to be stored to the filesystem
-     *
-     * @return serializedContent
-     */
-    @Override
-    public Map<String, Object> serialize() {
-        final Map<String, Object> map = new LinkedHashMap<>();
-        map.put("effect", this.effect.toUpperCase());
-        map.put("amount", this.amount);
-        map.put("speed", this.speed);
-        final Map<String, Object> tmp3 = new LinkedHashMap<>();
-        tmp3.put("x", this.offsetX);
-        tmp3.put("y", this.offsetY);
-        tmp3.put("z", this.offsetZ);
-        map.put("size", tmp3);
-        final Map<String, Object> tmp2 = new LinkedHashMap<>();
-        if (this.material != null)
-            tmp2.put("material", this.material);
-        else
-            tmp2.put("material", null);
-        tmp2.put("damage", this.data);
-        map.put("block", tmp2);
-        return map;
-    }
+
 
     /**
      * Returns a text of all particleEffects to let the user easily view them
@@ -648,7 +496,7 @@ public class ParticleEffectData extends PersistenceObject implements ParticleEff
      */
     public static String getParticlesText() {
         final StringBuilder builder = new StringBuilder();
-        for (final ParticleEffectData.ParticleEffectType particleEffect : ParticleEffectData.ParticleEffectType.values()) {
+        for (final ParticleEffectType particleEffect : ParticleEffectType.values()) {
             if (builder.length() != 0) {
                 builder.append(", ");
             }
@@ -663,100 +511,11 @@ public class ParticleEffectData extends PersistenceObject implements ParticleEff
      * @param name name
      * @return particleEffectType
      */
-    public static ParticleEffectData.ParticleEffectType getParticleEffectFromName(String name) {
-        for (final ParticleEffectData.ParticleEffectType particleEffect : ParticleEffectData.ParticleEffectType.values()) {
+    public static ParticleEffectType getParticleEffectFromName(String name) {
+        for (final ParticleEffectType particleEffect : ParticleEffectType.values()) {
             if (name != null && particleEffect.getSimpleName().equalsIgnoreCase(name))
                 return particleEffect;
         }
         return null;
     }
-
-    /**
-     * Sends a packet to the client player
-     *
-     * @param player player
-     * @param packet packet
-     * @throws ClassNotFoundException    exception
-     * @throws IllegalAccessException    exception
-     * @throws NoSuchMethodException     exception
-     * @throws InvocationTargetException exception
-     * @throws NoSuchFieldException      exception
-     */
-
-    private static void sendPacket(Player player, Object packet) throws ClassNotFoundException, IllegalAccessException, NoSuchMethodException, InvocationTargetException, NoSuchFieldException {
-        final Object craftPlayer = findClass("org.bukkit.craftbukkit.VERSION.entity.CraftPlayer").cast(player);
-        final Object entityPlayer = invokeMethod(craftPlayer, craftPlayer.getClass(), "getHandle", new Class[]{}, new Object[]{});
-        final Field field = findClass("net.minecraft.server.VERSION.EntityPlayer").getDeclaredField("playerConnection");
-        field.setAccessible(true);
-        final Object connection = field.get(entityPlayer);
-        invokeMethod(connection, connection.getClass(), "sendPacket", new Class[]{packet.getClass().getInterfaces()[0]}, new Object[]{packet});
-    }
-
-    /**
-     * Invokes a constructor by the given parameters
-     *
-     * @param clazz      clazz
-     * @param paramTypes paramTypes
-     * @param params     params
-     * @return instance
-     * @throws NoSuchMethodException     exception
-     * @throws IllegalAccessException    exception
-     * @throws InvocationTargetException exception
-     * @throws InstantiationException    exception
-     */
-    private static Object invokeConstructor(Class<?> clazz, Class[] paramTypes, Object[] params) throws
-            NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
-        final Constructor constructor = clazz.getDeclaredConstructor(paramTypes);
-        constructor.setAccessible(true);
-        return constructor.newInstance(params);
-    }
-
-    /**
-     * Invokes a method by the given parameters
-     *
-     * @param instance   instance
-     * @param clazz      clazz
-     * @param name       name
-     * @param paramTypes paramTypes
-     * @param params     params
-     * @return returnedObject
-     * @throws InvocationTargetException exception
-     * @throws IllegalAccessException    exception
-     * @throws NoSuchMethodException     exception
-     */
-    private static Object invokeMethod(Object instance, Class<?> clazz, String name, Class[] paramTypes, Object[]
-            params) throws InvocationTargetException, IllegalAccessException, NoSuchMethodException {
-        final Method method = clazz.getDeclaredMethod(name, paramTypes);
-        method.setAccessible(true);
-        return method.invoke(instance, params);
-    }
-
-    /**
-     * Finds a class regarding of the server Version
-     *
-     * @param name name
-     * @return clazz
-     * @throws ClassNotFoundException exception
-     */
-    private static Class<?> findClass(String name) throws ClassNotFoundException {
-        return Class.forName(name.replace("VERSION", Bukkit.getServer().getClass().getPackage().getName().replace(".", ",").split(",")[3]));
-    }
-
-    /**
-     * Checks if longDistance attribute is necessary
-     *
-     * @param location location
-     * @param players  players
-     * @return isNecessary
-     */
-    private static boolean isLongDistance(Location location, Player[] players) {
-        for (final Player player : players) {
-            if (location.getWorld().getName().equals(player.getLocation().getWorld().getName())
-                    && player.getLocation().distanceSquared(location) > 65536) {
-                return true;
-            }
-        }
-        return false;
-    }
-
 }

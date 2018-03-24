@@ -1,13 +1,11 @@
 package com.github.shynixn.petblocks.bukkit.logic.persistence.controller
 
-import com.github.shynixn.petblocks.api.persistence.entity.PlayerMeta
+import com.github.shynixn.petblocks.api.persistence.entity.ParticleEffectMeta
 import com.github.shynixn.petblocks.bukkit.PetBlocksPlugin
 import com.github.shynixn.petblocks.bukkit.logic.business.helper.LoggingBridge
-import com.github.shynixn.petblocks.bukkit.logic.persistence.entity.BukkitPlayerData
+import com.github.shynixn.petblocks.bukkit.logic.persistence.entity.BukkitParticleEffect
 import com.github.shynixn.petblocks.core.logic.business.helper.ExtensionHikariConnectionContext
-import com.github.shynixn.petblocks.core.logic.persistence.controller.PlayerDataRepository
-import com.github.shynixn.petblocks.core.logic.persistence.entity.PlayerData
-import org.bukkit.entity.Player
+import com.github.shynixn.petblocks.core.logic.persistence.controller.ParticleEffectDataRepository
 
 /**
  * Created by Shynixn 2018.
@@ -36,25 +34,13 @@ import org.bukkit.entity.Player
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class BukkitPlayerDataRepository(connectionContext : ExtensionHikariConnectionContext) : PlayerDataRepository<Player>(connectionContext, LoggingBridge(PetBlocksPlugin.logger())) {
+class BukkitParticleEffectDataRepository(connectionContext : ExtensionHikariConnectionContext) : ParticleEffectDataRepository(connectionContext, LoggingBridge(PetBlocksPlugin.logger())) {
     /**
-     * Creates a new playerData from the given player.
+     * Creates a new particleEffectMeta.
      *
-     * @param player player
-     * @return playerData
+     * @return meta
      */
-    override fun create(player: Player): PlayerMeta {
-        val playerStats = this.create()
-        playerStats.name = player.name
-        playerStats.setUuid(player.uniqueId)
-        return playerStats
-    }
-
-    /**
-     * Creates a new Player Data object.
-     * @return playerData.
-     */
-    override fun create(): PlayerData {
-        return BukkitPlayerData()
+    override fun create(): ParticleEffectMeta {
+        return BukkitParticleEffect()
     }
 }

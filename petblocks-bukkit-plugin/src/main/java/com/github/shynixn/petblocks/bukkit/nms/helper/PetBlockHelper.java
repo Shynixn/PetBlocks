@@ -14,10 +14,10 @@ import com.github.shynixn.petblocks.bukkit.PetBlocksPlugin;
 import com.github.shynixn.petblocks.bukkit.logic.business.configuration.ConfigPet;
 import com.github.shynixn.petblocks.bukkit.logic.business.helper.PetBlockModifyHelper;
 import com.github.shynixn.petblocks.bukkit.logic.business.helper.SkinHelper;
-import com.github.shynixn.petblocks.bukkit.logic.persistence.entity.ParticleEffectData;
 import com.github.shynixn.petblocks.bukkit.logic.persistence.entity.PetData;
 import com.github.shynixn.petblocks.bukkit.logic.persistence.entity.SoundBuilder;
 import com.github.shynixn.petblocks.bukkit.nms.v1_12_R1.MaterialCompatibility12;
+import com.github.shynixn.petblocks.core.logic.persistence.entity.ParticleEffectData;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -39,12 +39,12 @@ import java.util.logging.Level;
 public final class PetBlockHelper {
     private static final Random random = new Random();
     private static final SoundMeta explosionSound = new SoundBuilder("EXPLODE", 1.0F, 2.0F);
-    private static final ParticleEffectMeta angryParticle = new ParticleEffectData()
+    private static final ParticleEffectMeta angryParticle = createParticleComp()
             .setEffectType(ParticleEffectMeta.ParticleEffectType.VILLAGER_ANGRY)
             .setOffset(2, 2, 2)
             .setSpeed(0.1)
             .setAmount(2);
-    private static final ParticleEffectMeta cloud = new ParticleEffectData()
+    private static final ParticleEffectMeta cloud = createParticleComp()
             .setEffectType(ParticleEffectMeta.ParticleEffectType.CLOUD)
             .setOffset(1, 1, 1)
             .setSpeed(0.1)
@@ -52,6 +52,15 @@ public final class PetBlockHelper {
 
     private PetBlockHelper() {
         super();
+    }
+
+    public static ParticleEffectMeta createParticleComp() {
+        try {
+            final Class<?> clazz = Class.forName("com.github.shynixn.petblocks.bukkit.logic.persistence.entity.BukkitParticleEffect");
+            return (ParticleEffectMeta) clazz.newInstance();
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public static void playParticleEffectForPipeline(Location location, ParticleEffectMeta particleEffectMeta, PetBlock petBlock) {

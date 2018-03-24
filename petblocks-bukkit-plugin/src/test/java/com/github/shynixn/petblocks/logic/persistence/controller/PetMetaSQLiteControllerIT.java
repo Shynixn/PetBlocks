@@ -8,8 +8,8 @@ import com.github.shynixn.petblocks.api.persistence.entity.PetMeta;
 import com.github.shynixn.petblocks.api.persistence.entity.PlayerMeta;
 import com.github.shynixn.petblocks.bukkit.PetBlocksPlugin;
 import com.github.shynixn.petblocks.bukkit.logic.Factory;
-import com.github.shynixn.petblocks.bukkit.logic.persistence.entity.EngineData;
 import com.github.shynixn.petblocks.bukkit.logic.persistence.entity.PetData;
+import com.github.shynixn.petblocks.core.logic.persistence.entity.EngineData;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Server;
@@ -104,7 +104,8 @@ public class PetMetaSQLiteControllerIT {
                     assertThrows(IllegalArgumentException.class, () -> controller.store(meta));
 
                     meta.setSkin(Material.STONE.getId(), (short)5, null, false);
-                    meta.setEngine(new EngineData(4));
+                    meta.setEngine(new EngineData<Object>(4) {
+                    });
                     controller.store(meta);
 
                     assertEquals(1, controller.size());
@@ -132,7 +133,8 @@ public class PetMetaSQLiteControllerIT {
                     PetData meta = new PetData();
                     meta.setPetDisplayName("Me");
                     meta.setSkin(Material.BIRCH_DOOR_ITEM.getId(),5 , "This is my long skin.", true);
-                    meta.setEngine(new EngineData(4));
+                    meta.setEngine(new EngineData<Object>(4) {
+                    });
                     meta.setEnabled(true);
                     meta.setAge(500);
                     meta.setSoundEnabled(true);
@@ -166,7 +168,8 @@ public class PetMetaSQLiteControllerIT {
                     meta.setSoundEnabled(false);
                     meta.setPlayerMeta(playerMeta);
                     meta.setParticleEffectMeta(particleEffectMeta);
-                    meta.setEngine(new EngineData(1));
+                    meta.setEngine(new EngineData<Object>(1) {
+                    });
                     controller.store(meta);
 
                     assertEquals(1, controller.size());

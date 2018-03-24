@@ -1,13 +1,12 @@
-package com.github.shynixn.petblocks.bukkit.logic.persistence.controller
+package com.github.shynixn.petblocks.bukkit.logic.persistence.configuration
 
-import com.github.shynixn.petblocks.api.persistence.entity.PlayerMeta
 import com.github.shynixn.petblocks.bukkit.PetBlocksPlugin
-import com.github.shynixn.petblocks.bukkit.logic.business.helper.LoggingBridge
-import com.github.shynixn.petblocks.bukkit.logic.persistence.entity.BukkitPlayerData
-import com.github.shynixn.petblocks.core.logic.business.helper.ExtensionHikariConnectionContext
-import com.github.shynixn.petblocks.core.logic.persistence.controller.PlayerDataRepository
-import com.github.shynixn.petblocks.core.logic.persistence.entity.PlayerData
+import com.github.shynixn.petblocks.bukkit.logic.persistence.entity.BukkitEngineData
+import com.github.shynixn.petblocks.core.logic.persistence.configuration.EngineConfiguration
+import org.bukkit.configuration.MemorySection
 import org.bukkit.entity.Player
+import org.bukkit.plugin.java.JavaPlugin
+import java.util.logging.Level
 
 /**
  * Created by Shynixn 2018.
@@ -36,25 +35,24 @@ import org.bukkit.entity.Player
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class BukkitPlayerDataRepository(connectionContext : ExtensionHikariConnectionContext) : PlayerDataRepository<Player>(connectionContext, LoggingBridge(PetBlocksPlugin.logger())) {
-    /**
-     * Creates a new playerData from the given player.
-     *
-     * @param player player
-     * @return playerData
-     */
-    override fun create(player: Player): PlayerMeta {
-        val playerStats = this.create()
-        playerStats.name = player.name
-        playerStats.setUuid(player.uniqueId)
-        return playerStats
-    }
+class BukkitEngineConfiguration : EngineConfiguration<Player>() {
+
+    private val plugin = JavaPlugin.getPlugin(PetBlocksPlugin::class.java)
 
     /**
-     * Creates a new Player Data object.
-     * @return playerData.
+     * Reloads the content from the fileSystem.
      */
-    override fun create(): PlayerData {
-        return BukkitPlayerData()
+    override fun reload() {
+        this.items.clear()
+        this.plugin.reloadConfig()
+        val data = (this.plugin.config.get("engines") as MemorySection).getValues(false)
+        for (key in data.keys) {
+            val content = (this.plugin.config.get("engines." + key) as MemorySection).getValues(true)
+            try {
+                this.items.add(BukkitEngineData(key.toLong(), content))
+            } catch (e: Exception) {
+                PetBlocksPlugin.logger().log(Level.WARNING, "Failed to add content " + key + '.'.toString(), e)
+            }
+        }
     }
 }

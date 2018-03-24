@@ -1,13 +1,9 @@
-package com.github.shynixn.petblocks.bukkit.logic.persistence.entity;
+package com.github.shynixn.petblocks.core.logic.persistence.entity;
 
 import com.github.shynixn.petblocks.api.business.entity.GUIItemContainer;
 import com.github.shynixn.petblocks.api.business.enumeration.RideType;
 import com.github.shynixn.petblocks.api.persistence.entity.EngineContainer;
 import com.github.shynixn.petblocks.api.persistence.entity.SoundMeta;
-import com.github.shynixn.petblocks.bukkit.logic.business.entity.ItemContainer;
-import com.github.shynixn.petblocks.core.logic.persistence.entity.PersistenceObject;
-import org.bukkit.configuration.MemorySection;
-import org.bukkit.entity.Player;
 
 import java.util.Map;
 
@@ -40,37 +36,20 @@ import java.util.Map;
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-public class EngineData extends PersistenceObject implements EngineContainer<GUIItemContainer<Player>> {
+public abstract class EngineData<Player> extends PersistenceObject implements EngineContainer<GUIItemContainer<Player>> {
 
-    private GUIItemContainer<Player> itemContainer;
+    protected GUIItemContainer<Player> itemContainer;
 
-    private String entity;
-    private RideType rideType;
+    protected String entity;
+    protected RideType rideType;
 
-    private SoundMeta ambientSound;
-    private SoundMeta walkingSound;
-
-    /**
-     * Initializes a new engine data
-     *
-     * @param id   id
-     * @param data data
-     * @throws Exception exception
-     */
-    public EngineData(long id, Map<String, Object> data) throws Exception {
-        super();
-        this.setId(id);
-        this.itemContainer = new ItemContainer((int) id, ((MemorySection) data.get("gui")).getValues(false));
-        this.entity = (String) data.get("behaviour.entity");
-        this.rideType = RideType.valueOf((String) data.get("behaviour.riding"));
-        this.ambientSound = new SoundBuilder((String) data.get("sound.ambient.name"), (double) data.get("sound.ambient.volume"), (double) data.get("sound.ambient.pitch"));
-        this.walkingSound = new SoundBuilder((String) data.get("sound.walking.name"), (double) data.get("sound.walking.volume"), (double) data.get("sound.walking.pitch"));
-    }
+    protected SoundMeta ambientSound;
+    protected SoundMeta walkingSound;
 
     /**
      * Initializes a new engine data
      *
-     * @param id id
+     * @param id id.
      */
     public EngineData(long id) {
         super();

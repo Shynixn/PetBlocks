@@ -3,7 +3,6 @@ package com.github.shynixn.petblocks.bukkit.logic.business.configuration;
 import com.github.shynixn.petblocks.api.persistence.entity.ParticleEffectMeta;
 import com.github.shynixn.petblocks.api.persistence.entity.SoundMeta;
 import com.github.shynixn.petblocks.bukkit.PetBlocksPlugin;
-import com.github.shynixn.petblocks.bukkit.logic.persistence.entity.ParticleEffectData;
 import com.github.shynixn.petblocks.bukkit.logic.persistence.entity.SoundBuilder;
 import org.bukkit.configuration.MemorySection;
 
@@ -122,7 +121,7 @@ public class ConfigPet extends SimpleConfig {
     public ParticleEffectMeta getFeedingClickParticleEffect() {
         if (this.feedingClickParticleCache == null) {
             try {
-                this.feedingClickParticleCache = new ParticleEffectData(((MemorySection) this.getData("pet.feeding.click-particle")).getValues(false));
+                this.feedingClickParticleCache = Config.createParticleComp(((MemorySection) this.getData("pet.feeding.click-particle")).getValues(false));
             } catch (final Exception e) {
                 PetBlocksPlugin.logger().log(Level.WARNING, "Failed to load feeding click-sound.", e);
             }

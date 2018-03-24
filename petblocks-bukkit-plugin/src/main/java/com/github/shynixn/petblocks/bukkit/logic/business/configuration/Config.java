@@ -1,26 +1,26 @@
 package com.github.shynixn.petblocks.bukkit.logic.business.configuration;
 
 import com.github.shynixn.petblocks.api.business.entity.GUIItemContainer;
-import com.github.shynixn.petblocks.api.persistence.controller.CostumeController;
-import com.github.shynixn.petblocks.api.persistence.controller.EngineController;
-import com.github.shynixn.petblocks.api.persistence.controller.OtherGUIItemsController;
-import com.github.shynixn.petblocks.api.persistence.controller.ParticleController;
+import com.github.shynixn.petblocks.api.persistence.controller.*;
 import com.github.shynixn.petblocks.api.persistence.entity.EngineContainer;
 import com.github.shynixn.petblocks.api.persistence.entity.ParticleEffectMeta;
 import com.github.shynixn.petblocks.api.persistence.entity.PetMeta;
 import com.github.shynixn.petblocks.bukkit.PetBlocksPlugin;
 import com.github.shynixn.petblocks.bukkit.logic.business.helper.ChatBuilder;
 import com.github.shynixn.petblocks.bukkit.logic.Factory;
-import com.github.shynixn.petblocks.bukkit.logic.persistence.entity.ParticleEffectData;
 import com.github.shynixn.petblocks.bukkit.logic.persistence.entity.PetData;
 import com.github.shynixn.petblocks.bukkit.nms.NMSRegistry;
+import com.github.shynixn.petblocks.core.logic.business.helper.ExtensionHikariConnectionContext;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.configuration.MemorySection;
 import org.bukkit.entity.Player;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.logging.Level;
 
@@ -251,11 +251,21 @@ public final class Config extends SimpleConfig {
         if (!((String) this.getData("join.settings.particle.name")).equalsIgnoreCase("none")) {
             final ParticleEffectMeta meta;
             try {
-                meta = new ParticleEffectData(((MemorySection) this.getData("effect")).getValues(false));
+                meta = createParticleComp(((MemorySection) this.getData("effect")).getValues(false));
                 petMeta.setParticleEffectMeta(meta);
             } catch (final Exception e) {
                 PetBlocksPlugin.logger().log(Level.WARNING, "Failed to load particle effect for join pet.");
             }
+        }
+    }
+
+    public static ParticleEffectMeta createParticleComp(Map<String, Object> data) {
+        try {
+            final Class<?> clazz = Class.forName("com.github.shynixn.petblocks.bukkit.logic.persistence.entity.BukkitParticleEffect");
+            final Constructor constructor = clazz.getDeclaredConstructor(Map.class);
+            return (ParticleEffectMeta) constructor.newInstance(data);
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+            throw new RuntimeException(e);
         }
     }
 

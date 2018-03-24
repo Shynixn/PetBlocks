@@ -1,14 +1,10 @@
-package com.github.shynixn.petblocks.bukkit.logic.persistence.controller;
+package com.github.shynixn.petblocks.core.logic.persistence.controller;
 
 import com.github.shynixn.petblocks.api.persistence.controller.ParticleEffectMetaController;
 import com.github.shynixn.petblocks.api.persistence.entity.ParticleEffectMeta;
-import com.github.shynixn.petblocks.bukkit.PetBlocksPlugin;
-import com.github.shynixn.petblocks.bukkit.logic.business.helper.LoggingBridge;
-import com.github.shynixn.petblocks.bukkit.logic.persistence.entity.ParticleEffectData;
-import com.github.shynixn.petblocks.bukkit.nms.v1_12_R1.MaterialCompatibility12;
 import com.github.shynixn.petblocks.core.logic.business.helper.ExtensionHikariConnectionContext;
-import com.github.shynixn.petblocks.core.logic.persistence.controller.DataBaseRepository;
-import org.bukkit.Material;
+import com.github.shynixn.petblocks.core.logic.persistence.entity.ParticleEffectData;
+import org.slf4j.Logger;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -17,7 +13,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.logging.Level;
 
 /**
  * DatabaseRepository for particleEffects.
@@ -46,15 +41,15 @@ import java.util.logging.Level;
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-public class ParticleEffectDataRepository extends DataBaseRepository<ParticleEffectMeta> implements ParticleEffectMetaController {
-
+public abstract class ParticleEffectDataRepository extends DataBaseRepository<ParticleEffectMeta> implements ParticleEffectMetaController {
     /**
-     * Initializes a new particleEffect repository.
+     * Initializes a new databaseRepository with the given connectionContext.
      *
      * @param connectionContext connectionContext
+     * @param logger            logger
      */
-    public ParticleEffectDataRepository(ExtensionHikariConnectionContext connectionContext) {
-        super(connectionContext, new LoggingBridge(PetBlocksPlugin.logger()));
+    public ParticleEffectDataRepository(ExtensionHikariConnectionContext connectionContext, Logger logger) {
+        super(connectionContext, logger);
     }
 
     /**
@@ -84,7 +79,7 @@ public class ParticleEffectDataRepository extends DataBaseRepository<ParticleEff
                 items.add(data);
             }
         } catch (final SQLException e) {
-            PetBlocksPlugin.logger().log(Level.WARNING, "Database error occurred.", e);
+            this.logger.error("Database error occurred.", e);
         }
         return items;
     }
@@ -99,7 +94,7 @@ public class ParticleEffectDataRepository extends DataBaseRepository<ParticleEff
         try (Connection connection = this.dbContext.getConnection()) {
             String materialName = null;
             if (item.getMaterial() != null)
-                materialName = ((Material) item.getMaterial()).name();
+                materialName = item.getMaterialName();
             int data = -1;
             if (item.getData() != null)
                 data = item.getData();
@@ -114,18 +109,8 @@ public class ParticleEffectDataRepository extends DataBaseRepository<ParticleEff
                     data,
                     item.getId());
         } catch (final SQLException e) {
-            PetBlocksPlugin.logger().log(Level.WARNING, "Database error occurred.", e);
+            this.logger.error("Database error occurred.", e);
         }
-    }
-
-    /**
-     * Creates a new particleEffectMeta.
-     *
-     * @return meta
-     */
-    @Override
-    public ParticleEffectMeta create() {
-        return new ParticleEffectData();
     }
 
     /**
@@ -143,7 +128,7 @@ public class ParticleEffectDataRepository extends DataBaseRepository<ParticleEff
                 return Optional.of(this.from(resultSet));
             }
         } catch (final SQLException e) {
-            PetBlocksPlugin.logger().log(Level.WARNING, "Database error occurred.", e);
+            this.logger.error("Database error occurred.", e);
         }
         return Optional.empty();
     }
@@ -160,7 +145,7 @@ public class ParticleEffectDataRepository extends DataBaseRepository<ParticleEff
                 this.dbContext.executeStoredUpdate("particle/delete", connection,
                         item.getId());
             } catch (final SQLException e) {
-                PetBlocksPlugin.logger().log(Level.WARNING, "Database error occurred.", e);
+                this.logger.error("Database error occurred.", e);
             }
         }
     }
@@ -175,7 +160,7 @@ public class ParticleEffectDataRepository extends DataBaseRepository<ParticleEff
         try (Connection connection = this.dbContext.getConnection()) {
             String materialName = null;
             if (item.getMaterial() != null)
-                materialName = ((Material) item.getMaterial()).name();
+                materialName = item.getMaterialName();
             final long id = this.dbContext.executeStoredInsert("particle/insert", connection,
                     item.getEffectName(),
                     item.getAmount(),
@@ -187,7 +172,7 @@ public class ParticleEffectDataRepository extends DataBaseRepository<ParticleEff
                     item.getData());
             ((ParticleEffectData) item).setId(id);
         } catch (final SQLException e) {
-            PetBlocksPlugin.logger().log(Level.WARNING, "Database error occurred.", e);
+            this.logger.error("Database error occurred.", e);
         }
     }
 
@@ -202,7 +187,7 @@ public class ParticleEffectDataRepository extends DataBaseRepository<ParticleEff
             resultSet.next();
             return resultSet.getInt(1);
         } catch (final SQLException e) {
-            PetBlocksPlugin.logger().log(Level.WARNING, "Database error occurred.", e);
+            this.logger.error("Database error occurred.", e);
         }
         return 0;
     }
@@ -215,7 +200,7 @@ public class ParticleEffectDataRepository extends DataBaseRepository<ParticleEff
      */
     @Override
     protected ParticleEffectMeta from(ResultSet resultSet) throws SQLException {
-        final ParticleEffectData particleEffectData = new ParticleEffectData();
+        final ParticleEffectData particleEffectData = (ParticleEffectData) create();
         particleEffectData.setId(resultSet.getLong("id"));
         particleEffectData.setEffectName(resultSet.getString("name"));
         particleEffectData.setAmount(resultSet.getInt("amount"));
@@ -224,7 +209,7 @@ public class ParticleEffectDataRepository extends DataBaseRepository<ParticleEff
         particleEffectData.setOffsetY(resultSet.getDouble("y"));
         particleEffectData.setOffsetZ(resultSet.getDouble("z"));
         if (resultSet.getString("material") != null) {
-            particleEffectData.setMaterial(MaterialCompatibility12.getIdFromMaterial(Material.getMaterial(resultSet.getString("material"))));
+            particleEffectData.setMaterialName(resultSet.getString("material"));
         }
         if (resultSet.getInt("data") == -1) {
             particleEffectData.setData(null);
