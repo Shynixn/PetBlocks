@@ -5,6 +5,7 @@ import com.github.shynixn.petblocks.api.business.enumeration.RideType;
 import com.github.shynixn.petblocks.api.persistence.entity.EngineContainer;
 import com.github.shynixn.petblocks.api.persistence.entity.SoundMeta;
 import com.github.shynixn.petblocks.bukkit.logic.business.entity.ItemContainer;
+import com.github.shynixn.petblocks.core.logic.persistence.entity.PersistenceObject;
 import org.bukkit.configuration.MemorySection;
 import org.bukkit.entity.Player;
 

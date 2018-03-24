@@ -13,5 +13,12 @@
     <artifactId>petblocks-core</artifactId>
     <version>7.0.0-SNAPSHOT</version>
 
+    <dependencies>
+        <dependency>
+            <groupId>com.github.shynixn.petblocks</groupId>
+            <artifactId>petblocks-api</artifactId>
+            <version>7.0.0-SNAPSHOT</version>
+        </dependency>
+    </dependencies>
 
 </project>

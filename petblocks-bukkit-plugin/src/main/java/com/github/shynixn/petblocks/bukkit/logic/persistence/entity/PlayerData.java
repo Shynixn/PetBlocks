@@ -1,6 +1,7 @@
 package com.github.shynixn.petblocks.bukkit.logic.persistence.entity;
 
 import com.github.shynixn.petblocks.api.persistence.entity.PlayerMeta;
+import com.github.shynixn.petblocks.core.logic.persistence.entity.PersistenceObject;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
