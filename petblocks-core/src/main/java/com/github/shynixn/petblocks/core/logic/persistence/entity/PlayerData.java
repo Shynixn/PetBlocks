@@ -1,13 +1,10 @@
-package com.github.shynixn.petblocks.bukkit.logic.persistence.entity;
+package com.github.shynixn.petblocks.core.logic.persistence.entity;
 
 import com.github.shynixn.petblocks.api.persistence.entity.PlayerMeta;
-import com.github.shynixn.petblocks.core.logic.persistence.entity.PersistenceObject;
-import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
 
 import java.util.UUID;
 
-public class PlayerData extends PersistenceObject implements PlayerMeta {
+public abstract class PlayerData extends PersistenceObject implements PlayerMeta {
     private String name;
     private UUID uuid;
 
@@ -52,29 +49,15 @@ public class PlayerData extends PersistenceObject implements PlayerMeta {
     }
 
     /**
-     * Returns the player of the playerData
-     *
-     * @return player
-     */
-    @Override
-    public Player getPlayer() {
-        try {
-            return Bukkit.getPlayer(this.uuid);
-        } catch (final Exception ex) {
-            return null;
-        }
-    }
-
-    /**
      * Generates the playerData from a player
      *
      * @param player player
      * @return playerData
      */
-    public static PlayerData from(Player player) {
+  /*  public static PlayerData from(Player player) {
         final PlayerData playerStats = new PlayerData();
         playerStats.setName(player.getName());
         playerStats.setUuid(player.getUniqueId());
         return playerStats;
-    }
+    */
 }

@@ -9,8 +9,7 @@ import com.github.shynixn.petblocks.bukkit.logic.business.configuration.*;
 import com.github.shynixn.petblocks.bukkit.logic.business.controller.PetBlockRepository;
 import com.github.shynixn.petblocks.bukkit.logic.persistence.controller.ParticleEffectDataRepository;
 import com.github.shynixn.petblocks.bukkit.logic.persistence.controller.PetDataRepository;
-import com.github.shynixn.petblocks.bukkit.logic.persistence.controller.PlayerDataRepository;
-import com.github.shynixn.petblocks.bukkit.logic.business.helper.ExtensionHikariConnectionContext;
+import com.github.shynixn.petblocks.core.logic.business.helper.ExtensionHikariConnectionContext;
 import org.apache.commons.io.IOUtils;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
@@ -20,6 +19,8 @@ import org.bukkit.plugin.java.JavaPlugin;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -31,14 +32,20 @@ public class Factory {
     private static ExtensionHikariConnectionContext connectionContext;
 
     public static PlayerMetaController<Player> createPlayerDataController() {
-        return new PlayerDataRepository(connectionContext);
+        try {
+            final Class<?> clazz = Class.forName("com.github.shynixn.petblocks.bukkit.logic.persistence.controller.BukkitPlayerDataRepository");
+            Constructor constructor = clazz.getDeclaredConstructor(ExtensionHikariConnectionContext.class);
+            return (PlayerMetaController<Player>) constructor.newInstance(connectionContext);
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public static ParticleEffectMetaController createParticleEffectController() {
         return new ParticleEffectDataRepository(connectionContext);
     }
 
-    public static EngineController<EngineContainer<GUIItemContainer<Player>>,GUIItemContainer<Player>> createEngineController() {
+    public static EngineController<EngineContainer<GUIItemContainer<Player>>, GUIItemContainer<Player>> createEngineController() {
         return new EngineConfiguration(JavaPlugin.getPlugin(PetBlocksPlugin.class));
     }
 
@@ -99,7 +106,7 @@ public class Factory {
                         throw new IOException("Creating database file failed.");
                     }
                 }
-                connectionContext = ExtensionHikariConnectionContext.from(ExtensionHikariConnectionContext.SQLITE_DRIVER, "jdbc:sqlite:" + file.getAbsolutePath(), false,retriever);
+                connectionContext = ExtensionHikariConnectionContext.from(ExtensionHikariConnectionContext.SQLITE_DRIVER, "jdbc:sqlite:" + file.getAbsolutePath(), false, retriever);
                 try (Connection connection = connectionContext.getConnection()) {
                     connectionContext.execute("PRAGMA foreign_keys=ON", connection);
                 }

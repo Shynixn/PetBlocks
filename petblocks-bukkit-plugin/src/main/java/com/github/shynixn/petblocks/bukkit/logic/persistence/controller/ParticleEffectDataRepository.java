@@ -3,9 +3,11 @@ package com.github.shynixn.petblocks.bukkit.logic.persistence.controller;
 import com.github.shynixn.petblocks.api.persistence.controller.ParticleEffectMetaController;
 import com.github.shynixn.petblocks.api.persistence.entity.ParticleEffectMeta;
 import com.github.shynixn.petblocks.bukkit.PetBlocksPlugin;
+import com.github.shynixn.petblocks.bukkit.logic.business.helper.LoggingBridge;
 import com.github.shynixn.petblocks.bukkit.logic.persistence.entity.ParticleEffectData;
-import com.github.shynixn.petblocks.bukkit.logic.business.helper.ExtensionHikariConnectionContext;
 import com.github.shynixn.petblocks.bukkit.nms.v1_12_R1.MaterialCompatibility12;
+import com.github.shynixn.petblocks.core.logic.business.helper.ExtensionHikariConnectionContext;
+import com.github.shynixn.petblocks.core.logic.persistence.controller.DataBaseRepository;
 import org.bukkit.Material;
 
 import java.sql.Connection;
@@ -52,7 +54,7 @@ public class ParticleEffectDataRepository extends DataBaseRepository<ParticleEff
      * @param connectionContext connectionContext
      */
     public ParticleEffectDataRepository(ExtensionHikariConnectionContext connectionContext) {
-        super(connectionContext);
+        super(connectionContext, new LoggingBridge(PetBlocksPlugin.logger()));
     }
 
     /**

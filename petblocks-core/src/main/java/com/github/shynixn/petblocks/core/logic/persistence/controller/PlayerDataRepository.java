@@ -1,11 +1,10 @@
-package com.github.shynixn.petblocks.bukkit.logic.persistence.controller;
+package com.github.shynixn.petblocks.core.logic.persistence.controller;
 
 import com.github.shynixn.petblocks.api.persistence.controller.PlayerMetaController;
 import com.github.shynixn.petblocks.api.persistence.entity.PlayerMeta;
-import com.github.shynixn.petblocks.bukkit.PetBlocksPlugin;
-import com.github.shynixn.petblocks.bukkit.logic.business.helper.ExtensionHikariConnectionContext;
-import com.github.shynixn.petblocks.bukkit.logic.persistence.entity.PlayerData;
-import org.bukkit.entity.Player;
+import com.github.shynixn.petblocks.core.logic.business.helper.ExtensionHikariConnectionContext;
+import com.github.shynixn.petblocks.core.logic.persistence.entity.PlayerData;
+import org.slf4j.Logger;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -44,29 +43,23 @@ import java.util.logging.Level;
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-public class PlayerDataRepository extends DataBaseRepository<PlayerMeta> implements PlayerMetaController<Player> {
+public abstract class PlayerDataRepository<Player> extends DataBaseRepository<PlayerMeta> implements PlayerMetaController<Player> {
 
     /**
-     * Initializes a new playerData repository.
+     * Initializes a new databaseRepository with the given connectionContext.
      *
      * @param connectionContext connectionContext
+     * @param logger            logger
      */
-    public PlayerDataRepository(ExtensionHikariConnectionContext connectionContext) {
-        super(connectionContext);
+    public PlayerDataRepository(ExtensionHikariConnectionContext connectionContext, Logger logger) {
+        super(connectionContext, logger);
     }
 
     /**
-     * Creates a new playerData from the given player.
-     *
-     * @param player player
-     * @return playerData
+     * Creates a new Player Data object.
+     * @return playerData.
      */
-    @Override
-    public PlayerMeta create(Player player) {
-        if (player == null)
-            throw new IllegalArgumentException("Player cannot be null!");
-        return PlayerData.from(player);
-    }
+    public abstract PlayerData create();
 
     /**
      * Returns the playerMeta of the given uuid.
@@ -85,7 +78,7 @@ public class PlayerDataRepository extends DataBaseRepository<PlayerMeta> impleme
                 return Optional.of(this.from(resultSet));
             }
         } catch (final SQLException e) {
-            PetBlocksPlugin.logger().log(Level.WARNING, "Database error occurred.", e);
+            this.logger.error("Database error occurred.", e);
         }
         return Optional.empty();
     }
@@ -104,7 +97,7 @@ public class PlayerDataRepository extends DataBaseRepository<PlayerMeta> impleme
                 return Optional.of(this.from(resultSet));
             }
         } catch (final SQLException e) {
-            PetBlocksPlugin.logger().log(Level.WARNING, "Database error occurred.", e);
+            this.logger.error("Database error occurred.", e);
         }
         return Optional.empty();
     }
@@ -136,7 +129,7 @@ public class PlayerDataRepository extends DataBaseRepository<PlayerMeta> impleme
                 playerList.add(playerData);
             }
         } catch (final SQLException e) {
-            PetBlocksPlugin.logger().log(Level.WARNING, "Database error occurred.", e);
+            this.logger.error("Database error occurred.", e);
         }
         return playerList;
     }
@@ -154,7 +147,7 @@ public class PlayerDataRepository extends DataBaseRepository<PlayerMeta> impleme
                     item.getName(),
                     item.getId());
         } catch (final SQLException e) {
-            PetBlocksPlugin.logger().log(Level.WARNING, "Database error occurred.", e);
+            this.logger.error("Database error occurred.", e);
         }
     }
 
@@ -169,7 +162,7 @@ public class PlayerDataRepository extends DataBaseRepository<PlayerMeta> impleme
             this.dbContext.executeStoredUpdate("player/delete", connection,
                     item.getId());
         } catch (final SQLException e) {
-            PetBlocksPlugin.logger().log(Level.WARNING, "Database error occurred.", e);
+            this.logger.error("Database error occurred.", e);
         }
     }
 
@@ -187,7 +180,7 @@ public class PlayerDataRepository extends DataBaseRepository<PlayerMeta> impleme
                     item.getName(), item.getUUID().toString());
             ((PlayerData) item).setId(id);
         } catch (final SQLException e) {
-            PetBlocksPlugin.logger().log(Level.WARNING, "Database error occurred.", e);
+            this.logger.error("Database error occurred.", e);
         }
     }
 
@@ -199,7 +192,7 @@ public class PlayerDataRepository extends DataBaseRepository<PlayerMeta> impleme
      */
     @Override
     protected PlayerData from(ResultSet resultSet) throws SQLException {
-        final PlayerData playerStats = new PlayerData();
+        final PlayerData playerStats = this.create();
         playerStats.setId(resultSet.getLong("id"));
         playerStats.setName(resultSet.getString("name"));
         playerStats.setUuid(UUID.fromString(resultSet.getString("uuid")));
@@ -217,7 +210,7 @@ public class PlayerDataRepository extends DataBaseRepository<PlayerMeta> impleme
             resultSet.next();
             return resultSet.getInt(1);
         } catch (final SQLException e) {
-            PetBlocksPlugin.logger().log(Level.WARNING, "Database error occurred.", e);
+            this.logger.error("Database error occurred.", e);
         }
         return 0;
     }

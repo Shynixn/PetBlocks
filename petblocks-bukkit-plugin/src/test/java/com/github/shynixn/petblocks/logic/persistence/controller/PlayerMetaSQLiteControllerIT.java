@@ -5,7 +5,7 @@ import com.github.shynixn.petblocks.api.persistence.controller.PlayerMetaControl
 import com.github.shynixn.petblocks.api.persistence.entity.PetMeta;
 import com.github.shynixn.petblocks.api.persistence.entity.PlayerMeta;
 import com.github.shynixn.petblocks.bukkit.logic.Factory;
-import com.github.shynixn.petblocks.bukkit.logic.persistence.entity.PlayerData;
+import com.github.shynixn.petblocks.core.logic.persistence.entity.PlayerData;
 import org.bukkit.Bukkit;
 import org.bukkit.Server;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -70,7 +70,16 @@ public class PlayerMetaSQLiteControllerIT {
                 controller.remove(item);
             }
             final UUID uuid = UUID.randomUUID();
-            final PlayerMeta playerMeta = new PlayerData();
+            final PlayerMeta playerMeta = new PlayerData() {
+                @Override
+                public <T> T getPlayer() {
+                    try {
+                        return (T) Bukkit.getPlayer(this.getName());
+                    } catch (final Exception ex) {
+                        return null;
+                    }
+                }
+            };
             assertThrows(IllegalArgumentException.class, () -> controller.store(playerMeta));
             assertEquals(0, controller.size());
 
@@ -102,7 +111,16 @@ public class PlayerMetaSQLiteControllerIT {
                 controller.remove(item);
             }
             UUID uuid = UUID.randomUUID();
-            PlayerMeta playerMeta = new PlayerData();
+            PlayerMeta playerMeta = new PlayerData() {
+                @Override
+                public <T> T getPlayer() {
+                    try {
+                        return (T) Bukkit.getPlayer(this.getName());
+                    } catch (final Exception ex) {
+                        return null;
+                    }
+                }
+            };
             playerMeta.setName("Second");
             playerMeta.setUuid(uuid);
             controller.store(playerMeta);

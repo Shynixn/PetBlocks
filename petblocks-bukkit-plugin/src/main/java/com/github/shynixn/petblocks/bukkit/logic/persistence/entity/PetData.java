@@ -11,6 +11,8 @@ import com.github.shynixn.petblocks.bukkit.logic.business.helper.PetBlockModifyH
 import com.github.shynixn.petblocks.bukkit.logic.business.helper.SkinHelper;
 import com.github.shynixn.petblocks.bukkit.nms.v1_12_R1.MaterialCompatibility12;
 import com.github.shynixn.petblocks.core.logic.persistence.entity.PersistenceObject;
+import com.github.shynixn.petblocks.core.logic.persistence.entity.PlayerData;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -83,7 +85,16 @@ public class PetData extends PersistenceObject implements PetMeta {
         if (name == null)
             throw new IllegalArgumentException("Petname cannot be null!");
         this.petDisplayName = name.replace(":player", player.getName());
-        this.playerInfo = PlayerData.from(player);
+        this.playerInfo = new PlayerData() {
+            @Override
+            public <T> T getPlayer() {
+                try {
+                    return (T) Bukkit.getPlayer(this.getName());
+                } catch (final Exception ex) {
+                    return null;
+                }
+            }
+        };
         this.ageTicks = ConfigPet.getInstance().getAge_smallticks();
         this.sounds = true;
         this.particleEffectBuilder = new ParticleEffectData();

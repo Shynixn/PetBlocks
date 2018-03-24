@@ -1,7 +1,8 @@
-package com.github.shynixn.petblocks.bukkit.logic.persistence.controller;
+package com.github.shynixn.petblocks.core.logic.persistence.controller;
 
 import com.github.shynixn.petblocks.api.persistence.controller.IDatabaseController;
-import com.github.shynixn.petblocks.bukkit.logic.business.helper.ExtensionHikariConnectionContext;
+import com.github.shynixn.petblocks.core.logic.business.helper.ExtensionHikariConnectionContext;
+import org.slf4j.Logger;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -36,18 +37,21 @@ import java.util.List;
  * SOFTWARE.
  */
 public abstract class DataBaseRepository<T> implements IDatabaseController<T> {
-    ExtensionHikariConnectionContext dbContext;
+    protected ExtensionHikariConnectionContext dbContext;
+    protected Logger logger;
 
     /**
      * Initializes a new databaseRepository with the given connectionContext.
      *
      * @param connectionContext connectionContext
+     * @param logger  logger
      */
-    DataBaseRepository(ExtensionHikariConnectionContext connectionContext) {
+    public DataBaseRepository(ExtensionHikariConnectionContext connectionContext, Logger logger) {
         super();
         if (connectionContext == null)
             throw new IllegalArgumentException("ConnectionContext cannot be null!");
         this.dbContext = connectionContext;
+        this.logger = logger;
     }
 
     /**

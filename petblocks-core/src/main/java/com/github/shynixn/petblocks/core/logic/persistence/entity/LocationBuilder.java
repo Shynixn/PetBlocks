@@ -1,14 +1,7 @@
-package com.github.shynixn.petblocks.bukkit.logic.persistence.entity;
+package com.github.shynixn.petblocks.core.logic.persistence.entity;
 
 import com.github.shynixn.petblocks.api.persistence.entity.IPosition;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.World;
-import org.bukkit.configuration.serialization.ConfigurationSerializable;
-import org.bukkit.util.EulerAngle;
-import org.bukkit.util.Vector;
 
-import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
@@ -40,7 +33,7 @@ import java.util.Map;
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-public class LocationBuilder implements ConfigurationSerializable, IPosition {
+public abstract class LocationBuilder implements IPosition {
     private String world;
     private double x;
     private double y;
@@ -152,17 +145,6 @@ public class LocationBuilder implements ConfigurationSerializable, IPosition {
     }
 
     /**
-     * Sets the world of the builder
-     *
-     * @param world world
-     * @return builder
-     */
-    public LocationBuilder setWorld(World world) {
-        this.world = world.getName();
-        return this;
-    }
-
-    /**
      * Sets the worldName of the builder
      *
      * @param worldName worldName
@@ -255,15 +237,6 @@ public class LocationBuilder implements ConfigurationSerializable, IPosition {
     }
 
     /**
-     * Returns the BukkitWorld of the builder
-     *
-     * @return world
-     */
-    public World getWorld() {
-        return Bukkit.getWorld(this.world);
-    }
-
-    /**
      * Returns the x coordinate of the builder
      *
      * @return x
@@ -334,44 +307,6 @@ public class LocationBuilder implements ConfigurationSerializable, IPosition {
     }
 
     /**
-     * Copies the current builder
-     *
-     * @return copyOfBuilder
-     */
-    public LocationBuilder copy() {
-        return new LocationBuilder(this.world, this.x, this.y, this.z, this.yaw, this.pitch);
-    }
-
-    /**
-     * Converts the builder to a bukkitLocation
-     *
-     * @return bukkitLocation
-     */
-    public Location toLocation() {
-        if (Bukkit.getWorld(this.world) == null)
-            return null;
-        return new Location(Bukkit.getWorld(this.world), this.x, this.y, this.z, (float) this.yaw, (float) this.pitch);
-    }
-
-    /**
-     * Converts the builder to a bukkitVector
-     *
-     * @return bukkitVector
-     */
-    public Vector toVector() {
-        return new Vector(this.x, this.y, this.z);
-    }
-
-    /**
-     * Converts the builder to a bukkitEulerAngle
-     *
-     * @return eulerAngle
-     */
-    public EulerAngle toAngle() {
-        return new EulerAngle(this.x, this.y, this.z);
-    }
-
-    /**
      * Returns the relativePosition to a given direction
      *
      * @param distance  distance
@@ -423,26 +358,9 @@ public class LocationBuilder implements ConfigurationSerializable, IPosition {
      */
     @Override
     public String toString() {
-        if (this.getWorld() == null)
+        if (this.world == null)
             return "location {" + " w unloaded" + " x " + this.getBlockX() + " y " + this.getBlockY() + " z " + this.getBlockZ() + '}';
         return "location {" + " w " + this.getWorldName() + " x " + this.getBlockX() + " y " + this.getBlockY() + " z " + this.getBlockZ() + '}';
-    }
-
-    /**
-     * Serializes the location data to be stored to the filesystem
-     *
-     * @return serializedContent
-     */
-    @Override
-    public Map<String, Object> serialize() {
-        final Map<String, Object> map = new LinkedHashMap<>();
-        map.put("x", this.x);
-        map.put("y", this.y);
-        map.put("z", this.z);
-        map.put("yaw", this.yaw);
-        map.put("pitch", this.pitch);
-        map.put("worldname", this.world);
-        return map;
     }
 
     /**

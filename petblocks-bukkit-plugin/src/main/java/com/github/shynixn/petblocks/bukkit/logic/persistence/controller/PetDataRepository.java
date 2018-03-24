@@ -10,11 +10,13 @@ import com.github.shynixn.petblocks.api.persistence.entity.ParticleEffectMeta;
 import com.github.shynixn.petblocks.api.persistence.entity.PetMeta;
 import com.github.shynixn.petblocks.api.persistence.entity.PlayerMeta;
 import com.github.shynixn.petblocks.bukkit.PetBlocksPlugin;
-import com.github.shynixn.petblocks.bukkit.logic.business.helper.ExtensionHikariConnectionContext;
 import com.github.shynixn.petblocks.bukkit.logic.Factory;
 import com.github.shynixn.petblocks.bukkit.logic.business.configuration.Config;
+import com.github.shynixn.petblocks.bukkit.logic.business.helper.LoggingBridge;
 import com.github.shynixn.petblocks.bukkit.logic.persistence.entity.PetData;
 import com.github.shynixn.petblocks.bukkit.nms.v1_12_R1.MaterialCompatibility12;
+import com.github.shynixn.petblocks.core.logic.business.helper.ExtensionHikariConnectionContext;
+import com.github.shynixn.petblocks.core.logic.persistence.controller.DataBaseRepository;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
@@ -65,7 +67,7 @@ public class PetDataRepository extends DataBaseRepository<PetMeta> implements Pe
      * @param connectionContext connectionContext
      */
     public PetDataRepository(ExtensionHikariConnectionContext connectionContext) {
-        super(connectionContext);
+        super(connectionContext, new LoggingBridge(PetBlocksPlugin.logger()));
         this.playerMetaController = Factory.createPlayerDataController();
         this.particleEffectMetaController = Factory.createParticleEffectController();
     }

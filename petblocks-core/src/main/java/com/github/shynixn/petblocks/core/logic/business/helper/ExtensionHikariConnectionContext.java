@@ -1,4 +1,4 @@
-package com.github.shynixn.petblocks.bukkit.logic.business.helper;
+package com.github.shynixn.petblocks.core.logic.business.helper;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
@@ -53,7 +53,7 @@ public class ExtensionHikariConnectionContext implements AutoCloseable {
      * @param userName userNames
      * @param password password
      */
-    private ExtensionHikariConnectionContext(String driver, String url, String userName, String password,boolean useSSL, SQlRetriever retriever) {
+    private ExtensionHikariConnectionContext(String driver, String url, String userName, String password, boolean useSSL, SQlRetriever retriever) {
         super();
         this.retriever = retriever;
         final HikariConfig config = new HikariConfig();
