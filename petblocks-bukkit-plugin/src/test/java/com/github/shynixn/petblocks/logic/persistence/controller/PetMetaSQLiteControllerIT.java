@@ -8,8 +8,8 @@ import com.github.shynixn.petblocks.api.persistence.entity.PetMeta;
 import com.github.shynixn.petblocks.api.persistence.entity.PlayerMeta;
 import com.github.shynixn.petblocks.bukkit.PetBlocksPlugin;
 import com.github.shynixn.petblocks.bukkit.logic.Factory;
-import com.github.shynixn.petblocks.bukkit.logic.persistence.entity.PetData;
 import com.github.shynixn.petblocks.core.logic.persistence.entity.EngineData;
+import com.github.shynixn.petblocks.core.logic.persistence.entity.PetData;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Server;
@@ -37,7 +37,7 @@ public class PetMetaSQLiteControllerIT {
     private static Plugin mockPlugin() {
         final Server server = mock(Server.class);
         when(server.getLogger()).thenReturn(Logger.getGlobal());
-        if(Bukkit.getServer() == null)
+        if (Bukkit.getServer() == null)
             Bukkit.setServer(server);
         try {
             final Field field = PetBlocksPlugin.class.getDeclaredField("logger");
@@ -47,7 +47,7 @@ public class PetMetaSQLiteControllerIT {
             Assert.fail();
         }
         final YamlConfiguration configuration = new YamlConfiguration();
-        configuration.set("sql.enabled",false);
+        configuration.set("sql.enabled", false);
         configuration.set("sql.host", "localhost");
         configuration.set("sql.port", 3306);
         configuration.set("sql.database", "db");
@@ -82,7 +82,7 @@ public class PetMetaSQLiteControllerIT {
                     for (final PetMeta item : controller.getAll()) {
                         controller.remove(item);
                     }
-                    final PetData meta = new PetData();
+                    final PetData meta = create();
                     meta.setPetDisplayName("Notch");
                     assertThrows(IllegalArgumentException.class, () -> controller.store(meta));
                     assertEquals(0, controller.size());
@@ -103,7 +103,7 @@ public class PetMetaSQLiteControllerIT {
                     meta.setEngineId(4);
                     assertThrows(IllegalArgumentException.class, () -> controller.store(meta));
 
-                    meta.setSkin(Material.STONE.getId(), (short)5, null, false);
+                    meta.setSkin(Material.STONE.getId(), (short) 5, null, false);
                     meta.setEngine(new EngineData<Object>(4) {
                     });
                     controller.store(meta);
@@ -130,9 +130,9 @@ public class PetMetaSQLiteControllerIT {
                     for (final PetMeta item : controller.getAll()) {
                         controller.remove(item);
                     }
-                    PetData meta = new PetData();
+                    PetData meta = create();
                     meta.setPetDisplayName("Me");
-                    meta.setSkin(Material.BIRCH_DOOR_ITEM.getId(),5 , "This is my long skin.", true);
+                    meta.setSkin(Material.BIRCH_DOOR_ITEM.getId(), 5, "This is my long skin.", true);
                     meta.setEngine(new EngineData<Object>(4) {
                     });
                     meta.setEnabled(true);
@@ -161,7 +161,7 @@ public class PetMetaSQLiteControllerIT {
                     assertEquals(true, meta.isSoundEnabled());
 
                     meta.setPetDisplayName("PikaPet");
-                    meta.setSkin(Material.ARROW.getId(),7 , "http://Skin.com", false);
+                    meta.setSkin(Material.ARROW.getId(), 7, "http://Skin.com", false);
                     meta.setEngineId(1);
                     meta.setEnabled(false);
                     meta.setAge(250);
@@ -189,5 +189,14 @@ public class PetMetaSQLiteControllerIT {
             Logger.getLogger(this.getClass().getSimpleName()).log(Level.WARNING, "Failed to run test.", e);
             Assert.fail();
         }
+    }
+
+    private PetData create() {
+        try {
+            return (PetData) Class.forName("com.github.shynixn.petblocks.bukkit.logic.persistence.entity.BukkitPetData").newInstance();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return null;
     }
 }

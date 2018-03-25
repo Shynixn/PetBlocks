@@ -1,28 +1,9 @@
-package com.github.shynixn.petblocks.bukkit.logic.persistence.entity;
+package com.github.shynixn.petblocks.core.logic.persistence.entity;
 
-import com.github.shynixn.petblocks.api.business.entity.GUIItemContainer;
 import com.github.shynixn.petblocks.api.persistence.entity.EngineContainer;
 import com.github.shynixn.petblocks.api.persistence.entity.ParticleEffectMeta;
 import com.github.shynixn.petblocks.api.persistence.entity.PetMeta;
 import com.github.shynixn.petblocks.api.persistence.entity.PlayerMeta;
-import com.github.shynixn.petblocks.bukkit.logic.business.configuration.Config;
-import com.github.shynixn.petblocks.bukkit.logic.business.configuration.ConfigPet;
-import com.github.shynixn.petblocks.bukkit.logic.business.helper.PetBlockModifyHelper;
-import com.github.shynixn.petblocks.bukkit.logic.business.helper.SkinHelper;
-import com.github.shynixn.petblocks.bukkit.nms.v1_12_R1.MaterialCompatibility12;
-import com.github.shynixn.petblocks.core.logic.persistence.entity.ParticleEffectData;
-import com.github.shynixn.petblocks.core.logic.persistence.entity.PersistenceObject;
-import com.github.shynixn.petblocks.core.logic.persistence.entity.PlayerData;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.inventory.meta.SkullMeta;
-
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
 
 /**
  * Implementation of the petMeta interface which is persistence able to the database.
@@ -51,71 +32,27 @@ import java.util.Optional;
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-public class PetData extends PersistenceObject implements PetMeta {
+public abstract class PetData extends PersistenceObject implements PetMeta {
 
-    private String petDisplayName;
+    protected String petDisplayName;
 
-    private String skin;
-    private int id;
-    private int damage;
-    private boolean unbreakable;
+    protected String skin;
+    protected int id;
+    protected int damage;
+    protected boolean unbreakable;
 
-    private long ageTicks;
-    private boolean enabled;
-    private boolean sounds;
+    protected long ageTicks;
+    protected boolean enabled;
+    protected boolean sounds;
 
-    private PlayerMeta playerInfo;
-    private long playerId;
+    protected PlayerMeta playerInfo;
+    protected long playerId;
 
-    private ParticleEffectMeta particleEffectBuilder;
-    private long particleId;
+    protected ParticleEffectMeta particleEffectBuilder;
+    protected long particleId;
 
-    private EngineContainer engineContainer;
+    protected EngineContainer engineContainer;
     private int engineId;
-
-    /**
-     * Initializes a new default petData which is ready to be used.
-     *
-     * @param player player
-     * @param name   nameOfThePet
-     */
-    public PetData(Player player, String name) {
-        super();
-        if (player == null)
-            throw new IllegalArgumentException("Player cannot be null!");
-        if (name == null)
-            throw new IllegalArgumentException("Petname cannot be null!");
-        this.petDisplayName = name.replace(":player", player.getName());
-        this.playerInfo = new PlayerData() {
-            @Override
-            public <T> T getPlayer() {
-                try {
-                    return (T) Bukkit.getPlayer(this.getName());
-                } catch (final Exception ex) {
-                    return null;
-                }
-            }
-        };
-        this.ageTicks = ConfigPet.getInstance().getAge_smallticks();
-        this.sounds = true;
-        this.particleEffectBuilder = createParticleComp();
-        this.particleEffectBuilder.setEffectType(ParticleEffectMeta.ParticleEffectType.NONE);
-        final Optional<EngineContainer<GUIItemContainer<Player>>> engineContainer = Config.getInstance().getEngineController()
-                .getContainerFromPosition(Config.getInstance().getDefaultEngine());
-        if (!engineContainer.isPresent()) {
-            throw new RuntimeException("Default engine could not be loaded correctly!");
-        }
-        this.engineContainer = engineContainer.get();
-    }
-
-    public static ParticleEffectMeta createParticleComp() {
-        try {
-            final Class<?> clazz = Class.forName("com.github.shynixn.petblocks.bukkit.logic.persistence.entity.BukkitParticleEffect");
-            return (ParticleEffectMeta) clazz.newInstance();
-        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException e) {
-            throw new RuntimeException(e);
-        }
-    }
 
     /**
      * Initializes a new petData.
@@ -371,57 +308,6 @@ public class PetData extends PersistenceObject implements PetMeta {
         this.damage = damage;
         this.skin = s;
         this.unbreakable = unbreakable;
-    }
-
-    /**
-     * Returns the itemStack for the head
-     *
-     * @return headItemStack
-     */
-    @Override
-    public Object getHeadItemStack() {
-        ItemStack itemStack;
-        if (this.getSkin() != null) {
-            if (this.getSkin().contains("textures.minecraft")) {
-                itemStack = new ItemStack(MaterialCompatibility12.getMaterialFromId(this.getItemId()), 1, (short) this.getItemDamage());
-                SkinHelper.setItemStackSkin(itemStack, this.getSkin());
-            } else {
-                itemStack = new ItemStack(MaterialCompatibility12.getMaterialFromId(this.getItemId()), 1, (short) this.getItemDamage());
-                final ItemMeta meta = itemStack.getItemMeta();
-                if (meta instanceof SkullMeta) {
-                    ((SkullMeta) meta).setOwner(this.skin);
-                }
-                itemStack.setItemMeta(meta);
-            }
-        } else {
-            itemStack = new ItemStack(MaterialCompatibility12.getMaterialFromId(this.getItemId()), 1, (short) this.getItemDamage());
-        }
-        final ItemMeta meta = itemStack.getItemMeta();
-        meta.setDisplayName(this.petDisplayName);
-        itemStack.setItemMeta(meta);
-        final Map<String, Object> data = new HashMap<>();
-        data.put("Unbreakable", this.isItemStackUnbreakable());
-        itemStack = PetBlockModifyHelper.setItemStackNBTTag(itemStack, data);
-        return itemStack;
-    }
-
-    /**
-     * Sets the stored display name of the pet which appears above it's head on respawn.
-     *
-     * @param name name
-     */
-    @Override
-    public void setPetDisplayName(String name) {
-        if (name == null)
-            return;
-        if (ConfigPet.getInstance().getPetNameBlackList() != null) {
-            for (final String blackName : ConfigPet.getInstance().getPetNameBlackList()) {
-                if (name.toUpperCase().contains(blackName.toUpperCase())) {
-                    throw new RuntimeException("Name is not valid!");
-                }
-            }
-        }
-        this.petDisplayName = ChatColor.translateAlternateColorCodes('&', name);
     }
 
     /**

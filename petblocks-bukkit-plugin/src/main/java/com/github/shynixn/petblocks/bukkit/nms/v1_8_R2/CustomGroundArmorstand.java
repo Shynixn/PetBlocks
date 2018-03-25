@@ -11,7 +11,6 @@ import com.github.shynixn.petblocks.bukkit.logic.business.entity.Pipeline;
 import com.github.shynixn.petblocks.bukkit.nms.NMSRegistry;
 import com.github.shynixn.petblocks.bukkit.nms.helper.PetBlockHelper;
 import com.github.shynixn.petblocks.bukkit.logic.business.configuration.ConfigPet;
-import com.github.shynixn.petblocks.bukkit.logic.persistence.entity.PetData;
 import net.minecraft.server.v1_8_R2.*;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -30,7 +29,7 @@ import java.lang.reflect.Field;
 import java.util.logging.Level;
 
 final class CustomGroundArmorstand extends EntityArmorStand implements PetBlock {
-    private PetData petMeta;
+    private PetMeta petMeta;
     private Player owner;
 
     private boolean isSpecial;
@@ -53,7 +52,7 @@ final class CustomGroundArmorstand extends EntityArmorStand implements PetBlock 
     public CustomGroundArmorstand(Location location, PetMeta meta) {
         super(((CraftWorld) location.getWorld()).getHandle());
         this.isSpecial = true;
-        this.petMeta = (PetData) meta;
+        this.petMeta = meta;
         this.owner = this.petMeta.getPlayerMeta().getPlayer();
 
         if (this.owner == null) {

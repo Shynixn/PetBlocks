@@ -8,9 +8,9 @@ import com.github.shynixn.petblocks.bukkit.PetBlocksPlugin;
 import com.github.shynixn.petblocks.bukkit.logic.business.helper.ChatBuilder;
 import com.github.shynixn.petblocks.bukkit.logic.business.PetBlockManager;
 import com.github.shynixn.petblocks.bukkit.logic.business.PetRunnable;
-import com.github.shynixn.petblocks.bukkit.logic.business.configuration.Config;
 import com.github.shynixn.petblocks.bukkit.logic.business.configuration.ConfigPet;
 import com.github.shynixn.petblocks.bukkit.logic.business.helper.PetBlockModifyHelper;
+import com.github.shynixn.petblocks.core.logic.persistence.configuration.Config;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.World;
@@ -245,13 +245,13 @@ public final class PetBlockCommandExecutor extends SimpleCommandExecutor.UnRegis
         this.providePet(player, (petMeta, petBlock) -> {
             final Optional<GUIItemContainer<Player>> item;
             if (category.equalsIgnoreCase("simple-blocks")) {
-                item = Config.getInstance().getOrdinaryCostumesController().getContainerFromPosition(number);
+                item = Config.<Player>getInstance().getOrdinaryCostumesController().getContainerFromPosition(number);
             } else if (category.equalsIgnoreCase("colored-blocks")) {
-                item = Config.getInstance().getColorCostumesController().getContainerFromPosition(number);
+                item = Config.<Player>getInstance().getColorCostumesController().getContainerFromPosition(number);
             } else if (category.equalsIgnoreCase("player-heads")) {
-                item = Config.getInstance().getRareCostumesController().getContainerFromPosition(number);
+                item = Config.<Player>getInstance().getRareCostumesController().getContainerFromPosition(number);
             } else if (category.equalsIgnoreCase("minecraft-heads")) {
-                item = Config.getInstance().getMinecraftHeadsCostumesController().getContainerFromPosition(number);
+                item = Config.<Player>getInstance().getMinecraftHeadsCostumesController().getContainerFromPosition(number);
             } else {
                 return;
             }
@@ -264,7 +264,7 @@ public final class PetBlockCommandExecutor extends SimpleCommandExecutor.UnRegis
 
     private void setEngineCommand(Player player, int number) {
         this.providePet(player, (petMeta, petBlock) -> {
-            final Optional<EngineContainer<GUIItemContainer<Player>>> optEngine = Config.getInstance().getEngineController().getContainerFromPosition(number);
+            final Optional<EngineContainer<GUIItemContainer<Player>>> optEngine = Config.<Player>getInstance().getEngineController().getContainerFromPosition(number);
             if (!optEngine.isPresent()) {
                 player.sendMessage(Config.getInstance().getPrefix() + "Engine " + number + " could not be loaded correctly.");
             } else {
@@ -276,7 +276,7 @@ public final class PetBlockCommandExecutor extends SimpleCommandExecutor.UnRegis
 
     private void setParticleCommand(Player player, int number) {
         this.providePet(player, (petMeta, petBlock) -> {
-            final Optional<GUIItemContainer<Player>> guiItemContainer = Config.getInstance().getParticleController().getContainerFromPosition(number);
+            final Optional<GUIItemContainer<Player>> guiItemContainer = Config.<Player>getInstance().getParticleController().getContainerFromPosition(number);
             if (!guiItemContainer.isPresent()) {
                 player.sendMessage(Config.getInstance().getPrefix() + "Particle not found.");
             } else {

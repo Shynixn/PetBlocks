@@ -5,7 +5,10 @@ import com.github.shynixn.petblocks.api.persistence.entity.SoundMeta;
 import com.github.shynixn.petblocks.bukkit.PetBlocksPlugin;
 import org.bukkit.configuration.MemorySection;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 
 /**
@@ -104,12 +107,32 @@ public class ConfigPet extends SimpleConfig {
     public SoundMeta getFeedingClickSound() {
         if (this.feedingClickSoundCache == null) {
             try {
-                this.feedingClickSoundCache = Config.createSoundComp(((MemorySection) this.getData("pet.feeding.click-sound")).getValues(false));
+                this.feedingClickSoundCache = this.createSoundComp(((MemorySection) this.getData("pet.feeding.click-sound")).getValues(false));
             } catch (final Exception e) {
                 PetBlocksPlugin.logger().log(Level.WARNING, "Failed to load feeding click-sound.", e);
             }
         }
         return this.feedingClickSoundCache;
+    }
+
+    private SoundMeta createSoundComp(Map<String, Object> data) {
+        try {
+            final Class<?> clazz = Class.forName("com.github.shynixn.petblocks.bukkit.logic.persistence.entity.BukkitSoundBuilder");
+            final Constructor constructor = clazz.getDeclaredConstructor(Map.class);
+            return (SoundMeta) constructor.newInstance(data);
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private ParticleEffectMeta createParticleComp(Map<String, Object> data) {
+        try {
+            final Class<?> clazz = Class.forName("com.github.shynixn.petblocks.bukkit.logic.persistence.entity.BukkitParticleEffect");
+            final Constructor constructor = clazz.getDeclaredConstructor(Map.class);
+            return (ParticleEffectMeta) constructor.newInstance(data);
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     /**
@@ -120,7 +143,7 @@ public class ConfigPet extends SimpleConfig {
     public ParticleEffectMeta getFeedingClickParticleEffect() {
         if (this.feedingClickParticleCache == null) {
             try {
-                this.feedingClickParticleCache = Config.createParticleComp(((MemorySection) this.getData("pet.feeding.click-particle")).getValues(false));
+                this.feedingClickParticleCache = this.createParticleComp(((MemorySection) this.getData("pet.feeding.click-particle")).getValues(false));
             } catch (final Exception e) {
                 PetBlocksPlugin.logger().log(Level.WARNING, "Failed to load feeding click-sound.", e);
             }
