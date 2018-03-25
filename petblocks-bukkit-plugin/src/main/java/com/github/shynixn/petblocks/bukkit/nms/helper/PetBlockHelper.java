@@ -15,9 +15,9 @@ import com.github.shynixn.petblocks.bukkit.logic.business.configuration.ConfigPe
 import com.github.shynixn.petblocks.bukkit.logic.business.helper.PetBlockModifyHelper;
 import com.github.shynixn.petblocks.bukkit.logic.business.helper.SkinHelper;
 import com.github.shynixn.petblocks.bukkit.logic.persistence.entity.PetData;
-import com.github.shynixn.petblocks.bukkit.logic.persistence.entity.SoundBuilder;
 import com.github.shynixn.petblocks.bukkit.nms.v1_12_R1.MaterialCompatibility12;
 import com.github.shynixn.petblocks.core.logic.persistence.entity.ParticleEffectData;
+import com.github.shynixn.petblocks.core.logic.persistence.entity.SoundBuilder;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -33,12 +33,14 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.util.EulerAngle;
 import org.bukkit.util.Vector;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 import java.util.logging.Level;
 
 public final class PetBlockHelper {
     private static final Random random = new Random();
-    private static final SoundMeta explosionSound = new SoundBuilder("EXPLODE", 1.0F, 2.0F);
+    private static final SoundMeta explosionSound = createSoundComp("EXPLODE", 1.0F, 2.0F);
     private static final ParticleEffectMeta angryParticle = createParticleComp()
             .setEffectType(ParticleEffectMeta.ParticleEffectType.VILLAGER_ANGRY)
             .setOffset(2, 2, 2)
@@ -63,6 +65,16 @@ public final class PetBlockHelper {
         }
     }
 
+    public static SoundMeta createSoundComp(String name, double value1, double value2) {
+        try {
+            final Class<?> clazz = Class.forName("com.github.shynixn.petblocks.bukkit.logic.persistence.entity.BukkitSoundBuilder");
+            final Constructor constructor = clazz.getDeclaredConstructor(String.class, double.class, double.class);
+            return (SoundMeta) constructor.newInstance(name, value1, value2);
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     public static void playParticleEffectForPipeline(Location location, ParticleEffectMeta particleEffectMeta, PetBlock petBlock) {
         if (ConfigPet.getInstance().areParticlesForOtherPlayersVisible()) {
             for (final Player player : location.getWorld().getPlayers()) {
@@ -78,11 +90,9 @@ public final class PetBlockHelper {
             return;
         try {
             if (ConfigPet.getInstance().isSoundForOtherPlayersHearable()) {
-                for (final Player player : location.getWorld().getPlayers()) {
-                    ((SoundBuilder) soundMeta).apply(location, player);
-                }
+                ((SoundBuilder) soundMeta).apply(location,location.getWorld().getPlayers().toArray(new Player[0]));
             } else {
-                ((SoundBuilder) soundMeta).apply(location, (Player) petBlock.getPlayer());
+                ((SoundBuilder) soundMeta).apply(location, new Player[] {(Player) petBlock.getPlayer()});
             }
         } catch (final IllegalArgumentException e) {
             PetBlocksPlugin.logger().log(Level.WARNING, "Cannot play sound " + soundMeta.getName() + " of " + ChatColor.stripColor(petBlock.getMeta().<GUIItemContainer<Player>>getEngine().getGUIItem().getDisplayName().get()) + '.');

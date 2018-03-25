@@ -47,7 +47,7 @@ class BukkitEngineData : EngineData<Player> {
         this.itemContainer = ItemContainer(id.toInt(), (data["gui"] as MemorySection).getValues(false))
         this.entity = data["behaviour.entity"] as String
         this.rideType = RideType.valueOf(data["behaviour.riding"] as String)
-        this.ambientSound = SoundBuilder(data["sound.ambient.name"] as String, data["sound.ambient.volume"] as Double, data["sound.ambient.pitch"] as Double)
-        this.walkingSound = SoundBuilder(data["sound.walking.name"] as String, data["sound.walking.volume"] as Double, data["sound.walking.pitch"] as Double)
+        this.ambientSound = BukkitSoundBuilder(data["sound.ambient.name"] as String, data["sound.ambient.volume"] as Double, data["sound.ambient.pitch"] as Double)
+        this.walkingSound = BukkitSoundBuilder(data["sound.walking.name"] as String, data["sound.walking.volume"] as Double, data["sound.walking.pitch"] as Double)
     }
 }
