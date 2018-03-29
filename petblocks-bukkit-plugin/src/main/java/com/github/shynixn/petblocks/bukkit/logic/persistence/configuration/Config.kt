@@ -2,10 +2,10 @@ package com.github.shynixn.petblocks.bukkit.logic.persistence.configuration
 
 import com.github.shynixn.petblocks.api.persistence.entity.ParticleEffectMeta
 import com.github.shynixn.petblocks.api.persistence.entity.PetMeta
+import com.github.shynixn.petblocks.api.persistence.entity.SoundMeta
 import com.github.shynixn.petblocks.bukkit.PetBlocksPlugin
-import com.github.shynixn.petblocks.bukkit.logic.business.configuration.ConfigPet
-import com.github.shynixn.petblocks.bukkit.logic.business.helper.ChatBuilder
 import com.github.shynixn.petblocks.bukkit.nms.NMSRegistry
+import com.github.shynixn.petblocks.core.logic.business.helper.ChatBuilder
 import com.github.shynixn.petblocks.core.logic.persistence.configuration.Config
 import com.github.shynixn.petblocks.core.logic.persistence.entity.PetData
 import com.google.inject.Singleton
@@ -141,13 +141,67 @@ object Config : Config<Player>() {
         return true
     }
 
+
+    /**
+     * Returns the feeding click sound.
+     *
+     * @return sound
+     */
+    fun getFeedingClickSound(): SoundMeta {
+        if (this.feedingClickSoundCache == null) {
+            try {
+                this.feedingClickSoundCache = this.createSoundComp((this.getData<Any>("pet.feeding.click-sound") as MemorySection).getValues(false))
+            } catch (e: Exception) {
+                PetBlocksPlugin.logger().log(Level.WARNING, "Failed to load feeding click-sound.", e)
+            }
+
+        }
+        return this.feedingClickSoundCache
+    }
+
+    private fun createSoundComp(data: Map<String, Any>): SoundMeta {
+        try {
+            val clazz = Class.forName("com.github.shynixn.petblocks.bukkit.logic.persistence.entity.BukkitSoundBuilder")
+            val constructor = clazz.getDeclaredConstructor(Map::class.java)
+            return constructor.newInstance(data) as SoundMeta
+        } catch (e: Exception) {
+            throw RuntimeException(e)
+        }
+    }
+
+    private fun createParticleComp(data: Map<String, Any>): ParticleEffectMeta {
+        try {
+            val clazz = Class.forName("com.github.shynixn.petblocks.bukkit.logic.persistence.entity.BukkitParticleEffect")
+            val constructor = clazz.getDeclaredConstructor(Map::class.java)
+            return constructor.newInstance(data) as ParticleEffectMeta
+        } catch (e: Exception) {
+            throw RuntimeException(e)
+        }
+    }
+
+    /**
+     * Returns the feeding particleEffect.
+     *
+     * @return particleEffect
+     */
+    fun getFeedingClickParticleEffect(): ParticleEffectMeta {
+        if (this.feedingClickParticleCache == null) {
+            try {
+                this.feedingClickParticleCache = this.createParticleComp((this.getData<Any>("pet.feeding.click-particle") as MemorySection).getValues(false))
+            } catch (e: Exception) {
+                PetBlocksPlugin.logger().log(Level.WARNING, "Failed to load feeding click-sound.", e)
+            }
+
+        }
+        return this.feedingClickParticleCache
+    }
+
     /**
      * Reloads the config.
      */
     override fun reload() {
         this.plugin = JavaPlugin.getPlugin(PetBlocksPlugin::class.java)
         this.plugin!!.reloadConfig()
-        ConfigPet.getInstance().reload()
         super.reload()
     }
 

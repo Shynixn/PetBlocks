@@ -1,15 +1,11 @@
-package com.github.shynixn.petblocks.bukkit.logic.business.helper;
-
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.entity.Player;
+package com.github.shynixn.petblocks.core.logic.business.helper;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.logging.Level;
 
@@ -136,140 +132,8 @@ public class ChatBuilder {
         return this;
     }
 
-    /**
-     * Sends the built message to the given players
-     *
-     * @param players players
-     */
-    public void sendMessage(Collection<Player> players) {
-        if (players == null)
-            throw new IllegalArgumentException("Players cannot be null");
-        this.sendMessage(players.toArray(new Player[players.size()]));
-    }
-
-    /**
-     * Sends the built message to the given players
-     *
-     * @param players players
-     */
-    public void sendMessage(Player... players) {
-        if (players == null)
-            throw new IllegalArgumentException("Players cannot be null");
-        final StringBuilder finalMessage = new StringBuilder();
-        final StringBuilder cache = new StringBuilder();
-        finalMessage.append("{\"text\": \"\"");
-        finalMessage.append(", \"extra\" : [");
-        boolean firstExtra = false;
-        for (final Object component : this.components) {
-            if (!(component instanceof ChatColor) && firstExtra) {
-                finalMessage.append(", ");
-            }
-            if (component instanceof ChatColor) {
-                cache.append(component);
-            } else if (component instanceof String) {
-                finalMessage.append("{\"text\": \"");
-                finalMessage.append(ChatColor.translateAlternateColorCodes('&', cache.toString() + component));
-                finalMessage.append("\"}");
-                cache.setLength(0);
-                firstExtra = true;
-            } else {
-                finalMessage.append(component);
-                firstExtra = true;
-            }
-        }
-        finalMessage.append("]}");
-        try {
-            final Class<?> clazz;
-            if (Bukkit.getServer().getClass().getPackage().getName().replace(".", ",").split(",")[3].equals("v1_8_R1")) {
-                clazz = findClass("net.minecraft.server.VERSION.ChatSerializer");
-            } else {
-                clazz = findClass("net.minecraft.server.VERSION.IChatBaseComponent$ChatSerializer");
-            }
-            final Class<?> packetClazz = findClass("net.minecraft.server.VERSION.PacketPlayOutChat");
-            final Class<?> chatBaseComponentClazz = findClass("net.minecraft.server.VERSION.IChatBaseComponent");
-            final Object chatComponent = invokeMethod(null, clazz, "a", new Class[]{String.class}, new Object[]{finalMessage.toString()});
-            final Object packet;
-            if (Bukkit.getServer().getClass().getPackage().getName().replace(".", ",").split(",")[3].equals("v1_12_R1")) {
-                final Class<?> chatEnumMessage = findClass("net.minecraft.server.VERSION.ChatMessageType");
-                packet = invokeConstructor(packetClazz, new Class[]{chatBaseComponentClazz, chatEnumMessage}, new Object[]{chatComponent, chatEnumMessage.getEnumConstants()[0]});
-            } else {
-                packet = invokeConstructor(packetClazz, new Class[]{chatBaseComponentClazz, byte.class}, new Object[]{chatComponent, (byte) 0});
-            }
-            for (final Player player : players) {
-                sendPacket(player, packet);
-            }
-        } catch (ClassNotFoundException | IllegalAccessException | NoSuchMethodException | InvocationTargetException | InstantiationException | NoSuchFieldException e) {
-            Bukkit.getLogger().log(Level.WARNING, "Failed to send packet.", e);
-        }
-    }
-
-    /**
-     * Sends a packet to the client player
-     *
-     * @param player player
-     * @param packet packet
-     * @throws ClassNotFoundException    exception
-     * @throws IllegalAccessException    exception
-     * @throws NoSuchMethodException     exception
-     * @throws InvocationTargetException exception
-     * @throws NoSuchFieldException      exception
-     */
-
-    private static void sendPacket(Player player, Object packet) throws ClassNotFoundException, IllegalAccessException, NoSuchMethodException, InvocationTargetException, NoSuchFieldException {
-        final Object craftPlayer = findClass("org.bukkit.craftbukkit.VERSION.entity.CraftPlayer").cast(player);
-        final Object entityPlayer = invokeMethod(craftPlayer, craftPlayer.getClass(), "getHandle", new Class[]{}, new Object[]{});
-        final Field field = entityPlayer.getClass().getDeclaredField("playerConnection");
-        field.setAccessible(true);
-        final Object connection = field.get(entityPlayer);
-        invokeMethod(connection, connection.getClass(), "sendPacket", new Class[]{packet.getClass().getInterfaces()[0]}, new Object[]{packet});
-    }
-
-    /**
-     * Invokes a constructor by the given parameters
-     *
-     * @param clazz      clazz
-     * @param paramTypes paramTypes
-     * @param params     params
-     * @return instance
-     * @throws NoSuchMethodException     exception
-     * @throws IllegalAccessException    exception
-     * @throws InvocationTargetException exception
-     * @throws InstantiationException    exception
-     */
-    private static Object invokeConstructor(Class<?> clazz, Class[] paramTypes, Object[] params) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
-        final Constructor constructor = clazz.getDeclaredConstructor(paramTypes);
-        constructor.setAccessible(true);
-        return constructor.newInstance(params);
-    }
-
-    /**
-     * Invokes a method by the given parameters
-     *
-     * @param instance   instance
-     * @param clazz      clazz
-     * @param name       name
-     * @param paramTypes paramTypes
-     * @param params     params
-     * @return returnedObject
-     * @throws InvocationTargetException exception
-     * @throws IllegalAccessException    exception
-     * @throws NoSuchMethodException     exception
-     */
-    private static Object invokeMethod(Object instance, Class<?> clazz, String name, Class[] paramTypes, Object[] params) throws InvocationTargetException, IllegalAccessException, NoSuchMethodException {
-        final Method method = clazz.getDeclaredMethod(name, paramTypes);
-        method.setAccessible(true);
-        return method.invoke(instance, params);
-    }
-
-    /**
-     * Finds a class regarding of the server Version
-     *
-     * @param name name
-     * @return clazz
-     * @throws ClassNotFoundException exception
-     */
-    private static Class<?> findClass(String name) throws ClassNotFoundException {
-        return Class.forName(name.replace("VERSION", Bukkit.getServer().getClass().getPackage().getName().replace(".", ",").split(",")[3]));
+    public List<Object> getComponents() {
+        return Collections.unmodifiableList(this.components);
     }
 
     /**

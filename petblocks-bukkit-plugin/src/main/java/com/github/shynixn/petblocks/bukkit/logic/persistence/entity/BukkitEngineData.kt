@@ -1,7 +1,6 @@
 package com.github.shynixn.petblocks.bukkit.logic.persistence.entity
 
 import com.github.shynixn.petblocks.api.business.enumeration.RideType
-import com.github.shynixn.petblocks.bukkit.logic.business.entity.ItemContainer
 import com.github.shynixn.petblocks.core.logic.persistence.entity.EngineData
 import org.bukkit.configuration.MemorySection
 import org.bukkit.entity.Player
@@ -44,7 +43,7 @@ class BukkitEngineData : EngineData<Player> {
      */
     constructor(id: Long, data: Map<String, Any>) : super(id) {
         this.id = id
-        this.itemContainer = ItemContainer(id.toInt(), (data["gui"] as MemorySection).getValues(false))
+        this.itemContainer = BukkitItemContainer(id.toInt(), (data["gui"] as MemorySection).getValues(false))
         this.entity = data["behaviour.entity"] as String
         this.rideType = RideType.valueOf(data["behaviour.riding"] as String)
         this.ambientSound = BukkitSoundBuilder(data["sound.ambient.name"] as String, data["sound.ambient.volume"] as Double, data["sound.ambient.pitch"] as Double)

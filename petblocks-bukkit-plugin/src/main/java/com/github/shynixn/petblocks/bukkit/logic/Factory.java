@@ -4,14 +4,14 @@ import com.github.shynixn.petblocks.api.business.controller.PetBlockController;
 import com.github.shynixn.petblocks.api.business.entity.GUIItemContainer;
 import com.github.shynixn.petblocks.api.persistence.controller.*;
 import com.github.shynixn.petblocks.bukkit.PetBlocksPlugin;
-import com.github.shynixn.petblocks.bukkit.logic.business.configuration.*;
 import com.github.shynixn.petblocks.bukkit.logic.business.controller.PetBlockRepository;
+import com.github.shynixn.petblocks.bukkit.logic.persistence.controller.BukkitParticleEffectDataRepository;
+import com.github.shynixn.petblocks.bukkit.logic.persistence.controller.BukkitPlayerDataRepository;
 import com.github.shynixn.petblocks.core.logic.business.helper.ExtensionHikariConnectionContext;
 import org.apache.commons.io.IOUtils;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
-import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
 import java.io.IOException;
@@ -29,35 +29,15 @@ public class Factory {
     public static ExtensionHikariConnectionContext connectionContext;
 
     public static PlayerMetaController<Player> createPlayerDataController() {
-        try {
-            final Class<?> clazz = Class.forName("com.github.shynixn.petblocks.bukkit.logic.persistence.controller.BukkitPlayerDataRepository");
-            Constructor constructor = clazz.getDeclaredConstructor(ExtensionHikariConnectionContext.class);
-            return (PlayerMetaController<Player>) constructor.newInstance(connectionContext);
-        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
-            throw new RuntimeException(e);
-        }
+        return new BukkitPlayerDataRepository(connectionContext);
     }
 
     public static ParticleEffectMetaController createParticleEffectController() {
-        try {
-            final Class<?> clazz = Class.forName("com.github.shynixn.petblocks.bukkit.logic.persistence.controller.BukkitParticleEffectDataRepository");
-            final Constructor constructor = clazz.getDeclaredConstructor(ExtensionHikariConnectionContext.class);
-            return (ParticleEffectMetaController) constructor.newInstance(connectionContext);
-        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
-            throw new RuntimeException(e);
-        }
+        return new BukkitParticleEffectDataRepository(connectionContext);
     }
 
     public static PetBlockController<Player> createPetBlockController() {
         return new PetBlockRepository();
-    }
-
-    public static CostumeController<GUIItemContainer<Player>> createCostumesController(String category) {
-        return new CostumeConfiguration(category, JavaPlugin.getPlugin(PetBlocksPlugin.class));
-    }
-
-    public static CostumeController<GUIItemContainer<Player>> createMinecraftHeadsCostumesController() {
-        return new MinecraftHeadConfiguration(JavaPlugin.getPlugin(PetBlocksPlugin.class));
     }
 
     public static PetMetaController<Player> createPetDataController() {

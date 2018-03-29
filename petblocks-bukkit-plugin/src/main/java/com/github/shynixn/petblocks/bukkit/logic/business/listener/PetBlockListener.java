@@ -8,9 +8,8 @@ import com.github.shynixn.petblocks.api.persistence.entity.PetMeta;
 import com.github.shynixn.petblocks.bukkit.PetBlocksPlugin;
 import com.github.shynixn.petblocks.bukkit.logic.business.PetBlockManager;
 import com.github.shynixn.petblocks.bukkit.logic.business.PetRunnable;
-import com.github.shynixn.petblocks.bukkit.logic.business.configuration.ConfigPet;
+import com.github.shynixn.petblocks.bukkit.logic.persistence.configuration.Config;
 import com.github.shynixn.petblocks.bukkit.nms.NMSRegistry;
-import com.github.shynixn.petblocks.core.logic.persistence.configuration.Config;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -167,12 +166,12 @@ public class PetBlockListener extends SimpleListener {
                 event.setCancelled(true);
             }
         }
-        if (ConfigPet.getInstance().isFleesInCombat()) {
+        if (Config.INSTANCE.isFleesInCombat()) {
             if (event.getDamager() instanceof Player && this.manager.getPetBlockController().getFromPlayer((Player) event.getDamager()).isPresent()) {
-                this.manager.timeBlocked.put((Player) event.getDamager(), ConfigPet.getInstance().getReappearsInSeconds());
+                this.manager.timeBlocked.put((Player) event.getDamager(), Config.INSTANCE.getReappearsInSeconds());
                 this.manager.getPetBlockController().removeByPlayer((Player) event.getDamager());
             } else if (event.getEntity() instanceof Player && this.manager.getPetBlockController().getFromPlayer((Player) event.getEntity()).isPresent()) {
-                this.manager.timeBlocked.put((Player) event.getEntity(), ConfigPet.getInstance().getReappearsInSeconds());
+                this.manager.timeBlocked.put((Player) event.getEntity(), Config.INSTANCE.getReappearsInSeconds());
                 this.manager.getPetBlockController().removeByPlayer((Player) event.getEntity());
             }
         }
@@ -199,10 +198,10 @@ public class PetBlockListener extends SimpleListener {
                     this.providePet(event.getPlayer(), (petMeta, petBlock) -> Bukkit.getServer().getScheduler().runTaskLater(this.plugin, () -> {
                         final PetBlock petBlock1 = this.manager.getPetBlockController().create(event.getPlayer(), petMeta);
                         this.manager.getPetBlockController().store(petBlock1);
-                    }, ConfigPet.getInstance().getWarpDelay() * 20L));
+                    }, Config.INSTANCE.getWarpDelay() * 20L));
                 }
             } else if (event.getPlayer().getPassenger() != null && this.isPet(event.getPlayer().getPassenger())) {
-                if (!ConfigPet.getInstance().isFollow_fallOffHead()) {
+                if (!Config.INSTANCE.isFollow_fallOffHead()) {
                     final Optional<PetBlock> optPetblock = this.manager.getPetBlockController().getFromPlayer(event.getPlayer());
                     optPetblock.ifPresent(petBlock -> petBlock.teleportWithOwner(event.getTo()));
                     event.setCancelled(true);
@@ -221,7 +220,7 @@ public class PetBlockListener extends SimpleListener {
             this.plugin.getServer().getScheduler().runTaskLater(this.plugin, () -> this.providePet(event.getPlayer(), (petMeta, petBlock) -> Bukkit.getServer().getScheduler().runTaskLater(this.plugin, () -> {
                 final PetBlock petBlock1 = this.manager.getPetBlockController().create(event.getPlayer(), petMeta);
                 this.manager.getPetBlockController().store(petBlock1);
-            }, ConfigPet.getInstance().getWarpDelay() * 20L)), 60L);
+            }, Config.INSTANCE.getWarpDelay() * 20L)), 60L);
         }
     }
 
@@ -242,9 +241,9 @@ public class PetBlockListener extends SimpleListener {
         } else if (this.isPet(event.getRightClicked())) {
             final PetBlock petBlock = this.getPet(event.getRightClicked());
             if (petBlock != null && petBlock.getPlayer().equals(event.getPlayer())) {
-                if (ConfigPet.getInstance().isFeedingEnabled() && NMSRegistry.getItemInHand19(event.getPlayer(), false) != null && NMSRegistry.getItemInHand19(event.getPlayer(), false).getType() == Material.CARROT_ITEM) {
-                    petBlock.getEffectPipeline().playParticleEffect(event.getRightClicked().getLocation(), ConfigPet.getInstance().getFeedingClickParticleEffect());
-                    petBlock.getEffectPipeline().playSound(event.getRightClicked().getLocation(), ConfigPet.getInstance().getFeedingClickSound());
+                if (Config.INSTANCE.isFeedingEnabled() && NMSRegistry.getItemInHand19(event.getPlayer(), false) != null && NMSRegistry.getItemInHand19(event.getPlayer(), false).getType() == Material.CARROT_ITEM) {
+                    petBlock.getEffectPipeline().playParticleEffect(event.getRightClicked().getLocation(), Config.INSTANCE.getFeedingClickParticleEffect());
+                    petBlock.getEffectPipeline().playSound(event.getRightClicked().getLocation(), Config.INSTANCE.getFeedingClickSound());
                     if (NMSRegistry.getItemInHand19(event.getPlayer(), false).getAmount() == 1)
                         event.getPlayer().getInventory().setItem(event.getPlayer().getInventory().getHeldItemSlot(), new ItemStack(Material.AIR));
                     else
@@ -254,7 +253,7 @@ public class PetBlockListener extends SimpleListener {
                         this.jumped.add(this.getPet(event.getRightClicked()));
                         petBlock.jump();
                     }
-                } else if (ConfigPet.getInstance().isFollow_carry() && (event.getPlayer().getInventory() == null || NMSRegistry.getItemInHand19(event.getPlayer(), true).getType() == Material.AIR)) {
+                } else if (Config.INSTANCE.isFollow_carry() && (event.getPlayer().getInventory() == null || NMSRegistry.getItemInHand19(event.getPlayer(), true).getType() == Material.AIR)) {
                     final ItemStack itemStack = ((ArmorStand) petBlock.getArmorStand()).getHelmet().clone();
                     NMSRegistry.setItemInHand19(event.getPlayer(), itemStack, true);
                     this.manager.getPetBlockController().remove(petBlock);

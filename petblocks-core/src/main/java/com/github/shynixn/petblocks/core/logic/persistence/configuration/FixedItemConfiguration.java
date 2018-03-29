@@ -1,14 +1,7 @@
-package com.github.shynixn.petblocks.bukkit.logic.business.configuration;
+package com.github.shynixn.petblocks.core.logic.persistence.configuration;
 
 import com.github.shynixn.petblocks.api.business.entity.GUIItemContainer;
 import com.github.shynixn.petblocks.api.persistence.controller.OtherGUIItemsController;
-import com.github.shynixn.petblocks.bukkit.PetBlocksPlugin;
-import com.github.shynixn.petblocks.bukkit.logic.business.entity.ItemContainer;
-import org.bukkit.ChatColor;
-import org.bukkit.configuration.MemorySection;
-import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.plugin.Plugin;
 
 import java.util.*;
 import java.util.logging.Level;
@@ -42,22 +35,8 @@ import java.util.logging.Level;
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-public class FixedItemConfiguration implements OtherGUIItemsController<GUIItemContainer<Player>> {
-
-    private Plugin plugin;
-    private final Map<String, GUIItemContainer<Player>> items = new HashMap<>();
-
-    /**
-     * Initializes a new engine repository
-     *
-     * @param plugin plugin
-     */
-    public FixedItemConfiguration(Plugin plugin) {
-        super();
-        if (plugin == null)
-            throw new IllegalArgumentException("Plugin cannot be null!");
-        this.plugin = plugin;
-    }
+public abstract class FixedItemConfiguration<Player> implements OtherGUIItemsController<GUIItemContainer<Player>> {
+    protected final Map<String, GUIItemContainer<Player>> items = new HashMap<>();
 
     /**
      * Stores a new a item in the repository
@@ -100,27 +79,6 @@ public class FixedItemConfiguration implements OtherGUIItemsController<GUIItemCo
     }
 
     /**
-     * Reloads the content from the fileSystem
-     */
-    @Override
-    public void reload() {
-        this.items.clear();
-        this.plugin.reloadConfig();
-        final Map<String, Object> data = ((MemorySection) this.plugin.getConfig().get("gui.items")).getValues(false);
-        for (final String key : data.keySet()) {
-            try {
-                final GUIItemContainer<Player> container = new ItemContainer(0, ((MemorySection) data.get(key)).getValues(false));
-                if (key.equals("suggest-heads")) {
-                    ((ItemContainer) container).setDisplayName(ChatColor.AQUA + "" + ChatColor.BOLD + "Suggest Heads");
-                }
-                this.items.put(key, container);
-            } catch (final Exception e) {
-                PetBlocksPlugin.logger().log(Level.WARNING, "Failed to load guiItem " + key + '.', e);
-            }
-        }
-    }
-
-    /**
      * Returns the guiItem by the given name.
      *
      * @param name name
@@ -135,27 +93,6 @@ public class FixedItemConfiguration implements OtherGUIItemsController<GUIItemCo
     }
 
     /**
-     * Returns if the given itemStack is a guiItemStack with the given name
-     *
-     * @param itemStack itemStack
-     * @param name      name
-     * @return itemStack
-     */
-    @Override
-    public boolean isGUIItem(Object itemStack, String name) {
-        if (itemStack == null || name == null)
-            return false;
-        final Optional<GUIItemContainer<Player>> optGUIContainer = this.getGUIItemFromName(name);
-        if (!optGUIContainer.isPresent()) {
-            throw new RuntimeException("GUIItem for PetBlocks with the name " + name + " is not loaded correctly!");
-        }
-        final ItemStack mItemStack = (ItemStack) itemStack;
-        return mItemStack.getItemMeta() != null && optGUIContainer.get().getDisplayName().isPresent()
-                && mItemStack.getItemMeta().getDisplayName() != null
-                && mItemStack.getItemMeta().getDisplayName().equalsIgnoreCase(optGUIContainer.get().getDisplayName().get());
-    }
-
-    /**
      * Closes this resource, relinquishing any underlying resources.
      * This method is invoked automatically on objects managed by the
      * {@code try}-with-resources statement.
@@ -166,7 +103,6 @@ public class FixedItemConfiguration implements OtherGUIItemsController<GUIItemCo
      */
     @Override
     public void close() throws Exception {
-        this.plugin = null;
         this.items.clear();
     }
 }

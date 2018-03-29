@@ -8,6 +8,7 @@ import com.github.shynixn.petblocks.api.persistence.controller.ParticleControlle
 import com.github.shynixn.petblocks.api.persistence.entity.EngineContainer;
 import com.github.shynixn.petblocks.api.persistence.entity.ParticleEffectMeta;
 import com.github.shynixn.petblocks.api.persistence.entity.PetMeta;
+import com.github.shynixn.petblocks.api.persistence.entity.SoundMeta;
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
 
@@ -15,9 +16,13 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
 
 public abstract class Config<Player> {
     private static Config instance;
+
+    protected ParticleEffectMeta feedingClickParticleCache;
+    protected SoundMeta feedingClickSoundCache;
 
     @Inject
     private EngineController engineController;
@@ -72,6 +77,8 @@ public abstract class Config<Player> {
      * Reloads the config
      */
     public void reload() {
+        this.feedingClickParticleCache = null;
+        this.feedingClickSoundCache = null;
         this.ordinaryCostumesController.reload();
         this.colorCostumesController.reload();
         this.rareCostumesController.reload();
@@ -221,16 +228,45 @@ public abstract class Config<Player> {
         return this.getDataAsStringList("region.included");
     }
 
+
     /**
-     * Returns if metrics is enabled
+     * Returns the forbidden pet names.
      *
-     * @return enabled
+     * @return names
      */
-    public boolean isMetricsEnabled() {
-        return (boolean) this.getData("metrics");
+    public List<String> getPetNameBlackList() {
+        return this.getData("pet.design.petname-blacklist");
     }
 
-    public static ParticleEffectMeta createParticleComp(Map<String, Object> data) {
+    /**
+     * Returns the amount of blocks the pet has to stay away from the player.
+     *
+     * @return amount
+     */
+    public int getBlocksAwayFromPlayer() {
+        return (int) this.getData("pet.follow.amount-blocks-away");
+    }
+
+    /**
+     * Returns if feeding is enabled.
+     *
+     * @return feeding
+     */
+    public boolean isFeedingEnabled() {
+        return this.getData("pet.feeding.enabled");
+    }
+
+    private SoundMeta createSoundComp(Map<String, Object> data) {
+        try {
+            final Class<?> clazz = Class.forName("com.github.shynixn.petblocks.bukkit.logic.persistence.entity.BukkitSoundBuilder");
+            final Constructor constructor = clazz.getDeclaredConstructor(Map.class);
+            return (SoundMeta) constructor.newInstance(data);
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private ParticleEffectMeta createParticleComp(Map<String, Object> data) {
         try {
             final Class<?> clazz = Class.forName("com.github.shynixn.petblocks.bukkit.logic.persistence.entity.BukkitParticleEffect");
             final Constructor constructor = clazz.getDeclaredConstructor(Map.class);
@@ -238,6 +274,118 @@ public abstract class Config<Player> {
         } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    /**
+     * Returns the value of the hitbox y axe modification.
+     *
+     * @return value
+     */
+    public double getHitBoxYAxeModification() {
+        return this.getData("pet.follow.running-hitbox-height");
+    }
+
+    public boolean isAfraidOfwater() {
+        return (boolean) this.getData("pet.follow.afraid-water");
+    }
+
+    public boolean isAfraidwaterParticles() {
+        return (boolean) this.getData("pet.follow.afraid-water-particles");
+    }
+
+    public int getAge_smallticks() {
+        return (int) this.getData("pet.age.small-ticks");
+    }
+
+    public int getAge_largeticks() {
+        return (int) this.getData("pet.age.large-ticks");
+    }
+
+    public int getAge_maxticks() {
+        return (int) this.getData("pet.age.max-ticks");
+    }
+
+    public boolean isAge_deathOnMaxTicks() {
+        return (boolean) this.getData("pet.age.death-on-maxticks");
+    }
+
+    public double getCombat_health() {
+        return (double) this.getData("pet.combat.health");
+    }
+
+    public boolean isCombat_invincible() {
+        return (boolean) this.getData("pet.combat.invincible");
+    }
+
+    public int getFollow_maxRangeTeleport() {
+        return (int) this.getData("pet.follow.max-range-teleport");
+    }
+
+    public boolean isFollow_fallOffHead() {
+        return (boolean) this.getData("pet.follow.teleport-fall");
+    }
+
+    public boolean isFollow_carry() {
+        return (boolean) this.getData("pet.follow.carry");
+    }
+
+    public int getDesign_maxPetNameLength() {
+        return (int) this.getData("pet.design.max-petname-length");
+    }
+
+    public boolean isDesign_showDamageAnimation() {
+        return (boolean) this.getData("pet.design.show-damage-animation");
+    }
+
+    public boolean isSoundForOtherPlayersHearable() {
+        return (boolean) this.getData("pet.design.sounds-other-players");
+    }
+
+    /**
+     * Returns if particles are visible for other players.
+     *
+     * @return visible
+     */
+    public boolean areParticlesForOtherPlayersVisible() {
+        return this.getData("pet.design.particles-other-players");
+    }
+
+    public double getModifier_petriding() {
+        return (double) this.getData("pet.modifier.riding-speed");
+    }
+
+    public double getModifier_petwalking() {
+        return (double) this.getData("pet.modifier.walking-speed");
+    }
+
+    public double getModifier_petclimbing() {
+        return (double) this.getData("pet.modifier.climbing-height");
+    }
+
+    public boolean isFollow_wallcolliding() {
+        return (boolean) this.getData("pet.follow.flying-wall-colliding");
+    }
+
+    public boolean isFleesInCombat() {
+        return (boolean) this.getData("pet.flee.flees-in-combat");
+    }
+
+    public int getReappearsInSeconds() {
+        return (int) this.getData("pet.flee.reappears-in-seconds");
+    }
+
+    public int getWarpDelay() {
+        return (int) this.getData("pet.warp.teleports-in-seconds");
+    }
+
+
+    /**
+     * Returns if metrics is enabled
+     *
+     * @return enabled
+     */
+    public boolean isMetricsEnabled() {
+        return (boolean) this.getData("metrics");
     }
 
     private List<String> getDataAsStringList(String path) {

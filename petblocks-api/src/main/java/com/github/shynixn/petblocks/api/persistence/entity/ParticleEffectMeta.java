@@ -350,63 +350,61 @@ public interface ParticleEffectMeta extends Persistenceable {
         }
     }
 
-    /**
-     * ParticleEffectTypes
-     */
     enum ParticleEffectType {
-        EXPLOSION_NORMAL("explode", 0),
-        EXPLOSION_LARGE("largeexplode", 1),
-        EXPLOSION_HUGE("hugeexplosion", 2),
-        FIREWORKS_SPARK("fireworksSpark", 3),
-        WATER_BUBBLE("bubble", 4),
-        WATER_SPLASH("splash", 5),
-        WATER_WAKE("wake", 6),
-        SUSPENDED("suspended", 7),
-        SUSPENDED_DEPTH("depthsuspend", 8),
-        CRIT("crit", 9),
-        CRIT_MAGIC("magicCrit", 10),
-        SMOKE_NORMAL("smoke", 11),
-        SMOKE_LARGE("largesmoke", 12),
-        SPELL("spell", 13),
-        SPELL_INSTANT("instantSpell", 14),
-        SPELL_MOB("mobSpell", 15),
-        SPELL_MOB_AMBIENT("mobSpellAmbient", 16),
-        SPELL_WITCH("witchMagic", 17),
-        DRIP_WATER("dripWater", 18),
-        DRIP_LAVA("dripLava", 19),
-        VILLAGER_ANGRY("angryVillager", 20),
-        VILLAGER_HAPPY("happyVillager", 21),
-        TOWN_AURA("townaura", 22),
-        NOTE("note", 23),
-        PORTAL("portal", 24),
-        ENCHANTMENT_TABLE("enchantmenttable", 25),
-        FLAME("flame", 26),
-        LAVA("lava", 27),
-        FOOTSTEP("footstep", 28),
-        CLOUD("cloud", 29),
-        REDSTONE("reddust", 30),
-        SNOWBALL("snowballpoof", 31),
-        SNOW_SHOVEL("snowshovel", 32),
-        SLIME("slime", 33),
-        HEART("heart", 34),
-        BARRIER("barrier", 35),
-        ITEM_CRACK("iconcrack", 36),
-        BLOCK_CRACK("blockcrack", 37),
-        BLOCK_DUST("blockdust", 38),
-        WATER_DROP("droplet", 39),
-        ITEM_TAKE("take", 40),
-        MOB_APPEARANCE("mobappearance", 41),
-        DRAGON_BREATH("dragonbreath", 42),
-        END_ROD("endRod", 43),
-        DAMAGE_INDICATOR("damageIndicator", 44),
-        SWEEP_ATTACK("sweepAttack", 45),
-        FALLING_DUST("fallingdust", 46),
-        TOTEM("totem", 47),
-        NONE("none", 102),
-        SPIT("spit", 48);
+        EXPLOSION_NORMAL("explode", 0, "explosion"),
+        EXPLOSION_LARGE("largeexplode", 1, "large_explosion"),
+        EXPLOSION_HUGE("hugeexplosion", 2, "huge_explosion"),
+        FIREWORKS_SPARK("fireworksSpark", 3, "fireworks_spark"),
+        WATER_BUBBLE("bubble", 4, "water_bubble"),
+        WATER_SPLASH("splash", 5, "water_splash"),
+        WATER_WAKE("wake", 6, "water_wake"),
+        SUSPENDED("suspended", 7, "suspended"),
+        SUSPENDED_DEPTH("depthsuspend", 8, "suspended_depth"),
+        CRIT("crit", 9, "critical_hit"),
+        CRIT_MAGIC("magicCrit", 10, "magic_critical_hit"),
+        SMOKE_NORMAL("smoke", 11, "smoke"),
+        SMOKE_LARGE("largesmoke", 12, "large_smoke"),
+        SPELL("spell", 13, "spell"),
+        SPELL_INSTANT("instantSpell", 14, "instant_spell"),
+        SPELL_MOB("mobSpell", 15, "instant_spell"),
+        SPELL_MOB_AMBIENT("mobSpellAmbient", 16, "mob_spell"),
+        SPELL_WITCH("witchMagic", 17, "witch_spell"),
+        DRIP_WATER("dripWater", 18, "drip_water"),
+        DRIP_LAVA("dripLava", 19, "drip_lava"),
+        VILLAGER_ANGRY("angryVillager", 20, "angry_villager"),
+        VILLAGER_HAPPY("happyVillager", 21, "happy_villager"),
+        TOWN_AURA("townaura", 22, "town_aura"),
+        NOTE("note", 23, "note"),
+        PORTAL("portal", 24, "portal"),
+        ENCHANTMENT_TABLE("enchantmenttable", 25, "enchanting_glyphs"),
+        FLAME("flame", 26, "flame"),
+        LAVA("lava", 27, "lava"),
+        FOOTSTEP("footstep", 28, "footstep"),
+        CLOUD("cloud", 29, "cloud"),
+        REDSTONE("reddust", 30, "redstone_dust"),
+        SNOWBALL("snowballpoof", 31, "snowball"),
+        SNOW_SHOVEL("snowshovel", 32, "snow_shovel"),
+        SLIME("slime", 33, "slime"),
+        HEART("heart", 34, "heart"),
+        BARRIER("barrier", 35, "barrier"),
+        ITEM_CRACK("iconcrack", 36, "item_crack"),
+        BLOCK_CRACK("blockcrack", 37, "block_crack"),
+        BLOCK_DUST("blockdust", 38, "block_dust"),
+        WATER_DROP("droplet", 39, "water_drop"),
+        ITEM_TAKE("take", 40, "instant_spell"),
+        MOB_APPEARANCE("mobappearance", 41, "guardian_appearance"),
+        DRAGON_BREATH("dragonbreath", 42, "dragon_breath"),
+        END_ROD("endRod", 43, "end_rod"),
+        DAMAGE_INDICATOR("damageIndicator", 44, "damage_indicator"),
+        SWEEP_ATTACK("sweepAttack", 45, "sweep_attack"),
+        FALLING_DUST("fallingdust", 46, "falling_dust"),
+        TOTEM("totem", 47, "instant_spell"),
+        NONE("none", 102, "none"),
+        SPIT("spit", 48, "instant_spell");
 
         private final String simpleName;
         private final int id;
+        private String minecraftId;
 
         /**
          * Initializes a new particleEffectType.
@@ -414,9 +412,19 @@ public interface ParticleEffectMeta extends Persistenceable {
          * @param name name
          * @param id   id
          */
-        ParticleEffectType(String name, int id) {
+        ParticleEffectType(String name, int id, String minecraftId) {
             this.simpleName = name;
             this.id = id;
+            this.minecraftId = minecraftId;
+        }
+
+        /**
+         * Returns the vanilla minecraft id.
+         *
+         * @return vanilla id
+         */
+        public String getMinecraftId() {
+            return this.minecraftId;
         }
 
         /**

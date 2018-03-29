@@ -7,19 +7,12 @@ import com.github.shynixn.petblocks.api.persistence.controller.OtherGUIItemsCont
 import com.github.shynixn.petblocks.api.persistence.controller.ParticleController
 import com.github.shynixn.petblocks.api.persistence.entity.EngineContainer
 import com.github.shynixn.petblocks.bukkit.PetBlocksPlugin
-import com.github.shynixn.petblocks.bukkit.logic.business.configuration.CostumeConfiguration
-import com.github.shynixn.petblocks.bukkit.logic.business.configuration.FixedItemConfiguration
-import com.github.shynixn.petblocks.bukkit.logic.business.configuration.MinecraftHeadConfiguration
-import com.github.shynixn.petblocks.bukkit.logic.persistence.configuration.BukkitEngineConfiguration
-import com.github.shynixn.petblocks.bukkit.logic.persistence.configuration.BukkitParticleConfiguration
-import com.github.shynixn.petblocks.bukkit.logic.persistence.configuration.Config
+import com.github.shynixn.petblocks.bukkit.logic.persistence.configuration.*
 import com.google.inject.AbstractModule
-import com.google.inject.Key
 import com.google.inject.TypeLiteral
 import com.google.inject.name.Names
 import org.bukkit.entity.Player
 import org.bukkit.plugin.java.JavaPlugin
-import javax.inject.Provider
 
 
 /**
@@ -81,14 +74,14 @@ class GoogleGuiceBinder : AbstractModule() {
 
 
 
-        bind(OtherGUIItemsController::class.java).toInstance(FixedItemConfiguration(JavaPlugin.getPlugin(PetBlocksPlugin::class.java)))
+        bind(OtherGUIItemsController::class.java).toInstance(BukkitStaticGUIItems())
         bind(ParticleController::class.java).toInstance(BukkitParticleConfiguration())
         bind(EngineController::class.java).toInstance(BukkitEngineConfiguration())
 
-        bind(CostumeController::class.java).annotatedWith(Names.named("ordinary")).toInstance(CostumeConfiguration("ordinary", JavaPlugin.getPlugin(PetBlocksPlugin::class.java)))
-        bind(CostumeController::class.java).annotatedWith(Names.named("color")).toInstance(CostumeConfiguration("color", JavaPlugin.getPlugin(PetBlocksPlugin::class.java)))
-        bind(CostumeController::class.java).annotatedWith(Names.named("rare")).toInstance(CostumeConfiguration("rare", JavaPlugin.getPlugin(PetBlocksPlugin::class.java)))
-        bind(CostumeController::class.java).annotatedWith(Names.named("minecraft-heads")).toInstance(MinecraftHeadConfiguration(JavaPlugin.getPlugin(PetBlocksPlugin::class.java)))
+        bind(CostumeController::class.java).annotatedWith(Names.named("ordinary")).toInstance(BukkitCostumeConfiguration("ordinary"))
+        bind(CostumeController::class.java).annotatedWith(Names.named("color")).toInstance(BukkitCostumeConfiguration("color"))
+        bind(CostumeController::class.java).annotatedWith(Names.named("rare")).toInstance(BukkitCostumeConfiguration("rare"))
+        bind(CostumeController::class.java).annotatedWith(Names.named("minecraft-heads")).toInstance(BukkitMinecraftConfiguration())
 
 
 

@@ -1,23 +1,13 @@
-package com.github.shynixn.petblocks.bukkit.logic.business.entity;
+package com.github.shynixn.petblocks.core.logic.persistence.entity;
 
 import com.github.shynixn.petblocks.api.business.entity.GUIItemContainer;
 import com.github.shynixn.petblocks.api.business.enumeration.GUIPage;
-import com.github.shynixn.petblocks.bukkit.PetBlocksPlugin;
-import com.github.shynixn.petblocks.bukkit.logic.business.helper.PetBlockModifyHelper;
-import com.github.shynixn.petblocks.bukkit.logic.business.helper.SkinHelper;
-import com.github.shynixn.petblocks.bukkit.nms.v1_12_R1.MaterialCompatibility12;
-import com.github.shynixn.petblocks.core.logic.persistence.configuration.Config;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Material;
-import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.inventory.meta.SkullMeta;
-import org.bukkit.plugin.Plugin;
+import com.github.shynixn.petblocks.core.logic.business.helper.ChatColor;
 
-import java.util.*;
-import java.util.logging.Level;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 /**
  * Copyright 2017 Shynixn
@@ -48,10 +38,7 @@ import java.util.logging.Level;
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-public class ItemContainer implements GUIItemContainer<Player> {
-
-    private ItemStack cache;
-
+public abstract class ItemContainer<Player> implements GUIItemContainer<Player> {
     private boolean enabled;
     private int position = -1;
     private GUIPage page;
@@ -132,48 +119,6 @@ public class ItemContainer implements GUIItemContainer<Player> {
                 this.lore = lore.toArray(new String[lore.size()]);
             }
         }
-    }
-
-    /**
-     * Generates a new itemStack for the player and his permissions
-     *
-     * @param player      player
-     * @param permissions permission
-     * @return itemStack
-     */
-    @Override
-    public Object generate(Player player, String... permissions) {
-        if (this.cache != null) {
-            this.updateLore(player, permissions);
-            return this.cache.clone();
-        }
-        try {
-            if (this.enabled) {
-                ItemStack itemStack = new ItemStack(MaterialCompatibility12.getMaterialFromId(this.id), 1, (short) this.damage);
-                if (this.id == MaterialCompatibility12.getIdFromMaterial(Material.SKULL_ITEM) && this.skin != null) {
-                    if (this.skin.contains("textures.minecraft.net")) {
-                        SkinHelper.setItemStackSkin(itemStack, "http://" + this.skin);
-                    } else {
-                        final SkullMeta meta = (SkullMeta) itemStack.getItemMeta();
-                        meta.setOwner(this.skin);
-                        itemStack.setItemMeta(meta);
-                    }
-                }
-                final Map<String, Object> data = new HashMap<>();
-                data.put("Unbreakable", this.isItemUnbreakable());
-                itemStack = PetBlockModifyHelper.setItemStackNBTTag(itemStack, data);
-                final ItemMeta itemMeta = itemStack.getItemMeta();
-                itemMeta.setDisplayName(this.name);
-                itemStack.setItemMeta(itemMeta);
-                this.cache = itemStack;
-                this.updateLore(player, permissions);
-                return itemStack;
-            }
-        } catch (final Exception ex) {
-            Bukkit.getConsoleSender().sendMessage(PetBlocksPlugin.PREFIX_CONSOLE + ChatColor.RED + "Invalid config file. Fix the following error or recreate it!");
-            PetBlocksPlugin.logger().log(Level.WARNING, "Failed to generate itemStack.", ex);
-        }
-        return new ItemStack(Material.AIR);
     }
 
     public void setDisplayName(String displayName) {
@@ -278,54 +223,5 @@ public class ItemContainer implements GUIItemContainer<Player> {
     @Override
     public int getPosition() {
         return this.position;
-    }
-
-    private void updateLore(Player player, String... permissions) {
-        final String[] lore = this.provideLore(player, permissions);
-        if (lore != null) {
-            final ItemMeta meta = this.cache.getItemMeta();
-            meta.setLore(Arrays.asList(lore));
-            this.cache.setItemMeta(meta);
-        }
-    }
-
-    private String[] provideLore(Player player, String... permissions) {
-        if (permissions != null && permissions.length == 1 && permissions[0] != null) {
-            if (permissions.length == 1 && permissions[0].equals("minecraft-heads")) {
-                return new String[]{ChatColor.GRAY + "Use exclusive pet heads as costume.", ChatColor.YELLOW + "Sponsored by Minecraft-Heads.com"};
-            }
-            if (permissions.length == 1 && permissions[0].equals("head-database")) {
-                final Plugin plugin = Bukkit.getPluginManager().getPlugin("HeadDatabase");
-                if (plugin == null) {
-                    return new String[]{ChatColor.DARK_RED + "" + ChatColor.ITALIC + "Plugin is not installed - " + ChatColor.YELLOW + "Click me!"};
-                }
-            }
-        }
-        final String[] modifiedLore = new String[this.lore.length];
-        for (int i = 0; i < modifiedLore.length; i++) {
-            modifiedLore[i] = this.lore[i];
-            if (this.lore[i].contains("<permission>")) {
-                if (permissions != null && (permissions.length == 0 || this.hasPermission(player, permissions))) {
-                    modifiedLore[i] = this.lore[i].replace("<permission>", Config.getInstance().getPermissionIconYes());
-                } else {
-                    modifiedLore[i] = this.lore[i].replace("<permission>", Config.getInstance().getPermissionIconNo());
-                }
-            }
-        }
-        return modifiedLore;
-    }
-
-    private boolean hasPermission(Player player, String... permissions) {
-        for (final String permission : permissions) {
-            if (permission.endsWith(".all")) {
-                final String subPermission = permission.substring(0, permission.indexOf("all")) + this.position;
-                if (player.hasPermission(subPermission)) {
-                    return true;
-                }
-            }
-            if (player.hasPermission(permission))
-                return true;
-        }
-        return false;
     }
 }

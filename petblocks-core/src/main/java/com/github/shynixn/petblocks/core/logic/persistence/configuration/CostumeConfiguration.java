@@ -1,15 +1,9 @@
-package com.github.shynixn.petblocks.bukkit.logic.business.configuration;
+package com.github.shynixn.petblocks.core.logic.persistence.configuration;
 
 import com.github.shynixn.petblocks.api.business.entity.GUIItemContainer;
 import com.github.shynixn.petblocks.api.persistence.controller.CostumeController;
-import com.github.shynixn.petblocks.bukkit.PetBlocksPlugin;
-import com.github.shynixn.petblocks.bukkit.logic.business.entity.ItemContainer;
-import org.bukkit.configuration.MemorySection;
-import org.bukkit.entity.Player;
-import org.bukkit.plugin.Plugin;
 
-import java.util.*;
-import java.util.logging.Level;
+import java.util.Optional;
 
 /**
  * Copyright 2017 Shynixn
@@ -40,17 +34,15 @@ import java.util.logging.Level;
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-public class CostumeConfiguration extends ContainerConfiguration<GUIItemContainer<Player>> implements CostumeController<GUIItemContainer<Player>> {
+public abstract class CostumeConfiguration<Player> extends ContainerConfiguration<GUIItemContainer<Player>> implements CostumeController<GUIItemContainer<Player>> {
     private final String costumeCategory;
 
     /**
      * Initializes a new costume repository.
      *
      * @param costumeCategory costume
-     * @param plugin          plugin
      */
-    public CostumeConfiguration(String costumeCategory, Plugin plugin) {
-        super(plugin);
+    public CostumeConfiguration(String costumeCategory) {
         if (costumeCategory == null)
             throw new IllegalArgumentException("CostumeCategory cannot be null!");
         this.costumeCategory = costumeCategory;
@@ -72,21 +64,11 @@ public class CostumeConfiguration extends ContainerConfiguration<GUIItemContaine
     }
 
     /**
-     * Reloads the content from the fileSystem
+     * Returns the costume category.
+     * @return category
      */
-    @Override
-    public void reload() {
-        this.items.clear();
-        this.plugin.reloadConfig();
-        final Map<String, Object> data = ((MemorySection) this.plugin.getConfig().get("wardrobe." + this.costumeCategory)).getValues(false);
-        for (final String key : data.keySet()) {
-            try {
-                final GUIItemContainer<Player> container = new ItemContainer(Integer.parseInt(key), ((MemorySection) data.get(key)).getValues(true));
-                this.items.add(container);
-            } catch (final Exception e) {
-                PetBlocksPlugin.logger().log(Level.WARNING, "Failed to load guiItem " + this.costumeCategory + '.' + key + '.');
-            }
-        }
+    public String getCostumeCategory() {
+        return this.costumeCategory;
     }
 
     /**

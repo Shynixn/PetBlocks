@@ -1,15 +1,13 @@
 package com.github.shynixn.petblocks.bukkit.logic.persistence.configuration
 
-import com.github.shynixn.petblocks.api.business.entity.GUIItemContainer
-import com.github.shynixn.petblocks.api.persistence.entity.ParticleEffectMeta
 import com.github.shynixn.petblocks.bukkit.PetBlocksPlugin
-import com.github.shynixn.petblocks.bukkit.logic.business.entity.ItemContainer
+import com.github.shynixn.petblocks.bukkit.logic.persistence.entity.BukkitItemContainer
 import com.github.shynixn.petblocks.bukkit.logic.persistence.entity.BukkitParticleEffect
 import com.github.shynixn.petblocks.core.logic.persistence.configuration.ParticleConfiguration
+import com.github.shynixn.petblocks.core.logic.persistence.entity.ItemContainer
 import org.bukkit.configuration.MemorySection
 import org.bukkit.entity.Player
 import org.bukkit.plugin.java.JavaPlugin
-import java.util.*
 import java.util.logging.Level
 
 /**
@@ -52,7 +50,7 @@ class BukkitParticleConfiguration : ParticleConfiguration<Player>(){
         val data = (this.plugin.getConfig().get("particles") as MemorySection).getValues(false)
         for (key in data.keys) {
             try {
-                val container = ItemContainer(Integer.parseInt(key), (data[key] as MemorySection).getValues(false))
+                val container = BukkitItemContainer(Integer.parseInt(key), (data[key] as MemorySection).getValues(false))
                 val meta = BukkitParticleEffect(((data[key] as MemorySection).getValues(false)["effect"] as MemorySection).getValues(true))
                 this.particleCache.put(container, meta)
             } catch (e: Exception) {

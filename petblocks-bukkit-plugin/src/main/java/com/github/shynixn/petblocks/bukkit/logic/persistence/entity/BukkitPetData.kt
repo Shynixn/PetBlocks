@@ -1,7 +1,6 @@
 package com.github.shynixn.petblocks.bukkit.logic.persistence.entity
 
 import com.github.shynixn.petblocks.api.persistence.entity.ParticleEffectMeta
-import com.github.shynixn.petblocks.bukkit.logic.business.configuration.ConfigPet
 import com.github.shynixn.petblocks.bukkit.logic.business.helper.PetBlockModifyHelper
 import com.github.shynixn.petblocks.bukkit.logic.business.helper.SkinHelper
 import com.github.shynixn.petblocks.bukkit.logic.persistence.configuration.Config
@@ -85,7 +84,7 @@ class BukkitPetData : PetData {
 
             }
         }
-        this.ageTicks = ConfigPet.getInstance().age_smallticks.toLong()
+        this.ageTicks = Config.age_smallticks.toLong()
         this.sounds = true
         this.particleEffectBuilder = BukkitParticleEffect()
         this.particleEffectBuilder.effectType = ParticleEffectMeta.ParticleEffectType.NONE
@@ -138,8 +137,8 @@ class BukkitPetData : PetData {
     override fun setPetDisplayName(name: String?) {
         if (name == null)
             return
-        if (ConfigPet.getInstance().petNameBlackList != null) {
-            for (blackName in ConfigPet.getInstance().petNameBlackList) {
+        if (Config.petNameBlackList != null) {
+            for (blackName in Config.petNameBlackList) {
                 if (name.toUpperCase().contains(blackName.toUpperCase())) {
                     throw RuntimeException("Name is not valid!")
                 }
