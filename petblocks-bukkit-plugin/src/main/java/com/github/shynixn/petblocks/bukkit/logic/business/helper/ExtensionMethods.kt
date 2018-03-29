@@ -1,5 +1,6 @@
-package com.github.shynixn.petblocks.api.sponge.event
+package com.github.shynixn.petblocks.bukkit.logic.business.helper
 
+import com.github.shynixn.petblocks.bukkit.nms.VersionSupport
 
 /**
  * Created by Shynixn 2018.
@@ -28,18 +29,7 @@ package com.github.shynixn.petblocks.api.sponge.event
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class Sample {
 
-    fun doSomething()
-    {
-        println("HELLO WORLD")
-        var silentArmorstand : net.minecraft.anchor.v1_12_mcpR1.entity.item.EntityArmorStand? = null
-
-        silentArmorstand!!.canBeAttackedWithItem();
-
-
-        var silentArmorstand2 : net.minecraft.anchor.v1_11_mcpR1.entity.item.EntityArmorStand? = null
-
-        silentArmorstand!!.hasNoBasePlate()
-    }
+fun String.findServerVersion(): String {
+    return this.replace("VERSION", VersionSupport.getServerVersion().versionText)
 }

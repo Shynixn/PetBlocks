@@ -1,5 +1,8 @@
 package com.github.shynixn.petblocks.bukkit.logic.business.helper
 
+import com.comphenix.protocol.reflect.MethodUtils.invokeMethod
+import com.github.shynixn.petblocks.bukkit.logic.business.helper.ReflectionUtils.invokeConstructor
+import com.github.shynixn.petblocks.bukkit.nms.VersionSupport
 import com.github.shynixn.petblocks.core.logic.business.helper.ChatBuilder
 import com.github.shynixn.petblocks.core.logic.business.helper.ChatColor
 import org.bukkit.Bukkit
@@ -66,19 +69,22 @@ fun ChatBuilder.sendMessage(vararg players: Player) {
     try {
         val clazz: Class<*>
         if (Bukkit.getServer()::class.java.`package`.name.replace(".", ",").split(",")[3].equals("v1_8_R1")) {
-            clazz = findClass("net.minecraft.server.VERSION.ChatSerializer")
+            clazz =  Class.forName("net.minecraft.server.VERSION.ChatSerializer".findServerVersion())
         } else {
-            clazz = findClass("net.minecraft.server.VERSION.IChatBaseComponent\$ChatSerializer")
+            clazz = Class.forName("net.minecraft.server.VERSION.IChatBaseComponent\$ChatSerializer".findServerVersion())
         }
-        val packetClazz = findClass("net.minecraft.server.VERSION.PacketPlayOutChat")
-        val chatBaseComponentClazz = findClass("net.minecraft.server.VERSION.IChatBaseComponent")
-        val chatComponent = invokeMethod(null, clazz, "a", arrayOf(String::class.java), arrayOf(finalMessage.toString()))
+        val packetClazz = Class.forName("net.minecraft.server.VERSION.PacketPlayOutChat".findServerVersion())
+        val chatBaseComponentClazz =  Class.forName("net.minecraft.server.VERSION.IChatBaseComponent".findServerVersion())
+
+        val method = clazz.getDeclaredMethod("a",String::class.java);
+        method.isAccessible = true
+        val chatComponent = method.invoke(null, finalMessage.toString())
         val packet: Any
-        if (Bukkit.getServer()::class.java.`package`.name.replace(".", ",").split(",")[3].equals("v1_12_R1")) {
-            val chatEnumMessage = findClass("net.minecraft.server.VERSION.ChatMessageType")
-            packet = invokeConstructor(packetClazz, arrayOf(chatBaseComponentClazz, chatEnumMessage), arrayOf(chatComponent, chatEnumMessage.enumConstants[0]))
+        packet = if (VersionSupport.getServerVersion().versionText == "v1_12_R1") {
+            val chatEnumMessage = Class.forName("net.minecraft.server.VERSION.ChatMessageType".findServerVersion())
+            invokeConstructor(packetClazz, arrayOf(chatBaseComponentClazz, chatEnumMessage), arrayOf(chatComponent, chatEnumMessage.enumConstants[0]))
         } else {
-            packet = invokeConstructor(packetClazz, arrayOf(chatBaseComponentClazz, Byte::class.javaPrimitiveType!!), arrayOf(chatComponent, 0.toByte()))
+            invokeConstructor(packetClazz, arrayOf(chatBaseComponentClazz, Byte::class.javaPrimitiveType!!), arrayOf(chatComponent, 0.toByte()))
         }
         for (player in players) {
             sendPacket(player, packet)
@@ -102,61 +108,10 @@ fun ChatBuilder.sendMessage(vararg players: Player) {
 
 @Throws(ClassNotFoundException::class, IllegalAccessException::class, NoSuchMethodException::class, InvocationTargetException::class, NoSuchFieldException::class)
 private fun sendPacket(player: Player, packet: Any) {
-    val craftPlayer = findClass("org.bukkit.craftbukkit.VERSION.entity.CraftPlayer").cast(player)
-    val entityPlayer = invokeMethod(craftPlayer, craftPlayer.javaClass, "getHandle", arrayOf(), arrayOf())
+    val craftPlayer = Class.forName("org.bukkit.craftbukkit.VERSION.entity.CraftPlayer".findServerVersion()).cast(player)
+    val entityPlayer = craftPlayer.javaClass.getDeclaredMethod("getHandle").invoke(craftPlayer)
     val field = entityPlayer.javaClass.getDeclaredField("playerConnection")
     field.isAccessible = true
     val connection = field.get(entityPlayer)
-    invokeMethod(connection, connection.javaClass, "sendPacket", arrayOf(packet.javaClass.interfaces[0]), arrayOf(packet))
-}
-
-/**
- * Invokes a constructor by the given parameters
- *
- * @param clazz      clazz
- * @param paramTypes paramTypes
- * @param params     params
- * @return instance
- * @throws NoSuchMethodException     exception
- * @throws IllegalAccessException    exception
- * @throws InvocationTargetException exception
- * @throws InstantiationException    exception
- */
-@Throws(NoSuchMethodException::class, IllegalAccessException::class, InvocationTargetException::class, InstantiationException::class)
-private fun invokeConstructor(clazz: Class<*>, paramTypes: Array<Class<*>>, params: Array<Any>): Any {
-    val constructor = clazz.getDeclaredConstructor(*paramTypes)
-    constructor.isAccessible = true
-    return constructor.newInstance(*params)
-}
-
-/**
- * Invokes a method by the given parameters
- *
- * @param instance   instance
- * @param clazz      clazz
- * @param name       name
- * @param paramTypes paramTypes
- * @param params     params
- * @return returnedObject
- * @throws InvocationTargetException exception
- * @throws IllegalAccessException    exception
- * @throws NoSuchMethodException     exception
- */
-@Throws(InvocationTargetException::class, IllegalAccessException::class, NoSuchMethodException::class)
-private fun invokeMethod(instance: Any?, clazz: Class<*>, name: String, paramTypes: Array<Class<*>>, params: Array<Any>): Any {
-    val method = clazz.getDeclaredMethod(name, *paramTypes)
-    method.isAccessible = true
-    return method.invoke(instance, *params)
-}
-
-/**
- * Finds a class regarding of the server Version
- *
- * @param name name
- * @return clazz
- * @throws ClassNotFoundException exception
- */
-@Throws(ClassNotFoundException::class)
-private fun findClass(name: String): Class<*> {
-    return Class.forName(name.replace("VERSION", Bukkit.getServer()::class.java.`package`.name.replace(".", ",").split(",")[3]))
+    connection.javaClass.getDeclaredMethod("sendPacket", packet.javaClass.interfaces[0]).invoke(connection,packet)
 }

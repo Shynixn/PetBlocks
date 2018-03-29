@@ -54,11 +54,11 @@ class BukkitMinecraftConfiguration : CostumeConfiguration<Player>("minecrafthead
             val decipher = Cipher.getInstance("AES/CBC/PKCS5PADDING")
             decipher.init(Cipher.DECRYPT_MODE, SecretKeySpec(Base64Coder.decode("NTk50mqoZMw9ZTxcQJlVhA=="), "AES"), IvParameterSpec("RandomInitVector".toByteArray(charset("UTF-8"))))
             BufferedReader(InputStreamReader(CipherInputStream(JavaPlugin.getPlugin(PetBlocksPlugin::class.java).getResource("minecraftheads.db"), decipher))).use { reader ->
-                var s: String
+                var s: String?
                 val splitter = Pattern.quote(",")
                 var i = 0
                 while (true) {
-                    s = reader.readLine();
+                    s = reader.readLine()
                     if (s == null) {
                         break
                     }
@@ -79,7 +79,7 @@ class BukkitMinecraftConfiguration : CostumeConfiguration<Player>("minecrafthead
                 }
             }
         } catch (e: Exception) {
-            PetBlocksPlugin.logger().log(Level.WARNING, "Failed to read minecraft-heads.com skins.")
+            PetBlocksPlugin.logger().log(Level.WARNING, "Failed to read minecraft-heads.com skins.",e)
         }
     }
 }
