@@ -2,6 +2,7 @@ package com.github.shynixn.petblocks.sponge.nms;
 
 import com.github.shynixn.petblocks.core.logic.business.helper.ChatColor;
 import com.github.shynixn.petblocks.sponge.logic.business.helper.ExtensionMethodsKt;
+import org.spongepowered.api.Game;
 import org.spongepowered.api.Sponge;
 
 import java.util.regex.Pattern;
@@ -162,11 +163,11 @@ public enum VersionSupport {
      */
     public static boolean isServerVersionSupported(String pluginName, String prefix) {
         if (getServerVersion() == null) {
-            ExtensionMethodsKt.sendMessage(null,prefix + ChatColor.RED + "================================================");
-            ExtensionMethodsKt.sendMessage(null,prefix + ChatColor.RED + pluginName + " does not support your server version");
-            ExtensionMethodsKt.sendMessage(null,prefix + ChatColor.RED + "Install v" + getLowestVersionSupported().simpleVersionText + " - v" + getGreatestVersionSupported().simpleVersionText);
-            ExtensionMethodsKt.sendMessage(null,prefix + ChatColor.RED + "Plugin gets now disabled!");
-            ExtensionMethodsKt.sendMessage(null,prefix + ChatColor.RED + "================================================");
+            ExtensionMethodsKt.sendMessage((Game)null,prefix + ChatColor.RED + "================================================");
+            ExtensionMethodsKt.sendMessage((Game)null,prefix + ChatColor.RED + pluginName + " does not support your server version");
+            ExtensionMethodsKt.sendMessage((Game)null,prefix + ChatColor.RED + "Install v" + getLowestVersionSupported().simpleVersionText + " - v" + getGreatestVersionSupported().simpleVersionText);
+            ExtensionMethodsKt.sendMessage((Game)null,prefix + ChatColor.RED + "Plugin gets now disabled!");
+            ExtensionMethodsKt.sendMessage((Game)null,prefix + ChatColor.RED + "================================================");
             return false;
         }
         return true;

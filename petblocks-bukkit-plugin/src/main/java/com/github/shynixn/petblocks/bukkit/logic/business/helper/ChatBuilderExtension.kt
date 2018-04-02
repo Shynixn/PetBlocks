@@ -1,10 +1,9 @@
 package com.github.shynixn.petblocks.bukkit.logic.business.helper
 
-import com.comphenix.protocol.reflect.MethodUtils.invokeMethod
-import com.github.shynixn.petblocks.bukkit.logic.business.helper.ReflectionUtils.invokeConstructor
 import com.github.shynixn.petblocks.bukkit.nms.VersionSupport
 import com.github.shynixn.petblocks.core.logic.business.helper.ChatBuilder
 import com.github.shynixn.petblocks.core.logic.business.helper.ChatColor
+import com.github.shynixn.petblocks.core.logic.business.helper.ReflectionUtils.invokeConstructor
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
 import java.lang.reflect.InvocationTargetException

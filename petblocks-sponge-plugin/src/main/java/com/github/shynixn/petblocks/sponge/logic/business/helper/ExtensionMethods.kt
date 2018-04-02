@@ -3,9 +3,11 @@ package com.github.shynixn.petblocks.sponge.logic.business.helper
 import com.github.shynixn.petblocks.sponge.nms.VersionSupport
 import org.spongepowered.api.Game
 import org.spongepowered.api.Sponge
+import org.spongepowered.api.entity.living.player.Player
 import org.spongepowered.api.item.inventory.ItemStack
 import org.spongepowered.api.text.Text
 import org.spongepowered.api.text.serializer.TextSerializers
+import java.util.function.Consumer
 
 /**
  * Created by Shynixn 2018.
@@ -40,12 +42,26 @@ fun Game.sendMessage(message: String) {
     Sponge.getServer().console.sendMessage(message.translateToText())
 }
 
+fun Game.unloadPlugin(plugin: Any) {
+    Sponge.getGame().eventManager.unregisterPluginListeners(this)
+    Sponge.getGame().commandManager.getOwnedBy(this).forEach(Consumer { Sponge.getGame().commandManager.removeMapping(it) })
+    Sponge.getGame().scheduler.getScheduledTasks(this).forEach(Consumer { it.cancel() })
+}
+
 fun Array<String?>.translateToTexts(): Array<Text?> {
     val copy = arrayOfNulls<Text>(this.size)
     this.forEachIndexed { i, p ->
         copy[i] = this[i]!!.translateToText()
     }
     return copy
+}
+
+fun Player.updateInventory() {
+    ReflectionCache.updateInventoryMethod.invoke(this)
+}
+
+fun Player.sendMessage(text: String) {
+    sendMessage(text.translateToText())
 }
 
 fun String.translateToText(): Text {
@@ -67,6 +83,7 @@ fun ItemStack.setSkin(skin: String) {
 private object ReflectionCache {
     val utilsClass = Class.forName("com.github.shynixn.petblocks.sponge.nms.VERSION.NMSUtils".findServerVersion())
     val setDamageMethod = utilsClass.getDeclaredMethod("setItemDamage", ItemStack::class.java, Int::class.java)
+    val updateInventoryMethod = utilsClass.getDeclaredMethod("updateInventoryFor", Player::class.java)
     val setSkinUrlMethod = utilsClass.getDeclaredMethod("setSkinUrl", ItemStack::class.java, String::class.java)
     val setSkinOwnerMethod = utilsClass.getDeclaredMethod("setSkinOwner", ItemStack::class.java, String::class.java)
 }

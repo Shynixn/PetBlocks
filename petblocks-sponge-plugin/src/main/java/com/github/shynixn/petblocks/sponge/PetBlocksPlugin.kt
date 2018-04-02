@@ -1,6 +1,31 @@
 package com.github.shynixn.petblocks.sponge
 
+import com.github.shynixn.petblocks.api.PetBlocksApi
+import com.github.shynixn.petblocks.api.business.controller.PetBlockController
+import com.github.shynixn.petblocks.api.persistence.controller.PetMetaController
 import com.github.shynixn.petblocks.core.logic.business.helper.ChatColor
+import com.github.shynixn.petblocks.core.logic.business.helper.ReflectionUtils
+import com.github.shynixn.petblocks.sponge.logic.business.PetBlocksManager
+import com.github.shynixn.petblocks.sponge.logic.business.helper.GoogleGuiceBinder
+import com.github.shynixn.petblocks.sponge.logic.business.helper.UpdateUtils
+import com.github.shynixn.petblocks.sponge.logic.business.helper.sendMessage
+import com.github.shynixn.petblocks.sponge.logic.business.helper.unloadPlugin
+import com.github.shynixn.petblocks.sponge.logic.persistence.configuration.Config
+import com.github.shynixn.petblocks.sponge.nms.NMSRegistry
+import com.github.shynixn.petblocks.sponge.nms.VersionSupport
+import com.google.inject.Inject
+import com.google.inject.Injector
+import org.bstats.sponge.Metrics
+import org.slf4j.Logger
+import org.spongepowered.api.Sponge
+import org.spongepowered.api.event.Listener
+import org.spongepowered.api.event.game.GameReloadEvent
+import org.spongepowered.api.event.game.state.GameInitializationEvent
+import org.spongepowered.api.event.game.state.GameStoppingServerEvent
+import org.spongepowered.api.plugin.Plugin
+import org.spongepowered.api.plugin.PluginContainer
+import org.spongepowered.api.scheduler.Task
+import java.io.IOException
 
 /**
  * Created by Shynixn 2018.
@@ -29,10 +54,80 @@ import com.github.shynixn.petblocks.core.logic.business.helper.ChatColor
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+@Plugin(id = "petblocks", name = "PetBlocks", version = "7.0.0-SNAPSHOT", description = "PetBlocks is a spigot and sponge plugin to use block as pets in minecraft.")
 class PetBlocksPlugin {
 
     companion object {
         val PREFIX_CONSOLE = ChatColor.AQUA.toString() + "[PetBlocks] "
+        private val SPIGOT_RESOURCEID: Long = 12056
+        private val PLUGIN_NAME = "PetBlocks"
     }
 
+    private var disabled: Boolean = false
+
+    @Inject
+    private lateinit var pluginContainer: PluginContainer
+
+    @Inject
+    private lateinit var metrics: Metrics
+
+    @Inject
+    private lateinit var logger: Logger
+
+    @Inject
+    private lateinit var  petBlockManager: PetBlocksManager
+
+    @Inject
+    private lateinit var injector : Injector
+
+    @Listener
+    @Throws(IOException::class)
+    fun onEnable(event: GameInitializationEvent) {
+        if (!VersionSupport.isServerVersionSupported(PLUGIN_NAME, PREFIX_CONSOLE)) {
+            this.disabled = true
+            Sponge.getGame().unloadPlugin(this)
+        } else {
+            Sponge.getGame().sendMessage(PREFIX_CONSOLE + ChatColor.GREEN + "Loading PetBlocks ...")
+            injector.createChildInjector(GoogleGuiceBinder())
+            Config.reload()
+            metrics.addCustomChart(Metrics.SimplePie("storage", {
+                if (Config.getData<Boolean>("sql.enabled")!!) {
+                    "MySQL"
+                }
+                "SQLite"
+            }))
+            Task.builder().async().execute(Runnable {
+                try {
+                    UpdateUtils.checkPluginUpToDateAndPrintMessage(SPIGOT_RESOURCEID, PREFIX_CONSOLE, PLUGIN_NAME, pluginContainer)
+                } catch (e: IOException) {
+                    this.logger.warn("Failed to check for updates.")
+                }
+            }).submit(this.pluginContainer)
+            try {
+                ReflectionUtils.invokeMethodByClass<PetBlocksApi>(PetBlocksApi::class.java, "initialize", arrayOf<Class<*>>(PetMetaController::class.java, PetBlockController::class.java), arrayOf<Any>(this.petBlockManager.petMetaController, this.petBlockManager.petBlockController))
+                Sponge.getGame().sendMessage(PREFIX_CONSOLE + ChatColor.GREEN + "Enabled PetBlocks " + pluginContainer.version + " by Shynixn")
+            } catch (e: Exception) {
+                logger.error("Failed to enable plugin.", e)
+            }
+        }
+    }
+
+    @Listener
+    fun onReload(event: GameReloadEvent) {
+        if (!this.disabled) {
+            Config.reload()
+            Sponge.getGame().sendMessage(PREFIX_CONSOLE + ChatColor.GREEN + "Reloaded PetBlocks configuration.")
+        }
+    }
+
+    @Listener
+    fun onDisable(event: GameStoppingServerEvent) {
+        if (!this.disabled) {
+            try {
+                NMSRegistry.unregisterCustomEntities()
+            } catch (e: Exception) {
+                logger.warn("Failed to disable petblocks.", e)
+            }
+        }
+    }
 }
