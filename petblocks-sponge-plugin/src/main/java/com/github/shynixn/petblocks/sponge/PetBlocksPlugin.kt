@@ -118,7 +118,7 @@ class PetBlocksPlugin {
             Config.reload()
             Sponge.getGame().sendMessage(PREFIX_CONSOLE + ChatColor.GREEN + "Reloaded PetBlocks configuration.")
         }
-    }
+    }//
 
     @Listener
     fun onDisable(event: GameStoppingServerEvent) {
