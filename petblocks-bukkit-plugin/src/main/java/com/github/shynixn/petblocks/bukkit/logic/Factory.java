@@ -1,11 +1,13 @@
 package com.github.shynixn.petblocks.bukkit.logic;
 
 import com.github.shynixn.petblocks.api.business.controller.PetBlockController;
-import com.github.shynixn.petblocks.api.business.entity.GUIItemContainer;
-import com.github.shynixn.petblocks.api.persistence.controller.*;
+import com.github.shynixn.petblocks.api.persistence.controller.ParticleEffectMetaController;
+import com.github.shynixn.petblocks.api.persistence.controller.PetMetaController;
+import com.github.shynixn.petblocks.api.persistence.controller.PlayerMetaController;
 import com.github.shynixn.petblocks.bukkit.PetBlocksPlugin;
-import com.github.shynixn.petblocks.bukkit.logic.business.controller.PetBlockRepository;
+import com.github.shynixn.petblocks.bukkit.logic.business.controller.BukkitPetBlockRepository;
 import com.github.shynixn.petblocks.bukkit.logic.persistence.controller.BukkitParticleEffectDataRepository;
+import com.github.shynixn.petblocks.bukkit.logic.persistence.controller.BukkitPetDataRepository;
 import com.github.shynixn.petblocks.bukkit.logic.persistence.controller.BukkitPlayerDataRepository;
 import com.github.shynixn.petblocks.core.logic.business.helper.ExtensionHikariConnectionContext;
 import org.apache.commons.io.IOUtils;
@@ -16,8 +18,6 @@ import org.bukkit.plugin.Plugin;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -37,26 +37,11 @@ public class Factory {
     }
 
     public static PetBlockController<Player> createPetBlockController() {
-        return new PetBlockRepository();
+        return new BukkitPetBlockRepository();
     }
 
     public static PetMetaController<Player> createPetDataController() {
-        try {
-            final Class<?> clazz = Class.forName("com.github.shynixn.petblocks.bukkit.logic.persistence.controller.BukkitPetDataRepository");
-            final Constructor constructor = clazz.getDeclaredConstructor(PlayerMetaController.class,ParticleEffectMetaController.class,ExtensionHikariConnectionContext.class);
-            return (PetMetaController<Player>) constructor.newInstance(createPlayerDataController(),createParticleEffectController(),connectionContext);
-        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public static ParticleController<GUIItemContainer<Player>> createParticleConfiguration() {
-        try {
-            final Class<?> clazz = Class.forName("com.github.shynixn.petblocks.bukkit.logic.persistence.configuration.BukkitParticleConfiguration");
-            return (ParticleController<GUIItemContainer<Player>>) clazz.newInstance();
-        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException e) {
-            throw new RuntimeException(e);
-        }
+        return new BukkitPetDataRepository(createPlayerDataController(), createParticleEffectController(), connectionContext);
     }
 
     public static void disable() {

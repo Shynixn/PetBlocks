@@ -49,11 +49,10 @@ import java.util.regex.Pattern
  * SOFTWARE.
  */
 @Singleton
-class PetBlocksManager(plugin : PluginContainer) : AutoCloseable{
+public class PetBlocksManager(plugin : PluginContainer) : AutoCloseable{
 
     val carryingPet: MutableMap<Player, ItemStack> = HashMap()
     val timeBlocked: MutableMap<Player, Int> = HashMap()
-    val headDatabasePlayers: MutableSet<Player> = HashSet()
     val inventories: MutableMap<Player, Inventory> = HashMap()
     val pages: MutableMap<Player, GuiPageContainer> = HashMap()
 

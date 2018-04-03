@@ -1,9 +1,17 @@
 package com.github.shynixn.petblocks.sponge.logic.business.helper
 
+import com.github.shynixn.petblocks.api.business.entity.GUIItemContainer
+import com.github.shynixn.petblocks.api.business.entity.PetBlock
+import com.github.shynixn.petblocks.api.business.enumeration.Permission
+import com.github.shynixn.petblocks.api.persistence.entity.EngineContainer
+import com.github.shynixn.petblocks.api.persistence.entity.PetMeta
+import com.github.shynixn.petblocks.core.logic.persistence.configuration.Config
+import com.github.shynixn.petblocks.core.logic.persistence.configuration.EngineConfiguration
 import com.github.shynixn.petblocks.sponge.nms.VersionSupport
 import org.spongepowered.api.Game
 import org.spongepowered.api.Sponge
 import org.spongepowered.api.entity.living.player.Player
+import org.spongepowered.api.event.cause.Cause
 import org.spongepowered.api.item.inventory.ItemStack
 import org.spongepowered.api.text.Text
 import org.spongepowered.api.text.serializer.TextSerializers
@@ -48,6 +56,67 @@ fun Game.unloadPlugin(plugin: Any) {
     Sponge.getGame().scheduler.getScheduledTasks(this).forEach(Consumer { it.cancel() })
 }
 
+fun Game.getCause(): Cause {
+    return Cause.builder().build()
+}
+
+fun PetMeta.setCostume(petBlock: PetBlock?, container: GUIItemContainer<Player>?) {
+    if (container == null)
+        return
+    setSkin(container.itemId, container.itemDamage, container.skin, container.isItemUnbreakable)
+    petBlock?.respawn()
+}
+
+fun PetMeta.setEngine(petBlock: PetBlock?, engineContainer: EngineContainer<GUIItemContainer<Player>>?) {
+    if (engineContainer == null)
+        return
+    setEngine(engineContainer)
+    if (Config.getInstance<Any>().isCopySkinEnabled) {
+        val container = engineContainer.guiItem
+        setSkin(container.itemId, container.itemDamage, container.skin, container.isItemUnbreakable)
+    }
+    petBlock?.respawn()
+}
+
+/**
+ * Sets the particleEffect for the given petMeta and petblock.
+ *
+ * @param petMeta   petMeta
+ * @param petBlock  petblock
+ * @param container container
+ */
+fun PetMeta.setParticleEffect(petBlock: PetBlock?, container: GUIItemContainer<Player>?) {
+    if (container == null)
+        return
+    val transferOpt = Config.getInstance<Any>().particleController.getFromItem(container as GUIItemContainer<Any>)
+    if (!transferOpt.isPresent)
+        return
+    val transfer = transferOpt.get()
+    particleEffectMeta.effectType = transfer.effectType
+    particleEffectMeta.speed = transfer.speed
+    particleEffectMeta.amount = transfer.amount
+    particleEffectMeta.setOffset(transfer.offsetX, transfer.offsetY, transfer.offsetZ)
+    particleEffectMeta.material = transfer.material
+    particleEffectMeta.data = transfer.data
+    petBlock?.respawn()
+}
+
+
+fun Player.hasPermissions(permission: Permission, vararg placeholder: String): Boolean {
+    for (s in permission.permission) {
+        var perm = s
+        for (i in placeholder.indices) {
+            val plc = "$" + i
+            perm = perm.replace(plc, placeholder[i])
+        }
+        if (this.hasPermission(perm)) {
+            return true
+        }
+    }
+    return false
+}
+
+
 fun Array<String?>.translateToTexts(): Array<Text?> {
     val copy = arrayOfNulls<Text>(this.size)
     this.forEachIndexed { i, p ->
@@ -69,7 +138,7 @@ fun String.translateToText(): Text {
 }
 
 fun String.findServerVersion(): String {
-    return this.replace("VERSION", VersionSupport.getServerVersion().versionText);
+    return this.replace("VERSION", VersionSupport.getServerVersion().versionText)
 }
 
 fun ItemStack.setSkin(skin: String) {
@@ -89,5 +158,5 @@ private object ReflectionCache {
 }
 
 fun ItemStack.setDamage(damage: Int) {
-    ReflectionCache.setDamageMethod!!.invoke(this, damage);
+    ReflectionCache.setDamageMethod!!.invoke(this, damage)
 }

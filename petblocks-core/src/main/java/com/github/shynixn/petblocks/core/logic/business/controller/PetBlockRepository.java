@@ -1,12 +1,8 @@
-package com.github.shynixn.petblocks.bukkit.logic.business.controller;
+package com.github.shynixn.petblocks.core.logic.business.controller;
 
-import com.github.shynixn.petblocks.api.bukkit.event.PetBlockDeathEvent;
 import com.github.shynixn.petblocks.api.business.controller.PetBlockController;
 import com.github.shynixn.petblocks.api.business.entity.PetBlock;
 import com.github.shynixn.petblocks.api.persistence.entity.PetMeta;
-import com.github.shynixn.petblocks.bukkit.nms.NMSRegistry;
-import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
 
 import java.util.*;
 
@@ -39,24 +35,8 @@ import java.util.*;
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-public final class PetBlockRepository implements PetBlockController<Player> {
-    private final Map<Player, PetBlock> petblocks = new HashMap<>();
-
-    /**
-     * Creates a new petblock for the given player and meta.
-     *
-     * @param player  player
-     * @param petMeta meta
-     * @return petblock
-     */
-    @Override
-    public PetBlock create(Player player, PetMeta petMeta) {
-        if (player == null)
-            throw new IllegalArgumentException("Player cannot be null!");
-        if (petMeta == null)
-            throw new IllegalArgumentException("PetMeta cannot be null!");
-        return NMSRegistry.createPetBlock(player.getLocation(), petMeta);
-    }
+public abstract class PetBlockRepository<Player> implements PetBlockController<Player> {
+    protected final Map<Player, PetBlock> petblocks = new HashMap<>();
 
     /**
      * Returns the petblock of the given player.
@@ -99,26 +79,6 @@ public final class PetBlockRepository implements PetBlockController<Player> {
         final Player mPlayer = (Player) item.getPlayer();
         if (!this.petblocks.containsKey(mPlayer)) {
             this.petblocks.put(mPlayer, item);
-        }
-    }
-
-    /**
-     * Removes an item from the repository.
-     *
-     * @param item item
-     */
-    @Override
-    public void remove(PetBlock item) {
-        if (item == null)
-            return;
-        final Player player = (Player) item.getPlayer();
-        if (this.petblocks.containsKey(player)) {
-            final PetBlockDeathEvent event = new PetBlockDeathEvent(this.petblocks.get(player));
-            Bukkit.getPluginManager().callEvent(event);
-            if (!event.isCanceled()) {
-                this.petblocks.get(player).remove();
-                this.petblocks.remove(player);
-            }
         }
     }
 
