@@ -4,7 +4,9 @@ import com.github.shynixn.petblocks.api.business.controller.PetBlockController
 import com.github.shynixn.petblocks.api.persistence.controller.PetMetaController
 import com.github.shynixn.petblocks.core.logic.business.entity.GuiPageContainer
 import com.github.shynixn.petblocks.core.logic.business.helper.ExtensionHikariConnectionContext
+import com.github.shynixn.petblocks.sponge.logic.business.controller.SpongePetBlockRepository
 import com.github.shynixn.petblocks.sponge.logic.persistence.configuration.Config
+import com.github.shynixn.petblocks.sponge.logic.persistence.controller.SpongePetDataRepository
 import com.google.inject.Inject
 import com.google.inject.Singleton
 import org.slf4j.Logger
@@ -49,40 +51,40 @@ import java.util.regex.Pattern
  * SOFTWARE.
  */
 @Singleton
-public class PetBlocksManager(plugin : PluginContainer) : AutoCloseable{
+class PetBlocksManager @Inject constructor(private val plugin: PluginContainer) : AutoCloseable {
 
     val carryingPet: MutableMap<Player, ItemStack> = HashMap()
     val timeBlocked: MutableMap<Player, Int> = HashMap()
     val inventories: MutableMap<Player, Inventory> = HashMap()
     val pages: MutableMap<Player, GuiPageContainer> = HashMap()
 
+    init {
+        initialize(this.plugin, true)
+    }
+
     @Inject
     lateinit var gui: GUI
 
     @Inject
-    private lateinit var logger : Logger
+    private lateinit var logger: Logger
 
     @Inject
-    lateinit var petBlockController: PetBlockController<Player>
+    lateinit var petBlockController: SpongePetBlockRepository
         private set
 
     @Inject
-    lateinit var petMetaController: PetMetaController<Player>
+    lateinit var petMetaController: SpongePetDataRepository
         private set
 
     @ConfigDir(sharedRoot = false)
     private lateinit var privateConfigDir: Path
 
 
-
-
-
-
     @Synchronized
     private fun initialize(plugin: PluginContainer, modifier: Boolean): ExtensionHikariConnectionContext? {
         var connectionContext: ExtensionHikariConnectionContext? = null
         val config = Config
-        val retriever = ExtensionHikariConnectionContext.SQlRetriever{ fileName ->
+        val retriever = ExtensionHikariConnectionContext.SQlRetriever { fileName ->
             try {
                 val asset = Sponge.getAssetManager().getAsset(plugin, "sql/$fileName.sql").get()
                 asset.readString()
@@ -169,7 +171,7 @@ public class PetBlocksManager(plugin : PluginContainer) : AutoCloseable{
             } catch (e: Exception) {
                 logger.warn("Cannot execute creation.", e)
                 logger.warn("Trying to connect to SQLite database....", e)
-                return initialize(plugin,  false)
+                return initialize(plugin, false)
             }
 
         }
@@ -186,6 +188,14 @@ public class PetBlocksManager(plugin : PluginContainer) : AutoCloseable{
      * @throws Exception if this resource cannot be closed
      */
     override fun close() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        for (player in this.carryingPet.keys) {
+            //  NMSRegistry.setItemInHand19(player, null, true)
+        }
+        this.timeBlocked.clear()
+        this.inventories.clear()
+        this.pages.clear()
+        this.petBlockController.close()
+        this.petMetaController.close()
+        this.carryingPet.clear()
     }
 }

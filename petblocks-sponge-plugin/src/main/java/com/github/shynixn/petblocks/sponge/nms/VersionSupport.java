@@ -163,11 +163,11 @@ public enum VersionSupport {
      */
     public static boolean isServerVersionSupported(String pluginName, String prefix) {
         if (getServerVersion() == null) {
-            ExtensionMethodsKt.sendMessage((Game)null,prefix + ChatColor.RED + "================================================");
-            ExtensionMethodsKt.sendMessage((Game)null,prefix + ChatColor.RED + pluginName + " does not support your server version");
-            ExtensionMethodsKt.sendMessage((Game)null,prefix + ChatColor.RED + "Install v" + getLowestVersionSupported().simpleVersionText + " - v" + getGreatestVersionSupported().simpleVersionText);
-            ExtensionMethodsKt.sendMessage((Game)null,prefix + ChatColor.RED + "Plugin gets now disabled!");
-            ExtensionMethodsKt.sendMessage((Game)null,prefix + ChatColor.RED + "================================================");
+            ExtensionMethodsKt.sendMessage(Sponge.getGame(),prefix + ChatColor.RED + "================================================");
+            ExtensionMethodsKt.sendMessage(Sponge.getGame(),prefix + ChatColor.RED + pluginName + " does not support your server version");
+            ExtensionMethodsKt.sendMessage(Sponge.getGame(),prefix + ChatColor.RED + "Install v" + getLowestVersionSupported().simpleVersionText + " - v" + getGreatestVersionSupported().simpleVersionText);
+            ExtensionMethodsKt.sendMessage(Sponge.getGame(),prefix + ChatColor.RED + "Plugin gets now disabled!");
+            ExtensionMethodsKt.sendMessage(Sponge.getGame(),prefix + ChatColor.RED + "================================================");
             return false;
         }
         return true;

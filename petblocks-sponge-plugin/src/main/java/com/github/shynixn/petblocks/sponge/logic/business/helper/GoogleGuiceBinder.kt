@@ -1,17 +1,17 @@
 package com.github.shynixn.petblocks.sponge.logic.business.helper
 
 import com.github.shynixn.petblocks.api.business.entity.GUIItemContainer
-import com.github.shynixn.petblocks.api.persistence.controller.CostumeController
-import com.github.shynixn.petblocks.api.persistence.controller.EngineController
-import com.github.shynixn.petblocks.api.persistence.controller.OtherGUIItemsController
-import com.github.shynixn.petblocks.api.persistence.controller.ParticleController
+import com.github.shynixn.petblocks.api.persistence.controller.*
 import com.github.shynixn.petblocks.api.persistence.entity.EngineContainer
+import com.github.shynixn.petblocks.core.logic.persistence.controller.PetDataRepository
 import com.github.shynixn.petblocks.sponge.PetBlocksPlugin
+import com.github.shynixn.petblocks.sponge.logic.business.PetBlocksManager
 import com.github.shynixn.petblocks.sponge.logic.persistence.configuration.Config
 import com.google.inject.AbstractModule
 import com.google.inject.TypeLiteral
 import com.google.inject.name.Names
 import org.spongepowered.api.Sponge
+import org.spongepowered.api.entity.living.player.Player
 
 /**
  * Created by Shynixn 2018.
@@ -40,11 +40,11 @@ import org.spongepowered.api.Sponge
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class GoogleGuiceBinder : AbstractModule() {
+class GoogleGuiceBinder() : AbstractModule() {
+
+
 
     override fun configure() {
-
-
 
 
      /*   bind(OtherGUIItemsController::class.java).toInstance(BukkitStaticGUIItems())

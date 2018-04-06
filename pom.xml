@@ -193,12 +193,6 @@
              <scope>compile</scope>
          </dependency>
          <dependency>
-             <groupId>org.slf4j</groupId>
-             <artifactId>slf4j-jdk14</artifactId>
-             <version>1.7.25</version>
-             <scope>compile</scope>
-         </dependency>
-         <dependency>
              <groupId>org.jetbrains.kotlin</groupId>
              <artifactId>kotlin-stdlib-jdk8</artifactId>
              <version>${kotlin.version}</version>

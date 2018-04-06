@@ -50,10 +50,13 @@ fun Game.sendMessage(message: String) {
     Sponge.getServer().console.sendMessage(message.translateToText())
 }
 
+/**
+ * Unloads the given plugin.
+ */
 fun Game.unloadPlugin(plugin: Any) {
-    Sponge.getGame().eventManager.unregisterPluginListeners(this)
-    Sponge.getGame().commandManager.getOwnedBy(this).forEach(Consumer { Sponge.getGame().commandManager.removeMapping(it) })
-    Sponge.getGame().scheduler.getScheduledTasks(this).forEach(Consumer { it.cancel() })
+    Sponge.getGame().eventManager.unregisterPluginListeners(plugin)
+    Sponge.getGame().commandManager.getOwnedBy(plugin).forEach(Consumer { Sponge.getGame().commandManager.removeMapping(it) })
+    Sponge.getGame().scheduler.getScheduledTasks(plugin).forEach(Consumer { it.cancel() })
 }
 
 fun Game.getCause(): Cause {

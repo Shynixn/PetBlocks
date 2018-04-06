@@ -74,7 +74,6 @@ class PetBlocksPlugin {
     @Inject
     private lateinit var logger: Logger
 
-    @Inject
     private lateinit var  petBlockManager: PetBlocksManager
 
     @Inject
