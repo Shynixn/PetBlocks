@@ -1,0 +1,9 @@
+[{
+    "modid": "petblocks",
+    "name": "PetBlocks",
+    "version": "7.0.0-SNAPSHOT",
+    "description": "PetBlocks is a spigot and sponge plugin to use blocks as Pets in minecraft.",
+    "authorList": [
+        "Shynixn"
+    ]
+}]

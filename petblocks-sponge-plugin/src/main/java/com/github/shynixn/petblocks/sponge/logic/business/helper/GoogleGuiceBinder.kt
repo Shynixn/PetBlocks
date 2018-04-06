@@ -1,17 +1,12 @@
 package com.github.shynixn.petblocks.sponge.logic.business.helper
 
-import com.github.shynixn.petblocks.api.business.entity.GUIItemContainer
-import com.github.shynixn.petblocks.api.persistence.controller.*
-import com.github.shynixn.petblocks.api.persistence.entity.EngineContainer
-import com.github.shynixn.petblocks.core.logic.persistence.controller.PetDataRepository
-import com.github.shynixn.petblocks.sponge.PetBlocksPlugin
-import com.github.shynixn.petblocks.sponge.logic.business.PetBlocksManager
-import com.github.shynixn.petblocks.sponge.logic.persistence.configuration.Config
+import com.github.shynixn.petblocks.api.persistence.controller.CostumeController
+import com.github.shynixn.petblocks.api.persistence.controller.EngineController
+import com.github.shynixn.petblocks.api.persistence.controller.OtherGUIItemsController
+import com.github.shynixn.petblocks.api.persistence.controller.ParticleController
+import com.github.shynixn.petblocks.sponge.logic.persistence.configuration.*
 import com.google.inject.AbstractModule
-import com.google.inject.TypeLiteral
 import com.google.inject.name.Names
-import org.spongepowered.api.Sponge
-import org.spongepowered.api.entity.living.player.Player
 
 /**
  * Created by Shynixn 2018.
@@ -42,20 +37,16 @@ import org.spongepowered.api.entity.living.player.Player
  */
 class GoogleGuiceBinder() : AbstractModule() {
 
-
-
     override fun configure() {
+        bind(OtherGUIItemsController::class.java).toInstance(SpongeStaticGUIItems())
+        bind(ParticleController::class.java).toInstance(SpongeParticleConfiguration())
+        bind(EngineController::class.java).toInstance(SpongeEngineConfiguration())
 
+        bind(CostumeController::class.java).annotatedWith(Names.named("ordinary")).toInstance(SpongeCostumeConfiguration("ordinary"))
+        bind(CostumeController::class.java).annotatedWith(Names.named("color")).toInstance(SpongeCostumeConfiguration("color"))
+        bind(CostumeController::class.java).annotatedWith(Names.named("rare")).toInstance(SpongeCostumeConfiguration("rare"))
+        bind(CostumeController::class.java).annotatedWith(Names.named("minecraft-heads")).toInstance(SpongeMinecraftConfiguration())
 
-     /*   bind(OtherGUIItemsController::class.java).toInstance(BukkitStaticGUIItems())
-        bind(ParticleController::class.java).toInstance(BukkitParticleConfiguration())
-        bind(EngineController::class.java).toInstance(BukkitEngineConfiguration())
-
-        bind(CostumeController::class.java).annotatedWith(Names.named("ordinary")).toInstance(BukkitCostumeConfiguration("ordinary"))
-        bind(CostumeController::class.java).annotatedWith(Names.named("color")).toInstance(BukkitCostumeConfiguration("color"))
-        bind(CostumeController::class.java).annotatedWith(Names.named("rare")).toInstance(BukkitCostumeConfiguration("rare"))
-        bind(CostumeController::class.java).annotatedWith(Names.named("minecraft-heads")).toInstance(BukkitMinecraftConfiguration())
-*/
-
+        bind(Config::class.java).toInstance(Config)
     }
 }

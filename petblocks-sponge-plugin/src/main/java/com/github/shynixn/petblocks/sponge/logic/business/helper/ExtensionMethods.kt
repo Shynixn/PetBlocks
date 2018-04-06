@@ -14,9 +14,12 @@ import org.spongepowered.api.entity.Transform
 import org.spongepowered.api.entity.living.player.Player
 import org.spongepowered.api.event.cause.Cause
 import org.spongepowered.api.item.inventory.ItemStack
+import org.spongepowered.api.plugin.PluginContainer
 import org.spongepowered.api.text.Text
 import org.spongepowered.api.text.serializer.TextSerializers
 import org.spongepowered.api.world.World
+import java.io.BufferedInputStream
+import java.io.InputStream
 import java.util.function.Consumer
 
 /**
@@ -61,6 +64,11 @@ fun Game.unloadPlugin(plugin: Any) {
 
 fun Game.getCause(): Cause {
     return Cause.builder().build()
+}
+
+fun PluginContainer.getResource(name : String) : InputStream
+{
+    return BufferedInputStream(null)
 }
 
 fun PetMeta.setCostume(petBlock: PetBlock<Player, Transform<World>>?, container: GUIItemContainer<Player>?) {
