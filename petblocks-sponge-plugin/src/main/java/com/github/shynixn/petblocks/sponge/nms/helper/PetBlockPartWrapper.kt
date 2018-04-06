@@ -1,19 +1,17 @@
-package com.github.shynixn.petblocks.api.business.controller;
+package com.github.shynixn.petblocks.sponge.nms.helper
 
-import com.github.shynixn.petblocks.api.business.entity.PetBlock;
-import com.github.shynixn.petblocks.api.persistence.controller.IController;
-import com.github.shynixn.petblocks.api.persistence.entity.PetMeta;
-
-import java.util.Optional;
+import com.github.shynixn.petblocks.api.business.entity.PetBlockPartEntity
+import org.spongepowered.api.entity.Entity
+import org.spongepowered.api.entity.living.Living
 
 /**
- * Registers petblocks to manage their action and behavior.
+ * Created by Shynixn 2018.
  * <p>
- * Version 1.1
+ * Version 1.2
  * <p>
  * MIT License
  * <p>
- * Copyright (c) 2017 by Shynixn
+ * Copyright (c) 2018 by Shynixn
  * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -33,29 +31,29 @@ import java.util.Optional;
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-public interface PetBlockController<Player> extends IController<PetBlock<Object, Object>> {
+class PetBlockPartWrapper(private val engine: Living) : PetBlockPartEntity<Entity>{
+    /**
+     * Returns the entity hidden by this object.
+     *
+     * @return spigotEntity
+     */
+    override fun getEntity(): Entity {
+        return engine
+    }
 
     /**
-     * Creates a new petblock for the given player and meta.
+     * Spawns the entity at the given location.
      *
-     * @param player  player
-     * @param petMeta meta
-     * @return petblock
+     * @param location location
      */
-    PetBlock create(Player player, PetMeta petMeta);
+    override fun spawn(location: Any?) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
 
     /**
-     * Returns the petblock of the given player.
-     *
-     * @param player player
-     * @return petblock
+     * Removes the entity from the world.
      */
-    Optional<PetBlock> getFromPlayer(Player player);
-
-    /**
-     * Removes the petblock of the given player.
-     *
-     * @param player player
-     */
-    void removeByPlayer(Player player);
+    override fun remove() {
+        engine.remove()
+    }
 }

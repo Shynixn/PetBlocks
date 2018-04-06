@@ -10,11 +10,13 @@ import com.github.shynixn.petblocks.core.logic.persistence.configuration.EngineC
 import com.github.shynixn.petblocks.sponge.nms.VersionSupport
 import org.spongepowered.api.Game
 import org.spongepowered.api.Sponge
+import org.spongepowered.api.entity.Transform
 import org.spongepowered.api.entity.living.player.Player
 import org.spongepowered.api.event.cause.Cause
 import org.spongepowered.api.item.inventory.ItemStack
 import org.spongepowered.api.text.Text
 import org.spongepowered.api.text.serializer.TextSerializers
+import org.spongepowered.api.world.World
 import java.util.function.Consumer
 
 /**
@@ -44,8 +46,6 @@ import java.util.function.Consumer
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class ExtensionMethods
-
 fun Game.sendMessage(message: String) {
     Sponge.getServer().console.sendMessage(message.translateToText())
 }
@@ -60,14 +60,14 @@ fun Game.getCause(): Cause {
     return Cause.builder().build()
 }
 
-fun PetMeta.setCostume(petBlock: PetBlock?, container: GUIItemContainer<Player>?) {
+fun PetMeta.setCostume(petBlock: PetBlock<Player, Transform<World>>?, container: GUIItemContainer<Player>?) {
     if (container == null)
         return
     setSkin(container.itemId, container.itemDamage, container.skin, container.isItemUnbreakable)
     petBlock?.respawn()
 }
 
-fun PetMeta.setEngine(petBlock: PetBlock?, engineContainer: EngineContainer<GUIItemContainer<Player>>?) {
+fun PetMeta.setEngine(petBlock: PetBlock<Player, Transform<World>>?, engineContainer: EngineContainer<GUIItemContainer<Player>>?) {
     if (engineContainer == null)
         return
     setEngine(engineContainer)
@@ -85,7 +85,7 @@ fun PetMeta.setEngine(petBlock: PetBlock?, engineContainer: EngineContainer<GUII
  * @param petBlock  petblock
  * @param container container
  */
-fun PetMeta.setParticleEffect(petBlock: PetBlock?, container: GUIItemContainer<Player>?) {
+fun PetMeta.setParticleEffect(petBlock: PetBlock<Player, Transform<World>>?, container: GUIItemContainer<Player>?) {
     if (container == null)
         return
     val transferOpt = Config.getInstance<Any>().particleController.getFromItem(container as GUIItemContainer<Any>)

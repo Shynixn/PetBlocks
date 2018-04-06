@@ -2,7 +2,6 @@ package com.github.shynixn.petblocks.core.logic.business.controller;
 
 import com.github.shynixn.petblocks.api.business.controller.PetBlockController;
 import com.github.shynixn.petblocks.api.business.entity.PetBlock;
-import com.github.shynixn.petblocks.api.persistence.entity.PetMeta;
 
 import java.util.*;
 
@@ -98,8 +97,13 @@ public abstract class PetBlockRepository<Player> implements PetBlockController<P
      * @return items
      */
     @Override
-    public List<PetBlock> getAll() {
-        return new ArrayList<>(this.petblocks.values());
+    public List<PetBlock<Object, Object>> getAll() {
+        List<PetBlock<Object, Object>> list = new ArrayList<>();
+        for (PetBlock petBlock : this.petblocks.values()) {
+            list.add(petBlock);
+        }
+
+        return list;
     }
 
     /**

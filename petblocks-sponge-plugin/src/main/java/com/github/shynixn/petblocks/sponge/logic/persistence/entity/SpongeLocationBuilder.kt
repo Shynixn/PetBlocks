@@ -1,5 +1,6 @@
 package com.github.shynixn.petblocks.sponge.logic.persistence.entity
 
+import com.flowpowered.math.vector.Vector3d
 import com.github.shynixn.petblocks.core.logic.persistence.entity.LocationBuilder
 
 /**
@@ -34,4 +35,24 @@ class SpongeLocationBuilder : LocationBuilder {
     constructor(worldName: String?, x: Double, y: Double, z: Double, yaw: Float, pitch: Float) : super(worldName, x, y, z, yaw, pitch)
     constructor(worldName: String?, x: Double, y: Double, z: Double, yaw: Double, pitch: Double) : super(worldName, x, y, z, yaw, pitch)
     constructor(items: MutableMap<String, Any>?) : super(items)
+
+    /**
+     * Returns the direction of the location.
+     *
+     * @return direction
+     */
+    fun getDirection(): Vector3d {
+        val vector = SpongeLocationBuilder()
+        val rotX = this.yaw
+        val rotY = this.pitch
+        vector.y = -Math.sin(Math.toRadians(rotY))
+        val xz = Math.cos(Math.toRadians(rotY))
+        vector.x = -xz * Math.sin(Math.toRadians(rotX))
+        vector.z = xz * Math.cos(Math.toRadians(rotX))
+        return vector.toVector()
+    }
+
+    fun toVector(): Vector3d {
+        return Vector3d(x, y, z)
+    }
 }

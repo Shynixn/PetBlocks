@@ -6,7 +6,9 @@ import com.github.shynixn.petblocks.api.sponge.event.PetBlockDeathEvent
 import com.github.shynixn.petblocks.core.logic.business.controller.PetBlockRepository
 import com.github.shynixn.petblocks.sponge.nms.NMSRegistry
 import org.spongepowered.api.Sponge
+import org.spongepowered.api.entity.Transform
 import org.spongepowered.api.entity.living.player.Player
+import org.spongepowered.api.world.World
 
 /**
  * Created by Shynixn 2018.
@@ -43,7 +45,7 @@ class SpongePetBlockRepository : PetBlockRepository<Player>() {
      * @param petMeta meta
      * @return petblock
      */
-    override fun create(player: Player, petMeta: PetMeta): PetBlock {
+    override fun create(player: Player, petMeta: PetMeta): PetBlock<Player, Transform<World>> {
         return NMSRegistry.createPetBlock(player.location, petMeta)
     }
 
@@ -53,7 +55,7 @@ class SpongePetBlockRepository : PetBlockRepository<Player>() {
      *
      * @param item item
      */
-    override fun remove(item: PetBlock?) {
+    override fun remove(item: PetBlock<Any, Any>?) {
         if (item == null)
             return
 

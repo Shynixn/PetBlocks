@@ -6,6 +6,7 @@ import com.github.shynixn.petblocks.api.persistence.entity.PetMeta
 import com.github.shynixn.petblocks.bukkit.nms.NMSRegistry
 import com.github.shynixn.petblocks.core.logic.business.controller.PetBlockRepository
 import org.bukkit.Bukkit
+import org.bukkit.Location
 import org.bukkit.entity.Player
 
 /**
@@ -44,12 +45,12 @@ class BukkitPetBlockRepository : PetBlockRepository<Player>() {
      * @param petMeta meta
      * @return petblock
      */
-    override fun create(player: Player?, petMeta: PetMeta?): PetBlock {
+    override fun create(player: Player?, petMeta: PetMeta?): PetBlock<Player, Location> {
         if (player == null)
             throw IllegalArgumentException("Player cannot be null!")
         if (petMeta == null)
             throw IllegalArgumentException("PetMeta cannot be null!")
-        return NMSRegistry.createPetBlock(player.location, petMeta)
+        return NMSRegistry.createPetBlock(player.location, petMeta) as PetBlock<Player, Location>
     }
 
     /**
@@ -57,7 +58,7 @@ class BukkitPetBlockRepository : PetBlockRepository<Player>() {
      *
      * @param item item
      */
-    override fun remove(item: PetBlock?) {
+    override fun remove(item: PetBlock<Any, Any>?) {
         if (item == null)
             return
         val player = item.player as Player
