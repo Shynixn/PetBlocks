@@ -71,7 +71,7 @@ class GUI {
                             InventoryTitle.PROPERTY_NAME,
                             InventoryTitle.of(Config.guiTitle.translateToText())
                     )
-                    .build(this)
+                    .build(plugin)
             this.manager.inventories[player] = inventory
             player.openInventory(inventory)
         }

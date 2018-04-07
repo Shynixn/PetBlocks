@@ -189,12 +189,7 @@ object Config : ConfigLayer<Player>() {
             return null
         val items = path.split(Pattern.quote(".").toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
         val targetNode = this.node.getNode(*items as Array<Any>)
-        var data = targetNode.value
-        if (data is String) {
-            var s = data
-            s = s.replace('&', '§')
-            data = s.translateToText()
-        }
+        val data = targetNode.value
         return data as T
     }
 }

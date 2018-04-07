@@ -63,7 +63,11 @@ class SpongeParticleEffect : ParticleEffectData {
      *
      * @return material
      */
-    override fun getMaterial(): Any {
+    override fun getMaterial(): Any? {
+        if (materialId == null) {
+            return null
+        }
+
         return CompatibilityItemType.getFromId(this.materialId)
     }
 
