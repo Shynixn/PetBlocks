@@ -18,7 +18,6 @@ import com.google.inject.Inject;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.cause.Cause;
-import org.spongepowered.api.event.cause.NamedCause;
 import org.spongepowered.api.event.filter.cause.First;
 import org.spongepowered.api.event.item.inventory.ClickInventoryEvent;
 import org.spongepowered.api.event.network.ClientConnectionEvent;
@@ -311,7 +310,7 @@ public class SpongePetDataListener extends SimpleSpongeListener {
         if (this.manager.getInventories().containsKey(player)) {
             this.manager.getInventories().remove(player);
         }
-        player.closeInventory(Cause.of(NamedCause.owner(this.plugin)));
+        player.closeInventory();
     }
 
     /**

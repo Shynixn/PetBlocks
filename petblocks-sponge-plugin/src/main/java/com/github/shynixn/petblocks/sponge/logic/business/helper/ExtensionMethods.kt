@@ -62,10 +62,6 @@ fun Game.unloadPlugin(plugin: Any) {
     Sponge.getGame().scheduler.getScheduledTasks(plugin).forEach(Consumer { it.cancel() })
 }
 
-fun Game.getCause(): Cause {
-    return Cause.builder().build()
-}
-
 fun PluginContainer.getResource(name: String): InputStream {
     return this.getAsset(name).get().url.openStream()
 }
@@ -86,6 +82,13 @@ fun PetMeta.setEngine(petBlock: PetBlock<Player, Transform<World>>?, engineConta
         setSkin(container.itemId, container.itemDamage, container.skin, container.isItemUnbreakable)
     }
     petBlock?.respawn()
+}
+
+fun PetMeta.rename(petBlock: PetBlock<Player, Transform<World>>?, name: String) {
+    this.petDisplayName = name
+    if (petBlock != null) {
+        petBlock!!.respawn()
+    }
 }
 
 /**
@@ -126,6 +129,16 @@ fun Player.hasPermissions(permission: Permission, vararg placeholder: String): B
     return false
 }
 
+fun PetMeta.setSkin(petBlock: PetBlock<Player, Transform<World>>?, skin: String) {
+    var skinHelper = skin;
+    if (skinHelper.contains("textures.minecraft") && !skinHelper.contains("http://")) {
+        skinHelper = "http://" + skin;
+    }
+    setSkin(CompatibilityItemType.SKULL_ITEM.getId(), 3, skinHelper, false);
+    if (petBlock != null) {
+        petBlock.respawn();
+    }
+}
 
 fun Array<String?>.translateToTexts(): Array<Text?> {
     val copy = arrayOfNulls<Text>(this.size)

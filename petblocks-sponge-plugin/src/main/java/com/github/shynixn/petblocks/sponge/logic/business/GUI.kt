@@ -11,7 +11,6 @@ import com.github.shynixn.petblocks.sponge.logic.persistence.configuration.Confi
 import com.google.inject.Inject
 import org.spongepowered.api.entity.living.player.Player
 import org.spongepowered.api.event.cause.Cause
-import org.spongepowered.api.event.cause.NamedCause
 import org.spongepowered.api.item.ItemTypes
 import org.spongepowered.api.item.inventory.Inventory
 import org.spongepowered.api.item.inventory.InventoryArchetypes
@@ -74,7 +73,7 @@ class GUI {
                     )
                     .build(this)
             this.manager.inventories[player] = inventory
-            player.openInventory(inventory, Cause.of(NamedCause.owner(this.plugin)))
+            player.openInventory(inventory)
         }
     }
 
@@ -375,7 +374,7 @@ class GUI {
         if (this.manager.inventories.containsKey(player)) {
             this.manager.inventories.remove(player)
         }
-        player.closeInventory(Cause.of(NamedCause.owner(this.plugin)))
+        player.closeInventory()
     }
 
     private fun setItem(inventory: Inventory, slot: Int, itemStack: ItemStack) {

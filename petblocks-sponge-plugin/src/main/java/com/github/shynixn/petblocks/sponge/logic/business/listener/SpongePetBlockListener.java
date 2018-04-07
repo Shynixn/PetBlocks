@@ -16,7 +16,6 @@ import org.spongepowered.api.entity.Entity;
 import org.spongepowered.api.entity.living.ArmorStand;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Listener;
-import org.spongepowered.api.event.cause.NamedCause;
 import org.spongepowered.api.event.command.SendCommandEvent;
 import org.spongepowered.api.event.data.ChangeDataHolderEvent;
 import org.spongepowered.api.event.entity.*;
@@ -248,7 +247,7 @@ public class SpongePetBlockListener extends SimpleSpongeListener {
     public void onInventoryOpenEvent(InteractInventoryEvent.Open event, @First(typeFilter = Player.class) Player player) {
         if (this.manager.getCarryingPet().containsKey(player)) {
             event.setCancelled(true);
-            player.closeInventory(ExtensionMethodsKt.getCause(Sponge.getGame()));
+            player.closeInventory();
         }
     }
 
@@ -308,10 +307,10 @@ public class SpongePetBlockListener extends SimpleSpongeListener {
             final PetBlock petBlock = this.getPet(event.getTargetEntity());
             if (petBlock == null)
                 return;
-            if (!event.getCause().getNamedCauses().containsKey(NamedCause.PHYSICAL))
+          /*  if (!event.getCause().getContext().containsKey(NamedCause.PHYSICAL))
                 petBlock.damage(event.getFinalDamage());
             else if (event.getCause().getNamedCauses().containsKey(NamedCause.PHYSICAL))
-                petBlock.damage(-2.0);
+                petBlock.damage(-2.0);*/
             event.setCancelled(true);
         }
     }

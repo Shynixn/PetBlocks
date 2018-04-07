@@ -20,10 +20,8 @@ import org.spongepowered.api.entity.living.ArmorStand
 import org.spongepowered.api.entity.living.Living
 import org.spongepowered.api.entity.living.player.Player
 import org.spongepowered.api.event.cause.Cause
-import org.spongepowered.api.event.cause.NamedCause
 import org.spongepowered.api.text.Text
 import org.spongepowered.api.world.World
-import java.util.*
 
 /**
  * Created by Shynixn 2018.
@@ -151,7 +149,7 @@ class PetBlockWrapper(private val armorstandEntity: ArmorStand, private val owne
             if (!event.isCancelled) {
                 armorstandEntity.velocity = Vector3d(0f, 1f, 0f)
                 armorstandEntity.addPassenger(player)
-                player.closeInventory(Cause.of(NamedCause.owner(player)))
+                player.closeInventory()
             }
         }
     }
@@ -171,7 +169,7 @@ class PetBlockWrapper(private val armorstandEntity: ArmorStand, private val owne
             Sponge.getEventManager().post(event)
             if (!event.isCancelled) {
                 player.addPassenger(armorstandEntity)
-                player.closeInventory(Cause.of(NamedCause.owner(player)))
+                player.closeInventory()
             }
         }
     }
