@@ -37,9 +37,6 @@ import org.spongepowered.api.entity.living.player.Player
 class SpongeParticleConfiguration : ParticleConfiguration<Player>() {
 
     @Inject
-    private lateinit var config: Config
-
-    @Inject
     private lateinit var logger: Logger
 
     /**
@@ -47,11 +44,10 @@ class SpongeParticleConfiguration : ParticleConfiguration<Player>() {
      */
     override fun reload() {
         this.particleCache.clear()
-        config.reload()
-        val data = Config.getData<Map<String, Any>>("engines")
+        val data = Config.getData<Map<Int, Any>>("particles")
         for (key in data!!.keys) {
             try {
-                val container = SpongeItemContainer(key.toInt(), data[key] as Map<String, Any>)
+                val container = SpongeItemContainer(key, data[key] as Map<String, Any>)
                 val meta = SpongeParticleEffect((data[key] as Map<String, Any>)["effect"] as Map<String, Any>)
                 this.particleCache[container] = meta
             } catch (e: Exception) {

@@ -66,9 +66,8 @@ fun Game.getCause(): Cause {
     return Cause.builder().build()
 }
 
-fun PluginContainer.getResource(name : String) : InputStream
-{
-    return BufferedInputStream(null)
+fun PluginContainer.getResource(name: String): InputStream {
+    return this.getAsset(name).get().url.openStream()
 }
 
 fun PetMeta.setCostume(petBlock: PetBlock<Player, Transform<World>>?, container: GUIItemContainer<Player>?) {

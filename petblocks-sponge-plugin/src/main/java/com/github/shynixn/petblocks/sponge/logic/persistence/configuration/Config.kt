@@ -5,28 +5,20 @@ import com.github.shynixn.petblocks.api.persistence.entity.PetMeta
 import com.github.shynixn.petblocks.api.persistence.entity.SoundMeta
 import com.github.shynixn.petblocks.core.logic.business.helper.ChatBuilder
 import com.github.shynixn.petblocks.core.logic.business.helper.ChatColor
-import com.github.shynixn.petblocks.core.logic.persistence.configuration.Config
 import com.github.shynixn.petblocks.core.logic.persistence.entity.PetData
 import com.github.shynixn.petblocks.sponge.PetBlocksPlugin
 import com.github.shynixn.petblocks.sponge.logic.business.helper.sendMessage
 import com.github.shynixn.petblocks.sponge.logic.business.helper.translateToText
 import com.github.shynixn.petblocks.sponge.logic.persistence.entity.SpongeParticleEffect
 import com.github.shynixn.petblocks.sponge.logic.persistence.entity.SpongeSoundBuilder
-import com.google.inject.Inject
 import com.google.inject.Singleton
-import ninja.leaping.configurate.ConfigurationNode
 import ninja.leaping.configurate.yaml.YAMLConfigurationLoader
-import org.slf4j.Logger
 import org.spongepowered.api.Sponge
-import org.spongepowered.api.config.ConfigDir
 import org.spongepowered.api.entity.living.player.Player
-import org.spongepowered.api.plugin.PluginContainer
 import org.spongepowered.api.world.Location
 import org.spongepowered.api.world.World
 import java.io.IOException
 import java.nio.file.Files
-import java.nio.file.Path
-import java.util.logging.Level
 import java.util.regex.Pattern
 
 /**
@@ -57,19 +49,7 @@ import java.util.regex.Pattern
  * SOFTWARE.
  */
 @Singleton
-object Config : Config<Player>() {
-    @Inject
-    private lateinit var plugin: PluginContainer
-
-    @Inject
-    @ConfigDir(sharedRoot = false)
-    private lateinit var privateConfigDir: Path
-
-    @Inject
-    private lateinit var logger: Logger
-
-    private lateinit var node: ConfigurationNode
-
+object Config : ConfigLayer<Player>() {
     /**
      * Returns the pet naming message.
      *

@@ -1,10 +1,13 @@
 package com.github.shynixn.petblocks.sponge.logic.persistence.configuration
 
-import com.github.shynixn.petblocks.core.logic.persistence.configuration.EngineConfiguration
-import com.github.shynixn.petblocks.sponge.logic.persistence.entity.SpongeEngineData
+import com.github.shynixn.petblocks.core.logic.persistence.configuration.Config
 import com.google.inject.Inject
+import ninja.leaping.configurate.ConfigurationNode
 import org.slf4j.Logger
+import org.spongepowered.api.config.ConfigDir
 import org.spongepowered.api.entity.living.player.Player
+import org.spongepowered.api.plugin.PluginContainer
+import java.nio.file.Path
 
 /**
  * Created by Shynixn 2018.
@@ -33,26 +36,16 @@ import org.spongepowered.api.entity.living.player.Player
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class SpongeEngineConfiguration : EngineConfiguration<Player>() {
+abstract class ConfigLayer<Player> : Config<Player>() {
     @Inject
-    private lateinit var config: Config
+    protected lateinit var plugin: PluginContainer
 
     @Inject
-    private lateinit var logger: Logger
+    @ConfigDir(sharedRoot = false)
+    protected lateinit var privateConfigDir: Path
 
-    /**
-     * Reloads the content from the fileSystem.
-     */
-    override fun reload() {
-        this.items.clear()
-        val data = Config.getData<Map<Int, Any>>("engines")
-        for (key in data!!.keys) {
-            try {
-                val container = SpongeEngineData((key).toLong(), data[key] as Map<String, Any>)
-                this.items.add(container)
-            } catch (e: Exception) {
-                logger.error("Failed to add content " + key + '.'.toString(), e)
-            }
-        }
-    }
+    @Inject
+    protected lateinit var logger: Logger
+
+    protected lateinit var node: ConfigurationNode
 }

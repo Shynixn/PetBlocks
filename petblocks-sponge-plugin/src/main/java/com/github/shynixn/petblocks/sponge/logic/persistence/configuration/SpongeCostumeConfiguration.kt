@@ -34,10 +34,6 @@ import org.spongepowered.api.entity.living.player.Player
  * SOFTWARE.
  */
 class SpongeCostumeConfiguration(costumeCategory: String) : CostumeConfiguration<Player>(costumeCategory) {
-
-    @Inject
-    private lateinit var config: Config
-
     @Inject
     private lateinit var logger: Logger
 
@@ -46,11 +42,10 @@ class SpongeCostumeConfiguration(costumeCategory: String) : CostumeConfiguration
      */
     override fun reload() {
         this.items.clear()
-        config.reload()
-        val data = Config.getData<Map<String, Any>>("wardrobe." + this.costumeCategory)
+        val data = Config.getData<Map<Int, Any>>("wardrobe." + this.costumeCategory)
         for (key in data!!.keys) {
             try {
-                val container = SpongeItemContainer(Integer.parseInt(key), (data[key] as Map<String, Any>))
+                val container = SpongeItemContainer(key, (data[key] as Map<String, Any>))
                 this.items.add(container)
             } catch (e: Exception) {
                 logger.error("Failed to load guiItem " + this.costumeCategory + '.'.toString() + key + '.'.toString())

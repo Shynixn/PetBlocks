@@ -49,7 +49,6 @@ class SpongeStaticGUIItems : FixedItemConfiguration<Player>(){
      */
     override fun reload() {
         this.items.clear()
-        this.config.reload()
         val data = Config.getData<Map<String, Any>>("gui.items")
         for (key in data!!.keys) {
             try {

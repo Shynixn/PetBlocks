@@ -6,6 +6,7 @@ import com.github.shynixn.petblocks.core.logic.business.helper.ExtensionHikariCo
 import com.github.shynixn.petblocks.core.logic.persistence.controller.PetDataRepository
 import com.github.shynixn.petblocks.core.logic.persistence.entity.PetData
 import com.github.shynixn.petblocks.sponge.logic.persistence.entity.SpongePetData
+import com.google.inject.Inject
 import org.slf4j.Logger
 import org.spongepowered.api.entity.living.player.Player
 import java.util.*
@@ -37,7 +38,7 @@ import java.util.*
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class SpongePetDataRepository(playerMetaController: PlayerMetaController<Player>, particleController: ParticleEffectMetaController, connectionContext : ExtensionHikariConnectionContext
+class SpongePetDataRepository @Inject constructor(playerMetaController: SpongePlayerDataRepository, particleController: SpongeParticleEffectDataRepository, connectionContext : ExtensionHikariConnectionContext
 , logger : Logger) : PetDataRepository<Player>(playerMetaController, particleController, connectionContext, logger)
 {
     override fun create(player: Any?, name: String?): PetData {

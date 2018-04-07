@@ -5,6 +5,7 @@ import com.github.shynixn.petblocks.core.logic.business.helper.ExtensionHikariCo
 import com.github.shynixn.petblocks.core.logic.persistence.controller.PlayerDataRepository
 import com.github.shynixn.petblocks.core.logic.persistence.entity.PlayerData
 import com.github.shynixn.petblocks.sponge.logic.persistence.entity.SpongePlayerData
+import com.google.inject.Inject
 import org.slf4j.Logger
 import org.spongepowered.api.entity.living.player.Player
 
@@ -35,7 +36,7 @@ import org.spongepowered.api.entity.living.player.Player
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class SpongePlayerDataRepository(connectionContext : ExtensionHikariConnectionContext, logger: Logger) : PlayerDataRepository<Player>(connectionContext,logger) {
+class SpongePlayerDataRepository @Inject constructor(connectionContext : ExtensionHikariConnectionContext, logger: Logger) : PlayerDataRepository<Player>(connectionContext,logger) {
     /**
      * Creates a new playerData from the given player.
      *
