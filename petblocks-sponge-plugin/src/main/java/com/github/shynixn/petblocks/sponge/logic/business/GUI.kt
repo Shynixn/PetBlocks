@@ -20,6 +20,8 @@ import org.spongepowered.api.item.inventory.property.SlotIndex
 import org.spongepowered.api.item.inventory.property.SlotPos
 import org.spongepowered.api.item.inventory.type.GridInventory
 import org.spongepowered.api.plugin.PluginContainer
+import org.spongepowered.api.scheduler.Task
+import java.util.concurrent.TimeUnit
 
 /**
  * Created by Shynixn 2018.
@@ -320,13 +322,16 @@ class GUI {
                 val containerSlot = i + container.startCount
                 val mountBlock = container.currentCount
                 val currentPage = container.page
+                val slot = i;
                 count++
                 if (i % 2 == 0) {
                     scheduleCounter++
                 }
-                if (container.currentCount == mountBlock && currentPage == this.manager.pages[player]!!.page) {
-                    this.setItem(inventory, i, containers[containerSlot].generate(player, *groupPermission.permission) as ItemStack)
-                }
+                Task.builder().delay(scheduleCounter.toLong(), TimeUnit.MILLISECONDS).execute(Runnable {
+                    if (container.currentCount == mountBlock && currentPage == this.manager.pages[player]!!.page) {
+                        this.setItem(inventory, slot, containers[containerSlot].generate(player, *groupPermission.permission) as ItemStack)
+                    }
+                }).submit(plugin)
                 i++
             }
             container.startCount = count
