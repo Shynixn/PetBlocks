@@ -2,12 +2,12 @@ package com.github.shynixn.petblocks.sponge.logic.persistence.configuration
 
 import com.github.shynixn.petblocks.core.logic.business.helper.ChatColor
 import com.github.shynixn.petblocks.core.logic.persistence.configuration.FixedItemConfiguration
+import com.github.shynixn.petblocks.sponge.logic.business.helper.getDisplayName
 import com.github.shynixn.petblocks.sponge.logic.persistence.entity.SpongeItemContainer
 import com.google.inject.Inject
 import org.slf4j.Logger
 import org.spongepowered.api.entity.living.player.Player
 import org.spongepowered.api.item.inventory.ItemStack
-import java.util.logging.Level
 
 /**
  * Created by Shynixn 2018.
@@ -36,7 +36,7 @@ import java.util.logging.Level
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class SpongeStaticGUIItems : FixedItemConfiguration<Player>(){
+class SpongeStaticGUIItems : FixedItemConfiguration<Player>() {
 
     @Inject
     private lateinit var config: Config
@@ -79,9 +79,6 @@ class SpongeStaticGUIItems : FixedItemConfiguration<Player>(){
             throw RuntimeException("GUIItem for PetBlocks with the name $name is not loaded correctly!")
         }
         val mItemStack = itemStack as ItemStack?
-   /*     return (mItemStack!!.itemMeta != null && optGUIContainer.get().displayName.isPresent
-                && mItemStack.itemMeta.displayName != null
-                && mItemStack.itemMeta.displayName.equals(optGUIContainer.get().displayName.get(), ignoreCase = true))*/
-        return false;
+        return mItemStack!!.getDisplayName() != null && mItemStack.getDisplayName().equals(optGUIContainer.get().displayName.get(), ignoreCase = true)
     }
 }

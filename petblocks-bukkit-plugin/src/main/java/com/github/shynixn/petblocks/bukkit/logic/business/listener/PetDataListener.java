@@ -223,7 +223,11 @@ public class PetDataListener extends SimpleListener {
         final int itemSlot = event.getSlot() + this.manager.pages.get(player).currentCount + 1;
         if (this.manager.pages.get(player).page == GUIPage.MAIN && this.getGUIItem("my-pet").getPosition() == event.getSlot()) {
             this.handleClickOnMyPetItem(player, petMeta);
-        } else if (this.isGUIItem(currentItem, "enable-pet")) {
+        }
+        else if (this.isGUIItem(currentItem, "empty-slot")) {
+            return;
+        }
+        else if (this.isGUIItem(currentItem, "enable-pet")) {
             if (!this.spamProtection.contains(player)) {
                 this.setPetBlock(player, petMeta);
                 this.refreshGUI(player, petMeta);

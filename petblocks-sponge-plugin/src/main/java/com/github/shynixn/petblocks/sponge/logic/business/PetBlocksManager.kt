@@ -6,6 +6,7 @@ import com.github.shynixn.petblocks.core.logic.business.entity.GuiPageContainer
 import com.github.shynixn.petblocks.core.logic.business.helper.ExtensionHikariConnectionContext
 import com.github.shynixn.petblocks.sponge.logic.business.commandexecutor.PetDataCommandExecutor
 import com.github.shynixn.petblocks.sponge.logic.business.controller.SpongePetBlockRepository
+import com.github.shynixn.petblocks.sponge.logic.business.listener.SpongePetDataListener
 import com.github.shynixn.petblocks.sponge.logic.persistence.configuration.Config
 import com.github.shynixn.petblocks.sponge.logic.persistence.controller.SpongePetDataRepository
 import com.google.inject.Inject
@@ -64,6 +65,9 @@ class PetBlocksManager : AutoCloseable {
 
     @Inject
     private lateinit var petDataCommandExecutor: PetDataCommandExecutor
+
+    @Inject
+    private lateinit var petDataListener: SpongePetDataListener
 
     @Inject
     lateinit var petBlockController: SpongePetBlockRepository

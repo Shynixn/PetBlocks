@@ -138,7 +138,8 @@ public class SpongePetDataListener extends SimpleSpongeListener {
     public void playerJoinEvent(final ClientConnectionEvent.Join event) {
         final Player player = event.getTargetEntity();
         Task.builder().async().execute(() -> {
-            final Optional<PetMeta> petMetaOpt;            if (Config.INSTANCE.isJoin_enabled()) {
+            final Optional<PetMeta> petMetaOpt;
+            if (Config.INSTANCE.isJoin_enabled()) {
                 if (!SpongePetDataListener.this.manager.getPetMetaController().getFromPlayer(player).isPresent() || Config.getInstance().isJoin_overwriteExistingPet()) {
                     if (player.getWorld() != null) {
                         final PetMeta meta = SpongePetDataListener.this.manager.getPetMetaController().create(player);
@@ -171,6 +172,8 @@ public class SpongePetDataListener extends SimpleSpongeListener {
         final int itemSlot = slot + this.manager.getPages().get(player).currentCount + 1;
         if (this.manager.getPages().get(player).page == GUIPage.MAIN && this.getGUIItem("my-pet").getPosition() == slot) {
             this.handleClickOnMyPetItem(player, petMeta);
+        } else if (this.isGUIItem(currentItem, "empty-slot")) {
+            return;
         } else if (this.isGUIItem(currentItem, "enable-pet")) {
             if (!this.spamProtection.contains(player)) {
                 this.setPetBlock(player, petMeta);
@@ -202,7 +205,7 @@ public class SpongePetDataListener extends SimpleSpongeListener {
         } else if (this.isGUIItem(currentItem, "rare-costume")) {
             this.manager.gui.setPage(player, GUIPage.CUSTOM_COSTUMES, petMeta);
         } else if (this.isGUIItem(currentItem, "minecraft-heads-costume")) {
-           //  Bukkit.getServer().getScheduler().runTaskAsynchronously(JavaPlugin.getPlugin(PetBlocksPlugin.class), () -> this.collectedMinecraftHeads.sendMessage(player));
+            ExtensionMethodsKt.sendMessage(this.collectedMinecraftHeads, player);
             this.manager.gui.setPage(player, GUIPage.MINECRAFTHEADS_COSTUMES, petMeta);
         } else if (this.isGUIItem(currentItem, "particle-pet")) {
             this.manager.gui.setPage(player, GUIPage.PARTICLES, petMeta);
@@ -217,14 +220,15 @@ public class SpongePetDataListener extends SimpleSpongeListener {
             petBlock.wear(player);
         } else if (this.isGUIItem(currentItem, "riding-pet") && ExtensionMethodsKt.hasPermissions(player, Permission.ACTION_RIDE) && petBlock != null) {
             petBlock.ride(player);
+        } else if (this.isGUIItem(currentItem, "suggest-heads")) {
+            ExtensionMethodsKt.sendMessage(this.suggestHeadMessage, player);
+            this.closeInventory(player);
         } else if (this.isGUIItem(currentItem, "naming-pet") && ExtensionMethodsKt.hasPermissions(player, Permission.ACTION_RENAME)) {
-        //    this.namingPlayers.add(player);
+            ExtensionMethodsKt.sendMessage(((ChatBuilder) Config.getInstance().getPetNamingMessage()), player);
             this.closeInventory(player);
-            ExtensionMethodsKt.sendMessage(player, Config.getInstance().getPrefix().concat(Config.getInstance().getNamingMessage()));
         } else if (this.isGUIItem(currentItem, "skullnaming-pet") && ExtensionMethodsKt.hasPermissions(player, Permission.ACTION_CUSTOMSKULL)) {
-       //     this.namingSkull.add(player);
+            ExtensionMethodsKt.sendMessage(((ChatBuilder) Config.getInstance().getPetSkinNamingMessage()), player);
             this.closeInventory(player);
-            ExtensionMethodsKt.sendMessage(player, Config.getInstance().getPrefix().concat(Config.getInstance().getSkullNamingMessage()));
         } else if (this.isGUIItem(currentItem, "cannon-pet") && ExtensionMethodsKt.hasPermissions(player, Permission.ACTION_CANNON) && petBlock != null) {
             petBlock.setVelocity(this.getDirection(player));
             this.closeInventory(player);
@@ -377,7 +381,7 @@ public class SpongePetDataListener extends SimpleSpongeListener {
     private boolean hasPermission(Player player, Permission groupPermission, Permission singlePermission, int slot) {
         if (!ExtensionMethodsKt.hasPermissions(player, groupPermission)) {
             if (!ExtensionMethodsKt.hasPermissions(player, singlePermission, String.valueOf(slot))) {
-                ExtensionMethodsKt.sendMessage(player,Config.getInstance().getPrefix() + com.github.shynixn.petblocks.core.logic.persistence.configuration.Config.getInstance().getNoPermission());
+                ExtensionMethodsKt.sendMessage(player, Config.getInstance().getPrefix() + com.github.shynixn.petblocks.core.logic.persistence.configuration.Config.getInstance().getNoPermission());
                 return false;
             }
         }

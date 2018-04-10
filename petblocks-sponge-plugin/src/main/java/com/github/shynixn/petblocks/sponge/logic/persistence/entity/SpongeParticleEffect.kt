@@ -54,7 +54,12 @@ class SpongeParticleEffect : ParticleEffectData {
      * @return builder
      */
     override fun setMaterial(material: Any?): ParticleEffectMeta {
-        throw RuntimeException("Not implemented!")
+        when (material) {
+            null -> this.materialId = null
+            is CompatibilityItemType -> this.materialId = material.id
+            else -> throw RuntimeException("Not supported $material!")
+        }
+
         return this
     }
 
