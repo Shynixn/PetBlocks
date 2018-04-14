@@ -11,6 +11,7 @@ import com.github.shynixn.petblocks.core.logic.persistence.configuration.Config
 import com.github.shynixn.petblocks.sponge.nms.VersionSupport
 import org.spongepowered.api.Game
 import org.spongepowered.api.Sponge
+import org.spongepowered.api.command.CommandSource
 import org.spongepowered.api.entity.Transform
 import org.spongepowered.api.entity.living.player.Player
 import org.spongepowered.api.item.inventory.ItemStack
@@ -21,6 +22,7 @@ import org.spongepowered.api.world.World
 import java.io.InputStream
 import java.util.*
 import java.util.function.Consumer
+import kotlin.collections.ArrayList
 
 /**
  * Created by Shynixn 2018.
@@ -191,6 +193,14 @@ fun Array<String?>.translateToTexts(): Array<Text?> {
     return copy
 }
 
+fun Array<Text?>.translateToStrings(): Array<String?> {
+    val copy = arrayOfNulls<String>(this.size)
+    this.forEachIndexed { i, p ->
+        copy[i] = this[i]!!.translateToString()
+    }
+    return copy
+}
+
 /**
  * Updates the inventory of the player.
  */
@@ -199,7 +209,11 @@ fun Player.updateInventory() {
 }
 
 fun Player.sendMessage(text: String) {
-    sendMessage(text.translateToText())
+    sendMessage(ChatColor.translateAlternateColorCodes('&', text).translateToText())
+}
+
+fun CommandSource.sendMessage(text: String) {
+    sendMessage(ChatColor.translateAlternateColorCodes('&', text).translateToText())
 }
 
 fun String.translateToText(): Text {
@@ -238,6 +252,21 @@ private object ReflectionCache {
     val sendChatJsonMesssageMethod = utilsClass.getDeclaredMethod("sendJsonChatMessage", String::class.java, Array<Player>::class.java)
 }
 
+fun ItemStack.setDisplayName(text: String) {
+    this.offer(org.spongepowered.api.data.key.Keys.DISPLAY_NAME, text.translateToText());
+}
+
 fun ItemStack.setDamage(damage: Int) {
     ReflectionCache.setDamageMethod!!.invoke(null, this, damage)
+}
+
+fun ItemStack.setLore(vararg text: String) {
+    this.offer(org.spongepowered.api.data.key.Keys.ITEM_LORE, (text as Array<String?>).translateToTexts().toList());
+}
+
+fun ItemStack.getLore(): Array<String> {
+    if (this.get(org.spongepowered.api.data.key.Keys.ITEM_LORE).isPresent) {
+        return this.get(org.spongepowered.api.data.key.Keys.ITEM_LORE).get().toTypedArray().translateToStrings() as Array<String>
+    }
+    return emptyArray()
 }

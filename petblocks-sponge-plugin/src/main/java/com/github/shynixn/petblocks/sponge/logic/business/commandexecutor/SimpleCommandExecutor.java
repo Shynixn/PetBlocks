@@ -45,6 +45,7 @@ public class SimpleCommandExecutor implements CommandExecutor {
     private CommandSpec commandSpec;
     private String permissionMessage;
     private String permission;
+    private String name;
 
     protected PluginContainer plugin;
 
@@ -59,6 +60,7 @@ public class SimpleCommandExecutor implements CommandExecutor {
      */
     public CommandSpec register(Map<String, Object> data, OnCommandBuild onCommandBuild) {
         if (data.containsKey("enabled") && (boolean) data.get("enabled")) {
+            this.name = (String) data.get("command");
             return this.register((String) data.get("command"), (String) data.get("description"), (String) data.get("permission"), (String) data.get("permission-message"), onCommandBuild);
         }
         return null;
@@ -73,6 +75,7 @@ public class SimpleCommandExecutor implements CommandExecutor {
      * @param permissionMessage permissionMesssage
      */
     public CommandSpec register(String command, String description, String permission, String permissionMessage, OnCommandBuild onCommandBuild) {
+        this.name = command;
         this.permission = permission;
         this.permissionMessage = permissionMessage;
         final CommandSpec.Builder builder = CommandSpec.builder()
@@ -89,16 +92,39 @@ public class SimpleCommandExecutor implements CommandExecutor {
 
     @Override
     public CommandResult execute(CommandSource src, CommandContext args) throws CommandException {
+        final String[] arguments = args.getAll("text").toArray(new String[0]);
         if (src instanceof Player) {
             final Player player = (Player) src;
-            if (!player.hasPermission(this.permission)) {
+            if (this.permission != null && !player.hasPermission(this.permission)) {
                 player.sendMessage(this.parseString(this.permissionMessage));
             } else {
                 this.onPlayerExecuteCommand(player, args);
+                this.onPlayerExecuteCommand(player, arguments);
             }
         }
         this.onCommandSenderExecuteCommand(src, args);
+        this.onCommandSenderExecuteCommand(src, arguments);
         return CommandResult.success();
+    }
+
+    /**
+     * Can be overwritten to listen to player executed commands.
+     *
+     * @param player player
+     * @param args   args
+     */
+    protected void onPlayerExecuteCommand(Player player, String[] args) {
+
+    }
+
+    /**
+     * Can be overwritten to listener to all executed commands.
+     *
+     * @param sender sender
+     * @param args   args
+     */
+    protected void onCommandSenderExecuteCommand(CommandSource sender, String[] args) {
+
     }
 
     /**
@@ -119,6 +145,15 @@ public class SimpleCommandExecutor implements CommandExecutor {
      */
     public void onCommandSenderExecuteCommand(CommandSource sender, CommandContext args) {
 
+    }
+
+    /**
+     * Returns the name of the command.
+     *
+     * @return name
+     */
+    public String getName() {
+        return this.name;
     }
 
     private Text parseString(String s) {
