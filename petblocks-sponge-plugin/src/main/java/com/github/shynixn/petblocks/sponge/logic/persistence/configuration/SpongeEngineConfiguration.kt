@@ -34,8 +34,6 @@ import org.spongepowered.api.entity.living.player.Player
  * SOFTWARE.
  */
 class SpongeEngineConfiguration : EngineConfiguration<Player>() {
-    @Inject
-    private lateinit var config: Config
 
     @Inject
     private lateinit var logger: Logger

@@ -79,9 +79,8 @@ class SpongeItemContainer : ItemContainer<Player> {
     private fun updateLore(itemStack: ItemStack, player: Player, permissions: Array<String?>?) {
         val lore = this.provideLore(player, permissions)
         if (lore != null) {
-            if (itemStack.get(Keys.ITEM_LORE).isPresent) {
-                itemStack.offer(Keys.ITEM_LORE, lore.translateToTexts().toList())
-            }
+            val data = lore as Array<String>
+            itemStack.setLore(*data)
         }
     }
 

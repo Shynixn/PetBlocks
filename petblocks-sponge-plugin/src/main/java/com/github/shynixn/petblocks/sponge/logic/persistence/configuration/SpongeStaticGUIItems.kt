@@ -39,9 +39,6 @@ import org.spongepowered.api.item.inventory.ItemStack
 class SpongeStaticGUIItems : FixedItemConfiguration<Player>() {
 
     @Inject
-    private lateinit var config: Config
-
-    @Inject
     private lateinit var logger: Logger
 
     /**
@@ -56,7 +53,9 @@ class SpongeStaticGUIItems : FixedItemConfiguration<Player>() {
                 if (key == "suggest-heads") {
                     container.setDisplayName(ChatColor.AQUA.toString() + "" + ChatColor.BOLD + "Suggest Heads")
                 }
-                this.items[key] = container
+                if (key != "head-database-costume") {
+                    this.items[key] = container
+                }
             } catch (e: Exception) {
                 logger.error("Failed to load guiItem " + key + '.'.toString(), e)
             }

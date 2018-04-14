@@ -1,5 +1,6 @@
 package com.github.shynixn.petblocks.sponge.logic.persistence.entity
 
+import com.github.shynixn.petblocks.api.business.enumeration.RideType
 import com.github.shynixn.petblocks.core.logic.persistence.entity.EngineData
 import org.spongepowered.api.entity.living.player.Player
 
@@ -41,11 +42,14 @@ class SpongeEngineData : EngineData<Player> {
      */
     constructor(id: Long, data: Map<String, Any>) : super(id) {
         this.id = id
-    /*    this.itemContainer = ItemContainer(id.toInt(), (data["gui"] as MemorySection).getValues(false))
-        this.entity = data["behaviour.entity"] as String
-        this.rideType = RideType.valueOf(data["behaviour.riding"] as String)
-        this.ambientSound = BukkitSoundBuilder(data["sound.ambient.name"] as String, data["sound.ambient.volume"] as Double, data["sound.ambient.pitch"] as Double)
-        this.walkingSound = BukkitSoundBuilder(data["sound.walking.name"] as String, data["sound.walking.volume"] as Double, data["sound.walking.pitch"] as Double)*/
+        this.itemContainer = SpongeItemContainer(id.toInt(), data["gui"] as Map<String, Any>)
+        this.entity = (data["behaviour"] as Map<String, Any>)["entity"] as String
+        this.rideType = RideType.valueOf((data["behaviour"] as Map<String, Any>)["riding"] as String)
 
+        val ambient = (data["sound"] as Map<String, Any>)["ambient"] as Map<String, Any>
+        val walking = (data["sound"] as Map<String, Any>)["walking"] as Map<String, Any>
+
+        this.ambientSound = SpongeSoundBuilder(ambient["name"] as String, ambient["volume"] as Double, ambient["pitch"] as Double)
+        this.walkingSound = SpongeSoundBuilder(walking["name"] as String, walking["volume"] as Double, walking["pitch"] as Double)
     }
 }

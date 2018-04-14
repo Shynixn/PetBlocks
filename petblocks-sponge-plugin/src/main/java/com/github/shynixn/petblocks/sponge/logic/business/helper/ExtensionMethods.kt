@@ -209,15 +209,15 @@ fun Player.updateInventory() {
 }
 
 fun Player.sendMessage(text: String) {
-    sendMessage(ChatColor.translateAlternateColorCodes('&', text).translateToText())
+    sendMessage(text.translateToText())
 }
 
 fun CommandSource.sendMessage(text: String) {
-    sendMessage(ChatColor.translateAlternateColorCodes('&', text).translateToText())
+    sendMessage(text.translateToText())
 }
 
 fun String.translateToText(): Text {
-    return TextSerializers.LEGACY_FORMATTING_CODE.deserialize(this)
+    return TextSerializers.LEGACY_FORMATTING_CODE.deserialize(ChatColor.translateAlternateColorCodes('&', this))
 }
 
 fun Text.translateToString(): String {
