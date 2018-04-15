@@ -13,6 +13,14 @@
     <artifactId>petblocks-universal-plugin</artifactId>
     <version>7.0.0-SNAPSHOT</version>
 
+    <pluginRepositories>
+        <pluginRepository>
+            <id>jcenter</id>
+            <name>JCenter</name>
+            <url>https://jcenter.bintray.com/</url>
+        </pluginRepository>
+    </pluginRepositories>
+
     <dependencies>
         <dependency>
             <groupId>com.github.shynixn.petblocks</groupId>
@@ -55,6 +63,30 @@
                         </goals>
                     </execution>
                 </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.jetbrains.dokka</groupId>
+                <artifactId>dokka-maven-plugin</artifactId>
+                <version>0.9.16</version>
+                <executions>
+                    <execution>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>javadoc</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <outputDir>{project.basedir}/../docs/apidocs</outputDir>
+                    <sourceDirectories>
+                        <dir>{project.basedir}/../petblocks-api/src/main/java</dir>
+                        <dir>{project.basedir}/../petblocks-bukkit-api/src/main/java</dir>
+                        <dir>{project.basedir}/../petblocks-bukkit-plugin/src/main/java</dir>#                        <dir>{project.basedir}/../petblocks-sponge-plugin/src/main/java</dir>
+                        <dir>{project.basedir}/../petblocks-core/src/main/java</dir>
+                        <dir>{project.basedir}/../petblocks-sponge-api/src/main/java</dir>
+                        <dir>{project.basedir}/../petblocks-sponge-plugin/src/main/java</dir>
+                    </sourceDirectories>
+                </configuration>
             </plugin>
         </plugins>
     </build>

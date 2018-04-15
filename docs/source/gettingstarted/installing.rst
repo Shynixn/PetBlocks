@@ -6,7 +6,7 @@ The following items have to be installed in order to use PetBlocks:
 Java
 ~~~~
 
-Java 8 or Java 9 can be used to run PetBlocks.
+Java 8, Java 9 and Java 10 can be used to run PetBlocks.
 
 Spigot/CraftBukkit/Sponge
 ~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -14,7 +14,7 @@ Spigot/CraftBukkit/Sponge
 * Spigot ✔
 * PaperSpigot ✔
 * CraftBukkit ✔
-* Sponge ✘ (not compatible)
+* Sponge ✔
 
 Download
 ~~~~~~~~

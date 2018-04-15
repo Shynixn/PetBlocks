@@ -52,7 +52,7 @@
                 </executions>
                 <configuration>
                     <accessTransformer>petblocks_at.cfg</accessTransformer>
-                    <outputFile>D:\Temp\SpongePowered\mods\PetBlocks.jar</outputFile>
+
                     <versions>
                         <version>1.12</version>
                     </versions>
