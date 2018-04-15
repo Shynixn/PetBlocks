@@ -41,7 +41,7 @@ public final class PetDataCommandExecutor extends SimpleCommandExecutor {
                     .executor(renameCommandExecutor);
             final CommandSpec.Builder setSkinCommandBuilder = CommandSpec.builder()
                     .permission(Permission.ACTION_CUSTOMSKULL.getPermission()[1])
-                    .arguments(GenericArguments.string(Text.of("skin")))
+                    .arguments(GenericArguments.remainingJoinedStrings(Text.of("name")))
                     .executor(renameSkinCommandExecutor);
             builder.child(toggleCommandBuilder.build(), "toggle");
             builder.child(renameCommandBuilder.build(), "rename");

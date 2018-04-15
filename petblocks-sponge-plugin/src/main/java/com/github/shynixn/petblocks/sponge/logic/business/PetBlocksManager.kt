@@ -8,6 +8,7 @@ import com.github.shynixn.petblocks.sponge.logic.business.commandexecutor.PetBlo
 import com.github.shynixn.petblocks.sponge.logic.business.commandexecutor.PetBlockReloadCommandExecutor
 import com.github.shynixn.petblocks.sponge.logic.business.commandexecutor.PetDataCommandExecutor
 import com.github.shynixn.petblocks.sponge.logic.business.controller.SpongePetBlockRepository
+import com.github.shynixn.petblocks.sponge.logic.business.listener.SpongePetBlockListener
 import com.github.shynixn.petblocks.sponge.logic.business.listener.SpongePetDataListener
 import com.github.shynixn.petblocks.sponge.logic.persistence.configuration.Config
 import com.github.shynixn.petblocks.sponge.logic.persistence.controller.SpongePetDataRepository
@@ -76,6 +77,9 @@ class PetBlocksManager : AutoCloseable {
 
     @Inject
     private lateinit var petDataListener: SpongePetDataListener
+
+    @Inject
+    private lateinit var petBlockListener: SpongePetBlockListener
 
     @Inject
     lateinit var petBlockController: SpongePetBlockRepository

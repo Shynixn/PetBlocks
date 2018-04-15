@@ -175,7 +175,7 @@ final class CustomGroundArmorstand extends EntityArmorStand {
                 this.jumpMovementFactor = this.getAIMoveSpeed() * 0.1F;
                 if (!this.world.isRemote) {
                     this.setAIMoveSpeed((float) this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).getAttributeValue());
-                    super.travel(strafe * (float) Config.INSTANCE.getModifier_petriding() * 0.75F, forward * (float) Config.INSTANCE.getModifier_petriding() * 0.75F, vertical);
+                    super.travel(strafe * (float) Config.INSTANCE.getModifier_petriding() * 0.75F, vertical, forward * (float) Config.INSTANCE.getModifier_petriding() * 0.75F);
                 }
 
                 this.prevLimbSwingAmount = this.limbSwingAmount;

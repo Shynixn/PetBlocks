@@ -109,7 +109,7 @@ public class SpongePetDataListener extends SimpleSpongeListener {
     }
 
     @Listener
-    public void playerClickEvent(final ClickInventoryEvent event, @First(typeFilter = Player.class) Player player) {
+    public void playerClickEvent(final ClickInventoryEvent.Primary event, @First(typeFilter = Player.class) Player player) {
         if (event.getTargetInventory().getName().get().equals(Config.INSTANCE.getGUITitle())
                 && this.manager.getInventories().containsKey(player)) {
             event.setCancelled(true);
@@ -118,13 +118,14 @@ public class SpongePetDataListener extends SimpleSpongeListener {
             final ItemStack itemStack = event.getTransactions().get(0).getOriginal().createStack();
             final int newSlot = event.getTransactions().get(0).getSlot().getProperties(SlotIndex.class).toArray(new SlotIndex[0])[0].getValue();
             if ((optPetblock = this.manager.getPetBlockController().getFromPlayer(player)).isPresent()) {
-                this.handleClick(itemStack, newSlot, player, optPetblock.get().getMeta(), optPetblock.get());
+                Task.builder().execute(() -> this.handleClick(itemStack, newSlot, player, optPetblock.get().getMeta(), optPetblock.get())).submit(SpongePetDataListener.this.plugin);
             } else {
                 Task.builder().async().execute(() -> {
                     final Optional<PetMeta> optPetMeta = SpongePetDataListener.this.manager.getPetMetaController().getFromPlayer(player);
                     Task.builder().execute(() -> optPetMeta.ifPresent(petMeta -> SpongePetDataListener.this.handleClick(itemStack, newSlot, player, petMeta, null))).submit(SpongePetDataListener.this.plugin);
                 }).submit(this.plugin);
             }
+
         }
     }
 

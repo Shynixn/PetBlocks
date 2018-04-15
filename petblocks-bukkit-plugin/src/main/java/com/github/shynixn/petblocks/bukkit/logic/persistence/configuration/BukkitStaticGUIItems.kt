@@ -80,6 +80,7 @@ class BukkitStaticGUIItems : FixedItemConfiguration<Player>(){
         }
         val mItemStack = itemStack as ItemStack?
         return (mItemStack!!.itemMeta != null && optGUIContainer.get().displayName.isPresent
+                && mItemStack.type.id == optGUIContainer.get().itemId
                 && mItemStack.itemMeta.displayName != null
                 && mItemStack.itemMeta.displayName.equals(optGUIContainer.get().displayName.get(), ignoreCase = true))
     }

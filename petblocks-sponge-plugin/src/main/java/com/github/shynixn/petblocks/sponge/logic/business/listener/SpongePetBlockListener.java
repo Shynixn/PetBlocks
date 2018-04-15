@@ -189,14 +189,13 @@ public class SpongePetBlockListener extends SimpleSpongeListener {
     }
 
     @Listener
-    public void entityRightClickEvent(InteractEntityEvent event) {
+    public void onPlayerInteract(InteractEntityEvent.Secondary event, @First Player player) {
         if (!event.getCause().first(Entity.class).isPresent()) {
             return;
         }
         final Entity p = event.getCause().first(Entity.class).get();
         if (!(p instanceof Player))
             return;
-        final Player player = (Player) p;
         if (this.manager.getCarryingPet().containsKey(player)) {
             player.setItemInHand(HandTypes.OFF_HAND, null);
             if (this.manager.getPetBlockController().getFromPlayer(player).isPresent())
@@ -227,6 +226,7 @@ public class SpongePetBlockListener extends SimpleSpongeListener {
             event.setCancelled(true);
         }
     }
+
 
     @Listener
     public void onPlayerInteractEvent(HandInteractEvent event, @First(typeFilter = Player.class) Player player) {
@@ -315,9 +315,9 @@ public class SpongePetBlockListener extends SimpleSpongeListener {
         @Override
         public void run() {
             for (final PetBlock petBlock : SpongePetBlockListener.this.manager.getPetBlockController().getAll()) {
-                if (petBlock.isDead() || !Config.getInstance().allowPetSpawning(((Player) petBlock.getPlayer()).getTransform())) {
+                if (petBlock.isDead() || !Config.getInstance().allowPetSpawning(((Player) petBlock.getPlayer()).getLocation())) {
                     SpongePetBlockListener.this.manager.getPetBlockController().remove(petBlock);
-                    if (((Player) petBlock.getPlayer()).isOnline() && Config.getInstance().allowPetSpawning(((Player) petBlock.getPlayer()).getTransform())) {
+                    if (((Player) petBlock.getPlayer()).isOnline() && Config.getInstance().allowPetSpawning(((Player) petBlock.getPlayer()).getLocation())) {
                         Task.builder().async().execute(() -> {
                             final PetMeta petMeta = SpongePetBlockListener.this.manager.getPetMetaController().getFromPlayer((Player) petBlock.getPlayer()).get();
                             Task.builder().execute(() -> SpongePetBlockListener.this.setPetBlock((Player) petBlock.getPlayer(), petMeta)).submit(SpongePetBlockListener.this.plugin);

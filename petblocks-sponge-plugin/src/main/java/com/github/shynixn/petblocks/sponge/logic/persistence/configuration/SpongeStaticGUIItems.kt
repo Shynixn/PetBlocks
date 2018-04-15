@@ -2,6 +2,7 @@ package com.github.shynixn.petblocks.sponge.logic.persistence.configuration
 
 import com.github.shynixn.petblocks.core.logic.business.helper.ChatColor
 import com.github.shynixn.petblocks.core.logic.persistence.configuration.FixedItemConfiguration
+import com.github.shynixn.petblocks.sponge.logic.business.helper.CompatibilityItemType
 import com.github.shynixn.petblocks.sponge.logic.business.helper.getDisplayName
 import com.github.shynixn.petblocks.sponge.logic.persistence.entity.SpongeItemContainer
 import com.google.inject.Inject
@@ -78,6 +79,10 @@ class SpongeStaticGUIItems : FixedItemConfiguration<Player>() {
             throw RuntimeException("GUIItem for PetBlocks with the name $name is not loaded correctly!")
         }
         val mItemStack = itemStack as ItemStack?
-        return mItemStack!!.getDisplayName() != null && mItemStack.getDisplayName().equals(optGUIContainer.get().displayName.get(), ignoreCase = true)
+        var id = CompatibilityItemType.getFromItemType(mItemStack!!.type).id
+        if (id == 144) {
+            id = 397
+        }
+        return id == optGUIContainer.get().itemId && mItemStack.getDisplayName() != null && mItemStack.getDisplayName().equals(optGUIContainer.get().displayName.get(), ignoreCase = true)
     }
 }

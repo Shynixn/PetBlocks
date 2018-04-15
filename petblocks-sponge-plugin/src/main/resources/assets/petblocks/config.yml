@@ -127,7 +127,7 @@ pet:
     amount-blocks-away: 2
     teleport-fall: true
     max-range-teleport: 50
-    carry: true
+    carry: false
     flying-wall-colliding: true
     running-hitbox-height: -1.5
     afraid-water: false
