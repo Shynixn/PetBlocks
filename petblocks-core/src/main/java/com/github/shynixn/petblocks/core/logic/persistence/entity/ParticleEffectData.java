@@ -389,7 +389,7 @@ public abstract class ParticleEffectData extends PersistenceObject implements Pa
      */
     @Override
     public int getBlue() {
-        return (int) this.offsetZ * 255;
+        return (int) (this.offsetZ * 255.0);
     }
 
     /**
@@ -399,7 +399,7 @@ public abstract class ParticleEffectData extends PersistenceObject implements Pa
      */
     @Override
     public int getRed() {
-        return (int) this.offsetX * 255;
+        return (int) (this.offsetX * 255.0);
     }
 
     /**
@@ -409,7 +409,7 @@ public abstract class ParticleEffectData extends PersistenceObject implements Pa
      */
     @Override
     public int getGreen() {
-        return (int) this.offsetY * 255;
+        return (int) (this.offsetY * 255.0);
     }
 
     /**

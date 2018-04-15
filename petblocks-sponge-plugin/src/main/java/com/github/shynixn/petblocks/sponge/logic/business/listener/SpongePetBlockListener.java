@@ -29,6 +29,7 @@ import org.spongepowered.api.event.network.ClientConnectionEvent;
 import org.spongepowered.api.item.ItemTypes;
 import org.spongepowered.api.plugin.PluginContainer;
 import org.spongepowered.api.scheduler.Task;
+import org.spongepowered.api.text.Text;
 import org.spongepowered.api.world.World;
 
 import java.util.HashSet;
@@ -205,8 +206,8 @@ public class SpongePetBlockListener extends SimpleSpongeListener {
             final PetBlock petBlock = this.getPet(event.getTargetEntity());
             if (petBlock != null && petBlock.getPlayer().equals(player)) {
                 if (Config.INSTANCE.isFeedingEnabled() && player.getItemInHand(HandTypes.MAIN_HAND).isPresent() && player.getItemInHand(HandTypes.MAIN_HAND).get().getItem() == ItemTypes.CARROT) {
-                    petBlock.getEffectPipeline().playParticleEffect(event.getTargetEntity().getLocation(), Config.INSTANCE.getFeedingClickParticleEffect());
-                    petBlock.getEffectPipeline().playSound(event.getTargetEntity().getLocation(), Config.INSTANCE.getFeedingClickSound());
+                    petBlock.getEffectPipeline().playParticleEffect(event.getTargetEntity().getTransform(), Config.INSTANCE.getFeedingClickParticleEffect());
+                    petBlock.getEffectPipeline().playSound(event.getTargetEntity().getTransform(), Config.INSTANCE.getFeedingClickSound());
                     if (player.getItemInHand(HandTypes.MAIN_HAND).get().getQuantity() == 1) {
                         player.setItemInHand(HandTypes.MAIN_HAND, null);
                     } else {
@@ -343,7 +344,7 @@ public class SpongePetBlockListener extends SimpleSpongeListener {
                 for (final Entity entity : world.getEntities()) {
                     if (entity instanceof ArmorStand && SpongePetBlockListener.this.isDeadPet(entity)) {
                         entity.remove();
-                    } else if (!SpongePetBlockListener.this.isPet(entity) && entity.get(Keys.DISPLAY_NAME).isPresent() && entity.get(Keys.DISPLAY_NAME).get().equals("PetBlockIdentifier")) {
+                    } else if (!SpongePetBlockListener.this.isPet(entity) && entity.get(Keys.DISPLAY_NAME).isPresent() && entity.get(Keys.DISPLAY_NAME).get().equals(Text.of("PetBlockIdentifier"))) {
                         entity.remove();
                     }
                 }
