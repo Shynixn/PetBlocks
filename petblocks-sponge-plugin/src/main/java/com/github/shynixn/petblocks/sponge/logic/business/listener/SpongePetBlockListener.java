@@ -307,10 +307,6 @@ public class SpongePetBlockListener extends SimpleSpongeListener {
             final PetBlock petBlock = this.getPet(event.getTargetEntity());
             if (petBlock == null)
                 return;
-          /*  if (!event.getCause().getContext().containsKey(NamedCause.PHYSICAL))
-                petBlock.damage(event.getFinalDamage());
-            else if (event.getCause().getNamedCauses().containsKey(NamedCause.PHYSICAL))
-                petBlock.damage(-2.0);*/
             event.setCancelled(true);
         }
     }

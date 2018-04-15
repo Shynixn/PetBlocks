@@ -8,7 +8,9 @@ import com.github.shynixn.petblocks.api.persistence.entity.PetMeta
 import com.github.shynixn.petblocks.api.sponge.event.PetBlockCannonEvent
 import com.github.shynixn.petblocks.api.sponge.event.PetBlockRideEvent
 import com.github.shynixn.petblocks.api.sponge.event.PetBlockWearEvent
+import com.github.shynixn.petblocks.core.logic.business.helper.ReflectionUtils
 import com.github.shynixn.petblocks.sponge.logic.business.entity.Pipeline
+import com.github.shynixn.petblocks.sponge.logic.business.helper.findServerVersion
 import com.github.shynixn.petblocks.sponge.logic.persistence.configuration.Config
 import com.github.shynixn.petblocks.sponge.logic.persistence.entity.SpongeParticleEffect
 import com.github.shynixn.petblocks.sponge.logic.persistence.entity.SpongeSoundBuilder
@@ -19,7 +21,6 @@ import org.spongepowered.api.entity.Transform
 import org.spongepowered.api.entity.living.ArmorStand
 import org.spongepowered.api.entity.living.Living
 import org.spongepowered.api.entity.living.player.Player
-import org.spongepowered.api.event.cause.Cause
 import org.spongepowered.api.text.Text
 import org.spongepowered.api.world.World
 
@@ -50,8 +51,24 @@ import org.spongepowered.api.world.World
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class PetBlockWrapper(private val armorstandEntity: ArmorStand, private val owner: Player
-                      , private val petMeta: PetMeta, private val engine: Living) : PetBlock<Player, Transform<World>> {
+class PetBlockWrapper(private val firstSpawn : Transform<World>, private val owner: Player, private val petMeta: PetMeta) : PetBlock<Player, Transform<World>> {
+
+    object Companion {
+        var spawnMethod = Class.forName("com.github.shynixn.petblocks.sponge.nms.VERSION.CustomGroundArmorstand".replace("VERSION", VersionSupport.getServerVersion().versionText)).getDeclaredMethod("spawn", Transform::class.java)
+
+
+        var engine = Class.forName("com.github.shynixn.petblocks.sponge.nms.VERSION.CustomGroundArmorstand".replace("VERSION", VersionSupport.getServerVersion().versionText))
+                .getDeclaredField("rabbit");
+    }
+
+    private lateinit var engine: Living;
+    private var armorstandEntity: ArmorStand
+
+    private val pipeline = Pipeline(this)
+
+    var health = 20.0
+    private var dieng = false
+    var hitflor: Boolean = false
 
     private val explosionSound = SpongeSoundBuilder("EXPLODE", 1.0, 2.0)
 
@@ -61,23 +78,19 @@ class PetBlockWrapper(private val armorstandEntity: ArmorStand, private val owne
             .setSpeed(0.1)
             .setAmount(100)
 
-    private val pipeline = Pipeline(this)
-
-    var health = 20.0
-    private var dieng = false
-    var hitflor: Boolean = false
-
-    object Companion {
-        var spawnMethod = Class.forName("com.github.shynixn.petblocks.sponge.nms.VERSION.CustomGroundArmorstand".replace("VERSION", VersionSupport.getServerVersion().versionText))
-                .getDeclaredMethod("spawn", Transform::class.java)
+    init {
+        armorstandEntity = ReflectionUtils.invokeConstructor(Class.forName("com.github.shynixn.petblocks.sponge.nms.VERSION.CustomGroundArmorstand".findServerVersion()), arrayOf(player.transform.javaClass, PetBlockWrapper::class.java), arrayOf(firstSpawn, this)) as ArmorStand;
+        Companion.engine.isAccessible = true
+        val partWrapper = Companion.engine.get(armorstandEntity) as PetBlockPartWrapper
+        this.engine = partWrapper.entity as Living
     }
 
     override fun setSkin(skin: String?) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        throw RuntimeException("Not implemented!")
     }
 
     override fun setSkin(material: Any?, data: Byte) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        throw RuntimeException("Not implemented!")
     }
 
     override fun setDieing() {
@@ -129,9 +142,7 @@ class PetBlockWrapper(private val armorstandEntity: ArmorStand, private val owne
      * Removes the petblock.
      */
     override fun remove() {
-        if (this.engineEntity != null && !(this.engineEntity as Living).isRemoved) {
-            (this.engineEntity as Living).remove()
-        }
+        (this.engineEntity as Living).remove()
         if (!(this.armorStand as Living).isRemoved) {
             this.armorstandEntity.remove()
         }
@@ -215,8 +226,9 @@ class PetBlockWrapper(private val armorstandEntity: ArmorStand, private val owne
      */
     override fun respawn() {
         val location = location
-        location.add(Transform(location.extent, Vector3d(0.0, 1.2, 0.0)))
+        location.add(Transform(location.extent, Vector3d(0.0, 2.2, 0.0)))
         remove()
+        Companion.spawnMethod.isAccessible = true
         Companion.spawnMethod.invoke(armorstandEntity, location)
     }
 

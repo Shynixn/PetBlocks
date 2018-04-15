@@ -46,7 +46,7 @@ class SpongePetBlockRepository : PetBlockRepository<Player>() {
      * @return petblock
      */
     override fun create(player: Player, petMeta: PetMeta): PetBlock<Player, Transform<World>> {
-        return NMSRegistry.createPetBlock(player.location, petMeta)
+        return NMSRegistry.createPetBlock(player.transform, petMeta)
     }
 
 

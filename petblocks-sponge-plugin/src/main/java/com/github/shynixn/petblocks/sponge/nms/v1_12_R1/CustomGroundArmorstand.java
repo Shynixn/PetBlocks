@@ -39,27 +39,47 @@ import org.spongepowered.api.world.Location;
 import java.util.Random;
 
 final class CustomGroundArmorstand extends EntityArmorStand {
-    private PetBlock<Player, Location<org.spongepowered.api.world.World>> petBlock;
+
+    private PetBlockPartEntity rabbit;
+    private PetBlockWrapper wrapper;
 
     private boolean isSpecial;
     private boolean isGround;
     private boolean firstRide = true;
-    private PetBlockPartEntity rabbit;
     private int counter;
     private Vector3d bumper;
 
+    /**
+     * Default necessary constructor.
+     *
+     * @param world world
+     */
     public CustomGroundArmorstand(World world) {
         super(world);
     }
 
+    /**
+     * Default necessary constructor.
+     *
+     * @param world world
+     * @param d0    d0
+     * @param d1    d1
+     * @param d2    d2
+     */
     public CustomGroundArmorstand(World world, double d0, double d1, double d2) {
         super(world, d0, d1, d2);
     }
 
-    public CustomGroundArmorstand(Transform<org.spongepowered.api.world.World> location, PetBlock<Player, Location<org.spongepowered.api.world.World>> petBlock) {
+    /**
+     * Custom constructor to spawn the petblock pet.
+     *
+     * @param blockWrapper wrapper
+     * @param location     location
+     */
+    public CustomGroundArmorstand(Transform<org.spongepowered.api.world.World> location, PetBlockWrapper blockWrapper) {
         super((World) location.getExtent());
         this.isSpecial = true;
-        this.petBlock = petBlock;
+        this.wrapper = blockWrapper;
 
         this.spawn(location);
     }
@@ -67,47 +87,47 @@ final class CustomGroundArmorstand extends EntityArmorStand {
     @Override
     protected void updateEntityActionState() {
         if (this.isSpecial) {
-            ((Living) this.petBlock.getArmorStand()).getHealthData().health().set(((Living) this.petBlock.getArmorStand()).getHealthData().maxHealth().getMaxValue());
-            PetMeta petData = petBlock.getMeta();
-            ArmorStand armorStand = (ArmorStand) petBlock.getArmorStand();
-            Living engine = (Living) petBlock.getEngineEntity();
+            this.getArmorstand().getHealthData().health().set(this.getArmorstand().getHealthData().maxHealth().getMaxValue());
+            final PetMeta petData = this.wrapper.getMeta();
+            final ArmorStand armorStand = this.getArmorstand();
+            final Living engine = (Living) this.rabbit.getEntity();
 
             if (!armorStand.isRemoved() && armorStand.getPassengers().isEmpty() && engine != null && !armorStand.getVehicle().isPresent()) {
                 IPosition location = null;
                 if (petData.getAge() >= Config.INSTANCE.getAge_largeticks()) {
-                    location = new SpongeLocationBuilder(engine.getLocation().getExtent().getName(), engine.getLocation().getX(), engine.getLocation().getY(), engine.getLocation().getZ(), engine.getHeadRotation().getX(), engine.getHeadRotation().getZ());
+                    location = new SpongeLocationBuilder(engine.getLocation().getExtent().getName(), engine.getLocation().getX(), engine.getLocation().getY(), engine.getLocation().getZ(), engine.getTransform().getYaw(), engine.getTransform().getPitch());
                     location.setY(location.getY() - 1.2);
                 } else if (petData.getAge() <= Config.INSTANCE.getAge_smallticks())
-                    location = new SpongeLocationBuilder(engine.getLocation().getExtent().getName(), engine.getLocation().getX(), engine.getLocation().getY() - 0.7, engine.getLocation().getZ(), engine.getRotation().getX(), engine.getRotation().getY());
+                    location = new SpongeLocationBuilder(engine.getLocation().getExtent().getName(), engine.getLocation().getX(), engine.getLocation().getY() - 0.7, engine.getLocation().getZ(), engine.getTransform().getYaw(), engine.getTransform().getPitch());
                 if (location != null) {
                     this.setLocationAndAngles(location.getX(), location.getY() + 0.2, location.getZ(), (float) location.getYaw(), (float) location.getPitch());
                     final SPacketEntityTeleport animation = new SPacketEntityTeleport(this);
-                    for (final Player player : ((ArmorStand) this.petBlock.getArmorStand()).getWorld().getPlayers()) {
+                    for (final Player player : this.getArmorstand().getWorld().getPlayers()) {
                         ((EntityPlayerMP) player).connection.sendPacket(animation);
                     }
                 }
-                if (counter <= 0) {
+                if (this.counter <= 0) {
                     final Random random = new Random();
                     if (!engine.isOnGround() || petData.getEngine().getEntityType().equalsIgnoreCase("ZOMBIE")) {
-                        petBlock.getEffectPipeline().playSound(petBlock.getLocation(), petBlock.getMeta().getEngine().getAmbientSound());
+                        this.wrapper.getEffectPipeline().playSound(this.wrapper.getLocation(), this.wrapper.getMeta().getEngine().getAmbientSound());
                     }
-                    counter = 20 * random.nextInt(20) + 1;
+                    this.counter = 20 * random.nextInt(20) + 1;
                 }
                 if (engine.isRemoved()) {
-                    petBlock.remove();
-                    PetBlocksApi.getDefaultPetBlockController().remove((PetBlock<Object, Object>)(Object)petBlock);
+                    this.wrapper.remove();
+                    PetBlocksApi.getDefaultPetBlockController().remove((PetBlock<Object, Object>) (Object) wrapper);
                 }
                 if (petData.getParticleEffectMeta() != null) {
-                    petBlock.getEffectPipeline().playParticleEffect(armorStand.getLocation().add(0, 1, 0), petData.getParticleEffectMeta());
+                    this.wrapper.getEffectPipeline().playParticleEffect(armorStand.getTransform().add(new Transform<>(armorStand.getTransform().getExtent(), new Vector3d(0, 1, 0))), petData.getParticleEffectMeta());
                 }
-                counter--;
+                this.counter--;
             } else if (engine != null) {
                 engine.setLocation(armorStand.getLocation());
             }
             try {
                 if (petData.getAge() >= Config.INSTANCE.getAge_maxticks()) {
-                    if (Config.INSTANCE.isAge_deathOnMaxTicks() && !petBlock.isDieing()) {
-                        petBlock.setDieing();
+                    if (Config.INSTANCE.isAge_deathOnMaxTicks() && !this.wrapper.isDieing()) {
+                        this.wrapper.setDieing();
                     }
                 } else {
                     boolean respawn = false;
@@ -116,7 +136,7 @@ final class CustomGroundArmorstand extends EntityArmorStand {
                     }
                     petData.setAge(petData.getAge() + 1);
                     if (petData.getAge() >= Config.INSTANCE.getAge_largeticks() && respawn) {
-                        petBlock.respawn();
+                        this.wrapper.respawn();
                     }
                 }
             } catch (final Exception ex) {
@@ -126,7 +146,7 @@ final class CustomGroundArmorstand extends EntityArmorStand {
             if (engine != null) {
                 engine.offer(Keys.FIRE_TICKS, 0);
             }
-            Sponge.getEventManager().post(new PetBlockMoveEvent(petBlock));
+            Sponge.getEventManager().post(new PetBlockMoveEvent(this.wrapper));
         }
         super.updateEntityActionState();
     }
@@ -134,7 +154,7 @@ final class CustomGroundArmorstand extends EntityArmorStand {
     @Override
     public void travel(float strafe, float vertical, float forward) {
         if (this.hasHumanPassenger() != null) {
-            if (this.petBlock.getMeta().getEngine().getRideType() == RideType.RUNNING) {
+            if (this.wrapper.getMeta().getEngine().getRideType() == RideType.RUNNING) {
                 EntityLivingBase entityLiving = (EntityLivingBase) this.hasHumanPassenger();
                 this.rotationYaw = this.prevRotationYaw = entityLiving.rotationYaw;
                 this.rotationPitch = entityLiving.rotationPitch * 0.5F;
@@ -204,11 +224,11 @@ final class CustomGroundArmorstand extends EntityArmorStand {
                 if (this.isJumping()) {
                     v = new Vector3d(v.getX(), 0.5F, v.getZ());
                     this.isGround = true;
-                    ((PetBlockWrapper) (Object) this.petBlock).setHitflor(false);
+                    this.wrapper.setHitflor(false);
                 } else if (this.isGround) {
                     v = new Vector3d(v.getX(), -0.2F, v.getZ());
                 }
-                if (((PetBlockWrapper) (Object) this.petBlock).getHitflor()) {
+                if (this.wrapper.getHitflor()) {
                     v = new Vector3d(v.getX(), 0, v.getZ());
                     v = v.mul(2.25).mul(Config.INSTANCE.getModifier_petriding());
                     l.addCoordinates(v.getX(), v.getY(), v.getZ());
@@ -234,20 +254,20 @@ final class CustomGroundArmorstand extends EntityArmorStand {
     }
 
     public void spawn(Transform<org.spongepowered.api.world.World> location) {
-        final PetBlockSpawnEvent event = new PetBlockSpawnEvent(this.petBlock);
+        final PetBlockSpawnEvent event = new PetBlockSpawnEvent(wrapper);
         Sponge.getEventManager().post(event);
         if (!event.isCancelled()) {
-            if (this.petBlock.getMeta().getEngine().getEntityType().equalsIgnoreCase("RABBIT")) {
-                this.rabbit = new PetBlockPartWrapper((Living) (Object) new CustomRabbit(this.petBlock.getPlayer(), this.petBlock));
+            if (this.wrapper.getMeta().getEngine().getEntityType().equalsIgnoreCase("RABBIT")) {
+                this.rabbit = new PetBlockPartWrapper((Living) (Object) new CustomRabbit(location.getLocation(), this.wrapper));
 
-            } else if (this.petBlock.getMeta().getEngine().getEntityType().equalsIgnoreCase("ZOMBIE")) {
+            } else if (this.wrapper.getMeta().getEngine().getEntityType().equalsIgnoreCase("ZOMBIE")) {
                 //  this.rabbit = new CustomZombie(this.owner, this);
             }
 
             this.dead = false;
             this.isDead = false;
 
-            this.rabbit.spawn(location);
+            this.rabbit.spawn(location.add(new Transform<>(location.getExtent(), new Vector3d(0.0, 1.2, 0.0))));
             final World mcWorld = (World) location.getExtent();
             this.setPosition(location.getLocation().getX(), location.getLocation().getY(), location.getLocation().getZ());
             mcWorld.spawnEntity(this);
@@ -258,21 +278,23 @@ final class CustomGroundArmorstand extends EntityArmorStand {
             compound.setBoolean("ShowArms", true);
             compound.setBoolean("NoBasePlate", true);
             this.readEntityFromNBT(compound);
-            ((ArmorStand) this.petBlock.getArmorStand()).gravity().set(false);
-            ((ArmorStand) this.petBlock.getArmorStand()).getBodyPartRotationalData().bodyRotation().set(new Vector3d(0, 0, 2878));
-            ((ArmorStand) this.petBlock.getArmorStand()).getBodyPartRotationalData().leftArmDirection().set(new Vector3d(2878, 0, 0));
-            ((ArmorStand) this.petBlock.getArmorStand()).offer(Keys.CUSTOM_NAME_VISIBLE, true);
-            ((ArmorStand) this.petBlock.getArmorStand()).offer(Keys.DISPLAY_NAME, ExtensionMethodsKt.translateToText(this.petBlock.getMeta().getPetDisplayName()));
-            ((PetBlockWrapper) (Object) this.petBlock).setHealth(Config.INSTANCE.getCombat_health());
-            if (this.petBlock.getMeta() == null)
-                return;
-            ((ArmorStand) this.petBlock.getArmorStand()).setHelmet((ItemStack) this.petBlock.getMeta().getHeadItemStack());
-            if (this.petBlock.getMeta().getAge() >= Config.INSTANCE.getAge_largeticks()) {
-                ((ArmorStand) this.petBlock.getArmorStand()).small().set(false);
+            this.getArmorstand().gravity().set(false);
+            this.getArmorstand().getBodyPartRotationalData().bodyRotation().set(new Vector3d(0, 0, 2878));
+            this.getArmorstand().getBodyPartRotationalData().leftArmDirection().set(new Vector3d(2878, 0, 0));
+            this.getArmorstand().offer(Keys.CUSTOM_NAME_VISIBLE, true);
+            this.getArmorstand().offer(Keys.DISPLAY_NAME, ExtensionMethodsKt.translateToText(this.wrapper.getMeta().getPetDisplayName()));
+            ((PetBlockWrapper) (Object) this.wrapper).setHealth(Config.INSTANCE.getCombat_health());
+            this.getArmorstand().setHelmet((ItemStack) this.wrapper.getMeta().getHeadItemStack());
+            if (this.wrapper.getMeta().getAge() >= Config.INSTANCE.getAge_largeticks()) {
+                this.getArmorstand().small().set(false);
             } else {
-                ((ArmorStand) this.petBlock.getArmorStand()).small().set(true);
+                this.getArmorstand().small().set(true);
             }
         }
+    }
+
+    private ArmorStand getArmorstand() {
+        return (ArmorStand) (Object) this;
     }
 
     private boolean isJumping() {

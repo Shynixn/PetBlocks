@@ -12,6 +12,7 @@ import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.data.manipulator.mutable.PotionEffectData;
 import org.spongepowered.api.effect.potion.PotionEffect;
 import org.spongepowered.api.effect.potion.PotionEffectTypes;
+import org.spongepowered.api.entity.Transform;
 import org.spongepowered.api.entity.living.Living;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
@@ -25,8 +26,8 @@ public final class CustomRabbit extends EntityRabbit {
         super(worldIn);
     }
 
-    public CustomRabbit(Player player, PetBlock petBlock) {
-        super((World) ((Location<org.spongepowered.api.world.World>) petBlock.getLocation()).getExtent());
+    public CustomRabbit(Location<org.spongepowered.api.world.World> location, PetBlock petBlock) {
+        super((World) (location).getExtent());
         this.setSilent(true);
         try {
             this.tasks.taskEntries = Sets.newLinkedHashSet();
@@ -55,15 +56,14 @@ public final class CustomRabbit extends EntityRabbit {
     }
 
     /**
-     * Spawns the entity at the given location
+     * Spawns the entity at the given location.
      *
-     * @param mLocation location
+     * @param location location
      */
-    public void spawn(Object mLocation) {
-        final Location location = (Location) mLocation;
+    public void spawn(Transform<org.spongepowered.api.world.World> location) {
         final Living entity = (Living) (Object) this;
         final World mcWorld = (World) location.getExtent();
-        this.setPosition(location.getX(), location.getY(), location.getZ());
+        this.setPosition(location.getPosition().getX(), location.getPosition().getY(), location.getPosition().getZ());
         mcWorld.spawnEntity(this);
 
         this.enablePersistence();

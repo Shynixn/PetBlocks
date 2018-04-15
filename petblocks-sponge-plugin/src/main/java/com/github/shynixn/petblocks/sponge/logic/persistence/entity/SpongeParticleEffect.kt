@@ -110,7 +110,7 @@ class SpongeParticleEffect : ParticleEffectData {
                 return
 
             val players = playerstemp as Array<org.spongepowered.api.entity.living.player.Player>
-            val location = locationtemp as org.spongepowered.api.world.Location<World>
+            val location = locationtemp as Transform<World>
 
             val type = Sponge.getGame().registry.getType(ParticleType::class.java, "minecraft:" + this.effectType.minecraftId).get()
 
@@ -127,12 +127,12 @@ class SpongeParticleEffect : ParticleEffectData {
             }
             if (this.material != null) {
                 builder.option(ParticleOptions.BLOCK_STATE, BlockState.builder().blockType(CompatibilityItemType.getFromId(this.materialId)!!.blockType)
-                        .add(Keys.ITEM_DURABILITY, this.data as Int).build())
+                        .add(Keys.ITEM_DURABILITY, this.data.toInt()).build())
             }
 
             val effect = builder.build()
             for (player in players) {
-                player.spawnParticles(effect, Vector3d(location.x, location.y, location.z))
+                player.spawnParticles(effect, Vector3d(location.position.x, location.position.y, location.position.z))
             }
 
         } catch (e: Exception) {

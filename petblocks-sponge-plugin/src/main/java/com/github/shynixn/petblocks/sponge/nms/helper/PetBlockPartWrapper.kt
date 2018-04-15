@@ -1,7 +1,9 @@
 package com.github.shynixn.petblocks.sponge.nms.helper
 
 import com.github.shynixn.petblocks.api.business.entity.PetBlockPartEntity
+import com.github.shynixn.petblocks.sponge.nms.VersionSupport
 import org.spongepowered.api.entity.Entity
+import org.spongepowered.api.entity.Transform
 import org.spongepowered.api.entity.living.Living
 
 /**
@@ -31,7 +33,12 @@ import org.spongepowered.api.entity.living.Living
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class PetBlockPartWrapper(private val engine: Living) : PetBlockPartEntity<Entity>{
+class PetBlockPartWrapper(private val engine: Living) : PetBlockPartEntity<Entity> {
+
+    object Companion {
+        var spawnMethodRabbit = Class.forName("com.github.shynixn.petblocks.sponge.nms.VERSION.CustomRabbit".replace("VERSION", VersionSupport.getServerVersion().versionText)).getDeclaredMethod("spawn", Transform::class.java)
+    }
+
     /**
      * Returns the entity hidden by this object.
      *
@@ -47,7 +54,7 @@ class PetBlockPartWrapper(private val engine: Living) : PetBlockPartEntity<Entit
      * @param location location
      */
     override fun spawn(location: Any?) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        Companion.spawnMethodRabbit.invoke(engine, location)
     }
 
     /**

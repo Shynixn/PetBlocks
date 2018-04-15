@@ -3,7 +3,9 @@ package com.github.shynixn.petblocks.sponge.nms;
 import com.github.shynixn.petblocks.api.business.entity.PetBlock;
 import com.github.shynixn.petblocks.api.persistence.entity.PetMeta;
 import com.github.shynixn.petblocks.core.logic.business.helper.ReflectionUtils;
+import com.github.shynixn.petblocks.sponge.nms.helper.PetBlockWrapper;
 import org.spongepowered.api.entity.Transform;
+import org.spongepowered.api.entity.living.ArmorStand;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
@@ -62,14 +64,14 @@ public class NMSRegistry {
      * @param meta     meta
      * @return petblock
      */
-    public static PetBlock<Player, Transform<World>> createPetBlock(Location<World> location, PetMeta meta) {
+    public static PetBlock<Player, Transform<World>> createPetBlock(Transform<World> location, PetMeta meta) {
         try {
             if (!wrappedRegistry.isRegistered(rabbitClazz)) {
                 wrappedRegistry.register(rabbitClazz, CustomEntityType.RABBIT);
-                // wrappedRegistry.register(zombieClazz, CustomEntityType.ZOMBIE);
+                //   wrappedRegistry.register(zombieClazz, CustomEntityType.ZOMBIE);
             }
-            return (PetBlock) ReflectionUtils.invokeConstructor(findClassFromVersion("com.github.shynixn.petblocks.sponge.nms.VERSION.CustomGroundArmorstand")
-                    , new Class[]{location.getClass(), PetMeta.class}, new Object[]{location, meta});
+
+            return new PetBlockWrapper(location, meta.getPlayerMeta().getPlayer(), meta);
         } catch (final Exception e) {
             throw new RuntimeException("Cannot create petblock.", e);
         }

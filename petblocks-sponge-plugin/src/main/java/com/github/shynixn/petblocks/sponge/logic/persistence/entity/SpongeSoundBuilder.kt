@@ -4,6 +4,7 @@ import com.github.shynixn.petblocks.core.logic.persistence.entity.SoundBuilder
 import com.github.shynixn.petblocks.sponge.nms.VersionSupport
 import org.spongepowered.api.effect.sound.SoundType
 import org.spongepowered.api.effect.sound.SoundTypes
+import org.spongepowered.api.entity.Transform
 import org.spongepowered.api.entity.living.player.Player
 import org.spongepowered.api.world.Location
 import org.spongepowered.api.world.World
@@ -93,7 +94,7 @@ class SpongeSoundBuilder : SoundBuilder{
      */
     override fun <Location : Any?, Player : Any?> apply(location: Location, players: Array<out Player>?) {
         val inputPlayers = players as (Array<org.spongepowered.api.entity.living.player.Player>)
-        val inputLocation = location as org.spongepowered.api.world.Location<World>
+        val inputLocation = location as Transform<World>
         for (player in inputPlayers!!) {
             if (this.text == "none")
                 return
