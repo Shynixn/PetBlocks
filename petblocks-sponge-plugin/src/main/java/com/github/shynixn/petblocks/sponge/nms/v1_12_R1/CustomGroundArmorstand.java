@@ -261,7 +261,7 @@ final class CustomGroundArmorstand extends EntityArmorStand {
                 this.rabbit = new PetBlockPartWrapper((Living) (Object) new CustomRabbit(location.getLocation(), this.wrapper));
 
             } else if (this.wrapper.getMeta().getEngine().getEntityType().equalsIgnoreCase("ZOMBIE")) {
-                //  this.rabbit = new CustomZombie(this.owner, this);
+                this.rabbit = new PetBlockPartWrapper((Living) (Object) new CustomZombie(location.getLocation(), this.wrapper));
             }
 
             this.dead = false;

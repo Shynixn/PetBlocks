@@ -5,6 +5,7 @@ import com.github.shynixn.petblocks.sponge.nms.VersionSupport
 import org.spongepowered.api.entity.Entity
 import org.spongepowered.api.entity.Transform
 import org.spongepowered.api.entity.living.Living
+import org.spongepowered.api.entity.living.monster.Zombie
 
 /**
  * Created by Shynixn 2018.
@@ -37,6 +38,7 @@ class PetBlockPartWrapper(private val engine: Living) : PetBlockPartEntity<Entit
 
     object Companion {
         var spawnMethodRabbit = Class.forName("com.github.shynixn.petblocks.sponge.nms.VERSION.CustomRabbit".replace("VERSION", VersionSupport.getServerVersion().versionText)).getDeclaredMethod("spawn", Transform::class.java)
+        var spawnMethodZombie = Class.forName("com.github.shynixn.petblocks.sponge.nms.VERSION.CustomZombie".replace("VERSION", VersionSupport.getServerVersion().versionText)).getDeclaredMethod("spawn", Transform::class.java)
     }
 
     /**
@@ -54,7 +56,11 @@ class PetBlockPartWrapper(private val engine: Living) : PetBlockPartEntity<Entit
      * @param location location
      */
     override fun spawn(location: Any?) {
-        Companion.spawnMethodRabbit.invoke(engine, location)
+        if (engine is Zombie) {
+            Companion.spawnMethodZombie.invoke(engine, location)
+        } else {
+            Companion.spawnMethodRabbit.invoke(engine, location)
+        }
     }
 
     /**

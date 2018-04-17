@@ -44,7 +44,7 @@ public class NMSRegistry {
         try {
             wrappedRegistry = (CustomEntityType.WrappedRegistry) findClassFromVersion("com.github.shynixn.petblocks.sponge.nms.VERSION.CustomEntityRegistry").newInstance();
             rabbitClazz = findClassFromVersion("com.github.shynixn.petblocks.sponge.nms.VERSION.CustomRabbit");
-            zombieClazz = null;
+            zombieClazz = findClassFromVersion("com.github.shynixn.petblocks.sponge.nms.VERSION.CustomZombie");
         } catch (final ClassNotFoundException | IllegalAccessException | InstantiationException e) {
             throw new RuntimeException(e);
         }
@@ -65,11 +65,8 @@ public class NMSRegistry {
         try {
             if (!wrappedRegistry.isRegistered(rabbitClazz)) {
                 wrappedRegistry.register(rabbitClazz, CustomEntityType.RABBIT);
-                //   wrappedRegistry.register(zombieClazz, CustomEntityType.ZOMBIE);
+                wrappedRegistry.register(zombieClazz, CustomEntityType.ZOMBIE);
             }
-
-
-
 
             return new PetBlockWrapper(location, meta.getPlayerMeta().getPlayer(), meta);
         } catch (final Exception e) {

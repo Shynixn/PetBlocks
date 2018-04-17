@@ -5,7 +5,7 @@ import com.github.shynixn.petblocks.sponge.logic.persistence.configuration.Confi
 import com.google.common.collect.Sets;
 import net.minecraft.anchor.v1_12_mcpR1.entity.SharedMonsterAttributes;
 import net.minecraft.anchor.v1_12_mcpR1.entity.ai.EntityAISwimming;
-import net.minecraft.anchor.v1_12_mcpR1.entity.passive.EntityRabbit;
+import net.minecraft.anchor.v1_12_mcpR1.entity.monster.EntityZombie;
 import net.minecraft.anchor.v1_12_mcpR1.util.SoundEvent;
 import net.minecraft.anchor.v1_12_mcpR1.world.World;
 import org.spongepowered.api.data.key.Keys;
@@ -17,15 +17,15 @@ import org.spongepowered.api.entity.living.Living;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.world.Location;
 
-public final class CustomRabbit extends EntityRabbit {
+public final class CustomZombie extends EntityZombie {
     private PetBlock petBlock;
     private long playedMovingSound = 100000;
 
-    public CustomRabbit(World worldIn) {
-        super(worldIn);
+    public CustomZombie(World world) {
+        super(world);
     }
 
-    public CustomRabbit(Location<org.spongepowered.api.world.World> location, PetBlock petBlock) {
+    public CustomZombie(Location<org.spongepowered.api.world.World> location, PetBlock petBlock) {
         super((World) (location).getExtent());
         this.setSilent(true);
         try {
@@ -45,13 +45,13 @@ public final class CustomRabbit extends EntityRabbit {
     }
 
     @Override
-    protected SoundEvent getJumpSound() {
+    protected SoundEvent getStepSound() {
         final long milli = System.currentTimeMillis();
         if (milli - this.playedMovingSound > 500) {
             this.petBlock.getEffectPipeline().playSound(this.petBlock.getLocation(), this.petBlock.getMeta().getEngine().getWalkingSound());
             this.playedMovingSound = milli;
         }
-        return super.getJumpSound();
+        return super.getStepSound();
     }
 
     /**
