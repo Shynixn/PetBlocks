@@ -57,7 +57,7 @@ public class Factory {
         if (plugin == null)
             throw new IllegalArgumentException("Plugin cannot be null!");
         final ExtensionHikariConnectionContext.SQlRetriever retriever = fileName -> {
-            try (InputStream stream = plugin.getResource("sql/" + fileName + ".sql")) {
+            try (InputStream stream = plugin.getResource("assets/petblocks/sql/" + fileName + ".sql")) {
                 return IOUtils.toString(stream, "UTF-8");
             } catch (final IOException e) {
                 PetBlocksPlugin.logger().log(Level.WARNING, "Cannot read file.", fileName);
