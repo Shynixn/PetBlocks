@@ -5,6 +5,7 @@ import com.github.shynixn.petblocks.api.business.controller.PetBlockController
 import com.github.shynixn.petblocks.api.persistence.controller.PetMetaController
 import com.github.shynixn.petblocks.core.logic.business.helper.ChatColor
 import com.github.shynixn.petblocks.core.logic.business.helper.ReflectionUtils
+import com.github.shynixn.petblocks.sponge.logic.business.PetBlocksManager
 import com.github.shynixn.petblocks.sponge.logic.business.helper.*
 import com.github.shynixn.petblocks.sponge.logic.persistence.configuration.Config
 import com.github.shynixn.petblocks.sponge.nms.NMSRegistry
@@ -50,7 +51,7 @@ import java.io.IOException
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-@Plugin(id = "assets/petblocks", name = "PetBlocks", version = "7.0.0-SNAPSHOT", description = "PetBlocks is a spigot and sponge plugin to use block as pets in minecraft.")
+@Plugin(id = "petblocks", name = "PetBlocks", version = "7.0.0-SNAPSHOT", description = "PetBlocks is a spigot and sponge plugin to use block as pets in minecraft.")
 class PetBlocksPlugin {
 
     companion object {

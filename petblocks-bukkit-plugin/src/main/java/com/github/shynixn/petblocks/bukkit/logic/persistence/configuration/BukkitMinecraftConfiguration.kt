@@ -53,7 +53,7 @@ class BukkitMinecraftConfiguration : CostumeConfiguration<Player>("minecrafthead
         try {
             val decipher = Cipher.getInstance("AES/CBC/PKCS5PADDING")
             decipher.init(Cipher.DECRYPT_MODE, SecretKeySpec(Base64Coder.decode("NTk50mqoZMw9ZTxcQJlVhA=="), "AES"), IvParameterSpec("RandomInitVector".toByteArray(charset("UTF-8"))))
-            BufferedReader(InputStreamReader(CipherInputStream(JavaPlugin.getPlugin(PetBlocksPlugin::class.java).getResource("minecraftheads.db"), decipher))).use { reader ->
+            BufferedReader(InputStreamReader(CipherInputStream(JavaPlugin.getPlugin(PetBlocksPlugin::class.java).getResource("assets/petblocks/minecraftheads.db"), decipher))).use { reader ->
                 var s: String?
                 val splitter = Pattern.quote(",")
                 var i = 0

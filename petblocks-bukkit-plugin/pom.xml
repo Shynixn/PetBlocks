@@ -72,6 +72,12 @@
             <artifactId>petblocks-core</artifactId>
             <version>7.0.0-SNAPSHOT</version>
         </dependency>
+        <dependency>
+            <groupId>com.google.inject</groupId>
+            <artifactId>guice</artifactId>
+            <version>4.1.0</version>
+            <scope>compile</scope>
+        </dependency>
     </dependencies>
 
     <build>
@@ -83,39 +89,39 @@
                     <relocations>
                         <relocation>
                             <pattern>kotlin</pattern>
-                            <shadedPattern>com.github.shynixn.petblocks.lib.kotlin</shadedPattern>
+                            <shadedPattern>com.github.shynixn.blockball.lib.kotlin</shadedPattern>
                         </relocation>
                         <relocation>
                             <pattern>org.intellij</pattern>
-                            <shadedPattern>com.github.shynixn.petblocks.lib.org.intellij</shadedPattern>
+                            <shadedPattern>com.github.shynixn.blockball.lib.org.intellij</shadedPattern>
                         </relocation>
                         <relocation>
                             <pattern>org.jetbrains</pattern>
-                            <shadedPattern>com.github.shynixn.petblocks.lib.org.jetbrains</shadedPattern>
+                            <shadedPattern>com.github.shynixn.blockball.lib.org.jetbrains</shadedPattern>
                         </relocation>
                         <relocation>
                             <pattern>org.bstats</pattern>
-                            <shadedPattern>com.github.shynixn.petblocks.lib.org.bstats</shadedPattern>
+                            <shadedPattern>com.github.shynixn.blockball.lib.org.bstats</shadedPattern>
                         </relocation>
                         <relocation>
                             <pattern>javax.inject</pattern>
-                            <shadedPattern>com.github.shynixn.petblocks.lib.javax.inject</shadedPattern>
+                            <shadedPattern>com.github.shynixn.blockball.lib.javax.inject</shadedPattern>
                         </relocation>
                         <relocation>
                             <pattern>org.aopalliance</pattern>
-                            <shadedPattern>com.github.shynixn.petblocks.lib.org.aopalliance</shadedPattern>
+                            <shadedPattern>com.github.shynixn.blockball.lib.org.aopalliance</shadedPattern>
                         </relocation>
                         <relocation>
                             <pattern>org.slf4j</pattern>
-                            <shadedPattern>com.github.shynixn.petblocks.lib.org.slf4j</shadedPattern>
+                            <shadedPattern>com.github.shynixn.blockball.lib.org.slf4j</shadedPattern>
                         </relocation>
                         <relocation>
                             <pattern>com.google</pattern>
-                            <shadedPattern>com.github.shynixn.petblocks.lib.com.google</shadedPattern>
+                            <shadedPattern>com.github.shynixn.blockball.lib.com.google</shadedPattern>
                         </relocation>
                         <relocation>
                             <pattern>com.zaxxer</pattern>
-                            <shadedPattern>com.github.shynixn.petblocks.lib.com.zaxxer</shadedPattern>
+                            <shadedPattern>com.github.shynixn.blockball.lib.com.zaxxer</shadedPattern>
                         </relocation>
                     </relocations>
                 </configuration>

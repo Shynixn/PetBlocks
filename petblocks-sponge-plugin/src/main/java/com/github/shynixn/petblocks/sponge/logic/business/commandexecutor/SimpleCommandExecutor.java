@@ -12,7 +12,8 @@ import org.spongepowered.api.plugin.PluginContainer;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.serializer.TextSerializers;
 
-import java.util.Map;
+import java.util.*;
+import java.util.regex.Pattern;
 
 /**
  * Holds the different types of commandExecutors.
@@ -92,7 +93,17 @@ public class SimpleCommandExecutor implements CommandExecutor {
 
     @Override
     public CommandResult execute(CommandSource src, CommandContext args) throws CommandException {
-        final String[] arguments = args.getAll("text").toArray(new String[0]);
+        final Collection<String> tmpArguments = args.getAll("text");
+        final List<String> preArguments = new ArrayList<>();
+        for (final String s : tmpArguments) {
+            if (s.contains(" ")) {
+                preArguments.addAll(Arrays.asList(s.split(Pattern.quote(" "))));
+            } else {
+                preArguments.add(s);
+            }
+        }
+        final String[] arguments = preArguments.toArray(new String[preArguments.size()]);
+
         if (src instanceof Player) {
             final Player player = (Player) src;
             if (this.permission != null && !player.hasPermission(this.permission)) {

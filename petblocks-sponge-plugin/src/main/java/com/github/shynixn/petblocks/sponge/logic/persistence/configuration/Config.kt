@@ -99,7 +99,7 @@ object Config : ConfigLayer<Player>() {
                 meta = SpongeParticleEffect(this.getData<Any>("effect") as Map<String, Any>)
                 petMeta.particleEffectMeta = meta
             } catch (e: Exception) {
-               logger.warn("Failed to load particle effect for join pet.")
+                logger.warn("Failed to load particle effect for join pet.")
             }
         }
     }
@@ -158,6 +158,10 @@ object Config : ConfigLayer<Player>() {
      * Reloads the config.
      */
     override fun reload() {
+        if (!this.privateConfigDir.toFile().exists()) {
+            this.privateConfigDir.toFile().mkdir()
+        }
+
         val defaultConfig = this.privateConfigDir.resolve("config.yml")
         if (!Files.exists(defaultConfig)) {
             this.logger.info("Converting config....")

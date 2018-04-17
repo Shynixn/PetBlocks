@@ -62,21 +62,24 @@ class GUI {
      * @param player player
      */
     fun open(player: Player) {
-        if (!this.manager.inventories.containsKey(player)) {
-            if (player.openInventory.isPresent) {
-                this.closeInventory(player)
-            }
-
-            val inventory = Inventory.builder()
-                    .of(InventoryArchetypes.DOUBLE_CHEST)
-                    .property(
-                            InventoryTitle.PROPERTY_NAME,
-                            InventoryTitle.of(Config.guiTitle.translateToText())
-                    )
-                    .build(plugin)
-            this.manager.inventories[player] = inventory
-            player.openInventory(inventory)
+        if (this.manager.inventories.containsKey(player)) {
+            this.closeInventory(player)
+            this.manager.inventories.remove(player)
         }
+
+        if (player.openInventory.isPresent) {
+            this.closeInventory(player)
+        }
+
+        val inventory = Inventory.builder()
+                .of(InventoryArchetypes.DOUBLE_CHEST)
+                .property(
+                        InventoryTitle.PROPERTY_NAME,
+                        InventoryTitle.of(Config.guiTitle.translateToText())
+                )
+                .build(plugin)
+        this.manager.inventories[player] = inventory
+        player.openInventory(inventory)
     }
 
     /**
@@ -288,7 +291,7 @@ class GUI {
      * @param type            type
      * @param groupPermission groupPermissions
      */
-    private fun setCostumes(player: Player, containers: List<GUIItemContainer<Player>>, page: GUIPage, type: Int,groupPermission : Permission ) {
+    private fun setCostumes(player: Player, containers: List<GUIItemContainer<Player>>, page: GUIPage, type: Int, groupPermission: Permission) {
         if (this.manager.inventories.containsKey(player)) {
             val previousContainer = this.manager.pages[player]!!
             val container: GuiPageContainer
