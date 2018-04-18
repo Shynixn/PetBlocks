@@ -12,11 +12,7 @@ import com.github.shynixn.petblocks.api.persistence.entity.SoundMeta;
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.util.List;
-import java.util.Map;
-import java.util.logging.Level;
 
 public abstract class Config<Player> {
     private static Config instance;
@@ -50,6 +46,7 @@ public abstract class Config<Player> {
     private CostumeController minecraftHeadsCostumesController;
 
     public Config() {
+        super();
         instance = this;
     }
 
@@ -254,26 +251,6 @@ public abstract class Config<Player> {
      */
     public boolean isFeedingEnabled() {
         return this.getData("pet.feeding.enabled");
-    }
-
-    private SoundMeta createSoundComp(Map<String, Object> data) {
-        try {
-            final Class<?> clazz = Class.forName("com.github.shynixn.petblocks.bukkit.logic.persistence.entity.BukkitSoundBuilder");
-            final Constructor constructor = clazz.getDeclaredConstructor(Map.class);
-            return (SoundMeta) constructor.newInstance(data);
-        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    private ParticleEffectMeta createParticleComp(Map<String, Object> data) {
-        try {
-            final Class<?> clazz = Class.forName("com.github.shynixn.petblocks.bukkit.logic.persistence.entity.BukkitParticleEffect");
-            final Constructor constructor = clazz.getDeclaredConstructor(Map.class);
-            return (ParticleEffectMeta) constructor.newInstance(data);
-        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
-            throw new RuntimeException(e);
-        }
     }
 
     /**

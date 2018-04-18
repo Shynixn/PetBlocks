@@ -5,7 +5,6 @@ import com.google.inject.Inject
 import ninja.leaping.configurate.ConfigurationNode
 import org.slf4j.Logger
 import org.spongepowered.api.config.ConfigDir
-import org.spongepowered.api.entity.living.player.Player
 import org.spongepowered.api.plugin.PluginContainer
 import java.nio.file.Path
 

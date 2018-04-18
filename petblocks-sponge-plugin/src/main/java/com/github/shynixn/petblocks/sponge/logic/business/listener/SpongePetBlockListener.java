@@ -5,7 +5,6 @@ import com.github.shynixn.petblocks.api.business.entity.PetBlock;
 import com.github.shynixn.petblocks.api.persistence.entity.PetMeta;
 import com.github.shynixn.petblocks.core.logic.business.entity.PetRunnable;
 import com.github.shynixn.petblocks.sponge.logic.business.PetBlocksManager;
-import com.github.shynixn.petblocks.sponge.logic.business.helper.ExtensionMethodsKt;
 import com.github.shynixn.petblocks.sponge.logic.persistence.configuration.Config;
 import com.google.inject.Inject;
 import org.spongepowered.api.Sponge;
@@ -129,14 +128,17 @@ public class SpongePetBlockListener extends SimpleSpongeListener {
         if (!event.getCause().first(Entity.class).isPresent()) {
             return;
         }
-        Entity damager = event.getCause().first(Entity.class).get();
-        Entity entity = event.getTargetEntity();
+
+        final Entity damager = event.getCause().first(Entity.class).get();
+        final Entity entity = event.getTargetEntity();
+
         if (this.isPet(damager)) {
             final PetBlock petBlock = this.getPet(damager);
             if (petBlock != null && petBlock.getPlayer() != null && petBlock.getPlayer().equals(entity)) {
                 event.setCancelled(true);
             }
         }
+
         if (Config.INSTANCE.isFleesInCombat()) {
             if (damager instanceof Player && this.manager.getPetBlockController().getFromPlayer((Player) damager).isPresent()) {
                 this.manager.getTimeBlocked().put((Player) damager, Config.INSTANCE.getReappearsInSeconds());

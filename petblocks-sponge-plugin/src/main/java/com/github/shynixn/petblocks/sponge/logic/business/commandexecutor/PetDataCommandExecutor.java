@@ -171,10 +171,10 @@ public final class PetDataCommandExecutor extends SimpleCommandExecutor {
                 if (message.length() > Config.INSTANCE.getDesign_maxPetNameLength()) {
                     player.sendMessage(ExtensionMethodsKt.translateToText(Config.INSTANCE.getPrefix().concat(Config.getInstance().getNamingErrorMessage())));
                 } else {
-                    PetDataCommandExecutor.providePetblockData(plugin, manager, player, (meta, petBlock) -> {
+                    PetDataCommandExecutor.providePetblockData(this.plugin, this.manager, player, (meta, petBlock) -> {
                         ExtensionMethodsKt.rename(meta, petBlock, message);
                         player.sendMessage(ExtensionMethodsKt.translateToText(Config.INSTANCE.getPrefix().concat(Config.getInstance().getNamingSuccessMessage())));
-                        PetDataCommandExecutor.storeAsynchronly(plugin, manager.getPetMetaController(), meta);
+                        PetDataCommandExecutor.storeAsynchronly(this.plugin, this.manager.getPetMetaController(), meta);
                     });
                 }
             } catch (final Exception e) {
@@ -185,7 +185,7 @@ public final class PetDataCommandExecutor extends SimpleCommandExecutor {
 
     private static class RenameSkinCommandExecutor extends SimpleCommandExecutor {
 
-        private static int MAX_PETSKINLENGTH = 20;
+        private static final int MAX_PETSKINLENGTH = 20;
 
         @Inject
         private PetBlocksManager manager;
@@ -208,10 +208,10 @@ public final class PetDataCommandExecutor extends SimpleCommandExecutor {
                 if (message.length() > MAX_PETSKINLENGTH) {
                     player.sendMessage(ExtensionMethodsKt.translateToText(Config.getInstance().getPrefix().concat(Config.getInstance().getSkullNamingErrorMessage())));
                 } else {
-                    PetDataCommandExecutor.providePetblockData(plugin, manager, player, (meta, petBlock) -> {
+                    PetDataCommandExecutor.providePetblockData(this.plugin, this.manager, player, (meta, petBlock) -> {
                         ExtensionMethodsKt.setSkin(meta, petBlock, message);
                         player.sendMessage(ExtensionMethodsKt.translateToText(Config.getInstance().getPrefix().concat(Config.getInstance().getSkullNamingSuccessMessage())));
-                        PetDataCommandExecutor.storeAsynchronly(this.plugin, manager.getPetMetaController(), meta);
+                        PetDataCommandExecutor.storeAsynchronly(this.plugin, this.manager.getPetMetaController(), meta);
                     });
                 }
             } catch (final Exception e) {

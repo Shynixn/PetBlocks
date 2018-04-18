@@ -1,18 +1,12 @@
 package com.github.shynixn.petblocks.bukkit.logic.business.helper
 
-import com.github.shynixn.petblocks.api.business.entity.GUIItemContainer
 import com.github.shynixn.petblocks.api.persistence.controller.CostumeController
 import com.github.shynixn.petblocks.api.persistence.controller.EngineController
 import com.github.shynixn.petblocks.api.persistence.controller.OtherGUIItemsController
 import com.github.shynixn.petblocks.api.persistence.controller.ParticleController
-import com.github.shynixn.petblocks.api.persistence.entity.EngineContainer
-import com.github.shynixn.petblocks.bukkit.PetBlocksPlugin
 import com.github.shynixn.petblocks.bukkit.logic.persistence.configuration.*
 import com.google.inject.AbstractModule
-import com.google.inject.TypeLiteral
 import com.google.inject.name.Names
-import org.bukkit.entity.Player
-import org.bukkit.plugin.java.JavaPlugin
 
 
 /**

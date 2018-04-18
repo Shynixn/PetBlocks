@@ -76,12 +76,11 @@ class BukkitPetData : PetData {
         this.petDisplayName = name.replace(":player", player.name)
         this.playerInfo = object : PlayerData() {
             override fun <T> getPlayer(): T? {
-                try {
-                    return Bukkit.getPlayer(this.name) as T
+                return try {
+                    Bukkit.getPlayer(this.name) as T
                 } catch (ex: Exception) {
-                    return null
+                    null
                 }
-
             }
         }
         this.ageTicks = Config.age_smallticks.toLong()
@@ -138,11 +137,9 @@ class BukkitPetData : PetData {
         if (name == null)
             return
         if (Config.petNameBlackList != null) {
-            for (blackName in Config.petNameBlackList) {
-                if (name.toUpperCase().contains(blackName.toUpperCase())) {
-                    throw RuntimeException("Name is not valid!")
-                }
-            }
+            Config.petNameBlackList
+                    .filter { name.toUpperCase().contains(it.toUpperCase()) }
+                    .forEach { throw RuntimeException("Name is not valid!") }
         }
         this.petDisplayName = ChatColor.translateAlternateColorCodes('&', name)
     }

@@ -200,7 +200,7 @@ public abstract class ParticleEffectDataRepository extends DataBaseRepository<Pa
      */
     @Override
     protected ParticleEffectMeta from(ResultSet resultSet) throws SQLException {
-        final ParticleEffectData particleEffectData = (ParticleEffectData) create();
+        final ParticleEffectData particleEffectData = (ParticleEffectData) this.create();
         particleEffectData.setId(resultSet.getLong("id"));
         particleEffectData.setEffectName(resultSet.getString("name"));
         particleEffectData.setAmount(resultSet.getInt("amount"));

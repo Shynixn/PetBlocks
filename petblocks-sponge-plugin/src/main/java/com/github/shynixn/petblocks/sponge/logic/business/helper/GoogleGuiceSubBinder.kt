@@ -2,7 +2,6 @@ package com.github.shynixn.petblocks.sponge.logic.business.helper
 
 import com.github.shynixn.petblocks.core.logic.business.helper.ExtensionHikariConnectionContext
 import com.github.shynixn.petblocks.sponge.logic.business.PetBlocksManager
-import com.github.shynixn.petblocks.sponge.logic.business.commandexecutor.PetDataCommandExecutor
 import com.github.shynixn.petblocks.sponge.logic.persistence.configuration.Config
 import com.google.inject.AbstractModule
 import com.google.inject.Inject

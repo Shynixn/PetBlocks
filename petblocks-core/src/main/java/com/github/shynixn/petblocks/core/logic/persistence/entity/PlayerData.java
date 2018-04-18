@@ -47,17 +47,4 @@ public abstract class PlayerData extends PersistenceObject implements PlayerMeta
     public void setUuid(UUID uuid) {
         this.uuid = uuid;
     }
-
-    /**
-     * Generates the playerData from a player
-     *
-     * @param player player
-     * @return playerData
-     */
-  /*  public static PlayerData from(Player player) {
-        final PlayerData playerStats = new PlayerData();
-        playerStats.setName(player.getName());
-        playerStats.setUuid(player.getUniqueId());
-        return playerStats;
-    */
 }

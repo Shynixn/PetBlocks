@@ -5,7 +5,6 @@ import com.github.shynixn.petblocks.api.business.entity.PetBlock
 import com.github.shynixn.petblocks.api.persistence.entity.ParticleEffectMeta
 import com.github.shynixn.petblocks.sponge.logic.persistence.configuration.Config
 import com.github.shynixn.petblocks.sponge.logic.persistence.entity.SpongeParticleEffect
-import com.github.shynixn.petblocks.sponge.logic.persistence.entity.SpongeSoundBuilder
 import org.spongepowered.api.data.property.block.MatterProperty
 import org.spongepowered.api.entity.Entity
 import org.spongepowered.api.entity.living.player.Player
@@ -49,7 +48,7 @@ private val angryParticle = SpongeParticleEffect()
         .setAmount(2)
 
 fun PetBlock<Player, Location<World>>.playAfraidOfWaterEffect(counterValue : Int) : Int {
-    var counter = counterValue;
+    var counter = counterValue
     val entity = engineEntity as Entity
     if (Config.isAfraidOfwater) {
         val optional = entity.location.blockType.getProperty(MatterProperty::class.java)
@@ -57,7 +56,7 @@ fun PetBlock<Player, Location<World>>.playAfraidOfWaterEffect(counterValue : Int
             val vec = Vector3d((random.nextInt(3) * isNegative(random)).toFloat(), (random.nextInt(3) * isNegative(random)).toFloat(), (random.nextInt(3) * isNegative(random)).toFloat())
             entity.velocity = vec
             if (Config.isAfraidwaterParticles) {
-                getEffectPipeline().playParticleEffect(entity.location, angryParticle)
+                effectPipeline.playParticleEffect(entity.location, angryParticle)
             }
             counter = 20
         }

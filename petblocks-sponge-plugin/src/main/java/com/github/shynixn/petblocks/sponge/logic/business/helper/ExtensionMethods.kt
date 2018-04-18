@@ -20,9 +20,7 @@ import org.spongepowered.api.text.Text
 import org.spongepowered.api.text.serializer.TextSerializers
 import org.spongepowered.api.world.World
 import java.io.InputStream
-import java.util.*
 import java.util.function.Consumer
-import kotlin.collections.ArrayList
 
 /**
  * Created by Shynixn 2018.
@@ -62,20 +60,24 @@ fun ChatBuilder.sendMessage(vararg players: Player) {
     finalMessage.append(", \"extra\" : [")
     var firstExtra = false
     for (component in this.components) {
+
         if (component !is ChatColor && firstExtra) {
             finalMessage.append(", ")
         }
-        if (component is ChatColor) {
-            cache.append(component)
-        } else if (component is String) {
-            finalMessage.append("{\"text\": \"")
-            finalMessage.append(ChatColor.translateAlternateColorCodes('&', cache.toString() + component))
-            finalMessage.append("\"}")
-            cache.setLength(0)
-            firstExtra = true
-        } else {
-            finalMessage.append(component)
-            firstExtra = true
+
+        when (component) {
+            is ChatColor -> cache.append(component)
+            is String -> {
+                finalMessage.append("{\"text\": \"")
+                finalMessage.append(ChatColor.translateAlternateColorCodes('&', cache.toString() + component))
+                finalMessage.append("\"}")
+                cache.setLength(0)
+                firstExtra = true
+            }
+            else -> {
+                finalMessage.append(component)
+                firstExtra = true
+            }
         }
     }
     finalMessage.append("]}")
@@ -122,9 +124,7 @@ fun PetMeta.setEngine(petBlock: PetBlock<Player, Transform<World>>?, engineConta
 
 fun PetMeta.rename(petBlock: PetBlock<Player, Transform<World>>?, name: String) {
     this.petDisplayName = name
-    if (petBlock != null) {
-        petBlock.respawn()
-    }
+    petBlock?.respawn()
 }
 
 fun ItemStack.getDisplayName(): String? {
@@ -180,9 +180,7 @@ fun PetMeta.setSkin(petBlock: PetBlock<Player, Transform<World>>?, skin: String)
         skinHelper = "http://" + skin
     }
     setSkin(CompatibilityItemType.SKULL_ITEM.id, 3, skinHelper, false)
-    if (petBlock != null) {
-        petBlock.respawn()
-    }
+    petBlock?.respawn()
 }
 
 fun Array<String?>.translateToTexts(): Array<Text?> {
@@ -253,7 +251,7 @@ private object ReflectionCache {
 }
 
 fun ItemStack.setDisplayName(text: String) {
-    this.offer(org.spongepowered.api.data.key.Keys.DISPLAY_NAME, text.translateToText());
+    this.offer(org.spongepowered.api.data.key.Keys.DISPLAY_NAME, text.translateToText())
 }
 
 fun ItemStack.setDamage(damage: Int) {
@@ -261,7 +259,7 @@ fun ItemStack.setDamage(damage: Int) {
 }
 
 fun ItemStack.setLore(vararg text: String) {
-    this.offer(org.spongepowered.api.data.key.Keys.ITEM_LORE, (text as Array<String?>).translateToTexts().toList());
+    this.offer(org.spongepowered.api.data.key.Keys.ITEM_LORE, (text as Array<String?>).translateToTexts().toList())
 }
 
 fun ItemStack.getLore(): Array<String> {

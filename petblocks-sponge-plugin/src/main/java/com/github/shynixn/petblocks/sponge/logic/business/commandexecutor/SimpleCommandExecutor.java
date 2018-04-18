@@ -43,7 +43,6 @@ import java.util.regex.Pattern;
  * SOFTWARE.
  */
 public class SimpleCommandExecutor implements CommandExecutor {
-    private CommandSpec commandSpec;
     private String permissionMessage;
     private String permission;
     private String name;
@@ -51,6 +50,7 @@ public class SimpleCommandExecutor implements CommandExecutor {
     protected PluginContainer plugin;
 
     public SimpleCommandExecutor(PluginContainer plugin) {
+        super();
         this.plugin = plugin;
     }
 
@@ -85,10 +85,10 @@ public class SimpleCommandExecutor implements CommandExecutor {
                 .executor(this);
 
         onCommandBuild.run(builder);
-        this.commandSpec = builder.build();
+        final CommandSpec commandSpec = builder.build();
 
-        Sponge.getCommandManager().register(this.plugin, this.commandSpec, command);
-        return this.commandSpec;
+        Sponge.getCommandManager().register(this.plugin, commandSpec, command);
+        return commandSpec;
     }
 
     @Override
@@ -171,6 +171,7 @@ public class SimpleCommandExecutor implements CommandExecutor {
         return TextSerializers.LEGACY_FORMATTING_CODE.deserialize(s);
     }
 
+    @FunctionalInterface
     protected interface OnCommandBuild {
         /**
          * On command built.

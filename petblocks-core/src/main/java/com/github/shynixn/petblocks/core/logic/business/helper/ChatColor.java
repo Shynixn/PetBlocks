@@ -66,11 +66,11 @@ public enum ChatColor {
     private static final Map<Character, ChatColor> BY_CHAR = Maps.newHashMap();
 
     static {
-        ChatColor[] var0;
-        int var1 = (var0 = values()).length;
+        final ChatColor[] var0;
+        final int var1 = (var0 = values()).length;
 
         for (int var2 = 0; var2 < var1; ++var2) {
-            ChatColor color = var0[var2];
+            final ChatColor color = var0[var2];
             BY_ID.put(color.intCode, color);
             BY_CHAR.put(color.code, color);
         }
@@ -117,7 +117,7 @@ public enum ChatColor {
     }
 
     public static String translateAlternateColorCodes(char altColorChar, String textToTranslate) {
-        char[] b = textToTranslate.toCharArray();
+        final char[] b = textToTranslate.toCharArray();
 
         for (int i = 0; i < b.length - 1; ++i) {
             if (b[i] == altColorChar && "0123456789AaBbCcDdEeFfKkLlMmNnOoRr".indexOf(b[i + 1]) > -1) {
@@ -127,26 +127,6 @@ public enum ChatColor {
         }
 
         return new String(b);
-    }
-
-    public static String getLastColors(String input) {
-        String result = "";
-        int length = input.length();
-
-        for (int index = length - 1; index > -1; --index) {
-            char section = input.charAt(index);
-            if (section == 167 && index < length - 1) {
-                char c = input.charAt(index + 1);
-                ChatColor color = getByChar(c);
-                if (color != null) {
-                    result = color.toString() + result;
-                    if (color.isColor() || color.equals(RESET)) {
-                        break;
-                    }
-                }
-            }
-        }
-        return result;
     }
 }
 

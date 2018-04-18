@@ -4,22 +4,9 @@ import com.github.shynixn.petblocks.api.persistence.controller.CostumeController
 import com.github.shynixn.petblocks.api.persistence.controller.EngineController
 import com.github.shynixn.petblocks.api.persistence.controller.OtherGUIItemsController
 import com.github.shynixn.petblocks.api.persistence.controller.ParticleController
-import com.github.shynixn.petblocks.core.logic.business.helper.ExtensionHikariConnectionContext
-import com.github.shynixn.petblocks.sponge.logic.business.PetBlocksManager
 import com.github.shynixn.petblocks.sponge.logic.persistence.configuration.*
 import com.google.inject.AbstractModule
-import com.google.inject.Inject
 import com.google.inject.name.Names
-import ninja.leaping.configurate.ConfigurationNode
-import org.slf4j.Logger
-import org.spongepowered.api.Sponge
-import org.spongepowered.api.config.ConfigDir
-import org.spongepowered.api.plugin.PluginContainer
-import java.io.IOException
-import java.nio.file.Files
-import java.nio.file.Path
-import java.sql.SQLException
-import java.util.regex.Pattern
 
 /**
  * Created by Shynixn 2018.

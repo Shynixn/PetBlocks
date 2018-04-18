@@ -17,6 +17,9 @@ import org.spongepowered.api.entity.living.Living;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.world.Location;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 public final class CustomRabbit extends EntityRabbit {
     private PetBlock petBlock;
     private long playedMovingSound = 100000;
@@ -28,6 +31,7 @@ public final class CustomRabbit extends EntityRabbit {
     public CustomRabbit(Location<org.spongepowered.api.world.World> location, PetBlock petBlock) {
         super((World) (location).getExtent());
         this.setSilent(true);
+
         try {
             this.tasks.taskEntries = Sets.newLinkedHashSet();
             this.tasks.executingTaskEntries = Sets.newLinkedHashSet();
@@ -38,8 +42,9 @@ public final class CustomRabbit extends EntityRabbit {
             this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED)
                     .setBaseValue(0.30000001192092896D * Config.INSTANCE.getModifier_petwalking());
         } catch (final Exception exc) {
-            exc.printStackTrace();
+            Logger.getLogger(this.getClass().getSimpleName()).log(Level.WARNING, "Failed to create CustomRabbit.", exc);
         }
+
         this.petBlock = petBlock;
         this.stepHeight = (float) Config.INSTANCE.getModifier_petclimbing();
     }

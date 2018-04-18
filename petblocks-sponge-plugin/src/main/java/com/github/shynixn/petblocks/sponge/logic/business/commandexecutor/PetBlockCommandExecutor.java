@@ -15,7 +15,6 @@ import com.google.inject.Singleton;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.GenericArguments;
-import org.spongepowered.api.command.spec.CommandSpec;
 import org.spongepowered.api.entity.Entity;
 import org.spongepowered.api.entity.living.ArmorStand;
 import org.spongepowered.api.entity.living.player.Player;
@@ -39,9 +38,7 @@ public final class PetBlockCommandExecutor extends SimpleCommandExecutor {
     @Inject
     public PetBlockCommandExecutor(PluginContainer pluginContainer) {
         super(pluginContainer);
-        this.register(Config.getInstance().getData("petblocks-configuration"), builder -> {
-            builder.arguments(GenericArguments.optionalWeak(GenericArguments.remainingRawJoinedStrings(Text.of("text"))));
-        });
+        this.register(Config.getInstance().getData("petblocks-configuration"), builder -> builder.arguments(GenericArguments.optionalWeak(GenericArguments.remainingRawJoinedStrings(Text.of("text")))));
     }
 
     /**
@@ -473,9 +470,7 @@ public final class PetBlockCommandExecutor extends SimpleCommandExecutor {
     }
 
     private void persistAsynchronously(PetMeta petMeta) {
-        Task.builder().async().execute(() -> {
-            this.manager.getPetMetaController().store(petMeta);
-        }).submit(this.plugin);
+        Task.builder().async().execute(() -> this.manager.getPetMetaController().store(petMeta)).submit(this.plugin);
     }
 
     private void providePet(Player player, PetRunnable runnable) {
@@ -491,9 +486,7 @@ public final class PetBlockCommandExecutor extends SimpleCommandExecutor {
                 }
                 petMeta = this.manager.getPetMetaController().getFromPlayer(player).get();
 
-                Task.builder().execute(() -> {
-                    runnable.run(petMeta, null);
-                }).submit(this.plugin);
+                Task.builder().execute(() -> runnable.run(petMeta, null)).submit(this.plugin);
             }).submit(this.plugin);
         }
     }

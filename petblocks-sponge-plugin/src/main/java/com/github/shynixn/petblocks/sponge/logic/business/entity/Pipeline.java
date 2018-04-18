@@ -4,9 +4,12 @@ import com.github.shynixn.petblocks.api.business.entity.EffectPipeline;
 import com.github.shynixn.petblocks.api.business.entity.PetBlock;
 import com.github.shynixn.petblocks.api.persistence.entity.ParticleEffectMeta;
 import com.github.shynixn.petblocks.api.persistence.entity.SoundMeta;
+import com.github.shynixn.petblocks.sponge.PetBlocksPlugin;
+import com.github.shynixn.petblocks.sponge.logic.business.helper.ExtensionMethodsKt;
 import com.github.shynixn.petblocks.sponge.logic.persistence.configuration.Config;
 import com.github.shynixn.petblocks.sponge.logic.persistence.entity.SpongeParticleEffect;
 import com.github.shynixn.petblocks.sponge.logic.persistence.entity.SpongeSoundBuilder;
+import org.spongepowered.api.Sponge;
 import org.spongepowered.api.entity.Transform;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.world.World;
@@ -45,23 +48,16 @@ public class Pipeline implements EffectPipeline<Transform<World>> {
      */
     @Override
     public void playSound(Transform<World> location, SoundMeta soundMeta) {
-        if (!petBlock.getMeta().isSoundEnabled())
+        if (!this.petBlock.getMeta().isSoundEnabled())
             return;
         try {
             if (Config.INSTANCE.isSoundForOtherPlayersHearable()) {
                 ((SpongeSoundBuilder) soundMeta).apply(location, location.getExtent().getPlayers().toArray(new Player[location.getExtent().getPlayers().size()]));
             } else {
-                ((SpongeSoundBuilder) soundMeta).apply(location, new Player[] {(Player) petBlock.getPlayer()});
+                ((SpongeSoundBuilder) soundMeta).apply(location, new Player[]{(Player) this.petBlock.getPlayer()});
             }
-        } catch (final IllegalArgumentException | NullPointerException e) {
-            e.printStackTrace();
-           // PetBlocksPlugin.logger().warn("Cannot play sound " + soundMeta.getName() + " of " + petBlock.getMeta().getEngine().getGUIItem().getDisplayName().get() + '.');
-           // PetBlocksPlugin.logger().warn("Is this entity or sound supported by your server version? Disable it in the config.yml");
-        } catch (final Exception e1) {
-            e1.printStackTrace();
-
-            //  PetBlocksPlugin.logger()
-           //         .warn("Failed playing w sound.", e1);
+        } catch (final Exception e) {
+            ExtensionMethodsKt.sendMessage(Sponge.getGame(), e.toString());
         }
     }
 }

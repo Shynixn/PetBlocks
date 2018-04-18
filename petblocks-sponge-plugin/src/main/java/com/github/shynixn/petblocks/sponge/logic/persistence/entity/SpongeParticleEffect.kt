@@ -11,13 +11,8 @@ import org.spongepowered.api.effect.particle.ParticleEffect
 import org.spongepowered.api.effect.particle.ParticleOptions
 import org.spongepowered.api.effect.particle.ParticleType
 import org.spongepowered.api.entity.Transform
-import org.spongepowered.api.entity.living.player.Player
 import org.spongepowered.api.util.Color
-import org.spongepowered.api.world.Location
 import org.spongepowered.api.world.World
-import java.lang.reflect.InvocationTargetException
-import java.util.*
-import java.util.logging.Level
 
 /**
  * Created by Shynixn 2018.
@@ -76,7 +71,6 @@ class SpongeParticleEffect : ParticleEffectData {
         return CompatibilityItemType.getFromId(this.materialId)
     }
 
-    constructor(effectName: String?, amount: Int, speed: Double, offsetX: Double, offsetY: Double, offsetZ: Double) : super(effectName, amount, speed, offsetX, offsetY, offsetZ)
     constructor() : super()
     constructor(items: Map<String, Any>?) : super(items)
 
@@ -115,11 +109,12 @@ class SpongeParticleEffect : ParticleEffectData {
             val type = Sponge.getGame().registry.getType(ParticleType::class.java, "minecraft:" + this.effectType.minecraftId).get()
 
             val builder: ParticleEffect.Builder
-            if (this.effectType == ParticleEffectMeta.ParticleEffectType.REDSTONE || this.effectType == ParticleEffectMeta.ParticleEffectType.NOTE) {
-                builder = ParticleEffect.builder()
+
+            builder = if (this.effectType == ParticleEffectMeta.ParticleEffectType.REDSTONE || this.effectType == ParticleEffectMeta.ParticleEffectType.NOTE) {
+                ParticleEffect.builder()
                         .type(type).option(ParticleOptions.COLOR, Color.ofRgb(this.red, this.green, this.blue))
             } else {
-                builder = ParticleEffect.builder()
+                ParticleEffect.builder()
                         .type(type)
                         .quantity(this.amount)
                         .offset(Vector3d(this.offsetX, this.offsetY, this.offsetZ))

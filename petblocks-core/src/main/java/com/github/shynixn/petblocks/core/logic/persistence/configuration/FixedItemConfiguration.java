@@ -4,7 +4,6 @@ import com.github.shynixn.petblocks.api.business.entity.GUIItemContainer;
 import com.github.shynixn.petblocks.api.persistence.controller.OtherGUIItemsController;
 
 import java.util.*;
-import java.util.logging.Level;
 
 /**
  * Copyright 2017 Shynixn

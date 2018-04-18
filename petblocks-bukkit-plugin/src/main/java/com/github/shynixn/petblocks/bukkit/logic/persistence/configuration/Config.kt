@@ -105,39 +105,29 @@ object Config : Config<Player>() {
 
 
     override fun allowPetSpawning(location2: Any?): Boolean {
-        var location = location2 as Location
+        val location = location2 as Location
         val includedWorlds = this.includedWorlds
         val excludedWorlds = this.excludedWorlds
-        if (includedWorlds.contains("all")) {
-            return !excludedWorlds.contains(location.getWorld().getName()) && this.handleRegionSpawn(location)
-        } else if (excludedWorlds.contains("all")) {
-            return includedWorlds.contains(location.getWorld().getName()) && this.handleRegionSpawn(location)
-        } else {
-            Bukkit.getConsoleSender().sendMessage(PetBlocksPlugin.PREFIX_CONSOLE + ChatColor.RED + "Please add 'all' to excluded or included worlds inside of the config.yml")
+
+        when {
+            includedWorlds.contains("all") -> return !excludedWorlds.contains(location.world.name) && this.handleRegionSpawn(location)
+            excludedWorlds.contains("all") -> return includedWorlds.contains(location.world.name) && this.handleRegionSpawn(location)
+            else -> Bukkit.getConsoleSender().sendMessage(PetBlocksPlugin.PREFIX_CONSOLE + ChatColor.RED + "Please add 'all' to excluded or included worlds inside of the config.yml")
         }
+
         return true
     }
 
     private fun handleRegionSpawn(location: Location): Boolean {
         val includedRegions = this.includedRegions
         val excludedRegions = this.excludedRegion
-        if (includedRegions.contains("all")) {
-            for (k in NMSRegistry.getWorldGuardRegionsFromLocation(location)) {
-                if (excludedRegions.contains(k)) {
-                    return false
-                }
-            }
-            return true
-        } else if (excludedRegions.contains("all")) {
-            for (k in NMSRegistry.getWorldGuardRegionsFromLocation(location)) {
-                if (includedRegions.contains(k)) {
-                    return true
-                }
-            }
-            return false
-        } else {
-            Bukkit.getConsoleSender().sendMessage(PetBlocksPlugin.PREFIX_CONSOLE + ChatColor.RED + "Please add 'all' to excluded or included regions inside of the config.yml")
+
+        when {
+            includedRegions.contains("all") -> return NMSRegistry.getWorldGuardRegionsFromLocation(location).none { excludedRegions.contains(it) }
+            excludedRegions.contains("all") -> return NMSRegistry.getWorldGuardRegionsFromLocation(location).any { includedRegions.contains(it) }
+            else -> Bukkit.getConsoleSender().sendMessage(PetBlocksPlugin.PREFIX_CONSOLE + ChatColor.RED + "Please add 'all' to excluded or included regions inside of the config.yml")
         }
+
         return true
     }
 

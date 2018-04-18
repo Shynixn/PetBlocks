@@ -48,34 +48,38 @@ fun ChatBuilder.sendMessage(vararg players: Player) {
     finalMessage.append(", \"extra\" : [")
     var firstExtra = false
     for (component in this.components) {
+
         if (component !is ChatColor && firstExtra) {
             finalMessage.append(", ")
         }
-        if (component is ChatColor) {
-            cache.append(component)
-        } else if (component is String) {
-            finalMessage.append("{\"text\": \"")
-            finalMessage.append(ChatColor.translateAlternateColorCodes('&', cache.toString() + component))
-            finalMessage.append("\"}")
-            cache.setLength(0)
-            firstExtra = true
-        } else {
-            finalMessage.append(component)
-            firstExtra = true
+
+        when (component) {
+            is ChatColor -> cache.append(component)
+            is String -> {
+                finalMessage.append("{\"text\": \"")
+                finalMessage.append(ChatColor.translateAlternateColorCodes('&', cache.toString() + component))
+                finalMessage.append("\"}")
+                cache.setLength(0)
+                firstExtra = true
+            }
+            else -> {
+                finalMessage.append(component)
+                firstExtra = true
+            }
         }
     }
     finalMessage.append("]}")
     try {
-        val clazz: Class<*>
-        if (Bukkit.getServer()::class.java.`package`.name.replace(".", ",").split(",")[3].equals("v1_8_R1")) {
-            clazz =  Class.forName("net.minecraft.server.VERSION.ChatSerializer".findServerVersion())
+        val clazz: Class<*> = if (Bukkit.getServer()::class.java.`package`.name.replace(".", ",").split(",")[3] == "v1_8_R1") {
+            Class.forName("net.minecraft.server.VERSION.ChatSerializer".findServerVersion())
         } else {
-            clazz = Class.forName("net.minecraft.server.VERSION.IChatBaseComponent\$ChatSerializer".findServerVersion())
+            Class.forName("net.minecraft.server.VERSION.IChatBaseComponent\$ChatSerializer".findServerVersion())
         }
+
         val packetClazz = Class.forName("net.minecraft.server.VERSION.PacketPlayOutChat".findServerVersion())
         val chatBaseComponentClazz =  Class.forName("net.minecraft.server.VERSION.IChatBaseComponent".findServerVersion())
 
-        val method = clazz.getDeclaredMethod("a",String::class.java);
+        val method = clazz.getDeclaredMethod("a",String::class.java)
         method.isAccessible = true
         val chatComponent = method.invoke(null, finalMessage.toString())
         val packet: Any

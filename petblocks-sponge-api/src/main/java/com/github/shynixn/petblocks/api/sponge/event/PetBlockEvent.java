@@ -34,7 +34,7 @@ import org.spongepowered.api.event.impl.AbstractEvent;
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-public class PetBlockEvent extends AbstractEvent implements Event {
+public class PetBlockEvent extends AbstractEvent {
     private final PetBlock petBlock;
 
     /**

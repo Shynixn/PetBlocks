@@ -32,17 +32,8 @@ import org.bukkit.entity.Player
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class BukkitEngineData : EngineData<Player> {
-
-    /**
-     * Initializes a new engine data.
-     *
-     * @param id   id
-     * @param data data
-     * @throws Exception exception
-     */
-    constructor(id: Long, data: Map<String, Any>) : super(id) {
-        this.id = id
+class BukkitEngineData(id: Long, data: Map<String, Any>) : EngineData<Player>(id) {
+    init {
         this.itemContainer = BukkitItemContainer(id.toInt(), (data["gui"] as MemorySection).getValues(false))
         this.entity = data["behaviour.entity"] as String
         this.rideType = RideType.valueOf(data["behaviour.riding"] as String)

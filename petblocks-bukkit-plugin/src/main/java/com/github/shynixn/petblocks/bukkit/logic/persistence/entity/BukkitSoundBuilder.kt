@@ -2,9 +2,7 @@ package com.github.shynixn.petblocks.bukkit.logic.persistence.entity
 
 import com.github.shynixn.petblocks.bukkit.nms.VersionSupport
 import com.github.shynixn.petblocks.core.logic.persistence.entity.SoundBuilder
-import org.bukkit.Location
 import org.bukkit.Sound
-import org.bukkit.entity.Player
 
 /**
  * Created by Shynixn 2018.
@@ -33,66 +31,7 @@ import org.bukkit.entity.Player
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class BukkitSoundBuilder : SoundBuilder{
-
-    constructor() : super()
-    constructor(text: String?) : super(text)
-    constructor(text: String?, volume: Double, pitch: Double) : super(text, volume, pitch)
-    constructor(items: MutableMap<String, Any>?) : super(items)
-
-
-    /**
-     * Plays the sound to all given players at their location
-     *
-     * @param players players
-     * @throws Exception exception
-     */
-    @Throws(Exception::class)
-    fun apply(players: Collection<Player>) {
-        this.apply(players.toTypedArray())
-    }
-
-    /**
-     * Plays the sound to all given players at their location
-     *
-     * @param players players
-     * @throws Exception exception
-     */
-    @Throws(Exception::class)
-    fun apply(players : Array<Player>) {
-        if (this.text == "none")
-            return
-        for (player in players) {
-            player.playSound(player.getLocation(), Sound.valueOf(this.text), this.volume, this.pitch)
-        }
-    }
-
-    /**
-     * Plays the sound to all players in the world at the given location. Players to far away cannot hear the sound.
-     *
-     * @param location location
-     * @throws Exception exception
-     */
-    @Throws(Exception::class)
-    fun apply(location: Location) {
-        if (this.text == "none")
-            return
-        for (player in location.getWorld().getPlayers()) {
-            player.playSound(location, Sound.valueOf(this.text), this.volume, this.pitch)
-        }
-    }
-
-    /**
-     * Plays the sound to the given players at the given location. Given players to far away cannot hear the sound.
-     *
-     * @param location location
-     * @param players  players
-     * @throws Exception exception
-     */
-    @Throws(Exception::class)
-    fun apply(location: Location, players: Collection<Player>) {
-        this.apply(location, players.toTypedArray())
-    }
+class BukkitSoundBuilder(text: String?, volume: Double, pitch: Double) : SoundBuilder(text, volume, pitch) {
 
     /**
      * Plays the sound to the given players at the given location. Given players to far away cannot hear the sound.
@@ -104,25 +43,12 @@ class BukkitSoundBuilder : SoundBuilder{
     override fun <Location : Any?, Player : Any?> apply(location: Location, players: Array<out Player>?) {
         val inputPlayers = players as (Array<org.bukkit.entity.Player>)
         val inputLocation = location as org.bukkit.Location
-        for (player in inputPlayers!!) {
+
+        for (player in inputPlayers) {
             if (this.text == "none")
                 return
-            player.playSound(location, Sound.valueOf(this.text), this.volume, this.pitch)
+            player.playSound(inputLocation, Sound.valueOf(this.text), this.volume, this.pitch)
         }
-    }
-
-    /**
-     * Returns the sound from the given name-
-     *
-     * @param name name
-     * @return sounds
-     */
-    fun getSoundFromName(name: String): Sound? {
-        for (sound in Sound.values()) {
-            if (sound.name.equals(name, true))
-                return sound
-        }
-        return null
     }
 
     /**
@@ -186,44 +112,5 @@ class BukkitSoundBuilder : SoundBuilder{
                 }
             }
         }
-    }
-
-    /**
-     * Returns all available sound names-
-     *
-     * @return text
-     */
-    fun getAvailableSounds(): String {
-        val s = StringBuilder()
-        for (sound in Sound.values()) {
-            if (s.isNotEmpty()) {
-                s.append(", ")
-            }
-            s.append(sound.name.toLowerCase())
-        }
-        return s.toString()
-    }
-
-
-    /**
-     * Returns the sound and throws exception if the sound does not exist
-     *
-     * @return sound
-     * @throws Exception exception
-     */
-    @Throws(Exception::class)
-    fun getSound(): Sound {
-        return Sound.valueOf(this.text)
-    }
-
-    /**
-     * Sets the bukkit sound of the sound
-     *
-     * @param sound sound
-     * @return builder
-     */
-    fun setSound(sound: Sound): SoundBuilder {
-        this.text = sound.name
-        return this
     }
 }

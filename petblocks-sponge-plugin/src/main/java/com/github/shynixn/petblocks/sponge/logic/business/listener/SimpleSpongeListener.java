@@ -53,7 +53,7 @@ public class SimpleSpongeListener {
      * Registers the listener to spigot
      */
     final void register() {
-        Sponge.getEventManager().registerListeners(plugin, this);
+        Sponge.getEventManager().registerListeners(this.plugin, this);
     }
 
     /**

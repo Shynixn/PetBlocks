@@ -1,32 +1,21 @@
+@file:Suppress("unused")
+
 package com.github.shynixn.petblocks.sponge.logic.business
 
-import com.github.shynixn.petblocks.api.business.controller.PetBlockController
-import com.github.shynixn.petblocks.api.persistence.controller.PetMetaController
 import com.github.shynixn.petblocks.core.logic.business.entity.GuiPageContainer
-import com.github.shynixn.petblocks.core.logic.business.helper.ExtensionHikariConnectionContext
 import com.github.shynixn.petblocks.sponge.logic.business.commandexecutor.PetBlockCommandExecutor
 import com.github.shynixn.petblocks.sponge.logic.business.commandexecutor.PetBlockReloadCommandExecutor
 import com.github.shynixn.petblocks.sponge.logic.business.commandexecutor.PetDataCommandExecutor
 import com.github.shynixn.petblocks.sponge.logic.business.controller.SpongePetBlockRepository
 import com.github.shynixn.petblocks.sponge.logic.business.listener.SpongePetBlockListener
 import com.github.shynixn.petblocks.sponge.logic.business.listener.SpongePetDataListener
-import com.github.shynixn.petblocks.sponge.logic.persistence.configuration.Config
 import com.github.shynixn.petblocks.sponge.logic.persistence.controller.SpongePetDataRepository
 import com.google.inject.Inject
 import com.google.inject.Singleton
-import org.slf4j.Logger
-import org.spongepowered.api.Sponge
-import org.spongepowered.api.config.ConfigDir
 import org.spongepowered.api.entity.living.player.Player
 import org.spongepowered.api.item.inventory.Inventory
 import org.spongepowered.api.item.inventory.ItemStack
-import org.spongepowered.api.plugin.PluginContainer
-import java.io.IOException
-import java.nio.file.Files
-import java.nio.file.Path
-import java.sql.SQLException
 import java.util.*
-import java.util.regex.Pattern
 
 /**
  * Created by Shynixn 2018.
@@ -99,9 +88,6 @@ class PetBlocksManager : AutoCloseable {
      * @throws Exception if this resource cannot be closed
      */
     override fun close() {
-        for (player in this.carryingPet.keys) {
-            //  NMSRegistry.setItemInHand19(player, null, true)
-        }
         this.timeBlocked.clear()
         this.inventories.clear()
         this.pages.clear()

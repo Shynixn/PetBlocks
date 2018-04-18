@@ -38,52 +38,8 @@ import org.spongepowered.api.world.World
  */
 class SpongeSoundBuilder : SoundBuilder{
 
-    constructor() : super()
-    constructor(text: String?) : super(text)
     constructor(text: String?, volume: Double, pitch: Double) : super(text, volume, pitch)
     constructor(items: Map<String, Any>?) : super(items)
-
-    /**
-     * Plays the sound to all given players at their location
-     *
-     * @param players players
-     * @throws Exception exception
-     */
-    @Throws(Exception::class)
-    fun apply(players : Array<Player>) {
-        if (this.text == "none")
-            return
-        for (player in players) {
-            player.playSound(this.getSoundTypeFromName(this.text)!!,player.location.position, this.volume.toDouble(), this.pitch.toDouble())
-        }
-    }
-
-    /**
-     * Plays the sound to all players in the world at the given location. Players to far away cannot hear the sound.
-     *
-     * @param location location
-     * @throws Exception exception
-     */
-    @Throws(Exception::class)
-    fun apply(location: Location<World>) {
-        if (this.text == "none")
-            return
-        for (player in location.extent.players) {
-            player.playSound(this.getSoundTypeFromName(this.text)!!, location.position, this.volume.toDouble(), this.pitch.toDouble())
-        }
-    }
-
-    /**
-     * Plays the sound to the given players at the given location. Given players to far away cannot hear the sound.
-     *
-     * @param location location
-     * @param players  players
-     * @throws Exception exception
-     */
-    @Throws(Exception::class)
-    fun apply(location: Location<World>, players: Collection<Player>) {
-        this.apply(location, players.toTypedArray())
-    }
 
     /**
      * Plays the sound to the given players at the given location. Given players to far away cannot hear the sound.

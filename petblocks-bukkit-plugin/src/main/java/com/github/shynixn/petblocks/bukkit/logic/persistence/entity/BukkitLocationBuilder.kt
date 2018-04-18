@@ -3,11 +3,8 @@ package com.github.shynixn.petblocks.bukkit.logic.persistence.entity
 import com.github.shynixn.petblocks.api.persistence.entity.IPosition
 import com.github.shynixn.petblocks.core.logic.persistence.entity.LocationBuilder
 import org.bukkit.Bukkit
-import org.bukkit.Location
 import org.bukkit.World
 import org.bukkit.configuration.serialization.ConfigurationSerializable
-import org.bukkit.util.EulerAngle
-import org.bukkit.util.Vector
 import java.util.*
 
 /**
@@ -37,48 +34,13 @@ import java.util.*
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class BukkitLocationBuilder : LocationBuilder, ConfigurationSerializable {
-
-    constructor() : super()
-    constructor(worldName: String?, x: Double, y: Double, z: Double, yaw: Float, pitch: Float) : super(worldName, x, y, z, yaw, pitch)
-    constructor(worldName: String?, x: Double, y: Double, z: Double, yaw: Double, pitch: Double) : super(worldName, x, y, z, yaw, pitch)
-    constructor(items: MutableMap<String, Any>?) : super(items)
-
+class BukkitLocationBuilder(worldName: String?, x: Double, y: Double, z: Double, yaw: Double, pitch: Double) : LocationBuilder(worldName, x, y, z, yaw, pitch), ConfigurationSerializable {
 
     /**
      * Copies the position to another [IPosition].
      */
     fun copy(): IPosition {
         return BukkitLocationBuilder(this.worldName, this.x, this.y, this.z, this.yaw, this.pitch)
-    }
-
-    /**
-     * Converts this position to a [Location].
-     */
-    fun toLocation(): Location? {
-        return if (Bukkit.getWorld(this.worldName) == null) null else Location(Bukkit.getWorld(this.worldName), this.x, this.y, this.z, this.yaw.toFloat(), this.pitch.toFloat())
-    }
-
-    /**
-     * Converts this position to a [Vector].
-     */
-    fun toVector(): Vector {
-        return Vector(this.x, this.y, this.z)
-    }
-
-    /**
-     * Converts this position to an [EulerAngle].
-     */
-    fun toAngle(): EulerAngle {
-        return EulerAngle(this.x, this.y, this.z)
-    }
-
-    /**
-     * Sets the [world] of the builder.
-     */
-    fun setWorld(world: World): IPosition {
-        this.worldName = world.name
-        return this
     }
 
     /**

@@ -5,7 +5,6 @@ import com.github.shynixn.petblocks.api.business.controller.PetBlockController
 import com.github.shynixn.petblocks.api.persistence.controller.PetMetaController
 import com.github.shynixn.petblocks.core.logic.business.helper.ChatColor
 import com.github.shynixn.petblocks.core.logic.business.helper.ReflectionUtils
-import com.github.shynixn.petblocks.sponge.logic.business.PetBlocksManager
 import com.github.shynixn.petblocks.sponge.logic.business.helper.*
 import com.github.shynixn.petblocks.sponge.logic.persistence.configuration.Config
 import com.github.shynixn.petblocks.sponge.nms.NMSRegistry
@@ -56,8 +55,8 @@ class PetBlocksPlugin {
 
     companion object {
         val PREFIX_CONSOLE = ChatColor.AQUA.toString() + "[PetBlocks] "
-        private val SPIGOT_RESOURCEID: Long = 12056
-        private val PLUGIN_NAME = "PetBlocks"
+        private const val SPIGOT_RESOURCEID: Long = 12056
+        private const val PLUGIN_NAME = "PetBlocks"
     }
 
     private var disabled: Boolean = false

@@ -10,7 +10,6 @@ import com.github.shynixn.petblocks.sponge.logic.business.helper.updateInventory
 import com.github.shynixn.petblocks.sponge.logic.persistence.configuration.Config
 import com.google.inject.Inject
 import org.spongepowered.api.entity.living.player.Player
-import org.spongepowered.api.event.cause.Cause
 import org.spongepowered.api.item.ItemTypes
 import org.spongepowered.api.item.inventory.Inventory
 import org.spongepowered.api.item.inventory.InventoryArchetypes
@@ -318,14 +317,13 @@ class GUI {
                 count = 0
             container.currentCount = container.startCount
             val inventory = this.costumePreparation(player)
-            var i: Int
+            var i = 0
             var scheduleCounter = 4
-            i = 0
             while (i < 45 && i + container.startCount < containers.size) {
                 val containerSlot = i + container.startCount
                 val mountBlock = container.currentCount
                 val currentPage = container.page
-                val slot = i;
+                val slot = i
                 count++
                 if (i % 2 == 0) {
                     scheduleCounter++

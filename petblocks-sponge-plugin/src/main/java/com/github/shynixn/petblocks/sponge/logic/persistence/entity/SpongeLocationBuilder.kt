@@ -34,7 +34,6 @@ class SpongeLocationBuilder : LocationBuilder {
     constructor() : super()
     constructor(worldName: String?, x: Double, y: Double, z: Double, yaw: Float, pitch: Float) : super(worldName, x, y, z, yaw, pitch)
     constructor(worldName: String?, x: Double, y: Double, z: Double, yaw: Double, pitch: Double) : super(worldName, x, y, z, yaw, pitch)
-    constructor(items: MutableMap<String, Any>?) : super(items)
 
     /**
      * Returns the direction of the location.

@@ -8,7 +8,6 @@ import com.github.shynixn.petblocks.core.logic.business.helper.ChatColor
 import com.github.shynixn.petblocks.core.logic.persistence.entity.PetData
 import com.github.shynixn.petblocks.sponge.PetBlocksPlugin
 import com.github.shynixn.petblocks.sponge.logic.business.helper.sendMessage
-import com.github.shynixn.petblocks.sponge.logic.business.helper.translateToText
 import com.github.shynixn.petblocks.sponge.logic.persistence.entity.SpongeParticleEffect
 import com.github.shynixn.petblocks.sponge.logic.persistence.entity.SpongeSoundBuilder
 import com.google.inject.Singleton
@@ -83,7 +82,7 @@ object Config : ConfigLayer<Player>() {
 
     override fun fixJoinDefaultPet(petData: PetMeta) {
         val petMeta = petData as PetData
-        petMeta.setSkin(this.getData<Int>("join.settings.id")!!, (this.getData<Int>("join.settings.damage") as Int), this.getData<String>("join.settings.skin"), this.getData<Boolean>("unbreakable")!!)
+        petMeta.setSkin(this.getData<Int>("join.settings.id")!!, (this.getData("join.settings.damage") as Int), this.getData<String>("join.settings.skin"), this.getData<Boolean>("unbreakable")!!)
         val optEngineContainer = this.engineController.getContainerFromPosition(this.getData<Int>("join.settings.engine")!!)
         if (!optEngineContainer.isPresent) {
             throw IllegalArgumentException("Join.settings.engine engine could not be loaded!")
@@ -106,15 +105,14 @@ object Config : ConfigLayer<Player>() {
 
 
     override fun allowPetSpawning(location2: Any?): Boolean {
-        var location = location2 as Location<World>
+        val location = location2 as Location<World>
         val includedWorlds = this.includedWorlds
         val excludedWorlds = this.excludedWorlds
-        if (includedWorlds.contains("all")) {
-            return !excludedWorlds.contains(location.extent.name)
-        } else if (excludedWorlds.contains("all")) {
-            return includedWorlds.contains(location.extent.name)
-        } else {
-            Sponge.getGame().sendMessage(PetBlocksPlugin.PREFIX_CONSOLE + ChatColor.RED + "Please add 'all' to excluded or included worlds inside of the config.yml")
+
+        when {
+            includedWorlds.contains("all") -> return !excludedWorlds.contains(location.extent.name)
+            excludedWorlds.contains("all") -> return includedWorlds.contains(location.extent.name)
+            else -> Sponge.getGame().sendMessage(PetBlocksPlugin.PREFIX_CONSOLE + ChatColor.RED + "Please add 'all' to excluded or included worlds inside of the config.yml")
         }
         return true
     }

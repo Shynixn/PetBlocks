@@ -3,18 +3,15 @@ package com.github.shynixn.petblocks.sponge.nms.v1_12_R1;
 import net.minecraft.anchor.v1_12_mcpR1.entity.player.EntityPlayerMP;
 import net.minecraft.anchor.v1_12_mcpR1.nbt.NBTTagCompound;
 import net.minecraft.anchor.v1_12_mcpR1.nbt.NBTTagList;
-import net.minecraft.anchor.v1_12_mcpR1.network.play.client.CPacketChatMessage;
 import net.minecraft.anchor.v1_12_mcpR1.network.play.server.SPacketChat;
 import net.minecraft.anchor.v1_12_mcpR1.util.text.ChatType;
 import net.minecraft.anchor.v1_12_mcpR1.util.text.ITextComponent;
-import net.minecraft.anchor.v1_12_mcpR1.util.text.TextComponentBase;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.profile.GameProfile;
 import org.spongepowered.api.profile.property.ProfileProperty;
 
-import java.awt.*;
 import java.util.Base64;
 import java.util.Iterator;
 import java.util.UUID;
@@ -134,14 +131,12 @@ public class NMSUtils {
 
         if (!profile.getPropertyMap().isEmpty()) {
             final NBTTagCompound nbttagcompound = new NBTTagCompound();
-            final Iterator var3 = profile.getPropertyMap().keySet().iterator();
 
-            while (var3.hasNext()) {
-                final String s = (String) var3.next();
+            for (Object s : profile.getPropertyMap().keySet()) {
                 final NBTTagList nbttaglist = new NBTTagList();
 
                 NBTTagCompound nbttagcompound1;
-                for (final Iterator var6 = profile.getPropertyMap().get(s).iterator(); var6.hasNext(); nbttaglist.appendTag(nbttagcompound1)) {
+                for (final Iterator var6 = profile.getPropertyMap().get((String)s).iterator(); var6.hasNext(); nbttaglist.appendTag(nbttagcompound1)) {
                     final ProfileProperty property = (ProfileProperty) var6.next();
                     nbttagcompound1 = new NBTTagCompound();
                     nbttagcompound1.setString("Value", property.getValue());
@@ -150,7 +145,7 @@ public class NMSUtils {
                     }
                 }
 
-                nbttagcompound.setTag(s, nbttaglist);
+                nbttagcompound.setTag((String)s, nbttaglist);
             }
 
             tagCompound.setTag("Properties", nbttagcompound);

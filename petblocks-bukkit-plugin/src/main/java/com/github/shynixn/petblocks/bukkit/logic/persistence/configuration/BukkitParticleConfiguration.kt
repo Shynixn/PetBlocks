@@ -4,7 +4,6 @@ import com.github.shynixn.petblocks.bukkit.PetBlocksPlugin
 import com.github.shynixn.petblocks.bukkit.logic.persistence.entity.BukkitItemContainer
 import com.github.shynixn.petblocks.bukkit.logic.persistence.entity.BukkitParticleEffect
 import com.github.shynixn.petblocks.core.logic.persistence.configuration.ParticleConfiguration
-import com.github.shynixn.petblocks.core.logic.persistence.entity.ItemContainer
 import org.bukkit.configuration.MemorySection
 import org.bukkit.entity.Player
 import org.bukkit.plugin.java.JavaPlugin
@@ -47,12 +46,14 @@ class BukkitParticleConfiguration : ParticleConfiguration<Player>(){
     override fun reload() {
         this.particleCache.clear()
         this.plugin.reloadConfig()
-        val data = (this.plugin.getConfig().get("particles") as MemorySection).getValues(false)
+
+        val data = (this.plugin.config.get("particles") as MemorySection).getValues(false)
+
         for (key in data.keys) {
             try {
                 val container = BukkitItemContainer(Integer.parseInt(key), (data[key] as MemorySection).getValues(false))
                 val meta = BukkitParticleEffect(((data[key] as MemorySection).getValues(false)["effect"] as MemorySection).getValues(true))
-                this.particleCache.put(container, meta)
+                this.particleCache[container] = meta
             } catch (e: Exception) {
                 PetBlocksPlugin.logger().log(Level.WARNING, "Failed to load particle " + key + '.'.toString(), e)
             }

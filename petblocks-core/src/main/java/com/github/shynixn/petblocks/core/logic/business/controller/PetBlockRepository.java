@@ -98,8 +98,9 @@ public abstract class PetBlockRepository<Player> implements PetBlockController<P
      */
     @Override
     public List<PetBlock<Object, Object>> getAll() {
-        List<PetBlock<Object, Object>> list = new ArrayList<>();
-        for (PetBlock petBlock : this.petblocks.values()) {
+        final List<PetBlock<Object, Object>> list = new ArrayList<>();
+
+        for (final PetBlock petBlock : this.petblocks.values()) {
             list.add(petBlock);
         }
 

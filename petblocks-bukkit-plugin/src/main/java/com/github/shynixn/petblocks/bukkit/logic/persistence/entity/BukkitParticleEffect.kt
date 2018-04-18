@@ -41,7 +41,6 @@ import java.util.logging.Level
  * SOFTWARE.
  */
 class BukkitParticleEffect : ParticleEffectData, ConfigurationSerializable {
-    constructor(effectName: String?, amount: Int, speed: Double, offsetX: Double, offsetY: Double, offsetZ: Double) : super(effectName, amount, speed, offsetX, offsetY, offsetZ)
     constructor() : super()
     constructor(items: MutableMap<String, Any>?) : super(items)
 
@@ -74,17 +73,19 @@ class BukkitParticleEffect : ParticleEffectData, ConfigurationSerializable {
             if (locationtemp == null)
                 throw IllegalArgumentException("Location cannot be null!")
 
-            var location = locationtemp as org.bukkit.Location
-            var players = playerstemp as Array<org.bukkit.entity.Player>
+            val location = locationtemp as org.bukkit.Location
+            val players = playerstemp as Array<org.bukkit.entity.Player>
 
             if (this.effect == "none")
                 return
-            var playingPlayers: Array<org.bukkit.entity.Player>
-            if (playerstemp.isEmpty()) {
-                playingPlayers = location.world.players.toTypedArray()
+            val playingPlayers: Array<org.bukkit.entity.Player>
+
+            playingPlayers = if (playerstemp.isEmpty()) {
+                location.world.players.toTypedArray()
             } else {
-                playingPlayers = players
+                players
             }
+
             val speed: Float
             val amount: Int
             if (this.effect == ParticleEffectMeta.ParticleEffectType.REDSTONE.simpleName || this.effect == ParticleEffectMeta.ParticleEffectType.NOTE.simpleName) {
@@ -97,13 +98,13 @@ class BukkitParticleEffect : ParticleEffectData, ConfigurationSerializable {
             val enumParticle = getEnumParticle(this.effectType.name.toUpperCase())
             var additionalInfo: IntArray? = null
             if (this.material != null) {
-                if (this.effectType == ParticleEffectMeta.ParticleEffectType.ITEM_CRACK) {
-                    additionalInfo = intArrayOf(this.materialId, this.data!!.toInt())
+                additionalInfo = if (this.effectType == ParticleEffectMeta.ParticleEffectType.ITEM_CRACK) {
+                    intArrayOf(this.materialId, this.data!!.toInt())
                 } else {
-                    additionalInfo = intArrayOf(this.materialId, (this.data!!.toInt() shl 12))
+                    intArrayOf(this.materialId, (this.data!!.toInt() shl 12))
                 }
             }
-            val packet = invokeConstructor(findClass("net.minecraft.server.VERSION.PacketPlayOutWorldParticles"), arrayOf<Class<*>?>(enumParticle.javaClass, Boolean::class.javaPrimitiveType, Float::class.javaPrimitiveType, Float::class.javaPrimitiveType, Float::class.javaPrimitiveType, Float::class.javaPrimitiveType, Float::class.javaPrimitiveType, Float::class.javaPrimitiveType, Float::class.javaPrimitiveType, Int::class.javaPrimitiveType, IntArray::class.java)
+            val packet = invokeConstructor(findClass("net.minecraft.server.VERSION.PacketPlayOutWorldParticles"), arrayOf(enumParticle.javaClass, Boolean::class.javaPrimitiveType, Float::class.javaPrimitiveType, Float::class.javaPrimitiveType, Float::class.javaPrimitiveType, Float::class.javaPrimitiveType, Float::class.javaPrimitiveType, Float::class.javaPrimitiveType, Float::class.javaPrimitiveType, Int::class.javaPrimitiveType, IntArray::class.java)
                     , arrayOf(enumParticle, isLongDistance(location, players), location.x.toFloat(), location.y.toFloat(), location.z.toFloat(), this.offsetX.toFloat(), this.offsetY.toFloat(), this.offsetZ.toFloat(), speed, amount, additionalInfo))
             for (player in playingPlayers) {
                 sendPacket(player, packet)
@@ -114,17 +115,16 @@ class BukkitParticleEffect : ParticleEffectData, ConfigurationSerializable {
     }
 
     private fun getEnumParticle(name: String): Any {
-        var clazz = findClass("net.minecraft.server.VERSION.EnumParticle");
-        val method = clazz.getDeclaredMethod("valueOf", String::class.java);
-        return method.invoke(null, name);
+        val clazz = findClass("net.minecraft.server.VERSION.EnumParticle")
+        val method = clazz.getDeclaredMethod("valueOf", String::class.java)
+        return method.invoke(null, name)
     }
-
 
     @Throws(ClassNotFoundException::class, IllegalAccessException::class, NoSuchMethodException::class, InvocationTargetException::class, NoSuchFieldException::class)
     private fun sendPacket(player: Player, packet: Any) {
         val craftPlayer = findClass("org.bukkit.craftbukkit.VERSION.entity.CraftPlayer").cast(player)
-        val methodHandle = craftPlayer.javaClass.getDeclaredMethod("getHandle");
-        val entityPlayer = methodHandle.invoke(craftPlayer);
+        val methodHandle = craftPlayer.javaClass.getDeclaredMethod("getHandle")
+        val entityPlayer = methodHandle.invoke(craftPlayer)
         val field = findClass("net.minecraft.server.VERSION.EntityPlayer").getDeclaredField("playerConnection")
         field.isAccessible = true
         val connection = field.get(entityPlayer)

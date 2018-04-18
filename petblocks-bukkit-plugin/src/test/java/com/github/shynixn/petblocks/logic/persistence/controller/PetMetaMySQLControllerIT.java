@@ -109,7 +109,7 @@ public class PetMetaMySQLControllerIT {
                     for (final PetMeta item : controller.getAll()) {
                         controller.remove(item);
                     }
-                    final PetData meta = create();
+                    final PetData meta = this.create();
                     meta.setPetDisplayName("Notch");
                     assertThrows(IllegalArgumentException.class, () -> controller.store(meta));
                     assertEquals(0, controller.size());
@@ -160,7 +160,7 @@ public class PetMetaMySQLControllerIT {
                     for (final PetMeta item : controller.getAll()) {
                         controller.remove(item);
                     }
-                    PetData meta = create();
+                    PetData meta = this.create();
                     meta.setPetDisplayName("Me");
                     meta.setSkin(Material.BIRCH_DOOR_ITEM.getId(),5 , "This is my long skin.",true);
                     meta.setEnabled(true);
@@ -225,8 +225,8 @@ public class PetMetaMySQLControllerIT {
     private PetData create() {
         try {
             return (PetData) Class.forName("com.github.shynixn.petblocks.bukkit.logic.persistence.entity.BukkitPetData").newInstance();
-        } catch (Exception ex) {
-            ex.printStackTrace();
+        } catch (final Exception ex) {
+            Logger.getLogger(this.getClass().getSimpleName()).log(Level.WARNING, "Failed to create PetData.", ex);
         }
         return null;
     }

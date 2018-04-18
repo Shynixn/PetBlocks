@@ -43,6 +43,7 @@ public abstract class CostumeConfiguration<Player> extends ContainerConfiguratio
      * @param costumeCategory costume
      */
     public CostumeConfiguration(String costumeCategory) {
+        super();
         if (costumeCategory == null)
             throw new IllegalArgumentException("CostumeCategory cannot be null!");
         this.costumeCategory = costumeCategory;

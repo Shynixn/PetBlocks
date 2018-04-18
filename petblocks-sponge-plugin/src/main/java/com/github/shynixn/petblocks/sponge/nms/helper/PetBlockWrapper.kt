@@ -51,17 +51,17 @@ import org.spongepowered.api.world.World
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class PetBlockWrapper(private val firstSpawn : Transform<World>, private val owner: Player, private val petMeta: PetMeta) : PetBlock<Player, Transform<World>> {
+class PetBlockWrapper(firstSpawn : Transform<World>, private val owner: Player, private val petMeta: PetMeta) : PetBlock<Player, Transform<World>> {
 
     object Companion {
         var spawnMethod = Class.forName("com.github.shynixn.petblocks.sponge.nms.VERSION.CustomGroundArmorstand".replace("VERSION", VersionSupport.getServerVersion().versionText)).getDeclaredMethod("spawn", Transform::class.java)
 
 
         var engine = Class.forName("com.github.shynixn.petblocks.sponge.nms.VERSION.CustomGroundArmorstand".replace("VERSION", VersionSupport.getServerVersion().versionText))
-                .getDeclaredField("rabbit");
+                .getDeclaredField("rabbit")
     }
 
-    private lateinit var engine: Living;
+    private var engine: Living
     private var armorstandEntity: ArmorStand
 
     private val pipeline = Pipeline(this)
@@ -72,14 +72,8 @@ class PetBlockWrapper(private val firstSpawn : Transform<World>, private val own
 
     private val explosionSound = SpongeSoundBuilder("EXPLODE", 1.0, 2.0)
 
-    private val cloud = SpongeParticleEffect()
-            .setEffectType(ParticleEffectMeta.ParticleEffectType.CLOUD)
-            .setOffset(1.0, 1.0, 1.0)
-            .setSpeed(0.1)
-            .setAmount(100)
-
     init {
-        armorstandEntity = ReflectionUtils.invokeConstructor(Class.forName("com.github.shynixn.petblocks.sponge.nms.VERSION.CustomGroundArmorstand".findServerVersion()), arrayOf(player.transform.javaClass, PetBlockWrapper::class.java), arrayOf(firstSpawn, this)) as ArmorStand;
+        armorstandEntity = ReflectionUtils.invokeConstructor(Class.forName("com.github.shynixn.petblocks.sponge.nms.VERSION.CustomGroundArmorstand".findServerVersion()), arrayOf(player.transform.javaClass, PetBlockWrapper::class.java), arrayOf(firstSpawn, this)) as ArmorStand
         Companion.engine.isAccessible = true
         val partWrapper = Companion.engine.get(armorstandEntity) as PetBlockPartWrapper
         this.engine = partWrapper.entity as Living

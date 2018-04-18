@@ -404,7 +404,7 @@ public interface ParticleEffectMeta extends Persistenceable {
 
         private final String simpleName;
         private final int id;
-        private String minecraftId;
+        private final String minecraftId;
 
         /**
          * Initializes a new particleEffectType.
