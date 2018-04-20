@@ -6,10 +6,10 @@
     <parent>
         <artifactId>root</artifactId>
         <groupId>com.github.shynixn.petblocks</groupId>
-        <version>7.0.0-SNAPSHOT</version>
+        <version>7.0.0</version>
     </parent>
 
-    <version>7.0.0-SNAPSHOT</version>
+    <version>7.0.0</version>
     <artifactId>petblocks-bukkit-plugin</artifactId>
     <packaging>jar</packaging>
 
@@ -36,12 +36,12 @@
         <dependency>
             <groupId>com.github.shynixn.petblocks</groupId>
             <artifactId>petblocks-bukkit-api</artifactId>
-            <version>7.0.0-SNAPSHOT</version>
+            <version>7.0.0</version>
         </dependency>
         <dependency>
             <groupId>com.github.shynixn.petblocks</groupId>
             <artifactId>petblocks-core</artifactId>
-            <version>7.0.0-SNAPSHOT</version>
+            <version>7.0.0</version>
         </dependency>
         <dependency>
             <groupId>org.bstats</groupId>
@@ -70,7 +70,7 @@
         <dependency>
             <groupId>com.github.shynixn.petblocks</groupId>
             <artifactId>petblocks-core</artifactId>
-            <version>7.0.0-SNAPSHOT</version>
+            <version>7.0.0</version>
         </dependency>
         <dependency>
             <groupId>com.google.inject</groupId>
