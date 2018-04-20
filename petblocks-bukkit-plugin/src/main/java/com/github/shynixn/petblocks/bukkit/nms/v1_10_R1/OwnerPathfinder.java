@@ -1,7 +1,7 @@
 package com.github.shynixn.petblocks.bukkit.nms.v1_10_R1;
 
 import com.github.shynixn.petblocks.api.business.entity.PetBlock;
-import com.github.shynixn.petblocks.bukkit.logic.business.configuration.ConfigPet;
+import com.github.shynixn.petblocks.bukkit.logic.persistence.configuration.Config;
 import com.github.shynixn.petblocks.bukkit.nms.helper.PetBlockHelper;
 import net.minecraft.server.v1_10_R1.EntityInsentient;
 import net.minecraft.server.v1_10_R1.PathEntity;
@@ -71,14 +71,14 @@ public final class OwnerPathfinder extends PathfinderGoal {
         }
         if (!this.entity.getWorld().getWorldData().getName().equals(this.player.getWorld().getName())) {
             this.entity.getBukkitEntity().teleport(this.player.getLocation());
-        } else if (this.entity.getBukkitEntity().getLocation().distance(this.player.getLocation()) > ConfigPet.getInstance().getBlocksAwayFromPlayer()) {
+        } else if (this.entity.getBukkitEntity().getLocation().distance(this.player.getLocation()) > Config.INSTANCE.getBlocksAwayFromPlayer()) {
             this.counter2 = PetBlockHelper.afraidWaterEffect(this.petBlock, this.counter2);
             final Location targetLocation = this.player.getLocation();
             this.entity.getNavigation().n();
             this.entity.getNavigation();
             this.path = this.entity.getNavigation().a(targetLocation.getX() + 1, targetLocation.getY(), targetLocation.getZ() + 1);
             this.entity.getNavigation();
-            if (this.entity.getBukkitEntity().getLocation().distance(this.player.getLocation()) > ConfigPet.getInstance().getFollow_maxRangeTeleport())
+            if (this.entity.getBukkitEntity().getLocation().distance(this.player.getLocation()) > Config.INSTANCE.getFollow_maxRangeTeleport())
                 this.entity.getBukkitEntity().teleport(this.player.getLocation());
             if (Math.abs(this.entity.getBukkitEntity().getLocation().getY() - targetLocation.getY()) >= 2) {
                 this.counter++;
@@ -86,7 +86,7 @@ public final class OwnerPathfinder extends PathfinderGoal {
                 this.counter = 0;
             }
             if (this.counter > 5) {
-                this.entity.getBukkitEntity().setVelocity(new Vector(0.1, ConfigPet.getInstance().getModifier_petclimbing() * 0.1, 0.1));
+                this.entity.getBukkitEntity().setVelocity(new Vector(0.1, Config.INSTANCE.getModifier_petclimbing() * 0.1, 0.1));
                 this.counter = 0;
             }
             if (this.path != null) {

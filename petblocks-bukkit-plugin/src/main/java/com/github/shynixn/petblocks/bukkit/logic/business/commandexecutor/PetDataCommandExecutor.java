@@ -6,12 +6,11 @@ import com.github.shynixn.petblocks.api.business.enumeration.GUIPage;
 import com.github.shynixn.petblocks.api.business.enumeration.Permission;
 import com.github.shynixn.petblocks.api.persistence.entity.PetMeta;
 import com.github.shynixn.petblocks.bukkit.PetBlocksPlugin;
-import com.github.shynixn.petblocks.bukkit.logic.business.PetRunnable;
-import com.github.shynixn.petblocks.bukkit.logic.business.configuration.ConfigPet;
 import com.github.shynixn.petblocks.bukkit.logic.business.PetBlockManager;
-import com.github.shynixn.petblocks.bukkit.logic.business.configuration.Config;
 import com.github.shynixn.petblocks.bukkit.logic.business.helper.PetBlockModifyHelper;
 import com.github.shynixn.petblocks.bukkit.nms.v1_12_R1.MaterialCompatibility12;
+import com.github.shynixn.petblocks.core.logic.business.entity.PetRunnable;
+import com.github.shynixn.petblocks.core.logic.persistence.configuration.Config;
 import org.bukkit.Material;
 import org.bukkit.configuration.MemorySection;
 import org.bukkit.entity.Player;
@@ -95,7 +94,7 @@ public final class PetDataCommandExecutor extends SimpleCommandExecutor.UnRegist
     private void renameNameCommand(Player player, String[] args) {
         try {
             final String message = this.mergeArgs(args);
-            if (message.length() > ConfigPet.getInstance().getDesign_maxPetNameLength()) {
+            if (message.length() > Config.getInstance().getDesign_maxPetNameLength()) {
                 player.sendMessage(Config.getInstance().getPrefix() + Config.getInstance().getNamingErrorMessage());
             } else {
                 this.providePetblock(player, (meta, petBlock) -> {

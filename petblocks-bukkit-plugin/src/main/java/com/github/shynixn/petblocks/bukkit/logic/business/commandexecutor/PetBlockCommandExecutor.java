@@ -5,12 +5,12 @@ import com.github.shynixn.petblocks.api.business.entity.PetBlock;
 import com.github.shynixn.petblocks.api.persistence.entity.EngineContainer;
 import com.github.shynixn.petblocks.api.persistence.entity.PetMeta;
 import com.github.shynixn.petblocks.bukkit.PetBlocksPlugin;
-import com.github.shynixn.petblocks.bukkit.logic.business.helper.ChatBuilder;
 import com.github.shynixn.petblocks.bukkit.logic.business.PetBlockManager;
-import com.github.shynixn.petblocks.bukkit.logic.business.PetRunnable;
-import com.github.shynixn.petblocks.bukkit.logic.business.configuration.Config;
-import com.github.shynixn.petblocks.bukkit.logic.business.configuration.ConfigPet;
+import com.github.shynixn.petblocks.bukkit.logic.business.helper.ChatBuilderExtensionKt;
 import com.github.shynixn.petblocks.bukkit.logic.business.helper.PetBlockModifyHelper;
+import com.github.shynixn.petblocks.core.logic.business.entity.PetRunnable;
+import com.github.shynixn.petblocks.core.logic.business.helper.ChatBuilder;
+import com.github.shynixn.petblocks.core.logic.persistence.configuration.Config;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.World;
@@ -231,11 +231,11 @@ public final class PetBlockCommandExecutor extends SimpleCommandExecutor.UnRegis
             } else if (fullCommand.contains("-")) {
                 fullCommand = fullCommand.substring(0, fullCommand.indexOf("-"));
             }
-            new ChatBuilder()
+            ChatBuilderExtensionKt.sendMessage(new ChatBuilder()
                     .component(Config.getInstance().getPrefix() + this.getCommandName() + message)
                     .setClickAction(ChatBuilder.ClickAction.SUGGEST_COMMAND, fullCommand)
                     .setHoverText(builder.toString())
-                    .builder().sendMessage((Player) commandSender);
+                    .builder(), (Player) commandSender);
         } else {
             commandSender.sendMessage(Config.getInstance().getPrefix() + '/' + this.getName() + ' ' + message);
         }
@@ -245,13 +245,13 @@ public final class PetBlockCommandExecutor extends SimpleCommandExecutor.UnRegis
         this.providePet(player, (petMeta, petBlock) -> {
             final Optional<GUIItemContainer<Player>> item;
             if (category.equalsIgnoreCase("simple-blocks")) {
-                item = Config.getInstance().getOrdinaryCostumesController().getContainerFromPosition(number);
+                item = Config.<Player>getInstance().getOrdinaryCostumesController().getContainerFromPosition(number);
             } else if (category.equalsIgnoreCase("colored-blocks")) {
-                item = Config.getInstance().getColorCostumesController().getContainerFromPosition(number);
+                item = Config.<Player>getInstance().getColorCostumesController().getContainerFromPosition(number);
             } else if (category.equalsIgnoreCase("player-heads")) {
-                item = Config.getInstance().getRareCostumesController().getContainerFromPosition(number);
+                item = Config.<Player>getInstance().getRareCostumesController().getContainerFromPosition(number);
             } else if (category.equalsIgnoreCase("minecraft-heads")) {
-                item = Config.getInstance().getMinecraftHeadsCostumesController().getContainerFromPosition(number);
+                item = Config.<Player>getInstance().getMinecraftHeadsCostumesController().getContainerFromPosition(number);
             } else {
                 return;
             }
@@ -264,7 +264,7 @@ public final class PetBlockCommandExecutor extends SimpleCommandExecutor.UnRegis
 
     private void setEngineCommand(Player player, int number) {
         this.providePet(player, (petMeta, petBlock) -> {
-            final Optional<EngineContainer<GUIItemContainer<Player>>> optEngine = Config.getInstance().getEngineController().getContainerFromPosition(number);
+            final Optional<EngineContainer<GUIItemContainer<Player>>> optEngine = Config.<Player>getInstance().getEngineController().getContainerFromPosition(number);
             if (!optEngine.isPresent()) {
                 player.sendMessage(Config.getInstance().getPrefix() + "Engine " + number + " could not be loaded correctly.");
             } else {
@@ -276,7 +276,7 @@ public final class PetBlockCommandExecutor extends SimpleCommandExecutor.UnRegis
 
     private void setParticleCommand(Player player, int number) {
         this.providePet(player, (petMeta, petBlock) -> {
-            final Optional<GUIItemContainer<Player>> guiItemContainer = Config.getInstance().getParticleController().getContainerFromPosition(number);
+            final Optional<GUIItemContainer<Player>> guiItemContainer = Config.<Player>getInstance().getParticleController().getContainerFromPosition(number);
             if (!guiItemContainer.isPresent()) {
                 player.sendMessage(Config.getInstance().getPrefix() + "Particle not found.");
             } else {
@@ -400,7 +400,7 @@ public final class PetBlockCommandExecutor extends SimpleCommandExecutor.UnRegis
             }
             final String message = (String) mergedArgs[0];
             if (player != null) {
-                if (message.length() > ConfigPet.getInstance().getDesign_maxPetNameLength()) {
+                if (message.length() > Config.getInstance().getDesign_maxPetNameLength()) {
                     commandSender.sendMessage(Config.getInstance().getPrefix() + Config.getInstance().getNamingErrorMessage());
 
                 } else {

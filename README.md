@@ -3,7 +3,7 @@
 | branch        | status        | download      |
 | ------------- | --------------| --------------| 
 | master        | [![Build Status](https://travis-ci.org/Shynixn/PetBlocks.svg?branch=master)](https://travis-ci.org/Shynixn/PetBlocks) |[Download latest release (recommend)](https://github.com/Shynixn/PetBlocks/releases)|
-| development   | [![Build Status](https://travis-ci.org/Shynixn/PetBlocks.svg?branch=workflow)](https://travis-ci.org/Shynixn/PetBlocks) | [Download snapshots](https://oss.sonatype.org/content/repositories/snapshots/com/github/shynixn/petblocks/petblocks-bukkit-plugin/) |
+| development   | [![Build Status](https://travis-ci.org/Shynixn/PetBlocks.svg?branch=development)](https://travis-ci.org/Shynixn/PetBlocks) | [Download snapshots](https://oss.sonatype.org/content/repositories/snapshots/com/github/shynixn/petblocks/petblocks-bukkit-plugin/) |
 
 
 Documentation:  https://shynixn.github.io/PetBlocks/
@@ -12,14 +12,7 @@ JavaDocs: https://shynixn.github.io/PetBlocks/apidocs/
 
 ## Description
 
-PetBlocks is a spigot plugin to use blocks and custom heads as pets in Minecraft.
-
-## Features
-
-* Use blocks as pets in minecraft.
-* Customizable UI.
-* Version support 1.8.R1 - 1.12.R1
-* Check out the [PetBlocks-Spigot-Page](https://www.spigotmc.org/resources/petblocks-mysql-bungeecord-customizeable-gui-1-8-1-9-1-10-1-11.12056/) to get more information. 
+PetBlocks is a spigot and also a sponge plugin to use blocks and custom heads as pets in Minecraft.
 
 ## Installation
 

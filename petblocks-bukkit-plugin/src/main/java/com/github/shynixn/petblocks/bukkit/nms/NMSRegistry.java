@@ -6,11 +6,10 @@ import com.github.shynixn.petblocks.bukkit.PetBlocksPlugin;
 import com.github.shynixn.petblocks.bukkit.dependencies.clearlag.ClearLagListener;
 import com.github.shynixn.petblocks.bukkit.dependencies.worldguard.WorldGuardConnection5;
 import com.github.shynixn.petblocks.bukkit.dependencies.worldguard.WorldGuardConnection6;
-import com.github.shynixn.petblocks.bukkit.logic.business.helper.ReflectionUtils;
 import com.github.shynixn.petblocks.bukkit.logic.business.helper.RegisterHelper;
 import com.github.shynixn.petblocks.bukkit.nms.v1_9_R1.Listener19;
+import com.github.shynixn.petblocks.core.logic.business.helper.ReflectionUtils;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
@@ -102,7 +101,7 @@ public final class NMSRegistry {
                     return WorldGuardConnection5.isAllowedToEnterRegionByRiding(player, spawn);
                 }
             } catch (final Exception ex) {
-                Bukkit.getServer().getConsoleSender().sendMessage(PetBlocksPlugin.PREFIX_CONSOLE + ChatColor.DARK_RED + "Crashed while connecting to worldguard." + ex.getMessage());
+                PetBlocksPlugin.logger().log(Level.WARNING, "Failed to connect to worldguard", ex);
             }
         }
         return true;
@@ -123,7 +122,7 @@ public final class NMSRegistry {
                 else if (RegisterHelper.isRegistered("WorldGuard", '5'))
                     return WorldGuardConnection5.shouldKickOffPet(player, regionId);
             } catch (final Exception ex) {
-                Bukkit.getServer().getConsoleSender().sendMessage(PetBlocksPlugin.PREFIX_CONSOLE + ChatColor.DARK_RED + "Crashed while connecting to worldguard." + ex.getMessage());
+                PetBlocksPlugin.logger().log(Level.WARNING, "Failed to connect to worldguard", ex);
             }
         }
         return false;
@@ -191,7 +190,7 @@ public final class NMSRegistry {
             try {
                 new ClearLagListener((JavaPlugin) Bukkit.getPluginManager().getPlugin("PetBlocks"));
             } catch (final Exception ex) {
-                Bukkit.getServer().getConsoleSender().sendMessage(PetBlocksPlugin.PREFIX_CONSOLE + ChatColor.DARK_RED + "Manual hook failed. No interacting with [ClearLag.]");
+                PetBlocksPlugin.logger().log(Level.WARNING, "Failed to hook into ClearLag.", ex);
             }
         }
     }
@@ -204,7 +203,7 @@ public final class NMSRegistry {
                 else if (RegisterHelper.isRegistered("WorldGuard", '5'))
                     WorldGuardConnection5.allowSpawn(location);
             } catch (final Exception ex) {
-                Bukkit.getServer().getConsoleSender().sendMessage(PetBlocksPlugin.PREFIX_CONSOLE + ChatColor.DARK_RED + "Crashed while connecting to worldguard." + ex.getMessage());
+                PetBlocksPlugin.logger().log(Level.WARNING, "Failed to connect to worldguard", ex);
             }
         }
     }
@@ -217,7 +216,7 @@ public final class NMSRegistry {
                 else if (RegisterHelper.isRegistered("WorldGuard", '5'))
                     return WorldGuardConnection5.getRegionsFromLocation(location);
             } catch (final Exception ex) {
-                Bukkit.getServer().getConsoleSender().sendMessage(PetBlocksPlugin.PREFIX_CONSOLE + ChatColor.DARK_RED + "Crashed while connecting to worldguard." + ex.getMessage());
+                PetBlocksPlugin.logger().log(Level.WARNING, "Failed to connect to worldguard", ex);
             }
         }
         return new ArrayList<>();
@@ -231,7 +230,7 @@ public final class NMSRegistry {
                 else if (RegisterHelper.isRegistered("WorldGuard", '5'))
                     WorldGuardConnection5.rollBack();
             } catch (final Exception ex) {
-                Bukkit.getServer().getConsoleSender().sendMessage(PetBlocksPlugin.PREFIX_CONSOLE + ChatColor.DARK_RED + "Crashed while connecting to worldguard." + ex.getMessage());
+                PetBlocksPlugin.logger().log(Level.WARNING, "Failed to connect to worldguard", ex);
             }
         }
     }

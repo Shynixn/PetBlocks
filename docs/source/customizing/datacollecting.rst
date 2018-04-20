@@ -11,17 +11,29 @@ Also, enabling metrics does not have an impact on your server performance at all
 ::
     metrics: true
 
+
+**PetBlocks-Bukkit.jar**
+
 .. raw:: html
 
     <iframe style='min-width:100%;height:300px' src="https://bstats.org/plugin/bukkit/PetBlocks#serversLineChart">
       <p>Your browser does not support iframes.</p>
     </iframe>
 
-Source: `https://bstats.org/plugin/bukkit/PetBlocks <https://bstats.org/plugin/bukkit/PetBlocks>`__ . The linked
+Source: `https://bstats.org/plugin/bukkit/PetBlocks <https://bstats.org/plugin/bukkit/PetBlocks>`__. The linked
 page was initially checked and PetBlocks is not associated with https://bstats.org in any way.
 
 
+**PetBlocks-Sponge.jar**
 
+.. raw:: html
+
+    <iframe style='min-width:100%;height:300px' src="https://bstats.org/plugin/sponge/PetBlocks#serversLineChart">
+      <p>Your browser does not support iframes.</p>
+    </iframe>
+
+Source: `https://bstats.org/plugin/sponge/PetBlocks <https://bstats.org/plugin/sponge/PetBlocks>`__. The linked
+page was initially checked and PetBlocks is not associated with https://bstats.org in any way.
 
 
 

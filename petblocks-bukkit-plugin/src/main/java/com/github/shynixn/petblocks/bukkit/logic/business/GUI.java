@@ -5,8 +5,8 @@ import com.github.shynixn.petblocks.api.business.enumeration.GUIPage;
 import com.github.shynixn.petblocks.api.business.enumeration.Permission;
 import com.github.shynixn.petblocks.api.persistence.entity.PetMeta;
 import com.github.shynixn.petblocks.bukkit.PetBlocksPlugin;
-import com.github.shynixn.petblocks.bukkit.logic.business.entity.GuiPageContainer;
-import com.github.shynixn.petblocks.bukkit.logic.business.configuration.Config;
+import com.github.shynixn.petblocks.core.logic.business.entity.GuiPageContainer;
+import com.github.shynixn.petblocks.core.logic.persistence.configuration.Config;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -74,7 +74,7 @@ public class GUI {
         } else {
             this.setListAble(player, page, 0);
         }
-        final Optional<GUIItemContainer<Player>> optBackGuiItemContainer = Config.getInstance().getGuiItemsController().getGUIItemFromName("back");
+        final Optional<GUIItemContainer<Player>> optBackGuiItemContainer = Config.<Player>getInstance().getGuiItemsController().getGUIItemFromName("back");
         if (!optBackGuiItemContainer.isPresent())
             throw new IllegalArgumentException("Gui item back could not be loaded correctly!");
         inventory.setItem(optBackGuiItemContainer.get().getPosition(), (ItemStack) optBackGuiItemContainer.get().generate(player));
@@ -148,26 +148,26 @@ public class GUI {
         if (!this.manager.getPetBlockController().getFromPlayer(player).isPresent()) {
             petMeta.setEnabled(false);
         }
-        for (final GUIItemContainer<Player> guiItemContainer : Config.getInstance().getGuiItemsController().getAll()) {
+        for (final GUIItemContainer<Player> guiItemContainer : Config.<Player>getInstance().getGuiItemsController().getAll()) {
             if (guiItemContainer.getPage() == page) {
                 inventory.setItem(guiItemContainer.getPosition(), (ItemStack) guiItemContainer.generate(player));
             }
         }
         if (page == GUIPage.MAIN) {
-            final Optional<GUIItemContainer<Player> > container = Config.getInstance().getGuiItemsController().getGUIItemFromName("my-pet");
+            final Optional<GUIItemContainer<Player>> container = Config.<Player>getInstance().getGuiItemsController().getGUIItemFromName("my-pet");
             if (!container.isPresent())
                 throw new IllegalArgumentException("Gui item my-pet could not be loaded correctly!");
             inventory.setItem(container.get().getPosition(), (ItemStack) petMeta.getHeadItemStack());
         }
         if (petMeta.isSoundEnabled()) {
-            final Optional<GUIItemContainer<Player> > container = Config.getInstance().getGuiItemsController().getGUIItemFromName("sounds-enabled-pet");
+            final Optional<GUIItemContainer<Player>> container = Config.<Player>getInstance().getGuiItemsController().getGUIItemFromName("sounds-enabled-pet");
             if (!container.isPresent())
                 throw new IllegalArgumentException("Gui item sounds-enabled-pet could not be loaded correctly!");
             if (page == container.get().getPage()) {
                 inventory.setItem(container.get().getPosition(), (ItemStack) container.get().generate(player));
             }
         } else {
-            final Optional<GUIItemContainer<Player> > container = Config.getInstance().getGuiItemsController().getGUIItemFromName("sounds-disabled-pet");
+            final Optional<GUIItemContainer<Player>> container = Config.<Player>getInstance().getGuiItemsController().getGUIItemFromName("sounds-disabled-pet");
             if (!container.isPresent())
                 throw new IllegalArgumentException("Gui item sounds-disabled-pet could not be loaded correctly!");
             if (page == container.get().getPage()) {
@@ -175,21 +175,21 @@ public class GUI {
             }
         }
         if (!petMeta.isEnabled()) {
-            final Optional<GUIItemContainer<Player> > container = Config.getInstance().getGuiItemsController().getGUIItemFromName("enable-pet");
+            final Optional<GUIItemContainer<Player>> container = Config.<Player>getInstance().getGuiItemsController().getGUIItemFromName("enable-pet");
             if (!container.isPresent())
                 throw new IllegalArgumentException("Gui item enable-pet could not be loaded correctly!");
             if (page == container.get().getPage()) {
                 inventory.setItem(container.get().getPosition(), (ItemStack) container.get().generate(player));
             }
         } else {
-            final Optional<GUIItemContainer<Player> > container = Config.getInstance().getGuiItemsController().getGUIItemFromName("disable-pet");
+            final Optional<GUIItemContainer<Player>> container = Config.<Player>getInstance().getGuiItemsController().getGUIItemFromName("disable-pet");
             if (!container.isPresent())
                 throw new IllegalArgumentException("Gui item disable-pet could not be loaded correctly!");
             if (page == container.get().getPage()) {
                 inventory.setItem(container.get().getPosition(), (ItemStack) container.get().generate(player));
             }
         }
-        final Optional<GUIItemContainer<Player> > container = Config.getInstance().getGuiItemsController().getGUIItemFromName("minecraft-heads-costume");
+        final Optional<GUIItemContainer<Player>> container = Config.<Player>getInstance().getGuiItemsController().getGUIItemFromName("minecraft-heads-costume");
         if (!container.isPresent())
             throw new IllegalArgumentException("Gui item \"minecraft-heads-costume could not be loaded correctly!");
         if (page == container.get().getPage()) {
@@ -204,7 +204,7 @@ public class GUI {
      * @param type   type
      */
     private void setEngineItems(Player player, int type) {
-        this.setCostumes(player, Config.getInstance().getEngineController().getAllGUIItems(), GUIPage.ENGINES, type, Permission.ALL_ENGINES);
+        this.setCostumes(player, Config.<Player>getInstance().getEngineController().getAllGUIItems(), GUIPage.ENGINES, type, Permission.ALL_ENGINES);
     }
 
     /**
@@ -214,7 +214,7 @@ public class GUI {
      * @param type   type
      */
     private void setSimpleBlockItems(Player player, int type) {
-        this.setCostumes(player, Config.getInstance().getOrdinaryCostumesController().getAll(), GUIPage.DEFAULT_COSTUMES, type, Permission.ALL_SIMPLEBLOCKCOSTUMES);
+        this.setCostumes(player, Config.<Player>getInstance().getOrdinaryCostumesController().getAll(), GUIPage.DEFAULT_COSTUMES, type, Permission.ALL_SIMPLEBLOCKCOSTUMES);
     }
 
     /**
@@ -224,7 +224,7 @@ public class GUI {
      * @param type   type
      */
     private void setColorBlockItems(Player player, int type) {
-        this.setCostumes(player, Config.getInstance().getColorCostumesController().getAll(), GUIPage.COLOR_COSTUMES, type, Permission.ALL_COLOREDBLOCKCOSTUMES);
+        this.setCostumes(player, Config.<Player>getInstance().getColorCostumesController().getAll(), GUIPage.COLOR_COSTUMES, type, Permission.ALL_COLOREDBLOCKCOSTUMES);
     }
 
     /**
@@ -234,7 +234,7 @@ public class GUI {
      * @param type   type
      */
     private void setPlayerHeadItems(Player player, int type) {
-        this.setCostumes(player, Config.getInstance().getRareCostumesController().getAll(), GUIPage.CUSTOM_COSTUMES, type, Permission.ALL_PLAYERHEADCOSTUMES);
+        this.setCostumes(player, Config.<Player>getInstance().getRareCostumesController().getAll(), GUIPage.CUSTOM_COSTUMES, type, Permission.ALL_PLAYERHEADCOSTUMES);
     }
 
     /**
@@ -244,7 +244,7 @@ public class GUI {
      * @param type   type
      */
     private void setParticleItems(Player player, int type) {
-        this.setCostumes(player, Config.getInstance().getParticleController().getAll(), GUIPage.PARTICLES, type, Permission.ALL_PARTICLES);
+        this.setCostumes(player, Config.<Player>getInstance().getParticleController().getAll(), GUIPage.PARTICLES, type, Permission.ALL_PARTICLES);
     }
 
     /**
@@ -253,7 +253,7 @@ public class GUI {
      * @param player player
      */
     private void setMinecraftHeadsCostumeItems(Player player, int type) {
-        this.setCostumes(player, Config.getInstance().getMinecraftHeadsCostumesController().getAll(), GUIPage.MINECRAFTHEADS_COSTUMES, type, Permission.ALL_MINECRAFTHEADCOSTUMES);
+        this.setCostumes(player, Config.<Player>getInstance().getMinecraftHeadsCostumesController().getAll(), GUIPage.MINECRAFTHEADS_COSTUMES, type, Permission.ALL_MINECRAFTHEADCOSTUMES);
     }
 
     /**
@@ -311,18 +311,18 @@ public class GUI {
                 }
             }
             container.startCount = count;
-            final Optional<GUIItemContainer<Player> > optBackGuiItemContainer = Config.getInstance().getGuiItemsController().getGUIItemFromName("back");
+            final Optional<GUIItemContainer<Player>> optBackGuiItemContainer = Config.<Player>getInstance().getGuiItemsController().getGUIItemFromName("back");
             if (!optBackGuiItemContainer.isPresent())
                 throw new IllegalArgumentException("Gui item back could not be loaded correctly!");
             inventory.setItem(optBackGuiItemContainer.get().getPosition(), (ItemStack) optBackGuiItemContainer.get().generate(player));
             if (!(container.startCount % 45 != 0 || containers.size() == container.startCount)) {
-                final Optional<GUIItemContainer<Player> > optNextPage = Config.getInstance().getGuiItemsController().getGUIItemFromName("next-page");
+                final Optional<GUIItemContainer<Player>> optNextPage = Config.<Player>getInstance().getGuiItemsController().getGUIItemFromName("next-page");
                 if (!optNextPage.isPresent())
                     throw new IllegalArgumentException("Gui item next-page could not be loaded correctly!");
                 inventory.setItem(optNextPage.get().getPosition(), (ItemStack) optNextPage.get().generate(player));
             }
             if (container.currentCount != 0) {
-                final Optional<GUIItemContainer<Player>> optPreviousPage = Config.getInstance().getGuiItemsController().getGUIItemFromName("previous-page");
+                final Optional<GUIItemContainer<Player>> optPreviousPage = Config.<Player>getInstance().getGuiItemsController().getGUIItemFromName("previous-page");
                 if (!optPreviousPage.isPresent())
                     throw new IllegalArgumentException("Gui item previous-page could not be loaded correctly!");
                 inventory.setItem(optPreviousPage.get().getPosition(), (ItemStack) optPreviousPage.get().generate(player));
@@ -350,7 +350,7 @@ public class GUI {
     private void fillEmptySlots(Inventory inventory) {
         for (int i = 0; i < inventory.getContents().length; i++) {
             if (inventory.getItem(i) == null || inventory.getItem(i).getType() == Material.AIR) {
-                final Optional<GUIItemContainer<Player>> optEmptySlot = Config.getInstance().getGuiItemsController().getGUIItemFromName("empty-slot");
+                final Optional<GUIItemContainer<Player>> optEmptySlot = Config.<Player>getInstance().getGuiItemsController().getGUIItemFromName("empty-slot");
                 if (!optEmptySlot.isPresent()) {
                     throw new RuntimeException("PetBlocks gui item 'empty-slot' is not correctly loaded.");
                 } else {

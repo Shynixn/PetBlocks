@@ -1,21 +1,19 @@
 package com.github.shynixn.petblocks.bukkit.logic;
 
 import com.github.shynixn.petblocks.api.business.controller.PetBlockController;
-import com.github.shynixn.petblocks.api.business.entity.GUIItemContainer;
-import com.github.shynixn.petblocks.api.persistence.controller.*;
-import com.github.shynixn.petblocks.api.persistence.entity.EngineContainer;
+import com.github.shynixn.petblocks.api.persistence.controller.ParticleEffectMetaController;
+import com.github.shynixn.petblocks.api.persistence.controller.PetMetaController;
+import com.github.shynixn.petblocks.api.persistence.controller.PlayerMetaController;
 import com.github.shynixn.petblocks.bukkit.PetBlocksPlugin;
-import com.github.shynixn.petblocks.bukkit.logic.business.configuration.*;
-import com.github.shynixn.petblocks.bukkit.logic.business.controller.PetBlockRepository;
-import com.github.shynixn.petblocks.bukkit.logic.persistence.controller.ParticleEffectDataRepository;
-import com.github.shynixn.petblocks.bukkit.logic.persistence.controller.PetDataRepository;
-import com.github.shynixn.petblocks.bukkit.logic.persistence.controller.PlayerDataRepository;
-import com.github.shynixn.petblocks.bukkit.logic.business.helper.ExtensionHikariConnectionContext;
+import com.github.shynixn.petblocks.bukkit.logic.business.controller.BukkitPetBlockRepository;
+import com.github.shynixn.petblocks.bukkit.logic.persistence.controller.BukkitParticleEffectDataRepository;
+import com.github.shynixn.petblocks.bukkit.logic.persistence.controller.BukkitPetDataRepository;
+import com.github.shynixn.petblocks.bukkit.logic.persistence.controller.BukkitPlayerDataRepository;
+import com.github.shynixn.petblocks.core.logic.business.helper.ExtensionHikariConnectionContext;
 import org.apache.commons.io.IOUtils;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
-import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
 import java.io.IOException;
@@ -28,42 +26,22 @@ import java.util.regex.Pattern;
 
 public class Factory {
 
-    private static ExtensionHikariConnectionContext connectionContext;
+    public static ExtensionHikariConnectionContext connectionContext;
 
     public static PlayerMetaController<Player> createPlayerDataController() {
-        return new PlayerDataRepository(connectionContext);
+        return new BukkitPlayerDataRepository(connectionContext);
     }
 
     public static ParticleEffectMetaController createParticleEffectController() {
-        return new ParticleEffectDataRepository(connectionContext);
-    }
-
-    public static EngineController<EngineContainer<GUIItemContainer<Player>>,GUIItemContainer<Player>> createEngineController() {
-        return new EngineConfiguration(JavaPlugin.getPlugin(PetBlocksPlugin.class));
+        return new BukkitParticleEffectDataRepository(connectionContext);
     }
 
     public static PetBlockController<Player> createPetBlockController() {
-        return new PetBlockRepository();
-    }
-
-    public static CostumeController<GUIItemContainer<Player>> createCostumesController(String category) {
-        return new CostumeConfiguration(category, JavaPlugin.getPlugin(PetBlocksPlugin.class));
-    }
-
-    public static CostumeController<GUIItemContainer<Player>> createMinecraftHeadsCostumesController() {
-        return new MinecraftHeadConfiguration(JavaPlugin.getPlugin(PetBlocksPlugin.class));
+        return new BukkitPetBlockRepository();
     }
 
     public static PetMetaController<Player> createPetDataController() {
-        return new PetDataRepository(connectionContext);
-    }
-
-    public static OtherGUIItemsController<GUIItemContainer<Player>> createGUIItemsController() {
-        return new FixedItemConfiguration(JavaPlugin.getPlugin(PetBlocksPlugin.class));
-    }
-
-    public static ParticleController<GUIItemContainer<Player>> createParticleConfiguration() {
-        return new ParticleConfiguration(JavaPlugin.getPlugin(PetBlocksPlugin.class));
+        return new BukkitPetDataRepository(createPlayerDataController(), createParticleEffectController(), connectionContext);
     }
 
     public static void disable() {
@@ -79,7 +57,7 @@ public class Factory {
         if (plugin == null)
             throw new IllegalArgumentException("Plugin cannot be null!");
         final ExtensionHikariConnectionContext.SQlRetriever retriever = fileName -> {
-            try (InputStream stream = plugin.getResource("sql/" + fileName + ".sql")) {
+            try (InputStream stream = plugin.getResource("assets/petblocks/sql/" + fileName + ".sql")) {
                 return IOUtils.toString(stream, "UTF-8");
             } catch (final IOException e) {
                 PetBlocksPlugin.logger().log(Level.WARNING, "Cannot read file.", fileName);
@@ -99,7 +77,7 @@ public class Factory {
                         throw new IOException("Creating database file failed.");
                     }
                 }
-                connectionContext = ExtensionHikariConnectionContext.from(ExtensionHikariConnectionContext.SQLITE_DRIVER, "jdbc:sqlite:" + file.getAbsolutePath(), false,retriever);
+                connectionContext = ExtensionHikariConnectionContext.from(ExtensionHikariConnectionContext.SQLITE_DRIVER, "jdbc:sqlite:" + file.getAbsolutePath(), false, retriever);
                 try (Connection connection = connectionContext.getConnection()) {
                     connectionContext.execute("PRAGMA foreign_keys=ON", connection);
                 }
