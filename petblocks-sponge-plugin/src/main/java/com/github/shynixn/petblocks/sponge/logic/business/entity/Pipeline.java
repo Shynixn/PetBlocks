@@ -4,7 +4,6 @@ import com.github.shynixn.petblocks.api.business.entity.EffectPipeline;
 import com.github.shynixn.petblocks.api.business.entity.PetBlock;
 import com.github.shynixn.petblocks.api.persistence.entity.ParticleEffectMeta;
 import com.github.shynixn.petblocks.api.persistence.entity.SoundMeta;
-import com.github.shynixn.petblocks.sponge.PetBlocksPlugin;
 import com.github.shynixn.petblocks.sponge.logic.business.helper.ExtensionMethodsKt;
 import com.github.shynixn.petblocks.sponge.logic.persistence.configuration.Config;
 import com.github.shynixn.petblocks.sponge.logic.persistence.entity.SpongeParticleEffect;

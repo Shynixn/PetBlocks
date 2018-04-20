@@ -82,7 +82,7 @@ object Config : ConfigLayer<Player>() {
 
     override fun fixJoinDefaultPet(petData: PetMeta) {
         val petMeta = petData as PetData
-        petMeta.setSkin(this.getData<Int>("join.settings.id")!!, (this.getData("join.settings.damage") as Int), this.getData<String>("join.settings.skin"), this.getData<Boolean>("unbreakable")!!)
+        petMeta.setSkin(this.getData<Int>("join.settings.id")!!, (this.getData<Int>("join.settings.damage") as Int), this.getData<String>("join.settings.skin"), this.getData<Boolean>("unbreakable")!!)
         val optEngineContainer = this.engineController.getContainerFromPosition(this.getData<Int>("join.settings.engine")!!)
         if (!optEngineContainer.isPresent) {
             throw IllegalArgumentException("Join.settings.engine engine could not be loaded!")

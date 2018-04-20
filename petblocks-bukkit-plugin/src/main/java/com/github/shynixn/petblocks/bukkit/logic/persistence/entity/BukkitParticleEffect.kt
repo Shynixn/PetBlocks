@@ -65,22 +65,23 @@ class BukkitParticleEffect : ParticleEffectData, ConfigurationSerializable {
     /**
      * Plays the effect at the given location to the given players.
      *
-     * @param location location
-     * @param players  players
+     * @param tmpLocation location
+     * @param tmpPlayers  players
      */
-    override fun <Location, Player> applyTo(locationtemp: Location?, vararg playerstemp: Player) {
+    override fun <Location, Player> applyTo(tmpLocation: Location?, vararg tmpPlayers: Player) {
         try {
-            if (locationtemp == null)
+            if (tmpLocation == null) {
                 throw IllegalArgumentException("Location cannot be null!")
+            }
 
-            val location = locationtemp as org.bukkit.Location
-            val players = playerstemp as Array<org.bukkit.entity.Player>
+            val location = tmpLocation as org.bukkit.Location
+            val players = tmpPlayers as Array<org.bukkit.entity.Player>
 
             if (this.effect == "none")
                 return
             val playingPlayers: Array<org.bukkit.entity.Player>
 
-            playingPlayers = if (playerstemp.isEmpty()) {
+            playingPlayers = if (tmpPlayers.isEmpty()) {
                 location.world.players.toTypedArray()
             } else {
                 players
@@ -128,7 +129,7 @@ class BukkitParticleEffect : ParticleEffectData, ConfigurationSerializable {
         val field = findClass("net.minecraft.server.VERSION.EntityPlayer").getDeclaredField("playerConnection")
         field.isAccessible = true
         val connection = field.get(entityPlayer)
-        val sendMethod = connection.javaClass.getDeclaredMethod("sendPacket",packet.javaClass.interfaces[0])
+        val sendMethod = connection.javaClass.getDeclaredMethod("sendPacket", packet.javaClass.interfaces[0])
         sendMethod.invoke(connection, packet)
     }
 

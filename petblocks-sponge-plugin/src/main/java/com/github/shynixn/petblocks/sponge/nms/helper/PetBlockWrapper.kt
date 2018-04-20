@@ -3,7 +3,6 @@ package com.github.shynixn.petblocks.sponge.nms.helper
 import com.flowpowered.math.vector.Vector3d
 import com.github.shynixn.petblocks.api.business.entity.EffectPipeline
 import com.github.shynixn.petblocks.api.business.entity.PetBlock
-import com.github.shynixn.petblocks.api.persistence.entity.ParticleEffectMeta
 import com.github.shynixn.petblocks.api.persistence.entity.PetMeta
 import com.github.shynixn.petblocks.api.sponge.event.PetBlockCannonEvent
 import com.github.shynixn.petblocks.api.sponge.event.PetBlockRideEvent
@@ -12,7 +11,6 @@ import com.github.shynixn.petblocks.core.logic.business.helper.ReflectionUtils
 import com.github.shynixn.petblocks.sponge.logic.business.entity.Pipeline
 import com.github.shynixn.petblocks.sponge.logic.business.helper.findServerVersion
 import com.github.shynixn.petblocks.sponge.logic.persistence.configuration.Config
-import com.github.shynixn.petblocks.sponge.logic.persistence.entity.SpongeParticleEffect
 import com.github.shynixn.petblocks.sponge.logic.persistence.entity.SpongeSoundBuilder
 import com.github.shynixn.petblocks.sponge.nms.VersionSupport
 import org.spongepowered.api.Sponge

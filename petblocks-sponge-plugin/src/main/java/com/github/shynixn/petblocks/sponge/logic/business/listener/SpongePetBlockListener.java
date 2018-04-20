@@ -181,7 +181,7 @@ public class SpongePetBlockListener extends SimpleSpongeListener {
 
     @Listener
     public void onPlayerRespawnEvent(RespawnPlayerEvent event) {
-        Player player = event.getTargetEntity();
+        final Player player = event.getTargetEntity();
         if (this.manager.getPetBlockController().getFromPlayer(player).isPresent()) {
             this.manager.getPetBlockController().remove(this.manager.getPetBlockController().getFromPlayer(player).get());
             Task.builder().delayTicks(Config.INSTANCE.getWarpDelay() * 20L).execute(() -> this.providePet(player, (petMeta, petBlock) -> {
@@ -290,7 +290,7 @@ public class SpongePetBlockListener extends SimpleSpongeListener {
     public void onPlayerDropItem(DropItemEvent.Dispense event, @First(typeFilter = Player.class) Player player) {
         if (this.manager.getCarryingPet().containsKey(player)) {
             this.removePetFromArm(player, false);
-            for (Entity entity : event.getEntities()) {
+            for (final Entity entity : event.getEntities()) {
                 entity.remove();
             }
         }

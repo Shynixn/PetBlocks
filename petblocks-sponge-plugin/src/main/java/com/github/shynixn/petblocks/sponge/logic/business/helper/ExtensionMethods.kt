@@ -139,7 +139,6 @@ fun ItemStack.getDisplayName(): String? {
 /**
  * Sets the particleEffect for the given petMeta and petblock.
  *
- * @param petMeta   petMeta
  * @param petBlock  petblock
  * @param container container
  */

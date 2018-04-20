@@ -132,7 +132,7 @@ public class NMSUtils {
         if (!profile.getPropertyMap().isEmpty()) {
             final NBTTagCompound nbttagcompound = new NBTTagCompound();
 
-            for (Object s : profile.getPropertyMap().keySet()) {
+            for (final Object s : profile.getPropertyMap().keySet()) {
                 final NBTTagList nbttaglist = new NBTTagList();
 
                 NBTTagCompound nbttagcompound1;

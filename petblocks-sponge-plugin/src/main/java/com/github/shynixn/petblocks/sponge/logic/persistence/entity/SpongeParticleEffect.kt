@@ -95,16 +95,16 @@ class SpongeParticleEffect : ParticleEffectData {
     /**
      * Plays the effect at the given location to the given players.
      *
-     * @param location location
-     * @param players  players
+     * @param tmpLocation location
+     * @param tmpPlayers  players
      */
-    override fun <Location, Player> applyTo(locationtemp: Location?, vararg playerstemp: Player) {
+    override fun <Location, Player> applyTo(tmpLocation: Location?, vararg tmpPlayers: Player) {
         try {
             if (this.effect == null || this.effect.equals("none", ignoreCase = true))
                 return
 
-            val players = playerstemp as Array<org.spongepowered.api.entity.living.player.Player>
-            val location = locationtemp as Transform<World>
+            val players = tmpPlayers as Array<org.spongepowered.api.entity.living.player.Player>
+            val location = tmpLocation as Transform<World>
 
             val type = Sponge.getGame().registry.getType(ParticleType::class.java, "minecraft:" + this.effectType.minecraftId).get()
 

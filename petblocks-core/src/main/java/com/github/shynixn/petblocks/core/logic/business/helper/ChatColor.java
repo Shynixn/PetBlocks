@@ -62,7 +62,6 @@ public enum ChatColor {
     private final char code;
     private final boolean isFormat;
     private final String toString;
-    private static final Map<Integer, ChatColor> BY_ID = Maps.newHashMap();
     private static final Map<Character, ChatColor> BY_CHAR = Maps.newHashMap();
 
     static {
@@ -71,7 +70,6 @@ public enum ChatColor {
 
         for (int var2 = 0; var2 < var1; ++var2) {
             final ChatColor color = var0[var2];
-            BY_ID.put(color.intCode, color);
             BY_CHAR.put(color.code, color);
         }
 

@@ -5,8 +5,6 @@ import com.github.shynixn.petblocks.sponge.nms.VersionSupport
 import org.spongepowered.api.effect.sound.SoundType
 import org.spongepowered.api.effect.sound.SoundTypes
 import org.spongepowered.api.entity.Transform
-import org.spongepowered.api.entity.living.player.Player
-import org.spongepowered.api.world.Location
 import org.spongepowered.api.world.World
 
 /**
