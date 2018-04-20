@@ -6,6 +6,3 @@ Customizing
    database
    commands
    datacollecting
-
-
-Todo?

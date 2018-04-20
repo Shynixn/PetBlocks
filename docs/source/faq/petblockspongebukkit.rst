@@ -13,10 +13,5 @@ Things to point out:
 * Cross server pets are possible between Bukkit and Sponge server as the MySQL database is also interchangeable ✔
 * There is no Sponge version of the Head-Database plugin available, so this feature is disabled in Sponge-PetBlocks ✘
 * There is no Sponge version of the WorldGuard plugin available, so region restricting is disabled in Sponge-PetBlocks ✘
+* PetBlocks-Sponge is not available for as many Minecraft versions as PetBlocks-Bukkit ✘
 * All other features are available ✔
-
-
-
-
-
-

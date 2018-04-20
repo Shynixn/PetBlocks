@@ -60,9 +60,17 @@ Your plugin requires PetBlocks to work.
 ::
     depend: [PetBlocks]
 
-**(Sponge)**
+**(Sponge) mcmod.info**
+::
+ "dependencies": [
+    "petblocks"
+ ]
 
-Please take a look into the official sponge docs.
+Your plugin requires PetBlocks to work.
+::
+ "requiredMods": [
+    "petblocks"
+ ]
 
 
 Modifying PetMeta and PetBlock
