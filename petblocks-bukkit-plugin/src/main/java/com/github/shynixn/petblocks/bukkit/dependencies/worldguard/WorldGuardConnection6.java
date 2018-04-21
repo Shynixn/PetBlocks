@@ -29,7 +29,13 @@ public final class WorldGuardConnection6 {
 
     public synchronized static void allowSpawn(Location location) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException {
         final WorldGuardPlugin worldGuard = getWorldGuard();
-        final RegionManager regionManager = worldGuard.getRegionManager(location.getWorld());
+        final RegionManager regionManager;
+        try {
+            regionManager = worldGuard.getRegionManager(location.getWorld());
+        } catch (final Exception ignored) {
+            // Some issues in the latest WorldGuard version
+            return;
+        }
         final ApplicableRegionSet set = ReflectionUtils.invokeMethodByObject(regionManager, "getApplicableRegions", new Class[]{location.getClass()}, new Object[]{location});
         final Iterable<ProtectedRegion> regions = (Iterable<ProtectedRegion>) getRegionMethod(set.getClass()).invoke(set);
         for (final ProtectedRegion region : regions) {
@@ -56,7 +62,13 @@ public final class WorldGuardConnection6 {
             if (((ArmorStand) optPetBlock.get().getArmorStand()).getPassenger() != null && ((ArmorStand) optPetBlock.get().getArmorStand()).getPassenger().equals(player) || cacheSpawn) {
                 final Location location = player.getLocation();
                 final WorldGuardPlugin worldGuard = getWorldGuard();
-                final RegionManager regionManager = worldGuard.getRegionManager(location.getWorld());
+                final RegionManager regionManager;
+                try {
+                    regionManager = worldGuard.getRegionManager(location.getWorld());
+                } catch (final Exception ignored) {
+                    // Some issues in the latest WorldGuard version
+                    return true;
+                }
                 final ApplicableRegionSet set = ReflectionUtils.invokeMethodByObject(regionManager, "getApplicableRegions", new Class[]{location.getClass()}, new Object[]{location});
                 final Iterable<ProtectedRegion> regions = (Iterable<ProtectedRegion>) getRegionMethod(set.getClass()).invoke(set);
                 List<ProtectedRegion> regionsList = null;
@@ -102,9 +114,15 @@ public final class WorldGuardConnection6 {
     public static List<String> getRegionsFromLocation(Location location) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
         final List<String> regionList = new ArrayList<>();
         final WorldGuardPlugin worldGuard = getWorldGuard();
-        final RegionManager regionManager = worldGuard.getRegionManager(location.getWorld());
+        final RegionManager regionManager;
+        try {
+            regionManager = worldGuard.getRegionManager(location.getWorld());
+        } catch (final Exception ignored) {
+            // Some issues in the latest WorldGuard version
+            return new ArrayList<>();
+        }
         final ApplicableRegionSet set = ReflectionUtils.invokeMethodByObject(regionManager, "getApplicableRegions", new Class[]{location.getClass()}, new Object[]{location});
-        final Iterable<ProtectedRegion> regions = (Iterable<ProtectedRegion>)getRegionMethod(set.getClass()).invoke(set);
+        final Iterable<ProtectedRegion> regions = (Iterable<ProtectedRegion>) getRegionMethod(set.getClass()).invoke(set);
         for (final ProtectedRegion region : regions) {
             regionList.add(region.getId());
         }
