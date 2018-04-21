@@ -34,7 +34,6 @@
     </licenses>
 
     <properties>
-        <petblocks.bukkit.test-server-path>D:/Temp/plugins</petblocks.bukkit.test-server-path>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <kotlin.version>1.2.21</kotlin.version>
