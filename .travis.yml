@@ -9,12 +9,7 @@ before_script:
 script:
     - cd /home/travis/build/Shynixn/PetBlocks/petblocks-sponge-plugin
     - mvn anchornms:generate-mcp-libraries -X
-    - cd /home/travis/build/[secure]/PetBlocks/petblocks-sponge-plugin/target/nms-tools/gradle-4.6/bin/gradle
-    - ls Cannot run program ""/home/travis/build/[secure]/PetBlocks/petblocks-sponge-plugin/target/nms-tools/gradle-4.6/bin/gradle""
-    - ""/home/travis/build/[secure]/PetBlocks/petblocks-sponge-plugin/target/nms-tools/gradle-4.6/bin/gradle""
-    - cp target/nms-tools/mcp-1.11.jar /home/travis/build/Shynixn/PetBlocks/lib/mcp-1.11.jar
-    - cp target/nms-tools/mcp-1.12.jar /home/travis/build/Shynixn/PetBlocks/lib/mcp-1.12.jar
-    - cd /home/travis/build/Shynixn/PetBlocks/lib
+    - cd /home/travis/build/Shynixn/PetBlocks
     - java -jar BuildTools.jar --rev 1.8 > /dev/null
     - java -jar BuildTools.jar --rev 1.8.3 > /dev/null
     - java -jar BuildTools.jar --rev 1.8.8 > /dev/null

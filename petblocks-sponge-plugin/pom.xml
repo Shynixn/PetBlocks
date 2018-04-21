@@ -107,7 +107,6 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <outputFile>D:\Temp\SpongePowered\mods\PetBlocks-Sponge.jar</outputFile>
                     <accessTransformer>petblocks_at.cfg</accessTransformer>
                     <versions>
                         <version>1.12</version>
