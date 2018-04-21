@@ -10,6 +10,7 @@ script:
     - cd /home/travis/build/Shynixn/PetBlocks/petblocks-sponge-plugin
     - mvn anchornms:generate-mcp-libraries -X
     - cp target/nms-tools/mcp-1.12.jar /home/travis/build/Shynixn/PetBlocks/lib/mcp-1.12.jar
+    - cd /home/travis/build/Shynixn/PetBlocks/lib
     - java -jar BuildTools.jar --rev 1.8 > /dev/null
     - java -jar BuildTools.jar --rev 1.8.3 > /dev/null
     - java -jar BuildTools.jar --rev 1.8.8 > /dev/null
