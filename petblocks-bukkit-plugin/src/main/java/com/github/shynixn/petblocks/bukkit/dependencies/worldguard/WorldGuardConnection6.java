@@ -2,8 +2,8 @@ package com.github.shynixn.petblocks.bukkit.dependencies.worldguard;
 
 import com.github.shynixn.petblocks.api.PetBlocksApi;
 import com.github.shynixn.petblocks.api.business.entity.PetBlock;
-import com.github.shynixn.petblocks.bukkit.logic.business.configuration.Config;
-import com.github.shynixn.petblocks.bukkit.logic.business.helper.ReflectionUtils;
+import com.github.shynixn.petblocks.core.logic.business.helper.ReflectionUtils;
+import com.github.shynixn.petblocks.core.logic.persistence.configuration.Config;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import com.sk89q.worldguard.protection.ApplicableRegionSet;
 import com.sk89q.worldguard.protection.flags.DefaultFlag;
@@ -29,7 +29,13 @@ public final class WorldGuardConnection6 {
 
     public synchronized static void allowSpawn(Location location) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException {
         final WorldGuardPlugin worldGuard = getWorldGuard();
-        final RegionManager regionManager = worldGuard.getRegionManager(location.getWorld());
+        final RegionManager regionManager;
+        try {
+            regionManager = worldGuard.getRegionManager(location.getWorld());
+        } catch (final Exception ignored) {
+            // Some issues in the latest WorldGuard version
+            return;
+        }
         final ApplicableRegionSet set = ReflectionUtils.invokeMethodByObject(regionManager, "getApplicableRegions", new Class[]{location.getClass()}, new Object[]{location});
         final Iterable<ProtectedRegion> regions = (Iterable<ProtectedRegion>) getRegionMethod(set.getClass()).invoke(set);
         for (final ProtectedRegion region : regions) {
@@ -56,7 +62,13 @@ public final class WorldGuardConnection6 {
             if (((ArmorStand) optPetBlock.get().getArmorStand()).getPassenger() != null && ((ArmorStand) optPetBlock.get().getArmorStand()).getPassenger().equals(player) || cacheSpawn) {
                 final Location location = player.getLocation();
                 final WorldGuardPlugin worldGuard = getWorldGuard();
-                final RegionManager regionManager = worldGuard.getRegionManager(location.getWorld());
+                final RegionManager regionManager;
+                try {
+                    regionManager = worldGuard.getRegionManager(location.getWorld());
+                } catch (final Exception ignored) {
+                    // Some issues in the latest WorldGuard version
+                    return true;
+                }
                 final ApplicableRegionSet set = ReflectionUtils.invokeMethodByObject(regionManager, "getApplicableRegions", new Class[]{location.getClass()}, new Object[]{location});
                 final Iterable<ProtectedRegion> regions = (Iterable<ProtectedRegion>) getRegionMethod(set.getClass()).invoke(set);
                 List<ProtectedRegion> regionsList = null;
@@ -102,9 +114,15 @@ public final class WorldGuardConnection6 {
     public static List<String> getRegionsFromLocation(Location location) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
         final List<String> regionList = new ArrayList<>();
         final WorldGuardPlugin worldGuard = getWorldGuard();
-        final RegionManager regionManager = worldGuard.getRegionManager(location.getWorld());
+        final RegionManager regionManager;
+        try {
+            regionManager = worldGuard.getRegionManager(location.getWorld());
+        } catch (final Exception ignored) {
+            // Some issues in the latest WorldGuard version
+            return new ArrayList<>();
+        }
         final ApplicableRegionSet set = ReflectionUtils.invokeMethodByObject(regionManager, "getApplicableRegions", new Class[]{location.getClass()}, new Object[]{location});
-        final Iterable<ProtectedRegion> regions = (Iterable<ProtectedRegion>)getRegionMethod(set.getClass()).invoke(set);
+        final Iterable<ProtectedRegion> regions = (Iterable<ProtectedRegion>) getRegionMethod(set.getClass()).invoke(set);
         for (final ProtectedRegion region : regions) {
             regionList.add(region.getId());
         }

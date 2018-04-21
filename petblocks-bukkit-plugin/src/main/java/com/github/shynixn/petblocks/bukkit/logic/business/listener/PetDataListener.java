@@ -8,12 +8,13 @@ import com.github.shynixn.petblocks.api.persistence.entity.EngineContainer;
 import com.github.shynixn.petblocks.api.persistence.entity.ParticleEffectMeta;
 import com.github.shynixn.petblocks.api.persistence.entity.PetMeta;
 import com.github.shynixn.petblocks.bukkit.PetBlocksPlugin;
-import com.github.shynixn.petblocks.bukkit.logic.business.helper.ChatBuilder;
 import com.github.shynixn.petblocks.bukkit.logic.business.PetBlockManager;
-import com.github.shynixn.petblocks.bukkit.logic.business.configuration.Config;
+import com.github.shynixn.petblocks.bukkit.logic.business.helper.ChatBuilderExtensionKt;
 import com.github.shynixn.petblocks.bukkit.logic.business.helper.PetBlockModifyHelper;
 import com.github.shynixn.petblocks.bukkit.logic.business.helper.SkinHelper;
 import com.github.shynixn.petblocks.bukkit.nms.v1_12_R1.MaterialCompatibility12;
+import com.github.shynixn.petblocks.core.logic.business.helper.ChatBuilder;
+import com.github.shynixn.petblocks.core.logic.persistence.configuration.Config;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -70,27 +71,27 @@ public class PetDataListener extends SimpleListener {
     private final ChatBuilder suggestHeadMessage = new ChatBuilder().text(Config.getInstance().getPrefix())
             .text("Click here: ")
             .component(">>Submit skin<<")
-            .setColor(ChatColor.YELLOW)
+            .setColor(com.github.shynixn.petblocks.core.logic.business.helper.ChatColor.YELLOW)
             .setClickAction(ChatBuilder.ClickAction.OPEN_URL, "http://minecraft-heads.com/custom/heads-generator")
             .setHoverText("Goto the Minecraft-Heads website!")
             .builder()
             .text(" ")
             .component(">>Suggest new pet<<")
-            .setColor(ChatColor.YELLOW)
+            .setColor(com.github.shynixn.petblocks.core.logic.business.helper.ChatColor.YELLOW)
             .setClickAction(ChatBuilder.ClickAction.OPEN_URL, "http://minecraft-heads.com/forum/suggesthead")
             .setHoverText("Goto the Minecraft-Heads website!")
             .builder();
     private final ChatBuilder headDatabaseMessage = new ChatBuilder().text(Config.getInstance().getPrefix())
             .text("Download the plugin ")
             .component(">>Head Database<<")
-            .setColor(ChatColor.YELLOW)
+            .setColor(com.github.shynixn.petblocks.core.logic.business.helper.ChatColor.YELLOW)
             .setClickAction(ChatBuilder.ClickAction.OPEN_URL, "https://www.spigotmc.org/resources/14280/")
             .setHoverText("A valid spigot account is required!")
             .builder();
     private final ChatBuilder collectedMinecraftHeads = new ChatBuilder().text(Config.getInstance().getPrefix())
             .text("Pets collected by ")
             .component(">>Minecraft-Heads.com<<")
-            .setColor(ChatColor.YELLOW)
+            .setColor(com.github.shynixn.petblocks.core.logic.business.helper.ChatColor.YELLOW)
             .setClickAction(ChatBuilder.ClickAction.OPEN_URL, "http://minecraft-heads.com")
             .setHoverText("Goto the Minecraft-Heads website!")
             .builder();
@@ -222,7 +223,11 @@ public class PetDataListener extends SimpleListener {
         final int itemSlot = event.getSlot() + this.manager.pages.get(player).currentCount + 1;
         if (this.manager.pages.get(player).page == GUIPage.MAIN && this.getGUIItem("my-pet").getPosition() == event.getSlot()) {
             this.handleClickOnMyPetItem(player, petMeta);
-        } else if (this.isGUIItem(currentItem, "enable-pet")) {
+        }
+        else if (this.isGUIItem(currentItem, "empty-slot")) {
+            return;
+        }
+        else if (this.isGUIItem(currentItem, "enable-pet")) {
             if (!this.spamProtection.contains(player)) {
                 this.setPetBlock(player, petMeta);
                 this.refreshGUI(player, petMeta);
@@ -253,7 +258,7 @@ public class PetDataListener extends SimpleListener {
         } else if (this.isGUIItem(currentItem, "rare-costume")) {
             this.manager.gui.setPage(player, GUIPage.CUSTOM_COSTUMES, petMeta);
         } else if (this.isGUIItem(currentItem, "minecraft-heads-costume")) {
-            Bukkit.getServer().getScheduler().runTaskAsynchronously(JavaPlugin.getPlugin(PetBlocksPlugin.class), () -> this.collectedMinecraftHeads.sendMessage(player));
+            Bukkit.getServer().getScheduler().runTaskAsynchronously(JavaPlugin.getPlugin(PetBlocksPlugin.class), () -> ChatBuilderExtensionKt.sendMessage(this.collectedMinecraftHeads, player));
             this.manager.gui.setPage(player, GUIPage.MINECRAFTHEADS_COSTUMES, petMeta);
         } else if (this.isGUIItem(currentItem, "particle-pet")) {
             this.manager.gui.setPage(player, GUIPage.PARTICLES, petMeta);
@@ -269,7 +274,7 @@ public class PetDataListener extends SimpleListener {
         } else if (this.isGUIItem(currentItem, "riding-pet") && PetBlockModifyHelper.hasPermission(player, Permission.ACTION_RIDE) && petBlock != null) {
             petBlock.ride(player);
         } else if (this.isGUIItem(currentItem, "suggest-heads")) {
-            Bukkit.getServer().getScheduler().runTaskAsynchronously(JavaPlugin.getPlugin(PetBlocksPlugin.class), () -> this.suggestHeadMessage.sendMessage(player));
+            Bukkit.getServer().getScheduler().runTaskAsynchronously(JavaPlugin.getPlugin(PetBlocksPlugin.class), () -> ChatBuilderExtensionKt.sendMessage(this.suggestHeadMessage,player));
             player.closeInventory();
         } else if (this.isGUIItem(currentItem, "head-database-costume")) {
             if (PetBlockModifyHelper.hasPermission(player, Permission.ALL_HEADDATABASECOSTUMES)) {
@@ -278,10 +283,10 @@ public class PetDataListener extends SimpleListener {
                 player.sendMessage(Config.getInstance().getPrefix() + Config.getInstance().getNoPermission());
             }
         } else if (this.isGUIItem(currentItem, "naming-pet") && PetBlockModifyHelper.hasPermission(player, Permission.ACTION_RENAME)) {
-            Config.getInstance().getPetNamingMessage().sendMessage(player);
+            ChatBuilderExtensionKt.sendMessage(((ChatBuilder)Config.getInstance().getPetNamingMessage()),player);
             player.closeInventory();
         } else if (this.isGUIItem(currentItem, "skullnaming-pet") && PetBlockModifyHelper.hasPermission(player, Permission.ACTION_CUSTOMSKULL)) {
-            Config.getInstance().getPetSkinNamingMessage().sendMessage(player);
+            ChatBuilderExtensionKt.sendMessage(((ChatBuilder) Config.getInstance().getPetSkinNamingMessage()), player);
             player.closeInventory();
         } else if (this.isGUIItem(currentItem, "cannon-pet") && PetBlockModifyHelper.hasPermission(player, Permission.ACTION_CANNON) && petBlock != null) {
             petBlock.setVelocity(this.getDirection(player));
@@ -289,7 +294,7 @@ public class PetDataListener extends SimpleListener {
         } else if (this.isGUIItem(currentItem, "back")) {
             this.manager.gui.backPage(player, petMeta);
         } else if (this.manager.pages.get(player).page == GUIPage.ENGINES && this.hasPermission(player, Permission.ALL_ENGINES, Permission.SINGLE_ENGINE, itemSlot)) {
-            final Optional<EngineContainer<GUIItemContainer<Player>>> optEngineContainer = Config.getInstance().getEngineController().getContainerFromPosition(itemSlot);
+            final Optional<EngineContainer<GUIItemContainer<Player>>> optEngineContainer = Config.<Player>getInstance().getEngineController().getContainerFromPosition(itemSlot);
             if (!optEngineContainer.isPresent()) {
                 throw new IllegalArgumentException("Engine " + itemSlot + " could not be loaded correctly!");
             }
@@ -297,29 +302,29 @@ public class PetDataListener extends SimpleListener {
             this.persistAsynchronously(petMeta);
             this.manager.gui.setPage(player, GUIPage.MAIN, petMeta);
         } else if (this.manager.pages.get(player).page == GUIPage.PARTICLES && this.hasPermission(player, Permission.ALL_PARTICLES, Permission.SINGLE_PARTICLE, itemSlot)) {
-            final Optional<GUIItemContainer<Player>> container = Config.getInstance().getParticleController().getContainerFromPosition(itemSlot);
+            final Optional<GUIItemContainer<Player>> container = Config.<Player>getInstance().getParticleController().getContainerFromPosition(itemSlot);
             if (!container.isPresent())
                 throw new IllegalArgumentException("Particle " + itemSlot + " could not be loaded correctly.");
             PetBlockModifyHelper.setParticleEffect(petMeta, petBlock, container.get());
             this.persistAsynchronously(petMeta);
             this.manager.gui.setPage(player, GUIPage.MAIN, petMeta);
         } else if (event.getSlot() < 45 && this.manager.pages.get(player).page == GUIPage.DEFAULT_COSTUMES && this.hasPermission(player, Permission.ALL_SIMPLEBLOCKCOSTUMES, Permission.SINGLE_SIMPLEBLOCKCOSTUME, itemSlot)) {
-            final Optional<GUIItemContainer<Player>> container = Config.getInstance().getOrdinaryCostumesController().getContainerFromPosition(itemSlot);
+            final Optional<GUIItemContainer<Player>> container = Config.<Player>getInstance().getOrdinaryCostumesController().getContainerFromPosition(itemSlot);
             if (!container.isPresent())
                 throw new IllegalArgumentException("Skin " + itemSlot + " could not be loaded correctly.");
             this.setCostumeSkin(player, petMeta, petBlock, container.get());
         } else if (event.getSlot() < 45 && this.manager.pages.get(player).page == GUIPage.COLOR_COSTUMES && this.hasPermission(player, Permission.ALL_COLOREDBLOCKCOSTUMES, Permission.SINGLE_COLOREDBLOCKCOSTUME, itemSlot)) {
-            final Optional<GUIItemContainer<Player>> container = Config.getInstance().getColorCostumesController().getContainerFromPosition(itemSlot);
+            final Optional<GUIItemContainer<Player>> container = Config.<Player>getInstance().getColorCostumesController().getContainerFromPosition(itemSlot);
             if (!container.isPresent())
                 throw new IllegalArgumentException("Skin " + itemSlot + " could not be loaded correctly.");
             this.setCostumeSkin(player, petMeta, petBlock, container.get());
         } else if (event.getSlot() < 45 && this.manager.pages.get(player).page == GUIPage.CUSTOM_COSTUMES && this.hasPermission(player, Permission.ALL_PLAYERHEADCOSTUMES, Permission.SINGLE_PLAYERHEADCOSTUME, itemSlot)) {
-            final Optional<GUIItemContainer<Player>> container = Config.getInstance().getRareCostumesController().getContainerFromPosition(itemSlot);
+            final Optional<GUIItemContainer<Player>> container = Config.<Player>getInstance().getRareCostumesController().getContainerFromPosition(itemSlot);
             if (!container.isPresent())
                 throw new IllegalArgumentException("Skin " + itemSlot + " could not be loaded correctly.");
             this.setCostumeSkin(player, petMeta, petBlock, container.get());
         } else if (event.getSlot() < 45 && this.manager.pages.get(player).page == GUIPage.MINECRAFTHEADS_COSTUMES && this.hasPermission(player, Permission.ALL_MINECRAFTHEADCOSTUMES, Permission.SINGLE_MINECRAFTHEADCOSTUME, itemSlot)) {
-            final Optional<GUIItemContainer<Player>> container = Config.getInstance().getMinecraftHeadsCostumesController().getContainerFromPosition(itemSlot);
+            final Optional<GUIItemContainer<Player>> container = Config.<Player>getInstance().getMinecraftHeadsCostumesController().getContainerFromPosition(itemSlot);
             if (!container.isPresent())
                 throw new IllegalArgumentException("Skin " + itemSlot + " could not be loaded correctly.");
             this.setCostumeSkin(player, petMeta, petBlock, container.get());
@@ -352,7 +357,7 @@ public class PetDataListener extends SimpleListener {
             final Plugin plugin = Bukkit.getPluginManager().getPlugin("HeadDatabase");
             if (plugin == null) {
                 Bukkit.getServer().getScheduler().runTaskAsynchronously(JavaPlugin.getPlugin(PetBlocksPlugin.class), () -> {
-                    this.headDatabaseMessage.sendMessage(player);
+                    ChatBuilderExtensionKt.sendMessage(this.headDatabaseMessage, player);
                     player.sendMessage(Config.getInstance().getPrefix() + ChatColor.GRAY + "Please consider that PetBlocks is not responsible for any legal agreements between the author of Head Database and yourself.");
                 });
             } else {
@@ -518,7 +523,7 @@ public class PetDataListener extends SimpleListener {
     }
 
     private GUIItemContainer<Player> getGUIItem(String name) {
-        final Optional<GUIItemContainer<Player>> guiItemContainer = Config.getInstance().getGuiItemsController().getGUIItemFromName(name);
+        final Optional<GUIItemContainer<Player>> guiItemContainer = Config.<Player>getInstance().getGuiItemsController().getGUIItemFromName(name);
         if (!guiItemContainer.isPresent())
             throw new IllegalArgumentException("Guiitem " + name + " could not be loaded correctly!");
         return guiItemContainer.get();

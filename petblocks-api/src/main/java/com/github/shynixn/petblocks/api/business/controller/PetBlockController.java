@@ -33,7 +33,7 @@ import java.util.Optional;
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-public interface PetBlockController<Player> extends IController<PetBlock> {
+public interface PetBlockController<Player> extends IController<PetBlock<Object, Object>> {
 
     /**
      * Creates a new petblock for the given player and meta.

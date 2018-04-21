@@ -10,8 +10,8 @@ import com.github.shynixn.petblocks.api.persistence.entity.PetMeta;
 import com.github.shynixn.petblocks.api.persistence.entity.PlayerMeta;
 import com.github.shynixn.petblocks.bukkit.PetBlocksPlugin;
 import com.github.shynixn.petblocks.bukkit.logic.Factory;
-import com.github.shynixn.petblocks.bukkit.logic.persistence.entity.EngineData;
-import com.github.shynixn.petblocks.bukkit.logic.persistence.entity.PetData;
+import com.github.shynixn.petblocks.core.logic.persistence.entity.EngineData;
+import com.github.shynixn.petblocks.core.logic.persistence.entity.PetData;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
@@ -109,7 +109,7 @@ public class PetMetaMySQLControllerIT {
                     for (final PetMeta item : controller.getAll()) {
                         controller.remove(item);
                     }
-                    final PetData meta = new PetData();
+                    final PetData meta = this.create();
                     meta.setPetDisplayName("Notch");
                     assertThrows(IllegalArgumentException.class, () -> controller.store(meta));
                     assertEquals(0, controller.size());
@@ -131,7 +131,8 @@ public class PetMetaMySQLControllerIT {
                     assertThrows(IllegalArgumentException.class, () -> controller.store(meta));
 
                     meta.setSkin(Material.STONE.getId(), (short) 5, null, false);
-                    meta.setEngine(new EngineData(4));
+                    meta.setEngine(new EngineData<Object>(4) {
+                    });
                     controller.store(meta);
 
                     assertEquals(1, controller.size());
@@ -159,7 +160,7 @@ public class PetMetaMySQLControllerIT {
                     for (final PetMeta item : controller.getAll()) {
                         controller.remove(item);
                     }
-                    PetData meta = new PetData();
+                    PetData meta = this.create();
                     meta.setPetDisplayName("Me");
                     meta.setSkin(Material.BIRCH_DOOR_ITEM.getId(),5 , "This is my long skin.",true);
                     meta.setEnabled(true);
@@ -174,7 +175,8 @@ public class PetMetaMySQLControllerIT {
                     final PlayerMeta playerMeta = playerController.create(player);
                     playerController.store(playerMeta);
                     meta.setPlayerMeta(playerMeta);
-                    meta.setEngine(new EngineData(0));
+                    meta.setEngine(new EngineData<Object>(0) {
+                    });
                     controller.store(meta);
 
                     assertEquals(1, controller.size());
@@ -197,7 +199,8 @@ public class PetMetaMySQLControllerIT {
                     meta.setSoundEnabled(false);
                     meta.setPlayerMeta(playerMeta);
                     meta.setParticleEffectMeta(particleEffectMeta);
-                    meta.setEngine(new EngineData(2));
+                    meta.setEngine(new EngineData<Object>(2) {
+                    });
                     controller.store(meta);
 
                     assertEquals(1, controller.size());
@@ -217,5 +220,14 @@ public class PetMetaMySQLControllerIT {
             Logger.getLogger(this.getClass().getSimpleName()).log(Level.WARNING, "Failed to run test.", e);
             Assert.fail();
         }
+    }
+
+    private PetData create() {
+        try {
+            return (PetData) Class.forName("com.github.shynixn.petblocks.bukkit.logic.persistence.entity.BukkitPetData").newInstance();
+        } catch (final Exception ex) {
+            Logger.getLogger(this.getClass().getSimpleName()).log(Level.WARNING, "Failed to create PetData.", ex);
+        }
+        return null;
     }
 }

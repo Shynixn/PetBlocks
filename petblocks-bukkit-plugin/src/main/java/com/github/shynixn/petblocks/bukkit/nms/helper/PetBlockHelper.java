@@ -11,13 +11,13 @@ import com.github.shynixn.petblocks.api.persistence.entity.ParticleEffectMeta;
 import com.github.shynixn.petblocks.api.persistence.entity.PetMeta;
 import com.github.shynixn.petblocks.api.persistence.entity.SoundMeta;
 import com.github.shynixn.petblocks.bukkit.PetBlocksPlugin;
-import com.github.shynixn.petblocks.bukkit.logic.business.configuration.ConfigPet;
 import com.github.shynixn.petblocks.bukkit.logic.business.helper.PetBlockModifyHelper;
 import com.github.shynixn.petblocks.bukkit.logic.business.helper.SkinHelper;
-import com.github.shynixn.petblocks.bukkit.logic.persistence.entity.ParticleEffectData;
-import com.github.shynixn.petblocks.bukkit.logic.persistence.entity.PetData;
-import com.github.shynixn.petblocks.bukkit.logic.persistence.entity.SoundBuilder;
+import com.github.shynixn.petblocks.bukkit.logic.persistence.configuration.Config;
 import com.github.shynixn.petblocks.bukkit.nms.v1_12_R1.MaterialCompatibility12;
+import com.github.shynixn.petblocks.core.logic.persistence.entity.ParticleEffectData;
+import com.github.shynixn.petblocks.core.logic.persistence.entity.PetData;
+import com.github.shynixn.petblocks.core.logic.persistence.entity.SoundBuilder;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -33,18 +33,20 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.util.EulerAngle;
 import org.bukkit.util.Vector;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 import java.util.logging.Level;
 
 public final class PetBlockHelper {
     private static final Random random = new Random();
-    private static final SoundMeta explosionSound = new SoundBuilder("EXPLODE", 1.0F, 2.0F);
-    private static final ParticleEffectMeta angryParticle = new ParticleEffectData()
+    private static final SoundMeta explosionSound = createSoundComp("EXPLODE", 1.0F, 2.0F);
+    private static final ParticleEffectMeta angryParticle = createParticleComp()
             .setEffectType(ParticleEffectMeta.ParticleEffectType.VILLAGER_ANGRY)
             .setOffset(2, 2, 2)
             .setSpeed(0.1)
             .setAmount(2);
-    private static final ParticleEffectMeta cloud = new ParticleEffectData()
+    private static final ParticleEffectMeta cloud = createParticleComp()
             .setEffectType(ParticleEffectMeta.ParticleEffectType.CLOUD)
             .setOffset(1, 1, 1)
             .setSpeed(0.1)
@@ -54,8 +56,27 @@ public final class PetBlockHelper {
         super();
     }
 
+    public static ParticleEffectMeta createParticleComp() {
+        try {
+            final Class<?> clazz = Class.forName("com.github.shynixn.petblocks.bukkit.logic.persistence.entity.BukkitParticleEffect");
+            return (ParticleEffectMeta) clazz.newInstance();
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static SoundMeta createSoundComp(String name, double value1, double value2) {
+        try {
+            final Class<?> clazz = Class.forName("com.github.shynixn.petblocks.bukkit.logic.persistence.entity.BukkitSoundBuilder");
+            final Constructor constructor = clazz.getDeclaredConstructor(String.class, double.class, double.class);
+            return (SoundMeta) constructor.newInstance(name, value1, value2);
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     public static void playParticleEffectForPipeline(Location location, ParticleEffectMeta particleEffectMeta, PetBlock petBlock) {
-        if (ConfigPet.getInstance().areParticlesForOtherPlayersVisible()) {
+        if (Config.INSTANCE.areParticlesForOtherPlayersVisible()) {
             for (final Player player : location.getWorld().getPlayers()) {
                 Bukkit.getServer().getScheduler().runTaskAsynchronously(JavaPlugin.getPlugin(PetBlocksPlugin.class), () -> ((ParticleEffectData) particleEffectMeta).applyTo(location, player));
             }
@@ -68,12 +89,10 @@ public final class PetBlockHelper {
         if (!petBlock.getMeta().isSoundEnabled())
             return;
         try {
-            if (ConfigPet.getInstance().isSoundForOtherPlayersHearable()) {
-                for (final Player player : location.getWorld().getPlayers()) {
-                    ((SoundBuilder) soundMeta).apply(location, player);
-                }
+            if (Config.INSTANCE.isSoundForOtherPlayersHearable()) {
+                ((SoundBuilder) soundMeta).apply(location,location.getWorld().getPlayers().toArray(new Player[0]));
             } else {
-                ((SoundBuilder) soundMeta).apply(location, (Player) petBlock.getPlayer());
+                ((SoundBuilder) soundMeta).apply(location, new Player[] {(Player) petBlock.getPlayer()});
             }
         } catch (final IllegalArgumentException e) {
             PetBlocksPlugin.logger().log(Level.WARNING, "Cannot play sound " + soundMeta.getName() + " of " + ChatColor.stripColor(petBlock.getMeta().<GUIItemContainer<Player>>getEngine().getGUIItem().getDisplayName().get()) + '.');
@@ -86,11 +105,11 @@ public final class PetBlockHelper {
 
     public static int afraidWaterEffect(PetBlock petBlock, int counter) {
         final Entity entity = (Entity) petBlock.getEngineEntity();
-        if (ConfigPet.getInstance().isAfraidOfwater()) {
+        if (Config.INSTANCE.isAfraidOfwater()) {
             if (entity.getLocation().getBlock().isLiquid() && counter <= 0) {
                 final Vector vec = new Vector(random.nextInt(3) * isNegative(random), random.nextInt(3) * isNegative(random), random.nextInt(3) * isNegative(random));
                 entity.setVelocity(vec);
-                if (ConfigPet.getInstance().isAfraidwaterParticles()) {
+                if (Config.INSTANCE.isAfraidwaterParticles()) {
                     petBlock.getEffectPipeline().playParticleEffect(entity.getLocation(), angryParticle);
                 }
                 counter = 20;
@@ -146,9 +165,9 @@ public final class PetBlockHelper {
         final PetData petData = (PetData) petBlock.getMeta();
         if (!getArmorstand(petBlock).isDead() && getArmorstand(petBlock).getPassenger() == null && getEngineEntity(petBlock) != null && getArmorstand(petBlock).getVehicle() == null) {
             Location location = null;
-            if (petData.getAge() >= ConfigPet.getInstance().getAge_largeticks())
+            if (petData.getAge() >= Config.INSTANCE.getAge_largeticks())
                 location = new Location(getEngineEntity(petBlock).getLocation().getWorld(), getEngineEntity(petBlock).getLocation().getX(), getEngineEntity(petBlock).getLocation().getY() - 1.2, getEngineEntity(petBlock).getLocation().getZ(), getEngineEntity(petBlock).getLocation().getYaw(), getEngineEntity(petBlock).getLocation().getPitch());
-            else if (petData.getAge() <= ConfigPet.getInstance().getAge_smallticks())
+            else if (petData.getAge() <= Config.INSTANCE.getAge_smallticks())
                 location = new Location(getEngineEntity(petBlock).getLocation().getWorld(), getEngineEntity(petBlock).getLocation().getX(), getEngineEntity(petBlock).getLocation().getY() - 0.7, getEngineEntity(petBlock).getLocation().getZ(), getEngineEntity(petBlock).getLocation().getYaw(), getEngineEntity(petBlock).getLocation().getPitch());
             if (location != null)
                 callBack.run(location);
@@ -157,17 +176,17 @@ public final class PetBlockHelper {
             getEngineEntity(petBlock).teleport(getArmorstand(petBlock).getLocation());
         }
         try {
-            if (petData.getAge() >= ConfigPet.getInstance().getAge_maxticks()) {
-                if (ConfigPet.getInstance().isAge_deathOnMaxTicks() && !petBlock.isDieing()) {
+            if (petData.getAge() >= Config.INSTANCE.getAge_maxticks()) {
+                if (Config.INSTANCE.isAge_deathOnMaxTicks() && !petBlock.isDieing()) {
                     petBlock.setDieing();
                 }
             } else {
                 boolean respawn = false;
-                if (petData.getAge() < ConfigPet.getInstance().getAge_largeticks()) {
+                if (petData.getAge() < Config.INSTANCE.getAge_largeticks()) {
                     respawn = true;
                 }
                 petData.setAge(petData.getAge() + 1);
-                if (petData.getAge() >= ConfigPet.getInstance().getAge_largeticks() && respawn) {
+                if (petData.getAge() >= Config.INSTANCE.getAge_largeticks() && respawn) {
                     petBlock.respawn();
                 }
             }
@@ -234,7 +253,7 @@ public final class PetBlockHelper {
         } else {
             itemStack = new ItemStack(MaterialCompatibility12.getMaterialFromId(petData.getItemId()), 1, (short) petData.getItemDamage());
         }
-        if (petData.getAge() >= ConfigPet.getInstance().getAge_largeticks()) {
+        if (petData.getAge() >= Config.INSTANCE.getAge_largeticks()) {
             refreshHeadItemMeta(petBlock, itemStack);
             getArmorstand(petBlock).setSmall(false);
 
@@ -284,10 +303,10 @@ public final class PetBlockHelper {
     }
 
     public static double setDamage(PetBlock petBlock, double health, double damage, TickCallBack callBack) {
-        if (ConfigPet.getInstance().isDesign_showDamageAnimation()) {
+        if (Config.INSTANCE.isDesign_showDamageAnimation()) {
             callBack.run(null);
         }
-        if (!ConfigPet.getInstance().isCombat_invincible()) {
+        if (!Config.INSTANCE.isCombat_invincible()) {
             health -= damage;
             if (health <= 0) {
                 petBlock.setDieing();

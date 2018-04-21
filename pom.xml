@@ -6,14 +6,18 @@
     <groupId>com.github.shynixn.petblocks</groupId>
     <artifactId>root</artifactId>
     <name>PetBlocks</name>
-    <description>Spigot plugin to use blocks as pets in minecraft.</description>
+    <description>PetBlocks is a spigot and also a sponge plugin to use blocks and custom heads as pets in Minecraft.
+    </description>
     <url>https://github.com/Shynixn/PetBlocks</url>
     <modules>
         <module>petblocks-api</module>
         <module>petblocks-bukkit-api</module>
         <module>petblocks-bukkit-plugin</module>
+        <module>petblocks-sponge-api</module>
+        <module>petblocks-sponge-plugin</module>
+        <module>petblocks-core</module>
     </modules>
-    <version>6.5.1</version>
+    <version>7.0.0</version>
     <packaging>pom</packaging>
 
     <developers>
@@ -30,9 +34,9 @@
     </licenses>
 
     <properties>
-        <petblocks.bukkit.test-server-path>D:/Temp/plugins</petblocks.bukkit.test-server-path>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <kotlin.version>1.2.21</kotlin.version>
     </properties>
 
     <profiles>
@@ -135,14 +139,31 @@
                             <goal>jar</goal>
                         </goals>
                     </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <artifactId>kotlin-maven-plugin</artifactId>
+                <groupId>org.jetbrains.kotlin</groupId>
+                <version>${kotlin.version}</version>
+                <executions>
                     <execution>
-                        <id>aggregate</id>
-                        <phase>verify</phase>
+                        <id>compile</id>
+                        <phase>process-sources</phase>
                         <goals>
-                            <goal>aggregate</goal>
+                            <goal>compile</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>test-compile</id>
+                        <phase>test-compile</phase>
+                        <goals>
+                            <goal>test-compile</goal>
                         </goals>
                     </execution>
                 </executions>
+                <configuration>
+                    <jvmTarget>1.8</jvmTarget>
+                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -164,10 +185,16 @@
             <scope>compile</scope>
         </dependency>
         <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-jdk14</artifactId>
-            <version>1.7.25</version>
+            <groupId>org.jetbrains.kotlin</groupId>
+            <artifactId>kotlin-stdlib-jdk8</artifactId>
+            <version>${kotlin.version}</version>
             <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jetbrains.kotlin</groupId>
+            <artifactId>kotlin-test</artifactId>
+            <version>${kotlin.version}</version>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.xerial</groupId>

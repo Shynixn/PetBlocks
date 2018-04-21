@@ -1,6 +1,6 @@
 package com.github.shynixn.petblocks.bukkit.logic.business.commandexecutor;
 
-import com.github.shynixn.petblocks.bukkit.logic.business.configuration.Config;
+import com.github.shynixn.petblocks.core.logic.persistence.configuration.Config;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
