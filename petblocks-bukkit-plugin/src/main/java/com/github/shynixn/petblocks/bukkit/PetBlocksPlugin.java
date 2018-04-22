@@ -114,21 +114,6 @@ public final class PetBlocksPlugin extends JavaPlugin {
         }
     }
 
-    /**
-     * Overrides the implementation of default config.
-     */
-    @Override
-    public void saveDefaultConfig() {
-        if (!this.getDataFolder().exists()) {
-            this.getDataFolder().mkdir();
-        }
-
-        final File configFile = new File(this.getDataFolder(), "config.yml");
-        if (!configFile.exists()) {
-            this.saveResource("config.yml", false);
-        }
-    }
-
     private AbstractModule createInjector() {
         try {
             final Class<?> clazz = Class.forName("com.github.shynixn.petblocks.bukkit.logic.business.helper.GoogleGuiceBinder");
