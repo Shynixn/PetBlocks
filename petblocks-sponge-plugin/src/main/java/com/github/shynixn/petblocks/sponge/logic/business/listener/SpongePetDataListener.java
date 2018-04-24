@@ -15,6 +15,7 @@ import com.github.shynixn.petblocks.sponge.logic.business.helper.CompatibilityIt
 import com.github.shynixn.petblocks.sponge.logic.business.helper.ExtensionMethodsKt;
 import com.github.shynixn.petblocks.sponge.logic.persistence.configuration.Config;
 import com.google.inject.Inject;
+import org.spongepowered.api.Sponge;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.filter.cause.First;
@@ -56,9 +57,10 @@ import java.util.Set;
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-public class SpongePetDataListener extends SimpleSpongeListener {
+public class SpongePetDataListener {
     private final PetBlocksManager manager;
     private final Set<Player> spamProtection = new HashSet<>();
+    private final PluginContainer plugin;
 
     private final ChatBuilder suggestHeadMessage = new ChatBuilder().text(com.github.shynixn.petblocks.core.logic.persistence.configuration.Config.getInstance().getPrefix())
             .text("Click here: ")
@@ -89,8 +91,9 @@ public class SpongePetDataListener extends SimpleSpongeListener {
      */
     @Inject
     public SpongePetDataListener(PetBlocksManager manager, PluginContainer plugin) {
-        super(plugin);
+        this.plugin = plugin;
         this.manager = manager;
+        Sponge.getEventManager().registerListeners(plugin, this);
     }
 
     /**
@@ -108,7 +111,7 @@ public class SpongePetDataListener extends SimpleSpongeListener {
     }
 
     @Listener
-    public void playerClickEvent(final ClickInventoryEvent.Primary event, @First(typeFilter = Player.class) Player player) {
+    public void playerClickEvent(final ClickInventoryEvent event, @First(typeFilter = Player.class) Player player) {
         if (event.getTargetInventory().getName().get().equals(Config.INSTANCE.getGUITitle())
                 && this.manager.getInventories().containsKey(player)) {
             event.setCancelled(true);
