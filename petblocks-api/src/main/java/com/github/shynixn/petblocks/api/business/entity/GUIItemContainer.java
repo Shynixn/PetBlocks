@@ -86,25 +86,36 @@ public interface GUIItemContainer<Player> {
 
     /**
      * Returns the skin of the itemStack.
+     *
      * @return skin
      */
     String getSkin();
 
     /**
      * Returns the id of the item.
+     *
      * @return itemId
      */
     int getItemId();
 
     /**
      * Returns the damage of the item.
+     *
      * @return itemDamage
      */
     int getItemDamage();
 
     /**
      * Returns if the item is unbreakable.
+     *
      * @return unbreakable
      */
     boolean isItemUnbreakable();
+
+    /**
+     * Returns the optional executable script.
+     *
+     * @return script
+     */
+    Optional<String> getExecuteableScript();
 }
