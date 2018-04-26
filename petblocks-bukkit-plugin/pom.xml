@@ -26,6 +26,10 @@
             <id>bstats-repo</id>
             <url>http://repo.bstats.org/content/repositories/releases/</url>
         </repository>
+        <repository>
+            <id>okkero</id>
+            <url>http://nexus.okkero.com/repository/maven-releases/</url>
+        </repository>
     </repositories>
 
     <dependencies>
@@ -43,6 +47,12 @@
             <groupId>org.bstats</groupId>
             <artifactId>bstats-bukkit</artifactId>
             <version>RELEASE</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.okkero.skedule</groupId>
+            <artifactId>skedule</artifactId>
+            <version>1.2.3</version>
             <scope>compile</scope>
         </dependency>
         <dependency>

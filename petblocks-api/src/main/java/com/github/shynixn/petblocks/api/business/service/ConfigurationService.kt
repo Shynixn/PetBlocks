@@ -1,8 +1,7 @@
-package com.github.shynixn.petblocks.core.logic.persistence.configuration
+package com.github.shynixn.petblocks.api.business.service
 
-import com.github.shynixn.petblocks.api.business.entity.GUIItemContainer
-import com.github.shynixn.petblocks.core.logic.business.helper.ChatColor
-import org.slf4j.Logger
+import com.github.shynixn.petblocks.api.persistence.entity.GUIItem
+import java.util.*
 
 /**
  * Created by Shynixn 2018.
@@ -31,23 +30,11 @@ import org.slf4j.Logger
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class GUIItemCollection(private val key: String, private val clazz: Class<*>, private val logger: Logger) {
-
-    private val items: MutableMap<Int, GUIItemContainer<*>> = HashMap()
+interface ConfigurationService {
 
     /**
-     * Reloads the contents from the fileSystem.
+     * Tries to return a [GUIItem] matching the displayName and the lore of the given [item].
+     * Can be called from Asynchronly.
      */
-    fun reload() {
-        val data = Config.getInstance<Any>().getData<Map<String, Any>>(key)
-
-        for (key in data.keys) {
-            try {
-                val container = clazz.getConstructor(Map::class.java).newInstance(data[key]) as GUIItemContainer<*>
-                this.items[key.toInt()] = container
-            } catch (e: Exception) {
-                logger.warn("Failed to load guiItem $key.", e)
-            }
-        }
-    }
+    fun <I> findClickedGUIItem(item: I): Optional<GUIItem>
 }

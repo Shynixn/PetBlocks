@@ -1,8 +1,8 @@
-package com.github.shynixn.petblocks.core.logic.persistence.configuration
+package com.github.shynixn.petblocks.core.logic.persistence.entity
 
 import com.github.shynixn.petblocks.api.business.entity.GUIItemContainer
-import com.github.shynixn.petblocks.core.logic.business.helper.ChatColor
-import org.slf4j.Logger
+import com.github.shynixn.petblocks.api.persistence.entity.GUIItem
+import java.util.*
 
 /**
  * Created by Shynixn 2018.
@@ -31,23 +31,11 @@ import org.slf4j.Logger
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class GUIItemCollection(private val key: String, private val clazz: Class<*>, private val logger: Logger) {
-
-    private val items: MutableMap<Int, GUIItemContainer<*>> = HashMap()
-
-    /**
-     * Reloads the contents from the fileSystem.
-     */
-    fun reload() {
-        val data = Config.getInstance<Any>().getData<Map<String, Any>>(key)
-
-        for (key in data.keys) {
-            try {
-                val container = clazz.getConstructor(Map::class.java).newInstance(data[key]) as GUIItemContainer<*>
-                this.items[key.toInt()] = container
-            } catch (e: Exception) {
-                logger.warn("Failed to load guiItem $key.", e)
-            }
-        }
-    }
+class CustomGUIItem(private val itemContainer: GUIItemContainer<*>) : GUIItem{
+    /** Returns the item displayName */
+    override val displayName: String
+        get() = TODO("not implemented") //To change initializer of created properties use File | Settings | File Templates.
+    /** Returns a executable script */
+    override val executingScript: Optional<String>
+        get() = TODO("not implemented") //To change initializer of created properties use File | Settings | File Templates.
 }

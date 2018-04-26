@@ -1,8 +1,4 @@
-package com.github.shynixn.petblocks.core.logic.persistence.configuration
-
-import com.github.shynixn.petblocks.api.business.entity.GUIItemContainer
-import com.github.shynixn.petblocks.core.logic.business.helper.ChatColor
-import org.slf4j.Logger
+package com.github.shynixn.petblocks.api.business.service
 
 /**
  * Created by Shynixn 2018.
@@ -31,23 +27,15 @@ import org.slf4j.Logger
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class GUIItemCollection(private val key: String, private val clazz: Class<*>, private val logger: Logger) {
-
-    private val items: MutableMap<Int, GUIItemContainer<*>> = HashMap()
+interface GUIService {
 
     /**
-     * Reloads the contents from the fileSystem.
+     * Returns if the given [inventory] matches the inventory of this service.
      */
-    fun reload() {
-        val data = Config.getInstance<Any>().getData<Map<String, Any>>(key)
+    fun <I> isGUIInventory(inventory: I): Boolean
 
-        for (key in data.keys) {
-            try {
-                val container = clazz.getConstructor(Map::class.java).newInstance(data[key]) as GUIItemContainer<*>
-                this.items[key.toInt()] = container
-            } catch (e: Exception) {
-                logger.warn("Failed to load guiItem $key.", e)
-            }
-        }
-    }
+    /**
+     * Executes actions when the given [player] clicks on an [item].
+     */
+    fun <P, I> clickInventoryItem(player: P, item: I)
 }
