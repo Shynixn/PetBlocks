@@ -1,4 +1,4 @@
-package com.github.shynixn.petblocks.logic.persistence.controller;
+package com.github.shynixn.petblocks.integrationtests.persistence;
 
 import com.github.shynixn.petblocks.bukkit.nms.VersionSupport;
 import org.junit.Assert;

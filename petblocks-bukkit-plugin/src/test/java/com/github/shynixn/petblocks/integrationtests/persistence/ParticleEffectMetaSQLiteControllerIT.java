@@ -1,4 +1,4 @@
-package com.github.shynixn.petblocks.logic.persistence.controller;
+package com.github.shynixn.petblocks.integrationtests.persistence;
 
 import com.github.shynixn.petblocks.api.persistence.controller.ParticleEffectMetaController;
 import com.github.shynixn.petblocks.api.persistence.controller.PetMetaController;

@@ -1,4 +1,4 @@
-package com.github.shynixn.petblocks.logic.persistence.controller;
+package com.github.shynixn.petblocks.integrationtests.persistence;
 
 import ch.vorburger.mariadb4j.DB;
 import com.zaxxer.hikari.HikariConfig;

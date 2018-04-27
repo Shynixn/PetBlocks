@@ -1,7 +1,5 @@
-package com.github.shynixn.petblocks.logic.persistence.controller;
+package com.github.shynixn.petblocks.integrationtests.persistence;
 
-import ch.vorburger.exec.ManagedProcessException;
-import ch.vorburger.mariadb4j.DB;
 import com.github.shynixn.petblocks.api.persistence.controller.ParticleEffectMetaController;
 import com.github.shynixn.petblocks.api.persistence.controller.PetMetaController;
 import com.github.shynixn.petblocks.api.persistence.controller.PlayerMetaController;
@@ -12,21 +10,18 @@ import com.github.shynixn.petblocks.bukkit.PetBlocksPlugin;
 import com.github.shynixn.petblocks.bukkit.logic.Factory;
 import com.github.shynixn.petblocks.core.logic.persistence.entity.EngineData;
 import com.github.shynixn.petblocks.core.logic.persistence.entity.PetData;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.Server;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.junit.Assert;
-import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.lang.reflect.Field;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -37,9 +32,20 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-public class PetMetaMySQLControllerIT {
+public class PetMetaSQLiteControllerIT {
 
     private static Plugin mockPlugin() {
+        final Server server = mock(Server.class);
+        when(server.getLogger()).thenReturn(Logger.getGlobal());
+        if (Bukkit.getServer() == null)
+            Bukkit.setServer(server);
+        try {
+            final Field field = PetBlocksPlugin.class.getDeclaredField("logger");
+            field.setAccessible(true);
+            field.set(null, Logger.getGlobal());
+        } catch (IllegalAccessException | NoSuchFieldException e) {
+            Assert.fail();
+        }
         final YamlConfiguration configuration = new YamlConfiguration();
         configuration.set("sql.enabled", false);
         configuration.set("sql.host", "localhost");
@@ -47,13 +53,6 @@ public class PetMetaMySQLControllerIT {
         configuration.set("sql.database", "db");
         configuration.set("sql.username", "root");
         configuration.set("sql.password", "");
-        try {
-            final Field field = PetBlocksPlugin.class.getDeclaredField("logger");
-            field.setAccessible(true);
-            field.set(null, Logger.getGlobal());
-        } catch (IllegalAccessException | NoSuchFieldException e) {
-           Assert.fail();
-        }
         final Plugin plugin = mock(Plugin.class);
         new File("PetBlocks.db").delete();
         when(plugin.getDataFolder()).thenReturn(new File("PetBlocks"));
@@ -65,39 +64,13 @@ public class PetMetaMySQLControllerIT {
         return plugin;
     }
 
-
-    private static DB database;
-
-    @AfterAll
-    public static void stopMariaDB()
-    {
-        try {
-            database.stop();
-        } catch (final ManagedProcessException e) {
-            Logger.getLogger(PetMetaMySQLControllerIT.class.getSimpleName()).log(Level.WARNING, "Failed stop maria db.", e);
-        }
-    }
-
     @BeforeAll
-    public static void startMariaDB() {
-        try {
-            Factory.disable();
-            database = DB.newEmbeddedDB(3306);
-            database.start();
-            try (Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/?user=root&password=")) {
-                try (Statement statement = conn.createStatement()) {
-                    statement.executeUpdate("CREATE DATABASE db");
-                }
-            }
-        } catch (SQLException | ManagedProcessException e) {
-            Logger.getLogger(PetMetaMySQLControllerIT.class.getSimpleName()).log(Level.WARNING, "Failed start maria db.", e);
-        }
+    public static void disableFactory() {
+        Factory.disable();
     }
 
     @Test
-    public void insertSelectPlayerMetaTest() throws ClassNotFoundException {
-        final Plugin plugin = mockPlugin();
-        plugin.getConfig().set("sql.enabled", true);
+    public void insertSelectPetMetaTest() throws ClassNotFoundException {
         Factory.initialize(mockPlugin());
         final UUID uuid = UUID.randomUUID();
         final Player player = mock(Player.class);
@@ -105,7 +78,7 @@ public class PetMetaMySQLControllerIT {
         when(player.getUniqueId()).thenReturn(uuid);
         try (PetMetaController<Player> controller = Factory.createPetDataController()) {
             try (ParticleEffectMetaController particleController = Factory.createParticleEffectController()) {
-                try (PlayerMetaController playerController = Factory.createPlayerDataController()) {
+                try (PlayerMetaController<Player> playerController = Factory.createPlayerDataController()) {
                     for (final PetMeta item : controller.getAll()) {
                         controller.remove(item);
                     }
@@ -127,7 +100,7 @@ public class PetMetaMySQLControllerIT {
                     meta.setPlayerMeta(playerMeta);
                     assertThrows(IllegalArgumentException.class, () -> controller.store(meta));
 
-                    meta.setEngineId(1);
+                    meta.setEngineId(4);
                     assertThrows(IllegalArgumentException.class, () -> controller.store(meta));
 
                     meta.setSkin(Material.STONE.getId(), (short) 5, null, false);
@@ -144,11 +117,8 @@ public class PetMetaMySQLControllerIT {
         }
     }
 
-
     @Test
-    public void storeLoadPlayerMetaTest() throws ClassNotFoundException {
-        final Plugin plugin = mockPlugin();
-        plugin.getConfig().set("sql.enabled", true);
+    public void storeLoadPetMetaTest() throws ClassNotFoundException {
         Factory.initialize(mockPlugin());
         final UUID uuid = UUID.randomUUID();
         final Player player = mock(Player.class);
@@ -162,11 +132,12 @@ public class PetMetaMySQLControllerIT {
                     }
                     PetData meta = this.create();
                     meta.setPetDisplayName("Me");
-                    meta.setSkin(Material.BIRCH_DOOR_ITEM.getId(),5 , "This is my long skin.",true);
+                    meta.setSkin(Material.BIRCH_DOOR_ITEM.getId(), 5, "This is my long skin.", true);
+                    meta.setEngine(new EngineData<Object>(4) {
+                    });
                     meta.setEnabled(true);
                     meta.setAge(500);
                     meta.setSoundEnabled(true);
-
                     final ParticleEffectMeta particleEffectMeta = particleController.create();
                     particleEffectMeta.setEffectType(ParticleEffectMeta.ParticleEffectType.END_ROD);
                     particleController.store(particleEffectMeta);
@@ -175,31 +146,29 @@ public class PetMetaMySQLControllerIT {
                     final PlayerMeta playerMeta = playerController.create(player);
                     playerController.store(playerMeta);
                     meta.setPlayerMeta(playerMeta);
-                    meta.setEngine(new EngineData<Object>(0) {
-                    });
                     controller.store(meta);
 
                     assertEquals(1, controller.size());
                     meta = (PetData) controller.getFromId(meta.getId()).get();
                     assertEquals("Me", meta.getPetDisplayName());
                     assertEquals(Material.BIRCH_DOOR_ITEM.getId(), meta.getItemId());
-                    assertEquals((short)5, meta.getItemDamage());
+                    assertEquals(5, meta.getItemDamage());
                     assertEquals("This is my long skin.", meta.getSkin());
-                    assertEquals(0, meta.getEngineId());
+                    assertEquals(4, meta.getEngineId());
                     assertEquals(true, meta.isEnabled());
                     assertEquals(500, meta.getAge());
                     assertEquals(true, meta.isItemStackUnbreakable());
-                    assertEquals(true, meta.isItemStackUnbreakable());
+                    assertEquals(true, meta.isSoundEnabled());
 
                     meta.setPetDisplayName("PikaPet");
-                    meta.setSkin(Material.ARROW.getId(),(short)7 , "http://Skin.com", false);
-                    meta.setEngineId(2);
+                    meta.setSkin(Material.ARROW.getId(), 7, "http://Skin.com", false);
+                    meta.setEngineId(1);
                     meta.setEnabled(false);
                     meta.setAge(250);
                     meta.setSoundEnabled(false);
                     meta.setPlayerMeta(playerMeta);
                     meta.setParticleEffectMeta(particleEffectMeta);
-                    meta.setEngine(new EngineData<Object>(2) {
+                    meta.setEngine(new EngineData<Object>(1) {
                     });
                     controller.store(meta);
 
@@ -207,9 +176,9 @@ public class PetMetaMySQLControllerIT {
                     meta = (PetData) controller.getFromId(meta.getId()).get();
                     assertEquals("PikaPet", meta.getPetDisplayName());
                     assertEquals(Material.ARROW.getId(), meta.getItemId());
-                    assertEquals((short)7, meta.getItemDamage());
+                    assertEquals(7, meta.getItemDamage());
                     assertEquals("http://Skin.com", meta.getSkin());
-                    assertEquals(2, meta.getEngineId());
+                    assertEquals(1, meta.getEngineId());
                     assertEquals(false, meta.isEnabled());
                     assertEquals(250, meta.getAge());
                     assertEquals(false, meta.isItemStackUnbreakable());
