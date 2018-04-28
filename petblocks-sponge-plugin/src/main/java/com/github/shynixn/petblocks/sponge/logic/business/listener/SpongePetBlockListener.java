@@ -62,9 +62,11 @@ import java.util.Set;
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-public class SpongePetBlockListener extends SimpleSpongeListener {
+public class SpongePetBlockListener {
     private final PetBlocksManager manager;
     private final Set<PetBlock> jumped = new HashSet<>();
+
+    private final PluginContainer plugin;
 
     /**
      * Initializes a new petblockListener from the manager and plugin.
@@ -74,8 +76,9 @@ public class SpongePetBlockListener extends SimpleSpongeListener {
      */
     @Inject
     public SpongePetBlockListener(PetBlocksManager manager, PluginContainer plugin) {
-        super(plugin);
+        this.plugin = plugin;
         this.manager = manager;
+        Sponge.getEventManager().registerListeners(plugin, this);
         Task.builder().intervalTicks(60L).execute(new ParticleRunnable()).submit(plugin);
         Task.builder().intervalTicks(20L).execute(new PetHunterRunnable()).submit(plugin);
     }
@@ -223,13 +226,12 @@ public class SpongePetBlockListener extends SimpleSpongeListener {
                 } else if (Config.INSTANCE.isFollow_carry() && (player.getInventory() == null || !player.getItemInHand(HandTypes.OFF_HAND).isPresent())) {
                     player.setItemInHand(HandTypes.OFF_HAND, ((ArmorStand) petBlock.getArmorStand()).getHelmet().get().copy());
                     this.manager.getPetBlockController().remove(petBlock);
-                    this.manager.getCarryingPet().put(player,((ArmorStand) petBlock.getArmorStand()).getHelmet().get().copy());
+                    this.manager.getCarryingPet().put(player, ((ArmorStand) petBlock.getArmorStand()).getHelmet().get().copy());
                 }
             }
             event.setCancelled(true);
         }
     }
-
 
     @Listener
     public void onPlayerInteractEvent(HandInteractEvent event, @First(typeFilter = Player.class) Player player) {

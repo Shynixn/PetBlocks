@@ -67,6 +67,6 @@ public class PetBlockEvent extends AbstractEvent {
 
     @Override
     public Cause getCause() {
-        return Cause.builder().notifier(this).build();
+        return null;
     }
 }

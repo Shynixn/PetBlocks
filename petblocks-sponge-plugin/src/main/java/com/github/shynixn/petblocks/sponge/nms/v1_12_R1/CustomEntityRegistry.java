@@ -6,7 +6,11 @@ import net.minecraft.anchor.v1_12_mcpR1.entity.EntityList;
 import net.minecraft.anchor.v1_12_mcpR1.util.ResourceLocation;
 import net.minecraft.anchor.v1_12_mcpR1.util.registry.RegistryNamespaced;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -50,9 +54,13 @@ public class CustomEntityRegistry implements CustomEntityType.WrappedRegistry {
     @Override
     public void register(Class<?> customEntityClazz, CustomEntityType customEntityType) throws Exception {
         final ResourceLocation minecraftKey = new ResourceLocation("PetBlocks", customEntityType.getSaveGame_11());
-        final RegistryNamespaced<ResourceLocation, Class<? extends Entity>> materialRegistry = EntityList.REGISTRY;
-        materialRegistry.register(customEntityType.getEntityId(), minecraftKey, (Class<? extends Entity>) customEntityClazz);
-        this.registeredClasses.add(customEntityClazz);
+        try {
+            final RegistryNamespaced<ResourceLocation, Class<? extends Entity>> materialRegistry = EntityList.REGISTRY;
+            materialRegistry.register(customEntityType.getEntityId(), minecraftKey, (Class<? extends Entity>) customEntityClazz);
+            this.registeredClasses.add(customEntityClazz);
+        } catch (final NoSuchFieldError error) {
+            // @Forge why is this necessary and why do you remove this field???
+        }
     }
 
     /**
@@ -67,10 +75,15 @@ public class CustomEntityRegistry implements CustomEntityType.WrappedRegistry {
         if (!this.isRegistered(customEntityClazz)) {
             throw new IllegalArgumentException("Entity is already unregisterd!");
         }
-        final ResourceLocation minecraftKey = new ResourceLocation("PetBlocks", customEntityType.getSaveGame_11());
-        final RegistryNamespaced<ResourceLocation, Class<? extends Entity>> materialRegistry = EntityList.REGISTRY;
-        materialRegistry.registryObjects.remove(minecraftKey);
-        this.registeredClasses.remove(customEntityClazz);
+
+        try {
+            final ResourceLocation minecraftKey = new ResourceLocation("PetBlocks", customEntityType.getSaveGame_11());
+            final RegistryNamespaced<ResourceLocation, Class<? extends Entity>> materialRegistry = EntityList.REGISTRY;
+            materialRegistry.registryObjects.remove(minecraftKey);
+            this.registeredClasses.remove(customEntityClazz);
+        } catch (final NoSuchFieldError error) {
+            // @Forge is responsible for removing the key if this happens.
+        }
     }
 
     /**

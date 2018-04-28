@@ -16,12 +16,14 @@ import com.github.shynixn.petblocks.sponge.nms.helper.PetBlockPartWrapper;
 import com.github.shynixn.petblocks.sponge.nms.helper.PetBlockWrapper;
 import net.minecraft.anchor.v1_12_mcpR1.entity.Entity;
 import net.minecraft.anchor.v1_12_mcpR1.entity.EntityLivingBase;
+import net.minecraft.anchor.v1_12_mcpR1.entity.MoverType;
 import net.minecraft.anchor.v1_12_mcpR1.entity.SharedMonsterAttributes;
 import net.minecraft.anchor.v1_12_mcpR1.entity.item.EntityArmorStand;
 import net.minecraft.anchor.v1_12_mcpR1.entity.player.EntityPlayer;
 import net.minecraft.anchor.v1_12_mcpR1.entity.player.EntityPlayerMP;
 import net.minecraft.anchor.v1_12_mcpR1.nbt.NBTTagCompound;
 import net.minecraft.anchor.v1_12_mcpR1.network.play.server.SPacketEntityTeleport;
+import net.minecraft.anchor.v1_12_mcpR1.util.math.AxisAlignedBB;
 import net.minecraft.anchor.v1_12_mcpR1.util.math.MathHelper;
 import net.minecraft.anchor.v1_12_mcpR1.util.math.RayTraceResult;
 import net.minecraft.anchor.v1_12_mcpR1.util.math.Vec3d;
@@ -31,6 +33,7 @@ import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.entity.Transform;
 import org.spongepowered.api.entity.living.ArmorStand;
 import org.spongepowered.api.entity.living.Living;
+import org.spongepowered.api.entity.living.animal.Rabbit;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.item.inventory.ItemStack;
 
@@ -48,6 +51,7 @@ final class CustomGroundArmorstand extends EntityArmorStand {
     private boolean firstRide = true;
     private int counter;
     private Vector3d bumper;
+    private boolean isGroundRiding;
 
     /**
      * Default necessary constructor.
@@ -85,8 +89,29 @@ final class CustomGroundArmorstand extends EntityArmorStand {
     }
 
     @Override
+    public void move(MoverType type, double x, double y, double z) {
+        super.move(type, x, y, z);
+        this.recalculatePosition();
+    }
+
+    private void recalculatePosition() {
+        if (this.hasHumanPassenger() != null) {
+            final AxisAlignedBB localAxisAlignedBB = this.getEntityBoundingBox();
+            this.posX = ((localAxisAlignedBB.minX + localAxisAlignedBB.maxX) / 2.0D);
+            this.posZ = ((localAxisAlignedBB.minZ + localAxisAlignedBB.maxZ) / 2.0D);
+            this.posY = (localAxisAlignedBB.minY + Config.INSTANCE.getHitBoxYAxeModification());
+            this.isGroundRiding = true;
+        }
+    }
+
+    @Override
     protected void updateEntityActionState() {
         if (this.isSpecial) {
+            if (this.isGroundRiding && this.hasHumanPassenger() == null) {
+                ((Living) this.rabbit.getEntity()).setLocation(((Living) this.rabbit.getEntity()).getLocation().add(0, 2, 0));
+                this.isGroundRiding = false;
+            }
+
             this.getArmorstand().getHealthData().health().set(this.getArmorstand().getHealthData().maxHealth().getMaxValue());
             final PetMeta petData = this.wrapper.getMeta();
             final ArmorStand armorStand = this.getArmorstand();

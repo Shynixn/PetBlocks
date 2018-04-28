@@ -94,6 +94,7 @@ public abstract class PetDataRepository<Player> extends DataBaseRepository<PetMe
             throw new IllegalArgumentException("ParticleMeta cannot be null!");
         if (item.getPlayerMeta().getPlayer() != null) {
             item.getPlayerMeta().setName(this.getPlayerName(item.getPlayerMeta().getPlayer()));
+            item.getPlayerMeta().setUuid(this.getPlayerUUID(item.getPlayerMeta().getPlayer()));
             if (item.getPlayerMeta().getId() == 0) {
                 final Optional<PlayerMeta> optPlayerMeta;
                 if ((optPlayerMeta = this.playerMetaController.getFromUUID(this.getPlayerUUID(item.getPlayerMeta().getPlayer()))).isPresent()) {

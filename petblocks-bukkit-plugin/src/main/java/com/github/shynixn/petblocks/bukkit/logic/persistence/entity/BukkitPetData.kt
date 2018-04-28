@@ -77,7 +77,7 @@ class BukkitPetData : PetData {
         this.playerInfo = object : PlayerData() {
             override fun <T> getPlayer(): T? {
                 return try {
-                    Bukkit.getPlayer(this.name) as T
+                    Bukkit.getPlayer(player.name) as T
                 } catch (ex: Exception) {
                     null
                 }

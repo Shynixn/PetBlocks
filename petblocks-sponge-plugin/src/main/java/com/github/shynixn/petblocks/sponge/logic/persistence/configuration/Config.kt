@@ -13,6 +13,7 @@ import com.github.shynixn.petblocks.sponge.logic.persistence.entity.SpongeSoundB
 import com.google.inject.Singleton
 import ninja.leaping.configurate.yaml.YAMLConfigurationLoader
 import org.spongepowered.api.Sponge
+import org.spongepowered.api.entity.Transform
 import org.spongepowered.api.entity.living.player.Player
 import org.spongepowered.api.world.Location
 import org.spongepowered.api.world.World
@@ -105,7 +106,12 @@ object Config : ConfigLayer<Player>() {
 
 
     override fun allowPetSpawning(location2: Any?): Boolean {
-        val location = location2 as Location<World>
+        val location: Location<World> = if (location2 is Transform<*>) {
+            location2.location as Location<World>
+        } else {
+            location2 as Location<World>
+        }
+
         val includedWorlds = this.includedWorlds
         val excludedWorlds = this.excludedWorlds
 
