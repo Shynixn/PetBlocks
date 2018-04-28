@@ -38,4 +38,9 @@ interface GUIService {
      * Executes actions when the given [player] clicks on an [item].
      */
     fun <P, I> clickInventoryItem(player: P, item: I)
+
+    /**
+     * Loads the collection from the given [path] into the given [inventory].
+     */
+    fun <I> loadCollectionPage(inventory: I, path: String)
 }

@@ -1,5 +1,7 @@
 package com.github.shynixn.petblocks.api.business.service
 
+import com.github.shynixn.petblocks.api.business.entity.ScriptResult
+
 /**
  * Created by Shynixn 2018.
  * <p>
@@ -31,5 +33,5 @@ interface GUIScriptService {
     /**
      * Executes the given [script] for the given [inventory].
      */
-    fun <I> executeScript(inventory: I, script: String)
+    fun <I> executeScript(inventory: I, script: String) : ScriptResult
 }

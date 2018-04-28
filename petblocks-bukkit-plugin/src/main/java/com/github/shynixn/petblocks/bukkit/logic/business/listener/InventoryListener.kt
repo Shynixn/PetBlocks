@@ -37,15 +37,11 @@ import org.bukkit.plugin.PluginManager
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class InventoryListener(private val guiService: GUIService, private val plugin: Plugin, private val pluginManager: PluginManager) : Listener {
-
-    //region Constructor
+class InventoryListener(private val guiService: GUIService, private val plugin: Plugin, pluginManager: PluginManager) : Listener {
 
     init {
         pluginManager.registerEvents(this, this.plugin)
     }
-
-    //endregion
 
     /**
      * Gets called from [Bukkit] and handles action to the inventory.

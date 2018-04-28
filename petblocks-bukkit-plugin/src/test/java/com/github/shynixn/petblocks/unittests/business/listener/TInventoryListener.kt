@@ -8,7 +8,6 @@ import org.bukkit.event.inventory.InventoryClickEvent
 import org.bukkit.inventory.ItemStack
 import org.bukkit.plugin.Plugin
 import org.bukkit.plugin.PluginManager
-import org.junit.jupiter.api.Test
 import org.mockito.Mockito
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
@@ -110,6 +109,8 @@ class TInventoryListener {
         assertFalse(guiService.called)
     }
 
+    //region Region Helper
+
     object Companion {
 
         fun createWithDependencies(guiService: GUIService? = null): InventoryListener {
@@ -130,7 +131,7 @@ class TInventoryListener {
                 itemStack
             })
             Mockito.`when`(clickEvent.whoClicked).then({
-                Mockito.mock(Player::class.java)
+                Mockito.mock(Player::class.java)!!
             })
 
             return clickEvent
@@ -155,4 +156,6 @@ class TInventoryListener {
             called = true
         }
     }
+
+    //endregion
 }

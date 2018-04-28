@@ -1,10 +1,6 @@
-package com.github.shynixn.petblocks.bukkit.logic.business.service
+package com.github.shynixn.petblocks.api.business.entity
 
-import com.github.shynixn.petblocks.api.business.entity.ScriptResult
 import com.github.shynixn.petblocks.api.business.enumeration.ScriptAction
-import com.github.shynixn.petblocks.api.business.service.GUIScriptService
-import com.github.shynixn.petblocks.bukkit.logic.business.entity.ScriptResultImpl
-import org.slf4j.Logger
 import java.util.*
 
 /**
@@ -34,23 +30,15 @@ import java.util.*
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class GUIScriptServiceImpl(private val logger: Logger) : GUIScriptService {
+interface ScriptResult {
+
     /**
-     * Executes the given [script] for the given [inventory].
+     * Returns the [ScriptAction] which should be executed.
      */
-    override fun <I> executeScript(inventory: I, script: String): ScriptResult {
-        val scriptResult = ScriptResultImpl()
+    val action: ScriptAction
 
-        try {
-            if (script.startsWith("binding collection ")) {
-                val path = script.replace("binding collection ", "")
-                scriptResult.action = ScriptAction.LOAD_COLLECTION
-                scriptResult.path = Optional.of(path)
-            }
-        } catch (e: Exception) {
-            logger.warn("Failed to execute script '$script'.")
-        }
-
-        return scriptResult
-    }
+    /**
+     * Returns the optional parsed path for the [ScriptAction].
+     */
+    val path: Optional<String>
 }
