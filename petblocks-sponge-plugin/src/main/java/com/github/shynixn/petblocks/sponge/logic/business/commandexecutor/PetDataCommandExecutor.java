@@ -107,10 +107,20 @@ public final class PetDataCommandExecutor extends SimpleCommandExecutor {
          */
         @Override
         public void onPlayerExecuteCommand(Player player, CommandContext args) {
-            final Optional<PetBlock> petBlock;
-            if ((petBlock = this.manager.getPetBlockController().getFromPlayer(player)).isPresent()) {
-                petBlock.get().teleport(player.getTransform());
+            final Optional<PetBlock> optPetBlock;
+            if ((optPetBlock = this.manager.getPetBlockController().getFromPlayer(player)).isPresent()) {
+                optPetBlock.get().teleport(player.getTransform());
+            } else {
+                Task.builder().async().execute(() -> {
+                    final Optional<PetMeta> optPetMeta = this.manager.getPetMetaController().getFromPlayer(player);
+                    optPetMeta.ifPresent(petMeta -> Task.builder().execute(() -> {
+                        final PetBlock petBlock = this.manager.getPetBlockController().create(player, petMeta);
+                        this.manager.getPetBlockController().store(petBlock);
+                    }).submit(this.plugin));
+                }).submit(this.plugin);
             }
+
+            player.sendMessage(ExtensionMethodsKt.translateToText(Config.INSTANCE.getPrefix().concat(Config.getInstance().getCallPetSuccessMessage())));
         }
     }
 
@@ -136,12 +146,14 @@ public final class PetDataCommandExecutor extends SimpleCommandExecutor {
             final Optional<PetBlock> optPetBlock;
             if ((optPetBlock = this.manager.getPetBlockController().getFromPlayer(player)).isPresent()) {
                 this.manager.getPetBlockController().remove(optPetBlock.get());
+                player.sendMessage(ExtensionMethodsKt.translateToText(Config.INSTANCE.getPrefix().concat(Config.getInstance().getToggleDeSpawnMessage())));
             } else {
                 Task.builder().async().execute(() -> {
                     final Optional<PetMeta> optPetMeta = this.manager.getPetMetaController().getFromPlayer(player);
                     optPetMeta.ifPresent(petMeta -> Task.builder().execute(() -> {
                         final PetBlock petBlock = this.manager.getPetBlockController().create(player, petMeta);
                         this.manager.getPetBlockController().store(petBlock);
+                        player.sendMessage(ExtensionMethodsKt.translateToText(Config.INSTANCE.getPrefix().concat(Config.getInstance().getToggleSpawnMessage())));
                     }).submit(this.plugin));
                 }).submit(this.plugin);
             }

@@ -17,7 +17,7 @@
         <module>petblocks-sponge-plugin</module>
         <module>petblocks-core</module>
     </modules>
-    <version>7.0.0</version>
+    <version>7.0.1</version>
     <packaging>pom</packaging>
 
     <developers>

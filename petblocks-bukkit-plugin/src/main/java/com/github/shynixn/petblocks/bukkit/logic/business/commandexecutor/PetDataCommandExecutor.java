@@ -44,16 +44,29 @@ public final class PetDataCommandExecutor extends SimpleCommandExecutor.UnRegist
             final Optional<PetBlock> optPetBlock;
             if ((optPetBlock = PetBlocksApi.getDefaultPetBlockController().getFromPlayer(player)).isPresent()) {
                 optPetBlock.get().teleport(player.getLocation());
-            }
-        } else if (args.length == 1 && args[0].equalsIgnoreCase("toggle")) {
-            if (PetBlocksApi.getDefaultPetBlockController().getFromPlayer(player).isPresent()) {
-                PetBlocksApi.getDefaultPetBlockController().remove(PetBlocksApi.getDefaultPetBlockController().getFromPlayer(player).get());
             } else {
                 this.plugin.getServer().getScheduler().runTaskAsynchronously(this.plugin, () -> {
                     final Optional<PetMeta> optPetMeta = PetDataCommandExecutor.this.manager.getPetMetaController().getFromPlayer(player);
                     optPetMeta.ifPresent(petMeta -> this.plugin.getServer().getScheduler().runTask(this.plugin, () -> {
                         final PetBlock petBlock = PetBlocksApi.getDefaultPetBlockController().create(player, petMeta);
                         PetBlocksApi.getDefaultPetBlockController().store(petBlock);
+                    }));
+                });
+            }
+
+            player.sendMessage(Config.getInstance().getPrefix() + Config.getInstance().getCallPetSuccessMessage());
+
+        } else if (args.length == 1 && args[0].equalsIgnoreCase("toggle")) {
+            if (PetBlocksApi.getDefaultPetBlockController().getFromPlayer(player).isPresent()) {
+                PetBlocksApi.getDefaultPetBlockController().remove(PetBlocksApi.getDefaultPetBlockController().getFromPlayer(player).get());
+                player.sendMessage(Config.getInstance().getPrefix() + Config.getInstance().getToggleDeSpawnMessage());
+            } else {
+                this.plugin.getServer().getScheduler().runTaskAsynchronously(this.plugin, () -> {
+                    final Optional<PetMeta> optPetMeta = PetDataCommandExecutor.this.manager.getPetMetaController().getFromPlayer(player);
+                    optPetMeta.ifPresent(petMeta -> this.plugin.getServer().getScheduler().runTask(this.plugin, () -> {
+                        final PetBlock petBlock = PetBlocksApi.getDefaultPetBlockController().create(player, petMeta);
+                        PetBlocksApi.getDefaultPetBlockController().store(petBlock);
+                        player.sendMessage(Config.getInstance().getPrefix() + Config.getInstance().getToggleSpawnMessage());
                     }));
                 });
             }

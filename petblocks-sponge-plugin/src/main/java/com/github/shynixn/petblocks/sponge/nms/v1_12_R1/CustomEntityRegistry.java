@@ -60,28 +60,6 @@ public class CustomEntityRegistry implements CustomEntityType.WrappedRegistry {
             this.registeredClasses.add(customEntityClazz);
         } catch (final NoSuchFieldError error) {
             // @Forge why is this necessary and why do you remove this field???
-            // Fallback Implementation for SpongeForge
-
-            final Class<?> entityEntry = Class.forName("net.minecraftforge.fml.common.registry.EntityEntry");
-            final Constructor constructor = entityEntry.getDeclaredConstructor(Class.class, String.class);
-            final Method setRegistryName = Class.forName("net.minecraftforge.registries.IForgeRegistryEntry").getDeclaredMethod("setRegistryName", ResourceLocation.class);
-
-            final Object entityEntryInstance = constructor.newInstance(customEntityClazz, "PetBlocks." + customEntityType.getName());
-            setRegistryName.invoke(entityEntryInstance, minecraftKey);
-
-            final Class<?> forgeRegistry = Class.forName("net.minecraftforge.fml.common.registry.ForgeRegistries");
-            final Object internalForgeRegistry = forgeRegistry.getDeclaredField("ENTITIES").get(null);
-
-            Class.forName("net.minecraftforge.registries.ForgeRegistry").getDeclaredMethod("unfreeze").invoke(internalForgeRegistry);
-
-            for (final Method method : internalForgeRegistry.getClass().getDeclaredMethods()) {
-                if (method.getName().equals("register") && Modifier.isPublic(method.getModifiers())) {
-                    method.invoke(internalForgeRegistry, entityEntryInstance);
-                    break;
-                }
-            }
-
-            Class.forName("net.minecraftforge.registries.ForgeRegistry").getDeclaredMethod("freeze").invoke(internalForgeRegistry);
         }
     }
 

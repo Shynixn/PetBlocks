@@ -16,14 +16,14 @@ PetBlocks is using maven as build system but you can include the api via differe
     <dependency>
         <groupId>com.github.shynixn.petblocks</groupId>
         <artifactId>petblocks-bukkit-api</artifactId>
-        <version>7.0.0</version>
+        <version>7.0.1</version>
         <scope>provided</scope>
     </dependency>
 
 **(Bukkit) Gradle**:
 ::
     dependencies {
-        compileOnly 'com.github.shynixn.petblocks:petblocks-bukkit-api:7.0.0'
+        compileOnly 'com.github.shynixn.petblocks:petblocks-bukkit-api:7.0.1'
     }
 
 **(Sponge) Maven**:
@@ -31,14 +31,14 @@ PetBlocks is using maven as build system but you can include the api via differe
     <dependency>
         <groupId>com.github.shynixn.petblocks</groupId>
         <artifactId>petblocks-sponge-api</artifactId>
-        <version>7.0.0</version>
+        <version>7.0.1</version>
         <scope>provided</scope>
     </dependency>
 
 **(Sponge) Gradle**:
 ::
     dependencies {
-        compileOnly 'com.github.shynixn.petblocks:petblocks-sponge-api:7.0.0'
+        compileOnly 'com.github.shynixn.petblocks:petblocks-sponge-api:7.0.1'
     }
 
 **Reference the jar file**:
@@ -61,6 +61,8 @@ Your plugin requires PetBlocks to work.
     depend: [PetBlocks]
 
 **(Sponge) mcmod.info**
+
+Your plugin optionally uses PetBlocks.
 ::
  "dependencies": [
     "petblocks"
@@ -174,20 +176,20 @@ you need to manage asynchronous and synchronous server tasks.
                 public void run() {
                     Optional<PetMeta> optPetMeta = metaController.getFromPlayer(player);   //Acquire the PetMeta async from the database.
                     if (optPetMeta.isPresent()) { //Check if the player has got a petMeta?
-                        Bukkit.getServer().getScheduler().runTask(plugin, new Runnable() {
+                           Task.builder().async().execute(new Runnable() {
                             @Override
                             public void run() {
                                 PetMeta petMeta = optPetMeta.get();
                                 petMeta.setSkin(5, 0, null, false); //Change skin to a wooden block
 
-                                Bukkit.getServer().getScheduler().runTaskAsynchronously(plugin, new Runnable() {
+                                 Task.builder().async().execute(new Runnable() {
                                     @Override
                                     public void run() {
                                         metaController.store(petMeta);
                                     }
-                                });
+                                }).submit(plugin);
                             }
-                        });
+                        }).submit(plugin);
                     }
                 }
             }).submit(plugin);
@@ -199,14 +201,14 @@ Using lamda expressions can reduce the code above significantly.
             final PluginContainer plugin; //Any plugin instance
             PetMetaController<Player> metaController = PetBlocksApi.getDefaultPetMetaController();
 
-               Task.builder().async().execute(() -> {
+            Task.builder().async().execute(() -> {
                 Optional<PetMeta> optPetMeta = metaController.getFromPlayer(player);   //Acquire the PetMeta async from the database.
                 if (optPetMeta.isPresent()) { //Check if the player has got a petMeta?
-                    Bukkit.getServer().getScheduler().runTask(plugin, () -> {
+                      Task.builder().execute(() -> {
                         PetMeta petMeta = optPetMeta.get();
                         petMeta.setSkin(5, 0, null, false); //Change skin to a wooden block
-                        Bukkit.getServer().getScheduler().runTaskAsynchronously(plugin, () -> metaController.store(petMeta));
-                    });
+                        Task.builder().async().execute(() -> metaController.store(petMeta)).submit(plugin);
+                    }).submit(plugin);
                 }
             }).submit(plugin);
 

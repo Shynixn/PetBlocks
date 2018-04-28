@@ -225,7 +225,6 @@ public abstract class Config<Player> {
         return this.getDataAsStringList("region.included");
     }
 
-
     /**
      * Returns the forbidden pet names.
      *
@@ -355,6 +354,32 @@ public abstract class Config<Player> {
         return (int) this.getData("pet.warp.teleports-in-seconds");
     }
 
+    /**
+     * Returns the message for the pet being successfully called.
+     *
+     * @return message
+     */
+    public String getCallPetSuccessMessage() {
+        return this.getData("messages.called-success");
+    }
+
+    /**
+     * Returns the message for the pet being spawned.
+     *
+     * @return message
+     */
+    public String getToggleSpawnMessage() {
+        return this.getData("messages.toggle-spawn");
+    }
+
+    /**
+     * Returns the message for the pet being despawned.
+     *
+     * @return message
+     */
+    public String getToggleDeSpawnMessage() {
+        return this.getData("messages.toggle-despawn");
+    }
 
     /**
      * Returns if metrics is enabled
