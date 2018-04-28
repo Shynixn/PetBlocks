@@ -11,13 +11,13 @@ import com.github.shynixn.petblocks.core.logic.business.helper.ReflectionUtils;
 import com.github.shynixn.petblocks.core.logic.persistence.configuration.Config;
 import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
+import org.apache.commons.io.IOUtils;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.lang.reflect.InvocationTargetException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -96,6 +96,29 @@ public final class PetBlocksPlugin extends JavaPlugin {
             } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
                 PetBlocksPlugin.logger().log(Level.WARNING, "Failed to enable plugin.", e);
             }
+        }
+    }
+
+    /**
+     * Loads the default config and saves it to the plugin folder.
+     */
+    @Override
+    public void saveDefaultConfig() {
+        try (InputStream inputStream = this.getResource("assets/petblocks/config.yml")) {
+            if (!this.getDataFolder().exists()) {
+                this.getDataFolder().mkdir();
+            }
+
+            final File configFile = new File(this.getDataFolder(), "config.yml");
+            if (configFile.exists()) {
+                return;
+            }
+
+            try (OutputStream outputStream = new FileOutputStream(configFile)) {
+                IOUtils.copy(inputStream, outputStream);
+            }
+        } catch (final IOException e) {
+            logger().log(Level.WARNING, "Failed to save default config.", e);
         }
     }
 
