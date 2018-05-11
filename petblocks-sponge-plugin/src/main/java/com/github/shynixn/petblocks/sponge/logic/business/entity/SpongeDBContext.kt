@@ -87,7 +87,7 @@ class SpongeDBContext @Inject constructor(private val pluginContainer: PluginCon
     private fun initialize(driver: String) {
         if (driver == SQLITE_DRIVER) {
             val path = createSQLLiteFile()
-            this.dataSource = createDataSource("jdbc:sqlite:" + path.toAbsolutePath().toString())
+            this.dataSource = createDataSource(driver, "jdbc:sqlite:" + path.toAbsolutePath().toString())
 
             val connection = this.getConnection()
             connection.use {
@@ -98,7 +98,7 @@ class SpongeDBContext @Inject constructor(private val pluginContainer: PluginCon
             }
         } else if (driver == MYSQL_DRIVER) {
             try {
-                this.dataSource = createDataSource("jdbc:mysql://" + Config.getData<String>("sql.host") + ":" + Config.getData<String>("sql.port") + "/" + Config.getData<String>("sql.database"), Config.getData<String>("sql.username"), Config.getData<String>("sql.password"), Config.getData<Boolean>("sql.usessl")!!)
+                this.dataSource = createDataSource(driver, "jdbc:mysql://" + Config.getData<String>("sql.host") + ":" + Config.getData<Int>("sql.port") + "/" + Config.getData<String>("sql.database"), Config.getData<String>("sql.username"), Config.getData<String>("sql.password"), Config.getData<Boolean>("sql.usessl")!!)
 
                 val connection = this.getConnection()
                 connection.use {
@@ -117,8 +117,13 @@ class SpongeDBContext @Inject constructor(private val pluginContainer: PluginCon
     /**
      * Creates a new hikari datasource.
      */
-    private fun createDataSource(url: String, userName: String? = null, password: String? = null, useSSL: Boolean = false): DataSource {
-        val connectionURL = "$url;user=$userName;password=$password;usessl=$useSSL"
+    private fun createDataSource(driver: String, url: String, userName: String? = null, password: String? = null, useSSL: Boolean = false): DataSource {
+        val connectionURL: String = if (driver == MYSQL_DRIVER) {
+            "$url?user=$userName;password=$password;usessl=$useSSL"
+        } else {
+            "$url"
+        }
+
         val service = Sponge.getServiceManager().provide(SqlService::class.java).get()
         return service.getDataSource(connectionURL)
     }

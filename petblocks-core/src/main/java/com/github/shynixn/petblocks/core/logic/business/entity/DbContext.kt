@@ -148,7 +148,7 @@ abstract class DbContext : AutoCloseable {
      * Sets the parameters to the given preparedStatement.
      */
     @Throws(SQLException::class)
-    private fun setParameters(preparedStatement: PreparedStatement, vararg parameters: Any) {
+    private fun setParameters(preparedStatement: PreparedStatement, parameters:Array<out Any>) {
         for (i in parameters.indices) {
             preparedStatement.setObject(i + 1, parameters[i])
         }
