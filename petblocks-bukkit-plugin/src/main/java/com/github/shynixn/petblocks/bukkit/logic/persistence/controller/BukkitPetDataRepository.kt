@@ -5,7 +5,7 @@ import com.github.shynixn.petblocks.api.persistence.controller.PlayerMetaControl
 import com.github.shynixn.petblocks.bukkit.PetBlocksPlugin
 import com.github.shynixn.petblocks.bukkit.logic.business.helper.LoggingBridge
 import com.github.shynixn.petblocks.bukkit.logic.persistence.entity.BukkitPetData
-import com.github.shynixn.petblocks.core.logic.business.helper.ExtensionHikariConnectionContext
+import com.github.shynixn.petblocks.core.logic.business.entity.DbContext
 import com.github.shynixn.petblocks.core.logic.persistence.controller.PetDataRepository
 import com.github.shynixn.petblocks.core.logic.persistence.entity.PetData
 import org.bukkit.entity.Player
@@ -38,7 +38,7 @@ import java.util.*
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class BukkitPetDataRepository(playerMetaController: PlayerMetaController<Player>, particleController: ParticleEffectMetaController, connectionContext : ExtensionHikariConnectionContext
+class BukkitPetDataRepository(playerMetaController: PlayerMetaController<Player>, particleController: ParticleEffectMetaController, connectionContext : DbContext
 ) : PetDataRepository<Player>(playerMetaController, particleController, connectionContext, LoggingBridge(PetBlocksPlugin.logger()))
 {
     override fun create(player: Any?, name: String?): PetData {

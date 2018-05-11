@@ -2,7 +2,7 @@ package com.github.shynixn.petblocks.core.logic.persistence.controller;
 
 import com.github.shynixn.petblocks.api.persistence.controller.PlayerMetaController;
 import com.github.shynixn.petblocks.api.persistence.entity.PlayerMeta;
-import com.github.shynixn.petblocks.core.logic.business.helper.ExtensionHikariConnectionContext;
+import com.github.shynixn.petblocks.core.logic.business.entity.DbContext;
 import com.github.shynixn.petblocks.core.logic.persistence.entity.PlayerData;
 import org.slf4j.Logger;
 
@@ -50,7 +50,7 @@ public abstract class PlayerDataRepository<Player> extends DataBaseRepository<Pl
      * @param connectionContext connectionContext
      * @param logger            logger
      */
-    public PlayerDataRepository(ExtensionHikariConnectionContext connectionContext, Logger logger) {
+    public PlayerDataRepository(DbContext connectionContext, Logger logger) {
         super(connectionContext, logger);
     }
 

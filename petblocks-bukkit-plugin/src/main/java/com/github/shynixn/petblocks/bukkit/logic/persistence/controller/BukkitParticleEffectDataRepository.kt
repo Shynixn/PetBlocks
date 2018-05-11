@@ -4,7 +4,7 @@ import com.github.shynixn.petblocks.api.persistence.entity.ParticleEffectMeta
 import com.github.shynixn.petblocks.bukkit.PetBlocksPlugin
 import com.github.shynixn.petblocks.bukkit.logic.business.helper.LoggingBridge
 import com.github.shynixn.petblocks.bukkit.logic.persistence.entity.BukkitParticleEffect
-import com.github.shynixn.petblocks.core.logic.business.helper.ExtensionHikariConnectionContext
+import com.github.shynixn.petblocks.core.logic.business.entity.DbContext
 import com.github.shynixn.petblocks.core.logic.persistence.controller.ParticleEffectDataRepository
 
 /**
@@ -34,7 +34,7 @@ import com.github.shynixn.petblocks.core.logic.persistence.controller.ParticleEf
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class BukkitParticleEffectDataRepository(connectionContext : ExtensionHikariConnectionContext) : ParticleEffectDataRepository(connectionContext, LoggingBridge(PetBlocksPlugin.logger())) {
+class BukkitParticleEffectDataRepository(connectionContext: DbContext) : ParticleEffectDataRepository(connectionContext, LoggingBridge(PetBlocksPlugin.logger())) {
     /**
      * Creates a new particleEffectMeta.
      *

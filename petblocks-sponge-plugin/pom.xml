@@ -5,13 +5,13 @@
     <parent>
         <artifactId>root</artifactId>
         <groupId>com.github.shynixn.petblocks</groupId>
-        <version>7.0.1</version>
+        <version>7.1.0-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.github.shynixn.petblocks</groupId>
     <artifactId>petblocks-sponge-plugin</artifactId>
-    <version>7.0.1</version>
+    <version>7.1.0-SNAPSHOT</version>
 
     <repositories>
         <repository>
@@ -28,12 +28,12 @@
         <dependency>
             <groupId>com.github.shynixn.petblocks</groupId>
             <artifactId>petblocks-core</artifactId>
-            <version>7.0.1</version>
+            <version>7.1.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>com.github.shynixn.petblocks</groupId>
             <artifactId>petblocks-sponge-api</artifactId>
-            <version>7.0.1</version>
+            <version>7.1.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.bstats</groupId>
@@ -87,10 +87,6 @@
                             <pattern>org.aopalliance</pattern>
                             <shadedPattern>com.github.shynixn.petblocks.lib.org.aopalliance</shadedPattern>
                         </relocation>
-                        <relocation>
-                            <pattern>com.zaxxer</pattern>
-                            <shadedPattern>com.github.shynixn.petblocks.lib.com.zaxxer</shadedPattern>
-                        </relocation>
                     </relocations>
                 </configuration>
                 <executions>
@@ -114,6 +110,7 @@
                     </execution>
                 </executions>
                 <configuration>
+                    <outputFile>D:\Temp\SpongePowered\mods\PetBlocks-Sponge.jar</outputFile>
                     <accessTransformer>petblocks_at.cfg</accessTransformer>
                     <versions>
                         <version>1.12</version>

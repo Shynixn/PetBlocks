@@ -1,7 +1,7 @@
 package com.github.shynixn.petblocks.sponge.logic.persistence.controller
 
 import com.github.shynixn.petblocks.api.persistence.entity.ParticleEffectMeta
-import com.github.shynixn.petblocks.core.logic.business.helper.ExtensionHikariConnectionContext
+import com.github.shynixn.petblocks.core.logic.business.entity.DbContext
 import com.github.shynixn.petblocks.core.logic.persistence.controller.ParticleEffectDataRepository
 import com.github.shynixn.petblocks.sponge.logic.persistence.entity.SpongeParticleEffect
 import com.google.inject.Inject
@@ -34,7 +34,7 @@ import org.slf4j.Logger
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class SpongeParticleEffectDataRepository @Inject constructor(connectionContext: ExtensionHikariConnectionContext, logger: Logger) : ParticleEffectDataRepository(connectionContext, logger) {
+class SpongeParticleEffectDataRepository @Inject constructor(connectionContext: DbContext, logger: Logger) : ParticleEffectDataRepository(connectionContext, logger) {
     /**
      * Creates a new particleEffectMeta.
      *
