@@ -1,13 +1,13 @@
 package com.github.shynixn.petblocks.bukkit.logic.business.service
 
-import com.github.shynixn.petblocks.api.business.entity.GUIItemContainer
 import com.github.shynixn.petblocks.api.business.enumeration.GUIPage
-import com.github.shynixn.petblocks.api.business.enumeration.Permission
 import com.github.shynixn.petblocks.api.business.enumeration.ScriptAction
 import com.github.shynixn.petblocks.api.business.service.ConfigurationService
 import com.github.shynixn.petblocks.api.business.service.GUIScriptService
 import com.github.shynixn.petblocks.api.business.service.GUIService
+import com.github.shynixn.petblocks.api.persistence.entity.GUIItem
 import com.github.shynixn.petblocks.bukkit.logic.business.PetBlockManager
+import com.github.shynixn.petblocks.bukkit.logic.business.helper.clearCompletely
 import com.github.shynixn.petblocks.core.logic.business.entity.GuiPageContainer
 import com.github.shynixn.petblocks.core.logic.persistence.configuration.Config
 import com.google.inject.Inject
@@ -17,7 +17,6 @@ import org.bukkit.entity.Player
 import org.bukkit.inventory.Inventory
 import org.bukkit.inventory.ItemStack
 import org.bukkit.plugin.Plugin
-import org.slf4j.Logger
 
 /**
  * Created by Shynixn 2018.
@@ -47,7 +46,6 @@ import org.slf4j.Logger
  * SOFTWARE.
  */
 class GUIServiceImpl @Inject constructor(private val petBlockManager: PetBlockManager, private val configurationService: ConfigurationService, private val plugin: Plugin, private val scriptService: GUIScriptService) : GUIService {
-
     /**
      * Returns if the given [inventory] matches the inventory of this service.
      */
@@ -92,85 +90,92 @@ class GUIServiceImpl @Inject constructor(private val petBlockManager: PetBlockMa
     /**
      * Loads the collection from the given [path] into the given [inventory].
      */
-    override fun <I> loadCollectionPage(inventory: I, path: String) {
+    override fun <I> loadCollectionPage(inventory: I, path: String, permission: String?) {
+        if (inventory !is Inventory) {
+            throw IllegalArgumentException("Inventory has to be an BukkitInventory")
+        }
 
+        val optItems = configurationService.findGUIItemCollection(path)
 
+        if (optItems.isPresent) {
+            setItemsToInventory(inventory.holder as Player, inventory, 1, optItems.get(), permission)
+        }
     }
 
-   /* private fun setCostumes(player: Player, containers: List<GUIItemContainer<Player>>, page: GUIPage, type: Int, groupPermission: Permission) {
-        if (this.petBlockManager.inventories.containsKey(player)) {
-            val previousContainer = this.petBlockManager.pages[player]
-            val container: GuiPageContainer
-            if (previousContainer!!.page != page) {
-                container = GuiPageContainer(page, previousContainer)
-                this.petBlockManager.pages.put(player, container)
-            } else {
-                container = this.petBlockManager.pages.get(player)
-            }
-            if (type == 1 && (container.startCount % 45 != 0 || containers.size == container.startCount)) {
+    private fun setItemsToInventory(player: Player, inventory: Inventory, type: Int, items: List<GUIItem>, groupPermission: String?) {
+        val previousContainer = this.petBlockManager.pages[player]
+        val container: GuiPageContainer
+        val page = GUIPage.CUSTOM
+
+        if (previousContainer!!.page != page) {
+            container = GuiPageContainer(page, previousContainer)
+            this.petBlockManager.pages[player] = container
+        } else {
+            container = this.petBlockManager.pages[player]!!
+        }
+
+        if (type == 1 && (container.startCount % 45 != 0 || items.size == container.startCount)) {
+            return
+        }
+
+        if (type == 2) {
+            if (container.currentCount == 0) {
                 return
             }
-            if (type == 2) {
-                if (container.currentCount == 0) {
-                    return
-                }
-                container.startCount = container.currentCount - 45
-            }
-
-            var count = container.startCount
-            if (count < 0)
-                count = 0
-            container.currentCount = container.startCount
-            clearInventory(inventory)
-            var i: Int
-            var scheduleCounter = 0
-            i = 0
-            while (i < 45 && i + container.startCount < containers.size) {
-                if (inventory.getItem(i) == null || inventory.getItem(i).getType() == Material.AIR) {
-
-                    val containerSlot = i + container.startCount
-                    val mountBlock = container.currentCount
-                    val currentPage = container.page
-                    count++
-                    if (i % 2 == 0) {
-                        scheduleCounter++
-                    }
-                    Bukkit.getScheduler().runTaskLater(plugin, {
-                        if (container.currentCount == mountBlock && currentPage == this.manager.pages.get(player).page) {
-                            inventory.setItem(i, containers[containerSlot].generate(player, groupPermission.permission) as ItemStack)
-                        }
-                    }, scheduleCounter.toLong())
-                }
-                i++
-            }
-            container.startCount = count
-            val optBackGuiItemContainer = Config.getInstance<Player>().guiItemsController.getGUIItemFromName("back")
-            if (!optBackGuiItemContainer.isPresent)
-                throw IllegalArgumentException("Gui item back could not be loaded correctly!")
-            inventory.setItem(optBackGuiItemContainer.get().position, optBackGuiItemContainer.get().generate(player) as ItemStack)
-            if (!(container.startCount % 45 != 0 || containers.size == container.startCount)) {
-                val optNextPage = Config.getInstance<Player>().guiItemsController.getGUIItemFromName("next-page")
-                if (!optNextPage.isPresent)
-                    throw IllegalArgumentException("Gui item next-page could not be loaded correctly!")
-                inventory.setItem(optNextPage.get().position, optNextPage.get().generate(player) as ItemStack)
-            }
-            if (container.currentCount != 0) {
-                val optPreviousPage = Config.getInstance<Player>().guiItemsController.getGUIItemFromName("previous-page")
-                if (!optPreviousPage.isPresent)
-                    throw IllegalArgumentException("Gui item previous-page could not be loaded correctly!")
-                inventory.setItem(optPreviousPage.get().position, optPreviousPage.get().generate(player) as ItemStack)
-            }
-            this.fillEmptySlots(inventory)
+            container.startCount = container.currentCount - 45
         }
+
+        var count = container.startCount
+        if (count < 0)
+            count = 0
+        container.currentCount = container.startCount
+        inventory.clearCompletely()
+        var i: Int = 0
+        var scheduleCounter = 0
+        while (i < 45 && i + container.startCount < items.size) {
+            if (inventory.getItem(i) == null || inventory.getItem(i).getType() == Material.AIR) {
+
+                val containerSlot = i + container.startCount
+                val mountBlock = container.currentCount
+                val currentPage = container.page
+                count++
+                if (i % 2 == 0) {
+                    scheduleCounter++
+                }
+
+                Bukkit.getScheduler().runTaskLater(plugin, {
+                    if (container.currentCount == mountBlock && currentPage == this.petBlockManager.pages[player]!!.page) {
+                        inventory.setItem(i, setPermissionLore(player, items[containerSlot].toItemStack(), groupPermission))
+                    }
+                }, scheduleCounter.toLong())
+            }
+            i++
+        }
+        container.startCount = count
+        val optBackGuiItemContainer = Config.getInstance<Player>().guiItemsController.getGUIItemFromName("back")
+        if (!optBackGuiItemContainer.isPresent)
+            throw IllegalArgumentException("Gui item back could not be loaded correctly!")
+        inventory.setItem(optBackGuiItemContainer.get().position, optBackGuiItemContainer.get().generate(player) as ItemStack)
+
+        if (!(container.startCount % 45 != 0 || items.size == container.startCount)) {
+            val optNextPage = Config.getInstance<Player>().guiItemsController.getGUIItemFromName("next-page")
+            if (!optNextPage.isPresent)
+                throw IllegalArgumentException("Gui item next-page could not be loaded correctly!")
+            inventory.setItem(optNextPage.get().position, optNextPage.get().generate(player) as ItemStack)
+        }
+
+        if (container.currentCount != 0) {
+            val optPreviousPage = Config.getInstance<Player>().guiItemsController.getGUIItemFromName("previous-page")
+            if (!optPreviousPage.isPresent)
+                throw IllegalArgumentException("Gui item previous-page could not be loaded correctly!")
+            inventory.setItem(optPreviousPage.get().position, optPreviousPage.get().generate(player) as ItemStack)
+        }
+
+        this.fillEmptySlots(inventory)
     }
 
-    /**
-     * Perfectly clears the [inventory] of a player.
-     */
-    private fun clearInventory(inventory: Inventory) {
-        for (i in 0 until inventory.contents.size) {
-            inventory.setItem(i, null)
-        }
+    private fun setPermissionLore(player: Player, itemStack: ItemStack, permission: String?): ItemStack {
+        return itemStack
     }
 
     /**
@@ -187,5 +192,5 @@ class GUIServiceImpl @Inject constructor(private val petBlockManager: PetBlockMa
                 }
             }
         }
-    }*/
+    }
 }

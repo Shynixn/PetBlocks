@@ -1,4 +1,6 @@
-package com.github.shynixn.petblocks.api.persistence.controller
+package com.github.shynixn.petblocks.core.logic.business.entity
+
+import com.github.shynixn.petblocks.api.business.enumeration.GUIPage
 
 /**
  * Created by Shynixn 2018.
@@ -27,5 +29,23 @@ package com.github.shynixn.petblocks.api.persistence.controller
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-interface GUIItemCollection {
+class PageCache(
+        /**
+         * Page describing this cache.
+         */
+        var page: GUIPage,
+        /**
+         * Null able previous page.
+         */
+        var previousPage: GuiPageContainer?) {
+
+    /**
+     * Start item count of the page.
+     */
+    var startCount: Int = 0
+
+    /**
+     * Current count of the page.
+     */
+    var currentCount: Int = 0
 }

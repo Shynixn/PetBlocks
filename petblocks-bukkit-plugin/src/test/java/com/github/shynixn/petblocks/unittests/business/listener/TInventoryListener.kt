@@ -140,6 +140,12 @@ class TInventoryListener {
 
 
     class MockedGUIService : GUIService {
+        /**
+         * Loads the collection from the given [path] into the given [inventory].
+         */
+        override fun <I> loadCollectionPage(inventory: I, path: String, permission: String?) {
+        }
+
         var called = false
 
         /**

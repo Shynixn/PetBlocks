@@ -294,6 +294,18 @@ gui:
       unbreakable: false
       lore:
         - 'none'
+    strange-item:
+      enabled: true
+      position: 53
+      id: 397
+      damage: 3
+      position: 20
+      page: 'WARDROBE'
+      skin: 'http://textures.minecraft.net/texture/b6d840af5ef68f3cea9c8a96362123f7b9bbf98a72f325e14dc3e46c7d29d5f9'
+      name: '&aNext page'
+      unbreakable: false
+      lore:
+        - 'none'
     previous-page:
       enabled: true
       position: 45

@@ -4,10 +4,12 @@ import com.github.shynixn.petblocks.api.persistence.entity.ParticleEffectMeta
 import com.github.shynixn.petblocks.api.persistence.entity.PetMeta
 import com.github.shynixn.petblocks.api.persistence.entity.SoundMeta
 import com.github.shynixn.petblocks.bukkit.PetBlocksPlugin
+import com.github.shynixn.petblocks.bukkit.logic.business.listener.InventoryListener
 import com.github.shynixn.petblocks.bukkit.nms.NMSRegistry
 import com.github.shynixn.petblocks.core.logic.business.helper.ChatBuilder
 import com.github.shynixn.petblocks.core.logic.persistence.configuration.Config
 import com.github.shynixn.petblocks.core.logic.persistence.entity.PetData
+import com.google.inject.Inject
 import com.google.inject.Singleton
 import org.bukkit.Bukkit
 import org.bukkit.ChatColor
@@ -48,6 +50,9 @@ import java.util.logging.Level
 @Singleton
 object Config : Config<Player>() {
     internal var plugin: Plugin? = null
+
+    @Inject
+    private lateinit var inventoryListener : InventoryListener
 
     /**
      * Returns the pet naming message.

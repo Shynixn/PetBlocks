@@ -42,5 +42,5 @@ interface GUIService {
     /**
      * Loads the collection from the given [path] into the given [inventory].
      */
-    fun <I> loadCollectionPage(inventory: I, path: String)
+    fun <I> loadCollectionPage(inventory: I, path: String, permission: String? = null)
 }

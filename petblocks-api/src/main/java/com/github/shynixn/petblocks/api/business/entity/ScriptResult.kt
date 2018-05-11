@@ -41,4 +41,9 @@ interface ScriptResult {
      * Returns the optional parsed path for the [ScriptAction].
      */
     val path: Optional<String>
+
+    /**
+     * Returns the optional parsed permission for the [ScriptAction].
+     */
+    val permission: Optional<String>
 }

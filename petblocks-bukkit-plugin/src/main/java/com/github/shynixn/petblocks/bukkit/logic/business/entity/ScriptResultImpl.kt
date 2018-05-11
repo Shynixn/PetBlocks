@@ -33,6 +33,10 @@ import java.util.*
  */
 class ScriptResultImpl : ScriptResult {
     /**
+     * Returns the optional parsed permission for the [ScriptAction].
+     */
+    override var permission: Optional<String> = Optional.empty()
+    /**
      * Returns the [ScriptAction] which should be executed.
      */
     override var action: ScriptAction = ScriptAction.NONE

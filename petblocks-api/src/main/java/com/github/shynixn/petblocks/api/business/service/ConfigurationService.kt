@@ -34,7 +34,13 @@ interface ConfigurationService {
 
     /**
      * Tries to return a [GUIItem] matching the displayName and the lore of the given [item].
-     * Can be called from Asynchronly.
+     * Can be called asynchronly.
      */
     fun <I> findClickedGUIItem(item: I): Optional<GUIItem>
+
+    /**
+     * Tries to return a list of [GUIItem] matching the given path from the config.
+     * Can be called asynchronly.
+     */
+    fun findGUIItemCollection(path: String): Optional<List<GUIItem>>
 }

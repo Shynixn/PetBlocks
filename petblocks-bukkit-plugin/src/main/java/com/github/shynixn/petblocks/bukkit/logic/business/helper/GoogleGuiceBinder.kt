@@ -4,6 +4,7 @@ import com.github.shynixn.petblocks.api.persistence.controller.CostumeController
 import com.github.shynixn.petblocks.api.persistence.controller.EngineController
 import com.github.shynixn.petblocks.api.persistence.controller.OtherGUIItemsController
 import com.github.shynixn.petblocks.api.persistence.controller.ParticleController
+import com.github.shynixn.petblocks.bukkit.logic.business.listener.InventoryListener
 import com.github.shynixn.petblocks.bukkit.logic.persistence.configuration.*
 import com.google.inject.AbstractModule
 import com.google.inject.name.Names

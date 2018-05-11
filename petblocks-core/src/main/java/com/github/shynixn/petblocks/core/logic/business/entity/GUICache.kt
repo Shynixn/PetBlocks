@@ -1,12 +1,6 @@
-package com.github.shynixn.petblocks.bukkit.logic.business.service
+package com.github.shynixn.petblocks.core.logic.business.entity
 
-import com.github.shynixn.petblocks.api.business.entity.ScriptResult
-import com.github.shynixn.petblocks.api.business.enumeration.ScriptAction
-import com.github.shynixn.petblocks.api.business.service.GUIScriptService
-import com.github.shynixn.petblocks.bukkit.logic.business.entity.ScriptResultImpl
-import org.slf4j.Logger
 import java.util.*
-import java.util.regex.Pattern
 
 /**
  * Created by Shynixn 2018.
@@ -35,24 +29,9 @@ import java.util.regex.Pattern
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class GUIScriptServiceImpl(private val logger: Logger) : GUIScriptService {
+class GUICache {
     /**
-     * Executes the given [script] for the given [inventory].
+     * [PageCache] of the current player.
      */
-    override fun <I> executeScript(inventory: I, script: String): ScriptResult {
-        val scriptResult = ScriptResultImpl()
-
-        try {
-            if (script.startsWith("binding collection ")) {
-                val data = script.replace("binding collection ", "").split(Pattern.quote(" "))
-                scriptResult.action = ScriptAction.LOAD_COLLECTION
-                scriptResult.path = Optional.of(data[0])
-                scriptResult.permission = Optional.of(data[1])
-            }
-        } catch (e: Exception) {
-            logger.warn("Failed to execute script '$script'.")
-        }
-
-        return scriptResult
-    }
+    var pageCache: Optional<PageCache> = Optional.empty()
 }

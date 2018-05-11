@@ -34,6 +34,30 @@ interface GUIItem {
     /** Returns a executable script */
     val executingScript: Optional<String>
 
-    /** Returns the item displayName */
+    /** Returns the item displayName. */
     val displayName: String
+
+    /** Returns the type of the item. */
+    val type: Int
+
+    /** Returns the data of the item. */
+    val data: Int
+
+    /** Returns the lore of the item. */
+    val lore: List<String>
+
+    /** Returns the skin of the item. */
+    val skin: String
+
+    /** Returns if this item is enabled. */
+    val enabled: Boolean
+
+    /** Returns the position in the inventory. */
+    val position: Int
+
+    /** Returns if the item is unbreakable. */
+    val unbreakable: Boolean
+
+    /** Returns an itemStack from the given item. */
+    fun <I> toItemStack(): I
 }
