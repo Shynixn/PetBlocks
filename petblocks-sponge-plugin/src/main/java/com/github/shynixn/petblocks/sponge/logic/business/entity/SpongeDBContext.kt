@@ -106,7 +106,7 @@ class SpongeDBContext @Inject constructor(private val pluginContainer: PluginCon
                         executeUpdate(l, connection)
                     }
                 }
-            } catch (e: IOException) {
+            } catch (e: Exception) {
                 logger.warn("Cannot connect to the MYSQL database!", e)
                 logger.warn("Fallback mode activated. Using SQLite database instead.")
                 initialize(SQLITE_DRIVER)

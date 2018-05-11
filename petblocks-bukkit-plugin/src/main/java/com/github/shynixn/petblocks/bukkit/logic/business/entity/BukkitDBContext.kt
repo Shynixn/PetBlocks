@@ -108,7 +108,7 @@ class BukkitDBContext @Inject constructor(private val plugin: Plugin, private va
                         executeUpdate(l, connection)
                     }
                 }
-            } catch (e: IOException) {
+            } catch (e: Exception) {
                 logger.warn("Cannot connect to the MYSQL database!", e)
                 logger.warn("Fallback mode activated. Using SQLite database instead.")
                 initialize(SQLITE_DRIVER)
