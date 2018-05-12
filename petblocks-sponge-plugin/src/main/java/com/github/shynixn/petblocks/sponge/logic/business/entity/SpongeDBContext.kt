@@ -98,7 +98,7 @@ class SpongeDBContext @Inject constructor(private val pluginContainer: PluginCon
             }
         } else if (driver == MYSQL_DRIVER) {
             try {
-                this.dataSource = createDataSource(driver, "jdbc:mysql://" + Config.getData<String>("sql.host") + ":" + Config.getData<Int>("sql.port") + "/" + Config.getData<String>("sql.database"), Config.getData<String>("sql.username"), Config.getData<String>("sql.password"), Config.getData<Boolean>("sql.usessl")!!)
+                this.dataSource = createDataSource(driver, Config.getData<String>("sql.host") + ":" + Config.getData<Int>("sql.port") + "/" + Config.getData<String>("sql.database"), Config.getData<String>("sql.username"), Config.getData<String>("sql.password"), Config.getData<Boolean>("sql.usessl")!!)
 
                 val connection = this.getConnection()
                 connection.use {
@@ -119,7 +119,7 @@ class SpongeDBContext @Inject constructor(private val pluginContainer: PluginCon
      */
     private fun createDataSource(driver: String, url: String, userName: String? = null, password: String? = null, useSSL: Boolean = false): DataSource {
         val connectionURL: String = if (driver == MYSQL_DRIVER) {
-            "$url?user=$userName;password=$password;usessl=$useSSL"
+            "jdbc:mysql://$userName:$password@$url?useSSL=$useSSL"
         } else {
             "$url"
         }
