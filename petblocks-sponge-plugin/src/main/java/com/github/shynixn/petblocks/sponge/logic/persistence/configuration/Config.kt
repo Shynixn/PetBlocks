@@ -93,10 +93,10 @@ object Config : ConfigLayer<Player>() {
         petMeta.isEnabled = this.getData<Boolean>("join.settings.enabled")!!
         petMeta.age = this.getData<Int>("join.settings.age")!!.toLong()
 
-        if (!(this.getData<Any>("join.settings.particle.name") as String).equals("none", ignoreCase = true)) {
+        if (!(this.getData<Any>("join.settings.effect.name") as String).equals("none", ignoreCase = true)) {
             val meta: ParticleEffectMeta
             try {
-                meta = SpongeParticleEffect(this.getData<Any>("effect") as Map<String, Any>)
+                meta = SpongeParticleEffect(this.getData<Any>("join.settings.effect") as Map<String, Any>)
                 petMeta.particleEffectMeta = meta
             } catch (e: Exception) {
                 logger.warn("Failed to load particle effect for join pet.")
