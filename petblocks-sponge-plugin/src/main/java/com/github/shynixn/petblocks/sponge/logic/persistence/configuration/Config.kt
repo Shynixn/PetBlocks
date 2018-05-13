@@ -89,7 +89,7 @@ object Config : ConfigLayer<Player>() {
             throw IllegalArgumentException("Join.settings.engine engine could not be loaded!")
         }
         petMeta.setEngine(optEngineContainer.get())
-        petMeta.petDisplayName = this.getData<String>("join.settings.petname")
+        petMeta.petDisplayName = this.getData<String>("join.settings.petname")!!.replace(":player", petMeta.getPlayerMeta().getName())
         petMeta.isEnabled = this.getData<Boolean>("join.settings.enabled")!!
         petMeta.age = this.getData<Int>("join.settings.age")!!.toLong()
 
