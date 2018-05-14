@@ -83,20 +83,20 @@ object Config : ConfigLayer<Player>() {
 
     override fun fixJoinDefaultPet(petData: PetMeta) {
         val petMeta = petData as PetData
-        petMeta.setSkin(this.getData<Int>("join.settings.id")!!, (this.getData<Int>("join.settings.damage") as Int), this.getData<String>("join.settings.skin"), this.getData<Boolean>("unbreakable")!!)
+        petMeta.setSkin(this.getData<Int>("join.settings.id")!!, (this.getData<Int>("join.settings.damage") as Int), this.getData<String>("join.settings.skin"), this.getData<Boolean>("join.settings.unbreakable")!!)
         val optEngineContainer = this.engineController.getContainerFromPosition(this.getData<Int>("join.settings.engine")!!)
         if (!optEngineContainer.isPresent) {
             throw IllegalArgumentException("Join.settings.engine engine could not be loaded!")
         }
         petMeta.setEngine(optEngineContainer.get())
-        petMeta.petDisplayName = this.getData<String>("join.settings.petname")
+        petMeta.petDisplayName = this.getData<String>("join.settings.petname")!!.replace(":player", petMeta.getPlayerMeta().getName())
         petMeta.isEnabled = this.getData<Boolean>("join.settings.enabled")!!
         petMeta.age = this.getData<Int>("join.settings.age")!!.toLong()
 
-        if (!(this.getData<Any>("join.settings.particle.name") as String).equals("none", ignoreCase = true)) {
+        if (!(this.getData<Any>("join.settings.effect.name") as String).equals("none", ignoreCase = true)) {
             val meta: ParticleEffectMeta
             try {
-                meta = SpongeParticleEffect(this.getData<Any>("effect") as Map<String, Any>)
+                meta = SpongeParticleEffect(this.getData<Any>("join.settings.effect") as Map<String, Any>)
                 petMeta.particleEffectMeta = meta
             } catch (e: Exception) {
                 logger.warn("Failed to load particle effect for join pet.")
