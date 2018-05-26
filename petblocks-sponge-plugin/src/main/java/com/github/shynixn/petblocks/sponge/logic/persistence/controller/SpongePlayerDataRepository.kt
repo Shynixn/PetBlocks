@@ -1,7 +1,7 @@
 package com.github.shynixn.petblocks.sponge.logic.persistence.controller
 
 import com.github.shynixn.petblocks.api.persistence.entity.PlayerMeta
-import com.github.shynixn.petblocks.core.logic.business.helper.ExtensionHikariConnectionContext
+import com.github.shynixn.petblocks.core.logic.business.entity.DbContext
 import com.github.shynixn.petblocks.core.logic.persistence.controller.PlayerDataRepository
 import com.github.shynixn.petblocks.core.logic.persistence.entity.PlayerData
 import com.github.shynixn.petblocks.sponge.logic.persistence.entity.SpongePlayerData
@@ -36,7 +36,7 @@ import org.spongepowered.api.entity.living.player.Player
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class SpongePlayerDataRepository @Inject constructor(connectionContext : ExtensionHikariConnectionContext, logger: Logger) : PlayerDataRepository<Player>(connectionContext,logger) {
+class SpongePlayerDataRepository @Inject constructor(connectionContext : DbContext, logger: Logger) : PlayerDataRepository<Player>(connectionContext,logger) {
     /**
      * Creates a new playerData from the given player.
      *

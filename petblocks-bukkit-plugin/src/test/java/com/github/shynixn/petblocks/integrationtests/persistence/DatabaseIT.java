@@ -4,11 +4,8 @@ import ch.vorburger.mariadb4j.DB;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import org.junit.Assert;
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.Statement;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -32,11 +29,18 @@ public class DatabaseIT {
         }
     }
 
-    @Test
+    @org.junit.Test
     public void enableDatabaseMySQLTest() {
         try {
             final DB database = DB.newEmbeddedDB(3306);
             database.start();
+
+            while (true == true)
+            {
+                Thread.sleep(500);
+            }
+
+            /*
             try (Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/?user=root&password=")) {
                 try (Statement statement = conn.createStatement()) {
                     statement.executeUpdate("CREATE DATABASE db");
@@ -51,7 +55,7 @@ public class DatabaseIT {
             config.setMaximumPoolSize(50);
             final HikariDataSource ds = new HikariDataSource(config);
             ds.close();
-            database.stop();
+            database.stop();*/
         } catch (final Exception ex) {
             Logger.getLogger(this.getClass().getSimpleName()).log(Level.WARNING, "Failed to enable database.", ex);
             Assert.fail();

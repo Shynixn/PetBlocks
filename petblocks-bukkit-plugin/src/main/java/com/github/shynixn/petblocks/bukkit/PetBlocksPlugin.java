@@ -11,15 +11,13 @@ import com.github.shynixn.petblocks.core.logic.business.helper.ReflectionUtils;
 import com.github.shynixn.petblocks.core.logic.persistence.configuration.Config;
 import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
+import org.apache.commons.io.IOUtils;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.io.File;
-import java.io.IOException;
-import java.lang.reflect.Constructor;
+import java.io.*;
 import java.lang.reflect.InvocationTargetException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -102,6 +100,29 @@ public final class PetBlocksPlugin extends JavaPlugin {
     }
 
     /**
+     * Loads the default config and saves it to the plugin folder.
+     */
+    @Override
+    public void saveDefaultConfig() {
+        try (InputStream inputStream = this.getResource("assets/petblocks/config.yml")) {
+            if (!this.getDataFolder().exists()) {
+                this.getDataFolder().mkdir();
+            }
+
+            final File configFile = new File(this.getDataFolder(), "config.yml");
+            if (configFile.exists()) {
+                return;
+            }
+
+            try (OutputStream outputStream = new FileOutputStream(configFile)) {
+                IOUtils.copy(inputStream, outputStream);
+            }
+        } catch (final IOException e) {
+            logger().log(Level.WARNING, "Failed to save default config.", e);
+        }
+    }
+
+    /**
      * Disables the plugin PetBlocks.
      */
     @Override
@@ -119,9 +140,8 @@ public final class PetBlocksPlugin extends JavaPlugin {
     private AbstractModule createInjector() {
         try {
             final Class<?> clazz = Class.forName("com.github.shynixn.petblocks.bukkit.logic.business.helper.GoogleGuiceBinder");
-            final Constructor constructor = clazz.getDeclaredConstructor(Plugin.class);
-            return (AbstractModule) constructor.newInstance(this);
-        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
+            return (AbstractModule) clazz.newInstance();
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException e) {
             throw new RuntimeException(e);
         }
     }

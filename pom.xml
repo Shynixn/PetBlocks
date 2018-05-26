@@ -17,7 +17,7 @@
         <module>petblocks-sponge-plugin</module>-->
         <module>petblocks-core</module>
     </modules>
-    <version>7.0.0</version>
+    <version>7.1.0-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <developers>
@@ -177,16 +177,42 @@
                 </configuration>
                 <version>2.3.2</version>
             </plugin>
+            <plugin>
+                <groupId>org.jetbrains.dokka</groupId>
+                <artifactId>dokka-maven-plugin</artifactId>
+                <version>0.9.16</version>
+                <executions>
+                    <execution>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>javadoc</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <outputDir>docs/apidocs</outputDir>
+                    <sourceDirectories>
+                        <dir>petblocks-api/src/main/java</dir>
+                        <dir>petblocks-bukkit-api/src/main/java</dir>
+                        <dir>petblocks-bukkit-plugin/src/main/java</dir>
+                        <dir>petblocks-core/src/main/java</dir>
+                        <dir>petblocks-sponge-api/src/main/java</dir>
+                        <dir>petblocks-sponge-plugin/src/main/java</dir>
+                    </sourceDirectories>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
 
+    <pluginRepositories>
+        <pluginRepository>
+            <id>jcenter</id>
+            <name>JCenter</name>
+            <url>https://jcenter.bintray.com/</url>
+        </pluginRepository>
+    </pluginRepositories>
+
     <dependencies>
-        <dependency>
-            <groupId>com.zaxxer</groupId>
-            <artifactId>HikariCP</artifactId>
-            <version>RELEASE</version>
-            <scope>compile</scope>
-        </dependency>
         <dependency>
             <groupId>org.jetbrains.kotlin</groupId>
             <artifactId>kotlin-stdlib-jdk8</artifactId>

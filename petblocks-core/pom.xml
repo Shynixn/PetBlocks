@@ -5,24 +5,30 @@
     <parent>
         <artifactId>root</artifactId>
         <groupId>com.github.shynixn.petblocks</groupId>
-        <version>7.0.0</version>
+        <version>7.1.0-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.github.shynixn.petblocks</groupId>
     <artifactId>petblocks-core</artifactId>
-    <version>7.0.0</version>
+    <version>7.1.0-SNAPSHOT</version>
 
     <dependencies>
         <dependency>
             <groupId>com.github.shynixn.petblocks</groupId>
             <artifactId>petblocks-api</artifactId>
-            <version>7.0.0</version>
+            <version>7.1.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>com.google.inject</groupId>
             <artifactId>guice</artifactId>
             <version>4.1.0</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>1.7.25</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>
