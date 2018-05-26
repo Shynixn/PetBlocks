@@ -63,6 +63,7 @@ abstract class CustomGUIItem() : GUIItem {
         this.position = guiItemContainer.position
         this.lore = guiItemContainer.lore.get().toList()
         this.skin = guiItemContainer.skin
+        this.executingScript = guiItemContainer.executeableScript
     }
 
     constructor(id: Int, data: Map<String, Any>) : this() {

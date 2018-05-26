@@ -56,10 +56,10 @@ class BukkitGUIItem : CustomGUIItem {
         cachedItemStack = itemStack.setUnbreakable(this.unbreakable).setDisplayName(displayName)
                 .setLore(this.lore)
 
-        return cachedItemStack as I
+        return cachedItemStack!!.clone() as I
     }
 
     constructor(id: Int, values: Map<String, Any>) : super(id, values)
 
-    constructor(container: GUIItemContainer<*>) : super (container)
+    constructor(container: GUIItemContainer<*>) : super(container)
 }

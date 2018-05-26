@@ -60,10 +60,13 @@ fun ItemStack.setDisplayName(displayName: String): ItemStack {
 
 fun ItemStack.setLore(lore: List<String>): ItemStack {
     val meta = itemMeta
-    meta.lore = ArrayList()
+    val tmpLore = ArrayList<String>()
+
     lore.forEach { l ->
-        meta.lore.add(ChatColor.translateAlternateColorCodes('&', l))
+        tmpLore.add(ChatColor.translateAlternateColorCodes('&', l))
     }
+
+    meta.lore = tmpLore
 
     itemMeta = meta
     return this

@@ -7,7 +7,6 @@ import com.github.shynixn.petblocks.api.persistence.entity.GUIItem
 import com.github.shynixn.petblocks.bukkit.logic.persistence.entity.BukkitGUIItem
 import com.google.inject.Inject
 import org.bukkit.configuration.MemorySection
-import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 import org.bukkit.plugin.Plugin
 import java.util.*
@@ -42,7 +41,7 @@ import kotlin.collections.HashMap
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class ConfigurationServiceImpl @Inject constructor(private val plugin: Plugin, private val guiItemsController: OtherGUIItemsController<GUIItemContainer<Player>>) : ConfigurationService {
+class ConfigurationServiceImpl @Inject constructor(private val plugin: Plugin, private val guiItemsController: OtherGUIItemsController<GUIItemContainer<Object>>) : ConfigurationService {
 
     private val cache = HashMap<String, List<GUIItem>>()
 
@@ -81,8 +80,13 @@ class ConfigurationServiceImpl @Inject constructor(private val plugin: Plugin, p
 
                 if (item.itemMeta.displayName == i.displayName.get()) {
                     val lore = i.lore.get()
-                    if (item.itemMeta.lore.size == lore.size) {
-                        return if ((0..item.itemMeta.lore.size).any { item.itemMeta.lore[it] != lore[it] }) Optional.empty() else Optional.of(BukkitGUIItem(i))
+                    val meta = item.itemMeta
+                    if (meta.lore == null) {
+                        meta.lore = ArrayList()
+                    }
+
+                    if (meta.lore.size == lore.size) {
+                        return Optional.of(BukkitGUIItem(i))
                     }
                 }
             } catch (e: Exception) {

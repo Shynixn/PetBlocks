@@ -1,6 +1,8 @@
 package com.github.shynixn.petblocks.bukkit.logic.business.listener
 
 import com.github.shynixn.petblocks.api.business.service.GUIService
+import com.google.inject.Inject
+import com.google.inject.Singleton
 import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.entity.Player
@@ -37,7 +39,8 @@ import org.bukkit.plugin.PluginManager
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class InventoryListener(private val guiService: GUIService, private val plugin: Plugin, pluginManager: PluginManager) : Listener {
+@Singleton
+class InventoryListener @Inject constructor(private val guiService: GUIService, private val plugin: Plugin, pluginManager: PluginManager) : Listener {
 
     init {
         pluginManager.registerEvents(this, this.plugin)
@@ -61,6 +64,6 @@ class InventoryListener(private val guiService: GUIService, private val plugin: 
         event.isCancelled = true
         player.updateInventory()
 
-        guiService.clickInventoryItem(player, event.currentItem)
+        guiService.clickInventoryItem(player, event.slot, event.currentItem)
     }
 }

@@ -1,8 +1,8 @@
-package com.github.shynixn.petblocks.core.logic.persistence.configuration
+package com.github.shynixn.petblocks.api.business.service
 
-import com.github.shynixn.petblocks.api.business.entity.GUIItemContainer
-import com.github.shynixn.petblocks.core.logic.business.helper.ChatColor
-import org.slf4j.Logger
+import com.github.shynixn.petblocks.api.persistence.entity.PetMeta
+import java.util.*
+import java.util.concurrent.CompletableFuture
 
 /**
  * Created by Shynixn 2018.
@@ -31,23 +31,19 @@ import org.slf4j.Logger
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class GUIItemCollection(private val key: String, private val clazz: Class<*>, private val logger: Logger) {
-
-    private val items: MutableMap<Int, GUIItemContainer<*>> = HashMap()
+interface PersistenceService {
+    /**
+     * Returns [CompletableFuture] with a list of stored [PetMeta].
+     */
+    fun getAll(): CompletableFuture<List<PetMeta>>
 
     /**
-     * Reloads the contents from the fileSystem.
+     * Returns [CompletableFuture] with optional newly created [PetMeta] instance or empty optional if not found.
      */
-    fun reload() {
-        val data = Config.getInstance<Any>().getData<Map<String, Any>>(key)
+    fun <P> getFromPlayer(player: P): CompletableFuture<Optional<PetMeta>>
 
-        for (key in data.keys) {
-            try {
-                val container = clazz.getConstructor(Map::class.java).newInstance(data[key]) as GUIItemContainer<*>
-                this.items[key.toInt()] = container
-            } catch (e: Exception) {
-                logger.warn("Failed to load guiItem $key.", e)
-            }
-        }
-    }
+    /**
+     * Saves the given [petMeta] instance and returns a [CompletableFuture] with the same petMeta instance.
+     */
+    fun save(petMeta: PetMeta): CompletableFuture<PetMeta>
 }

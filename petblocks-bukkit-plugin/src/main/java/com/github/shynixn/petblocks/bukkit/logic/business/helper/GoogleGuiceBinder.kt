@@ -1,13 +1,20 @@
 package com.github.shynixn.petblocks.bukkit.logic.business.helper
 
+import com.github.shynixn.petblocks.api.business.service.PersistenceService
 import com.github.shynixn.petblocks.api.persistence.controller.CostumeController
 import com.github.shynixn.petblocks.api.persistence.controller.EngineController
 import com.github.shynixn.petblocks.api.persistence.controller.OtherGUIItemsController
 import com.github.shynixn.petblocks.api.persistence.controller.ParticleController
+import com.github.shynixn.petblocks.bukkit.logic.Factory
 import com.github.shynixn.petblocks.bukkit.logic.business.listener.InventoryListener
+import com.github.shynixn.petblocks.bukkit.logic.business.service.PersistenceServiceImpl
 import com.github.shynixn.petblocks.bukkit.logic.persistence.configuration.*
+import com.github.shynixn.petblocks.core.logic.persistence.controller.PetDataRepository
 import com.google.inject.AbstractModule
 import com.google.inject.name.Names
+import org.bukkit.Bukkit
+import org.bukkit.plugin.Plugin
+import org.bukkit.plugin.PluginManager
 
 
 /**
@@ -37,9 +44,13 @@ import com.google.inject.name.Names
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class GoogleGuiceBinder : AbstractModule() {
+class GoogleGuiceBinder(private val plugin: Plugin) : AbstractModule() {
 
     override fun configure() {
+        bind(Plugin::class.java).toInstance(plugin)
+        bind(PluginManager::class.java).toInstance(Bukkit.getServer().pluginManager)
+        bind(PersistenceService::class.java).toInstance(PersistenceServiceImpl(plugin, Factory.createPetBlockController(), Factory.createPetDataController()))
+
         bind(OtherGUIItemsController::class.java).toInstance(BukkitStaticGUIItems())
         bind(ParticleController::class.java).toInstance(BukkitParticleConfiguration())
         bind(EngineController::class.java).toInstance(BukkitEngineConfiguration())

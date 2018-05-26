@@ -44,15 +44,16 @@ class GUIScriptServiceImpl(private val logger: Logger) : GUIScriptService {
 
         try {
             if (script.startsWith("binding collection ")) {
-                val data = script.replace("binding collection ", "").split(Pattern.quote(" "))
+                val data = script.replace("binding collection ", "").split(" ")
                 scriptResult.action = ScriptAction.LOAD_COLLECTION
                 scriptResult.path = Optional.of(data[0])
                 scriptResult.permission = Optional.of(data[1])
+                return scriptResult
             }
         } catch (e: Exception) {
             logger.warn("Failed to execute script '$script'.")
         }
 
-        return scriptResult
+        return ScriptResultImpl()
     }
 }

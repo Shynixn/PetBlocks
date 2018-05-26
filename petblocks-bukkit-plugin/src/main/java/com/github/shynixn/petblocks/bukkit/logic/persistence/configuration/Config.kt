@@ -51,9 +51,6 @@ import java.util.logging.Level
 object Config : Config<Player>() {
     internal var plugin: Plugin? = null
 
-    @Inject
-    private lateinit var inventoryListener : InventoryListener
-
     /**
      * Returns the pet naming message.
      *

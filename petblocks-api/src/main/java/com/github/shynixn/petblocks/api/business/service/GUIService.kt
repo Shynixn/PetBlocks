@@ -35,9 +35,14 @@ interface GUIService {
     fun <I> isGUIInventory(inventory: I): Boolean
 
     /**
-     * Executes actions when the given [player] clicks on an [item].
+     * Clears all resources the given player has allocated from this service.
      */
-    fun <P, I> clickInventoryItem(player: P, item: I)
+    fun <P> cleanResources(player: P)
+
+    /**
+     * Executes actions when the given [player] clicks on an [item] at the given [relativeSlot].
+     */
+    fun <P, I> clickInventoryItem(player: P, relativeSlot: Int, item: I)
 
     /**
      * Loads the collection from the given [path] into the given [inventory].

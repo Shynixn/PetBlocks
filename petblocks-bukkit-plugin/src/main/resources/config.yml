@@ -303,6 +303,7 @@ gui:
       page: 'WARDROBE'
       skin: 'http://textures.minecraft.net/texture/b6d840af5ef68f3cea9c8a96362123f7b9bbf98a72f325e14dc3e46c7d29d5f9'
       name: '&aNext page'
+      script: 'binding collection strange-collection'
       unbreakable: false
       lore:
         - 'none'
@@ -1214,6 +1215,27 @@ engines:
 # lore: item lore in the GUI (Multiple lines support)
 
 ############################
+
+strange-collection:
+     1:
+      id: 397
+      damage: 3
+      skin: 'textures.minecraft.net/texture/621668ef7cb79dd9c22ce3d1f3f4cb6e2559893b6df4a469514e667c16aa4'
+      name: 'Pig'
+      unbreakable: false
+      lore:
+        - 'none'
+     2:
+      id: 397
+      damage: 3
+      skin: 'textures.minecraft.net/texture/1638469a599ceef7207537603248a9ab11ff591fd378bea4735b346a7fae893'
+      name: 'Chicken'
+      unbreakable: false
+      lore:
+        - 'none'
+
+
+
 
 wardrobe:
    ordinary:
