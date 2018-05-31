@@ -4,6 +4,7 @@ import com.github.shynixn.petblocks.api.business.entity.ScriptResult
 import com.github.shynixn.petblocks.api.business.enumeration.ScriptAction
 import com.github.shynixn.petblocks.api.business.service.GUIScriptService
 import com.github.shynixn.petblocks.bukkit.logic.business.entity.ScriptResultImpl
+import com.google.inject.Inject
 import org.slf4j.Logger
 import java.util.*
 import java.util.regex.Pattern
@@ -35,7 +36,7 @@ import java.util.regex.Pattern
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class GUIScriptServiceImpl(private val logger: Logger) : GUIScriptService {
+class GUIScriptServiceImpl @Inject constructor(private val logger: Logger) : GUIScriptService {
     /**
      * Executes the given [script] for the given [inventory].
      */
@@ -48,6 +49,11 @@ class GUIScriptServiceImpl(private val logger: Logger) : GUIScriptService {
                 scriptResult.action = ScriptAction.LOAD_COLLECTION
                 scriptResult.path = Optional.of(data[0])
                 scriptResult.permission = Optional.of(data[1])
+                return scriptResult
+            } else if (script.startsWith("scrolling collection")) {
+                val amount = script.replace("scrolling collection ", "").split(" ")[0].trim()
+                scriptResult.action = ScriptAction.SCROLL_COLLECTION
+                scriptResult.valueContainer = Optional.of(amount.toInt());
                 return scriptResult
             }
         } catch (e: Exception) {

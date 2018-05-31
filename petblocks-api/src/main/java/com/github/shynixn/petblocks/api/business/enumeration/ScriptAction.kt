@@ -37,5 +37,10 @@ enum class ScriptAction {
     /**
      * Action for loading a item collection into the current open gui window.
      */
-    LOAD_COLLECTION
+    LOAD_COLLECTION,
+
+    /**
+     * Action for scrolling an item collection.
+     */
+    SCROLL_COLLECTION,
 }

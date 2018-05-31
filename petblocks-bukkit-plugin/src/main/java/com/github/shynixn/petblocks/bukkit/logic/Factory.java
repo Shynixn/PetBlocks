@@ -6,7 +6,7 @@ import com.github.shynixn.petblocks.api.persistence.controller.PetMetaController
 import com.github.shynixn.petblocks.api.persistence.controller.PlayerMetaController;
 import com.github.shynixn.petblocks.bukkit.PetBlocksPlugin;
 import com.github.shynixn.petblocks.bukkit.logic.business.controller.BukkitPetBlockRepository;
-import com.github.shynixn.petblocks.bukkit.logic.business.entity.BukkitDBContext;
+import com.github.shynixn.petblocks.bukkit.logic.business.BukkitDBContext;
 import com.github.shynixn.petblocks.bukkit.logic.business.helper.LoggingBridge;
 import com.github.shynixn.petblocks.bukkit.logic.persistence.controller.BukkitParticleEffectDataRepository;
 import com.github.shynixn.petblocks.bukkit.logic.persistence.controller.BukkitPetDataRepository;
@@ -20,6 +20,7 @@ import java.util.logging.Level;
 public class Factory {
 
     public static DbContext connectionContext;
+    private static PetBlockController petBlockControllerCache;
 
     public static PlayerMetaController<Player> createPlayerDataController() {
         return new BukkitPlayerDataRepository(connectionContext);
@@ -30,7 +31,11 @@ public class Factory {
     }
 
     public static PetBlockController<Player> createPetBlockController() {
-        return new BukkitPetBlockRepository();
+        if (petBlockControllerCache == null) {
+            petBlockControllerCache = new BukkitPetBlockRepository();
+        }
+
+        return petBlockControllerCache;
     }
 
     public static PetMetaController<Player> createPetDataController() {

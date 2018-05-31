@@ -3,14 +3,17 @@ package com.github.shynixn.petblocks.bukkit;
 import com.github.shynixn.petblocks.api.PetBlocksApi;
 import com.github.shynixn.petblocks.api.business.controller.PetBlockController;
 import com.github.shynixn.petblocks.api.persistence.controller.PetMetaController;
+import com.github.shynixn.petblocks.bukkit.logic.business.GoogleGuiceBinder;
 import com.github.shynixn.petblocks.bukkit.logic.business.PetBlockManager;
 import com.github.shynixn.petblocks.bukkit.logic.business.helper.UpdateUtils;
+import com.github.shynixn.petblocks.bukkit.logic.business.listener.InventoryListener;
 import com.github.shynixn.petblocks.bukkit.nms.NMSRegistry;
 import com.github.shynixn.petblocks.bukkit.nms.VersionSupport;
 import com.github.shynixn.petblocks.core.logic.business.helper.ReflectionUtils;
 import com.github.shynixn.petblocks.core.logic.persistence.configuration.Config;
 import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
+import com.google.inject.Inject;
 import org.apache.commons.io.IOUtils;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
@@ -59,6 +62,12 @@ public final class PetBlocksPlugin extends JavaPlugin {
     private PetBlockManager petBlockManager;
 
     /**
+     * Listeners.
+     */
+    @Inject
+    private InventoryListener inventoryListener;
+
+    /**
      * Enables the plugin PetBlocks.
      */
     @Override
@@ -70,7 +79,7 @@ public final class PetBlocksPlugin extends JavaPlugin {
             Bukkit.getPluginManager().disablePlugin(this);
         } else {
             Bukkit.getServer().getConsoleSender().sendMessage(PREFIX_CONSOLE + ChatColor.GREEN + "Loading PetBlocks ...");
-            Guice.createInjector(this.createInjector());
+            Guice.createInjector(new GoogleGuiceBinder(this));
             Config.getInstance().reload();
             if (Config.getInstance().isMetricsEnabled()) {
                 final Metrics metrics = new Metrics(this);
@@ -134,15 +143,6 @@ public final class PetBlocksPlugin extends JavaPlugin {
             } catch (final Exception e) {
                 PetBlocksPlugin.logger().log(Level.WARNING, "Failed to disable petblocks.", e);
             }
-        }
-    }
-
-    private AbstractModule createInjector() {
-        try {
-            final Class<?> clazz = Class.forName("com.github.shynixn.petblocks.bukkit.logic.business.helper.GoogleGuiceBinder");
-            return (AbstractModule) clazz.newInstance();
-        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException e) {
-            throw new RuntimeException(e);
         }
     }
 

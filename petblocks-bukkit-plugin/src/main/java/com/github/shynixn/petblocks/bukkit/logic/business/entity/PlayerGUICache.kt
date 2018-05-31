@@ -1,9 +1,5 @@
 package com.github.shynixn.petblocks.bukkit.logic.business.entity
 
-import com.github.shynixn.petblocks.api.business.entity.ScriptResult
-import com.github.shynixn.petblocks.api.business.enumeration.ScriptAction
-import java.util.*
-
 /**
  * Created by Shynixn 2018.
  * <p>
@@ -31,22 +27,9 @@ import java.util.*
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class ScriptResultImpl : ScriptResult {
-    /**
-     * Storage for additional values.
-     */
-    override var valueContainer: Optional<Any> = Optional.empty()
-    /**
-     * Returns the optional parsed permission for the [ScriptAction].
-     */
-    override var permission: Optional<String> = Optional.empty()
-    /**
-     * Returns the [ScriptAction] which should be executed.
-     */
-    override var action: ScriptAction = ScriptAction.NONE
+class PlayerGUICache {
 
-    /**
-     * Returns the optional parsed path for the [ScriptAction].
-     */
-    override var path: Optional<String> = Optional.empty()
+    var path: String? = null
+
+    var permission: String? = null
 }

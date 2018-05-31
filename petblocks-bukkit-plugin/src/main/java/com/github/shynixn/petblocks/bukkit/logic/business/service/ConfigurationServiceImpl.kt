@@ -2,8 +2,8 @@ package com.github.shynixn.petblocks.bukkit.logic.business.service
 
 import com.github.shynixn.petblocks.api.business.entity.GUIItemContainer
 import com.github.shynixn.petblocks.api.business.service.ConfigurationService
-import com.github.shynixn.petblocks.api.persistence.controller.OtherGUIItemsController
 import com.github.shynixn.petblocks.api.persistence.entity.GUIItem
+import com.github.shynixn.petblocks.bukkit.logic.persistence.configuration.BukkitStaticGUIItems
 import com.github.shynixn.petblocks.bukkit.logic.persistence.entity.BukkitGUIItem
 import com.google.inject.Inject
 import org.bukkit.configuration.MemorySection
@@ -41,7 +41,7 @@ import kotlin.collections.HashMap
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class ConfigurationServiceImpl @Inject constructor(private val plugin: Plugin, private val guiItemsController: OtherGUIItemsController<GUIItemContainer<Object>>) : ConfigurationService {
+class ConfigurationServiceImpl @Inject constructor(private val plugin: Plugin, private val guiItemsController: BukkitStaticGUIItems) : ConfigurationService {
 
     private val cache = HashMap<String, List<GUIItem>>()
 
@@ -78,18 +78,21 @@ class ConfigurationServiceImpl @Inject constructor(private val plugin: Plugin, p
         guiItemsController.all.forEach { i ->
             try {
 
-                if (item.itemMeta.displayName == i.displayName.get()) {
-                    val lore = i.lore.get()
-                    val meta = item.itemMeta
-                    if (meta.lore == null) {
-                        meta.lore = ArrayList()
-                    }
+                if ((i as GUIItemContainer<*>).displayName.isPresent && !(i as GUIItemContainer<*>).displayName.get().trim().isEmpty()) {
+                    if (item.itemMeta.displayName == (i as GUIItemContainer<*>).displayName.get()) {
+                        val lore = i.lore.get()
+                        val meta = item.itemMeta
+                        if (meta.lore == null) {
+                            meta.lore = ArrayList()
+                        }
 
-                    if (meta.lore.size == lore.size) {
-                        return Optional.of(BukkitGUIItem(i))
+                        if (meta.lore.size == lore.size) {
+                            return Optional.of(BukkitGUIItem(i))
+                        }
                     }
                 }
             } catch (e: Exception) {
+                e.printStackTrace()
                 // Ignored
             }
         }

@@ -1,4 +1,4 @@
-package com.github.shynixn.petblocks.bukkit.logic.business.entity
+package com.github.shynixn.petblocks.bukkit.logic.business
 
 import com.github.shynixn.petblocks.core.logic.business.entity.DbContext
 import com.google.inject.Inject

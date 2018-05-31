@@ -82,12 +82,12 @@ class PersistenceServiceImpl @Inject constructor(private val plugin: Plugin, pri
             plugin.server.scheduler.runTaskAsynchronously(plugin, {
                 completableFuture.complete(Optional.of(meta))
             })
+        } else {
+            plugin.server.scheduler.runTaskAsynchronously(plugin, {
+                val optResult = petMetaController.getFromPlayer(player)
+                completableFuture.complete(optResult)
+            })
         }
-
-        plugin.server.scheduler.runTaskAsynchronously(plugin, {
-            val optResult = petMetaController.getFromPlayer(player)
-            completableFuture.complete(optResult)
-        })
 
         return completableFuture
     }
@@ -101,6 +101,13 @@ class PersistenceServiceImpl @Inject constructor(private val plugin: Plugin, pri
         plugin.server.scheduler.runTaskAsynchronously(plugin, {
             petMetaController.store(petMeta)
             completableFuture.complete(petMeta)
+        })
+
+        plugin.server.scheduler.runTask(plugin, {
+            val petBlock = petBlockController.getFromPlayer(petMeta.playerMeta.getPlayer())
+            if (petBlock.isPresent) {
+                petBlock.get().respawn()
+            }
         })
 
         return completableFuture

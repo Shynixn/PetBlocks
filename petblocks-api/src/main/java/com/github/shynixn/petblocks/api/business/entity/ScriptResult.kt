@@ -46,4 +46,9 @@ interface ScriptResult {
      * Returns the optional parsed permission for the [ScriptAction].
      */
     val permission: Optional<String>
+
+    /**
+     * Storage for additional values.
+     */
+    val valueContainer: Optional<Any>
 }

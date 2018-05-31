@@ -1,6 +1,7 @@
 package com.github.shynixn.petblocks.bukkit.logic.business.listener
 
 import com.github.shynixn.petblocks.api.business.service.GUIService
+import com.github.shynixn.petblocks.bukkit.nms.NMSRegistry
 import com.google.inject.Inject
 import com.google.inject.Singleton
 import org.bukkit.Bukkit
@@ -9,6 +10,7 @@ import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.inventory.InventoryClickEvent
+import org.bukkit.event.player.PlayerQuitEvent
 import org.bukkit.plugin.Plugin
 import org.bukkit.plugin.PluginManager
 
@@ -65,5 +67,13 @@ class InventoryListener @Inject constructor(private val guiService: GUIService, 
         player.updateInventory()
 
         guiService.clickInventoryItem(player, event.slot, event.currentItem)
+    }
+
+    /**
+     * Gets called from [Bukkit] and handles cleaning up remaining resources.
+     */
+    @EventHandler
+    fun playerQuitEvent(event: PlayerQuitEvent) {
+        guiService.cleanResources(event.player)
     }
 }

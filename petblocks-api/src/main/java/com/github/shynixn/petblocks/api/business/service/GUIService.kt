@@ -40,6 +40,12 @@ interface GUIService {
     fun <P> cleanResources(player: P)
 
     /**
+     * Scrolls the loaded collection page of a [player] the given [amountOfSlots] to the right when entered a positive value.
+     * Scrolls to the left when given a negative amount of Slots value.
+     */
+    fun <P> scrollCollectionPage(player: P, amountOfSlots: Int)
+
+    /**
      * Executes actions when the given [player] clicks on an [item] at the given [relativeSlot].
      */
     fun <P, I> clickInventoryItem(player: P, relativeSlot: Int, item: I)
