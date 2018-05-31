@@ -113,7 +113,7 @@ public final class PetBlocksPlugin extends JavaPlugin {
      */
     @Override
     public void saveDefaultConfig() {
-        try (InputStream inputStream = this.getResource("assets/petblocks/config.yml")) {
+        try (final InputStream inputStream = this.getResource("assets/petblocks/config.yml")) {
             if (!this.getDataFolder().exists()) {
                 this.getDataFolder().mkdir();
             }
@@ -123,7 +123,7 @@ public final class PetBlocksPlugin extends JavaPlugin {
                 return;
             }
 
-            try (OutputStream outputStream = new FileOutputStream(configFile)) {
+            try (final OutputStream outputStream = new FileOutputStream(configFile)) {
                 IOUtils.copy(inputStream, outputStream);
             }
         } catch (final IOException e) {
