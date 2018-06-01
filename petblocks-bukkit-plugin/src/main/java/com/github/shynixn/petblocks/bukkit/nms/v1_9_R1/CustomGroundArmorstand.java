@@ -123,7 +123,7 @@ final class CustomGroundArmorstand extends EntityArmorStand implements PetBlock 
                     ((CraftPlayer) player).getHandle().playerConnection.sendPacket(animation);
                 }
             });
-            if (this.isGroundRiding && this.hasHumanPassenger()  == null) {
+            if (this.isGroundRiding && this.hasHumanPassenger() == null) {
                 ((org.bukkit.entity.Entity) this.getEngineEntity()).teleport(((org.bukkit.entity.Entity) this.getEngineEntity()).getLocation().add(0, 2, 0));
                 this.isGroundRiding = false;
             }
@@ -244,13 +244,13 @@ final class CustomGroundArmorstand extends EntityArmorStand implements PetBlock 
             compound.setBoolean("ShowArms", true);
             compound.setBoolean("NoBasePlate", true);
             this.a(compound);
-            ((ArmorStand)this.getArmorStand()).setBodyPose(new EulerAngle(0, 0, 2878));
-            ((ArmorStand)this.getArmorStand()).setLeftArmPose(new EulerAngle(2878, 0, 0));
-            ((ArmorStand)this.getArmorStand()).setMetadata("keep", this.getKeepField());
+            ((ArmorStand) this.getArmorStand()).setBodyPose(new EulerAngle(0, 0, 2878));
+            ((ArmorStand) this.getArmorStand()).setLeftArmPose(new EulerAngle(2878, 0, 0));
+            ((ArmorStand) this.getArmorStand()).setMetadata("keep", this.getKeepField());
             NMSRegistry.rollbackWorldGuardSpawn(location);
-            ((ArmorStand)this.getArmorStand()).setCustomNameVisible(true);
-            ((ArmorStand)this.getArmorStand()).setCustomName(this.petMeta.getPetDisplayName());
-            ((ArmorStand)this.getArmorStand()).setRemoveWhenFarAway(false);
+            ((ArmorStand) this.getArmorStand()).setCustomNameVisible(true);
+            ((ArmorStand) this.getArmorStand()).setCustomName(this.petMeta.getPetDisplayName());
+            ((ArmorStand) this.getArmorStand()).setRemoveWhenFarAway(false);
             ((LivingEntity) this.getEngineEntity()).setRemoveWhenFarAway(false);
             this.health = Config.INSTANCE.getCombat_health();
             if (this.petMeta == null)
@@ -311,7 +311,7 @@ final class CustomGroundArmorstand extends EntityArmorStand implements PetBlock 
 
     @Override
     public void setSkin(String skin) {
-        PetBlockHelper.setSkin(this,skin);
+        PetBlockHelper.setSkin(this, skin);
     }
 
     @Override
@@ -337,7 +337,6 @@ final class CustomGroundArmorstand extends EntityArmorStand implements PetBlock 
         return PetBlockHelper.isDead(this);
     }
 
-
     /**
      * Lets the given player ride on the petblock
      *
@@ -355,12 +354,17 @@ final class CustomGroundArmorstand extends EntityArmorStand implements PetBlock 
      */
     @Override
     public void wear(Object player) {
-        if (this.getBukkitEntity().getPassenger() == null && ((Player)player).getPassenger() == null) {
+        if (this.getBukkitEntity().getPassenger() == null && ((Player) player).getPassenger() == null) {
             final NBTTagCompound compound = new NBTTagCompound();
             this.b(compound);
             compound.setBoolean("Marker", true);
             this.a(compound);
             this.setCustomNameVisible(false);
+
+            if (this.rabbit != null) {
+                ((EntityInsentient) this.rabbit).m(true);
+            }
+
             PetBlockHelper.wear(this, (Player) player, null);
         }
     }
@@ -377,6 +381,11 @@ final class CustomGroundArmorstand extends EntityArmorStand implements PetBlock 
         compound.setBoolean("Marker", false);
         this.a(compound);
         this.setCustomNameVisible(true);
+
+        if (this.rabbit != null) {
+            ((EntityInsentient) this.rabbit).m(false);
+        }
+
         PetBlockHelper.eject(this, (Player) player, null);
     }
 
@@ -390,7 +399,6 @@ final class CustomGroundArmorstand extends EntityArmorStand implements PetBlock 
         PetBlockHelper.setDisplayName(this, name);
     }
 
-
     /**
      * Returns the armorstand of the petblock
      *
@@ -400,7 +408,6 @@ final class CustomGroundArmorstand extends EntityArmorStand implements PetBlock 
     public Object getArmorStand() {
         return this.getBukkitEntity();
     }
-
 
     /**
      * Sets the velocity of the petblock
@@ -429,7 +436,7 @@ final class CustomGroundArmorstand extends EntityArmorStand implements PetBlock 
      */
     @Override
     public String getDisplayName() {
-        return ((ArmorStand)this.getArmorStand()).getCustomName();
+        return ((ArmorStand) this.getArmorStand()).getCustomName();
     }
 
     /**
@@ -479,7 +486,7 @@ final class CustomGroundArmorstand extends EntityArmorStand implements PetBlock 
      */
     @Override
     public Object getLocation() {
-        return ((ArmorStand)this.getArmorStand()).getLocation();
+        return ((ArmorStand) this.getArmorStand()).getLocation();
     }
 
     /**

@@ -2,6 +2,7 @@ package com.github.shynixn.petblocks.sponge
 
 import com.github.shynixn.petblocks.api.PetBlocksApi
 import com.github.shynixn.petblocks.api.business.controller.PetBlockController
+import com.github.shynixn.petblocks.api.business.service.GUIService
 import com.github.shynixn.petblocks.api.persistence.controller.PetMetaController
 import com.github.shynixn.petblocks.core.logic.business.helper.ChatColor
 import com.github.shynixn.petblocks.core.logic.business.helper.ReflectionUtils
@@ -71,10 +72,10 @@ class PetBlocksPlugin {
     private lateinit var logger: Logger
 
     @Inject
-    private lateinit var injector : Injector
+    private lateinit var injector: Injector
 
     @Inject
-    private lateinit var guice : GoogleGuiceSubBinder
+    private lateinit var guice: GoogleGuiceSubBinder
 
     @Listener
     @Throws(IOException::class)
@@ -103,7 +104,7 @@ class PetBlocksPlugin {
                 }
             }).submit(this.pluginContainer)
             try {
-                ReflectionUtils.invokeMethodByClass<PetBlocksApi>(PetBlocksApi::class.java, "initialize", arrayOf<Class<*>>(PetMetaController::class.java, PetBlockController::class.java), arrayOf<Any>(guice.petBlocksManager!!.petMetaController, this.guice.petBlocksManager!!.petBlockController))
+                ReflectionUtils.invokeMethodByClass<PetBlocksApi>(PetBlocksApi::class.java, "initialize", arrayOf<Class<*>>(PetMetaController::class.java, PetBlockController::class.java, GUIService::class.java), arrayOf<Any?>(guice.petBlocksManager!!.petMetaController, this.guice.petBlocksManager!!.petBlockController, null))
                 Sponge.getGame().sendMessage(PREFIX_CONSOLE + ChatColor.GREEN + "Enabled PetBlocks " + pluginContainer.version.get() + " by Shynixn")
             } catch (e: Exception) {
                 logger.error("Failed to enable plugin.", e)

@@ -14,6 +14,7 @@ import com.github.shynixn.petblocks.sponge.logic.persistence.configuration.Confi
 import com.github.shynixn.petblocks.sponge.logic.persistence.entity.SpongeSoundBuilder
 import com.github.shynixn.petblocks.sponge.nms.VersionSupport
 import org.spongepowered.api.Sponge
+import org.spongepowered.api.data.key.Key
 import org.spongepowered.api.data.key.Keys
 import org.spongepowered.api.entity.Transform
 import org.spongepowered.api.entity.living.ArmorStand
@@ -49,7 +50,7 @@ import org.spongepowered.api.world.World
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class PetBlockWrapper(firstSpawn : Transform<World>, private val owner: Player, private val petMeta: PetMeta) : PetBlock<Player, Transform<World>> {
+class PetBlockWrapper(firstSpawn: Transform<World>, private val owner: Player, private val petMeta: PetMeta) : PetBlock<Player, Transform<World>> {
 
     object Companion {
         var spawnMethod = Class.forName("com.github.shynixn.petblocks.sponge.nms.VERSION.CustomGroundArmorstand".replace("VERSION", VersionSupport.getServerVersion().versionText)).getDeclaredMethod("spawn", Transform::class.java)
@@ -167,6 +168,7 @@ class PetBlockWrapper(firstSpawn : Transform<World>, private val owner: Player, 
             val armorStand = this.armorStand as ArmorStand
             armorStand.offer(Keys.ARMOR_STAND_MARKER, true)
             armorStand.offer(Keys.CUSTOM_NAME_VISIBLE, false)
+            engine.offer(Keys.AI_ENABLED, false)
 
             val event = PetBlockWearEvent(this, true)
             Sponge.getEventManager().post(event)
@@ -186,6 +188,7 @@ class PetBlockWrapper(firstSpawn : Transform<World>, private val owner: Player, 
         val armorStand = this.armorStand as ArmorStand
         armorStand.offer(Keys.ARMOR_STAND_MARKER, false)
         armorStand.offer(Keys.CUSTOM_NAME_VISIBLE, true)
+        engine.offer(Keys.AI_ENABLED, true)
 
         val event = PetBlockWearEvent(this, false)
         Sponge.getEventManager().post(event)

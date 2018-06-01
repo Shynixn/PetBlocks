@@ -118,7 +118,7 @@ final class CustomGroundArmorstand extends EntityArmorStand implements PetBlock 
                     ((CraftPlayer) player).getHandle().playerConnection.sendPacket(animation);
                 }
             });
-            if (this.isGroundRiding && this.hasHumanPassenger()  == null) {
+            if (this.isGroundRiding && this.hasHumanPassenger() == null) {
                 ((org.bukkit.entity.Entity) this.getEngineEntity()).teleport(((org.bukkit.entity.Entity) this.getEngineEntity()).getLocation().add(0, 2, 0));
                 this.isGroundRiding = false;
             }
@@ -357,6 +357,11 @@ final class CustomGroundArmorstand extends EntityArmorStand implements PetBlock 
             compound.setBoolean("Marker", true);
             this.a(compound);
             this.setCustomNameVisible(false);
+
+            if (this.rabbit != null) {
+                ((EntityInsentient) this.rabbit).setNoAI(true);
+            }
+
             PetBlockHelper.wear(this, (Player) player, null);
         }
     }
@@ -373,6 +378,11 @@ final class CustomGroundArmorstand extends EntityArmorStand implements PetBlock 
         compound.setBoolean("Marker", false);
         this.a(compound);
         this.setCustomNameVisible(true);
+
+        if (this.rabbit != null) {
+            ((EntityInsentient) this.rabbit).setNoAI(false);
+        }
+
         PetBlockHelper.eject(this, (Player) player, null);
     }
 

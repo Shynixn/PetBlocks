@@ -351,6 +351,11 @@ final class CustomGroundArmorstand extends EntityArmorStand implements PetBlock 
             compound.setBoolean("Marker", true);
             this.a(compound);
             this.setCustomNameVisible(false);
+
+            if (this.rabbit != null) {
+                ((EntityInsentient) this.rabbit).k(true);
+            }
+
             PetBlockHelper.wear(this, (Player) player, null);
         }
     }
@@ -367,6 +372,11 @@ final class CustomGroundArmorstand extends EntityArmorStand implements PetBlock 
         compound.setBoolean("Marker", false);
         this.a(compound);
         this.setCustomNameVisible(true);
+
+        if (this.rabbit != null) {
+            ((EntityInsentient) this.rabbit).k(false);
+        }
+
         PetBlockHelper.eject(this, (Player) player, null);
     }
 
