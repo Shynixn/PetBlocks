@@ -4,6 +4,7 @@ import com.github.shynixn.petblocks.api.persistence.entity.EngineContainer;
 import com.github.shynixn.petblocks.api.persistence.entity.ParticleEffectMeta;
 import com.github.shynixn.petblocks.api.persistence.entity.PetMeta;
 import com.github.shynixn.petblocks.api.persistence.entity.PlayerMeta;
+import com.github.shynixn.petblocks.core.logic.business.helper.ChatColor;
 
 /**
  * Implementation of the petMeta interface which is persistence able to the database.
@@ -255,7 +256,33 @@ public abstract class PetData extends PersistenceObject implements PetMeta {
      */
     @Override
     public <T> void setEngine(EngineContainer<T> engine) {
+        this.setEngine(engine, true);
+    }
+
+    /**
+     * Sets the data of the engine.
+     *
+     * @param engine    engine
+     * @param overwrite should the previous settings be overwritten by the engine.
+     */
+    @Override
+    public <T> void setEngine(EngineContainer<T> engine, boolean overwrite) {
         this.engineContainer = engine;
+
+        if (overwrite) {
+            if (engine.getPetName().isPresent()) {
+                this.petDisplayName = ChatColor.translateAlternateColorCodes('&', engine.getPetName().get());
+            }
+            if (engine.getParticleEffect().isPresent()) {
+                long id = 0;
+                if (this.particleEffectBuilder != null) {
+                    id = this.particleEffectBuilder.getId();
+                }
+
+                this.particleEffectBuilder = engine.getParticleEffect().get().copy();
+                ((ParticleEffectData) this.particleEffectBuilder).setId(id);
+            }
+        }
     }
 
     /**

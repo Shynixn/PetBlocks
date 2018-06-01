@@ -2,6 +2,7 @@ package com.github.shynixn.petblocks.sponge.logic.persistence.entity
 
 import com.github.shynixn.petblocks.api.business.enumeration.RideType
 import com.github.shynixn.petblocks.core.logic.persistence.entity.EngineData
+import com.github.shynixn.petblocks.core.logic.persistence.entity.ParticleEffectData
 import org.spongepowered.api.entity.living.player.Player
 
 /**
@@ -40,5 +41,13 @@ class SpongeEngineData(id: Long, data: Map<String, Any>) : EngineData<Player>(id
         val walking = (data["sound"] as Map<String, Any>)["walking"] as Map<String, Any>
         this.ambientSound = SpongeSoundBuilder(ambient["name"] as String, ambient["volume"] as Double, ambient["pitch"] as Double)
         this.walkingSound = SpongeSoundBuilder(walking["name"] as String, walking["volume"] as Double, walking["pitch"] as Double)
+
+        if (data.containsKey("petname")) {
+            this.petName = data["petname"] as String;
+        }
+
+        if (data.containsKey("particle")) {
+            this.particleEffectMeta = SpongeParticleEffect(data["particle"] as Map<String, Any>)
+        }
     }
 }

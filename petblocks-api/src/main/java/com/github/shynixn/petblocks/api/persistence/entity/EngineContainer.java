@@ -2,6 +2,8 @@ package com.github.shynixn.petblocks.api.persistence.entity;
 
 import com.github.shynixn.petblocks.api.business.enumeration.RideType;
 
+import java.util.Optional;
+
 /**
  * Properties of engines.
  * <p>
@@ -30,6 +32,20 @@ import com.github.shynixn.petblocks.api.business.enumeration.RideType;
  * SOFTWARE.
  */
 public interface EngineContainer<T> extends Persistenceable {
+
+    /**
+     * Returns the optional default pet name for this engine.
+     *
+     * @return petName
+     */
+    Optional<String> getPetName();
+
+    /**
+     * Returns the optional default particle effect for this engine.
+     *
+     * @return particle effect
+     */
+    Optional<ParticleEffectMeta> getParticleEffect();
 
     /**
      * Returns the walking sound.

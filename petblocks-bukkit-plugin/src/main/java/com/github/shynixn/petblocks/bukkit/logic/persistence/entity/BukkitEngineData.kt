@@ -39,5 +39,13 @@ class BukkitEngineData(id: Long, data: Map<String, Any>) : EngineData<Player>(id
         this.rideType = RideType.valueOf(data["behaviour.riding"] as String)
         this.ambientSound = BukkitSoundBuilder(data["sound.ambient.name"] as String, data["sound.ambient.volume"] as Double, data["sound.ambient.pitch"] as Double)
         this.walkingSound = BukkitSoundBuilder(data["sound.walking.name"] as String, data["sound.walking.volume"] as Double, data["sound.walking.pitch"] as Double)
+
+        if (data.containsKey("petname")) {
+            this.petName = data["petname"] as String
+        }
+
+        if (data.containsKey("particle")) {
+            this.particleEffectMeta = BukkitParticleEffect((data["particle"] as MemorySection).getValues(false))
+        }
     }
 }

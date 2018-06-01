@@ -69,6 +69,7 @@ public abstract class PetDataRepository<Player> extends DataBaseRepository<PetMe
 
     /**
      * Creates a new PetData.
+     *
      * @return petData
      */
     public abstract PetData create();
@@ -172,7 +173,8 @@ public abstract class PetDataRepository<Player> extends DataBaseRepository<PetMe
         if (!optEngineContainer.isPresent()) {
             throw new IllegalArgumentException("Engine with id " + ((PetData) petMeta).getEngineId() + " could not be loaded correctly!");
         }
-        petMeta.setEngine(optEngineContainer.get());
+
+        petMeta.setEngine(optEngineContainer.get(), false);
         final PetData petData = (PetData) petMeta;
         final Optional<ParticleEffectMeta> optParticleEffectMeta;
         final Optional<PlayerMeta> optPlayerMeta;

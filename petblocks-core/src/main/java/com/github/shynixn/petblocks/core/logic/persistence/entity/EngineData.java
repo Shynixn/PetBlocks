@@ -3,7 +3,10 @@ package com.github.shynixn.petblocks.core.logic.persistence.entity;
 import com.github.shynixn.petblocks.api.business.entity.GUIItemContainer;
 import com.github.shynixn.petblocks.api.business.enumeration.RideType;
 import com.github.shynixn.petblocks.api.persistence.entity.EngineContainer;
+import com.github.shynixn.petblocks.api.persistence.entity.ParticleEffectMeta;
 import com.github.shynixn.petblocks.api.persistence.entity.SoundMeta;
+
+import java.util.Optional;
 
 /**
  * Copyright 2017 Shynixn
@@ -44,6 +47,10 @@ public abstract class EngineData<Player> extends PersistenceObject implements En
     protected SoundMeta ambientSound;
     protected SoundMeta walkingSound;
 
+    protected String petName;
+
+    protected ParticleEffectMeta particleEffectMeta;
+
     /**
      * Initializes a new engine data
      *
@@ -52,6 +59,34 @@ public abstract class EngineData<Player> extends PersistenceObject implements En
     public EngineData(long id) {
         super();
         this.setId(id);
+    }
+
+    /**
+     * Returns the optional default pet name for this engine.
+     *
+     * @return petName
+     */
+    @Override
+    public Optional<String> getPetName() {
+        if (this.petName == null) {
+            return Optional.empty();
+        }
+
+        return Optional.of(this.petName);
+    }
+
+    /**
+     * Returns the optional default particle effect for this engine.
+     *
+     * @return particle effect
+     */
+    @Override
+    public Optional<ParticleEffectMeta> getParticleEffect() {
+        if (this.particleEffectMeta == null) {
+            return Optional.empty();
+        }
+
+        return Optional.of(this.particleEffectMeta);
     }
 
     /**
