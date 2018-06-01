@@ -1,6 +1,7 @@
 package com.github.shynixn.petblocks.bukkit.logic.business.helper
 
 import com.github.shynixn.petblocks.api.business.service.PersistenceService
+import com.github.shynixn.petblocks.api.persistence.entity.PetMeta
 import com.github.shynixn.petblocks.bukkit.PetBlocksPlugin
 import com.github.shynixn.petblocks.bukkit.logic.business.service.PersistenceServiceImpl
 import com.github.shynixn.petblocks.bukkit.nms.VersionSupport
@@ -11,6 +12,8 @@ import org.bukkit.inventory.Inventory
 import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.meta.SkullMeta
 import org.bukkit.plugin.java.JavaPlugin
+import java.util.concurrent.CompletableFuture
+import java.util.function.Consumer
 
 /**
  * Created by Shynixn 2018.
@@ -78,8 +81,17 @@ fun ItemStack.setLore(lore: List<String>): ItemStack {
 }
 
 fun PersistenceService.runOnMainThread(runnable: Runnable) {
-    val plugin = JavaPlugin.getPlugin(PetBlocksPlugin::class.java);
+    val plugin = JavaPlugin.getPlugin(PetBlocksPlugin::class.java)
     plugin.server.scheduler.runTask(plugin, runnable)
+}
+
+fun <T> CompletableFuture<T>.thenAcceptOnMainThread(action: Consumer<in T>) {
+    this.thenAccept { p ->
+        val plugin = JavaPlugin.getPlugin(PetBlocksPlugin::class.java)
+        plugin.server.scheduler.runTask(plugin, {
+            action.accept(p)
+        })
+    }
 }
 
 fun ItemStack.setSkin(skin: String): ItemStack {

@@ -39,6 +39,39 @@ import java.util.concurrent.CompletableFuture
  */
 class PersistenceServiceImpl @Inject constructor(private val plugin: Plugin, private val petBlockController: PetBlockController<Player>, private val petMetaController: PetMetaController<Player>) : PersistenceService {
     /**
+     * Returns [CompletableFuture] with the [PetMeta] instance of the given player. Creates a new [PetMeta] instance and
+     * stores it in the storage if it does not already exist.
+     */
+    override fun <P> getOrCreateFromPlayer(player: P): CompletableFuture<PetMeta> {
+        if (player !is Player) {
+            throw IllegalArgumentException("Player has to be an BukkitPlayer!")
+        }
+
+        val completableFuture = CompletableFuture<PetMeta>()
+
+        val optPetBlock = petBlockController.getFromPlayer(player)
+        if (optPetBlock.isPresent) {
+            val meta = optPetBlock.get().meta
+            plugin.server.scheduler.runTaskAsynchronously(plugin, {
+                completableFuture.complete(meta)
+            })
+        } else {
+            plugin.server.scheduler.runTaskAsynchronously(plugin, {
+                val optResult = petMetaController.getFromPlayer(player)
+                if (optPetBlock.isPresent) {
+                    completableFuture.complete(optResult.get())
+                } else {
+                    val petMeta = petMetaController.create(player)
+                    petMetaController.store(petMeta)
+                    completableFuture.complete(petMeta)
+                }
+            })
+        }
+
+        return completableFuture
+    }
+
+    /**
      * Returns [CompletableFuture] with a list of stored [PetMeta].
      */
     override fun getAll(): CompletableFuture<List<PetMeta>> {

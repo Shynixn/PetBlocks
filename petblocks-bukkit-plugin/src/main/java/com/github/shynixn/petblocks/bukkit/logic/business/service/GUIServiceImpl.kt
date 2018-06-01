@@ -11,16 +11,19 @@ import com.github.shynixn.petblocks.bukkit.logic.business.PetBlockManager
 import com.github.shynixn.petblocks.bukkit.logic.business.entity.PlayerGUICache
 import com.github.shynixn.petblocks.bukkit.logic.business.helper.clearCompletely
 import com.github.shynixn.petblocks.bukkit.logic.business.helper.runOnMainThread
+import com.github.shynixn.petblocks.bukkit.logic.business.helper.thenAcceptOnMainThread
 import com.github.shynixn.petblocks.bukkit.nms.v1_12_R1.MaterialCompatibility12
 import com.github.shynixn.petblocks.core.logic.business.entity.GuiPageContainer
 import com.github.shynixn.petblocks.core.logic.persistence.configuration.Config
 import com.google.inject.Inject
+import com.google.inject.Singleton
 import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.entity.Player
 import org.bukkit.inventory.Inventory
 import org.bukkit.inventory.ItemStack
 import org.bukkit.plugin.Plugin
+import java.util.function.Consumer
 
 /**
  * Created by Shynixn 2018.
@@ -49,19 +52,46 @@ import org.bukkit.plugin.Plugin
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+@Singleton
 class GUIServiceImpl @Inject constructor(private val configurationService: ConfigurationService, private val plugin: Plugin, private val scriptService: GUIScriptService, private val persistenceService: PersistenceService) : GUIService {
     private val pageCache = HashMap<Player, PlayerGUICache>()
+
+    /**
+     * Closes the gui for the given [player]. Does nothing when the GUI is already closed.
+     */
+    override fun <P> close(player: P) {
+        if (player !is Player) {
+            throw IllegalArgumentException("Player has to be a BukkitPlayer!")
+        }
+
+        player.closeInventory()
+    }
+
+    /**
+     * Opens the gui for the given [player]. Does nothing when the GUI is already open.
+     */
+    override fun <P> open(player: P) {
+        if (player !is Player) {
+            throw IllegalArgumentException("Player has to be a BukkitPlayer!")
+        }
+
+        PetBlockManager.instance.gui.open(player)
+
+        persistenceService.getOrCreateFromPlayer(player).thenAcceptOnMainThread(Consumer { petMeta ->
+            PetBlockManager.instance.gui.setPage(player, GUIPage.MAIN, petMeta)
+        })
+    }
 
     /**
      * Executes actions when the given [player] clicks on an [item] at the given [relativeSlot].
      */
     override fun <P, I> clickInventoryItem(player: P, relativeSlot: Int, item: I) {
         if (player !is Player) {
-            throw IllegalArgumentException("Player has to be an BukkitPlayer!")
+            throw IllegalArgumentException("Player has to be a BukkitPlayer!")
         }
 
         if (item !is ItemStack) {
-            throw IllegalArgumentException("Item has to be an BukkitItemStack!")
+            throw IllegalArgumentException("Item has to be a BukkitItemStack!")
         }
 
         if (!pageCache.containsKey(player)) {
@@ -104,7 +134,7 @@ class GUIServiceImpl @Inject constructor(private val configurationService: Confi
      */
     override fun <P> cleanResources(player: P) {
         if (player !is Player) {
-            throw IllegalArgumentException("Player has to be an BukkitPlayer!")
+            throw IllegalArgumentException("Player has to be a BukkitPlayer!")
         }
 
         if (pageCache.containsKey(player)) {
@@ -117,7 +147,7 @@ class GUIServiceImpl @Inject constructor(private val configurationService: Confi
      */
     override fun <I> isGUIInventory(inventory: I): Boolean {
         if (inventory !is Inventory) {
-            throw IllegalArgumentException("Inventory has to be an BukkitInventory")
+            throw IllegalArgumentException("Inventory has to be a BukkitInventory!")
         }
 
         return PetBlockManager.instance.inventories.containsKey(inventory.holder)
@@ -130,7 +160,7 @@ class GUIServiceImpl @Inject constructor(private val configurationService: Confi
      */
     override fun <P> scrollCollectionPage(player: P, amountOfSlots: Int) {
         if (player !is Player) {
-            throw IllegalArgumentException("Player has to be an BukkitPlayer!")
+            throw IllegalArgumentException("Player has to be a BukkitPlayer!")
         }
 
         if (!pageCache.containsKey(player)) {
@@ -159,7 +189,7 @@ class GUIServiceImpl @Inject constructor(private val configurationService: Confi
      */
     override fun <I> loadCollectionPage(inventory: I, path: String, permission: String?) {
         if (inventory !is Inventory) {
-            throw IllegalArgumentException("Inventory has to be an BukkitInventory")
+            throw IllegalArgumentException("Inventory has to be an BukkitInventory!")
         }
 
         if (!pageCache.containsKey(inventory.holder as Player)) {

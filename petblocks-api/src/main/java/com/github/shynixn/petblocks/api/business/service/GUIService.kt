@@ -30,6 +30,16 @@ package com.github.shynixn.petblocks.api.business.service
 interface GUIService {
 
     /**
+     * Opens the gui for the given [player]. Does nothing when the GUI is already open.
+     */
+    fun <P> open(player: P)
+
+    /**
+     * Closes the gui for the given [player]. Does nothing when the GUI is already closed.
+     */
+    fun <P> close(player: P)
+
+    /**
      * Returns if the given [inventory] matches the inventory of this service.
      */
     fun <I> isGUIInventory(inventory: I): Boolean

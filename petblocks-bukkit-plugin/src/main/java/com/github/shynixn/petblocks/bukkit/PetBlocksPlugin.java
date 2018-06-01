@@ -2,6 +2,7 @@ package com.github.shynixn.petblocks.bukkit;
 
 import com.github.shynixn.petblocks.api.PetBlocksApi;
 import com.github.shynixn.petblocks.api.business.controller.PetBlockController;
+import com.github.shynixn.petblocks.api.business.service.GUIService;
 import com.github.shynixn.petblocks.api.persistence.controller.PetMetaController;
 import com.github.shynixn.petblocks.bukkit.logic.business.GoogleGuiceBinder;
 import com.github.shynixn.petblocks.bukkit.logic.business.PetBlockManager;
@@ -67,6 +68,9 @@ public final class PetBlocksPlugin extends JavaPlugin {
     @Inject
     private InventoryListener inventoryListener;
 
+    @Inject
+    private GUIService guiService;
+
     /**
      * Enables the plugin PetBlocks.
      */
@@ -100,7 +104,7 @@ public final class PetBlocksPlugin extends JavaPlugin {
             NMSRegistry.registerAll();
             try {
                 this.petBlockManager = new PetBlockManager(this);
-                ReflectionUtils.invokeMethodByClass(PetBlocksApi.class, "initialize", new Class[]{PetMetaController.class, PetBlockController.class}, new Object[]{this.petBlockManager.getPetMetaController(), this.petBlockManager.getPetBlockController()});
+                ReflectionUtils.invokeMethodByClass(PetBlocksApi.class, "initialize", new Class[]{PetMetaController.class, PetBlockController.class, GUIService.class}, new Object[]{this.petBlockManager.getPetMetaController(), this.petBlockManager.getPetBlockController(), this.guiService});
                 Bukkit.getServer().getConsoleSender().sendMessage(PREFIX_CONSOLE + ChatColor.GREEN + "Enabled PetBlocks " + this.getDescription().getVersion() + " by Shynixn");
             } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
                 PetBlocksPlugin.logger().log(Level.WARNING, "Failed to enable plugin.", e);

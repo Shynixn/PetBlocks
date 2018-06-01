@@ -43,6 +43,12 @@ interface PersistenceService {
     fun <P> getFromPlayer(player: P): CompletableFuture<Optional<PetMeta>>
 
     /**
+     * Returns [CompletableFuture] with the [PetMeta] instance of the given player. Creates a new [PetMeta] instance and
+     * stores it in the storage if it does not already exist.
+     */
+    fun <P> getOrCreateFromPlayer(player: P): CompletableFuture<PetMeta>
+
+    /**
      * Saves the given [petMeta] instance and returns a [CompletableFuture] with the same petMeta instance.
      */
     fun save(petMeta: PetMeta): CompletableFuture<PetMeta>
