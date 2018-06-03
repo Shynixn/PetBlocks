@@ -7,7 +7,6 @@ import com.github.shynixn.petblocks.bukkit.logic.business.entity.ScriptResultImp
 import com.google.inject.Inject
 import org.slf4j.Logger
 import java.util.*
-import java.util.regex.Pattern
 
 /**
  * Created by Shynixn 2018.

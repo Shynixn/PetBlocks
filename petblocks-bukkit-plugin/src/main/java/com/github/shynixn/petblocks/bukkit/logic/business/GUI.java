@@ -131,8 +131,6 @@ public class GUI {
             this.setColorBlockItems(player, type);
         } else if (page == GUIPage.CUSTOM_COSTUMES) {
             this.setPlayerHeadItems(player, type);
-        } else if (page == GUIPage.MINECRAFTHEADS_COSTUMES) {
-            this.setMinecraftHeadsCostumeItems(player, type);
         }
     }
 
@@ -189,12 +187,6 @@ public class GUI {
                 inventory.setItem(container.get().getPosition(), (ItemStack) container.get().generate(player));
             }
         }
-        final Optional<GUIItemContainer<Player>> container = Config.<Player>getInstance().getGuiItemsController().getGUIItemFromName("minecraft-heads-costume");
-        if (!container.isPresent())
-            throw new IllegalArgumentException("Gui item \"minecraft-heads-costume could not be loaded correctly!");
-        if (page == container.get().getPage()) {
-            inventory.setItem(container.get().getPosition(), (ItemStack) container.get().generate(player, "minecraft-heads"));
-        }
     }
 
     /**
@@ -245,15 +237,6 @@ public class GUI {
      */
     private void setParticleItems(Player player, int type) {
         this.setCostumes(player, Config.<Player>getInstance().getParticleController().getAll(), GUIPage.PARTICLES, type, Permission.ALL_PARTICLES);
-    }
-
-    /**
-     * Sets all minecraft-heads costumes
-     *
-     * @param player player
-     */
-    private void setMinecraftHeadsCostumeItems(Player player, int type) {
-        this.setCostumes(player, Config.<Player>getInstance().getMinecraftHeadsCostumesController().getAll(), GUIPage.MINECRAFTHEADS_COSTUMES, type, Permission.ALL_MINECRAFTHEADCOSTUMES);
     }
 
     /**

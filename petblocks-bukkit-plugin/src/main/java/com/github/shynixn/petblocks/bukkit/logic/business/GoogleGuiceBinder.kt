@@ -10,7 +10,6 @@ import com.github.shynixn.petblocks.api.persistence.controller.OtherGUIItemsCont
 import com.github.shynixn.petblocks.api.persistence.controller.ParticleController
 import com.github.shynixn.petblocks.bukkit.logic.Factory
 import com.github.shynixn.petblocks.bukkit.logic.business.helper.LoggingBridge
-import com.github.shynixn.petblocks.bukkit.logic.business.listener.InventoryListener
 import com.github.shynixn.petblocks.bukkit.logic.business.service.ConfigurationServiceImpl
 import com.github.shynixn.petblocks.bukkit.logic.business.service.GUIScriptServiceImpl
 import com.github.shynixn.petblocks.bukkit.logic.business.service.GUIServiceImpl
@@ -71,7 +70,6 @@ class GoogleGuiceBinder(private val plugin: Plugin) : AbstractModule() {
         bind(CostumeController::class.java).annotatedWith(Names.named("ordinary")).toInstance(BukkitCostumeConfiguration("ordinary"))
         bind(CostumeController::class.java).annotatedWith(Names.named("color")).toInstance(BukkitCostumeConfiguration("color"))
         bind(CostumeController::class.java).annotatedWith(Names.named("rare")).toInstance(BukkitCostumeConfiguration("rare"))
-        bind(CostumeController::class.java).annotatedWith(Names.named("minecraft-heads")).toInstance(BukkitMinecraftConfiguration())
 
         bind(Config::class.java).toInstance(Config)
 

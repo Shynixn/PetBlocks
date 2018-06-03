@@ -16,9 +16,9 @@ Contents
 
 .. toctree::
    gettingstarted/index
-   updating/index
    customizing/index
    commands/index
+   general/index
    api/index
    faq/index
    contributing/index

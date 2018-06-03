@@ -187,6 +187,7 @@ public class PetDataListener extends SimpleListener {
                 if (!this.manager.getPetMetaController().getFromPlayer(event.getPlayer()).isPresent() || Config.getInstance().isJoin_overwriteExistingPet()) {
                     if (event.getPlayer().getWorld() != null) {
                         final PetMeta meta = this.manager.getPetMetaController().create(event.getPlayer());
+                        meta.getPlayerMeta().setName(event.getPlayer().getName());
                         Config.getInstance().fixJoinDefaultPet(meta);
                         this.manager.getPetMetaController().store(meta);
                     }
@@ -223,11 +224,9 @@ public class PetDataListener extends SimpleListener {
         final int itemSlot = event.getSlot() + this.manager.pages.get(player).currentCount + 1;
         if (this.manager.pages.get(player).page == GUIPage.MAIN && this.getGUIItem("my-pet").getPosition() == event.getSlot()) {
             this.handleClickOnMyPetItem(player, petMeta);
-        }
-        else if (this.isGUIItem(currentItem, "empty-slot")) {
+        } else if (this.isGUIItem(currentItem, "empty-slot")) {
             return;
-        }
-        else if (this.isGUIItem(currentItem, "enable-pet")) {
+        } else if (this.isGUIItem(currentItem, "enable-pet")) {
             if (!this.spamProtection.contains(player)) {
                 this.setPetBlock(player, petMeta);
                 this.refreshGUI(player, petMeta);
@@ -257,9 +256,6 @@ public class PetDataListener extends SimpleListener {
             this.manager.gui.setPage(player, GUIPage.COLOR_COSTUMES, petMeta);
         } else if (this.isGUIItem(currentItem, "rare-costume")) {
             this.manager.gui.setPage(player, GUIPage.CUSTOM_COSTUMES, petMeta);
-        } else if (this.isGUIItem(currentItem, "minecraft-heads-costume")) {
-            Bukkit.getServer().getScheduler().runTaskAsynchronously(JavaPlugin.getPlugin(PetBlocksPlugin.class), () -> ChatBuilderExtensionKt.sendMessage(this.collectedMinecraftHeads, player));
-            this.manager.gui.setPage(player, GUIPage.MINECRAFTHEADS_COSTUMES, petMeta);
         } else if (this.isGUIItem(currentItem, "particle-pet")) {
             this.manager.gui.setPage(player, GUIPage.PARTICLES, petMeta);
         } else if (this.isGUIItem(currentItem, "wardrobe")) {
@@ -274,7 +270,7 @@ public class PetDataListener extends SimpleListener {
         } else if (this.isGUIItem(currentItem, "riding-pet") && PetBlockModifyHelper.hasPermission(player, Permission.ACTION_RIDE) && petBlock != null) {
             petBlock.ride(player);
         } else if (this.isGUIItem(currentItem, "suggest-heads")) {
-            Bukkit.getServer().getScheduler().runTaskAsynchronously(JavaPlugin.getPlugin(PetBlocksPlugin.class), () -> ChatBuilderExtensionKt.sendMessage(this.suggestHeadMessage,player));
+            Bukkit.getServer().getScheduler().runTaskAsynchronously(JavaPlugin.getPlugin(PetBlocksPlugin.class), () -> ChatBuilderExtensionKt.sendMessage(this.suggestHeadMessage, player));
             player.closeInventory();
         } else if (this.isGUIItem(currentItem, "head-database-costume")) {
             if (PetBlockModifyHelper.hasPermission(player, Permission.ALL_HEADDATABASECOSTUMES)) {
@@ -283,7 +279,7 @@ public class PetDataListener extends SimpleListener {
                 player.sendMessage(Config.getInstance().getPrefix() + Config.getInstance().getNoPermission());
             }
         } else if (this.isGUIItem(currentItem, "naming-pet") && PetBlockModifyHelper.hasPermission(player, Permission.ACTION_RENAME)) {
-            ChatBuilderExtensionKt.sendMessage(((ChatBuilder)Config.getInstance().getPetNamingMessage()),player);
+            ChatBuilderExtensionKt.sendMessage(((ChatBuilder) Config.getInstance().getPetNamingMessage()), player);
             player.closeInventory();
         } else if (this.isGUIItem(currentItem, "skullnaming-pet") && PetBlockModifyHelper.hasPermission(player, Permission.ACTION_CUSTOMSKULL)) {
             ChatBuilderExtensionKt.sendMessage(((ChatBuilder) Config.getInstance().getPetSkinNamingMessage()), player);
@@ -320,11 +316,6 @@ public class PetDataListener extends SimpleListener {
             this.setCostumeSkin(player, petMeta, petBlock, container.get());
         } else if (event.getSlot() < 45 && this.manager.pages.get(player).page == GUIPage.CUSTOM_COSTUMES && this.hasPermission(player, Permission.ALL_PLAYERHEADCOSTUMES, Permission.SINGLE_PLAYERHEADCOSTUME, itemSlot)) {
             final Optional<GUIItemContainer<Player>> container = Config.<Player>getInstance().getRareCostumesController().getContainerFromPosition(itemSlot);
-            if (!container.isPresent())
-                throw new IllegalArgumentException("Skin " + itemSlot + " could not be loaded correctly.");
-            this.setCostumeSkin(player, petMeta, petBlock, container.get());
-        } else if (event.getSlot() < 45 && this.manager.pages.get(player).page == GUIPage.MINECRAFTHEADS_COSTUMES && this.hasPermission(player, Permission.ALL_MINECRAFTHEADCOSTUMES, Permission.SINGLE_MINECRAFTHEADCOSTUME, itemSlot)) {
-            final Optional<GUIItemContainer<Player>> container = Config.<Player>getInstance().getMinecraftHeadsCostumesController().getContainerFromPosition(itemSlot);
             if (!container.isPresent())
                 throw new IllegalArgumentException("Skin " + itemSlot + " could not be loaded correctly.");
             this.setCostumeSkin(player, petMeta, petBlock, container.get());

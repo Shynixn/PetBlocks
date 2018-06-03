@@ -166,7 +166,6 @@ class GUI {
             GUIPage.DEFAULT_COSTUMES -> this.setSimpleBlockItems(player, type)
             GUIPage.COLOR_COSTUMES -> this.setColorBlockItems(player, type)
             GUIPage.CUSTOM_COSTUMES -> this.setPlayerHeadItems(player, type)
-            GUIPage.MINECRAFTHEADS_COSTUMES -> this.setMinecraftHeadsCostumeItems(player, type)
         }
     }
 
@@ -214,11 +213,6 @@ class GUI {
             if (page == container.page) {
                 this.setItem(inventory, container.position, container.generate(player) as ItemStack)
             }
-        }
-
-        val container = Config.guiItemsController.getGUIItemFromName("minecraft-heads-costume").get()
-        if (page == container.page) {
-            this.setItem(inventory, container.position, container.generate(player, "minecraft-heads") as ItemStack)
         }
     }
 
@@ -270,15 +264,6 @@ class GUI {
      */
     private fun setParticleItems(player: Player, type: Int) {
         this.setCostumes(player, Config.particleController.all, GUIPage.PARTICLES, type, Permission.ALL_PARTICLES)
-    }
-
-    /**
-     * Sets all minecraft-heads costumes
-     *
-     * @param player player
-     */
-    private fun setMinecraftHeadsCostumeItems(player: Player, type: Int) {
-        this.setCostumes(player, Config.minecraftHeadsCostumesController.all, GUIPage.MINECRAFTHEADS_COSTUMES, type, Permission.ALL_MINECRAFTHEADCOSTUMES)
     }
 
     /**

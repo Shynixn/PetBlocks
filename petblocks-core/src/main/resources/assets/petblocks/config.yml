@@ -304,6 +304,7 @@ gui:
       damage: 3
       skin: 'textures.minecraft.net/texture/3ebf907494a935e955bfcadab81beafb90fb9be49c7026ba97d798d5f1a23'
       name: '&aPrevious page'
+      script: 'scrolling collection -45'
       unbreakable: false
       lore:
         - 'none'
@@ -314,6 +315,7 @@ gui:
       damage: 3
       skin: 'textures.minecraft.net/texture/1b6f1a25b6bc199946472aedb370522584ff6f4e83221e5946bd2e41b5ca13b'
       name: '&aNext page'
+      script: 'scrolling collection 45'
       unbreakable: false
       lore:
         - 'none'
@@ -395,7 +397,7 @@ gui:
         - '&7Click to enable the sounds of your pet.'
     ordinary-costume:
       enabled: true
-      position: 20
+      position: 19
       page: 'WARDROBE'
       id: 397
       damage: 3
@@ -406,7 +408,7 @@ gui:
         - '&7Use Minecraft blocks as costume.'
     color-costume:
       enabled: true
-      position: 21
+      position: 20
       page: 'WARDROBE'
       id: 397
       damage: 3
@@ -417,7 +419,7 @@ gui:
         - '&7Use colored Minecraft blocks as costume.'
     rare-costume:
       enabled: true
-      position: 22
+      position: 21
       page: 'WARDROBE'
       id: 397
       damage: 3
@@ -426,20 +428,45 @@ gui:
       unbreakable: false
       lore:
         - '&7Use player heads as costume.'
-    minecraft-heads-costume:
+    minecraft-heads-pet-costume:
+      enabled: true
+      position: 22
+      page: 'WARDROBE'
+      id: 397
+      damage: 3
+      skin: 'textures.minecraft.net/texture/fec052be76e39148a27f255ec537dff92018c79744202d60c51bc67d618ae36a'
+      name: '&9&lPet costumes'
+      script: 'binding collection minecraft-heads-com.pet petblocks.selection.petcostumes.all'
+      unbreakable: false
+      lore:
+        - 'none'
+    minecraft-heads-vehicle-costume:
       enabled: true
       position: 23
       page: 'WARDROBE'
       id: 397
       damage: 3
-      name: '&9&lPet costumes'
+      skin: 'textures.minecraft.net/texture/e8778c34fba29652cfac8d3f6fb35c49cbc2362b2b8f1378d83b30f463b181'
+      name: '&2&lVehicle costumes'
+      script: 'binding collection minecraft-heads-com.vehicle petblocks.selection.vehiclecostumes.all'
       unbreakable: false
-      skin: 'textures.minecraft.net/texture/fec052be76e39148a27f255ec537dff92018c79744202d60c51bc67d618ae36a'
+      lore:
+        - 'none'
+    minecraft-heads-puppet-costume:
+      enabled: true
+      position: 24
+      page: 'WARDROBE'
+      id: 397
+      damage: 3
+      skin: 'textures.minecraft.net/texture/3835da2685f7ad3f1919a018976ad56826691e26758a3a55a1918f7f17ad938'
+      name: '&b&lPlushie costumes'
+      script: 'binding collection minecraft-heads-com.puppet petblocks.selection.puppetcostumes.all'
+      unbreakable: false
       lore:
         - 'none'
     head-database-costume:
       enabled: true
-      position: 24
+      position: 25
       page: 'WARDROBE'
       id: 397
       damage: 3
