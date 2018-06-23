@@ -1,13 +1,9 @@
 package com.github.shynixn.petblocks.bukkit.logic.business.helper
 
 import com.github.shynixn.petblocks.api.business.service.PersistenceService
-import com.github.shynixn.petblocks.api.persistence.entity.PetMeta
 import com.github.shynixn.petblocks.bukkit.PetBlocksPlugin
-import com.github.shynixn.petblocks.bukkit.logic.business.service.PersistenceServiceImpl
 import com.github.shynixn.petblocks.bukkit.nms.VersionSupport
 import com.github.shynixn.petblocks.core.logic.business.helper.ChatColor
-import org.bukkit.Bukkit
-import org.bukkit.entity.Item
 import org.bukkit.inventory.Inventory
 import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.meta.SkullMeta

@@ -105,8 +105,11 @@ class GUIServiceImpl @Inject constructor(private val configurationService: Confi
             }
 
             val itemSlot = relativeSlot + PetBlockManager.instance.pages[player]!!.currentCount
-            val guiItem = optItems.get()[itemSlot]
-            setCollectionSkinItemToPlayer(player, guiItem)
+
+            if (optItems.isPresent && itemSlot < optItems.get().size) {
+                val guiItem = optItems.get()[itemSlot]
+                setCollectionSkinItemToPlayer(player, guiItem)
+            }
 
             return
         }
