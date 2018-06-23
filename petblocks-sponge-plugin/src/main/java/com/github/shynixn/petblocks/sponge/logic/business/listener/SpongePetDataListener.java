@@ -267,11 +267,6 @@ public class SpongePetDataListener {
             if (!container.isPresent())
                 throw new IllegalArgumentException("Skin " + itemSlot + " could not be loaded correctly.");
             this.setCostumeSkin(player, petMeta, petBlock, container.get());
-        } else if (slot < 45 && this.manager.getPages().get(player).page == GUIPage.MINECRAFTHEADS_COSTUMES && this.hasPermission(player, Permission.ALL_MINECRAFTHEADCOSTUMES, Permission.SINGLE_MINECRAFTHEADCOSTUME, itemSlot)) {
-            final Optional<GUIItemContainer<Player>> container = Config.<Player>getInstance().getMinecraftHeadsCostumesController().getContainerFromPosition(itemSlot);
-            if (!container.isPresent())
-                throw new IllegalArgumentException("Skin " + itemSlot + " could not be loaded correctly.");
-            this.setCostumeSkin(player, petMeta, petBlock, container.get());
         }
     }
 
