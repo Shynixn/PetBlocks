@@ -3,6 +3,7 @@ package com.github.shynixn.petblocks.sponge.logic.business.helper
 import com.github.shynixn.petblocks.api.business.entity.GUIItemContainer
 import com.github.shynixn.petblocks.api.business.entity.PetBlock
 import com.github.shynixn.petblocks.api.business.enumeration.Permission
+import com.github.shynixn.petblocks.api.business.service.PersistenceService
 import com.github.shynixn.petblocks.api.persistence.entity.EngineContainer
 import com.github.shynixn.petblocks.api.persistence.entity.PetMeta
 import com.github.shynixn.petblocks.core.logic.business.helper.ChatBuilder
@@ -12,14 +13,23 @@ import com.github.shynixn.petblocks.sponge.nms.VersionSupport
 import org.spongepowered.api.Game
 import org.spongepowered.api.Sponge
 import org.spongepowered.api.command.CommandSource
+import org.spongepowered.api.entity.Item
 import org.spongepowered.api.entity.Transform
 import org.spongepowered.api.entity.living.player.Player
+import org.spongepowered.api.item.inventory.Inventory
 import org.spongepowered.api.item.inventory.ItemStack
+import org.spongepowered.api.item.inventory.property.SlotIndex
+import org.spongepowered.api.item.inventory.property.SlotPos
+import org.spongepowered.api.item.inventory.type.CarriedInventory
+import org.spongepowered.api.item.inventory.type.GridInventory
 import org.spongepowered.api.plugin.PluginContainer
+import org.spongepowered.api.scheduler.Task
 import org.spongepowered.api.text.Text
 import org.spongepowered.api.text.serializer.TextSerializers
 import org.spongepowered.api.world.World
 import java.io.InputStream
+import java.util.*
+import java.util.concurrent.CompletableFuture
 import java.util.function.Consumer
 
 /**
@@ -90,7 +100,6 @@ fun ChatBuilder.sendMessage(vararg players: Player) {
     ReflectionCache.sendChatJsonMesssageMethod.invoke(null, finalMessage.toString(), playerResult)
 }
 
-
 /**
  * Unloads the given plugin.
  */
@@ -109,6 +118,142 @@ fun PetMeta.setCostume(petBlock: PetBlock<Player, Transform<World>>?, container:
         return
     setSkin(container.itemId, container.itemDamage, container.skin, container.isItemUnbreakable)
     petBlock?.respawn()
+}
+
+
+/**
+ * Handles the current action on the minecraft main thread.
+ */
+fun Any.minecraft(f: () -> Unit): After {
+    val after = After()
+    val plugin = Sponge.getPluginManager().getPlugin("petblocks")
+
+    Task.builder().execute(Runnable {
+        f.invoke()
+        after.execute()
+    }).submit(plugin)
+
+    return after
+}
+
+/**
+ * Handles the current action on the minecraft main thread.
+ */
+fun Any.minecraft(f: () -> Unit, ticks: Long): After {
+    val after = After()
+    val plugin = Sponge.getPluginManager().getPlugin("petblocks")
+
+    Task.builder().delayTicks(ticks).execute(Runnable {
+        f.invoke()
+        after.execute()
+    }).submit(plugin)
+
+    return after
+}
+
+/**
+ * Handles the current action on the async background thread.
+ */
+fun Any.async(f: () -> Unit): After {
+    val after = After()
+    val plugin = Sponge.getPluginManager().getPlugin("petblocks")
+
+    Task.builder().async().execute(Runnable {
+        f.invoke()
+        after.execute()
+    }).submit(plugin)
+
+    return after
+}
+
+/**
+ * Handles the current action on the async background thread.
+ */
+fun Any.async(f: () -> Unit, ticks: Long): After {
+    val after = After()
+    val plugin = Sponge.getPluginManager().getPlugin("petblocks")
+
+    Task.builder().delayTicks(ticks).async().execute(Runnable {
+        f.invoke()
+        after.execute()
+    }).submit(plugin)
+
+    return after
+}
+
+fun Inventory.setItem(index: Int, itemStack: ItemStack) {
+    if (index == 0) {
+        this.query<Inventory>(GridInventory::class.java)
+                .query<Inventory>(SlotPos.of(0, 0)).set(itemStack)
+    } else {
+        this.query<Inventory>(GridInventory::class.java)
+                .query<Inventory>(SlotIndex.of(index)).set(itemStack)
+    }
+}
+
+fun Inventory.getItem(index: Int): ItemStack? {
+    val optItemStack: Optional<ItemStack> = if (index == 0) {
+        this.query<Inventory>(GridInventory::class.java)
+                .query<Inventory>(SlotPos.of(0, 0)).peek()
+    } else {
+        this.query<Inventory>(GridInventory::class.java)
+                .query<Inventory>(SlotIndex.of(index)).peek()
+    }
+
+    if (optItemStack.isPresent) {
+        return optItemStack.get()
+    }
+
+    return null
+}
+
+class After {
+    private var f: (() -> Unit)? = null
+    private var mainThread: Boolean = false
+
+    /**
+     * Executes any stored action.
+     */
+    fun execute() {
+        if (f == null) {
+            return
+        }
+
+        if (mainThread) {
+            minecraft {
+                f?.invoke()
+            }
+        } else {
+            async {
+                f?.invoke()
+            }
+        }
+    }
+
+    /**
+     * Handles the current action on the minecraft main thread.
+     */
+    fun thenMinecraft(f: () -> Unit) {
+        this.f = f
+        mainThread = true
+    }
+
+    /**
+     * Handles the current action on the async background thread.
+     */
+    fun thenAsync(f: () -> Unit) {
+        this.f = f
+
+        mainThread = false
+    }
+}
+
+/**
+ * Returns the owner of the inventory.
+ */
+fun Inventory.getHolder(): Player {
+    val carriedInventory = this as CarriedInventory<Player>
+    return carriedInventory.carrier.get()
 }
 
 fun PetMeta.setEngine(petBlock: PetBlock<Player, Transform<World>>?, engineContainer: EngineContainer<GUIItemContainer<Player>>?) {
@@ -257,8 +402,8 @@ fun ItemStack.setDamage(damage: Int) {
     ReflectionCache.setDamageMethod!!.invoke(null, this, damage)
 }
 
-fun ItemStack.setLore(vararg text: String) {
-    this.offer(org.spongepowered.api.data.key.Keys.ITEM_LORE, (text as Array<String?>).translateToTexts().toList())
+fun ItemStack.setLore(data: Array<String>) {
+    this.offer(org.spongepowered.api.data.key.Keys.ITEM_LORE, (data as Array<String?>).translateToTexts().toList())
 }
 
 fun ItemStack.getLore(): Array<String> {

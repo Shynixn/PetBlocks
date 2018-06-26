@@ -3,7 +3,7 @@ package com.github.shynixn.petblocks.bukkit.logic.business.service
 import com.github.shynixn.petblocks.api.business.entity.ScriptResult
 import com.github.shynixn.petblocks.api.business.enumeration.ScriptAction
 import com.github.shynixn.petblocks.api.business.service.GUIScriptService
-import com.github.shynixn.petblocks.bukkit.logic.business.entity.ScriptResultImpl
+import com.github.shynixn.petblocks.core.logic.persistence.entity.ScriptResultImpl
 import com.google.inject.Inject
 import org.slf4j.Logger
 import java.util.*

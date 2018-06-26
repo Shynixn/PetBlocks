@@ -46,7 +46,6 @@ import java.util.*
  */
 @Singleton
 class PetBlocksManager : AutoCloseable {
-
     val carryingPet: MutableMap<Player, ItemStack> = HashMap()
     val timeBlocked: MutableMap<Player, Int> = HashMap()
     val inventories: MutableMap<Player, Inventory> = HashMap()

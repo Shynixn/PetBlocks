@@ -4,9 +4,10 @@ import com.github.shynixn.petblocks.api.business.controller.PetBlockController
 import com.github.shynixn.petblocks.api.business.service.PersistenceService
 import com.github.shynixn.petblocks.api.persistence.controller.PetMetaController
 import com.github.shynixn.petblocks.api.persistence.entity.PetMeta
+import com.github.shynixn.petblocks.sponge.logic.business.helper.async
 import com.google.inject.Inject
-import org.bukkit.entity.Player
-import org.bukkit.plugin.Plugin
+import org.spongepowered.api.entity.living.player.Player
+import org.spongepowered.api.plugin.PluginContainer
 import java.util.*
 import java.util.concurrent.CompletableFuture
 
@@ -37,7 +38,7 @@ import java.util.concurrent.CompletableFuture
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class PersistenceServiceImpl @Inject constructor(private val plugin: Plugin, private val petBlockController: PetBlockController<Player>, private val petMetaController: PetMetaController<Player>) : PersistenceService {
+class PersistenceServiceImpl @Inject constructor(private val plugin: PluginContainer, private val petBlockController: PetBlockController<Player>, private val petMetaController: PetMetaController<Player>) : PersistenceService {
     /**
      * Returns [CompletableFuture] with the [PetMeta] instance of the given player. Creates a new [PetMeta] instance and
      * stores it in the storage if it does not already exist.
@@ -52,11 +53,12 @@ class PersistenceServiceImpl @Inject constructor(private val plugin: Plugin, pri
 
         if (optPetBlock.isPresent) {
             val meta = optPetBlock.get().meta
-            plugin.server.scheduler.runTaskAsynchronously(plugin, {
+
+            async {
                 completableFuture.complete(meta)
-            })
+            }
         } else {
-            plugin.server.scheduler.runTaskAsynchronously(plugin, {
+            async {
                 val optResult = petMetaController.getFromPlayer(player)
 
                 if (optPetBlock.isPresent) {
@@ -66,7 +68,7 @@ class PersistenceServiceImpl @Inject constructor(private val plugin: Plugin, pri
                     petMetaController.store(petMeta)
                     completableFuture.complete(petMeta)
                 }
-            })
+            }
         }
 
         return completableFuture
@@ -79,7 +81,7 @@ class PersistenceServiceImpl @Inject constructor(private val plugin: Plugin, pri
         val completableFuture = CompletableFuture<List<PetMeta>>()
         val activePetMetas = petBlockController.all.map { p -> p.meta }
 
-        plugin.server.scheduler.runTaskAsynchronously(plugin, {
+        async {
             val petMetaList = petMetaController.all
 
             var i = 0
@@ -95,7 +97,7 @@ class PersistenceServiceImpl @Inject constructor(private val plugin: Plugin, pri
             }
 
             completableFuture.complete(petMetaList)
-        })
+        }
 
         return completableFuture
     }
@@ -114,14 +116,14 @@ class PersistenceServiceImpl @Inject constructor(private val plugin: Plugin, pri
         if (optPetBlock.isPresent) {
             val meta = optPetBlock.get().meta
 
-            plugin.server.scheduler.runTaskAsynchronously(plugin, {
+            async {
                 completableFuture.complete(Optional.of(meta))
-            })
+            }
         } else {
-            plugin.server.scheduler.runTaskAsynchronously(plugin, {
+            async {
                 val optResult = petMetaController.getFromPlayer(player)
                 completableFuture.complete(optResult)
-            })
+            }
         }
 
         return completableFuture
@@ -133,17 +135,15 @@ class PersistenceServiceImpl @Inject constructor(private val plugin: Plugin, pri
     override fun save(petMeta: PetMeta): CompletableFuture<PetMeta> {
         val completableFuture = CompletableFuture<PetMeta>()
 
-        plugin.server.scheduler.runTaskAsynchronously(plugin, {
+        async {
             petMetaController.store(petMeta)
             completableFuture.complete(petMeta)
-        })
-
-        plugin.server.scheduler.runTask(plugin, {
+        }.thenMinecraft {
             val petBlock = petBlockController.getFromPlayer(petMeta.playerMeta.getPlayer())
             if (petBlock.isPresent) {
                 petBlock.get().respawn()
             }
-        })
+        }
 
         return completableFuture
     }

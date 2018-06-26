@@ -1,6 +1,7 @@
-package com.github.shynixn.petblocks.core.logic.business.entity
+package com.github.shynixn.petblocks.core.logic.persistence.entity
 
 import com.github.shynixn.petblocks.api.business.enumeration.GUIPage
+import com.github.shynixn.petblocks.core.logic.business.entity.GuiPageContainer
 
 /**
  * Created by Shynixn 2018.

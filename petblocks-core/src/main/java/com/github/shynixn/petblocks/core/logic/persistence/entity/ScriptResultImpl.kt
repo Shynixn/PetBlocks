@@ -1,4 +1,8 @@
-package com.github.shynixn.petblocks.bukkit.logic.business.entity
+package com.github.shynixn.petblocks.core.logic.persistence.entity
+
+import com.github.shynixn.petblocks.api.business.entity.ScriptResult
+import com.github.shynixn.petblocks.api.business.enumeration.ScriptAction
+import java.util.*
 
 /**
  * Created by Shynixn 2018.
@@ -27,9 +31,22 @@ package com.github.shynixn.petblocks.bukkit.logic.business.entity
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class PlayerGUICache {
+class ScriptResultImpl : ScriptResult {
+    /**
+     * Storage for additional values.
+     */
+    override var valueContainer: Optional<Any> = Optional.empty()
+    /**
+     * Returns the optional parsed permission for the [ScriptAction].
+     */
+    override var permission: Optional<String> = Optional.empty()
+    /**
+     * Returns the [ScriptAction] which should be executed.
+     */
+    override var action: ScriptAction = ScriptAction.NONE
 
-    var path: String? = null
-
-    var permission: String? = null
+    /**
+     * Returns the optional parsed path for the [ScriptAction].
+     */
+    override var path: Optional<String> = Optional.empty()
 }

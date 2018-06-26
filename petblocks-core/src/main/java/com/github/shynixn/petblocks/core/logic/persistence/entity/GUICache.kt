@@ -1,4 +1,4 @@
-package com.github.shynixn.petblocks.core.logic.business.entity
+package com.github.shynixn.petblocks.core.logic.persistence.entity
 
 import java.util.*
 
