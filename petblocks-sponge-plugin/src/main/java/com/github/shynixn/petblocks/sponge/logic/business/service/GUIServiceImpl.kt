@@ -49,8 +49,9 @@ import org.spongepowered.api.plugin.PluginContainer
  * SOFTWARE.
  */
 @Singleton
-class GUIServiceImpl @Inject constructor(private val configurationService: ConfigurationService, private val plugin: PluginContainer, private val scriptService: GUIScriptService, private val persistenceService: PersistenceService, private val petBlocksManager: PetBlocksManager) : GUIService {
+class GUIServiceImpl @Inject constructor(private val configurationService: ConfigurationService, private val plugin: PluginContainer, private val scriptService: GUIScriptService, private val persistenceService: PersistenceService) : GUIService {
     private val pageCache = HashMap<Player, PlayerGUICache>()
+    private val petBlocksManager = PetBlocksManager.petBlocksManager!!
 
     /**
      * Closes the gui for the given [player]. Does nothing when the GUI is already closed.
@@ -126,6 +127,10 @@ class GUIServiceImpl @Inject constructor(private val configurationService: Confi
             scriptResult.action == ScriptAction.LOAD_COLLECTION -> loadCollectionPage(petBlocksManager.inventories[player], scriptResult.path.get(), scriptResult.permission.get())
             scriptResult.action == ScriptAction.SCROLL_COLLECTION -> scrollCollectionPage(player, scriptResult.valueContainer.get() as Int)
         }
+
+        sync(plugin, 5L) {
+            player.updateInventory()
+        }
     }
 
     /**
@@ -150,7 +155,6 @@ class GUIServiceImpl @Inject constructor(private val configurationService: Confi
         }
 
         return petBlocksManager.inventories.containsKey(inventory.getHolder())
-                && petBlocksManager.inventories[inventory.getHolder()]!! == inventory
     }
 
     /**
@@ -249,7 +253,7 @@ class GUIServiceImpl @Inject constructor(private val configurationService: Confi
                     scheduleCounter++
                 }
 
-                async(plugin, scheduleCounter.toLong()) {
+                sync(plugin, scheduleCounter.toLong()) {
                     if (container.currentCount == mountBlock && currentPage == petBlocksManager.pages[player]!!.page) {
                         inventory.setItem(slot, setPermissionLore(player, items[containerSlot].toItemStack(), items[containerSlot].position, groupPermission))
                     }
@@ -258,22 +262,29 @@ class GUIServiceImpl @Inject constructor(private val configurationService: Confi
             i++
         }
         container.startCount = count
+
         val optBackGuiItemContainer = Config.getInstance<Player>().guiItemsController.getGUIItemFromName("back")
-        if (!optBackGuiItemContainer.isPresent)
+        if (!optBackGuiItemContainer.isPresent) {
             throw IllegalArgumentException("Gui item back could not be loaded correctly!")
+        }
+
         inventory.setItem(optBackGuiItemContainer.get().position, optBackGuiItemContainer.get().generate(player) as ItemStack)
 
         if (!(container.startCount % 45 != 0 || items.size == container.startCount)) {
             val optNextPage = Config.getInstance<Player>().guiItemsController.getGUIItemFromName("next-page")
-            if (!optNextPage.isPresent)
+            if (!optNextPage.isPresent) {
                 throw IllegalArgumentException("Gui item next-page could not be loaded correctly!")
+            }
+
             inventory.setItem(optNextPage.get().position, optNextPage.get().generate(player) as ItemStack)
         }
 
         if (container.currentCount != 0) {
             val optPreviousPage = Config.getInstance<Player>().guiItemsController.getGUIItemFromName("previous-page")
-            if (!optPreviousPage.isPresent)
+            if (!optPreviousPage.isPresent) {
                 throw IllegalArgumentException("Gui item previous-page could not be loaded correctly!")
+            }
+
             inventory.setItem(optPreviousPage.get().position, optPreviousPage.get().generate(player) as ItemStack)
         }
 
@@ -290,6 +301,7 @@ class GUIServiceImpl @Inject constructor(private val configurationService: Confi
                 } else {
                     lore[i] = lore[i].replace("<permission>", com.github.shynixn.petblocks.sponge.logic.persistence.configuration.Config.permissionIconNo)
                 }
+
                 i++
             }
 

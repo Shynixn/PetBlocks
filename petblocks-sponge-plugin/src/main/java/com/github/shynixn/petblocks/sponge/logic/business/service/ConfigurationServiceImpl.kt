@@ -66,6 +66,8 @@ class ConfigurationServiceImpl @Inject constructor(private val plugin: PluginCon
             val defaultConfig = this.privateConfigDir.resolve("config.yml")
             val loader = YAMLConfigurationLoader.builder().setPath(defaultConfig).build()
             this.node = loader.load()
+
+            guiItemsController.reload()
         } catch (e: IOException) {
             plugin.logger.warn("Failed to reload config.yml.", e)
         }
@@ -92,9 +94,9 @@ class ConfigurationServiceImpl @Inject constructor(private val plugin: PluginCon
             val items = path.split(Pattern.quote(".").toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
             val targetNode = this.node.getNode(*items as Array<Any>)
             val data = targetNode.childrenMap
-         //   data.keys.mapTo(items) { SpongeGUIItem(Integer.parseInt(it as String),data.entries) }
+            //   data.keys.mapTo(items) { SpongeGUIItem(Integer.parseInt(it as String),data.entries) }
         } catch (e: Exception) {
-        //    plugin.logger.Level.WARNING, "Failed load GUI Item collection called '$path'.", e)
+            //    plugin.logger.Level.WARNING, "Failed load GUI Item collection called '$path'.", e)
         }
 
         cache[path] = items
@@ -139,7 +141,7 @@ class ConfigurationServiceImpl @Inject constructor(private val plugin: PluginCon
         try {
             val decipher = Cipher.getInstance("AES/CBC/PKCS5PADDING")
             decipher.init(Cipher.DECRYPT_MODE, SecretKeySpec(Base64Coder.decode("Ydy3wN+SnAgC/sYQZ72yEg=="), "AES"), IvParameterSpec("RandomInitVector".toByteArray(charset("UTF-8"))))
-            BufferedReader(InputStreamReader(CipherInputStream(plugin.getResource("assets/petblocks/minecraftheads.db"), decipher))).use { reader ->
+            BufferedReader(InputStreamReader(CipherInputStream(plugin.getResource("minecraftheads.db"), decipher))).use { reader ->
                 var s: String?
                 val splitter = Pattern.quote(",")
                 var i = 0

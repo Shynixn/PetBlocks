@@ -1,8 +1,17 @@
 package com.github.shynixn.petblocks.sponge.logic.business.helper
 
+import com.github.shynixn.petblocks.api.business.service.ConfigurationService
+import com.github.shynixn.petblocks.api.business.service.GUIScriptService
+import com.github.shynixn.petblocks.api.business.service.GUIService
+import com.github.shynixn.petblocks.api.business.service.PersistenceService
+import com.github.shynixn.petblocks.bukkit.logic.business.service.GUIScriptServiceImpl
+import com.github.shynixn.petblocks.sponge.logic.business.service.PersistenceServiceImpl
 import com.github.shynixn.petblocks.core.logic.business.entity.DbContext
 import com.github.shynixn.petblocks.sponge.logic.business.PetBlocksManager
 import com.github.shynixn.petblocks.sponge.logic.business.entity.SpongeDBContext
+import com.github.shynixn.petblocks.sponge.logic.business.listener.InventoryListener
+import com.github.shynixn.petblocks.sponge.logic.business.service.ConfigurationServiceImpl
+import com.github.shynixn.petblocks.sponge.logic.business.service.GUIServiceImpl
 import com.google.inject.AbstractModule
 import com.google.inject.Inject
 import org.slf4j.Logger
@@ -55,5 +64,11 @@ class GoogleGuiceSubBinder : AbstractModule() {
         petBlocksManager = PetBlocksManager()
         bind(DbContext::class.java).toInstance(SpongeDBContext(plugin, logger, privateConfigDir))
         bind(PetBlocksManager::class.java).toInstance(petBlocksManager)
+
+        bind(PersistenceService::class.java).to(PersistenceServiceImpl::class.java)
+        bind(GUIScriptService::class.java).to(GUIScriptServiceImpl::class.java)
+        bind(ConfigurationService::class.java).to(ConfigurationServiceImpl::class.java)
+        bind(GUIService::class.java).to(GUIServiceImpl::class.java)
+        bind(InventoryListener::class.java)
     }
 }

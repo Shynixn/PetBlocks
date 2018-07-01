@@ -1,9 +1,10 @@
-package com.github.shynixn.petblocks.bukkit.logic.business.service
+package com.github.shynixn.petblocks.sponge.logic.business.service
 
 import com.github.shynixn.petblocks.api.business.controller.PetBlockController
 import com.github.shynixn.petblocks.api.business.service.PersistenceService
 import com.github.shynixn.petblocks.api.persistence.controller.PetMetaController
 import com.github.shynixn.petblocks.api.persistence.entity.PetMeta
+import com.github.shynixn.petblocks.sponge.logic.business.PetBlocksManager
 import com.github.shynixn.petblocks.sponge.logic.business.helper.async
 import com.github.shynixn.petblocks.sponge.logic.business.helper.sync
 import com.google.inject.Inject
@@ -39,7 +40,10 @@ import java.util.concurrent.CompletableFuture
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class PersistenceServiceImpl @Inject constructor(private val plugin: PluginContainer, private val petBlockController: PetBlockController<Player>, private val petMetaController: PetMetaController<Player>) : PersistenceService {
+class PersistenceServiceImpl @Inject constructor(private val plugin: PluginContainer) : PersistenceService {
+    private var petBlockController: PetBlockController<Player>? = null
+    private var petMetaController: PetMetaController<Player>? = null
+
     /**
      * Returns [CompletableFuture] with the [PetMeta] instance of the given player. Creates a new [PetMeta] instance and
      * stores it in the storage if it does not already exist.
@@ -49,8 +53,10 @@ class PersistenceServiceImpl @Inject constructor(private val plugin: PluginConta
             throw IllegalArgumentException("Player has to be an BukkitPlayer!")
         }
 
+        initializeDependencies()
+
         val completableFuture = CompletableFuture<PetMeta>()
-        val optPetBlock = petBlockController.getFromPlayer(player)
+        val optPetBlock = petBlockController!!.getFromPlayer(player)
 
         if (optPetBlock.isPresent) {
             val meta = optPetBlock.get().meta
@@ -60,15 +66,15 @@ class PersistenceServiceImpl @Inject constructor(private val plugin: PluginConta
             }
         } else {
             async(plugin) {
-                val optResult = petMetaController.getFromPlayer(player)
+                val optResult = petMetaController!!.getFromPlayer(player)
 
                 if (optPetBlock.isPresent) {
                     sync(plugin) {
                         completableFuture.complete(optResult.get())
                     }
                 } else {
-                    val petMeta = petMetaController.create(player)
-                    petMetaController.store(petMeta)
+                    val petMeta = petMetaController!!.create(player)
+                    petMetaController!!.store(petMeta)
 
                     sync(plugin) {
                         completableFuture.complete(petMeta)
@@ -85,10 +91,12 @@ class PersistenceServiceImpl @Inject constructor(private val plugin: PluginConta
      */
     override fun getAll(): CompletableFuture<List<PetMeta>> {
         val completableFuture = CompletableFuture<List<PetMeta>>()
-        val activePetMetas = petBlockController.all.map { p -> p.meta }
+        val activePetMetas = petBlockController!!.all.map { p -> p.meta }
+
+        initializeDependencies()
 
         async(plugin) {
-            val petMetaList = petMetaController.all
+            val petMetaList = petMetaController!!.all
 
             var i = 0
             while (i < petMetaList.size) {
@@ -118,8 +126,10 @@ class PersistenceServiceImpl @Inject constructor(private val plugin: PluginConta
             throw IllegalArgumentException("Player has to be an BukkitPlayer!")
         }
 
+        initializeDependencies()
+
         val completableFuture = CompletableFuture<Optional<PetMeta>>()
-        val optPetBlock = petBlockController.getFromPlayer(player)
+        val optPetBlock = petBlockController!!.getFromPlayer(player)
 
         if (optPetBlock.isPresent) {
             val meta = optPetBlock.get().meta
@@ -129,10 +139,9 @@ class PersistenceServiceImpl @Inject constructor(private val plugin: PluginConta
             }
         } else {
             async(plugin) {
-                val optResult = petMetaController.getFromPlayer(player)
+                val optResult = petMetaController!!.getFromPlayer(player)
 
-                sync(plugin)
-                {
+                sync(plugin) {
                     completableFuture.complete(optResult)
                 }
             }
@@ -145,19 +154,28 @@ class PersistenceServiceImpl @Inject constructor(private val plugin: PluginConta
      * Saves the given [petMeta] instance and returns a [CompletableFuture] with the same petMeta instance.
      */
     override fun save(petMeta: PetMeta): CompletableFuture<PetMeta> {
+        initializeDependencies()
+
         val completableFuture = CompletableFuture<PetMeta>()
 
         async(plugin) {
-            petMetaController.store(petMeta)
+            petMetaController!!.store(petMeta)
             completableFuture.complete(petMeta)
 
             sync(plugin) {
-                val petBlock = petBlockController.getFromPlayer(petMeta.playerMeta.getPlayer())
+                val petBlock = petBlockController!!.getFromPlayer(petMeta.playerMeta.getPlayer())
                 if (petBlock.isPresent) {
                     petBlock.get().respawn()
                 }
             }
         }
         return completableFuture
+    }
+
+    private fun initializeDependencies() {
+        if (petBlockController == null) {
+            petBlockController = PetBlocksManager.petBlocksManager!!.petBlockController
+            petMetaController = PetBlocksManager.petBlocksManager!!.petMetaController
+        }
     }
 }

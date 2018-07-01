@@ -72,6 +72,7 @@ class GUI {
 
         val inventory = Inventory.builder()
                 .of(InventoryArchetypes.DOUBLE_CHEST)
+                .withCarrier(player)
                 .property(
                         InventoryTitle.PROPERTY_NAME,
                         InventoryTitle.of(Config.guiTitle.translateToText())
