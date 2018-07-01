@@ -88,13 +88,6 @@ public class PetDataListener extends SimpleListener {
             .setClickAction(ChatBuilder.ClickAction.OPEN_URL, "https://www.spigotmc.org/resources/14280/")
             .setHoverText("A valid spigot account is required!")
             .builder();
-    private final ChatBuilder collectedMinecraftHeads = new ChatBuilder().text(Config.getInstance().getPrefix())
-            .text("Pets collected by ")
-            .component(">>Minecraft-Heads.com<<")
-            .setColor(com.github.shynixn.petblocks.core.logic.business.helper.ChatColor.YELLOW)
-            .setClickAction(ChatBuilder.ClickAction.OPEN_URL, "http://minecraft-heads.com")
-            .setHoverText("Goto the Minecraft-Heads website!")
-            .builder();
 
     /**
      * Initializes a new PetDataListener.

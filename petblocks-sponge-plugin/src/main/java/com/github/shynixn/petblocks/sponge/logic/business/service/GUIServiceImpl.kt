@@ -8,6 +8,7 @@ import com.github.shynixn.petblocks.api.business.service.GUIService
 import com.github.shynixn.petblocks.api.business.service.PersistenceService
 import com.github.shynixn.petblocks.api.persistence.entity.GUIItem
 import com.github.shynixn.petblocks.core.logic.business.entity.GuiPageContainer
+import com.github.shynixn.petblocks.core.logic.business.helper.ChatBuilder
 import com.github.shynixn.petblocks.core.logic.persistence.configuration.Config
 import com.github.shynixn.petblocks.core.logic.persistence.entity.PlayerGUICache
 import com.github.shynixn.petblocks.sponge.logic.business.PetBlocksManager
@@ -52,6 +53,7 @@ import org.spongepowered.api.plugin.PluginContainer
 class GUIServiceImpl @Inject constructor(private val configurationService: ConfigurationService, private val plugin: PluginContainer, private val scriptService: GUIScriptService, private val persistenceService: PersistenceService) : GUIService {
     private val pageCache = HashMap<Player, PlayerGUICache>()
     private val petBlocksManager = PetBlocksManager.petBlocksManager!!
+    private var collectedMinecraftHeadsMessage: ChatBuilder? = null
 
     /**
      * Closes the gui for the given [player]. Does nothing when the GUI is already closed.
@@ -200,6 +202,20 @@ class GUIServiceImpl @Inject constructor(private val configurationService: Confi
         }
 
         val optItems = configurationService.findGUIItemCollection(path)
+
+        if (path.startsWith("minecraft-heads-com.")) {
+            if (collectedMinecraftHeadsMessage == null) {
+                collectedMinecraftHeadsMessage = ChatBuilder().text(com.github.shynixn.petblocks.core.logic.persistence.configuration.Config.getInstance<kotlin.Any>().prefix)
+                        .text("Pets collected by ")
+                        .component(">>Minecraft-Heads.com<<")
+                        .setColor(com.github.shynixn.petblocks.core.logic.business.helper.ChatColor.YELLOW)
+                        .setClickAction(com.github.shynixn.petblocks.core.logic.business.helper.ChatBuilder.ClickAction.OPEN_URL, "http://minecraft-heads.com")
+                        .setHoverText("Goto the Minecraft-Heads website!")
+                        .builder()
+            }
+
+            collectedMinecraftHeadsMessage!!.sendMessage(inventory.getHolder())
+        }
 
         if (optItems.isPresent) {
             this.pageCache[inventory.getHolder()]!!.path = path

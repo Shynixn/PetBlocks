@@ -7,7 +7,9 @@ import com.github.shynixn.petblocks.api.persistence.entity.GUIItem
 import com.github.shynixn.petblocks.sponge.logic.business.helper.getDisplayName
 import com.github.shynixn.petblocks.sponge.logic.business.helper.getLore
 import com.github.shynixn.petblocks.sponge.logic.business.helper.getResource
+import com.github.shynixn.petblocks.sponge.logic.persistence.configuration.Config
 import com.github.shynixn.petblocks.sponge.logic.persistence.configuration.SpongeStaticGUIItems
+import com.github.shynixn.petblocks.sponge.logic.persistence.entity.SpongeEngineData
 import com.github.shynixn.petblocks.sponge.logic.persistence.entity.SpongeGUIItem
 import com.github.shynixn.petblocks.sponge.logic.persistence.entity.SpongeItemContainer
 import com.google.inject.Inject
@@ -91,15 +93,17 @@ class ConfigurationServiceImpl @Inject constructor(private val plugin: PluginCon
 
         val items = ArrayList<GUIItem>()
         try {
-            val items = path.split(Pattern.quote(".").toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
-            val targetNode = this.node.getNode(*items as Array<Any>)
-            val data = targetNode.childrenMap
-            //   data.keys.mapTo(items) { SpongeGUIItem(Integer.parseInt(it as String),data.entries) }
+            val data = Config.getData<Map<Int, Any>>(path)
+            for (key in data!!.keys) {
+                val container = SpongeGUIItem((key), data[key] as Map<String, Any>)
+                items.add(container)
+            }
+
+            cache[path] = items
         } catch (e: Exception) {
-            //    plugin.logger.Level.WARNING, "Failed load GUI Item collection called '$path'.", e)
+            plugin.logger.warn("Failed load GUI Item collection called '$path'.", e)
         }
 
-        cache[path] = items
         return Optional.of(items)
     }
 
