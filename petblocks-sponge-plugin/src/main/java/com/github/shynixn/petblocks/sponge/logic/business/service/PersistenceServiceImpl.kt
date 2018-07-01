@@ -5,6 +5,7 @@ import com.github.shynixn.petblocks.api.business.service.PersistenceService
 import com.github.shynixn.petblocks.api.persistence.controller.PetMetaController
 import com.github.shynixn.petblocks.api.persistence.entity.PetMeta
 import com.github.shynixn.petblocks.sponge.logic.business.helper.async
+import com.github.shynixn.petblocks.sponge.logic.business.helper.sync
 import com.google.inject.Inject
 import org.spongepowered.api.entity.living.player.Player
 import org.spongepowered.api.plugin.PluginContainer
@@ -54,19 +55,24 @@ class PersistenceServiceImpl @Inject constructor(private val plugin: PluginConta
         if (optPetBlock.isPresent) {
             val meta = optPetBlock.get().meta
 
-            async {
+            sync(plugin) {
                 completableFuture.complete(meta)
             }
         } else {
-            async {
+            async(plugin) {
                 val optResult = petMetaController.getFromPlayer(player)
 
                 if (optPetBlock.isPresent) {
-                    completableFuture.complete(optResult.get())
+                    sync(plugin) {
+                        completableFuture.complete(optResult.get())
+                    }
                 } else {
                     val petMeta = petMetaController.create(player)
                     petMetaController.store(petMeta)
-                    completableFuture.complete(petMeta)
+
+                    sync(plugin) {
+                        completableFuture.complete(petMeta)
+                    }
                 }
             }
         }
@@ -81,7 +87,7 @@ class PersistenceServiceImpl @Inject constructor(private val plugin: PluginConta
         val completableFuture = CompletableFuture<List<PetMeta>>()
         val activePetMetas = petBlockController.all.map { p -> p.meta }
 
-        async {
+        async(plugin) {
             val petMetaList = petMetaController.all
 
             var i = 0
@@ -96,7 +102,9 @@ class PersistenceServiceImpl @Inject constructor(private val plugin: PluginConta
                 i++
             }
 
-            completableFuture.complete(petMetaList)
+            sync(plugin) {
+                completableFuture.complete(petMetaList)
+            }
         }
 
         return completableFuture
@@ -116,13 +124,17 @@ class PersistenceServiceImpl @Inject constructor(private val plugin: PluginConta
         if (optPetBlock.isPresent) {
             val meta = optPetBlock.get().meta
 
-            async {
+            sync(plugin) {
                 completableFuture.complete(Optional.of(meta))
             }
         } else {
-            async {
+            async(plugin) {
                 val optResult = petMetaController.getFromPlayer(player)
-                completableFuture.complete(optResult)
+
+                sync(plugin)
+                {
+                    completableFuture.complete(optResult)
+                }
             }
         }
 
@@ -135,16 +147,17 @@ class PersistenceServiceImpl @Inject constructor(private val plugin: PluginConta
     override fun save(petMeta: PetMeta): CompletableFuture<PetMeta> {
         val completableFuture = CompletableFuture<PetMeta>()
 
-        async {
+        async(plugin) {
             petMetaController.store(petMeta)
             completableFuture.complete(petMeta)
-        }.thenMinecraft {
-            val petBlock = petBlockController.getFromPlayer(petMeta.playerMeta.getPlayer())
-            if (petBlock.isPresent) {
-                petBlock.get().respawn()
+
+            sync(plugin) {
+                val petBlock = petBlockController.getFromPlayer(petMeta.playerMeta.getPlayer())
+                if (petBlock.isPresent) {
+                    petBlock.get().respawn()
+                }
             }
         }
-
         return completableFuture
     }
 }

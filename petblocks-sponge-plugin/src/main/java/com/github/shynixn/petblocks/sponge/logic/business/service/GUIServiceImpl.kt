@@ -14,14 +14,12 @@ import com.github.shynixn.petblocks.sponge.logic.business.PetBlocksManager
 import com.github.shynixn.petblocks.sponge.logic.business.helper.*
 import com.google.inject.Inject
 import com.google.inject.Singleton
-import org.spongepowered.api.Sponge
 import org.spongepowered.api.entity.living.player.Player
 import org.spongepowered.api.item.ItemTypes
 import org.spongepowered.api.item.inventory.Inventory
 import org.spongepowered.api.item.inventory.ItemStack
 import org.spongepowered.api.item.inventory.type.GridInventory
 import org.spongepowered.api.plugin.PluginContainer
-import java.util.function.Consumer
 
 /**
  * Created by Shynixn 2018.
@@ -76,9 +74,7 @@ class GUIServiceImpl @Inject constructor(private val configurationService: Confi
         petBlocksManager.gui.open(player)
 
         persistenceService.getOrCreateFromPlayer(player).thenAccept({ petMeta ->
-            minecraft {
-                petBlocksManager.gui.setPage(player, GUIPage.MAIN, petMeta)
-            }
+            petBlocksManager.gui.setPage(player, GUIPage.MAIN, petMeta)
         })
     }
 
@@ -253,11 +249,11 @@ class GUIServiceImpl @Inject constructor(private val configurationService: Confi
                     scheduleCounter++
                 }
 
-                async({
+                async(plugin, scheduleCounter.toLong()) {
                     if (container.currentCount == mountBlock && currentPage == petBlocksManager.pages[player]!!.page) {
                         inventory.setItem(slot, setPermissionLore(player, items[containerSlot].toItemStack(), items[containerSlot].position, groupPermission))
                     }
-                }, scheduleCounter.toLong())
+                }
             }
             i++
         }
@@ -310,10 +306,10 @@ class GUIServiceImpl @Inject constructor(private val configurationService: Confi
         persistenceService.getFromPlayer(player).thenAccept { p ->
             val petMeta = p.get()
             petMeta.setSkin(CompatibilityItemType.getFromId(guiItem.type).name, guiItem.data, guiItem.skin, guiItem.unbreakable)
-            persistenceService.save(petMeta)
+            petBlocksManager.gui.setPage(player, GUIPage.MAIN, petMeta)
 
-            minecraft {
-                petBlocksManager.gui.setPage(player, GUIPage.MAIN, petMeta)
+            async(plugin) {
+                persistenceService.save(petMeta)
             }
         }
     }

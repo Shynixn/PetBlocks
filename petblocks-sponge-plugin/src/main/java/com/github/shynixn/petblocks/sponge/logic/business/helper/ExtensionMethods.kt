@@ -120,65 +120,34 @@ fun PetMeta.setCostume(petBlock: PetBlock<Player, Transform<World>>?, container:
     petBlock?.respawn()
 }
 
-
 /**
- * Handles the current action on the minecraft main thread.
+ * Executes the given [f] for the given [plugin] on main thread.
  */
-fun Any.minecraft(f: () -> Unit): After {
-    val after = After()
-    val plugin = Sponge.getPluginManager().getPlugin("petblocks")
-
-    Task.builder().execute(Runnable {
+inline fun Any.sync(plugin: Any, delayTicks: Long = 0L, repeatingTicks: Long = 0L, crossinline f: () -> Unit) {
+    val builder = Task.builder().execute(Runnable {
         f.invoke()
-        after.execute()
-    }).submit(plugin)
+    }).delayTicks(delayTicks)
 
-    return after
+    if (repeatingTicks > 0) {
+        builder.intervalTicks(repeatingTicks)
+    }
+
+    builder.submit(plugin)
 }
 
 /**
- * Handles the current action on the minecraft main thread.
+ * Executes the given [f] for the given [plugin] asynchronly.
  */
-fun Any.minecraft(f: () -> Unit, ticks: Long): After {
-    val after = After()
-    val plugin = Sponge.getPluginManager().getPlugin("petblocks")
-
-    Task.builder().delayTicks(ticks).execute(Runnable {
+inline fun Any.async(plugin: Any, delayTicks: Long = 0L, repeatingTicks: Long = 0L, crossinline f: () -> Unit) {
+    val builder = Task.builder().async().execute(Runnable {
         f.invoke()
-        after.execute()
-    }).submit(plugin)
+    }).delayTicks(delayTicks)
 
-    return after
-}
+    if (repeatingTicks > 0) {
+        builder.intervalTicks(repeatingTicks)
+    }
 
-/**
- * Handles the current action on the async background thread.
- */
-fun Any.async(f: () -> Unit): After {
-    val after = After()
-    val plugin = Sponge.getPluginManager().getPlugin("petblocks")
-
-    Task.builder().async().execute(Runnable {
-        f.invoke()
-        after.execute()
-    }).submit(plugin)
-
-    return after
-}
-
-/**
- * Handles the current action on the async background thread.
- */
-fun Any.async(f: () -> Unit, ticks: Long): After {
-    val after = After()
-    val plugin = Sponge.getPluginManager().getPlugin("petblocks")
-
-    Task.builder().delayTicks(ticks).async().execute(Runnable {
-        f.invoke()
-        after.execute()
-    }).submit(plugin)
-
-    return after
+    builder.submit(plugin)
 }
 
 fun Inventory.setItem(index: Int, itemStack: ItemStack) {
@@ -205,47 +174,6 @@ fun Inventory.getItem(index: Int): ItemStack? {
     }
 
     return null
-}
-
-class After {
-    private var f: (() -> Unit)? = null
-    private var mainThread: Boolean = false
-
-    /**
-     * Executes any stored action.
-     */
-    fun execute() {
-        if (f == null) {
-            return
-        }
-
-        if (mainThread) {
-            minecraft {
-                f?.invoke()
-            }
-        } else {
-            async {
-                f?.invoke()
-            }
-        }
-    }
-
-    /**
-     * Handles the current action on the minecraft main thread.
-     */
-    fun thenMinecraft(f: () -> Unit) {
-        this.f = f
-        mainThread = true
-    }
-
-    /**
-     * Handles the current action on the async background thread.
-     */
-    fun thenAsync(f: () -> Unit) {
-        this.f = f
-
-        mainThread = false
-    }
 }
 
 /**
