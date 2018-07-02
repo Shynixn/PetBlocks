@@ -105,6 +105,10 @@ class GUIServiceImpl @Inject constructor(private val configurationService: Confi
 
             val itemSlot = relativeSlot + petBlocksManager.pages[player]!!.currentCount
 
+            if (!hasPermission(player, itemSlot, pageCache[player]!!.permission)) {
+                return
+            }
+
             if (optItems.isPresent && itemSlot < optItems.get().size) {
                 val guiItem = optItems.get()[itemSlot]
                 setCollectionSkinItemToPlayer(player, guiItem)
@@ -305,6 +309,16 @@ class GUIServiceImpl @Inject constructor(private val configurationService: Confi
         }
 
         this.fillEmptySlots(inventory)
+    }
+
+    private fun hasPermission(player: Player, position: Int, permission: String?): Boolean {
+        val slot = position + 1
+        if (player.hasPermission("$permission.all") || player.hasPermission("$permission.$slot")) {
+            return true
+        }
+
+        player.sendMessage(Config.getInstance<Any>().prefix + Config.getInstance<Any>().noPermission)
+        return false
     }
 
     private fun setPermissionLore(player: Player, itemStack: ItemStack, position: Int, permission: String?): ItemStack {
