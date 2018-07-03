@@ -113,6 +113,7 @@ tag.
        - 'none'
 
 **Important:** You can always type **/petblockreload** and take a look into your console log to see if the config.yml can still be parsed.
+If the script is correctly added but it gets not executed try restarting the server.
 
 3. Add the 'script' tag to the category item with the correct action, path and permission.
 

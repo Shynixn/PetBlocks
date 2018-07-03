@@ -4,9 +4,7 @@ package com.github.shynixn.petblocks.sponge.logic.persistence.entity
 
 import com.github.shynixn.petblocks.api.business.entity.GUIItemContainer
 import com.github.shynixn.petblocks.core.logic.persistence.entity.CustomGUIItem
-import com.github.shynixn.petblocks.sponge.logic.business.helper.CompatibilityItemType
-import com.github.shynixn.petblocks.sponge.logic.business.helper.setDamage
-import com.github.shynixn.petblocks.sponge.logic.business.helper.setSkin
+import com.github.shynixn.petblocks.sponge.logic.business.helper.*
 import org.spongepowered.api.data.key.Keys
 import org.spongepowered.api.item.inventory.ItemStack
 
@@ -47,9 +45,12 @@ class SpongeGUIItem : CustomGUIItem {
 
         itemStack.setDamage(this.data)
 
-        if (itemType == CompatibilityItemType.SKULL_ITEM && this.skin != null) {
+        if (itemType == CompatibilityItemType.SKULL_ITEM) {
             itemStack.setSkin(this.skin)
         }
+
+        itemStack.setDisplayName(displayName)
+        itemStack.setLore(this.lore.toTypedArray())
 
         itemStack.offer(Keys.UNBREAKABLE, this.unbreakable)
 
