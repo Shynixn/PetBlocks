@@ -12,6 +12,7 @@ import com.github.shynixn.petblocks.sponge.nms.NMSRegistry
 import com.github.shynixn.petblocks.sponge.nms.VersionSupport
 import com.google.inject.Inject
 import com.google.inject.Injector
+import com.google.inject.Key
 import org.bstats.sponge.Metrics
 import org.slf4j.Logger
 import org.spongepowered.api.Sponge
@@ -93,7 +94,7 @@ class PetBlocksPlugin {
 
         injector.createChildInjector(GoogleGuiceBinder())
         Config.reload()
-        injector.createChildInjector(guice)
+        val childInjector = injector.createChildInjector(guice)
 
         metrics.addCustomChart(Metrics.SimplePie("storage", {
             if (Config.getData<Boolean>("sql.enabled")!!) {
@@ -111,7 +112,9 @@ class PetBlocksPlugin {
         }
 
         try {
-            ReflectionUtils.invokeMethodByClass<PetBlocksApi>(PetBlocksApi::class.java, "initialize", arrayOf<Class<*>>(PetMetaController::class.java, PetBlockController::class.java, GUIService::class.java), arrayOf<Any?>(guice.petBlocksManager!!.petMetaController, this.guice.petBlocksManager!!.petBlockController, null))
+            ReflectionUtils.invokeMethodByClass<PetBlocksApi>(PetBlocksApi::class.java, "initialize"
+                    , arrayOf<Class<*>>(PetMetaController::class.java, PetBlockController::class.java, GUIService::class.java)
+                    , arrayOf<Any?>(guice.petBlocksManager!!.petMetaController, this.guice.petBlocksManager!!.petBlockController, childInjector.getInstance(Key.get(GUIService::class.java))))
             Sponge.getGame().sendMessage(PREFIX_CONSOLE + ChatColor.GREEN + "Enabled PetBlocks " + pluginContainer.version.get() + " by Shynixn")
         } catch (e: Exception) {
             logger.error("Failed to enable plugin.", e)

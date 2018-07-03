@@ -4,6 +4,8 @@ import com.github.shynixn.petblocks.api.business.controller.PetBlockController;
 import com.github.shynixn.petblocks.api.business.service.GUIService;
 import com.github.shynixn.petblocks.api.persistence.controller.PetMetaController;
 
+import java.util.Optional;
+
 /**
  * PetBlocksApi for accessing and modifying PetBlocks and PetMeta.
  * <p>
@@ -36,6 +38,7 @@ public class PetBlocksApi {
     private static PetMetaController metaController;
     private static PetBlockController petBlockController;
     private static GUIService guiService;
+    public static final PetBlocksApi INSTANCE = new PetBlocksApi();
 
     /**
      * Initializes the api.
@@ -47,12 +50,18 @@ public class PetBlocksApi {
     }
 
     /**
-     * Returns the gui service handling interactions with the gui.
+     * Gets a business logic service by resolving the given class.
      *
-     * @return gui
+     * @param service service interface.
+     * @param <S>     type of Service.
+     * @return optional S.
      */
-    public static GUIService getGUIService() {
-        return guiService;
+    public <S> Optional<S> resolve(Class<S> service) {
+        if (service == GUIService.class) {
+            return Optional.of((S) guiService);
+        }
+
+        return Optional.empty();
     }
 
     /**

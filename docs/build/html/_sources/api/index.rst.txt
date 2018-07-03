@@ -248,6 +248,20 @@ However, for applying the changes you need to respawn the PetBlock:
     final PetBlock petBlock; //Any PetBlock instance
     petBlock.respawn();
 
+Accessing Business Logic
+~~~~~~~~~~~~~~~~~~~~~~~~
+
+The PetBlocks plugin allows to access some (not all) parts of the Business Logic too.
+
+* Accessing the GUI.
+
+**Bukkit/Sponge:**
+::
+    Player player; // Any player instance
+    final GUIService guiService = PetBlocksApi.INSTANCE.resolve(GUIService.class).get();
+
+    guiService.open(player);
+
 Listen to Events
 ~~~~~~~~~~~~~~~~
 
