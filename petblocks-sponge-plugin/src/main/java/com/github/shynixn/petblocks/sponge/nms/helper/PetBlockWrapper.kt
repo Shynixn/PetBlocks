@@ -14,7 +14,6 @@ import com.github.shynixn.petblocks.sponge.logic.persistence.configuration.Confi
 import com.github.shynixn.petblocks.sponge.logic.persistence.entity.SpongeSoundBuilder
 import com.github.shynixn.petblocks.sponge.nms.VersionSupport
 import org.spongepowered.api.Sponge
-import org.spongepowered.api.data.key.Key
 import org.spongepowered.api.data.key.Keys
 import org.spongepowered.api.entity.Transform
 import org.spongepowered.api.entity.living.ArmorStand
@@ -136,6 +135,7 @@ class PetBlockWrapper(firstSpawn: Transform<World>, private val owner: Player, p
      */
     override fun remove() {
         (this.engineEntity as Living).remove()
+
         if (!(this.armorStand as Living).isRemoved) {
             this.armorstandEntity.remove()
         }
@@ -223,6 +223,7 @@ class PetBlockWrapper(firstSpawn: Transform<World>, private val owner: Player, p
         val location = location
         location.add(Transform(location.extent, Vector3d(0.0, 2.2, 0.0)))
         remove()
+
         Companion.spawnMethod.isAccessible = true
         Companion.spawnMethod.invoke(armorstandEntity, location)
     }
