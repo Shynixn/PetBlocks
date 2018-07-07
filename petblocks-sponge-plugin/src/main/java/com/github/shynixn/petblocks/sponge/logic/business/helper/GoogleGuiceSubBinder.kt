@@ -4,7 +4,7 @@ import com.github.shynixn.petblocks.api.business.service.ConfigurationService
 import com.github.shynixn.petblocks.api.business.service.GUIScriptService
 import com.github.shynixn.petblocks.api.business.service.GUIService
 import com.github.shynixn.petblocks.api.business.service.PersistenceService
-import com.github.shynixn.petblocks.bukkit.logic.business.service.GUIScriptServiceImpl
+import com.github.shynixn.petblocks.core.logic.business.service.GUIScriptServiceImpl
 import com.github.shynixn.petblocks.sponge.logic.business.service.PersistenceServiceImpl
 import com.github.shynixn.petblocks.core.logic.business.entity.DbContext
 import com.github.shynixn.petblocks.sponge.logic.business.PetBlocksManager

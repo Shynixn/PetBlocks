@@ -3,7 +3,6 @@ package com.github.shynixn.petblocks.sponge.logic.business.helper
 import com.github.shynixn.petblocks.api.business.entity.GUIItemContainer
 import com.github.shynixn.petblocks.api.business.entity.PetBlock
 import com.github.shynixn.petblocks.api.business.enumeration.Permission
-import com.github.shynixn.petblocks.api.business.service.PersistenceService
 import com.github.shynixn.petblocks.api.persistence.entity.EngineContainer
 import com.github.shynixn.petblocks.api.persistence.entity.PetMeta
 import com.github.shynixn.petblocks.core.logic.business.helper.ChatBuilder
@@ -13,7 +12,6 @@ import com.github.shynixn.petblocks.sponge.nms.VersionSupport
 import org.spongepowered.api.Game
 import org.spongepowered.api.Sponge
 import org.spongepowered.api.command.CommandSource
-import org.spongepowered.api.entity.Item
 import org.spongepowered.api.entity.Transform
 import org.spongepowered.api.entity.living.player.Player
 import org.spongepowered.api.item.inventory.Inventory
@@ -29,7 +27,6 @@ import org.spongepowered.api.text.serializer.TextSerializers
 import org.spongepowered.api.world.World
 import java.io.InputStream
 import java.util.*
-import java.util.concurrent.CompletableFuture
 import java.util.function.Consumer
 
 /**
@@ -236,7 +233,7 @@ fun Player.hasPermissions(permission: Permission, vararg placeholder: String): B
     for (s in permission.permission) {
         var perm = s
         for (i in placeholder.indices) {
-            val plc = "$" + i
+            val plc = "$$i"
             perm = perm.replace(plc, placeholder[i])
         }
         if (this.hasPermission(perm)) {
@@ -249,7 +246,7 @@ fun Player.hasPermissions(permission: Permission, vararg placeholder: String): B
 fun PetMeta.setSkin(petBlock: PetBlock<Player, Transform<World>>?, skin: String) {
     var skinHelper = skin
     if (skinHelper.contains("textures.minecraft") && !skinHelper.contains("http://")) {
-        skinHelper = "http://" + skin
+        skinHelper = "http://$skin"
     }
     setSkin(CompatibilityItemType.SKULL_ITEM.id, 3, skinHelper, false)
     petBlock?.respawn()
@@ -305,7 +302,7 @@ fun ItemStack.setSkin(skin: String) {
     if (skin.contains("textures.minecraft.net")) {
         var helpSkin = skin
         if (!helpSkin.startsWith("http://")) {
-            helpSkin = "http://" + helpSkin
+            helpSkin = "http://$helpSkin"
         }
         ReflectionCache.setSkinUrlMethod.invoke(null, this, helpSkin)
     } else {

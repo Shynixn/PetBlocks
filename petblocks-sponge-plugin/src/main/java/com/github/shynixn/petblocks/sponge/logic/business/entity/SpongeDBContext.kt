@@ -42,10 +42,17 @@ import javax.sql.DataSource
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class SpongeDBContext @Inject constructor(private val pluginContainer: PluginContainer, private val logger: Logger, @ConfigDir(sharedRoot = false) var privateConfigDir: Path) : DbContext() {
+class SpongeDBContext @Inject constructor(private val pluginContainer: PluginContainer, private val logger: Logger, @ConfigDir(sharedRoot = false) private var privateConfigDir: Path) : DbContext() {
     companion object {
-        val SQLITE_DRIVER = "org.sqlite.JDBC"
-        val MYSQL_DRIVER = "com.mysql.jdbc.Driver"
+        /**
+         * SQLiteDriver classPath.
+         */
+        const val SQLITE_DRIVER = "org.sqlite.JDBC"
+
+        /**
+         * MySQLDriver classPath.
+         */
+        const val MYSQL_DRIVER = "com.mysql.jdbc.Driver"
     }
 
     private lateinit var dataSource: DataSource
@@ -121,7 +128,7 @@ class SpongeDBContext @Inject constructor(private val pluginContainer: PluginCon
         val connectionURL: String = if (driver == MYSQL_DRIVER) {
             "jdbc:mysql://$userName:$password@$url?useSSL=$useSSL"
         } else {
-            "$url"
+            url
         }
 
         val service = Sponge.getServiceManager().provide(SqlService::class.java).get()

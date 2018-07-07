@@ -95,7 +95,7 @@ fun ItemStack.setSkin(skin: String): ItemStack {
         if (skin.startsWith("http://")) {
             SkinHelper.setItemStackSkin(this, skin)
         } else {
-            SkinHelper.setItemStackSkin(this, "http://" + skin)
+            SkinHelper.setItemStackSkin(this, "http://$skin")
         }
     } else {
         val meta = itemMeta as SkullMeta

@@ -1,4 +1,4 @@
-package com.github.shynixn.petblocks.bukkit.logic.business.service
+package com.github.shynixn.petblocks.core.logic.business.service
 
 import com.github.shynixn.petblocks.api.business.entity.ScriptResult
 import com.github.shynixn.petblocks.api.business.enumeration.ScriptAction

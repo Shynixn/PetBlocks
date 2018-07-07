@@ -11,7 +11,7 @@ import com.github.shynixn.petblocks.api.persistence.controller.ParticleControlle
 import com.github.shynixn.petblocks.bukkit.logic.Factory
 import com.github.shynixn.petblocks.bukkit.logic.business.helper.LoggingBridge
 import com.github.shynixn.petblocks.bukkit.logic.business.service.ConfigurationServiceImpl
-import com.github.shynixn.petblocks.bukkit.logic.business.service.GUIScriptServiceImpl
+import com.github.shynixn.petblocks.core.logic.business.service.GUIScriptServiceImpl
 import com.github.shynixn.petblocks.bukkit.logic.business.service.GUIServiceImpl
 import com.github.shynixn.petblocks.bukkit.logic.business.service.PersistenceServiceImpl
 import com.github.shynixn.petblocks.bukkit.logic.persistence.configuration.*
@@ -75,6 +75,6 @@ class GoogleGuiceBinder(private val plugin: Plugin) : AbstractModule() {
 
         bind(GUIScriptService::class.java).to(GUIScriptServiceImpl::class.java)
         bind(ConfigurationService::class.java).to(ConfigurationServiceImpl::class.java)
-        bind(GUIService::class.java).to(GUIServiceImpl::class.java);
+        bind(GUIService::class.java).to(GUIServiceImpl::class.java)
     }
 }

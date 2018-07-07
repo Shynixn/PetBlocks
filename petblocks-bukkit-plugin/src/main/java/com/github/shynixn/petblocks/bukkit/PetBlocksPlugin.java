@@ -12,7 +12,6 @@ import com.github.shynixn.petblocks.bukkit.nms.NMSRegistry;
 import com.github.shynixn.petblocks.bukkit.nms.VersionSupport;
 import com.github.shynixn.petblocks.core.logic.business.helper.ReflectionUtils;
 import com.github.shynixn.petblocks.core.logic.persistence.configuration.Config;
-import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
 import com.google.inject.Inject;
 import org.apache.commons.io.IOUtils;
@@ -106,7 +105,7 @@ public final class PetBlocksPlugin extends JavaPlugin {
                 this.petBlockManager = new PetBlockManager(this);
                 ReflectionUtils.invokeMethodByClass(PetBlocksApi.class, "initialize", new Class[]{PetMetaController.class, PetBlockController.class, GUIService.class}, new Object[]{this.petBlockManager.getPetMetaController(), this.petBlockManager.getPetBlockController(), this.guiService});
                 Bukkit.getServer().getConsoleSender().sendMessage(PREFIX_CONSOLE + ChatColor.GREEN + "Enabled PetBlocks " + this.getDescription().getVersion() + " by Shynixn");
-            } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
+            } catch (final NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
                 PetBlocksPlugin.logger().log(Level.WARNING, "Failed to enable plugin.", e);
             }
         }

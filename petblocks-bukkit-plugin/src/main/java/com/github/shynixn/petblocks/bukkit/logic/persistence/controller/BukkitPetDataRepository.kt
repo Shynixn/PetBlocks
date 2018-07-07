@@ -38,17 +38,25 @@ import java.util.*
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class BukkitPetDataRepository(playerMetaController: PlayerMetaController<Player>, particleController: ParticleEffectMetaController, connectionContext : DbContext
-) : PetDataRepository<Player>(playerMetaController, particleController, connectionContext, LoggingBridge(PetBlocksPlugin.logger()))
-{
+class BukkitPetDataRepository(playerMetaController: PlayerMetaController<Player>, particleController: ParticleEffectMetaController, connectionContext: DbContext
+) : PetDataRepository<Player>(playerMetaController, particleController, connectionContext, LoggingBridge(PetBlocksPlugin.logger())) {
+    /**
+     * Creates a new [BukkitPetData] from the given [player] and [name].
+     */
     override fun create(player: Any?, name: String?): PetData {
         return BukkitPetData(player as Player, name)
     }
 
+    /**
+     * Returns the name of the [player].
+     */
     override fun getPlayerName(player: Any?): String {
         return (player as Player).name
     }
 
+    /**
+     * Returns the [UUID] of the [player].
+     */
     override fun getPlayerUUID(player: Any?): UUID {
         return (player as Player).uniqueId
     }

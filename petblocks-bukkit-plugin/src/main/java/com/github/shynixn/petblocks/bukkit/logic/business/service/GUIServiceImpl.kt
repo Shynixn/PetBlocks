@@ -261,7 +261,7 @@ class GUIServiceImpl @Inject constructor(private val configurationService: Confi
             count = 0
         container.currentCount = container.startCount
         inventory.clearCompletely()
-        var i: Int = 0
+        var i = 0
         var scheduleCounter = 0
         while (i < 45 && i + container.startCount < items.size) {
             if (inventory.getItem(i) == null || inventory.getItem(i).type == Material.AIR) {

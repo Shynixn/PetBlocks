@@ -42,8 +42,15 @@ import java.sql.Connection
 class BukkitDBContext @Inject constructor(private val plugin: Plugin, private val logger: org.slf4j.Logger) : DbContext() {
 
     companion object {
-        val SQLITE_DRIVER = "org.sqlite.JDBC"
-        val MYSQL_DRIVER = "com.mysql.jdbc.Driver"
+        /**
+         * SQLiteDriver classPath.
+         */
+        const val SQLITE_DRIVER = "org.sqlite.JDBC"
+
+        /**
+         * MySQLDriver classPath.
+         */
+        const val MYSQL_DRIVER = "com.mysql.jdbc.Driver"
     }
 
     private lateinit var dataSource: HikariDataSource

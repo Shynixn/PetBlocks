@@ -1,7 +1,6 @@
 package com.github.shynixn.petblocks.bukkit.logic.business.listener
 
 import com.github.shynixn.petblocks.api.business.service.GUIService
-import com.github.shynixn.petblocks.bukkit.nms.NMSRegistry
 import com.google.inject.Inject
 import com.google.inject.Singleton
 import org.bukkit.Bukkit

@@ -61,7 +61,7 @@ public class SkinHelper {
                 field.setAccessible(true);
                 field.set(real, getNonPlayerProfile(newSkin));
                 itemStack.setItemMeta(SkullMeta.class.cast(real));
-            } catch (IllegalArgumentException | IllegalAccessException | NoSuchFieldException | SecurityException | ClassNotFoundException e) {
+            } catch (final IllegalArgumentException | IllegalAccessException | NoSuchFieldException | SecurityException | ClassNotFoundException e) {
                 Bukkit.getLogger().log(Level.WARNING, "Failed to set url of itemstack.", e);
             }
         } else {
@@ -109,7 +109,7 @@ public class SkinHelper {
                     return Optional.of(s.toString().substring(s.indexOf("http://"), s.length()));
                 }
             }
-        } catch (IllegalArgumentException | IllegalAccessException | NoSuchFieldException | SecurityException | ClassNotFoundException e) {
+        } catch (final IllegalArgumentException | IllegalAccessException | NoSuchFieldException | SecurityException | ClassNotFoundException e) {
             Bukkit.getLogger().log(Level.WARNING, "Failed to set url of itemstack.", e);
         }
         return Optional.empty();

@@ -4,12 +4,10 @@ import com.github.shynixn.petblocks.api.persistence.entity.ParticleEffectMeta
 import com.github.shynixn.petblocks.api.persistence.entity.PetMeta
 import com.github.shynixn.petblocks.api.persistence.entity.SoundMeta
 import com.github.shynixn.petblocks.bukkit.PetBlocksPlugin
-import com.github.shynixn.petblocks.bukkit.logic.business.listener.InventoryListener
 import com.github.shynixn.petblocks.bukkit.nms.NMSRegistry
 import com.github.shynixn.petblocks.core.logic.business.helper.ChatBuilder
 import com.github.shynixn.petblocks.core.logic.persistence.configuration.Config
 import com.github.shynixn.petblocks.core.logic.persistence.entity.PetData
-import com.google.inject.Inject
 import com.google.inject.Singleton
 import org.bukkit.Bukkit
 import org.bukkit.ChatColor
@@ -90,7 +88,7 @@ object Config : Config<Player>() {
             throw IllegalArgumentException("Join.settings.engine engine could not be loaded!")
         }
         petMeta.setEngine(optEngineContainer.get())
-        petMeta.petDisplayName = this.getData<String>("join.settings.petname")!!.replace(":player", petMeta.getPlayerMeta().getName())
+        petMeta.petDisplayName = this.getData<String>("join.settings.petname")!!.replace(":player", petMeta.playerMeta.name)
         petMeta.isEnabled = this.getData<Boolean>("join.settings.enabled")!!
         petMeta.age = this.getData<Int>("join.settings.age")!!.toLong()
 

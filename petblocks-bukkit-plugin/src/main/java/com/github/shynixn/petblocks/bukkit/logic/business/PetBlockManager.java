@@ -1,7 +1,6 @@
 package com.github.shynixn.petblocks.bukkit.logic.business;
 
 import com.github.shynixn.petblocks.api.business.controller.PetBlockController;
-import com.github.shynixn.petblocks.api.business.service.GUIService;
 import com.github.shynixn.petblocks.api.persistence.controller.PetMetaController;
 import com.github.shynixn.petblocks.bukkit.PetBlocksPlugin;
 import com.github.shynixn.petblocks.bukkit.logic.Factory;
@@ -9,17 +8,10 @@ import com.github.shynixn.petblocks.bukkit.logic.business.commandexecutor.PetBlo
 import com.github.shynixn.petblocks.bukkit.logic.business.commandexecutor.PetBlockReloadCommandExecutor;
 import com.github.shynixn.petblocks.bukkit.logic.business.commandexecutor.PetDataCommandExecutor;
 import com.github.shynixn.petblocks.bukkit.logic.business.filter.PetBlockFilter;
-import com.github.shynixn.petblocks.bukkit.logic.business.helper.LoggingBridge;
-import com.github.shynixn.petblocks.bukkit.logic.business.listener.InventoryListener;
 import com.github.shynixn.petblocks.bukkit.logic.business.listener.PetBlockListener;
 import com.github.shynixn.petblocks.bukkit.logic.business.listener.PetDataListener;
-import com.github.shynixn.petblocks.bukkit.logic.business.service.ConfigurationServiceImpl;
-import com.github.shynixn.petblocks.bukkit.logic.business.service.GUIScriptServiceImpl;
-import com.github.shynixn.petblocks.bukkit.logic.business.service.GUIServiceImpl;
-import com.github.shynixn.petblocks.bukkit.logic.persistence.configuration.Config;
 import com.github.shynixn.petblocks.bukkit.nms.NMSRegistry;
 import com.github.shynixn.petblocks.core.logic.business.entity.GuiPageContainer;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;

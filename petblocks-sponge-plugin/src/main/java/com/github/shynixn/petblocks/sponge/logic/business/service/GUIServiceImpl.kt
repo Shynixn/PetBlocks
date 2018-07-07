@@ -259,7 +259,7 @@ class GUIServiceImpl @Inject constructor(private val configurationService: Confi
             count = 0
         container.currentCount = container.startCount
         inventory.clear()
-        var i: Int = 0
+        var i = 0
         var scheduleCounter = 0
         while (i < 45 && i + container.startCount < items.size) {
             val invItem = inventory.getItem(i)
