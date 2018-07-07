@@ -104,6 +104,10 @@ Allows to use all player head costumes               petblocks.selection.playerh
 Allows to use a single player head costume           petblocks.selection.playerheadcostumes.<number>
 Allows to use all pet costumes                       petblocks.selection.petcostumes.all
 Allows to use a single pet costume                   petblocks.selection.petcostumes.<number>
+Allows to use all vehicle costumes                   petblocks.selection.vehiclecostumes.all
+Allows to use a single vehicle costume               petblocks.selection.vehiclecostumes.<number>
+Allows to use all puppet costumes                    petblocks.selection.puppetcostumes.all
+Allows to use a single puppets costume               petblocks.selection.puppetcostumes.<number>
 Allows to use all particles                          petblocks.selection.particles.all
 Allows to use a single particle                      petblocks.pet.particles.<number
 Allows to use all head database costumes             petblocks.selection.headdatabasecostumes.all
