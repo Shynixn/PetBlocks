@@ -5,19 +5,19 @@
     <parent>
         <artifactId>root</artifactId>
         <groupId>com.github.shynixn.petblocks</groupId>
-        <version>7.1.0-SNAPSHOT</version>
+        <version>7.1.0</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.github.shynixn.petblocks</groupId>
     <artifactId>petblocks-core</artifactId>
-    <version>7.1.0-SNAPSHOT</version>
+    <version>7.1.0</version>
 
     <dependencies>
         <dependency>
             <groupId>com.github.shynixn.petblocks</groupId>
             <artifactId>petblocks-api</artifactId>
-            <version>7.1.0-SNAPSHOT</version>
+            <version>7.1.0</version>
         </dependency>
         <dependency>
             <groupId>com.google.inject</groupId>

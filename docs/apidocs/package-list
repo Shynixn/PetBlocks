@@ -35,6 +35,7 @@ com.github.shynixn.petblocks.bukkit.nms.v1_9_R2
 com.github.shynixn.petblocks.core.logic.business.controller
 com.github.shynixn.petblocks.core.logic.business.entity
 com.github.shynixn.petblocks.core.logic.business.helper
+com.github.shynixn.petblocks.core.logic.business.service
 com.github.shynixn.petblocks.core.logic.persistence.configuration
 com.github.shynixn.petblocks.core.logic.persistence.controller
 com.github.shynixn.petblocks.core.logic.persistence.entity
