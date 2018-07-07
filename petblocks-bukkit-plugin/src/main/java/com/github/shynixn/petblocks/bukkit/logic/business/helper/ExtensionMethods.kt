@@ -1,6 +1,15 @@
 package com.github.shynixn.petblocks.bukkit.logic.business.helper
 
+import com.github.shynixn.petblocks.api.business.service.PersistenceService
+import com.github.shynixn.petblocks.bukkit.PetBlocksPlugin
 import com.github.shynixn.petblocks.bukkit.nms.VersionSupport
+import com.github.shynixn.petblocks.core.logic.business.helper.ChatColor
+import org.bukkit.inventory.Inventory
+import org.bukkit.inventory.ItemStack
+import org.bukkit.inventory.meta.SkullMeta
+import org.bukkit.plugin.java.JavaPlugin
+import java.util.concurrent.CompletableFuture
+import java.util.function.Consumer
 
 /**
  * Created by Shynixn 2018.
@@ -32,4 +41,66 @@ import com.github.shynixn.petblocks.bukkit.nms.VersionSupport
 
 fun String.findServerVersion(): String {
     return this.replace("VERSION", VersionSupport.getServerVersion().versionText)
+}
+
+fun Inventory.clearCompletely() {
+    for (i in 0 until contents.size) {
+        setItem(i, null)
+    }
+}
+
+fun ItemStack.setUnbreakable(unbreakable: Boolean): ItemStack {
+    val data = HashMap<String, Any>()
+    data["Unbreakable"] = unbreakable
+    return PetBlockModifyHelper.setItemStackNBTTag(this, data)
+}
+
+fun ItemStack.setDisplayName(displayName: String): ItemStack {
+    val meta = itemMeta
+    meta.displayName = ChatColor.translateAlternateColorCodes('&', displayName)
+    itemMeta = meta
+    return this
+}
+
+fun ItemStack.setLore(lore: List<String>): ItemStack {
+    val meta = itemMeta
+    val tmpLore = ArrayList<String>()
+
+    lore.forEach { l ->
+        tmpLore.add(ChatColor.translateAlternateColorCodes('&', l))
+    }
+
+    meta.lore = tmpLore
+
+    itemMeta = meta
+    return this
+}
+
+fun PersistenceService.runOnMainThread(runnable: Runnable) {
+    val plugin = JavaPlugin.getPlugin(PetBlocksPlugin::class.java)
+    plugin.server.scheduler.runTask(plugin, runnable)
+}
+
+fun <T> CompletableFuture<T>.thenAcceptOnMainThread(action: Consumer<in T>) {
+    this.thenAccept { p ->
+        val plugin = JavaPlugin.getPlugin(PetBlocksPlugin::class.java)
+        plugin.server.scheduler.runTask(plugin, {
+            action.accept(p)
+        })
+    }
+}
+
+fun ItemStack.setSkin(skin: String): ItemStack {
+    if (skin.contains("textures.minecraft.net")) {
+        if (skin.startsWith("http://")) {
+            SkinHelper.setItemStackSkin(this, skin)
+        } else {
+            SkinHelper.setItemStackSkin(this, "http://$skin")
+        }
+    } else {
+        val meta = itemMeta as SkullMeta
+        meta.owner = skin
+        itemMeta = meta
+    }
+    return this
 }

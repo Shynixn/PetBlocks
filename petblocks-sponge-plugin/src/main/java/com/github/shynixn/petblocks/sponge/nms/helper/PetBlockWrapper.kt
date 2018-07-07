@@ -49,7 +49,7 @@ import org.spongepowered.api.world.World
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class PetBlockWrapper(firstSpawn : Transform<World>, private val owner: Player, private val petMeta: PetMeta) : PetBlock<Player, Transform<World>> {
+class PetBlockWrapper(firstSpawn: Transform<World>, private val owner: Player, private val petMeta: PetMeta) : PetBlock<Player, Transform<World>> {
 
     object Companion {
         var spawnMethod = Class.forName("com.github.shynixn.petblocks.sponge.nms.VERSION.CustomGroundArmorstand".replace("VERSION", VersionSupport.getServerVersion().versionText)).getDeclaredMethod("spawn", Transform::class.java)
@@ -135,6 +135,7 @@ class PetBlockWrapper(firstSpawn : Transform<World>, private val owner: Player, 
      */
     override fun remove() {
         (this.engineEntity as Living).remove()
+
         if (!(this.armorStand as Living).isRemoved) {
             this.armorstandEntity.remove()
         }
@@ -167,6 +168,7 @@ class PetBlockWrapper(firstSpawn : Transform<World>, private val owner: Player, 
             val armorStand = this.armorStand as ArmorStand
             armorStand.offer(Keys.ARMOR_STAND_MARKER, true)
             armorStand.offer(Keys.CUSTOM_NAME_VISIBLE, false)
+            engine.offer(Keys.AI_ENABLED, false)
 
             val event = PetBlockWearEvent(this, true)
             Sponge.getEventManager().post(event)
@@ -186,6 +188,7 @@ class PetBlockWrapper(firstSpawn : Transform<World>, private val owner: Player, 
         val armorStand = this.armorStand as ArmorStand
         armorStand.offer(Keys.ARMOR_STAND_MARKER, false)
         armorStand.offer(Keys.CUSTOM_NAME_VISIBLE, true)
+        engine.offer(Keys.AI_ENABLED, true)
 
         val event = PetBlockWearEvent(this, false)
         Sponge.getEventManager().post(event)
@@ -220,6 +223,7 @@ class PetBlockWrapper(firstSpawn : Transform<World>, private val owner: Player, 
         val location = location
         location.add(Transform(location.extent, Vector3d(0.0, 2.2, 0.0)))
         remove()
+
         Companion.spawnMethod.isAccessible = true
         Companion.spawnMethod.invoke(armorstandEntity, location)
     }

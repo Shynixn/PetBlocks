@@ -9,7 +9,7 @@ import com.github.shynixn.petblocks.api.persistence.entity.EngineContainer;
 import com.github.shynixn.petblocks.api.persistence.entity.ParticleEffectMeta;
 import com.github.shynixn.petblocks.api.persistence.entity.PetMeta;
 import com.github.shynixn.petblocks.api.persistence.entity.PlayerMeta;
-import com.github.shynixn.petblocks.core.logic.business.helper.ExtensionHikariConnectionContext;
+import com.github.shynixn.petblocks.core.logic.business.entity.DbContext;
 import com.github.shynixn.petblocks.core.logic.persistence.configuration.Config;
 import com.github.shynixn.petblocks.core.logic.persistence.entity.PetData;
 import org.slf4j.Logger;
@@ -61,7 +61,7 @@ public abstract class PetDataRepository<Player> extends DataBaseRepository<PetMe
      * @param connectionContext connectionContext
      */
     public PetDataRepository(PlayerMetaController<Player> playerMetaController, ParticleEffectMetaController particleEffectMetaController
-            , ExtensionHikariConnectionContext connectionContext, Logger logger) {
+            , DbContext connectionContext, Logger logger) {
         super(connectionContext, logger);
         this.playerMetaController = playerMetaController;
         this.particleEffectMetaController = particleEffectMetaController;
@@ -69,6 +69,7 @@ public abstract class PetDataRepository<Player> extends DataBaseRepository<PetMe
 
     /**
      * Creates a new PetData.
+     *
      * @return petData
      */
     public abstract PetData create();
@@ -172,7 +173,8 @@ public abstract class PetDataRepository<Player> extends DataBaseRepository<PetMe
         if (!optEngineContainer.isPresent()) {
             throw new IllegalArgumentException("Engine with id " + ((PetData) petMeta).getEngineId() + " could not be loaded correctly!");
         }
-        petMeta.setEngine(optEngineContainer.get());
+
+        petMeta.setEngine(optEngineContainer.get(), false);
         final PetData petData = (PetData) petMeta;
         final Optional<ParticleEffectMeta> optParticleEffectMeta;
         final Optional<PlayerMeta> optPlayerMeta;

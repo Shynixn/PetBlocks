@@ -37,8 +37,11 @@ import com.google.inject.name.Names
  */
 class GoogleGuiceBinder : AbstractModule() {
     override fun configure() {
+        val staticGuiItem = SpongeStaticGUIItems()
 
-        bind(OtherGUIItemsController::class.java).toInstance(SpongeStaticGUIItems())
+        bind(OtherGUIItemsController::class.java).toInstance(staticGuiItem)
+        bind(SpongeStaticGUIItems::class.java).toInstance(staticGuiItem)
+
         bind(ParticleController::class.java).toInstance(SpongeParticleConfiguration())
         bind(EngineController::class.java).toInstance(SpongeEngineConfiguration())
 

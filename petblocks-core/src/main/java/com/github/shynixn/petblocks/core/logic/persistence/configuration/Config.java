@@ -41,10 +41,6 @@ public abstract class Config<Player> {
     @Named("rare")
     private CostumeController rareCostumesController;
 
-    @Inject
-    @Named("minecraft-heads")
-    private CostumeController minecraftHeadsCostumesController;
-
     public Config() {
         super();
         instance = this;
@@ -79,7 +75,6 @@ public abstract class Config<Player> {
         this.ordinaryCostumesController.reload();
         this.colorCostumesController.reload();
         this.rareCostumesController.reload();
-        this.minecraftHeadsCostumesController.reload();
         this.guiItemsController.reload();
         this.particleController.reload();
         this.engineController.reload();
@@ -107,10 +102,6 @@ public abstract class Config<Player> {
 
     public CostumeController<GUIItemContainer<Player>> getRareCostumesController() {
         return this.rareCostumesController;
-    }
-
-    public CostumeController<GUIItemContainer<Player>> getMinecraftHeadsCostumesController() {
-        return this.minecraftHeadsCostumesController;
     }
 
     public int getDefaultEngine() {

@@ -255,8 +255,6 @@ public final class PetBlockCommandExecutor extends SimpleCommandExecutor {
                 item = Config.<Player>getInstance().getColorCostumesController().getContainerFromPosition(number);
             } else if (category.equalsIgnoreCase("player-heads")) {
                 item = Config.<Player>getInstance().getRareCostumesController().getContainerFromPosition(number);
-            } else if (category.equalsIgnoreCase("minecraft-heads")) {
-                item = Config.<Player>getInstance().getMinecraftHeadsCostumesController().getContainerFromPosition(number);
             } else {
                 return;
             }

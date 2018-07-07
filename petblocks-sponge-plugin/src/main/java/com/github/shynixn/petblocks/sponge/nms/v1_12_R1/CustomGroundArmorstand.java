@@ -1,8 +1,6 @@
 package com.github.shynixn.petblocks.sponge.nms.v1_12_R1;
 
 import com.flowpowered.math.vector.Vector3d;
-import com.github.shynixn.petblocks.api.PetBlocksApi;
-import com.github.shynixn.petblocks.api.business.entity.PetBlock;
 import com.github.shynixn.petblocks.api.business.entity.PetBlockPartEntity;
 import com.github.shynixn.petblocks.api.business.enumeration.RideType;
 import com.github.shynixn.petblocks.api.persistence.entity.IPosition;
@@ -33,7 +31,6 @@ import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.entity.Transform;
 import org.spongepowered.api.entity.living.ArmorStand;
 import org.spongepowered.api.entity.living.Living;
-import org.spongepowered.api.entity.living.animal.Rabbit;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.item.inventory.ItemStack;
 
@@ -139,8 +136,7 @@ final class CustomGroundArmorstand extends EntityArmorStand {
                     this.counter = 20 * random.nextInt(20) + 1;
                 }
                 if (engine.isRemoved()) {
-                    this.wrapper.remove();
-                    PetBlocksApi.getDefaultPetBlockController().remove((PetBlock<Object, Object>) (Object) this.wrapper);
+                    return;
                 }
                 if (petData.getParticleEffectMeta() != null) {
                     this.wrapper.getEffectPipeline().playParticleEffect(armorStand.getTransform().add(new Transform<>(armorStand.getTransform().getExtent(), new Vector3d(0, 1, 0))), petData.getParticleEffectMeta());

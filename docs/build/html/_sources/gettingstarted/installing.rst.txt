@@ -15,7 +15,23 @@ Spigot/Sponge
 * PaperSpigot *(1.8.0 - 1.12.2)* ✔
 * CraftBukkit *(1.8.0 - 1.12.2)* ✔
 * SpongeVanilla *(1.12.0 - 1.12.2)* ✔
-* SpongeForge *(1.12.0 - 1.12.2)* ✔
+* SpongeForge *(1.12.0 - 1.12.2)* **Please see below.**
+
+SpongeForge
+~~~~~~~~~~~
+
+There seem to be some issues concerning compatibility with server-only entities (PetBlocks Pets) and Forge.
+SpongeForge is supported in experimental stage but there seem to be issues with some Minecraft Clients.
+
+I am looking forward for any feedback regarding this issue.
+
+Please refer to the following pages:
+
+* `PetBlocks Issue <https://github.com/Shynixn/PetBlocks/issues/134>`__
+* `Forge Forum Post <http://www.minecraftforge.net/forum/topic/64251-registering-server-only-entity-112/>`__
+* `Forge Drop of server-only entities in 1.12 <https://github.com/MinecraftForge/MinecraftForge/issues/4870>`__
+
+Currently, PetBlocks uses unregistered "Ghost-Entities" to solve this issue which can cause unexpected errors.
 
 Download
 ~~~~~~~~

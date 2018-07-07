@@ -2,7 +2,7 @@ package com.github.shynixn.petblocks.core.logic.persistence.controller;
 
 import com.github.shynixn.petblocks.api.persistence.controller.ParticleEffectMetaController;
 import com.github.shynixn.petblocks.api.persistence.entity.ParticleEffectMeta;
-import com.github.shynixn.petblocks.core.logic.business.helper.ExtensionHikariConnectionContext;
+import com.github.shynixn.petblocks.core.logic.business.entity.DbContext;
 import com.github.shynixn.petblocks.core.logic.persistence.entity.ParticleEffectData;
 import org.slf4j.Logger;
 
@@ -48,7 +48,7 @@ public abstract class ParticleEffectDataRepository extends DataBaseRepository<Pa
      * @param connectionContext connectionContext
      * @param logger            logger
      */
-    public ParticleEffectDataRepository(ExtensionHikariConnectionContext connectionContext, Logger logger) {
+    public ParticleEffectDataRepository(DbContext connectionContext, Logger logger) {
         super(connectionContext, logger);
     }
 

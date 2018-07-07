@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Developer API &mdash; PetBlocks 7.0.1 documentation</title>
+  <title>Developer API &mdash; PetBlocks 7.1.0 documentation</title>
   
 
   
@@ -37,9 +37,9 @@
         <link rel="index" title="Index"
               href="../genindex.html"/>
         <link rel="search" title="Search" href="../search.html"/>
-    <link rel="top" title="PetBlocks 7.0.1 documentation" href="../index.html"/>
+    <link rel="top" title="PetBlocks 7.1.0 documentation" href="../index.html"/>
         <link rel="next" title="FAQ" href="../faq/index.html"/>
-        <link rel="prev" title="Commands" href="../commands/index.html"/> 
+        <link rel="prev" title="Datacollecting" href="../general/datacollecting.html"/> 
 
   
   <script src="../_static/js/modernizr.min.js"></script>
@@ -71,7 +71,7 @@
             
             
               <div class="version">
-                7.0.1
+                7.1.0
               </div>
             
           
@@ -97,14 +97,15 @@
             
               <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../gettingstarted/index.html">Getting Started</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../updating/index.html">Updating</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../customizing/index.html">Customizing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../commands/index.html">Commands</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../general/index.html">General</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Developer API</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#javadocs">JavaDocs</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#including-the-petblocks-api">Including the PetBlocks Api</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#registering-your-dependency">Registering your dependency</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#modifying-petmeta-and-petblock">Modifying PetMeta and PetBlock</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#accessing-business-logic">Accessing Business Logic</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#listen-to-events">Listen to Events</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#setup-your-personal-petblocks-workspace">Setup your personal PetBlocks Workspace</a></li>
 </ul>
@@ -188,30 +189,44 @@
 <p><strong>(Bukkit) Maven</strong>:</p>
 <div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">dependency</span><span class="o">&gt;</span>
     <span class="o">&lt;</span><span class="n">groupId</span><span class="o">&gt;</span><span class="n">com</span><span class="o">.</span><span class="n">github</span><span class="o">.</span><span class="n">shynixn</span><span class="o">.</span><span class="n">petblocks</span><span class="o">&lt;/</span><span class="n">groupId</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="n">artifactId</span><span class="o">&gt;</span><span class="n">petblocks</span><span class="o">-</span><span class="n">api</span><span class="o">&lt;/</span><span class="n">artifactId</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="n">version</span><span class="o">&gt;</span><span class="mf">7.1</span><span class="o">.</span><span class="mi">0</span><span class="o">&lt;/</span><span class="n">version</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="n">scope</span><span class="o">&gt;</span><span class="n">provided</span><span class="o">&lt;/</span><span class="n">scope</span><span class="o">&gt;</span>
+<span class="o">&lt;/</span><span class="n">dependency</span><span class="o">&gt;</span>
+<span class="o">&lt;</span><span class="n">dependency</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="n">groupId</span><span class="o">&gt;</span><span class="n">com</span><span class="o">.</span><span class="n">github</span><span class="o">.</span><span class="n">shynixn</span><span class="o">.</span><span class="n">petblocks</span><span class="o">&lt;/</span><span class="n">groupId</span><span class="o">&gt;</span>
     <span class="o">&lt;</span><span class="n">artifactId</span><span class="o">&gt;</span><span class="n">petblocks</span><span class="o">-</span><span class="n">bukkit</span><span class="o">-</span><span class="n">api</span><span class="o">&lt;/</span><span class="n">artifactId</span><span class="o">&gt;</span>
-    <span class="o">&lt;</span><span class="n">version</span><span class="o">&gt;</span><span class="mf">7.0</span><span class="o">.</span><span class="mi">1</span><span class="o">&lt;/</span><span class="n">version</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="n">version</span><span class="o">&gt;</span><span class="mf">7.1</span><span class="o">.</span><span class="mi">0</span><span class="o">&lt;/</span><span class="n">version</span><span class="o">&gt;</span>
     <span class="o">&lt;</span><span class="n">scope</span><span class="o">&gt;</span><span class="n">provided</span><span class="o">&lt;/</span><span class="n">scope</span><span class="o">&gt;</span>
 <span class="o">&lt;/</span><span class="n">dependency</span><span class="o">&gt;</span>
 </pre></div>
 </div>
 <p><strong>(Bukkit) Gradle</strong>:</p>
 <div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">dependencies</span> <span class="p">{</span>
-    <span class="n">compileOnly</span> <span class="s1">&#39;com.github.shynixn.petblocks:petblocks-bukkit-api:7.0.1&#39;</span>
+    <span class="n">compileOnly</span> <span class="s1">&#39;com.github.shynixn.petblocks:petblocks-api:7.1.0&#39;</span>
+    <span class="n">compileOnly</span> <span class="s1">&#39;com.github.shynixn.petblocks:petblocks-bukkit-api:7.1.0&#39;</span>
 <span class="p">}</span>
 </pre></div>
 </div>
 <p><strong>(Sponge) Maven</strong>:</p>
 <div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">dependency</span><span class="o">&gt;</span>
-    <span class="o">&lt;</span><span class="n">groupId</span><span class="o">&gt;</span><span class="n">com</span><span class="o">.</span><span class="n">github</span><span class="o">.</span><span class="n">shynixn</span><span class="o">.</span><span class="n">petblocks</span><span class="o">&lt;/</span><span class="n">groupId</span><span class="o">&gt;</span>
-    <span class="o">&lt;</span><span class="n">artifactId</span><span class="o">&gt;</span><span class="n">petblocks</span><span class="o">-</span><span class="n">sponge</span><span class="o">-</span><span class="n">api</span><span class="o">&lt;/</span><span class="n">artifactId</span><span class="o">&gt;</span>
-    <span class="o">&lt;</span><span class="n">version</span><span class="o">&gt;</span><span class="mf">7.0</span><span class="o">.</span><span class="mi">1</span><span class="o">&lt;/</span><span class="n">version</span><span class="o">&gt;</span>
-    <span class="o">&lt;</span><span class="n">scope</span><span class="o">&gt;</span><span class="n">provided</span><span class="o">&lt;/</span><span class="n">scope</span><span class="o">&gt;</span>
-<span class="o">&lt;/</span><span class="n">dependency</span><span class="o">&gt;</span>
+     <span class="o">&lt;</span><span class="n">groupId</span><span class="o">&gt;</span><span class="n">com</span><span class="o">.</span><span class="n">github</span><span class="o">.</span><span class="n">shynixn</span><span class="o">.</span><span class="n">petblocks</span><span class="o">&lt;/</span><span class="n">groupId</span><span class="o">&gt;</span>
+     <span class="o">&lt;</span><span class="n">artifactId</span><span class="o">&gt;</span><span class="n">petblocks</span><span class="o">-</span><span class="n">api</span><span class="o">&lt;/</span><span class="n">artifactId</span><span class="o">&gt;</span>
+     <span class="o">&lt;</span><span class="n">version</span><span class="o">&gt;</span><span class="mf">7.1</span><span class="o">.</span><span class="mi">0</span><span class="o">&lt;/</span><span class="n">version</span><span class="o">&gt;</span>
+     <span class="o">&lt;</span><span class="n">scope</span><span class="o">&gt;</span><span class="n">provided</span><span class="o">&lt;/</span><span class="n">scope</span><span class="o">&gt;</span>
+ <span class="o">&lt;/</span><span class="n">dependency</span><span class="o">&gt;</span>
+ <span class="o">&lt;</span><span class="n">dependency</span><span class="o">&gt;</span>
+     <span class="o">&lt;</span><span class="n">groupId</span><span class="o">&gt;</span><span class="n">com</span><span class="o">.</span><span class="n">github</span><span class="o">.</span><span class="n">shynixn</span><span class="o">.</span><span class="n">petblocks</span><span class="o">&lt;/</span><span class="n">groupId</span><span class="o">&gt;</span>
+     <span class="o">&lt;</span><span class="n">artifactId</span><span class="o">&gt;</span><span class="n">petblocks</span><span class="o">-</span><span class="n">sponge</span><span class="o">-</span><span class="n">api</span><span class="o">&lt;/</span><span class="n">artifactId</span><span class="o">&gt;</span>
+     <span class="o">&lt;</span><span class="n">version</span><span class="o">&gt;</span><span class="mf">7.1</span><span class="o">.</span><span class="mi">0</span><span class="o">&lt;/</span><span class="n">version</span><span class="o">&gt;</span>
+     <span class="o">&lt;</span><span class="n">scope</span><span class="o">&gt;</span><span class="n">provided</span><span class="o">&lt;/</span><span class="n">scope</span><span class="o">&gt;</span>
+ <span class="o">&lt;/</span><span class="n">dependency</span><span class="o">&gt;</span>
 </pre></div>
 </div>
 <p><strong>(Sponge) Gradle</strong>:</p>
 <div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">dependencies</span> <span class="p">{</span>
-    <span class="n">compileOnly</span> <span class="s1">&#39;com.github.shynixn.petblocks:petblocks-sponge-api:7.0.1&#39;</span>
+    <span class="n">compileOnly</span> <span class="s1">&#39;com.github.shynixn.petblocks:petblocks-api:7.1.0&#39;</span>
+    <span class="n">compileOnly</span> <span class="s1">&#39;com.github.shynixn.petblocks:petblocks-sponge-api:7.1.0&#39;</span>
 <span class="p">}</span>
 </pre></div>
 </div>
@@ -410,6 +425,20 @@ Task.builder().async().execute(() -&gt; {
 </pre></div>
 </div>
 </div>
+<div class="section" id="accessing-business-logic">
+<h2>Accessing Business Logic<a class="headerlink" href="#accessing-business-logic" title="Permalink to this headline">¶</a></h2>
+<p>The PetBlocks plugin allows to access some (not all) parts of the Business Logic too.</p>
+<ul class="simple">
+<li>Accessing the GUI.</li>
+</ul>
+<p><strong>Bukkit/Sponge:</strong></p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">Player</span> <span class="n">player</span><span class="p">;</span> <span class="o">//</span> <span class="n">Any</span> <span class="n">player</span> <span class="n">instance</span>
+<span class="n">final</span> <span class="n">GUIService</span> <span class="n">guiService</span> <span class="o">=</span> <span class="n">PetBlocksApi</span><span class="o">.</span><span class="n">INSTANCE</span><span class="o">.</span><span class="n">resolve</span><span class="p">(</span><span class="n">GUIService</span><span class="o">.</span><span class="n">class</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">();</span>
+
+<span class="n">guiService</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">player</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
 <div class="section" id="listen-to-events">
 <h2>Listen to Events<a class="headerlink" href="#listen-to-events" title="Permalink to this headline">¶</a></h2>
 <p>There are many PetBlock events in order to listen to actions. Please take a look into the <a class="reference external" href="https://shynixn.github.io/PetBlocks/apidocs/">JavaDocs</a>  for all events:</p>
@@ -488,7 +517,7 @@ help you to get started with developing for PetBlocks.</p>
         <a href="../faq/index.html" class="btn btn-neutral float-right" title="FAQ" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="../commands/index.html" class="btn btn-neutral" title="Commands" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="../general/datacollecting.html" class="btn btn-neutral" title="Datacollecting" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
@@ -518,7 +547,7 @@ help you to get started with developing for PetBlocks.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'7.0.1',
+            VERSION:'7.1.0',
             LANGUAGE:'None',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',

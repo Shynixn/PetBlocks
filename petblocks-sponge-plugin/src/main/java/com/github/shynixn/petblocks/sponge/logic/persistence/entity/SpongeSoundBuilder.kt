@@ -34,7 +34,7 @@ import org.spongepowered.api.world.World
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class SpongeSoundBuilder : SoundBuilder{
+class SpongeSoundBuilder : SoundBuilder {
 
     constructor(text: String?, volume: Double, pitch: Double) : super(text, volume, pitch)
     constructor(items: Map<String, Any>?) : super(items)
@@ -49,7 +49,7 @@ class SpongeSoundBuilder : SoundBuilder{
     override fun <Location : Any?, Player : Any?> apply(location: Location, players: Array<out Player>?) {
         val inputPlayers = players as (Array<org.spongepowered.api.entity.living.player.Player>)
         val inputLocation = location as Transform<World>
-        for (player in inputPlayers!!) {
+        for (player in inputPlayers) {
             if (this.text == "none")
                 return
             player.playSound(this.getSoundTypeFromName(this.text)!!, inputLocation.position, this.volume.toDouble(), this.pitch.toDouble())

@@ -59,7 +59,7 @@ public final class MaterialCompatibility12 {
     public static Material getMaterialFromId(int id) {
         try {
             return (Material) getMaterialFromIdMethod.invoke(null, id);
-        } catch (IllegalAccessException | InvocationTargetException e) {
+        } catch (final IllegalAccessException | InvocationTargetException e) {
             throw new RuntimeException(e);
         }
     }
@@ -74,7 +74,7 @@ public final class MaterialCompatibility12 {
     public static int getIdFromMaterial(Material material) {
         try {
             return (int) getIdFromMaterialMethod.invoke(material);
-        } catch (IllegalAccessException | InvocationTargetException e) {
+        } catch (final IllegalAccessException | InvocationTargetException e) {
             throw new RuntimeException(e);
         }
     }

@@ -47,7 +47,7 @@ class BukkitEngineConfiguration : EngineConfiguration<Player>() {
         this.plugin.reloadConfig()
         val data = (this.plugin.config.get("engines") as MemorySection).getValues(false)
         for (key in data.keys) {
-            val content = (this.plugin.config.get("engines." + key) as MemorySection).getValues(true)
+            val content = (this.plugin.config.get("engines.$key") as MemorySection).getValues(true)
             try {
                 this.items.add(BukkitEngineData(key.toLong(), content))
             } catch (e: Exception) {

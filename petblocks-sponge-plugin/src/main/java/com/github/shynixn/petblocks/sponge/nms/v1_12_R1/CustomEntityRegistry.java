@@ -6,11 +6,7 @@ import net.minecraft.anchor.v1_12_mcpR1.entity.EntityList;
 import net.minecraft.anchor.v1_12_mcpR1.util.ResourceLocation;
 import net.minecraft.anchor.v1_12_mcpR1.util.registry.RegistryNamespaced;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 
 /**
@@ -73,7 +69,7 @@ public class CustomEntityRegistry implements CustomEntityType.WrappedRegistry {
     @Override
     public void unregister(Class<?> customEntityClazz, CustomEntityType customEntityType) throws Exception {
         if (!this.isRegistered(customEntityClazz)) {
-            throw new IllegalArgumentException("Entity is already unregisterd!");
+            return;
         }
 
         try {

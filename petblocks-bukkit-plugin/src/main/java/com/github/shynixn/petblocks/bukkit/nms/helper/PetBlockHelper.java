@@ -60,7 +60,7 @@ public final class PetBlockHelper {
         try {
             final Class<?> clazz = Class.forName("com.github.shynixn.petblocks.bukkit.logic.persistence.entity.BukkitParticleEffect");
             return (ParticleEffectMeta) clazz.newInstance();
-        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException e) {
+        } catch (final ClassNotFoundException | InstantiationException | IllegalAccessException e) {
             throw new RuntimeException(e);
         }
     }
@@ -70,7 +70,7 @@ public final class PetBlockHelper {
             final Class<?> clazz = Class.forName("com.github.shynixn.petblocks.bukkit.logic.persistence.entity.BukkitSoundBuilder");
             final Constructor constructor = clazz.getDeclaredConstructor(String.class, double.class, double.class);
             return (SoundMeta) constructor.newInstance(name, value1, value2);
-        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+        } catch (final ClassNotFoundException | InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
             throw new RuntimeException(e);
         }
     }

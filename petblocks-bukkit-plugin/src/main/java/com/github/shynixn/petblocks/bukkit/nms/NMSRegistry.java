@@ -64,7 +64,7 @@ public final class NMSRegistry {
             }
             return (PetBlock) ReflectionUtils.invokeConstructor(findClassFromVersion("com.github.shynixn.petblocks.bukkit.nms.VERSION.CustomGroundArmorstand")
                     , new Class[]{location.getClass(), PetMeta.class}, new Object[]{location, meta});
-        } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException | InstantiationException | ClassNotFoundException e) {
+        } catch (final IllegalAccessException | InvocationTargetException | NoSuchMethodException | InstantiationException | ClassNotFoundException e) {
             PetBlocksPlugin.logger().log(Level.WARNING, "Cannot create petblock.", e);
             return null;
         } catch (final Exception e) {
@@ -144,7 +144,7 @@ public final class NMSRegistry {
                 return ReflectionUtils.invokeMethodByObject(player.getInventory(), "getItemInOffHand", new Class[]{}, new Object[]{});
             }
             return ReflectionUtils.invokeMethodByObject(player.getInventory(), "getItemInMainHand", new Class[]{}, new Object[]{});
-        } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
+        } catch (final NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
             PetBlocksPlugin.logger().log(Level.WARNING, "Failed to gather item in 19 hand.", e);
             return null;
         }
@@ -166,7 +166,7 @@ public final class NMSRegistry {
             } else {
                 ReflectionUtils.invokeMethodByObject(player.getInventory(), "setItemInMainHand", new Class[]{ItemStack.class}, new Object[]{itemStack});
             }
-        } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
+        } catch (final NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
             PetBlocksPlugin.logger().log(Level.WARNING, "Failed to set item in 19 hand.", e);
         }
     }

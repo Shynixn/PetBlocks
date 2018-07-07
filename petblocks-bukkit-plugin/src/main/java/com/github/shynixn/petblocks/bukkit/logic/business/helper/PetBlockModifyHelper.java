@@ -94,7 +94,7 @@ public class PetBlockModifyHelper {
                 setNBTTag.invoke(nmsItemStack, nbtTag);
             }
             return (ItemStack) bukkitCopyMethod.invoke(null, nmsItemStack);
-        } catch (NoSuchMethodException | ClassNotFoundException | InvocationTargetException | IllegalAccessException | InstantiationException e) {
+        } catch (final NoSuchMethodException | ClassNotFoundException | InvocationTargetException | IllegalAccessException | InstantiationException e) {
             Bukkit.getLogger().log(Level.WARNING, "Failed to set nbt tag.", e);
         }
         return null;

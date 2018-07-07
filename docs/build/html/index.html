@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>PetBlocks Documentation &mdash; PetBlocks 7.0.1 documentation</title>
+  <title>PetBlocks Documentation &mdash; PetBlocks 7.1.0 documentation</title>
   
 
   
@@ -37,7 +37,7 @@
         <link rel="index" title="Index"
               href="genindex.html"/>
         <link rel="search" title="Search" href="search.html"/>
-    <link rel="top" title="PetBlocks 7.0.1 documentation" href="#"/>
+    <link rel="top" title="PetBlocks 7.1.0 documentation" href="#"/>
         <link rel="next" title="Getting Started" href="gettingstarted/index.html"/> 
 
   
@@ -70,7 +70,7 @@
             
             
               <div class="version">
-                7.0.1
+                7.1.0
               </div>
             
           
@@ -96,9 +96,9 @@
             
               <ul>
 <li class="toctree-l1"><a class="reference internal" href="gettingstarted/index.html">Getting Started</a></li>
-<li class="toctree-l1"><a class="reference internal" href="updating/index.html">Updating</a></li>
 <li class="toctree-l1"><a class="reference internal" href="customizing/index.html">Customizing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="commands/index.html">Commands</a></li>
+<li class="toctree-l1"><a class="reference internal" href="general/index.html">General</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api/index.html">Developer API</a></li>
 <li class="toctree-l1"><a class="reference internal" href="faq/index.html">FAQ</a></li>
 <li class="toctree-l1"><a class="reference internal" href="contributing/index.html">Contributing to PetBlock</a></li>
@@ -183,6 +183,7 @@
 <li class="toctree-l2"><a class="reference internal" href="gettingstarted/installing.html">Installing</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="gettingstarted/installing.html#java">Java</a></li>
 <li class="toctree-l3"><a class="reference internal" href="gettingstarted/installing.html#spigot-sponge">Spigot/Sponge</a></li>
+<li class="toctree-l3"><a class="reference internal" href="gettingstarted/installing.html#spongeforge">SpongeForge</a></li>
 <li class="toctree-l3"><a class="reference internal" href="gettingstarted/installing.html#download">Download</a></li>
 </ul>
 </li>
@@ -195,13 +196,6 @@
 <li class="toctree-l2"><a class="reference internal" href="gettingstarted/playing.html">Playing</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="updating/index.html">Updating</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="updating/index.html#general">General</a></li>
-<li class="toctree-l2"><a class="reference internal" href="updating/index.html#upgrading-from-the-previous-to-next-version">Upgrading from the previous to next version</a></li>
-<li class="toctree-l2"><a class="reference internal" href="updating/index.html#upgrading-from-any-version-to-the-latest-version">Upgrading from any version to the latest version</a></li>
-<li class="toctree-l2"><a class="reference internal" href="updating/index.html#upgrading-to-the-new-permissions">Upgrading to the new permissions</a></li>
-</ul>
-</li>
 <li class="toctree-l1"><a class="reference internal" href="customizing/index.html">Customizing</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="customizing/gui.html">GUI</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="customizing/guiblocktypeskin.html">Change the block type and damage</a></li>
@@ -212,12 +206,17 @@
 </li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="customizing/database.html">Database and Storage</a></li>
-<li class="toctree-l2"><a class="reference internal" href="customizing/commands.html">Commands</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="customizing/commands.html#rename-commands">Rename Commands</a></li>
+<li class="toctree-l2"><a class="reference internal" href="customizing/engines.html">Engines</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="customizing/engines.html#description">Description</a></li>
+<li class="toctree-l3"><a class="reference internal" href="customizing/engines.html#configuration-example">Configuration Example</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="customizing/datacollecting.html">Datacollecting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="customizing/scripting.html">Scripting</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="customizing/scripting.html#description">Description</a></li>
+<li class="toctree-l3"><a class="reference internal" href="customizing/scripting.html#actions">Actions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="customizing/scripting.html#example-adding-a-new-costume-category">Example: Adding a new costume category</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="commands/index.html">Commands</a><ul>
@@ -227,11 +226,24 @@
 <li class="toctree-l2"><a class="reference internal" href="commands/index.html#console-or-command-blocks">Console or Command blocks</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="general/index.html">General</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="general/updating.html">Updating</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="general/updating.html#general">General</a></li>
+<li class="toctree-l3"><a class="reference internal" href="general/updating.html#upgrading-from-the-previous-to-next-version">Upgrading from the previous to next version</a></li>
+<li class="toctree-l3"><a class="reference internal" href="general/updating.html#upgrading-from-any-version-to-the-latest-version">Upgrading from any version to the latest version</a></li>
+<li class="toctree-l3"><a class="reference internal" href="general/updating.html#upgrading-to-the-new-permissions">Upgrading to the new permissions</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="general/database.html">Database and Storage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="general/datacollecting.html">Datacollecting</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="api/index.html">Developer API</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="api/index.html#javadocs">JavaDocs</a></li>
 <li class="toctree-l2"><a class="reference internal" href="api/index.html#including-the-petblocks-api">Including the PetBlocks Api</a></li>
 <li class="toctree-l2"><a class="reference internal" href="api/index.html#registering-your-dependency">Registering your dependency</a></li>
 <li class="toctree-l2"><a class="reference internal" href="api/index.html#modifying-petmeta-and-petblock">Modifying PetMeta and PetBlock</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/index.html#accessing-business-logic">Accessing Business Logic</a></li>
 <li class="toctree-l2"><a class="reference internal" href="api/index.html#listen-to-events">Listen to Events</a></li>
 <li class="toctree-l2"><a class="reference internal" href="api/index.html#setup-your-personal-petblocks-workspace">Setup your personal PetBlocks Workspace</a></li>
 </ul>
@@ -309,7 +321,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'./',
-            VERSION:'7.0.1',
+            VERSION:'7.1.0',
             LANGUAGE:'None',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',

@@ -64,7 +64,7 @@ class SpongeItemContainer : ItemContainer<Player> {
                 if (this.displayName.isPresent) {
                     itemStack.offer(Keys.DISPLAY_NAME, this.displayName.get().translateToText())
                 }
-                this.updateLore(itemStack,player, permissions)
+                this.updateLore(itemStack, player, permissions)
                 return itemStack
             }
         } catch (ex: Exception) {
@@ -80,7 +80,7 @@ class SpongeItemContainer : ItemContainer<Player> {
         val lore = this.provideLore(player, permissions)
         if (lore != null) {
             val data = lore as Array<String>
-            itemStack.setLore(*data)
+            itemStack.setLore(data)
         }
     }
 

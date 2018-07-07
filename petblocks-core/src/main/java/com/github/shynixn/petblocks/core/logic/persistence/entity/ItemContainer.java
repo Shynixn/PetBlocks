@@ -4,10 +4,7 @@ import com.github.shynixn.petblocks.api.business.entity.GUIItemContainer;
 import com.github.shynixn.petblocks.api.business.enumeration.GUIPage;
 import com.github.shynixn.petblocks.core.logic.business.helper.ChatColor;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 /**
  * Copyright 2017 Shynixn
@@ -48,6 +45,7 @@ public abstract class ItemContainer<Player> implements GUIItemContainer<Player> 
     private boolean unbreakable;
     private String name;
     private String[] lore;
+    private String executable;
 
     /**
      * Initializes a new itemContainer
@@ -104,6 +102,10 @@ public abstract class ItemContainer<Player> implements GUIItemContainer<Player> 
             } else {
                 this.name = ChatColor.translateAlternateColorCodes('&', (String) data.get("name"));
             }
+        }
+
+        if (data.containsKey("script")) {
+            this.executable = (String) data.get("script");
         }
 
         if (data.containsKey("unbreakable"))
@@ -223,5 +225,15 @@ public abstract class ItemContainer<Player> implements GUIItemContainer<Player> 
     @Override
     public int getPosition() {
         return this.position;
+    }
+
+    /**
+     * Returns the optional executable script.
+     *
+     * @return script
+     */
+    @Override
+    public Optional<String> getExecuteableScript() {
+        return Optional.ofNullable(this.executable);
     }
 }

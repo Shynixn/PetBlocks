@@ -74,10 +74,19 @@ public interface PetMeta extends Persistenceable {
     /**
      * Sets the data of the engine.
      *
-     * @param <T> type of engineContainer type.
+     * @param <T>    type of engineContainer type.
      * @param engine engine
      */
     <T> void setEngine(EngineContainer<T> engine);
+
+    /**
+     * Sets the data of the engine.
+     *
+     * @param <T>       type of engineContainer type.
+     * @param overwrite should the previous settings be overwritten by the engine.
+     * @param engine    engine
+     */
+    <T> void setEngine(EngineContainer<T> engine, boolean overwrite);
 
     /**
      * Sets the pet sound enabled.
@@ -114,7 +123,7 @@ public interface PetMeta extends Persistenceable {
     /**
      * Sets the itemStack.
      *
-     * @param name name
+     * @param name        name
      * @param damage      damage
      * @param skin        skin
      * @param unbreakable unbreakable
@@ -158,6 +167,7 @@ public interface PetMeta extends Persistenceable {
 
     /**
      * Returns the material name of the item id.
+     *
      * @return name
      */
     String getItemMaterialName();

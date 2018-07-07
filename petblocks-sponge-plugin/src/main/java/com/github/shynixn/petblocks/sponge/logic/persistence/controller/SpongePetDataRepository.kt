@@ -1,6 +1,6 @@
 package com.github.shynixn.petblocks.sponge.logic.persistence.controller
 
-import com.github.shynixn.petblocks.core.logic.business.helper.ExtensionHikariConnectionContext
+import com.github.shynixn.petblocks.core.logic.business.entity.DbContext
 import com.github.shynixn.petblocks.core.logic.persistence.controller.PetDataRepository
 import com.github.shynixn.petblocks.core.logic.persistence.entity.PetData
 import com.github.shynixn.petblocks.sponge.logic.persistence.entity.SpongePetData
@@ -36,7 +36,7 @@ import java.util.*
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class SpongePetDataRepository @Inject constructor(playerMetaController: SpongePlayerDataRepository, particleController: SpongeParticleEffectDataRepository, connectionContext : ExtensionHikariConnectionContext
+class SpongePetDataRepository @Inject constructor(playerMetaController: SpongePlayerDataRepository, particleController: SpongeParticleEffectDataRepository, connectionContext : DbContext
 , logger : Logger) : PetDataRepository<Player>(playerMetaController, particleController, connectionContext, logger)
 {
     override fun create(player: Any?, name: String?): PetData {

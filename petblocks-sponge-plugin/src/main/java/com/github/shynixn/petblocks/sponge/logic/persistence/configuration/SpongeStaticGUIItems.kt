@@ -6,6 +6,7 @@ import com.github.shynixn.petblocks.sponge.logic.business.helper.CompatibilityIt
 import com.github.shynixn.petblocks.sponge.logic.business.helper.getDisplayName
 import com.github.shynixn.petblocks.sponge.logic.persistence.entity.SpongeItemContainer
 import com.google.inject.Inject
+import com.google.inject.Singleton
 import org.slf4j.Logger
 import org.spongepowered.api.entity.living.player.Player
 import org.spongepowered.api.item.inventory.ItemStack
@@ -37,6 +38,7 @@ import org.spongepowered.api.item.inventory.ItemStack
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+@Singleton
 class SpongeStaticGUIItems : FixedItemConfiguration<Player>() {
 
     @Inject
@@ -48,12 +50,15 @@ class SpongeStaticGUIItems : FixedItemConfiguration<Player>() {
     override fun reload() {
         this.items.clear()
         val data = Config.getData<Map<String, Any>>("gui.items")
+
         for (key in data!!.keys) {
             try {
                 val container = SpongeItemContainer(0, (data[key] as Map<String, Any>))
+
                 if (key == "suggest-heads") {
                     container.setDisplayName(ChatColor.AQUA.toString() + "" + ChatColor.BOLD + "Suggest Heads")
                 }
+
                 if (key != "head-database-costume") {
                     this.items[key] = container
                 }
@@ -75,14 +80,17 @@ class SpongeStaticGUIItems : FixedItemConfiguration<Player>() {
         if (itemStack == null || name == null)
             return false
         val optGUIContainer = this.getGUIItemFromName(name)
+
         if (!optGUIContainer.isPresent) {
             throw RuntimeException("GUIItem for PetBlocks with the name $name is not loaded correctly!")
         }
+
         val mItemStack = itemStack as ItemStack?
         var id = CompatibilityItemType.getFromItemType(mItemStack!!.type).id
         if (id == 144) {
             id = 397
         }
+
         return id == optGUIContainer.get().itemId && mItemStack.getDisplayName() != null && mItemStack.getDisplayName().equals(optGUIContainer.get().displayName.get(), ignoreCase = true)
     }
 }

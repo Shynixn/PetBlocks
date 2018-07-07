@@ -12,15 +12,13 @@ import java.io.InputStreamReader;
 import java.net.URL;
 
 /**
- * Copyright 2017 Shynixn
+ * Service to make a webRequest to spigotmc.org to check for new updates.
  * <p>
- * Do not remove this header!
- * <p>
- * Version 1.0
+ * Version 1.2
  * <p>
  * MIT License
  * <p>
- * Copyright (c) 2017
+ * Copyright (c) 2018 by Shynixn
  * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -45,7 +43,7 @@ public class UpdateUtils {
     private static final String BASE_URL = "https://api.spigotmc.org/legacy/update.php?resource=";
 
     /**
-     * Checks if the given plugin version and spigot resource Id is the same by doing an webRequest
+     * Checks if the given plugin version and spigot resource Id is the same by doing an webRequest.
      *
      * @param resourceId spigot resourceId
      * @param plugin     plugin
@@ -57,7 +55,7 @@ public class UpdateUtils {
     }
 
     /**
-     * Checks if the given plugin version and spigot resource Id is the same by doing and webRequest and printing the result into the console
+     * Checks if the given plugin version and spigot resource Id is the same by doing and webRequest and printing the result into the console.
      *
      * @param resourceId spigot resourceId
      * @param prefix     prefix
@@ -75,14 +73,14 @@ public class UpdateUtils {
             } else {
                 Bukkit.getServer().getConsoleSender().sendMessage(prefix + ChatColor.YELLOW + "================================================");
                 Bukkit.getServer().getConsoleSender().sendMessage(prefix + ChatColor.YELLOW + pluginName + " is outdated");
-                Bukkit.getServer().getConsoleSender().sendMessage(prefix + ChatColor.YELLOW + "Please download the latest version from spigotmc.org");
+                Bukkit.getServer().getConsoleSender().sendMessage(prefix + ChatColor.YELLOW + "Please download the latest version from github");
                 Bukkit.getServer().getConsoleSender().sendMessage(prefix + ChatColor.YELLOW + "================================================");
             }
         }
     }
 
     /**
-     * Returns the latest version by a webRequest
+     * Returns the latest version by a webRequest.
      *
      * @param resourceId resource
      * @return version
@@ -90,7 +88,7 @@ public class UpdateUtils {
      */
     private static String getLatestReleaseVersion(long resourceId) throws IOException {
         final HttpsURLConnection httpsURLConnection = (HttpsURLConnection) new URL(BASE_URL + resourceId).openConnection();
-        try (InputStream stream = httpsURLConnection.getInputStream(); InputStreamReader reader = new InputStreamReader(stream); BufferedReader bufferedReader = new BufferedReader(reader)) {
+        try (final InputStream stream = httpsURLConnection.getInputStream(); final InputStreamReader reader = new InputStreamReader(stream); final BufferedReader bufferedReader = new BufferedReader(reader)) {
             return bufferedReader.readLine();
         }
     }

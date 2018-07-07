@@ -9,8 +9,8 @@ import com.github.shynixn.petblocks.bukkit.logic.business.commandexecutor.PetBlo
 import com.github.shynixn.petblocks.bukkit.logic.business.commandexecutor.PetDataCommandExecutor;
 import com.github.shynixn.petblocks.bukkit.logic.business.filter.PetBlockFilter;
 import com.github.shynixn.petblocks.bukkit.logic.business.listener.PetBlockListener;
-import com.github.shynixn.petblocks.bukkit.nms.NMSRegistry;
 import com.github.shynixn.petblocks.bukkit.logic.business.listener.PetDataListener;
+import com.github.shynixn.petblocks.bukkit.nms.NMSRegistry;
 import com.github.shynixn.petblocks.core.logic.business.entity.GuiPageContainer;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
@@ -54,6 +54,9 @@ import java.util.logging.Level;
  */
 public class PetBlockManager implements AutoCloseable {
 
+    // For compatibility reasons. Will be removed.
+    public static PetBlockManager instance;
+
     public final Map<Player, ItemStack> carryingPet = new HashMap<>();
     public final Map<Player, Integer> timeBlocked = new HashMap<>();
     public final Set<Player> headDatabasePlayers = new HashSet<>();
@@ -72,7 +75,6 @@ public class PetBlockManager implements AutoCloseable {
      */
     public PetBlockManager(Plugin plugin) {
         super();
-        Factory.initialize(plugin);
         this.petBlockController = Factory.createPetBlockController();
         this.petMetaController = Factory.createPetDataController();
         try {
@@ -83,6 +85,7 @@ public class PetBlockManager implements AutoCloseable {
             new PetBlockListener(this, plugin);
             this.filter = PetBlockFilter.create();
             this.gui = new GUI(this);
+            instance = this;
         } catch (final Exception e) {
             PetBlocksPlugin.logger().log(Level.WARNING, "Failed to initialize petblockmanager.", e);
         }

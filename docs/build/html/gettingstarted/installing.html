@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Installing &mdash; PetBlocks 7.0.1 documentation</title>
+  <title>Installing &mdash; PetBlocks 7.1.0 documentation</title>
   
 
   
@@ -37,7 +37,7 @@
         <link rel="index" title="Index"
               href="../genindex.html"/>
         <link rel="search" title="Search" href="../search.html"/>
-    <link rel="top" title="PetBlocks 7.0.1 documentation" href="../index.html"/>
+    <link rel="top" title="PetBlocks 7.1.0 documentation" href="../index.html"/>
         <link rel="up" title="Getting Started" href="index.html"/>
         <link rel="next" title="Configuring Permissions" href="permissions.html"/>
         <link rel="prev" title="Getting Started" href="index.html"/> 
@@ -72,7 +72,7 @@
             
             
               <div class="version">
-                7.0.1
+                7.1.0
               </div>
             
           
@@ -101,6 +101,7 @@
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Installing</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#java">Java</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#spigot-sponge">Spigot/Sponge</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#spongeforge">SpongeForge</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#download">Download</a></li>
 </ul>
 </li>
@@ -108,9 +109,9 @@
 <li class="toctree-l2"><a class="reference internal" href="playing.html">Playing</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../updating/index.html">Updating</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../customizing/index.html">Customizing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../commands/index.html">Commands</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../general/index.html">General</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../api/index.html">Developer API</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../faq/index.html">FAQ</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../contributing/index.html">Contributing to PetBlock</a></li>
@@ -195,8 +196,21 @@
 <li>PaperSpigot <em>(1.8.0 - 1.12.2)</em> ✔</li>
 <li>CraftBukkit <em>(1.8.0 - 1.12.2)</em> ✔</li>
 <li>SpongeVanilla <em>(1.12.0 - 1.12.2)</em> ✔</li>
-<li>SpongeForge <em>(1.12.0 - 1.12.2)</em> ✔</li>
+<li>SpongeForge <em>(1.12.0 - 1.12.2)</em> <strong>Please see below.</strong></li>
 </ul>
+</div>
+<div class="section" id="spongeforge">
+<h2>SpongeForge<a class="headerlink" href="#spongeforge" title="Permalink to this headline">¶</a></h2>
+<p>There seem to be some issues concerning compatibility with server-only entities (PetBlocks Pets) and Forge.
+SpongeForge is supported in experimental stage but there seem to be issues with some Minecraft Clients.</p>
+<p>I am looking forward for any feedback regarding this issue.</p>
+<p>Please refer to the following pages:</p>
+<ul class="simple">
+<li><a class="reference external" href="https://github.com/Shynixn/PetBlocks/issues/134">PetBlocks Issue</a></li>
+<li><a class="reference external" href="http://www.minecraftforge.net/forum/topic/64251-registering-server-only-entity-112/">Forge Forum Post</a></li>
+<li><a class="reference external" href="https://github.com/MinecraftForge/MinecraftForge/issues/4870">Forge Drop of server-only entities in 1.12</a></li>
+</ul>
+<p>Currently, PetBlocks uses unregistered “Ghost-Entities” to solve this issue which can cause unexpected errors.</p>
 </div>
 <div class="section" id="download">
 <h2>Download<a class="headerlink" href="#download" title="Permalink to this headline">¶</a></h2>
@@ -253,7 +267,7 @@ to check the signature or download the javadocs from the <a class="reference ext
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'7.0.1',
+            VERSION:'7.1.0',
             LANGUAGE:'None',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',

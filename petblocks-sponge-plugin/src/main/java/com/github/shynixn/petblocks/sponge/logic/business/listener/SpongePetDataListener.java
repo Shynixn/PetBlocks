@@ -114,7 +114,6 @@ public class SpongePetDataListener {
     public void playerClickEvent(final ClickInventoryEvent event, @First(typeFilter = Player.class) Player player) {
         if (event.getTargetInventory().getName().get().equals(Config.INSTANCE.getGUITitle())
                 && this.manager.getInventories().containsKey(player)) {
-            event.setCancelled(true);
             ExtensionMethodsKt.updateInventory(player);
             final Optional<PetBlock> optPetblock;
             final ItemStack itemStack = event.getTransactions().get(0).getOriginal().createStack();
@@ -207,9 +206,6 @@ public class SpongePetDataListener {
             this.manager.gui.setPage(player, GUIPage.COLOR_COSTUMES, petMeta);
         } else if (this.isGUIItem(currentItem, "rare-costume")) {
             this.manager.gui.setPage(player, GUIPage.CUSTOM_COSTUMES, petMeta);
-        } else if (this.isGUIItem(currentItem, "minecraft-heads-costume")) {
-            ExtensionMethodsKt.sendMessage(this.collectedMinecraftHeads, player);
-            this.manager.gui.setPage(player, GUIPage.MINECRAFTHEADS_COSTUMES, petMeta);
         } else if (this.isGUIItem(currentItem, "particle-pet")) {
             this.manager.gui.setPage(player, GUIPage.PARTICLES, petMeta);
         } else if (this.isGUIItem(currentItem, "wardrobe")) {
@@ -264,11 +260,6 @@ public class SpongePetDataListener {
             this.setCostumeSkin(player, petMeta, petBlock, container.get());
         } else if (slot < 45 && this.manager.getPages().get(player).page == GUIPage.CUSTOM_COSTUMES && this.hasPermission(player, Permission.ALL_PLAYERHEADCOSTUMES, Permission.SINGLE_PLAYERHEADCOSTUME, itemSlot)) {
             final Optional<GUIItemContainer<Player>> container = Config.<Player>getInstance().getRareCostumesController().getContainerFromPosition(itemSlot);
-            if (!container.isPresent())
-                throw new IllegalArgumentException("Skin " + itemSlot + " could not be loaded correctly.");
-            this.setCostumeSkin(player, petMeta, petBlock, container.get());
-        } else if (slot < 45 && this.manager.getPages().get(player).page == GUIPage.MINECRAFTHEADS_COSTUMES && this.hasPermission(player, Permission.ALL_MINECRAFTHEADCOSTUMES, Permission.SINGLE_MINECRAFTHEADCOSTUME, itemSlot)) {
-            final Optional<GUIItemContainer<Player>> container = Config.<Player>getInstance().getMinecraftHeadsCostumesController().getContainerFromPosition(itemSlot);
             if (!container.isPresent())
                 throw new IllegalArgumentException("Skin " + itemSlot + " could not be loaded correctly.");
             this.setCostumeSkin(player, petMeta, petBlock, container.get());

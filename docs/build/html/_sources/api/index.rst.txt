@@ -15,30 +15,44 @@ PetBlocks is using maven as build system but you can include the api via differe
 ::
     <dependency>
         <groupId>com.github.shynixn.petblocks</groupId>
+        <artifactId>petblocks-api</artifactId>
+        <version>7.1.0</version>
+        <scope>provided</scope>
+    </dependency>
+    <dependency>
+        <groupId>com.github.shynixn.petblocks</groupId>
         <artifactId>petblocks-bukkit-api</artifactId>
-        <version>7.0.1</version>
+        <version>7.1.0</version>
         <scope>provided</scope>
     </dependency>
 
 **(Bukkit) Gradle**:
 ::
     dependencies {
-        compileOnly 'com.github.shynixn.petblocks:petblocks-bukkit-api:7.0.1'
+        compileOnly 'com.github.shynixn.petblocks:petblocks-api:7.1.0'
+        compileOnly 'com.github.shynixn.petblocks:petblocks-bukkit-api:7.1.0'
     }
 
 **(Sponge) Maven**:
 ::
+   <dependency>
+        <groupId>com.github.shynixn.petblocks</groupId>
+        <artifactId>petblocks-api</artifactId>
+        <version>7.1.0</version>
+        <scope>provided</scope>
+    </dependency>
     <dependency>
         <groupId>com.github.shynixn.petblocks</groupId>
         <artifactId>petblocks-sponge-api</artifactId>
-        <version>7.0.1</version>
+        <version>7.1.0</version>
         <scope>provided</scope>
     </dependency>
 
 **(Sponge) Gradle**:
 ::
     dependencies {
-        compileOnly 'com.github.shynixn.petblocks:petblocks-sponge-api:7.0.1'
+        compileOnly 'com.github.shynixn.petblocks:petblocks-api:7.1.0'
+        compileOnly 'com.github.shynixn.petblocks:petblocks-sponge-api:7.1.0'
     }
 
 **Reference the jar file**:
@@ -247,6 +261,20 @@ However, for applying the changes you need to respawn the PetBlock:
 ::
     final PetBlock petBlock; //Any PetBlock instance
     petBlock.respawn();
+
+Accessing Business Logic
+~~~~~~~~~~~~~~~~~~~~~~~~
+
+The PetBlocks plugin allows to access some (not all) parts of the Business Logic too.
+
+* Accessing the GUI.
+
+**Bukkit/Sponge:**
+::
+    Player player; // Any player instance
+    final GUIService guiService = PetBlocksApi.INSTANCE.resolve(GUIService.class).get();
+
+    guiService.open(player);
 
 Listen to Events
 ~~~~~~~~~~~~~~~~

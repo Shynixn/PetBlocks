@@ -14,12 +14,19 @@ import org.spongepowered.api.Sponge
 import org.spongepowered.api.command.CommandSource
 import org.spongepowered.api.entity.Transform
 import org.spongepowered.api.entity.living.player.Player
+import org.spongepowered.api.item.inventory.Inventory
 import org.spongepowered.api.item.inventory.ItemStack
+import org.spongepowered.api.item.inventory.property.SlotIndex
+import org.spongepowered.api.item.inventory.property.SlotPos
+import org.spongepowered.api.item.inventory.type.CarriedInventory
+import org.spongepowered.api.item.inventory.type.GridInventory
 import org.spongepowered.api.plugin.PluginContainer
+import org.spongepowered.api.scheduler.Task
 import org.spongepowered.api.text.Text
 import org.spongepowered.api.text.serializer.TextSerializers
 import org.spongepowered.api.world.World
 import java.io.InputStream
+import java.util.*
 import java.util.function.Consumer
 
 /**
@@ -90,7 +97,6 @@ fun ChatBuilder.sendMessage(vararg players: Player) {
     ReflectionCache.sendChatJsonMesssageMethod.invoke(null, finalMessage.toString(), playerResult)
 }
 
-
 /**
  * Unloads the given plugin.
  */
@@ -109,6 +115,70 @@ fun PetMeta.setCostume(petBlock: PetBlock<Player, Transform<World>>?, container:
         return
     setSkin(container.itemId, container.itemDamage, container.skin, container.isItemUnbreakable)
     petBlock?.respawn()
+}
+
+/**
+ * Executes the given [f] for the given [plugin] on main thread.
+ */
+inline fun Any.sync(plugin: Any, delayTicks: Long = 0L, repeatingTicks: Long = 0L, crossinline f: () -> Unit) {
+    val builder = Task.builder().execute(Runnable {
+        f.invoke()
+    }).delayTicks(delayTicks)
+
+    if (repeatingTicks > 0) {
+        builder.intervalTicks(repeatingTicks)
+    }
+
+    builder.submit(plugin)
+}
+
+/**
+ * Executes the given [f] for the given [plugin] asynchronly.
+ */
+inline fun Any.async(plugin: Any, delayTicks: Long = 0L, repeatingTicks: Long = 0L, crossinline f: () -> Unit) {
+    val builder = Task.builder().async().execute(Runnable {
+        f.invoke()
+    }).delayTicks(delayTicks)
+
+    if (repeatingTicks > 0) {
+        builder.intervalTicks(repeatingTicks)
+    }
+
+    builder.submit(plugin)
+}
+
+fun Inventory.setItem(index: Int, itemStack: ItemStack) {
+    if (index == 0) {
+        this.query<Inventory>(GridInventory::class.java)
+                .query<Inventory>(SlotPos.of(0, 0)).set(itemStack)
+    } else {
+        this.query<Inventory>(GridInventory::class.java)
+                .query<Inventory>(SlotIndex.of(index)).set(itemStack)
+    }
+}
+
+fun Inventory.getItem(index: Int): ItemStack? {
+    val optItemStack: Optional<ItemStack> = if (index == 0) {
+        this.query<Inventory>(GridInventory::class.java)
+                .query<Inventory>(SlotPos.of(0, 0)).peek()
+    } else {
+        this.query<Inventory>(GridInventory::class.java)
+                .query<Inventory>(SlotIndex.of(index)).peek()
+    }
+
+    if (optItemStack.isPresent) {
+        return optItemStack.get()
+    }
+
+    return null
+}
+
+/**
+ * Returns the owner of the inventory.
+ */
+fun Inventory.getHolder(): Player {
+    val carriedInventory = this as CarriedInventory<Player>
+    return carriedInventory.carrier.get()
 }
 
 fun PetMeta.setEngine(petBlock: PetBlock<Player, Transform<World>>?, engineContainer: EngineContainer<GUIItemContainer<Player>>?) {
@@ -163,7 +233,7 @@ fun Player.hasPermissions(permission: Permission, vararg placeholder: String): B
     for (s in permission.permission) {
         var perm = s
         for (i in placeholder.indices) {
-            val plc = "$" + i
+            val plc = "$$i"
             perm = perm.replace(plc, placeholder[i])
         }
         if (this.hasPermission(perm)) {
@@ -176,7 +246,7 @@ fun Player.hasPermissions(permission: Permission, vararg placeholder: String): B
 fun PetMeta.setSkin(petBlock: PetBlock<Player, Transform<World>>?, skin: String) {
     var skinHelper = skin
     if (skinHelper.contains("textures.minecraft") && !skinHelper.contains("http://")) {
-        skinHelper = "http://" + skin
+        skinHelper = "http://$skin"
     }
     setSkin(CompatibilityItemType.SKULL_ITEM.id, 3, skinHelper, false)
     petBlock?.respawn()
@@ -232,7 +302,7 @@ fun ItemStack.setSkin(skin: String) {
     if (skin.contains("textures.minecraft.net")) {
         var helpSkin = skin
         if (!helpSkin.startsWith("http://")) {
-            helpSkin = "http://" + helpSkin
+            helpSkin = "http://$helpSkin"
         }
         ReflectionCache.setSkinUrlMethod.invoke(null, this, helpSkin)
     } else {
@@ -257,8 +327,8 @@ fun ItemStack.setDamage(damage: Int) {
     ReflectionCache.setDamageMethod!!.invoke(null, this, damage)
 }
 
-fun ItemStack.setLore(vararg text: String) {
-    this.offer(org.spongepowered.api.data.key.Keys.ITEM_LORE, (text as Array<String?>).translateToTexts().toList())
+fun ItemStack.setLore(data: Array<String>) {
+    this.offer(org.spongepowered.api.data.key.Keys.ITEM_LORE, (data as Array<String?>).translateToTexts().toList())
 }
 
 fun ItemStack.getLore(): Array<String> {
