@@ -29,3 +29,11 @@ Cooperation
 PetBlocks is in cooperation with `Minecraft-Heads.com <https://minecraft-heads.com/>`__ .
 
 .. image:: http://minecraft-heads.com/images/banners/minecraft-heads_banner_600x200.png
+
+.. raw:: html
+
+   <div align="center">
+    <h3>Are you looking for a <a style="color: red">Cheap, Affordable and Reliable Hosting Company?</a></h3>
+    <h3>If so <a style="color: red">ExcaliburNode</a> is the right host for you. Be sure to check out their website</h3>
+    <h3><a style="color: orange" href="https://excaliburnode.host/">HERE</a>!</h3>
+   </div>
