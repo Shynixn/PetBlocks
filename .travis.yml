@@ -8,10 +8,10 @@ cache:
   - $HOME/.m2/repository/org/spigotmc
   - $HOME/.m2/repository/org/mcp
 install:
-    - cd /home/travis/build/Shynixn/BlockBall/
+    - cd /home/travis/build/Shynixn/PetBlocks/
     - mkdir lib
-    - wget https://hub.spigotmc.org/jenkins/job/BuildTools/lastStableBuild/artifact/target/BuildTools.jar -P /home/travis/build/Shynixn/BlockBall/lib/
-    - cd /home/travis/build/Shynixn/BlockBall/lib/
+    - wget https://hub.spigotmc.org/jenkins/job/BuildTools/lastStableBuild/artifact/target/BuildTools.jar -P /home/travis/build/Shynixn/PetBlocks/lib/
+    - cd /home/travis/build/Shynixn/PetBlocks/lib/
     - java -jar BuildTools.jar --rev 1.8 > /dev/null
     - java -jar BuildTools.jar --rev 1.8.3 > /dev/null
     - java -jar BuildTools.jar --rev 1.8.8 > /dev/null
@@ -32,7 +32,7 @@ install:
     - mvn anchornms:generate-mcp-libraries -X
     - cd target/nms-tools/
     - mvn install:install-file -Dfile=mcp-1.12.jar -DgroupId=org.mcp -DartifactId=minecraft112R1 -Dversion=1.12.0-R1.0 -Dpackaging=jar
-    - cd /home/travis/build/Shynixn/BlockBall/
+    - cd /home/travis/build/Shynixn/PetBlocks/
 before_script:
   - sudo /etc/init.d/mysql stop
 script:
