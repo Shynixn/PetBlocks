@@ -47,11 +47,10 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>mcp</groupId>
+            <groupId>org.mcp</groupId>
             <artifactId>minecraft112R1</artifactId>
-            <scope>system</scope>
-            <version>1.0</version>
-            <systemPath>${basedir}/../lib/mcp-1.12.jar</systemPath>
+            <version>1.12.0-R1.0</version>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 
