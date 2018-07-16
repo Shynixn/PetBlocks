@@ -173,14 +173,6 @@ fun Inventory.getItem(index: Int): ItemStack? {
     return null
 }
 
-/**
- * Returns the owner of the inventory.
- */
-fun Inventory.getHolder(): Player {
-    val carriedInventory = this as CarriedInventory<Player>
-    return carriedInventory.carrier.get()
-}
-
 fun PetMeta.setEngine(petBlock: PetBlock<Player, Transform<World>>?, engineContainer: EngineContainer<GUIItemContainer<Player>>?) {
     if (engineContainer == null)
         return
