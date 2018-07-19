@@ -58,6 +58,30 @@
                             </execution>
                         </executions>
                     </plugin>
+                    <plugin>
+                        <groupId>org.jetbrains.dokka</groupId>
+                        <artifactId>dokka-maven-plugin</artifactId>
+                        <version>0.9.16</version>
+                        <executions>
+                            <execution>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>javadoc</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                        <configuration>
+                            <outputDir>docs/apidocs</outputDir>
+                            <sourceDirectories>
+                                <dir>petblocks-api/src/main/java</dir>
+                                <dir>petblocks-bukkit-api/src/main/java</dir>
+                                <dir>petblocks-bukkit-plugin/src/main/java</dir>
+                                <dir>petblocks-core/src/main/java</dir>
+                                <dir>petblocks-sponge-api/src/main/java</dir>
+                                <dir>petblocks-sponge-plugin/src/main/java</dir>
+                            </sourceDirectories>
+                        </configuration>
+                    </plugin>
                 </plugins>
             </build>
         </profile>
@@ -173,30 +197,6 @@
                     <target>1.8</target>
                 </configuration>
                 <version>2.3.2</version>
-            </plugin>
-            <plugin>
-                <groupId>org.jetbrains.dokka</groupId>
-                <artifactId>dokka-maven-plugin</artifactId>
-                <version>0.9.16</version>
-                <executions>
-                    <execution>
-                        <phase>verify</phase>
-                        <goals>
-                            <goal>javadoc</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <outputDir>docs/apidocs</outputDir>
-                    <sourceDirectories>
-                        <dir>petblocks-api/src/main/java</dir>
-                        <dir>petblocks-bukkit-api/src/main/java</dir>
-                        <dir>petblocks-bukkit-plugin/src/main/java</dir>
-                        <dir>petblocks-core/src/main/java</dir>
-                        <dir>petblocks-sponge-api/src/main/java</dir>
-                        <dir>petblocks-sponge-plugin/src/main/java</dir>
-                    </sourceDirectories>
-                </configuration>
             </plugin>
         </plugins>
     </build>
