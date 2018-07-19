@@ -104,7 +104,7 @@ public interface PetBlock<Player,Location> {
      *
      * @return name
      */
-    String getDisplayName();
+    Object getDisplayName();
 
     /**
      * Respawns the petblock

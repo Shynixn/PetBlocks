@@ -90,9 +90,9 @@ public final class PetBlockHelper {
             return;
         try {
             if (Config.INSTANCE.isSoundForOtherPlayersHearable()) {
-                ((SoundBuilder) soundMeta).apply(location,location.getWorld().getPlayers().toArray(new Player[0]));
+                ((SoundBuilder) soundMeta).apply(location, location.getWorld().getPlayers().toArray(new Player[0]));
             } else {
-                ((SoundBuilder) soundMeta).apply(location, new Player[] {(Player) petBlock.getPlayer()});
+                ((SoundBuilder) soundMeta).apply(location, new Player[]{(Player) petBlock.getPlayer()});
             }
         } catch (final IllegalArgumentException e) {
             PetBlocksPlugin.logger().log(Level.WARNING, "Cannot play sound " + soundMeta.getName() + " of " + ChatColor.stripColor(petBlock.getMeta().<GUIItemContainer<Player>>getEngine().getGUIItem().getDisplayName().get()) + '.');
@@ -221,7 +221,7 @@ public final class PetBlockHelper {
 
     public static void refreshHeadItemMeta(PetBlock petBlock, ItemStack itemStack) {
         final String name;
-        name = petBlock.getDisplayName();
+        name = (String) petBlock.getDisplayName();
         itemStack = nameItem(itemStack, name);
         itemStack = setWithUnbreakable(petBlock.getMeta(), itemStack);
         getArmorstand(petBlock).setHelmet(itemStack);

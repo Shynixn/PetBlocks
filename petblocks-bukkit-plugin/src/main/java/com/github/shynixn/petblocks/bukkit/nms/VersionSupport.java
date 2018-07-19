@@ -38,7 +38,8 @@ public enum VersionSupport {
     VERSION_1_9_R2("v1_9_R2", "1.9.4", 1.092),
     VERSION_1_10_R1("v1_10_R1", "1.10.2", 1.10),
     VERSION_1_11_R1("v1_11_R1", "1.11.2", 1.11),
-    VERSION_1_12_R1("v1_12_R1", "1.12.2", 1.12);
+    VERSION_1_12_R1("v1_12_R1", "1.12.2", 1.12),
+    VERSION_1_13_R1("v1_13_R1", "1.13.0", 1.13);
 
     private final String versionText;
     private final String simpleVersionText;
