@@ -50,6 +50,14 @@ import org.spongepowered.api.world.World
  * SOFTWARE.
  */
 class PetBlockWrapper(firstSpawn: Transform<World>, private val owner: Player, private val petMeta: PetMeta) : PetBlock<Player, Transform<World>> {
+    /**
+     * Returns the displayName of the petblock.
+     *
+     * @return name
+     */
+    override fun getEntityDisplayName(): String {
+        return (this.armorStand as ArmorStand).get<Text>(Keys.DISPLAY_NAME).get().toPlain()
+    }
 
     object Companion {
         var spawnMethod = Class.forName("com.github.shynixn.petblocks.sponge.nms.VERSION.CustomGroundArmorstand".replace("VERSION", VersionSupport.getServerVersion().versionText)).getDeclaredMethod("spawn", Transform::class.java)
@@ -205,15 +213,6 @@ class PetBlockWrapper(firstSpawn: Transform<World>, private val owner: Player, p
     override fun setDisplayName(name: String?) {
         armorstandEntity.offer(Keys.DISPLAY_NAME, Text.of(name))
         armorstandEntity.offer(Keys.CUSTOM_NAME_VISIBLE, true)
-    }
-
-    /**
-     * Returns the displayName of the petblock.
-     *
-     * @return name
-     */
-    override fun getDisplayName(): String {
-        return (this.armorStand as ArmorStand).get<Text>(Keys.DISPLAY_NAME).get().toPlain()
     }
 
     /**

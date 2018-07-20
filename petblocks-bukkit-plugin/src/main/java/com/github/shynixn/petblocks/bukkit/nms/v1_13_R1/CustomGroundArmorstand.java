@@ -398,6 +398,16 @@ final class CustomGroundArmorstand extends EntityArmorStand implements PetBlock 
     }
 
     /**
+     * Returns the displayName of the petblock.
+     *
+     * @return name
+     */
+    @Override
+    public String getEntityDisplayName() {
+        return ((ArmorStand) this.getArmorStand()).getCustomName();
+    }
+
+    /**
      * Returns the armorstand of the petblock
      *
      * @return armorstand

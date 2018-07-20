@@ -54,8 +54,10 @@ public final class NMSRegistry {
             if (wrappedRegistry == null) {
                 if (VersionSupport.getServerVersion().isVersionLowerThan(VersionSupport.VERSION_1_11_R1)) {
                     wrappedRegistry = new CustomEntityType.Registry10();
-                } else {
+                } else if (VersionSupport.getServerVersion().isVersionLowerThan(VersionSupport.VERSION_1_13_R1)) {
                     wrappedRegistry = new CustomEntityType.Registry11();
+                } else {
+                    wrappedRegistry = new CustomEntityType.Registry13();
                 }
             }
             if (!wrappedRegistry.isRegistered(rabbitClazz)) {
