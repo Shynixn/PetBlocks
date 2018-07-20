@@ -6,7 +6,7 @@ import com.github.shynixn.petblocks.api.business.enumeration.Permission;
 import com.github.shynixn.petblocks.api.persistence.entity.EngineContainer;
 import com.github.shynixn.petblocks.api.persistence.entity.ParticleEffectMeta;
 import com.github.shynixn.petblocks.api.persistence.entity.PetMeta;
-import com.github.shynixn.petblocks.bukkit.nms.v1_12_R1.MaterialCompatibility12;
+import com.github.shynixn.petblocks.bukkit.nms.v1_13_R1.MaterialCompatibility13;
 import com.github.shynixn.petblocks.core.logic.persistence.configuration.Config;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -187,7 +187,7 @@ public class PetBlockModifyHelper {
         if (petSkin.contains("textures.minecraft") && !petSkin.contains("http://")) {
             petSkin = "http://" + skin;
         }
-        petMeta.setSkin(MaterialCompatibility12.getIdFromMaterial(Material.SKULL_ITEM), (short) 3, petSkin, false);
+        petMeta.setSkin(MaterialCompatibility13.getIdFromMaterial(Material.SKULL_ITEM), (short) 3, petSkin, false);
         if (petBlock != null) {
             petBlock.respawn();
         }

@@ -12,7 +12,7 @@ import com.github.shynixn.petblocks.bukkit.logic.business.PetBlockManager;
 import com.github.shynixn.petblocks.bukkit.logic.business.helper.ChatBuilderExtensionKt;
 import com.github.shynixn.petblocks.bukkit.logic.business.helper.PetBlockModifyHelper;
 import com.github.shynixn.petblocks.bukkit.logic.business.helper.SkinHelper;
-import com.github.shynixn.petblocks.bukkit.nms.v1_12_R1.MaterialCompatibility12;
+import com.github.shynixn.petblocks.bukkit.nms.v1_13_R1.MaterialCompatibility13;
 import com.github.shynixn.petblocks.core.logic.business.helper.ChatBuilder;
 import com.github.shynixn.petblocks.core.logic.persistence.configuration.Config;
 import org.bukkit.Bukkit;
@@ -365,7 +365,7 @@ public class PetDataListener extends SimpleListener {
             this.manager.gui.setPage(player, GUIPage.MAIN, petMeta);
         } else {
             if (Config.getInstance().isCopySkinEnabled()) {
-                petMeta.setSkin(MaterialCompatibility12.getIdFromMaterial(Material.SKULL_ITEM), 3, this.getGUIItem("my-pet").getSkin(), this.getGUIItem("my-pet").isItemUnbreakable());
+                petMeta.setSkin(MaterialCompatibility13.getIdFromMaterial(Material.SKULL_ITEM), 3, this.getGUIItem("my-pet").getSkin(), this.getGUIItem("my-pet").isItemUnbreakable());
             } else {
                 final GUIItemContainer c = this.getGUIItem("default-appearance");
                 petMeta.setSkin(c.getItemId(), c.getItemDamage(), c.getSkin(), c.isItemUnbreakable());
@@ -395,9 +395,9 @@ public class PetDataListener extends SimpleListener {
                     return;
                 final SkullMeta meta = (SkullMeta) itemStack.getItemMeta();
                 if (meta.getOwner() == null) {
-                    petMeta.get().setSkin(MaterialCompatibility12.getIdFromMaterial(itemStack.getType()), itemStack.getDurability(), SkinHelper.getItemStackSkin(itemStack).get(), false);
+                    petMeta.get().setSkin(MaterialCompatibility13.getIdFromMaterial(itemStack.getType()), itemStack.getDurability(), SkinHelper.getItemStackSkin(itemStack).get(), false);
                 } else {
-                    petMeta.get().setSkin(MaterialCompatibility12.getIdFromMaterial(itemStack.getType()), itemStack.getDurability(), ((SkullMeta) itemStack.getItemMeta()).getOwner(), false);
+                    petMeta.get().setSkin(MaterialCompatibility13.getIdFromMaterial(itemStack.getType()), itemStack.getDurability(), ((SkullMeta) itemStack.getItemMeta()).getOwner(), false);
                 }
                 this.manager.getPetMetaController().store(petMeta.get());
                 this.plugin.getServer().getScheduler().runTask(this.plugin, () -> {

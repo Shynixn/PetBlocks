@@ -1,4 +1,4 @@
-package com.github.shynixn.petblocks.bukkit.nms.v1_12_R1;
+package com.github.shynixn.petblocks.bukkit.nms.v1_13_R1;
 
 import com.github.shynixn.petblocks.bukkit.nms.VersionSupport;
 import org.bukkit.Material;
@@ -33,7 +33,7 @@ import java.lang.reflect.Method;
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-public final class MaterialCompatibility12 {
+public final class MaterialCompatibility13 {
     private static Method getMaterialFromIdMethod;
     private static Method getIdFromMaterialMethod;
 
@@ -49,7 +49,7 @@ public final class MaterialCompatibility12 {
         }
     }
 
-    private MaterialCompatibility12() {
+    private MaterialCompatibility13() {
         super();
     }
 

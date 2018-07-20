@@ -14,7 +14,7 @@ import com.github.shynixn.petblocks.bukkit.PetBlocksPlugin;
 import com.github.shynixn.petblocks.bukkit.logic.business.helper.PetBlockModifyHelper;
 import com.github.shynixn.petblocks.bukkit.logic.business.helper.SkinHelper;
 import com.github.shynixn.petblocks.bukkit.logic.persistence.configuration.Config;
-import com.github.shynixn.petblocks.bukkit.nms.v1_12_R1.MaterialCompatibility12;
+import com.github.shynixn.petblocks.bukkit.nms.v1_13_R1.MaterialCompatibility13;
 import com.github.shynixn.petblocks.core.logic.persistence.entity.ParticleEffectData;
 import com.github.shynixn.petblocks.core.logic.persistence.entity.PetData;
 import com.github.shynixn.petblocks.core.logic.persistence.entity.SoundBuilder;
@@ -245,13 +245,13 @@ public final class PetBlockHelper {
         final ItemStack itemStack;
         if (petData.getSkin() != null) {
             if (petData.getSkin().contains("http")) {
-                itemStack = new ItemStack(MaterialCompatibility12.getMaterialFromId(petData.getItemId()), 1, (short) petData.getItemDamage());
+                itemStack = new ItemStack(MaterialCompatibility13.getMaterialFromId(petData.getItemId()), 1, (short) petData.getItemDamage());
                 SkinHelper.setItemStackSkin(itemStack, petData.getSkin());
             } else {
-                itemStack = activateHead(petData.getSkin(), new ItemStack(MaterialCompatibility12.getMaterialFromId(petData.getItemId()), 1, (short) petData.getItemDamage()));
+                itemStack = activateHead(petData.getSkin(), new ItemStack(MaterialCompatibility13.getMaterialFromId(petData.getItemId()), 1, (short) petData.getItemDamage()));
             }
         } else {
-            itemStack = new ItemStack(MaterialCompatibility12.getMaterialFromId(petData.getItemId()), 1, (short) petData.getItemDamage());
+            itemStack = new ItemStack(MaterialCompatibility13.getMaterialFromId(petData.getItemId()), 1, (short) petData.getItemDamage());
         }
         if (petData.getAge() >= Config.INSTANCE.getAge_largeticks()) {
             refreshHeadItemMeta(petBlock, itemStack);

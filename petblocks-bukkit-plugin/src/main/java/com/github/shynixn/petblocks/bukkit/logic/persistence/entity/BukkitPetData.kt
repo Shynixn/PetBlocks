@@ -4,7 +4,7 @@ import com.github.shynixn.petblocks.api.persistence.entity.ParticleEffectMeta
 import com.github.shynixn.petblocks.bukkit.logic.business.helper.PetBlockModifyHelper
 import com.github.shynixn.petblocks.bukkit.logic.business.helper.SkinHelper
 import com.github.shynixn.petblocks.bukkit.logic.persistence.configuration.Config
-import com.github.shynixn.petblocks.bukkit.nms.v1_12_R1.MaterialCompatibility12
+import com.github.shynixn.petblocks.bukkit.nms.v1_13_R1.MaterialCompatibility13
 import com.github.shynixn.petblocks.core.logic.persistence.entity.PetData
 import com.github.shynixn.petblocks.core.logic.persistence.entity.PlayerData
 import org.bukkit.Bukkit
@@ -51,7 +51,7 @@ class BukkitPetData : PetData {
      * @param unbreakable unbreakable
      */
     override fun setSkin(name: String, damage: Int, skin: String?, unbreakable: Boolean) {
-        this.setSkin(MaterialCompatibility12.getIdFromMaterial(org.bukkit.Material.getMaterial(name)), damage, skin, unbreakable)
+        this.setSkin(MaterialCompatibility13.getIdFromMaterial(org.bukkit.Material.getMaterial(name)), damage, skin, unbreakable)
     }
 
     /**
@@ -59,7 +59,7 @@ class BukkitPetData : PetData {
      * @return name
      */
     override fun getItemMaterialName(): String {
-        return MaterialCompatibility12.getMaterialFromId(this.itemId).name
+        return MaterialCompatibility13.getMaterialFromId(this.itemId).name
     }
 
     /**
@@ -106,10 +106,10 @@ class BukkitPetData : PetData {
         var itemStack: ItemStack?
         if (this.getSkin() != null) {
             if (this.getSkin().contains("textures.minecraft")) {
-                itemStack = ItemStack(MaterialCompatibility12.getMaterialFromId(this.itemId), 1, this.itemDamage.toShort())
+                itemStack = ItemStack(MaterialCompatibility13.getMaterialFromId(this.itemId), 1, this.itemDamage.toShort())
                 SkinHelper.setItemStackSkin(itemStack, this.getSkin())
             } else {
-                itemStack = ItemStack(MaterialCompatibility12.getMaterialFromId(this.itemId), 1, this.itemDamage.toShort())
+                itemStack = ItemStack(MaterialCompatibility13.getMaterialFromId(this.itemId), 1, this.itemDamage.toShort())
                 val meta = itemStack.itemMeta
                 if (meta is SkullMeta) {
                     meta.owner = this.skin
@@ -117,7 +117,7 @@ class BukkitPetData : PetData {
                 itemStack.itemMeta = meta
             }
         } else {
-            itemStack = ItemStack(MaterialCompatibility12.getMaterialFromId(this.itemId), 1, this.itemDamage.toShort())
+            itemStack = ItemStack(MaterialCompatibility13.getMaterialFromId(this.itemId), 1, this.itemDamage.toShort())
         }
         val meta = itemStack.itemMeta
         meta.displayName = this.petDisplayName

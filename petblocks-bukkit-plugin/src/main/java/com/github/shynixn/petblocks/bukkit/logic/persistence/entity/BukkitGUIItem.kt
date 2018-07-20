@@ -7,7 +7,7 @@ import com.github.shynixn.petblocks.bukkit.logic.business.helper.setDisplayName
 import com.github.shynixn.petblocks.bukkit.logic.business.helper.setLore
 import com.github.shynixn.petblocks.bukkit.logic.business.helper.setSkin
 import com.github.shynixn.petblocks.bukkit.logic.business.helper.setUnbreakable
-import com.github.shynixn.petblocks.bukkit.nms.v1_12_R1.MaterialCompatibility12
+import com.github.shynixn.petblocks.bukkit.nms.v1_13_R1.MaterialCompatibility13
 import com.github.shynixn.petblocks.core.logic.persistence.entity.CustomGUIItem
 import org.bukkit.Material
 import org.bukkit.inventory.ItemStack
@@ -48,7 +48,7 @@ class BukkitGUIItem : CustomGUIItem {
             return cachedItemStack!!.clone() as I
         }
 
-        val itemStack = ItemStack(MaterialCompatibility12.getMaterialFromId(this.type), 1, this.data.toShort())
+        val itemStack = ItemStack(MaterialCompatibility13.getMaterialFromId(this.type), 1, this.data.toShort())
         if (itemStack.type == Material.SKULL_ITEM && this.skin != "") {
             itemStack.setSkin(this.skin)
         }

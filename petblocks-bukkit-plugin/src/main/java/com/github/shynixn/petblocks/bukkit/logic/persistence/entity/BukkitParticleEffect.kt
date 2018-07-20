@@ -2,8 +2,9 @@ package com.github.shynixn.petblocks.bukkit.logic.persistence.entity
 
 import com.github.shynixn.petblocks.api.persistence.entity.ParticleEffectMeta
 import com.github.shynixn.petblocks.bukkit.PetBlocksPlugin
-import com.github.shynixn.petblocks.bukkit.nms.v1_12_R1.MaterialCompatibility12
+import com.github.shynixn.petblocks.bukkit.nms.v1_13_R1.MaterialCompatibility13
 import com.github.shynixn.petblocks.core.logic.persistence.entity.ParticleEffectData
+import net.minecraft.server.v1_13_R1.Particle
 import org.bukkit.Bukkit
 import org.bukkit.Location
 import org.bukkit.Material
@@ -143,7 +144,7 @@ class BukkitParticleEffect : ParticleEffectData, ConfigurationSerializable {
         if (material != null && material is Int) {
             this.materialId = material
         } else if (material != null) {
-            this.materialId = MaterialCompatibility12.getIdFromMaterial(material as Material?)
+            this.materialId = MaterialCompatibility13.getIdFromMaterial(material as Material?)
         } else {
             this.materialId = null
         }
@@ -156,7 +157,7 @@ class BukkitParticleEffect : ParticleEffectData, ConfigurationSerializable {
      * @return material
      */
     override fun getMaterial(): Any? {
-        return if (this.materialId == null || MaterialCompatibility12.getMaterialFromId(materialId) == null) null else MaterialCompatibility12.getMaterialFromId(materialId)
+        return if (this.materialId == null || MaterialCompatibility13.getMaterialFromId(materialId) == null) null else MaterialCompatibility13.getMaterialFromId(materialId)
     }
 
     /**
