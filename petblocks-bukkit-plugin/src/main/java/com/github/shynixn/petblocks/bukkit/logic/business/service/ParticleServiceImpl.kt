@@ -12,11 +12,7 @@ import com.google.inject.Inject
 import net.minecraft.server.v1_13_R1.*
 import org.bukkit.Location
 import org.bukkit.Material
-import org.bukkit.block.BlockState
-import org.bukkit.block.data.BlockData
-import org.bukkit.craftbukkit.v1_13_R1.CraftParticle
 import org.bukkit.craftbukkit.v1_13_R1.block.CraftBlockState
-import org.bukkit.craftbukkit.v1_13_R1.block.data.CraftBlockData
 import org.bukkit.craftbukkit.v1_13_R1.inventory.CraftItemStack
 import org.bukkit.craftbukkit.v1_13_R1.util.CraftMagicNumbers
 import org.bukkit.entity.Player
@@ -123,9 +119,21 @@ class ParticleServiceImpl @Inject constructor(private val plugin: Plugin, privat
                 }
             }
 
-            val constructor = Class.forName("net.minecraft.server.VERSION.PacketPlayOutWorldParticles".replace("VERSION", version.versionText))
-                    .getDeclaredConstructor(internalParticleType.javaClass, Boolean::class.javaPrimitiveType, Float::class.javaPrimitiveType, Float::class.javaPrimitiveType, Float::class.javaPrimitiveType, Float::class.javaPrimitiveType, Float::class.javaPrimitiveType, Float::class.javaPrimitiveType, Float::class.javaPrimitiveType, Int::class.javaPrimitiveType, IntArray::class.java)
-            constructor.newInstance(internalParticleType, isLongDistance(location, targets), location.x.toFloat(), location.y.toFloat(), location.z.toFloat(), particle.offSetX.toFloat(), particle.offSetY.toFloat(), particle.offSetZ.toFloat(), particle.speed, particle.amount, additionalPayload)
+            if (particle.type == ParticleType.REDSTONE) {
+                var red = particle.colorRed.toFloat() / 255.0F;
+                if (red <= 0) {
+                    red = Float.MIN_VALUE
+                }
+
+                val constructor = Class.forName("net.minecraft.server.VERSION.PacketPlayOutWorldParticles".replace("VERSION", version.versionText))
+                        .getDeclaredConstructor(internalParticleType.javaClass, Boolean::class.javaPrimitiveType, Float::class.javaPrimitiveType, Float::class.javaPrimitiveType, Float::class.javaPrimitiveType, Float::class.javaPrimitiveType, Float::class.javaPrimitiveType, Float::class.javaPrimitiveType, Float::class.javaPrimitiveType, Int::class.javaPrimitiveType, IntArray::class.java)
+                constructor.newInstance(internalParticleType, isLongDistance(location, targets), location.x.toFloat(), location.y.toFloat(), location.z.toFloat(), red, particle.colorGreen.toFloat() / 255.0f, particle.colorBlue.toFloat() / 255.0f, particle.speed.toFloat(), particle.amount, additionalPayload)
+            } else {
+
+                val constructor = Class.forName("net.minecraft.server.VERSION.PacketPlayOutWorldParticles".replace("VERSION", version.versionText))
+                        .getDeclaredConstructor(internalParticleType.javaClass, Boolean::class.javaPrimitiveType, Float::class.javaPrimitiveType, Float::class.javaPrimitiveType, Float::class.javaPrimitiveType, Float::class.javaPrimitiveType, Float::class.javaPrimitiveType, Float::class.javaPrimitiveType, Float::class.javaPrimitiveType, Int::class.javaPrimitiveType, IntArray::class.java)
+                constructor.newInstance(internalParticleType, isLongDistance(location, targets), location.x.toFloat(), location.y.toFloat(), location.z.toFloat(), particle.offSetX.toFloat(), particle.offSetY.toFloat(), particle.offSetZ.toFloat(), particle.speed.toFloat(), particle.amount, additionalPayload)
+            }
         }
 
         async(plugin) {
@@ -144,13 +152,18 @@ class ParticleServiceImpl @Inject constructor(private val plugin: Plugin, privat
     }
 
     private fun getInternalEnumValue(particle: ParticleType): Any {
-        return if (version.isVersionLowerThan(VersionSupport.VERSION_1_13_R1)) {
-            val clazz = Class.forName("net.minecraft.server.VERSION.EnumParticle".replace("VERSION", version.versionText))
-            val method = clazz.getDeclaredMethod("valueOf", String::class.java)
-            method.invoke(null, particle.gameId_18)
-        } else {
-            val minecraftKey = MinecraftKey(particle.gameId_113)
-            net.minecraft.server.v1_13_R1.Particle.REGISTRY.get(minecraftKey) as Any
+        try {
+            return if (version.isVersionLowerThan(VersionSupport.VERSION_1_13_R1)) {
+                val clazz = Class.forName("net.minecraft.server.VERSION.EnumParticle".replace("VERSION", version.versionText))
+                val method = clazz.getDeclaredMethod("valueOf", String::class.java)
+                method.invoke(null, particle.name)
+            } else {
+                val minecraftKey = MinecraftKey(particle.gameId_113)
+                net.minecraft.server.v1_13_R1.Particle.REGISTRY.get(minecraftKey) as Any
+            }
+        } catch (e: Exception) {
+            plugin.logger.log(Level.WARNING, "Failed to load enum value.", e)
+            throw RuntimeException(e)
         }
     }
 }
