@@ -4,7 +4,7 @@ import com.github.shynixn.petblocks.api.business.entity.GUIItemContainer;
 import com.github.shynixn.petblocks.api.business.entity.PetBlock;
 import com.github.shynixn.petblocks.api.business.enumeration.Permission;
 import com.github.shynixn.petblocks.api.persistence.entity.EngineContainer;
-import com.github.shynixn.petblocks.api.persistence.entity.ParticleEffectMeta;
+import com.github.shynixn.petblocks.api.persistence.entity.Particle;
 import com.github.shynixn.petblocks.api.persistence.entity.PetMeta;
 import com.github.shynixn.petblocks.bukkit.nms.v1_13_R1.MaterialCompatibility13;
 import com.github.shynixn.petblocks.core.logic.persistence.configuration.Config;
@@ -160,15 +160,17 @@ public class PetBlockModifyHelper {
     public static void setParticleEffect(PetMeta petMeta, PetBlock petBlock, GUIItemContainer container) {
         if (container == null)
             return;
-        final Optional<ParticleEffectMeta> transferOpt = Config.getInstance().getParticleController().getFromItem(container);
+        final Optional<Particle> transferOpt = Config.getInstance().getParticleController().getFromItem(container);
         if (!transferOpt.isPresent())
             return;
-        final ParticleEffectMeta transfer = transferOpt.get();
-        petMeta.getParticleEffectMeta().setEffectType(transfer.getEffectType());
+        final Particle transfer = transferOpt.get();
+        petMeta.getParticleEffectMeta().setType(transfer.getType());
         petMeta.getParticleEffectMeta().setSpeed(transfer.getSpeed());
         petMeta.getParticleEffectMeta().setAmount(transfer.getAmount());
-        petMeta.getParticleEffectMeta().setOffset(transfer.getOffsetX(), transfer.getOffsetY(), transfer.getOffsetZ());
-        petMeta.getParticleEffectMeta().setMaterial(transfer.getMaterial());
+        petMeta.getParticleEffectMeta().setOffSetX(transfer.getOffSetX());
+        petMeta.getParticleEffectMeta().setOffSetY(transfer.getOffSetY());
+        petMeta.getParticleEffectMeta().setOffSetZ(transfer.getOffSetZ());
+        petMeta.getParticleEffectMeta().setMaterialName(transfer.getMaterialName());
         petMeta.getParticleEffectMeta().setData(transfer.getData());
         if (petBlock != null) {
             petBlock.respawn();

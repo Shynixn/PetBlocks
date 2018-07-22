@@ -1,10 +1,11 @@
 package com.github.shynixn.petblocks.bukkit.logic.persistence.entity
 
-import com.github.shynixn.petblocks.api.persistence.entity.ParticleEffectMeta
+import com.github.shynixn.petblocks.api.business.enumeration.ParticleType
 import com.github.shynixn.petblocks.bukkit.logic.business.helper.PetBlockModifyHelper
 import com.github.shynixn.petblocks.bukkit.logic.business.helper.SkinHelper
 import com.github.shynixn.petblocks.bukkit.logic.persistence.configuration.Config
 import com.github.shynixn.petblocks.bukkit.nms.v1_13_R1.MaterialCompatibility13
+import com.github.shynixn.petblocks.core.logic.persistence.entity.ParticleEntity
 import com.github.shynixn.petblocks.core.logic.persistence.entity.PetData
 import com.github.shynixn.petblocks.core.logic.persistence.entity.PlayerData
 import org.bukkit.Bukkit
@@ -85,8 +86,7 @@ class BukkitPetData : PetData {
         }
         this.ageTicks = Config.age_smallticks.toLong()
         this.sounds = true
-        this.particleEffectBuilder = BukkitParticleEffect()
-        this.particleEffectBuilder.effectType = ParticleEffectMeta.ParticleEffectType.NONE
+        this.particleEffectBuilder = ParticleEntity(ParticleType.NONE)
         val engineContainer = Config.engineController
                 .getContainerFromPosition(Config.defaultEngine)
         if (!engineContainer.isPresent) {

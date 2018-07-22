@@ -1,17 +1,13 @@
-package com.github.shynixn.petblocks.api.persistence.entity;
-
-import com.github.shynixn.petblocks.api.business.enumeration.RideType;
-
-import java.util.Optional;
+package com.github.shynixn.petblocks.api.business.enumeration
 
 /**
- * Properties of engines.
+ * Created by Shynixn 2018.
  * <p>
- * Version 1.1
+ * Version 1.2
  * <p>
  * MIT License
  * <p>
- * Copyright (c) 2017 by Shynixn
+ * Copyright (c) 2018 by Shynixn
  * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -31,54 +27,81 @@ import java.util.Optional;
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-public interface EngineContainer<T> extends Persistenceable {
-
+enum class ParticleColor(
+        /**
+         * Red color value.
+         */
+        val red: Int,
+        /**
+         * Green color value.
+         */
+        val green: Int,
+        /**
+         * Blue color value.
+         */
+        val blue: Int) {
     /**
-     * Returns the optional default pet name for this engine.
-     *
-     * @return petName
+     * Black.
      */
-    Optional<String> getPetName();
-
+    BLACK(0, 0, 0),
     /**
-     * Returns the optional default particle effect for this engine.
-     *
-     * @return particle effect
+     * Dark blue.
      */
-    Optional<Particle> getParticleEffect();
-
+    DARK_BLUE(0, 0, 170),
     /**
-     * Returns the walking sound.
-     *
-     * @return walkingSound
+     * Dark green.
      */
-    Sound getWalkingSound();
-
+    DARK_GREEN(0, 170, 0),
     /**
-     * Returns the ambient sound.
-     *
-     * @return ambientSound
+     * Dark aqua.
      */
-    Sound getAmbientSound();
-
+    DARK_AQUA(0, 170, 170),
     /**
-     * Returns the rideType.
-     *
-     * @return rideType
+     * Dark red.
      */
-    RideType getRideType();
-
+    DARK_RED(170, 0, 0),
     /**
-     * Returns the entityType.
-     *
-     * @return entityType
+     * Dark purple.
      */
-    String getEntityType();
-
+    DARK_PURPLE(170, 0, 170),
     /**
-     * Returns the guiItem of the engine.
-     *
-     * @return guiItem
+     * Gold.
      */
-    T getGUIItem();
+    GOLD(255, 170, 0),
+    /**
+     * Gray.
+     */
+    GRAY(170, 170, 170),
+    /**
+     * Dark blue.
+     */
+    DARK_GRAY(85, 85, 85),
+    /**
+     * Blue.
+     */
+    BLUE(85, 85, 255),
+    /**
+     * Green.
+     */
+    GREEN(85, 255, 85),
+    /**
+     * Aqua.
+     */
+    AQUA(85, 255, 255),
+    /**
+     * Red.
+     */
+    RED(255, 85, 85),
+    /**
+     * Light Purple.
+     */
+    LIGHT_PURPLE(255, 85, 255),
+    /**
+     * Yellow.
+     */
+    YELLOW(255, 255, 85),
+    /**
+     * White.
+     */
+    WHITE(255, 255, 255);
 }

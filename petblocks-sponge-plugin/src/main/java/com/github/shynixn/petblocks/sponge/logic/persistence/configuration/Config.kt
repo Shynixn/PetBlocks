@@ -1,15 +1,18 @@
 package com.github.shynixn.petblocks.sponge.logic.persistence.configuration
 
-import com.github.shynixn.petblocks.api.persistence.entity.ParticleEffectMeta
+import com.github.shynixn.petblocks.api.business.enumeration.ParticleType
+import com.github.shynixn.petblocks.api.persistence.entity.Particle
 import com.github.shynixn.petblocks.api.persistence.entity.PetMeta
-import com.github.shynixn.petblocks.api.persistence.entity.SoundMeta
+import com.github.shynixn.petblocks.api.persistence.entity.Sound
 import com.github.shynixn.petblocks.core.logic.business.helper.ChatBuilder
 import com.github.shynixn.petblocks.core.logic.business.helper.ChatColor
+import com.github.shynixn.petblocks.core.logic.persistence.entity.ParticleEntity
 import com.github.shynixn.petblocks.core.logic.persistence.entity.PetData
+import com.github.shynixn.petblocks.core.logic.persistence.entity.SoundEntity
 import com.github.shynixn.petblocks.sponge.PetBlocksPlugin
+import com.github.shynixn.petblocks.sponge.logic.business.helper.CompatibilityItemType
 import com.github.shynixn.petblocks.sponge.logic.business.helper.sendMessage
-import com.github.shynixn.petblocks.sponge.logic.persistence.entity.SpongeParticleEffect
-import com.github.shynixn.petblocks.sponge.logic.persistence.entity.SpongeSoundBuilder
+import com.github.shynixn.petblocks.sponge.logic.business.helper.toParticleType
 import com.google.inject.Singleton
 import ninja.leaping.configurate.yaml.YAMLConfigurationLoader
 import org.spongepowered.api.Sponge
@@ -95,14 +98,7 @@ object Config : ConfigLayer<Player>() {
         petMeta.age = this.getData<Int>("join.settings.age")!!.toLong()
 
         if (!(this.getData<Any>("join.settings.effect.name") as String).equals("none", ignoreCase = true)) {
-            val meta: ParticleEffectMeta
-
-            try {
-                meta = SpongeParticleEffect(this.getData<Any>("join.settings.effect") as Map<String, Any>)
-                ((petMeta as PetData).particleEffectMeta) = meta
-            } catch (e: Exception) {
-                logger.warn("Failed to load particle effect for join pet.")
-            }
+            (petMeta as PetData).setParticleEffectMeta(generateParticleEffectCompatibility("join.settings.effect"))
         }
     }
 
@@ -131,10 +127,13 @@ object Config : ConfigLayer<Player>() {
      *
      * @return sound
      */
-    fun getFeedingClickSound(): SoundMeta {
+    fun getFeedingClickSound(): Sound {
         if (this.feedingClickSoundCache == null) {
             try {
-                this.feedingClickSoundCache = SpongeSoundBuilder(this.getData<Any>("pet.feeding.click-sound") as Map<String, Any>)
+                val data = (this.getData<Any>("pet.feeding.click-sound") as Map<String, Any>)
+                this.feedingClickSoundCache = SoundEntity(data["name"] as String)
+                this.feedingClickSoundCache.volume = data["volume"] as Double
+                this.feedingClickSoundCache.pitch = data["pitch"] as Double
             } catch (e: Exception) {
                 logger.warn("Failed to load feeding click-sound.", e)
             }
@@ -148,10 +147,10 @@ object Config : ConfigLayer<Player>() {
      *
      * @return particleEffect
      */
-    fun getFeedingClickParticleEffect(): ParticleEffectMeta {
+    fun getFeedingClickParticleEffect(): Particle {
         if (this.feedingClickParticleCache == null) {
             try {
-                this.feedingClickParticleCache = SpongeParticleEffect(this.getData<Any>("pet.feeding.click-particle") as Map<String, Any>)
+                feedingClickParticleCache = generateParticleEffectCompatibility("pet.feeding.click-particle")
             } catch (e: Exception) {
                 logger.warn("Failed to load feeding click-sound.", e)
             }
@@ -186,6 +185,44 @@ object Config : ConfigLayer<Player>() {
         }
 
         super.reload()
+    }
+
+    private fun generateParticleEffectCompatibility(path: String): ParticleEntity {
+        val entityParticle = ParticleEntity(ParticleType.NONE)
+        val values = this.getData<Any>(path) as Map<String, Any>
+
+        with(entityParticle) {
+            type = (values["name"] as String).toParticleType()
+            amount = values["amount"] as Int
+            speed = values["speed"] as Double
+        }
+
+        if (values.containsKey("offx")) {
+            with(entityParticle) {
+                offSetX = values["offx"] as Double
+                offSetY = values["offy"] as Double
+                offSetZ = values["offz"] as Double
+            }
+        }
+
+        if (values.containsKey("red")) {
+            with(entityParticle) {
+                colorRed = values["red"] as Int
+                colorGreen = values["green"] as Int
+                colorBlue = values["blue"] as Int
+            }
+        }
+
+
+        if (values.containsKey("id")) {
+            if (values["id"] is String) {
+                entityParticle.materialName = values["id"] as String
+            } else {
+                entityParticle.materialName = CompatibilityItemType.getFromId(values["id"] as Int).name
+            }
+        }
+
+        return entityParticle
     }
 
     /**

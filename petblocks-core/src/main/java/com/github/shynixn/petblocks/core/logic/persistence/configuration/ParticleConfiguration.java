@@ -2,7 +2,7 @@ package com.github.shynixn.petblocks.core.logic.persistence.configuration;
 
 import com.github.shynixn.petblocks.api.business.entity.GUIItemContainer;
 import com.github.shynixn.petblocks.api.persistence.controller.ParticleController;
-import com.github.shynixn.petblocks.api.persistence.entity.ParticleEffectMeta;
+import com.github.shynixn.petblocks.api.persistence.entity.Particle;
 
 import java.util.*;
 
@@ -37,7 +37,7 @@ import java.util.*;
  */
 public abstract class ParticleConfiguration<Player> implements ParticleController<GUIItemContainer<Player>> {
 
-    protected final Map<GUIItemContainer<Player>, ParticleEffectMeta> particleCache = new HashMap<>();
+    protected final Map<GUIItemContainer<Player>, Particle> particleCache = new HashMap<>();
 
     /**
      * Stores a new a item in the repository
@@ -106,7 +106,7 @@ public abstract class ParticleConfiguration<Player> implements ParticleControlle
      * @return particleEffect
      */
     @Override
-    public Optional<ParticleEffectMeta> getFromItem(GUIItemContainer<Player> container) {
+    public Optional<Particle> getFromItem(GUIItemContainer<Player> container) {
         if (this.particleCache.containsKey(container)) {
             return Optional.of(this.particleCache.get(container));
         }

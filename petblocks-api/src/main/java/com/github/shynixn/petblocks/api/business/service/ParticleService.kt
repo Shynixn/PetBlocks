@@ -1,14 +1,9 @@
-package com.github.shynixn.petblocks.bukkit.logic.persistence.controller
+package com.github.shynixn.petblocks.api.business.service
 
-import com.github.shynixn.petblocks.api.persistence.entity.ParticleEffectMeta
-import com.github.shynixn.petblocks.bukkit.PetBlocksPlugin
-import com.github.shynixn.petblocks.bukkit.logic.business.helper.LoggingBridge
-import com.github.shynixn.petblocks.bukkit.logic.persistence.entity.BukkitParticleEffect
-import com.github.shynixn.petblocks.core.logic.business.entity.DbContext
-import com.github.shynixn.petblocks.core.logic.persistence.controller.ParticleEffectDataRepository
+import com.github.shynixn.petblocks.api.persistence.entity.Particle
 
 /**
- * Created by Shynixn 2018.
+ * Handles particle effects in the world.
  * <p>
  * Version 1.2
  * <p>
@@ -34,13 +29,15 @@ import com.github.shynixn.petblocks.core.logic.persistence.controller.ParticleEf
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class BukkitParticleEffectDataRepository(connectionContext: DbContext) : ParticleEffectDataRepository(connectionContext, LoggingBridge(PetBlocksPlugin.logger())) {
+interface ParticleService {
     /**
-     * Creates a new particleEffectMeta.
-     *
-     * @return meta
+     * Plays the given [particle] at the given [location] for the given [player] or
+     * all players in the world if the config option all visible is enabled.
      */
-    override fun create(): ParticleEffectMeta {
-        return BukkitParticleEffect()
-    }
+    fun <L, P> playParticle(location: L, particle: Particle, player: P)
+
+    /**
+     * Plays the given [particle] at the given [location] for the given [players].
+     */
+    fun <L, P> playParticle(location: L, particle: Particle, players: Collection<P>)
 }

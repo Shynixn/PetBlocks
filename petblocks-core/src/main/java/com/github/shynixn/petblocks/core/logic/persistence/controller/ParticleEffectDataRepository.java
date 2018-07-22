@@ -1,9 +1,10 @@
 package com.github.shynixn.petblocks.core.logic.persistence.controller;
 
+import com.github.shynixn.petblocks.api.business.enumeration.ParticleType;
 import com.github.shynixn.petblocks.api.persistence.controller.ParticleEffectMetaController;
-import com.github.shynixn.petblocks.api.persistence.entity.ParticleEffectMeta;
+import com.github.shynixn.petblocks.api.persistence.entity.Particle;
 import com.github.shynixn.petblocks.core.logic.business.entity.DbContext;
-import com.github.shynixn.petblocks.core.logic.persistence.entity.ParticleEffectData;
+import com.github.shynixn.petblocks.core.logic.persistence.entity.ParticleEntity;
 import org.slf4j.Logger;
 
 import java.sql.Connection;
@@ -41,7 +42,7 @@ import java.util.Optional;
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-public abstract class ParticleEffectDataRepository extends DataBaseRepository<ParticleEffectMeta> implements ParticleEffectMetaController {
+public class ParticleEffectDataRepository extends DataBaseRepository<Particle> implements ParticleEffectMetaController {
     /**
      * Initializes a new databaseRepository with the given connectionContext.
      *
@@ -59,8 +60,8 @@ public abstract class ParticleEffectDataRepository extends DataBaseRepository<Pa
      * @return hasGivenId
      */
     @Override
-    protected boolean hasId(ParticleEffectMeta item) {
-        return item.getId() != 0;
+    protected boolean hasId(Particle item) {
+        return ((ParticleEntity) item).getId() != 0;
     }
 
     /**
@@ -69,13 +70,13 @@ public abstract class ParticleEffectDataRepository extends DataBaseRepository<Pa
      * @return listOfItems
      */
     @Override
-    protected List<ParticleEffectMeta> select() {
-        final List<ParticleEffectMeta> items = new ArrayList<>();
+    protected List<Particle> select() {
+        final List<Particle> items = new ArrayList<>();
         try (Connection connection = this.dbContext.getConnection();
              PreparedStatement preparedStatement = this.dbContext.executeStoredQuery("particle/selectall", connection);
              ResultSet resultSet = preparedStatement.executeQuery()) {
             while (resultSet.next()) {
-                final ParticleEffectMeta data = this.from(resultSet);
+                final ParticleEntity data = this.from(resultSet);
                 items.add(data);
             }
         } catch (final SQLException e) {
@@ -90,24 +91,24 @@ public abstract class ParticleEffectDataRepository extends DataBaseRepository<Pa
      * @param item item
      */
     @Override
-    protected void update(ParticleEffectMeta item) {
-        try (Connection connection = this.dbContext.getConnection()) {
+    protected void update(Particle item) {
+        try (final Connection connection = this.dbContext.getConnection()) {
             String materialName = null;
-            if (item.getMaterial() != null)
+            if (item.getMaterialName() != null)
                 materialName = item.getMaterialName();
             int data = -1;
-            if (item.getData() != null)
+            if (item.getData() != 0)
                 data = item.getData();
             this.dbContext.executeStoredUpdate("particle/update", connection,
-                    item.getEffectName(),
+                    item.getType().getGameId_113(),
                     item.getAmount(),
                     item.getSpeed(),
-                    item.getOffsetX(),
-                    item.getOffsetY(),
-                    item.getOffsetZ(),
+                    item.getOffSetX(),
+                    item.getOffSetY(),
+                    item.getOffSetZ(),
                     materialName,
                     data,
-                    item.getId());
+                    ((ParticleEntity) item).getId());
         } catch (final SQLException e) {
             this.logger.error("Database error occurred.", e);
         }
@@ -120,7 +121,7 @@ public abstract class ParticleEffectDataRepository extends DataBaseRepository<Pa
      * @return item
      */
     @Override
-    public Optional<ParticleEffectMeta> getFromId(long id) {
+    public Optional<Particle> getFromId(long id) {
         try (Connection connection = this.dbContext.getConnection();
              PreparedStatement preparedStatement = this.dbContext.executeStoredQuery("particle/selectbyid", connection, id);
              ResultSet resultSet = preparedStatement.executeQuery()) {
@@ -139,11 +140,11 @@ public abstract class ParticleEffectDataRepository extends DataBaseRepository<Pa
      * @param item item
      */
     @Override
-    protected void delete(ParticleEffectMeta item) {
+    protected void delete(Particle item) {
         if (item != null) {
             try (Connection connection = this.dbContext.getConnection()) {
                 this.dbContext.executeStoredUpdate("particle/delete", connection,
-                        item.getId());
+                        ((ParticleEntity) item).getId());
             } catch (final SQLException e) {
                 this.logger.error("Database error occurred.", e);
             }
@@ -156,21 +157,21 @@ public abstract class ParticleEffectDataRepository extends DataBaseRepository<Pa
      * @param item item
      */
     @Override
-    protected void insert(ParticleEffectMeta item) {
+    protected void insert(Particle item) {
         try (Connection connection = this.dbContext.getConnection()) {
             String materialName = null;
-            if (item.getMaterial() != null)
+            if (item.getMaterialName() != null)
                 materialName = item.getMaterialName();
             final long id = this.dbContext.executeStoredInsert("particle/insert", connection,
-                    item.getEffectName(),
+                    item.getType().getGameId_113(),
                     item.getAmount(),
                     item.getSpeed(),
-                    item.getOffsetX(),
-                    item.getOffsetY(),
-                    item.getOffsetZ(),
+                    item.getOffSetX(),
+                    item.getOffSetY(),
+                    item.getOffSetZ(),
                     materialName,
                     item.getData());
-            ((ParticleEffectData) item).setId(id);
+            ((ParticleEntity) item).setId(id);
         } catch (final SQLException e) {
             this.logger.error("Database error occurred.", e);
         }
@@ -199,24 +200,34 @@ public abstract class ParticleEffectDataRepository extends DataBaseRepository<Pa
      * @return entity
      */
     @Override
-    protected ParticleEffectMeta from(ResultSet resultSet) throws SQLException {
-        final ParticleEffectData particleEffectData = (ParticleEffectData) this.create();
+    protected ParticleEntity from(ResultSet resultSet) throws SQLException {
+        final ParticleEntity particleEffectData = (ParticleEntity) this.create();
         particleEffectData.setId(resultSet.getLong("id"));
-        particleEffectData.setEffectName(resultSet.getString("name"));
+        particleEffectData.setType(this.findParticleTypeFromName(resultSet.getString("name")));
         particleEffectData.setAmount(resultSet.getInt("amount"));
         particleEffectData.setSpeed(resultSet.getDouble("speed"));
-        particleEffectData.setOffsetX((resultSet.getDouble("x")));
-        particleEffectData.setOffsetY(resultSet.getDouble("y"));
-        particleEffectData.setOffsetZ(resultSet.getDouble("z"));
+        particleEffectData.setOffSetX((resultSet.getDouble("x")));
+        particleEffectData.setOffSetY(resultSet.getDouble("y"));
+        particleEffectData.setOffSetZ(resultSet.getDouble("z"));
         if (resultSet.getString("material") != null) {
             particleEffectData.setMaterialName(resultSet.getString("material"));
         }
         if (resultSet.getInt("data") == -1) {
-            particleEffectData.setData(null);
+            particleEffectData.setData(0);
         } else {
             particleEffectData.setData((byte) resultSet.getInt("data"));
         }
         return particleEffectData;
+    }
+
+    private ParticleType findParticleTypeFromName(String name) {
+        for (final ParticleType p : ParticleType.values()) {
+            if (p.getGameId_18().equalsIgnoreCase(name) || p.getGameId_113().equalsIgnoreCase(name) || p.name().equalsIgnoreCase(name)) {
+                return p;
+            }
+        }
+
+        throw new RuntimeException("Failed to find Particle.");
     }
 
     /**
@@ -225,7 +236,17 @@ public abstract class ParticleEffectDataRepository extends DataBaseRepository<Pa
      * {@code try}-with-resources statement.
      */
     @Override
-    public void close() throws Exception {
+    public void close() {
         this.dbContext = null;
+    }
+
+    /**
+     * Creates a new particleEffectMeta.
+     *
+     * @return meta
+     */
+    @Override
+    public Particle create() {
+        return new ParticleEntity(ParticleType.NONE);
     }
 }

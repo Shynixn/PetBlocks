@@ -1,5 +1,6 @@
 package com.github.shynixn.petblocks.bukkit.nms;
 
+import com.github.shynixn.petblocks.api.business.enumeration.Version;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 
@@ -156,6 +157,22 @@ public enum VersionSupport {
             }
         }
         return version;
+    }
+
+    /**
+     * Compatibility converter.
+     *
+     * @param version version.
+     * @return support.
+     */
+    public static VersionSupport fromVersion(Version version) {
+        for (final VersionSupport support : VersionSupport.values()) {
+            if (support.simpleVersionText.equalsIgnoreCase(version.getId())) {
+                return support;
+            }
+        }
+
+        return null;
     }
 
     /**

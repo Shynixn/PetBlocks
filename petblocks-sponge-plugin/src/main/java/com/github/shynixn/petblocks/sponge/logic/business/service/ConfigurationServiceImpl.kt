@@ -75,6 +75,18 @@ class ConfigurationServiceImpl @Inject constructor(private val plugin: PluginCon
     }
 
     /**
+     * Tries to load the config value from the given [path].
+     * Throws a [IllegalArgumentException] if the path could not be correctly
+     * loaded.
+     */
+    override fun <C> findValue(path: String): C {
+        val items = path.split(Pattern.quote(".").toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
+        val targetNode = this.node.getNode(*items as Array<Any>)
+        val data = targetNode.value
+        return data as C
+    }
+
+    /**
      * Tries to return a list of [GUIItem] matching the given path from the config.
      * Can be called asynchronly.
      */

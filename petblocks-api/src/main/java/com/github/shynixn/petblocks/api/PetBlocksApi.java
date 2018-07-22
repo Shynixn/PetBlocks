@@ -1,6 +1,7 @@
 package com.github.shynixn.petblocks.api;
 
 import com.github.shynixn.petblocks.api.business.controller.PetBlockController;
+import com.github.shynixn.petblocks.api.business.entity.PetBlocksPlugin;
 import com.github.shynixn.petblocks.api.business.service.GUIService;
 import com.github.shynixn.petblocks.api.persistence.controller.PetMetaController;
 
@@ -37,16 +38,16 @@ public class PetBlocksApi {
 
     private static PetMetaController metaController;
     private static PetBlockController petBlockController;
-    private static GUIService guiService;
     public static final PetBlocksApi INSTANCE = new PetBlocksApi();
+    private static PetBlocksPlugin plugin;
 
     /**
      * Initializes the api.
      */
-    private static void initialize(PetMetaController petMetaController, PetBlockController petBlockController, GUIService guiService) {
+    private static void initialize(PetMetaController petMetaController, PetBlockController petBlockController, PetBlocksPlugin plugin) {
         PetBlocksApi.metaController = petMetaController;
         PetBlocksApi.petBlockController = petBlockController;
-        PetBlocksApi.guiService = guiService;
+        PetBlocksApi.plugin = plugin;
     }
 
     /**
@@ -57,11 +58,7 @@ public class PetBlocksApi {
      * @return optional S.
      */
     public <S> Optional<S> resolve(Class<S> service) {
-        if (service == GUIService.class) {
-            return Optional.of((S) guiService);
-        }
-
-        return Optional.empty();
+        return plugin.resolve(service);
     }
 
     /**

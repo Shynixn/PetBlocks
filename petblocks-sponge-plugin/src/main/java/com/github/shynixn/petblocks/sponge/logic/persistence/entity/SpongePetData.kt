@@ -1,7 +1,8 @@
 package com.github.shynixn.petblocks.sponge.logic.persistence.entity
 
-import com.github.shynixn.petblocks.api.persistence.entity.ParticleEffectMeta
+import com.github.shynixn.petblocks.api.business.enumeration.ParticleType
 import com.github.shynixn.petblocks.core.logic.business.helper.ChatColor
+import com.github.shynixn.petblocks.core.logic.persistence.entity.ParticleEntity
 import com.github.shynixn.petblocks.core.logic.persistence.entity.PetData
 import com.github.shynixn.petblocks.sponge.logic.business.helper.CompatibilityItemType
 import com.github.shynixn.petblocks.sponge.logic.business.helper.setDamage
@@ -77,8 +78,7 @@ class SpongePetData : PetData {
         this.playerInfo.setUuid(player.uniqueId)
         this.ageTicks = Config.age_smallticks.toLong()
         this.sounds = true
-        this.particleEffectBuilder = SpongeParticleEffect()
-        this.particleEffectBuilder.effectType = ParticleEffectMeta.ParticleEffectType.NONE
+        this.particleEffectBuilder = ParticleEntity(ParticleType.NONE)
         val engineContainer = Config.engineController
                 .getContainerFromPosition(Config.defaultEngine)
         if (!engineContainer.isPresent) {

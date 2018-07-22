@@ -1,13 +1,16 @@
-package com.github.shynixn.petblocks.api.persistence.entity;
+package com.github.shynixn.petblocks.api.persistence.entity
+
+import com.github.shynixn.petblocks.api.business.enumeration.ParticleColor
+import com.github.shynixn.petblocks.api.business.enumeration.ParticleType
 
 /**
- * Metadata about sounds.
+ * Created by Shynixn 2018.
  * <p>
- * Version 1.1
+ * Version 1.2
  * <p>
  * MIT License
  * <p>
- * Copyright (c) 2017 by Shynixn
+ * Copyright (c) 2018 by Shynixn
  * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -27,49 +30,69 @@ package com.github.shynixn.petblocks.api.persistence.entity;
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-public interface SoundMeta extends Persistenceable {
+interface Particle {
     /**
-     * Returns the name of the sound.
-     *
-     * @return name
+     * Color of the particle effect.
      */
-    String getName();
+    var color: ParticleColor
 
     /**
-     * Sets the name of the sound.
-     *
-     * @param name name
-     * @return builder
+     * RGB Color code of red.
      */
-    SoundMeta setName(String name);
+    var colorRed: Int
 
     /**
-     * Returns the volume of the sound.
-     *
-     * @return volume
+     * RGB Color code of green.
      */
-    double getVolume();
+    var colorGreen: Int
 
     /**
-     * Sets the volume of the sound.
-     *
-     * @param volume volume
-     * @return builder
+     * RGB Color code of blue.
      */
-    SoundMeta setVolume(double volume);
+    var colorBlue: Int
 
     /**
-     * Returns the pitch of the sound.
-     *
-     * @return pitch
+     * Custom note color code.
      */
-    double getPitch();
+    var noteColor: Int
 
     /**
-     * Sets the pitch of the sound.
-     *
-     * @param pitch pitch
-     * @return builder
+     * Amount of particles.
      */
-    SoundMeta setPitch(double pitch);
+    var amount: Int
+
+    /**
+     * Particle speed.
+     */
+    var speed: Double
+
+    /**
+     * Offset for the x coordinate.
+     */
+    var offSetX: Double
+
+    /**
+     * Offset for the y coordinate.
+     */
+    var offSetY: Double
+
+    /**
+     * Offset for the z coordinate.
+     */
+    var offSetZ: Double
+
+    /**
+     * Type of the particle.
+     */
+    var type: ParticleType
+
+    /**
+     * Material value.
+     */
+    var materialName: String?
+
+    /**
+     * Data value.
+     */
+    var data: Int
 }

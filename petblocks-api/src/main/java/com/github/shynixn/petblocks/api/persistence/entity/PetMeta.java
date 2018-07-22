@@ -149,7 +149,7 @@ public interface PetMeta extends Persistenceable {
      *
      * @return meta
      */
-    ParticleEffectMeta getParticleEffectMeta();
+    Particle getParticleEffectMeta();
 
     /**
      * Returns the meta of the owner.

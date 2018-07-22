@@ -1,11 +1,6 @@
-package com.github.shynixn.petblocks.sponge.logic.persistence.controller
+package com.github.shynixn.petblocks.api.business.entity
 
-import com.github.shynixn.petblocks.api.persistence.entity.ParticleEffectMeta
-import com.github.shynixn.petblocks.core.logic.business.entity.DbContext
-import com.github.shynixn.petblocks.core.logic.persistence.controller.ParticleEffectDataRepository
-import com.github.shynixn.petblocks.sponge.logic.persistence.entity.SpongeParticleEffect
-import com.google.inject.Inject
-import org.slf4j.Logger
+import java.util.*
 
 /**
  * Created by Shynixn 2018.
@@ -34,13 +29,10 @@ import org.slf4j.Logger
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class SpongeParticleEffectDataRepository @Inject constructor(connectionContext: DbContext, logger: Logger) : ParticleEffectDataRepository(connectionContext, logger) {
+interface PetBlocksPlugin {
     /**
-     * Creates a new particleEffectMeta.
-     *
-     * @return meta
+     * Gets a business logic from the PetBlocks plugin.
+     * All types in the service package can be accessed.
      */
-    override fun create(): ParticleEffectMeta {
-        return SpongeParticleEffect()
-    }
+    fun <S> resolve(service: Class<S>): Optional<S>
 }

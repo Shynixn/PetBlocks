@@ -3,9 +3,9 @@ package com.github.shynixn.petblocks.bukkit.logic.business.listener;
 import com.github.shynixn.petblocks.api.business.entity.GUIItemContainer;
 import com.github.shynixn.petblocks.api.business.entity.PetBlock;
 import com.github.shynixn.petblocks.api.business.enumeration.GUIPage;
+import com.github.shynixn.petblocks.api.business.enumeration.ParticleType;
 import com.github.shynixn.petblocks.api.business.enumeration.Permission;
 import com.github.shynixn.petblocks.api.persistence.entity.EngineContainer;
-import com.github.shynixn.petblocks.api.persistence.entity.ParticleEffectMeta;
 import com.github.shynixn.petblocks.api.persistence.entity.PetMeta;
 import com.github.shynixn.petblocks.bukkit.PetBlocksPlugin;
 import com.github.shynixn.petblocks.bukkit.logic.business.PetBlockManager;
@@ -370,7 +370,7 @@ public class PetDataListener extends SimpleListener {
                 final GUIItemContainer c = this.getGUIItem("default-appearance");
                 petMeta.setSkin(c.getItemId(), c.getItemDamage(), c.getSkin(), c.isItemUnbreakable());
             }
-            petMeta.getParticleEffectMeta().setEffectType(ParticleEffectMeta.ParticleEffectType.NONE);
+            petMeta.getParticleEffectMeta().setType(ParticleType.NONE);
             optPetBlock.ifPresent(PetBlock::respawn);
             this.persistAsynchronously(petMeta);
         }

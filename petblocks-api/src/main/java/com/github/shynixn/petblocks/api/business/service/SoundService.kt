@@ -1,16 +1,15 @@
-package com.github.shynixn.petblocks.api.business.entity;
+package com.github.shynixn.petblocks.api.business.service
 
-import com.github.shynixn.petblocks.api.persistence.entity.ParticleEffectMeta;
-import com.github.shynixn.petblocks.api.persistence.entity.SoundMeta;
+import com.github.shynixn.petblocks.api.persistence.entity.Sound
 
 /**
- * Pipeline to correctly handle particle or sound effects.
+ * Created by Shynixn 2018.
  * <p>
- * Version 1.1
+ * Version 1.2
  * <p>
  * MIT License
  * <p>
- * Copyright (c) 2017 by Shynixn
+ * Copyright (c) 2018 by Shynixn
  * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -30,21 +29,15 @@ import com.github.shynixn.petblocks.api.persistence.entity.SoundMeta;
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-public interface EffectPipeline<Location> {
+interface SoundService {
+    /**
+     * Plays the given [sound] at the given [location] for the given [player] or
+     * all players in the world if the config option is enabled.
+     */
+    fun <L, P> playSound(location: L, sound: Sound, player: P)
 
     /**
-     * Plays the given particleEffect and watches for invisibility, other players and actions.
-     *
-     * @param location           location
-     * @param particleEffectMeta particleEffectMeta
+     * Plays the given [sound] at the given [location] for the given [players].
      */
-    void playParticleEffect(Location location, ParticleEffectMeta particleEffectMeta);
-
-    /**
-     * Plays the given sound and watches for invisibility, other players and actions.
-     *
-     * @param location  location
-     * @param soundMeta soundMeta
-     */
-    void playSound(Location location, SoundMeta soundMeta);
+    fun <L, P> playSound(location: L, sound: Sound, players: Collection<P>)
 }

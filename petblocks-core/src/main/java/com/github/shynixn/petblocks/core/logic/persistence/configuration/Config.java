@@ -6,9 +6,9 @@ import com.github.shynixn.petblocks.api.persistence.controller.EngineController;
 import com.github.shynixn.petblocks.api.persistence.controller.OtherGUIItemsController;
 import com.github.shynixn.petblocks.api.persistence.controller.ParticleController;
 import com.github.shynixn.petblocks.api.persistence.entity.EngineContainer;
-import com.github.shynixn.petblocks.api.persistence.entity.ParticleEffectMeta;
+import com.github.shynixn.petblocks.api.persistence.entity.Particle;
 import com.github.shynixn.petblocks.api.persistence.entity.PetMeta;
-import com.github.shynixn.petblocks.api.persistence.entity.SoundMeta;
+import com.github.shynixn.petblocks.api.persistence.entity.Sound;
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
 
@@ -17,8 +17,8 @@ import java.util.List;
 public abstract class Config<Player> {
     private static Config instance;
 
-    protected ParticleEffectMeta feedingClickParticleCache;
-    protected SoundMeta feedingClickSoundCache;
+    protected Particle feedingClickParticleCache;
+    protected Sound feedingClickSoundCache;
 
     @Inject
     private EngineController engineController;

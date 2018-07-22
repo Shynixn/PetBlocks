@@ -1,5 +1,6 @@
 package com.github.shynixn.petblocks.sponge.nms;
 
+import com.github.shynixn.petblocks.api.business.enumeration.Version;
 import com.github.shynixn.petblocks.core.logic.business.helper.ChatColor;
 import com.github.shynixn.petblocks.sponge.logic.business.helper.ExtensionMethodsKt;
 import org.spongepowered.api.Sponge;
@@ -139,6 +140,22 @@ public enum VersionSupport {
     }
 
     /**
+     * Compatibility converter.
+     *
+     * @param version version.
+     * @return support.
+     */
+    public static VersionSupport fromVersion(Version version) {
+        for (final VersionSupport support : VersionSupport.values()) {
+            if (support.simpleVersionText.equalsIgnoreCase(version.getId())) {
+                return support;
+            }
+        }
+
+        return null;
+    }
+
+    /**
      * Returns the lowest version supported by the plugin
      *
      * @return lowest version
@@ -162,11 +179,11 @@ public enum VersionSupport {
      */
     public static boolean isServerVersionSupported(String pluginName, String prefix) {
         if (getServerVersion() == null) {
-            ExtensionMethodsKt.sendMessage(Sponge.getGame(),prefix + ChatColor.RED + "================================================");
-            ExtensionMethodsKt.sendMessage(Sponge.getGame(),prefix + ChatColor.RED + pluginName + " does not support your server version");
-            ExtensionMethodsKt.sendMessage(Sponge.getGame(),prefix + ChatColor.RED + "Install v" + getLowestVersionSupported().simpleVersionText + " - v" + getGreatestVersionSupported().simpleVersionText);
-            ExtensionMethodsKt.sendMessage(Sponge.getGame(),prefix + ChatColor.RED + "Plugin gets now disabled!");
-            ExtensionMethodsKt.sendMessage(Sponge.getGame(),prefix + ChatColor.RED + "================================================");
+            ExtensionMethodsKt.sendMessage(Sponge.getGame(), prefix + ChatColor.RED + "================================================");
+            ExtensionMethodsKt.sendMessage(Sponge.getGame(), prefix + ChatColor.RED + pluginName + " does not support your server version");
+            ExtensionMethodsKt.sendMessage(Sponge.getGame(), prefix + ChatColor.RED + "Install v" + getLowestVersionSupported().simpleVersionText + " - v" + getGreatestVersionSupported().simpleVersionText);
+            ExtensionMethodsKt.sendMessage(Sponge.getGame(), prefix + ChatColor.RED + "Plugin gets now disabled!");
+            ExtensionMethodsKt.sendMessage(Sponge.getGame(), prefix + ChatColor.RED + "================================================");
             return false;
         }
         return true;

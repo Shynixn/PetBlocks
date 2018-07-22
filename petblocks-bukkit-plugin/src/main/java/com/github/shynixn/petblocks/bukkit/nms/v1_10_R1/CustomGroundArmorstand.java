@@ -1,13 +1,11 @@
 package com.github.shynixn.petblocks.bukkit.nms.v1_10_R1;
 
 import com.github.shynixn.petblocks.api.bukkit.event.PetBlockSpawnEvent;
-import com.github.shynixn.petblocks.api.business.entity.EffectPipeline;
 import com.github.shynixn.petblocks.api.business.entity.PetBlock;
 import com.github.shynixn.petblocks.api.business.entity.PetBlockPartEntity;
 import com.github.shynixn.petblocks.api.business.enumeration.RideType;
 import com.github.shynixn.petblocks.api.persistence.entity.PetMeta;
 import com.github.shynixn.petblocks.bukkit.PetBlocksPlugin;
-import com.github.shynixn.petblocks.bukkit.logic.business.entity.Pipeline;
 import com.github.shynixn.petblocks.bukkit.logic.persistence.configuration.Config;
 import com.github.shynixn.petblocks.bukkit.nms.NMSRegistry;
 import com.github.shynixn.petblocks.bukkit.nms.helper.PetBlockHelper;
@@ -42,8 +40,6 @@ final class CustomGroundArmorstand extends EntityArmorStand implements PetBlock 
 
     private boolean hitflor;
 
-    private Pipeline pipeline;
-
     public CustomGroundArmorstand(World world) {
         super(world);
     }
@@ -64,7 +60,6 @@ final class CustomGroundArmorstand extends EntityArmorStand implements PetBlock 
         else if (this.petMeta.getEngine().getEntityType().equalsIgnoreCase("ZOMBIE"))
             this.rabbit = new CustomZombie(this.owner, this);
 
-        this.pipeline = new Pipeline(this);
         this.spawn(location);
     }
 
@@ -296,16 +291,6 @@ final class CustomGroundArmorstand extends EntityArmorStand implements PetBlock 
     @Override
     public boolean isDieing() {
         return this.isDieing;
-    }
-
-    /**
-     * Returns the pipeline for managed effect playing.
-     *
-     * @return effectPipeLine
-     */
-    @Override
-    public EffectPipeline getEffectPipeline() {
-        return this.pipeline;
     }
 
     @Override

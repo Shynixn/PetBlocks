@@ -1,6 +1,6 @@
 package com.github.shynixn.petblocks.api.persistence.controller;
 
-import com.github.shynixn.petblocks.api.persistence.entity.ParticleEffectMeta;
+import com.github.shynixn.petblocks.api.persistence.entity.Particle;
 
 import java.util.Optional;
 
@@ -38,5 +38,5 @@ public interface ParticleController<T> extends CostumeController<T> {
      * @param container container
      * @return particleEffect
      */
-    Optional<ParticleEffectMeta> getFromItem(T container);
+    Optional<Particle> getFromItem(T container);
 }

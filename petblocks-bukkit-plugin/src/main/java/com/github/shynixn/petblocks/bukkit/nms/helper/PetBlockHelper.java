@@ -5,21 +5,22 @@ import com.github.shynixn.petblocks.api.bukkit.event.PetBlockCannonEvent;
 import com.github.shynixn.petblocks.api.bukkit.event.PetBlockMoveEvent;
 import com.github.shynixn.petblocks.api.bukkit.event.PetBlockRideEvent;
 import com.github.shynixn.petblocks.api.bukkit.event.PetBlockWearEvent;
-import com.github.shynixn.petblocks.api.business.entity.GUIItemContainer;
 import com.github.shynixn.petblocks.api.business.entity.PetBlock;
-import com.github.shynixn.petblocks.api.persistence.entity.ParticleEffectMeta;
+import com.github.shynixn.petblocks.api.business.enumeration.ParticleType;
+import com.github.shynixn.petblocks.api.business.service.ParticleService;
+import com.github.shynixn.petblocks.api.business.service.SoundService;
+import com.github.shynixn.petblocks.api.persistence.entity.Particle;
 import com.github.shynixn.petblocks.api.persistence.entity.PetMeta;
-import com.github.shynixn.petblocks.api.persistence.entity.SoundMeta;
+import com.github.shynixn.petblocks.api.persistence.entity.Sound;
 import com.github.shynixn.petblocks.bukkit.PetBlocksPlugin;
 import com.github.shynixn.petblocks.bukkit.logic.business.helper.PetBlockModifyHelper;
 import com.github.shynixn.petblocks.bukkit.logic.business.helper.SkinHelper;
 import com.github.shynixn.petblocks.bukkit.logic.persistence.configuration.Config;
 import com.github.shynixn.petblocks.bukkit.nms.v1_13_R1.MaterialCompatibility13;
-import com.github.shynixn.petblocks.core.logic.persistence.entity.ParticleEffectData;
+import com.github.shynixn.petblocks.core.logic.persistence.entity.ParticleEntity;
 import com.github.shynixn.petblocks.core.logic.persistence.entity.PetData;
-import com.github.shynixn.petblocks.core.logic.persistence.entity.SoundBuilder;
+import com.github.shynixn.petblocks.core.logic.persistence.entity.SoundEntity;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.ArmorStand;
@@ -29,78 +30,43 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
-import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.util.EulerAngle;
 import org.bukkit.util.Vector;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Random;
 import java.util.logging.Level;
 
 public final class PetBlockHelper {
     private static final Random random = new Random();
-    private static final SoundMeta explosionSound = createSoundComp("EXPLODE", 1.0F, 2.0F);
-    private static final ParticleEffectMeta angryParticle = createParticleComp()
-            .setEffectType(ParticleEffectMeta.ParticleEffectType.VILLAGER_ANGRY)
-            .setOffset(2, 2, 2)
-            .setSpeed(0.1)
-            .setAmount(2);
-    private static final ParticleEffectMeta cloud = createParticleComp()
-            .setEffectType(ParticleEffectMeta.ParticleEffectType.CLOUD)
-            .setOffset(1, 1, 1)
-            .setSpeed(0.1)
-            .setAmount(100);
+    private static final Sound explosionSound;
+    private static final Particle angryParticle;
+    private static final Particle cloud;
+
+    static {
+        angryParticle = new ParticleEntity(ParticleType.VILLAGER_ANGRY);
+        angryParticle.setOffSetX(2);
+        angryParticle.setOffSetY(2);
+        angryParticle.setOffSetZ(2);
+        angryParticle.setSpeed(0.1);
+        angryParticle.setAmount(2);
+
+        cloud = new ParticleEntity(ParticleType.CLOUD);
+        cloud.setOffSetX(2);
+        cloud.setOffSetY(2);
+        cloud.setOffSetZ(2);
+        cloud.setSpeed(0.1);
+        cloud.setAmount(100);
+
+        explosionSound = new SoundEntity("EXPLOSION");
+        explosionSound.setVolume(1.0);
+        explosionSound.setPitch(2.0);
+    }
 
     private PetBlockHelper() {
         super();
-    }
-
-    public static ParticleEffectMeta createParticleComp() {
-        try {
-            final Class<?> clazz = Class.forName("com.github.shynixn.petblocks.bukkit.logic.persistence.entity.BukkitParticleEffect");
-            return (ParticleEffectMeta) clazz.newInstance();
-        } catch (final ClassNotFoundException | InstantiationException | IllegalAccessException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public static SoundMeta createSoundComp(String name, double value1, double value2) {
-        try {
-            final Class<?> clazz = Class.forName("com.github.shynixn.petblocks.bukkit.logic.persistence.entity.BukkitSoundBuilder");
-            final Constructor constructor = clazz.getDeclaredConstructor(String.class, double.class, double.class);
-            return (SoundMeta) constructor.newInstance(name, value1, value2);
-        } catch (final ClassNotFoundException | InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public static void playParticleEffectForPipeline(Location location, ParticleEffectMeta particleEffectMeta, PetBlock petBlock) {
-        if (Config.INSTANCE.areParticlesForOtherPlayersVisible()) {
-            for (final Player player : location.getWorld().getPlayers()) {
-                Bukkit.getServer().getScheduler().runTaskAsynchronously(JavaPlugin.getPlugin(PetBlocksPlugin.class), () -> ((ParticleEffectData) particleEffectMeta).applyTo(location, player));
-            }
-        } else {
-            Bukkit.getServer().getScheduler().runTaskAsynchronously(JavaPlugin.getPlugin(PetBlocksPlugin.class), () -> ((ParticleEffectData) particleEffectMeta).applyTo(location, (Player) petBlock.getPlayer()));
-        }
-    }
-
-    public static void playSoundEffectForPipeline(Location location, SoundMeta soundMeta, PetBlock petBlock) {
-        if (!petBlock.getMeta().isSoundEnabled())
-            return;
-        try {
-            if (Config.INSTANCE.isSoundForOtherPlayersHearable()) {
-                ((SoundBuilder) soundMeta).apply(location, location.getWorld().getPlayers().toArray(new Player[0]));
-            } else {
-                ((SoundBuilder) soundMeta).apply(location, new Player[]{(Player) petBlock.getPlayer()});
-            }
-        } catch (final IllegalArgumentException e) {
-            PetBlocksPlugin.logger().log(Level.WARNING, "Cannot play sound " + soundMeta.getName() + " of " + ChatColor.stripColor(petBlock.getMeta().<GUIItemContainer<Player>>getEngine().getGUIItem().getDisplayName().get()) + '.');
-            PetBlocksPlugin.logger().log(Level.WARNING, "Is this entity or sound supported by your server version? Disable it in the config.yml");
-        } catch (final Exception e1) {
-            PetBlocksPlugin.logger()
-                    .log(Level.WARNING, "Failed playing w sound.", e1);
-        }
     }
 
     public static int afraidWaterEffect(PetBlock petBlock, int counter) {
@@ -110,7 +76,8 @@ public final class PetBlockHelper {
                 final Vector vec = new Vector(random.nextInt(3) * isNegative(random), random.nextInt(3) * isNegative(random), random.nextInt(3) * isNegative(random));
                 entity.setVelocity(vec);
                 if (Config.INSTANCE.isAfraidwaterParticles()) {
-                    petBlock.getEffectPipeline().playParticleEffect(entity.getLocation(), angryParticle);
+                    final ParticleService particleService = PetBlocksApi.INSTANCE.resolve(ParticleService.class).get();
+                    particleService.playParticle(entity.getLocation(), angryParticle, petBlock.getPlayer());
                 }
                 counter = 20;
             }
@@ -150,7 +117,10 @@ public final class PetBlockHelper {
             return previous;
         final long milli = System.currentTimeMillis();
         if (milli - previous > 500) {
-            petBlock.getEffectPipeline().playSound(petBlock.getLocation(), petBlock.getMeta().getEngine().getWalkingSound());
+            if (petBlock.getMeta().isSoundEnabled()) {
+                final SoundService soundService = PetBlocksApi.INSTANCE.resolve(SoundService.class).get();
+                soundService.playSound(petBlock.getLocation(), petBlock.getMeta().getEngine().getWalkingSound(), petBlock.getPlayer());
+            }
             return milli;
         }
         return previous;
@@ -205,7 +175,10 @@ public final class PetBlockHelper {
         if (counter <= 0) {
             final Random random = new Random();
             if (!getEngineEntity(petBlock).isOnGround() || petData.getEngine().getEntityType().equalsIgnoreCase("ZOMBIE")) {
-                petBlock.getEffectPipeline().playSound(petBlock.getLocation(), petBlock.getMeta().getEngine().getAmbientSound());
+                if (petBlock.getMeta().isSoundEnabled()) {
+                    final SoundService soundService = PetBlocksApi.INSTANCE.resolve(SoundService.class).get();
+                    soundService.playSound(petBlock.getLocation(), petBlock.getMeta().getEngine().getAmbientSound(), petBlock.getPlayer());
+                }
             }
             counter = 20 * random.nextInt(20) + 1;
         }
@@ -213,7 +186,8 @@ public final class PetBlockHelper {
             PetBlocksApi.getDefaultPetBlockController().remove(petBlock);
         }
         if (petData.getParticleEffectMeta() != null) {
-            petBlock.getEffectPipeline().playParticleEffect(getArmorstand(petBlock).getLocation().add(0, 1, 0), petData.getParticleEffectMeta());
+            final ParticleService particleService = PetBlocksApi.INSTANCE.resolve(ParticleService.class).get();
+            particleService.playParticle(getArmorstand(petBlock).getLocation().add(0, 1, 0), petData.getParticleEffectMeta(), petBlock.getPlayer());
         }
         counter--;
         return counter;
@@ -281,7 +255,8 @@ public final class PetBlockHelper {
             if (petBlock.getArmorStand() != null && !getArmorstand(petBlock).isDead())
                 getArmorstand(petBlock).setHeadPose(new EulerAngle(0, 1, 0));
             Bukkit.getPluginManager().getPlugin("PetBlocks").getServer().getScheduler().runTaskLater(Bukkit.getPluginManager().getPlugin("PetBlocks"), () -> {
-                petBlock.getEffectPipeline().playParticleEffect(petBlock.getLocation(), cloud);
+                final ParticleService particleService = PetBlocksApi.INSTANCE.resolve(ParticleService.class).get();
+                particleService.playParticle(petBlock.getLocation(), cloud, petBlock.getPlayer());
                 petBlock.remove();
             }, 20 * 2);
             return true;
@@ -320,7 +295,10 @@ public final class PetBlockHelper {
         Bukkit.getPluginManager().callEvent(event);
         if (!event.isCanceled()) {
             getEngineEntity(petBlock).setVelocity(vector);
-            petBlock.getEffectPipeline().playSound(((Player) petBlock.getPlayer()).getLocation(), explosionSound);
+            if (petBlock.getMeta().isSoundEnabled()) {
+                final SoundService soundService = PetBlocksApi.INSTANCE.resolve(SoundService.class).get();
+                soundService.playSound(((Player) petBlock.getPlayer()).getLocation(), explosionSound, petBlock.getPlayer());
+            }
         }
     }
 

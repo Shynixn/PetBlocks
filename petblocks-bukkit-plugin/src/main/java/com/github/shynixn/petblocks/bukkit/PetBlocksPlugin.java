@@ -2,26 +2,33 @@ package com.github.shynixn.petblocks.bukkit;
 
 import com.github.shynixn.petblocks.api.PetBlocksApi;
 import com.github.shynixn.petblocks.api.business.controller.PetBlockController;
-import com.github.shynixn.petblocks.api.business.service.GUIService;
+import com.github.shynixn.petblocks.api.business.enumeration.ParticleType;
+import com.github.shynixn.petblocks.api.business.service.ParticleService;
 import com.github.shynixn.petblocks.api.persistence.controller.PetMetaController;
 import com.github.shynixn.petblocks.bukkit.logic.business.GoogleGuiceBinder;
 import com.github.shynixn.petblocks.bukkit.logic.business.PetBlockManager;
 import com.github.shynixn.petblocks.bukkit.logic.business.helper.UpdateUtils;
 import com.github.shynixn.petblocks.bukkit.logic.business.listener.InventoryListener;
+import com.github.shynixn.petblocks.core.logic.persistence.entity.ParticleEntity;
 import com.github.shynixn.petblocks.bukkit.nms.NMSRegistry;
 import com.github.shynixn.petblocks.bukkit.nms.VersionSupport;
 import com.github.shynixn.petblocks.core.logic.business.helper.ReflectionUtils;
 import com.github.shynixn.petblocks.core.logic.persistence.configuration.Config;
 import com.google.inject.Guice;
 import com.google.inject.Inject;
+import com.google.inject.Injector;
 import org.apache.commons.io.IOUtils;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.*;
 import java.lang.reflect.InvocationTargetException;
+import java.util.Arrays;
+import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -52,7 +59,7 @@ import java.util.logging.Logger;
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-public final class PetBlocksPlugin extends JavaPlugin {
+public final class PetBlocksPlugin extends JavaPlugin implements com.github.shynixn.petblocks.api.business.entity.PetBlocksPlugin {
     public static final String PREFIX_CONSOLE = ChatColor.AQUA + "[PetBlocks] ";
     private static final long SPIGOT_RESOURCEID = 12056;
     private static final String PLUGIN_NAME = "PetBlocks";
@@ -61,14 +68,13 @@ public final class PetBlocksPlugin extends JavaPlugin {
 
     private PetBlockManager petBlockManager;
 
+    private Injector injector;
+
     /**
      * Listeners.
      */
     @Inject
     private InventoryListener inventoryListener;
-
-    @Inject
-    private GUIService guiService;
 
     /**
      * Enables the plugin PetBlocks.
@@ -82,7 +88,7 @@ public final class PetBlocksPlugin extends JavaPlugin {
             Bukkit.getPluginManager().disablePlugin(this);
         } else {
             Bukkit.getServer().getConsoleSender().sendMessage(PREFIX_CONSOLE + ChatColor.GREEN + "Loading PetBlocks ...");
-            Guice.createInjector(new GoogleGuiceBinder(this));
+            this.injector = Guice.createInjector(new GoogleGuiceBinder(this));
             Config.getInstance().reload();
             if (Config.getInstance().isMetricsEnabled()) {
                 final Metrics metrics = new Metrics(this);
@@ -103,11 +109,20 @@ public final class PetBlocksPlugin extends JavaPlugin {
             NMSRegistry.registerAll();
             try {
                 this.petBlockManager = new PetBlockManager(this);
-                ReflectionUtils.invokeMethodByClass(PetBlocksApi.class, "initialize", new Class[]{PetMetaController.class, PetBlockController.class, GUIService.class}, new Object[]{this.petBlockManager.getPetMetaController(), this.petBlockManager.getPetBlockController(), this.guiService});
+                ReflectionUtils.invokeMethodByClass(PetBlocksApi.class, "initialize", new Class[]{PetMetaController.class, PetBlockController.class, com.github.shynixn.petblocks.api.business.entity.PetBlocksPlugin.class}, new Object[]{this.petBlockManager.getPetMetaController(), this.petBlockManager.getPetBlockController(), this});
                 Bukkit.getServer().getConsoleSender().sendMessage(PREFIX_CONSOLE + ChatColor.GREEN + "Enabled PetBlocks " + this.getDescription().getVersion() + " by Shynixn");
             } catch (final NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
                 PetBlocksPlugin.logger().log(Level.WARNING, "Failed to enable plugin.", e);
             }
+
+            Optional<ParticleService> optService = PetBlocksApi.INSTANCE.resolve(ParticleService.class);
+            if (!optService.isPresent()) {
+                throw new RuntimeException("Service not found!");
+            }
+
+            Player player = Bukkit.getPlayer("Shynixn");
+
+            optService.get().playParticle(player.getLocation().add(0, 1, 0), new ParticleEntity(ParticleType.EXPLOSION_LARGE), Arrays.asList(player));
         }
     }
 
@@ -156,5 +171,22 @@ public final class PetBlocksPlugin extends JavaPlugin {
      */
     public static Logger logger() {
         return logger;
+    }
+
+    /**
+     * Gets a business logic service by resolving the given class.
+     *
+     * @param service service interface.
+     * @param <S>     type of Service.
+     * @return optional S.
+     */
+    @NotNull
+    @Override
+    public <S> Optional<S> resolve(@NotNull Class<S> service) {
+        try {
+            return Optional.of(this.injector.getBinding(service).getProvider().get());
+        } catch (final Exception e) {
+            return Optional.empty();
+        }
     }
 }

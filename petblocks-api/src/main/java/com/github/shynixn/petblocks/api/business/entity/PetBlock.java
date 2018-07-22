@@ -47,13 +47,6 @@ public interface PetBlock<Player, Location> {
     boolean isDieing();
 
     /**
-     * Returns the pipeline for managed effect playing.
-     *
-     * @return pipeline
-     */
-    EffectPipeline<Location> getEffectPipeline();
-
-    /**
      * Returns the meta of the petblock.
      *
      * @return meta

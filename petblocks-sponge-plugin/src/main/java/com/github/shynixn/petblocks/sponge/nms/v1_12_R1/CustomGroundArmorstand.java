@@ -1,8 +1,11 @@
 package com.github.shynixn.petblocks.sponge.nms.v1_12_R1;
 
 import com.flowpowered.math.vector.Vector3d;
+import com.github.shynixn.petblocks.api.PetBlocksApi;
 import com.github.shynixn.petblocks.api.business.entity.PetBlockPartEntity;
 import com.github.shynixn.petblocks.api.business.enumeration.RideType;
+import com.github.shynixn.petblocks.api.business.service.ParticleService;
+import com.github.shynixn.petblocks.api.business.service.SoundService;
 import com.github.shynixn.petblocks.api.persistence.entity.IPosition;
 import com.github.shynixn.petblocks.api.persistence.entity.PetMeta;
 import com.github.shynixn.petblocks.api.sponge.event.PetBlockMoveEvent;
@@ -49,6 +52,9 @@ final class CustomGroundArmorstand extends EntityArmorStand {
     private int counter;
     private Vector3d bumper;
     private boolean isGroundRiding;
+
+    private final SoundService soundService = PetBlocksApi.INSTANCE.resolve(SoundService.class).get();
+    private final ParticleService particleService = PetBlocksApi.INSTANCE.resolve(ParticleService.class).get();
 
     /**
      * Default necessary constructor.
@@ -131,7 +137,9 @@ final class CustomGroundArmorstand extends EntityArmorStand {
                 if (this.counter <= 0) {
                     final Random random = new Random();
                     if (!engine.isOnGround() || petData.getEngine().getEntityType().equalsIgnoreCase("ZOMBIE")) {
-                        this.wrapper.getEffectPipeline().playSound(this.wrapper.getLocation(), this.wrapper.getMeta().getEngine().getAmbientSound());
+                        if (petData.isSoundEnabled()) {
+                            this.soundService.playSound(this.wrapper.getLocation(), this.wrapper.getMeta().getEngine().getAmbientSound(), petData.getPlayerMeta().getPlayer());
+                        }
                     }
                     this.counter = 20 * random.nextInt(20) + 1;
                 }
@@ -139,7 +147,7 @@ final class CustomGroundArmorstand extends EntityArmorStand {
                     return;
                 }
                 if (petData.getParticleEffectMeta() != null) {
-                    this.wrapper.getEffectPipeline().playParticleEffect(armorStand.getTransform().add(new Transform<>(armorStand.getTransform().getExtent(), new Vector3d(0, 1, 0))), petData.getParticleEffectMeta());
+                    this.particleService.playParticle(armorStand.getLocation().add(0, 1, 0), petData.getParticleEffectMeta(), petData.getPlayerMeta().getPlayer());
                 }
                 this.counter--;
             } else if (engine != null) {

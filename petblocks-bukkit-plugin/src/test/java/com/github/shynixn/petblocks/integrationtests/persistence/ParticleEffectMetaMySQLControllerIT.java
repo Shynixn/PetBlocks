@@ -2,9 +2,12 @@ package com.github.shynixn.petblocks.integrationtests.persistence;
 
 import ch.vorburger.exec.ManagedProcessException;
 import ch.vorburger.mariadb4j.DB;
+import com.github.shynixn.petblocks.api.business.enumeration.ParticleType;
 import com.github.shynixn.petblocks.api.persistence.controller.ParticleEffectMetaController;
+import com.github.shynixn.petblocks.api.persistence.entity.Particle;
 import com.github.shynixn.petblocks.api.persistence.entity.ParticleEffectMeta;
 import com.github.shynixn.petblocks.bukkit.logic.Factory;
+import com.github.shynixn.petblocks.core.logic.persistence.entity.ParticleEntity;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.Plugin;
@@ -48,6 +51,7 @@ public class ParticleEffectMetaMySQLControllerIT {
     }
 
     private static DB database;
+
     @AfterAll
     public static void stopMariaDB() {
         try {
@@ -79,25 +83,24 @@ public class ParticleEffectMetaMySQLControllerIT {
         plugin.getConfig().set("sql.enabled", true);
         Factory.initialize(plugin);
         try (ParticleEffectMetaController controller = Factory.createParticleEffectController()) {
-            for (final ParticleEffectMeta item : controller.getAll()) {
+            for (final Particle item : controller.getAll()) {
                 controller.remove(item);
             }
-            final ParticleEffectMeta meta = controller.create();
-            meta.setEffectType(ParticleEffectMeta.ParticleEffectType.CLOUD);
+            final Particle meta = controller.create();
+            meta.setType(ParticleType.CLOUD);
             controller.store(meta);
             assertEquals(1, controller.size());
-            assertEquals(ParticleEffectMeta.ParticleEffectType.CLOUD, controller.getFromId(meta.getId()).get().getEffectType());
+            assertEquals(ParticleType.CLOUD, controller.getFromId(((ParticleEntity) meta).getId()).get().getType());
         } catch (final Exception e) {
             Logger.getLogger(ParticleEffectMetaMySQLControllerIT.class.getSimpleName()).log(Level.WARNING, "Failed to run test.", e);
             Assert.fail();
         }
     }
 
-
     @Test
     public void storeLoadParticleEffectMetaTest() throws ClassNotFoundException {
         final Plugin plugin = mockPlugin();
-        plugin.getConfig().set("sql.enabled",true);
+        plugin.getConfig().set("sql.enabled", true);
         Factory.initialize(plugin);
         try (ParticleEffectMetaController controller = Factory.createParticleEffectController()) {
             for (final ParticleEffectMeta item : controller.getAll()) {
@@ -111,7 +114,7 @@ public class ParticleEffectMetaMySQLControllerIT {
                     .setOffsetZ(11.24)
                     .setSpeed(0.0001)
                     .setMaterial(Material.BONE.getId())
-                    .setData((byte)5);
+                    .setData((byte) 5);
             controller.store(meta);
             assertEquals(1, controller.size());
 
@@ -122,7 +125,7 @@ public class ParticleEffectMetaMySQLControllerIT {
             assertEquals(3.75, meta.getOffsetY());
             assertEquals(11.24, meta.getOffsetZ());
             assertEquals(Material.BONE, meta.getMaterial());
-            assertEquals((byte)5, (byte)meta.getData());
+            assertEquals((byte) 5, (byte) meta.getData());
 
             meta.setAmount(7)
                     .setEffectType(ParticleEffectMeta.ParticleEffectType.BARRIER)
@@ -131,7 +134,7 @@ public class ParticleEffectMetaMySQLControllerIT {
                     .setOffsetZ(5.24)
                     .setSpeed(0.002)
                     .setMaterial(Material.BARRIER.getId())
-                    .setData((byte)7);
+                    .setData((byte) 7);
             controller.store(meta);
 
             meta = controller.getFromId(meta.getId()).get();
@@ -141,7 +144,7 @@ public class ParticleEffectMetaMySQLControllerIT {
             assertEquals(7.75, meta.getOffsetY());
             assertEquals(5.24, meta.getOffsetZ());
             assertEquals(Material.BARRIER, meta.getMaterial());
-            assertEquals((byte)7, (byte)meta.getData());
+            assertEquals((byte) 7, (byte) meta.getData());
         } catch (final Exception e) {
             Logger.getLogger(ParticleEffectMetaMySQLControllerIT.class.getSimpleName()).log(Level.WARNING, "Failed to run test.", e);
             Assert.fail();

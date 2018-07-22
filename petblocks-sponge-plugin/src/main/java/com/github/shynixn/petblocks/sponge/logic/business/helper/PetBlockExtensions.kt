@@ -1,10 +1,13 @@
 package com.github.shynixn.petblocks.sponge.logic.business.helper
 
 import com.flowpowered.math.vector.Vector3d
+import com.github.shynixn.petblocks.api.PetBlocksApi
 import com.github.shynixn.petblocks.api.business.entity.PetBlock
-import com.github.shynixn.petblocks.api.persistence.entity.ParticleEffectMeta
+import com.github.shynixn.petblocks.api.business.enumeration.ParticleType
+import com.github.shynixn.petblocks.api.business.service.ParticleService
+import com.github.shynixn.petblocks.api.persistence.entity.Particle
+import com.github.shynixn.petblocks.core.logic.persistence.entity.ParticleEntity
 import com.github.shynixn.petblocks.sponge.logic.persistence.configuration.Config
-import com.github.shynixn.petblocks.sponge.logic.persistence.entity.SpongeParticleEffect
 import org.spongepowered.api.data.property.block.MatterProperty
 import org.spongepowered.api.entity.Entity
 import org.spongepowered.api.entity.living.player.Player
@@ -41,13 +44,22 @@ import java.util.*
  */
 
 private val random = Random()
-private val angryParticle = SpongeParticleEffect()
-        .setEffectType(ParticleEffectMeta.ParticleEffectType.VILLAGER_ANGRY)
-        .setOffset(2.0, 2.0, 2.0)
-        .setSpeed(0.1)
-        .setAmount(2)
+private var angryParticle: Particle? = null
+private var service: ParticleService? = null
 
-fun PetBlock<Player, Location<World>>.playAfraidOfWaterEffect(counterValue : Int) : Int {
+
+fun PetBlock<Player, Location<World>>.playAfraidOfWaterEffect(counterValue: Int): Int {
+    if (angryParticle == null) {
+        angryParticle = ParticleEntity(ParticleType.VILLAGER_ANGRY)
+        angryParticle!!.offSetX = 2.0
+        angryParticle!!.offSetY = 2.0
+        angryParticle!!.offSetZ = 2.0
+        angryParticle!!.speed = 0.1
+        angryParticle!!.amount = 2
+
+        service = PetBlocksApi.INSTANCE.resolve(ParticleService::class.java).get()
+    }
+
     var counter = counterValue
     val entity = engineEntity as Entity
     if (Config.isAfraidOfwater) {
@@ -56,7 +68,7 @@ fun PetBlock<Player, Location<World>>.playAfraidOfWaterEffect(counterValue : Int
             val vec = Vector3d((random.nextInt(3) * isNegative(random)).toFloat(), (random.nextInt(3) * isNegative(random)).toFloat(), (random.nextInt(3) * isNegative(random)).toFloat())
             entity.velocity = vec
             if (Config.isAfraidwaterParticles) {
-                effectPipeline.playParticleEffect(entity.location, angryParticle)
+                service!!.playParticle(entity.location, angryParticle!!, this.player)
             }
             counter = 20
         }
