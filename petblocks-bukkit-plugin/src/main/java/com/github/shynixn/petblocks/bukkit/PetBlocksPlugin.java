@@ -4,16 +4,18 @@ import com.github.shynixn.petblocks.api.PetBlocksApi;
 import com.github.shynixn.petblocks.api.business.controller.PetBlockController;
 import com.github.shynixn.petblocks.api.business.enumeration.ParticleType;
 import com.github.shynixn.petblocks.api.business.service.ParticleService;
+import com.github.shynixn.petblocks.api.business.service.SoundService;
 import com.github.shynixn.petblocks.api.persistence.controller.PetMetaController;
 import com.github.shynixn.petblocks.bukkit.logic.business.GoogleGuiceBinder;
 import com.github.shynixn.petblocks.bukkit.logic.business.PetBlockManager;
 import com.github.shynixn.petblocks.bukkit.logic.business.helper.UpdateUtils;
 import com.github.shynixn.petblocks.bukkit.logic.business.listener.InventoryListener;
-import com.github.shynixn.petblocks.core.logic.persistence.entity.ParticleEntity;
 import com.github.shynixn.petblocks.bukkit.nms.NMSRegistry;
 import com.github.shynixn.petblocks.bukkit.nms.VersionSupport;
 import com.github.shynixn.petblocks.core.logic.business.helper.ReflectionUtils;
 import com.github.shynixn.petblocks.core.logic.persistence.configuration.Config;
+import com.github.shynixn.petblocks.core.logic.persistence.entity.ParticleEntity;
+import com.github.shynixn.petblocks.core.logic.persistence.entity.SoundEntity;
 import com.google.inject.Guice;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
@@ -114,15 +116,6 @@ public final class PetBlocksPlugin extends JavaPlugin implements com.github.shyn
             } catch (final NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
                 PetBlocksPlugin.logger().log(Level.WARNING, "Failed to enable plugin.", e);
             }
-
-            Optional<ParticleService> optService = PetBlocksApi.INSTANCE.resolve(ParticleService.class);
-            if (!optService.isPresent()) {
-                throw new RuntimeException("Service not found!");
-            }
-
-            Player player = Bukkit.getPlayer("Shynixn");
-
-            optService.get().playParticle(player.getLocation().add(0, 1, 0), new ParticleEntity(ParticleType.EXPLOSION_LARGE), Arrays.asList(player));
         }
     }
 

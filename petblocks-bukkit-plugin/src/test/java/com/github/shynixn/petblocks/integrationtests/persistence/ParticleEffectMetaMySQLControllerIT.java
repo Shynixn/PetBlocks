@@ -5,7 +5,6 @@ import ch.vorburger.mariadb4j.DB;
 import com.github.shynixn.petblocks.api.business.enumeration.ParticleType;
 import com.github.shynixn.petblocks.api.persistence.controller.ParticleEffectMetaController;
 import com.github.shynixn.petblocks.api.persistence.entity.Particle;
-import com.github.shynixn.petblocks.api.persistence.entity.ParticleEffectMeta;
 import com.github.shynixn.petblocks.bukkit.logic.Factory;
 import com.github.shynixn.petblocks.core.logic.persistence.entity.ParticleEntity;
 import org.bukkit.Material;
@@ -97,7 +96,7 @@ public class ParticleEffectMetaMySQLControllerIT {
         }
     }
 
-    @Test
+ /*   @Test
     public void storeLoadParticleEffectMetaTest() throws ClassNotFoundException {
         final Plugin plugin = mockPlugin();
         plugin.getConfig().set("sql.enabled", true);
@@ -149,5 +148,5 @@ public class ParticleEffectMetaMySQLControllerIT {
             Logger.getLogger(ParticleEffectMetaMySQLControllerIT.class.getSimpleName()).log(Level.WARNING, "Failed to run test.", e);
             Assert.fail();
         }
-    }
+    }*/
 }

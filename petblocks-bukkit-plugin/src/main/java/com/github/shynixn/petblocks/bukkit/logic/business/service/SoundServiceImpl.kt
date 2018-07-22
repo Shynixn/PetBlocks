@@ -84,6 +84,23 @@ class SoundServiceImpl @Inject constructor(private val plugin: Plugin, private v
         val version = VersionSupport.getServerVersion()
 
         if (version.isVersionSameOrGreaterThan(VersionSupport.VERSION_1_13_R1)) {
+            when (name) {
+                "MAGMACUBE_WALK" -> {
+                    return "ENTITY_MAGMA_CUBE_JUMP"
+                }
+                "ENDERMAN_IDLE" -> {
+                    return "ENTITY_ENDERMAN_AMBIENT"
+                }
+                "ENDERDRAGON_GROWL" -> {
+                    return "ENTITY_ENDER_DRAGON_GROWL"
+                }
+                "ENDERDRAGON_WINGS" -> {
+                    return "ENTITY_ENDER_DRAGON_FLAP"
+                }
+                "IRONGOLEM_WALK" -> {
+                    return "ENTITY_IRON_GOLEM_STEP"
+                }
+            }
         }
         if (version.isVersionSameOrGreaterThan(VersionSupport.VERSION_1_9_R1)) {
             when (name) {

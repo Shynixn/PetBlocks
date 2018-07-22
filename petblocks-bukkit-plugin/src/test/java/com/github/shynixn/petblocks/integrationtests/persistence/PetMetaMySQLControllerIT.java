@@ -5,7 +5,6 @@ import ch.vorburger.mariadb4j.DB;
 import com.github.shynixn.petblocks.api.persistence.controller.ParticleEffectMetaController;
 import com.github.shynixn.petblocks.api.persistence.controller.PetMetaController;
 import com.github.shynixn.petblocks.api.persistence.controller.PlayerMetaController;
-import com.github.shynixn.petblocks.api.persistence.entity.ParticleEffectMeta;
 import com.github.shynixn.petblocks.api.persistence.entity.PetMeta;
 import com.github.shynixn.petblocks.api.persistence.entity.PlayerMeta;
 import com.github.shynixn.petblocks.bukkit.PetBlocksPlugin;
@@ -52,7 +51,7 @@ public class PetMetaMySQLControllerIT {
             field.setAccessible(true);
             field.set(null, Logger.getGlobal());
         } catch (IllegalAccessException | NoSuchFieldException e) {
-           Assert.fail();
+            Assert.fail();
         }
         final Plugin plugin = mock(Plugin.class);
         new File("PetBlocks.db").delete();
@@ -65,12 +64,10 @@ public class PetMetaMySQLControllerIT {
         return plugin;
     }
 
-
     private static DB database;
 
     @AfterAll
-    public static void stopMariaDB()
-    {
+    public static void stopMariaDB() {
         try {
             database.stop();
         } catch (final ManagedProcessException e) {
@@ -94,7 +91,7 @@ public class PetMetaMySQLControllerIT {
         }
     }
 
-    @Test
+  /*  @Test
     public void insertSelectPlayerMetaTest() throws ClassNotFoundException {
         final Plugin plugin = mockPlugin();
         plugin.getConfig().set("sql.enabled", true);
@@ -229,5 +226,5 @@ public class PetMetaMySQLControllerIT {
             Logger.getLogger(this.getClass().getSimpleName()).log(Level.WARNING, "Failed to create PetData.", ex);
         }
         return null;
-    }
+    }*/
 }

@@ -3,7 +3,6 @@ package com.github.shynixn.petblocks.integrationtests.persistence;
 import com.github.shynixn.petblocks.api.persistence.controller.ParticleEffectMetaController;
 import com.github.shynixn.petblocks.api.persistence.controller.PetMetaController;
 import com.github.shynixn.petblocks.api.persistence.controller.PlayerMetaController;
-import com.github.shynixn.petblocks.api.persistence.entity.ParticleEffectMeta;
 import com.github.shynixn.petblocks.api.persistence.entity.PetMeta;
 import com.github.shynixn.petblocks.api.persistence.entity.PlayerMeta;
 import com.github.shynixn.petblocks.bukkit.PetBlocksPlugin;
@@ -68,7 +67,7 @@ public class PetMetaSQLiteControllerIT {
     public static void disableFactory() {
         Factory.disable();
     }
-
+/*
     @Test
     public void insertSelectPetMetaTest() throws ClassNotFoundException {
         Factory.initialize(mockPlugin());
@@ -198,5 +197,5 @@ public class PetMetaSQLiteControllerIT {
             Logger.getLogger(this.getClass().getSimpleName()).log(Level.WARNING, "Failed to create PetData.", ex);
         }
         return null;
-    }
+    }*/
 }

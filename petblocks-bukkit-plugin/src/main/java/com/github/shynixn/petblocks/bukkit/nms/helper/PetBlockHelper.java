@@ -60,7 +60,7 @@ public final class PetBlockHelper {
         cloud.setSpeed(0.1);
         cloud.setAmount(100);
 
-        explosionSound = new SoundEntity("EXPLOSION");
+        explosionSound = new SoundEntity("EXPLODE");
         explosionSound.setVolume(1.0);
         explosionSound.setPitch(2.0);
     }

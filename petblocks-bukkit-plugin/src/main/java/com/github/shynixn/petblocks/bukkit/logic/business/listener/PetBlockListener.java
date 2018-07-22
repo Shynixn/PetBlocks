@@ -68,8 +68,8 @@ public class PetBlockListener extends SimpleListener {
 
     private final PetBlockManager manager;
     private final Set<PetBlock> jumped = new HashSet<>();
-    private final ParticleService particleService;
-    private final SoundService soundService;
+    private ParticleService particleService;
+    private SoundService soundService;
 
     /**
      * Initializes a new petblockListener from the manager and plugin.
@@ -80,8 +80,6 @@ public class PetBlockListener extends SimpleListener {
     public PetBlockListener(PetBlockManager manager, Plugin plugin) {
         super(plugin);
         this.manager = manager;
-        this.particleService = PetBlocksApi.INSTANCE.resolve(ParticleService.class).get();
-        this.soundService = PetBlocksApi.INSTANCE.resolve(SoundService.class).get();
         NMSRegistry.registerListener19(manager.carryingPet, plugin);
         this.plugin.getServer().getScheduler().scheduleSyncRepeatingTask(this.plugin, new ParticleRunnable(), 0L, 60L);
         this.plugin.getServer().getScheduler().runTaskTimer(this.plugin, new PetHunterRunnable(), 0L, 20);
@@ -248,6 +246,11 @@ public class PetBlockListener extends SimpleListener {
             final PetBlock petBlock = this.getPet(event.getRightClicked());
             if (petBlock != null && petBlock.getPlayer().equals(event.getPlayer())) {
                 if (Config.INSTANCE.isFeedingEnabled() && NMSRegistry.getItemInHand19(event.getPlayer(), false) != null && NMSRegistry.getItemInHand19(event.getPlayer(), false).getType() == Material.CARROT_ITEM) {
+                    if (this.soundService == null) {
+                        this.particleService = PetBlocksApi.INSTANCE.resolve(ParticleService.class).get();
+                        this.soundService = PetBlocksApi.INSTANCE.resolve(SoundService.class).get();
+                    }
+
                     if (petBlock.getMeta().isSoundEnabled()) {
                         this.soundService.playSound(event.getRightClicked().getLocation(), Config.INSTANCE.getFeedingClickSound(), event.getPlayer());
                     }

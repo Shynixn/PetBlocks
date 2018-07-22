@@ -176,6 +176,7 @@
                             <shadedPattern>com.github.shynixn.petblocks.lib.com.zaxxer</shadedPattern>
                         </relocation>
                     </relocations>
+                    <outputFile>D:/Temp/plugins/PetBlocks-Bukkit.jar</outputFile>
                 </configuration>
                 <executions>
                     <execution>
