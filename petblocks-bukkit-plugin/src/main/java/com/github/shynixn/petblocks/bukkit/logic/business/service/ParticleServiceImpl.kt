@@ -12,6 +12,11 @@ import com.google.inject.Inject
 import net.minecraft.server.v1_13_R1.*
 import org.bukkit.Location
 import org.bukkit.Material
+import org.bukkit.block.BlockState
+import org.bukkit.block.data.BlockData
+import org.bukkit.craftbukkit.v1_13_R1.CraftParticle
+import org.bukkit.craftbukkit.v1_13_R1.block.CraftBlockState
+import org.bukkit.craftbukkit.v1_13_R1.block.data.CraftBlockData
 import org.bukkit.craftbukkit.v1_13_R1.inventory.CraftItemStack
 import org.bukkit.craftbukkit.v1_13_R1.util.CraftMagicNumbers
 import org.bukkit.entity.Player
@@ -98,6 +103,10 @@ class ParticleServiceImpl @Inject constructor(private val plugin: Plugin, privat
             } else if (dataType == MaterialData::class.java) {
                 val data = MaterialData(Material.getMaterial(particle.materialName), particle.data.toByte())
                 internalParticleType = ParticleParamBlock(internalParticleType as net.minecraft.server.v1_13_R1.Particle<ParticleParamBlock>, CraftMagicNumbers.getBlock(data))
+            } else if (particle.type == ParticleType.BLOCK_CRACK || particle.type == ParticleType.BLOCK_DUST) {
+                val data = CraftBlockState(Material.getMaterial(particle.materialName))
+                data.rawData = particle.data.toByte()
+                internalParticleType = ParticleParamBlock(internalParticleType as net.minecraft.server.v1_13_R1.Particle<ParticleParamBlock>, data.handle)
             } else if (particle.type == ParticleType.REDSTONE) {
                 internalParticleType = ParticleParamRedstone(particle.colorRed.toFloat() / 255.0f, particle.colorGreen.toFloat() / 255.0f, particle.colorBlue.toFloat() / 255.0f, 1.0F)
             }

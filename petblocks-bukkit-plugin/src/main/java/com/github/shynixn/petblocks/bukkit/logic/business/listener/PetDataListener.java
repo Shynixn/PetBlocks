@@ -215,6 +215,10 @@ public class PetDataListener extends SimpleListener {
     private void handleClick(InventoryClickEvent event, Player player, PetMeta petMeta, PetBlock petBlock) {
         final ItemStack currentItem = event.getCurrentItem();
         final int itemSlot = event.getSlot() + this.manager.pages.get(player).currentCount + 1;
+        if (itemSlot < 0) {
+            return;
+        }
+
         if (this.manager.pages.get(player).page == GUIPage.MAIN && this.getGUIItem("my-pet").getPosition() == event.getSlot()) {
             this.handleClickOnMyPetItem(player, petMeta);
         } else if (this.isGUIItem(currentItem, "empty-slot")) {

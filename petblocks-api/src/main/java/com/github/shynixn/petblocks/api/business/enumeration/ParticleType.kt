@@ -220,7 +220,7 @@ enum class ParticleType(
     /**
      * Blockdust.
      */
-    BLOCK_DUST("blockdust", "blockdust", Version.VERSION_1_8_R1),
+    BLOCK_DUST("blockdust", "block", Version.VERSION_1_8_R1),
     /**
      * Rain.
      */
