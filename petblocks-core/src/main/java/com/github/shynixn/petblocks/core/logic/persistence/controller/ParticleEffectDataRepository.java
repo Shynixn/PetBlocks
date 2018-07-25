@@ -5,6 +5,7 @@ import com.github.shynixn.petblocks.api.persistence.controller.ParticleEffectMet
 import com.github.shynixn.petblocks.api.persistence.entity.Particle;
 import com.github.shynixn.petblocks.core.logic.business.entity.DbContext;
 import com.github.shynixn.petblocks.core.logic.persistence.entity.ParticleEntity;
+import com.google.inject.Inject;
 import org.slf4j.Logger;
 
 import java.sql.Connection;
@@ -49,6 +50,7 @@ public class ParticleEffectDataRepository extends DataBaseRepository<Particle> i
      * @param connectionContext connectionContext
      * @param logger            logger
      */
+    @Inject
     public ParticleEffectDataRepository(DbContext connectionContext, Logger logger) {
         super(connectionContext, logger);
     }

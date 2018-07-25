@@ -67,8 +67,9 @@ fun PetBlock<Player, Location<World>>.playAfraidOfWaterEffect(counterValue: Int)
         if (optional.get().value === MatterProperty.Matter.LIQUID && counter <= 0) {
             val vec = Vector3d((random.nextInt(3) * isNegative(random)).toFloat(), (random.nextInt(3) * isNegative(random)).toFloat(), (random.nextInt(3) * isNegative(random)).toFloat())
             entity.velocity = vec
+            val locationN = entity.location
             if (Config.isAfraidwaterParticles) {
-                service!!.playParticle(entity.location, angryParticle!!, this.player)
+                service!!.playParticle<Location<*>, Player>(locationN, particle = angryParticle!!, player = this.player as Player)
             }
             counter = 20
         }

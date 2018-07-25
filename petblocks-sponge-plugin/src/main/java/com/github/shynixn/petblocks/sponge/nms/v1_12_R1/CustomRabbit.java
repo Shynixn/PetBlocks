@@ -57,7 +57,7 @@ public final class CustomRabbit extends EntityRabbit {
         final long milli = System.currentTimeMillis();
         if (milli - this.playedMovingSound > 500) {
             if (this.petBlock.getMeta().isSoundEnabled()) {
-                this.soundService.playSound(this.petBlock.getLocation(), this.petBlock.getMeta().getEngine().getWalkingSound(), this.petBlock.getPlayer());
+                this.soundService.playSound(((Transform) this.petBlock.getLocation()).getLocation(), this.petBlock.getMeta().getEngine().getWalkingSound(), this.petBlock.getPlayer());
             }
             this.playedMovingSound = milli;
         }

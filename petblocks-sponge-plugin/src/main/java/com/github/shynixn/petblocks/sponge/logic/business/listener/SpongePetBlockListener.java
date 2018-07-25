@@ -1,7 +1,6 @@
 package com.github.shynixn.petblocks.sponge.logic.business.listener;
 
 import com.flowpowered.math.vector.Vector3d;
-import com.github.shynixn.petblocks.api.PetBlocksApi;
 import com.github.shynixn.petblocks.api.business.entity.PetBlock;
 import com.github.shynixn.petblocks.api.business.service.ParticleService;
 import com.github.shynixn.petblocks.api.business.service.SoundService;
@@ -70,8 +69,12 @@ public class SpongePetBlockListener {
     private final Set<PetBlock> jumped = new HashSet<>();
 
     private final PluginContainer plugin;
-    private final ParticleService particleService;
-    private final SoundService soundService;
+
+    @Inject
+    private ParticleService particleService;
+
+    @Inject
+    private SoundService soundService;
 
     /**
      * Initializes a new petblockListener from the manager and plugin.
@@ -86,8 +89,6 @@ public class SpongePetBlockListener {
         Sponge.getEventManager().registerListeners(plugin, this);
         Task.builder().intervalTicks(60L).execute(new ParticleRunnable()).submit(plugin);
         Task.builder().intervalTicks(20L).execute(new PetHunterRunnable()).submit(plugin);
-        this.particleService = PetBlocksApi.INSTANCE.resolve(ParticleService.class).get();
-        this.soundService = PetBlocksApi.INSTANCE.resolve(SoundService.class).get();
     }
 
     /**

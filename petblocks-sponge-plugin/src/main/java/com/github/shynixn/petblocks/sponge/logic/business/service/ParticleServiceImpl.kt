@@ -82,7 +82,7 @@ class ParticleServiceImpl @Inject constructor(private val logger: Logger, privat
             particle.speed = 1.0f.toDouble()
         }
 
-        val type = Sponge.getGame().registry.getType(org.spongepowered.api.effect.particle.ParticleType::class.java, "minecraft:" + particle.type.gameId_113).get()
+        val type = Sponge.getGame().registry.getType(org.spongepowered.api.effect.particle.ParticleType::class.java, "minecraft:" + particle.type.minecraftId_112).get()
 
         val builder: ParticleEffect.Builder
 

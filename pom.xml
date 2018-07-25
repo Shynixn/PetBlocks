@@ -13,8 +13,8 @@
         <module>petblocks-api</module>
         <module>petblocks-bukkit-api</module>
         <module>petblocks-bukkit-plugin</module>
-        <!--  <module>petblocks-sponge-api</module>
-          <module>petblocks-sponge-plugin</module>-->
+        <module>petblocks-sponge-api</module>
+        <module>petblocks-sponge-plugin</module>
         <module>petblocks-core</module>
     </modules>
     <version>7.2.0-SNAPSHOT</version>

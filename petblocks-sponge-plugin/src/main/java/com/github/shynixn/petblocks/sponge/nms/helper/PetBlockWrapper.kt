@@ -299,7 +299,7 @@ class PetBlockWrapper(firstSpawn: Transform<World>, private val owner: Player, p
 
             if (petMeta.isSoundEnabled) {
                 val soundService = PetBlocksApi.INSTANCE.resolve(SoundService::class.java).get()
-                soundService.playSound(location, explosionSound!!, player)
+                soundService.playSound(location.location, explosionSound!!, player)
             }
         }
     }

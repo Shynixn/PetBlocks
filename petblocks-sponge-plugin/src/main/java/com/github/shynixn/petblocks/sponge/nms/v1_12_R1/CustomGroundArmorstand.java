@@ -36,6 +36,7 @@ import org.spongepowered.api.entity.living.ArmorStand;
 import org.spongepowered.api.entity.living.Living;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.item.inventory.ItemStack;
+import org.spongepowered.api.world.Location;
 
 import java.util.Random;
 import java.util.logging.Level;
@@ -138,7 +139,7 @@ final class CustomGroundArmorstand extends EntityArmorStand {
                     final Random random = new Random();
                     if (!engine.isOnGround() || petData.getEngine().getEntityType().equalsIgnoreCase("ZOMBIE")) {
                         if (petData.isSoundEnabled()) {
-                            this.soundService.playSound(this.wrapper.getLocation(), this.wrapper.getMeta().getEngine().getAmbientSound(), petData.getPlayerMeta().getPlayer());
+                            this.soundService.playSound(this.wrapper.getLocation().getLocation(), this.wrapper.getMeta().getEngine().getAmbientSound(), (Player) petData.getPlayerMeta().getPlayer());
                         }
                     }
                     this.counter = 20 * random.nextInt(20) + 1;
@@ -147,7 +148,7 @@ final class CustomGroundArmorstand extends EntityArmorStand {
                     return;
                 }
                 if (petData.getParticleEffectMeta() != null) {
-                    this.particleService.playParticle(armorStand.getLocation().add(0, 1, 0), petData.getParticleEffectMeta(), petData.getPlayerMeta().getPlayer());
+                    this.particleService.<Location, Player>playParticle(armorStand.getLocation().add(0, 1, 0), petData.getParticleEffectMeta(), petData.getPlayerMeta().<Player>getPlayer());
                 }
                 this.counter--;
             } else if (engine != null) {
