@@ -11,9 +11,9 @@ Java 8, Java 9 and Java 10 can be used to run PetBlocks.
 Spigot/Sponge
 ~~~~~~~~~~~~~
 
-* Spigot *(1.8.0 - 1.12.2)* ✔
-* PaperSpigot *(1.8.0 - 1.12.2)* ✔
-* CraftBukkit *(1.8.0 - 1.12.2)* ✔
+* Spigot *(1.8.0 - 1.13.0)* ✔
+* PaperSpigot *(1.8.0 - 1.13.0)* ✔
+* CraftBukkit *(1.8.0 - 1.13.0)* ✔
 * SpongeVanilla *(1.12.0 - 1.12.2)* ✔
 * SpongeForge *(1.12.0 - 1.12.2)* **Please see below.**
 
