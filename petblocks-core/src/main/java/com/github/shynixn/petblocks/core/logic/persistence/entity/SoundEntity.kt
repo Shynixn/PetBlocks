@@ -33,7 +33,7 @@ class SoundEntity(
         /**
          * Name of the sound.
          */
-        override var name: String) : Sound {
+        override var name: String = "none") : Sound {
     /**
      * Pitch of the sound.
      */

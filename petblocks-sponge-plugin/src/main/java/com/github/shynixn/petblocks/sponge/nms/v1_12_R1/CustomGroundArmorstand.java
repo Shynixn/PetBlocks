@@ -54,8 +54,8 @@ final class CustomGroundArmorstand extends EntityArmorStand {
     private Vector3d bumper;
     private boolean isGroundRiding;
 
-    private final SoundService soundService = PetBlocksApi.INSTANCE.resolve(SoundService.class).get();
-    private final ParticleService particleService = PetBlocksApi.INSTANCE.resolve(ParticleService.class).get();
+    private final SoundService soundService = PetBlocksApi.INSTANCE.resolve(SoundService.class);
+    private final ParticleService particleService = PetBlocksApi.INSTANCE.resolve(ParticleService.class);
 
     /**
      * Default necessary constructor.

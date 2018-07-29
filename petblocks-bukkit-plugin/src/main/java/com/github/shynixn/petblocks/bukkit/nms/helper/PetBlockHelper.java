@@ -76,7 +76,7 @@ public final class PetBlockHelper {
                 final Vector vec = new Vector(random.nextInt(3) * isNegative(random), random.nextInt(3) * isNegative(random), random.nextInt(3) * isNegative(random));
                 entity.setVelocity(vec);
                 if (Config.INSTANCE.isAfraidwaterParticles()) {
-                    final ParticleService particleService = PetBlocksApi.INSTANCE.resolve(ParticleService.class).get();
+                    final ParticleService particleService = PetBlocksApi.INSTANCE.resolve(ParticleService.class);
                     particleService.playParticle(entity.getLocation(), angryParticle, petBlock.getPlayer());
                 }
                 counter = 20;
@@ -118,7 +118,7 @@ public final class PetBlockHelper {
         final long milli = System.currentTimeMillis();
         if (milli - previous > 500) {
             if (petBlock.getMeta().isSoundEnabled()) {
-                final SoundService soundService = PetBlocksApi.INSTANCE.resolve(SoundService.class).get();
+                final SoundService soundService = PetBlocksApi.INSTANCE.resolve(SoundService.class);
                 soundService.playSound(petBlock.getLocation(), petBlock.getMeta().getEngine().getWalkingSound(), petBlock.getPlayer());
             }
             return milli;
@@ -176,7 +176,7 @@ public final class PetBlockHelper {
             final Random random = new Random();
             if (!getEngineEntity(petBlock).isOnGround() || petData.getEngine().getEntityType().equalsIgnoreCase("ZOMBIE")) {
                 if (petBlock.getMeta().isSoundEnabled()) {
-                    final SoundService soundService = PetBlocksApi.INSTANCE.resolve(SoundService.class).get();
+                    final SoundService soundService = PetBlocksApi.INSTANCE.resolve(SoundService.class);
                     soundService.playSound(petBlock.getLocation(), petBlock.getMeta().getEngine().getAmbientSound(), petBlock.getPlayer());
                 }
             }
@@ -186,7 +186,7 @@ public final class PetBlockHelper {
             PetBlocksApi.getDefaultPetBlockController().remove(petBlock);
         }
         if (petData.getParticleEffectMeta() != null) {
-            final ParticleService particleService = PetBlocksApi.INSTANCE.resolve(ParticleService.class).get();
+            final ParticleService particleService = PetBlocksApi.INSTANCE.resolve(ParticleService.class);
             particleService.playParticle(getArmorstand(petBlock).getLocation().add(0, 1, 0), petData.getParticleEffectMeta(), petBlock.getPlayer());
         }
         counter--;
@@ -255,7 +255,7 @@ public final class PetBlockHelper {
             if (petBlock.getArmorStand() != null && !getArmorstand(petBlock).isDead())
                 getArmorstand(petBlock).setHeadPose(new EulerAngle(0, 1, 0));
             Bukkit.getPluginManager().getPlugin("PetBlocks").getServer().getScheduler().runTaskLater(Bukkit.getPluginManager().getPlugin("PetBlocks"), () -> {
-                final ParticleService particleService = PetBlocksApi.INSTANCE.resolve(ParticleService.class).get();
+                final ParticleService particleService = PetBlocksApi.INSTANCE.resolve(ParticleService.class);
                 particleService.playParticle(petBlock.getLocation(), cloud, petBlock.getPlayer());
                 petBlock.remove();
             }, 20 * 2);
@@ -296,7 +296,7 @@ public final class PetBlockHelper {
         if (!event.isCanceled()) {
             getEngineEntity(petBlock).setVelocity(vector);
             if (petBlock.getMeta().isSoundEnabled()) {
-                final SoundService soundService = PetBlocksApi.INSTANCE.resolve(SoundService.class).get();
+                final SoundService soundService = PetBlocksApi.INSTANCE.resolve(SoundService.class);
                 soundService.playSound(((Player) petBlock.getPlayer()).getLocation(), explosionSound, petBlock.getPlayer());
             }
         }

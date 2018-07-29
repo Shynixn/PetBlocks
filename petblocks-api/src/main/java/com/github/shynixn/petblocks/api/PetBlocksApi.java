@@ -2,10 +2,7 @@ package com.github.shynixn.petblocks.api;
 
 import com.github.shynixn.petblocks.api.business.controller.PetBlockController;
 import com.github.shynixn.petblocks.api.business.entity.PetBlocksPlugin;
-import com.github.shynixn.petblocks.api.business.service.GUIService;
 import com.github.shynixn.petblocks.api.persistence.controller.PetMetaController;
-
-import java.util.Optional;
 
 /**
  * PetBlocksApi for accessing and modifying PetBlocks and PetMeta.
@@ -57,8 +54,20 @@ public class PetBlocksApi {
      * @param <S>     type of Service.
      * @return optional S.
      */
-    public <S> Optional<S> resolve(Class<S> service) {
+    public <S> S resolve(Class<S> service) {
         return plugin.resolve(service);
+    }
+
+    /**
+     * Creates a new entity from the given class.
+     * Throws a IllegalArgumentException if not found.
+     *
+     * @param entity entityClazz
+     * @param <E>    type
+     * @return entity.
+     */
+    public <E> E create(Class<E> entity) {
+        return plugin.create(entity);
     }
 
     /**

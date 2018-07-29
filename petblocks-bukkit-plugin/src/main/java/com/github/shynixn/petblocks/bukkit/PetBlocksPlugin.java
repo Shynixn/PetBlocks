@@ -6,6 +6,8 @@ import com.github.shynixn.petblocks.api.business.enumeration.ParticleType;
 import com.github.shynixn.petblocks.api.business.service.ParticleService;
 import com.github.shynixn.petblocks.api.business.service.SoundService;
 import com.github.shynixn.petblocks.api.persistence.controller.PetMetaController;
+import com.github.shynixn.petblocks.api.persistence.entity.Particle;
+import com.github.shynixn.petblocks.api.persistence.entity.Sound;
 import com.github.shynixn.petblocks.bukkit.logic.business.GoogleGuiceBinder;
 import com.github.shynixn.petblocks.bukkit.logic.business.PetBlockManager;
 import com.github.shynixn.petblocks.bukkit.logic.business.helper.UpdateUtils;
@@ -23,6 +25,7 @@ import org.apache.commons.io.IOUtils;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
@@ -101,6 +104,7 @@ public final class PetBlocksPlugin extends JavaPlugin implements com.github.shyn
                     return "SQLite";
                 }));
             }
+
             this.getServer().getScheduler().runTaskAsynchronously(this, () -> {
                 try {
                     UpdateUtils.checkPluginUpToDateAndPrintMessage(SPIGOT_RESOURCEID, PREFIX_CONSOLE, PLUGIN_NAME, PetBlocksPlugin.this);
@@ -108,7 +112,9 @@ public final class PetBlocksPlugin extends JavaPlugin implements com.github.shyn
                     PetBlocksPlugin.logger().log(Level.WARNING, "Failed to check for updates.");
                 }
             });
+
             NMSRegistry.registerAll();
+
             try {
                 this.petBlockManager = new PetBlockManager(this);
                 ReflectionUtils.invokeMethodByClass(PetBlocksApi.class, "initialize", new Class[]{PetMetaController.class, PetBlockController.class, com.github.shynixn.petblocks.api.business.entity.PetBlocksPlugin.class}, new Object[]{this.petBlockManager.getPetMetaController(), this.petBlockManager.getPetBlockController(), this});
@@ -116,6 +122,13 @@ public final class PetBlocksPlugin extends JavaPlugin implements com.github.shyn
             } catch (final NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
                 PetBlocksPlugin.logger().log(Level.WARNING, "Failed to enable plugin.", e);
             }
+
+            Particle particle = PetBlocksApi.INSTANCE.create(Particle.class);
+
+            Sound sound = PetBlocksApi.INSTANCE.create(Sound.class);
+
+            System.out.println("WELL: " + sound + "." + particle);
+
         }
     }
 
@@ -175,11 +188,29 @@ public final class PetBlocksPlugin extends JavaPlugin implements com.github.shyn
      */
     @NotNull
     @Override
-    public <S> Optional<S> resolve(@NotNull Class<S> service) {
+    public <S> S resolve(@NotNull Class<S> service) {
         try {
-            return Optional.of(this.injector.getBinding(service).getProvider().get());
+            return this.injector.getBinding(service).getProvider().get();
         } catch (final Exception e) {
-            return Optional.empty();
+            throw new IllegalArgumentException("Service could not be resolved.", e);
+        }
+    }
+
+    /**
+     * Creates a new entity from the given class.
+     * Throws a IllegalArgumentException if not found.
+     *
+     * @param entity entityClazz
+     * @param <E>    type
+     * @return entity.
+     */
+    @Override
+    public <E> E create(@NotNull Class<E> entity) {
+        try {
+            final String entityName = entity.getSimpleName() + "Entity";
+            return (E) Class.forName("com.github.shynixn.petblocks.core.logic.persistence.entity." + entityName).newInstance();
+        } catch (final Exception e) {
+            throw new IllegalArgumentException("Entity could not be created.", e);
         }
     }
 }

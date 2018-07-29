@@ -57,7 +57,7 @@ fun PetBlock<Player, Location<World>>.playAfraidOfWaterEffect(counterValue: Int)
         angryParticle!!.speed = 0.1
         angryParticle!!.amount = 2
 
-        service = PetBlocksApi.INSTANCE.resolve(ParticleService::class.java).get()
+        service = PetBlocksApi.INSTANCE.resolve(ParticleService::class.java)
     }
 
     var counter = counterValue

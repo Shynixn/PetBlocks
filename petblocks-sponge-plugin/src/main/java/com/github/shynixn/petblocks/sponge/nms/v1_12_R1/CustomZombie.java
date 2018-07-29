@@ -25,7 +25,7 @@ import java.util.logging.Logger;
 public final class CustomZombie extends EntityZombie {
     private PetBlock petBlock;
     private long playedMovingSound = 100000;
-    private final SoundService soundService = PetBlocksApi.INSTANCE.resolve(SoundService.class).get();
+    private final SoundService soundService = PetBlocksApi.INSTANCE.resolve(SoundService.class);
 
     public CustomZombie(World world) {
         super(world);

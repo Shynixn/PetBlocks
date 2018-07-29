@@ -25,7 +25,7 @@ import java.util.logging.Logger;
 public final class CustomRabbit extends EntityRabbit {
     private PetBlock petBlock;
     private long playedMovingSound = 100000;
-    private final SoundService soundService = PetBlocksApi.INSTANCE.resolve(SoundService.class).get();
+    private final SoundService soundService = PetBlocksApi.INSTANCE.resolve(SoundService.class);
 
     public CustomRabbit(World worldIn) {
         super(worldIn);

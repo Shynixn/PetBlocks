@@ -32,7 +32,7 @@ import java.util.*
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class ParticleEntity(override var type: ParticleType) : Particle {
+class ParticleEntity(override var type: ParticleType = ParticleType.NONE) : Particle {
     /**
      * Database Id.
      */

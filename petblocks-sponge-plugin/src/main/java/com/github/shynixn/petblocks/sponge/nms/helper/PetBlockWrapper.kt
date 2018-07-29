@@ -298,7 +298,7 @@ class PetBlockWrapper(firstSpawn: Transform<World>, private val owner: Player, p
             engine.velocity = vector as Vector3d
 
             if (petMeta.isSoundEnabled) {
-                val soundService = PetBlocksApi.INSTANCE.resolve(SoundService::class.java).get()
+                val soundService = PetBlocksApi.INSTANCE.resolve(SoundService::class.java)
                 soundService.playSound(location.location, explosionSound!!, player)
             }
         }

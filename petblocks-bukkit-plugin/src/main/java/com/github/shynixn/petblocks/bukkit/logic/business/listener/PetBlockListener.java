@@ -247,8 +247,8 @@ public class PetBlockListener extends SimpleListener {
             if (petBlock != null && petBlock.getPlayer().equals(event.getPlayer())) {
                 if (Config.INSTANCE.isFeedingEnabled() && NMSRegistry.getItemInHand19(event.getPlayer(), false) != null && NMSRegistry.getItemInHand19(event.getPlayer(), false).getType() == Material.CARROT_ITEM) {
                     if (this.soundService == null) {
-                        this.particleService = PetBlocksApi.INSTANCE.resolve(ParticleService.class).get();
-                        this.soundService = PetBlocksApi.INSTANCE.resolve(SoundService.class).get();
+                        this.particleService = PetBlocksApi.INSTANCE.resolve(ParticleService.class);
+                        this.soundService = PetBlocksApi.INSTANCE.resolve(SoundService.class);
                     }
 
                     if (petBlock.getMeta().isSoundEnabled()) {

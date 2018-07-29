@@ -3,7 +3,10 @@ package com.github.shynixn.petblocks.sponge
 import com.github.shynixn.petblocks.api.PetBlocksApi
 import com.github.shynixn.petblocks.api.business.controller.PetBlockController
 import com.github.shynixn.petblocks.api.business.entity.PetBlocksPlugin
+import com.github.shynixn.petblocks.api.business.enumeration.ParticleType
+import com.github.shynixn.petblocks.api.business.service.ParticleService
 import com.github.shynixn.petblocks.api.persistence.controller.PetMetaController
+import com.github.shynixn.petblocks.api.persistence.entity.Particle
 import com.github.shynixn.petblocks.core.logic.business.helper.ChatColor
 import com.github.shynixn.petblocks.core.logic.business.helper.ReflectionUtils
 import com.github.shynixn.petblocks.sponge.logic.business.helper.*
@@ -156,11 +159,28 @@ class PetBlocksPlugin : com.github.shynixn.petblocks.api.business.entity.PetBloc
      * Gets a business logic from the PetBlocks plugin.
      * All types in the service package can be accessed.
      */
-    override fun <S> resolve(service: Class<S>): Optional<S> {
+    override fun <S> resolve(service: Class<S>): S {
         return try {
-            Optional.of(this.childInjector!!.getBinding(service).provider.get())
+            this.childInjector!!.getBinding(service).provider.get()
         } catch (e: Exception) {
-            Optional.empty()
+            throw IllegalArgumentException("Service could not be resolved.", e)
+        }
+    }
+
+    /**
+     * Creates a new entity from the given class.
+     * Throws a IllegalArgumentException if not found.
+     *
+     * @param entity entityClazz
+     * @param <E>    type
+     * @return entity.
+    </E> */
+    override fun <E> create(entity: Class<E>): E {
+        try {
+            val entityName = entity.simpleName + "Entity"
+            return Class.forName("com.github.shynixn.petblocks.core.logic.persistence.entity.$entityName").newInstance() as E
+        } catch (e: Exception) {
+            throw IllegalArgumentException("Entity could not be created.", e)
         }
     }
 }
