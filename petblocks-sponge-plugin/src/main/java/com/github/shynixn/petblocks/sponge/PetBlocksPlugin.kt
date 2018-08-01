@@ -3,10 +3,7 @@ package com.github.shynixn.petblocks.sponge
 import com.github.shynixn.petblocks.api.PetBlocksApi
 import com.github.shynixn.petblocks.api.business.controller.PetBlockController
 import com.github.shynixn.petblocks.api.business.entity.PetBlocksPlugin
-import com.github.shynixn.petblocks.api.business.enumeration.ParticleType
-import com.github.shynixn.petblocks.api.business.service.ParticleService
 import com.github.shynixn.petblocks.api.persistence.controller.PetMetaController
-import com.github.shynixn.petblocks.api.persistence.entity.Particle
 import com.github.shynixn.petblocks.core.logic.business.helper.ChatColor
 import com.github.shynixn.petblocks.core.logic.business.helper.ReflectionUtils
 import com.github.shynixn.petblocks.sponge.logic.business.helper.*
@@ -25,7 +22,6 @@ import org.spongepowered.api.event.game.state.GameStoppingServerEvent
 import org.spongepowered.api.plugin.Plugin
 import org.spongepowered.api.plugin.PluginContainer
 import java.io.IOException
-import java.util.*
 
 /**
  * Main Sponge Plugin.

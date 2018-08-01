@@ -2,12 +2,7 @@ package com.github.shynixn.petblocks.bukkit;
 
 import com.github.shynixn.petblocks.api.PetBlocksApi;
 import com.github.shynixn.petblocks.api.business.controller.PetBlockController;
-import com.github.shynixn.petblocks.api.business.enumeration.ParticleType;
-import com.github.shynixn.petblocks.api.business.service.ParticleService;
-import com.github.shynixn.petblocks.api.business.service.SoundService;
 import com.github.shynixn.petblocks.api.persistence.controller.PetMetaController;
-import com.github.shynixn.petblocks.api.persistence.entity.Particle;
-import com.github.shynixn.petblocks.api.persistence.entity.Sound;
 import com.github.shynixn.petblocks.bukkit.logic.business.GoogleGuiceBinder;
 import com.github.shynixn.petblocks.bukkit.logic.business.PetBlockManager;
 import com.github.shynixn.petblocks.bukkit.logic.business.helper.UpdateUtils;
@@ -16,8 +11,6 @@ import com.github.shynixn.petblocks.bukkit.nms.NMSRegistry;
 import com.github.shynixn.petblocks.bukkit.nms.VersionSupport;
 import com.github.shynixn.petblocks.core.logic.business.helper.ReflectionUtils;
 import com.github.shynixn.petblocks.core.logic.persistence.configuration.Config;
-import com.github.shynixn.petblocks.core.logic.persistence.entity.ParticleEntity;
-import com.github.shynixn.petblocks.core.logic.persistence.entity.SoundEntity;
 import com.google.inject.Guice;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
@@ -25,15 +18,11 @@ import org.apache.commons.io.IOUtils;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.Location;
-import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.*;
 import java.lang.reflect.InvocationTargetException;
-import java.util.Arrays;
-import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -122,13 +111,6 @@ public final class PetBlocksPlugin extends JavaPlugin implements com.github.shyn
             } catch (final NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
                 PetBlocksPlugin.logger().log(Level.WARNING, "Failed to enable plugin.", e);
             }
-
-            Particle particle = PetBlocksApi.INSTANCE.create(Particle.class);
-
-            Sound sound = PetBlocksApi.INSTANCE.create(Sound.class);
-
-            System.out.println("WELL: " + sound + "." + particle);
-
         }
     }
 
