@@ -28,17 +28,19 @@ import java.util.logging.Level;
 final class CustomGroundArmorstand extends EntityArmorStand implements PetBlock {
     private PetMeta petMeta;
     private Player owner;
+    private PetBlockPartEntity rabbit;
 
     private boolean isSpecial;
     private boolean isGround;
     private boolean firstRide = true;
-    private PetBlockPartEntity rabbit;
-    private int counter;
-
+    private boolean isGroundRiding;
+    private boolean hasHitFlor;
     private boolean isDieing;
+
+    private int counter;
     private double health = 20.0;
 
-    private boolean hitflor;
+    private Vector bumper;
 
     public CustomGroundArmorstand(World world) {
         super(world);
@@ -84,8 +86,6 @@ final class CustomGroundArmorstand extends EntityArmorStand implements PetBlock 
         }
         return null;
     }
-
-    private boolean isGroundRiding;
 
     @Override
     public void move(EnumMoveType enummovetype, double d0, double d1, double d2) {
@@ -140,7 +140,7 @@ final class CustomGroundArmorstand extends EntityArmorStand implements PetBlock 
                     }
 
                     this.Q = (float) Config.INSTANCE.getModifier_petclimbing();
-                    this.aU = (this.cJ() * 0.1F);
+                    this.aU = (this.cK() * 0.1F);
 
                     if (!this.world.isClientSide) {
                         this.o(0.35F);
@@ -190,11 +190,11 @@ final class CustomGroundArmorstand extends EntityArmorStand implements PetBlock 
                     if (this.isJumping()) {
                         v.setY(0.5F);
                         this.isGround = true;
-                        this.hitflor = false;
+                        this.hasHitFlor = false;
                     } else if (this.isGround) {
                         v.setY(-0.2F);
                     }
-                    if (this.hitflor) {
+                    if (this.hasHitFlor) {
                         v.setY(0);
                         l.add(v.multiply(2.25).multiply(Config.INSTANCE.getModifier_petriding()));
                         this.setPosition(l.getX(), l.getY(), l.getZ());
@@ -218,8 +218,6 @@ final class CustomGroundArmorstand extends EntityArmorStand implements PetBlock 
             super.a(sideMot, f2, forMot);
         }
     }
-
-    private Vector bumper;
 
     public void spawn(Location location) {
         final PetBlockSpawnEvent event = new PetBlockSpawnEvent(this);
@@ -266,7 +264,7 @@ final class CustomGroundArmorstand extends EntityArmorStand implements PetBlock 
     @Override
     public void damage(double amount) {
         if (amount < -1.0) {
-            this.hitflor = true;
+            this.hasHitFlor = true;
         } else {
             this.health = PetBlockHelper.setDamage(this, this.health, amount, location -> {
                 final PacketPlayOutAnimation animation = new PacketPlayOutAnimation(CustomGroundArmorstand.this, 1);

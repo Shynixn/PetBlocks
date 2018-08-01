@@ -74,7 +74,7 @@ public final class OwnerPathfinder extends PathfinderGoal {
         } else if (this.entity.getBukkitEntity().getLocation().distance(this.player.getLocation()) > Config.INSTANCE.getBlocksAwayFromPlayer()) {
             this.counter2 = PetBlockHelper.afraidWaterEffect(this.petBlock, this.counter2);
             final Location targetLocation = this.player.getLocation();
-            this.entity.getNavigation().q();
+            this.entity.getNavigation().p();
             this.entity.getNavigation();
             this.path = this.entity.getNavigation().a(targetLocation.getX() + 1, targetLocation.getY(), targetLocation.getZ() + 1);
             this.entity.getNavigation();
