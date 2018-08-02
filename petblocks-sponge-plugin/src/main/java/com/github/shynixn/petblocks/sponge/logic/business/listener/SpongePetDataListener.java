@@ -116,6 +116,11 @@ public class SpongePetDataListener {
                 && this.manager.getInventories().containsKey(player)) {
             ExtensionMethodsKt.updateInventory(player);
             final Optional<PetBlock> optPetblock;
+
+            if (event.getTransactions().isEmpty()) {
+                return;
+            }
+
             final ItemStack itemStack = event.getTransactions().get(0).getOriginal().createStack();
             final int newSlot = event.getTransactions().get(0).getSlot().getProperties(SlotIndex.class).toArray(new SlotIndex[0])[0].getValue();
             if ((optPetblock = this.manager.getPetBlockController().getFromPlayer(player)).isPresent()) {

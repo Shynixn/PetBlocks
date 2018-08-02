@@ -56,6 +56,10 @@ class InventoryListener @Inject constructor(private val guiService: GUIService, 
             return
         }
 
+        if (event.transactions.isEmpty()) {
+            return
+        }
+
         val itemStack = event.transactions[0].original.createStack()
         val newSlot = event.transactions[0].slot.getProperties(SlotIndex::class.java).toTypedArray()[0].value
 
