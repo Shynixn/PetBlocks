@@ -234,9 +234,15 @@ object Config : ConfigLayer<Player>() {
     override fun <T> getData(path: String): T? {
         if (this.node == null)
             return null
+
         val items = path.split(Pattern.quote(".").toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
         val targetNode = this.node.getNode(*items as Array<Any>)
         val data = targetNode.value
+
+        if (data is String) {
+            return ChatColor.translateAlternateColorCodes('&', data) as T
+        }
+
         return data as T
     }
 }
