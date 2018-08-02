@@ -1,16 +1,13 @@
-package com.github.shynixn.petblocks.api.business.entity;
-
-import com.github.shynixn.petblocks.api.persistence.entity.ParticleEffectMeta;
-import com.github.shynixn.petblocks.api.persistence.entity.SoundMeta;
+package com.github.shynixn.petblocks.api.persistence.entity
 
 /**
- * Pipeline to correctly handle particle or sound effects.
+ * Created by Shynixn 2018.
  * <p>
- * Version 1.1
+ * Version 1.2
  * <p>
  * MIT License
  * <p>
- * Copyright (c) 2017 by Shynixn
+ * Copyright (c) 2018 by Shynixn
  * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -30,21 +27,19 @@ import com.github.shynixn.petblocks.api.persistence.entity.SoundMeta;
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-public interface EffectPipeline<Location> {
+interface Sound {
+    /**
+     * Name of the sound.
+     */
+    var name: String
 
     /**
-     * Plays the given particleEffect and watches for invisibility, other players and actions.
-     *
-     * @param location           location
-     * @param particleEffectMeta particleEffectMeta
+     * Pitch of the sound.
      */
-    void playParticleEffect(Location location, ParticleEffectMeta particleEffectMeta);
+    var pitch: Double
 
     /**
-     * Plays the given sound and watches for invisibility, other players and actions.
-     *
-     * @param location  location
-     * @param soundMeta soundMeta
+     * Volume of the sound.
      */
-    void playSound(Location location, SoundMeta soundMeta);
+    var volume: Double
 }

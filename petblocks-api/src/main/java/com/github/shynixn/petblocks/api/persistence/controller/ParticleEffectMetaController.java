@@ -1,6 +1,6 @@
 package com.github.shynixn.petblocks.api.persistence.controller;
 
-import com.github.shynixn.petblocks.api.persistence.entity.ParticleEffectMeta;
+import com.github.shynixn.petblocks.api.persistence.entity.Particle;
 
 /**
  * Controller for particleEffects.
@@ -29,10 +29,11 @@ import com.github.shynixn.petblocks.api.persistence.entity.ParticleEffectMeta;
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-public interface ParticleEffectMetaController extends IDatabaseController<ParticleEffectMeta> {
+public interface ParticleEffectMetaController extends IDatabaseController<Particle> {
     /**
      * Creates a new particleEffectMeta.
+     *
      * @return meta
      */
-    ParticleEffectMeta create();
+    Particle create();
 }

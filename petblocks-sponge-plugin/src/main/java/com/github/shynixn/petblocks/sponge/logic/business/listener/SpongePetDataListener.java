@@ -5,9 +5,9 @@ import com.github.shynixn.petblocks.api.PetBlocksApi;
 import com.github.shynixn.petblocks.api.business.entity.GUIItemContainer;
 import com.github.shynixn.petblocks.api.business.entity.PetBlock;
 import com.github.shynixn.petblocks.api.business.enumeration.GUIPage;
+import com.github.shynixn.petblocks.api.business.enumeration.ParticleType;
 import com.github.shynixn.petblocks.api.business.enumeration.Permission;
 import com.github.shynixn.petblocks.api.persistence.entity.EngineContainer;
-import com.github.shynixn.petblocks.api.persistence.entity.ParticleEffectMeta;
 import com.github.shynixn.petblocks.api.persistence.entity.PetMeta;
 import com.github.shynixn.petblocks.core.logic.business.helper.ChatBuilder;
 import com.github.shynixn.petblocks.sponge.logic.business.PetBlocksManager;
@@ -116,6 +116,11 @@ public class SpongePetDataListener {
                 && this.manager.getInventories().containsKey(player)) {
             ExtensionMethodsKt.updateInventory(player);
             final Optional<PetBlock> optPetblock;
+
+            if (event.getTransactions().isEmpty()) {
+                return;
+            }
+
             final ItemStack itemStack = event.getTransactions().get(0).getOriginal().createStack();
             final int newSlot = event.getTransactions().get(0).getSlot().getProperties(SlotIndex.class).toArray(new SlotIndex[0])[0].getValue();
             if ((optPetblock = this.manager.getPetBlockController().getFromPlayer(player)).isPresent()) {
@@ -298,7 +303,7 @@ public class SpongePetDataListener {
                 final GUIItemContainer c = this.getGUIItem("default-appearance");
                 petMeta.setSkin(c.getItemId(), c.getItemDamage(), c.getSkin(), c.isItemUnbreakable());
             }
-            petMeta.getParticleEffectMeta().setEffectType(ParticleEffectMeta.ParticleEffectType.NONE);
+            petMeta.getParticleEffectMeta().setType(ParticleType.NONE);
             optPetBlock.ifPresent(PetBlock::respawn);
             this.persistAsynchronously(petMeta);
         }

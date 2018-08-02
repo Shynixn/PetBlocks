@@ -1,19 +1,14 @@
 package com.github.shynixn.petblocks.bukkit.logic.business
 
-import com.github.shynixn.petblocks.api.business.service.ConfigurationService
-import com.github.shynixn.petblocks.api.business.service.GUIScriptService
-import com.github.shynixn.petblocks.api.business.service.GUIService
-import com.github.shynixn.petblocks.api.business.service.PersistenceService
+import com.github.shynixn.petblocks.api.business.service.*
 import com.github.shynixn.petblocks.api.persistence.controller.CostumeController
 import com.github.shynixn.petblocks.api.persistence.controller.EngineController
 import com.github.shynixn.petblocks.api.persistence.controller.OtherGUIItemsController
 import com.github.shynixn.petblocks.api.persistence.controller.ParticleController
 import com.github.shynixn.petblocks.bukkit.logic.Factory
 import com.github.shynixn.petblocks.bukkit.logic.business.helper.LoggingBridge
-import com.github.shynixn.petblocks.bukkit.logic.business.service.ConfigurationServiceImpl
+import com.github.shynixn.petblocks.bukkit.logic.business.service.*
 import com.github.shynixn.petblocks.core.logic.business.service.GUIScriptServiceImpl
-import com.github.shynixn.petblocks.bukkit.logic.business.service.GUIServiceImpl
-import com.github.shynixn.petblocks.bukkit.logic.business.service.PersistenceServiceImpl
 import com.github.shynixn.petblocks.bukkit.logic.persistence.configuration.*
 import com.google.inject.AbstractModule
 import com.google.inject.name.Names
@@ -57,6 +52,8 @@ class GoogleGuiceBinder(private val plugin: Plugin) : AbstractModule() {
         Factory.initialize(plugin)
 
         bind(PluginManager::class.java).toInstance(Bukkit.getServer().pluginManager)
+        bind(ParticleService::class.java).to(ParticleServiceImpl::class.java)
+        bind(SoundService::class.java).to(SoundServiceImpl::class.java)
         bind(PersistenceService::class.java).toInstance(PersistenceServiceImpl(plugin, Factory.createPetBlockController(), Factory.createPetDataController()))
 
         val guiItems = BukkitStaticGUIItems()

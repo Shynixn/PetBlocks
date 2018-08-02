@@ -1,13 +1,18 @@
 package com.github.shynixn.petblocks.bukkit.logic.business.helper
 
+import com.github.shynixn.petblocks.api.business.enumeration.ParticleType
 import com.github.shynixn.petblocks.api.business.service.PersistenceService
 import com.github.shynixn.petblocks.bukkit.PetBlocksPlugin
 import com.github.shynixn.petblocks.bukkit.nms.VersionSupport
 import com.github.shynixn.petblocks.core.logic.business.helper.ChatColor
+import org.bukkit.entity.Player
 import org.bukkit.inventory.Inventory
 import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.meta.SkullMeta
+import org.bukkit.plugin.Plugin
 import org.bukkit.plugin.java.JavaPlugin
+import java.lang.reflect.InvocationTargetException
+import java.util.*
 import java.util.concurrent.CompletableFuture
 import java.util.function.Consumer
 
@@ -43,10 +48,58 @@ fun String.findServerVersion(): String {
     return this.replace("VERSION", VersionSupport.getServerVersion().versionText)
 }
 
+/**
+ * Executes the given [f] for the given [plugin] on main thread.
+ */
+inline fun Any.sync(plugin: Plugin, delayTicks: Long = 0L, repeatingTicks: Long = 0L, crossinline f: () -> Unit) {
+    if (repeatingTicks > 0) {
+        plugin.server.scheduler.runTaskTimer(plugin, {
+            f.invoke()
+        }, delayTicks, repeatingTicks)
+    } else {
+        plugin.server.scheduler.runTaskLater(plugin, {
+            f.invoke()
+        }, delayTicks)
+    }
+}
+
+/**
+ * Executes the given [f] for the given [plugin] asynchronly.
+ */
+inline fun Any.async(plugin: Plugin, delayTicks: Long = 0L, repeatingTicks: Long = 0L, crossinline f: () -> Unit) {
+    if (repeatingTicks > 0) {
+        plugin.server.scheduler.runTaskTimerAsynchronously(plugin, {
+            f.invoke()
+        }, delayTicks, repeatingTicks)
+    } else {
+        plugin.server.scheduler.runTaskLaterAsynchronously(plugin, {
+            f.invoke()
+        }, delayTicks)
+    }
+}
+
 fun Inventory.clearCompletely() {
     for (i in 0 until contents.size) {
         setItem(i, null)
     }
+}
+
+/**
+ * Sends the given [packet] to this player.
+ */
+@Throws(ClassNotFoundException::class, IllegalAccessException::class, NoSuchMethodException::class, InvocationTargetException::class, NoSuchFieldException::class)
+fun Player.sendPacket(packet: Any) {
+    val version = VersionSupport.getServerVersion()
+    val craftPlayer = Class.forName("org.bukkit.craftbukkit.VERSION.entity.CraftPlayer".replace("VERSION", version.versionText)).cast(player)
+    val methodHandle = craftPlayer.javaClass.getDeclaredMethod("getHandle")
+    val entityPlayer = methodHandle.invoke(craftPlayer)
+
+    val field = Class.forName("net.minecraft.server.VERSION.EntityPlayer".replace("VERSION", version.versionText)).getDeclaredField("playerConnection")
+    field.isAccessible = true
+    val connection = field.get(entityPlayer)
+
+    val sendMethod = connection.javaClass.getDeclaredMethod("sendPacket", packet.javaClass.interfaces[0])
+    sendMethod.invoke(connection, packet)
 }
 
 fun ItemStack.setUnbreakable(unbreakable: Boolean): ItemStack {
@@ -74,6 +127,23 @@ fun ItemStack.setLore(lore: List<String>): ItemStack {
 
     itemMeta = meta
     return this
+}
+
+/**
+ * Tries to return the [ParticleType] from the given [name].
+ */
+fun String.toParticleType(): ParticleType {
+    val version = VersionSupport.getServerVersion()
+
+    ParticleType.values().forEach { p ->
+        if (p.gameId_18.equals(this, true) || p.gameId_113.equals(this, true) || p.name.equals(this, true)) {
+            if (version.isVersionSameOrGreaterThan(VersionSupport.fromVersion(p.sinceVersion))) {
+                return p
+            }
+        }
+    }
+
+    throw IllegalArgumentException("ParticleType cannot be parsed from '" + this + "'.")
 }
 
 fun PersistenceService.runOnMainThread(runnable: Runnable) {

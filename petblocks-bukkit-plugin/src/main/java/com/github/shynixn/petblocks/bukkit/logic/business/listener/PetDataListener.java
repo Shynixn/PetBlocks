@@ -3,16 +3,16 @@ package com.github.shynixn.petblocks.bukkit.logic.business.listener;
 import com.github.shynixn.petblocks.api.business.entity.GUIItemContainer;
 import com.github.shynixn.petblocks.api.business.entity.PetBlock;
 import com.github.shynixn.petblocks.api.business.enumeration.GUIPage;
+import com.github.shynixn.petblocks.api.business.enumeration.ParticleType;
 import com.github.shynixn.petblocks.api.business.enumeration.Permission;
 import com.github.shynixn.petblocks.api.persistence.entity.EngineContainer;
-import com.github.shynixn.petblocks.api.persistence.entity.ParticleEffectMeta;
 import com.github.shynixn.petblocks.api.persistence.entity.PetMeta;
 import com.github.shynixn.petblocks.bukkit.PetBlocksPlugin;
 import com.github.shynixn.petblocks.bukkit.logic.business.PetBlockManager;
 import com.github.shynixn.petblocks.bukkit.logic.business.helper.ChatBuilderExtensionKt;
 import com.github.shynixn.petblocks.bukkit.logic.business.helper.PetBlockModifyHelper;
 import com.github.shynixn.petblocks.bukkit.logic.business.helper.SkinHelper;
-import com.github.shynixn.petblocks.bukkit.nms.v1_12_R1.MaterialCompatibility12;
+import com.github.shynixn.petblocks.bukkit.nms.v1_13_R1.MaterialCompatibility13;
 import com.github.shynixn.petblocks.core.logic.business.helper.ChatBuilder;
 import com.github.shynixn.petblocks.core.logic.persistence.configuration.Config;
 import org.bukkit.Bukkit;
@@ -215,6 +215,10 @@ public class PetDataListener extends SimpleListener {
     private void handleClick(InventoryClickEvent event, Player player, PetMeta petMeta, PetBlock petBlock) {
         final ItemStack currentItem = event.getCurrentItem();
         final int itemSlot = event.getSlot() + this.manager.pages.get(player).currentCount + 1;
+        if (itemSlot < 0) {
+            return;
+        }
+
         if (this.manager.pages.get(player).page == GUIPage.MAIN && this.getGUIItem("my-pet").getPosition() == event.getSlot()) {
             this.handleClickOnMyPetItem(player, petMeta);
         } else if (this.isGUIItem(currentItem, "empty-slot")) {
@@ -365,12 +369,12 @@ public class PetDataListener extends SimpleListener {
             this.manager.gui.setPage(player, GUIPage.MAIN, petMeta);
         } else {
             if (Config.getInstance().isCopySkinEnabled()) {
-                petMeta.setSkin(MaterialCompatibility12.getIdFromMaterial(Material.SKULL_ITEM), 3, this.getGUIItem("my-pet").getSkin(), this.getGUIItem("my-pet").isItemUnbreakable());
+                petMeta.setSkin(MaterialCompatibility13.getIdFromMaterial(Material.SKULL_ITEM), 3, this.getGUIItem("my-pet").getSkin(), this.getGUIItem("my-pet").isItemUnbreakable());
             } else {
                 final GUIItemContainer c = this.getGUIItem("default-appearance");
                 petMeta.setSkin(c.getItemId(), c.getItemDamage(), c.getSkin(), c.isItemUnbreakable());
             }
-            petMeta.getParticleEffectMeta().setEffectType(ParticleEffectMeta.ParticleEffectType.NONE);
+            petMeta.getParticleEffectMeta().setType(ParticleType.NONE);
             optPetBlock.ifPresent(PetBlock::respawn);
             this.persistAsynchronously(petMeta);
         }
@@ -395,9 +399,9 @@ public class PetDataListener extends SimpleListener {
                     return;
                 final SkullMeta meta = (SkullMeta) itemStack.getItemMeta();
                 if (meta.getOwner() == null) {
-                    petMeta.get().setSkin(MaterialCompatibility12.getIdFromMaterial(itemStack.getType()), itemStack.getDurability(), SkinHelper.getItemStackSkin(itemStack).get(), false);
+                    petMeta.get().setSkin(MaterialCompatibility13.getIdFromMaterial(itemStack.getType()), itemStack.getDurability(), SkinHelper.getItemStackSkin(itemStack).get(), false);
                 } else {
-                    petMeta.get().setSkin(MaterialCompatibility12.getIdFromMaterial(itemStack.getType()), itemStack.getDurability(), ((SkullMeta) itemStack.getItemMeta()).getOwner(), false);
+                    petMeta.get().setSkin(MaterialCompatibility13.getIdFromMaterial(itemStack.getType()), itemStack.getDurability(), ((SkullMeta) itemStack.getItemMeta()).getOwner(), false);
                 }
                 this.manager.getPetMetaController().store(petMeta.get());
                 this.plugin.getServer().getScheduler().runTask(this.plugin, () -> {

@@ -1,10 +1,8 @@
 package com.github.shynixn.petblocks.api;
 
 import com.github.shynixn.petblocks.api.business.controller.PetBlockController;
-import com.github.shynixn.petblocks.api.business.service.GUIService;
+import com.github.shynixn.petblocks.api.business.entity.PetBlocksPlugin;
 import com.github.shynixn.petblocks.api.persistence.controller.PetMetaController;
-
-import java.util.Optional;
 
 /**
  * PetBlocksApi for accessing and modifying PetBlocks and PetMeta.
@@ -37,16 +35,16 @@ public class PetBlocksApi {
 
     private static PetMetaController metaController;
     private static PetBlockController petBlockController;
-    private static GUIService guiService;
     public static final PetBlocksApi INSTANCE = new PetBlocksApi();
+    private static PetBlocksPlugin plugin;
 
     /**
      * Initializes the api.
      */
-    private static void initialize(PetMetaController petMetaController, PetBlockController petBlockController, GUIService guiService) {
+    private static void initialize(PetMetaController petMetaController, PetBlockController petBlockController, PetBlocksPlugin plugin) {
         PetBlocksApi.metaController = petMetaController;
         PetBlocksApi.petBlockController = petBlockController;
-        PetBlocksApi.guiService = guiService;
+        PetBlocksApi.plugin = plugin;
     }
 
     /**
@@ -56,12 +54,20 @@ public class PetBlocksApi {
      * @param <S>     type of Service.
      * @return optional S.
      */
-    public <S> Optional<S> resolve(Class<S> service) {
-        if (service == GUIService.class) {
-            return Optional.of((S) guiService);
-        }
+    public <S> S resolve(Class<S> service) {
+        return plugin.resolve(service);
+    }
 
-        return Optional.empty();
+    /**
+     * Creates a new entity from the given class.
+     * Throws a IllegalArgumentException if not found.
+     *
+     * @param entity entityClazz
+     * @param <E>    type
+     * @return entity.
+     */
+    public <E> E create(Class<E> entity) {
+        return plugin.create(entity);
     }
 
     /**

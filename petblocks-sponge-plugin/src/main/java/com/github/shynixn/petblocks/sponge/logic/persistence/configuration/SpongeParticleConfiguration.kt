@@ -1,8 +1,11 @@
 package com.github.shynixn.petblocks.sponge.logic.persistence.configuration
 
+import com.github.shynixn.petblocks.api.business.enumeration.ParticleType
 import com.github.shynixn.petblocks.core.logic.persistence.configuration.ParticleConfiguration
+import com.github.shynixn.petblocks.core.logic.persistence.entity.ParticleEntity
+import com.github.shynixn.petblocks.sponge.logic.business.helper.CompatibilityItemType
+import com.github.shynixn.petblocks.sponge.logic.business.helper.toParticleType
 import com.github.shynixn.petblocks.sponge.logic.persistence.entity.SpongeItemContainer
-import com.github.shynixn.petblocks.sponge.logic.persistence.entity.SpongeParticleEffect
 import com.google.inject.Inject
 import org.slf4j.Logger
 import org.spongepowered.api.entity.living.player.Player
@@ -48,10 +51,43 @@ class SpongeParticleConfiguration : ParticleConfiguration<Player>() {
         for (key in data!!.keys) {
             try {
                 val container = SpongeItemContainer(key, data[key] as Map<String, Any>)
-                val meta = SpongeParticleEffect((data[key] as Map<String, Any>)["effect"] as Map<String, Any>)
-                this.particleCache[container] = meta
+                val entityParticle = ParticleEntity(ParticleType.NONE)
+                val values = (data[key] as Map<String, Any>)["effect"] as Map<String, Any>
+
+                with(entityParticle) {
+                    type = (values["name"] as String).toParticleType()
+                    amount = values["amount"] as Int
+                    speed = values["speed"] as Double
+                }
+
+                if (values.containsKey("offx")) {
+                    with(entityParticle) {
+                        offSetX = values["offx"] as Double
+                        offSetY = values["offy"] as Double
+                        offSetZ = values["offz"] as Double
+                    }
+                }
+
+                if (values.containsKey("red")) {
+                    with(entityParticle) {
+                        colorRed = values["red"] as Int
+                        colorGreen = values["green"] as Int
+                        colorBlue = values["blue"] as Int
+                    }
+                }
+
+
+                if (values.containsKey("id")) {
+                    if (values["id"] is String) {
+                        entityParticle.materialName = values["id"] as String
+                    } else {
+                        entityParticle.materialName = CompatibilityItemType.getFromId(values["id"] as Int).name
+                    }
+                }
+
+                this.particleCache[container] = entityParticle
             } catch (e: Exception) {
-                logger.error("Failed to load particle " + key + '.'.toString(), e)
+                logger.warn("Failed to load particle " + key + '.'.toString(), e)
             }
         }
     }

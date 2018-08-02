@@ -6,11 +6,12 @@ import com.github.shynixn.petblocks.api.persistence.controller.ParticleEffectMet
 import com.github.shynixn.petblocks.api.persistence.controller.PetMetaController;
 import com.github.shynixn.petblocks.api.persistence.controller.PlayerMetaController;
 import com.github.shynixn.petblocks.api.persistence.entity.EngineContainer;
-import com.github.shynixn.petblocks.api.persistence.entity.ParticleEffectMeta;
+import com.github.shynixn.petblocks.api.persistence.entity.Particle;
 import com.github.shynixn.petblocks.api.persistence.entity.PetMeta;
 import com.github.shynixn.petblocks.api.persistence.entity.PlayerMeta;
 import com.github.shynixn.petblocks.core.logic.business.entity.DbContext;
 import com.github.shynixn.petblocks.core.logic.persistence.configuration.Config;
+import com.github.shynixn.petblocks.core.logic.persistence.entity.ParticleEntity;
 import com.github.shynixn.petblocks.core.logic.persistence.entity.PetData;
 import org.slf4j.Logger;
 
@@ -105,7 +106,7 @@ public abstract class PetDataRepository<Player> extends DataBaseRepository<PetMe
         }
         this.playerMetaController.store(item.getPlayerMeta());
         this.particleEffectMetaController.store(item.getParticleEffectMeta());
-        ((PetData) item).setParticleId(item.getParticleEffectMeta().getId());
+        ((PetData) item).setParticleId(((ParticleEntity) item.getParticleEffectMeta()).getId());
         ((PetData) item).setPlayerId(item.getPlayerMeta().getId());
         super.store(item);
     }
@@ -176,10 +177,10 @@ public abstract class PetDataRepository<Player> extends DataBaseRepository<PetMe
 
         petMeta.setEngine(optEngineContainer.get(), false);
         final PetData petData = (PetData) petMeta;
-        final Optional<ParticleEffectMeta> optParticleEffectMeta;
+        final Optional<Particle> optParticleEffectMeta;
         final Optional<PlayerMeta> optPlayerMeta;
         if ((optParticleEffectMeta = this.particleEffectMetaController.getFromId(petData.getParticleId())).isPresent()) {
-            petData.setParticleEffectMeta(optParticleEffectMeta.get());
+            petData.setParticleEffectMeta((ParticleEntity) optParticleEffectMeta.get());
         }
         if ((optPlayerMeta = this.playerMetaController.getFromId(petData.getPlayerId())).isPresent()) {
             petData.setPlayerMeta(optPlayerMeta.get());

@@ -29,7 +29,7 @@ import com.github.shynixn.petblocks.api.persistence.entity.PetMeta;
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-public interface PetBlock<Player,Location> {
+public interface PetBlock<Player, Location> {
 
     @Deprecated
     void setSkin(String skin);
@@ -45,12 +45,6 @@ public interface PetBlock<Player,Location> {
 
     @Deprecated
     boolean isDieing();
-
-    /**
-     * Returns the pipeline for managed effect playing.
-     * @return pipeline
-     */
-    EffectPipeline<Location> getEffectPipeline();
 
     /**
      * Returns the meta of the petblock.
@@ -104,7 +98,7 @@ public interface PetBlock<Player,Location> {
      *
      * @return name
      */
-    String getDisplayName();
+    String getEntityDisplayName();
 
     /**
      * Respawns the petblock

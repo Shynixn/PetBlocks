@@ -1,13 +1,15 @@
-package com.github.shynixn.petblocks.api.persistence.entity;
+package com.github.shynixn.petblocks.api.business.service
+
+import com.github.shynixn.petblocks.api.persistence.entity.Particle
 
 /**
- * Metadata about sounds.
+ * Handles particle effects in the world.
  * <p>
- * Version 1.1
+ * Version 1.2
  * <p>
  * MIT License
  * <p>
- * Copyright (c) 2017 by Shynixn
+ * Copyright (c) 2018 by Shynixn
  * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -27,49 +29,15 @@ package com.github.shynixn.petblocks.api.persistence.entity;
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-public interface SoundMeta extends Persistenceable {
+interface ParticleService {
     /**
-     * Returns the name of the sound.
-     *
-     * @return name
+     * Plays the given [particle] at the given [location] for the given [player] or
+     * all players in the world if the config option all visible is enabled.
      */
-    String getName();
+    fun <L, P> playParticle(location: L, particle: Particle, player: P)
 
     /**
-     * Sets the name of the sound.
-     *
-     * @param name name
-     * @return builder
+     * Plays the given [particle] at the given [location] for the given [players].
      */
-    SoundMeta setName(String name);
-
-    /**
-     * Returns the volume of the sound.
-     *
-     * @return volume
-     */
-    double getVolume();
-
-    /**
-     * Sets the volume of the sound.
-     *
-     * @param volume volume
-     * @return builder
-     */
-    SoundMeta setVolume(double volume);
-
-    /**
-     * Returns the pitch of the sound.
-     *
-     * @return pitch
-     */
-    double getPitch();
-
-    /**
-     * Sets the pitch of the sound.
-     *
-     * @param pitch pitch
-     * @return builder
-     */
-    SoundMeta setPitch(double pitch);
+    fun <L, P> playParticle(location: L, particle: Particle, players: Collection<P>)
 }

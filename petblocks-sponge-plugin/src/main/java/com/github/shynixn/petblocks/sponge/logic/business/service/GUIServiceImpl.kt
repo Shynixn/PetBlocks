@@ -19,6 +19,7 @@ import org.spongepowered.api.entity.living.player.Player
 import org.spongepowered.api.item.ItemTypes
 import org.spongepowered.api.item.inventory.Inventory
 import org.spongepowered.api.item.inventory.ItemStack
+import org.spongepowered.api.item.inventory.type.CarriedInventory
 import org.spongepowered.api.item.inventory.type.GridInventory
 import org.spongepowered.api.plugin.PluginContainer
 
@@ -160,7 +161,11 @@ class GUIServiceImpl @Inject constructor(private val configurationService: Confi
             throw IllegalArgumentException("Inventory has to be a SpongeInventory!")
         }
 
-        return petBlocksManager.inventories.containsKey(inventory.getHolder())
+        if (inventory !is CarriedInventory<*>) {
+            return false
+        }
+
+        return petBlocksManager.inventories.containsKey((inventory as CarriedInventory<Player>).carrier.get())
     }
 
     /**
@@ -186,9 +191,9 @@ class GUIServiceImpl @Inject constructor(private val configurationService: Confi
 
         if (optItems.isPresent) {
             if (amountOfSlots < 0) {
-                setItemsToInventory(player, petBlocksManager.inventories[player]!!, amountOfSlots, optItems.get(), permission)
+                setItemsToInventory(player, petBlocksManager.inventories[player]!! as CarriedInventory<Player>, amountOfSlots, optItems.get(), permission)
             } else {
-                setItemsToInventory(player, petBlocksManager.inventories[player]!!, amountOfSlots, optItems.get(), permission)
+                setItemsToInventory(player, petBlocksManager.inventories[player]!! as CarriedInventory<Player>, amountOfSlots, optItems.get(), permission)
             }
         }
     }
@@ -201,8 +206,14 @@ class GUIServiceImpl @Inject constructor(private val configurationService: Confi
             throw IllegalArgumentException("Inventory has to be an SpongeInventory!")
         }
 
-        if (!pageCache.containsKey(inventory.getHolder())) {
-            this.pageCache[inventory.getHolder()] = PlayerGUICache()
+        if (inventory !is CarriedInventory<*>) {
+            return
+        }
+
+        val player = (inventory as CarriedInventory<Player>).carrier.get()
+
+        if (!pageCache.containsKey(player)) {
+            this.pageCache[player] = PlayerGUICache()
         }
 
         val optItems = configurationService.findGUIItemCollection(path)
@@ -218,17 +229,17 @@ class GUIServiceImpl @Inject constructor(private val configurationService: Confi
                         .builder()
             }
 
-            collectedMinecraftHeadsMessage!!.sendMessage(inventory.getHolder())
+            collectedMinecraftHeadsMessage!!.sendMessage(player)
         }
 
         if (optItems.isPresent) {
-            this.pageCache[inventory.getHolder()]!!.path = path
-            this.pageCache[inventory.getHolder()]!!.permission = permission
-            setItemsToInventory(inventory.getHolder(), inventory, 45, optItems.get(), permission)
+            this.pageCache[player]!!.path = path
+            this.pageCache[player]!!.permission = permission
+            setItemsToInventory(player, inventory, 45, optItems.get(), permission)
         }
     }
 
-    private fun setItemsToInventory(player: Player, inventory: Inventory, type: Int, items: List<GUIItem>, groupPermission: String?) {
+    private fun setItemsToInventory(player: Player, inventory: CarriedInventory<Player>, type: Int, items: List<GUIItem>, groupPermission: String?) {
         val previousContainer = petBlocksManager.pages[player]
         val container: GuiPageContainer
         val page = GUIPage.CUSTOM_COLLECTION
@@ -359,8 +370,8 @@ class GUIServiceImpl @Inject constructor(private val configurationService: Confi
     /**
      * Fills up the given [inventory] with the default item.
      */
-    private fun fillEmptySlots(inventory: Inventory) {
-        val player = inventory.getHolder()
+    private fun fillEmptySlots(inventory: CarriedInventory<Player>) {
+        val player = inventory.carrier.get()
 
         for (i in 0..53) {
             inventory.query<Inventory>(GridInventory::class.java)

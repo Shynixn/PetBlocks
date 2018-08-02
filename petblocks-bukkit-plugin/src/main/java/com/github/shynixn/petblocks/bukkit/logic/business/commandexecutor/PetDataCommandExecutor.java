@@ -8,7 +8,7 @@ import com.github.shynixn.petblocks.api.persistence.entity.PetMeta;
 import com.github.shynixn.petblocks.bukkit.PetBlocksPlugin;
 import com.github.shynixn.petblocks.bukkit.logic.business.PetBlockManager;
 import com.github.shynixn.petblocks.bukkit.logic.business.helper.PetBlockModifyHelper;
-import com.github.shynixn.petblocks.bukkit.nms.v1_12_R1.MaterialCompatibility12;
+import com.github.shynixn.petblocks.bukkit.nms.v1_13_R1.MaterialCompatibility13;
 import com.github.shynixn.petblocks.core.logic.business.entity.PetRunnable;
 import com.github.shynixn.petblocks.core.logic.persistence.configuration.Config;
 import org.bukkit.Material;
@@ -126,7 +126,7 @@ public final class PetDataCommandExecutor extends SimpleCommandExecutor.UnRegist
             player.sendMessage(Config.getInstance().getPrefix() + Config.getInstance().getSkullNamingErrorMessage());
         } else {
             try {
-                petMeta.setSkin(MaterialCompatibility12.getIdFromMaterial(Material.SKULL_ITEM), 3, message, false);
+                petMeta.setSkin(MaterialCompatibility13.getIdFromMaterial(Material.SKULL_ITEM), 3, message, false);
                 this.persistAsynchronously(petMeta);
                 if (petBlock != null)
                     petBlock.respawn();

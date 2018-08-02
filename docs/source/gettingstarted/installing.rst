@@ -11,14 +11,20 @@ Java 8, Java 9 and Java 10 can be used to run PetBlocks.
 Spigot/Sponge
 ~~~~~~~~~~~~~
 
-* Spigot *(1.8.0 - 1.12.2)* ✔
-* PaperSpigot *(1.8.0 - 1.12.2)* ✔
-* CraftBukkit *(1.8.0 - 1.12.2)* ✔
+* Spigot *(1.8.0 - 1.13.0)* ✔
+* PaperSpigot *(1.8.0 - 1.13.0)* ✔
+* CraftBukkit *(1.8.0 - 1.13.0)* ✔
 * SpongeVanilla *(1.12.0 - 1.12.2)* ✔
 * SpongeForge *(1.12.0 - 1.12.2)* **Please see below.**
 
 SpongeForge
 ~~~~~~~~~~~
+
+PetBlocks v7.2.0 was tested with the following configuration:
+
+* Minecraft Forge 1.12.2 - 14.23.4.2705 (Server + Client)
+* SpongeForge 1.12.2-2705-7.1.0-BETA-3361
+
 
 There seem to be some issues concerning compatibility with server-only entities (PetBlocks Pets) and Forge.
 SpongeForge is supported in experimental stage but there seem to be issues with some Minecraft Clients.

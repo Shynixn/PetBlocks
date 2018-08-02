@@ -1,11 +1,6 @@
-package com.github.shynixn.petblocks.bukkit.logic.persistence.controller
+package com.github.shynixn.petblocks.api.business.service
 
-import com.github.shynixn.petblocks.api.persistence.entity.ParticleEffectMeta
-import com.github.shynixn.petblocks.bukkit.PetBlocksPlugin
-import com.github.shynixn.petblocks.bukkit.logic.business.helper.LoggingBridge
-import com.github.shynixn.petblocks.bukkit.logic.persistence.entity.BukkitParticleEffect
-import com.github.shynixn.petblocks.core.logic.business.entity.DbContext
-import com.github.shynixn.petblocks.core.logic.persistence.controller.ParticleEffectDataRepository
+import com.github.shynixn.petblocks.api.persistence.entity.Sound
 
 /**
  * Created by Shynixn 2018.
@@ -34,13 +29,15 @@ import com.github.shynixn.petblocks.core.logic.persistence.controller.ParticleEf
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class BukkitParticleEffectDataRepository(connectionContext: DbContext) : ParticleEffectDataRepository(connectionContext, LoggingBridge(PetBlocksPlugin.logger())) {
+interface SoundService {
     /**
-     * Creates a new particleEffectMeta.
-     *
-     * @return meta
+     * Plays the given [sound] at the given [location] for the given [player] or
+     * all players in the world if the config option is enabled.
      */
-    override fun create(): ParticleEffectMeta {
-        return BukkitParticleEffect()
-    }
+    fun <L, P> playSound(location: L, sound: Sound, player: P)
+
+    /**
+     * Plays the given [sound] at the given [location] for the given [players].
+     */
+    fun <L, P> playSound(location: L, sound: Sound, players: Collection<P>)
 }

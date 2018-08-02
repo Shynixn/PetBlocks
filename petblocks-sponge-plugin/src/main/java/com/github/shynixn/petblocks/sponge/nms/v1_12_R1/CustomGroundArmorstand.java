@@ -1,8 +1,11 @@
 package com.github.shynixn.petblocks.sponge.nms.v1_12_R1;
 
 import com.flowpowered.math.vector.Vector3d;
+import com.github.shynixn.petblocks.api.PetBlocksApi;
 import com.github.shynixn.petblocks.api.business.entity.PetBlockPartEntity;
 import com.github.shynixn.petblocks.api.business.enumeration.RideType;
+import com.github.shynixn.petblocks.api.business.service.ParticleService;
+import com.github.shynixn.petblocks.api.business.service.SoundService;
 import com.github.shynixn.petblocks.api.persistence.entity.IPosition;
 import com.github.shynixn.petblocks.api.persistence.entity.PetMeta;
 import com.github.shynixn.petblocks.api.sponge.event.PetBlockMoveEvent;
@@ -33,6 +36,7 @@ import org.spongepowered.api.entity.living.ArmorStand;
 import org.spongepowered.api.entity.living.Living;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.item.inventory.ItemStack;
+import org.spongepowered.api.world.Location;
 
 import java.util.Random;
 import java.util.logging.Level;
@@ -49,6 +53,9 @@ final class CustomGroundArmorstand extends EntityArmorStand {
     private int counter;
     private Vector3d bumper;
     private boolean isGroundRiding;
+
+    private final SoundService soundService = PetBlocksApi.INSTANCE.resolve(SoundService.class);
+    private final ParticleService particleService = PetBlocksApi.INSTANCE.resolve(ParticleService.class);
 
     /**
      * Default necessary constructor.
@@ -131,7 +138,9 @@ final class CustomGroundArmorstand extends EntityArmorStand {
                 if (this.counter <= 0) {
                     final Random random = new Random();
                     if (!engine.isOnGround() || petData.getEngine().getEntityType().equalsIgnoreCase("ZOMBIE")) {
-                        this.wrapper.getEffectPipeline().playSound(this.wrapper.getLocation(), this.wrapper.getMeta().getEngine().getAmbientSound());
+                        if (petData.isSoundEnabled()) {
+                            this.soundService.playSound(this.wrapper.getLocation().getLocation(), this.wrapper.getMeta().getEngine().getAmbientSound(), (Player) petData.getPlayerMeta().getPlayer());
+                        }
                     }
                     this.counter = 20 * random.nextInt(20) + 1;
                 }
@@ -139,7 +148,7 @@ final class CustomGroundArmorstand extends EntityArmorStand {
                     return;
                 }
                 if (petData.getParticleEffectMeta() != null) {
-                    this.wrapper.getEffectPipeline().playParticleEffect(armorStand.getTransform().add(new Transform<>(armorStand.getTransform().getExtent(), new Vector3d(0, 1, 0))), petData.getParticleEffectMeta());
+                    this.particleService.<Location, Player>playParticle(armorStand.getLocation().add(0, 1, 0), petData.getParticleEffectMeta(), petData.getPlayerMeta().<Player>getPlayer());
                 }
                 this.counter--;
             } else if (engine != null) {

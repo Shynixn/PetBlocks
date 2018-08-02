@@ -1,13 +1,18 @@
 package com.github.shynixn.petblocks.bukkit.logic.persistence.configuration
 
-import com.github.shynixn.petblocks.api.persistence.entity.ParticleEffectMeta
+import com.github.shynixn.petblocks.api.business.enumeration.ParticleType
+import com.github.shynixn.petblocks.api.persistence.entity.Particle
 import com.github.shynixn.petblocks.api.persistence.entity.PetMeta
-import com.github.shynixn.petblocks.api.persistence.entity.SoundMeta
+import com.github.shynixn.petblocks.api.persistence.entity.Sound
 import com.github.shynixn.petblocks.bukkit.PetBlocksPlugin
+import com.github.shynixn.petblocks.bukkit.logic.business.helper.toParticleType
 import com.github.shynixn.petblocks.bukkit.nms.NMSRegistry
+import com.github.shynixn.petblocks.bukkit.nms.v1_13_R1.MaterialCompatibility13
 import com.github.shynixn.petblocks.core.logic.business.helper.ChatBuilder
 import com.github.shynixn.petblocks.core.logic.persistence.configuration.Config
+import com.github.shynixn.petblocks.core.logic.persistence.entity.ParticleEntity
 import com.github.shynixn.petblocks.core.logic.persistence.entity.PetData
+import com.github.shynixn.petblocks.core.logic.persistence.entity.SoundEntity
 import com.google.inject.Singleton
 import org.bukkit.Bukkit
 import org.bukkit.ChatColor
@@ -93,13 +98,7 @@ object Config : Config<Player>() {
         petMeta.age = this.getData<Int>("join.settings.age")!!.toLong()
 
         if (!(this.getData<Any>("join.settings.effect.name") as String).equals("none", ignoreCase = true)) {
-            val meta: ParticleEffectMeta
-            try {
-                meta = createParticleComp((this.getData<Any>("join.settings.effect") as MemorySection).getValues(false))
-                petMeta.particleEffectMeta = meta
-            } catch (e: Exception) {
-                PetBlocksPlugin.logger().log(Level.WARNING, "Failed to load particle effect for join pet.")
-            }
+            petData.setParticleEffectMeta(generateParticleEffectCompatibility("join.settings.effect"))
         }
     }
 
@@ -137,10 +136,13 @@ object Config : Config<Player>() {
      *
      * @return sound
      */
-    fun getFeedingClickSound(): SoundMeta {
+    fun getFeedingClickSound(): Sound {
         if (this.feedingClickSoundCache == null) {
             try {
-                this.feedingClickSoundCache = this.createSoundComp((this.getData<Any>("pet.feeding.click-sound") as MemorySection).getValues(false))
+                val data = (this.getData<Any>("pet.feeding.click-sound") as MemorySection).getValues(false)
+                this.feedingClickSoundCache = SoundEntity(data["name"] as String)
+                this.feedingClickSoundCache.volume = data["volume"] as Double
+                this.feedingClickSoundCache.pitch = data["pitch"] as Double
             } catch (e: Exception) {
                 PetBlocksPlugin.logger().log(Level.WARNING, "Failed to load feeding click-sound.", e)
             }
@@ -149,41 +151,59 @@ object Config : Config<Player>() {
         return this.feedingClickSoundCache
     }
 
-    private fun createSoundComp(data: Map<String, Any>): SoundMeta {
-        try {
-            val clazz = Class.forName("com.github.shynixn.petblocks.bukkit.logic.persistence.entity.BukkitSoundBuilder")
-            val constructor = clazz.getDeclaredConstructor(Map::class.java)
-            return constructor.newInstance(data) as SoundMeta
-        } catch (e: Exception) {
-            throw RuntimeException(e)
-        }
-    }
-
-    private fun createParticleComp(data: Map<String, Any>): ParticleEffectMeta {
-        try {
-            val clazz = Class.forName("com.github.shynixn.petblocks.bukkit.logic.persistence.entity.BukkitParticleEffect")
-            val constructor = clazz.getDeclaredConstructor(Map::class.java)
-            return constructor.newInstance(data) as ParticleEffectMeta
-        } catch (e: Exception) {
-            throw RuntimeException(e)
-        }
-    }
-
     /**
      * Returns the feeding particleEffect.
      *
      * @return particleEffect
      */
-    fun getFeedingClickParticleEffect(): ParticleEffectMeta {
+    fun getFeedingClickParticleEffect(): Particle {
         if (this.feedingClickParticleCache == null) {
             try {
-                this.feedingClickParticleCache = this.createParticleComp((this.getData<Any>("pet.feeding.click-particle") as MemorySection).getValues(false))
+                feedingClickParticleCache = generateParticleEffectCompatibility("pet.feeding.click-particle")
             } catch (e: Exception) {
                 PetBlocksPlugin.logger().log(Level.WARNING, "Failed to load feeding click-sound.", e)
             }
 
         }
         return this.feedingClickParticleCache
+    }
+
+    private fun generateParticleEffectCompatibility(path: String): ParticleEntity {
+        val entityParticle = ParticleEntity(ParticleType.NONE)
+        val values = (this.getData<Any>(path) as MemorySection).getValues(false)
+
+        with(entityParticle) {
+            type = (values["name"] as String).toParticleType()
+            amount = values["amount"] as Int
+            speed = values["speed"] as Double
+        }
+
+        if (values.containsKey("offx")) {
+            with(entityParticle) {
+                offSetX = values["offx"] as Double
+                offSetY = values["offy"] as Double
+                offSetZ = values["offz"] as Double
+            }
+        }
+
+        if (values.containsKey("red")) {
+            with(entityParticle) {
+                colorRed = values["red"] as Int
+                colorGreen = values["green"] as Int
+                colorBlue = values["blue"] as Int
+            }
+        }
+
+
+        if (values.containsKey("id")) {
+            if (values["id"] is String) {
+                entityParticle.materialName = values["id"] as String
+            } else {
+                entityParticle.materialName = MaterialCompatibility13.getMaterialFromId(values["id"] as Int).name
+            }
+        }
+
+        return entityParticle
     }
 
     /**

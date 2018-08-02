@@ -1,13 +1,11 @@
 package com.github.shynixn.petblocks.bukkit.nms.v1_12_R1;
 
 import com.github.shynixn.petblocks.api.bukkit.event.PetBlockSpawnEvent;
-import com.github.shynixn.petblocks.api.business.entity.EffectPipeline;
 import com.github.shynixn.petblocks.api.business.entity.PetBlock;
 import com.github.shynixn.petblocks.api.business.entity.PetBlockPartEntity;
 import com.github.shynixn.petblocks.api.business.enumeration.RideType;
 import com.github.shynixn.petblocks.api.persistence.entity.PetMeta;
 import com.github.shynixn.petblocks.bukkit.PetBlocksPlugin;
-import com.github.shynixn.petblocks.bukkit.logic.business.entity.Pipeline;
 import com.github.shynixn.petblocks.bukkit.logic.persistence.configuration.Config;
 import com.github.shynixn.petblocks.bukkit.nms.NMSRegistry;
 import com.github.shynixn.petblocks.bukkit.nms.helper.PetBlockHelper;
@@ -42,8 +40,6 @@ final class CustomGroundArmorstand extends EntityArmorStand implements PetBlock 
 
     private boolean hitflor;
 
-    private Pipeline pipeline;
-
     public CustomGroundArmorstand(World world) {
         super(world);
     }
@@ -60,7 +56,6 @@ final class CustomGroundArmorstand extends EntityArmorStand implements PetBlock 
         else
             throw new RuntimeException("Cannot find engine!");
 
-        this.pipeline = new Pipeline(this);
         this.spawn(location);
     }
 
@@ -296,16 +291,6 @@ final class CustomGroundArmorstand extends EntityArmorStand implements PetBlock 
         return this.isDieing;
     }
 
-    /**
-     * Returns the pipeline for managed effect playing.
-     *
-     * @return effectPipeLine
-     */
-    @Override
-    public EffectPipeline getEffectPipeline() {
-        return this.pipeline;
-    }
-
     @Override
     public void setSkin(String skin) {
         PetBlockHelper.setSkin(this, skin);
@@ -427,12 +412,12 @@ final class CustomGroundArmorstand extends EntityArmorStand implements PetBlock 
     }
 
     /**
-     * Returns the displayName of the petblock
+     * Returns the displayName of the petblock.
      *
      * @return name
      */
     @Override
-    public String getDisplayName() {
+    public String getEntityDisplayName() {
         return ((ArmorStand) this.getArmorStand()).getCustomName();
     }
 

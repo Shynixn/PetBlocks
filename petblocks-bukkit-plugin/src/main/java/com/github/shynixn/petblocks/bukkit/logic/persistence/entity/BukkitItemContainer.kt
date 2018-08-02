@@ -4,7 +4,7 @@ import com.github.shynixn.petblocks.api.business.enumeration.GUIPage
 import com.github.shynixn.petblocks.bukkit.PetBlocksPlugin
 import com.github.shynixn.petblocks.bukkit.logic.business.helper.PetBlockModifyHelper
 import com.github.shynixn.petblocks.bukkit.logic.business.helper.SkinHelper
-import com.github.shynixn.petblocks.bukkit.nms.v1_12_R1.MaterialCompatibility12
+import com.github.shynixn.petblocks.bukkit.nms.v1_13_R1.MaterialCompatibility13
 import com.github.shynixn.petblocks.core.logic.persistence.configuration.Config
 import com.github.shynixn.petblocks.core.logic.persistence.entity.ItemContainer
 import org.bukkit.Bukkit
@@ -63,8 +63,8 @@ class BukkitItemContainer : ItemContainer<Player> {
         }
         try {
             if (this.isEnabled) {
-                var itemStack: ItemStack? = ItemStack(MaterialCompatibility12.getMaterialFromId(this.itemId), 1, this.itemDamage.toShort())
-                if (this.itemId == MaterialCompatibility12.getIdFromMaterial(Material.SKULL_ITEM) && this.skin != null) {
+                var itemStack: ItemStack? = ItemStack(MaterialCompatibility13.getMaterialFromId(this.itemId), 1, this.itemDamage.toShort())
+                if (this.itemId == MaterialCompatibility13.getIdFromMaterial(Material.SKULL_ITEM) && this.skin != null) {
                     if (this.skin.contains("textures.minecraft.net")) {
                         SkinHelper.setItemStackSkin(itemStack, "http://" + this.skin)
                     } else {

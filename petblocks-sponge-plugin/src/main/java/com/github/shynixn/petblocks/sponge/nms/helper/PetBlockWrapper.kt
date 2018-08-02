@@ -1,17 +1,18 @@
 package com.github.shynixn.petblocks.sponge.nms.helper
 
 import com.flowpowered.math.vector.Vector3d
-import com.github.shynixn.petblocks.api.business.entity.EffectPipeline
+import com.github.shynixn.petblocks.api.PetBlocksApi
 import com.github.shynixn.petblocks.api.business.entity.PetBlock
+import com.github.shynixn.petblocks.api.business.service.SoundService
 import com.github.shynixn.petblocks.api.persistence.entity.PetMeta
+import com.github.shynixn.petblocks.api.persistence.entity.Sound
 import com.github.shynixn.petblocks.api.sponge.event.PetBlockCannonEvent
 import com.github.shynixn.petblocks.api.sponge.event.PetBlockRideEvent
 import com.github.shynixn.petblocks.api.sponge.event.PetBlockWearEvent
 import com.github.shynixn.petblocks.core.logic.business.helper.ReflectionUtils
-import com.github.shynixn.petblocks.sponge.logic.business.entity.Pipeline
+import com.github.shynixn.petblocks.core.logic.persistence.entity.SoundEntity
 import com.github.shynixn.petblocks.sponge.logic.business.helper.findServerVersion
 import com.github.shynixn.petblocks.sponge.logic.persistence.configuration.Config
-import com.github.shynixn.petblocks.sponge.logic.persistence.entity.SpongeSoundBuilder
 import com.github.shynixn.petblocks.sponge.nms.VersionSupport
 import org.spongepowered.api.Sponge
 import org.spongepowered.api.data.key.Keys
@@ -50,6 +51,14 @@ import org.spongepowered.api.world.World
  * SOFTWARE.
  */
 class PetBlockWrapper(firstSpawn: Transform<World>, private val owner: Player, private val petMeta: PetMeta) : PetBlock<Player, Transform<World>> {
+    /**
+     * Returns the displayName of the petblock.
+     *
+     * @return name
+     */
+    override fun getEntityDisplayName(): String {
+        return (this.armorStand as ArmorStand).get<Text>(Keys.DISPLAY_NAME).get().toPlain()
+    }
 
     object Companion {
         var spawnMethod = Class.forName("com.github.shynixn.petblocks.sponge.nms.VERSION.CustomGroundArmorstand".replace("VERSION", VersionSupport.getServerVersion().versionText)).getDeclaredMethod("spawn", Transform::class.java)
@@ -62,15 +71,17 @@ class PetBlockWrapper(firstSpawn: Transform<World>, private val owner: Player, p
     private var engine: Living
     private var armorstandEntity: ArmorStand
 
-    private val pipeline = Pipeline(this)
-
     var health = 20.0
     private var dieng = false
     var hitflor: Boolean = false
 
-    private val explosionSound = SpongeSoundBuilder("EXPLODE", 1.0, 2.0)
+    private var explosionSound: Sound? = null
 
     init {
+        explosionSound = SoundEntity("EXPLODE")
+        explosionSound!!.volume = 1.0
+        explosionSound!!.pitch = 2.0
+
         armorstandEntity = ReflectionUtils.invokeConstructor(Class.forName("com.github.shynixn.petblocks.sponge.nms.VERSION.CustomGroundArmorstand".findServerVersion()), arrayOf(player.transform.javaClass, PetBlockWrapper::class.java), arrayOf(firstSpawn, this)) as ArmorStand
         Companion.engine.isAccessible = true
         val partWrapper = Companion.engine.get(armorstandEntity) as PetBlockPartWrapper
@@ -102,14 +113,6 @@ class PetBlockWrapper(firstSpawn: Transform<World>, private val owner: Player, p
 
     override fun isDieing(): Boolean {
         return dieng
-    }
-
-    /**
-     * Returns the pipeline for managed effect playing.
-     * @return pipeline
-     */
-    override fun getEffectPipeline(): EffectPipeline<Transform<World>> {
-        return pipeline
     }
 
     /**
@@ -208,15 +211,6 @@ class PetBlockWrapper(firstSpawn: Transform<World>, private val owner: Player, p
     }
 
     /**
-     * Returns the displayName of the petblock.
-     *
-     * @return name
-     */
-    override fun getDisplayName(): String {
-        return (this.armorStand as ArmorStand).get<Text>(Keys.DISPLAY_NAME).get().toPlain()
-    }
-
-    /**
      * Respawns the petblock
      */
     override fun respawn() {
@@ -302,7 +296,11 @@ class PetBlockWrapper(firstSpawn: Transform<World>, private val owner: Player, p
         Sponge.getEventManager().post(event)
         if (!event.isCancelled) {
             engine.velocity = vector as Vector3d
-            effectPipeline.playSound(location, explosionSound)
+
+            if (petMeta.isSoundEnabled) {
+                val soundService = PetBlocksApi.INSTANCE.resolve(SoundService::class.java)
+                soundService.playSound(location.location, explosionSound!!, player)
+            }
         }
     }
 

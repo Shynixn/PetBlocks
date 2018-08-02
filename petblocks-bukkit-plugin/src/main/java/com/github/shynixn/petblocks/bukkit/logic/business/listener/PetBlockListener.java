@@ -4,6 +4,8 @@ import com.github.shynixn.petblocks.api.PetBlocksApi;
 import com.github.shynixn.petblocks.api.bukkit.event.PetBlockMoveEvent;
 import com.github.shynixn.petblocks.api.bukkit.event.PetBlockRideEvent;
 import com.github.shynixn.petblocks.api.business.entity.PetBlock;
+import com.github.shynixn.petblocks.api.business.service.ParticleService;
+import com.github.shynixn.petblocks.api.business.service.SoundService;
 import com.github.shynixn.petblocks.api.persistence.entity.PetMeta;
 import com.github.shynixn.petblocks.bukkit.PetBlocksPlugin;
 import com.github.shynixn.petblocks.bukkit.logic.business.PetBlockManager;
@@ -66,6 +68,8 @@ public class PetBlockListener extends SimpleListener {
 
     private final PetBlockManager manager;
     private final Set<PetBlock> jumped = new HashSet<>();
+    private ParticleService particleService;
+    private SoundService soundService;
 
     /**
      * Initializes a new petblockListener from the manager and plugin.
@@ -242,8 +246,16 @@ public class PetBlockListener extends SimpleListener {
             final PetBlock petBlock = this.getPet(event.getRightClicked());
             if (petBlock != null && petBlock.getPlayer().equals(event.getPlayer())) {
                 if (Config.INSTANCE.isFeedingEnabled() && NMSRegistry.getItemInHand19(event.getPlayer(), false) != null && NMSRegistry.getItemInHand19(event.getPlayer(), false).getType() == Material.CARROT_ITEM) {
-                    petBlock.getEffectPipeline().playParticleEffect(event.getRightClicked().getLocation(), Config.INSTANCE.getFeedingClickParticleEffect());
-                    petBlock.getEffectPipeline().playSound(event.getRightClicked().getLocation(), Config.INSTANCE.getFeedingClickSound());
+                    if (this.soundService == null) {
+                        this.particleService = PetBlocksApi.INSTANCE.resolve(ParticleService.class);
+                        this.soundService = PetBlocksApi.INSTANCE.resolve(SoundService.class);
+                    }
+
+                    if (petBlock.getMeta().isSoundEnabled()) {
+                        this.soundService.playSound(event.getRightClicked().getLocation(), Config.INSTANCE.getFeedingClickSound(), event.getPlayer());
+                    }
+
+                    this.particleService.playParticle(event.getRightClicked().getLocation(), Config.INSTANCE.getFeedingClickParticleEffect(), event.getPlayer());
                     if (NMSRegistry.getItemInHand19(event.getPlayer(), false).getAmount() == 1)
                         event.getPlayer().getInventory().setItem(event.getPlayer().getInventory().getHeldItemSlot(), new ItemStack(Material.AIR));
                     else
@@ -417,9 +429,7 @@ public class PetBlockListener extends SimpleListener {
             if (xidentifier == 2877 && (identifier == 2877 || lidentifier == 2877)) {
                 return true;
             }
-            if (Math.floor(stand.getBodyPose().getZ() * 1000) == 301) {
-                return true;
-            }
+            return Math.floor(stand.getBodyPose().getZ() * 1000) == 301;
         }
         return false;
     }

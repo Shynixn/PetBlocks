@@ -2,6 +2,8 @@ package com.github.shynixn.petblocks.sponge.logic.business.listener;
 
 import com.flowpowered.math.vector.Vector3d;
 import com.github.shynixn.petblocks.api.business.entity.PetBlock;
+import com.github.shynixn.petblocks.api.business.service.ParticleService;
+import com.github.shynixn.petblocks.api.business.service.SoundService;
 import com.github.shynixn.petblocks.api.persistence.entity.PetMeta;
 import com.github.shynixn.petblocks.core.logic.business.entity.PetRunnable;
 import com.github.shynixn.petblocks.sponge.logic.business.PetBlocksManager;
@@ -67,6 +69,12 @@ public class SpongePetBlockListener {
     private final Set<PetBlock> jumped = new HashSet<>();
 
     private final PluginContainer plugin;
+
+    @Inject
+    private ParticleService particleService;
+
+    @Inject
+    private SoundService soundService;
 
     /**
      * Initializes a new petblockListener from the manager and plugin.
@@ -211,8 +219,10 @@ public class SpongePetBlockListener {
             final PetBlock petBlock = this.getPet(event.getTargetEntity());
             if (petBlock != null && petBlock.getPlayer().equals(player)) {
                 if (Config.INSTANCE.isFeedingEnabled() && player.getItemInHand(HandTypes.MAIN_HAND).isPresent() && player.getItemInHand(HandTypes.MAIN_HAND).get().getItem() == ItemTypes.CARROT) {
-                    petBlock.getEffectPipeline().playParticleEffect(event.getTargetEntity().getTransform(), Config.INSTANCE.getFeedingClickParticleEffect());
-                    petBlock.getEffectPipeline().playSound(event.getTargetEntity().getTransform(), Config.INSTANCE.getFeedingClickSound());
+                    this.particleService.playParticle(event.getTargetEntity().getLocation(), Config.INSTANCE.getFeedingClickParticleEffect(), player);
+                    if (petBlock.getMeta().isSoundEnabled()) {
+                        this.soundService.playSound(event.getTargetEntity().getTransform(), Config.INSTANCE.getFeedingClickSound(), player);
+                    }
                     if (player.getItemInHand(HandTypes.MAIN_HAND).get().getQuantity() == 1) {
                         player.setItemInHand(HandTypes.MAIN_HAND, null);
                     } else {

@@ -1,6 +1,8 @@
 package com.github.shynixn.petblocks.sponge.nms.v1_12_R1;
 
+import com.github.shynixn.petblocks.api.PetBlocksApi;
 import com.github.shynixn.petblocks.api.business.entity.PetBlock;
+import com.github.shynixn.petblocks.api.business.service.SoundService;
 import com.github.shynixn.petblocks.sponge.logic.persistence.configuration.Config;
 import com.google.common.collect.Sets;
 import net.minecraft.anchor.v1_12_mcpR1.entity.SharedMonsterAttributes;
@@ -23,6 +25,7 @@ import java.util.logging.Logger;
 public final class CustomZombie extends EntityZombie {
     private PetBlock petBlock;
     private long playedMovingSound = 100000;
+    private final SoundService soundService = PetBlocksApi.INSTANCE.resolve(SoundService.class);
 
     public CustomZombie(World world) {
         super(world);
@@ -53,7 +56,9 @@ public final class CustomZombie extends EntityZombie {
     protected SoundEvent getStepSound() {
         final long milli = System.currentTimeMillis();
         if (milli - this.playedMovingSound > 500) {
-            this.petBlock.getEffectPipeline().playSound(this.petBlock.getLocation(), this.petBlock.getMeta().getEngine().getWalkingSound());
+            if (this.petBlock.getMeta().isSoundEnabled()) {
+                this.soundService.playSound(((Transform) this.petBlock.getLocation()).getLocation(), this.petBlock.getMeta().getEngine().getWalkingSound(), this.petBlock.getPlayer());
+            }
             this.playedMovingSound = milli;
         }
         return super.getStepSound();

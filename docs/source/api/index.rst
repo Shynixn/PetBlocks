@@ -12,25 +12,29 @@ Including the PetBlocks Api
 PetBlocks is using maven as build system but you can include the api via different ways:
 
 **(Bukkit) Maven**:
-::
+
+.. code-block:: maven
+
     <dependency>
         <groupId>com.github.shynixn.petblocks</groupId>
         <artifactId>petblocks-api</artifactId>
-        <version>7.1.0</version>
+        <version>7.2.0</version>
         <scope>provided</scope>
     </dependency>
     <dependency>
         <groupId>com.github.shynixn.petblocks</groupId>
         <artifactId>petblocks-bukkit-api</artifactId>
-        <version>7.1.0</version>
+        <version>7.2.0</version>
         <scope>provided</scope>
     </dependency>
 
 **(Bukkit) Gradle**:
-::
+
+.. code-block:: groovy
+
     dependencies {
-        compileOnly 'com.github.shynixn.petblocks:petblocks-api:7.1.0'
-        compileOnly 'com.github.shynixn.petblocks:petblocks-bukkit-api:7.1.0'
+        compileOnly 'com.github.shynixn.petblocks:petblocks-api:7.2.0'
+        compileOnly 'com.github.shynixn.petblocks:petblocks-bukkit-api:7.2.0'
     }
 
 **(Sponge) Maven**:
@@ -38,21 +42,21 @@ PetBlocks is using maven as build system but you can include the api via differe
    <dependency>
         <groupId>com.github.shynixn.petblocks</groupId>
         <artifactId>petblocks-api</artifactId>
-        <version>7.1.0</version>
+        <version>7.2.0</version>
         <scope>provided</scope>
     </dependency>
     <dependency>
         <groupId>com.github.shynixn.petblocks</groupId>
         <artifactId>petblocks-sponge-api</artifactId>
-        <version>7.1.0</version>
+        <version>7.2.0</version>
         <scope>provided</scope>
     </dependency>
 
 **(Sponge) Gradle**:
 ::
     dependencies {
-        compileOnly 'com.github.shynixn.petblocks:petblocks-api:7.1.0'
-        compileOnly 'com.github.shynixn.petblocks:petblocks-sponge-api:7.1.0'
+        compileOnly 'com.github.shynixn.petblocks:petblocks-api:7.2.0'
+        compileOnly 'com.github.shynixn.petblocks:petblocks-sponge-api:7.2.0'
     }
 
 **Reference the jar file**:
@@ -94,7 +98,9 @@ Modifying PetMeta and PetBlock
 
 
 **(Bukkit) Creating a new PetMeta for a player:**
-::
+
+.. code-block:: java
+
     Player player; //Any player instance
     Plugin plugin; //Any plugin instance
 
@@ -110,7 +116,9 @@ Modifying PetMeta and PetBlock
     });
 
 **(Sponge) Creating a new PetMeta for a player:**
-::
+
+.. code-block:: java
+
     Player player; //Any player instance
     PluginContainer plugin; //Any plugin instance
 
@@ -130,7 +138,9 @@ Modifying PetMeta and PetBlock
 
 You can see that this gets easily very complicated if
 you need to manage asynchronous and synchronous server tasks.
-::
+
+.. code-block:: java
+
             final Player player; //Any player instance
             final Plugin plugin; //Any plugin instance
             PetMetaController<Player> metaController = PetBlocksApi.getDefaultPetMetaController();
@@ -160,7 +170,9 @@ you need to manage asynchronous and synchronous server tasks.
 ::
 
 Using lamda expressions can reduce the code above significantly.
-::
+
+.. code-block:: java
+
             final Player player; //Any player instance
             final Plugin plugin; //Any plugin instance
             PetMetaController<Player> metaController = PetBlocksApi.getDefaultPetMetaController();
@@ -180,7 +192,9 @@ Using lamda expressions can reduce the code above significantly.
 
 You can see that this gets easily very complicated if
 you need to manage asynchronous and synchronous server tasks.
-::
+
+.. code-block:: java
+
             final Player player; //Any player instance
             final PluginContainer plugin; //Any plugin instance
             PetMetaController<Player> metaController = PetBlocksApi.getDefaultPetMetaController();
@@ -210,7 +224,9 @@ you need to manage asynchronous and synchronous server tasks.
 ::
 
 Using lamda expressions can reduce the code above significantly.
-::
+
+.. code-block:: java
+
             final Player player; //Any player instance
             final PluginContainer plugin; //Any plugin instance
             PetMetaController<Player> metaController = PetBlocksApi.getDefaultPetMetaController();
@@ -227,7 +243,9 @@ Using lamda expressions can reduce the code above significantly.
             }).submit(plugin);
 
 **(Bukkit/Sponge) Spawning a petblock for a player:**
-::
+
+.. code-block:: java
+
     final Player player; //Any player instance
     final PetMeta petMeta; //Any PetMeta instance
     final Location location; //Any target location
@@ -239,7 +257,9 @@ Using lamda expressions can reduce the code above significantly.
     petBlock.teleport(location);    //Teleport the petblock to the target location
 
 **(Bukkit/Sponge) Obtaining an existing petblock for a player:**
-::
+
+.. code-block:: java
+
             final Player player; //Any player instance
             final Location location; //Any target location
 
@@ -253,12 +273,16 @@ Using lamda expressions can reduce the code above significantly.
 **(Bukkit/Sponge) Applying changes to the PetBlock**
 
 You can also directly change the meta data of the spawned PetBlock:
-::
+
+.. code-block:: java
+
     final PetBlock petBlock; //Any PetBlock instance
     petBlock.getMeta().setPetDisplayName("New name");
 
 However, for applying the changes you need to respawn the PetBlock:
-::
+
+.. code-block:: java
+
     final PetBlock petBlock; //Any PetBlock instance
     petBlock.respawn();
 
@@ -267,14 +291,78 @@ Accessing Business Logic
 
 The PetBlocks plugin allows to access some (not all) parts of the Business Logic too.
 
+* Accessing the Configuration.
+
+**Bukkit/Sponge:**
+
+.. code-block:: java
+
+   ConfigurationService configurationService = PetBlocksApi.INSTANCE.resolve(ConfigurationService.class);
+   int length = configurationService.findValue("pet.design.max-petname-length");
+
 * Accessing the GUI.
 
 **Bukkit/Sponge:**
-::
+
+.. code-block:: java
+
     Player player; // Any player instance
-    final GUIService guiService = PetBlocksApi.INSTANCE.resolve(GUIService.class).get();
+    final GUIService guiService = PetBlocksApi.INSTANCE.resolve(GUIService.class)
 
     guiService.open(player);
+
+* Parsing GUI Scripts.
+
+**Bukkit/Sponge:**
+
+.. code-block:: java
+
+   Inventory inventory; // Any inventory instance.
+   String script = "binding collection minecraft-heads-com.pet petblocks.selection.petcostumes";
+
+   GUIScriptService guiScriptService = PetBlocksApi.INSTANCE.resolve(GUIScriptService.class);
+   ScriptResult scriptResult = guiScriptService.executeScript(inventory, script);
+
+   if (scriptResult.getAction() == ScriptAction.LOAD_COLLECTION) {
+         // Parsed script is a loaded collection.
+   }
+
+* Playing sounds.
+
+**Bukkit/Sponge:**
+
+.. code-block:: java
+
+     Player player; // Any player instance.
+     Location location; // Any location instance.
+
+     Sound sound = PetBlocksApi.INSTANCE.create(Sound.class);
+     sound.setName("AMBIENT_CAVE"); // Name of the sound for Minecraft 1.13.
+     sound.setVolume(1.0);
+     sound.setPitch(1.0);
+
+     SoundService soundService = PetBlocksApi.INSTANCE.resolve(SoundService.class);
+     soundService.playSound(location, sound, player);
+
+* Playing particles.
+
+**Bukkit/Sponge:**
+
+.. code-block:: java
+
+    Player player; // Any player instance.
+    Location location; // Any location instance.
+
+    Particle particle = PetBlocksApi.INSTANCE.create(Particle.class);
+    particle.setType(ParticleType.PORTAL);
+    particle.setSpeed(0.1);
+    particle.setAmount(20);
+    particle.setOffSetX(5);
+    particle.setOffSetY(5);
+    particle.setOffSetZ(5);
+
+    ParticleService particleService = PetBlocksApi.INSTANCE.resolve(ParticleService.class);
+    particleService.playParticle(location, particle, player);
 
 Listen to Events
 ~~~~~~~~~~~~~~~~
@@ -282,7 +370,9 @@ Listen to Events
 There are many PetBlock events in order to listen to actions. Please take a look into the `JavaDocs <https://shynixn.github.io/PetBlocks/apidocs/>`__  for all events:
 
 **Bukkit:**
-::
+
+.. code-block:: java
+
     @EventHandler
     public void onPetBlockSpawnEvent(PetBlockSpawnEvent event){
         Player owner = event.getPlayer();
@@ -292,7 +382,9 @@ There are many PetBlock events in order to listen to actions. Please take a look
     }
 
 **Sponge:**
-::
+
+.. code-block:: java
+
     @Listener
     public void onPetBlockSpawnEvent(PetBlockSpawnEvent event){
         Player owner = event.getPlayer();

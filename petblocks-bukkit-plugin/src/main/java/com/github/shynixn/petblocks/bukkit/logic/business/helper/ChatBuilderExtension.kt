@@ -77,13 +77,13 @@ fun ChatBuilder.sendMessage(vararg players: Player) {
         }
 
         val packetClazz = Class.forName("net.minecraft.server.VERSION.PacketPlayOutChat".findServerVersion())
-        val chatBaseComponentClazz =  Class.forName("net.minecraft.server.VERSION.IChatBaseComponent".findServerVersion())
+        val chatBaseComponentClazz = Class.forName("net.minecraft.server.VERSION.IChatBaseComponent".findServerVersion())
 
-        val method = clazz.getDeclaredMethod("a",String::class.java)
+        val method = clazz.getDeclaredMethod("a", String::class.java)
         method.isAccessible = true
         val chatComponent = method.invoke(null, finalMessage.toString())
         val packet: Any
-        packet = if (VersionSupport.getServerVersion().versionText == "v1_12_R1") {
+        packet = if (VersionSupport.getServerVersion().isVersionSameOrGreaterThan(VersionSupport.VERSION_1_12_R1)) {
             val chatEnumMessage = Class.forName("net.minecraft.server.VERSION.ChatMessageType".findServerVersion())
             invokeConstructor(packetClazz, arrayOf(chatBaseComponentClazz, chatEnumMessage), arrayOf(chatComponent, chatEnumMessage.enumConstants[0]))
         } else {
@@ -116,5 +116,5 @@ private fun sendPacket(player: Player, packet: Any) {
     val field = entityPlayer.javaClass.getDeclaredField("playerConnection")
     field.isAccessible = true
     val connection = field.get(entityPlayer)
-    connection.javaClass.getDeclaredMethod("sendPacket", packet.javaClass.interfaces[0]).invoke(connection,packet)
+    connection.javaClass.getDeclaredMethod("sendPacket", packet.javaClass.interfaces[0]).invoke(connection, packet)
 }

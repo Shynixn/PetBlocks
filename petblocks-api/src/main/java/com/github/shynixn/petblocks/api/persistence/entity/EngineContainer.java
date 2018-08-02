@@ -45,21 +45,21 @@ public interface EngineContainer<T> extends Persistenceable {
      *
      * @return particle effect
      */
-    Optional<ParticleEffectMeta> getParticleEffect();
+    Optional<Particle> getParticleEffect();
 
     /**
      * Returns the walking sound.
      *
      * @return walkingSound
      */
-    SoundMeta getWalkingSound();
+    Sound getWalkingSound();
 
     /**
      * Returns the ambient sound.
      *
      * @return ambientSound
      */
-    SoundMeta getAmbientSound();
+    Sound getAmbientSound();
 
     /**
      * Returns the rideType.

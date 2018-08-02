@@ -1,11 +1,7 @@
-package com.github.shynixn.petblocks.sponge.logic.persistence.controller
+package com.github.shynixn.petblocks.api.persistence.entity
 
-import com.github.shynixn.petblocks.api.persistence.entity.ParticleEffectMeta
-import com.github.shynixn.petblocks.core.logic.business.entity.DbContext
-import com.github.shynixn.petblocks.core.logic.persistence.controller.ParticleEffectDataRepository
-import com.github.shynixn.petblocks.sponge.logic.persistence.entity.SpongeParticleEffect
-import com.google.inject.Inject
-import org.slf4j.Logger
+import com.github.shynixn.petblocks.api.business.enumeration.ParticleColor
+import com.github.shynixn.petblocks.api.business.enumeration.ParticleType
 
 /**
  * Created by Shynixn 2018.
@@ -34,13 +30,69 @@ import org.slf4j.Logger
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class SpongeParticleEffectDataRepository @Inject constructor(connectionContext: DbContext, logger: Logger) : ParticleEffectDataRepository(connectionContext, logger) {
+interface Particle {
     /**
-     * Creates a new particleEffectMeta.
-     *
-     * @return meta
+     * Color of the particle effect.
      */
-    override fun create(): ParticleEffectMeta {
-        return SpongeParticleEffect()
-    }
+    var color: ParticleColor
+
+    /**
+     * RGB Color code of red.
+     */
+    var colorRed: Int
+
+    /**
+     * RGB Color code of green.
+     */
+    var colorGreen: Int
+
+    /**
+     * RGB Color code of blue.
+     */
+    var colorBlue: Int
+
+    /**
+     * Custom note color code.
+     */
+    var noteColor: Int
+
+    /**
+     * Amount of particles.
+     */
+    var amount: Int
+
+    /**
+     * Particle speed.
+     */
+    var speed: Double
+
+    /**
+     * Offset for the x coordinate.
+     */
+    var offSetX: Double
+
+    /**
+     * Offset for the y coordinate.
+     */
+    var offSetY: Double
+
+    /**
+     * Offset for the z coordinate.
+     */
+    var offSetZ: Double
+
+    /**
+     * Type of the particle.
+     */
+    var type: ParticleType
+
+    /**
+     * Material value.
+     */
+    var materialName: String?
+
+    /**
+     * Data value.
+     */
+    var data: Int
 }

@@ -4,6 +4,7 @@ import com.github.shynixn.petblocks.api.business.entity.GUIItemContainer
 import com.github.shynixn.petblocks.api.business.enumeration.GUIPage
 import com.github.shynixn.petblocks.api.business.service.ConfigurationService
 import com.github.shynixn.petblocks.api.persistence.entity.GUIItem
+import com.github.shynixn.petblocks.core.logic.business.helper.ChatColor
 import com.github.shynixn.petblocks.sponge.logic.business.helper.getDisplayName
 import com.github.shynixn.petblocks.sponge.logic.business.helper.getLore
 import com.github.shynixn.petblocks.sponge.logic.business.helper.getResource
@@ -72,6 +73,23 @@ class ConfigurationServiceImpl @Inject constructor(private val plugin: PluginCon
         } catch (e: IOException) {
             plugin.logger.warn("Failed to reload config.yml.", e)
         }
+    }
+
+    /**
+     * Tries to load the config value from the given [path].
+     * Throws a [IllegalArgumentException] if the path could not be correctly
+     * loaded.
+     */
+    override fun <C> findValue(path: String): C {
+        val items = path.split(Pattern.quote(".").toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
+        val targetNode = this.node.getNode(*items as Array<Any>)
+        var data = targetNode.value
+
+        if (data is String) {
+            data = ChatColor.translateAlternateColorCodes('&', data)
+        }
+
+        return data as C
     }
 
     /**

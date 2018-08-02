@@ -3,8 +3,8 @@ package com.github.shynixn.petblocks.core.logic.persistence.entity;
 import com.github.shynixn.petblocks.api.business.entity.GUIItemContainer;
 import com.github.shynixn.petblocks.api.business.enumeration.RideType;
 import com.github.shynixn.petblocks.api.persistence.entity.EngineContainer;
-import com.github.shynixn.petblocks.api.persistence.entity.ParticleEffectMeta;
-import com.github.shynixn.petblocks.api.persistence.entity.SoundMeta;
+import com.github.shynixn.petblocks.api.persistence.entity.Particle;
+import com.github.shynixn.petblocks.api.persistence.entity.Sound;
 
 import java.util.Optional;
 
@@ -44,12 +44,12 @@ public abstract class EngineData<Player> extends PersistenceObject implements En
     protected String entity;
     protected RideType rideType;
 
-    protected SoundMeta ambientSound;
-    protected SoundMeta walkingSound;
+    protected Sound ambientSound;
+    protected Sound walkingSound;
 
     protected String petName;
 
-    protected ParticleEffectMeta particleEffectMeta;
+    protected ParticleEntity particleEffectMeta;
 
     /**
      * Initializes a new engine data
@@ -81,7 +81,7 @@ public abstract class EngineData<Player> extends PersistenceObject implements En
      * @return particle effect
      */
     @Override
-    public Optional<ParticleEffectMeta> getParticleEffect() {
+    public Optional<Particle> getParticleEffect() {
         if (this.particleEffectMeta == null) {
             return Optional.empty();
         }
@@ -95,7 +95,7 @@ public abstract class EngineData<Player> extends PersistenceObject implements En
      * @return walkingSound
      */
     @Override
-    public SoundMeta getWalkingSound() {
+    public Sound getWalkingSound() {
         return this.walkingSound;
     }
 
@@ -105,7 +105,7 @@ public abstract class EngineData<Player> extends PersistenceObject implements En
      * @return ambientSound
      */
     @Override
-    public SoundMeta getAmbientSound() {
+    public Sound getAmbientSound() {
         return this.ambientSound;
     }
 

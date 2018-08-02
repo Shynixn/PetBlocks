@@ -12,7 +12,7 @@ import com.github.shynixn.petblocks.bukkit.logic.business.helper.clearCompletely
 import com.github.shynixn.petblocks.bukkit.logic.business.helper.runOnMainThread
 import com.github.shynixn.petblocks.bukkit.logic.business.helper.sendMessage
 import com.github.shynixn.petblocks.bukkit.logic.business.helper.thenAcceptOnMainThread
-import com.github.shynixn.petblocks.bukkit.nms.v1_12_R1.MaterialCompatibility12
+import com.github.shynixn.petblocks.bukkit.nms.v1_13_R1.MaterialCompatibility13
 import com.github.shynixn.petblocks.core.logic.business.entity.GuiPageContainer
 import com.github.shynixn.petblocks.core.logic.business.helper.ChatBuilder
 import com.github.shynixn.petblocks.core.logic.persistence.configuration.Config
@@ -343,7 +343,7 @@ class GUIServiceImpl @Inject constructor(private val configurationService: Confi
     private fun setCollectionSkinItemToPlayer(player: Player, guiItem: GUIItem) {
         persistenceService.getFromPlayer(player).thenAccept { p ->
             val petMeta = p.get()
-            petMeta.setSkin(MaterialCompatibility12.getMaterialFromId(guiItem.type).name, guiItem.data, guiItem.skin, guiItem.unbreakable)
+            petMeta.setSkin(MaterialCompatibility13.getMaterialFromId(guiItem.type).name, guiItem.data, guiItem.skin, guiItem.unbreakable)
             persistenceService.save(petMeta)
             persistenceService.runOnMainThread(Runnable {
                 PetBlockManager.instance.gui.setPage(player, GUIPage.MAIN, petMeta)

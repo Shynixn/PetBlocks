@@ -33,6 +33,13 @@ import java.util.*
 interface ConfigurationService {
 
     /**
+     * Tries to load the config value from the given [path].
+     * Throws a [IllegalArgumentException] if the path could not be correctly
+     * loaded.
+     */
+    fun <C> findValue(path: String): C
+
+    /**
      * Tries to return a [GUIItem] matching the displayName and the lore of the given [item].
      * Can be called asynchronly.
      */

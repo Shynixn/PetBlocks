@@ -17,7 +17,7 @@
         <module>petblocks-sponge-plugin</module>
         <module>petblocks-core</module>
     </modules>
-    <version>7.1.0</version>
+    <version>7.2.0</version>
     <packaging>pom</packaging>
 
     <developers>
@@ -57,6 +57,30 @@
                                 </goals>
                             </execution>
                         </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.jetbrains.dokka</groupId>
+                        <artifactId>dokka-maven-plugin</artifactId>
+                        <version>0.9.16</version>
+                        <executions>
+                            <execution>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>javadoc</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                        <configuration>
+                            <outputDir>docs/apidocs</outputDir>
+                            <sourceDirectories>
+                                <dir>petblocks-api/src/main/java</dir>
+                                <dir>petblocks-bukkit-api/src/main/java</dir>
+                                <dir>petblocks-bukkit-plugin/src/main/java</dir>
+                                <dir>petblocks-core/src/main/java</dir>
+                                <dir>petblocks-sponge-api/src/main/java</dir>
+                                <dir>petblocks-sponge-plugin/src/main/java</dir>
+                            </sourceDirectories>
+                        </configuration>
                     </plugin>
                 </plugins>
             </build>
@@ -175,28 +199,23 @@
                 <version>2.3.2</version>
             </plugin>
             <plugin>
-                <groupId>org.jetbrains.dokka</groupId>
-                <artifactId>dokka-maven-plugin</artifactId>
-                <version>0.9.16</version>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>0.7.9</version>
                 <executions>
                     <execution>
-                        <phase>verify</phase>
                         <goals>
-                            <goal>javadoc</goal>
+                            <goal>prepare-agent</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>report</id>
+                        <phase>test</phase>
+                        <goals>
+                            <goal>report</goal>
                         </goals>
                     </execution>
                 </executions>
-                <configuration>
-                    <outputDir>docs/apidocs</outputDir>
-                    <sourceDirectories>
-                        <dir>petblocks-api/src/main/java</dir>
-                        <dir>petblocks-bukkit-api/src/main/java</dir>
-                        <dir>petblocks-bukkit-plugin/src/main/java</dir>
-                        <dir>petblocks-core/src/main/java</dir>
-                        <dir>petblocks-sponge-api/src/main/java</dir>
-                        <dir>petblocks-sponge-plugin/src/main/java</dir>
-                    </sourceDirectories>
-                </configuration>
             </plugin>
         </plugins>
     </build>

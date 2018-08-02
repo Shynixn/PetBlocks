@@ -38,7 +38,6 @@ sql:
   username: ''
   password: ''
 
-
 ############################
 
 # Command settings
@@ -436,7 +435,7 @@ gui:
       damage: 3
       skin: 'textures.minecraft.net/texture/fec052be76e39148a27f255ec537dff92018c79744202d60c51bc67d618ae36a'
       name: '&9&lPet costumes'
-      script: 'binding collection minecraft-heads-com.pet petblocks.selection.petcostumes.all'
+      script: 'binding collection minecraft-heads-com.pet petblocks.selection.petcostumes'
       unbreakable: false
       lore:
         - "&7Use exclusive pet heads as costume."
@@ -449,7 +448,7 @@ gui:
       damage: 3
       skin: 'textures.minecraft.net/texture/e8778c34fba29652cfac8d3f6fb35c49cbc2362b2b8f1378d83b30f463b181'
       name: '&2&lVehicle costumes'
-      script: 'binding collection minecraft-heads-com.vehicle petblocks.selection.vehiclecostumes.all'
+      script: 'binding collection minecraft-heads-com.vehicle petblocks.selection.vehiclecostumes'
       unbreakable: false
       lore:
         - "&7Use exclusive vehicle heads as costume."
@@ -462,7 +461,7 @@ gui:
       damage: 3
       skin: 'textures.minecraft.net/texture/3835da2685f7ad3f1919a018976ad56826691e26758a3a55a1918f7f17ad938'
       name: '&b&lPlushie costumes'
-      script: 'binding collection minecraft-heads-com.puppet petblocks.selection.puppetcostumes.all'
+      script: 'binding collection minecraft-heads-com.puppet petblocks.selection.puppetcostumes'
       unbreakable: false
       lore:
         - "&7Use exclusive plushie heads as costume."

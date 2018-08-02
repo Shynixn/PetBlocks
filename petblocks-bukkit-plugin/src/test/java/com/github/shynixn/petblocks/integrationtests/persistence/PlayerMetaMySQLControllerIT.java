@@ -84,7 +84,7 @@ public class PlayerMetaMySQLControllerIT {
         }
     }
 
-    @Test
+ /*   @Test
     public void insertSelectPlayerMetaTest() throws ClassNotFoundException {
         final Plugin plugin = mockPlugin();
         plugin.getConfig().set("sql.enabled", true);
@@ -163,5 +163,5 @@ public class PlayerMetaMySQLControllerIT {
             Logger.getLogger(this.getClass().getSimpleName()).log(Level.WARNING, "Failed to run test.", e);
             Assert.fail();
         }
-    }
+    }*/
 }

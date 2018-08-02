@@ -1,7 +1,7 @@
 package com.github.shynixn.petblocks.core.logic.persistence.entity;
 
 import com.github.shynixn.petblocks.api.persistence.entity.EngineContainer;
-import com.github.shynixn.petblocks.api.persistence.entity.ParticleEffectMeta;
+import com.github.shynixn.petblocks.api.persistence.entity.Particle;
 import com.github.shynixn.petblocks.api.persistence.entity.PetMeta;
 import com.github.shynixn.petblocks.api.persistence.entity.PlayerMeta;
 import com.github.shynixn.petblocks.core.logic.business.helper.ChatColor;
@@ -49,7 +49,7 @@ public abstract class PetData extends PersistenceObject implements PetMeta {
     protected PlayerMeta playerInfo;
     protected long playerId;
 
-    protected ParticleEffectMeta particleEffectBuilder;
+    protected Particle particleEffectBuilder;
     protected long particleId;
 
     protected EngineContainer engineContainer;
@@ -131,7 +131,7 @@ public abstract class PetData extends PersistenceObject implements PetMeta {
      *
      * @param meta meta
      */
-    public void setParticleEffectMeta(ParticleEffectMeta meta) {
+    public void setParticleEffectMeta(ParticleEntity meta) {
         if (meta == null) {
             throw new IllegalArgumentException("ParticleEffectMeta cannot be null!");
         }
@@ -145,7 +145,7 @@ public abstract class PetData extends PersistenceObject implements PetMeta {
      * @return meta
      */
     @Override
-    public ParticleEffectMeta getParticleEffectMeta() {
+    public Particle getParticleEffectMeta() {
         return this.particleEffectBuilder;
     }
 
@@ -276,11 +276,19 @@ public abstract class PetData extends PersistenceObject implements PetMeta {
             if (engine.getParticleEffect().isPresent()) {
                 long id = 0;
                 if (this.particleEffectBuilder != null) {
-                    id = this.particleEffectBuilder.getId();
+                    id = ((ParticleEntity) this.particleEffectBuilder).getId();
                 }
 
-                this.particleEffectBuilder = engine.getParticleEffect().get().copy();
-                ((ParticleEffectData) this.particleEffectBuilder).setId(id);
+                final Particle raw = engine.getParticleEffect().get();
+                this.particleEffectBuilder = new ParticleEntity(raw.getType());
+                ((ParticleEntity) this.particleEffectBuilder).setId(id);
+                this.particleEffectBuilder.setAmount(raw.getAmount());
+                this.particleEffectBuilder.setSpeed(raw.getSpeed());
+                this.particleEffectBuilder.setOffSetX(raw.getOffSetX());
+                this.particleEffectBuilder.setOffSetY(raw.getOffSetY());
+                this.particleEffectBuilder.setOffSetZ(raw.getOffSetZ());
+                this.particleEffectBuilder.setData(raw.getData());
+                this.particleEffectBuilder.setMaterialName(raw.getMaterialName());
             }
         }
     }

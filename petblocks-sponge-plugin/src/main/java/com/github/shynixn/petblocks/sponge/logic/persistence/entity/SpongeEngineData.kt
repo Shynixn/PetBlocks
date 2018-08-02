@@ -1,7 +1,12 @@
 package com.github.shynixn.petblocks.sponge.logic.persistence.entity
 
+import com.github.shynixn.petblocks.api.business.enumeration.ParticleType
 import com.github.shynixn.petblocks.api.business.enumeration.RideType
 import com.github.shynixn.petblocks.core.logic.persistence.entity.EngineData
+import com.github.shynixn.petblocks.core.logic.persistence.entity.ParticleEntity
+import com.github.shynixn.petblocks.core.logic.persistence.entity.SoundEntity
+import com.github.shynixn.petblocks.sponge.logic.business.helper.CompatibilityItemType
+import com.github.shynixn.petblocks.sponge.logic.business.helper.toParticleType
 import org.spongepowered.api.entity.living.player.Player
 
 /**
@@ -38,15 +43,54 @@ class SpongeEngineData(id: Long, data: Map<String, Any>) : EngineData<Player>(id
         this.rideType = RideType.valueOf((data["behaviour"] as Map<String, Any>)["riding"] as String)
         val ambient = (data["sound"] as Map<String, Any>)["ambient"] as Map<String, Any>
         val walking = (data["sound"] as Map<String, Any>)["walking"] as Map<String, Any>
-        this.ambientSound = SpongeSoundBuilder(ambient["name"] as String, ambient["volume"] as Double, ambient["pitch"] as Double)
-        this.walkingSound = SpongeSoundBuilder(walking["name"] as String, walking["volume"] as Double, walking["pitch"] as Double)
+        this.ambientSound = SoundEntity(ambient["name"] as String)
+        this.ambientSound.volume = ambient["volume"] as Double
+        this.ambientSound.pitch = ambient["pitch"] as Double
+
+        this.walkingSound = SoundEntity(walking["name"] as String)
+        this.walkingSound.volume = walking["volume"] as Double
+        this.walkingSound.pitch = walking["pitch"] as Double
 
         if (data.containsKey("petname")) {
             this.petName = data["petname"] as String
         }
 
         if (data.containsKey("particle")) {
-            this.particleEffectMeta = SpongeParticleEffect(data["particle"] as Map<String, Any>)
+            val entityParticle = ParticleEntity(ParticleType.NONE)
+            val values = data["particle"] as Map<String, Any>
+
+            with(entityParticle) {
+                type = (values["name"] as String).toParticleType()
+                amount = values["amount"] as Int
+                speed = values["speed"] as Double
+            }
+
+            if (values.containsKey("offx")) {
+                with(entityParticle) {
+                    offSetX = values["offx"] as Double
+                    offSetY = values["offy"] as Double
+                    offSetZ = values["offz"] as Double
+                }
+            }
+
+            if (values.containsKey("red")) {
+                with(entityParticle) {
+                    colorRed = values["red"] as Int
+                    colorGreen = values["green"] as Int
+                    colorBlue = values["blue"] as Int
+                }
+            }
+
+
+            if (values.containsKey("id")) {
+                if (values["id"] is String) {
+                    entityParticle.materialName = values["id"] as String
+                } else {
+                    entityParticle.materialName = CompatibilityItemType.getFromId(values["id"] as Int).name
+                }
+            }
+
+            this.particleEffectMeta = entityParticle
         }
     }
 }

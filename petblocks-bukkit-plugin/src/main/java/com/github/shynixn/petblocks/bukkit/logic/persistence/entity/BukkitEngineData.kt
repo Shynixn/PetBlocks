@@ -1,7 +1,14 @@
 package com.github.shynixn.petblocks.bukkit.logic.persistence.entity
 
+import com.github.shynixn.petblocks.api.PetBlocksApi
+import com.github.shynixn.petblocks.api.business.enumeration.ParticleType
 import com.github.shynixn.petblocks.api.business.enumeration.RideType
+import com.github.shynixn.petblocks.api.business.service.ParticleService
+import com.github.shynixn.petblocks.bukkit.logic.business.helper.toParticleType
+import com.github.shynixn.petblocks.bukkit.nms.v1_13_R1.MaterialCompatibility13
 import com.github.shynixn.petblocks.core.logic.persistence.entity.EngineData
+import com.github.shynixn.petblocks.core.logic.persistence.entity.ParticleEntity
+import com.github.shynixn.petblocks.core.logic.persistence.entity.SoundEntity
 import org.bukkit.configuration.MemorySection
 import org.bukkit.entity.Player
 
@@ -37,15 +44,55 @@ class BukkitEngineData(id: Long, data: Map<String, Any>) : EngineData<Player>(id
         this.itemContainer = BukkitItemContainer(id.toInt(), (data["gui"] as MemorySection).getValues(false))
         this.entity = data["behaviour.entity"] as String
         this.rideType = RideType.valueOf(data["behaviour.riding"] as String)
-        this.ambientSound = BukkitSoundBuilder(data["sound.ambient.name"] as String, data["sound.ambient.volume"] as Double, data["sound.ambient.pitch"] as Double)
-        this.walkingSound = BukkitSoundBuilder(data["sound.walking.name"] as String, data["sound.walking.volume"] as Double, data["sound.walking.pitch"] as Double)
+
+        this.ambientSound = SoundEntity(data["sound.ambient.name"] as String)
+        this.ambientSound.volume = data["sound.ambient.volume"] as Double
+        this.ambientSound.pitch = data["sound.ambient.pitch"] as Double
+
+        this.walkingSound = SoundEntity(data["sound.walking.name"] as String)
+        this.walkingSound.volume = data["sound.walking.volume"] as Double
+        this.walkingSound.pitch = data["sound.walking.pitch"] as Double
 
         if (data.containsKey("petname")) {
             this.petName = data["petname"] as String
         }
 
         if (data.containsKey("particle")) {
-            this.particleEffectMeta = BukkitParticleEffect((data["particle"] as MemorySection).getValues(false))
+            val entityParticle = ParticleEntity(ParticleType.NONE)
+            val values = (data["particle"] as MemorySection).getValues(false)
+
+            with(entityParticle) {
+                type = (values["name"] as String).toParticleType()
+                amount = values["amount"] as Int
+                speed = values["speed"] as Double
+            }
+
+            if (values.containsKey("offx")) {
+                with(entityParticle) {
+                    offSetX = values["offx"] as Double
+                    offSetY = values["offy"] as Double
+                    offSetZ = values["offz"] as Double
+                }
+            }
+
+            if (values.containsKey("red")) {
+                with(entityParticle) {
+                    colorRed = values["red"] as Int
+                    colorGreen = values["green"] as Int
+                    colorBlue = values["blue"] as Int
+                }
+            }
+
+
+            if (values.containsKey("id")) {
+                if (values["id"] is String) {
+                    entityParticle.materialName = values["id"] as String
+                } else {
+                    entityParticle.materialName = MaterialCompatibility13.getMaterialFromId(values["id"] as Int).name
+                }
+            }
+
+            this.particleEffectMeta = entityParticle
         }
     }
 }

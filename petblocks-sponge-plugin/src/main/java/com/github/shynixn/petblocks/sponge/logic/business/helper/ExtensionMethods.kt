@@ -2,7 +2,9 @@ package com.github.shynixn.petblocks.sponge.logic.business.helper
 
 import com.github.shynixn.petblocks.api.business.entity.GUIItemContainer
 import com.github.shynixn.petblocks.api.business.entity.PetBlock
+import com.github.shynixn.petblocks.api.business.enumeration.ParticleType
 import com.github.shynixn.petblocks.api.business.enumeration.Permission
+import com.github.shynixn.petblocks.api.business.enumeration.Version
 import com.github.shynixn.petblocks.api.persistence.entity.EngineContainer
 import com.github.shynixn.petblocks.api.persistence.entity.PetMeta
 import com.github.shynixn.petblocks.core.logic.business.helper.ChatBuilder
@@ -18,7 +20,6 @@ import org.spongepowered.api.item.inventory.Inventory
 import org.spongepowered.api.item.inventory.ItemStack
 import org.spongepowered.api.item.inventory.property.SlotIndex
 import org.spongepowered.api.item.inventory.property.SlotPos
-import org.spongepowered.api.item.inventory.type.CarriedInventory
 import org.spongepowered.api.item.inventory.type.GridInventory
 import org.spongepowered.api.plugin.PluginContainer
 import org.spongepowered.api.scheduler.Task
@@ -173,14 +174,6 @@ fun Inventory.getItem(index: Int): ItemStack? {
     return null
 }
 
-/**
- * Returns the owner of the inventory.
- */
-fun Inventory.getHolder(): Player {
-    val carriedInventory = this as CarriedInventory<Player>
-    return carriedInventory.carrier.get()
-}
-
 fun PetMeta.setEngine(petBlock: PetBlock<Player, Transform<World>>?, engineContainer: EngineContainer<GUIItemContainer<Player>>?) {
     if (engineContainer == null)
         return
@@ -219,13 +212,32 @@ fun PetMeta.setParticleEffect(petBlock: PetBlock<Player, Transform<World>>?, con
     if (!transferOpt.isPresent)
         return
     val transfer = transferOpt.get()
-    particleEffectMeta.effectType = transfer.effectType
+    particleEffectMeta.type = transfer.type
     particleEffectMeta.speed = transfer.speed
     particleEffectMeta.amount = transfer.amount
-    particleEffectMeta.setOffset(transfer.offsetX, transfer.offsetY, transfer.offsetZ)
-    particleEffectMeta.material = transfer.material
+    particleEffectMeta.offSetX = transfer.offSetX
+    particleEffectMeta.offSetY = transfer.offSetY
+    particleEffectMeta.offSetZ = transfer.offSetZ
+    particleEffectMeta.materialName = transfer.materialName
     particleEffectMeta.data = transfer.data
     petBlock?.respawn()
+}
+
+/**
+ * Tries to return the [ParticleType] from the given [name].
+ */
+fun String.toParticleType(): ParticleType {
+    val version = VersionSupport.getServerVersion()
+
+    ParticleType.values().forEach { p ->
+        if (p.gameId_18.equals(this, true) || p.gameId_113.equals(this, true) || p.name.equals(this, true)) {
+            if (version.isVersionSameOrGreaterThan(VersionSupport.fromVersion(Version.VERSION_1_12_R1))) {
+                return p
+            }
+        }
+    }
+
+    throw IllegalArgumentException("ParticleType cannot be parsed from '" + this + "'.")
 }
 
 
