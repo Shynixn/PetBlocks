@@ -6,17 +6,17 @@
     <parent>
         <artifactId>root</artifactId>
         <groupId>com.github.shynixn.petblocks</groupId>
-        <version>7.2.0-SNAPSHOT</version>
+        <version>7.2.0</version>
     </parent>
 
-    <version>7.2.0-SNAPSHOT</version>
+    <version>7.2.0</version>
     <artifactId>petblocks-bukkit-api</artifactId>
 
     <dependencies>
         <dependency>
             <groupId>com.github.shynixn.petblocks</groupId>
             <artifactId>petblocks-api</artifactId>
-            <version>7.2.0-SNAPSHOT</version>
+            <version>7.2.0</version>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
