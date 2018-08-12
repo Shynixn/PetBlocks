@@ -6,9 +6,9 @@
     <parent>
         <artifactId>root</artifactId>
         <groupId>com.github.shynixn.petblocks</groupId>
-        <version>7.2.0</version>
+        <version>7.2.1-SNAPSHOT</version>
     </parent>
 
-    <version>7.2.0</version>
+    <version>7.2.1-SNAPSHOT</version>
     <artifactId>petblocks-api</artifactId>
 </project>

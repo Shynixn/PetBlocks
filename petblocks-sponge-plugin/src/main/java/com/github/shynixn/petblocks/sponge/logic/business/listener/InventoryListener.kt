@@ -13,7 +13,6 @@ import org.spongepowered.api.event.network.ClientConnectionEvent
 import org.spongepowered.api.item.ItemTypes
 import org.spongepowered.api.item.inventory.ItemStack
 import org.spongepowered.api.item.inventory.property.SlotIndex
-import org.spongepowered.api.plugin.PluginContainer
 
 /**
  * Created by Shynixn 2018.
@@ -42,11 +41,7 @@ import org.spongepowered.api.plugin.PluginContainer
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class InventoryListener @Inject constructor(private val guiService: GUIService, plugin: PluginContainer) {
-    init {
-        Sponge.getEventManager().registerListeners(plugin, this)
-    }
-
+class InventoryListener @Inject constructor(private val guiService: GUIService) {
     /**
      * Gets called from [Sponge] and handles action to the inventory.
      */

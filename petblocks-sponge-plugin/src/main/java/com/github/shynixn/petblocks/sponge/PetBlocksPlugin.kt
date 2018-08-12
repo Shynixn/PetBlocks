@@ -7,6 +7,7 @@ import com.github.shynixn.petblocks.api.persistence.controller.PetMetaController
 import com.github.shynixn.petblocks.core.logic.business.helper.ChatColor
 import com.github.shynixn.petblocks.core.logic.business.helper.ReflectionUtils
 import com.github.shynixn.petblocks.sponge.logic.business.helper.*
+import com.github.shynixn.petblocks.sponge.logic.business.listener.InventoryListener
 import com.github.shynixn.petblocks.sponge.logic.persistence.configuration.Config
 import com.github.shynixn.petblocks.sponge.nms.NMSRegistry
 import com.github.shynixn.petblocks.sponge.nms.VersionSupport
@@ -50,7 +51,7 @@ import java.io.IOException
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-@Plugin(id = "petblocks", name = "PetBlocks", version = "7.2.0", description = "PetBlocks is a spigot and also a sponge plugin to use blocks and custom heads as pets in Minecraft.")
+@Plugin(id = "petblocks", name = "PetBlocks", version = "7.2.1-SNAPSHOT", description = "PetBlocks is a spigot and also a sponge plugin to use blocks and custom heads as pets in Minecraft.")
 class PetBlocksPlugin : com.github.shynixn.petblocks.api.business.entity.PetBlocksPlugin {
 
     companion object {
@@ -80,7 +81,7 @@ class PetBlocksPlugin : com.github.shynixn.petblocks.api.business.entity.PetBloc
     private lateinit var injector: Injector
 
     @Inject
-    private lateinit var guice: GoogleGuiceSubBinder
+    private lateinit var guice: PetBlocksDependencyInjectionBinder
 
     @Listener
     @Throws(IOException::class)
@@ -111,6 +112,9 @@ class PetBlocksPlugin : com.github.shynixn.petblocks.api.business.entity.PetBloc
                 this.logger.warn("Failed to check for updates.")
             }
         }
+
+        // Register Listeners
+        Sponge.getEventManager().registerListeners(pluginContainer, resolve(InventoryListener::class.java))
 
         try {
             ReflectionUtils.invokeMethodByClass<PetBlocksApi>(PetBlocksApi::class.java, "initialize"

@@ -1,4 +1,4 @@
-package com.github.shynixn.petblocks.sponge.logic.business.helper
+package com.github.shynixn.petblocks.sponge
 
 import com.github.shynixn.petblocks.api.business.service.*
 import com.github.shynixn.petblocks.api.persistence.controller.ParticleEffectMetaController
@@ -11,6 +11,7 @@ import com.github.shynixn.petblocks.sponge.logic.business.listener.InventoryList
 import com.github.shynixn.petblocks.sponge.logic.business.service.*
 import com.google.inject.AbstractModule
 import com.google.inject.Inject
+import com.google.inject.Scopes
 import org.slf4j.Logger
 import org.spongepowered.api.config.ConfigDir
 import org.spongepowered.api.plugin.PluginContainer
@@ -43,7 +44,7 @@ import java.nio.file.Path
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class GoogleGuiceSubBinder : AbstractModule() {
+class PetBlocksDependencyInjectionBinder : AbstractModule() {
 
     @Inject
     @ConfigDir(sharedRoot = false)
@@ -66,7 +67,7 @@ class GoogleGuiceSubBinder : AbstractModule() {
         bind(PersistenceService::class.java).to(PersistenceServiceImpl::class.java)
         bind(GUIScriptService::class.java).to(GUIScriptServiceImpl::class.java)
         bind(ConfigurationService::class.java).to(ConfigurationServiceImpl::class.java)
-        bind(GUIService::class.java).to(GUIServiceImpl::class.java)
+        bind(GUIService::class.java).to(GUIServiceImpl::class.java).`in`(Scopes.SINGLETON)
         bind(ParticleService::class.java).to(ParticleServiceImpl::class.java)
         bind(SoundService::class.java).to(SoundServiceImpl::class.java)
 

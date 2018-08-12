@@ -14,7 +14,6 @@ import com.github.shynixn.petblocks.core.logic.persistence.entity.PlayerGUICache
 import com.github.shynixn.petblocks.sponge.logic.business.PetBlocksManager
 import com.github.shynixn.petblocks.sponge.logic.business.helper.*
 import com.google.inject.Inject
-import com.google.inject.Singleton
 import org.spongepowered.api.entity.living.player.Player
 import org.spongepowered.api.item.ItemTypes
 import org.spongepowered.api.item.inventory.Inventory
@@ -50,7 +49,6 @@ import org.spongepowered.api.plugin.PluginContainer
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-@Singleton
 class GUIServiceImpl @Inject constructor(private val configurationService: ConfigurationService, private val plugin: PluginContainer, private val scriptService: GUIScriptService, private val persistenceService: PersistenceService) : GUIService {
     private val pageCache = HashMap<Player, PlayerGUICache>()
     private val petBlocksManager = PetBlocksManager.petBlocksManager!!
@@ -165,7 +163,11 @@ class GUIServiceImpl @Inject constructor(private val configurationService: Confi
             return false
         }
 
-        return petBlocksManager.inventories.containsKey((inventory as CarriedInventory<Player>).carrier.get())
+        if (!inventory.carrier.isPresent) {
+            return false
+        }
+
+        return petBlocksManager.inventories.containsKey(inventory.carrier.get())
     }
 
     /**

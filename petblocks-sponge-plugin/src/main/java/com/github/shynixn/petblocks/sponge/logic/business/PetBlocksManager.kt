@@ -62,9 +62,6 @@ class PetBlocksManager : AutoCloseable {
     }
 
     @Inject
-    private lateinit var inventoryListener: InventoryListener
-
-    @Inject
     lateinit var gui: GUI
 
     @Inject
