@@ -21,6 +21,10 @@
             <id>sponge</id>
             <url>https://repo.spongepowered.org/maven</url>
         </repository>
+        <repository>
+            <id>forge</id>
+            <url>http://files.minecraftforge.net/maven</url>
+        </repository>
     </repositories>
 
     <dependencies>
@@ -51,6 +55,18 @@
             <artifactId>minecraft112R1</artifactId>
             <version>1.12.0-R1.0</version>
             <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.spongepowered</groupId>
+            <artifactId>spongeforge</artifactId>
+            <version>1.11.2-2227-6.0.0-BETA-2148</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.spongepowered</groupId>
+            <artifactId>spongeforge</artifactId>
+            <version>1.12.2-2705-7.1.0-BETA-3366</version>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 

@@ -42,7 +42,7 @@ import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-final class CustomGroundArmorstand extends EntityArmorStand {
+public final class CustomGroundArmorstand extends EntityArmorStand {
 
     private PetBlockPartEntity rabbit;
     private PetBlockWrapper wrapper;
