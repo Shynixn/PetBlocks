@@ -55,10 +55,14 @@ public final class CustomRabbit extends EntityRabbit implements PetBlockPartEnti
     @Override
     protected SoundEffect di() {
         try {
+            if (this.petBlock == null) {
+                return this.di();
+            }
+
             this.playedMovingSound = PetBlockHelper.executeMovingSound(this.petBlock, this.playedMovingSound);
         } catch (final Exception ex) {
             this.remove();
-            PetBlocksPlugin.logger().log(Level.WARNING, "Detected invalid rabbit entity. Removed entity.");
+            PetBlocksPlugin.logger().log(Level.WARNING, "Detected invalid rabbit entity. Removed entity.", ex);
         }
         return super.di();
     }
