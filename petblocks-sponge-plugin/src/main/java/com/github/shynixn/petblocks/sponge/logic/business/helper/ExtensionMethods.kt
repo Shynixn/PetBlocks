@@ -331,21 +331,41 @@ private object ReflectionCache {
     val updateInventoryMethod = utilsClass.getDeclaredMethod("updateInventoryFor", Player::class.java)
     val setSkinUrlMethod = utilsClass.getDeclaredMethod("setItemSkin", ItemStack::class.java, String::class.java)
     val setSkinOwnerMethod = utilsClass.getDeclaredMethod("setItemOwner", ItemStack::class.java, String::class.java)
+    val setUnbreakableMethod = utilsClass.getDeclaredMethod("setItemUnbreakableTag", ItemStack::class.java, Boolean::class.java)
     val sendChatJsonMesssageMethod = utilsClass.getDeclaredMethod("sendJsonChatMessage", String::class.java, Array<Player>::class.java)
 }
 
+/**
+ * Sets the itemstack unbreakable.
+ */
+fun ItemStack.setUnbreakable(unbreakable: Boolean) {
+    ReflectionCache.setUnbreakableMethod.invoke(null, this, unbreakable)
+}
+
+/**
+ * Sets the displayname of the itemstack.
+ */
 fun ItemStack.setDisplayName(text: String) {
     this.offer(org.spongepowered.api.data.key.Keys.DISPLAY_NAME, text.translateToText())
 }
 
+/**
+ * Sets the damage of the itemstack.
+ */
 fun ItemStack.setDamage(damage: Int) {
     ReflectionCache.setDamageMethod!!.invoke(null, this, damage)
 }
 
+/**
+ * Sets the lore of the itemstack.
+ */
 fun ItemStack.setLore(data: Array<String>) {
     this.offer(org.spongepowered.api.data.key.Keys.ITEM_LORE, (data as Array<String?>).translateToTexts().toList())
 }
 
+/**
+ * Gets the lore of the itemstack.
+ */
 fun ItemStack.getLore(): Array<String> {
     if (this.get(org.spongepowered.api.data.key.Keys.ITEM_LORE).isPresent) {
         return this.get(org.spongepowered.api.data.key.Keys.ITEM_LORE).get().toTypedArray().translateToStrings() as Array<String>

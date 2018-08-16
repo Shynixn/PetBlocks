@@ -56,6 +56,24 @@ public class NMSUtils {
     }
 
     /**
+     * Sets the unbreakable tag for the given itemStack as the sponge implementation is broken.
+     *
+     * @param itemStack   itemstack
+     * @param unbreakable unbreakable.
+     */
+    public static void setItemUnbreakableTag(ItemStack itemStack, boolean unbreakable) {
+        final net.minecraft.anchor.v1_12_mcpR1.item.ItemStack item = ((net.minecraft.anchor.v1_12_mcpR1.item.ItemStack) (Object) itemStack);
+
+        NBTTagCompound compound = item.getTagCompound();
+        if (compound == null) {
+            compound = new NBTTagCompound();
+        }
+
+        compound.setBoolean("Unbreakable", unbreakable);
+        item.setTagCompound(compound);
+    }
+
+    /**
      * Sets the item skin by the given owner name.
      *
      * @param itemStack itemstakc
@@ -75,6 +93,7 @@ public class NMSUtils {
 
     /**
      * Sends the given json message to the given players.
+     *
      * @param message message
      * @param players players
      */
@@ -136,7 +155,7 @@ public class NMSUtils {
                 final NBTTagList nbttaglist = new NBTTagList();
 
                 NBTTagCompound nbttagcompound1;
-                for (final Iterator var6 = profile.getPropertyMap().get((String)s).iterator(); var6.hasNext(); nbttaglist.appendTag(nbttagcompound1)) {
+                for (final Iterator var6 = profile.getPropertyMap().get((String) s).iterator(); var6.hasNext(); nbttaglist.appendTag(nbttagcompound1)) {
                     final ProfileProperty property = (ProfileProperty) var6.next();
                     nbttagcompound1 = new NBTTagCompound();
                     nbttagcompound1.setString("Value", property.getValue());
@@ -145,7 +164,7 @@ public class NMSUtils {
                     }
                 }
 
-                nbttagcompound.setTag((String)s, nbttaglist);
+                nbttagcompound.setTag((String) s, nbttaglist);
             }
 
             tagCompound.setTag("Properties", nbttagcompound);
