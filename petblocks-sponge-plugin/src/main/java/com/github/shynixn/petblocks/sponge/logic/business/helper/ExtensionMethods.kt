@@ -57,7 +57,10 @@ import java.util.function.Consumer
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-fun Game.sendMessage(message: String) {
+/**
+ * Sends a console [message].
+ */
+fun Any.sendConsoleMessage(message: String) {
     Sponge.getServer().console.sendMessage(message.translateToText())
 }
 

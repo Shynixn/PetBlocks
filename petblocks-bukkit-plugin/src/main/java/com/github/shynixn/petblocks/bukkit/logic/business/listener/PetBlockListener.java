@@ -1,13 +1,10 @@
 package com.github.shynixn.petblocks.bukkit.logic.business.listener;
 
 import com.github.shynixn.petblocks.api.PetBlocksApi;
-import com.github.shynixn.petblocks.api.bukkit.event.PetBlockMoveEvent;
-import com.github.shynixn.petblocks.api.bukkit.event.PetBlockRideEvent;
 import com.github.shynixn.petblocks.api.business.entity.PetBlock;
 import com.github.shynixn.petblocks.api.business.service.ParticleService;
 import com.github.shynixn.petblocks.api.business.service.SoundService;
 import com.github.shynixn.petblocks.api.persistence.entity.PetMeta;
-import com.github.shynixn.petblocks.bukkit.PetBlocksPlugin;
 import com.github.shynixn.petblocks.bukkit.logic.business.PetBlockManager;
 import com.github.shynixn.petblocks.bukkit.logic.persistence.configuration.Config;
 import com.github.shynixn.petblocks.bukkit.nms.NMSRegistry;
@@ -33,8 +30,6 @@ import org.bukkit.util.Vector;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
-import java.util.logging.Level;
-import java.util.regex.Pattern;
 
 /**
  * Listens to events related to the petblock entity.
@@ -83,53 +78,6 @@ public class PetBlockListener extends SimpleListener {
         NMSRegistry.registerListener19(manager.carryingPet, plugin);
         this.plugin.getServer().getScheduler().scheduleSyncRepeatingTask(this.plugin, new ParticleRunnable(), 0L, 60L);
         this.plugin.getServer().getScheduler().runTaskTimer(this.plugin, new PetHunterRunnable(), 0L, 20);
-    }
-
-    /**
-     * Gets called when the player starts riding and caches the regions he has spawned in.
-     *
-     * @param event event
-     */
-    @EventHandler
-    public void onPetBlockRideEvent(PetBlockRideEvent event) {
-        NMSRegistry.canEnterRegionOnPetRiding(event.getPlayer(), true);
-    }
-
-    /**
-     * Gets called when the petblock moves and kicks the player off the pet when he enters a region with a different owner.
-     *
-     * @param event event
-     */
-    @EventHandler
-    public void onPetBlockMoveEvent(PetBlockMoveEvent event) {
-        if (!NMSRegistry.canEnterRegionOnPetRiding(event.getPlayer(), false)) {
-            ((ArmorStand) event.getPetBlock().getArmorStand()).eject();
-        }
-    }
-
-    /**
-     * Kicks a player off the pet when the region he is membership of gets modified.
-     *
-     * @param event event
-     */
-    @EventHandler
-    public void onCommandEvent(PlayerCommandPreprocessEvent event) {
-        if (!Config.getInstance().allowRidingOnRegionChanging() && event.getMessage().contains("removemember")) {
-            try {
-                final String[] data = event.getMessage().split(Pattern.quote(" "));
-                final String playerName = data[3];
-                final String regionName = data[2];
-                final Player player;
-                if ((player = Bukkit.getPlayer(playerName)) != null) {
-                    final Optional<PetBlock> optPetblock;
-                    if ((optPetblock = PetBlocksApi.getDefaultPetBlockController().getFromPlayer(player)).isPresent() && NMSRegistry.shouldKickOffPet(player, regionName)) {
-                        ((ArmorStand) optPetblock.get().getArmorStand()).eject();
-                    }
-                }
-            } catch (final Exception ex) {
-                PetBlocksPlugin.logger().log(Level.WARNING, "Failed to kick member from pet.");
-            }
-        }
     }
 
     /**

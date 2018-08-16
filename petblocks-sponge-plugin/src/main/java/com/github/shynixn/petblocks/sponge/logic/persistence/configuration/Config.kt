@@ -11,7 +11,7 @@ import com.github.shynixn.petblocks.core.logic.persistence.entity.PetData
 import com.github.shynixn.petblocks.core.logic.persistence.entity.SoundEntity
 import com.github.shynixn.petblocks.sponge.PetBlocksPlugin
 import com.github.shynixn.petblocks.sponge.logic.business.helper.CompatibilityItemType
-import com.github.shynixn.petblocks.sponge.logic.business.helper.sendMessage
+import com.github.shynixn.petblocks.sponge.logic.business.helper.sendConsoleMessage
 import com.github.shynixn.petblocks.sponge.logic.business.helper.toParticleType
 import com.google.inject.Singleton
 import ninja.leaping.configurate.yaml.YAMLConfigurationLoader
@@ -116,7 +116,7 @@ object Config : ConfigLayer<Player>() {
         when {
             includedWorlds.contains("all") -> return !excludedWorlds.contains(location.extent.name)
             excludedWorlds.contains("all") -> return includedWorlds.contains(location.extent.name)
-            else -> Sponge.getGame().sendMessage(PetBlocksPlugin.PREFIX_CONSOLE + ChatColor.RED + "Please add 'all' to excluded or included worlds inside of the config.yml")
+            else -> Sponge.getGame().sendConsoleMessage(PetBlocksPlugin.PREFIX_CONSOLE + ChatColor.RED + "Please add 'all' to excluded or included worlds inside of the config.yml")
         }
         return true
     }

@@ -1,18 +1,14 @@
 package com.github.shynixn.petblocks.bukkit.logic.business.listener
 
-import com.github.shynixn.petblocks.api.business.service.GUIService
-import com.github.shynixn.petblocks.bukkit.logic.business.helper.updateInventory
-import com.google.inject.Inject
-import org.bukkit.Bukkit
-import org.bukkit.Material
-import org.bukkit.entity.Player
+import me.minebuilders.clearlag.events.EntityRemoveEvent
+import org.bukkit.entity.ArmorStand
+import org.bukkit.entity.Entity
+import org.bukkit.entity.Rabbit
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
-import org.bukkit.event.inventory.InventoryClickEvent
-import org.bukkit.event.player.PlayerQuitEvent
 
 /**
- * Handles clicking into the PetBlocks GUI.
+ * Created by Shynixn 2018.
  * <p>
  * Version 1.2
  * <p>
@@ -38,33 +34,34 @@ import org.bukkit.event.player.PlayerQuitEvent
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class InventoryListener @Inject constructor(private val guiService: GUIService) : Listener {
+class ClearLagListener : Listener {
     /**
-     * Gets called from [Bukkit] and handles action to the inventory.
+     * Gets called from clear lag when an entity gets removed.
      */
     @EventHandler
-    fun playerClickInInventoryEvent(event: InventoryClickEvent) {
-        val player = event.whoClicked as Player
-
-        if (!guiService.isGUIInventory(event.inventory)) {
-            return
+    fun onEntityRemoveEvent(event: EntityRemoveEvent) {
+        for (entity in event.entityList.toTypedArray()) {
+            if (this.isPet(entity)) {
+                event.entityList.remove(entity)
+            }
         }
-
-        if (event.currentItem == null || event.currentItem.type == Material.AIR) {
-            return
-        }
-
-        event.isCancelled = true
-        player.inventory.updateInventory()
-
-        guiService.clickInventoryItem(player, event.slot, event.currentItem)
     }
 
     /**
-     * Gets called from [Bukkit] and handles cleaning up remaining resources.
+     * Checks if the given [entity] is a petblock pet.
      */
-    @EventHandler
-    fun playerQuitEvent(event: PlayerQuitEvent) {
-        guiService.cleanResources(event.player)
+    private fun isPet(entity: Entity): Boolean {
+        if (entity is ArmorStand) {
+            val xidentifier = entity.bodyPose.z.toInt()
+            val identifier = entity.rightArmPose.x.toInt()
+
+            if (xidentifier == 2877 && identifier == 2877) {
+                return true
+            }
+        } else if (entity is Rabbit && entity.getCustomName() != null && entity.getCustomName() == "PetBlockIdentifier") {
+            return true
+        }
+
+        return false
     }
 }

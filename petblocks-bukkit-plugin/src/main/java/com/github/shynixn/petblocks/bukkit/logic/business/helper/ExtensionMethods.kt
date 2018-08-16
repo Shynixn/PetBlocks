@@ -8,6 +8,7 @@ import com.github.shynixn.petblocks.core.logic.business.helper.ChatColor
 import org.bukkit.entity.Player
 import org.bukkit.inventory.Inventory
 import org.bukkit.inventory.ItemStack
+import org.bukkit.inventory.PlayerInventory
 import org.bukkit.inventory.meta.SkullMeta
 import org.bukkit.plugin.Plugin
 import org.bukkit.plugin.java.JavaPlugin
@@ -46,6 +47,13 @@ import java.util.function.Consumer
 
 fun String.findServerVersion(): String {
     return this.replace("VERSION", VersionSupport.getServerVersion().versionText)
+}
+
+/**
+ * Updates this inventory.
+ */
+fun PlayerInventory.updateInventory() {
+    Player::class.java.getDeclaredMethod("updateInventory").invoke(this.holder as Player)
 }
 
 /**

@@ -1,12 +1,15 @@
 package com.github.shynixn.petblocks.bukkit.logic.persistence.configuration
 
+import com.github.shynixn.petblocks.api.PetBlocksApi
 import com.github.shynixn.petblocks.api.business.enumeration.ParticleType
+import com.github.shynixn.petblocks.api.business.enumeration.PluginDependency
+import com.github.shynixn.petblocks.api.business.service.DependencyService
+import com.github.shynixn.petblocks.api.business.service.DependencyWorldGuardService
 import com.github.shynixn.petblocks.api.persistence.entity.Particle
 import com.github.shynixn.petblocks.api.persistence.entity.PetMeta
 import com.github.shynixn.petblocks.api.persistence.entity.Sound
 import com.github.shynixn.petblocks.bukkit.PetBlocksPlugin
 import com.github.shynixn.petblocks.bukkit.logic.business.helper.toParticleType
-import com.github.shynixn.petblocks.bukkit.nms.NMSRegistry
 import com.github.shynixn.petblocks.bukkit.nms.v1_13_R1.MaterialCompatibility13
 import com.github.shynixn.petblocks.core.logic.business.helper.ChatBuilder
 import com.github.shynixn.petblocks.core.logic.persistence.configuration.Config
@@ -118,13 +121,25 @@ object Config : Config<Player>() {
     }
 
     private fun handleRegionSpawn(location: Location): Boolean {
+        val dependencyService = PetBlocksApi.INSTANCE.resolve(DependencyService::class.java)
+
+        if (!dependencyService.isInstalled(PluginDependency.WORLDGUARD)) {
+            return true
+        }
+
+        val worldGuardService = PetBlocksApi.INSTANCE.resolve(DependencyWorldGuardService::class.java)
+
         val includedRegions = this.includedRegions
         val excludedRegions = this.excludedRegion
 
-        when {
-            includedRegions.contains("all") -> return NMSRegistry.getWorldGuardRegionsFromLocation(location).none { excludedRegions.contains(it) }
-            excludedRegions.contains("all") -> return NMSRegistry.getWorldGuardRegionsFromLocation(location).any { includedRegions.contains(it) }
-            else -> Bukkit.getConsoleSender().sendMessage(PetBlocksPlugin.PREFIX_CONSOLE + ChatColor.RED + "Please add 'all' to excluded or included regions inside of the config.yml")
+        try {
+            when {
+                includedRegions.contains("all") -> return worldGuardService.getRegionNames(location).none { excludedRegions.contains(it) }
+                excludedRegions.contains("all") -> return worldGuardService.getRegionNames(location).any { includedRegions.contains(it) }
+                else -> Bukkit.getConsoleSender().sendMessage(PetBlocksPlugin.PREFIX_CONSOLE + ChatColor.RED + "Please add 'all' to excluded or included regions inside of the config.yml")
+            }
+        } catch (e: Exception) {
+            PetBlocksPlugin.logger().log(Level.WARNING, "Failed to handle region spawning.", e)
         }
 
         return true

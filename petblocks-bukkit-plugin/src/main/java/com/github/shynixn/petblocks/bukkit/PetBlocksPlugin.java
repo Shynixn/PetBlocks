@@ -2,17 +2,18 @@ package com.github.shynixn.petblocks.bukkit;
 
 import com.github.shynixn.petblocks.api.PetBlocksApi;
 import com.github.shynixn.petblocks.api.business.controller.PetBlockController;
+import com.github.shynixn.petblocks.api.business.enumeration.PluginDependency;
+import com.github.shynixn.petblocks.api.business.service.DependencyService;
 import com.github.shynixn.petblocks.api.persistence.controller.PetMetaController;
-import com.github.shynixn.petblocks.bukkit.logic.business.GoogleGuiceBinder;
 import com.github.shynixn.petblocks.bukkit.logic.business.PetBlockManager;
 import com.github.shynixn.petblocks.bukkit.logic.business.helper.UpdateUtils;
+import com.github.shynixn.petblocks.bukkit.logic.business.listener.ClearLagListener;
 import com.github.shynixn.petblocks.bukkit.logic.business.listener.InventoryListener;
 import com.github.shynixn.petblocks.bukkit.nms.NMSRegistry;
 import com.github.shynixn.petblocks.bukkit.nms.VersionSupport;
 import com.github.shynixn.petblocks.core.logic.business.helper.ReflectionUtils;
 import com.github.shynixn.petblocks.core.logic.persistence.configuration.Config;
 import com.google.inject.Guice;
-import com.google.inject.Inject;
 import com.google.inject.Injector;
 import org.apache.commons.io.IOUtils;
 import org.bstats.bukkit.Metrics;
@@ -65,12 +66,6 @@ public final class PetBlocksPlugin extends JavaPlugin implements com.github.shyn
     private Injector injector;
 
     /**
-     * Listeners.
-     */
-    @Inject
-    private InventoryListener inventoryListener;
-
-    /**
      * Enables the plugin PetBlocks.
      */
     @Override
@@ -82,8 +77,12 @@ public final class PetBlocksPlugin extends JavaPlugin implements com.github.shyn
             Bukkit.getPluginManager().disablePlugin(this);
         } else {
             Bukkit.getServer().getConsoleSender().sendMessage(PREFIX_CONSOLE + ChatColor.GREEN + "Loading PetBlocks ...");
-            this.injector = Guice.createInjector(new GoogleGuiceBinder(this));
+            this.injector = Guice.createInjector(new PetBlocksDependencyInjectionBinder(this));
             Config.getInstance().reload();
+
+            // Register Listeners
+            Bukkit.getPluginManager().registerEvents(this.resolve(InventoryListener.class), this);
+
             if (Config.getInstance().isMetricsEnabled()) {
                 final Metrics metrics = new Metrics(this);
                 metrics.addCustomChart(new Metrics.SimplePie("storage", () -> {
@@ -102,7 +101,11 @@ public final class PetBlocksPlugin extends JavaPlugin implements com.github.shyn
                 }
             });
 
-            NMSRegistry.registerAll();
+            final DependencyService dependencyService = this.resolve(DependencyService.class);
+
+            if (dependencyService.isInstalled(PluginDependency.CLEARLAG)) {
+                Bukkit.getPluginManager().registerEvents(this.resolve(ClearLagListener.class), this);
+            }
 
             try {
                 this.petBlockManager = new PetBlockManager(this);

@@ -68,15 +68,15 @@ public class UpdateUtils {
     public static void checkPluginUpToDateAndPrintMessage(long resourceId, String prefix, String pluginName, PluginContainer plugin) throws IOException {
         if (!isPluginUpToDate(resourceId, plugin)) {
             if (plugin.getVersion().get().endsWith("SNAPSHOT")) {
-                ExtensionMethodsKt.sendMessage(Sponge.getGame(),prefix + ChatColor.YELLOW + "================================================");
-                ExtensionMethodsKt.sendMessage(Sponge.getGame(),prefix + ChatColor.YELLOW + "You are using a snapshot of " + pluginName);
-                ExtensionMethodsKt.sendMessage(Sponge.getGame(),prefix + ChatColor.YELLOW + "Please check if there is a new version available");
-                ExtensionMethodsKt.sendMessage(Sponge.getGame(),prefix + ChatColor.YELLOW + "================================================");
+                ExtensionMethodsKt.sendConsoleMessage(Sponge.getGame(),prefix + ChatColor.YELLOW + "================================================");
+                ExtensionMethodsKt.sendConsoleMessage(Sponge.getGame(),prefix + ChatColor.YELLOW + "You are using a snapshot of " + pluginName);
+                ExtensionMethodsKt.sendConsoleMessage(Sponge.getGame(),prefix + ChatColor.YELLOW + "Please check if there is a new version available");
+                ExtensionMethodsKt.sendConsoleMessage(Sponge.getGame(),prefix + ChatColor.YELLOW + "================================================");
             } else {
-                ExtensionMethodsKt.sendMessage(Sponge.getGame(),prefix + ChatColor.YELLOW + "================================================");
-                ExtensionMethodsKt.sendMessage(Sponge.getGame(),prefix + ChatColor.YELLOW + pluginName + " is outdated");
-                ExtensionMethodsKt.sendMessage(Sponge.getGame(),prefix + ChatColor.YELLOW + "Please download the latest version from spigotmc.org");
-                ExtensionMethodsKt.sendMessage(Sponge.getGame(),prefix + ChatColor.YELLOW + "================================================");
+                ExtensionMethodsKt.sendConsoleMessage(Sponge.getGame(),prefix + ChatColor.YELLOW + "================================================");
+                ExtensionMethodsKt.sendConsoleMessage(Sponge.getGame(),prefix + ChatColor.YELLOW + pluginName + " is outdated");
+                ExtensionMethodsKt.sendConsoleMessage(Sponge.getGame(),prefix + ChatColor.YELLOW + "Please download the latest version from spigotmc.org");
+                ExtensionMethodsKt.sendConsoleMessage(Sponge.getGame(),prefix + ChatColor.YELLOW + "================================================");
             }
         }
     }

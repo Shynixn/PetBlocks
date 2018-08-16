@@ -68,8 +68,8 @@ class SpongeItemContainer : ItemContainer<Player> {
                 return itemStack
             }
         } catch (ex: Exception) {
-            Sponge.getGame().sendMessage("Invalid config file. Fix the following error or recreate it!")
-            Sponge.getGame().sendMessage("Failed to generate itemStack.")
+            Sponge.getGame().sendConsoleMessage("Invalid config file. Fix the following error or recreate it!")
+            Sponge.getGame().sendConsoleMessage("Failed to generate itemStack.")
             ex.printStackTrace()
         }
 

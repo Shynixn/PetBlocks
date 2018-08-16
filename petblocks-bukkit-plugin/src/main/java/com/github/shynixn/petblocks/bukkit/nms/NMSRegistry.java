@@ -1,25 +1,21 @@
 package com.github.shynixn.petblocks.bukkit.nms;
 
+import com.github.shynixn.petblocks.api.PetBlocksApi;
 import com.github.shynixn.petblocks.api.business.entity.PetBlock;
+import com.github.shynixn.petblocks.api.business.enumeration.PluginDependency;
+import com.github.shynixn.petblocks.api.business.service.DependencyService;
+import com.github.shynixn.petblocks.api.business.service.DependencyWorldGuardService;
 import com.github.shynixn.petblocks.api.persistence.entity.PetMeta;
 import com.github.shynixn.petblocks.bukkit.PetBlocksPlugin;
-import com.github.shynixn.petblocks.bukkit.dependencies.clearlag.ClearLagListener;
-import com.github.shynixn.petblocks.bukkit.dependencies.worldguard.WorldGuardConnection5;
-import com.github.shynixn.petblocks.bukkit.dependencies.worldguard.WorldGuardConnection6;
-import com.github.shynixn.petblocks.bukkit.logic.business.helper.RegisterHelper;
 import com.github.shynixn.petblocks.bukkit.nms.v1_9_R1.Listener19;
 import com.github.shynixn.petblocks.core.logic.business.helper.ReflectionUtils;
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
-import org.bukkit.plugin.java.JavaPlugin;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 
@@ -88,49 +84,6 @@ public final class NMSRegistry {
     }
 
     /**
-     * Checks if the player is allowed to enter a region when he is riding his pet
-     *
-     * @param player player
-     * @param spawn  spawn
-     * @return isAllowed
-     */
-    public static boolean canEnterRegionOnPetRiding(Player player, boolean spawn) {
-        if (RegisterHelper.isRegistered("WorldGuard")) {
-            try {
-                if (RegisterHelper.isRegistered("WorldGuard", '6')) {
-                    return WorldGuardConnection6.isAllowedToEnterRegionByRiding(player, spawn);
-                } else if (RegisterHelper.isRegistered("WorldGuard", '5')) {
-                    return WorldGuardConnection5.isAllowedToEnterRegionByRiding(player, spawn);
-                }
-            } catch (final Exception ex) {
-                PetBlocksPlugin.logger().log(Level.WARNING, "Failed to connect to worldguard", ex);
-            }
-        }
-        return true;
-    }
-
-    /**
-     * Checks if the player should be kicked off his pet
-     *
-     * @param player   player
-     * @param regionId regionId
-     * @return kickOff
-     */
-    public static boolean shouldKickOffPet(Player player, String regionId) {
-        if (RegisterHelper.isRegistered("WorldGuard")) {
-            try {
-                if (RegisterHelper.isRegistered("WorldGuard", '6'))
-                    return WorldGuardConnection6.shouldKickOffPet(player, regionId);
-                else if (RegisterHelper.isRegistered("WorldGuard", '5'))
-                    return WorldGuardConnection5.shouldKickOffPet(player, regionId);
-            } catch (final Exception ex) {
-                PetBlocksPlugin.logger().log(Level.WARNING, "Failed to connect to worldguard", ex);
-            }
-        }
-        return false;
-    }
-
-    /**
      * Returns the item in hand by being compatible to lower than 1.9
      *
      * @param player  player
@@ -184,59 +137,6 @@ public final class NMSRegistry {
         }
     }
 
-    public static void registerAll() {
-        RegisterHelper.PREFIX = PetBlocksPlugin.PREFIX_CONSOLE;
-        RegisterHelper.register("WorldGuard", "com.sk89q.worldguard.protection.ApplicableRegionSet", '5');
-        RegisterHelper.register("WorldGuard", "com.sk89q.worldguard.protection.ApplicableRegionSet", '6');
-        if (RegisterHelper.register("ClearLag")) {
-            try {
-                new ClearLagListener((JavaPlugin) Bukkit.getPluginManager().getPlugin("PetBlocks"));
-            } catch (final Exception ex) {
-                PetBlocksPlugin.logger().log(Level.WARNING, "Failed to hook into ClearLag.", ex);
-            }
-        }
-    }
-
-    public static void accessWorldGuardSpawn(Location location) {
-        if (RegisterHelper.isRegistered("WorldGuard")) {
-            try {
-                if (RegisterHelper.isRegistered("WorldGuard", '6'))
-                    WorldGuardConnection6.allowSpawn(location);
-                else if (RegisterHelper.isRegistered("WorldGuard", '5'))
-                    WorldGuardConnection5.allowSpawn(location);
-            } catch (final Exception ex) {
-                PetBlocksPlugin.logger().log(Level.WARNING, "Failed to connect to worldguard", ex);
-            }
-        }
-    }
-
-    public static List<String> getWorldGuardRegionsFromLocation(Location location) {
-        if (RegisterHelper.isRegistered("WorldGuard")) {
-            try {
-                if (RegisterHelper.isRegistered("WorldGuard", '6'))
-                    return WorldGuardConnection6.getRegionsFromLocation(location);
-                else if (RegisterHelper.isRegistered("WorldGuard", '5'))
-                    return WorldGuardConnection5.getRegionsFromLocation(location);
-            } catch (final Exception ex) {
-                PetBlocksPlugin.logger().log(Level.WARNING, "Failed to connect to worldguard", ex);
-            }
-        }
-        return new ArrayList<>();
-    }
-
-    public static void rollbackWorldGuardSpawn(Location location) {
-        if (RegisterHelper.isRegistered("WorldGuard")) {
-            try {
-                if (RegisterHelper.isRegistered("WorldGuard", '6'))
-                    WorldGuardConnection6.rollBack();
-                else if (RegisterHelper.isRegistered("WorldGuard", '5'))
-                    WorldGuardConnection5.rollBack();
-            } catch (final Exception ex) {
-                PetBlocksPlugin.logger().log(Level.WARNING, "Failed to connect to worldguard", ex);
-            }
-        }
-    }
-
     /**
      * Returns the class managed by version
      *
@@ -246,5 +146,49 @@ public final class NMSRegistry {
      */
     private static Class<?> findClassFromVersion(String path) throws ClassNotFoundException {
         return Class.forName(path.replace("VERSION", VersionSupport.getServerVersion().getVersionText()));
+    }
+
+    /**
+     * Compatibility method.
+     *
+     * @param location location
+     */
+    @Deprecated
+    public static void accessWorldGuardSpawn(Location location) {
+        final DependencyService dependencyService = PetBlocksApi.INSTANCE.resolve(DependencyService.class);
+
+        if (!dependencyService.isInstalled(PluginDependency.WORLDGUARD)) {
+            return;
+        }
+
+        final DependencyWorldGuardService dependencyWorldGuardService = PetBlocksApi.INSTANCE.resolve(DependencyWorldGuardService.class);
+
+        try {
+            dependencyWorldGuardService.prepareSpawningRegion(location);
+        } catch (final Exception e) {
+            PetBlocksPlugin.logger().log(Level.WARNING, "Failed to handle region spawning.", e);
+        }
+    }
+
+    /**
+     * Compatibility method.
+     *
+     * @param location location
+     */
+    @Deprecated
+    public static void rollbackWorldGuardSpawn(Location location) {
+        final DependencyService dependencyService = PetBlocksApi.INSTANCE.resolve(DependencyService.class);
+
+        if (!dependencyService.isInstalled(PluginDependency.WORLDGUARD)) {
+            return;
+        }
+
+        final DependencyWorldGuardService dependencyWorldGuardService = PetBlocksApi.INSTANCE.resolve(DependencyWorldGuardService.class);
+
+        try {
+            dependencyWorldGuardService.resetSpawningRegion(location);
+        } catch (final Exception e) {
+            PetBlocksPlugin.logger().log(Level.WARNING, "Failed to handle region spawning.", e);
+        }
     }
 }
