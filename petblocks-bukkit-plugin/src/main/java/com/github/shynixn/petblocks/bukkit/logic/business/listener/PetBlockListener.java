@@ -1,35 +1,29 @@
 package com.github.shynixn.petblocks.bukkit.logic.business.listener;
 
-import com.github.shynixn.petblocks.api.PetBlocksApi;
 import com.github.shynixn.petblocks.api.business.entity.PetBlock;
-import com.github.shynixn.petblocks.api.business.service.ParticleService;
-import com.github.shynixn.petblocks.api.business.service.SoundService;
 import com.github.shynixn.petblocks.api.persistence.entity.PetMeta;
 import com.github.shynixn.petblocks.bukkit.logic.business.PetBlockManager;
 import com.github.shynixn.petblocks.bukkit.logic.persistence.configuration.Config;
-import com.github.shynixn.petblocks.bukkit.nms.NMSRegistry;
 import com.github.shynixn.petblocks.core.logic.business.entity.PetRunnable;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
-import org.bukkit.event.entity.*;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
-import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.event.inventory.InventoryOpenEvent;
-import org.bukkit.event.player.*;
-import org.bukkit.inventory.ItemStack;
+import org.bukkit.event.entity.EntityInteractEvent;
+import org.bukkit.event.entity.PlayerLeashEntityEvent;
+import org.bukkit.event.player.PlayerInteractAtEntityEvent;
+import org.bukkit.event.player.PlayerRespawnEvent;
+import org.bukkit.event.player.PlayerTeleportEvent;
+import org.bukkit.event.player.PlayerToggleSneakEvent;
 import org.bukkit.plugin.Plugin;
-import org.bukkit.util.Vector;
 
-import java.util.HashSet;
 import java.util.Optional;
-import java.util.Set;
 
 /**
  * Listens to events related to the petblock entity.
@@ -62,9 +56,6 @@ public class PetBlockListener extends SimpleListener {
     private static final String PETBLOCK_IDENTIFIER = "PetBlockIdentifier";
 
     private final PetBlockManager manager;
-    private final Set<PetBlock> jumped = new HashSet<>();
-    private ParticleService particleService;
-    private SoundService soundService;
 
     /**
      * Initializes a new petblockListener from the manager and plugin.
@@ -75,7 +66,6 @@ public class PetBlockListener extends SimpleListener {
     public PetBlockListener(PetBlockManager manager, Plugin plugin) {
         super(plugin);
         this.manager = manager;
-        NMSRegistry.registerListener19(manager.carryingPet, plugin);
         this.plugin.getServer().getScheduler().scheduleSyncRepeatingTask(this.plugin, new ParticleRunnable(), 0L, 60L);
         this.plugin.getServer().getScheduler().runTaskTimer(this.plugin, new PetHunterRunnable(), 0L, 20);
     }
@@ -183,121 +173,6 @@ public class PetBlockListener extends SimpleListener {
         }
     }
 
-    @EventHandler(priority = EventPriority.HIGHEST)
-    public void entityRightClickEvent(final PlayerInteractAtEntityEvent event) {
-        if (this.manager.carryingPet.containsKey(event.getPlayer())) {
-            NMSRegistry.setItemInHand19(event.getPlayer(), null, true);
-            if (this.manager.getPetBlockController().getFromPlayer(event.getPlayer()).isPresent())
-                this.manager.getPetBlockController().removeByPlayer(event.getPlayer());
-            event.setCancelled(true);
-        } else if (this.isPet(event.getRightClicked())) {
-            final PetBlock petBlock = this.getPet(event.getRightClicked());
-            if (petBlock != null && petBlock.getPlayer().equals(event.getPlayer())) {
-                if (Config.INSTANCE.isFeedingEnabled() && NMSRegistry.getItemInHand19(event.getPlayer(), false) != null && NMSRegistry.getItemInHand19(event.getPlayer(), false).getType() == Material.CARROT_ITEM) {
-                    if (this.soundService == null) {
-                        this.particleService = PetBlocksApi.INSTANCE.resolve(ParticleService.class);
-                        this.soundService = PetBlocksApi.INSTANCE.resolve(SoundService.class);
-                    }
-
-                    if (petBlock.getMeta().isSoundEnabled()) {
-                        this.soundService.playSound(event.getRightClicked().getLocation(), Config.INSTANCE.getFeedingClickSound(), event.getPlayer());
-                    }
-
-                    this.particleService.playParticle(event.getRightClicked().getLocation(), Config.INSTANCE.getFeedingClickParticleEffect(), event.getPlayer());
-                    if (NMSRegistry.getItemInHand19(event.getPlayer(), false).getAmount() == 1)
-                        event.getPlayer().getInventory().setItem(event.getPlayer().getInventory().getHeldItemSlot(), new ItemStack(Material.AIR));
-                    else
-                        NMSRegistry.getItemInHand19(event.getPlayer(), false).setAmount(NMSRegistry.getItemInHand19(event.getPlayer(), false).getAmount() - 1);
-                    if (!this.jumped.contains(petBlock)) {
-                        this.plugin.getServer().getScheduler().runTaskLater(this.plugin, () -> PetBlockListener.this.jumped.remove(PetBlockListener.this.getPet(event.getRightClicked())), 20L);
-                        this.jumped.add(this.getPet(event.getRightClicked()));
-                        petBlock.jump();
-                    }
-                } else if (Config.INSTANCE.isFollow_carry() && (event.getPlayer().getInventory() == null || NMSRegistry.getItemInHand19(event.getPlayer(), true).getType() == Material.AIR)) {
-                    final ItemStack itemStack = ((ArmorStand) petBlock.getArmorStand()).getHelmet().clone();
-                    NMSRegistry.setItemInHand19(event.getPlayer(), itemStack, true);
-                    this.manager.getPetBlockController().remove(petBlock);
-                    this.manager.carryingPet.put((Player) petBlock.getPlayer(), itemStack);
-                }
-            }
-            event.setCancelled(true);
-        }
-    }
-
-    @EventHandler
-    public void onPlayerInteractEvent(PlayerInteractEvent event) {
-        if (this.manager.carryingPet.containsKey(event.getPlayer())) {
-            this.removePetFromArm(event.getPlayer(), true);
-            event.setCancelled(true);
-        }
-    }
-
-    @EventHandler
-    public void onPlayerCommandEvent(PlayerCommandPreprocessEvent event) {
-        if (this.manager.carryingPet.containsKey(event.getPlayer())) {
-            event.setCancelled(true);
-        }
-    }
-
-    @EventHandler
-    public void onInventoryOpenEvent(InventoryOpenEvent event) {
-        final Player player = (Player) event.getPlayer();
-        if (this.manager.carryingPet.containsKey(player)) {
-            event.setCancelled(true);
-            event.getPlayer().closeInventory();
-        }
-    }
-
-    @EventHandler
-    public void onPlayerEntityEvent(PlayerInteractEntityEvent event) {
-        if (this.manager.carryingPet.containsKey(event.getPlayer())) {
-            this.removePetFromArm(event.getPlayer(), false);
-            event.setCancelled(true);
-        }
-    }
-
-    @EventHandler
-    public void onPlayerDeathEvent(PlayerDeathEvent event) {
-        if (this.manager.carryingPet.containsKey(event.getEntity())) {
-            final ItemStack itemStack = this.manager.carryingPet.get(event.getEntity());
-            event.getDrops().remove(itemStack);
-            this.removePetFromArm(event.getEntity(), false);
-        }
-    }
-
-    @EventHandler
-    public void onPlayerQuitEvent(PlayerQuitEvent event) {
-        if (this.manager.carryingPet.containsKey(event.getPlayer())) {
-            NMSRegistry.setItemInHand19(event.getPlayer(), null, true);
-            this.manager.carryingPet.remove(event.getPlayer());
-        }
-    }
-
-    @EventHandler
-    public void onInventoryOpen(InventoryClickEvent event) {
-        final Player player = (Player) event.getWhoClicked();
-        if (this.manager.carryingPet.containsKey(player)) {
-            this.removePetFromArm((Player) event.getWhoClicked(), false);
-            event.setCancelled(true);
-        }
-    }
-
-    @EventHandler
-    public void onPlayerDropItem(PlayerDropItemEvent event) {
-        if (this.manager.carryingPet.containsKey(event.getPlayer())) {
-            this.removePetFromArm(event.getPlayer(), false);
-            event.getItemDrop().remove();
-        }
-    }
-
-    @EventHandler
-    public void onSlotChange(PlayerItemHeldEvent event) {
-        if (this.manager.carryingPet.containsKey(event.getPlayer())) {
-            this.removePetFromArm(event.getPlayer(), false);
-            event.getPlayer().getInventory().setItem(event.getPreviousSlot(), null);
-        }
-    }
-
     @EventHandler
     public void entityDamageEvent(final EntityDamageEvent event) {
         if (this.isPet(event.getEntity())) {
@@ -382,20 +257,6 @@ public class PetBlockListener extends SimpleListener {
         return false;
     }
 
-    private void removePetFromArm(Player player, boolean launch) {
-        this.providePet(player, (petMeta, petBlock) -> {
-            if (petBlock == null) {
-                this.setPetBlock(player, petMeta);
-            }
-            NMSRegistry.setItemInHand19(player, null, true);
-            this.manager.carryingPet.remove(player);
-            if (launch) {
-                final Optional<PetBlock> optPetBlock = this.manager.getPetBlockController().getFromPlayer(player);
-                optPetBlock.ifPresent(petBlock1 -> ((LivingEntity) petBlock1.getEngineEntity()).setVelocity(this.getDirection(player)));
-            }
-        });
-    }
-
     /**
      * Creates a new petblock for the player and petMeta and sets it managed for the default controller.
      *
@@ -423,22 +284,5 @@ public class PetBlockListener extends SimpleListener {
                 optPetMeta.ifPresent(petMeta -> this.plugin.getServer().getScheduler().runTask(this.plugin, () -> runnable.run(petMeta, null)));
             });
         }
-    }
-
-    /**
-     * Returns the launch direction for holding pets.
-     *
-     * @param player player
-     * @return launchDirection
-     */
-    private Vector getDirection(Player player) {
-        final Vector vector = new Vector();
-        final double rotX = player.getLocation().getYaw();
-        final double rotY = player.getLocation().getPitch();
-        vector.setY(-Math.sin(Math.toRadians(rotY)));
-        final double h = Math.cos(Math.toRadians(rotY));
-        vector.setX(-h * Math.sin(Math.toRadians(rotX)));
-        vector.setZ(h * Math.cos(Math.toRadians(rotX)));
-        return vector.multiply(1.2);
     }
 }

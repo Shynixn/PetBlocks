@@ -10,6 +10,7 @@ import com.github.shynixn.petblocks.bukkit.logic.Factory
 import com.github.shynixn.petblocks.bukkit.logic.business.helper.LoggingBridge
 import com.github.shynixn.petblocks.bukkit.logic.business.service.*
 import com.github.shynixn.petblocks.bukkit.logic.persistence.configuration.*
+import com.github.shynixn.petblocks.bukkit.nms.VersionSupport
 import com.github.shynixn.petblocks.core.logic.business.service.GUIScriptServiceImpl
 import com.google.inject.AbstractModule
 import com.google.inject.Scopes
@@ -47,6 +48,7 @@ import org.slf4j.Logger
  * SOFTWARE.
  */
 class PetBlocksDependencyInjectionBinder(private val plugin: Plugin) : AbstractModule() {
+    private val version = VersionSupport.getServerVersion()
 
     /**
      * Configures the business logic tree.
@@ -75,7 +77,9 @@ class PetBlocksDependencyInjectionBinder(private val plugin: Plugin) : AbstractM
         bind(GUIScriptService::class.java).to(GUIScriptServiceImpl::class.java)
         bind(ConfigurationService::class.java).to(ConfigurationServiceImpl::class.java)
         bind(GUIService::class.java).to(GUIServiceImpl::class.java).`in`(Scopes.SINGLETON)
+        bind(FeedingPetService::class.java).to(FeedPetServiceImpl::class.java)
         bind(DependencyService::class.java).to(DependencyServiceImpl::class.java).`in`(Scopes.SINGLETON)
+        bind(CarryPetService::class.java).to(CarryPetServiceImpl::class.java).`in`(Scopes.SINGLETON)
 
         val dependencyService = DependencyServiceImpl(plugin)
         dependencyService.checkForInstalledDependencies()

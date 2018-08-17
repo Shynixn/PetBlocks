@@ -10,11 +10,9 @@ import com.github.shynixn.petblocks.bukkit.logic.business.commandexecutor.PetDat
 import com.github.shynixn.petblocks.bukkit.logic.business.filter.PetBlockFilter;
 import com.github.shynixn.petblocks.bukkit.logic.business.listener.PetBlockListener;
 import com.github.shynixn.petblocks.bukkit.logic.business.listener.PetDataListener;
-import com.github.shynixn.petblocks.bukkit.nms.NMSRegistry;
 import com.github.shynixn.petblocks.core.logic.business.entity.GuiPageContainer;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 
 import java.util.HashMap;
@@ -57,7 +55,6 @@ public class PetBlockManager implements AutoCloseable {
     // For compatibility reasons. Will be removed.
     public static PetBlockManager instance;
 
-    public final Map<Player, ItemStack> carryingPet = new HashMap<>();
     public final Map<Player, Integer> timeBlocked = new HashMap<>();
     public final Set<Player> headDatabasePlayers = new HashSet<>();
     public final Map<Player, Inventory> inventories = new HashMap<>();
@@ -122,9 +119,6 @@ public class PetBlockManager implements AutoCloseable {
      */
     @Override
     public void close() throws Exception {
-        for (final Player player : this.carryingPet.keySet()) {
-            NMSRegistry.setItemInHand19(player, null, true);
-        }
         this.timeBlocked.clear();
         this.headDatabasePlayers.clear();
         this.inventories.clear();
@@ -132,6 +126,5 @@ public class PetBlockManager implements AutoCloseable {
         this.petBlockController.close();
         this.petMetaController.close();
         this.filter.close();
-        this.carryingPet.clear();
     }
 }

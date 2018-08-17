@@ -7,16 +7,10 @@ import com.github.shynixn.petblocks.api.business.service.DependencyService;
 import com.github.shynixn.petblocks.api.business.service.DependencyWorldGuardService;
 import com.github.shynixn.petblocks.api.persistence.entity.PetMeta;
 import com.github.shynixn.petblocks.bukkit.PetBlocksPlugin;
-import com.github.shynixn.petblocks.bukkit.nms.v1_9_R1.Listener19;
 import com.github.shynixn.petblocks.core.logic.business.helper.ReflectionUtils;
 import org.bukkit.Location;
-import org.bukkit.entity.HumanEntity;
-import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.plugin.Plugin;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.Map;
 import java.util.logging.Level;
 
 public final class NMSRegistry {
@@ -80,60 +74,6 @@ public final class NMSRegistry {
             wrappedRegistry.unregister(rabbitClazz, CustomEntityType.RABBIT);
             wrappedRegistry.unregister(zombieClazz, CustomEntityType.ZOMBIE);
             wrappedRegistry = null;
-        }
-    }
-
-    /**
-     * Returns the item in hand by being compatible to lower than 1.9
-     *
-     * @param player  player
-     * @param offHand offHand
-     * @return itemStack
-     */
-    public static ItemStack getItemInHand19(Player player, boolean offHand) {
-        try {
-            if (!VersionSupport.getServerVersion().isVersionSameOrGreaterThan(VersionSupport.VERSION_1_9_R1)) {
-                return ReflectionUtils.invokeMethodByObject(player, "getItemInHand", new Class[]{}, new Object[]{}, HumanEntity.class);
-            }
-            if (offHand) {
-                return ReflectionUtils.invokeMethodByObject(player.getInventory(), "getItemInOffHand", new Class[]{}, new Object[]{});
-            }
-            return ReflectionUtils.invokeMethodByObject(player.getInventory(), "getItemInMainHand", new Class[]{}, new Object[]{});
-        } catch (final NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
-            PetBlocksPlugin.logger().log(Level.WARNING, "Failed to gather item in 19 hand.", e);
-            return null;
-        }
-    }
-
-    /**
-     * Sets the item in hand by being compatible to lower than 1.9
-     *
-     * @param player    player
-     * @param itemStack itemStack
-     * @param offHand   offHand
-     */
-    public static void setItemInHand19(Player player, ItemStack itemStack, boolean offHand) {
-        try {
-            if (!VersionSupport.getServerVersion().isVersionSameOrGreaterThan(VersionSupport.VERSION_1_9_R1)) {
-                ReflectionUtils.invokeMethodByObject(player, "setItemInHand", new Class[]{ItemStack.class}, new Object[]{itemStack}, HumanEntity.class);
-            } else if (offHand) {
-                ReflectionUtils.invokeMethodByObject(player.getInventory(), "setItemInOffHand", new Class[]{ItemStack.class}, new Object[]{itemStack});
-            } else {
-                ReflectionUtils.invokeMethodByObject(player.getInventory(), "setItemInMainHand", new Class[]{ItemStack.class}, new Object[]{itemStack});
-            }
-        } catch (final NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
-            PetBlocksPlugin.logger().log(Level.WARNING, "Failed to set item in 19 hand.", e);
-        }
-    }
-
-    public static void registerListener19(Map<Player, ItemStack> players, Plugin plugin) {
-        if (VersionSupport.getServerVersion().isVersionSameOrGreaterThan(VersionSupport.VERSION_1_9_R1)) {
-            try {
-                Class.forName("org.bukkit.event.player.PlayerSwapHandItemsEvent");
-            } catch (final ClassNotFoundException e) {
-                return;
-            }
-            new Listener19(players, plugin);
         }
     }
 

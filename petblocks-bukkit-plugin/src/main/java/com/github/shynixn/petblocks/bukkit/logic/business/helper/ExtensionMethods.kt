@@ -1,10 +1,14 @@
+@file:Suppress("UNCHECKED_CAST")
+
 package com.github.shynixn.petblocks.bukkit.logic.business.helper
 
 import com.github.shynixn.petblocks.api.business.enumeration.ParticleType
 import com.github.shynixn.petblocks.api.business.service.PersistenceService
 import com.github.shynixn.petblocks.bukkit.PetBlocksPlugin
+import com.github.shynixn.petblocks.bukkit.logic.business.PetBlockManager
 import com.github.shynixn.petblocks.bukkit.nms.VersionSupport
 import com.github.shynixn.petblocks.core.logic.business.helper.ChatColor
+import org.bukkit.entity.Entity
 import org.bukkit.entity.Player
 import org.bukkit.inventory.Inventory
 import org.bukkit.inventory.ItemStack
@@ -47,6 +51,64 @@ import java.util.function.Consumer
 
 fun String.findServerVersion(): String {
     return this.replace("VERSION", VersionSupport.getServerVersion().versionText)
+}
+
+/**
+ * Sets the item in the players arm.
+ */
+fun PlayerInventory.setItemStackInHand(itemStack: ItemStack?, offHand: Boolean = false) {
+    val version = VersionSupport.getServerVersion()
+
+    if (version.isVersionSameOrGreaterThan(VersionSupport.VERSION_1_9_R1)) {
+        val inventoryClazz = Class.forName("org.bukkit.inventory.PlayerInventory")
+
+        if (offHand) {
+            inventoryClazz.getDeclaredMethod("setItemInOffHand", ItemStack::class.java).invoke(this, itemStack)
+        } else {
+            inventoryClazz.getDeclaredMethod("setItemInMainHand", ItemStack::class.java).invoke(this, itemStack)
+        }
+    } else {
+        Class.forName("org.bukkit.entity.HumanEntity").getDeclaredMethod("setItemInHand", ItemStack::class.java)
+                .invoke(this.holder, itemStack)
+    }
+}
+
+/**
+ * Is this the pet entity?
+ */
+fun Entity.isPetOfPlayer(player: Player): Boolean {
+    try {
+        val petblock = PetBlockManager.instance.petBlockController.getFromPlayer(player)
+        if (petblock.isPresent) {
+            val block = petblock.get()
+            if (block.armorStand != null && block.engineEntity != null && (block.armorStand == this || block.engineEntity == this)) {
+                return true
+            }
+        }
+    } catch (ignored: Exception) {
+    }
+
+    return false
+}
+
+/**
+ * Gets the item in the players arm.
+ */
+fun PlayerInventory.getItemStackInHand(offHand: Boolean = false): Optional<ItemStack> {
+    val version = VersionSupport.getServerVersion()
+
+    return if (version.isVersionSameOrGreaterThan(VersionSupport.VERSION_1_9_R1)) {
+        val inventoryClazz = Class.forName("org.bukkit.inventory.PlayerInventory")
+
+        if (offHand) {
+            Optional.ofNullable(inventoryClazz.getDeclaredMethod("getItemInOffHand").invoke(this)) as Optional<ItemStack>
+        } else {
+            Optional.ofNullable(inventoryClazz.getDeclaredMethod("getItemInMainHand").invoke(this)) as Optional<ItemStack>
+        }
+    } else {
+        Optional.ofNullable(Class.forName("org.bukkit.entity.HumanEntity").getDeclaredMethod("getItemInHand")
+                .invoke(this.holder)) as Optional<ItemStack>
+    }
 }
 
 /**
@@ -168,6 +230,9 @@ fun <T> CompletableFuture<T>.thenAcceptOnMainThread(action: Consumer<in T>) {
     }
 }
 
+/**
+ * Sets the skin of the itemstack.
+ */
 fun ItemStack.setSkin(skin: String): ItemStack {
     if (skin.contains("textures.minecraft.net")) {
         if (skin.startsWith("http://")) {

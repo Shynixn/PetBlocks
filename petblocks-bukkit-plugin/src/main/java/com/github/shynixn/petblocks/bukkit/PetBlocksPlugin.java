@@ -7,8 +7,7 @@ import com.github.shynixn.petblocks.api.business.service.DependencyService;
 import com.github.shynixn.petblocks.api.persistence.controller.PetMetaController;
 import com.github.shynixn.petblocks.bukkit.logic.business.PetBlockManager;
 import com.github.shynixn.petblocks.bukkit.logic.business.helper.UpdateUtils;
-import com.github.shynixn.petblocks.bukkit.logic.business.listener.ClearLagListener;
-import com.github.shynixn.petblocks.bukkit.logic.business.listener.InventoryListener;
+import com.github.shynixn.petblocks.bukkit.logic.business.listener.*;
 import com.github.shynixn.petblocks.bukkit.nms.NMSRegistry;
 import com.github.shynixn.petblocks.bukkit.nms.VersionSupport;
 import com.github.shynixn.petblocks.core.logic.business.helper.ReflectionUtils;
@@ -82,6 +81,12 @@ public final class PetBlocksPlugin extends JavaPlugin implements com.github.shyn
 
             // Register Listeners
             Bukkit.getPluginManager().registerEvents(this.resolve(InventoryListener.class), this);
+            Bukkit.getPluginManager().registerEvents(this.resolve(CarryPetListener.class), this);
+            Bukkit.getPluginManager().registerEvents(this.resolve(FeedingPetListener.class), this);
+
+            if (VersionSupport.getServerVersion().isVersionSameOrGreaterThan(VersionSupport.VERSION_1_9_R1)) {
+                Bukkit.getPluginManager().registerEvents(this.resolve(CarryPet19R1Listener.class), this);
+            }
 
             if (Config.getInstance().isMetricsEnabled()) {
                 final Metrics metrics = new Metrics(this);
