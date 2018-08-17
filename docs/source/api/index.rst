@@ -356,6 +356,24 @@ The PetBlocks plugin allows to access some parts of the Business Logic.
     ParticleService particleService = PetBlocksApi.INSTANCE.resolve(ParticleService.class);
     particleService.playParticle(location, particle, player);
 
+.. note::  **Carry** - Bukkit/Sponge - Let the player carry his pet.
+
+.. code-block:: java
+
+     Player player; // Any player instance
+
+     CarryPetService carryPetService = PetBlocksApi.INSTANCE.resolve(CarryPetService.class);
+     carryPetService.carryPet(player);
+
+.. note::  **Feeding** - Bukkit/Sponge - Execute the feeding effect.
+
+.. code-block:: java
+
+    Player player; // Any player instance
+
+    FeedingPetService feedingPetService = PetBlocksApi.INSTANCE.resolve(FeedingPetService.class);
+    feedingPetService.feedPet(player);
+
 .. note::  **WorldGuard** - Bukkit - Accessing the WorldGuard dependency.
 
 .. code-block:: java

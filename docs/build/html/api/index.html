@@ -500,6 +500,26 @@ you need to manage asynchronous and synchronous server tasks.</p>
 </div>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
+<p class="last"><strong>Carry</strong> - Bukkit/Sponge - Let the player carry his pet.</p>
+</div>
+<div class="highlight-java"><div class="highlight"><pre><span></span><span class="n">Player</span> <span class="n">player</span><span class="o">;</span> <span class="c1">// Any player instance</span>
+
+<span class="n">CarryPetService</span> <span class="n">carryPetService</span> <span class="o">=</span> <span class="n">PetBlocksApi</span><span class="o">.</span><span class="na">INSTANCE</span><span class="o">.</span><span class="na">resolve</span><span class="o">(</span><span class="n">CarryPetService</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
+<span class="n">carryPetService</span><span class="o">.</span><span class="na">carryPet</span><span class="o">(</span><span class="n">player</span><span class="o">);</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last"><strong>Feeding</strong> - Bukkit/Sponge - Execute the feeding effect.</p>
+</div>
+<div class="highlight-java"><div class="highlight"><pre><span></span><span class="n">Player</span> <span class="n">player</span><span class="o">;</span> <span class="c1">// Any player instance</span>
+
+<span class="n">FeedingPetService</span> <span class="n">feedingPetService</span> <span class="o">=</span> <span class="n">PetBlocksApi</span><span class="o">.</span><span class="na">INSTANCE</span><span class="o">.</span><span class="na">resolve</span><span class="o">(</span><span class="n">FeedingPetService</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
+<span class="n">feedingPetService</span><span class="o">.</span><span class="na">feedPet</span><span class="o">(</span><span class="n">player</span><span class="o">);</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
 <p class="last"><strong>WorldGuard</strong> - Bukkit - Accessing the WorldGuard dependency.</p>
 </div>
 <div class="highlight-java"><div class="highlight"><pre><span></span><span class="n">Location</span> <span class="n">location</span><span class="o">;</span> <span class="c1">// Any location instance.</span>

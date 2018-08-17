@@ -9,9 +9,9 @@ import com.github.shynixn.petblocks.api.persistence.controller.PetMetaController
 import com.github.shynixn.petblocks.core.logic.business.helper.ChatColor
 import com.github.shynixn.petblocks.core.logic.business.helper.ReflectionUtils
 import com.github.shynixn.petblocks.sponge.logic.business.helper.*
+import com.github.shynixn.petblocks.sponge.logic.business.listener.CarryPetListener
+import com.github.shynixn.petblocks.sponge.logic.business.listener.FeedingPetListener
 import com.github.shynixn.petblocks.sponge.logic.business.listener.InventoryListener
-import com.github.shynixn.petblocks.sponge.logic.business.service.DependencyServiceImpl
-import com.github.shynixn.petblocks.sponge.logic.business.service.MessageServiceImpl
 import com.github.shynixn.petblocks.sponge.logic.persistence.configuration.Config
 import com.github.shynixn.petblocks.sponge.nms.NMSRegistry
 import com.github.shynixn.petblocks.sponge.nms.VersionSupport
@@ -122,6 +122,8 @@ class PetBlocksPlugin : com.github.shynixn.petblocks.api.business.entity.PetBloc
 
         // Register Listeners
         Sponge.getEventManager().registerListeners(pluginContainer, resolve(InventoryListener::class.java))
+        Sponge.getEventManager().registerListeners(pluginContainer, resolve(FeedingPetListener::class.java))
+        Sponge.getEventManager().registerListeners(pluginContainer, resolve(CarryPetListener::class.java))
 
         val entityService = resolve(EntityService::class.java)
 

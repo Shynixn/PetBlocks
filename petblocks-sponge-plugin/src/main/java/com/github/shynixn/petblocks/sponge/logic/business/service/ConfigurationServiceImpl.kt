@@ -7,9 +7,9 @@ import com.github.shynixn.petblocks.api.business.enumeration.GUIPage
 import com.github.shynixn.petblocks.api.business.service.ConfigurationService
 import com.github.shynixn.petblocks.api.persistence.entity.GUIItem
 import com.github.shynixn.petblocks.core.logic.business.helper.ChatColor
-import com.github.shynixn.petblocks.sponge.logic.business.helper.getDisplayName
-import com.github.shynixn.petblocks.sponge.logic.business.helper.getLore
-import com.github.shynixn.petblocks.sponge.logic.business.helper.getResource
+import com.github.shynixn.petblocks.core.logic.persistence.entity.ParticleEntity
+import com.github.shynixn.petblocks.core.logic.persistence.entity.SoundEntity
+import com.github.shynixn.petblocks.sponge.logic.business.helper.*
 import com.github.shynixn.petblocks.sponge.logic.persistence.configuration.Config
 import com.github.shynixn.petblocks.sponge.logic.persistence.configuration.SpongeStaticGUIItems
 import com.github.shynixn.petblocks.sponge.logic.persistence.entity.SpongeGUIItem
@@ -89,6 +89,57 @@ class ConfigurationServiceImpl @Inject constructor(private val plugin: PluginCon
 
         if (data is String) {
             data = ChatColor.translateAlternateColorCodes('&', data)
+        }
+
+        if (data is Map<*, *>) {
+            if (data.contains("name") && data.contains("speed") && data.contains("amount")) {
+                val entityParticle = ParticleEntity()
+                val values = data
+
+                with(entityParticle) {
+                    type = (values["name"] as String).toParticleType()
+                    amount = values["amount"] as Int
+                    speed = values["speed"] as Double
+                }
+
+                if (values.containsKey("offx")) {
+                    with(entityParticle) {
+                        offSetX = values["offx"] as Double
+                        offSetY = values["offy"] as Double
+                        offSetZ = values["offz"] as Double
+                    }
+                }
+
+                if (values.containsKey("red")) {
+                    with(entityParticle) {
+                        colorRed = values["red"] as Int
+                        colorGreen = values["green"] as Int
+                        colorBlue = values["blue"] as Int
+                    }
+                }
+
+
+                if (values.containsKey("id")) {
+                    if (values["id"] is String) {
+                        entityParticle.materialName = values["id"] as String
+                    } else {
+                        entityParticle.materialName = CompatibilityItemType.getFromId(values["id"] as Int).name
+                    }
+                }
+
+                return entityParticle as C
+            } else if (data.contains("name") && data.contains("volume")) {
+                val sound = SoundEntity()
+                val values = data
+
+                with(sound) {
+                    name = values["name"] as String
+                    volume = values["volume"] as Double
+                    pitch = values["pitch"] as Double
+                }
+
+                return sound as C
+            }
         }
 
         return data as C

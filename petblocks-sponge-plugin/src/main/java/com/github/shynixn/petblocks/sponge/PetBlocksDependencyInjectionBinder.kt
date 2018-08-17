@@ -74,6 +74,8 @@ class PetBlocksDependencyInjectionBinder : AbstractModule() {
         bind(SoundService::class.java).to(SoundServiceImpl::class.java)
         bind(EntityService::class.java).to(EntityServiceImpl::class.java)
         bind(MessageService::class.java).to(MessageServiceImpl::class.java)
+        bind(FeedingPetService::class.java).to(FeedPetServiceImpl::class.java)
         bind(DependencyService::class.java).to(DependencyServiceImpl::class.java).`in`(Scopes.SINGLETON)
+        bind(CarryPetService::class.java).to(CarryPetServiceImpl::class.java).`in`(Scopes.SINGLETON)
     }
 }

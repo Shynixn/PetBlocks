@@ -10,16 +10,20 @@ import com.github.shynixn.petblocks.api.persistence.entity.PetMeta
 import com.github.shynixn.petblocks.core.logic.business.helper.ChatBuilder
 import com.github.shynixn.petblocks.core.logic.business.helper.ChatColor
 import com.github.shynixn.petblocks.core.logic.persistence.configuration.Config
+import com.github.shynixn.petblocks.sponge.logic.business.PetBlocksManager
 import com.github.shynixn.petblocks.sponge.nms.VersionSupport
 import org.spongepowered.api.Game
 import org.spongepowered.api.Sponge
 import org.spongepowered.api.command.CommandSource
+import org.spongepowered.api.data.type.HandTypes
+import org.spongepowered.api.entity.Entity
 import org.spongepowered.api.entity.Transform
 import org.spongepowered.api.entity.living.player.Player
 import org.spongepowered.api.item.inventory.Inventory
 import org.spongepowered.api.item.inventory.ItemStack
 import org.spongepowered.api.item.inventory.property.SlotIndex
 import org.spongepowered.api.item.inventory.property.SlotPos
+import org.spongepowered.api.item.inventory.type.CarriedInventory
 import org.spongepowered.api.item.inventory.type.GridInventory
 import org.spongepowered.api.plugin.PluginContainer
 import org.spongepowered.api.scheduler.Task
@@ -62,6 +66,61 @@ import java.util.function.Consumer
  */
 fun Any.sendConsoleMessage(message: String) {
     Sponge.getServer().console.sendMessage(message.translateToText())
+}
+
+/**
+ * Is this the pet entity?
+ */
+fun Entity.isPetOfPlayer(player: Player): Boolean {
+    try {
+        val petblock = PetBlocksManager.petBlocksManager!!.petBlockController.getFromPlayer(player)
+        if (petblock.isPresent) {
+            val block = petblock.get()
+            if (block.armorStand != null && block.engineEntity != null && (block.armorStand == this || block.engineEntity == this)) {
+                return true
+            }
+        }
+    } catch (ignored: Exception) {
+    }
+
+    return false
+}
+
+/**
+ * Updates the inventory of the player.
+ */
+fun CarriedInventory<*>.updateInventory() {
+    ReflectionCache.updateInventoryMethod.invoke(null, this.carrier.get())
+}
+
+/**
+ * Sets the item in the players arm.
+ */
+fun CarriedInventory<*>.setItemStackInHand(itemStack: ItemStack?, offHand: Boolean = false) {
+    if (!this.carrier.isPresent || this.carrier.get() !is Player) {
+        throw IllegalArgumentException("Inventory is not the inventory of a SpongePlayer!")
+    }
+
+    if (offHand) {
+        (this.carrier.get() as Player).setItemInHand(HandTypes.OFF_HAND, itemStack)
+    } else {
+        (this.carrier.get() as Player).setItemInHand(HandTypes.MAIN_HAND, itemStack)
+    }
+}
+
+/**
+ * Gets the item in the players arm.
+ */
+fun CarriedInventory<*>.getItemStackInHand(offHand: Boolean = false): Optional<ItemStack> {
+    if (!this.carrier.isPresent || this.carrier.get() !is Player) {
+        throw IllegalArgumentException("Inventory is not the inventory of a SpongePlayer!")
+    }
+
+    return if (offHand) {
+        (this.carrier.get() as Player).getItemInHand(HandTypes.OFF_HAND)
+    } else {
+        (this.carrier.get() as Player).getItemInHand(HandTypes.MAIN_HAND)
+    }
 }
 
 fun ChatBuilder.sendMessage(vararg players: Player) {

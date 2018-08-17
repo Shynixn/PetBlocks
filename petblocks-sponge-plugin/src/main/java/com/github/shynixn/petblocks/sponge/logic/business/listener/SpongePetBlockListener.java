@@ -1,6 +1,5 @@
 package com.github.shynixn.petblocks.sponge.logic.business.listener;
 
-import com.flowpowered.math.vector.Vector3d;
 import com.github.shynixn.petblocks.api.business.entity.PetBlock;
 import com.github.shynixn.petblocks.api.business.service.ParticleService;
 import com.github.shynixn.petblocks.api.business.service.SoundService;
@@ -12,30 +11,23 @@ import com.google.inject.Inject;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.data.manipulator.mutable.entity.SneakingData;
-import org.spongepowered.api.data.type.HandTypes;
 import org.spongepowered.api.entity.Entity;
 import org.spongepowered.api.entity.living.ArmorStand;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Listener;
-import org.spongepowered.api.event.command.SendCommandEvent;
 import org.spongepowered.api.event.data.ChangeDataHolderEvent;
-import org.spongepowered.api.event.entity.*;
-import org.spongepowered.api.event.entity.living.humanoid.HandInteractEvent;
+import org.spongepowered.api.event.entity.DamageEntityEvent;
+import org.spongepowered.api.event.entity.InteractEntityEvent;
+import org.spongepowered.api.event.entity.LeashEntityEvent;
+import org.spongepowered.api.event.entity.MoveEntityEvent;
 import org.spongepowered.api.event.entity.living.humanoid.player.RespawnPlayerEvent;
 import org.spongepowered.api.event.filter.cause.First;
-import org.spongepowered.api.event.item.inventory.ClickInventoryEvent;
-import org.spongepowered.api.event.item.inventory.DropItemEvent;
-import org.spongepowered.api.event.item.inventory.InteractInventoryEvent;
-import org.spongepowered.api.event.network.ClientConnectionEvent;
-import org.spongepowered.api.item.ItemTypes;
 import org.spongepowered.api.plugin.PluginContainer;
 import org.spongepowered.api.scheduler.Task;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.world.World;
 
-import java.util.HashSet;
 import java.util.Optional;
-import java.util.Set;
 
 /**
  * Listens to events related to the petblock entity.
@@ -66,7 +58,6 @@ import java.util.Set;
  */
 public class SpongePetBlockListener {
     private final PetBlocksManager manager;
-    private final Set<PetBlock> jumped = new HashSet<>();
 
     private final PluginContainer plugin;
 
@@ -203,120 +194,6 @@ public class SpongePetBlockListener {
     }
 
     @Listener
-    public void onPlayerInteract(InteractEntityEvent.Secondary event, @First Player player) {
-        if (!event.getCause().first(Entity.class).isPresent()) {
-            return;
-        }
-        final Entity p = event.getCause().first(Entity.class).get();
-        if (!(p instanceof Player))
-            return;
-        if (this.manager.getCarryingPet().containsKey(player)) {
-            player.setItemInHand(HandTypes.OFF_HAND, null);
-            if (this.manager.getPetBlockController().getFromPlayer(player).isPresent())
-                this.manager.getPetBlockController().removeByPlayer(player);
-            event.setCancelled(true);
-        } else if (this.isPet(event.getTargetEntity())) {
-            final PetBlock petBlock = this.getPet(event.getTargetEntity());
-            if (petBlock != null && petBlock.getPlayer().equals(player)) {
-                if (Config.INSTANCE.isFeedingEnabled() && player.getItemInHand(HandTypes.MAIN_HAND).isPresent() && player.getItemInHand(HandTypes.MAIN_HAND).get().getItem() == ItemTypes.CARROT) {
-                    this.particleService.playParticle(event.getTargetEntity().getLocation(), Config.INSTANCE.getFeedingClickParticleEffect(), player);
-                    if (petBlock.getMeta().isSoundEnabled()) {
-                        this.soundService.playSound(event.getTargetEntity().getTransform(), Config.INSTANCE.getFeedingClickSound(), player);
-                    }
-                    if (player.getItemInHand(HandTypes.MAIN_HAND).get().getQuantity() == 1) {
-                        player.setItemInHand(HandTypes.MAIN_HAND, null);
-                    } else {
-                        player.getItemInHand(HandTypes.MAIN_HAND).get().setQuantity(player.getItemInHand(HandTypes.MAIN_HAND).get().getQuantity() - 1);
-                    }
-                    if (!this.jumped.contains(petBlock)) {
-                        this.jumped.add(this.getPet(event.getTargetEntity()));
-                        petBlock.jump();
-                        Task.builder().delayTicks(20L).execute(() -> this.jumped.remove(this.getPet(event.getTargetEntity())));
-                    }
-                } else if (Config.INSTANCE.isFollow_carry() && (player.getInventory() == null || !player.getItemInHand(HandTypes.OFF_HAND).isPresent())) {
-                    player.setItemInHand(HandTypes.OFF_HAND, ((ArmorStand) petBlock.getArmorStand()).getHelmet().get().copy());
-                    this.manager.getPetBlockController().remove(petBlock);
-                    this.manager.getCarryingPet().put(player, ((ArmorStand) petBlock.getArmorStand()).getHelmet().get().copy());
-                }
-            }
-            event.setCancelled(true);
-        }
-    }
-
-    @Listener
-    public void onPlayerInteractEvent(HandInteractEvent event, @First(typeFilter = Player.class) Player player) {
-        if (this.manager.getCarryingPet().containsKey(player)) {
-            this.removePetFromArm(player, true);
-            event.setCancelled(true);
-        }
-    }
-
-    @Listener
-    public void onPlayerCommandEvent(SendCommandEvent event, @First(typeFilter = Player.class) Player player) {
-        if (this.manager.getCarryingPet().containsKey(player)) {
-            event.setCancelled(true);
-        }
-    }
-
-    @Listener
-    public void onInventoryOpenEvent(InteractInventoryEvent.Open event, @First(typeFilter = Player.class) Player player) {
-        if (this.manager.getCarryingPet().containsKey(player)) {
-            event.setCancelled(true);
-            player.closeInventory();
-        }
-    }
-
-    @Listener
-    public void onPlayerEntityEvent(InteractEntityEvent event, @First(typeFilter = Player.class) Player player) {
-        if (this.manager.getCarryingPet().containsKey(player)) {
-            this.removePetFromArm(player, false);
-            event.setCancelled(true);
-        }
-    }
-
-    @Listener
-    public void onPlayerDeathEvent(DestructEntityEvent.Death event) {
-        if (event.getTargetEntity() instanceof Player && this.manager.getCarryingPet().containsKey(event.getTargetEntity())) {
-            this.removePetFromArm((Player) event.getTargetEntity(), false);
-        }
-    }
-
-    @Listener
-    public void onPlayerQuitEvent(ClientConnectionEvent.Disconnect event) {
-        final Player player = event.getTargetEntity();
-        if (this.manager.getCarryingPet().containsKey(player)) {
-            player.setItemInHand(HandTypes.OFF_HAND, null);
-            this.manager.getCarryingPet().remove(player);
-        }
-    }
-
-    @Listener
-    public void onInventoryOpen(ClickInventoryEvent event, @First(typeFilter = Player.class) Player player) {
-        if (this.manager.getCarryingPet().containsKey(player)) {
-            this.removePetFromArm(player, false);
-            event.setCancelled(true);
-        }
-    }
-
-    @Listener
-    public void onPlayerDropItem(DropItemEvent.Dispense event, @First(typeFilter = Player.class) Player player) {
-        if (this.manager.getCarryingPet().containsKey(player)) {
-            this.removePetFromArm(player, false);
-            for (final Entity entity : event.getEntities()) {
-                entity.remove();
-            }
-        }
-    }
-
-    @Listener
-    public void onSlotChange(ChangeDataHolderEvent event, @First(typeFilter = Player.class) Player player) {
-        if (this.manager.getCarryingPet().containsKey(player)) {
-            this.removePetFromArm(player, false);
-            event.setCancelled(true);
-        }
-    }
-
-    @Listener
     public void entityDamageEvent(DamageEntityEvent event) {
         if (this.isPet(event.getTargetEntity())) {
             final PetBlock petBlock = this.getPet(event.getTargetEntity());
@@ -381,20 +258,6 @@ public class SpongePetBlockListener {
         return null;
     }
 
-    private void removePetFromArm(Player player, boolean launch) {
-        this.providePet(player, (petMeta, petBlock) -> {
-            if (petBlock == null) {
-                this.setPetBlock(player, petMeta);
-            }
-            player.setItemInHand(HandTypes.OFF_HAND, null);
-            this.manager.getCarryingPet().remove(player);
-            if (launch) {
-                final Optional<PetBlock> optPetblock = this.manager.getPetBlockController().getFromPlayer(player);
-                optPetblock.ifPresent(spongePetBlock -> ((Entity) spongePetBlock.getEngineEntity()).setVelocity(this.getDirection(player)));
-            }
-        });
-    }
-
     /**
      * Creates a new petblock for the player and petMeta and sets it managed for the default controller.
      *
@@ -438,19 +301,5 @@ public class SpongePetBlockListener {
             }
         }
         return false;
-    }
-
-    /**
-     * Returns the launch Direction for holding pets.
-     *
-     * @param player player
-     * @return launchDirection
-     */
-    private Vector3d getDirection(Player player) {
-        final double rotX = player.getHeadRotation().getY();
-        final double rotY = player.getHeadRotation().getX();
-        final double h = Math.cos(Math.toRadians(rotY));
-        return new Vector3d(-h * Math.sin(Math.toRadians(rotX)), 0.5, h * Math.cos(Math.toRadians(rotX)))
-                .mul(1.2);
     }
 }
