@@ -1,4 +1,4 @@
-The Pet falls through the ground when riding?
+The pet falls through the ground when riding?
 =============================================
 
 Sometimes the pet is not synchronized with your world or simply requires another hitbox-height for

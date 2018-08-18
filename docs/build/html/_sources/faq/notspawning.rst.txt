@@ -1,4 +1,4 @@
-The petblock does not spawn?
+The pet does not spawn?
 ============================
 
 It is important to understand how PetBlocks works in order to fix this problem. A PetBlock consist out of
