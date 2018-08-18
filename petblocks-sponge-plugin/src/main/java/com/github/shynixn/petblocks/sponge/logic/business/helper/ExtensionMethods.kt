@@ -2,6 +2,7 @@ package com.github.shynixn.petblocks.sponge.logic.business.helper
 
 import com.github.shynixn.petblocks.api.business.entity.GUIItemContainer
 import com.github.shynixn.petblocks.api.business.entity.PetBlock
+import com.github.shynixn.petblocks.api.business.entity.PetBlocksPlugin
 import com.github.shynixn.petblocks.api.business.enumeration.ParticleType
 import com.github.shynixn.petblocks.api.business.enumeration.Permission
 import com.github.shynixn.petblocks.api.business.enumeration.Version
@@ -91,6 +92,13 @@ fun Entity.isPetOfPlayer(player: Player): Boolean {
  */
 fun CarriedInventory<*>.updateInventory() {
     ReflectionCache.updateInventoryMethod.invoke(null, this.carrier.get())
+}
+
+/**
+ * Kotlin resolve syntactic sugar.
+ */
+inline fun <reified S> PetBlocksPlugin.resolve(): S {
+    return this.resolve(S::class.java)
 }
 
 /**

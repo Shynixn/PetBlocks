@@ -4,9 +4,9 @@ import com.github.shynixn.petblocks.api.PetBlocksApi;
 import com.github.shynixn.petblocks.api.business.controller.PetBlockController;
 import com.github.shynixn.petblocks.api.business.enumeration.PluginDependency;
 import com.github.shynixn.petblocks.api.business.service.DependencyService;
+import com.github.shynixn.petblocks.api.business.service.UpdateCheckService;
 import com.github.shynixn.petblocks.api.persistence.controller.PetMetaController;
 import com.github.shynixn.petblocks.bukkit.logic.business.PetBlockManager;
-import com.github.shynixn.petblocks.bukkit.logic.business.helper.UpdateUtils;
 import com.github.shynixn.petblocks.bukkit.logic.business.listener.*;
 import com.github.shynixn.petblocks.bukkit.nms.NMSRegistry;
 import com.github.shynixn.petblocks.bukkit.nms.VersionSupport;
@@ -55,7 +55,6 @@ import java.util.logging.Logger;
  */
 public final class PetBlocksPlugin extends JavaPlugin implements com.github.shynixn.petblocks.api.business.entity.PetBlocksPlugin {
     public static final String PREFIX_CONSOLE = ChatColor.AQUA + "[PetBlocks] ";
-    private static final long SPIGOT_RESOURCEID = 12056;
     private static final String PLUGIN_NAME = "PetBlocks";
     private static Logger logger;
     private boolean disabled;
@@ -98,15 +97,10 @@ public final class PetBlocksPlugin extends JavaPlugin implements com.github.shyn
                 }));
             }
 
-            this.getServer().getScheduler().runTaskAsynchronously(this, () -> {
-                try {
-                    UpdateUtils.checkPluginUpToDateAndPrintMessage(SPIGOT_RESOURCEID, PREFIX_CONSOLE, PLUGIN_NAME, PetBlocksPlugin.this);
-                } catch (final IOException e) {
-                    PetBlocksPlugin.logger().log(Level.WARNING, "Failed to check for updates.");
-                }
-            });
-
+            final UpdateCheckService updateCheckService = this.resolve(UpdateCheckService.class);
             final DependencyService dependencyService = this.resolve(DependencyService.class);
+
+            updateCheckService.checkForUpdates();
 
             if (dependencyService.isInstalled(PluginDependency.CLEARLAG)) {
                 Bukkit.getPluginManager().registerEvents(this.resolve(ClearLagListener.class), this);

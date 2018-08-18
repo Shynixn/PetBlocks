@@ -532,6 +532,15 @@ you need to manage asynchronous and synchronous server tasks.</p>
 <span class="o">}</span>
 </pre></div>
 </div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last"><strong>Updates</strong> - Bukkit/Sponge - Checking for updates.</p>
+</div>
+<div class="highlight-java"><div class="highlight"><pre><span></span><span class="n">UpdateCheckService</span> <span class="n">updateCheckService</span> <span class="o">=</span> <span class="n">PetBlocksApi</span><span class="o">.</span><span class="na">INSTANCE</span><span class="o">.</span><span class="na">resolve</span><span class="o">(</span><span class="n">UpdateCheckService</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
+
+<span class="n">updateCheckService</span><span class="o">.</span><span class="na">checkForUpdates</span><span class="o">();</span>
+</pre></div>
+</div>
 </div>
 <div class="section" id="listen-to-events">
 <h2>Listen to Events<a class="headerlink" href="#listen-to-events" title="Permalink to this headline">¶</a></h2>

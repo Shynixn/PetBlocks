@@ -387,6 +387,13 @@ The PetBlocks plugin allows to access some parts of the Business Logic.
          dependencyWorldGuardService.prepareSpawningRegion(location);
     }
 
+.. note::  **Updates** - Bukkit/Sponge - Checking for updates.
+
+.. code-block:: java
+
+    UpdateCheckService updateCheckService = PetBlocksApi.INSTANCE.resolve(UpdateCheckService.class);
+
+    updateCheckService.checkForUpdates();
 
 Listen to Events
 ~~~~~~~~~~~~~~~~

@@ -5,6 +5,7 @@ import com.github.shynixn.petblocks.api.business.controller.PetBlockController
 import com.github.shynixn.petblocks.api.business.entity.PetBlocksPlugin
 import com.github.shynixn.petblocks.api.business.service.DependencyService
 import com.github.shynixn.petblocks.api.business.service.EntityService
+import com.github.shynixn.petblocks.api.business.service.UpdateCheckService
 import com.github.shynixn.petblocks.api.persistence.controller.PetMetaController
 import com.github.shynixn.petblocks.core.logic.business.helper.ChatColor
 import com.github.shynixn.petblocks.core.logic.business.helper.ReflectionUtils
@@ -109,24 +110,18 @@ class PetBlocksPlugin : com.github.shynixn.petblocks.api.business.entity.PetBloc
             "SQLite"
         }))
 
-        async(pluginContainer) {
-            try {
-                UpdateUtils.checkPluginUpToDateAndPrintMessage(SPIGOT_RESOURCEID, PREFIX_CONSOLE, PLUGIN_NAME, pluginContainer)
-            } catch (e: IOException) {
-                this.logger.warn("Failed to check for updates.")
-            }
-        }
-
-        val dependencyService = resolve(DependencyService::class.java)
-        dependencyService.checkForInstalledDependencies()
-
         // Register Listeners
-        Sponge.getEventManager().registerListeners(pluginContainer, resolve(InventoryListener::class.java))
-        Sponge.getEventManager().registerListeners(pluginContainer, resolve(FeedingPetListener::class.java))
-        Sponge.getEventManager().registerListeners(pluginContainer, resolve(CarryPetListener::class.java))
+        Sponge.getEventManager().registerListeners(pluginContainer, resolve<InventoryListener>())
+        Sponge.getEventManager().registerListeners(pluginContainer, resolve<FeedingPetListener>())
+        Sponge.getEventManager().registerListeners(pluginContainer, resolve<CarryPetListener>())
 
-        val entityService = resolve(EntityService::class.java)
+        // Launch services
+        val updateService = resolve<UpdateCheckService>()
+        val dependencyService = resolve<DependencyService>()
+        val entityService = resolve<EntityService>()
 
+        updateService.checkForUpdates()
+        dependencyService.checkForInstalledDependencies()
         entityService.registerEntitiesOnServer()
 
         try {
