@@ -2,17 +2,17 @@ package com.github.shynixn.petblocks.bukkit;
 
 import com.github.shynixn.petblocks.api.PetBlocksApi;
 import com.github.shynixn.petblocks.api.business.controller.PetBlockController;
+import com.github.shynixn.petblocks.api.business.enumeration.PluginDependency;
+import com.github.shynixn.petblocks.api.business.service.DependencyService;
+import com.github.shynixn.petblocks.api.business.service.UpdateCheckService;
 import com.github.shynixn.petblocks.api.persistence.controller.PetMetaController;
-import com.github.shynixn.petblocks.bukkit.logic.business.GoogleGuiceBinder;
 import com.github.shynixn.petblocks.bukkit.logic.business.PetBlockManager;
-import com.github.shynixn.petblocks.bukkit.logic.business.helper.UpdateUtils;
-import com.github.shynixn.petblocks.bukkit.logic.business.listener.InventoryListener;
+import com.github.shynixn.petblocks.bukkit.logic.business.listener.*;
 import com.github.shynixn.petblocks.bukkit.nms.NMSRegistry;
 import com.github.shynixn.petblocks.bukkit.nms.VersionSupport;
 import com.github.shynixn.petblocks.core.logic.business.helper.ReflectionUtils;
 import com.github.shynixn.petblocks.core.logic.persistence.configuration.Config;
 import com.google.inject.Guice;
-import com.google.inject.Inject;
 import com.google.inject.Injector;
 import org.apache.commons.io.IOUtils;
 import org.bstats.bukkit.Metrics;
@@ -55,7 +55,6 @@ import java.util.logging.Logger;
  */
 public final class PetBlocksPlugin extends JavaPlugin implements com.github.shynixn.petblocks.api.business.entity.PetBlocksPlugin {
     public static final String PREFIX_CONSOLE = ChatColor.AQUA + "[PetBlocks] ";
-    private static final long SPIGOT_RESOURCEID = 12056;
     private static final String PLUGIN_NAME = "PetBlocks";
     private static Logger logger;
     private boolean disabled;
@@ -63,12 +62,6 @@ public final class PetBlocksPlugin extends JavaPlugin implements com.github.shyn
     private PetBlockManager petBlockManager;
 
     private Injector injector;
-
-    /**
-     * Listeners.
-     */
-    @Inject
-    private InventoryListener inventoryListener;
 
     /**
      * Enables the plugin PetBlocks.
@@ -82,8 +75,18 @@ public final class PetBlocksPlugin extends JavaPlugin implements com.github.shyn
             Bukkit.getPluginManager().disablePlugin(this);
         } else {
             Bukkit.getServer().getConsoleSender().sendMessage(PREFIX_CONSOLE + ChatColor.GREEN + "Loading PetBlocks ...");
-            this.injector = Guice.createInjector(new GoogleGuiceBinder(this));
+            this.injector = Guice.createInjector(new PetBlocksDependencyInjectionBinder(this));
             Config.getInstance().reload();
+
+            // Register Listeners
+            Bukkit.getPluginManager().registerEvents(this.resolve(InventoryListener.class), this);
+            Bukkit.getPluginManager().registerEvents(this.resolve(CarryPetListener.class), this);
+            Bukkit.getPluginManager().registerEvents(this.resolve(FeedingPetListener.class), this);
+
+            if (VersionSupport.getServerVersion().isVersionSameOrGreaterThan(VersionSupport.VERSION_1_9_R1)) {
+                Bukkit.getPluginManager().registerEvents(this.resolve(CarryPet19R1Listener.class), this);
+            }
+
             if (Config.getInstance().isMetricsEnabled()) {
                 final Metrics metrics = new Metrics(this);
                 metrics.addCustomChart(new Metrics.SimplePie("storage", () -> {
@@ -94,15 +97,14 @@ public final class PetBlocksPlugin extends JavaPlugin implements com.github.shyn
                 }));
             }
 
-            this.getServer().getScheduler().runTaskAsynchronously(this, () -> {
-                try {
-                    UpdateUtils.checkPluginUpToDateAndPrintMessage(SPIGOT_RESOURCEID, PREFIX_CONSOLE, PLUGIN_NAME, PetBlocksPlugin.this);
-                } catch (final IOException e) {
-                    PetBlocksPlugin.logger().log(Level.WARNING, "Failed to check for updates.");
-                }
-            });
+            final UpdateCheckService updateCheckService = this.resolve(UpdateCheckService.class);
+            final DependencyService dependencyService = this.resolve(DependencyService.class);
 
-            NMSRegistry.registerAll();
+            updateCheckService.checkForUpdates();
+
+            if (dependencyService.isInstalled(PluginDependency.CLEARLAG)) {
+                Bukkit.getPluginManager().registerEvents(this.resolve(ClearLagListener.class), this);
+            }
 
             try {
                 this.petBlockManager = new PetBlockManager(this);

@@ -60,7 +60,7 @@ class SpongeItemContainer : ItemContainer<Player> {
                 if (itemType == CompatibilityItemType.SKULL_ITEM && this.skin != null) {
                     itemStack.setSkin(this.skin)
                 }
-                itemStack.offer(Keys.UNBREAKABLE, this.isItemUnbreakable)
+                itemStack.setUnbreakable(this.isItemUnbreakable)
                 if (this.displayName.isPresent) {
                     itemStack.offer(Keys.DISPLAY_NAME, this.displayName.get().translateToText())
                 }
@@ -68,8 +68,8 @@ class SpongeItemContainer : ItemContainer<Player> {
                 return itemStack
             }
         } catch (ex: Exception) {
-            Sponge.getGame().sendMessage("Invalid config file. Fix the following error or recreate it!")
-            Sponge.getGame().sendMessage("Failed to generate itemStack.")
+            Sponge.getGame().sendConsoleMessage("Invalid config file. Fix the following error or recreate it!")
+            Sponge.getGame().sendConsoleMessage("Failed to generate itemStack.")
             ex.printStackTrace()
         }
 

@@ -4,10 +4,7 @@ import com.github.shynixn.petblocks.api.business.enumeration.ParticleType
 import com.github.shynixn.petblocks.core.logic.business.helper.ChatColor
 import com.github.shynixn.petblocks.core.logic.persistence.entity.ParticleEntity
 import com.github.shynixn.petblocks.core.logic.persistence.entity.PetData
-import com.github.shynixn.petblocks.sponge.logic.business.helper.CompatibilityItemType
-import com.github.shynixn.petblocks.sponge.logic.business.helper.setDamage
-import com.github.shynixn.petblocks.sponge.logic.business.helper.setSkin
-import com.github.shynixn.petblocks.sponge.logic.business.helper.translateToText
+import com.github.shynixn.petblocks.sponge.logic.business.helper.*
 import com.github.shynixn.petblocks.sponge.logic.persistence.configuration.Config
 import org.spongepowered.api.data.key.Keys
 import org.spongepowered.api.entity.living.player.Player
@@ -103,9 +100,9 @@ class SpongePetData : PetData {
         if (this.getSkin() != null) {
             itemStack.setSkin(this.getSkin())
         }
-        itemStack.offer(Keys.UNBREAKABLE, this.isItemUnbreakable)
+        itemStack.setUnbreakable(this.isItemUnbreakable)
         if (this.getPetDisplayName() != null) {
-            itemStack.offer(Keys.DISPLAY_NAME,this.getPetDisplayName().translateToText())
+            itemStack.offer(Keys.DISPLAY_NAME, this.getPetDisplayName().translateToText())
         }
         return itemStack
     }

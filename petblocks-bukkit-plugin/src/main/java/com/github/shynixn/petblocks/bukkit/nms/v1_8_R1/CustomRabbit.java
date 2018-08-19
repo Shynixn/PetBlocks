@@ -47,7 +47,7 @@ public final class CustomRabbit extends EntityRabbit implements PetBlockPartEnti
             cField.set(this.targetSelector, new UnsafeList<PathfinderGoalSelector>());
             this.getAttributeInstance(GenericAttributes.d).setValue(0.30000001192092896D * Config.INSTANCE.getModifier_petwalking());
             this.goalSelector.a(0, new PathfinderGoalFloat(this));
-            this.goalSelector.a(1, new OwnerPathfinder(this,petBlock));
+            this.goalSelector.a(1, new OwnerPathfinder(this, petBlock));
         } catch (final Exception exc) {
             PetBlocksPlugin.logger().log(Level.WARNING, "EntityNMS exception.", exc);
         }
@@ -58,10 +58,14 @@ public final class CustomRabbit extends EntityRabbit implements PetBlockPartEnti
     @Override
     protected String ck() {
         try {
+            if (this.petBlock == null) {
+                return super.ck();
+            }
+
             this.playedMovingSound = PetBlockHelper.executeMovingSound(this.petBlock, this.playedMovingSound);
         } catch (final Exception ex) {
             this.remove();
-            PetBlocksPlugin.logger().log(Level.WARNING, "Detected invalid rabbit entity. Removed entity.");
+            PetBlocksPlugin.logger().log(Level.WARNING, "Detected invalid rabbit entity. Removed entity.", ex);
         }
         return "mob.rabbit.hop";
     }

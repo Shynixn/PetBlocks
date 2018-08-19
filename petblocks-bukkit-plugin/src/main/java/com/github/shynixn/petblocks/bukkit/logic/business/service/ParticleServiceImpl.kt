@@ -1,3 +1,5 @@
+@file:Suppress("UNCHECKED_CAST")
+
 package com.github.shynixn.petblocks.bukkit.logic.business.service
 
 import com.github.shynixn.petblocks.api.business.enumeration.ParticleType
@@ -120,7 +122,7 @@ class ParticleServiceImpl @Inject constructor(private val plugin: Plugin, privat
             }
 
             if (particle.type == ParticleType.REDSTONE) {
-                var red = particle.colorRed.toFloat() / 255.0F;
+                var red = particle.colorRed.toFloat() / 255.0F
                 if (red <= 0) {
                     red = Float.MIN_VALUE
                 }

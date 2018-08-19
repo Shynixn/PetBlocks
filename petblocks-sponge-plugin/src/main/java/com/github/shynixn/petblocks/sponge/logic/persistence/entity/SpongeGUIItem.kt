@@ -5,7 +5,6 @@ package com.github.shynixn.petblocks.sponge.logic.persistence.entity
 import com.github.shynixn.petblocks.api.business.entity.GUIItemContainer
 import com.github.shynixn.petblocks.core.logic.persistence.entity.CustomGUIItem
 import com.github.shynixn.petblocks.sponge.logic.business.helper.*
-import org.spongepowered.api.data.key.Keys
 import org.spongepowered.api.item.inventory.ItemStack
 
 /**
@@ -51,8 +50,7 @@ class SpongeGUIItem : CustomGUIItem {
 
         itemStack.setDisplayName(displayName)
         itemStack.setLore(this.lore.toTypedArray())
-
-        itemStack.offer(Keys.UNBREAKABLE, this.unbreakable)
+        itemStack.setUnbreakable(this.unbreakable)
 
         return itemStack as I
     }

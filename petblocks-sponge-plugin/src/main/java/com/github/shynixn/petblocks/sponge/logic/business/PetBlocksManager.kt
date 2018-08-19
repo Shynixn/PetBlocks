@@ -7,7 +7,6 @@ import com.github.shynixn.petblocks.sponge.logic.business.commandexecutor.PetBlo
 import com.github.shynixn.petblocks.sponge.logic.business.commandexecutor.PetBlockReloadCommandExecutor
 import com.github.shynixn.petblocks.sponge.logic.business.commandexecutor.PetDataCommandExecutor
 import com.github.shynixn.petblocks.sponge.logic.business.controller.SpongePetBlockRepository
-import com.github.shynixn.petblocks.sponge.logic.business.listener.InventoryListener
 import com.github.shynixn.petblocks.sponge.logic.business.listener.SpongePetBlockListener
 import com.github.shynixn.petblocks.sponge.logic.business.listener.SpongePetDataListener
 import com.github.shynixn.petblocks.sponge.logic.persistence.controller.SpongePetDataRepository
@@ -15,7 +14,6 @@ import com.google.inject.Inject
 import com.google.inject.Singleton
 import org.spongepowered.api.entity.living.player.Player
 import org.spongepowered.api.item.inventory.Inventory
-import org.spongepowered.api.item.inventory.ItemStack
 import java.util.*
 
 /**
@@ -52,7 +50,6 @@ class PetBlocksManager : AutoCloseable {
         var petBlocksManager: PetBlocksManager? = null
     }
 
-    val carryingPet: MutableMap<Player, ItemStack> = HashMap()
     val timeBlocked: MutableMap<Player, Int> = HashMap()
     val inventories: MutableMap<Player, Inventory> = HashMap()
     val pages: MutableMap<Player, GuiPageContainer> = HashMap()
@@ -60,9 +57,6 @@ class PetBlocksManager : AutoCloseable {
     init {
         petBlocksManager = this
     }
-
-    @Inject
-    private lateinit var inventoryListener: InventoryListener
 
     @Inject
     lateinit var gui: GUI
@@ -105,6 +99,5 @@ class PetBlocksManager : AutoCloseable {
         this.pages.clear()
         this.petBlockController.close()
         this.petMetaController.close()
-        this.carryingPet.clear()
     }
 }

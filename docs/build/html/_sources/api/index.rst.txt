@@ -18,13 +18,13 @@ PetBlocks is using maven as build system but you can include the api via differe
     <dependency>
         <groupId>com.github.shynixn.petblocks</groupId>
         <artifactId>petblocks-api</artifactId>
-        <version>7.2.0</version>
+        <version>7.2.1</version>
         <scope>provided</scope>
     </dependency>
     <dependency>
         <groupId>com.github.shynixn.petblocks</groupId>
         <artifactId>petblocks-bukkit-api</artifactId>
-        <version>7.2.0</version>
+        <version>7.2.1</version>
         <scope>provided</scope>
     </dependency>
 
@@ -33,8 +33,8 @@ PetBlocks is using maven as build system but you can include the api via differe
 .. code-block:: groovy
 
     dependencies {
-        compileOnly 'com.github.shynixn.petblocks:petblocks-api:7.2.0'
-        compileOnly 'com.github.shynixn.petblocks:petblocks-bukkit-api:7.2.0'
+        compileOnly 'com.github.shynixn.petblocks:petblocks-api:7.2.1'
+        compileOnly 'com.github.shynixn.petblocks:petblocks-bukkit-api:7.2.1'
     }
 
 **(Sponge) Maven**:
@@ -42,21 +42,21 @@ PetBlocks is using maven as build system but you can include the api via differe
    <dependency>
         <groupId>com.github.shynixn.petblocks</groupId>
         <artifactId>petblocks-api</artifactId>
-        <version>7.2.0</version>
+        <version>7.2.1</version>
         <scope>provided</scope>
     </dependency>
     <dependency>
         <groupId>com.github.shynixn.petblocks</groupId>
         <artifactId>petblocks-sponge-api</artifactId>
-        <version>7.2.0</version>
+        <version>7.2.1</version>
         <scope>provided</scope>
     </dependency>
 
 **(Sponge) Gradle**:
 ::
     dependencies {
-        compileOnly 'com.github.shynixn.petblocks:petblocks-api:7.2.0'
-        compileOnly 'com.github.shynixn.petblocks:petblocks-sponge-api:7.2.0'
+        compileOnly 'com.github.shynixn.petblocks:petblocks-api:7.2.1'
+        compileOnly 'com.github.shynixn.petblocks:petblocks-sponge-api:7.2.1'
     }
 
 **Reference the jar file**:
@@ -289,20 +289,18 @@ However, for applying the changes you need to respawn the PetBlock:
 Accessing Business Logic
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
-The PetBlocks plugin allows to access some (not all) parts of the Business Logic too.
+The PetBlocks plugin allows to access some parts of the Business Logic.
 
-* Accessing the Configuration.
-
-**Bukkit/Sponge:**
+.. note::  **Configuration** - Bukkit/Sponge - Accessing the stored configuration.
 
 .. code-block:: java
 
+   String path = "pet.design.max-petname-length";
+
    ConfigurationService configurationService = PetBlocksApi.INSTANCE.resolve(ConfigurationService.class);
-   int length = configurationService.findValue("pet.design.max-petname-length");
+   int length = configurationService.findValue(path);
 
-* Accessing the GUI.
-
-**Bukkit/Sponge:**
+.. note::  **GUI** - Bukkit/Sponge - Using the GUI.
 
 .. code-block:: java
 
@@ -311,9 +309,7 @@ The PetBlocks plugin allows to access some (not all) parts of the Business Logic
 
     guiService.open(player);
 
-* Parsing GUI Scripts.
-
-**Bukkit/Sponge:**
+.. note::  **Scripts** - Bukkit/Sponge - Parsing GUI scripts.
 
 .. code-block:: java
 
@@ -327,9 +323,7 @@ The PetBlocks plugin allows to access some (not all) parts of the Business Logic
          // Parsed script is a loaded collection.
    }
 
-* Playing sounds.
-
-**Bukkit/Sponge:**
+.. note::  **Sounds** - Bukkit/Sponge - Creating and sending sounds.
 
 .. code-block:: java
 
@@ -344,9 +338,7 @@ The PetBlocks plugin allows to access some (not all) parts of the Business Logic
      SoundService soundService = PetBlocksApi.INSTANCE.resolve(SoundService.class);
      soundService.playSound(location, sound, player);
 
-* Playing particles.
-
-**Bukkit/Sponge:**
+.. note::  **Particles** - Bukkit/Sponge - Creating and sending particles.
 
 .. code-block:: java
 
@@ -364,12 +356,51 @@ The PetBlocks plugin allows to access some (not all) parts of the Business Logic
     ParticleService particleService = PetBlocksApi.INSTANCE.resolve(ParticleService.class);
     particleService.playParticle(location, particle, player);
 
+.. note::  **Carry** - Bukkit/Sponge - Let the player carry his pet.
+
+.. code-block:: java
+
+     Player player; // Any player instance
+
+     CarryPetService carryPetService = PetBlocksApi.INSTANCE.resolve(CarryPetService.class);
+     carryPetService.carryPet(player);
+
+.. note::  **Feeding** - Bukkit/Sponge - Execute the feeding effect.
+
+.. code-block:: java
+
+    Player player; // Any player instance
+
+    FeedingPetService feedingPetService = PetBlocksApi.INSTANCE.resolve(FeedingPetService.class);
+    feedingPetService.feedPet(player);
+
+.. note::  **WorldGuard** - Bukkit - Accessing the WorldGuard dependency.
+
+.. code-block:: java
+
+    Location location; // Any location instance.
+
+    DependencyService dependencyService = PetBlocksApi.INSTANCE.resolve(DependencyService.class);
+
+    if (dependencyService.isInstalled(PluginDependency.WORLDGUARD)) {
+         DependencyWorldGuardService dependencyWorldGuardService = PetBlocksApi.INSTANCE.resolve(DependencyWorldGuardService.class);
+         dependencyWorldGuardService.prepareSpawningRegion(location);
+    }
+
+.. note::  **Updates** - Bukkit/Sponge - Checking for updates.
+
+.. code-block:: java
+
+    UpdateCheckService updateCheckService = PetBlocksApi.INSTANCE.resolve(UpdateCheckService.class);
+
+    updateCheckService.checkForUpdates();
+
 Listen to Events
 ~~~~~~~~~~~~~~~~
 
-There are many PetBlock events in order to listen to actions. Please take a look into the `JavaDocs <https://shynixn.github.io/PetBlocks/apidocs/>`__  for all events:
+There are many PetBlock events in order to listen to actions. Please take a look into the `JavaDocs <https://shynixn.github.io/PetBlocks/apidocs/>`__  for all events.
 
-**Bukkit:**
+.. note::  **SpawnEvent** - Bukkit - Listening to the spawn event.
 
 .. code-block:: java
 
@@ -381,7 +412,7 @@ There are many PetBlock events in order to listen to actions. Please take a look
         //Do something
     }
 
-**Sponge:**
+.. note::  **SpawnEvent** - Sponge - Listening to the spawn event.
 
 .. code-block:: java
 
@@ -394,44 +425,55 @@ There are many PetBlock events in order to listen to actions. Please take a look
     }
 
 
-Setup your personal PetBlocks Workspace
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Contributing and setting up your workspace
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-**Important!** PetBlocks is *partially* written in `Kotlin <https://kotlinlang.org/>`__ instead of pure Java.
-Especially the sponge implementation. If you are not familiar with Kotlin, modifying PetBlocks might be a difficult task.
+.. warning:: PetBlocks is **partially** written in `Kotlin <https://kotlinlang.org/>`__ instead of pure Java. Especially the sponge implementation. If you are not familiar with Kotlin, modifying PetBlocks might be a difficult task.
 
-It is sometimes necessary to customize PetBlocks itself instead of using the Developer API. The following steps
-help you to get started with developing for PetBlocks.
+* Fork the PetBlocks project on github and clone it to your local environment.
 
-Before you continue you should be familiar with **git**, **github**, **maven** and any preferred **Java IDE**.
+* Use BuildTools.jar from spigotmc.org to build to following dependencies.
 
-1. Open `PetBlocks on github <https://github.com/Shynixn/PetBlocks>`__
-2. Log in or create a github account and press the **Fork** button in the top right corner.
-3. Github will create a new repository with PetBlocks on your account
-4. Click on the green **Clone or download** button and copy the text inside of the textbox
-5. Open a terminal on your pc, go into a target folder and enter the command
+.. code-block:: java
 
-Terminal:
-::
-   git clone <your copied text>
-::
+    - java -jar BuildTools.jar --rev 1.8
+    - java -jar BuildTools.jar --rev 1.8.3
+    - java -jar BuildTools.jar --rev 1.8.8
+    - java -jar BuildTools.jar --rev 1.9
+    - java -jar BuildTools.jar --rev 1.9.4
+    - java -jar BuildTools.jar --rev 1.10
+    - java -jar BuildTools.jar --rev 1.11
+    - java -jar BuildTools.jar --rev 1.12
+    - java -jar BuildTools.jar --rev 1.13
 
-6. After PetBlocks folder is created you can open the Project with any Java IDE supporting **Maven**
-7. Create a new **lib** folder in your PetBlocks folder (ignore the .idea, docs and headdatabase folder)
-8. Download all spigot libraries from 1.8.0 until the latest version and put it into the lib folder
 
-.. image:: ../_static/images/help1.jpg
+* Install the created libraries to your local maven repository.
 
-9. Make sure you understand that PetBlocks uses custom generated and relocated `mcp libraries <http://www.modcoderpack.com/>`__ for NMS in sponge.
-10. As gradle is necessary for developing NMS sponge you need to install gradle
-11. Execute the maven goal **anchornms:generate-mcp-libraries** on the petblocks-sponge-plugin module.
-12. Copy the generated mcp-...jar files from the target/nms-tools folder into your lib folder
-13. Try to compile the root project with **mvn compile**
-14. If successful you can start editing the source code and create jar files via **mvn package**
+.. code-block:: java
 
-**Optional**
+    - mvn install:install-file -Dfile=spigot-1.8.jar -DgroupId=org.spigotmc -DartifactId=spigot18R1 -Dversion=1.8.0-R1.0 -Dpackaging=jar
+    - mvn install:install-file -Dfile=spigot-1.8.3.jar -DgroupId=org.spigotmc -DartifactId=spigot18R2 -Dversion=1.8.3-R2.0 -Dpackaging=jar
+    - mvn install:install-file -Dfile=spigot-1.8.8.jar -DgroupId=org.spigotmc -DartifactId=spigot18R3 -Dversion=1.8.8-R3.0 -Dpackaging=jar
+    - mvn install:install-file -Dfile=spigot-1.9.jar -DgroupId=org.spigotmc -DartifactId=spigot19R1 -Dversion=1.9.0-R1.0 -Dpackaging=jar
+    - mvn install:install-file -Dfile=spigot-1.9.4.jar -DgroupId=org.spigotmc -DartifactId=spigot19R2 -Dversion=1.9.4-R2.0 -Dpackaging=jar
+    - mvn install:install-file -Dfile=spigot-1.10.2.jar -DgroupId=org.spigotmc -DartifactId=spigot110R1 -Dversion=1.10.2-R1.0 -Dpackaging=jar
+    - mvn install:install-file -Dfile=spigot-1.11.jar -DgroupId=org.spigotmc -DartifactId=spigot111R1 -Dversion=1.11.0-R1.0 -Dpackaging=jar
+    - mvn install:install-file -Dfile=spigot-1.12.jar -DgroupId=org.spigotmc -DartifactId=spigot112R1 -Dversion=1.12.0-R1.0 -Dpackaging=jar
+    - mvn install:install-file -Dfile=spigot-1.13.jar -DgroupId=org.spigotmc -DartifactId=spigot113R1 -Dversion=1.13.0-R1.0 -Dpackaging=jar
 
-15. To share your changes with the world push your committed changes into your github repository.
-16. Click on the **New pull request** button and start a pull request against PetBlocks
+* Execute the following maven goal on the petblocks-sponge-plugin project.
 
-(base:fork Shynixn/PetBlocks, base: development <- head fork: <your repository> ...)
+.. code-block:: java
+
+    mvn anchornms:generate-mcp-libraries
+
+
+* Go to the petblocks-sponge-plugin/target/nms-tools folder and install the generated libraries to your local maven repository.
+
+.. code-block:: java
+
+    mvn install:install-file -Dfile=mcp-1.12.jar -DgroupId=org.mcp -DartifactId=minecraft112R1 -Dversion=1.12.0-R1.0 -Dpackaging=jar
+
+* Reimport the PetBlocks maven project and execute 'mvn package' afterwards.
+
+* The generated petblocks-bukkit-plugin/target/petblocks-bukkit-plugin-###.jar or petblocks-sponge-plugin/target/petblocks-sponge-plugin-###.ja can be used for testing on a server.

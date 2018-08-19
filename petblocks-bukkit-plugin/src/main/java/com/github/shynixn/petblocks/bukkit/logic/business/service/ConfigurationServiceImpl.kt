@@ -1,3 +1,5 @@
+@file:Suppress("UNCHECKED_CAST")
+
 package com.github.shynixn.petblocks.bukkit.logic.business.service
 
 import com.github.shynixn.petblocks.api.business.entity.GUIItemContainer
@@ -5,9 +7,13 @@ import com.github.shynixn.petblocks.api.business.enumeration.GUIPage
 import com.github.shynixn.petblocks.api.business.service.ConfigurationService
 import com.github.shynixn.petblocks.api.persistence.entity.GUIItem
 import com.github.shynixn.petblocks.bukkit.PetBlocksPlugin
+import com.github.shynixn.petblocks.bukkit.logic.business.helper.toParticleType
 import com.github.shynixn.petblocks.bukkit.logic.persistence.configuration.BukkitStaticGUIItems
 import com.github.shynixn.petblocks.bukkit.logic.persistence.entity.BukkitGUIItem
 import com.github.shynixn.petblocks.bukkit.logic.persistence.entity.BukkitItemContainer
+import com.github.shynixn.petblocks.bukkit.nms.v1_13_R1.MaterialCompatibility13
+import com.github.shynixn.petblocks.core.logic.persistence.entity.ParticleEntity
+import com.github.shynixn.petblocks.core.logic.persistence.entity.SoundEntity
 import com.google.inject.Inject
 import org.bukkit.ChatColor
 import org.bukkit.configuration.MemorySection
@@ -72,6 +78,57 @@ class ConfigurationServiceImpl @Inject constructor(private val plugin: Plugin, p
 
         if (data is String) {
             data = ChatColor.translateAlternateColorCodes('&', data)
+        }
+
+        if (data is MemorySection) {
+            if (data.contains("name") && data.contains("speed") && data.contains("amount")) {
+                val particle = ParticleEntity()
+                val values = data.getValues(false)
+
+                with(particle) {
+                    type = (values["name"] as String).toParticleType()
+                    amount = values["amount"] as Int
+                    speed = values["speed"] as Double
+                }
+
+                if (values.containsKey("offx")) {
+                    with(particle) {
+                        offSetX = values["offx"] as Double
+                        offSetY = values["offy"] as Double
+                        offSetZ = values["offz"] as Double
+                    }
+                }
+
+                if (values.containsKey("red")) {
+                    with(particle) {
+                        colorRed = values["red"] as Int
+                        colorGreen = values["green"] as Int
+                        colorBlue = values["blue"] as Int
+                    }
+                }
+
+
+                if (values.containsKey("id")) {
+                    if (values["id"] is String) {
+                        particle.materialName = values["id"] as String
+                    } else {
+                        particle.materialName = MaterialCompatibility13.getMaterialFromId(values["id"] as Int).name
+                    }
+                }
+
+                return particle as C
+            } else if (data.contains("name") && data.contains("volume")) {
+                val sound = SoundEntity()
+                val values = data.getValues(false)
+
+                with(sound) {
+                    name = values["name"] as String
+                    volume = values["volume"] as Double
+                    pitch = values["pitch"] as Double
+                }
+
+                return sound as C
+            }
         }
 
         return data as C

@@ -7,3 +7,4 @@ Customizing
    sounds
    particleeffects
    scripting
+   regions

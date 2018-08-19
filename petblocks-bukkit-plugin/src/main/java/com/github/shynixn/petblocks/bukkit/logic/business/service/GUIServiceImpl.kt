@@ -18,7 +18,6 @@ import com.github.shynixn.petblocks.core.logic.business.helper.ChatBuilder
 import com.github.shynixn.petblocks.core.logic.persistence.configuration.Config
 import com.github.shynixn.petblocks.core.logic.persistence.entity.PlayerGUICache
 import com.google.inject.Inject
-import com.google.inject.Singleton
 import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.entity.Player
@@ -54,7 +53,6 @@ import java.util.function.Consumer
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-@Singleton
 class GUIServiceImpl @Inject constructor(private val configurationService: ConfigurationService, private val plugin: Plugin, private val scriptService: GUIScriptService, private val persistenceService: PersistenceService) : GUIService {
     private val pageCache = HashMap<Player, PlayerGUICache>()
 

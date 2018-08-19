@@ -1,3 +1,5 @@
+@file:Suppress("UNCHECKED_CAST")
+
 package com.github.shynixn.petblocks.sponge.logic.business.service
 
 import com.flowpowered.math.vector.Vector3d
