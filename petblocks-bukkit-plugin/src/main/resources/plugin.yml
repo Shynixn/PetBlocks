@@ -1,5 +1,5 @@
 name: PetBlocks
-version: 7.2.1-SNAPSHOT
+version: 7.2.1
 author: Shynixn
 main: com.github.shynixn.petblocks.bukkit.PetBlocksPlugin
 softdepend: [WorldGuard, ClearLag]

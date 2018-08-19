@@ -325,6 +325,10 @@ public final class PetBlockHelper {
     }
 
     public static boolean isDead(PetBlock petBlock) {
+        if (petBlock == null || getEngineEntity(petBlock) == null || getArmorstand(petBlock) == null) {
+            return true;
+        }
+
         return (getEngineEntity(petBlock).isDead()
                 || getArmorstand(petBlock).isDead())
                 || (getEngineEntity(petBlock).getWorld().getName().equals(getArmorstand(petBlock).getWorld().getName())

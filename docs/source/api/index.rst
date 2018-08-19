@@ -18,13 +18,13 @@ PetBlocks is using maven as build system but you can include the api via differe
     <dependency>
         <groupId>com.github.shynixn.petblocks</groupId>
         <artifactId>petblocks-api</artifactId>
-        <version>7.2.0</version>
+        <version>7.2.1</version>
         <scope>provided</scope>
     </dependency>
     <dependency>
         <groupId>com.github.shynixn.petblocks</groupId>
         <artifactId>petblocks-bukkit-api</artifactId>
-        <version>7.2.0</version>
+        <version>7.2.1</version>
         <scope>provided</scope>
     </dependency>
 
@@ -33,8 +33,8 @@ PetBlocks is using maven as build system but you can include the api via differe
 .. code-block:: groovy
 
     dependencies {
-        compileOnly 'com.github.shynixn.petblocks:petblocks-api:7.2.0'
-        compileOnly 'com.github.shynixn.petblocks:petblocks-bukkit-api:7.2.0'
+        compileOnly 'com.github.shynixn.petblocks:petblocks-api:7.2.1'
+        compileOnly 'com.github.shynixn.petblocks:petblocks-bukkit-api:7.2.1'
     }
 
 **(Sponge) Maven**:
@@ -42,21 +42,21 @@ PetBlocks is using maven as build system but you can include the api via differe
    <dependency>
         <groupId>com.github.shynixn.petblocks</groupId>
         <artifactId>petblocks-api</artifactId>
-        <version>7.2.0</version>
+        <version>7.2.1</version>
         <scope>provided</scope>
     </dependency>
     <dependency>
         <groupId>com.github.shynixn.petblocks</groupId>
         <artifactId>petblocks-sponge-api</artifactId>
-        <version>7.2.0</version>
+        <version>7.2.1</version>
         <scope>provided</scope>
     </dependency>
 
 **(Sponge) Gradle**:
 ::
     dependencies {
-        compileOnly 'com.github.shynixn.petblocks:petblocks-api:7.2.0'
-        compileOnly 'com.github.shynixn.petblocks:petblocks-sponge-api:7.2.0'
+        compileOnly 'com.github.shynixn.petblocks:petblocks-api:7.2.1'
+        compileOnly 'com.github.shynixn.petblocks:petblocks-sponge-api:7.2.1'
     }
 
 **Reference the jar file**:

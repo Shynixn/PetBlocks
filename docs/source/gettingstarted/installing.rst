@@ -17,27 +17,27 @@ Spigot/Sponge
 * SpongeVanilla *(1.12.0 - 1.12.2)* ✔
 * SpongeForge *(1.12.0 - 1.12.2)* **Please see below.**
 
+.. note:: Take a look into the `FAQ section <../faq>`__ if you have
+          troubles getting the pets working on your server.
+
 SpongeForge
 ~~~~~~~~~~~
 
-PetBlocks v7.2.0 was tested with the following configuration:
+PetBlocks v7.2.1 was tested with the following configuration:
 
-* Minecraft Forge 1.12.2 - 14.23.4.2705 (Server + Client)
-* SpongeForge 1.12.2-2705-7.1.0-BETA-3361
+* Minecraft Forge **1.12.2 - 14.23.4.2705** (Server + Client)
+* SpongeForge **1.12.2-2705-7.1.0-BETA-3361**
 
+.. warning::  There seem to be some issues concerning compatibility with server-only entities and Forge.
+              However it is more likely that you have a more commong error which can be easily fixed
+              by taking a look into the `FAQ section <../faq>`__.
 
-There seem to be some issues concerning compatibility with server-only entities (PetBlocks Pets) and Forge.
-SpongeForge is supported in experimental stage but there seem to be issues with some Minecraft Clients.
-
-I am looking forward for any feedback regarding this issue.
-
-Please refer to the following pages:
+If you are experiencing any crashes refer to the following pages:
 
 * `PetBlocks Issue <https://github.com/Shynixn/PetBlocks/issues/134>`__
 * `Forge Forum Post <http://www.minecraftforge.net/forum/topic/64251-registering-server-only-entity-112/>`__
 * `Forge Drop of server-only entities in 1.12 <https://github.com/MinecraftForge/MinecraftForge/issues/4870>`__
 
-Currently, PetBlocks uses unregistered "Ghost-Entities" to solve this issue which can cause unexpected errors.
 
 Download
 ~~~~~~~~
