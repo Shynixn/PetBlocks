@@ -58,6 +58,7 @@ public interface PetBlock<Player, Location> {
      *
      * @return player
      */
+    @Deprecated
     Player getPlayer();
 
     /**

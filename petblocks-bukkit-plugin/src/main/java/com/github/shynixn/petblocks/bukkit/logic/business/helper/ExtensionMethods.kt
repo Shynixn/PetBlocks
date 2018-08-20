@@ -2,6 +2,7 @@
 
 package com.github.shynixn.petblocks.bukkit.logic.business.helper
 
+import com.github.shynixn.petblocks.api.business.entity.PetBlock
 import com.github.shynixn.petblocks.api.business.enumeration.ParticleType
 import com.github.shynixn.petblocks.api.business.service.PersistenceService
 import com.github.shynixn.petblocks.bukkit.PetBlocksPlugin
@@ -74,7 +75,7 @@ fun PlayerInventory.setItemStackInHand(itemStack: ItemStack?, offHand: Boolean =
 }
 
 /**
- * Is this the pet entity?
+ * Is this the pet of this player entity?
  */
 fun Entity.isPetOfPlayer(player: Player): Boolean {
     try {
@@ -82,6 +83,22 @@ fun Entity.isPetOfPlayer(player: Player): Boolean {
         if (petblock.isPresent) {
             val block = petblock.get()
             if (block.armorStand != null && block.engineEntity != null && (block.armorStand == this || block.engineEntity == this)) {
+                return true
+            }
+        }
+    } catch (ignored: Exception) {
+    }
+
+    return false
+}
+
+/**
+ * Returns if this entity is a pet.
+ */
+fun Entity.isPet(): Boolean {
+    try {
+        for (block in PetBlockManager.instance.petBlockController.all) {
+            if (block != null && block.armorStand != null && block.engineEntity != null && (block.armorStand == this || block.engineEntity == this)) {
                 return true
             }
         }

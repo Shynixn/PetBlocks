@@ -2,9 +2,11 @@ package com.github.shynixn.petblocks.bukkit.logic.business.service
 
 import com.github.shynixn.petblocks.api.business.enumeration.PluginDependency
 import com.github.shynixn.petblocks.api.business.service.DependencyService
+import com.github.shynixn.petblocks.bukkit.nms.VersionSupport
 import com.google.inject.Inject
 import org.bukkit.ChatColor
 import org.bukkit.plugin.Plugin
+import java.util.logging.Level
 
 /**
  * Created by Shynixn 2018.
@@ -33,8 +35,9 @@ import org.bukkit.plugin.Plugin
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class DependencyServiceImpl @Inject constructor(private val plugin : Plugin) : DependencyService {
+class DependencyServiceImpl @Inject constructor(private val plugin: Plugin) : DependencyService {
     private val prefix = ChatColor.AQUA.toString() + "[PetBlocks] "
+    private var printedWorldGuardError = false
 
     /**
      * Checks for installed dependencies and shows console output.
@@ -49,6 +52,15 @@ class DependencyServiceImpl @Inject constructor(private val plugin : Plugin) : D
      */
     override fun isInstalled(pluginDependency: PluginDependency): Boolean {
         val plugin = this.plugin.server.pluginManager.getPlugin(pluginDependency.pluginName)
+
+        if (plugin != null && plugin.description.version != "1.0" && pluginDependency == PluginDependency.WORLDGUARD && VersionSupport.getServerVersion().isVersionSameOrGreaterThan(VersionSupport.VERSION_1_13_R1)) {
+            if (!printedWorldGuardError) {
+                this.plugin.logger.log(Level.WARNING, "WorldGuard dependency cannot be established in 1.13 yet.")
+                printedWorldGuardError = true
+            }
+
+            return false
+        }
 
         return plugin != null
     }
@@ -67,11 +79,14 @@ class DependencyServiceImpl @Inject constructor(private val plugin : Plugin) : D
      * Prints to the console if the plugin is installed.
      */
     private fun printInstallment(pluginDependency: PluginDependency) {
-        if (isInstalled(pluginDependency)) {
-            val plugin = this.plugin.server.pluginManager.getPlugin(pluginDependency.pluginName)
+        val plugin = this.plugin.server.pluginManager.getPlugin(pluginDependency.pluginName)
 
+        if (plugin != null) {
             plugin.server.consoleSender.sendMessage(prefix + ChatColor.DARK_GREEN + "found dependency [" + plugin.name + "].")
-            plugin.server.consoleSender.sendMessage(prefix + ChatColor.DARK_GREEN + "successfully loaded dependency [" + plugin.name + "] " + plugin.description.version + '.')
+
+            if (isInstalled(pluginDependency)) {
+                plugin.server.consoleSender.sendMessage(prefix + ChatColor.DARK_GREEN + "successfully loaded dependency [" + plugin.name + "] " + plugin.description.version + '.')
+            }
         }
     }
 }

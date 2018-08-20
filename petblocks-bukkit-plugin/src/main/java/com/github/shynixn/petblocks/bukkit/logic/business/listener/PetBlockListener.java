@@ -206,12 +206,26 @@ public class PetBlockListener extends SimpleListener {
         @Override
         public void run() {
             for (final PetBlock petBlock : PetBlockListener.this.manager.getPetBlockController().getAll()) {
+                if (petBlock.isDead() || (petBlock.getPlayer() == null || !((Player) petBlock.getPlayer()).isOnline())) {
+                    return;
+                }
+
                 if (petBlock.isDead() || !Config.getInstance().allowPetSpawning(((Player) petBlock.getPlayer()).getLocation())) {
                     PetBlockListener.this.manager.getPetBlockController().remove(petBlock);
                     if (((Player) petBlock.getPlayer()).isOnline() && Config.getInstance().allowPetSpawning(((Player) petBlock.getPlayer()).getLocation())) {
                         PetBlockListener.this.plugin.getServer().getScheduler().runTaskAsynchronously(PetBlockListener.this.plugin, () -> {
+                            if (petBlock.getPlayer() == null || !((Player) petBlock.getPlayer()).isOnline()) {
+                                return;
+                            }
+
                             final Optional<PetMeta> optMeta = PetBlockListener.this.manager.getPetMetaController().getFromPlayer((Player) petBlock.getPlayer());
-                            optMeta.ifPresent(petMeta -> PetBlockListener.this.plugin.getServer().getScheduler().runTask(PetBlockListener.this.plugin, () -> PetBlockListener.this.setPetBlock((Player) petBlock.getPlayer(), petMeta)));
+                            optMeta.ifPresent(petMeta -> PetBlockListener.this.plugin.getServer().getScheduler().runTask(PetBlockListener.this.plugin, () -> {
+                                if (petBlock.getPlayer() == null || !((Player) petBlock.getPlayer()).isOnline()) {
+                                    return;
+                                }
+
+                                PetBlockListener.this.setPetBlock((Player) petBlock.getPlayer(), petMeta);
+                            }));
                         });
                     }
 

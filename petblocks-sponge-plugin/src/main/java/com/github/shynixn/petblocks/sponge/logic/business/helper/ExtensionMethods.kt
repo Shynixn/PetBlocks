@@ -88,6 +88,22 @@ fun Entity.isPetOfPlayer(player: Player): Boolean {
 }
 
 /**
+ * Returns if this entity is a pet.
+ */
+fun Entity.isPet(): Boolean {
+    try {
+        for (block in PetBlocksManager.petBlocksManager!!.petBlockController.all) {
+            if (block?.armorStand != null && block.engineEntity != null && (block.armorStand == this || block.engineEntity == this)) {
+                return true
+            }
+        }
+    } catch (ignored: Exception) {
+    }
+
+    return false
+}
+
+/**
  * Updates the inventory of the player.
  */
 fun CarriedInventory<*>.updateInventory() {

@@ -23,13 +23,13 @@ Spigot/Sponge
 SpongeForge
 ~~~~~~~~~~~
 
-PetBlocks v7.2.1 was tested with the following configuration:
+PetBlocks v7.2.2 was tested with the following configuration:
 
 * Minecraft Forge **1.12.2 - 14.23.4.2705** (Server + Client)
 * SpongeForge **1.12.2-2705-7.1.0-BETA-3361**
 
 .. warning::  There seem to be some issues concerning compatibility with server-only entities and Forge.
-              However it is more likely that you have a more commong error which can be easily fixed
+              However it is more likely that you have a more common error which can be easily fixed
               by taking a look into the `FAQ section <../faq>`__.
 
 If you are experiencing any crashes refer to the following pages:

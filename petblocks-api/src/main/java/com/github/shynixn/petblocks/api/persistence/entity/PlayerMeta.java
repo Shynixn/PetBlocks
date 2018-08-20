@@ -60,5 +60,6 @@ public interface PlayerMeta extends Persistenceable{
      * @param <T> type
      * @return player
      */
+    @Deprecated
     <T> T getPlayer();
 }

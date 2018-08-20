@@ -3,6 +3,7 @@
 package com.github.shynixn.petblocks.sponge.logic.business.listener
 
 import com.github.shynixn.petblocks.api.business.service.CarryPetService
+import com.github.shynixn.petblocks.sponge.logic.business.helper.isPet
 import com.github.shynixn.petblocks.sponge.logic.business.helper.isPetOfPlayer
 import com.google.inject.Inject
 import org.spongepowered.api.entity.Entity
@@ -70,6 +71,12 @@ class CarryPetListener @Inject constructor(private val carryPetService: CarryPet
         if (entity.isPetOfPlayer(player)) {
             carryPetService.carryPet(player)
             event.isCancelled = true
+            return
+        }
+
+        if (entity.isPet()) {
+            event.isCancelled = true
+            return
         }
     }
 
