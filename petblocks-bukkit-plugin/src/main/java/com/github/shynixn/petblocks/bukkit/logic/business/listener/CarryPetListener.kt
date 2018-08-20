@@ -3,6 +3,7 @@
 package com.github.shynixn.petblocks.bukkit.logic.business.listener
 
 import com.github.shynixn.petblocks.api.business.service.CarryPetService
+import com.github.shynixn.petblocks.bukkit.logic.business.helper.isPet
 import com.github.shynixn.petblocks.bukkit.logic.business.helper.isPetOfPlayer
 import com.google.inject.Inject
 import org.bukkit.entity.Player
@@ -59,6 +60,12 @@ class CarryPetListener @Inject constructor(private val carryPetService: CarryPet
         if (event.rightClicked != null && event.rightClicked.isPetOfPlayer(event.player)) {
             carryPetService.carryPet(event.player)
             event.isCancelled = true
+            return
+        }
+
+        if (event.rightClicked != null && event.rightClicked.isPet()) {
+            event.isCancelled = true
+            return
         }
     }
 

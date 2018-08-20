@@ -175,6 +175,10 @@ public class PetDataListener extends SimpleListener {
     @EventHandler
     public void playerJoinEvent(final PlayerJoinEvent event) {
         this.plugin.getServer().getScheduler().runTaskAsynchronously(this.plugin, () -> {
+            if (!event.getPlayer().isOnline()) {
+                return;
+            }
+
             final Optional<PetMeta> petMetaOpt;
             if (Config.getInstance().isJoin_enabled()) {
                 if (!this.manager.getPetMetaController().getFromPlayer(event.getPlayer()).isPresent() || Config.getInstance().isJoin_overwriteExistingPet()) {
@@ -189,7 +193,7 @@ public class PetDataListener extends SimpleListener {
             if ((petMetaOpt = this.manager.getPetMetaController().getFromPlayer(event.getPlayer())).isPresent()) {
                 if (petMetaOpt.get().isEnabled()) {
                     this.plugin.getServer().getScheduler().runTaskLater(this.plugin, () -> {
-                        if (event.getPlayer().getWorld() != null) {
+                        if (event.getPlayer().isOnline() && event.getPlayer().getWorld() != null) {
                             final PetBlock petBlock = this.manager.getPetBlockController().create(event.getPlayer(), petMetaOpt.get());
                             this.manager.getPetBlockController().store(petBlock);
                         }

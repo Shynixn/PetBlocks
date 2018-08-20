@@ -50,6 +50,11 @@ class BukkitPetBlockRepository : PetBlockRepository<Player>() {
             throw IllegalArgumentException("Player cannot be null!")
         if (petMeta == null)
             throw IllegalArgumentException("PetMeta cannot be null!")
+
+        if (!player.isOnline || petMeta.playerMeta.getPlayer() as Player? == null) {
+            throw RuntimeException("The owner of this pet already went offline.")
+        }
+
         return NMSRegistry.createPetBlock(player.location, petMeta) as PetBlock<Player, Location>
     }
 
