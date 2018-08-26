@@ -1,6 +1,7 @@
 package com.github.shynixn.petblocks.bukkit.logic.persistence.configuration
 
 import com.github.shynixn.petblocks.api.PetBlocksApi
+import com.github.shynixn.petblocks.api.business.enumeration.ChatClickAction
 import com.github.shynixn.petblocks.api.business.enumeration.ParticleType
 import com.github.shynixn.petblocks.api.business.enumeration.PluginDependency
 import com.github.shynixn.petblocks.api.business.service.DependencyService
@@ -11,7 +12,7 @@ import com.github.shynixn.petblocks.api.persistence.entity.Sound
 import com.github.shynixn.petblocks.bukkit.PetBlocksPlugin
 import com.github.shynixn.petblocks.bukkit.logic.business.helper.toParticleType
 import com.github.shynixn.petblocks.bukkit.nms.v1_13_R1.MaterialCompatibility13
-import com.github.shynixn.petblocks.core.logic.business.helper.ChatBuilder
+import com.github.shynixn.petblocks.core.logic.business.extension.chatMessage
 import com.github.shynixn.petblocks.core.logic.persistence.configuration.Config
 import com.github.shynixn.petblocks.core.logic.persistence.entity.ParticleEntity
 import com.github.shynixn.petblocks.core.logic.persistence.entity.PetData
@@ -57,37 +58,6 @@ import java.util.logging.Level
 object Config : Config<Player>() {
     internal var plugin: Plugin? = null
 
-    /**
-     * Returns the pet naming message.
-     *
-     * @return message
-     */
-    override fun getPetNamingMessage(): ChatBuilder {
-        return ChatBuilder()
-                .text(this.prefix)
-                .component(this.getData<String>("messages.naming-suggest-prefix")).builder()
-                .component(this.getData<String>("messages.naming-suggest-clickable"))
-                .setClickAction(ChatBuilder.ClickAction.SUGGEST_COMMAND, "/" + this.getData<Any>("petblocks-gui.command") + " rename ")
-                .setHoverText(this.getData<String>("messages.naming-suggest-hover")).builder()
-                .component(this.getData<String>("messages.naming-suggest-suffix")).builder()
-    }
-
-    /**
-     * Returns the skin naming message.
-     *
-     * @return message
-     */
-    override fun getPetSkinNamingMessage(): ChatBuilder {
-        return ChatBuilder()
-                .text(this.prefix)
-                .component(this.getData<String>("messages.skullnaming-suggest-prefix")).builder()
-                .component(this.getData<String>("messages.skullnaming-suggest-clickable"))
-                .setClickAction(ChatBuilder.ClickAction.SUGGEST_COMMAND, "/" + this.getData<Any>("petblocks-gui.command") + " skin ")
-                .setHoverText(this.getData<String>("messages.skullnaming-suggest-hover")).builder()
-                .component(this.getData<String>("messages.skullnaming-suggest-suffix")).builder()
-    }
-
-
     override fun fixJoinDefaultPet(petData: PetMeta) {
         val petMeta = petData as PetData
         petMeta.setSkin(this.getData<Int>("join.settings.id")!!, (this.getData<Int>("join.settings.damage") as Int), this.getData<String>("join.settings.skin"), this.getData<Boolean>("join.settings.unbreakable")!!)
@@ -102,6 +72,64 @@ object Config : Config<Player>() {
 
         if (!(this.getData<Any>("join.settings.effect.name") as String).equals("none", ignoreCase = true)) {
             petData.setParticleEffectMeta(generateParticleEffectCompatibility("join.settings.effect"))
+        }
+    }
+
+    val suggestHeadMessage = chatMessage {
+        text {
+            prefix + "Click here: "
+        }
+        component {
+            color(com.github.shynixn.petblocks.api.business.enumeration.ChatColor.YELLOW) {
+                text {
+                    ">>Submit skin<<"
+                }
+            }
+            clickAction {
+                ChatClickAction.OPEN_URL to "http://minecraft-heads.com/custom/heads-generator"
+            }
+            hover {
+                text {
+                    "Goto the Minecraft-Heads website!"
+                }
+            }
+        }
+        text { " " }
+        component {
+            color(com.github.shynixn.petblocks.api.business.enumeration.ChatColor.YELLOW) {
+                text {
+                    ">>Suggest new pet<<"
+                }
+            }
+            clickAction {
+                ChatClickAction.OPEN_URL to "http://minecraft-heads.com/forum/suggesthead"
+            }
+            hover {
+                text {
+                    "Goto the Minecraft-Heads website!"
+                }
+            }
+        }
+    }
+
+    val headDatabaseMessage = chatMessage {
+        text {
+            prefix + "Download the plugin "
+        }
+        component {
+            color(com.github.shynixn.petblocks.api.business.enumeration.ChatColor.YELLOW) {
+                text {
+                    ">>Head Database<<"
+                }
+            }
+            clickAction {
+                ChatClickAction.OPEN_URL to "https://www.spigotmc.org/resources/14280/"
+            }
+            hover {
+                text {
+                    "A valid spigot account is required!"
+                }
+            }
         }
     }
 

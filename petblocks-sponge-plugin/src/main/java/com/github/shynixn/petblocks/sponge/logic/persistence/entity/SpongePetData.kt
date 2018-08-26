@@ -1,7 +1,7 @@
 package com.github.shynixn.petblocks.sponge.logic.persistence.entity
 
 import com.github.shynixn.petblocks.api.business.enumeration.ParticleType
-import com.github.shynixn.petblocks.core.logic.business.helper.ChatColor
+import com.github.shynixn.petblocks.core.logic.business.extension.translateChatColors
 import com.github.shynixn.petblocks.core.logic.persistence.entity.ParticleEntity
 import com.github.shynixn.petblocks.core.logic.persistence.entity.PetData
 import com.github.shynixn.petblocks.sponge.logic.business.helper.*
@@ -121,6 +121,6 @@ class SpongePetData : PetData {
                     .filter { name.toUpperCase().contains(it.toUpperCase()) }
                     .forEach { throw RuntimeException("Name is not valid!") }
         }
-        this.petDisplayName = ChatColor.translateAlternateColorCodes('&', name)
+        this.petDisplayName = name.translateChatColors()
     }
 }

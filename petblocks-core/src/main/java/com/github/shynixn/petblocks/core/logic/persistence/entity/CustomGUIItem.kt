@@ -1,8 +1,8 @@
 package com.github.shynixn.petblocks.core.logic.persistence.entity
 
 import com.github.shynixn.petblocks.api.business.entity.GUIItemContainer
+import com.github.shynixn.petblocks.api.business.enumeration.ChatColor
 import com.github.shynixn.petblocks.api.persistence.entity.GUIItem
-import com.github.shynixn.petblocks.core.logic.business.helper.ChatColor
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -94,7 +94,7 @@ abstract class CustomGUIItem() : GUIItem {
             when {
                 data["name"] == "default" -> this.displayName = ""
                 data["name"] == "none" -> this.displayName = " "
-                else -> this.displayName = ChatColor.translateAlternateColorCodes('&', data["name"] as String)
+                else -> this.displayName = ChatColor.translateChatColorCodes('&', data["name"] as String)
             }
         }
 
@@ -110,7 +110,7 @@ abstract class CustomGUIItem() : GUIItem {
             val m = data["lore"] as List<String>?
             if (m != null) {
                 val lore = ArrayList<String>()
-                m.filter { it != "none" }.mapTo(lore) { ChatColor.translateAlternateColorCodes('&', it) }
+                m.filter { it != "none" }.mapTo(lore) { ChatColor.translateChatColorCodes('&', it) }
                 this.lore = lore
             }
         }

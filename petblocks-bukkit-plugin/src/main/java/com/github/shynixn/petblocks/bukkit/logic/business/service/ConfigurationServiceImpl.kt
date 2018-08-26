@@ -3,8 +3,10 @@
 package com.github.shynixn.petblocks.bukkit.logic.business.service
 
 import com.github.shynixn.petblocks.api.business.entity.GUIItemContainer
+import com.github.shynixn.petblocks.api.business.enumeration.ChatClickAction
 import com.github.shynixn.petblocks.api.business.enumeration.GUIPage
 import com.github.shynixn.petblocks.api.business.service.ConfigurationService
+import com.github.shynixn.petblocks.api.persistence.entity.ChatMessage
 import com.github.shynixn.petblocks.api.persistence.entity.GUIItem
 import com.github.shynixn.petblocks.bukkit.PetBlocksPlugin
 import com.github.shynixn.petblocks.bukkit.logic.business.helper.toParticleType
@@ -12,6 +14,7 @@ import com.github.shynixn.petblocks.bukkit.logic.persistence.configuration.Bukki
 import com.github.shynixn.petblocks.bukkit.logic.persistence.entity.BukkitGUIItem
 import com.github.shynixn.petblocks.bukkit.logic.persistence.entity.BukkitItemContainer
 import com.github.shynixn.petblocks.bukkit.nms.v1_13_R1.MaterialCompatibility13
+import com.github.shynixn.petblocks.core.logic.business.extension.chatMessage
 import com.github.shynixn.petblocks.core.logic.persistence.entity.ParticleEntity
 import com.github.shynixn.petblocks.core.logic.persistence.entity.SoundEntity
 import com.google.inject.Inject
@@ -62,7 +65,8 @@ import kotlin.collections.HashMap
  */
 class ConfigurationServiceImpl @Inject constructor(private val plugin: Plugin, private val guiItemsController: BukkitStaticGUIItems) : ConfigurationService {
     private val cache = HashMap<String, List<GUIItem>>()
-
+    private var namingMessage: ChatMessage? = null
+    private var skullNamingMessage: ChatMessage? = null
 
     /**
      * Tries to load the config value from the given [path].
@@ -74,10 +78,63 @@ class ConfigurationServiceImpl @Inject constructor(private val plugin: Plugin, p
             throw IllegalArgumentException("Path '$path' could not be found!")
         }
 
+        if (path == "messages.naming-suggest") {
+            if (namingMessage == null) {
+                namingMessage = chatMessage {
+                    text {
+                        findValue("messages.naming-suggest-prefix")
+                    }
+                    component {
+                        text {
+                            findValue("messages.naming-suggest-clickable")
+                        }
+                        clickAction {
+                            ChatClickAction.SUGGEST_COMMAND to "/" + findValue("petblocks-gui.command") + " rename "
+                        }
+                        hover {
+                            findValue("messages.naming-suggest-hover")
+                        }
+                    }
+                    text {
+                        findValue("messages.naming-suggest-suffix")
+                    }
+                }
+            }
+
+            return namingMessage as C
+        }
+
+        if (path == "messages.skullnaming-suggest") {
+            if (skullNamingMessage == null) {
+                skullNamingMessage = chatMessage {
+                    text {
+                        findValue("messages.skullnaming-suggest-prefix")
+                    }
+                    component {
+                        text {
+                            findValue("messages.skullnaming-suggest-clickable")
+                        }
+                        clickAction {
+                            ChatClickAction.SUGGEST_COMMAND to "/" + findValue("petblocks-gui.command") + " skin "
+                        }
+                        hover {
+                            findValue("messages.skullnaming-suggest-hover")
+                        }
+                    }
+                    text {
+                        findValue("messages.skullnaming-suggest-suffix")
+                    }
+                }
+            }
+
+            return skullNamingMessage as C
+        }
+
         var data = this.plugin.config.get(path)
 
         if (data is String) {
             data = ChatColor.translateAlternateColorCodes('&', data)
+            return data as C
         }
 
         if (data is MemorySection) {

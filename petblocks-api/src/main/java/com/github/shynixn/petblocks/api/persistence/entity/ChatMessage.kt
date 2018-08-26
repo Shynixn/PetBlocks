@@ -1,4 +1,7 @@
-package com.github.shynixn.petblocks.api.business.enumeration
+package com.github.shynixn.petblocks.api.persistence.entity
+
+import com.github.shynixn.petblocks.api.business.enumeration.ChatClickAction
+import com.github.shynixn.petblocks.api.business.enumeration.ChatColor
 
 /**
  * Created by Shynixn 2018.
@@ -27,30 +30,45 @@ package com.github.shynixn.petblocks.api.business.enumeration
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-enum class ScriptAction {
+interface ChatMessage {
+    /**
+     * Appends a text to this message with the last formatting type.
+     */
+    fun text(f: (ChatMessage) -> String)
 
     /**
-     * Action for not interpreting the script.
+     * Sets this component italic.
      */
-    NONE,
+    fun italic(f: (ChatMessage) -> Unit)
 
     /**
-     * Action for loading a item collection into the current open gui window.
+     * Creates a sub component.
      */
-    LOAD_COLLECTION,
+    fun component(f: ChatMessageComponent.() -> Unit)
 
     /**
-     * Action for scrolling an item collection.
+     * Sets this component bold.
      */
-    SCROLL_COLLECTION,
+    fun bold(f: (ChatMessage) -> Unit)
 
     /**
-     * Action for renaming the pet.
+     * Sets this component underlined.
      */
-    RENAME_PET,
+    fun underline(f: (ChatMessage) -> Unit)
 
     /**
-     * Action for changing the skull with a custom skin name.
+     * Sets this component strikeThrough.
      */
-    CUSTOM_SKIN
+    fun strikeThrough(f: (ChatMessage) -> Unit)
+
+    /**
+     * Sets this component color.
+     */
+    fun color(color: ChatColor, f: (ChatMessage) -> Unit)
+
+    /**
+     * Returns all components of this message.
+     * Can contain string, ChatColors or ChatMessages.
+     */
+    val components: List<Any>
 }

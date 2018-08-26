@@ -1,4 +1,6 @@
-package com.github.shynixn.petblocks.api.business.enumeration
+package com.github.shynixn.petblocks.api.persistence.entity
+
+import com.github.shynixn.petblocks.api.business.enumeration.ChatClickAction
 
 /**
  * Created by Shynixn 2018.
@@ -27,30 +29,14 @@ package com.github.shynixn.petblocks.api.business.enumeration
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-enum class ScriptAction {
+interface ChatMessageComponent : ChatMessage{
+    /**
+     * Adds a clickable action.
+     */
+    fun clickAction(f : (ChatMessageComponent) -> Pair<ChatClickAction, String>)
 
     /**
-     * Action for not interpreting the script.
+     * Sets the hover able component.
      */
-    NONE,
-
-    /**
-     * Action for loading a item collection into the current open gui window.
-     */
-    LOAD_COLLECTION,
-
-    /**
-     * Action for scrolling an item collection.
-     */
-    SCROLL_COLLECTION,
-
-    /**
-     * Action for renaming the pet.
-     */
-    RENAME_PET,
-
-    /**
-     * Action for changing the skull with a custom skin name.
-     */
-    CUSTOM_SKIN
+    fun hover(f : ChatMessageComponent.() -> Unit)
 }

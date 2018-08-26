@@ -529,6 +529,7 @@ gui:
       damage: 3
       skin: 'none'
       name: '&2&lCustom costume'
+      script: 'executing action customskin petblocks.action.customskin'
       unbreakable: false
       lore:
         - '&7Use the skin of another player as costume.'
@@ -540,6 +541,7 @@ gui:
       damage: 0
       skin: 'none'
       name: '&6&lRename'
+      script: 'executing action rename petblocks.action.rename'
       page: 'MAIN'
       lore:
         - '&7Change the name of your pet.'

@@ -1,7 +1,7 @@
 package com.github.shynixn.petblocks.sponge.logic.persistence.entity
 
+import com.github.shynixn.petblocks.api.business.enumeration.ChatColor
 import com.github.shynixn.petblocks.api.business.enumeration.GUIPage
-import com.github.shynixn.petblocks.core.logic.business.helper.ChatColor
 import com.github.shynixn.petblocks.core.logic.persistence.configuration.Config
 import com.github.shynixn.petblocks.core.logic.persistence.entity.ItemContainer
 import com.github.shynixn.petblocks.sponge.logic.business.helper.*

@@ -27,30 +27,25 @@ package com.github.shynixn.petblocks.api.business.enumeration
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-enum class ScriptAction {
-
+enum class ChatClickAction {
     /**
-     * Action for not interpreting the script.
+     * Opens a URL.
      */
-    NONE,
-
+    OPEN_URL,
     /**
-     * Action for loading a item collection into the current open gui window.
+     * Opens a file.
      */
-    LOAD_COLLECTION,
-
+    OPEN_FILE,
     /**
-     * Action for scrolling an item collection.
+     * Runs a command.
      */
-    SCROLL_COLLECTION,
-
+    RUN_COMMAND,
     /**
-     * Action for renaming the pet.
+     * Suggests a command.
      */
-    RENAME_PET,
-
+    SUGGEST_COMMAND,
     /**
-     * Action for changing the skull with a custom skin name.
+     * Changes page.
      */
-    CUSTOM_SKIN
+    CHANGE_PAGE,
 }

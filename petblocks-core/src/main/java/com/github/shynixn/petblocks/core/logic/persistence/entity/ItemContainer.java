@@ -1,8 +1,8 @@
 package com.github.shynixn.petblocks.core.logic.persistence.entity;
 
 import com.github.shynixn.petblocks.api.business.entity.GUIItemContainer;
+import com.github.shynixn.petblocks.api.business.enumeration.ChatColor;
 import com.github.shynixn.petblocks.api.business.enumeration.GUIPage;
-import com.github.shynixn.petblocks.core.logic.business.helper.ChatColor;
 
 import java.util.*;
 
@@ -100,7 +100,7 @@ public abstract class ItemContainer<Player> implements GUIItemContainer<Player> 
             } else if (data.get("name").equals("none")) {
                 this.name = " ";
             } else {
-                this.name = ChatColor.translateAlternateColorCodes('&', (String) data.get("name"));
+                this.name = ChatColor.Companion.translateChatColorCodes('&', (String) data.get("name"));
             }
         }
 
@@ -116,7 +116,7 @@ public abstract class ItemContainer<Player> implements GUIItemContainer<Player> 
                 final List<String> lore = new ArrayList<>();
                 for (final String s : m) {
                     if (!s.equals("none"))
-                        lore.add(ChatColor.translateAlternateColorCodes('&', s));
+                        lore.add(ChatColor.Companion.translateChatColorCodes('&', s));
                 }
                 this.lore = lore.toArray(new String[lore.size()]);
             }

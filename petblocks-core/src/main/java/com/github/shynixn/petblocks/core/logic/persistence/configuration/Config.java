@@ -58,10 +58,6 @@ public abstract class Config<Player> {
      */
     public abstract <T> T getData(String path);
 
-    public abstract Object getPetNamingMessage();
-
-    public abstract Object getPetSkinNamingMessage();
-
     public abstract void fixJoinDefaultPet(PetMeta petMeta);
 
     public abstract boolean allowPetSpawning(Object location);

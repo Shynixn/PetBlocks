@@ -3,10 +3,13 @@
 package com.github.shynixn.petblocks.sponge.logic.business.service
 
 import com.github.shynixn.petblocks.api.business.entity.GUIItemContainer
+import com.github.shynixn.petblocks.api.business.enumeration.ChatClickAction
+import com.github.shynixn.petblocks.api.business.enumeration.ChatColor
 import com.github.shynixn.petblocks.api.business.enumeration.GUIPage
 import com.github.shynixn.petblocks.api.business.service.ConfigurationService
+import com.github.shynixn.petblocks.api.persistence.entity.ChatMessage
 import com.github.shynixn.petblocks.api.persistence.entity.GUIItem
-import com.github.shynixn.petblocks.core.logic.business.helper.ChatColor
+import com.github.shynixn.petblocks.core.logic.business.extension.chatMessage
 import com.github.shynixn.petblocks.core.logic.persistence.entity.ParticleEntity
 import com.github.shynixn.petblocks.core.logic.persistence.entity.SoundEntity
 import com.github.shynixn.petblocks.sponge.logic.business.helper.*
@@ -64,6 +67,8 @@ import kotlin.collections.HashMap
 class ConfigurationServiceImpl @Inject constructor(private val plugin: PluginContainer, private val guiItemsController: SpongeStaticGUIItems, @ConfigDir(sharedRoot = false) private val privateConfigDir: Path) : ConfigurationService {
     private val cache = HashMap<String, List<GUIItem>>()
     private lateinit var node: ConfigurationNode
+    private var namingMessage: ChatMessage? = null
+    private var skullNamingMessage: ChatMessage? = null
 
     init {
         try {
@@ -83,12 +88,65 @@ class ConfigurationServiceImpl @Inject constructor(private val plugin: PluginCon
      * loaded.
      */
     override fun <C> findValue(path: String): C {
+        if (path == "messages.naming-suggest") {
+            if (namingMessage == null) {
+                namingMessage = chatMessage {
+                    text {
+                        findValue("messages.naming-suggest-prefix")
+                    }
+                    component {
+                        text {
+                            findValue("messages.naming-suggest-clickable")
+                        }
+                        clickAction {
+                            ChatClickAction.SUGGEST_COMMAND to "/" + findValue("petblocks-gui.command") + " rename "
+                        }
+                        hover {
+                            findValue("messages.naming-suggest-hover")
+                        }
+                    }
+                    text {
+                        findValue("messages.naming-suggest-suffix")
+                    }
+                }
+            }
+
+            return namingMessage as C
+        }
+
+        if (path == "messages.skullnaming-suggest") {
+            if (skullNamingMessage == null) {
+                skullNamingMessage = chatMessage {
+                    text {
+                        findValue("messages.skullnaming-suggest-prefix")
+                    }
+                    component {
+                        text {
+                            findValue("messages.skullnaming-suggest-clickable")
+                        }
+                        clickAction {
+                            ChatClickAction.SUGGEST_COMMAND to "/" + findValue("petblocks-gui.command") + " skin "
+                        }
+                        hover {
+                            findValue("messages.skullnaming-suggest-hover")
+                        }
+                    }
+                    text {
+                        findValue("messages.skullnaming-suggest-suffix")
+                    }
+                }
+            }
+
+            return skullNamingMessage as C
+        }
+
+
         val items = path.split(Pattern.quote(".").toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
         val targetNode = this.node.getNode(*items as Array<Any>)
         var data = targetNode.value
 
         if (data is String) {
-            data = ChatColor.translateAlternateColorCodes('&', data)
+            data = ChatColor.translateChatColorCodes('&', data)
         }
 
         if (data is Map<*, *>) {

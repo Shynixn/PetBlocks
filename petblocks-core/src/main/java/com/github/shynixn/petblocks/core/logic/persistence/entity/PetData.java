@@ -1,10 +1,10 @@
 package com.github.shynixn.petblocks.core.logic.persistence.entity;
 
+import com.github.shynixn.petblocks.api.business.enumeration.ChatColor;
 import com.github.shynixn.petblocks.api.persistence.entity.EngineContainer;
 import com.github.shynixn.petblocks.api.persistence.entity.Particle;
 import com.github.shynixn.petblocks.api.persistence.entity.PetMeta;
 import com.github.shynixn.petblocks.api.persistence.entity.PlayerMeta;
-import com.github.shynixn.petblocks.core.logic.business.helper.ChatColor;
 
 /**
  * Implementation of the petMeta interface which is persistence able to the database.
@@ -271,7 +271,7 @@ public abstract class PetData extends PersistenceObject implements PetMeta {
 
         if (overwrite) {
             if (engine.getPetName().isPresent()) {
-                this.petDisplayName = ChatColor.translateAlternateColorCodes('&', engine.getPetName().get());
+                this.petDisplayName = ChatColor.Companion.translateChatColorCodes('&', engine.getPetName().get());
             }
             if (engine.getParticleEffect().isPresent()) {
                 long id = 0;

@@ -1,4 +1,8 @@
-package com.github.shynixn.petblocks.api.business.enumeration
+package com.github.shynixn.petblocks.core.logic.business.extension
+
+import com.github.shynixn.petblocks.api.business.enumeration.ChatColor
+import com.github.shynixn.petblocks.api.persistence.entity.ChatMessage
+import com.github.shynixn.petblocks.core.logic.persistence.entity.ChatMessageEntity
 
 /**
  * Created by Shynixn 2018.
@@ -27,30 +31,19 @@ package com.github.shynixn.petblocks.api.business.enumeration
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-enum class ScriptAction {
 
-    /**
-     * Action for not interpreting the script.
-     */
-    NONE,
+/**
+ * Creates a new chat message.
+ */
+fun chatMessage(f: ChatMessage.() -> Unit): ChatMessage {
+    val chatMessage = ChatMessageEntity()
+    f.invoke(chatMessage)
+    return chatMessage
+}
 
-    /**
-     * Action for loading a item collection into the current open gui window.
-     */
-    LOAD_COLLECTION,
-
-    /**
-     * Action for scrolling an item collection.
-     */
-    SCROLL_COLLECTION,
-
-    /**
-     * Action for renaming the pet.
-     */
-    RENAME_PET,
-
-    /**
-     * Action for changing the skull with a custom skin name.
-     */
-    CUSTOM_SKIN
+/**
+ * Translates the given chatColor.
+ */
+fun String.translateChatColors(): String {
+    return ChatColor.translateChatColorCodes('&', this)
 }

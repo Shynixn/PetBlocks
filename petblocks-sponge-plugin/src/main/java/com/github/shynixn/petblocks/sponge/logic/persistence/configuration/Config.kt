@@ -1,11 +1,13 @@
 package com.github.shynixn.petblocks.sponge.logic.persistence.configuration
 
+import com.github.shynixn.petblocks.api.business.enumeration.ChatClickAction
+import com.github.shynixn.petblocks.api.business.enumeration.ChatColor
 import com.github.shynixn.petblocks.api.business.enumeration.ParticleType
 import com.github.shynixn.petblocks.api.persistence.entity.Particle
 import com.github.shynixn.petblocks.api.persistence.entity.PetMeta
 import com.github.shynixn.petblocks.api.persistence.entity.Sound
-import com.github.shynixn.petblocks.core.logic.business.helper.ChatBuilder
-import com.github.shynixn.petblocks.core.logic.business.helper.ChatColor
+import com.github.shynixn.petblocks.core.logic.business.extension.chatMessage
+import com.github.shynixn.petblocks.core.logic.business.extension.translateChatColors
 import com.github.shynixn.petblocks.core.logic.persistence.entity.ParticleEntity
 import com.github.shynixn.petblocks.core.logic.persistence.entity.PetData
 import com.github.shynixn.petblocks.core.logic.persistence.entity.SoundEntity
@@ -53,37 +55,6 @@ import java.util.regex.Pattern
  */
 @Singleton
 object Config : ConfigLayer<Player>() {
-    /**
-     * Returns the pet naming message.
-     *
-     * @return message
-     */
-    override fun getPetNamingMessage(): ChatBuilder {
-        return ChatBuilder()
-                .text(this.prefix)
-                .component(this.getData<String>("messages.naming-suggest-prefix")).builder()
-                .component(this.getData<String>("messages.naming-suggest-clickable"))
-                .setClickAction(ChatBuilder.ClickAction.SUGGEST_COMMAND, "/" + this.getData<Any>("petblocks-gui.command") + " rename ")
-                .setHoverText(this.getData<String>("messages.naming-suggest-hover")).builder()
-                .component(this.getData<String>("messages.naming-suggest-suffix")).builder()
-    }
-
-    /**
-     * Returns the skin naming message.
-     *
-     * @return message
-     */
-    override fun getPetSkinNamingMessage(): ChatBuilder {
-        return ChatBuilder()
-                .text(this.prefix)
-                .component(this.getData<String>("messages.skullnaming-suggest-prefix")).builder()
-                .component(this.getData<String>("messages.skullnaming-suggest-clickable"))
-                .setClickAction(ChatBuilder.ClickAction.SUGGEST_COMMAND, "/" + this.getData<Any>("petblocks-gui.command") + " skin ")
-                .setHoverText(this.getData<String>("messages.skullnaming-suggest-hover")).builder()
-                .component(this.getData<String>("messages.skullnaming-suggest-suffix")).builder()
-    }
-
-
     override fun fixJoinDefaultPet(petMeta: PetMeta) {
         petMeta.setSkin(this.getData<Int>("join.settings.id")!!, (this.getData<Int>("join.settings.damage") as Int), this.getData<String>("join.settings.skin"), this.getData<Boolean>("join.settings.unbreakable")!!)
 
@@ -102,6 +73,42 @@ object Config : ConfigLayer<Player>() {
         }
     }
 
+    val suggestHeadMessage = chatMessage {
+        text {
+            prefix + "Click here: "
+        }
+        component {
+            color(ChatColor.YELLOW) {
+                text {
+                    ">>Submit skin<<"
+                }
+            }
+            clickAction {
+                ChatClickAction.OPEN_URL to "http://minecraft-heads.com/custom/heads-generator"
+            }
+            hover {
+                text {
+                    "Goto the Minecraft-Heads website!"
+                }
+            }
+        }
+        text { " " }
+        component {
+            color(ChatColor.YELLOW) {
+                text {
+                    ">>Suggest new pet<<"
+                }
+            }
+            clickAction {
+                ChatClickAction.OPEN_URL to "http://minecraft-heads.com/forum/suggesthead"
+            }
+            hover {
+                text {
+                    "Goto the Minecraft-Heads website!"
+                }
+            }
+        }
+    }
 
     override fun allowPetSpawning(location2: Any?): Boolean {
         val location: Location<World> = if (location2 is Transform<*>) {
@@ -240,7 +247,7 @@ object Config : ConfigLayer<Player>() {
         val data = targetNode.value
 
         if (data is String) {
-            return ChatColor.translateAlternateColorCodes('&', data) as T
+            return data.translateChatColors() as T
         }
 
         return data as T

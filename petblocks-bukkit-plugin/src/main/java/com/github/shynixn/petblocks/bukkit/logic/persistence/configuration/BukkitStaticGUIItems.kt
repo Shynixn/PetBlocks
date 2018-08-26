@@ -1,8 +1,8 @@
 package com.github.shynixn.petblocks.bukkit.logic.persistence.configuration
 
+import com.github.shynixn.petblocks.api.business.enumeration.ChatColor
 import com.github.shynixn.petblocks.bukkit.PetBlocksPlugin
 import com.github.shynixn.petblocks.bukkit.logic.persistence.entity.BukkitItemContainer
-import com.github.shynixn.petblocks.core.logic.business.helper.ChatColor
 import com.github.shynixn.petblocks.core.logic.persistence.configuration.FixedItemConfiguration
 import org.bukkit.configuration.MemorySection
 import org.bukkit.entity.Player
