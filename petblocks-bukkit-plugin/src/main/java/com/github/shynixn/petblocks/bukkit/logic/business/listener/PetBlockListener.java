@@ -206,7 +206,7 @@ public class PetBlockListener extends SimpleListener {
         @Override
         public void run() {
             for (final PetBlock petBlock : PetBlockListener.this.manager.getPetBlockController().getAll()) {
-                if (petBlock.isDead() || (petBlock.getPlayer() == null || !((Player) petBlock.getPlayer()).isOnline())) {
+                if (petBlock.getPlayer() == null || !((Player) petBlock.getPlayer()).isOnline()) {
                     return;
                 }
 

@@ -1,6 +1,5 @@
 package com.github.shynixn.petblocks.api.persistence.entity
 
-import com.github.shynixn.petblocks.api.business.enumeration.ChatClickAction
 import com.github.shynixn.petblocks.api.business.enumeration.ChatColor
 
 /**

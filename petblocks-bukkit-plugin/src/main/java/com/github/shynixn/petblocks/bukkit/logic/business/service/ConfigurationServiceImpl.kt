@@ -74,15 +74,11 @@ class ConfigurationServiceImpl @Inject constructor(private val plugin: Plugin, p
      * loaded.
      */
     override fun <C> findValue(path: String): C {
-        if (!plugin.config.contains(path)) {
-            throw IllegalArgumentException("Path '$path' could not be found!")
-        }
-
         if (path == "messages.naming-suggest") {
             if (namingMessage == null) {
                 namingMessage = chatMessage {
                     text {
-                        findValue("messages.naming-suggest-prefix")
+                        findValue<String>("messages.prefix") + findValue("messages.naming-suggest-prefix")
                     }
                     component {
                         text {
@@ -92,7 +88,9 @@ class ConfigurationServiceImpl @Inject constructor(private val plugin: Plugin, p
                             ChatClickAction.SUGGEST_COMMAND to "/" + findValue("petblocks-gui.command") + " rename "
                         }
                         hover {
-                            findValue("messages.naming-suggest-hover")
+                            text {
+                                findValue("messages.naming-suggest-hover")
+                            }
                         }
                     }
                     text {
@@ -108,7 +106,7 @@ class ConfigurationServiceImpl @Inject constructor(private val plugin: Plugin, p
             if (skullNamingMessage == null) {
                 skullNamingMessage = chatMessage {
                     text {
-                        findValue("messages.skullnaming-suggest-prefix")
+                        findValue<String>("messages.prefix") + findValue("messages.skullnaming-suggest-prefix")
                     }
                     component {
                         text {
@@ -118,7 +116,9 @@ class ConfigurationServiceImpl @Inject constructor(private val plugin: Plugin, p
                             ChatClickAction.SUGGEST_COMMAND to "/" + findValue("petblocks-gui.command") + " skin "
                         }
                         hover {
-                            findValue("messages.skullnaming-suggest-hover")
+                            text {
+                                findValue("messages.skullnaming-suggest-hover")
+                            }
                         }
                     }
                     text {
@@ -128,6 +128,10 @@ class ConfigurationServiceImpl @Inject constructor(private val plugin: Plugin, p
             }
 
             return skullNamingMessage as C
+        }
+
+        if (!plugin.config.contains(path)) {
+            throw IllegalArgumentException("Path '$path' could not be found!")
         }
 
         var data = this.plugin.config.get(path)

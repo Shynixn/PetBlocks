@@ -171,24 +171,29 @@ public final class PetBlockHelper {
     }
 
     private static int doTickSounds(int counter, PetBlock petBlock) {
-        final PetMeta petData = petBlock.getMeta();
-        if (counter <= 0) {
-            final Random random = new Random();
-            if (!getEngineEntity(petBlock).isOnGround() || petData.getEngine().getEntityType().equalsIgnoreCase("ZOMBIE")) {
-                if (petBlock.getMeta().isSoundEnabled()) {
-                    final SoundService soundService = PetBlocksApi.INSTANCE.resolve(SoundService.class);
-                    soundService.playSound(petBlock.getLocation(), petBlock.getMeta().getEngine().getAmbientSound(), petBlock.getPlayer());
+        try {
+            final PetMeta petData = petBlock.getMeta();
+            if (counter <= 0) {
+                final Random random = new Random();
+                if (!getEngineEntity(petBlock).isOnGround() || petData.getEngine().getEntityType().equalsIgnoreCase("ZOMBIE")) {
+                    if (petBlock.getMeta().isSoundEnabled()) {
+                        final SoundService soundService = PetBlocksApi.INSTANCE.resolve(SoundService.class);
+                        soundService.playSound(petBlock.getLocation(), petBlock.getMeta().getEngine().getAmbientSound(), petBlock.getPlayer());
+                    }
                 }
+                counter = 20 * random.nextInt(20) + 1;
             }
-            counter = 20 * random.nextInt(20) + 1;
+            if (getEngineEntity(petBlock).isDead()) {
+                PetBlocksApi.getDefaultPetBlockController().remove(petBlock);
+            }
+            if (petData.getParticleEffectMeta() != null) {
+                final ParticleService particleService = PetBlocksApi.INSTANCE.resolve(ParticleService.class);
+                particleService.playParticle(getArmorstand(petBlock).getLocation().add(0, 1, 0), petData.getParticleEffectMeta(), petBlock.getPlayer());
+            }
+        } catch (Exception e) {
+            PetBlocksPlugin.logger().log(Level.WARNING, "Catcher prevented server crash, please report the following error to author Shynixn!", e);
         }
-        if (getEngineEntity(petBlock).isDead()) {
-            PetBlocksApi.getDefaultPetBlockController().remove(petBlock);
-        }
-        if (petData.getParticleEffectMeta() != null) {
-            final ParticleService particleService = PetBlocksApi.INSTANCE.resolve(ParticleService.class);
-            particleService.playParticle(getArmorstand(petBlock).getLocation().add(0, 1, 0), petData.getParticleEffectMeta(), petBlock.getPlayer());
-        }
+
         counter--;
         return counter;
     }

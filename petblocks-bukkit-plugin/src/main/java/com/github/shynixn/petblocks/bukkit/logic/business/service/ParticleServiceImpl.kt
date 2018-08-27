@@ -108,7 +108,7 @@ class ParticleServiceImpl @Inject constructor(private val plugin: Plugin, privat
                 craftBlockStateClazz.getDeclaredMethod("setRawData", Byte::class.java).invoke(data, particle.data.toByte())
                 val handle = craftBlockStateClazz.getDeclaredMethod("getHandle").invoke(data)
 
-                internalParticleType = findClazz("net.minecraft.server.VERSION.ParticleParamRedstone")
+                internalParticleType = findClazz("net.minecraft.server.VERSION.ParticleParamBlock")
                         .getDeclaredConstructor(particleClazz, findClazz("net.minecraft.server.VERSION.IBlockData"))
                         .newInstance(internalParticleType, handle)
             } else if (particle.type == ParticleType.REDSTONE) {
@@ -172,15 +172,23 @@ class ParticleServiceImpl @Inject constructor(private val plugin: Plugin, privat
 
     private fun getInternalEnumValue(particle: ParticleType): Any {
         try {
-            return if (version.isVersionLowerThan(VersionSupport.VERSION_1_13_R1)) {
-                val clazz = Class.forName("net.minecraft.server.VERSION.EnumParticle".replace("VERSION", version.versionText))
-                val method = clazz.getDeclaredMethod("valueOf", String::class.java)
-                method.invoke(null, particle.name)
-            } else {
-                val minecraftKey = findClazz("net.minecraft.server.VERSION.MinecraftKey").getDeclaredConstructor(String::class.java).newInstance(particle.gameId_113)
-                val registry = findClazz("net.minecraft.server.VERSION.Particle").getDeclaredField("REGISTRY").get(null)
+            return when {
+                version.isVersionLowerThan(VersionSupport.VERSION_1_13_R1) -> {
+                    val clazz = Class.forName("net.minecraft.server.VERSION.EnumParticle".replace("VERSION", version.versionText))
+                    val method = clazz.getDeclaredMethod("valueOf", String::class.java)
+                    method.invoke(null, particle.name)
+                }
+                version == VersionSupport.VERSION_1_13_R1 -> {
+                    val minecraftKey = findClazz("net.minecraft.server.VERSION.MinecraftKey").getDeclaredConstructor(String::class.java).newInstance(particle.gameId_113)
+                    val registry = findClazz("net.minecraft.server.VERSION.Particle").getDeclaredField("REGISTRY").get(null)
 
-                findClazz("net.minecraft.server.VERSION.RegistryMaterials").getDeclaredMethod("get", Any::class.java).invoke(registry, minecraftKey)
+                    findClazz("net.minecraft.server.VERSION.RegistryMaterials").getDeclaredMethod("get", Any::class.java).invoke(registry, minecraftKey)
+                }
+                else -> {
+                    val minecraftKey = findClazz("net.minecraft.server.VERSION.MinecraftKey").getDeclaredConstructor(String::class.java).newInstance(particle.gameId_113)
+                    val registry = findClazz("net.minecraft.server.VERSION.IRegistry").getDeclaredField("PARTICLE_TYPE").get(null)
+                    findClazz("net.minecraft.server.VERSION.RegistryMaterials").getDeclaredMethod("get", findClazz("net.minecraft.server.VERSION.MinecraftKey")).invoke(registry, minecraftKey)
+                }
             }
         } catch (e: Exception) {
             plugin.logger.log(Level.WARNING, "Failed to load enum value.", e)

@@ -250,7 +250,7 @@ public class PetDataListener extends SimpleListener {
         } else if (this.isGUIItem(currentItem, "riding-pet") && PetBlockModifyHelper.hasPermission(player, Permission.ACTION_RIDE) && petBlock != null) {
             petBlock.ride(player);
         } else if (this.isGUIItem(currentItem, "suggest-heads")) {
-            ExtensionMethodsKt.sendMessage(player, com.github.shynixn.petblocks.bukkit.logic.persistence.configuration.Config.INSTANCE.getSuggestHeadMessage());
+            ExtensionMethodsKt.sendMessage(player, com.github.shynixn.petblocks.bukkit.logic.persistence.configuration.Config.INSTANCE.generateSuggestHeadMessage());
             player.closeInventory();
         } else if (this.isGUIItem(currentItem, "head-database-costume")) {
             if (PetBlockModifyHelper.hasPermission(player, Permission.ALL_HEADDATABASECOSTUMES)) {
@@ -322,7 +322,7 @@ public class PetDataListener extends SimpleListener {
             final Plugin plugin = Bukkit.getPluginManager().getPlugin("HeadDatabase");
             if (plugin == null) {
                 Bukkit.getServer().getScheduler().runTaskAsynchronously(JavaPlugin.getPlugin(PetBlocksPlugin.class), () -> {
-                    ExtensionMethodsKt.sendMessage(player, com.github.shynixn.petblocks.bukkit.logic.persistence.configuration.Config.INSTANCE.getHeadDatabaseMessage());
+                    ExtensionMethodsKt.sendMessage(player, com.github.shynixn.petblocks.bukkit.logic.persistence.configuration.Config.INSTANCE.generateHeadDatabasemessage());
                     player.sendMessage(Config.getInstance().getPrefix() + ChatColor.GRAY + "Please consider that PetBlocks is not responsible for any legal agreements between the author of Head Database and yourself.");
                 });
             } else {

@@ -6,6 +6,7 @@ import com.github.shynixn.petblocks.api.business.enumeration.ParticleType
 import com.github.shynixn.petblocks.api.business.enumeration.PluginDependency
 import com.github.shynixn.petblocks.api.business.service.DependencyService
 import com.github.shynixn.petblocks.api.business.service.DependencyWorldGuardService
+import com.github.shynixn.petblocks.api.persistence.entity.ChatMessage
 import com.github.shynixn.petblocks.api.persistence.entity.Particle
 import com.github.shynixn.petblocks.api.persistence.entity.PetMeta
 import com.github.shynixn.petblocks.api.persistence.entity.Sound
@@ -75,64 +76,67 @@ object Config : Config<Player>() {
         }
     }
 
-    val suggestHeadMessage = chatMessage {
-        text {
-            prefix + "Click here: "
-        }
-        component {
-            color(com.github.shynixn.petblocks.api.business.enumeration.ChatColor.YELLOW) {
-                text {
-                    ">>Submit skin<<"
+    fun generateSuggestHeadMessage(): ChatMessage {
+        return chatMessage {
+            text {
+                prefix + "Click here: "
+            }
+            component {
+                color(com.github.shynixn.petblocks.api.business.enumeration.ChatColor.YELLOW) {
+                    text {
+                        ">>Submit skin<<"
+                    }
+                }
+                clickAction {
+                    ChatClickAction.OPEN_URL to "http://minecraft-heads.com/custom/heads-generator"
+                }
+                hover {
+                    text {
+                        "Goto the Minecraft-Heads website!"
+                    }
                 }
             }
-            clickAction {
-                ChatClickAction.OPEN_URL to "http://minecraft-heads.com/custom/heads-generator"
-            }
-            hover {
-                text {
-                    "Goto the Minecraft-Heads website!"
+            text { " " }
+            component {
+                color(com.github.shynixn.petblocks.api.business.enumeration.ChatColor.YELLOW) {
+                    text {
+                        ">>Suggest new pet<<"
+                    }
                 }
-            }
-        }
-        text { " " }
-        component {
-            color(com.github.shynixn.petblocks.api.business.enumeration.ChatColor.YELLOW) {
-                text {
-                    ">>Suggest new pet<<"
+                clickAction {
+                    ChatClickAction.OPEN_URL to "http://minecraft-heads.com/forum/suggesthead"
                 }
-            }
-            clickAction {
-                ChatClickAction.OPEN_URL to "http://minecraft-heads.com/forum/suggesthead"
-            }
-            hover {
-                text {
-                    "Goto the Minecraft-Heads website!"
-                }
-            }
-        }
-    }
-
-    val headDatabaseMessage = chatMessage {
-        text {
-            prefix + "Download the plugin "
-        }
-        component {
-            color(com.github.shynixn.petblocks.api.business.enumeration.ChatColor.YELLOW) {
-                text {
-                    ">>Head Database<<"
-                }
-            }
-            clickAction {
-                ChatClickAction.OPEN_URL to "https://www.spigotmc.org/resources/14280/"
-            }
-            hover {
-                text {
-                    "A valid spigot account is required!"
+                hover {
+                    text {
+                        "Goto the Minecraft-Heads website!"
+                    }
                 }
             }
         }
     }
 
+    fun generateHeadDatabasemessage() : ChatMessage{
+        return chatMessage {
+            text {
+                prefix + "Download the plugin "
+            }
+            component {
+                color(com.github.shynixn.petblocks.api.business.enumeration.ChatColor.YELLOW) {
+                    text {
+                        ">>Head Database<<"
+                    }
+                }
+                clickAction {
+                    ChatClickAction.OPEN_URL to "https://www.spigotmc.org/resources/14280/"
+                }
+                hover {
+                    text {
+                        "A valid spigot account is required!"
+                    }
+                }
+            }
+        }
+    }
 
     override fun allowPetSpawning(location2: Any?): Boolean {
         val location = location2 as Location
