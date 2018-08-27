@@ -56,7 +56,7 @@ import java.io.IOException
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-@Plugin(id = "petblocks", name = "PetBlocks", version = "7.2.2", description = "PetBlocks is a spigot and also a sponge plugin to use blocks and custom heads as pets in Minecraft.")
+@Plugin(id = "petblocks", name = "PetBlocks", version = "7.3.0-SNAPSHOT", description = "PetBlocks is a spigot and also a sponge plugin to use blocks and custom heads as pets in Minecraft.")
 class PetBlocksPlugin : com.github.shynixn.petblocks.api.business.entity.PetBlocksPlugin {
 
     companion object {
