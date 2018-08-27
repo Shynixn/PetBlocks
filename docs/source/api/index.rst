@@ -445,7 +445,7 @@ Contributing and setting up your workspace
     - java -jar BuildTools.jar --rev 1.11
     - java -jar BuildTools.jar --rev 1.12
     - java -jar BuildTools.jar --rev 1.13
-
+    - java -jar BuildTools.jar --rev 1.13.1 > /dev/null
 
 * Install the created libraries to your local maven repository.
 
@@ -460,6 +460,7 @@ Contributing and setting up your workspace
     - mvn install:install-file -Dfile=spigot-1.11.jar -DgroupId=org.spigotmc -DartifactId=spigot111R1 -Dversion=1.11.0-R1.0 -Dpackaging=jar
     - mvn install:install-file -Dfile=spigot-1.12.jar -DgroupId=org.spigotmc -DartifactId=spigot112R1 -Dversion=1.12.0-R1.0 -Dpackaging=jar
     - mvn install:install-file -Dfile=spigot-1.13.jar -DgroupId=org.spigotmc -DartifactId=spigot113R1 -Dversion=1.13.0-R1.0 -Dpackaging=jar
+    - mvn install:install-file -Dfile=spigot-1.13.1.jar -DgroupId=org.spigotmc -DartifactId=spigot113R2 -Dversion=1.13.1-R2.0 -Dpackaging=jar
 
 * Execute the following maven goal on the petblocks-sponge-plugin project.
 
