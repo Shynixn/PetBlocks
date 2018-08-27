@@ -59,12 +59,6 @@
         <dependency>
             <groupId>org.spongepowered</groupId>
             <artifactId>spongeforge</artifactId>
-            <version>1.11.2-2227-6.0.0-BETA-2148</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.spongepowered</groupId>
-            <artifactId>spongeforge</artifactId>
             <version>1.12.2-2705-7.1.0-BETA-3366</version>
             <scope>test</scope>
         </dependency>
