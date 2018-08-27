@@ -92,7 +92,7 @@ class ConfigurationServiceImpl @Inject constructor(private val plugin: PluginCon
             if (namingMessage == null) {
                 namingMessage = chatMessage {
                     text {
-                        findValue("messages.naming-suggest-prefix")
+                        findValue<String>("messages.prefix") + findValue("messages.naming-suggest-prefix")
                     }
                     component {
                         text {
@@ -118,7 +118,7 @@ class ConfigurationServiceImpl @Inject constructor(private val plugin: PluginCon
             if (skullNamingMessage == null) {
                 skullNamingMessage = chatMessage {
                     text {
-                        findValue("messages.skullnaming-suggest-prefix")
+                        findValue<String>("messages.prefix") + findValue("messages.skullnaming-suggest-prefix")
                     }
                     component {
                         text {

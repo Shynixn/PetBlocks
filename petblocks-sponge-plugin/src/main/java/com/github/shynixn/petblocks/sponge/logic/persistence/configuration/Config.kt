@@ -3,6 +3,7 @@ package com.github.shynixn.petblocks.sponge.logic.persistence.configuration
 import com.github.shynixn.petblocks.api.business.enumeration.ChatClickAction
 import com.github.shynixn.petblocks.api.business.enumeration.ChatColor
 import com.github.shynixn.petblocks.api.business.enumeration.ParticleType
+import com.github.shynixn.petblocks.api.persistence.entity.ChatMessage
 import com.github.shynixn.petblocks.api.persistence.entity.Particle
 import com.github.shynixn.petblocks.api.persistence.entity.PetMeta
 import com.github.shynixn.petblocks.api.persistence.entity.Sound
@@ -73,38 +74,40 @@ object Config : ConfigLayer<Player>() {
         }
     }
 
-    val suggestHeadMessage = chatMessage {
-        text {
-            prefix + "Click here: "
-        }
-        component {
-            color(ChatColor.YELLOW) {
-                text {
-                    ">>Submit skin<<"
+    fun generateSuggestHeadMessage(): ChatMessage {
+        return chatMessage {
+            text {
+                prefix + "Click here: "
+            }
+            component {
+                color(com.github.shynixn.petblocks.api.business.enumeration.ChatColor.YELLOW) {
+                    text {
+                        ">>Submit skin<<"
+                    }
+                }
+                clickAction {
+                    ChatClickAction.OPEN_URL to "http://minecraft-heads.com/custom/heads-generator"
+                }
+                hover {
+                    text {
+                        "Goto the Minecraft-Heads website!"
+                    }
                 }
             }
-            clickAction {
-                ChatClickAction.OPEN_URL to "http://minecraft-heads.com/custom/heads-generator"
-            }
-            hover {
-                text {
-                    "Goto the Minecraft-Heads website!"
+            text { " " }
+            component {
+                color(com.github.shynixn.petblocks.api.business.enumeration.ChatColor.YELLOW) {
+                    text {
+                        ">>Suggest new pet<<"
+                    }
                 }
-            }
-        }
-        text { " " }
-        component {
-            color(ChatColor.YELLOW) {
-                text {
-                    ">>Suggest new pet<<"
+                clickAction {
+                    ChatClickAction.OPEN_URL to "http://minecraft-heads.com/forum/suggesthead"
                 }
-            }
-            clickAction {
-                ChatClickAction.OPEN_URL to "http://minecraft-heads.com/forum/suggesthead"
-            }
-            hover {
-                text {
-                    "Goto the Minecraft-Heads website!"
+                hover {
+                    text {
+                        "Goto the Minecraft-Heads website!"
+                    }
                 }
             }
         }

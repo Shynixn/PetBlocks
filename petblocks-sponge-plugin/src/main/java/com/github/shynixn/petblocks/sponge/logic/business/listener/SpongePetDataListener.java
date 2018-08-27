@@ -203,7 +203,7 @@ public class SpongePetDataListener {
         } else if (this.isGUIItem(currentItem, "riding-pet") && ExtensionMethodsKt.hasPermissions(player, Permission.ACTION_RIDE) && petBlock != null) {
             petBlock.ride(player);
         } else if (this.isGUIItem(currentItem, "suggest-heads")) {
-            ExtensionMethodsKt.sendMessage(player, com.github.shynixn.petblocks.sponge.logic.persistence.configuration.Config.INSTANCE.getSuggestHeadMessage());
+            ExtensionMethodsKt.sendMessage(player, com.github.shynixn.petblocks.sponge.logic.persistence.configuration.Config.INSTANCE.generateSuggestHeadMessage());
             this.closeInventory(player);
         } else if (this.isGUIItem(currentItem, "cannon-pet") && ExtensionMethodsKt.hasPermissions(player, Permission.ACTION_CANNON) && petBlock != null) {
             petBlock.setVelocity(this.getDirection(player));
