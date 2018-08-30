@@ -1,11 +1,14 @@
 package com.github.shynixn.petblocks.bukkit.logic.business.service
 
+import com.github.shynixn.petblocks.api.business.enumeration.ChatClickAction
+import com.github.shynixn.petblocks.api.business.enumeration.ChatColor
 import com.github.shynixn.petblocks.api.business.enumeration.GUIPage
 import com.github.shynixn.petblocks.api.business.enumeration.ScriptAction
 import com.github.shynixn.petblocks.api.business.service.ConfigurationService
 import com.github.shynixn.petblocks.api.business.service.GUIScriptService
 import com.github.shynixn.petblocks.api.business.service.GUIService
 import com.github.shynixn.petblocks.api.business.service.PersistenceService
+import com.github.shynixn.petblocks.api.persistence.entity.ChatMessage
 import com.github.shynixn.petblocks.api.persistence.entity.GUIItem
 import com.github.shynixn.petblocks.bukkit.logic.business.PetBlockManager
 import com.github.shynixn.petblocks.bukkit.logic.business.helper.clearCompletely
@@ -14,7 +17,7 @@ import com.github.shynixn.petblocks.bukkit.logic.business.helper.sendMessage
 import com.github.shynixn.petblocks.bukkit.logic.business.helper.thenAcceptOnMainThread
 import com.github.shynixn.petblocks.bukkit.nms.v1_13_R1.MaterialCompatibility13
 import com.github.shynixn.petblocks.core.logic.business.entity.GuiPageContainer
-import com.github.shynixn.petblocks.core.logic.business.helper.ChatBuilder
+import com.github.shynixn.petblocks.core.logic.business.extension.chatMessage
 import com.github.shynixn.petblocks.core.logic.persistence.configuration.Config
 import com.github.shynixn.petblocks.core.logic.persistence.entity.PlayerGUICache
 import com.google.inject.Inject
@@ -55,8 +58,26 @@ import java.util.function.Consumer
  */
 class GUIServiceImpl @Inject constructor(private val configurationService: ConfigurationService, private val plugin: Plugin, private val scriptService: GUIScriptService, private val persistenceService: PersistenceService) : GUIService {
     private val pageCache = HashMap<Player, PlayerGUICache>()
-
-    private var collectedMinecraftHeadsMessage: ChatBuilder? = null
+    private var collectedMinecraftHeadsMessage = chatMessage {
+        text {
+            Config.getInstance<Any>().prefix + "Pets collected by "
+        }
+        component {
+            color(ChatColor.YELLOW) {
+                text {
+                    ">>Minecraft-Heads.com<<"
+                }
+            }
+            clickAction {
+                ChatClickAction.OPEN_URL to "http://minecraft-heads.com"
+            }
+            hover {
+                text {
+                    "Goto the Minecraft-Heads website!"
+                }
+            }
+        }
+    }
 
     /**
      * Closes the gui for the given [player]. Does nothing when the GUI is already closed.
@@ -135,6 +156,19 @@ class GUIServiceImpl @Inject constructor(private val configurationService: Confi
         when {
             scriptResult.action == ScriptAction.LOAD_COLLECTION -> loadCollectionPage(PetBlockManager.instance.inventories[player], scriptResult.path.get(), scriptResult.permission.get())
             scriptResult.action == ScriptAction.SCROLL_COLLECTION -> scrollCollectionPage(player, scriptResult.valueContainer.get() as Int)
+            scriptResult.action == ScriptAction.RENAME_PET -> sendGuiMessage(player, configurationService.findValue("messages.naming-suggest"), scriptResult.permission.get())
+            scriptResult.action == ScriptAction.CUSTOM_SKIN -> sendGuiMessage(player, configurationService.findValue("messages.skullnaming-suggest"), scriptResult.permission.get())
+        }
+    }
+
+    /**
+     * Sends a gui action message.
+     */
+    private fun sendGuiMessage(player: Player, message: ChatMessage, permission: String) {
+        if (player.hasPermission(permission)) {
+            player.sendMessage(message)
+        } else {
+            player.sendMessage(configurationService.findValue<String>("messages.prefix") + configurationService.findValue<String>("messages.no-perms"))
         }
     }
 
@@ -208,17 +242,7 @@ class GUIServiceImpl @Inject constructor(private val configurationService: Confi
         val optItems = configurationService.findGUIItemCollection(path)
 
         if (path.startsWith("minecraft-heads-com.")) {
-            if (collectedMinecraftHeadsMessage == null) {
-                collectedMinecraftHeadsMessage = ChatBuilder().text(com.github.shynixn.petblocks.core.logic.persistence.configuration.Config.getInstance<kotlin.Any>().prefix)
-                        .text("Pets collected by ")
-                        .component(">>Minecraft-Heads.com<<")
-                        .setColor(com.github.shynixn.petblocks.core.logic.business.helper.ChatColor.YELLOW)
-                        .setClickAction(com.github.shynixn.petblocks.core.logic.business.helper.ChatBuilder.ClickAction.OPEN_URL, "http://minecraft-heads.com")
-                        .setHoverText("Goto the Minecraft-Heads website!")
-                        .builder()
-            }
-
-            collectedMinecraftHeadsMessage!!.sendMessage(inventory.holder as Player)
+            (inventory.holder as Player).sendMessage(collectedMinecraftHeadsMessage)
         }
 
         if (optItems.isPresent) {

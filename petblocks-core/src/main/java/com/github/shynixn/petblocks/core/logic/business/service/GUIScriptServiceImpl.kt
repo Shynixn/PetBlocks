@@ -54,6 +54,19 @@ class GUIScriptServiceImpl @Inject constructor(private val logger: Logger) : GUI
                 scriptResult.action = ScriptAction.SCROLL_COLLECTION
                 scriptResult.valueContainer = Optional.of(amount.toInt());
                 return scriptResult
+            } else if (script.startsWith("executing action")) {
+                if (script.startsWith("executing action rename")) {
+                    val permission = script.replace("executing action rename", "").trim()
+                    scriptResult.action = ScriptAction.RENAME_PET
+                    scriptResult.permission = Optional.of(permission)
+                    return scriptResult
+                }
+                else if (script.startsWith("executing action customskin")) {
+                    val permission = script.replace("executing action customskin", "").trim()
+                    scriptResult.action = ScriptAction.CUSTOM_SKIN
+                    scriptResult.permission = Optional.of(permission)
+                    return scriptResult
+                }
             }
         } catch (e: Exception) {
             logger.warn("Failed to execute script '$script'.")

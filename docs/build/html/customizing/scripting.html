@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Scripting &mdash; PetBlocks 7.2.2 documentation</title>
+  <title>Scripting &mdash; PetBlocks 7.3.0 documentation</title>
   
 
   
@@ -37,7 +37,7 @@
         <link rel="index" title="Index"
               href="../genindex.html"/>
         <link rel="search" title="Search" href="../search.html"/>
-    <link rel="top" title="PetBlocks 7.2.2 documentation" href="../index.html"/>
+    <link rel="top" title="PetBlocks 7.3.0 documentation" href="../index.html"/>
         <link rel="up" title="Customizing" href="index.html"/>
         <link rel="next" title="Regions" href="regions.html"/>
         <link rel="prev" title="Particles" href="particleeffects.html"/> 
@@ -72,7 +72,7 @@
             
             
               <div class="version">
-                7.2.2
+                7.3.0
               </div>
             
           
@@ -201,12 +201,13 @@ This means you can customize your GUI even more than before.</p>
 </div>
 <div class="section" id="actions">
 <h2>Actions<a class="headerlink" href="#actions" title="Permalink to this headline">¶</a></h2>
-<ol class="arabic simple">
-<li>This action allows to open a page collection of items. It acts the same as clicking on the costume categories.</li>
-</ol>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last"><strong>Skin Collection</strong> - This action allows to open a page collection of items. It acts the same as clicking on the costume categories.</p>
+</div>
 <ul class="simple">
-<li><em>path:</em> Path to the skins in the config.yml</li>
-<li><em>permission:</em> Base permission to the items which automatically resolves into &lt;permission&gt;.all and &lt;permission&gt;.&lt;position&gt;</li>
+<li><strong>path:</strong> Path to the skins in the config.yml</li>
+<li><strong>permission:</strong> Base permission to the items which automatically resolves into &lt;permission&gt;.all and &lt;permission&gt;.&lt;position&gt;</li>
 </ul>
 <p><strong>action</strong>:</p>
 <div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">script</span><span class="p">:</span> <span class="s1">&#39;binding collection &lt;path&gt; &lt;permission&gt;&#39;</span>
@@ -217,11 +218,12 @@ This means you can customize your GUI even more than before.</p>
 <div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">script</span><span class="p">:</span> <span class="s1">&#39;binding collection wardrobe.ordinary petblocks.wardrobe&#39;</span>
 </pre></div>
 </div>
-<ol class="arabic simple" start="2">
-<li>This action allows to scroll the current page collection to the left right with the given amount of slots.</li>
-</ol>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last"><strong>Page Scrolling</strong> -  This action allows to scroll the current page collection to the left right with the given amount of slots.</p>
+</div>
 <ul class="simple">
-<li><em>positive-or-negative-slots-amount:</em> Amount of slots the collection should scroll to the left or right.</li>
+<li><strong>positive-or-negative-slots-amount:</strong> Amount of slots the collection should scroll to the left or right.</li>
 </ul>
 <p><strong>action</strong>:</p>
 <div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">script</span><span class="p">:</span> <span class="s1">&#39;scrolling collection &lt;positive-or-negative-slots-amount&gt;&#39;</span>
@@ -230,6 +232,38 @@ This means you can customize your GUI even more than before.</p>
 <p>The following sample would scroll the item collection 45 slots to the left.</p>
 <p><strong>sample</strong>:</p>
 <div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">script</span><span class="p">:</span> <span class="s1">&#39;scrolling collection -45&#39;</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last"><strong>Rename Pet</strong> -  This action displays a message where the user can rename the pet.</p>
+</div>
+<ul class="simple">
+<li><strong>permission:</strong> Required permission to perform this action.</li>
+</ul>
+<p><strong>action</strong>:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">script</span><span class="p">:</span> <span class="s1">&#39;executing action rename &lt;permission&gt;&#39;</span>
+</pre></div>
+</div>
+<p>The following sample executes the action if the player has got the permission ‘petblocks.action.rename’.</p>
+<p><strong>sample</strong>:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">script</span><span class="p">:</span> <span class="s1">&#39;executing action rename petblocks.action.rename&#39;</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last"><strong>Custom Skin</strong> -  This action displays a message where the user can enter a custom skin name.</p>
+</div>
+<ul class="simple">
+<li><strong>permission:</strong> Required permission to perform this action.</li>
+</ul>
+<p><strong>action</strong>:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">script</span><span class="p">:</span> <span class="s1">&#39;executing action customskin &lt;permission&gt;&#39;</span>
+</pre></div>
+</div>
+<p>The following sample executes the action if the player has got the permission ‘petblocks.action.customskin’.</p>
+<p><strong>sample</strong>:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">script</span><span class="p">:</span> <span class="s1">&#39;executing action customskin petblocks.action.customskin&#39;</span>
 </pre></div>
 </div>
 </div>
@@ -404,7 +438,7 @@ If the script is correctly added but it gets not executed try restarting the ser
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'7.2.2',
+            VERSION:'7.3.0',
             LANGUAGE:'None',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',

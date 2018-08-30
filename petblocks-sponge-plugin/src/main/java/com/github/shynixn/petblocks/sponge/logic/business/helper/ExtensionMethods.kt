@@ -3,13 +3,13 @@ package com.github.shynixn.petblocks.sponge.logic.business.helper
 import com.github.shynixn.petblocks.api.business.entity.GUIItemContainer
 import com.github.shynixn.petblocks.api.business.entity.PetBlock
 import com.github.shynixn.petblocks.api.business.entity.PetBlocksPlugin
+import com.github.shynixn.petblocks.api.business.enumeration.ChatColor
 import com.github.shynixn.petblocks.api.business.enumeration.ParticleType
 import com.github.shynixn.petblocks.api.business.enumeration.Permission
 import com.github.shynixn.petblocks.api.business.enumeration.Version
+import com.github.shynixn.petblocks.api.persistence.entity.ChatMessage
 import com.github.shynixn.petblocks.api.persistence.entity.EngineContainer
 import com.github.shynixn.petblocks.api.persistence.entity.PetMeta
-import com.github.shynixn.petblocks.core.logic.business.helper.ChatBuilder
-import com.github.shynixn.petblocks.core.logic.business.helper.ChatColor
 import com.github.shynixn.petblocks.core.logic.persistence.configuration.Config
 import com.github.shynixn.petblocks.sponge.logic.business.PetBlocksManager
 import com.github.shynixn.petblocks.sponge.nms.VersionSupport
@@ -147,13 +147,23 @@ fun CarriedInventory<*>.getItemStackInHand(offHand: Boolean = false): Optional<I
     }
 }
 
-fun ChatBuilder.sendMessage(vararg players: Player) {
+
+/**
+ * Sends the player the given message.
+ */
+fun Player.sendMessage(message: ChatMessage) {
+    val components = message.components
+
+    if (components.isEmpty()) {
+        throw IllegalArgumentException("Components amount of message is 0. Are you not using the parent component?")
+    }
+
     val finalMessage = StringBuilder()
     val cache = StringBuilder()
     finalMessage.append("{\"text\": \"\"")
     finalMessage.append(", \"extra\" : [")
     var firstExtra = false
-    for (component in this.components) {
+    for (component in components) {
 
         if (component !is ChatColor && firstExtra) {
             finalMessage.append(", ")
@@ -163,7 +173,7 @@ fun ChatBuilder.sendMessage(vararg players: Player) {
             is ChatColor -> cache.append(component)
             is String -> {
                 finalMessage.append("{\"text\": \"")
-                finalMessage.append(ChatColor.translateAlternateColorCodes('&', cache.toString() + component))
+                finalMessage.append(ChatColor.translateChatColorCodes('&', cache.toString() + component))
                 finalMessage.append("\"}")
                 cache.setLength(0)
                 firstExtra = true
@@ -176,14 +186,11 @@ fun ChatBuilder.sendMessage(vararg players: Player) {
     }
     finalMessage.append("]}")
 
-    val playerResult = arrayOfNulls<Player>(players.size)
-    players.forEachIndexed { i, p ->
-        playerResult[i] = p
-    }
+    val playerResult = arrayOfNulls<Player>(1)
+    playerResult[0] = this
 
     ReflectionCache.sendChatJsonMesssageMethod.invoke(null, finalMessage.toString(), playerResult)
 }
-
 /**
  * Unloads the given plugin.
  */
@@ -382,7 +389,7 @@ fun CommandSource.sendMessage(text: String) {
 }
 
 fun String.translateToText(): Text {
-    return TextSerializers.LEGACY_FORMATTING_CODE.deserialize(ChatColor.translateAlternateColorCodes('&', this))
+    return TextSerializers.LEGACY_FORMATTING_CODE.deserialize(ChatColor.translateChatColorCodes('&', this))
 }
 
 fun Text.translateToString(): String {

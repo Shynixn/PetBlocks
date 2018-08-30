@@ -122,7 +122,7 @@ public enum CustomEntityType {
     }
 
     /**
-     * Registry for minecraft 1.8.0 - 1.10.2.
+     * Registry for minecraft 1.8.0 to 1.10.2.
      * <p>
      * Version 1.1
      * <p>
@@ -225,7 +225,7 @@ public enum CustomEntityType {
     }
 
     /**
-     * Registry for minecraft 1.11.0 and above.
+     * Registry for minecraft 1.11.0 to 1.12.2.
      * <p>
      * Version 1.1
      * <p>
@@ -321,7 +321,7 @@ public enum CustomEntityType {
     }
 
     /**
-     * Registry for minecraft 1.11.0 and above.
+     * Registry for minecraft 1.13.0 to 1.13.0.
      * <p>
      * Version 1.1
      * <p>
@@ -420,6 +420,113 @@ public enum CustomEntityType {
                 this.materialField = this.entityTypeClazz.getDeclaredField("REGISTRY");
                 this.appendEntityMethod = findClass("net.minecraft.server.VERSION.RegistryMaterials").getDeclaredMethod("a", int.class, Object.class, Object.class);
                 this.removeMaterialField = findClass("net.minecraft.server.VERSION.RegistrySimple").getDeclaredField("c");
+                this.removeMaterialField.setAccessible(true);
+
+                this.notInitialized = false;
+            }
+        }
+    }
+
+    /**
+     * Registry for minecraft 1.13.1 and above.
+     * <p>
+     * Version 1.1
+     * <p>
+     * MIT License
+     * <p>
+     * Copyright (c) 2017 by Shynixn
+     * <p>
+     * Permission is hereby granted, free of charge, to any person obtaining a copy
+     * of this software and associated documentation files (the "Software"), to deal
+     * in the Software without restriction, including without limitation the rights
+     * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+     * copies of the Software, and to permit persons to whom the Software is
+     * furnished to do so, subject to the following conditions:
+     * <p>
+     * The above copyright notice and this permission notice shall be included in all
+     * copies or substantial portions of the Software.
+     * <p>
+     * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+     * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+     * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+     * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+     * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+     * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+     * SOFTWARE.
+     */
+    static class Registry131 implements WrappedRegistry {
+        private Class<?> registryClazz;
+        private final Set<Class<?>> registeredClasses = new HashSet<>();
+        private boolean notInitialized = true;
+
+        private Constructor minecraftKeyConstructor;
+        private Field removeMaterialField;
+        private Field materialField;
+        private Method appendEntityMethod;
+        private Method convertEntityMethod;
+        private Method wrapEntityMethod;
+
+        /**
+         * Registers a new customEntityClass with the given parameters. Overrides any existing registrations of this customEntityClazz.
+         *
+         * @param customEntityClazz customEntityClass
+         * @param customEntityType  type
+         * @throws Exception exception
+         */
+        @Override
+        public void register(Class<?> customEntityClazz, CustomEntityType customEntityType) throws Exception {
+            this.initialize();
+
+            final Object minecraftKey = this.minecraftKeyConstructor.newInstance("petblocks", customEntityType.saveGame_11);
+            final Object wrappedEntityType = this.wrapEntityMethod.invoke(null, customEntityClazz);
+            final Object wrappedEntity = this.convertEntityMethod.invoke(wrappedEntityType, customEntityType.saveGame_11);
+            final Object materialRegistry = this.materialField.get(null);
+
+            this.appendEntityMethod.invoke(materialRegistry, customEntityType.entityId, minecraftKey, wrappedEntity);
+            this.registeredClasses.add(customEntityClazz);
+        }
+
+        /**
+         * Unregisters the customEntityClass with the given parameters. Throws an exception if already unregistered.
+         *
+         * @param customEntityClazz customEntityClass
+         * @param customEntityType  type
+         */
+        @Override
+        public void unregister(Class<?> customEntityClazz, CustomEntityType customEntityType) throws Exception {
+            this.initialize();
+
+            if (!this.isRegistered(customEntityClazz)) {
+                throw new IllegalArgumentException("Entity is already removed from the registry!");
+            }
+
+            final Object minecraftKey = this.minecraftKeyConstructor.newInstance("petblocks", customEntityType.saveGame_11);
+            final Object materialRegistry = this.materialField.get(null);
+
+            ((Map<?, ?>) this.removeMaterialField.get(materialRegistry)).remove(minecraftKey);
+            this.registeredClasses.remove(customEntityClazz);
+        }
+
+        /**
+         * Returns if the customEntityClazz is still registered.
+         *
+         * @param customEntityClazz customEntityClass
+         * @return isRegistered
+         */
+        @Override
+        public boolean isRegistered(Class<?> customEntityClazz) {
+            return this.registeredClasses.contains(customEntityClazz);
+        }
+
+        private void initialize() throws ClassNotFoundException, NoSuchFieldException, NoSuchMethodException {
+            if (this.notInitialized) {
+                this.registryClazz = findClass("net.minecraft.server.VERSION.IRegistry");
+                this.minecraftKeyConstructor = findClass("net.minecraft.server.VERSION.MinecraftKey").getDeclaredConstructor(String.class, String.class);
+                this.wrapEntityMethod = findClass("net.minecraft.server.VERSION.EntityTypes$a").getDeclaredMethod("a", Class.class);
+                this.convertEntityMethod = findClass("net.minecraft.server.VERSION.EntityTypes$a").getDeclaredMethod("a", String.class);
+                this.materialField = this.registryClazz.getDeclaredField("ENTITY_TYPE");
+                this.appendEntityMethod = findClass("net.minecraft.server.VERSION.RegistryMaterials").getDeclaredMethod("a", int.class, findClass("net.minecraft.server.VERSION.MinecraftKey"), Object.class);
+                this.removeMaterialField = findClass("net.minecraft.server.VERSION.RegistryMaterials").getDeclaredField("c");
                 this.removeMaterialField.setAccessible(true);
 
                 this.notInitialized = false;

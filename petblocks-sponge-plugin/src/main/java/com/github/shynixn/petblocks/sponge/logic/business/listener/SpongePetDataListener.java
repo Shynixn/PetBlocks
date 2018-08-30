@@ -9,7 +9,6 @@ import com.github.shynixn.petblocks.api.business.enumeration.ParticleType;
 import com.github.shynixn.petblocks.api.business.enumeration.Permission;
 import com.github.shynixn.petblocks.api.persistence.entity.EngineContainer;
 import com.github.shynixn.petblocks.api.persistence.entity.PetMeta;
-import com.github.shynixn.petblocks.core.logic.business.helper.ChatBuilder;
 import com.github.shynixn.petblocks.sponge.logic.business.PetBlocksManager;
 import com.github.shynixn.petblocks.sponge.logic.business.helper.CompatibilityItemType;
 import com.github.shynixn.petblocks.sponge.logic.business.helper.ExtensionMethodsKt;
@@ -61,27 +60,6 @@ public class SpongePetDataListener {
     private final PetBlocksManager manager;
     private final Set<Player> spamProtection = new HashSet<>();
     private final PluginContainer plugin;
-
-    private final ChatBuilder suggestHeadMessage = new ChatBuilder().text(com.github.shynixn.petblocks.core.logic.persistence.configuration.Config.getInstance().getPrefix())
-            .text("Click here: ")
-            .component(">>Submit skin<<")
-            .setColor(com.github.shynixn.petblocks.core.logic.business.helper.ChatColor.YELLOW)
-            .setClickAction(ChatBuilder.ClickAction.OPEN_URL, "http://minecraft-heads.com/custom/heads-generator")
-            .setHoverText("Goto the Minecraft-Heads website!")
-            .builder()
-            .text(" ")
-            .component(">>Suggest new pet<<")
-            .setColor(com.github.shynixn.petblocks.core.logic.business.helper.ChatColor.YELLOW)
-            .setClickAction(ChatBuilder.ClickAction.OPEN_URL, "http://minecraft-heads.com/forum/suggesthead")
-            .setHoverText("Goto the Minecraft-Heads website!")
-            .builder();
-    private final ChatBuilder collectedMinecraftHeads = new ChatBuilder().text(com.github.shynixn.petblocks.core.logic.persistence.configuration.Config.getInstance().getPrefix())
-            .text("Pets collected by ")
-            .component(">>Minecraft-Heads.com<<")
-            .setColor(com.github.shynixn.petblocks.core.logic.business.helper.ChatColor.YELLOW)
-            .setClickAction(ChatBuilder.ClickAction.OPEN_URL, "http://minecraft-heads.com")
-            .setHoverText("Goto the Minecraft-Heads website!")
-            .builder();
 
     /**
      * Initializes a new PetDataListener
@@ -225,13 +203,7 @@ public class SpongePetDataListener {
         } else if (this.isGUIItem(currentItem, "riding-pet") && ExtensionMethodsKt.hasPermissions(player, Permission.ACTION_RIDE) && petBlock != null) {
             petBlock.ride(player);
         } else if (this.isGUIItem(currentItem, "suggest-heads")) {
-            ExtensionMethodsKt.sendMessage(this.suggestHeadMessage, player);
-            this.closeInventory(player);
-        } else if (this.isGUIItem(currentItem, "naming-pet") && ExtensionMethodsKt.hasPermissions(player, Permission.ACTION_RENAME)) {
-            ExtensionMethodsKt.sendMessage(((ChatBuilder) Config.getInstance().getPetNamingMessage()), player);
-            this.closeInventory(player);
-        } else if (this.isGUIItem(currentItem, "skullnaming-pet") && ExtensionMethodsKt.hasPermissions(player, Permission.ACTION_CUSTOMSKULL)) {
-            ExtensionMethodsKt.sendMessage(((ChatBuilder) Config.getInstance().getPetSkinNamingMessage()), player);
+            ExtensionMethodsKt.sendMessage(player, com.github.shynixn.petblocks.sponge.logic.persistence.configuration.Config.INSTANCE.generateSuggestHeadMessage());
             this.closeInventory(player);
         } else if (this.isGUIItem(currentItem, "cannon-pet") && ExtensionMethodsKt.hasPermissions(player, Permission.ACTION_CANNON) && petBlock != null) {
             petBlock.setVelocity(this.getDirection(player));

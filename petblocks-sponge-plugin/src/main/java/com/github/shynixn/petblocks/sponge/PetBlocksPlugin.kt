@@ -3,11 +3,11 @@ package com.github.shynixn.petblocks.sponge
 import com.github.shynixn.petblocks.api.PetBlocksApi
 import com.github.shynixn.petblocks.api.business.controller.PetBlockController
 import com.github.shynixn.petblocks.api.business.entity.PetBlocksPlugin
+import com.github.shynixn.petblocks.api.business.enumeration.ChatColor
 import com.github.shynixn.petblocks.api.business.service.DependencyService
 import com.github.shynixn.petblocks.api.business.service.EntityService
 import com.github.shynixn.petblocks.api.business.service.UpdateCheckService
 import com.github.shynixn.petblocks.api.persistence.controller.PetMetaController
-import com.github.shynixn.petblocks.core.logic.business.helper.ChatColor
 import com.github.shynixn.petblocks.core.logic.business.helper.ReflectionUtils
 import com.github.shynixn.petblocks.sponge.logic.business.helper.*
 import com.github.shynixn.petblocks.sponge.logic.business.listener.CarryPetListener
@@ -56,7 +56,7 @@ import java.io.IOException
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-@Plugin(id = "petblocks", name = "PetBlocks", version = "7.2.2", description = "PetBlocks is a spigot and also a sponge plugin to use blocks and custom heads as pets in Minecraft.")
+@Plugin(id = "petblocks", name = "PetBlocks", version = "7.3.0", description = "PetBlocks is a spigot and also a sponge plugin to use blocks and custom heads as pets in Minecraft.")
 class PetBlocksPlugin : com.github.shynixn.petblocks.api.business.entity.PetBlocksPlugin {
 
     companion object {

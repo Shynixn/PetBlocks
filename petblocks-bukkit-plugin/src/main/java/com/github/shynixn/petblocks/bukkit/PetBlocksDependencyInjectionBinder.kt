@@ -48,8 +48,6 @@ import org.slf4j.Logger
  * SOFTWARE.
  */
 class PetBlocksDependencyInjectionBinder(private val plugin: Plugin) : AbstractModule() {
-    private val version = VersionSupport.getServerVersion()
-
     /**
      * Configures the business logic tree.
      */

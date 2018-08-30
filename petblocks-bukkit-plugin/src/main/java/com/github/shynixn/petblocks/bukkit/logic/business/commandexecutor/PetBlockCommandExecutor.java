@@ -2,15 +2,19 @@ package com.github.shynixn.petblocks.bukkit.logic.business.commandexecutor;
 
 import com.github.shynixn.petblocks.api.business.entity.GUIItemContainer;
 import com.github.shynixn.petblocks.api.business.entity.PetBlock;
+import com.github.shynixn.petblocks.api.business.enumeration.ChatClickAction;
+import com.github.shynixn.petblocks.api.persistence.entity.ChatMessage;
 import com.github.shynixn.petblocks.api.persistence.entity.EngineContainer;
 import com.github.shynixn.petblocks.api.persistence.entity.PetMeta;
 import com.github.shynixn.petblocks.bukkit.PetBlocksPlugin;
 import com.github.shynixn.petblocks.bukkit.logic.business.PetBlockManager;
-import com.github.shynixn.petblocks.bukkit.logic.business.helper.ChatBuilderExtensionKt;
+import com.github.shynixn.petblocks.bukkit.logic.business.helper.ExtensionMethodsKt;
 import com.github.shynixn.petblocks.bukkit.logic.business.helper.PetBlockModifyHelper;
 import com.github.shynixn.petblocks.core.logic.business.entity.PetRunnable;
-import com.github.shynixn.petblocks.core.logic.business.helper.ChatBuilder;
+import com.github.shynixn.petblocks.core.logic.business.extension.ExtensionMethodKt;
 import com.github.shynixn.petblocks.core.logic.persistence.configuration.Config;
+import kotlin.Pair;
+import kotlin.Unit;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.World;
@@ -231,11 +235,23 @@ public final class PetBlockCommandExecutor extends SimpleCommandExecutor.UnRegis
             } else if (fullCommand.contains("-")) {
                 fullCommand = fullCommand.substring(0, fullCommand.indexOf("-"));
             }
-            ChatBuilderExtensionKt.sendMessage(new ChatBuilder()
-                    .component(Config.getInstance().getPrefix() + this.getCommandName() + message)
-                    .setClickAction(ChatBuilder.ClickAction.SUGGEST_COMMAND, fullCommand)
-                    .setHoverText(builder.toString())
-                    .builder(), (Player) commandSender);
+
+            final String finalFullCommand = fullCommand;
+            final ChatMessage internalMessage = ExtensionMethodKt.chatMessage(chatMessage -> {
+                chatMessage.component(chatMessageComponent -> {
+                    chatMessageComponent.text(chatMessage1 -> Config.getInstance().getPrefix() + this.getCommandName() + message);
+                    chatMessageComponent.clickAction(chatMessageComponent12 -> new Pair(ChatClickAction.SUGGEST_COMMAND, finalFullCommand));
+                    chatMessageComponent.hover(chatMessageComponent1 -> {
+                        chatMessageComponent1.text(chatMessage12 -> builder.toString());
+                        return Unit.INSTANCE;
+                    });
+                    return Unit.INSTANCE;
+                });
+
+                return Unit.INSTANCE;
+            });
+
+            ExtensionMethodsKt.sendMessage((Player) commandSender, internalMessage);
         } else {
             commandSender.sendMessage(Config.getInstance().getPrefix() + '/' + this.getName() + ' ' + message);
         }

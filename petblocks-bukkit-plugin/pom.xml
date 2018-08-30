@@ -6,10 +6,10 @@
     <parent>
         <artifactId>root</artifactId>
         <groupId>com.github.shynixn.petblocks</groupId>
-        <version>7.2.2</version>
+        <version>7.3.0</version>
     </parent>
 
-    <version>7.2.2</version>
+    <version>7.3.0</version>
     <artifactId>petblocks-bukkit-plugin</artifactId>
     <packaging>jar</packaging>
 
@@ -32,12 +32,12 @@
         <dependency>
             <groupId>com.github.shynixn.petblocks</groupId>
             <artifactId>petblocks-bukkit-api</artifactId>
-            <version>7.2.2</version>
+            <version>7.3.0</version>
         </dependency>
         <dependency>
             <groupId>com.github.shynixn.petblocks</groupId>
             <artifactId>petblocks-core</artifactId>
-            <version>7.2.2</version>
+            <version>7.3.0</version>
         </dependency>
         <dependency>
             <groupId>org.bstats</groupId>
@@ -127,6 +127,12 @@
             <groupId>org.spigotmc</groupId>
             <artifactId>spigot113R1</artifactId>
             <version>1.13.0-R1.0</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.spigotmc</groupId>
+            <artifactId>spigot113R2</artifactId>
+            <version>1.13.1-R2.0</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>

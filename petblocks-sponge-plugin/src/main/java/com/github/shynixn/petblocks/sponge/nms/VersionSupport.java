@@ -1,7 +1,7 @@
 package com.github.shynixn.petblocks.sponge.nms;
 
+import com.github.shynixn.petblocks.api.business.enumeration.ChatColor;
 import com.github.shynixn.petblocks.api.business.enumeration.Version;
-import com.github.shynixn.petblocks.core.logic.business.helper.ChatColor;
 import com.github.shynixn.petblocks.sponge.logic.business.helper.ExtensionMethodsKt;
 import org.spongepowered.api.Sponge;
 

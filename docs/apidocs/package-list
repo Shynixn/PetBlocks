@@ -25,6 +25,7 @@ com.github.shynixn.petblocks.bukkit.nms.v1_10_R1
 com.github.shynixn.petblocks.bukkit.nms.v1_11_R1
 com.github.shynixn.petblocks.bukkit.nms.v1_12_R1
 com.github.shynixn.petblocks.bukkit.nms.v1_13_R1
+com.github.shynixn.petblocks.bukkit.nms.v1_13_R2
 com.github.shynixn.petblocks.bukkit.nms.v1_8_R1
 com.github.shynixn.petblocks.bukkit.nms.v1_8_R2
 com.github.shynixn.petblocks.bukkit.nms.v1_8_R3
@@ -32,6 +33,7 @@ com.github.shynixn.petblocks.bukkit.nms.v1_9_R1
 com.github.shynixn.petblocks.bukkit.nms.v1_9_R2
 com.github.shynixn.petblocks.core.logic.business.controller
 com.github.shynixn.petblocks.core.logic.business.entity
+com.github.shynixn.petblocks.core.logic.business.extension
 com.github.shynixn.petblocks.core.logic.business.helper
 com.github.shynixn.petblocks.core.logic.business.service
 com.github.shynixn.petblocks.core.logic.persistence.configuration

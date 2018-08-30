@@ -2,13 +2,14 @@
 
 package com.github.shynixn.petblocks.bukkit.logic.business.helper
 
-import com.github.shynixn.petblocks.api.business.entity.PetBlock
+import com.github.shynixn.petblocks.api.business.enumeration.ChatColor
 import com.github.shynixn.petblocks.api.business.enumeration.ParticleType
 import com.github.shynixn.petblocks.api.business.service.PersistenceService
+import com.github.shynixn.petblocks.api.persistence.entity.ChatMessage
 import com.github.shynixn.petblocks.bukkit.PetBlocksPlugin
 import com.github.shynixn.petblocks.bukkit.logic.business.PetBlockManager
 import com.github.shynixn.petblocks.bukkit.nms.VersionSupport
-import com.github.shynixn.petblocks.core.logic.business.helper.ChatColor
+import com.github.shynixn.petblocks.core.logic.business.extension.translateChatColors
 import org.bukkit.entity.Entity
 import org.bukkit.entity.Player
 import org.bukkit.inventory.Inventory
@@ -197,7 +198,7 @@ fun ItemStack.setUnbreakable(unbreakable: Boolean): ItemStack {
 
 fun ItemStack.setDisplayName(displayName: String): ItemStack {
     val meta = itemMeta
-    meta.displayName = ChatColor.translateAlternateColorCodes('&', displayName)
+    meta.displayName = displayName.translateChatColors()
     itemMeta = meta
     return this
 }
@@ -207,7 +208,7 @@ fun ItemStack.setLore(lore: List<String>): ItemStack {
     val tmpLore = ArrayList<String>()
 
     lore.forEach { l ->
-        tmpLore.add(ChatColor.translateAlternateColorCodes('&', l))
+        tmpLore.add(l.translateChatColors())
     }
 
     meta.lore = tmpLore
@@ -264,3 +265,68 @@ fun ItemStack.setSkin(skin: String): ItemStack {
     }
     return this
 }
+
+/**
+ * Sends the player the given message.
+ */
+fun Player.sendMessage(message: ChatMessage) {
+    val components = message.components
+    var firstExtra = false
+
+    if (components.isEmpty()) {
+        throw IllegalArgumentException("Components amount of message is 0. Are you not using the parent component?")
+    }
+
+    val finalMessage = StringBuilder()
+    val cache = StringBuilder()
+    finalMessage.append("{\"text\": \"\"")
+    finalMessage.append(", \"extra\" : [")
+
+    for (component in components) {
+
+        if (component !is ChatColor && firstExtra) {
+            finalMessage.append(", ")
+        }
+
+        when (component) {
+            is ChatColor -> cache.append(component)
+            is String -> {
+                finalMessage.append("{\"text\": \"")
+                finalMessage.append(ChatColor.translateChatColorCodes('&', cache.toString() + component))
+                finalMessage.append("\"}")
+                cache.setLength(0)
+                firstExtra = true
+            }
+            else -> {
+                finalMessage.append(component)
+                firstExtra = true
+            }
+        }
+    }
+
+    finalMessage.append("]}")
+
+    val clazz: Class<*> = if (VersionSupport.getServerVersion() == VersionSupport.VERSION_1_8_R1) {
+        Class.forName("net.minecraft.server.VERSION.ChatSerializer".findServerVersion())
+    } else {
+        Class.forName("net.minecraft.server.VERSION.IChatBaseComponent\$ChatSerializer".findServerVersion())
+    }
+
+    val packetClazz = Class.forName("net.minecraft.server.VERSION.PacketPlayOutChat".findServerVersion())
+    val chatBaseComponentClazz = Class.forName("net.minecraft.server.VERSION.IChatBaseComponent".findServerVersion())
+
+    val method = clazz.getDeclaredMethod("a", String::class.java)
+    method.isAccessible = true
+    val chatComponent = method.invoke(null, finalMessage.toString())
+    val packet: Any
+
+    packet = if (VersionSupport.getServerVersion().isVersionSameOrGreaterThan(VersionSupport.VERSION_1_12_R1)) {
+        val chatEnumMessage = Class.forName("net.minecraft.server.VERSION.ChatMessageType".findServerVersion())
+        packetClazz.getDeclaredConstructor(chatBaseComponentClazz, chatEnumMessage).newInstance(chatComponent, chatEnumMessage.enumConstants[0])
+    } else {
+        packetClazz.getDeclaredConstructor(chatBaseComponentClazz, Byte::class.javaPrimitiveType!!).newInstance(chatComponent, 0.toByte())
+    }
+
+    this.sendPacket(packet)
+}
+

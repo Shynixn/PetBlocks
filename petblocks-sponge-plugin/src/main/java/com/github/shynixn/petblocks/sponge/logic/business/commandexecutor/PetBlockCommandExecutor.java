@@ -2,16 +2,20 @@ package com.github.shynixn.petblocks.sponge.logic.business.commandexecutor;
 
 import com.github.shynixn.petblocks.api.business.entity.GUIItemContainer;
 import com.github.shynixn.petblocks.api.business.entity.PetBlock;
+import com.github.shynixn.petblocks.api.business.enumeration.ChatClickAction;
+import com.github.shynixn.petblocks.api.business.enumeration.ChatColor;
+import com.github.shynixn.petblocks.api.persistence.entity.ChatMessage;
 import com.github.shynixn.petblocks.api.persistence.entity.EngineContainer;
 import com.github.shynixn.petblocks.api.persistence.entity.PetMeta;
 import com.github.shynixn.petblocks.core.logic.business.entity.PetRunnable;
-import com.github.shynixn.petblocks.core.logic.business.helper.ChatBuilder;
-import com.github.shynixn.petblocks.core.logic.business.helper.ChatColor;
+import com.github.shynixn.petblocks.core.logic.business.extension.ExtensionMethodKt;
 import com.github.shynixn.petblocks.core.logic.persistence.configuration.Config;
 import com.github.shynixn.petblocks.sponge.logic.business.PetBlocksManager;
 import com.github.shynixn.petblocks.sponge.logic.business.helper.ExtensionMethodsKt;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import kotlin.Pair;
+import kotlin.Unit;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.GenericArguments;
@@ -236,11 +240,23 @@ public final class PetBlockCommandExecutor extends SimpleCommandExecutor {
             } else if (fullCommand.contains("-")) {
                 fullCommand = fullCommand.substring(0, fullCommand.indexOf("-"));
             }
-            ExtensionMethodsKt.sendMessage(new ChatBuilder()
-                    .component(Config.getInstance().getPrefix() + this.getCommandName() + message)
-                    .setClickAction(ChatBuilder.ClickAction.SUGGEST_COMMAND, fullCommand)
-                    .setHoverText(builder.toString())
-                    .builder(), (Player) commandSender);
+
+            String finalFullCommand = fullCommand;
+            final ChatMessage internalMessage = ExtensionMethodKt.chatMessage(chatMessage -> {
+                chatMessage.component(chatMessageComponent -> {
+                    chatMessageComponent.text(chatMessage1 -> Config.getInstance().getPrefix() + this.getCommandName() + message);
+                    chatMessageComponent.clickAction(chatMessageComponent12 -> new Pair(ChatClickAction.SUGGEST_COMMAND, finalFullCommand));
+                    chatMessageComponent.hover(chatMessageComponent1 -> {
+                        chatMessageComponent1.text(chatMessage12 -> builder.toString());
+                        return Unit.INSTANCE;
+                    });
+                    return Unit.INSTANCE;
+                });
+
+                return Unit.INSTANCE;
+            });
+
+            ExtensionMethodsKt.sendMessage((Player) commandSender, internalMessage);
         } else {
             ExtensionMethodsKt.sendMessage(commandSender, Config.getInstance().getPrefix() + '/' + this.getName() + ' ' + message);
         }
@@ -317,7 +333,7 @@ public final class PetBlockCommandExecutor extends SimpleCommandExecutor {
                     lore.add("");
                 }
 
-                lore.set(line, ChatColor.translateAlternateColorCodes('&', text));
+                lore.set(line, ChatColor.Companion.translateChatColorCodes('&', text));
                 ExtensionMethodsKt.setLore(itemStack, lore.toArray(new String[lore.size()]));
                 armorStand.setHelmet(itemStack);
             }

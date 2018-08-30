@@ -232,13 +232,13 @@ messages:
   default-petname: ":player's pet"
   naming-suggest-prefix: ''
   naming-suggest-clickable: '&e<<Click here>> '
-  naming-suggest-suffix: 'to rename your pet.'
+  naming-suggest-suffix: '&ato rename your pet.'
   naming-suggest-hover: 'Click me to rename your pet.'
   naming-success: '&aYou changed the name of your pet.'
   naming-error: '&cYou cannot name your pet like that.'
   skullnaming-suggest-prefix: ''
   skullnaming-suggest-clickable: '&e<<Click here>> '
-  skullnaming-suggest-suffix: 'to change the skin of your pet.'
+  skullnaming-suggest-suffix: '&ato change the skin of your pet.'
   skullnaming-suggest-hover: 'Click me to change the skin of your pet.'
   skullnaming-success: '&aYou changed the skin of your pet.'
   skullnaming-error: '&eThis skin is invalid.'
@@ -529,6 +529,7 @@ gui:
       damage: 3
       skin: 'none'
       name: '&2&lCustom costume'
+      script: 'executing action customskin petblocks.action.customskin'
       unbreakable: false
       lore:
         - '&7Use the skin of another player as costume.'
@@ -540,6 +541,7 @@ gui:
       damage: 0
       skin: 'none'
       name: '&6&lRename'
+      script: 'executing action rename petblocks.action.rename'
       page: 'MAIN'
       lore:
         - '&7Change the name of your pet.'

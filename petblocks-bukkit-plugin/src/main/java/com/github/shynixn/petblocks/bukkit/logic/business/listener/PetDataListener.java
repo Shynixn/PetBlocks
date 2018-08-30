@@ -9,11 +9,10 @@ import com.github.shynixn.petblocks.api.persistence.entity.EngineContainer;
 import com.github.shynixn.petblocks.api.persistence.entity.PetMeta;
 import com.github.shynixn.petblocks.bukkit.PetBlocksPlugin;
 import com.github.shynixn.petblocks.bukkit.logic.business.PetBlockManager;
-import com.github.shynixn.petblocks.bukkit.logic.business.helper.ChatBuilderExtensionKt;
+import com.github.shynixn.petblocks.bukkit.logic.business.helper.ExtensionMethodsKt;
 import com.github.shynixn.petblocks.bukkit.logic.business.helper.PetBlockModifyHelper;
 import com.github.shynixn.petblocks.bukkit.logic.business.helper.SkinHelper;
 import com.github.shynixn.petblocks.bukkit.nms.v1_13_R1.MaterialCompatibility13;
-import com.github.shynixn.petblocks.core.logic.business.helper.ChatBuilder;
 import com.github.shynixn.petblocks.core.logic.persistence.configuration.Config;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -68,26 +67,6 @@ public class PetDataListener extends SimpleListener {
 
     private String headDatabaseTitle;
     private String headDatabaseSearch;
-    private final ChatBuilder suggestHeadMessage = new ChatBuilder().text(Config.getInstance().getPrefix())
-            .text("Click here: ")
-            .component(">>Submit skin<<")
-            .setColor(com.github.shynixn.petblocks.core.logic.business.helper.ChatColor.YELLOW)
-            .setClickAction(ChatBuilder.ClickAction.OPEN_URL, "http://minecraft-heads.com/custom/heads-generator")
-            .setHoverText("Goto the Minecraft-Heads website!")
-            .builder()
-            .text(" ")
-            .component(">>Suggest new pet<<")
-            .setColor(com.github.shynixn.petblocks.core.logic.business.helper.ChatColor.YELLOW)
-            .setClickAction(ChatBuilder.ClickAction.OPEN_URL, "http://minecraft-heads.com/forum/suggesthead")
-            .setHoverText("Goto the Minecraft-Heads website!")
-            .builder();
-    private final ChatBuilder headDatabaseMessage = new ChatBuilder().text(Config.getInstance().getPrefix())
-            .text("Download the plugin ")
-            .component(">>Head Database<<")
-            .setColor(com.github.shynixn.petblocks.core.logic.business.helper.ChatColor.YELLOW)
-            .setClickAction(ChatBuilder.ClickAction.OPEN_URL, "https://www.spigotmc.org/resources/14280/")
-            .setHoverText("A valid spigot account is required!")
-            .builder();
 
     /**
      * Initializes a new PetDataListener.
@@ -271,7 +250,7 @@ public class PetDataListener extends SimpleListener {
         } else if (this.isGUIItem(currentItem, "riding-pet") && PetBlockModifyHelper.hasPermission(player, Permission.ACTION_RIDE) && petBlock != null) {
             petBlock.ride(player);
         } else if (this.isGUIItem(currentItem, "suggest-heads")) {
-            Bukkit.getServer().getScheduler().runTaskAsynchronously(JavaPlugin.getPlugin(PetBlocksPlugin.class), () -> ChatBuilderExtensionKt.sendMessage(this.suggestHeadMessage, player));
+            ExtensionMethodsKt.sendMessage(player, com.github.shynixn.petblocks.bukkit.logic.persistence.configuration.Config.INSTANCE.generateSuggestHeadMessage());
             player.closeInventory();
         } else if (this.isGUIItem(currentItem, "head-database-costume")) {
             if (PetBlockModifyHelper.hasPermission(player, Permission.ALL_HEADDATABASECOSTUMES)) {
@@ -279,12 +258,6 @@ public class PetDataListener extends SimpleListener {
             } else {
                 player.sendMessage(Config.getInstance().getPrefix() + Config.getInstance().getNoPermission());
             }
-        } else if (this.isGUIItem(currentItem, "naming-pet") && PetBlockModifyHelper.hasPermission(player, Permission.ACTION_RENAME)) {
-            ChatBuilderExtensionKt.sendMessage(((ChatBuilder) Config.getInstance().getPetNamingMessage()), player);
-            player.closeInventory();
-        } else if (this.isGUIItem(currentItem, "skullnaming-pet") && PetBlockModifyHelper.hasPermission(player, Permission.ACTION_CUSTOMSKULL)) {
-            ChatBuilderExtensionKt.sendMessage(((ChatBuilder) Config.getInstance().getPetSkinNamingMessage()), player);
-            player.closeInventory();
         } else if (this.isGUIItem(currentItem, "cannon-pet") && PetBlockModifyHelper.hasPermission(player, Permission.ACTION_CANNON) && petBlock != null) {
             petBlock.setVelocity(this.getDirection(player));
             player.closeInventory();
@@ -349,7 +322,7 @@ public class PetDataListener extends SimpleListener {
             final Plugin plugin = Bukkit.getPluginManager().getPlugin("HeadDatabase");
             if (plugin == null) {
                 Bukkit.getServer().getScheduler().runTaskAsynchronously(JavaPlugin.getPlugin(PetBlocksPlugin.class), () -> {
-                    ChatBuilderExtensionKt.sendMessage(this.headDatabaseMessage, player);
+                    ExtensionMethodsKt.sendMessage(player, com.github.shynixn.petblocks.bukkit.logic.persistence.configuration.Config.INSTANCE.generateHeadDatabasemessage());
                     player.sendMessage(Config.getInstance().getPrefix() + ChatColor.GRAY + "Please consider that PetBlocks is not responsible for any legal agreements between the author of Head Database and yourself.");
                 });
             } else {

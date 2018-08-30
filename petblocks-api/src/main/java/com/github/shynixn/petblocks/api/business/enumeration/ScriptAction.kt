@@ -43,4 +43,14 @@ enum class ScriptAction {
      * Action for scrolling an item collection.
      */
     SCROLL_COLLECTION,
+
+    /**
+     * Action for renaming the pet.
+     */
+    RENAME_PET,
+
+    /**
+     * Action for changing the skull with a custom skin name.
+     */
+    CUSTOM_SKIN
 }

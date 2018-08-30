@@ -18,10 +18,10 @@ Before you get started consider the following:
 Actions
 ~~~~~~~
 
-1. This action allows to open a page collection of items. It acts the same as clicking on the costume categories.
+.. note::  **Skin Collection** - This action allows to open a page collection of items. It acts the same as clicking on the costume categories.
 
-* *path:* Path to the skins in the config.yml
-* *permission:* Base permission to the items which automatically resolves into <permission>.all and <permission>.<position>
+* **path:** Path to the skins in the config.yml
+* **permission:** Base permission to the items which automatically resolves into <permission>.all and <permission>.<position>
 
 **action**:
 ::
@@ -33,9 +33,9 @@ The following sample would open the collection of wardrobe.ordinary items.
 ::
    script: 'binding collection wardrobe.ordinary petblocks.wardrobe'
 
-2. This action allows to scroll the current page collection to the left right with the given amount of slots.
+.. note::  **Page Scrolling** -  This action allows to scroll the current page collection to the left right with the given amount of slots.
 
-* *positive-or-negative-slots-amount:* Amount of slots the collection should scroll to the left or right.
+* **positive-or-negative-slots-amount:** Amount of slots the collection should scroll to the left or right.
 
 **action**:
 ::
@@ -46,6 +46,34 @@ The following sample would scroll the item collection 45 slots to the left.
 **sample**:
 ::
    script: 'scrolling collection -45'
+
+.. note::  **Rename Pet** -  This action displays a message where the user can rename the pet.
+
+* **permission:** Required permission to perform this action.
+
+**action**:
+::
+    script: 'executing action rename <permission>'
+
+The following sample executes the action if the player has got the permission 'petblocks.action.rename'.
+
+**sample**:
+::
+   script: 'executing action rename petblocks.action.rename'
+
+.. note::  **Custom Skin** -  This action displays a message where the user can enter a custom skin name.
+
+* **permission:** Required permission to perform this action.
+
+**action**:
+::
+    script: 'executing action customskin <permission>'
+
+The following sample executes the action if the player has got the permission 'petblocks.action.customskin'.
+
+**sample**:
+::
+   script: 'executing action customskin petblocks.action.customskin'
 
 Example: Adding a new costume category
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

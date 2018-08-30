@@ -6,96 +6,207 @@ JavaDocs
 
 https://shynixn.github.io/PetBlocks/apidocs/
 
-Including the PetBlocks Api
+Including the PetBlocks API
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-PetBlocks is using maven as build system but you can include the api via different ways:
+.. image:: https://maven-badges.herokuapp.com/maven-central/com.github.shynixn.petblocks/petblocks-api/badge.svg
+    :target: https://maven-badges.herokuapp.com/maven-central/com.github.shynixn.petblocks/petblocks-api
 
-**(Bukkit) Maven**:
+PetBlocks is using maven as build system and is available in the central repository.
 
-.. code-block:: maven
+.. note::  **Maven** - Bukkit
+
+.. parsed-literal::
 
     <dependency>
         <groupId>com.github.shynixn.petblocks</groupId>
         <artifactId>petblocks-api</artifactId>
-        <version>7.2.2</version>
+        <version>\ |release|\ </version>
         <scope>provided</scope>
     </dependency>
     <dependency>
         <groupId>com.github.shynixn.petblocks</groupId>
         <artifactId>petblocks-bukkit-api</artifactId>
-        <version>7.2.2</version>
+        <version>\ |release|\ </version>
         <scope>provided</scope>
     </dependency>
 
-**(Bukkit) Gradle**:
+.. note::  **Maven** - Sponge
 
-.. code-block:: groovy
+.. parsed-literal::
 
-    dependencies {
-        compileOnly 'com.github.shynixn.petblocks:petblocks-api:7.2.2'
-        compileOnly 'com.github.shynixn.petblocks:petblocks-bukkit-api:7.2.2'
-    }
-
-**(Sponge) Maven**:
-::
    <dependency>
         <groupId>com.github.shynixn.petblocks</groupId>
         <artifactId>petblocks-api</artifactId>
-        <version>7.2.2</version>
+        <version>\ |release|\ </version>
         <scope>provided</scope>
     </dependency>
     <dependency>
         <groupId>com.github.shynixn.petblocks</groupId>
         <artifactId>petblocks-sponge-api</artifactId>
-        <version>7.2.2</version>
+        <version>\ |release|\ </version>
         <scope>provided</scope>
-    </dependency>
+   </dependency>
 
-**(Sponge) Gradle**:
-::
+.. note::  **Gradle** - Bukkit
+
+.. parsed-literal::
+
     dependencies {
-        compileOnly 'com.github.shynixn.petblocks:petblocks-api:7.2.2'
-        compileOnly 'com.github.shynixn.petblocks:petblocks-sponge-api:7.2.2'
+        compileOnly 'com.github.shynixn.petblocks:petblocks-api:\ |release|\ '
+        compileOnly 'com.github.shynixn.petblocks:petblocks-bukkit-api:\ |release|\ '
     }
 
-**Reference the jar file**:
+.. note::  **Gradle** - Sponge
 
-If you are not capable of using one of these above you can also manually download the
-api from the `repository <https://oss.sonatype.org/content/repositories/releases/com/github/shynixn/petblocks/>`__  and reference it in your project.
+.. parsed-literal::
 
-Registering your dependency
-~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    dependencies {
+        compileOnly 'com.github.shynixn.petblocks:petblocks-api:\ |release|\ '
+        compileOnly 'com.github.shynixn.petblocks:petblocks-sponge-api:\ |release|\ '
+    }
 
-**(Bukkit) plugin.yml**
 
+Registering the dependency
+~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Your plugin optionally uses PetBlocks.
-::
+.. note::  **Bukkit** - Add the following tag to your plugin.yml if you **optionally** want to use PetBlocks.
+
+.. code-block:: yaml
+
     softdepend: [PetBlocks]
 
-Your plugin requires PetBlocks to work.
-::
-    depend: [PetBlocks]
+.. note::  **Sponge** - Add the following tag to your mcmod.info if you **optionally** want to use PetBlocks.
 
-**(Sponge) mcmod.info**
+.. code-block:: java
 
-Your plugin optionally uses PetBlocks.
-::
  "dependencies": [
     "petblocks"
  ]
 
-Your plugin requires PetBlocks to work.
-::
+.. note::  **Bukkit** - Add the following tag to your plugin.yml if your plugin  **requires** PetBlocks to work.
+
+.. code-block:: yaml
+
+    depend: [PetBlocks]
+
+.. note::  **Sponge** - Add the following tag to your mcmod.info if your plugin **requires** PetBlocks to work.
+
+.. code-block:: java
+
  "requiredMods": [
     "petblocks"
  ]
 
-
-Modifying PetMeta and PetBlock
+Working with the PetBlocks API
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+.. note::  **Configuration** - Bukkit/Sponge - Accessing the stored configuration.
+
+.. code-block:: java
+
+   String path = "pet.design.max-petname-length";
+
+   ConfigurationService configurationService = PetBlocksApi.INSTANCE.resolve(ConfigurationService.class);
+   int length = configurationService.findValue(path);
+
+.. note::  **GUI** - Bukkit/Sponge - Using the GUI.
+
+.. code-block:: java
+
+    Player player; // Any player instance
+    final GUIService guiService = PetBlocksApi.INSTANCE.resolve(GUIService.class)
+
+    guiService.open(player);
+
+.. note::  **Scripts** - Bukkit/Sponge - Parsing GUI scripts.
+
+.. code-block:: java
+
+   Inventory inventory; // Any inventory instance.
+   String script = "binding collection minecraft-heads-com.pet petblocks.selection.petcostumes";
+
+   GUIScriptService guiScriptService = PetBlocksApi.INSTANCE.resolve(GUIScriptService.class);
+   ScriptResult scriptResult = guiScriptService.executeScript(inventory, script);
+
+   if (scriptResult.getAction() == ScriptAction.LOAD_COLLECTION) {
+         // Parsed script is a loaded collection.
+   }
+
+.. note::  **Sounds** - Bukkit/Sponge - Creating and sending sounds.
+
+.. code-block:: java
+
+     Player player; // Any player instance.
+     Location location; // Any location instance.
+
+     Sound sound = PetBlocksApi.INSTANCE.create(Sound.class);
+     sound.setName("AMBIENT_CAVE"); // Name of the sound for Minecraft 1.13.
+     sound.setVolume(1.0);
+     sound.setPitch(1.0);
+
+     SoundService soundService = PetBlocksApi.INSTANCE.resolve(SoundService.class);
+     soundService.playSound(location, sound, player);
+
+.. note::  **Particles** - Bukkit/Sponge - Creating and sending particles.
+
+.. code-block:: java
+
+    Player player; // Any player instance.
+    Location location; // Any location instance.
+
+    Particle particle = PetBlocksApi.INSTANCE.create(Particle.class);
+    particle.setType(ParticleType.PORTAL);
+    particle.setSpeed(0.1);
+    particle.setAmount(20);
+    particle.setOffSetX(5);
+    particle.setOffSetY(5);
+    particle.setOffSetZ(5);
+
+    ParticleService particleService = PetBlocksApi.INSTANCE.resolve(ParticleService.class);
+    particleService.playParticle(location, particle, player);
+
+.. note::  **Carry** - Bukkit/Sponge - Let the player carry his pet.
+
+.. code-block:: java
+
+     Player player; // Any player instance
+
+     CarryPetService carryPetService = PetBlocksApi.INSTANCE.resolve(CarryPetService.class);
+     carryPetService.carryPet(player);
+
+.. note::  **Feeding** - Bukkit/Sponge - Execute the feeding effect.
+
+.. code-block:: java
+
+    Player player; // Any player instance
+
+    FeedingPetService feedingPetService = PetBlocksApi.INSTANCE.resolve(FeedingPetService.class);
+    feedingPetService.feedPet(player);
+
+.. note::  **WorldGuard** - Bukkit - Accessing the WorldGuard dependency.
+
+.. code-block:: java
+
+    Location location; // Any location instance.
+
+    DependencyService dependencyService = PetBlocksApi.INSTANCE.resolve(DependencyService.class);
+
+    if (dependencyService.isInstalled(PluginDependency.WORLDGUARD)) {
+         DependencyWorldGuardService dependencyWorldGuardService = PetBlocksApi.INSTANCE.resolve(DependencyWorldGuardService.class);
+         dependencyWorldGuardService.prepareSpawningRegion(location);
+    }
+
+.. note::  **Updates** - Bukkit/Sponge - Checking for updates.
+
+.. code-block:: java
+
+    UpdateCheckService updateCheckService = PetBlocksApi.INSTANCE.resolve(UpdateCheckService.class);
+
+    updateCheckService.checkForUpdates();
+
+
+.. warning:: Accessing the PetMeta and PetBlock is not stable via this API. This is going to be replaced by services in the future.
 
 **(Bukkit) Creating a new PetMeta for a player:**
 
@@ -286,115 +397,6 @@ However, for applying the changes you need to respawn the PetBlock:
     final PetBlock petBlock; //Any PetBlock instance
     petBlock.respawn();
 
-Accessing Business Logic
-~~~~~~~~~~~~~~~~~~~~~~~~
-
-The PetBlocks plugin allows to access some parts of the Business Logic.
-
-.. note::  **Configuration** - Bukkit/Sponge - Accessing the stored configuration.
-
-.. code-block:: java
-
-   String path = "pet.design.max-petname-length";
-
-   ConfigurationService configurationService = PetBlocksApi.INSTANCE.resolve(ConfigurationService.class);
-   int length = configurationService.findValue(path);
-
-.. note::  **GUI** - Bukkit/Sponge - Using the GUI.
-
-.. code-block:: java
-
-    Player player; // Any player instance
-    final GUIService guiService = PetBlocksApi.INSTANCE.resolve(GUIService.class)
-
-    guiService.open(player);
-
-.. note::  **Scripts** - Bukkit/Sponge - Parsing GUI scripts.
-
-.. code-block:: java
-
-   Inventory inventory; // Any inventory instance.
-   String script = "binding collection minecraft-heads-com.pet petblocks.selection.petcostumes";
-
-   GUIScriptService guiScriptService = PetBlocksApi.INSTANCE.resolve(GUIScriptService.class);
-   ScriptResult scriptResult = guiScriptService.executeScript(inventory, script);
-
-   if (scriptResult.getAction() == ScriptAction.LOAD_COLLECTION) {
-         // Parsed script is a loaded collection.
-   }
-
-.. note::  **Sounds** - Bukkit/Sponge - Creating and sending sounds.
-
-.. code-block:: java
-
-     Player player; // Any player instance.
-     Location location; // Any location instance.
-
-     Sound sound = PetBlocksApi.INSTANCE.create(Sound.class);
-     sound.setName("AMBIENT_CAVE"); // Name of the sound for Minecraft 1.13.
-     sound.setVolume(1.0);
-     sound.setPitch(1.0);
-
-     SoundService soundService = PetBlocksApi.INSTANCE.resolve(SoundService.class);
-     soundService.playSound(location, sound, player);
-
-.. note::  **Particles** - Bukkit/Sponge - Creating and sending particles.
-
-.. code-block:: java
-
-    Player player; // Any player instance.
-    Location location; // Any location instance.
-
-    Particle particle = PetBlocksApi.INSTANCE.create(Particle.class);
-    particle.setType(ParticleType.PORTAL);
-    particle.setSpeed(0.1);
-    particle.setAmount(20);
-    particle.setOffSetX(5);
-    particle.setOffSetY(5);
-    particle.setOffSetZ(5);
-
-    ParticleService particleService = PetBlocksApi.INSTANCE.resolve(ParticleService.class);
-    particleService.playParticle(location, particle, player);
-
-.. note::  **Carry** - Bukkit/Sponge - Let the player carry his pet.
-
-.. code-block:: java
-
-     Player player; // Any player instance
-
-     CarryPetService carryPetService = PetBlocksApi.INSTANCE.resolve(CarryPetService.class);
-     carryPetService.carryPet(player);
-
-.. note::  **Feeding** - Bukkit/Sponge - Execute the feeding effect.
-
-.. code-block:: java
-
-    Player player; // Any player instance
-
-    FeedingPetService feedingPetService = PetBlocksApi.INSTANCE.resolve(FeedingPetService.class);
-    feedingPetService.feedPet(player);
-
-.. note::  **WorldGuard** - Bukkit - Accessing the WorldGuard dependency.
-
-.. code-block:: java
-
-    Location location; // Any location instance.
-
-    DependencyService dependencyService = PetBlocksApi.INSTANCE.resolve(DependencyService.class);
-
-    if (dependencyService.isInstalled(PluginDependency.WORLDGUARD)) {
-         DependencyWorldGuardService dependencyWorldGuardService = PetBlocksApi.INSTANCE.resolve(DependencyWorldGuardService.class);
-         dependencyWorldGuardService.prepareSpawningRegion(location);
-    }
-
-.. note::  **Updates** - Bukkit/Sponge - Checking for updates.
-
-.. code-block:: java
-
-    UpdateCheckService updateCheckService = PetBlocksApi.INSTANCE.resolve(UpdateCheckService.class);
-
-    updateCheckService.checkForUpdates();
-
 Listen to Events
 ~~~~~~~~~~~~~~~~
 
@@ -432,7 +434,7 @@ Contributing and setting up your workspace
 
 * Fork the PetBlocks project on github and clone it to your local environment.
 
-* Use BuildTools.jar from spigotmc.org to build to following dependencies.
+* Use BuildTools.jar from spigotmc.org to build the following dependencies.
 
 .. code-block:: java
 
@@ -445,7 +447,7 @@ Contributing and setting up your workspace
     - java -jar BuildTools.jar --rev 1.11
     - java -jar BuildTools.jar --rev 1.12
     - java -jar BuildTools.jar --rev 1.13
-
+    - java -jar BuildTools.jar --rev 1.13.1
 
 * Install the created libraries to your local maven repository.
 
@@ -460,6 +462,7 @@ Contributing and setting up your workspace
     - mvn install:install-file -Dfile=spigot-1.11.jar -DgroupId=org.spigotmc -DartifactId=spigot111R1 -Dversion=1.11.0-R1.0 -Dpackaging=jar
     - mvn install:install-file -Dfile=spigot-1.12.jar -DgroupId=org.spigotmc -DartifactId=spigot112R1 -Dversion=1.12.0-R1.0 -Dpackaging=jar
     - mvn install:install-file -Dfile=spigot-1.13.jar -DgroupId=org.spigotmc -DartifactId=spigot113R1 -Dversion=1.13.0-R1.0 -Dpackaging=jar
+    - mvn install:install-file -Dfile=spigot-1.13.1.jar -DgroupId=org.spigotmc -DartifactId=spigot113R2 -Dversion=1.13.1-R2.0 -Dpackaging=jar
 
 * Execute the following maven goal on the petblocks-sponge-plugin project.
 
