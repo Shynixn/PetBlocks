@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Developer API &mdash; PetBlocks 7.2.2 documentation</title>
+  <title>Developer API &mdash; PetBlocks 7.3.0 documentation</title>
   
 
   
@@ -37,7 +37,7 @@
         <link rel="index" title="Index"
               href="../genindex.html"/>
         <link rel="search" title="Search" href="../search.html"/>
-    <link rel="top" title="PetBlocks 7.2.2 documentation" href="../index.html"/>
+    <link rel="top" title="PetBlocks 7.3.0 documentation" href="../index.html"/>
         <link rel="next" title="FAQ" href="../faq/index.html"/>
         <link rel="prev" title="Datacollecting" href="../general/datacollecting.html"/> 
 
@@ -71,7 +71,7 @@
             
             
               <div class="version">
-                7.2.2
+                7.3.0
               </div>
             
           
@@ -102,10 +102,9 @@
 <li class="toctree-l1"><a class="reference internal" href="../general/index.html">General</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Developer API</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#javadocs">JavaDocs</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#including-the-petblocks-api">Including the PetBlocks Api</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#registering-your-dependency">Registering your dependency</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#modifying-petmeta-and-petblock">Modifying PetMeta and PetBlock</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#accessing-business-logic">Accessing Business Logic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#including-the-petblocks-api">Including the PetBlocks API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#registering-the-dependency">Registering the dependency</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#working-with-the-petblocks-api">Working with the PetBlocks API</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#listen-to-events">Listen to Events</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#contributing-and-setting-up-your-workspace">Contributing and setting up your workspace</a></li>
 </ul>
@@ -184,83 +183,220 @@
 <p><a class="reference external" href="https://shynixn.github.io/PetBlocks/apidocs/">https://shynixn.github.io/PetBlocks/apidocs/</a></p>
 </div>
 <div class="section" id="including-the-petblocks-api">
-<h2>Including the PetBlocks Api<a class="headerlink" href="#including-the-petblocks-api" title="Permalink to this headline">¶</a></h2>
-<p>PetBlocks is using maven as build system but you can include the api via different ways:</p>
-<p><strong>(Bukkit) Maven</strong>:</p>
-<div class="highlight-maven"><div class="highlight"><pre><span></span>&lt;dependency&gt;
+<h2>Including the PetBlocks API<a class="headerlink" href="#including-the-petblocks-api" title="Permalink to this headline">¶</a></h2>
+<a class="reference external image-reference" href="https://maven-badges.herokuapp.com/maven-central/com.github.shynixn.petblocks/petblocks-api"><img alt="https://maven-badges.herokuapp.com/maven-central/com.github.shynixn.petblocks/petblocks-api/badge.svg" src="https://maven-badges.herokuapp.com/maven-central/com.github.shynixn.petblocks/petblocks-api/badge.svg" /></a>
+<p>PetBlocks is using maven as build system and is available in the central repository.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last"><strong>Maven</strong> - Bukkit</p>
+</div>
+<pre class="literal-block">
+&lt;dependency&gt;
     &lt;groupId&gt;com.github.shynixn.petblocks&lt;/groupId&gt;
     &lt;artifactId&gt;petblocks-api&lt;/artifactId&gt;
-    &lt;version&gt;7.2.2&lt;/version&gt;
+    &lt;version&gt;7.3.0&lt;/version&gt;
     &lt;scope&gt;provided&lt;/scope&gt;
 &lt;/dependency&gt;
 &lt;dependency&gt;
     &lt;groupId&gt;com.github.shynixn.petblocks&lt;/groupId&gt;
     &lt;artifactId&gt;petblocks-bukkit-api&lt;/artifactId&gt;
-    &lt;version&gt;7.2.2&lt;/version&gt;
+    &lt;version&gt;7.3.0&lt;/version&gt;
     &lt;scope&gt;provided&lt;/scope&gt;
 &lt;/dependency&gt;
+</pre>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last"><strong>Maven</strong> - Sponge</p>
+</div>
+<pre class="literal-block">
+&lt;dependency&gt;
+     &lt;groupId&gt;com.github.shynixn.petblocks&lt;/groupId&gt;
+     &lt;artifactId&gt;petblocks-api&lt;/artifactId&gt;
+     &lt;version&gt;7.3.0&lt;/version&gt;
+     &lt;scope&gt;provided&lt;/scope&gt;
+ &lt;/dependency&gt;
+ &lt;dependency&gt;
+     &lt;groupId&gt;com.github.shynixn.petblocks&lt;/groupId&gt;
+     &lt;artifactId&gt;petblocks-sponge-api&lt;/artifactId&gt;
+     &lt;version&gt;7.3.0&lt;/version&gt;
+     &lt;scope&gt;provided&lt;/scope&gt;
+&lt;/dependency&gt;
+</pre>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last"><strong>Gradle</strong> - Bukkit</p>
+</div>
+<pre class="literal-block">
+dependencies {
+    compileOnly 'com.github.shynixn.petblocks:petblocks-api:7.3.0'
+    compileOnly 'com.github.shynixn.petblocks:petblocks-bukkit-api:7.3.0'
+}
+</pre>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last"><strong>Gradle</strong> - Sponge</p>
+</div>
+<pre class="literal-block">
+dependencies {
+    compileOnly 'com.github.shynixn.petblocks:petblocks-api:7.3.0'
+    compileOnly 'com.github.shynixn.petblocks:petblocks-sponge-api:7.3.0'
+}
+</pre>
+</div>
+<div class="section" id="registering-the-dependency">
+<h2>Registering the dependency<a class="headerlink" href="#registering-the-dependency" title="Permalink to this headline">¶</a></h2>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last"><strong>Bukkit</strong> - Add the following tag to your plugin.yml if you <strong>optionally</strong> want to use PetBlocks.</p>
+</div>
+<div class="highlight-yaml"><div class="highlight"><pre><span></span><span class="l l-Scalar l-Scalar-Plain">softdepend</span><span class="p p-Indicator">:</span> <span class="p p-Indicator">[</span><span class="nv">PetBlocks</span><span class="p p-Indicator">]</span>
 </pre></div>
 </div>
-<p><strong>(Bukkit) Gradle</strong>:</p>
-<div class="highlight-groovy"><div class="highlight"><pre><span></span><span class="n">dependencies</span> <span class="o">{</span>
-    <span class="n">compileOnly</span> <span class="s1">&#39;com.github.shynixn.petblocks:petblocks-api:7.2.2&#39;</span>
-    <span class="n">compileOnly</span> <span class="s1">&#39;com.github.shynixn.petblocks:petblocks-bukkit-api:7.2.2&#39;</span>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last"><strong>Sponge</strong> - Add the following tag to your mcmod.info if you <strong>optionally</strong> want to use PetBlocks.</p>
+</div>
+<div class="highlight-java"><div class="highlight"><pre><span></span><span class="s">&quot;dependencies&quot;</span><span class="o">:</span> <span class="o">[</span>
+   <span class="s">&quot;petblocks&quot;</span>
+<span class="o">]</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last"><strong>Bukkit</strong> - Add the following tag to your plugin.yml if your plugin  <strong>requires</strong> PetBlocks to work.</p>
+</div>
+<div class="highlight-yaml"><div class="highlight"><pre><span></span><span class="l l-Scalar l-Scalar-Plain">depend</span><span class="p p-Indicator">:</span> <span class="p p-Indicator">[</span><span class="nv">PetBlocks</span><span class="p p-Indicator">]</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last"><strong>Sponge</strong> - Add the following tag to your mcmod.info if your plugin <strong>requires</strong> PetBlocks to work.</p>
+</div>
+<div class="highlight-java"><div class="highlight"><pre><span></span><span class="s">&quot;requiredMods&quot;</span><span class="o">:</span> <span class="o">[</span>
+   <span class="s">&quot;petblocks&quot;</span>
+<span class="o">]</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="working-with-the-petblocks-api">
+<h2>Working with the PetBlocks API<a class="headerlink" href="#working-with-the-petblocks-api" title="Permalink to this headline">¶</a></h2>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last"><strong>Configuration</strong> - Bukkit/Sponge - Accessing the stored configuration.</p>
+</div>
+<div class="highlight-java"><div class="highlight"><pre><span></span><span class="n">String</span> <span class="n">path</span> <span class="o">=</span> <span class="s">&quot;pet.design.max-petname-length&quot;</span><span class="o">;</span>
+
+<span class="n">ConfigurationService</span> <span class="n">configurationService</span> <span class="o">=</span> <span class="n">PetBlocksApi</span><span class="o">.</span><span class="na">INSTANCE</span><span class="o">.</span><span class="na">resolve</span><span class="o">(</span><span class="n">ConfigurationService</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
+<span class="kt">int</span> <span class="n">length</span> <span class="o">=</span> <span class="n">configurationService</span><span class="o">.</span><span class="na">findValue</span><span class="o">(</span><span class="n">path</span><span class="o">);</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last"><strong>GUI</strong> - Bukkit/Sponge - Using the GUI.</p>
+</div>
+<div class="highlight-java"><div class="highlight"><pre><span></span><span class="n">Player</span> <span class="n">player</span><span class="o">;</span> <span class="c1">// Any player instance</span>
+<span class="kd">final</span> <span class="n">GUIService</span> <span class="n">guiService</span> <span class="o">=</span> <span class="n">PetBlocksApi</span><span class="o">.</span><span class="na">INSTANCE</span><span class="o">.</span><span class="na">resolve</span><span class="o">(</span><span class="n">GUIService</span><span class="o">.</span><span class="na">class</span><span class="o">)</span>
+
+<span class="n">guiService</span><span class="o">.</span><span class="na">open</span><span class="o">(</span><span class="n">player</span><span class="o">);</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last"><strong>Scripts</strong> - Bukkit/Sponge - Parsing GUI scripts.</p>
+</div>
+<div class="highlight-java"><div class="highlight"><pre><span></span><span class="n">Inventory</span> <span class="n">inventory</span><span class="o">;</span> <span class="c1">// Any inventory instance.</span>
+<span class="n">String</span> <span class="n">script</span> <span class="o">=</span> <span class="s">&quot;binding collection minecraft-heads-com.pet petblocks.selection.petcostumes&quot;</span><span class="o">;</span>
+
+<span class="n">GUIScriptService</span> <span class="n">guiScriptService</span> <span class="o">=</span> <span class="n">PetBlocksApi</span><span class="o">.</span><span class="na">INSTANCE</span><span class="o">.</span><span class="na">resolve</span><span class="o">(</span><span class="n">GUIScriptService</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
+<span class="n">ScriptResult</span> <span class="n">scriptResult</span> <span class="o">=</span> <span class="n">guiScriptService</span><span class="o">.</span><span class="na">executeScript</span><span class="o">(</span><span class="n">inventory</span><span class="o">,</span> <span class="n">script</span><span class="o">);</span>
+
+<span class="k">if</span> <span class="o">(</span><span class="n">scriptResult</span><span class="o">.</span><span class="na">getAction</span><span class="o">()</span> <span class="o">==</span> <span class="n">ScriptAction</span><span class="o">.</span><span class="na">LOAD_COLLECTION</span><span class="o">)</span> <span class="o">{</span>
+      <span class="c1">// Parsed script is a loaded collection.</span>
 <span class="o">}</span>
 </pre></div>
 </div>
-<p><strong>(Sponge) Maven</strong>:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">dependency</span><span class="o">&gt;</span>
-     <span class="o">&lt;</span><span class="n">groupId</span><span class="o">&gt;</span><span class="n">com</span><span class="o">.</span><span class="n">github</span><span class="o">.</span><span class="n">shynixn</span><span class="o">.</span><span class="n">petblocks</span><span class="o">&lt;/</span><span class="n">groupId</span><span class="o">&gt;</span>
-     <span class="o">&lt;</span><span class="n">artifactId</span><span class="o">&gt;</span><span class="n">petblocks</span><span class="o">-</span><span class="n">api</span><span class="o">&lt;/</span><span class="n">artifactId</span><span class="o">&gt;</span>
-     <span class="o">&lt;</span><span class="n">version</span><span class="o">&gt;</span><span class="mf">7.2</span><span class="o">.</span><span class="mi">2</span><span class="o">&lt;/</span><span class="n">version</span><span class="o">&gt;</span>
-     <span class="o">&lt;</span><span class="n">scope</span><span class="o">&gt;</span><span class="n">provided</span><span class="o">&lt;/</span><span class="n">scope</span><span class="o">&gt;</span>
- <span class="o">&lt;/</span><span class="n">dependency</span><span class="o">&gt;</span>
- <span class="o">&lt;</span><span class="n">dependency</span><span class="o">&gt;</span>
-     <span class="o">&lt;</span><span class="n">groupId</span><span class="o">&gt;</span><span class="n">com</span><span class="o">.</span><span class="n">github</span><span class="o">.</span><span class="n">shynixn</span><span class="o">.</span><span class="n">petblocks</span><span class="o">&lt;/</span><span class="n">groupId</span><span class="o">&gt;</span>
-     <span class="o">&lt;</span><span class="n">artifactId</span><span class="o">&gt;</span><span class="n">petblocks</span><span class="o">-</span><span class="n">sponge</span><span class="o">-</span><span class="n">api</span><span class="o">&lt;/</span><span class="n">artifactId</span><span class="o">&gt;</span>
-     <span class="o">&lt;</span><span class="n">version</span><span class="o">&gt;</span><span class="mf">7.2</span><span class="o">.</span><span class="mi">2</span><span class="o">&lt;/</span><span class="n">version</span><span class="o">&gt;</span>
-     <span class="o">&lt;</span><span class="n">scope</span><span class="o">&gt;</span><span class="n">provided</span><span class="o">&lt;/</span><span class="n">scope</span><span class="o">&gt;</span>
- <span class="o">&lt;/</span><span class="n">dependency</span><span class="o">&gt;</span>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last"><strong>Sounds</strong> - Bukkit/Sponge - Creating and sending sounds.</p>
+</div>
+<div class="highlight-java"><div class="highlight"><pre><span></span><span class="n">Player</span> <span class="n">player</span><span class="o">;</span> <span class="c1">// Any player instance.</span>
+<span class="n">Location</span> <span class="n">location</span><span class="o">;</span> <span class="c1">// Any location instance.</span>
+
+<span class="n">Sound</span> <span class="n">sound</span> <span class="o">=</span> <span class="n">PetBlocksApi</span><span class="o">.</span><span class="na">INSTANCE</span><span class="o">.</span><span class="na">create</span><span class="o">(</span><span class="n">Sound</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
+<span class="n">sound</span><span class="o">.</span><span class="na">setName</span><span class="o">(</span><span class="s">&quot;AMBIENT_CAVE&quot;</span><span class="o">);</span> <span class="c1">// Name of the sound for Minecraft 1.13.</span>
+<span class="n">sound</span><span class="o">.</span><span class="na">setVolume</span><span class="o">(</span><span class="mf">1.0</span><span class="o">);</span>
+<span class="n">sound</span><span class="o">.</span><span class="na">setPitch</span><span class="o">(</span><span class="mf">1.0</span><span class="o">);</span>
+
+<span class="n">SoundService</span> <span class="n">soundService</span> <span class="o">=</span> <span class="n">PetBlocksApi</span><span class="o">.</span><span class="na">INSTANCE</span><span class="o">.</span><span class="na">resolve</span><span class="o">(</span><span class="n">SoundService</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
+<span class="n">soundService</span><span class="o">.</span><span class="na">playSound</span><span class="o">(</span><span class="n">location</span><span class="o">,</span> <span class="n">sound</span><span class="o">,</span> <span class="n">player</span><span class="o">);</span>
 </pre></div>
 </div>
-<p><strong>(Sponge) Gradle</strong>:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">dependencies</span> <span class="p">{</span>
-    <span class="n">compileOnly</span> <span class="s1">&#39;com.github.shynixn.petblocks:petblocks-api:7.2.2&#39;</span>
-    <span class="n">compileOnly</span> <span class="s1">&#39;com.github.shynixn.petblocks:petblocks-sponge-api:7.2.2&#39;</span>
-<span class="p">}</span>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last"><strong>Particles</strong> - Bukkit/Sponge - Creating and sending particles.</p>
+</div>
+<div class="highlight-java"><div class="highlight"><pre><span></span><span class="n">Player</span> <span class="n">player</span><span class="o">;</span> <span class="c1">// Any player instance.</span>
+<span class="n">Location</span> <span class="n">location</span><span class="o">;</span> <span class="c1">// Any location instance.</span>
+
+<span class="n">Particle</span> <span class="n">particle</span> <span class="o">=</span> <span class="n">PetBlocksApi</span><span class="o">.</span><span class="na">INSTANCE</span><span class="o">.</span><span class="na">create</span><span class="o">(</span><span class="n">Particle</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
+<span class="n">particle</span><span class="o">.</span><span class="na">setType</span><span class="o">(</span><span class="n">ParticleType</span><span class="o">.</span><span class="na">PORTAL</span><span class="o">);</span>
+<span class="n">particle</span><span class="o">.</span><span class="na">setSpeed</span><span class="o">(</span><span class="mf">0.1</span><span class="o">);</span>
+<span class="n">particle</span><span class="o">.</span><span class="na">setAmount</span><span class="o">(</span><span class="mi">20</span><span class="o">);</span>
+<span class="n">particle</span><span class="o">.</span><span class="na">setOffSetX</span><span class="o">(</span><span class="mi">5</span><span class="o">);</span>
+<span class="n">particle</span><span class="o">.</span><span class="na">setOffSetY</span><span class="o">(</span><span class="mi">5</span><span class="o">);</span>
+<span class="n">particle</span><span class="o">.</span><span class="na">setOffSetZ</span><span class="o">(</span><span class="mi">5</span><span class="o">);</span>
+
+<span class="n">ParticleService</span> <span class="n">particleService</span> <span class="o">=</span> <span class="n">PetBlocksApi</span><span class="o">.</span><span class="na">INSTANCE</span><span class="o">.</span><span class="na">resolve</span><span class="o">(</span><span class="n">ParticleService</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
+<span class="n">particleService</span><span class="o">.</span><span class="na">playParticle</span><span class="o">(</span><span class="n">location</span><span class="o">,</span> <span class="n">particle</span><span class="o">,</span> <span class="n">player</span><span class="o">);</span>
 </pre></div>
 </div>
-<p><strong>Reference the jar file</strong>:</p>
-<p>If you are not capable of using one of these above you can also manually download the
-api from the <a class="reference external" href="https://oss.sonatype.org/content/repositories/releases/com/github/shynixn/petblocks/">repository</a>  and reference it in your project.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last"><strong>Carry</strong> - Bukkit/Sponge - Let the player carry his pet.</p>
 </div>
-<div class="section" id="registering-your-dependency">
-<h2>Registering your dependency<a class="headerlink" href="#registering-your-dependency" title="Permalink to this headline">¶</a></h2>
-<p><strong>(Bukkit) plugin.yml</strong></p>
-<p>Your plugin optionally uses PetBlocks.</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">softdepend</span><span class="p">:</span> <span class="p">[</span><span class="n">PetBlocks</span><span class="p">]</span>
+<div class="highlight-java"><div class="highlight"><pre><span></span><span class="n">Player</span> <span class="n">player</span><span class="o">;</span> <span class="c1">// Any player instance</span>
+
+<span class="n">CarryPetService</span> <span class="n">carryPetService</span> <span class="o">=</span> <span class="n">PetBlocksApi</span><span class="o">.</span><span class="na">INSTANCE</span><span class="o">.</span><span class="na">resolve</span><span class="o">(</span><span class="n">CarryPetService</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
+<span class="n">carryPetService</span><span class="o">.</span><span class="na">carryPet</span><span class="o">(</span><span class="n">player</span><span class="o">);</span>
 </pre></div>
 </div>
-<p>Your plugin requires PetBlocks to work.</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">depend</span><span class="p">:</span> <span class="p">[</span><span class="n">PetBlocks</span><span class="p">]</span>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last"><strong>Feeding</strong> - Bukkit/Sponge - Execute the feeding effect.</p>
+</div>
+<div class="highlight-java"><div class="highlight"><pre><span></span><span class="n">Player</span> <span class="n">player</span><span class="o">;</span> <span class="c1">// Any player instance</span>
+
+<span class="n">FeedingPetService</span> <span class="n">feedingPetService</span> <span class="o">=</span> <span class="n">PetBlocksApi</span><span class="o">.</span><span class="na">INSTANCE</span><span class="o">.</span><span class="na">resolve</span><span class="o">(</span><span class="n">FeedingPetService</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
+<span class="n">feedingPetService</span><span class="o">.</span><span class="na">feedPet</span><span class="o">(</span><span class="n">player</span><span class="o">);</span>
 </pre></div>
 </div>
-<p><strong>(Sponge) mcmod.info</strong></p>
-<p>Your plugin optionally uses PetBlocks.</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="s2">&quot;dependencies&quot;</span><span class="p">:</span> <span class="p">[</span>
-   <span class="s2">&quot;petblocks&quot;</span>
-<span class="p">]</span>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last"><strong>WorldGuard</strong> - Bukkit - Accessing the WorldGuard dependency.</p>
+</div>
+<div class="highlight-java"><div class="highlight"><pre><span></span><span class="n">Location</span> <span class="n">location</span><span class="o">;</span> <span class="c1">// Any location instance.</span>
+
+<span class="n">DependencyService</span> <span class="n">dependencyService</span> <span class="o">=</span> <span class="n">PetBlocksApi</span><span class="o">.</span><span class="na">INSTANCE</span><span class="o">.</span><span class="na">resolve</span><span class="o">(</span><span class="n">DependencyService</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
+
+<span class="k">if</span> <span class="o">(</span><span class="n">dependencyService</span><span class="o">.</span><span class="na">isInstalled</span><span class="o">(</span><span class="n">PluginDependency</span><span class="o">.</span><span class="na">WORLDGUARD</span><span class="o">))</span> <span class="o">{</span>
+     <span class="n">DependencyWorldGuardService</span> <span class="n">dependencyWorldGuardService</span> <span class="o">=</span> <span class="n">PetBlocksApi</span><span class="o">.</span><span class="na">INSTANCE</span><span class="o">.</span><span class="na">resolve</span><span class="o">(</span><span class="n">DependencyWorldGuardService</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
+     <span class="n">dependencyWorldGuardService</span><span class="o">.</span><span class="na">prepareSpawningRegion</span><span class="o">(</span><span class="n">location</span><span class="o">);</span>
+<span class="o">}</span>
 </pre></div>
 </div>
-<p>Your plugin requires PetBlocks to work.</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="s2">&quot;requiredMods&quot;</span><span class="p">:</span> <span class="p">[</span>
-   <span class="s2">&quot;petblocks&quot;</span>
-<span class="p">]</span>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last"><strong>Updates</strong> - Bukkit/Sponge - Checking for updates.</p>
+</div>
+<div class="highlight-java"><div class="highlight"><pre><span></span><span class="n">UpdateCheckService</span> <span class="n">updateCheckService</span> <span class="o">=</span> <span class="n">PetBlocksApi</span><span class="o">.</span><span class="na">INSTANCE</span><span class="o">.</span><span class="na">resolve</span><span class="o">(</span><span class="n">UpdateCheckService</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
+
+<span class="n">updateCheckService</span><span class="o">.</span><span class="na">checkForUpdates</span><span class="o">();</span>
 </pre></div>
 </div>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">Accessing the PetMeta and PetBlock is not stable via this API. This is going to be replaced by services in the future.</p>
 </div>
-<div class="section" id="modifying-petmeta-and-petblock">
-<h2>Modifying PetMeta and PetBlock<a class="headerlink" href="#modifying-petmeta-and-petblock" title="Permalink to this headline">¶</a></h2>
 <p><strong>(Bukkit) Creating a new PetMeta for a player:</strong></p>
 <div class="highlight-java"><div class="highlight"><pre><span></span><span class="n">Player</span> <span class="n">player</span><span class="o">;</span> <span class="c1">//Any player instance</span>
 <span class="n">Plugin</span> <span class="n">plugin</span><span class="o">;</span> <span class="c1">//Any plugin instance</span>
@@ -425,123 +561,6 @@ you need to manage asynchronous and synchronous server tasks.</p>
 </pre></div>
 </div>
 </div>
-<div class="section" id="accessing-business-logic">
-<h2>Accessing Business Logic<a class="headerlink" href="#accessing-business-logic" title="Permalink to this headline">¶</a></h2>
-<p>The PetBlocks plugin allows to access some parts of the Business Logic.</p>
-<div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last"><strong>Configuration</strong> - Bukkit/Sponge - Accessing the stored configuration.</p>
-</div>
-<div class="highlight-java"><div class="highlight"><pre><span></span><span class="n">String</span> <span class="n">path</span> <span class="o">=</span> <span class="s">&quot;pet.design.max-petname-length&quot;</span><span class="o">;</span>
-
-<span class="n">ConfigurationService</span> <span class="n">configurationService</span> <span class="o">=</span> <span class="n">PetBlocksApi</span><span class="o">.</span><span class="na">INSTANCE</span><span class="o">.</span><span class="na">resolve</span><span class="o">(</span><span class="n">ConfigurationService</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
-<span class="kt">int</span> <span class="n">length</span> <span class="o">=</span> <span class="n">configurationService</span><span class="o">.</span><span class="na">findValue</span><span class="o">(</span><span class="n">path</span><span class="o">);</span>
-</pre></div>
-</div>
-<div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last"><strong>GUI</strong> - Bukkit/Sponge - Using the GUI.</p>
-</div>
-<div class="highlight-java"><div class="highlight"><pre><span></span><span class="n">Player</span> <span class="n">player</span><span class="o">;</span> <span class="c1">// Any player instance</span>
-<span class="kd">final</span> <span class="n">GUIService</span> <span class="n">guiService</span> <span class="o">=</span> <span class="n">PetBlocksApi</span><span class="o">.</span><span class="na">INSTANCE</span><span class="o">.</span><span class="na">resolve</span><span class="o">(</span><span class="n">GUIService</span><span class="o">.</span><span class="na">class</span><span class="o">)</span>
-
-<span class="n">guiService</span><span class="o">.</span><span class="na">open</span><span class="o">(</span><span class="n">player</span><span class="o">);</span>
-</pre></div>
-</div>
-<div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last"><strong>Scripts</strong> - Bukkit/Sponge - Parsing GUI scripts.</p>
-</div>
-<div class="highlight-java"><div class="highlight"><pre><span></span><span class="n">Inventory</span> <span class="n">inventory</span><span class="o">;</span> <span class="c1">// Any inventory instance.</span>
-<span class="n">String</span> <span class="n">script</span> <span class="o">=</span> <span class="s">&quot;binding collection minecraft-heads-com.pet petblocks.selection.petcostumes&quot;</span><span class="o">;</span>
-
-<span class="n">GUIScriptService</span> <span class="n">guiScriptService</span> <span class="o">=</span> <span class="n">PetBlocksApi</span><span class="o">.</span><span class="na">INSTANCE</span><span class="o">.</span><span class="na">resolve</span><span class="o">(</span><span class="n">GUIScriptService</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
-<span class="n">ScriptResult</span> <span class="n">scriptResult</span> <span class="o">=</span> <span class="n">guiScriptService</span><span class="o">.</span><span class="na">executeScript</span><span class="o">(</span><span class="n">inventory</span><span class="o">,</span> <span class="n">script</span><span class="o">);</span>
-
-<span class="k">if</span> <span class="o">(</span><span class="n">scriptResult</span><span class="o">.</span><span class="na">getAction</span><span class="o">()</span> <span class="o">==</span> <span class="n">ScriptAction</span><span class="o">.</span><span class="na">LOAD_COLLECTION</span><span class="o">)</span> <span class="o">{</span>
-      <span class="c1">// Parsed script is a loaded collection.</span>
-<span class="o">}</span>
-</pre></div>
-</div>
-<div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last"><strong>Sounds</strong> - Bukkit/Sponge - Creating and sending sounds.</p>
-</div>
-<div class="highlight-java"><div class="highlight"><pre><span></span><span class="n">Player</span> <span class="n">player</span><span class="o">;</span> <span class="c1">// Any player instance.</span>
-<span class="n">Location</span> <span class="n">location</span><span class="o">;</span> <span class="c1">// Any location instance.</span>
-
-<span class="n">Sound</span> <span class="n">sound</span> <span class="o">=</span> <span class="n">PetBlocksApi</span><span class="o">.</span><span class="na">INSTANCE</span><span class="o">.</span><span class="na">create</span><span class="o">(</span><span class="n">Sound</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
-<span class="n">sound</span><span class="o">.</span><span class="na">setName</span><span class="o">(</span><span class="s">&quot;AMBIENT_CAVE&quot;</span><span class="o">);</span> <span class="c1">// Name of the sound for Minecraft 1.13.</span>
-<span class="n">sound</span><span class="o">.</span><span class="na">setVolume</span><span class="o">(</span><span class="mf">1.0</span><span class="o">);</span>
-<span class="n">sound</span><span class="o">.</span><span class="na">setPitch</span><span class="o">(</span><span class="mf">1.0</span><span class="o">);</span>
-
-<span class="n">SoundService</span> <span class="n">soundService</span> <span class="o">=</span> <span class="n">PetBlocksApi</span><span class="o">.</span><span class="na">INSTANCE</span><span class="o">.</span><span class="na">resolve</span><span class="o">(</span><span class="n">SoundService</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
-<span class="n">soundService</span><span class="o">.</span><span class="na">playSound</span><span class="o">(</span><span class="n">location</span><span class="o">,</span> <span class="n">sound</span><span class="o">,</span> <span class="n">player</span><span class="o">);</span>
-</pre></div>
-</div>
-<div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last"><strong>Particles</strong> - Bukkit/Sponge - Creating and sending particles.</p>
-</div>
-<div class="highlight-java"><div class="highlight"><pre><span></span><span class="n">Player</span> <span class="n">player</span><span class="o">;</span> <span class="c1">// Any player instance.</span>
-<span class="n">Location</span> <span class="n">location</span><span class="o">;</span> <span class="c1">// Any location instance.</span>
-
-<span class="n">Particle</span> <span class="n">particle</span> <span class="o">=</span> <span class="n">PetBlocksApi</span><span class="o">.</span><span class="na">INSTANCE</span><span class="o">.</span><span class="na">create</span><span class="o">(</span><span class="n">Particle</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
-<span class="n">particle</span><span class="o">.</span><span class="na">setType</span><span class="o">(</span><span class="n">ParticleType</span><span class="o">.</span><span class="na">PORTAL</span><span class="o">);</span>
-<span class="n">particle</span><span class="o">.</span><span class="na">setSpeed</span><span class="o">(</span><span class="mf">0.1</span><span class="o">);</span>
-<span class="n">particle</span><span class="o">.</span><span class="na">setAmount</span><span class="o">(</span><span class="mi">20</span><span class="o">);</span>
-<span class="n">particle</span><span class="o">.</span><span class="na">setOffSetX</span><span class="o">(</span><span class="mi">5</span><span class="o">);</span>
-<span class="n">particle</span><span class="o">.</span><span class="na">setOffSetY</span><span class="o">(</span><span class="mi">5</span><span class="o">);</span>
-<span class="n">particle</span><span class="o">.</span><span class="na">setOffSetZ</span><span class="o">(</span><span class="mi">5</span><span class="o">);</span>
-
-<span class="n">ParticleService</span> <span class="n">particleService</span> <span class="o">=</span> <span class="n">PetBlocksApi</span><span class="o">.</span><span class="na">INSTANCE</span><span class="o">.</span><span class="na">resolve</span><span class="o">(</span><span class="n">ParticleService</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
-<span class="n">particleService</span><span class="o">.</span><span class="na">playParticle</span><span class="o">(</span><span class="n">location</span><span class="o">,</span> <span class="n">particle</span><span class="o">,</span> <span class="n">player</span><span class="o">);</span>
-</pre></div>
-</div>
-<div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last"><strong>Carry</strong> - Bukkit/Sponge - Let the player carry his pet.</p>
-</div>
-<div class="highlight-java"><div class="highlight"><pre><span></span><span class="n">Player</span> <span class="n">player</span><span class="o">;</span> <span class="c1">// Any player instance</span>
-
-<span class="n">CarryPetService</span> <span class="n">carryPetService</span> <span class="o">=</span> <span class="n">PetBlocksApi</span><span class="o">.</span><span class="na">INSTANCE</span><span class="o">.</span><span class="na">resolve</span><span class="o">(</span><span class="n">CarryPetService</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
-<span class="n">carryPetService</span><span class="o">.</span><span class="na">carryPet</span><span class="o">(</span><span class="n">player</span><span class="o">);</span>
-</pre></div>
-</div>
-<div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last"><strong>Feeding</strong> - Bukkit/Sponge - Execute the feeding effect.</p>
-</div>
-<div class="highlight-java"><div class="highlight"><pre><span></span><span class="n">Player</span> <span class="n">player</span><span class="o">;</span> <span class="c1">// Any player instance</span>
-
-<span class="n">FeedingPetService</span> <span class="n">feedingPetService</span> <span class="o">=</span> <span class="n">PetBlocksApi</span><span class="o">.</span><span class="na">INSTANCE</span><span class="o">.</span><span class="na">resolve</span><span class="o">(</span><span class="n">FeedingPetService</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
-<span class="n">feedingPetService</span><span class="o">.</span><span class="na">feedPet</span><span class="o">(</span><span class="n">player</span><span class="o">);</span>
-</pre></div>
-</div>
-<div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last"><strong>WorldGuard</strong> - Bukkit - Accessing the WorldGuard dependency.</p>
-</div>
-<div class="highlight-java"><div class="highlight"><pre><span></span><span class="n">Location</span> <span class="n">location</span><span class="o">;</span> <span class="c1">// Any location instance.</span>
-
-<span class="n">DependencyService</span> <span class="n">dependencyService</span> <span class="o">=</span> <span class="n">PetBlocksApi</span><span class="o">.</span><span class="na">INSTANCE</span><span class="o">.</span><span class="na">resolve</span><span class="o">(</span><span class="n">DependencyService</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
-
-<span class="k">if</span> <span class="o">(</span><span class="n">dependencyService</span><span class="o">.</span><span class="na">isInstalled</span><span class="o">(</span><span class="n">PluginDependency</span><span class="o">.</span><span class="na">WORLDGUARD</span><span class="o">))</span> <span class="o">{</span>
-     <span class="n">DependencyWorldGuardService</span> <span class="n">dependencyWorldGuardService</span> <span class="o">=</span> <span class="n">PetBlocksApi</span><span class="o">.</span><span class="na">INSTANCE</span><span class="o">.</span><span class="na">resolve</span><span class="o">(</span><span class="n">DependencyWorldGuardService</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
-     <span class="n">dependencyWorldGuardService</span><span class="o">.</span><span class="na">prepareSpawningRegion</span><span class="o">(</span><span class="n">location</span><span class="o">);</span>
-<span class="o">}</span>
-</pre></div>
-</div>
-<div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last"><strong>Updates</strong> - Bukkit/Sponge - Checking for updates.</p>
-</div>
-<div class="highlight-java"><div class="highlight"><pre><span></span><span class="n">UpdateCheckService</span> <span class="n">updateCheckService</span> <span class="o">=</span> <span class="n">PetBlocksApi</span><span class="o">.</span><span class="na">INSTANCE</span><span class="o">.</span><span class="na">resolve</span><span class="o">(</span><span class="n">UpdateCheckService</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
-
-<span class="n">updateCheckService</span><span class="o">.</span><span class="na">checkForUpdates</span><span class="o">();</span>
-</pre></div>
-</div>
-</div>
 <div class="section" id="listen-to-events">
 <h2>Listen to Events<a class="headerlink" href="#listen-to-events" title="Permalink to this headline">¶</a></h2>
 <p>There are many PetBlock events in order to listen to actions. Please take a look into the <a class="reference external" href="https://shynixn.github.io/PetBlocks/apidocs/">JavaDocs</a>  for all events.</p>
@@ -580,7 +599,7 @@ you need to manage asynchronous and synchronous server tasks.</p>
 </div>
 <ul class="simple">
 <li>Fork the PetBlocks project on github and clone it to your local environment.</li>
-<li>Use BuildTools.jar from spigotmc.org to build to following dependencies.</li>
+<li>Use BuildTools.jar from spigotmc.org to build the following dependencies.</li>
 </ul>
 <div class="highlight-java"><div class="highlight"><pre><span></span><span class="o">-</span> <span class="n">java</span> <span class="o">-</span><span class="n">jar</span> <span class="n">BuildTools</span><span class="o">.</span><span class="na">jar</span> <span class="o">--</span><span class="n">rev</span> <span class="mf">1.8</span>
 <span class="o">-</span> <span class="n">java</span> <span class="o">-</span><span class="n">jar</span> <span class="n">BuildTools</span><span class="o">.</span><span class="na">jar</span> <span class="o">--</span><span class="n">rev</span> <span class="mf">1.8.3</span>
@@ -591,7 +610,7 @@ you need to manage asynchronous and synchronous server tasks.</p>
 <span class="o">-</span> <span class="n">java</span> <span class="o">-</span><span class="n">jar</span> <span class="n">BuildTools</span><span class="o">.</span><span class="na">jar</span> <span class="o">--</span><span class="n">rev</span> <span class="mf">1.11</span>
 <span class="o">-</span> <span class="n">java</span> <span class="o">-</span><span class="n">jar</span> <span class="n">BuildTools</span><span class="o">.</span><span class="na">jar</span> <span class="o">--</span><span class="n">rev</span> <span class="mf">1.12</span>
 <span class="o">-</span> <span class="n">java</span> <span class="o">-</span><span class="n">jar</span> <span class="n">BuildTools</span><span class="o">.</span><span class="na">jar</span> <span class="o">--</span><span class="n">rev</span> <span class="mf">1.13</span>
-<span class="o">-</span> <span class="n">java</span> <span class="o">-</span><span class="n">jar</span> <span class="n">BuildTools</span><span class="o">.</span><span class="na">jar</span> <span class="o">--</span><span class="n">rev</span> <span class="mf">1.13.1</span> <span class="o">&gt;</span> <span class="o">/</span><span class="n">dev</span><span class="o">/</span><span class="kc">null</span>
+<span class="o">-</span> <span class="n">java</span> <span class="o">-</span><span class="n">jar</span> <span class="n">BuildTools</span><span class="o">.</span><span class="na">jar</span> <span class="o">--</span><span class="n">rev</span> <span class="mf">1.13.1</span>
 </pre></div>
 </div>
 <ul class="simple">
@@ -671,7 +690,7 @@ you need to manage asynchronous and synchronous server tasks.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'7.2.2',
+            VERSION:'7.3.0',
             LANGUAGE:'None',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',

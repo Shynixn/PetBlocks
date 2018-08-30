@@ -23,7 +23,7 @@ Spigot/Sponge
 SpongeForge
 ~~~~~~~~~~~
 
-PetBlocks v7.2.2 was tested with the following configuration:
+PetBlocks |version| was tested with the following configuration:
 
 * Minecraft Forge **1.12.2 - 14.23.4.2705** (Server + Client)
 * SpongeForge **1.12.2-2705-7.1.0-BETA-3361**
@@ -49,14 +49,3 @@ to check the signature or download the javadocs from the `repository <https://os
 * Use the **PetBlocks-Sponge.jar** for SpongeVanilla and SpongeForge.
 
 If you always want to be the first person to test the latest features, you can also download `snapshots <https://oss.sonatype.org/content/repositories/snapshots/com/github/shynixn/petblocks/>`__ for future versions.
-
-
-
-
-
-
-
-
-
-
-
