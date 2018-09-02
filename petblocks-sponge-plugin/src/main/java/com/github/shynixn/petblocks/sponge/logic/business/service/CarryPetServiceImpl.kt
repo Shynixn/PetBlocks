@@ -53,7 +53,7 @@ class CarryPetServiceImpl @Inject constructor(private val plugin: PluginContaine
      */
     override fun <P> carryPet(player: P) {
         if (player !is Player) {
-            throw IllegalArgumentException("Player has to be a BukkitPlayer!")
+            throw IllegalArgumentException("Player has to be a SpongePlayer!")
         }
 
         val allowCarry = configurationService.findValue<Boolean>("pet.follow.carry")
@@ -84,7 +84,7 @@ class CarryPetServiceImpl @Inject constructor(private val plugin: PluginContaine
      */
     override fun <P> dropPet(player: P): CompletableFuture<Void> {
         if (player !is Player) {
-            throw IllegalArgumentException("Player has to be a BukkitPlayer!")
+            throw IllegalArgumentException("Player has to be a SpongePlayer!")
         }
 
         val completableFuture = CompletableFuture<Void>()
@@ -116,7 +116,7 @@ class CarryPetServiceImpl @Inject constructor(private val plugin: PluginContaine
      */
     override fun <P> throwPet(player: P): CompletableFuture<Void> {
         if (player !is Player) {
-            throw IllegalArgumentException("Player has to be a BukkitPlayer!")
+            throw IllegalArgumentException("Player has to be a SpongePlayer!")
         }
 
         val completableFuture = CompletableFuture<Void>()
@@ -141,7 +141,7 @@ class CarryPetServiceImpl @Inject constructor(private val plugin: PluginContaine
      */
     override fun <P, I> getCarryPetItemStack(player: P): Optional<I> {
         if (player !is Player) {
-            throw IllegalArgumentException("Player has to be a BukkitPlayer!")
+            throw IllegalArgumentException("Player has to be a SpongePlayer!")
         }
 
         return if (isCarryingPet(player)) {
@@ -156,7 +156,7 @@ class CarryPetServiceImpl @Inject constructor(private val plugin: PluginContaine
      */
     override fun <P> isCarryingPet(player: P): Boolean {
         if (player !is Player) {
-            throw IllegalArgumentException("Player has to be a BukkitPlayer!")
+            throw IllegalArgumentException("Player has to be a SpongePlayer!")
         }
 
         return carryingPet.containsKey(player)
@@ -167,7 +167,7 @@ class CarryPetServiceImpl @Inject constructor(private val plugin: PluginContaine
      */
     override fun <P> clearResources(player: P) {
         if (player !is Player) {
-            throw IllegalArgumentException("Player has to be a BukkitPlayer!")
+            throw IllegalArgumentException("Player has to be a SpongePlayer!")
         }
 
         dropPet(player)

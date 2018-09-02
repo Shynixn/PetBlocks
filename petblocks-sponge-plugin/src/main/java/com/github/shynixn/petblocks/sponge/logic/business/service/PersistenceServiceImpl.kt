@@ -50,7 +50,7 @@ class PersistenceServiceImpl @Inject constructor(private val plugin: PluginConta
      */
     override fun <P> getOrCreateFromPlayer(player: P): CompletableFuture<PetMeta> {
         if (player !is Player) {
-            throw IllegalArgumentException("Player has to be an BukkitPlayer!")
+            throw IllegalArgumentException("Player has to be an SpongePlayer!")
         }
 
         initializeDependencies()
@@ -123,7 +123,7 @@ class PersistenceServiceImpl @Inject constructor(private val plugin: PluginConta
      */
     override fun <P> getFromPlayer(player: P): CompletableFuture<Optional<PetMeta>> {
         if (player !is Player) {
-            throw IllegalArgumentException("Player has to be an BukkitPlayer!")
+            throw IllegalArgumentException("Player has to be an SpongePlayer!")
         }
 
         initializeDependencies()

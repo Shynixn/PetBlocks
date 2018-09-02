@@ -128,7 +128,7 @@ class CarryPetListener @Inject constructor(private val carryPetService: CarryPet
      */
     @Listener
     fun onPlayerDeathEvent(event: DestructEntityEvent.Death) {
-        if (carryPetService.isCarryingPet(event.targetEntity)) {
+        if (event.targetEntity is Player && carryPetService.isCarryingPet(event.targetEntity)) {
             carryPetService.dropPet(event.targetEntity)
         }
     }
@@ -138,9 +138,7 @@ class CarryPetListener @Inject constructor(private val carryPetService: CarryPet
      */
     @Listener
     fun onPlayerQuitEvent(event: ClientConnectionEvent.Disconnect) {
-        if (carryPetService.isCarryingPet(event.targetEntity)) {
-            carryPetService.clearResources(event.targetEntity)
-        }
+        carryPetService.clearResources(event.targetEntity)
     }
 
     /**

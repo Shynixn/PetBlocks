@@ -241,7 +241,7 @@ class ConfigurationServiceImpl @Inject constructor(private val plugin: PluginCon
      */
     override fun <I> findClickedGUIItem(item: I): Optional<GUIItem> {
         if (item !is ItemStack) {
-            throw IllegalArgumentException("Item has to be an BukkitItemStack")
+            throw IllegalArgumentException("Item has to be an SpongeItemStack!")
         }
 
         guiItemsController.all.forEach { i ->
