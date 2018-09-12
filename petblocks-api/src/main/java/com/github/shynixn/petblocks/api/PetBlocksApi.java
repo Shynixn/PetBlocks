@@ -1,7 +1,7 @@
 package com.github.shynixn.petblocks.api;
 
 import com.github.shynixn.petblocks.api.business.controller.PetBlockController;
-import com.github.shynixn.petblocks.api.business.entity.PetBlocksPlugin;
+import com.github.shynixn.petblocks.api.business.proxy.PluginProxy;
 import com.github.shynixn.petblocks.api.persistence.controller.PetMetaController;
 
 /**
@@ -36,12 +36,12 @@ public class PetBlocksApi {
     private static PetMetaController metaController;
     private static PetBlockController petBlockController;
     public static final PetBlocksApi INSTANCE = new PetBlocksApi();
-    private static PetBlocksPlugin plugin;
+    private static PluginProxy plugin;
 
     /**
      * Initializes the api.
      */
-    private static void initialize(PetMetaController petMetaController, PetBlockController petBlockController, PetBlocksPlugin plugin) {
+    private static void initialize(PetMetaController petMetaController, PetBlockController petBlockController, PluginProxy plugin) {
         PetBlocksApi.metaController = petMetaController;
         PetBlocksApi.petBlockController = petBlockController;
         PetBlocksApi.plugin = plugin;

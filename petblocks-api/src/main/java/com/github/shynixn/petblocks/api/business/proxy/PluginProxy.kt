@@ -1,8 +1,4 @@
-package com.github.shynixn.petblocks.core.logic.persistence.entity
-
-import com.github.shynixn.petblocks.api.business.entity.ScriptResult
-import com.github.shynixn.petblocks.api.business.enumeration.ScriptAction
-import java.util.*
+package com.github.shynixn.petblocks.api.business.proxy
 
 /**
  * Created by Shynixn 2018.
@@ -31,22 +27,17 @@ import java.util.*
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class ScriptResultImpl : ScriptResult {
+interface PluginProxy {
     /**
-     * Storage for additional values.
+     * Gets a business logic from the PetBlocks plugin.
+     * All types in the service package can be accessed.
+     * Throws a [IllegalArgumentException] if the service could not be found.
      */
-    override var valueContainer: Optional<Any> = Optional.empty()
-    /**
-     * Returns the optional parsed permission for the [ScriptAction].
-     */
-    override var permission: Optional<String> = Optional.empty()
-    /**
-     * Returns the [ScriptAction] which should be executed.
-     */
-    override var action: ScriptAction = ScriptAction.NONE
+    fun <S> resolve(service: Class<S>): S
 
     /**
-     * Returns the optional parsed path for the [ScriptAction].
+     * Creates a new entity from the given [entity].
+     * Throws a [IllegalArgumentException] if the entity could not be found.
      */
-    override var path: Optional<String> = Optional.empty()
+    fun <E> create(entity: Class<E>): E
 }

@@ -4,14 +4,17 @@ import com.github.shynixn.petblocks.api.business.entity.GUIItemContainer;
 import com.github.shynixn.petblocks.api.business.entity.PetBlock;
 import com.github.shynixn.petblocks.api.business.enumeration.ChatClickAction;
 import com.github.shynixn.petblocks.api.business.enumeration.ChatColor;
+import com.github.shynixn.petblocks.api.business.service.MessageService;
 import com.github.shynixn.petblocks.api.persistence.entity.ChatMessage;
 import com.github.shynixn.petblocks.api.persistence.entity.EngineContainer;
 import com.github.shynixn.petblocks.api.persistence.entity.PetMeta;
 import com.github.shynixn.petblocks.core.logic.business.entity.PetRunnable;
 import com.github.shynixn.petblocks.core.logic.business.extension.ExtensionMethodKt;
 import com.github.shynixn.petblocks.core.logic.persistence.configuration.Config;
+import com.github.shynixn.petblocks.core.logic.persistence.entity.ChatMessageEntity;
 import com.github.shynixn.petblocks.sponge.logic.business.PetBlocksManager;
 import com.github.shynixn.petblocks.sponge.logic.business.helper.ExtensionMethodsKt;
+import com.github.shynixn.petblocks.sponge.logic.business.service.MessageServiceImpl;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import kotlin.Pair;
@@ -38,6 +41,8 @@ public final class PetBlockCommandExecutor extends SimpleCommandExecutor {
 
     @Inject
     private PetBlocksManager manager;
+
+    private final MessageService messageService = new MessageServiceImpl();
 
     @Inject
     public PetBlockCommandExecutor(PluginContainer pluginContainer) {
@@ -241,22 +246,13 @@ public final class PetBlockCommandExecutor extends SimpleCommandExecutor {
                 fullCommand = fullCommand.substring(0, fullCommand.indexOf("-"));
             }
 
-            String finalFullCommand = fullCommand;
-            final ChatMessage internalMessage = ExtensionMethodKt.chatMessage(chatMessage -> {
-                chatMessage.component(chatMessageComponent -> {
-                    chatMessageComponent.text(chatMessage1 -> Config.getInstance().getPrefix() + this.getCommandName() + message);
-                    chatMessageComponent.clickAction(chatMessageComponent12 -> new Pair(ChatClickAction.SUGGEST_COMMAND, finalFullCommand));
-                    chatMessageComponent.hover(chatMessageComponent1 -> {
-                        chatMessageComponent1.text(chatMessage12 -> builder.toString());
-                        return Unit.INSTANCE;
-                    });
-                    return Unit.INSTANCE;
-                });
+            final String finalFullCommand = fullCommand;
+            final ChatMessage internalMessage = new ChatMessageEntity().appendComponent()
+                    .append(Config.getInstance().getPrefix() + this.getCommandName() + message)
+                    .setClickAction(ChatClickAction.SUGGEST_COMMAND, finalFullCommand)
+                    .appendHoverComponent().append(builder.toString()).getRoot();
 
-                return Unit.INSTANCE;
-            });
-
-            ExtensionMethodsKt.sendMessage((Player) commandSender, internalMessage);
+            this.messageService.sendPlayerMessage(commandSender, internalMessage);
         } else {
             ExtensionMethodsKt.sendMessage(commandSender, Config.getInstance().getPrefix() + '/' + this.getName() + ' ' + message);
         }

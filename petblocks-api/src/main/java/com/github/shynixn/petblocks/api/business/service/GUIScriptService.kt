@@ -1,6 +1,6 @@
 package com.github.shynixn.petblocks.api.business.service
 
-import com.github.shynixn.petblocks.api.business.entity.ScriptResult
+import com.github.shynixn.petblocks.api.persistence.entity.ScriptResult
 
 /**
  * Created by Shynixn 2018.

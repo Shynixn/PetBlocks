@@ -3,6 +3,7 @@ package unittest
 import com.github.shynixn.petblocks.api.business.enumeration.PluginDependency
 import com.github.shynixn.petblocks.api.business.service.DependencyService
 import com.github.shynixn.petblocks.api.business.service.MessageService
+import com.github.shynixn.petblocks.api.persistence.entity.ChatMessage
 import com.github.shynixn.petblocks.sponge.logic.business.service.DependencyServiceImpl
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
@@ -210,6 +211,13 @@ class DependencyServiceTest {
          */
         override fun sendConsoleMessage(message: String) {
             messageCounter++
+        }
+
+        /**
+         * Sends the given [chatMessage] to the given [player].
+         */
+        override fun <P> sendPlayerMessage(player: P, chatMessage: ChatMessage) {
+            throw IllegalArgumentException()
         }
     }
 }

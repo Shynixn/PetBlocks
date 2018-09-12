@@ -1,5 +1,6 @@
-package com.github.shynixn.petblocks.api.business.entity
+package com.github.shynixn.petblocks.core.logic.persistence.entity
 
+import com.github.shynixn.petblocks.api.persistence.entity.ScriptResult
 import com.github.shynixn.petblocks.api.business.enumeration.ScriptAction
 import java.util.*
 
@@ -30,25 +31,22 @@ import java.util.*
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-interface ScriptResult {
-
+class ScriptResultEntity : ScriptResult {
+    /**
+     * Storage for additional values.
+     */
+    override var valueContainer: Optional<Any> = Optional.empty()
+    /**
+     * Returns the optional parsed permission for the [ScriptAction].
+     */
+    override var permission: Optional<String> = Optional.empty()
     /**
      * Returns the [ScriptAction] which should be executed.
      */
-    val action: ScriptAction
+    override var action: ScriptAction = ScriptAction.NONE
 
     /**
      * Returns the optional parsed path for the [ScriptAction].
      */
-    val path: Optional<String>
-
-    /**
-     * Returns the optional parsed permission for the [ScriptAction].
-     */
-    val permission: Optional<String>
-
-    /**
-     * Storage for additional values.
-     */
-    val valueContainer: Optional<Any>
+    override var path: Optional<String> = Optional.empty()
 }

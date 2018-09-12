@@ -1,6 +1,7 @@
 package com.github.shynixn.petblocks.api.persistence.entity
 
 import com.github.shynixn.petblocks.api.business.enumeration.ChatClickAction
+import com.github.shynixn.petblocks.api.business.enumeration.ChatColor
 
 /**
  * Created by Shynixn 2018.
@@ -29,14 +30,45 @@ import com.github.shynixn.petblocks.api.business.enumeration.ChatClickAction
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-interface ChatMessageComponent : ChatMessage{
+interface ChatMessageComponent : ChatMessage {
+    /**
+     * Appends a text to the chatMessage and returns the same builder instance.
+     */
+    override fun append(text: String): ChatMessageComponent
+
+    /**
+     * Appends a chat color and returns the same builder instance.
+     */
+    override fun append(chatColor: ChatColor): ChatMessageComponent
+
+    /**
+     * Appends a new component to the chat message and returns the instance.
+     */
+    override fun appendComponent(): ChatMessageComponent
+
+    /**
+     * Sets the click action.
+     */
+    fun setClickAction(clickAction: ChatClickAction, payload: String): ChatMessageComponent
+
+    /**
+     * Sets the hover action with another chat message component.
+     * Returns the sub chat message component for hover actions.
+     */
+    fun appendHoverComponent(): ChatMessageComponent
+
+    /**
+     * Returns the root chat message.
+     */
+    fun getRoot(): ChatMessage
+
     /**
      * Adds a clickable action.
      */
-    fun clickAction(f : (ChatMessageComponent) -> Pair<ChatClickAction, String>)
+    fun clickAction(f: (ChatMessageComponent) -> Pair<ChatClickAction, String>)
 
     /**
      * Sets the hover able component.
      */
-    fun hover(f : ChatMessageComponent.() -> Unit)
+    fun hover(f: ChatMessageComponent.() -> Unit)
 }

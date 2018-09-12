@@ -1,5 +1,7 @@
 package com.github.shynixn.petblocks.api.business.service
 
+import com.github.shynixn.petblocks.api.persistence.entity.ChatMessage
+
 /**
  * Created by Shynixn 2018.
  * <p>
@@ -32,4 +34,9 @@ interface MessageService {
      * Sends a colored console message.
      */
     fun sendConsoleMessage(message: String)
+
+    /**
+     * Sends the given [chatMessage] to the given [player].
+     */
+    fun <P> sendPlayerMessage(player: P, chatMessage: ChatMessage)
 }

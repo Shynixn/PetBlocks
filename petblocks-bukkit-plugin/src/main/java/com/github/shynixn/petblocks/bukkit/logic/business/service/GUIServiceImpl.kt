@@ -4,16 +4,12 @@ import com.github.shynixn.petblocks.api.business.enumeration.ChatClickAction
 import com.github.shynixn.petblocks.api.business.enumeration.ChatColor
 import com.github.shynixn.petblocks.api.business.enumeration.GUIPage
 import com.github.shynixn.petblocks.api.business.enumeration.ScriptAction
-import com.github.shynixn.petblocks.api.business.service.ConfigurationService
-import com.github.shynixn.petblocks.api.business.service.GUIScriptService
-import com.github.shynixn.petblocks.api.business.service.GUIService
-import com.github.shynixn.petblocks.api.business.service.PersistenceService
+import com.github.shynixn.petblocks.api.business.service.*
 import com.github.shynixn.petblocks.api.persistence.entity.ChatMessage
 import com.github.shynixn.petblocks.api.persistence.entity.GUIItem
 import com.github.shynixn.petblocks.bukkit.logic.business.PetBlockManager
 import com.github.shynixn.petblocks.bukkit.logic.business.helper.clearCompletely
 import com.github.shynixn.petblocks.bukkit.logic.business.helper.runOnMainThread
-import com.github.shynixn.petblocks.bukkit.logic.business.helper.sendMessage
 import com.github.shynixn.petblocks.bukkit.logic.business.helper.thenAcceptOnMainThread
 import com.github.shynixn.petblocks.bukkit.nms.v1_13_R1.MaterialCompatibility13
 import com.github.shynixn.petblocks.core.logic.business.entity.GuiPageContainer
@@ -56,7 +52,7 @@ import java.util.function.Consumer
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class GUIServiceImpl @Inject constructor(private val configurationService: ConfigurationService, private val plugin: Plugin, private val scriptService: GUIScriptService, private val persistenceService: PersistenceService) : GUIService {
+class GUIServiceImpl @Inject constructor(private val configurationService: ConfigurationService, private val plugin: Plugin, private val scriptService: GUIScriptService, private val persistenceService: PersistenceService, private val messageService: MessageService) : GUIService {
     private val pageCache = HashMap<Player, PlayerGUICache>()
     private var collectedMinecraftHeadsMessage = chatMessage {
         text {
@@ -166,7 +162,7 @@ class GUIServiceImpl @Inject constructor(private val configurationService: Confi
      */
     private fun sendGuiMessage(player: Player, message: ChatMessage, permission: String) {
         if (player.hasPermission(permission)) {
-            player.sendMessage(message)
+            messageService.sendPlayerMessage(player, message)
         } else {
             player.sendMessage(configurationService.findValue<String>("messages.prefix") + configurationService.findValue<String>("messages.no-perms"))
         }
@@ -242,7 +238,7 @@ class GUIServiceImpl @Inject constructor(private val configurationService: Confi
         val optItems = configurationService.findGUIItemCollection(path)
 
         if (path.startsWith("minecraft-heads-com.")) {
-            (inventory.holder as Player).sendMessage(collectedMinecraftHeadsMessage)
+            messageService.sendPlayerMessage(inventory.holder, collectedMinecraftHeadsMessage)
         }
 
         if (optItems.isPresent) {

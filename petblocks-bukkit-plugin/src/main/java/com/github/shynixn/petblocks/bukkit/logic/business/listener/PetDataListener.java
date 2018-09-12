@@ -5,6 +5,7 @@ import com.github.shynixn.petblocks.api.business.entity.PetBlock;
 import com.github.shynixn.petblocks.api.business.enumeration.GUIPage;
 import com.github.shynixn.petblocks.api.business.enumeration.ParticleType;
 import com.github.shynixn.petblocks.api.business.enumeration.Permission;
+import com.github.shynixn.petblocks.api.business.service.MessageService;
 import com.github.shynixn.petblocks.api.persistence.entity.EngineContainer;
 import com.github.shynixn.petblocks.api.persistence.entity.PetMeta;
 import com.github.shynixn.petblocks.bukkit.PetBlocksPlugin;
@@ -12,6 +13,7 @@ import com.github.shynixn.petblocks.bukkit.logic.business.PetBlockManager;
 import com.github.shynixn.petblocks.bukkit.logic.business.helper.ExtensionMethodsKt;
 import com.github.shynixn.petblocks.bukkit.logic.business.helper.PetBlockModifyHelper;
 import com.github.shynixn.petblocks.bukkit.logic.business.helper.SkinHelper;
+import com.github.shynixn.petblocks.bukkit.logic.business.service.MessageServiceImpl;
 import com.github.shynixn.petblocks.bukkit.nms.v1_13_R1.MaterialCompatibility13;
 import com.github.shynixn.petblocks.core.logic.persistence.configuration.Config;
 import org.bukkit.Bukkit;
@@ -64,6 +66,7 @@ import java.util.Set;
 public class PetDataListener extends SimpleListener {
     private final PetBlockManager manager;
     private final Set<Player> spamProtection = new HashSet<>();
+    private final MessageService messageService = new MessageServiceImpl();
 
     private String headDatabaseTitle;
     private String headDatabaseSearch;
@@ -250,7 +253,7 @@ public class PetDataListener extends SimpleListener {
         } else if (this.isGUIItem(currentItem, "riding-pet") && PetBlockModifyHelper.hasPermission(player, Permission.ACTION_RIDE) && petBlock != null) {
             petBlock.ride(player);
         } else if (this.isGUIItem(currentItem, "suggest-heads")) {
-            ExtensionMethodsKt.sendMessage(player, com.github.shynixn.petblocks.bukkit.logic.persistence.configuration.Config.INSTANCE.generateSuggestHeadMessage());
+            messageService.sendPlayerMessage(player, com.github.shynixn.petblocks.bukkit.logic.persistence.configuration.Config.INSTANCE.generateSuggestHeadMessage());
             player.closeInventory();
         } else if (this.isGUIItem(currentItem, "head-database-costume")) {
             if (PetBlockModifyHelper.hasPermission(player, Permission.ALL_HEADDATABASECOSTUMES)) {
@@ -322,7 +325,7 @@ public class PetDataListener extends SimpleListener {
             final Plugin plugin = Bukkit.getPluginManager().getPlugin("HeadDatabase");
             if (plugin == null) {
                 Bukkit.getServer().getScheduler().runTaskAsynchronously(JavaPlugin.getPlugin(PetBlocksPlugin.class), () -> {
-                    ExtensionMethodsKt.sendMessage(player, com.github.shynixn.petblocks.bukkit.logic.persistence.configuration.Config.INSTANCE.generateHeadDatabasemessage());
+                    messageService.sendPlayerMessage(player, com.github.shynixn.petblocks.bukkit.logic.persistence.configuration.Config.INSTANCE.generateHeadDatabasemessage());
                     player.sendMessage(Config.getInstance().getPrefix() + ChatColor.GRAY + "Please consider that PetBlocks is not responsible for any legal agreements between the author of Head Database and yourself.");
                 });
             } else {

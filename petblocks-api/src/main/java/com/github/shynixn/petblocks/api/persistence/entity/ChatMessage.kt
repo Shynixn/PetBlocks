@@ -31,6 +31,21 @@ import com.github.shynixn.petblocks.api.business.enumeration.ChatColor
  */
 interface ChatMessage {
     /**
+     * Appends a text to the chatMessage and returns the same builder instance.
+     */
+    fun append(text: String): ChatMessage
+
+    /**
+     * Appends a chat color and returns the same builder instance.
+     */
+    fun append(chatColor: ChatColor): ChatMessage
+
+    /**
+     * Appends a new component to the chat message and returns the instance.
+     */
+    fun appendComponent(): ChatMessageComponent
+
+    /**
      * Appends a text to this message with the last formatting type.
      */
     fun text(f: (ChatMessage) -> String)

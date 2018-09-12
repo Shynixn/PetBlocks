@@ -57,8 +57,6 @@ class PetBlocksDependencyInjectionBinder(private val plugin: Plugin) : AbstractM
 
         // Old
         bind(PluginManager::class.java).toInstance(Bukkit.getServer().pluginManager)
-        bind(ParticleService::class.java).to(ParticleServiceImpl::class.java)
-        bind(SoundService::class.java).to(SoundServiceImpl::class.java)
         bind(PersistenceService::class.java).toInstance(PersistenceServiceImpl(plugin, Factory.createPetBlockController(), Factory.createPetDataController()))
         val guiItems = BukkitStaticGUIItems()
         bind(BukkitStaticGUIItems::class.java).toInstance(guiItems) // Compatibility reasons.
@@ -72,11 +70,14 @@ class PetBlocksDependencyInjectionBinder(private val plugin: Plugin) : AbstractM
         bind(Config::class.java).toInstance(Config)
 
         // Services
+        bind(ParticleService::class.java).to(ParticleServiceImpl::class.java)
+        bind(SoundService::class.java).to(SoundServiceImpl::class.java)
         bind(GUIScriptService::class.java).to(GUIScriptServiceImpl::class.java)
         bind(ConfigurationService::class.java).to(ConfigurationServiceImpl::class.java)
         bind(GUIService::class.java).to(GUIServiceImpl::class.java).`in`(Scopes.SINGLETON)
         bind(FeedingPetService::class.java).to(FeedPetServiceImpl::class.java)
         bind(UpdateCheckService::class.java).to(UpdateCheckServiceImpl::class.java)
+        bind(MessageService::class.java).to(MessageServiceImpl::class.java)
         bind(DependencyService::class.java).to(DependencyServiceImpl::class.java).`in`(Scopes.SINGLETON)
         bind(CarryPetService::class.java).to(CarryPetServiceImpl::class.java).`in`(Scopes.SINGLETON)
 

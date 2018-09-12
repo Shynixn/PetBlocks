@@ -372,6 +372,28 @@ dependencies {
 </div>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
+<p class="last"><strong>Messages</strong> - Bukkit/Sponge - Sending a clickable chat message.</p>
+</div>
+<div class="highlight-java"><div class="highlight"><pre><span></span><span class="n">Player</span> <span class="n">player</span><span class="o">;</span> <span class="c1">// Any player instance</span>
+
+<span class="n">MessageService</span> <span class="n">messageService</span> <span class="o">=</span> <span class="n">PetBlocksApi</span><span class="o">.</span><span class="na">INSTANCE</span><span class="o">.</span><span class="na">resolve</span><span class="o">(</span><span class="n">MessageService</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
+<span class="n">ChatMessage</span> <span class="n">chatMessage</span> <span class="o">=</span> <span class="n">PetBlocksApi</span><span class="o">.</span><span class="na">INSTANCE</span><span class="o">.</span><span class="na">create</span><span class="o">(</span><span class="n">ChatMessage</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
+
+<span class="n">chatMessage</span><span class="o">.</span><span class="na">append</span><span class="o">(</span><span class="s">&quot;This is a &quot;</span><span class="o">)</span>
+        <span class="o">.</span><span class="na">appendComponent</span><span class="o">()</span>
+        <span class="o">.</span><span class="na">append</span><span class="o">(</span><span class="n">ChatColor</span><span class="o">.</span><span class="na">YELLOW</span><span class="o">)</span>
+        <span class="o">.</span><span class="na">append</span><span class="o">(</span><span class="s">&quot;&lt;&lt;clickable link&gt;&gt;&quot;</span><span class="o">)</span>
+        <span class="o">.</span><span class="na">setClickAction</span><span class="o">(</span><span class="n">ChatClickAction</span><span class="o">.</span><span class="na">OPEN_URL</span><span class="o">,</span> <span class="s">&quot;https://shynixn.github.io/PetBlocks/build/html/index.html&quot;</span><span class="o">)</span>
+        <span class="o">.</span><span class="na">appendHoverComponent</span><span class="o">().</span><span class="na">append</span><span class="o">(</span><span class="s">&quot;Opens the PetBlocks wiki.&quot;</span><span class="o">)</span>
+        <span class="o">.</span><span class="na">getRoot</span><span class="o">()</span> <span class="c1">// Goes back to the root chatMessage builder.</span>
+        <span class="o">.</span><span class="na">append</span><span class="o">(</span><span class="n">ChatColor</span><span class="o">.</span><span class="na">WHITE</span><span class="o">)</span>
+        <span class="o">.</span><span class="na">append</span><span class="o">(</span><span class="s">&quot; to the PetBlocks wiki.&quot;</span><span class="o">);</span>
+
+<span class="n">messageService</span><span class="o">.</span><span class="na">sendPlayerMessage</span><span class="o">(</span><span class="n">player</span><span class="o">,</span> <span class="n">chatMessage</span><span class="o">);</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
 <p class="last"><strong>WorldGuard</strong> - Bukkit - Accessing the WorldGuard dependency.</p>
 </div>
 <div class="highlight-java"><div class="highlight"><pre><span></span><span class="n">Location</span> <span class="n">location</span><span class="o">;</span> <span class="c1">// Any location instance.</span>

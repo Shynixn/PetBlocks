@@ -39,17 +39,42 @@ class ChatMessageEntity : ChatMessage {
     override val components = ArrayList<Any>()
 
     /**
+     * Appends a text to the chatMessage and returns the same builder instance.
+     */
+    override fun append(text: String): ChatMessage {
+        this.components.add(text)
+        return this
+    }
+
+    /**
+     * Appends a chat color and returns the same builder instance.
+     */
+    override fun append(chatColor: ChatColor): ChatMessage {
+        this.components.add(chatColor)
+        return this
+    }
+
+    /**
+     * Appends a new component to the chat message and returns the instance.
+     */
+    override fun appendComponent(): ChatMessageComponent {
+        val component = ChatMessageComponentEntity(this)
+        this.components.add(component)
+        return component
+    }
+
+    /**
      * Appends a text to this message with the last formatting type.
      */
     override fun text(f: (ChatMessage) -> String) {
-        this.components.add(f.invoke(this))
+        this.append(f.invoke(this))
     }
 
     /**
      * Sets this component italic.
      */
     override fun italic(f: (ChatMessage) -> Unit) {
-        this.components.add(ChatColor.ITALIC)
+        this.append(ChatColor.ITALIC)
         f.invoke(this)
     }
 
@@ -57,7 +82,7 @@ class ChatMessageEntity : ChatMessage {
      * Sets this component bold.
      */
     override fun bold(f: (ChatMessage) -> Unit) {
-        this.components.add(ChatColor.BOLD)
+        this.append(ChatColor.BOLD)
         f.invoke(this)
     }
 
@@ -65,7 +90,7 @@ class ChatMessageEntity : ChatMessage {
      * Sets this component underlined.
      */
     override fun underline(f: (ChatMessage) -> Unit) {
-        this.components.add(ChatColor.UNDERLINE)
+        this.append(ChatColor.UNDERLINE)
         f.invoke(this)
     }
 
@@ -73,7 +98,7 @@ class ChatMessageEntity : ChatMessage {
      * Sets this component strikeThrough.
      */
     override fun strikeThrough(f: (ChatMessage) -> Unit) {
-        this.components.add(ChatColor.STRIKETHROUGH)
+        this.append(ChatColor.STRIKETHROUGH)
         f.invoke(this)
     }
 
@@ -81,7 +106,7 @@ class ChatMessageEntity : ChatMessage {
      * Sets this component color.
      */
     override fun color(color: ChatColor, f: (ChatMessage) -> Unit) {
-        this.components.add(color)
+        this.append(color)
         f.invoke(this)
     }
 

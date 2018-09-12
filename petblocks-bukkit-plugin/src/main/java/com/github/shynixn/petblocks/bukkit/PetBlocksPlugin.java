@@ -3,6 +3,7 @@ package com.github.shynixn.petblocks.bukkit;
 import com.github.shynixn.petblocks.api.PetBlocksApi;
 import com.github.shynixn.petblocks.api.business.controller.PetBlockController;
 import com.github.shynixn.petblocks.api.business.enumeration.PluginDependency;
+import com.github.shynixn.petblocks.api.business.proxy.PluginProxy;
 import com.github.shynixn.petblocks.api.business.service.DependencyService;
 import com.github.shynixn.petblocks.api.business.service.UpdateCheckService;
 import com.github.shynixn.petblocks.api.persistence.controller.PetMetaController;
@@ -53,7 +54,7 @@ import java.util.logging.Logger;
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-public final class PetBlocksPlugin extends JavaPlugin implements com.github.shynixn.petblocks.api.business.entity.PetBlocksPlugin {
+public final class PetBlocksPlugin extends JavaPlugin implements PluginProxy {
     public static final String PREFIX_CONSOLE = ChatColor.AQUA + "[PetBlocks] ";
     private static final String PLUGIN_NAME = "PetBlocks";
     private static Logger logger;
@@ -108,7 +109,7 @@ public final class PetBlocksPlugin extends JavaPlugin implements com.github.shyn
 
             try {
                 this.petBlockManager = new PetBlockManager(this);
-                ReflectionUtils.invokeMethodByClass(PetBlocksApi.class, "initialize", new Class[]{PetMetaController.class, PetBlockController.class, com.github.shynixn.petblocks.api.business.entity.PetBlocksPlugin.class}, new Object[]{this.petBlockManager.getPetMetaController(), this.petBlockManager.getPetBlockController(), this});
+                ReflectionUtils.invokeMethodByClass(PetBlocksApi.class, "initialize", new Class[]{PetMetaController.class, PetBlockController.class, PluginProxy.class}, new Object[]{this.petBlockManager.getPetMetaController(), this.petBlockManager.getPetBlockController(), this});
                 Bukkit.getServer().getConsoleSender().sendMessage(PREFIX_CONSOLE + ChatColor.GREEN + "Enabled PetBlocks " + this.getDescription().getVersion() + " by Shynixn");
             } catch (final NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
                 PetBlocksPlugin.logger().log(Level.WARNING, "Failed to enable plugin.", e);

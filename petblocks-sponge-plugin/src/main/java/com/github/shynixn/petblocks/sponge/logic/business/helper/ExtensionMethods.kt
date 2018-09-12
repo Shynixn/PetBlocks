@@ -2,12 +2,11 @@ package com.github.shynixn.petblocks.sponge.logic.business.helper
 
 import com.github.shynixn.petblocks.api.business.entity.GUIItemContainer
 import com.github.shynixn.petblocks.api.business.entity.PetBlock
-import com.github.shynixn.petblocks.api.business.entity.PetBlocksPlugin
+import com.github.shynixn.petblocks.api.business.proxy.PluginProxy
 import com.github.shynixn.petblocks.api.business.enumeration.ChatColor
 import com.github.shynixn.petblocks.api.business.enumeration.ParticleType
 import com.github.shynixn.petblocks.api.business.enumeration.Permission
 import com.github.shynixn.petblocks.api.business.enumeration.Version
-import com.github.shynixn.petblocks.api.persistence.entity.ChatMessage
 import com.github.shynixn.petblocks.api.persistence.entity.EngineContainer
 import com.github.shynixn.petblocks.api.persistence.entity.PetMeta
 import com.github.shynixn.petblocks.core.logic.persistence.configuration.Config
@@ -113,7 +112,7 @@ fun CarriedInventory<*>.updateInventory() {
 /**
  * Kotlin resolve syntactic sugar.
  */
-inline fun <reified S> PetBlocksPlugin.resolve(): S {
+inline fun <reified S> PluginProxy.resolve(): S {
     return this.resolve(S::class.java)
 }
 
@@ -147,50 +146,6 @@ fun CarriedInventory<*>.getItemStackInHand(offHand: Boolean = false): Optional<I
     }
 }
 
-
-/**
- * Sends the player the given message.
- */
-fun Player.sendMessage(message: ChatMessage) {
-    val components = message.components
-
-    if (components.isEmpty()) {
-        throw IllegalArgumentException("Components amount of message is 0. Are you not using the parent component?")
-    }
-
-    val finalMessage = StringBuilder()
-    val cache = StringBuilder()
-    finalMessage.append("{\"text\": \"\"")
-    finalMessage.append(", \"extra\" : [")
-    var firstExtra = false
-    for (component in components) {
-
-        if (component !is ChatColor && firstExtra) {
-            finalMessage.append(", ")
-        }
-
-        when (component) {
-            is ChatColor -> cache.append(component)
-            is String -> {
-                finalMessage.append("{\"text\": \"")
-                finalMessage.append(ChatColor.translateChatColorCodes('&', cache.toString() + component))
-                finalMessage.append("\"}")
-                cache.setLength(0)
-                firstExtra = true
-            }
-            else -> {
-                finalMessage.append(component)
-                firstExtra = true
-            }
-        }
-    }
-    finalMessage.append("]}")
-
-    val playerResult = arrayOfNulls<Player>(1)
-    playerResult[0] = this
-
-    ReflectionCache.sendChatJsonMesssageMethod.invoke(null, finalMessage.toString(), playerResult)
-}
 /**
  * Unloads the given plugin.
  */

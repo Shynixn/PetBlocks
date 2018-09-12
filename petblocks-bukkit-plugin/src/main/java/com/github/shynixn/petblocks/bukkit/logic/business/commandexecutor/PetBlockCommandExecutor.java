@@ -3,16 +3,17 @@ package com.github.shynixn.petblocks.bukkit.logic.business.commandexecutor;
 import com.github.shynixn.petblocks.api.business.entity.GUIItemContainer;
 import com.github.shynixn.petblocks.api.business.entity.PetBlock;
 import com.github.shynixn.petblocks.api.business.enumeration.ChatClickAction;
+import com.github.shynixn.petblocks.api.business.service.MessageService;
 import com.github.shynixn.petblocks.api.persistence.entity.ChatMessage;
 import com.github.shynixn.petblocks.api.persistence.entity.EngineContainer;
 import com.github.shynixn.petblocks.api.persistence.entity.PetMeta;
 import com.github.shynixn.petblocks.bukkit.PetBlocksPlugin;
 import com.github.shynixn.petblocks.bukkit.logic.business.PetBlockManager;
-import com.github.shynixn.petblocks.bukkit.logic.business.helper.ExtensionMethodsKt;
 import com.github.shynixn.petblocks.bukkit.logic.business.helper.PetBlockModifyHelper;
+import com.github.shynixn.petblocks.bukkit.logic.business.service.MessageServiceImpl;
 import com.github.shynixn.petblocks.core.logic.business.entity.PetRunnable;
-import com.github.shynixn.petblocks.core.logic.business.extension.ExtensionMethodKt;
 import com.github.shynixn.petblocks.core.logic.persistence.configuration.Config;
+import com.github.shynixn.petblocks.core.logic.persistence.entity.ChatMessageEntity;
 import kotlin.Pair;
 import kotlin.Unit;
 import org.bukkit.Bukkit;
@@ -33,6 +34,7 @@ import java.util.Optional;
 
 public final class PetBlockCommandExecutor extends SimpleCommandExecutor.UnRegistered {
     private final PetBlockManager manager;
+    private final MessageService messageService = new MessageServiceImpl();
 
     public PetBlockCommandExecutor(PetBlockManager manager) throws Exception {
         super(((MemorySection) JavaPlugin.getPlugin(PetBlocksPlugin.class).getConfig().get("petblocks-configuration")).getValues(false)
@@ -237,21 +239,12 @@ public final class PetBlockCommandExecutor extends SimpleCommandExecutor.UnRegis
             }
 
             final String finalFullCommand = fullCommand;
-            final ChatMessage internalMessage = ExtensionMethodKt.chatMessage(chatMessage -> {
-                chatMessage.component(chatMessageComponent -> {
-                    chatMessageComponent.text(chatMessage1 -> Config.getInstance().getPrefix() + this.getCommandName() + message);
-                    chatMessageComponent.clickAction(chatMessageComponent12 -> new Pair(ChatClickAction.SUGGEST_COMMAND, finalFullCommand));
-                    chatMessageComponent.hover(chatMessageComponent1 -> {
-                        chatMessageComponent1.text(chatMessage12 -> builder.toString());
-                        return Unit.INSTANCE;
-                    });
-                    return Unit.INSTANCE;
-                });
+            final ChatMessage internalMessage = new ChatMessageEntity().appendComponent()
+                    .append(Config.getInstance().getPrefix() + this.getCommandName() + message)
+                    .setClickAction(ChatClickAction.SUGGEST_COMMAND, finalFullCommand)
+                    .appendHoverComponent().append(builder.toString()).getRoot();
 
-                return Unit.INSTANCE;
-            });
-
-            ExtensionMethodsKt.sendMessage((Player) commandSender, internalMessage);
+            this.messageService.sendPlayerMessage(commandSender, internalMessage);
         } else {
             commandSender.sendMessage(Config.getInstance().getPrefix() + '/' + this.getName() + ' ' + message);
         }

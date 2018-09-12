@@ -1,12 +1,13 @@
-package com.github.shynixn.petblocks.sponge.logic.business.service
+package com.github.shynixn.petblocks.bukkit.logic.business.service
 
 import com.github.shynixn.petblocks.api.business.enumeration.ChatColor
 import com.github.shynixn.petblocks.api.business.service.MessageService
 import com.github.shynixn.petblocks.api.persistence.entity.ChatMessage
-import com.github.shynixn.petblocks.sponge.logic.business.helper.findServerVersion
-import com.github.shynixn.petblocks.sponge.logic.business.helper.translateToText
-import org.spongepowered.api.Sponge
-import org.spongepowered.api.entity.living.player.Player
+import com.github.shynixn.petblocks.bukkit.logic.business.helper.findServerVersion
+import com.github.shynixn.petblocks.bukkit.logic.business.helper.sendPacket
+import com.github.shynixn.petblocks.bukkit.nms.VersionSupport
+import org.bukkit.Bukkit
+import org.bukkit.entity.Player
 
 /**
  * Created by Shynixn 2018.
@@ -40,7 +41,7 @@ class MessageServiceImpl : MessageService {
      * Sends a colored console message.
      */
     override fun sendConsoleMessage(message: String) {
-        Sponge.getServer().console.sendMessage(message.translateToText())
+        Bukkit.getServer().consoleSender.sendMessage(message)
     }
 
     /**
@@ -48,10 +49,11 @@ class MessageServiceImpl : MessageService {
      */
     override fun <P> sendPlayerMessage(player: P, chatMessage: ChatMessage) {
         if (player !is Player) {
-            throw IllegalArgumentException("Player has to be a SpongePlayer!")
+            throw IllegalArgumentException("Player has to be a BukkitPlayer!")
         }
 
         val components = chatMessage.components
+        var firstExtra = false
 
         if (components.isEmpty()) {
             throw IllegalArgumentException("Components amount of message is 0. Are you not using the parent component?")
@@ -61,7 +63,7 @@ class MessageServiceImpl : MessageService {
         val cache = StringBuilder()
         finalMessage.append("{\"text\": \"\"")
         finalMessage.append(", \"extra\" : [")
-        var firstExtra = false
+
         for (component in components) {
 
             if (component !is ChatColor && firstExtra) {
@@ -83,13 +85,30 @@ class MessageServiceImpl : MessageService {
                 }
             }
         }
+
         finalMessage.append("]}")
 
-        val playerResult = arrayOfNulls<Player>(1)
-        playerResult[0] = player
+        val clazz: Class<*> = if (VersionSupport.getServerVersion() == VersionSupport.VERSION_1_8_R1) {
+            Class.forName("net.minecraft.server.VERSION.ChatSerializer".findServerVersion())
+        } else {
+            Class.forName("net.minecraft.server.VERSION.IChatBaseComponent\$ChatSerializer".findServerVersion())
+        }
 
-        val utilsClass = Class.forName("com.github.shynixn.petblocks.sponge.nms.VERSION.NMSUtils".findServerVersion())
-        val sendChatJsonMessageMethod = utilsClass.getDeclaredMethod("sendJsonChatMessage", String::class.java, Array<Player>::class.java)
-        sendChatJsonMessageMethod.invoke(null, finalMessage.toString(), playerResult)
+        val packetClazz = Class.forName("net.minecraft.server.VERSION.PacketPlayOutChat".findServerVersion())
+        val chatBaseComponentClazz = Class.forName("net.minecraft.server.VERSION.IChatBaseComponent".findServerVersion())
+
+        val method = clazz.getDeclaredMethod("a", String::class.java)
+        method.isAccessible = true
+        val chatComponent = method.invoke(null, finalMessage.toString())
+        val packet: Any
+
+        packet = if (VersionSupport.getServerVersion().isVersionSameOrGreaterThan(VersionSupport.VERSION_1_12_R1)) {
+            val chatEnumMessage = Class.forName("net.minecraft.server.VERSION.ChatMessageType".findServerVersion())
+            packetClazz.getDeclaredConstructor(chatBaseComponentClazz, chatEnumMessage).newInstance(chatComponent, chatEnumMessage.enumConstants[0])
+        } else {
+            packetClazz.getDeclaredConstructor(chatBaseComponentClazz, Byte::class.javaPrimitiveType!!).newInstance(chatComponent, 0.toByte())
+        }
+
+        player.sendPacket(packet)
     }
 }

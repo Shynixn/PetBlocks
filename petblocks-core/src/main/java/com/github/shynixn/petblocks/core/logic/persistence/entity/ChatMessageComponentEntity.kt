@@ -45,10 +45,51 @@ class ChatMessageComponentEntity(private val parent: ChatMessage) : ChatMessageC
     private var hoverActionData: ChatMessageComponentEntity? = null
 
     /**
+     * Sets the click action.
+     */
+    override fun setClickAction(clickAction: ChatClickAction, payload: String): ChatMessageComponent {
+        this.clickAction = clickAction
+        this.clickActionData = payload
+        return this
+    }
+
+    /**
+     * Sets the hover action with another chat message component.
+     * Returns the sub chat message component for hover actions.
+     */
+    override fun appendHoverComponent(): ChatMessageComponent {
+        this.hoverActionData = ChatMessageComponentEntity(parent)
+        return this.hoverActionData!!
+    }
+
+    /**
+     * Appends a text to the chatMessage and returns the same builder instance.
+     */
+    override fun append(text: String): ChatMessageComponent {
+        this.text.append(text)
+        return this
+    }
+
+    /**
+     * Appends a chat color and returns the same builder instance.
+     */
+    override fun append(chatColor: ChatColor): ChatMessageComponent {
+        this.text.append(chatColor.toString())
+        return this
+    }
+
+    /**
+     * Appends a new component to the chat message and returns the instance.
+     */
+    override fun appendComponent(): ChatMessageComponent {
+        return parent.appendComponent()
+    }
+
+    /**
      * Appends a text to this message with the last formatting type.
      */
     override fun text(f: (ChatMessage) -> String) {
-        text.append(f.invoke(this))
+        this.append(f.invoke(this))
     }
 
     /**
@@ -111,8 +152,15 @@ class ChatMessageComponentEntity(private val parent: ChatMessage) : ChatMessageC
      * Sets the hover able component.
      */
     override fun hover(f: (ChatMessageComponent) -> Unit) {
-        this.hoverActionData = ChatMessageComponentEntity(this)
+        this.hoverActionData = ChatMessageComponentEntity(parent)
         f.invoke(hoverActionData!!)
+    }
+
+    /**
+     * Returns the root chat message.
+     */
+    override fun getRoot(): ChatMessage {
+        return parent
     }
 
     /**

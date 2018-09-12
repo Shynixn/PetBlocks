@@ -10,7 +10,7 @@ Including the PetBlocks API
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. image:: https://maven-badges.herokuapp.com/maven-central/com.github.shynixn.petblocks/petblocks-api/badge.svg
-    :target: https://maven-badges.herokuapp.com/maven-central/com.github.shynixn.petblocks/petblocks-api
+     :target: https://maven-badges.herokuapp.com/maven-central/com.github.shynixn.petblocks/petblocks-api
 
 PetBlocks is using maven as build system and is available in the central repository.
 
@@ -183,6 +183,27 @@ Working with the PetBlocks API
 
     FeedingPetService feedingPetService = PetBlocksApi.INSTANCE.resolve(FeedingPetService.class);
     feedingPetService.feedPet(player);
+
+.. note::  **Messages** - Bukkit/Sponge - Sending a clickable chat message.
+
+.. code-block:: java
+
+    Player player; // Any player instance
+
+    MessageService messageService = PetBlocksApi.INSTANCE.resolve(MessageService.class);
+    ChatMessage chatMessage = PetBlocksApi.INSTANCE.create(ChatMessage.class);
+
+    chatMessage.append("This is a ")
+            .appendComponent()
+            .append(ChatColor.YELLOW)
+            .append("<<clickable link>>")
+            .setClickAction(ChatClickAction.OPEN_URL, "https://shynixn.github.io/PetBlocks/build/html/index.html")
+            .appendHoverComponent().append("Opens the PetBlocks wiki.")
+            .getRoot() // Goes back to the root chatMessage builder.
+            .append(ChatColor.WHITE)
+            .append(" to the PetBlocks wiki.");
+
+    messageService.sendPlayerMessage(player, chatMessage);
 
 .. note::  **WorldGuard** - Bukkit - Accessing the WorldGuard dependency.
 

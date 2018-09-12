@@ -7,11 +7,13 @@ import com.github.shynixn.petblocks.api.business.entity.PetBlock;
 import com.github.shynixn.petblocks.api.business.enumeration.GUIPage;
 import com.github.shynixn.petblocks.api.business.enumeration.ParticleType;
 import com.github.shynixn.petblocks.api.business.enumeration.Permission;
+import com.github.shynixn.petblocks.api.business.service.MessageService;
 import com.github.shynixn.petblocks.api.persistence.entity.EngineContainer;
 import com.github.shynixn.petblocks.api.persistence.entity.PetMeta;
 import com.github.shynixn.petblocks.sponge.logic.business.PetBlocksManager;
 import com.github.shynixn.petblocks.sponge.logic.business.helper.CompatibilityItemType;
 import com.github.shynixn.petblocks.sponge.logic.business.helper.ExtensionMethodsKt;
+import com.github.shynixn.petblocks.sponge.logic.business.service.MessageServiceImpl;
 import com.github.shynixn.petblocks.sponge.logic.persistence.configuration.Config;
 import com.google.inject.Inject;
 import org.spongepowered.api.Sponge;
@@ -60,6 +62,7 @@ public class SpongePetDataListener {
     private final PetBlocksManager manager;
     private final Set<Player> spamProtection = new HashSet<>();
     private final PluginContainer plugin;
+    private final MessageService messageService = new MessageServiceImpl();
 
     /**
      * Initializes a new PetDataListener
@@ -203,7 +206,7 @@ public class SpongePetDataListener {
         } else if (this.isGUIItem(currentItem, "riding-pet") && ExtensionMethodsKt.hasPermissions(player, Permission.ACTION_RIDE) && petBlock != null) {
             petBlock.ride(player);
         } else if (this.isGUIItem(currentItem, "suggest-heads")) {
-            ExtensionMethodsKt.sendMessage(player, com.github.shynixn.petblocks.sponge.logic.persistence.configuration.Config.INSTANCE.generateSuggestHeadMessage());
+            messageService.sendPlayerMessage(player, com.github.shynixn.petblocks.sponge.logic.persistence.configuration.Config.INSTANCE.generateSuggestHeadMessage());
             this.closeInventory(player);
         } else if (this.isGUIItem(currentItem, "cannon-pet") && ExtensionMethodsKt.hasPermissions(player, Permission.ACTION_CANNON) && petBlock != null) {
             petBlock.setVelocity(this.getDirection(player));

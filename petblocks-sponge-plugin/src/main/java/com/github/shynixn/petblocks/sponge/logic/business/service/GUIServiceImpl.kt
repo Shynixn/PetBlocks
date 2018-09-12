@@ -6,10 +6,7 @@ import com.github.shynixn.petblocks.api.business.enumeration.ChatClickAction
 import com.github.shynixn.petblocks.api.business.enumeration.ChatColor
 import com.github.shynixn.petblocks.api.business.enumeration.GUIPage
 import com.github.shynixn.petblocks.api.business.enumeration.ScriptAction
-import com.github.shynixn.petblocks.api.business.service.ConfigurationService
-import com.github.shynixn.petblocks.api.business.service.GUIScriptService
-import com.github.shynixn.petblocks.api.business.service.GUIService
-import com.github.shynixn.petblocks.api.business.service.PersistenceService
+import com.github.shynixn.petblocks.api.business.service.*
 import com.github.shynixn.petblocks.api.persistence.entity.ChatMessage
 import com.github.shynixn.petblocks.api.persistence.entity.GUIItem
 import com.github.shynixn.petblocks.core.logic.business.entity.GuiPageContainer
@@ -54,7 +51,7 @@ import org.spongepowered.api.plugin.PluginContainer
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class GUIServiceImpl @Inject constructor(private val configurationService: ConfigurationService, private val plugin: PluginContainer, private val scriptService: GUIScriptService, private val persistenceService: PersistenceService) : GUIService {
+class GUIServiceImpl @Inject constructor(private val configurationService: ConfigurationService, private val plugin: PluginContainer, private val scriptService: GUIScriptService, private val persistenceService: PersistenceService, private val messageService: MessageService) : GUIService {
     private val pageCache = HashMap<Player, PlayerGUICache>()
     private val petBlocksManager = PetBlocksManager.petBlocksManager!!
     private var collectedMinecraftHeadsMessage = chatMessage {
@@ -247,7 +244,7 @@ class GUIServiceImpl @Inject constructor(private val configurationService: Confi
         val optItems = configurationService.findGUIItemCollection(path)
 
         if (path.startsWith("minecraft-heads-com.")) {
-            player.sendMessage(collectedMinecraftHeadsMessage)
+            messageService.sendPlayerMessage(player, collectedMinecraftHeadsMessage)
         }
 
         if (optItems.isPresent) {
@@ -403,7 +400,7 @@ class GUIServiceImpl @Inject constructor(private val configurationService: Confi
      */
     private fun sendGuiMessage(player: Player, message: ChatMessage, permission: String) {
         if (player.hasPermission(permission)) {
-            player.sendMessage(message)
+            messageService.sendPlayerMessage(player, message)
         } else {
             player.sendMessage(configurationService.findValue<String>("messages.prefix") + configurationService.findValue<String>("messages.no-perms"))
         }

@@ -1,4 +1,7 @@
-package com.github.shynixn.petblocks.api.business.entity
+package com.github.shynixn.petblocks.api.persistence.entity
+
+import com.github.shynixn.petblocks.api.business.enumeration.ScriptAction
+import java.util.*
 
 /**
  * Created by Shynixn 2018.
@@ -27,17 +30,25 @@ package com.github.shynixn.petblocks.api.business.entity
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-interface PetBlocksPlugin {
-    /**
-     * Gets a business logic from the PetBlocks plugin.
-     * All types in the service package can be accessed.
-     * Throws a [IllegalArgumentException] if the service could not be found.
-     */
-    fun <S> resolve(service: Class<S>): S
+interface ScriptResult {
 
     /**
-     * Creates a new entity from the given [entity].
-     * Throws a [IllegalArgumentException] if the entity could not be found.
+     * Returns the [ScriptAction] which should be executed.
      */
-    fun <E> create(entity: Class<E>): E
+    val action: ScriptAction
+
+    /**
+     * Returns the optional parsed path for the [ScriptAction].
+     */
+    val path: Optional<String>
+
+    /**
+     * Returns the optional parsed permission for the [ScriptAction].
+     */
+    val permission: Optional<String>
+
+    /**
+     * Storage for additional values.
+     */
+    val valueContainer: Optional<Any>
 }

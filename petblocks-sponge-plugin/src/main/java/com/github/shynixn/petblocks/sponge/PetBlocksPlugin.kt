@@ -2,7 +2,7 @@ package com.github.shynixn.petblocks.sponge
 
 import com.github.shynixn.petblocks.api.PetBlocksApi
 import com.github.shynixn.petblocks.api.business.controller.PetBlockController
-import com.github.shynixn.petblocks.api.business.entity.PetBlocksPlugin
+import com.github.shynixn.petblocks.api.business.proxy.PluginProxy
 import com.github.shynixn.petblocks.api.business.enumeration.ChatColor
 import com.github.shynixn.petblocks.api.business.service.DependencyService
 import com.github.shynixn.petblocks.api.business.service.EntityService
@@ -57,7 +57,7 @@ import java.io.IOException
  * SOFTWARE.
  */
 @Plugin(id = "petblocks", name = "PetBlocks", version = "7.4.0-SNAPSHOT", description = "PetBlocks is a spigot and also a sponge plugin to use blocks and custom heads as pets in Minecraft.")
-class PetBlocksPlugin : com.github.shynixn.petblocks.api.business.entity.PetBlocksPlugin {
+class PetBlocksPlugin : PluginProxy {
 
     companion object {
         /**
@@ -65,7 +65,6 @@ class PetBlocksPlugin : com.github.shynixn.petblocks.api.business.entity.PetBloc
          */
         val PREFIX_CONSOLE = ChatColor.AQUA.toString() + "[PetBlocks] "
 
-        private const val SPIGOT_RESOURCEID: Long = 12056
         private const val PLUGIN_NAME = "PetBlocks"
     }
 
@@ -126,7 +125,7 @@ class PetBlocksPlugin : com.github.shynixn.petblocks.api.business.entity.PetBloc
 
         try {
             ReflectionUtils.invokeMethodByClass<PetBlocksApi>(PetBlocksApi::class.java, "initialize"
-                    , arrayOf<Class<*>>(PetMetaController::class.java, PetBlockController::class.java, PetBlocksPlugin::class.java)
+                    , arrayOf<Class<*>>(PetMetaController::class.java, PetBlockController::class.java, PluginProxy::class.java)
                     , arrayOf<Any?>(guice.petBlocksManager!!.petMetaController, this.guice.petBlocksManager!!.petBlockController, this))
             Sponge.getGame().sendConsoleMessage(PREFIX_CONSOLE + ChatColor.GREEN + "Enabled PetBlocks " + pluginContainer.version.get() + " by Shynixn")
         } catch (e: Exception) {

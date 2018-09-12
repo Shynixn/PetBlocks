@@ -1,9 +1,9 @@
 package com.github.shynixn.petblocks.core.logic.business.service
 
-import com.github.shynixn.petblocks.api.business.entity.ScriptResult
+import com.github.shynixn.petblocks.api.persistence.entity.ScriptResult
 import com.github.shynixn.petblocks.api.business.enumeration.ScriptAction
 import com.github.shynixn.petblocks.api.business.service.GUIScriptService
-import com.github.shynixn.petblocks.core.logic.persistence.entity.ScriptResultImpl
+import com.github.shynixn.petblocks.core.logic.persistence.entity.ScriptResultEntity
 import com.google.inject.Inject
 import org.slf4j.Logger
 import java.util.*
@@ -40,7 +40,7 @@ class GUIScriptServiceImpl @Inject constructor(private val logger: Logger) : GUI
      * Executes the given [script] for the given [inventory].
      */
     override fun <I> executeScript(inventory: I, script: String): ScriptResult {
-        val scriptResult = ScriptResultImpl()
+        val scriptResult = ScriptResultEntity()
 
         try {
             if (script.startsWith("binding collection ")) {
@@ -72,6 +72,6 @@ class GUIScriptServiceImpl @Inject constructor(private val logger: Logger) : GUI
             logger.warn("Failed to execute script '$script'.")
         }
 
-        return ScriptResultImpl()
+        return ScriptResultEntity()
     }
 }
