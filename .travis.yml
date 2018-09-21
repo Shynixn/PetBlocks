@@ -52,8 +52,8 @@ after_success:
   - bash <(curl -s https://codecov.io/bash)
   - wget https://raw.githubusercontent.com/Shynixn/travis-ci-discord-webhook/master/send.sh
   - chmod +x send.sh
-  - ./send.sh success $WEBHOOK_URL
+  - ./send.sh success $WEBHOOK_URL $WEB_SNAPSHOT_REPOSITORY
 after_failure:
   - wget https://raw.githubusercontent.com/Shynixn/travis-ci-discord-webhook/master/send.sh
   - chmod +x send.sh
-  - ./send.sh failure $WEBHOOK_URL
+  - ./send.sh failure $WEBHOOK_URL $WEB_SNAPSHOT_REPOSITORY
