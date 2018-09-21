@@ -2,10 +2,7 @@
 
 package com.github.shynixn.petblocks.bukkit.logic.business.helper
 
-import com.github.shynixn.petblocks.api.business.enumeration.ChatColor
 import com.github.shynixn.petblocks.api.business.enumeration.ParticleType
-import com.github.shynixn.petblocks.api.business.service.PersistenceService
-import com.github.shynixn.petblocks.api.persistence.entity.ChatMessage
 import com.github.shynixn.petblocks.bukkit.PetBlocksPlugin
 import com.github.shynixn.petblocks.bukkit.logic.business.PetBlockManager
 import com.github.shynixn.petblocks.bukkit.nms.VersionSupport
@@ -16,7 +13,6 @@ import org.bukkit.inventory.Inventory
 import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.PlayerInventory
 import org.bukkit.inventory.meta.SkullMeta
-import org.bukkit.plugin.Plugin
 import org.bukkit.plugin.java.JavaPlugin
 import java.lang.reflect.InvocationTargetException
 import java.util.*
@@ -136,36 +132,6 @@ fun PlayerInventory.updateInventory() {
     Player::class.java.getDeclaredMethod("updateInventory").invoke(this.holder as Player)
 }
 
-/**
- * Executes the given [f] for the given [plugin] on main thread.
- */
-inline fun Any.sync(plugin: Plugin, delayTicks: Long = 0L, repeatingTicks: Long = 0L, crossinline f: () -> Unit) {
-    if (repeatingTicks > 0) {
-        plugin.server.scheduler.runTaskTimer(plugin, {
-            f.invoke()
-        }, delayTicks, repeatingTicks)
-    } else {
-        plugin.server.scheduler.runTaskLater(plugin, {
-            f.invoke()
-        }, delayTicks)
-    }
-}
-
-/**
- * Executes the given [f] for the given [plugin] asynchronly.
- */
-inline fun Any.async(plugin: Plugin, delayTicks: Long = 0L, repeatingTicks: Long = 0L, crossinline f: () -> Unit) {
-    if (repeatingTicks > 0) {
-        plugin.server.scheduler.runTaskTimerAsynchronously(plugin, {
-            f.invoke()
-        }, delayTicks, repeatingTicks)
-    } else {
-        plugin.server.scheduler.runTaskLaterAsynchronously(plugin, {
-            f.invoke()
-        }, delayTicks)
-    }
-}
-
 fun Inventory.clearCompletely() {
     for (i in 0 until contents.size) {
         setItem(i, null)
@@ -232,20 +198,6 @@ fun String.toParticleType(): ParticleType {
     }
 
     throw IllegalArgumentException("ParticleType cannot be parsed from '" + this + "'.")
-}
-
-fun PersistenceService.runOnMainThread(runnable: Runnable) {
-    val plugin = JavaPlugin.getPlugin(PetBlocksPlugin::class.java)
-    plugin.server.scheduler.runTask(plugin, runnable)
-}
-
-fun <T> CompletableFuture<T>.thenAcceptOnMainThread(action: Consumer<in T>) {
-    this.thenAccept { p ->
-        val plugin = JavaPlugin.getPlugin(PetBlocksPlugin::class.java)
-        plugin.server.scheduler.runTask(plugin, {
-            action.accept(p)
-        })
-    }
 }
 
 /**

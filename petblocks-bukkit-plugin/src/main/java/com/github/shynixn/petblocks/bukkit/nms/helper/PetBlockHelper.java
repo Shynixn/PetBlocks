@@ -135,33 +135,12 @@ public final class PetBlockHelper {
         final PetData petData = (PetData) petBlock.getMeta();
         if (!getArmorstand(petBlock).isDead() && getArmorstand(petBlock).getPassenger() == null && getEngineEntity(petBlock) != null && getArmorstand(petBlock).getVehicle() == null) {
             Location location = null;
-            if (petData.getAge() >= Config.INSTANCE.getAge_largeticks())
-                location = new Location(getEngineEntity(petBlock).getLocation().getWorld(), getEngineEntity(petBlock).getLocation().getX(), getEngineEntity(petBlock).getLocation().getY() - 1.2, getEngineEntity(petBlock).getLocation().getZ(), getEngineEntity(petBlock).getLocation().getYaw(), getEngineEntity(petBlock).getLocation().getPitch());
-            else if (petData.getAge() <= Config.INSTANCE.getAge_smallticks())
-                location = new Location(getEngineEntity(petBlock).getLocation().getWorld(), getEngineEntity(petBlock).getLocation().getX(), getEngineEntity(petBlock).getLocation().getY() - 0.7, getEngineEntity(petBlock).getLocation().getZ(), getEngineEntity(petBlock).getLocation().getYaw(), getEngineEntity(petBlock).getLocation().getPitch());
+            location = new Location(getEngineEntity(petBlock).getLocation().getWorld(), getEngineEntity(petBlock).getLocation().getX(), getEngineEntity(petBlock).getLocation().getY() - 1.2, getEngineEntity(petBlock).getLocation().getZ(), getEngineEntity(petBlock).getLocation().getYaw(), getEngineEntity(petBlock).getLocation().getPitch());
             if (location != null)
                 callBack.run(location);
             counter = doTickSounds(counter, petBlock);
         } else if (getEngineEntity(petBlock) != null) {
             getEngineEntity(petBlock).teleport(getArmorstand(petBlock).getLocation());
-        }
-        try {
-            if (petData.getAge() >= Config.INSTANCE.getAge_maxticks()) {
-                if (Config.INSTANCE.isAge_deathOnMaxTicks() && !petBlock.isDieing()) {
-                    petBlock.setDieing();
-                }
-            } else {
-                boolean respawn = false;
-                if (petData.getAge() < Config.INSTANCE.getAge_largeticks()) {
-                    respawn = true;
-                }
-                petData.setAge(petData.getAge() + 1);
-                if (petData.getAge() >= Config.INSTANCE.getAge_largeticks() && respawn) {
-                    petBlock.respawn();
-                }
-            }
-        } catch (final Exception ex) {
-            PetBlocksPlugin.logger().log(Level.WARNING, "Catcher prevented server crash, please report the following error to author Shynixn!", ex);
         }
         getArmorstand(petBlock).setFireTicks(0);
         if (getEngineEntity(petBlock) != null)
@@ -232,14 +211,9 @@ public final class PetBlockHelper {
         } else {
             itemStack = new ItemStack(MaterialCompatibility13.getMaterialFromId(petData.getItemId()), 1, (short) petData.getItemDamage());
         }
-        if (petData.getAge() >= Config.INSTANCE.getAge_largeticks()) {
-            refreshHeadItemMeta(petBlock, itemStack);
-            getArmorstand(petBlock).setSmall(false);
 
-        } else {
-            refreshHeadItemMeta(petBlock, itemStack);
-            getArmorstand(petBlock).setSmall(true);
-        }
+        refreshHeadItemMeta(petBlock, itemStack);
+        getArmorstand(petBlock).setSmall(false);
     }
 
     public static void setRiding(PetBlock petBlock, Player player) {
@@ -334,10 +308,15 @@ public final class PetBlockHelper {
             return true;
         }
 
-        return (getEngineEntity(petBlock).isDead()
-                || getArmorstand(petBlock).isDead())
-                || (getEngineEntity(petBlock).getWorld().getName().equals(getArmorstand(petBlock).getWorld().getName())
-                && getEngineEntity(petBlock).getLocation().distance(getArmorstand(petBlock).getLocation()) > 10);
+        boolean engineEntityDead = getEngineEntity(petBlock).isDead();
+        boolean armorstandDead = getArmorstand(petBlock).isDead();
+        boolean differentWorldName = getEngineEntity(petBlock).getWorld().getName().equals(getArmorstand(petBlock).getWorld().getName());
+        boolean distance = getEngineEntity(petBlock).getLocation().distance(getArmorstand(petBlock).getLocation()) > 10;
+
+        return (engineEntityDead
+                || armorstandDead)
+                || (differentWorldName
+                && distance);
     }
 
     public static void setDisplayName(PetBlock petBlock, String name) {

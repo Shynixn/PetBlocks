@@ -1,5 +1,6 @@
 package com.github.shynixn.petblocks.bukkit.logic.business
 
+import com.github.shynixn.petblocks.api.business.service.LoggingService
 import com.github.shynixn.petblocks.core.logic.business.entity.DbContext
 import com.google.inject.Inject
 import com.zaxxer.hikari.HikariConfig
@@ -39,7 +40,7 @@ import java.sql.Connection
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class BukkitDBContext @Inject constructor(private val plugin: Plugin, private val logger: org.slf4j.Logger) : DbContext() {
+class BukkitDBContext @Inject constructor(private val plugin: Plugin, private val logger: LoggingService) : DbContext() {
 
     companion object {
         /**

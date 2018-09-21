@@ -9,8 +9,6 @@ import com.github.shynixn.petblocks.api.persistence.entity.ChatMessage
 import com.github.shynixn.petblocks.api.persistence.entity.GUIItem
 import com.github.shynixn.petblocks.bukkit.logic.business.PetBlockManager
 import com.github.shynixn.petblocks.bukkit.logic.business.helper.clearCompletely
-import com.github.shynixn.petblocks.bukkit.logic.business.helper.runOnMainThread
-import com.github.shynixn.petblocks.bukkit.logic.business.helper.thenAcceptOnMainThread
 import com.github.shynixn.petblocks.bukkit.nms.v1_13_R1.MaterialCompatibility13
 import com.github.shynixn.petblocks.core.logic.business.entity.GuiPageContainer
 import com.github.shynixn.petblocks.core.logic.business.extension.chatMessage
@@ -23,7 +21,6 @@ import org.bukkit.entity.Player
 import org.bukkit.inventory.Inventory
 import org.bukkit.inventory.ItemStack
 import org.bukkit.plugin.Plugin
-import java.util.function.Consumer
 
 /**
  * Created by Shynixn 2018.
@@ -52,7 +49,7 @@ import java.util.function.Consumer
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class GUIServiceImpl @Inject constructor(private val configurationService: ConfigurationService, private val plugin: Plugin, private val scriptService: GUIScriptService, private val persistenceService: PersistenceService, private val messageService: MessageService) : GUIService {
+class GUIServiceImpl @Inject constructor(private val configurationService: ConfigurationService, private val plugin: Plugin, private val scriptService: GUIScriptService, private val persistenceService: PersistencePetMetaService, private val messageService: MessageService) : GUIService {
     private val pageCache = HashMap<Player, PlayerGUICache>()
     private var collectedMinecraftHeadsMessage = chatMessage {
         text {
@@ -96,9 +93,9 @@ class GUIServiceImpl @Inject constructor(private val configurationService: Confi
 
         PetBlockManager.instance.gui.open(player)
 
-        persistenceService.getOrCreateFromPlayer(player).thenAcceptOnMainThread(Consumer { petMeta ->
+        persistenceService.getOrCreateFromPlayerUUID(player.uniqueId).thenAccept { petMeta ->
             PetBlockManager.instance.gui.setPage(player, GUIPage.MAIN, petMeta)
-        })
+        }
     }
 
     /**
@@ -359,13 +356,10 @@ class GUIServiceImpl @Inject constructor(private val configurationService: Confi
      * Sets the given itemstack as new pet skin for the given [player].
      */
     private fun setCollectionSkinItemToPlayer(player: Player, guiItem: GUIItem) {
-        persistenceService.getFromPlayer(player).thenAccept { p ->
-            val petMeta = p.get()
+        persistenceService.getOrCreateFromPlayerUUID(player.uniqueId).thenAccept { petMeta ->
             petMeta.setSkin(MaterialCompatibility13.getMaterialFromId(guiItem.type).name, guiItem.data, guiItem.skin, guiItem.unbreakable)
             persistenceService.save(petMeta)
-            persistenceService.runOnMainThread(Runnable {
-                PetBlockManager.instance.gui.setPage(player, GUIPage.MAIN, petMeta)
-            })
+            PetBlockManager.instance.gui.setPage(player, GUIPage.MAIN, petMeta)
         }
     }
 

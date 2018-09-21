@@ -1,12 +1,13 @@
-package com.github.shynixn.petblocks.sponge.logic.business.service
+package com.github.shynixn.petblocks.core.logic.business.service
 
 import com.github.shynixn.petblocks.api.business.enumeration.ChatColor
+import com.github.shynixn.petblocks.api.business.service.LoggingService
+import com.github.shynixn.petblocks.api.business.service.ConcurrencyService
+import com.github.shynixn.petblocks.api.business.service.ConfigurationService
 import com.github.shynixn.petblocks.api.business.service.MessageService
 import com.github.shynixn.petblocks.api.business.service.UpdateCheckService
-import com.github.shynixn.petblocks.sponge.logic.business.helper.async
+import com.github.shynixn.petblocks.core.logic.business.extension.async
 import com.google.inject.Inject
-import org.slf4j.Logger
-import org.spongepowered.api.plugin.PluginContainer
 import java.io.BufferedReader
 import java.io.IOException
 import java.io.InputStreamReader
@@ -41,10 +42,12 @@ import javax.net.ssl.HttpsURLConnection
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class UpdateCheckServiceImpl @Inject constructor(private val plugin: PluginContainer, private val messageService: MessageService, private val logger: Logger) : UpdateCheckService {
+class UpdateCheckServiceImpl @Inject constructor(configurationService: ConfigurationService, private val loggingService: LoggingService, private val messageService: MessageService, private val concurrencyService: ConcurrencyService) : UpdateCheckService {
     private val baseUrl = "https://api.spigotmc.org/legacy/update.php?resource="
     private val spigotResourceId: Long = 12056
     private val prefix: String = ChatColor.AQUA.toString() + "[PetBlocks] "
+    private val pluginVersion = configurationService.findValue<String>("plugin.version")
+    private val pluginName = "PetBlocks"
 
     /**
      * Returns if there are any new updates for the PetBlocks plugin.
@@ -52,16 +55,14 @@ class UpdateCheckServiceImpl @Inject constructor(private val plugin: PluginConta
     override fun checkForUpdates(): CompletableFuture<Boolean> {
         val completableFuture = CompletableFuture<Boolean>()
 
-        async(plugin) {
+        async(concurrencyService) {
             try {
                 val resourceVersion = getLatestReleaseVersion(spigotResourceId)
 
-                if (resourceVersion == plugin.version.get()) {
+                if (resourceVersion == pluginVersion) {
                     completableFuture.complete(false)
                 } else {
-                    val pluginName = plugin.name
-
-                    if (plugin.version.get().endsWith("SNAPSHOT")) {
+                    if (pluginVersion.endsWith("SNAPSHOT")) {
                         messageService.sendConsoleMessage(prefix + ChatColor.YELLOW + "================================================")
                         messageService.sendConsoleMessage(prefix + ChatColor.YELLOW + "You are using a snapshot of " + pluginName)
                         messageService.sendConsoleMessage(prefix + ChatColor.YELLOW + "Please check if there is a new version available")
@@ -76,7 +77,7 @@ class UpdateCheckServiceImpl @Inject constructor(private val plugin: PluginConta
                     completableFuture.complete(true)
                 }
             } catch (e: IOException) {
-                logger.warn("Failed to check for updates.", e)
+                loggingService.warn("Failed to check for updates.", e)
                 completableFuture.complete(false)
             }
         }

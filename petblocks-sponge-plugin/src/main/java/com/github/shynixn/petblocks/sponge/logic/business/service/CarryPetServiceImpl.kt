@@ -4,16 +4,20 @@ package com.github.shynixn.petblocks.sponge.logic.business.service
 
 import com.flowpowered.math.vector.Vector3d
 import com.github.shynixn.petblocks.api.business.service.CarryPetService
+import com.github.shynixn.petblocks.api.business.service.ConcurrencyService
 import com.github.shynixn.petblocks.api.business.service.ConfigurationService
+import com.github.shynixn.petblocks.core.logic.business.extension.async
+import com.github.shynixn.petblocks.core.logic.business.extension.sync
 import com.github.shynixn.petblocks.sponge.logic.business.PetBlocksManager
-import com.github.shynixn.petblocks.sponge.logic.business.helper.*
+import com.github.shynixn.petblocks.sponge.logic.business.helper.getItemStackInHand
+import com.github.shynixn.petblocks.sponge.logic.business.helper.setItemStackInHand
+import com.github.shynixn.petblocks.sponge.logic.business.helper.updateInventory
 import com.google.inject.Inject
 import org.spongepowered.api.entity.Entity
 import org.spongepowered.api.entity.living.ArmorStand
 import org.spongepowered.api.entity.living.player.Player
 import org.spongepowered.api.item.ItemTypes
 import org.spongepowered.api.item.inventory.ItemStack
-import org.spongepowered.api.plugin.PluginContainer
 import java.util.*
 import java.util.concurrent.CompletableFuture
 
@@ -44,7 +48,7 @@ import java.util.concurrent.CompletableFuture
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class CarryPetServiceImpl @Inject constructor(private val plugin: PluginContainer, private val configurationService: ConfigurationService) : CarryPetService {
+class CarryPetServiceImpl @Inject constructor(private val concurrencyService: ConcurrencyService, private val configurationService: ConfigurationService) : CarryPetService {
     private val carryingPet: MutableMap<Player, ItemStack> = HashMap()
 
     /**
@@ -96,10 +100,10 @@ class CarryPetServiceImpl @Inject constructor(private val plugin: PluginContaine
         carryingPet.remove(player)
         player.inventory.setItemStackInHand(null, true)
 
-        async(plugin) {
+        async(concurrencyService) {
             val petMeta = PetBlocksManager.petBlocksManager!!.petMetaController.getFromPlayer(player)
 
-            sync(plugin) {
+            sync(concurrencyService) {
                 val petBlock = PetBlocksManager.petBlocksManager!!.petBlockController.create(player, petMeta.get())
                 PetBlocksManager.petBlocksManager!!.petBlockController.store(petBlock)
 

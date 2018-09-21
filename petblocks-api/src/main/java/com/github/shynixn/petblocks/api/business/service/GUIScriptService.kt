@@ -32,6 +32,7 @@ import com.github.shynixn.petblocks.api.persistence.entity.ScriptResult
 interface GUIScriptService {
     /**
      * Executes the given [script] for the given [inventory].
+     * @param I the type of the inventory.
      */
     fun <I> executeScript(inventory: I, script: String) : ScriptResult
 }

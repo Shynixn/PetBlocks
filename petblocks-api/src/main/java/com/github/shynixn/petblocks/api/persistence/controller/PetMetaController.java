@@ -3,6 +3,7 @@ package com.github.shynixn.petblocks.api.persistence.controller;
 import com.github.shynixn.petblocks.api.persistence.entity.PetMeta;
 
 import java.util.Optional;
+import java.util.UUID;
 
 /**
  * Controller for the pet properties and meta data.
@@ -31,6 +32,7 @@ import java.util.Optional;
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+@Deprecated
 public interface PetMetaController<Player> extends IDatabaseController<PetMeta> {
 
     /**
@@ -63,4 +65,19 @@ public interface PetMetaController<Player> extends IDatabaseController<PetMeta> 
      * @param player player
      */
     void removeByPlayer(Player player);
+
+    /**
+     * Create from uuid.
+     * @param uuid uuid.
+     * @return petMeta
+     */
+    PetMeta createFromUUID(UUID uuid);
+
+    /**
+     * Returns the petMeta of the given uuid.
+     *
+     * @param uuid uuid
+     * @return playerMeta
+     */
+    Optional<PetMeta> getFromUUID(UUID uuid);
 }

@@ -2,9 +2,9 @@ package com.github.shynixn.petblocks.bukkit.logic.persistence.controller
 
 import com.github.shynixn.petblocks.api.persistence.entity.PlayerMeta
 import com.github.shynixn.petblocks.bukkit.PetBlocksPlugin
-import com.github.shynixn.petblocks.bukkit.logic.business.helper.LoggingBridge
 import com.github.shynixn.petblocks.bukkit.logic.persistence.entity.BukkitPlayerData
 import com.github.shynixn.petblocks.core.logic.business.entity.DbContext
+import com.github.shynixn.petblocks.core.logic.business.service.LoggingUtilServiceImpl
 import com.github.shynixn.petblocks.core.logic.persistence.controller.PlayerDataRepository
 import com.github.shynixn.petblocks.core.logic.persistence.entity.PlayerData
 import org.bukkit.entity.Player
@@ -36,7 +36,7 @@ import org.bukkit.entity.Player
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class BukkitPlayerDataRepository(connectionContext : DbContext) : PlayerDataRepository<Player>(connectionContext, LoggingBridge(PetBlocksPlugin.logger())) {
+class BukkitPlayerDataRepository(connectionContext : DbContext) : PlayerDataRepository<Player>(connectionContext, LoggingUtilServiceImpl(PetBlocksPlugin.logger())) {
     /**
      * Creates a new playerData from the given player.
      *

@@ -36,12 +36,14 @@ interface ConfigurationService {
      * Tries to load the config value from the given [path].
      * Throws a [IllegalArgumentException] if the path could not be correctly
      * loaded.
+     * @param C the type of the returned value.
      */
     fun <C> findValue(path: String): C
 
     /**
      * Tries to return a [GUIItem] matching the displayName and the lore of the given [item].
      * Can be called asynchronly.
+     * @param I the type of the itemstack.
      */
     fun <I> findClickedGUIItem(item: I): Optional<GUIItem>
 

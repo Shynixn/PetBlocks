@@ -1,11 +1,8 @@
-package com.github.shynixn.petblocks.bukkit.logic.persistence.entity
+package com.github.shynixn.petblocks.api.business.service
 
-import com.github.shynixn.petblocks.api.persistence.entity.IPosition
-import com.github.shynixn.petblocks.core.logic.persistence.entity.LocationBuilder
-import org.bukkit.Bukkit
-import org.bukkit.World
-import org.bukkit.configuration.serialization.ConfigurationSerializable
+import com.github.shynixn.petblocks.api.persistence.entity.PetMeta
 import java.util.*
+import java.util.concurrent.CompletableFuture
 
 /**
  * Created by Shynixn 2018.
@@ -34,35 +31,21 @@ import java.util.*
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class BukkitLocationBuilder(worldName: String?, x: Double, y: Double, z: Double, yaw: Double, pitch: Double) : LocationBuilder(worldName, x, y, z, yaw, pitch), ConfigurationSerializable {
+interface PersistencePetMetaService {
+    /**
+     * Returns [CompletableFuture] with a list of stored [PetMeta].
+     */
+    fun getAll(): CompletableFuture<List<PetMeta>>
 
     /**
-     * Copies the position to another [IPosition].
+     * Returns the petMeta of from the given player uuid. Creates
+     * a new one if it does not exist yet. Gets it from the runtime when a pet
+     * currently uses the meta data of the player.
      */
-    fun copy(): IPosition {
-        return BukkitLocationBuilder(this.worldName, this.x, this.y, this.z, this.yaw, this.pitch)
-    }
+    fun getOrCreateFromPlayerUUID(uuid: UUID): CompletableFuture<PetMeta>
 
     /**
-     * Returns the [world] of the builder.
+     * Saves the given [petMeta] instance and returns a [CompletableFuture] with the same petMeta instance.
      */
-    fun getWorld(): World? {
-        return Bukkit.getWorld(this.worldName)
-    }
-
-    /**
-     * Serializes the location data to be stored to the filesystem
-     *
-     * @return serializedContent
-     */
-    override fun serialize(): Map<String, Any> {
-        val map = LinkedHashMap<String, Any>()
-        map["x"] = this.x
-        map["y"] = this.y
-        map["z"] = this.z
-        map["yaw"] = this.yaw
-        map["pitch"] = this.pitch
-        map["worldname"] = this.worldName
-        return map
-    }
+    fun save(petMeta: PetMeta): CompletableFuture<PetMeta>
 }

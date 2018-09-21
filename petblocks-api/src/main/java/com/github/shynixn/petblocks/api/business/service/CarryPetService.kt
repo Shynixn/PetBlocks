@@ -34,6 +34,7 @@ interface CarryPetService {
     /**
      * Starts the given [player] carry his pet if is is currently spawned.
      * Does nothing if the pet is already getting carried.
+     * @param P the type of the player.
      */
     fun <P> carryPet(player: P)
 
@@ -41,6 +42,7 @@ interface CarryPetService {
      * Lets the given [player] drop his pet if he is currently carrying it.
      * Does nothing if the player isn't carrying it.
      * Returns when the action was completed.
+     * @param P the type of the player.
      */
     fun <P> dropPet(player: P): CompletableFuture<Void>
 
@@ -48,22 +50,26 @@ interface CarryPetService {
      * Lets the given [player] throw his pet if he is currently carrying.
      * Does automatically drop it and does nothing if the player isn't carrying it.
      * Returns when the action was completed.
+     * @param P the type of the player.
      */
     fun <P> throwPet(player: P): CompletableFuture<Void>
 
     /**
      * Gets the itemstack from the carrying pet.
      * Returns an empty optional if the player is carrying anything.
+     * @param P the type of the player.
      */
     fun <P, I> getCarryPetItemStack(player: P): Optional<I>
 
     /**
      * Gets if the given player is carrying a pet.
+     * @param P the type of the player.
      */
     fun <P> isCarryingPet(player: P): Boolean
 
     /**
      * Clears all resources the given [player] may have allocated.
+     * @param P the type of the player.
      */
     fun <P> clearResources(player: P)
 }

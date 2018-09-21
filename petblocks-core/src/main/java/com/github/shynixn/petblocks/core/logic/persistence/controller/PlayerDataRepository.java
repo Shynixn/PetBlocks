@@ -1,5 +1,6 @@
 package com.github.shynixn.petblocks.core.logic.persistence.controller;
 
+import com.github.shynixn.petblocks.api.business.service.LoggingService;
 import com.github.shynixn.petblocks.api.persistence.controller.PlayerMetaController;
 import com.github.shynixn.petblocks.api.persistence.entity.PlayerMeta;
 import com.github.shynixn.petblocks.core.logic.business.entity.DbContext;
@@ -50,7 +51,7 @@ public abstract class PlayerDataRepository<Player> extends DataBaseRepository<Pl
      * @param connectionContext connectionContext
      * @param logger            logger
      */
-    public PlayerDataRepository(DbContext connectionContext, Logger logger) {
+    public PlayerDataRepository(DbContext connectionContext, LoggingService logger) {
         super(connectionContext, logger);
     }
 

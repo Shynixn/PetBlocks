@@ -14,6 +14,8 @@ import org.junit.Assert;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
+import sun.rmi.runtime.Log;
 
 import java.io.File;
 import java.sql.Connection;
@@ -60,6 +62,7 @@ public class ParticleEffectMetaMySQLControllerIT {
         }
     }
 
+    @SuppressWarnings("HardCodedStringLiteral")
     @BeforeAll
     public static void startMariaDB() {
         try {
@@ -80,8 +83,9 @@ public class ParticleEffectMetaMySQLControllerIT {
     public void insertSelectParticleEffectMetaTest() throws ClassNotFoundException {
         final Plugin plugin = mockPlugin();
         plugin.getConfig().set("sql.enabled", true);
+        Mockito.when(plugin.getLogger()).thenReturn(Logger.getGlobal());
         Factory.initialize(plugin);
-        try (ParticleEffectMetaController controller = Factory.createParticleEffectController()) {
+        try (ParticleEffectMetaController controller = Factory.createParticleEffectController(plugin)) {
             for (final Particle item : controller.getAll()) {
                 controller.remove(item);
             }

@@ -72,10 +72,11 @@ public class PetBlocksApi {
 
     /**
      * Returns the default meta controller.
-     *
-     * @param <T> type of petMetaController.
-     * @return metaController
+     * <p>
+     * Deprecated. Please use PersistencePetMetaService service = PetBlocksApi.resolve(PersistencePetMetaService.class) instead.
+     * Use the sample from https://shynixn.github.io/PetBlocks/build/html/api/index.html.
      */
+    @Deprecated
     public static <T> PetMetaController<T> getDefaultPetMetaController() {
         return metaController;
     }
@@ -85,7 +86,10 @@ public class PetBlocksApi {
      *
      * @param <T> type of petblockController.
      * @return petBlockController
+     * Deprecated. Please use PetService service = PetBlocksApi.resolve(PetService.class) instead.
+     * Use the sample from https://shynixn.github.io/PetBlocks/build/html/api/index.html.
      */
+    @Deprecated
     public static <T> PetBlockController<T> getDefaultPetBlockController() {
         return petBlockController;
     }

@@ -3,6 +3,7 @@ com.github.shynixn.petblocks.api.bukkit.event
 com.github.shynixn.petblocks.api.business.controller
 com.github.shynixn.petblocks.api.business.entity
 com.github.shynixn.petblocks.api.business.enumeration
+com.github.shynixn.petblocks.api.business.proxy
 com.github.shynixn.petblocks.api.business.service
 com.github.shynixn.petblocks.api.persistence.controller
 com.github.shynixn.petblocks.api.persistence.entity

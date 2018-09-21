@@ -1,9 +1,5 @@
 package com.github.shynixn.petblocks.api.business.service
 
-import com.github.shynixn.petblocks.api.persistence.entity.PetMeta
-import java.util.*
-import java.util.concurrent.CompletableFuture
-
 /**
  * Created by Shynixn 2018.
  * <p>
@@ -31,25 +27,14 @@ import java.util.concurrent.CompletableFuture
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-interface PersistenceService {
+interface ConcurrencyService {
     /**
-     * Returns [CompletableFuture] with a list of stored [PetMeta].
+     * Runs the given [function] synchronised with the given [delayTicks] and [repeatingTicks].
      */
-    fun getAll(): CompletableFuture<List<PetMeta>>
+    fun runTaskSync(delayTicks: Long = 0L, repeatingTicks: Long = 0L, function: Runnable)
 
     /**
-     * Returns [CompletableFuture] with optional newly created [PetMeta] instance or empty optional if not found.
+     * Runs the given [function] asynchronous with the given [delayTicks] and [repeatingTicks].
      */
-    fun <P> getFromPlayer(player: P): CompletableFuture<Optional<PetMeta>>
-
-    /**
-     * Returns [CompletableFuture] with the [PetMeta] instance of the given player. Creates a new [PetMeta] instance and
-     * stores it in the storage if it does not already exist.
-     */
-    fun <P> getOrCreateFromPlayer(player: P): CompletableFuture<PetMeta>
-
-    /**
-     * Saves the given [petMeta] instance and returns a [CompletableFuture] with the same petMeta instance.
-     */
-    fun save(petMeta: PetMeta): CompletableFuture<PetMeta>
+    fun runTaskAsync(delayTicks: Long = 0L, repeatingTicks: Long = 0L, function: Runnable)
 }

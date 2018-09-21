@@ -31,6 +31,7 @@ interface FeedingPetService {
     /**
      * Feeds the pet of the given [player] with the current item in hand.
      * Returns if the pet could be feed.
+     * @param P the type of the player.
      */
     fun <P> feedPet(player: P): Boolean
 }

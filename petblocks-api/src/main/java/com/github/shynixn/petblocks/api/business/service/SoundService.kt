@@ -33,11 +33,15 @@ interface SoundService {
     /**
      * Plays the given [sound] at the given [location] for the given [player] or
      * all players in the world if the config option is enabled.
+     * @param P the type of the player.
+     * @param L the type of the location.
      */
     fun <L, P> playSound(location: L, sound: Sound, player: P)
 
     /**
      * Plays the given [sound] at the given [location] for the given [players].
+     * @param P the type of the player.
+     * @param L the type of the location.
      */
     fun <L, P> playSound(location: L, sound: Sound, players: Collection<P>)
 }

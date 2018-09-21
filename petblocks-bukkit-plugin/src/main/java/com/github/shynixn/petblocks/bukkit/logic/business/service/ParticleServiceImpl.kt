@@ -3,20 +3,20 @@
 package com.github.shynixn.petblocks.bukkit.logic.business.service
 
 import com.github.shynixn.petblocks.api.business.enumeration.ParticleType
+import com.github.shynixn.petblocks.api.business.service.ConcurrencyService
 import com.github.shynixn.petblocks.api.business.service.ConfigurationService
+import com.github.shynixn.petblocks.api.business.service.LoggingService
 import com.github.shynixn.petblocks.api.business.service.ParticleService
 import com.github.shynixn.petblocks.api.persistence.entity.Particle
-import com.github.shynixn.petblocks.bukkit.logic.business.helper.async
 import com.github.shynixn.petblocks.bukkit.logic.business.helper.sendPacket
 import com.github.shynixn.petblocks.bukkit.nms.VersionSupport
 import com.github.shynixn.petblocks.bukkit.nms.v1_13_R1.MaterialCompatibility13
+import com.github.shynixn.petblocks.core.logic.business.extension.async
 import com.google.inject.Inject
 import org.bukkit.Location
 import org.bukkit.Material
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
-import org.bukkit.plugin.Plugin
-import java.util.logging.Level
 
 /**
  * Created by Shynixn 2018.
@@ -45,7 +45,7 @@ import java.util.logging.Level
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class ParticleServiceImpl @Inject constructor(private val plugin: Plugin, private val configurationService: ConfigurationService) : ParticleService {
+class ParticleServiceImpl @Inject constructor(private val concurrencyService: ConcurrencyService, private val logger: LoggingService, private val configurationService: ConfigurationService) : ParticleService {
     private val version = VersionSupport.getServerVersion()
 
     /**
@@ -148,13 +148,13 @@ class ParticleServiceImpl @Inject constructor(private val plugin: Plugin, privat
             }
         }
 
-        async(plugin) {
+        async(concurrencyService) {
             try {
                 players.forEach { p ->
                     p.sendPacket(packet)
                 }
             } catch (e: Exception) {
-                plugin.logger.log(Level.WARNING, "Failed to send particle.", e)
+                logger.warn("Failed to send particle.", e)
             }
         }
     }
@@ -191,7 +191,7 @@ class ParticleServiceImpl @Inject constructor(private val plugin: Plugin, privat
                 }
             }
         } catch (e: Exception) {
-            plugin.logger.log(Level.WARNING, "Failed to load enum value.", e)
+            logger.warn("Failed to load enum value.", e)
             throw RuntimeException(e)
         }
     }

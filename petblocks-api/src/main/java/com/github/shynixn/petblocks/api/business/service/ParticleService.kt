@@ -33,11 +33,15 @@ interface ParticleService {
     /**
      * Plays the given [particle] at the given [location] for the given [player] or
      * all players in the world if the config option all visible is enabled.
+     * @param P the type of the player.
+     * @param L the type of the location.
      */
     fun <L, P> playParticle(location: L, particle: Particle, player: P)
 
     /**
      * Plays the given [particle] at the given [location] for the given [players].
+     * @param P the type of the player.
+     * @param L the type of the location.
      */
     fun <L, P> playParticle(location: L, particle: Particle, players: Collection<P>)
 }

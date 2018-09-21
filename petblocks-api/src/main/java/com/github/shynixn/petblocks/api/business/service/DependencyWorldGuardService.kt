@@ -31,17 +31,20 @@ interface DependencyWorldGuardService {
     /**
      * Prepares the given [location] for spawning a pet inside of it. All worldguard regions get modified
      * to correctly adjust the spawning. Does nothing if already prepared.
+     * @param L the type of the location.
      */
     fun <L> prepareSpawningRegion(location: L)
 
     /**
      * Resets the cached spawning adjustments which where made by [prepareSpawningRegion]. If no caches
      * are present it does nothing.
+     * @param L the type of the location.
      */
     fun <L> resetSpawningRegion(location: L)
 
     /**
      * Returns all region names at the given [location].
+     * @param L the type of the location.
      */
     fun <L> getRegionNames(location: L): List<String>
 }

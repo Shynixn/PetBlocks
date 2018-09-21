@@ -1,12 +1,14 @@
 package com.github.shynixn.petblocks.sponge.logic.persistence.controller
 
+import com.github.shynixn.petblocks.api.business.service.LoggingService
 import com.github.shynixn.petblocks.api.persistence.controller.ParticleEffectMetaController
+import com.github.shynixn.petblocks.api.persistence.entity.PetMeta
 import com.github.shynixn.petblocks.core.logic.business.entity.DbContext
 import com.github.shynixn.petblocks.core.logic.persistence.controller.PetDataRepository
 import com.github.shynixn.petblocks.core.logic.persistence.entity.PetData
 import com.github.shynixn.petblocks.sponge.logic.persistence.entity.SpongePetData
 import com.google.inject.Inject
-import org.slf4j.Logger
+import org.spongepowered.api.Sponge
 import org.spongepowered.api.entity.living.player.Player
 import java.util.*
 
@@ -38,7 +40,26 @@ import java.util.*
  * SOFTWARE.
  */
 class SpongePetDataRepository @Inject constructor(playerMetaController: SpongePlayerDataRepository, particleController: ParticleEffectMetaController, connectionContext: DbContext
-                                                  , logger: Logger) : PetDataRepository<Player>(playerMetaController, particleController, connectionContext, logger) {
+                                                  , logger: LoggingService) : PetDataRepository<Player>(playerMetaController, particleController, connectionContext, logger) {
+    /**
+     * Create from uuid.
+     * @param uuid uuid.
+     * @return petMeta
+     */
+    override fun createFromUUID(uuid: UUID?): PetMeta {
+        return create(Sponge.getGame().server.getPlayer(uuid!!).get())
+    }
+
+    /**
+     * Returns the petMeta of the given uuid.
+     *
+     * @param uuid uuid
+     * @return playerMeta
+     */
+    override fun getFromUUID(uuid: UUID?): Optional<PetMeta> {
+        return getFromPlayer(Sponge.getGame().server.getPlayer(uuid!!).get())
+    }
+
     override fun create(player: Any?, name: String?): PetData {
         return SpongePetData(player as Player, name)
     }

@@ -6,13 +6,13 @@ import com.github.shynixn.petblocks.api.business.entity.PetBlockPartEntity;
 import com.github.shynixn.petblocks.api.business.enumeration.RideType;
 import com.github.shynixn.petblocks.api.business.service.ParticleService;
 import com.github.shynixn.petblocks.api.business.service.SoundService;
-import com.github.shynixn.petblocks.api.persistence.entity.IPosition;
 import com.github.shynixn.petblocks.api.persistence.entity.PetMeta;
+import com.github.shynixn.petblocks.api.persistence.entity.Position;
 import com.github.shynixn.petblocks.api.sponge.event.PetBlockMoveEvent;
 import com.github.shynixn.petblocks.api.sponge.event.PetBlockSpawnEvent;
+import com.github.shynixn.petblocks.core.logic.persistence.entity.PositionEntity;
 import com.github.shynixn.petblocks.sponge.logic.business.helper.ExtensionMethodsKt;
 import com.github.shynixn.petblocks.sponge.logic.persistence.configuration.Config;
-import com.github.shynixn.petblocks.sponge.logic.persistence.entity.SpongeLocationBuilder;
 import com.github.shynixn.petblocks.sponge.nms.helper.PetBlockPartWrapper;
 import com.github.shynixn.petblocks.sponge.nms.helper.PetBlockWrapper;
 import net.minecraft.anchor.v1_12_mcpR1.entity.Entity;
@@ -122,12 +122,26 @@ public final class CustomGroundArmorstand extends EntityArmorStand {
             final Living engine = (Living) this.rabbit.getEntity();
 
             if (!armorStand.isRemoved() && armorStand.getPassengers().isEmpty() && engine != null && !armorStand.getVehicle().isPresent()) {
-                IPosition location = null;
+                Position location = null;
                 if (petData.getAge() >= Config.INSTANCE.getAge_largeticks()) {
-                    location = new SpongeLocationBuilder(engine.getLocation().getExtent().getName(), engine.getLocation().getX(), engine.getLocation().getY(), engine.getLocation().getZ(), engine.getTransform().getYaw(), engine.getTransform().getPitch());
+                    location = new PositionEntity();
+                    location.setWorldName(engine.getLocation().getExtent().getName());
+                    location.setX(engine.getLocation().getX());
+                    location.setY(engine.getLocation().getY());
+                    location.setZ(engine.getLocation().getZ());
+                    location.setYaw(engine.getTransform().getYaw());
+                    location.setPitch(engine.getTransform().getPitch());
                     location.setY(location.getY() - 1.2);
-                } else if (petData.getAge() <= Config.INSTANCE.getAge_smallticks())
-                    location = new SpongeLocationBuilder(engine.getLocation().getExtent().getName(), engine.getLocation().getX(), engine.getLocation().getY() - 0.7, engine.getLocation().getZ(), engine.getTransform().getYaw(), engine.getTransform().getPitch());
+                } else if (petData.getAge() <= Config.INSTANCE.getAge_smallticks()) {
+                    location = new PositionEntity();
+                    location.setWorldName(engine.getLocation().getExtent().getName());
+                    location.setX(engine.getLocation().getX());
+                    location.setY(engine.getLocation().getY());
+                    location.setZ(engine.getLocation().getZ());
+                    location.setYaw(engine.getTransform().getYaw());
+                    location.setPitch(engine.getTransform().getPitch());
+                    location.setY(location.getY() - 0.7);
+                }
                 if (location != null) {
                     this.setLocationAndAngles(location.getX(), location.getY() + 0.2, location.getZ(), (float) location.getYaw(), (float) location.getPitch());
                     final SPacketEntityTeleport animation = new SPacketEntityTeleport(this);
@@ -230,22 +244,26 @@ public final class CustomGroundArmorstand extends EntityArmorStand {
                 final float forw = entityLiving.moveForward;
                 Vector3d v = new Vector3d();
                 final org.spongepowered.api.world.World world = (org.spongepowered.api.world.World) this.world;
-                final SpongeLocationBuilder l = new SpongeLocationBuilder(world.getName(), this.posX, this.posY, this.posZ, 0, 0);
+                final Position l = new PositionEntity();
+                l.setWorldName(world.getName());
+                l.setX(this.posX);
+                l.setY(this.posY);
+                l.setZ(this.posZ);
 
                 if (side < 0.0F) {
                     l.setYaw(entityLiving.rotationYaw - 90);
-                    v = v.add(l.getDirection().normalize().mul(-0.5));
+                    v = v.add(ExtensionMethodsKt.getDirection(l).normalize().mul(-0.5));
                 } else if (side > 0.0F) {
                     l.setYaw(entityLiving.rotationYaw + 90);
-                    v = v.add(l.getDirection().normalize().mul(-0.5));
+                    v = v.add(ExtensionMethodsKt.getDirection(l).normalize().mul(-0.5));
                 }
 
                 if (forw < 0.0F) {
                     l.setYaw(entityLiving.rotationYaw);
-                    v = v.add(l.getDirection().normalize().mul(0.5));
+                    v = v.add(ExtensionMethodsKt.getDirection(l).normalize().mul(0.5));
                 } else if (forw > 0.0F) {
                     l.setYaw(entityLiving.rotationYaw);
-                    v = v.add(l.getDirection().normalize().mul(0.5));
+                    v = v.add(ExtensionMethodsKt.getDirection(l).normalize().mul(0.5));
                 }
                 if (this.firstRide) {
                     this.firstRide = false;
@@ -261,18 +279,22 @@ public final class CustomGroundArmorstand extends EntityArmorStand {
                 if (this.wrapper.getHitflor()) {
                     v = new Vector3d(v.getX(), 0, v.getZ());
                     v = v.mul(2.25).mul(Config.INSTANCE.getModifier_petriding());
-                    l.addCoordinates(v.getX(), v.getY(), v.getZ());
+                    l.setX(l.getX() + v.getX());
+                    l.setY(l.getY() + v.getY());
+                    l.setZ(l.getZ() + v.getZ());
                     this.setPosition(l.getX(), l.getY(), l.getZ());
                 } else {
                     v = v.mul(2.25).mul(Config.INSTANCE.getModifier_petriding());
-                    l.addCoordinates(v.getX(), v.getY(), v.getZ());
+                    l.setX(l.getX() + v.getX());
+                    l.setY(l.getY() + v.getY());
+                    l.setZ(l.getZ() + v.getZ());
                     this.setPosition(l.getX(), l.getY(), l.getZ());
                 }
                 final Vec3d vec3d = new Vec3d(this.posX, this.posY, this.posZ);
                 final Vec3d vec3d1 = new Vec3d(this.posX + this.motionX, this.posY + this.motionY, this.posZ + this.motionZ);
                 final RayTraceResult movingobjectposition = this.world.rayTraceBlocks(vec3d, vec3d1);
                 if (movingobjectposition == null) {
-                    this.bumper = l.toVector();
+                    this.bumper = new Vector3d(l.getX(), l.getY(), l.getZ());
                 } else {
                     if (this.bumper != null && Config.INSTANCE.isFollow_wallcolliding())
                         this.setPosition(this.bumper.getX(), this.bumper.getY(), this.bumper.getZ());

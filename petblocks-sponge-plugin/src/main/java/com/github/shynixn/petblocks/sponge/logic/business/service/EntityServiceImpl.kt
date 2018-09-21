@@ -2,11 +2,11 @@ package com.github.shynixn.petblocks.sponge.logic.business.service
 
 import com.github.shynixn.petblocks.api.business.enumeration.EntityType
 import com.github.shynixn.petblocks.api.business.service.EntityService
+import com.github.shynixn.petblocks.api.business.service.LoggingService
 import com.github.shynixn.petblocks.sponge.nms.v1_12_R1.CustomGroundArmorstand
 import com.github.shynixn.petblocks.sponge.nms.v1_12_R1.CustomRabbit
 import com.github.shynixn.petblocks.sponge.nms.v1_12_R1.CustomZombie
 import com.google.inject.Inject
-import org.slf4j.Logger
 import org.spongepowered.api.Sponge
 import org.spongepowered.api.text.translation.Translation
 
@@ -37,7 +37,7 @@ import org.spongepowered.api.text.translation.Translation
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class EntityServiceImpl @Inject constructor(private val logger: Logger) : EntityService {
+class EntityServiceImpl @Inject constructor(private val logger: LoggingService) : EntityService {
     /**
      * Registers entities on the server when not already registered.
      * Returns true if registered. Returns false when not registered.

@@ -1,8 +1,8 @@
 package com.github.shynixn.petblocks.core.logic.persistence.controller;
 
+import com.github.shynixn.petblocks.api.business.service.LoggingService;
 import com.github.shynixn.petblocks.api.persistence.controller.IDatabaseController;
 import com.github.shynixn.petblocks.core.logic.business.entity.DbContext;
-import org.slf4j.Logger;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -38,7 +38,7 @@ import java.util.List;
  */
 public abstract class DataBaseRepository<T> implements IDatabaseController<T> {
     protected DbContext dbContext;
-    protected Logger logger;
+    protected LoggingService logger;
 
     /**
      * Initializes a new databaseRepository with the given connectionContext.
@@ -46,7 +46,7 @@ public abstract class DataBaseRepository<T> implements IDatabaseController<T> {
      * @param connectionContext connectionContext
      * @param logger            logger
      */
-    public DataBaseRepository(DbContext connectionContext, Logger logger) {
+    public DataBaseRepository(DbContext connectionContext, LoggingService logger) {
         super();
         if (connectionContext == null)
             throw new IllegalArgumentException("ConnectionContext cannot be null!");

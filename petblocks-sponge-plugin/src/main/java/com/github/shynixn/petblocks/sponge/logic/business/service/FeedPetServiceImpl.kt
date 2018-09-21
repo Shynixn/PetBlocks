@@ -1,20 +1,16 @@
 package com.github.shynixn.petblocks.sponge.logic.business.service
 
-import com.github.shynixn.petblocks.api.business.service.ConfigurationService
-import com.github.shynixn.petblocks.api.business.service.FeedingPetService
-import com.github.shynixn.petblocks.api.business.service.ParticleService
-import com.github.shynixn.petblocks.api.business.service.SoundService
+import com.github.shynixn.petblocks.api.business.service.*
 import com.github.shynixn.petblocks.api.persistence.entity.Particle
 import com.github.shynixn.petblocks.api.persistence.entity.Sound
+import com.github.shynixn.petblocks.core.logic.business.extension.sync
 import com.github.shynixn.petblocks.sponge.logic.business.PetBlocksManager
 import com.github.shynixn.petblocks.sponge.logic.business.helper.getItemStackInHand
 import com.github.shynixn.petblocks.sponge.logic.business.helper.setItemStackInHand
-import com.github.shynixn.petblocks.sponge.logic.business.helper.sync
 import com.google.inject.Inject
 import org.spongepowered.api.entity.Transform
 import org.spongepowered.api.entity.living.player.Player
 import org.spongepowered.api.item.ItemTypes
-import org.spongepowered.api.plugin.PluginContainer
 import java.util.*
 
 /**
@@ -44,7 +40,7 @@ import java.util.*
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class FeedPetServiceImpl @Inject constructor(private val plugin: PluginContainer, private val configurationService: ConfigurationService, private val soundService: SoundService, private val particleService: ParticleService) : FeedingPetService {
+class FeedPetServiceImpl @Inject constructor(private val concurrencyService: ConcurrencyService, private val configurationService: ConfigurationService, private val soundService: SoundService, private val particleService: ParticleService) : FeedingPetService {
     private val jumpCache = HashSet<UUID>()
 
     /**
@@ -90,7 +86,7 @@ class FeedPetServiceImpl @Inject constructor(private val plugin: PluginContainer
         if (!jumpCache.contains(player.uniqueId)) {
             jumpCache.add(player.uniqueId)
             pet.get().jump()
-            sync(plugin, 20L) {
+            sync(concurrencyService, 20L) {
                 jumpCache.remove(player.uniqueId)
             }
         }

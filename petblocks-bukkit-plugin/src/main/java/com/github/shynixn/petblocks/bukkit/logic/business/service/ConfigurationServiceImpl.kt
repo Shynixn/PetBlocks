@@ -130,6 +130,10 @@ class ConfigurationServiceImpl @Inject constructor(private val plugin: Plugin, p
             return skullNamingMessage as C
         }
 
+        if (path == "plugin.version") {
+            return plugin.description.version as C
+        }
+
         if (!plugin.config.contains(path)) {
             throw IllegalArgumentException("Path '$path' could not be found!")
         }

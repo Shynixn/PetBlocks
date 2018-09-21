@@ -1,5 +1,6 @@
 package com.github.shynixn.petblocks.sponge.logic.business.helper
 
+import com.flowpowered.math.vector.Vector3d
 import com.github.shynixn.petblocks.api.business.entity.GUIItemContainer
 import com.github.shynixn.petblocks.api.business.entity.PetBlock
 import com.github.shynixn.petblocks.api.business.proxy.PluginProxy
@@ -9,7 +10,9 @@ import com.github.shynixn.petblocks.api.business.enumeration.Permission
 import com.github.shynixn.petblocks.api.business.enumeration.Version
 import com.github.shynixn.petblocks.api.persistence.entity.EngineContainer
 import com.github.shynixn.petblocks.api.persistence.entity.PetMeta
+import com.github.shynixn.petblocks.api.persistence.entity.Position
 import com.github.shynixn.petblocks.core.logic.persistence.configuration.Config
+import com.github.shynixn.petblocks.core.logic.persistence.entity.PositionEntity
 import com.github.shynixn.petblocks.sponge.logic.business.PetBlocksManager
 import com.github.shynixn.petblocks.sponge.nms.VersionSupport
 import org.spongepowered.api.Game
@@ -84,6 +87,22 @@ fun Entity.isPetOfPlayer(player: Player): Boolean {
     }
 
     return false
+}
+
+/**
+ * Returns the direction of the location.
+ *
+ * @return direction
+ */
+fun Position.getDirection(): Vector3d {
+    val vector = PositionEntity()
+    val rotX = this.yaw
+    val rotY = this.pitch
+    vector.y = -Math.sin(Math.toRadians(rotY))
+    val xz = Math.cos(Math.toRadians(rotY))
+    vector.x = -xz * Math.sin(Math.toRadians(rotX))
+    vector.z = xz * Math.cos(Math.toRadians(rotX))
+    return Vector3d(vector.x, vector.y, vector.z)
 }
 
 /**
@@ -164,36 +183,6 @@ fun PetMeta.setCostume(petBlock: PetBlock<Player, Transform<World>>?, container:
         return
     setSkin(container.itemId, container.itemDamage, container.skin, container.isItemUnbreakable)
     petBlock?.respawn()
-}
-
-/**
- * Executes the given [f] for the given [plugin] on main thread.
- */
-inline fun Any.sync(plugin: Any, delayTicks: Long = 0L, repeatingTicks: Long = 0L, crossinline f: () -> Unit) {
-    val builder = Task.builder().execute(Runnable {
-        f.invoke()
-    }).delayTicks(delayTicks)
-
-    if (repeatingTicks > 0) {
-        builder.intervalTicks(repeatingTicks)
-    }
-
-    builder.submit(plugin)
-}
-
-/**
- * Executes the given [f] for the given [plugin] asynchronly.
- */
-inline fun Any.async(plugin: Any, delayTicks: Long = 0L, repeatingTicks: Long = 0L, crossinline f: () -> Unit) {
-    val builder = Task.builder().async().execute(Runnable {
-        f.invoke()
-    }).delayTicks(delayTicks)
-
-    if (repeatingTicks > 0) {
-        builder.intervalTicks(repeatingTicks)
-    }
-
-    builder.submit(plugin)
 }
 
 fun Inventory.setItem(index: Int, itemStack: ItemStack) {

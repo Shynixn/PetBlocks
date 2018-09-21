@@ -282,6 +282,26 @@ dependencies {
 <h2>Working with the PetBlocks API<a class="headerlink" href="#working-with-the-petblocks-api" title="Permalink to this headline">¶</a></h2>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
+<p class="last"><strong>Pet Metadata</strong> - Bukkit/Sponge - Manipulating the name of the pet of a player.</p>
+</div>
+<div class="highlight-java"><div class="highlight"><pre><span></span><span class="n">Player</span> <span class="n">player</span><span class="o">;</span>  <span class="c1">// Any player instance</span>
+<span class="n">PersistencePetMetaService</span> <span class="n">petMetaService</span> <span class="o">=</span> <span class="n">PetBlocksApi</span><span class="o">.</span><span class="na">INSTANCE</span><span class="o">.</span><span class="na">resolve</span><span class="o">(</span><span class="n">PersistencePetMetaService</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
+
+<span class="n">CompletableFuture</span><span class="o">&lt;</span><span class="n">PetMeta</span><span class="o">&gt;</span> <span class="n">completeAblePetMeta</span> <span class="o">=</span> <span class="n">petMetaService</span><span class="o">.</span><span class="na">getOrCreateFromPlayerUUID</span><span class="o">(</span><span class="n">player</span><span class="o">.</span><span class="na">getUniqueId</span><span class="o">());</span>
+
+<span class="n">completeAblePetMeta</span><span class="o">.</span><span class="na">thenAccept</span><span class="o">(</span><span class="n">petMeta</span> <span class="o">-&gt;</span> <span class="o">{</span>
+    <span class="c1">// Sets the display to Pikachu so the pet shows up with the name Pikachu when a respawn gets</span>
+    <span class="c1">// triggered.</span>
+    <span class="n">petMeta</span><span class="o">.</span><span class="na">setPetDisplayName</span><span class="o">(</span><span class="n">ChatColor</span><span class="o">.</span><span class="na">YELLOW</span> <span class="o">+</span> <span class="s">&quot;Pikachu&quot;</span><span class="o">);</span>
+
+    <span class="c1">// Stores the changed data and triggers a respawn if the pet is already spawned. Does not</span>
+    <span class="c1">// respawn the pet when the pet is not spawned.</span>
+    <span class="n">petMetaService</span><span class="o">.</span><span class="na">save</span><span class="o">(</span><span class="n">petMeta</span><span class="o">);</span>
+<span class="o">});</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
 <p class="last"><strong>Configuration</strong> - Bukkit/Sponge - Accessing the stored configuration.</p>
 </div>
 <div class="highlight-java"><div class="highlight"><pre><span></span><span class="n">String</span> <span class="n">path</span> <span class="o">=</span> <span class="s">&quot;pet.design.max-petname-length&quot;</span><span class="o">;</span>
@@ -417,135 +437,7 @@ dependencies {
 </div>
 <div class="admonition warning">
 <p class="first admonition-title">Warning</p>
-<p class="last">Accessing the PetMeta and PetBlock is not stable via this API. This is going to be replaced by services in the future.</p>
-</div>
-<p><strong>(Bukkit) Creating a new PetMeta for a player:</strong></p>
-<div class="highlight-java"><div class="highlight"><pre><span></span><span class="n">Player</span> <span class="n">player</span><span class="o">;</span> <span class="c1">//Any player instance</span>
-<span class="n">Plugin</span> <span class="n">plugin</span><span class="o">;</span> <span class="c1">//Any plugin instance</span>
-
-<span class="n">PetMetaController</span><span class="o">&lt;</span><span class="n">Player</span><span class="o">&gt;</span> <span class="n">metaController</span> <span class="o">=</span> <span class="n">PetBlocksApi</span><span class="o">.</span><span class="na">getDefaultPetMetaController</span><span class="o">();</span>
-<span class="n">PetMeta</span> <span class="n">petMeta</span> <span class="o">=</span> <span class="n">metaController</span><span class="o">.</span><span class="na">create</span><span class="o">(</span><span class="n">player</span><span class="o">);</span>
-<span class="n">petMeta</span><span class="o">.</span><span class="na">setPetDisplayName</span><span class="o">(</span><span class="n">ChatColor</span><span class="o">.</span><span class="na">GREEN</span> <span class="o">+</span> <span class="s">&quot;This is my new pet.&quot;</span><span class="o">);</span> <span class="c1">//Modify the petMeta</span>
-
-<span class="n">Bukkit</span><span class="o">.</span><span class="na">getServer</span><span class="o">().</span><span class="na">getScheduler</span><span class="o">().</span><span class="na">runTaskAsynchronously</span><span class="o">(</span><span class="n">plugin</span><span class="o">,</span> <span class="k">new</span> <span class="n">Runnable</span><span class="o">()</span> <span class="o">{</span>
-    <span class="nd">@Override</span>
-    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">run</span><span class="o">()</span> <span class="o">{</span>
-        <span class="n">metaController</span><span class="o">.</span><span class="na">store</span><span class="o">(</span><span class="n">petMeta</span><span class="o">);</span> <span class="c1">//It is recommend to save the petMeta asynchronously into the database</span>
-    <span class="o">}</span>
-<span class="o">});</span>
-</pre></div>
-</div>
-<p><strong>(Sponge) Creating a new PetMeta for a player:</strong></p>
-<div class="highlight-java"><div class="highlight"><pre><span></span><span class="n">Player</span> <span class="n">player</span><span class="o">;</span> <span class="c1">//Any player instance</span>
-<span class="n">PluginContainer</span> <span class="n">plugin</span><span class="o">;</span> <span class="c1">//Any plugin instance</span>
-
-<span class="n">PetMetaController</span><span class="o">&lt;</span><span class="n">Player</span><span class="o">&gt;</span> <span class="n">metaController</span> <span class="o">=</span> <span class="n">PetBlocksApi</span><span class="o">.</span><span class="na">getDefaultPetMetaController</span><span class="o">();</span>
-<span class="n">PetMeta</span> <span class="n">petMeta</span> <span class="o">=</span> <span class="n">metaController</span><span class="o">.</span><span class="na">create</span><span class="o">(</span><span class="n">player</span><span class="o">);</span>
-<span class="n">petMeta</span><span class="o">.</span><span class="na">setPetDisplayName</span><span class="o">(</span><span class="s">&quot;This is my new pet.&quot;</span><span class="o">);</span> <span class="c1">//Modify the petMeta</span>
-
-<span class="n">Task</span><span class="o">.</span><span class="na">builder</span><span class="o">().</span><span class="na">async</span><span class="o">().</span><span class="na">execute</span><span class="o">(</span><span class="k">new</span> <span class="n">Runnable</span><span class="o">()</span> <span class="o">{</span>
-    <span class="nd">@Override</span>
-    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">run</span><span class="o">()</span> <span class="o">{</span>
-        <span class="n">metaController</span><span class="o">.</span><span class="na">store</span><span class="o">(</span><span class="n">petMeta</span><span class="o">);</span> <span class="c1">//It is recommend to save the petMeta asynchronously into the database</span>
-    <span class="o">}</span>
-<span class="o">}).</span><span class="na">submit</span><span class="o">(</span><span class="n">plugin</span><span class="o">);</span>
-</pre></div>
-</div>
-<p><strong>(Bukkit) Obtaining an existing PetMeta for a player from the database:</strong></p>
-<p>You can see that this gets easily very complicated if
-you need to manage asynchronous and synchronous server tasks.</p>
-<div class="highlight-java"><div class="highlight"><pre><span></span><span class="kd">final</span> <span class="n">Player</span> <span class="n">player</span><span class="o">;</span> <span class="c1">//Any player instance</span>
-<span class="kd">final</span> <span class="n">Plugin</span> <span class="n">plugin</span><span class="o">;</span> <span class="c1">//Any plugin instance</span>
-<span class="n">PetMetaController</span><span class="o">&lt;</span><span class="n">Player</span><span class="o">&gt;</span> <span class="n">metaController</span> <span class="o">=</span> <span class="n">PetBlocksApi</span><span class="o">.</span><span class="na">getDefaultPetMetaController</span><span class="o">();</span>
-
-<span class="n">Bukkit</span><span class="o">.</span><span class="na">getServer</span><span class="o">().</span><span class="na">getScheduler</span><span class="o">().</span><span class="na">runTaskAsynchronously</span><span class="o">(</span><span class="n">plugin</span><span class="o">,</span> <span class="k">new</span> <span class="n">Runnable</span><span class="o">()</span> <span class="o">{</span>
-    <span class="nd">@Override</span>
-    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">run</span><span class="o">()</span> <span class="o">{</span>
-        <span class="n">Optional</span><span class="o">&lt;</span><span class="n">PetMeta</span><span class="o">&gt;</span> <span class="n">optPetMeta</span> <span class="o">=</span> <span class="n">metaController</span><span class="o">.</span><span class="na">getFromPlayer</span><span class="o">(</span><span class="n">player</span><span class="o">);</span>   <span class="c1">//Acquire the PetMeta async from the database.</span>
-        <span class="k">if</span> <span class="o">(</span><span class="n">optPetMeta</span><span class="o">.</span><span class="na">isPresent</span><span class="o">())</span> <span class="o">{</span> <span class="c1">//Check if the player has got a petMeta?</span>
-            <span class="n">Bukkit</span><span class="o">.</span><span class="na">getServer</span><span class="o">().</span><span class="na">getScheduler</span><span class="o">().</span><span class="na">runTask</span><span class="o">(</span><span class="n">plugin</span><span class="o">,</span> <span class="k">new</span> <span class="n">Runnable</span><span class="o">()</span> <span class="o">{</span>
-                <span class="nd">@Override</span>
-                <span class="kd">public</span> <span class="kt">void</span> <span class="nf">run</span><span class="o">()</span> <span class="o">{</span>
-                    <span class="n">PetMeta</span> <span class="n">petMeta</span> <span class="o">=</span> <span class="n">optPetMeta</span><span class="o">.</span><span class="na">get</span><span class="o">();</span>
-                    <span class="n">petMeta</span><span class="o">.</span><span class="na">setSkin</span><span class="o">(</span><span class="mi">5</span><span class="o">,</span> <span class="mi">0</span><span class="o">,</span> <span class="kc">null</span><span class="o">,</span> <span class="kc">false</span><span class="o">);</span> <span class="c1">//Change skin to a wooden block</span>
-
-                    <span class="n">Bukkit</span><span class="o">.</span><span class="na">getServer</span><span class="o">().</span><span class="na">getScheduler</span><span class="o">().</span><span class="na">runTaskAsynchronously</span><span class="o">(</span><span class="n">plugin</span><span class="o">,</span> <span class="k">new</span> <span class="n">Runnable</span><span class="o">()</span> <span class="o">{</span>
-                        <span class="nd">@Override</span>
-                        <span class="kd">public</span> <span class="kt">void</span> <span class="nf">run</span><span class="o">()</span> <span class="o">{</span>
-                            <span class="n">metaController</span><span class="o">.</span><span class="na">store</span><span class="o">(</span><span class="n">petMeta</span><span class="o">);</span>
-                        <span class="o">}</span>
-                    <span class="o">});</span>
-                <span class="o">}</span>
-            <span class="o">});</span>
-        <span class="o">}</span>
-    <span class="o">}</span>
-<span class="o">});</span>
-</pre></div>
-</div>
-<p>Using lamda expressions can reduce the code above significantly.</p>
-<div class="highlight-java"><div class="highlight"><pre><span></span><span class="kd">final</span> <span class="n">Player</span> <span class="n">player</span><span class="o">;</span> <span class="c1">//Any player instance</span>
-<span class="kd">final</span> <span class="n">Plugin</span> <span class="n">plugin</span><span class="o">;</span> <span class="c1">//Any plugin instance</span>
-<span class="n">PetMetaController</span><span class="o">&lt;</span><span class="n">Player</span><span class="o">&gt;</span> <span class="n">metaController</span> <span class="o">=</span> <span class="n">PetBlocksApi</span><span class="o">.</span><span class="na">getDefaultPetMetaController</span><span class="o">();</span>
-
-<span class="n">Bukkit</span><span class="o">.</span><span class="na">getServer</span><span class="o">().</span><span class="na">getScheduler</span><span class="o">().</span><span class="na">runTaskAsynchronously</span><span class="o">(</span><span class="n">plugin</span><span class="o">,</span> <span class="o">()</span> <span class="o">-&gt;</span> <span class="o">{</span>
-    <span class="n">Optional</span><span class="o">&lt;</span><span class="n">PetMeta</span><span class="o">&gt;</span> <span class="n">optPetMeta</span> <span class="o">=</span> <span class="n">metaController</span><span class="o">.</span><span class="na">getFromPlayer</span><span class="o">(</span><span class="n">player</span><span class="o">);</span>   <span class="c1">//Acquire the PetMeta async from the database.</span>
-    <span class="k">if</span> <span class="o">(</span><span class="n">optPetMeta</span><span class="o">.</span><span class="na">isPresent</span><span class="o">())</span> <span class="o">{</span> <span class="c1">//Check if the player has got a petMeta?</span>
-        <span class="n">Bukkit</span><span class="o">.</span><span class="na">getServer</span><span class="o">().</span><span class="na">getScheduler</span><span class="o">().</span><span class="na">runTask</span><span class="o">(</span><span class="n">plugin</span><span class="o">,</span> <span class="o">()</span> <span class="o">-&gt;</span> <span class="o">{</span>
-            <span class="n">PetMeta</span> <span class="n">petMeta</span> <span class="o">=</span> <span class="n">optPetMeta</span><span class="o">.</span><span class="na">get</span><span class="o">();</span>
-            <span class="n">petMeta</span><span class="o">.</span><span class="na">setSkin</span><span class="o">(</span><span class="mi">5</span><span class="o">,</span> <span class="mi">0</span><span class="o">,</span> <span class="kc">null</span><span class="o">,</span> <span class="kc">false</span><span class="o">);</span> <span class="c1">//Change skin to a wooden block</span>
-            <span class="n">Bukkit</span><span class="o">.</span><span class="na">getServer</span><span class="o">().</span><span class="na">getScheduler</span><span class="o">().</span><span class="na">runTaskAsynchronously</span><span class="o">(</span><span class="n">plugin</span><span class="o">,</span> <span class="o">()</span> <span class="o">-&gt;</span> <span class="n">metaController</span><span class="o">.</span><span class="na">store</span><span class="o">(</span><span class="n">petMeta</span><span class="o">));</span>
-        <span class="o">});</span>
-    <span class="o">}</span>
-<span class="o">});</span>
-</pre></div>
-</div>
-<p><strong>(Sponge) Obtaining an existing PetMeta for a player from the database:</strong></p>
-<p>You can see that this gets easily very complicated if
-you need to manage asynchronous and synchronous server tasks.</p>
-<div class="highlight-java"><div class="highlight"><pre><span></span><span class="kd">final</span> <span class="n">Player</span> <span class="n">player</span><span class="o">;</span> <span class="c1">//Any player instance</span>
-<span class="kd">final</span> <span class="n">PluginContainer</span> <span class="n">plugin</span><span class="o">;</span> <span class="c1">//Any plugin instance</span>
-<span class="n">PetMetaController</span><span class="o">&lt;</span><span class="n">Player</span><span class="o">&gt;</span> <span class="n">metaController</span> <span class="o">=</span> <span class="n">PetBlocksApi</span><span class="o">.</span><span class="na">getDefaultPetMetaController</span><span class="o">();</span>
-
-<span class="n">Task</span><span class="o">.</span><span class="na">builder</span><span class="o">().</span><span class="na">async</span><span class="o">().</span><span class="na">execute</span><span class="o">(</span><span class="k">new</span> <span class="n">Runnable</span><span class="o">()</span> <span class="o">{</span>
-    <span class="nd">@Override</span>
-    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">run</span><span class="o">()</span> <span class="o">{</span>
-        <span class="n">Optional</span><span class="o">&lt;</span><span class="n">PetMeta</span><span class="o">&gt;</span> <span class="n">optPetMeta</span> <span class="o">=</span> <span class="n">metaController</span><span class="o">.</span><span class="na">getFromPlayer</span><span class="o">(</span><span class="n">player</span><span class="o">);</span>   <span class="c1">//Acquire the PetMeta async from the database.</span>
-        <span class="k">if</span> <span class="o">(</span><span class="n">optPetMeta</span><span class="o">.</span><span class="na">isPresent</span><span class="o">())</span> <span class="o">{</span> <span class="c1">//Check if the player has got a petMeta?</span>
-               <span class="n">Task</span><span class="o">.</span><span class="na">builder</span><span class="o">().</span><span class="na">async</span><span class="o">().</span><span class="na">execute</span><span class="o">(</span><span class="k">new</span> <span class="n">Runnable</span><span class="o">()</span> <span class="o">{</span>
-                <span class="nd">@Override</span>
-                <span class="kd">public</span> <span class="kt">void</span> <span class="nf">run</span><span class="o">()</span> <span class="o">{</span>
-                    <span class="n">PetMeta</span> <span class="n">petMeta</span> <span class="o">=</span> <span class="n">optPetMeta</span><span class="o">.</span><span class="na">get</span><span class="o">();</span>
-                    <span class="n">petMeta</span><span class="o">.</span><span class="na">setSkin</span><span class="o">(</span><span class="mi">5</span><span class="o">,</span> <span class="mi">0</span><span class="o">,</span> <span class="kc">null</span><span class="o">,</span> <span class="kc">false</span><span class="o">);</span> <span class="c1">//Change skin to a wooden block</span>
-
-                     <span class="n">Task</span><span class="o">.</span><span class="na">builder</span><span class="o">().</span><span class="na">async</span><span class="o">().</span><span class="na">execute</span><span class="o">(</span><span class="k">new</span> <span class="n">Runnable</span><span class="o">()</span> <span class="o">{</span>
-                        <span class="nd">@Override</span>
-                        <span class="kd">public</span> <span class="kt">void</span> <span class="nf">run</span><span class="o">()</span> <span class="o">{</span>
-                            <span class="n">metaController</span><span class="o">.</span><span class="na">store</span><span class="o">(</span><span class="n">petMeta</span><span class="o">);</span>
-                        <span class="o">}</span>
-                    <span class="o">}).</span><span class="na">submit</span><span class="o">(</span><span class="n">plugin</span><span class="o">);</span>
-                <span class="o">}</span>
-            <span class="o">}).</span><span class="na">submit</span><span class="o">(</span><span class="n">plugin</span><span class="o">);</span>
-        <span class="o">}</span>
-    <span class="o">}</span>
-<span class="o">}).</span><span class="na">submit</span><span class="o">(</span><span class="n">plugin</span><span class="o">);</span>
-</pre></div>
-</div>
-<p>Using lamda expressions can reduce the code above significantly.</p>
-<div class="highlight-java"><div class="highlight"><pre><span></span><span class="kd">final</span> <span class="n">Player</span> <span class="n">player</span><span class="o">;</span> <span class="c1">//Any player instance</span>
-<span class="kd">final</span> <span class="n">PluginContainer</span> <span class="n">plugin</span><span class="o">;</span> <span class="c1">//Any plugin instance</span>
-<span class="n">PetMetaController</span><span class="o">&lt;</span><span class="n">Player</span><span class="o">&gt;</span> <span class="n">metaController</span> <span class="o">=</span> <span class="n">PetBlocksApi</span><span class="o">.</span><span class="na">getDefaultPetMetaController</span><span class="o">();</span>
-
-<span class="n">Task</span><span class="o">.</span><span class="na">builder</span><span class="o">().</span><span class="na">async</span><span class="o">().</span><span class="na">execute</span><span class="o">(()</span> <span class="o">-&gt;</span> <span class="o">{</span>
-    <span class="n">Optional</span><span class="o">&lt;</span><span class="n">PetMeta</span><span class="o">&gt;</span> <span class="n">optPetMeta</span> <span class="o">=</span> <span class="n">metaController</span><span class="o">.</span><span class="na">getFromPlayer</span><span class="o">(</span><span class="n">player</span><span class="o">);</span>   <span class="c1">//Acquire the PetMeta async from the database.</span>
-    <span class="k">if</span> <span class="o">(</span><span class="n">optPetMeta</span><span class="o">.</span><span class="na">isPresent</span><span class="o">())</span> <span class="o">{</span> <span class="c1">//Check if the player has got a petMeta?</span>
-          <span class="n">Task</span><span class="o">.</span><span class="na">builder</span><span class="o">().</span><span class="na">execute</span><span class="o">(()</span> <span class="o">-&gt;</span> <span class="o">{</span>
-            <span class="n">PetMeta</span> <span class="n">petMeta</span> <span class="o">=</span> <span class="n">optPetMeta</span><span class="o">.</span><span class="na">get</span><span class="o">();</span>
-            <span class="n">petMeta</span><span class="o">.</span><span class="na">setSkin</span><span class="o">(</span><span class="mi">5</span><span class="o">,</span> <span class="mi">0</span><span class="o">,</span> <span class="kc">null</span><span class="o">,</span> <span class="kc">false</span><span class="o">);</span> <span class="c1">//Change skin to a wooden block</span>
-            <span class="n">Task</span><span class="o">.</span><span class="na">builder</span><span class="o">().</span><span class="na">async</span><span class="o">().</span><span class="na">execute</span><span class="o">(()</span> <span class="o">-&gt;</span> <span class="n">metaController</span><span class="o">.</span><span class="na">store</span><span class="o">(</span><span class="n">petMeta</span><span class="o">)).</span><span class="na">submit</span><span class="o">(</span><span class="n">plugin</span><span class="o">);</span>
-        <span class="o">}).</span><span class="na">submit</span><span class="o">(</span><span class="n">plugin</span><span class="o">);</span>
-    <span class="o">}</span>
-<span class="o">}).</span><span class="na">submit</span><span class="o">(</span><span class="n">plugin</span><span class="o">);</span>
-</pre></div>
+<p class="last">Accessing the PetBlock is not stable via this API. This is going to be replaced by services in the future.</p>
 </div>
 <p><strong>(Bukkit/Sponge) Spawning a petblock for a player:</strong></p>
 <div class="highlight-java"><div class="highlight"><pre><span></span><span class="kd">final</span> <span class="n">Player</span> <span class="n">player</span><span class="o">;</span> <span class="c1">//Any player instance</span>
@@ -569,17 +461,6 @@ you need to manage asynchronous and synchronous server tasks.</p>
     <span class="kd">final</span> <span class="n">PetBlock</span> <span class="n">petBlock</span> <span class="o">=</span> <span class="n">optPetBlock</span><span class="o">.</span><span class="na">get</span><span class="o">();</span>
     <span class="n">petBlock</span><span class="o">.</span><span class="na">teleport</span><span class="o">(</span><span class="n">location</span><span class="o">);</span>    <span class="c1">//Teleport the petblock to the target location</span>
 <span class="o">}</span>
-</pre></div>
-</div>
-<p><strong>(Bukkit/Sponge) Applying changes to the PetBlock</strong></p>
-<p>You can also directly change the meta data of the spawned PetBlock:</p>
-<div class="highlight-java"><div class="highlight"><pre><span></span><span class="kd">final</span> <span class="n">PetBlock</span> <span class="n">petBlock</span><span class="o">;</span> <span class="c1">//Any PetBlock instance</span>
-<span class="n">petBlock</span><span class="o">.</span><span class="na">getMeta</span><span class="o">().</span><span class="na">setPetDisplayName</span><span class="o">(</span><span class="s">&quot;New name&quot;</span><span class="o">);</span>
-</pre></div>
-</div>
-<p>However, for applying the changes you need to respawn the PetBlock:</p>
-<div class="highlight-java"><div class="highlight"><pre><span></span><span class="kd">final</span> <span class="n">PetBlock</span> <span class="n">petBlock</span><span class="o">;</span> <span class="c1">//Any PetBlock instance</span>
-<span class="n">petBlock</span><span class="o">.</span><span class="na">respawn</span><span class="o">();</span>
 </pre></div>
 </div>
 </div>

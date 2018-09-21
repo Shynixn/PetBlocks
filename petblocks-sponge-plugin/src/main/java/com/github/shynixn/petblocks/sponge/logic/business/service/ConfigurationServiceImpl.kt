@@ -140,6 +140,9 @@ class ConfigurationServiceImpl @Inject constructor(private val plugin: PluginCon
             return skullNamingMessage as C
         }
 
+        if (path == "plugin.version") {
+            return plugin.version.get() as C
+        }
 
         val items = path.split(Pattern.quote(".").toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
         val targetNode = this.node.getNode(*items as Array<Any>)

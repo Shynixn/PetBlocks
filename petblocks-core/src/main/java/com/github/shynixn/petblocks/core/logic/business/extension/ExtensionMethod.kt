@@ -1,6 +1,7 @@
 package com.github.shynixn.petblocks.core.logic.business.extension
 
 import com.github.shynixn.petblocks.api.business.enumeration.ChatColor
+import com.github.shynixn.petblocks.api.business.service.ConcurrencyService
 import com.github.shynixn.petblocks.api.persistence.entity.ChatMessage
 import com.github.shynixn.petblocks.core.logic.persistence.entity.ChatMessageEntity
 
@@ -39,6 +40,20 @@ fun chatMessage(f: ChatMessage.() -> Unit): ChatMessage {
     val chatMessage = ChatMessageEntity()
     f.invoke(chatMessage)
     return chatMessage
+}
+
+/**
+ * Executes the given [f] via the [concurrencyService] synchronized with the server tick.
+ */
+inline fun Any.sync(concurrencyService: ConcurrencyService, delayTicks: Long = 0L, repeatingTicks: Long = 0L, crossinline f: () -> Unit) {
+    concurrencyService.runTaskSync(delayTicks, repeatingTicks, Runnable { f.invoke() })
+}
+
+/**
+ * Executes the given [f] via the [concurrencyService] asynchronous.
+ */
+inline fun Any.async(concurrencyService: ConcurrencyService, delayTicks: Long = 0L, repeatingTicks: Long = 0L, crossinline f: () -> Unit) {
+    concurrencyService.runTaskAsync(delayTicks, repeatingTicks, Runnable { f.invoke() })
 }
 
 /**

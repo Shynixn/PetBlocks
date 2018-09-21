@@ -3,7 +3,6 @@ package com.github.shynixn.petblocks.core.logic.persistence.entity
 import com.github.shynixn.petblocks.api.business.enumeration.ParticleColor
 import com.github.shynixn.petblocks.api.business.enumeration.ParticleType
 import com.github.shynixn.petblocks.api.persistence.entity.Particle
-import java.util.*
 
 /**
  * Created by Shynixn 2018.

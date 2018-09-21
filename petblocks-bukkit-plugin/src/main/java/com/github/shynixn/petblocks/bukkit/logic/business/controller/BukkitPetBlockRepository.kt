@@ -8,6 +8,7 @@ import com.github.shynixn.petblocks.core.logic.business.controller.PetBlockRepos
 import org.bukkit.Bukkit
 import org.bukkit.Location
 import org.bukkit.entity.Player
+import java.util.*
 
 /**
  * Created by Shynixn 2018.
@@ -37,6 +38,26 @@ import org.bukkit.entity.Player
  * SOFTWARE.
  */
 class BukkitPetBlockRepository : PetBlockRepository<Player>() {
+    /**
+     * Creates from uuid.
+     *
+     * @param uuid    uuid
+     * @param petMeta petMeta
+     * @return pet
+     */
+    override fun createFromUUID(uuid: UUID?, petMeta: PetMeta?): PetBlock<*, *> {
+        return create(Bukkit.getPlayer(uuid), petMeta)
+    }
+
+    /**
+     * Gets the petblock from the given uuid.
+     *
+     * @param uuid uudi
+     * @return pet
+     */
+    override fun getFromUUID(uuid: UUID?): Optional<PetBlock<Any, Any>> {
+        return getFromPlayer(Bukkit.getPlayer(uuid))
+    }
 
     /**
      * Creates a new petblock for the given player and meta.

@@ -1,24 +1,22 @@
 package com.github.shynixn.petblocks.bukkit
 
 import com.github.shynixn.petblocks.api.business.enumeration.PluginDependency
+import com.github.shynixn.petblocks.api.business.service.LoggingService
 import com.github.shynixn.petblocks.api.business.service.*
 import com.github.shynixn.petblocks.api.persistence.controller.CostumeController
 import com.github.shynixn.petblocks.api.persistence.controller.EngineController
 import com.github.shynixn.petblocks.api.persistence.controller.OtherGUIItemsController
 import com.github.shynixn.petblocks.api.persistence.controller.ParticleController
 import com.github.shynixn.petblocks.bukkit.logic.Factory
-import com.github.shynixn.petblocks.bukkit.logic.business.helper.LoggingBridge
 import com.github.shynixn.petblocks.bukkit.logic.business.service.*
 import com.github.shynixn.petblocks.bukkit.logic.persistence.configuration.*
-import com.github.shynixn.petblocks.bukkit.nms.VersionSupport
-import com.github.shynixn.petblocks.core.logic.business.service.GUIScriptServiceImpl
+import com.github.shynixn.petblocks.core.logic.business.service.*
 import com.google.inject.AbstractModule
 import com.google.inject.Scopes
 import com.google.inject.name.Names
 import org.bukkit.Bukkit
 import org.bukkit.plugin.Plugin
 import org.bukkit.plugin.PluginManager
-import org.slf4j.Logger
 
 /**
  * Created by Shynixn 2018.
@@ -57,19 +55,21 @@ class PetBlocksDependencyInjectionBinder(private val plugin: Plugin) : AbstractM
 
         // Old
         bind(PluginManager::class.java).toInstance(Bukkit.getServer().pluginManager)
-        bind(PersistenceService::class.java).toInstance(PersistenceServiceImpl(plugin, Factory.createPetBlockController(), Factory.createPetDataController()))
         val guiItems = BukkitStaticGUIItems()
         bind(BukkitStaticGUIItems::class.java).toInstance(guiItems) // Compatibility reasons.
         bind(OtherGUIItemsController::class.java).toInstance(guiItems)
         bind(ParticleController::class.java).toInstance(BukkitParticleConfiguration())
         bind(EngineController::class.java).toInstance(BukkitEngineConfiguration())
-        bind(Logger::class.java).toInstance(LoggingBridge(plugin.logger))
         bind(CostumeController::class.java).annotatedWith(Names.named("ordinary")).toInstance(BukkitCostumeConfiguration("ordinary"))
         bind(CostumeController::class.java).annotatedWith(Names.named("color")).toInstance(BukkitCostumeConfiguration("color"))
         bind(CostumeController::class.java).annotatedWith(Names.named("rare")).toInstance(BukkitCostumeConfiguration("rare"))
         bind(Config::class.java).toInstance(Config)
 
         // Services
+        bind(PetService::class.java).to(PetServiceImpl::class.java)
+        bind(ConcurrencyService::class.java).to(ConcurrencyServiceImpl::class.java)
+        bind(LoggingService::class.java).toInstance(LoggingUtilServiceImpl(plugin.logger))
+        bind(PersistencePetMetaService::class.java).to(PersistencePetMetaServiceImpl::class.java)
         bind(ParticleService::class.java).to(ParticleServiceImpl::class.java)
         bind(SoundService::class.java).to(SoundServiceImpl::class.java)
         bind(GUIScriptService::class.java).to(GUIScriptServiceImpl::class.java)

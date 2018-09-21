@@ -10,7 +10,9 @@ import com.github.shynixn.petblocks.api.business.service.*
 import com.github.shynixn.petblocks.api.persistence.entity.ChatMessage
 import com.github.shynixn.petblocks.api.persistence.entity.GUIItem
 import com.github.shynixn.petblocks.core.logic.business.entity.GuiPageContainer
+import com.github.shynixn.petblocks.core.logic.business.extension.async
 import com.github.shynixn.petblocks.core.logic.business.extension.chatMessage
+import com.github.shynixn.petblocks.core.logic.business.extension.sync
 import com.github.shynixn.petblocks.core.logic.persistence.configuration.Config
 import com.github.shynixn.petblocks.core.logic.persistence.entity.PlayerGUICache
 import com.github.shynixn.petblocks.sponge.logic.business.PetBlocksManager
@@ -22,7 +24,6 @@ import org.spongepowered.api.item.inventory.Inventory
 import org.spongepowered.api.item.inventory.ItemStack
 import org.spongepowered.api.item.inventory.type.CarriedInventory
 import org.spongepowered.api.item.inventory.type.GridInventory
-import org.spongepowered.api.plugin.PluginContainer
 
 /**
  * Created by Shynixn 2018.
@@ -51,7 +52,7 @@ import org.spongepowered.api.plugin.PluginContainer
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class GUIServiceImpl @Inject constructor(private val configurationService: ConfigurationService, private val plugin: PluginContainer, private val scriptService: GUIScriptService, private val persistenceService: PersistenceService, private val messageService: MessageService) : GUIService {
+class GUIServiceImpl @Inject constructor(private val configurationService: ConfigurationService, private val concurrencyService: ConcurrencyService, private val scriptService: GUIScriptService, private val persistenceService: PersistencePetMetaService, private val messageService: MessageService) : GUIService {
     private val pageCache = HashMap<Player, PlayerGUICache>()
     private val petBlocksManager = PetBlocksManager.petBlocksManager!!
     private var collectedMinecraftHeadsMessage = chatMessage {
@@ -96,7 +97,7 @@ class GUIServiceImpl @Inject constructor(private val configurationService: Confi
 
         petBlocksManager.gui.open(player)
 
-        persistenceService.getOrCreateFromPlayer(player).thenAccept({ petMeta ->
+        persistenceService.getOrCreateFromPlayerUUID(player.uniqueId).thenAccept({ petMeta ->
             petBlocksManager.gui.setPage(player, GUIPage.MAIN, petMeta)
         })
     }
@@ -156,7 +157,7 @@ class GUIServiceImpl @Inject constructor(private val configurationService: Confi
             scriptResult.action == ScriptAction.CUSTOM_SKIN -> sendGuiMessage(player, configurationService.findValue("messages.skullnaming-suggest"), scriptResult.permission.get())
         }
 
-        sync(plugin, 5L) {
+        sync(concurrencyService, 5L) {
             player.updateInventory()
         }
     }
@@ -299,7 +300,7 @@ class GUIServiceImpl @Inject constructor(private val configurationService: Confi
                     scheduleCounter++
                 }
 
-                sync(plugin, scheduleCounter.toLong()) {
+                sync(concurrencyService, scheduleCounter.toLong()) {
                     if (container.currentCount == mountBlock && currentPage == petBlocksManager.pages[player]!!.page) {
                         inventory.setItem(slot, setPermissionLore(player, items[containerSlot].toItemStack(), items[containerSlot].position, groupPermission))
                     }
@@ -371,12 +372,11 @@ class GUIServiceImpl @Inject constructor(private val configurationService: Confi
      * Sets the given itemstack as new pet skin for the given [player].
      */
     private fun setCollectionSkinItemToPlayer(player: Player, guiItem: GUIItem) {
-        persistenceService.getFromPlayer(player).thenAccept { p ->
-            val petMeta = p.get()
+        persistenceService.getOrCreateFromPlayerUUID(player.uniqueId).thenAccept { petMeta ->
             petMeta.setSkin(CompatibilityItemType.getFromId(guiItem.type).name, guiItem.data, guiItem.skin, guiItem.unbreakable)
             petBlocksManager.gui.setPage(player, GUIPage.MAIN, petMeta)
 
-            async(plugin) {
+            async(concurrencyService) {
                 persistenceService.save(petMeta)
             }
         }

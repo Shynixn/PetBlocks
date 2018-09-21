@@ -7,10 +7,10 @@ import com.github.shynixn.petblocks.api.persistence.controller.PlayerMetaControl
 import com.github.shynixn.petblocks.bukkit.PetBlocksPlugin;
 import com.github.shynixn.petblocks.bukkit.logic.business.BukkitDBContext;
 import com.github.shynixn.petblocks.bukkit.logic.business.controller.BukkitPetBlockRepository;
-import com.github.shynixn.petblocks.bukkit.logic.business.helper.LoggingBridge;
 import com.github.shynixn.petblocks.bukkit.logic.persistence.controller.BukkitPetDataRepository;
 import com.github.shynixn.petblocks.bukkit.logic.persistence.controller.BukkitPlayerDataRepository;
 import com.github.shynixn.petblocks.core.logic.business.entity.DbContext;
+import com.github.shynixn.petblocks.core.logic.business.service.LoggingUtilServiceImpl;
 import com.github.shynixn.petblocks.core.logic.persistence.controller.ParticleEffectDataRepository;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
@@ -27,7 +27,11 @@ public class Factory {
     }
 
     public static ParticleEffectMetaController createParticleEffectController() {
-        return new ParticleEffectDataRepository(connectionContext, new LoggingBridge(PetBlocksPlugin.logger()));
+        return new ParticleEffectDataRepository(connectionContext, new LoggingUtilServiceImpl(PetBlocksPlugin.logger()));
+    }
+
+    public static ParticleEffectMetaController createParticleEffectController(Plugin plugin) {
+        return new ParticleEffectDataRepository(connectionContext, new LoggingUtilServiceImpl(plugin.getLogger()));
     }
 
     public static PetBlockController<Player> createPetBlockController() {
@@ -43,7 +47,7 @@ public class Factory {
     }
 
     public static void initialize(Plugin plugin) {
-        connectionContext = new BukkitDBContext(plugin, new LoggingBridge(plugin.getLogger()));
+        connectionContext = new BukkitDBContext(plugin, new LoggingUtilServiceImpl(plugin.getLogger()));
     }
 
     public static void disable() {

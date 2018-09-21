@@ -5,6 +5,7 @@ import com.github.shynixn.petblocks.api.persistence.controller.IController;
 import com.github.shynixn.petblocks.api.persistence.entity.PetMeta;
 
 import java.util.Optional;
+import java.util.UUID;
 
 /**
  * Registers petblocks to manage their action and behavior.
@@ -33,6 +34,7 @@ import java.util.Optional;
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+@Deprecated
 public interface PetBlockController<Player> extends IController<PetBlock<Object, Object>> {
 
     /**
@@ -45,12 +47,29 @@ public interface PetBlockController<Player> extends IController<PetBlock<Object,
     PetBlock create(Player player, PetMeta petMeta);
 
     /**
+     * Creates from uuid.
+     *
+     * @param uuid    uuid
+     * @param petMeta petMeta
+     * @return pet
+     */
+    PetBlock createFromUUID(UUID uuid, PetMeta petMeta);
+
+    /**
      * Returns the petblock of the given player.
      *
      * @param player player
      * @return petblock
      */
     Optional<PetBlock> getFromPlayer(Player player);
+
+    /**
+     * Gets the petblock from the given uuid.
+     *
+     * @param uuid uudi
+     * @return pet
+     */
+    Optional<PetBlock> getFromUUID(UUID uuid);
 
     /**
      * Removes the petblock of the given player.

@@ -1,6 +1,7 @@
 package com.github.shynixn.petblocks.core.logic.persistence.controller;
 
 import com.github.shynixn.petblocks.api.business.enumeration.ParticleType;
+import com.github.shynixn.petblocks.api.business.service.LoggingService;
 import com.github.shynixn.petblocks.api.persistence.controller.ParticleEffectMetaController;
 import com.github.shynixn.petblocks.api.persistence.entity.Particle;
 import com.github.shynixn.petblocks.core.logic.business.entity.DbContext;
@@ -51,7 +52,7 @@ public class ParticleEffectDataRepository extends DataBaseRepository<Particle> i
      * @param logger            logger
      */
     @Inject
-    public ParticleEffectDataRepository(DbContext connectionContext, Logger logger) {
+    public ParticleEffectDataRepository(DbContext connectionContext, LoggingService logger) {
         super(connectionContext, logger);
     }
 

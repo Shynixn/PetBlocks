@@ -5,11 +5,11 @@ package com.github.shynixn.petblocks.sponge.logic.business.service
 import com.flowpowered.math.vector.Vector3d
 import com.github.shynixn.petblocks.api.business.enumeration.ParticleType
 import com.github.shynixn.petblocks.api.business.service.ConfigurationService
+import com.github.shynixn.petblocks.api.business.service.LoggingService
 import com.github.shynixn.petblocks.api.business.service.ParticleService
 import com.github.shynixn.petblocks.api.persistence.entity.Particle
 import com.github.shynixn.petblocks.sponge.logic.business.helper.CompatibilityItemType
 import com.google.inject.Inject
-import org.slf4j.Logger
 import org.spongepowered.api.Sponge
 import org.spongepowered.api.block.BlockState
 import org.spongepowered.api.data.key.Keys
@@ -46,7 +46,7 @@ import org.spongepowered.api.world.Location
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class ParticleServiceImpl @Inject constructor(private val logger: Logger, private val configurationService: ConfigurationService) : ParticleService {
+class ParticleServiceImpl @Inject constructor(private val logger: LoggingService, private val configurationService: ConfigurationService) : ParticleService {
     /**
      * Plays the given [particle] at the given [location] for the given [player] or
      * all players in the world if the config option all visible is enabled.

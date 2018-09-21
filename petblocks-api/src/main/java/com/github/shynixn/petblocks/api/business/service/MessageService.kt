@@ -37,6 +37,7 @@ interface MessageService {
 
     /**
      * Sends the given [chatMessage] to the given [player].
+     * @param P the type of the player.
      */
     fun <P> sendPlayerMessage(player: P, chatMessage: ChatMessage)
 }

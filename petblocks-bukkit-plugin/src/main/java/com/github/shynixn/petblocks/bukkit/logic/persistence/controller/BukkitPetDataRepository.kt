@@ -2,12 +2,14 @@ package com.github.shynixn.petblocks.bukkit.logic.persistence.controller
 
 import com.github.shynixn.petblocks.api.persistence.controller.ParticleEffectMetaController
 import com.github.shynixn.petblocks.api.persistence.controller.PlayerMetaController
+import com.github.shynixn.petblocks.api.persistence.entity.PetMeta
 import com.github.shynixn.petblocks.bukkit.PetBlocksPlugin
-import com.github.shynixn.petblocks.bukkit.logic.business.helper.LoggingBridge
 import com.github.shynixn.petblocks.bukkit.logic.persistence.entity.BukkitPetData
 import com.github.shynixn.petblocks.core.logic.business.entity.DbContext
+import com.github.shynixn.petblocks.core.logic.business.service.LoggingUtilServiceImpl
 import com.github.shynixn.petblocks.core.logic.persistence.controller.PetDataRepository
 import com.github.shynixn.petblocks.core.logic.persistence.entity.PetData
+import org.bukkit.Bukkit
 import org.bukkit.entity.Player
 import java.util.*
 
@@ -39,7 +41,26 @@ import java.util.*
  * SOFTWARE.
  */
 class BukkitPetDataRepository(playerMetaController: PlayerMetaController<Player>, particleController: ParticleEffectMetaController, connectionContext: DbContext
-) : PetDataRepository<Player>(playerMetaController, particleController, connectionContext, LoggingBridge(PetBlocksPlugin.logger())) {
+) : PetDataRepository<Player>(playerMetaController, particleController, connectionContext, LoggingUtilServiceImpl(PetBlocksPlugin.logger())) {
+    /**
+     * Create from uuid.
+     * @param uuid uuid.
+     * @return petMeta
+     */
+    override fun createFromUUID(uuid: UUID?): PetMeta {
+        return create(Bukkit.getPlayer(uuid))
+    }
+
+    /**
+     * Returns the petMeta of the given uuid.
+     *
+     * @param uuid uuid
+     * @return playerMeta
+     */
+    override fun getFromUUID(uuid: UUID?): Optional<PetMeta> {
+        return getFromPlayer(Bukkit.getPlayer(uuid))
+    }
+
     /**
      * Creates a new [BukkitPetData] from the given [player] and [name].
      */

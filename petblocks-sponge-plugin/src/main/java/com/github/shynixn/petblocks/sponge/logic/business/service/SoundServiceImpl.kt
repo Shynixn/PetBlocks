@@ -3,11 +3,11 @@
 package com.github.shynixn.petblocks.sponge.logic.business.service
 
 import com.github.shynixn.petblocks.api.business.service.ConfigurationService
+import com.github.shynixn.petblocks.api.business.service.LoggingService
 import com.github.shynixn.petblocks.api.business.service.SoundService
 import com.github.shynixn.petblocks.api.persistence.entity.Sound
 import com.github.shynixn.petblocks.sponge.nms.VersionSupport
 import com.google.inject.Inject
-import org.slf4j.Logger
 import org.spongepowered.api.effect.sound.SoundType
 import org.spongepowered.api.effect.sound.SoundTypes
 import org.spongepowered.api.entity.living.player.Player
@@ -40,7 +40,7 @@ import org.spongepowered.api.world.Location
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class SoundServiceImpl @Inject constructor(private val logger: Logger, private val configurationService: ConfigurationService) : SoundService {
+class SoundServiceImpl @Inject constructor(private val logger: LoggingService, private val configurationService: ConfigurationService) : SoundService {
     /**
      * Plays the given [sound] at the given [location] for the given [player] or
      * all players in the world if the config option is enabled.

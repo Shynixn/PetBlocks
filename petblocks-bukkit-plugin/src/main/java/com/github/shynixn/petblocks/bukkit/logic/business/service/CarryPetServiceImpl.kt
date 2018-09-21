@@ -3,16 +3,20 @@
 package com.github.shynixn.petblocks.bukkit.logic.business.service
 
 import com.github.shynixn.petblocks.api.business.service.CarryPetService
+import com.github.shynixn.petblocks.api.business.service.ConcurrencyService
 import com.github.shynixn.petblocks.api.business.service.ConfigurationService
 import com.github.shynixn.petblocks.bukkit.logic.business.PetBlockManager
-import com.github.shynixn.petblocks.bukkit.logic.business.helper.*
+import com.github.shynixn.petblocks.bukkit.logic.business.helper.getItemStackInHand
+import com.github.shynixn.petblocks.bukkit.logic.business.helper.setItemStackInHand
+import com.github.shynixn.petblocks.bukkit.logic.business.helper.updateInventory
+import com.github.shynixn.petblocks.core.logic.business.extension.async
+import com.github.shynixn.petblocks.core.logic.business.extension.sync
 import com.google.inject.Inject
 import org.bukkit.Material
 import org.bukkit.entity.ArmorStand
 import org.bukkit.entity.LivingEntity
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
-import org.bukkit.plugin.Plugin
 import org.bukkit.util.Vector
 import java.util.*
 import java.util.concurrent.CompletableFuture
@@ -44,7 +48,7 @@ import java.util.concurrent.CompletableFuture
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class CarryPetServiceImpl @Inject constructor(private val plugin: Plugin, private val configurationService: ConfigurationService) : CarryPetService {
+class CarryPetServiceImpl @Inject constructor(private val concurrencyService: ConcurrencyService, private val configurationService: ConfigurationService) : CarryPetService {
     private val carryingPet: MutableMap<Player, ItemStack> = HashMap()
 
     /**
@@ -96,10 +100,10 @@ class CarryPetServiceImpl @Inject constructor(private val plugin: Plugin, privat
         carryingPet.remove(player)
         player.inventory.setItemStackInHand(null, true)
 
-        async(plugin) {
+        async(concurrencyService) {
             val petMeta = PetBlockManager.instance.petMetaController.getFromPlayer(player)
 
-            sync(plugin) {
+            sync(concurrencyService) {
                 val petBlock = PetBlockManager.instance.petBlockController.create(player, petMeta.get())
                 PetBlockManager.instance.petBlockController.store(petBlock)
 

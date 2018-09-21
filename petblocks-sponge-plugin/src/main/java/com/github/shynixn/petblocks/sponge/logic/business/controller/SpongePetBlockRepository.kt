@@ -9,6 +9,7 @@ import org.spongepowered.api.Sponge
 import org.spongepowered.api.entity.Transform
 import org.spongepowered.api.entity.living.player.Player
 import org.spongepowered.api.world.World
+import java.util.*
 
 /**
  * Created by Shynixn 2018.
@@ -38,6 +39,27 @@ import org.spongepowered.api.world.World
  * SOFTWARE.
  */
 class SpongePetBlockRepository : PetBlockRepository<Player>() {
+    /**
+     * Creates from uuid.
+     *
+     * @param uuid    uuid
+     * @param petMeta petMeta
+     * @return pet
+     */
+    override fun createFromUUID(uuid: UUID?, petMeta: PetMeta?): PetBlock<*, *> {
+        return create(Sponge.getGame().server.getPlayer(uuid!!).get(), petMeta!!)
+    }
+
+    /**
+     * Gets the petblock from the given uuid.
+     *
+     * @param uuid uudi
+     * @return pet
+     */
+    override fun getFromUUID(uuid: UUID?): Optional<PetBlock<Any, Any>> {
+        return getFromPlayer(Sponge.getGame().server.getPlayer(uuid!!).get())
+    }
+
     /**
      * Creates a new petblock for the given player and meta.
      *

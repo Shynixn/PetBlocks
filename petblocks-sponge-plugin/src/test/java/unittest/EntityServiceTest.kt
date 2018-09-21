@@ -1,12 +1,11 @@
 package unittest
 
 import com.github.shynixn.petblocks.api.business.service.EntityService
+import com.github.shynixn.petblocks.api.business.service.LoggingService
 import com.github.shynixn.petblocks.sponge.logic.business.service.EntityServiceImpl
-import helper.LoggingHelper
 import ninja.leaping.configurate.objectmapping.ObjectMapper
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
-import org.mockito.Mockito
 import org.spongepowered.api.CatalogType
 import org.spongepowered.api.GameRegistry
 import org.spongepowered.api.Sponge
@@ -38,19 +37,13 @@ import org.spongepowered.api.util.rotation.Rotation
 import org.spongepowered.api.world.extent.ExtentBufferFactory
 import org.spongepowered.common.SpongeImpl
 import org.spongepowered.common.config.SpongeConfig
-import org.spongepowered.common.config.type.ConfigBase
 import org.spongepowered.common.config.type.TrackerConfig
 import java.awt.image.BufferedImage
 import java.io.InputStream
-import java.lang.reflect.Field
-import java.lang.reflect.Modifier
 import java.net.URL
 import java.nio.file.Path
-import java.nio.file.Paths
 import java.util.*
 import java.util.function.Supplier
-import java.util.logging.Logger
-import kotlin.collections.ArrayList
 
 /**
  * Created by Shynixn 2018.
@@ -137,7 +130,27 @@ class EntityServiceTest {
             thirdField.isAccessible = true
             thirdField.set(tracker, ObjectMapper.forObject(TrackerConfig()))
 
-            return EntityServiceImpl(LoggingHelper())
+            return EntityServiceImpl(MockedLoggingService())
+        }
+    }
+
+    private class MockedLoggingService : LoggingService {
+        /**
+         * Logs an info text.
+         */
+        override fun info(text: String, e: Throwable?) {
+        }
+
+        /**
+         * Logs an warning text.
+         */
+        override fun warn(text: String, e: Throwable?) {
+        }
+
+        /**
+         * Logs an error text.
+         */
+        override fun error(text: String, e: Throwable?) {
         }
     }
 

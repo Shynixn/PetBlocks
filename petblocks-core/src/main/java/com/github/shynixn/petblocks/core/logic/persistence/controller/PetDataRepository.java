@@ -2,6 +2,7 @@ package com.github.shynixn.petblocks.core.logic.persistence.controller;
 
 import com.github.shynixn.petblocks.api.PetBlocksApi;
 import com.github.shynixn.petblocks.api.business.entity.GUIItemContainer;
+import com.github.shynixn.petblocks.api.business.service.LoggingService;
 import com.github.shynixn.petblocks.api.persistence.controller.ParticleEffectMetaController;
 import com.github.shynixn.petblocks.api.persistence.controller.PetMetaController;
 import com.github.shynixn.petblocks.api.persistence.controller.PlayerMetaController;
@@ -62,7 +63,7 @@ public abstract class PetDataRepository<Player> extends DataBaseRepository<PetMe
      * @param connectionContext connectionContext
      */
     public PetDataRepository(PlayerMetaController<Player> playerMetaController, ParticleEffectMetaController particleEffectMetaController
-            , DbContext connectionContext, Logger logger) {
+            , DbContext connectionContext, LoggingService logger) {
         super(connectionContext, logger);
         this.playerMetaController = playerMetaController;
         this.particleEffectMetaController = particleEffectMetaController;
