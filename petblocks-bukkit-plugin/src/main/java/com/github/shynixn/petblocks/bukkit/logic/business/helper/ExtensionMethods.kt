@@ -2,7 +2,9 @@
 
 package com.github.shynixn.petblocks.bukkit.logic.business.helper
 
+import com.github.shynixn.petblocks.api.business.entity.PetBlock
 import com.github.shynixn.petblocks.api.business.enumeration.ParticleType
+import com.github.shynixn.petblocks.api.business.service.PetService
 import com.github.shynixn.petblocks.bukkit.PetBlocksPlugin
 import com.github.shynixn.petblocks.bukkit.logic.business.PetBlockManager
 import com.github.shynixn.petblocks.bukkit.nms.VersionSupport
@@ -198,6 +200,15 @@ fun String.toParticleType(): ParticleType {
     }
 
     throw IllegalArgumentException("ParticleType cannot be parsed from '" + this + "'.")
+}
+
+/**
+ * Gets the pet of a player.
+ */
+inline fun Any.pet(petService: PetService, player: Player, crossinline f: (PetBlock<*, *>) -> Unit) {
+    petService.getOrSpawnPetBlockFromPlayerUUID(player.uniqueId).thenAccept { petblock ->
+        f.invoke(petblock)
+    }
 }
 
 /**
