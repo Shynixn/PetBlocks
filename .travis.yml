@@ -50,9 +50,10 @@ script:
   #- mvn clean deploy --settings .travis_settings.xml
 after_success:
   - bash <(curl -s https://codecov.io/bash)
-  - wget https://raw.githubusercontent.com/Shynixn/travis-ci-discord-webhook/master/send.sh
-  - chmod +x send.sh
-  - ./send.sh success $WEBHOOK_URL $WEB_SNAPSHOT_REPOSITORY
+  - wget https://github.com/Shynixn/travis-ci-discord-webhook/raw/master/nexus-query-snapshot.jar
+  - wget https://raw.githubusercontent.com/Shynixn/travis-ci-discord-webhook/master/petblocks.sh
+  - chmod +x petblocks.sh
+  - ./petblocks.sh success $WEBHOOK_URL $WEB_SNAPSHOT_REPOSITORY
 after_failure:
   - wget https://raw.githubusercontent.com/Shynixn/travis-ci-discord-webhook/master/send.sh
   - chmod +x send.sh
