@@ -53,7 +53,7 @@ after_success:
   - wget https://github.com/Shynixn/travis-ci-discord-webhook/raw/master/nexus-query-snapshot.jar
   - wget https://raw.githubusercontent.com/Shynixn/travis-ci-discord-webhook/master/petblocks.sh
   - chmod +x petblocks.sh
-  - ./petblocks.sh success $WEBHOOK_URL $SNAPSHOT_REPOSITORY_BUKKIT $SNAPSHOT_REPOSITORY_SPONGE
+  - ./petblocks.sh success $WEBHOOK_URL $WEBHOOK_SNAPSHOT_URL $SNAPSHOT_REPOSITORY_BUKKIT $SNAPSHOT_REPOSITORY_SPONGE
 after_failure:
   - wget https://raw.githubusercontent.com/Shynixn/travis-ci-discord-webhook/master/send.sh
   - chmod +x send.sh
