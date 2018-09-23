@@ -122,26 +122,17 @@ public final class CustomGroundArmorstand extends EntityArmorStand {
             final Living engine = (Living) this.rabbit.getEntity();
 
             if (!armorStand.isRemoved() && armorStand.getPassengers().isEmpty() && engine != null && !armorStand.getVehicle().isPresent()) {
-                Position location = null;
-                if (petData.getAge() >= Config.INSTANCE.getAge_largeticks()) {
-                    location = new PositionEntity();
-                    location.setWorldName(engine.getLocation().getExtent().getName());
-                    location.setX(engine.getLocation().getX());
-                    location.setY(engine.getLocation().getY());
-                    location.setZ(engine.getLocation().getZ());
-                    location.setYaw(engine.getTransform().getYaw());
-                    location.setPitch(engine.getTransform().getPitch());
-                    location.setY(location.getY() - 1.2);
-                } else if (petData.getAge() <= Config.INSTANCE.getAge_smallticks()) {
-                    location = new PositionEntity();
-                    location.setWorldName(engine.getLocation().getExtent().getName());
-                    location.setX(engine.getLocation().getX());
-                    location.setY(engine.getLocation().getY());
-                    location.setZ(engine.getLocation().getZ());
-                    location.setYaw(engine.getTransform().getYaw());
-                    location.setPitch(engine.getTransform().getPitch());
-                    location.setY(location.getY() - 0.7);
-                }
+                Position location;
+
+                location = new PositionEntity();
+                location.setWorldName(engine.getLocation().getExtent().getName());
+                location.setX(engine.getLocation().getX());
+                location.setY(engine.getLocation().getY());
+                location.setZ(engine.getLocation().getZ());
+                location.setYaw(engine.getTransform().getYaw());
+                location.setPitch(engine.getTransform().getPitch());
+                location.setY(location.getY() - 1.2);
+
                 if (location != null) {
                     this.setLocationAndAngles(location.getX(), location.getY() + 0.2, location.getZ(), (float) location.getYaw(), (float) location.getPitch());
                     final SPacketEntityTeleport animation = new SPacketEntityTeleport(this);
@@ -167,24 +158,6 @@ public final class CustomGroundArmorstand extends EntityArmorStand {
                 this.counter--;
             } else if (engine != null) {
                 engine.setLocation(armorStand.getLocation());
-            }
-            try {
-                if (petData.getAge() >= Config.INSTANCE.getAge_maxticks()) {
-                    if (Config.INSTANCE.isAge_deathOnMaxTicks() && !this.wrapper.isDieing()) {
-                        this.wrapper.setDieing();
-                    }
-                } else {
-                    boolean respawn = false;
-                    if (petData.getAge() < Config.INSTANCE.getAge_largeticks()) {
-                        respawn = true;
-                    }
-                    petData.setAge(petData.getAge() + 1);
-                    if (petData.getAge() >= Config.INSTANCE.getAge_largeticks() && respawn) {
-                        this.wrapper.respawn();
-                    }
-                }
-            } catch (final Exception ex) {
-                Logger.getLogger(this.getClass().getSimpleName()).log(Level.WARNING, "Failed to manage aging.", ex);
             }
             armorStand.offer(Keys.FIRE_TICKS, 0);
             if (engine != null) {
@@ -337,11 +310,7 @@ public final class CustomGroundArmorstand extends EntityArmorStand {
             this.getArmorstand().offer(Keys.DISPLAY_NAME, ExtensionMethodsKt.translateToText(this.wrapper.getMeta().getPetDisplayName()));
             this.wrapper.setHealth(Config.INSTANCE.getCombat_health());
             this.getArmorstand().setHelmet((ItemStack) this.wrapper.getMeta().getHeadItemStack());
-            if (this.wrapper.getMeta().getAge() >= Config.INSTANCE.getAge_largeticks()) {
-                this.getArmorstand().small().set(false);
-            } else {
-                this.getArmorstand().small().set(true);
-            }
+            this.getArmorstand().small().set(false);
         }
     }
 
