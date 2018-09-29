@@ -1,11 +1,11 @@
-package com.github.shynixn.petblocks.bukkit.logic.business.listener
+package com.github.shynixn.petblocks.bukkit.logic.business.proxy
 
-import me.minebuilders.clearlag.events.EntityRemoveEvent
-import org.bukkit.entity.ArmorStand
-import org.bukkit.entity.Entity
-import org.bukkit.entity.Rabbit
-import org.bukkit.event.EventHandler
-import org.bukkit.event.Listener
+import com.github.shynixn.petblocks.api.business.command.PlayerCommand
+import com.github.shynixn.petblocks.api.business.command.SourceCommand
+import org.bukkit.command.Command
+import org.bukkit.command.CommandExecutor
+import org.bukkit.command.CommandSender
+import org.bukkit.entity.Player
 
 /**
  * Created by Shynixn 2018.
@@ -34,34 +34,19 @@ import org.bukkit.event.Listener
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class ClearLagListener : Listener {
+class CommandRegisteredProxyImpl(private val instance: Any) : CommandExecutor {
     /**
-     * Gets called from clear lag when an entity gets removed.
+     * Gets called when the user enters a command.
      */
-    @EventHandler
-    fun onEntityRemoveEvent(event: EntityRemoveEvent) {
-        for (entity in event.entityList.toTypedArray()) {
-            if (this.isPet(entity)) {
-                event.entityList.remove(entity)
-            }
-        }
-    }
-
-    /**
-     * Checks if the given [entity] is a petblock pet.
-     */
-    private fun isPet(entity: Entity): Boolean {
-        if (entity is ArmorStand) {
-            val xidentifier = entity.bodyPose.z.toInt()
-            val identifier = entity.rightArmPose.x.toInt()
-
-            if (xidentifier == 2877 && identifier == 2877) {
-                return true
-            }
-        } else if (entity is Rabbit && entity.getCustomName() != null && entity.getCustomName() == "PetBlockIdentifier") {
-            return true
+    override fun onCommand(commandSender: CommandSender, command: Command, s: String, args: Array<String>): Boolean {
+        if (instance is PlayerCommand && commandSender is Player) {
+            instance.onPlayerExecuteCommand(commandSender, args)
         }
 
-        return false
+        if (instance is SourceCommand) {
+            instance.onExecuteCommand(commandSender, args)
+        }
+
+        return true
     }
 }

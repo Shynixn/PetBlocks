@@ -36,6 +36,11 @@ interface MessageService {
     fun sendConsoleMessage(message: String)
 
     /**
+     * Sends a message to the given source.
+     */
+    fun <S> sendSourceMessage(source: S, message: String)
+
+    /**
      * Sends the given [chatMessage] to the given [player].
      * @param P the type of the player.
      */

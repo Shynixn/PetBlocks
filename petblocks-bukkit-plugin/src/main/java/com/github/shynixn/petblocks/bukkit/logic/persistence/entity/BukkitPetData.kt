@@ -136,11 +136,6 @@ class BukkitPetData : PetData {
     override fun setPetDisplayName(name: String?) {
         if (name == null)
             return
-        if (Config.petNameBlackList != null) {
-            Config.petNameBlackList
-                    .filter { name.toUpperCase().contains(it.toUpperCase()) }
-                    .forEach { throw RuntimeException("Name is not valid!") }
-        }
         this.petDisplayName = ChatColor.translateAlternateColorCodes('&', name)
     }
 }

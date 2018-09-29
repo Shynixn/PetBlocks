@@ -2,7 +2,9 @@ package com.github.shynixn.petblocks.bukkit.logic.business.controller
 
 import com.github.shynixn.petblocks.api.bukkit.event.PetBlockDeathEvent
 import com.github.shynixn.petblocks.api.business.entity.PetBlock
+import com.github.shynixn.petblocks.api.business.proxy.PetProxy
 import com.github.shynixn.petblocks.api.persistence.entity.PetMeta
+import com.github.shynixn.petblocks.bukkit.logic.business.proxy.PetProxyImpl
 import com.github.shynixn.petblocks.bukkit.nms.NMSRegistry
 import com.github.shynixn.petblocks.core.logic.business.controller.PetBlockRepository
 import org.bukkit.Bukkit
@@ -39,9 +41,20 @@ import java.util.*
  */
 class BukkitPetBlockRepository : PetBlockRepository<Player>() {
     /**
-     * Creates from uuid.
+     * Temporary compatibility create.
      *
-     * @param uuid    uuid
+     * @param petBlock petblock
+     * @return proxy
+     */
+    override fun createfromPetBlock(petBlock: PetBlock<*, *>?): PetProxy {
+        @Suppress("UNCHECKED_CAST")
+        return PetProxyImpl(petBlock as PetBlock<Any, Any>)
+    }
+
+    /**
+     * Creates from uniqueId.
+     *
+     * @param uuid    uniqueId
      * @param petMeta petMeta
      * @return pet
      */
@@ -50,7 +63,7 @@ class BukkitPetBlockRepository : PetBlockRepository<Player>() {
     }
 
     /**
-     * Gets the petblock from the given uuid.
+     * Gets the petblock from the given uniqueId.
      *
      * @param uuid uudi
      * @return pet

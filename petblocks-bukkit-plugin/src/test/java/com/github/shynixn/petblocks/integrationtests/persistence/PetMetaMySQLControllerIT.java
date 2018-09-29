@@ -96,10 +96,10 @@ public class PetMetaMySQLControllerIT {
         final Plugin plugin = mockPlugin();
         plugin.getConfig().set("sql.enabled", true);
         Factory.initialize(mockPlugin());
-        final UUID uuid = UUID.randomUUID();
+        final UUID uniqueId = UUID.randomUUID();
         final Player player = mock(Player.class);
         when(player.getName()).thenReturn("Shynixn");
-        when(player.getUniqueId()).thenReturn(uuid);
+        when(player.getUniqueId()).thenReturn(uniqueId);
         try (PetMetaController<Player> controller = Factory.createPetDataController()) {
             try (ParticleEffectMetaController particleController = Factory.createParticleEffectController()) {
                 try (PlayerMetaController playerController = Factory.createPlayerDataController()) {
@@ -147,10 +147,10 @@ public class PetMetaMySQLControllerIT {
         final Plugin plugin = mockPlugin();
         plugin.getConfig().set("sql.enabled", true);
         Factory.initialize(mockPlugin());
-        final UUID uuid = UUID.randomUUID();
+        final UUID uniqueId = UUID.randomUUID();
         final Player player = mock(Player.class);
         when(player.getName()).thenReturn("Shynixn");
-        when(player.getUniqueId()).thenReturn(uuid);
+        when(player.getUniqueId()).thenReturn(uniqueId);
         try (PetMetaController<Player> controller = Factory.createPetDataController()) {
             try (ParticleEffectMetaController particleController = Factory.createParticleEffectController()) {
                 try (PlayerMetaController playerController = Factory.createPlayerDataController()) {

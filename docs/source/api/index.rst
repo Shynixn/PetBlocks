@@ -9,8 +9,8 @@ https://shynixn.github.io/PetBlocks/apidocs/
 Including the PetBlocks API
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-.. image:: https://maven-badges.herokuapp.com/maven-central/com.github.shynixn.petblocks/petblocks-api/badge.svg
-    :target: https://maven-badges.herokuapp.com/maven-central/com.github.shynixn.petblocks/petblocks-api
+.. image:: https://maven-badges.herokuapp.com/maven-central/com.github.shynixn.petblocks/petblocks-api/badge.svg?style=flat-square
+:target: https://maven-badges.herokuapp.com/maven-central/com.github.shynixn.petblocks/petblocks-api
 
 PetBlocks is using maven as build system and is available in the central repository.
 
@@ -101,10 +101,24 @@ Registering the dependency
 Working with the PetBlocks API
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-.. note::  **Pet Metadata** - Bukkit/Sponge - Manipulating the name of the pet of a player.
+.. note::  **Pet** - Bukkit/Sponge - Accessing the pet entity of a player.
 
 .. code-block:: java
 
+    Player player; // Any player instance
+
+    PetService petService = PetBlocksApi.INSTANCE.resolve(PetService.class);
+    CompletableFuture<PetBlock<Object, Object>> completeAblePetBlock = petService.getOrSpawnPetBlockFromPlayerUUID(player.getUniqueId());
+
+    completeAblePetBlock.thenAccept(petBlock -> {
+        // Let the player ride the pet if he does not already do it.
+        // If this code segment is not called check your console for error messages.
+        petBlock.ride(player);
+    });
+
+.. note::  **Pet Metadata** - Bukkit/Sponge - Manipulating the name of the pet of a player.
+
+.. code-block:: java
 
     Player player;  // Any player instance
     PersistencePetMetaService petMetaService = PetBlocksApi.INSTANCE.resolve(PersistencePetMetaService.class);
@@ -245,37 +259,6 @@ Working with the PetBlocks API
     UpdateCheckService updateCheckService = PetBlocksApi.INSTANCE.resolve(UpdateCheckService.class);
 
     updateCheckService.checkForUpdates();
-
-
-.. warning:: Accessing the PetBlock is not stable via this API. This is going to be replaced by services in the future.
-
-**(Bukkit/Sponge) Spawning a petblock for a player:**
-
-.. code-block:: java
-
-    final Player player; //Any player instance
-    final PetMeta petMeta; //Any PetMeta instance
-    final Location location; //Any target location
-
-    final PetBlockController<Player> petBlockController = PetBlocksApi.getDefaultPetBlockController();
-    final PetBlock petBlock = petBlockController.create(player, petMeta); //Spawn PetBlock
-    petBlockController.store(petBlock); //Set it managed by the PetBlocks plugin
-
-    petBlock.teleport(location);    //Teleport the petblock to the target location
-
-**(Bukkit/Sponge) Obtaining an existing petblock for a player:**
-
-.. code-block:: java
-
-            final Player player; //Any player instance
-            final Location location; //Any target location
-
-            final PetBlockController<Player> petBlockController = PetBlocksApi.getDefaultPetBlockController();
-            final Optional<PetBlock> optPetBlock = petBlockController.getFromPlayer(player); //PetBlock is already managed
-            if (optPetBlock.isPresent()) {
-                final PetBlock petBlock = optPetBlock.get();
-                petBlock.teleport(location);    //Teleport the petblock to the target location
-            }
 
 Listen to Events
 ~~~~~~~~~~~~~~~~

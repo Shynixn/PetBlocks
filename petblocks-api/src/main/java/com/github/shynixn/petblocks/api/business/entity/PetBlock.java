@@ -29,6 +29,11 @@ import com.github.shynixn.petblocks.api.persistence.entity.PetMeta;
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
+/**
+ * @deprecated Use the PetProxy instead.
+ */
+@Deprecated
 public interface PetBlock<Player, Location> {
 
     @Deprecated

@@ -1,5 +1,8 @@
+@file:Suppress("UNCHECKED_CAST")
+
 package com.github.shynixn.petblocks.core.logic.business.extension
 
+import com.github.shynixn.petblocks.api.business.command.PlayerCommand
 import com.github.shynixn.petblocks.api.business.enumeration.ChatColor
 import com.github.shynixn.petblocks.api.business.service.ConcurrencyService
 import com.github.shynixn.petblocks.api.persistence.entity.ChatMessage
@@ -40,6 +43,43 @@ fun chatMessage(f: ChatMessage.() -> Unit): ChatMessage {
     val chatMessage = ChatMessageEntity()
     f.invoke(chatMessage)
     return chatMessage
+}
+
+/**
+ * Merges the args after the first parameter.
+ *
+ * @param args args
+ * @return merged.
+ */
+fun PlayerCommand.mergeArgs(args: Array<out String>): String {
+    val builder = StringBuilder()
+    for (i in 1 until args.size) {
+        if (builder.isNotEmpty()) {
+            builder.append(' ')
+        }
+
+        builder.append(args[i])
+    }
+    return builder.toString()
+}
+
+/**
+ * Copies the properties from the given [source] into this target property. Both objects have to be the
+ * same type or interface type.
+ */
+fun <T : Any> T.copyPropertiesFrom(source: T) {
+    source::class.java.declaredFields.forEach { sourceField ->
+        sourceField.isAccessible = true
+        val sourceValue = sourceField.get(source)
+
+        if (sourceValue is Int || sourceValue is Double || sourceValue is String || sourceValue is Enum<*>) {
+            val targetField = this::class.java.getDeclaredField(sourceField.name)
+            targetField.isAccessible = true
+            targetField.set(this, sourceValue)
+        } else {
+            throw RuntimeException("Cannot copy properties from $source")
+        }
+    }
 }
 
 /**

@@ -42,8 +42,8 @@ import java.util.*
 class SpongePetDataRepository @Inject constructor(playerMetaController: SpongePlayerDataRepository, particleController: ParticleEffectMetaController, connectionContext: DbContext
                                                   , logger: LoggingService) : PetDataRepository<Player>(playerMetaController, particleController, connectionContext, logger) {
     /**
-     * Create from uuid.
-     * @param uuid uuid.
+     * Create from uniqueId.
+     * @param uuid uniqueId.
      * @return petMeta
      */
     override fun createFromUUID(uuid: UUID?): PetMeta {
@@ -51,9 +51,9 @@ class SpongePetDataRepository @Inject constructor(playerMetaController: SpongePl
     }
 
     /**
-     * Returns the petMeta of the given uuid.
+     * Returns the petMeta of the given uniqueId.
      *
-     * @param uuid uuid
+     * @param uuid uniqueId
      * @return playerMeta
      */
     override fun getFromUUID(uuid: UUID?): Optional<PetMeta> {

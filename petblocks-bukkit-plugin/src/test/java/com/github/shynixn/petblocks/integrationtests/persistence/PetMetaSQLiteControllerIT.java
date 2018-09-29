@@ -71,10 +71,10 @@ public class PetMetaSQLiteControllerIT {
     @Test
     public void insertSelectPetMetaTest() throws ClassNotFoundException {
         Factory.initialize(mockPlugin());
-        final UUID uuid = UUID.randomUUID();
+        final UUID uniqueId = UUID.randomUUID();
         final Player player = mock(Player.class);
         when(player.getName()).thenReturn("Shynixn");
-        when(player.getUniqueId()).thenReturn(uuid);
+        when(player.getUniqueId()).thenReturn(uniqueId);
         try (PetMetaController<Player> controller = Factory.createPetDataController()) {
             try (ParticleEffectMetaController particleController = Factory.createParticleEffectController()) {
                 try (PlayerMetaController<Player> playerController = Factory.createPlayerDataController()) {
@@ -119,10 +119,10 @@ public class PetMetaSQLiteControllerIT {
     @Test
     public void storeLoadPetMetaTest() throws ClassNotFoundException {
         Factory.initialize(mockPlugin());
-        final UUID uuid = UUID.randomUUID();
+        final UUID uniqueId = UUID.randomUUID();
         final Player player = mock(Player.class);
         when(player.getName()).thenReturn("Shynixn");
-        when(player.getUniqueId()).thenReturn(uuid);
+        when(player.getUniqueId()).thenReturn(uniqueId);
         try (PetMetaController<Player> controller = Factory.createPetDataController()) {
             try (ParticleEffectMetaController particleController = Factory.createParticleEffectController()) {
                 try (PlayerMetaController playerController = Factory.createPlayerDataController()) {

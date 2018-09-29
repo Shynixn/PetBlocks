@@ -52,4 +52,9 @@ interface ConfigurationService {
      * Can be called asynchronly.
      */
     fun findGUIItemCollection(path: String): Optional<List<GUIItem>>
+
+    /**
+     * Clears cached resources and refreshes the used configuration.
+     */
+    fun refresh()
 }

@@ -1,9 +1,13 @@
 package com.github.shynixn.petblocks.sponge
 
 import com.github.shynixn.petblocks.api.PetBlocksApi
+import com.github.shynixn.petblocks.api.business.commandexecutor.EditPetCommandExecutor
+import com.github.shynixn.petblocks.api.business.commandexecutor.PlayerPetActionCommandExecutor
+import com.github.shynixn.petblocks.api.business.commandexecutor.ReloadCommandExecutor
 import com.github.shynixn.petblocks.api.business.controller.PetBlockController
 import com.github.shynixn.petblocks.api.business.proxy.PluginProxy
 import com.github.shynixn.petblocks.api.business.enumeration.ChatColor
+import com.github.shynixn.petblocks.api.business.service.CommandService
 import com.github.shynixn.petblocks.api.business.service.DependencyService
 import com.github.shynixn.petblocks.api.business.service.EntityService
 import com.github.shynixn.petblocks.api.business.service.UpdateCheckService
@@ -113,6 +117,12 @@ class PetBlocksPlugin : PluginProxy {
         Sponge.getEventManager().registerListeners(pluginContainer, resolve<InventoryListener>())
         Sponge.getEventManager().registerListeners(pluginContainer, resolve<FeedingPetListener>())
         Sponge.getEventManager().registerListeners(pluginContainer, resolve<CarryPetListener>())
+
+        // Register CommandExecutor
+        val commandService = this.resolve<CommandService>()
+        commandService.registerCommandExecutor(Config.getData<Map<String, Any>>("petblocks-gui")!!, this.resolve<PlayerPetActionCommandExecutor>())
+        commandService.registerCommandExecutor(Config.getData<Map<String, Any>>("petblocks-configuration")!!, this.resolve<EditPetCommandExecutor>())
+        commandService.registerCommandExecutor("petblockreload", this.resolve<ReloadCommandExecutor>())
 
         // Launch services
         val updateService = resolve<UpdateCheckService>()

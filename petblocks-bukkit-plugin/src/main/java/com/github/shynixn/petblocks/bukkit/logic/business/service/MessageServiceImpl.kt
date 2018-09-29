@@ -7,6 +7,7 @@ import com.github.shynixn.petblocks.bukkit.logic.business.helper.findServerVersi
 import com.github.shynixn.petblocks.bukkit.logic.business.helper.sendPacket
 import com.github.shynixn.petblocks.bukkit.nms.VersionSupport
 import org.bukkit.Bukkit
+import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 
 /**
@@ -37,6 +38,17 @@ import org.bukkit.entity.Player
  * SOFTWARE.
  */
 class MessageServiceImpl : MessageService {
+    /**
+     * Sends a message to the given source.
+     */
+    override fun <S> sendSourceMessage(source: S, message: String) {
+        if (source !is CommandSender) {
+            throw IllegalArgumentException("Source has to be a sender!")
+        }
+
+        source.sendMessage(message)
+    }
+
     /**
      * Sends a colored console message.
      */

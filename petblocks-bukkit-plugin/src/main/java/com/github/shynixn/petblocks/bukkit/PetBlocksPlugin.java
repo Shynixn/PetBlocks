@@ -1,14 +1,19 @@
 package com.github.shynixn.petblocks.bukkit;
 
 import com.github.shynixn.petblocks.api.PetBlocksApi;
+import com.github.shynixn.petblocks.api.business.commandexecutor.EditPetCommandExecutor;
+import com.github.shynixn.petblocks.api.business.commandexecutor.PlayerPetActionCommandExecutor;
+import com.github.shynixn.petblocks.api.business.commandexecutor.ReloadCommandExecutor;
 import com.github.shynixn.petblocks.api.business.controller.PetBlockController;
 import com.github.shynixn.petblocks.api.business.enumeration.PluginDependency;
 import com.github.shynixn.petblocks.api.business.proxy.PluginProxy;
+import com.github.shynixn.petblocks.api.business.service.CommandService;
 import com.github.shynixn.petblocks.api.business.service.DependencyService;
 import com.github.shynixn.petblocks.api.business.service.UpdateCheckService;
 import com.github.shynixn.petblocks.api.persistence.controller.PetMetaController;
 import com.github.shynixn.petblocks.bukkit.logic.business.PetBlockManager;
 import com.github.shynixn.petblocks.bukkit.logic.business.listener.*;
+import com.github.shynixn.petblocks.bukkit.logic.business.proxy.FilterProxyImpl;
 import com.github.shynixn.petblocks.bukkit.nms.NMSRegistry;
 import com.github.shynixn.petblocks.bukkit.nms.VersionSupport;
 import com.github.shynixn.petblocks.core.logic.business.helper.ReflectionUtils;
@@ -19,6 +24,7 @@ import org.apache.commons.io.IOUtils;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.configuration.MemorySection;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 
@@ -61,7 +67,7 @@ public final class PetBlocksPlugin extends JavaPlugin implements PluginProxy {
     private boolean disabled;
 
     private PetBlockManager petBlockManager;
-
+    private final FilterProxyImpl filterProxy = new FilterProxyImpl();
     private Injector injector;
 
     /**
@@ -84,6 +90,12 @@ public final class PetBlocksPlugin extends JavaPlugin implements PluginProxy {
             Bukkit.getPluginManager().registerEvents(this.resolve(CarryPetListener.class), this);
             Bukkit.getPluginManager().registerEvents(this.resolve(FeedingPetListener.class), this);
 
+            // Register CommandExecutor
+            final CommandService commandService = this.resolve(CommandService.class);
+            commandService.registerCommandExecutor(((MemorySection) this.getConfig().get("petblocks-gui")).getValues(false), this.resolve(PlayerPetActionCommandExecutor.class));
+            commandService.registerCommandExecutor(((MemorySection) this.getConfig().get("petblocks-configuration")).getValues(false), this.resolve(EditPetCommandExecutor.class));
+            commandService.registerCommandExecutor("petblockreload", this.resolve(ReloadCommandExecutor.class));
+
             if (VersionSupport.getServerVersion().isVersionSameOrGreaterThan(VersionSupport.VERSION_1_9_R1)) {
                 Bukkit.getPluginManager().registerEvents(this.resolve(CarryPet19R1Listener.class), this);
             }
@@ -104,7 +116,7 @@ public final class PetBlocksPlugin extends JavaPlugin implements PluginProxy {
             updateCheckService.checkForUpdates();
 
             if (dependencyService.isInstalled(PluginDependency.CLEARLAG)) {
-                Bukkit.getPluginManager().registerEvents(this.resolve(ClearLagListener.class), this);
+                Bukkit.getPluginManager().registerEvents(this.resolve(DependencyClearLagListener.class), this);
             }
 
             try {
@@ -148,6 +160,7 @@ public final class PetBlocksPlugin extends JavaPlugin implements PluginProxy {
         if (!this.disabled) {
             try {
                 NMSRegistry.unregisterCustomEntities();
+                this.filterProxy.close();
                 this.petBlockManager.close();
             } catch (final Exception e) {
                 PetBlocksPlugin.logger().log(Level.WARNING, "Failed to disable petblocks.", e);

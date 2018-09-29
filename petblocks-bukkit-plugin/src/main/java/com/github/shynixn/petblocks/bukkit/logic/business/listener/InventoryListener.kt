@@ -1,6 +1,7 @@
 package com.github.shynixn.petblocks.bukkit.logic.business.listener
 
 import com.github.shynixn.petblocks.api.business.service.GUIService
+import com.github.shynixn.petblocks.api.business.service.ProxyService
 import com.github.shynixn.petblocks.bukkit.logic.business.helper.updateInventory
 import com.google.inject.Inject
 import org.bukkit.Bukkit
@@ -38,7 +39,7 @@ import org.bukkit.event.player.PlayerQuitEvent
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class InventoryListener @Inject constructor(private val guiService: GUIService) : Listener {
+class InventoryListener @Inject constructor(private val guiService: GUIService, private val proxyService: ProxyService) : Listener {
     /**
      * Gets called from [Bukkit] and handles action to the inventory.
      */
@@ -66,5 +67,6 @@ class InventoryListener @Inject constructor(private val guiService: GUIService) 
     @EventHandler
     fun playerQuitEvent(event: PlayerQuitEvent) {
         guiService.cleanResources(event.player)
+        proxyService.cleanResources(event.player)
     }
 }

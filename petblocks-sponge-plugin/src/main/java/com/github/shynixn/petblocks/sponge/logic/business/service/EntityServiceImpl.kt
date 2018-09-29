@@ -1,13 +1,18 @@
 package com.github.shynixn.petblocks.sponge.logic.business.service
 
+import com.github.shynixn.petblocks.api.business.enumeration.ChatColor
 import com.github.shynixn.petblocks.api.business.enumeration.EntityType
+import com.github.shynixn.petblocks.api.business.service.ConfigurationService
 import com.github.shynixn.petblocks.api.business.service.EntityService
 import com.github.shynixn.petblocks.api.business.service.LoggingService
+import com.github.shynixn.petblocks.sponge.logic.business.helper.sendMessage
 import com.github.shynixn.petblocks.sponge.nms.v1_12_R1.CustomGroundArmorstand
 import com.github.shynixn.petblocks.sponge.nms.v1_12_R1.CustomRabbit
 import com.github.shynixn.petblocks.sponge.nms.v1_12_R1.CustomZombie
 import com.google.inject.Inject
 import org.spongepowered.api.Sponge
+import org.spongepowered.api.entity.Entity
+import org.spongepowered.api.entity.living.player.Player
 import org.spongepowered.api.text.translation.Translation
 
 /**
@@ -37,7 +42,33 @@ import org.spongepowered.api.text.translation.Translation
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class EntityServiceImpl @Inject constructor(private val logger: LoggingService) : EntityService {
+class EntityServiceImpl @Inject constructor(private val logger: LoggingService, private val configurationService: ConfigurationService) : EntityService {
+    /**
+     * Kills the nearest entity of the [player].
+     */
+    override fun <P> killNearestEntity(player: P) {
+        if (player !is Player) {
+            throw IllegalArgumentException("Player has to be a SpongePlayer!")
+        }
+
+        var distance = 100.0
+        var nearest: Entity? = null
+
+        player.location.extent.entities.forEach { entity ->
+            if (entity !is Player && player.location.position.distance(entity.location.position) < distance) {
+                distance = player.location.position.distance(entity.location.position)
+                nearest = entity
+            }
+        }
+
+        if (nearest != null && nearest is Entity) {
+            nearest!!.remove()
+
+            val prefix = configurationService.findValue<String>("messages.prefix")
+            player.sendMessage(prefix + "" + ChatColor.GREEN + "You removed entity " + nearest!!.type.name + ".")
+        }
+    }
+
     /**
      * Registers entities on the server when not already registered.
      * Returns true if registered. Returns false when not registered.
@@ -51,7 +82,7 @@ class EntityServiceImpl @Inject constructor(private val logger: LoggingService) 
 
         try {
             val entityTypeRegistryModuleClazz = Class.forName("org.spongepowered.common.registry.type.entity.EntityTypeRegistryModule")
-            val entityRegistrationMethod = entityTypeRegistryModuleClazz.getDeclaredMethod("registerEntityType",org.spongepowered.api.entity.EntityType::class.java)
+            val entityRegistrationMethod = entityTypeRegistryModuleClazz.getDeclaredMethod("registerEntityType", org.spongepowered.api.entity.EntityType::class.java)
             val spongeEntityTypeClazzConstructor = Class.forName("org.spongepowered.common.entity.SpongeEntityType")
                     .getDeclaredConstructor(Int::class.java, String::class.java, String::class.java, Class::class.java, Translation::class.java)
 

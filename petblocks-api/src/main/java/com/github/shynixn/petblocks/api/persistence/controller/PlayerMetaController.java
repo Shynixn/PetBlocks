@@ -43,9 +43,9 @@ public interface PlayerMetaController<Player> extends IDatabaseController<Player
     PlayerMeta create(Player player);
 
     /**
-     * Returns the playerMeta of the given uuid.
+     * Returns the playerMeta of the given uniqueId.
      *
-     * @param uuid uuid
+     * @param uuid uniqueId
      * @return playerMeta
      */
     Optional<PlayerMeta> getFromUUID(UUID uuid);

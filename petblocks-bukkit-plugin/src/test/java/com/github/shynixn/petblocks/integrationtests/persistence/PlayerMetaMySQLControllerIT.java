@@ -93,7 +93,7 @@ public class PlayerMetaMySQLControllerIT {
             for (final PlayerMeta item : controller.getAll()) {
                 controller.remove(item);
             }
-            final UUID uuid = UUID.randomUUID();
+            final UUID uniqueId = UUID.randomUUID();
             final PlayerMeta playerMeta = new PlayerData() {
                 @Override
                 public <T> T getPlayer() {
@@ -108,14 +108,14 @@ public class PlayerMetaMySQLControllerIT {
             assertThrows(IllegalArgumentException.class, () -> controller.store(playerMeta));
             assertEquals(0, controller.size());
 
-            playerMeta.setUuid(uuid);
+            playerMeta.setUuid(uniqueId);
             controller.store(playerMeta);
             assertEquals(0, controller.size());
 
             playerMeta.setName("Sample");
             controller.store(playerMeta);
             assertEquals(1, controller.size());
-            assertEquals(uuid, controller.getFromId(playerMeta.getId()).get().getUUID());
+            assertEquals(uniqueId, controller.getFromId(playerMeta.getId()).get().getUUID());
         } catch (final Exception e) {
             Logger.getLogger(this.getClass().getSimpleName()).log(Level.WARNING, "Failed to run test.", e);
             Assert.fail();
@@ -131,7 +131,7 @@ public class PlayerMetaMySQLControllerIT {
             for (final PlayerMeta item : controller.getAll()) {
                 controller.remove(item);
             }
-            UUID uuid = UUID.randomUUID();
+            UUID uniqueId = UUID.randomUUID();
             PlayerMeta playerMeta = new PlayerData() {
                 @Override
                 public <T> T getPlayer() {
@@ -143,21 +143,21 @@ public class PlayerMetaMySQLControllerIT {
                 }
             };
             playerMeta.setName("Second");
-            playerMeta.setUuid(uuid);
+            playerMeta.setUuid(uniqueId);
             controller.store(playerMeta);
 
             assertEquals(1, controller.size());
             playerMeta = controller.getAll().get(0);
-            assertEquals(uuid, playerMeta.getUUID());
+            assertEquals(uniqueId, playerMeta.getUUID());
             assertEquals("Second", playerMeta.getName());
 
-            uuid = UUID.randomUUID();
+            uniqueId = UUID.randomUUID();
             playerMeta.setName("Shynixn");
-            playerMeta.setUuid(uuid);
+            playerMeta.setUuid(uniqueId);
             controller.store(playerMeta);
 
             playerMeta = controller.getAll().get(0);
-            assertEquals(uuid, playerMeta.getUUID());
+            assertEquals(uniqueId, playerMeta.getUUID());
             assertEquals("Shynixn", playerMeta.getName());
         } catch (final Exception e) {
             Logger.getLogger(this.getClass().getSimpleName()).log(Level.WARNING, "Failed to run test.", e);

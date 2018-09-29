@@ -29,9 +29,9 @@ public abstract class PlayerData extends PersistenceObject implements PlayerMeta
     }
 
     /**
-     * Returns the uuid of the playerData
+     * Returns the uniqueId of the playerData
      *
-     * @return uuid
+     * @return uniqueId
      */
     @Override
     public UUID getUUID() {
@@ -39,9 +39,9 @@ public abstract class PlayerData extends PersistenceObject implements PlayerMeta
     }
 
     /**
-     * Sets the uuid of the playerData
+     * Sets the uniqueId of the playerData
      *
-     * @param uuid uuid
+     * @param uuid uniqueId
      */
     @Override
     public void setUuid(UUID uuid) {

@@ -43,8 +43,8 @@ import java.util.*
 class BukkitPetDataRepository(playerMetaController: PlayerMetaController<Player>, particleController: ParticleEffectMetaController, connectionContext: DbContext
 ) : PetDataRepository<Player>(playerMetaController, particleController, connectionContext, LoggingUtilServiceImpl(PetBlocksPlugin.logger())) {
     /**
-     * Create from uuid.
-     * @param uuid uuid.
+     * Create from uniqueId.
+     * @param uuid uniqueId.
      * @return petMeta
      */
     override fun createFromUUID(uuid: UUID?): PetMeta {
@@ -52,9 +52,9 @@ class BukkitPetDataRepository(playerMetaController: PlayerMetaController<Player>
     }
 
     /**
-     * Returns the petMeta of the given uuid.
+     * Returns the petMeta of the given uniqueId.
      *
-     * @param uuid uuid
+     * @param uuid uniqueId
      * @return playerMeta
      */
     override fun getFromUUID(uuid: UUID?): Optional<PetMeta> {

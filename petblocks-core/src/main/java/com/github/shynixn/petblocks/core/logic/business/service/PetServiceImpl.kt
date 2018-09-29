@@ -3,14 +3,16 @@ package com.github.shynixn.petblocks.core.logic.business.service
 import com.github.shynixn.petblocks.api.PetBlocksApi
 import com.github.shynixn.petblocks.api.business.controller.PetBlockController
 import com.github.shynixn.petblocks.api.business.entity.PetBlock
+import com.github.shynixn.petblocks.api.business.proxy.PetProxy
 import com.github.shynixn.petblocks.api.business.service.ConcurrencyService
 import com.github.shynixn.petblocks.api.business.service.LoggingService
 import com.github.shynixn.petblocks.api.business.service.PersistencePetMetaService
 import com.github.shynixn.petblocks.api.business.service.PetService
-import com.github.shynixn.petblocks.core.logic.business.extension.sync
+import com.github.shynixn.petblocks.core.logic.persistence.configuration.Config
 import com.google.inject.Inject
 import java.util.*
 import java.util.concurrent.CompletableFuture
+import kotlin.collections.HashMap
 
 /**
  * Created by Shynixn 2018.
@@ -39,16 +41,70 @@ import java.util.concurrent.CompletableFuture
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class PetServiceImpl @Inject constructor(private val concurrencyService: ConcurrencyService, private val petMetaService: PersistencePetMetaService, private val loggingService: LoggingService) : PetService {
+class PetServiceImpl @Inject constructor(private val petMetaService: PersistencePetMetaService, private val loggingService: LoggingService, private val concurrencyService: ConcurrencyService) : PetService, Runnable {
+    private val pets = HashMap<PetBlock<Any, Any>, PetProxy>()
     private var petBlockController: PetBlockController<*>? = null
 
+    init {
+        concurrencyService.runTaskSync(0L, 20L * 60 * 5, this)
+    }
+
     /**
-     * Tries to find the PetBlock from the given entity.
+     * Gets or spawns the pet of the given player uniqueId.
      */
-    override fun <E> findPetBlockByEntity(entity: E): Optional<PetBlock<Any, Any>> {
+    override fun getOrSpawnPetFromPlayerUUID(uuid: UUID): CompletableFuture<PetProxy> {
+        initializeDependencies()
+
+        val completableFuture = CompletableFuture<PetProxy>()
+
+        if (!Config.getInstance<Any>().allowPetSpawningByUUID(uuid)) {
+            return completableFuture
+        }
+
+        petMetaService.getOrCreateFromPlayerUUID(uuid).thenAccept { petMeta ->
+            val optExistingPetBlock = petBlockController!!.getFromUUID(uuid)
+
+            if (optExistingPetBlock.isPresent && !optExistingPetBlock.get().isDead) {
+                if (!pets.containsKey(optExistingPetBlock.get())) {
+                    pets[optExistingPetBlock.get()] = petBlockController!!.createfromPetBlock(optExistingPetBlock.get())
+                }
+
+                completableFuture.complete(pets[optExistingPetBlock.get()])
+            } else {
+                if (optExistingPetBlock.isPresent) {
+                    petBlockController!!.remove(optExistingPetBlock.get())
+                }
+
+                try {
+                    val petBlock = petBlockController!!.createFromUUID(uuid, petMeta)
+                    petBlock.meta.isEnabled = true
+                    petBlockController!!.store(petBlock)
+
+                    if (!pets.containsKey(petBlock)) {
+                        pets[petBlock] = petBlockController!!.createfromPetBlock(petBlock)
+                    }
+
+                    completableFuture.complete(pets[petBlock])
+                } catch (e: Exception) {
+                    loggingService.error("Pet could not be spawned. Please report the error message to the plugin author.", e)
+                }
+            }
+        }
+
+        return completableFuture
+    }
+
+    /**
+     * Tries to find the pet from the given entity.
+     */
+    override fun <E> findPetByEntity(entity: E): Optional<PetProxy> {
         petBlockController!!.all.forEach { petBlock ->
             if (petBlock.armorStand == entity || petBlock.engineEntity == entity) {
-                return Optional.of(petBlock)
+                if (!pets.containsKey(petBlock)) {
+                    pets[petBlock] = petBlockController!!.createfromPetBlock(petBlock)
+                }
+
+                return Optional.of(pets[petBlock]!!)
             }
         }
 
@@ -63,36 +119,23 @@ class PetServiceImpl @Inject constructor(private val concurrencyService: Concurr
     }
 
     /**
-     * Gets or spawns the pet of the given player uuid.
+     * When an object implementing interface `Runnable` is used
+     * to create a thread, starting the thread causes the object's
+     * `run` method to be called in that separately executing
+     * thread.
+     *
+     *
+     * The general contract of the method `run` is that it may
+     * take any action whatsoever.
+     *
+     * @see java.lang.Thread.run
      */
-    override fun getOrSpawnPetBlockFromPlayerUUID(uuid: UUID): CompletableFuture<PetBlock<Any, Any>> {
-        initializeDependencies()
-
-        val completableFuture = CompletableFuture<PetBlock<Any, Any>>()
-
-        petMetaService.getOrCreateFromPlayerUUID(uuid).thenAccept { petMeta ->
-            val optExistingPetBlock = petBlockController!!.getFromUUID(uuid)
-
-            if (optExistingPetBlock.isPresent && !optExistingPetBlock.get().isDead) {
-                completableFuture.complete(optExistingPetBlock.get())
-            } else {
-                if (optExistingPetBlock.isPresent) {
-                    petBlockController!!.remove(optExistingPetBlock.get())
-                }
-
-                try {
-                    val petBlock = petBlockController!!.createFromUUID(uuid, petMeta)
-                    petBlock.meta.isEnabled = true
-                    petBlockController!!.store(petBlock)
-
-                    completableFuture.complete(petBlock)
-                } catch (e: Exception) {
-                    loggingService.error("Pet could not be spawned. Please report the error message to the plugin author.", e)
-                }
+    override fun run() {
+        pets.keys.toTypedArray().forEach { petblock ->
+            if (petblock.isDead) {
+                this.pets.remove(petblock)
             }
         }
-
-        return completableFuture
     }
 
     /**

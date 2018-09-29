@@ -75,7 +75,7 @@ class PersistencePetMetaServiceImpl @Inject constructor(private val concurrencyS
     }
 
     /**
-     * Returns the petMeta of from the given player uuid. Creates
+     * Returns the petMeta of from the given player uniqueId. Creates
      * a new one if it does not exist yet. Gets it from the runtime when a pet
      * currently uses the meta data of the player.
      */

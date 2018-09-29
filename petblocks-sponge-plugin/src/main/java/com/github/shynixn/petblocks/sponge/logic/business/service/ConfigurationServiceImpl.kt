@@ -269,6 +269,17 @@ class ConfigurationServiceImpl @Inject constructor(private val plugin: PluginCon
     }
 
     /**
+     * Clears cached resources and refreshes the used configuration.
+     */
+    override fun refresh() {
+        cache.clear()
+        namingMessage = null
+        skullNamingMessage = null
+
+        Config.reload()
+    }
+
+    /**
      * Returns the minecraft-heads.com category heads.
      */
     private fun getItemsFromMinecraftHeadsDatabase(category: String): List<GUIItem> {

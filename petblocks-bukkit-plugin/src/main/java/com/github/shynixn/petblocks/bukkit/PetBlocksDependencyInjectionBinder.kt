@@ -11,6 +11,7 @@ import com.github.shynixn.petblocks.bukkit.logic.Factory
 import com.github.shynixn.petblocks.bukkit.logic.business.service.*
 import com.github.shynixn.petblocks.bukkit.logic.persistence.configuration.*
 import com.github.shynixn.petblocks.core.logic.business.service.*
+import com.github.shynixn.petblocks.core.logic.business.service.CarryPetServiceImpl
 import com.google.inject.AbstractModule
 import com.google.inject.Scopes
 import com.google.inject.name.Names
@@ -66,18 +67,18 @@ class PetBlocksDependencyInjectionBinder(private val plugin: Plugin) : AbstractM
         bind(Config::class.java).toInstance(Config)
 
         // Services
-        bind(PetService::class.java).to(PetServiceImpl::class.java)
         bind(ConcurrencyService::class.java).to(ConcurrencyServiceImpl::class.java)
         bind(LoggingService::class.java).toInstance(LoggingUtilServiceImpl(plugin.logger))
-        bind(PersistencePetMetaService::class.java).to(PersistencePetMetaServiceImpl::class.java)
         bind(ParticleService::class.java).to(ParticleServiceImpl::class.java)
         bind(SoundService::class.java).to(SoundServiceImpl::class.java)
         bind(GUIScriptService::class.java).to(GUIScriptServiceImpl::class.java)
-        bind(ConfigurationService::class.java).to(ConfigurationServiceImpl::class.java)
-        bind(GUIService::class.java).to(GUIServiceImpl::class.java).`in`(Scopes.SINGLETON)
-        bind(FeedingPetService::class.java).to(FeedPetServiceImpl::class.java)
         bind(UpdateCheckService::class.java).to(UpdateCheckServiceImpl::class.java)
         bind(MessageService::class.java).to(MessageServiceImpl::class.java)
+        bind(PersistencePetMetaService::class.java).to(PersistencePetMetaServiceImpl::class.java).`in`(Scopes.SINGLETON)
+        bind(ConfigurationService::class.java).to(ConfigurationServiceImpl::class.java).`in`(Scopes.SINGLETON)
+        bind(GUIService::class.java).to(GUIServiceImpl::class.java).`in`(Scopes.SINGLETON)
+        bind(FeedingPetService::class.java).to(FeedPetServiceImpl::class.java).`in`(Scopes.SINGLETON)
+        bind(PetService::class.java).to(PetServiceImpl::class.java).`in`(Scopes.SINGLETON)
         bind(DependencyService::class.java).to(DependencyServiceImpl::class.java).`in`(Scopes.SINGLETON)
         bind(CarryPetService::class.java).to(CarryPetServiceImpl::class.java).`in`(Scopes.SINGLETON)
 

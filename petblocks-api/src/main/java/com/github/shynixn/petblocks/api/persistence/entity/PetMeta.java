@@ -131,6 +131,13 @@ public interface PetMeta extends Persistenceable {
     void setSkin(String name, int damage, String skin, boolean unbreakable);
 
     /**
+     * Changes the skin of the pet with the given player name or skin url.
+     *
+     * @param name name
+     */
+    void setSkinFromName(String name);
+
+    /**
      * Sets the stored display name of the pet which appears above it's head on respawn.
      *
      * @param name name

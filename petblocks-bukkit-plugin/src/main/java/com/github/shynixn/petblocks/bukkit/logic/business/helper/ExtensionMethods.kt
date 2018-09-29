@@ -2,10 +2,9 @@
 
 package com.github.shynixn.petblocks.bukkit.logic.business.helper
 
-import com.github.shynixn.petblocks.api.business.entity.PetBlock
 import com.github.shynixn.petblocks.api.business.enumeration.ParticleType
-import com.github.shynixn.petblocks.api.business.service.PetService
-import com.github.shynixn.petblocks.bukkit.PetBlocksPlugin
+import com.github.shynixn.petblocks.api.business.enumeration.Permission
+import com.github.shynixn.petblocks.api.persistence.entity.Position
 import com.github.shynixn.petblocks.bukkit.logic.business.PetBlockManager
 import com.github.shynixn.petblocks.bukkit.nms.VersionSupport
 import com.github.shynixn.petblocks.core.logic.business.extension.translateChatColors
@@ -15,11 +14,9 @@ import org.bukkit.inventory.Inventory
 import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.PlayerInventory
 import org.bukkit.inventory.meta.SkullMeta
-import org.bukkit.plugin.java.JavaPlugin
+import org.bukkit.util.Vector
 import java.lang.reflect.InvocationTargetException
 import java.util.*
-import java.util.concurrent.CompletableFuture
-import java.util.function.Consumer
 
 /**
  * Created by Shynixn 2018.
@@ -71,6 +68,13 @@ fun PlayerInventory.setItemStackInHand(itemStack: ItemStack?, offHand: Boolean =
         Class.forName("org.bukkit.entity.HumanEntity").getDeclaredMethod("setItemInHand", ItemStack::class.java)
                 .invoke(this.holder, itemStack)
     }
+}
+
+/**
+ * Converts the [Position] to a BukkitVector.
+ */
+fun Position.toVector(): Vector {
+    return Vector(this.x, this.y, this.z)
 }
 
 /**
@@ -171,6 +175,13 @@ fun ItemStack.setDisplayName(displayName: String): ItemStack {
     return this
 }
 
+/**
+ * Checks if this player has got the given [permission].
+ */
+fun Player.hasPermission(permission: Permission): Boolean {
+    return PetBlockModifyHelper.hasPermission(this, permission)
+}
+
 fun ItemStack.setLore(lore: List<String>): ItemStack {
     val meta = itemMeta
     val tmpLore = ArrayList<String>()
@@ -200,15 +211,6 @@ fun String.toParticleType(): ParticleType {
     }
 
     throw IllegalArgumentException("ParticleType cannot be parsed from '" + this + "'.")
-}
-
-/**
- * Gets the pet of a player.
- */
-inline fun Any.pet(petService: PetService, player: Player, crossinline f: (PetBlock<*, *>) -> Unit) {
-    petService.getOrSpawnPetBlockFromPlayerUUID(player.uniqueId).thenAccept { petblock ->
-        f.invoke(petblock)
-    }
 }
 
 /**

@@ -3,9 +3,6 @@
 package com.github.shynixn.petblocks.sponge.logic.business
 
 import com.github.shynixn.petblocks.core.logic.business.entity.GuiPageContainer
-import com.github.shynixn.petblocks.sponge.logic.business.commandexecutor.PetBlockCommandExecutor
-import com.github.shynixn.petblocks.sponge.logic.business.commandexecutor.PetBlockReloadCommandExecutor
-import com.github.shynixn.petblocks.sponge.logic.business.commandexecutor.PetDataCommandExecutor
 import com.github.shynixn.petblocks.sponge.logic.business.controller.SpongePetBlockRepository
 import com.github.shynixn.petblocks.sponge.logic.business.listener.SpongePetBlockListener
 import com.github.shynixn.petblocks.sponge.logic.business.listener.SpongePetDataListener
@@ -60,15 +57,6 @@ class PetBlocksManager : AutoCloseable {
 
     @Inject
     lateinit var gui: GUI
-
-    @Inject
-    private lateinit var petDataCommandExecutor: PetDataCommandExecutor
-
-    @Inject
-    private lateinit var petReloadCommandExecutor: PetBlockReloadCommandExecutor
-
-    @Inject
-    private lateinit var petblockCommandExecutor: PetBlockCommandExecutor
 
     @Inject
     private lateinit var petDataListener: SpongePetDataListener

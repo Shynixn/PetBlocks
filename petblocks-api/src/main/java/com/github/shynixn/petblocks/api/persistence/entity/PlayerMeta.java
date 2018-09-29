@@ -44,14 +44,14 @@ public interface PlayerMeta extends Persistenceable{
     void setName(String name);
 
     /**
-     * Returns the uuid of the playerData.
-     * @return uuid
+     * Returns the uniqueId of the playerData.
+     * @return uniqueId
      */
     UUID getUUID();
 
     /**
-     * Sets the uuid of the playerData.
-     * @param uuid uuid
+     * Sets the uniqueId of the playerData.
+     * @param uuid uniqueId
      */
     void setUuid(UUID uuid);
 

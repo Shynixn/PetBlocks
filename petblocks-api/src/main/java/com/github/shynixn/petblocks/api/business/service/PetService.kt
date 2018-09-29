@@ -1,6 +1,6 @@
 package com.github.shynixn.petblocks.api.business.service
 
-import com.github.shynixn.petblocks.api.business.entity.PetBlock
+import com.github.shynixn.petblocks.api.business.proxy.PetProxy
 import java.util.*
 import java.util.concurrent.CompletableFuture
 
@@ -33,17 +33,17 @@ import java.util.concurrent.CompletableFuture
  */
 interface PetService {
     /**
-     * Tries to find the PetBlock from the given entity.
+     * Gets or spawns the pet of the given player uniqueId.
      */
-    fun <E> findPetBlockByEntity(entity: E): Optional<PetBlock<Any, Any>>
+    fun getOrSpawnPetFromPlayerUUID(uuid: UUID): CompletableFuture<PetProxy>
+
+    /**
+     * Tries to find the pet from the given entity.
+     */
+    fun <E> findPetByEntity(entity: E): Optional<PetProxy>
 
     /**
      * Checks if the player with the given [uuid] has an active pet.
      */
     fun hasPet(uuid: UUID): Boolean
-
-    /**
-     * Gets or spawns the pet of the given player uuid.
-     */
-    fun getOrSpawnPetBlockFromPlayerUUID(uuid: UUID): CompletableFuture<PetBlock<Any, Any>>
 }

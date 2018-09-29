@@ -13,6 +13,7 @@ import com.google.inject.Inject;
 import com.google.inject.name.Named;
 
 import java.util.List;
+import java.util.UUID;
 
 public abstract class Config<Player> {
     private static Config instance;
@@ -61,6 +62,8 @@ public abstract class Config<Player> {
     public abstract void fixJoinDefaultPet(PetMeta petMeta);
 
     public abstract boolean allowPetSpawning(Object location);
+
+    public abstract boolean allowPetSpawningByUUID(UUID uuid);
 
     /**
      * Reloads the config

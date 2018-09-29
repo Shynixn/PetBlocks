@@ -1,6 +1,7 @@
 package com.github.shynixn.petblocks.api.business.controller;
 
 import com.github.shynixn.petblocks.api.business.entity.PetBlock;
+import com.github.shynixn.petblocks.api.business.proxy.PetProxy;
 import com.github.shynixn.petblocks.api.persistence.controller.IController;
 import com.github.shynixn.petblocks.api.persistence.entity.PetMeta;
 
@@ -34,6 +35,9 @@ import java.util.UUID;
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+/**
+ * @deprecated Use the PetService instead.
+ */
 @Deprecated
 public interface PetBlockController<Player> extends IController<PetBlock<Object, Object>> {
 
@@ -47,9 +51,17 @@ public interface PetBlockController<Player> extends IController<PetBlock<Object,
     PetBlock create(Player player, PetMeta petMeta);
 
     /**
-     * Creates from uuid.
+     * Temporary compatibility create.
      *
-     * @param uuid    uuid
+     * @param petBlock petblock
+     * @return proxy
+     */
+    PetProxy createfromPetBlock(PetBlock petBlock);
+
+    /**
+     * Creates from uniqueId.
+     *
+     * @param uuid    uniqueId
      * @param petMeta petMeta
      * @return pet
      */
@@ -64,7 +76,7 @@ public interface PetBlockController<Player> extends IController<PetBlock<Object,
     Optional<PetBlock> getFromPlayer(Player player);
 
     /**
-     * Gets the petblock from the given uuid.
+     * Gets the petblock from the given uniqueId.
      *
      * @param uuid uudi
      * @return pet

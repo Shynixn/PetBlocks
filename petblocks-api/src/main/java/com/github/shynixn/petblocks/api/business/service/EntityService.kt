@@ -33,4 +33,9 @@ interface EntityService {
      * Returns true if registered. Returns false when not registered.
      */
     fun registerEntitiesOnServer(): Boolean
+
+    /**
+     * Kills the nearest entity of the [player].
+     */
+    fun <P> killNearestEntity(player: P)
 }

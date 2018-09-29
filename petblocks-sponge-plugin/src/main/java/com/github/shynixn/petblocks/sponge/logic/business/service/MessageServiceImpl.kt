@@ -4,6 +4,7 @@ import com.github.shynixn.petblocks.api.business.enumeration.ChatColor
 import com.github.shynixn.petblocks.api.business.service.MessageService
 import com.github.shynixn.petblocks.api.persistence.entity.ChatMessage
 import com.github.shynixn.petblocks.sponge.logic.business.helper.findServerVersion
+import com.github.shynixn.petblocks.sponge.logic.business.helper.sendMessage
 import com.github.shynixn.petblocks.sponge.logic.business.helper.translateToText
 import org.spongepowered.api.Sponge
 import org.spongepowered.api.entity.living.player.Player
@@ -36,6 +37,17 @@ import org.spongepowered.api.entity.living.player.Player
  * SOFTWARE.
  */
 class MessageServiceImpl : MessageService {
+    /**
+     * Sends a message to the given source.
+     */
+    override fun <S> sendSourceMessage(source: S, message: String) {
+        if (source is Player) {
+            source.sendMessage(message)
+        } else {
+            sendConsoleMessage(message)
+        }
+    }
+
     /**
      * Sends a colored console message.
      */

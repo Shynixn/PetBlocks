@@ -1,9 +1,13 @@
+@file:Suppress("UNCHECKED_CAST")
+
 package com.github.shynixn.petblocks.sponge.logic.business.controller
 
 import com.github.shynixn.petblocks.api.business.entity.PetBlock
+import com.github.shynixn.petblocks.api.business.proxy.PetProxy
 import com.github.shynixn.petblocks.api.persistence.entity.PetMeta
 import com.github.shynixn.petblocks.api.sponge.event.PetBlockDeathEvent
 import com.github.shynixn.petblocks.core.logic.business.controller.PetBlockRepository
+import com.github.shynixn.petblocks.sponge.logic.business.proxy.PetProxyImpl
 import com.github.shynixn.petblocks.sponge.nms.NMSRegistry
 import org.spongepowered.api.Sponge
 import org.spongepowered.api.entity.Transform
@@ -40,9 +44,19 @@ import java.util.*
  */
 class SpongePetBlockRepository : PetBlockRepository<Player>() {
     /**
-     * Creates from uuid.
+     * Temporary compatibility create.
      *
-     * @param uuid    uuid
+     * @param petBlock petblock
+     * @return proxy
+     */
+    override fun createfromPetBlock(petBlock: PetBlock<*, *>?): PetProxy {
+        return PetProxyImpl(petBlock as PetBlock<Any, Any>)
+    }
+
+    /**
+     * Creates from uniqueId.
+     *
+     * @param uuid    uniqueId
      * @param petMeta petMeta
      * @return pet
      */
@@ -51,7 +65,7 @@ class SpongePetBlockRepository : PetBlockRepository<Player>() {
     }
 
     /**
-     * Gets the petblock from the given uuid.
+     * Gets the petblock from the given uniqueId.
      *
      * @param uuid uudi
      * @return pet

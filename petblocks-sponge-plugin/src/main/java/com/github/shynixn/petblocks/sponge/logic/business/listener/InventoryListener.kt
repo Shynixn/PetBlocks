@@ -1,6 +1,7 @@
 package com.github.shynixn.petblocks.sponge.logic.business.listener
 
 import com.github.shynixn.petblocks.api.business.service.GUIService
+import com.github.shynixn.petblocks.api.business.service.ProxyService
 import com.github.shynixn.petblocks.sponge.logic.business.helper.updateInventory
 import com.google.inject.Inject
 import org.spongepowered.api.Sponge
@@ -41,7 +42,7 @@ import org.spongepowered.api.item.inventory.property.SlotIndex
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class InventoryListener @Inject constructor(private val guiService: GUIService) {
+class InventoryListener @Inject constructor(private val guiService: GUIService, private val proxyService: ProxyService) {
     /**
      * Gets called from [Sponge] and handles action to the inventory.
      */
@@ -74,5 +75,6 @@ class InventoryListener @Inject constructor(private val guiService: GUIService) 
     @Listener
     fun playerQuitEvent(event: ClientConnectionEvent.Disconnect) {
         guiService.cleanResources(event.targetEntity)
+        proxyService.cleanResources(event.targetEntity)
     }
 }

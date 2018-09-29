@@ -15,6 +15,7 @@ import com.github.shynixn.petblocks.bukkit.logic.persistence.entity.BukkitGUIIte
 import com.github.shynixn.petblocks.bukkit.logic.persistence.entity.BukkitItemContainer
 import com.github.shynixn.petblocks.bukkit.nms.v1_13_R1.MaterialCompatibility13
 import com.github.shynixn.petblocks.core.logic.business.extension.chatMessage
+import com.github.shynixn.petblocks.core.logic.persistence.configuration.Config
 import com.github.shynixn.petblocks.core.logic.persistence.entity.ParticleEntity
 import com.github.shynixn.petblocks.core.logic.persistence.entity.SoundEntity
 import com.google.inject.Inject
@@ -259,6 +260,17 @@ class ConfigurationServiceImpl @Inject constructor(private val plugin: Plugin, p
         }
 
         return Optional.empty()
+    }
+
+    /**
+     * Clears cached resources and refreshes the used configuration.
+     */
+    override fun refresh() {
+        cache.clear()
+        namingMessage = null
+        skullNamingMessage = null
+
+        Config.getInstance<Any>().reload()
     }
 
     /**

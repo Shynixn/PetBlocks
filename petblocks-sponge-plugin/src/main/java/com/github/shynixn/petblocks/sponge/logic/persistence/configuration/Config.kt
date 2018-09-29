@@ -25,6 +25,7 @@ import org.spongepowered.api.world.Location
 import org.spongepowered.api.world.World
 import java.io.IOException
 import java.nio.file.Files
+import java.util.*
 import java.util.regex.Pattern
 
 /**
@@ -56,6 +57,16 @@ import java.util.regex.Pattern
  */
 @Singleton
 object Config : ConfigLayer<Player>() {
+    override fun allowPetSpawningByUUID(uuid: UUID?): Boolean {
+        val player = (Sponge.getGame().server.getPlayer(uuid!!))
+
+        if (player.isPresent) {
+            return allowPetSpawning(player.get().location)
+        }
+
+        return false
+    }
+
     override fun fixJoinDefaultPet(petMeta: PetMeta) {
         petMeta.setSkin(this.getData<Int>("join.settings.id")!!, (this.getData<Int>("join.settings.damage") as Int), this.getData<String>("join.settings.skin"), this.getData<Boolean>("join.settings.unbreakable")!!)
 

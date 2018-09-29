@@ -62,9 +62,9 @@ public abstract class PlayerDataRepository<Player> extends DataBaseRepository<Pl
     public abstract PlayerData create();
 
     /**
-     * Returns the playerMeta of the given uuid.
+     * Returns the playerMeta of the given uniqueId.
      *
-     * @param uuid uuid
+     * @param uuid uniqueId
      * @return playerMeta
      */
     @Override
@@ -195,7 +195,7 @@ public abstract class PlayerDataRepository<Player> extends DataBaseRepository<Pl
         final PlayerData playerStats = this.create();
         playerStats.setId(resultSet.getLong("id"));
         playerStats.setName(resultSet.getString("name"));
-        playerStats.setUuid(UUID.fromString(resultSet.getString("uuid")));
+        playerStats.setUuid(UUID.fromString(resultSet.getString("uniqueId")));
         return playerStats;
     }
 

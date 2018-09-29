@@ -4,10 +4,6 @@ import com.github.shynixn.petblocks.api.business.controller.PetBlockController;
 import com.github.shynixn.petblocks.api.persistence.controller.PetMetaController;
 import com.github.shynixn.petblocks.bukkit.PetBlocksPlugin;
 import com.github.shynixn.petblocks.bukkit.logic.Factory;
-import com.github.shynixn.petblocks.bukkit.logic.business.commandexecutor.PetBlockCommandExecutor;
-import com.github.shynixn.petblocks.bukkit.logic.business.commandexecutor.PetBlockReloadCommandExecutor;
-import com.github.shynixn.petblocks.bukkit.logic.business.commandexecutor.PetDataCommandExecutor;
-import com.github.shynixn.petblocks.bukkit.logic.business.filter.PetBlockFilter;
 import com.github.shynixn.petblocks.bukkit.logic.business.listener.PetBlockListener;
 import com.github.shynixn.petblocks.bukkit.logic.business.listener.PetDataListener;
 import com.github.shynixn.petblocks.core.logic.business.entity.GuiPageContainer;
@@ -61,7 +57,6 @@ public class PetBlockManager implements AutoCloseable {
     public final Map<Player, GuiPageContainer> pages = new HashMap<>();
     public GUI gui;
 
-    private PetBlockFilter filter;
     private final PetBlockController<Player> petBlockController;
     private final PetMetaController<Player> petMetaController;
 
@@ -75,12 +70,8 @@ public class PetBlockManager implements AutoCloseable {
         this.petBlockController = Factory.createPetBlockController();
         this.petMetaController = Factory.createPetDataController();
         try {
-            new PetDataCommandExecutor(this);
-            new PetBlockCommandExecutor(this);
-            new PetBlockReloadCommandExecutor(plugin);
             new PetDataListener(this, plugin);
             new PetBlockListener(this, plugin);
-            this.filter = PetBlockFilter.create();
             this.gui = new GUI(this);
             instance = this;
         } catch (final Exception e) {
@@ -125,6 +116,5 @@ public class PetBlockManager implements AutoCloseable {
         this.pages.clear();
         this.petBlockController.close();
         this.petMetaController.close();
-        this.filter.close();
     }
 }

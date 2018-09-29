@@ -184,7 +184,7 @@
 </div>
 <div class="section" id="including-the-petblocks-api">
 <h2>Including the PetBlocks API<a class="headerlink" href="#including-the-petblocks-api" title="Permalink to this headline">¶</a></h2>
-<a class="reference external image-reference" href="https://maven-badges.herokuapp.com/maven-central/com.github.shynixn.petblocks/petblocks-api"><img alt="https://maven-badges.herokuapp.com/maven-central/com.github.shynixn.petblocks/petblocks-api/badge.svg" src="https://maven-badges.herokuapp.com/maven-central/com.github.shynixn.petblocks/petblocks-api/badge.svg" /></a>
+<a class="reference external image-reference" href="https://maven-badges.herokuapp.com/maven-central/com.github.shynixn.petblocks/petblocks-api"><img alt="https://maven-badges.herokuapp.com/maven-central/com.github.shynixn.petblocks/petblocks-api/badge.svg?style=flat-square" src="https://maven-badges.herokuapp.com/maven-central/com.github.shynixn.petblocks/petblocks-api/badge.svg?style=flat-square" /></a>
 <p>PetBlocks is using maven as build system and is available in the central repository.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
@@ -280,6 +280,22 @@ dependencies {
 </div>
 <div class="section" id="working-with-the-petblocks-api">
 <h2>Working with the PetBlocks API<a class="headerlink" href="#working-with-the-petblocks-api" title="Permalink to this headline">¶</a></h2>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last"><strong>Pet</strong> - Bukkit/Sponge - Accessing the pet entity of a player.</p>
+</div>
+<div class="highlight-java"><div class="highlight"><pre><span></span><span class="n">Player</span> <span class="n">player</span><span class="o">;</span> <span class="c1">// Any player instance</span>
+
+<span class="n">PetService</span> <span class="n">petService</span> <span class="o">=</span> <span class="n">PetBlocksApi</span><span class="o">.</span><span class="na">INSTANCE</span><span class="o">.</span><span class="na">resolve</span><span class="o">(</span><span class="n">PetService</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
+<span class="n">CompletableFuture</span><span class="o">&lt;</span><span class="n">PetBlock</span><span class="o">&lt;</span><span class="n">Object</span><span class="o">,</span> <span class="n">Object</span><span class="o">&gt;&gt;</span> <span class="n">completeAblePetBlock</span> <span class="o">=</span> <span class="n">petService</span><span class="o">.</span><span class="na">getOrSpawnPetBlockFromPlayerUUID</span><span class="o">(</span><span class="n">player</span><span class="o">.</span><span class="na">getUniqueId</span><span class="o">());</span>
+
+<span class="n">completeAblePetBlock</span><span class="o">.</span><span class="na">thenAccept</span><span class="o">(</span><span class="n">petBlock</span> <span class="o">-&gt;</span> <span class="o">{</span>
+    <span class="c1">// Let the player ride the pet if he does not already do it.</span>
+    <span class="c1">// If this code segment is not called check your console for error messages.</span>
+    <span class="n">petBlock</span><span class="o">.</span><span class="na">ride</span><span class="o">(</span><span class="n">player</span><span class="o">);</span>
+<span class="o">});</span>
+</pre></div>
+</div>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p class="last"><strong>Pet Metadata</strong> - Bukkit/Sponge - Manipulating the name of the pet of a player.</p>
@@ -433,34 +449,6 @@ dependencies {
 <div class="highlight-java"><div class="highlight"><pre><span></span><span class="n">UpdateCheckService</span> <span class="n">updateCheckService</span> <span class="o">=</span> <span class="n">PetBlocksApi</span><span class="o">.</span><span class="na">INSTANCE</span><span class="o">.</span><span class="na">resolve</span><span class="o">(</span><span class="n">UpdateCheckService</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
 
 <span class="n">updateCheckService</span><span class="o">.</span><span class="na">checkForUpdates</span><span class="o">();</span>
-</pre></div>
-</div>
-<div class="admonition warning">
-<p class="first admonition-title">Warning</p>
-<p class="last">Accessing the PetBlock is not stable via this API. This is going to be replaced by services in the future.</p>
-</div>
-<p><strong>(Bukkit/Sponge) Spawning a petblock for a player:</strong></p>
-<div class="highlight-java"><div class="highlight"><pre><span></span><span class="kd">final</span> <span class="n">Player</span> <span class="n">player</span><span class="o">;</span> <span class="c1">//Any player instance</span>
-<span class="kd">final</span> <span class="n">PetMeta</span> <span class="n">petMeta</span><span class="o">;</span> <span class="c1">//Any PetMeta instance</span>
-<span class="kd">final</span> <span class="n">Location</span> <span class="n">location</span><span class="o">;</span> <span class="c1">//Any target location</span>
-
-<span class="kd">final</span> <span class="n">PetBlockController</span><span class="o">&lt;</span><span class="n">Player</span><span class="o">&gt;</span> <span class="n">petBlockController</span> <span class="o">=</span> <span class="n">PetBlocksApi</span><span class="o">.</span><span class="na">getDefaultPetBlockController</span><span class="o">();</span>
-<span class="kd">final</span> <span class="n">PetBlock</span> <span class="n">petBlock</span> <span class="o">=</span> <span class="n">petBlockController</span><span class="o">.</span><span class="na">create</span><span class="o">(</span><span class="n">player</span><span class="o">,</span> <span class="n">petMeta</span><span class="o">);</span> <span class="c1">//Spawn PetBlock</span>
-<span class="n">petBlockController</span><span class="o">.</span><span class="na">store</span><span class="o">(</span><span class="n">petBlock</span><span class="o">);</span> <span class="c1">//Set it managed by the PetBlocks plugin</span>
-
-<span class="n">petBlock</span><span class="o">.</span><span class="na">teleport</span><span class="o">(</span><span class="n">location</span><span class="o">);</span>    <span class="c1">//Teleport the petblock to the target location</span>
-</pre></div>
-</div>
-<p><strong>(Bukkit/Sponge) Obtaining an existing petblock for a player:</strong></p>
-<div class="highlight-java"><div class="highlight"><pre><span></span><span class="kd">final</span> <span class="n">Player</span> <span class="n">player</span><span class="o">;</span> <span class="c1">//Any player instance</span>
-<span class="kd">final</span> <span class="n">Location</span> <span class="n">location</span><span class="o">;</span> <span class="c1">//Any target location</span>
-
-<span class="kd">final</span> <span class="n">PetBlockController</span><span class="o">&lt;</span><span class="n">Player</span><span class="o">&gt;</span> <span class="n">petBlockController</span> <span class="o">=</span> <span class="n">PetBlocksApi</span><span class="o">.</span><span class="na">getDefaultPetBlockController</span><span class="o">();</span>
-<span class="kd">final</span> <span class="n">Optional</span><span class="o">&lt;</span><span class="n">PetBlock</span><span class="o">&gt;</span> <span class="n">optPetBlock</span> <span class="o">=</span> <span class="n">petBlockController</span><span class="o">.</span><span class="na">getFromPlayer</span><span class="o">(</span><span class="n">player</span><span class="o">);</span> <span class="c1">//PetBlock is already managed</span>
-<span class="k">if</span> <span class="o">(</span><span class="n">optPetBlock</span><span class="o">.</span><span class="na">isPresent</span><span class="o">())</span> <span class="o">{</span>
-    <span class="kd">final</span> <span class="n">PetBlock</span> <span class="n">petBlock</span> <span class="o">=</span> <span class="n">optPetBlock</span><span class="o">.</span><span class="na">get</span><span class="o">();</span>
-    <span class="n">petBlock</span><span class="o">.</span><span class="na">teleport</span><span class="o">(</span><span class="n">location</span><span class="o">);</span>    <span class="c1">//Teleport the petblock to the target location</span>
-<span class="o">}</span>
 </pre></div>
 </div>
 </div>

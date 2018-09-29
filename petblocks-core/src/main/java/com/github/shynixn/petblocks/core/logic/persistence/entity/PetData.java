@@ -63,6 +63,16 @@ public abstract class PetData extends PersistenceObject implements PetMeta {
     }
 
     /**
+     * Changes the skin of the pet with the given player name or skin url.
+     *
+     * @param name name
+     */
+    @Override
+    public void setSkinFromName(String name) {
+        this.setSkin(397, 3, name, this.unbreakable);
+    }
+
+    /**
      * Sets the id of the engine.
      *
      * @param engineId id

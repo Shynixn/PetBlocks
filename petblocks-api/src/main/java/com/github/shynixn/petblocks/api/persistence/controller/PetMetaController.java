@@ -32,6 +32,9 @@ import java.util.UUID;
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+/**
+ * @deprecated Use the PersistencePetMetaService instead.
+ */
 @Deprecated
 public interface PetMetaController<Player> extends IDatabaseController<PetMeta> {
 
@@ -67,16 +70,16 @@ public interface PetMetaController<Player> extends IDatabaseController<PetMeta> 
     void removeByPlayer(Player player);
 
     /**
-     * Create from uuid.
-     * @param uuid uuid.
+     * Create from uniqueId.
+     * @param uuid uniqueId.
      * @return petMeta
      */
     PetMeta createFromUUID(UUID uuid);
 
     /**
-     * Returns the petMeta of the given uuid.
+     * Returns the petMeta of the given uniqueId.
      *
-     * @param uuid uuid
+     * @param uuid uniqueId
      * @return playerMeta
      */
     Optional<PetMeta> getFromUUID(UUID uuid);

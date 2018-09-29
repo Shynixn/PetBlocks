@@ -324,10 +324,23 @@ fun Player.updateInventory() {
     ReflectionCache.updateInventoryMethod.invoke(null, this)
 }
 
+/**
+ * Sends a text message to this player.
+ */
 fun Player.sendMessage(text: String) {
     sendMessage(text.translateToText())
 }
 
+/**
+ * Converts the [Position] to a BukkitVector.
+ */
+fun Position.toVector(): Vector3d {
+    return Vector3d(this.x, this.y, this.z)
+}
+
+/**
+ * Sends a [text] to the command source.
+ */
 fun CommandSource.sendMessage(text: String) {
     sendMessage(text.translateToText())
 }

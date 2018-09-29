@@ -26,6 +26,7 @@ import org.bukkit.configuration.MemorySection
 import org.bukkit.entity.Player
 import org.bukkit.plugin.Plugin
 import org.bukkit.plugin.java.JavaPlugin
+import java.util.*
 import java.util.logging.Level
 
 /**
@@ -115,7 +116,17 @@ object Config : Config<Player>() {
         }
     }
 
-    fun generateHeadDatabasemessage() : ChatMessage{
+    override fun allowPetSpawningByUUID(uuid: UUID): Boolean {
+        val player = Bukkit.getPlayer(uuid)
+
+        if (player != null && player.isOnline) {
+            return allowPetSpawning(player.location)
+        }
+
+        return false
+    }
+
+    fun generateHeadDatabasemessage(): ChatMessage {
         return chatMessage {
             text {
                 prefix + "Download the plugin "
