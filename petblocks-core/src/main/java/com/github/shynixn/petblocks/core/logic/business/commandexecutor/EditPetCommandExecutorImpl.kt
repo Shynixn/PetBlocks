@@ -1,12 +1,13 @@
 package com.github.shynixn.petblocks.core.logic.business.commandexecutor
 
+import com.github.shynixn.petblocks.api.business.command.SourceCommand
 import com.github.shynixn.petblocks.api.business.commandexecutor.EditPetCommandExecutor
 import com.github.shynixn.petblocks.api.business.enumeration.ChatClickAction
 import com.github.shynixn.petblocks.api.business.enumeration.ChatColor
 import com.github.shynixn.petblocks.api.business.service.ConfigurationService
 import com.github.shynixn.petblocks.api.business.service.MessageService
 import com.github.shynixn.petblocks.api.business.service.ProxyService
-import com.github.shynixn.petblocks.core.logic.business.command.EditPetKillNextCommand
+import com.github.shynixn.petblocks.core.logic.business.command.*
 import com.github.shynixn.petblocks.core.logic.persistence.entity.ChatMessageEntity
 import com.google.inject.Inject
 
@@ -37,12 +38,29 @@ import com.google.inject.Inject
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class EditPetCommandExecutorImpl @Inject constructor(private val killNextCommand: EditPetKillNextCommand, private val messageService: MessageService, private val proxyService: ProxyService, private val configurationService: ConfigurationService) : EditPetCommandExecutor {
+class EditPetCommandExecutorImpl @Inject constructor(editPetCostumeCommand: EditPetCostumeCommand, editPetDisableCommand: EditPetDisableCommand, editPetEnableCommand: EditPetEnableCommand, editPetEngineCommand: EditPetEngineCommand, editPetItemLoreCommand: EditPetItemLoreCommand, editPetItemNameCommand: EditPetItemNameCommand, killNextCommand: EditPetKillNextCommand, editPetParticleCommand: EditPetParticleCommand, editPetRenameCommand: EditPetRenameCommand, editPetRideCommand: EditPetRideCommand, editPetSkinCommand: EditPetSkinCommand, editPetToggleCommand: EditPetToggleCommand, editPetToggleSoundCommand: EditPetToggleSoundCommand, editPetWearCommand: EditPetWearCommand, private val messageService: MessageService, private val proxyService: ProxyService, private val configurationService: ConfigurationService) : EditPetCommandExecutor {
+    private val commands = ArrayList<SourceCommand>()
+
+    init {
+        commands.addAll(arrayOf(editPetCostumeCommand, editPetDisableCommand, editPetEnableCommand,
+                editPetEngineCommand, editPetItemLoreCommand, editPetItemNameCommand, killNextCommand,
+                editPetParticleCommand, editPetRenameCommand, editPetRideCommand, editPetSkinCommand,
+                editPetToggleCommand, editPetToggleSoundCommand, editPetWearCommand))
+    }
+
     /**
      * Gets called when the given [source] executes the defined command with the given [args].
      */
     override fun <S> onExecuteCommand(source: S, args: Array<out String>): Boolean {
-        val called = killNextCommand.onExecuteCommand(source, args)
+        var called = false
+
+        commands.forEach { command ->
+            val commandCalled = command.onExecuteCommand(source, args)
+
+            if (commandCalled) {
+                called = true
+            }
+        }
 
         if (called) {
             return true
@@ -50,7 +68,7 @@ class EditPetCommandExecutorImpl @Inject constructor(private val killNextCommand
 
         val command = "/" + configurationService.findValue<String>("petblocks-configuration.command") + " "
         val senderName = proxyService.getNameOfInstance(source)
-        
+
         if (args.size == 1 && args[0].equals("3", ignoreCase = true)) {
             messageService.sendSourceMessage(source, "")
             messageService.sendSourceMessage(source, ChatColor.DARK_GREEN.toString() + "" + ChatColor.BOLD + ChatColor.UNDERLINE + "                   PetBlocks " + "                       ")

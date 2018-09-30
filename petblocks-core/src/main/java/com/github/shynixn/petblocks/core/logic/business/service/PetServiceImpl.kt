@@ -8,6 +8,7 @@ import com.github.shynixn.petblocks.api.business.service.ConcurrencyService
 import com.github.shynixn.petblocks.api.business.service.LoggingService
 import com.github.shynixn.petblocks.api.business.service.PersistencePetMetaService
 import com.github.shynixn.petblocks.api.business.service.PetService
+import com.github.shynixn.petblocks.core.logic.business.extension.thenAcceptSafely
 import com.github.shynixn.petblocks.core.logic.persistence.configuration.Config
 import com.google.inject.Inject
 import java.util.*
@@ -61,7 +62,7 @@ class PetServiceImpl @Inject constructor(private val petMetaService: Persistence
             return completableFuture
         }
 
-        petMetaService.getOrCreateFromPlayerUUID(uuid).thenAccept { petMeta ->
+        petMetaService.getOrCreateFromPlayerUUID(uuid).thenAcceptSafely { petMeta ->
             val optExistingPetBlock = petBlockController!!.getFromUUID(uuid)
 
             if (optExistingPetBlock.isPresent && !optExistingPetBlock.get().isDead) {
@@ -98,6 +99,8 @@ class PetServiceImpl @Inject constructor(private val petMetaService: Persistence
      * Tries to find the pet from the given entity.
      */
     override fun <E> findPetByEntity(entity: E): Optional<PetProxy> {
+        initializeDependencies()
+
         petBlockController!!.all.forEach { petBlock ->
             if (petBlock.armorStand == entity || petBlock.engineEntity == entity) {
                 if (!pets.containsKey(petBlock)) {
@@ -115,6 +118,9 @@ class PetServiceImpl @Inject constructor(private val petMetaService: Persistence
      * Checks if the player with the given [uuid] has an active pet.
      */
     override fun hasPet(uuid: UUID): Boolean {
+        initializeDependencies()
+
+
         return petBlockController!!.getFromUUID(uuid).isPresent
     }
 

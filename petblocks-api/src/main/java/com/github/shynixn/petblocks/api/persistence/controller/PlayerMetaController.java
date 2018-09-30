@@ -32,6 +32,7 @@ import java.util.UUID;
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+@Deprecated
 public interface PlayerMetaController<Player> extends IDatabaseController<PlayerMeta> {
 
     /**

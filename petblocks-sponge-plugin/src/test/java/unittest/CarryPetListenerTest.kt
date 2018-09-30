@@ -132,12 +132,12 @@ class CarryPetListenerTest {
             throw IllegalArgumentException()
         }
 
-        override fun <P> dropPet(player: P): CompletableFuture<Void> {
+        override fun <P> dropPet(player: P): CompletableFuture<Void?> {
             isDropPetCalled = true
             return CompletableFuture()
         }
 
-        override fun <P> throwPet(player: P): CompletableFuture<Void> {
+        override fun <P> throwPet(player: P): CompletableFuture<Void?> {
             throw IllegalArgumentException()
         }
 

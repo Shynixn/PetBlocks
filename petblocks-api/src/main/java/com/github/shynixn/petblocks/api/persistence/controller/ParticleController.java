@@ -31,6 +31,7 @@ import java.util.Optional;
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+@Deprecated
 public interface ParticleController<T> extends CostumeController<T> {
     /**
      * Returns the particleEffect by the given container.

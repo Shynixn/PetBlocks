@@ -29,6 +29,7 @@ import com.github.shynixn.petblocks.api.persistence.entity.Particle;
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+@Deprecated
 public interface ParticleEffectMetaController extends IDatabaseController<Particle> {
     /**
      * Creates a new particleEffectMeta.

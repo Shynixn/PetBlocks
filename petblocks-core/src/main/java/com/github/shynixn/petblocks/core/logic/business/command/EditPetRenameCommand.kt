@@ -4,6 +4,7 @@ import com.github.shynixn.petblocks.api.business.command.SourceCommand
 import com.github.shynixn.petblocks.api.business.service.CommandService
 import com.github.shynixn.petblocks.api.business.service.PersistencePetMetaService
 import com.github.shynixn.petblocks.api.business.service.ProxyService
+import com.github.shynixn.petblocks.core.logic.business.extension.thenAcceptSafely
 import com.google.inject.Inject
 
 /**
@@ -51,7 +52,7 @@ class EditPetRenameCommand @Inject constructor(private val proxyService: ProxySe
         val playerProxy = proxyService.findPlayerProxyObject(result.first)
         val message = result.second
 
-        petMetaService.getOrCreateFromPlayerUUID(playerProxy.uniqueId).thenAccept { petMeta ->
+        petMetaService.getOrCreateFromPlayerUUID(playerProxy.uniqueId).thenAcceptSafely { petMeta ->
             petMeta.petDisplayName = message
             petMetaService.save(petMeta)
         }

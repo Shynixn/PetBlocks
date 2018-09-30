@@ -204,6 +204,13 @@ class DependencyServiceTest {
     }
 
     private class MockedMessageService : MessageService {
+        /**
+         * Sends a message to the given source.
+         */
+        override fun <S> sendSourceMessage(source: S, message: String) {
+            messageCounter++
+        }
+
         var messageCounter = 0
 
         /**

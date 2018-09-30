@@ -44,7 +44,7 @@ interface CarryPetService {
      * Returns when the action was completed.
      * @param P the type of the player.
      */
-    fun <P> dropPet(player: P): CompletableFuture<Void>
+    fun <P> dropPet(player: P): CompletableFuture<Void?>
 
     /**
      * Lets the given [player] throw his pet if he is currently carrying.
@@ -52,7 +52,7 @@ interface CarryPetService {
      * Returns when the action was completed.
      * @param P the type of the player.
      */
-    fun <P> throwPet(player: P): CompletableFuture<Void>
+    fun <P> throwPet(player: P): CompletableFuture<Void?>
 
     /**
      * Gets the itemstack from the carrying pet.

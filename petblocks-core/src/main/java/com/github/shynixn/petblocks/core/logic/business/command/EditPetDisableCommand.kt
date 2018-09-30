@@ -4,6 +4,7 @@ import com.github.shynixn.petblocks.api.business.command.SourceCommand
 import com.github.shynixn.petblocks.api.business.service.CommandService
 import com.github.shynixn.petblocks.api.business.service.PetService
 import com.github.shynixn.petblocks.api.business.service.ProxyService
+import com.github.shynixn.petblocks.core.logic.business.extension.thenAcceptSafely
 import com.google.inject.Inject
 
 /**
@@ -51,7 +52,7 @@ class EditPetDisableCommand @Inject constructor(private val proxyService: ProxyS
         val playerProxy = proxyService.findPlayerProxyObject(result.first)
 
         if (petService.hasPet(playerProxy.uniqueId)) {
-            petService.getOrSpawnPetFromPlayerUUID(playerProxy.uniqueId).thenAccept { pet ->
+            petService.getOrSpawnPetFromPlayerUUID(playerProxy.uniqueId).thenAcceptSafely { pet ->
                 pet.remove()
             }
         }

@@ -195,7 +195,7 @@ public abstract class PlayerDataRepository<Player> extends DataBaseRepository<Pl
         final PlayerData playerStats = this.create();
         playerStats.setId(resultSet.getLong("id"));
         playerStats.setName(resultSet.getString("name"));
-        playerStats.setUuid(UUID.fromString(resultSet.getString("uniqueId")));
+        playerStats.setUuid(UUID.fromString(resultSet.getString("uuid")));
         return playerStats;
     }
 

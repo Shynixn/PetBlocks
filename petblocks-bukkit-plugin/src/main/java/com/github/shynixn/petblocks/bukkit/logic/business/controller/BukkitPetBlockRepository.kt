@@ -69,7 +69,8 @@ class BukkitPetBlockRepository : PetBlockRepository<Player>() {
      * @return pet
      */
     override fun getFromUUID(uuid: UUID?): Optional<PetBlock<Any, Any>> {
-        return getFromPlayer(Bukkit.getPlayer(uuid))
+        val player = Bukkit.getPlayer(uuid) ?: return Optional.empty()
+        return getFromPlayer(player)
     }
 
     /**

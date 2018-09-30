@@ -4,7 +4,7 @@ import com.github.shynixn.petblocks.api.business.command.SourceCommand
 import com.github.shynixn.petblocks.api.business.service.CommandService
 import com.github.shynixn.petblocks.api.business.service.PersistencePetMetaService
 import com.github.shynixn.petblocks.api.business.service.ProxyService
-import com.github.shynixn.petblocks.core.logic.business.extension.copyPropertiesFrom
+import com.github.shynixn.petblocks.core.logic.business.extension.thenAcceptSafely
 import com.github.shynixn.petblocks.core.logic.persistence.configuration.Config
 import com.google.inject.Inject
 
@@ -40,7 +40,7 @@ class EditPetParticleCommand @Inject constructor(private val proxyService: Proxy
      * Gets called when the given [source] executes the defined command with the given [args].
      */
     override fun <S> onExecuteCommand(source: S, args: Array<out String>): Boolean {
-        if (args.size < 2 || !args[0].equals("costume", true) || args[1].toIntOrNull() == null) {
+        if (args.size < 2 || !args[0].equals("particle", true) || args[1].toIntOrNull() == null) {
             return false
         }
 
@@ -53,8 +53,8 @@ class EditPetParticleCommand @Inject constructor(private val proxyService: Proxy
         val number = args[1].toInt()
         val playerProxy = proxyService.findPlayerProxyObject(result.first)
 
-        petMetaService.getOrCreateFromPlayerUUID(playerProxy.uniqueId).thenAccept { petMeta ->
-            val guiItemContainer = Config.getInstance<Any>().getParticleController().getContainerFromPosition(number)
+        petMetaService.getOrCreateFromPlayerUUID(playerProxy.uniqueId).thenAcceptSafely { petMeta ->
+            val guiItemContainer = Config.getInstance<Any>().particleController.getContainerFromPosition(number)
 
             if (!guiItemContainer.isPresent) {
                 playerProxy.sendMessage(Config.getInstance<Any>().prefix + "Particle not found.")
@@ -62,9 +62,20 @@ class EditPetParticleCommand @Inject constructor(private val proxyService: Proxy
                 val transferOpt = Config.getInstance<Any>().particleController.getFromItem(guiItemContainer.get())
 
                 if (transferOpt.isPresent) {
-                    petMeta.particleEffectMeta.copyPropertiesFrom(transferOpt.get())
-                }
+                    val sourceParticle = transferOpt.get()
+                    val targetParticle = petMeta.particleEffectMeta
 
+                    with(targetParticle) {
+                        type = sourceParticle.type
+                        amount = sourceParticle.amount
+                        speed = sourceParticle.speed
+                        offSetX = sourceParticle.offSetX
+                        offSetY = sourceParticle.offSetY
+                        offSetZ = sourceParticle.offSetZ
+                        materialName = sourceParticle.materialName
+                        data = sourceParticle.data
+                    }
+                }
                 petMetaService.save(petMeta)
             }
         }

@@ -1,5 +1,6 @@
 package com.github.shynixn.petblocks.bukkit.logic.business.proxy
 
+import com.github.shynixn.petblocks.api.PetBlocksApi
 import com.github.shynixn.petblocks.api.business.entity.PetBlock
 import com.github.shynixn.petblocks.api.business.proxy.PetProxy
 import com.github.shynixn.petblocks.api.persistence.entity.PetMeta
@@ -120,6 +121,7 @@ class PetProxyImpl(
      */
     override fun remove() {
         petBlock.remove()
+        PetBlocksApi.getDefaultPetBlockController<Any>().removeByPlayer(petBlock.player)
     }
 
     /**

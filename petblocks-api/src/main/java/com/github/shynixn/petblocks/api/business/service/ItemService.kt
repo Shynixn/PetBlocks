@@ -56,7 +56,7 @@ interface ItemService {
     fun <I> setLoreOfItemStack(itemstack: I, index: Int, text: String)
 
     /**
-     * Gets the materialType of the given stack.
+     * Gets if the given itemstack is the given materialType.
      */
-    fun <I> getMaterialTypeOfItemstack(itemStack: I): MaterialType
+    fun <I> isItemStackMaterialType(itemStack: I, materialType: MaterialType): Boolean
 }

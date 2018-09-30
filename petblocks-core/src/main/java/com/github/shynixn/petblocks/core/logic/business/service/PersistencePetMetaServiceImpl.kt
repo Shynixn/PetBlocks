@@ -50,6 +50,11 @@ class PersistencePetMetaServiceImpl @Inject constructor(private val concurrencyS
         initializeDependencies()
 
         val completableFuture = CompletableFuture<List<PetMeta>>()
+
+        completableFuture.exceptionally { throwable ->
+            throw RuntimeException("Failed to perform PetBlocks task.", throwable)
+        }
+
         val activePetMetas = petBlockController!!.all.map { p -> p.meta }
 
         async(concurrencyService) {
@@ -83,6 +88,11 @@ class PersistencePetMetaServiceImpl @Inject constructor(private val concurrencyS
         initializeDependencies()
 
         val completableFuture = CompletableFuture<PetMeta>()
+
+        completableFuture.exceptionally { throwable ->
+            throw RuntimeException("Failed to perform PetBlocks task.", throwable)
+        }
+
         val optPetBlock = petBlockController!!.getFromUUID(uuid)
 
         if (optPetBlock.isPresent) {
@@ -95,7 +105,7 @@ class PersistencePetMetaServiceImpl @Inject constructor(private val concurrencyS
             async(concurrencyService) {
                 val optResult = petMetaController!!.getFromUUID(uuid)
 
-                if (optPetBlock.isPresent) {
+                if (optResult.isPresent) {
                     sync(concurrencyService) {
                         completableFuture.complete(optResult.get())
                     }
@@ -120,6 +130,10 @@ class PersistencePetMetaServiceImpl @Inject constructor(private val concurrencyS
         initializeDependencies()
 
         val completableFuture = CompletableFuture<PetMeta>()
+
+        completableFuture.exceptionally { throwable ->
+            throw RuntimeException("Failed to perform PetBlocks task.", throwable)
+        }
 
         async(concurrencyService) {
             petMetaController!!.store(petMeta)

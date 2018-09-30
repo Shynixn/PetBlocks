@@ -4,6 +4,7 @@ import com.github.shynixn.petblocks.api.business.command.SourceCommand
 import com.github.shynixn.petblocks.api.business.service.CommandService
 import com.github.shynixn.petblocks.api.business.service.PersistencePetMetaService
 import com.github.shynixn.petblocks.api.business.service.ProxyService
+import com.github.shynixn.petblocks.core.logic.business.extension.thenAcceptSafely
 import com.google.inject.Inject
 
 /**
@@ -50,7 +51,7 @@ class EditPetSkinCommand @Inject constructor(private val proxyService: ProxyServ
 
         val playerProxy = proxyService.findPlayerProxyObject(result.first)
 
-        petMetaService.getOrCreateFromPlayerUUID(playerProxy.uniqueId).thenAccept { petMeta ->
+        petMetaService.getOrCreateFromPlayerUUID(playerProxy.uniqueId).thenAcceptSafely { petMeta ->
             petMeta.setSkinFromName(args[1])
             petMetaService.save(petMeta)
         }

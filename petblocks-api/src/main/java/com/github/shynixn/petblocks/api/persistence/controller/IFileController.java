@@ -27,6 +27,7 @@ package com.github.shynixn.petblocks.api.persistence.controller;
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+@Deprecated
 public interface IFileController<T> extends IController<T> {
     /**
      * Reloads the content from the fileSystem.

@@ -6,6 +6,7 @@ import com.github.shynixn.petblocks.api.business.service.CommandService
 import com.github.shynixn.petblocks.bukkit.logic.business.proxy.CommandProxyImpl
 import com.github.shynixn.petblocks.bukkit.logic.business.proxy.CommandRegisteredProxyImpl
 import com.github.shynixn.petblocks.bukkit.nms.VersionSupport
+import com.google.inject.Inject
 import org.bukkit.Bukkit
 import org.bukkit.command.SimpleCommandMap
 import org.bukkit.entity.Player
@@ -39,7 +40,7 @@ import org.bukkit.plugin.java.JavaPlugin
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class CommandServiceImpl(private val plugin: Plugin) : CommandService {
+class CommandServiceImpl @Inject constructor(private val plugin: Plugin) : CommandService {
     private val version = VersionSupport.getServerVersion()
 
     /**

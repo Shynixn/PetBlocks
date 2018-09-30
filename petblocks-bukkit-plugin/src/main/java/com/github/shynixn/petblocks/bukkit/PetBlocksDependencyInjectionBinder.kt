@@ -1,7 +1,9 @@
 package com.github.shynixn.petblocks.bukkit
 
+import com.github.shynixn.petblocks.api.business.commandexecutor.EditPetCommandExecutor
+import com.github.shynixn.petblocks.api.business.commandexecutor.PlayerPetActionCommandExecutor
+import com.github.shynixn.petblocks.api.business.commandexecutor.ReloadCommandExecutor
 import com.github.shynixn.petblocks.api.business.enumeration.PluginDependency
-import com.github.shynixn.petblocks.api.business.service.LoggingService
 import com.github.shynixn.petblocks.api.business.service.*
 import com.github.shynixn.petblocks.api.persistence.controller.CostumeController
 import com.github.shynixn.petblocks.api.persistence.controller.EngineController
@@ -10,8 +12,10 @@ import com.github.shynixn.petblocks.api.persistence.controller.ParticleControlle
 import com.github.shynixn.petblocks.bukkit.logic.Factory
 import com.github.shynixn.petblocks.bukkit.logic.business.service.*
 import com.github.shynixn.petblocks.bukkit.logic.persistence.configuration.*
+import com.github.shynixn.petblocks.core.logic.business.commandexecutor.EditPetCommandExecutorImpl
+import com.github.shynixn.petblocks.core.logic.business.commandexecutor.PlayerPetActionCommandExecutorImpl
+import com.github.shynixn.petblocks.core.logic.business.commandexecutor.ReloadCommandExecutorImpl
 import com.github.shynixn.petblocks.core.logic.business.service.*
-import com.github.shynixn.petblocks.core.logic.business.service.CarryPetServiceImpl
 import com.google.inject.AbstractModule
 import com.google.inject.Scopes
 import com.google.inject.name.Names
@@ -51,10 +55,9 @@ class PetBlocksDependencyInjectionBinder(private val plugin: Plugin) : AbstractM
      * Configures the business logic tree.
      */
     override fun configure() {
+        // Old
         bind(Plugin::class.java).toInstance(plugin)
         Factory.initialize(plugin)
-
-        // Old
         bind(PluginManager::class.java).toInstance(Bukkit.getServer().pluginManager)
         val guiItems = BukkitStaticGUIItems()
         bind(BukkitStaticGUIItems::class.java).toInstance(guiItems) // Compatibility reasons.
@@ -66,14 +69,24 @@ class PetBlocksDependencyInjectionBinder(private val plugin: Plugin) : AbstractM
         bind(CostumeController::class.java).annotatedWith(Names.named("rare")).toInstance(BukkitCostumeConfiguration("rare"))
         bind(Config::class.java).toInstance(Config)
 
+        // CommandExecutors
+        bind(ReloadCommandExecutor::class.java).to(ReloadCommandExecutorImpl::class.java)
+        bind(PlayerPetActionCommandExecutor::class.java).to(PlayerPetActionCommandExecutorImpl::class.java)
+        bind(EditPetCommandExecutor::class.java).to(EditPetCommandExecutorImpl::class.java)
+
         // Services
-        bind(ConcurrencyService::class.java).to(ConcurrencyServiceImpl::class.java)
         bind(LoggingService::class.java).toInstance(LoggingUtilServiceImpl(plugin.logger))
         bind(ParticleService::class.java).to(ParticleServiceImpl::class.java)
         bind(SoundService::class.java).to(SoundServiceImpl::class.java)
         bind(GUIScriptService::class.java).to(GUIScriptServiceImpl::class.java)
         bind(UpdateCheckService::class.java).to(UpdateCheckServiceImpl::class.java)
         bind(MessageService::class.java).to(MessageServiceImpl::class.java)
+        bind(PetActionService::class.java).to(PetActionServiceImpl::class.java).`in`(Scopes.SINGLETON)
+        bind(ProxyService::class.java).to(ProxyServiceImpl::class.java).`in`(Scopes.SINGLETON)
+        bind(ItemService::class.java).to(ItemServiceImpl::class.java).`in`(Scopes.SINGLETON)
+        bind(EntityService::class.java).to(EntityServiceImpl::class.java).`in`(Scopes.SINGLETON)
+        bind(ConcurrencyService::class.java).to(ConcurrencyServiceImpl::class.java).`in`(Scopes.SINGLETON)
+        bind(CommandService::class.java).to(CommandServiceImpl::class.java).`in`(Scopes.SINGLETON)
         bind(PersistencePetMetaService::class.java).to(PersistencePetMetaServiceImpl::class.java).`in`(Scopes.SINGLETON)
         bind(ConfigurationService::class.java).to(ConfigurationServiceImpl::class.java).`in`(Scopes.SINGLETON)
         bind(GUIService::class.java).to(GUIServiceImpl::class.java).`in`(Scopes.SINGLETON)
@@ -82,6 +95,7 @@ class PetBlocksDependencyInjectionBinder(private val plugin: Plugin) : AbstractM
         bind(DependencyService::class.java).to(DependencyServiceImpl::class.java).`in`(Scopes.SINGLETON)
         bind(CarryPetService::class.java).to(CarryPetServiceImpl::class.java).`in`(Scopes.SINGLETON)
 
+        // Dependency resolving
         val dependencyService = DependencyServiceImpl(plugin)
         dependencyService.checkForInstalledDependencies()
 

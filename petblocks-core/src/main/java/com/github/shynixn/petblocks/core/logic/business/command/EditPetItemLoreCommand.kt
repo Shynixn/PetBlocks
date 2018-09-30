@@ -5,6 +5,7 @@ import com.github.shynixn.petblocks.api.business.service.CommandService
 import com.github.shynixn.petblocks.api.business.service.ItemService
 import com.github.shynixn.petblocks.api.business.service.PetService
 import com.github.shynixn.petblocks.api.business.service.ProxyService
+import com.github.shynixn.petblocks.core.logic.business.extension.thenAcceptSafely
 import com.google.inject.Inject
 
 /**
@@ -39,11 +40,11 @@ class EditPetItemLoreCommand @Inject constructor(private val proxyService: Proxy
      * Gets called when the given [source] executes the defined command with the given [args].
      */
     override fun <S> onExecuteCommand(source: S, args: Array<out String>): Boolean {
-        if (args.size < 3 || !args[0].equals("item-name", true) || args[1].toIntOrNull() == null) {
+        if (args.size < 3 || !args[0].equals("item-lore", true) || args[1].toIntOrNull() == null) {
             return false
         }
 
-        val result = commandService.parseCommand<Any?>(source as Any, args, 1)
+        val result = commandService.parseCommand<Any?>(source as Any, args, 2)
 
         if (result.first == null) {
             return false
@@ -57,7 +58,7 @@ class EditPetItemLoreCommand @Inject constructor(private val proxyService: Proxy
             return false
         }
 
-        petService.getOrSpawnPetFromPlayerUUID(playerProxy.uniqueId).thenAccept { pet ->
+        petService.getOrSpawnPetFromPlayerUUID(playerProxy.uniqueId).thenAcceptSafely { pet ->
             val itemStack = pet.getHeadItemStack<Any>()
             itemService.setLoreOfItemStack(itemStack, index, message)
             pet.setHeadItemStack(itemStack)

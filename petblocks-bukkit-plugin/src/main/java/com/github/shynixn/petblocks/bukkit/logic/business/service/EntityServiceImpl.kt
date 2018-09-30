@@ -2,6 +2,7 @@ package com.github.shynixn.petblocks.bukkit.logic.business.service
 
 import com.github.shynixn.petblocks.api.business.service.ConfigurationService
 import com.github.shynixn.petblocks.api.business.service.EntityService
+import com.google.inject.Inject
 import org.bukkit.ChatColor
 import org.bukkit.entity.Entity
 import org.bukkit.entity.Player
@@ -33,7 +34,7 @@ import org.bukkit.entity.Player
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class EntityServiceImpl(private val configurationService: ConfigurationService) : EntityService {
+class EntityServiceImpl @Inject constructor(private val configurationService: ConfigurationService) : EntityService {
     /**
      * Registers entities on the server when not already registered.
      * Returns true if registered. Returns false when not registered.

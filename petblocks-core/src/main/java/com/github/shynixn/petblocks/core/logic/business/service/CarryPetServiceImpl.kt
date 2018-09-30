@@ -4,6 +4,7 @@ package com.github.shynixn.petblocks.core.logic.business.service
 
 import com.github.shynixn.petblocks.api.business.enumeration.MaterialType
 import com.github.shynixn.petblocks.api.business.service.*
+import com.github.shynixn.petblocks.core.logic.business.extension.thenAcceptSafely
 import com.google.inject.Inject
 import java.util.*
 import java.util.concurrent.CompletableFuture
@@ -54,10 +55,10 @@ class CarryPetServiceImpl @Inject constructor(private val petService: PetService
             return
         }
 
-        petService.getOrSpawnPetFromPlayerUUID(playerProxy.uniqueId).thenAccept { pet ->
+        petService.getOrSpawnPetFromPlayerUUID(playerProxy.uniqueId).thenAcceptSafely { pet ->
             val itemInHand = playerProxy.getItemInHand<Any>(true)
 
-            if (!itemInHand.isPresent || itemService.getMaterialTypeOfItemstack(itemInHand) == MaterialType.AIR) {
+            if (!itemInHand.isPresent || itemService.isItemStackMaterialType(itemInHand.get(), MaterialType.AIR)) {
                 val cachePet = pet.getHeadItemStack<Any>()
                 carryingPet[playerProxy.uniqueId] = cachePet
                 playerProxy.setItemInHand(cachePet, true)
@@ -72,9 +73,13 @@ class CarryPetServiceImpl @Inject constructor(private val petService: PetService
      * Lets the given [player] drop his pet if he is currently carrying it.
      * Does nothing if the player isn't carrying it.
      */
-    override fun <P> dropPet(player: P): CompletableFuture<Void> {
+    override fun <P> dropPet(player: P): CompletableFuture<Void?> {
         val playerProxy = proxyService.findPlayerProxyObject(player)
-        val completableFuture = CompletableFuture<Void>()
+        val completableFuture = CompletableFuture<Void?>()
+
+        completableFuture.exceptionally { throwable ->
+            throw RuntimeException("Failed to perform PetBlocks task.", throwable)
+        }
 
         if (!carryingPet.containsKey(playerProxy.uniqueId)) {
             return completableFuture
@@ -83,7 +88,7 @@ class CarryPetServiceImpl @Inject constructor(private val petService: PetService
         carryingPet.remove(playerProxy.uniqueId)
         playerProxy.setItemInHand(null, true)
 
-        petService.getOrSpawnPetFromPlayerUUID(playerProxy.uniqueId).thenAccept {
+        petService.getOrSpawnPetFromPlayerUUID(playerProxy.uniqueId).thenAcceptSafely {
             completableFuture.complete(null)
         }
 
@@ -94,16 +99,20 @@ class CarryPetServiceImpl @Inject constructor(private val petService: PetService
      * Lets the given [player] throw his pet if he is currently carrying.
      * Does automatically drop it and does nothing if the player isn't carrying it.
      */
-    override fun <P> throwPet(player: P): CompletableFuture<Void> {
+    override fun <P> throwPet(player: P): CompletableFuture<Void?> {
         val playerProxy = proxyService.findPlayerProxyObject(player)
-        val completableFuture = CompletableFuture<Void>()
+        val completableFuture = CompletableFuture<Void?>()
+
+        completableFuture.exceptionally { throwable ->
+            throw RuntimeException("Failed to perform PetBlocks task.", throwable)
+        }
 
         if (!carryingPet.containsKey(playerProxy.uniqueId)) {
             return completableFuture
         }
 
-        dropPet(player).thenAccept {
-            petService.getOrSpawnPetFromPlayerUUID(playerProxy.uniqueId).thenAccept { pet ->
+        dropPet(player).thenAcceptSafely {
+            petService.getOrSpawnPetFromPlayerUUID(playerProxy.uniqueId).thenAcceptSafely { pet ->
                 pet.setVelocity(playerProxy.getDirectionLaunchVector<Any>())
                 completableFuture.complete(null)
             }

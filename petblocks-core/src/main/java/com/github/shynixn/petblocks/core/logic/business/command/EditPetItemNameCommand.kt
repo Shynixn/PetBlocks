@@ -5,6 +5,7 @@ import com.github.shynixn.petblocks.api.business.service.CommandService
 import com.github.shynixn.petblocks.api.business.service.ItemService
 import com.github.shynixn.petblocks.api.business.service.PetService
 import com.github.shynixn.petblocks.api.business.service.ProxyService
+import com.github.shynixn.petblocks.core.logic.business.extension.thenAcceptSafely
 import com.google.inject.Inject
 
 /**
@@ -56,7 +57,7 @@ class EditPetItemNameCommand @Inject constructor(private val proxyService: Proxy
             return false
         }
 
-        petService.getOrSpawnPetFromPlayerUUID(playerProxy.uniqueId).thenAccept { pet ->
+        petService.getOrSpawnPetFromPlayerUUID(playerProxy.uniqueId).thenAcceptSafely { pet ->
             val itemStack = pet.getHeadItemStack<Any>()
             itemService.setDisplayNameOfItemStack(itemStack, message)
             pet.setHeadItemStack(itemStack)

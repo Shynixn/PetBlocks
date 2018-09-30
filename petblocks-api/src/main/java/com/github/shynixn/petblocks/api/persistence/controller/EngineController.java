@@ -29,6 +29,7 @@ import java.util.List;
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+@Deprecated
 public interface EngineController<T,K> extends ContainerController<T> {
     /**
      * Returns all gui items.

@@ -57,7 +57,13 @@ class SpongePetDataRepository @Inject constructor(playerMetaController: SpongePl
      * @return playerMeta
      */
     override fun getFromUUID(uuid: UUID?): Optional<PetMeta> {
-        return getFromPlayer(Sponge.getGame().server.getPlayer(uuid!!).get())
+        val player = Sponge.getGame().server.getPlayer(uuid!!)
+
+        if (!player.isPresent) {
+            return Optional.empty()
+        }
+
+        return getFromPlayer(player.get())
     }
 
     override fun create(player: Any?, name: String?): PetData {

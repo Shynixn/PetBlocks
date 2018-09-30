@@ -71,7 +71,13 @@ class SpongePetBlockRepository : PetBlockRepository<Player>() {
      * @return pet
      */
     override fun getFromUUID(uuid: UUID?): Optional<PetBlock<Any, Any>> {
-        return getFromPlayer(Sponge.getGame().server.getPlayer(uuid!!).get())
+        val player = Sponge.getGame().server.getPlayer(uuid!!)
+
+        if (!player.isPresent) {
+            return Optional.empty()
+        }
+
+        return getFromPlayer(player.get())
     }
 
     /**

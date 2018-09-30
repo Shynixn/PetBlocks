@@ -1,11 +1,13 @@
 package unittest
 
+import com.github.shynixn.petblocks.api.business.service.ConfigurationService
 import com.github.shynixn.petblocks.api.business.service.EntityService
 import com.github.shynixn.petblocks.api.business.service.LoggingService
 import com.github.shynixn.petblocks.sponge.logic.business.service.EntityServiceImpl
 import ninja.leaping.configurate.objectmapping.ObjectMapper
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
+import org.mockito.Mockito
 import org.spongepowered.api.CatalogType
 import org.spongepowered.api.GameRegistry
 import org.spongepowered.api.Sponge
@@ -130,7 +132,7 @@ class EntityServiceTest {
             thirdField.isAccessible = true
             thirdField.set(tracker, ObjectMapper.forObject(TrackerConfig()))
 
-            return EntityServiceImpl(MockedLoggingService())
+            return EntityServiceImpl(MockedLoggingService(),Mockito.mock(ConfigurationService::class.java))
         }
     }
 

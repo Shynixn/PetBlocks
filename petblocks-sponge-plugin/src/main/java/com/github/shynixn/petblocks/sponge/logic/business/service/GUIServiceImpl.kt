@@ -13,6 +13,7 @@ import com.github.shynixn.petblocks.core.logic.business.entity.GuiPageContainer
 import com.github.shynixn.petblocks.core.logic.business.extension.async
 import com.github.shynixn.petblocks.core.logic.business.extension.chatMessage
 import com.github.shynixn.petblocks.core.logic.business.extension.sync
+import com.github.shynixn.petblocks.core.logic.business.extension.thenAcceptSafely
 import com.github.shynixn.petblocks.core.logic.persistence.configuration.Config
 import com.github.shynixn.petblocks.core.logic.persistence.entity.PlayerGUICache
 import com.github.shynixn.petblocks.sponge.logic.business.PetBlocksManager
@@ -97,7 +98,7 @@ class GUIServiceImpl @Inject constructor(private val configurationService: Confi
 
         petBlocksManager.gui.open(player)
 
-        persistenceService.getOrCreateFromPlayerUUID(player.uniqueId).thenAccept({ petMeta ->
+        persistenceService.getOrCreateFromPlayerUUID(player.uniqueId).thenAcceptSafely({ petMeta ->
             petBlocksManager.gui.setPage(player, GUIPage.MAIN, petMeta)
         })
     }
@@ -372,7 +373,7 @@ class GUIServiceImpl @Inject constructor(private val configurationService: Confi
      * Sets the given itemstack as new pet skin for the given [player].
      */
     private fun setCollectionSkinItemToPlayer(player: Player, guiItem: GUIItem) {
-        persistenceService.getOrCreateFromPlayerUUID(player.uniqueId).thenAccept { petMeta ->
+        persistenceService.getOrCreateFromPlayerUUID(player.uniqueId).thenAcceptSafely { petMeta ->
             petMeta.setSkin(CompatibilityItemType.getFromId(guiItem.type).name, guiItem.data, guiItem.skin, guiItem.unbreakable)
             petBlocksManager.gui.setPage(player, GUIPage.MAIN, petMeta)
 

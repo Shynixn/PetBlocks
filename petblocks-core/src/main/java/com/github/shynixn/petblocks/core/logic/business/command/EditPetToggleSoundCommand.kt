@@ -6,6 +6,7 @@ import com.github.shynixn.petblocks.api.business.service.CommandService
 import com.github.shynixn.petblocks.api.business.service.PersistencePetMetaService
 import com.github.shynixn.petblocks.api.business.service.PetService
 import com.github.shynixn.petblocks.api.business.service.ProxyService
+import com.github.shynixn.petblocks.core.logic.business.extension.thenAcceptSafely
 import com.github.shynixn.petblocks.core.logic.persistence.configuration.Config
 import com.google.inject.Inject
 import java.util.*
@@ -54,7 +55,7 @@ class EditPetToggleSoundCommand @Inject constructor(private val proxyService: Pr
 
         val playerProxy = proxyService.findPlayerProxyObject(result.first)
 
-        petMetaService.getOrCreateFromPlayerUUID(playerProxy.uniqueId).thenAccept { petMeta ->
+        petMetaService.getOrCreateFromPlayerUUID(playerProxy.uniqueId).thenAcceptSafely { petMeta ->
            petMeta.isSoundEnabled = !petMeta.isSoundEnabled
             petMetaService.save(petMeta)
         }

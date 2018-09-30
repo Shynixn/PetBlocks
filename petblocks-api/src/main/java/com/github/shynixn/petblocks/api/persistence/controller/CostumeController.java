@@ -27,4 +27,5 @@ package com.github.shynixn.petblocks.api.persistence.controller;
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+@Deprecated
 public interface CostumeController<T> extends ContainerController<T> {}

@@ -7,6 +7,7 @@ import com.github.shynixn.petblocks.api.business.service.*
 import com.github.shynixn.petblocks.api.persistence.entity.Particle
 import com.github.shynixn.petblocks.api.persistence.entity.Sound
 import com.github.shynixn.petblocks.core.logic.business.extension.sync
+import com.github.shynixn.petblocks.core.logic.business.extension.thenAcceptSafely
 import com.github.shynixn.petblocks.core.logic.persistence.entity.PositionEntity
 import com.google.inject.Inject
 import java.util.*
@@ -59,11 +60,11 @@ class FeedPetServiceImpl @Inject constructor(private val concurrencyService: Con
 
         val itemInHand = playerProxy.getItemInHand<Any>()
 
-        if (!itemInHand.isPresent || inventoryItemService.getMaterialTypeOfItemstack(itemInHand.get()) != MaterialType.CARROT_ITEM) {
+        if (!itemInHand.isPresent || inventoryItemService.isItemStackMaterialType(itemInHand.get(), MaterialType.CARROT_ITEM)) {
             return false
         }
 
-        petService.getOrSpawnPetFromPlayerUUID(playerProxy.uniqueId).thenAccept { petblock ->
+        petService.getOrSpawnPetFromPlayerUUID(playerProxy.uniqueId).thenAcceptSafely { petblock ->
             feedPet(playerProxy, petblock, itemInHand.get())
         }
 
@@ -85,8 +86,7 @@ class FeedPetServiceImpl @Inject constructor(private val concurrencyService: Con
         val amountInHand = inventoryItemService.getAmountOfItemStack(itemInHand)
 
         if (amountInHand == 1) {
-            val airItemStack = inventoryItemService.createItemStack<Any>(MaterialType.AIR)
-            playerProxy.setItemInHand(airItemStack)
+            playerProxy.setItemInHand(null)
         } else {
             inventoryItemService.setAmountOfItemStack(itemInHand, amountInHand - 1)
             playerProxy.setItemInHand(itemInHand)

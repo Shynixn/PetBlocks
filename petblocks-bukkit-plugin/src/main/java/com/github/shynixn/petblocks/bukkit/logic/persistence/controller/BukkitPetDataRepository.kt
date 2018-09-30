@@ -58,7 +58,9 @@ class BukkitPetDataRepository(playerMetaController: PlayerMetaController<Player>
      * @return playerMeta
      */
     override fun getFromUUID(uuid: UUID?): Optional<PetMeta> {
-        return getFromPlayer(Bukkit.getPlayer(uuid))
+        val player = Bukkit.getPlayer(uuid) ?: return Optional.empty()
+
+        return getFromPlayer(player)
     }
 
     /**

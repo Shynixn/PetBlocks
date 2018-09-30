@@ -7,6 +7,7 @@ import com.github.shynixn.petblocks.api.business.service.CommandService
 import com.github.shynixn.petblocks.api.business.service.PersistencePetMetaService
 import com.github.shynixn.petblocks.api.business.service.ProxyService
 import com.github.shynixn.petblocks.api.persistence.entity.EngineContainer
+import com.github.shynixn.petblocks.core.logic.business.extension.thenAcceptSafely
 import com.github.shynixn.petblocks.core.logic.persistence.configuration.Config
 import com.google.inject.Inject
 
@@ -55,7 +56,7 @@ class EditPetEngineCommand @Inject constructor(private val proxyService: ProxySe
         val number = args[1].toInt()
         val playerProxy = proxyService.findPlayerProxyObject(result.first)
 
-        petMetaService.getOrCreateFromPlayerUUID(playerProxy.uniqueId).thenAccept { petMeta ->
+        petMetaService.getOrCreateFromPlayerUUID(playerProxy.uniqueId).thenAcceptSafely { petMeta ->
             val optEngine = Config.getInstance<Any>().engineController.getContainerFromPosition(number)
 
             if (!optEngine.isPresent) {
