@@ -1,0 +1,51 @@
+package com.github.shynixn.petblocks.core.logic.compatibility;
+
+import com.github.shynixn.petblocks.api.persistence.entity.PlayerMeta;
+import com.github.shynixn.petblocks.core.logic.compatibility.PersistenceObject;
+
+import java.util.UUID;
+
+public abstract class PlayerData extends PersistenceObject implements PlayerMeta {
+    private String name;
+    private UUID uuid;
+
+    /**
+     * Returns the name of the playerData
+     *
+     * @return playerData
+     */
+    @Override
+    public String getName() {
+        return this.name;
+    }
+
+    /**
+     * Sets the name of the playerData
+     *
+     * @param name name
+     */
+    @Override
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    /**
+     * Returns the uniqueId of the playerData
+     *
+     * @return uniqueId
+     */
+    @Override
+    public UUID getUUID() {
+        return this.uuid;
+    }
+
+    /**
+     * Sets the uniqueId of the playerData
+     *
+     * @param uuid uniqueId
+     */
+    @Override
+    public void setUuid(UUID uuid) {
+        this.uuid = uuid;
+    }
+}

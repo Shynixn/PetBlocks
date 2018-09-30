@@ -5,7 +5,7 @@ import com.github.shynixn.petblocks.api.business.enumeration.EntityType
 import com.github.shynixn.petblocks.api.business.service.ConfigurationService
 import com.github.shynixn.petblocks.api.business.service.EntityService
 import com.github.shynixn.petblocks.api.business.service.LoggingService
-import com.github.shynixn.petblocks.sponge.logic.business.helper.sendMessage
+import com.github.shynixn.petblocks.sponge.logic.business.extension.sendMessage
 import com.github.shynixn.petblocks.sponge.nms.v1_12_R1.CustomGroundArmorstand
 import com.github.shynixn.petblocks.sponge.nms.v1_12_R1.CustomRabbit
 import com.github.shynixn.petblocks.sponge.nms.v1_12_R1.CustomZombie

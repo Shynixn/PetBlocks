@@ -8,7 +8,7 @@ import com.github.shynixn.petblocks.api.business.service.ConfigurationService
 import com.github.shynixn.petblocks.api.business.service.LoggingService
 import com.github.shynixn.petblocks.api.business.service.ParticleService
 import com.github.shynixn.petblocks.api.persistence.entity.Particle
-import com.github.shynixn.petblocks.sponge.logic.business.helper.CompatibilityItemType
+import com.github.shynixn.petblocks.sponge.logic.compatibility.CompatibilityItemType
 import com.google.inject.Inject
 import org.spongepowered.api.Sponge
 import org.spongepowered.api.block.BlockState

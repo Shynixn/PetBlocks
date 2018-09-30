@@ -2,23 +2,13 @@ package com.github.shynixn.petblocks.integrationtests.persistence;
 
 import ch.vorburger.exec.ManagedProcessException;
 import ch.vorburger.mariadb4j.DB;
-import com.github.shynixn.petblocks.api.persistence.controller.ParticleEffectMetaController;
-import com.github.shynixn.petblocks.api.persistence.controller.PetMetaController;
-import com.github.shynixn.petblocks.api.persistence.controller.PlayerMetaController;
-import com.github.shynixn.petblocks.api.persistence.entity.PetMeta;
-import com.github.shynixn.petblocks.api.persistence.entity.PlayerMeta;
 import com.github.shynixn.petblocks.bukkit.PetBlocksPlugin;
-import com.github.shynixn.petblocks.bukkit.logic.Factory;
-import com.github.shynixn.petblocks.core.logic.persistence.entity.EngineData;
-import com.github.shynixn.petblocks.core.logic.persistence.entity.PetData;
-import org.bukkit.Material;
+import com.github.shynixn.petblocks.bukkit.logic.compatibility.Factory;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.junit.Assert;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.lang.reflect.Field;
@@ -26,12 +16,10 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -221,7 +209,7 @@ public class PetMetaMySQLControllerIT {
 
     private PetData create() {
         try {
-            return (PetData) Class.forName("com.github.shynixn.petblocks.bukkit.logic.persistence.entity.BukkitPetData").newInstance();
+            return (PetData) Class.forName("com.github.shynixn.petblocks.bukkit.logic.compatibility.BukkitPetData").newInstance();
         } catch (final Exception ex) {
             Logger.getLogger(this.getClass().getSimpleName()).log(Level.WARNING, "Failed to create PetData.", ex);
         }

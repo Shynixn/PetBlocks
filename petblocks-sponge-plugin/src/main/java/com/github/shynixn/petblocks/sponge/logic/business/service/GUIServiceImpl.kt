@@ -9,15 +9,16 @@ import com.github.shynixn.petblocks.api.business.enumeration.ScriptAction
 import com.github.shynixn.petblocks.api.business.service.*
 import com.github.shynixn.petblocks.api.persistence.entity.ChatMessage
 import com.github.shynixn.petblocks.api.persistence.entity.GUIItem
-import com.github.shynixn.petblocks.core.logic.business.entity.GuiPageContainer
+import com.github.shynixn.petblocks.core.logic.compatibility.GuiPageContainer
 import com.github.shynixn.petblocks.core.logic.business.extension.async
 import com.github.shynixn.petblocks.core.logic.business.extension.chatMessage
 import com.github.shynixn.petblocks.core.logic.business.extension.sync
 import com.github.shynixn.petblocks.core.logic.business.extension.thenAcceptSafely
-import com.github.shynixn.petblocks.core.logic.persistence.configuration.Config
-import com.github.shynixn.petblocks.core.logic.persistence.entity.PlayerGUICache
-import com.github.shynixn.petblocks.sponge.logic.business.PetBlocksManager
-import com.github.shynixn.petblocks.sponge.logic.business.helper.*
+import com.github.shynixn.petblocks.core.logic.compatibility.Config
+import com.github.shynixn.petblocks.core.logic.compatibility.PlayerGUICache
+import com.github.shynixn.petblocks.sponge.logic.compatibility.PetBlocksManager
+import com.github.shynixn.petblocks.sponge.logic.business.extension.*
+import com.github.shynixn.petblocks.sponge.logic.compatibility.CompatibilityItemType
 import com.google.inject.Inject
 import org.spongepowered.api.entity.living.player.Player
 import org.spongepowered.api.item.ItemTypes
@@ -355,9 +356,9 @@ class GUIServiceImpl @Inject constructor(private val configurationService: Confi
             val lore = itemStack.getLore()
             while (i < lore.size) {
                 if (player.hasPermission("$permission.all") || player.hasPermission("$permission.$position")) {
-                    lore[i] = lore[i].replace("<permission>", com.github.shynixn.petblocks.sponge.logic.persistence.configuration.Config.permissionIconYes)
+                    lore[i] = lore[i].replace("<permission>", com.github.shynixn.petblocks.sponge.logic.compatibility.Config.permissionIconYes)
                 } else {
-                    lore[i] = lore[i].replace("<permission>", com.github.shynixn.petblocks.sponge.logic.persistence.configuration.Config.permissionIconNo)
+                    lore[i] = lore[i].replace("<permission>", com.github.shynixn.petblocks.sponge.logic.compatibility.Config.permissionIconNo)
                 }
 
                 i++
@@ -392,7 +393,7 @@ class GUIServiceImpl @Inject constructor(private val configurationService: Confi
         for (i in 0..53) {
             inventory.query<Inventory>(GridInventory::class.java)
                     .query<Inventory>(ItemTypes.AIR)
-                    .offer(com.github.shynixn.petblocks.sponge.logic.persistence.configuration.Config.guiItemsController.getGUIItemFromName("empty-slot").get().generate(player) as ItemStack)
+                    .offer(com.github.shynixn.petblocks.sponge.logic.compatibility.Config.guiItemsController.getGUIItemFromName("empty-slot").get().generate(player) as ItemStack)
         }
     }
 

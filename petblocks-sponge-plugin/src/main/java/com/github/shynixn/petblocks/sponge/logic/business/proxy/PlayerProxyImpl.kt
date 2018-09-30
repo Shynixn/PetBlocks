@@ -5,9 +5,9 @@ package com.github.shynixn.petblocks.sponge.logic.business.proxy
 import com.flowpowered.math.vector.Vector3d
 import com.github.shynixn.petblocks.api.business.enumeration.Permission
 import com.github.shynixn.petblocks.api.business.proxy.PlayerProxy
-import com.github.shynixn.petblocks.sponge.logic.business.helper.hasPermissions
-import com.github.shynixn.petblocks.sponge.logic.business.helper.sendMessage
-import com.github.shynixn.petblocks.sponge.logic.business.helper.updateInventory
+import com.github.shynixn.petblocks.sponge.logic.business.extension.hasPermissions
+import com.github.shynixn.petblocks.sponge.logic.business.extension.sendMessage
+import com.github.shynixn.petblocks.sponge.logic.business.extension.updateInventory
 import org.spongepowered.api.data.type.HandTypes
 import org.spongepowered.api.entity.living.player.Player
 import org.spongepowered.api.item.inventory.Inventory

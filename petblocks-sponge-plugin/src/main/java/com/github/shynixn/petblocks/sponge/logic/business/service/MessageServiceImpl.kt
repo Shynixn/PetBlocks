@@ -3,9 +3,9 @@ package com.github.shynixn.petblocks.sponge.logic.business.service
 import com.github.shynixn.petblocks.api.business.enumeration.ChatColor
 import com.github.shynixn.petblocks.api.business.service.MessageService
 import com.github.shynixn.petblocks.api.persistence.entity.ChatMessage
-import com.github.shynixn.petblocks.sponge.logic.business.helper.findServerVersion
-import com.github.shynixn.petblocks.sponge.logic.business.helper.sendMessage
-import com.github.shynixn.petblocks.sponge.logic.business.helper.translateToText
+import com.github.shynixn.petblocks.sponge.logic.business.extension.findServerVersion
+import com.github.shynixn.petblocks.sponge.logic.business.extension.sendMessage
+import com.github.shynixn.petblocks.sponge.logic.business.extension.translateToText
 import org.spongepowered.api.Sponge
 import org.spongepowered.api.entity.living.player.Player
 

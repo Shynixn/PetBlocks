@@ -5,9 +5,8 @@ import ch.vorburger.mariadb4j.DB;
 import com.github.shynixn.petblocks.api.business.enumeration.ParticleType;
 import com.github.shynixn.petblocks.api.persistence.controller.ParticleEffectMetaController;
 import com.github.shynixn.petblocks.api.persistence.entity.Particle;
-import com.github.shynixn.petblocks.bukkit.logic.Factory;
+import com.github.shynixn.petblocks.bukkit.logic.compatibility.Factory;
 import com.github.shynixn.petblocks.core.logic.persistence.entity.ParticleEntity;
-import org.bukkit.Material;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.Plugin;
 import org.junit.Assert;
@@ -15,7 +14,6 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
-import sun.rmi.runtime.Log;
 
 import java.io.File;
 import java.sql.Connection;

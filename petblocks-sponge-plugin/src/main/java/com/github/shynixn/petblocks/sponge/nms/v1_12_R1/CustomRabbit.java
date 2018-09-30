@@ -3,7 +3,7 @@ package com.github.shynixn.petblocks.sponge.nms.v1_12_R1;
 import com.github.shynixn.petblocks.api.PetBlocksApi;
 import com.github.shynixn.petblocks.api.business.entity.PetBlock;
 import com.github.shynixn.petblocks.api.business.service.SoundService;
-import com.github.shynixn.petblocks.sponge.logic.persistence.configuration.Config;
+import com.github.shynixn.petblocks.sponge.logic.compatibility.Config;
 import com.google.common.collect.Sets;
 import net.minecraft.anchor.v1_12_mcpR1.entity.SharedMonsterAttributes;
 import net.minecraft.anchor.v1_12_mcpR1.entity.ai.EntityAISwimming;

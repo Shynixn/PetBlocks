@@ -1,7 +1,7 @@
 package com.github.shynixn.petblocks.bukkit.logic.business.listener
 
 import com.github.shynixn.petblocks.api.business.service.FeedingPetService
-import com.github.shynixn.petblocks.bukkit.logic.business.helper.isPetOfPlayer
+import com.github.shynixn.petblocks.bukkit.logic.business.extension.isPetOfPlayer
 import com.google.inject.Inject
 import org.bukkit.event.EventHandler
 import org.bukkit.event.EventPriority

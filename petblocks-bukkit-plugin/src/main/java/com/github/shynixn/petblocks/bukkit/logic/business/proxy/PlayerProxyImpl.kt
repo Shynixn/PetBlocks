@@ -4,7 +4,7 @@ package com.github.shynixn.petblocks.bukkit.logic.business.proxy
 
 import com.github.shynixn.petblocks.api.business.enumeration.Permission
 import com.github.shynixn.petblocks.api.business.proxy.PlayerProxy
-import com.github.shynixn.petblocks.bukkit.logic.business.helper.PetBlockModifyHelper
+import com.github.shynixn.petblocks.bukkit.logic.compatibility.PetBlockModifyHelper
 import com.github.shynixn.petblocks.bukkit.nms.VersionSupport
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack

@@ -3,8 +3,8 @@ package com.github.shynixn.petblocks.bukkit.logic.business.service
 import com.github.shynixn.petblocks.api.business.enumeration.ChatColor
 import com.github.shynixn.petblocks.api.business.service.MessageService
 import com.github.shynixn.petblocks.api.persistence.entity.ChatMessage
-import com.github.shynixn.petblocks.bukkit.logic.business.helper.findServerVersion
-import com.github.shynixn.petblocks.bukkit.logic.business.helper.sendPacket
+import com.github.shynixn.petblocks.bukkit.logic.business.extension.findServerVersion
+import com.github.shynixn.petblocks.bukkit.logic.business.extension.sendPacket
 import com.github.shynixn.petblocks.bukkit.nms.VersionSupport
 import org.bukkit.Bukkit
 import org.bukkit.command.CommandSender

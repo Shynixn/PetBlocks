@@ -2,7 +2,7 @@ package com.github.shynixn.petblocks.sponge.nms;
 
 import com.github.shynixn.petblocks.api.business.enumeration.ChatColor;
 import com.github.shynixn.petblocks.api.business.enumeration.Version;
-import com.github.shynixn.petblocks.sponge.logic.business.helper.ExtensionMethodsKt;
+import com.github.shynixn.petblocks.sponge.logic.business.extension.ExtensionMethodKt;
 import org.spongepowered.api.Sponge;
 
 import java.util.regex.Pattern;
@@ -179,11 +179,11 @@ public enum VersionSupport {
      */
     public static boolean isServerVersionSupported(String pluginName, String prefix) {
         if (getServerVersion() == null) {
-            ExtensionMethodsKt.sendConsoleMessage(Sponge.getGame(), prefix + ChatColor.RED + "================================================");
-            ExtensionMethodsKt.sendConsoleMessage(Sponge.getGame(), prefix + ChatColor.RED + pluginName + " does not support your server version");
-            ExtensionMethodsKt.sendConsoleMessage(Sponge.getGame(), prefix + ChatColor.RED + "Install v" + getLowestVersionSupported().simpleVersionText + " - v" + getGreatestVersionSupported().simpleVersionText);
-            ExtensionMethodsKt.sendConsoleMessage(Sponge.getGame(), prefix + ChatColor.RED + "Plugin gets now disabled!");
-            ExtensionMethodsKt.sendConsoleMessage(Sponge.getGame(), prefix + ChatColor.RED + "================================================");
+            ExtensionMethodKt.sendConsoleMessage(Sponge.getGame(), prefix + ChatColor.RED + "================================================");
+            ExtensionMethodKt.sendConsoleMessage(Sponge.getGame(), prefix + ChatColor.RED + pluginName + " does not support your server version");
+            ExtensionMethodKt.sendConsoleMessage(Sponge.getGame(), prefix + ChatColor.RED + "Install v" + getLowestVersionSupported().simpleVersionText + " - v" + getGreatestVersionSupported().simpleVersionText);
+            ExtensionMethodKt.sendConsoleMessage(Sponge.getGame(), prefix + ChatColor.RED + "Plugin gets now disabled!");
+            ExtensionMethodKt.sendConsoleMessage(Sponge.getGame(), prefix + ChatColor.RED + "================================================");
             return false;
         }
         return true;

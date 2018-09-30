@@ -8,7 +8,7 @@ import com.github.shynixn.petblocks.api.business.service.PersistencePetMetaServi
 import com.github.shynixn.petblocks.api.business.service.ProxyService
 import com.github.shynixn.petblocks.api.persistence.entity.EngineContainer
 import com.github.shynixn.petblocks.core.logic.business.extension.thenAcceptSafely
-import com.github.shynixn.petblocks.core.logic.persistence.configuration.Config
+import com.github.shynixn.petblocks.core.logic.compatibility.Config
 import com.google.inject.Inject
 
 /**

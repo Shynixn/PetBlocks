@@ -11,8 +11,8 @@ import com.github.shynixn.petblocks.api.persistence.entity.Position;
 import com.github.shynixn.petblocks.api.sponge.event.PetBlockMoveEvent;
 import com.github.shynixn.petblocks.api.sponge.event.PetBlockSpawnEvent;
 import com.github.shynixn.petblocks.core.logic.persistence.entity.PositionEntity;
-import com.github.shynixn.petblocks.sponge.logic.business.helper.ExtensionMethodsKt;
-import com.github.shynixn.petblocks.sponge.logic.persistence.configuration.Config;
+import com.github.shynixn.petblocks.sponge.logic.business.extension.ExtensionMethodKt;
+import com.github.shynixn.petblocks.sponge.logic.compatibility.Config;
 import com.github.shynixn.petblocks.sponge.nms.helper.PetBlockPartWrapper;
 import com.github.shynixn.petblocks.sponge.nms.helper.PetBlockWrapper;
 import net.minecraft.anchor.v1_12_mcpR1.entity.Entity;
@@ -39,8 +39,6 @@ import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.world.Location;
 
 import java.util.Random;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public final class CustomGroundArmorstand extends EntityArmorStand {
 
@@ -225,18 +223,18 @@ public final class CustomGroundArmorstand extends EntityArmorStand {
 
                 if (side < 0.0F) {
                     l.setYaw(entityLiving.rotationYaw - 90);
-                    v = v.add(ExtensionMethodsKt.getDirection(l).normalize().mul(-0.5));
+                    v = v.add(ExtensionMethodKt.getDirection(l).normalize().mul(-0.5));
                 } else if (side > 0.0F) {
                     l.setYaw(entityLiving.rotationYaw + 90);
-                    v = v.add(ExtensionMethodsKt.getDirection(l).normalize().mul(-0.5));
+                    v = v.add(ExtensionMethodKt.getDirection(l).normalize().mul(-0.5));
                 }
 
                 if (forw < 0.0F) {
                     l.setYaw(entityLiving.rotationYaw);
-                    v = v.add(ExtensionMethodsKt.getDirection(l).normalize().mul(0.5));
+                    v = v.add(ExtensionMethodKt.getDirection(l).normalize().mul(0.5));
                 } else if (forw > 0.0F) {
                     l.setYaw(entityLiving.rotationYaw);
-                    v = v.add(ExtensionMethodsKt.getDirection(l).normalize().mul(0.5));
+                    v = v.add(ExtensionMethodKt.getDirection(l).normalize().mul(0.5));
                 }
                 if (this.firstRide) {
                     this.firstRide = false;
@@ -307,7 +305,7 @@ public final class CustomGroundArmorstand extends EntityArmorStand {
             this.getArmorstand().getBodyPartRotationalData().bodyRotation().set(new Vector3d(0, 0, 2878));
             this.getArmorstand().getBodyPartRotationalData().leftArmDirection().set(new Vector3d(2878, 0, 0));
             this.getArmorstand().offer(Keys.CUSTOM_NAME_VISIBLE, true);
-            this.getArmorstand().offer(Keys.DISPLAY_NAME, ExtensionMethodsKt.translateToText(this.wrapper.getMeta().getPetDisplayName()));
+            this.getArmorstand().offer(Keys.DISPLAY_NAME, ExtensionMethodKt.translateToText(this.wrapper.getMeta().getPetDisplayName()));
             this.wrapper.setHealth(Config.INSTANCE.getCombat_health());
             this.getArmorstand().setHelmet((ItemStack) this.wrapper.getMeta().getHeadItemStack());
             this.getArmorstand().small().set(false);

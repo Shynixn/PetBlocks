@@ -2,7 +2,7 @@ package com.github.shynixn.petblocks.sponge.logic.business.proxy
 
 import com.github.shynixn.petblocks.api.business.command.PlayerCommand
 import com.github.shynixn.petblocks.api.business.command.SourceCommand
-import com.github.shynixn.petblocks.sponge.logic.business.helper.sendMessage
+import com.github.shynixn.petblocks.sponge.logic.business.extension.sendMessage
 import org.spongepowered.api.command.CommandResult
 import org.spongepowered.api.command.CommandSource
 import org.spongepowered.api.command.args.CommandContext

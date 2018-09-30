@@ -1,7 +1,7 @@
 package com.github.shynixn.petblocks.bukkit.nms.v1_13_R2;
 
 import com.github.shynixn.petblocks.api.business.entity.PetBlock;
-import com.github.shynixn.petblocks.bukkit.logic.persistence.configuration.Config;
+import com.github.shynixn.petblocks.bukkit.logic.compatibility.Config;
 import com.github.shynixn.petblocks.bukkit.nms.helper.PetBlockHelper;
 import net.minecraft.server.v1_13_R2.EntityInsentient;
 import net.minecraft.server.v1_13_R2.PathEntity;

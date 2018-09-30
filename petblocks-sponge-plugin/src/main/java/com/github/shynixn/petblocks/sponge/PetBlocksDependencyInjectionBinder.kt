@@ -2,11 +2,11 @@ package com.github.shynixn.petblocks.sponge
 
 import com.github.shynixn.petblocks.api.business.service.*
 import com.github.shynixn.petblocks.api.persistence.controller.ParticleEffectMetaController
-import com.github.shynixn.petblocks.core.logic.business.entity.DbContext
+import com.github.shynixn.petblocks.core.logic.compatibility.DbContext
 import com.github.shynixn.petblocks.core.logic.business.service.*
-import com.github.shynixn.petblocks.core.logic.persistence.controller.ParticleEffectDataRepository
-import com.github.shynixn.petblocks.sponge.logic.business.PetBlocksManager
-import com.github.shynixn.petblocks.sponge.logic.business.entity.SpongeDBContext
+import com.github.shynixn.petblocks.core.logic.compatibility.ParticleEffectDataRepository
+import com.github.shynixn.petblocks.sponge.logic.compatibility.PetBlocksManager
+import com.github.shynixn.petblocks.sponge.logic.compatibility.SpongeDBContext
 import com.github.shynixn.petblocks.sponge.logic.business.service.*
 import com.google.inject.AbstractModule
 import com.google.inject.Inject

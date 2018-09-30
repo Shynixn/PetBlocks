@@ -9,9 +9,9 @@ import com.github.shynixn.petblocks.api.persistence.controller.CostumeController
 import com.github.shynixn.petblocks.api.persistence.controller.EngineController
 import com.github.shynixn.petblocks.api.persistence.controller.OtherGUIItemsController
 import com.github.shynixn.petblocks.api.persistence.controller.ParticleController
-import com.github.shynixn.petblocks.bukkit.logic.Factory
+import com.github.shynixn.petblocks.bukkit.logic.compatibility.Factory
 import com.github.shynixn.petblocks.bukkit.logic.business.service.*
-import com.github.shynixn.petblocks.bukkit.logic.persistence.configuration.*
+import com.github.shynixn.petblocks.bukkit.logic.compatibility.*
 import com.github.shynixn.petblocks.core.logic.business.commandexecutor.EditPetCommandExecutorImpl
 import com.github.shynixn.petblocks.core.logic.business.commandexecutor.PlayerPetActionCommandExecutorImpl
 import com.github.shynixn.petblocks.core.logic.business.commandexecutor.ReloadCommandExecutorImpl

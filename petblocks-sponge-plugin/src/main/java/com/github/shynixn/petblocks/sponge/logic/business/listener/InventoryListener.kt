@@ -2,7 +2,7 @@ package com.github.shynixn.petblocks.sponge.logic.business.listener
 
 import com.github.shynixn.petblocks.api.business.service.GUIService
 import com.github.shynixn.petblocks.api.business.service.ProxyService
-import com.github.shynixn.petblocks.sponge.logic.business.helper.updateInventory
+import com.github.shynixn.petblocks.sponge.logic.business.extension.updateInventory
 import com.google.inject.Inject
 import org.spongepowered.api.Sponge
 import org.spongepowered.api.entity.living.player.Player

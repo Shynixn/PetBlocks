@@ -3,7 +3,7 @@
 package com.github.shynixn.petblocks.sponge.logic.business.service
 
 import com.github.shynixn.petblocks.api.business.service.CommandService
-import com.github.shynixn.petblocks.sponge.logic.business.helper.translateToText
+import com.github.shynixn.petblocks.sponge.logic.business.extension.translateToText
 import com.github.shynixn.petblocks.sponge.logic.business.proxy.CommandProxyImpl
 import com.google.inject.Inject
 import org.spongepowered.api.Sponge

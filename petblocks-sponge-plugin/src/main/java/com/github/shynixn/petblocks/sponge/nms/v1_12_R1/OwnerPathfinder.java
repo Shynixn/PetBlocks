@@ -2,8 +2,8 @@ package com.github.shynixn.petblocks.sponge.nms.v1_12_R1;
 
 import com.flowpowered.math.vector.Vector3d;
 import com.github.shynixn.petblocks.api.business.entity.PetBlock;
-import com.github.shynixn.petblocks.sponge.logic.business.helper.PetBlockExtensionsKt;
-import com.github.shynixn.petblocks.sponge.logic.persistence.configuration.Config;
+import com.github.shynixn.petblocks.sponge.logic.compatibility.PetBlockExtensionsKt;
+import com.github.shynixn.petblocks.sponge.logic.compatibility.Config;
 import net.minecraft.anchor.v1_12_mcpR1.entity.EntityLiving;
 import net.minecraft.anchor.v1_12_mcpR1.entity.ai.EntityAIBase;
 import net.minecraft.anchor.v1_12_mcpR1.pathfinding.Path;

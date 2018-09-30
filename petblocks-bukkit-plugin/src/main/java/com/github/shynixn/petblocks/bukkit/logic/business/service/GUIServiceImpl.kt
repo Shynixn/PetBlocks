@@ -7,14 +7,14 @@ import com.github.shynixn.petblocks.api.business.enumeration.ScriptAction
 import com.github.shynixn.petblocks.api.business.service.*
 import com.github.shynixn.petblocks.api.persistence.entity.ChatMessage
 import com.github.shynixn.petblocks.api.persistence.entity.GUIItem
-import com.github.shynixn.petblocks.bukkit.logic.business.PetBlockManager
-import com.github.shynixn.petblocks.bukkit.logic.business.helper.clearCompletely
+import com.github.shynixn.petblocks.bukkit.logic.compatibility.PetBlockManager
+import com.github.shynixn.petblocks.bukkit.logic.business.extension.clearCompletely
 import com.github.shynixn.petblocks.bukkit.nms.v1_13_R1.MaterialCompatibility13
-import com.github.shynixn.petblocks.core.logic.business.entity.GuiPageContainer
+import com.github.shynixn.petblocks.core.logic.compatibility.GuiPageContainer
 import com.github.shynixn.petblocks.core.logic.business.extension.chatMessage
 import com.github.shynixn.petblocks.core.logic.business.extension.thenAcceptSafely
-import com.github.shynixn.petblocks.core.logic.persistence.configuration.Config
-import com.github.shynixn.petblocks.core.logic.persistence.entity.PlayerGUICache
+import com.github.shynixn.petblocks.core.logic.compatibility.Config
+import com.github.shynixn.petblocks.core.logic.compatibility.PlayerGUICache
 import com.google.inject.Inject
 import org.bukkit.Bukkit
 import org.bukkit.Material
@@ -339,9 +339,9 @@ class GUIServiceImpl @Inject constructor(private val configurationService: Confi
             val lore = meta.lore
             while (i < lore.size) {
                 if (player.hasPermission("$permission.all") || player.hasPermission("$permission.$position")) {
-                    lore[i] = lore[i].replace("<permission>", com.github.shynixn.petblocks.bukkit.logic.persistence.configuration.Config.permissionIconYes)
+                    lore[i] = lore[i].replace("<permission>", com.github.shynixn.petblocks.bukkit.logic.compatibility.Config.permissionIconYes)
                 } else {
-                    lore[i] = lore[i].replace("<permission>", com.github.shynixn.petblocks.bukkit.logic.persistence.configuration.Config.permissionIconNo)
+                    lore[i] = lore[i].replace("<permission>", com.github.shynixn.petblocks.bukkit.logic.compatibility.Config.permissionIconNo)
                 }
                 i++
             }

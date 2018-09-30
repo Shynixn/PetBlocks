@@ -9,10 +9,10 @@ import com.github.shynixn.petblocks.api.persistence.entity.Sound
 import com.github.shynixn.petblocks.api.sponge.event.PetBlockCannonEvent
 import com.github.shynixn.petblocks.api.sponge.event.PetBlockRideEvent
 import com.github.shynixn.petblocks.api.sponge.event.PetBlockWearEvent
-import com.github.shynixn.petblocks.core.logic.business.helper.ReflectionUtils
+import com.github.shynixn.petblocks.core.logic.compatibility.ReflectionUtils
 import com.github.shynixn.petblocks.core.logic.persistence.entity.SoundEntity
-import com.github.shynixn.petblocks.sponge.logic.business.helper.findServerVersion
-import com.github.shynixn.petblocks.sponge.logic.persistence.configuration.Config
+import com.github.shynixn.petblocks.sponge.logic.business.extension.findServerVersion
+import com.github.shynixn.petblocks.sponge.logic.compatibility.Config
 import com.github.shynixn.petblocks.sponge.nms.VersionSupport
 import org.spongepowered.api.Sponge
 import org.spongepowered.api.data.key.Keys

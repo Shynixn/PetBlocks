@@ -7,7 +7,7 @@ import com.github.shynixn.petblocks.api.business.service.DependencyService;
 import com.github.shynixn.petblocks.api.business.service.DependencyWorldGuardService;
 import com.github.shynixn.petblocks.api.persistence.entity.PetMeta;
 import com.github.shynixn.petblocks.bukkit.PetBlocksPlugin;
-import com.github.shynixn.petblocks.core.logic.business.helper.ReflectionUtils;
+import com.github.shynixn.petblocks.core.logic.compatibility.ReflectionUtils;
 import org.bukkit.Location;
 
 import java.lang.reflect.InvocationTargetException;

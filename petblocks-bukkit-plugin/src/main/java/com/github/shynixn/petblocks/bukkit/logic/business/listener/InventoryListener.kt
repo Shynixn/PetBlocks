@@ -2,7 +2,7 @@ package com.github.shynixn.petblocks.bukkit.logic.business.listener
 
 import com.github.shynixn.petblocks.api.business.service.GUIService
 import com.github.shynixn.petblocks.api.business.service.ProxyService
-import com.github.shynixn.petblocks.bukkit.logic.business.helper.updateInventory
+import com.github.shynixn.petblocks.bukkit.logic.business.extension.updateInventory
 import com.google.inject.Inject
 import org.bukkit.Bukkit
 import org.bukkit.Material
