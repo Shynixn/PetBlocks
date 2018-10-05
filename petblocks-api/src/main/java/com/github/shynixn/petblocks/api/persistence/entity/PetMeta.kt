@@ -1,13 +1,13 @@
-package com.github.shynixn.petblocks.api.persistence.controller;
+package com.github.shynixn.petblocks.api.persistence.entity
 
 /**
- * Controller for different kind of costume categories.
+ * Created by Shynixn 2018.
  * <p>
- * Version 1.1
+ * Version 1.2
  * <p>
  * MIT License
  * <p>
- * Copyright (c) 2017 by Shynixn
+ * Copyright (c) 2018 by Shynixn
  * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -27,5 +27,19 @@ package com.github.shynixn.petblocks.api.persistence.controller;
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-@Deprecated
-public interface CostumeController<T> extends ContainerController<T> {}
+interface PetMeta {
+    /**
+     * Database id.
+     */
+    var id: Long
+
+    /**
+     * Meta data of the owner.
+     */
+    val playerMeta: PlayerMeta
+
+    /**
+     * Particle of the pet.
+     */
+    val particle: Particle
+}

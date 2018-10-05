@@ -1,5 +1,6 @@
 package com.github.shynixn.petblocks.api.persistence.entity
 
+import com.github.shynixn.petblocks.api.business.enumeration.RideType
 import java.util.*
 
 /**
@@ -29,35 +30,34 @@ import java.util.*
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-interface GUIItem {
+interface Engine {
+    /**
+     * Gets the petName of the engine.
+     */
+    val petName: Optional<String>
 
-    /** Returns a executable script */
-    val executingScript: Optional<String>
+    /**
+     * Gets the particle of the engine.
+     */
+    val particle: Optional<Particle>
 
-    /** Returns the item displayName. */
-    val displayName: String
+    /**
+     * Name of the entity being used as pet.
+     */
+    val entityType: String
 
-    /** Returns the type of the item. */
-    val type: Int
+    /**
+     * Gets the walking sound.
+     */
+    val walkingSound: Sound
 
-    /** Returns the data of the item. */
-    val data: Int
+    /**
+     * Gets the ambient sound.
+     */
+    val ambientSound: Sound
 
-    /** Returns the lore of the item. */
-    val lore: List<String>
-
-    /** Returns the skin of the item. */
-    val skin: String
-
-    /** Returns if this item is enabled. */
-    val enabled: Boolean
-
-    /** Returns the position in the inventory. */
-    val position: Int
-
-    /** Returns if the item is unbreakable. */
-    val unbreakable: Boolean
-
-    /** Returns an itemStack from the given item. */
-    fun <I> toItemStack(): I
+    /**
+     * Gets the riding type.
+     */
+    val rideType: RideType
 }

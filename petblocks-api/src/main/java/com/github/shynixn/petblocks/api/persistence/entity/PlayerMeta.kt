@@ -1,15 +1,15 @@
-package com.github.shynixn.petblocks.api.persistence.controller;
+package com.github.shynixn.petblocks.api.persistence.entity
 
-import java.util.Optional;
+import java.util.*
 
 /**
- * Database Controller interface.
+ * Created by Shynixn 2018.
  * <p>
- * Version 1.1
+ * Version 1.2
  * <p>
  * MIT License
  * <p>
- * Copyright (c) 2017 by Shynixn
+ * Copyright (c) 2018 by Shynixn
  * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -29,13 +29,19 @@ import java.util.Optional;
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-@Deprecated
-public interface IDatabaseController<T> extends IController<T> {
+interface PlayerMeta {
     /**
-     * Returns the item of the given id.
-     *
-     * @param id id
-     * @return item
+     * Database id.
      */
-    Optional<T> getFromId(long id);
+    var id: Long
+
+    /**
+     * Player UUID.
+     */
+    var uuid: UUID
+
+    /**
+     * Player Name.
+     */
+    var name: String
 }

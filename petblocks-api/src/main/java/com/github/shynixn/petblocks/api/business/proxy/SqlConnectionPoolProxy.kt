@@ -1,15 +1,15 @@
-package com.github.shynixn.petblocks.api.persistence.controller;
+package com.github.shynixn.petblocks.api.business.proxy
 
-import com.github.shynixn.petblocks.api.persistence.entity.Particle;
+import java.sql.Connection
 
 /**
- * Controller for particleEffects.
+ * Created by Shynixn 2018.
  * <p>
- * Version 1.1
+ * Version 1.2
  * <p>
  * MIT License
  * <p>
- * Copyright (c) 2017 by Shynixn
+ * Copyright (c) 2018 by Shynixn
  * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -29,12 +29,9 @@ import com.github.shynixn.petblocks.api.persistence.entity.Particle;
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-@Deprecated
-public interface ParticleEffectMetaController extends IDatabaseController<Particle> {
+interface SqlConnectionPoolProxy {
     /**
-     * Creates a new particleEffectMeta.
-     *
-     * @return meta
+     * Creates a basic jdbc connection which the caller is responsible for.
      */
-    Particle create();
+    fun openConnection(): Connection
 }

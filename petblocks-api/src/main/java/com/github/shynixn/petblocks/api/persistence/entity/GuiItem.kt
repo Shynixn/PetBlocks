@@ -1,15 +1,15 @@
-package com.github.shynixn.petblocks.api.persistence.entity;
+package com.github.shynixn.petblocks.api.persistence.entity
 
-import java.util.UUID;
+import java.util.*
 
 /**
- * Information about the players.
+ * Created by Shynixn 2018.
  * <p>
- * Version 1.1
+ * Version 1.2
  * <p>
  * MIT License
  * <p>
- * Copyright (c) 2017 by Shynixn
+ * Copyright (c) 2018 by Shynixn
  * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -29,37 +29,42 @@ import java.util.UUID;
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-public interface PlayerMeta extends Persistenceable{
+interface GuiItem {
+
+    /** Returns a executable script */
+    val executingScript: Optional<String>
+
+    /** Returns the item displayName. */
+    val displayName: String
+
+    /** Returns the type of the item. */
+    val type: Int
+
+    /** Returns the data of the item. */
+    val data: Int
+
+    /** Returns the lore of the item. */
+    val lore: List<String>
+
+    /** Returns the skin of the item. */
+    val skin: String
+
+    /** Returns if this item is enabled. */
+    val enabled: Boolean
+
+    /** Returns the position in the inventory. */
+    val position: Int
+
+    /** Returns if the item is unbreakable. */
+    val unbreakable: Boolean
 
     /**
-     * Returns the name of the playerData.
-     * @return playerData
+     * Gets the optional item payload.
      */
-    String getName();
+    fun <P> getPayload(): Optional<P>
 
     /**
-     * Sets the name of the playerData.
-     * @param name name
+     * Sets the optional item payload.
      */
-    void setName(String name);
-
-    /**
-     * Returns the uniqueId of the playerData.
-     * @return uniqueId
-     */
-    UUID getUUID();
-
-    /**
-     * Sets the uniqueId of the playerData.
-     * @param uuid uniqueId
-     */
-    void setUuid(UUID uuid);
-
-    /**
-     * Returns the player of the playerData.
-     * @param <T> type
-     * @return player
-     */
-    @Deprecated
-    <T> T getPlayer();
+    fun <P> setPayload(payload: P)
 }

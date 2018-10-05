@@ -1,13 +1,13 @@
-package com.github.shynixn.petblocks.api.business.enumeration;
+package com.github.shynixn.petblocks.api.business.enumeration
 
 /**
- * List of permissions inside of the PetBlocks plugin.
+ * Created by Shynixn 2018.
  * <p>
- * Version 1.1
+ * Version 1.2
  * <p>
  * MIT License
  * <p>
- * Copyright (c) 2017 by Shynixn
+ * Copyright (c) 2018 by Shynixn
  * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -27,7 +27,7 @@ package com.github.shynixn.petblocks.api.business.enumeration;
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-public enum Permission {
+enum class Permission(vararg perm: String) {
     ALL_ENGINES("petblocks.pet.type.all", "petblocks.selection.engines.all"),
     SINGLE_ENGINE("petblocks.pet.type.$0", "petblocks.selection.engines.$0"),
     ALL_SIMPLEBLOCKCOSTUMES("petblocks.pet.defaultcostumes.all", "petblocks.selection.simpleblockcostumes.all"),
@@ -48,23 +48,14 @@ public enum Permission {
     ACTION_RIDE("petblocks.pet.ride", "petblocks.action.ride"),
     ACTION_WEAR("petblocks.pet.wear", "petblocks.action.wear");
 
-    private final String[] perm;
-
-    /**
-     * Initializes a new permission.
-     *
-     * @param perm permission
-     */
-    Permission(String... perm) {
-        this.perm = perm;
-    }
+    private val permissions = perm
 
     /**
      * Returns all permission in an array.
      *
      * @return permission
      */
-    public String[] getPermission() {
-        return this.perm.clone();
+    fun getPermission(): Array<out String> {
+        return this.permissions.clone()
     }
 }

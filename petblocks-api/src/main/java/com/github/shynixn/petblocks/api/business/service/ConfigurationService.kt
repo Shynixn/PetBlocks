@@ -1,6 +1,6 @@
 package com.github.shynixn.petblocks.api.business.service
 
-import com.github.shynixn.petblocks.api.persistence.entity.GUIItem
+import com.github.shynixn.petblocks.api.persistence.entity.GuiItem
 import java.util.*
 
 /**
@@ -41,17 +41,17 @@ interface ConfigurationService {
     fun <C> findValue(path: String): C
 
     /**
-     * Tries to return a [GUIItem] matching the displayName and the lore of the given [item].
+     * Tries to return a [GuiItem] matching the displayName and the lore of the given [item].
      * Can be called asynchronly.
      * @param I the type of the itemstack.
      */
-    fun <I> findClickedGUIItem(item: I): Optional<GUIItem>
+    fun <I> findClickedGUIItem(item: I): Optional<GuiItem>
 
     /**
-     * Tries to return a list of [GUIItem] matching the given path from the config.
+     * Tries to return a list of [GuiItem] matching the given path from the config.
      * Can be called asynchronly.
      */
-    fun findGUIItemCollection(path: String): Optional<List<GUIItem>>
+    fun findGUIItemCollection(path: String): Optional<List<GuiItem>>
 
     /**
      * Clears cached resources and refreshes the used configuration.

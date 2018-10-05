@@ -1,15 +1,15 @@
-package com.github.shynixn.petblocks.api.persistence.controller;
+package com.github.shynixn.petblocks.api
 
-import java.util.Optional;
+import com.github.shynixn.petblocks.api.business.proxy.PluginProxy
 
 /**
- * Controller for other gui items.
+ * Created by Shynixn 2018.
  * <p>
- * Version 1.1
+ * Version 1.2
  * <p>
  * MIT License
  * <p>
- * Copyright (c) 2017 by Shynixn
+ * Copyright (c) 2018 by Shynixn
  * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -29,22 +29,30 @@ import java.util.Optional;
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-@Deprecated
-public interface OtherGUIItemsController<T> extends IFileController<T> {
-    /**
-     * Returns the guiItem by the given name.
-     *
-     * @param name name
-     * @return item
-     */
-    Optional<T> getGUIItemFromName(String name);
+object PetBlocksApi {
+    private var plugin: PluginProxy? = null
 
     /**
-     * Returns if the given itemStack is a guiItemStack with the given name.
-     *
-     * @param itemStack itemStack
-     * @param name      name
-     * @return isGuiItem
+     * Initializes the [petblocksPlugin] proxy.
      */
-    boolean isGUIItem(Object itemStack, String name);
+    private fun initializePetBlocks(petblocksPlugin : PluginProxy) {
+        this.plugin = petblocksPlugin
+    }
+
+    /**
+     * Gets a business logic from the PetBlocks plugin.
+     * All types in the service package can be accessed.
+     * Throws a [IllegalArgumentException] if the service could not be found.
+     */
+    fun <S> resolve(service: Class<S>): S {
+        return plugin!!.resolve(service)
+    }
+
+    /**
+     * Creates a new entity from the given [entity] clazz.
+     * Throws a [IllegalArgumentException] if the entity could not be found.
+     */
+    fun <E> create(entity: Class<E>): E {
+        return plugin!!.create(entity)
+    }
 }

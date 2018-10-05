@@ -32,6 +32,11 @@ import com.github.shynixn.petblocks.api.business.enumeration.ParticleType
  */
 interface Particle {
     /**
+     * Database id.
+     */
+    var id: Long
+
+    /**
      * Color of the particle effect.
      */
     var color: ParticleColor

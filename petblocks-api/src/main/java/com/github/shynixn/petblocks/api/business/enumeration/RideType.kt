@@ -1,17 +1,13 @@
-package com.github.shynixn.petblocks.api.persistence.entity;
-
-import com.github.shynixn.petblocks.api.business.enumeration.RideType;
-
-import java.util.Optional;
+package com.github.shynixn.petblocks.api.business.enumeration
 
 /**
- * Properties of engines.
+ * Created by Shynixn 2018.
  * <p>
- * Version 1.1
+ * Version 1.2
  * <p>
  * MIT License
  * <p>
- * Copyright (c) 2017 by Shynixn
+ * Copyright (c) 2018 by Shynixn
  * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -31,54 +27,13 @@ import java.util.Optional;
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-public interface EngineContainer<T> extends Persistenceable {
-
+enum class RideType {
     /**
-     * Returns the optional default pet name for this engine.
-     *
-     * @return petName
+     * Running.
      */
-    Optional<String> getPetName();
-
+    RUNNING,
     /**
-     * Returns the optional default particle effect for this engine.
-     *
-     * @return particle effect
+     * Flying.
      */
-    Optional<Particle> getParticleEffect();
-
-    /**
-     * Returns the walking sound.
-     *
-     * @return walkingSound
-     */
-    Sound getWalkingSound();
-
-    /**
-     * Returns the ambient sound.
-     *
-     * @return ambientSound
-     */
-    Sound getAmbientSound();
-
-    /**
-     * Returns the rideType.
-     *
-     * @return rideType
-     */
-    RideType getRideType();
-
-    /**
-     * Returns the entityType.
-     *
-     * @return entityType
-     */
-    String getEntityType();
-
-    /**
-     * Returns the guiItem of the engine.
-     *
-     * @return guiItem
-     */
-    T getGUIItem();
+    FLYING
 }
