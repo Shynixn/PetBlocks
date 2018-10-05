@@ -1,6 +1,7 @@
-package com.github.shynixn.petblocks.api.business.proxy
+package com.github.shynixn.petblocks.api.bukkit.event
 
-import com.github.shynixn.petblocks.api.persistence.entity.PetMeta
+import com.github.shynixn.petblocks.api.business.proxy.PetProxy
+import org.bukkit.event.Cancellable
 
 /**
  * Created by Shynixn 2018.
@@ -29,69 +30,20 @@ import com.github.shynixn.petblocks.api.persistence.entity.PetMeta
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-interface PetProxy {
-    /**
-     * Gets the meta data.
-     */
-    val meta: PetMeta
+open class PetCancelableEvent(pet: PetProxy) : PetEvent(pet), Cancellable {
+    private var cancelled = false
 
     /**
-     * Sets the entity wearing the pet.
+     * Sets cancelled.
      */
-    fun startWearing()
+    override fun setCancelled(cancel: Boolean) {
+        this.cancelled = cancel
+    }
 
     /**
-     * Stops the current target wearing the pet.
+     * Is cancelled.
      */
-    fun stopWearing()
-
-    /**
-     * Starts riding the pet.zg
-     */
-    fun startRiding()
-
-    /**
-     * Stops the current target riding the pet.
-     */
-    fun stopRiding()
-
-    /**
-     * Gets the itemStack on the pet head.
-     */
-    fun <I> getHeadItemStack(): I
-
-    /**
-     * Sets the itemstack on the pet head.
-     */
-    fun <I> setHeadItemStack(itemStack: I)
-
-    /**
-     * Sets the velocity of the pet.
-     */
-    fun <V> setVelocity(vector: V)
-
-    /**
-     * Gets the velocity of the pet.
-     */
-    fun <V> getVelocity(): V
-
-    /**
-     * Teleports the pet to the given [location].
-     */
-    fun <L> teleport(location: L)
-
-    /**
-     * Gets the location of the pet.
-     */
-    fun <L> getLocation(): L
-
-    /**
-     * Gets the pet owner.
-     */
-    fun <P> getPlayer(): P
-
-    /**
-     * Removes the pet.
-     */
-    fun remove()
+    override fun isCancelled(): Boolean {
+        return cancelled
+    }
 }

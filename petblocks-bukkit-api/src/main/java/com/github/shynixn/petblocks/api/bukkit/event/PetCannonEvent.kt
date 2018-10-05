@@ -1,15 +1,15 @@
-package com.github.shynixn.petblocks.api.bukkit.event;
+package com.github.shynixn.petblocks.api.bukkit.event
 
-import com.github.shynixn.petblocks.api.business.entity.PetBlock;
+import com.github.shynixn.petblocks.api.business.proxy.PetProxy
 
 /**
- * PetBlock event which gets called when a player starts wearing his pet.
+ * Created by Shynixn 2018.
  * <p>
- * Version 1.1
+ * Version 1.2
  * <p>
  * MIT License
  * <p>
- * Copyright (c) 2017 by Shynixn
+ * Copyright (c) 2018 by Shynixn
  * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -29,26 +29,4 @@ import com.github.shynixn.petblocks.api.business.entity.PetBlock;
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-public class PetBlockWearEvent extends PetBlockCancelAbleEvent {
-    private final boolean wearing;
-
-    /**
-     * Initializes a new petblock event.
-     *
-     * @param petBlock petblock
-     * @param wearing isWearing
-     */
-    public PetBlockWearEvent(PetBlock petBlock, boolean wearing) {
-        super(petBlock);
-        this.wearing = wearing;
-    }
-
-    /**
-     * Returns if the owner of the petblock is currently wearing his pet.
-     *
-     * @return isWearing
-     */
-    public boolean isWearing() {
-        return this.wearing;
-    }
-}
+class PetCannonEvent(pet: PetProxy) : PetCancelableEvent(pet)

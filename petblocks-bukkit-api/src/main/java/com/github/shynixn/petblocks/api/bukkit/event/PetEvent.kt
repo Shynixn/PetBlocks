@@ -1,15 +1,15 @@
-package com.github.shynixn.petblocks.api.bukkit.event;
+package com.github.shynixn.petblocks.api.bukkit.event
 
-import com.github.shynixn.petblocks.api.business.entity.PetBlock;
+import com.github.shynixn.petblocks.api.business.proxy.PetProxy
 
 /**
- * PetBlock event which gets called when a petblock dies.
+ * Created by Shynixn 2018.
  * <p>
- * Version 1.1
+ * Version 1.2
  * <p>
  * MIT License
  * <p>
- * Copyright (c) 2017 by Shynixn
+ * Copyright (c) 2018 by Shynixn
  * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -29,14 +29,8 @@ import com.github.shynixn.petblocks.api.business.entity.PetBlock;
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-public class PetBlockDeathEvent extends PetBlockCancelAbleEvent {
-
-    /**
-     * Initializes a new petblock event.
-     *
-     * @param petBlock petblock
-     */
-    public PetBlockDeathEvent(PetBlock petBlock) {
-        super(petBlock);
-    }
-}
+open class PetEvent(
+        /**
+         * Pet causing this event.
+         */
+        val pet: PetProxy) : PetBlocksEvent()

@@ -1,15 +1,15 @@
-package com.github.shynixn.petblocks.api.bukkit.event;
+package com.github.shynixn.petblocks.api.bukkit.event
 
-import com.github.shynixn.petblocks.api.business.entity.PetBlock;
+import com.github.shynixn.petblocks.api.business.proxy.PetProxy
 
 /**
- * PetBlock event which gets called when the player starts or stops riding his petblock.
+ * Created by Shynixn 2018.
  * <p>
- * Version 1.1
+ * Version 1.2
  * <p>
  * MIT License
  * <p>
- * Copyright (c) 2017 by Shynixn
+ * Copyright (c) 2018 by Shynixn
  * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -29,27 +29,4 @@ import com.github.shynixn.petblocks.api.business.entity.PetBlock;
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-public class PetBlockRideEvent extends PetBlockCancelAbleEvent {
-    private final boolean isRiding;
-
-    /**
-     * Initializes a new petblock event.
-     *
-     * @param petBlock petblock
-     * @param isRiding isRiding
-     */
-    public PetBlockRideEvent(PetBlock petBlock, boolean isRiding) {
-        super(petBlock);
-        this.isRiding = isRiding;
-    }
-
-    /**
-     * Returns if the owner is currently riding the petblock.
-     *
-     * @return isRiding
-     */
-    public boolean isRiding() {
-        return this.isRiding;
-    }
-}
-
+class PetRemoveEvent(pet: PetProxy) : PetCancelableEvent(pet)
