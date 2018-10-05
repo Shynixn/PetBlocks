@@ -42,4 +42,34 @@ interface PetMeta {
      * Particle of the pet.
      */
     val particle: Particle
+
+    /**
+     * Is the pet using sounds.
+     */
+    var sound: Boolean
+
+    /**
+     * Displayed name on top of the pet.
+     */
+    var displayName: String
+
+    /**
+     * Skin of the pet head.
+     */
+    var skin: String
+
+    /**
+     * ItemId of the pet head.
+     */
+    var itemId: Int
+
+    /**
+     * ItemDamage of the pet head.
+     */
+    var itemDamage: Int
+
+    /**
+     * Unbreakable Tag of the pet head.
+     */
+    var unbreakable: Boolean
 }

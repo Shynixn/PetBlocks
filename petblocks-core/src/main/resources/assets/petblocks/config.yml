@@ -402,6 +402,7 @@ gui:
       damage: 3
       skin: 'textures.minecraft.net/texture/c95d37993e594082678472bf9d86823413c250d4332a2c7d8c52de4976b362'
       name: '&e&lSimple block costumes'
+      script: 'binding collection wardrobe.ordinary petblocks.selection.simpleblockcostumes'
       unbreakable: false
       lore:
         - '&7Use Minecraft blocks as costume.'
@@ -413,6 +414,7 @@ gui:
       damage: 3
       skin: 'textures.minecraft.net/texture/f1af46febd45c0f4d81e8fa1b66b275d89e272b2ad55c978553a99c733e1ff'
       name: '&a&lColored block costumes'
+      script: 'binding collection wardrobe.color petblocks.selection.coloredblockcostumes'
       unbreakable: false
       lore:
         - '&7Use colored Minecraft blocks as costume.'
@@ -424,6 +426,7 @@ gui:
       damage: 3
       skin: 'textures.minecraft.net/texture/a0c2549a893726988f3428bef799875ba871688ae64eb0cfdc43f7d6e24c6c'
       name: '&d&lPlayer head costumes'
+      script: 'binding collection wardrobe.rare petblocks.selection.playerheadcostumes.'
       unbreakable: false
       lore:
         - '&7Use player heads as costume.'

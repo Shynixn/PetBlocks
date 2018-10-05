@@ -52,7 +52,7 @@ class EditPetToggleSoundCommand @Inject constructor(private val proxyService: Pr
         val playerProxy = proxyService.findPlayerProxyObject(result.first)
 
         petMetaService.getOrCreateFromPlayerUUID(playerProxy.uniqueId).thenAcceptSafely { petMeta ->
-           petMeta.isSoundEnabled = !petMeta.isSoundEnabled
+            petMeta.sound = !petMeta.sound
             petMetaService.save(petMeta)
         }
 

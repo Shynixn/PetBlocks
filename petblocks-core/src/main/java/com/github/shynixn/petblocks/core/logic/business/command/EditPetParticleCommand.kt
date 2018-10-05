@@ -2,10 +2,11 @@ package com.github.shynixn.petblocks.core.logic.business.command
 
 import com.github.shynixn.petblocks.api.business.command.SourceCommand
 import com.github.shynixn.petblocks.api.business.service.CommandService
+import com.github.shynixn.petblocks.api.business.service.ConfigurationService
 import com.github.shynixn.petblocks.api.business.service.PersistencePetMetaService
 import com.github.shynixn.petblocks.api.business.service.ProxyService
+import com.github.shynixn.petblocks.api.persistence.entity.Particle
 import com.github.shynixn.petblocks.core.logic.business.extension.thenAcceptSafely
-import com.github.shynixn.petblocks.core.logic.compatibility.Config
 import com.google.inject.Inject
 
 /**
@@ -35,7 +36,7 @@ import com.google.inject.Inject
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class EditPetParticleCommand @Inject constructor(private val proxyService: ProxyService, private val petMetaService: PersistencePetMetaService, private val commandService: CommandService) : SourceCommand {
+class EditPetParticleCommand @Inject constructor(private val proxyService: ProxyService, private val petMetaService: PersistencePetMetaService, private val commandService: CommandService, private val configurationService: ConfigurationService) : SourceCommand {
     /**
      * Gets called when the given [source] executes the defined command with the given [args].
      */
@@ -54,16 +55,18 @@ class EditPetParticleCommand @Inject constructor(private val proxyService: Proxy
         val playerProxy = proxyService.findPlayerProxyObject(result.first)
 
         petMetaService.getOrCreateFromPlayerUUID(playerProxy.uniqueId).thenAcceptSafely { petMeta ->
-            val guiItemContainer = Config.getInstance<Any>().particleController.getContainerFromPosition(number)
+            val particleCollection = configurationService.findGUIItemCollection("particles")
+            val prefix = configurationService.findValue<String>("messages.prefix")
 
-            if (!guiItemContainer.isPresent) {
-                playerProxy.sendMessage(Config.getInstance<Any>().prefix + "Particle not found.")
+            if (!particleCollection.isPresent) {
+                playerProxy.sendMessage(prefix + "Collection path 'particles' does not exist in the config.yml")
             } else {
-                val transferOpt = Config.getInstance<Any>().particleController.getFromItem(guiItemContainer.get())
-
-                if (transferOpt.isPresent) {
-                    val sourceParticle = transferOpt.get()
-                    val targetParticle = petMeta.particleEffectMeta
+                if (number < 0 || number < particleCollection.get().size) {
+                    playerProxy.sendMessage(prefix + "Collection does not contain number " + number + ".")
+                } else {
+                    val guiItem = particleCollection.get()[number]
+                    val targetParticle = petMeta.particle
+                    val sourceParticle = guiItem.getPayload<Particle>().get()
 
                     with(targetParticle) {
                         type = sourceParticle.type
@@ -75,8 +78,9 @@ class EditPetParticleCommand @Inject constructor(private val proxyService: Proxy
                         materialName = sourceParticle.materialName
                         data = sourceParticle.data
                     }
+
+                    petMetaService.save(petMeta)
                 }
-                petMetaService.save(petMeta)
             }
         }
 

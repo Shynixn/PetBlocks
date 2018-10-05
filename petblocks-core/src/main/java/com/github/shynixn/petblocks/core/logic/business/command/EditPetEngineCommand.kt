@@ -3,12 +3,9 @@
 package com.github.shynixn.petblocks.core.logic.business.command
 
 import com.github.shynixn.petblocks.api.business.command.SourceCommand
-import com.github.shynixn.petblocks.api.business.service.CommandService
-import com.github.shynixn.petblocks.api.business.service.PersistencePetMetaService
-import com.github.shynixn.petblocks.api.business.service.ProxyService
-import com.github.shynixn.petblocks.api.persistence.entity.EngineContainer
+import com.github.shynixn.petblocks.api.business.service.*
+import com.github.shynixn.petblocks.api.persistence.entity.Engine
 import com.github.shynixn.petblocks.core.logic.business.extension.thenAcceptSafely
-import com.github.shynixn.petblocks.core.logic.compatibility.Config
 import com.google.inject.Inject
 
 /**
@@ -38,7 +35,7 @@ import com.google.inject.Inject
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class EditPetEngineCommand @Inject constructor(private val proxyService: ProxyService, private val petMetaService: PersistencePetMetaService, private val commandService: CommandService) : SourceCommand {
+class EditPetEngineCommand @Inject constructor(private val proxyService: ProxyService, private val petMetaService: PersistencePetMetaService, private val petActionService: PetActionService, private val commandService: CommandService, private val configurationService: ConfigurationService) : SourceCommand {
     /**
      * Gets called when the given [source] executes the defined command with the given [args].
      */
@@ -57,19 +54,19 @@ class EditPetEngineCommand @Inject constructor(private val proxyService: ProxySe
         val playerProxy = proxyService.findPlayerProxyObject(result.first)
 
         petMetaService.getOrCreateFromPlayerUUID(playerProxy.uniqueId).thenAcceptSafely { petMeta ->
-            val optEngine = Config.getInstance<Any>().engineController.getContainerFromPosition(number)
+            val engineCollection = configurationService.findGUIItemCollection("engines")
+            val prefix = configurationService.findValue<String>("messages.prefix")
 
-            if (!optEngine.isPresent) {
-                playerProxy.sendMessage(Config.getInstance<Any>().prefix + "Engine " + number + " could not be loaded correctly.")
+            if (!engineCollection.isPresent) {
+                playerProxy.sendMessage(prefix + "Collection path 'engines' does not exist in the config.yml")
             } else {
-                petMeta.setEngine<Any>(optEngine.get() as EngineContainer<Any>)
-
-                if (Config.getInstance<Any>().isCopySkinEnabled) {
-                    val container = optEngine.get().guiItem
-                    petMeta.setSkin(container.itemId, container.itemDamage, container.skin, container.isItemUnbreakable)
+                if (number < 0 || number < engineCollection.get().size) {
+                    playerProxy.sendMessage(prefix + "Collection does not contain number " + number + ".")
+                } else {
+                    val guiItem = engineCollection.get()[number]
+                    petActionService.changeEngine(playerProxy.handle, guiItem.getPayload<Engine>().get())
+                    petMetaService.save(petMeta)
                 }
-
-                petMetaService.save(petMeta)
             }
         }
 

@@ -1,14 +1,12 @@
 package com.github.shynixn.petblocks.core.logic.business.command
 
 import com.github.shynixn.petblocks.api.business.command.SourceCommand
-import com.github.shynixn.petblocks.api.business.entity.GUIItemContainer
 import com.github.shynixn.petblocks.api.business.service.CommandService
+import com.github.shynixn.petblocks.api.business.service.ConfigurationService
 import com.github.shynixn.petblocks.api.business.service.PersistencePetMetaService
 import com.github.shynixn.petblocks.api.business.service.ProxyService
 import com.github.shynixn.petblocks.core.logic.business.extension.thenAcceptSafely
-import com.github.shynixn.petblocks.core.logic.compatibility.Config
 import com.google.inject.Inject
-import java.util.*
 
 /**
  * Created by Shynixn 2018.
@@ -37,7 +35,7 @@ import java.util.*
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class EditPetCostumeCommand @Inject constructor(private val proxyService: ProxyService, private val petMetaService: PersistencePetMetaService, private val commandService: CommandService) : SourceCommand {
+class EditPetCostumeCommand @Inject constructor(private val proxyService: ProxyService, private val petMetaService: PersistencePetMetaService, private val commandService: CommandService, private val configurationService: ConfigurationService) : SourceCommand {
     /**
      * Gets called when the given [source] executes the defined command with the given [args].
      */
@@ -58,17 +56,26 @@ class EditPetCostumeCommand @Inject constructor(private val proxyService: ProxyS
 
 
         petMetaService.getOrCreateFromPlayerUUID(playerProxy.uniqueId).thenAcceptSafely { petMeta ->
-            var item: Optional<GUIItemContainer<Any>> = Optional.empty()
+            val skinCollection = configurationService.findGUIItemCollection(category)
+            val prefix = configurationService.findValue<String>("messages.prefix")
 
-            when {
-                category.equals("simple-blocks", ignoreCase = true) -> item = Config.getInstance<Any>().ordinaryCostumesController.getContainerFromPosition(number)
-                category.equals("colored-blocks", ignoreCase = true) -> item = Config.getInstance<Any>().colorCostumesController.getContainerFromPosition(number)
-                category.equals("player-heads", ignoreCase = true) -> item = Config.getInstance<Any>().rareCostumesController.getContainerFromPosition(number)
-            }
+            if (!skinCollection.isPresent) {
+                playerProxy.sendMessage(prefix + "Collection path '" + category + "' does not exist in the config.yml")
+            } else {
+                if (number < 0 || number < skinCollection.get().size) {
+                    playerProxy.sendMessage(prefix + "Collection does not contain number " + number + ".")
+                } else {
+                    val guiItem = skinCollection.get()[number]
 
-            item.ifPresent { guiItemContainer ->
-                petMeta.setSkin(guiItemContainer.itemId, guiItemContainer.itemDamage, guiItemContainer.skin, guiItemContainer.isItemUnbreakable)
-                petMetaService.save(petMeta)
+                    with(petMeta) {
+                        itemId = guiItem.type
+                        itemDamage = guiItem.data
+                        skin = guiItem.skin
+                        unbreakable = guiItem.unbreakable
+                    }
+
+                    petMetaService.save(petMeta)
+                }
             }
         }
 

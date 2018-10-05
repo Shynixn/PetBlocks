@@ -38,7 +38,7 @@ class EditPetRenameCommand @Inject constructor(private val proxyService: ProxySe
     /**
      * Gets called when the given [source] executes the defined command with the given [args].
      */
-    override fun <S> onExecuteCommand(source: S, args: Array<out String>) : Boolean {
+    override fun <S> onExecuteCommand(source: S, args: Array<out String>): Boolean {
         if (args.size < 2 || !args[0].equals("rename", true)) {
             return false
         }
@@ -53,7 +53,7 @@ class EditPetRenameCommand @Inject constructor(private val proxyService: ProxySe
         val message = result.second
 
         petMetaService.getOrCreateFromPlayerUUID(playerProxy.uniqueId).thenAcceptSafely { petMeta ->
-            petMeta.petDisplayName = message
+            petMeta.displayName = message
             petMetaService.save(petMeta)
         }
 

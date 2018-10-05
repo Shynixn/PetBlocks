@@ -1,5 +1,7 @@
 package com.github.shynixn.petblocks.api.business.service
 
+import com.github.shynixn.petblocks.api.persistence.entity.Engine
+
 /**
  * Created by Shynixn 2018.
  * <p>
@@ -48,4 +50,9 @@ interface PetActionService {
      * Changes the skin of the given [player] pet to the given [name].
      */
     fun <P> changeSkin(player: P, name: String)
+
+    /**
+     * Changes the engine of the given [player] pet to the given [engine].
+     */
+    fun <P> changeEngine(player: P, engine: Engine)
 }
