@@ -1,7 +1,7 @@
 package com.github.shynixn.petblocks.core.logic.business.service
 
-import com.github.shynixn.petblocks.api.business.enumeration.MaterialType
 import com.github.shynixn.petblocks.api.business.service.*
+import com.github.shynixn.petblocks.api.persistence.entity.Engine
 import com.github.shynixn.petblocks.core.logic.business.extension.thenAcceptSafely
 import com.github.shynixn.petblocks.core.logic.business.extension.translateChatColors
 import com.google.inject.Inject
@@ -99,10 +99,50 @@ class PetActionServiceImpl @Inject constructor(private val petService: PetServic
         persistencePetMetaService.getOrCreateFromPlayerUUID(playerProxy.uniqueId).thenAcceptSafely { petMeta ->
             val namingSuccessMessage = configurationService.findValue<String>("messages.naming-success")
 
-            petMeta.petDisplayName = name.translateChatColors()
+            petMeta.displayName = name.translateChatColors()
             persistencePetMetaService.save(petMeta)
 
             playerProxy.sendMessage(prefix + namingSuccessMessage)
+        }
+    }
+
+    /**
+     * Changes the engine of the given [player] pet to the given [engine].
+     */
+    override fun <P> changeEngine(player: P, engine: Engine) {
+        val playerProxy = proxyService.findPlayerProxyObject(player)
+
+        persistencePetMetaService.getOrCreateFromPlayerUUID(playerProxy.uniqueId).thenAcceptSafely { petMeta ->
+            val copySkin = configurationService.findValue<Boolean>("gui.settings.copy-skin")
+
+            if (copySkin) {
+                with(petMeta) {
+                    itemId = engine.type
+                    itemDamage = engine.data
+                    skin = engine.skin
+                    unbreakable = engine.unbreakable
+                }
+            }
+
+            if (engine.petName.isPresent) {
+                petMeta.displayName = engine.petName.get().translateChatColors()
+            }
+
+            if (engine.particle.isPresent) {
+                val targetParticle = petMeta.particle
+                val sourceParticle = engine.particle.get()
+
+                with(targetParticle) {
+                    type = sourceParticle.type
+                    amount = sourceParticle.amount
+                    speed = sourceParticle.speed
+                    offSetX = sourceParticle.offSetX
+                    offSetY = sourceParticle.offSetY
+                    offSetZ = sourceParticle.offSetZ
+                    materialName = sourceParticle.materialName
+                    data = sourceParticle.data
+                }
+            }
         }
     }
 
@@ -123,7 +163,11 @@ class PetActionServiceImpl @Inject constructor(private val petService: PetServic
         persistencePetMetaService.getOrCreateFromPlayerUUID(playerProxy.uniqueId).thenAcceptSafely { petMeta ->
             val namingSuccessMessage = configurationService.findValue<String>("messages.skullnaming-success")
 
-            petMeta.setSkin(MaterialType.SKULL_ITEM.MinecraftNumericId, 3, name, false)
+            petMeta.skin = name
+            petMeta.unbreakable = false
+            petMeta.itemId = 397
+            petMeta.itemDamage = 3
+
             persistencePetMetaService.save(petMeta)
 
             playerProxy.sendMessage(prefix + namingSuccessMessage)

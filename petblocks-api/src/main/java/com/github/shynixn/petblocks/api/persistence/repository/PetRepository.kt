@@ -1,5 +1,7 @@
-package com.github.shynixn.petblocks.core.logic.compatibility
+package com.github.shynixn.petblocks.api.persistence.repository
 
+import com.github.shynixn.petblocks.api.business.proxy.PetProxy
+import com.github.shynixn.petblocks.api.persistence.entity.PetMeta
 import java.util.*
 
 /**
@@ -29,9 +31,30 @@ import java.util.*
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class GUICache {
+interface PetRepository {
     /**
-     * [PageCache] of the current player.
+     * Returns [List] with a list of stored [PetProxy].
      */
-    var pageCache: Optional<PageCache> = Optional.empty()
+    fun getAll(): List<PetProxy>
+
+    /**
+     * Removes the given petProxy from being managed.
+     */
+    fun remove(petProxy: PetProxy)
+
+    /**
+     * Returns the PetProxy of from the given player petMeta. Creates
+     * a new one if it does not exist yet.
+     */
+    fun <L> getOrSpawnFromPetMeta(location: L, petMeta: PetMeta): PetProxy
+
+    /**
+     * Gets the pet from the uuid. Throws exception if not exist.
+     */
+    fun getFromPlayerUUID(uuid: UUID): PetProxy
+
+    /**
+     * Gets if the given player uniqueId has got an active pet.
+     */
+    fun hasPet(uuid: UUID): Boolean
 }

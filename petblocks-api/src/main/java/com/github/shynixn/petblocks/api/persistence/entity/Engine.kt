@@ -60,4 +60,16 @@ interface Engine {
      * Gets the riding type.
      */
     val rideType: RideType
+
+    /** Returns the type of the item. */
+    val type: Int
+
+    /** Returns the data of the item. */
+    val data: Int
+
+    /** Returns the skin of the item. */
+    val skin: String
+
+    /** Returns if the item is unbreakable. */
+    val unbreakable: Boolean
 }

@@ -60,6 +60,11 @@ interface ProxyService {
     fun findPlayerProxyObjectFromName(name: String): Optional<PlayerProxy>
 
     /**
+     * Tries to return a player proxy for the given player uuid.
+     */
+    fun findPlayerProxyObjectFromUUID(uuid: UUID) : Optional<PlayerProxy>
+
+    /**
      * Clears any resources the given instance has allocated.
      */
     fun cleanResources(instance: Any)

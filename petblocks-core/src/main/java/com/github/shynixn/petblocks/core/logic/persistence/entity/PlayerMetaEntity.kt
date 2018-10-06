@@ -1,6 +1,7 @@
-package com.github.shynixn.petblocks.core.logic.compatibility;
+package com.github.shynixn.petblocks.core.logic.persistence.entity
 
-import com.github.shynixn.petblocks.api.business.enumeration.GUIPage;
+import com.github.shynixn.petblocks.api.persistence.entity.PlayerMeta
+import java.util.*
 
 /**
  * Created by Shynixn 2018.
@@ -29,15 +30,9 @@ import com.github.shynixn.petblocks.api.business.enumeration.GUIPage;
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-public class GuiPageContainer {
-    public final GuiPageContainer previousPage;
-    public final GUIPage page;
-    public int startCount;
-    public int currentCount;
-
-    public GuiPageContainer(GUIPage page, GuiPageContainer previousPage) {
-        super();
-        this.page = page;
-        this.previousPage = previousPage;
-    }
+class PlayerMetaEntity(override var uuid: UUID, override var name: String) : PlayerMeta {
+    /**
+     * Database id.
+     */
+    override var id: Long = 0
 }

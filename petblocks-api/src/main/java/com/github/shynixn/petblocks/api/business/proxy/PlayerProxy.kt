@@ -1,6 +1,7 @@
 package com.github.shynixn.petblocks.api.business.proxy
 
 import com.github.shynixn.petblocks.api.business.enumeration.Permission
+import com.github.shynixn.petblocks.api.persistence.entity.Position
 import java.util.*
 
 /**
@@ -40,6 +41,16 @@ interface PlayerProxy {
      * Gets the framework handle.
      */
     val handle: Any
+
+    /**
+     * Gets the name of the player.
+     */
+    val name : String
+
+    /**
+     * Gets the position of the player.
+     */
+    val position : Position
 
     /**
      * Sends a message to the player.

@@ -35,7 +35,7 @@ class ParticleEntity(override var type: ParticleType = ParticleType.NONE) : Part
     /**
      * Database Id.
      */
-    var id: Long = 0
+    override var id: Long = 0
     /**
      * Amount of particles.
      */

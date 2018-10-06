@@ -1,16 +1,17 @@
 package com.github.shynixn.petblocks.core.logic.business.service
 
-import com.github.shynixn.petblocks.api.PetBlocksApi
-import com.github.shynixn.petblocks.api.business.controller.PetBlockController
 import com.github.shynixn.petblocks.api.business.service.ConcurrencyService
 import com.github.shynixn.petblocks.api.business.service.PersistencePetMetaService
-import com.github.shynixn.petblocks.api.persistence.controller.PetMetaController
+import com.github.shynixn.petblocks.api.business.service.ProxyService
 import com.github.shynixn.petblocks.api.persistence.entity.PetMeta
+import com.github.shynixn.petblocks.api.persistence.repository.PetMetaRepository
+import com.github.shynixn.petblocks.api.persistence.repository.PetRepository
 import com.github.shynixn.petblocks.core.logic.business.extension.async
 import com.github.shynixn.petblocks.core.logic.business.extension.sync
 import com.google.inject.Inject
 import java.util.*
 import java.util.concurrent.CompletableFuture
+import kotlin.collections.ArrayList
 
 /**
  * Created by Shynixn 2018.
@@ -39,36 +40,25 @@ import java.util.concurrent.CompletableFuture
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class PersistencePetMetaServiceImpl @Inject constructor(private val concurrencyService: ConcurrencyService) : PersistencePetMetaService {
-    private var petBlockController: PetBlockController<*>? = null
-    private var petMetaController: PetMetaController<*>? = null
-
+class PersistencePetMetaServiceImpl @Inject constructor(private val concurrencyService: ConcurrencyService, private val proxyService: ProxyService, private val petMetaRepository: PetMetaRepository, private val petRepository: PetRepository) : PersistencePetMetaService {
     /**
      * Returns [CompletableFuture] with a list of stored [PetMeta].
      */
     override fun getAll(): CompletableFuture<List<PetMeta>> {
-        initializeDependencies()
-
         val completableFuture = CompletableFuture<List<PetMeta>>()
 
-        completableFuture.exceptionally { throwable ->
-            throw RuntimeException("Failed to perform PetBlocks task.", throwable)
-        }
-
-        val activePetMetas = petBlockController!!.all.map { p -> p.meta }
+        val activePetMetas = petRepository.getAll().map { p -> p.meta }
 
         async(concurrencyService) {
-            val petMetaList = petMetaController!!.all
+            val petMetaList = ArrayList(petMetaRepository.getAll())
 
             petMetaList.toTypedArray().forEach { item ->
-
                 activePetMetas.forEach { active ->
                     if (active.id == item.id) {
                         petMetaList.remove(item)
                         petMetaList.add(active)
                     }
                 }
-
             }
 
             sync(concurrencyService) {
@@ -85,33 +75,21 @@ class PersistencePetMetaServiceImpl @Inject constructor(private val concurrencyS
      * currently uses the meta data of the player.
      */
     override fun getOrCreateFromPlayerUUID(uuid: UUID): CompletableFuture<PetMeta> {
-        initializeDependencies()
-
         val completableFuture = CompletableFuture<PetMeta>()
 
-        completableFuture.exceptionally { throwable ->
-            throw RuntimeException("Failed to perform PetBlocks task.", throwable)
-        }
-
-        val optPetBlock = petBlockController!!.getFromUUID(uuid)
-
-        if (optPetBlock.isPresent) {
-            val meta = optPetBlock.get().meta
+        if (petRepository.hasPet(uuid)) {
+            val meta = petRepository.getFromPlayerUUID(uuid).meta
 
             sync(concurrencyService) {
                 completableFuture.complete(meta)
             }
         } else {
-            async(concurrencyService) {
-                val optResult = petMetaController!!.getFromUUID(uuid)
+            val playerProxy = proxyService.findPlayerProxyObjectFromUUID(uuid)
+            val playerName = playerProxy.get().name
 
-                if (optResult.isPresent) {
-                    sync(concurrencyService) {
-                        completableFuture.complete(optResult.get())
-                    }
-                } else {
-                    val petMeta = petMetaController!!.createFromUUID(uuid)
-                    petMetaController!!.store(petMeta)
+            if (playerProxy.isPresent) {
+                async(concurrencyService) {
+                    val petMeta = petMetaRepository.getOrCreateFromPlayerIdentifiers(playerName, uuid)
 
                     sync(concurrencyService) {
                         completableFuture.complete(petMeta)
@@ -119,7 +97,6 @@ class PersistencePetMetaServiceImpl @Inject constructor(private val concurrencyS
                 }
             }
         }
-
         return completableFuture
     }
 
@@ -127,8 +104,6 @@ class PersistencePetMetaServiceImpl @Inject constructor(private val concurrencyS
      * Saves the given [petMeta] instance and returns a [CompletableFuture] with the same petMeta instance.
      */
     override fun save(petMeta: PetMeta): CompletableFuture<PetMeta> {
-        initializeDependencies()
-
         val completableFuture = CompletableFuture<PetMeta>()
 
         completableFuture.exceptionally { throwable ->
@@ -136,27 +111,13 @@ class PersistencePetMetaServiceImpl @Inject constructor(private val concurrencyS
         }
 
         async(concurrencyService) {
-            petMetaController!!.store(petMeta)
-            completableFuture.complete(petMeta)
+            petMetaRepository.save(petMeta)
 
             sync(concurrencyService) {
-                val petBlock = petBlockController!!.getFromUUID(petMeta.playerMeta.uuid)
-
-                if (petBlock.isPresent) {
-                    petBlock.get().respawn()
-                }
+                completableFuture.complete(petMeta)
             }
         }
-        return completableFuture
-    }
 
-    /**
-     * Helper.
-     */
-    private fun initializeDependencies() {
-        if (petBlockController == null) {
-            petBlockController = PetBlocksApi.getDefaultPetBlockController<Any>() as PetBlockController<*>
-            petMetaController = PetBlocksApi.getDefaultPetMetaController<Any>() as PetMetaController<*>
-        }
+        return completableFuture
     }
 }

@@ -36,6 +36,11 @@ interface PetProxy {
     val meta: PetMeta
 
     /**
+     * Gets if the pet is dead or was removed.
+     */
+    val isDead: Boolean
+
+    /**
      * Sets the entity wearing the pet.
      */
     fun startWearing()
@@ -89,6 +94,16 @@ interface PetProxy {
      * Gets the pet owner.
      */
     fun <P> getPlayer(): P
+
+    /**
+     * Gets the head armorstand.
+     */
+    fun <A> getHeadArmorstand(): A
+
+    /**
+     * Gets a living hitbox entity.
+     */
+    fun <L> getHitBoxLivingEntity(): L
 
     /**
      * Removes the pet.

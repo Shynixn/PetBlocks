@@ -1,7 +1,8 @@
-package com.github.shynixn.petblocks.core.logic.compatibility
+package com.github.shynixn.petblocks.core.logic.persistence.entity
 
-import com.github.shynixn.petblocks.api.business.enumeration.GUIPage
-import com.github.shynixn.petblocks.core.logic.compatibility.GuiPageContainer
+import com.github.shynixn.petblocks.api.persistence.entity.Particle
+import com.github.shynixn.petblocks.api.persistence.entity.PetMeta
+import com.github.shynixn.petblocks.api.persistence.entity.PlayerMeta
 
 /**
  * Created by Shynixn 2018.
@@ -30,23 +31,36 @@ import com.github.shynixn.petblocks.core.logic.compatibility.GuiPageContainer
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class PageCache(
-        /**
-         * Page describing this cache.
-         */
-        var page: GUIPage,
-        /**
-         * Null able previous page.
-         */
-        var previousPage: GuiPageContainer?) {
+class PetMetaEntity(override val playerMeta: PlayerMeta, override val particle: Particle) : PetMeta {
+    /**
+     * Database id.
+     */
+    override var id: Long = 0
 
     /**
-     * Start item count of the page.
+     * Is the pet using sounds.
      */
-    var startCount: Int = 0
+    override var sound: Boolean = true
 
     /**
-     * Current count of the page.
+     * Displayed name on top of the pet.
      */
-    var currentCount: Int = 0
+    override var displayName: String = playerMeta.name + "'s Pet"
+
+    /**
+     * Skin of the pet head.
+     */
+    override var skin: String = ""
+    /**
+     * ItemId of the pet head.
+     */
+    override var itemId: Int = 2
+    /**
+     * ItemDamage of the pet head.
+     */
+    override var itemDamage: Int = 0
+    /**
+     * Unbreakable Tag of the pet head.
+     */
+    override var unbreakable: Boolean = false
 }

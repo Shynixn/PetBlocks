@@ -1,19 +1,16 @@
 package com.github.shynixn.petblocks.core.logic.business.service
 
 import com.github.shynixn.petblocks.api.PetBlocksApi
-import com.github.shynixn.petblocks.api.business.controller.PetBlockController
-import com.github.shynixn.petblocks.api.business.entity.PetBlock
+import com.github.shynixn.petblocks.api.business.enumeration.PluginDependency
 import com.github.shynixn.petblocks.api.business.proxy.PetProxy
-import com.github.shynixn.petblocks.api.business.service.ConcurrencyService
-import com.github.shynixn.petblocks.api.business.service.LoggingService
-import com.github.shynixn.petblocks.api.business.service.PersistencePetMetaService
-import com.github.shynixn.petblocks.api.business.service.PetService
+import com.github.shynixn.petblocks.api.business.service.*
+import com.github.shynixn.petblocks.api.persistence.entity.Position
+import com.github.shynixn.petblocks.api.persistence.repository.PetRepository
+import com.github.shynixn.petblocks.core.logic.business.extension.sync
 import com.github.shynixn.petblocks.core.logic.business.extension.thenAcceptSafely
-import com.github.shynixn.petblocks.core.logic.compatibility.Config
 import com.google.inject.Inject
 import java.util.*
 import java.util.concurrent.CompletableFuture
-import kotlin.collections.HashMap
 
 /**
  * Created by Shynixn 2018.
@@ -42,10 +39,7 @@ import kotlin.collections.HashMap
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class PetServiceImpl @Inject constructor(private val petMetaService: PersistencePetMetaService, private val loggingService: LoggingService, private val concurrencyService: ConcurrencyService) : PetService, Runnable {
-    private val pets = HashMap<PetBlock<Any, Any>, PetProxy>()
-    private var petBlockController: PetBlockController<*>? = null
-
+class PetServiceImpl @Inject constructor(private val petMetaService: PersistencePetMetaService, private val loggingService: LoggingService, private val configurationService: ConfigurationService, private val proxyService: ProxyService, private val dependencyService: DependencyService, private val petRepository: PetRepository, private val concurrencyService: ConcurrencyService) : PetService, Runnable {
     init {
         concurrencyService.runTaskSync(0L, 20L * 60 * 5, this)
     }
@@ -54,41 +48,26 @@ class PetServiceImpl @Inject constructor(private val petMetaService: Persistence
      * Gets or spawns the pet of the given player uniqueId.
      */
     override fun getOrSpawnPetFromPlayerUUID(uuid: UUID): CompletableFuture<PetProxy> {
-        initializeDependencies()
-
         val completableFuture = CompletableFuture<PetProxy>()
 
-        if (!Config.getInstance<Any>().allowPetSpawningByUUID(uuid)) {
+        val playerProxy = proxyService.findPlayerProxyObjectFromUUID(uuid)
+
+        if (!playerProxy.isPresent) {
             return completableFuture
         }
 
-        petMetaService.getOrCreateFromPlayerUUID(uuid).thenAcceptSafely { petMeta ->
-            val optExistingPetBlock = petBlockController!!.getFromUUID(uuid)
+        if (!isAllowedToSpawn(playerProxy.get().position, playerProxy.get().getLocation())) {
+            return completableFuture
+        }
 
-            if (optExistingPetBlock.isPresent && !optExistingPetBlock.get().isDead) {
-                if (!pets.containsKey(optExistingPetBlock.get())) {
-                    pets[optExistingPetBlock.get()] = petBlockController!!.createfromPetBlock(optExistingPetBlock.get())
-                }
-
-                completableFuture.complete(pets[optExistingPetBlock.get()])
-            } else {
-                if (optExistingPetBlock.isPresent) {
-                    petBlockController!!.remove(optExistingPetBlock.get())
-                }
-
-                try {
-                    val petBlock = petBlockController!!.createFromUUID(uuid, petMeta)
-                    petBlock.meta.isEnabled = true
-                    petBlockController!!.store(petBlock)
-
-                    if (!pets.containsKey(petBlock)) {
-                        pets[petBlock] = petBlockController!!.createfromPetBlock(petBlock)
-                    }
-
-                    completableFuture.complete(pets[petBlock])
-                } catch (e: Exception) {
-                    loggingService.error("Pet could not be spawned. Please report the error message to the plugin author.", e)
-                }
+        if (hasPet(uuid)) {
+            sync(concurrencyService) {
+                completableFuture.complete(petRepository.getFromPlayerUUID(uuid))
+            }
+        } else {
+            petMetaService.getOrCreateFromPlayerUUID(uuid).thenAcceptSafely { petMeta ->
+                val petProxy = petRepository.getOrSpawnFromPetMeta(playerProxy.get().getLocation<Any>(), petMeta)
+                completableFuture.complete(petProxy)
             }
         }
 
@@ -99,15 +78,11 @@ class PetServiceImpl @Inject constructor(private val petMetaService: Persistence
      * Tries to find the pet from the given entity.
      */
     override fun <E> findPetByEntity(entity: E): Optional<PetProxy> {
-        initializeDependencies()
-
-        petBlockController!!.all.forEach { petBlock ->
-            if (petBlock.armorStand == entity || petBlock.engineEntity == entity) {
-                if (!pets.containsKey(petBlock)) {
-                    pets[petBlock] = petBlockController!!.createfromPetBlock(petBlock)
+        petRepository.getAll().forEach { petBlock ->
+            if (!petBlock.isDead) {
+                if (petBlock.getHeadArmorstand<Any>() == entity || petBlock.getHitBoxLivingEntity<Any>() == entity) {
+                    return Optional.of(petBlock)
                 }
-
-                return Optional.of(pets[petBlock]!!)
             }
         }
 
@@ -118,10 +93,7 @@ class PetServiceImpl @Inject constructor(private val petMetaService: Persistence
      * Checks if the player with the given [uuid] has an active pet.
      */
     override fun hasPet(uuid: UUID): Boolean {
-        initializeDependencies()
-
-
-        return petBlockController!!.getFromUUID(uuid).isPresent
+        return petRepository.hasPet(uuid) && !petRepository.getFromPlayerUUID(uuid).isDead
     }
 
     /**
@@ -137,19 +109,51 @@ class PetServiceImpl @Inject constructor(private val petMetaService: Persistence
      * @see java.lang.Thread.run
      */
     override fun run() {
-        pets.keys.toTypedArray().forEach { petblock ->
-            if (petblock.isDead) {
-                this.pets.remove(petblock)
+        petRepository.getAll().toTypedArray().forEach { pet ->
+            if (pet.isDead) {
+                petRepository.remove(pet)
             }
         }
     }
 
     /**
-     * Helper.
+     * Gets if the pet is allowed to spawn at the given position.
      */
-    private fun initializeDependencies() {
-        if (petBlockController == null) {
-            petBlockController = PetBlocksApi.getDefaultPetBlockController<Any>() as PetBlockController<*>
+    private fun isAllowedToSpawn(position: Position, location: Any): Boolean {
+        val includedWorlds = configurationService.findValue<List<String>>("world.included")
+        val excludedWorlds = configurationService.findValue<List<String>>("world.excluded")
+
+        when {
+            includedWorlds.contains("all") -> return !excludedWorlds.contains(position.worldName) && isAllowedToSpawnInWorldGuardRegion(location)
+            excludedWorlds.contains("all") -> return includedWorlds.contains(position.worldName) && isAllowedToSpawnInWorldGuardRegion(location)
+            else -> loggingService.warn("Please add 'all' to excluded or included worlds inside of the config.yml")
         }
+
+        return true
+    }
+
+    /**
+     * Gets if the pet is allowed to spawn in WorldGuard region.
+     */
+    private fun isAllowedToSpawnInWorldGuardRegion(location: Any): Boolean {
+        if (!dependencyService.isInstalled(PluginDependency.WORLDGUARD)) {
+            return true
+        }
+
+        val worldGuardService = PetBlocksApi.resolve(DependencyWorldGuardService::class.java)
+        val includedRegions = configurationService.findValue<List<String>>("region.included")
+        val excludedRegions = configurationService.findValue<List<String>>("region.excluded")
+
+        try {
+            when {
+                includedRegions.contains("all") -> return worldGuardService.getRegionNames(location).none { excludedRegions.contains(it) }
+                excludedRegions.contains("all") -> return worldGuardService.getRegionNames(location).any { includedRegions.contains(it) }
+                else -> loggingService.warn("Please add 'all' to excluded or included regions inside of the config.yml")
+            }
+        } catch (e: Exception) {
+            loggingService.warn("Failed to handle region spawning.", e)
+        }
+
+        return true
     }
 }

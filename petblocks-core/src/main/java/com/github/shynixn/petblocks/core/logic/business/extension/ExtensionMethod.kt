@@ -78,7 +78,7 @@ inline fun Any.sync(concurrencyService: ConcurrencyService, delayTicks: Long = 0
  */
 fun <T> CompletableFuture<T>.thenAcceptSafely(f: (T) -> Unit) {
     this.thenAccept(f).exceptionally { e ->
-        val loggingService = PetBlocksApi.INSTANCE.resolve(LoggingService::class.java)
+        val loggingService = PetBlocksApi.resolve(LoggingService::class.java)
         loggingService.error("Failed to execute Task.", e)
         throw RuntimeException(e)
     }
