@@ -95,6 +95,19 @@ class ProxyServiceImpl : ProxyService {
         throw IllegalArgumentException("Instance $instance is not supported!")
     }
 
+    /**
+     * Tries to return a player proxy for the given player uuid.
+     */
+    override fun findPlayerProxyObjectFromUUID(uuid: UUID): Optional<PlayerProxy> {
+        val player = Bukkit.getPlayer(uuid)
+
+        if (player != null && player.isOnline) {
+            return Optional.of(findPlayerProxyObject(player))
+        }
+
+        return Optional.empty()
+    }
+
 
     /**
      * Clears any resources the given instance has allocated.
