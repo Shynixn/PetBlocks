@@ -8,7 +8,7 @@ import com.github.shynixn.petblocks.api.business.enumeration.ChatColor
 import com.github.shynixn.petblocks.api.business.enumeration.GUIPage
 import com.github.shynixn.petblocks.api.business.service.ConfigurationService
 import com.github.shynixn.petblocks.api.persistence.entity.ChatMessage
-import com.github.shynixn.petblocks.api.persistence.entity.GUIItem
+import com.github.shynixn.petblocks.api.persistence.entity.GuiItem
 import com.github.shynixn.petblocks.core.logic.business.extension.chatMessage
 import com.github.shynixn.petblocks.core.logic.persistence.entity.ParticleEntity
 import com.github.shynixn.petblocks.core.logic.persistence.entity.SoundEntity
@@ -69,7 +69,7 @@ import kotlin.collections.HashMap
  * SOFTWARE.
  */
 class ConfigurationServiceImpl @Inject constructor(private val plugin: PluginContainer, private val guiItemsController: SpongeStaticGUIItems, @ConfigDir(sharedRoot = false) private val privateConfigDir: Path) : ConfigurationService {
-    private val cache = HashMap<String, List<GUIItem>>()
+    private val cache = HashMap<String, List<GuiItem>>()
     private lateinit var node: ConfigurationNode
     private var namingMessage: ChatMessage? = null
     private var skullNamingMessage: ChatMessage? = null
@@ -211,10 +211,10 @@ class ConfigurationServiceImpl @Inject constructor(private val plugin: PluginCon
     }
 
     /**
-     * Tries to return a list of [GUIItem] matching the given path from the config.
+     * Tries to return a list of [GuiItem] matching the given path from the config.
      * Can be called asynchronly.
      */
-    override fun findGUIItemCollection(path: String): Optional<List<GUIItem>> {
+    override fun findGUIItemCollection(path: String): Optional<List<GuiItem>> {
         if (cache.containsKey(path)) {
             return Optional.of(cache[path]!!)
         }
@@ -226,7 +226,7 @@ class ConfigurationServiceImpl @Inject constructor(private val plugin: PluginCon
             return Optional.of(items)
         }
 
-        val items = ArrayList<GUIItem>()
+        val items = ArrayList<GuiItem>()
         try {
             val data = Config.getData<Map<Int, Any>>(path)
             for (key in data!!.keys) {
@@ -243,10 +243,10 @@ class ConfigurationServiceImpl @Inject constructor(private val plugin: PluginCon
     }
 
     /**
-     * Tries to return a [GUIItem] matching the displayName and the lore of the given [item].
+     * Tries to return a [GuiItem] matching the displayName and the lore of the given [item].
      * Can be called from Asynchronly.
      */
-    override fun <I> findClickedGUIItem(item: I): Optional<GUIItem> {
+    override fun <I> findClickedGUIItem(item: I): Optional<GuiItem> {
         if (item !is ItemStack) {
             throw IllegalArgumentException("Item has to be an SpongeItemStack!")
         }
@@ -286,8 +286,8 @@ class ConfigurationServiceImpl @Inject constructor(private val plugin: PluginCon
     /**
      * Returns the minecraft-heads.com category heads.
      */
-    private fun getItemsFromMinecraftHeadsDatabase(category: String): List<GUIItem> {
-        val items = ArrayList<GUIItem>()
+    private fun getItemsFromMinecraftHeadsDatabase(category: String): List<GuiItem> {
+        val items = ArrayList<GuiItem>()
         try {
             val decipher = Cipher.getInstance("AES/CBC/PKCS5PADDING")
             decipher.init(Cipher.DECRYPT_MODE, SecretKeySpec(Base64Coder.decode("Ydy3wN+SnAgC/sYQZ72yEg=="), "AES"), IvParameterSpec("RandomInitVector".toByteArray(charset("UTF-8"))))

@@ -9,8 +9,8 @@ import com.github.shynixn.petblocks.api.business.service.LoggingService
 import com.github.shynixn.petblocks.api.business.service.ParticleService
 import com.github.shynixn.petblocks.api.persistence.entity.Particle
 import com.github.shynixn.petblocks.bukkit.logic.business.extension.sendPacket
-import com.github.shynixn.petblocks.bukkit.nms.VersionSupport
-import com.github.shynixn.petblocks.bukkit.nms.v1_13_R1.MaterialCompatibility13
+import com.github.shynixn.petblocks.bukkit.logic.business.nms.VersionSupport
+import com.github.shynixn.petblocks.bukkit.logic.business.nms.v1_13_R1.MaterialCompatibility13
 import com.github.shynixn.petblocks.core.logic.business.extension.async
 import com.google.inject.Inject
 import org.bukkit.Location

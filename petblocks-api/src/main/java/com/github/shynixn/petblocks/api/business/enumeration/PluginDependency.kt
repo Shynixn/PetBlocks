@@ -34,6 +34,11 @@ enum class PluginDependency(
         val pluginName: String) {
 
     /**
+     * HeadDatabase plugin.
+     */
+    HEADDATABASE("HeadDatabase"),
+
+    /**
      * ClearLag plugin.
      */
     CLEARLAG("ClearLag"),

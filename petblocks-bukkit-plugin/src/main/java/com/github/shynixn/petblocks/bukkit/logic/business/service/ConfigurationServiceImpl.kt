@@ -7,13 +7,13 @@ import com.github.shynixn.petblocks.api.business.enumeration.ChatClickAction
 import com.github.shynixn.petblocks.api.business.enumeration.GUIPage
 import com.github.shynixn.petblocks.api.business.service.ConfigurationService
 import com.github.shynixn.petblocks.api.persistence.entity.ChatMessage
-import com.github.shynixn.petblocks.api.persistence.entity.GUIItem
+import com.github.shynixn.petblocks.api.persistence.entity.GuiItem
 import com.github.shynixn.petblocks.bukkit.PetBlocksPlugin
 import com.github.shynixn.petblocks.bukkit.logic.business.extension.toParticleType
 import com.github.shynixn.petblocks.bukkit.logic.compatibility.BukkitStaticGUIItems
 import com.github.shynixn.petblocks.bukkit.logic.compatibility.BukkitGUIItem
 import com.github.shynixn.petblocks.bukkit.logic.compatibility.BukkitItemContainer
-import com.github.shynixn.petblocks.bukkit.nms.v1_13_R1.MaterialCompatibility13
+import com.github.shynixn.petblocks.bukkit.logic.business.nms.v1_13_R1.MaterialCompatibility13
 import com.github.shynixn.petblocks.core.logic.business.extension.chatMessage
 import com.github.shynixn.petblocks.core.logic.compatibility.Config
 import com.github.shynixn.petblocks.core.logic.persistence.entity.ParticleEntity
@@ -65,7 +65,7 @@ import kotlin.collections.HashMap
  * SOFTWARE.
  */
 class ConfigurationServiceImpl @Inject constructor(private val plugin: Plugin, private val guiItemsController: BukkitStaticGUIItems) : ConfigurationService {
-    private val cache = HashMap<String, List<GUIItem>>()
+    private val cache = HashMap<String, List<GuiItem>>()
     private var namingMessage: ChatMessage? = null
     private var skullNamingMessage: ChatMessage? = null
 
@@ -201,10 +201,10 @@ class ConfigurationServiceImpl @Inject constructor(private val plugin: Plugin, p
     }
 
     /**
-     * Tries to return a list of [GUIItem] matching the given path from the config.
+     * Tries to return a list of [GuiItem] matching the given path from the config.
      * Can be called asynchronly.
      */
-    override fun findGUIItemCollection(path: String): Optional<List<GUIItem>> {
+    override fun findGUIItemCollection(path: String): Optional<List<GuiItem>> {
         if (cache.containsKey(path)) {
             return Optional.of(cache[path]!!)
         }
@@ -216,7 +216,7 @@ class ConfigurationServiceImpl @Inject constructor(private val plugin: Plugin, p
             return Optional.of(items)
         }
 
-        val items = ArrayList<GUIItem>()
+        val items = ArrayList<GuiItem>()
         try {
             val data = (this.plugin.config.get(path) as MemorySection).getValues(false)
             data.keys.mapTo(items) { BukkitGUIItem(Integer.parseInt(it), (data[it] as MemorySection).getValues(true)) }
@@ -229,10 +229,10 @@ class ConfigurationServiceImpl @Inject constructor(private val plugin: Plugin, p
     }
 
     /**
-     * Tries to return a [GUIItem] matching the displayName and the lore of the given [item].
+     * Tries to return a [GuiItem] matching the displayName and the lore of the given [item].
      * Can be called from Asynchronly.
      */
-    override fun <I> findClickedGUIItem(item: I): Optional<GUIItem> {
+    override fun <I> findClickedGUIItem(item: I): Optional<GuiItem> {
         if (item !is ItemStack) {
             throw IllegalArgumentException("Item has to be an BukkitItemStack")
         }
@@ -276,8 +276,8 @@ class ConfigurationServiceImpl @Inject constructor(private val plugin: Plugin, p
     /**
      * Returns the minecraft-heads.com category heads.
      */
-    private fun getItemsFromMinecraftHeadsDatabase(category: String): List<GUIItem> {
-        val items = ArrayList<GUIItem>()
+    private fun getItemsFromMinecraftHeadsDatabase(category: String): List<GuiItem> {
+        val items = ArrayList<GuiItem>()
         try {
             val decipher = Cipher.getInstance("AES/CBC/PKCS5PADDING")
             decipher.init(Cipher.DECRYPT_MODE, SecretKeySpec(Base64Coder.decode("Ydy3wN+SnAgC/sYQZ72yEg=="), "AES"), IvParameterSpec("RandomInitVector".toByteArray(charset("UTF-8"))))

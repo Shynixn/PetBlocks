@@ -4,8 +4,10 @@ package com.github.shynixn.petblocks.bukkit.logic.business.proxy
 
 import com.github.shynixn.petblocks.api.business.enumeration.Permission
 import com.github.shynixn.petblocks.api.business.proxy.PlayerProxy
-import com.github.shynixn.petblocks.bukkit.logic.compatibility.PetBlockModifyHelper
-import com.github.shynixn.petblocks.bukkit.nms.VersionSupport
+import com.github.shynixn.petblocks.api.persistence.entity.Position
+import com.github.shynixn.petblocks.bukkit.logic.business.extension.hasPermission
+import com.github.shynixn.petblocks.bukkit.logic.business.extension.toPosition
+import com.github.shynixn.petblocks.bukkit.logic.business.nms.VersionSupport
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 import org.bukkit.util.Vector
@@ -39,13 +41,24 @@ import java.util.*
  * SOFTWARE.
  */
 class PlayerProxyImpl(private val player: Player) : PlayerProxy {
+    private val version = VersionSupport.getServerVersion()
+
     /**
      * Gets the framework handle.
      */
     override val handle: Any
         get() = player
 
-    private val version = VersionSupport.getServerVersion()
+    /**
+     * Gets the name of the player.
+     */
+    override val name: String
+        get() = player.name
+    /**
+     * Gets the position of the player.
+     */
+    override val position: Position
+        get() = player.location.toPosition()
 
     /**
      * Sets the item in the players hand.
@@ -87,7 +100,7 @@ class PlayerProxyImpl(private val player: Player) : PlayerProxy {
      * Gets if this player has got permissions.
      */
     override fun hasPermission(permission: Permission): Boolean {
-        return PetBlockModifyHelper.hasPermission(player, permission)
+        return player.hasPermission(permission)
     }
 
     /**

@@ -2,19 +2,16 @@ package com.github.shynixn.petblocks.bukkit.logic.business.service
 
 import com.github.shynixn.petblocks.api.business.enumeration.ChatClickAction
 import com.github.shynixn.petblocks.api.business.enumeration.ChatColor
-import com.github.shynixn.petblocks.api.business.enumeration.GUIPage
 import com.github.shynixn.petblocks.api.business.enumeration.ScriptAction
 import com.github.shynixn.petblocks.api.business.service.*
 import com.github.shynixn.petblocks.api.persistence.entity.ChatMessage
-import com.github.shynixn.petblocks.api.persistence.entity.GUIItem
+import com.github.shynixn.petblocks.api.persistence.entity.GuiItem
 import com.github.shynixn.petblocks.bukkit.logic.compatibility.PetBlockManager
 import com.github.shynixn.petblocks.bukkit.logic.business.extension.clearCompletely
-import com.github.shynixn.petblocks.bukkit.nms.v1_13_R1.MaterialCompatibility13
-import com.github.shynixn.petblocks.core.logic.compatibility.GuiPageContainer
+import com.github.shynixn.petblocks.bukkit.logic.compatibility.Config
+import com.github.shynixn.petblocks.bukkit.logic.business.nms.v1_13_R1.MaterialCompatibility13
 import com.github.shynixn.petblocks.core.logic.business.extension.chatMessage
 import com.github.shynixn.petblocks.core.logic.business.extension.thenAcceptSafely
-import com.github.shynixn.petblocks.core.logic.compatibility.Config
-import com.github.shynixn.petblocks.core.logic.compatibility.PlayerGUICache
 import com.google.inject.Inject
 import org.bukkit.Bukkit
 import org.bukkit.Material
@@ -50,11 +47,12 @@ import org.bukkit.plugin.Plugin
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class GUIServiceImpl @Inject constructor(private val configurationService: ConfigurationService, private val plugin: Plugin, private val scriptService: GUIScriptService, private val persistenceService: PersistencePetMetaService, private val messageService: MessageService) : GUIService {
+class GUIServiceImpl @Inject constructor(private val configurationService: ConfigurationService, private val plugin: Plugin, private val scriptService: GUIScriptService, private val persistenceService: PersistencePetMetaService, private val messageService: MessageService, private val headDatabaseService: DependencyHeadDatabaseService) : GUIService {
     private val pageCache = HashMap<Player, PlayerGUICache>()
+
     private var collectedMinecraftHeadsMessage = chatMessage {
         text {
-            Config.getInstance<Any>().prefix + "Pets collected by "
+            configurationService.findValue<String>("messages.prefix") + "Pets collected by "
         }
         component {
             color(ChatColor.YELLOW) {
@@ -92,10 +90,99 @@ class GUIServiceImpl @Inject constructor(private val configurationService: Confi
             throw IllegalArgumentException("Player has to be a BukkitPlayer!")
         }
 
-        PetBlockManager.instance.gui.open(player)
+        if (player.openInventory != null) {
+            player.closeInventory()
+        }
+
+        headDatabaseService.clearResources(player)
+
+        val guiTitle = configurationService.findValue<String>("gui.settings.title")
+        val inventory = Bukkit.getServer().createInventory(player, 54, guiTitle)
+        player.openInventory(inventory)
 
         persistenceService.getOrCreateFromPlayerUUID(player.uniqueId).thenAcceptSafely { petMeta ->
             PetBlockManager.instance.gui.setPage(player, GUIPage.MAIN, petMeta)
+
+
+            /*  public void setPage(Player player, GUIPage page, PetMeta petMeta) {
+                  if (!this.manager.inventories.containsKey(player)) {
+                      return;
+                  }
+                  final Inventory inventory = this.manager.inventories.get(player);
+                  inventory.clear();
+                  if (page == GUIPage.MAIN) {
+                      this.setOtherItems(player, inventory, petMeta, GUIPage.MAIN);
+                      this.manager.pages.put(player, new GuiPageContainer(GUIPage.MAIN, null));
+                  } else if (page == GUIPage.WARDROBE) {
+                      this.setOtherItems(player, inventory, petMeta, page);
+                      this.manager.pages.put(player, new GuiPageContainer(page, this.manager.pages.get(player)));
+                  } else {
+                      this.setListAble(player, page, 0);
+                  }
+                  final Optional<GUIItemContainer<Player>> optBackGuiItemContainer = Config.<Player>getInstance().getGuiItemsController().getGUIItemFromName("back");
+                  if (!optBackGuiItemContainer.isPresent())
+                      throw new IllegalArgumentException("Gui item back could not be loaded correctly!");
+                  inventory.setItem(optBackGuiItemContainer.get().getPosition(), (ItemStack) optBackGuiItemContainer.get().generate(player));
+                  this.fillEmptySlots(inventory);
+                  player.updateInventory();*/
+
+        }
+    }
+
+    /**
+     * Displays the main page for the given [player].
+     */
+    private fun openMainPage(player: Player) {
+        val inventory = player.openInventory.topInventory
+        inventory.clear()
+
+        configurationService.findGUIItemCollection("main").get().forEach{ guiItem ->
+            if(guiItem.)
+
+
+        }
+
+        for (guiItemContainer in Config.getInstance<Player>().getGuiItemsController().getAll()) {
+            if (guiItemContainer.getPage() === page) {
+                inventory.setItem(guiItemContainer.getPosition(), guiItemContainer.generate(player) as ItemStack)
+            }
+        }
+
+        if (page === GUIPage.MAIN) {
+            val container = Config.getInstance<Player>().getGuiItemsController().getGUIItemFromName("my-pet")
+            if (!container.isPresent())
+                throw IllegalArgumentException("Gui item my-pet could not be loaded correctly!")
+            inventory.setItem(container.get().getPosition(), petMeta.getHeadItemStack() as ItemStack)
+        }
+        if (petMeta.isSoundEnabled()) {
+            val container = Config.getInstance<Player>().getGuiItemsController().getGUIItemFromName("sounds-enabled-pet")
+            if (!container.isPresent())
+                throw IllegalArgumentException("Gui item sounds-enabled-pet could not be loaded correctly!")
+            if (page === container.get().getPage()) {
+                inventory.setItem(container.get().getPosition(), container.get().generate(player) as ItemStack)
+            }
+        } else {
+            val container = Config.getInstance<Player>().getGuiItemsController().getGUIItemFromName("sounds-disabled-pet")
+            if (!container.isPresent())
+                throw IllegalArgumentException("Gui item sounds-disabled-pet could not be loaded correctly!")
+            if (page === container.get().getPage()) {
+                inventory.setItem(container.get().getPosition(), container.get().generate(player) as ItemStack)
+            }
+        }
+        if (!petMeta.isEnabled()) {
+            val container = Config.getInstance<Player>().getGuiItemsController().getGUIItemFromName("enable-pet")
+            if (!container.isPresent())
+                throw IllegalArgumentException("Gui item enable-pet could not be loaded correctly!")
+            if (page === container.get().getPage()) {
+                inventory.setItem(container.get().getPosition(), container.get().generate(player) as ItemStack)
+            }
+        } else {
+            val container = Config.getInstance<Player>().getGuiItemsController().getGUIItemFromName("disable-pet")
+            if (!container.isPresent())
+                throw IllegalArgumentException("Gui item disable-pet could not be loaded correctly!")
+            if (page === container.get().getPage()) {
+                inventory.setItem(container.get().getPosition(), container.get().generate(player) as ItemStack)
+            }
         }
     }
 
@@ -115,7 +202,7 @@ class GUIServiceImpl @Inject constructor(private val configurationService: Confi
             this.pageCache[player] = PlayerGUICache()
         }
 
-        if (PetBlockManager.instance.pages[player]!!.page == GUIPage.CUSTOM_COLLECTION && !configurationService.findClickedGUIItem(item).isPresent) {
+        if (PetBlockManager.instance.pages[player]!!.page == GUIPage.&& !configurationService.findClickedGUIItem(item).isPresent) {
             val optItems = configurationService.findGUIItemCollection(pageCache[player]!!.path!!)
             if (!optItems.isPresent || optItems.get().isEmpty()) {
                 return
@@ -246,7 +333,7 @@ class GUIServiceImpl @Inject constructor(private val configurationService: Confi
         }
     }
 
-    private fun setItemsToInventory(player: Player, inventory: Inventory, type: Int, items: List<GUIItem>, groupPermission: String?) {
+    private fun setItemsToInventory(player: Player, inventory: Inventory, type: Int, items: List<GuiItem>, groupPermission: String?) {
         val previousContainer = PetBlockManager.instance.pages[player]
         val container: GuiPageContainer
         val page = GUIPage.CUSTOM_COLLECTION
@@ -356,7 +443,7 @@ class GUIServiceImpl @Inject constructor(private val configurationService: Confi
     /**
      * Sets the given itemstack as new pet skin for the given [player].
      */
-    private fun setCollectionSkinItemToPlayer(player: Player, guiItem: GUIItem) {
+    private fun setCollectionSkinItemToPlayer(player: Player, guiItem: GuiItem) {
         persistenceService.getOrCreateFromPlayerUUID(player.uniqueId).thenAcceptSafely { petMeta ->
             petMeta.setSkin(MaterialCompatibility13.getMaterialFromId(guiItem.type).name, guiItem.data, guiItem.skin, guiItem.unbreakable)
             persistenceService.save(petMeta)

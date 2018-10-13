@@ -70,17 +70,12 @@ petblocks-configuration:
 
 # Pet settings
 
-# Settings to customize the pet itself
-
-# age-small-ticks:  Amount of ticks until the pet grows up.
-# age-large-ticks: Amount of ticks until the pet dies.
-# age-max-ticks: Amount of ticks until the pet stops aging.
-# age-death-on-maxticks: Should the pet die after it has reached the max amount of ticks?
+# Settings to customize the pet itself.
 
 # combat-invincible: Should petblocks be able to die when being punched?
-# combat-health: Amount of health when petblocks are not invincible
+# combat-health: Amount of health when petblocks are not invincible.
 
-# warp-teleports-in-seconds: Amount of seconds a petblock waits to teleport after his owner
+# warp-teleports-in-seconds: Amount of seconds a petblock waits to teleport after his owner.
 
 # flee-flees-in-combat: Should petblocks despawn when their owner is in combat?
 # flee-reappears-in-seconds: Amount of seconds the petblock reappears after fleeing the the combat.
@@ -106,14 +101,12 @@ petblocks-configuration:
 # modifier-walking-speed: Speed of the petblock when it casually follows the owner (1 = default speed, 0.5 = half speed,...)
 # modifier-climbing-height: Amount of blocks the petblock can jump when the it casually follows the owner (1 = default height, 0.5 = half height,...)
 
+# join-enabled: Should the player receive a default pet when he enters the server?
+# join-overwrite-previous-pet: Should the player receive a default pet and overwrite any existing pets when he enters the server?
+
 ############################
 
 pet:
-  age:
-    small-ticks: 0
-    large-ticks: 1
-    max-ticks: 1
-    death-on-maxticks: false
   combat:
     invincible: true
     health: 20.0
@@ -134,28 +127,45 @@ pet:
   feeding:
     enabled: true
     click-particle:
-       name: 'heart'
-       speed: 0.1
-       amount: 20
-       offx: 1.0
-       offy: 1.0
-       offz: 1.0
+      name: 'heart'
+      speed: 0.1
+      amount: 20
+      offx: 1.0
+      offy: 1.0
+      offz: 1.0
     click-sound:
-       name: 'EAT'
-       volume: 1.0
-       pitch: 1.0
+      name: 'EAT'
+      volume: 1.0
+      pitch: 1.0
   design:
     max-petname-length: 20
     show-damage-animation: true
     sounds-other-players: true
     particles-other-players: true
     petname-blacklist:
-      - 'petty'
-      - 'shitty'
+    - 'petty'
+    - 'shitty'
   modifier:
     riding-speed: 1.0
     walking-speed: 1.0
     climbing-height: 1.0
+  join:
+    enabled: false
+    overwrite-previous-pet: false
+  default:
+    petname: 'Default pet'
+    id: 2
+    damage: 0
+    unbreakable: false
+    skin: ''
+    enabled: true
+    effect:
+      name: 'largesmoke'
+      speed: 0.01
+      amount: 2
+      offx: 0.5
+      offy: 0.5
+      offz: 0.5
 
 ############################
 
@@ -177,47 +187,15 @@ pet:
 ############################
 
 world:
-    excluded:
-      - ''
-    included:
-      - 'all'
+  excluded:
+  - ''
+  included:
+  - 'all'
 region:
-    excluded:
-      - ''
-    included:
-      - 'all'
-
-############################
-
-# Join settings
-
-# Settings to manage joining of players and their petblocks
-
-# join-enabled: Should the player receive a default pet when he enters the server?
-# join-overwrite-previous-pet: Should the player receive a default pet and overwrite any existing pets when he enters the server?
-# join-settings: Default pet-settings
-
-############################
-
-join:
-  enabled: false
-  overwrite-previous-pet: false
-  settings:
-    petname: 'Default pet'
-    engine: 1
-    id: 2
-    damage: 0
-    unbreakable: false
-    skin: ''
-    enabled: true
-    age: 1
-    effect:
-       name: 'largesmoke'
-       speed: 0.01
-       amount: 2
-       offx: 0.5
-       offy: 0.5
-       offz: 0.5
+  excluded:
+  - ''
+  included:
+  - 'all'
 
 ############################
 
@@ -230,6 +208,7 @@ join:
 messages:
   prefix: '&2[&aPetBlocks&2]&a '
   default-petname: ":player's pet"
+  gui-title: 'PetBlocks'
   naming-suggest-prefix: ''
   naming-suggest-clickable: '&e<<Click here>> '
   naming-suggest-suffix: '&ato rename your pet.'
@@ -274,104 +253,49 @@ messages:
 ############################
 
 gui:
-  settings:
-    title: 'PetBlocks'
-    copy-skin: true
-    use-only-disable-pet-item: false
-    default-engine: 1
-  items:
+  main:
     my-pet:
       position: 4
-    default-appearance:
-      id: 2
-      damage: 0
-      skin: 'textures.minecraft.net/texture/dfab7daeb8f333c7886a70ef30caf4dec4a8cd10493f23802f1516bdd23fcd'
-      unbreakable: false
-    empty-slot:
-      enabled: true
-      id: 160
-      damage: 15
-      skin: 'none'
-      name: 'none'
-      unbreakable: false
-      lore:
-        - 'none'
-    previous-page:
-      enabled: true
-      position: 45
-      id: 397
-      damage: 3
-      skin: 'textures.minecraft.net/texture/3ebf907494a935e955bfcadab81beafb90fb9be49c7026ba97d798d5f1a23'
-      name: '&aPrevious page'
-      script: 'scrolling collection -45'
-      unbreakable: false
-      lore:
-        - 'none'
-    next-page:
-      enabled: true
-      position: 53
-      id: 397
-      damage: 3
-      skin: 'textures.minecraft.net/texture/1b6f1a25b6bc199946472aedb370522584ff6f4e83221e5946bd2e41b5ca13b'
-      name: '&aNext page'
-      script: 'scrolling collection 45'
-      unbreakable: false
-      lore:
-        - 'none'
-    back:
-      enabled: true
-      position: 49
-      id: 166
-      damage: 0
-      skin: 'none'
-      name: '&cBack'
-      unbreakable: false
-      lore:
-        - '&7Closes the current window.'
     enable-pet:
       enabled: true
       position: 22
-      page: 'MAIN'
       id: 397
       damage: 3
       skin: 'textures.minecraft.net/texture/ad5fcd31287d63e7826ea760a7ed154f685dfdc7f3465732a96e619b2e1347'
       name: '&c&lPetblock disabled'
       unbreakable: false
       lore:
-        - '&7Click to enable the pet.'
+      - '&7Click to enable the pet.'
     disable-pet:
       enabled: true
       position: 22
-      page: 'MAIN'
       id: 397
       damage: 3
       skin: 'textures.minecraft.net/texture/f45c9acea8da71b4f252cd4deb5943f49e7dbc0764274b25a6a6f5875baea3'
       name: '&a&lPetblock enabled'
       unbreakable: false
       lore:
-        - '&7Click to disable the pet.'
-    engine-settings:
+      - '&7Click to disable the pet.'
+    template-settings:
       enabled: true
       position: 26
-      page: 'MAIN'
       id: 397
       damage: 3
       skin: 'textures.minecraft.net/texture/8f14f3179b86f69b3efa7472dacaeb2339f6290d2d817362793348abd98e021'
-      name: '&6&lEngines'
+      name: '&6&lTemplates'
       unbreakable: false
       lore:
-        - '&7Customize the behaviour of your pet.'
+      - '&7Use a template of a pet.'
     wardrobe:
       enabled: true
       position: 18
-      page: 'MAIN'
       id: 397
       damage: 3
       skin: 'textures.minecraft.net/texture/55507d6517eff952dd38fa8bc551dd6d6a7a5e4ea134519b44650ac1ffa59c3'
       name: '&6&lWardrobe'
       unbreakable: false
       lore:
-        - '&7Change the appearance of your pet.'
+      - '&7Change the appearance of your pet.'
     sounds-enabled-pet:
       enabled: true
       position: 31
@@ -382,7 +306,7 @@ gui:
       name: '&a&lPet unmuted'
       unbreakable: false
       lore:
-        - '&7Click to disable the sounds of your pet.'
+      - '&7Click to disable the sounds of your pet.'
     sounds-disabled-pet:
       enabled: true
       position: 31
@@ -393,8 +317,72 @@ gui:
       name: '&c&lPet muted'
       unbreakable: false
       lore:
-        - '&7Click to enable the sounds of your pet.'
-    ordinary-costume:
+      - '&7Click to enable the sounds of your pet.'
+    call-pet:
+      enabled: true
+      position: 38
+      page: 'MAIN'
+      id: 420
+      damage: 0
+      skin: 'none'
+      name: '&2&lCall'
+      unbreakable: false
+      lore:
+      - '&7Teleports your pet to you.'
+    particle-pet:
+      enabled: true
+      position: 35
+      page: 'MAIN'
+      id: 331
+      damage: 0
+      skin: 'none'
+      name: '&6&lParticles'
+      unbreakable: false
+      lore:
+      - '&7Customize the effects of your pet.'
+    suggest-heads:
+      enabled: true
+      position: 43
+      page: 'WARDROBE'
+      id: 386
+      damage: 0
+      skin: 'none'
+      unbreakable: false
+      lore:
+      - '&7Submit skins for pets or'
+      - '&7make a suggestion for a new pet.'
+    cannon-pet:
+      enabled: true
+      position: 11
+      id: 397
+      damage: 3
+      skin: 'textures.minecraft.net/texture/996754d330435345aae3a9f063cfca42afb28b7c5c4bb9f294ed2527d961'
+      name: '&2&lLaunch'
+      unbreakable: false
+      lore:
+      - '&7Shoot your pet like a cannon.'
+    hat-pet:
+      enabled: true
+      position: 15
+      id: 397
+      damage: 3
+      skin: 'textures.minecraft.net/texture/9b5f247a7f5b37bbfa488ab4efaddcbad2e526e94fc542b1fe2f7cfeb6e'
+      name: '&2&lHat'
+      unbreakable: false
+      lore:
+      - '&7Wear your pet like a hat.'
+    riding-pet:
+      enabled: true
+      position: 42
+      id: 329
+      damage: 0
+      skin: 'none'
+      name: '&2&lRide'
+      unbreakable: false
+      lore:
+      - '&7Start to ride your pet.'
+  wardrobe:
+    block-costumes-category:
       enabled: true
       position: 19
       page: 'WARDROBE'
@@ -405,8 +393,8 @@ gui:
       script: 'binding collection wardrobe.ordinary petblocks.selection.simpleblockcostumes'
       unbreakable: false
       lore:
-        - '&7Use Minecraft blocks as costume.'
-    color-costume:
+      - '&7Use Minecraft blocks as costume.'
+    colored-block-costumes-category:
       enabled: true
       position: 20
       page: 'WARDROBE'
@@ -417,8 +405,8 @@ gui:
       script: 'binding collection wardrobe.color petblocks.selection.coloredblockcostumes'
       unbreakable: false
       lore:
-        - '&7Use colored Minecraft blocks as costume.'
-    rare-costume:
+      - '&7Use colored Minecraft blocks as costume.'
+    player-heads-costumes-category:
       enabled: true
       position: 21
       page: 'WARDROBE'
@@ -429,7 +417,7 @@ gui:
       script: 'binding collection wardrobe.rare petblocks.selection.playerheadcostumes.'
       unbreakable: false
       lore:
-        - '&7Use player heads as costume.'
+      - '&7Use player heads as costume.'
     minecraft-heads-pet-costume:
       enabled: true
       position: 22
@@ -441,8 +429,8 @@ gui:
       script: 'binding collection minecraft-heads-com.pet petblocks.selection.petcostumes'
       unbreakable: false
       lore:
-        - "&7Use exclusive pet heads as costume."
-        - "&eSponsored by Minecraft-Heads.com"
+      - "&7Use exclusive pet heads as costume."
+      - "&eSponsored by Minecraft-Heads.com"
     minecraft-heads-vehicle-costume:
       enabled: true
       position: 23
@@ -454,8 +442,8 @@ gui:
       script: 'binding collection minecraft-heads-com.vehicle petblocks.selection.vehiclecostumes'
       unbreakable: false
       lore:
-        - "&7Use exclusive vehicle heads as costume."
-        - "&eSponsored by Minecraft-Heads.com"
+      - "&7Use exclusive vehicle heads as costume."
+      - "&eSponsored by Minecraft-Heads.com"
     minecraft-heads-puppet-costume:
       enabled: true
       position: 24
@@ -467,8 +455,8 @@ gui:
       script: 'binding collection minecraft-heads-com.puppet petblocks.selection.puppetcostumes'
       unbreakable: false
       lore:
-        - "&7Use exclusive plushie heads as costume."
-        - "&eSponsored by Minecraft-Heads.com"
+      - "&7Use exclusive plushie heads as costume."
+      - "&eSponsored by Minecraft-Heads.com"
     head-database-costume:
       enabled: true
       position: 25
@@ -479,51 +467,7 @@ gui:
       name: '&c&lHead Database costumes'
       unbreakable: false
       lore:
-        - '&7Use heads from an external plugin as costume.'
-    call-pet:
-      enabled: true
-      position: 38
-      page: 'MAIN'
-      id: 420
-      damage: 0
-      skin: 'none'
-      name: '&2&lCall'
-      unbreakable: false
-      lore:
-        - '&7Teleports your pet to you.'
-    particle-pet:
-      enabled: true
-      position: 35
-      page: 'MAIN'
-      id: 331
-      damage: 0
-      skin: 'none'
-      name: '&6&lParticles'
-      unbreakable: false
-      lore:
-        - '&7Customize the effects of your pet.'
-    suggest-heads:
-      enabled: true
-      position: 43
-      page: 'WARDROBE'
-      id: 386
-      damage: 0
-      skin: 'none'
-      unbreakable: false
-      lore:
-        - '&7Submit skins for pets or'
-        - '&7make a suggestion for a new pet.'
-    cannon-pet:
-      enabled: true
-      position: 11
-      page: 'MAIN'
-      id: 397
-      damage: 3
-      skin: 'textures.minecraft.net/texture/996754d330435345aae3a9f063cfca42afb28b7c5c4bb9f294ed2527d961'
-      name: '&2&lLaunch'
-      unbreakable: false
-      lore:
-        - '&7Shoot your pet like a cannon.'
+      - '&7Use heads from an external plugin as costume.'
     skullnaming-pet:
       enabled: true
       position: 37
@@ -535,7 +479,7 @@ gui:
       script: 'executing action customskin petblocks.action.customskin'
       unbreakable: false
       lore:
-        - '&7Use the skin of another player as costume.'
+      - '&7Use the skin of another player as costume.'
     naming-pet:
       enabled: true
       position: 27
@@ -547,30 +491,47 @@ gui:
       script: 'executing action rename petblocks.action.rename'
       page: 'MAIN'
       lore:
-        - '&7Change the name of your pet.'
-    hat-pet:
-      enabled: true
-      position: 15
-      page: 'MAIN'
-      id: 397
-      damage: 3
-      skin: 'textures.minecraft.net/texture/9b5f247a7f5b37bbfa488ab4efaddcbad2e526e94fc542b1fe2f7cfeb6e'
-      name: '&2&lHat'
-      unbreakable: false
-      lore:
-        - '&7Wear your pet like a hat.'
-    riding-pet:
-      enabled: true
-      position: 42
-      page: 'MAIN'
-      id: 329
-      damage: 0
-      skin: 'none'
-      name: '&2&lRide'
-      unbreakable: false
-      lore:
-        - '&7Start to ride your pet.'
-#--- DO NOT COPY ITEMS
+      - '&7Change the name of your pet.'
+
+gui-options:
+  empty-slot:
+    id: 160
+    damage: 15
+    skin: 'none'
+    name: 'none'
+    unbreakable: false
+    lore:
+    - 'none'
+  previous-page:
+    position: 45
+    id: 397
+    damage: 3
+    skin: 'textures.minecraft.net/texture/3ebf907494a935e955bfcadab81beafb90fb9be49c7026ba97d798d5f1a23'
+    name: '&aPrevious page'
+    script: 'scrolling collection -45'
+    unbreakable: false
+    lore:
+    - 'none'
+  next-page:
+    position: 53
+    id: 397
+    damage: 3
+    skin: 'textures.minecraft.net/texture/1b6f1a25b6bc199946472aedb370522584ff6f4e83221e5946bd2e41b5ca13b'
+    name: '&aNext page'
+    script: 'scrolling collection 45'
+    unbreakable: false
+    lore:
+    - 'none'
+  back:
+    enabled: true
+    position: 49
+    id: 166
+    damage: 0
+    skin: 'none'
+    name: '&cBack'
+    unbreakable: false
+    lore:
+    - '&7Closes the current window.'
 
 ############################
 
@@ -593,636 +554,637 @@ gui:
 ############################
 
 engines:
-   1:
-     gui:
-        id: 397
-        damage: 3
-        skin: 'textures.minecraft.net/texture/621668ef7cb79dd9c22ce3d1f3f4cb6e2559893b6df4a469514e667c16aa4'
-        name: '&d&lPig'
-        unbreakable: false
-        lore:
-          - '&7Permission: <permission>'
-     behaviour:
-        entity: 'RABBIT'
-        riding: 'RUNNING'
-     sound:
-        ambient:
-          name: 'PIG_IDLE'
-          volume: 1.0
-          pitch: 1.0
-        walking:
-          name: 'PIG_WALK'
-          volume: 1.0
-          pitch: 1.0
-   2:
-     gui:
-        id: 397
-        damage: 3
-        skin: 'textures.minecraft.net/texture/1638469a599ceef7207537603248a9ab11ff591fd378bea4735b346a7fae893'
-        name: '&f&lChicken'
-        unbreakable: false
-        lore:
-          - '&7Permission: <permission>'
-     behaviour:
-        entity: 'RABBIT'
-        riding: 'RUNNING'
-     sound:
-        ambient:
-          name: 'CHICKEN_IDLE'
-          volume: 1.0
-          pitch: 1.0
-        walking:
-          name: 'CHICKEN_WALK'
-          volume: 1.0
-          pitch: 1.0
-   3:
-     gui:
-        id: 397
-        damage: 3
-        skin: 'textures.minecraft.net/texture/e95cbb4f75ea87617f2f713c6d49dac3209ba1bd4b9369654b1459ea15317'
-        name: '&6&lDog'
-        unbreakable: false
-        lore:
-          - '&7Permission: <permission>'
-     behaviour:
-        entity: 'RABBIT'
-        riding: 'RUNNING'
-     sound:
-        ambient:
-          name: 'WOLF_GROWL'
-          volume: 1.0
-          pitch: 1.0
-        walking:
-          name: 'WOLF_WALK'
-          volume: 1.0
-          pitch: 1.0
-   4:
-     gui:
-        id: 397
-        damage: 3
-        skin: 'textures.minecraft.net/texture/5657cd5c2989ff97570fec4ddcdc6926a68a3393250c1be1f0b114a1db1'
-        name: '&e&lCat'
-        unbreakable: false
-        lore:
-          - '&7Permission: <permission>'
-     behaviour:
-        entity: 'RABBIT'
-        riding: 'RUNNING'
-     sound:
-        ambient:
-           name: 'CAT_MEOW'
-           volume: 1.0
-           pitch: 1.0
-        walking:
-           name: 'WOLF_WALK'
-           volume: 1.0
-           pitch: 1.0
-   5:
-     gui:
-        id: 397
-        damage: 3
-        skin: 'textures.minecraft.net/texture/5d6c6eda942f7f5f71c3161c7306f4aed307d82895f9d2b07ab4525718edc5'
-        name: '&2&lCow'
-        unbreakable: false
-        lore:
-          - '&7Permission: <permission>'
-     behaviour:
-        entity: 'RABBIT'
-        riding: 'RUNNING'
-     sound:
-        ambient:
-          name: 'COW_IDLE'
-          volume: 1.0
-          pitch: 1.0
-        walking:
-          name: 'COW_WALK'
-          volume: 1.0
-          pitch: 1.0
-   6:
-     gui:
-        id: 397
-        damage: 3
-        skin: 'textures.minecraft.net/texture/f31f9ccc6b3e32ecf13b8a11ac29cd33d18c95fc73db8a66c5d657ccb8be70'
-        name: '&7&lSheep'
-        unbreakable: false
-        lore:
-          - '&7Permission: <permission>'
-     behaviour:
-        entity: 'RABBIT'
-        riding: 'RUNNING'
-     sound:
-        ambient:
-           name: 'SHEEP_IDLE'
-           volume: 1.0
-           pitch: 1.0
-        walking:
-           name: 'SHEEP_WALK'
-           volume: 1.0
-           pitch: 1.0
-   7:
-     gui:
-        id: 397
-        damage: 3
-        skin: 'textures.minecraft.net/texture/61902898308730c4747299cb5a5da9c25838b1d059fe46fc36896fee662729'
-        name: '&6&lHorse'
-        unbreakable: false
-        lore:
-          - '&7Permission: <permission>'
-     behaviour:
-        entity: 'RABBIT'
-        riding: 'RUNNING'
-     sound:
-        ambient:
-          name: 'HORSE_IDLE'
-          volume: 1.0
-          pitch: 1.0
-        walking:
-          name: 'HORSE_GALLOP'
-          volume: 1.0
-          pitch: 1.0
-   8:
-     gui:
-        id: 397
-        damage: 3
-        skin: 'textures.minecraft.net/texture/f2542c19cbcd964274244af6bed1ac8560b3f36fd3b3268061f8a614a9b59e35'
-        name: '&c&lBird'
-        unbreakable: false
-        lore:
-          - '&7Permission: <permission>'
-     behaviour:
-        entity: 'RABBIT'
-        riding: 'FLYING'
-     sound:
-        ambient:
-          name: 'BAT_IDLE'
-          volume: 1.0
-          pitch: 0.0
-        walking:
-          name: 'CHICKEN_WALK'
-          volume: 0.3
-          pitch: 1.0
-   9:
-     gui:
-        id: 397
-        damage: 3
-        skin: 'textures.minecraft.net/texture/4cf1b3b3f539d2f63c172e94cacfaa391e8b385cdd633f3b991c74e44b28'
-        name: '&7&lBat'
-        unbreakable: false
-        lore:
-          - '&7Permission: <permission>'
-     behaviour:
-        entity: 'RABBIT'
-        riding: 'FLYING'
-     sound:
-        ambient:
-          name: 'BAT_IDLE'
-          volume: 1.0
-          pitch: 1.0
-        walking:
-          name: 'BAT_LOOP'
-          volume: 1.0
-          pitch: 1.0
-   10:
-     gui:
-        id: 397
-        damage: 3
-        skin: 'textures.minecraft.net/texture/56fc854bb84cf4b7697297973e02b79bc10698460b51a639c60e5e417734e11'
-        name: '&2&lZombie'
-        unbreakable: false
-        lore:
-          - '&7Permission: <permission>'
-     behaviour:
-        entity: 'RABBIT'
-        riding: 'RUNNING'
-     sound:
-        ambient:
-          name: 'ZOMBIE_IDLE'
-          volume: 1.0
-          pitch: 1.0
-        walking:
-          name: 'ZOMBIE_WALK'
-          volume: 1.0
-          pitch: 1.0
-   11:
-     gui:
-        id: 397
-        damage: 3
-        skin: 'textures.minecraft.net/texture/2e5be6a3c0159d2c1f3b1e4e1d8384b6f7ebac993d58b10b9f8989c78a232'
-        name: '&7&lSkeleton'
-        unbreakable: false
-        lore:
-          - '&7Permission: <permission>'
-     behaviour:
-        entity: 'RABBIT'
-        riding: 'RUNNING'
-     sound:
-        ambient:
-          name: 'SKELETON_IDLE'
-          volume: 1.0
-          pitch: 1.0
-        walking:
-          name: 'SKELETON_WALK'
-          volume: 1.0
-          pitch: 1.0
-   11:
-     gui:
-        id: 397
-        damage: 3
-        skin: 'textures.minecraft.net/texture/295ef836389af993158aba27ff37b6567185f7a721ca90fdfeb937a7cb5747'
-        name: '&a&lCreeper'
-        unbreakable: false
-        lore:
-          - '&7Permission: <permission>'
-     behaviour:
-        entity: 'RABBIT'
-        riding: 'RUNNING'
-     sound:
-        ambient:
-          name: 'none'
-          volume: 1.0
-          pitch: 1.0
-        walking:
-          name: 'none'
-          volume: 1.0
-          pitch: 1.0
-   12:
-     gui:
-        id: 397
-        damage: 3
-        skin: 'textures.minecraft.net/texture/cd541541daaff50896cd258bdbdd4cf80c3ba816735726078bfe393927e57f1'
-        name: '&8&lSpider'
-        unbreakable: false
-        lore:
-          - '&7Permission: <permission>'
-     behaviour:
-        entity: 'RABBIT'
-        riding: 'RUNNING'
-     sound:
-        ambient:
-          name: 'SPIDER_IDLE'
-          volume: 1.0
-          pitch: 1.0
-        walking:
-          name: 'SPIDER_WALK'
-          volume: 1.0
-          pitch: 1.0
-   13:
-     gui:
-        id: 397
-        damage: 3
-        skin: 'textures.minecraft.net/texture/7a59bb0a7a32965b3d90d8eafa899d1835f424509eadd4e6b709ada50b9cf'
-        name: '&5&lEnderman'
-        unbreakable: false
-        lore:
-          - '&7Permission: <permission>'
-     behaviour:
-        entity: 'RABBIT'
-        riding: 'RUNNING'
-     sound:
-        ambient:
-          name: 'ENDERMAN_IDLE'
-          volume: 1.0
-          pitch: 1.0
-        walking:
-          name: 'none'
-          volume: 1.0
-          pitch: 1.0
-   14:
-     gui:
-        id: 397
-        damage: 3
-        skin: 'textures.minecraft.net/texture/16ad20fc2d579be250d3db659c832da2b478a73a698b7ea10d18c9162e4d9b5'
-        name: '&a&lSlime'
-        unbreakable: false
-        lore:
-          - '&7Permission: <permission>'
-     behaviour:
-        entity: 'RABBIT'
-        riding: 'RUNNING'
-     sound:
-        ambient:
-          name: 'none'
-          volume: 1.0
-          pitch: 1.0
-        walking:
-          name: 'SLIME_WALK'
-          volume: 1.0
-          pitch: 1.0
-   15:
-     gui:
-        id: 397
-        damage: 3
-        skin: 'textures.minecraft.net/texture/38957d5023c937c4c41aa2412d43410bda23cf79a9f6ab36b76fef2d7c429'
-        name: '&4&lLavaslime'
-        unbreakable: false
-        lore:
-          - '&7Permission: <permission>'
-     behaviour:
-        entity: 'RABBIT'
-        riding: 'RUNNING'
-     sound:
-        ambient:
-          name: 'none'
-          volume: 1.0
-          pitch: 1.0
-        walking:
-          name: 'MAGMACUBE_WALK'
-          volume: 1.0
-          pitch: 1.0
-   16:
-     gui:
-        id: 397
-        damage: 3
-        skin: 'textures.minecraft.net/texture/74e9c6e98582ffd8ff8feb3322cd1849c43fb16b158abb11ca7b42eda7743eb'
-        name: '&d&lPigzombie'
-        unbreakable: false
-        lore:
-          - '&7Permission: <permission>'
-     behaviour:
-        entity: 'RABBIT'
-        riding: 'RUNNING'
-     sound:
-        ambient:
-          name: 'PIG_IDLE'
-          volume: 1.0
-          pitch: 1.0
-        walking:
-          name: 'PIG_WALK'
-          volume: 1.0
-          pitch: 1.0
-   17:
-     gui:
-        id: 397
-        damage: 3
-        skin: 'textures.minecraft.net/texture/c52264ac4e5621668c43e87aed7918ed6b883abc5018769c9536d27b77f'
-        name: '&5&lDragon'
-        unbreakable: false
-        lore:
-          - '&7Permission: <permission>'
-     behaviour:
-        entity: 'RABBIT'
-        riding: 'FLYING'
-     sound:
-        ambient:
-          name: 'ENDERDRAGON_GROWL'
-          volume: 1.0
-          pitch: 1.0
-        walking:
-          name: 'ENDERDRAGON_WINGS'
-          volume: 1.0
-          pitch: 1.0
-   18:
-     gui:
-        id: 397
-        damage: 3
-        skin: 'textures.minecraft.net/texture/456eec1c2169c8c60a7ae436abcd2dc5417d56f8adef84f11343dc1188fe138'
-        name: '&3&lHuman'
-        unbreakable: false
-        lore:
-          - '&7Permission: <permission>'
-     behaviour:
-        entity: 'RABBIT'
-        riding: 'RUNNING'
-     sound:
-        ambient:
-          name: 'none'
-          volume: 1.0
-          pitch: 1.0
-        walking:
-          name: 'none'
-          volume: 1.0
-          pitch: 1.0
-   19:
-     gui:
-        id: 397
-        damage: 3
-        skin: 'textures.minecraft.net/texture/822d8e751c8f2fd4c8942c44bdb2f5ca4d8ae8e575ed3eb34c18a86e93b'
-        name: '&a&lVillager'
-        unbreakable: false
-        lore:
-          - '&7Permission: <permission>'
-     behaviour:
-        entity: 'RABBIT'
-        riding: 'RUNNING'
-     sound:
-        ambient:
-          name: 'VILLAGER_IDLE'
-          volume: 1.0
-          pitch: 1.0
-        walking:
-          name: 'none'
-          volume: 1.0
-          pitch: 1.0
-   20:
-     gui:
-        id: 397
-        damage: 3
-        skin: 'textures.minecraft.net/texture/89091d79ea0f59ef7ef94d7bba6e5f17f2f7d4572c44f90f76c4819a714'
-        name: '&8&lIrongolem'
-        unbreakable: false
-        lore:
-          - '&7Permission: <permission>'
-     behaviour:
-        entity: 'RABBIT'
-        riding: 'RUNNING'
-     sound:
-        ambient:
-          name: 'none'
-          volume: 1.0
-          pitch: 1.0
-        walking:
-          name: 'IRONGOLEM_WALK'
-          volume: 1.0
-          pitch: 1.0
-   21:
-     gui:
-        id: 397
-        damage: 3
-        skin: 'textures.minecraft.net/texture/ce663a1949db253da3a6f2a69e35da9a524ee3d958a3807ce2bdabcd6f7f5'
-        name: '&8&lSilverfish'
-        unbreakable: false
-        lore:
-          - '&7Permission: <permission>'
-     behaviour:
-        entity: 'RABBIT'
-        riding: 'RUNNING'
-     sound:
-        ambient:
-          name: 'SILVERFISH_IDLE'
-          volume: 1.0
-          pitch: 1.0
-        walking:
-          name: 'SILVERFISH_WALK'
-          volume: 1.0
-          pitch: 1.0
-   22:
-     gui:
-        id: 397
-        damage: 3
-        skin: 'textures.minecraft.net/texture/8b6a72138d69fbbd2fea3fa251cabd87152e4f1c97e5f986bf685571db3cc0'
-        name: '&f&lGhast'
-        unbreakable: false
-        lore:
-          - '&7Permission: <permission>'
-     behaviour:
-        entity: 'RABBIT'
-        riding: 'FLYING'
-     sound:
-        ambient:
-          name: 'GHAST_SCREAM'
-          volume: 1.0
-          pitch: 1.0
-        walking:
-          name: 'none'
-          volume: 1.0
-          pitch: 1.0
-   23:
-     gui:
-        id: 397
-        damage: 3
-        skin: 'textures.minecraft.net/texture/b78ef2e4cf2c41a2d14bfde9caff10219f5b1bf5b35a49eb51c6467882cb5f0'
-        name: '&e&lBlaze'
-        unbreakable: false
-        lore:
-          - '&7Permission: <permission>'
-     behaviour:
-        entity: 'RABBIT'
-        riding: 'FLYING'
-     sound:
-        ambient:
-          name: 'BLAZE_BREATH'
-          volume: 1.0
-          pitch: 1.0
-        walking:
-          name: 'none'
-          volume: 1.0
-          pitch: 1.0
-   24:
-     gui:
-        id: 397
-        damage: 3
-        skin: 'textures.minecraft.net/texture/233b41fa79cd53a230e2db942863843183a70404533bbc01fab744769bcb'
-        name: '&8&lWither'
-        unbreakable: false
-        lore:
-          - '&7Permission: <permission>'
-     behaviour:
-        entity: 'RABBIT'
-        riding: 'FLYING'
-     sound:
-        ambient:
-          name: 'WITHER_IDLE'
-          volume: 1.0
-          pitch: 1.0
-        walking:
-          name: 'none'
-          volume: 1.0
-          pitch: 1.0
-   25:
-     gui:
-        id: 397
-        damage: 3
-        skin: 'textures.minecraft.net/texture/b1d3534d21fe8499262de87affbeac4d25ffde35c8bdca069e61e1787ff2f'
-        name: '&5&lShulker'
-        unbreakable: false
-        lore:
-          - '&7Permission: <permission>'
-     behaviour:
-        entity: 'RABBIT'
-        riding: 'FLYING'
-     sound:
-        ambient:
-          name: 'SHULKER_IDLE'
-          volume: 1.0
-          pitch: 1.0
-        walking:
-          name: 'none'
-          volume: 1.0
-          pitch: 1.0
-   26:
-     gui:
-        id: 397
-        damage: 3
-        skin: 'textures.minecraft.net/texture/442123ac15effa1ba46462472871b88f1b09c1db467621376e2f71656d3fbc'
-        name: '&f&lPolar Bear'
-        unbreakable: false
-        lore:
-          - '&7Permission: <permission>'
-     behaviour:
-        entity: 'RABBIT'
-        riding: 'RUNNING'
-     sound:
-        ambient:
-          name: 'ENTITY_POLAR_BEAR_AMBIENT'
-          volume: 1.0
-          pitch: 1.0
-        walking:
-          name: 'ENTITY_POLAR_BEAR_STEP'
-          volume: 1.0
-          pitch: 1.0
-   27:
-     gui:
-        id: 397
-        damage: 3
-        skin: 'textures.minecraft.net/texture/818cd457fbaf327fa39f10b5b36166fd018264036865164c02d9e5ff53f45'
-        name: '&6&lLlama'
-        unbreakable: false
-        lore:
-          - '&7Permission: <permission>'
-     behaviour:
-        entity: 'RABBIT'
-        riding: 'RUNNING'
-     sound:
-        ambient:
-          name: 'ENTITY_LLAMA_AMBIENT'
-          volume: 1.0
-          pitch: 1.0
-        walking:
-          name: 'ENTITY_LLAMA_STEP'
-          volume: 1.0
-          pitch: 1.0
-   28:
-     gui:
-        id: 397
-        damage: 3
-        skin: 'textures.minecraft.net/texture/c2ec5a516617ff1573cd2f9d5f3969f56d5575c4ff4efefabd2a18dc7ab98cd'
-        name: '&8&lVex'
-        unbreakable: false
-        lore:
-          - '&7Permission: <permission>'
-     behaviour:
-        entity: 'RABBIT'
-        riding: 'FLYING'
-     sound:
-        ambient:
-          name: 'ENTITY_VEX_AMBIENT'
-          volume: 1.0
-          pitch: 1.0
-        walking:
-          name: 'none'
-          volume: 1.0
-          pitch: 1.0
-   29:
-     gui:
-        id: 397
-        damage: 3
-        skin: 'textures.minecraft.net/texture/707dab2cbebea539b64d5ad246f9ccc1fcda7aa94b88e59fc2829852f46071'
-        name: '&c&lParrot'
-        unbreakable: false
-        lore:
-          - '&7Permission: <permission>'
-     behaviour:
-        entity: 'RABBIT'
-        riding: 'FLYING'
-     sound:
-        ambient:
-          name: 'ENTITY_PARROT_AMBIENT'
-          volume: 1.0
-          pitch: 1.0
-        walking:
-          name: 'ENTITY_PARROT_FLY'
-          volume: 1.0
-          pitch: 1.0
+  1:
+    gui:
+      copy-skin: false
+      id: 397
+      damage: 3
+      skin: 'textures.minecraft.net/texture/621668ef7cb79dd9c22ce3d1f3f4cb6e2559893b6df4a469514e667c16aa4'
+      name: '&d&lPig'
+      unbreakable: false
+      lore:
+      - '&7Permission: <permission>'
+    behaviour:
+      entity: 'RABBIT'
+      riding: 'RUNNING'
+    sound:
+      ambient:
+        name: 'PIG_IDLE'
+        volume: 1.0
+        pitch: 1.0
+      walking:
+        name: 'PIG_WALK'
+        volume: 1.0
+        pitch: 1.0
+  2:
+    gui:
+      id: 397
+      damage: 3
+      skin: 'textures.minecraft.net/texture/1638469a599ceef7207537603248a9ab11ff591fd378bea4735b346a7fae893'
+      name: '&f&lChicken'
+      unbreakable: false
+      lore:
+      - '&7Permission: <permission>'
+    behaviour:
+      entity: 'RABBIT'
+      riding: 'RUNNING'
+    sound:
+      ambient:
+        name: 'CHICKEN_IDLE'
+        volume: 1.0
+        pitch: 1.0
+      walking:
+        name: 'CHICKEN_WALK'
+        volume: 1.0
+        pitch: 1.0
+  3:
+    gui:
+      id: 397
+      damage: 3
+      skin: 'textures.minecraft.net/texture/e95cbb4f75ea87617f2f713c6d49dac3209ba1bd4b9369654b1459ea15317'
+      name: '&6&lDog'
+      unbreakable: false
+      lore:
+      - '&7Permission: <permission>'
+    behaviour:
+      entity: 'RABBIT'
+      riding: 'RUNNING'
+    sound:
+      ambient:
+        name: 'WOLF_GROWL'
+        volume: 1.0
+        pitch: 1.0
+      walking:
+        name: 'WOLF_WALK'
+        volume: 1.0
+        pitch: 1.0
+  4:
+    gui:
+      id: 397
+      damage: 3
+      skin: 'textures.minecraft.net/texture/5657cd5c2989ff97570fec4ddcdc6926a68a3393250c1be1f0b114a1db1'
+      name: '&e&lCat'
+      unbreakable: false
+      lore:
+      - '&7Permission: <permission>'
+    behaviour:
+      entity: 'RABBIT'
+      riding: 'RUNNING'
+    sound:
+      ambient:
+        name: 'CAT_MEOW'
+        volume: 1.0
+        pitch: 1.0
+      walking:
+        name: 'WOLF_WALK'
+        volume: 1.0
+        pitch: 1.0
+  5:
+    gui:
+      id: 397
+      damage: 3
+      skin: 'textures.minecraft.net/texture/5d6c6eda942f7f5f71c3161c7306f4aed307d82895f9d2b07ab4525718edc5'
+      name: '&2&lCow'
+      unbreakable: false
+      lore:
+      - '&7Permission: <permission>'
+    behaviour:
+      entity: 'RABBIT'
+      riding: 'RUNNING'
+    sound:
+      ambient:
+        name: 'COW_IDLE'
+        volume: 1.0
+        pitch: 1.0
+      walking:
+        name: 'COW_WALK'
+        volume: 1.0
+        pitch: 1.0
+  6:
+    gui:
+      id: 397
+      damage: 3
+      skin: 'textures.minecraft.net/texture/f31f9ccc6b3e32ecf13b8a11ac29cd33d18c95fc73db8a66c5d657ccb8be70'
+      name: '&7&lSheep'
+      unbreakable: false
+      lore:
+      - '&7Permission: <permission>'
+    behaviour:
+      entity: 'RABBIT'
+      riding: 'RUNNING'
+    sound:
+      ambient:
+        name: 'SHEEP_IDLE'
+        volume: 1.0
+        pitch: 1.0
+      walking:
+        name: 'SHEEP_WALK'
+        volume: 1.0
+        pitch: 1.0
+  7:
+    gui:
+      id: 397
+      damage: 3
+      skin: 'textures.minecraft.net/texture/61902898308730c4747299cb5a5da9c25838b1d059fe46fc36896fee662729'
+      name: '&6&lHorse'
+      unbreakable: false
+      lore:
+      - '&7Permission: <permission>'
+    behaviour:
+      entity: 'RABBIT'
+      riding: 'RUNNING'
+    sound:
+      ambient:
+        name: 'HORSE_IDLE'
+        volume: 1.0
+        pitch: 1.0
+      walking:
+        name: 'HORSE_GALLOP'
+        volume: 1.0
+        pitch: 1.0
+  8:
+    gui:
+      id: 397
+      damage: 3
+      skin: 'textures.minecraft.net/texture/f2542c19cbcd964274244af6bed1ac8560b3f36fd3b3268061f8a614a9b59e35'
+      name: '&c&lBird'
+      unbreakable: false
+      lore:
+      - '&7Permission: <permission>'
+    behaviour:
+      entity: 'RABBIT'
+      riding: 'FLYING'
+    sound:
+      ambient:
+        name: 'BAT_IDLE'
+        volume: 1.0
+        pitch: 0.0
+      walking:
+        name: 'CHICKEN_WALK'
+        volume: 0.3
+        pitch: 1.0
+  9:
+    gui:
+      id: 397
+      damage: 3
+      skin: 'textures.minecraft.net/texture/4cf1b3b3f539d2f63c172e94cacfaa391e8b385cdd633f3b991c74e44b28'
+      name: '&7&lBat'
+      unbreakable: false
+      lore:
+      - '&7Permission: <permission>'
+    behaviour:
+      entity: 'RABBIT'
+      riding: 'FLYING'
+    sound:
+      ambient:
+        name: 'BAT_IDLE'
+        volume: 1.0
+        pitch: 1.0
+      walking:
+        name: 'BAT_LOOP'
+        volume: 1.0
+        pitch: 1.0
+  10:
+    gui:
+      id: 397
+      damage: 3
+      skin: 'textures.minecraft.net/texture/56fc854bb84cf4b7697297973e02b79bc10698460b51a639c60e5e417734e11'
+      name: '&2&lZombie'
+      unbreakable: false
+      lore:
+      - '&7Permission: <permission>'
+    behaviour:
+      entity: 'RABBIT'
+      riding: 'RUNNING'
+    sound:
+      ambient:
+        name: 'ZOMBIE_IDLE'
+        volume: 1.0
+        pitch: 1.0
+      walking:
+        name: 'ZOMBIE_WALK'
+        volume: 1.0
+        pitch: 1.0
+  11:
+    gui:
+      id: 397
+      damage: 3
+      skin: 'textures.minecraft.net/texture/2e5be6a3c0159d2c1f3b1e4e1d8384b6f7ebac993d58b10b9f8989c78a232'
+      name: '&7&lSkeleton'
+      unbreakable: false
+      lore:
+      - '&7Permission: <permission>'
+    behaviour:
+      entity: 'RABBIT'
+      riding: 'RUNNING'
+    sound:
+      ambient:
+        name: 'SKELETON_IDLE'
+        volume: 1.0
+        pitch: 1.0
+      walking:
+        name: 'SKELETON_WALK'
+        volume: 1.0
+        pitch: 1.0
+  12:
+    gui:
+      id: 397
+      damage: 3
+      skin: 'textures.minecraft.net/texture/295ef836389af993158aba27ff37b6567185f7a721ca90fdfeb937a7cb5747'
+      name: '&a&lCreeper'
+      unbreakable: false
+      lore:
+      - '&7Permission: <permission>'
+    behaviour:
+      entity: 'RABBIT'
+      riding: 'RUNNING'
+    sound:
+      ambient:
+        name: 'none'
+        volume: 1.0
+        pitch: 1.0
+      walking:
+        name: 'none'
+        volume: 1.0
+        pitch: 1.0
+  12:
+    gui:
+      id: 397
+      damage: 3
+      skin: 'textures.minecraft.net/texture/cd541541daaff50896cd258bdbdd4cf80c3ba816735726078bfe393927e57f1'
+      name: '&8&lSpider'
+      unbreakable: false
+      lore:
+      - '&7Permission: <permission>'
+    behaviour:
+      entity: 'RABBIT'
+      riding: 'RUNNING'
+    sound:
+      ambient:
+        name: 'SPIDER_IDLE'
+        volume: 1.0
+        pitch: 1.0
+      walking:
+        name: 'SPIDER_WALK'
+        volume: 1.0
+        pitch: 1.0
+  13:
+    gui:
+      id: 397
+      damage: 3
+      skin: 'textures.minecraft.net/texture/7a59bb0a7a32965b3d90d8eafa899d1835f424509eadd4e6b709ada50b9cf'
+      name: '&5&lEnderman'
+      unbreakable: false
+      lore:
+      - '&7Permission: <permission>'
+    behaviour:
+      entity: 'RABBIT'
+      riding: 'RUNNING'
+    sound:
+      ambient:
+        name: 'ENDERMAN_IDLE'
+        volume: 1.0
+        pitch: 1.0
+      walking:
+        name: 'none'
+        volume: 1.0
+        pitch: 1.0
+  14:
+    gui:
+      id: 397
+      damage: 3
+      skin: 'textures.minecraft.net/texture/16ad20fc2d579be250d3db659c832da2b478a73a698b7ea10d18c9162e4d9b5'
+      name: '&a&lSlime'
+      unbreakable: false
+      lore:
+      - '&7Permission: <permission>'
+    behaviour:
+      entity: 'RABBIT'
+      riding: 'RUNNING'
+    sound:
+      ambient:
+        name: 'none'
+        volume: 1.0
+        pitch: 1.0
+      walking:
+        name: 'SLIME_WALK'
+        volume: 1.0
+        pitch: 1.0
+  15:
+    gui:
+      id: 397
+      damage: 3
+      skin: 'textures.minecraft.net/texture/38957d5023c937c4c41aa2412d43410bda23cf79a9f6ab36b76fef2d7c429'
+      name: '&4&lLavaslime'
+      unbreakable: false
+      lore:
+      - '&7Permission: <permission>'
+    behaviour:
+      entity: 'RABBIT'
+      riding: 'RUNNING'
+    sound:
+      ambient:
+        name: 'none'
+        volume: 1.0
+        pitch: 1.0
+      walking:
+        name: 'MAGMACUBE_WALK'
+        volume: 1.0
+        pitch: 1.0
+  16:
+    gui:
+      id: 397
+      damage: 3
+      skin: 'textures.minecraft.net/texture/74e9c6e98582ffd8ff8feb3322cd1849c43fb16b158abb11ca7b42eda7743eb'
+      name: '&d&lPigzombie'
+      unbreakable: false
+      lore:
+      - '&7Permission: <permission>'
+    behaviour:
+      entity: 'RABBIT'
+      riding: 'RUNNING'
+    sound:
+      ambient:
+        name: 'PIG_IDLE'
+        volume: 1.0
+        pitch: 1.0
+      walking:
+        name: 'PIG_WALK'
+        volume: 1.0
+        pitch: 1.0
+  17:
+    gui:
+      id: 397
+      damage: 3
+      skin: 'textures.minecraft.net/texture/c52264ac4e5621668c43e87aed7918ed6b883abc5018769c9536d27b77f'
+      name: '&5&lDragon'
+      unbreakable: false
+      lore:
+      - '&7Permission: <permission>'
+    behaviour:
+      entity: 'RABBIT'
+      riding: 'FLYING'
+    sound:
+      ambient:
+        name: 'ENDERDRAGON_GROWL'
+        volume: 1.0
+        pitch: 1.0
+      walking:
+        name: 'ENDERDRAGON_WINGS'
+        volume: 1.0
+        pitch: 1.0
+  18:
+    gui:
+      id: 397
+      damage: 3
+      skin: 'textures.minecraft.net/texture/456eec1c2169c8c60a7ae436abcd2dc5417d56f8adef84f11343dc1188fe138'
+      name: '&3&lHuman'
+      unbreakable: false
+      lore:
+      - '&7Permission: <permission>'
+    behaviour:
+      entity: 'RABBIT'
+      riding: 'RUNNING'
+    sound:
+      ambient:
+        name: 'none'
+        volume: 1.0
+        pitch: 1.0
+      walking:
+        name: 'none'
+        volume: 1.0
+        pitch: 1.0
+  19:
+    gui:
+      id: 397
+      damage: 3
+      skin: 'textures.minecraft.net/texture/822d8e751c8f2fd4c8942c44bdb2f5ca4d8ae8e575ed3eb34c18a86e93b'
+      name: '&a&lVillager'
+      unbreakable: false
+      lore:
+      - '&7Permission: <permission>'
+    behaviour:
+      entity: 'RABBIT'
+      riding: 'RUNNING'
+    sound:
+      ambient:
+        name: 'VILLAGER_IDLE'
+        volume: 1.0
+        pitch: 1.0
+      walking:
+        name: 'none'
+        volume: 1.0
+        pitch: 1.0
+  20:
+    gui:
+      id: 397
+      damage: 3
+      skin: 'textures.minecraft.net/texture/89091d79ea0f59ef7ef94d7bba6e5f17f2f7d4572c44f90f76c4819a714'
+      name: '&8&lIrongolem'
+      unbreakable: false
+      lore:
+      - '&7Permission: <permission>'
+    behaviour:
+      entity: 'RABBIT'
+      riding: 'RUNNING'
+    sound:
+      ambient:
+        name: 'none'
+        volume: 1.0
+        pitch: 1.0
+      walking:
+        name: 'IRONGOLEM_WALK'
+        volume: 1.0
+        pitch: 1.0
+  21:
+    gui:
+      id: 397
+      damage: 3
+      skin: 'textures.minecraft.net/texture/ce663a1949db253da3a6f2a69e35da9a524ee3d958a3807ce2bdabcd6f7f5'
+      name: '&8&lSilverfish'
+      unbreakable: false
+      lore:
+      - '&7Permission: <permission>'
+    behaviour:
+      entity: 'RABBIT'
+      riding: 'RUNNING'
+    sound:
+      ambient:
+        name: 'SILVERFISH_IDLE'
+        volume: 1.0
+        pitch: 1.0
+      walking:
+        name: 'SILVERFISH_WALK'
+        volume: 1.0
+        pitch: 1.0
+  22:
+    gui:
+      id: 397
+      damage: 3
+      skin: 'textures.minecraft.net/texture/8b6a72138d69fbbd2fea3fa251cabd87152e4f1c97e5f986bf685571db3cc0'
+      name: '&f&lGhast'
+      unbreakable: false
+      lore:
+      - '&7Permission: <permission>'
+    behaviour:
+      entity: 'RABBIT'
+      riding: 'FLYING'
+    sound:
+      ambient:
+        name: 'GHAST_SCREAM'
+        volume: 1.0
+        pitch: 1.0
+      walking:
+        name: 'none'
+        volume: 1.0
+        pitch: 1.0
+  23:
+    gui:
+      id: 397
+      damage: 3
+      skin: 'textures.minecraft.net/texture/b78ef2e4cf2c41a2d14bfde9caff10219f5b1bf5b35a49eb51c6467882cb5f0'
+      name: '&e&lBlaze'
+      unbreakable: false
+      lore:
+      - '&7Permission: <permission>'
+    behaviour:
+      entity: 'RABBIT'
+      riding: 'FLYING'
+    sound:
+      ambient:
+        name: 'BLAZE_BREATH'
+        volume: 1.0
+        pitch: 1.0
+      walking:
+        name: 'none'
+        volume: 1.0
+        pitch: 1.0
+  24:
+    gui:
+      id: 397
+      damage: 3
+      skin: 'textures.minecraft.net/texture/233b41fa79cd53a230e2db942863843183a70404533bbc01fab744769bcb'
+      name: '&8&lWither'
+      unbreakable: false
+      lore:
+      - '&7Permission: <permission>'
+    behaviour:
+      entity: 'RABBIT'
+      riding: 'FLYING'
+    sound:
+      ambient:
+        name: 'WITHER_IDLE'
+        volume: 1.0
+        pitch: 1.0
+      walking:
+        name: 'none'
+        volume: 1.0
+        pitch: 1.0
+  25:
+    gui:
+      id: 397
+      damage: 3
+      skin: 'textures.minecraft.net/texture/b1d3534d21fe8499262de87affbeac4d25ffde35c8bdca069e61e1787ff2f'
+      name: '&5&lShulker'
+      unbreakable: false
+      lore:
+      - '&7Permission: <permission>'
+    behaviour:
+      entity: 'RABBIT'
+      riding: 'FLYING'
+    sound:
+      ambient:
+        name: 'SHULKER_IDLE'
+        volume: 1.0
+        pitch: 1.0
+      walking:
+        name: 'none'
+        volume: 1.0
+        pitch: 1.0
+  26:
+    gui:
+      id: 397
+      damage: 3
+      skin: 'textures.minecraft.net/texture/442123ac15effa1ba46462472871b88f1b09c1db467621376e2f71656d3fbc'
+      name: '&f&lPolar Bear'
+      unbreakable: false
+      lore:
+      - '&7Permission: <permission>'
+    behaviour:
+      entity: 'RABBIT'
+      riding: 'RUNNING'
+    sound:
+      ambient:
+        name: 'ENTITY_POLAR_BEAR_AMBIENT'
+        volume: 1.0
+        pitch: 1.0
+      walking:
+        name: 'ENTITY_POLAR_BEAR_STEP'
+        volume: 1.0
+        pitch: 1.0
+  27:
+    gui:
+      id: 397
+      damage: 3
+      skin: 'textures.minecraft.net/texture/818cd457fbaf327fa39f10b5b36166fd018264036865164c02d9e5ff53f45'
+      name: '&6&lLlama'
+      unbreakable: false
+      lore:
+      - '&7Permission: <permission>'
+    behaviour:
+      entity: 'RABBIT'
+      riding: 'RUNNING'
+    sound:
+      ambient:
+        name: 'ENTITY_LLAMA_AMBIENT'
+        volume: 1.0
+        pitch: 1.0
+      walking:
+        name: 'ENTITY_LLAMA_STEP'
+        volume: 1.0
+        pitch: 1.0
+  28:
+    gui:
+      id: 397
+      damage: 3
+      skin: 'textures.minecraft.net/texture/c2ec5a516617ff1573cd2f9d5f3969f56d5575c4ff4efefabd2a18dc7ab98cd'
+      name: '&8&lVex'
+      unbreakable: false
+      lore:
+      - '&7Permission: <permission>'
+    behaviour:
+      entity: 'RABBIT'
+      riding: 'FLYING'
+    sound:
+      ambient:
+        name: 'ENTITY_VEX_AMBIENT'
+        volume: 1.0
+        pitch: 1.0
+      walking:
+        name: 'none'
+        volume: 1.0
+        pitch: 1.0
+  29:
+    gui:
+      id: 397
+      damage: 3
+      skin: 'textures.minecraft.net/texture/707dab2cbebea539b64d5ad246f9ccc1fcda7aa94b88e59fc2829852f46071'
+      name: '&c&lParrot'
+      unbreakable: false
+      lore:
+      - '&7Permission: <permission>'
+    behaviour:
+      entity: 'RABBIT'
+      riding: 'FLYING'
+    sound:
+      ambient:
+        name: 'ENTITY_PARROT_AMBIENT'
+        volume: 1.0
+        pitch: 1.0
+      walking:
+        name: 'ENTITY_PARROT_FLY'
+        volume: 1.0
+        pitch: 1.0
 #--- Copy one of the items increment the number and add it above this line
 ############################
 
@@ -1241,1185 +1203,1185 @@ engines:
 ############################
 
 wardrobe:
-   ordinary:
-     1:
+  ordinary:
+    1:
       id: 1
       damage: 0
       skin: 'none'
       name: 'none'
       unbreakable: false
       lore:
-        - 'none'
-     2:
+      - 'none'
+    2:
       id: 1
       damage: 1
       skin: 'none'
       name: 'none'
       unbreakable: false
       lore:
-        - 'none'
-     3:
+      - 'none'
+    3:
       id: 1
       damage: 2
       skin: 'none'
       name: 'none'
       unbreakable: false
       lore:
-        - 'none'
-     4:
+      - 'none'
+    4:
       id: 1
       damage: 3
       skin: 'none'
       name: 'none'
       unbreakable: false
       lore:
-        - 'none'
-     5:
+      - 'none'
+    5:
       id: 1
       damage: 4
       skin: 'none'
       name: 'none'
       unbreakable: false
       lore:
-        - 'none'
-     6:
+      - 'none'
+    6:
       id: 1
       damage: 5
       skin: 'none'
       name: 'none'
       unbreakable: false
       lore:
-        - 'none'
-     7:
+      - 'none'
+    7:
       id: 1
       damage: 6
       skin: 'none'
       name: 'none'
       unbreakable: false
       lore:
-        - 'none'
-     8:
+      - 'none'
+    8:
       id: 2
       damage: 0
       skin: 'none'
       name: 'none'
       unbreakable: false
       lore:
-        - 'none'
-     9:
+      - 'none'
+    9:
       id: 3
       damage: 0
       skin: 'none'
       name: 'none'
       unbreakable: false
       lore:
-        - 'none'
-     10:
+      - 'none'
+    10:
       id: 3
       damage: 1
       skin: 'none'
       name: 'none'
       unbreakable: false
       lore:
-        - 'none'
-     11:
+      - 'none'
+    11:
       id: 3
       damage: 2
       skin: 'none'
       name: 'none'
       unbreakable: false
       lore:
-        - 'none'
-     12:
+      - 'none'
+    12:
       id: 4
       damage: 0
       skin: 'none'
       name: 'none'
       unbreakable: false
       lore:
-        - 'none'
-     13:
+      - 'none'
+    13:
       id: 5
       damage: 0
       skin: 'none'
       name: 'none'
       unbreakable: false
       lore:
-        - 'none'
-     14:
+      - 'none'
+    14:
       id: 5
       damage: 1
       skin: 'none'
       name: 'none'
       unbreakable: false
       lore:
-        - 'none'
-     15:
+      - 'none'
+    15:
       id: 5
       damage: 2
       skin: 'none'
       name: 'none'
       unbreakable: false
       lore:
-        - 'none'
-     16:
+      - 'none'
+    16:
       id: 5
       damage: 3
       skin: 'none'
       name: 'none'
       unbreakable: false
       lore:
-        - 'none'
-     17:
+      - 'none'
+    17:
       id: 5
       damage: 4
       skin: 'none'
       name: 'none'
       unbreakable: false
       lore:
-        - 'none'
-     18:
+      - 'none'
+    18:
       id: 5
       damage: 5
       skin: 'none'
       name: 'none'
       unbreakable: false
       lore:
-        - 'none'
-     19:
+      - 'none'
+    19:
       id: 7
       damage: 0
       skin: 'none'
       name: 'none'
       unbreakable: false
       lore:
-        - 'none'
-     20:
+      - 'none'
+    20:
       id: 12
       damage: 0
       skin: 'none'
       name: 'none'
       unbreakable: false
       lore:
-        - 'none'
-     21:
+      - 'none'
+    21:
       id: 12
       damage: 1
       skin: 'none'
       name: 'none'
       unbreakable: false
       lore:
-        - 'none'
-     22:
+      - 'none'
+    22:
       id: 13
       damage: 0
       skin: 'none'
       name: 'none'
       unbreakable: false
       lore:
-        - 'none'
-     23:
+      - 'none'
+    23:
       id: 14
       damage: 0
       skin: 'none'
       name: 'none'
       unbreakable: false
       lore:
-        - 'none'
-     24:
+      - 'none'
+    24:
       id: 15
       damage: 0
       skin: 'none'
       name: 'none'
       unbreakable: false
       lore:
-        - 'none'
-     25:
+      - 'none'
+    25:
       id: 16
       damage: 0
       skin: 'none'
       name: 'none'
       unbreakable: false
       lore:
-        - 'none'
-     26:
+      - 'none'
+    26:
       id: 17
       damage: 0
       skin: 'none'
       name: 'none'
       unbreakable: false
       lore:
-        - 'none'
-     27:
+      - 'none'
+    27:
       id: 17
       damage: 1
       skin: 'none'
       name: 'none'
       unbreakable: false
       lore:
-        - 'none'
-     28:
+      - 'none'
+    28:
       id: 17
       damage: 2
       skin: 'none'
       name: 'none'
       unbreakable: false
       lore:
-        - 'none'
-     29:
+      - 'none'
+    29:
       id: 17
       damage: 2
       skin: 'none'
       name: 'none'
       unbreakable: false
       lore:
-        - 'none'
-     30:
+      - 'none'
+    30:
       id: 17
       damage: 3
       skin: 'none'
       name: 'none'
       unbreakable: false
       lore:
-        - 'none'
-     31:
+      - 'none'
+    31:
       id: 18
       damage: 0
       skin: 'none'
       name: 'none'
       unbreakable: false
       lore:
-        - 'none'
-     32:
+      - 'none'
+    32:
       id: 18
       damage: 1
       skin: 'none'
       name: 'none'
       unbreakable: false
       lore:
-        - 'none'
-     33:
+      - 'none'
+    33:
       id: 18
       damage: 2
       skin: 'none'
       name: 'none'
       unbreakable: false
       lore:
-        - 'none'
-     34:
+      - 'none'
+    34:
       id: 18
       damage: 3
       skin: 'none'
       name: 'none'
       unbreakable: false
       lore:
-        - 'none'
-     35:
+      - 'none'
+    35:
       id: 19
       damage: 0
       skin: 'none'
       name: 'none'
       unbreakable: false
       lore:
-        - 'none'
-     36:
+      - 'none'
+    36:
       id: 19
       damage: 1
       skin: 'none'
       name: 'none'
       unbreakable: false
       lore:
-        - 'none'
-     37:
+      - 'none'
+    37:
       id: 20
       damage: 0
       skin: 'none'
       name: 'none'
       unbreakable: false
       lore:
-        - 'none'
-     38:
+      - 'none'
+    38:
       id: 21
       damage: 0
       skin: 'none'
       name: 'none'
       unbreakable: false
       lore:
-        - 'none'
-     39:
+      - 'none'
+    39:
       id: 22
       damage: 0
       skin: 'none'
       name: 'none'
       unbreakable: false
       lore:
-        - 'none'
-     40:
+      - 'none'
+    40:
       id: 23
       damage: 0
       skin: 'none'
       name: 'none'
       unbreakable: false
       lore:
-        - 'none'
-     41:
+      - 'none'
+    41:
       id: 24
       damage: 0
       skin: 'none'
       name: 'none'
       unbreakable: false
       lore:
-        - 'none'
-     42:
+      - 'none'
+    42:
       id: 24
       damage: 1
       skin: 'none'
       name: 'none'
       unbreakable: false
       lore:
-        - 'none'
-     43:
+      - 'none'
+    43:
       id: 24
       damage: 2
       skin: 'none'
       name: 'none'
       unbreakable: false
       lore:
-        - 'none'
-     44:
+      - 'none'
+    44:
       id: 25
       damage: 0
       skin: 'none'
       name: 'none'
       unbreakable: false
       lore:
-        - 'none'
-     45:
+      - 'none'
+    45:
       id: 29
       damage: 0
       skin: 'none'
       name: 'none'
       unbreakable: false
       lore:
-        - 'none'
-     46:
+      - 'none'
+    46:
       id: 33
       damage: 0
       skin: 'none'
       name: 'none'
       unbreakable: false
       lore:
-        - 'none'
-     47:
+      - 'none'
+    47:
       id: 41
       damage: 0
       skin: 'none'
       name: 'none'
       unbreakable: false
       lore:
-        - 'none'
-     48:
+      - 'none'
+    48:
       id: 42
       damage: 0
       skin: 'none'
       name: 'none'
       unbreakable: false
       lore:
-        - 'none'
-     49:
+      - 'none'
+    49:
       id: 44
       damage: 0
       skin: 'none'
       name: 'none'
       unbreakable: false
       lore:
-        - 'none'
-     50:
+      - 'none'
+    50:
       id: 45
       damage: 0
       skin: 'none'
       name: 'none'
       unbreakable: false
       lore:
-        - 'none'
-     51:
+      - 'none'
+    51:
       id: 57
       damage: 0
       skin: 'none'
       name: 'none'
       unbreakable: false
       lore:
-        - 'none'
-     52:
+      - 'none'
+    52:
       id: 80
       damage: 0
       skin: 'none'
       name: 'none'
       unbreakable: false
       lore:
-        - 'none'
-     53:
+      - 'none'
+    53:
       id: 82
       damage: 0
       skin: 'none'
       name: 'none'
       unbreakable: false
       lore:
-        - 'none'
-     54:
+      - 'none'
+    54:
       id: 87
       damage: 0
       skin: 'none'
       name: 'none'
       unbreakable: false
       lore:
-        - 'none'
-     55:
+      - 'none'
+    55:
       id: 88
       damage: 0
       skin: 'none'
       name: 'none'
       unbreakable: false
       lore:
-        - 'none'
-   color:
-     1:
+      - 'none'
+  color:
+    1:
       id: 35
       damage: 12
       skin: 'none'
       name: 'none'
       unbreakable: false
       lore:
-        - 'none'
-     2:
+      - 'none'
+    2:
       id: 35
       damage: 1
       skin: 'none'
       name: 'none'
       unbreakable: false
       lore:
-        - 'none'
-     3:
+      - 'none'
+    3:
       id: 35
       damage: 2
       skin: 'none'
       name: 'none'
       unbreakable: false
       lore:
-        - 'none'
-     4:
+      - 'none'
+    4:
       id: 35
       damage: 3
       skin: 'none'
       name: 'none'
       unbreakable: false
       lore:
-        - 'none'
-     5:
+      - 'none'
+    5:
       id: 35
       damage: 4
       skin: 'none'
       name: 'none'
       unbreakable: false
       lore:
-        - 'none'
-     6:
+      - 'none'
+    6:
       id: 35
       damage: 5
       skin: 'none'
       name: 'none'
       unbreakable: false
       lore:
-        - 'none'
-     7:
+      - 'none'
+    7:
       id: 35
       damage: 6
       skin: 'none'
       name: 'none'
       unbreakable: false
       lore:
-        - 'none'
-     8:
+      - 'none'
+    8:
       id: 35
       damage: 7
       skin: 'none'
       name: 'none'
       unbreakable: false
       lore:
-        - 'none'
-     9:
+      - 'none'
+    9:
       id: 35
       damage: 8
       skin: 'none'
       name: 'none'
       unbreakable: false
       lore:
-        - 'none'
-     10:
+      - 'none'
+    10:
       id: 35
       damage: 9
       skin: 'none'
       name: 'none'
       unbreakable: false
       lore:
-        - 'none'
-     11:
+      - 'none'
+    11:
       id: 35
       damage: 10
       skin: 'none'
       name: 'none'
       unbreakable: false
       lore:
-        - 'none'
-     12:
+      - 'none'
+    12:
       id: 35
       damage: 11
       skin: 'none'
       name: 'none'
       unbreakable: false
       lore:
-        - 'none'
-     13:
+      - 'none'
+    13:
       id: 35
       damage: 12
       skin: 'none'
       name: 'none'
       unbreakable: false
       lore:
-        - 'none'
-     14:
+      - 'none'
+    14:
       id: 35
       damage: 13
       skin: 'none'
       name: 'none'
       unbreakable: false
       lore:
-        - 'none'
-     15:
+      - 'none'
+    15:
       id: 35
       damage: 14
       skin: 'none'
       name: 'none'
       unbreakable: false
       lore:
-        - 'none'
-     16:
+      - 'none'
+    16:
       id: 35
       damage: 15
       skin: 'none'
       name: 'none'
       unbreakable: false
       lore:
-        - 'none'
-     17:
+      - 'none'
+    17:
       id: 95
       damage: 0
       skin: 'none'
       name: 'none'
       unbreakable: false
       lore:
-        - 'none'
-     18:
+      - 'none'
+    18:
       id: 95
       damage: 1
       skin: 'none'
       name: 'none'
       unbreakable: false
       lore:
-        - 'none'
-     19:
+      - 'none'
+    19:
       id: 95
       damage: 2
       skin: 'none'
       name: 'none'
       unbreakable: false
       lore:
-        - 'none'
-     20:
+      - 'none'
+    20:
       id: 95
       damage: 3
       skin: 'none'
       name: 'none'
       unbreakable: false
       lore:
-        - 'none'
-     21:
+      - 'none'
+    21:
       id: 95
       damage: 4
       skin: 'none'
       name: 'none'
       unbreakable: false
       lore:
-        - 'none'
-     22:
+      - 'none'
+    22:
       id: 95
       damage: 5
       skin: 'none'
       name: 'none'
       unbreakable: false
       lore:
-        - 'none'
-     23:
+      - 'none'
+    23:
       id: 95
       damage: 6
       skin: 'none'
       name: 'none'
       unbreakable: false
       lore:
-        - 'none'
-     24:
+      - 'none'
+    24:
       id: 95
       damage: 7
       skin: 'none'
       name: 'none'
       unbreakable: false
       lore:
-        - 'none'
-     25:
+      - 'none'
+    25:
       id: 95
       damage: 8
       skin: 'none'
       name: 'none'
       unbreakable: false
       lore:
-        - 'none'
-     26:
+      - 'none'
+    26:
       id: 95
       damage: 9
       skin: 'none'
       name: 'none'
       unbreakable: false
       lore:
-        - 'none'
-     27:
+      - 'none'
+    27:
       id: 95
       damage: 10
       skin: 'none'
       name: 'none'
       unbreakable: false
       lore:
-        - 'none'
-     28:
+      - 'none'
+    28:
       id: 95
       damage: 11
       skin: 'none'
       name: 'none'
       unbreakable: false
       lore:
-        - 'none'
-     29:
+      - 'none'
+    29:
       id: 95
       damage: 12
       skin: 'none'
       name: 'none'
       unbreakable: false
       lore:
-        - 'none'
-     30:
+      - 'none'
+    30:
       id: 95
       damage: 13
       skin: 'none'
       name: 'none'
       unbreakable: false
       lore:
-        - 'none'
-     31:
+      - 'none'
+    31:
       id: 95
       damage: 14
       skin: 'none'
       name: 'none'
       unbreakable: false
       lore:
-        - 'none'
-     32:
+      - 'none'
+    32:
       id: 95
       damage: 15
       skin: 'none'
       name: 'none'
       unbreakable: false
       lore:
-        - 'none'
-     33:
+      - 'none'
+    33:
       id: 159
       damage: 0
       skin: 'none'
       name: 'none'
       unbreakable: false
       lore:
-        - 'none'
-     34:
+      - 'none'
+    34:
       id: 159
       damage: 1
       skin: 'none'
       name: 'none'
       unbreakable: false
       lore:
-        - 'none'
-     35:
+      - 'none'
+    35:
       id: 159
       damage: 2
       skin: 'none'
       name: 'none'
       unbreakable: false
       lore:
-        - 'none'
-     36:
+      - 'none'
+    36:
       id: 159
       damage: 3
       skin: 'none'
       name: 'none'
       unbreakable: false
       lore:
-        - 'none'
-     37:
+      - 'none'
+    37:
       id: 159
       damage: 4
       skin: 'none'
       name: 'none'
       unbreakable: false
       lore:
-        - 'none'
-     38:
+      - 'none'
+    38:
       id: 159
       damage: 5
       skin: 'none'
       name: 'none'
       unbreakable: false
       lore:
-        - 'none'
-     39:
+      - 'none'
+    39:
       id: 159
       damage: 6
       skin: 'none'
       name: 'none'
       unbreakable: false
       lore:
-        - 'none'
-     40:
+      - 'none'
+    40:
       id: 159
       damage: 7
       skin: 'none'
       name: 'none'
       unbreakable: false
       lore:
-        - 'none'
-     41:
+      - 'none'
+    41:
       id: 159
       damage: 8
       skin: 'none'
       name: 'none'
       unbreakable: false
       lore:
-        - 'none'
-     42:
+      - 'none'
+    42:
       id: 159
       damage: 9
       skin: 'none'
       name: 'none'
       unbreakable: false
       lore:
-        - 'none'
-     43:
+      - 'none'
+    43:
       id: 159
       damage: 10
       skin: 'none'
       name: 'none'
       unbreakable: false
       lore:
-        - 'none'
-     44:
+      - 'none'
+    44:
       id: 159
       damage: 11
       skin: 'none'
       name: 'none'
       unbreakable: false
       lore:
-        - 'none'
-     45:
+      - 'none'
+    45:
       id: 159
       damage: 12
       skin: 'none'
       name: 'none'
       unbreakable: false
       lore:
-        - 'none'
-     46:
+      - 'none'
+    46:
       id: 159
       damage: 13
       skin: 'none'
       name: 'none'
       unbreakable: false
       lore:
-        - 'none'
-     47:
+      - 'none'
+    47:
       id: 159
       damage: 14
       skin: 'none'
       name: 'none'
       unbreakable: false
       lore:
-        - 'none'
-     48:
+      - 'none'
+    48:
       id: 159
       damage: 15
       skin: 'none'
       name: 'none'
       unbreakable: false
       lore:
-        - 'none'
-   rare:
-     1:
+      - 'none'
+  rare:
+    1:
       id: 397
       damage: 3
       skin: 'textures.minecraft.net/texture/621668ef7cb79dd9c22ce3d1f3f4cb6e2559893b6df4a469514e667c16aa4'
       name: 'Pig'
       unbreakable: false
       lore:
-        - 'none'
-     2:
+      - 'none'
+    2:
       id: 397
       damage: 3
       skin: 'textures.minecraft.net/texture/1638469a599ceef7207537603248a9ab11ff591fd378bea4735b346a7fae893'
       name: 'Chicken'
       unbreakable: false
       lore:
-        - 'none'
-     3:
+      - 'none'
+    3:
       id: 397
       damage: 3
       skin: 'textures.minecraft.net/texture/5657cd5c2989ff97570fec4ddcdc6926a68a3393250c1be1f0b114a1db1'
       name: 'Cat'
       unbreakable: false
       lore:
-        - 'none'
-     4:
+      - 'none'
+    4:
       id: 397
       damage: 3
       skin: 'textures.minecraft.net/texture/e95cbb4f75ea87617f2f713c6d49dac3209ba1bd4b9369654b1459ea15317'
       name: 'Wolf'
       unbreakable: false
       lore:
-        - 'none'
-     5:
+      - 'none'
+    5:
       id: 397
       damage: 3
       skin: 'textures.minecraft.net/texture/f2542c19cbcd964274244af6bed1ac8560b3f36fd3b3268061f8a614a9b59e35'
       name: 'Bird'
       unbreakable: false
       lore:
-        - 'none'
-     6:
+      - 'none'
+    6:
       id: 397
       damage: 3
       skin: 'textures.minecraft.net/texture/c52264ac4e5621668c43e87aed7918ed6b883abc5018769c9536d27b77f'
       name: 'Dragon'
       unbreakable: false
       lore:
-        - 'none'
-     7:
+      - 'none'
+    7:
       id: 397
       damage: 3
       skin: 'textures.minecraft.net/texture/295ef836389af993158aba27ff37b6567185f7a721ca90fdfeb937a7cb5747'
       name: 'Creeper'
       unbreakable: false
       lore:
-        - 'none'
-     8:
+      - 'none'
+    8:
       id: 397
       damage: 3
       skin: 'textures.minecraft.net/texture/38957d5023c937c4c41aa2412d43410bda23cf79a9f6ab36b76fef2d7c429'
       name: 'Magma Slime'
       unbreakable: false
       lore:
-        - 'none'
-     9:
+      - 'none'
+    9:
       id: 397
       damage: 3
       skin: 'textures.minecraft.net/texture/cd541541daaff50896cd258bdbdd4cf80c3ba816735726078bfe393927e57f1'
       name: 'Spider'
       unbreakable: false
       lore:
-        - 'none'
-     10:
+      - 'none'
+    10:
       id: 397
       damage: 3
       skin: 'textures.minecraft.net/texture/a0c2549a893726988f3428bef799875ba871688ae64eb0cfdc43f7d6e24c6c'
       name: 'Mario'
       unbreakable: false
       lore:
-        - 'none'
-     11:
+      - 'none'
+    11:
       id: 397
       damage: 3
       skin: 'textures.minecraft.net/texture/b6ad46433a34ed66ccbafb46778ae493f2b3a2a5fdc693f8bffeb3386ccdf3CAPEurl'
       name: 'Human'
       unbreakable: false
       lore:
-        - 'none'
-     12:
+      - 'none'
+    12:
       id: 397
       damage: 3
       skin: 'textures.minecraft.net/texture/5fc8b863995fb84685c273c859548c75d94f9b82cce41b1efff454fe03cc123'
       name: 'Yoshi'
       unbreakable: false
       lore:
-        - 'none'
-     13:
+      - 'none'
+    13:
       id: 397
       damage: 3
       skin: 'textures.minecraft.net/texture/4b62d1dbf94e8cbb3c5327d96aac121d20677338924a5ed6de4cbf578a73d'
       name: 'Pokeball'
       unbreakable: false
       lore:
-        - 'none'
-     14:
+      - 'none'
+    14:
       id: 397
       damage: 3
       skin: 'textures.minecraft.net/texture/f6c5ee57717f561fc12b9f8878fbe0d0d62c72facfad61c0d27cade54e818c14'
       name: 'Pikachu'
       unbreakable: false
       lore:
-        - 'none'
-     15:
+      - 'none'
+    15:
       id: 397
       damage: 3
       skin: 'textures.minecraft.net/texture/538992fa71d5d98789d5061ddd68e2b7af9efc253b39e1b346343d7789f8dc'
       name: 'Charmander'
       unbreakable: false
       lore:
-        - 'none'
-     16:
+      - 'none'
+    16:
       id: 397
       damage: 3
       skin: 'textures.minecraft.net/texture/c99ec943b48c6f82f32acd9e8626546de8416cce4da41cbaa02c69feefbea'
       name: 'Bulbasaur'
       unbreakable: false
       lore:
-        - 'none'
-     17:
+      - 'none'
+    17:
       id: 397
       damage: 3
       skin: 'textures.minecraft.net/texture/f53ebc976cb6771f3e95117b326842ff7812c740bece96bb8858346d841'
       name: 'Squirtle'
       unbreakable: false
       lore:
-        - 'none'
-     18:
+      - 'none'
+    18:
       id: 397
       damage: 3
       skin: 'textures.minecraft.net/texture/d9e0b56996f494adabebac9ea2a52c64ac486a5e0b8a89e485945dcca2b'
       name: 'Mewto'
       unbreakable: false
       lore:
-        - 'none'
-     19:
+      - 'none'
+    19:
       id: 397
       damage: 3
       skin: 'textures.minecraft.net/texture/f06555706b641fdaf436c07663f923afc5ee72146f90195fb337b9de766588d'
       name: 'Food'
       unbreakable: false
       lore:
-        - 'none'
-     20:
+      - 'none'
+    20:
       id: 397
       damage: 3
       skin: 'textures.minecraft.net/texture/b26f0b5e52337c76b5a80e3d971477a8e38b0d71390f13defe1316ad6a0a67c'
       name: 'Burger'
       unbreakable: false
       lore:
-        - 'none'
-     21:
+      - 'none'
+    21:
       id: 397
       damage: 3
       skin: 'textures.minecraft.net/texture/d7ab62fb77189352541dd95a8ee7e3631f7c1658f463f661680c283493d8a'
       name: 'Milk'
       unbreakable: false
       lore:
-        - 'none'
-     22:
+      - 'none'
+    22:
       id: 397
       damage: 3
       skin: 'textures.minecraft.net/texture/9a29335ffad5bdf825a96be8eb4c1a803dace929fc8e1178475f8f8d9c5668'
       name: 'Bread'
       unbreakable: false
       lore:
-        - 'none'
-     23:
+      - 'none'
+    23:
       id: 397
       damage: 3
       skin: 'textures.minecraft.net/texture/f71cc917159f14565f6afe22b9e33d5a23e423ecd8cb5dfba0b3f66d825389ca'
       name: 'Fruit'
       unbreakable: false
       lore:
-        - 'none'
-     24:
+      - 'none'
+    24:
       id: 397
       damage: 3
       skin: 'textures.minecraft.net/texture/6837a48ee530cfe35aca37969e4ea71d875237d2cb7a81b1ae80a75dc76e5a'
       name: 'Fruit'
       unbreakable: false
       lore:
-        - 'none'
-     25:
+      - 'none'
+    25:
       id: 397
       damage: 3
       skin: 'textures.minecraft.net/texture/dfd71e20fc50abf0de2ef7decfc01ce27ad51955759e072ceaab96355f594f0'
       name: 'Sweet'
       unbreakable: false
       lore:
-        - 'none'
-     26:
+      - 'none'
+    26:
       id: 397
       damage: 3
       skin: 'textures.minecraft.net/texture/819f948d17718adace5dd6e050c586229653fef645d7113ab94d17b639cc466'
       name: 'Sweet'
       unbreakable: false
       lore:
-        - 'none'
-     27:
+      - 'none'
+    27:
       id: 397
       damage: 3
       skin: 'textures.minecraft.net/texture/b0e38c176dbf7df9b0632c256eeb6c5aaca99e1c8c1a530656eaff0417aed22'
       name: 'Burger'
       unbreakable: false
       lore:
-        - 'none'
-     28:
+      - 'none'
+    28:
       id: 397
       damage: 3
       skin: 'textures.minecraft.net/texture/37ca2aa8a9f5d3246ee7f2d07e1d5fd4819125ecddf5a72e2f675355a3b9bcc'
       name: 'Stormtrooper'
       unbreakable: false
       lore:
-        - 'none'
-     29:
+      - 'none'
+    29:
       id: 397
       damage: 3
       skin: 'textures.minecraft.net/texture/52284e132bfd659bc6ada497c4fa3094cd93231a6b505a12ce7cd5135ba8ff93'
       name: 'Stormtrooper'
       unbreakable: false
       lore:
-        - 'none'
-     30:
+      - 'none'
+    30:
       id: 397
       damage: 3
       skin: 'textures.minecraft.net/texture/5685be67be3089dcccc73c4ddc44886e6666e0aa9817aacd4546ef58196038'
       name: 'Stormtrooper'
       unbreakable: false
       lore:
-        - 'none'
-     31:
+      - 'none'
+    31:
       id: 397
       damage: 3
       skin: 'textures.minecraft.net/texture/c535ff84f4b6d85626b92ca5d2619fd5599a96a585d851727d6633227a654'
       name: 'Boba Fett'
       unbreakable: false
       lore:
-        - 'none'
-     32:
+      - 'none'
+    32:
       id: 397
       damage: 3
       skin: 'textures.minecraft.net/texture/68f54244604274927974e579d222f0c931278e0eceead31872c81c8e6f441'
       name: 'Jabba The Hutt'
       unbreakable: false
       lore:
-        - 'none'
-     33:
+      - 'none'
+    33:
       id: 397
       damage: 3
       skin: 'textures.minecraft.net/texture/c9c0b6aa32b5a2c2d77f15dad54af3c2f201f818c7fa3ef83760648264fee2'
       name: 'Wookie'
       unbreakable: false
       lore:
-        - 'none'
-     34:
+      - 'none'
+    34:
       id: 397
       damage: 3
       skin: 'textures.minecraft.net/texture/4251d1e46d4d5fda32665da1f6cce29fd1c113491451c955f7668de32d37ae6'
       name: 'Yoda'
       unbreakable: false
       lore:
-        - 'none'
-     35:
+      - 'none'
+    35:
       id: 397
       damage: 3
       skin: 'textures.minecraft.net/texture/b0bcbea8d2ecce2e43daf5997e597b02c605f1babc11971ce4870342e3e1551'
       name: 'R2D2'
       unbreakable: false
       lore:
-        - 'none'
-     36:
+      - 'none'
+    36:
       id: 397
       damage: 3
       skin: 'textures.minecraft.net/texture/9fec991891f4143d40f013b98dc38dc53ed14ca75ebd32866efb126a32842a1'
       name: 'C3PO'
       unbreakable: false
       lore:
-        - 'none'
-     37:
+      - 'none'
+    37:
       id: 397
       damage: 3
       skin: 'textures.minecraft.net/texture/a116e69a845e227f7ca1fdde8c357c8c821ebd4ba619382ea4a1f87d4ae94'
       name: 'Notch'
       unbreakable: false
       lore:
-        - 'none'
-     38:
+      - 'none'
+    38:
       id: 397
       damage: 3
       skin: 'textures.minecraft.net/texture/3a22126c8187c352bf4dac5af2afe48dbf0d4e5f98542bdd9f6c5f52f5169b'
       name: 'Shynixn'
       unbreakable: false
       lore:
-        - 'none'
-     39:
+      - 'none'
+    39:
       id: 397
       damage: 3
       skin: 'textures.minecraft.net/texture/14e424b1676feec3a3f8ebade9e7d6a6f71f7756a869f36f7df0fc182d436e'
       name: 'Santa'
       unbreakable: false
       lore:
-        - 'none'
-     40:
+      - 'none'
+    40:
       id: 397
       damage: 3
       skin: 'textures.minecraft.net/texture/98b7ca3c7d314a61abed8fc18d797fc30b6efc8445425c4e250997e52e6cb'
       name: 'Herobrine'
       unbreakable: false
       lore:
-        - 'none'
-     41:
+      - 'none'
+    41:
       id: 397
       damage: 3
       skin: 'textures.minecraft.net/texture/d357444ade64ec6cea645ec57e775864d67c5fa62299786e03799317ee4ad'
       name: 'Miner'
       unbreakable: false
       lore:
-        - 'none'
-     42:
+      - 'none'
+    42:
       id: 397
       damage: 3
       skin: 'textures.minecraft.net/texture/42bc2de782fd6d7c50e9b3edb133487191d8f5546644c25be357cca2685db'
       name: 'Sonic'
       unbreakable: false
       lore:
-        - 'none'
-     43:
+      - 'none'
+    43:
       id: 397
       damage: 3
       skin: 'textures.minecraft.net/texture/fb3329b3c82ddfcd19255c42712eca7bc24472c03f78668faff7d8431997d693'
       name: 'Reaper'
       unbreakable: false
       lore:
-        - 'none'
-     44:
+      - 'none'
+    44:
       id: 397
       damage: 3
       skin: 'textures.minecraft.net/texture/797884d451dc7b7729de2076cd6c4912865ade70391d1ccec3e95fb39f8c5e1'
       name: 'Crazy'
       unbreakable: false
       lore:
-        - 'none'
+      - 'none'
 #--- Copy one of the items increment the number and add it above this line
 
 ############################
@@ -2459,14 +2421,14 @@ particles:
     name: '&2None'
     unbreakable: false
     lore:
-       - 'none'
+    - 'none'
     effect:
-        name: 'none'
-        speed: 0.0
-        amount: 0
-        offx: 0.0
-        offy: 0.0
-        offz: 0.0
+      name: 'none'
+      speed: 0.0
+      amount: 0
+      offx: 0.0
+      offy: 0.0
+      offz: 0.0
   2:
     id: 95
     damage: 7
@@ -2474,14 +2436,14 @@ particles:
     name: '&8Largesmoke'
     unbreakable: false
     lore:
-       - 'none'
+    - 'none'
     effect:
-        name: 'largesmoke'
-        speed: 0.01
-        amount: 2
-        offx: 0.5
-        offy: 0.5
-        offz: 0.5
+      name: 'largesmoke'
+      speed: 0.01
+      amount: 2
+      offx: 0.5
+      offy: 0.5
+      offz: 0.5
   3:
     id: 95
     damage: 8
@@ -2489,14 +2451,14 @@ particles:
     name: '&fExplosion'
     unbreakable: false
     lore:
-        - 'none'
+    - 'none'
     effect:
-        name: 'explode'
-        speed: 0.01
-        amount: 2
-        offx: 0.5
-        offy: 0.5
-        offz: 0.5
+      name: 'explode'
+      speed: 0.01
+      amount: 2
+      offx: 0.5
+      offy: 0.5
+      offz: 0.5
   4:
     id: 351
     damage: 12
@@ -2504,14 +2466,14 @@ particles:
     name: '&9Blue-Trail'
     unbreakable: false
     lore:
-       - 'none'
+    - 'none'
     effect:
-        name: 'reddust'
-        speed: 0.01
-        amount: 20
-        red: 0
-        green: 0
-        blue: 255
+      name: 'reddust'
+      speed: 0.01
+      amount: 20
+      red: 0
+      green: 0
+      blue: 255
   5:
     id: 351
     damage: 1
@@ -2519,14 +2481,14 @@ particles:
     name: '&cRed-Trail'
     unbreakable: false
     lore:
-       - 'none'
+    - 'none'
     effect:
-        name: 'reddust'
-        speed: 0.01
-        amount: 20
-        red: 255
-        green: 0
-        blue: 0
+      name: 'reddust'
+      speed: 0.01
+      amount: 20
+      red: 255
+      green: 0
+      blue: 0
   6:
     id: 351
     damage: 10
@@ -2534,14 +2496,14 @@ particles:
     name: '&aGreen-Trail'
     unbreakable: false
     lore:
-       - 'none'
+    - 'none'
     effect:
-        name: 'reddust'
-        speed: 0.01
-        amount: 20
-        red: 0
-        green: 255
-        blue: 0
+      name: 'reddust'
+      speed: 0.01
+      amount: 20
+      red: 0
+      green: 255
+      blue: 0
   7:
     id: 152
     damage: 0
@@ -2549,16 +2511,16 @@ particles:
     name: '&cRedstone-Crack'
     unbreakable: false
     lore:
-       - 'none'
+    - 'none'
     effect:
-        name: 'blockcrack'
-        amount: 2
-        speed: 0.01
-        offx: 0.5
-        offy: 0.5
-        offz: 0.5
-        id: 166
-        damage: 0
+      name: 'blockcrack'
+      amount: 2
+      speed: 0.01
+      offx: 0.5
+      offy: 0.5
+      offz: 0.5
+      id: 166
+      damage: 0
   8:
     id: 12
     damage: 0
@@ -2566,16 +2528,16 @@ particles:
     name: '&eSand-Crack'
     unbreakable: false
     lore:
-       - 'none'
+    - 'none'
     effect:
-        name: 'blockdust'
-        speed: 0.01
-        amount: 2
-        offx: 0.5
-        offy: 0.5
-        offz: 0.5
-        id: 12
-        damage: 0
+      name: 'blockdust'
+      speed: 0.01
+      amount: 2
+      offx: 0.5
+      offy: 0.5
+      offz: 0.5
+      id: 12
+      damage: 0
   9:
     id: 18
     damage: 0
@@ -2583,16 +2545,16 @@ particles:
     name: '&2Leaves-Crack'
     unbreakable: false
     lore:
-       - 'none'
+    - 'none'
     effect:
-        name: 'blockdust'
-        speed: 0.01
-        amount: 2
-        offx: 0.5
-        offy: 0.5
-        offz: 0.5
-        id: 18
-        damage: 0
+      name: 'blockdust'
+      speed: 0.01
+      amount: 2
+      offx: 0.5
+      offy: 0.5
+      offz: 0.5
+      id: 18
+      damage: 0
   10:
     id: 95
     damage: 11
@@ -2600,14 +2562,14 @@ particles:
     name: '&9Splash'
     unbreakable: false
     lore:
-       - 'none'
+    - 'none'
     effect:
-        name: 'splash'
-        speed: 0.01
-        amount: 2
-        offx: 0.5
-        offy: 0.5
-        offz: 0.5
+      name: 'splash'
+      speed: 0.01
+      amount: 2
+      offx: 0.5
+      offy: 0.5
+      offz: 0.5
   11:
     id: 95
     damage: 2
@@ -2615,14 +2577,14 @@ particles:
     name: '&5Portal'
     unbreakable: false
     lore:
-       - 'none'
+    - 'none'
     effect:
-        name: 'portal'
-        speed: 0.01
-        amount: 2
-        offx: 0.5
-        offy: 0.5
-        offz: 0.5
+      name: 'portal'
+      speed: 0.01
+      amount: 2
+      offx: 0.5
+      offy: 0.5
+      offz: 0.5
   12:
     id: 95
     damage: 0
@@ -2630,14 +2592,14 @@ particles:
     name: '&fSpell'
     unbreakable: false
     lore:
-       - 'none'
+    - 'none'
     effect:
-        name: 'spell'
-        speed: 0.01
-        amount: 2
-        offx: 0.5
-        offy: 0.5
-        offz: 0.5
+      name: 'spell'
+      speed: 0.01
+      amount: 2
+      offx: 0.5
+      offy: 0.5
+      offz: 0.5
   13:
     id: 351
     damage: 11
@@ -2645,14 +2607,14 @@ particles:
     name: '&eYello-Trail'
     unbreakable: false
     lore:
-       - 'none'
+    - 'none'
     effect:
-        name: 'reddust'
-        speed: 0.01
-        amount: 20
-        red: 255
-        green: 185
-        blue: 15
+      name: 'reddust'
+      speed: 0.01
+      amount: 20
+      red: 255
+      green: 185
+      blue: 15
   14:
     id: 351
     damage: 13
@@ -2660,14 +2622,14 @@ particles:
     name: '&5Purple-Trail'
     unbreakable: false
     lore:
-       - 'none'
+    - 'none'
     effect:
-        name: 'reddust'
-        speed: 0.01
-        amount: 20
-        red: 139
-        green: 0
-        blue: 139
+      name: 'reddust'
+      speed: 0.01
+      amount: 20
+      red: 139
+      green: 0
+      blue: 139
   15:
     id: 351
     damage: 14
@@ -2675,14 +2637,14 @@ particles:
     name: '&6Orange-Trail'
     unbreakable: false
     lore:
-       - 'none'
+    - 'none'
     effect:
-        name: 'reddust'
-        speed: 0.01
-        amount: 20
-        red: 238
-        green: 118
-        blue: 0
+      name: 'reddust'
+      speed: 0.01
+      amount: 20
+      red: 238
+      green: 118
+      blue: 0
   16:
     id: 42
     damage: 0
@@ -2690,16 +2652,16 @@ particles:
     name: '&fIron-Crack'
     unbreakable: false
     lore:
-       - 'none'
+    - 'none'
     effect:
-        name: 'blockdust'
-        amount: 2
-        speed: 0.01
-        offx: 0.5
-        offy: 0.5
-        offz: 0.5
-        id: 42
-        damage: 0
+      name: 'blockdust'
+      amount: 2
+      speed: 0.01
+      offx: 0.5
+      offy: 0.5
+      offz: 0.5
+      id: 42
+      damage: 0
   17:
     id: 41
     damage: 0
@@ -2707,16 +2669,16 @@ particles:
     name: '&eGold-Crack'
     unbreakable: false
     lore:
-       - 'none'
+    - 'none'
     effect:
-        name: 'blockdust'
-        speed: 0.01
-        amount: 2
-        offx: 0.5
-        offy: 0.5
-        offz: 0.5
-        id: 41
-        damage: 0
+      name: 'blockdust'
+      speed: 0.01
+      amount: 2
+      offx: 0.5
+      offy: 0.5
+      offz: 0.5
+      id: 41
+      damage: 0
   18:
     id: 57
     damage: 0
@@ -2724,16 +2686,16 @@ particles:
     name: '&bDiamond-Crack'
     unbreakable: false
     lore:
-       - 'none'
+    - 'none'
     effect:
-        name: 'blockdust'
-        speed: 0.01
-        amount: 2
-        offx: 0.5
-        offy: 0.5
-        offz: 0.5
-        id: 57
-        damage: 0
+      name: 'blockdust'
+      speed: 0.01
+      amount: 2
+      offx: 0.5
+      offy: 0.5
+      offz: 0.5
+      id: 57
+      damage: 0
   19:
     id: 95
     damage: 1
@@ -2741,14 +2703,14 @@ particles:
     name: '&6Flames'
     unbreakable: false
     lore:
-       - 'none'
+    - 'none'
     effect:
-        name: 'flame'
-        speed: 0.01
-        amount: 2
-        offx: 0.5
-        offy: 0.5
-        offz: 0.5
+      name: 'flame'
+      speed: 0.01
+      amount: 2
+      offx: 0.5
+      offy: 0.5
+      offz: 0.5
   20:
     id: 95
     damage: 5
@@ -2756,14 +2718,14 @@ particles:
     name: '&aHappiness'
     unbreakable: false
     lore:
-       - 'none'
+    - 'none'
     effect:
-        name: 'happyVillager'
-        speed: 0.01
-        amount: 1
-        offx: 0.5
-        offy: 0.5
-        offz: 0.5
+      name: 'happyVillager'
+      speed: 0.01
+      amount: 1
+      offx: 0.5
+      offy: 0.5
+      offz: 0.5
   21:
     id: 95
     damage: 14
@@ -2771,14 +2733,14 @@ particles:
     name: '&cHearts'
     unbreakable: false
     lore:
-       - 'none'
+    - 'none'
     effect:
-        name: 'heart'
-        speed: 4.0
-        amount: 1
-        offx: 0.5
-        offy: 0.5
-        offz: 0.5
+      name: 'heart'
+      speed: 4.0
+      amount: 1
+      offx: 0.5
+      offy: 0.5
+      offz: 0.5
   22:
     id: 351
     damage: 3
@@ -2786,14 +2748,14 @@ particles:
     name: '&6Brown-Trail'
     unbreakable: false
     lore:
-       - 'none'
+    - 'none'
     effect:
-        name: 'reddust'
-        speed: 0.01
-        amount: 20
-        red: 139
-        green: 69
-        blue: 19
+      name: 'reddust'
+      speed: 0.01
+      amount: 20
+      red: 139
+      green: 69
+      blue: 19
   23:
     id: 351
     damage: 15
@@ -2801,14 +2763,14 @@ particles:
     name: '&fWhite-Trail'
     unbreakable: false
     lore:
-       - 'none'
+    - 'none'
     effect:
-        name: 'reddust'
-        speed: 0.01
-        amount: 20
-        red: 255
-        green: 255
-        blue: 255
+      name: 'reddust'
+      speed: 0.01
+      amount: 20
+      red: 255
+      green: 255
+      blue: 255
   24:
     id: 351
     damage: 0
@@ -2816,14 +2778,14 @@ particles:
     name: '&8Black-Trail'
     unbreakable: false
     lore:
-       - 'none'
+    - 'none'
     effect:
-        name: 'reddust'
-        speed: 0.01
-        amount: 20
-        red: 0
-        green: 0
-        blue: 0
+      name: 'reddust'
+      speed: 0.01
+      amount: 20
+      red: 0
+      green: 0
+      blue: 0
   25:
     id: 1
     damage: 0
@@ -2831,16 +2793,16 @@ particles:
     name: '&7Stone-Crack'
     unbreakable: false
     lore:
-       - 'none'
+    - 'none'
     effect:
-        name: 'blockdust'
-        amount: 2
-        speed: 0.01
-        offx: 0.5
-        offy: 0.5
-        offz: 0.5
-        id: 1
-        damage: 0
+      name: 'blockdust'
+      amount: 2
+      speed: 0.01
+      offx: 0.5
+      offy: 0.5
+      offz: 0.5
+      id: 1
+      damage: 0
   26:
     id: 2
     damage: 0
@@ -2848,16 +2810,16 @@ particles:
     name: '&aGrass-Crack'
     unbreakable: false
     lore:
-       - 'none'
+    - 'none'
     effect:
-        name: 'blockdust'
-        speed: 0.01
-        amount: 2
-        offx: 0.5
-        offy: 0.5
-        offz: 0.5
-        id: 2
-        damage: 0
+      name: 'blockdust'
+      speed: 0.01
+      amount: 2
+      offx: 0.5
+      offy: 0.5
+      offz: 0.5
+      id: 2
+      damage: 0
   27:
     id: 5
     damage: 0
@@ -2865,16 +2827,16 @@ particles:
     name: '&6Wood-Crack'
     unbreakable: false
     lore:
-       - 'none'
+    - 'none'
     effect:
-        name: 'blockdust'
-        speed: 0.01
-        amount: 2
-        offx: 0.5
-        offy: 0.5
-        offz: 0.5
-        id: 5
-        damage: 0
+      name: 'blockdust'
+      speed: 0.01
+      amount: 2
+      offx: 0.5
+      offy: 0.5
+      offz: 0.5
+      id: 5
+      damage: 0
 #--- Copy one of the particles, increment the number and add it above this line
 
 

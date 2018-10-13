@@ -1,6 +1,6 @@
 package com.github.shynixn.petblocks.integrationtests.persistence;
 
-import com.github.shynixn.petblocks.bukkit.nms.VersionSupport;
+import com.github.shynixn.petblocks.bukkit.logic.business.nms.VersionSupport;
 import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 

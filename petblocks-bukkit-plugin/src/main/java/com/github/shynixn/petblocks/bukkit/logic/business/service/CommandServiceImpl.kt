@@ -5,7 +5,7 @@ package com.github.shynixn.petblocks.bukkit.logic.business.service
 import com.github.shynixn.petblocks.api.business.service.CommandService
 import com.github.shynixn.petblocks.bukkit.logic.business.proxy.CommandProxyImpl
 import com.github.shynixn.petblocks.bukkit.logic.business.proxy.CommandRegisteredProxyImpl
-import com.github.shynixn.petblocks.bukkit.nms.VersionSupport
+import com.github.shynixn.petblocks.bukkit.logic.business.nms.VersionSupport
 import com.google.inject.Inject
 import org.bukkit.Bukkit
 import org.bukkit.command.SimpleCommandMap

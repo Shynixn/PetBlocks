@@ -2,7 +2,7 @@ package com.github.shynixn.petblocks.bukkit.logic.business.service
 
 import com.github.shynixn.petblocks.api.business.enumeration.PluginDependency
 import com.github.shynixn.petblocks.api.business.service.DependencyService
-import com.github.shynixn.petblocks.bukkit.nms.VersionSupport
+import com.github.shynixn.petblocks.bukkit.logic.business.nms.VersionSupport
 import com.google.inject.Inject
 import org.bukkit.ChatColor
 import org.bukkit.plugin.Plugin

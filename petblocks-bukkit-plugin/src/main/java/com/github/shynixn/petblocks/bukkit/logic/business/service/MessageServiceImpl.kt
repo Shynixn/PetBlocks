@@ -5,7 +5,7 @@ import com.github.shynixn.petblocks.api.business.service.MessageService
 import com.github.shynixn.petblocks.api.persistence.entity.ChatMessage
 import com.github.shynixn.petblocks.bukkit.logic.business.extension.findServerVersion
 import com.github.shynixn.petblocks.bukkit.logic.business.extension.sendPacket
-import com.github.shynixn.petblocks.bukkit.nms.VersionSupport
+import com.github.shynixn.petblocks.bukkit.logic.business.nms.VersionSupport
 import org.bukkit.Bukkit
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player

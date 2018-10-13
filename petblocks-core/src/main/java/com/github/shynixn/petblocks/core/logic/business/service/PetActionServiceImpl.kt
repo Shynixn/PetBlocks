@@ -1,7 +1,7 @@
 package com.github.shynixn.petblocks.core.logic.business.service
 
 import com.github.shynixn.petblocks.api.business.service.*
-import com.github.shynixn.petblocks.api.persistence.entity.Engine
+import com.github.shynixn.petblocks.api.persistence.entity.Template
 import com.github.shynixn.petblocks.core.logic.business.extension.thenAcceptSafely
 import com.github.shynixn.petblocks.core.logic.business.extension.translateChatColors
 import com.google.inject.Inject
@@ -109,7 +109,7 @@ class PetActionServiceImpl @Inject constructor(private val petService: PetServic
     /**
      * Changes the engine of the given [player] pet to the given [engine].
      */
-    override fun <P> changeEngine(player: P, engine: Engine) {
+    override fun <P> changeTemplate(player: P, engine: Template) {
         val playerProxy = proxyService.findPlayerProxyObject(player)
 
         persistencePetMetaService.getOrCreateFromPlayerUUID(playerProxy.uniqueId).thenAcceptSafely { petMeta ->

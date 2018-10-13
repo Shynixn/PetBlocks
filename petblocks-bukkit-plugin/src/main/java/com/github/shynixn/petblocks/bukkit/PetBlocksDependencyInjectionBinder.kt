@@ -4,24 +4,18 @@ import com.github.shynixn.petblocks.api.business.commandexecutor.EditPetCommandE
 import com.github.shynixn.petblocks.api.business.commandexecutor.PlayerPetActionCommandExecutor
 import com.github.shynixn.petblocks.api.business.commandexecutor.ReloadCommandExecutor
 import com.github.shynixn.petblocks.api.business.enumeration.PluginDependency
+import com.github.shynixn.petblocks.api.business.enumeration.Version
 import com.github.shynixn.petblocks.api.business.service.*
-import com.github.shynixn.petblocks.api.persistence.controller.CostumeController
-import com.github.shynixn.petblocks.api.persistence.controller.EngineController
-import com.github.shynixn.petblocks.api.persistence.controller.OtherGUIItemsController
-import com.github.shynixn.petblocks.api.persistence.controller.ParticleController
-import com.github.shynixn.petblocks.bukkit.logic.compatibility.Factory
+import com.github.shynixn.petblocks.bukkit.logic.business.extension.toVersion
+import com.github.shynixn.petblocks.bukkit.logic.business.nms.VersionSupport
 import com.github.shynixn.petblocks.bukkit.logic.business.service.*
-import com.github.shynixn.petblocks.bukkit.logic.compatibility.*
 import com.github.shynixn.petblocks.core.logic.business.commandexecutor.EditPetCommandExecutorImpl
 import com.github.shynixn.petblocks.core.logic.business.commandexecutor.PlayerPetActionCommandExecutorImpl
 import com.github.shynixn.petblocks.core.logic.business.commandexecutor.ReloadCommandExecutorImpl
 import com.github.shynixn.petblocks.core.logic.business.service.*
 import com.google.inject.AbstractModule
 import com.google.inject.Scopes
-import com.google.inject.name.Names
-import org.bukkit.Bukkit
 import org.bukkit.plugin.Plugin
-import org.bukkit.plugin.PluginManager
 
 /**
  * Created by Shynixn 2018.
@@ -55,19 +49,8 @@ class PetBlocksDependencyInjectionBinder(private val plugin: Plugin) : AbstractM
      * Configures the business logic tree.
      */
     override fun configure() {
-        // Old
         bind(Plugin::class.java).toInstance(plugin)
-        Factory.initialize(plugin)
-        bind(PluginManager::class.java).toInstance(Bukkit.getServer().pluginManager)
-        val guiItems = BukkitStaticGUIItems()
-        bind(BukkitStaticGUIItems::class.java).toInstance(guiItems) // Compatibility reasons.
-        bind(OtherGUIItemsController::class.java).toInstance(guiItems)
-        bind(ParticleController::class.java).toInstance(BukkitParticleConfiguration())
-        bind(EngineController::class.java).toInstance(BukkitEngineConfiguration())
-        bind(CostumeController::class.java).annotatedWith(Names.named("ordinary")).toInstance(BukkitCostumeConfiguration("ordinary"))
-        bind(CostumeController::class.java).annotatedWith(Names.named("color")).toInstance(BukkitCostumeConfiguration("color"))
-        bind(CostumeController::class.java).annotatedWith(Names.named("rare")).toInstance(BukkitCostumeConfiguration("rare"))
-        bind(Config::class.java).toInstance(Config)
+        bind(Version::class.java).toInstance(VersionSupport.getServerVersion().toVersion())
 
         // CommandExecutors
         bind(ReloadCommandExecutor::class.java).to(ReloadCommandExecutorImpl::class.java)

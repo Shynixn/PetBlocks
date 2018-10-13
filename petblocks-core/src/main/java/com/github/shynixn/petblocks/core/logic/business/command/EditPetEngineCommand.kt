@@ -4,7 +4,7 @@ package com.github.shynixn.petblocks.core.logic.business.command
 
 import com.github.shynixn.petblocks.api.business.command.SourceCommand
 import com.github.shynixn.petblocks.api.business.service.*
-import com.github.shynixn.petblocks.api.persistence.entity.Engine
+import com.github.shynixn.petblocks.api.persistence.entity.Template
 import com.github.shynixn.petblocks.core.logic.business.extension.thenAcceptSafely
 import com.google.inject.Inject
 
@@ -64,7 +64,7 @@ class EditPetEngineCommand @Inject constructor(private val proxyService: ProxySe
                     playerProxy.sendMessage(prefix + "Collection does not contain number " + number + ".")
                 } else {
                     val guiItem = engineCollection.get()[number]
-                    petActionService.changeEngine(playerProxy.handle, guiItem.getPayload<Engine>().get())
+                    petActionService.changeTemplate(playerProxy.handle, guiItem.getPayload<Template>().get())
                     petMetaService.save(petMeta)
                 }
             }

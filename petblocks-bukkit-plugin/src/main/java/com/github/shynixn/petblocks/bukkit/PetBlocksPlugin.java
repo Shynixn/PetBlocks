@@ -8,14 +8,15 @@ import com.github.shynixn.petblocks.api.business.controller.PetBlockController;
 import com.github.shynixn.petblocks.api.business.enumeration.PluginDependency;
 import com.github.shynixn.petblocks.api.business.proxy.PluginProxy;
 import com.github.shynixn.petblocks.api.business.service.CommandService;
+import com.github.shynixn.petblocks.api.business.service.ConfigurationService;
 import com.github.shynixn.petblocks.api.business.service.DependencyService;
 import com.github.shynixn.petblocks.api.business.service.UpdateCheckService;
 import com.github.shynixn.petblocks.api.persistence.controller.PetMetaController;
 import com.github.shynixn.petblocks.bukkit.logic.compatibility.PetBlockManager;
 import com.github.shynixn.petblocks.bukkit.logic.business.listener.*;
 import com.github.shynixn.petblocks.bukkit.logic.business.proxy.FilterProxyImpl;
-import com.github.shynixn.petblocks.bukkit.nms.NMSRegistry;
-import com.github.shynixn.petblocks.bukkit.nms.VersionSupport;
+import com.github.shynixn.petblocks.bukkit.logic.business.nms.NMSRegistry;
+import com.github.shynixn.petblocks.bukkit.logic.business.nms.VersionSupport;
 import com.github.shynixn.petblocks.core.logic.compatibility.ReflectionUtils;
 import com.github.shynixn.petblocks.core.logic.compatibility.Config;
 import com.google.inject.Guice;
@@ -100,7 +101,19 @@ public final class PetBlocksPlugin extends JavaPlugin implements PluginProxy {
                 Bukkit.getPluginManager().registerEvents(this.resolve(CarryPet19R1Listener.class), this);
             }
 
-            if (Config.getInstance().isMetricsEnabled()) {
+            final UpdateCheckService updateCheckService = this.resolve(UpdateCheckService.class);
+            final DependencyService dependencyService = this.resolve(DependencyService.class);
+            final ConfigurationService configurationService = this.resolve(ConfigurationService.class);
+
+            updateCheckService.checkForUpdates();
+
+            if (dependencyService.isInstalled(PluginDependency.CLEARLAG)) {
+                Bukkit.getPluginManager().registerEvents(this.resolve(DependencyClearLagListener.class), this);
+            }
+
+            final boolean enableMetrics = configurationService.findValue("metrics");
+
+            if (enableMetrics) {
                 final Metrics metrics = new Metrics(this);
                 metrics.addCustomChart(new Metrics.SimplePie("storage", () -> {
                     if (PetBlocksPlugin.this.getConfig().getBoolean("sql.enabled")) {
@@ -108,15 +121,6 @@ public final class PetBlocksPlugin extends JavaPlugin implements PluginProxy {
                     }
                     return "SQLite";
                 }));
-            }
-
-            final UpdateCheckService updateCheckService = this.resolve(UpdateCheckService.class);
-            final DependencyService dependencyService = this.resolve(DependencyService.class);
-
-            updateCheckService.checkForUpdates();
-
-            if (dependencyService.isInstalled(PluginDependency.CLEARLAG)) {
-                Bukkit.getPluginManager().registerEvents(this.resolve(DependencyClearLagListener.class), this);
             }
 
             try {

@@ -8,7 +8,7 @@ import com.github.shynixn.petblocks.api.business.enumeration.GUIPage
 import com.github.shynixn.petblocks.api.business.enumeration.ScriptAction
 import com.github.shynixn.petblocks.api.business.service.*
 import com.github.shynixn.petblocks.api.persistence.entity.ChatMessage
-import com.github.shynixn.petblocks.api.persistence.entity.GUIItem
+import com.github.shynixn.petblocks.api.persistence.entity.GuiItem
 import com.github.shynixn.petblocks.core.logic.compatibility.GuiPageContainer
 import com.github.shynixn.petblocks.core.logic.business.extension.async
 import com.github.shynixn.petblocks.core.logic.business.extension.chatMessage
@@ -257,7 +257,7 @@ class GUIServiceImpl @Inject constructor(private val configurationService: Confi
         }
     }
 
-    private fun setItemsToInventory(player: Player, inventory: CarriedInventory<Player>, type: Int, items: List<GUIItem>, groupPermission: String?) {
+    private fun setItemsToInventory(player: Player, inventory: CarriedInventory<Player>, type: Int, items: List<GuiItem>, groupPermission: String?) {
         val previousContainer = petBlocksManager.pages[player]
         val container: GuiPageContainer
         val page = GUIPage.CUSTOM_COLLECTION
@@ -373,7 +373,7 @@ class GUIServiceImpl @Inject constructor(private val configurationService: Confi
     /**
      * Sets the given itemstack as new pet skin for the given [player].
      */
-    private fun setCollectionSkinItemToPlayer(player: Player, guiItem: GUIItem) {
+    private fun setCollectionSkinItemToPlayer(player: Player, guiItem: GuiItem) {
         persistenceService.getOrCreateFromPlayerUUID(player.uniqueId).thenAcceptSafely { petMeta ->
             petMeta.setSkin(CompatibilityItemType.getFromId(guiItem.type).name, guiItem.data, guiItem.skin, guiItem.unbreakable)
             petBlocksManager.gui.setPage(player, GUIPage.MAIN, petMeta)

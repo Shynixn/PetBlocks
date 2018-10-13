@@ -36,6 +36,7 @@ install: true
     #- mvn install:install-file -Dfile=spigot-1.12.jar -DgroupId=org.spigotmc -DartifactId=spigot112R1 -Dversion=1.12.0-R1.0 -Dpackaging=jar
     #- mvn install:install-file -Dfile=spigot-1.13.jar -DgroupId=org.spigotmc -DartifactId=spigot113R1 -Dversion=1.13.0-R1.0 -Dpackaging=jar
     #- mvn install:install-file -Dfile=spigot-1.13.1.jar -DgroupId=org.spigotmc -DartifactId=spigot113R2 -Dversion=1.13.1-R2.0 -Dpackaging=jar
+    #- mvn install:install-file -Dfile=HeadDatabaseAPI.jar -DgroupId=me.arcaniax.hdb -DartifactId=headdatabase-api -Dversion=0.3 -Dpackaging=jar
     #- wget https://dev.bukkit.org/projects/clearlagg/files/2442450/download -P /home/travis/build/Shynixn/PetBlocks/lib/ -O Clearlag.jar
     #- mvn install:install-file -Dfile=Clearlag.jar -DgroupId=me.minebuilders -DartifactId=clearlag-core -Dversion=2.9.7 -Dpackaging=jar
     #- cd /home/travis/build/Shynixn/PetBlocks/petblocks-sponge-plugin
