@@ -49,8 +49,10 @@ class PetBlocksDependencyInjectionBinder(private val plugin: Plugin) : AbstractM
      * Configures the business logic tree.
      */
     override fun configure() {
+        val versionSupport = VersionSupport.getServerVersion()
+
         bind(Plugin::class.java).toInstance(plugin)
-        bind(Version::class.java).toInstance(VersionSupport.getServerVersion().toVersion())
+        bind(Version::class.java).toInstance(versionSupport.toVersion())
 
         // CommandExecutors
         bind(ReloadCommandExecutor::class.java).to(ReloadCommandExecutorImpl::class.java)
@@ -77,6 +79,13 @@ class PetBlocksDependencyInjectionBinder(private val plugin: Plugin) : AbstractM
         bind(PetService::class.java).to(PetServiceImpl::class.java).`in`(Scopes.SINGLETON)
         bind(DependencyService::class.java).to(DependencyServiceImpl::class.java).`in`(Scopes.SINGLETON)
         bind(CarryPetService::class.java).to(CarryPetServiceImpl::class.java).`in`(Scopes.SINGLETON)
+
+        when {
+            versionSupport.isVersionSameOrGreaterThan(VersionSupport.VERSION_1_13_R2) -> bind(EntityRegistrationService::class.java).to(EntityRegistration113R2ServiceImpl::class.java).`in`(Scopes.SINGLETON)
+            versionSupport.isVersionSameOrGreaterThan(VersionSupport.VERSION_1_13_R1) -> bind(EntityRegistrationService::class.java).to(EntityRegistration113R1ServiceImpl::class.java).`in`(Scopes.SINGLETON)
+            versionSupport.isVersionSameOrGreaterThan(VersionSupport.VERSION_1_11_R1) -> bind(EntityRegistrationService::class.java).to(EntityRegistration111R1ServiceImpl::class.java).`in`(Scopes.SINGLETON)
+            else -> bind(EntityRegistrationService::class.java).to(EntityRegistration18R1ServiceImpl::class.java).`in`(Scopes.SINGLETON)
+        }
 
         // Dependency resolving
         val dependencyService = DependencyServiceImpl(plugin)
