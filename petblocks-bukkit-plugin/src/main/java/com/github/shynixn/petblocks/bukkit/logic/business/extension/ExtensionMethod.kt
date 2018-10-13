@@ -12,6 +12,7 @@ import com.github.shynixn.petblocks.core.logic.persistence.entity.PositionEntity
 import com.mojang.authlib.GameProfile
 import com.mojang.authlib.properties.Property
 import org.bukkit.Location
+import org.bukkit.configuration.MemorySection
 import org.bukkit.entity.Player
 import org.bukkit.inventory.Inventory
 import org.bukkit.inventory.ItemStack
@@ -149,6 +150,17 @@ fun Inventory.clearCompletely() {
     for (i in 0 until contents.size) {
         setItem(i, null)
     }
+}
+
+/**
+ * Transforms the given object to a memory section map.
+ */
+fun Any.yamlMap(deep: Boolean = false): Map<String, Any> {
+    if (this !is MemorySection) {
+        throw IllegalArgumentException("This object is not a MemorySection!")
+    }
+
+    return this.getValues(deep)
 }
 
 /**
