@@ -29,4 +29,4 @@ import com.github.shynixn.petblocks.api.business.proxy.PetProxy
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class PetRemoveEvent(pet: PetProxy) : PetCancelableEvent(pet)
+class PetRemoveEvent(pet: PetProxy) : PetEvent(pet)

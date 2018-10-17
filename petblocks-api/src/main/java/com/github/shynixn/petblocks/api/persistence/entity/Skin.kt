@@ -1,7 +1,5 @@
 package com.github.shynixn.petblocks.api.persistence.entity
 
-import com.github.shynixn.petblocks.api.business.enumeration.EntityType
-
 /**
  * Created by Shynixn 2018.
  * <p>
@@ -29,64 +27,24 @@ import com.github.shynixn.petblocks.api.business.enumeration.EntityType
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-interface PetMeta {
+interface Skin {
     /**
-     * Database id.
+     * Skin url or owner name.
      */
-    var id: Long
+    var owner: String
 
     /**
-     * Meta data of the owner.
+     * Typename of the skin.
      */
-    val playerMeta: PlayerMeta
+    var typeName: String
 
     /**
-     * Particle of the pet.
+     * Data Value.
      */
-    val particle: Particle
+    var dataValue: Int
 
     /**
-     * Is the pet using sounds.
-     */
-    var sound: Boolean
-
-    /**
-     * Displayed name on top of the pet.
-     */
-    var displayName: String
-
-    /**
-     * Skin of the pet head.
-     */
-    var skin: String
-
-    /**
-     * ItemId of the pet head.
-     */
-    var itemId: Int
-
-    /**
-     * ItemDamage of the pet head.
-     */
-    var itemDamage: Int
-
-    /**
-     * Unbreakable Tag of the pet head.
+     * Unbreakable.
      */
     var unbreakable: Boolean
-
-    /**
-     * Climbing height.
-     */
-    val climbingHeight: Double
-
-    /**
-     * Movement speed modifier.
-     */
-    val movementSpeedModifier: Double
-
-    /**
-     * Type of the hitbox entity.
-     */
-    val hitBoxEntityType: EntityType
 }

@@ -1,5 +1,6 @@
 package com.github.shynixn.petblocks.api.business.proxy
 
+import com.github.shynixn.petblocks.api.business.service.LoggingService
 import com.github.shynixn.petblocks.api.persistence.entity.PetMeta
 
 /**
@@ -41,6 +42,23 @@ interface PetProxy {
     val isDead: Boolean
 
     /**
+     * Gets the logger of the pet.
+     */
+    val logger: LoggingService
+
+    /**
+     * Runnable value which represents internal nbt changes of the design armorstand.
+     * Gets automatically applied next pet tick.
+     */
+    val designNbtChange: Map<String, Any>
+
+    /**
+     * Runnable value which represents internal nbt changes of the hitboxEntity.
+     * Gets automatically applied next pet tick.
+     */
+    val hitBoxNbtChange: Map<String, Any>
+
+    /**
      * Sets the entity wearing the pet.
      */
     fun startWearing()
@@ -59,6 +77,11 @@ interface PetProxy {
      * Stops the current target riding the pet.
      */
     fun stopRiding()
+
+    /**
+     * Plays the moving sound.
+     */
+    fun playMovingSound()
 
     /**
      * Gets the itemStack on the pet head.

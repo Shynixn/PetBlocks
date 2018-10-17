@@ -10,7 +10,6 @@ import com.github.shynixn.petblocks.api.business.service.ParticleService
 import com.github.shynixn.petblocks.api.persistence.entity.Particle
 import com.github.shynixn.petblocks.bukkit.logic.business.extension.sendPacket
 import com.github.shynixn.petblocks.bukkit.logic.business.nms.VersionSupport
-import com.github.shynixn.petblocks.bukkit.logic.business.nms.v1_13_R1.MaterialCompatibility13
 import com.github.shynixn.petblocks.core.logic.business.extension.async
 import com.google.inject.Inject
 import org.bukkit.Location
@@ -125,9 +124,11 @@ class ParticleServiceImpl @Inject constructor(private val concurrencyService: Co
 
             if (particle.materialName != null) {
                 additionalPayload = if (particle.type == ParticleType.ITEM_CRACK) {
-                    intArrayOf(MaterialCompatibility13.getIdFromMaterial(Material.getMaterial(particle.materialName)), particle.data)
+                    //intArrayOf(MaterialCompatibility13.getIdFromMaterial(Material.getMaterial(particle.materialName)), particle.data)
+                    intArrayOf(0)
                 } else {
-                    intArrayOf(MaterialCompatibility13.getIdFromMaterial(Material.getMaterial(particle.materialName)), (particle.data shl 12))
+                    //intArrayOf(MaterialCompatibility13.getIdFromMaterial(Material.getMaterial(particle.materialName)), (particle.data shl 12))
+                    intArrayOf(1)
                 }
             }
 

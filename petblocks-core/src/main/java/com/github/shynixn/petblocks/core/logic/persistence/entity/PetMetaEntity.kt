@@ -1,5 +1,6 @@
 package com.github.shynixn.petblocks.core.logic.persistence.entity
 
+import com.github.shynixn.petblocks.api.business.enumeration.EntityType
 import com.github.shynixn.petblocks.api.persistence.entity.Particle
 import com.github.shynixn.petblocks.api.persistence.entity.PetMeta
 import com.github.shynixn.petblocks.api.persistence.entity.PlayerMeta
@@ -32,6 +33,18 @@ import com.github.shynixn.petblocks.api.persistence.entity.PlayerMeta
  * SOFTWARE.
  */
 class PetMetaEntity(override val playerMeta: PlayerMeta, override val particle: Particle) : PetMeta {
+    /**
+     * Climbing height.
+     */
+    override val climbingHeight: Double = 1.0
+    /**
+     * Movement speed modifier.
+     */
+    override val movementSpeedModifier: Double = 1.0
+    /**
+     * Type of the hitbox entity.
+     */
+    override val hitBoxEntityType: EntityType = EntityType.RABBIT
     /**
      * Database id.
      */

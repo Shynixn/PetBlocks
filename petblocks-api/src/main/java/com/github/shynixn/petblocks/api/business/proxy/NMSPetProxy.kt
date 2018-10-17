@@ -1,6 +1,4 @@
-package com.github.shynixn.petblocks.api.persistence.entity
-
-import com.github.shynixn.petblocks.api.business.enumeration.EntityType
+package com.github.shynixn.petblocks.api.business.proxy
 
 /**
  * Created by Shynixn 2018.
@@ -29,64 +27,9 @@ import com.github.shynixn.petblocks.api.business.enumeration.EntityType
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-interface PetMeta {
+interface NMSPetProxy {
     /**
-     * Database id.
+     * Gets the proxy.
      */
-    var id: Long
-
-    /**
-     * Meta data of the owner.
-     */
-    val playerMeta: PlayerMeta
-
-    /**
-     * Particle of the pet.
-     */
-    val particle: Particle
-
-    /**
-     * Is the pet using sounds.
-     */
-    var sound: Boolean
-
-    /**
-     * Displayed name on top of the pet.
-     */
-    var displayName: String
-
-    /**
-     * Skin of the pet head.
-     */
-    var skin: String
-
-    /**
-     * ItemId of the pet head.
-     */
-    var itemId: Int
-
-    /**
-     * ItemDamage of the pet head.
-     */
-    var itemDamage: Int
-
-    /**
-     * Unbreakable Tag of the pet head.
-     */
-    var unbreakable: Boolean
-
-    /**
-     * Climbing height.
-     */
-    val climbingHeight: Double
-
-    /**
-     * Movement speed modifier.
-     */
-    val movementSpeedModifier: Double
-
-    /**
-     * Type of the hitbox entity.
-     */
-    val hitBoxEntityType: EntityType
+    val proxy: PetProxy
 }

@@ -20,7 +20,9 @@ import org.bukkit.inventory.PlayerInventory
 import org.bukkit.inventory.meta.SkullMeta
 import org.bukkit.util.Vector
 import org.yaml.snakeyaml.external.biz.base64Coder.Base64Coder
+import java.lang.reflect.Field
 import java.lang.reflect.InvocationTargetException
+import java.lang.reflect.Modifier
 import java.util.*
 
 /**
@@ -363,4 +365,14 @@ internal fun ItemStack.getSkin(): Optional<String> {
     }
 
     return Optional.empty()
+}
+
+/**
+ * Removes the final modifier from this field to allow editing.
+ */
+fun Field.removeFinalModifier() {
+    isAccessible = true
+    val modifiersField = Field::class.java.getDeclaredField("modifiers")
+    modifiersField.isAccessible = true
+    modifiersField.setInt(this, this.modifiers and Modifier.FINAL.inv())
 }

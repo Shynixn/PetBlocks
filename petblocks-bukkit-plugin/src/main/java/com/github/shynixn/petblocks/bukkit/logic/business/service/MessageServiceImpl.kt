@@ -1,9 +1,9 @@
 package com.github.shynixn.petblocks.bukkit.logic.business.service
 
 import com.github.shynixn.petblocks.api.business.enumeration.ChatColor
+import com.github.shynixn.petblocks.api.business.enumeration.Version
 import com.github.shynixn.petblocks.api.business.service.MessageService
 import com.github.shynixn.petblocks.api.persistence.entity.ChatMessage
-import com.github.shynixn.petblocks.bukkit.logic.business.extension.findServerVersion
 import com.github.shynixn.petblocks.bukkit.logic.business.extension.sendPacket
 import com.github.shynixn.petblocks.bukkit.logic.business.nms.VersionSupport
 import org.bukkit.Bukkit
@@ -37,7 +37,7 @@ import org.bukkit.entity.Player
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class MessageServiceImpl : MessageService {
+class MessageServiceImpl(private val version: Version) : MessageService {
     /**
      * Sends a message to the given source.
      */
@@ -101,13 +101,13 @@ class MessageServiceImpl : MessageService {
         finalMessage.append("]}")
 
         val clazz: Class<*> = if (VersionSupport.getServerVersion() == VersionSupport.VERSION_1_8_R1) {
-            Class.forName("net.minecraft.server.VERSION.ChatSerializer".findServerVersion())
+            findClazz("net.minecraft.server.VERSION.ChatSerializer")
         } else {
-            Class.forName("net.minecraft.server.VERSION.IChatBaseComponent\$ChatSerializer".findServerVersion())
+            findClazz("net.minecraft.server.VERSION.IChatBaseComponent\$ChatSerializer")
         }
 
-        val packetClazz = Class.forName("net.minecraft.server.VERSION.PacketPlayOutChat".findServerVersion())
-        val chatBaseComponentClazz = Class.forName("net.minecraft.server.VERSION.IChatBaseComponent".findServerVersion())
+        val packetClazz = findClazz("net.minecraft.server.VERSION.PacketPlayOutChat")
+        val chatBaseComponentClazz = findClazz("net.minecraft.server.VERSION.IChatBaseComponent")
 
         val method = clazz.getDeclaredMethod("a", String::class.java)
         method.isAccessible = true
@@ -115,12 +115,19 @@ class MessageServiceImpl : MessageService {
         val packet: Any
 
         packet = if (VersionSupport.getServerVersion().isVersionSameOrGreaterThan(VersionSupport.VERSION_1_12_R1)) {
-            val chatEnumMessage = Class.forName("net.minecraft.server.VERSION.ChatMessageType".findServerVersion())
+            val chatEnumMessage = findClazz("net.minecraft.server.VERSION.ChatMessageType")
             packetClazz.getDeclaredConstructor(chatBaseComponentClazz, chatEnumMessage).newInstance(chatComponent, chatEnumMessage.enumConstants[0])
         } else {
             packetClazz.getDeclaredConstructor(chatBaseComponentClazz, Byte::class.javaPrimitiveType!!).newInstance(chatComponent, 0.toByte())
         }
 
         player.sendPacket(packet)
+    }
+
+    /**
+     * Finds the class from the version.
+     */
+    private fun findClazz(name: String): Class<*> {
+        return Class.forName(name.replace("VERSION", version.bukkitId))
     }
 }

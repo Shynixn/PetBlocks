@@ -1,15 +1,25 @@
 package com.github.shynixn.petblocks.bukkit.logic.business.proxy
 
 import com.github.shynixn.petblocks.api.PetBlocksApi
-import com.github.shynixn.petblocks.api.business.entity.PetBlock
+import com.github.shynixn.petblocks.api.bukkit.event.PetRemoveEvent
+import com.github.shynixn.petblocks.api.bukkit.event.PetRideEvent
+import com.github.shynixn.petblocks.api.bukkit.event.PetSpawnEvent
+import com.github.shynixn.petblocks.api.bukkit.event.PetWearEvent
 import com.github.shynixn.petblocks.api.business.proxy.PetProxy
+import com.github.shynixn.petblocks.api.business.service.LoggingService
 import com.github.shynixn.petblocks.api.persistence.entity.PetMeta
 import com.github.shynixn.petblocks.api.persistence.entity.Position
 import com.github.shynixn.petblocks.bukkit.logic.business.extension.toVector
+import org.bukkit.Bukkit
 import org.bukkit.Location
 import org.bukkit.entity.ArmorStand
 import org.bukkit.entity.LivingEntity
+import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
+import org.bukkit.metadata.FixedMetadataValue
+import org.bukkit.potion.PotionEffect
+import org.bukkit.potion.PotionEffectType
+import org.bukkit.util.EulerAngle
 import org.bukkit.util.Vector
 
 @Suppress("UNCHECKED_CAST")
@@ -40,44 +50,152 @@ import org.bukkit.util.Vector
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class PetProxyImpl(
-        /**
-         * PetProxy.
-         */
-        val petBlock: PetBlock<Any, Any>) : PetProxy {
+class PetProxyImpl(override val meta: PetMeta, private val design: ArmorStand, private val hitBox: LivingEntity, private val owner: Player) : PetProxy, Runnable {
+    /**
+     * Gets the logger of the pet.
+     */
+    override var logger: LoggingService = PetBlocksApi.resolve(LoggingService::class.java)
 
     /**
-     * Gets the meta data.
+     * Runnable value which represents internal nbt changes of the design armorstand.
+     * Gets automatically applied next pet tick.
      */
-    override val meta: PetMeta
-        get() = petBlock.meta
+    override val designNbtChange = HashMap<String, Any>()
+    /**
+     * Runnable value which represents internal nbt changes of the hitboxEntity.
+     * Gets automatically applied next pet tick.
+     */
+    override val hitBoxNbtChange = HashMap<String, Any>()
+
+    /**
+     * Gets if the pet is dead or was removed.
+     */
+    override val isDead: Boolean
+        get() = this.design.isDead || hitBox.isDead
+
+    /**
+     * Init.
+     */
+    init {
+        design.bodyPose = EulerAngle(0.0, 0.0, 2878.0)
+        design.leftArmPose = EulerAngle(2878.0, 0.0, 0.0)
+        design.setMetadata("keep", FixedMetadataValue(Bukkit.getPluginManager().getPlugin("PetBlocks"), true))
+        design.isCustomNameVisible = true
+        design.customName = meta.displayName
+        design.removeWhenFarAway = false
+        design.removeWhenFarAway = false
+
+        hitBox.addPotionEffect(PotionEffect(PotionEffectType.INVISIBILITY, 9999999, 1))
+        hitBox.setMetadata("keep", FixedMetadataValue(Bukkit.getPluginManager().getPlugin("PetBlocks"), true))
+        hitBox.isCustomNameVisible = false
+        hitBox.customName = "PetBlockIdentifier"
+
+        val event = PetSpawnEvent(this)
+        Bukkit.getPluginManager().callEvent(event)
+    }
+
+    /**
+     * Gets the pet owner.
+     */
+    override fun <P> getPlayer(): P {
+        return owner as P
+    }
+
+    /**
+     * Gets the head armorstand.
+     */
+    override fun <A> getHeadArmorstand(): A {
+        return design as A
+    }
+
+    /**
+     * Gets a living hitbox entity.
+     */
+    override fun <L> getHitBoxLivingEntity(): L {
+        return hitBox as L
+    }
 
     /**
      * Sets the entity wearing the pet.
      */
     override fun startWearing() {
-        petBlock.wear(petBlock.player)
+        if (design.passenger != null) {
+            return
+        }
+
+        val event = PetWearEvent(false, this)
+        Bukkit.getPluginManager().callEvent(event)
+
+        if (event.isCancelled) {
+            return
+        }
+
+        design.isCustomNameVisible = false
+        designNbtChange["Marker"] = true
+        hitBoxNbtChange["NoAI"] = true
+
+        owner.passenger = design
+        owner.closeInventory()
     }
 
     /**
      * Stops the current target wearing the pet.
      */
     override fun stopWearing() {
-        petBlock.eject(petBlock.player)
+        if (design.passenger == null) {
+            return
+        }
+
+        val event = PetWearEvent(true, this)
+        Bukkit.getPluginManager().callEvent(event)
+
+        if (event.isCancelled) {
+            return
+        }
+
+        design.isCustomNameVisible = true
+        designNbtChange["Marker"] = false
+        hitBoxNbtChange["NoAI"] = false
+
+        owner.eject()
     }
 
     /**
      * Starts riding the pet.zg
      */
     override fun startRiding() {
-        petBlock.ride(petBlock.player)
+        if (owner.passenger != null) {
+            return
+        }
+
+        val event = PetRideEvent(false, this)
+        Bukkit.getPluginManager().callEvent(event)
+
+        if (event.isCancelled) {
+            return
+        }
+
+        design.velocity = Vector(0, 1, 0)
+        design.passenger = owner
+        owner.closeInventory()
     }
 
     /**
      * Stops the current target riding the pet.
      */
     override fun stopRiding() {
-        petBlock.eject(petBlock.player)
+        if (owner.passenger != null) {
+            return
+        }
+
+        val event = PetRideEvent(true, this)
+        Bukkit.getPluginManager().callEvent(event)
+
+        if (event.isCancelled) {
+            return
+        }
+
+        owner.eject()
     }
 
     /**
@@ -88,14 +206,14 @@ class PetProxyImpl(
             throw IllegalArgumentException("ItemStack has to be a BukkitItemStack!")
         }
 
-        (petBlock.armorStand as ArmorStand).helmet = itemStack
+        design.helmet = itemStack
     }
 
     /**
      * Gets the itemStack on the pet head.
      */
     override fun <I> getHeadItemStack(): I {
-        return ((petBlock.armorStand as ArmorStand).helmet).clone() as I
+        return design.helmet.clone() as I
     }
 
     /**
@@ -106,22 +224,47 @@ class PetProxyImpl(
             throw IllegalArgumentException("Location has to be a BukkitLocation!")
         }
 
-        petBlock.teleport(location)
+        design.teleport(location)
+        hitBox.teleport(location)
+    }
+
+    /**
+     * When an object implementing interface `Runnable` is used
+     * to create a thread, starting the thread causes the object's
+     * `run` method to be called in that separately executing
+     * thread.
+     *
+     *
+     * The general contract of the method `run` is that it may
+     * take any action whatsoever.
+     *
+     * @see java.lang.Thread.run
+     */
+    override fun run() {
     }
 
     /**
      * Gets the location of the pet.
      */
     override fun <L> getLocation(): L {
-        return (petBlock.engineEntity as LivingEntity).location as L
+        return hitBox.location as L
     }
 
     /**
      * Removes the pet.
      */
     override fun remove() {
-        petBlock.remove()
-        PetBlocksApi.getDefaultPetBlockController<Any>().removeByPlayer(petBlock.player)
+        Bukkit.getPluginManager().callEvent(PetRemoveEvent(this))
+        this.design.remove()
+        this.hitBox.remove()
+    }
+
+
+    /**
+     * Plays the moving sound.
+     */
+    override fun playMovingSound() {
+
     }
 
     /**
@@ -129,7 +272,7 @@ class PetProxyImpl(
      */
     override fun <V> setVelocity(vector: V) {
         if (vector is Position) {
-            (petBlock.engineEntity as LivingEntity).velocity = vector.toVector()
+            hitBox.velocity = vector.toVector()
             return
         }
 
@@ -137,13 +280,13 @@ class PetProxyImpl(
             throw IllegalArgumentException("Vector has to be a BukkitVector!")
         }
 
-        (petBlock.engineEntity as LivingEntity).velocity = vector
+        hitBox.velocity = vector
     }
 
     /**
      * Gets the velocity of the pet.
      */
     override fun <V> getVelocity(): V {
-        return (petBlock.engineEntity as LivingEntity).velocity as V
+        return hitBox.velocity as V
     }
 }
