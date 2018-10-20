@@ -3,7 +3,6 @@
 package com.github.shynixn.petblocks.core.logic.business.extension
 
 import com.github.shynixn.petblocks.api.PetBlocksApi
-import com.github.shynixn.petblocks.api.business.command.PlayerCommand
 import com.github.shynixn.petblocks.api.business.enumeration.ChatColor
 import com.github.shynixn.petblocks.api.business.service.ConcurrencyService
 import com.github.shynixn.petblocks.api.business.service.LoggingService
@@ -54,7 +53,7 @@ fun chatMessage(f: ChatMessage.() -> Unit): ChatMessage {
  * @param args args
  * @return merged.
  */
-fun PlayerCommand.mergeArgs(args: Array<out String>): String {
+fun mergeArgs(args: Array<out String>): String {
     val builder = StringBuilder()
     for (i in 1 until args.size) {
         if (builder.isNotEmpty()) {
@@ -74,6 +73,13 @@ inline fun Any.sync(concurrencyService: ConcurrencyService, delayTicks: Long = 0
 }
 
 /**
+ * Executes the given [f] via the [concurrencyService] asynchronous.
+ */
+inline fun Any.async(concurrencyService: ConcurrencyService, delayTicks: Long = 0L, repeatingTicks: Long = 0L, crossinline f: () -> Unit) {
+    concurrencyService.runTaskAsync(delayTicks, repeatingTicks, Runnable { f.invoke() })
+}
+
+/**
  * Accepts the action safely.
  */
 fun <T> CompletableFuture<T>.thenAcceptSafely(f: (T) -> Unit) {
@@ -82,13 +88,6 @@ fun <T> CompletableFuture<T>.thenAcceptSafely(f: (T) -> Unit) {
         loggingService.error("Failed to execute Task.", e)
         throw RuntimeException(e)
     }
-}
-
-/**
- * Executes the given [f] via the [concurrencyService] asynchronous.
- */
-inline fun Any.async(concurrencyService: ConcurrencyService, delayTicks: Long = 0L, repeatingTicks: Long = 0L, crossinline f: () -> Unit) {
-    concurrencyService.runTaskAsync(delayTicks, repeatingTicks, Runnable { f.invoke() })
 }
 
 /**
