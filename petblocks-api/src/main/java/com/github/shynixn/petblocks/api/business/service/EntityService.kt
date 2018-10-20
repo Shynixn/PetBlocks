@@ -1,5 +1,8 @@
 package com.github.shynixn.petblocks.api.business.service
 
+import com.github.shynixn.petblocks.api.business.proxy.PetProxy
+import com.github.shynixn.petblocks.api.persistence.entity.PetMeta
+
 /**
  * Created by Shynixn 2018.
  * <p>
@@ -33,6 +36,11 @@ interface EntityService {
      * Returns true if registered. Returns false when not registered.
      */
     fun registerEntitiesOnServer(): Boolean
+
+    /**
+     * Spawns a new unManaged petProxy.
+     */
+    fun <L> spawnPetProxy(location: L, petMeta: PetMeta): PetProxy
 
     /**
      * Kills the nearest entity of the [player].

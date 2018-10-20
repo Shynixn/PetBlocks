@@ -43,10 +43,9 @@ interface PetRepository {
     fun remove(petProxy: PetProxy)
 
     /**
-     * Returns the PetProxy of from the given player petMeta. Creates
-     * a new one if it does not exist yet.
+     * Saves the petProxy into the repository.
      */
-    fun <L> getOrSpawnFromPetMeta(location: L, petMeta: PetMeta): PetProxy
+    fun save(petProxy: PetProxy)
 
     /**
      * Gets the pet from the uuid. Throws exception if not exist.

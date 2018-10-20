@@ -39,7 +39,7 @@ import java.util.concurrent.CompletableFuture
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class PetServiceImpl @Inject constructor(private val petMetaService: PersistencePetMetaService, private val loggingService: LoggingService, private val configurationService: ConfigurationService, private val proxyService: ProxyService, private val dependencyService: DependencyService, private val petRepository: PetRepository, private val concurrencyService: ConcurrencyService) : PetService, Runnable {
+class PetServiceImpl @Inject constructor(private val petMetaService: PersistencePetMetaService, private val loggingService: LoggingService, private val configurationService: ConfigurationService, private val proxyService: ProxyService, private val dependencyService: DependencyService, private val petRepository: PetRepository, private val concurrencyService: ConcurrencyService, private val entityService: EntityService) : PetService, Runnable {
     init {
         concurrencyService.runTaskSync(0L, 20L * 60 * 5, this)
     }
@@ -66,7 +66,8 @@ class PetServiceImpl @Inject constructor(private val petMetaService: Persistence
             }
         } else {
             petMetaService.getOrCreateFromPlayerUUID(uuid).thenAcceptSafely { petMeta ->
-                val petProxy = petRepository.getOrSpawnFromPetMeta(playerProxy.get().getLocation<Any>(), petMeta)
+                val petProxy = entityService.spawnPetProxy(playerProxy.get().getLocation<Any>(), petMeta)
+                petRepository.save(petProxy)
                 completableFuture.complete(petProxy)
             }
         }

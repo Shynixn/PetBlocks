@@ -109,7 +109,7 @@ class PetMetaSqlRepository(private val sqlDbContext: SqlDbContext) : PetMetaRepo
     /**
      * Updates the [petMeta] in the database.
      */
-    private fun update(connection: Connection, petMeta: PetMeta) : PetMeta {
+    private fun update(connection: Connection, petMeta: PetMeta): PetMeta {
         val playerMeta = petMeta.playerMeta
         val particleMeta = petMeta.particle
 
@@ -117,7 +117,7 @@ class PetMetaSqlRepository(private val sqlDbContext: SqlDbContext) : PetMetaRepo
                 , "uuid" to playerMeta.uuid
                 , "name" to playerMeta.name)
 
-        particleMeta.id = sqlDbContext.insert(connection, "SHY_PARTICLE_EFFECT "
+        sqlDbContext.update(connection, "SHY_PARTICLE_EFFECT ", "WHERE id=" + particleMeta.id
                 , "name" to particleMeta.type.gameId_113
                 , "amount" to particleMeta.amount
                 , "speed" to particleMeta.speed
@@ -133,7 +133,7 @@ class PetMetaSqlRepository(private val sqlDbContext: SqlDbContext) : PetMetaRepo
     /**
      * Inserts the [petMeta] into the database.
      */
-    private fun insertInto(connection: Connection, petMeta: PetMeta) : PetMeta {
+    private fun insertInto(connection: Connection, petMeta: PetMeta): PetMeta {
         val playerMeta = petMeta.playerMeta
         val particleMeta = petMeta.particle
 
@@ -150,6 +150,8 @@ class PetMetaSqlRepository(private val sqlDbContext: SqlDbContext) : PetMetaRepo
                 , "z" to particleMeta.offSetZ
                 , "material" to particleMeta.materialName
                 , "data" to particleMeta.data)
+
+        petMeta.id = sqlDbContext.insert(connection, "SHY_PET_META")
 
         return petMeta
     }

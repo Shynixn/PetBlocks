@@ -1,7 +1,6 @@
 package com.github.shynixn.petblocks.core.logic.persistence.repository
 
 import com.github.shynixn.petblocks.api.business.proxy.PetProxy
-import com.github.shynixn.petblocks.api.persistence.entity.PetMeta
 import com.github.shynixn.petblocks.api.persistence.repository.PetRepository
 import java.util.*
 
@@ -45,18 +44,19 @@ class PetRunTimeRepository : PetRepository {
     }
 
     /**
+     * Saves the petProxy into the repository.
+     */
+    override fun save(petProxy: PetProxy) {
+        if (!pets.contains(petProxy)) {
+            pets.add(petProxy)
+        }
+    }
+
+    /**
      * Returns [List] with a list of stored [PetProxy].
      */
     override fun getAll(): List<PetProxy> {
         return pets
-    }
-
-    /**
-     * Returns the PetProxy of from the given player petMeta. Creates
-     * a new one if it does not exist yet.
-     */
-    override fun <L> getOrSpawnFromPetMeta(location: L, petMeta: PetMeta): PetProxy {
-        throw RuntimeException("Failed to spawn pet because not implemented.")
     }
 
     /**
@@ -71,6 +71,6 @@ class PetRunTimeRepository : PetRepository {
      * Gets if the given player uniqueId has got an active pet.
      */
     override fun hasPet(uuid: UUID): Boolean {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        return pets.firstOrNull { p -> p.meta.playerMeta.uuid == uuid } != null
     }
 }
