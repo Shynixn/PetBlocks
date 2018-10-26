@@ -20,17 +20,29 @@ metrics: true
 
 ############################
 
+# Config version
+
+# Change the config-version when you have read the update log and see a change of
+# the config.yml. The config.yml does not change every update and the plugin automatically
+# checks if your config-version is compatible with the installed plugin.jar.
+
+############################
+
+config-version: 1.0
+
+############################
+
 # Database settings
 
-# All petblocks are stored in a local file by default.
-# It is recommend to edit these settings when you are using a MySQL database
-# and have got a bigger player-base. Also if you want to use the same pets
-# cross servers. (BungeeCord)
+# All pets are stored in a SQLite database per default which is basically the
+# PetBlocks.db file in the plugin folder.
+# Available types are 'sqlite' and 'mysql'.
+# Use the same mysql database for 2 or more server in order to allow cross server pets.
 
 ############################
 
 sql:
-  enabled: false
+  type: 'sqlite'
   host: localhost
   port: 3306
   database: ''
@@ -42,79 +54,89 @@ sql:
 
 # Command settings
 
-# Instead of setting the commands inside of the plugin.yml, I believe you should be able to customize
-# the whole command by yourself. Name, description, permission customize it to your needs.
-
-# petblocks-gui: Settings for the command to open the petblock-GUI
-# petblock-configuration: Settings for the command to manage petblock-configuration
+# There are commands available in PetBlocks you can customize by yourself.
+# This means you can disable the command entirely, change the name, description
+# and even permission.
 
 ############################
 
-petblocks-gui:
-  enabled: true
-  command: petblock
-  useage: /<command>
-  description: Opens the pet GUI.
-  permission: petblocks.command.use
-  permission-message: You don't have permission
-petblocks-configuration:
-  enabled: true
-  command: petblocks
-  useage: /<command>
-  description: Command to configure pets.
-  permission: petblocks.command.admin
-  permission-message: You don't have permission
-
-
-############################
-
-# Pet settings
-
-# Settings to customize the pet itself.
-
-# combat-invincible: Should petblocks be able to die when being punched?
-# combat-health: Amount of health when petblocks are not invincible.
-
-# warp-teleports-in-seconds: Amount of seconds a petblock waits to teleport after his owner.
-
-# flee-flees-in-combat: Should petblocks despawn when their owner is in combat?
-# flee-reappears-in-seconds: Amount of seconds the petblock reappears after fleeing the the combat.
-
-# follow-amount-blocks-away: Amount of blocks the pet does not get in touch with it's owner
-# follow-teleport-fall: Should the pet fall from the owner's head when the owner is teleporting to another location?
-# follow-max-range-teleport: Amount of blocks the pet can stay away from the owner before it teleports back to the owner
-# follow-carry: Should the pet be able to carry with the player's hands? (Very unstable and not recommend for many types of server)
-# follow-flying-wall-colliding: Should the pet not be able to fly through blocks?
-# follow-afraid-water: Should the pet be afraid of water?
-# follow-afraid-water: Should the pet display angry particles when getting in touch with water?
-
-# feeding-enabled: Should feeding pets be possible?
-# feeding-click-particle: Particle effect which gets displayed when a player feeds his pet with a carrot.
-# feeding-click-sound: Sound which gets played when a player feeds his pet with a carrot.
-
-# design-max-petname-length: The max amount of letters a name can be
-# design-show-damage-animation: Should the petlock display damage animation when being hit? (Works only for below 1.8.x)
-# design-sounds-other-players: Should the petblock sounds be audible for other players?
-# design-petname-blacklist: Names which are forbidden to use as pet names!
-
-# modifier-riding-speed: Speed of the petblock when the owner is riding on it (1 = default speed, 0.5 = half speed,...)
-# modifier-walking-speed: Speed of the petblock when it casually follows the owner (1 = default speed, 0.5 = half speed,...)
-# modifier-climbing-height: Amount of blocks the petblock can jump when the it casually follows the owner (1 = default height, 0.5 = half height,...)
-
-# join-enabled: Should the player receive a default pet when he enters the server?
-# join-overwrite-previous-pet: Should the player receive a default pet and overwrite any existing pets when he enters the server?
+commands:
+  petblock:
+    enabled: true
+    command: petblock
+    useage: /<command>
+    description: Opens the pet GUI.
+    permission: petblocks.command.use
+    permission-message: You don't have permission
+  petblocks:
+    enabled: true
+    command: petblocks
+    useage: /<command>
+    description: Command to configure pets.
+    permission: petblocks.command.admin
+    permission-message: You don't have permission
 
 ############################
 
-pet:
-  combat:
-    invincible: true
-    health: 20.0
-  warp:
-    teleports-in-seconds: 0
-  flee:
-    flees-in-combat: false
-    reappears-in-seconds: 15
+# Messages settings
+
+# Change the messages of the PetBlocks plugin.
+
+############################
+
+messages:
+  prefix: '&2[&aPetBlocks&2]&a '
+  default-petname: ":player's pet"
+  gui-title: 'PetBlocks'
+  naming-suggest-prefix: ''
+  naming-suggest-clickable: '&e<<Click here>> '
+  naming-suggest-suffix: '&ato rename your pet.'
+  naming-suggest-hover: 'Click me to rename your pet.'
+  naming-success: '&aYou changed the name of your pet.'
+  naming-error: '&cYou cannot name your pet like that.'
+  skullnaming-suggest-prefix: ''
+  skullnaming-suggest-clickable: '&e<<Click here>> '
+  skullnaming-suggest-suffix: '&ato change the skin of your pet.'
+  skullnaming-suggest-hover: 'Click me to change the skin of your pet.'
+  skullnaming-success: '&aYou changed the skin of your pet.'
+  skullnaming-error: '&eThis skin is invalid.'
+  called-success: '&aYou have called your pet.'
+  toggle-spawn: '&aYour pet has spawned.'
+  toggle-despawn: '&aYour pet has despawned.'
+  perms-ico-yes: '&aYes'
+  perms-ico-no: '&cNo'
+  no-perms: '&cYou do not have permissions.'
+
+############################
+
+# Default Pet settings
+
+# The pets of this plugin are very, very customize able.
+# Please take a look into the official documentation mentioned at the top of this file
+# in order to configure your pet correctly.
+
+# These are the settings players are starting with when they get their first pet. However,
+# you can add all of these settings to templates in order to change them per skin or particle
+# or whatever.
+
+############################
+
+default-pet:
+   flee-in-combat: false
+   health: 20.0
+   invincible: true
+   pathfinder:
+      - follow-owner
+   respawn-delay: 4
+   teleport-delay: 0
+
+
+
+
+
+
+
+
   follow:
     amount-blocks-away: 2
     teleport-fall: true
@@ -196,37 +218,6 @@ region:
   - ''
   included:
   - 'all'
-
-############################
-
-# Messages settings
-
-# Settings to adjust the messages
-
-############################
-
-messages:
-  prefix: '&2[&aPetBlocks&2]&a '
-  default-petname: ":player's pet"
-  gui-title: 'PetBlocks'
-  naming-suggest-prefix: ''
-  naming-suggest-clickable: '&e<<Click here>> '
-  naming-suggest-suffix: '&ato rename your pet.'
-  naming-suggest-hover: 'Click me to rename your pet.'
-  naming-success: '&aYou changed the name of your pet.'
-  naming-error: '&cYou cannot name your pet like that.'
-  skullnaming-suggest-prefix: ''
-  skullnaming-suggest-clickable: '&e<<Click here>> '
-  skullnaming-suggest-suffix: '&ato change the skin of your pet.'
-  skullnaming-suggest-hover: 'Click me to change the skin of your pet.'
-  skullnaming-success: '&aYou changed the skin of your pet.'
-  skullnaming-error: '&eThis skin is invalid.'
-  called-success: '&aYou have called your pet.'
-  toggle-spawn: '&aYour pet has spawned.'
-  toggle-despawn: '&aYour pet has despawned.'
-  perms-ico-yes: '&aYes'
-  perms-ico-no: '&cNo'
-  no-perms: '&cYou do not have permissions.'
 
 ############################
 
@@ -2838,801 +2829,3 @@ particles:
       id: 5
       damage: 0
 #--- Copy one of the particles, increment the number and add it above this line
-
-
-#******************
-# Particle list (Color/material particles require the color/material template to work)
-#******************
-# explode
-# largeexplode
-# hugeexplosion
-# fireworksSpark
-# bubble
-# splash
-# wake
-# suspended
-# depthSuspend
-# crit
-# magicCrit
-# smoke
-# largesmoke
-# spell
-# instantSpell
-# mobSpell [Color]
-# mobSpellAmbient [Color]
-# witchMagic
-# dripWater
-# dripLava
-# angryVillager
-# happyVillager
-# townaura
-# note [Color]
-# portal
-# enchantmenttable
-# flame
-# lava
-# footstep
-# cloud
-# reddust [Color]
-# snowballpoof
-# snowshovel
-# slime
-# heart
-# barrier
-# iconcrack [Material]
-# blockcrack [Material]
-# blockdust [Material]
-# droplet
-# take
-# mobappearance
-
-#*******************
-# Sound list [1.9 and above]
-#*******************
-# AMBIENT_CAVE
-# BLOCK_ANVIL_BREAK
-# BLOCK_ANVIL_DESTROY
-# BLOCK_ANVIL_FALL
-# BLOCK_ANVIL_HIT
-# BLOCK_ANVIL_LAND
-# BLOCK_ANVIL_PLACE
-# BLOCK_ANVIL_STEP
-# BLOCK_ANVIL_USE
-# BLOCK_BREWING_STAND_BREW
-# BLOCK_CHEST_CLOSE
-# BLOCK_CHEST_LOCKED
-# BLOCK_CHEST_OPEN
-# BLOCK_CHORUS_FLOWER_DEATH
-# BLOCK_CHORUS_FLOWER_GROW
-# BLOCK_CLOTH_BREAK
-# BLOCK_CLOTH_FALL
-# BLOCK_CLOTH_HIT
-# BLOCK_CLOTH_PLACE
-# BLOCK_CLOTH_STEP
-# BLOCK_COMPARATOR_CLICK
-# BLOCK_DISPENSER_DISPENSE
-# BLOCK_DISPENSER_FAIL
-# BLOCK_DISPENSER_LAUNCH
-# BLOCK_ENCHANTMENT_TABLE_USE
-# BLOCK_ENDERCHEST_CLOSE
-# BLOCK_ENDERCHEST_OPEN
-# BLOCK_END_GATEWAY_SPAWN
-# BLOCK_END_PORTAL_FRAME_FILL
-# BLOCK_END_PORTAL_SPAWN
-# BLOCK_FENCE_GATE_CLOSE
-# BLOCK_FENCE_GATE_OPEN
-# BLOCK_FIRE_AMBIENT
-# BLOCK_FIRE_EXTINGUISH
-# BLOCK_FURNACE_FIRE_CRACKLE
-# BLOCK_GLASS_BREAK
-# BLOCK_GLASS_FALL
-# BLOCK_GLASS_HIT
-# BLOCK_GLASS_PLACE
-# BLOCK_GLASS_STEP
-# BLOCK_GRASS_BREAK
-# BLOCK_GRASS_FALL
-# BLOCK_GRASS_HIT
-# BLOCK_GRASS_PLACE
-# BLOCK_GRASS_STEP
-# BLOCK_GRAVEL_BREAK
-# BLOCK_GRAVEL_FALL
-# BLOCK_GRAVEL_HIT
-# BLOCK_GRAVEL_PLACE
-# BLOCK_GRAVEL_STEP
-# BLOCK_IRON_DOOR_CLOSE
-# BLOCK_IRON_DOOR_OPEN
-# BLOCK_IRON_TRAPDOOR_CLOSE
-# BLOCK_IRON_TRAPDOOR_OPEN
-# BLOCK_LADDER_BREAK
-# BLOCK_LADDER_FALL
-# BLOCK_LADDER_HIT
-# BLOCK_LADDER_PLACE
-# BLOCK_LADDER_STEP
-# BLOCK_LAVA_AMBIENT
-# BLOCK_LAVA_EXTINGUISH
-# BLOCK_LAVA_POP
-# BLOCK_LEVER_CLICK
-# BLOCK_METAL_BREAK
-# BLOCK_METAL_FALL
-# BLOCK_METAL_HIT
-# BLOCK_METAL_PLACE
-# BLOCK_METAL_PRESSUREPLATE_CLICK_OFF
-# BLOCK_METAL_PRESSUREPLATE_CLICK_ON
-# BLOCK_METAL_STEP
-# BLOCK_NOTE_BASEDRUM
-# BLOCK_NOTE_BASS
-# BLOCK_NOTE_BELL
-# BLOCK_NOTE_CHIME
-# BLOCK_NOTE_FLUTE
-# BLOCK_NOTE_GUITAR
-# BLOCK_NOTE_HARP
-# BLOCK_NOTE_HAT
-# BLOCK_NOTE_PLING
-# BLOCK_NOTE_SNARE
-# BLOCK_NOTE_XYLOPHONE
-# BLOCK_PISTON_CONTRACT
-# BLOCK_PISTON_EXTEND
-# BLOCK_PORTAL_AMBIENT
-# BLOCK_PORTAL_TRAVEL
-# BLOCK_PORTAL_TRIGGER
-# BLOCK_REDSTONE_TORCH_BURNOUT
-# BLOCK_SAND_BREAK
-# BLOCK_SAND_FALL
-# BLOCK_SAND_HIT
-# BLOCK_SAND_PLACE
-# BLOCK_SAND_STEP
-# BLOCK_SHULKER_BOX_CLOSE
-# BLOCK_SHULKER_BOX_OPEN
-# BLOCK_SLIME_BREAK
-# BLOCK_SLIME_FALL
-# BLOCK_SLIME_HIT
-# BLOCK_SLIME_PLACE
-# BLOCK_SLIME_STEP
-# BLOCK_SNOW_BREAK
-# BLOCK_SNOW_FALL
-# BLOCK_SNOW_HIT
-# BLOCK_SNOW_PLACE
-# BLOCK_SNOW_STEP
-# BLOCK_STONE_BREAK
-# BLOCK_STONE_BUTTON_CLICK_OFF
-# BLOCK_STONE_BUTTON_CLICK_ON
-# BLOCK_STONE_FALL
-# BLOCK_STONE_HIT
-# BLOCK_STONE_PLACE
-# BLOCK_STONE_PRESSUREPLATE_CLICK_OFF
-# BLOCK_STONE_PRESSUREPLATE_CLICK_ON
-# BLOCK_STONE_STEP
-# BLOCK_TRIPWIRE_ATTACH
-# BLOCK_TRIPWIRE_CLICK_OFF
-# BLOCK_TRIPWIRE_CLICK_ON
-# BLOCK_TRIPWIRE_DETACH
-# BLOCK_WATERLILY_PLACE
-# BLOCK_WATER_AMBIENT
-# BLOCK_WOODEN_DOOR_CLOSE
-# BLOCK_WOODEN_DOOR_OPEN
-# BLOCK_WOODEN_TRAPDOOR_CLOSE
-# BLOCK_WOODEN_TRAPDOOR_OPEN
-# BLOCK_WOOD_BREAK
-# BLOCK_WOOD_BUTTON_CLICK_OFF
-# BLOCK_WOOD_BUTTON_CLICK_ON
-# BLOCK_WOOD_FALL
-# BLOCK_WOOD_HIT
-# BLOCK_WOOD_PLACE
-# BLOCK_WOOD_PRESSUREPLATE_CLICK_OFF
-# BLOCK_WOOD_PRESSUREPLATE_CLICK_ON
-# BLOCK_WOOD_STEP
-# ENCHANT_THORNS_HIT
-# ENTITY_ARMORSTAND_BREAK
-# ENTITY_ARMORSTAND_FALL
-# ENTITY_ARMORSTAND_HIT
-# ENTITY_ARMORSTAND_PLACE
-# ENTITY_ARROW_HIT
-# ENTITY_ARROW_HIT_PLAYER
-# ENTITY_ARROW_SHOOT
-# ENTITY_BAT_AMBIENT
-# ENTITY_BAT_DEATH
-# ENTITY_BAT_HURT
-# ENTITY_BAT_LOOP
-# ENTITY_BAT_TAKEOFF
-# ENTITY_BLAZE_AMBIENT
-# ENTITY_BLAZE_BURN
-# ENTITY_BLAZE_DEATH
-# ENTITY_BLAZE_HURT
-# ENTITY_BLAZE_SHOOT
-# ENTITY_BOAT_PADDLE_LAND
-# ENTITY_BOAT_PADDLE_WATER
-# ENTITY_BOBBER_RETRIEVE
-# ENTITY_BOBBER_SPLASH
-# ENTITY_BOBBER_THROW
-# ENTITY_CAT_AMBIENT
-# ENTITY_CAT_DEATH
-# ENTITY_CAT_HISS
-# ENTITY_CAT_HURT
-# ENTITY_CAT_PURR
-# ENTITY_CAT_PURREOW
-# ENTITY_CHICKEN_AMBIENT
-# ENTITY_CHICKEN_DEATH
-# ENTITY_CHICKEN_EGG
-# ENTITY_CHICKEN_HURT
-# ENTITY_CHICKEN_STEP
-# ENTITY_COW_AMBIENT
-# ENTITY_COW_DEATH
-# ENTITY_COW_HURT
-# ENTITY_COW_MILK
-# ENTITY_COW_STEP
-# ENTITY_CREEPER_DEATH
-# ENTITY_CREEPER_HURT
-# ENTITY_CREEPER_PRIMED
-# ENTITY_DONKEY_AMBIENT
-# ENTITY_DONKEY_ANGRY
-# ENTITY_DONKEY_CHEST
-# ENTITY_DONKEY_DEATH
-# ENTITY_DONKEY_HURT
-# ENTITY_EGG_THROW
-# ENTITY_ELDER_GUARDIAN_AMBIENT
-# ENTITY_ELDER_GUARDIAN_AMBIENT_LAND
-# ENTITY_ELDER_GUARDIAN_CURSE
-# ENTITY_ELDER_GUARDIAN_DEATH
-# ENTITY_ELDER_GUARDIAN_DEATH_LAND
-# ENTITY_ELDER_GUARDIAN_FLOP
-# ENTITY_ELDER_GUARDIAN_HURT
-# ENTITY_ELDER_GUARDIAN_HURT_LAND
-# ENTITY_ENDERDRAGON_AMBIENT
-# ENTITY_ENDERDRAGON_DEATH
-# ENTITY_ENDERDRAGON_FIREBALL_EXPLODE
-# ENTITY_ENDERDRAGON_FLAP
-# ENTITY_ENDERDRAGON_GROWL
-# ENTITY_ENDERDRAGON_HURT
-# ENTITY_ENDERDRAGON_SHOOT
-# ENTITY_ENDEREYE_DEATH
-# ENTITY_ENDEREYE_LAUNCH
-# ENTITY_ENDERMEN_AMBIENT
-# ENTITY_ENDERMEN_DEATH
-# ENTITY_ENDERMEN_HURT
-# ENTITY_ENDERMEN_SCREAM
-# ENTITY_ENDERMEN_STARE
-# ENTITY_ENDERMEN_TELEPORT
-# ENTITY_ENDERMITE_AMBIENT
-# ENTITY_ENDERMITE_DEATH
-# ENTITY_ENDERMITE_HURT
-# ENTITY_ENDERMITE_STEP
-# ENTITY_ENDERPEARL_THROW
-# ENTITY_EVOCATION_FANGS_ATTACK
-# ENTITY_EVOCATION_ILLAGER_AMBIENT
-# ENTITY_EVOCATION_ILLAGER_CAST_SPELL
-# ENTITY_EVOCATION_ILLAGER_DEATH
-# ENTITY_EVOCATION_ILLAGER_HURT
-# ENTITY_EVOCATION_ILLAGER_PREPARE_ATTACK
-# ENTITY_EVOCATION_ILLAGER_PREPARE_SUMMON
-# ENTITY_EVOCATION_ILLAGER_PREPARE_WOLOLO
-# ENTITY_EXPERIENCE_BOTTLE_THROW
-# ENTITY_EXPERIENCE_ORB_PICKUP
-# ENTITY_FIREWORK_BLAST
-# ENTITY_FIREWORK_BLAST_FAR
-# ENTITY_FIREWORK_LARGE_BLAST
-# ENTITY_FIREWORK_LARGE_BLAST_FAR
-# ENTITY_FIREWORK_LAUNCH
-# ENTITY_FIREWORK_SHOOT
-# ENTITY_FIREWORK_TWINKLE
-# ENTITY_FIREWORK_TWINKLE_FAR
-# ENTITY_GENERIC_BIG_FALL
-# ENTITY_GENERIC_BURN
-# ENTITY_GENERIC_DEATH
-# ENTITY_GENERIC_DRINK
-# ENTITY_GENERIC_EAT
-# ENTITY_GENERIC_EXPLODE
-# ENTITY_GENERIC_EXTINGUISH_FIRE
-# ENTITY_GENERIC_HURT
-# ENTITY_GENERIC_SMALL_FALL
-# ENTITY_GENERIC_SPLASH
-# ENTITY_GENERIC_SWIM
-# ENTITY_GHAST_AMBIENT
-# ENTITY_GHAST_DEATH
-# ENTITY_GHAST_HURT
-# ENTITY_GHAST_SCREAM
-# ENTITY_GHAST_SHOOT
-# ENTITY_GHAST_WARN
-# ENTITY_GUARDIAN_AMBIENT
-# ENTITY_GUARDIAN_AMBIENT_LAND
-# ENTITY_GUARDIAN_ATTACK
-# ENTITY_GUARDIAN_DEATH
-# ENTITY_GUARDIAN_DEATH_LAND
-# ENTITY_GUARDIAN_FLOP
-# ENTITY_GUARDIAN_HURT
-# ENTITY_GUARDIAN_HURT_LAND
-# ENTITY_HORSE_AMBIENT
-# ENTITY_HORSE_ANGRY
-# ENTITY_HORSE_ARMOR
-# ENTITY_HORSE_BREATHE
-# ENTITY_HORSE_DEATH
-# ENTITY_HORSE_EAT
-# ENTITY_HORSE_GALLOP
-# ENTITY_HORSE_HURT
-# ENTITY_HORSE_JUMP
-# ENTITY_HORSE_LAND
-# ENTITY_HORSE_SADDLE
-# ENTITY_HORSE_STEP
-# ENTITY_HORSE_STEP_WOOD
-# ENTITY_HOSTILE_BIG_FALL
-# ENTITY_HOSTILE_DEATH
-# ENTITY_HOSTILE_HURT
-# ENTITY_HOSTILE_SMALL_FALL
-# ENTITY_HOSTILE_SPLASH
-# ENTITY_HOSTILE_SWIM
-# ENTITY_HUSK_AMBIENT
-# ENTITY_HUSK_DEATH
-# ENTITY_HUSK_HURT
-# ENTITY_HUSK_STEP
-# ENTITY_ILLUSION_ILLAGER_AMBIENT
-# ENTITY_ILLUSION_ILLAGER_CAST_SPELL
-# ENTITY_ILLUSION_ILLAGER_DEATH
-# ENTITY_ILLUSION_ILLAGER_HURT
-# ENTITY_ILLUSION_ILLAGER_MIRROR_MOVE
-# ENTITY_ILLUSION_ILLAGER_PREPARE_BLINDNESS
-# ENTITY_ILLUSION_ILLAGER_PREPARE_MIRROR
-# ENTITY_IRONGOLEM_ATTACK
-# ENTITY_IRONGOLEM_DEATH
-# ENTITY_IRONGOLEM_HURT
-# ENTITY_IRONGOLEM_STEP
-# ENTITY_ITEMFRAME_ADD_ITEM
-# ENTITY_ITEMFRAME_BREAK
-# ENTITY_ITEMFRAME_PLACE
-# ENTITY_ITEMFRAME_REMOVE_ITEM
-# ENTITY_ITEMFRAME_ROTATE_ITEM
-# ENTITY_ITEM_BREAK
-# ENTITY_ITEM_PICKUP
-# ENTITY_LEASHKNOT_BREAK
-# ENTITY_LEASHKNOT_PLACE
-# ENTITY_LIGHTNING_IMPACT
-# ENTITY_LIGHTNING_THUNDER
-# ENTITY_LINGERINGPOTION_THROW
-# ENTITY_LLAMA_AMBIENT
-# ENTITY_LLAMA_ANGRY
-# ENTITY_LLAMA_CHEST
-# ENTITY_LLAMA_DEATH
-# ENTITY_LLAMA_EAT
-# ENTITY_LLAMA_HURT
-# ENTITY_LLAMA_SPIT
-# ENTITY_LLAMA_STEP
-# ENTITY_LLAMA_SWAG
-# ENTITY_MAGMACUBE_DEATH
-# ENTITY_MAGMACUBE_HURT
-# ENTITY_MAGMACUBE_JUMP
-# ENTITY_MAGMACUBE_SQUISH
-# ENTITY_MINECART_INSIDE
-# ENTITY_MINECART_RIDING
-# ENTITY_MOOSHROOM_SHEAR
-# ENTITY_MULE_AMBIENT
-# ENTITY_MULE_CHEST
-# ENTITY_MULE_DEATH
-# ENTITY_MULE_HURT
-# ENTITY_PAINTING_BREAK
-# ENTITY_PAINTING_PLACE
-# ENTITY_PARROT_AMBIENT
-# ENTITY_PARROT_DEATH
-# ENTITY_PARROT_EAT
-# ENTITY_PARROT_FLY
-# ENTITY_PARROT_HURT
-# ENTITY_PARROT_IMITATE_BLAZE
-# ENTITY_PARROT_IMITATE_CREEPER
-# ENTITY_PARROT_IMITATE_ELDER_GUARDIAN
-# ENTITY_PARROT_IMITATE_ENDERDRAGON
-# ENTITY_PARROT_IMITATE_ENDERMAN
-# ENTITY_PARROT_IMITATE_ENDERMITE
-# ENTITY_PARROT_IMITATE_EVOCATION_ILLAGER
-# ENTITY_PARROT_IMITATE_GHAST
-# ENTITY_PARROT_IMITATE_HUSK
-# ENTITY_PARROT_IMITATE_ILLUSION_ILLAGER
-# ENTITY_PARROT_IMITATE_MAGMACUBE
-# ENTITY_PARROT_IMITATE_POLAR_BEAR
-# ENTITY_PARROT_IMITATE_SHULKER
-# ENTITY_PARROT_IMITATE_SILVERFISH
-# ENTITY_PARROT_IMITATE_SKELETON
-# ENTITY_PARROT_IMITATE_SLIME
-# ENTITY_PARROT_IMITATE_SPIDER
-# ENTITY_PARROT_IMITATE_STRAY
-# ENTITY_PARROT_IMITATE_VEX
-# ENTITY_PARROT_IMITATE_VINDICATION_ILLAGER
-# ENTITY_PARROT_IMITATE_WITCH
-# ENTITY_PARROT_IMITATE_WITHER
-# ENTITY_PARROT_IMITATE_WITHER_SKELETON
-# ENTITY_PARROT_IMITATE_WOLF
-# ENTITY_PARROT_IMITATE_ZOMBIE
-# ENTITY_PARROT_IMITATE_ZOMBIE_PIGMAN
-# ENTITY_PARROT_IMITATE_ZOMBIE_VILLAGER
-# ENTITY_PARROT_STEP
-# ENTITY_PIG_AMBIENT
-# ENTITY_PIG_DEATH
-# ENTITY_PIG_HURT
-# ENTITY_PIG_SADDLE
-# ENTITY_PIG_STEP
-# ENTITY_PLAYER_ATTACK_CRIT
-# ENTITY_PLAYER_ATTACK_KNOCKBACK
-# ENTITY_PLAYER_ATTACK_NODAMAGE
-# ENTITY_PLAYER_ATTACK_STRONG
-# ENTITY_PLAYER_ATTACK_SWEEP
-# ENTITY_PLAYER_ATTACK_WEAK
-# ENTITY_PLAYER_BIG_FALL
-# ENTITY_PLAYER_BREATH
-# ENTITY_PLAYER_BURP
-# ENTITY_PLAYER_DEATH
-# ENTITY_PLAYER_HURT
-# ENTITY_PLAYER_HURT_DROWN
-# ENTITY_PLAYER_HURT_ON_FIRE
-# ENTITY_PLAYER_LEVELUP
-# ENTITY_PLAYER_SMALL_FALL
-# ENTITY_PLAYER_SPLASH
-# ENTITY_PLAYER_SWIM
-# ENTITY_POLAR_BEAR_AMBIENT
-# ENTITY_POLAR_BEAR_BABY_AMBIENT
-# ENTITY_POLAR_BEAR_DEATH
-# ENTITY_POLAR_BEAR_HURT
-# ENTITY_POLAR_BEAR_STEP
-# ENTITY_POLAR_BEAR_WARNING
-# ENTITY_RABBIT_AMBIENT
-# ENTITY_RABBIT_ATTACK
-# ENTITY_RABBIT_DEATH
-# ENTITY_RABBIT_HURT
-# ENTITY_RABBIT_JUMP
-# ENTITY_SHEEP_AMBIENT
-# ENTITY_SHEEP_DEATH
-# ENTITY_SHEEP_HURT
-# ENTITY_SHEEP_SHEAR
-# ENTITY_SHEEP_STEP
-# ENTITY_SHULKER_AMBIENT
-# ENTITY_SHULKER_BULLET_HIT
-# ENTITY_SHULKER_BULLET_HURT
-# ENTITY_SHULKER_CLOSE
-# ENTITY_SHULKER_DEATH
-# ENTITY_SHULKER_HURT
-# ENTITY_SHULKER_HURT_CLOSED
-# ENTITY_SHULKER_OPEN
-# ENTITY_SHULKER_SHOOT
-# ENTITY_SHULKER_TELEPORT
-# ENTITY_SILVERFISH_AMBIENT
-# ENTITY_SILVERFISH_DEATH
-# ENTITY_SILVERFISH_HURT
-# ENTITY_SILVERFISH_STEP
-# ENTITY_SKELETON_AMBIENT
-# ENTITY_SKELETON_DEATH
-# ENTITY_SKELETON_HORSE_AMBIENT
-# ENTITY_SKELETON_HORSE_DEATH
-# ENTITY_SKELETON_HORSE_HURT
-# ENTITY_SKELETON_HURT
-# ENTITY_SKELETON_SHOOT
-# ENTITY_SKELETON_STEP
-# ENTITY_SLIME_ATTACK
-# ENTITY_SLIME_DEATH
-# ENTITY_SLIME_HURT
-# ENTITY_SLIME_JUMP
-# ENTITY_SLIME_SQUISH
-# ENTITY_SMALL_MAGMACUBE_DEATH
-# ENTITY_SMALL_MAGMACUBE_HURT
-# ENTITY_SMALL_MAGMACUBE_SQUISH
-# ENTITY_SMALL_SLIME_DEATH
-# ENTITY_SMALL_SLIME_HURT
-# ENTITY_SMALL_SLIME_JUMP
-# ENTITY_SMALL_SLIME_SQUISH
-# ENTITY_SNOWBALL_THROW
-# ENTITY_SNOWMAN_AMBIENT
-# ENTITY_SNOWMAN_DEATH
-# ENTITY_SNOWMAN_HURT
-# ENTITY_SNOWMAN_SHOOT
-# ENTITY_SPIDER_AMBIENT
-# ENTITY_SPIDER_DEATH
-# ENTITY_SPIDER_HURT
-# ENTITY_SPIDER_STEP
-# ENTITY_SPLASH_POTION_BREAK
-# ENTITY_SPLASH_POTION_THROW
-# ENTITY_SQUID_AMBIENT
-# ENTITY_SQUID_DEATH
-# ENTITY_SQUID_HURT
-# ENTITY_STRAY_AMBIENT
-# ENTITY_STRAY_DEATH
-# ENTITY_STRAY_HURT
-# ENTITY_STRAY_STEP
-# ENTITY_TNT_PRIMED
-# ENTITY_VEX_AMBIENT
-# ENTITY_VEX_CHARGE
-# ENTITY_VEX_DEATH
-# ENTITY_VEX_HURT
-# ENTITY_VILLAGER_AMBIENT
-# ENTITY_VILLAGER_DEATH
-# ENTITY_VILLAGER_HURT
-# ENTITY_VILLAGER_NO
-# ENTITY_VILLAGER_TRADING
-# ENTITY_VILLAGER_YES
-# ENTITY_VINDICATION_ILLAGER_AMBIENT
-# ENTITY_VINDICATION_ILLAGER_DEATH
-# ENTITY_VINDICATION_ILLAGER_HURT
-# ENTITY_WITCH_AMBIENT
-# ENTITY_WITCH_DEATH
-# ENTITY_WITCH_DRINK
-# ENTITY_WITCH_HURT
-# ENTITY_WITCH_THROW
-# ENTITY_WITHER_AMBIENT
-# ENTITY_WITHER_BREAK_BLOCK
-# ENTITY_WITHER_DEATH
-# ENTITY_WITHER_HURT
-# ENTITY_WITHER_SHOOT
-# ENTITY_WITHER_SKELETON_AMBIENT
-# ENTITY_WITHER_SKELETON_DEATH
-# ENTITY_WITHER_SKELETON_HURT
-# ENTITY_WITHER_SKELETON_STEP
-# ENTITY_WITHER_SPAWN
-# ENTITY_WOLF_AMBIENT
-# ENTITY_WOLF_DEATH
-# ENTITY_WOLF_GROWL
-# ENTITY_WOLF_HOWL
-# ENTITY_WOLF_HURT
-# ENTITY_WOLF_PANT
-# ENTITY_WOLF_SHAKE
-# ENTITY_WOLF_STEP
-# ENTITY_WOLF_WHINE
-# ENTITY_ZOMBIE_AMBIENT
-# ENTITY_ZOMBIE_ATTACK_DOOR_WOOD
-# ENTITY_ZOMBIE_ATTACK_IRON_DOOR
-# ENTITY_ZOMBIE_BREAK_DOOR_WOOD
-# ENTITY_ZOMBIE_DEATH
-# ENTITY_ZOMBIE_HORSE_AMBIENT
-# ENTITY_ZOMBIE_HORSE_DEATH
-# ENTITY_ZOMBIE_HORSE_HURT
-# ENTITY_ZOMBIE_HURT
-# ENTITY_ZOMBIE_INFECT
-# ENTITY_ZOMBIE_PIG_AMBIENT
-# ENTITY_ZOMBIE_PIG_ANGRY
-# ENTITY_ZOMBIE_PIG_DEATH
-# ENTITY_ZOMBIE_PIG_HURT
-# ENTITY_ZOMBIE_STEP
-# ENTITY_ZOMBIE_VILLAGER_AMBIENT
-# ENTITY_ZOMBIE_VILLAGER_CONVERTED
-# ENTITY_ZOMBIE_VILLAGER_CURE
-# ENTITY_ZOMBIE_VILLAGER_DEATH
-# ENTITY_ZOMBIE_VILLAGER_HURT
-# ENTITY_ZOMBIE_VILLAGER_STEP
-# ITEM_ARMOR_EQUIP_CHAIN
-# ITEM_ARMOR_EQUIP_DIAMOND
-# ITEM_ARMOR_EQUIP_ELYTRA
-# ITEM_ARMOR_EQUIP_GENERIC
-# ITEM_ARMOR_EQUIP_GOLD
-# ITEM_ARMOR_EQUIP_IRON
-# ITEM_ARMOR_EQUIP_LEATHER
-# ITEM_BOTTLE_EMPTY
-# ITEM_BOTTLE_FILL
-# ITEM_BOTTLE_FILL_DRAGONBREATH
-# ITEM_BUCKET_EMPTY
-# ITEM_BUCKET_EMPTY_LAVA
-# ITEM_BUCKET_FILL
-# ITEM_BUCKET_FILL_LAVA
-# ITEM_CHORUS_FRUIT_TELEPORT
-# ITEM_ELYTRA_FLYING
-# ITEM_FIRECHARGE_USE
-# ITEM_FLINTANDSTEEL_USE
-# ITEM_HOE_TILL
-# ITEM_SHIELD_BLOCK
-# ITEM_SHIELD_BREAK
-# ITEM_SHOVEL_FLATTEN
-# ITEM_TOTEM_USE
-# MUSIC_CREATIVE
-# MUSIC_CREDITS
-# MUSIC_DRAGON
-# MUSIC_END
-# MUSIC_GAME
-# MUSIC_MENU
-# MUSIC_NETHER
-# RECORD_11
-# RECORD_13
-# RECORD_BLOCKS
-# RECORD_CAT
-# RECORD_CHIRP
-# RECORD_FAR
-# RECORD_MALL
-# RECORD_MELLOHI
-# RECORD_STAL
-# RECORD_STRAD
-# RECORD_WAIT
-# RECORD_WARD
-# UI_BUTTON_CLICK
-# UI_TOAST_CHALLENGE_COMPLETE
-# UI_TOAST_IN
-# UI_TOAST_OUT
-# WEATHER_RAIN
-# WEATHER_RAIN_ABOVE
-
-#*******************
-# Sound list [1.8]
-#*******************
-# AMBIENCE_CAVE
-# AMBIENCE_RAIN
-# AMBIENCE_THUNDER
-# ANVIL_BREAK
-# ANVIL_LAND
-# ANVIL_USE
-# ARROW_HIT
-# BURP
-# CHEST_CLOSE
-# CHEST_OPEN
-# CLICK
-# DOOR_CLOSE
-# DOOR_OPEN
-# DRINK
-# EAT
-# EXPLODE
-# FALL_BIG
-# FALL_SMALL
-# FIRE
-# FIRE_IGNITE
-# FIZZ
-# FUSE
-# GLASS
-# HURT_FLESH
-# ITEM_BREAK
-# ITEM_PICKUP
-# LAVA
-# LAVA_POP
-# LEVEL_UP
-# MINECART_BASE
-# MINECART_INSIDE
-# NOTE_BASS
-# NOTE_PIANO
-# NOTE_BASS_DRUM
-# NOTE_STICKS
-# NOTE_BASS_GUITAR
-# NOTE_SNARE_DRUM
-# NOTE_PLING
-# ORB_PICKUP
-# PISTON_EXTEND
-# PISTON_RETRACT
-# PORTAL
-# PORTAL_TRAVEL
-# PORTAL_TRIGGER
-# SHOOT_ARROW
-# SPLASH
-# SPLASH2
-# STEP_GRASS
-# STEP_GRAVEL
-# STEP_LADDER
-# STEP_SAND
-# STEP_SNOW
-# STEP_STONE
-# STEP_WOOD
-# STEP_WOOL
-# SWIM
-# WATER
-# WOOD_CLICK
-# BAT_DEATH
-# BAT_HURT
-# BAT_IDLE
-# BAT_LOOP
-# BAT_TAKEOFF
-# BLAZE_BREATH
-# BLAZE_DEATH
-# BLAZE_HIT
-# CAT_HISS
-# CAT_HIT
-# CAT_MEOW
-# CAT_PURR
-# CAT_PURREOW
-# CHICKEN_IDLE
-# CHICKEN_HURT
-# CHICKEN_EGG_POP
-# CHICKEN_WALK
-# COW_IDLE
-# COW_HURT
-# COW_WALK
-# CREEPER_HISS
-# CREEPER_DEATH
-# ENDERDRAGON_DEATH
-# ENDERDRAGON_GROWL
-# ENDERDRAGON_HIT
-# ENDERDRAGON_WINGS
-# ENDERMAN_DEATH
-# ENDERMAN_HIT
-# ENDERMAN_IDLE
-# ENDERMAN_TELEPORT
-# ENDERMAN_SCREAM
-# ENDERMAN_STARE
-# GHAST_SCREAM
-# GHAST_SCREAM2
-# GHAST_CHARGE
-# GHAST_DEATH
-# GHAST_FIREBALL
-# GHAST_MOAN
-# IRONGOLEM_DEATH
-# IRONGOLEM_HIT
-# IRONGOLEM_THROW
-# IRONGOLEM_WALK
-# MAGMACUBE_WALK
-# MAGMACUBE_WALK2
-# MAGMACUBE_JUMP
-# PIG_IDLE
-# PIG_DEATH
-# PIG_WALK
-# SHEEP_IDLE
-# SHEEP_SHEAR
-# SHEEP_WALK
-# SILVERFISH_HIT
-# SILVERFISH_KILL
-# SILVERFISH_IDLE
-# SILVERFISH_WALK
-# SKELETON_IDLE
-# SKELETON_DEATH
-# SKELETON_HURT
-# SKELETON_WALK
-# SLIME_ATTACK
-# SLIME_WALK
-# SLIME_WALK2
-# SPIDER_IDLE
-# SPIDER_DEATH
-# SPIDER_WALK
-# WITHER_DEATH
-# WITHER_HURT
-# WITHER_IDLE
-# WITHER_SHOOT
-# WITHER_SPAWN
-# WOLF_BARK
-# WOLF_DEATH
-# WOLF_GROWL
-# WOLF_HOWL
-# WOLF_HURT
-# WOLF_PANT
-# WOLF_SHAKE
-# WOLF_WALK
-# WOLF_WHINE
-# ZOMBIE_METAL
-# ZOMBIE_WOOD
-# ZOMBIE_WOODBREAK
-# ZOMBIE_IDLE
-# ZOMBIE_DEATH
-# ZOMBIE_HURT
-# ZOMBIE_INFECT
-# ZOMBIE_UNFECT
-# ZOMBIE_REMEDY
-# ZOMBIE_WALK
-# ZOMBIE_PIG_IDLE
-# ZOMBIE_PIG_ANGRY
-# ZOMBIE_PIG_DEATH
-# ZOMBIE_PIG_HURT
-# DIG_WOOL
-# DIG_GRASS
-# DIG_GRAVEL
-# DIG_SAND
-# DIG_SNOW
-# DIG_STONE
-# DIG_WOOD
-# FIREWORK_BLAST
-# FIREWORK_BLAST2
-# FIREWORK_LARGE_BLAST
-# FIREWORK_LARGE_BLAST2
-# FIREWORK_TWINKLE
-# FIREWORK_TWINKLE2
-# FIREWORK_LAUNCH
-# SUCCESSFUL_HIT
-# HORSE_ANGRY
-# HORSE_ARMOR
-# HORSE_BREATHE
-# HORSE_DEATH
-# HORSE_GALLOP
-# HORSE_HIT
-# HORSE_IDLE
-# HORSE_JUMP
-# HORSE_LAND
-# HORSE_SADDLE
-# HORSE_SOFT
-# HORSE_WOOD
-# DONKEY_ANGRY
-# DONKEY_DEATH
-# DONKEY_HIT
-# DONKEY_IDLE
-# HORSE_SKELETON_DEATH
-# HORSE_SKELETON_HIT
-# HORSE_SKELETON_IDLE
-# HORSE_ZOMBIE_DEATH
-# HORSE_ZOMBIE_HIT
-# HORSE_ZOMBIE_IDLE
-# VILLAGER_DEATH
-# VILLAGER_HAGGLE
-# VILLAGER_HIT
-# VILLAGER_IDLE
-# VILLAGER_NO
-# VILLAGER_YES
