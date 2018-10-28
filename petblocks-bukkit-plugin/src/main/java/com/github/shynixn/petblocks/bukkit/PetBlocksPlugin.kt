@@ -103,8 +103,8 @@ class PetBlocksPlugin : JavaPlugin(), PluginProxy {
         }
 
         // Register CommandExecutor
-        commandService.registerCommandExecutor(this.config.get("petblocks-gui").yamlMap(), this.resolve(PlayerPetActionCommandExecutor::class.java))
-        commandService.registerCommandExecutor(this.config.get("petblocks-configuration").yamlMap(), this.resolve(EditPetCommandExecutor::class.java))
+        commandService.registerCommandExecutor(this.config.get("commands.petblock").yamlMap(), this.resolve(PlayerPetActionCommandExecutor::class.java))
+        commandService.registerCommandExecutor(this.config.get("commands.petblocks").yamlMap(), this.resolve(EditPetCommandExecutor::class.java))
         commandService.registerCommandExecutor("petblockreload", this.resolve(ReloadCommandExecutor::class.java))
 
         if (config.getBoolean("metrics")) {

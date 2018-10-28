@@ -6,6 +6,7 @@ import com.github.shynixn.petblocks.api.business.service.MessageService
 import com.github.shynixn.petblocks.api.persistence.entity.ChatMessage
 import com.github.shynixn.petblocks.bukkit.logic.business.extension.sendPacket
 import com.github.shynixn.petblocks.bukkit.logic.business.nms.VersionSupport
+import com.google.inject.Inject
 import org.bukkit.Bukkit
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
@@ -37,7 +38,7 @@ import org.bukkit.entity.Player
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class MessageServiceImpl(private val version: Version) : MessageService {
+class MessageServiceImpl @Inject constructor(private val version: Version) : MessageService {
     /**
      * Sends a message to the given source.
      */

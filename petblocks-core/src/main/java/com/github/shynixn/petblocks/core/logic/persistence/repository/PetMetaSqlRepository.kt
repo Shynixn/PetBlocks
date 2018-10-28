@@ -6,6 +6,7 @@ import com.github.shynixn.petblocks.api.persistence.repository.PetMetaRepository
 import com.github.shynixn.petblocks.core.logic.persistence.entity.ParticleEntity
 import com.github.shynixn.petblocks.core.logic.persistence.entity.PetMetaEntity
 import com.github.shynixn.petblocks.core.logic.persistence.entity.PlayerMetaEntity
+import com.google.inject.Inject
 import java.sql.Connection
 import java.util.*
 
@@ -36,7 +37,7 @@ import java.util.*
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class PetMetaSqlRepository(private val sqlDbContext: SqlDbContext) : PetMetaRepository {
+class PetMetaSqlRepository @Inject constructor(private val sqlDbContext: SqlDbContext) : PetMetaRepository {
     /**
      * Returns the petMeta of from the given player uniqueId. Creates
      * a new one if it does not exist yet. Gets it from the runtime when a pet

@@ -3,6 +3,7 @@ package com.github.shynixn.petblocks.core.logic.persistence.context
 import com.github.shynixn.petblocks.api.business.proxy.SqlConnectionPoolProxy
 import com.github.shynixn.petblocks.api.business.service.LoggingService
 import com.github.shynixn.petblocks.api.persistence.context.SqlDbContext
+import com.google.inject.Inject
 import java.sql.Connection
 import java.sql.ResultSet
 import java.sql.SQLException
@@ -35,7 +36,7 @@ import java.util.*
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class SqlDbContextImpl(private val sqlConnectionPoolProxy: SqlConnectionPoolProxy, private val loggingService: LoggingService) : SqlDbContext {
+class SqlDbContextImpl @Inject constructor(private val sqlConnectionPoolProxy: SqlConnectionPoolProxy, private val loggingService: LoggingService) : SqlDbContext {
     /**
      * Updates the given row by the [rowSelection] of the given [table] with the given [parameters].
      * Does not close the connection.

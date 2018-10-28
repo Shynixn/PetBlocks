@@ -119,75 +119,54 @@ messages:
 # you can add all of these settings to templates in order to change them per skin or particle
 # or whatever.
 
+# You can find a list of all available goals on the documentation.
+
 ############################
 
+global-configuration:
+  respawn-delay: 4
+  teleport-delay: 0
+  apply-pet-on-spawn: false
+  overwrite-previous-pet: false
+  sounds-other-players: true
+  particles-other-players: true
+  max-petname-length: 20
+  petname-blacklist:
+  - 'petty'
+  - 'shitty'
+
 default-pet:
-   flee-in-combat: false
-   health: 20.0
-   invincible: true
-   pathfinder:
-      - follow-owner
-   respawn-delay: 4
-   teleport-delay: 0
-
-
-
-
-
-
-
-
-  follow:
-    amount-blocks-away: 2
-    teleport-fall: true
-    max-range-teleport: 50
-    carry: false
-    flying-wall-colliding: true
-    running-hitbox-height: -1.5
-    afraid-water: false
-    afraid-water-particles: false
-  feeding:
-    enabled: true
-    click-particle:
-      name: 'heart'
-      speed: 0.1
-      amount: 20
-      offx: 1.0
-      offy: 1.0
-      offz: 1.0
-    click-sound:
-      name: 'EAT'
-      volume: 1.0
-      pitch: 1.0
-  design:
-    max-petname-length: 20
-    show-damage-animation: true
-    sounds-other-players: true
-    particles-other-players: true
-    petname-blacklist:
-    - 'petty'
-    - 'shitty'
-  modifier:
-    riding-speed: 1.0
-    walking-speed: 1.0
-    climbing-height: 1.0
-  join:
-    enabled: false
-    overwrite-previous-pet: false
-  default:
-    petname: 'Default pet'
-    id: 2
-    damage: 0
-    unbreakable: false
-    skin: ''
-    enabled: true
-    effect:
+  enabled: true
+  petname: 'Default pet'
+  flee-in-combat: false
+  health: 20.0
+  invincible: true
+  id: 2
+  damage: 0
+  unbreakable: false
+  skin: ''
+  goals:
+    1:
+      id: 'follow-owner'
+      max-distance: 50
+    2:
+      id: 'walking-particle'
       name: 'largesmoke'
       speed: 0.01
       amount: 2
       offx: 0.5
       offy: 0.5
       offz: 0.5
+    3:
+      id: 'ambient-sound'
+      name: 'CHICKEN_IDLE'
+      volume: 1.0
+      pitch: 1.0
+    4:
+      id: 'walking-sound'
+      name: 'CHICKEN_WALK'
+      volume: 1.0
+      pitch: 1.0
 
 ############################
 
@@ -219,33 +198,63 @@ region:
   included:
   - 'all'
 
+  ############################
+
+  # GUI-settings
+
+  # Settings for the petblock-gui
+
+  # settings-title: GUI title
+  # settings-copy-skin: Should the skin of petblock-engine be applied when being selected?
+  # settings-use-only-disable-pet-item: Removes the enable block from the GUI and uses the pet-item instead to spawn the pet.
+  # settings-my-pet-position: Position in the GUI to show the currently selected pet
+  # settings-my-pet-default-appearance:: Default skin of the petblock if the settings-copy-skin is disabled
+
+  # gui enabled: Should the the item be shown in the GUI?
+  # gui position: Position of the item in of the GUI
+  # gui page: Page of the item in of the GUI (PAGES: MAIN, WARDROBE)
+  # gui id: item id in the GUI
+  # gui damage: item damage in the the GUI
+  # gui skin: item skin in the GUI (Name of the player [Shynixn] or the skin URL [textures.minecraft.net/texture/797884d451dc7b7729de2076cd6c4912865ade70391d1ccec3e95fb39f8c5e1])
+  # gui name: item name in the GUI
+  # gui unbreakable: item unbreakable tag in the GUI
+  # gui lore: item lore in the GUI (Multiple lines support)
+
 ############################
 
-# GUI-settings
-
-# Settings for the petblock-gui
-
-# settings-title: GUI title
-# settings-copy-skin: Should the skin of petblock-engine be applied when being selected?
-# settings-use-only-disable-pet-item: Removes the enable block from the GUI and uses the pet-item instead to spawn the pet.
-# settings-my-pet-position: Position in the GUI to show the currently selected pet
-# settings-my-pet-default-appearance:: Default skin of the petblock if the settings-copy-skin is disabled
-
-# gui enabled: Should the the item be shown in the GUI?
-# gui position: Position of the item in of the GUI
-# gui page: Page of the item in of the GUI (PAGES: MAIN, WARDROBE)
-# gui id: item id in the GUI
-# gui damage: item damage in the the GUI
-# gui skin: item skin in the GUI (Name of the player [Shynixn] or the skin URL [textures.minecraft.net/texture/797884d451dc7b7729de2076cd6c4912865ade70391d1ccec3e95fb39f8c5e1])
-# gui name: item name in the GUI
-# gui unbreakable: item unbreakable tag in the GUI
-# gui lore: item lore in the GUI (Multiple lines support)
-
-############################
+previous-page:
+  icon:
+    id: 397
+    damage: 3
+    skin: 'textures.minecraft.net/texture/3ebf907494a935e955bfcadab81beafb90fb9be49c7026ba97d798d5f1a23'
+    name: '&aPrevious page'
+    unbreakable: false
+    lore:
+    - 'none'
+  script: 'scrolling collection -45'
+  next-page:
+    id: 397
+    damage: 3
+    skin: 'textures.minecraft.net/texture/1b6f1a25b6bc199946472aedb370522584ff6f4e83221e5946bd2e41b5ca13b'
+    name: '&aNext page'
+    script: 'scrolling collection 45'
+    unbreakable: false
+    lore:
+    - 'none'
+  back:
+    enabled: true
+    id: 166
+    damage: 0
+    skin: 'none'
+    name: '&cBack'
+    unbreakable: false
+    lore:
+    - '&7Closes the current window.'
 
 gui:
   main:
-    my-pet:
+    player-pet:
+      icon: 'pet'
       position: 4
     enable-pet:
       enabled: true
@@ -493,36 +502,6 @@ gui-options:
     unbreakable: false
     lore:
     - 'none'
-  previous-page:
-    position: 45
-    id: 397
-    damage: 3
-    skin: 'textures.minecraft.net/texture/3ebf907494a935e955bfcadab81beafb90fb9be49c7026ba97d798d5f1a23'
-    name: '&aPrevious page'
-    script: 'scrolling collection -45'
-    unbreakable: false
-    lore:
-    - 'none'
-  next-page:
-    position: 53
-    id: 397
-    damage: 3
-    skin: 'textures.minecraft.net/texture/1b6f1a25b6bc199946472aedb370522584ff6f4e83221e5946bd2e41b5ca13b'
-    name: '&aNext page'
-    script: 'scrolling collection 45'
-    unbreakable: false
-    lore:
-    - 'none'
-  back:
-    enabled: true
-    position: 49
-    id: 166
-    damage: 0
-    skin: 'none'
-    name: '&cBack'
-    unbreakable: false
-    lore:
-    - '&7Closes the current window.'
 
 ############################
 

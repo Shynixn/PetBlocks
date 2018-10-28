@@ -5,6 +5,7 @@ package com.github.shynixn.petblocks.bukkit.logic.business.service
 import com.github.shynixn.petblocks.api.business.enumeration.EntityType
 import com.github.shynixn.petblocks.api.business.enumeration.Version
 import com.github.shynixn.petblocks.api.business.service.EntityRegistrationService
+import com.google.inject.Inject
 
 /**
  * Created by Shynixn 2018.
@@ -33,7 +34,7 @@ import com.github.shynixn.petblocks.api.business.service.EntityRegistrationServi
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class EntityRegistration18R1ServiceImpl(private val version: Version) : EntityRegistrationService {
+class EntityRegistration18R1ServiceImpl @Inject constructor(private val version: Version) : EntityRegistrationService {
     private val classes = HashMap<Class<*>, EntityType>()
 
     /**

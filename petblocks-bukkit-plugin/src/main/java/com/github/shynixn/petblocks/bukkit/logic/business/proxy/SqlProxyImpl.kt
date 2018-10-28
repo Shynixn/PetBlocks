@@ -2,6 +2,7 @@ package com.github.shynixn.petblocks.bukkit.logic.business.proxy
 
 import com.github.shynixn.petblocks.api.business.proxy.SqlConnectionPoolProxy
 import com.github.shynixn.petblocks.api.business.service.LoggingService
+import com.google.inject.Inject
 import com.zaxxer.hikari.HikariConfig
 import com.zaxxer.hikari.HikariDataSource
 import org.bukkit.plugin.Plugin
@@ -38,7 +39,7 @@ import java.sql.Connection
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class SqlProxyImpl(private val plugin: Plugin, private val loggingService: LoggingService) : SqlConnectionPoolProxy, AutoCloseable {
+class SqlProxyImpl @Inject constructor(private val plugin: Plugin, private val loggingService: LoggingService) : SqlConnectionPoolProxy, AutoCloseable {
     companion object {
         /**
          * SQLiteDriver classPath.

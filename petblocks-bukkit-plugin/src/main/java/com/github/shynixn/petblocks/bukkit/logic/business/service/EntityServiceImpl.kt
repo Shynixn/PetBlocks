@@ -1,7 +1,9 @@
 package com.github.shynixn.petblocks.bukkit.logic.business.service
 
+import com.github.shynixn.petblocks.api.business.proxy.PetProxy
 import com.github.shynixn.petblocks.api.business.service.ConfigurationService
 import com.github.shynixn.petblocks.api.business.service.EntityService
+import com.github.shynixn.petblocks.api.persistence.entity.PetMeta
 import com.google.inject.Inject
 import org.bukkit.ChatColor
 import org.bukkit.entity.Entity
@@ -35,6 +37,10 @@ import org.bukkit.entity.Player
  * SOFTWARE.
  */
 class EntityServiceImpl @Inject constructor(private val configurationService: ConfigurationService) : EntityService {
+    override fun <L> spawnPetProxy(location: L, petMeta: PetMeta): PetProxy {
+        throw RuntimeException("")
+    }
+
     /**
      * Registers entities on the server when not already registered.
      * Returns true if registered. Returns false when not registered.
