@@ -5,6 +5,8 @@ import org.bukkit.Location;
 import org.bukkit.craftbukkit.v1_13_R2.entity.CraftEntity;
 import org.bukkit.event.entity.EntityTeleportEvent;
 
+import java.lang.reflect.Field;
+
 public class PathfinderGoalFollowOwnerImpl extends PathfinderGoal {
     private final EntityPlayer owner;
 
@@ -17,6 +19,20 @@ public class PathfinderGoalFollowOwnerImpl extends PathfinderGoal {
     private final float g;
     private final float h;
     private float i;
+
+    private static Field axisField;
+
+    static {
+        try {
+            axisField = AxisAlignedBB.class.getDeclaredField("minY");
+        } catch (final NoSuchFieldException ex) {
+            try {
+                axisField = AxisAlignedBB.class.getDeclaredField("b");
+            } catch (final NoSuchFieldException e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
 
     public PathfinderGoalFollowOwnerImpl(EntityInsentient entitytameableanimal, double d0, float f, float f1, EntityPlayer owner) {
         this.owner = owner;
@@ -36,9 +52,9 @@ public class PathfinderGoalFollowOwnerImpl extends PathfinderGoal {
         EntityLiving entityliving = owner;
         if (entityliving == null) {
             return false;
-        } else if (entityliving instanceof EntityHuman && ((EntityHuman)entityliving).isSpectator()) {
+        } else if (entityliving instanceof EntityHuman && ((EntityHuman) entityliving).isSpectator()) {
             return false;
-        }else if (this.b.h(entityliving) < (double)(this.h * this.h)) {
+        } else if (this.b.h(entityliving) < (double) (this.h * this.h)) {
             return false;
         } else {
             this.c = entityliving;
@@ -47,7 +63,7 @@ public class PathfinderGoalFollowOwnerImpl extends PathfinderGoal {
     }
 
     public boolean b() {
-        return !this.e.p() && this.b.h(this.c) > (double)(this.g * this.g);
+        return !this.e.p() && this.b.h(this.c) > (double) (this.g * this.g);
     }
 
     public void c() {
@@ -63,19 +79,24 @@ public class PathfinderGoalFollowOwnerImpl extends PathfinderGoal {
     }
 
     public void e() {
-        this.b.getControllerLook().a(this.c, 10.0F, (float)this.b.K());
+        this.b.getControllerLook().a(this.c, 10.0F, (float) this.b.K());
         if (--this.f <= 0) {
             this.f = 10;
             if (!this.e.a(this.c, this.d) && !this.b.isLeashed() && !this.b.isPassenger() && this.b.h(this.c) >= 144.0D) {
                 int i = MathHelper.floor(this.c.locX) - 2;
                 int j = MathHelper.floor(this.c.locZ) - 2;
-                int k = MathHelper.floor(this.c.getBoundingBox().b);
+                int k = 0;
+                try {
+                    k = MathHelper.floor(axisField.getDouble(this.c.getBoundingBox()));
+                } catch (IllegalAccessException e1) {
+                    e1.printStackTrace();
+                }
 
-                for(int l = 0; l <= 4; ++l) {
-                    for(int i1 = 0; i1 <= 4; ++i1) {
+                for (int l = 0; l <= 4; ++l) {
+                    for (int i1 = 0; i1 <= 4; ++i1) {
                         if ((l < 1 || i1 < 1 || l > 3 || i1 > 3) && this.a(i, j, k, l, i1)) {
                             CraftEntity entity = this.b.getBukkitEntity();
-                            Location to = new Location(entity.getWorld(), (double)((float)(i + l) + 0.5F), (double)k, (double)((float)(j + i1) + 0.5F), this.b.yaw, this.b.pitch);
+                            Location to = new Location(entity.getWorld(), (double) ((float) (i + l) + 0.5F), (double) k, (double) ((float) (j + i1) + 0.5F), this.b.yaw, this.b.pitch);
                             EntityTeleportEvent event = new EntityTeleportEvent(entity, entity.getLocation(), to);
                             this.b.world.getServer().getPluginManager().callEvent(event);
                             if (event.isCancelled()) {

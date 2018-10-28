@@ -1,6 +1,7 @@
-package com.github.shynixn.petblocks.api.business.service
+package com.github.shynixn.petblocks.core.logic.persistence.entity
 
-import com.github.shynixn.petblocks.api.business.enumeration.MaterialType
+import com.github.shynixn.petblocks.api.persistence.entity.GuiIcon
+import com.github.shynixn.petblocks.api.persistence.entity.GuiItem
 
 /**
  * Created by Shynixn 2018.
@@ -29,39 +30,19 @@ import com.github.shynixn.petblocks.api.business.enumeration.MaterialType
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-interface ItemService {
+class GuiItemEntity : GuiItem {
     /**
-     * Creates a new itemstack from the given materialType.
+     * Gets a nullable script
+     * which can be used for defining the action of the gui item.
      */
-    fun <I> createItemStack(materialType: MaterialType, dataValue: Int = 0, amount: Int = 0): I
+    override var script: String? = null
+    /**
+     * Icon of the gui item.
+     */
+    override val icon: GuiIcon = GuiIconEntity()
 
-    /**
-     * Creates a new itemstack from the given parameters.
-     */
-    fun <I> createItemStack(typeId : Int, dataValue : Int = 0, amount : Int = 1) : I
-
-    /**
-     * Sets the amount of items on the given stack.
-     */
-    fun <I> setAmountOfItemStack(itemStack: I, amount: Int)
-
-    /**
-     * Gets the amount of items on the given stack.
-     */
-    fun getAmountOfItemStack(itemStack: Any): Int
-
-    /**
-     * Sets the displayName of an itemstack.
-     */
-    fun <I> setDisplayNameOfItemStack(itemstack: I, name: String)
-
-    /**
-     * Sets the lore of an itemstack.
-     */
-    fun <I> setLoreOfItemStack(itemstack: I, index: Int, text: String)
-
-    /**
-     * Gets if the given itemstack is the given materialType.
-     */
-    fun <I> isItemStackMaterialType(itemStack: I, materialType: MaterialType): Boolean
+    /** Returns if this item should be rendered. */
+    override var visible: Boolean = true
+    /** Returns the position in the inventory. */
+    override var position: Int = 0
 }

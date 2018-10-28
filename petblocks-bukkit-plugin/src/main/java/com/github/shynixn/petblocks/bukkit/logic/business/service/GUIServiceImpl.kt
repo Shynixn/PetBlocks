@@ -2,12 +2,19 @@ package com.github.shynixn.petblocks.bukkit.logic.business.service
 
 import com.github.shynixn.petblocks.api.business.enumeration.ChatClickAction
 import com.github.shynixn.petblocks.api.business.enumeration.ChatColor
+import com.github.shynixn.petblocks.api.business.enumeration.ScriptAction
 import com.github.shynixn.petblocks.api.business.service.*
 import com.github.shynixn.petblocks.api.persistence.entity.ChatMessage
+import com.github.shynixn.petblocks.api.persistence.entity.GuiIcon
 import com.github.shynixn.petblocks.api.persistence.entity.GuiItem
-import com.github.shynixn.petblocks.bukkit.logic.business.extension.clearCompletely
+import com.github.shynixn.petblocks.api.persistence.entity.PetMeta
+import com.github.shynixn.petblocks.bukkit.logic.business.extension.*
 import com.github.shynixn.petblocks.core.logic.business.extension.chatMessage
 import com.github.shynixn.petblocks.core.logic.business.extension.thenAcceptSafely
+import com.github.shynixn.petblocks.core.logic.persistence.entity.GuiIconEntity
+import com.github.shynixn.petblocks.core.logic.persistence.entity.ParticleEntity
+import com.github.shynixn.petblocks.core.logic.persistence.entity.PetMetaEntity
+import com.github.shynixn.petblocks.core.logic.persistence.entity.PlayerMetaEntity
 import com.google.inject.Inject
 import org.bukkit.Bukkit
 import org.bukkit.Material
@@ -15,6 +22,8 @@ import org.bukkit.entity.Player
 import org.bukkit.inventory.Inventory
 import org.bukkit.inventory.ItemStack
 import org.bukkit.plugin.Plugin
+import java.util.*
+import java.util.logging.Level
 
 /**
  * Created by Shynixn 2018.
@@ -43,8 +52,8 @@ import org.bukkit.plugin.Plugin
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class GUIServiceImpl @Inject constructor(private val configurationService: ConfigurationService, private val plugin: Plugin, private val scriptService: GUIScriptService, private val persistenceService: PersistencePetMetaService, private val messageService: MessageService, private val headDatabaseService: DependencyHeadDatabaseService) : GUIService {
-    private val pageCache = HashMap<Player,Any>()
+class GUIServiceImpl @Inject constructor(private val configurationService: ConfigurationService, private val plugin: Plugin, private val scriptService: GUIScriptService, private val persistenceService: PersistencePetMetaService, private val itemService: ItemService, private val messageService: MessageService, private val headDatabaseService: DependencyHeadDatabaseService) : GUIService {
+    private val pageCache = HashMap<Player, Any>()
 
     private var collectedMinecraftHeadsMessage = chatMessage {
         text {
@@ -92,94 +101,91 @@ class GUIServiceImpl @Inject constructor(private val configurationService: Confi
 
         headDatabaseService.clearResources(player)
 
-        val guiTitle = configurationService.findValue<String>("gui.settings.title")
+        val guiTitle = configurationService.findValue<String>("messages.gui-title")
         val inventory = Bukkit.getServer().createInventory(player, 54, guiTitle)
         player.openInventory(inventory)
 
-        persistenceService.getOrCreateFromPlayerUUID(player.uniqueId).thenAcceptSafely { petMeta ->
-            //    PetBlockManager.instance.gui.setPage(player, GUIPage.MAIN, petMeta)
+        renderPage(player, "gui.main", PetMetaEntity(PlayerMetaEntity(UUID.randomUUID(), "name"), ParticleEntity()))
+
+        /* persistenceService.getOrCreateFromPlayerUUID(player.uniqueId).thenAcceptSafely { petMeta ->
+             //    PetBlockManager.instance.gui.setPage(player, GUIPage.MAIN, petMeta)
 
 
-            /*  public void setPage(Player player, GUIPage page, PetMeta petMeta) {
-                  if (!this.manager.inventories.containsKey(player)) {
-                      return;
-                  }
-                  final Inventory inventory = this.manager.inventories.get(player);
-                  inventory.clear();
-                  if (page == GUIPage.MAIN) {
-                      this.setOtherItems(player, inventory, petMeta, GUIPage.MAIN);
-                      this.manager.pages.put(player, new GuiPageContainer(GUIPage.MAIN, null));
-                  } else if (page == GUIPage.WARDROBE) {
-                      this.setOtherItems(player, inventory, petMeta, page);
-                      this.manager.pages.put(player, new GuiPageContainer(page, this.manager.pages.get(player)));
-                  } else {
-                      this.setListAble(player, page, 0);
-                  }
-                  final Optional<GUIItemContainer<Player>> optBackGuiItemContainer = Config.<Player>getInstance().getGuiItemsController().getGUIItemFromName("back");
-                  if (!optBackGuiItemContainer.isPresent())
-                      throw new IllegalArgumentException("Gui item back could not be loaded correctly!");
-                  inventory.setItem(optBackGuiItemContainer.get().getPosition(), (ItemStack) optBackGuiItemContainer.get().generate(player));
-                  this.fillEmptySlots(inventory);
-                  player.updateInventory();*/
-
-        }
+             /*  public void setPage(Player player, GUIPage page, PetMeta petMeta) {
+                   if (!this.manager.inventories.containsKey(player)) {
+                       return;
+                   }
+                   final Inventory inventory = this.manager.inventories.get(player);
+                   inventory.clear();
+                   if (page == GUIPage.MAIN) {
+                       this.setOtherItems(player, inventory, petMeta, GUIPage.MAIN);
+                       this.manager.pages.put(player, new GuiPageContainer(GUIPage.MAIN, null));
+                   } else if (page == GUIPage.WARDROBE) {
+                       this.setOtherItems(player, inventory, petMeta, page);
+                       this.manager.pages.put(player, new GuiPageContainer(page, this.manager.pages.get(player)));
+                   } else {
+                       this.setListAble(player, page, 0);
+                   }
+                   final Optional<GUIItemContainer<Player>> optBackGuiItemContainer = Config.<Player>getInstance().getGuiItemsController().getGUIItemFromName("back");
+                   if (!optBackGuiItemContainer.isPresent())
+                       throw new IllegalArgumentException("Gui item back could not be loaded correctly!");
+                   inventory.setItem(optBackGuiItemContainer.get().getPosition(), (ItemStack) optBackGuiItemContainer.get().generate(player));
+                   this.fillEmptySlots(inventory);
+                   player.updateInventory();*/
+         }*/
     }
 
     /**
-     * Displays the main page for the given [player].
+     * Renders a single gui page.
      */
-    private fun openMainPage(player: Player) {
+    private fun renderPage(player: Player, path: String, petMeta: PetMeta) {
+        val items = configurationService.findGUIItemCollection(path)
         val inventory = player.openInventory.topInventory
-        inventory.clear()
 
-        /*configurationService.findGUIItemCollection("main").get().forEach{ guiItem ->
-            if(guiItem.)
-
-
+        if (!items.isPresent) {
+            plugin.logger.log(Level.WARNING, "Failed to load gui path '$path'.")
+            return
         }
 
-        for (guiItemContainer in Config.getInstance<Player>().getGuiItemsController().getAll()) {
-            if (guiItemContainer.getPage() === page) {
-                inventory.setItem(guiItemContainer.getPosition(), guiItemContainer.generate(player) as ItemStack)
+        items.get().forEach { item ->
+            if (item.position >= 0 && item.visible) {
+                if (item.icon.script != null) {
+                    val scriptResult = scriptService.executeScript<Any>(inventory, item.icon.script!!)
+
+                    if (scriptResult.action == ScriptAction.COPY_PET_SKIN) {
+                        val guiIcon = GuiIconEntity()
+
+                        with(guiIcon) {
+                            displayName = petMeta.displayName
+                            type = petMeta.itemId
+                            data = petMeta.itemDamage
+                            skin = petMeta.skin
+                            unbreakable = petMeta.unbreakable
+                        }
+
+                        renderIcon(inventory, item.position, guiIcon)
+                    }
+                } else {
+                    renderIcon(inventory, item.position, item.icon)
+                }
             }
         }
 
-        if (page === GUIPage.MAIN) {
-            val container = Config.getInstance<Player>().getGuiItemsController().getGUIItemFromName("my-pet")
-            if (!container.isPresent())
-                throw IllegalArgumentException("Gui item my-pet could not be loaded correctly!")
-            inventory.setItem(container.get().getPosition(), petMeta.getHeadItemStack() as ItemStack)
-        }
-        if (petMeta.isSoundEnabled()) {
-            val container = Config.getInstance<Player>().getGuiItemsController().getGUIItemFromName("sounds-enabled-pet")
-            if (!container.isPresent())
-                throw IllegalArgumentException("Gui item sounds-enabled-pet could not be loaded correctly!")
-            if (page === container.get().getPage()) {
-                inventory.setItem(container.get().getPosition(), container.get().generate(player) as ItemStack)
-            }
-        } else {
-            val container = Config.getInstance<Player>().getGuiItemsController().getGUIItemFromName("sounds-disabled-pet")
-            if (!container.isPresent())
-                throw IllegalArgumentException("Gui item sounds-disabled-pet could not be loaded correctly!")
-            if (page === container.get().getPage()) {
-                inventory.setItem(container.get().getPosition(), container.get().generate(player) as ItemStack)
-            }
-        }
-        if (!petMeta.isEnabled()) {
-            val container = Config.getInstance<Player>().getGuiItemsController().getGUIItemFromName("enable-pet")
-            if (!container.isPresent())
-                throw IllegalArgumentException("Gui item enable-pet could not be loaded correctly!")
-            if (page === container.get().getPage()) {
-                inventory.setItem(container.get().getPosition(), container.get().generate(player) as ItemStack)
-            }
-        } else {
-            val container = Config.getInstance<Player>().getGuiItemsController().getGUIItemFromName("disable-pet")
-            if (!container.isPresent())
-                throw IllegalArgumentException("Gui item disable-pet could not be loaded correctly!")
-            if (page === container.get().getPage()) {
-                inventory.setItem(container.get().getPosition(), container.get().generate(player) as ItemStack)
-            }
-        }*/
+        player.inventory.updateInventory()
+    }
+
+    /**
+     * Renders a gui Icon.
+     */
+    private fun renderIcon(inventory: Inventory, position: Int, guiIcon: GuiIcon) {
+        val itemStack = itemService.createItemStack<ItemStack>(guiIcon.type, guiIcon.data)
+
+        itemStack.setDisplayName(guiIcon.displayName)
+        itemStack.setLore(guiIcon.lore)
+        itemStack.setSkin(guiIcon.skin)
+        itemStack.setUnbreakable(guiIcon.unbreakable)
+
+        inventory.setItem(position, itemStack)
     }
 
     /**
@@ -199,10 +205,6 @@ class GUIServiceImpl @Inject constructor(private val configurationService: Confi
             return
         }
 
-        val script = optGuiItem.get().executingScript
-        if (!script.isPresent) {
-            return
-        }
 
         /*  val scriptResult = scriptService.executeScript(PetBlockManager.instance.inventories[player], script.get())
 
@@ -307,108 +309,108 @@ class GUIServiceImpl @Inject constructor(private val configurationService: Confi
     }
 
     private fun setItemsToInventory(player: Player, inventory: Inventory, type: Int, items: List<GuiItem>, groupPermission: String?) {
-     /*   val previousContainer = PetBlockManager.instance.pages[player]
-        val container: GuiPageContainer
-        val page = GUIPage.CUSTOM_COLLECTION
+        /*   val previousContainer = PetBlockManager.instance.pages[player]
+           val container: GuiPageContainer
+           val page = GUIPage.CUSTOM_COLLECTION
 
-        if (previousContainer!!.page != page) {
-            container = GuiPageContainer(page, previousContainer)
-            PetBlockManager.instance.pages[player] = container
-        } else {
-            container = PetBlockManager.instance.pages[player]!!
-        }
+           if (previousContainer!!.page != page) {
+               container = GuiPageContainer(page, previousContainer)
+               PetBlockManager.instance.pages[player] = container
+           } else {
+               container = PetBlockManager.instance.pages[player]!!
+           }
 
-        if (type > 0) {
-            if (container.startCount % 45 != 0 || items.size == container.startCount) {
-                return
-            } else {
-                container.startCount = container.startCount - (45 - type)
-            }
-        } else {
-            if (container.currentCount == 0) {
-                return
-            } else {
-                container.startCount = container.currentCount + type
-            }
-        }
+           if (type > 0) {
+               if (container.startCount % 45 != 0 || items.size == container.startCount) {
+                   return
+               } else {
+                   container.startCount = container.startCount - (45 - type)
+               }
+           } else {
+               if (container.currentCount == 0) {
+                   return
+               } else {
+                   container.startCount = container.currentCount + type
+               }
+           }
 
-        var count = container.startCount
-        if (count < 0)
-            count = 0
-        container.currentCount = container.startCount
-        inventory.clearCompletely()
-        var i = 0
-        var scheduleCounter = 0
-        while (i < 45 && i + container.startCount < items.size) {
-            if (inventory.getItem(i) == null || inventory.getItem(i).type == Material.AIR) {
+           var count = container.startCount
+           if (count < 0)
+               count = 0
+           container.currentCount = container.startCount
+           inventory.clearCompletely()
+           var i = 0
+           var scheduleCounter = 0
+           while (i < 45 && i + container.startCount < items.size) {
+               if (inventory.getItem(i) == null || inventory.getItem(i).type == Material.AIR) {
 
-                val slot = i
-                val containerSlot = i + container.startCount
-                val mountBlock = container.currentCount
-                val currentPage = container.page
-                count++
-                if (i % 2 == 0) {
-                    scheduleCounter++
-                }
+                   val slot = i
+                   val containerSlot = i + container.startCount
+                   val mountBlock = container.currentCount
+                   val currentPage = container.page
+                   count++
+                   if (i % 2 == 0) {
+                       scheduleCounter++
+                   }
 
-                Bukkit.getScheduler().runTaskLater(plugin, {
-                    if (container.currentCount == mountBlock && currentPage == PetBlockManager.instance.pages[player]!!.page) {
-                        inventory.setItem(slot, setPermissionLore(player, items[containerSlot].toItemStack(), items[containerSlot].position, groupPermission))
-                    }
-                }, scheduleCounter.toLong())
-            }
-            i++
-        }
-        container.startCount = count
-        val optBackGuiItemContainer = Config.getInstance<Player>().guiItemsController.getGUIItemFromName("back")
-        if (!optBackGuiItemContainer.isPresent)
-            throw IllegalArgumentException("Gui item back could not be loaded correctly!")
-        inventory.setItem(optBackGuiItemContainer.get().position, optBackGuiItemContainer.get().generate(player) as ItemStack)
+                   Bukkit.getScheduler().runTaskLater(plugin, {
+                       if (container.currentCount == mountBlock && currentPage == PetBlockManager.instance.pages[player]!!.page) {
+                           inventory.setItem(slot, setPermissionLore(player, items[containerSlot].toItemStack(), items[containerSlot].position, groupPermission))
+                       }
+                   }, scheduleCounter.toLong())
+               }
+               i++
+           }
+           container.startCount = count
+           val optBackGuiItemContainer = Config.getInstance<Player>().guiItemsController.getGUIItemFromName("back")
+           if (!optBackGuiItemContainer.isPresent)
+               throw IllegalArgumentException("Gui item back could not be loaded correctly!")
+           inventory.setItem(optBackGuiItemContainer.get().position, optBackGuiItemContainer.get().generate(player) as ItemStack)
 
-        if (!(container.startCount % 45 != 0 || items.size == container.startCount)) {
-            val optNextPage = Config.getInstance<Player>().guiItemsController.getGUIItemFromName("next-page")
-            if (!optNextPage.isPresent)
-                throw IllegalArgumentException("Gui item next-page could not be loaded correctly!")
-            inventory.setItem(optNextPage.get().position, optNextPage.get().generate(player) as ItemStack)
-        }
+           if (!(container.startCount % 45 != 0 || items.size == container.startCount)) {
+               val optNextPage = Config.getInstance<Player>().guiItemsController.getGUIItemFromName("next-page")
+               if (!optNextPage.isPresent)
+                   throw IllegalArgumentException("Gui item next-page could not be loaded correctly!")
+               inventory.setItem(optNextPage.get().position, optNextPage.get().generate(player) as ItemStack)
+           }
 
-        if (container.currentCount != 0) {
-            val optPreviousPage = Config.getInstance<Player>().guiItemsController.getGUIItemFromName("previous-page")
-            if (!optPreviousPage.isPresent)
-                throw IllegalArgumentException("Gui item previous-page could not be loaded correctly!")
-            inventory.setItem(optPreviousPage.get().position, optPreviousPage.get().generate(player) as ItemStack)
-        }
+           if (container.currentCount != 0) {
+               val optPreviousPage = Config.getInstance<Player>().guiItemsController.getGUIItemFromName("previous-page")
+               if (!optPreviousPage.isPresent)
+                   throw IllegalArgumentException("Gui item previous-page could not be loaded correctly!")
+               inventory.setItem(optPreviousPage.get().position, optPreviousPage.get().generate(player) as ItemStack)
+           }
 
-        this.fillEmptySlots(inventory)*/
+           this.fillEmptySlots(inventory)*/
     }
 
     private fun hasPermission(player: Player, position: Int, permission: String?): Boolean {
-      /*  val slot = position + 1
-        if (player.hasPermission("$permission.all") || player.hasPermission("$permission.$slot")) {
-            return true
-        }
+        /*  val slot = position + 1
+          if (player.hasPermission("$permission.all") || player.hasPermission("$permission.$slot")) {
+              return true
+          }
 
-        player.sendMessage(Config.getInstance<Any>().prefix + Config.getInstance<Any>().noPermission)*/
+          player.sendMessage(Config.getInstance<Any>().prefix + Config.getInstance<Any>().noPermission)*/
         return false
     }
 
     private fun setPermissionLore(player: Player, itemStack: ItemStack, position: Int, permission: String?): ItemStack {
-     /*   if (itemStack.itemMeta != null && itemStack.itemMeta.lore != null) {
-            var i = 0
-            val meta = itemStack.itemMeta
-            val lore = meta.lore
-            while (i < lore.size) {
-                if (player.hasPermission("$permission.all") || player.hasPermission("$permission.$position")) {
-                    lore[i] = lore[i].replace("<permission>", com.github.shynixn.petblocks.bukkit.logic.compatibility.Config.permissionIconYes)
-                } else {
-                    lore[i] = lore[i].replace("<permission>", com.github.shynixn.petblocks.bukkit.logic.compatibility.Config.permissionIconNo)
-                }
-                i++
-            }
+        /*   if (itemStack.itemMeta != null && itemStack.itemMeta.lore != null) {
+               var i = 0
+               val meta = itemStack.itemMeta
+               val lore = meta.lore
+               while (i < lore.size) {
+                   if (player.hasPermission("$permission.all") || player.hasPermission("$permission.$position")) {
+                       lore[i] = lore[i].replace("<permission>", com.github.shynixn.petblocks.bukkit.logic.compatibility.Config.permissionIconYes)
+                   } else {
+                       lore[i] = lore[i].replace("<permission>", com.github.shynixn.petblocks.bukkit.logic.compatibility.Config.permissionIconNo)
+                   }
+                   i++
+               }
 
-            meta.lore = lore
-            itemStack.itemMeta = meta
-        }*/
+               meta.lore = lore
+               itemStack.itemMeta = meta
+           }*/
 
         return itemStack
     }

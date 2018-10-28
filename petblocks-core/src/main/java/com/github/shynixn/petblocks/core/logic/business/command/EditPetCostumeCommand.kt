@@ -68,10 +68,10 @@ class EditPetCostumeCommand @Inject constructor(private val proxyService: ProxyS
                     val guiItem = skinCollection.get()[number]
 
                     with(petMeta) {
-                        itemId = guiItem.type
-                        itemDamage = guiItem.data
-                        skin = guiItem.skin
-                        unbreakable = guiItem.unbreakable
+                        itemId = guiItem.icon.type
+                        itemDamage = guiItem.icon.data
+                        skin = guiItem.icon.skin
+                        unbreakable = guiItem.icon.unbreakable
                     }
 
                     petMetaService.save(petMeta)

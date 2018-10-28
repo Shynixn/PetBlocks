@@ -49,6 +49,8 @@ class GUIScriptServiceImpl @Inject constructor(private val logger: LoggingServic
                 scriptResult.path = Optional.of(data[0])
                 scriptResult.permission = Optional.of(data[1])
                 return scriptResult
+            } else if (script.startsWith("executing action copy-pet-skin")) {
+                scriptResult.action = ScriptAction.LOAD_COLLECTION
             } else if (script.startsWith("scrolling collection")) {
                 val amount = script.replace("scrolling collection ", "").split(" ")[0].trim()
                 scriptResult.action = ScriptAction.SCROLL_COLLECTION
@@ -60,8 +62,7 @@ class GUIScriptServiceImpl @Inject constructor(private val logger: LoggingServic
                     scriptResult.action = ScriptAction.RENAME_PET
                     scriptResult.permission = Optional.of(permission)
                     return scriptResult
-                }
-                else if (script.startsWith("executing action customskin")) {
+                } else if (script.startsWith("executing action customskin")) {
                     val permission = script.replace("executing action customskin", "").trim()
                     scriptResult.action = ScriptAction.CUSTOM_SKIN
                     scriptResult.permission = Optional.of(permission)

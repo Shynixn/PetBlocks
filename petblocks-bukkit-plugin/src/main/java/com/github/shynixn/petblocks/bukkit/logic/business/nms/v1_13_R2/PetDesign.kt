@@ -44,6 +44,34 @@ class PetDesign(owner: Player, petMeta: PetMeta) : EntityArmorStand((owner.locat
     private var jumpingField: Field = EntityLiving::class.java.getDeclaredField("bg")
     private var hitBox: EntityInsentient
 
+    companion object {
+        private val axisAlignmentFields = arrayOfNulls<Field?>(5)
+
+        /**
+         * The name of the axis alignment fields changed from 1.13.1 to 1.13.2 but the
+         * NMS layer is still the same.
+         */
+        init {
+            try {
+                axisAlignmentFields[0] = AxisAlignedBB::class.java.getDeclaredField("minX")
+                axisAlignmentFields[1] = AxisAlignedBB::class.java.getDeclaredField("minY")
+                axisAlignmentFields[2] = AxisAlignedBB::class.java.getDeclaredField("minZ")
+                axisAlignmentFields[3] = AxisAlignedBB::class.java.getDeclaredField("maxX")
+                axisAlignmentFields[4] = AxisAlignedBB::class.java.getDeclaredField("maxZ")
+            } catch (ex: NoSuchFieldException) {
+                try {
+                    axisAlignmentFields[0] = AxisAlignedBB::class.java.getDeclaredField("a")
+                    axisAlignmentFields[1] = AxisAlignedBB::class.java.getDeclaredField("b")
+                    axisAlignmentFields[2] = AxisAlignedBB::class.java.getDeclaredField("c")
+                    axisAlignmentFields[3] = AxisAlignedBB::class.java.getDeclaredField("d")
+                    axisAlignmentFields[4] = AxisAlignedBB::class.java.getDeclaredField("f")
+                } catch (e: NoSuchFieldException) {
+                    throw RuntimeException("Fields could not get located.", e)
+                }
+            }
+        }
+    }
+
     /**
      * Proxy handler.
      */
@@ -92,10 +120,17 @@ class PetDesign(owner: Player, petMeta: PetMeta) : EntityArmorStand((owner.locat
         super.move(enummovetype, d0, d1, d2)
 
         if (this.passengers != null && this.passengers.firstOrNull { p -> p is EntityHuman } != null) {
-            val localAxisAlignedBB = this.boundingBox
-            this.locX = (localAxisAlignedBB.a + localAxisAlignedBB.d) / 2.0
-            this.locZ = (localAxisAlignedBB.c + localAxisAlignedBB.f) / 2.0
-            this.locY = localAxisAlignedBB.b + 0 // TODO: HitBox Riding relocation.
+            val axisBoundingBox = this.boundingBox
+
+            val minXA = axisAlignmentFields[0]!!.getDouble(axisBoundingBox)
+            val minXB = axisAlignmentFields[1]!!.getDouble(axisBoundingBox)
+            val minXC = axisAlignmentFields[2]!!.getDouble(axisBoundingBox)
+            val maxXD = axisAlignmentFields[3]!!.getDouble(axisBoundingBox)
+            val maxXF = axisAlignmentFields[4]!!.getDouble(axisBoundingBox)
+
+            this.locX = (minXA + maxXD) / 2.0
+            this.locY = minXB + 0
+            this.locZ = (minXC + maxXF) / 2.0
         }
     }
 

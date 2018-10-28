@@ -52,5 +52,10 @@ enum class ScriptAction {
     /**
      * Action for changing the skull with a custom skin name.
      */
-    CUSTOM_SKIN
+    CUSTOM_SKIN,
+
+    /**
+     * Copies the current skin of the pet into a gui icon.
+     */
+    COPY_PET_SKIN
 }

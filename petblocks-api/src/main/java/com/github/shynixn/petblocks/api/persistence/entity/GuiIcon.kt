@@ -1,6 +1,4 @@
-package com.github.shynixn.petblocks.api.business.service
-
-import com.github.shynixn.petblocks.api.business.enumeration.MaterialType
+package com.github.shynixn.petblocks.api.persistence.entity
 
 /**
  * Created by Shynixn 2018.
@@ -29,39 +27,28 @@ import com.github.shynixn.petblocks.api.business.enumeration.MaterialType
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-interface ItemService {
+interface GuiIcon {
     /**
-     * Creates a new itemstack from the given materialType.
+     * Gets a nullable script
+     * which can be used for special rendering processes.
      */
-    fun <I> createItemStack(materialType: MaterialType, dataValue: Int = 0, amount: Int = 0): I
+    var script: String?
 
-    /**
-     * Creates a new itemstack from the given parameters.
-     */
-    fun <I> createItemStack(typeId : Int, dataValue : Int = 0, amount : Int = 1) : I
+    /** Returns the item displayName. */
+    var displayName: String
 
-    /**
-     * Sets the amount of items on the given stack.
-     */
-    fun <I> setAmountOfItemStack(itemStack: I, amount: Int)
+    /** Returns the lore of the item. */
+    var lore: List<String>
 
-    /**
-     * Gets the amount of items on the given stack.
-     */
-    fun getAmountOfItemStack(itemStack: Any): Int
+    /** Returns the type of the item. */
+    var type: Int
 
-    /**
-     * Sets the displayName of an itemstack.
-     */
-    fun <I> setDisplayNameOfItemStack(itemstack: I, name: String)
+    /** Returns the data of the item. */
+    var data: Int
 
-    /**
-     * Sets the lore of an itemstack.
-     */
-    fun <I> setLoreOfItemStack(itemstack: I, index: Int, text: String)
+    /** Returns the skin of the item. */
+    var skin: String
 
-    /**
-     * Gets if the given itemstack is the given materialType.
-     */
-    fun <I> isItemStackMaterialType(itemStack: I, materialType: MaterialType): Boolean
+    /** Returns if the item is unbreakable. */
+    var unbreakable: Boolean
 }

@@ -1,6 +1,6 @@
-package com.github.shynixn.petblocks.api.business.service
+package com.github.shynixn.petblocks.core.logic.persistence.entity
 
-import com.github.shynixn.petblocks.api.business.enumeration.MaterialType
+import com.github.shynixn.petblocks.api.persistence.entity.GuiIcon
 
 /**
  * Created by Shynixn 2018.
@@ -29,39 +29,27 @@ import com.github.shynixn.petblocks.api.business.enumeration.MaterialType
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-interface ItemService {
-    /**
-     * Creates a new itemstack from the given materialType.
-     */
-    fun <I> createItemStack(materialType: MaterialType, dataValue: Int = 0, amount: Int = 0): I
+class GuiIconEntity : GuiIcon {
+    /** Returns the item displayName. */
+    override var displayName: String = ""
 
-    /**
-     * Creates a new itemstack from the given parameters.
-     */
-    fun <I> createItemStack(typeId : Int, dataValue : Int = 0, amount : Int = 1) : I
+    /** Returns the lore of the item. */
+    override var lore: List<String> = ArrayList()
 
-    /**
-     * Sets the amount of items on the given stack.
-     */
-    fun <I> setAmountOfItemStack(itemStack: I, amount: Int)
+    /** Returns the type of the item. */
+    override var type: Int = 0
 
-    /**
-     * Gets the amount of items on the given stack.
-     */
-    fun getAmountOfItemStack(itemStack: Any): Int
+    /** Returns the data of the item. */
+    override var data: Int = 0
 
-    /**
-     * Sets the displayName of an itemstack.
-     */
-    fun <I> setDisplayNameOfItemStack(itemstack: I, name: String)
+    /** Returns the skin of the item. */
+    override var skin: String = ""
 
+    /** Returns if the item is unbreakable. */
+    override var unbreakable: Boolean = false
     /**
-     * Sets the lore of an itemstack.
+     * Gets a nullable script
+     * which can be used for special rendering processes.
      */
-    fun <I> setLoreOfItemStack(itemstack: I, index: Int, text: String)
-
-    /**
-     * Gets if the given itemstack is the given materialType.
-     */
-    fun <I> isItemStackMaterialType(itemStack: I, materialType: MaterialType): Boolean
+    override var script: String? = null
 }

@@ -4,9 +4,11 @@ package com.github.shynixn.petblocks.bukkit.logic.business.service
 
 import com.github.shynixn.petblocks.api.business.enumeration.MaterialType
 import com.github.shynixn.petblocks.api.business.service.ItemService
+import com.github.shynixn.petblocks.bukkit.logic.business.nms.VersionSupport
 import com.github.shynixn.petblocks.core.logic.business.extension.translateChatColors
 import org.bukkit.Material
 import org.bukkit.inventory.ItemStack
+import java.lang.reflect.Method
 
 /**
  * Created by Shynixn 2018.
@@ -36,6 +38,26 @@ import org.bukkit.inventory.ItemStack
  * SOFTWARE.
  */
 class ItemServiceImpl : ItemService {
+    private val version = VersionSupport.getServerVersion()
+    private val getIdFromMaterialMethod: Method = { Material::class.java.getDeclaredMethod("getId") }.invoke()
+
+    private val getMaterialFromIdMethod: Method? = {
+        if (version.isVersionLowerThan(VersionSupport.VERSION_1_13_R1)) {
+            Material::class.java.getDeclaredMethod("getMaterial", Int::class.javaPrimitiveType)
+        }
+
+        null
+    }.invoke()
+
+    /**
+     * Creates a new itemstack from the given parameters.
+     */
+    override fun <I> createItemStack(typeId: Int, dataValue: Int, amount: Int): I {
+        val materialType = getMaterialFromNumericValue<Material>(typeId)
+
+        return ItemStack(materialType, amount, dataValue.toShort()) as I
+    }
+
     /**
      * Gets if the given itemstack is the given materialType.
      */
@@ -133,4 +155,22 @@ class ItemServiceImpl : ItemService {
     }
 
 
+    /**
+     * Gets the material from the numeric value.
+     * Throws a [IllegalArgumentException] if the numeric value could
+     * not get applied to a material.
+     */
+    private fun <M> getMaterialFromNumericValue(value: Int): M {
+        if (getMaterialFromIdMethod != null) {
+            return getMaterialFromIdMethod.invoke(null, value) as M
+        } else {
+            for (material in Material.values()) {
+                if (getIdFromMaterialMethod(material) == value) {
+                    return material as M
+                }
+            }
+
+            throw IllegalArgumentException("Material of numeric value $value could not be found.")
+        }
+    }
 }

@@ -64,7 +64,7 @@ class EditPetEngineCommand @Inject constructor(private val proxyService: ProxySe
                     playerProxy.sendMessage(prefix + "Collection does not contain number " + number + ".")
                 } else {
                     val guiItem = engineCollection.get()[number]
-                    petActionService.changeTemplate(playerProxy.handle, guiItem.getPayload<Template>().get())
+                  //  petActionService.changeTemplate(playerProxy.handle, guiItem.getPayload<Template>().get())
                     petMetaService.save(petMeta)
                 }
             }

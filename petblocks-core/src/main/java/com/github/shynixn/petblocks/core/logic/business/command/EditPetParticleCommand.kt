@@ -66,18 +66,8 @@ class EditPetParticleCommand @Inject constructor(private val proxyService: Proxy
                 } else {
                     val guiItem = particleCollection.get()[number]
                     val targetParticle = petMeta.particle
-                    val sourceParticle = guiItem.getPayload<Particle>().get()
+                  //  val sourceParticle = guiItem.getPayload<Particle>().get()
 
-                    with(targetParticle) {
-                        type = sourceParticle.type
-                        amount = sourceParticle.amount
-                        speed = sourceParticle.speed
-                        offSetX = sourceParticle.offSetX
-                        offSetY = sourceParticle.offSetY
-                        offSetZ = sourceParticle.offSetZ
-                        materialName = sourceParticle.materialName
-                        data = sourceParticle.data
-                    }
 
                     petMetaService.save(petMeta)
                 }

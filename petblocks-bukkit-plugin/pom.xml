@@ -4,14 +4,12 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <artifactId>root</artifactId>
+        <artifactId>petblocks-root</artifactId>
         <groupId>com.github.shynixn.petblocks</groupId>
-        <version>7.4.0-SNAPSHOT</version>
+        <version>8.0.0-SNAPSHOT</version>
     </parent>
 
-    <version>7.4.0-SNAPSHOT</version>
     <artifactId>petblocks-bukkit-plugin</artifactId>
-    <packaging>jar</packaging>
 
     <repositories>
         <repository>
@@ -23,8 +21,12 @@
             <url>http://maven.sk89q.com/repo/</url>
         </repository>
         <repository>
-            <id>bstats-repo</id>
-            <url>http://repo.bstats.org/content/repositories/releases/</url>
+            <id>jitpack.io</id>
+            <url>https://jitpack.io</url>
+        </repository>
+        <repository>
+            <id>spigot-repo</id>
+            <url>https://hub.spigotmc.org/nexus/content/groups/public/</url>
         </repository>
     </repositories>
 
@@ -32,30 +34,36 @@
         <dependency>
             <groupId>com.github.shynixn.petblocks</groupId>
             <artifactId>petblocks-bukkit-api</artifactId>
-            <version>7.4.0-SNAPSHOT</version>
+            <version>8.0.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>com.github.shynixn.petblocks</groupId>
             <artifactId>petblocks-core</artifactId>
-            <version>7.4.0-SNAPSHOT</version>
+            <version>8.0.0-SNAPSHOT</version>
         </dependency>
         <dependency>
-            <groupId>org.bstats</groupId>
+            <groupId>com.google.inject</groupId>
+            <artifactId>guice</artifactId>
+            <version>4.1.0</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-jdk14</artifactId>
+            <version>1.7.25</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.bstats.bStats-Metrics</groupId>
             <artifactId>bstats-bukkit</artifactId>
-            <version>RELEASE</version>
+            <version>1.3</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>com.zaxxer</groupId>
             <artifactId>HikariCP</artifactId>
-            <version>RELEASE</version>
+            <version>3.2.0</version>
             <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.comphenix.protocol</groupId>
-            <artifactId>ProtocolLib-API</artifactId>
-            <version>RELEASE</version>
-            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>me.minebuilders</groupId>
@@ -66,14 +74,8 @@
         <dependency>
             <groupId>com.sk89q</groupId>
             <artifactId>worldguard</artifactId>
-            <version>RELEASE</version>
+            <version>6.1</version>
             <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.google.inject</groupId>
-            <artifactId>guice</artifactId>
-            <version>4.1.0</version>
-            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.spigotmc</groupId>
@@ -132,7 +134,7 @@
         <dependency>
             <groupId>org.spigotmc</groupId>
             <artifactId>spigot113R2</artifactId>
-            <version>1.13.1-R2.0</version>
+            <version>1.13.2-R2.0</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>

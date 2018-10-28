@@ -30,41 +30,20 @@ import java.util.*
  * SOFTWARE.
  */
 interface GuiItem {
+    /**
+     * Gets a nullable script
+     * which can be used for defining the action of the gui item.
+     */
+    var script: String?
 
-    /** Returns a executable script */
-    val executingScript: Optional<String>
+    /**
+     * Icon of the gui item.
+     */
+    val icon: GuiIcon
 
-    /** Returns the item displayName. */
-    val displayName: String
-
-    /** Returns the type of the item. */
-    val type: Int
-
-    /** Returns the data of the item. */
-    val data: Int
-
-    /** Returns the lore of the item. */
-    val lore: List<String>
-
-    /** Returns the skin of the item. */
-    val skin: String
-
-    /** Returns if this item is enabled. */
-    val enabled: Boolean
+    /** Returns if this item should be rendered. */
+    var visible: Boolean
 
     /** Returns the position in the inventory. */
-    val position: Int
-
-    /** Returns if the item is unbreakable. */
-    val unbreakable: Boolean
-
-    /**
-     * Gets the optional item payload.
-     */
-    fun <P> getPayload(): Optional<P>
-
-    /**
-     * Sets the optional item payload.
-     */
-    fun <P> setPayload(payload: P)
+    var position: Int
 }

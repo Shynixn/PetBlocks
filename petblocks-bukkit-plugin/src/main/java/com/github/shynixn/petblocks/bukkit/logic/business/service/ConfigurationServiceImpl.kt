@@ -8,6 +8,8 @@ import com.github.shynixn.petblocks.api.persistence.entity.ChatMessage
 import com.github.shynixn.petblocks.api.persistence.entity.GuiItem
 import com.github.shynixn.petblocks.bukkit.logic.business.extension.toParticleType
 import com.github.shynixn.petblocks.core.logic.business.extension.chatMessage
+import com.github.shynixn.petblocks.core.logic.persistence.entity.GuiIconEntity
+import com.github.shynixn.petblocks.core.logic.persistence.entity.GuiItemEntity
 import com.github.shynixn.petblocks.core.logic.persistence.entity.ParticleEntity
 import com.github.shynixn.petblocks.core.logic.persistence.entity.SoundEntity
 import com.google.inject.Inject
@@ -162,7 +164,7 @@ class ConfigurationServiceImpl @Inject constructor(private val plugin: Plugin) :
                         particle.materialName = values["id"] as String
                     } else {
                         throw IllegalArgumentException("WAT")
-                       //  particle.materialName = MaterialCompatibility13.getMaterialFromId(values["id"] as Int).name
+                        //  particle.materialName = MaterialCompatibility13.getMaterialFromId(values["id"] as Int).name
                     }
                 }
 
@@ -193,23 +195,42 @@ class ConfigurationServiceImpl @Inject constructor(private val plugin: Plugin) :
             return Optional.of(cache[path]!!)
         }
 
-        if (path.startsWith("minecraft-heads-com.")) {
-            val category = path.split(".")[1]
-            val items = getItemsFromMinecraftHeadsDatabase(category)
-            cache[path] = items
-            return Optional.of(items)
-        }
-
         val items = ArrayList<GuiItem>()
-        try {
-            val data = (this.plugin.config.get(path) as MemorySection).getValues(false)
-            //     data.keys.mapTo(items) { BukkitGUIItem(Integer.parseInt(it), (data[it] as MemorySection).getValues(true)) }
-        } catch (e: Exception) {
-            plugin.logger.log(Level.WARNING, "Failed load GUI Item collection called '$path'.", e)
+        val section = (plugin.config.get(path) as MemorySection).getValues(false)
+
+        section.keys.forEach { key ->
+            val guiItem = GuiItemEntity()
+            val guiIcon = guiItem.icon
+            val description = (section[key] as MemorySection).getValues(true)
+
+            this.setItem(guiItem, "visible", "visible", description)
+            this.setItem(guiItem, "position", "position", description)
+            this.setItem(guiItem, "script", "script", description)
+
+            this.setItem(guiIcon, "type", "icon.id", description)
+            this.setItem(guiIcon, "data", "icon.damage", description)
+            this.setItem(guiIcon, "displayName", "icon.name", description)
+            this.setItem(guiIcon, "unbreakable", "icon..unbreakable", description)
+            this.setItem(guiIcon, "skin", "icon.skin", description)
+            this.setItem(guiIcon, "script", "icon.script", description)
+            this.setItem(guiIcon, "lore", "icon.lore", description)
+
+            items.add(guiItem)
         }
 
         cache[path] = items
         return Optional.of(items)
+    }
+
+    /**
+     * Sets optional gui items to a instance.
+     */
+    private fun setItem(instance: Any, fieldName: String, key: String, map: Map<String, Any>) {
+        if (map.containsKey(key)) {
+            val field = instance.javaClass.getDeclaredField(fieldName)
+            field.isAccessible = true
+            field.set(instance, map[key])
+        }
     }
 
     /**
@@ -220,6 +241,16 @@ class ConfigurationServiceImpl @Inject constructor(private val plugin: Plugin) :
         if (item !is ItemStack) {
             throw IllegalArgumentException("Item has to be an BukkitItemStack")
         }
+        /**
+         *   if (path.startsWith("minecraft-heads-com.")) {
+        val category = path.split(".")[1]
+        val items = getItemsFromMinecraftHeadsDatabase(category)
+        cache[path] = items
+        return Optional.of(items)
+        }
+
+         */
+
 
         /*guiItemsController.all.forEach { i ->
             try {
