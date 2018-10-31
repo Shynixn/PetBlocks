@@ -104,8 +104,10 @@ class SqlProxyImpl @Inject constructor(private val plugin: Plugin, private val l
                 }
 
                 plugin.getResource("assets/petblocks/sql/create-sqlite.sql").bufferedReader().use { reader ->
-                    connection.prepareStatement(reader.readText()).use { statement ->
-                        statement.execute()
+                    reader.readText().split(";").forEach { text ->
+                        connection.prepareStatement(text).use { statement ->
+                            statement.execute()
+                        }
                     }
                 }
             }

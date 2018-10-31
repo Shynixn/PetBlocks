@@ -29,7 +29,7 @@ import java.sql.Connection
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-interface SqlConnectionPoolProxy {
+interface SqlConnectionPoolProxy : AutoCloseable {
     /**
      * Creates a basic jdbc connection which the caller is responsible for.
      */

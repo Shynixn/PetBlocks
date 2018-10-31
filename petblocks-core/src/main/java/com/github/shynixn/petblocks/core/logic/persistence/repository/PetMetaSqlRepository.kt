@@ -45,7 +45,7 @@ class PetMetaSqlRepository @Inject constructor(private val sqlDbContext: SqlDbCo
      */
     override fun getOrCreateFromPlayerIdentifiers(name: String, uuid: UUID): PetMeta {
         return sqlDbContext.transaction { connection ->
-            val statement = "SELECT * FROM SHY_PETBLOCK petblock, SHY_PARTICLE_EFFECT particle, SHY_PLAYER player" +
+            val statement = "SELECT * FROM SHY_PETBLOCK petblock, SHY_PARTICLE_EFFECT particle, SHY_PLAYER player " +
                     "WHERE player.uuid = ? " +
                     "AND petblock.shy_player_id = player.id " +
                     "AND shy_particle_effect_id = particle.id"
@@ -78,7 +78,7 @@ class PetMetaSqlRepository @Inject constructor(private val sqlDbContext: SqlDbCo
      */
     override fun getAll(): List<PetMeta> {
         return sqlDbContext.transaction { connection ->
-            val statement = "SELECT * FROM SHY_PETBLOCK petblock, SHY_PARTICLE_EFFECT particle, SHY_PLAYER player" +
+            val statement = "SELECT * FROM SHY_PETBLOCK petblock, SHY_PARTICLE_EFFECT particle, SHY_PLAYER player " +
                     "WHERE petblock.shy_player_id = player.id " +
                     "AND shy_particle_effect_id = particle.id"
 
