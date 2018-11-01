@@ -37,9 +37,9 @@ import java.util.*
  */
 class GUIScriptServiceImpl @Inject constructor(private val logger: LoggingService) : GUIScriptService {
     /**
-     * Executes the given [script] for the given [inventory].
+     * Executes the given [script].
      */
-    override fun <I> executeScript(inventory: I, script: String): ScriptResult {
+    override fun executeScript(script: String): ScriptResult {
         val scriptResult = ScriptResultEntity()
 
         try {
@@ -51,8 +51,8 @@ class GUIScriptServiceImpl @Inject constructor(private val logger: LoggingServic
                 return scriptResult
             } else if (script.startsWith("executing action copy-pet-skin")) {
                 scriptResult.action = ScriptAction.LOAD_COLLECTION
-            } else if (script.startsWith("scrolling collection")) {
-                val amount = script.replace("scrolling collection ", "").split(" ")[0].trim()
+            } else if (script.startsWith("scrolling")) {
+                val amount = script.replace("scrolling ", "").split(" ")[0].trim()
                 scriptResult.action = ScriptAction.SCROLL_COLLECTION
                 scriptResult.valueContainer = Optional.of(amount.toInt())
                 return scriptResult

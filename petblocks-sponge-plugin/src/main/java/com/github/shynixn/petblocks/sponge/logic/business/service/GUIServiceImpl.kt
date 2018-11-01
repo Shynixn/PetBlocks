@@ -150,7 +150,7 @@ class GUIServiceImpl @Inject constructor(private val configurationService: Confi
             return
         }
 
-        val scriptResult = scriptService.executeScript(petBlocksManager.inventories[player], script.get())
+        val scriptResult = scriptService.executeScript<Any>(petBlocksManager.inventories[player], script.get())
 
         when {
             scriptResult.action == ScriptAction.LOAD_COLLECTION -> loadCollectionPage(petBlocksManager.inventories[player], scriptResult.path.get(), scriptResult.permission.get())

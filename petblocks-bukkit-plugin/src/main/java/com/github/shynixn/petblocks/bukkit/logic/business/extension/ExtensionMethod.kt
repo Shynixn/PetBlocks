@@ -149,6 +149,8 @@ fun PlayerInventory.updateInventory() {
  * Clears the inventory completely
  */
 fun Inventory.clearCompletely() {
+    clear()
+
     for (i in 0 until contents.size) {
         setItem(i, null)
     }

@@ -1,7 +1,4 @@
-package com.github.shynixn.petblocks.api.business.service
-
-import com.github.shynixn.petblocks.api.persistence.entity.GuiItem
-import java.util.*
+package com.github.shynixn.petblocks.api.persistence.entity
 
 /**
  * Created by Shynixn 2018.
@@ -30,31 +27,19 @@ import java.util.*
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-interface ConfigurationService {
+interface GuiPlayerCache {
+    /**
+     * Allocated gui items path.
+     */
+    var path: String
 
     /**
-     * Tries to load the config value from the given [path].
-     * Throws a [IllegalArgumentException] if the path could not be correctly
-     * loaded.
-     * @param C the type of the returned value.
+     * Off set from the left side.
      */
-    fun <C> findValue(path: String): C
+    var offset: Int
 
     /**
-     * Tries to return a [GuiItem] matching the displayName and the lore of the given [item].
-     * Can be called asynchronly. Uses the [path] parameter for faster fetching.
-     * @param I the type of the itemstack.
+     * Gets the inventory.
      */
-    fun <I> findClickedGUIItem(path: String, item: I): Optional<GuiItem>
-
-    /**
-     * Tries to return a list of [GuiItem] matching the given path from the config.
-     * Can be called asynchronly.
-     */
-    fun findGUIItemCollection(path: String): Optional<List<GuiItem>>
-
-    /**
-     * Clears cached resources and refreshes the used configuration.
-     */
-    fun refresh()
+    fun <I> getInventory(): I
 }

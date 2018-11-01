@@ -8,6 +8,7 @@ import com.github.shynixn.petblocks.api.persistence.entity.ChatMessage
 import com.github.shynixn.petblocks.api.persistence.entity.GuiItem
 import com.github.shynixn.petblocks.bukkit.logic.business.extension.toParticleType
 import com.github.shynixn.petblocks.core.logic.business.extension.chatMessage
+import com.github.shynixn.petblocks.core.logic.business.extension.translateChatColors
 import com.github.shynixn.petblocks.core.logic.persistence.entity.GuiIconEntity
 import com.github.shynixn.petblocks.core.logic.persistence.entity.GuiItemEntity
 import com.github.shynixn.petblocks.core.logic.persistence.entity.ParticleEntity
@@ -235,42 +236,34 @@ class ConfigurationServiceImpl @Inject constructor(private val plugin: Plugin) :
      * Tries to return a [GuiItem] matching the displayName and the lore of the given [item].
      * Can be called from Asynchronly.
      */
-    override fun <I> findClickedGUIItem(item: I): Optional<GuiItem> {
+    override fun <I> findClickedGUIItem(path: String, item: I): Optional<GuiItem> {
         if (item !is ItemStack) {
             throw IllegalArgumentException("Item has to be an BukkitItemStack")
         }
-        /**
-         *   if (path.startsWith("minecraft-heads-com.")) {
-        val category = path.split(".")[1]
-        val items = getItemsFromMinecraftHeadsDatabase(category)
-        cache[path] = items
-        return Optional.of(items)
+
+        if (!this.cache.containsKey(path)) {
+            return Optional.empty()
         }
 
-         */
+        if (item.itemMeta == null || item.itemMeta.displayName == null) {
+            return Optional.empty()
+        }
 
-
-        /*guiItemsController.all.forEach { i ->
+        this.cache[path]!!.forEach { guiItem ->
             try {
+                if (item.itemMeta.displayName == guiItem.icon.displayName.translateChatColors()) {
+                    if (item.itemMeta.lore == null) {
+                        item.itemMeta.lore = ArrayList<String>()
+                    }
 
-                if ((i as GUIItemContainer<*>).displayName.isPresent && !(i as GUIItemContainer<*>).displayName.get().trim().isEmpty()) {
-                    if (item.itemMeta.displayName == (i as GUIItemContainer<*>).displayName.get()) {
-                        val lore = i.lore.get()
-                        val meta = item.itemMeta
-                        if (meta.lore == null) {
-                            meta.lore = ArrayList()
-                        }
-
-                        if (meta.lore.size == lore.size) {
-                            return Optional.of(BukkitGUIItem(i))
-                        }
+                    if (item.itemMeta.lore.size == guiItem.icon.lore.size) {
+                        return Optional.of(guiItem)
                     }
                 }
             } catch (e: Exception) {
-                e.printStackTrace()
                 // Ignored
             }
-        }*/
+        }
 
         return Optional.empty()
     }
@@ -288,6 +281,16 @@ class ConfigurationServiceImpl @Inject constructor(private val plugin: Plugin) :
      * Returns the minecraft-heads.com category heads.
      */
     private fun getItemsFromMinecraftHeadsDatabase(category: String): List<GuiItem> {
+        /**
+         *   if (path.startsWith("minecraft-heads-com.")) {
+        val category = path.split(".")[1]
+        val items = getItemsFromMinecraftHeadsDatabase(category)
+        cache[path] = items
+        return Optional.of(items)
+        }
+
+         */
+
         val items = ArrayList<GuiItem>()
         /*  try {
               val decipher = Cipher.getInstance("AES/CBC/PKCS5PADDING")

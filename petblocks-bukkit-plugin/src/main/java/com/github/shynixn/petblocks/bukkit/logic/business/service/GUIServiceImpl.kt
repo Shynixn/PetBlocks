@@ -4,17 +4,10 @@ import com.github.shynixn.petblocks.api.business.enumeration.ChatClickAction
 import com.github.shynixn.petblocks.api.business.enumeration.ChatColor
 import com.github.shynixn.petblocks.api.business.enumeration.ScriptAction
 import com.github.shynixn.petblocks.api.business.service.*
-import com.github.shynixn.petblocks.api.persistence.entity.ChatMessage
-import com.github.shynixn.petblocks.api.persistence.entity.GuiIcon
-import com.github.shynixn.petblocks.api.persistence.entity.GuiItem
-import com.github.shynixn.petblocks.api.persistence.entity.PetMeta
+import com.github.shynixn.petblocks.api.persistence.entity.*
 import com.github.shynixn.petblocks.bukkit.logic.business.extension.*
 import com.github.shynixn.petblocks.core.logic.business.extension.chatMessage
-import com.github.shynixn.petblocks.core.logic.business.extension.thenAcceptSafely
-import com.github.shynixn.petblocks.core.logic.persistence.entity.GuiIconEntity
-import com.github.shynixn.petblocks.core.logic.persistence.entity.ParticleEntity
-import com.github.shynixn.petblocks.core.logic.persistence.entity.PetMetaEntity
-import com.github.shynixn.petblocks.core.logic.persistence.entity.PlayerMetaEntity
+import com.github.shynixn.petblocks.core.logic.persistence.entity.*
 import com.google.inject.Inject
 import org.bukkit.Bukkit
 import org.bukkit.Material
@@ -53,7 +46,7 @@ import java.util.logging.Level
  * SOFTWARE.
  */
 class GUIServiceImpl @Inject constructor(private val configurationService: ConfigurationService, private val plugin: Plugin, private val scriptService: GUIScriptService, private val persistenceService: PersistencePetMetaService, private val itemService: ItemService, private val messageService: MessageService, private val headDatabaseService: DependencyHeadDatabaseService) : GUIService {
-    private val pageCache = HashMap<Player, Any>()
+    private val pageCache = HashMap<Player, GuiPlayerCache>()
 
     private var collectedMinecraftHeadsMessage = chatMessage {
         text {
@@ -102,6 +95,19 @@ class GUIServiceImpl @Inject constructor(private val configurationService: Confi
     }
 
     /**
+     * Returns if the given [inventory] matches the inventory of this service.
+     */
+    override fun <I> isGUIInventory(inventory: I): Boolean {
+        if (inventory !is Inventory) {
+            throw IllegalArgumentException("Inventory has to be a BukkitInventory!")
+        }
+
+        val holder = inventory.holder as? Player ?: return false
+
+        return this.pageCache.containsKey(holder) && this.pageCache[holder]!!.getInventory<Inventory>() == inventory
+    }
+
+    /**
      * Opens the gui for the given [player]. Does nothing when the GUI is already open.
      */
     override fun <P> open(player: P) {
@@ -119,6 +125,8 @@ class GUIServiceImpl @Inject constructor(private val configurationService: Confi
         val inventory = Bukkit.getServer().createInventory(player, 54, guiTitle)
         player.openInventory(inventory)
 
+        pageCache[player] = GuiPlayerCacheEntity("gui.main", inventory)
+
         renderPage(player, "gui.main", PetMetaEntity(PlayerMetaEntity(UUID.randomUUID(), "name"), ParticleEntity()))
     }
 
@@ -134,15 +142,20 @@ class GUIServiceImpl @Inject constructor(private val configurationService: Confi
             throw IllegalArgumentException("Item has to be a BukkitItemStack!")
         }
 
-        val optGuiItem = configurationService.findClickedGUIItem(item)
-        if (!optGuiItem.isPresent) {
+        val optGuiItem = configurationService.findClickedGUIItem(pageCache[player]!!.path, item)
+        if (!optGuiItem.isPresent || optGuiItem.get().script == null) {
             return
         }
 
+        val scriptResult = scriptService.executeScript(optGuiItem.get().script!!)
 
-        /*  val scriptResult = scriptService.executeScript(PetBlockManager.instance.inventories[player], script.get())
+        if (scriptResult.action == ScriptAction.SCROLL_COLLECTION) {
+            pageCache[player]!!.offset += scriptResult.valueContainer.get() as Int
+            renderPage(player, pageCache[player]!!.path, PetMetaEntity(PlayerMetaEntity(UUID.randomUUID(), "name"), ParticleEntity()));
+        }
 
-          when {
+
+        /*  when {
               scriptResult.action == ScriptAction.LOAD_COLLECTION -> loadCollectionPage(PetBlockManager.instance.inventories[player], scriptResult.path.get(), scriptResult.permission.get())
               scriptResult.action == ScriptAction.SCROLL_COLLECTION -> scrollCollectionPage(player, scriptResult.valueContainer.get() as Int)
               scriptResult.action == ScriptAction.RENAME_PET -> sendGuiMessage(player, configurationService.findValue("messages.naming-suggest"), scriptResult.permission.get())
@@ -154,6 +167,9 @@ class GUIServiceImpl @Inject constructor(private val configurationService: Confi
      * Renders a single gui page.
      */
     private fun renderPage(player: Player, path: String, petMeta: PetMeta) {
+        player.inventory.clearCompletely()
+        val offset = this.pageCache[player]!!.offset
+
         val items = configurationService.findGUIItemCollection(path)
         val inventory = player.openInventory.topInventory
 
@@ -165,7 +181,7 @@ class GUIServiceImpl @Inject constructor(private val configurationService: Confi
         items.get().forEach { item ->
             if (item.position >= 0 && item.visible) {
                 if (item.icon.script != null) {
-                    val scriptResult = scriptService.executeScript<Any>(inventory, item.icon.script!!)
+                    val scriptResult = scriptService.executeScript(item.icon.script!!)
 
                     if (scriptResult.action == ScriptAction.COPY_PET_SKIN) {
                         val guiIcon = GuiIconEntity()
@@ -178,10 +194,10 @@ class GUIServiceImpl @Inject constructor(private val configurationService: Confi
                             unbreakable = petMeta.unbreakable
                         }
 
-                        renderIcon(inventory, item.position, guiIcon)
+                        renderIcon(inventory, item.position - offset, guiIcon)
                     }
                 } else {
-                    renderIcon(inventory, item.position, item.icon)
+                    renderIcon(inventory, item.position - offset, item.icon)
                 }
             }
         }
@@ -194,8 +210,12 @@ class GUIServiceImpl @Inject constructor(private val configurationService: Confi
      * Renders a gui Icon.
      */
     private fun renderIcon(inventory: Inventory, position: Int, guiIcon: GuiIcon) {
+        if (position < 0) {
+            return
+        }
+
         val itemStack = itemService.createItemStack<ItemStack>(guiIcon.type, guiIcon.data)
-        
+
         itemStack.setDisplayName(guiIcon.displayName)
         itemStack.setLore(guiIcon.lore)
         itemStack.setSkin(guiIcon.skin)
@@ -205,55 +225,42 @@ class GUIServiceImpl @Inject constructor(private val configurationService: Confi
     }
 
     /**
-     * Returns if the given [inventory] matches the inventory of this service.
-     */
-    override fun <I> isGUIInventory(inventory: I): Boolean {
-        if (inventory !is Inventory) {
-            throw IllegalArgumentException("Inventory has to be a BukkitInventory!")
-        }
-
-        /* return PetBlockManager.instance.inventories.containsKey(inventory.holder)
-                 && PetBlockManager.instance.inventories[inventory.holder]!! == inventory*/
-        return false
-    }
-
-    /**
      * Scrolls the loaded collection page of a [player] the given [amountOfSlots] to the right when entered a positive value.
-     * Scrolls to the left when given a negative amount of Slots value.
-     */
-    override fun <P> scrollCollectionPage(player: P, amountOfSlots: Int) {
-        if (player !is Player) {
-            throw IllegalArgumentException("Player has to be a BukkitPlayer!")
-        }
+     * Scrolls to the left when given a negative amount of Slots value.*/
 
-        /*if (!pageCache.containsKey(player)) {
-            this.pageCache[player] = PlayerGUICache()
-        }
+    // override fun <P> scrollCollectionPage(player: P, amountOfSlots: Int) {
+    // if (player !is Player) {
+    //      throw IllegalArgumentException("Player has to be a BukkitPlayer!")
+    //  }
 
-        if (!PetBlockManager.instance.pages.containsKey(player) || PetBlockManager.instance.pages[player]!!.page != GUIPage.CUSTOM_COLLECTION) {
-            return
-        }
-
-        val path = pageCache[player]!!.path ?: return
-        val permission = pageCache[player]!!.permission ?: return
-        val optItems = configurationService.findGUIItemCollection(path)
-
-        if (optItems.isPresent) {
-            if (amountOfSlots < 0) {
-                setItemsToInventory(player, PetBlockManager.instance.inventories[player]!!, amountOfSlots, optItems.get(), permission)
-            } else {
-                setItemsToInventory(player, PetBlockManager.instance.inventories[player]!!, amountOfSlots, optItems.get(), permission)
-            }
-        }*/
+    /*if (!pageCache.containsKey(player)) {
+        this.pageCache[player] = PlayerGUICache()
     }
+
+    if (!PetBlockManager.instance.pages.containsKey(player) || PetBlockManager.instance.pages[player]!!.page != GUIPage.CUSTOM_COLLECTION) {
+        return
+    }
+
+    val path = pageCache[player]!!.path ?: return
+    val permission = pageCache[player]!!.permission ?: return
+    val optItems = configurationService.findGUIItemCollection(path)
+
+    if (optItems.isPresent) {
+        if (amountOfSlots < 0) {
+            setItemsToInventory(player, PetBlockManager.instance.inventories[player]!!, amountOfSlots, optItems.get(), permission)
+        } else {
+            setItemsToInventory(player, PetBlockManager.instance.inventories[player]!!, amountOfSlots, optItems.get(), permission)
+        }
+    }*/
+    //}
 
     /**
      * Loads the collection from the given [path] into the given [inventory].
      */
-    override fun <I> loadCollectionPage(inventory: I, path: String, permission: String?) {
-        if (inventory !is Inventory) {
-            throw IllegalArgumentException("Inventory has to be an BukkitInventory!")
-        }
+    //   override fun <I> loadCollectionPage(inventory: I, path: String, permission: String?) {
+    //    if (inventory !is Inventory) {
+    //        throw IllegalArgumentException("Inventory has to be an BukkitInventory!")
+    //   }
 /*
         if (!pageCache.containsKey(inventory.holder as Player)) {
             this.pageCache[inventory.holder as Player] = PlayerGUICache()
@@ -269,8 +276,8 @@ class GUIServiceImpl @Inject constructor(private val configurationService: Confi
             this.pageCache[inventory.holder as Player]!!.path = path
             this.pageCache[inventory.holder as Player]!!.permission = permission
             setItemsToInventory(inventory.holder as Player, inventory, 45, optItems.get(), permission)
-        }*/
-    }
+        }
+    }*/
 
 
     /**
