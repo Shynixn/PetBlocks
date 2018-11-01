@@ -203,17 +203,17 @@ class ConfigurationServiceImpl @Inject constructor(private val plugin: Plugin) :
             val guiIcon = guiItem.icon
             val description = (section[key] as MemorySection).getValues(true)
 
-            this.setItem(guiItem, "visible", "visible", description)
-            this.setItem(guiItem, "position", "position", description)
-            this.setItem(guiItem, "script", "script", description)
+            this.setItem<Boolean>("visible", description) { value -> guiItem.visible = value }
+            this.setItem<Int>("position", description) { value -> guiItem.position = value }
+            this.setItem<String>("script", description) { value -> guiItem.script = value }
 
-            this.setItem(guiIcon, "type", "icon.id", description)
-            this.setItem(guiIcon, "data", "icon.damage", description)
-            this.setItem(guiIcon, "displayName", "icon.name", description)
-            this.setItem(guiIcon, "unbreakable", "icon..unbreakable", description)
-            this.setItem(guiIcon, "skin", "icon.skin", description)
-            this.setItem(guiIcon, "script", "icon.script", description)
-            this.setItem(guiIcon, "lore", "icon.lore", description)
+            this.setItem<Int>("icon.id", description) { value -> guiIcon.type = value }
+            this.setItem<Int>("icon.damage", description) { value -> guiIcon.data = value }
+            this.setItem<String>("icon.name", description) { value -> guiIcon.displayName = value }
+            this.setItem<Boolean>("icon.unbreakable", description) { value -> guiIcon.unbreakable = value }
+            this.setItem<String>("icon.skin", description) { value -> guiIcon.skin = value }
+            this.setItem<String>("icon.script", description) { value -> guiIcon.script = value }
+            this.setItem<List<String>>("icon.lore", description) { value -> guiIcon.lore = value }
 
             items.add(guiItem)
         }
@@ -225,11 +225,9 @@ class ConfigurationServiceImpl @Inject constructor(private val plugin: Plugin) :
     /**
      * Sets optional gui items to a instance.
      */
-    private fun setItem(instance: Any, fieldName: String, key: String, map: Map<String, Any>) {
+    private fun <T> setItem(key: String, map: Map<String, Any>, f: (T) -> Unit) {
         if (map.containsKey(key)) {
-            val field = instance.javaClass.getDeclaredField(fieldName)
-            field.isAccessible = true
-            field.set(instance, map[key])
+            f.invoke(map[key]!! as T)
         }
     }
 

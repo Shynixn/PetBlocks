@@ -30,11 +30,9 @@ import com.github.shynixn.petblocks.api.persistence.entity.GuiIcon
  * SOFTWARE.
  */
 class GuiIconEntity : GuiIcon {
-    /** Returns the item displayName. */
-    override var displayName: String = ""
-
-    /** Returns the lore of the item. */
-    override var lore: List<String> = ArrayList()
+    private var backedDisplayName = " "
+    private var backedSkin = ""
+    private var backedLore = ArrayList<String>()
 
     /** Returns the type of the item. */
     override var type: Int = 0
@@ -43,7 +41,44 @@ class GuiIconEntity : GuiIcon {
     override var data: Int = 0
 
     /** Returns the skin of the item. */
-    override var skin: String = ""
+    override var skin: String
+        get() = backedSkin
+        set(value) {
+            if (value == "none") {
+                this.backedSkin = ""
+            } else {
+                this.backedSkin = value
+            }
+        }
+
+
+    /** Returns the item displayName. */
+    override var displayName: String
+        get() = backedDisplayName
+        set(value) {
+            if (value == "none") {
+                this.backedDisplayName = " "
+            } else {
+                this.backedDisplayName = value
+            }
+        }
+
+    /** Returns the lore of the item. */
+    override var lore: List<String>
+        get() = backedLore
+        set(value) {
+            backedLore.clear()
+
+            value.forEach { line ->
+                if (line == "none") {
+                    if (value.size != 1) {
+                        backedLore.add("")
+                    }
+                } else {
+                    backedLore.add(line)
+                }
+            }
+        }
 
     /** Returns if the item is unbreakable. */
     override var unbreakable: Boolean = false

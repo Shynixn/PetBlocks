@@ -87,6 +87,20 @@ class GUIServiceImpl @Inject constructor(private val configurationService: Confi
         player.closeInventory()
     }
 
+
+    /**
+     * Clears all resources the given player has allocated from this service.
+     */
+    override fun <P> cleanResources(player: P) {
+        if (player !is Player) {
+            throw IllegalArgumentException("Player has to be a BukkitPlayer!")
+        }
+
+        if (pageCache.containsKey(player)) {
+            pageCache.remove(player)
+        }
+    }
+
     /**
      * Opens the gui for the given [player]. Does nothing when the GUI is already open.
      */
@@ -106,33 +120,34 @@ class GUIServiceImpl @Inject constructor(private val configurationService: Confi
         player.openInventory(inventory)
 
         renderPage(player, "gui.main", PetMetaEntity(PlayerMetaEntity(UUID.randomUUID(), "name"), ParticleEntity()))
+    }
 
-        /* persistenceService.getOrCreateFromPlayerUUID(player.uniqueId).thenAcceptSafely { petMeta ->
-             //    PetBlockManager.instance.gui.setPage(player, GUIPage.MAIN, petMeta)
+    /**
+     * Executes actions when the given [player] clicks on an [item] at the given [relativeSlot].
+     */
+    override fun <P, I> clickInventoryItem(player: P, relativeSlot: Int, item: I) {
+        if (player !is Player) {
+            throw IllegalArgumentException("Player has to be a BukkitPlayer!")
+        }
+
+        if (item !is ItemStack) {
+            throw IllegalArgumentException("Item has to be a BukkitItemStack!")
+        }
+
+        val optGuiItem = configurationService.findClickedGUIItem(item)
+        if (!optGuiItem.isPresent) {
+            return
+        }
 
 
-             /*  public void setPage(Player player, GUIPage page, PetMeta petMeta) {
-                   if (!this.manager.inventories.containsKey(player)) {
-                       return;
-                   }
-                   final Inventory inventory = this.manager.inventories.get(player);
-                   inventory.clear();
-                   if (page == GUIPage.MAIN) {
-                       this.setOtherItems(player, inventory, petMeta, GUIPage.MAIN);
-                       this.manager.pages.put(player, new GuiPageContainer(GUIPage.MAIN, null));
-                   } else if (page == GUIPage.WARDROBE) {
-                       this.setOtherItems(player, inventory, petMeta, page);
-                       this.manager.pages.put(player, new GuiPageContainer(page, this.manager.pages.get(player)));
-                   } else {
-                       this.setListAble(player, page, 0);
-                   }
-                   final Optional<GUIItemContainer<Player>> optBackGuiItemContainer = Config.<Player>getInstance().getGuiItemsController().getGUIItemFromName("back");
-                   if (!optBackGuiItemContainer.isPresent())
-                       throw new IllegalArgumentException("Gui item back could not be loaded correctly!");
-                   inventory.setItem(optBackGuiItemContainer.get().getPosition(), (ItemStack) optBackGuiItemContainer.get().generate(player));
-                   this.fillEmptySlots(inventory);
-                   player.updateInventory();*/
-         }*/
+        /*  val scriptResult = scriptService.executeScript(PetBlockManager.instance.inventories[player], script.get())
+
+          when {
+              scriptResult.action == ScriptAction.LOAD_COLLECTION -> loadCollectionPage(PetBlockManager.instance.inventories[player], scriptResult.path.get(), scriptResult.permission.get())
+              scriptResult.action == ScriptAction.SCROLL_COLLECTION -> scrollCollectionPage(player, scriptResult.valueContainer.get() as Int)
+              scriptResult.action == ScriptAction.RENAME_PET -> sendGuiMessage(player, configurationService.findValue("messages.naming-suggest"), scriptResult.permission.get())
+              scriptResult.action == ScriptAction.CUSTOM_SKIN -> sendGuiMessage(player, configurationService.findValue("messages.skullnaming-suggest"), scriptResult.permission.get())
+          }*/
     }
 
     /**
@@ -171,6 +186,7 @@ class GUIServiceImpl @Inject constructor(private val configurationService: Confi
             }
         }
 
+        this.fillEmptySlots(inventory)
         player.inventory.updateInventory()
     }
 
@@ -179,65 +195,13 @@ class GUIServiceImpl @Inject constructor(private val configurationService: Confi
      */
     private fun renderIcon(inventory: Inventory, position: Int, guiIcon: GuiIcon) {
         val itemStack = itemService.createItemStack<ItemStack>(guiIcon.type, guiIcon.data)
-
+        
         itemStack.setDisplayName(guiIcon.displayName)
         itemStack.setLore(guiIcon.lore)
         itemStack.setSkin(guiIcon.skin)
         itemStack.setUnbreakable(guiIcon.unbreakable)
 
         inventory.setItem(position, itemStack)
-    }
-
-    /**
-     * Executes actions when the given [player] clicks on an [item] at the given [relativeSlot].
-     */
-    override fun <P, I> clickInventoryItem(player: P, relativeSlot: Int, item: I) {
-        if (player !is Player) {
-            throw IllegalArgumentException("Player has to be a BukkitPlayer!")
-        }
-
-        if (item !is ItemStack) {
-            throw IllegalArgumentException("Item has to be a BukkitItemStack!")
-        }
-
-        val optGuiItem = configurationService.findClickedGUIItem(item)
-        if (!optGuiItem.isPresent) {
-            return
-        }
-
-
-        /*  val scriptResult = scriptService.executeScript(PetBlockManager.instance.inventories[player], script.get())
-
-          when {
-              scriptResult.action == ScriptAction.LOAD_COLLECTION -> loadCollectionPage(PetBlockManager.instance.inventories[player], scriptResult.path.get(), scriptResult.permission.get())
-              scriptResult.action == ScriptAction.SCROLL_COLLECTION -> scrollCollectionPage(player, scriptResult.valueContainer.get() as Int)
-              scriptResult.action == ScriptAction.RENAME_PET -> sendGuiMessage(player, configurationService.findValue("messages.naming-suggest"), scriptResult.permission.get())
-              scriptResult.action == ScriptAction.CUSTOM_SKIN -> sendGuiMessage(player, configurationService.findValue("messages.skullnaming-suggest"), scriptResult.permission.get())
-          }*/
-    }
-
-    /**
-     * Sends a gui action message.
-     */
-    private fun sendGuiMessage(player: Player, message: ChatMessage, permission: String) {
-        if (player.hasPermission(permission)) {
-            messageService.sendPlayerMessage(player, message)
-        } else {
-            player.sendMessage(configurationService.findValue<String>("messages.prefix") + configurationService.findValue<String>("messages.no-perms"))
-        }
-    }
-
-    /**
-     * Clears all resources the given player has allocated from this service.
-     */
-    override fun <P> cleanResources(player: P) {
-        if (player !is Player) {
-            throw IllegalArgumentException("Player has to be a BukkitPlayer!")
-        }
-
-        if (pageCache.containsKey(player)) {
-            pageCache.remove(player)
-        }
     }
 
     /**
@@ -306,6 +270,18 @@ class GUIServiceImpl @Inject constructor(private val configurationService: Confi
             this.pageCache[inventory.holder as Player]!!.permission = permission
             setItemsToInventory(inventory.holder as Player, inventory, 45, optItems.get(), permission)
         }*/
+    }
+
+
+    /**
+     * Sends a gui action message.
+     */
+    private fun sendGuiMessage(player: Player, message: ChatMessage, permission: String) {
+        if (player.hasPermission(permission)) {
+            messageService.sendPlayerMessage(player, message)
+        } else {
+            player.sendMessage(configurationService.findValue<String>("messages.prefix") + configurationService.findValue<String>("messages.no-perms"))
+        }
     }
 
     private fun setItemsToInventory(player: Player, inventory: Inventory, type: Int, items: List<GuiItem>, groupPermission: String?) {
@@ -384,61 +360,16 @@ class GUIServiceImpl @Inject constructor(private val configurationService: Confi
            this.fillEmptySlots(inventory)*/
     }
 
-    private fun hasPermission(player: Player, position: Int, permission: String?): Boolean {
-        /*  val slot = position + 1
-          if (player.hasPermission("$permission.all") || player.hasPermission("$permission.$slot")) {
-              return true
-          }
-
-          player.sendMessage(Config.getInstance<Any>().prefix + Config.getInstance<Any>().noPermission)*/
-        return false
-    }
-
-    private fun setPermissionLore(player: Player, itemStack: ItemStack, position: Int, permission: String?): ItemStack {
-        /*   if (itemStack.itemMeta != null && itemStack.itemMeta.lore != null) {
-               var i = 0
-               val meta = itemStack.itemMeta
-               val lore = meta.lore
-               while (i < lore.size) {
-                   if (player.hasPermission("$permission.all") || player.hasPermission("$permission.$position")) {
-                       lore[i] = lore[i].replace("<permission>", com.github.shynixn.petblocks.bukkit.logic.compatibility.Config.permissionIconYes)
-                   } else {
-                       lore[i] = lore[i].replace("<permission>", com.github.shynixn.petblocks.bukkit.logic.compatibility.Config.permissionIconNo)
-                   }
-                   i++
-               }
-
-               meta.lore = lore
-               itemStack.itemMeta = meta
-           }*/
-
-        return itemStack
-    }
-
-    /**
-     * Sets the given itemstack as new pet skin for the given [player].
-     */
-    private fun setCollectionSkinItemToPlayer(player: Player, guiItem: GuiItem) {
-        /*persistenceService.getOrCreateFromPlayerUUID(player.uniqueId).thenAcceptSafely { petMeta ->
-            petMeta.setSkin(MaterialCompatibility13.getMaterialFromId(guiItem.type).name, guiItem.data, guiItem.skin, guiItem.unbreakable)
-            persistenceService.save(petMeta)
-            PetBlockManager.instance.gui.setPage(player, GUIPage.MAIN, petMeta)
-        }*/
-    }
-
     /**
      * Fills up the given [inventory] with the default item.
      */
     private fun fillEmptySlots(inventory: Inventory) {
-        /*   for (i in 0 until inventory.contents.size) {
-               if (inventory.getItem(i) == null || inventory.getItem(i).type == Material.AIR) {
-                   val optEmptySlot = Config.getInstance<Player>().guiItemsController.getGUIItemFromName("empty-slot")
-                   if (!optEmptySlot.isPresent) {
-                       throw RuntimeException("PetBlocks gui item 'empty-slot' is not correctly loaded.")
-                   } else {
-                       inventory.setItem(i, optEmptySlot.get().generate(inventory.holder as Player) as ItemStack)
-                   }
-               }
-           }*/
+        val guiItem = this.configurationService.findGUIItemCollection("static-gui").get()[0]
+
+        for (i in 0 until inventory.contents.size) {
+            if (inventory.getItem(i) == null || inventory.getItem(i).type == Material.AIR) {
+                renderIcon(inventory, i, guiItem.icon)
+            }
+        }
     }
 }
