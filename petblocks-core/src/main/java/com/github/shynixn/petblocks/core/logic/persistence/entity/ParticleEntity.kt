@@ -81,9 +81,9 @@ class ParticleEntity(override var type: ParticleType = ParticleType.NONE) : Part
     override var color: ParticleColor
         get() = ParticleColor.WHITE
         set(value) {
-            colorRed = color.red
-            colorGreen = color.green
-            colorBlue = color.blue
+            colorRed = value.red
+            colorGreen = value.green
+            colorBlue = value.blue
         }
 
     /**
