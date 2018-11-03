@@ -1,4 +1,6 @@
-package com.github.shynixn.petblocks.api.persistence.entity
+package com.github.shynixn.petblocks.core.logic.persistence.entity
+
+import com.github.shynixn.petblocks.api.persistence.entity.PetModifierMeta
 
 /**
  * Created by Shynixn 2018.
@@ -27,21 +29,17 @@ package com.github.shynixn.petblocks.api.persistence.entity
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-interface GuiIcon {
+class PetModifierEntity : PetModifierMeta {
     /**
-     * Gets a nullable script
-     * which can be used for special rendering processes.
+     * Database id.
      */
-    var script: String?
-
-    /** Returns the item displayName. */
-    var displayName: String
-
-    /** Returns the lore of the item. */
-    var lore: List<String>
-
+    override var id: Long = 0
     /**
-     * Gets the skin of the icon.
+     * Climbing height.
      */
-    val skin: Skin
+    override var climbingHeight: Double = 0.0
+    /**
+     * Movement speed modifier.
+     */
+    override var movementSpeed: Double = 0.0
 }

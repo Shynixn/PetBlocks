@@ -5,9 +5,7 @@ package unittest
 import com.github.shynixn.petblocks.api.business.enumeration.ParticleType
 import com.github.shynixn.petblocks.api.persistence.context.SqlDbContext
 import com.github.shynixn.petblocks.api.persistence.repository.PetMetaRepository
-import com.github.shynixn.petblocks.core.logic.persistence.entity.ParticleEntity
-import com.github.shynixn.petblocks.core.logic.persistence.entity.PetMetaEntity
-import com.github.shynixn.petblocks.core.logic.persistence.entity.PlayerMetaEntity
+import com.github.shynixn.petblocks.core.logic.persistence.entity.*
 import com.github.shynixn.petblocks.core.logic.persistence.repository.PetMetaSqlRepository
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
@@ -62,7 +60,6 @@ class PetMetaSqlRepositoryTest {
 
         // Assert
         Assertions.assertEquals("Elias", petMetas[1].playerMeta.name)
-        Assertions.assertEquals(ParticleType.BLOCK_CRACK, petMetas[1].particle.type)
     }
 
     /**
@@ -78,7 +75,7 @@ class PetMetaSqlRepositoryTest {
         // Arrange
         val mockedContext = MockedSqlDbContext()
         val classUnderTest = createWithDependencies(mockedContext)
-        val petMeta = PetMetaEntity(PlayerMetaEntity(UUID.randomUUID(), "Pikachu"), ParticleEntity())
+        val petMeta = PetMetaEntity(PlayerMetaEntity(UUID.randomUUID(), "Pikachu"), SkinEntity(), PetModifierEntity())
 
         // Act
         val databasePetMeta = classUnderTest.save(petMeta)
@@ -102,10 +99,9 @@ class PetMetaSqlRepositoryTest {
         // Arrange
         val mockedContext = MockedSqlDbContext()
         val classUnderTest = createWithDependencies(mockedContext)
-        val petMeta = PetMetaEntity(PlayerMetaEntity(UUID.randomUUID(), "Pikachu"), ParticleEntity())
+        val petMeta = PetMetaEntity(PlayerMetaEntity(UUID.randomUUID(), "Pikachu"), SkinEntity(), PetModifierEntity())
         petMeta.id = 32
         petMeta.playerMeta.id = 106
-        petMeta.particle.id = 117
 
         // Act
         val databasePetMeta = classUnderTest.save(petMeta)
@@ -134,7 +130,6 @@ class PetMetaSqlRepositoryTest {
 
         // Assert
         Assertions.assertEquals("Alina", petMeta.playerMeta.name)
-        Assertions.assertEquals(ParticleType.BARRIER, petMeta.particle.type)
     }
 
     /**
@@ -167,8 +162,8 @@ class PetMetaSqlRepositoryTest {
         var insertCalled = false
         var updateCalled = false
         var singleQueryCounter = 0
-        private val petMetas = arrayListOf(PetMetaEntity(PlayerMetaEntity(UUID.fromString("16625034-af3d-4781-b157-64572759ad1c"), "Alina"), ParticleEntity(ParticleType.BARRIER)),
-                PetMetaEntity(PlayerMetaEntity(UUID.randomUUID(), "Elias"), ParticleEntity(ParticleType.BLOCK_CRACK)))
+        private val petMetas = arrayListOf(PetMetaEntity(PlayerMetaEntity(UUID.fromString("16625034-af3d-4781-b157-64572759ad1c"), "Alina"), SkinEntity(), PetModifierEntity()),
+                PetMetaEntity(PlayerMetaEntity(UUID.randomUUID(), "Elias"), SkinEntity(), PetModifierEntity()))
 
         /**
          * Creates a new transaction to the database.
@@ -211,7 +206,7 @@ class PetMetaSqlRepositoryTest {
                 return Optional.empty()
             }
 
-            return Optional.of(PetMetaEntity(PlayerMetaEntity(UUID.randomUUID(), "Mosalina"), ParticleEntity()) as R)
+            return Optional.of(PetMetaEntity(PlayerMetaEntity(UUID.randomUUID(), "Mosalina"), SkinEntity(), PetModifierEntity()) as R)
         }
 
         /**

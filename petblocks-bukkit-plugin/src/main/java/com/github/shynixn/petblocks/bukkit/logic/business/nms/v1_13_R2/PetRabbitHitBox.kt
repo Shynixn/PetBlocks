@@ -63,8 +63,8 @@ class PetRabbitHitBox(world: World) : EntityRabbit(world) {
             this.goalSelector.a(i, pathfinders[i])
         }
 
-        this.getAttributeInstance(GenericAttributes.MOVEMENT_SPEED).value = 0.30000001192092896 * petDesign.proxy.meta.movementSpeedModifier
-        this.Q = petDesign.proxy.meta.climbingHeight.toFloat()
+        this.getAttributeInstance(GenericAttributes.MOVEMENT_SPEED).value = 0.30000001192092896 * petDesign.proxy.meta.modifier.movementSpeed
+        this.Q = petDesign.proxy.meta.modifier.climbingHeight.toFloat()
 
         val mcWorld = (location.world as CraftWorld).handle
         this.setPosition(location.x, location.y, location.z)

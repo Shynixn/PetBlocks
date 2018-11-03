@@ -75,10 +75,10 @@ class FeedPetServiceImpl @Inject constructor(private val concurrencyService: Con
      * Feeds the pet if the conditions are right.
      */
     private fun feedPet(playerProxy: PlayerProxy, pet: PetProxy, itemInHand: Any) {
-        if (pet.meta.sound) {
-            val feedingSound = configurationService.findValue<Sound>("pet.feeding.click-sound")
-            this.soundService.playSound(pet.getLocation<Any>(), feedingSound, playerProxy.handle)
-        }
+       // if (pet.meta.sound) {
+        //    val feedingSound = configurationService.findValue<Sound>("pet.feeding.click-sound")
+        //    this.soundService.playSound(pet.getLocation<Any>(), feedingSound, playerProxy.handle)
+      //  }
 
         val feedingParticle = configurationService.findValue<Particle>("pet.feeding.click-particle")
         particleService.playParticle(pet.getLocation<Any>(), feedingParticle, playerProxy.handle)

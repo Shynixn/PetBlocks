@@ -1,13 +1,14 @@
 package com.github.shynixn.petblocks.core.logic.persistence.repository
 
+import com.github.shynixn.petblocks.api.business.enumeration.EntityType
 import com.github.shynixn.petblocks.api.persistence.context.SqlDbContext
 import com.github.shynixn.petblocks.api.persistence.entity.PetMeta
 import com.github.shynixn.petblocks.api.persistence.repository.PetMetaRepository
-import com.github.shynixn.petblocks.core.logic.persistence.entity.ParticleEntity
-import com.github.shynixn.petblocks.core.logic.persistence.entity.PetMetaEntity
-import com.github.shynixn.petblocks.core.logic.persistence.entity.PlayerMetaEntity
+import com.github.shynixn.petblocks.core.logic.business.extension.get
+import com.github.shynixn.petblocks.core.logic.persistence.entity.*
 import com.google.inject.Inject
 import java.sql.Connection
+import java.sql.ResultSet
 import java.util.*
 
 /**
@@ -44,33 +45,7 @@ class PetMetaSqlRepository @Inject constructor(private val sqlDbContext: SqlDbCo
      * currently uses the meta data of the player.
      */
     override fun getOrCreateFromPlayerIdentifiers(name: String, uuid: UUID): PetMeta {
-        return sqlDbContext.transaction { connection ->
-            val statement = "SELECT * FROM SHY_PETBLOCK petblock, SHY_PARTICLE_EFFECT particle, SHY_PLAYER player " +
-                    "WHERE player.uuid = ? " +
-                    "AND petblock.shy_player_id = player.id " +
-                    "AND shy_particle_effect_id = particle.id"
-
-            val optResult = sqlDbContext.singleQuery<PetMeta>(connection, statement, { resultset ->
-                val playerMeta = PlayerMetaEntity(uuid, name)
-                val particle = ParticleEntity()
-
-                // Parse resultSet.
-
-
-                PetMetaEntity(playerMeta, particle)
-            }, uuid.toString())
-
-            if (!optResult.isPresent) {
-                val playerMeta = PlayerMetaEntity(uuid, name)
-                val particle = ParticleEntity()
-                val petMetaEntity = PetMetaEntity(playerMeta, particle)
-
-                insertInto(connection, petMetaEntity)
-                getOrCreateFromPlayerIdentifiers(name, uuid)
-            } else {
-                optResult.get()
-            }
-        }
+        return sqlDbContext.transaction { connection -> getOrCreateFromPlayerIdentifiers(connection, name, uuid) }
     }
 
     /**
@@ -78,18 +53,16 @@ class PetMetaSqlRepository @Inject constructor(private val sqlDbContext: SqlDbCo
      */
     override fun getAll(): List<PetMeta> {
         return sqlDbContext.transaction { connection ->
-            val statement = "SELECT * FROM SHY_PETBLOCK petblock, SHY_PARTICLE_EFFECT particle, SHY_PLAYER player " +
-                    "WHERE petblock.shy_player_id = player.id " +
-                    "AND shy_particle_effect_id = particle.id"
+            val statement = "SELECT pet.id as petid, shy_player_id, shy_skin_id, shy_modifier_id, enabled, displayname" +
+                    ", hitboxentitytype, soundenabled, particleenabled, climbingheight, movementspeed, uuid, name" +
+                    ", typename, owner, datavalue, unbreakable " +
+                    "FROM SHY_PET pet, SHY_SKIN skin, SHY_PLAYER player, SHY_PET_MODIFIER modifier " +
+                    "WHERE pet.shy_player_id = player.id " +
+                    "AND shy_skin_id = skin.id " +
+                    "AND shy_modifier_id = modifier.id"
 
-            sqlDbContext.multiQuery<PetMeta>(connection, statement, { resultset ->
-                val playerMeta = PlayerMetaEntity(UUID.randomUUID(), "")
-                val particle = ParticleEntity()
-
-                // Parse resultSet.
-
-
-                PetMetaEntity(playerMeta, particle)
+            sqlDbContext.multiQuery(connection, statement, { resultSet ->
+                mapResultSetToPetMeta(resultSet)
             })
         }
     }
@@ -108,25 +81,56 @@ class PetMetaSqlRepository @Inject constructor(private val sqlDbContext: SqlDbCo
     }
 
     /**
+     * Returns the petMeta of from the given player uniqueId. Creates
+     * a new one if it does not exist yet. Gets it from the runtime when a pet
+     * currently uses the meta data of the player.
+     */
+    private fun getOrCreateFromPlayerIdentifiers(connection: Connection, name: String, uuid: UUID): PetMeta {
+        val statement = "SELECT pet.id as petid, shy_player_id, shy_skin_id, shy_modifier_id, enabled, displayname" +
+                ", hitboxentitytype, soundenabled, particleenabled, climbingheight, movementspeed, uuid, name" +
+                ", typename, owner, datavalue, unbreakable " +
+                "FROM SHY_PET pet, SHY_SKIN skin, SHY_PLAYER player, SHY_PET_MODIFIER modifier " +
+                "WHERE player.uuid = ? " +
+                "AND pet.shy_player_id = player.id " +
+                "AND shy_skin_id = skin.id " +
+                "AND shy_modifier_id = modifier.id"
+
+        val optResult = sqlDbContext.singleQuery(connection, statement, { resultSet ->
+            mapResultSetToPetMeta(resultSet)
+        }, uuid.toString())
+
+        return if (!optResult.isPresent) {
+            val playerMeta = PlayerMetaEntity(uuid, name)
+            val petMeta = PetMetaEntity(playerMeta, SkinEntity(), PetModifierEntity())
+
+            insertInto(connection, petMeta)
+            getOrCreateFromPlayerIdentifiers(connection, name, uuid)
+        } else {
+            optResult.get()
+        }
+    }
+
+
+    /**
      * Updates the [petMeta] in the database.
      */
     private fun update(connection: Connection, petMeta: PetMeta): PetMeta {
         val playerMeta = petMeta.playerMeta
-        val particleMeta = petMeta.particle
+        // val particleMeta = petMeta.particle
 
         sqlDbContext.update(connection, "SHY_PLAYER", "WHERE id=" + playerMeta.id
                 , "uuid" to playerMeta.uuid
                 , "name" to playerMeta.name)
 
-        sqlDbContext.update(connection, "SHY_PARTICLE_EFFECT ", "WHERE id=" + particleMeta.id
-                , "name" to particleMeta.type.gameId_113
-                , "amount" to particleMeta.amount
-                , "speed" to particleMeta.speed
-                , "x" to particleMeta.offSetX
-                , "y" to particleMeta.offSetY
-                , "z" to particleMeta.offSetZ
-                , "material" to particleMeta.materialName
-                , "data" to particleMeta.data)
+        /*  sqlDbContext.update(connection, "SHY_PARTICLE_EFFECT ", "WHERE id=" + particleMeta.id
+                  , "name" to particleMeta.type.gameId_113
+                  , "amount" to particleMeta.amount
+                  , "speed" to particleMeta.speed
+                  , "x" to particleMeta.offSetX
+                  , "y" to particleMeta.offSetY
+                  , "z" to particleMeta.offSetZ
+                  , "material" to particleMeta.materialName
+                  , "data" to particleMeta.data)*/
 
         return petMeta
     }
@@ -136,23 +140,78 @@ class PetMetaSqlRepository @Inject constructor(private val sqlDbContext: SqlDbCo
      */
     private fun insertInto(connection: Connection, petMeta: PetMeta): PetMeta {
         val playerMeta = petMeta.playerMeta
-        val particleMeta = petMeta.particle
 
+        // TODO: CHECK IF PLAYER IS ALREADY IN DATABASE
         playerMeta.id = sqlDbContext.insert(connection, "SHY_PLAYER"
                 , "uuid" to playerMeta.uuid
                 , "name" to playerMeta.name)
 
-        particleMeta.id = sqlDbContext.insert(connection, "SHY_PARTICLE_EFFECT "
-                , "name" to particleMeta.type.gameId_113
-                , "amount" to particleMeta.amount
-                , "speed" to particleMeta.speed
-                , "x" to particleMeta.offSetX
-                , "y" to particleMeta.offSetY
-                , "z" to particleMeta.offSetZ
-                , "material" to particleMeta.materialName
-                , "data" to particleMeta.data)
+        val modifierMeta = petMeta.modifier
+        modifierMeta.id = sqlDbContext.insert(connection, "SHY_PET_MODIFIER"
+                , "climbingheight" to modifierMeta.climbingHeight
+                , "movementspeed" to modifierMeta.movementSpeed)
 
-        petMeta.id = sqlDbContext.insert(connection, "SHY_PET_META")
+        val skinMeta = petMeta.skin
+        skinMeta.id = sqlDbContext.insert(connection, "SHY_SKIN"
+                , "typename" to skinMeta.typeName
+                , "owner" to skinMeta.owner
+                , "datavalue" to skinMeta.dataValue
+                , "unbreakable" to skinMeta.unbreakable
+        )
+
+        petMeta.id = sqlDbContext.insert(connection, "SHY_PET"
+                , "shy_player_id" to playerMeta.id
+                , "shy_skin_id" to skinMeta.id
+                , "shy_modifier_id" to modifierMeta.id
+                , "enabled" to petMeta.enabled
+                , "displayname" to petMeta.displayName
+                , "hitboxentitytype" to petMeta.hitBoxEntityType.name
+                , "soundenabled" to petMeta.soundEnabled
+                , "particleenabled" to petMeta.particleEnabled)
+
+        return petMeta
+    }
+
+    /**
+     * Maps the resultSet to a new petMeta.
+     */
+    private fun mapResultSetToPetMeta(resultSet: ResultSet): PetMeta {
+        val modifierEntity = PetModifierEntity()
+
+        with(modifierEntity) {
+            id = resultSet["shy_modifier_id"]
+            climbingHeight = resultSet["climbingheight"]
+            movementSpeed = resultSet["movementspeed"]
+        }
+
+        val skinEntity = SkinEntity()
+
+        with(skinEntity) {
+            id = resultSet["shy_skin_id"]
+            typeName = resultSet["typename"]
+            owner = resultSet["owner"]
+            dataValue = resultSet["dataValue"]
+            unbreakable = resultSet["unbreakable"]
+        }
+
+        val playerMeta = PlayerMetaEntity()
+
+        with(playerMeta) {
+            id = resultSet["shy_player_id"]
+            uuid = UUID.fromString(resultSet["uuid"])
+            name = resultSet["name"]
+        }
+
+        val petMeta = PetMetaEntity(playerMeta, skinEntity, modifierEntity)
+
+        with(petMeta) {
+            id = resultSet["petid"]
+            enabled = resultSet["enabled"]
+            displayName = resultSet["displayname"]
+            hitBoxEntityType = EntityType.valueOf(resultSet["hitboxentitytype"])
+            soundEnabled = resultSet["soundenabled"]
+            particleEnabled = resultSet["particleenabled"]
+        }
 
         return petMeta
     }

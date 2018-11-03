@@ -11,14 +11,14 @@ import com.github.shynixn.petblocks.api.persistence.entity.PetMeta
 import com.github.shynixn.petblocks.api.persistence.repository.PetMetaRepository
 import com.github.shynixn.petblocks.api.persistence.repository.PetRepository
 import com.github.shynixn.petblocks.core.logic.business.service.PersistencePetMetaServiceImpl
-import com.github.shynixn.petblocks.core.logic.persistence.entity.ParticleEntity
 import com.github.shynixn.petblocks.core.logic.persistence.entity.PetMetaEntity
+import com.github.shynixn.petblocks.core.logic.persistence.entity.PetModifierEntity
 import com.github.shynixn.petblocks.core.logic.persistence.entity.PlayerMetaEntity
+import com.github.shynixn.petblocks.core.logic.persistence.entity.SkinEntity
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito
 import org.mockito.Mockito.`when`
-import java.lang.RuntimeException
 import java.util.*
 
 /**
@@ -131,8 +131,8 @@ class PersistencePetMetaServiceTest {
         val petMetaRepository = MockedPetMetaRepository()
         val classUnderTest = createWithDependencies(petMetaRepository)
 
-        val petMeta = PetMetaEntity(PlayerMetaEntity(UUID.randomUUID(), "Mario"), ParticleEntity())
-        petMeta.skin = "Pikachu"
+        val petMeta = PetMetaEntity(PlayerMetaEntity(UUID.randomUUID(), "Mario"), SkinEntity(), PetModifierEntity())
+        petMeta.skin.owner = "Pikachu"
         petMeta.id = 2
 
         // Act
@@ -156,8 +156,8 @@ class PersistencePetMetaServiceTest {
         val petMetaRepository = MockedPetMetaRepository(true)
         val classUnderTest = createWithDependencies(petMetaRepository)
 
-        val petMeta = PetMetaEntity(PlayerMetaEntity(UUID.randomUUID(), "Mario"), ParticleEntity())
-        petMeta.skin = "Pikachu"
+        val petMeta = PetMetaEntity(PlayerMetaEntity(UUID.randomUUID(), "Mario"), SkinEntity(), PetModifierEntity())
+        petMeta.skin.owner = "Pikachu"
         petMeta.id = 2
 
         // Act
@@ -178,7 +178,7 @@ class PersistencePetMetaServiceTest {
          */
         override fun getAll(): List<PetProxy> {
             val pet = Mockito.mock(PetProxy::class.java)
-            val petMeta = PetMetaEntity(PlayerMetaEntity(UUID.randomUUID(), "Batman"), ParticleEntity())
+            val petMeta = PetMetaEntity(PlayerMetaEntity(UUID.randomUUID(), "Batman"), SkinEntity(), PetModifierEntity())
             petMeta.displayName = "Keks"
             petMeta.id = 1
 
@@ -207,7 +207,7 @@ class PersistencePetMetaServiceTest {
         override fun getFromPlayerUUID(uuid: UUID): PetProxy {
             if (uuid.toString() == "c7d21810-d2a0-407d-a389-14efd3eb79d2") {
                 val pet = Mockito.mock(PetProxy::class.java)
-                val petMeta = PetMetaEntity(PlayerMetaEntity(UUID.randomUUID(), "Beeman"), ParticleEntity())
+                val petMeta = PetMetaEntity(PlayerMetaEntity(UUID.randomUUID(), "Beeman"), SkinEntity(), PetModifierEntity())
                 petMeta.displayName = "Test"
                 petMeta.id = 1
 
@@ -238,11 +238,11 @@ class PersistencePetMetaServiceTest {
          * Returns [List] with a list of stored [PetMeta].
          */
         override fun getAll(): List<PetMeta> {
-            val petMeta1 = PetMetaEntity(PlayerMetaEntity(UUID.randomUUID(), "Batman"), ParticleEntity())
+            val petMeta1 = PetMetaEntity(PlayerMetaEntity(UUID.randomUUID(), "Batman"), SkinEntity(), PetModifierEntity())
             petMeta1.id = 1
 
-            val petMeta2 = PetMetaEntity(PlayerMetaEntity(UUID.randomUUID(), "Mario"), ParticleEntity())
-            petMeta2.skin = "Pikachu"
+            val petMeta2 = PetMetaEntity(PlayerMetaEntity(UUID.randomUUID(), "Mario"),SkinEntity(), PetModifierEntity())
+            petMeta2.skin.owner = "Pikachu"
             petMeta2.id = 2
 
             return arrayListOf(petMeta1, petMeta2)
@@ -255,8 +255,8 @@ class PersistencePetMetaServiceTest {
          */
         override fun getOrCreateFromPlayerIdentifiers(name: String, uuid: UUID): PetMeta {
             if (uuid.toString() == "ecd66f19-3b5b-4910-b8e6-1716b5a636bf") {
-                val petMeta = PetMetaEntity(PlayerMetaEntity(uuid, "Kenny"), ParticleEntity())
-                petMeta.skin = "Cloud"
+                val petMeta = PetMetaEntity(PlayerMetaEntity(uuid, "Kenny"), SkinEntity(), PetModifierEntity())
+                petMeta.skin.owner = "Cloud"
                 return petMeta
             }
 

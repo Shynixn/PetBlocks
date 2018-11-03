@@ -53,9 +53,9 @@ class EditPetSkinCommand @Inject constructor(private val proxyService: ProxyServ
 
         petMetaService.getOrCreateFromPlayerUUID(playerProxy.uniqueId).thenAcceptSafely { petMeta ->
             with(petMeta) {
-                itemId = 397
-                itemDamage = 3
-                skin = args[1]
+             //   itemId = 397
+               // itemDamage = 3
+            //    skin = args[1]
             }
 
             petMetaService.save(petMeta)

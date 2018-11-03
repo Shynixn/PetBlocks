@@ -27,21 +27,19 @@ package com.github.shynixn.petblocks.api.persistence.entity
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-interface GuiIcon {
+interface Goal {
     /**
-     * Gets a nullable script
-     * which can be used for special rendering processes.
+     * Database id.
      */
-    var script: String?
-
-    /** Returns the item displayName. */
-    var displayName: String
-
-    /** Returns the lore of the item. */
-    var lore: List<String>
+    var id: Long
 
     /**
-     * Gets the skin of the icon.
+     * Gets the payload of the goal.
      */
-    val skin: Skin
+    fun <P> getPayload(): P
+
+    /**
+     * Sets the payload of the goal.
+     */
+    fun <P> setPayload(p: P)
 }

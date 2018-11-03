@@ -1,6 +1,7 @@
 package com.github.shynixn.petblocks.core.logic.persistence.entity
 
 import com.github.shynixn.petblocks.api.persistence.entity.GuiIcon
+import com.github.shynixn.petblocks.api.persistence.entity.Skin
 
 /**
  * Created by Shynixn 2018.
@@ -31,26 +32,12 @@ import com.github.shynixn.petblocks.api.persistence.entity.GuiIcon
  */
 class GuiIconEntity : GuiIcon {
     private var backedDisplayName = " "
-    private var backedSkin = ""
     private var backedLore = ArrayList<String>()
 
-    /** Returns the type of the item. */
-    override var type: Int = 0
-
-    /** Returns the data of the item. */
-    override var data: Int = 0
-
-    /** Returns the skin of the item. */
-    override var skin: String
-        get() = backedSkin
-        set(value) {
-            if (value == "none") {
-                this.backedSkin = ""
-            } else {
-                this.backedSkin = value
-            }
-        }
-
+    /**
+     * Gets the skin of the icon.
+     */
+    override val skin: Skin = SkinEntity()
 
     /** Returns the item displayName. */
     override var displayName: String
@@ -80,8 +67,6 @@ class GuiIconEntity : GuiIcon {
             }
         }
 
-    /** Returns if the item is unbreakable. */
-    override var unbreakable: Boolean = false
     /**
      * Gets a nullable script
      * which can be used for special rendering processes.

@@ -115,7 +115,7 @@ class PetActionServiceImpl @Inject constructor(private val petService: PetServic
         persistencePetMetaService.getOrCreateFromPlayerUUID(playerProxy.uniqueId).thenAcceptSafely { petMeta ->
             val copySkin = configurationService.findValue<Boolean>("gui.settings.copy-skin")
 
-            if (copySkin) {
+         /*   if (copySkin) {
                 with(petMeta) {
                     itemId = engine.type
                     itemDamage = engine.data
@@ -142,7 +142,7 @@ class PetActionServiceImpl @Inject constructor(private val petService: PetServic
                     materialName = sourceParticle.materialName
                     data = sourceParticle.data
                 }
-            }
+            }*/
         }
     }
 
@@ -163,10 +163,10 @@ class PetActionServiceImpl @Inject constructor(private val petService: PetServic
         persistencePetMetaService.getOrCreateFromPlayerUUID(playerProxy.uniqueId).thenAcceptSafely { petMeta ->
             val namingSuccessMessage = configurationService.findValue<String>("messages.skullnaming-success")
 
-            petMeta.skin = name
+         /*   petMeta.skin = name
             petMeta.unbreakable = false
             petMeta.itemId = 397
-            petMeta.itemDamage = 3
+            petMeta.itemDamage = 3*/
 
             persistencePetMetaService.save(petMeta)
 

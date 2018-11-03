@@ -12,6 +12,7 @@ import com.github.shynixn.petblocks.core.logic.business.service.PersistencePetMe
 import com.github.shynixn.petblocks.core.logic.persistence.context.SqlDbContextImpl
 import com.github.shynixn.petblocks.core.logic.persistence.repository.PetMetaSqlRepository
 import com.github.shynixn.petblocks.core.logic.persistence.repository.PetRunTimeRepository
+import org.apache.commons.io.FileUtils
 import org.bukkit.configuration.file.YamlConfiguration
 import org.bukkit.plugin.Plugin
 import org.junit.jupiter.api.Assertions
@@ -52,11 +53,12 @@ import java.util.logging.Logger
 class PersistenceIT {
     /**
      * Given
-     *      a valid pluginProxy and a valid service class.
+     *      initial empty database and production configuration in config.yml
      * When
-     *      resolve is called
+     *      getAll is called the database should still be empty
      * Then
-     *     plugin Proxy resolve should be called.
+     *     the default pet specified in the config should be inserted and retrieved correctly from
+     *     the database.
      */
     @Test
     fun resolve_ValidPluginAndServiceClass_ShouldCallProxy() {
@@ -88,13 +90,19 @@ class PersistenceIT {
             configuration.set("sql.username", "root")
             configuration.set("sql.password", "")
 
+            val folder = File("integrationtest-sqlite")
+
+            if (folder.exists()) {
+                FileUtils.deleteDirectory(folder)
+            }
+
             val plugin = Mockito.mock(Plugin::class.java)
             Mockito.`when`(plugin.config).thenReturn(configuration)
             Mockito.`when`(plugin.dataFolder).thenReturn(File("integrationtest-sqlite"))
             Mockito.`when`(plugin.getResource(Mockito.anyString())).then { parameter ->
-                if(parameter.arguments[0].toString() == "assets/petblocks/sql/create-sqlite.sql"){
+                if (parameter.arguments[0].toString() == "assets/petblocks/sql/create-sqlite.sql") {
                     FileInputStream(File("../petblocks-core/src/main/resources/assets/petblocks/sql/create-sqlite.sql"))
-                }else{
+                } else {
                     Unit
                 }
             }

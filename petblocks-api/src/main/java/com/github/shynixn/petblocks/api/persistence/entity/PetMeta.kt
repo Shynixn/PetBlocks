@@ -36,19 +36,9 @@ interface PetMeta {
     var id: Long
 
     /**
-     * Meta data of the owner.
+     * Is the pet enabled. Should not get modified directly.
      */
-    val playerMeta: PlayerMeta
-
-    /**
-     * Particle of the pet.
-     */
-    val particle: Particle
-
-    /**
-     * Is the pet using sounds.
-     */
-    var sound: Boolean
+    var enabled: Boolean
 
     /**
      * Displayed name on top of the pet.
@@ -56,37 +46,32 @@ interface PetMeta {
     var displayName: String
 
     /**
-     * Skin of the pet head.
-     */
-    var skin: String
-
-    /**
-     * ItemId of the pet head.
-     */
-    var itemId: Int
-
-    /**
-     * ItemDamage of the pet head.
-     */
-    var itemDamage: Int
-
-    /**
-     * Unbreakable Tag of the pet head.
-     */
-    var unbreakable: Boolean
-
-    /**
-     * Climbing height.
-     */
-    val climbingHeight: Double
-
-    /**
-     * Movement speed modifier.
-     */
-    val movementSpeedModifier: Double
-
-    /**
      * Type of the hitbox entity.
      */
-    val hitBoxEntityType: EntityType
+    var hitBoxEntityType: EntityType
+
+    /**
+     * Pet sounds enabled.
+     */
+    var soundEnabled: Boolean
+
+    /**
+     * Pet particles enabled.
+     */
+    var particleEnabled: Boolean
+
+    /**
+     * Meta data of the owner.
+     */
+    val playerMeta: PlayerMeta
+
+    /**
+     * Meta data of the skin.
+     */
+    val skin: Skin
+
+    /**
+     * Modifier value
+     */
+    val modifier: PetModifierMeta
 }

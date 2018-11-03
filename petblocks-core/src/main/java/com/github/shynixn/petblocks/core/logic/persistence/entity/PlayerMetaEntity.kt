@@ -30,7 +30,7 @@ import java.util.*
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class PlayerMetaEntity(override var uuid: UUID, override var name: String) : PlayerMeta {
+class PlayerMetaEntity(override var uuid: UUID = UUID.randomUUID(), override var name: String = "") : PlayerMeta {
     /**
      * Database id.
      */

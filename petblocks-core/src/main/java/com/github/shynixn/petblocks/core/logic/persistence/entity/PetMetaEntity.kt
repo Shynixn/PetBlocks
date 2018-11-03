@@ -1,9 +1,7 @@
 package com.github.shynixn.petblocks.core.logic.persistence.entity
 
 import com.github.shynixn.petblocks.api.business.enumeration.EntityType
-import com.github.shynixn.petblocks.api.persistence.entity.Particle
-import com.github.shynixn.petblocks.api.persistence.entity.PetMeta
-import com.github.shynixn.petblocks.api.persistence.entity.PlayerMeta
+import com.github.shynixn.petblocks.api.persistence.entity.*
 
 /**
  * Created by Shynixn 2018.
@@ -32,28 +30,16 @@ import com.github.shynixn.petblocks.api.persistence.entity.PlayerMeta
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class PetMetaEntity(override val playerMeta: PlayerMeta, override val particle: Particle) : PetMeta {
-    /**
-     * Climbing height.
-     */
-    override val climbingHeight: Double = 1.0
-    /**
-     * Movement speed modifier.
-     */
-    override val movementSpeedModifier: Double = 1.0
-    /**
-     * Type of the hitbox entity.
-     */
-    override val hitBoxEntityType: EntityType = EntityType.RABBIT
+class PetMetaEntity(override val playerMeta: PlayerMeta, override val skin: Skin, override val modifier: PetModifierMeta) : PetMeta {
     /**
      * Database id.
      */
     override var id: Long = 0
 
     /**
-     * Is the pet using sounds.
+     * Is the pet enabled. Should not get modified directly.
      */
-    override var sound: Boolean = true
+    override var enabled: Boolean = false
 
     /**
      * Displayed name on top of the pet.
@@ -61,19 +47,16 @@ class PetMetaEntity(override val playerMeta: PlayerMeta, override val particle: 
     override var displayName: String = playerMeta.name + "'s Pet"
 
     /**
-     * Skin of the pet head.
+     * Type of the hitbox entity.
      */
-    override var skin: String = ""
+    override var hitBoxEntityType: EntityType = EntityType.RABBIT
+
     /**
-     * ItemId of the pet head.
+     * Pet sounds enabled.
      */
-    override var itemId: Int = 2
+    override var soundEnabled: Boolean = true
     /**
-     * ItemDamage of the pet head.
+     * Pet particles enabled.
      */
-    override var itemDamage: Int = 0
-    /**
-     * Unbreakable Tag of the pet head.
-     */
-    override var unbreakable: Boolean = false
+    override var particleEnabled: Boolean = true
 }

@@ -4,6 +4,7 @@ package com.github.shynixn.petblocks.bukkit.logic.business.service
 
 import com.github.shynixn.petblocks.api.business.enumeration.ChatClickAction
 import com.github.shynixn.petblocks.api.business.service.ConfigurationService
+import com.github.shynixn.petblocks.api.business.service.ItemService
 import com.github.shynixn.petblocks.api.persistence.entity.ChatMessage
 import com.github.shynixn.petblocks.api.persistence.entity.GuiItem
 import com.github.shynixn.petblocks.bukkit.logic.business.extension.toParticleType
@@ -15,6 +16,7 @@ import com.github.shynixn.petblocks.core.logic.persistence.entity.ParticleEntity
 import com.github.shynixn.petblocks.core.logic.persistence.entity.SoundEntity
 import com.google.inject.Inject
 import org.bukkit.ChatColor
+import org.bukkit.Material
 import org.bukkit.configuration.MemorySection
 import org.bukkit.inventory.ItemStack
 import org.bukkit.plugin.Plugin
@@ -50,7 +52,7 @@ import kotlin.collections.HashMap
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class ConfigurationServiceImpl @Inject constructor(private val plugin: Plugin) : ConfigurationService {
+class ConfigurationServiceImpl @Inject constructor(private val plugin: Plugin, private val itemService : ItemService) : ConfigurationService {
     private val cache = HashMap<String, List<GuiItem>>()
     private var namingMessage: ChatMessage? = null
     private var skullNamingMessage: ChatMessage? = null
@@ -208,11 +210,11 @@ class ConfigurationServiceImpl @Inject constructor(private val plugin: Plugin) :
             this.setItem<Int>("position", description) { value -> guiItem.position = value }
             this.setItem<String>("script", description) { value -> guiItem.script = value }
 
-            this.setItem<Int>("icon.id", description) { value -> guiIcon.type = value }
-            this.setItem<Int>("icon.damage", description) { value -> guiIcon.data = value }
+            this.setItem<Int>("icon.id", description) { value -> guiIcon.skin.typeName = itemService.getMaterialFromNumericValue<Material>(value).name }
+            this.setItem<Int>("icon.damage", description) { value -> guiIcon.skin.dataValue = value }
             this.setItem<String>("icon.name", description) { value -> guiIcon.displayName = value }
-            this.setItem<Boolean>("icon.unbreakable", description) { value -> guiIcon.unbreakable = value }
-            this.setItem<String>("icon.skin", description) { value -> guiIcon.skin = value }
+            this.setItem<Boolean>("icon.unbreakable", description) { value -> guiIcon.skin.unbreakable = value }
+            this.setItem<String>("icon.skin", description) { value -> guiIcon.skin.owner = value }
             this.setItem<String>("icon.script", description) { value -> guiIcon.script = value }
             this.setItem<List<String>>("icon.lore", description) { value -> guiIcon.lore = value }
 

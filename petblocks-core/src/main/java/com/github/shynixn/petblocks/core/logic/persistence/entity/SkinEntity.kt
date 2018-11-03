@@ -1,4 +1,6 @@
-package com.github.shynixn.petblocks.api.persistence.entity
+package com.github.shynixn.petblocks.core.logic.persistence.entity
+
+import com.github.shynixn.petblocks.api.persistence.entity.Skin
 
 /**
  * Created by Shynixn 2018.
@@ -27,21 +29,37 @@ package com.github.shynixn.petblocks.api.persistence.entity
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-interface GuiIcon {
-    /**
-     * Gets a nullable script
-     * which can be used for special rendering processes.
-     */
-    var script: String?
-
-    /** Returns the item displayName. */
-    var displayName: String
-
-    /** Returns the lore of the item. */
-    var lore: List<String>
+class SkinEntity : Skin {
+    private var backedSkin = ""
 
     /**
-     * Gets the skin of the icon.
+     * Database id.
      */
-    val skin: Skin
+    override var id: Long = 0
+
+    /**
+     * Skin url or owner name.
+     */
+    override var owner: String
+        get() = backedSkin
+        set(value) {
+            if (value == "none") {
+                this.backedSkin = ""
+            } else {
+                this.backedSkin = value
+            }
+        }
+
+    /**
+     * Typename of the skin.
+     */
+    override var typeName: String = "AIR"
+    /**
+     * Data Value.
+     */
+    override var dataValue: Int = 0
+    /**
+     * Unbreakable.
+     */
+    override var unbreakable: Boolean = false
 }

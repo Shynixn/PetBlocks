@@ -137,7 +137,7 @@ global-configuration:
 
 default-pet:
   enabled: true
-  petname: 'Default pet'
+  name: 'Default pet'
   flee-in-combat: false
   health: 20.0
   invincible: true

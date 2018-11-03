@@ -1,7 +1,5 @@
 package com.github.shynixn.petblocks.api.sponge.event;
 
-import com.github.shynixn.petblocks.api.business.entity.PetBlock;
-
 /**
  * PetBlock event which gets called when the petblock moves.
  * <p>

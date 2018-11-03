@@ -129,9 +129,9 @@ class DependencyHeadDatabaseServiceImpl @Inject constructor(private val dependen
         player.closeInventory()
 
         petMetaService.getOrCreateFromPlayerUUID(player.uniqueId).thenAccept { petMeta ->
-            petMeta.itemId = item.type.id
-            petMeta.itemDamage = item.durability.toInt()
-            petMeta.skin = item.getSkin().get()
+        //    petMeta.itemId = item.type.id
+          //  petMeta.itemDamage = item.durability.toInt()
+        //    petMeta.skin = item.getSkin().get()
 
             petMetaService.save(petMeta)
 

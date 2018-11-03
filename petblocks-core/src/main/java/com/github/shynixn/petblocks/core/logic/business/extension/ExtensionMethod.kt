@@ -8,6 +8,7 @@ import com.github.shynixn.petblocks.api.business.service.ConcurrencyService
 import com.github.shynixn.petblocks.api.business.service.LoggingService
 import com.github.shynixn.petblocks.api.persistence.entity.ChatMessage
 import com.github.shynixn.petblocks.core.logic.persistence.entity.ChatMessageEntity
+import java.sql.ResultSet
 import java.util.concurrent.CompletableFuture
 
 /**
@@ -46,6 +47,21 @@ fun chatMessage(f: ChatMessage.() -> Unit): ChatMessage {
     f.invoke(chatMessage)
     return chatMessage
 }
+
+/**
+ * Gets the column value.
+ */
+inline operator fun <reified V> ResultSet.get(key: String): V {
+    return when {
+        V::class == String::class -> this.getString(key) as V
+        V::class == Double::class -> this.getDouble(key) as V
+        V::class == Int::class -> this.getInt(key) as V
+        V::class == Long::class -> this.getLong(key) as V
+        V::class == Boolean::class -> this.getBoolean(key) as V
+        else -> throw IllegalArgumentException("Get access does not support the type " + V::class + ".")
+    }
+}
+
 
 /**
  * Merges the args after the first parameter.

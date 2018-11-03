@@ -160,7 +160,7 @@ class ItemServiceImpl : ItemService {
      * Throws a [IllegalArgumentException] if the numeric value could
      * not get applied to a material.
      */
-    private fun <M> getMaterialFromNumericValue(value: Int): M {
+    override fun <M> getMaterialFromNumericValue(value: Int): M {
         if (getMaterialFromIdMethod != null) {
             return getMaterialFromIdMethod.invoke(null, value) as M
         } else {

@@ -29,6 +29,11 @@ package com.github.shynixn.petblocks.api.persistence.entity
  */
 interface Skin {
     /**
+     * Database id.
+     */
+    var id: Long
+
+    /**
      * Skin url or owner name.
      */
     var owner: String

@@ -38,7 +38,7 @@ interface ItemService {
     /**
      * Creates a new itemstack from the given parameters.
      */
-    fun <I> createItemStack(typeId : Int, dataValue : Int = 0, amount : Int = 1) : I
+    fun <I> createItemStack(typeId: Int, dataValue: Int = 0, amount: Int = 1): I
 
     /**
      * Sets the amount of items on the given stack.
@@ -49,6 +49,11 @@ interface ItemService {
      * Gets the amount of items on the given stack.
      */
     fun getAmountOfItemStack(itemStack: Any): Int
+
+    /**
+     * Gets the material from the numeric value.
+     */
+    fun <M> getMaterialFromNumericValue(value: Int): M
 
     /**
      * Sets the displayName of an itemstack.

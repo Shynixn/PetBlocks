@@ -127,7 +127,7 @@ class GUIServiceImpl @Inject constructor(private val configurationService: Confi
 
         pageCache[player] = GuiPlayerCacheEntity("gui.main", inventory)
 
-        renderPage(player, "gui.main", PetMetaEntity(PlayerMetaEntity(UUID.randomUUID(), "name"), ParticleEntity()))
+        renderPage(player, "gui.main", PetMetaEntity(PlayerMetaEntity(UUID.randomUUID(), "name"), SkinEntity(), PetModifierEntity()))
     }
 
     /**
@@ -151,7 +151,7 @@ class GUIServiceImpl @Inject constructor(private val configurationService: Confi
 
         if (scriptResult.action == ScriptAction.SCROLL_COLLECTION) {
             pageCache[player]!!.offset += scriptResult.valueContainer.get() as Int
-            renderPage(player, pageCache[player]!!.path, PetMetaEntity(PlayerMetaEntity(UUID.randomUUID(), "name"), ParticleEntity()));
+            renderPage(player, pageCache[player]!!.path, PetMetaEntity(PlayerMetaEntity(UUID.randomUUID(), "name"), SkinEntity(), PetModifierEntity()));
         }
 
 
@@ -167,7 +167,7 @@ class GUIServiceImpl @Inject constructor(private val configurationService: Confi
      * Renders a single gui page.
      */
     private fun renderPage(player: Player, path: String, petMeta: PetMeta) {
-        player.inventory.clearCompletely()
+        player.openInventory.topInventory.clear()
         val offset = this.pageCache[player]!!.offset
 
         val items = configurationService.findGUIItemCollection(path)
@@ -188,10 +188,10 @@ class GUIServiceImpl @Inject constructor(private val configurationService: Confi
 
                         with(guiIcon) {
                             displayName = petMeta.displayName
-                            type = petMeta.itemId
-                            data = petMeta.itemDamage
-                            skin = petMeta.skin
-                            unbreakable = petMeta.unbreakable
+                        //    type = petMeta.itemId
+                          //  data = petMeta.itemDamage
+                       //     skin = petMeta.skin
+                        //    unbreakable = petMeta.unbreakable
                         }
 
                         renderIcon(inventory, item.position - offset, guiIcon)
@@ -214,14 +214,14 @@ class GUIServiceImpl @Inject constructor(private val configurationService: Confi
             return
         }
 
-        val itemStack = itemService.createItemStack<ItemStack>(guiIcon.type, guiIcon.data)
+     //   val itemStack = itemService.createItemStack<ItemStack>(guiIcon.type, guiIcon.data)
 
-        itemStack.setDisplayName(guiIcon.displayName)
-        itemStack.setLore(guiIcon.lore)
-        itemStack.setSkin(guiIcon.skin)
-        itemStack.setUnbreakable(guiIcon.unbreakable)
+     //   itemStack.setDisplayName(guiIcon.displayName)
+     //   itemStack.setLore(guiIcon.lore)
+     //   itemStack.setSkin(guiIcon.skin)
+      //  itemStack.setUnbreakable(guiIcon.unbreakable)
 
-        inventory.setItem(position, itemStack)
+      //  inventory.setItem(position, itemStack)
     }
 
     /**

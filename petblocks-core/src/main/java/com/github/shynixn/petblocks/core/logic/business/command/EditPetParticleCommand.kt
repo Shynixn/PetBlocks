@@ -65,7 +65,7 @@ class EditPetParticleCommand @Inject constructor(private val proxyService: Proxy
                     playerProxy.sendMessage(prefix + "Collection does not contain number " + number + ".")
                 } else {
                     val guiItem = particleCollection.get()[number]
-                    val targetParticle = petMeta.particle
+                 //   val targetParticle = petMeta.particle
                   //  val sourceParticle = guiItem.getPayload<Particle>().get()
 
 
