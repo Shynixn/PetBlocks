@@ -1,6 +1,7 @@
 package com.github.shynixn.petblocks.api.business.service
 
 import com.github.shynixn.petblocks.api.persistence.entity.GuiItem
+import com.github.shynixn.petblocks.api.persistence.entity.PetMeta
 import java.util.*
 
 /**
@@ -52,6 +53,11 @@ interface ConfigurationService {
      * Can be called asynchronly.
      */
     fun findGUIItemCollection(path: String): Optional<List<GuiItem>>
+
+    /**
+     * Generates the default pet meta.
+     */
+    fun generateDefaultPetMeta(uuid: UUID, name : String): PetMeta
 
     /**
      * Clears cached resources and refreshes the used configuration.

@@ -4,6 +4,7 @@ package com.github.shynixn.petblocks.core.logic.business.extension
 
 import com.github.shynixn.petblocks.api.PetBlocksApi
 import com.github.shynixn.petblocks.api.business.enumeration.ChatColor
+import com.github.shynixn.petblocks.api.business.enumeration.Version
 import com.github.shynixn.petblocks.api.business.service.ConcurrencyService
 import com.github.shynixn.petblocks.api.business.service.LoggingService
 import com.github.shynixn.petblocks.api.persistence.entity.ChatMessage
@@ -62,6 +63,24 @@ inline operator fun <reified V> ResultSet.get(key: String): V {
     }
 }
 
+/**
+ * Gets the value of the map.
+ */
+inline fun <reified V> Map<String, Any?>.getItem(key: String): V {
+    return this[key] as V
+}
+
+
+/**
+ * Checks if this version is lower than the given version by parameter.
+ *
+ * @param version version
+ * @return isLower
+ */
+fun Version.isVersionLowerThan(version : Version): Boolean {
+    val result = java.lang.Double.compare(this.numericId, version.numericId)
+    return result == -1
+}
 
 /**
  * Merges the args after the first parameter.

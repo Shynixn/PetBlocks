@@ -37,6 +37,15 @@ class PetMetaEntity(override val playerMeta: PlayerMeta, override val skin: Skin
     override var id: Long = 0
 
     /**
+     * Gets the health of the pet.
+     */
+    override var health: Double = 0.0
+    /**
+     * Is the pet invincible?
+     */
+    override var invincible: Boolean = false
+
+    /**
      * Is the pet enabled. Should not get modified directly.
      */
     override var enabled: Boolean = false

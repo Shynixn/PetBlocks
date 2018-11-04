@@ -92,7 +92,7 @@ class PersistencePetMetaServiceTest {
 
         // Assert
         Assertions.assertEquals("Kenny", petMeta.playerMeta.name)
-        Assertions.assertEquals("Cloud", petMeta.skin)
+        Assertions.assertEquals("Cloud", petMeta.skin.owner)
     }
 
     /**

@@ -3,17 +3,18 @@
 package com.github.shynixn.petblocks.bukkit.logic.business.service
 
 import com.github.shynixn.petblocks.api.business.enumeration.ChatClickAction
+import com.github.shynixn.petblocks.api.business.enumeration.EntityType
 import com.github.shynixn.petblocks.api.business.service.ConfigurationService
 import com.github.shynixn.petblocks.api.business.service.ItemService
 import com.github.shynixn.petblocks.api.persistence.entity.ChatMessage
 import com.github.shynixn.petblocks.api.persistence.entity.GuiItem
+import com.github.shynixn.petblocks.api.persistence.entity.PetMeta
+import com.github.shynixn.petblocks.bukkit.logic.business.extension.deserializeToMap
 import com.github.shynixn.petblocks.bukkit.logic.business.extension.toParticleType
 import com.github.shynixn.petblocks.core.logic.business.extension.chatMessage
+import com.github.shynixn.petblocks.core.logic.business.extension.getItem
 import com.github.shynixn.petblocks.core.logic.business.extension.translateChatColors
-import com.github.shynixn.petblocks.core.logic.persistence.entity.GuiIconEntity
-import com.github.shynixn.petblocks.core.logic.persistence.entity.GuiItemEntity
-import com.github.shynixn.petblocks.core.logic.persistence.entity.ParticleEntity
-import com.github.shynixn.petblocks.core.logic.persistence.entity.SoundEntity
+import com.github.shynixn.petblocks.core.logic.persistence.entity.*
 import com.google.inject.Inject
 import org.bukkit.ChatColor
 import org.bukkit.Material
@@ -21,7 +22,6 @@ import org.bukkit.configuration.MemorySection
 import org.bukkit.inventory.ItemStack
 import org.bukkit.plugin.Plugin
 import java.util.*
-import java.util.logging.Level
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 
@@ -52,7 +52,7 @@ import kotlin.collections.HashMap
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class ConfigurationServiceImpl @Inject constructor(private val plugin: Plugin, private val itemService : ItemService) : ConfigurationService {
+class ConfigurationServiceImpl @Inject constructor(private val plugin: Plugin, private val itemService: ItemService) : ConfigurationService {
     private val cache = HashMap<String, List<GuiItem>>()
     private var namingMessage: ChatMessage? = null
     private var skullNamingMessage: ChatMessage? = null
@@ -184,6 +184,8 @@ class ConfigurationServiceImpl @Inject constructor(private val plugin: Plugin, p
 
                 return sound as C
             }
+
+            return plugin.config.deserializeToMap(path) as C
         }
 
         return data as C
@@ -277,6 +279,50 @@ class ConfigurationServiceImpl @Inject constructor(private val plugin: Plugin, p
         cache.clear()
         namingMessage = null
         skullNamingMessage = null
+    }
+
+    /**
+     * Generates the default pet meta.
+     */
+    override fun generateDefaultPetMeta(uuid: UUID, name: String): PetMeta {
+        val playerMeta = PlayerMetaEntity(uuid, name)
+        val petMeta = PetMetaEntity(playerMeta, SkinEntity(), PetModifierEntity())
+
+        val defaultConfig = findValue<Map<String, Any?>>("default-pet")
+        val skin = defaultConfig["skin"] as Map<String, Any?>
+        val modifier = defaultConfig["modifier"] as Map<String, Any?>
+
+        with(petMeta) {
+            enabled = defaultConfig.getItem("enabled")
+            displayName = defaultConfig.getItem<String>("name").replace("<player>", name)
+            health = defaultConfig.getItem("health")
+            invincible = defaultConfig.getItem("invincible")
+            hitBoxEntityType = EntityType.valueOf(defaultConfig.getItem("hitbox-entitytype"))
+            soundEnabled = defaultConfig.getItem("sound-enabled")
+            particleEnabled = defaultConfig.getItem("particle-enabled")
+        }
+
+        val typePayload = skin["typename"]
+
+        val typename = if (typePayload is Int) {
+            itemService.getMaterialFromNumericValue<Material>(typePayload).name
+        } else {
+            typePayload as String
+        }
+
+        with(petMeta.skin) {
+            typeName = typename
+            dataValue = skin.getItem("datavalue")
+            unbreakable = skin.getItem("unbreakable")
+            owner = skin.getItem("owner")
+        }
+
+        with(petMeta.modifier) {
+            climbingHeight = modifier.getItem("climbing-height")
+            movementSpeed = modifier.getItem("movement-speed")
+        }
+
+        return petMeta
     }
 
     /**

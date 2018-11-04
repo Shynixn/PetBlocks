@@ -136,15 +136,21 @@ global-configuration:
   - 'shitty'
 
 default-pet:
-  enabled: true
-  name: 'Default pet'
-  flee-in-combat: false
+  enabled: false
+  name: "<player>'s Pet"
   health: 20.0
   invincible: true
-  id: 2
-  damage: 0
-  unbreakable: false
-  skin: ''
+  hitbox-entitytype: RABBIT
+  sound-enabled: true
+  particle-enabled: true
+  skin:
+    typename: 2
+    datavalue: 0
+    unbreakable: false
+    owner: ''
+  modifier:
+    climbing-height: 0.0
+    movement-speed: 0.0
   goals:
     1:
       id: 'follow-owner'
@@ -278,7 +284,7 @@ gui:
       position: 31
       visible: true
       icon:
-      id: 397
+        id: 397
         damage: 3
         skin: 'textures.minecraft.net/texture/cb9c706c85572f05efc4170ada791154de2b5378e6252aadc8d43b19c5564'
         name: '&a&lPet unmuted'

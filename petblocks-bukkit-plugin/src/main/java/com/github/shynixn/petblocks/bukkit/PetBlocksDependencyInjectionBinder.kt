@@ -76,7 +76,6 @@ class PetBlocksDependencyInjectionBinder(private val plugin: Plugin) : AbstractM
         bind(MessageService::class.java).to(MessageServiceImpl::class.java)
         bind(PetActionService::class.java).to(PetActionServiceImpl::class.java).`in`(Scopes.SINGLETON)
         bind(ProxyService::class.java).to(ProxyServiceImpl::class.java).`in`(Scopes.SINGLETON)
-        bind(ItemService::class.java).to(ItemServiceImpl::class.java).`in`(Scopes.SINGLETON)
         bind(EntityService::class.java).to(EntityServiceImpl::class.java).`in`(Scopes.SINGLETON)
         bind(ConcurrencyService::class.java).to(ConcurrencyServiceImpl::class.java).`in`(Scopes.SINGLETON)
         bind(CommandService::class.java).to(CommandServiceImpl::class.java).`in`(Scopes.SINGLETON)
@@ -103,6 +102,11 @@ class PetBlocksDependencyInjectionBinder(private val plugin: Plugin) : AbstractM
             versionSupport.isVersionSameOrGreaterThan(VersionSupport.VERSION_1_13_R1) -> bind(EntityRegistrationService::class.java).to(EntityRegistration113R1ServiceImpl::class.java).`in`(Scopes.SINGLETON)
             versionSupport.isVersionSameOrGreaterThan(VersionSupport.VERSION_1_11_R1) -> bind(EntityRegistrationService::class.java).to(EntityRegistration111R1ServiceImpl::class.java).`in`(Scopes.SINGLETON)
             else -> bind(EntityRegistrationService::class.java).to(EntityRegistration18R1ServiceImpl::class.java).`in`(Scopes.SINGLETON)
+        }
+
+        when {
+            versionSupport.isVersionSameOrGreaterThan(VersionSupport.VERSION_1_13_R1) -> bind(ItemService::class.java).to(Item113R1ServiceImpl::class.java).`in`(Scopes.SINGLETON)
+            else -> bind(ItemService::class.java).to(Item18R1ServiceImpl::class.java).`in`(Scopes.SINGLETON)
         }
 
         // Dependency resolving

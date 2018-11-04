@@ -2,16 +2,22 @@
 
 package integrationtest
 
+import ch.vorburger.mariadb4j.DB
+import com.github.shynixn.petblocks.api.business.enumeration.EntityType
 import com.github.shynixn.petblocks.api.business.proxy.PlayerProxy
 import com.github.shynixn.petblocks.api.business.service.ConcurrencyService
 import com.github.shynixn.petblocks.api.business.service.PersistencePetMetaService
 import com.github.shynixn.petblocks.api.business.service.ProxyService
 import com.github.shynixn.petblocks.bukkit.logic.business.proxy.SqlProxyImpl
+import com.github.shynixn.petblocks.bukkit.logic.business.service.ConfigurationServiceImpl
+import com.github.shynixn.petblocks.bukkit.logic.business.service.Item18R1ServiceImpl
 import com.github.shynixn.petblocks.core.logic.business.service.LoggingUtilServiceImpl
 import com.github.shynixn.petblocks.core.logic.business.service.PersistencePetMetaServiceImpl
 import com.github.shynixn.petblocks.core.logic.persistence.context.SqlDbContextImpl
 import com.github.shynixn.petblocks.core.logic.persistence.repository.PetMetaSqlRepository
 import com.github.shynixn.petblocks.core.logic.persistence.repository.PetRunTimeRepository
+import com.zaxxer.hikari.HikariConfig
+import com.zaxxer.hikari.HikariDataSource
 import org.apache.commons.io.FileUtils
 import org.bukkit.configuration.file.YamlConfiguration
 import org.bukkit.plugin.Plugin
@@ -20,6 +26,7 @@ import org.junit.jupiter.api.Test
 import org.mockito.Mockito
 import java.io.File
 import java.io.FileInputStream
+import java.sql.DriverManager
 import java.util.*
 import java.util.logging.Logger
 
@@ -50,64 +57,142 @@ import java.util.logging.Logger
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class PersistenceIT {
+class PersistenceMySQLIT {
     /**
      * Given
      *      initial empty database and production configuration in config.yml
      * When
-     *      getAll is called the database should still be empty
+     *      getAll is called the database should still be empty and when getOrCreateFromPlayerUUID with a new uuid is called
      * Then
-     *     the default pet specified in the config should be inserted and retrieved correctly from
-     *     the database.
+     *     the default pet with the default production configuration from the config.yml should be generated.
      */
     @Test
-    fun resolve_ValidPluginAndServiceClass_ShouldCallProxy() {
+    fun getOrCreateFromPlayerUUID_ProductionConfiguration_ShouldGenerateCorrectPet() {
         // Arrange
         val classUnderTest = createWithDependencies()
         val uuid = UUID.fromString("c7d21810-d2a0-407d-a389-14efd3eb79d2")
 
         // Act
         val initialSize = classUnderTest.getAll().get().size
-        val initialPetMeta = classUnderTest.getOrCreateFromPlayerUUID(uuid).get()
-        initialPetMeta.displayName = "Peter Brown"
-        classUnderTest.save(initialPetMeta)
-        val resultPetMeta = classUnderTest.getOrCreateFromPlayerUUID(uuid).get()
+        val actual = classUnderTest.getOrCreateFromPlayerUUID(uuid).get()
+        sqlProxy!!.close()
+        database!!.stop()
 
         // Assert
         Assertions.assertEquals(0, initialSize)
-        Assertions.assertEquals("Peter Brown", resultPetMeta.displayName)
+        Assertions.assertEquals(1, actual.id)
+        Assertions.assertEquals(false, actual.enabled)
+        Assertions.assertEquals("Kenny's Pet", actual.displayName)
+        Assertions.assertEquals(20.0, actual.health)
+        Assertions.assertEquals(true, actual.invincible)
+        Assertions.assertEquals(EntityType.RABBIT, actual.hitBoxEntityType)
+        Assertions.assertEquals(true, actual.soundEnabled)
+        Assertions.assertEquals(true, actual.particleEnabled)
+        Assertions.assertEquals(1, actual.skin.id)
+        Assertions.assertEquals("GRASS", actual.skin.typeName)
+        Assertions.assertEquals(0, actual.skin.dataValue)
+        Assertions.assertEquals(false, actual.skin.unbreakable)
+        Assertions.assertEquals("", actual.skin.owner)
+        Assertions.assertEquals(1, actual.playerMeta.id)
+        Assertions.assertEquals("Kenny", actual.playerMeta.name)
+        Assertions.assertEquals(1, actual.modifier.id)
+        Assertions.assertEquals(0.0, actual.modifier.climbingHeight)
+        Assertions.assertEquals(0.0, actual.modifier.movementSpeed)
+    }
 
-        // TODO: Test all properties if correctly stored.
+    /**
+     * Given
+     *      initial empty database and production configuration in config.yml
+     * When
+     *      getAll is called the database should still be empty and when getOrCreateFromPlayerUUID is called
+     * Then
+     *     the default pet with the default production configuration should be correctly editable and storeAble again.
+     */
+    @Test
+    fun getOrCreateFromPlayerUUID_ProductionConfiguration_ShouldAllowChangingPet() {
+        // Arrange
+        val classUnderTest = createWithDependencies()
+        val uuid = UUID.fromString("c7d21810-d2a0-407d-a389-14efd3eb79d2")
+
+        // Act
+        val initialSize = classUnderTest.getAll().get().size
+        val petMeta = classUnderTest.getOrCreateFromPlayerUUID(uuid).get()
+
+        petMeta.enabled = true
+        petMeta.displayName = "Captain Pet"
+        petMeta.health = 17.0
+        petMeta.invincible = false
+        petMeta.hitBoxEntityType = EntityType.ZOMBIE
+        petMeta.soundEnabled = false
+        petMeta.particleEnabled = false
+        petMeta.skin.typeName = "DIRT"
+        petMeta.skin.dataValue = 2
+        petMeta.skin.unbreakable = true
+        petMeta.skin.owner = "Pikachu"
+        petMeta.playerMeta.name = "Superman"
+        petMeta.modifier.climbingHeight = 22.2
+        petMeta.modifier.movementSpeed = 21.5
+
+        classUnderTest.save(petMeta).get()
+        val actual = classUnderTest.getOrCreateFromPlayerUUID(uuid).get()
+        sqlProxy!!.close()
+        database!!.stop()
+
+        // Assert
+        Assertions.assertEquals(0, initialSize)
+        Assertions.assertEquals(1, actual.id)
+        Assertions.assertEquals(true, actual.enabled)
+        Assertions.assertEquals("Captain Pet", actual.displayName)
+        Assertions.assertEquals(17.0, actual.health)
+        Assertions.assertEquals(false, actual.invincible)
+        Assertions.assertEquals(EntityType.ZOMBIE, actual.hitBoxEntityType)
+        Assertions.assertEquals(false, actual.soundEnabled)
+        Assertions.assertEquals(false, actual.particleEnabled)
+        Assertions.assertEquals(1, actual.skin.id)
+        Assertions.assertEquals("DIRT", actual.skin.typeName)
+        Assertions.assertEquals(2, actual.skin.dataValue)
+        Assertions.assertEquals(true, actual.skin.unbreakable)
+        Assertions.assertEquals("Pikachu", actual.skin.owner)
+        Assertions.assertEquals(1, actual.playerMeta.id)
+        Assertions.assertEquals("Superman", actual.playerMeta.name)
+        Assertions.assertEquals(1, actual.modifier.id)
+        Assertions.assertEquals(22.2, actual.modifier.climbingHeight)
+        Assertions.assertEquals(21.5, actual.modifier.movementSpeed)
     }
 
     companion object {
+        private var sqlProxy : SqlProxyImpl? = null
+        private var database : DB? = null
+
         fun createWithDependencies(): PersistencePetMetaService {
             val configuration = YamlConfiguration()
-            configuration.set("sql.enabled", false)
-            configuration.set("sql.host", "localhost")
-            configuration.set("sql.port", 3306)
+            configuration.load(File("../petblocks-core/src/main/resources/assets/petblocks/config.yml"))
+            configuration.set("sql.type", "mysql")
             configuration.set("sql.database", "db")
-            configuration.set("sql.username", "root")
-            configuration.set("sql.password", "")
 
-            val folder = File("integrationtest-sqlite")
+            database = DB.newEmbeddedDB(3306)
+            database!!.start()
 
-            if (folder.exists()) {
-                FileUtils.deleteDirectory(folder)
+            DriverManager.getConnection("jdbc:mysql://localhost:3306/?user=root&password=").use { conn ->
+                conn.createStatement().use { statement ->
+                    statement.executeUpdate("CREATE DATABASE db")
+                }
             }
 
             val plugin = Mockito.mock(Plugin::class.java)
             Mockito.`when`(plugin.config).thenReturn(configuration)
             Mockito.`when`(plugin.dataFolder).thenReturn(File("integrationtest-sqlite"))
             Mockito.`when`(plugin.getResource(Mockito.anyString())).then { parameter ->
-                if (parameter.arguments[0].toString() == "assets/petblocks/sql/create-sqlite.sql") {
-                    FileInputStream(File("../petblocks-core/src/main/resources/assets/petblocks/sql/create-sqlite.sql"))
+                if (parameter.arguments[0].toString() == "assets/petblocks/sql/create-mysql.sql") {
+                    FileInputStream(File("../petblocks-core/src/main/resources/assets/petblocks/sql/create-mysql.sql"))
                 } else {
                     Unit
                 }
             }
 
-            val sqlite = PetMetaSqlRepository(SqlDbContextImpl(SqlProxyImpl(plugin, LoggingUtilServiceImpl(Logger.getAnonymousLogger())), LoggingUtilServiceImpl(Logger.getAnonymousLogger())))
+            sqlProxy = SqlProxyImpl(plugin, LoggingUtilServiceImpl(Logger.getAnonymousLogger()))
+            val sqlite = PetMetaSqlRepository(SqlDbContextImpl(sqlProxy!!, LoggingUtilServiceImpl(Logger.getAnonymousLogger()))
+                    , ConfigurationServiceImpl(plugin, Item18R1ServiceImpl()))
             val repo = PetRunTimeRepository()
 
             return PersistencePetMetaServiceImpl(MockedConcurrencyService(), MockedProxyService(), sqlite, repo)

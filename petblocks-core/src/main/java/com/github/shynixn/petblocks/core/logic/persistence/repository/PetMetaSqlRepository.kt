@@ -1,11 +1,17 @@
+@file:Suppress("UNCHECKED_CAST")
+
 package com.github.shynixn.petblocks.core.logic.persistence.repository
 
 import com.github.shynixn.petblocks.api.business.enumeration.EntityType
+import com.github.shynixn.petblocks.api.business.service.ConfigurationService
 import com.github.shynixn.petblocks.api.persistence.context.SqlDbContext
 import com.github.shynixn.petblocks.api.persistence.entity.PetMeta
 import com.github.shynixn.petblocks.api.persistence.repository.PetMetaRepository
 import com.github.shynixn.petblocks.core.logic.business.extension.get
-import com.github.shynixn.petblocks.core.logic.persistence.entity.*
+import com.github.shynixn.petblocks.core.logic.persistence.entity.PetMetaEntity
+import com.github.shynixn.petblocks.core.logic.persistence.entity.PetModifierEntity
+import com.github.shynixn.petblocks.core.logic.persistence.entity.PlayerMetaEntity
+import com.github.shynixn.petblocks.core.logic.persistence.entity.SkinEntity
 import com.google.inject.Inject
 import java.sql.Connection
 import java.sql.ResultSet
@@ -38,7 +44,7 @@ import java.util.*
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class PetMetaSqlRepository @Inject constructor(private val sqlDbContext: SqlDbContext) : PetMetaRepository {
+class PetMetaSqlRepository @Inject constructor(private val sqlDbContext: SqlDbContext, private val configurationService: ConfigurationService) : PetMetaRepository {
     /**
      * Returns the petMeta of from the given player uniqueId. Creates
      * a new one if it does not exist yet. Gets it from the runtime when a pet
@@ -55,7 +61,7 @@ class PetMetaSqlRepository @Inject constructor(private val sqlDbContext: SqlDbCo
         return sqlDbContext.transaction { connection ->
             val statement = "SELECT pet.id as petid, shy_player_id, shy_skin_id, shy_modifier_id, enabled, displayname" +
                     ", hitboxentitytype, soundenabled, particleenabled, climbingheight, movementspeed, uuid, name" +
-                    ", typename, owner, datavalue, unbreakable " +
+                    ", typename, owner, datavalue, unbreakable, invincible, health " +
                     "FROM SHY_PET pet, SHY_SKIN skin, SHY_PLAYER player, SHY_PET_MODIFIER modifier " +
                     "WHERE pet.shy_player_id = player.id " +
                     "AND shy_skin_id = skin.id " +
@@ -88,7 +94,7 @@ class PetMetaSqlRepository @Inject constructor(private val sqlDbContext: SqlDbCo
     private fun getOrCreateFromPlayerIdentifiers(connection: Connection, name: String, uuid: UUID): PetMeta {
         val statement = "SELECT pet.id as petid, shy_player_id, shy_skin_id, shy_modifier_id, enabled, displayname" +
                 ", hitboxentitytype, soundenabled, particleenabled, climbingheight, movementspeed, uuid, name" +
-                ", typename, owner, datavalue, unbreakable " +
+                ", typename, owner, datavalue, unbreakable, invincible, health " +
                 "FROM SHY_PET pet, SHY_SKIN skin, SHY_PLAYER player, SHY_PET_MODIFIER modifier " +
                 "WHERE player.uuid = ? " +
                 "AND pet.shy_player_id = player.id " +
@@ -100,9 +106,7 @@ class PetMetaSqlRepository @Inject constructor(private val sqlDbContext: SqlDbCo
         }, uuid.toString())
 
         return if (!optResult.isPresent) {
-            val playerMeta = PlayerMetaEntity(uuid, name)
-            val petMeta = PetMetaEntity(playerMeta, SkinEntity(), PetModifierEntity())
-
+            val petMeta = configurationService.generateDefaultPetMeta(uuid, name)
             insertInto(connection, petMeta)
             getOrCreateFromPlayerIdentifiers(connection, name, uuid)
         } else {
@@ -116,21 +120,30 @@ class PetMetaSqlRepository @Inject constructor(private val sqlDbContext: SqlDbCo
      */
     private fun update(connection: Connection, petMeta: PetMeta): PetMeta {
         val playerMeta = petMeta.playerMeta
-        // val particleMeta = petMeta.particle
-
         sqlDbContext.update(connection, "SHY_PLAYER", "WHERE id=" + playerMeta.id
-                , "uuid" to playerMeta.uuid
+                , "uuid" to playerMeta.uuid.toString()
                 , "name" to playerMeta.name)
 
-        /*  sqlDbContext.update(connection, "SHY_PARTICLE_EFFECT ", "WHERE id=" + particleMeta.id
-                  , "name" to particleMeta.type.gameId_113
-                  , "amount" to particleMeta.amount
-                  , "speed" to particleMeta.speed
-                  , "x" to particleMeta.offSetX
-                  , "y" to particleMeta.offSetY
-                  , "z" to particleMeta.offSetZ
-                  , "material" to particleMeta.materialName
-                  , "data" to particleMeta.data)*/
+        val modifierMeta = petMeta.modifier
+        sqlDbContext.update(connection, "SHY_PET_MODIFIER", "WHERE id=" + modifierMeta.id
+                , "climbingheight" to modifierMeta.climbingHeight
+                , "movementspeed" to modifierMeta.movementSpeed)
+
+        val skinMeta = petMeta.skin
+        sqlDbContext.update(connection, "SHY_SKIN", "WHERE id=" + skinMeta.id
+                , "typename" to skinMeta.typeName
+                , "owner" to skinMeta.owner
+                , "datavalue" to skinMeta.dataValue
+                , "unbreakable" to skinMeta.unbreakable)
+
+        sqlDbContext.update(connection, "SHY_PET", "WHERE id=" + petMeta.id
+                , "enabled" to petMeta.enabled
+                , "invincible" to petMeta.invincible
+                , "health" to petMeta.health
+                , "displayname" to petMeta.displayName
+                , "hitboxentitytype" to petMeta.hitBoxEntityType.name
+                , "soundenabled" to petMeta.soundEnabled
+                , "particleenabled" to petMeta.particleEnabled)
 
         return petMeta
     }
@@ -141,10 +154,15 @@ class PetMetaSqlRepository @Inject constructor(private val sqlDbContext: SqlDbCo
     private fun insertInto(connection: Connection, petMeta: PetMeta): PetMeta {
         val playerMeta = petMeta.playerMeta
 
-        // TODO: CHECK IF PLAYER IS ALREADY IN DATABASE
-        playerMeta.id = sqlDbContext.insert(connection, "SHY_PLAYER"
-                , "uuid" to playerMeta.uuid
-                , "name" to playerMeta.name)
+        sqlDbContext.singleQuery(connection, "SELECT * from SHY_PLAYER WHERE uuid = ?", { resultSet ->
+            playerMeta.id = resultSet["id"]
+        }, playerMeta.uuid.toString())
+
+        if (playerMeta.id == 0L) {
+            playerMeta.id = sqlDbContext.insert(connection, "SHY_PLAYER"
+                    , "uuid" to playerMeta.uuid.toString()
+                    , "name" to playerMeta.name)
+        }
 
         val modifierMeta = petMeta.modifier
         modifierMeta.id = sqlDbContext.insert(connection, "SHY_PET_MODIFIER"
@@ -156,14 +174,15 @@ class PetMetaSqlRepository @Inject constructor(private val sqlDbContext: SqlDbCo
                 , "typename" to skinMeta.typeName
                 , "owner" to skinMeta.owner
                 , "datavalue" to skinMeta.dataValue
-                , "unbreakable" to skinMeta.unbreakable
-        )
+                , "unbreakable" to skinMeta.unbreakable)
 
         petMeta.id = sqlDbContext.insert(connection, "SHY_PET"
                 , "shy_player_id" to playerMeta.id
                 , "shy_skin_id" to skinMeta.id
                 , "shy_modifier_id" to modifierMeta.id
                 , "enabled" to petMeta.enabled
+                , "invincible" to petMeta.invincible
+                , "health" to petMeta.health
                 , "displayname" to petMeta.displayName
                 , "hitboxentitytype" to petMeta.hitBoxEntityType.name
                 , "soundenabled" to petMeta.soundEnabled
@@ -207,6 +226,8 @@ class PetMetaSqlRepository @Inject constructor(private val sqlDbContext: SqlDbCo
         with(petMeta) {
             id = resultSet["petid"]
             enabled = resultSet["enabled"]
+            health = resultSet["health"]
+            invincible = resultSet["invincible"]
             displayName = resultSet["displayname"]
             hitBoxEntityType = EntityType.valueOf(resultSet["hitboxentitytype"])
             soundEnabled = resultSet["soundenabled"]

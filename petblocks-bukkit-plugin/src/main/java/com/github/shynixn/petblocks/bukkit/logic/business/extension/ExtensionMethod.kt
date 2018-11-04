@@ -13,6 +13,7 @@ import com.mojang.authlib.GameProfile
 import com.mojang.authlib.properties.Property
 import org.bukkit.Location
 import org.bukkit.configuration.MemorySection
+import org.bukkit.configuration.file.FileConfiguration
 import org.bukkit.entity.Player
 import org.bukkit.inventory.Inventory
 import org.bukkit.inventory.ItemStack
@@ -69,6 +70,28 @@ fun PlayerInventory.setItemStackInHand(itemStack: ItemStack?, offHand: Boolean =
     } else {
         Class.forName("org.bukkit.entity.HumanEntity").getDeclaredMethod("setItemInHand", ItemStack::class.java)
                 .invoke(this.holder, itemStack)
+    }
+}
+
+/**
+ * Deserializes the configuraiton section path to a map.
+ */
+fun FileConfiguration.deserializeToMap(path: String): Map<String, Any?> {
+    val section = getConfigurationSection(path).getValues(false)
+    deserialize(section)
+    return section
+}
+
+/**
+ * Deserializes the given section.
+ */
+private fun deserialize(section: MutableMap<String, Any?>) {
+    section.keys.forEach { key ->
+        if (section[key] is MemorySection) {
+            val map = (section[key] as MemorySection).getValues(false)
+            deserialize(map)
+            section[key] = map
+        }
     }
 }
 

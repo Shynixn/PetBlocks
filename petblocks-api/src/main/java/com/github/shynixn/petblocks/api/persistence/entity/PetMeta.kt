@@ -41,6 +41,16 @@ interface PetMeta {
     var enabled: Boolean
 
     /**
+     * Gets the health of the pet.
+     */
+    var health : Double
+
+    /**
+     * Is the pet invincible?
+     */
+    var invincible : Boolean
+
+    /**
      * Displayed name on top of the pet.
      */
     var displayName: String

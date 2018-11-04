@@ -58,7 +58,7 @@ class SqlProxyImpl @Inject constructor(private val plugin: Plugin, private val l
      * Initializes the db context.
      */
     init {
-        if (!plugin.config.getBoolean("sql.enabled")) {
+        if (plugin.config.getString("sql.type") == "sqlite") {
             initialize(SQLITE_DRIVER)
         } else {
             initialize(MYSQL_DRIVER)
@@ -118,9 +118,11 @@ class SqlProxyImpl @Inject constructor(private val plugin: Plugin, private val l
 
                 val connection = this.openConnection()
                 connection.use {
-                    plugin.getResource("assets/petblocks/sql/create-sqlite.sql").bufferedReader().use { reader ->
-                        connection.prepareStatement(reader.readText()).use { statement ->
-                            statement.execute()
+                    plugin.getResource("assets/petblocks/sql/create-mysql.sql").bufferedReader().use { reader ->
+                        reader.readText().split(";").forEach { text ->
+                            connection.prepareStatement(text).use { statement ->
+                                statement.execute()
+                            }
                         }
                     }
                 }

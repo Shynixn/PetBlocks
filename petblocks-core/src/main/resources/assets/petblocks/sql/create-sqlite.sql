@@ -41,12 +41,14 @@ CREATE TABLE IF NOT EXISTS SHY_PET
   shy_player_id REFERENCES SHY_PLAYER(id),
   shy_skin_id REFERENCES SHY_SKIN(id),
   shy_modifier_id REFERENCES SHY_PET_MODIFIER(id),
+  invincible INTEGER,
+  health REAL,
   enabled INTEGER,
   displayname VARCHAR(32) NOT NULL,
   hitboxentitytype VARCHAR(32) NOT NULL,
   soundenabled INTEGER,
   particleenabled INTEGER,
-CONSTRAINT foreignkey_modifier_id_cs FOREIGN KEY (shy_modifier_id) REFERENCES SHY_PET_MODIFIER(id),
+  CONSTRAINT foreignkey_modifier_id_cs FOREIGN KEY (shy_modifier_id) REFERENCES SHY_PET_MODIFIER(id),
   CONSTRAINT foreignkey_player_id_cs FOREIGN KEY (shy_player_id) REFERENCES SHY_PLAYER(id),
   CONSTRAINT foreignkey_skin_id_cs FOREIGN KEY (shy_skin_id) REFERENCES SHY_SKIN(id)
 )

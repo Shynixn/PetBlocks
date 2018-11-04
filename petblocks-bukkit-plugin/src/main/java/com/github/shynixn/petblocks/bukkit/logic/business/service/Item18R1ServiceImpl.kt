@@ -4,7 +4,6 @@ package com.github.shynixn.petblocks.bukkit.logic.business.service
 
 import com.github.shynixn.petblocks.api.business.enumeration.MaterialType
 import com.github.shynixn.petblocks.api.business.service.ItemService
-import com.github.shynixn.petblocks.bukkit.logic.business.nms.VersionSupport
 import com.github.shynixn.petblocks.core.logic.business.extension.translateChatColors
 import org.bukkit.Material
 import org.bukkit.inventory.ItemStack
@@ -37,17 +36,8 @@ import java.lang.reflect.Method
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class ItemServiceImpl : ItemService {
-    private val version = VersionSupport.getServerVersion()
-    private val getIdFromMaterialMethod: Method = { Material::class.java.getDeclaredMethod("getId") }.invoke()
-
-    private val getMaterialFromIdMethod: Method? = {
-        if (version.isVersionLowerThan(VersionSupport.VERSION_1_13_R1)) {
-            Material::class.java.getDeclaredMethod("getMaterial", Int::class.javaPrimitiveType)
-        }
-
-        null
-    }.invoke()
+class Item18R1ServiceImpl : ItemService {
+    private val getMaterialFromIdMethod: Method = Material::class.java.getDeclaredMethod("getMaterial", Int::class.javaPrimitiveType)
 
     /**
      * Creates a new itemstack from the given parameters.
@@ -81,7 +71,7 @@ class ItemServiceImpl : ItemService {
      * Creates a new itemstack from the given materialType.
      */
     override fun <I> createItemStack(materialType: MaterialType, dataValue: Int, amount: Int): I {
-        return ItemStack(materialType.MinecraftNumericId, amount, dataValue.toShort()) as I
+        return ItemStack(getMaterialFromNumericValue<Material>(materialType.MinecraftNumericId), amount, dataValue.toShort()) as I
     }
 
     /**
@@ -161,16 +151,6 @@ class ItemServiceImpl : ItemService {
      * not get applied to a material.
      */
     override fun <M> getMaterialFromNumericValue(value: Int): M {
-        if (getMaterialFromIdMethod != null) {
-            return getMaterialFromIdMethod.invoke(null, value) as M
-        } else {
-            for (material in Material.values()) {
-                if (getIdFromMaterialMethod(material) == value) {
-                    return material as M
-                }
-            }
-
-            throw IllegalArgumentException("Material of numeric value $value could not be found.")
-        }
+        return getMaterialFromIdMethod.invoke(null, value) as M
     }
 }

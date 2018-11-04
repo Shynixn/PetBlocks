@@ -7,6 +7,7 @@ import com.google.inject.Inject
 import java.sql.Connection
 import java.sql.ResultSet
 import java.sql.SQLException
+import java.sql.Statement
 import java.util.*
 
 /**
@@ -96,7 +97,7 @@ class SqlDbContextImpl @Inject constructor(private val sqlConnectionPoolProxy: S
 
         statement.append(")")
 
-        val preparedStatement = connection.prepareStatement(statement.toString())
+        val preparedStatement = connection.prepareStatement(statement.toString(), Statement.RETURN_GENERATED_KEYS)
 
         preparedStatement.use {
             for (i in parameters.indices) {

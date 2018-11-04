@@ -3,7 +3,11 @@
 package unittest
 
 import com.github.shynixn.petblocks.api.business.enumeration.ParticleType
+import com.github.shynixn.petblocks.api.business.service.ConfigurationService
+import com.github.shynixn.petblocks.api.business.service.ItemService
 import com.github.shynixn.petblocks.api.persistence.context.SqlDbContext
+import com.github.shynixn.petblocks.api.persistence.entity.GuiItem
+import com.github.shynixn.petblocks.api.persistence.entity.PetMeta
 import com.github.shynixn.petblocks.api.persistence.repository.PetMetaRepository
 import com.github.shynixn.petblocks.core.logic.persistence.entity.*
 import com.github.shynixn.petblocks.core.logic.persistence.repository.PetMetaSqlRepository
@@ -154,7 +158,50 @@ class PetMetaSqlRepositoryTest {
 
     companion object {
         fun createWithDependencies(dbContext: SqlDbContext = MockedSqlDbContext()): PetMetaRepository {
-            return PetMetaSqlRepository(dbContext)
+            return PetMetaSqlRepository(dbContext, MockedConfigurationService())
+        }
+    }
+
+    class MockedConfigurationService : ConfigurationService{
+        /**
+         * Tries to load the config value from the given [path].
+         * Throws a [IllegalArgumentException] if the path could not be correctly
+         * loaded.
+         * @param C the type of the returned value.
+         */
+        override fun <C> findValue(path: String): C {
+            throw IllegalArgumentException()
+        }
+
+        /**
+         * Tries to return a [GuiItem] matching the displayName and the lore of the given [item].
+         * Can be called asynchronly. Uses the [path] parameter for faster fetching.
+         * @param I the type of the itemstack.
+         */
+        override fun <I> findClickedGUIItem(path: String, item: I): Optional<GuiItem> {
+            throw IllegalArgumentException()
+        }
+
+        /**
+         * Tries to return a list of [GuiItem] matching the given path from the config.
+         * Can be called asynchronly.
+         */
+        override fun findGUIItemCollection(path: String): Optional<List<GuiItem>> {
+            throw IllegalArgumentException()
+        }
+
+        /**
+         * Generates the default pet meta.
+         */
+        override fun generateDefaultPetMeta(uuid: UUID, name: String): PetMeta {
+            return PetMetaEntity(PlayerMetaEntity(), SkinEntity(), PetModifierEntity())
+        }
+
+        /**
+         * Clears cached resources and refreshes the used configuration.
+         */
+        override fun refresh() {
+            throw IllegalArgumentException()
         }
     }
 
@@ -182,9 +229,6 @@ class PetMetaSqlRepositoryTest {
          * [R] result type.
          */
         override fun <R> multiQuery(connection: Connection, sqlStatement: String, f: (ResultSet) -> R, vararg parameters: Any): List<R> {
-            val resultSet = Mockito.mock(ResultSet::class.java)
-            f.invoke(resultSet)
-
             return petMetas as List<R>
         }
 
@@ -197,9 +241,6 @@ class PetMetaSqlRepositoryTest {
             if (parameters.isNotEmpty() && parameters[0] == "16625034-af3d-4781-b157-64572759ad1c") {
                 return Optional.of(petMetas[0] as R)
             }
-
-            val resultSet = Mockito.mock(ResultSet::class.java)
-            f.invoke(resultSet)
 
             if (singleQueryCounter == 0) {
                 singleQueryCounter++
