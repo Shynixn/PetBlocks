@@ -85,9 +85,10 @@ class PersistencePetMetaServiceImpl @Inject constructor(private val concurrencyS
             }
         } else {
             val playerProxy = proxyService.findPlayerProxyObjectFromUUID(uuid)
-            val playerName = playerProxy.get().name
 
             if (playerProxy.isPresent) {
+                val playerName = playerProxy.get().name
+
                 async(concurrencyService) {
                     val petMeta = petMetaRepository.getOrCreateFromPlayerIdentifiers(playerName, uuid)
 
