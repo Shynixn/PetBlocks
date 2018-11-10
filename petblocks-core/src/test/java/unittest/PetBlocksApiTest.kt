@@ -48,6 +48,7 @@ class PetBlocksApiTest {
         // Arrange
         val proxy = MockedPluginProxy()
         val classUnderTest = createWithDependencies(proxy)
+        throw
 
         // Act
         classUnderTest.resolve(String::class.java)
