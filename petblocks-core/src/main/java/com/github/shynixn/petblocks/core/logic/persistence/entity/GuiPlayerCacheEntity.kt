@@ -3,6 +3,7 @@
 package com.github.shynixn.petblocks.core.logic.persistence.entity
 
 import com.github.shynixn.petblocks.api.persistence.entity.GuiPlayerCache
+import com.github.shynixn.petblocks.api.persistence.entity.PetMeta
 
 /**
  * Created by Shynixn 2018.
@@ -35,7 +36,7 @@ class GuiPlayerCacheEntity(
         /**
          * Allocated gui items path.
          */
-        override var path: String, private val inventory: Any) : GuiPlayerCache {
+        override var path: String, private val inventory: Any, override var petMeta: PetMeta) : GuiPlayerCache {
     /**
      * Off set x axe.
      */

@@ -9,6 +9,7 @@ import com.github.shynixn.petblocks.api.business.service.*
 import com.github.shynixn.petblocks.api.persistence.entity.*
 import com.github.shynixn.petblocks.bukkit.logic.business.extension.*
 import com.github.shynixn.petblocks.core.logic.business.extension.chatMessage
+import com.github.shynixn.petblocks.core.logic.business.extension.thenAcceptSafely
 import com.github.shynixn.petblocks.core.logic.persistence.entity.*
 import com.google.inject.Inject
 import org.bukkit.Bukkit
@@ -128,9 +129,10 @@ class GUIServiceImpl @Inject constructor(private val configurationService: Confi
         val inventory = Bukkit.getServer().createInventory(player, 54, guiTitle)
         player.openInventory(inventory)
 
-        pageCache[player] = GuiPlayerCacheEntity("gui.main", inventory)
-
-        renderPage(player, "gui.main", PetMetaEntity(PlayerMetaEntity(UUID.randomUUID(), "name"), SkinEntity(), PetModifierEntity()))
+        persistenceService.getOrCreateFromPlayerUUID(player.uniqueId).thenAcceptSafely { petMeta ->
+            pageCache[player] = GuiPlayerCacheEntity("gui.main", inventory, petMeta)
+            renderPage(player, "gui.main", petMeta)
+        }
     }
 
     /**
@@ -150,6 +152,7 @@ class GUIServiceImpl @Inject constructor(private val configurationService: Confi
             return
         }
 
+
         val scriptResult = scriptService.executeScript(optGuiItem.get().script!!)
 
         if (scriptResult.action == ScriptAction.SCROLL_COLLECTION) {
@@ -157,7 +160,7 @@ class GUIServiceImpl @Inject constructor(private val configurationService: Confi
             pageCache[player]!!.offsetX += result.first
             pageCache[player]!!.offsetY += result.second
 
-            renderPage(player, pageCache[player]!!.path, PetMetaEntity(PlayerMetaEntity(UUID.randomUUID(), "name"), SkinEntity(), PetModifierEntity()))
+            renderPage(player, pageCache[player]!!.path, pageCache[player]!!.petMeta)
         }
 
 
@@ -217,65 +220,6 @@ class GUIServiceImpl @Inject constructor(private val configurationService: Confi
 
         this.fillEmptySlots(inventory)
         player.inventory.updateInventory()
-    }
-
-    private fun scrollCollection(player: Player, sourcePosition: Int): Int {
-        var offsetX = pageCache[player]!!.offsetX
-        var offsetY = pageCache[player]!!.offsetY
-        var position = sourcePosition
-        var previousPosition: Int
-
-        while (offsetX > 0) {
-            previousPosition = position
-            position -= 1
-            offsetX -= 1
-
-            if (hasReachedOuterColumn(previousPosition, position)) {
-                return -1
-            }
-        }
-
-        while (offsetX < 0) {
-            previousPosition = position
-            position += 1
-            offsetX += 1
-
-            if (hasReachedOuterColumn(previousPosition, position)) {
-                return -1
-            }
-        }
-
-        while (offsetY > 0) {
-            if (position > 53) {
-                return -1
-            }
-
-            position += 9
-            offsetY -= 1
-        }
-
-        while (offsetY < 0) {
-            if (position < 0) {
-                return -1
-            }
-
-            position -= 9
-            offsetY += 1
-        }
-
-        return position
-    }
-
-    private fun hasReachedOuterColumn(previousPosition: Int, position: Int): Boolean {
-        if (previousPosition % 9 == 0 && previousPosition > position) {
-            return true
-        }
-
-        if (position % 9 == 0 && previousPosition < position) {
-            return true
-        }
-
-        return false
     }
 
     /**
@@ -450,5 +394,70 @@ class GUIServiceImpl @Inject constructor(private val configurationService: Confi
                 renderIcon(inventory, i, guiItem.icon)
             }
         }
+    }
+
+    /**
+     * Scrolls the page to the axes.
+     */
+    private fun scrollCollection(player: Player, sourcePosition: Int): Int {
+        var offsetX = pageCache[player]!!.offsetX
+        var offsetY = pageCache[player]!!.offsetY
+        var position = sourcePosition
+        var previousPosition: Int
+
+        while (offsetX > 0) {
+            previousPosition = position
+            position -= 1
+            offsetX -= 1
+
+            if (hasReachedOuterColumn(previousPosition, position)) {
+                return -1
+            }
+        }
+
+        while (offsetX < 0) {
+            previousPosition = position
+            position += 1
+            offsetX += 1
+
+            if (hasReachedOuterColumn(previousPosition, position)) {
+                return -1
+            }
+        }
+
+        while (offsetY > 0) {
+            if (position > 53) {
+                return -1
+            }
+
+            position += 9
+            offsetY -= 1
+        }
+
+        while (offsetY < 0) {
+            if (position < 0) {
+                return -1
+            }
+
+            position -= 9
+            offsetY += 1
+        }
+
+        return position
+    }
+
+    /**
+     * Checks if the item is outside of the box.
+     */
+    private fun hasReachedOuterColumn(previousPosition: Int, position: Int): Boolean {
+        if (previousPosition % 9 == 0 && previousPosition > position) {
+            return true
+        }
+
+        if (position % 9 == 0 && previousPosition < position) {
+            return true
+        }
+
+        return false
     }
 }

@@ -50,7 +50,8 @@ class GUIScriptServiceImpl @Inject constructor(private val logger: LoggingServic
                 scriptResult.permission = Optional.of(data[1])
                 return scriptResult
             } else if (script.startsWith("executing action copy-pet-skin")) {
-                scriptResult.action = ScriptAction.LOAD_COLLECTION
+                scriptResult.action = ScriptAction.COPY_PET_SKIN
+                return scriptResult
             } else if (script.startsWith("scrolling")) {
                 val data = script.replace("scrolling ", "").split(" ")
                 scriptResult.action = ScriptAction.SCROLL_COLLECTION
