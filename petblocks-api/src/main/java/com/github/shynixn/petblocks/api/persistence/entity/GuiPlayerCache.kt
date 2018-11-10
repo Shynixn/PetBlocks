@@ -34,9 +34,14 @@ interface GuiPlayerCache {
     var path: String
 
     /**
-     * Off set from the left side.
+     * Off set x axe.
      */
-    var offset: Int
+    var offsetX: Int
+
+    /**
+     * Off set Y axe.
+     */
+    var offsetY: Int
 
     /**
      * Gets the inventory.

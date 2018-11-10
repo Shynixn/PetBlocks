@@ -111,6 +111,8 @@ class SqlProxyImpl @Inject constructor(private val plugin: Plugin, private val l
                     }
                 }
             }
+
+            loggingService.info("Connected to " + this.dataSource.jdbcUrl)
         } else if (driver == MYSQL_DRIVER) {
             try {
                 val config = plugin.config
@@ -126,6 +128,8 @@ class SqlProxyImpl @Inject constructor(private val plugin: Plugin, private val l
                         }
                     }
                 }
+
+                loggingService.info("Connected to " + this.dataSource.jdbcUrl)
             } catch (e: Exception) {
                 loggingService.warn("Cannot connect to the MYSQL database!", e)
                 loggingService.warn("Fallback mode activated. Using SQLite database instead.")

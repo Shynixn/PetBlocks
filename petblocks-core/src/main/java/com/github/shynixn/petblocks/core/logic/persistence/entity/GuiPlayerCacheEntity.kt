@@ -37,14 +37,18 @@ class GuiPlayerCacheEntity(
          */
         override var path: String, private val inventory: Any) : GuiPlayerCache {
     /**
+     * Off set x axe.
+     */
+    override var offsetX: Int = 0
+    /**
+     * Off set Y axe.
+     */
+    override var offsetY: Int = 0
+
+    /**
      * Gets the inventory.
      */
     override fun <I> getInventory(): I {
         return inventory as I
     }
-
-    /**
-     * Off set from the left side.
-     */
-    override var offset: Int = 0
 }

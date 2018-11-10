@@ -38,7 +38,7 @@ interface ItemService {
     /**
      * Creates a new itemstack from the given parameters.
      */
-    fun <I> createItemStack(typeId: Int, dataValue: Int = 0, amount: Int = 1): I
+    fun <I> createItemStack(typeName: String, dataValue: Int = 0, amount: Int = 1): I
 
     /**
      * Sets the amount of items on the given stack.

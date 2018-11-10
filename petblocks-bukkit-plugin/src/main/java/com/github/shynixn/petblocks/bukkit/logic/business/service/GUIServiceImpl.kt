@@ -1,3 +1,5 @@
+@file:Suppress("UNCHECKED_CAST")
+
 package com.github.shynixn.petblocks.bukkit.logic.business.service
 
 import com.github.shynixn.petblocks.api.business.enumeration.ChatClickAction
@@ -17,6 +19,7 @@ import org.bukkit.inventory.ItemStack
 import org.bukkit.plugin.Plugin
 import java.util.*
 import java.util.logging.Level
+import kotlin.collections.HashMap
 
 /**
  * Created by Shynixn 2018.
@@ -150,8 +153,11 @@ class GUIServiceImpl @Inject constructor(private val configurationService: Confi
         val scriptResult = scriptService.executeScript(optGuiItem.get().script!!)
 
         if (scriptResult.action == ScriptAction.SCROLL_COLLECTION) {
-            pageCache[player]!!.offset += scriptResult.valueContainer.get() as Int
-            renderPage(player, pageCache[player]!!.path, PetMetaEntity(PlayerMetaEntity(UUID.randomUUID(), "name"), SkinEntity(), PetModifierEntity()));
+            val result = scriptResult.valueContainer.get() as Pair<Int, Int>
+            pageCache[player]!!.offsetX += result.first
+            pageCache[player]!!.offsetY += result.second
+
+            renderPage(player, pageCache[player]!!.path, PetMetaEntity(PlayerMetaEntity(UUID.randomUUID(), "name"), SkinEntity(), PetModifierEntity()))
         }
 
 
@@ -168,7 +174,6 @@ class GUIServiceImpl @Inject constructor(private val configurationService: Confi
      */
     private fun renderPage(player: Player, path: String, petMeta: PetMeta) {
         player.openInventory.topInventory.clear()
-        val offset = this.pageCache[player]!!.offset
 
         val items = configurationService.findGUIItemCollection(path)
         val inventory = player.openInventory.topInventory
@@ -178,32 +183,99 @@ class GUIServiceImpl @Inject constructor(private val configurationService: Confi
             return
         }
 
-        items.get().forEach { item ->
-            if (item.position >= 0 && item.visible) {
-                if (item.icon.script != null) {
-                    val scriptResult = scriptService.executeScript(item.icon.script!!)
+        for (item in items.get()) {
+            if (!item.visible) {
+                continue
+            }
 
-                    if (scriptResult.action == ScriptAction.COPY_PET_SKIN) {
-                        val guiIcon = GuiIconEntity()
+            val position = scrollCollection(player, item.position)
 
-                        with(guiIcon) {
-                            displayName = petMeta.displayName
-                        //    type = petMeta.itemId
-                          //  data = petMeta.itemDamage
-                       //     skin = petMeta.skin
-                        //    unbreakable = petMeta.unbreakable
-                        }
+            if (position < 0 || position > 53) {
+                continue
+            }
 
-                        renderIcon(inventory, item.position - offset, guiIcon)
+            if (item.icon.script != null) {
+                val scriptResult = scriptService.executeScript(item.icon.script!!)
+
+                if (scriptResult.action == ScriptAction.COPY_PET_SKIN) {
+                    val guiIcon = GuiIconEntity()
+                    guiIcon.displayName = petMeta.displayName
+
+                    with(guiIcon.skin) {
+                        typeName = petMeta.skin.typeName
+                        dataValue = petMeta.skin.dataValue
+                        owner = petMeta.skin.owner
+                        unbreakable = petMeta.skin.unbreakable
                     }
-                } else {
-                    renderIcon(inventory, item.position - offset, item.icon)
+
+                    renderIcon(inventory, position, guiIcon)
                 }
+            } else {
+                renderIcon(inventory, position, item.icon)
             }
         }
 
         this.fillEmptySlots(inventory)
         player.inventory.updateInventory()
+    }
+
+    private fun scrollCollection(player: Player, sourcePosition: Int): Int {
+        var offsetX = pageCache[player]!!.offsetX
+        var offsetY = pageCache[player]!!.offsetY
+        var position = sourcePosition
+        var previousPosition: Int
+
+        while (offsetX > 0) {
+            previousPosition = position
+            position -= 1
+            offsetX -= 1
+
+            if (hasReachedOuterColumn(previousPosition, position)) {
+                return -1
+            }
+        }
+
+        while (offsetX < 0) {
+            previousPosition = position
+            position += 1
+            offsetX += 1
+
+            if (hasReachedOuterColumn(previousPosition, position)) {
+                return -1
+            }
+        }
+
+        while (offsetY > 0) {
+            if (position > 53) {
+                return -1
+            }
+
+            position += 9
+            offsetY -= 1
+        }
+
+        while (offsetY < 0) {
+            if (position < 0) {
+                return -1
+            }
+
+            position -= 9
+            offsetY += 1
+        }
+
+        return position
+    }
+
+    private fun hasReachedOuterColumn(previousPosition: Int, position: Int): Boolean {
+        if (previousPosition % 9 == 0 && previousPosition > position) {
+            return true
+        }
+
+        if (position % 9 == 0 && previousPosition < position) {
+            return true
+        }
+
+        return false
     }
 
     /**
@@ -214,14 +286,14 @@ class GUIServiceImpl @Inject constructor(private val configurationService: Confi
             return
         }
 
-     //   val itemStack = itemService.createItemStack<ItemStack>(guiIcon.type, guiIcon.data)
+        val itemStack = itemService.createItemStack<ItemStack>(guiIcon.skin.typeName, guiIcon.skin.dataValue)
 
-     //   itemStack.setDisplayName(guiIcon.displayName)
-     //   itemStack.setLore(guiIcon.lore)
-     //   itemStack.setSkin(guiIcon.skin)
-      //  itemStack.setUnbreakable(guiIcon.unbreakable)
+        itemStack.setDisplayName(guiIcon.displayName)
+        itemStack.setLore(guiIcon.lore)
+        itemStack.setSkin(guiIcon.skin.owner)
+        itemStack.setUnbreakable(guiIcon.skin.unbreakable)
 
-      //  inventory.setItem(position, itemStack)
+        inventory.setItem(position, itemStack)
     }
 
     /**
