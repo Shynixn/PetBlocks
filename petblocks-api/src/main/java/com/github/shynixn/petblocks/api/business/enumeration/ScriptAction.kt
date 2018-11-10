@@ -57,5 +57,10 @@ enum class ScriptAction {
     /**
      * Copies the current skin of the pet into a gui icon.
      */
-    COPY_PET_SKIN
+    COPY_PET_SKIN,
+
+    /**
+     * Calls the pet to the player.
+     */
+    CALL_PET
 }

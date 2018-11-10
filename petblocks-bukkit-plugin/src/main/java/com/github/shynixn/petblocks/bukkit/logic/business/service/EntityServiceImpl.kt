@@ -1,9 +1,13 @@
 package com.github.shynixn.petblocks.bukkit.logic.business.service
 
+import com.github.shynixn.petblocks.api.business.enumeration.EntityType
 import com.github.shynixn.petblocks.api.business.proxy.PetProxy
 import com.github.shynixn.petblocks.api.business.service.ConfigurationService
+import com.github.shynixn.petblocks.api.business.service.EntityRegistrationService
 import com.github.shynixn.petblocks.api.business.service.EntityService
+import com.github.shynixn.petblocks.api.business.service.ProxyService
 import com.github.shynixn.petblocks.api.persistence.entity.PetMeta
+import com.github.shynixn.petblocks.bukkit.logic.business.nms.VersionSupport
 import com.google.inject.Inject
 import org.bukkit.ChatColor
 import org.bukkit.entity.Entity
@@ -36,9 +40,21 @@ import org.bukkit.entity.Player
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class EntityServiceImpl @Inject constructor(private val configurationService: ConfigurationService) : EntityService {
+class EntityServiceImpl @Inject constructor(private val configurationService: ConfigurationService, private val proxyService: ProxyService, private val entityRegistrationService: EntityRegistrationService) : EntityService {
+    private val version = VersionSupport.getServerVersion()
+    private var registered = false
+
+    /**
+     * Spawns a new unManaged petProxy.
+     */
     override fun <L> spawnPetProxy(location: L, petMeta: PetMeta): PetProxy {
-        throw RuntimeException("")
+        this.registerEntitiesOnServer()
+
+        val playerProxy = proxyService.findPlayerProxyObjectFromUUID(petMeta.playerMeta.uuid).get()
+        val designClazz = Class.forName("com.github.shynixn.petblocks.bukkit.logic.business.nms.VERSION.PetDesign".replace("VERSION", version.versionText))
+
+        return designClazz.getDeclaredConstructor(Player::class.java, PetMeta::class.java)
+                .newInstance(playerProxy.handle, petMeta) as PetProxy
     }
 
     /**
@@ -46,6 +62,15 @@ class EntityServiceImpl @Inject constructor(private val configurationService: Co
      * Returns true if registered. Returns false when not registered.
      */
     override fun registerEntitiesOnServer(): Boolean {
+        if (registered) {
+            return true
+        }
+
+        val rabbitClazz = Class.forName("com.github.shynixn.petblocks.bukkit.logic.business.nms.VERSION.PetRabbitHitBox".replace("VERSION", version.versionText))
+        entityRegistrationService.register(rabbitClazz, EntityType.RABBIT)
+
+        registered = true
+
         return true
     }
 

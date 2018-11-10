@@ -10,6 +10,7 @@ import com.github.shynixn.petblocks.api.business.enumeration.PluginDependency
 import com.github.shynixn.petblocks.api.business.proxy.PluginProxy
 import com.github.shynixn.petblocks.api.business.service.CommandService
 import com.github.shynixn.petblocks.api.business.service.DependencyService
+import com.github.shynixn.petblocks.api.business.service.EntityRegistrationService
 import com.github.shynixn.petblocks.api.business.service.UpdateCheckService
 import com.github.shynixn.petblocks.bukkit.logic.business.extension.yamlMap
 import com.github.shynixn.petblocks.bukkit.logic.business.listener.*
@@ -121,6 +122,13 @@ class PetBlocksPlugin : JavaPlugin(), PluginProxy {
 
         startPlugin()
         Bukkit.getServer().consoleSender.sendMessage(PREFIX_CONSOLE + ChatColor.GREEN + "Enabled PetBlocks " + this.description.version + " by Shynixn")
+    }
+
+    /**
+     * OnDisable.
+     */
+    override fun onDisable() {
+        resolve(EntityRegistrationService::class.java).clearResources()
     }
 
     /**

@@ -7,6 +7,7 @@ import net.minecraft.server.v1_13_R2.*
 import org.bukkit.Location
 import org.bukkit.craftbukkit.v1_13_R2.CraftWorld
 import org.bukkit.craftbukkit.v1_13_R2.entity.CraftPlayer
+import org.bukkit.entity.Player
 import org.bukkit.event.entity.CreatureSpawnEvent
 
 /**
@@ -42,11 +43,11 @@ class PetRabbitHitBox(world: World) : EntityRabbit(world) {
     /**
      * Additional override constructor.
      */
-    constructor(petDesign: PetDesign, location: Location) : this((location.world as CraftWorld).handle) {
+    constructor(player : Player, petDesign: PetDesign, location: Location) : this((location.world as CraftWorld).handle) {
         this.petDesign = petDesign
         this.isSilent = true
 
-        val pathfinders = arrayListOf(PathfinderGoalFollowOwnerImpl(this, 1.0, 10.0F, 2.0F, (petDesign.proxy.getPlayer() as CraftPlayer).handle))
+        val pathfinders = arrayListOf(PathfinderGoalFollowOwnerImpl(this, 1.0, 10.0F, 2.0F, (player as CraftPlayer).handle))
 
         val bField = PathfinderGoalSelector::class.java.getDeclaredField("b")
         val cField = PathfinderGoalSelector::class.java.getDeclaredField("c")
@@ -59,7 +60,7 @@ class PetRabbitHitBox(world: World) : EntityRabbit(world) {
         cField.set(this.goalSelector, Sets.newLinkedHashSet<Any>())
         cField.set(this.targetSelector, Sets.newLinkedHashSet<Any>())
 
-        for (i in 0..pathfinders.size) {
+        for (i in 0 until pathfinders.size) {
             this.goalSelector.a(i, pathfinders[i])
         }
 

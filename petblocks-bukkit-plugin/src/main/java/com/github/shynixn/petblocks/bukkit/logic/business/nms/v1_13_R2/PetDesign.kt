@@ -89,9 +89,9 @@ class PetDesign(owner: Player, petMeta: PetMeta) : EntityArmorStand((owner.locat
         mcWorld.addEntity(this, CreatureSpawnEvent.SpawnReason.CUSTOM)
 
         hitBox = if (petMeta.hitBoxEntityType == EntityType.ZOMBIE) {
-            PetRabbitHitBox(this, location)
+            PetRabbitHitBox(owner, this, location)
         } else {
-            PetRabbitHitBox(this, location)
+            PetRabbitHitBox(owner, this, location)
         }
 
         internalProxy = PetProxyImpl(petMeta, this.bukkitEntity as ArmorStand, hitBox.bukkitEntity as LivingEntity, owner)

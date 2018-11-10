@@ -49,7 +49,7 @@ import kotlin.collections.HashMap
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class GUIServiceImpl @Inject constructor(private val configurationService: ConfigurationService, private val plugin: Plugin, private val scriptService: GUIScriptService, private val persistenceService: PersistencePetMetaService, private val itemService: ItemService, private val messageService: MessageService, private val headDatabaseService: DependencyHeadDatabaseService) : GUIService {
+class GUIServiceImpl @Inject constructor(private val configurationService: ConfigurationService, private val plugin: Plugin, private val petActionService: PetActionService, private val scriptService: GUIScriptService, private val persistenceService: PersistencePetMetaService, private val itemService: ItemService, private val messageService: MessageService, private val headDatabaseService: DependencyHeadDatabaseService) : GUIService {
     private val pageCache = HashMap<Player, GuiPlayerCache>()
 
     private var collectedMinecraftHeadsMessage = chatMessage {
@@ -161,6 +161,9 @@ class GUIServiceImpl @Inject constructor(private val configurationService: Confi
             pageCache[player]!!.offsetY += result.second
 
             renderPage(player, pageCache[player]!!.path, pageCache[player]!!.petMeta)
+        } else if (scriptResult.action == ScriptAction.CALL_PET) {
+            petActionService.callPet(player)
+            this.close(player)
         }
 
 

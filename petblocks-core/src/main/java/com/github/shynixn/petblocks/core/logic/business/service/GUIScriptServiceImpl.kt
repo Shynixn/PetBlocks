@@ -69,6 +69,10 @@ class GUIScriptServiceImpl @Inject constructor(private val logger: LoggingServic
                     scriptResult.permission = Optional.of(permission)
                     return scriptResult
                 }
+                else if (script.startsWith("executing action call-pet")) {
+                    scriptResult.action = ScriptAction.CALL_PET
+                    return scriptResult
+                }
             }
         } catch (e: Exception) {
             logger.warn("Failed to execute script '$script'.")
