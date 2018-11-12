@@ -6,6 +6,7 @@ import com.github.shynixn.petblocks.api.persistence.entity.PetMeta
 import com.github.shynixn.petblocks.bukkit.logic.business.proxy.PetProxyImpl
 import net.minecraft.server.v1_13_R2.*
 import org.bukkit.craftbukkit.v1_13_R2.CraftWorld
+import org.bukkit.craftbukkit.v1_13_R2.entity.CraftPlayer
 import org.bukkit.entity.ArmorStand
 import org.bukkit.entity.LivingEntity
 import org.bukkit.entity.Player
@@ -39,10 +40,11 @@ import java.lang.reflect.Field
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class PetDesign(owner: Player, petMeta: PetMeta) : EntityArmorStand((owner.location.world as CraftWorld).handle), NMSPetProxy {
+class PetDesign(owner: Player, val petMeta: PetMeta) : EntityArmorStand((owner.location.world as CraftWorld).handle), NMSPetProxy {
     private var internalProxy: PetProxyImpl? = null
     private var jumpingField: Field = EntityLiving::class.java.getDeclaredField("bg")
     private var hitBox: EntityInsentient
+
 
     companion object {
         private val axisAlignmentFields = arrayOfNulls<Field?>(5)
@@ -103,6 +105,12 @@ class PetDesign(owner: Player, petMeta: PetMeta) : EntityArmorStand((owner.locat
         compound.setBoolean("ShowArms", true)
         compound.setBoolean("NoBasePlate", true)
         this.a(compound)
+
+        val packetPlayOutRiding = PacketPlayOutMount(this)
+
+        location.world.players.forEach { player ->
+            (player as CraftPlayer).handle.playerConnection.sendPacket(packetPlayOutRiding)
+        }
     }
 
     /**

@@ -9,9 +9,11 @@ import com.github.shynixn.petblocks.api.business.proxy.PetProxy
 import com.github.shynixn.petblocks.api.business.service.LoggingService
 import com.github.shynixn.petblocks.api.persistence.entity.PetMeta
 import com.github.shynixn.petblocks.api.persistence.entity.Position
-import com.github.shynixn.petblocks.bukkit.logic.business.extension.toVector
+import com.github.shynixn.petblocks.bukkit.logic.business.extension.*
+import com.github.shynixn.petblocks.bukkit.logic.business.service.Item113R1ServiceImpl
 import org.bukkit.Bukkit
 import org.bukkit.Location
+import org.bukkit.Material
 import org.bukkit.entity.ArmorStand
 import org.bukkit.entity.LivingEntity
 import org.bukkit.entity.Player
@@ -85,10 +87,21 @@ class PetProxyImpl(override val meta: PetMeta, private val design: ArmorStand, p
         design.removeWhenFarAway = false
         design.removeWhenFarAway = false
 
-        hitBox.addPotionEffect(PotionEffect(PotionEffectType.INVISIBILITY, 9999999, 1))
+      //  hitBox.addPotionEffect(PotionEffect(PotionEffectType.INVISIBILITY, 9999999, 1))
         hitBox.setMetadata("keep", FixedMetadataValue(Bukkit.getPluginManager().getPlugin("PetBlocks"), true))
         hitBox.isCustomNameVisible = false
         hitBox.customName = "PetBlockIdentifier"
+
+        val itemService = Item113R1ServiceImpl()
+        val itemStack = itemService.createItemStack<ItemStack>(meta.skin.typeName, meta.skin.dataValue)
+
+        itemStack.setDisplayName(meta.displayName)
+        itemStack.setSkin(meta.skin.owner)
+        itemStack.setUnbreakable(meta.skin.unbreakable)
+
+        this.setHeadItemStack(itemStack)
+
+        hitBox.passenger = design
 
         val event = PetSpawnEvent(this)
         Bukkit.getPluginManager().callEvent(event)

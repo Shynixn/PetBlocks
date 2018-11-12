@@ -1,6 +1,7 @@
 package com.github.shynixn.petblocks.bukkit.logic.business.service
 
 import com.github.shynixn.petblocks.api.business.enumeration.EntityType
+import com.github.shynixn.petblocks.api.business.proxy.NMSPetProxy
 import com.github.shynixn.petblocks.api.business.proxy.PetProxy
 import com.github.shynixn.petblocks.api.business.service.ConfigurationService
 import com.github.shynixn.petblocks.api.business.service.EntityRegistrationService
@@ -53,8 +54,8 @@ class EntityServiceImpl @Inject constructor(private val configurationService: Co
         val playerProxy = proxyService.findPlayerProxyObjectFromUUID(petMeta.playerMeta.uuid).get()
         val designClazz = Class.forName("com.github.shynixn.petblocks.bukkit.logic.business.nms.VERSION.PetDesign".replace("VERSION", version.versionText))
 
-        return designClazz.getDeclaredConstructor(Player::class.java, PetMeta::class.java)
-                .newInstance(playerProxy.handle, petMeta) as PetProxy
+        return (designClazz.getDeclaredConstructor(Player::class.java, PetMeta::class.java)
+                .newInstance(playerProxy.handle, petMeta) as NMSPetProxy).proxy
     }
 
     /**
