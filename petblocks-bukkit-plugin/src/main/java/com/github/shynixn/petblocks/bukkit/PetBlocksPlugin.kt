@@ -21,6 +21,7 @@ import org.apache.commons.io.IOUtils
 import org.bstats.bukkit.Metrics
 import org.bukkit.Bukkit
 import org.bukkit.ChatColor
+import org.bukkit.entity.Player
 import org.bukkit.plugin.java.JavaPlugin
 import java.io.File
 import java.io.FileOutputStream
@@ -118,6 +119,14 @@ class PetBlocksPlugin : JavaPlugin(), PluginProxy {
                     "SQLite"
                 }
             })
+        }
+
+        for (world in Bukkit.getWorlds()) {
+            world.entities.forEach { entity ->
+                if (entity !is Player) {
+                    entity.remove()
+                }
+            }
         }
 
         startPlugin()

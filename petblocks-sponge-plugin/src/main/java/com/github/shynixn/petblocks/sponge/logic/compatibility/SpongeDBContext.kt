@@ -3,6 +3,7 @@ package com.github.shynixn.petblocks.sponge.logic.compatibility
 import com.github.shynixn.petblocks.core.logic.compatibility.DbContext
 import com.github.shynixn.petblocks.sponge.logic.compatibility.Config
 import com.google.inject.Inject
+import net.minecraft.anchor.v1_12_mcpR1.entity.ai.EntityAIFollowGolem
 import org.slf4j.Logger
 import org.spongepowered.api.Sponge
 import org.spongepowered.api.config.ConfigDir
@@ -66,6 +67,8 @@ class SpongeDBContext @Inject constructor(private val pluginContainer: PluginCon
         } else {
             initialize(MYSQL_DRIVER)
         }
+
+        EntityAIFollowGolem
     }
 
     /**

@@ -6,6 +6,7 @@ import com.github.shynixn.petblocks.sponge.logic.compatibility.PetBlockExtension
 import com.github.shynixn.petblocks.sponge.logic.compatibility.Config;
 import net.minecraft.anchor.v1_12_mcpR1.entity.EntityLiving;
 import net.minecraft.anchor.v1_12_mcpR1.entity.ai.EntityAIBase;
+import net.minecraft.anchor.v1_12_mcpR1.entity.passive.EntityRabbit;
 import net.minecraft.anchor.v1_12_mcpR1.pathfinding.Path;
 import org.spongepowered.api.entity.living.Living;
 import org.spongepowered.api.entity.living.player.Player;
@@ -58,6 +59,7 @@ public final class OwnerPathfinder extends EntityAIBase {
         this.entity = entityCreature;
         this.player = (Player) petBlock.getPlayer();
         this.petBlock = petBlock;
+        EntityRabbit.RabbitJumpHelper
     }
 
     /**

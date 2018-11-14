@@ -6,7 +6,6 @@ import com.github.shynixn.petblocks.api.persistence.entity.PetMeta
 import com.github.shynixn.petblocks.bukkit.logic.business.proxy.PetProxyImpl
 import net.minecraft.server.v1_13_R2.*
 import org.bukkit.craftbukkit.v1_13_R2.CraftWorld
-import org.bukkit.craftbukkit.v1_13_R2.entity.CraftPlayer
 import org.bukkit.entity.ArmorStand
 import org.bukkit.entity.LivingEntity
 import org.bukkit.entity.Player
@@ -106,11 +105,7 @@ class PetDesign(owner: Player, val petMeta: PetMeta) : EntityArmorStand((owner.l
         compound.setBoolean("NoBasePlate", true)
         this.a(compound)
 
-        val packetPlayOutRiding = PacketPlayOutMount(this)
-
-        location.world.players.forEach { player ->
-            (player as CraftPlayer).handle.playerConnection.sendPacket(packetPlayOutRiding)
-        }
+        hitBox.passengers.add(this)
     }
 
     /**

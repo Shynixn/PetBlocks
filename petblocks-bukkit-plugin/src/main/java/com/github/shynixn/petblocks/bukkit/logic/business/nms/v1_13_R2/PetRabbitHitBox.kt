@@ -1,12 +1,12 @@
 package com.github.shynixn.petblocks.bukkit.logic.business.nms.v1_13_R2
 
 import com.github.shynixn.petblocks.bukkit.logic.business.extension.removeFinalModifier
-import com.github.shynixn.petblocks.bukkit.logic.business.nms.v1_13_R2.pathfinder.PathfinderGoalFollowOwnerImpl
+import com.github.shynixn.petblocks.bukkit.logic.business.goals.PathfinderGoalFollowOwnerImpl
 import com.google.common.collect.Sets
 import net.minecraft.server.v1_13_R2.*
 import org.bukkit.Location
 import org.bukkit.craftbukkit.v1_13_R2.CraftWorld
-import org.bukkit.craftbukkit.v1_13_R2.entity.CraftPlayer
+import org.bukkit.entity.LivingEntity
 import org.bukkit.entity.Player
 import org.bukkit.event.entity.CreatureSpawnEvent
 
@@ -47,8 +47,6 @@ class PetRabbitHitBox(world: World) : EntityRabbit(world) {
         this.petDesign = petDesign
         this.isSilent = true
 
-        val pathfinders = arrayListOf(PathfinderGoalFollowOwnerImpl(this, 1.0, 10.0F, 2.0F, (player as CraftPlayer).handle))
-
         val bField = PathfinderGoalSelector::class.java.getDeclaredField("b")
         val cField = PathfinderGoalSelector::class.java.getDeclaredField("c")
 
@@ -60,16 +58,18 @@ class PetRabbitHitBox(world: World) : EntityRabbit(world) {
         cField.set(this.goalSelector, Sets.newLinkedHashSet<Any>())
         cField.set(this.targetSelector, Sets.newLinkedHashSet<Any>())
 
-        for (i in 0 until pathfinders.size) {
-            this.goalSelector.a(i, pathfinders[i])
-        }
-
-        this.getAttributeInstance(GenericAttributes.MOVEMENT_SPEED).value = 0.30000001192092896 * petDesign.petMeta.modifier.movementSpeed
+        this.getAttributeInstance(GenericAttributes.MOVEMENT_SPEED).value = 0.30000001192092896 * 1.0
         this.Q = petDesign.petMeta.modifier.climbingHeight.toFloat()
 
         val mcWorld = (location.world as CraftWorld).handle
         this.setPosition(location.x, location.y, location.z)
         mcWorld.addEntity(this, CreatureSpawnEvent.SpawnReason.CUSTOM)
+
+        val pathfinders = arrayListOf(PathfinderProxy( PathfinderGoalFollowOwnerImpl(player, this.getBukkitEntity() as LivingEntity)))
+
+        for (i in 0 until pathfinders.size) {
+            this.goalSelector.a(i, pathfinders[i])
+        }
     }
 
     /**

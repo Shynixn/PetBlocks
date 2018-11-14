@@ -101,8 +101,6 @@ class PetProxyImpl(override val meta: PetMeta, private val design: ArmorStand, p
 
         this.setHeadItemStack(itemStack)
 
-        hitBox.passenger = design
-
         val event = PetSpawnEvent(this)
         Bukkit.getPluginManager().callEvent(event)
     }

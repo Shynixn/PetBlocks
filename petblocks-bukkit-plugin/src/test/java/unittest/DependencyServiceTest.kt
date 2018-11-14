@@ -17,6 +17,7 @@ import org.bukkit.plugin.PluginManager
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito
+import java.lang.RuntimeException
 import java.util.logging.Logger
 
 /**
@@ -66,6 +67,8 @@ class DependencyServiceTest {
 
         // Assert
         Assertions.assertEquals(4, consoleSender.messageCounter)
+
+        throw RuntimeException()
     }
 
     /**
