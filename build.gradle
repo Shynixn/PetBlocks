@@ -1,0 +1,84 @@
+plugins {
+    id 'kotlin-multiplatform' version '1.3.0'
+}
+repositories {
+    mavenLocal()
+    mavenCentral()
+    maven {
+        url "https://jitpack.io"
+    }
+}
+group 'com.example'
+version '0.0.1'
+
+apply plugin: 'maven-publish'
+
+kotlin {
+    targets {
+        fromPreset(presets.jvm, 'petblocksBukkitApi')
+        fromPreset(presets.jvm, 'petblocksBukkitPlugin')
+        fromPreset(presets.jvm, 'petblocksCoreJava')
+    }
+    sourceSets {
+        petblocksApiMain {
+            dependencies {
+                implementation 'org.jetbrains.kotlin:kotlin-stdlib-common'
+            }
+        }
+        petblocksBukkitApiMain {
+            dependencies {
+                dependsOn petblocksApiMain
+                dependsOn petblocksCoreJavaMain
+
+                implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk8'
+                compileOnly 'org.spigotmc:spigot113R2:1.13.2-R2.0'
+            }
+        }
+        petblocksBukkitPluginMain {
+            dependencies {
+                dependsOn petblocksBukkitApiMain
+                dependsOn petblocksCoreJavaMain
+
+                implementation 'org.slf4j:slf4j-jdk14:1.7.25'
+                implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk8'
+                implementation 'com.zaxxer:HikariCP:3.2.0'
+                implementation 'com.google.inject:guice:4.1.0'
+                implementation 'org.bstats.bStats-Metrics:bstats-bukkit:1.3'
+
+                compileOnly 'com.sk89q:worldguard:6.1'
+                compileOnly 'me.minebuilders:clearlag-core:2.9.7'
+
+                compileOnly 'org.spigotmc:spigot18R1:1.8.0-R1.0'
+
+            }
+        }
+        petblocksCoreMain {
+            dependencies {
+                dependsOn petblocksApiMain
+                implementation 'org.jetbrains.kotlin:kotlin-stdlib-common'
+            }
+        }
+        petblocksCoreJavaMain {
+            dependencies {
+                dependsOn petblocksCoreMain
+                dependsOn petblocksApiMain
+
+                implementation 'com.google.inject:guice:4.1.0'
+                implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk8'
+                implementation 'org.slf4j:slf4j-api:1.7.25'
+            }
+        }
+        petblocksBukkitTest {
+            dependencies {
+                implementation 'org.jetbrains.kotlin:kotlin-test'
+                implementation 'org.jetbrains.kotlin:kotlin-test-junit'
+            }
+        }
+        petblocksCoreJavaTest {
+            dependencies {
+                implementation 'org.jetbrains.kotlin:kotlin-test'
+                implementation 'org.jetbrains.kotlin:kotlin-test-junit'
+            }
+        }
+    }
+}
