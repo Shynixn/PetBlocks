@@ -2,8 +2,9 @@ package com.github.shynixn.petblocks.bukkit.logic.business.service
 
 import com.github.shynixn.petblocks.api.business.annotation.Inject
 import com.github.shynixn.petblocks.api.business.enumeration.PluginDependency
+import com.github.shynixn.petblocks.api.business.enumeration.Version
 import com.github.shynixn.petblocks.api.business.service.DependencyService
-import com.github.shynixn.petblocks.bukkit.logic.business.nms.VersionSupport
+import com.github.shynixn.petblocks.bukkit.logic.business.extension.getServerVersion
 import org.bukkit.ChatColor
 import org.bukkit.plugin.Plugin
 import java.util.logging.Level
@@ -53,7 +54,7 @@ class DependencyServiceImpl @Inject constructor(private val plugin: Plugin) : De
     override fun isInstalled(pluginDependency: PluginDependency): Boolean {
         val plugin = this.plugin.server.pluginManager.getPlugin(pluginDependency.pluginName)
 
-        if (plugin != null && plugin.description.version != "1.0" && pluginDependency == PluginDependency.WORLDGUARD && VersionSupport.getServerVersion().isVersionSameOrGreaterThan(VersionSupport.VERSION_1_13_R1)) {
+        if (plugin != null && plugin.description.version != "1.0" && pluginDependency == PluginDependency.WORLDGUARD && getServerVersion().isVersionSameOrGreaterThan(Version.VERSION_1_13_R1)) {
             if (!printedWorldGuardError) {
                 this.plugin.logger.log(Level.WARNING, "WorldGuard dependency cannot be established in 1.13 yet.")
                 printedWorldGuardError = true

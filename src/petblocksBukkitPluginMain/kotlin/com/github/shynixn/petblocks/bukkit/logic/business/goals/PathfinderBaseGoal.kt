@@ -1,7 +1,7 @@
 package com.github.shynixn.petblocks.bukkit.logic.business.goals
 
 import com.github.shynixn.petblocks.api.business.goal.Goal
-import com.github.shynixn.petblocks.bukkit.logic.business.nms.VersionSupport
+import com.github.shynixn.petblocks.bukkit.logic.business.extension.getServerVersion
 
 /**
  * Created by Shynixn 2018.
@@ -31,7 +31,7 @@ import com.github.shynixn.petblocks.bukkit.logic.business.nms.VersionSupport
  * SOFTWARE.
  */
 abstract class PathfinderBaseGoal : Goal {
-    private val version = VersionSupport.getServerVersion()
+    private val version = getServerVersion()
 
     /**
      * Can the goal be cancelled while not being achieved yet?
@@ -61,6 +61,6 @@ abstract class PathfinderBaseGoal : Goal {
      * Finds a version compatible class.
      */
     protected fun findClazz(name : String) : Class<*>{
-        return Class.forName(name.replace("VERSION",version.versionText))
+        return Class.forName(name.replace("VERSION",version.bukkitId))
     }
 }

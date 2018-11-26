@@ -1,0 +1,371 @@
+#######################################################################
+#                          PetBlocks                                  #
+# 		            	   by Shynixn							      #
+#######################################################################
+
+# You can find the permissions at the official documentation.
+# https://shynixn.github.io/PetBlocks/build/html/gettingstarted/permissions.html#permissionlist
+
+############################
+
+# Data-collecting settings
+
+# Settings to send anonymous stats to https://bstats.org/plugin/bukkit/PetBlocks.
+# As this does not have an impact on your PetBlocks experience at all I would like you to set it on true as knowing that my
+# plugin gets used by many server helps me focusing on new updates ;)
+
+############################
+
+metrics: true
+
+############################
+
+# Config version
+
+# Change the config-version when you have read the update log and see a change of
+# the config.yml. The config.yml does not change every update and the plugin automatically
+# checks if your config-version is compatible with the installed plugin.jar.
+
+############################
+
+config-version: 1.0
+
+############################
+
+# Database settings
+
+# All pets are stored in a SQLite database per default which is basically the
+# PetBlocks.db file in the plugin folder.
+# Available types are 'sqlite' and 'mysql'.
+# Use the same mysql database for 2 or more server in order to allow cross server pets.
+
+############################
+
+sql:
+  type: 'sqlite'
+  host: localhost
+  port: 3306
+  database: ''
+  usessl: false
+  username: ''
+  password: ''
+
+############################
+
+# Command settings
+
+# There are commands available in PetBlocks you can customize by yourself.
+# This means you can disable the command entirely, change the name, description
+# and even permission.
+
+############################
+
+commands:
+  petblock:
+    enabled: true
+    command: petblock
+    useage: /<command>
+    description: Opens the pet GUI.
+    permission: petblocks.command.use
+    permission-message: You don't have permission
+  petblocks:
+    enabled: true
+    command: petblocks
+    useage: /<command>
+    description: Command to configure pets.
+    permission: petblocks.command.admin
+    permission-message: You don't have permission
+
+############################
+
+# Messages settings
+
+# Change the messages of the PetBlocks plugin.
+
+############################
+
+messages:
+  prefix: '&2[&aPetBlocks&2]&a '
+  default-petname: ":player's pet"
+  gui-title: 'PetBlocks'
+  naming-suggest-prefix: ''
+  naming-suggest-clickable: '&e<<Click here>> '
+  naming-suggest-suffix: '&ato rename your pet.'
+  naming-suggest-hover: 'Click me to rename your pet.'
+  naming-success: '&aYou changed the name of your pet.'
+  naming-error: '&cYou cannot name your pet like that.'
+  skullnaming-suggest-prefix: ''
+  skullnaming-suggest-clickable: '&e<<Click here>> '
+  skullnaming-suggest-suffix: '&ato change the skin of your pet.'
+  skullnaming-suggest-hover: 'Click me to change the skin of your pet.'
+  skullnaming-success: '&aYou changed the skin of your pet.'
+  skullnaming-error: '&eThis skin is invalid.'
+  called-success: '&aYou have called your pet.'
+  toggle-spawn: '&aYour pet has spawned.'
+  toggle-despawn: '&aYour pet has despawned.'
+  perms-ico-yes: '&aYes'
+  perms-ico-no: '&cNo'
+  no-perms: '&cYou do not have permissions.'
+
+############################
+
+# Default Pet settings
+
+# The pets of this plugin are very, very customize able.
+# Please take a look into the official documentation mentioned at the top of this file
+# in order to configure your pet correctly.
+
+# These are the settings players are starting with when they get their first pet. However,
+# you can add all of these settings to templates in order to change them per skin or particle
+# or whatever.
+
+# You can find a list of all available goals on the documentation.
+
+############################
+
+global-configuration:
+  respawn-delay: 4
+  teleport-delay: 0
+  apply-pet-on-spawn: false
+  overwrite-previous-pet: false
+  sounds-other-players: true
+  particles-other-players: true
+  max-petname-length: 20
+  petname-blacklist:
+  - 'petty'
+  - 'shitty'
+
+default-pet:
+  enabled: false
+  name: "<player>'s Pet"
+  health: 20.0
+  invincible: true
+  hitbox-entitytype: RABBIT
+  sound-enabled: true
+  particle-enabled: true
+  skin:
+    typename: 2
+    datavalue: 0
+    unbreakable: false
+    owner: ''
+  modifier:
+    climbing-height: 0.0
+    movement-speed: 0.0
+  goals:
+    1:
+      id: 'follow-owner'
+      max-distance: 50
+    2:
+      id: 'walking-particle'
+      name: 'largesmoke'
+      speed: 0.01
+      amount: 2
+      offx: 0.5
+      offy: 0.5
+      offz: 0.5
+    3:
+      id: 'ambient-sound'
+      name: 'CHICKEN_IDLE'
+      volume: 1.0
+      pitch: 1.0
+    4:
+      id: 'walking-sound'
+      name: 'CHICKEN_WALK'
+      volume: 1.0
+      pitch: 1.0
+
+############################
+
+# World-region settings
+
+# Settings to manage spawning of petblocks in certain worlds or worldGuard-regions
+# DO NOT PUT 'all' into both included and excluded!
+
+# world-excluded: Add worlds where the petblocks should not be able to spawn
+# (When 'all' is added to excluded all worlds are disabled for spawning except the added worlds to included)
+# world-included: Add worlds where the petblocks should be able to spawn
+# (When 'all' is added to included all worlds are enabled for spawning except the added worlds to excluded)
+
+# region-excluded: Add regions where the petblocks should not be able to spawn
+# (When 'all' is added to excluded all regions are disabled for spawning except the added regions to included)
+# region-included: Add regions where the petblocks should be able to spawn
+# (When 'all' is added to included all regions are enabled for spawning except the added regions to excluded)
+
+############################
+
+world:
+  excluded:
+  - ''
+  included:
+  - 'all'
+region:
+  excluded:
+  - ''
+  included:
+  - 'all'
+
+  ############################
+
+  # GUI-settings
+
+  # Settings for the petblock-gui
+
+  # settings-title: GUI title
+  # settings-copy-skin: Should the skin of petblock-engine be applied when being selected?
+  # settings-use-only-disable-pet-item: Removes the enable block from the GUI and uses the pet-item instead to spawn the pet.
+  # settings-my-pet-position: Position in the GUI to show the currently selected pet
+  # settings-my-pet-default-appearance:: Default skin of the petblock if the settings-copy-skin is disabled
+
+  # gui enabled: Should the the item be shown in the GUI?
+  # gui position: Position of the item in of the GUI
+  # gui page: Page of the item in of the GUI (PAGES: MAIN, WARDROBE)
+  # gui id: item id in the GUI
+  # gui damage: item damage in the the GUI
+  # gui skin: item skin in the GUI (Name of the player [Shynixn] or the skin URL [textures.minecraft.net/texture/797884d451dc7b7729de2076cd6c4912865ade70391d1ccec3e95fb39f8c5e1])
+  # gui name: item name in the GUI
+  # gui unbreakable: item unbreakable tag in the GUI
+  # gui lore: item lore in the GUI (Multiple lines support)
+
+############################
+
+static-gui:
+  empty-slot:
+    icon:
+      id: 160
+      damage: 15
+      skin: 'none'
+      name: 'none'
+      unbreakable: false
+      lore:
+      - 'none'
+
+gui:
+  main:
+    player-pet:
+      position: 4
+      visible: true
+      icon:
+        script: 'executing action copy-pet-skin'
+    enable-pet:
+      position: 22
+      visible: true
+      script: 'executing action respawn-pet'
+      icon:
+        id: 397
+        damage: 3
+        skin: 'textures.minecraft.net/texture/ad5fcd31287d63e7826ea760a7ed154f685dfdc7f3465732a96e619b2e1347'
+        name: '&c&lPetblock disabled'
+        unbreakable: false
+        lore:
+        - '&7Click to enable the pet.'
+    disable-pet:
+      position: 22
+      visible: true
+      icon:
+        id: 397
+        damage: 3
+        skin: 'textures.minecraft.net/texture/f45c9acea8da71b4f252cd4deb5943f49e7dbc0764274b25a6a6f5875baea3'
+        name: '&a&lPetblock enabled'
+        unbreakable: false
+        lore:
+        - '&7Click to disable the pet.'
+    wardrobe:
+      position: 18
+      visible: true
+      icon:
+        id: 397
+        damage: 3
+        skin: 'textures.minecraft.net/texture/55507d6517eff952dd38fa8bc551dd6d6a7a5e4ea134519b44650ac1ffa59c3'
+        name: '&6&lWardrobe'
+        unbreakable: false
+        lore:
+        - '&7Change the appearance of your pet.'
+    sounds-enabled-pet:
+      position: 31
+      visible: true
+      icon:
+        id: 397
+        damage: 3
+        skin: 'textures.minecraft.net/texture/cb9c706c85572f05efc4170ada791154de2b5378e6252aadc8d43b19c5564'
+        name: '&a&lPet unmuted'
+        unbreakable: false
+        lore:
+        - '&7Click to disable the sounds of your pet.'
+    sounds-disabled-pet:
+      position: 31
+      visible: true
+      icon:
+        id: 397
+        damage: 3
+        skin: 'textures.minecraft.net/texture/ae7215c45d97d7bc55d9dfa58fcc73f4af74e4b3f5a15b4419127424c4268e'
+        name: '&c&lPet muted'
+        unbreakable: false
+        lore:
+        - '&7Click to enable the sounds of your pet.'
+    call-pet:
+      position: 38
+      visible: true
+      icon:
+        id: 420
+        damage: 0
+        skin: 'none'
+        name: '&2&lCall'
+        unbreakable: false
+        lore:
+        - '&7Teleports your pet to you.'
+    particle-pet:
+      position: 35
+      visible: true
+      icon:
+        id: 331
+        damage: 0
+        skin: 'none'
+        name: '&6&lParticles'
+        unbreakable: false
+        lore:
+        - '&7Customize the effects of your pet.'
+    cannon-pet:
+      position: 11
+      visible: true
+      icon:
+        id: 397
+        damage: 3
+        skin: 'textures.minecraft.net/texture/996754d330435345aae3a9f063cfca42afb28b7c5c4bb9f294ed2527d961'
+        name: '&2&lLaunch'
+        unbreakable: false
+        lore:
+        - '&7Shoot your pet like a cannon.'
+    hat-pet:
+      position: 15
+      visible: true
+      icon:
+        id: 397
+        damage: 3
+        skin: 'textures.minecraft.net/texture/9b5f247a7f5b37bbfa488ab4efaddcbad2e526e94fc542b1fe2f7cfeb6e'
+        name: '&2&lHat'
+        unbreakable: false
+        lore:
+        - '&7Wear your pet like a hat.'
+    riding-pet:
+      position: 42
+      visible: true
+      icon:
+        id: 329
+        damage: 0
+        skin: 'none'
+        name: '&2&lRide'
+        unbreakable: false
+        lore:
+        - '&7Start to ride your pet.'
+    back:
+      position: 45
+      visible: true
+      icon:
+        id: 166
+        damage: 0
+        skin: 'none'
+        name: '&cBack'
+        unbreakable: false
+        lore:
+        - '&7Closes the current window.'
+# Append new items above this line <---

@@ -7,14 +7,15 @@ import com.github.shynixn.petblocks.api.business.commandexecutor.EditPetCommandE
 import com.github.shynixn.petblocks.api.business.commandexecutor.PlayerPetActionCommandExecutor
 import com.github.shynixn.petblocks.api.business.commandexecutor.ReloadCommandExecutor
 import com.github.shynixn.petblocks.api.business.enumeration.PluginDependency
+import com.github.shynixn.petblocks.api.business.enumeration.Version
 import com.github.shynixn.petblocks.api.business.proxy.PluginProxy
 import com.github.shynixn.petblocks.api.business.service.CommandService
 import com.github.shynixn.petblocks.api.business.service.DependencyService
 import com.github.shynixn.petblocks.api.business.service.EntityRegistrationService
 import com.github.shynixn.petblocks.api.business.service.UpdateCheckService
+import com.github.shynixn.petblocks.bukkit.logic.business.extension.getServerVersion
 import com.github.shynixn.petblocks.bukkit.logic.business.extension.yamlMap
 import com.github.shynixn.petblocks.bukkit.logic.business.listener.*
-import com.github.shynixn.petblocks.bukkit.logic.business.nms.VersionSupport
 import com.google.inject.Guice
 import com.google.inject.Injector
 import org.apache.commons.io.IOUtils
@@ -58,7 +59,6 @@ class PetBlocksPlugin : JavaPlugin(), PluginProxy {
     companion object {
         /** Final Prefix of PetBlocks in the console */
         val PREFIX_CONSOLE: String = ChatColor.AQUA.toString() + "[PetBlocks] "
-        private const val PLUGIN_NAME = "PetBlocks"
     }
 
     private var injector: Injector? = null
@@ -71,7 +71,24 @@ class PetBlocksPlugin : JavaPlugin(), PluginProxy {
         this.saveDefaultConfig()
         this.injector = Guice.createInjector(PetBlocksDependencyInjectionBinder(this))
 
-        if (!VersionSupport.isServerVersionSupported(PLUGIN_NAME, PREFIX_CONSOLE)) {
+        if (getServerVersion().isCompatible(
+                Version.VERSION_1_8_R1,
+                Version.VERSION_1_8_R2,
+                Version.VERSION_1_8_R3,
+                Version.VERSION_1_9_R1,
+                Version.VERSION_1_9_R2,
+                Version.VERSION_1_10_R1,
+                Version.VERSION_1_11_R1,
+                Version.VERSION_1_12_R1,
+                Version.VERSION_1_13_R1,
+                Version.VERSION_1_13_R2)
+        ) {
+            Bukkit.getServer().consoleSender.sendMessage(PREFIX_CONSOLE + ChatColor.RED + "================================================")
+            Bukkit.getServer().consoleSender.sendMessage(PREFIX_CONSOLE + ChatColor.RED + "PetBlocks does not support your server version")
+            Bukkit.getServer()
+                .consoleSender.sendMessage(PREFIX_CONSOLE + ChatColor.RED + "Install v" + Version.VERSION_1_8_R1.id + " - v" + Version.VERSION_1_13_R2.id)
+            Bukkit.getServer().consoleSender.sendMessage(PREFIX_CONSOLE + ChatColor.RED + "Plugin gets now disabled!")
+            Bukkit.getServer().consoleSender.sendMessage(PREFIX_CONSOLE + ChatColor.RED + "================================================")
             Bukkit.getPluginManager().disablePlugin(this)
             return
         }
@@ -92,7 +109,7 @@ class PetBlocksPlugin : JavaPlugin(), PluginProxy {
         Bukkit.getPluginManager().registerEvents(resolve(InventoryListener::class.java), this)
         Bukkit.getPluginManager().registerEvents(resolve(PetListener::class.java), this)
 
-        if (VersionSupport.getServerVersion().isVersionSameOrGreaterThan(VersionSupport.VERSION_1_9_R2)) {
+        if (getServerVersion().isVersionSameOrGreaterThan(Version.VERSION_1_9_R2)) {
             Bukkit.getPluginManager().registerEvents(resolve(CarryPet19R1Listener::class.java), this)
         }
 
@@ -204,7 +221,7 @@ class PetBlocksPlugin : JavaPlugin(), PluginProxy {
             val method = PetBlocksApi::class.java.getDeclaredMethod("initializePetBlocks", PluginProxy::class.java)
             method.isAccessible = true
             method.invoke(PetBlocksApi, this)
-            logger.log(Level.INFO, "Using NMS Connector " + VersionSupport.getServerVersion().versionText + ".")
+            logger.log(Level.INFO, "Using NMS Connector " + getServerVersion().bukkitId + ".")
         } catch (e: Exception) {
             logger.log(Level.WARNING, "Failed to enable PetBlocks.", e)
         }

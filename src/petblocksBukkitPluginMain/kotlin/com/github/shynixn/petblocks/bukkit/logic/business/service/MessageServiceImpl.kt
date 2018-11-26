@@ -5,8 +5,8 @@ import com.github.shynixn.petblocks.api.business.enumeration.ChatColor
 import com.github.shynixn.petblocks.api.business.enumeration.Version
 import com.github.shynixn.petblocks.api.business.service.MessageService
 import com.github.shynixn.petblocks.api.persistence.entity.ChatMessage
+import com.github.shynixn.petblocks.bukkit.logic.business.extension.getServerVersion
 import com.github.shynixn.petblocks.bukkit.logic.business.extension.sendPacket
-import com.github.shynixn.petblocks.bukkit.logic.business.nms.VersionSupport
 import org.bukkit.Bukkit
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
@@ -101,7 +101,7 @@ class MessageServiceImpl @Inject constructor(private val version: Version) : Mes
 
         finalMessage.append("]}")
 
-        val clazz: Class<*> = if (VersionSupport.getServerVersion() == VersionSupport.VERSION_1_8_R1) {
+        val clazz: Class<*> = if (getServerVersion() == Version.VERSION_1_8_R1) {
             findClazz("net.minecraft.server.VERSION.ChatSerializer")
         } else {
             findClazz("net.minecraft.server.VERSION.IChatBaseComponent\$ChatSerializer")
@@ -115,7 +115,7 @@ class MessageServiceImpl @Inject constructor(private val version: Version) : Mes
         val chatComponent = method.invoke(null, finalMessage.toString())
         val packet: Any
 
-        packet = if (VersionSupport.getServerVersion().isVersionSameOrGreaterThan(VersionSupport.VERSION_1_12_R1)) {
+        packet = if (getServerVersion().isVersionSameOrGreaterThan(Version.VERSION_1_12_R1)) {
             val chatEnumMessage = findClazz("net.minecraft.server.VERSION.ChatMessageType")
             packetClazz.getDeclaredConstructor(chatBaseComponentClazz, chatEnumMessage).newInstance(chatComponent, chatEnumMessage.enumConstants[0])
         } else {

@@ -92,6 +92,9 @@ task shadowJarBukkitPlugin(type: ShadowJar) {
     classifier = null
     version = null
 
+    // Change the output folder of the plugin.
+    destinationDir = file('D:/Temp/plugins')
+
     relocate 'kotlin', 'com.github.shynixn.petblocks.lib.kotlin'
     relocate 'org.intellij', 'com.github.shynixn.petblocks.lib.org.intellij'
     relocate 'org.jetbrains', 'com.github.shynixn.petblocks.lib.org.jetbrains'

@@ -6,11 +6,11 @@ import com.github.shynixn.petblocks.api.business.enumeration.ParticleType
 import com.github.shynixn.petblocks.api.business.enumeration.Permission
 import com.github.shynixn.petblocks.api.business.enumeration.Version
 import com.github.shynixn.petblocks.api.persistence.entity.Position
-import com.github.shynixn.petblocks.bukkit.logic.business.nms.VersionSupport
 import com.github.shynixn.petblocks.core.logic.business.extension.translateChatColors
 import com.github.shynixn.petblocks.core.logic.persistence.entity.PositionEntity
 import com.mojang.authlib.GameProfile
 import com.mojang.authlib.properties.Property
+import org.bukkit.Bukkit
 import org.bukkit.Location
 import org.bukkit.configuration.MemorySection
 import org.bukkit.configuration.file.FileConfiguration
@@ -57,9 +57,9 @@ import java.util.*
  * Sets the item in the players arm.
  */
 fun PlayerInventory.setItemStackInHand(itemStack: ItemStack?, offHand: Boolean = false) {
-    val version = VersionSupport.getServerVersion()
+    val version = getServerVersion()
 
-    if (version.isVersionSameOrGreaterThan(VersionSupport.VERSION_1_9_R1)) {
+    if (version.isVersionSameOrGreaterThan(Version.VERSION_1_9_R1)) {
         val inventoryClazz = Class.forName("org.bukkit.inventory.PlayerInventory")
 
         if (offHand) {
@@ -69,7 +69,7 @@ fun PlayerInventory.setItemStackInHand(itemStack: ItemStack?, offHand: Boolean =
         }
     } else {
         Class.forName("org.bukkit.entity.HumanEntity").getDeclaredMethod("setItemInHand", ItemStack::class.java)
-                .invoke(this.holder, itemStack)
+            .invoke(this.holder, itemStack)
     }
 }
 
@@ -99,19 +99,19 @@ private fun deserialize(section: MutableMap<String, Any?>) {
  * Teleports the player via packets to keep his state in the world.
  */
 fun Player.teleportUnsafe(location: Location) {
-    val version = VersionSupport.getServerVersion()
-    val craftPlayer = Class.forName("org.bukkit.craftbukkit.VERSION.entity.CraftPlayer".replace("VERSION", version.versionText)).cast(player)
+    val version = getServerVersion()
+    val craftPlayer = Class.forName("org.bukkit.craftbukkit.VERSION.entity.CraftPlayer".replace("VERSION", version.bukkitId)).cast(player)
     val methodHandle = craftPlayer.javaClass.getDeclaredMethod("getHandle")
     val entityPlayer = methodHandle.invoke(craftPlayer)
-    val entityClazz = Class.forName("net.minecraft.server.VERSION.Entity".replace("VERSION", version.versionText))
+    val entityClazz = Class.forName("net.minecraft.server.VERSION.Entity".replace("VERSION", version.bukkitId))
 
     val setPositionMethod = entityClazz
-            .getDeclaredMethod("setPositionRotation", Double::class.java, Double::class.java, Double::class.java, Float::class.java, Float::class.java)
+        .getDeclaredMethod("setPositionRotation", Double::class.java, Double::class.java, Double::class.java, Float::class.java, Float::class.java)
 
     setPositionMethod.invoke(entityPlayer, location.x, location.y, location.z, location.yaw, location.pitch)
 
-    val packetTeleport = Class.forName("net.minecraft.server.VERSION.PacketPlayOutEntityTeleport".replace("VERSION", version.versionText))
-            .getDeclaredConstructor(entityClazz).newInstance(entityPlayer)
+    val packetTeleport = Class.forName("net.minecraft.server.VERSION.PacketPlayOutEntityTeleport".replace("VERSION", version.bukkitId))
+        .getDeclaredConstructor(entityClazz).newInstance(entityPlayer)
 
     location.world.players.forEach { worldPlayer ->
         worldPlayer.sendPacket(packetTeleport)
@@ -145,9 +145,9 @@ fun Location.toPosition(): Position {
  * Gets the item in the players arm.
  */
 fun PlayerInventory.getItemStackInHand(offHand: Boolean = false): Optional<ItemStack> {
-    val version = VersionSupport.getServerVersion()
+    val version = getServerVersion()
 
-    return if (version.isVersionSameOrGreaterThan(VersionSupport.VERSION_1_9_R1)) {
+    return if (version.isVersionSameOrGreaterThan(Version.VERSION_1_9_R1)) {
         val inventoryClazz = Class.forName("org.bukkit.inventory.PlayerInventory")
 
         if (offHand) {
@@ -156,8 +156,10 @@ fun PlayerInventory.getItemStackInHand(offHand: Boolean = false): Optional<ItemS
             Optional.ofNullable(inventoryClazz.getDeclaredMethod("getItemInMainHand").invoke(this)) as Optional<ItemStack>
         }
     } else {
-        Optional.ofNullable(Class.forName("org.bukkit.entity.HumanEntity").getDeclaredMethod("getItemInHand")
-                .invoke(this.holder)) as Optional<ItemStack>
+        Optional.ofNullable(
+            Class.forName("org.bukkit.entity.HumanEntity").getDeclaredMethod("getItemInHand")
+                .invoke(this.holder)
+        ) as Optional<ItemStack>
     }
 }
 
@@ -195,12 +197,12 @@ fun Any.yamlMap(deep: Boolean = false): Map<String, Any> {
  */
 @Throws(ClassNotFoundException::class, IllegalAccessException::class, NoSuchMethodException::class, InvocationTargetException::class, NoSuchFieldException::class)
 fun Player.sendPacket(packet: Any) {
-    val version = VersionSupport.getServerVersion()
-    val craftPlayer = Class.forName("org.bukkit.craftbukkit.VERSION.entity.CraftPlayer".replace("VERSION", version.versionText)).cast(player)
+    val version = getServerVersion()
+    val craftPlayer = Class.forName("org.bukkit.craftbukkit.VERSION.entity.CraftPlayer".replace("VERSION", version.bukkitId)).cast(player)
     val methodHandle = craftPlayer.javaClass.getDeclaredMethod("getHandle")
     val entityPlayer = methodHandle.invoke(craftPlayer)
 
-    val field = Class.forName("net.minecraft.server.VERSION.EntityPlayer".replace("VERSION", version.versionText)).getDeclaredField("playerConnection")
+    val field = Class.forName("net.minecraft.server.VERSION.EntityPlayer".replace("VERSION", version.bukkitId)).getDeclaredField("playerConnection")
     field.isAccessible = true
     val connection = field.get(entityPlayer)
 
@@ -222,11 +224,12 @@ fun ItemStack.setUnbreakable(unbreakable: Boolean): ItemStack {
  * Sets nbt tags to the itemstack.
  */
 fun ItemStack.setNBTTags(tags: Map<String, Any>) {
-    val version = VersionSupport.getServerVersion()
-    val nmsCopyMethod = Class.forName("org.bukkit.craftbukkit.VERSION.inventory.CraftItemStack".replace("VERSION", version.versionText)).getDeclaredMethod("asNMSCopy", ItemStack::class.java)
+    val version = getServerVersion()
+    val nmsCopyMethod =
+        Class.forName("org.bukkit.craftbukkit.VERSION.inventory.CraftItemStack".replace("VERSION", version.bukkitId)).getDeclaredMethod("asNMSCopy", ItemStack::class.java)
 
-    val nbtTagClass = Class.forName("net.minecraft.server.VERSION.NBTTagCompound".replace("VERSION", version.versionText))
-    val nmsItemStackClass = Class.forName("net.minecraft.server.VERSION.ItemStack".replace("VERSION", version.versionText))
+    val nbtTagClass = Class.forName("net.minecraft.server.VERSION.NBTTagCompound".replace("VERSION", version.bukkitId))
+    val nmsItemStackClass = Class.forName("net.minecraft.server.VERSION.ItemStack".replace("VERSION", version.bukkitId))
     val getNBTTag = nmsItemStackClass.getDeclaredMethod("getTag")
     val setNBTTag = nmsItemStackClass.getDeclaredMethod("setTag", nbtTagClass)
     val nmsItemStack = nmsCopyMethod.invoke(null, this)
@@ -247,9 +250,11 @@ fun ItemStack.setNBTTags(tags: Map<String, Any>) {
             is String -> {
                 nbtSetString.invoke(nbtTag, key, value)
             }
+
             is Int -> {
                 nbtSetInteger.invoke(nbtTag, key, value)
             }
+
             is Boolean -> {
                 nbtSetBoolean.invoke(nbtTag, key, value)
             }
@@ -307,11 +312,11 @@ fun ItemStack.setLore(lore: List<String>): ItemStack {
  * Tries to return the [ParticleType] from the given [name].
  */
 fun String.toParticleType(): ParticleType {
-    val version = VersionSupport.getServerVersion()
+    val version = getServerVersion()
 
     ParticleType.values().forEach { p ->
         if (p.gameId_18.equals(this, true) || p.gameId_113.equals(this, true) || p.name.equals(this, true)) {
-            if (version.isVersionSameOrGreaterThan(VersionSupport.fromVersion(p.sinceVersion))) {
+            if (version.isVersionSameOrGreaterThan(p.sinceVersion)) {
                 return p
             }
         }
@@ -334,7 +339,7 @@ internal fun ItemStack.setSkin(skin: String) {
 
         val newSkinProfile = GameProfile(UUID.randomUUID(), null)
 
-        val cls = Class.forName("org.bukkit.craftbukkit.VERSION.inventory.CraftMetaSkull".replace("VERSION", VersionSupport.getServerVersion().versionText))
+        val cls = Class.forName("org.bukkit.craftbukkit.VERSION.inventory.CraftMetaSkull".replace("VERSION", getServerVersion().bukkitId))
         val real = cls.cast(currentMeta)
         val field = real.javaClass.getDeclaredField("profile")
 
@@ -349,13 +354,6 @@ internal fun ItemStack.setSkin(skin: String) {
 }
 
 /**
- * Finds the corresponding version.
- */
-fun VersionSupport.toVersion(): Version {
-    return Version.values().find { v -> this.simpleVersionText == v.id }!!
-}
-
-/**
  * Gets the skin of an itemstack.
  */
 internal fun ItemStack.getSkin(): Optional<String> {
@@ -364,7 +362,7 @@ internal fun ItemStack.getSkin(): Optional<String> {
     if (meta.owner != null) {
         return Optional.of(meta.owner)
     } else {
-        val cls = Class.forName("org.bukkit.craftbukkit.VERSION.inventory.CraftMetaSkull".replace("VERSION", VersionSupport.getServerVersion().versionText))
+        val cls = Class.forName("org.bukkit.craftbukkit.VERSION.inventory.CraftMetaSkull".replace("VERSION", getServerVersion().bukkitId))
         val real = cls.cast(meta)
         val field = real.javaClass.getDeclaredField("profile")
         field.isAccessible = true
@@ -390,6 +388,25 @@ internal fun ItemStack.getSkin(): Optional<String> {
     }
 
     return Optional.empty()
+}
+
+/**
+ * Gets the server version the plugin is running on.
+ */
+fun Any.getServerVersion(): Version {
+    if (Bukkit.getServer() == null || Bukkit.getServer().javaClass.getPackage() == null) {
+        return Version.VERSION_UNKNOWN
+    }
+
+    val version = Bukkit.getServer().javaClass.getPackage().name.replace(".", ",").split(",".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()[3]
+
+    for (versionSupport in Version.values()) {
+        if (versionSupport.bukkitId == version) {
+            return versionSupport
+        }
+    }
+
+    return Version.VERSION_UNKNOWN
 }
 
 /**

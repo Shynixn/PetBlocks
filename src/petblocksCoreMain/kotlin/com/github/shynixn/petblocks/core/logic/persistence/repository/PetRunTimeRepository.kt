@@ -1,5 +1,6 @@
 package com.github.shynixn.petblocks.core.logic.persistence.repository
 
+import com.github.shynixn.petblocks.api.business.annotation.Inject
 import com.github.shynixn.petblocks.api.business.proxy.PetProxy
 import com.github.shynixn.petblocks.api.persistence.repository.PetRepository
 
@@ -63,7 +64,7 @@ class PetRunTimeRepository : PetRepository {
      */
     override fun getFromPlayerUUID(uuid: String): PetProxy {
         return pets.find { p -> p.meta.playerMeta.uuid == uuid }
-                ?: throw IllegalArgumentException("Pet cannot be located of uuid " + uuid.toString() + ".")
+            ?: throw IllegalArgumentException("Pet cannot be located of uuid " + uuid.toString() + ".")
     }
 
     /**

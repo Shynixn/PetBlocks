@@ -2,6 +2,7 @@ package com.github.shynixn.petblocks.bukkit.logic.business.service
 
 import com.github.shynixn.petblocks.api.business.annotation.Inject
 import com.github.shynixn.petblocks.api.business.enumeration.EntityType
+import com.github.shynixn.petblocks.api.business.enumeration.Version
 import com.github.shynixn.petblocks.api.business.proxy.NMSPetProxy
 import com.github.shynixn.petblocks.api.business.proxy.PetProxy
 import com.github.shynixn.petblocks.api.business.service.ConfigurationService
@@ -9,7 +10,6 @@ import com.github.shynixn.petblocks.api.business.service.EntityRegistrationServi
 import com.github.shynixn.petblocks.api.business.service.EntityService
 import com.github.shynixn.petblocks.api.business.service.ProxyService
 import com.github.shynixn.petblocks.api.persistence.entity.PetMeta
-import com.github.shynixn.petblocks.bukkit.logic.business.nms.VersionSupport
 import org.bukkit.ChatColor
 import org.bukkit.entity.Entity
 import org.bukkit.entity.Player
@@ -41,8 +41,12 @@ import org.bukkit.entity.Player
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class EntityServiceImpl @Inject constructor(private val configurationService: ConfigurationService, private val proxyService: ProxyService, private val entityRegistrationService: EntityRegistrationService) : EntityService {
-    private val version = VersionSupport.getServerVersion()
+class EntityServiceImpl @Inject constructor(
+    private val configurationService: ConfigurationService,
+    private val proxyService: ProxyService,
+    private val entityRegistrationService: EntityRegistrationService,
+    private val version: Version
+) : EntityService {
     private var registered = false
 
     /**
@@ -52,10 +56,10 @@ class EntityServiceImpl @Inject constructor(private val configurationService: Co
         this.registerEntitiesOnServer()
 
         val playerProxy = proxyService.findPlayerProxyObjectFromUUID(petMeta.playerMeta.uuid)
-        val designClazz = Class.forName("com.github.shynixn.petblocks.bukkit.logic.business.nms.VERSION.PetDesign".replace("VERSION", version.versionText))
+        val designClazz = Class.forName("com.github.shynixn.petblocks.bukkit.logic.business.nms.VERSION.PetDesign".replace("VERSION", version.bukkitId))
 
         return (designClazz.getDeclaredConstructor(Player::class.java, PetMeta::class.java)
-                .newInstance(playerProxy!!.handle, petMeta) as NMSPetProxy).proxy
+            .newInstance(playerProxy!!.handle, petMeta) as NMSPetProxy).proxy
     }
 
     /**
@@ -67,7 +71,7 @@ class EntityServiceImpl @Inject constructor(private val configurationService: Co
             return true
         }
 
-        val rabbitClazz = Class.forName("com.github.shynixn.petblocks.bukkit.logic.business.nms.VERSION.PetRabbitHitBox".replace("VERSION", version.versionText))
+        val rabbitClazz = Class.forName("com.github.shynixn.petblocks.bukkit.logic.business.nms.VERSION.PetRabbitHitBox".replace("VERSION", version.bukkitId))
         entityRegistrationService.register(rabbitClazz, EntityType.RABBIT)
 
         registered = true

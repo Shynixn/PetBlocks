@@ -46,17 +46,6 @@ fun chatMessage(f: ChatMessage.() -> Unit): ChatMessage {
 }
 
 /**
- * Checks if this version is lower than the given version by parameter.
- *
- * @param version version
- * @return isLower
- */
-fun Version.isVersionLowerThan(version: Version): Boolean {
-    val result = this.numericId.compareTo(version.numericId)
-    return result == -1
-}
-
-/**
  * Gets the value of the map.
  */
 inline fun <reified V> Map<String, Any?>.getNullableItem(key: String): V {

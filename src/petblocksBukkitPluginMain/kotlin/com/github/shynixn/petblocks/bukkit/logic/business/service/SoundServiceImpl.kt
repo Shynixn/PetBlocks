@@ -3,10 +3,10 @@
 package com.github.shynixn.petblocks.bukkit.logic.business.service
 
 import com.github.shynixn.petblocks.api.business.annotation.Inject
+import com.github.shynixn.petblocks.api.business.enumeration.Version
 import com.github.shynixn.petblocks.api.business.service.ConfigurationService
 import com.github.shynixn.petblocks.api.business.service.SoundService
 import com.github.shynixn.petblocks.api.persistence.entity.Sound
-import com.github.shynixn.petblocks.bukkit.logic.business.nms.VersionSupport
 import org.bukkit.Location
 import org.bukkit.entity.Player
 import org.bukkit.plugin.Plugin
@@ -39,7 +39,7 @@ import java.util.logging.Level
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class SoundServiceImpl @Inject constructor(private val plugin: Plugin, private val configurationService: ConfigurationService) : SoundService {
+class SoundServiceImpl @Inject constructor(private val plugin: Plugin, private val configurationService: ConfigurationService, private val version : Version) : SoundService {
     /**
      * Plays the given [sound] at the given [location] for the given [player] or
      * all players in the world if the config option is enabled.
@@ -83,9 +83,7 @@ class SoundServiceImpl @Inject constructor(private val plugin: Plugin, private v
     }
 
     private fun convertName(name: String): String {
-        val version = VersionSupport.getServerVersion()
-
-        if (version.isVersionSameOrGreaterThan(VersionSupport.VERSION_1_13_R1)) {
+        if (version.isVersionSameOrGreaterThan(Version.VERSION_1_13_R1)) {
             when (name) {
                 "MAGMACUBE_WALK" -> {
                     return "ENTITY_MAGMA_CUBE_JUMP"
@@ -104,7 +102,7 @@ class SoundServiceImpl @Inject constructor(private val plugin: Plugin, private v
                 }
             }
         }
-        if (version.isVersionSameOrGreaterThan(VersionSupport.VERSION_1_9_R1)) {
+        if (version.isVersionSameOrGreaterThan(Version.VERSION_1_9_R1)) {
             when (name) {
                 "ENDERMAN_IDLE" -> {
                     return "ENTITY_ENDERMEN_AMBIENT"
@@ -154,9 +152,9 @@ class SoundServiceImpl @Inject constructor(private val plugin: Plugin, private v
                 }
                 else -> {
                     if (name.contains("WALK")) {
-                        return "ENTITY_" + name.toUpperCase().split("_".toRegex()).dropLastWhile({ it.isEmpty() }).toTypedArray()[0] + "_STEP"
+                        return "ENTITY_" + name.toUpperCase().split("_".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()[0] + "_STEP"
                     } else if (name.contains("IDLE")) {
-                        return "ENTITY_" + name.toUpperCase().split("_".toRegex()).dropLastWhile({ it.isEmpty() }).toTypedArray()[0] + "_AMBIENT"
+                        return "ENTITY_" + name.toUpperCase().split("_".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()[0] + "_AMBIENT"
                     }
                 }
             }

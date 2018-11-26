@@ -3,11 +3,12 @@
 package com.github.shynixn.petblocks.bukkit.logic.business.proxy
 
 import com.github.shynixn.petblocks.api.business.enumeration.Permission
+import com.github.shynixn.petblocks.api.business.enumeration.Version
 import com.github.shynixn.petblocks.api.business.proxy.PlayerProxy
 import com.github.shynixn.petblocks.api.persistence.entity.Position
+import com.github.shynixn.petblocks.bukkit.logic.business.extension.getServerVersion
 import com.github.shynixn.petblocks.bukkit.logic.business.extension.hasPermission
 import com.github.shynixn.petblocks.bukkit.logic.business.extension.toPosition
-import com.github.shynixn.petblocks.bukkit.logic.business.nms.VersionSupport
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 import org.bukkit.util.Vector
@@ -40,7 +41,7 @@ import org.bukkit.util.Vector
  * SOFTWARE.
  */
 class PlayerProxyImpl(private val player: Player) : PlayerProxy {
-    private val version = VersionSupport.getServerVersion()
+    private val version = getServerVersion()
 
     /**
      * Gets the framework handle.
@@ -63,7 +64,7 @@ class PlayerProxyImpl(private val player: Player) : PlayerProxy {
      * Sets the item in the players hand.
      */
     override fun <I> setItemInHand(itemStack: I, offHand: Boolean) {
-        if (version.isVersionSameOrGreaterThan(VersionSupport.VERSION_1_9_R1)) {
+        if (version.isVersionSameOrGreaterThan(Version.VERSION_1_9_R1)) {
             val inventoryClazz = Class.forName("org.bukkit.inventory.PlayerInventory")
 
             if (offHand) {
@@ -81,7 +82,7 @@ class PlayerProxyImpl(private val player: Player) : PlayerProxy {
      * Gets the item in the players hand.
      */
     override fun <I> getItemInHand(offHand: Boolean): I? {
-        return if (version.isVersionSameOrGreaterThan(VersionSupport.VERSION_1_9_R1)) {
+        return if (version.isVersionSameOrGreaterThan(Version.VERSION_1_9_R1)) {
             val inventoryClazz = Class.forName("org.bukkit.inventory.PlayerInventory")
 
             if (offHand) {

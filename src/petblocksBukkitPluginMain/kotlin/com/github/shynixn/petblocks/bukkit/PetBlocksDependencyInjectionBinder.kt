@@ -13,12 +13,12 @@ import com.github.shynixn.petblocks.api.business.service.*
 import com.github.shynixn.petblocks.api.persistence.context.SqlDbContext
 import com.github.shynixn.petblocks.api.persistence.repository.PetMetaRepository
 import com.github.shynixn.petblocks.api.persistence.repository.PetRepository
-import com.github.shynixn.petblocks.bukkit.logic.business.extension.toVersion
-import com.github.shynixn.petblocks.bukkit.logic.business.nms.VersionSupport
+import com.github.shynixn.petblocks.bukkit.logic.business.extension.getServerVersion
 import com.github.shynixn.petblocks.bukkit.logic.business.proxy.SqlProxyImpl
 import com.github.shynixn.petblocks.bukkit.logic.business.service.*
 import com.github.shynixn.petblocks.core.jvm.logic.persistence.context.SqlDbContextImpl
 import com.github.shynixn.petblocks.core.jvm.logic.persistence.service.UpdateCheckServiceImpl
+import com.github.shynixn.petblocks.core.logic.business.command.EditPetCostumeCommand
 import com.github.shynixn.petblocks.core.logic.business.commandexecutor.EditPetCommandExecutorImpl
 import com.github.shynixn.petblocks.core.logic.business.commandexecutor.PlayerPetActionCommandExecutorImpl
 import com.github.shynixn.petblocks.core.logic.business.commandexecutor.ReloadCommandExecutorImpl
@@ -62,16 +62,19 @@ class PetBlocksDependencyInjectionBinder(private val plugin: Plugin) : AbstractM
      * Configures the business logic tree.
      */
     override fun configure() {
-        val versionSupport = VersionSupport.getServerVersion()
+        val version = plugin.getServerVersion()
 
         bindInstance<Plugin>(plugin)
-        bindInstance<Version>(versionSupport.toVersion())
+        bindInstance<Version>(version)
         bindInstance<LoggingService>(LoggingUtilServiceImpl(plugin.logger))
 
         // CommandExecutors
         bind<ReloadCommandExecutor, ReloadCommandExecutorImpl>()
         bind<PlayerPetActionCommandExecutor, PlayerPetActionCommandExecutorImpl>()
         bind<EditPetCommandExecutor, EditPetCommandExecutorImpl>()
+
+        // Commands
+        bind<EditPetCostumeCommand, EditPetCostumeCommand>()
 
         // Context
         bind<SqlConnectionPoolProxy, SqlProxyImpl>()
@@ -103,10 +106,15 @@ class PetBlocksDependencyInjectionBinder(private val plugin: Plugin) : AbstractM
         bind<DependencyHeadDatabaseService, DependencyHeadDatabaseServiceImpl>()
 
         when {
-            versionSupport.isVersionSameOrGreaterThan(VersionSupport.VERSION_1_13_R2) -> bind<EntityRegistrationService, EntityRegistration113R2ServiceImpl>()
-            versionSupport.isVersionSameOrGreaterThan(VersionSupport.VERSION_1_13_R1) -> bind<EntityRegistrationService, EntityRegistration113R1ServiceImpl>()
-            versionSupport.isVersionSameOrGreaterThan(VersionSupport.VERSION_1_11_R1) -> bind<EntityRegistrationService, EntityRegistration111R1ServiceImpl>()
-            versionSupport.isVersionSameOrGreaterThan(VersionSupport.VERSION_1_11_R1) -> bind<EntityRegistrationService, EntityRegistration18R1ServiceImpl>()
+            version.isVersionSameOrGreaterThan(Version.VERSION_1_13_R2) -> bind<EntityRegistrationService, EntityRegistration113R2ServiceImpl>()
+            version.isVersionSameOrGreaterThan(Version.VERSION_1_13_R1) -> bind<EntityRegistrationService, EntityRegistration113R1ServiceImpl>()
+            version.isVersionSameOrGreaterThan(Version.VERSION_1_11_R1) -> bind<EntityRegistrationService, EntityRegistration111R1ServiceImpl>()
+            else -> bind<EntityRegistrationService, EntityRegistration18R1ServiceImpl>()
+        }
+
+        when {
+            version.isVersionSameOrGreaterThan(Version.VERSION_1_13_R1) -> bind<ItemService, Item113R1ServiceImpl>()
+            else -> bind<ItemService, Item18R1ServiceImpl>()
         }
 
         // Dependency resolving
@@ -144,6 +152,11 @@ class PetBlocksDependencyInjectionBinder(private val plugin: Plugin) : AbstractM
             }
         }
 
-        throw RuntimeException("Failed to bind PetBlocks dependency! Does the binding contain the Inject annotation?")
+        if (T::class.java.declaredConstructors.size == 1) {
+            bind(I::class.java).toConstructor(T::class.java.declaredConstructors[0] as Constructor<I>).`in`(Scopes.SINGLETON)
+            return
+        }
+
+        throw RuntimeException("Failed to bind PetBlocks dependency! Does the binding " + T::class.java + " contain the Inject annotation?")
     }
 }

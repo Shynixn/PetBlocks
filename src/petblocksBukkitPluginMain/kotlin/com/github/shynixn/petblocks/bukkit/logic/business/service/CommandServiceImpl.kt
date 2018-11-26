@@ -3,9 +3,9 @@
 package com.github.shynixn.petblocks.bukkit.logic.business.service
 
 import com.github.shynixn.petblocks.api.business.service.CommandService
+import com.github.shynixn.petblocks.bukkit.logic.business.extension.getServerVersion
 import com.github.shynixn.petblocks.bukkit.logic.business.proxy.CommandProxyImpl
 import com.github.shynixn.petblocks.bukkit.logic.business.proxy.CommandRegisteredProxyImpl
-import com.github.shynixn.petblocks.bukkit.logic.business.nms.VersionSupport
 import com.google.inject.Inject
 import org.bukkit.Bukkit
 import org.bukkit.command.SimpleCommandMap
@@ -41,7 +41,7 @@ import org.bukkit.plugin.java.JavaPlugin
  * SOFTWARE.
  */
 class CommandServiceImpl @Inject constructor(private val plugin: Plugin) : CommandService {
-    private val version = VersionSupport.getServerVersion()
+    private val version = getServerVersion()
 
     /**
      * Registers a command executor.
@@ -96,7 +96,7 @@ class CommandServiceImpl @Inject constructor(private val plugin: Plugin) : Comma
         val permissionMessage = commandConfiguration["permission-message"] as String
 
         val commandExecutor = CommandProxyImpl(command, description, usage, permission, permissionMessage, commandExecutorInstance)
-        val clazz = Class.forName("org.bukkit.craftbukkit.VERSION.CraftServer".replace("VERSION", version.versionText))
+        val clazz = Class.forName("org.bukkit.craftbukkit.VERSION.CraftServer".replace("VERSION", version.bukkitId))
         val server = clazz.cast(Bukkit.getServer())
         val map = server.javaClass.getDeclaredMethod("getCommandMap").invoke(server) as SimpleCommandMap
         map.register(command, commandExecutor)

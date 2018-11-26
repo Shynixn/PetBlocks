@@ -4,13 +4,14 @@ package com.github.shynixn.petblocks.bukkit.logic.business.service
 
 import com.github.shynixn.petblocks.api.business.annotation.Inject
 import com.github.shynixn.petblocks.api.business.enumeration.ParticleType
+import com.github.shynixn.petblocks.api.business.enumeration.Version
 import com.github.shynixn.petblocks.api.business.service.ConcurrencyService
 import com.github.shynixn.petblocks.api.business.service.ConfigurationService
 import com.github.shynixn.petblocks.api.business.service.LoggingService
 import com.github.shynixn.petblocks.api.business.service.ParticleService
 import com.github.shynixn.petblocks.api.persistence.entity.Particle
+import com.github.shynixn.petblocks.bukkit.logic.business.extension.getServerVersion
 import com.github.shynixn.petblocks.bukkit.logic.business.extension.sendPacket
-import com.github.shynixn.petblocks.bukkit.logic.business.nms.VersionSupport
 import com.github.shynixn.petblocks.core.logic.business.extension.async
 import org.bukkit.Location
 import org.bukkit.Material
@@ -45,7 +46,7 @@ import org.bukkit.inventory.ItemStack
  * SOFTWARE.
  */
 class ParticleServiceImpl @Inject constructor(private val concurrencyService: ConcurrencyService, private val logger: LoggingService, private val configurationService: ConfigurationService) : ParticleService {
-    private val version = VersionSupport.getServerVersion()
+    private val version = getServerVersion()
 
     /**
      * Plays the given [particle] at the given [location] for the given [player] or
@@ -86,7 +87,7 @@ class ParticleServiceImpl @Inject constructor(private val concurrencyService: Co
 
         var internalParticleType = getInternalEnumValue(particle.type)
 
-        val packet = if (version.isVersionSameOrGreaterThan(VersionSupport.VERSION_1_13_R1)) {
+        val packet = if (version.isVersionSameOrGreaterThan(Version.VERSION_1_13_R1)) {
             val dataType = internalParticleType
             val particleParamClazz = findClazz("net.minecraft.server.VERSION.ParticleParam")
             val particleClazz = findClazz("net.minecraft.server.VERSION.Particle")
@@ -138,12 +139,12 @@ class ParticleServiceImpl @Inject constructor(private val concurrencyService: Co
                     red = Float.MIN_VALUE
                 }
 
-                val constructor = Class.forName("net.minecraft.server.VERSION.PacketPlayOutWorldParticles".replace("VERSION", version.versionText))
+                val constructor = Class.forName("net.minecraft.server.VERSION.PacketPlayOutWorldParticles".replace("VERSION", version.bukkitId))
                         .getDeclaredConstructor(internalParticleType.javaClass, Boolean::class.javaPrimitiveType, Float::class.javaPrimitiveType, Float::class.javaPrimitiveType, Float::class.javaPrimitiveType, Float::class.javaPrimitiveType, Float::class.javaPrimitiveType, Float::class.javaPrimitiveType, Float::class.javaPrimitiveType, Int::class.javaPrimitiveType, IntArray::class.java)
                 constructor.newInstance(internalParticleType, isLongDistance(location, targets), location.x.toFloat(), location.y.toFloat(), location.z.toFloat(), red, particle.colorGreen.toFloat() / 255.0f, particle.colorBlue.toFloat() / 255.0f, particle.speed.toFloat(), particle.amount, additionalPayload)
             } else {
 
-                val constructor = Class.forName("net.minecraft.server.VERSION.PacketPlayOutWorldParticles".replace("VERSION", version.versionText))
+                val constructor = Class.forName("net.minecraft.server.VERSION.PacketPlayOutWorldParticles".replace("VERSION", version.bukkitId))
                         .getDeclaredConstructor(internalParticleType.javaClass, Boolean::class.javaPrimitiveType, Float::class.javaPrimitiveType, Float::class.javaPrimitiveType, Float::class.javaPrimitiveType, Float::class.javaPrimitiveType, Float::class.javaPrimitiveType, Float::class.javaPrimitiveType, Float::class.javaPrimitiveType, Int::class.javaPrimitiveType, IntArray::class.java)
                 constructor.newInstance(internalParticleType, isLongDistance(location, targets), location.x.toFloat(), location.y.toFloat(), location.z.toFloat(), particle.offSetX.toFloat(), particle.offSetY.toFloat(), particle.offSetZ.toFloat(), particle.speed.toFloat(), particle.amount, additionalPayload)
             }
@@ -164,7 +165,7 @@ class ParticleServiceImpl @Inject constructor(private val concurrencyService: Co
      * Finds the version dependent class.
      */
     private fun findClazz(name: String): Class<*> {
-        return Class.forName(name.replace("VERSION", version.versionText))
+        return Class.forName(name.replace("VERSION", version.bukkitId))
     }
 
     private fun isLongDistance(location: Location, players: Array<out Player>): Boolean {
@@ -174,12 +175,12 @@ class ParticleServiceImpl @Inject constructor(private val concurrencyService: Co
     private fun getInternalEnumValue(particle: ParticleType): Any {
         try {
             return when {
-                version.isVersionLowerThan(VersionSupport.VERSION_1_13_R1) -> {
-                    val clazz = Class.forName("net.minecraft.server.VERSION.EnumParticle".replace("VERSION", version.versionText))
+                version.isVersionLowerThan(Version.VERSION_1_13_R1) -> {
+                    val clazz = Class.forName("net.minecraft.server.VERSION.EnumParticle".replace("VERSION", version.bukkitId))
                     val method = clazz.getDeclaredMethod("valueOf", String::class.java)
                     method.invoke(null, particle.name)
                 }
-                version == VersionSupport.VERSION_1_13_R1 -> {
+                version == Version.VERSION_1_13_R1 -> {
                     val minecraftKey = findClazz("net.minecraft.server.VERSION.MinecraftKey").getDeclaredConstructor(String::class.java).newInstance(particle.gameId_113)
                     val registry = findClazz("net.minecraft.server.VERSION.Particle").getDeclaredField("REGISTRY").get(null)
 
