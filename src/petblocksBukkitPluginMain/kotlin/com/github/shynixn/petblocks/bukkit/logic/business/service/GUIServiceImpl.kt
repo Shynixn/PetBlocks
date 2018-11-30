@@ -91,7 +91,6 @@ class GUIServiceImpl @Inject constructor(
         player.closeInventory()
     }
 
-
     /**
      * Clears all resources the given player has allocated from this service.
      */
@@ -173,7 +172,6 @@ class GUIServiceImpl @Inject constructor(
             this.close(player)
         }
 
-
         /*  when {
               scriptResult.action == ScriptAction.LOAD_COLLECTION -> loadCollectionPage(PetBlockManager.instance.inventories[player], scriptResult.path.get(), scriptResult.permission.get())
               scriptResult.action == ScriptAction.SCROLL_COLLECTION -> scrollCollectionPage(player, scriptResult.valueContainer.get() as Int)
@@ -197,8 +195,10 @@ class GUIServiceImpl @Inject constructor(
         }
 
         for (item in items) {
-            if (!item.visible) {
-                continue
+            if (!item.alwaysVisible) {
+                if(!(item.visibleWithSpawnedPet && petMeta.enabled)){
+                    continue
+                }
             }
 
             val position = scrollCollection(player, item.position)
@@ -304,7 +304,6 @@ class GUIServiceImpl @Inject constructor(
             setItemsToInventory(inventory.holder as Player, inventory, 45, optItems.get(), permission)
         }
     }*/
-
 
     /**
      * Sends a gui action message.

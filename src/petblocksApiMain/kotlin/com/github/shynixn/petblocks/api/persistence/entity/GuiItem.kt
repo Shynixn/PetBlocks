@@ -40,7 +40,12 @@ interface GuiItem {
     val icon: GuiIcon
 
     /** Returns if this item should be rendered. */
-    var visible: Boolean
+    var alwaysVisible: Boolean
+
+    /**
+     * Returns if this item should be visible when a pet is spawned.
+     */
+    var visibleWithSpawnedPet: Boolean
 
     /** Returns the position in the inventory. */
     var position: Int

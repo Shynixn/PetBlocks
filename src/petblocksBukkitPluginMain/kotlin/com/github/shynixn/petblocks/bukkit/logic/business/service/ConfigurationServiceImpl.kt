@@ -205,7 +205,8 @@ class ConfigurationServiceImpl @Inject constructor(private val plugin: Plugin, p
             val guiIcon = guiItem.icon
             val description = (section[key] as MemorySection).getValues(true)
 
-            this.setItem<Boolean>("visible", description) { value -> guiItem.visible = value }
+            this.setItem<Boolean>("always-visible", description) { value -> guiItem.alwaysVisible = value }
+            this.setItem<Boolean>("pet-spawned-visible", description) { value -> guiItem.visibleWithSpawnedPet = value }
             this.setItem<Int>("position", description) { value -> guiItem.position = value }
             this.setItem<String>("script", description) { value -> guiItem.script = value }
 

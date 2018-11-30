@@ -6,6 +6,7 @@ import com.github.shynixn.petblocks.api.PetBlocksApi
 import com.github.shynixn.petblocks.api.business.proxy.PluginProxy
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
+import java.lang.RuntimeException
 
 /**
  * Created by Shynixn 2018.
@@ -75,6 +76,8 @@ class PetBlocksApiTest {
 
         // Assert
         Assertions.assertTrue(proxy.called)
+
+        throw RuntimeException()
     }
 
     companion object {

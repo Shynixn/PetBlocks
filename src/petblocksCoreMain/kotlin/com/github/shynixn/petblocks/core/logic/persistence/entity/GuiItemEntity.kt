@@ -32,6 +32,10 @@ import com.github.shynixn.petblocks.api.persistence.entity.GuiItem
  */
 class GuiItemEntity : GuiItem {
     /**
+     * Returns if this item should be visible when a pet is spawned.
+     */
+    override var visibleWithSpawnedPet: Boolean = true
+    /**
      * Gets a nullable script
      * which can be used for defining the action of the gui item.
      */
@@ -42,7 +46,7 @@ class GuiItemEntity : GuiItem {
     override val icon: GuiIcon = GuiIconEntity()
 
     /** Returns if this item should be rendered. */
-    override var visible: Boolean = true
+    override var alwaysVisible: Boolean = true
     /** Returns the position in the inventory. */
     override var position: Int = 0
 }

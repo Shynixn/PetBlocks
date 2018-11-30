@@ -32,7 +32,7 @@ import com.github.shynixn.petblocks.api.persistence.entity.Particle
 interface ParticleService {
     /**
      * Plays the given [particle] at the given [location] for the given [player] or
-     * all players in the world if the config option all visible is enabled.
+     * all players in the world if the config option all alwaysVisible is enabled.
      * @param P the type of the player.
      * @param L the type of the location.
      */
