@@ -6,16 +6,17 @@ The following items have to be installed in order to use PetBlocks:
 Java
 ~~~~
 
-Java 8, Java 9 and Java 10 can be used to run PetBlocks.
+Java 8, Java 9, Java 10 or Java 11 can be used to run PetBlocks.
 
-Spigot/Sponge
-~~~~~~~~~~~~~
+Spigot/CraftBukkit/Sponge/Bedrock
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 * Spigot *(1.8.0 - 1.13.1)* ✔
 * PaperSpigot *(1.8.0 - 1.13.1)* ✔
 * CraftBukkit *(1.8.0 - 1.13.1)* ✔
 * SpongeVanilla *(1.12.0 - 1.12.2)* ✔
-* SpongeForge *(1.12.0 - 1.12.2)* **Please see below.**
+* SpongeForge *(1.12.0 - 1.12.2)* ✔
+* Bedrock ✘ (not compatible)
 
 .. note:: Take a look into the `FAQ section <../faq>`__ if you have
           troubles getting the pets working on your server.

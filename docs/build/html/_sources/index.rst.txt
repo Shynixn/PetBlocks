@@ -16,6 +16,7 @@ Contents
 
 .. toctree::
    gettingstarted/index
+   pets/index
    customizing/index
    commands/index
    general/index

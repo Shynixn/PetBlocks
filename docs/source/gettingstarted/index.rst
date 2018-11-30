@@ -6,4 +6,4 @@ The articles in this section explain how to install and setup PetBlocks on your 
 .. toctree::
    installing
    permissions
-   playing
+   petsetup
