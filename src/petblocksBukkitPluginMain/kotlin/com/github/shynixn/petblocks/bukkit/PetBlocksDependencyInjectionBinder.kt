@@ -14,11 +14,12 @@ import com.github.shynixn.petblocks.api.persistence.context.SqlDbContext
 import com.github.shynixn.petblocks.api.persistence.repository.PetMetaRepository
 import com.github.shynixn.petblocks.api.persistence.repository.PetRepository
 import com.github.shynixn.petblocks.bukkit.logic.business.extension.getServerVersion
+import com.github.shynixn.petblocks.bukkit.logic.business.listener.*
 import com.github.shynixn.petblocks.bukkit.logic.business.proxy.SqlProxyImpl
 import com.github.shynixn.petblocks.bukkit.logic.business.service.*
 import com.github.shynixn.petblocks.core.jvm.logic.persistence.context.SqlDbContextImpl
 import com.github.shynixn.petblocks.core.jvm.logic.persistence.service.UpdateCheckServiceImpl
-import com.github.shynixn.petblocks.core.logic.business.command.EditPetCostumeCommand
+import com.github.shynixn.petblocks.core.logic.business.command.*
 import com.github.shynixn.petblocks.core.logic.business.commandexecutor.EditPetCommandExecutorImpl
 import com.github.shynixn.petblocks.core.logic.business.commandexecutor.PlayerPetActionCommandExecutorImpl
 import com.github.shynixn.petblocks.core.logic.business.commandexecutor.ReloadCommandExecutorImpl
@@ -68,13 +69,26 @@ class PetBlocksDependencyInjectionBinder(private val plugin: Plugin) : AbstractM
         bindInstance<Version>(version)
         bindInstance<LoggingService>(LoggingUtilServiceImpl(plugin.logger))
 
+        // Commands
+        bindClass<EditPetCostumeCommand>()
+        bindClass<EditPetDisableCommand>()
+        bindClass<EditPetEnableCommand>()
+        bindClass<EditPetEngineCommand>()
+        bindClass<EditPetItemLoreCommand>()
+        bindClass<EditPetItemNameCommand>()
+        bindClass<EditPetKillNextCommand>()
+        bindClass<EditPetParticleCommand>()
+        bindClass<EditPetRenameCommand>()
+        bindClass<EditPetRideCommand>()
+        bindClass<EditPetSkinCommand>()
+        bindClass<EditPetToggleCommand>()
+        bindClass<EditPetToggleSoundCommand>()
+        bindClass<EditPetWearCommand>()
+
         // CommandExecutors
         bind<ReloadCommandExecutor, ReloadCommandExecutorImpl>()
         bind<PlayerPetActionCommandExecutor, PlayerPetActionCommandExecutorImpl>()
         bind<EditPetCommandExecutor, EditPetCommandExecutorImpl>()
-
-        // Commands
-        bind<EditPetCostumeCommand, EditPetCostumeCommand>()
 
         // Context
         bind<SqlConnectionPoolProxy, SqlProxyImpl>()
@@ -137,6 +151,13 @@ class PetBlocksDependencyInjectionBinder(private val plugin: Plugin) : AbstractM
      */
     private inline fun <reified I> bindInstance(instance: Any) {
         this.bind(I::class.java).toInstance(instance as I)
+    }
+
+    /**
+     * Binds an interface to its implementation via the custom annotation Inject.
+     */
+    private inline fun <reified I> bindClass() {
+        this.bind<I, I>()
     }
 
     /**

@@ -149,7 +149,7 @@ class SqlDbContextImpl @Inject constructor(private val sqlConnectionPoolProxy: S
                     val data = HashMap<String, Any>()
 
                     for (i in 1..metaData.columnCount) {
-                        data[metaData.getColumnName(i)] = resultSet.getObject(i)
+                        data[metaData.getColumnLabel(i)] = resultSet.getObject(i)
                     }
 
                     list.add(f.invoke(data))

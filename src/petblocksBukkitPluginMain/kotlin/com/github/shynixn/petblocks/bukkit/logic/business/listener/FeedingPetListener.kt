@@ -1,8 +1,8 @@
 package com.github.shynixn.petblocks.bukkit.logic.business.listener
 
-import com.github.shynixn.petblocks.api.business.annotation.Inject
 import com.github.shynixn.petblocks.api.business.service.FeedingPetService
 import com.github.shynixn.petblocks.api.business.service.PetService
+import com.google.inject.Inject
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.EventPriority

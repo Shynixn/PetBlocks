@@ -1,10 +1,10 @@
 package com.github.shynixn.petblocks.bukkit.logic.business.listener
 
-import com.github.shynixn.petblocks.api.business.annotation.Inject
 import com.github.shynixn.petblocks.api.business.enumeration.MaterialType
 import com.github.shynixn.petblocks.api.business.service.CombatPetService
 import com.github.shynixn.petblocks.api.business.service.ItemService
 import com.github.shynixn.petblocks.api.business.service.PetService
+import com.google.inject.Inject
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
@@ -39,7 +39,7 @@ import org.bukkit.event.entity.EntityInteractEvent
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class CombatPetListener @Inject constructor(private val itemService: ItemService,private val combatService: CombatPetService, private val petService: PetService) : Listener {
+class CombatPetListener @Inject constructor(private val itemService: ItemService, private val combatService: CombatPetService, private val petService: PetService) : Listener {
     private val soildMaterial = MaterialType.SOIL;
 
     /**

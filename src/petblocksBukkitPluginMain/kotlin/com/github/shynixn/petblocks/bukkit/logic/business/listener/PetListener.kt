@@ -1,11 +1,11 @@
 package com.github.shynixn.petblocks.bukkit.logic.business.listener
 
-import com.github.shynixn.petblocks.api.business.annotation.Inject
 import com.github.shynixn.petblocks.api.business.service.ConcurrencyService
 import com.github.shynixn.petblocks.api.business.service.ConfigurationService
 import com.github.shynixn.petblocks.api.business.service.PetService
 import com.github.shynixn.petblocks.bukkit.logic.business.extension.teleportUnsafe
 import com.github.shynixn.petblocks.core.logic.business.extension.sync
+import com.google.inject.Inject
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.entity.PlayerLeashEntityEvent

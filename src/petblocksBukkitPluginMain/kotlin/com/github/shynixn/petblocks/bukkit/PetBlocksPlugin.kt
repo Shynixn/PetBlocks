@@ -71,7 +71,7 @@ class PetBlocksPlugin : JavaPlugin(), PluginProxy {
         this.saveDefaultConfig()
         this.injector = Guice.createInjector(PetBlocksDependencyInjectionBinder(this))
 
-        if (getServerVersion().isCompatible(
+        if (!getServerVersion().isCompatible(
                 Version.VERSION_1_8_R1,
                 Version.VERSION_1_8_R2,
                 Version.VERSION_1_8_R3,

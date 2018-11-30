@@ -13,7 +13,6 @@ import com.github.shynixn.petblocks.api.persistence.entity.PetMeta
 import com.github.shynixn.petblocks.bukkit.logic.business.extension.deserializeToMap
 import com.github.shynixn.petblocks.bukkit.logic.business.extension.toParticleType
 import com.github.shynixn.petblocks.core.logic.business.extension.chatMessage
-import com.github.shynixn.petblocks.core.logic.business.extension.getItem
 import com.github.shynixn.petblocks.core.logic.business.extension.getNullableItem
 import com.github.shynixn.petblocks.core.logic.business.extension.translateChatColors
 import com.github.shynixn.petblocks.core.logic.persistence.entity.*
@@ -22,9 +21,6 @@ import org.bukkit.Material
 import org.bukkit.configuration.MemorySection
 import org.bukkit.inventory.ItemStack
 import org.bukkit.plugin.Plugin
-import java.util.*
-import kotlin.collections.ArrayList
-import kotlin.collections.HashMap
 
 /**
  * Created by Shynixn 2018.

@@ -60,7 +60,7 @@ class PetMetaSqlRepository @Inject constructor(
     override fun getAll(): List<PetMeta> {
         return sqlDbContext.transaction<List<PetMeta>, Any> { connection ->
             val statement =
-                "SELECT pet.id as petid, shy_player_id, shy_skin_id, shy_modifier_id, enabled, displayname" +
+                "SELECT pet.id, shy_player_id, shy_skin_id, shy_modifier_id, enabled, displayname" +
                         ", hitboxentitytype, soundenabled, particleenabled, climbingheight, movementspeed, uuid, name" +
                         ", typename, owner, datavalue, unbreakable, invincible, health " +
                         "FROM SHY_PET pet, SHY_SKIN skin, SHY_PLAYER player, SHY_PET_MODIFIER modifier " +
@@ -93,7 +93,7 @@ class PetMetaSqlRepository @Inject constructor(
      * currently uses the meta data of the player.
      */
     private fun getOrCreateFromPlayerIdentifiers(connection: Any, name: String, uuid: String): PetMeta {
-        val statement = "SELECT pet.id as petid, shy_player_id, shy_skin_id, shy_modifier_id, enabled, displayname" +
+        val statement = "SELECT pet.id, shy_player_id, shy_skin_id, shy_modifier_id, enabled, displayname" +
                 ", hitboxentitytype, soundenabled, particleenabled, climbingheight, movementspeed, uuid, name" +
                 ", typename, owner, datavalue, unbreakable, invincible, health " +
                 "FROM SHY_PET pet, SHY_SKIN skin, SHY_PLAYER player, SHY_PET_MODIFIER modifier " +
@@ -114,7 +114,6 @@ class PetMetaSqlRepository @Inject constructor(
             optResult
         }
     }
-
 
     /**
      * Updates the [petMeta] in the database.
@@ -215,7 +214,7 @@ class PetMetaSqlRepository @Inject constructor(
         val modifierEntity = PetModifierEntity()
 
         with(modifierEntity) {
-            id = resultSet.getItem("shy_modifier_id")
+            id = resultSet.getItem<Int>("shy_modifier_id").toLong()
             climbingHeight = resultSet.getItem("climbingheight")
             movementSpeed = resultSet.getItem("movementspeed")
         }
@@ -223,17 +222,17 @@ class PetMetaSqlRepository @Inject constructor(
         val skinEntity = SkinEntity()
 
         with(skinEntity) {
-            id = resultSet.getItem("shy_skin_id")
+            id = resultSet.getItem<Int>("shy_skin_id").toLong()
             typeName = resultSet.getItem("typename")
             owner = resultSet.getItem("owner")
-            dataValue = resultSet.getItem("dataValue")
+            dataValue = resultSet.getItem("datavalue")
             unbreakable = resultSet.getItem("unbreakable")
         }
 
         val playerMeta = PlayerMetaEntity("")
 
         with(playerMeta) {
-            id = resultSet.getItem("shy_player_id")
+            id = resultSet.getItem<Int>("shy_player_id").toLong()
             uuid = resultSet.getItem("uuid")
             name = resultSet.getItem("name")
         }
@@ -241,7 +240,7 @@ class PetMetaSqlRepository @Inject constructor(
         val petMeta = PetMetaEntity(playerMeta, skinEntity, modifierEntity)
 
         with(petMeta) {
-            id = resultSet.getItem("petid")
+            id = resultSet.getItem<Int>("id").toLong()
             enabled = resultSet.getItem("enabled")
             health = resultSet.getItem("health")
             invincible = resultSet.getItem("invincible")

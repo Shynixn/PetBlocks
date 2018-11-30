@@ -53,7 +53,6 @@ kotlin {
                 compileOnly 'me.minebuilders:clearlag-core:2.9.7'
 
                 compileOnly 'org.spigotmc:spigot18R1:1.8.0-R1.0'
-
             }
         }
         petblocksCoreMain {
@@ -72,10 +71,15 @@ kotlin {
                 implementation 'org.slf4j:slf4j-api:1.7.25'
             }
         }
-        petblocksBukkitTest {
+        petblocksBukkitPluginTest {
             dependencies {
                 implementation 'org.jetbrains.kotlin:kotlin-test'
                 implementation 'org.jetbrains.kotlin:kotlin-test-junit'
+                implementation 'org.mockito:mockito-core:2.23.0'
+                implementation group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: '5.3.1'
+                implementation 'org.xerial:sqlite-jdbc:3.23.1'
+                implementation 'ch.vorburger.mariaDB4j:mariaDB4j:2.2.3'
+                implementation 'org.spigotmc:spigot18R1:1.8.0-R1.0'
             }
         }
         petblocksCoreJavaTest {

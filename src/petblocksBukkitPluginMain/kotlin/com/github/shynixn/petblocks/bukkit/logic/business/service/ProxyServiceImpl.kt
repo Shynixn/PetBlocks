@@ -39,7 +39,6 @@ import java.util.*
 class ProxyServiceImpl : ProxyService {
     private val playerCache = HashMap<Player, PlayerProxy>()
 
-
     /**
      * Gets if the given instance can be converted to a player.
      */
@@ -98,8 +97,8 @@ class ProxyServiceImpl : ProxyService {
     /**
      * Tries to return a player proxy for the given player uuid.
      */
-    override fun findPlayerProxyObjectFromUUID(uuid: String): PlayerProxy?{
-        val player = Bukkit.getPlayer(uuid)
+    override fun findPlayerProxyObjectFromUUID(uuid: String): PlayerProxy? {
+        val player = Bukkit.getPlayer(UUID.fromString(uuid))
 
         if (player != null && player.isOnline) {
             return findPlayerProxyObject(player)

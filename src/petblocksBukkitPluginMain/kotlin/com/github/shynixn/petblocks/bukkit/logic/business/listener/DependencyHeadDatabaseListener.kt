@@ -1,7 +1,7 @@
 package com.github.shynixn.petblocks.bukkit.logic.business.listener
 
-import com.github.shynixn.petblocks.api.business.annotation.Inject
 import com.github.shynixn.petblocks.api.business.service.DependencyHeadDatabaseService
+import com.google.inject.Inject
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.player.PlayerQuitEvent
