@@ -275,6 +275,19 @@ fun ItemStack.setDisplayName(displayName: String): ItemStack {
 }
 
 /**
+ * Gets the displayname of an item.
+ */
+fun ItemStack.getDisplayName(): String? {
+    if (this.itemMeta != null) {
+        if (this.itemMeta.displayName != null) {
+            return itemMeta.displayName
+        }
+    }
+
+    return null
+}
+
+/**
  * Checks if this player has got the given [permission].
  */
 fun Player.hasPermission(permission: Permission, vararg placeholder: String): Boolean {
@@ -344,7 +357,7 @@ internal fun ItemStack.setSkin(skin: String) {
                 newSkin = "http://$newSkin"
             }
 
-            newSkin = Base64Coder.encodeString("{textures:{SKIN:{url:\"$newSkin\"}}}");
+            newSkin = Base64Coder.encodeString("{textures:{SKIN:{url:\"$newSkin\"}}}")
         }
 
         newSkinProfile.properties.put("textures", Property("textures", newSkin))

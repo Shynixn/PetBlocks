@@ -199,7 +199,7 @@ class GUIServiceImpl @Inject constructor(
                 continue
             }
 
-            if (!petMeta.enabled && item.hiddenWhenPetIsSpawned) {
+            if (petMeta.enabled && item.hiddenWhenPetIsSpawned) {
                 continue
             }
 
