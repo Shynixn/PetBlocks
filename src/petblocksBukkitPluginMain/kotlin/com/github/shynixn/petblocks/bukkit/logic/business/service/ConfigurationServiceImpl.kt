@@ -205,8 +205,8 @@ class ConfigurationServiceImpl @Inject constructor(private val plugin: Plugin, p
             val guiIcon = guiItem.icon
             val description = (section[key] as MemorySection).getValues(true)
 
-            this.setItem<Boolean>("always-visible", description) { value -> guiItem.alwaysVisible = value }
-            this.setItem<Boolean>("pet-spawned-visible", description) { value -> guiItem.visibleWithSpawnedPet = value }
+            this.setItem<Boolean>("hidden", description) { value -> guiItem.hidden = value }
+            this.setItem<Boolean>("hidden-when-pet-is-spawned", description) { value -> guiItem.hiddenWhenPetIsSpawned = value }
             this.setItem<Int>("position", description) { value -> guiItem.position = value }
             this.setItem<String>("script", description) { value -> guiItem.script = value }
 
@@ -275,6 +275,7 @@ class ConfigurationServiceImpl @Inject constructor(private val plugin: Plugin, p
      */
     override fun refresh() {
         cache.clear()
+        plugin.reloadConfig()
         namingMessage = null
         skullNamingMessage = null
     }

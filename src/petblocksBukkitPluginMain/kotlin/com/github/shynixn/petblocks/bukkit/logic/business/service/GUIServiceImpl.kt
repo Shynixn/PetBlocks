@@ -195,10 +195,12 @@ class GUIServiceImpl @Inject constructor(
         }
 
         for (item in items) {
-            if (!item.alwaysVisible) {
-                if(!(item.visibleWithSpawnedPet && petMeta.enabled)){
-                    continue
-                }
+            if (item.hidden) {
+                continue
+            }
+
+            if (!petMeta.enabled && item.hiddenWhenPetIsSpawned) {
+                continue
             }
 
             val position = scrollCollection(player, item.position)

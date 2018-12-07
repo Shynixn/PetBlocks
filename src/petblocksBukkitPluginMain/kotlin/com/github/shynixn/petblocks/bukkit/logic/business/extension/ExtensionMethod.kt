@@ -332,18 +332,22 @@ internal fun ItemStack.setSkin(skin: String) {
     val currentMeta = this.itemMeta as? SkullMeta ?: return
 
     var newSkin = skin
-    if (newSkin.contains("textures.minecraft.net")) {
-        if (!newSkin.startsWith("http://")) {
-            newSkin = "http://$newSkin"
-        }
 
-        val newSkinProfile = GameProfile(UUID.randomUUID(), null)
-
+    if (newSkin.length > 32) {
         val cls = Class.forName("org.bukkit.craftbukkit.VERSION.inventory.CraftMetaSkull".replace("VERSION", getServerVersion().bukkitId))
         val real = cls.cast(currentMeta)
         val field = real.javaClass.getDeclaredField("profile")
+        val newSkinProfile = GameProfile(UUID.randomUUID(), null)
 
-        newSkinProfile.properties.put("textures", Property("textures", Base64Coder.encodeString("{textures:{SKIN:{url:\"$newSkin\"}}}")))
+        if (newSkin.contains("textures.minecraft.net")) {
+            if (!newSkin.startsWith("http://")) {
+                newSkin = "http://$newSkin"
+            }
+
+            newSkin = Base64Coder.encodeString("{textures:{SKIN:{url:\"$newSkin\"}}}");
+        }
+
+        newSkinProfile.properties.put("textures", Property("textures", newSkin))
         field.isAccessible = true
         field.set(real, newSkinProfile)
         itemMeta = SkullMeta::class.java.cast(real)
@@ -351,43 +355,6 @@ internal fun ItemStack.setSkin(skin: String) {
         currentMeta.owner = skin
         itemMeta = currentMeta
     }
-}
-
-/**
- * Gets the skin of an itemstack.
- */
-internal fun ItemStack.getSkin(): Optional<String> {
-    val meta = this.itemMeta as? SkullMeta ?: return Optional.empty()
-
-    if (meta.owner != null) {
-        return Optional.of(meta.owner)
-    } else {
-        val cls = Class.forName("org.bukkit.craftbukkit.VERSION.inventory.CraftMetaSkull".replace("VERSION", getServerVersion().bukkitId))
-        val real = cls.cast(meta)
-        val field = real.javaClass.getDeclaredField("profile")
-        field.isAccessible = true
-
-        val profile = field.get(real) as GameProfile
-        val props = profile.properties.get("textures")
-
-        for (property in props) {
-            if (property.name == "textures") {
-                val text = Base64Coder.decodeString(property.value)
-                val s = StringBuilder()
-                var start = false
-                for (i in 0 until text.length) {
-                    if (text[i] == '"') {
-                        start = !start
-                    } else if (start) {
-                        s.append(text[i])
-                    }
-                }
-                return Optional.of(s.toString().substring(s.indexOf("http://"), s.length))
-            }
-        }
-    }
-
-    return Optional.empty()
 }
 
 /**
