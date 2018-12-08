@@ -1,5 +1,6 @@
 package com.github.shynixn.petblocks.bukkit.logic.business.goals
 
+import net.minecraft.server.v1_13_R2.EntityInsentient
 import org.bukkit.GameMode
 import org.bukkit.Location
 import org.bukkit.entity.LivingEntity
@@ -35,7 +36,8 @@ import org.bukkit.entity.Player
 class PathfinderGoalFollowOwnerImpl(private val player: Player, private val livingEntity: LivingEntity) : PathfinderBaseGoal() {
     private val getHandleMethod = findClazz("org.bukkit.craftbukkit.VERSION.entity.CraftLivingEntity").getDeclaredMethod("getHandle")
     private val navigationAbstractMethod = findClazz("net.minecraft.server.VERSION.EntityInsentient").getDeclaredMethod("getNavigation")
-    private val goToEntityNavigationMethod = findClazz("net.minecraft.server.VERSION.NavigationAbstract").getDeclaredMethod("a", findClazz("net.minecraft.server.VERSION.Entity"), Double::class.java)
+    private val goToEntityNavigationMethod =
+        findClazz("net.minecraft.server.VERSION.NavigationAbstract").getDeclaredMethod("a", findClazz("net.minecraft.server.VERSION.Entity"), Double::class.java)
     private val clearCurrentPath = findClazz("net.minecraft.server.VERSION.NavigationAbstract").getDeclaredMethod("q")
 
     private var lastLocation: Location? = null
@@ -44,7 +46,7 @@ class PathfinderGoalFollowOwnerImpl(private val player: Player, private val livi
      * Gets if the goal should be currently executed.
      */
     override fun shouldGoalBeExecuted(): Boolean {
-        return !livingEntity.isDead && player.gameMode != GameMode.ADVENTURE && player.location.distance(livingEntity.location) >= 5
+        return !livingEntity.isDead && player.gameMode != GameMode.SPECTATOR && player.location.distance(livingEntity.location) >= 5
     }
 
     /**
@@ -65,13 +67,21 @@ class PathfinderGoalFollowOwnerImpl(private val player: Player, private val livi
     }
 
     /**
+     * Gets called when the goal stops getting executed.
+     */
+    override fun onStopExecuting() {
+        val nmsLiving = getHandleMethod(livingEntity) as EntityInsentient
+        nmsLiving.navigation.q()
+    }
+
+    /**
      * Gets called when the goal gets started.
      */
     override fun onStartExecuting() {
         val nmsLivingEntity = getHandleMethod.invoke(livingEntity)
         val nmsPlayer = getHandleMethod.invoke(player)
         val navigation = navigationAbstractMethod.invoke(nmsLivingEntity)
-        val speed = 1.0
+        val speed = 2.5
 
         lastLocation = player.location.clone()
 

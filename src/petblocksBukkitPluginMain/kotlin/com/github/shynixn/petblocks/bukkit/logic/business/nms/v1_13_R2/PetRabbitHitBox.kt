@@ -9,6 +9,7 @@ import org.bukkit.craftbukkit.v1_13_R2.CraftWorld
 import org.bukkit.entity.LivingEntity
 import org.bukkit.entity.Player
 import org.bukkit.event.entity.CreatureSpawnEvent
+import org.bukkit.util.Vector
 
 /**
  * Created by Shynixn 2018.
@@ -43,7 +44,7 @@ class PetRabbitHitBox(world: World) : EntityRabbit(world) {
     /**
      * Additional override constructor.
      */
-    constructor(player : Player, petDesign: PetDesign, location: Location) : this((location.world as CraftWorld).handle) {
+    constructor(player: Player, petDesign: PetDesign, location: Location) : this((location.world as CraftWorld).handle) {
         this.petDesign = petDesign
         this.isSilent = true
 
@@ -58,14 +59,14 @@ class PetRabbitHitBox(world: World) : EntityRabbit(world) {
         cField.set(this.goalSelector, Sets.newLinkedHashSet<Any>())
         cField.set(this.targetSelector, Sets.newLinkedHashSet<Any>())
 
-        this.getAttributeInstance(GenericAttributes.MOVEMENT_SPEED).value = 0.30000001192092896 * 1.0
+        this.getAttributeInstance(GenericAttributes.MOVEMENT_SPEED).value = 0.30000001192092896 * 0.75
         this.Q = petDesign.petMeta.modifier.climbingHeight.toFloat()
 
         val mcWorld = (location.world as CraftWorld).handle
-        this.setPosition(location.x, location.y, location.z)
+        this.setPosition(location.x, location.y + 1, location.z)
         mcWorld.addEntity(this, CreatureSpawnEvent.SpawnReason.CUSTOM)
 
-        val pathfinders = arrayListOf(PathfinderProxy( PathfinderGoalFollowOwnerImpl(player, this.getBukkitEntity() as LivingEntity)))
+        val pathfinders = arrayListOf(PathfinderProxy(PathfinderGoalFollowOwnerImpl(player, this.getBukkitEntity() as LivingEntity)))
 
         for (i in 0 until pathfinders.size) {
             this.goalSelector.a(i, pathfinders[i])
