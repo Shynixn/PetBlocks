@@ -87,7 +87,7 @@ class PetProxyImpl(override val meta: PetMeta, private val design: ArmorStand, p
         design.removeWhenFarAway = false
         design.removeWhenFarAway = false
 
-      //  hitBox.addPotionEffect(PotionEffect(PotionEffectType.INVISIBILITY, 9999999, 1))
+        hitBox.addPotionEffect(PotionEffect(PotionEffectType.INVISIBILITY, 9999999, 1))
         hitBox.setMetadata("keep", FixedMetadataValue(Bukkit.getPluginManager().getPlugin("PetBlocks"), true))
         hitBox.isCustomNameVisible = false
         hitBox.customName = "PetBlockIdentifier"
@@ -269,7 +269,6 @@ class PetProxyImpl(override val meta: PetMeta, private val design: ArmorStand, p
         this.design.remove()
         this.hitBox.remove()
     }
-
 
     /**
      * Plays the moving sound.
