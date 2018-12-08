@@ -2,6 +2,8 @@ package com.github.shynixn.petblocks.bukkit.logic.business.nms.v1_13_R2
 
 import com.github.shynixn.petblocks.api.business.goal.Goal
 import net.minecraft.server.v1_13_R2.PathfinderGoal
+import org.bukkit.plugin.Plugin
+import java.util.logging.Level
 
 /**
  * Created by Shynixn 2018.
@@ -30,46 +32,73 @@ import net.minecraft.server.v1_13_R2.PathfinderGoal
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class PathfinderProxy(private val goal: Goal) : PathfinderGoal() {
+class PathfinderProxy(private val goal: Goal, private val plugin: Plugin) : PathfinderGoal() {
     /**
      * Override ShouldExecute.
      */
     override fun a(): Boolean {
-        return goal.shouldGoalBeExecuted()
+        return try {
+            goal.shouldGoalBeExecuted()
+        } catch (e: Exception) {
+            plugin.logger.log(Level.WARNING, "Failed shouldGoalBeExecuted.", e)
+            false
+        }
     }
 
     /**
      * Override continue executing.
      */
     override fun b(): Boolean {
-        return goal.shouldGoalContinueExecuting()
+        return try {
+            goal.shouldGoalContinueExecuting()
+        } catch (e: Exception) {
+            plugin.logger.log(Level.WARNING, "Failed shouldGoalContinueExecuting.", e)
+            false
+        }
     }
 
     /**
      * Override isInterruptible.
      */
     override fun f(): Boolean {
-        return goal.isInteruptible
+        return try {
+            goal.isInteruptible
+        } catch (e: Exception) {
+            plugin.logger.log(Level.WARNING, "Failed isInteruptible.", e)
+            false
+        }
     }
 
     /**
      * Override startExecuting.
      */
     override fun c() {
-        this.goal.onStartExecuting()
+        try {
+            this.goal.onStartExecuting()
+        } catch (e: Exception) {
+            plugin.logger.log(Level.WARNING, "Failed onStartExecuting.", e)
+        }
     }
 
     /**
      * Override reset.
      */
     override fun d() {
-        this.goal.onStopExecuting()
+        try {
+            this.goal.onStopExecuting()
+        } catch (e: Exception) {
+            plugin.logger.log(Level.WARNING, "Failed onStopExecuting.", e)
+        }
     }
 
     /**
      * Override update.
      */
     override fun e() {
-        this.goal.onExecute()
+        try {
+            this.goal.onExecute()
+        } catch (e: Exception) {
+            plugin.logger.log(Level.WARNING, "Failed onExecute.", e)
+        }
     }
 }

@@ -1,5 +1,6 @@
 package com.github.shynixn.petblocks.bukkit.logic.business.nms.v1_13_R2
 
+import com.github.shynixn.petblocks.bukkit.PetBlocksPlugin
 import com.github.shynixn.petblocks.bukkit.logic.business.extension.removeFinalModifier
 import com.github.shynixn.petblocks.bukkit.logic.business.goals.PathfinderGoalFollowOwnerImpl
 import com.google.common.collect.Sets
@@ -9,6 +10,7 @@ import org.bukkit.craftbukkit.v1_13_R2.CraftWorld
 import org.bukkit.entity.LivingEntity
 import org.bukkit.entity.Player
 import org.bukkit.event.entity.CreatureSpawnEvent
+import org.bukkit.plugin.java.JavaPlugin
 import org.bukkit.util.Vector
 
 /**
@@ -66,7 +68,7 @@ class PetRabbitHitBox(world: World) : EntityRabbit(world) {
         this.setPosition(location.x, location.y + 1, location.z)
         mcWorld.addEntity(this, CreatureSpawnEvent.SpawnReason.CUSTOM)
 
-        val pathfinders = arrayListOf(PathfinderProxy(PathfinderGoalFollowOwnerImpl(player, this.getBukkitEntity() as LivingEntity)))
+        val pathfinders = arrayListOf(PathfinderProxy(PathfinderGoalFollowOwnerImpl(player, this.getBukkitEntity() as LivingEntity), JavaPlugin.getPlugin(PetBlocksPlugin::class.java)))
 
         for (i in 0 until pathfinders.size) {
             this.goalSelector.a(i, pathfinders[i])
