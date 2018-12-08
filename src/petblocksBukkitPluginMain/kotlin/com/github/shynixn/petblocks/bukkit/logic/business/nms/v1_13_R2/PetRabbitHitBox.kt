@@ -11,7 +11,6 @@ import org.bukkit.entity.LivingEntity
 import org.bukkit.entity.Player
 import org.bukkit.event.entity.CreatureSpawnEvent
 import org.bukkit.plugin.java.JavaPlugin
-import org.bukkit.util.Vector
 
 /**
  * Created by Shynixn 2018.
@@ -68,7 +67,8 @@ class PetRabbitHitBox(world: World) : EntityRabbit(world) {
         this.setPosition(location.x, location.y + 1, location.z)
         mcWorld.addEntity(this, CreatureSpawnEvent.SpawnReason.CUSTOM)
 
-        val pathfinders = arrayListOf(PathfinderProxy(PathfinderGoalFollowOwnerImpl(player, this.getBukkitEntity() as LivingEntity), JavaPlugin.getPlugin(PetBlocksPlugin::class.java)))
+        val pathfinders =
+            arrayListOf(PathfinderProxy(PathfinderGoalFollowOwnerImpl(player, this.getBukkitEntity() as LivingEntity), JavaPlugin.getPlugin(PetBlocksPlugin::class.java)))
 
         for (i in 0 until pathfinders.size) {
             this.goalSelector.a(i, pathfinders[i])
