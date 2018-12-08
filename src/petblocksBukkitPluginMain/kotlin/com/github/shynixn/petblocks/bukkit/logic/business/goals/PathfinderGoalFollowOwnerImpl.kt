@@ -36,7 +36,7 @@ class PathfinderGoalFollowOwnerImpl(private val player: Player, private val livi
     private var lastLocation: Location? = null
 
     private val speed = 2.5
-    private val distanceNearby = 2
+    private val distanceNearby = 3
 
     /**
      * Gets if the goal should be currently executed.
