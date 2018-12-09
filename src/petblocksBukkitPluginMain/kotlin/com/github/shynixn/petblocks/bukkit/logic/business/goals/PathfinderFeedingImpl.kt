@@ -1,6 +1,8 @@
 package com.github.shynixn.petblocks.bukkit.logic.business.goals
 
 import com.github.shynixn.petblocks.api.business.proxy.PetProxy
+import com.github.shynixn.petblocks.api.persistence.entity.Particle
+import com.github.shynixn.petblocks.api.persistence.entity.Sound
 import org.bukkit.entity.Player
 
 /**
@@ -31,25 +33,27 @@ import org.bukkit.entity.Player
  * SOFTWARE.
  */
 
-class PathfinderFleeInCombatGoalImpl(private val player: Player, private val petProxy: PetProxy) : PathfinderBaseGoal() {
+class PathfinderFeedingImpl(
+    /**
+     * Feeding particle.
+     */
+    val particle: Particle,
+    /**
+     * Feeding sound.
+     */
+    val sound: Sound
+) : PathfinderBaseGoal() {
     /**
      * Gets if the goal should be currently executed.
      */
     override fun shouldGoalBeExecuted(): Boolean {
-        return false
+        return true
     }
 
     /**
      * Gets the condition when the goal has been reached or cancelled.
      */
     override fun shouldGoalContinueExecuting(): Boolean {
-        return false
-    }
-
-    /**
-     * Gets called every time the scheduler ticks this already started goal.
-     */
-    override fun onExecute() {
-        petProxy.remove()
+        return true
     }
 }

@@ -1,7 +1,14 @@
 package com.github.shynixn.petblocks.bukkit.logic.business.goals
 
-import com.github.shynixn.petblocks.api.business.proxy.PetProxy
+import com.github.shynixn.petblocks.api.business.service.ParticleService
+import com.github.shynixn.petblocks.api.business.service.SoundService
+import com.github.shynixn.petblocks.api.persistence.entity.Particle
+import com.github.shynixn.petblocks.api.persistence.entity.Sound
+import org.bukkit.GameMode
+import org.bukkit.entity.LivingEntity
 import org.bukkit.entity.Player
+import org.bukkit.plugin.Plugin
+import java.util.logging.Level
 
 /**
  * Created by Shynixn 2018.
@@ -31,25 +38,35 @@ import org.bukkit.entity.Player
  * SOFTWARE.
  */
 
-class PathfinderFleeInCombatGoalImpl(private val player: Player, private val petProxy: PetProxy) : PathfinderBaseGoal() {
+class PathfinderWalkingParticleImpl(
+    private val player: Player,
+    private val livingEntity: LivingEntity,
+    private val particle: Particle,
+    private val particleService: ParticleService,
+    private val plugin: Plugin
+) : PathfinderBaseGoal() {
     /**
      * Gets if the goal should be currently executed.
      */
     override fun shouldGoalBeExecuted(): Boolean {
-        return false
+        return !livingEntity.isDead && player.gameMode != GameMode.SPECTATOR
     }
 
     /**
      * Gets the condition when the goal has been reached or cancelled.
      */
     override fun shouldGoalContinueExecuting(): Boolean {
-        return false
+        return true
     }
 
     /**
      * Gets called every time the scheduler ticks this already started goal.
      */
     override fun onExecute() {
-        petProxy.remove()
+        try {
+            particleService.playParticle(livingEntity.location, particle, player.world.players)
+        } catch (e: Exception) {
+            plugin.logger.log(Level.WARNING, "Failed to play walking particle.", e)
+        }
     }
 }

@@ -1,6 +1,13 @@
 package com.github.shynixn.petblocks.bukkit.logic.business.goals
 
 import com.github.shynixn.petblocks.api.business.proxy.PetProxy
+import com.github.shynixn.petblocks.api.business.service.ParticleService
+import com.github.shynixn.petblocks.api.business.service.SoundService
+import com.github.shynixn.petblocks.api.persistence.entity.Particle
+import com.github.shynixn.petblocks.api.persistence.entity.Sound
+import org.bukkit.GameMode
+import org.bukkit.Material
+import org.bukkit.entity.LivingEntity
 import org.bukkit.entity.Player
 
 /**
@@ -31,12 +38,12 @@ import org.bukkit.entity.Player
  * SOFTWARE.
  */
 
-class PathfinderFleeInCombatGoalImpl(private val player: Player, private val petProxy: PetProxy) : PathfinderBaseGoal() {
+class PathfinderAfraidOfWaterGoalImpl(private val player: Player, private val livingEntity: LivingEntity, private val sound : Sound, private val particle : Particle, private val particleService : ParticleService, private val soundService : SoundService) : PathfinderBaseGoal() {
     /**
      * Gets if the goal should be currently executed.
      */
     override fun shouldGoalBeExecuted(): Boolean {
-        return false
+        return !livingEntity.isDead && player.gameMode != GameMode.SPECTATOR && livingEntity.location.block != null && (livingEntity.location.block.type == Material.WATER ||livingEntity.location.block.type == Material.STATIONARY_WATER)
     }
 
     /**
@@ -50,6 +57,8 @@ class PathfinderFleeInCombatGoalImpl(private val player: Player, private val pet
      * Gets called every time the scheduler ticks this already started goal.
      */
     override fun onExecute() {
-        petProxy.remove()
+
+
+
     }
 }
