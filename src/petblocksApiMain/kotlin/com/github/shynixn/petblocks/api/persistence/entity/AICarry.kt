@@ -1,7 +1,4 @@
-package com.github.shynixn.petblocks.bukkit.logic.business.goals
-
-import com.github.shynixn.petblocks.api.business.proxy.PetProxy
-import org.bukkit.entity.Player
+package com.github.shynixn.petblocks.api.persistence.entity
 
 /**
  * Created by Shynixn 2018.
@@ -30,26 +27,4 @@ import org.bukkit.entity.Player
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-
-class PathfinderFleeInCombatGoalImpl(private val player: Player, private val petProxy: PetProxy) : PathfinderBaseGoal() {
-    /**
-     * Gets if the goal should be currently executed.
-     */
-    override fun shouldGoalBeExecuted(): Boolean {
-        return false
-    }
-
-    /**
-     * Gets the condition when the goal has been reached or cancelled.
-     */
-    override fun shouldGoalContinueExecuting(): Boolean {
-        return false
-    }
-
-    /**
-     * Gets called every time the scheduler ticks this already started goal.
-     */
-    override fun onExecute() {
-        petProxy.remove()
-    }
-}
+interface AICarry : AIBase

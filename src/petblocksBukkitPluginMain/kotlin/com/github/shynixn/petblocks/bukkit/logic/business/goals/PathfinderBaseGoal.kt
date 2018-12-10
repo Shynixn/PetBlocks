@@ -1,6 +1,5 @@
 package com.github.shynixn.petblocks.bukkit.logic.business.goals
 
-import com.github.shynixn.petblocks.api.business.goal.Goal
 import com.github.shynixn.petblocks.bukkit.logic.business.extension.getServerVersion
 import org.bukkit.Location
 import org.bukkit.entity.LivingEntity
@@ -32,7 +31,7 @@ import org.bukkit.entity.LivingEntity
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-abstract class PathfinderBaseGoal : Goal {
+abstract class PathfinderBaseGoal {
     companion object {
         private val version = getServerVersion()
         private val getHandleMethod = findClazz("org.bukkit.craftbukkit.VERSION.entity.CraftLivingEntity").getDeclaredMethod("getHandle")!!
@@ -52,25 +51,25 @@ abstract class PathfinderBaseGoal : Goal {
     /**
      * Can the goal be cancelled while not being achieved yet?
      */
-    override val isInteruptible: Boolean
+    open val isInteruptible: Boolean
         get() = true
 
     /**
      * Gets called when the goal gets started.
      */
-    override fun onStartExecuting() {
+    open  fun onStartExecuting() {
     }
 
     /**
      * Gets called every time the scheduler ticks this already started goal.
      */
-    override fun onExecute() {
+    open fun onExecute() {
     }
 
     /**
      * Gets called when the goal stops getting executed.
      */
-    override fun onStopExecuting() {
+    open fun onStopExecuting() {
     }
 
     /**

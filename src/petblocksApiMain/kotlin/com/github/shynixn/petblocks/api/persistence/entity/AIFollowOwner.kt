@@ -1,9 +1,4 @@
-package com.github.shynixn.petblocks.bukkit.logic.business.goals
-
-import com.github.shynixn.petblocks.api.business.proxy.PetProxy
-import com.github.shynixn.petblocks.api.persistence.entity.Particle
-import com.github.shynixn.petblocks.api.persistence.entity.Sound
-import org.bukkit.entity.Player
+package com.github.shynixn.petblocks.api.persistence.entity
 
 /**
  * Created by Shynixn 2018.
@@ -32,28 +27,19 @@ import org.bukkit.entity.Player
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-
-class PathfinderFeedingImpl(
+interface AIFollowOwner : AIBase{
     /**
-     * Feeding particle.
+     * Distance to the owner which the pet tries to stay away.
      */
-    val particle: Particle,
-    /**
-     * Feeding sound.
-     */
-    val sound: Sound
-) : PathfinderBaseGoal() {
-    /**
-     * Gets if the goal should be currently executed.
-     */
-    override fun shouldGoalBeExecuted(): Boolean {
-        return true
-    }
+    var distanceToOwner: Double
 
     /**
-     * Gets the condition when the goal has been reached or cancelled.
+     * The max range a pet can be away from a player until it teleports back.
      */
-    override fun shouldGoalContinueExecuting(): Boolean {
-        return true
-    }
+    var maxRange: Double
+
+    /**
+     * Speed of the pathfinder.
+     */
+    var speed: Double
 }

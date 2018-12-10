@@ -1,4 +1,4 @@
-package com.github.shynixn.petblocks.api.business.goal
+package com.github.shynixn.petblocks.api.persistence.entity
 
 /**
  * Created by Shynixn 2018.
@@ -27,34 +27,4 @@ package com.github.shynixn.petblocks.api.business.goal
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-interface Goal {
-    /**
-     * Can the goal be cancelled while not being achieved yet?
-     */
-    val isInteruptible: Boolean
-
-    /**
-     * Gets if the goal should be currently executed.
-     */
-    fun shouldGoalBeExecuted(): Boolean
-
-    /**
-     * Gets the condition when the goal has been reached or cancelled.
-     */
-    fun shouldGoalContinueExecuting() : Boolean
-
-    /**
-     * Gets called when the goal gets started.
-     */
-    fun onStartExecuting()
-
-    /**
-     * Gets called every time the scheduler ticks this already started goal.
-     */
-    fun onExecute()
-
-    /**
-     * Gets called when the goal stops getting executed.
-     */
-    fun onStopExecuting()
-}
+interface AIWalking : AIBase

@@ -37,8 +37,24 @@ interface PetModifierMeta {
      * Climbing height.
      */
     var climbingHeight: Double
+
     /**
      * Movement speed modifier.
      */
     var movementSpeed: Double
+
+    /**
+     * Riding speed.
+     */
+    var ridingSpeed : Double
+
+    /**
+     * Movement offset from ground.
+     */
+    var movementYOffSet : Double
+
+    /**
+     * Riding offset from ground.
+     */
+    var ridingYOffSet : Double
 }

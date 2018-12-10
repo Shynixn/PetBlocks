@@ -27,19 +27,9 @@ package com.github.shynixn.petblocks.api.persistence.entity
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-interface Goal {
+interface AIFleeInCombat : AIBase {
     /**
-     * Database id.
+     * After how many seconds should the pet reappear?
      */
-    var id: Long
-
-    /**
-     * Gets the payload of the goal.
-     */
-    fun <P> getPayload(): P
-
-    /**
-     * Sets the payload of the goal.
-     */
-    fun <P> setPayload(p: P)
+    var reAppearsInSeconds: Int
 }

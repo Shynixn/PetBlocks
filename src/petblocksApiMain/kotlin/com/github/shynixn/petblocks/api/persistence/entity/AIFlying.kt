@@ -1,8 +1,5 @@
 package com.github.shynixn.petblocks.api.persistence.entity
 
-import com.github.shynixn.petblocks.api.business.enumeration.EntityType
-import com.github.shynixn.petblocks.api.business.enumeration.RideType
-
 /**
  * Created by Shynixn 2018.
  * <p>
@@ -30,59 +27,4 @@ import com.github.shynixn.petblocks.api.business.enumeration.RideType
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-interface PetMeta {
-    /**
-     * Database id.
-     */
-    var id: Long
-
-    /**
-     * Is the pet enabled. Should not get modified directly.
-     */
-    var enabled: Boolean
-
-    /**
-     * Gets the health of the pet.
-     */
-    var health : Double
-
-    /**
-     * Is the pet invincible?
-     */
-    var invincible : Boolean
-
-    /**
-     * Displayed name on top of the pet.
-     */
-    var displayName: String
-
-    /**
-     * Riding ype.
-     */
-    var rideType :RideType
-
-    /**
-     * Pet sounds enabled.
-     */
-    var soundEnabled: Boolean
-
-    /**
-     * Pet particles enabled.
-     */
-    var particleEnabled: Boolean
-
-    /**
-     * Meta data of the owner.
-     */
-    val playerMeta: PlayerMeta
-
-    /**
-     * Meta data of the skin.
-     */
-    val skin: Skin
-
-    /**
-     * Modifier value
-     */
-    val modifier: PetModifierMeta
-}
+interface AIFlying : AIBase
