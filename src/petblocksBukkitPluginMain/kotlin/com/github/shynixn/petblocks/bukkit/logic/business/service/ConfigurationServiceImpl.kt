@@ -7,6 +7,7 @@ import com.github.shynixn.petblocks.api.business.enumeration.ChatClickAction
 import com.github.shynixn.petblocks.api.business.enumeration.EntityType
 import com.github.shynixn.petblocks.api.business.service.ConfigurationService
 import com.github.shynixn.petblocks.api.business.service.ItemService
+import com.github.shynixn.petblocks.api.persistence.entity.AIHopping
 import com.github.shynixn.petblocks.api.persistence.entity.ChatMessage
 import com.github.shynixn.petblocks.api.persistence.entity.GuiItem
 import com.github.shynixn.petblocks.api.persistence.entity.PetMeta
@@ -287,7 +288,7 @@ class ConfigurationServiceImpl @Inject constructor(private val plugin: Plugin, p
         val playerMeta = PlayerMetaEntity(uuid, name)
         val petMeta = PetMetaEntity(playerMeta, SkinEntity(), PetModifierEntity())
 
-        val defaultConfig = findValue<Map<String, Any?>>("default-pet")
+        val defaultConfig = findValue<Map<String, Any?>>("pet")
         val skin = defaultConfig["skin"] as Map<String, Any?>
         val modifier = defaultConfig["modifier"] as Map<String, Any?>
 
@@ -319,6 +320,16 @@ class ConfigurationServiceImpl @Inject constructor(private val plugin: Plugin, p
         with(petMeta.modifier) {
             climbingHeight = modifier.getNullableItem("climbing-height")
             movementSpeed = modifier.getNullableItem("movement-speed")
+        }
+
+        val goalsMap = defaultConfig.get("goals") as Map<String, Any?>
+
+        goalsMap.keys.forEach { key ->
+            val goal = goalsMap[key] as Map<String, Any?>
+
+            if(goal["id"] == "hopping"){
+            //    petMeta.aiGoals.add(AIHoppingEntity())
+            }
         }
 
         return petMeta

@@ -1,7 +1,6 @@
-package com.github.shynixn.petblocks.api.persistence.entity
+package com.github.shynixn.petblocks.api.business.service
 
-import com.github.shynixn.petblocks.api.business.enumeration.EntityType
-import com.github.shynixn.petblocks.api.business.enumeration.RideType
+import com.github.shynixn.petblocks.api.business.proxy.PetProxy
 
 /**
  * Created by Shynixn 2018.
@@ -30,64 +29,15 @@ import com.github.shynixn.petblocks.api.business.enumeration.RideType
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-interface PetMeta {
+interface AfraidOfWaterService {
     /**
-     * Database id.
+     * Gets if the given pet is in water.
      */
-    var id: Long
+    fun isPetInWater(petProxy: PetProxy): Boolean
 
     /**
-     * Is the pet enabled. Should not get modified directly.
+     * Applies an escape path to the given [petProxy] to escape from water.
+     * Does nothing if the path is already activated.
      */
-    var enabled: Boolean
-
-    /**
-     * Gets the health of the pet.
-     */
-    var health : Double
-
-    /**
-     * Is the pet invincible?
-     */
-    var invincible : Boolean
-
-    /**
-     * Displayed name on top of the pet.
-     */
-    var displayName: String
-
-    /**
-     * Riding ype.
-     */
-    var rideType :RideType
-
-    /**
-     * Pet sounds enabled.
-     */
-    var soundEnabled: Boolean
-
-    /**
-     * Pet particles enabled.
-     */
-    var particleEnabled: Boolean
-
-    /**
-     * Meta data of the owner.
-     */
-    val playerMeta: PlayerMeta
-
-    /**
-     * Meta data of the skin.
-     */
-    val skin: Skin
-
-    /**
-     * Modifier value
-     */
-    val modifier: PetModifierMeta
-
-    /**
-     * Gets a list of all ai goals of this pet.
-     */
-    val aiGoals : MutableList<AIBase>
+    fun escapeWater(petProxy: PetProxy)
 }

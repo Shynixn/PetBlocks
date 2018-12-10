@@ -1,7 +1,8 @@
-package com.github.shynixn.petblocks.api.persistence.entity
+package com.github.shynixn.petblocks.core.logic.persistence.entity
 
-import com.github.shynixn.petblocks.api.business.enumeration.EntityType
-import com.github.shynixn.petblocks.api.business.enumeration.RideType
+import com.github.shynixn.petblocks.api.business.enumeration.ParticleType
+import com.github.shynixn.petblocks.api.persistence.entity.AIAfraidOfWater
+import com.github.shynixn.petblocks.api.persistence.entity.Particle
 
 /**
  * Created by Shynixn 2018.
@@ -30,64 +31,17 @@ import com.github.shynixn.petblocks.api.business.enumeration.RideType
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-interface PetMeta {
+class AIAfraidOfWaterEntity : AIAfraidOfWater {
     /**
      * Database id.
      */
-    var id: Long
-
+    override var id: Long = 0
     /**
-     * Is the pet enabled. Should not get modified directly.
+     *  Particle shown when a pet falls into water.
      */
-    var enabled: Boolean
-
+    override var particle: Particle = ParticleEntity(ParticleType.VILLAGER_ANGRY)
     /**
-     * Gets the health of the pet.
+     * Amount of seconds until the particles disappear.
      */
-    var health : Double
-
-    /**
-     * Is the pet invincible?
-     */
-    var invincible : Boolean
-
-    /**
-     * Displayed name on top of the pet.
-     */
-    var displayName: String
-
-    /**
-     * Riding ype.
-     */
-    var rideType :RideType
-
-    /**
-     * Pet sounds enabled.
-     */
-    var soundEnabled: Boolean
-
-    /**
-     * Pet particles enabled.
-     */
-    var particleEnabled: Boolean
-
-    /**
-     * Meta data of the owner.
-     */
-    val playerMeta: PlayerMeta
-
-    /**
-     * Meta data of the skin.
-     */
-    val skin: Skin
-
-    /**
-     * Modifier value
-     */
-    val modifier: PetModifierMeta
-
-    /**
-     * Gets a list of all ai goals of this pet.
-     */
-    val aiGoals : MutableList<AIBase>
+    override var stopingDelay: Int = 3
 }

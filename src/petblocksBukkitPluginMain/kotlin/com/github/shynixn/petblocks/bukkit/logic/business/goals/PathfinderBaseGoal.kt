@@ -1,8 +1,11 @@
 package com.github.shynixn.petblocks.bukkit.logic.business.goals
 
+import com.github.shynixn.petblocks.api.business.proxy.PetProxy
 import com.github.shynixn.petblocks.bukkit.logic.business.extension.getServerVersion
+import org.bukkit.GameMode
 import org.bukkit.Location
 import org.bukkit.entity.LivingEntity
+import org.bukkit.entity.Player
 
 /**
  * Created by Shynixn 2018.
@@ -57,19 +60,36 @@ abstract class PathfinderBaseGoal {
     /**
      * Gets called when the goal gets started.
      */
-    open  fun onStartExecuting() {
+    open  fun onStartExecuting(petProxy: PetProxy) {
     }
 
     /**
      * Gets called every time the scheduler ticks this already started goal.
      */
-    open fun onExecute() {
+    open fun onExecute(petProxy: PetProxy) {
     }
 
     /**
      * Gets called when the goal stops getting executed.
      */
-    open fun onStopExecuting() {
+    open fun onStopExecuting(petProxy: PetProxy) {
+    }
+
+    /**
+     * Gets if the goal should be currently executed.
+     */
+    open fun shouldGoalBeExecuted(petProxy: PetProxy): Boolean{
+        val livingEntity = petProxy.getHitBoxLivingEntity<LivingEntity>()
+        val player = petProxy.getPlayer<Player>()
+
+        return !livingEntity.isDead && player.gameMode != GameMode.SPECTATOR
+    }
+
+    /**
+     * Gets the condition when the goal has been reached or cancelled.
+     */
+    open fun shouldGoalContinueExecuting(petProxy: PetProxy): Boolean {
+        return false
     }
 
     /**
