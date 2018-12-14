@@ -2,7 +2,7 @@ package com.github.shynixn.petblocks.bukkit.logic.business.nms.v1_13_R2
 
 import com.github.shynixn.petblocks.bukkit.PetBlocksPlugin
 import com.github.shynixn.petblocks.bukkit.logic.business.extension.removeFinalModifier
-import com.github.shynixn.petblocks.bukkit.logic.business.goals.PathfinderGoalFollowOwnerImpl
+import com.github.shynixn.petblocks.bukkit.logic.business.goals.PathfinderBaseGoal
 import com.github.shynixn.petblocks.bukkit.logic.business.goals.PathfinderStickToBackGoalImpl
 import com.google.common.collect.Sets
 import net.minecraft.server.v1_13_R2.*
@@ -69,7 +69,14 @@ class PetRabbitHitBox(world: World) : EntityRabbit(world) {
         mcWorld.addEntity(this, CreatureSpawnEvent.SpawnReason.CUSTOM)
 
         val pathfinders =
-            arrayListOf(PathfinderProxy(PathfinderStickToBackGoalImpl(player, this.getBukkitEntity() as LivingEntity), JavaPlugin.getPlugin(PetBlocksPlugin::class.java)))
+            arrayListOf(Pathfinder(PathfinderStickToBackGoalImpl(player, getBukkitEntity() as LivingEntity), JavaPlugin.getPlugin(PetBlocksPlugin::class.java)))
+
+        val pathfinderBaseGoal : PathfinderBaseGoal<*>
+
+        pathfinderBaseGoal.onStartExecutingFunction = { petPRoxy, ai ->
+            service.playOnWaterService.
+        }
+
 
         for (i in 0 until pathfinders.size) {
             this.goalSelector.a(i, pathfinders[i])

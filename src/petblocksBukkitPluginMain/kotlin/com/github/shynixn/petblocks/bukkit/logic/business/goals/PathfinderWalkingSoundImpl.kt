@@ -41,8 +41,7 @@ class PathfinderWalkingSoundImpl(
     private val livingEntity: LivingEntity,
     private val sound: Sound,
     private val soundService: SoundService,
-    private val plugin: Plugin
-) : PathfinderBaseGoal() {
+    private val plugin: Plugin) : PathfinderBaseGoal() {
     /**
      * Gets if the goal should be currently executed.
      */
@@ -61,10 +60,6 @@ class PathfinderWalkingSoundImpl(
      * Gets called every time the scheduler ticks this already started goal.
      */
     override fun onExecute() {
-        try {
-            soundService.playSound(livingEntity.location, sound, player.world.players)
-        } catch (e: Exception) {
-            plugin.logger.log(Level.WARNING, "Failed to play walking sound.", e)
-        }
+
     }
 }

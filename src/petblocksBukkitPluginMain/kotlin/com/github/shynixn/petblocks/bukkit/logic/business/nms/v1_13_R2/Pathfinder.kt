@@ -1,7 +1,7 @@
-package com.github.shynixn.petblocks.bukkit.logic.business.goals
+package com.github.shynixn.petblocks.bukkit.logic.business.nms.v1_13_R2
 
-import com.github.shynixn.petblocks.api.business.proxy.PetProxy
-import com.github.shynixn.petblocks.api.business.service.AfraidOfWaterService
+import com.github.shynixn.petblocks.api.business.proxy.PathfinderProxy
+import net.minecraft.server.v1_13_R2.PathfinderGoal
 
 /**
  * Created by Shynixn 2018.
@@ -30,19 +30,46 @@ import com.github.shynixn.petblocks.api.business.service.AfraidOfWaterService
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-
-class PathfinderAfraidOfWaterGoalImpl(private val afraidOfWaterService: AfraidOfWaterService) : PathfinderBaseGoal() {
+class Pathfinder(private val pathfinderProxy: PathfinderProxy) : PathfinderGoal() {
     /**
-     * Gets if the goal should be currently executed.
+     * Override ShouldExecute.
      */
-    override fun shouldGoalBeExecuted(petProxy: PetProxy): Boolean {
-        return super.shouldGoalBeExecuted(petProxy) && afraidOfWaterService.isPetInWater(petProxy)
+    override fun a(): Boolean {
+        return pathfinderProxy.shouldGoalBeExecuted()
     }
 
     /**
-     * Gets called every time the scheduler ticks this already started goal.
+     * Override continue executing.
      */
-    override fun onExecute(petProxy: PetProxy) {
-        afraidOfWaterService.escapeWater(petProxy)
+    override fun b(): Boolean {
+        return pathfinderProxy.shouldGoalContinueExecuting()
+    }
+
+    /**
+     * Override isInterrupting.
+     */
+    override fun f(): Boolean {
+        return pathfinderProxy.isInteruptible
+    }
+
+    /**
+     * Override startExecuting.
+     */
+    override fun c() {
+        this.pathfinderProxy.onStartExecuting()
+    }
+
+    /**
+     * Override reset.
+     */
+    override fun d() {
+        this.pathfinderProxy.onStopExecuting()
+    }
+
+    /**
+     * Override update.
+     */
+    override fun e() {
+        this.pathfinderProxy.onExecute()
     }
 }

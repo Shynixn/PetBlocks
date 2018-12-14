@@ -6,23 +6,27 @@ import com.github.shynixn.petblocks.api.bukkit.event.PetRideEvent
 import com.github.shynixn.petblocks.api.bukkit.event.PetSpawnEvent
 import com.github.shynixn.petblocks.api.bukkit.event.PetWearEvent
 import com.github.shynixn.petblocks.api.business.proxy.PetProxy
-import com.github.shynixn.petblocks.api.business.service.LoggingService
-import com.github.shynixn.petblocks.api.persistence.entity.PetMeta
-import com.github.shynixn.petblocks.api.persistence.entity.Position
-import com.github.shynixn.petblocks.bukkit.logic.business.extension.*
-import com.github.shynixn.petblocks.bukkit.logic.business.service.Item113R1ServiceImpl
+import com.github.shynixn.petblocks.api.business.service.*
+import com.github.shynixn.petblocks.api.persistence.entity.*
+import com.github.shynixn.petblocks.bukkit.PetBlocksPlugin
+import com.github.shynixn.petblocks.bukkit.logic.business.extension.setDisplayName
+import com.github.shynixn.petblocks.bukkit.logic.business.extension.setSkin
+import com.github.shynixn.petblocks.bukkit.logic.business.extension.setUnbreakable
+import com.github.shynixn.petblocks.bukkit.logic.business.extension.toVector
 import org.bukkit.Bukkit
+import org.bukkit.GameMode
 import org.bukkit.Location
-import org.bukkit.Material
 import org.bukkit.entity.ArmorStand
 import org.bukkit.entity.LivingEntity
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 import org.bukkit.metadata.FixedMetadataValue
+import org.bukkit.plugin.java.JavaPlugin
 import org.bukkit.potion.PotionEffect
 import org.bukkit.potion.PotionEffectType
 import org.bukkit.util.EulerAngle
 import org.bukkit.util.Vector
+import java.util.logging.Level
 
 @Suppress("UNCHECKED_CAST")
 /**
@@ -92,7 +96,7 @@ class PetProxyImpl(override val meta: PetMeta, private val design: ArmorStand, p
         hitBox.isCustomNameVisible = false
         hitBox.customName = "PetBlockIdentifier"
 
-        val itemService = Item113R1ServiceImpl()
+        val itemService = PetBlocksApi.resolve<ItemService, Class<*>>(ItemService::class.java)
         val itemStack = itemService.createItemStack<ItemStack>(meta.skin.typeName, meta.skin.dataValue)
 
         itemStack.setDisplayName(meta.displayName)
@@ -100,6 +104,44 @@ class PetProxyImpl(override val meta: PetMeta, private val design: ArmorStand, p
         itemStack.setUnbreakable(meta.skin.unbreakable)
 
         this.setHeadItemStack(itemStack)
+
+        val plugin = JavaPlugin.getPlugin(PetBlocksPlugin::class.java)
+
+        meta.aiGoals.forEach { goal ->
+            val pathfinder = PathfinderProxyImpl(plugin)
+
+            if (goal is AIAfraidOfWater) {
+                val afraidOfWaterService = PetBlocksApi.resolve<AfraidOfWaterService, Class<*>>(AfraidOfWaterService::class.java)
+
+                pathfinder.shouldGoalBeExecuted = {
+                    !hitBox.isDead && owner.gameMode != GameMode.SPECTATOR && afraidOfWaterService.isPetInWater(this)
+                }
+
+                pathfinder.onExecute = {
+                    afraidOfWaterService.escapeWater(this, goal)
+                }
+            }
+
+            if (goal is AIAmbientSound) {
+                val soundService = PetBlocksApi.resolve<SoundService, Class<*>>(SoundService::class.java)
+
+                pathfinder.shouldGoalBeExecuted = {
+                    !hitBox.isDead && owner.gameMode != GameMode.SPECTATOR
+                }
+
+                pathfinder.onExecute = {
+                    if(Math.random() > 0.7) {
+                        soundService.playSound(hitBox.location, goal.sound, hitBox.world.players)
+                    }
+                }
+            }
+
+            if(goal is AIWalking){
+                val soundService = PetBlocksApi.resolve<SoundService, Class<*>>(SoundService::class.java)
+                val particleService = PetBlocksApi.resolve<ParticleService, Class<*>>(ParticleService::class.java)
+
+            }
+        }
 
         val event = PetSpawnEvent(this)
         Bukkit.getPluginManager().callEvent(event)

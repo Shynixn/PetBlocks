@@ -1,7 +1,4 @@
-package com.github.shynixn.petblocks.api.business.service
-
-import com.github.shynixn.petblocks.api.business.proxy.PetProxy
-import com.github.shynixn.petblocks.api.persistence.entity.AIAfraidOfWater
+package com.github.shynixn.petblocks.api.persistence.entity
 
 /**
  * Created by Shynixn 2018.
@@ -30,15 +27,9 @@ import com.github.shynixn.petblocks.api.persistence.entity.AIAfraidOfWater
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-interface AfraidOfWaterService {
+interface AIAmbientSound : AIBase{
     /**
-     * Gets if the given pet is in water.
+     * Ambient random sound.
      */
-    fun isPetInWater(petProxy: PetProxy): Boolean
-
-    /**
-     * Applies an escape path to the given [petProxy] to escape from water.
-     * Does nothing if the path is already activated.
-     */
-    fun escapeWater(petProxy: PetProxy, ai : AIAfraidOfWater)
+    val sound: Sound
 }

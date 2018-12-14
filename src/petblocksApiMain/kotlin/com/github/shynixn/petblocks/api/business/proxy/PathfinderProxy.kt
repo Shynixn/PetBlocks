@@ -1,7 +1,4 @@
-package com.github.shynixn.petblocks.api.business.service
-
-import com.github.shynixn.petblocks.api.business.proxy.PetProxy
-import com.github.shynixn.petblocks.api.persistence.entity.AIAfraidOfWater
+package com.github.shynixn.petblocks.api.business.proxy
 
 /**
  * Created by Shynixn 2018.
@@ -30,15 +27,59 @@ import com.github.shynixn.petblocks.api.persistence.entity.AIAfraidOfWater
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-interface AfraidOfWaterService {
+interface PathfinderProxy {
     /**
-     * Gets if the given pet is in water.
+     * Should Goal executed function.
      */
-    fun isPetInWater(petProxy: PetProxy): Boolean
+    var shouldGoalBeExecuted: (() -> Boolean)?
 
     /**
-     * Applies an escape path to the given [petProxy] to escape from water.
-     * Does nothing if the path is already activated.
+     * Should Goal continue executing function.
      */
-    fun escapeWater(petProxy: PetProxy, ai : AIAfraidOfWater)
+    var shouldGoalContinueExecuting: (() -> Boolean)?
+
+    /**
+     * On start executing function.
+     */
+    var onStartExecuting: (() -> Unit)?
+
+    /**
+     * On stop executing function.
+     */
+    var onStopExecuting: (() -> Unit)?
+
+    /**
+     * On execute function.
+     */
+    var onExecute: (() -> Unit)?
+
+    /**
+     * Is the pathfinder incorruptible.
+     */
+    var isInteruptible: Boolean
+
+    /**
+     * Should the goal be executed.
+     */
+    fun shouldGoalBeExecuted(): Boolean
+
+    /**
+     * Should the goal continue executing.
+     */
+    fun shouldGoalContinueExecuting(): Boolean
+
+    /**
+     * On start executing.
+     */
+    fun onStartExecuting()
+
+    /**
+     * On stop executing.
+     */
+    fun onStopExecuting()
+
+    /**
+     * On execute.
+     */
+    fun onExecute()
 }

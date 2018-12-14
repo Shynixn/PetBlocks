@@ -1,7 +1,6 @@
 package com.github.shynixn.petblocks.api.business.service
 
 import com.github.shynixn.petblocks.api.business.proxy.PetProxy
-import com.github.shynixn.petblocks.api.persistence.entity.AIAfraidOfWater
 
 /**
  * Created by Shynixn 2018.
@@ -30,15 +29,14 @@ import com.github.shynixn.petblocks.api.persistence.entity.AIAfraidOfWater
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-interface AfraidOfWaterService {
+interface NavigationService {
     /**
-     * Gets if the given pet is in water.
+     * Lets the given [petProxy] navigate to the given [location].
      */
-    fun isPetInWater(petProxy: PetProxy): Boolean
+    fun <L> navigateToLocation(petProxy: PetProxy, location: L, speed : Double)
 
     /**
-     * Applies an escape path to the given [petProxy] to escape from water.
-     * Does nothing if the path is already activated.
+     * Clears the current navigation target from the petProxy.
      */
-    fun escapeWater(petProxy: PetProxy, ai : AIAfraidOfWater)
+    fun clearNavigation(petProxy: PetProxy)
 }

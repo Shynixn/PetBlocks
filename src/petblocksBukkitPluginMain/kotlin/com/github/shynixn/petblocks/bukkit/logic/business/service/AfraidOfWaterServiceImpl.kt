@@ -2,6 +2,7 @@ package com.github.shynixn.petblocks.bukkit.logic.business.service
 
 import com.github.shynixn.petblocks.api.business.proxy.PetProxy
 import com.github.shynixn.petblocks.api.business.service.AfraidOfWaterService
+import com.github.shynixn.petblocks.api.persistence.entity.AIAfraidOfWater
 import org.bukkit.Material
 import org.bukkit.entity.LivingEntity
 
@@ -34,19 +35,19 @@ import org.bukkit.entity.LivingEntity
  */
 class AfraidOfWaterServiceImpl : AfraidOfWaterService {
     /**
+     * Applies an escape path to the given [petProxy] to escape from water.
+     * Does nothing if the path is already activated.
+     */
+    override fun escapeWater(petProxy: PetProxy, ai: AIAfraidOfWater) {
+       
+    }
+
+    /**
      * Gets if the given pet is in water.
      */
     override fun isPetInWater(petProxy: PetProxy): Boolean {
         val livingEntity = petProxy.getHitBoxLivingEntity<LivingEntity>()
 
         return livingEntity.location.block != null && (livingEntity.location.block.type == Material.WATER || livingEntity.location.block.type == Material.STATIONARY_WATER)
-    }
-
-    /**
-     * Applies an escape path to the given [petProxy] to escape from water.
-     * Does nothing if the path is already activated.
-     */
-    override fun escapeWater(petProxy: PetProxy) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 }
