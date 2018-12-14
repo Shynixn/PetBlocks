@@ -171,6 +171,9 @@ class GUIServiceImpl @Inject constructor(
             petActionService.callPet(player)
             this.close(player)
         }
+        else if (scriptResult.action == ScriptAction.CLOSE_GUI) {
+            this.close(player)
+        }
 
         /*  when {
               scriptResult.action == ScriptAction.LOAD_COLLECTION -> loadCollectionPage(PetBlockManager.instance.inventories[player], scriptResult.path.get(), scriptResult.permission.get())

@@ -48,6 +48,9 @@ class GUIScriptServiceImpl @Inject constructor(private val logger: LoggingServic
             } else if (script.startsWith("executing action call-pet")) {
                 scriptResult.action = ScriptAction.CALL_PET
                 return scriptResult
+            } else if (script.startsWith("close-gui")) {
+                scriptResult.action = ScriptAction.CLOSE_GUI
+                return scriptResult
             }
         } catch (e: Exception) {
             logger.warn("Failed to execute script '$script'.")

@@ -45,6 +45,11 @@ enum class ScriptAction {
     SCROLL_PAGE,
 
     /**
+     * Closes the gui.
+     */
+    CLOSE_GUI,
+
+    /**
      * Copies the pet skin to the icon.
      */
     COPY_PET_SKIN

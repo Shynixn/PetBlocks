@@ -115,6 +115,9 @@ class PetBlocksDependencyInjectionBinder(private val plugin: Plugin) : AbstractM
         bind<DependencyService, DependencyServiceImpl>()
         bind<CarryPetService, CarryPetServiceImpl>()
         bind<CombatPetService, CombatPetServiceImpl>()
+        bind<AIService, AIServiceImpl>()
+        bind<AfraidOfWaterService, AfraidOfWaterServiceImpl>()
+        bind<NavigationService, NavigationServiceImpl>()
         bind<DependencyHeadDatabaseService, DependencyHeadDatabaseServiceImpl>()
 
         when {
