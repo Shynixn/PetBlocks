@@ -38,6 +38,11 @@ class GuiPlayerCacheEntity(
          */
         override var path: String, private val inventory: Any, override var petMeta: PetMeta) : GuiPlayerCache {
     /**
+     * Parent.
+     */
+    override var parent: GuiPlayerCache? = null
+
+    /**
      * Off set x axe.
      */
     override var offsetX: Int = 0

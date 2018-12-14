@@ -368,7 +368,7 @@ internal fun ItemStack.setSkin(skin: String) {
         field.isAccessible = true
         field.set(real, newSkinProfile)
         itemMeta = SkullMeta::class.java.cast(real)
-    } else {
+    } else if(skin.isNotEmpty()) {
         currentMeta.owner = skin
         itemMeta = currentMeta
     }

@@ -3,14 +3,14 @@
 # 		            	   by Shynixn							      #
 #######################################################################
 
-# You can find the permissions at the official documentation.
-# https://shynixn.github.io/PetBlocks/build/html/gettingstarted/permissions.html#permissionlist
+# You can get started and find the permissions at the official documentation.
+# https://shynixn.github.io/PetBlocks
 
 ############################
 
 # Data-collecting settings
 
-# Settings to send anonymous stats to https://bstats.org/plugin/bukkit/PetBlocks.
+# These are settings to send anonymous stats to https://bstats.org/plugin/bukkit/PetBlocks.
 # As this does not have an impact on your PetBlocks experience at all I would like you to set it on true as knowing that my
 # plugin gets used by many server helps me focusing on new updates ;)
 
@@ -107,25 +107,21 @@ messages:
   perms-ico-no: '&cNo'
   no-perms: '&cYou do not have permissions.'
 
-############################
+  ############################
 
-# Default Pet settings
+  # Global settings
 
-# The pets of this plugin are very, very customize able.
-# Please take a look into the official documentation mentioned at the top of this file
-# in order to configure your pet correctly.
+  # These are global settings which belong to the whole PetBlocks plugin without being specific to a single pet.
 
-# These are the settings players are starting with when they get their first pet. However,
-# you can add all of these settings to templates in order to change them per skin or particle
-# or whatever.
+  # Please take a look into the official documentation mentioned at the top of this file if you need an explanation for all values.
 
-# You can find a list of all available goals on the documentation.
-
-############################
+  ############################
 
 global-configuration:
   respawn-delay: 4
   teleport-delay: 0
+  teleport-fall: true
+  flying-wall-colliding: true
   apply-pet-on-spawn: false
   overwrite-previous-pet: false
   sounds-other-players: true
@@ -133,14 +129,26 @@ global-configuration:
   max-petname-length: 20
   petname-blacklist:
   - 'petty'
-  - 'shitty'
+  - 'shit'
 
-default-pet:
+############################
+
+# Default Pet settings
+
+# The pets of this plugin are very, very customizeable.
+# Please take a look into the official documentation mentioned at the top of this file
+# in order to configure your pet correctly.
+
+# These are the settings players are starting with when they get their first pet. However,
+# you can add all of these settings to the GUI in order to change them per skin or particle or something else.
+
+# You can find a list of all available ais on the documentation.
+
+############################
+
+pet:
   enabled: false
   name: "<player>'s Pet"
-  health: 20.0
-  invincible: true
-  hitbox-entitytype: RABBIT
   sound-enabled: true
   particle-enabled: true
   skin:
@@ -148,10 +156,9 @@ default-pet:
     datavalue: 0
     unbreakable: false
     owner: ''
-  modifier:
-    climbing-height: 0.0
-    movement-speed: 0.0
-  goals:
+  ais:
+    1:
+      id: 'hopping'
     1:
       id: 'follow-owner'
       max-distance: 50
@@ -176,20 +183,16 @@ default-pet:
 
 ############################
 
-# World-region settings
+# World settings
 
-# Settings to manage spawning of petblocks in certain worlds or worldGuard-regions
-# DO NOT PUT 'all' into both included and excluded!
+# These settings allow spawning or deny spawning pets in certain worlds.
 
-# world-excluded: Add worlds where the petblocks should not be able to spawn
+# world-excluded: Add worlds where the pets should not be able to spawn.
 # (When 'all' is added to excluded all worlds are disabled for spawning except the added worlds to included)
-# world-included: Add worlds where the petblocks should be able to spawn
+# world-included: Add worlds where the pets should be able to spawn.
 # (When 'all' is added to included all worlds are enabled for spawning except the added worlds to excluded)
 
-# region-excluded: Add regions where the petblocks should not be able to spawn
-# (When 'all' is added to excluded all regions are disabled for spawning except the added regions to included)
-# region-included: Add regions where the petblocks should be able to spawn
-# (When 'all' is added to included all regions are enabled for spawning except the added regions to excluded)
+# DO NOT PUT 'all' into both included and excluded!
 
 ############################
 
@@ -198,33 +201,36 @@ world:
   - ''
   included:
   - 'all'
+
+############################
+
+# Region settings
+
+# These settings are for the WorldGuard plugin to allow spawning or deny spawning pets in certain regions.
+# If you do not have WorldGuard installed, you can ignore these settings.
+
+# region-excluded: Add regions where the pets should not be able to spawn.
+# (When 'all' is added to excluded all regions are disabled for spawning except the added regions to included)
+# region-included: Add regions where the pets should be able to spawn.
+# (When 'all' is added to included all regions are enabled for spawning except the added regions to excluded)
+
+# DO NOT PUT 'all' into both included and excluded!
+
+############################
+
 region:
   excluded:
   - ''
   included:
   - 'all'
 
-  ############################
+############################
 
-  # GUI-settings
+# Static GUI settings.
 
-  # Settings for the petblock-gui
+# These settings are global settings for the gui which do not get dynamically parsed.
 
-  # settings-title: GUI title
-  # settings-copy-skin: Should the skin of petblock-engine be applied when being selected?
-  # settings-use-only-disable-pet-item: Removes the enable block from the GUI and uses the pet-item instead to spawn the pet.
-  # settings-my-pet-position: Position in the GUI to show the currently selected pet
-  # settings-my-pet-default-appearance:: Default skin of the petblock if the settings-copy-skin is disabled
-
-  # gui enabled: Should the the item be shown in the GUI?
-  # gui position: Position of the item in of the GUI
-  # gui page: Page of the item in of the GUI (PAGES: MAIN, WARDROBE)
-  # gui id: item id in the GUI
-  # gui damage: item damage in the the GUI
-  # gui skin: item skin in the GUI (Name of the player [Shynixn] or the skin URL [textures.minecraft.net/texture/797884d451dc7b7729de2076cd6c4912865ade70391d1ccec3e95fb39f8c5e1])
-  # gui name: item name in the GUI
-  # gui unbreakable: item unbreakable tag in the GUI
-  # gui lore: item lore in the GUI (Multiple lines support)
+# Adding new items is not possible for this settings and you can only change the parameters of the existing declared ones.
 
 ############################
 
@@ -239,133 +245,223 @@ static-gui:
       lore:
       - 'none'
 
+      ############################
+
+      # GUI settings.
+
+      # These settings are settings for the GUI which dynamically create the GUI.
+
+      # Adding, Changing and deleting items is possible below, however please take a look into the documentation mentioned at the top
+      # of this file in order to change it correctly.
+
+      ############################
+
 gui:
   main:
     player-pet:
-      position: 4
-      visible: true
+      position: 13
+      script: 'executing action call-pet'
       icon:
         script: 'executing action copy-pet-skin'
+    disable-pet:
+      position: 31
+      icon:
+        id: 397
+        damage: 3
+        skin: 'http://textures.minecraft.net/texture/f45c9acea8da71b4f252cd4deb5943f49e7dbc0764274b25a6a6f5875baea3'
+        name: '&a&lPet enabled'
+        lore:
+        - '&7Click to disable the pet.'
     enable-pet:
-      position: 22
-      visible: true
-      script: 'executing action respawn-pet'
+      position: 31
+      hidden-when-pet-is-spawned: true
+      script: 'executing action call-pet'
       icon:
         id: 397
         damage: 3
         skin: 'textures.minecraft.net/texture/ad5fcd31287d63e7826ea760a7ed154f685dfdc7f3465732a96e619b2e1347'
-        name: '&c&lPetblock disabled'
-        unbreakable: false
+        name: '&c&lPetdisabled'
         lore:
         - '&7Click to enable the pet.'
-    disable-pet:
-      position: 22
-      visible: true
-      icon:
-        id: 397
-        damage: 3
-        skin: 'textures.minecraft.net/texture/f45c9acea8da71b4f252cd4deb5943f49e7dbc0764274b25a6a6f5875baea3'
-        name: '&a&lPetblock enabled'
-        unbreakable: false
-        lore:
-        - '&7Click to disable the pet.'
     wardrobe:
-      position: 18
-      visible: true
+      position: 10
+      script: 'open-page gui.wardrobe'
       icon:
         id: 397
         damage: 3
         skin: 'textures.minecraft.net/texture/55507d6517eff952dd38fa8bc551dd6d6a7a5e4ea134519b44650ac1ffa59c3'
-        name: '&6&lWardrobe'
-        unbreakable: false
+        name: '&6&lPet Customization'
         lore:
         - '&7Change the appearance of your pet.'
-    sounds-enabled-pet:
-      position: 31
-      visible: true
+    sounds-enabled:
+      position: 35
       icon:
         id: 397
         damage: 3
         skin: 'textures.minecraft.net/texture/cb9c706c85572f05efc4170ada791154de2b5378e6252aadc8d43b19c5564'
         name: '&a&lPet unmuted'
-        unbreakable: false
         lore:
         - '&7Click to disable the sounds of your pet.'
-    sounds-disabled-pet:
-      position: 31
-      visible: true
+    sounds-disabled:
+      position: 35
       icon:
         id: 397
         damage: 3
         skin: 'textures.minecraft.net/texture/ae7215c45d97d7bc55d9dfa58fcc73f4af74e4b3f5a15b4419127424c4268e'
         name: '&c&lPet muted'
-        unbreakable: false
         lore:
         - '&7Click to enable the sounds of your pet.'
     call-pet:
-      position: 38
-      visible: true
+      position: 37
+      script: 'executing action call-pet'
       icon:
         id: 420
-        damage: 0
-        skin: 'none'
         name: '&2&lCall'
-        unbreakable: false
         lore:
         - '&7Teleports your pet to you.'
-    particle-pet:
-      position: 35
-      visible: true
-      icon:
-        id: 331
-        damage: 0
-        skin: 'none'
-        name: '&6&lParticles'
-        unbreakable: false
-        lore:
-        - '&7Customize the effects of your pet.'
-    cannon-pet:
-      position: 11
-      visible: true
+    launch-pet:
+      position: 24
       icon:
         id: 397
         damage: 3
         skin: 'textures.minecraft.net/texture/996754d330435345aae3a9f063cfca42afb28b7c5c4bb9f294ed2527d961'
         name: '&2&lLaunch'
-        unbreakable: false
         lore:
         - '&7Shoot your pet like a cannon.'
     hat-pet:
-      position: 15
-      visible: true
+      position: 6
       icon:
         id: 397
         damage: 3
         skin: 'textures.minecraft.net/texture/9b5f247a7f5b37bbfa488ab4efaddcbad2e526e94fc542b1fe2f7cfeb6e'
         name: '&2&lHat'
-        unbreakable: false
         lore:
         - '&7Wear your pet like a hat.'
-    riding-pet:
-      position: 42
-      visible: true
+    ride-pet:
+      position: 17
       icon:
         id: 329
         damage: 0
-        skin: 'none'
         name: '&2&lRide'
-        unbreakable: false
         lore:
         - '&7Start to ride your pet.'
+    rename-pet:
+      position: 42
+      icon:
+        id: 421
+        damage: 0
+        name: '&6&lRename'
+        lore:
+        - '&7Change the name of your pet.'
+    particles-disabled:
+      position: 53
+      icon:
+        id: 397
+        damage: 3
+        skin: 'eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNDFiYzUwZDUyYTJhMmNkYTgxMjAzMWQxMTdmNWZkMDlmOGYwMGRlZWEyNjcxOGZmMTVmNTEyMzE3YjgzNjhmNiJ9fX0='
+        name: '&c&lPet particles disabled'
+        lore:
+        - '&7Click to enable the particles of your pet.'
     back:
-      position: 45
-      visible: true
+      position: 49
+      script: 'close-gui'
       icon:
         id: 166
         damage: 0
-        skin: 'none'
         name: '&cBack'
-        unbreakable: false
+        lore:
+        - '&7Closes the current window.'
+  wardrobe:
+    block-skins:
+      position: 11
+      icon:
+        id: 397
+        damage: 3
+        name: '&e&lSimple block costumes'
+        skin: 'http://textures.minecraft.net/texture/c95d37993e594082678472bf9d86823413c250d4332a2c7d8c52de4976b362'
+        lore:
+        - '&7Use Minecraft blocks as costume.'
+    colored-block-skins:
+      position: 13
+      icon:
+        id: 397
+        damage: 3
+        name: '&a&lColored block costumes'
+        skin: 'http://textures.minecraft.net/texture/f1af46febd45c0f4d81e8fa1b66b275d89e272b2ad55c978553a99c733e1ff'
+        lore:
+        - '&7Use colored Minecraft blocks as costume.'
+    player-head-skins:
+      position: 15
+      icon:
+        id: 397
+        damage: 3
+        name: '&d&lPlayer head costumes'
+        skin: 'http://textures.minecraft.net/texture/a0c2549a893726988f3428bef799875ba871688ae64eb0cfdc43f7d6e24c6c'
+        lore:
+        - '&7Use player heads as costume.'
+    minecraft-heads-pet-skins:
+      position: 19
+      icon:
+        id: 397
+        damage: 3
+        name: '&9&lPet costumes'
+        skin: 'http://textures.minecraft.net/texture/fec052be76e39148a27f255ec537dff92018c79744202d60c51bc67d618ae36a'
+        lore:
+        - "&7Use exclusive pet heads as costume."
+        - "&eSponsored by Minecraft-Heads.com"
+    minecraft-heads-vehicle-skins:
+      position: 23
+      icon:
+        id: 397
+        damage: 3
+        name: '&2&lVehicle costumes'
+        skin: 'http://textures.minecraft.net/texture/e8778c34fba29652cfac8d3f6fb35c49cbc2362b2b8f1378d83b30f463b181'
+        lore:
+        - "&7Use exclusive vehicle heads as costume."
+        - "&eSponsored by Minecraft-Heads.com"
+    minecraft-heads-puppet-skins:
+      position: 21
+      icon:
+        id: 397
+        damage: 3
+        name: '&b&lPlushie costumes'
+        skin: 'http://textures.minecraft.net/texture/3835da2685f7ad3f1919a018976ad56826691e26758a3a55a1918f7f17ad938'
+        lore:
+        - "&7Use exclusive plushie heads as costume."
+        - "&eSponsored by Minecraft-Heads.com"
+    headdatabase-skins:
+      position: 25
+      icon:
+        id: 397
+        damage: 3
+        name: '&c&lHead Database costumes'
+        skin: 'http://textures.minecraft.net/texture/3bb612eb495ede2c5ca5178d2d1ecf1ca5a255d25dfc3c254bc47f6848791d8'
+        lore:
+        - '&7Use heads from an external plugin as costume.'
+    suggest-heads:
+      position: 43
+      icon:
+        id: 386
+        damage: 0
+        name: '&a&lSuggest Heads'
+        lore:
+        - '&7Submit skins for pets or'
+        - '&7make a suggestion for a new pet.'
+    enter-custom-head:
+      position: 37
+      icon:
+        id: 397
+        damage: 3
+        name: '&2&lCustom skin'
+        lore:
+        - '&7Use the skin of another player as costume.'
+    back:
+      position: 49
+      script: 'close-gui'
+      icon:
+        id: 166
+        damage: 0
+        name: '&cBack'
         lore:
         - '&7Closes the current window.'
 # Append new items above this line <---

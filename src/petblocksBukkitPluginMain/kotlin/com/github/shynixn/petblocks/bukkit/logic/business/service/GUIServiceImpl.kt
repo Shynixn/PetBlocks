@@ -177,9 +177,18 @@ class GUIServiceImpl @Inject constructor(
             petActionService.callPet(player)
             this.close(player)
         } else if (scriptResult.action == ScriptAction.CLOSE_GUI) {
-            this.close(player)
+            val page = pageCache[player]!!
+
+            if (page.parent == null) {
+                this.close(player)
+            } else {
+                pageCache[player] = page.parent!!
+                renderPage(player, pageCache[player]!!.path, pageCache[player]!!.petMeta)
+            }
         } else if (scriptResult.action == ScriptAction.OPEN_PAGE) {
-            pageCache[player] = GuiPlayerCacheEntity(scriptResult.valueContainer as String, pageCache[player]!!.getInventory(), pageCache[player]!!.petMeta)
+            val parent = pageCache[player]!!
+            pageCache[player] = GuiPlayerCacheEntity(scriptResult.valueContainer as String, parent.getInventory(), parent.petMeta)
+            pageCache[player]!!.parent = parent
             renderPage(player, scriptResult.valueContainer as String, pageCache[player]!!.petMeta)
         }
 

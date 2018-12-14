@@ -49,6 +49,11 @@ interface GuiPlayerCache {
     var offsetY: Int
 
     /**
+     * Parent.
+     */
+    var parent : GuiPlayerCache?
+
+    /**
      * Gets the inventory.
      */
     fun <I> getInventory(): I
