@@ -50,6 +50,11 @@ enum class ScriptAction {
     CLOSE_GUI,
 
     /**
+     * Opens a GUI page.
+     */
+    OPEN_PAGE,
+
+    /**
      * Copies the pet skin to the icon.
      */
     COPY_PET_SKIN

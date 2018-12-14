@@ -33,7 +33,7 @@ interface GUIService {
      * Opens the gui for the given [player]. Does nothing when the GUI is already open.
      * @param P the type of the player.
      */
-    fun <P> open(player: P)
+    fun <P> open(player: P, pageName : String? = null)
 
     /**
      * Closes the gui for the given [player]. Does nothing when the GUI is already closed.

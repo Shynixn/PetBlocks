@@ -120,13 +120,19 @@ class GUIServiceImpl @Inject constructor(
     /**
      * Opens the gui for the given [player]. Does nothing when the GUI is already open.
      */
-    override fun <P> open(player: P) {
+    override fun <P> open(player: P, pageName: String?) {
         if (player !is Player) {
             throw IllegalArgumentException("Player has to be a BukkitPlayer!")
         }
 
         if (player.openInventory != null) {
             player.closeInventory()
+        }
+
+        var page = pageName
+
+        if (page == null) {
+            page = "gui.main"
         }
 
         headDatabaseService.clearResources(player)
@@ -136,8 +142,8 @@ class GUIServiceImpl @Inject constructor(
         player.openInventory(inventory)
 
         persistenceService.getOrCreateFromPlayerUUID(player.uniqueId.toString()).thenAccept { petMeta ->
-            pageCache[player] = GuiPlayerCacheEntity("gui.main", inventory, petMeta)
-            renderPage(player, "gui.main", petMeta)
+            pageCache[player] = GuiPlayerCacheEntity(page, inventory, petMeta)
+            renderPage(player, page, petMeta)
         }
     }
 
@@ -170,9 +176,11 @@ class GUIServiceImpl @Inject constructor(
         } else if (scriptResult.action == ScriptAction.CALL_PET) {
             petActionService.callPet(player)
             this.close(player)
-        }
-        else if (scriptResult.action == ScriptAction.CLOSE_GUI) {
+        } else if (scriptResult.action == ScriptAction.CLOSE_GUI) {
             this.close(player)
+        } else if (scriptResult.action == ScriptAction.OPEN_PAGE) {
+            pageCache[player] = GuiPlayerCacheEntity(scriptResult.valueContainer as String, pageCache[player]!!.getInventory(), pageCache[player]!!.petMeta)
+            renderPage(player, scriptResult.valueContainer as String, pageCache[player]!!.petMeta)
         }
 
         /*  when {
