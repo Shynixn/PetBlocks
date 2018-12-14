@@ -33,6 +33,10 @@ import com.github.shynixn.petblocks.api.persistence.entity.Particle
  */
 class AIAfraidOfWaterEntity : AIAfraidOfWater {
     /**
+     * Optional user identifier.
+     */
+    override var userId: String? = null
+    /**
      * Database id.
      */
     override var id: Long = 0
@@ -43,5 +47,5 @@ class AIAfraidOfWaterEntity : AIAfraidOfWater {
     /**
      * Amount of seconds until the particles disappear.
      */
-    override var stopingDelay: Int = 3
+    override var stoppingDelay: Int = 3
 }

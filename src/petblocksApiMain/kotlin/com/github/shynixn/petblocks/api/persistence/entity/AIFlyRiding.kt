@@ -1,7 +1,5 @@
 package com.github.shynixn.petblocks.api.persistence.entity
 
-import com.github.shynixn.petblocks.api.business.enumeration.RideType
-
 /**
  * Created by Shynixn 2018.
  * <p>
@@ -29,46 +27,14 @@ import com.github.shynixn.petblocks.api.business.enumeration.RideType
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-interface Template {
+interface AIFlyRiding : AIBase {
     /**
-     * Gets the petName of the engine.
+     * Riding speed.
      */
-    val petName: String?
-
-    /**
-     * Gets the particle of the engine.
-     */
-    val particle: Particle?
+    var ridingSpeed: Double
 
     /**
-     * Name of the entity being used as pet.
+     * Riding offset from ground.
      */
-    val entityType: String
-
-    /**
-     * Gets the walking sound.
-     */
-    val walkingSound: Sound
-
-    /**
-     * Gets the ambient sound.
-     */
-    val ambientSound: Sound
-
-    /**
-     * Gets the riding type.
-     */
-    val rideType: RideType
-
-    /** Returns the type of the item. */
-    val type: Int
-
-    /** Returns the data of the item. */
-    val data: Int
-
-    /** Returns the skin of the item. */
-    val skin: String
-
-    /** Returns if the item is unbreakable. */
-    val unbreakable: Boolean
+    var ridingYOffSet: Double
 }

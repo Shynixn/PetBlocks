@@ -38,7 +38,7 @@ class CompletableFutureProxyImpl<T> : CompletableFuture<T>(), CompletableFutureP
      */
     override fun thenAccept(function: (T) -> Unit) {
         super.thenAccept(function).exceptionally { e ->
-            val loggingService = PetBlocksApi.resolve<LoggingService, Class<*>>(LoggingService::class.java)
+            val loggingService = PetBlocksApi.resolve<LoggingService>(LoggingService::class.java)
             loggingService.error("Failed to execute Task.", e)
             throw RuntimeException(e)
         }

@@ -1,6 +1,4 @@
-package com.github.shynixn.petblocks.api
-
-import com.github.shynixn.petblocks.api.business.proxy.PluginProxy
+package com.github.shynixn.petblocks.api.persistence.entity
 
 /**
  * Created by Shynixn 2018.
@@ -29,30 +27,39 @@ import com.github.shynixn.petblocks.api.business.proxy.PluginProxy
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-object PetBlocksApi {
-    private var plugin: PluginProxy? = null
+interface AIMovement : AIBase {
+    /**
+     * Movement sound.
+     */
+    val movementSound: Sound
 
     /**
-     * Initializes the [petblocksPlugin] proxy.
+     * Movement particle.
      */
-    private fun initializePetBlocks(petblocksPlugin: PluginProxy) {
-        this.plugin = petblocksPlugin
-    }
+    val movementParticle: Particle
 
     /**
-     * Gets a business logic from the PetBlocks plugin.
-     * All types in the service package can be accessed.
-     * Throws a [IllegalArgumentException] if the service could not be found.
+     * Climbing height.
      */
-    fun <S> resolve(service: Any): S {
-        return plugin!!.resolve(service)
-    }
+    var climbingHeight: Double
 
     /**
-     * Creates a new entity from the given [entity] clazz.
-     * Throws a [IllegalArgumentException] if the entity could not be found.
+     * Movement speed modifier.
      */
-    fun <E> create(entity: Any): E {
-        return plugin!!.create(entity)
-    }
+    var movementSpeed: Double
+
+    /**
+     * Movement offset from ground.
+     */
+    var movementYOffSet: Double
+
+    /**
+     * Riding speed.
+     */
+    var ridingSpeed: Double
+
+    /**
+     * Riding offset from ground.
+     */
+    var ridingYOffSet: Double
 }

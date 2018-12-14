@@ -27,4 +27,4 @@ package com.github.shynixn.petblocks.api.persistence.entity
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-interface AIFlying : AIBase
+interface AIFlying : AIMovement

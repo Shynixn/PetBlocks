@@ -1,6 +1,6 @@
 package com.github.shynixn.petblocks.api.business.service
 
-import com.github.shynixn.petblocks.api.persistence.entity.Template
+import com.github.shynixn.petblocks.api.persistence.entity.AIBase
 
 /**
  * Created by Shynixn 2018.
@@ -47,12 +47,8 @@ interface PetActionService {
     fun <P> renamePet(player: P, name: String)
 
     /**
-     * Changes the skin of the given [player] pet to the given [name].
+     * Changes the ai of the pet to the given target ai goals. The boolean flag sets
+     * if the ai goals with the same type should get replaced.
      */
-    fun <P> changeSkin(player: P, name: String)
-
-    /**
-     * Changes the template of the given [player] pet to the given [engine].
-     */
-    fun <P> changeTemplate(player: P, engine: Template)
+    fun <P> changeAI(player: P, targetAIGoals: Map<AIBase, Boolean>)
 }

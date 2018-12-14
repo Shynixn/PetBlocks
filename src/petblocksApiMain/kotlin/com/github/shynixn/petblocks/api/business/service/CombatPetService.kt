@@ -33,5 +33,4 @@ interface CombatPetService {
      * source of a attack on another player.
      */
     fun <P> flee(player: P)
-
 }

@@ -28,5 +28,4 @@ package com.github.shynixn.petblocks.api.business.annotation
  * SOFTWARE.
 */
 @Retention(AnnotationRetention.RUNTIME)
-annotation class Inject {
-}
+annotation class Inject

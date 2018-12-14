@@ -29,6 +29,11 @@ package com.github.shynixn.petblocks.api.persistence.entity
  */
 interface Sound {
     /**
+     * Id.
+     */
+    var id: Long
+
+    /**
      * Name of the sound.
      */
     var name: String

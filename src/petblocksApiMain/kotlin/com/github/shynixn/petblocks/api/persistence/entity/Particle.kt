@@ -32,7 +32,7 @@ import com.github.shynixn.petblocks.api.business.enumeration.ParticleType
  */
 interface Particle {
     /**
-     * Database id.
+     * Id.
      */
     var id: Long
 

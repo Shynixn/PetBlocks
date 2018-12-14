@@ -32,4 +32,9 @@ interface AIBase {
      * Database id.
      */
     var id: Long
+
+    /**
+     * Optional user identifier.
+     */
+    var userId: String?
 }

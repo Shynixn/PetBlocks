@@ -49,7 +49,7 @@ class PlayerPetActionCommandExecutorImpl @Inject constructor(private val petActi
         } else if (args.size >= 2 && args[0].equals("rename", true) && playerProxy.hasPermission(Permission.ACTION_RENAME)) {
             petActionService.renamePet(player, mergeArgs(args))
         } else if (args.size == 2 && args[0].equals("skin", true) && playerProxy.hasPermission(Permission.ACTION_CUSTOMSKULL)) {
-            petActionService.changeSkin(player, args[1])
+          //  petActionService.changeSkin(player, args[1])
         } else {
             guiService.open(player)
         }

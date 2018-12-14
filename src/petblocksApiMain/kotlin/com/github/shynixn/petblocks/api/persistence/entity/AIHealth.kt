@@ -1,4 +1,4 @@
-package com.github.shynixn.petblocks.api.business.enumeration
+package com.github.shynixn.petblocks.api.persistence.entity
 
 /**
  * Created by Shynixn 2018.
@@ -27,13 +27,19 @@ package com.github.shynixn.petblocks.api.business.enumeration
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-enum class RideType {
+interface AIHealth {
     /**
-     * Running.
+     * Max health of a ai item.
      */
-    RUNNING,
+    var maxHealth: Double
+
     /**
-     * Flying.
+     * Current health of a ai item.
      */
-    FLYING
+    var health: Double
+
+    /**
+     * Amount of seconds until the pet can respawn after it has died.
+     */
+    var respawningDelay: Double
 }

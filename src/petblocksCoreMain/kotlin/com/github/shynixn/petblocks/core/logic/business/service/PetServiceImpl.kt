@@ -146,7 +146,7 @@ class PetServiceImpl @Inject constructor(
             return true
         }
 
-        val worldGuardService = PetBlocksApi.resolve<DependencyWorldGuardService, Any>(DependencyWorldGuardService::class)
+        val worldGuardService = PetBlocksApi.resolve<DependencyWorldGuardService>(DependencyWorldGuardService::class)
         val includedRegions = configurationService.findValue<List<String>>("region.included")
         val excludedRegions = configurationService.findValue<List<String>>("region.excluded")
 

@@ -1,6 +1,4 @@
-package com.github.shynixn.petblocks.api
-
-import com.github.shynixn.petblocks.api.business.proxy.PluginProxy
+package com.github.shynixn.petblocks.api.persistence.entity
 
 /**
  * Created by Shynixn 2018.
@@ -29,30 +27,19 @@ import com.github.shynixn.petblocks.api.business.proxy.PluginProxy
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-object PetBlocksApi {
-    private var plugin: PluginProxy? = null
+interface AIGroundRiding : AIBase {
+    /**
+     * Climbing height.
+     */
+    var climbingHeight: Double
 
     /**
-     * Initializes the [petblocksPlugin] proxy.
+     * Riding speed.
      */
-    private fun initializePetBlocks(petblocksPlugin: PluginProxy) {
-        this.plugin = petblocksPlugin
-    }
+    var ridingSpeed : Double
 
     /**
-     * Gets a business logic from the PetBlocks plugin.
-     * All types in the service package can be accessed.
-     * Throws a [IllegalArgumentException] if the service could not be found.
+     * Riding offset from ground.
      */
-    fun <S> resolve(service: Any): S {
-        return plugin!!.resolve(service)
-    }
-
-    /**
-     * Creates a new entity from the given [entity] clazz.
-     * Throws a [IllegalArgumentException] if the entity could not be found.
-     */
-    fun <E> create(entity: Any): E {
-        return plugin!!.create(entity)
-    }
+    var ridingYOffSet : Double
 }

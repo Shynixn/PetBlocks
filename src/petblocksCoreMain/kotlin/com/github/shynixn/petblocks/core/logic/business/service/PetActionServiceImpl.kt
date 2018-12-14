@@ -2,7 +2,7 @@ package com.github.shynixn.petblocks.core.logic.business.service
 
 import com.github.shynixn.petblocks.api.business.annotation.Inject
 import com.github.shynixn.petblocks.api.business.service.*
-import com.github.shynixn.petblocks.api.persistence.entity.Template
+import com.github.shynixn.petblocks.api.persistence.entity.AIBase
 import com.github.shynixn.petblocks.core.logic.business.extension.translateChatColors
 
 /**
@@ -38,6 +38,8 @@ class PetActionServiceImpl @Inject constructor(
     private val configurationService: ConfigurationService,
     private val proxyService: ProxyService
 ) : PetActionService {
+
+
     private val maxSkinLength = 20
 
     /**
@@ -111,70 +113,10 @@ class PetActionServiceImpl @Inject constructor(
     }
 
     /**
-     * Changes the engine of the given [player] pet to the given [engine].
+     * Changes the ai of the pet to the given target ai goals. The boolean flag sets
+     * if the ai goals with the same type should get replaced.
      */
-    override fun <P> changeTemplate(player: P, engine: Template) {
-        val playerProxy = proxyService.findPlayerProxyObject(player)
-
-        persistencePetMetaService.getOrCreateFromPlayerUUID(playerProxy.uniqueId).thenAccept { petMeta ->
-            val copySkin = configurationService.findValue<Boolean>("gui.settings.copy-skin")
-
-            /*   if (copySkin) {
-                   with(petMeta) {
-                       itemId = engine.type
-                       itemDamage = engine.data
-                       skin = engine.skin
-                       unbreakable = engine.unbreakable
-                   }
-               }
-
-               if (engine.petName.isPresent) {
-                   petMeta.displayName = engine.petName.get().translateChatColors()
-               }
-
-               if (engine.particle.isPresent) {
-                   val targetParticle = petMeta.particle
-                   val sourceParticle = engine.particle.get()
-
-                   with(targetParticle) {
-                       type = sourceParticle.type
-                       amount = sourceParticle.amount
-                       speed = sourceParticle.speed
-                       offSetX = sourceParticle.offSetX
-                       offSetY = sourceParticle.offSetY
-                       offSetZ = sourceParticle.offSetZ
-                       materialName = sourceParticle.materialName
-                       data = sourceParticle.data
-                   }
-               }*/
-        }
-    }
-
-    /**
-     * Changes the skin of the given [player] pet to the given [name].
-     */
-    override fun <P> changeSkin(player: P, name: String) {
-        val playerProxy = proxyService.findPlayerProxyObject(player)
-
-        val prefix = configurationService.findValue<String>("messages.prefix")
-        val skinNamingErrorMessage = configurationService.findValue<String>("messages.skullnaming-error")
-
-        if (name.length > maxSkinLength) {
-            playerProxy.sendMessage(prefix + skinNamingErrorMessage)
-            return
-        }
-
-        persistencePetMetaService.getOrCreateFromPlayerUUID(playerProxy.uniqueId).thenAccept { petMeta ->
-            val namingSuccessMessage = configurationService.findValue<String>("messages.skullnaming-success")
-
-            /*   petMeta.skin = name
-               petMeta.unbreakable = false
-               petMeta.itemId = 397
-               petMeta.itemDamage = 3*/
-
-            persistencePetMetaService.save(petMeta)
-
-            playerProxy.sendMessage(prefix + namingSuccessMessage)
-        }
+    override fun <P> changeAI(player: P, targetAIGoals: Map<AIBase, Boolean>) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 }

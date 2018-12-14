@@ -29,7 +29,7 @@ package com.github.shynixn.petblocks.api.persistence.entity
  */
 interface Skin {
     /**
-     * Database id.
+     * Id.
      */
     var id: Long
 

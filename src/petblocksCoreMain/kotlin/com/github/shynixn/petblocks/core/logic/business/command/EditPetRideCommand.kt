@@ -55,7 +55,7 @@ class EditPetRideCommand @Inject constructor(private val proxyService: ProxyServ
         }
 
         petService.getOrSpawnPetFromPlayerUUID(playerProxy.uniqueId).thenAccept{ pet ->
-            pet.startRiding()
+          //  pet.startRiding()
         }
 
         return true

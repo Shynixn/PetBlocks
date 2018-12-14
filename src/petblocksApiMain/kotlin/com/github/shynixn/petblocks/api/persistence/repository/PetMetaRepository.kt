@@ -37,8 +37,7 @@ interface PetMetaRepository {
 
     /**
      * Returns the petMeta of from the given player uniqueId. Creates
-     * a new one if it does not exist yet. Gets it from the runtime when a pet
-     * currently uses the meta data of the player.
+     * a new one if it does not exist yet.
      */
     fun getOrCreateFromPlayerIdentifiers(name: String, uuid: String): PetMeta
 

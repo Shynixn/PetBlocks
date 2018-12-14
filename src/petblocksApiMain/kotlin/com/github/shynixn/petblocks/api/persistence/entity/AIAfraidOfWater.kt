@@ -31,10 +31,10 @@ interface AIAfraidOfWater : AIBase {
     /**
      *  Particle shown when a pet falls into water.
      */
-    var particle: Particle
+    val particle: Particle
 
     /**
      * Amount of seconds until the particles disappear.
      */
-    var stopingDelay: Int
+    var stoppingDelay: Int
 }

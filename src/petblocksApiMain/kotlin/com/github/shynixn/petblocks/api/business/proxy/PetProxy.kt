@@ -59,31 +59,6 @@ interface PetProxy {
     val hitBoxNbtChange: Map<String, Any>
 
     /**
-     * Sets the entity wearing the pet.
-     */
-    fun startWearing()
-
-    /**
-     * Stops the current target wearing the pet.
-     */
-    fun stopWearing()
-
-    /**
-     * Starts riding the pet.zg
-     */
-    fun startRiding()
-
-    /**
-     * Stops the current target riding the pet.
-     */
-    fun stopRiding()
-
-    /**
-     * Plays the moving sound.
-     */
-    fun playMovingSound()
-
-    /**
      * Gets the itemStack on the pet head.
      */
     fun <I> getHeadItemStack(): I

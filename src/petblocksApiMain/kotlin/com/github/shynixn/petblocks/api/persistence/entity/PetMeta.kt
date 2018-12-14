@@ -1,8 +1,5 @@
 package com.github.shynixn.petblocks.api.persistence.entity
 
-import com.github.shynixn.petblocks.api.business.enumeration.EntityType
-import com.github.shynixn.petblocks.api.business.enumeration.RideType
-
 /**
  * Created by Shynixn 2018.
  * <p>
@@ -42,24 +39,9 @@ interface PetMeta {
     var enabled: Boolean
 
     /**
-     * Gets the health of the pet.
-     */
-    var health : Double
-
-    /**
-     * Is the pet invincible?
-     */
-    var invincible : Boolean
-
-    /**
      * Displayed name on top of the pet.
      */
     var displayName: String
-
-    /**
-     * Riding ype.
-     */
-    var rideType :RideType
 
     /**
      * Pet sounds enabled.
@@ -82,12 +64,7 @@ interface PetMeta {
     val skin: Skin
 
     /**
-     * Modifier value
-     */
-    val modifier: PetModifierMeta
-
-    /**
      * Gets a list of all ai goals of this pet.
      */
-    val aiGoals : MutableList<AIBase>
+    val aiGoals: MutableList<AIBase>
 }

@@ -27,34 +27,4 @@ package com.github.shynixn.petblocks.api.persistence.entity
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-interface PetModifierMeta {
-    /**
-     * Database id.
-     */
-    var id: Long
-
-    /**
-     * Climbing height.
-     */
-    var climbingHeight: Double
-
-    /**
-     * Movement speed modifier.
-     */
-    var movementSpeed: Double
-
-    /**
-     * Riding speed.
-     */
-    var ridingSpeed : Double
-
-    /**
-     * Movement offset from ground.
-     */
-    var movementYOffSet : Double
-
-    /**
-     * Riding offset from ground.
-     */
-    var ridingYOffSet : Double
-}
+interface AIWearing : AIBase

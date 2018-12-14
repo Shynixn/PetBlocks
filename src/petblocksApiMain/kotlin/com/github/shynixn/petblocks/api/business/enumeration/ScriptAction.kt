@@ -35,32 +35,12 @@ enum class ScriptAction {
     NONE,
 
     /**
-     * Action for loading a item collection into the current open gui window.
-     */
-    LOAD_COLLECTION,
-
-    /**
-     * Action for scrolling an item collection.
-     */
-    SCROLL_COLLECTION,
-
-    /**
-     * Action for renaming the pet.
-     */
-    RENAME_PET,
-
-    /**
-     * Action for changing the skull with a custom skin name.
-     */
-    CUSTOM_SKIN,
-
-    /**
-     * Copies the current skin of the pet into a gui icon.
-     */
-    COPY_PET_SKIN,
-
-    /**
      * Calls the pet to the player.
      */
-    CALL_PET
+    CALL_PET,
+
+    /**
+     * Copies the pet skin to the icon.
+     */
+    COPY_PET_SKIN
 }

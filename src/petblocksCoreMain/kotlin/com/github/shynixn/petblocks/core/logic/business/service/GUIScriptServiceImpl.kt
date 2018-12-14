@@ -42,35 +42,12 @@ class GUIScriptServiceImpl @Inject constructor(private val logger: LoggingServic
         val scriptResult = ScriptResultEntity()
 
         try {
-            if (script.startsWith("binding collection ")) {
-                val data = script.replace("binding collection ", "").split(" ")
-                scriptResult.action = ScriptAction.LOAD_COLLECTION
-                scriptResult.path = data[0]
-                scriptResult.permission = data[1]
-                return scriptResult
-            } else if (script.startsWith("executing action copy-pet-skin")) {
+            if (script.startsWith("executing action copy-pet-skin")) {
                 scriptResult.action = ScriptAction.COPY_PET_SKIN
                 return scriptResult
-            } else if (script.startsWith("scrolling")) {
-                val data = script.replace("scrolling ", "").split(" ")
-                scriptResult.action = ScriptAction.SCROLL_COLLECTION
-                scriptResult.valueContainer = Pair(data[0].toInt(), data[1].toInt())
+            } else if (script.startsWith("executing action call-pet")) {
+                scriptResult.action = ScriptAction.CALL_PET
                 return scriptResult
-            } else if (script.startsWith("executing action")) {
-                if (script.startsWith("executing action rename")) {
-                    val permission = script.replace("executing action rename", "").trim()
-                    scriptResult.action = ScriptAction.RENAME_PET
-                    scriptResult.permission = permission
-                    return scriptResult
-                } else if (script.startsWith("executing action customskin")) {
-                    val permission = script.replace("executing action customskin", "").trim()
-                    scriptResult.action = ScriptAction.CUSTOM_SKIN
-                    scriptResult.permission = permission
-                    return scriptResult
-                } else if (script.startsWith("executing action call-pet")) {
-                    scriptResult.action = ScriptAction.CALL_PET
-                    return scriptResult
-                }
             }
         } catch (e: Exception) {
             logger.warn("Failed to execute script '$script'.")
