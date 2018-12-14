@@ -32,6 +32,10 @@ import com.github.shynixn.petblocks.api.persistence.entity.GuiItem
  */
 class GuiItemEntity : GuiItem {
     /**
+     * Position in the inventory which cannot be scrolled.
+     */
+    override var positionFixed: Int = -1
+    /**
      * Should this icon always be hidden?
      */
     override var hidden: Boolean = false

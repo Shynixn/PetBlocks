@@ -56,6 +56,19 @@ class GUIScriptServiceImpl @Inject constructor(private val logger: LoggingServic
                 scriptResult.valueContainer = script.split(" ")[1]
                 return scriptResult
             }
+            else if (script.startsWith("scroll")) {
+                scriptResult.action = ScriptAction.SCROLL_PAGE
+                scriptResult.valueContainer = Pair(script.split(" ")[1].toInt(), script.split(" ")[2].toInt())
+                return scriptResult
+            }
+            else if (script.startsWith("hide-left-scroll")) {
+                scriptResult.action = ScriptAction.HIDE_LEFT_SCROLL
+                return scriptResult
+            }
+            else if (script.startsWith("hide-right-scroll")) {
+                scriptResult.action = ScriptAction.HIDE_RIGHT_SCROLL
+                return scriptResult
+            }
         } catch (e: Exception) {
             logger.warn("Failed to execute script '$script'.")
         }

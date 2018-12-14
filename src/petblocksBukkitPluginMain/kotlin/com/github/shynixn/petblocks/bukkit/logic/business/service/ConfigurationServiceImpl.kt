@@ -11,6 +11,7 @@ import com.github.shynixn.petblocks.api.persistence.entity.ChatMessage
 import com.github.shynixn.petblocks.api.persistence.entity.GuiItem
 import com.github.shynixn.petblocks.api.persistence.entity.PetMeta
 import com.github.shynixn.petblocks.bukkit.logic.business.extension.deserializeToMap
+import com.github.shynixn.petblocks.bukkit.logic.business.extension.setLore
 import com.github.shynixn.petblocks.bukkit.logic.business.extension.toParticleType
 import com.github.shynixn.petblocks.core.logic.business.extension.chatMessage
 import com.github.shynixn.petblocks.core.logic.business.extension.getNullableItem
@@ -208,6 +209,7 @@ class ConfigurationServiceImpl @Inject constructor(private val plugin: Plugin, p
             this.setItem<Boolean>("hidden", description) { value -> guiItem.hidden = value }
             this.setItem<Boolean>("hidden-when-pet-is-spawned", description) { value -> guiItem.hiddenWhenPetIsSpawned = value }
             this.setItem<Int>("position", description) { value -> guiItem.position = value }
+            this.setItem<Int>("position-fixed", description)  {value ->  guiItem.positionFixed = value}
             this.setItem<String>("script", description) { value -> guiItem.script = value }
 
             this.setItem<Int>("icon.id", description) { value -> guiIcon.skin.typeName = itemService.getMaterialFromNumericValue<Material>(value).name }
@@ -254,11 +256,7 @@ class ConfigurationServiceImpl @Inject constructor(private val plugin: Plugin, p
         this.cache[path]!!.forEach { guiItem ->
             try {
                 if (item.itemMeta.displayName == guiItem.icon.displayName.translateChatColors()) {
-                    if (item.itemMeta.lore == null) {
-                        item.itemMeta.lore = ArrayList<String>()
-                    }
-
-                    if (item.itemMeta.lore.size == guiItem.icon.lore.size) {
+                    if ((item.itemMeta.lore == null && guiItem.icon.lore.isEmpty()) || (item.itemMeta.lore.size == guiItem.icon.lore.size)) {
                         return guiItem
                     }
                 }

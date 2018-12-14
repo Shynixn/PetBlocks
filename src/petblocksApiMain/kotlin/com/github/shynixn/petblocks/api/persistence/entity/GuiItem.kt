@@ -51,4 +51,9 @@ interface GuiItem {
 
     /** Returns the position in the inventory. */
     var position: Int
+
+    /**
+     * Position in the inventory which cannot be scrolled.
+     */
+    var positionFixed : Int
 }

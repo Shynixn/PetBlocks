@@ -214,6 +214,8 @@ class GUIServiceImpl @Inject constructor(
             return
         }
 
+        println("-----------")
+
         for (item in items) {
             if (item.hidden) {
                 continue
@@ -223,7 +225,13 @@ class GUIServiceImpl @Inject constructor(
                 continue
             }
 
-            val position = scrollCollection(player, item.position)
+            val position = if (item.positionFixed >= 0) {
+                item.positionFixed
+            } else {
+                scrollCollection(player, item.position)
+            }
+
+            println("Item " + position + "/" + item.position)
 
             if (position < 0 || position > 53) {
                 continue
@@ -243,10 +251,54 @@ class GUIServiceImpl @Inject constructor(
                         unbreakable = petMeta.skin.unbreakable
                     }
 
-                    renderIcon(inventory, position, guiIcon)
+                    renderIcon(inventory, position, item.positionFixed, guiIcon)
+                } else if (scriptResult.action == ScriptAction.HIDE_RIGHT_SCROLL && item.script != null) {
+                    val itemPreScriptResult = scriptService.executeScript(item.script!!)
+                    val offsetData = itemPreScriptResult.valueContainer as Pair<Int, Int>
+
+                    val cachedData = Pair(pageCache[player]!!.offsetX, pageCache[player]!!.offsetY)
+                    pageCache[player]!!.offsetX += offsetData.first
+
+                    var found = false
+
+                    if (offsetData.first > 0) {
+                        for (s in items) {
+                            if (s.hidden) {
+                                continue
+                            }
+
+                            if (petMeta.enabled && s.hiddenWhenPetIsSpawned) {
+                                continue
+                            }
+
+                            val pos = scrollCollection(player, s.position)
+
+                            if (pos in 0..53) {
+                                found = true
+                            }
+                        }
+                    }
+
+                    pageCache[player]!!.offsetX = cachedData.first
+                    pageCache[player]!!.offsetY = cachedData.second
+
+                    if (found) {
+                        renderIcon(inventory, position, item.positionFixed, item.icon)
+                    }
+                } else if (scriptResult.action == ScriptAction.HIDE_LEFT_SCROLL && item.script != null) {
+                    val itemPreScriptResult = scriptService.executeScript(item.script!!)
+                    val offsetData = itemPreScriptResult.valueContainer as Pair<Int, Int>
+
+                    if (offsetData.first < 0) {
+                        if (pageCache[player]!!.offsetX > 0) {
+                            renderIcon(inventory, position, item.positionFixed, item.icon)
+                        }
+
+                        continue
+                    }
                 }
             } else {
-                renderIcon(inventory, position, item.icon)
+                renderIcon(inventory, position, item.positionFixed, item.icon)
             }
         }
 
@@ -257,8 +309,8 @@ class GUIServiceImpl @Inject constructor(
     /**
      * Renders a gui Icon.
      */
-    private fun renderIcon(inventory: Inventory, position: Int, guiIcon: GuiIcon) {
-        if (position < 0) {
+    private fun renderIcon(inventory: Inventory, position: Int, positionFixed: Int, guiIcon: GuiIcon) {
+        if (position < 0 && positionFixed < 0) {
             return
         }
 
@@ -269,7 +321,11 @@ class GUIServiceImpl @Inject constructor(
         itemStack.setSkin(guiIcon.skin.owner)
         itemStack.setUnbreakable(guiIcon.skin.unbreakable)
 
-        inventory.setItem(position, itemStack)
+        if (positionFixed > -1) {
+            inventory.setItem(positionFixed, itemStack)
+        } else {
+            inventory.setItem(position, itemStack)
+        }
     }
 
     /**
@@ -422,7 +478,7 @@ class GUIServiceImpl @Inject constructor(
 
         for (i in 0 until inventory.contents.size) {
             if (inventory.getItem(i) == null || inventory.getItem(i).type == Material.AIR) {
-                renderIcon(inventory, i, guiItem.icon)
+                renderIcon(inventory, i, -1, guiItem.icon)
             }
         }
     }

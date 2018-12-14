@@ -57,5 +57,15 @@ enum class ScriptAction {
     /**
      * Copies the pet skin to the icon.
      */
-    COPY_PET_SKIN
+    COPY_PET_SKIN,
+
+    /**
+     * Hides the item on left scroll outside of the bounding box.
+     */
+    HIDE_LEFT_SCROLL,
+
+    /**
+     * Hides the item on right scroll outside of the bounding box.
+     */
+    HIDE_RIGHT_SCROLL
 }
