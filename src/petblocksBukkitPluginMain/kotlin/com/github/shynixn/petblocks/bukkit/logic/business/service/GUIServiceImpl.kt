@@ -161,7 +161,7 @@ class GUIServiceImpl @Inject constructor(
 
         val scriptResult = scriptService.executeScript(optGuiItem.script!!)
 
-        if (scriptResult.action == ScriptAction.SCROLL_COLLECTION) {
+        if (scriptResult.action == ScriptAction.SCROLL_PAGE) {
             val result = scriptResult.valueContainer as Pair<Int, Int>
             pageCache[player]!!.offsetX += result.first
             pageCache[player]!!.offsetY += result.second

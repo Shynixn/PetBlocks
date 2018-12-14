@@ -1,12 +1,7 @@
-package com.github.shynixn.petblocks.bukkit.logic.business.goals
+package com.github.shynixn.petblocks.api.business.service
 
-import com.github.shynixn.petblocks.api.business.service.SoundService
-import com.github.shynixn.petblocks.api.persistence.entity.Sound
-import org.bukkit.GameMode
-import org.bukkit.entity.LivingEntity
-import org.bukkit.entity.Player
-import org.bukkit.plugin.Plugin
-import java.util.logging.Level
+import com.github.shynixn.petblocks.api.business.proxy.PetProxy
+import com.github.shynixn.petblocks.api.persistence.entity.AIBase
 
 /**
  * Created by Shynixn 2018.
@@ -35,31 +30,9 @@ import java.util.logging.Level
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-
-class PathfinderWalkingSoundImpl(
-    private val player: Player,
-    private val livingEntity: LivingEntity,
-    private val sound: Sound,
-    private val soundService: SoundService,
-    private val plugin: Plugin) : PathfinderBaseGoal() {
+interface AIService {
     /**
-     * Gets if the goal should be currently executed.
+     * Applies an ai goal to a pet and performs all checking actions.
      */
-    override fun shouldGoalBeExecuted(): Boolean {
-        return !livingEntity.isDead && player.gameMode != GameMode.SPECTATOR
-    }
-
-    /**
-     * Gets the condition when the goal has been reached or cancelled.
-     */
-    override fun shouldGoalContinueExecuting(): Boolean {
-        return true
-    }
-
-    /**
-     * Gets called every time the scheduler ticks this already started goal.
-     */
-    override fun onExecute() {
-
-    }
+    fun applyAIGoalToPet(petProxy: PetProxy, goal : AIBase)
 }

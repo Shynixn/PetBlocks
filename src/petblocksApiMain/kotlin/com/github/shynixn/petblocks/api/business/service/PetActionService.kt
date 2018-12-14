@@ -45,10 +45,4 @@ interface PetActionService {
      * Renames the pet of the given [player] to the given [name].
      */
     fun <P> renamePet(player: P, name: String)
-
-    /**
-     * Changes the ai of the pet to the given target ai goals. The boolean flag sets
-     * if the ai goals with the same type should get replaced.
-     */
-    fun <P> changeAI(player: P, targetAIGoals: Map<AIBase, Boolean>)
 }

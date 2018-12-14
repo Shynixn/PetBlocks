@@ -5,6 +5,8 @@ import com.github.shynixn.petblocks.api.bukkit.event.PetRemoveEvent
 import com.github.shynixn.petblocks.api.bukkit.event.PetRideEvent
 import com.github.shynixn.petblocks.api.bukkit.event.PetSpawnEvent
 import com.github.shynixn.petblocks.api.bukkit.event.PetWearEvent
+import com.github.shynixn.petblocks.api.business.proxy.NMSPetProxy
+import com.github.shynixn.petblocks.api.business.proxy.PathfinderProxy
 import com.github.shynixn.petblocks.api.business.proxy.PetProxy
 import com.github.shynixn.petblocks.api.business.service.*
 import com.github.shynixn.petblocks.api.persistence.entity.*
@@ -56,7 +58,11 @@ import java.util.logging.Level
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class PetProxyImpl(override val meta: PetMeta, private val design: ArmorStand, private val hitBox: LivingEntity, private val owner: Player) : PetProxy, Runnable {
+class PetProxyImpl(override val meta: PetMeta, private val design: ArmorStand, private val nmsProxy: NMSPetProxy, private val hitBox: LivingEntity, private val owner: Player) : PetProxy, Runnable {
+    /**
+     * Gets all pathfinders.
+     */
+    override val pathfinders: MutableList<PathfinderProxy> = ArrayList()
     /**
      * Gets the logger of the pet.
      */
@@ -96,7 +102,7 @@ class PetProxyImpl(override val meta: PetMeta, private val design: ArmorStand, p
         hitBox.isCustomNameVisible = false
         hitBox.customName = "PetBlockIdentifier"
 
-        val itemService = PetBlocksApi.resolve<ItemService, Class<*>>(ItemService::class.java)
+        val itemService = PetBlocksApi.resolve<ItemService>(ItemService::class.java)
         val itemStack = itemService.createItemStack<ItemStack>(meta.skin.typeName, meta.skin.dataValue)
 
         itemStack.setDisplayName(meta.displayName)
@@ -105,46 +111,22 @@ class PetProxyImpl(override val meta: PetMeta, private val design: ArmorStand, p
 
         this.setHeadItemStack(itemStack)
 
-        val plugin = JavaPlugin.getPlugin(PetBlocksPlugin::class.java)
+        val aiService = PetBlocksApi.resolve<AIService>(AIService::class.java);
 
-        meta.aiGoals.forEach { goal ->
-            val pathfinder = PathfinderProxyImpl(plugin)
-
-            if (goal is AIAfraidOfWater) {
-                val afraidOfWaterService = PetBlocksApi.resolve<AfraidOfWaterService, Class<*>>(AfraidOfWaterService::class.java)
-
-                pathfinder.shouldGoalBeExecuted = {
-                    !hitBox.isDead && owner.gameMode != GameMode.SPECTATOR && afraidOfWaterService.isPetInWater(this)
-                }
-
-                pathfinder.onExecute = {
-                    afraidOfWaterService.escapeWater(this, goal)
-                }
-            }
-
-            if (goal is AIAmbientSound) {
-                val soundService = PetBlocksApi.resolve<SoundService, Class<*>>(SoundService::class.java)
-
-                pathfinder.shouldGoalBeExecuted = {
-                    !hitBox.isDead && owner.gameMode != GameMode.SPECTATOR
-                }
-
-                pathfinder.onExecute = {
-                    if(Math.random() > 0.7) {
-                        soundService.playSound(hitBox.location, goal.sound, hitBox.world.players)
-                    }
-                }
-            }
-
-            if(goal is AIWalking){
-                val soundService = PetBlocksApi.resolve<SoundService, Class<*>>(SoundService::class.java)
-                val particleService = PetBlocksApi.resolve<ParticleService, Class<*>>(ParticleService::class.java)
-
-            }
+        for (goal in meta.aiGoals) {
+            aiService.applyAIGoalToPet(this, goal)
         }
 
         val event = PetSpawnEvent(this)
         Bukkit.getPluginManager().callEvent(event)
+    }
+
+    /**
+     * Adds a pathfinder to this pet.
+     */
+    override fun addPathfinder(pathfinderProxy: PathfinderProxy) {
+        pathfinders.add(pathfinderProxy)
+        nmsProxy.applyPathfinder(pathfinderProxy)
     }
 
     /**
@@ -171,7 +153,7 @@ class PetProxyImpl(override val meta: PetMeta, private val design: ArmorStand, p
     /**
      * Sets the entity wearing the pet.
      */
-    override fun startWearing() {
+    fun startWearing() {
         if (design.passenger != null) {
             return
         }
@@ -194,7 +176,7 @@ class PetProxyImpl(override val meta: PetMeta, private val design: ArmorStand, p
     /**
      * Stops the current target wearing the pet.
      */
-    override fun stopWearing() {
+    fun stopWearing() {
         if (design.passenger == null) {
             return
         }
@@ -216,7 +198,7 @@ class PetProxyImpl(override val meta: PetMeta, private val design: ArmorStand, p
     /**
      * Starts riding the pet.zg
      */
-    override fun startRiding() {
+    fun startRiding() {
         if (owner.passenger != null) {
             return
         }
@@ -236,7 +218,7 @@ class PetProxyImpl(override val meta: PetMeta, private val design: ArmorStand, p
     /**
      * Stops the current target riding the pet.
      */
-    override fun stopRiding() {
+    fun stopRiding() {
         if (owner.passenger != null) {
             return
         }
@@ -310,13 +292,6 @@ class PetProxyImpl(override val meta: PetMeta, private val design: ArmorStand, p
         Bukkit.getPluginManager().callEvent(PetRemoveEvent(this))
         this.design.remove()
         this.hitBox.remove()
-    }
-
-    /**
-     * Plays the moving sound.
-     */
-    override fun playMovingSound() {
-
     }
 
     /**

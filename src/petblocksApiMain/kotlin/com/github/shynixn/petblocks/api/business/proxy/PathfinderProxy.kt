@@ -1,5 +1,7 @@
 package com.github.shynixn.petblocks.api.business.proxy
 
+import com.github.shynixn.petblocks.api.persistence.entity.AIBase
+
 /**
  * Created by Shynixn 2018.
  * <p>
@@ -57,6 +59,11 @@ interface PathfinderProxy {
      * Is the pathfinder incorruptible.
      */
     var isInteruptible: Boolean
+
+    /**
+     * Gets the base ai.
+     */
+    val aiBase : AIBase
 
     /**
      * Should the goal be executed.

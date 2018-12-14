@@ -2,6 +2,8 @@ package com.github.shynixn.petblocks.bukkit.logic.business.nms.v1_13_R2
 
 import com.github.shynixn.petblocks.api.business.enumeration.EntityType
 import com.github.shynixn.petblocks.api.business.proxy.NMSPetProxy
+import com.github.shynixn.petblocks.api.business.proxy.PathfinderProxy
+import com.github.shynixn.petblocks.api.persistence.entity.AIHopping
 import com.github.shynixn.petblocks.api.persistence.entity.PetMeta
 import com.github.shynixn.petblocks.bukkit.logic.business.proxy.PetProxyImpl
 import net.minecraft.server.v1_13_R2.*
@@ -39,11 +41,10 @@ import java.lang.reflect.Field
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class PetDesign(owner: Player, val petMeta: PetMeta) : EntityArmorStand((owner.location.world as CraftWorld).handle), NMSPetProxy {
+class PetDesign(owner: Player, val petMeta: PetMeta, entityType: EntityType) : EntityArmorStand((owner.location.world as CraftWorld).handle), NMSPetProxy {
     private var internalProxy: PetProxyImpl? = null
     private var jumpingField: Field = EntityLiving::class.java.getDeclaredField("bg")
-    private var hitBox: EntityInsentient
-
+    private var hitBox: PetRabbitHitBox
 
     companion object {
         private val axisAlignmentFields = arrayOfNulls<Field?>(5)
@@ -89,13 +90,13 @@ class PetDesign(owner: Player, val petMeta: PetMeta) : EntityArmorStand((owner.l
         this.setPositionRotation(location.x, location.y, location.z, location.yaw, location.pitch)
         mcWorld.addEntity(this, CreatureSpawnEvent.SpawnReason.CUSTOM)
 
-        hitBox = if (petMeta.hitBoxEntityType == EntityType.ZOMBIE) {
+        hitBox = if (entityType == EntityType.RABBIT) {
             PetRabbitHitBox(owner, this, location)
         } else {
             PetRabbitHitBox(owner, this, location)
         }
 
-        internalProxy = PetProxyImpl(petMeta, this.bukkitEntity as ArmorStand, hitBox.bukkitEntity as LivingEntity, owner)
+        internalProxy = PetProxyImpl(petMeta, this.bukkitEntity as ArmorStand, this, hitBox.bukkitEntity as LivingEntity, owner)
 
         val compound = NBTTagCompound()
         compound.setBoolean("invulnerable", true)
@@ -106,6 +107,13 @@ class PetDesign(owner: Player, val petMeta: PetMeta) : EntityArmorStand((owner.l
         this.a(compound)
 
         hitBox.passengers.add(this)
+    }
+
+    /**
+     * Applies pathfinder to the entity.
+     */
+    override fun applyPathfinder(pathfinderProxies: PathfinderProxy) {
+        hitBox.applyPathfinder(pathfinderProxies)
     }
 
     /**

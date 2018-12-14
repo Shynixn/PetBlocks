@@ -111,12 +111,4 @@ class PetActionServiceImpl @Inject constructor(
             playerProxy.sendMessage(prefix + namingSuccessMessage)
         }
     }
-
-    /**
-     * Changes the ai of the pet to the given target ai goals. The boolean flag sets
-     * if the ai goals with the same type should get replaced.
-     */
-    override fun <P> changeAI(player: P, targetAIGoals: Map<AIBase, Boolean>) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
 }

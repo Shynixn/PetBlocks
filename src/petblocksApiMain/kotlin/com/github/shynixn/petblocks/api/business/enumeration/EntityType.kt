@@ -48,12 +48,14 @@ enum class EntityType(
      * Rabbit EntityType.
      */
     RABBIT(101, "RABBIT", "Rabbit", "rabbit"),
+
+    /**
+     * Villager entity type.
+     */
+    VILLAGER(120, "VILLAGER", "Villager", "villager"),
+
     /**
      * Armorstand EntityType.
      */
     ARMORSTAND(30, "ARMORSTAND", "Armorstand", "armorstand"),
-    /**
-     * Zombie EntityTye.
-     */
-    ZOMBIE(54, "ZOMBIE", "Zombie", "zombie");
 }

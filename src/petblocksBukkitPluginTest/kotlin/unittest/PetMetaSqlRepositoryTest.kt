@@ -8,7 +8,6 @@ import com.github.shynixn.petblocks.api.persistence.entity.GuiItem
 import com.github.shynixn.petblocks.api.persistence.entity.PetMeta
 import com.github.shynixn.petblocks.api.persistence.repository.PetMetaRepository
 import com.github.shynixn.petblocks.core.logic.persistence.entity.PetMetaEntity
-import com.github.shynixn.petblocks.core.logic.persistence.entity.PetModifierEntity
 import com.github.shynixn.petblocks.core.logic.persistence.entity.PlayerMetaEntity
 import com.github.shynixn.petblocks.core.logic.persistence.entity.SkinEntity
 import com.github.shynixn.petblocks.core.logic.persistence.repository.PetMetaSqlRepository
@@ -79,7 +78,7 @@ class PetMetaSqlRepositoryTest {
         // Arrange
         val mockedContext = MockedSqlDbContext()
         val classUnderTest = createWithDependencies(mockedContext)
-        val petMeta = PetMetaEntity(PlayerMetaEntity(UUID.randomUUID().toString(), "Pikachu"), SkinEntity(), PetModifierEntity())
+        val petMeta = PetMetaEntity(PlayerMetaEntity(UUID.randomUUID().toString(), "Pikachu"), SkinEntity())
 
         // Act
         val databasePetMeta = classUnderTest.save(petMeta)
@@ -103,7 +102,7 @@ class PetMetaSqlRepositoryTest {
         // Arrange
         val mockedContext = MockedSqlDbContext()
         val classUnderTest = createWithDependencies(mockedContext)
-        val petMeta = PetMetaEntity(PlayerMetaEntity(UUID.randomUUID().toString(), "Pikachu"), SkinEntity(), PetModifierEntity())
+        val petMeta = PetMetaEntity(PlayerMetaEntity(UUID.randomUUID().toString(), "Pikachu"), SkinEntity())
         petMeta.id = 32
         petMeta.playerMeta.id = 106
 
@@ -194,7 +193,7 @@ class PetMetaSqlRepositoryTest {
          * Generates the default pet meta.
          */
         override fun generateDefaultPetMeta(uuid: String, name: String): PetMeta {
-            return PetMetaEntity(PlayerMetaEntity(uuid, name), SkinEntity(), PetModifierEntity())
+            return PetMetaEntity(PlayerMetaEntity(uuid, name), SkinEntity())
         }
 
         /**
@@ -209,8 +208,8 @@ class PetMetaSqlRepositoryTest {
         var insertCalled = false
         var updateCalled = false
         var singleQueryCounter = 0
-        private val petMetas = arrayListOf(PetMetaEntity(PlayerMetaEntity(UUID.fromString("16625034-af3d-4781-b157-64572759ad1c").toString(), "Alina"), SkinEntity(), PetModifierEntity()),
-            PetMetaEntity(PlayerMetaEntity(UUID.randomUUID().toString(), "Elias"), SkinEntity(), PetModifierEntity()))
+        private val petMetas = arrayListOf(PetMetaEntity(PlayerMetaEntity(UUID.fromString("16625034-af3d-4781-b157-64572759ad1c").toString(), "Alina"), SkinEntity()),
+            PetMetaEntity(PlayerMetaEntity(UUID.randomUUID().toString(), "Elias"), SkinEntity()))
 
         /**
          * Creates a new transaction to the database.
@@ -247,7 +246,7 @@ class PetMetaSqlRepositoryTest {
                 return null
             }
 
-            return PetMetaEntity(PlayerMetaEntity(UUID.randomUUID().toString(), "Mosalina"), SkinEntity(), PetModifierEntity()) as R
+            return PetMetaEntity(PlayerMetaEntity(UUID.randomUUID().toString(), "Mosalina"), SkinEntity()) as R
         }
 
         /**

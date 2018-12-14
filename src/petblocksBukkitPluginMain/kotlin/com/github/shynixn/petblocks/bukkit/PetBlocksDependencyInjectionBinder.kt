@@ -14,7 +14,6 @@ import com.github.shynixn.petblocks.api.persistence.context.SqlDbContext
 import com.github.shynixn.petblocks.api.persistence.repository.PetMetaRepository
 import com.github.shynixn.petblocks.api.persistence.repository.PetRepository
 import com.github.shynixn.petblocks.bukkit.logic.business.extension.getServerVersion
-import com.github.shynixn.petblocks.bukkit.logic.business.listener.*
 import com.github.shynixn.petblocks.bukkit.logic.business.proxy.SqlProxyImpl
 import com.github.shynixn.petblocks.bukkit.logic.business.service.*
 import com.github.shynixn.petblocks.core.jvm.logic.persistence.context.SqlDbContextImpl
@@ -73,7 +72,6 @@ class PetBlocksDependencyInjectionBinder(private val plugin: Plugin) : AbstractM
         bindClass<EditPetCostumeCommand>()
         bindClass<EditPetDisableCommand>()
         bindClass<EditPetEnableCommand>()
-        bindClass<EditPetEngineCommand>()
         bindClass<EditPetItemLoreCommand>()
         bindClass<EditPetItemNameCommand>()
         bindClass<EditPetKillNextCommand>()

@@ -3,7 +3,6 @@ package unittest
 import com.github.shynixn.petblocks.api.business.proxy.PetProxy
 import com.github.shynixn.petblocks.api.persistence.repository.PetRepository
 import com.github.shynixn.petblocks.core.logic.persistence.entity.PetMetaEntity
-import com.github.shynixn.petblocks.core.logic.persistence.entity.PetModifierEntity
 import com.github.shynixn.petblocks.core.logic.persistence.entity.PlayerMetaEntity
 import com.github.shynixn.petblocks.core.logic.persistence.entity.SkinEntity
 import com.github.shynixn.petblocks.core.logic.persistence.repository.PetRunTimeRepository
@@ -100,7 +99,7 @@ class PetRunTimeRepositoryTest {
         val classUnderTest = createWithDependencies()
         val proxy = Mockito.mock(PetProxy::class.java)
         val uuid = UUID.randomUUID()
-        val petMeta = PetMetaEntity(PlayerMetaEntity(uuid.toString(), "Creeper"), SkinEntity(), PetModifierEntity())
+        val petMeta = PetMetaEntity(PlayerMetaEntity(uuid.toString(), "Creeper"), SkinEntity())
         Mockito.`when`(proxy.meta).thenReturn(petMeta)
 
         // Act
@@ -125,7 +124,7 @@ class PetRunTimeRepositoryTest {
         val classUnderTest = createWithDependencies()
         val proxy = Mockito.mock(PetProxy::class.java)
         val uuid = UUID.randomUUID()
-        val petMeta = PetMetaEntity(PlayerMetaEntity(uuid.toString(), "Creeper"), SkinEntity(), PetModifierEntity())
+        val petMeta = PetMetaEntity(PlayerMetaEntity(uuid.toString(), "Creeper"), SkinEntity())
         Mockito.`when`(proxy.meta).thenReturn(petMeta)
 
         // Act
@@ -151,7 +150,7 @@ class PetRunTimeRepositoryTest {
         val classUnderTest = createWithDependencies()
         val proxy = Mockito.mock(PetProxy::class.java)
         val uuid = UUID.randomUUID()
-        val petMeta = PetMetaEntity(PlayerMetaEntity(uuid.toString(), "Creeper"), SkinEntity(), PetModifierEntity())
+        val petMeta = PetMetaEntity(PlayerMetaEntity(uuid.toString(), "Creeper"), SkinEntity())
         Mockito.`when`(proxy.meta).thenReturn(petMeta)
 
         // Act
@@ -176,7 +175,7 @@ class PetRunTimeRepositoryTest {
         val classUnderTest = createWithDependencies()
         val proxy = Mockito.mock(PetProxy::class.java)
         val uuid = UUID.randomUUID()
-        val petMeta = PetMetaEntity(PlayerMetaEntity(uuid.toString(), "Creeper"), SkinEntity(), PetModifierEntity())
+        val petMeta = PetMetaEntity(PlayerMetaEntity(uuid.toString(), "Creeper"), SkinEntity())
         Mockito.`when`(proxy.meta).thenReturn(petMeta)
 
         // Act

@@ -38,12 +38,12 @@ import com.github.shynixn.petblocks.core.logic.persistence.entity.ChatMessageEnt
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class EditPetCommandExecutorImpl @Inject constructor(editPetCostumeCommand: EditPetCostumeCommand, editPetDisableCommand: EditPetDisableCommand, editPetEnableCommand: EditPetEnableCommand, editPetEngineCommand: EditPetEngineCommand, editPetItemLoreCommand: EditPetItemLoreCommand, editPetItemNameCommand: EditPetItemNameCommand, killNextCommand: EditPetKillNextCommand, editPetParticleCommand: EditPetParticleCommand, editPetRenameCommand: EditPetRenameCommand, editPetRideCommand: EditPetRideCommand, editPetSkinCommand: EditPetSkinCommand, editPetToggleCommand: EditPetToggleCommand, editPetToggleSoundCommand: EditPetToggleSoundCommand, editPetWearCommand: EditPetWearCommand, private val messageService: MessageService, private val proxyService: ProxyService, private val configurationService: ConfigurationService) : EditPetCommandExecutor {
+class EditPetCommandExecutorImpl @Inject constructor(editPetCostumeCommand: EditPetCostumeCommand, editPetDisableCommand: EditPetDisableCommand, editPetEnableCommand: EditPetEnableCommand, editPetItemLoreCommand: EditPetItemLoreCommand, editPetItemNameCommand: EditPetItemNameCommand, killNextCommand: EditPetKillNextCommand, editPetParticleCommand: EditPetParticleCommand, editPetRenameCommand: EditPetRenameCommand, editPetRideCommand: EditPetRideCommand, editPetSkinCommand: EditPetSkinCommand, editPetToggleCommand: EditPetToggleCommand, editPetToggleSoundCommand: EditPetToggleSoundCommand, editPetWearCommand: EditPetWearCommand, private val messageService: MessageService, private val proxyService: ProxyService, private val configurationService: ConfigurationService) : EditPetCommandExecutor {
     private val commands = ArrayList<SourceCommand>()
 
     init {
         commands.addAll(arrayOf(editPetCostumeCommand, editPetDisableCommand, editPetEnableCommand,
-                editPetEngineCommand, editPetItemLoreCommand, editPetItemNameCommand, killNextCommand,
+     editPetItemLoreCommand, editPetItemNameCommand, killNextCommand,
                 editPetParticleCommand, editPetRenameCommand, editPetRideCommand, editPetSkinCommand,
                 editPetToggleCommand, editPetToggleSoundCommand, editPetWearCommand))
     }

@@ -9,6 +9,8 @@ import com.github.shynixn.petblocks.api.business.service.ConfigurationService
 import com.github.shynixn.petblocks.api.business.service.EntityRegistrationService
 import com.github.shynixn.petblocks.api.business.service.EntityService
 import com.github.shynixn.petblocks.api.business.service.ProxyService
+import com.github.shynixn.petblocks.api.persistence.entity.AIHopping
+import com.github.shynixn.petblocks.api.persistence.entity.AIWalking
 import com.github.shynixn.petblocks.api.persistence.entity.PetMeta
 import org.bukkit.ChatColor
 import org.bukkit.entity.Entity
@@ -58,8 +60,21 @@ class EntityServiceImpl @Inject constructor(
         val playerProxy = proxyService.findPlayerProxyObjectFromUUID(petMeta.playerMeta.uuid)
         val designClazz = Class.forName("com.github.shynixn.petblocks.bukkit.logic.business.nms.VERSION.PetDesign".replace("VERSION", version.bukkitId))
 
-        return (designClazz.getDeclaredConstructor(Player::class.java, PetMeta::class.java)
-            .newInstance(playerProxy!!.handle, petMeta) as NMSPetProxy).proxy
+        var entityType = EntityType.RABBIT
+
+        for (aiGoal in petMeta.aiGoals) {
+            if (aiGoal is AIHopping) {
+                break
+            }
+
+            if(aiGoal is AIWalking){
+                entityType = EntityType.VILLAGER
+                break
+            }
+        }
+
+        return (designClazz.getDeclaredConstructor(Player::class.java, PetMeta::class.java, EntityType::class.java)
+            .newInstance(playerProxy!!.handle, petMeta, entityType) as NMSPetProxy).proxy
     }
 
     /**

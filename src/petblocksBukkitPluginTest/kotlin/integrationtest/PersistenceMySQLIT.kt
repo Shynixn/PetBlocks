@@ -83,9 +83,6 @@ class PersistenceMySQLIT {
         Assertions.assertEquals(1, actual.id)
         Assertions.assertEquals(false, actual.enabled)
         Assertions.assertEquals("Kenny's Pet", actual.displayName)
-        Assertions.assertEquals(20.0, actual.health)
-        Assertions.assertEquals(true, actual.invincible)
-        Assertions.assertEquals(EntityType.RABBIT, actual.hitBoxEntityType)
         Assertions.assertEquals(true, actual.soundEnabled)
         Assertions.assertEquals(true, actual.particleEnabled)
         Assertions.assertEquals(1, actual.skin.id)
@@ -95,9 +92,6 @@ class PersistenceMySQLIT {
         Assertions.assertEquals("", actual.skin.owner)
         Assertions.assertEquals(1, actual.playerMeta.id)
         Assertions.assertEquals("Kenny", actual.playerMeta.name)
-        Assertions.assertEquals(1, actual.modifier.id)
-        Assertions.assertEquals(0.0, actual.modifier.climbingHeight)
-        Assertions.assertEquals(0.0, actual.modifier.movementSpeed)
     }
 
     /**
@@ -120,9 +114,6 @@ class PersistenceMySQLIT {
 
         petMeta.enabled = true
         petMeta.displayName = "Captain Pet"
-        petMeta.health = 17.0
-        petMeta.invincible = false
-        petMeta.hitBoxEntityType = EntityType.ZOMBIE
         petMeta.soundEnabled = false
         petMeta.particleEnabled = false
         petMeta.skin.typeName = "DIRT"
@@ -130,8 +121,6 @@ class PersistenceMySQLIT {
         petMeta.skin.unbreakable = true
         petMeta.skin.owner = "Pikachu"
         petMeta.playerMeta.name = "Superman"
-        petMeta.modifier.climbingHeight = 22.2
-        petMeta.modifier.movementSpeed = 21.5
 
         classUnderTest.save(petMeta).get()
         val actual = classUnderTest.getOrCreateFromPlayerUUID(uuid.toString()).get()
@@ -143,9 +132,6 @@ class PersistenceMySQLIT {
         Assertions.assertEquals(1, actual.id)
         Assertions.assertEquals(true, actual.enabled)
         Assertions.assertEquals("Captain Pet", actual.displayName)
-        Assertions.assertEquals(17.0, actual.health)
-        Assertions.assertEquals(false, actual.invincible)
-        Assertions.assertEquals(EntityType.ZOMBIE, actual.hitBoxEntityType)
         Assertions.assertEquals(false, actual.soundEnabled)
         Assertions.assertEquals(false, actual.particleEnabled)
         Assertions.assertEquals(1, actual.skin.id)
@@ -155,9 +141,6 @@ class PersistenceMySQLIT {
         Assertions.assertEquals("Pikachu", actual.skin.owner)
         Assertions.assertEquals(1, actual.playerMeta.id)
         Assertions.assertEquals("Superman", actual.playerMeta.name)
-        Assertions.assertEquals(1, actual.modifier.id)
-        Assertions.assertEquals(22.2, actual.modifier.climbingHeight)
-        Assertions.assertEquals(21.5, actual.modifier.movementSpeed)
     }
 
     companion object {

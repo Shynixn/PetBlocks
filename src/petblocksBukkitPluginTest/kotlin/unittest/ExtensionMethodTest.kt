@@ -2,7 +2,6 @@
 
 package unittest
 
-import com.github.shynixn.petblocks.api.PetBlocksApi
 import com.github.shynixn.petblocks.api.business.enumeration.ChatColor
 import com.github.shynixn.petblocks.api.business.proxy.CompletableFutureProxy
 import com.github.shynixn.petblocks.api.business.proxy.PluginProxy
@@ -12,8 +11,6 @@ import com.github.shynixn.petblocks.core.jvm.logic.business.proxy.CompletableFut
 import com.github.shynixn.petblocks.core.logic.business.extension.*
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
-import java.io.IOException
-import java.util.concurrent.CompletableFuture
 
 /**
  * Created by Shynixn 2018.
@@ -218,7 +215,7 @@ class ExtensionMethodTest {
          * Throws a [IllegalArgumentException] if the service could not be found.
          * @param S the type of service class.
          */
-        override fun <S, C> resolve(service: C): S {
+        override fun <S> resolve(service: Any): S {
             return logger as S
         }
 
@@ -227,7 +224,7 @@ class ExtensionMethodTest {
          * Throws a [IllegalArgumentException] if the entity could not be found.
          * @param E the type of entity class.
          */
-        override fun <E, C> create(entity: C): E {
+        override fun <E> create(entity: Any): E {
             return "" as E
         }
     }

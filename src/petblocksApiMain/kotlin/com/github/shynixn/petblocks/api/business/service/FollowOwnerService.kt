@@ -1,6 +1,4 @@
-package com.github.shynixn.petblocks.core.logic.persistence.entity
-
-import com.github.shynixn.petblocks.api.persistence.entity.PetModifierMeta
+package com.github.shynixn.petblocks.api.business.service
 
 /**
  * Created by Shynixn 2018.
@@ -29,17 +27,5 @@ import com.github.shynixn.petblocks.api.persistence.entity.PetModifierMeta
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class PetModifierEntity : PetModifierMeta {
-    /**
-     * Database id.
-     */
-    override var id: Long = 0
-    /**
-     * Climbing height.
-     */
-    override var climbingHeight: Double = 0.0
-    /**
-     * Movement speed modifier.
-     */
-    override var movementSpeed: Double = 0.0
+interface FollowOwnerService {
 }

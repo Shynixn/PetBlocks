@@ -3,14 +3,12 @@
 package com.github.shynixn.petblocks.core.logic.persistence.repository
 
 import com.github.shynixn.petblocks.api.business.annotation.Inject
-import com.github.shynixn.petblocks.api.business.enumeration.EntityType
 import com.github.shynixn.petblocks.api.business.service.ConfigurationService
 import com.github.shynixn.petblocks.api.persistence.context.SqlDbContext
 import com.github.shynixn.petblocks.api.persistence.entity.PetMeta
 import com.github.shynixn.petblocks.api.persistence.repository.PetMetaRepository
 import com.github.shynixn.petblocks.core.logic.business.extension.getItem
 import com.github.shynixn.petblocks.core.logic.persistence.entity.PetMetaEntity
-import com.github.shynixn.petblocks.core.logic.persistence.entity.PetModifierEntity
 import com.github.shynixn.petblocks.core.logic.persistence.entity.PlayerMetaEntity
 import com.github.shynixn.petblocks.core.logic.persistence.entity.SkinEntity
 
@@ -126,13 +124,6 @@ class PetMetaSqlRepository @Inject constructor(
             , "name" to playerMeta.name
         )
 
-        val modifierMeta = petMeta.modifier
-        sqlDbContext.update(
-            connection, "SHY_PET_MODIFIER", "WHERE id=" + modifierMeta.id
-            , "climbingheight" to modifierMeta.climbingHeight
-            , "movementspeed" to modifierMeta.movementSpeed
-        )
-
         val skinMeta = petMeta.skin
         sqlDbContext.update(
             connection, "SHY_SKIN", "WHERE id=" + skinMeta.id
@@ -145,10 +136,7 @@ class PetMetaSqlRepository @Inject constructor(
         sqlDbContext.update(
             connection, "SHY_PET", "WHERE id=" + petMeta.id
             , "enabled" to petMeta.enabled
-            , "invincible" to petMeta.invincible
-            , "health" to petMeta.health
             , "displayname" to petMeta.displayName
-            , "hitboxentitytype" to petMeta.hitBoxEntityType.name
             , "soundenabled" to petMeta.soundEnabled
             , "particleenabled" to petMeta.particleEnabled
         )
@@ -174,13 +162,6 @@ class PetMetaSqlRepository @Inject constructor(
             )
         }
 
-        val modifierMeta = petMeta.modifier
-        modifierMeta.id = sqlDbContext.insert(
-            connection, "SHY_PET_MODIFIER"
-            , "climbingheight" to modifierMeta.climbingHeight
-            , "movementspeed" to modifierMeta.movementSpeed
-        )
-
         val skinMeta = petMeta.skin
         skinMeta.id = sqlDbContext.insert(
             connection, "SHY_SKIN"
@@ -194,12 +175,8 @@ class PetMetaSqlRepository @Inject constructor(
             connection, "SHY_PET"
             , "shy_player_id" to playerMeta.id
             , "shy_skin_id" to skinMeta.id
-            , "shy_modifier_id" to modifierMeta.id
             , "enabled" to petMeta.enabled
-            , "invincible" to petMeta.invincible
-            , "health" to petMeta.health
             , "displayname" to petMeta.displayName
-            , "hitboxentitytype" to petMeta.hitBoxEntityType.name
             , "soundenabled" to petMeta.soundEnabled
             , "particleenabled" to petMeta.particleEnabled
         )
@@ -211,14 +188,6 @@ class PetMetaSqlRepository @Inject constructor(
      * Maps the resultSet to a new petMeta.
      */
     private fun mapResultSetToPetMeta(resultSet: Map<String, Any>): PetMeta {
-        val modifierEntity = PetModifierEntity()
-
-        with(modifierEntity) {
-            id = resultSet.getItem<Int>("shy_modifier_id").toLong()
-            climbingHeight = resultSet.getItem("climbingheight")
-            movementSpeed = resultSet.getItem("movementspeed")
-        }
-
         val skinEntity = SkinEntity()
 
         with(skinEntity) {
@@ -237,15 +206,12 @@ class PetMetaSqlRepository @Inject constructor(
             name = resultSet.getItem("name")
         }
 
-        val petMeta = PetMetaEntity(playerMeta, skinEntity, modifierEntity)
+        val petMeta = PetMetaEntity(playerMeta, skinEntity)
 
         with(petMeta) {
             id = resultSet.getItem<Int>("id").toLong()
             enabled = resultSet.getItem("enabled")
-            health = resultSet.getItem("health")
-            invincible = resultSet.getItem("invincible")
             displayName = resultSet.getItem("displayname")
-            hitBoxEntityType = EntityType.valueOf(resultSet.getItem("hitboxentitytype"))
             soundEnabled = resultSet.getItem("soundenabled")
             particleEnabled = resultSet.getItem("particleenabled")
         }

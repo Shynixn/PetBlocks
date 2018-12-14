@@ -40,6 +40,11 @@ enum class ScriptAction {
     CALL_PET,
 
     /**
+     * Scrolls the whole gui page.
+     */
+    SCROLL_PAGE,
+
+    /**
      * Copies the pet skin to the icon.
      */
     COPY_PET_SKIN

@@ -51,7 +51,7 @@ class PetBlocksApiTest {
         val classUnderTest = createWithDependencies(proxy)
 
         // Act
-        classUnderTest.resolve<Any, Any>(String::class.java)
+        classUnderTest.resolve<Any>(String::class.java)
 
         // Assert
         Assertions.assertTrue(proxy.called)
@@ -72,7 +72,7 @@ class PetBlocksApiTest {
         val classUnderTest = createWithDependencies(proxy)
 
         // Act
-        classUnderTest.create<Any, Any>(String::class.java)
+        classUnderTest.create<Any>(String::class.java)
 
         // Assert
         Assertions.assertTrue(proxy.called)
@@ -104,7 +104,7 @@ class PetBlocksApiTest {
          * Throws a [IllegalArgumentException] if the service could not be found.
          * @param S the type of service class.
          */
-        override fun <S, C> resolve(service: C): S {
+        override fun <S> resolve(service: Any): S {
             called = true
             return "" as S
         }
@@ -114,7 +114,7 @@ class PetBlocksApiTest {
          * Throws a [IllegalArgumentException] if the entity could not be found.
          * @param E the type of entity class.
          */
-        override fun <E, C> create(entity: C): E {
+        override fun <E> create(entity: Any): E {
             called = true
             return "" as E
         }

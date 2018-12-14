@@ -58,7 +58,7 @@ class PetListener @Inject constructor(private val petService: PetService, privat
 
         petService.getOrSpawnPetFromPlayerUUID(event.player.uniqueId.toString()).thenAccept { pet ->
             if (event.player.passenger == pet.getHeadArmorstand() || event.player.passenger == pet.getHitBoxLivingEntity()) {
-                pet.stopWearing()
+               // pet.stopWearing()
             }
         }
     }
@@ -128,7 +128,7 @@ class PetListener @Inject constructor(private val petService: PetService, privat
         val pet = petService.getOrSpawnPetFromPlayerUUID(event.player.uniqueId.toString()).get()
 
         if (fallOffHead) {
-            pet.stopWearing()
+          //  pet.stopWearing()
 
             return
         }

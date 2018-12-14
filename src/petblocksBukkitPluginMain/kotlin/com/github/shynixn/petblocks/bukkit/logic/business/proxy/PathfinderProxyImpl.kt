@@ -1,6 +1,7 @@
 package com.github.shynixn.petblocks.bukkit.logic.business.proxy
 
 import com.github.shynixn.petblocks.api.business.proxy.PathfinderProxy
+import com.github.shynixn.petblocks.api.persistence.entity.AIBase
 import org.bukkit.plugin.Plugin
 import java.util.logging.Level
 
@@ -31,7 +32,7 @@ import java.util.logging.Level
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class PathfinderProxyImpl(private val plugin: Plugin) : PathfinderProxy {
+class PathfinderProxyImpl(private val plugin: Plugin, override val aiBase: AIBase) : PathfinderProxy {
     /**
      * Should Goal executed function.
      */

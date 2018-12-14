@@ -1,17 +1,13 @@
 package com.github.shynixn.petblocks.bukkit.logic.business.nms.v1_13_R2
 
-import com.github.shynixn.petblocks.bukkit.PetBlocksPlugin
+import com.github.shynixn.petblocks.api.business.proxy.PathfinderProxy
 import com.github.shynixn.petblocks.bukkit.logic.business.extension.removeFinalModifier
-import com.github.shynixn.petblocks.bukkit.logic.business.goals.PathfinderBaseGoal
-import com.github.shynixn.petblocks.bukkit.logic.business.goals.PathfinderStickToBackGoalImpl
 import com.google.common.collect.Sets
 import net.minecraft.server.v1_13_R2.*
 import org.bukkit.Location
 import org.bukkit.craftbukkit.v1_13_R2.CraftWorld
-import org.bukkit.entity.LivingEntity
 import org.bukkit.entity.Player
 import org.bukkit.event.entity.CreatureSpawnEvent
-import org.bukkit.plugin.java.JavaPlugin
 
 /**
  * Created by Shynixn 2018.
@@ -42,6 +38,7 @@ import org.bukkit.plugin.java.JavaPlugin
  */
 class PetRabbitHitBox(world: World) : EntityRabbit(world) {
     private var petDesign: PetDesign? = null
+    private var pathfinderCounter = 0
 
     /**
      * Additional override constructor.
@@ -62,25 +59,18 @@ class PetRabbitHitBox(world: World) : EntityRabbit(world) {
         cField.set(this.targetSelector, Sets.newLinkedHashSet<Any>())
 
         this.getAttributeInstance(GenericAttributes.MOVEMENT_SPEED).value = 0.30000001192092896 * 0.75
-        this.Q = petDesign.petMeta.modifier.climbingHeight.toFloat()
+        // this.Q = petDesign.petMeta.modifier.climbingHeight.toFloat()
 
         val mcWorld = (location.world as CraftWorld).handle
         this.setPosition(location.x, location.y + 1, location.z)
         mcWorld.addEntity(this, CreatureSpawnEvent.SpawnReason.CUSTOM)
+    }
 
-        val pathfinders =
-            arrayListOf(Pathfinder(PathfinderStickToBackGoalImpl(player, getBukkitEntity() as LivingEntity), JavaPlugin.getPlugin(PetBlocksPlugin::class.java)))
-
-        val pathfinderBaseGoal : PathfinderBaseGoal<*>
-
-        pathfinderBaseGoal.onStartExecutingFunction = { petPRoxy, ai ->
-            service.playOnWaterService.
-        }
-
-
-        for (i in 0 until pathfinders.size) {
-            this.goalSelector.a(i, pathfinders[i])
-        }
+    /**
+     * Applies pathfinder to the entity.
+     */
+    fun applyPathfinder(pathfinderProxies: PathfinderProxy) {
+        this.goalSelector.a(pathfinderCounter++, Pathfinder(pathfinderProxies))
     }
 
     /**
@@ -92,7 +82,7 @@ class PetRabbitHitBox(world: World) : EntityRabbit(world) {
         }
 
         try {
-            petDesign!!.proxy.playMovingSound()
+            // petDesign!!.proxy.playMovingSound()
         } catch (e: Exception) {
             petDesign!!.proxy.logger.error("Failed to play moving sound.", e)
         }

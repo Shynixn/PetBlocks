@@ -30,10 +30,15 @@ import com.github.shynixn.petblocks.api.persistence.entity.Sound
  * SOFTWARE.
  */
 class SoundEntity(
-        /**
-         * Name of the sound.
-         */
-        override var name: String = "none") : Sound {
+    /**
+     * Name of the sound.
+     */
+    override var name: String = "none"
+) : Sound {
+    /**
+     * Id.
+     */
+    override var id: Long = 0
     /**
      * Pitch of the sound.
      */

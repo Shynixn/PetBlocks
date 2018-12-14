@@ -95,9 +95,9 @@ class PetBlocksPlugin : JavaPlugin(), PluginProxy {
 
         this.reloadConfig()
 
-        val dependencyService = resolve<DependencyService, Class<*>>(DependencyService::class.java)
-        val updateCheckService = resolve<UpdateCheckService, Class<*>>(UpdateCheckService::class.java)
-        val commandService = resolve<CommandService, Class<*>>(CommandService::class.java)
+        val dependencyService = resolve<DependencyService>(DependencyService::class.java)
+        val updateCheckService = resolve<UpdateCheckService>(UpdateCheckService::class.java)
+        val commandService = resolve<CommandService>(CommandService::class.java)
 
         dependencyService.checkForInstalledDependencies()
         updateCheckService.checkForUpdates()
@@ -154,7 +154,7 @@ class PetBlocksPlugin : JavaPlugin(), PluginProxy {
      * OnDisable.
      */
     override fun onDisable() {
-        resolve<EntityRegistrationService, Class<*>>(EntityRegistrationService::class.java).clearResources()
+        resolve<EntityRegistrationService>(EntityRegistrationService::class.java).clearResources()
     }
 
     /**
@@ -183,7 +183,7 @@ class PetBlocksPlugin : JavaPlugin(), PluginProxy {
      * Throws a [IllegalArgumentException] if the service could not be found.
      * @param S the type of service class.
      */
-    override fun <S, C> resolve(service: C): S {
+    override fun <S> resolve(service: Any): S {
         if (service !is Class<*>) {
             throw IllegalArgumentException("Service has to be a Class!")
         }
@@ -200,7 +200,7 @@ class PetBlocksPlugin : JavaPlugin(), PluginProxy {
      * Throws a [IllegalArgumentException] if the entity could not be found.
      * @param E the type of entity class.
      */
-    override fun <E, C> create(entity: C): E {
+    override fun <E> create(entity: Any): E {
         if (entity !is Class<*>) {
             throw IllegalArgumentException("Entity has to be a Class!")
         }

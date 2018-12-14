@@ -2,9 +2,12 @@
 
 package com.github.shynixn.petblocks.bukkit.logic.business.extension
 
+import com.github.shynixn.petblocks.api.PetBlocksApi
+import com.github.shynixn.petblocks.api.business.enumeration.MaterialType
 import com.github.shynixn.petblocks.api.business.enumeration.ParticleType
 import com.github.shynixn.petblocks.api.business.enumeration.Permission
 import com.github.shynixn.petblocks.api.business.enumeration.Version
+import com.github.shynixn.petblocks.api.business.service.ItemService
 import com.github.shynixn.petblocks.api.persistence.entity.Position
 import com.github.shynixn.petblocks.core.logic.business.extension.translateChatColors
 import com.github.shynixn.petblocks.core.logic.persistence.entity.PositionEntity
@@ -12,6 +15,7 @@ import com.mojang.authlib.GameProfile
 import com.mojang.authlib.properties.Property
 import org.bukkit.Bukkit
 import org.bukkit.Location
+import org.bukkit.Material
 import org.bukkit.configuration.MemorySection
 import org.bukkit.configuration.file.FileConfiguration
 import org.bukkit.entity.Player
@@ -368,6 +372,15 @@ internal fun ItemStack.setSkin(skin: String) {
         currentMeta.owner = skin
         itemMeta = currentMeta
     }
+}
+
+/**
+ * Is the material the given type?
+ */
+fun Material.isMaterial(type: MaterialType): Boolean {
+    val itemService = PetBlocksApi.resolve<ItemService>(ItemService::class.java)
+
+    return this == itemService.getMaterialFromNumericValue<Material>(type.MinecraftNumericId)
 }
 
 /**

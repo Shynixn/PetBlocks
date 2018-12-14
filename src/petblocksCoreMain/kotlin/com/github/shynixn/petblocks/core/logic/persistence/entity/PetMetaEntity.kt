@@ -1,6 +1,5 @@
 package com.github.shynixn.petblocks.core.logic.persistence.entity
 
-import com.github.shynixn.petblocks.api.business.enumeration.EntityType
 import com.github.shynixn.petblocks.api.persistence.entity.*
 
 /**
@@ -30,21 +29,15 @@ import com.github.shynixn.petblocks.api.persistence.entity.*
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class PetMetaEntity(override val playerMeta: PlayerMeta, override val skin: Skin, override val modifier: PetModifierMeta) : PetMeta {
+class PetMetaEntity(override val playerMeta: PlayerMeta, override val skin: Skin) : PetMeta {
+    /**
+     * Gets a list of all ai goals of this pet.
+     */
+    override val aiGoals: MutableList<AIBase> = ArrayList()
     /**
      * Database id.
      */
     override var id: Long = 0
-
-    /**
-     * Gets the health of the pet.
-     */
-    override var health: Double = 0.0
-    /**
-     * Is the pet invincible?
-     */
-    override var invincible: Boolean = false
-
     /**
      * Is the pet enabled. Should not get modified directly.
      */
@@ -54,11 +47,6 @@ class PetMetaEntity(override val playerMeta: PlayerMeta, override val skin: Skin
      * Displayed name on top of the pet.
      */
     override var displayName: String = playerMeta.name + "'s Pet"
-
-    /**
-     * Type of the hitbox entity.
-     */
-    override var hitBoxEntityType: EntityType = EntityType.RABBIT
 
     /**
      * Pet sounds enabled.

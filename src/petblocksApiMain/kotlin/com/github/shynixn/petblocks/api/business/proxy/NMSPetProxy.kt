@@ -32,4 +32,9 @@ interface NMSPetProxy {
      * Gets the proxy.
      */
     val proxy: PetProxy
+
+    /**
+     * Applies pathfinder to the entity.
+     */
+    fun applyPathfinder(pathfinderProxies: PathfinderProxy)
 }

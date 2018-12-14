@@ -1,8 +1,10 @@
 package com.github.shynixn.petblocks.bukkit.logic.business.service
 
+import com.github.shynixn.petblocks.api.business.enumeration.MaterialType
 import com.github.shynixn.petblocks.api.business.proxy.PetProxy
 import com.github.shynixn.petblocks.api.business.service.AfraidOfWaterService
 import com.github.shynixn.petblocks.api.persistence.entity.AIAfraidOfWater
+import com.github.shynixn.petblocks.bukkit.logic.business.extension.isMaterial
 import org.bukkit.Material
 import org.bukkit.entity.LivingEntity
 
@@ -48,6 +50,6 @@ class AfraidOfWaterServiceImpl : AfraidOfWaterService {
     override fun isPetInWater(petProxy: PetProxy): Boolean {
         val livingEntity = petProxy.getHitBoxLivingEntity<LivingEntity>()
 
-        return livingEntity.location.block != null && (livingEntity.location.block.type == Material.WATER || livingEntity.location.block.type == Material.STATIONARY_WATER)
+        return livingEntity.location.block != null && (livingEntity.location.block.type == Material.WATER || livingEntity.location.block.type.isMaterial(MaterialType.STATIONARY_WATER))
     }
 }

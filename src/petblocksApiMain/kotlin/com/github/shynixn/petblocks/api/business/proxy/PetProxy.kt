@@ -59,6 +59,16 @@ interface PetProxy {
     val hitBoxNbtChange: Map<String, Any>
 
     /**
+     * Adds a pathfinder to this pet.
+     */
+    fun addPathfinder(pathfinderProxy: PathfinderProxy)
+
+    /**
+     * Gets all pathfinders.
+     */
+    val pathfinders: List<PathfinderProxy>
+
+    /**
      * Gets the itemStack on the pet head.
      */
     fun <I> getHeadItemStack(): I

@@ -28,11 +28,11 @@ package com.github.shynixn.petblocks.api.business.enumeration
  * SOFTWARE.
  */
 enum class MaterialType(
-        /**
-         * Numeric internal minecraft id.
-         */
-        val MinecraftNumericId: Int) {
-
+    /**
+     * Numeric internal minecraft id.
+     */
+    val MinecraftNumericId: Int
+) {
 
     /**
      * Air Material Type.
@@ -48,6 +48,11 @@ enum class MaterialType(
      * Skull Item type.
      */
     SKULL_ITEM(397),
+
+    /**
+     * Stationary water.
+     */
+    STATIONARY_WATER(9),
 
     /**
      * Carrot Item type.
