@@ -336,7 +336,7 @@ class GUIServiceImpl @Inject constructor(
 
         val itemStack = itemService.createItemStack<ItemStack>(guiIcon.skin.typeName, guiIcon.skin.dataValue)
 
-        itemStack.setDisplayName(guiIcon.displayName.replace("<permission>", permissionMessage))
+        itemStack.setDisplayName(guiIcon.displayName)
         itemStack.setSkin(guiIcon.skin.owner)
         itemStack.setUnbreakable(guiIcon.skin.unbreakable)
 
