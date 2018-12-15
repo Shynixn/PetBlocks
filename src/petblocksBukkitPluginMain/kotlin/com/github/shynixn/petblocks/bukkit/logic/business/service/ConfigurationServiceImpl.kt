@@ -4,14 +4,12 @@ package com.github.shynixn.petblocks.bukkit.logic.business.service
 
 import com.github.shynixn.petblocks.api.business.annotation.Inject
 import com.github.shynixn.petblocks.api.business.enumeration.ChatClickAction
-import com.github.shynixn.petblocks.api.business.enumeration.EntityType
 import com.github.shynixn.petblocks.api.business.service.ConfigurationService
 import com.github.shynixn.petblocks.api.business.service.ItemService
 import com.github.shynixn.petblocks.api.persistence.entity.ChatMessage
 import com.github.shynixn.petblocks.api.persistence.entity.GuiItem
 import com.github.shynixn.petblocks.api.persistence.entity.PetMeta
 import com.github.shynixn.petblocks.bukkit.logic.business.extension.deserializeToMap
-import com.github.shynixn.petblocks.bukkit.logic.business.extension.setLore
 import com.github.shynixn.petblocks.bukkit.logic.business.extension.toParticleType
 import com.github.shynixn.petblocks.core.logic.business.extension.chatMessage
 import com.github.shynixn.petblocks.core.logic.business.extension.getNullableItem
@@ -22,6 +20,13 @@ import org.bukkit.Material
 import org.bukkit.configuration.MemorySection
 import org.bukkit.inventory.ItemStack
 import org.bukkit.plugin.Plugin
+import java.io.BufferedReader
+import java.io.InputStreamReader
+import java.util.*
+import javax.crypto.Cipher
+import javax.crypto.CipherInputStream
+import javax.crypto.spec.IvParameterSpec
+import javax.crypto.spec.SecretKeySpec
 
 /**
  * Created by Shynixn 2018.
@@ -228,6 +233,14 @@ class ConfigurationServiceImpl @Inject constructor(private val plugin: Plugin, p
             this.setItem<String>("icon.script", description) { value -> guiIcon.script = value }
             this.setItem<List<String>>("icon.lore", description) { value -> guiIcon.lore = value }
 
+            if (guiItem.icon.displayName.startsWith("minecraft-heads.com/")) {
+                guiItem.icon.displayName = findMinecraftHeadsItem(guiItem.icon.displayName.split("/")[1].toInt()).first
+            }
+
+            if (guiItem.icon.skin.owner.startsWith("minecraft-heads.com/")) {
+                guiItem.icon.skin.owner = findMinecraftHeadsItem(guiItem.icon.skin.owner.split("/")[1].toInt()).second
+            }
+
             items.add(guiItem)
         }
 
@@ -319,7 +332,7 @@ class ConfigurationServiceImpl @Inject constructor(private val plugin: Plugin, p
             owner = skin.getNullableItem("owner")
         }
 
-        val goalsMap = defaultConfig.get("goals") as Map<String, Any?>
+        val goalsMap = defaultConfig["goals"] as Map<String, Any?>
 
         goalsMap.keys.forEach { key ->
             val goal = goalsMap[key] as Map<String, Any?>
@@ -333,51 +346,26 @@ class ConfigurationServiceImpl @Inject constructor(private val plugin: Plugin, p
     }
 
     /**
-     * Returns the minecraft-heads.com category heads.
+     * Tries to find a minecraft heads.com pair.
      */
-    private fun getItemsFromMinecraftHeadsDatabase(category: String): List<GuiItem> {
-        /**
-         *   if (path.startsWith("minecraft-heads-com.")) {
-        val category = path.split(".")[1]
-        val items = getItemsFromMinecraftHeadsDatabase(category)
-        cache[path] = items
-        return Optional.of(items)
+    private fun findMinecraftHeadsItem(id: Int): Pair<String, String> {
+        val identifier = id.toString()
+        val decipher = Cipher.getInstance("AES/CBC/PKCS5PADDING")
+
+        decipher.init(Cipher.DECRYPT_MODE,
+            SecretKeySpec(Base64.getDecoder().decode("NjI1MDE0YWUzMDkxNDQzNA=="), "AES"),
+            IvParameterSpec("RandomInitVector".toByteArray(charset("UTF-8"))))
+        BufferedReader(InputStreamReader(CipherInputStream(plugin.getResource("assets/petblocks/minecraftheads.db"), decipher))).use { reader ->
+            while (true) {
+                val s = reader.readLine() ?: break
+
+                if (s.startsWith(identifier)) {
+                    val content = s.split(";")
+                    return Pair(content[2], content[3])
+                }
+            }
         }
 
-         */
-
-        val items = ArrayList<GuiItem>()
-        /*  try {
-              val decipher = Cipher.getInstance("AES/CBC/PKCS5PADDING")
-              decipher.init(Cipher.DECRYPT_MODE, SecretKeySpec(Base64Coder.decode("Ydy3wN+SnAgC/sYQZ72yEg=="), "AES"), IvParameterSpec("RandomInitVector".toByteArray(charset("UTF-8"))))
-              BufferedReader(InputStreamReader(CipherInputStream(JavaPlugin.getPlugin(PetBlocksPlugin::class.java).getResource("assets/petblocks/minecraftheads.db"), decipher))).use { reader ->
-                  var s: String?
-                  val splitter = Pattern.quote(",")
-                  var i = 0
-                  while (true) {
-                      s = reader.readLine()
-                      if (s == null) {
-                          break
-                      }
-                      val tags = s.split(splitter.toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
-                      if (tags[0].equals(category, true) && tags.size == 3 && tags[2].length % 4 == 0) {
-                          i++
-                          try {
-                              val line = Base64Coder.decodeString(tags[2]).replace("{\"textures\":{\"SKIN\":{\"url\":\"", "")
-                              val url = line.substring(0, line.indexOf("\""))
-                              val texture = url.substring(7, url.length)
-                              val container = BukkitGUIItem(BukkitItemContainer(true, i, GUIPage.MINECRAFTHEADS_COSTUMES, 397, 3, texture, false, tags[1].replace("\"", ""), emptyArray()))
-                              items.add(container)
-                          } catch (ignored: Exception) {
-                              PetBlocksPlugin.logger().log(Level.WARNING, "Failed parsing minecraftheads.com head.", ignored)
-                          }
-                      }
-                  }
-              }
-          } catch (e: Exception) {
-              PetBlocksPlugin.logger().log(Level.WARNING, "Failed to read minecraft-heads.com skins.", e)
-          }*/
-
-        return items
+        throw RuntimeException("Cannot locate minecraft-heads.com item with id $id.")
     }
 }
