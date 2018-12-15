@@ -55,5 +55,5 @@ interface GuiItem {
     /**
      * Position in the inventory which cannot be scrolled.
      */
-    var positionFixed : Int
+    var fixed : Boolean
 }

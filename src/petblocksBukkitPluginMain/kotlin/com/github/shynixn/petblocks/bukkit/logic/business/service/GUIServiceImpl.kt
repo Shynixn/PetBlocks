@@ -191,13 +191,6 @@ class GUIServiceImpl @Inject constructor(
             pageCache[player]!!.parent = parent
             renderPage(player, scriptResult.valueContainer as String, pageCache[player]!!.petMeta)
         }
-
-        /*  when {
-              scriptResult.action == ScriptAction.LOAD_COLLECTION -> loadCollectionPage(PetBlockManager.instance.inventories[player], scriptResult.path.get(), scriptResult.permission.get())
-              scriptResult.action == ScriptAction.SCROLL_COLLECTION -> scrollCollectionPage(player, scriptResult.valueContainer.get() as Int)
-              scriptResult.action == ScriptAction.RENAME_PET -> sendGuiMessage(player, configurationService.findValue("messages.naming-suggest"), scriptResult.permission.get())
-              scriptResult.action == ScriptAction.CUSTOM_SKIN -> sendGuiMessage(player, configurationService.findValue("messages.skullnaming-suggest"), scriptResult.permission.get())
-          }*/
     }
 
     /**
@@ -214,8 +207,6 @@ class GUIServiceImpl @Inject constructor(
             return
         }
 
-        println("-----------")
-
         for (item in items) {
             if (item.hidden) {
                 continue
@@ -225,13 +216,11 @@ class GUIServiceImpl @Inject constructor(
                 continue
             }
 
-            val position = if (item.positionFixed >= 0) {
-                item.positionFixed
+            val position = if (item.fixed) {
+                item.position
             } else {
                 scrollCollection(player, item.position)
             }
-
-            println("Item " + position + "/" + item.position)
 
             if (position < 0 || position > 53) {
                 continue
@@ -251,7 +240,7 @@ class GUIServiceImpl @Inject constructor(
                         unbreakable = petMeta.skin.unbreakable
                     }
 
-                    renderIcon(inventory, position, item.positionFixed, guiIcon)
+                    renderIcon(inventory, position, guiIcon)
                 } else if (scriptResult.action == ScriptAction.HIDE_RIGHT_SCROLL && item.script != null) {
                     val itemPreScriptResult = scriptService.executeScript(item.script!!)
                     val offsetData = itemPreScriptResult.valueContainer as Pair<Int, Int>
@@ -283,7 +272,7 @@ class GUIServiceImpl @Inject constructor(
                     pageCache[player]!!.offsetY = cachedData.second
 
                     if (found) {
-                        renderIcon(inventory, position, item.positionFixed, item.icon)
+                        renderIcon(inventory, position,  item.icon)
                     }
                 } else if (scriptResult.action == ScriptAction.HIDE_LEFT_SCROLL && item.script != null) {
                     val itemPreScriptResult = scriptService.executeScript(item.script!!)
@@ -291,14 +280,14 @@ class GUIServiceImpl @Inject constructor(
 
                     if (offsetData.first < 0) {
                         if (pageCache[player]!!.offsetX > 0) {
-                            renderIcon(inventory, position, item.positionFixed, item.icon)
+                            renderIcon(inventory, position, item.icon)
                         }
 
                         continue
                     }
                 }
             } else {
-                renderIcon(inventory, position, item.positionFixed, item.icon)
+                renderIcon(inventory, position, item.icon)
             }
         }
 
@@ -309,8 +298,8 @@ class GUIServiceImpl @Inject constructor(
     /**
      * Renders a gui Icon.
      */
-    private fun renderIcon(inventory: Inventory, position: Int, positionFixed: Int, guiIcon: GuiIcon) {
-        if (position < 0 && positionFixed < 0) {
+    private fun renderIcon(inventory: Inventory, position: Int,guiIcon: GuiIcon) {
+        if (position < 0) {
             return
         }
 
@@ -321,67 +310,8 @@ class GUIServiceImpl @Inject constructor(
         itemStack.setSkin(guiIcon.skin.owner)
         itemStack.setUnbreakable(guiIcon.skin.unbreakable)
 
-        if (positionFixed > -1) {
-            inventory.setItem(positionFixed, itemStack)
-        } else {
-            inventory.setItem(position, itemStack)
-        }
+        inventory.setItem(position, itemStack)
     }
-
-    /**
-     * Scrolls the loaded collection page of a [player] the given [amountOfSlots] to the right when entered a positive value.
-     * Scrolls to the left when given a negative amount of Slots value.*/
-
-    // override fun <P> scrollCollectionPage(player: P, amountOfSlots: Int) {
-    // if (player !is Player) {
-    //      throw IllegalArgumentException("Player has to be a BukkitPlayer!")
-    //  }
-
-    /*if (!pageCache.containsKey(player)) {
-        this.pageCache[player] = PlayerGUICache()
-    }
-
-    if (!PetBlockManager.instance.pages.containsKey(player) || PetBlockManager.instance.pages[player]!!.page != GUIPage.CUSTOM_COLLECTION) {
-        return
-    }
-
-    val path = pageCache[player]!!.path ?: return
-    val permission = pageCache[player]!!.permission ?: return
-    val optItems = configurationService.findGUIItemCollection(path)
-
-    if (optItems.isPresent) {
-        if (amountOfSlots < 0) {
-            setItemsToInventory(player, PetBlockManager.instance.inventories[player]!!, amountOfSlots, optItems.get(), permission)
-        } else {
-            setItemsToInventory(player, PetBlockManager.instance.inventories[player]!!, amountOfSlots, optItems.get(), permission)
-        }
-    }*/
-    //}
-
-    /**
-     * Loads the collection from the given [path] into the given [inventory].
-     */
-    //   override fun <I> loadCollectionPage(inventory: I, path: String, permission: String?) {
-    //    if (inventory !is Inventory) {
-    //        throw IllegalArgumentException("Inventory has to be an BukkitInventory!")
-    //   }
-/*
-        if (!pageCache.containsKey(inventory.holder as Player)) {
-            this.pageCache[inventory.holder as Player] = PlayerGUICache()
-        }
-
-        val optItems = configurationService.findGUIItemCollection(path)
-
-        if (path.startsWith("minecraft-heads-com.")) {
-            messageService.sendPlayerMessage(inventory.holder, collectedMinecraftHeadsMessage)
-        }
-
-        if (optItems.isPresent) {
-            this.pageCache[inventory.holder as Player]!!.path = path
-            this.pageCache[inventory.holder as Player]!!.permission = permission
-            setItemsToInventory(inventory.holder as Player, inventory, 45, optItems.get(), permission)
-        }
-    }*/
 
     /**
      * Sends a gui action message.
@@ -394,82 +324,6 @@ class GUIServiceImpl @Inject constructor(
         }
     }
 
-    private fun setItemsToInventory(player: Player, inventory: Inventory, type: Int, items: List<GuiItem>, groupPermission: String?) {
-        /*   val previousContainer = PetBlockManager.instance.pages[player]
-           val container: GuiPageContainer
-           val page = GUIPage.CUSTOM_COLLECTION
-
-           if (previousContainer!!.page != page) {
-               container = GuiPageContainer(page, previousContainer)
-               PetBlockManager.instance.pages[player] = container
-           } else {
-               container = PetBlockManager.instance.pages[player]!!
-           }
-
-           if (type > 0) {
-               if (container.startCount % 45 != 0 || items.size == container.startCount) {
-                   return
-               } else {
-                   container.startCount = container.startCount - (45 - type)
-               }
-           } else {
-               if (container.currentCount == 0) {
-                   return
-               } else {
-                   container.startCount = container.currentCount + type
-               }
-           }
-
-           var count = container.startCount
-           if (count < 0)
-               count = 0
-           container.currentCount = container.startCount
-           inventory.clearCompletely()
-           var i = 0
-           var scheduleCounter = 0
-           while (i < 45 && i + container.startCount < items.size) {
-               if (inventory.getItem(i) == null || inventory.getItem(i).type == Material.AIR) {
-
-                   val slot = i
-                   val containerSlot = i + container.startCount
-                   val mountBlock = container.currentCount
-                   val currentPage = container.page
-                   count++
-                   if (i % 2 == 0) {
-                       scheduleCounter++
-                   }
-
-                   Bukkit.getScheduler().runTaskLater(plugin, {
-                       if (container.currentCount == mountBlock && currentPage == PetBlockManager.instance.pages[player]!!.page) {
-                           inventory.setItem(slot, setPermissionLore(player, items[containerSlot].toItemStack(), items[containerSlot].position, groupPermission))
-                       }
-                   }, scheduleCounter.toLong())
-               }
-               i++
-           }
-           container.startCount = count
-           val optBackGuiItemContainer = Config.getInstance<Player>().guiItemsController.getGUIItemFromName("back")
-           if (!optBackGuiItemContainer.isPresent)
-               throw IllegalArgumentException("Gui item back could not be loaded correctly!")
-           inventory.setItem(optBackGuiItemContainer.get().position, optBackGuiItemContainer.get().generate(player) as ItemStack)
-
-           if (!(container.startCount % 45 != 0 || items.size == container.startCount)) {
-               val optNextPage = Config.getInstance<Player>().guiItemsController.getGUIItemFromName("next-page")
-               if (!optNextPage.isPresent)
-                   throw IllegalArgumentException("Gui item next-page could not be loaded correctly!")
-               inventory.setItem(optNextPage.get().position, optNextPage.get().generate(player) as ItemStack)
-           }
-
-           if (container.currentCount != 0) {
-               val optPreviousPage = Config.getInstance<Player>().guiItemsController.getGUIItemFromName("previous-page")
-               if (!optPreviousPage.isPresent)
-                   throw IllegalArgumentException("Gui item previous-page could not be loaded correctly!")
-               inventory.setItem(optPreviousPage.get().position, optPreviousPage.get().generate(player) as ItemStack)
-           }
-
-           this.fillEmptySlots(inventory)*/
-    }
-
     /**
      * Fills up the given [inventory] with the default item.
      */
@@ -478,7 +332,7 @@ class GUIServiceImpl @Inject constructor(
 
         for (i in 0 until inventory.contents.size) {
             if (inventory.getItem(i) == null || inventory.getItem(i).type == Material.AIR) {
-                renderIcon(inventory, i, -1, guiItem.icon)
+                renderIcon(inventory, i,guiItem.icon)
             }
         }
     }
@@ -487,64 +341,19 @@ class GUIServiceImpl @Inject constructor(
      * Scrolls the page to the axes.
      */
     private fun scrollCollection(player: Player, sourcePosition: Int): Int {
-        var offsetX = pageCache[player]!!.offsetX
-        var offsetY = pageCache[player]!!.offsetY
-        var position = sourcePosition
-        var previousPosition: Int
+        val vPosition = sourcePosition % 54
+        val multiplier = sourcePosition / 54
 
-        while (offsetX > 0) {
-            previousPosition = position
-            position -= 1
-            offsetX -= 1
+        val offsetX = pageCache[player]!!.offsetX
+        val row = vPosition / 9
+        var column = (vPosition % 9) + multiplier * 9
 
-            if (hasReachedOuterColumn(previousPosition, position)) {
-                return -1
-            }
+        column -= offsetX
+
+        if (column < 0 || column > 8) {
+            return -1
         }
 
-        while (offsetX < 0) {
-            previousPosition = position
-            position += 1
-            offsetX += 1
-
-            if (hasReachedOuterColumn(previousPosition, position)) {
-                return -1
-            }
-        }
-
-        while (offsetY > 0) {
-            if (position > 53) {
-                return -1
-            }
-
-            position += 9
-            offsetY -= 1
-        }
-
-        while (offsetY < 0) {
-            if (position < 0) {
-                return -1
-            }
-
-            position -= 9
-            offsetY += 1
-        }
-
-        return position
-    }
-
-    /**
-     * Checks if the item is outside of the box.
-     */
-    private fun hasReachedOuterColumn(previousPosition: Int, position: Int): Boolean {
-        if (previousPosition % 9 == 0 && previousPosition > position) {
-            return true
-        }
-
-        if (position % 9 == 0 && previousPosition < position) {
-            return true
-        }
-
-        return false
+        return row * 9 + column
     }
 }

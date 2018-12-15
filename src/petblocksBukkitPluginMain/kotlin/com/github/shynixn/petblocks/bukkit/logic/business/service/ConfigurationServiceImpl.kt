@@ -206,10 +206,16 @@ class ConfigurationServiceImpl @Inject constructor(private val plugin: Plugin, p
             val guiIcon = guiItem.icon
             val description = (section[key] as MemorySection).getValues(true)
 
+            if (description.containsKey("row") && description.containsKey("col")) {
+                var column =  (description["col"] as Int - 1)
+                column += ((column / 9) * 45)
+                guiItem.position = (description["row"] as Int - 1) * 9 + column
+            }
+
             this.setItem<Boolean>("hidden", description) { value -> guiItem.hidden = value }
             this.setItem<Boolean>("hidden-when-pet-is-spawned", description) { value -> guiItem.hiddenWhenPetIsSpawned = value }
-            this.setItem<Int>("position", description) { value -> guiItem.position = value }
-            this.setItem<Int>("position-fixed", description)  {value ->  guiItem.positionFixed = value}
+            this.setItem<Int>("position", description) { value -> guiItem.position = value - 1 }
+            this.setItem<Boolean>("fixed", description) { value -> guiItem.fixed = value }
             this.setItem<String>("script", description) { value -> guiItem.script = value }
 
             this.setItem<Int>("icon.id", description) { value -> guiIcon.skin.typeName = itemService.getMaterialFromNumericValue<Material>(value).name }
@@ -316,8 +322,8 @@ class ConfigurationServiceImpl @Inject constructor(private val plugin: Plugin, p
         goalsMap.keys.forEach { key ->
             val goal = goalsMap[key] as Map<String, Any?>
 
-            if(goal["id"] == "hopping"){
-            //    petMeta.aiGoals.add(AIHoppingEntity())
+            if (goal["id"] == "hopping") {
+                //    petMeta.aiGoals.add(AIHoppingEntity())
             }
         }
 

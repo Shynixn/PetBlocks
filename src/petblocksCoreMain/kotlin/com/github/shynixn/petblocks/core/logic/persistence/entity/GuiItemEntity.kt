@@ -34,7 +34,8 @@ class GuiItemEntity : GuiItem {
     /**
      * Position in the inventory which cannot be scrolled.
      */
-    override var positionFixed: Int = -1
+    override var fixed: Boolean = false
+
     /**
      * Should this icon always be hidden?
      */

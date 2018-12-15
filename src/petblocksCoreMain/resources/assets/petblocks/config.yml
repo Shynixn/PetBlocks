@@ -259,12 +259,14 @@ static-gui:
 gui:
   main:
     player-pet:
-      position: 13
+      row: 2
+      col: 5
       script: 'executing action call-pet'
       icon:
         script: 'executing action copy-pet-skin'
     disable-pet:
-      position: 31
+      row: 4
+      col: 5
       icon:
         id: 397
         damage: 3
@@ -273,7 +275,8 @@ gui:
         lore:
         - '&7Click to disable the pet.'
     enable-pet:
-      position: 31
+      row: 4
+      col: 5
       hidden-when-pet-is-spawned: true
       script: 'executing action call-pet'
       icon:
@@ -284,7 +287,8 @@ gui:
         lore:
         - '&7Click to enable the pet.'
     wardrobe:
-      position: 10
+      row: 2
+      col: 2
       script: 'open-page gui.wardrobe'
       icon:
         id: 397
@@ -294,7 +298,8 @@ gui:
         lore:
         - '&7Change the appearance of your pet.'
     sounds-enabled:
-      position: 35
+      row: 4
+      col: 9
       icon:
         id: 397
         damage: 3
@@ -303,7 +308,8 @@ gui:
         lore:
         - '&7Click to disable the sounds of your pet.'
     sounds-disabled:
-      position: 35
+      row: 4
+      col: 9
       icon:
         id: 397
         damage: 3
@@ -312,7 +318,8 @@ gui:
         lore:
         - '&7Click to enable the sounds of your pet.'
     call-pet:
-      position: 37
+      row: 5
+      col: 2
       script: 'executing action call-pet'
       icon:
         id: 420
@@ -320,7 +327,8 @@ gui:
         lore:
         - '&7Teleports your pet to you.'
     launch-pet:
-      position: 24
+      row: 3
+      col: 7
       icon:
         id: 397
         damage: 3
@@ -329,7 +337,8 @@ gui:
         lore:
         - '&7Shoot your pet like a cannon.'
     hat-pet:
-      position: 6
+      row: 1
+      col: 7
       icon:
         id: 397
         damage: 3
@@ -338,7 +347,8 @@ gui:
         lore:
         - '&7Wear your pet like a hat.'
     ride-pet:
-      position: 17
+      row: 2
+      col: 9
       icon:
         id: 329
         damage: 0
@@ -346,7 +356,8 @@ gui:
         lore:
         - '&7Start to ride your pet.'
     rename-pet:
-      position: 42
+      row: 5
+      col: 7
       icon:
         id: 421
         damage: 0
@@ -354,7 +365,8 @@ gui:
         lore:
         - '&7Change the name of your pet.'
     particles-disabled:
-      position: 53
+      row: 6
+      col: 9
       icon:
         id: 397
         damage: 3
@@ -363,7 +375,8 @@ gui:
         lore:
         - '&7Click to enable the particles of your pet.'
     back:
-      position: 49
+      row: 6
+      col: 5
       script: 'close-gui'
       icon:
         id: 166
@@ -373,7 +386,9 @@ gui:
         - '&7Closes the current window.'
   wardrobe:
     block-skins:
-      position: 11
+      row: 2
+      col: 3
+      script: 'open-page gui.block-skins'
       icon:
         id: 397
         damage: 3
@@ -382,7 +397,8 @@ gui:
         lore:
         - '&7Use Minecraft blocks as costume.'
     colored-block-skins:
-      position: 13
+      row: 2
+      col: 5
       icon:
         id: 397
         damage: 3
@@ -391,7 +407,8 @@ gui:
         lore:
         - '&7Use colored Minecraft blocks as costume.'
     player-head-skins:
-      position: 15
+      row: 2
+      col: 7
       icon:
         id: 397
         damage: 3
@@ -400,7 +417,8 @@ gui:
         lore:
         - '&7Use player heads as costume.'
     minecraft-heads-pet-skins:
-      position: 19
+      row: 3
+      col: 2
       icon:
         id: 397
         damage: 3
@@ -410,7 +428,8 @@ gui:
         - "&7Use exclusive pet heads as costume."
         - "&eSponsored by Minecraft-Heads.com"
     minecraft-heads-vehicle-skins:
-      position: 23
+      row: 3
+      col: 4
       icon:
         id: 397
         damage: 3
@@ -420,7 +439,8 @@ gui:
         - "&7Use exclusive vehicle heads as costume."
         - "&eSponsored by Minecraft-Heads.com"
     minecraft-heads-puppet-skins:
-      position: 21
+      row: 3
+      col: 6
       icon:
         id: 397
         damage: 3
@@ -430,7 +450,8 @@ gui:
         - "&7Use exclusive plushie heads as costume."
         - "&eSponsored by Minecraft-Heads.com"
     headdatabase-skins:
-      position: 25
+      row: 3
+      col: 8
       icon:
         id: 397
         damage: 3
@@ -438,8 +459,18 @@ gui:
         skin: 'http://textures.minecraft.net/texture/3bb612eb495ede2c5ca5178d2d1ecf1ca5a255d25dfc3c254bc47f6848791d8'
         lore:
         - '&7Use heads from an external plugin as costume.'
+    enter-custom-head:
+      row: 5
+      col: 8
+      icon:
+        id: 397
+        damage: 3
+        name: '&2&lCustom skin'
+        lore:
+        - '&7Use the skin of another player as costume.'
     suggest-heads:
-      position: 43
+      row: 5
+      col: 2
       icon:
         id: 386
         damage: 0
@@ -447,16 +478,9 @@ gui:
         lore:
         - '&7Submit skins for pets or'
         - '&7make a suggestion for a new pet.'
-    enter-custom-head:
-      position: 37
-      icon:
-        id: 397
-        damage: 3
-        name: '&2&lCustom skin'
-        lore:
-        - '&7Use the skin of another player as costume.'
     back:
-      position: 49
+      row: 6
+      col: 5
       script: 'close-gui'
       icon:
         id: 166
@@ -464,4 +488,311 @@ gui:
         name: '&cBack'
         lore:
         - '&7Closes the current window.'
+  block-skins:
+    next-page:
+      row: 6
+      col: 9
+      fixed: true
+      script: 'scroll 2 0'
+      icon:
+        id: 397
+        damage: 3
+        skin: 'http://textures.minecraft.net/texture/1b6f1a25b6bc199946472aedb370522584ff6f4e83221e5946bd2e41b5ca13b'
+        name: '&aNext page'
+        script: 'hide-right-scroll'
+    previous-page:
+      row: 6
+      col: 1
+      fixed: true
+      script: 'scroll -2 0'
+      icon:
+        id: 397
+        damage: 3
+        skin: 'http://textures.minecraft.net/texture/3ebf907494a935e955bfcadab81beafb90fb9be49c7026ba97d798d5f1a23'
+        name: '&aPrevious page'
+        script: 'hide-left-scroll'
+    back:
+      row: 6
+      col: 5
+      fixed: true
+      script: 'close-gui'
+      icon:
+        id: 166
+        damage: 0
+        name: '&cBack'
+        lore:
+        - '&7Closes the current window.'
+    block-1:
+      row: 1
+      col: 1
+      icon:
+        id: 1
+    block-1-1:
+      row: 1
+      col: 2
+      icon:
+        id: 1
+        damage: 1
+    block-1-2:
+      row: 1
+      col: 3
+      icon:
+        id: 1
+        damage: 2
+    block-1-3:
+      row: 1
+      col: 4
+      icon:
+        id: 1
+        damage: 3
+    block-1-4:
+      row: 1
+      col: 5
+      icon:
+        id: 1
+        damage: 4
+    block-1-5:
+      row: 1
+      col: 6
+      icon:
+        id: 1
+        damage: 5
+    block-1-6:
+      row: 1
+      col: 7
+      icon:
+        id: 1
+        damage: 6
+    block-2:
+      row: 1
+      col: 8
+      icon:
+        id: 2
+    block-3:
+      row: 1
+      col: 9
+      icon:
+        id: 3
+    block-45:
+      row: 1
+      col: 10
+      icon:
+        id: 45
+    block-3-1:
+      row: 2
+      col: 1
+      icon:
+        id: 3
+        damage: 1
+    block-3-2:
+      row: 2
+      col: 2
+      icon:
+        id: 3
+        damage: 2
+    block-4:
+      row: 2
+      col: 3
+      icon:
+        id: 4
+    block-5:
+      row: 2
+      col: 4
+      icon:
+        id: 5
+    block-5-1:
+      row: 2
+      col: 5
+      icon:
+        id: 5
+        damage: 1
+    block-5-2:
+      row: 2
+      col: 6
+      icon:
+        id: 5
+        damage: 2
+    block-5-3:
+      row: 2
+      col: 7
+      icon:
+        id: 5
+        damage: 3
+    block-5-4:
+      row: 2
+      col: 8
+      icon:
+        id: 5
+        damage: 4
+    block-5-5:
+      row: 2
+      col: 9
+      icon:
+        id: 5
+        damage: 5
+    block-57:
+      row: 2
+      col: 10
+      icon:
+        id: 57
+    block-7:
+      row: 3
+      col: 1
+      icon:
+        id: 7
+    block-12-1:
+      row: 3
+      col: 2
+      icon:
+        id: 12
+        damage: 1
+    block-13:
+      row: 3
+      col: 3
+      icon:
+        id: 13
+    block-14:
+      row: 3
+      col: 4
+      icon:
+        id: 14
+    block-15:
+      row: 3
+      col: 5
+      icon:
+        id: 15
+    block-16:
+      row: 3
+      col: 6
+      icon:
+        id: 16
+    block-17:
+      row: 3
+      col: 7
+      icon:
+        id: 17
+    block-17-1:
+      row: 3
+      col: 8
+      icon:
+        id: 17
+        damage: 1
+    block-17-2:
+      row: 3
+      col: 9
+      icon:
+        id: 17
+        damage: 2
+    block-80:
+      row: 3
+      col: 10
+      icon:
+        id: 80
+    block-17-3:
+      row: 4
+      col: 1
+      icon:
+        id: 17
+        damage: 3
+    block-18:
+      row: 4
+      col: 2
+      icon:
+        id: 18
+    block-18-1:
+      row: 4
+      col: 3
+      icon:
+        id: 18
+        damage: 1
+    block-18-2:
+      row: 4
+      col: 4
+      icon:
+        id: 18
+        damage: 2
+    block-18-3:
+      row: 4
+      col: 5
+      icon:
+        id: 18
+        damage: 3
+    block-19:
+      row: 4
+      col: 6
+      icon:
+        id: 19
+    block-19-1:
+      row: 4
+      col: 7
+      icon:
+        id: 19
+        damage: 1
+    block-20:
+      row: 4
+      col: 8
+      icon:
+        id: 20
+    block-21:
+      row: 4
+      col: 9
+      icon:
+        id: 21
+    block-22:
+      row: 4
+      col: 10
+      icon:
+        id: 22
+    block-24:
+      row: 5
+      col: 1
+      icon:
+        id: 24
+    block-24-1:
+      row: 5
+      col: 2
+      icon:
+        id: 24
+        damage: 1
+    block-24-2:
+      row: 5
+      col: 3
+      icon:
+        id: 24
+        damage: 2
+    block-25:
+      row: 5
+      col: 4
+      icon:
+        id: 25
+    block-29:
+      row: 5
+      col: 5
+      icon:
+        id: 29
+    block-33:
+      row: 5
+      col: 6
+      icon:
+        id: 33
+    block-41:
+      row: 5
+      col: 7
+      icon:
+        id: 41
+    block-42:
+      row: 5
+      col: 8
+      icon:
+        id: 42
+    block-44:
+      row: 5
+      col: 9
+      icon:
+        id: 44
+    block-155:
+      row: 5
+      col: 10
+      icon:
+        id: 155
 # Append new items above this line <---
