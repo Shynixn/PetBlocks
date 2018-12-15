@@ -22,8 +22,17 @@ kotlin {
         fromPreset(presets.jvm, 'petblocksBukkitApi')
         fromPreset(presets.jvm, 'petblocksBukkitPlugin')
         fromPreset(presets.jvm, 'petblocksCoreJava')
+        fromPreset(presets.jvm, 'petblocksMinecraftHeadsManager')
     }
     sourceSets {
+        petblocksMinecraftHeadsManagerMain{
+            dependencies {
+                implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk8'
+                implementation 'commons-io:commons-io:2.4'
+                implementation 'com.zaxxer:HikariCP:3.2.0'
+                implementation 'org.xerial:sqlite-jdbc:3.8.11.2'
+            }
+        }
         petblocksApiMain {
             dependencies {
                 implementation 'org.jetbrains.kotlin:kotlin-stdlib-common'
