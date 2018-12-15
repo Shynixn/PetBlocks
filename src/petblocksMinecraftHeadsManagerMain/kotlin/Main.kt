@@ -1,7 +1,6 @@
 import org.apache.commons.io.FileUtils
 import org.apache.commons.io.IOUtils
 import java.io.FileInputStream
-import java.io.FileNotFoundException
 import java.io.FileOutputStream
 import java.io.IOException
 import java.nio.file.Files
@@ -14,7 +13,6 @@ import javax.crypto.CipherOutputStream
 import javax.crypto.spec.IvParameterSpec
 import javax.crypto.spec.SecretKeySpec
 import kotlin.collections.ArrayList
-import kotlin.math.log
 
 /**
  * Created by Shynixn 2018.
@@ -49,6 +47,7 @@ fun main(args: Array<String>) {
         Paths.get("")
     val targetFile = Paths.get("")
     val targetEncryptedFile = Paths.get("")
+    val targetYamlFile = Paths.get("")
 
     val mainLogger = Logger.getLogger("com.logicbig")
     mainLogger.useParentHandlers = false
@@ -119,6 +118,8 @@ fun main(args: Array<String>) {
             sqlContext.multiQuery(connection, "SELECT * FROM SHY_MCHEAD ORDER BY headtype, id", { resultSet ->
                 val stringBuilder = StringBuilder()
 
+                stringBuilder.append(resultSet["id"] as Int)
+                stringBuilder.append(";")
                 stringBuilder.append(resultSet["headtype"] as String)
                 stringBuilder.append(";")
                 stringBuilder.append(resultSet["name"] as String)
@@ -159,6 +160,94 @@ fun main(args: Array<String>) {
         }
 
         logger.log(Level.INFO, "Completed.")
+
+        logger.log(Level.INFO, "Generating yaml source...")
+
+
+
+        var categories = arrayOf("Pet", "Puppet", "Vehicle")
+        var builder = StringBuilder()
+
+
+        categories.forEach { category ->
+            val resultPet = sqlContext.transaction<List<String>, Connection> { connection ->
+                sqlContext.multiQuery(connection, "SELECT * FROM SHY_MCHEAD WHERE headtype='$category' ORDER BY headtype, id", { resultSet ->
+                    (resultSet["id"] as Int).toString()
+                })
+            }
+
+            if(category == "Pet"){
+                builder.appendln("  minecraft-heads-pet-skins:")
+            }
+            if(category == "Puppet"){
+                builder.appendln("  minecraft-heads-puppet-skins:")
+            }
+            if(category == "Vehicle"){
+                builder.appendln("  minecraft-heads-vehicle-skins:")
+            }
+
+            builder.appendln("    next-page:\n" +
+                    "      row: 6\n" +
+                    "      col: 9\n" +
+                    "      fixed: true\n" +
+                    "      script: 'scroll 2 0'\n" +
+                    "      icon: \n" +
+                    "       id: 397\n" +
+                    "       damage: 3\n" +
+                    "       skin: 'http://textures.minecraft.net/texture/1b6f1a25b6bc199946472aedb370522584ff6f4e83221e5946bd2e41b5ca13b'\n" +
+                    "       name: '&aNext page'\n" +
+                    "       script: 'hide-right-scroll'\n" +
+                    "    previous-page:\n" +
+                    "      row: 6\n" +
+                    "      col: 1\n" +
+                    "      fixed: true\n" +
+                    "      script: 'scroll -2 0'\n" +
+                    "      icon: \n" +
+                    "       id: 397\n" +
+                    "       damage: 3\n" +
+                    "       skin: 'http://textures.minecraft.net/texture/3ebf907494a935e955bfcadab81beafb90fb9be49c7026ba97d798d5f1a23'\n" +
+                    "       name: '&aPrevious page'\n" +
+                    "       script: 'hide-left-scroll'\n" +
+                    "    back:\n" +
+                    "      row: 6\n" +
+                    "      col: 5\n" +
+                    "      fixed: true\n" +
+                    "      script: 'close-gui'\n" +
+                    "      icon:\n" +
+                    "        id: 166\n" +
+                    "        damage: 0\n" +
+                    "        name: '&cBack'\n" +
+                    "        lore:\n" +
+                    "        - '&7Closes the current window.'")
+
+            var counter = 0
+            var amount = (resultPet.size / 5)
+            var remaining = resultPet.size % 5
+
+            for(i in 1..5){
+                var j = 0
+                for(j in 1..amount){
+                    while (remaining >= 0){
+                        var item = resultPet[counter]
+
+                        builder.append("    block-").append(i).append("-").append(j).append("-").append(remaining).appendln(":")
+                        builder.appendln("      row: $i")
+                        builder.appendln("      col: $j")
+                        builder.appendln("      icon:")
+                        builder.appendln("        id: 397")
+                        builder.appendln("        damage: 3")
+                        builder.appendln("        name: 'minecraft-heads.com/$item'")
+                        builder.appendln("        skin: 'minecraft-heads.com/$item'")
+                        counter++
+                        remaining--
+                    }
+
+                    remaining = 0
+                }
+            }
+        }
+
+        FileUtils.write(targetYamlFile.toFile(), builder.toString())
 
         logger.log(Level.INFO, "Finished generation. Decryption Key: " + Base64.getEncoder().encodeToString(halfkey))
     }
