@@ -32,6 +32,15 @@ import com.github.shynixn.petblocks.api.persistence.entity.GuiItem
  */
 class GuiItemEntity : GuiItem {
     /**
+     * Required permission to perform this action.
+     */
+    override var permission: String = ""
+    /**
+     * Should the item be hidden if the player has not not the permissions.
+     */
+    override var hiddenWhenNoPermission: Boolean = false
+
+    /**
      * Position in the inventory which cannot be scrolled.
      */
     override var fixed: Boolean = false

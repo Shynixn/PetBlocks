@@ -10,6 +10,8 @@ import com.github.shynixn.petblocks.api.business.service.*
 import com.github.shynixn.petblocks.api.persistence.entity.*
 import com.github.shynixn.petblocks.bukkit.logic.business.extension.*
 import com.github.shynixn.petblocks.core.logic.business.extension.chatMessage
+import com.github.shynixn.petblocks.core.logic.business.extension.sync
+import com.github.shynixn.petblocks.core.logic.business.extension.translateChatColors
 import com.github.shynixn.petblocks.core.logic.persistence.entity.GuiIconEntity
 import com.github.shynixn.petblocks.core.logic.persistence.entity.GuiPlayerCacheEntity
 import org.bukkit.Bukkit
@@ -18,6 +20,7 @@ import org.bukkit.entity.Player
 import org.bukkit.inventory.Inventory
 import org.bukkit.inventory.ItemStack
 import org.bukkit.plugin.Plugin
+import java.util.ArrayList
 import java.util.logging.Level
 
 /**
@@ -54,9 +57,13 @@ class GUIServiceImpl @Inject constructor(
     private val scriptService: GUIScriptService,
     private val persistenceService: PersistencePetMetaService,
     private val itemService: ItemService,
+    private val concurrencyService: ConcurrencyService,
     private val messageService: MessageService,
     private val headDatabaseService: DependencyHeadDatabaseService
 ) : GUIService {
+
+    private val clickProtection = ArrayList<Player>()
+
     private val pageCache = HashMap<Player, GuiPlayerCache>()
 
     private var collectedMinecraftHeadsMessage = chatMessage {
@@ -165,6 +172,14 @@ class GUIServiceImpl @Inject constructor(
             return
         }
 
+        if (optGuiItem.permission.isNotEmpty() && !player.hasPermission(optGuiItem.permission)) {
+            if(!lockGui(player)){
+                player.sendMessage(configurationService.findValue<String>("messages.prefix") + configurationService.findValue<String>("messages.no-perms"))
+            }
+
+            return
+        }
+
         val scriptResult = scriptService.executeScript(optGuiItem.script!!)
 
         if (scriptResult.action == ScriptAction.SCROLL_PAGE) {
@@ -216,6 +231,16 @@ class GUIServiceImpl @Inject constructor(
                 continue
             }
 
+            var hasPermission = true
+
+            if (item.permission.isNotEmpty()) {
+                hasPermission = player.hasPermission(item.permission)
+            }
+
+            if (!hasPermission && item.hiddenWhenNoPermission) {
+                continue
+            }
+
             val position = if (item.fixed) {
                 item.position
             } else {
@@ -240,7 +265,7 @@ class GUIServiceImpl @Inject constructor(
                         unbreakable = petMeta.skin.unbreakable
                     }
 
-                    renderIcon(inventory, position, guiIcon)
+                    renderIcon(inventory, position, guiIcon, hasPermission)
                 } else if (scriptResult.action == ScriptAction.HIDE_RIGHT_SCROLL && item.script != null) {
                     val itemPreScriptResult = scriptService.executeScript(item.script!!)
                     val offsetData = itemPreScriptResult.valueContainer as Pair<Int, Int>
@@ -272,7 +297,7 @@ class GUIServiceImpl @Inject constructor(
                     pageCache[player]!!.offsetY = cachedData.second
 
                     if (found) {
-                        renderIcon(inventory, position,  item.icon)
+                        renderIcon(inventory, position, item.icon, hasPermission)
                     }
                 } else if (scriptResult.action == ScriptAction.HIDE_LEFT_SCROLL && item.script != null) {
                     val itemPreScriptResult = scriptService.executeScript(item.script!!)
@@ -280,14 +305,14 @@ class GUIServiceImpl @Inject constructor(
 
                     if (offsetData.first < 0) {
                         if (pageCache[player]!!.offsetX > 0) {
-                            renderIcon(inventory, position, item.icon)
+                            renderIcon(inventory, position, item.icon, hasPermission)
                         }
 
                         continue
                     }
                 }
             } else {
-                renderIcon(inventory, position, item.icon)
+                renderIcon(inventory, position, item.icon, hasPermission)
             }
         }
 
@@ -298,30 +323,34 @@ class GUIServiceImpl @Inject constructor(
     /**
      * Renders a gui Icon.
      */
-    private fun renderIcon(inventory: Inventory, position: Int,guiIcon: GuiIcon) {
+    private fun renderIcon(inventory: Inventory, position: Int, guiIcon: GuiIcon, hasPermission: Boolean) {
         if (position < 0) {
             return
         }
 
+        val permissionMessage = if (hasPermission) {
+            configurationService.findValue("messages.perms-ico-yes")
+        } else {
+            configurationService.findValue<String>("messages.perms-ico-no")
+        }
+
         val itemStack = itemService.createItemStack<ItemStack>(guiIcon.skin.typeName, guiIcon.skin.dataValue)
 
-        itemStack.setDisplayName(guiIcon.displayName)
-        itemStack.setLore(guiIcon.lore)
+        itemStack.setDisplayName(guiIcon.displayName.replace("<permission>", permissionMessage))
         itemStack.setSkin(guiIcon.skin.owner)
         itemStack.setUnbreakable(guiIcon.skin.unbreakable)
 
-        inventory.setItem(position, itemStack)
-    }
+        val meta = itemStack.itemMeta
+        val tmpLore = ArrayList<String>()
 
-    /**
-     * Sends a gui action message.
-     */
-    private fun sendGuiMessage(player: Player, message: ChatMessage, permission: String) {
-        if (player.hasPermission(permission)) {
-            messageService.sendPlayerMessage(player, message)
-        } else {
-            player.sendMessage(configurationService.findValue<String>("messages.prefix") + configurationService.findValue<String>("messages.no-perms"))
+        guiIcon.lore.forEach { l ->
+            tmpLore.add(l.replace("<permission>", permissionMessage).translateChatColors())
         }
+
+        meta.lore = tmpLore
+        itemStack.itemMeta = meta
+
+        inventory.setItem(position, itemStack)
     }
 
     /**
@@ -332,9 +361,27 @@ class GUIServiceImpl @Inject constructor(
 
         for (i in 0 until inventory.contents.size) {
             if (inventory.getItem(i) == null || inventory.getItem(i).type == Material.AIR) {
-                renderIcon(inventory, i,guiItem.icon)
+                renderIcon(inventory, i, guiItem.icon, true)
             }
         }
+    }
+
+    /**
+     * Locks the GUI against spamming.
+     * Returns if locked.
+     */
+    private fun lockGui(player: Player): Boolean {
+        if (clickProtection.contains(player)) {
+            return true
+        }
+
+        this.clickProtection.add(player)
+
+        sync(concurrencyService, 10L) {
+            this.clickProtection.remove(player)
+        }
+
+        return false
     }
 
     /**

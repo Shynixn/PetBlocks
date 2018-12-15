@@ -49,6 +49,17 @@ interface GuiItem {
      */
     var hiddenWhenPetIsSpawned : Boolean
 
+    /**
+     * Required permission to perform this action.
+     */
+    var permission : String
+
+    /**
+     * Should the item be hidden if the player has not not the permissions.
+     */
+    var hiddenWhenNoPermission : Boolean
+
+
     /** Returns the position in the inventory. */
     var position: Int
 

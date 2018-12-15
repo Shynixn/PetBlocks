@@ -207,11 +207,13 @@ class ConfigurationServiceImpl @Inject constructor(private val plugin: Plugin, p
             val description = (section[key] as MemorySection).getValues(true)
 
             if (description.containsKey("row") && description.containsKey("col")) {
-                var column =  (description["col"] as Int - 1)
+                var column = (description["col"] as Int - 1)
                 column += ((column / 9) * 45)
                 guiItem.position = (description["row"] as Int - 1) * 9 + column
             }
 
+            this.setItem<String>("permission", description) { value -> guiItem.permission = value }
+            this.setItem<Boolean>("hidden-when-no-permission", description) { value -> guiItem.hiddenWhenNoPermission = value }
             this.setItem<Boolean>("hidden", description) { value -> guiItem.hidden = value }
             this.setItem<Boolean>("hidden-when-pet-is-spawned", description) { value -> guiItem.hiddenWhenPetIsSpawned = value }
             this.setItem<Int>("position", description) { value -> guiItem.position = value - 1 }
