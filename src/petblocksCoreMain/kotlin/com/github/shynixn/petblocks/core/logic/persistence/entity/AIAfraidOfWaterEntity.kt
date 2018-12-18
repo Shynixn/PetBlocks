@@ -31,19 +31,15 @@ import com.github.shynixn.petblocks.api.persistence.entity.Particle
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class AIAfraidOfWaterEntity : AIAfraidOfWater {
+class AIAfraidOfWaterEntity : AIBaseEntity(), AIAfraidOfWater {
     /**
-     * Optional user identifier.
+     * Name of the type.
      */
-    override var userId: String? = null
-    /**
-     * Database id.
-     */
-    override var id: Long = 0
+    override var type: String = "afraid-of-water"
     /**
      *  Particle shown when a pet falls into water.
      */
-    override var particle: Particle = ParticleEntity(ParticleType.VILLAGER_ANGRY)
+    override var particle: Particle = ParticleEntity()
     /**
      * Amount of seconds until the particles disappear.
      */

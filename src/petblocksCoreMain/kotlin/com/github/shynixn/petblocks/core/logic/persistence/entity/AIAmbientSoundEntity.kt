@@ -1,4 +1,8 @@
-package com.github.shynixn.petblocks.api.persistence.entity
+package com.github.shynixn.petblocks.core.logic.persistence.entity
+
+import com.github.shynixn.petblocks.api.business.annotation.YamlSerialize
+import com.github.shynixn.petblocks.api.persistence.entity.AIAmbientSound
+import com.github.shynixn.petblocks.api.persistence.entity.Sound
 
 /**
  * Created by Shynixn 2018.
@@ -27,29 +31,14 @@ package com.github.shynixn.petblocks.api.persistence.entity
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-interface AIMovement : AIBase {
+class AIAmbientSoundEntity : AIBaseEntity(), AIAmbientSound {
     /**
-     * Movement sound.
+     * Name of the type.
      */
-    val movementSound: Sound
-
+    override var type: String = "ambient-sound"
     /**
-     * Movement particle.
+     * Ambient random sound.
      */
-    val movementParticle: Particle
-
-    /**
-     * Climbing height.
-     */
-    var climbingHeight: Double
-
-    /**
-     * Movement speed modifier.
-     */
-    var movementSpeed: Double
-
-    /**
-     * Movement offset from ground.
-     */
-    var movementYOffSet: Double
+    @YamlSerialize(value = "sound", orderNumber = 1, implementation = SoundEntity::class)
+    override val sound: Sound = SoundEntity()
 }

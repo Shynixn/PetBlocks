@@ -1,4 +1,6 @@
-package com.github.shynixn.petblocks.api.persistence.entity
+package com.github.shynixn.petblocks.core.logic.persistence.entity
+
+import com.github.shynixn.petblocks.api.persistence.entity.AIBase
 
 /**
  * Created by Shynixn 2018.
@@ -27,29 +29,13 @@ package com.github.shynixn.petblocks.api.persistence.entity
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-interface AIMovement : AIBase {
+abstract class AIBaseEntity : AIBase {
     /**
-     * Movement sound.
+     * Database id.
      */
-    val movementSound: Sound
-
+    override var id: Long = 0
     /**
-     * Movement particle.
+     * Optional user identifier.
      */
-    val movementParticle: Particle
-
-    /**
-     * Climbing height.
-     */
-    var climbingHeight: Double
-
-    /**
-     * Movement speed modifier.
-     */
-    var movementSpeed: Double
-
-    /**
-     * Movement offset from ground.
-     */
-    var movementYOffSet: Double
+    override var userId: String? = null
 }

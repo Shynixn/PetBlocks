@@ -1,5 +1,6 @@
 package com.github.shynixn.petblocks.core.logic.persistence.entity
 
+import com.github.shynixn.petblocks.api.business.annotation.YamlSerialize
 import com.github.shynixn.petblocks.api.business.enumeration.ParticleColor
 import com.github.shynixn.petblocks.api.business.enumeration.ParticleType
 import com.github.shynixn.petblocks.api.persistence.entity.Particle
@@ -31,7 +32,9 @@ import com.github.shynixn.petblocks.api.persistence.entity.Particle
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class ParticleEntity(override var type: ParticleType = ParticleType.NONE) : Particle {
+class ParticleEntity(
+    @YamlSerialize(value = "name", orderNumber = 1)
+    override var type: ParticleType = ParticleType.NONE) : Particle {
     /**
      * Database Id.
      */
@@ -39,31 +42,38 @@ class ParticleEntity(override var type: ParticleType = ParticleType.NONE) : Part
     /**
      * Amount of particles.
      */
+    @YamlSerialize(value = "amount", orderNumber = 2)
     override var amount: Int = 1
     /**
      * Particle speed.
      */
+    @YamlSerialize(value = "speed", orderNumber = 3)
     override var speed: Double = 1.0
     /**
      * Offset for the x coordinate.
      */
+    @YamlSerialize(value = "offx", orderNumber = 4)
     override var offSetX: Double = 1.0
     /**
      * Offset for the y coordinate.
      */
+    @YamlSerialize(value = "offy", orderNumber = 5)
     override var offSetY: Double = 1.0
     /**
      * Offset for the z coordinate.
      */
+    @YamlSerialize(value = "offz", orderNumber = 6)
     override var offSetZ: Double = 1.0
 
     /**
      * Material value.
      */
+    @YamlSerialize(value = "material", orderNumber = 7)
     override var materialName: String? = null
     /**
      * Data value.
      */
+    @YamlSerialize(value = "data", orderNumber = 8)
     override var data: Int = 0
 
     /**

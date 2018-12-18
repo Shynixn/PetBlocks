@@ -1,4 +1,6 @@
-package com.github.shynixn.petblocks.api.persistence.entity
+package com.github.shynixn.petblocks.core.logic.persistence.entity
+
+import com.github.shynixn.petblocks.api.persistence.entity.AIDiving
 
 /**
  * Created by Shynixn 2018.
@@ -27,29 +29,9 @@ package com.github.shynixn.petblocks.api.persistence.entity
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-interface AIMovement : AIBase {
+class AIDivingEntity : AIMovementEntity(), AIDiving {
     /**
-     * Movement sound.
+     * Name of the type.
      */
-    val movementSound: Sound
-
-    /**
-     * Movement particle.
-     */
-    val movementParticle: Particle
-
-    /**
-     * Climbing height.
-     */
-    var climbingHeight: Double
-
-    /**
-     * Movement speed modifier.
-     */
-    var movementSpeed: Double
-
-    /**
-     * Movement offset from ground.
-     */
-    var movementYOffSet: Double
+    override var type: String = "diving"
 }

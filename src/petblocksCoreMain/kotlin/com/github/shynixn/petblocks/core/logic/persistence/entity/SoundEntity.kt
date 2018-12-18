@@ -1,5 +1,6 @@
 package com.github.shynixn.petblocks.core.logic.persistence.entity
 
+import com.github.shynixn.petblocks.api.business.annotation.YamlSerialize
 import com.github.shynixn.petblocks.api.persistence.entity.Sound
 
 /**
@@ -33,6 +34,7 @@ class SoundEntity(
     /**
      * Name of the sound.
      */
+    @YamlSerialize(value = "name", orderNumber = 1)
     override var name: String = "none"
 ) : Sound {
     /**
@@ -40,11 +42,13 @@ class SoundEntity(
      */
     override var id: Long = 0
     /**
-     * Pitch of the sound.
-     */
-    override var pitch: Double = 1.0
-    /**
      * Volume of the sound.
      */
+    @YamlSerialize(value = "volume", orderNumber = 2)
     override var volume: Double = 1.0
+    /**
+     * Pitch of the sound.
+     */
+    @YamlSerialize(value = "pitch", orderNumber = 3)
+    override var pitch: Double = 1.0
 }

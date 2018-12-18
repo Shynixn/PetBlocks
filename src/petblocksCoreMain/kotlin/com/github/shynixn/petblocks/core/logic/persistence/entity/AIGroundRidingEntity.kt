@@ -1,4 +1,6 @@
-package com.github.shynixn.petblocks.api.persistence.entity
+package com.github.shynixn.petblocks.core.logic.persistence.entity
+
+import com.github.shynixn.petblocks.api.persistence.entity.AIGroundRiding
 
 /**
  * Created by Shynixn 2018.
@@ -27,29 +29,23 @@ package com.github.shynixn.petblocks.api.persistence.entity
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-interface AIMovement : AIBase {
+class AIGroundRidingEntity : AIBaseEntity(), AIGroundRiding {
     /**
-     * Movement sound.
+     * Name of the type.
      */
-    val movementSound: Sound
-
-    /**
-     * Movement particle.
-     */
-    val movementParticle: Particle
-
+    override var type: String = "ground-riding"
     /**
      * Climbing height.
      */
-    var climbingHeight: Double
+    override var climbingHeight: Double = 1.0
 
     /**
-     * Movement speed modifier.
+     * Riding speed.
      */
-    var movementSpeed: Double
+    override var ridingSpeed: Double = 1.0
 
     /**
-     * Movement offset from ground.
+     * Riding offset from ground.
      */
-    var movementYOffSet: Double
+    override var ridingYOffSet: Double = 1.0
 }

@@ -1,4 +1,6 @@
-package com.github.shynixn.petblocks.api.persistence.entity
+package com.github.shynixn.petblocks.core.logic.persistence.entity
+
+import com.github.shynixn.petblocks.api.persistence.entity.AIHealth
 
 /**
  * Created by Shynixn 2018.
@@ -27,29 +29,22 @@ package com.github.shynixn.petblocks.api.persistence.entity
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-interface AIMovement : AIBase {
+class AIHealthEntity : AIBaseEntity(), AIHealth {
     /**
-     * Movement sound.
+     * Name of the type.
      */
-    val movementSound: Sound
+    override var type: String = "health"
+    /**
+     * Max health of a ai item.
+     */
+    override var maxHealth: Double = 20.0
+    /**
+     * Current health of a ai item.
+     */
+    override var health: Double = 20.0
 
     /**
-     * Movement particle.
+     * Amount of seconds until the pet can respawn after it has died.
      */
-    val movementParticle: Particle
-
-    /**
-     * Climbing height.
-     */
-    var climbingHeight: Double
-
-    /**
-     * Movement speed modifier.
-     */
-    var movementSpeed: Double
-
-    /**
-     * Movement offset from ground.
-     */
-    var movementYOffSet: Double
+    override var respawningDelay: Double = 5.0
 }

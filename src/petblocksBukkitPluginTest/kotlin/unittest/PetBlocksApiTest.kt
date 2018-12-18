@@ -76,8 +76,6 @@ class PetBlocksApiTest {
 
         // Assert
         Assertions.assertTrue(proxy.called)
-
-        throw RuntimeException()
     }
 
     companion object {

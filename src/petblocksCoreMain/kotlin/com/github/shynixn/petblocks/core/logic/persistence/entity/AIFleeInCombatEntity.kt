@@ -1,4 +1,6 @@
-package com.github.shynixn.petblocks.api.persistence.entity
+package com.github.shynixn.petblocks.core.logic.persistence.entity
+
+import com.github.shynixn.petblocks.api.persistence.entity.AIFleeInCombat
 
 /**
  * Created by Shynixn 2018.
@@ -27,29 +29,13 @@ package com.github.shynixn.petblocks.api.persistence.entity
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-interface AIMovement : AIBase {
+class AIFleeInCombatEntity : AIBaseEntity(), AIFleeInCombat{
     /**
-     * Movement sound.
+     * Name of the type.
      */
-    val movementSound: Sound
-
+    override var type: String = "flee-in-combat"
     /**
-     * Movement particle.
+     * After how many seconds should the pet reappear?
      */
-    val movementParticle: Particle
-
-    /**
-     * Climbing height.
-     */
-    var climbingHeight: Double
-
-    /**
-     * Movement speed modifier.
-     */
-    var movementSpeed: Double
-
-    /**
-     * Movement offset from ground.
-     */
-    var movementYOffSet: Double
+    override var reAppearsInSeconds: Int = 5
 }

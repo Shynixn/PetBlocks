@@ -1,4 +1,7 @@
-package com.github.shynixn.petblocks.api.persistence.entity
+package com.github.shynixn.petblocks.api.business.annotation
+
+import com.github.shynixn.blockball.api.business.enumeration.SerializationType
+import kotlin.reflect.KClass
 
 /**
  * Created by Shynixn 2018.
@@ -27,29 +30,24 @@ package com.github.shynixn.petblocks.api.persistence.entity
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-interface AIMovement : AIBase {
-    /**
-     * Movement sound.
-     */
-    val movementSound: Sound
+@Retention(AnnotationRetention.RUNTIME)
+@Target(AnnotationTarget.FIELD)
+annotation class YamlSerialize(
+        /**
+         * Name of the target property.
+         */
+        val value: String,
+        /**
+         * Order number in the target file.
+         */
+        val orderNumber: Int,
 
-    /**
-     * Movement particle.
-     */
-    val movementParticle: Particle
-
-    /**
-     * Climbing height.
-     */
-    var climbingHeight: Double
-
-    /**
-     * Movement speed modifier.
-     */
-    var movementSpeed: Double
-
-    /**
-     * Movement offset from ground.
-     */
-    var movementYOffSet: Double
-}
+        /**
+         * Custom serialization class.
+         */
+        val customserializer: KClass<*> = Any::class,
+        /**
+         * Optional implementation of the class if the type is specified as interface.
+         */
+        val implementation: KClass<*> = Any::class
+)

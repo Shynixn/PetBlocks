@@ -34,6 +34,11 @@ interface AIBase {
     var id: Long
 
     /**
+     * Name of the type.
+     */
+    var type : String
+
+    /**
      * Optional user identifier.
      */
     var userId: String?

@@ -1,4 +1,9 @@
-package com.github.shynixn.petblocks.api.persistence.entity
+package com.github.shynixn.petblocks.core.logic.persistence.entity
+
+import com.github.shynixn.petblocks.api.business.enumeration.ParticleType
+import com.github.shynixn.petblocks.api.persistence.entity.AIMovement
+import com.github.shynixn.petblocks.api.persistence.entity.Particle
+import com.github.shynixn.petblocks.api.persistence.entity.Sound
 
 /**
  * Created by Shynixn 2018.
@@ -27,29 +32,26 @@ package com.github.shynixn.petblocks.api.persistence.entity
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-interface AIMovement : AIBase {
+abstract class AIMovementEntity : AIBaseEntity(), AIMovement {
     /**
      * Movement sound.
      */
-    val movementSound: Sound
-
+    override val movementSound: Sound = SoundEntity("CHICKEN_WALK")
     /**
      * Movement particle.
      */
-    val movementParticle: Particle
+    override val movementParticle: Particle = ParticleEntity()
 
     /**
      * Climbing height.
      */
-    var climbingHeight: Double
-
+    override var climbingHeight: Double = 1.0
     /**
      * Movement speed modifier.
      */
-    var movementSpeed: Double
-
+    override var movementSpeed: Double = 1.0
     /**
      * Movement offset from ground.
      */
-    var movementYOffSet: Double
+    override var movementYOffSet: Double = 1.0
 }

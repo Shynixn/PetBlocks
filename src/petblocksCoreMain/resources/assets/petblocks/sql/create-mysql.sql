@@ -6,19 +6,6 @@ CREATE TABLE IF NOT EXISTS SHY_PLAYER
   CONSTRAINT unique_uuid_cs UNIQUE (uuid)
 );
 
-CREATE TABLE IF NOT EXISTS SHY_PARTICLE_EFFECT
-(
-  id INTEGER PRIMARY KEY AUTO_INCREMENT,
-  name VARCHAR(32) NOT NULL,
-  amount INTEGER,
-  speed DOUBLE,
-  x DOUBLE,
-  y DOUBLE,
-  z DOUBLE,
-  material VARCHAR(32),
-  data CHAR(4)
-);
-
 CREATE TABLE IF NOT EXISTS SHY_SKIN
 (
   id INTEGER PRIMARY KEY AUTO_INCREMENT,
@@ -28,27 +15,24 @@ CREATE TABLE IF NOT EXISTS SHY_SKIN
   unbreakable INTEGER
 );
 
-CREATE TABLE IF NOT EXISTS SHY_PET_MODIFIER
-(
-  id INTEGER PRIMARY KEY AUTO_INCREMENT,
-  climbingheight DOUBLE,
-  movementspeed DOUBLE
-);
-
 CREATE TABLE IF NOT EXISTS SHY_PET
 (
   id INTEGER PRIMARY KEY AUTO_INCREMENT,
   shy_player_id INTEGER,
   shy_skin_id INTEGER,
-  shy_modifier_id INTEGER,
-  invincible INTEGER,
-  health REAL,
   enabled INTEGER,
   displayname VARCHAR(32) NOT NULL,
-  hitboxentitytype VARCHAR(32) NOT NULL,
   soundenabled INTEGER,
   particleenabled INTEGER,
-  CONSTRAINT foreignkey_modifier_id_cs FOREIGN KEY (shy_modifier_id) REFERENCES SHY_PET_MODIFIER(id),
   CONSTRAINT foreignkey_player_id_cs FOREIGN KEY (shy_player_id) REFERENCES SHY_PLAYER(id),
   CONSTRAINT foreignkey_skin_id_cs FOREIGN KEY (shy_skin_id) REFERENCES SHY_SKIN(id)
-)
+);
+
+CREATE TABLE IF NOT EXISTS SHY_PET_AI
+(
+  id INTEGER PRIMARY KEY AUTO_INCREMENT,
+  shy_pet_id INTEGER
+  content TEXT,
+  CONSTRAINT foreignkey_pet_ai_id_cs FOREIGN KEY (shy_pet_id) REFERENCES SHY_PET(id),
+);
+

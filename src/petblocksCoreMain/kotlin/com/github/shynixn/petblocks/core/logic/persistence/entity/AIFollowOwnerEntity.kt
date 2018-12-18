@@ -1,4 +1,6 @@
-package com.github.shynixn.petblocks.api.persistence.entity
+package com.github.shynixn.petblocks.core.logic.persistence.entity
+
+import com.github.shynixn.petblocks.api.persistence.entity.AIFollowOwner
 
 /**
  * Created by Shynixn 2018.
@@ -27,29 +29,22 @@ package com.github.shynixn.petblocks.api.persistence.entity
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-interface AIMovement : AIBase {
+class AIFollowOwnerEntity : AIBaseEntity(), AIFollowOwner {
     /**
-     * Movement sound.
+     * Name of the type.
      */
-    val movementSound: Sound
+    override var type: String = "follow-owner"
+    /**
+     * Distance to the owner which the pet tries to stay away.
+     */
+    override var distanceToOwner: Double = 3.0
+    /**
+     * The max range a pet can be away from a player until it teleports back.
+     */
+    override var maxRange: Double = 50.0
 
     /**
-     * Movement particle.
+     * Speed of the pathfinder.
      */
-    val movementParticle: Particle
-
-    /**
-     * Climbing height.
-     */
-    var climbingHeight: Double
-
-    /**
-     * Movement speed modifier.
-     */
-    var movementSpeed: Double
-
-    /**
-     * Movement offset from ground.
-     */
-    var movementYOffSet: Double
+    override var speed: Double = 3.0
 }

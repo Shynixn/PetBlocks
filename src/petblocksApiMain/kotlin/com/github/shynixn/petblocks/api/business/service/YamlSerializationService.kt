@@ -1,4 +1,4 @@
-package com.github.shynixn.petblocks.api.persistence.entity
+package com.github.shynixn.petblocks.api.business.service
 
 /**
  * Created by Shynixn 2018.
@@ -27,29 +27,15 @@ package com.github.shynixn.petblocks.api.persistence.entity
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-interface AIMovement : AIBase {
-    /**
-     * Movement sound.
-     */
-    val movementSound: Sound
+interface YamlSerializationService {
 
     /**
-     * Movement particle.
+     * Serializes the given [instance] to a key value pair map.
      */
-    val movementParticle: Particle
+    fun serialize(instance: Any): Map<String, Any?>
 
     /**
-     * Climbing height.
+     * Deserializes the given [dataSource] into a new instance of the given [targetObjectClass].
      */
-    var climbingHeight: Double
-
-    /**
-     * Movement speed modifier.
-     */
-    var movementSpeed: Double
-
-    /**
-     * Movement offset from ground.
-     */
-    var movementYOffSet: Double
+    fun <R> deserialize(targetObjectClass: Any, dataSource: Map<String, Any?>) : R
 }
