@@ -1,9 +1,12 @@
 package com.github.shynixn.petblocks.core.logic.persistence.entity
 
+import com.github.shynixn.petblocks.api.business.annotation.YamlSerialize
 import com.github.shynixn.petblocks.api.business.enumeration.ParticleType
+import com.github.shynixn.petblocks.api.business.service.ParticleService
 import com.github.shynixn.petblocks.api.persistence.entity.AIMovement
 import com.github.shynixn.petblocks.api.persistence.entity.Particle
 import com.github.shynixn.petblocks.api.persistence.entity.Sound
+import com.github.shynixn.petblocks.core.logic.business.serializer.ParticleTypeSerializer
 
 /**
  * Created by Shynixn 2018.
@@ -36,22 +39,27 @@ abstract class AIMovementEntity : AIBaseEntity(), AIMovement {
     /**
      * Movement sound.
      */
+    @YamlSerialize(value = "sound", orderNumber = 5, implementation = SoundEntity::class)
     override val movementSound: Sound = SoundEntity("CHICKEN_WALK")
     /**
      * Movement particle.
      */
+    @YamlSerialize(value = "particle", orderNumber = 4, implementation = ParticleEntity::class)
     override val movementParticle: Particle = ParticleEntity()
 
     /**
      * Climbing height.
      */
+    @YamlSerialize(value = "climbing-height", orderNumber = 1)
     override var climbingHeight: Double = 1.0
     /**
      * Movement speed modifier.
      */
+    @YamlSerialize(value = "speed", orderNumber = 2)
     override var movementSpeed: Double = 1.0
     /**
      * Movement offset from ground.
      */
+    @YamlSerialize(value = "offset-y", orderNumber = 3)
     override var movementYOffSet: Double = 1.0
 }

@@ -56,7 +56,17 @@ interface ConfigurationService {
     /**
      * Generates the default pet meta.
      */
-    fun generateDefaultPetMeta(uuid: String, name : String): PetMeta
+    fun generateDefaultPetMeta(uuid: String, name: String): PetMeta
+
+    /**
+     * Converts the given [source] to a string.
+     */
+    fun convertMapToString(source: Map<String, Any?>): String
+
+    /**
+     * Converts the given [data] to a  map.
+     */
+    fun convertStringToMap(data : String) : Map<String, Any?>
 
     /**
      * Clears cached resources and refreshes the used configuration.

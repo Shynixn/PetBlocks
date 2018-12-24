@@ -2,18 +2,22 @@
 
 package integrationtest
 
+import com.github.shynixn.petblocks.api.business.enumeration.ParticleType
 import com.github.shynixn.petblocks.api.business.proxy.CompletableFutureProxy
 import com.github.shynixn.petblocks.api.business.proxy.PlayerProxy
 import com.github.shynixn.petblocks.api.business.service.ConcurrencyService
 import com.github.shynixn.petblocks.api.business.service.PersistencePetMetaService
 import com.github.shynixn.petblocks.api.business.service.ProxyService
+import com.github.shynixn.petblocks.api.persistence.entity.*
 import com.github.shynixn.petblocks.bukkit.logic.business.proxy.SqlProxyImpl
 import com.github.shynixn.petblocks.bukkit.logic.business.service.ConfigurationServiceImpl
 import com.github.shynixn.petblocks.bukkit.logic.business.service.Item18R1ServiceImpl
 import com.github.shynixn.petblocks.core.jvm.logic.business.proxy.CompletableFutureProxyImpl
 import com.github.shynixn.petblocks.core.jvm.logic.persistence.context.SqlDbContextImpl
+import com.github.shynixn.petblocks.core.jvm.logic.persistence.service.YamlSerializationServiceImpl
 import com.github.shynixn.petblocks.core.logic.business.service.LoggingUtilServiceImpl
 import com.github.shynixn.petblocks.core.logic.business.service.PersistencePetMetaServiceImpl
+import com.github.shynixn.petblocks.core.logic.persistence.entity.AIMovementEntity
 import com.github.shynixn.petblocks.core.logic.persistence.repository.PetMetaSqlRepository
 import com.github.shynixn.petblocks.core.logic.persistence.repository.PetRunTimeRepository
 import org.apache.commons.io.FileUtils
@@ -88,6 +92,38 @@ class PersistenceSQLiteIT {
         Assertions.assertEquals("", actual.skin.owner)
         Assertions.assertEquals(1, actual.playerMeta.id)
         Assertions.assertEquals("Kenny", actual.playerMeta.name)
+        Assertions.assertEquals(7, actual.aiGoals.size)
+
+        Assertions.assertEquals("hopping", (actual.aiGoals[0] as AIMovementEntity).type)
+        Assertions.assertEquals(1.0, (actual.aiGoals[0] as AIMovementEntity).climbingHeight)
+        Assertions.assertEquals(1.0, (actual.aiGoals[0] as AIMovementEntity).movementSpeed)
+        Assertions.assertEquals(1.0, (actual.aiGoals[0] as AIMovementEntity).movementYOffSet)
+        Assertions.assertEquals("CHICKEN_WALK", (actual.aiGoals[0] as AIMovementEntity).movementSound.name)
+        Assertions.assertEquals(1.0, (actual.aiGoals[0] as AIMovementEntity).movementSound.volume)
+        Assertions.assertEquals(1.0, (actual.aiGoals[0] as AIMovementEntity).movementSound.pitch)
+        Assertions.assertEquals(ParticleType.REDSTONE, (actual.aiGoals[0] as AIMovementEntity).movementParticle.type)
+        Assertions.assertEquals(20, (actual.aiGoals[0] as AIMovementEntity).movementParticle.amount)
+
+        Assertions.assertEquals("follow-owner", (actual.aiGoals[1] as AIFollowOwner).type)
+        Assertions.assertEquals(3.0, (actual.aiGoals[1] as AIFollowOwner).distanceToOwner)
+        Assertions.assertEquals(50.0, (actual.aiGoals[1] as AIFollowOwner).maxRange)
+        Assertions.assertEquals(2.5, (actual.aiGoals[1] as AIFollowOwner).speed)
+
+        Assertions.assertEquals("float-in-water", (actual.aiGoals[2] as AIFloatInWater).type)
+        Assertions.assertEquals("wearing", (actual.aiGoals[3] as AIWearing).type)
+
+        Assertions.assertEquals("ground-riding", (actual.aiGoals[4] as AIGroundRiding).type)
+        Assertions.assertEquals(1.0, (actual.aiGoals[4] as AIGroundRiding).climbingHeight)
+        Assertions.assertEquals(1.0, (actual.aiGoals[4] as AIGroundRiding).ridingSpeed)
+        Assertions.assertEquals(1.0, (actual.aiGoals[4] as AIGroundRiding).ridingYOffSet)
+
+        Assertions.assertEquals("feeding", (actual.aiGoals[5] as AIFeeding).type)
+        Assertions.assertEquals("CARROT", (actual.aiGoals[5] as AIFeeding).typeName)
+        Assertions.assertEquals(ParticleType.HEART, (actual.aiGoals[5] as AIFeeding).clickParticle.type)
+        Assertions.assertEquals("EAT", (actual.aiGoals[5] as AIFeeding).clickSound.name)
+
+        Assertions.assertEquals("ambient-sound", (actual.aiGoals[6] as AIAmbientSound).type)
+        Assertions.assertEquals("CHICKEN_IDLE", (actual.aiGoals[6] as AIAmbientSound).sound.name)
     }
 
     /**
@@ -166,7 +202,7 @@ class PersistenceSQLiteIT {
 
             sqlProxy = SqlProxyImpl(plugin, LoggingUtilServiceImpl(Logger.getAnonymousLogger()))
             val sqlite = PetMetaSqlRepository(SqlDbContextImpl(sqlProxy!!, LoggingUtilServiceImpl(Logger.getAnonymousLogger()))
-                , ConfigurationServiceImpl(plugin, Item18R1ServiceImpl()))
+                , ConfigurationServiceImpl(plugin, Item18R1ServiceImpl(), YamlSerializationServiceImpl()), YamlSerializationServiceImpl())
             val repo = PetRunTimeRepository()
 
             return PersistencePetMetaServiceImpl(MockedConcurrencyService(), MockedProxyService(), sqlite, repo)

@@ -1,6 +1,5 @@
 package com.github.shynixn.petblocks.api.business.annotation
 
-import com.github.shynixn.blockball.api.business.enumeration.SerializationType
 import kotlin.reflect.KClass
 
 /**

@@ -14,6 +14,7 @@ import com.github.shynixn.petblocks.bukkit.logic.business.service.ConfigurationS
 import com.github.shynixn.petblocks.bukkit.logic.business.service.Item18R1ServiceImpl
 import com.github.shynixn.petblocks.core.jvm.logic.business.proxy.CompletableFutureProxyImpl
 import com.github.shynixn.petblocks.core.jvm.logic.persistence.context.SqlDbContextImpl
+import com.github.shynixn.petblocks.core.jvm.logic.persistence.service.YamlSerializationServiceImpl
 import com.github.shynixn.petblocks.core.logic.business.service.LoggingUtilServiceImpl
 import com.github.shynixn.petblocks.core.logic.business.service.PersistencePetMetaServiceImpl
 import com.github.shynixn.petblocks.core.logic.persistence.repository.PetMetaSqlRepository
@@ -175,7 +176,7 @@ class PersistenceMySQLIT {
 
             sqlProxy = SqlProxyImpl(plugin, LoggingUtilServiceImpl(Logger.getAnonymousLogger()))
             val sqlite = PetMetaSqlRepository(SqlDbContextImpl(sqlProxy!!, LoggingUtilServiceImpl(Logger.getAnonymousLogger()))
-                , ConfigurationServiceImpl(plugin, Item18R1ServiceImpl()))
+                , ConfigurationServiceImpl(plugin, Item18R1ServiceImpl(), YamlSerializationServiceImpl()), YamlSerializationServiceImpl())
             val repo = PetRunTimeRepository()
 
             return PersistencePetMetaServiceImpl(MockedConcurrencyService(), MockedProxyService(), sqlite, repo)

@@ -1,7 +1,7 @@
-package com.github.shynixn.petblocks.core.logic.persistence.entity
+package com.github.shynixn.petblocks.core.logic.business.serializer
 
-import com.github.shynixn.petblocks.api.business.annotation.YamlSerialize
-import com.github.shynixn.petblocks.api.persistence.entity.AIFollowOwner
+import com.github.shynixn.petblocks.api.business.enumeration.ParticleType
+import com.github.shynixn.petblocks.api.business.serializer.YamlSerializer
 
 /**
  * Created by Shynixn 2018.
@@ -30,25 +30,24 @@ import com.github.shynixn.petblocks.api.persistence.entity.AIFollowOwner
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class AIFollowOwnerEntity : AIBaseEntity(), AIFollowOwner {
+class ParticleTypeSerializer : YamlSerializer<ParticleType, String> {
     /**
-     * Name of the type.
+     * Gets called on serialization.
      */
-    override var type: String = "follow-owner"
-    /**
-     * Distance to the owner which the pet tries to stay away.
-     */
-    @YamlSerialize(value = "min-distance", orderNumber = 1)
-    override var distanceToOwner: Double = 3.0
-    /**
-     * The max range a pet can be away from a player until it teleports back.
-     */
-    @YamlSerialize(value = "max-distance", orderNumber = 2)
-    override var maxRange: Double = 50.0
+    override fun onSerialization(item: ParticleType): String {
+        return item.name
+    }
 
     /**
-     * Speed of the pathfinder.
+     * Gets called on Deserialization.
      */
-    @YamlSerialize(value = "speed", orderNumber = 3)
-    override var speed: Double = 3.0
+    override fun onDeserialization(item: String): ParticleType {
+        ParticleType.values().forEach { p ->
+            if (p.name == item || p.gameId_18 == item || p.gameId_113 == item || p.minecraftId_112 == item) {
+                return p
+            }
+        }
+
+        throw RuntimeException("Item '$item' cannot be deserialized to ParticleType!")
+    }
 }

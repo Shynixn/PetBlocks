@@ -4,13 +4,13 @@ package com.github.shynixn.petblocks.core.logic.persistence.repository
 
 import com.github.shynixn.petblocks.api.business.annotation.Inject
 import com.github.shynixn.petblocks.api.business.service.ConfigurationService
+import com.github.shynixn.petblocks.api.business.service.YamlSerializationService
 import com.github.shynixn.petblocks.api.persistence.context.SqlDbContext
+import com.github.shynixn.petblocks.api.persistence.entity.AIBase
 import com.github.shynixn.petblocks.api.persistence.entity.PetMeta
 import com.github.shynixn.petblocks.api.persistence.repository.PetMetaRepository
 import com.github.shynixn.petblocks.core.logic.business.extension.getItem
-import com.github.shynixn.petblocks.core.logic.persistence.entity.PetMetaEntity
-import com.github.shynixn.petblocks.core.logic.persistence.entity.PlayerMetaEntity
-import com.github.shynixn.petblocks.core.logic.persistence.entity.SkinEntity
+import com.github.shynixn.petblocks.core.logic.persistence.entity.*
 
 /**
  * Created by Shynixn 2018.
@@ -41,7 +41,8 @@ import com.github.shynixn.petblocks.core.logic.persistence.entity.SkinEntity
  */
 class PetMetaSqlRepository @Inject constructor(
     private val sqlDbContext: SqlDbContext,
-    private val configurationService: ConfigurationService
+    private val configurationService: ConfigurationService,
+    private val yamlSerializationService: YamlSerializationService
 ) : PetMetaRepository {
     /**
      * Returns the petMeta of from the given player uniqueId. Creates
@@ -58,16 +59,21 @@ class PetMetaSqlRepository @Inject constructor(
     override fun getAll(): List<PetMeta> {
         return sqlDbContext.transaction<List<PetMeta>, Any> { connection ->
             val statement =
-                "SELECT pet.id, shy_player_id, shy_skin_id, shy_modifier_id, enabled, displayname" +
-                        ", hitboxentitytype, soundenabled, particleenabled, climbingheight, movementspeed, uuid, name" +
-                        ", typename, owner, datavalue, unbreakable, invincible, health " +
-                        "FROM SHY_PET pet, SHY_SKIN skin, SHY_PLAYER player, SHY_PET_MODIFIER modifier " +
+                "SELECT * " +
+                        "FROM SHY_PET pet, SHY_SKIN skin, SHY_PLAYER player" +
                         "WHERE pet.shy_player_id = player.id " +
-                        "AND shy_skin_id = skin.id " +
-                        "AND shy_modifier_id = modifier.id"
+                        "AND shy_skin_id = skin.id "
+
+            val aiStatement = "SELECT * FROM SHY_PET_AI WHERE shy_pet_id = ?"
 
             sqlDbContext.multiQuery(connection, statement, { resultSet ->
-                mapResultSetToPetMeta(resultSet)
+                val petMeta = mapResultSetToPetMeta(resultSet)
+
+                petMeta.aiGoals.addAll(sqlDbContext.multiQuery(connection, aiStatement, { aiResultSet ->
+                    mapResultSetToAI(aiResultSet)
+                }, petMeta.id))
+
+                petMeta
             })
         }
     }
@@ -91,23 +97,27 @@ class PetMetaSqlRepository @Inject constructor(
      * currently uses the meta data of the player.
      */
     private fun getOrCreateFromPlayerIdentifiers(connection: Any, name: String, uuid: String): PetMeta {
-        val statement = "SELECT pet.id, shy_player_id, shy_skin_id, shy_modifier_id, enabled, displayname" +
-                ", hitboxentitytype, soundenabled, particleenabled, climbingheight, movementspeed, uuid, name" +
-                ", typename, owner, datavalue, unbreakable, invincible, health " +
-                "FROM SHY_PET pet, SHY_SKIN skin, SHY_PLAYER player, SHY_PET_MODIFIER modifier " +
+        val statement = "SELECT * " +
+                "FROM SHY_PET pet, SHY_SKIN skin, SHY_PLAYER player " +
                 "WHERE player.uuid = ? " +
                 "AND pet.shy_player_id = player.id " +
-                "AND shy_skin_id = skin.id " +
-                "AND shy_modifier_id = modifier.id"
+                "AND shy_skin_id = skin.id "
+
+        val aiStatement = "SELECT * FROM SHY_PET_AI WHERE shy_pet_id = ?"
 
         val optResult = sqlDbContext.singleQuery(connection, statement, { resultSet ->
-            mapResultSetToPetMeta(resultSet)
+            val petMeta = mapResultSetToPetMeta(resultSet)
+
+            petMeta.aiGoals.addAll(sqlDbContext.multiQuery(connection, aiStatement, { aiResultSet ->
+                mapResultSetToAI(aiResultSet)
+            }, petMeta.id))
+
+            petMeta
         }, uuid)
 
         return if (optResult == null) {
             val petMeta = configurationService.generateDefaultPetMeta(uuid, name)
-            insertInto(connection, petMeta)
-            getOrCreateFromPlayerIdentifiers(connection, name, uuid)
+            return insertInto(connection, petMeta)
         } else {
             optResult
         }
@@ -141,6 +151,14 @@ class PetMetaSqlRepository @Inject constructor(
             , "particleenabled" to petMeta.particleEnabled
         )
 
+        for (aiItem in petMeta.aiGoals) {
+            val payload = yamlSerializationService.serialize(aiItem)
+            val payloadString = configurationService.convertMapToString(payload)
+
+            sqlDbContext.update(connection, "SHY_PET_AI", "WHERE id=" + aiItem.id
+                , "content" to payloadString)
+        }
+
         return petMeta
     }
 
@@ -151,7 +169,7 @@ class PetMetaSqlRepository @Inject constructor(
         val playerMeta = petMeta.playerMeta
 
         sqlDbContext.singleQuery(connection, "SELECT * from SHY_PLAYER WHERE uuid = ?", { resultSet ->
-            playerMeta.id = resultSet.getItem("id")
+            playerMeta.id = resultSet.getItem<Int>("id").toLong()
         }, playerMeta.uuid)
 
         if (playerMeta.id == 0L) {
@@ -180,6 +198,15 @@ class PetMetaSqlRepository @Inject constructor(
             , "soundenabled" to petMeta.soundEnabled
             , "particleenabled" to petMeta.particleEnabled
         )
+
+        for (aiItem in petMeta.aiGoals) {
+            val payload = yamlSerializationService.serialize(aiItem)
+            val payloadString = configurationService.convertMapToString(payload)
+
+            aiItem.id = sqlDbContext.insert(connection, "SHY_PET_AI"
+                , "shy_pet_id" to petMeta.id
+                , "content" to payloadString)
+        }
 
         return petMeta
     }
@@ -217,5 +244,29 @@ class PetMetaSqlRepository @Inject constructor(
         }
 
         return petMeta
+    }
+
+    /**
+     * Maps the resultSet to a new ai base.
+     */
+    private fun mapResultSetToAI(resultSet: Map<String, Any>): AIBase {
+        val contentString = resultSet["content"]
+        val aiSource = configurationService.convertStringToMap(contentString as String)
+
+        val type = aiSource["type"] as String
+
+        return when (type) {
+            "hopping" -> yamlSerializationService.deserialize<AIHoppingEntity>(AIHoppingEntity::class, aiSource)
+            "follow-owner" -> yamlSerializationService.deserialize<AIFollowBackEntity>(AIFollowOwnerEntity::class, aiSource)
+            "float-in-water" -> yamlSerializationService.deserialize<AIFloatInWaterEntity>(AIFloatInWaterEntity::class, aiSource)
+            "wearing" -> yamlSerializationService.deserialize<AIWearingEntity>(AIWearingEntity::class, aiSource)
+            "ground-riding" -> yamlSerializationService.deserialize<AIGroundRidingEntity>(AIGroundRidingEntity::class, aiSource)
+            "feeding" -> yamlSerializationService.deserialize<AIFeedingEntity>(AIFeedingEntity::class, aiSource)
+            "ambient-sound" -> yamlSerializationService.deserialize<AIFeedingEntity>(AIAmbientSoundEntity::class, aiSource)
+
+            else -> {
+                throw IllegalArgumentException()
+            }
+        }
     }
 }

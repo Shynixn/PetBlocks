@@ -7,6 +7,7 @@ import com.github.shynixn.petblocks.api.persistence.context.SqlDbContext
 import com.github.shynixn.petblocks.api.persistence.entity.GuiItem
 import com.github.shynixn.petblocks.api.persistence.entity.PetMeta
 import com.github.shynixn.petblocks.api.persistence.repository.PetMetaRepository
+import com.github.shynixn.petblocks.core.jvm.logic.persistence.service.YamlSerializationServiceImpl
 import com.github.shynixn.petblocks.core.logic.persistence.entity.PetMetaEntity
 import com.github.shynixn.petblocks.core.logic.persistence.entity.PlayerMetaEntity
 import com.github.shynixn.petblocks.core.logic.persistence.entity.SkinEntity
@@ -157,11 +158,25 @@ class PetMetaSqlRepositoryTest {
 
     companion object {
         fun createWithDependencies(dbContext: SqlDbContext = MockedSqlDbContext()): PetMetaRepository {
-            return PetMetaSqlRepository(dbContext, MockedConfigurationService())
+            return PetMetaSqlRepository(dbContext, MockedConfigurationService(), YamlSerializationServiceImpl())
         }
     }
 
     class MockedConfigurationService : ConfigurationService{
+        /**
+         * Converts the given [source] to a string.
+         */
+        override fun convertMapToString(source: Map<String, Any?>): String {
+            throw IllegalArgumentException()
+        }
+
+        /**
+         * Converts the given [data] to a  map.
+         */
+        override fun convertStringToMap(data: String): Map<String, Any?> {
+            throw IllegalArgumentException()
+        }
+
         /**
          * Tries to load the config value from the given [path].
          * Throws a [IllegalArgumentException] if the path could not be correctly

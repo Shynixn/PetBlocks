@@ -4,6 +4,7 @@ import com.github.shynixn.petblocks.api.business.annotation.YamlSerialize
 import com.github.shynixn.petblocks.api.business.enumeration.ParticleColor
 import com.github.shynixn.petblocks.api.business.enumeration.ParticleType
 import com.github.shynixn.petblocks.api.persistence.entity.Particle
+import com.github.shynixn.petblocks.core.logic.business.serializer.ParticleTypeSerializer
 
 /**
  * Created by Shynixn 2018.
@@ -33,7 +34,7 @@ import com.github.shynixn.petblocks.api.persistence.entity.Particle
  * SOFTWARE.
  */
 class ParticleEntity(
-    @YamlSerialize(value = "name", orderNumber = 1)
+    @YamlSerialize(value = "name", orderNumber = 1, customserializer = ParticleTypeSerializer::class)
     override var type: ParticleType = ParticleType.NONE) : Particle {
     /**
      * Database Id.

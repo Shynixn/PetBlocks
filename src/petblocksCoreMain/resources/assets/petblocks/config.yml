@@ -152,35 +152,59 @@ pet:
   sound-enabled: true
   particle-enabled: true
   skin:
-    typename: 2
-    datavalue: 0
-    unbreakable: false
-    owner: ''
+    id: 2
   ais:
     1:
-      id: 'hopping'
-    1:
-      id: 'follow-owner'
-      max-distance: 50
+      type: 'hopping'
+      climbing-height: 1.0
+      speed: 1.0
+      offset-y: 1.0
+      sound:
+        name: 'CHICKEN_WALK'
+        volume: 1.0
+        itch: 1.0
+      particle:
+        name: 'reddust'
+        speed: 0.01
+        amount: 20
+        red: 0
+        green: 0
+        blue: 255
     2:
-      id: 'walking-particle'
-      name: 'largesmoke'
-      speed: 0.01
-      amount: 2
-      offx: 0.5
-      offy: 0.5
-      offz: 0.5
+      type: 'follow-owner'
+      min-distance: 3.0
+      max-distance: 50.0
+      speed: 2.5
     3:
-      id: 'ambient-sound'
-      name: 'CHICKEN_IDLE'
-      volume: 1.0
-      pitch: 1.0
+      type: 'float-in-water'
     4:
-      id: 'walking-sound'
-      name: 'CHICKEN_WALK'
-      volume: 1.0
-      pitch: 1.0
-
+      type: 'wearing'
+    5:
+      type: 'ground-riding'
+      climbing-height: 1.0
+      speed: 1.0
+      offset-y: 1.0
+    6:
+      type: 'feeding'
+      item-id: 391
+      item-damage: 0
+      click-particle:
+        name: 'heart'
+        speed: 0.1
+        amount: 20
+        offx: 1.0
+        offy: 1.0
+        offz: 1.0
+      click-sound:
+        name: 'EAT'
+        volume: 1.0
+        pitch: 1.0
+    7:
+      type: 'ambient-sound'
+      sound:
+        name: 'CHICKEN_IDLE'
+        volume: 1.0
+        pitch: 1.0
 ############################
 
 # World settings

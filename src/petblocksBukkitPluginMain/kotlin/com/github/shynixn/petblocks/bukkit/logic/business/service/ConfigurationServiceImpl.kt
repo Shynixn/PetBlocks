@@ -6,12 +6,12 @@ import com.github.shynixn.petblocks.api.business.annotation.Inject
 import com.github.shynixn.petblocks.api.business.enumeration.ChatClickAction
 import com.github.shynixn.petblocks.api.business.service.ConfigurationService
 import com.github.shynixn.petblocks.api.business.service.ItemService
+import com.github.shynixn.petblocks.api.business.service.YamlSerializationService
 import com.github.shynixn.petblocks.api.persistence.entity.AIBase
 import com.github.shynixn.petblocks.api.persistence.entity.ChatMessage
 import com.github.shynixn.petblocks.api.persistence.entity.GuiItem
 import com.github.shynixn.petblocks.api.persistence.entity.PetMeta
 import com.github.shynixn.petblocks.bukkit.logic.business.extension.deserializeToMap
-import com.github.shynixn.petblocks.bukkit.logic.business.extension.toParticleType
 import com.github.shynixn.petblocks.core.logic.business.extension.chatMessage
 import com.github.shynixn.petblocks.core.logic.business.extension.getNullableItem
 import com.github.shynixn.petblocks.core.logic.business.extension.translateChatColors
@@ -19,11 +19,13 @@ import com.github.shynixn.petblocks.core.logic.persistence.entity.*
 import org.bukkit.ChatColor
 import org.bukkit.Material
 import org.bukkit.configuration.MemorySection
+import org.bukkit.configuration.file.YamlConfiguration
 import org.bukkit.inventory.ItemStack
 import org.bukkit.plugin.Plugin
 import java.io.BufferedReader
 import java.io.InputStreamReader
 import java.util.*
+import java.util.logging.Level
 import javax.crypto.Cipher
 import javax.crypto.CipherInputStream
 import javax.crypto.spec.IvParameterSpec
@@ -57,10 +59,23 @@ import kotlin.collections.ArrayList
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class ConfigurationServiceImpl @Inject constructor(private val plugin: Plugin, private val itemService: ItemService) : ConfigurationService {
+class ConfigurationServiceImpl @Inject constructor(
+    private val plugin: Plugin,
+    private val itemService: ItemService,
+    private val yamlSerializationService: YamlSerializationService
+) : ConfigurationService {
     private val cache = HashMap<String, List<GuiItem>>()
     private var namingMessage: ChatMessage? = null
     private var skullNamingMessage: ChatMessage? = null
+
+    /**
+     * Converts the given [source] to a string.
+     */
+    override fun convertMapToString(source: Map<String, Any?>): String {
+        val yamlSerializer = YamlConfiguration()
+        yamlSerializer.set("a", source)
+        return yamlSerializer.saveToString()
+    }
 
     /**
      * Tries to load the config value from the given [path].
@@ -137,6 +152,10 @@ class ConfigurationServiceImpl @Inject constructor(private val plugin: Plugin, p
         if (data is String) {
             data = ChatColor.translateAlternateColorCodes('&', data)
             return data as C
+        }
+
+        if (data is MemorySection) {
+            return plugin.config.deserializeToMap(path) as C
         }
 
         return data as C
@@ -254,18 +273,15 @@ class ConfigurationServiceImpl @Inject constructor(private val plugin: Plugin, p
         val playerMeta = PlayerMetaEntity(uuid, name)
         val petMeta = PetMetaEntity(playerMeta, SkinEntity())
 
-        val defaultConfig = findValue<Map<String, Any?>>("pet")
-        val skin = defaultConfig["skin"] as Map<String, Any?>
-        val modifier = defaultConfig["modifier"] as Map<String, Any?>
+        val defaultConfig = findValue<Map<String, Any>>("pet")
+        val skin = defaultConfig["skin"] as Map<String, Any>
 
-        with(petMeta) {
-            enabled = defaultConfig.getNullableItem("enabled")
-            displayName = defaultConfig.getNullableItem<String>("name").replace("<player>", name)
-            soundEnabled = defaultConfig.getNullableItem("sound-enabled")
-            particleEnabled = defaultConfig.getNullableItem("particle-enabled")
-        }
+        setItem<Boolean>("enabled", defaultConfig) { value -> petMeta.enabled = value }
+        setItem<String>("name", defaultConfig) { value -> petMeta.displayName = value.replace("<player>", name) }
+        setItem<Boolean>("sound-enabled", defaultConfig) { value -> petMeta.soundEnabled = value }
+        setItem<Boolean>("particle-enabled", defaultConfig) { value -> petMeta.particleEnabled = value }
 
-        val typePayload = skin["typename"]
+        val typePayload = skin["id"]
 
         val typename = if (typePayload is Int) {
             itemService.getMaterialFromNumericValue<Material>(typePayload).name
@@ -273,22 +289,15 @@ class ConfigurationServiceImpl @Inject constructor(private val plugin: Plugin, p
             typePayload as String
         }
 
-        with(petMeta.skin) {
-            typeName = typename
-            dataValue = skin.getNullableItem("datavalue")
-            unbreakable = skin.getNullableItem("unbreakable")
-            owner = skin.getNullableItem("owner")
-        }
+        petMeta.skin.typeName = typename
+        setItem<Int>("damage", skin) { value -> petMeta.skin.dataValue = value }
+        setItem<Boolean>("unbreakable", skin) { value -> petMeta.skin.unbreakable = value }
+        setItem<String>("skin", skin) { value -> petMeta.skin.owner = value }
 
-        val goalsMap = defaultConfig["goals"] as Map<String, Any?>
-
-        goalsMap.keys.forEach { key ->
-            val goal = goalsMap[key] as Map<String, Any?>
-
-            if (goal["id"] == "hopping") {
-                //    petMeta.aiGoals.add(AIHoppingEntity())
-            }
-        }
+        val goalsMap = defaultConfig["ais"] as Map<String, Any?>
+        val ais = parseAis(goalsMap)
+        petMeta.aiGoals.clear()
+        petMeta.aiGoals.addAll(ais)
 
         return petMeta
     }
@@ -296,13 +305,40 @@ class ConfigurationServiceImpl @Inject constructor(private val plugin: Plugin, p
     /**
      * Returns a list of ais from the given memory section.
      */
-    private fun parseAis(memorySection: MemorySection) : List<AIBase>{
-        val resultList = ArrayList<String>()
-        val dataSource = memorySection.getValues(false)
+    private fun parseAis(map: Map<String, Any?>): List<AIBase> {
+        val resultList = ArrayList<AIBase>()
 
-        for(key in dataSource.keys){
-            val aiSource = (dataSource[key] as MemorySection).getValues(true)
+        for (key in map.keys) {
+            val aiSource = (map[key] as Map<String, Any?>)
+
+            if (!aiSource.containsKey("type")) {
+                plugin.logger.log(Level.WARNING, "AI with at $key has got no type tag so it will not be applied.")
+                continue
+            }
+
+            val type = aiSource["type"] as String
+
+            when (type) {
+                "hopping" -> resultList.add(yamlSerializationService.deserialize<AIHoppingEntity>(AIHoppingEntity::class.java, aiSource))
+                "follow-owner" -> resultList.add(yamlSerializationService.deserialize<AIFollowBackEntity>(AIFollowOwnerEntity::class.java, aiSource))
+                "float-in-water" -> resultList.add(yamlSerializationService.deserialize<AIFloatInWaterEntity>(AIFloatInWaterEntity::class.java, aiSource))
+                "wearing" -> resultList.add(yamlSerializationService.deserialize<AIWearingEntity>(AIWearingEntity::class.java, aiSource))
+                "ground-riding" -> resultList.add(yamlSerializationService.deserialize<AIGroundRidingEntity>(AIGroundRidingEntity::class.java, aiSource))
+                "feeding" -> resultList.add(yamlSerializationService.deserialize<AIFeedingEntity>(AIFeedingEntity::class.java, aiSource))
+                "ambient-sound" -> resultList.add(yamlSerializationService.deserialize<AIFeedingEntity>(AIAmbientSoundEntity::class.java, aiSource))
+            }
         }
+
+        return resultList
+    }
+
+    /**
+     * Converts the given [data] to a  map.
+     */
+    override fun convertStringToMap(data: String): Map<String, Any?> {
+        val yamlSerializer = YamlConfiguration()
+        yamlSerializer.loadFromString(data)
+        return yamlSerializer.deserializeToMap("a")
     }
 
     /**
