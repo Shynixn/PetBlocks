@@ -1,16 +1,8 @@
-pluginManagement {
-    resolutionStrategy {
-        eachPlugin {
-            if (requested.id.id == "kotlin-multiplatform") {
-                useModule("org.jetbrains.kotlin:kotlin-gradle-plugin:${requested.version}")
-            }
+rootProject.name = 'PetBlocks'
+include 'petblocks-api'
+include 'petblocks-bukkit-api'
+include 'petblocks-bukkit-plugin'
+include 'petblocks-core'
+include 'petblocks-core-java'
+include 'petblocks-heads-tool'
 
-            if (requested.id.id == "kotlin-multiplatform") {
-                useModule("org.jetbrains.kotlin:kotlin-gradle-plugin:${requested.version}")
-            }
-        }
-    }
-}
-enableFeaturePreview('GRADLE_METADATA')
-
-rootProject.name = 'PetBlocksv2'

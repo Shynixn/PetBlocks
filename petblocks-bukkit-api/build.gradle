@@ -1,0 +1,9 @@
+apply plugin: 'kotlin-platform-jvm'
+
+dependencies {
+    expectedBy project(':petblocks-api')
+
+    implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk8'
+
+    compileOnly 'org.spigotmc:spigot113R2:1.13.2-R2.0'
+}

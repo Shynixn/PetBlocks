@@ -1,0 +1,7 @@
+apply plugin: 'kotlin-platform-common'
+
+dependencies {
+    implementation project(':petblocks-api')
+
+    implementation 'org.jetbrains.kotlin:kotlin-stdlib-common'
+}

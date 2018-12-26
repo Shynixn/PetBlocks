@@ -237,7 +237,7 @@ class PersistenceMySQLIT {
 
         fun createWithDependencies(): PersistencePetMetaService {
             val configuration = YamlConfiguration()
-            configuration.load(File("./src/petblocksCoreMain/resources/assets/petblocks/config.yml"))
+            configuration.load(File("../petblocks-core/src/main/resources/assets/petblocks/config.yml"))
             configuration.set("sql.type", "mysql")
             configuration.set("sql.database", "db")
 
@@ -259,7 +259,7 @@ class PersistenceMySQLIT {
             Mockito.`when`(plugin.dataFolder).thenReturn(File("integrationtest-sqlite"))
             Mockito.`when`(plugin.getResource(Mockito.anyString())).then { parameter ->
                 if (parameter.arguments[0].toString() == "assets/petblocks/sql/create-mysql.sql") {
-                    FileInputStream(File("./src/petblocksCoreMain/resources/assets/petblocks/sql/create-mysql.sql"))
+                    FileInputStream(File("../petblocks-core/src/main/resources/assets/petblocks/sql/create-mysql.sql"))
                 } else {
                     Unit
                 }
