@@ -1,5 +1,6 @@
 package com.github.shynixn.petblocks.core.logic.persistence.entity
 
+import com.github.shynixn.petblocks.api.business.annotation.YamlSerialize
 import com.github.shynixn.petblocks.api.persistence.entity.AIBase
 
 /**
@@ -33,9 +34,11 @@ abstract class AIBaseEntity : AIBase {
     /**
      * Database id.
      */
+    @YamlSerialize(value = "id", orderNumber = 1)
     override var id: Long = 0
     /**
      * Optional user identifier.
      */
+    @YamlSerialize(value = "user-id", orderNumber = 2)
     override var userId: String? = null
 }

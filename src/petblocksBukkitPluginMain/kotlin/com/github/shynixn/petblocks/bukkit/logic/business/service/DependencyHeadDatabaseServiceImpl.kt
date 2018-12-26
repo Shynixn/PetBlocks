@@ -6,6 +6,7 @@ import com.github.shynixn.petblocks.api.business.enumeration.ChatColor
 import com.github.shynixn.petblocks.api.business.enumeration.MaterialType
 import com.github.shynixn.petblocks.api.business.enumeration.PluginDependency
 import com.github.shynixn.petblocks.api.business.service.*
+import com.github.shynixn.petblocks.bukkit.logic.business.extension.type
 import com.github.shynixn.petblocks.core.logic.business.extension.chatMessage
 import com.github.shynixn.petblocks.core.logic.business.extension.sync
 import org.bukkit.Bukkit
@@ -44,9 +45,8 @@ class DependencyHeadDatabaseServiceImpl @Inject constructor(
     private val configurationService: ConfigurationService,
     private val messageService: MessageService,
     private val petMetaService: PersistencePetMetaService,
-    private val concurrencyService: ConcurrencyService,
-private val itemService: ItemService
-) : DependencyHeadDatabaseService {
+    private val concurrencyService: ConcurrencyService
+    ) : DependencyHeadDatabaseService {
     private val headDatabasePlayers = HashSet<Player>()
     private var headDatabaseTitle: String? = null
     private var headDatabaseSearch: String? = null
@@ -128,7 +128,7 @@ private val itemService: ItemService
             return false
         }
 
-        if (item.type != itemService.getMaterialFromNumericValue(skullItemType.MinecraftNumericId) || item.itemMeta == null
+        if (item.type != skullItemType.type || item.itemMeta == null
             || item.itemMeta.displayName == null || !item.itemMeta.displayName.startsWith(org.bukkit.ChatColor.BLUE.toString())
         ) {
             return false
@@ -177,7 +177,6 @@ private val itemService: ItemService
             headDatabasePlayers.remove(player)
         }
     }
-
 
     /**
      * Constructs a prefix from the given source.

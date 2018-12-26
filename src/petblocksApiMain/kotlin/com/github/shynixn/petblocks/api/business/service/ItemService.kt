@@ -51,9 +51,9 @@ interface ItemService {
     fun getAmountOfItemStack(itemStack: Any): Int
 
     /**
-     * Gets the material from the numeric value.
+     * Gets the material from the numeric value or string value.
      */
-    fun <M> getMaterialFromNumericValue(value: Int): M
+    fun <M> getMaterialValue(value: Any): M
 
     /**
      * Sets the displayName of an itemstack.

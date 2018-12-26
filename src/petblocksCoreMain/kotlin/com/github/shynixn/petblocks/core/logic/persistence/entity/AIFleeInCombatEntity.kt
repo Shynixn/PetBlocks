@@ -1,5 +1,6 @@
 package com.github.shynixn.petblocks.core.logic.persistence.entity
 
+import com.github.shynixn.petblocks.api.business.annotation.YamlSerialize
 import com.github.shynixn.petblocks.api.persistence.entity.AIFleeInCombat
 
 /**
@@ -29,7 +30,7 @@ import com.github.shynixn.petblocks.api.persistence.entity.AIFleeInCombat
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class AIFleeInCombatEntity : AIBaseEntity(), AIFleeInCombat{
+class AIFleeInCombatEntity : AIBaseEntity(), AIFleeInCombat {
     /**
      * Name of the type.
      */
@@ -37,5 +38,6 @@ class AIFleeInCombatEntity : AIBaseEntity(), AIFleeInCombat{
     /**
      * After how many seconds should the pet reappear?
      */
+    @YamlSerialize(value = "reappear-delay", orderNumber = 1)
     override var reAppearsInSeconds: Int = 5
 }

@@ -1,5 +1,6 @@
 package com.github.shynixn.petblocks.core.logic.persistence.entity
 
+import com.github.shynixn.petblocks.api.business.annotation.YamlSerialize
 import com.github.shynixn.petblocks.api.business.enumeration.ParticleType
 import com.github.shynixn.petblocks.api.persistence.entity.AIAfraidOfWater
 import com.github.shynixn.petblocks.api.persistence.entity.Particle
@@ -39,9 +40,11 @@ class AIAfraidOfWaterEntity : AIBaseEntity(), AIAfraidOfWater {
     /**
      *  Particle shown when a pet falls into water.
      */
+    @YamlSerialize(value = "particle", orderNumber = 1, implementation = ParticleEntity::class)
     override var particle: Particle = ParticleEntity()
     /**
      * Amount of seconds until the particles disappear.
      */
+    @YamlSerialize(value = "stop-delay", orderNumber = 2)
     override var stoppingDelay: Int = 3
 }

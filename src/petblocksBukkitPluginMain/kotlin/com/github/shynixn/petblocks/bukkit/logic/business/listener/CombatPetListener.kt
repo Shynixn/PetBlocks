@@ -2,8 +2,8 @@ package com.github.shynixn.petblocks.bukkit.logic.business.listener
 
 import com.github.shynixn.petblocks.api.business.enumeration.MaterialType
 import com.github.shynixn.petblocks.api.business.service.CombatPetService
-import com.github.shynixn.petblocks.api.business.service.ItemService
 import com.github.shynixn.petblocks.api.business.service.PetService
+import com.github.shynixn.petblocks.bukkit.logic.business.extension.type
 import com.google.inject.Inject
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
@@ -39,8 +39,8 @@ import org.bukkit.event.entity.EntityInteractEvent
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class CombatPetListener @Inject constructor(private val itemService: ItemService, private val combatService: CombatPetService, private val petService: PetService) : Listener {
-    private val soildMaterial = MaterialType.SOIL;
+class CombatPetListener @Inject constructor(private val combatService: CombatPetService, private val petService: PetService) : Listener {
+    private val soilMaterial = MaterialType.SOIL
 
     /**
      * Cancels the entity interact event for pets.
@@ -51,7 +51,7 @@ class CombatPetListener @Inject constructor(private val itemService: ItemService
     fun onEntityInteractEvent(event: EntityInteractEvent) {
         val optPet = petService.findPetByEntity(event.entity)
 
-        if (optPet != null && event.block.type == itemService.getMaterialFromNumericValue(soildMaterial.MinecraftNumericId)) {
+        if (optPet != null && event.block.type == soilMaterial.type) {
             event.isCancelled = true
         }
     }

@@ -1,5 +1,6 @@
 package com.github.shynixn.petblocks.api.business.service
 
+import com.github.shynixn.petblocks.api.persistence.entity.AIBase
 import com.github.shynixn.petblocks.api.persistence.entity.GuiItem
 import com.github.shynixn.petblocks.api.persistence.entity.PetMeta
 
@@ -64,9 +65,9 @@ interface ConfigurationService {
     fun convertMapToString(source: Map<String, Any?>): String
 
     /**
-     * Converts the given [data] to a  map.
+     * Converts the given [data] to a ai.
      */
-    fun convertStringToMap(data : String) : Map<String, Any?>
+    fun convertStringToAi(typename : String, data : String) : AIBase
 
     /**
      * Clears cached resources and refreshes the used configuration.

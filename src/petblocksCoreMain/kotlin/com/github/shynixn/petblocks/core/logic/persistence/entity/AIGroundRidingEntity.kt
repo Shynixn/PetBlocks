@@ -1,5 +1,6 @@
 package com.github.shynixn.petblocks.core.logic.persistence.entity
 
+import com.github.shynixn.petblocks.api.business.annotation.YamlSerialize
 import com.github.shynixn.petblocks.api.persistence.entity.AIGroundRiding
 
 /**
@@ -37,15 +38,18 @@ class AIGroundRidingEntity : AIBaseEntity(), AIGroundRiding {
     /**
      * Climbing height.
      */
+    @YamlSerialize(value = "climbing-height", orderNumber = 1)
     override var climbingHeight: Double = 1.0
 
     /**
      * Riding speed.
      */
+    @YamlSerialize(value = "speed", orderNumber = 2)
     override var ridingSpeed: Double = 1.0
 
     /**
      * Riding offset from ground.
      */
+    @YamlSerialize(value = "offset-y", orderNumber = 3)
     override var ridingYOffSet: Double = 1.0
 }

@@ -32,6 +32,7 @@ CREATE TABLE IF NOT EXISTS SHY_PET_AI
 (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   shy_pet_id INTEGER,
+  typename VARCHAR(32) NOT NULL,
   content TEXT,
   CONSTRAINT foreignkey_pet_ai_id_cs FOREIGN KEY (shy_pet_id) REFERENCES SHY_PET(id)
 )

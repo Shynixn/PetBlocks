@@ -3,6 +3,7 @@
 package com.github.shynixn.petblocks.core.logic.persistence.repository
 
 import com.github.shynixn.petblocks.api.business.annotation.Inject
+import com.github.shynixn.petblocks.api.business.enumeration.AIType
 import com.github.shynixn.petblocks.api.business.service.ConfigurationService
 import com.github.shynixn.petblocks.api.business.service.YamlSerializationService
 import com.github.shynixn.petblocks.api.persistence.context.SqlDbContext
@@ -60,7 +61,7 @@ class PetMetaSqlRepository @Inject constructor(
         return sqlDbContext.transaction<List<PetMeta>, Any> { connection ->
             val statement =
                 "SELECT * " +
-                        "FROM SHY_PET pet, SHY_SKIN skin, SHY_PLAYER player" +
+                        "FROM SHY_PET pet, SHY_SKIN skin, SHY_PLAYER player " +
                         "WHERE pet.shy_player_id = player.id " +
                         "AND shy_skin_id = skin.id "
 
@@ -151,11 +152,15 @@ class PetMetaSqlRepository @Inject constructor(
             , "particleenabled" to petMeta.particleEnabled
         )
 
+        sqlDbContext.delete(connection, "SHY_PET_AI", "WHERE shy_pet_id=" + petMeta.id)
+
         for (aiItem in petMeta.aiGoals) {
             val payload = yamlSerializationService.serialize(aiItem)
             val payloadString = configurationService.convertMapToString(payload)
 
-            sqlDbContext.update(connection, "SHY_PET_AI", "WHERE id=" + aiItem.id
+            aiItem.id = sqlDbContext.insert(connection, "SHY_PET_AI"
+                , "shy_pet_id" to petMeta.id
+                , "typename" to aiItem.type
                 , "content" to payloadString)
         }
 
@@ -205,6 +210,7 @@ class PetMetaSqlRepository @Inject constructor(
 
             aiItem.id = sqlDbContext.insert(connection, "SHY_PET_AI"
                 , "shy_pet_id" to petMeta.id
+                , "typename" to aiItem.type
                 , "content" to payloadString)
         }
 
@@ -251,22 +257,7 @@ class PetMetaSqlRepository @Inject constructor(
      */
     private fun mapResultSetToAI(resultSet: Map<String, Any>): AIBase {
         val contentString = resultSet["content"]
-        val aiSource = configurationService.convertStringToMap(contentString as String)
-
-        val type = aiSource["type"] as String
-
-        return when (type) {
-            "hopping" -> yamlSerializationService.deserialize<AIHoppingEntity>(AIHoppingEntity::class, aiSource)
-            "follow-owner" -> yamlSerializationService.deserialize<AIFollowBackEntity>(AIFollowOwnerEntity::class, aiSource)
-            "float-in-water" -> yamlSerializationService.deserialize<AIFloatInWaterEntity>(AIFloatInWaterEntity::class, aiSource)
-            "wearing" -> yamlSerializationService.deserialize<AIWearingEntity>(AIWearingEntity::class, aiSource)
-            "ground-riding" -> yamlSerializationService.deserialize<AIGroundRidingEntity>(AIGroundRidingEntity::class, aiSource)
-            "feeding" -> yamlSerializationService.deserialize<AIFeedingEntity>(AIFeedingEntity::class, aiSource)
-            "ambient-sound" -> yamlSerializationService.deserialize<AIFeedingEntity>(AIAmbientSoundEntity::class, aiSource)
-
-            else -> {
-                throw IllegalArgumentException()
-            }
-        }
+        val type = resultSet["typename"] as String
+        return configurationService.convertStringToAi(type, contentString as String)
     }
 }

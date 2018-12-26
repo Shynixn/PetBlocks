@@ -368,7 +368,7 @@ internal fun ItemStack.setSkin(skin: String) {
         field.isAccessible = true
         field.set(real, newSkinProfile)
         itemMeta = SkullMeta::class.java.cast(real)
-    } else if(skin.isNotEmpty()) {
+    } else if (skin.isNotEmpty()) {
         currentMeta.owner = skin
         itemMeta = currentMeta
     }
@@ -380,8 +380,30 @@ internal fun ItemStack.setSkin(skin: String) {
 fun Material.isMaterial(type: MaterialType): Boolean {
     val itemService = PetBlocksApi.resolve<ItemService>(ItemService::class.java)
 
-    return this == itemService.getMaterialFromNumericValue<Material>(type.MinecraftNumericId)
+    return this == itemService.getMaterialValue<Material>(type.MinecraftNumericId)
 }
+
+/**
+ * Converts the given string to a material.
+ */
+fun String.toMaterial(): Material {
+    return Cache.itemService.getMaterialValue(this)
+}
+
+/**
+ * Converts the given int to a material.
+ */
+fun Int.toMaterial(): Material {
+    return Cache.itemService.getMaterialValue(this)
+}
+
+/**
+ * TypeName of the material.
+ */
+val MaterialType.type: Material
+    get() {
+        return Cache.itemService.getMaterialValue<Material>(this.MinecraftNumericId)
+    }
 
 /**
  * Gets the server version the plugin is running on.
@@ -410,4 +432,8 @@ fun Field.removeFinalModifier() {
     val modifiersField = Field::class.java.getDeclaredField("modifiers")
     modifiersField.isAccessible = true
     modifiersField.setInt(this, this.modifiers and Modifier.FINAL.inv())
+}
+
+private object Cache {
+    val itemService = PetBlocksApi.resolve<ItemService>(ItemService::class.java)
 }

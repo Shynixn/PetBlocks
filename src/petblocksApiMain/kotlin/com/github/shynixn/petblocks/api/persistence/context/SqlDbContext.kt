@@ -57,6 +57,11 @@ interface SqlDbContext {
     fun <C> insert(connection: C, table: String, vararg parameters: Pair<String, Any?>): Long
 
     /**
+     * Deletes the given [parameters] into the given [connection] [table].
+     */
+    fun <C> delete(connection: C, table: String, rowSelection: String, vararg parameters: Pair<String, Any?>)
+
+    /**
      * Updates the given row by the [rowSelection] of the given [table] with the given [parameters].
      * Does not close the connection.
      */

@@ -2,13 +2,17 @@
 
 package integrationtest
 
+import com.github.shynixn.petblocks.api.PetBlocksApi
 import com.github.shynixn.petblocks.api.business.enumeration.ParticleType
 import com.github.shynixn.petblocks.api.business.proxy.CompletableFutureProxy
 import com.github.shynixn.petblocks.api.business.proxy.PlayerProxy
+import com.github.shynixn.petblocks.api.business.proxy.PluginProxy
 import com.github.shynixn.petblocks.api.business.service.ConcurrencyService
+import com.github.shynixn.petblocks.api.business.service.ItemService
 import com.github.shynixn.petblocks.api.business.service.PersistencePetMetaService
 import com.github.shynixn.petblocks.api.business.service.ProxyService
 import com.github.shynixn.petblocks.api.persistence.entity.*
+import com.github.shynixn.petblocks.bukkit.logic.business.extension.toMaterial
 import com.github.shynixn.petblocks.bukkit.logic.business.proxy.SqlProxyImpl
 import com.github.shynixn.petblocks.bukkit.logic.business.service.ConfigurationServiceImpl
 import com.github.shynixn.petblocks.bukkit.logic.business.service.Item18R1ServiceImpl
@@ -118,7 +122,7 @@ class PersistenceSQLiteIT {
         Assertions.assertEquals(1.0, (actual.aiGoals[4] as AIGroundRiding).ridingYOffSet)
 
         Assertions.assertEquals("feeding", (actual.aiGoals[5] as AIFeeding).type)
-        Assertions.assertEquals("CARROT", (actual.aiGoals[5] as AIFeeding).typeName)
+        Assertions.assertEquals("CARROT_ITEM", (actual.aiGoals[5] as AIFeeding).typeName.toMaterial().name)
         Assertions.assertEquals(ParticleType.HEART, (actual.aiGoals[5] as AIFeeding).clickParticle.type)
         Assertions.assertEquals("EAT", (actual.aiGoals[5] as AIFeeding).clickSound.name)
 
@@ -154,6 +158,29 @@ class PersistenceSQLiteIT {
         petMeta.skin.owner = "Pikachu"
         petMeta.playerMeta.name = "Superman"
 
+        (petMeta.aiGoals[0] as AIHopping).climbingHeight = 23.5
+        (petMeta.aiGoals[0] as AIHopping).movementSpeed = 105.3
+        (petMeta.aiGoals[0] as AIHopping).movementYOffSet = 93.4
+        (petMeta.aiGoals[0] as AIHopping).movementParticle.offSetY = 471.2
+        (petMeta.aiGoals[0] as AIHopping).movementSound.pitch = 44.2
+
+        (petMeta.aiGoals[1] as AIFollowOwner).maxRange = 100.2
+        (petMeta.aiGoals[1] as AIFollowOwner).distanceToOwner = 14.45
+        (petMeta.aiGoals[1] as AIFollowOwner).speed = 42.2
+
+        (petMeta.aiGoals[2] as AIFloatInWater).userId = "43"
+        (petMeta.aiGoals[3] as AIWearing).userId = "465"
+        (petMeta.aiGoals[4] as AIGroundRiding).climbingHeight = 88.2
+        (petMeta.aiGoals[4] as AIGroundRiding).ridingSpeed = 165.2
+        (petMeta.aiGoals[4] as AIGroundRiding).ridingYOffSet = 99.44
+
+        (petMeta.aiGoals[5] as AIFeeding).clickParticle.offSetZ = 25.4
+        (petMeta.aiGoals[5] as AIFeeding).clickSound.name = "COOKIE_SOUND"
+        (petMeta.aiGoals[5] as AIFeeding).dataValue = 4
+        (petMeta.aiGoals[5] as AIFeeding).typeName = "POWER_BANK"
+
+        (petMeta.aiGoals[6] as AIAmbientSound).sound.volume = 41.55
+
         classUnderTest.save(petMeta).get()
         val actual = classUnderTest.getOrCreateFromPlayerUUID(uuid.toString()).get()
         sqlProxy!!.close()
@@ -172,6 +199,35 @@ class PersistenceSQLiteIT {
         Assertions.assertEquals("Pikachu", actual.skin.owner)
         Assertions.assertEquals(1, actual.playerMeta.id)
         Assertions.assertEquals("Superman", actual.playerMeta.name)
+
+        Assertions.assertEquals("hopping", (actual.aiGoals[0] as AIMovementEntity).type)
+        Assertions.assertEquals(23.5, (actual.aiGoals[0] as AIMovementEntity).climbingHeight)
+        Assertions.assertEquals(105.3, (actual.aiGoals[0] as AIMovementEntity).movementSpeed)
+        Assertions.assertEquals(93.4, (actual.aiGoals[0] as AIMovementEntity).movementYOffSet)
+        Assertions.assertEquals(44.2, (actual.aiGoals[0] as AIMovementEntity).movementSound.pitch)
+        Assertions.assertEquals(471.2, (actual.aiGoals[0] as AIMovementEntity).movementParticle.offSetY)
+
+        Assertions.assertEquals("follow-owner", (actual.aiGoals[1] as AIFollowOwner).type)
+        Assertions.assertEquals(14.45, (actual.aiGoals[1] as AIFollowOwner).distanceToOwner)
+        Assertions.assertEquals(100.2, (actual.aiGoals[1] as AIFollowOwner).maxRange)
+        Assertions.assertEquals(42.2, (actual.aiGoals[1] as AIFollowOwner).speed)
+
+        Assertions.assertEquals("43", (actual.aiGoals[2] as AIFloatInWater).userId!!)
+        Assertions.assertEquals("465", (actual.aiGoals[3] as AIWearing).userId)
+
+        Assertions.assertEquals("ground-riding", (actual.aiGoals[4] as AIGroundRiding).type)
+        Assertions.assertEquals(88.2, (actual.aiGoals[4] as AIGroundRiding).climbingHeight)
+        Assertions.assertEquals(165.2, (actual.aiGoals[4] as AIGroundRiding).ridingSpeed)
+        Assertions.assertEquals(99.44, (actual.aiGoals[4] as AIGroundRiding).ridingYOffSet)
+
+        Assertions.assertEquals("feeding", (actual.aiGoals[5] as AIFeeding).type)
+        Assertions.assertEquals("POWER_BANK", (actual.aiGoals[5] as AIFeeding).typeName)
+        Assertions.assertEquals(4, (actual.aiGoals[5] as AIFeeding).dataValue)
+        Assertions.assertEquals("COOKIE_SOUND", (actual.aiGoals[5] as AIFeeding).clickSound.name)
+        Assertions.assertEquals(25.4, (actual.aiGoals[5] as AIFeeding).clickParticle.offSetZ)
+
+        Assertions.assertEquals("ambient-sound", (actual.aiGoals[6] as AIAmbientSound).type)
+        Assertions.assertEquals(41.55, (actual.aiGoals[6] as AIAmbientSound).sound.volume)
     }
 
     companion object {
@@ -200,12 +256,41 @@ class PersistenceSQLiteIT {
                 }
             }
 
+            val method = PetBlocksApi::class.java.getDeclaredMethod("initializePetBlocks", PluginProxy::class.java)
+            method.isAccessible = true
+            method.invoke(PetBlocksApi, MockedPluginProxy())
+
             sqlProxy = SqlProxyImpl(plugin, LoggingUtilServiceImpl(Logger.getAnonymousLogger()))
             val sqlite = PetMetaSqlRepository(SqlDbContextImpl(sqlProxy!!, LoggingUtilServiceImpl(Logger.getAnonymousLogger()))
                 , ConfigurationServiceImpl(plugin, Item18R1ServiceImpl(), YamlSerializationServiceImpl()), YamlSerializationServiceImpl())
             val repo = PetRunTimeRepository()
 
             return PersistencePetMetaServiceImpl(MockedConcurrencyService(), MockedProxyService(), sqlite, repo)
+        }
+    }
+
+    class MockedPluginProxy : PluginProxy {
+        /**
+         * Gets a business logic from the PetBlocks plugin.
+         * All types in the service package can be accessed.
+         * Throws a [IllegalArgumentException] if the service could not be found.
+         * @param S the type of service class.
+         */
+        override fun <S> resolve(service: Any): S {
+            if (service == ItemService::class.java) {
+                return Item18R1ServiceImpl() as S
+            }
+
+            throw IllegalArgumentException()
+        }
+
+        /**
+         * Creates a new entity from the given [entity].
+         * Throws a [IllegalArgumentException] if the entity could not be found.
+         * @param E the type of entity class.
+         */
+        override fun <E> create(entity: Any): E {
+            throw IllegalArgumentException()
         }
     }
 

@@ -3,6 +3,7 @@
 package com.github.shynixn.petblocks.bukkit.logic.business.service
 
 import com.github.shynixn.petblocks.api.business.annotation.Inject
+import com.github.shynixn.petblocks.api.business.enumeration.AIType
 import com.github.shynixn.petblocks.api.business.enumeration.ChatClickAction
 import com.github.shynixn.petblocks.api.business.service.ConfigurationService
 import com.github.shynixn.petblocks.api.business.service.ItemService
@@ -12,10 +13,13 @@ import com.github.shynixn.petblocks.api.persistence.entity.ChatMessage
 import com.github.shynixn.petblocks.api.persistence.entity.GuiItem
 import com.github.shynixn.petblocks.api.persistence.entity.PetMeta
 import com.github.shynixn.petblocks.bukkit.logic.business.extension.deserializeToMap
+import com.github.shynixn.petblocks.bukkit.logic.business.extension.toMaterial
 import com.github.shynixn.petblocks.core.logic.business.extension.chatMessage
-import com.github.shynixn.petblocks.core.logic.business.extension.getNullableItem
 import com.github.shynixn.petblocks.core.logic.business.extension.translateChatColors
-import com.github.shynixn.petblocks.core.logic.persistence.entity.*
+import com.github.shynixn.petblocks.core.logic.persistence.entity.GuiItemEntity
+import com.github.shynixn.petblocks.core.logic.persistence.entity.PetMetaEntity
+import com.github.shynixn.petblocks.core.logic.persistence.entity.PlayerMetaEntity
+import com.github.shynixn.petblocks.core.logic.persistence.entity.SkinEntity
 import org.bukkit.ChatColor
 import org.bukkit.Material
 import org.bukkit.configuration.MemorySection
@@ -64,6 +68,7 @@ class ConfigurationServiceImpl @Inject constructor(
     private val itemService: ItemService,
     private val yamlSerializationService: YamlSerializationService
 ) : ConfigurationService {
+
     private val cache = HashMap<String, List<GuiItem>>()
     private var namingMessage: ChatMessage? = null
     private var skullNamingMessage: ChatMessage? = null
@@ -75,6 +80,24 @@ class ConfigurationServiceImpl @Inject constructor(
         val yamlSerializer = YamlConfiguration()
         yamlSerializer.set("a", source)
         return yamlSerializer.saveToString()
+    }
+
+    /**
+     * Converts the given [data] to a ai.
+     */
+    override fun convertStringToAi(typename: String, data: String): AIBase {
+        val yamlSerializer = YamlConfiguration()
+        yamlSerializer.loadFromString(data)
+        val map = yamlSerializer.deserializeToMap("a")
+
+        for (aiType in AIType.values()) {
+            if (aiType.type.equals(typename, true)) {
+                val clazz = Class.forName("com.github.shynixn.petblocks.core.logic.persistence.entity." + aiType.aiClazz.java.simpleName + "Entity")
+                return yamlSerializationService.deserialize(clazz, map)
+            }
+        }
+
+        throw IllegalArgumentException()
     }
 
     /**
@@ -192,7 +215,7 @@ class ConfigurationServiceImpl @Inject constructor(
             this.setItem<Boolean>("fixed", description) { value -> guiItem.fixed = value }
             this.setItem<String>("script", description) { value -> guiItem.script = value }
 
-            this.setItem<Int>("icon.id", description) { value -> guiIcon.skin.typeName = itemService.getMaterialFromNumericValue<Material>(value).name }
+            this.setItem<Int>("icon.id", description) { value -> guiIcon.skin.typeName = value.toMaterial().name }
             this.setItem<Int>("icon.damage", description) { value -> guiIcon.skin.dataValue = value }
             this.setItem<String>("icon.name", description) { value -> guiIcon.displayName = value }
             this.setItem<Boolean>("icon.unbreakable", description) { value -> guiIcon.skin.unbreakable = value }
@@ -284,7 +307,7 @@ class ConfigurationServiceImpl @Inject constructor(
         val typePayload = skin["id"]
 
         val typename = if (typePayload is Int) {
-            itemService.getMaterialFromNumericValue<Material>(typePayload).name
+            itemService.getMaterialValue<Material>(typePayload).name
         } else {
             typePayload as String
         }
@@ -317,28 +340,22 @@ class ConfigurationServiceImpl @Inject constructor(
             }
 
             val type = aiSource["type"] as String
+            var found = false
 
-            when (type) {
-                "hopping" -> resultList.add(yamlSerializationService.deserialize<AIHoppingEntity>(AIHoppingEntity::class.java, aiSource))
-                "follow-owner" -> resultList.add(yamlSerializationService.deserialize<AIFollowBackEntity>(AIFollowOwnerEntity::class.java, aiSource))
-                "float-in-water" -> resultList.add(yamlSerializationService.deserialize<AIFloatInWaterEntity>(AIFloatInWaterEntity::class.java, aiSource))
-                "wearing" -> resultList.add(yamlSerializationService.deserialize<AIWearingEntity>(AIWearingEntity::class.java, aiSource))
-                "ground-riding" -> resultList.add(yamlSerializationService.deserialize<AIGroundRidingEntity>(AIGroundRidingEntity::class.java, aiSource))
-                "feeding" -> resultList.add(yamlSerializationService.deserialize<AIFeedingEntity>(AIFeedingEntity::class.java, aiSource))
-                "ambient-sound" -> resultList.add(yamlSerializationService.deserialize<AIFeedingEntity>(AIAmbientSoundEntity::class.java, aiSource))
+            for (aiType in AIType.values()) {
+                if (aiType.type.equals(type, true)) {
+                    val clazz = Class.forName("com.github.shynixn.petblocks.core.logic.persistence.entity." + aiType.aiClazz.java.simpleName + "Entity")
+                    resultList.add(yamlSerializationService.deserialize(clazz, aiSource))
+                    found = true
+                }
+            }
+
+            if (!found) {
+                plugin.logger.log(Level.WARNING, "AI with at $key has got an unknown type tag $type.")
             }
         }
 
         return resultList
-    }
-
-    /**
-     * Converts the given [data] to a  map.
-     */
-    override fun convertStringToMap(data: String): Map<String, Any?> {
-        val yamlSerializer = YamlConfiguration()
-        yamlSerializer.loadFromString(data)
-        return yamlSerializer.deserializeToMap("a")
     }
 
     /**

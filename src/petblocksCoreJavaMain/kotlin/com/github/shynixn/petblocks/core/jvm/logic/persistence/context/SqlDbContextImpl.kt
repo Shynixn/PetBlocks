@@ -41,6 +41,30 @@ import kotlin.collections.HashMap
  */
 class SqlDbContextImpl @Inject constructor(private val sqlConnectionPoolProxy: SqlConnectionPoolProxy, private val loggingService: LoggingService) : SqlDbContext {
     /**
+     * Deletes the given [parameters] into the given [connection] [table].
+     */
+    override fun <C> delete(connection: C, table: String, rowSelection: String, vararg parameters: Pair<String, Any?>) {
+        if (connection !is Connection) {
+            throw IllegalArgumentException("Connection has to be a Java Connection!")
+        }
+
+        val statement = StringBuilder("DELETE FROM ")
+            .append(table)
+            .append(" ")
+            .append(rowSelection)
+
+        val preparedStatement = connection.prepareStatement(statement.toString())
+
+        preparedStatement.use {
+            for (i in parameters.indices) {
+                preparedStatement.setObject(i + 1, parameters[i].second)
+            }
+
+            preparedStatement.executeUpdate()
+        }
+    }
+
+    /**
      * Updates the given row by the [rowSelection] of the given [table] with the given [parameters].
      * Does not close the connection.
      */
@@ -195,7 +219,6 @@ class SqlDbContextImpl @Inject constructor(private val sqlConnectionPoolProxy: S
 
         return null
     }
-
 
     /**
      * Creates a new transaction to the database.

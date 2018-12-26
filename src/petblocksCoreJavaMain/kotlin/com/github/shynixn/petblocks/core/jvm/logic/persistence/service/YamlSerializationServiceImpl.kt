@@ -66,11 +66,11 @@ class YamlSerializationServiceImpl : YamlSerializationService {
      */
     override fun <R> deserialize(targetObjectClass: Any, dataSource: Map<String, Any?>): R {
         if(targetObjectClass !is Class<*>){
-            throw IllegalArgumentException()
+            throw IllegalArgumentException("TargetObjectClass is not a java class $targetObjectClass.")
         }
 
         if (targetObjectClass.isInterface) {
-            throw IllegalArgumentException("Use a class intead of the interface $targetObjectClass.")
+            throw IllegalArgumentException("Use a class instead of the $targetObjectClass.")
         }
 
         val instance: R?

@@ -1,5 +1,6 @@
 package com.github.shynixn.petblocks.core.logic.persistence.entity
 
+import com.github.shynixn.petblocks.api.business.annotation.YamlSerialize
 import com.github.shynixn.petblocks.api.persistence.entity.AIHealth
 
 /**
@@ -37,14 +38,17 @@ class AIHealthEntity : AIBaseEntity(), AIHealth {
     /**
      * Max health of a ai item.
      */
+    @YamlSerialize(value = "max-health", orderNumber = 1)
     override var maxHealth: Double = 20.0
     /**
      * Current health of a ai item.
      */
+    @YamlSerialize(value = "health", orderNumber = 2)
     override var health: Double = 20.0
 
     /**
      * Amount of seconds until the pet can respawn after it has died.
      */
+    @YamlSerialize(value = "respawn-delay", orderNumber = 3)
     override var respawningDelay: Double = 5.0
 }

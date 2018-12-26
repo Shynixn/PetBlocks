@@ -4,6 +4,7 @@ package unittest
 
 import com.github.shynixn.petblocks.api.business.service.ConfigurationService
 import com.github.shynixn.petblocks.api.persistence.context.SqlDbContext
+import com.github.shynixn.petblocks.api.persistence.entity.AIBase
 import com.github.shynixn.petblocks.api.persistence.entity.GuiItem
 import com.github.shynixn.petblocks.api.persistence.entity.PetMeta
 import com.github.shynixn.petblocks.api.persistence.repository.PetMetaRepository
@@ -164,16 +165,16 @@ class PetMetaSqlRepositoryTest {
 
     class MockedConfigurationService : ConfigurationService{
         /**
-         * Converts the given [source] to a string.
+         * Converts the given [data] to a ai.
          */
-        override fun convertMapToString(source: Map<String, Any?>): String {
+        override fun convertStringToAi(typename: String, data: String): AIBase {
             throw IllegalArgumentException()
         }
 
         /**
-         * Converts the given [data] to a  map.
+         * Converts the given [source] to a string.
          */
-        override fun convertStringToMap(data: String): Map<String, Any?> {
+        override fun convertMapToString(source: Map<String, Any?>): String {
             throw IllegalArgumentException()
         }
 
@@ -220,6 +221,12 @@ class PetMetaSqlRepositoryTest {
     }
 
     class MockedSqlDbContext : SqlDbContext {
+        /**
+         * Deletes the given [parameters] into the given [connection] [table].
+         */
+        override fun <C> delete(connection: C, table: String, rowSelection: String, vararg parameters: Pair<String, Any?>) {
+        }
+
         var insertCalled = false
         var updateCalled = false
         var singleQueryCounter = 0

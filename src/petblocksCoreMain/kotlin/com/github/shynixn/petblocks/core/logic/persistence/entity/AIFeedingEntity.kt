@@ -1,5 +1,6 @@
 package com.github.shynixn.petblocks.core.logic.persistence.entity
 
+import com.github.shynixn.petblocks.api.business.annotation.YamlSerialize
 import com.github.shynixn.petblocks.api.persistence.entity.AIFeeding
 import com.github.shynixn.petblocks.api.persistence.entity.Particle
 import com.github.shynixn.petblocks.api.persistence.entity.Sound
@@ -39,18 +40,36 @@ class AIFeedingEntity : AIBaseEntity(), AIFeeding {
     /**
      * Typename of the item.
      */
+    @YamlSerialize(value = "item-name", orderNumber = 1)
     override var typeName: String = ""
+        get() {
+            if (field.isEmpty() && itemId != 0) {
+                return itemId.toString()
+            }
+
+            return field
+        }
+
+    /**
+     * Compatibility.
+     */
+    @YamlSerialize(value = "item-id", orderNumber = 2)
+    var itemId: Int = 0
+
     /**
      * Data Value.
      */
+    @YamlSerialize(value = "item-data", orderNumber = 3)
     override var dataValue: Int = 0
     /**
      * Click particle.
      */
+    @YamlSerialize(value = "click-particle", orderNumber = 4, implementation = ParticleEntity::class)
     override var clickParticle: Particle = ParticleEntity()
 
     /**
      * Click sound.
      */
+    @YamlSerialize(value = "click-sound", orderNumber = 5, implementation = SoundEntity::class)
     override var clickSound: Sound = SoundEntity()
 }

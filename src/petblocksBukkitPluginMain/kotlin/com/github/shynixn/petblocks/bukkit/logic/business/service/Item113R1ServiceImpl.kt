@@ -71,7 +71,7 @@ class Item113R1ServiceImpl : ItemService {
      * Creates a new itemstack from the given materialType.
      */
     override fun <I> createItemStack(materialType: MaterialType, dataValue: Int, amount: Int): I {
-        return ItemStack(getMaterialFromNumericValue<Material>(materialType.MinecraftNumericId), amount, dataValue.toShort()) as I
+        return ItemStack(getMaterialValue<Material>(materialType.MinecraftNumericId), amount, dataValue.toShort()) as I
     }
 
     /**
@@ -149,13 +149,23 @@ class Item113R1ServiceImpl : ItemService {
      * Throws a [IllegalArgumentException] if the numeric value could
      * not get applied to a material.
      */
-    override fun <M> getMaterialFromNumericValue(value: Int): M {
-        for (material in Material.values()) {
-            if (getIdFromMaterialMethod(material) == value) {
-                return material as M
+    override fun <M> getMaterialValue(value: Any): M {
+        if (value is Int) {
+            for (material in Material.values()) {
+                if (getIdFromMaterialMethod(material) == value) {
+                    return material as M
+                }
             }
+        } else if (value is String && value.toIntOrNull() != null) {
+            for (material in Material.values()) {
+                if (getIdFromMaterialMethod(material) == value) {
+                    return material as M
+                }
+            }
+        } else if (value is String) {
+            return Material.getMaterial(value) as M ?: throw IllegalArgumentException("Material $value does not exist!")
         }
 
-        throw IllegalArgumentException("Material of numeric value $value could not be found.")
+        throw IllegalArgumentException("Material $value is not a string or int.")
     }
 }
