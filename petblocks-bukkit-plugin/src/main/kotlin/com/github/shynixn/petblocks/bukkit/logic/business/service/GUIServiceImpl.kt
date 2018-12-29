@@ -147,8 +147,10 @@ class GUIServiceImpl @Inject constructor(
         val inventory = Bukkit.getServer().createInventory(player, 54, guiTitle)
         player.openInventory(inventory)
 
-        pageCache[player] = GuiPlayerCacheEntity(page, inventory)
-        renderPage(player, page)
+        persistenceService.getOrCreateFromPlayerUUID(player.uniqueId.toString()).thenAccept { petMeta ->
+            pageCache[player] = GuiPlayerCacheEntity(page, inventory, petMeta)
+            renderPage(player, page)
+        }
     }
 
     /**
@@ -174,33 +176,32 @@ class GUIServiceImpl @Inject constructor(
         }
 
         if (pageCache.containsKey(player)) {
-            persistenceService.getOrCreateFromPlayerUUID(player.uniqueId.toString()).thenAccept { petMeta ->
-                var changes = false
+            val petMeta = pageCache[player]!!.petMeta
+            var changes = false
 
-                if (optGuiItem.targetSkin != null) {
-                    val skin = optGuiItem.targetSkin!!
+            if (optGuiItem.targetSkin != null) {
+                val skin = optGuiItem.targetSkin!!
 
-                    petMeta.skin.typeName = skin.typeName
-                    petMeta.skin.dataValue = skin.dataValue
-                    petMeta.skin.owner = skin.owner
-                    petMeta.skin.unbreakable = skin.unbreakable
+                petMeta.skin.typeName = skin.typeName
+                petMeta.skin.dataValue = skin.dataValue
+                petMeta.skin.owner = skin.owner
+                petMeta.skin.unbreakable = skin.unbreakable
 
-                    changes = true
-                }
+                changes = true
+            }
 
-                for (aiBase in optGuiItem.removeAIs.toTypedArray()) {
-                    petMeta.aiGoals.removeIf { a -> a.type == aiBase.type }
-                    changes = true
-                }
+            for (aiBase in optGuiItem.removeAIs.toTypedArray()) {
+                petMeta.aiGoals.removeIf { a -> a.type == aiBase.type }
+                changes = true
+            }
 
-                for (aiBase in optGuiItem.addAIs.toTypedArray()) {
-                    petMeta.aiGoals.add(aiBase)
-                    changes = true
-                }
+            for (aiBase in optGuiItem.addAIs.toTypedArray()) {
+                petMeta.aiGoals.add(aiBase)
+                changes = true
+            }
 
-                if (changes) {
-                    persistenceService.save(petMeta)
-                }
+            if (changes) {
+                persistenceService.save(petMeta)
             }
         }
 
@@ -230,7 +231,7 @@ class GUIServiceImpl @Inject constructor(
             }
         } else if (scriptResult.action == ScriptAction.OPEN_PAGE) {
             val parent = pageCache[player]!!
-            pageCache[player] = GuiPlayerCacheEntity(scriptResult.valueContainer as String, parent.getInventory())
+            pageCache[player] = GuiPlayerCacheEntity(scriptResult.valueContainer as String, parent.getInventory(), parent.petMeta)
             pageCache[player]!!.parent = parent
             renderPage(player, scriptResult.valueContainer as String)
         }
@@ -250,106 +251,105 @@ class GUIServiceImpl @Inject constructor(
             return
         }
 
-        fillEmptySlots(inventory)
+        val petMeta = pageCache[player]!!.petMeta
 
-        persistenceService.getOrCreateFromPlayerUUID(player.uniqueId.toString()).thenAccept { petMeta ->
-            for (item in items) {
-                if (item.hidden) {
-                    continue
-                }
-
-                if (petMeta.enabled && item.hiddenWhenPetIsSpawned) {
-                    continue
-                }
-
-                var hasPermission = true
-
-                if (item.permission.isNotEmpty()) {
-                    hasPermission = player.hasPermission(item.permission)
-                }
-
-                if (!hasPermission && item.hiddenWhenNoPermission) {
-                    continue
-                }
-
-                val position = if (item.fixed) {
-                    item.position
-                } else {
-                    scrollCollection(player, item.position)
-                }
-
-                if (position < 0 || position > 53) {
-                    continue
-                }
-
-                if (item.icon.script != null) {
-                    val scriptResult = scriptService.executeScript(item.icon.script!!)
-
-                    if (scriptResult.action == ScriptAction.COPY_PET_SKIN) {
-                        val guiIcon = GuiIconEntity()
-                        guiIcon.displayName = petMeta.displayName
-
-                        with(guiIcon.skin) {
-                            typeName = petMeta.skin.typeName
-                            dataValue = petMeta.skin.dataValue
-                            owner = petMeta.skin.owner
-                            unbreakable = petMeta.skin.unbreakable
-                        }
-
-                        renderIcon(inventory, position, guiIcon, hasPermission)
-                    } else if (scriptResult.action == ScriptAction.HIDE_RIGHT_SCROLL && item.script != null) {
-                        val itemPreScriptResult = scriptService.executeScript(item.script!!)
-                        val offsetData = itemPreScriptResult.valueContainer as Pair<Int, Int>
-
-                        val cachedData = Pair(pageCache[player]!!.offsetX, pageCache[player]!!.offsetY)
-                        pageCache[player]!!.offsetX += offsetData.first
-
-                        var found = false
-
-                        if (offsetData.first > 0) {
-                            for (s in items) {
-                                if (s.hidden) {
-                                    continue
-                                }
-
-                                if (petMeta.enabled && s.hiddenWhenPetIsSpawned) {
-                                    continue
-                                }
-
-                                val pos = scrollCollection(player, s.position)
-
-                                if (pos in 0..53) {
-                                    found = true
-                                }
-                            }
-                        }
-
-                        pageCache[player]!!.offsetX = cachedData.first
-                        pageCache[player]!!.offsetY = cachedData.second
-
-                        if (found) {
-                            renderIcon(inventory, position, item.icon, hasPermission)
-                        }
-                    } else if (scriptResult.action == ScriptAction.HIDE_LEFT_SCROLL && item.script != null) {
-                        val itemPreScriptResult = scriptService.executeScript(item.script!!)
-                        val offsetData = itemPreScriptResult.valueContainer as Pair<Int, Int>
-
-                        if (offsetData.first < 0) {
-                            if (pageCache[player]!!.offsetX > 0) {
-                                renderIcon(inventory, position, item.icon, hasPermission)
-                            }
-
-                            continue
-                        }
-                    }
-                } else {
-                    renderIcon(inventory, position, item.icon, hasPermission)
-                }
+        for (item in items) {
+            if (item.hidden) {
+                continue
             }
 
-            this.fillEmptySlots(inventory)
-            player.inventory.updateInventory()
+            if (petMeta.enabled && item.hiddenWhenPetIsSpawned) {
+                continue
+            }
+
+            var hasPermission = true
+
+            if (item.permission.isNotEmpty()) {
+                hasPermission = player.hasPermission(item.permission)
+            }
+
+            if (!hasPermission && item.hiddenWhenNoPermission) {
+                continue
+            }
+
+            val position = if (item.fixed) {
+                item.position
+            } else {
+                scrollCollection(player, item.position)
+            }
+
+            if (position < 0 || position > 53) {
+                continue
+            }
+
+            if (item.icon.script != null) {
+                val scriptResult = scriptService.executeScript(item.icon.script!!)
+
+                if (scriptResult.action == ScriptAction.COPY_PET_SKIN) {
+                    val guiIcon = GuiIconEntity()
+                    guiIcon.displayName = petMeta.displayName
+
+                    with(guiIcon.skin) {
+                        typeName = petMeta.skin.typeName
+                        dataValue = petMeta.skin.dataValue
+                        owner = petMeta.skin.owner
+                        unbreakable = petMeta.skin.unbreakable
+                    }
+
+                    renderIcon(inventory, position, guiIcon, hasPermission)
+                } else if (scriptResult.action == ScriptAction.HIDE_RIGHT_SCROLL && item.script != null) {
+                    val itemPreScriptResult = scriptService.executeScript(item.script!!)
+                    val offsetData = itemPreScriptResult.valueContainer as Pair<Int, Int>
+
+                    val cachedData = Pair(pageCache[player]!!.offsetX, pageCache[player]!!.offsetY)
+                    pageCache[player]!!.offsetX += offsetData.first
+
+                    var found = false
+
+                    if (offsetData.first > 0) {
+                        for (s in items) {
+                            if (s.hidden) {
+                                continue
+                            }
+
+                            if (petMeta.enabled && s.hiddenWhenPetIsSpawned) {
+                                continue
+                            }
+
+                            val pos = scrollCollection(player, s.position)
+
+                            if (pos in 0..53) {
+                                found = true
+                            }
+                        }
+                    }
+
+                    pageCache[player]!!.offsetX = cachedData.first
+                    pageCache[player]!!.offsetY = cachedData.second
+
+                    if (found) {
+                        renderIcon(inventory, position, item.icon, hasPermission)
+                    }
+                } else if (scriptResult.action == ScriptAction.HIDE_LEFT_SCROLL && item.script != null) {
+                    val itemPreScriptResult = scriptService.executeScript(item.script!!)
+                    val offsetData = itemPreScriptResult.valueContainer as Pair<Int, Int>
+
+                    if (offsetData.first < 0) {
+                        if (pageCache[player]!!.offsetX > 0) {
+                            renderIcon(inventory, position, item.icon, hasPermission)
+                        }
+
+                        continue
+                    }
+                }
+            } else {
+                renderIcon(inventory, position, item.icon, hasPermission)
+            }
         }
+
+        fillEmptySlots(inventory)
+
+        player.inventory.updateInventory()
     }
 
     /**
