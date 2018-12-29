@@ -95,7 +95,7 @@ class DatabaseIT {
             ds.close()
             database.stop()
         } catch (e: Exception) {
-            Assertions.fail<String>("Failed to enable databaseource for sqllite.", e)
+            Assertions.fail<String>("Failed to enable databaseource for mysql.", e)
         }
     }
 }

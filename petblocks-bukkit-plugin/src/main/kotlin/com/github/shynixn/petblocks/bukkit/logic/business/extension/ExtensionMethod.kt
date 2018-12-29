@@ -89,7 +89,7 @@ fun FileConfiguration.deserializeToMap(path: String): Map<String, Any?> {
 /**
  * Deserializes the given section.
  */
-private fun deserialize(section: MutableMap<String, Any?>) {
+fun deserialize(section: MutableMap<String, Any?>) {
     section.keys.forEach { key ->
         if (section[key] is MemorySection) {
             val map = (section[key] as MemorySection).getValues(false)

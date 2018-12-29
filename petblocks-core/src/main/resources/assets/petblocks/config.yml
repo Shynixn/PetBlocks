@@ -153,7 +153,7 @@ pet:
   particle-enabled: true
   skin:
     id: 2
-  ais:
+  add-ai:
     1:
       type: 'hopping'
       climbing-height: 1.0
@@ -269,16 +269,16 @@ static-gui:
       lore:
       - 'none'
 
-      ############################
+############################
 
-      # GUI settings.
+# GUI settings.
 
-      # These settings are settings for the GUI which dynamically create the GUI.
+# These settings are settings for the GUI which dynamically create the GUI.
 
-      # Adding, Changing and deleting items is possible below, however please take a look into the documentation mentioned at the top
-      # of this file in order to change it correctly.
+# Adding, Changing and deleting items is possible below, however please take a look into the documentation mentioned at the top
+# of this file in order to change it correctly.
 
-      ############################
+############################
 
 gui:
   main:
@@ -558,6 +558,17 @@ gui:
       col: 1
       icon:
         id: 1
+      set-skin:
+        id: 397
+        damage: 3
+        skin: 'http://textures.minecraft.net/texture/3ebf907494a935e955bfcadab81beafb90fb9be49c7026ba97d798d5f1a23'
+        name: '&aCustom-skin'
+        lore:
+        - 'Meme Lore'
+      add-ai:
+        type: 'ambient-sound'
+      remove-ai:
+        type: 'ambient-sound'
     block-1-1:
       row: 1
       col: 2

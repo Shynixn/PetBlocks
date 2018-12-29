@@ -58,7 +58,6 @@ class GUIServiceImpl @Inject constructor(
     private val persistenceService: PersistencePetMetaService,
     private val itemService: ItemService,
     private val concurrencyService: ConcurrencyService,
-    private val messageService: MessageService,
     private val headDatabaseService: DependencyHeadDatabaseService
 ) : GUIService {
 
@@ -148,10 +147,8 @@ class GUIServiceImpl @Inject constructor(
         val inventory = Bukkit.getServer().createInventory(player, 54, guiTitle)
         player.openInventory(inventory)
 
-        persistenceService.getOrCreateFromPlayerUUID(player.uniqueId.toString()).thenAccept { petMeta ->
-            pageCache[player] = GuiPlayerCacheEntity(page, inventory, petMeta)
-            renderPage(player, page, petMeta)
-        }
+        pageCache[player] = GuiPlayerCacheEntity(page, inventory)
+        renderPage(player, page)
     }
 
     /**
@@ -166,17 +163,48 @@ class GUIServiceImpl @Inject constructor(
             throw IllegalArgumentException("Item has to be a BukkitItemStack!")
         }
 
-        val optGuiItem = configurationService.findClickedGUIItem(pageCache[player]!!.path, item)
-
-        if (optGuiItem?.script == null) {
-            return
-        }
+        val optGuiItem = configurationService.findClickedGUIItem(pageCache[player]!!.path, item) ?: return
 
         if (optGuiItem.permission.isNotEmpty() && !player.hasPermission(optGuiItem.permission)) {
-            if(!lockGui(player)){
+            if (!lockGui(player)) {
                 player.sendMessage(configurationService.findValue<String>("messages.prefix") + configurationService.findValue<String>("messages.no-perms"))
             }
 
+            return
+        }
+
+        if (pageCache.containsKey(player)) {
+            persistenceService.getOrCreateFromPlayerUUID(player.uniqueId.toString()).thenAccept { petMeta ->
+                var changes = false
+
+                if (optGuiItem.targetSkin != null) {
+                    val skin = optGuiItem.targetSkin!!
+
+                    petMeta.skin.typeName = skin.typeName
+                    petMeta.skin.dataValue = skin.dataValue
+                    petMeta.skin.owner = skin.owner
+                    petMeta.skin.unbreakable = skin.unbreakable
+
+                    changes = true
+                }
+
+                for (aiBase in optGuiItem.removeAIs.toTypedArray()) {
+                    petMeta.aiGoals.removeIf { a -> a.type == aiBase.type }
+                    changes = true
+                }
+
+                for (aiBase in optGuiItem.addAIs.toTypedArray()) {
+                    petMeta.aiGoals.add(aiBase)
+                    changes = true
+                }
+
+                if (changes) {
+                    persistenceService.save(petMeta)
+                }
+            }
+        }
+
+        if (optGuiItem.script == null) {
             return
         }
 
@@ -187,7 +215,7 @@ class GUIServiceImpl @Inject constructor(
             pageCache[player]!!.offsetX += result.first
             pageCache[player]!!.offsetY += result.second
 
-            renderPage(player, pageCache[player]!!.path, pageCache[player]!!.petMeta)
+            renderPage(player, pageCache[player]!!.path)
         } else if (scriptResult.action == ScriptAction.CALL_PET) {
             petActionService.callPet(player)
             this.close(player)
@@ -198,20 +226,20 @@ class GUIServiceImpl @Inject constructor(
                 this.close(player)
             } else {
                 pageCache[player] = page.parent!!
-                renderPage(player, pageCache[player]!!.path, pageCache[player]!!.petMeta)
+                renderPage(player, pageCache[player]!!.path)
             }
         } else if (scriptResult.action == ScriptAction.OPEN_PAGE) {
             val parent = pageCache[player]!!
-            pageCache[player] = GuiPlayerCacheEntity(scriptResult.valueContainer as String, parent.getInventory(), parent.petMeta)
+            pageCache[player] = GuiPlayerCacheEntity(scriptResult.valueContainer as String, parent.getInventory())
             pageCache[player]!!.parent = parent
-            renderPage(player, scriptResult.valueContainer as String, pageCache[player]!!.petMeta)
+            renderPage(player, scriptResult.valueContainer as String)
         }
     }
 
     /**
      * Renders a single gui page.
      */
-    private fun renderPage(player: Player, path: String, petMeta: PetMeta) {
+    private fun renderPage(player: Player, path: String) {
         player.openInventory.topInventory.clear()
 
         val items = configurationService.findGUIItemCollection(path)
@@ -222,102 +250,106 @@ class GUIServiceImpl @Inject constructor(
             return
         }
 
-        for (item in items) {
-            if (item.hidden) {
-                continue
-            }
+        fillEmptySlots(inventory)
 
-            if (petMeta.enabled && item.hiddenWhenPetIsSpawned) {
-                continue
-            }
+        persistenceService.getOrCreateFromPlayerUUID(player.uniqueId.toString()).thenAccept { petMeta ->
+            for (item in items) {
+                if (item.hidden) {
+                    continue
+                }
 
-            var hasPermission = true
+                if (petMeta.enabled && item.hiddenWhenPetIsSpawned) {
+                    continue
+                }
 
-            if (item.permission.isNotEmpty()) {
-                hasPermission = player.hasPermission(item.permission)
-            }
+                var hasPermission = true
 
-            if (!hasPermission && item.hiddenWhenNoPermission) {
-                continue
-            }
+                if (item.permission.isNotEmpty()) {
+                    hasPermission = player.hasPermission(item.permission)
+                }
 
-            val position = if (item.fixed) {
-                item.position
-            } else {
-                scrollCollection(player, item.position)
-            }
+                if (!hasPermission && item.hiddenWhenNoPermission) {
+                    continue
+                }
 
-            if (position < 0 || position > 53) {
-                continue
-            }
+                val position = if (item.fixed) {
+                    item.position
+                } else {
+                    scrollCollection(player, item.position)
+                }
 
-            if (item.icon.script != null) {
-                val scriptResult = scriptService.executeScript(item.icon.script!!)
+                if (position < 0 || position > 53) {
+                    continue
+                }
 
-                if (scriptResult.action == ScriptAction.COPY_PET_SKIN) {
-                    val guiIcon = GuiIconEntity()
-                    guiIcon.displayName = petMeta.displayName
+                if (item.icon.script != null) {
+                    val scriptResult = scriptService.executeScript(item.icon.script!!)
 
-                    with(guiIcon.skin) {
-                        typeName = petMeta.skin.typeName
-                        dataValue = petMeta.skin.dataValue
-                        owner = petMeta.skin.owner
-                        unbreakable = petMeta.skin.unbreakable
-                    }
+                    if (scriptResult.action == ScriptAction.COPY_PET_SKIN) {
+                        val guiIcon = GuiIconEntity()
+                        guiIcon.displayName = petMeta.displayName
 
-                    renderIcon(inventory, position, guiIcon, hasPermission)
-                } else if (scriptResult.action == ScriptAction.HIDE_RIGHT_SCROLL && item.script != null) {
-                    val itemPreScriptResult = scriptService.executeScript(item.script!!)
-                    val offsetData = itemPreScriptResult.valueContainer as Pair<Int, Int>
+                        with(guiIcon.skin) {
+                            typeName = petMeta.skin.typeName
+                            dataValue = petMeta.skin.dataValue
+                            owner = petMeta.skin.owner
+                            unbreakable = petMeta.skin.unbreakable
+                        }
 
-                    val cachedData = Pair(pageCache[player]!!.offsetX, pageCache[player]!!.offsetY)
-                    pageCache[player]!!.offsetX += offsetData.first
+                        renderIcon(inventory, position, guiIcon, hasPermission)
+                    } else if (scriptResult.action == ScriptAction.HIDE_RIGHT_SCROLL && item.script != null) {
+                        val itemPreScriptResult = scriptService.executeScript(item.script!!)
+                        val offsetData = itemPreScriptResult.valueContainer as Pair<Int, Int>
 
-                    var found = false
+                        val cachedData = Pair(pageCache[player]!!.offsetX, pageCache[player]!!.offsetY)
+                        pageCache[player]!!.offsetX += offsetData.first
 
-                    if (offsetData.first > 0) {
-                        for (s in items) {
-                            if (s.hidden) {
-                                continue
-                            }
+                        var found = false
 
-                            if (petMeta.enabled && s.hiddenWhenPetIsSpawned) {
-                                continue
-                            }
+                        if (offsetData.first > 0) {
+                            for (s in items) {
+                                if (s.hidden) {
+                                    continue
+                                }
 
-                            val pos = scrollCollection(player, s.position)
+                                if (petMeta.enabled && s.hiddenWhenPetIsSpawned) {
+                                    continue
+                                }
 
-                            if (pos in 0..53) {
-                                found = true
+                                val pos = scrollCollection(player, s.position)
+
+                                if (pos in 0..53) {
+                                    found = true
+                                }
                             }
                         }
-                    }
 
-                    pageCache[player]!!.offsetX = cachedData.first
-                    pageCache[player]!!.offsetY = cachedData.second
+                        pageCache[player]!!.offsetX = cachedData.first
+                        pageCache[player]!!.offsetY = cachedData.second
 
-                    if (found) {
-                        renderIcon(inventory, position, item.icon, hasPermission)
-                    }
-                } else if (scriptResult.action == ScriptAction.HIDE_LEFT_SCROLL && item.script != null) {
-                    val itemPreScriptResult = scriptService.executeScript(item.script!!)
-                    val offsetData = itemPreScriptResult.valueContainer as Pair<Int, Int>
-
-                    if (offsetData.first < 0) {
-                        if (pageCache[player]!!.offsetX > 0) {
+                        if (found) {
                             renderIcon(inventory, position, item.icon, hasPermission)
                         }
+                    } else if (scriptResult.action == ScriptAction.HIDE_LEFT_SCROLL && item.script != null) {
+                        val itemPreScriptResult = scriptService.executeScript(item.script!!)
+                        val offsetData = itemPreScriptResult.valueContainer as Pair<Int, Int>
 
-                        continue
+                        if (offsetData.first < 0) {
+                            if (pageCache[player]!!.offsetX > 0) {
+                                renderIcon(inventory, position, item.icon, hasPermission)
+                            }
+
+                            continue
+                        }
                     }
+                } else {
+                    renderIcon(inventory, position, item.icon, hasPermission)
                 }
-            } else {
-                renderIcon(inventory, position, item.icon, hasPermission)
             }
-        }
 
-        this.fillEmptySlots(inventory)
-        player.inventory.updateInventory()
+            this.fillEmptySlots(inventory)
+            player.inventory.updateInventory()
+        }
     }
 
     /**

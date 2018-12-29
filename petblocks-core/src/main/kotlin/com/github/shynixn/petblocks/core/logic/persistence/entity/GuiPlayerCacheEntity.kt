@@ -33,10 +33,11 @@ import com.github.shynixn.petblocks.api.persistence.entity.PetMeta
  * SOFTWARE.
  */
 class GuiPlayerCacheEntity(
-        /**
-         * Allocated gui items path.
-         */
-        override var path: String, private val inventory: Any, override var petMeta: PetMeta) : GuiPlayerCache {
+    /**
+     * Allocated gui items path.
+     */
+    override var path: String, private val inventory: Any
+) : GuiPlayerCache {
     /**
      * Parent.
      */

@@ -1,7 +1,9 @@
 package com.github.shynixn.petblocks.core.logic.persistence.entity
 
+import com.github.shynixn.petblocks.api.persistence.entity.AIBase
 import com.github.shynixn.petblocks.api.persistence.entity.GuiIcon
 import com.github.shynixn.petblocks.api.persistence.entity.GuiItem
+import com.github.shynixn.petblocks.api.persistence.entity.Skin
 
 /**
  * Created by Shynixn 2018.
@@ -31,6 +33,19 @@ import com.github.shynixn.petblocks.api.persistence.entity.GuiItem
  * SOFTWARE.
  */
 class GuiItemEntity : GuiItem {
+    /**
+     * Target skin.
+     */
+    override var targetSkin: Skin? = null
+    /**
+     * Ai which should be added on click.
+     */
+    override val addAIs: MutableList<AIBase> = ArrayList()
+
+    /**
+     * Ai which should be removed on click.
+     */
+    override val removeAIs: MutableList<AIBase> = ArrayList()
     /**
      * Required permission to perform this action.
      */

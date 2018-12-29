@@ -42,23 +42,22 @@ interface GuiItem {
     /**
      * Should this icon always be hidden?
      */
-    var hidden : Boolean
+    var hidden: Boolean
 
     /**
      * Should this icon be hidden when the pet is spawned?
      */
-    var hiddenWhenPetIsSpawned : Boolean
+    var hiddenWhenPetIsSpawned: Boolean
 
     /**
      * Required permission to perform this action.
      */
-    var permission : String
+    var permission: String
 
     /**
      * Should the item be hidden if the player has not not the permissions.
      */
-    var hiddenWhenNoPermission : Boolean
-
+    var hiddenWhenNoPermission: Boolean
 
     /** Returns the position in the inventory. */
     var position: Int
@@ -66,5 +65,20 @@ interface GuiItem {
     /**
      * Position in the inventory which cannot be scrolled.
      */
-    var fixed : Boolean
+    var fixed: Boolean
+
+    /**
+     * Target skin.
+     */
+    var targetSkin: Skin?
+
+    /**
+     * Ai which should be added on click.
+     */
+    val addAIs: MutableList<AIBase>
+
+    /**
+     * Ai which should be removed on click.
+     */
+    val removeAIs: MutableList<AIBase>
 }

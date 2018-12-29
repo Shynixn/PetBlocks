@@ -12,6 +12,7 @@ import com.github.shynixn.petblocks.api.persistence.entity.AIBase
 import com.github.shynixn.petblocks.api.persistence.entity.ChatMessage
 import com.github.shynixn.petblocks.api.persistence.entity.GuiItem
 import com.github.shynixn.petblocks.api.persistence.entity.PetMeta
+import com.github.shynixn.petblocks.bukkit.logic.business.extension.deserialize
 import com.github.shynixn.petblocks.bukkit.logic.business.extension.deserializeToMap
 import com.github.shynixn.petblocks.bukkit.logic.business.extension.toMaterial
 import com.github.shynixn.petblocks.core.logic.business.extension.chatMessage
@@ -223,6 +224,27 @@ class ConfigurationServiceImpl @Inject constructor(
             this.setItem<String>("icon.script", description) { value -> guiIcon.script = value }
             this.setItem<List<String>>("icon.lore", description) { value -> guiIcon.lore = value }
 
+            if (description.containsKey("set-skin")) {
+                guiItem.targetSkin = SkinEntity()
+            }
+
+            this.setItem<Int>("set-skin.id", description) { value -> guiItem.targetSkin!!.typeName = value.toMaterial().name }
+            this.setItem<Int>("set-skin.damage", description) { value -> guiItem.targetSkin!!.dataValue = value }
+            this.setItem<Boolean>("set-skin.unbreakable", description) { value -> guiItem.targetSkin!!.unbreakable = value }
+            this.setItem<String>("set-skin.skin", description) { value -> guiItem.targetSkin!!.owner = value }
+
+            if (description.containsKey("add-ai")) {
+                val goalsMap = (description["add-ai"] as MemorySection).getValues(false)
+                deserialize(goalsMap)
+                guiItem.addAIs.addAll(parseAis(goalsMap))
+            }
+
+            if (description.containsKey("remove-ai")) {
+                val goalsMap = (description["remove-ai"] as MemorySection).getValues(false)
+                deserialize(goalsMap)
+                guiItem.addAIs.addAll(parseAis(goalsMap))
+            }
+
             if (guiItem.icon.displayName.startsWith("minecraft-heads.com/")) {
                 guiItem.icon.displayName = findMinecraftHeadsItem(guiItem.icon.displayName.split("/")[1].toInt()).first
             }
@@ -317,7 +339,7 @@ class ConfigurationServiceImpl @Inject constructor(
         setItem<Boolean>("unbreakable", skin) { value -> petMeta.skin.unbreakable = value }
         setItem<String>("skin", skin) { value -> petMeta.skin.owner = value }
 
-        val goalsMap = defaultConfig["ais"] as Map<String, Any?>
+        val goalsMap = defaultConfig["add-ai"] as Map<String, Any?>
         val ais = parseAis(goalsMap)
         petMeta.aiGoals.clear()
         petMeta.aiGoals.addAll(ais)

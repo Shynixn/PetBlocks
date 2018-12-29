@@ -18,6 +18,7 @@ import com.github.shynixn.petblocks.bukkit.logic.business.proxy.SqlProxyImpl
 import com.github.shynixn.petblocks.bukkit.logic.business.service.*
 import com.github.shynixn.petblocks.core.jvm.logic.persistence.context.SqlDbContextImpl
 import com.github.shynixn.petblocks.core.jvm.logic.persistence.service.UpdateCheckServiceImpl
+import com.github.shynixn.petblocks.core.jvm.logic.persistence.service.YamlSerializationServiceImpl
 import com.github.shynixn.petblocks.core.logic.business.command.*
 import com.github.shynixn.petblocks.core.logic.business.commandexecutor.EditPetCommandExecutorImpl
 import com.github.shynixn.petblocks.core.logic.business.commandexecutor.PlayerPetActionCommandExecutorImpl
@@ -116,6 +117,7 @@ class PetBlocksDependencyInjectionBinder(private val plugin: Plugin) : AbstractM
         bind<CarryPetService, CarryPetServiceImpl>()
         bind<CombatPetService, CombatPetServiceImpl>()
         bind<AIService, AIServiceImpl>()
+        bind<YamlSerializationService, YamlSerializationServiceImpl>()
         bind<AfraidOfWaterService, AfraidOfWaterServiceImpl>()
         bind<NavigationService, NavigationServiceImpl>()
         bind<DependencyHeadDatabaseService, DependencyHeadDatabaseServiceImpl>()
