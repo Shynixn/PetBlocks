@@ -391,6 +391,13 @@ fun String.toMaterial(): Material {
 }
 
 /**
+ * Finds a version clazz.
+ */
+fun findClazz(name: String): Class<*> {
+    return Class.forName(name.replace("VERSION", Cache.version.bukkitId))
+}
+
+/**
  * Converts the given int to a material.
  */
 fun Int.toMaterial(): Material {
@@ -435,5 +442,6 @@ fun Field.removeFinalModifier() {
 }
 
 private object Cache {
+    val version = getServerVersion()
     val itemService = PetBlocksApi.resolve<ItemService>(ItemService::class.java)
 }

@@ -61,12 +61,12 @@ interface PetProxy {
     /**
      * Adds a pathfinder to this pet.
      */
-    fun addPathfinder(pathfinderProxy: PathfinderProxy)
+    fun addPathfinder(pathfinder: Any)
 
     /**
      * Gets all pathfinders.
      */
-    val pathfinders: List<PathfinderProxy>
+    val pathfinders: List<Any>
 
     /**
      * Gets called from any Movement AI to play movement effects.

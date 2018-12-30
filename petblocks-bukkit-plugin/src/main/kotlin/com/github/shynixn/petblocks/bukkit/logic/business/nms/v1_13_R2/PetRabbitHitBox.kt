@@ -82,8 +82,12 @@ class PetRabbitHitBox(world: World) : EntityRabbit(world) {
     /**
      * Applies pathfinder to the entity.
      */
-    fun applyPathfinder(pathfinderProxies: PathfinderProxy) {
-        this.goalSelector.a(pathfinderCounter++, Pathfinder(pathfinderProxies))
+    fun applyPathfinder(pathfinder: Any) {
+        if (pathfinder is PathfinderProxy) {
+            this.goalSelector.a(pathfinderCounter++, Pathfinder(pathfinder))
+        } else {
+            this.goalSelector.a(pathfinderCounter++, pathfinder as PathfinderGoal)
+        }
     }
 
     /**
@@ -142,7 +146,9 @@ class PetRabbitHitBox(world: World) : EntityRabbit(world) {
             return super.dz()
         }
 
-        petDesign!!.proxy.playMovementEffects()
+        if (!this.isInWater) {
+            petDesign!!.proxy.playMovementEffects()
+        }
 
         return super.dz()
     }

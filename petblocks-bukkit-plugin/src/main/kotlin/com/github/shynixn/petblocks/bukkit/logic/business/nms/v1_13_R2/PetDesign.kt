@@ -2,8 +2,6 @@ package com.github.shynixn.petblocks.bukkit.logic.business.nms.v1_13_R2
 
 import com.github.shynixn.petblocks.api.business.enumeration.EntityType
 import com.github.shynixn.petblocks.api.business.proxy.NMSPetProxy
-import com.github.shynixn.petblocks.api.business.proxy.PathfinderProxy
-import com.github.shynixn.petblocks.api.persistence.entity.AIHopping
 import com.github.shynixn.petblocks.api.persistence.entity.PetMeta
 import com.github.shynixn.petblocks.bukkit.logic.business.proxy.PetProxyImpl
 import net.minecraft.server.v1_13_R2.*
@@ -84,8 +82,8 @@ class PetDesign(owner: Player, val petMeta: PetMeta, entityType: EntityType) : E
     /**
      * Applies pathfinder to the entity.
      */
-    override fun applyPathfinder(pathfinderProxies: PathfinderProxy) {
-        hitBox.applyPathfinder(pathfinderProxies)
+    override fun applyPathfinder(pathfinder: Any) {
+        hitBox.applyPathfinder(pathfinder)
     }
 
     /**

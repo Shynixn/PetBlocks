@@ -9,26 +9,24 @@ import com.github.shynixn.petblocks.api.business.proxy.NMSPetProxy
 import com.github.shynixn.petblocks.api.business.proxy.PathfinderProxy
 import com.github.shynixn.petblocks.api.business.proxy.PetProxy
 import com.github.shynixn.petblocks.api.business.service.*
-import com.github.shynixn.petblocks.api.persistence.entity.*
-import com.github.shynixn.petblocks.bukkit.PetBlocksPlugin
+import com.github.shynixn.petblocks.api.persistence.entity.AIMovement
+import com.github.shynixn.petblocks.api.persistence.entity.PetMeta
+import com.github.shynixn.petblocks.api.persistence.entity.Position
 import com.github.shynixn.petblocks.bukkit.logic.business.extension.setDisplayName
 import com.github.shynixn.petblocks.bukkit.logic.business.extension.setSkin
 import com.github.shynixn.petblocks.bukkit.logic.business.extension.setUnbreakable
 import com.github.shynixn.petblocks.bukkit.logic.business.extension.toVector
 import org.bukkit.Bukkit
-import org.bukkit.GameMode
 import org.bukkit.Location
 import org.bukkit.entity.ArmorStand
 import org.bukkit.entity.LivingEntity
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 import org.bukkit.metadata.FixedMetadataValue
-import org.bukkit.plugin.java.JavaPlugin
 import org.bukkit.potion.PotionEffect
 import org.bukkit.potion.PotionEffectType
 import org.bukkit.util.EulerAngle
 import org.bukkit.util.Vector
-import java.util.logging.Level
 
 @Suppress("UNCHECKED_CAST")
 /**
@@ -69,7 +67,7 @@ class PetProxyImpl(override val meta: PetMeta, private val design: ArmorStand, p
     /**
      * Gets all pathfinders.
      */
-    override val pathfinders: MutableList<PathfinderProxy> = ArrayList()
+    override val pathfinders: MutableList<Any> = ArrayList()
     /**
      * Gets the logger of the pet.
      */
@@ -104,7 +102,7 @@ class PetProxyImpl(override val meta: PetMeta, private val design: ArmorStand, p
         design.removeWhenFarAway = false
         design.removeWhenFarAway = false
 
-        //  hitBox.addPotionEffect(PotionEffect(PotionEffectType.INVISIBILITY, 9999999, 1))
+        hitBox.addPotionEffect(PotionEffect(PotionEffectType.INVISIBILITY, 9999999, 1))
         hitBox.setMetadata("keep", FixedMetadataValue(Bukkit.getPluginManager().getPlugin("PetBlocks"), true))
         hitBox.isCustomNameVisible = false
         hitBox.customName = "PetBlockIdentifier"
@@ -131,9 +129,9 @@ class PetProxyImpl(override val meta: PetMeta, private val design: ArmorStand, p
     /**
      * Adds a pathfinder to this pet.
      */
-    override fun addPathfinder(pathfinderProxy: PathfinderProxy) {
-        pathfinders.add(pathfinderProxy)
-        nmsProxy.applyPathfinder(pathfinderProxy)
+    override fun addPathfinder(pathfinder: Any) {
+        pathfinders.add(pathfinder)
+        nmsProxy.applyPathfinder(pathfinder)
     }
 
     /**
@@ -186,12 +184,14 @@ class PetProxyImpl(override val meta: PetMeta, private val design: ArmorStand, p
     override fun playMovementEffects() {
         try {
             for (aiGoal in pathfinders) {
-                val aiBase = aiGoal.aiBase
-                if (aiBase is AIMovement) {
-                    val location = getLocation<Location>()
+                if (aiGoal is PathfinderProxy) {
+                    val aiBase = aiGoal.aiBase
+                    if (aiBase is AIMovement) {
+                        val location = getLocation<Location>()
 
-                    particleService.playParticle(location, aiBase.movementParticle, owner)
-                    soundService.playSound(location, aiBase.movementSound, owner)
+                        particleService.playParticle(location, aiBase.movementParticle, owner)
+                        soundService.playSound(location, aiBase.movementSound, owner)
+                    }
                 }
             }
         } catch (e: Exception) {

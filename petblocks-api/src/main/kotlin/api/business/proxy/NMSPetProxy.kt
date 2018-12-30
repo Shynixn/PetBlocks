@@ -36,5 +36,5 @@ interface NMSPetProxy {
     /**
      * Applies pathfinder to the entity.
      */
-    fun applyPathfinder(pathfinderProxies: PathfinderProxy)
+    fun applyPathfinder(pathfinder : Any)
 }
