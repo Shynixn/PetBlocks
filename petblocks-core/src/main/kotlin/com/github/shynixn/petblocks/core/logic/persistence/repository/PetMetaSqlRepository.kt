@@ -84,12 +84,41 @@ class PetMetaSqlRepository @Inject constructor(
      */
     override fun save(petMeta: PetMeta): PetMeta {
         return sqlDbContext.transaction<PetMeta, Any> { connection ->
-            if (petMeta.id == 0L) {
-                insertInto(connection, petMeta)
+            merge(connection, petMeta)
+        }
+    }
+
+    /**
+     * Merges the petMeta into the database.
+     */
+    private fun merge(connection: Any, petMeta: PetMeta): PetMeta {
+        if (petMeta.id == 0L) {
+            val optPlayerMeta = getPetMeta(connection, petMeta.playerMeta.uuid)
+
+            if (optPlayerMeta == null) {
+                return insertInto(connection, petMeta)
             } else {
-                update(connection, petMeta)
+                optPlayerMeta.displayName = petMeta.displayName
+                optPlayerMeta.enabled = petMeta.enabled
+                optPlayerMeta.soundEnabled = petMeta.soundEnabled
+                optPlayerMeta.particleEnabled = petMeta.particleEnabled
+
+                optPlayerMeta.playerMeta.name = petMeta.playerMeta.name
+                optPlayerMeta.playerMeta.uuid= petMeta.playerMeta.uuid
+
+                optPlayerMeta.skin.typeName = petMeta.skin.typeName
+                optPlayerMeta.skin.unbreakable = petMeta.skin.unbreakable
+                optPlayerMeta.skin.dataValue = petMeta.skin.dataValue
+                optPlayerMeta.skin.owner = petMeta.skin.owner
+
+                optPlayerMeta.aiGoals.clear()
+                optPlayerMeta.aiGoals.addAll(petMeta.aiGoals)
+
+                return update(connection, optPlayerMeta)
             }
         }
+
+        return update(connection, petMeta)
     }
 
     /**
@@ -98,6 +127,20 @@ class PetMetaSqlRepository @Inject constructor(
      * currently uses the meta data of the player.
      */
     private fun getOrCreateFromPlayerIdentifiers(connection: Any, name: String, uuid: String): PetMeta {
+        val optResult = getPetMeta(connection, uuid)
+
+        return if (optResult == null) {
+            val petMeta = configurationService.generateDefaultPetMeta(uuid, name)
+            return insertInto(connection, petMeta)
+        } else {
+            optResult
+        }
+    }
+
+    /**
+     * Gets the pet meta from the database.
+     */
+    private fun getPetMeta(connection: Any, uuid: String): PetMeta? {
         val statement = "SELECT * " +
                 "FROM SHY_PET pet, SHY_SKIN skin, SHY_PLAYER player " +
                 "WHERE player.uuid = ? " +
@@ -106,7 +149,7 @@ class PetMetaSqlRepository @Inject constructor(
 
         val aiStatement = "SELECT * FROM SHY_PET_AI WHERE shy_pet_id = ?"
 
-        val optResult = sqlDbContext.singleQuery(connection, statement, { resultSet ->
+        return sqlDbContext.singleQuery(connection, statement, { resultSet ->
             val petMeta = mapResultSetToPetMeta(resultSet)
 
             petMeta.aiGoals.addAll(sqlDbContext.multiQuery(connection, aiStatement, { aiResultSet ->
@@ -115,13 +158,6 @@ class PetMetaSqlRepository @Inject constructor(
 
             petMeta
         }, uuid)
-
-        return if (optResult == null) {
-            val petMeta = configurationService.generateDefaultPetMeta(uuid, name)
-            return insertInto(connection, petMeta)
-        } else {
-            optResult
-        }
     }
 
     /**

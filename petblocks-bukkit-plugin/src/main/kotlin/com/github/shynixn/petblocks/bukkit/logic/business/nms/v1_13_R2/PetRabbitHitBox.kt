@@ -74,6 +74,28 @@ class PetRabbitHitBox(world: World) : EntityRabbit(world) {
     }
 
     /**
+     * Riding function.
+     */
+    override fun a(sidemot: Float, f2: Float, formot: Float) {
+        if(petDesign == null){
+            return
+        }
+
+        if (this.passengers == null) {
+            return
+        }
+
+        val passenger = this.passengers.first()
+
+        this.yaw = passenger.yaw
+        this.lastYaw = passenger.yaw
+        this.pitch = passenger.pitch * 0.5f
+        this.setYawPitch(this.yaw, this.pitch)
+        this.aQ = this.yaw
+        this.aS = this.aQ
+    }
+
+    /**
      * Overrides the default moving sound.
      */
     override fun dz(): SoundEffect {

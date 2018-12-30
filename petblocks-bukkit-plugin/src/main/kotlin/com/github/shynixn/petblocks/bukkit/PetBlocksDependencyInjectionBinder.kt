@@ -83,6 +83,7 @@ class PetBlocksDependencyInjectionBinder(private val plugin: Plugin) : AbstractM
         bindClass<EditPetToggleCommand>()
         bindClass<EditPetToggleSoundCommand>()
         bindClass<EditPetWearCommand>()
+        bindClass<EditPetResetCommand>()
 
         // CommandExecutors
         bind<ReloadCommandExecutor, ReloadCommandExecutorImpl>()
