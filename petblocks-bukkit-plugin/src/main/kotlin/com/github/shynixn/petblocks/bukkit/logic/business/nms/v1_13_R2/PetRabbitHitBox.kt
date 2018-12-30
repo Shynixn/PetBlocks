@@ -1,6 +1,7 @@
 package com.github.shynixn.petblocks.bukkit.logic.business.nms.v1_13_R2
 
 import com.github.shynixn.petblocks.api.business.proxy.PathfinderProxy
+import com.github.shynixn.petblocks.api.persistence.entity.AIMovement
 import com.github.shynixn.petblocks.bukkit.logic.business.extension.removeFinalModifier
 import com.google.common.collect.Sets
 import net.minecraft.server.v1_13_R2.*
@@ -58,8 +59,20 @@ class PetRabbitHitBox(world: World) : EntityRabbit(world) {
         cField.set(this.goalSelector, Sets.newLinkedHashSet<Any>())
         cField.set(this.targetSelector, Sets.newLinkedHashSet<Any>())
 
-        this.getAttributeInstance(GenericAttributes.MOVEMENT_SPEED).value = 0.30000001192092896 * 0.75
-        // this.Q = petDesign.petMeta.modifier.climbingHeight.toFloat()
+        val aiGoal = petDesign.petMeta.aiGoals.firstOrNull { p -> p is AIMovement }
+        val speed = if (aiGoal != null) {
+            (aiGoal as AIMovement).movementSpeed
+        } else {
+            0.75
+        }
+
+        this.getAttributeInstance(GenericAttributes.MOVEMENT_SPEED).value = 0.30000001192092896 * speed
+
+        this.Q = if (aiGoal != null) {
+            (aiGoal as AIMovement).climbingHeight.toFloat()
+        } else {
+            1.0F
+        }
 
         val mcWorld = (location.world as CraftWorld).handle
         this.setPosition(location.x, location.y + 1, location.z)
@@ -77,22 +90,24 @@ class PetRabbitHitBox(world: World) : EntityRabbit(world) {
      * Riding function.
      */
     override fun a(sidemot: Float, f2: Float, formot: Float) {
-        if(petDesign == null){
+        if (petDesign == null) {
+            super.a(sidemot, f2, formot)
             return
         }
 
         if (this.passengers == null) {
+            super.a(sidemot, f2, formot)
             return
         }
 
-        val passenger = this.passengers.first()
+        val passenger = this.passengers.first() as EntityArmorStand
+        passenger.yaw = this.yaw
+        passenger.pitch = this.pitch * 0.5f
+        passenger.lastYaw = this.yaw
+        passenger.aQ = this.yaw
+        passenger.aS = this.yaw
 
-        this.yaw = passenger.yaw
-        this.lastYaw = passenger.yaw
-        this.pitch = passenger.pitch * 0.5f
-        this.setYawPitch(this.yaw, this.pitch)
-        this.aQ = this.yaw
-        this.aS = this.aQ
+        super.a(sidemot, f2, formot)
     }
 
     /**
@@ -103,11 +118,7 @@ class PetRabbitHitBox(world: World) : EntityRabbit(world) {
             return super.dz()
         }
 
-        try {
-            // petDesign!!.proxy.playMovingSound()
-        } catch (e: Exception) {
-            petDesign!!.proxy.logger.error("Failed to play moving sound.", e)
-        }
+        petDesign!!.proxy.playMovementEffects()
 
         return super.dz()
     }

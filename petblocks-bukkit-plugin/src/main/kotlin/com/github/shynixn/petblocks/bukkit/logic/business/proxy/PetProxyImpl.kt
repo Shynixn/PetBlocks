@@ -58,7 +58,14 @@ import java.util.logging.Level
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class PetProxyImpl(override val meta: PetMeta, private val design: ArmorStand, private val nmsProxy: NMSPetProxy, private val hitBox: LivingEntity, private val owner: Player) : PetProxy, Runnable {
+class PetProxyImpl(override val meta: PetMeta, private val design: ArmorStand, private val nmsProxy: NMSPetProxy, private val hitBox: LivingEntity, private val owner: Player) :
+    PetProxy, Runnable {
+
+    var teleportTarget: Location? = null
+
+    private val particleService = PetBlocksApi.resolve<ParticleService>(ParticleService::class.java)
+    private val soundService = PetBlocksApi.resolve<SoundService>(SoundService::class.java)
+
     /**
      * Gets all pathfinders.
      */
@@ -97,7 +104,7 @@ class PetProxyImpl(override val meta: PetMeta, private val design: ArmorStand, p
         design.removeWhenFarAway = false
         design.removeWhenFarAway = false
 
-        hitBox.addPotionEffect(PotionEffect(PotionEffectType.INVISIBILITY, 9999999, 1))
+        //  hitBox.addPotionEffect(PotionEffect(PotionEffectType.INVISIBILITY, 9999999, 1))
         hitBox.setMetadata("keep", FixedMetadataValue(Bukkit.getPluginManager().getPlugin("PetBlocks"), true))
         hitBox.isCustomNameVisible = false
         hitBox.customName = "PetBlockIdentifier"
@@ -171,6 +178,25 @@ class PetProxyImpl(override val meta: PetMeta, private val design: ArmorStand, p
 
         owner.passenger = design
         owner.closeInventory()
+    }
+
+    /**
+     * Gets called from any Movement AI to play movement effects.
+     */
+    override fun playMovementEffects() {
+        try {
+            for (aiGoal in pathfinders) {
+                val aiBase = aiGoal.aiBase
+                if (aiBase is AIMovement) {
+                    val location = getLocation<Location>()
+
+                    particleService.playParticle(location, aiBase.movementParticle, owner)
+                    soundService.playSound(location, aiBase.movementSound, owner)
+                }
+            }
+        } catch (e: Exception) {
+            logger.error("Failed to play moving sound and particle.", e)
+        }
     }
 
     /**
@@ -259,8 +285,7 @@ class PetProxyImpl(override val meta: PetMeta, private val design: ArmorStand, p
             throw IllegalArgumentException("Location has to be a BukkitLocation!")
         }
 
-        design.teleport(location)
-        hitBox.teleport(location)
+        teleportTarget = location
     }
 
     /**

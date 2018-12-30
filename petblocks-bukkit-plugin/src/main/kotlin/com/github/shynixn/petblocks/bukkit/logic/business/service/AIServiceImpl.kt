@@ -69,7 +69,7 @@ class AIServiceImpl @Inject constructor(
             }
 
             pathfinder.onExecute = {
-                if (Math.random() > 0.7) {
+                if (Math.random() > 0.99) {
                     soundService.playSound(hitBox.location, goal.sound, hitBox.world.players)
                 }
             }
@@ -121,16 +121,14 @@ class AIServiceImpl @Inject constructor(
             var lastLocation: Location? = null
 
             pathfinder.shouldGoalContinueExecuting = {
-                if (owner.location.distance(hitBox.location) > goal.maxRange) {
-                    petProxy.teleport(owner.location)
-                    false
-                } else if (owner.location.distance(hitBox.location) < goal.distanceToOwner) {
-                    false
-                } else if (lastLocation != null && lastLocation!!.distance(owner.location) > 2) {
-                    false
+                when {
+                    owner.location.distance(hitBox.location) > goal.maxRange -> {
+                        petProxy.teleport(owner.location)
+                        false
+                    }
+                    owner.location.distance(hitBox.location) < goal.distanceToOwner -> false
+                    else -> !(lastLocation != null && lastLocation!!.distance(owner.location) > 2)
                 }
-
-                true
             }
 
             pathfinder.shouldGoalBeExecuted = {

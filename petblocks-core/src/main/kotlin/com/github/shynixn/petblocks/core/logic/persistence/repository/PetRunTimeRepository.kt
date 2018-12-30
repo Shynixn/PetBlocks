@@ -63,14 +63,14 @@ class PetRunTimeRepository : PetRepository {
      * Gets the pet from the uuid. Throws exception if not exist.
      */
     override fun getFromPlayerUUID(uuid: String): PetProxy {
-        return pets.find { p -> p.meta.playerMeta.uuid == uuid }
-            ?: throw IllegalArgumentException("Pet cannot be located of uuid " + uuid.toString() + ".")
+        return pets.find { p -> !p.isDead && p.meta.playerMeta.uuid == uuid }
+            ?: throw IllegalArgumentException("Pet cannot be located of uuid $uuid.")
     }
 
     /**
      * Gets if the given player uniqueId has got an active pet.
      */
     override fun hasPet(uuid: String): Boolean {
-        return pets.firstOrNull { p -> p.meta.playerMeta.uuid == uuid } != null
+        return pets.firstOrNull { p -> !p.isDead && p.meta.playerMeta.uuid == uuid } != null
     }
 }

@@ -5,18 +5,20 @@ package com.github.shynixn.petblocks.bukkit.logic.business.service
 import com.github.shynixn.petblocks.api.business.annotation.Inject
 import com.github.shynixn.petblocks.api.business.enumeration.ParticleType
 import com.github.shynixn.petblocks.api.business.enumeration.Version
-import com.github.shynixn.petblocks.api.business.service.ConcurrencyService
 import com.github.shynixn.petblocks.api.business.service.ConfigurationService
+import com.github.shynixn.petblocks.api.business.service.ItemService
 import com.github.shynixn.petblocks.api.business.service.LoggingService
 import com.github.shynixn.petblocks.api.business.service.ParticleService
 import com.github.shynixn.petblocks.api.persistence.entity.Particle
 import com.github.shynixn.petblocks.bukkit.logic.business.extension.getServerVersion
 import com.github.shynixn.petblocks.bukkit.logic.business.extension.sendPacket
-import com.github.shynixn.petblocks.core.logic.business.extension.async
+import org.bukkit.Bukkit
 import org.bukkit.Location
 import org.bukkit.Material
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
+import java.lang.reflect.Method
+import java.util.logging.Level
 
 /**
  * Created by Shynixn 2018.
@@ -45,8 +47,13 @@ import org.bukkit.inventory.ItemStack
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class ParticleServiceImpl @Inject constructor(private val concurrencyService: ConcurrencyService, private val logger: LoggingService, private val configurationService: ConfigurationService) : ParticleService {
+class ParticleServiceImpl @Inject constructor(
+    private val logger: LoggingService,
+    private val configurationService: ConfigurationService
+) : ParticleService {
     private val version = getServerVersion()
+
+    private val getIdFromMaterialMethod: Method = { Material::class.java.getDeclaredMethod("getId") }.invoke()
 
     /**
      * Plays the given [particle] at the given [location] for the given [player] or
@@ -57,7 +64,7 @@ class ParticleServiceImpl @Inject constructor(private val concurrencyService: Co
             throw IllegalArgumentException("Player has to be a BukkitPlayer!")
         }
 
-        val canOtherPlayersSeeParticles = configurationService.findValue<Boolean>("pet.design.particles-other-players")
+        val canOtherPlayersSeeParticles = configurationService.findValue<Boolean>("global-configuration.particles-other-players")
 
         if (canOtherPlayersSeeParticles) {
             playParticle(location, particle, player.world.players)
@@ -94,42 +101,58 @@ class ParticleServiceImpl @Inject constructor(private val concurrencyService: Co
 
             if (dataType == ItemStack::class.java && particle.materialName != null) {
                 val itemStack = findClazz("org.bukkit.craftbukkit.VERSION.inventory.CraftItemStack").getDeclaredMethod("asNMSCopy")
-                        .invoke(null, ItemStack(Material.getMaterial(particle.materialName), 1, particle.data.toShort()))
+                    .invoke(null, ItemStack(Material.getMaterial(particle.materialName), 1, particle.data.toShort()))
 
                 internalParticleType = findClazz("net.minecraft.server.VERSION.ParticleParamItem")
-                        .getDeclaredConstructor(particleClazz, itemStack.javaClass).newInstance(internalParticleType, itemStack)
+                    .getDeclaredConstructor(particleClazz, itemStack.javaClass).newInstance(internalParticleType, itemStack)
             } else if (particle.type == ParticleType.BLOCK_CRACK || particle.type == ParticleType.BLOCK_DUST) {
                 val craftBlockStateClazz = findClazz("org.bukkit.craftbukkit.VERSION.block.CraftBlockState")
 
                 val data = craftBlockStateClazz
-                        .getDeclaredConstructor(Material::class.java)
-                        .newInstance(Material.getMaterial(particle.materialName))
+                    .getDeclaredConstructor(Material::class.java)
+                    .newInstance(Material.getMaterial(particle.materialName))
 
                 craftBlockStateClazz.getDeclaredMethod("setRawData", Byte::class.java).invoke(data, particle.data.toByte())
                 val handle = craftBlockStateClazz.getDeclaredMethod("getHandle").invoke(data)
 
                 internalParticleType = findClazz("net.minecraft.server.VERSION.ParticleParamBlock")
-                        .getDeclaredConstructor(particleClazz, findClazz("net.minecraft.server.VERSION.IBlockData"))
-                        .newInstance(internalParticleType, handle)
+                    .getDeclaredConstructor(particleClazz, findClazz("net.minecraft.server.VERSION.IBlockData"))
+                    .newInstance(internalParticleType, handle)
             } else if (particle.type == ParticleType.REDSTONE) {
                 internalParticleType = findClazz("net.minecraft.server.VERSION.ParticleParamRedstone")
-                        .getDeclaredConstructor(Float::class.java, Float::class.java, Float::class.java, Float::class.java)
-                        .newInstance(particle.colorRed.toFloat() / 255.0f, particle.colorGreen.toFloat() / 255.0f, particle.colorBlue.toFloat() / 255.0f, 1.0F)
+                    .getDeclaredConstructor(Float::class.java, Float::class.java, Float::class.java, Float::class.java)
+                    .newInstance(particle.colorRed.toFloat() / 255.0f, particle.colorGreen.toFloat() / 255.0f, particle.colorBlue.toFloat() / 255.0f, 1.0F)
             }
 
             findClazz("net.minecraft.server.VERSION.PacketPlayOutWorldParticles")
-                    .getDeclaredConstructor(particleParamClazz, Boolean::class.java, Float::class.java, Float::class.java, Float::class.java, Float::class.java, Float::class.java, Float::class.java, Float::class.java, Int::class.java)
-                    .newInstance(internalParticleType, isLongDistance(location, targets), location.x.toFloat(), location.y.toFloat(), location.z.toFloat(), particle.offSetX.toFloat(), particle.offSetY.toFloat(), particle.offSetZ.toFloat(), particle.speed.toFloat(), particle.amount)
+                .getDeclaredConstructor(particleParamClazz,
+                    Boolean::class.java,
+                    Float::class.java,
+                    Float::class.java,
+                    Float::class.java,
+                    Float::class.java,
+                    Float::class.java,
+                    Float::class.java,
+                    Float::class.java,
+                    Int::class.java)
+                .newInstance(internalParticleType,
+                    isLongDistance(location, targets),
+                    location.x.toFloat(),
+                    location.y.toFloat(),
+                    location.z.toFloat(),
+                    particle.offSetX.toFloat(),
+                    particle.offSetY.toFloat(),
+                    particle.offSetZ.toFloat(),
+                    particle.speed.toFloat(),
+                    particle.amount)
         } else {
             var additionalPayload: IntArray? = null
 
             if (particle.materialName != null) {
                 additionalPayload = if (particle.type == ParticleType.ITEM_CRACK) {
-                    //intArrayOf(MaterialCompatibility13.getIdFromMaterial(Material.getMaterial(particle.materialName)), particle.data)
-                    intArrayOf(0)
+                    intArrayOf(getIdFromMaterialMethod.invoke(Material.getMaterial(particle.materialName)) as Int, particle.data)
                 } else {
-                    //intArrayOf(MaterialCompatibility13.getIdFromMaterial(Material.getMaterial(particle.materialName)), (particle.data shl 12))
-                    intArrayOf(1)
+                    intArrayOf(getIdFromMaterialMethod.invoke(Material.getMaterial(particle.materialName)) as Int, (particle.data shl 12))
                 }
             }
 
@@ -140,24 +163,62 @@ class ParticleServiceImpl @Inject constructor(private val concurrencyService: Co
                 }
 
                 val constructor = Class.forName("net.minecraft.server.VERSION.PacketPlayOutWorldParticles".replace("VERSION", version.bukkitId))
-                        .getDeclaredConstructor(internalParticleType.javaClass, Boolean::class.javaPrimitiveType, Float::class.javaPrimitiveType, Float::class.javaPrimitiveType, Float::class.javaPrimitiveType, Float::class.javaPrimitiveType, Float::class.javaPrimitiveType, Float::class.javaPrimitiveType, Float::class.javaPrimitiveType, Int::class.javaPrimitiveType, IntArray::class.java)
-                constructor.newInstance(internalParticleType, isLongDistance(location, targets), location.x.toFloat(), location.y.toFloat(), location.z.toFloat(), red, particle.colorGreen.toFloat() / 255.0f, particle.colorBlue.toFloat() / 255.0f, particle.speed.toFloat(), particle.amount, additionalPayload)
+                    .getDeclaredConstructor(internalParticleType.javaClass,
+                        Boolean::class.javaPrimitiveType,
+                        Float::class.javaPrimitiveType,
+                        Float::class.javaPrimitiveType,
+                        Float::class.javaPrimitiveType,
+                        Float::class.javaPrimitiveType,
+                        Float::class.javaPrimitiveType,
+                        Float::class.javaPrimitiveType,
+                        Float::class.javaPrimitiveType,
+                        Int::class.javaPrimitiveType,
+                        IntArray::class.java)
+                constructor.newInstance(internalParticleType,
+                    isLongDistance(location, targets),
+                    location.x.toFloat(),
+                    location.y.toFloat(),
+                    location.z.toFloat(),
+                    red,
+                    particle.colorGreen.toFloat() / 255.0f,
+                    particle.colorBlue.toFloat() / 255.0f,
+                    particle.speed.toFloat(),
+                    particle.amount,
+                    additionalPayload)
             } else {
 
                 val constructor = Class.forName("net.minecraft.server.VERSION.PacketPlayOutWorldParticles".replace("VERSION", version.bukkitId))
-                        .getDeclaredConstructor(internalParticleType.javaClass, Boolean::class.javaPrimitiveType, Float::class.javaPrimitiveType, Float::class.javaPrimitiveType, Float::class.javaPrimitiveType, Float::class.javaPrimitiveType, Float::class.javaPrimitiveType, Float::class.javaPrimitiveType, Float::class.javaPrimitiveType, Int::class.javaPrimitiveType, IntArray::class.java)
-                constructor.newInstance(internalParticleType, isLongDistance(location, targets), location.x.toFloat(), location.y.toFloat(), location.z.toFloat(), particle.offSetX.toFloat(), particle.offSetY.toFloat(), particle.offSetZ.toFloat(), particle.speed.toFloat(), particle.amount, additionalPayload)
+                    .getDeclaredConstructor(internalParticleType.javaClass,
+                        Boolean::class.javaPrimitiveType,
+                        Float::class.javaPrimitiveType,
+                        Float::class.javaPrimitiveType,
+                        Float::class.javaPrimitiveType,
+                        Float::class.javaPrimitiveType,
+                        Float::class.javaPrimitiveType,
+                        Float::class.javaPrimitiveType,
+                        Float::class.javaPrimitiveType,
+                        Int::class.javaPrimitiveType,
+                        IntArray::class.java)
+                constructor.newInstance(internalParticleType,
+                    isLongDistance(location, targets),
+                    location.x.toFloat(),
+                    location.y.toFloat(),
+                    location.z.toFloat(),
+                    particle.offSetX.toFloat(),
+                    particle.offSetY.toFloat(),
+                    particle.offSetZ.toFloat(),
+                    particle.speed.toFloat(),
+                    particle.amount,
+                    additionalPayload)
             }
         }
 
-        async(concurrencyService) {
-            try {
-                players.forEach { p ->
-                    p.sendPacket(packet)
-                }
-            } catch (e: Exception) {
-                logger.warn("Failed to send particle.", e)
+        try {
+            players.forEach { p ->
+                p.sendPacket(packet)
             }
+        } catch (e: Exception) {
+            Bukkit.getServer().logger.log(Level.WARNING, "Failed to send particle.", e)
         }
     }
 
@@ -180,16 +241,19 @@ class ParticleServiceImpl @Inject constructor(private val concurrencyService: Co
                     val method = clazz.getDeclaredMethod("valueOf", String::class.java)
                     method.invoke(null, particle.name)
                 }
+
                 version == Version.VERSION_1_13_R1 -> {
                     val minecraftKey = findClazz("net.minecraft.server.VERSION.MinecraftKey").getDeclaredConstructor(String::class.java).newInstance(particle.gameId_113)
                     val registry = findClazz("net.minecraft.server.VERSION.Particle").getDeclaredField("REGISTRY").get(null)
 
                     findClazz("net.minecraft.server.VERSION.RegistryMaterials").getDeclaredMethod("get", Any::class.java).invoke(registry, minecraftKey)
                 }
+
                 else -> {
                     val minecraftKey = findClazz("net.minecraft.server.VERSION.MinecraftKey").getDeclaredConstructor(String::class.java).newInstance(particle.gameId_113)
                     val registry = findClazz("net.minecraft.server.VERSION.IRegistry").getDeclaredField("PARTICLE_TYPE").get(null)
-                    findClazz("net.minecraft.server.VERSION.RegistryMaterials").getDeclaredMethod("get", findClazz("net.minecraft.server.VERSION.MinecraftKey")).invoke(registry, minecraftKey)
+                    findClazz("net.minecraft.server.VERSION.RegistryMaterials").getDeclaredMethod("get", findClazz("net.minecraft.server.VERSION.MinecraftKey"))
+                        .invoke(registry, minecraftKey)
                 }
             }
         } catch (e: Exception) {

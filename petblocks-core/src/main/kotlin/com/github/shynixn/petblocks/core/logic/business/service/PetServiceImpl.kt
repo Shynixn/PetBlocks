@@ -101,7 +101,7 @@ class PetServiceImpl @Inject constructor(
      * Checks if the player with the given [uuid] has an active pet.
      */
     override fun hasPet(uuid: String): Boolean {
-        return petRepository.hasPet(uuid) && !petRepository.getFromPlayerUUID(uuid).isDead
+        return petRepository.hasPet(uuid)
     }
 
     /**

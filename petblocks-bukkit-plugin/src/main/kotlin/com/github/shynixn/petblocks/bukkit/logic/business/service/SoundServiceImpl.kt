@@ -39,7 +39,7 @@ import java.util.logging.Level
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class SoundServiceImpl @Inject constructor(private val plugin: Plugin, private val configurationService: ConfigurationService, private val version : Version) : SoundService {
+class SoundServiceImpl @Inject constructor(private val plugin: Plugin, private val configurationService: ConfigurationService, private val version: Version) : SoundService {
     /**
      * Plays the given [sound] at the given [location] for the given [player] or
      * all players in the world if the config option is enabled.
@@ -49,7 +49,7 @@ class SoundServiceImpl @Inject constructor(private val plugin: Plugin, private v
             throw IllegalArgumentException("Player has to be a BukkitPlayer!")
         }
 
-        val canOtherPlayersHearSound = configurationService.findValue<Boolean>("pet.design.particles-other-players")
+        val canOtherPlayersHearSound = configurationService.findValue<Boolean>("global-configuration.sounds-other-players")
 
         if (canOtherPlayersHearSound) {
             playSound(location, sound, player.world.players)
@@ -88,15 +88,19 @@ class SoundServiceImpl @Inject constructor(private val plugin: Plugin, private v
                 "MAGMACUBE_WALK" -> {
                     return "ENTITY_MAGMA_CUBE_JUMP"
                 }
+
                 "ENDERMAN_IDLE" -> {
                     return "ENTITY_ENDERMAN_AMBIENT"
                 }
+
                 "ENDERDRAGON_GROWL" -> {
                     return "ENTITY_ENDER_DRAGON_GROWL"
                 }
+
                 "ENDERDRAGON_WINGS" -> {
                     return "ENTITY_ENDER_DRAGON_FLAP"
                 }
+
                 "IRONGOLEM_WALK" -> {
                     return "ENTITY_IRON_GOLEM_STEP"
                 }
@@ -107,12 +111,15 @@ class SoundServiceImpl @Inject constructor(private val plugin: Plugin, private v
                 "ENDERMAN_IDLE" -> {
                     return "ENTITY_ENDERMEN_AMBIENT"
                 }
+
                 "MAGMACUBE_WALK" -> {
                     return "ENTITY_MAGMACUBE_JUMP"
                 }
+
                 "SLIME_WALK" -> {
                     return "ENTITY_SLIME_JUMP"
                 }
+
                 "EXPLODE" -> {
                     return "ENTITY_GENERIC_EXPLODE"
                 }
@@ -120,36 +127,47 @@ class SoundServiceImpl @Inject constructor(private val plugin: Plugin, private v
                 "EAT" -> {
                     return "ENTITY_GENERIC_EAT"
                 }
+
                 "WOLF_GROWL" -> {
                     return "ENTITY_WOLF_GROWL"
                 }
+
                 "CAT_MEOW" -> {
                     return "ENTITY_CAT_PURREOW"
                 }
+
                 "HORSE_GALLOP" -> {
                     return "ENTITY_GENERIC_EXPLODE"
                 }
+
                 "ENTITY_HORSE_GALLOP" -> {
                     return "ENTITY_GENERIC_EXPLODE"
                 }
+
                 "BAT_LOOP" -> {
                     return "ENTITY_BAT_LOOP"
                 }
+
                 "GHAST_SCREAM" -> {
                     return "ENTITY_GHAST_SCREAM"
                 }
+
                 "BLAZE_BREATH" -> {
                     return "ENTITY_BLAZE_AMBIENT"
                 }
+
                 "ENDERDRAGON_WINGS" -> {
                     return "ENTITY_ENDERDRAGON_FLAP"
                 }
+
                 "ENDERDRAGON_GROWL" -> {
                     return "ENTITY_ENDERDRAGON_GROWL"
                 }
+
                 "none" -> {
                     return "none"
                 }
+
                 else -> {
                     if (name.contains("WALK")) {
                         return "ENTITY_" + name.toUpperCase().split("_".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()[0] + "_STEP"

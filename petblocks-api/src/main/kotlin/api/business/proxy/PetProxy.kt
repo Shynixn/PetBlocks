@@ -69,6 +69,11 @@ interface PetProxy {
     val pathfinders: List<PathfinderProxy>
 
     /**
+     * Gets called from any Movement AI to play movement effects.
+     */
+    fun playMovementEffects()
+
+    /**
      * Gets the itemStack on the pet head.
      */
     fun <I> getHeadItemStack(): I

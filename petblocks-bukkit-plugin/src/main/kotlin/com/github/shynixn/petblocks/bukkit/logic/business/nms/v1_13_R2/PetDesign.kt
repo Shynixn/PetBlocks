@@ -121,6 +121,14 @@ class PetDesign(owner: Player, val petMeta: PetMeta, entityType: EntityType) : E
      */
     override fun doTick() {
         super.doTick()
+
+        if (proxy.teleportTarget != null) {
+            val location = proxy.teleportTarget!!
+            this.hitBox.setPositionRotation(location.x, location.y, location.z, location.yaw, location.pitch)
+            this.setPositionRotation(location.x, location.y, location.z, location.yaw, location.pitch)
+            proxy.teleportTarget = null
+        }
+
         proxy.run()
     }
 
