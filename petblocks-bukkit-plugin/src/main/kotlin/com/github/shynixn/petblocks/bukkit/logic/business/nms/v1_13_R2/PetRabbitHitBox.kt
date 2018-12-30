@@ -87,6 +87,30 @@ class PetRabbitHitBox(world: World) : EntityRabbit(world) {
     }
 
     /**
+     * Overrides the moving of the pet design.
+     */
+    override fun move(enummovetype: EnumMoveType?, d0: Double, d1: Double, d2: Double) {
+        super.move(enummovetype, d0, d1, d2)
+
+        if (petDesign == null) {
+            return
+        }
+
+        val aiGoal = petDesign!!.petMeta.aiGoals.firstOrNull { p -> p is AIMovement } ?: return
+        val axisBoundingBox = this.boundingBox
+
+        val minXA = axisBoundingBox.minX
+        val minXB = axisBoundingBox.minY
+        val minXC = axisBoundingBox.minZ
+        val maxXD = axisBoundingBox.maxX
+        val maxXF = axisBoundingBox.maxZ
+
+        this.locX = (minXA + maxXD) / 2.0
+        this.locY = minXB - 2.0 + (aiGoal as AIMovement).movementYOffSet
+        this.locZ = (minXC + maxXF) / 2.0
+    }
+
+    /**
      * Riding function.
      */
     override fun a(sidemot: Float, f2: Float, formot: Float) {

@@ -46,34 +46,6 @@ class PetDesign(owner: Player, val petMeta: PetMeta, entityType: EntityType) : E
     private var jumpingField: Field = EntityLiving::class.java.getDeclaredField("bg")
     private var hitBox: PetRabbitHitBox
 
-    companion object {
-        private val axisAlignmentFields = arrayOfNulls<Field?>(5)
-
-        /**
-         * The name of the axis alignment fields changed from 1.13.1 to 1.13.2 but the
-         * NMS layer is still the same.
-         */
-        init {
-            try {
-                axisAlignmentFields[0] = AxisAlignedBB::class.java.getDeclaredField("minX")
-                axisAlignmentFields[1] = AxisAlignedBB::class.java.getDeclaredField("minY")
-                axisAlignmentFields[2] = AxisAlignedBB::class.java.getDeclaredField("minZ")
-                axisAlignmentFields[3] = AxisAlignedBB::class.java.getDeclaredField("maxX")
-                axisAlignmentFields[4] = AxisAlignedBB::class.java.getDeclaredField("maxZ")
-            } catch (ex: NoSuchFieldException) {
-                try {
-                    axisAlignmentFields[0] = AxisAlignedBB::class.java.getDeclaredField("a")
-                    axisAlignmentFields[1] = AxisAlignedBB::class.java.getDeclaredField("b")
-                    axisAlignmentFields[2] = AxisAlignedBB::class.java.getDeclaredField("c")
-                    axisAlignmentFields[3] = AxisAlignedBB::class.java.getDeclaredField("d")
-                    axisAlignmentFields[4] = AxisAlignedBB::class.java.getDeclaredField("f")
-                } catch (e: NoSuchFieldException) {
-                    throw RuntimeException("Fields could not get located.", e)
-                }
-            }
-        }
-    }
-
     /**
      * Proxy handler.
      */
@@ -141,11 +113,11 @@ class PetDesign(owner: Player, val petMeta: PetMeta, entityType: EntityType) : E
         if (this.passengers != null && this.passengers.firstOrNull { p -> p is EntityHuman } != null) {
             val axisBoundingBox = this.boundingBox
 
-            val minXA = axisAlignmentFields[0]!!.getDouble(axisBoundingBox)
-            val minXB = axisAlignmentFields[1]!!.getDouble(axisBoundingBox)
-            val minXC = axisAlignmentFields[2]!!.getDouble(axisBoundingBox)
-            val maxXD = axisAlignmentFields[3]!!.getDouble(axisBoundingBox)
-            val maxXF = axisAlignmentFields[4]!!.getDouble(axisBoundingBox)
+            val minXA = axisBoundingBox.minX
+            val minXB = axisBoundingBox.minY
+            val minXC = axisBoundingBox.minZ
+            val maxXD = axisBoundingBox.maxX
+            val maxXF = axisBoundingBox.maxZ
 
             this.locX = (minXA + maxXD) / 2.0
             this.locY = minXB + 0
