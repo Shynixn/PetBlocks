@@ -52,4 +52,9 @@ interface Skin {
      * Unbreakable.
      */
     var unbreakable: Boolean
+
+    /**
+     * Is the skin sponsored?
+     */
+    var sponsored : Boolean
 }

@@ -343,6 +343,26 @@ fun String.toParticleType(): ParticleType {
 }
 
 /**
+ * Gets the skin of an itemstack.
+ */
+val ItemStack.skin: String?
+    get() {
+        val currentMeta = this.itemMeta as? SkullMeta ?: return null
+
+        if (!currentMeta.owner.isNullOrEmpty()) {
+            return currentMeta.owner
+        }
+
+        val cls = Class.forName("org.bukkit.craftbukkit.VERSION.inventory.CraftMetaSkull".replace("VERSION", getServerVersion().bukkitId))
+        val real = cls.cast(currentMeta)
+        val field = real.javaClass.getDeclaredField("profile")
+        field.isAccessible = true
+        val profile = field.get(real) as GameProfile
+
+        return profile.properties.get("textures").toTypedArray()[0].value
+    }
+
+/**
  * Sets the skin of an itemstack.
  */
 internal fun ItemStack.setSkin(skin: String) {

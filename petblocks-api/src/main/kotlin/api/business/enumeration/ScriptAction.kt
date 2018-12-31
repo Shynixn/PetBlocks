@@ -60,6 +60,21 @@ enum class ScriptAction {
     COPY_PET_SKIN,
 
     /**
+     * Prints the suggest head message.
+     */
+    PRINT_SUGGEST_HEAD_MESSAGE,
+
+    /**
+     * Prints the custom skin message.
+     */
+    PRINT_CUSTOM_SKIN_MESSAGE,
+
+    /**
+     * Connects to the head database plugin.
+     */
+    CONNECT_HEAD_DATABASE,
+
+    /**
      * Hides the item on left scroll outside of the bounding box.
      */
     HIDE_LEFT_SCROLL,

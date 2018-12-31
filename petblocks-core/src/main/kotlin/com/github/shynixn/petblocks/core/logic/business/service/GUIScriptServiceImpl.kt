@@ -55,18 +55,24 @@ class GUIScriptServiceImpl @Inject constructor(private val logger: LoggingServic
                 scriptResult.action = ScriptAction.OPEN_PAGE
                 scriptResult.valueContainer = script.split(" ")[1]
                 return scriptResult
-            }
-            else if (script.startsWith("scroll")) {
+            } else if (script.startsWith("scroll")) {
                 scriptResult.action = ScriptAction.SCROLL_PAGE
                 scriptResult.valueContainer = Pair(script.split(" ")[1].toInt(), script.split(" ")[2].toInt())
                 return scriptResult
-            }
-            else if (script.startsWith("hide-left-scroll")) {
+            } else if (script.startsWith("hide-left-scroll")) {
                 scriptResult.action = ScriptAction.HIDE_LEFT_SCROLL
                 return scriptResult
-            }
-            else if (script.startsWith("hide-right-scroll")) {
+            } else if (script.startsWith("hide-right-scroll")) {
                 scriptResult.action = ScriptAction.HIDE_RIGHT_SCROLL
+                return scriptResult
+            } else if (script.startsWith("print-suggest-heads-message")) {
+                scriptResult.action = ScriptAction.PRINT_SUGGEST_HEAD_MESSAGE
+                return scriptResult
+            } else if (script.startsWith("print-custom-skin-message")) {
+                scriptResult.action = ScriptAction.PRINT_CUSTOM_SKIN_MESSAGE
+                return scriptResult
+            } else if (script.startsWith("connect-head-database")) {
+                scriptResult.action = ScriptAction.CONNECT_HEAD_DATABASE
                 return scriptResult
             }
         } catch (e: Exception) {

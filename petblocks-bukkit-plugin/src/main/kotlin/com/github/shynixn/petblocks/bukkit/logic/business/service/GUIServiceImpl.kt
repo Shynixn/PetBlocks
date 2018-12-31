@@ -7,8 +7,12 @@ import com.github.shynixn.petblocks.api.business.enumeration.ChatClickAction
 import com.github.shynixn.petblocks.api.business.enumeration.ChatColor
 import com.github.shynixn.petblocks.api.business.enumeration.ScriptAction
 import com.github.shynixn.petblocks.api.business.service.*
-import com.github.shynixn.petblocks.api.persistence.entity.*
-import com.github.shynixn.petblocks.bukkit.logic.business.extension.*
+import com.github.shynixn.petblocks.api.persistence.entity.GuiIcon
+import com.github.shynixn.petblocks.api.persistence.entity.GuiPlayerCache
+import com.github.shynixn.petblocks.bukkit.logic.business.extension.setDisplayName
+import com.github.shynixn.petblocks.bukkit.logic.business.extension.setSkin
+import com.github.shynixn.petblocks.bukkit.logic.business.extension.setUnbreakable
+import com.github.shynixn.petblocks.bukkit.logic.business.extension.updateInventory
 import com.github.shynixn.petblocks.core.logic.business.extension.chatMessage
 import com.github.shynixn.petblocks.core.logic.business.extension.sync
 import com.github.shynixn.petblocks.core.logic.business.extension.translateChatColors
@@ -20,7 +24,7 @@ import org.bukkit.entity.Player
 import org.bukkit.inventory.Inventory
 import org.bukkit.inventory.ItemStack
 import org.bukkit.plugin.Plugin
-import java.util.ArrayList
+import java.util.*
 import java.util.logging.Level
 
 /**
@@ -58,11 +62,12 @@ class GUIServiceImpl @Inject constructor(
     private val persistenceService: PersistencePetMetaService,
     private val itemService: ItemService,
     private val concurrencyService: ConcurrencyService,
-    private val headDatabaseService: DependencyHeadDatabaseService
+    private val dependencyService: DependencyService,
+    private val headDatabaseService: DependencyHeadDatabaseService,
+    private val messageService: MessageService
 ) : GUIService {
 
     private val clickProtection = ArrayList<Player>()
-
     private val pageCache = HashMap<Player, GuiPlayerCache>()
 
     private var collectedMinecraftHeadsMessage = chatMessage {
@@ -83,6 +88,87 @@ class GUIServiceImpl @Inject constructor(
                     "Goto the Minecraft-Heads website!"
                 }
             }
+        }
+    }
+
+    private var suggestHeadMessage = chatMessage {
+        text {
+            configurationService.findValue<String>("messages.prefix") + "Click here: "
+        }
+        component {
+            color(com.github.shynixn.petblocks.api.business.enumeration.ChatColor.YELLOW) {
+                text {
+                    ">>Submit skin<<"
+                }
+            }
+            clickAction {
+                ChatClickAction.OPEN_URL to "http://minecraft-heads.com/custom/heads-generator"
+            }
+            hover {
+                text {
+                    "Goto the Minecraft-Heads website!"
+                }
+            }
+        }
+        text { " " }
+        component {
+            color(com.github.shynixn.petblocks.api.business.enumeration.ChatColor.YELLOW) {
+                text {
+                    ">>Suggest new pet<<"
+                }
+            }
+            clickAction {
+                ChatClickAction.OPEN_URL to "http://minecraft-heads.com/forum/suggesthead"
+            }
+            hover {
+                text {
+                    "Goto the Minecraft-Heads website!"
+                }
+            }
+        }
+    }
+
+    private var skullNamingMessage = chatMessage {
+        text {
+            configurationService.findValue<String>("messages.prefix") + configurationService.findValue("messages.skullnaming-suggest-prefix")
+        }
+        component {
+            text {
+                configurationService.findValue("messages.skullnaming-suggest-clickable")
+            }
+            clickAction {
+                ChatClickAction.SUGGEST_COMMAND to "/" + configurationService.findValue("commands.petblock.command") + " skin "
+            }
+            hover {
+                text {
+                    configurationService.findValue("messages.skullnaming-suggest-hover")
+                }
+            }
+        }
+        text {
+            configurationService.findValue("messages.skullnaming-suggest-suffix")
+        }
+    }
+
+    private var namingMessage = chatMessage {
+        text {
+            configurationService.findValue<String>("messages.prefix") + configurationService.findValue("messages.naming-suggest-prefix")
+        }
+        component {
+            text {
+                configurationService.findValue("messages.naming-suggest-clickable")
+            }
+            clickAction {
+                ChatClickAction.SUGGEST_COMMAND to "/" + configurationService.findValue("commands.petblocks.command") + " rename "
+            }
+            hover {
+                text {
+                    configurationService.findValue("messages.naming-suggest-hover")
+                }
+            }
+        }
+        text {
+            configurationService.findValue("messages.naming-suggest-suffix")
         }
     }
 
@@ -176,11 +262,16 @@ class GUIServiceImpl @Inject constructor(
         }
 
         if (pageCache.containsKey(player)) {
-            val petMeta = pageCache[player]!!.petMeta
+            val pageCache = pageCache[player]!!
+            val petMeta = pageCache.petMeta
             var changes = false
 
             if (optGuiItem.targetSkin != null) {
                 val skin = optGuiItem.targetSkin!!
+
+                if (skin.sponsored) {
+                    sendSponsoringMessage(pageCache, player)
+                }
 
                 petMeta.skin.typeName = skin.typeName
                 petMeta.skin.dataValue = skin.dataValue
@@ -188,6 +279,10 @@ class GUIServiceImpl @Inject constructor(
                 petMeta.skin.unbreakable = skin.unbreakable
 
                 changes = true
+            }
+
+            if (optGuiItem.icon.skin.sponsored) {
+                sendSponsoringMessage(pageCache, player)
             }
 
             for (aiBase in optGuiItem.removeAIs.toTypedArray()) {
@@ -217,6 +312,12 @@ class GUIServiceImpl @Inject constructor(
             pageCache[player]!!.offsetY += result.second
 
             renderPage(player, pageCache[player]!!.path)
+        } else if (scriptResult.action == ScriptAction.PRINT_CUSTOM_SKIN_MESSAGE) {
+            messageService.sendPlayerMessage(player, skullNamingMessage)
+        } else if (scriptResult.action == ScriptAction.PRINT_SUGGEST_HEAD_MESSAGE) {
+            messageService.sendPlayerMessage(player, suggestHeadMessage)
+        } else if (scriptResult.action == ScriptAction.CONNECT_HEAD_DATABASE) {
+            headDatabaseService.openConnection(player)
         } else if (scriptResult.action == ScriptAction.CALL_PET) {
             petActionService.callPet(player)
             this.close(player)
@@ -231,7 +332,7 @@ class GUIServiceImpl @Inject constructor(
             }
         } else if (scriptResult.action == ScriptAction.OPEN_PAGE) {
             val parent = pageCache[player]!!
-            pageCache[player] = GuiPlayerCacheEntity(scriptResult.valueContainer as String, parent.getInventory(), parent.petMeta)
+            pageCache[player] = GuiPlayerCacheEntity(scriptResult.valueContainer as String, parent.getInventory(), parent.petMeta, parent.advertisingMessageTime)
             pageCache[player]!!.parent = parent
             renderPage(player, scriptResult.valueContainer as String)
         }
@@ -383,6 +484,20 @@ class GUIServiceImpl @Inject constructor(
         itemStack.itemMeta = meta
 
         inventory.setItem(position, itemStack)
+    }
+
+    /**
+     * Sends the sponsoring message to the given player.
+     */
+    private fun sendSponsoringMessage(guiPlayerCache: GuiPlayerCache, player: Player) {
+        val current = Date().time
+        val difference = current - guiPlayerCache.advertisingMessageTime
+        val timeOut = 2 * 60 * 1000
+
+        if (difference > timeOut) {
+            messageService.sendPlayerMessage(player, collectedMinecraftHeadsMessage)
+            guiPlayerCache.advertisingMessageTime = current
+        }
     }
 
     /**

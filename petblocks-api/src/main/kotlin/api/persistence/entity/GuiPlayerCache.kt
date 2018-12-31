@@ -1,5 +1,7 @@
 package com.github.shynixn.petblocks.api.persistence.entity
 
+import com.github.shynixn.petblocks.api.business.service.LoggingService
+
 /**
  * Created by Shynixn 2018.
  * <p>
@@ -36,7 +38,7 @@ interface GuiPlayerCache {
     /**
      * PetMeta.
      */
-    var petMeta : PetMeta
+    var petMeta: PetMeta
 
     /**
      * Off set x axe.
@@ -51,7 +53,12 @@ interface GuiPlayerCache {
     /**
      * Parent.
      */
-    var parent : GuiPlayerCache?
+    var parent: GuiPlayerCache?
+
+    /**
+     * Last time the advertising message was played.
+     */
+    var advertisingMessageTime: Long
 
     /**
      * Gets the inventory.

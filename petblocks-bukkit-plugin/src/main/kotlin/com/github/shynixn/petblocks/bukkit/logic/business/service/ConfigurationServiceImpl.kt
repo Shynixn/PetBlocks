@@ -4,18 +4,15 @@ package com.github.shynixn.petblocks.bukkit.logic.business.service
 
 import com.github.shynixn.petblocks.api.business.annotation.Inject
 import com.github.shynixn.petblocks.api.business.enumeration.AIType
-import com.github.shynixn.petblocks.api.business.enumeration.ChatClickAction
 import com.github.shynixn.petblocks.api.business.service.ConfigurationService
 import com.github.shynixn.petblocks.api.business.service.ItemService
 import com.github.shynixn.petblocks.api.business.service.YamlSerializationService
 import com.github.shynixn.petblocks.api.persistence.entity.AIBase
-import com.github.shynixn.petblocks.api.persistence.entity.ChatMessage
 import com.github.shynixn.petblocks.api.persistence.entity.GuiItem
 import com.github.shynixn.petblocks.api.persistence.entity.PetMeta
 import com.github.shynixn.petblocks.bukkit.logic.business.extension.deserialize
 import com.github.shynixn.petblocks.bukkit.logic.business.extension.deserializeToMap
 import com.github.shynixn.petblocks.bukkit.logic.business.extension.toMaterial
-import com.github.shynixn.petblocks.core.logic.business.extension.chatMessage
 import com.github.shynixn.petblocks.core.logic.business.extension.translateChatColors
 import com.github.shynixn.petblocks.core.logic.persistence.entity.GuiItemEntity
 import com.github.shynixn.petblocks.core.logic.persistence.entity.PetMetaEntity
@@ -71,8 +68,6 @@ class ConfigurationServiceImpl @Inject constructor(
 ) : ConfigurationService {
 
     private val cache = HashMap<String, List<GuiItem>>()
-    private var namingMessage: ChatMessage? = null
-    private var skullNamingMessage: ChatMessage? = null
 
     /**
      * Converts the given [source] to a string.
@@ -107,62 +102,6 @@ class ConfigurationServiceImpl @Inject constructor(
      * loaded.
      */
     override fun <C> findValue(path: String): C {
-        if (path == "messages.naming-suggest") {
-            if (namingMessage == null) {
-                namingMessage = chatMessage {
-                    text {
-                        findValue<String>("messages.prefix") + findValue("messages.naming-suggest-prefix")
-                    }
-                    component {
-                        text {
-                            findValue("messages.naming-suggest-clickable")
-                        }
-                        clickAction {
-                            ChatClickAction.SUGGEST_COMMAND to "/" + findValue("petblocks-gui.command") + " rename "
-                        }
-                        hover {
-                            text {
-                                findValue("messages.naming-suggest-hover")
-                            }
-                        }
-                    }
-                    text {
-                        findValue("messages.naming-suggest-suffix")
-                    }
-                }
-            }
-
-            return namingMessage as C
-        }
-
-        if (path == "messages.skullnaming-suggest") {
-            if (skullNamingMessage == null) {
-                skullNamingMessage = chatMessage {
-                    text {
-                        findValue<String>("messages.prefix") + findValue("messages.skullnaming-suggest-prefix")
-                    }
-                    component {
-                        text {
-                            findValue("messages.skullnaming-suggest-clickable")
-                        }
-                        clickAction {
-                            ChatClickAction.SUGGEST_COMMAND to "/" + findValue("petblocks-gui.command") + " skin "
-                        }
-                        hover {
-                            text {
-                                findValue("messages.skullnaming-suggest-hover")
-                            }
-                        }
-                    }
-                    text {
-                        findValue("messages.skullnaming-suggest-suffix")
-                    }
-                }
-            }
-
-            return skullNamingMessage as C
-        }
-
         if (path == "plugin.version") {
             return plugin.description.version as C
         }
@@ -200,7 +139,7 @@ class ConfigurationServiceImpl @Inject constructor(
         section.keys.forEach { key ->
             val guiItem = GuiItemEntity()
             val guiIcon = guiItem.icon
-            val description = (section[key] as MemorySection).getValues(true)
+            val description = (section[key] as MemorySection).getValues(false)
 
             if (description.containsKey("row") && description.containsKey("col")) {
                 var column = (description["col"] as Int - 1)
@@ -216,22 +155,34 @@ class ConfigurationServiceImpl @Inject constructor(
             this.setItem<Boolean>("fixed", description) { value -> guiItem.fixed = value }
             this.setItem<String>("script", description) { value -> guiItem.script = value }
 
-            this.setItem<Int>("icon.id", description) { value -> guiIcon.skin.typeName = value.toMaterial().name }
-            this.setItem<Int>("icon.damage", description) { value -> guiIcon.skin.dataValue = value }
-            this.setItem<String>("icon.name", description) { value -> guiIcon.displayName = value }
-            this.setItem<Boolean>("icon.unbreakable", description) { value -> guiIcon.skin.unbreakable = value }
-            this.setItem<String>("icon.skin", description) { value -> guiIcon.skin.owner = value }
-            this.setItem<String>("icon.script", description) { value -> guiIcon.script = value }
-            this.setItem<List<String>>("icon.lore", description) { value -> guiIcon.lore = value }
+            val iconDescription = (description["icon"] as MemorySection).getValues(false)
 
-            if (description.containsKey("set-skin")) {
+            this.setItem<Int>("id", iconDescription) { value -> guiIcon.skin.typeName = value.toMaterial().name }
+            this.setItem<Int>("damage", iconDescription) { value -> guiIcon.skin.dataValue = value }
+            this.setItem<String>("name", iconDescription) { value -> guiIcon.displayName = value }
+            this.setItem<Boolean>("unbreakable", iconDescription) { value -> guiIcon.skin.unbreakable = value }
+            this.setItem<String>("skin", iconDescription) { value -> guiIcon.skin.owner = value }
+            this.setItem<String>("script", iconDescription) { value -> guiIcon.script = value }
+            this.setItem<List<String>>("lore", iconDescription) { value -> guiIcon.lore = value }
+
+            val skinDescription = if (description.containsKey("set-skin")) {
                 guiItem.targetSkin = SkinEntity()
+                (description["set-skin"] as MemorySection).getValues(false)
+            } else {
+                null
             }
 
-            this.setItem<Int>("set-skin.id", description) { value -> guiItem.targetSkin!!.typeName = value.toMaterial().name }
-            this.setItem<Int>("set-skin.damage", description) { value -> guiItem.targetSkin!!.dataValue = value }
-            this.setItem<Boolean>("set-skin.unbreakable", description) { value -> guiItem.targetSkin!!.unbreakable = value }
-            this.setItem<String>("set-skin.skin", description) { value -> guiItem.targetSkin!!.owner = value }
+            this.setItem<Int>("id", skinDescription) { value -> guiItem.targetSkin!!.typeName = value.toMaterial().name }
+            this.setItem<Int>("damage", skinDescription) { value -> guiItem.targetSkin!!.dataValue = value }
+            this.setItem<Boolean>("unbreakable", skinDescription) { value -> guiItem.targetSkin!!.unbreakable = value }
+            this.setItem<String>("skin", skinDescription) { value ->
+                if (value.startsWith("minecraft-heads.com/")) {
+                    guiItem.icon.skin.sponsored = true
+                    guiItem.targetSkin!!.owner = findMinecraftHeadsItem(value.split("/")[1].toInt()).second
+                } else {
+                    guiItem.targetSkin!!.owner = value
+                }
+            }
 
             if (description.containsKey("add-ai")) {
                 val goalsMap = (description["add-ai"] as MemorySection).getValues(false)
@@ -250,6 +201,7 @@ class ConfigurationServiceImpl @Inject constructor(
             }
 
             if (guiItem.icon.skin.owner.startsWith("minecraft-heads.com/")) {
+                guiItem.icon.skin.sponsored = true
                 guiItem.icon.skin.owner = findMinecraftHeadsItem(guiItem.icon.skin.owner.split("/")[1].toInt()).second
             }
 
@@ -263,8 +215,8 @@ class ConfigurationServiceImpl @Inject constructor(
     /**
      * Sets optional gui items to a instance.
      */
-    private fun <T> setItem(key: String, map: Map<String, Any>, f: (T) -> Unit) {
-        if (map.containsKey(key)) {
+    private fun <T> setItem(key: String, map: Map<String, Any>?, f: (T) -> Unit) {
+        if (map != null && map.containsKey(key)) {
             f.invoke(map[key]!! as T)
         }
     }
@@ -307,8 +259,6 @@ class ConfigurationServiceImpl @Inject constructor(
     override fun refresh() {
         cache.clear()
         plugin.reloadConfig()
-        namingMessage = null
-        skullNamingMessage = null
     }
 
     /**
@@ -388,7 +338,7 @@ class ConfigurationServiceImpl @Inject constructor(
         val decipher = Cipher.getInstance("AES/CBC/PKCS5PADDING")
 
         decipher.init(Cipher.DECRYPT_MODE,
-            SecretKeySpec(Base64.getDecoder().decode("NjI1MDE0YWUzMDkxNDQzNA=="), "AES"),
+            SecretKeySpec(Base64.getDecoder().decode("YjJjNWIzOTQ0NTY1NDJlNQ=="), "AES"),
             IvParameterSpec("RandomInitVector".toByteArray(charset("UTF-8"))))
         BufferedReader(InputStreamReader(CipherInputStream(plugin.getResource("assets/petblocks/minecraftheads.db"), decipher))).use { reader ->
             while (true) {

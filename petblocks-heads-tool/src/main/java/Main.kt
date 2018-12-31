@@ -94,20 +94,48 @@ fun main(args: Array<String>) {
                 val content = line.split(Regex(",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)"))
 
                 if (content.size == 3) {
-                    try {
-                        sqlContext.insert(connection, "SHY_MCHEAD"
-                            , "name" to content[1].replace("\"", "")
-                            , "skin" to content[2]
-                            , "headtype" to content[0]
-                        )
+                    var found = false
+                    var appendCounter = 1
 
-                        counter++
-                    } catch (e: Exception) {
+                    while (!found) {
+                        try {
+                            sqlContext.insert(connection, "SHY_MCHEAD"
+                                , "name" to content[1].replace("\"", "") + " " + appendCounter
+                                , "skin" to content[2]
+                                , "headtype" to content[0]
+                            )
+                            found = true
+                            counter++
+                        } catch (e: Exception) {
+                        }
+
+                        if (appendCounter > 100) {
+                            break
+                        }
+
+                        appendCounter++
                     }
                 } else {
-                    println("LINE: " + line)
+                    logger.log(Level.WARNING, "Failure in line " + line + ".")
                 }
             }
+
+            var nameChanges = 0
+
+            sqlContext.multiQuery(connection, "SELECT id, name FROM SHY_MCHEAD\n" +
+                    "WHERE name like '%1'\n" +
+                    "  and NOT(Replace(name, '1', '2') IN(SELECT name from SHY_MCHEAD))", { result ->
+                val identifier = (result["id"] as Int)
+                val target = (result["name"] as String).replace(" 1", "")
+
+                sqlContext.update(connection, "SHY_MCHEAD", "WHERE id = $identifier", "name" to target)
+
+                println(target)
+
+                nameChanges++
+            })
+
+            logger.log(Level.INFO, "$nameChanges name changes were required.")
         }
 
         logger.log(Level.INFO, "Inserted $counter/$size new items into the database.")
@@ -163,8 +191,6 @@ fun main(args: Array<String>) {
 
         logger.log(Level.INFO, "Generating yaml source...")
 
-
-
         var categories = arrayOf("Pet", "Puppet", "Vehicle")
         var builder = StringBuilder()
 
@@ -176,13 +202,13 @@ fun main(args: Array<String>) {
                 })
             }
 
-            if(category == "Pet"){
+            if (category == "Pet") {
                 builder.appendln("  minecraft-heads-pet-skins:")
             }
-            if(category == "Puppet"){
+            if (category == "Puppet") {
                 builder.appendln("  minecraft-heads-puppet-skins:")
             }
-            if(category == "Vehicle"){
+            if (category == "Vehicle") {
                 builder.appendln("  minecraft-heads-vehicle-skins:")
             }
 
@@ -224,28 +250,48 @@ fun main(args: Array<String>) {
             var amount = (resultPet.size / 5)
             var remaining = resultPet.size % 5
 
-            for(i in 1..5){
-                var j = 0
-                for(j in 1..amount){
-                    while (remaining >= 0){
-                        var item = resultPet[counter]
+            for (i in 1..5) {
+                for(j in 1..amount) {
+                    var item = resultPet[counter]
 
-                        builder.append("    block-").append(i).append("-").append(j).append("-").append(remaining).appendln(":")
-                        builder.appendln("      row: $i")
-                        builder.appendln("      col: $j")
-                        builder.appendln("      icon:")
-                        builder.appendln("        id: 397")
-                        builder.appendln("        damage: 3")
-                        builder.appendln("        name: 'minecraft-heads.com/$item'")
-                        builder.appendln("        skin: 'minecraft-heads.com/$item'")
-                        counter++
-                        remaining--
-                    }
-
-                    remaining = 0
+                    builder.append("    block-").append(i).append("-").append(j).appendln(":")
+                    builder.appendln("      row: $i")
+                    builder.appendln("      col: $j")
+                    builder.appendln("      icon:")
+                    builder.appendln("        id: 397")
+                    builder.appendln("        damage: 3")
+                    builder.appendln("        name: 'minecraft-heads.com/$item'")
+                    builder.appendln("        skin: 'minecraft-heads.com/$item'")
+                    builder.appendln("      set-skin:")
+                    builder.appendln("        id: 397")
+                    builder.appendln("        damage: 3")
+                    builder.appendln("        skin: 'minecraft-heads.com/$item'")
+                    counter++
                 }
             }
+
+            var startCol = amount + 1
+            var rowCounter = 1
+            for(i in 0 until remaining){
+                val item = resultPet[counter]
+
+                builder.append("    block-").append(i).append("-").append(startCol).appendln(":")
+                builder.appendln("      row: $rowCounter")
+                builder.appendln("      col: $startCol")
+                builder.appendln("      icon:")
+                builder.appendln("        id: 397")
+                builder.appendln("        damage: 3")
+                builder.appendln("        name: 'minecraft-heads.com/$item'")
+                builder.appendln("        skin: 'minecraft-heads.com/$item'")
+                builder.appendln("      set-skin:")
+                builder.appendln("        id: 397")
+                builder.appendln("        damage: 3")
+                builder.appendln("        skin: 'minecraft-heads.com/$item'")
+                counter++
+                rowCounter++
+            }
         }
+
 
         FileUtils.write(targetYamlFile.toFile(), builder.toString())
 

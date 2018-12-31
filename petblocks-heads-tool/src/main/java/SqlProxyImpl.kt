@@ -93,7 +93,7 @@ class SqlProxyImpl constructor(private val loggingService: Logger) :  AutoClosea
                     val text = "CREATE TABLE IF NOT EXISTS SHY_MCHEAD\n" +
                             "(\n" +
                             "  id INTEGER PRIMARY KEY AUTOINCREMENT,\n" +
-                            "  name TEXT NOT NULL,\n" +
+                            "  name TEXT NOT NULL UNIQUE,\n" +
                             "  skin TEXT NOT NULL UNIQUE,\n" +
                             "  headtype TEXT NOT NULL\n" +
                             ")\n"

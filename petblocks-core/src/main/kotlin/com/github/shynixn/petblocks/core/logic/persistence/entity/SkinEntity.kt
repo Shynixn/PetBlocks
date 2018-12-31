@@ -38,6 +38,11 @@ class SkinEntity : Skin {
     override var id: Long = 0
 
     /**
+     * Is the skin sponsored?
+     */
+    override var sponsored: Boolean = false
+
+    /**
      * Skin url or owner name.
      */
     override var owner: String

@@ -6,7 +6,9 @@ import com.github.shynixn.petblocks.api.business.enumeration.ChatColor
 import com.github.shynixn.petblocks.api.business.enumeration.MaterialType
 import com.github.shynixn.petblocks.api.business.enumeration.PluginDependency
 import com.github.shynixn.petblocks.api.business.service.*
+import com.github.shynixn.petblocks.bukkit.logic.business.extension.skin
 import com.github.shynixn.petblocks.bukkit.logic.business.extension.type
+import com.github.shynixn.petblocks.bukkit.logic.business.extension.updateInventory
 import com.github.shynixn.petblocks.core.logic.business.extension.chatMessage
 import com.github.shynixn.petblocks.core.logic.business.extension.sync
 import org.bukkit.Bukkit
@@ -46,7 +48,7 @@ class DependencyHeadDatabaseServiceImpl @Inject constructor(
     private val messageService: MessageService,
     private val petMetaService: PersistencePetMetaService,
     private val concurrencyService: ConcurrencyService
-    ) : DependencyHeadDatabaseService {
+) : DependencyHeadDatabaseService {
     private val headDatabasePlayers = HashSet<Player>()
     private var headDatabaseTitle: String? = null
     private var headDatabaseSearch: String? = null
@@ -137,13 +139,13 @@ class DependencyHeadDatabaseServiceImpl @Inject constructor(
         player.closeInventory()
 
         petMetaService.getOrCreateFromPlayerUUID(player.uniqueId.toString()).thenAccept { petMeta ->
-            //    petMeta.itemId = item.type.id
-            //  petMeta.itemDamage = item.durability.toInt()
-            //    petMeta.skin = item.getSkin().get()
+            petMeta.skin.typeName = item.type.name
+            petMeta.skin.dataValue = item.durability.toInt()
+            petMeta.skin.owner = item.skin!!
 
             petMetaService.save(petMeta)
 
-            val command = configurationService.findValue<String>("petblocks-gui.command")
+            val command = configurationService.findValue<String>("commands.petblock.command")
             player.performCommand(command)
         }
 
@@ -155,7 +157,7 @@ class DependencyHeadDatabaseServiceImpl @Inject constructor(
                 ) {
                     if (itemStack.itemMeta.displayName == item.itemMeta.displayName) {
                         player.inventory.remove(itemStack)
-                        player.updateInventory()
+                        player.inventory.updateInventory()
                         break
                     }
                 }

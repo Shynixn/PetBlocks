@@ -36,7 +36,7 @@ class GuiPlayerCacheEntity(
     /**
      * Allocated gui items path.
      */
-    override var path: String, private val inventory: Any, override var petMeta: PetMeta
+    override var path: String, private val inventory: Any, override var petMeta: PetMeta, override var advertisingMessageTime: Long = 0L
 ) : GuiPlayerCache {
     /**
      * Parent.

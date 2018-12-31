@@ -8,3 +8,4 @@ Customizing
    particleeffects
    scripting
    regions
+   headdatabase
