@@ -262,7 +262,7 @@ class GUIServiceImpl @Inject constructor(
         }
 
         if (pageCache.containsKey(player)) {
-            val pageCache = pageCache[player]!!
+            var pageCache = pageCache[player]!!
             val petMeta = pageCache.petMeta
             var changes = false
 
@@ -279,6 +279,13 @@ class GUIServiceImpl @Inject constructor(
                 petMeta.skin.unbreakable = skin.unbreakable
 
                 changes = true
+
+                while (pageCache.parent != null) {
+                    pageCache = pageCache.parent!!
+                }
+
+                this.pageCache[player] = pageCache
+                renderPage(player, this.pageCache[player]!!.path)
             }
 
             if (optGuiItem.icon.skin.sponsored) {

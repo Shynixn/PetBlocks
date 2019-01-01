@@ -328,7 +328,7 @@ fun main(args: Array<String>) {
         , "Vex" to "http://textures.minecraft.net/texture/c2ec5a516617ff1573cd2f9d5f3969f56d5575c4ff4efefabd2a18dc7ab98cd"
         , "Parrot" to "http://textures.minecraft.net/texture/707dab2cbebea539b64d5ad246f9ccc1fcda7aa94b88e59fc2829852f46071"
         , "Mario"  to "http://textures.minecraft.net/texture/a0c2549a893726988f3428bef799875ba871688ae64eb0cfdc43f7d6e24c6c"
-        , "Yoshi" to "http://textures.minecraft.net/texture/5fc8b863995fb84685c273c859548c75d94f9b82cce41b1efff454fe03cc12"
+        , "Yoshi" to "http://textures.minecraft.net/texture/5fc8b863995fb84685c273c859548c75d94f9b82cce41b1efff454fe03cc123"
         , "Pokeball" to "http://textures.minecraft.net/texture/4b62d1dbf94e8cbb3c5327d96aac121d20677338924a5ed6de4cbf578a73d"
         , "Pikachu" to "http://textures.minecraft.net/texture/f6c5ee57717f561fc12b9f8878fbe0d0d62c72facfad61c0d27cade54e818c14"
         , "Charmander" to "http://textures.minecraft.net/texture/538992fa71d5d98789d5061ddd68e2b7af9efc253b39e1b346343d7789f8dc"

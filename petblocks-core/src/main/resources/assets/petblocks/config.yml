@@ -1954,11 +1954,11 @@ gui:
         id: 397
         damage: 3
         name: 'Yoshi'
-        skin: 'http://textures.minecraft.net/texture/5fc8b863995fb84685c273c859548c75d94f9b82cce41b1efff454fe03cc12'
+        skin: 'http://textures.minecraft.net/texture/5fc8b863995fb84685c273c859548c75d94f9b82cce41b1efff454fe03cc123'
       set-skin:
         id: 397
         damage: 3
-        skin: 'http://textures.minecraft.net/texture/5fc8b863995fb84685c273c859548c75d94f9b82cce41b1efff454fe03cc12'
+        skin: 'http://textures.minecraft.net/texture/5fc8b863995fb84685c273c859548c75d94f9b82cce41b1efff454fe03cc123'
     block-3-9:
       row: 3
       col: 9

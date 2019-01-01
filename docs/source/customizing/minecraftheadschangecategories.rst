@@ -6,6 +6,16 @@ into 3 categories. Pet skins, vehicle skins and plushie skins.
 
 .. image:: ../_static/images/minecraftheads-categories.png
 
+Usage ingame
+~~~~~~~~~~~~
+
+1. Click on any Minecraft-Heads.com category.
+
+.. image:: ../_static/images/minecraftheads-categoryselect.png
+
+2. Select any skin you like.
+
+.. image:: ../_static/images/minecraftheads-skinselect.png
 
 Configuring in the config.yml
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -42,14 +52,3 @@ A single item looks like this:
 * Row, Column: Specifies the location of the item in the GUI grid.
 * Icon: Specifies the rendered icon in the GUI.
 * Set-skin: Specifies the skin a pet receives when clicking on it.
-
-Usage ingame
-~~~~~~~~~~~~
-
-1. Click on any Minecraft-Heads.com category.
-
-.. image:: ../_static/images/minecraftheads-categoryselect.png
-
-2. Select any skin you like.
-
-.. image:: ../_static/images/minecraftheads-skinselect.png
