@@ -5,4 +5,5 @@ dependencies {
     implementation 'commons-io:commons-io:2.4'
     implementation 'com.zaxxer:HikariCP:3.2.0'
     implementation 'org.xerial:sqlite-jdbc:3.8.11.2'
+    implementation 'org.spigotmc:spigot18R3:1.8.8-R3.0'
 }
