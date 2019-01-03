@@ -9,13 +9,13 @@ import com.github.shynixn.petblocks.api.business.service.ProxyService
 import com.github.shynixn.petblocks.core.logic.business.extension.mergeArgs
 
 /**
- * Created by Shynixn 2018.
+ * Created by Shynixn 2019.
  * <p>
  * Version 1.2
  * <p>
  * MIT License
  * <p>
- * Copyright (c) 2018 by Shynixn
+ * Copyright (c) 2019 by Shynixn
  * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -35,7 +35,11 @@ import com.github.shynixn.petblocks.core.logic.business.extension.mergeArgs
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class PlayerPetActionCommandExecutorImpl @Inject constructor(private val petActionService: PetActionService, private val guiService: GUIService, private val proxyService: ProxyService) : PlayerPetActionCommandExecutor {
+class PlayerPetActionCommandExecutorImpl @Inject constructor(
+    private val petActionService: PetActionService,
+    private val guiService: GUIService,
+    private val proxyService: ProxyService
+) : PlayerPetActionCommandExecutor {
     /**
      * Gets called when the given [player] executes the defined command with the given [args].
      */
@@ -49,7 +53,7 @@ class PlayerPetActionCommandExecutorImpl @Inject constructor(private val petActi
         } else if (args.size >= 2 && args[0].equals("rename", true) && playerProxy.hasPermission(Permission.ACTION_RENAME)) {
             petActionService.renamePet(player, mergeArgs(args))
         } else if (args.size == 2 && args[0].equals("skin", true) && playerProxy.hasPermission(Permission.ACTION_CUSTOMSKULL)) {
-          //  petActionService.changeSkin(player, args[1])
+            petActionService.changePetSkin(player, args[1])
         } else {
             guiService.open(player)
         }

@@ -45,4 +45,9 @@ interface PetActionService {
      * Renames the pet of the given [player] to the given [name].
      */
     fun <P> renamePet(player: P, name: String)
+
+    /**
+     * Sets the pet of the given [player] to the given skin.
+     */
+    fun <P> changePetSkin(player : P, skin : String)
 }

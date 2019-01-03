@@ -43,7 +43,7 @@ class Item113R1ServiceImpl : ItemService {
      * Creates a new itemstack from the given parameters.
      */
     override fun <I> createItemStack(typeName: String, dataValue: Int, amount: Int): I {
-        val materialType = Material.getMaterial(typeName)
+        val materialType = getMaterialValue<Material>(typeName)
 
         return ItemStack(materialType, amount, dataValue.toShort()) as I
     }
@@ -157,8 +157,10 @@ class Item113R1ServiceImpl : ItemService {
                 }
             }
         } else if (value is String && value.toIntOrNull() != null) {
+            val intvalue = value.toInt()
+
             for (material in Material.values()) {
-                if (getIdFromMaterialMethod(material) == value) {
+                if (getIdFromMaterialMethod(material) == intvalue) {
                     return material as M
                 }
             }

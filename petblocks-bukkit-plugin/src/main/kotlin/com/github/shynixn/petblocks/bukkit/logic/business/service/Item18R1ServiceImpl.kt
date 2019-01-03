@@ -43,7 +43,7 @@ class Item18R1ServiceImpl : ItemService {
      * Creates a new itemstack from the given parameters.
      */
     override fun <I> createItemStack(typeName: String, dataValue: Int, amount: Int): I {
-        val materialType = Material.valueOf(typeName)
+        val materialType = getMaterialValue<Material>(typeName)
 
         return ItemStack(materialType, amount, dataValue.toShort()) as I
     }

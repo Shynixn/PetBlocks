@@ -2,17 +2,16 @@ package com.github.shynixn.petblocks.core.logic.business.service
 
 import com.github.shynixn.petblocks.api.business.annotation.Inject
 import com.github.shynixn.petblocks.api.business.service.*
-import com.github.shynixn.petblocks.api.persistence.entity.AIBase
 import com.github.shynixn.petblocks.core.logic.business.extension.translateChatColors
 
 /**
- * Created by Shynixn 2018.
+ * Created by Shynixn 2019.
  * <p>
  * Version 1.2
  * <p>
  * MIT License
  * <p>
- * Copyright (c) 2018 by Shynixn
+ * Copyright (c) 2019 by Shynixn
  * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -39,8 +38,32 @@ class PetActionServiceImpl @Inject constructor(
     private val proxyService: ProxyService
 ) : PetActionService {
 
+    /**
+     * Sets the pet of the given [player] to the given skin.
+     */
+    override fun <P> changePetSkin(player: P, skin: String) {
+        val playerProxy = proxyService.findPlayerProxyObject(player)
+        val prefix = configurationService.findValue<String>("messages.prefix")
 
-    private val maxSkinLength = 20
+        if (skin.length > 200) {
+            val namingSuccessMessage = configurationService.findValue<String>("messages.skullnaming-error")
+            playerProxy.sendMessage(prefix + namingSuccessMessage)
+
+            return
+        }
+
+        persistencePetMetaService.getOrCreateFromPlayerUUID(playerProxy.uniqueId).thenAccept { petMeta ->
+            petMeta.skin.typeName = "397"
+            petMeta.skin.dataValue = 3
+            petMeta.skin.owner = skin
+
+            persistencePetMetaService.save(petMeta)
+
+            val namingSuccessMessage = configurationService.findValue<String>("messages.skullnaming-success")
+
+            playerProxy.sendMessage(prefix + namingSuccessMessage)
+        }
+    }
 
     /**
      * Calls the pet to the given player. If the pet is not enabled, it will be enabled after calling.
@@ -85,18 +108,20 @@ class PetActionServiceImpl @Inject constructor(
         val playerProxy = proxyService.findPlayerProxyObject(player)
 
         val prefix = configurationService.findValue<String>("messages.prefix")
-        val maxPetNameLength = configurationService.findValue<Int>("pet.design.max-petname-length")
-        val namingErrorMessage = configurationService.findValue<String>("messages.naming-error")
+        val maxPetNameLength = configurationService.findValue<Int>("global-configuration.max-petname-length")
 
         if (name.length > maxPetNameLength) {
+            val namingErrorMessage = configurationService.findValue<String>("messages.naming-error")
             playerProxy.sendMessage(prefix + namingErrorMessage)
             return
         }
 
-        val petNameBlackList = configurationService.findValue<List<String>>("pet.design.petname-blacklist").map { s -> s.toUpperCase() }
+        val petNameBlackList = configurationService.findValue<List<String>>("global-configuration.petname-blacklist").map { s -> s.toUpperCase() }
+        val upperCaseName = name.toUpperCase()
 
-        petNameBlackList.forEach { blackName ->
-            if (name.toUpperCase().contains(blackName.toUpperCase())) {
+        for (blackName in petNameBlackList) {
+            if (upperCaseName.contains(blackName)) {
+                val namingErrorMessage = configurationService.findValue<String>("messages.naming-error")
                 playerProxy.sendMessage(prefix + namingErrorMessage)
                 return
             }
