@@ -321,12 +321,20 @@ class GUIServiceImpl @Inject constructor(
             renderPage(player, pageCache[player]!!.path)
         } else if (scriptResult.action == ScriptAction.PRINT_CUSTOM_SKIN_MESSAGE) {
             messageService.sendPlayerMessage(player, skullNamingMessage)
+            this.close(player)
         } else if (scriptResult.action == ScriptAction.PRINT_SUGGEST_HEAD_MESSAGE) {
             messageService.sendPlayerMessage(player, suggestHeadMessage)
+            this.close(player)
+        } else if (scriptResult.action == ScriptAction.PRINT_CUSTOM_NAME_MESSAGE) {
+            messageService.sendPlayerMessage(player, namingMessage)
+            this.close(player)
         } else if (scriptResult.action == ScriptAction.CONNECT_HEAD_DATABASE) {
             headDatabaseService.openConnection(player)
         } else if (scriptResult.action == ScriptAction.CALL_PET) {
             petActionService.callPet(player)
+            this.close(player)
+        } else if (scriptResult.action == ScriptAction.LAUNCH_CANNON) {
+            petActionService.launchPet(player)
             this.close(player)
         } else if (scriptResult.action == ScriptAction.CLOSE_GUI) {
             val page = pageCache[player]!!

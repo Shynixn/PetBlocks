@@ -89,5 +89,5 @@ interface PlayerProxy {
     /**
      * Generates a vector for the launching direction.
      */
-    fun <V> getDirectionLaunchVector(): V
+    fun getDirectionLaunchVector(): Position
 }

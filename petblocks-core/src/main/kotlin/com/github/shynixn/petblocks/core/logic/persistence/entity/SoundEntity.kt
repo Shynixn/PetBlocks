@@ -35,20 +35,22 @@ class SoundEntity(
      * Name of the sound.
      */
     @YamlSerialize(value = "name", orderNumber = 1)
-    override var name: String = "none"
-) : Sound {
-    /**
-     * Id.
-     */
-    override var id: Long = 0
+    override var name: String = "none",
+
     /**
      * Volume of the sound.
      */
     @YamlSerialize(value = "volume", orderNumber = 2)
-    override var volume: Double = 1.0
+    override var volume: Double = 1.0,
+
     /**
      * Pitch of the sound.
      */
     @YamlSerialize(value = "pitch", orderNumber = 3)
     override var pitch: Double = 1.0
+) : Sound {
+    /**
+     * Id.
+     */
+    override var id: Long = 0
 }

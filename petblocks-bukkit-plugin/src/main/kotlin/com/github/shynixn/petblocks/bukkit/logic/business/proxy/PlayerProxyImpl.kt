@@ -131,7 +131,7 @@ class PlayerProxyImpl(private val player: Player) : PlayerProxy {
     /**
      * Generates a vector for the launching direction.
      */
-    override fun <V> getDirectionLaunchVector(): V {
+    override fun getDirectionLaunchVector(): Position {
         val vector = Vector()
         val rotX = player.location.yaw.toDouble()
         val rotY = player.location.pitch.toDouble()
@@ -139,7 +139,7 @@ class PlayerProxyImpl(private val player: Player) : PlayerProxy {
         val h = Math.cos(Math.toRadians(rotY))
         vector.x = -h * Math.sin(Math.toRadians(rotX))
         vector.z = h * Math.cos(Math.toRadians(rotX))
-        return vector.multiply(1.2) as V
+        return vector.toPosition()
     }
 
     /**

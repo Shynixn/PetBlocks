@@ -3,6 +3,7 @@ package com.github.shynixn.petblocks.core.logic.business.service
 import com.github.shynixn.petblocks.api.business.annotation.Inject
 import com.github.shynixn.petblocks.api.business.service.*
 import com.github.shynixn.petblocks.core.logic.business.extension.translateChatColors
+import com.github.shynixn.petblocks.core.logic.persistence.entity.SoundEntity
 
 /**
  * Created by Shynixn 2019.
@@ -35,8 +36,31 @@ class PetActionServiceImpl @Inject constructor(
     private val petService: PetService,
     private val persistencePetMetaService: PersistencePetMetaService,
     private val configurationService: ConfigurationService,
+    private val soundService: SoundService,
     private val proxyService: ProxyService
 ) : PetActionService {
+
+    private val maxSkinLength = 200
+    private val explosionSound = SoundEntity("EXPLODE", 1.0, 2.0)
+
+    /**
+     * Launches the pet of the player.
+     */
+    override fun <P> launchPet(player: P) {
+        val playerProxy = proxyService.findPlayerProxyObject(player)
+
+        val direction = playerProxy.getDirectionLaunchVector()
+        direction.y = 0.5
+        direction.multiply(3.0)
+
+        if (petService.hasPet(playerProxy.uniqueId)) {
+            petService.getOrSpawnPetFromPlayerUUID(playerProxy.uniqueId).thenAccept { pet ->
+                pet.setVelocity(direction)
+
+                soundService.playSound(pet.getLocation<Any>(), explosionSound, playerProxy.handle)
+            }
+        }
+    }
 
     /**
      * Sets the pet of the given [player] to the given skin.
@@ -45,7 +69,7 @@ class PetActionServiceImpl @Inject constructor(
         val playerProxy = proxyService.findPlayerProxyObject(player)
         val prefix = configurationService.findValue<String>("messages.prefix")
 
-        if (skin.length > 200) {
+        if (skin.length > maxSkinLength) {
             val namingSuccessMessage = configurationService.findValue<String>("messages.skullnaming-error")
             playerProxy.sendMessage(prefix + namingSuccessMessage)
 

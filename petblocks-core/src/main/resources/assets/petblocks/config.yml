@@ -319,9 +319,9 @@ gui:
         id: 397
         damage: 3
         skin: 'textures.minecraft.net/texture/55507d6517eff952dd38fa8bc551dd6d6a7a5e4ea134519b44650ac1ffa59c3'
-        name: '&6&lPet Customization <permission>'
+        name: '&6&lPet Customization'
         lore:
-        - '&7Change the appearance of your pet. <permission>'
+        - '&7Change the appearance of your pet.'
     sounds-enabled:
       row: 4
       col: 9
@@ -356,6 +356,7 @@ gui:
     launch-pet:
       row: 3
       col: 7
+      script: 'launch-cannon'
       icon:
         id: 397
         damage: 3
@@ -385,6 +386,7 @@ gui:
     rename-pet:
       row: 5
       col: 7
+      script: 'print-rename-message'
       icon:
         id: 421
         damage: 0

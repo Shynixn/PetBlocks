@@ -60,6 +60,11 @@ enum class ScriptAction {
     COPY_PET_SKIN,
 
     /**
+     * Launch cannon.
+     */
+    LAUNCH_CANNON,
+
+    /**
      * Prints the suggest head message.
      */
     PRINT_SUGGEST_HEAD_MESSAGE,
@@ -68,6 +73,11 @@ enum class ScriptAction {
      * Prints the custom skin message.
      */
     PRINT_CUSTOM_SKIN_MESSAGE,
+
+    /**
+     * Prints the rename message.
+     */
+    PRINT_CUSTOM_NAME_MESSAGE,
 
     /**
      * Connects to the head database plugin.

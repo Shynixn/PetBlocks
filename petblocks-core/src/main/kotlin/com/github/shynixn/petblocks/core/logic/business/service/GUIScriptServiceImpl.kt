@@ -71,8 +71,17 @@ class GUIScriptServiceImpl @Inject constructor(private val logger: LoggingServic
             } else if (script.startsWith("print-custom-skin-message")) {
                 scriptResult.action = ScriptAction.PRINT_CUSTOM_SKIN_MESSAGE
                 return scriptResult
-            } else if (script.startsWith("connect-head-database")) {
+            }
+            else if (script.startsWith("print-rename-message")) {
+                scriptResult.action = ScriptAction.PRINT_CUSTOM_NAME_MESSAGE
+                return scriptResult
+            }
+            else if (script.startsWith("connect-head-database")) {
                 scriptResult.action = ScriptAction.CONNECT_HEAD_DATABASE
+                return scriptResult
+            }
+            else if (script.startsWith("launch-cannon")) {
+                scriptResult.action = ScriptAction.LAUNCH_CANNON
                 return scriptResult
             }
         } catch (e: Exception) {

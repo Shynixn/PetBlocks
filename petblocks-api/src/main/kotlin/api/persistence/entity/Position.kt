@@ -54,4 +54,9 @@ interface Position {
 
     /** [blockZ] coordinate as Int. */
     val blockZ: Int
+
+    /**
+     * Multiply position.
+     */
+    fun multiply(multiplier : Double)
 }

@@ -3,8 +3,6 @@
 package com.github.shynixn.petblocks.core.logic.business.extension
 
 import com.github.shynixn.petblocks.api.business.enumeration.ChatColor
-import com.github.shynixn.petblocks.api.business.enumeration.MaterialType
-import com.github.shynixn.petblocks.api.business.enumeration.Version
 import com.github.shynixn.petblocks.api.business.service.ConcurrencyService
 import com.github.shynixn.petblocks.api.persistence.entity.ChatMessage
 import com.github.shynixn.petblocks.core.logic.persistence.entity.ChatMessageEntity
@@ -47,19 +45,12 @@ fun chatMessage(f: ChatMessage.() -> Unit): ChatMessage {
 }
 
 /**
- * Gets the value of the map.
- */
-inline fun <reified V> Map<String, Any?>.getNullableItem(key: String): V {
-    return this[key] as V
-}
-
-/**
  * Gets the column value.
  */
 inline fun <reified V> Map<String, Any>.getItem(key: String): V {
     val data = this[key]
 
-    if(data is Int && V::class == Boolean::class){
+    if (data is Int && V::class == Boolean::class) {
         return (this[key] == 1) as V
     }
 
@@ -87,7 +78,12 @@ fun mergeArgs(args: Array<out String>): String {
 /**
  * Executes the given [f] via the [concurrencyService] synchronized with the server tick.
  */
-inline fun Any.sync(concurrencyService: ConcurrencyService, delayTicks: Long = 0L, repeatingTicks: Long = 0L, crossinline f: () -> Unit) {
+inline fun sync(
+    concurrencyService: ConcurrencyService,
+    delayTicks: Long = 0L,
+    repeatingTicks: Long = 0L,
+    crossinline f: () -> Unit
+) {
     concurrencyService.runTaskSync(delayTicks, repeatingTicks) {
         f.invoke()
     }
@@ -96,7 +92,12 @@ inline fun Any.sync(concurrencyService: ConcurrencyService, delayTicks: Long = 0
 /**
  * Executes the given [f] via the [concurrencyService] asynchronous.
  */
-inline fun Any.async(concurrencyService: ConcurrencyService, delayTicks: Long = 0L, repeatingTicks: Long = 0L, crossinline f: () -> Unit) {
+inline fun async(
+    concurrencyService: ConcurrencyService,
+    delayTicks: Long = 0L,
+    repeatingTicks: Long = 0L,
+    crossinline f: () -> Unit
+) {
     concurrencyService.runTaskAsync(delayTicks, repeatingTicks) {
         f.invoke()
     }

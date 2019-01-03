@@ -130,19 +130,17 @@ fun Position.toVector(): Vector {
 }
 
 /**
+ * Converts the [Vector] to a position
+ */
+fun Vector.toPosition(): Position {
+    return PositionEntity(this.x, this.y, this.z)
+}
+
+/**
  * Converts the [Location] to a Position.
  */
 fun Location.toPosition(): Position {
-    val position = PositionEntity()
-
-    position.worldName = this.world.name
-    position.x = this.x
-    position.y = this.y
-    position.z = this.z
-    position.yaw = this.yaw.toDouble()
-    position.pitch = this.pitch.toDouble()
-
-    return position
+    return PositionEntity(this.x, this.y, this.z, this.yaw.toDouble(), this.pitch.toDouble(), this.world.name)
 }
 
 /**

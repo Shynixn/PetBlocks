@@ -29,19 +29,30 @@ import com.github.shynixn.petblocks.api.persistence.entity.Position
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class PositionEntity : Position {
+class PositionEntity(
+    /** [x] coordinate. */
+    override var x: Double = 0.0,
+    /** [y] coordinate. */
+    override var y: Double = 0.0,
+    /** [z] coordinate. */
+    override var z: Double = 0.0,
+    /** [yaw] rotation yaw. */
+    override var yaw: Double = 0.0,
+    /** [pitch] rotation pitch. */
+    override var pitch: Double = 0.0,
+
     /** [worldName] which world the location is. */
     override var worldName: String? = null
-    /** [x] coordinate. */
-    override var x: Double = 0.0
-    /** [y] coordinate. */
-    override var y: Double = 0.0
-    /** [z] coordinate. */
-    override var z: Double = 0.0
-    /** [yaw] rotation yaw. */
-    override var yaw: Double = 0.0
-    /** [pitch] rotation pitch. */
-    override var pitch: Double = 0.0
+) : Position {
+    /**
+     * Multiply position.
+     */
+    override fun multiply(multiplier: Double) {
+        this.x *= multiplier
+        this.y *= multiplier
+        this.z *= multiplier
+    }
+
     /** [blockX] coordinate as Int. */
     override val blockX: Int
         get() = x.toInt()

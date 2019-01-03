@@ -109,7 +109,7 @@ class CarryPetServiceImpl @Inject constructor(
 
         dropPet(player).thenAccept {
             petService.getOrSpawnPetFromPlayerUUID(playerProxy.uniqueId).thenAccept { pet ->
-                pet.setVelocity(playerProxy.getDirectionLaunchVector<Any>())
+                pet.setVelocity(playerProxy.getDirectionLaunchVector().multiply(1.2))
                 completableFuture.complete(Unit)
             }
         }
