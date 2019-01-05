@@ -39,20 +39,16 @@ import com.github.shynixn.petblocks.core.logic.persistence.entity.ChatMessageEnt
  * SOFTWARE.
  */
 class EditPetCommandExecutorImpl @Inject constructor(
-    editPetCostumeCommand: EditPetCostumeCommand,
+    editPetAICommand: EditPetAICommand,
     editPetDisableCommand: EditPetDisableCommand,
     editPetEnableCommand: EditPetEnableCommand,
-    editPetItemLoreCommand: EditPetItemLoreCommand,
-    editPetItemNameCommand: EditPetItemNameCommand,
     killNextCommand: EditPetKillNextCommand,
-    editPetParticleCommand: EditPetParticleCommand,
     editPetRenameCommand: EditPetRenameCommand,
-    editPetRideCommand: EditPetRideCommand,
+    editPetResetCommand: EditPetResetCommand,
     editPetSkinCommand: EditPetSkinCommand,
     editPetToggleCommand: EditPetToggleCommand,
+    editPetToggleParticleCommand: EditPetToggleParticleCommand,
     editPetToggleSoundCommand: EditPetToggleSoundCommand,
-    editPetWearCommand: EditPetWearCommand,
-    editPetResetCommand: EditPetResetCommand,
     private val messageService: MessageService,
     private val proxyService: ProxyService,
     private val configurationService: ConfigurationService
@@ -60,10 +56,9 @@ class EditPetCommandExecutorImpl @Inject constructor(
     private val commands = ArrayList<SourceCommand>()
 
     init {
-        commands.addAll(arrayOf(editPetCostumeCommand, editPetDisableCommand, editPetEnableCommand,
-            editPetItemLoreCommand, editPetItemNameCommand, killNextCommand, editPetResetCommand,
-            editPetParticleCommand, editPetRenameCommand, editPetRideCommand, editPetSkinCommand,
-            editPetToggleCommand, editPetToggleSoundCommand, editPetWearCommand))
+        commands.addAll(arrayOf(editPetAICommand, editPetDisableCommand, editPetEnableCommand,
+            killNextCommand, editPetRenameCommand, editPetResetCommand, editPetSkinCommand,
+            editPetToggleCommand, editPetToggleParticleCommand, editPetToggleSoundCommand))
     }
 
     /**
@@ -88,43 +83,25 @@ class EditPetCommandExecutorImpl @Inject constructor(
         val senderName = proxyService.getNameOfInstance(source)
 
         if (args.size == 1 && args[0].equals("3", ignoreCase = true)) {
-            messageService.sendSourceMessage(source, "")
+            messageService.sendSourceMessage(source, "", false)
             messageService.sendSourceMessage(source,
-                ChatColor.DARK_GREEN.toString() + "" + ChatColor.BOLD + ChatColor.UNDERLINE + "                   PetBlocks " + "                       ")
-            messageService.sendSourceMessage(source, "")
+                ChatColor.DARK_GREEN.toString() + "" + ChatColor.BOLD + ChatColor.UNDERLINE + "                   PetBlocks " + "                       ", false)
+            messageService.sendSourceMessage(source, "", false)
             this.sendMessage(source,
-                "hat [player]",
+                "togglesound [player]",
                 arrayOf(ChatColor.BLUE.toString() + "Description:" + ChatColor.RESET,
-                    "Starts wearing the PetBlock.",
+                    "Toggles all pet sounds of the given player.",
                     ChatColor.YELLOW.toString() + "Examples:" + ChatColor.RESET,
-                    command + "hat",
-                    command + "hat " + senderName,
+                    command + "togglesound",
+                    command + "togglesound " + senderName,
                     ChatColor.GOLD.toString() + "<<Click me>>"))
             this.sendMessage(source,
-                "ride [player]",
+                "toggleparticle [player]",
                 arrayOf(ChatColor.BLUE.toString() + "Description:" + ChatColor.RESET,
-                    "Starts riding the PetBlock.",
+                    "Toggles all pet particles of the given player.",
                     ChatColor.YELLOW.toString() + "Examples:" + ChatColor.RESET,
-                    command + "ride",
-                    command + "ride " + senderName,
-                    ChatColor.GOLD.toString() + "<<Click me>>"))
-            this.sendMessage(source,
-                "item-name <text> [player]",
-                arrayOf(ChatColor.BLUE.toString() + "Description:" + ChatColor.RESET,
-                    "Changes the name of the PetBlock item when it is inside of the inventory of the player.",
-                    ChatColor.YELLOW.toString() + "Examples:" + ChatColor.RESET,
-                    command + "item-name Petblock",
-                    command + "item-name Amazing Beast",
-                    command + "item-name My block " + senderName,
-                    ChatColor.GOLD.toString() + "<<Click me>>"))
-            this.sendMessage(source,
-                "item-lore <line> <text> [player]",
-                arrayOf(ChatColor.BLUE.toString() + "Description:" + ChatColor.RESET,
-                    "Changes the lore of the PetBlock item when it is inside of the inventory of the player.",
-                    ChatColor.YELLOW.toString() + "Examples:" + ChatColor.RESET,
-                    command + "item-lore 1 Beast",
-                    command + "item-lore 2 This is my pet",
-                    command + "item-lore 2 PetBlock " + senderName,
+                    command + "toggleparticle",
+                    command + "toggleparticle " + senderName,
                     ChatColor.GOLD.toString() + "<<Click me>>"))
             this.sendMessage(source,
                 "killnext",
@@ -133,77 +110,59 @@ class EditPetCommandExecutorImpl @Inject constructor(
                     ChatColor.YELLOW.toString() + "Examples:" + ChatColor.RESET,
                     command + "killnext",
                     ChatColor.GOLD.toString() + "<<Click me>>"))
-            messageService.sendSourceMessage(source, "")
+            messageService.sendSourceMessage(source, "", false)
             messageService.sendSourceMessage(source,
-                ChatColor.DARK_GREEN.toString() + "" + ChatColor.BOLD + "" + ChatColor.UNDERLINE + "                           ┌3/3┐                            ")
-            messageService.sendSourceMessage(source, "")
+                ChatColor.DARK_GREEN.toString() + "" + ChatColor.BOLD + "" + ChatColor.UNDERLINE + "                           ┌3/3┐                            ", false)
+            messageService.sendSourceMessage(source, "", false)
         } else if (args.size == 1 && args[0].equals("2", ignoreCase = true)) {
-            messageService.sendSourceMessage(source, "")
+            messageService.sendSourceMessage(source, "", false)
             messageService.sendSourceMessage(source,
-                ChatColor.DARK_GREEN.toString() + "" + ChatColor.BOLD + ChatColor.UNDERLINE + "                   PetBlocks " + "                       ")
-            messageService.sendSourceMessage(source, "")
+                ChatColor.DARK_GREEN.toString() + "" + ChatColor.BOLD + ChatColor.UNDERLINE + "                   PetBlocks " + "                       ", false)
+            messageService.sendSourceMessage(source, "", false)
             this.sendMessage(source,
-                "engine <number> [player]",
+                "ai <path> [player]",
                 arrayOf(ChatColor.BLUE.toString() + "Description:" + ChatColor.RESET,
-                    "Changes the engine being used of the PetBlock.",
+                    "Adds and removes the ais from the given config path.",
                     ChatColor.YELLOW.toString() + "Examples:" + ChatColor.RESET,
-                    command + "engine 1",
-                    command + "engine 2 " + senderName,
+                    command + "ai pet",
+                    command + "ai mycustomais.aicontainer1",
+                    command + "ai mycustomais.aicontainer2 " + senderName,
                     ChatColor.GOLD.toString() + "<<Click me>>"))
             this.sendMessage(source,
-                "costume <category> <number> [player]",
+                "skin <path> [player]",
                 arrayOf(ChatColor.BLUE.toString() + "Description:" + ChatColor.RESET,
-                    "Changes the costume of the PetBlock.",
+                    "Sets the skin from the given config path.",
                     ChatColor.YELLOW.toString() + "Examples:" + ChatColor.RESET,
-                    command + "costume simple-blocks 1",
-                    command + "costume simple-blocks 1 " + senderName,
-                    command + "costume colored-blocks 2",
-                    command + "costume player-heads 3",
-                    command + "costume minecraft-heads 1",
+                    command + "skin pet.skin",
+                    command + "skin gui.player-head-skins.block-1-1.set-skin",
+                    command + "skin mycustomskins.skincontainer2 " + senderName,
                     ChatColor.GOLD.toString() + "<<Click me>>"))
             this.sendMessage(source,
                 "rename <name> [player]",
                 arrayOf(ChatColor.BLUE.toString() + "Description:" + ChatColor.RESET,
-                    "Renames the PetBlock.",
+                    "Renames the pet.",
                     ChatColor.YELLOW.toString() + "Examples:" + ChatColor.RESET,
                     command + "rename Beast",
                     command + "rename My awesome Pet",
                     command + "rename My Pet " + senderName,
                     ChatColor.GOLD.toString() + "<<Click me>>"))
-            this.sendMessage(source,
-                "skin <account/url> [player]",
-                arrayOf(ChatColor.BLUE.toString() + "Description:" + ChatColor.RESET,
-                    "Replaces the costume of the PetBlock with the given skin.",
-                    ChatColor.YELLOW.toString() + "Examples:" + ChatColor.RESET,
-                    command + "skin Shynixn",
-                    command + "skin Shynixn " + senderName,
-                    command + "skin http://textures.minecraft.net/texture/707dab2cbebea539b64d5ad246f9ccc1fcda7aa94b88e59fc2829852f46071",
-                    ChatColor.GOLD.toString() + "<<Click me>>"))
-            this.sendMessage(source,
-                "particle <number> [player]",
-                arrayOf(ChatColor.BLUE.toString() + "Description:" + ChatColor.RESET,
-                    "Changes the particle of the PetBlock.",
-                    ChatColor.YELLOW.toString() + "Examples:" + ChatColor.RESET,
-                    command + "particle 2",
-                    command + "particle 3 " + senderName,
-                    ChatColor.GOLD.toString() + "<<Click me>>"))
-            messageService.sendSourceMessage(source, "")
+            messageService.sendSourceMessage(source, "", false)
             messageService.sendSourceMessage(source,
-                ChatColor.DARK_GREEN.toString() + "" + ChatColor.BOLD + "" + ChatColor.UNDERLINE + "                           ┌2/3┐                            ")
-            messageService.sendSourceMessage(source, "")
+                ChatColor.DARK_GREEN.toString() + "" + ChatColor.BOLD + "" + ChatColor.UNDERLINE + "                           ┌2/3┐                            ", false)
+            messageService.sendSourceMessage(source, "", false)
         } else {
-            messageService.sendSourceMessage(source, "")
+            messageService.sendSourceMessage(source, "", false)
             messageService.sendSourceMessage(source,
-                ChatColor.DARK_GREEN.toString() + "" + ChatColor.BOLD + ChatColor.UNDERLINE + "                   PetBlocks " + "                       ")
+                ChatColor.DARK_GREEN.toString() + "" + ChatColor.BOLD + ChatColor.UNDERLINE + "                   PetBlocks " + "                       ", false)
             if (proxyService.isPlayer(source)) {
-                messageService.sendSourceMessage(source, "")
-                messageService.sendSourceMessage(source, ChatColor.DARK_GREEN.toString() + "" + ChatColor.ITALIC + "Move your mouse over the commands to display tooltips!")
+                messageService.sendSourceMessage(source, "", false)
+                messageService.sendSourceMessage(source, ChatColor.DARK_GREEN.toString() + "" + ChatColor.ITALIC + "Move your mouse over the commands to display tooltips!", false)
             }
-            messageService.sendSourceMessage(source, "")
+            messageService.sendSourceMessage(source, "", false)
             this.sendMessage(source,
                 "enable [player]",
                 arrayOf(ChatColor.BLUE.toString() + "Description:" + ChatColor.RESET,
-                    "Respawns the PetBlock of the given player.",
+                    "Respawns the pet of the given player.",
                     ChatColor.YELLOW.toString() + "Examples:" + ChatColor.RESET,
                     command + "enable",
                     command + "enable " + senderName,
@@ -211,7 +170,7 @@ class EditPetCommandExecutorImpl @Inject constructor(
             this.sendMessage(source,
                 "disable [player]",
                 arrayOf(ChatColor.BLUE.toString() + "Description:" + ChatColor.RESET,
-                    "Removes the PetBlock of the given player.",
+                    "Removes the pet of the given player.",
                     ChatColor.YELLOW.toString() + "Examples:" + ChatColor.RESET,
                     command + "disable",
                     command + "disable " + senderName,
@@ -219,7 +178,7 @@ class EditPetCommandExecutorImpl @Inject constructor(
             this.sendMessage(source,
                 "toggle [player]",
                 arrayOf(ChatColor.BLUE.toString() + "Description:" + ChatColor.RESET,
-                    "Enables or disables the PetBlock.",
+                    "Enables or disables the pet.",
                     ChatColor.YELLOW.toString() + "Examples:" + ChatColor.RESET,
                     command + "toggle",
                     command + "toggle " + senderName,
@@ -232,10 +191,10 @@ class EditPetCommandExecutorImpl @Inject constructor(
                     command + "reset",
                     command + "reset " + senderName,
                     ChatColor.GOLD.toString() + "<<Click me>>"))
-            messageService.sendSourceMessage(source, "")
+            messageService.sendSourceMessage(source, "", false)
             messageService.sendSourceMessage(source,
-                ChatColor.DARK_GREEN.toString() + "" + ChatColor.BOLD + "" + ChatColor.UNDERLINE + "                           ┌1/3┐                            ")
-            messageService.sendSourceMessage(source, "")
+                ChatColor.DARK_GREEN.toString() + "" + ChatColor.BOLD + "" + ChatColor.UNDERLINE + "                           ┌1/3┐                            ", false)
+            messageService.sendSourceMessage(source, "", false)
         }
 
         return true

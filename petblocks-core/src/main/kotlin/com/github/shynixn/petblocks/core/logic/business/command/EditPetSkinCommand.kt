@@ -1,10 +1,11 @@
+@file:Suppress("UNCHECKED_CAST")
+
 package com.github.shynixn.petblocks.core.logic.business.command
 
 import com.github.shynixn.petblocks.api.business.annotation.Inject
 import com.github.shynixn.petblocks.api.business.command.SourceCommand
-import com.github.shynixn.petblocks.api.business.service.CommandService
-import com.github.shynixn.petblocks.api.business.service.PersistencePetMetaService
-import com.github.shynixn.petblocks.api.business.service.ProxyService
+import com.github.shynixn.petblocks.api.business.enumeration.ChatColor
+import com.github.shynixn.petblocks.api.business.service.*
 
 /**
  * Created by Shynixn 2018.
@@ -33,7 +34,13 @@ import com.github.shynixn.petblocks.api.business.service.ProxyService
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class EditPetSkinCommand @Inject constructor(private val proxyService: ProxyService, private val petMetaService: PersistencePetMetaService, private val commandService: CommandService) : SourceCommand {
+class EditPetSkinCommand @Inject constructor(
+    private val proxyService: ProxyService,
+    private val petMetaService: PersistencePetMetaService,
+    private val configurationService: ConfigurationService,
+    private val commandService: CommandService,
+    private val messageService: MessageService
+) : SourceCommand {
     /**
      * Gets called when the given [source] executes the defined command with the given [args].
      */
@@ -42,7 +49,7 @@ class EditPetSkinCommand @Inject constructor(private val proxyService: ProxyServ
             return false
         }
 
-        val result = commandService.parseCommand<Any?>(source as Any, args, 1)
+        val result = commandService.parseCommand<Any?>(source as Any, args, 2)
 
         if (result.first == null) {
             return false
@@ -51,15 +58,30 @@ class EditPetSkinCommand @Inject constructor(private val proxyService: ProxyServ
         val playerProxy = proxyService.findPlayerProxyObject(result.first)
 
         petMetaService.getOrCreateFromPlayerUUID(playerProxy.uniqueId).thenAccept { petMeta ->
-            with(petMeta) {
-             //   itemId = 397
-               // itemDamage = 3
-            //    skin = args[1]
-            }
+            try {
+                val configuration = configurationService.findValue<Map<String, Any>>(args[1])
 
-            petMetaService.save(petMeta)
+                this.setItem<Int>("id", configuration) { value -> petMeta.skin.typeName = value.toString() }
+                this.setItem<Int>("damage", configuration) { value -> petMeta.skin.dataValue = value }
+                this.setItem<Boolean>("unbreakable", configuration) { value -> petMeta.skin.unbreakable = value }
+                this.setItem<String>("skin", configuration) { value -> petMeta.skin.owner = value }
+
+                petMetaService.save(petMeta)
+                messageService.sendSourceMessage(source, "Changed the skin of the pet of player ${playerProxy.name}.")
+            } catch (e: Exception) {
+                messageService.sendSourceMessage(source, ChatColor.RED.toString() + e.message)
+            }
         }
 
         return true
+    }
+
+    /**
+     * Sets optional gui items to a instance.
+     */
+    private fun <T> setItem(key: String, map: Map<String, Any?>?, f: (T) -> Unit) {
+        if (map != null && map.containsKey(key)) {
+            f.invoke(map[key]!! as T)
+        }
     }
 }

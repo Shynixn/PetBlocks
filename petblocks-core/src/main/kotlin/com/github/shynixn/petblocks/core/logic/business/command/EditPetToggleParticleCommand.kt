@@ -3,7 +3,8 @@ package com.github.shynixn.petblocks.core.logic.business.command
 import com.github.shynixn.petblocks.api.business.annotation.Inject
 import com.github.shynixn.petblocks.api.business.command.SourceCommand
 import com.github.shynixn.petblocks.api.business.service.CommandService
-import com.github.shynixn.petblocks.api.business.service.PetService
+import com.github.shynixn.petblocks.api.business.service.MessageService
+import com.github.shynixn.petblocks.api.business.service.PersistencePetMetaService
 import com.github.shynixn.petblocks.api.business.service.ProxyService
 
 /**
@@ -33,12 +34,17 @@ import com.github.shynixn.petblocks.api.business.service.ProxyService
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class EditPetWearCommand @Inject constructor(private val proxyService: ProxyService, private val petService: PetService, private val commandService: CommandService) : SourceCommand {
+class EditPetToggleParticleCommand @Inject constructor(
+    private val proxyService: ProxyService,
+    private val petMetaService: PersistencePetMetaService,
+    private val commandService: CommandService,
+    private val messageService: MessageService
+) : SourceCommand {
     /**
      * Gets called when the given [source] executes the defined command with the given [args].
      */
-    override fun <S> onExecuteCommand(source: S, args: Array<out String>) : Boolean {
-        if (args.isEmpty() || !args[0].equals("hat", true)) {
+    override fun <S> onExecuteCommand(source: S, args: Array<out String>): Boolean {
+        if (args.isEmpty() || !args[0].equals("toggleParticle", true)) {
             return false
         }
 
@@ -50,12 +56,15 @@ class EditPetWearCommand @Inject constructor(private val proxyService: ProxyServ
 
         val playerProxy = proxyService.findPlayerProxyObject(result.first)
 
-        if (!petService.hasPet(playerProxy.uniqueId)) {
-            return false
-        }
+        petMetaService.getOrCreateFromPlayerUUID(playerProxy.uniqueId).thenAccept { petMeta ->
+            petMeta.particleEnabled = !petMeta.particleEnabled
+            petMetaService.save(petMeta)
 
-        petService.getOrSpawnPetFromPlayerUUID(playerProxy.uniqueId).thenAccept { pet ->
-         //   pet.startWearing()
+            if (petMeta.particleEnabled) {
+                messageService.sendSourceMessage(source, "Enabled particles for player ${playerProxy.name}.")
+            } else {
+                messageService.sendSourceMessage(source, "Disabled particles for player ${playerProxy.name}.")
+            }
         }
 
         return true

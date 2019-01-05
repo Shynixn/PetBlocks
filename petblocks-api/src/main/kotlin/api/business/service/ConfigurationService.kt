@@ -67,7 +67,12 @@ interface ConfigurationService {
     /**
      * Converts the given [data] to a ai.
      */
-    fun convertStringToAi(typename : String, data : String) : AIBase
+    fun convertStringToAi(typename: String, data: String): AIBase
+
+    /**
+     * Parses Ais from the given [map].
+     */
+    fun parseAIsFromMap(map: Map<String, Any?>): List<AIBase>
 
     /**
      * Clears cached resources and refreshes the used configuration.

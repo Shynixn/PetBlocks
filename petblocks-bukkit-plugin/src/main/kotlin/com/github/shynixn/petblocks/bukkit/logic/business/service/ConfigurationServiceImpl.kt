@@ -66,7 +66,6 @@ class ConfigurationServiceImpl @Inject constructor(
     private val itemService: ItemService,
     private val yamlSerializationService: YamlSerializationService
 ) : ConfigurationService {
-
     private val cache = HashMap<String, List<GuiItem>>()
 
     /**
@@ -187,13 +186,13 @@ class ConfigurationServiceImpl @Inject constructor(
             if (description.containsKey("add-ai")) {
                 val goalsMap = (description["add-ai"] as MemorySection).getValues(false)
                 deserialize(goalsMap)
-                guiItem.addAIs.addAll(parseAis(goalsMap))
+                guiItem.addAIs.addAll(parseAIsFromMap(goalsMap))
             }
 
             if (description.containsKey("remove-ai")) {
                 val goalsMap = (description["remove-ai"] as MemorySection).getValues(false)
                 deserialize(goalsMap)
-                guiItem.addAIs.addAll(parseAis(goalsMap))
+                guiItem.addAIs.addAll(parseAIsFromMap(goalsMap))
             }
 
             if (guiItem.icon.displayName.startsWith("minecraft-heads.com/")) {
@@ -290,7 +289,7 @@ class ConfigurationServiceImpl @Inject constructor(
         setItem<String>("skin", skin) { value -> petMeta.skin.owner = value }
 
         val goalsMap = defaultConfig["add-ai"] as Map<String, Any?>
-        val ais = parseAis(goalsMap)
+        val ais = parseAIsFromMap(goalsMap)
         petMeta.aiGoals.clear()
         petMeta.aiGoals.addAll(ais)
 
@@ -298,9 +297,9 @@ class ConfigurationServiceImpl @Inject constructor(
     }
 
     /**
-     * Returns a list of ais from the given memory section.
+     * Parses Ais from the given [map].
      */
-    private fun parseAis(map: Map<String, Any?>): List<AIBase> {
+    override fun parseAIsFromMap(map: Map<String, Any?>): List<AIBase> {
         val resultList = ArrayList<AIBase>()
 
         for (key in map.keys) {

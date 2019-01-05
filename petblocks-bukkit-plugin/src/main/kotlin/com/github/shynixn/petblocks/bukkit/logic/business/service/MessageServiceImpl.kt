@@ -3,6 +3,7 @@ package com.github.shynixn.petblocks.bukkit.logic.business.service
 import com.github.shynixn.petblocks.api.business.annotation.Inject
 import com.github.shynixn.petblocks.api.business.enumeration.ChatColor
 import com.github.shynixn.petblocks.api.business.enumeration.Version
+import com.github.shynixn.petblocks.api.business.service.ConfigurationService
 import com.github.shynixn.petblocks.api.business.service.MessageService
 import com.github.shynixn.petblocks.api.persistence.entity.ChatMessage
 import com.github.shynixn.petblocks.bukkit.logic.business.extension.getServerVersion
@@ -38,16 +39,21 @@ import org.bukkit.entity.Player
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class MessageServiceImpl @Inject constructor(private val version: Version) : MessageService {
+class MessageServiceImpl @Inject constructor(private val version: Version, private val configurationService: ConfigurationService) : MessageService {
     /**
      * Sends a message to the given source.
      */
-    override fun <S> sendSourceMessage(source: S, message: String) {
+    override fun <S> sendSourceMessage(source: S, message: String, prefix: Boolean) {
         if (source !is CommandSender) {
             throw IllegalArgumentException("Source has to be a sender!")
         }
 
-        source.sendMessage(message)
+        if (prefix) {
+            val textPrefix = configurationService.findValue<String>("messages.prefix")
+            source.sendMessage(textPrefix + message)
+        } else {
+            source.sendMessage(message)
+        }
     }
 
     /**
@@ -85,6 +91,7 @@ class MessageServiceImpl @Inject constructor(private val version: Version) : Mes
 
             when (component) {
                 is ChatColor -> cache.append(component)
+
                 is String -> {
                     finalMessage.append("{\"text\": \"")
                     finalMessage.append(ChatColor.translateChatColorCodes('&', cache.toString() + component))
@@ -92,6 +99,7 @@ class MessageServiceImpl @Inject constructor(private val version: Version) : Mes
                     cache.setLength(0)
                     firstExtra = true
                 }
+
                 else -> {
                     finalMessage.append(component)
                     firstExtra = true

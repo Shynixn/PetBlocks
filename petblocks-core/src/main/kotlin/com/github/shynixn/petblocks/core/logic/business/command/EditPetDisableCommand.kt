@@ -3,6 +3,7 @@ package com.github.shynixn.petblocks.core.logic.business.command
 import com.github.shynixn.petblocks.api.business.annotation.Inject
 import com.github.shynixn.petblocks.api.business.command.SourceCommand
 import com.github.shynixn.petblocks.api.business.service.CommandService
+import com.github.shynixn.petblocks.api.business.service.MessageService
 import com.github.shynixn.petblocks.api.business.service.PetService
 import com.github.shynixn.petblocks.api.business.service.ProxyService
 
@@ -36,7 +37,8 @@ import com.github.shynixn.petblocks.api.business.service.ProxyService
 class EditPetDisableCommand @Inject constructor(
     private val proxyService: ProxyService,
     private val petService: PetService,
-    private val commandService: CommandService
+    private val commandService: CommandService,
+    private val messageService: MessageService
 ) : SourceCommand {
     /**
      * Gets called when the given [source] executes the defined command with the given [args].
@@ -58,6 +60,10 @@ class EditPetDisableCommand @Inject constructor(
             petService.getOrSpawnPetFromPlayerUUID(playerProxy.uniqueId).thenAccept { pet ->
                 pet.remove()
             }
+
+            messageService.sendSourceMessage(source, "Disabled pet of player ${playerProxy.name}.")
+        } else {
+            messageService.sendSourceMessage(source, "There is no active pet of player ${playerProxy.name}.")
         }
 
         return true

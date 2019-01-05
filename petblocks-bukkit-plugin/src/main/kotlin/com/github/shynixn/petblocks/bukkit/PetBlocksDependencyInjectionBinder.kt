@@ -70,20 +70,16 @@ class PetBlocksDependencyInjectionBinder(private val plugin: Plugin) : AbstractM
         bindInstance<LoggingService>(LoggingUtilServiceImpl(plugin.logger))
 
         // Commands
-        bindClass<EditPetCostumeCommand>()
+        bindClass<EditPetAICommand>()
         bindClass<EditPetDisableCommand>()
         bindClass<EditPetEnableCommand>()
-        bindClass<EditPetItemLoreCommand>()
-        bindClass<EditPetItemNameCommand>()
         bindClass<EditPetKillNextCommand>()
-        bindClass<EditPetParticleCommand>()
         bindClass<EditPetRenameCommand>()
-        bindClass<EditPetRideCommand>()
+        bindClass<EditPetResetCommand>()
         bindClass<EditPetSkinCommand>()
         bindClass<EditPetToggleCommand>()
+        bindClass<EditPetToggleParticleCommand>()
         bindClass<EditPetToggleSoundCommand>()
-        bindClass<EditPetWearCommand>()
-        bindClass<EditPetResetCommand>()
 
         // CommandExecutors
         bind<ReloadCommandExecutor, ReloadCommandExecutorImpl>()

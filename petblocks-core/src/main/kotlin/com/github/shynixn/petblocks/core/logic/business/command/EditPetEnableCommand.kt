@@ -3,6 +3,7 @@ package com.github.shynixn.petblocks.core.logic.business.command
 import com.github.shynixn.petblocks.api.business.annotation.Inject
 import com.github.shynixn.petblocks.api.business.command.SourceCommand
 import com.github.shynixn.petblocks.api.business.service.CommandService
+import com.github.shynixn.petblocks.api.business.service.MessageService
 import com.github.shynixn.petblocks.api.business.service.PetService
 import com.github.shynixn.petblocks.api.business.service.ProxyService
 
@@ -33,7 +34,13 @@ import com.github.shynixn.petblocks.api.business.service.ProxyService
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class EditPetEnableCommand @Inject constructor(private val proxyService: ProxyService, private val petService: PetService, private val commandService: CommandService) : SourceCommand {
+class EditPetEnableCommand @Inject constructor(
+    private val proxyService: ProxyService,
+    private val petService: PetService,
+    private val commandService: CommandService,
+    private val messageService: MessageService
+) :
+    SourceCommand {
     /**
      * Gets called when the given [source] executes the defined command with the given [args].
      */
@@ -52,6 +59,9 @@ class EditPetEnableCommand @Inject constructor(private val proxyService: ProxySe
 
         if (!petService.hasPet(playerProxy.uniqueId)) {
             petService.getOrSpawnPetFromPlayerUUID(playerProxy.uniqueId)
+            messageService.sendSourceMessage(source, "Enabled pet of player ${playerProxy.name}.")
+        } else {
+            messageService.sendSourceMessage(source, "There is already an active pet of player ${playerProxy.name}.")
         }
 
         return true

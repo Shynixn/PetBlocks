@@ -38,7 +38,7 @@ interface MessageService {
     /**
      * Sends a message to the given source.
      */
-    fun <S> sendSourceMessage(source: S, message: String)
+    fun <S> sendSourceMessage(source: S, message: String, prefix : Boolean = true)
 
     /**
      * Sends the given [chatMessage] to the given [player].

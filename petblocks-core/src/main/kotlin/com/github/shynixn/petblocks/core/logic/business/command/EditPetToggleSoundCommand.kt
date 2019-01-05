@@ -3,6 +3,7 @@ package com.github.shynixn.petblocks.core.logic.business.command
 import com.github.shynixn.petblocks.api.business.annotation.Inject
 import com.github.shynixn.petblocks.api.business.command.SourceCommand
 import com.github.shynixn.petblocks.api.business.service.CommandService
+import com.github.shynixn.petblocks.api.business.service.MessageService
 import com.github.shynixn.petblocks.api.business.service.PersistencePetMetaService
 import com.github.shynixn.petblocks.api.business.service.ProxyService
 
@@ -33,12 +34,17 @@ import com.github.shynixn.petblocks.api.business.service.ProxyService
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class EditPetToggleSoundCommand @Inject constructor(private val proxyService: ProxyService, private val petMetaService: PersistencePetMetaService, private val commandService: CommandService) : SourceCommand {
+class EditPetToggleSoundCommand @Inject constructor(
+    private val proxyService: ProxyService,
+    private val petMetaService: PersistencePetMetaService,
+    private val commandService: CommandService,
+    private val messageService: MessageService
+) : SourceCommand {
     /**
      * Gets called when the given [source] executes the defined command with the given [args].
      */
     override fun <S> onExecuteCommand(source: S, args: Array<out String>): Boolean {
-        if (args.isEmpty() || !args[0].equals("toggle-sound", true)) {
+        if (args.isEmpty() || !args[0].equals("toggleSound", true)) {
             return false
         }
 
@@ -51,8 +57,14 @@ class EditPetToggleSoundCommand @Inject constructor(private val proxyService: Pr
         val playerProxy = proxyService.findPlayerProxyObject(result.first)
 
         petMetaService.getOrCreateFromPlayerUUID(playerProxy.uniqueId).thenAccept { petMeta ->
-         //   petMeta.sound = !petMeta.sound
+            petMeta.soundEnabled = !petMeta.soundEnabled
             petMetaService.save(petMeta)
+
+            if (petMeta.soundEnabled) {
+                messageService.sendSourceMessage(source, "Enabled sound for player ${playerProxy.name}.")
+            } else {
+                messageService.sendSourceMessage(source, "Disabled sound for player ${playerProxy.name}.")
+            }
         }
 
         return true

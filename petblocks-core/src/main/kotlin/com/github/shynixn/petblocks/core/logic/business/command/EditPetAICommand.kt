@@ -1,11 +1,11 @@
+@file:Suppress("UNCHECKED_CAST")
+
 package com.github.shynixn.petblocks.core.logic.business.command
 
 import com.github.shynixn.petblocks.api.business.annotation.Inject
 import com.github.shynixn.petblocks.api.business.command.SourceCommand
-import com.github.shynixn.petblocks.api.business.service.CommandService
-import com.github.shynixn.petblocks.api.business.service.ItemService
-import com.github.shynixn.petblocks.api.business.service.PetService
-import com.github.shynixn.petblocks.api.business.service.ProxyService
+import com.github.shynixn.petblocks.api.business.enumeration.ChatColor
+import com.github.shynixn.petblocks.api.business.service.*
 
 /**
  * Created by Shynixn 2018.
@@ -34,17 +34,18 @@ import com.github.shynixn.petblocks.api.business.service.ProxyService
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class EditPetItemLoreCommand @Inject constructor(
+class EditPetAICommand @Inject constructor(
     private val proxyService: ProxyService,
-    private val petService: PetService,
-    private val commandService: CommandService,
-    private val itemService: ItemService
+    private val petMetaService: PersistencePetMetaService,
+    private val configurationService: ConfigurationService,
+    private val messageService: MessageService,
+    private val commandService: CommandService
 ) : SourceCommand {
     /**
      * Gets called when the given [source] executes the defined command with the given [args].
      */
     override fun <S> onExecuteCommand(source: S, args: Array<out String>): Boolean {
-        if (args.size < 3 || !args[0].equals("item-lore", true) || args[1].toIntOrNull() == null) {
+        if (args.size < 2 || !args[0].equals("ai", true)) {
             return false
         }
 
@@ -55,17 +56,33 @@ class EditPetItemLoreCommand @Inject constructor(
         }
 
         val playerProxy = proxyService.findPlayerProxyObject(result.first)
-        val index = args[1].toInt()
-        val message = result.second
 
-        if (!petService.hasPet(playerProxy.uniqueId)) {
-            return false
-        }
+        petMetaService.getOrCreateFromPlayerUUID(playerProxy.uniqueId).thenAccept { petMeta ->
+            try {
+                val configuration = configurationService.findValue<Map<String, Any>>(args[1])
+                var addAmount = 0
+                var removeAmount = 0
 
-        petService.getOrSpawnPetFromPlayerUUID(playerProxy.uniqueId).thenAccept { pet ->
-            val itemStack = pet.getHeadItemStack<Any>()
-            itemService.setLoreOfItemStack(itemStack, index, message)
-            pet.setHeadItemStack(itemStack)
+                if (configuration.containsKey("remove-ai")) {
+                    val removeAis = configurationService.parseAIsFromMap(configuration["remove-ai"] as Map<String, Any?>)
+
+                    for (aiBase in removeAis) {
+                        removeAmount += petMeta.aiGoals.filter { a -> a.type == aiBase.type }.size
+                        petMeta.aiGoals.removeAll { a -> a.type == aiBase.type }
+                    }
+                }
+
+                if (configuration.containsKey("add-ai")) {
+                    val addAis = configurationService.parseAIsFromMap(configuration["add-ai"] as Map<String, Any?>)
+                    petMeta.aiGoals.addAll(addAis)
+                    addAmount += addAis.size
+                }
+
+                petMetaService.save(petMeta)
+                messageService.sendSourceMessage(source, "Added $addAmount new ais and removed $removeAmount ais to/from player ${playerProxy.name}.")
+            } catch (e: Exception) {
+                messageService.sendSourceMessage(source, ChatColor.RED.toString() + e.message)
+            }
         }
 
         return true

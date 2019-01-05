@@ -95,26 +95,14 @@ class PetMetaSqlRepository @Inject constructor(
         if (petMeta.id == 0L) {
             val optPlayerMeta = getPetMeta(connection, petMeta.playerMeta.uuid)
 
-            if (optPlayerMeta == null) {
-                return insertInto(connection, petMeta)
+            return if (optPlayerMeta == null) {
+                insertInto(connection, petMeta)
             } else {
-                optPlayerMeta.displayName = petMeta.displayName
-                optPlayerMeta.enabled = petMeta.enabled
-                optPlayerMeta.soundEnabled = petMeta.soundEnabled
-                optPlayerMeta.particleEnabled = petMeta.particleEnabled
+                petMeta.id = optPlayerMeta.id
+                petMeta.skin.id = optPlayerMeta.skin.id
+                petMeta.playerMeta.id = optPlayerMeta.playerMeta.id
 
-                optPlayerMeta.playerMeta.name = petMeta.playerMeta.name
-                optPlayerMeta.playerMeta.uuid= petMeta.playerMeta.uuid
-
-                optPlayerMeta.skin.typeName = petMeta.skin.typeName
-                optPlayerMeta.skin.unbreakable = petMeta.skin.unbreakable
-                optPlayerMeta.skin.dataValue = petMeta.skin.dataValue
-                optPlayerMeta.skin.owner = petMeta.skin.owner
-
-                optPlayerMeta.aiGoals.clear()
-                optPlayerMeta.aiGoals.addAll(petMeta.aiGoals)
-
-                return update(connection, optPlayerMeta)
+                update(connection, petMeta)
             }
         }
 
