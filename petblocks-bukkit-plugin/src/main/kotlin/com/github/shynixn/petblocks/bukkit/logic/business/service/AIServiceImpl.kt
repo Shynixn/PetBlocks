@@ -91,13 +91,13 @@ class AIServiceImpl @Inject constructor(
 
         if (goal is AIFollowBack) {
             if (petProxy.pathfinders.singleOrNull { p -> p is PathfinderProxy && p.aiBase is AIFollowBack } != null) {
-                loggingService.warn("The pet of player " + owner.name + "tried to apply AI [follow-back] again.")
+                loggingService.warn("The pet of player " + owner.name + " tried to apply AI [follow-back] again.")
                 loggingService.warn("Remove the duplicate definition in your configuration.")
                 return
             }
 
             if (petProxy.pathfinders.singleOrNull { p -> p is PathfinderProxy && p.aiBase is AIFollowOwner } != null) {
-                loggingService.warn("The pet of player " + owner.name + "tried to apply AI [follow-back] even though [follow-owner] was already applied.")
+                loggingService.warn("The pet of player " + owner.name + " tried to apply AI [follow-back] even though [follow-owner] was already applied.")
                 loggingService.warn("Remove one of the definitions in your configuration.")
                 return
             }
@@ -121,13 +121,13 @@ class AIServiceImpl @Inject constructor(
 
         if (goal is AIFollowOwner) {
             if (petProxy.pathfinders.singleOrNull { p -> p is PathfinderProxy && p.aiBase is AIFollowOwner } != null) {
-                loggingService.warn("The pet of player " + owner.name + "tried to apply AI [follow-owner] again.")
+                loggingService.warn("The pet of player " + owner.name + " tried to apply AI [follow-owner] again.")
                 loggingService.warn("Remove the duplicate definition in your configuration.")
                 return
             }
 
             if (petProxy.pathfinders.singleOrNull { p -> p is PathfinderProxy && p.aiBase is AIFollowBack } != null) {
-                loggingService.warn("The pet of player " + owner.name + "tried to apply AI [follow-owner] even though [follow-back] was already applied.")
+                loggingService.warn("The pet of player " + owner.name + " tried to apply AI [follow-owner] even though [follow-back] was already applied.")
                 loggingService.warn("Remove one of the definitions in your configuration.")
                 return
             }

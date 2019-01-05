@@ -3,8 +3,14 @@ Commandslist
 
 .. note:: You can find the permissions for the commands at the `permission list <../gettingstarted/permissions.html#permissionlist>`__.
 
+.. toctree::
+  commandlist
+
+User Commands
+"""""""""""""
+
 /petblock
-~~~~~~~~~~
+~~~~~~~~~
 
 This user command opens the PetBlocks GUI.
 
@@ -79,3 +85,246 @@ Set your pet skin to the skin Black Cat by a full texture url
 Set your pet skin to the skin Black Cat by a shortened texture url
 ::
   /petblock skin textures.minecraft.net/texture/9e4fcb9ccae4f0639c689e6565b5205d7abaca2160cff6b0a5e906d8b1481933
+
+Admin Commands
+""""""""""""""
+
+.. note:: All admin commands can be executed via the server console.
+
+/petblocks [page]
+~~~~~~~~~~~~~~~~~
+
+This admin command opens the command list for administrators.
+
+The optional [page] parameter specifies the target command list page.
+
+* Players (require permissions) ✔
+* Server console ✔
+* Command blocks ✔
+
+Opens page 1
+::
+  /petblocks
+
+Opens page 2
+::
+  /petblocks 2
+
+/petblocks enable [player]
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Respawns the pet of the given player.
+
+The optional [player] parameter specifies the target player otherwise the player executing the command gets used.
+
+* Players (require permissions) ✔
+* Server console ✔
+* Command blocks ✔
+
+**Sample list:**
+
+Enable your pet
+::
+  /petblocks enable
+
+Enable the pet of player Mario
+::
+  /petblocks enable Mario
+
+/petblocks disable [player]
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Removes the pet of the given player.
+
+The optional [player] parameter specifies the target player otherwise the player executing the command gets used.
+
+* Players (require permissions) ✔
+* Server console ✔
+* Command blocks ✔
+
+**Sample list:**
+
+Disable your pet
+::
+  /petblocks disable
+
+Disable the pet of player Mario
+::
+  /petblocks disable Mario
+
+/petblocks toggle [player]
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Enables or disables the pet of the given player.
+
+The optional [player] parameter specifies the target player otherwise the player executing the command gets used.
+
+* Players (require permissions) ✔
+* Server console ✔
+* Command blocks ✔
+
+**Sample list:**
+
+Toggles your pet
+::
+  /petblocks toggle
+
+Toggles the pet of player Mario
+::
+  /petblocks disable Mario
+
+/petblocks ai <path> [player]
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Changes the pet ai from the given player to the specified ais at the given config.yml path.
+
+The optional [player] parameter specifies the target player otherwise the player executing the command gets used.
+
+* Players (require permissions) ✔
+* Server console ✔
+* Command blocks ✔
+
+.. warning:: The same ais can be added multiple times per default.
+
+**Sample list:**
+
+Applies the pet ai from the default pet configuration in the config.yml.
+::
+  /petblocks ai pet
+
+Apply a custom ai to a pet.
+
+1. Include the follow ai section anywhere in your config.yml.
+
+**config.yml**
+::
+    mycustomais:
+     fastfollowai:
+       add-ai:
+        1:
+          type: 'follow-owner'
+          min-distance: 3.0
+          max-distance: 10.0
+          speed: 5.0
+       remove-ai:
+        1:
+          type: 'follow-owner'
+
+.. note:: Execute the **/petblockreload** command after changing the config.yml.
+
+2. Execute the follow command
+::
+  /petblocks ai mycustomais.fastfollowai
+
+/petblocks skin <path> [player]
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Sets the pet skin from the given player to the specified skin at the given config.yml path.
+
+The optional [player] parameter specifies the target player otherwise the player executing the command gets used.
+
+* Players (require permissions) ✔
+* Server console ✔
+* Command blocks ✔
+
+**Sample list:**
+
+Applies the pet skin from the default pet configuration in the config.yml.
+::
+  /petblocks skin pet.skin
+
+Apply a custom skin to a pet.
+
+1. Include the follow skin section anywhere in your config.yml.
+
+**config.yml**
+::
+  mycustomskins:
+   marioskin:
+    id: 397
+    damage: 3
+    skin: 'http://textures.minecraft.net/texture/a0c2549a893726988f3428bef799875ba871688ae64eb0cfdc43f7d6e24c6c'
+
+.. note:: Execute the **/petblockreload** command after changing the config.yml.
+
+2. Execute the follow command
+::
+  /petblocks skin mycustomskins.marioskin
+
+/petblocks rename [player]
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Renames the pet of the given player.
+
+The optional [player] parameter specifies the target player otherwise the player executing the command gets used.
+
+* Players (require permissions) ✔
+* Server console ✔
+* Command blocks ✔
+
+**Sample list:**
+
+Renames your pet to Beast
+::
+  /petblocks rename Beast
+
+Renames your pet to My awesome Pet
+::
+  /petblocks rename &aMy awesome Pet
+
+/petblocks togglesound [player]
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Toggles the pet sounds of the given player.
+
+The optional [player] parameter specifies the target player otherwise the player executing the command gets used.
+
+* Players (require permissions) ✔
+* Server console ✔
+* Command blocks ✔
+
+**Sample list:**
+
+Toggles the sound
+::
+  /petblocks togglesound
+
+Toggles the sound of player Shynixn
+::
+  /petblocks togglesound Shynixn
+
+/petblocks toggleparticle [player]
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Toggles the pet particles of the given player.
+
+The optional [player] parameter specifies the target player otherwise the player executing the command gets used.
+
+* Players (require permissions) ✔
+* Server console ✔
+* Command blocks ✔
+
+**Sample list:**
+
+Toggles the particle
+::
+  /petblocks toggleparticle
+
+Toggles the particle of player Shynixn
+::
+  /petblocks toggleparticle  Shynixn
+
+/petblocks killnext
+~~~~~~~~~~~~~~~~~~~
+
+Kills the nearest entity. Does not kill other players.
+
+* Players (require permissions) ✔
+* Server console ✘
+* Command blocks ✘
+
+**Sample list:**
+
+Kills the nearest entity in the current chunk
+::
+  /petblocks killnext

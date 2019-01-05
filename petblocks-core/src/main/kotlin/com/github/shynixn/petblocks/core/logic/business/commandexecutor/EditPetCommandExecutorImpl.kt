@@ -231,7 +231,7 @@ class EditPetCommandExecutorImpl @Inject constructor(
 
             this.messageService.sendPlayerMessage(commandSender, internalMessage)
         } else {
-            messageService.sendSourceMessage(commandSender, prefix + command + message)
+            messageService.sendSourceMessage(commandSender, command + message)
         }
     }
 }
