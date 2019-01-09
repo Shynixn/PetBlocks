@@ -61,9 +61,9 @@ class PetDesign(owner: Player, val petMeta: PetMeta, entityType: EntityType) : E
         mcWorld.addEntity(this, CreatureSpawnEvent.SpawnReason.CUSTOM)
 
         hitBox = if (entityType == EntityType.RABBIT) {
-            PetRabbitHitBox(owner, this, location)
+            PetRabbitHitBox(this, location)
         } else {
-            PetRabbitHitBox(owner, this, location)
+            PetRabbitHitBox(this, location)
         }
 
         internalProxy = PetProxyImpl(petMeta, this.bukkitEntity as ArmorStand, this, hitBox.bukkitEntity as LivingEntity, owner)
@@ -80,17 +80,12 @@ class PetDesign(owner: Player, val petMeta: PetMeta, entityType: EntityType) : E
     }
 
     /**
-     * Applies pathfinder to the entity.
-     */
-    override fun applyPathfinder(pathfinder: Any) {
-        hitBox.applyPathfinder(pathfinder)
-    }
-
-    /**
      * Entity tick.
      */
     override fun doTick() {
         super.doTick()
+
+        proxy.run()
 
         if (proxy.teleportTarget != null) {
             val location = proxy.teleportTarget!!
@@ -99,7 +94,10 @@ class PetDesign(owner: Player, val petMeta: PetMeta, entityType: EntityType) : E
             proxy.teleportTarget = null
         }
 
-        proxy.run()
+        if (proxy.aiGoals != null) {
+            this.hitBox.applyPathfinders(proxy.aiGoals!!)
+            proxy.aiGoals = null
+        }
     }
 
     /**

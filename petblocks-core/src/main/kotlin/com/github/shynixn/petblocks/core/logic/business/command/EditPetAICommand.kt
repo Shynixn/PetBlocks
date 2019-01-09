@@ -74,7 +74,7 @@ class EditPetAICommand @Inject constructor(
 
                 if (configuration.containsKey("add-ai")) {
                     val addAis = configurationService.parseAIsFromMap(configuration["add-ai"] as Map<String, Any?>)
-                    petMeta.aiGoals.addAll(addAis)
+
                     addAmount += addAis.size
                 }
 

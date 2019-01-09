@@ -42,48 +42,6 @@ interface PetProxy {
     val isDead: Boolean
 
     /**
-     * Gets the logger of the pet.
-     */
-    val logger: LoggingService
-
-    /**
-     * Runnable value which represents internal nbt changes of the design armorstand.
-     * Gets automatically applied next pet tick.
-     */
-    val designNbtChange: Map<String, Any>
-
-    /**
-     * Runnable value which represents internal nbt changes of the hitboxEntity.
-     * Gets automatically applied next pet tick.
-     */
-    val hitBoxNbtChange: Map<String, Any>
-
-    /**
-     * Adds a pathfinder to this pet.
-     */
-    fun addPathfinder(pathfinder: Any)
-
-    /**
-     * Gets all pathfinders.
-     */
-    val pathfinders: List<Any>
-
-    /**
-     * Gets called from any Movement AI to play movement effects.
-     */
-    fun playMovementEffects()
-
-    /**
-     * Gets the itemStack on the pet head.
-     */
-    fun <I> getHeadItemStack(): I
-
-    /**
-     * Sets the itemstack on the pet head.
-     */
-    fun <I> setHeadItemStack(itemStack: I)
-
-    /**
      * Sets the velocity of the pet.
      */
     fun <V> setVelocity(vector: V)
@@ -112,6 +70,11 @@ interface PetProxy {
      * Gets the head armorstand.
      */
     fun <A> getHeadArmorstand(): A
+
+    /**
+     * Gets the head of the head armorstand.
+     */
+    fun <I> getHeadArmorstandItemStack(): I
 
     /**
      * Gets a living hitbox entity.

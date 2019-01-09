@@ -1,5 +1,8 @@
 package com.github.shynixn.petblocks.api.persistence.entity
 
+import api.business.service.PropertyTrackingService
+import api.persistence.entity.PropertyTrackable
+
 /**
  * Created by Shynixn 2018.
  * <p>
@@ -27,7 +30,7 @@ package com.github.shynixn.petblocks.api.persistence.entity
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-interface PetMeta {
+interface PetMeta : PropertyTrackable{
     /**
      * Database id.
      */

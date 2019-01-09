@@ -31,31 +31,6 @@ import com.github.shynixn.petblocks.api.persistence.entity.AIBase
  */
 interface PathfinderProxy {
     /**
-     * Should Goal executed function.
-     */
-    var shouldGoalBeExecuted: (() -> Boolean)?
-
-    /**
-     * Should Goal continue executing function.
-     */
-    var shouldGoalContinueExecuting: (() -> Boolean)?
-
-    /**
-     * On start executing function.
-     */
-    var onStartExecuting: (() -> Unit)?
-
-    /**
-     * On stop executing function.
-     */
-    var onStopExecuting: (() -> Unit)?
-
-    /**
-     * On execute function.
-     */
-    var onExecute: (() -> Unit)?
-
-    /**
      * Is the pathfinder incorruptible.
      */
     var isInteruptible: Boolean

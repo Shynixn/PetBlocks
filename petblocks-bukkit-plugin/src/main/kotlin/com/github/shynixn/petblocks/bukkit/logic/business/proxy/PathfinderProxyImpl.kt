@@ -36,27 +36,27 @@ class PathfinderProxyImpl(private val plugin: Plugin, override val aiBase: AIBas
     /**
      * Should Goal executed function.
      */
-    override var shouldGoalBeExecuted: (() -> Boolean)? = null
+    var shouldGoalBeExecuted: (() -> Boolean)? = null
 
     /**
      * Should Goal continue executing function.
      */
-    override var shouldGoalContinueExecuting: (() -> Boolean)? = null
+    var shouldGoalContinueExecuting: (() -> Boolean)? = null
 
     /**
      * On start executing function.
      */
-    override var onStartExecuting: (() -> Unit)? = null
+    var onStartExecuting: (() -> Unit)? = null
 
     /**
      * On stop executing function.
      */
-    override var onStopExecuting: (() -> Unit)? = null
+    var onStopExecuting: (() -> Unit)? = null
 
     /**
      * On execute function.
      */
-    override var onExecute: (() -> Unit)? = null
+    var onExecute: (() -> Unit)? = null
 
     /**
      * Is the pathfinder incorruptible.

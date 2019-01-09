@@ -1,17 +1,19 @@
-package com.github.shynixn.petblocks.api.business.service
+package com.github.shynixn.petblocks.core.logic.business.proxy
 
+import api.business.proxy.AICreationProxy
+import com.github.shynixn.petblocks.api.business.proxy.PetProxy
+import com.github.shynixn.petblocks.api.business.service.YamlSerializationService
 import com.github.shynixn.petblocks.api.persistence.entity.AIBase
-import com.github.shynixn.petblocks.api.persistence.entity.GuiItem
-import com.github.shynixn.petblocks.api.persistence.entity.PetMeta
+import kotlin.reflect.KClass
 
 /**
- * Created by Shynixn 2018.
+ * Created by Shynixn 2019.
  * <p>
  * Version 1.2
  * <p>
  * MIT License
  * <p>
- * Copyright (c) 2018 by Shynixn
+ * Copyright (c) 2019 by Shynixn
  * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -31,36 +33,31 @@ import com.github.shynixn.petblocks.api.persistence.entity.PetMeta
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-interface ConfigurationService {
+class AICreationProxyImpl(
+    private val yamlSerializationService: YamlSerializationService,
+    private val clazz: KClass<*>,
+    private val function: (PetProxy, AIBase) -> Any
+) :
+    AICreationProxy<AIBase> {
+    /**
+     * Gets called when a pathfinder needs to be created for the given pet.
+     * ReturnType can be an instance of PathfinderProxy or any NMS pathfinder.
+     */
+    override fun onPathfinderCreation(pet: PetProxy, aiBase: AIBase): Any {
+        return function.invoke(pet, aiBase)
+    }
 
     /**
-     * Tries to load the config value from the given [path].
-     * Throws a [IllegalArgumentException] if the path could not be correctly
-     * loaded.
-     * @param C the type of the returned value.
+     *  Gets called when the the given ai Base should be serialized.
      */
-    fun <C> findValue(path: String): C
+    override fun onSerialization(aiBase: AIBase): Map<String, Any?> {
+        return yamlSerializationService.serialize(aiBase)
+    }
 
     /**
-     * Tries to return a [GuiItem] matching the displayName and the lore of the given [item].
-     * Can be called asynchronly. Uses the [path] parameter for faster fetching.
-     * @param I the type of the itemstack.
+     * Gets called when the given aiBase should be serialized.
      */
-    fun <I> findClickedGUIItem(path: String, item: I): GuiItem?
-
-    /**
-     * Tries to return a list of [GuiItem] matching the given path from the config.
-     * Can be called asynchronly.
-     */
-    fun findGUIItemCollection(path: String): List<GuiItem>?
-
-    /**
-     * Generates the default pet meta.
-     */
-    fun generateDefaultPetMeta(uuid: String, name: String): PetMeta
-
-    /**
-     * Clears cached resources and refreshes the used configuration.
-     */
-    fun refresh()
+    override fun onDeserialization(source: Map<String, Any?>): AIBase {
+        return yamlSerializationService.deserialize(clazz, source)
+    }
 }

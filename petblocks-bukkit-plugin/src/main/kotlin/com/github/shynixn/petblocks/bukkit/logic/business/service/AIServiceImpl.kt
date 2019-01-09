@@ -1,14 +1,22 @@
+@file:Suppress("UNCHECKED_CAST")
+
 package com.github.shynixn.petblocks.bukkit.logic.business.service
 
+import api.business.proxy.AICreationProxy
+import com.github.shynixn.petblocks.api.PetBlocksApi
+import com.github.shynixn.petblocks.api.business.enumeration.AIType
 import com.github.shynixn.petblocks.api.business.proxy.PathfinderProxy
 import com.github.shynixn.petblocks.api.business.proxy.PetProxy
 import com.github.shynixn.petblocks.api.business.service.*
 import com.github.shynixn.petblocks.api.persistence.entity.*
+import com.github.shynixn.petblocks.bukkit.logic.business.extension.deserializeToMap
 import com.github.shynixn.petblocks.bukkit.logic.business.extension.findClazz
 import com.github.shynixn.petblocks.bukkit.logic.business.proxy.PathfinderProxyImpl
+import com.github.shynixn.petblocks.core.logic.business.proxy.AICreationProxyImpl
 import com.google.inject.Inject
 import org.bukkit.GameMode
 import org.bukkit.Location
+import org.bukkit.configuration.file.YamlConfiguration
 import org.bukkit.entity.LivingEntity
 import org.bukkit.entity.Player
 import org.bukkit.plugin.Plugin
@@ -42,68 +50,65 @@ import org.bukkit.plugin.Plugin
  */
 class AIServiceImpl @Inject constructor(
     private val plugin: Plugin,
-    private val soundService: SoundService,
     private val loggingService: LoggingService,
-    private val afraidOfWaterService: AfraidOfWaterService,
-    private val navigationService: NavigationService
+    private val yamlSerializationService: YamlSerializationService
 ) : AIService {
 
     private val getHandleMethod = findClazz("org.bukkit.craftbukkit.VERSION.entity.CraftLivingEntity").getDeclaredMethod("getHandle")!!
 
-    /**
-     * Applies an ai goal to a pet and performs all checking actions.
-     */
-    override fun applyAIGoalToPet(petProxy: PetProxy, goal: AIBase) {
-        if (goal is AIFloatInWater) {
-            val pathfinderGoal = findClazz("net.minecraft.server.VERSION.PathfinderGoalFloat")
-                .getDeclaredConstructor(findClazz("net.minecraft.server.VERSION.EntityInsentient"))
-                .newInstance(getHandleMethod.invoke(petProxy.getHitBoxLivingEntity<LivingEntity>()))
+    private val registeredAIS = HashMap<String, AICreationProxy<AIBase>>()
 
-            petProxy.addPathfinder(pathfinderGoal)
-            return
+    init {
+        val afraidOfWaterService: AfraidOfWaterService = PetBlocksApi.resolve(AfraidOfWaterService::class)
+        val navigationService: NavigationService = PetBlocksApi.resolve(NavigationService::class)
+        val soundService: SoundService = PetBlocksApi.resolve(SoundService::class)
+
+        this.register<AIFloatInWater>(AIType.FLOAT_IN_WATER) { pet, _ ->
+            findClazz("net.minecraft.server.VERSION.PathfinderGoalFloat")
+                .getDeclaredConstructor(findClazz("net.minecraft.server.VERSION.EntityInsentient"))
+                .newInstance(getHandleMethod.invoke(pet.getHitBoxLivingEntity<LivingEntity>()))
         }
 
-        val pathfinder = PathfinderProxyImpl(plugin, goal)
-        val hitBox = petProxy.getHitBoxLivingEntity<LivingEntity>()
-        val owner = petProxy.getPlayer<Player>()
+        this.register<AIAfraidOfWater>(AIType.AFRAID_OF_WATER) { pet, aiBase ->
+            val pathfinder = PathfinderProxyImpl(plugin, aiBase)
+            val hitBox = pet.getHitBoxLivingEntity<LivingEntity>()
+            val owner = pet.getPlayer<Player>()
 
-        if (goal is AIAfraidOfWater) {
             pathfinder.shouldGoalBeExecuted = {
-                !hitBox.isDead && owner.gameMode != GameMode.SPECTATOR && afraidOfWaterService.isPetInWater(petProxy)
+                !hitBox.isDead && owner.gameMode != GameMode.SPECTATOR && afraidOfWaterService.isPetInWater(pet)
             }
 
             pathfinder.onExecute = {
-                afraidOfWaterService.escapeWater(petProxy, goal)
+                afraidOfWaterService.escapeWater(pet, aiBase)
             }
+
+            pathfinder
         }
 
-        if (goal is AIAmbientSound) {
+        this.register<AIAmbientSound>(AIType.AMBIENT_SOUND) { pet, aiBase ->
+            val pathfinder = PathfinderProxyImpl(plugin, aiBase)
+            val hitBox = pet.getHitBoxLivingEntity<LivingEntity>()
+            val owner = pet.getPlayer<Player>()
+
             pathfinder.shouldGoalBeExecuted = {
                 !hitBox.isDead && owner.gameMode != GameMode.SPECTATOR
             }
 
             pathfinder.onExecute = {
                 if (Math.random() > 0.99) {
-                    soundService.playSound(hitBox.location, goal.sound, hitBox.world.players)
+                    soundService.playSound(hitBox.location, aiBase.sound, hitBox.world.players)
                 }
             }
+
+            pathfinder
         }
 
-        if (goal is AIFollowBack) {
-            if (petProxy.pathfinders.singleOrNull { p -> p is PathfinderProxy && p.aiBase is AIFollowBack } != null) {
-                loggingService.warn("The pet of player " + owner.name + " tried to apply AI [follow-back] again.")
-                loggingService.warn("Remove the duplicate definition in your configuration.")
-                return
-            }
-
-            if (petProxy.pathfinders.singleOrNull { p -> p is PathfinderProxy && p.aiBase is AIFollowOwner } != null) {
-                loggingService.warn("The pet of player " + owner.name + " tried to apply AI [follow-back] even though [follow-owner] was already applied.")
-                loggingService.warn("Remove one of the definitions in your configuration.")
-                return
-            }
+        this.register<AIFollowBack>(AIType.FOLLOW_BACK) { pet, aiBase ->
+            val pathfinder = PathfinderProxyImpl(plugin, aiBase)
+            val owner = pet.getPlayer<Player>()
 
             pathfinder.shouldGoalBeExecuted = {
-                !petProxy.isDead && owner.gameMode != GameMode.SPECTATOR
+                !pet.isDead && owner.gameMode != GameMode.SPECTATOR
             }
 
             pathfinder.onExecute = {
@@ -115,51 +120,146 @@ class AIServiceImpl @Inject constructor(
                     location.yaw,
                     location.pitch)
 
-                petProxy.teleport(targetLocation)
+                pet.teleport(targetLocation)
             }
+
+            pathfinder
         }
 
-        if (goal is AIFollowOwner) {
-            if (petProxy.pathfinders.singleOrNull { p -> p is PathfinderProxy && p.aiBase is AIFollowOwner } != null) {
-                loggingService.warn("The pet of player " + owner.name + " tried to apply AI [follow-owner] again.")
-                loggingService.warn("Remove the duplicate definition in your configuration.")
-                return
-            }
-
-            if (petProxy.pathfinders.singleOrNull { p -> p is PathfinderProxy && p.aiBase is AIFollowBack } != null) {
-                loggingService.warn("The pet of player " + owner.name + " tried to apply AI [follow-owner] even though [follow-back] was already applied.")
-                loggingService.warn("Remove one of the definitions in your configuration.")
-                return
-            }
-
+        this.register<AIFollowOwner>(AIType.FOLLOW_BACK) { pet, aiBase ->
             var lastLocation: Location? = null
+            val pathfinder = PathfinderProxyImpl(plugin, aiBase)
+            val owner = pet.getPlayer<Player>()
+            val hitBox = pet.getHitBoxLivingEntity<LivingEntity>()
 
             pathfinder.shouldGoalContinueExecuting = {
                 when {
-                    owner.location.distance(hitBox.location) > goal.maxRange -> {
-                        petProxy.teleport(owner.location)
+                    owner.location.distance(hitBox.location) > aiBase.maxRange -> {
+                        pet.teleport(owner.location)
                         false
                     }
 
-                    owner.location.distance(hitBox.location) < goal.distanceToOwner -> false
+                    owner.location.distance(hitBox.location) < aiBase.distanceToOwner -> false
                     else -> !(lastLocation != null && lastLocation!!.distance(owner.location) > 2)
                 }
             }
 
             pathfinder.shouldGoalBeExecuted = {
-                !hitBox.isDead && owner.gameMode != GameMode.SPECTATOR && owner.location.distance(hitBox.location) >= goal.distanceToOwner
+                !hitBox.isDead && owner.gameMode != GameMode.SPECTATOR && owner.location.distance(hitBox.location) >= aiBase.distanceToOwner
             }
 
             pathfinder.onStopExecuting = {
-                navigationService.clearNavigation(petProxy)
+                navigationService.clearNavigation(pet)
             }
 
             pathfinder.onStartExecuting = {
                 lastLocation = owner.location.clone()
-                navigationService.navigateToLocation(petProxy, owner.location, goal.speed)
+                navigationService.navigateToLocation(pet, owner.location, aiBase.speed)
+            }
+
+            pathfinder
+        }
+    }
+
+    /**
+     * Generates pathfinders from the given ai bases depending on the
+     * type specified in the [AIBase] and registers types of this service.
+     */
+    override fun convertPetAiBasesToPathfinders(petProxy: PetProxy, metas: List<AIBase>): List<Any> {
+        val player = petProxy.getPlayer<Player>()
+        val pathfinders = ArrayList<Any>()
+
+        for (meta in metas) {
+            if (!registeredAIS.containsKey(meta.type)) {
+                loggingService.warn("Pet of ${player.name} tried to use ai type + " + meta.type + " which is not registered in the AI Service. Please register it first.")
+            }
+
+            val aiCreation = registeredAIS[meta.type]!!
+            val pathfinder = aiCreation.onPathfinderCreation(petProxy, meta)
+
+            pathfinders.add(pathfinder)
+        }
+
+        if (pathfinders.count { p -> p is PathfinderProxy && p.aiBase is AIFollowBack } > 1) {
+            loggingService.warn("Pet of ${player.name} tried to apply ai follow-back atleast twice. Please check your configuration!")
+
+            val resultPathfinder = pathfinders.first { p -> p is PathfinderProxy && p.aiBase is AIFollowBack }
+            pathfinders.removeAll { p -> p is PathfinderProxy && p.aiBase is AIFollowBack }
+            pathfinders.add(resultPathfinder)
+        }
+
+        if (pathfinders.count { p -> p is PathfinderProxy && p.aiBase is AIFollowOwner } > 1) {
+            loggingService.warn("Pet of ${player.name} tried to apply ai follow-owner atleast twice. Please check your configuration!")
+
+            val resultPathfinder = pathfinders.first { p -> p is PathfinderProxy && p.aiBase is AIFollowOwner }
+            pathfinders.removeAll { p -> p is PathfinderProxy && p.aiBase is AIFollowOwner }
+            pathfinders.add(resultPathfinder)
+        }
+
+        if (pathfinders.singleOrNull { p -> p is PathfinderProxy && p.aiBase is AIFollowOwner } != null) {
+            if (pathfinders.singleOrNull { p -> p is PathfinderProxy && p.aiBase is AIFollowBack } != null) {
+                loggingService.warn("Pet of ${player.name} tried to apply both follow-owner and follow-back. Please check your configuration!")
+                pathfinders.removeAll { p -> p is PathfinderProxy && p.aiBase is AIFollowBack }
             }
         }
 
-        petProxy.addPathfinder(pathfinder)
+        return pathfinders
+    }
+
+    /**
+     * Registers a custom ai type with unique [type] and a proxy to create required AI actions.
+     * Existing types can be overwritten if the given [type] already exists.
+     */
+    override fun <A : AIBase> register(type: String, creator: AICreationProxy<A>) {
+        registeredAIS[type] = creator as AICreationProxy<AIBase>
+    }
+
+    /**
+     * Generates an AIBase from the given yaml source string.
+     */
+    override fun <A : AIBase> deserializeAiBase(type: String, source: String): A {
+        val yamlSerializer = YamlConfiguration()
+        yamlSerializer.loadFromString(source)
+        return deserializeAiBase(type, yamlSerializer.deserializeToMap("a")) as A
+    }
+
+    /**
+     * Generates an AIBase from the given yaml map data.
+     */
+    override fun <A : AIBase> deserializeAiBase(type: String, source: Map<String, Any?>): A {
+        if (!registeredAIS.containsKey(type)) {
+            throw IllegalArgumentException("AIBase $type is not registered.")
+        }
+
+        val creationProxy = registeredAIS[type]!!
+        return creationProxy.onDeserialization(source) as A
+    }
+
+    /**
+     *  Serializes the given [aiBase] to a yaml string.
+     */
+    override fun serializeAiBaseToString(aiBase: AIBase): String {
+        val yamlSerializer = YamlConfiguration()
+        yamlSerializer.set("a", serializeAiBase(aiBase))
+        return yamlSerializer.saveToString()
+    }
+
+    /**
+     *  Serializes the given [aiBase] to a yaml map.
+     */
+    override fun serializeAiBase(aiBase: AIBase): Map<String, Any?> {
+        if (!registeredAIS.containsKey(aiBase.type)) {
+            throw IllegalArgumentException("AIBase " + aiBase.type + " is not registered.")
+        }
+
+        val creationProxy = registeredAIS[aiBase.type]!!
+        return creationProxy.onSerialization(aiBase)
+    }
+
+    /**
+     * Registers a default ai type.
+     */
+    private fun <A : AIBase> register(aiType: AIType, function: (PetProxy, A) -> Any) {
+        this.register(aiType.type, AICreationProxyImpl(yamlSerializationService, aiType.aiClazz, function as (PetProxy, AIBase) -> Any))
     }
 }

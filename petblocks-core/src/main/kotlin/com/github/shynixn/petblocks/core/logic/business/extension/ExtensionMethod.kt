@@ -2,10 +2,13 @@
 
 package com.github.shynixn.petblocks.core.logic.business.extension
 
+import api.business.service.PropertyTrackingService
+import api.persistence.entity.PropertyTrackable
 import com.github.shynixn.petblocks.api.business.enumeration.ChatColor
 import com.github.shynixn.petblocks.api.business.service.ConcurrencyService
 import com.github.shynixn.petblocks.api.persistence.entity.ChatMessage
 import com.github.shynixn.petblocks.core.logic.persistence.entity.ChatMessageEntity
+import kotlin.reflect.KProperty
 
 /**
  * Created by Shynixn 2018.
@@ -87,6 +90,15 @@ inline fun sync(
     concurrencyService.runTaskSync(delayTicks, repeatingTicks) {
         f.invoke()
     }
+}
+
+/**
+ * Gets if the given property has changed.
+ */
+fun <R> KProperty<R>.hasChanged(instance: PropertyTrackable): Boolean {
+    val hasChanged = instance.propertyTracker.hasChanged(this)
+    instance.propertyTracker.onPropertyChanged(this, false)
+    return hasChanged
 }
 
 /**

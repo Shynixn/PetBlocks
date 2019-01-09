@@ -3,15 +3,16 @@
 package com.github.shynixn.petblocks.core.logic.persistence.repository
 
 import com.github.shynixn.petblocks.api.business.annotation.Inject
-import com.github.shynixn.petblocks.api.business.enumeration.AIType
+import com.github.shynixn.petblocks.api.business.service.AIService
 import com.github.shynixn.petblocks.api.business.service.ConfigurationService
-import com.github.shynixn.petblocks.api.business.service.YamlSerializationService
 import com.github.shynixn.petblocks.api.persistence.context.SqlDbContext
 import com.github.shynixn.petblocks.api.persistence.entity.AIBase
 import com.github.shynixn.petblocks.api.persistence.entity.PetMeta
 import com.github.shynixn.petblocks.api.persistence.repository.PetMetaRepository
 import com.github.shynixn.petblocks.core.logic.business.extension.getItem
-import com.github.shynixn.petblocks.core.logic.persistence.entity.*
+import com.github.shynixn.petblocks.core.logic.persistence.entity.PetMetaEntity
+import com.github.shynixn.petblocks.core.logic.persistence.entity.PlayerMetaEntity
+import com.github.shynixn.petblocks.core.logic.persistence.entity.SkinEntity
 
 /**
  * Created by Shynixn 2018.
@@ -42,8 +43,8 @@ import com.github.shynixn.petblocks.core.logic.persistence.entity.*
  */
 class PetMetaSqlRepository @Inject constructor(
     private val sqlDbContext: SqlDbContext,
-    private val configurationService: ConfigurationService,
-    private val yamlSerializationService: YamlSerializationService
+    private val aiService: AIService,
+    private val configurationService: ConfigurationService
 ) : PetMetaRepository {
     /**
      * Returns the petMeta of from the given player uniqueId. Creates
@@ -179,8 +180,7 @@ class PetMetaSqlRepository @Inject constructor(
         sqlDbContext.delete(connection, "SHY_PET_AI", "WHERE shy_pet_id=" + petMeta.id)
 
         for (aiItem in petMeta.aiGoals) {
-            val payload = yamlSerializationService.serialize(aiItem)
-            val payloadString = configurationService.convertMapToString(payload)
+            val payloadString = aiService.serializeAiBase(aiItem)
 
             aiItem.id = sqlDbContext.insert(connection, "SHY_PET_AI"
                 , "shy_pet_id" to petMeta.id
@@ -229,8 +229,7 @@ class PetMetaSqlRepository @Inject constructor(
         )
 
         for (aiItem in petMeta.aiGoals) {
-            val payload = yamlSerializationService.serialize(aiItem)
-            val payloadString = configurationService.convertMapToString(payload)
+            val payloadString = aiService.serializeAiBase(aiItem)
 
             aiItem.id = sqlDbContext.insert(connection, "SHY_PET_AI"
                 , "shy_pet_id" to petMeta.id
@@ -280,8 +279,9 @@ class PetMetaSqlRepository @Inject constructor(
      * Maps the resultSet to a new ai base.
      */
     private fun mapResultSetToAI(resultSet: Map<String, Any>): AIBase {
-        val contentString = resultSet["content"]
+        val contentString = resultSet["content"] as String
         val type = resultSet["typename"] as String
-        return configurationService.convertStringToAi(type, contentString as String)
+
+        return aiService.deserializeAiBase(type, contentString)
     }
 }

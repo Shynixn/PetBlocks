@@ -1,6 +1,8 @@
 package com.github.shynixn.petblocks.core.logic.persistence.entity
 
+import api.business.service.PropertyTrackingService
 import com.github.shynixn.petblocks.api.persistence.entity.*
+import com.github.shynixn.petblocks.core.logic.business.service.PropertyTrackingServiceImpl
 
 /**
  * Created by Shynixn 2018.
@@ -33,7 +35,10 @@ class PetMetaEntity(override val playerMeta: PlayerMeta, override val skin: Skin
     /**
      * Gets a list of all ai goals of this pet.
      */
-    override val aiGoals: MutableList<AIBase> = ArrayList()
+    override val aiGoals: MutableList<AIBase> = ObserveableArrayList {
+        propertyTracker.onPropertyChanged(this::aiGoals, true)
+    }
+
     /**
      * Database id.
      */
@@ -47,13 +52,26 @@ class PetMetaEntity(override val playerMeta: PlayerMeta, override val skin: Skin
      * Displayed name on top of the pet.
      */
     override var displayName: String = playerMeta.name + "'s Pet"
+        set(value) {
+            if (field != value) {
+                propertyTracker.onPropertyChanged(this::displayName, true)
+            }
+
+            field = value
+        }
 
     /**
      * Pet sounds enabled.
      */
     override var soundEnabled: Boolean = true
+
     /**
      * Pet particles enabled.
      */
     override var particleEnabled: Boolean = true
+
+    /**
+     * Gets the property tracker.
+     */
+    override val propertyTracker: PropertyTrackingService = PropertyTrackingServiceImpl()
 }

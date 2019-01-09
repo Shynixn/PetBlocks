@@ -7,7 +7,6 @@ import com.google.common.collect.Sets
 import net.minecraft.server.v1_13_R2.*
 import org.bukkit.Location
 import org.bukkit.craftbukkit.v1_13_R2.CraftWorld
-import org.bukkit.entity.Player
 import org.bukkit.event.entity.CreatureSpawnEvent
 
 /**
@@ -44,35 +43,13 @@ class PetRabbitHitBox(world: World) : EntityRabbit(world) {
     /**
      * Additional override constructor.
      */
-    constructor(player: Player, petDesign: PetDesign, location: Location) : this((location.world as CraftWorld).handle) {
+    constructor(petDesign: PetDesign, location: Location) : this((location.world as CraftWorld).handle) {
         this.petDesign = petDesign
         this.isSilent = true
 
-        val bField = PathfinderGoalSelector::class.java.getDeclaredField("b")
-        val cField = PathfinderGoalSelector::class.java.getDeclaredField("c")
-
-        bField.removeFinalModifier()
-        cField.removeFinalModifier()
-
-        bField.set(this.goalSelector, Sets.newLinkedHashSet<Any>())
-        bField.set(this.targetSelector, Sets.newLinkedHashSet<Any>())
-        cField.set(this.goalSelector, Sets.newLinkedHashSet<Any>())
-        cField.set(this.targetSelector, Sets.newLinkedHashSet<Any>())
-
-        val aiGoal = petDesign.petMeta.aiGoals.firstOrNull { p -> p is AIMovement }
-        val speed = if (aiGoal != null) {
-            (aiGoal as AIMovement).movementSpeed
-        } else {
-            0.75
-        }
-
-        this.getAttributeInstance(GenericAttributes.MOVEMENT_SPEED).value = 0.30000001192092896 * speed
-
-        this.Q = if (aiGoal != null) {
-            (aiGoal as AIMovement).climbingHeight.toFloat()
-        } else {
-            1.0F
-        }
+        clearAIGoals()
+        this.getAttributeInstance(GenericAttributes.MOVEMENT_SPEED).value = 0.30000001192092896 * 0.75
+        this.Q = 1.0F
 
         val mcWorld = (location.world as CraftWorld).handle
         this.setPosition(location.x, location.y + 1, location.z)
@@ -80,13 +57,24 @@ class PetRabbitHitBox(world: World) : EntityRabbit(world) {
     }
 
     /**
-     * Applies pathfinder to the entity.
+     * Applies pathfinders to the entity.
      */
-    fun applyPathfinder(pathfinder: Any) {
-        if (pathfinder is PathfinderProxy) {
-            this.goalSelector.a(pathfinderCounter++, Pathfinder(pathfinder))
-        } else {
-            this.goalSelector.a(pathfinderCounter++, pathfinder as PathfinderGoal)
+    fun applyPathfinders(pathfinders: List<Any>) {
+        clearAIGoals()
+
+        for (pathfinder in pathfinders) {
+            if (pathfinder is PathfinderProxy) {
+                this.goalSelector.a(pathfinderCounter++, Pathfinder(pathfinder))
+
+                val aiBase = pathfinder.aiBase
+
+                if (aiBase is AIMovement) {
+                    this.getAttributeInstance(GenericAttributes.MOVEMENT_SPEED).value = 0.30000001192092896 * aiBase.movementSpeed
+                    this.Q = aiBase.climbingHeight.toFloat()
+                }
+            } else {
+                this.goalSelector.a(pathfinderCounter++, pathfinder as PathfinderGoal)
+            }
         }
     }
 
@@ -100,7 +88,7 @@ class PetRabbitHitBox(world: World) : EntityRabbit(world) {
             return
         }
 
-        val aiGoal = petDesign!!.petMeta.aiGoals.firstOrNull { p -> p is AIMovement } ?: return
+        val aiGoal = petDesign!!.petMeta.aiGoals.lastOrNull { p -> p is AIMovement } ?: return
         val axisBoundingBox = this.boundingBox
 
         val minXA = axisBoundingBox.minX
@@ -151,5 +139,21 @@ class PetRabbitHitBox(world: World) : EntityRabbit(world) {
         }
 
         return super.dz()
+    }
+
+    /**
+     * Clears all entity aiGoals.
+     */
+    private fun clearAIGoals() {
+        val bField = PathfinderGoalSelector::class.java.getDeclaredField("b")
+        val cField = PathfinderGoalSelector::class.java.getDeclaredField("c")
+
+        bField.removeFinalModifier()
+        cField.removeFinalModifier()
+
+        bField.set(this.goalSelector, Sets.newLinkedHashSet<Any>())
+        bField.set(this.targetSelector, Sets.newLinkedHashSet<Any>())
+        cField.set(this.goalSelector, Sets.newLinkedHashSet<Any>())
+        cField.set(this.targetSelector, Sets.newLinkedHashSet<Any>())
     }
 }

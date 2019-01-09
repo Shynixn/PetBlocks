@@ -1,6 +1,8 @@
 package com.github.shynixn.petblocks.core.logic.persistence.entity
 
+import api.business.service.PropertyTrackingService
 import com.github.shynixn.petblocks.api.persistence.entity.Skin
+import com.github.shynixn.petblocks.core.logic.business.service.PropertyTrackingServiceImpl
 
 /**
  * Created by Shynixn 2018.
@@ -30,8 +32,6 @@ import com.github.shynixn.petblocks.api.persistence.entity.Skin
  * SOFTWARE.
  */
 class SkinEntity : Skin {
-    private var backedSkin = ""
-
     /**
      * Database id.
      */
@@ -45,13 +45,18 @@ class SkinEntity : Skin {
     /**
      * Skin url or owner name.
      */
-    override var owner: String
-        get() = backedSkin
+    override var owner: String = ""
         set(value) {
-            if (value == "none") {
-                this.backedSkin = ""
+            val preField = field
+
+            field = if (value == "none") {
+                ""
             } else {
-                this.backedSkin = value
+                value
+            }
+
+            if(preField != field){
+                propertyTracker.onPropertyChanged(this::typeName)
             }
         }
 
@@ -59,12 +64,40 @@ class SkinEntity : Skin {
      * Typename of the skin.
      */
     override var typeName: String = "AIR"
+        set(value) {
+            if (field != value) {
+                propertyTracker.onPropertyChanged(this::typeName)
+            }
+
+            field = value
+        }
+
     /**
      * Data Value.
      */
     override var dataValue: Int = 0
+        set(value) {
+            if (field != value) {
+                propertyTracker.onPropertyChanged(this::typeName)
+            }
+
+            field = value
+        }
+
     /**
      * Unbreakable.
      */
     override var unbreakable: Boolean = false
+        set(value) {
+            if (field != value) {
+                propertyTracker.onPropertyChanged(this::typeName)
+            }
+
+            field = value
+        }
+
+    /**
+     * Gets the property tracker.
+     */
+    override val propertyTracker: PropertyTrackingService = PropertyTrackingServiceImpl()
 }

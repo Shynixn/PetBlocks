@@ -3,11 +3,9 @@
 package com.github.shynixn.petblocks.bukkit.logic.business.service
 
 import com.github.shynixn.petblocks.api.business.annotation.Inject
-import com.github.shynixn.petblocks.api.business.enumeration.AIType
+import com.github.shynixn.petblocks.api.business.service.AIService
 import com.github.shynixn.petblocks.api.business.service.ConfigurationService
 import com.github.shynixn.petblocks.api.business.service.ItemService
-import com.github.shynixn.petblocks.api.business.service.YamlSerializationService
-import com.github.shynixn.petblocks.api.persistence.entity.AIBase
 import com.github.shynixn.petblocks.api.persistence.entity.GuiItem
 import com.github.shynixn.petblocks.api.persistence.entity.PetMeta
 import com.github.shynixn.petblocks.bukkit.logic.business.extension.deserialize
@@ -21,13 +19,11 @@ import com.github.shynixn.petblocks.core.logic.persistence.entity.SkinEntity
 import org.bukkit.ChatColor
 import org.bukkit.Material
 import org.bukkit.configuration.MemorySection
-import org.bukkit.configuration.file.YamlConfiguration
 import org.bukkit.inventory.ItemStack
 import org.bukkit.plugin.Plugin
 import java.io.BufferedReader
 import java.io.InputStreamReader
 import java.util.*
-import java.util.logging.Level
 import javax.crypto.Cipher
 import javax.crypto.CipherInputStream
 import javax.crypto.spec.IvParameterSpec
@@ -64,36 +60,9 @@ import kotlin.collections.ArrayList
 class ConfigurationServiceImpl @Inject constructor(
     private val plugin: Plugin,
     private val itemService: ItemService,
-    private val yamlSerializationService: YamlSerializationService
+    private val aiService: AIService
 ) : ConfigurationService {
     private val cache = HashMap<String, List<GuiItem>>()
-
-    /**
-     * Converts the given [source] to a string.
-     */
-    override fun convertMapToString(source: Map<String, Any?>): String {
-        val yamlSerializer = YamlConfiguration()
-        yamlSerializer.set("a", source)
-        return yamlSerializer.saveToString()
-    }
-
-    /**
-     * Converts the given [data] to a ai.
-     */
-    override fun convertStringToAi(typename: String, data: String): AIBase {
-        val yamlSerializer = YamlConfiguration()
-        yamlSerializer.loadFromString(data)
-        val map = yamlSerializer.deserializeToMap("a")
-
-        for (aiType in AIType.values()) {
-            if (aiType.type.equals(typename, true)) {
-                val clazz = Class.forName("com.github.shynixn.petblocks.core.logic.persistence.entity." + aiType.aiClazz.java.simpleName + "Entity")
-                return yamlSerializationService.deserialize(clazz, map)
-            }
-        }
-
-        throw IllegalArgumentException()
-    }
 
     /**
      * Tries to load the config value from the given [path].
@@ -186,13 +155,23 @@ class ConfigurationServiceImpl @Inject constructor(
             if (description.containsKey("add-ai")) {
                 val goalsMap = (description["add-ai"] as MemorySection).getValues(false)
                 deserialize(goalsMap)
-                guiItem.addAIs.addAll(parseAIsFromMap(goalsMap))
+
+                for (goalKey in goalsMap.keys) {
+                    val aiMap = goalsMap[goalKey] as Map<String, Any>
+                    val type = aiMap["type"] as String
+                    guiItem.addAIs.add(aiService.deserializeAiBase(type, aiMap))
+                }
             }
 
             if (description.containsKey("remove-ai")) {
                 val goalsMap = (description["remove-ai"] as MemorySection).getValues(false)
                 deserialize(goalsMap)
-                guiItem.addAIs.addAll(parseAIsFromMap(goalsMap))
+
+                for (goalKey in goalsMap.keys) {
+                    val aiMap = goalsMap[goalKey] as Map<String, Any>
+                    val type = aiMap["type"] as String
+                    guiItem.addAIs.add(aiService.deserializeAiBase(type, aiMap))
+                }
             }
 
             if (guiItem.icon.displayName.startsWith("minecraft-heads.com/")) {
@@ -288,45 +267,17 @@ class ConfigurationServiceImpl @Inject constructor(
         setItem<Boolean>("unbreakable", skin) { value -> petMeta.skin.unbreakable = value }
         setItem<String>("skin", skin) { value -> petMeta.skin.owner = value }
 
-        val goalsMap = defaultConfig["add-ai"] as Map<String, Any?>
-        val ais = parseAIsFromMap(goalsMap)
         petMeta.aiGoals.clear()
-        petMeta.aiGoals.addAll(ais)
 
-        return petMeta
-    }
+        val goalsMap = defaultConfig["add-ai"] as Map<String, Any?>
 
-    /**
-     * Parses Ais from the given [map].
-     */
-    override fun parseAIsFromMap(map: Map<String, Any?>): List<AIBase> {
-        val resultList = ArrayList<AIBase>()
-
-        for (key in map.keys) {
-            val aiSource = (map[key] as Map<String, Any?>)
-
-            if (!aiSource.containsKey("type")) {
-                plugin.logger.log(Level.WARNING, "AI with at $key has got no type tag so it will not be applied.")
-                continue
-            }
-
-            val type = aiSource["type"] as String
-            var found = false
-
-            for (aiType in AIType.values()) {
-                if (aiType.type.equals(type, true)) {
-                    val clazz = Class.forName("com.github.shynixn.petblocks.core.logic.persistence.entity." + aiType.aiClazz.java.simpleName + "Entity")
-                    resultList.add(yamlSerializationService.deserialize(clazz, aiSource))
-                    found = true
-                }
-            }
-
-            if (!found) {
-                plugin.logger.log(Level.WARNING, "AI with at $key has got an unknown type tag $type.")
-            }
+        for (goalKey in goalsMap.keys) {
+            val aiMap = goalsMap[goalKey] as Map<String, Any>
+            val type = aiMap["type"] as String
+            petMeta.aiGoals.add(aiService.deserializeAiBase(type, aiMap))
         }
 
-        return resultList
+        return petMeta
     }
 
     /**

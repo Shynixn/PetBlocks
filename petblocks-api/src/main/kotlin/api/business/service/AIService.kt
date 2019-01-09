@@ -1,5 +1,6 @@
 package com.github.shynixn.petblocks.api.business.service
 
+import api.business.proxy.AICreationProxy
 import com.github.shynixn.petblocks.api.business.proxy.PetProxy
 import com.github.shynixn.petblocks.api.persistence.entity.AIBase
 
@@ -32,7 +33,34 @@ import com.github.shynixn.petblocks.api.persistence.entity.AIBase
  */
 interface AIService {
     /**
-     * Applies an ai goal to a pet and performs all checking actions.
+     * Registers a custom ai type with unique [type] and a proxy to create required AI actions.
+     * Existing types can be overwritten if the given [type] already exists.
      */
-    fun applyAIGoalToPet(petProxy: PetProxy, goal : AIBase)
+    fun <A : AIBase> register(type: String, creator: AICreationProxy<A>)
+
+    /**
+     * Generates an AIBase from the given yaml source string.
+     */
+    fun <A : AIBase> deserializeAiBase(type : String, source: String): A
+
+    /**
+     * Generates an AIBase from the given yaml map data.
+     */
+    fun <A : AIBase> deserializeAiBase(type : String, source: Map<String, Any?>): A
+
+    /**
+     *  Serializes the given [aiBase] to a yaml string.
+     */
+    fun serializeAiBaseToString(aiBase: AIBase): String
+
+    /**
+     *  Serializes the given [aiBase] to a yaml map.
+     */
+    fun serializeAiBase(aiBase: AIBase): Map<String, Any?>
+
+    /**
+     * Generates pathfinders from the given ai bases depending on the
+     * type specified in the [AIBase] and registers types of this service.
+     */
+    fun convertPetAiBasesToPathfinders(petProxy: PetProxy, metas: List<AIBase>): List<Any>
 }

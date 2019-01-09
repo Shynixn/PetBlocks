@@ -63,10 +63,10 @@ class CarryPetServiceImpl @Inject constructor(
             val itemInHand = playerProxy.getItemInHand<Any>(true)
 
             if (itemInHand == null || itemService.isItemStackMaterialType(itemInHand, MaterialType.AIR)) {
-                val cachePet = pet.getHeadItemStack<Any>()
+             /*   val cachePet = pet.getHeadItemStack<Any>()
                 carryingPet[playerProxy.uniqueId] = cachePet
                 playerProxy.setItemInHand(cachePet, true)
-                playerProxy.updateInventory()
+                playerProxy.updateInventory()*/
 
                 pet.remove()
             }

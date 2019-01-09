@@ -12,10 +12,13 @@ import com.github.shynixn.petblocks.api.business.service.*
 import com.github.shynixn.petblocks.api.persistence.entity.AIMovement
 import com.github.shynixn.petblocks.api.persistence.entity.PetMeta
 import com.github.shynixn.petblocks.api.persistence.entity.Position
+import com.github.shynixn.petblocks.api.persistence.entity.Skin
 import com.github.shynixn.petblocks.bukkit.logic.business.extension.setDisplayName
 import com.github.shynixn.petblocks.bukkit.logic.business.extension.setSkin
 import com.github.shynixn.petblocks.bukkit.logic.business.extension.setUnbreakable
 import com.github.shynixn.petblocks.bukkit.logic.business.extension.toVector
+import com.github.shynixn.petblocks.core.logic.business.extension.hasChanged
+import com.github.shynixn.petblocks.core.logic.business.extension.translateChatColors
 import org.bukkit.Bukkit
 import org.bukkit.Location
 import org.bukkit.entity.ArmorStand
@@ -60,29 +63,15 @@ class PetProxyImpl(override val meta: PetMeta, private val design: ArmorStand, p
     PetProxy, Runnable {
 
     var teleportTarget: Location? = null
+    var aiGoals: List<Any>? = null
 
     private val particleService = PetBlocksApi.resolve<ParticleService>(ParticleService::class.java)
     private val soundService = PetBlocksApi.resolve<SoundService>(SoundService::class.java)
+    private val logger: LoggingService = PetBlocksApi.resolve(LoggingService::class.java)
+    private val itemService = PetBlocksApi.resolve<ItemService>(ItemService::class.java)
+    private val aiService = PetBlocksApi.resolve<AIService>(AIService::class.java)
 
-    /**
-     * Gets all pathfinders.
-     */
-    override val pathfinders: MutableList<Any> = ArrayList()
-    /**
-     * Gets the logger of the pet.
-     */
-    override var logger: LoggingService = PetBlocksApi.resolve(LoggingService::class.java)
-
-    /**
-     * Runnable value which represents internal nbt changes of the design armorstand.
-     * Gets automatically applied next pet tick.
-     */
-    override val designNbtChange = HashMap<String, Any>()
-    /**
-     * Runnable value which represents internal nbt changes of the hitboxEntity.
-     * Gets automatically applied next pet tick.
-     */
-    override val hitBoxNbtChange = HashMap<String, Any>()
+    private var aiList: List<Any>? = null
 
     /**
      * Gets if the pet is dead or was removed.
@@ -98,8 +87,6 @@ class PetProxyImpl(override val meta: PetMeta, private val design: ArmorStand, p
         design.leftArmPose = EulerAngle(2878.0, 0.0, 0.0)
         design.setMetadata("keep", FixedMetadataValue(Bukkit.getPluginManager().getPlugin("PetBlocks"), true))
         design.isCustomNameVisible = true
-        design.customName = meta.displayName
-        design.removeWhenFarAway = false
         design.removeWhenFarAway = false
 
         hitBox.addPotionEffect(PotionEffect(PotionEffectType.INVISIBILITY, 9999999, 1))
@@ -107,31 +94,12 @@ class PetProxyImpl(override val meta: PetMeta, private val design: ArmorStand, p
         hitBox.isCustomNameVisible = false
         hitBox.customName = "PetBlockIdentifier"
 
-        val itemService = PetBlocksApi.resolve<ItemService>(ItemService::class.java)
-        val itemStack = itemService.createItemStack<ItemStack>(meta.skin.typeName, meta.skin.dataValue)
-
-        itemStack.setDisplayName(meta.displayName)
-        itemStack.setSkin(meta.skin.owner)
-        itemStack.setUnbreakable(meta.skin.unbreakable)
-
-        this.setHeadItemStack(itemStack)
-
-        val aiService = PetBlocksApi.resolve<AIService>(AIService::class.java);
-
-        for (goal in meta.aiGoals) {
-            aiService.applyAIGoalToPet(this, goal)
-        }
+        meta.enabled = true
+        meta.propertyTracker.onPropertyChanged(PetMeta::displayName)
+        meta.propertyTracker.onPropertyChanged(Skin::typeName)
 
         val event = PetSpawnEvent(this)
         Bukkit.getPluginManager().callEvent(event)
-    }
-
-    /**
-     * Adds a pathfinder to this pet.
-     */
-    override fun addPathfinder(pathfinder: Any) {
-        pathfinders.add(pathfinder)
-        nmsProxy.applyPathfinder(pathfinder)
     }
 
     /**
@@ -146,6 +114,13 @@ class PetProxyImpl(override val meta: PetMeta, private val design: ArmorStand, p
      */
     override fun <A> getHeadArmorstand(): A {
         return design as A
+    }
+
+    /**
+     * Gets the head of the head armorstand.
+     */
+    override fun <I> getHeadArmorstandItemStack(): I {
+        return design.helmet.clone() as I
     }
 
     /**
@@ -171,8 +146,8 @@ class PetProxyImpl(override val meta: PetMeta, private val design: ArmorStand, p
         }
 
         design.isCustomNameVisible = false
-        designNbtChange["Marker"] = true
-        hitBoxNbtChange["NoAI"] = true
+        //designNbtChange["Marker"] = true
+        //   hitBoxNbtChange["NoAI"] = true
 
         owner.passenger = design
         owner.closeInventory()
@@ -181,9 +156,13 @@ class PetProxyImpl(override val meta: PetMeta, private val design: ArmorStand, p
     /**
      * Gets called from any Movement AI to play movement effects.
      */
-    override fun playMovementEffects() {
+    fun playMovementEffects() {
         try {
-            for (aiGoal in pathfinders) {
+            if (aiList == null) {
+                return
+            }
+
+            for (aiGoal in aiList!!) {
                 if (aiGoal is PathfinderProxy) {
                     val aiBase = aiGoal.aiBase
                     if (aiBase is AIMovement) {
@@ -203,22 +182,35 @@ class PetProxyImpl(override val meta: PetMeta, private val design: ArmorStand, p
      * Stops the current target wearing the pet.
      */
     fun stopWearing() {
+        /**
+         *
+        /**
+         * Runnable value which represents internal nbt changes of the design armorstand.
+         * Gets automatically applied next pet tick.
+        */
+        override val designNbtChange = HashMap<String, Any>()
+        /**
+         * Runnable value which represents internal nbt changes of the hitboxEntity.
+         * Gets automatically applied next pet tick.
+        */
+        override val hitBoxNbtChange = HashMap<String, Any>()
+
         if (design.passenger == null) {
-            return
+        return
         }
 
         val event = PetWearEvent(true, this)
         Bukkit.getPluginManager().callEvent(event)
 
         if (event.isCancelled) {
-            return
+        return
         }
 
         design.isCustomNameVisible = true
         designNbtChange["Marker"] = false
         hitBoxNbtChange["NoAI"] = false
 
-        owner.eject()
+        owner.eject()    */
     }
 
     /**
@@ -260,24 +252,6 @@ class PetProxyImpl(override val meta: PetMeta, private val design: ArmorStand, p
     }
 
     /**
-     * Sets the itemstack on the pet head.
-     */
-    override fun <I> setHeadItemStack(itemStack: I) {
-        if (itemStack !is ItemStack) {
-            throw IllegalArgumentException("ItemStack has to be a BukkitItemStack!")
-        }
-
-        design.helmet = itemStack
-    }
-
-    /**
-     * Gets the itemStack on the pet head.
-     */
-    override fun <I> getHeadItemStack(): I {
-        return design.helmet.clone() as I
-    }
-
-    /**
      * Teleports the pet to the given [location].
      */
     override fun <L> teleport(location: L) {
@@ -301,6 +275,34 @@ class PetProxyImpl(override val meta: PetMeta, private val design: ArmorStand, p
      * @see java.lang.Thread.run
      */
     override fun run() {
+        if (!meta.enabled && !isDead) {
+            Bukkit.getPluginManager().callEvent(PetRemoveEvent(this))
+            this.design.remove()
+            this.hitBox.remove()
+
+            return
+        }
+
+        val displayNameChanged = PetMeta::displayName.hasChanged(meta)
+
+        if (displayNameChanged) {
+            design.customName = meta.displayName.translateChatColors()
+        }
+
+        if (displayNameChanged || Skin::typeName.hasChanged(meta.skin)) {
+            val itemStack = itemService.createItemStack<ItemStack>(meta.skin.typeName, meta.skin.dataValue)
+
+            itemStack.setDisplayName(meta.displayName)
+            itemStack.setSkin(meta.skin.owner)
+            itemStack.setUnbreakable(meta.skin.unbreakable)
+
+            design.helmet = itemStack
+        }
+
+        if (PetMeta::aiGoals.hasChanged(meta)) {
+            aiGoals = aiService.convertPetAiBasesToPathfinders(this, meta.aiGoals)
+            aiList = aiGoals
+        }
     }
 
     /**
@@ -314,9 +316,7 @@ class PetProxyImpl(override val meta: PetMeta, private val design: ArmorStand, p
      * Removes the pet.
      */
     override fun remove() {
-        Bukkit.getPluginManager().callEvent(PetRemoveEvent(this))
-        this.design.remove()
-        this.hitBox.remove()
+        meta.enabled = false
     }
 
     /**
