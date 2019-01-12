@@ -15,6 +15,7 @@ import com.github.shynixn.petblocks.api.business.service.ProxyService
 import com.github.shynixn.petblocks.api.persistence.entity.*
 import com.github.shynixn.petblocks.bukkit.logic.business.extension.toMaterial
 import com.github.shynixn.petblocks.bukkit.logic.business.proxy.SqlProxyImpl
+import com.github.shynixn.petblocks.bukkit.logic.business.service.AIServiceImpl
 import com.github.shynixn.petblocks.bukkit.logic.business.service.ConfigurationServiceImpl
 import com.github.shynixn.petblocks.bukkit.logic.business.service.Item18R1ServiceImpl
 import com.github.shynixn.petblocks.core.jvm.logic.business.proxy.CompletableFutureProxyImpl
@@ -266,8 +267,8 @@ class PersistenceMySQLIT {
             }
 
             sqlProxy = SqlProxyImpl(plugin, LoggingUtilServiceImpl(Logger.getAnonymousLogger()))
-            val sqlite = PetMetaSqlRepository(SqlDbContextImpl(sqlProxy!!, LoggingUtilServiceImpl(Logger.getAnonymousLogger()))
-                , ConfigurationServiceImpl(plugin, Item18R1ServiceImpl(), YamlSerializationServiceImpl()), YamlSerializationServiceImpl())
+            val sqlite = PetMetaSqlRepository(SqlDbContextImpl(sqlProxy!!, LoggingUtilServiceImpl(Logger.getAnonymousLogger())),
+                    AIServiceImpl(plugin, LoggingUtilServiceImpl(Logger.getAnonymousLogger()), YamlSerializationServiceImpl()), ConfigurationServiceImpl(plugin, Item18R1ServiceImpl(),  AIServiceImpl(plugin, LoggingUtilServiceImpl(Logger.getAnonymousLogger()), YamlSerializationServiceImpl())))
             val repo = PetRunTimeRepository()
 
             val method = PetBlocksApi::class.java.getDeclaredMethod("initializePetBlocks", PluginProxy::class.java)

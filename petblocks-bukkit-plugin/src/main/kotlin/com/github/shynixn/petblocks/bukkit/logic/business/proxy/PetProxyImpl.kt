@@ -299,6 +299,9 @@ class PetProxyImpl(override val meta: PetMeta, private val design: ArmorStand, p
             design.helmet = itemStack
         }
 
+        // TODO: Keep this check until packet problem appears
+        val hasPassenger = getHitBoxLivingEntity<LivingEntity>().passengers
+
         if (PetMeta::aiGoals.hasChanged(meta)) {
             aiGoals = aiService.convertPetAiBasesToPathfinders(this, meta.aiGoals)
             aiList = aiGoals

@@ -180,7 +180,7 @@ class PetMetaSqlRepository @Inject constructor(
         sqlDbContext.delete(connection, "SHY_PET_AI", "WHERE shy_pet_id=" + petMeta.id)
 
         for (aiItem in petMeta.aiGoals) {
-            val payloadString = aiService.serializeAiBase(aiItem)
+            val payloadString = aiService.serializeAiBaseToString(aiItem)
 
             aiItem.id = sqlDbContext.insert(connection, "SHY_PET_AI"
                 , "shy_pet_id" to petMeta.id
@@ -229,7 +229,7 @@ class PetMetaSqlRepository @Inject constructor(
         )
 
         for (aiItem in petMeta.aiGoals) {
-            val payloadString = aiService.serializeAiBase(aiItem)
+            val payloadString = aiService.serializeAiBaseToString(aiItem)
 
             aiItem.id = sqlDbContext.insert(connection, "SHY_PET_AI"
                 , "shy_pet_id" to petMeta.id

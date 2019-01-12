@@ -1,17 +1,13 @@
-package com.github.shynixn.petblocks.core.logic.persistence.entity
-
-import com.github.shynixn.petblocks.api.business.annotation.YamlSerialize
-import com.github.shynixn.petblocks.api.persistence.entity.AIAfraidOfWater
-import com.github.shynixn.petblocks.api.persistence.entity.Particle
+package api.business.service
 
 /**
- * Created by Shynixn 2018.
+ * Created by Shynixn 2019.
  * <p>
  * Version 1.2
  * <p>
  * MIT License
  * <p>
- * Copyright (c) 2018 by Shynixn
+ * Copyright (c) 2019 by Shynixn
  * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -31,19 +27,14 @@ import com.github.shynixn.petblocks.api.persistence.entity.Particle
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class AIAfraidOfWaterEntity : AIBaseEntity(), AIAfraidOfWater {
+interface YamlConfigurationService {
     /**
-     * Name of the type.
+     * Serializes the given [map] and [key] to a string.
      */
-    override var type: String = "afraid-of-water"
+    fun serializeToString(key: String, map: Map<String, Any?>): String
+
     /**
-     *  Particle shown when a pet falls into water.
+     * DeSerializes the given [data] and turns all memory sections into maps.
      */
-    @YamlSerialize(value = "particle", orderNumber = 1, implementation = ParticleEntity::class)
-    override var particle: Particle = ParticleEntity()
-    /**
-     * Amount of seconds until the particles disappear.
-     */
-    @YamlSerialize(value = "stop-delay", orderNumber = 2)
-    override var stoppingDelay: Int = 3
+    fun deserializeToMap(key: String, data: String): Map<String, Any?>
 }

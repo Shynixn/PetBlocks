@@ -4,20 +4,23 @@ package unittest
 
 import com.github.shynixn.petblocks.api.business.service.ConfigurationService
 import com.github.shynixn.petblocks.api.persistence.context.SqlDbContext
-import com.github.shynixn.petblocks.api.persistence.entity.AIBase
 import com.github.shynixn.petblocks.api.persistence.entity.GuiItem
 import com.github.shynixn.petblocks.api.persistence.entity.PetMeta
 import com.github.shynixn.petblocks.api.persistence.repository.PetMetaRepository
+import com.github.shynixn.petblocks.bukkit.logic.business.service.AIServiceImpl
 import com.github.shynixn.petblocks.core.jvm.logic.persistence.service.YamlSerializationServiceImpl
+import com.github.shynixn.petblocks.core.logic.business.service.LoggingUtilServiceImpl
 import com.github.shynixn.petblocks.core.logic.persistence.entity.PetMetaEntity
 import com.github.shynixn.petblocks.core.logic.persistence.entity.PlayerMetaEntity
 import com.github.shynixn.petblocks.core.logic.persistence.entity.SkinEntity
 import com.github.shynixn.petblocks.core.logic.persistence.repository.PetMetaSqlRepository
+import org.bukkit.plugin.Plugin
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito
 import java.sql.Connection
 import java.util.*
+import java.util.logging.Logger
 
 /**
  * Created by Shynixn 2018.
@@ -159,24 +162,11 @@ class PetMetaSqlRepositoryTest {
 
     companion object {
         fun createWithDependencies(dbContext: SqlDbContext = MockedSqlDbContext()): PetMetaRepository {
-            return PetMetaSqlRepository(dbContext, MockedConfigurationService(), YamlSerializationServiceImpl())
+            return PetMetaSqlRepository(dbContext, AIServiceImpl(Mockito.mock(Plugin::class.java), LoggingUtilServiceImpl(Logger.getAnonymousLogger()), YamlSerializationServiceImpl()), MockedConfigurationService())
         }
     }
 
     class MockedConfigurationService : ConfigurationService{
-        /**
-         * Converts the given [data] to a ai.
-         */
-        override fun convertStringToAi(typename: String, data: String): AIBase {
-            throw IllegalArgumentException()
-        }
-
-        /**
-         * Converts the given [source] to a string.
-         */
-        override fun convertMapToString(source: Map<String, Any?>): String {
-            throw IllegalArgumentException()
-        }
 
         /**
          * Tries to load the config value from the given [path].

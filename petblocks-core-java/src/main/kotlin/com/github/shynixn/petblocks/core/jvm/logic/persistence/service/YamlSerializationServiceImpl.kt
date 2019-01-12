@@ -17,6 +17,7 @@ import kotlin.collections.forEach
 import kotlin.collections.set
 import kotlin.collections.sortedBy
 import kotlin.collections.toTypedArray
+import kotlin.reflect.KClass
 
 /**
  * Created by Shynixn 2018.
@@ -65,23 +66,29 @@ class YamlSerializationServiceImpl : YamlSerializationService {
      * Deserializes the given [dataSource] into a new instance of the given [targetObjectClass].
      */
     override fun <R> deserialize(targetObjectClass: Any, dataSource: Map<String, Any?>): R {
-        if(targetObjectClass !is Class<*>){
-            throw IllegalArgumentException("TargetObjectClass is not a java class $targetObjectClass.")
+        var objectClazz = targetObjectClass
+
+        if (objectClazz is KClass<*>) {
+            objectClazz = objectClazz.java
         }
 
-        if (targetObjectClass.isInterface) {
-            throw IllegalArgumentException("Use a class instead of the $targetObjectClass.")
+        if (objectClazz !is Class<*>) {
+            throw IllegalArgumentException("Deserialization class is not a java class $objectClazz.")
+        }
+
+        if (objectClazz.isInterface) {
+            throw IllegalArgumentException("Use a class instead of the $objectClazz.")
         }
 
         val instance: R?
 
         try {
-            instance = targetObjectClass.newInstance() as R
+            instance = objectClazz.newInstance() as R
         } catch (e: Exception) {
-            throw IllegalArgumentException("Cannot instanciet the class $targetObjectClass. Does it have a default constructor?")
+            throw IllegalArgumentException("Cannot instanciet the class $objectClazz. Does it have a default constructor?")
         }
 
-        deserializeObject(instance!!, targetObjectClass, dataSource)
+        deserializeObject(instance!!, objectClazz, dataSource)
 
         return instance
     }
@@ -264,7 +271,6 @@ class YamlSerializationServiceImpl : YamlSerializationService {
             field.set(instance, deserialize(instanceClazz, value as Map<String, Any?>))
         }
     }
-
 
     /**
      * Serializes the given [instance] into a key value pair map.

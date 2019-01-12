@@ -433,7 +433,7 @@ val MaterialType.type: Material
 /**
  * Gets the server version the plugin is running on.
  */
-fun Any.getServerVersion(): Version {
+fun getServerVersion(): Version {
     if (Bukkit.getServer() == null || Bukkit.getServer().javaClass.getPackage() == null) {
         return Version.VERSION_UNKNOWN
     }

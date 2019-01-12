@@ -1,20 +1,25 @@
+@file:Suppress("UNCHECKED_CAST")
+
 package com.github.shynixn.petblocks.bukkit.logic.business.service
 
 import com.github.shynixn.petblocks.api.business.annotation.Inject
+import com.github.shynixn.petblocks.api.business.enumeration.AIType
 import com.github.shynixn.petblocks.api.business.enumeration.EntityType
 import com.github.shynixn.petblocks.api.business.enumeration.Version
 import com.github.shynixn.petblocks.api.business.proxy.NMSPetProxy
 import com.github.shynixn.petblocks.api.business.proxy.PetProxy
-import com.github.shynixn.petblocks.api.business.service.ConfigurationService
-import com.github.shynixn.petblocks.api.business.service.EntityRegistrationService
-import com.github.shynixn.petblocks.api.business.service.EntityService
-import com.github.shynixn.petblocks.api.business.service.ProxyService
-import com.github.shynixn.petblocks.api.persistence.entity.AIHopping
-import com.github.shynixn.petblocks.api.persistence.entity.AIWalking
-import com.github.shynixn.petblocks.api.persistence.entity.PetMeta
+import com.github.shynixn.petblocks.api.business.service.*
+import com.github.shynixn.petblocks.api.persistence.entity.*
+import com.github.shynixn.petblocks.bukkit.logic.business.extension.findClazz
+import com.github.shynixn.petblocks.bukkit.logic.business.proxy.PathfinderProxyImpl
+import com.github.shynixn.petblocks.core.logic.business.proxy.AICreationProxyImpl
 import org.bukkit.ChatColor
+import org.bukkit.GameMode
+import org.bukkit.Location
 import org.bukkit.entity.Entity
+import org.bukkit.entity.LivingEntity
 import org.bukkit.entity.Player
+import org.bukkit.plugin.Plugin
 
 /**
  * Created by Shynixn 2018.
@@ -47,9 +52,122 @@ class EntityServiceImpl @Inject constructor(
     private val configurationService: ConfigurationService,
     private val proxyService: ProxyService,
     private val entityRegistrationService: EntityRegistrationService,
+    private val yamlSerializationService: YamlSerializationService,
+    private val aiService: AIService,
+    private val plugin: Plugin,
+    private val afraidOfWaterService: AfraidOfWaterService,
+    private val navigationService: NavigationService,
+    private val soundService: SoundService,
     private val version: Version
 ) : EntityService {
     private var registered = false
+
+    private val getHandleMethod = Class.forName("org.bukkit.craftbukkit.VERSION.entity.CraftLivingEntity".replace("VERSION", version.bukkitId)).getDeclaredMethod("getHandle")!!
+
+    init {
+        this.register<AIFloatInWater>(AIType.FLOAT_IN_WATER) { pet, _ ->
+            findClazz("net.minecraft.server.VERSION.PathfinderGoalFloat")
+                .getDeclaredConstructor(findClazz("net.minecraft.server.VERSION.EntityInsentient"))
+                .newInstance(getHandleMethod.invoke(pet.getHitBoxLivingEntity<LivingEntity>()))
+        }
+
+        this.register<AIAfraidOfWater>(AIType.AFRAID_OF_WATER) { pet, aiBase ->
+            val pathfinder = PathfinderProxyImpl(plugin, aiBase)
+            val hitBox = pet.getHitBoxLivingEntity<LivingEntity>()
+            val owner = pet.getPlayer<Player>()
+
+            pathfinder.shouldGoalBeExecuted = {
+                !hitBox.isDead && owner.gameMode != GameMode.SPECTATOR && afraidOfWaterService.isPetInWater(pet)
+            }
+
+            pathfinder.onExecute = {
+                afraidOfWaterService.escapeWater(pet, aiBase)
+            }
+
+            pathfinder
+        }
+
+        this.register<AIAmbientSound>(AIType.AMBIENT_SOUND) { pet, aiBase ->
+            val pathfinder = PathfinderProxyImpl(plugin, aiBase)
+            val hitBox = pet.getHitBoxLivingEntity<LivingEntity>()
+            val owner = pet.getPlayer<Player>()
+
+            pathfinder.shouldGoalBeExecuted = {
+                !hitBox.isDead && owner.gameMode != GameMode.SPECTATOR
+            }
+
+            pathfinder.onExecute = {
+                if (Math.random() > 0.99) {
+                    soundService.playSound(hitBox.location, aiBase.sound, hitBox.world.players)
+                }
+            }
+
+            pathfinder
+        }
+
+        this.register<AIFeeding>(AIType.FEEDING) { _, aiBase -> PathfinderProxyImpl(plugin, aiBase) }
+
+        this.register<AIFollowBack>(AIType.FOLLOW_BACK) { pet, aiBase ->
+            val pathfinder = PathfinderProxyImpl(plugin, aiBase)
+            val owner = pet.getPlayer<Player>()
+
+            pathfinder.shouldGoalBeExecuted = {
+                !pet.isDead && owner.gameMode != GameMode.SPECTATOR
+            }
+
+            pathfinder.onExecute = {
+                val location = owner.location
+                val targetLocation = Location(location.world,
+                    (location.x + (-1 * Math.cos(Math.toRadians(location.yaw + 90.0)))),
+                    location.y,
+                    location.z + (-1 * Math.sin(Math.toRadians(location.yaw + 90.0))),
+                    location.yaw,
+                    location.pitch)
+
+                pet.teleport(targetLocation)
+            }
+
+            pathfinder
+        }
+
+        this.register<AIFollowOwner>(AIType.FOLLOW_OWNER) { pet, aiBase ->
+            var lastLocation: Location? = null
+            val pathfinder = PathfinderProxyImpl(plugin, aiBase)
+            val owner = pet.getPlayer<Player>()
+            val hitBox = pet.getHitBoxLivingEntity<LivingEntity>()
+
+            pathfinder.shouldGoalContinueExecuting = {
+                when {
+                    owner.location.distance(hitBox.location) > aiBase.maxRange -> {
+                        pet.teleport(owner.location)
+                        false
+                    }
+
+                    owner.location.distance(hitBox.location) < aiBase.distanceToOwner -> false
+                    else -> !(lastLocation != null && lastLocation!!.distance(owner.location) > 2)
+                }
+            }
+
+            pathfinder.shouldGoalBeExecuted = {
+                !hitBox.isDead && owner.gameMode != GameMode.SPECTATOR && owner.location.distance(hitBox.location) >= aiBase.distanceToOwner
+            }
+
+            pathfinder.onStopExecuting = {
+                navigationService.clearNavigation(pet)
+            }
+
+            pathfinder.onStartExecuting = {
+                lastLocation = owner.location.clone()
+                navigationService.navigateToLocation(pet, owner.location, aiBase.speed)
+            }
+
+            pathfinder
+        }
+
+        this.register<AIGroundRiding>(AIType.GROUND_RIDING) { _, aiBase -> PathfinderProxyImpl(plugin, aiBase) }
+        this.register<AIHopping>(AIType.HOPPING) { _, aiBase -> PathfinderProxyImpl(plugin, aiBase) }
+        this.register<AIWearing>(AIType.WEARING) { _, aiBase -> PathfinderProxyImpl(plugin, aiBase) }
+    }
 
     /**
      * Spawns a new unManaged petProxy.
@@ -67,7 +185,7 @@ class EntityServiceImpl @Inject constructor(
                 break
             }
 
-            if(aiGoal is AIWalking){
+            if (aiGoal is AIWalking) {
                 entityType = EntityType.VILLAGER
                 break
             }
@@ -118,5 +236,13 @@ class EntityServiceImpl @Inject constructor(
             val prefix = configurationService.findValue<String>("messages.prefix")
             player.sendMessage(prefix + "" + ChatColor.GREEN + "You removed entity " + nearest.type + '.'.toString())
         }
+    }
+
+    /**
+     * Registers a default ai type.
+     */
+    private fun <A : AIBase> register(aiType: AIType, function: (PetProxy, A) -> Any) {
+        val clazz = Class.forName("com.github.shynixn.petblocks.core.logic.persistence.entity.CUSTOMEntity".replace("CUSTOM", aiType.aiClazz.java.simpleName))
+        aiService.register(aiType.type, AICreationProxyImpl(yamlSerializationService, clazz.kotlin, function as (PetProxy, AIBase) -> Any))
     }
 }

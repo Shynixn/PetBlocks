@@ -2,6 +2,7 @@
 
 package com.github.shynixn.petblocks.bukkit
 
+import api.business.service.YamlConfigurationService
 import com.github.shynixn.petblocks.api.business.annotation.Inject
 import com.github.shynixn.petblocks.api.business.commandexecutor.EditPetCommandExecutor
 import com.github.shynixn.petblocks.api.business.commandexecutor.PlayerPetActionCommandExecutor
@@ -63,7 +64,7 @@ class PetBlocksDependencyInjectionBinder(private val plugin: Plugin) : AbstractM
      * Configures the business logic tree.
      */
     override fun configure() {
-        val version = plugin.getServerVersion()
+        val version = getServerVersion()
 
         bindInstance<Plugin>(plugin)
         bindInstance<Version>(version)
@@ -94,6 +95,11 @@ class PetBlocksDependencyInjectionBinder(private val plugin: Plugin) : AbstractM
         bind<PetMetaRepository, PetMetaSqlRepository>()
         bind<PetRepository, PetRunTimeRepository>()
 
+        when {
+            version.isVersionSameOrGreaterThan(Version.VERSION_1_13_R1) -> bind<ItemService, Item113R1ServiceImpl>()
+            else -> bind<ItemService, Item18R1ServiceImpl>()
+        }
+
         // Services
         bind<ParticleService, ParticleServiceImpl>()
         bind<SoundService, SoundServiceImpl>()
@@ -114,6 +120,7 @@ class PetBlocksDependencyInjectionBinder(private val plugin: Plugin) : AbstractM
         bind<CarryPetService, CarryPetServiceImpl>()
         bind<CombatPetService, CombatPetServiceImpl>()
         bind<AIService, AIServiceImpl>()
+        bind<YamlConfigurationService, YamlConfigurationServiceImpl>()
         bind<YamlSerializationService, YamlSerializationServiceImpl>()
         bind<AfraidOfWaterService, AfraidOfWaterServiceImpl>()
         bind<NavigationService, NavigationServiceImpl>()
@@ -124,11 +131,6 @@ class PetBlocksDependencyInjectionBinder(private val plugin: Plugin) : AbstractM
             version.isVersionSameOrGreaterThan(Version.VERSION_1_13_R1) -> bind<EntityRegistrationService, EntityRegistration113R1ServiceImpl>()
             version.isVersionSameOrGreaterThan(Version.VERSION_1_11_R1) -> bind<EntityRegistrationService, EntityRegistration111R1ServiceImpl>()
             else -> bind<EntityRegistrationService, EntityRegistration18R1ServiceImpl>()
-        }
-
-        when {
-            version.isVersionSameOrGreaterThan(Version.VERSION_1_13_R1) -> bind<ItemService, Item113R1ServiceImpl>()
-            else -> bind<ItemService, Item18R1ServiceImpl>()
         }
 
         // Dependency resolving

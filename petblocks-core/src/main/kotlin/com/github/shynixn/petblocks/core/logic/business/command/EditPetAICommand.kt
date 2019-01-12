@@ -6,6 +6,7 @@ import com.github.shynixn.petblocks.api.business.annotation.Inject
 import com.github.shynixn.petblocks.api.business.command.SourceCommand
 import com.github.shynixn.petblocks.api.business.enumeration.ChatColor
 import com.github.shynixn.petblocks.api.business.service.*
+import com.github.shynixn.petblocks.api.persistence.entity.AIBase
 
 /**
  * Created by Shynixn 2018.
@@ -39,6 +40,7 @@ class EditPetAICommand @Inject constructor(
     private val petMetaService: PersistencePetMetaService,
     private val configurationService: ConfigurationService,
     private val messageService: MessageService,
+    private val aiService: AIService,
     private val commandService: CommandService
 ) : SourceCommand {
     /**
@@ -64,16 +66,27 @@ class EditPetAICommand @Inject constructor(
                 var removeAmount = 0
 
                 if (configuration.containsKey("remove-ai")) {
-                    val removeAis = configurationService.parseAIsFromMap(configuration["remove-ai"] as Map<String, Any?>)
+                    val removeAis = configuration["remove-ai"] as Map<String, Any?>
 
-                    for (aiBase in removeAis) {
+                    for (mapData in removeAis.keys) {
+                        val data = removeAis[mapData] as Map<String, Any?>
+                        val aiBase = aiService.deserializeAiBase<AIBase>(data["type"] as String, data)
+
                         removeAmount += petMeta.aiGoals.filter { a -> a.type == aiBase.type }.size
                         petMeta.aiGoals.removeAll { a -> a.type == aiBase.type }
                     }
                 }
 
                 if (configuration.containsKey("add-ai")) {
-                    val addAis = configurationService.parseAIsFromMap(configuration["add-ai"] as Map<String, Any?>)
+                    val addAis = configuration["add-ai"] as Map<String, Any?>
+
+                    for (mapData in addAis.keys) {
+                        val data = addAis[mapData] as Map<String, Any?>
+                        val aiBase = aiService.deserializeAiBase<AIBase>(data["type"] as String, data)
+
+                        removeAmount += petMeta.aiGoals.filter { a -> a.type == aiBase.type }.size
+                        petMeta.aiGoals.removeAll { a -> a.type == aiBase.type }
+                    }
 
                     addAmount += addAis.size
                 }
