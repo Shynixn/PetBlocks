@@ -1,7 +1,10 @@
-package api.business.proxy
+@file:Suppress("KDocMissingDocumentation")
 
-import com.github.shynixn.petblocks.api.business.proxy.PetProxy
-import com.github.shynixn.petblocks.api.persistence.entity.AIBase
+package com.github.shynixn.petblocks.bukkit.logic.business.nms.v1_13_R2
+
+import com.github.shynixn.petblocks.api.business.proxy.EntityPetProxy
+import org.bukkit.craftbukkit.v1_13_R2.CraftServer
+import org.bukkit.craftbukkit.v1_13_R2.entity.CraftCreature
 
 /**
  * Created by Shynixn 2019.
@@ -30,20 +33,44 @@ import com.github.shynixn.petblocks.api.persistence.entity.AIBase
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-interface AICreationProxy<A : AIBase> {
+class CraftPet(server: CraftServer, nmsPet: NMSPet) : CraftCreature(server, nmsPet), EntityPetProxy {
     /**
-     *  Gets called when the the given ai Base should be serialized.
+     * Removes this entity.
      */
-    fun onSerialization(aiBase: A): Map<String, Any?>
+    override fun deleteFromWorld() {
+        super.remove()
+    }
 
     /**
-     * Gets called when the given aiBase should be serialized.
+     * Hides the true type of the pet from everyone else.
      */
-    fun onDeserialization(source: Map<String, Any?>): A
+    override fun getType(): org.bukkit.entity.EntityType {
+        return org.bukkit.entity.EntityType.UNKNOWN
+    }
 
     /**
-     * Gets called when a pathfinder needs to be created for the given pet.
-     * ReturnType can be an instance of PathfinderProxy or any NMS pathfinder.
+     * Ignore all other plugins trying to remove this entity. This is the entity of PetBlocks,
+     * no one else is allowed to modify this!
      */
-    fun onPathfinderCreation(pet: PetProxy, aiBase: A): Any
+    override fun remove() {
+    }
+
+    /**
+     * Pet should never be persistent.
+     */
+    override fun isPersistent(): Boolean {
+        return false
+    }
+
+    /**
+     * Pet should never be persistent.
+     */
+    override fun setPersistent(b: Boolean) {}
+
+    /**
+     * Custom type.
+     */
+    override fun toString(): String {
+        return "PetBlocks{Entity}"
+    }
 }

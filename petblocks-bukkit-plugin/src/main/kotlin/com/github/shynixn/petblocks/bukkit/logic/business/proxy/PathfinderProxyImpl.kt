@@ -32,7 +32,7 @@ import java.util.logging.Level
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class PathfinderProxyImpl(private val plugin: Plugin, override val aiBase: AIBase) : PathfinderProxy {
+open class PathfinderProxyImpl(private val plugin: Plugin, override val aiBase: AIBase) : PathfinderProxy {
     /**
      * Should Goal executed function.
      */

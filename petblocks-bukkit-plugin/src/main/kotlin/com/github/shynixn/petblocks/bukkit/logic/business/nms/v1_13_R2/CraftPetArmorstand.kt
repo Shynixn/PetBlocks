@@ -1,6 +1,8 @@
-package api.persistence.entity
+package com.github.shynixn.petblocks.bukkit.logic.business.nms.v1_13_R2
 
-import api.business.service.PropertyTrackingService
+import com.github.shynixn.petblocks.api.business.proxy.EntityPetProxy
+import org.bukkit.craftbukkit.v1_13_R2.CraftServer
+import org.bukkit.craftbukkit.v1_13_R2.entity.CraftArmorStand
 
 /**
  * Created by Shynixn 2019.
@@ -29,9 +31,44 @@ import api.business.service.PropertyTrackingService
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-interface PropertyTrackable {
+class CraftPetArmorstand(server: CraftServer, nmsPet: NMSPetArmorstand) : CraftArmorStand(server, nmsPet), EntityPetProxy {
     /**
-     * Gets the property tracker.
+     * Removes this entity.
      */
-    val propertyTracker : PropertyTrackingService
+    override fun deleteFromWorld() {
+        super.remove()
+    }
+
+    /**
+     * Hides the true type of the pet from everyone else.
+     */
+    override fun getType(): org.bukkit.entity.EntityType {
+        return org.bukkit.entity.EntityType.UNKNOWN
+    }
+
+    /**
+     * Ignore all other plugins trying to remove this entity. This is the entity of PetBlocks,
+     * no one else is allowed to modify this!
+     */
+    override fun remove() {
+    }
+
+    /**
+     * Pet should never be persistent.
+     */
+    override fun isPersistent(): Boolean {
+        return false
+    }
+
+    /**
+     * Pet should never be persistent.
+     */
+    override fun setPersistent(b: Boolean) {}
+
+    /**
+     * Custom type.
+     */
+    override fun toString(): String {
+        return "PetBlocks{ArmorstandEntity}"
+    }
 }

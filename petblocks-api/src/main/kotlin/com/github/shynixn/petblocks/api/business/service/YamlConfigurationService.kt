@@ -1,7 +1,4 @@
-package com.github.shynixn.petblocks.core.logic.business.service
-
-import com.github.shynixn.petblocks.api.business.service.PropertyTrackingService
-import kotlin.reflect.KProperty
+package com.github.shynixn.petblocks.api.business.service
 
 /**
  * Created by Shynixn 2019.
@@ -30,24 +27,14 @@ import kotlin.reflect.KProperty
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class PropertyTrackingServiceImpl : PropertyTrackingService {
-    private val changeHistory = HashMap<String, Boolean>()
+interface YamlConfigurationService {
+    /**
+     * Serializes the given [map] and [key] to a string.
+     */
+    fun serializeToString(key: String, map: Map<String, Any?>): String
 
     /**
-     * Gets if the given [property] has changed.
+     * DeSerializes the given [data] and turns all memory sections into maps.
      */
-    override fun hasChanged(property: KProperty<*>): Boolean {
-        if (!changeHistory.containsKey(property.name)) {
-            return false
-        }
-
-        return changeHistory[property.name]!!
-    }
-
-    /**
-     * Gets called when the [property] gets updated.
-     */
-    override fun onPropertyChanged(property: KProperty<*>, changeState: Boolean) {
-        changeHistory[property.name] = changeState
-    }
+    fun deserializeToMap(key: String, data: String): Map<String, Any?>
 }

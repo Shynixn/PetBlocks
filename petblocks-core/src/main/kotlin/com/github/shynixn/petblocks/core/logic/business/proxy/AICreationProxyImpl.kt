@@ -1,6 +1,6 @@
 package com.github.shynixn.petblocks.core.logic.business.proxy
 
-import api.business.proxy.AICreationProxy
+import com.github.shynixn.petblocks.api.business.proxy.AICreationProxy
 import com.github.shynixn.petblocks.api.business.proxy.PetProxy
 import com.github.shynixn.petblocks.api.business.service.YamlSerializationService
 import com.github.shynixn.petblocks.api.persistence.entity.AIBase
@@ -36,15 +36,19 @@ import kotlin.reflect.KClass
 class AICreationProxyImpl(
     private val yamlSerializationService: YamlSerializationService,
     private val clazz: KClass<*>,
-    private val function: (PetProxy, AIBase) -> Any
+    private val function: ((PetProxy, AIBase) -> Any)?
 ) :
     AICreationProxy<AIBase> {
     /**
      * Gets called when a pathfinder needs to be created for the given pet.
      * ReturnType can be an instance of PathfinderProxy or any NMS pathfinder.
      */
-    override fun onPathfinderCreation(pet: PetProxy, aiBase: AIBase): Any {
-        return function.invoke(pet, aiBase)
+    override fun onPathfinderCreation(pet: PetProxy, aiBase: AIBase): Any? {
+        if (function != null) {
+            return function.invoke(pet, aiBase)
+        }
+
+        return null
     }
 
     /**

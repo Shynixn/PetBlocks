@@ -1,7 +1,7 @@
-package com.github.shynixn.petblocks.api.persistence.entity
+package com.github.shynixn.petblocks.api.business.service
 
-import api.business.service.PropertyTrackingService
-import api.persistence.entity.PropertyTrackable
+import com.github.shynixn.petblocks.api.business.proxy.CompletableFutureProxy
+import com.github.shynixn.petblocks.api.business.proxy.PlayerProxy
 
 /**
  * Created by Shynixn 2018.
@@ -30,44 +30,46 @@ import api.persistence.entity.PropertyTrackable
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-interface PetMeta : PropertyTrackable{
+interface ProxyService {
     /**
-     * Database id.
+     * Creates a new completable future.
      */
-    var id: Long
+    fun <T> createCompletableFuture(): CompletableFutureProxy<T>
 
     /**
-     * Is the pet enabled. Should not get modified directly.
+     * Returns a proxy object for the given instance.
+     * Throws a [IllegalArgumentException] if the proxy could not be generated.
      */
-    var enabled: Boolean
+    fun <P> findProxyObject(instance: Any): P
 
     /**
-     * Displayed name on top of the pet.
+     * Returns a player proxy object for the given instance.
+     * Throws a [IllegalArgumentException] if the proxy could not be generated.
      */
-    var displayName: String
+    fun <P> findPlayerProxyObject(instance: P): PlayerProxy
 
     /**
-     * Pet sounds enabled.
+     * Gets if the given instance can be converted to a player.
      */
-    var soundEnabled: Boolean
+    fun <P> isPlayer(instance: P): Boolean
 
     /**
-     * Pet particles enabled.
+     * Gets the name of a  instance.
      */
-    var particleEnabled: Boolean
+    fun <I> getNameOfInstance(instance: I): String
 
     /**
-     * Meta data of the owner.
+     * Tries to return a player proxy for the given player name.
      */
-    val playerMeta: PlayerMeta
+    fun findPlayerProxyObjectFromName(name: String): PlayerProxy?
 
     /**
-     * Meta data of the skin.
+     * Tries to return a player proxy for the given player uuid.
      */
-    val skin: Skin
+    fun findPlayerProxyObjectFromUUID(uuid: String) : PlayerProxy?
 
     /**
-     * Gets a list of all ai goals of this pet.
+     * Clears any resources the given instance has allocated.
      */
-    val aiGoals: MutableList<AIBase>
+    fun cleanResources(instance: Any)
 }

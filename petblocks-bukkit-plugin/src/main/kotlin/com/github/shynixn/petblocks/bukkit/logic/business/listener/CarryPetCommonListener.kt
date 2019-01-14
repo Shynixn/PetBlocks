@@ -41,7 +41,7 @@ import org.bukkit.inventory.ItemStack
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class CarryPetListener @Inject constructor(private val carryPetService: CarryPetService, private val petService: PetService) : Listener {
+class CarryPetCommonListener @Inject constructor(private val carryPetService: CarryPetService, private val petService: PetService) : Listener {
     /**
      * Gets called when a player interacts at the given entity.
      */
@@ -106,10 +106,12 @@ class CarryPetListener @Inject constructor(private val carryPetService: CarryPet
      */
     @EventHandler
     fun onInventoryOpenEvent(event: InventoryOpenEvent) {
-        if (carryPetService.isCarryingPet(event.player)) {
-            event.isCancelled = true
-            event.player.closeInventory()
+        if (!carryPetService.isCarryingPet(event.player)) {
+            return
         }
+
+        event.isCancelled = true
+        event.player.closeInventory()
     }
 
     /**
@@ -117,13 +119,15 @@ class CarryPetListener @Inject constructor(private val carryPetService: CarryPet
      */
     @EventHandler
     fun onPlayerDeathEvent(event: PlayerDeathEvent) {
-        if (carryPetService.isCarryingPet(event.entity)) {
-            val itemStack = carryPetService.getCarryPetItemStack<Player, ItemStack>(event.entity)
+        if (!carryPetService.isCarryingPet(event.entity)) {
+            return
+        }
 
-            if (itemStack != null) {
-                event.drops.remove(itemStack)
-                carryPetService.dropPet(event.entity)
-            }
+        val itemStack = carryPetService.getCarryPetItemStack<Player, ItemStack>(event.entity)
+
+        if (itemStack != null) {
+            event.drops.remove(itemStack)
+            carryPetService.dropPet(event.entity)
         }
     }
 
@@ -132,9 +136,11 @@ class CarryPetListener @Inject constructor(private val carryPetService: CarryPet
      */
     @EventHandler
     fun onPlayerQuitEvent(event: PlayerQuitEvent) {
-        if (carryPetService.isCarryingPet(event.player)) {
-            carryPetService.clearResources(event.player)
+        if (!carryPetService.isCarryingPet(event.player)) {
+            return
         }
+
+        carryPetService.clearResources(event.player)
     }
 
     /**
@@ -142,22 +148,26 @@ class CarryPetListener @Inject constructor(private val carryPetService: CarryPet
      */
     @EventHandler
     fun onInventoryClick(event: InventoryClickEvent) {
-        if (carryPetService.isCarryingPet(event.whoClicked)) {
-            carryPetService.dropPet(event.whoClicked)
-            event.isCancelled = true
+        if (!carryPetService.isCarryingPet(event.whoClicked)) {
+            return
         }
+
+        carryPetService.dropPet(event.whoClicked)
+        event.isCancelled = true
     }
 
     /**
-     * Gets called when the player drops an item.l
+     * Gets called when the player drops an item.
      */
     @EventHandler
     fun onPlayerDropItem(event: PlayerDropItemEvent) {
-        if (carryPetService.isCarryingPet(event.player)) {
-            carryPetService.dropPet(event.player)
-            event.isCancelled = true
-            event.itemDrop.remove()
+        if (!carryPetService.isCarryingPet(event.player)) {
+            return
         }
+
+        carryPetService.dropPet(event.player)
+        event.isCancelled = true
+        event.itemDrop.remove()
     }
 
     /**
@@ -165,9 +175,11 @@ class CarryPetListener @Inject constructor(private val carryPetService: CarryPet
      */
     @EventHandler
     fun onSlotChange(event: PlayerItemHeldEvent) {
-        if (carryPetService.isCarryingPet(event.player)) {
-            carryPetService.dropPet(event.player)
-            event.player.inventory.setItem(event.previousSlot, null)
+        if (!carryPetService.isCarryingPet(event.player)) {
+            return
         }
+
+        carryPetService.dropPet(event.player)
+        event.player.inventory.setItem(event.previousSlot, null)
     }
 }

@@ -1,4 +1,6 @@
-package api.business.service
+package com.github.shynixn.petblocks.api.business.service
+
+import kotlin.reflect.KProperty
 
 /**
  * Created by Shynixn 2019.
@@ -27,14 +29,15 @@ package api.business.service
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-interface YamlConfigurationService {
-    /**
-     * Serializes the given [map] and [key] to a string.
-     */
-    fun serializeToString(key: String, map: Map<String, Any?>): String
+interface PropertyTrackingService {
 
     /**
-     * DeSerializes the given [data] and turns all memory sections into maps.
+     * Gets if the given [property] has changed.
      */
-    fun deserializeToMap(key: String, data: String): Map<String, Any?>
+    fun hasChanged(property : KProperty<*>) : Boolean
+
+    /**
+     * Gets called when the [property] gets updated.
+     */
+    fun onPropertyChanged(property : KProperty<*>, changeState : Boolean = true)
 }

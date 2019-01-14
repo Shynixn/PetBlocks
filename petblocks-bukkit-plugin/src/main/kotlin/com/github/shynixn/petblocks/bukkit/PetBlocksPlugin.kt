@@ -103,7 +103,7 @@ class PetBlocksPlugin : JavaPlugin(), PluginProxy {
         updateCheckService.checkForUpdates()
 
         // Register Listener
-        Bukkit.getPluginManager().registerEvents(resolve(CarryPetListener::class.java), this)
+        Bukkit.getPluginManager().registerEvents(resolve(CarryPetCommonListener::class.java), this)
         Bukkit.getPluginManager().registerEvents(resolve(CombatPetListener::class.java), this)
         Bukkit.getPluginManager().registerEvents(resolve(FeedingPetListener::class.java), this)
         Bukkit.getPluginManager().registerEvents(resolve(InventoryListener::class.java), this)

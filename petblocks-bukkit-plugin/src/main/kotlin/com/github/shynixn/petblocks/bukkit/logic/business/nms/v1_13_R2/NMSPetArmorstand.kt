@@ -39,10 +39,10 @@ import java.lang.reflect.Field
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class PetDesign(owner: Player, val petMeta: PetMeta, entityType: EntityType) : EntityArmorStand((owner.location.world as CraftWorld).handle), NMSPetProxy {
+class NMSPetArmorstand(owner: Player, val petMeta: PetMeta, entityType: EntityType) : EntityArmorStand((owner.location.world as CraftWorld).handle), NMSPetProxy {
     private var internalProxy: PetProxyImpl? = null
     private var jumpingField: Field = EntityLiving::class.java.getDeclaredField("bg")
-    private var hitBox: PetRabbitHitBox
+    private var hitBox: NMSPet
 
     /**
      * Proxy handler.
@@ -61,9 +61,9 @@ class PetDesign(owner: Player, val petMeta: PetMeta, entityType: EntityType) : E
         mcWorld.addEntity(this, CreatureSpawnEvent.SpawnReason.CUSTOM)
 
         hitBox = if (entityType == EntityType.RABBIT) {
-            PetRabbitHitBox(this, location)
+            NMSPet(this, location)
         } else {
-            PetRabbitHitBox(this, location)
+            NMSPet(this, location)
         }
 
         internalProxy = PetProxyImpl(petMeta, this.bukkitEntity as ArmorStand, this, hitBox.bukkitEntity as LivingEntity, owner)
@@ -122,10 +122,14 @@ class PetDesign(owner: Player, val petMeta: PetMeta, entityType: EntityType) : E
     }
 
     /**
-     * Gets if a passenger of the pet is jumping.
+     * Gets the bukkit entity.
      */
-    private fun isPassengerJumping(): Boolean {
-        return passengers != null && !this.passengers.isEmpty() && jumpingField.getBoolean(this.passengers[0])
+    override fun getBukkitEntity(): CraftPetArmorstand {
+        if (this.bukkitEntity == null) {
+            this.bukkitEntity = CraftPetArmorstand(this.world.server, this)
+        }
+
+        return this.bukkitEntity as CraftPetArmorstand
     }
 
     /**
@@ -180,5 +184,12 @@ class PetDesign(owner: Player, val petMeta: PetMeta, entityType: EntityType) : E
 
         this.aJ += (f4 - this.aJ) * 0.4f
         this.aK += this.aJ
+    }
+
+    /**
+     * Gets if a passenger of the pet is jumping.
+     */
+    private fun isPassengerJumping(): Boolean {
+        return passengers != null && !this.passengers.isEmpty() && jumpingField.getBoolean(this.passengers[0])
     }
 }

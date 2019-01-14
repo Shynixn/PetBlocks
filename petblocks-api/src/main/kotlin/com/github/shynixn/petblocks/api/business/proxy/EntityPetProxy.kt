@@ -1,15 +1,13 @@
-package com.github.shynixn.petblocks.api.business.service
-
-import com.github.shynixn.petblocks.api.business.proxy.CompletableFutureProxy
+package com.github.shynixn.petblocks.api.business.proxy
 
 /**
- * Created by Shynixn 2018.
+ * Created by Shynixn 2019.
  * <p>
  * Version 1.2
  * <p>
  * MIT License
  * <p>
- * Copyright (c) 2018 by Shynixn
+ * Copyright (c) 2019 by Shynixn
  * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -29,19 +27,9 @@ import com.github.shynixn.petblocks.api.business.proxy.CompletableFutureProxy
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-interface ConcurrencyService {
+interface EntityPetProxy{
     /**
-     * Creates a new completable future.
+     * Removes this entity.
      */
-    fun <T> createCompletableFuture(): CompletableFutureProxy<T>
-
-    /**
-     * Runs the given [function] synchronised with the given [delayTicks] and [repeatingTicks].
-     */
-    fun runTaskSync(delayTicks: Long = 0L, repeatingTicks: Long = 0L, function: () -> Unit)
-
-    /**
-     * Runs the given [function] asynchronous with the given [delayTicks] and [repeatingTicks].
-     */
-    fun runTaskAsync(delayTicks: Long = 0L, repeatingTicks: Long = 0L, function: () -> Unit)
+    fun deleteFromWorld()
 }

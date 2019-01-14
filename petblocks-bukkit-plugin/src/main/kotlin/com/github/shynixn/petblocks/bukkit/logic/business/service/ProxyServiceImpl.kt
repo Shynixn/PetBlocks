@@ -2,9 +2,11 @@
 
 package com.github.shynixn.petblocks.bukkit.logic.business.service
 
+import com.github.shynixn.petblocks.api.business.proxy.CompletableFutureProxy
 import com.github.shynixn.petblocks.api.business.proxy.PlayerProxy
 import com.github.shynixn.petblocks.api.business.service.ProxyService
 import com.github.shynixn.petblocks.bukkit.logic.business.proxy.PlayerProxyImpl
+import com.github.shynixn.petblocks.core.jvm.logic.business.proxy.CompletableFutureProxyImpl
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
 import java.util.*
@@ -38,6 +40,13 @@ import java.util.*
  */
 class ProxyServiceImpl : ProxyService {
     private val playerCache = HashMap<Player, PlayerProxy>()
+
+    /**
+     * Creates a new completable future.
+     */
+    override fun <T> createCompletableFuture(): CompletableFutureProxy<T> {
+        return CompletableFutureProxyImpl()
+    }
 
     /**
      * Gets if the given instance can be converted to a player.

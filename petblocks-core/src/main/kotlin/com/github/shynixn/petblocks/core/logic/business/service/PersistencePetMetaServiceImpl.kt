@@ -40,16 +40,16 @@ import kotlin.collections.ArrayList
  * SOFTWARE.
  */
 class PersistencePetMetaServiceImpl @Inject constructor(
-    private val concurrencyService: ConcurrencyService,
     private val proxyService: ProxyService,
     private val petMetaRepository: PetMetaRepository,
+    private val concurrencyService: ConcurrencyService,
     private val petRepository: PetRepository
 ) : PersistencePetMetaService {
     /**
      * Returns [CompletableFutureProxy] with a list of stored [PetMeta].
      */
     override fun getAll(): CompletableFutureProxy<List<PetMeta>> {
-        val completableFuture = concurrencyService.createCompletableFuture<List<PetMeta>>()
+        val completableFuture = proxyService.createCompletableFuture<List<PetMeta>>()
 
         val activePetMetas = petRepository.getAll().map { p -> p.meta }
 
@@ -79,7 +79,7 @@ class PersistencePetMetaServiceImpl @Inject constructor(
      * currently uses the meta data of the player.
      */
     override fun getOrCreateFromPlayerUUID(uuid: String): CompletableFutureProxy<PetMeta> {
-        val completableFuture = concurrencyService.createCompletableFuture<PetMeta>()
+        val completableFuture = proxyService.createCompletableFuture<PetMeta>()
 
         if (petRepository.hasPet(uuid)) {
             val meta = petRepository.getFromPlayerUUID(uuid).meta
@@ -109,7 +109,7 @@ class PersistencePetMetaServiceImpl @Inject constructor(
      * Saves the given [petMeta] instance and returns a [CompletableFutureProxy] with the same petMeta instance.
      */
     override fun save(petMeta: PetMeta): CompletableFutureProxy<PetMeta> {
-        val completableFuture = concurrencyService.createCompletableFuture<PetMeta>()
+        val completableFuture = proxyService.createCompletableFuture<PetMeta>()
 
         async(concurrencyService) {
             petMetaRepository.save(petMeta)

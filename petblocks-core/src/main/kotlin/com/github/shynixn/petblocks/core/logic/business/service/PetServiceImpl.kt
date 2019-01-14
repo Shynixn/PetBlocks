@@ -57,7 +57,7 @@ class PetServiceImpl @Inject constructor(
      * Gets or spawns the pet of the given player uniqueId.
      */
     override fun getOrSpawnPetFromPlayerUUID(uuid: String): CompletableFutureProxy<PetProxy> {
-        val completableFuture = concurrencyService.createCompletableFuture<PetProxy>()
+        val completableFuture = proxyService.createCompletableFuture<PetProxy>()
 
         val playerProxy = proxyService.findPlayerProxyObjectFromUUID(uuid) ?: return completableFuture
 

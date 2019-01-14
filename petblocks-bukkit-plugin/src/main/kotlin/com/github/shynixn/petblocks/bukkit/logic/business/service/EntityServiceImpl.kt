@@ -65,12 +65,6 @@ class EntityServiceImpl @Inject constructor(
     private val getHandleMethod = Class.forName("org.bukkit.craftbukkit.VERSION.entity.CraftLivingEntity".replace("VERSION", version.bukkitId)).getDeclaredMethod("getHandle")!!
 
     init {
-        this.register<AIFloatInWater>(AIType.FLOAT_IN_WATER) { pet, _ ->
-            findClazz("net.minecraft.server.VERSION.PathfinderGoalFloat")
-                .getDeclaredConstructor(findClazz("net.minecraft.server.VERSION.EntityInsentient"))
-                .newInstance(getHandleMethod.invoke(pet.getHitBoxLivingEntity<LivingEntity>()))
-        }
-
         this.register<AIAfraidOfWater>(AIType.AFRAID_OF_WATER) { pet, aiBase ->
             val pathfinder = PathfinderProxyImpl(plugin, aiBase)
             val hitBox = pet.getHitBoxLivingEntity<LivingEntity>()
@@ -105,7 +99,14 @@ class EntityServiceImpl @Inject constructor(
             pathfinder
         }
 
-        this.register<AIFeeding>(AIType.FEEDING) { _, aiBase -> PathfinderProxyImpl(plugin, aiBase) }
+        this.register<AICarry>(AIType.CARRY)
+        this.register<AIFeeding>(AIType.FEEDING)
+
+        this.register<AIFloatInWater>(AIType.FLOAT_IN_WATER) { pet, _ ->
+            findClazz("net.minecraft.server.VERSION.PathfinderGoalFloat")
+                .getDeclaredConstructor(findClazz("net.minecraft.server.VERSION.EntityInsentient"))
+                .newInstance(getHandleMethod.invoke(pet.getHitBoxLivingEntity<LivingEntity>()))
+        }
 
         this.register<AIFollowBack>(AIType.FOLLOW_BACK) { pet, aiBase ->
             val pathfinder = PathfinderProxyImpl(plugin, aiBase)
@@ -241,8 +242,8 @@ class EntityServiceImpl @Inject constructor(
     /**
      * Registers a default ai type.
      */
-    private fun <A : AIBase> register(aiType: AIType, function: (PetProxy, A) -> Any) {
+    private fun <A : AIBase> register(aiType: AIType, function: ((PetProxy, A) -> Any)? = null) {
         val clazz = Class.forName("com.github.shynixn.petblocks.core.logic.persistence.entity.CUSTOMEntity".replace("CUSTOM", aiType.aiClazz.java.simpleName))
-        aiService.register(aiType.type, AICreationProxyImpl(yamlSerializationService, clazz.kotlin, function as (PetProxy, AIBase) -> Any))
+        aiService.register(aiType.type, AICreationProxyImpl(yamlSerializationService, clazz.kotlin, function as ((PetProxy, AIBase) -> Any)?))
     }
 }

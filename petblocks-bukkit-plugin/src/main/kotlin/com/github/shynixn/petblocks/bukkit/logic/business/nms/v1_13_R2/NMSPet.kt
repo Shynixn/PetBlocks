@@ -36,14 +36,14 @@ import org.bukkit.event.entity.CreatureSpawnEvent
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class PetRabbitHitBox(world: World) : EntityRabbit(world) {
-    private var petDesign: PetDesign? = null
+class NMSPet(world: World) : EntityCreature(EntityTypes.RABBIT, world) {
+    private var petDesign: NMSPetArmorstand? = null
     private var pathfinderCounter = 0
 
     /**
      * Additional override constructor.
      */
-    constructor(petDesign: PetDesign, location: Location) : this((location.world as CraftWorld).handle) {
+    constructor(petDesign: NMSPetArmorstand, location: Location) : this((location.world as CraftWorld).handle) {
         this.petDesign = petDesign
         this.isSilent = true
 
@@ -127,18 +127,27 @@ class PetRabbitHitBox(world: World) : EntityRabbit(world) {
     }
 
     /**
-     * Overrides the default moving sound.
+     * Gets called on move to play sounds.
      */
-    override fun dz(): SoundEffect {
+    override fun a(blockposition: BlockPosition, iblockdata: IBlockData) {
         if (petDesign == null) {
-            return super.dz()
+            return
         }
 
         if (!this.isInWater) {
             petDesign!!.proxy.playMovementEffects()
         }
+    }
 
-        return super.dz()
+    /**
+     * Gets the bukkit entity.
+     */
+    override fun getBukkitEntity(): CraftPet {
+        if (this.bukkitEntity == null) {
+            this.bukkitEntity = CraftPet(this.world.server, this)
+        }
+
+        return this.bukkitEntity as CraftPet
     }
 
     /**

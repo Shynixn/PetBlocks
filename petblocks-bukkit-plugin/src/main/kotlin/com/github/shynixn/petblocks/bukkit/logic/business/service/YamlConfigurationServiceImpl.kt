@@ -1,6 +1,6 @@
 package com.github.shynixn.petblocks.bukkit.logic.business.service
 
-import api.business.service.YamlConfigurationService
+import com.github.shynixn.petblocks.api.business.service.YamlConfigurationService
 import com.github.shynixn.petblocks.bukkit.logic.business.extension.deserializeToMap
 import org.bukkit.configuration.file.YamlConfiguration
 

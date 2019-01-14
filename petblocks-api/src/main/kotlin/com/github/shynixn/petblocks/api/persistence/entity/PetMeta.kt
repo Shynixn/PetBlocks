@@ -1,15 +1,16 @@
-package api.business.service
+package com.github.shynixn.petblocks.api.persistence.entity
 
-import kotlin.reflect.KProperty
+import com.github.shynixn.petblocks.api.business.service.PropertyTrackingService
+import api.persistence.entity.PropertyTrackable
 
 /**
- * Created by Shynixn 2019.
+ * Created by Shynixn 2018.
  * <p>
  * Version 1.2
  * <p>
  * MIT License
  * <p>
- * Copyright (c) 2019 by Shynixn
+ * Copyright (c) 2018 by Shynixn
  * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -29,15 +30,44 @@ import kotlin.reflect.KProperty
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-interface PropertyTrackingService {
+interface PetMeta : PropertyTrackable{
+    /**
+     * Database id.
+     */
+    var id: Long
 
     /**
-     * Gets if the given [property] has changed.
+     * Is the pet enabled. Should not get modified directly.
      */
-    fun hasChanged(property : KProperty<*>) : Boolean
+    var enabled: Boolean
 
     /**
-     * Gets called when the [property] gets updated.
+     * Displayed name on top of the pet.
      */
-    fun onPropertyChanged(property : KProperty<*>, changeState : Boolean = true)
+    var displayName: String
+
+    /**
+     * Pet sounds enabled.
+     */
+    var soundEnabled: Boolean
+
+    /**
+     * Pet particles enabled.
+     */
+    var particleEnabled: Boolean
+
+    /**
+     * Meta data of the owner.
+     */
+    val playerMeta: PlayerMeta
+
+    /**
+     * Meta data of the skin.
+     */
+    val skin: Skin
+
+    /**
+     * Gets a list of all ai goals of this pet.
+     */
+    val aiGoals: MutableList<AIBase>
 }

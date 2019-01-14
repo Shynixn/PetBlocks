@@ -2,8 +2,8 @@
 
 package com.github.shynixn.petblocks.core.logic.business.service
 
-import api.business.proxy.AICreationProxy
-import api.business.service.YamlConfigurationService
+import com.github.shynixn.petblocks.api.business.proxy.AICreationProxy
+import com.github.shynixn.petblocks.api.business.service.YamlConfigurationService
 import com.github.shynixn.petblocks.api.business.annotation.Inject
 import com.github.shynixn.petblocks.api.business.proxy.PathfinderProxy
 import com.github.shynixn.petblocks.api.business.proxy.PetProxy
@@ -65,7 +65,9 @@ class AIServiceImpl @Inject constructor(
             val aiCreation = registeredAIS[meta.type]!!
             val pathfinder = aiCreation.onPathfinderCreation(petProxy, meta)
 
-            pathfinders.add(pathfinder)
+            if (pathfinder != null) {
+                pathfinders.add(pathfinder)
+            }
         }
 
         if (pathfinders.count { p -> p is PathfinderProxy && p.aiBase is AIFollowBack } > 1) {

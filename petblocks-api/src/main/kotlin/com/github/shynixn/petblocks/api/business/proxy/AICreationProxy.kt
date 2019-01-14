@@ -1,17 +1,16 @@
-package com.github.shynixn.petblocks.api.business.service
+package com.github.shynixn.petblocks.api.business.proxy
 
-import api.business.proxy.AICreationProxy
 import com.github.shynixn.petblocks.api.business.proxy.PetProxy
 import com.github.shynixn.petblocks.api.persistence.entity.AIBase
 
 /**
- * Created by Shynixn 2018.
+ * Created by Shynixn 2019.
  * <p>
  * Version 1.2
  * <p>
  * MIT License
  * <p>
- * Copyright (c) 2018 by Shynixn
+ * Copyright (c) 2019 by Shynixn
  * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -31,36 +30,22 @@ import com.github.shynixn.petblocks.api.persistence.entity.AIBase
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-interface AIService {
+interface AICreationProxy<A : AIBase> {
     /**
-     * Registers a custom ai type with unique [type] and a proxy to create required AI actions.
-     * Existing types can be overwritten if the given [type] already exists.
+     *  Gets called when the the given ai Base should be serialized.
      */
-    fun <A : AIBase> register(type: String, creator: AICreationProxy<A>)
+    fun onSerialization(aiBase: A): Map<String, Any?>
 
     /**
-     * Generates an AIBase from the given yaml source string.
+     * Gets called when the given aiBase should be serialized.
      */
-    fun <A : AIBase> deserializeAiBase(type : String, source: String): A
+    fun onDeserialization(source: Map<String, Any?>): A
 
     /**
-     * Generates an AIBase from the given yaml map data.
+     * Gets called when a pathfinder needs to be created for the given pet.
+     * ReturnType can be an instance of PathfinderProxy or any NMS pathfinder.
+     *
+     * If the pathfinder instance should not be created and is managed by something else (like events) return null.
      */
-    fun <A : AIBase> deserializeAiBase(type : String, source: Map<String, Any?>): A
-
-    /**
-     *  Serializes the given [aiBase] to a yaml string.
-     */
-    fun serializeAiBaseToString(aiBase: AIBase): String
-
-    /**
-     *  Serializes the given [aiBase] to a yaml map.
-     */
-    fun serializeAiBase(aiBase: AIBase): Map<String, Any?>
-
-    /**
-     * Generates pathfinders from the given ai bases depending on the
-     * type specified in the [AIBase] and registers types of this service.
-     */
-    fun convertPetAiBasesToPathfinders(petProxy: PetProxy, metas: List<AIBase>): List<Any>
+    fun onPathfinderCreation(pet: PetProxy, aiBase: A): Any?
 }

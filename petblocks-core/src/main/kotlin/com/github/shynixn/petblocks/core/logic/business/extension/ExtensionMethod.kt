@@ -2,7 +2,7 @@
 
 package com.github.shynixn.petblocks.core.logic.business.extension
 
-import api.business.service.PropertyTrackingService
+import com.github.shynixn.petblocks.api.business.service.PropertyTrackingService
 import api.persistence.entity.PropertyTrackable
 import com.github.shynixn.petblocks.api.business.enumeration.ChatColor
 import com.github.shynixn.petblocks.api.business.service.ConcurrencyService

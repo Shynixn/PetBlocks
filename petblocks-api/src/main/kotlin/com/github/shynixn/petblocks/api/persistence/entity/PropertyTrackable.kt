@@ -1,7 +1,6 @@
-package com.github.shynixn.petblocks.core.logic.business.service
+package api.persistence.entity
 
 import com.github.shynixn.petblocks.api.business.service.PropertyTrackingService
-import kotlin.reflect.KProperty
 
 /**
  * Created by Shynixn 2019.
@@ -30,24 +29,9 @@ import kotlin.reflect.KProperty
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class PropertyTrackingServiceImpl : PropertyTrackingService {
-    private val changeHistory = HashMap<String, Boolean>()
-
+interface PropertyTrackable {
     /**
-     * Gets if the given [property] has changed.
+     * Gets the property tracker.
      */
-    override fun hasChanged(property: KProperty<*>): Boolean {
-        if (!changeHistory.containsKey(property.name)) {
-            return false
-        }
-
-        return changeHistory[property.name]!!
-    }
-
-    /**
-     * Gets called when the [property] gets updated.
-     */
-    override fun onPropertyChanged(property: KProperty<*>, changeState: Boolean) {
-        changeHistory[property.name] = changeState
-    }
+    val propertyTracker : PropertyTrackingService
 }

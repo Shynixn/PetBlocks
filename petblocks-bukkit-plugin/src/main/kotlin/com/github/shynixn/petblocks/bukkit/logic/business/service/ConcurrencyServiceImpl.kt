@@ -35,13 +35,6 @@ import org.bukkit.plugin.Plugin
  */
 class ConcurrencyServiceImpl @Inject constructor(private val plugin: Plugin) : ConcurrencyService {
     /**
-     * Creates a new completable future.
-     */
-    override fun <T> createCompletableFuture(): CompletableFutureProxy<T> {
-        return CompletableFutureProxyImpl()
-    }
-
-    /**
      * Runs the given [function] synchronised with the given [delayTicks] and [repeatingTicks].
      */
     override fun runTaskSync(delayTicks: Long, repeatingTicks: Long, function: () -> Unit) {

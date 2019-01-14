@@ -1,16 +1,13 @@
-package com.github.shynixn.petblocks.core.logic.business.service
-
-import com.github.shynixn.petblocks.api.business.service.PropertyTrackingService
-import kotlin.reflect.KProperty
+package com.github.shynixn.petblocks.api.business.service
 
 /**
- * Created by Shynixn 2019.
+ * Created by Shynixn 2018.
  * <p>
  * Version 1.2
  * <p>
  * MIT License
  * <p>
- * Copyright (c) 2019 by Shynixn
+ * Copyright (c) 2018 by Shynixn
  * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -30,24 +27,14 @@ import kotlin.reflect.KProperty
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class PropertyTrackingServiceImpl : PropertyTrackingService {
-    private val changeHistory = HashMap<String, Boolean>()
+interface ConcurrencyService {
+    /**
+     * Runs the given [function] synchronised with the given [delayTicks] and [repeatingTicks].
+     */
+    fun runTaskSync(delayTicks: Long = 0L, repeatingTicks: Long = 0L, function: () -> Unit)
 
     /**
-     * Gets if the given [property] has changed.
+     * Runs the given [function] asynchronous with the given [delayTicks] and [repeatingTicks].
      */
-    override fun hasChanged(property: KProperty<*>): Boolean {
-        if (!changeHistory.containsKey(property.name)) {
-            return false
-        }
-
-        return changeHistory[property.name]!!
-    }
-
-    /**
-     * Gets called when the [property] gets updated.
-     */
-    override fun onPropertyChanged(property: KProperty<*>, changeState: Boolean) {
-        changeHistory[property.name] = changeState
-    }
+    fun runTaskAsync(delayTicks: Long = 0L, repeatingTicks: Long = 0L, function: () -> Unit)
 }

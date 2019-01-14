@@ -3,9 +3,13 @@
 package com.github.shynixn.petblocks.core.logic.business.service
 
 import com.github.shynixn.petblocks.api.business.annotation.Inject
+import com.github.shynixn.petblocks.api.business.enumeration.AIType
 import com.github.shynixn.petblocks.api.business.enumeration.MaterialType
 import com.github.shynixn.petblocks.api.business.proxy.CompletableFutureProxy
-import com.github.shynixn.petblocks.api.business.service.*
+import com.github.shynixn.petblocks.api.business.service.CarryPetService
+import com.github.shynixn.petblocks.api.business.service.ItemService
+import com.github.shynixn.petblocks.api.business.service.PetService
+import com.github.shynixn.petblocks.api.business.service.ProxyService
 
 /**
  * Created by Shynixn 2018.
@@ -36,10 +40,8 @@ import com.github.shynixn.petblocks.api.business.service.*
  */
 class CarryPetServiceImpl @Inject constructor(
     private val petService: PetService,
-    private val configurationService: ConfigurationService,
     private val proxyService: ProxyService,
-    private val itemService: ItemService,
-    private val concurrencyService: ConcurrencyService
+    private val itemService: ItemService
 ) : CarryPetService {
     private val carryingPet: MutableMap<String, Any> = HashMap()
 
@@ -49,26 +51,23 @@ class CarryPetServiceImpl @Inject constructor(
      */
     override fun <P> carryPet(player: P) {
         val playerProxy = proxyService.findPlayerProxyObject(player)
-        val allowCarry = configurationService.findValue<Boolean>("pet.follow.carry")
-
-        if (!allowCarry) {
-            return
-        }
 
         if (!petService.hasPet(playerProxy.uniqueId)) {
             return
         }
 
         petService.getOrSpawnPetFromPlayerUUID(playerProxy.uniqueId).thenAccept { pet ->
-            val itemInHand = playerProxy.getItemInHand<Any>(true)
+            if (pet.meta.aiGoals.firstOrNull { a -> a.type == AIType.CARRY.type } != null) {
+                val itemInHand = playerProxy.getItemInHand<Any>(true)
 
-            if (itemInHand == null || itemService.isItemStackMaterialType(itemInHand, MaterialType.AIR)) {
-             /*   val cachePet = pet.getHeadItemStack<Any>()
-                carryingPet[playerProxy.uniqueId] = cachePet
-                playerProxy.setItemInHand(cachePet, true)
-                playerProxy.updateInventory()*/
+                if (itemInHand == null || itemService.isItemStackMaterialType(itemInHand, MaterialType.AIR)) {
+                    val cachePet = pet.getHeadArmorstandItemStack<Any>()
+                    carryingPet[playerProxy.uniqueId] = cachePet
+                    playerProxy.setItemInHand(cachePet, true)
+                    playerProxy.updateInventory()
 
-                pet.remove()
+                    pet.remove()
+                }
             }
         }
     }
@@ -79,7 +78,7 @@ class CarryPetServiceImpl @Inject constructor(
      */
     override fun <P> dropPet(player: P): CompletableFutureProxy<Unit> {
         val playerProxy = proxyService.findPlayerProxyObject(player)
-        val completableFuture = concurrencyService.createCompletableFuture<Unit>()
+        val completableFuture = proxyService.createCompletableFuture<Unit>()
 
         if (!carryingPet.containsKey(playerProxy.uniqueId)) {
             return completableFuture
@@ -101,7 +100,7 @@ class CarryPetServiceImpl @Inject constructor(
      */
     override fun <P> throwPet(player: P): CompletableFutureProxy<Unit> {
         val playerProxy = proxyService.findPlayerProxyObject(player)
-        val completableFuture = concurrencyService.createCompletableFuture<Unit>()
+        val completableFuture = proxyService.createCompletableFuture<Unit>()
 
         if (!carryingPet.containsKey(playerProxy.uniqueId)) {
             return completableFuture

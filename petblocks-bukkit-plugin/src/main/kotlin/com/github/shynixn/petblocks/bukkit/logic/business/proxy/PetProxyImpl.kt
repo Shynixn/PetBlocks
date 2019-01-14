@@ -1,12 +1,12 @@
 package com.github.shynixn.petblocks.bukkit.logic.business.proxy
 
+import com.github.shynixn.petblocks.api.business.proxy.EntityPetProxy
 import com.github.shynixn.petblocks.api.PetBlocksApi
 import com.github.shynixn.petblocks.api.bukkit.event.PetRemoveEvent
 import com.github.shynixn.petblocks.api.bukkit.event.PetRideEvent
 import com.github.shynixn.petblocks.api.bukkit.event.PetSpawnEvent
 import com.github.shynixn.petblocks.api.bukkit.event.PetWearEvent
 import com.github.shynixn.petblocks.api.business.proxy.NMSPetProxy
-import com.github.shynixn.petblocks.api.business.proxy.PathfinderProxy
 import com.github.shynixn.petblocks.api.business.proxy.PetProxy
 import com.github.shynixn.petblocks.api.business.service.*
 import com.github.shynixn.petblocks.api.persistence.entity.AIMovement
@@ -70,8 +70,6 @@ class PetProxyImpl(override val meta: PetMeta, private val design: ArmorStand, p
     private val logger: LoggingService = PetBlocksApi.resolve(LoggingService::class.java)
     private val itemService = PetBlocksApi.resolve<ItemService>(ItemService::class.java)
     private val aiService = PetBlocksApi.resolve<AIService>(AIService::class.java)
-
-    private var aiList: List<Any>? = null
 
     /**
      * Gets if the pet is dead or was removed.
@@ -158,19 +156,12 @@ class PetProxyImpl(override val meta: PetMeta, private val design: ArmorStand, p
      */
     fun playMovementEffects() {
         try {
-            if (aiList == null) {
-                return
-            }
+            for (aiBase in meta.aiGoals) {
+                if (aiBase is AIMovement) {
+                    val location = getLocation<Location>()
 
-            for (aiGoal in aiList!!) {
-                if (aiGoal is PathfinderProxy) {
-                    val aiBase = aiGoal.aiBase
-                    if (aiBase is AIMovement) {
-                        val location = getLocation<Location>()
-
-                        particleService.playParticle(location, aiBase.movementParticle, owner)
-                        soundService.playSound(location, aiBase.movementSound, owner)
-                    }
+                    particleService.playParticle(location, aiBase.movementParticle, owner)
+                    soundService.playSound(location, aiBase.movementSound, owner)
                 }
             }
         } catch (e: Exception) {
@@ -277,8 +268,8 @@ class PetProxyImpl(override val meta: PetMeta, private val design: ArmorStand, p
     override fun run() {
         if (!meta.enabled && !isDead) {
             Bukkit.getPluginManager().callEvent(PetRemoveEvent(this))
-            this.design.remove()
-            this.hitBox.remove()
+            (this.design as EntityPetProxy).deleteFromWorld()
+            (this.hitBox as EntityPetProxy).deleteFromWorld()
 
             return
         }
@@ -304,7 +295,6 @@ class PetProxyImpl(override val meta: PetMeta, private val design: ArmorStand, p
 
         if (PetMeta::aiGoals.hasChanged(meta)) {
             aiGoals = aiService.convertPetAiBasesToPathfinders(this, meta.aiGoals)
-            aiList = aiGoals
         }
     }
 

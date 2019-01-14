@@ -1,6 +1,6 @@
 package com.github.shynixn.petblocks.core.logic.persistence.entity
 
-import api.business.service.PropertyTrackingService
+import com.github.shynixn.petblocks.api.business.service.PropertyTrackingService
 import com.github.shynixn.petblocks.api.persistence.entity.Skin
 import com.github.shynixn.petblocks.core.logic.business.service.PropertyTrackingServiceImpl
 

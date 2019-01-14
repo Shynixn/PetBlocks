@@ -1,6 +1,8 @@
 package com.github.shynixn.petblocks.api.business.service
 
-import com.github.shynixn.petblocks.api.business.proxy.PlayerProxy
+import com.github.shynixn.petblocks.api.business.proxy.AICreationProxy
+import com.github.shynixn.petblocks.api.business.proxy.PetProxy
+import com.github.shynixn.petblocks.api.persistence.entity.AIBase
 
 /**
  * Created by Shynixn 2018.
@@ -29,42 +31,36 @@ import com.github.shynixn.petblocks.api.business.proxy.PlayerProxy
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-interface ProxyService {
+interface AIService {
+    /**
+     * Registers a custom ai type with unique [type] and a proxy to create required AI actions.
+     * Existing types can be overwritten if the given [type] already exists.
+     */
+    fun <A : AIBase> register(type: String, creator: AICreationProxy<A>)
 
     /**
-     * Returns a proxy object for the given instance.
-     * Throws a [IllegalArgumentException] if the proxy could not be generated.
+     * Generates an AIBase from the given yaml source string.
      */
-    fun <P> findProxyObject(instance: Any): P
+    fun <A : AIBase> deserializeAiBase(type : String, source: String): A
 
     /**
-     * Returns a player proxy object for the given instance.
-     * Throws a [IllegalArgumentException] if the proxy could not be generated.
+     * Generates an AIBase from the given yaml map data.
      */
-    fun <P> findPlayerProxyObject(instance: P): PlayerProxy
+    fun <A : AIBase> deserializeAiBase(type : String, source: Map<String, Any?>): A
 
     /**
-     * Gets if the given instance can be converted to a player.
+     *  Serializes the given [aiBase] to a yaml string.
      */
-    fun <P> isPlayer(instance: P): Boolean
+    fun serializeAiBaseToString(aiBase: AIBase): String
 
     /**
-     * Gets the name of a  instance.
+     *  Serializes the given [aiBase] to a yaml map.
      */
-    fun <I> getNameOfInstance(instance: I): String
+    fun serializeAiBase(aiBase: AIBase): Map<String, Any?>
 
     /**
-     * Tries to return a player proxy for the given player name.
+     * Generates pathfinders from the given ai bases depending on the
+     * type specified in the [AIBase] and registers types of this service.
      */
-    fun findPlayerProxyObjectFromName(name: String): PlayerProxy?
-
-    /**
-     * Tries to return a player proxy for the given player uuid.
-     */
-    fun findPlayerProxyObjectFromUUID(uuid: String) : PlayerProxy?
-
-    /**
-     * Clears any resources the given instance has allocated.
-     */
-    fun cleanResources(instance: Any)
+    fun convertPetAiBasesToPathfinders(petProxy: PetProxy, metas: List<AIBase>): List<Any>
 }

@@ -2,7 +2,7 @@
 
 package com.github.shynixn.petblocks.bukkit
 
-import api.business.service.YamlConfigurationService
+import com.github.shynixn.petblocks.api.business.service.YamlConfigurationService
 import com.github.shynixn.petblocks.api.business.annotation.Inject
 import com.github.shynixn.petblocks.api.business.commandexecutor.EditPetCommandExecutor
 import com.github.shynixn.petblocks.api.business.commandexecutor.PlayerPetActionCommandExecutor
