@@ -38,9 +38,7 @@ class ReloadCommandExecutorImpl @Inject constructor(private val configurationSer
      */
     override fun <S> onExecuteCommand(source: S, args: Array<out String>): Boolean {
         configurationService.refresh()
-
-        val prefix = configurationService.findValue<String>("messages.prefix")
-        messageService.sendSourceMessage(source, (prefix + "Reloaded PetBlocks."))
+        messageService.sendSourceMessage(source, "Reloaded PetBlocks.")
 
         return true
     }

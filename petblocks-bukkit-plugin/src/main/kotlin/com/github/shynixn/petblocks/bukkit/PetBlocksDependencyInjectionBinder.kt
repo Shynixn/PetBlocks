@@ -7,7 +7,6 @@ import com.github.shynixn.petblocks.api.business.annotation.Inject
 import com.github.shynixn.petblocks.api.business.commandexecutor.EditPetCommandExecutor
 import com.github.shynixn.petblocks.api.business.commandexecutor.PlayerPetActionCommandExecutor
 import com.github.shynixn.petblocks.api.business.commandexecutor.ReloadCommandExecutor
-import com.github.shynixn.petblocks.api.business.enumeration.PluginDependency
 import com.github.shynixn.petblocks.api.business.enumeration.Version
 import com.github.shynixn.petblocks.api.business.proxy.SqlConnectionPoolProxy
 import com.github.shynixn.petblocks.api.business.service.*
@@ -18,6 +17,7 @@ import com.github.shynixn.petblocks.bukkit.logic.business.extension.getServerVer
 import com.github.shynixn.petblocks.bukkit.logic.business.proxy.SqlProxyImpl
 import com.github.shynixn.petblocks.bukkit.logic.business.service.*
 import com.github.shynixn.petblocks.core.jvm.logic.persistence.context.SqlDbContextImpl
+import com.github.shynixn.petblocks.core.jvm.logic.persistence.service.LoggingUtilServiceImpl
 import com.github.shynixn.petblocks.core.jvm.logic.persistence.service.UpdateCheckServiceImpl
 import com.github.shynixn.petblocks.core.jvm.logic.persistence.service.YamlSerializationServiceImpl
 import com.github.shynixn.petblocks.core.logic.business.command.*
@@ -136,16 +136,6 @@ class PetBlocksDependencyInjectionBinder(private val plugin: Plugin) : AbstractM
         // Dependency resolving
         val dependencyService = DependencyServiceImpl(plugin)
         dependencyService.checkForInstalledDependencies()
-
-        if (dependencyService.isInstalled(PluginDependency.WORLDGUARD)) {
-            val version = dependencyService.getVersion(PluginDependency.WORLDGUARD)
-
-            if (version.startsWith("5")) {
-                bind<DependencyWorldGuardService, DependencyWorldGuard5Impl>()
-            } else {
-                bind<DependencyWorldGuardService, DependencyWorldGuard6Impl>()
-            }
-        }
     }
 
     /**

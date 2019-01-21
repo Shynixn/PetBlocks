@@ -58,7 +58,6 @@ class EditPetToggleSoundCommand @Inject constructor(
 
         petMetaService.getOrCreateFromPlayerUUID(playerProxy.uniqueId).thenAccept { petMeta ->
             petMeta.soundEnabled = !petMeta.soundEnabled
-            petMetaService.save(petMeta)
 
             if (petMeta.soundEnabled) {
                 messageService.sendSourceMessage(source, "Enabled sound for player ${playerProxy.name}.")

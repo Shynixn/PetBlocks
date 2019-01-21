@@ -81,8 +81,6 @@ class PetActionServiceImpl @Inject constructor(
             petMeta.skin.dataValue = 3
             petMeta.skin.owner = skin
 
-            persistencePetMetaService.save(petMeta)
-
             val namingSuccessMessage = configurationService.findValue<String>("messages.skullnaming-success")
 
             playerProxy.sendMessage(prefix + namingSuccessMessage)
@@ -155,7 +153,6 @@ class PetActionServiceImpl @Inject constructor(
             val namingSuccessMessage = configurationService.findValue<String>("messages.naming-success")
 
             petMeta.displayName = name.translateChatColors()
-            persistencePetMetaService.save(petMeta)
 
             playerProxy.sendMessage(prefix + namingSuccessMessage)
         }

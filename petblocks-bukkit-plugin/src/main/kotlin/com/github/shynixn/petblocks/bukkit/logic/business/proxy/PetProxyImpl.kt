@@ -13,14 +13,12 @@ import com.github.shynixn.petblocks.api.persistence.entity.AIMovement
 import com.github.shynixn.petblocks.api.persistence.entity.PetMeta
 import com.github.shynixn.petblocks.api.persistence.entity.Position
 import com.github.shynixn.petblocks.api.persistence.entity.Skin
-import com.github.shynixn.petblocks.bukkit.logic.business.extension.setDisplayName
-import com.github.shynixn.petblocks.bukkit.logic.business.extension.setSkin
-import com.github.shynixn.petblocks.bukkit.logic.business.extension.setUnbreakable
-import com.github.shynixn.petblocks.bukkit.logic.business.extension.toVector
+import com.github.shynixn.petblocks.bukkit.logic.business.extension.*
 import com.github.shynixn.petblocks.core.logic.business.extension.hasChanged
 import com.github.shynixn.petblocks.core.logic.business.extension.translateChatColors
 import org.bukkit.Bukkit
 import org.bukkit.Location
+import org.bukkit.Material
 import org.bukkit.entity.ArmorStand
 import org.bukkit.entity.LivingEntity
 import org.bukkit.entity.Player
@@ -90,11 +88,13 @@ class PetProxyImpl(override val meta: PetMeta, private val design: ArmorStand, p
         hitBox.addPotionEffect(PotionEffect(PotionEffectType.INVISIBILITY, 9999999, 1))
         hitBox.setMetadata("keep", FixedMetadataValue(Bukkit.getPluginManager().getPlugin("PetBlocks"), true))
         hitBox.isCustomNameVisible = false
-        hitBox.customName = "PetBlockIdentifier"
 
         meta.enabled = true
         meta.propertyTracker.onPropertyChanged(PetMeta::displayName)
         meta.propertyTracker.onPropertyChanged(Skin::typeName)
+
+        design.equipment.boots = generateMarkerItemStack()
+        hitBox.equipment.boots = generateMarkerItemStack()
 
         val event = PetSpawnEvent(this)
         Bukkit.getPluginManager().callEvent(event)
@@ -283,15 +283,13 @@ class PetProxyImpl(override val meta: PetMeta, private val design: ArmorStand, p
         if (displayNameChanged || Skin::typeName.hasChanged(meta.skin)) {
             val itemStack = itemService.createItemStack<ItemStack>(meta.skin.typeName, meta.skin.dataValue)
 
-            itemStack.setDisplayName(meta.displayName)
+            itemStack.displayName = meta.displayName
             itemStack.setSkin(meta.skin.owner)
             itemStack.setUnbreakable(meta.skin.unbreakable)
 
             design.helmet = itemStack
         }
 
-        // TODO: Keep this check until packet problem appears
-        val hasPassenger = getHitBoxLivingEntity<LivingEntity>().passengers
 
         if (PetMeta::aiGoals.hasChanged(meta)) {
             aiGoals = aiService.convertPetAiBasesToPathfinders(this, meta.aiGoals)
@@ -333,5 +331,14 @@ class PetProxyImpl(override val meta: PetMeta, private val design: ArmorStand, p
      */
     override fun <V> getVelocity(): V {
         return hitBox.velocity as V
+    }
+
+    /**
+     * Gets a new marker itemstack.
+     */
+    private fun generateMarkerItemStack(): ItemStack {
+        val item = ItemStack(Material.APPLE)
+        item.setLore(arrayListOf("PetBlocks"))
+        return item
     }
 }

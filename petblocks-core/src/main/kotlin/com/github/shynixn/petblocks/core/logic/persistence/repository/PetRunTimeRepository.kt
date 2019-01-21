@@ -1,6 +1,5 @@
 package com.github.shynixn.petblocks.core.logic.persistence.repository
 
-import com.github.shynixn.petblocks.api.business.annotation.Inject
 import com.github.shynixn.petblocks.api.business.proxy.PetProxy
 import com.github.shynixn.petblocks.api.persistence.repository.PetRepository
 

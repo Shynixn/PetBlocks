@@ -7,10 +7,8 @@ import com.github.shynixn.petblocks.api.business.service.PersistencePetMetaServi
 import com.github.shynixn.petblocks.api.business.service.ProxyService
 import com.github.shynixn.petblocks.api.persistence.entity.PetMeta
 import com.github.shynixn.petblocks.api.persistence.repository.PetMetaRepository
-import com.github.shynixn.petblocks.api.persistence.repository.PetRepository
 import com.github.shynixn.petblocks.core.logic.business.extension.async
 import com.github.shynixn.petblocks.core.logic.business.extension.sync
-import kotlin.collections.ArrayList
 
 /**
  * Created by Shynixn 2018.
@@ -42,31 +40,40 @@ import kotlin.collections.ArrayList
 class PersistencePetMetaServiceImpl @Inject constructor(
     private val proxyService: ProxyService,
     private val petMetaRepository: PetMetaRepository,
-    private val concurrencyService: ConcurrencyService,
-    private val petRepository: PetRepository
+    private val concurrencyService: ConcurrencyService
 ) : PersistencePetMetaService {
+
+    private val cache = HashMap<String, PetMeta>()
+
+    /**
+     * Initialize.
+     */
+    init {
+        sync(concurrencyService, 0L, 20 * 60L * 5) {
+            cache.values.forEach { p ->
+                save(p)
+            }
+        }
+    }
+
     /**
      * Returns [CompletableFutureProxy] with a list of stored [PetMeta].
      */
     override fun getAll(): CompletableFutureProxy<List<PetMeta>> {
         val completableFuture = proxyService.createCompletableFuture<List<PetMeta>>()
 
-        val activePetMetas = petRepository.getAll().map { p -> p.meta }
-
         async(concurrencyService) {
-            val petMetaList = ArrayList(petMetaRepository.getAll())
-
-            petMetaList.toTypedArray().forEach { item ->
-                activePetMetas.forEach { active ->
-                    if (active.id == item.id) {
-                        petMetaList.remove(item)
-                        petMetaList.add(active)
-                    }
-                }
-            }
+            val items = petMetaRepository.getAll()
 
             sync(concurrencyService) {
-                completableFuture.complete(petMetaList)
+                items.forEach { item ->
+                    if (!cache.containsKey(item.playerMeta.uuid)) {
+                        cache[item.playerMeta.uuid] = item
+                    }
+
+                }
+
+                completableFuture.complete(cache.values.toList())
             }
         }
 
@@ -81,28 +88,37 @@ class PersistencePetMetaServiceImpl @Inject constructor(
     override fun getOrCreateFromPlayerUUID(uuid: String): CompletableFutureProxy<PetMeta> {
         val completableFuture = proxyService.createCompletableFuture<PetMeta>()
 
-        if (petRepository.hasPet(uuid)) {
-            val meta = petRepository.getFromPlayerUUID(uuid).meta
+        if (cache.containsKey(uuid)) {
+            sync(concurrencyService) {
+                completableFuture.complete(cache[uuid]!!)
+            }
+
+            return completableFuture
+        }
+
+        val playerProxy = proxyService.findPlayerProxyObjectFromUUID(uuid)!!
+        val playerName = playerProxy.name
+
+        async(concurrencyService) {
+            val petMeta = petMetaRepository.getOrCreateFromPlayerIdentifiers(playerName, uuid)
 
             sync(concurrencyService) {
-                completableFuture.complete(meta)
-            }
-        } else {
-            val playerProxy = proxyService.findPlayerProxyObjectFromUUID(uuid)
-
-            if (playerProxy != null) {
-                val playerName = playerProxy.name
-
-                async(concurrencyService) {
-                    val petMeta = petMetaRepository.getOrCreateFromPlayerIdentifiers(playerName, uuid)
-
-                    sync(concurrencyService) {
-                        completableFuture.complete(petMeta)
-                    }
-                }
+                cache[uuid] = petMeta
+                completableFuture.complete(petMeta)
             }
         }
+
         return completableFuture
+    }
+
+    /**
+     * Clears the cache of the player.
+     */
+    override fun cleanResources(uuid: String) {
+        if (cache.containsKey(uuid)) {
+            save(cache[uuid]!!)
+            cache.remove(uuid)
+        }
     }
 
     /**

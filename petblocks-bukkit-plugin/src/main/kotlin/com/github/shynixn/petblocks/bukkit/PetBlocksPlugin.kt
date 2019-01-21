@@ -9,10 +9,7 @@ import com.github.shynixn.petblocks.api.business.commandexecutor.ReloadCommandEx
 import com.github.shynixn.petblocks.api.business.enumeration.PluginDependency
 import com.github.shynixn.petblocks.api.business.enumeration.Version
 import com.github.shynixn.petblocks.api.business.proxy.PluginProxy
-import com.github.shynixn.petblocks.api.business.service.CommandService
-import com.github.shynixn.petblocks.api.business.service.DependencyService
-import com.github.shynixn.petblocks.api.business.service.EntityRegistrationService
-import com.github.shynixn.petblocks.api.business.service.UpdateCheckService
+import com.github.shynixn.petblocks.api.business.service.*
 import com.github.shynixn.petblocks.bukkit.logic.business.extension.getServerVersion
 import com.github.shynixn.petblocks.bukkit.logic.business.extension.yamlMap
 import com.github.shynixn.petblocks.bukkit.logic.business.listener.*
@@ -98,6 +95,7 @@ class PetBlocksPlugin : JavaPlugin(), PluginProxy {
         val dependencyService = resolve<DependencyService>(DependencyService::class.java)
         val updateCheckService = resolve<UpdateCheckService>(UpdateCheckService::class.java)
         val commandService = resolve<CommandService>(CommandService::class.java)
+        val entityService = resolve<EntityService>(EntityService::class.java)
 
         dependencyService.checkForInstalledDependencies()
         updateCheckService.checkForUpdates()
@@ -139,11 +137,7 @@ class PetBlocksPlugin : JavaPlugin(), PluginProxy {
         }
 
         for (world in Bukkit.getWorlds()) {
-            world.entities.forEach { entity ->
-                if (entity !is Player) {
-                    entity.remove()
-                }
-            }
+            entityService.cleanUpInvalidEntities(world.entities)
         }
 
         startPlugin()

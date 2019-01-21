@@ -38,6 +38,11 @@ interface EntityService {
     fun registerEntitiesOnServer(): Boolean
 
     /**
+     * Checks the entity collection for invalid pet entities and removes them.
+     */
+    fun <E> cleanUpInvalidEntities(entities: Collection<E>)
+
+    /**
      * Spawns a new unManaged petProxy.
      */
     fun <L> spawnPetProxy(location: L, petMeta: PetMeta): PetProxy

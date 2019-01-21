@@ -1,15 +1,15 @@
-package com.github.shynixn.petblocks.core.jvm.logic.business.extension
+package com.github.shynixn.petblocks.api.business.service
 
-import java.sql.ResultSet
+import com.github.shynixn.petblocks.api.business.proxy.PetProxy
 
 /**
- * Created by Shynixn 2018.
+ * Created by Shynixn 2019.
  * <p>
  * Version 1.2
  * <p>
  * MIT License
  * <p>
- * Copyright (c) 2018 by Shynixn
+ * Copyright (c) 2019 by Shynixn
  * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -29,17 +29,10 @@ import java.sql.ResultSet
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-
-/**
- * Gets the column value.
- */
-inline operator fun <reified V> ResultSet.get(key: String): V {
-    return when {
-        V::class == String::class -> this.getString(key) as V
-        V::class == Double::class -> this.getDouble(key) as V
-        V::class == Int::class -> this.getInt(key) as V
-        V::class == Long::class -> this.getLong(key) as V
-        V::class == Boolean::class -> this.getBoolean(key) as V
-        else -> throw IllegalArgumentException("Get access does not support the type " + V::class + ".")
-    }
+interface HealthService {
+    /**
+     * Damages the given [pet] with the given [damage].
+     * The pet needs a health ai otherwise this operation gets ignored.
+     */
+    fun damagePet(pet: PetProxy, damage: Double)
 }

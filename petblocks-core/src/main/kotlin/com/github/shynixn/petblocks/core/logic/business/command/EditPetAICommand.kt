@@ -91,7 +91,6 @@ class EditPetAICommand @Inject constructor(
                     addAmount += addAis.size
                 }
 
-                petMetaService.save(petMeta)
                 messageService.sendSourceMessage(source, "Added $addAmount new ais and removed $removeAmount ais to/from player ${playerProxy.name}.")
             } catch (e: Exception) {
                 messageService.sendSourceMessage(source, ChatColor.RED.toString() + e.message)

@@ -144,43 +144,10 @@ fun Location.toPosition(): Position {
 }
 
 /**
- * Gets the item in the players arm.
- */
-fun PlayerInventory.getItemStackInHand(offHand: Boolean = false): Optional<ItemStack> {
-    val version = getServerVersion()
-
-    return if (version.isVersionSameOrGreaterThan(Version.VERSION_1_9_R1)) {
-        val inventoryClazz = Class.forName("org.bukkit.inventory.PlayerInventory")
-
-        if (offHand) {
-            Optional.ofNullable(inventoryClazz.getDeclaredMethod("getItemInOffHand").invoke(this)) as Optional<ItemStack>
-        } else {
-            Optional.ofNullable(inventoryClazz.getDeclaredMethod("getItemInMainHand").invoke(this)) as Optional<ItemStack>
-        }
-    } else {
-        Optional.ofNullable(
-            Class.forName("org.bukkit.entity.HumanEntity").getDeclaredMethod("getItemInHand")
-                .invoke(this.holder)
-        ) as Optional<ItemStack>
-    }
-}
-
-/**
  * Updates this inventory.
  */
 fun PlayerInventory.updateInventory() {
-    Player::class.java.getDeclaredMethod("updateInventory").invoke(this.holder as Player)
-}
-
-/**
- * Clears the inventory completely
- */
-fun Inventory.clearCompletely() {
-    clear()
-
-    for (i in 0 until contents.size) {
-        setItem(i, null)
-    }
+    (this.holder as Player).updateInventory()
 }
 
 /**
@@ -267,27 +234,22 @@ fun ItemStack.setNBTTags(tags: Map<String, Any>) {
 }
 
 /**
- * Sets the displayName of an itemstack.
+ * Changes the displayname of the itemstack.
+ * Gets an empty string if the displayName is not present.
  */
-fun ItemStack.setDisplayName(displayName: String): ItemStack {
-    val meta = itemMeta
-    meta.displayName = displayName.translateChatColors()
-    itemMeta = meta
-    return this
-}
-
-/**
- * Gets the displayname of an item.
- */
-fun ItemStack.getDisplayName(): String? {
-    if (this.itemMeta != null) {
-        if (this.itemMeta.displayName != null) {
+var ItemStack.displayName: String
+    get() {
+        if (this.itemMeta != null && this.itemMeta.displayName != null) {
             return itemMeta.displayName
         }
-    }
 
-    return null
-}
+        return ""
+    }
+    set(value) {
+        val meta = itemMeta
+        meta.displayName = value.translateChatColors()
+        itemMeta = meta
+    }
 
 /**
  * Checks if this player has got the given [permission].

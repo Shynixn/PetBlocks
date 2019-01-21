@@ -73,7 +73,6 @@ class PetServiceImpl @Inject constructor(
             petMetaService.getOrCreateFromPlayerUUID(uuid).thenAccept { petMeta ->
                 val petProxy = entityService.spawnPetProxy(playerProxy.getLocation<Any>(), petMeta)
                 petMeta.enabled = true
-                petMetaService.save(petMeta)
                 petRepository.save(petProxy)
                 completableFuture.complete(petProxy)
             }

@@ -20,7 +20,7 @@ import com.github.shynixn.petblocks.bukkit.logic.business.service.Item18R1Servic
 import com.github.shynixn.petblocks.core.jvm.logic.business.proxy.CompletableFutureProxyImpl
 import com.github.shynixn.petblocks.core.jvm.logic.persistence.context.SqlDbContextImpl
 import com.github.shynixn.petblocks.core.jvm.logic.persistence.service.YamlSerializationServiceImpl
-import com.github.shynixn.petblocks.core.logic.business.service.LoggingUtilServiceImpl
+import com.github.shynixn.petblocks.core.jvm.logic.persistence.service.LoggingUtilServiceImpl
 import com.github.shynixn.petblocks.core.logic.business.service.PersistencePetMetaServiceImpl
 import com.github.shynixn.petblocks.core.logic.persistence.entity.AIMovementEntity
 import com.github.shynixn.petblocks.core.logic.persistence.repository.PetMetaSqlRepository

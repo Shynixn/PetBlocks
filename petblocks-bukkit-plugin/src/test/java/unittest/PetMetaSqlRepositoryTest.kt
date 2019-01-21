@@ -9,7 +9,7 @@ import com.github.shynixn.petblocks.api.persistence.entity.PetMeta
 import com.github.shynixn.petblocks.api.persistence.repository.PetMetaRepository
 import com.github.shynixn.petblocks.bukkit.logic.business.service.AIServiceImpl
 import com.github.shynixn.petblocks.core.jvm.logic.persistence.service.YamlSerializationServiceImpl
-import com.github.shynixn.petblocks.core.logic.business.service.LoggingUtilServiceImpl
+import com.github.shynixn.petblocks.core.jvm.logic.persistence.service.LoggingUtilServiceImpl
 import com.github.shynixn.petblocks.core.logic.persistence.entity.PetMetaEntity
 import com.github.shynixn.petblocks.core.logic.persistence.entity.PlayerMetaEntity
 import com.github.shynixn.petblocks.core.logic.persistence.entity.SkinEntity

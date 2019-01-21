@@ -1,4 +1,4 @@
-@file:Suppress("UNCHECKED_CAST", "CascadeIf")
+@file:Suppress("UNCHECKED_CAST", "CascadeIf", "FoldInitializerAndIfToElvis")
 
 package com.github.shynixn.petblocks.core.jvm.logic.persistence.service
 
@@ -63,7 +63,7 @@ class YamlSerializationServiceImpl : YamlSerializationService {
     }
 
     /**
-     * Deserializes the given [dataSource] into a new instance of the given [targetObjectClass].
+     * DeSerializes the given [dataSource] into a new instance of the given [targetObjectClass].
      */
     override fun <R> deserialize(targetObjectClass: Any, dataSource: Map<String, Any?>): R {
         var objectClazz = targetObjectClass

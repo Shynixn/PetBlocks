@@ -6,6 +6,7 @@ import com.github.shynixn.petblocks.api.business.annotation.Inject
 import com.github.shynixn.petblocks.api.business.enumeration.AIType
 import com.github.shynixn.petblocks.api.business.enumeration.EntityType
 import com.github.shynixn.petblocks.api.business.enumeration.Version
+import com.github.shynixn.petblocks.api.business.proxy.EntityPetProxy
 import com.github.shynixn.petblocks.api.business.proxy.NMSPetProxy
 import com.github.shynixn.petblocks.api.business.proxy.PetProxy
 import com.github.shynixn.petblocks.api.business.service.*
@@ -16,10 +17,13 @@ import com.github.shynixn.petblocks.core.logic.business.proxy.AICreationProxyImp
 import org.bukkit.ChatColor
 import org.bukkit.GameMode
 import org.bukkit.Location
+import org.bukkit.Material
+import org.bukkit.entity.ArmorStand
 import org.bukkit.entity.Entity
 import org.bukkit.entity.LivingEntity
 import org.bukkit.entity.Player
 import org.bukkit.plugin.Plugin
+import java.util.logging.Level
 
 /**
  * Created by Shynixn 2018.
@@ -54,12 +58,14 @@ class EntityServiceImpl @Inject constructor(
     private val entityRegistrationService: EntityRegistrationService,
     private val yamlSerializationService: YamlSerializationService,
     private val aiService: AIService,
+    private val petService: PetService,
     private val plugin: Plugin,
     private val afraidOfWaterService: AfraidOfWaterService,
     private val navigationService: NavigationService,
     private val soundService: SoundService,
     private val version: Version
 ) : EntityService {
+
     private var registered = false
 
     private val getHandleMethod = Class.forName("org.bukkit.craftbukkit.VERSION.entity.CraftLivingEntity".replace("VERSION", version.bukkitId)).getDeclaredMethod("getHandle")!!
@@ -69,6 +75,7 @@ class EntityServiceImpl @Inject constructor(
             val pathfinder = PathfinderProxyImpl(plugin, aiBase)
             val hitBox = pet.getHitBoxLivingEntity<LivingEntity>()
             val owner = pet.getPlayer<Player>()
+            var milliseconds = 0L
 
             pathfinder.shouldGoalBeExecuted = {
                 !hitBox.isDead && owner.gameMode != GameMode.SPECTATOR && afraidOfWaterService.isPetInWater(pet)
@@ -76,6 +83,14 @@ class EntityServiceImpl @Inject constructor(
 
             pathfinder.onExecute = {
                 afraidOfWaterService.escapeWater(pet, aiBase)
+            }
+
+            pathfinder.shouldGoalContinueExecuting = {
+                val current = System.currentTimeMillis()
+                val difference = current - milliseconds
+
+                milliseconds = current
+                difference < 2000
             }
 
             pathfinder
@@ -91,7 +106,7 @@ class EntityServiceImpl @Inject constructor(
             }
 
             pathfinder.onExecute = {
-                if (Math.random() > 0.99) {
+                if (Math.random() > 0.90) {
                     soundService.playSound(hitBox.location, aiBase.sound, hitBox.world.players)
                 }
             }
@@ -168,6 +183,40 @@ class EntityServiceImpl @Inject constructor(
         this.register<AIGroundRiding>(AIType.GROUND_RIDING) { _, aiBase -> PathfinderProxyImpl(plugin, aiBase) }
         this.register<AIHopping>(AIType.HOPPING) { _, aiBase -> PathfinderProxyImpl(plugin, aiBase) }
         this.register<AIWearing>(AIType.WEARING) { _, aiBase -> PathfinderProxyImpl(plugin, aiBase) }
+    }
+
+    /**
+     * Checks the entity collection for invalid pet entities and removes them.
+     */
+    override fun <E> cleanUpInvalidEntities(entities: Collection<E>) {
+        for (entity in entities) {
+            if (entity !is LivingEntity) {
+                continue
+            }
+
+            if (petService.findPetByEntity(entity) != null) {
+                continue
+            }
+
+            // Pets of PetBlocks hide a marker in the boots of every entity. This marker is persistent even on server crashes.
+            if (entity.equipment != null && entity.equipment.boots != null) {
+                val boots = entity.equipment.boots
+
+                if (boots.itemMeta != null && boots.itemMeta.lore != null && boots.itemMeta.lore.size > 0) {
+                    val lore = boots.itemMeta.lore[0]
+
+                    if (ChatColor.stripColor(lore) == "PetBlocks") {
+                        if (entity is EntityPetProxy) {
+                            entity.deleteFromWorld()
+                        } else {
+                            entity.remove()
+                        }
+
+                        plugin.logger.log(Level.INFO, "Removed invalid pet in chunk.")
+                    }
+                }
+            }
+        }
     }
 
     /**

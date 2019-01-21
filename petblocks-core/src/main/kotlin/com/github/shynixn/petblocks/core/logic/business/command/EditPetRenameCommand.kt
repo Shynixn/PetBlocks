@@ -59,7 +59,6 @@ class EditPetRenameCommand @Inject constructor(
 
         petMetaService.getOrCreateFromPlayerUUID(playerProxy.uniqueId).thenAccept { petMeta ->
             petMeta.displayName = message
-            petMetaService.save(petMeta)
             messageService.sendSourceMessage(source, "Renamed the pet of player ${playerProxy.name}.")
         }
 

@@ -37,6 +37,11 @@ interface PersistencePetMetaService {
     fun getAll(): CompletableFutureProxy<List<PetMeta>>
 
     /**
+     * Clears the cache of the player.
+     */
+    fun cleanResources(uuid  : String)
+
+    /**
      * Returns the petMeta of from the given player uniqueId. Creates
      * a new one if it does not exist yet. Gets it from the runtime when a pet
      * currently uses the meta data of the player.

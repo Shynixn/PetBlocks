@@ -38,7 +38,6 @@ interface AfraidOfWaterService {
 
     /**
      * Applies an escape path to the given [petProxy] to escape from water.
-     * Does nothing if the path is already activated.
      */
     fun escapeWater(petProxy: PetProxy, ai : AIAfraidOfWater)
 }

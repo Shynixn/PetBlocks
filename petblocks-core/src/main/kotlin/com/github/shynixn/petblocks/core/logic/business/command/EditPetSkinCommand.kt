@@ -66,7 +66,6 @@ class EditPetSkinCommand @Inject constructor(
                 this.setItem<Boolean>("unbreakable", configuration) { value -> petMeta.skin.unbreakable = value }
                 this.setItem<String>("skin", configuration) { value -> petMeta.skin.owner = value }
 
-                petMetaService.save(petMeta)
                 messageService.sendSourceMessage(source, "Changed the skin of the pet of player ${playerProxy.name}.")
             } catch (e: Exception) {
                 messageService.sendSourceMessage(source, ChatColor.RED.toString() + e.message)

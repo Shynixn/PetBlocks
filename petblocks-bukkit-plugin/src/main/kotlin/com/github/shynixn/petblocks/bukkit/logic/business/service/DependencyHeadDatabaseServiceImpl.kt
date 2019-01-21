@@ -143,8 +143,6 @@ class DependencyHeadDatabaseServiceImpl @Inject constructor(
             petMeta.skin.dataValue = item.durability.toInt()
             petMeta.skin.owner = item.skin!!
 
-            petMetaService.save(petMeta)
-
             val command = configurationService.findValue<String>("commands.petblock.command")
             player.performCommand(command)
         }

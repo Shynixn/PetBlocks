@@ -58,7 +58,6 @@ class EditPetToggleParticleCommand @Inject constructor(
 
         petMetaService.getOrCreateFromPlayerUUID(playerProxy.uniqueId).thenAccept { petMeta ->
             petMeta.particleEnabled = !petMeta.particleEnabled
-            petMetaService.save(petMeta)
 
             if (petMeta.particleEnabled) {
                 messageService.sendSourceMessage(source, "Enabled particles for player ${playerProxy.name}.")

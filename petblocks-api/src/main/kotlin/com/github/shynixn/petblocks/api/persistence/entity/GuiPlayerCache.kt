@@ -36,11 +36,6 @@ interface GuiPlayerCache {
     var path: String
 
     /**
-     * PetMeta.
-     */
-    var petMeta: PetMeta
-
-    /**
      * Off set x axe.
      */
     var offsetX: Int

@@ -3,8 +3,11 @@ package com.github.shynixn.petblocks.bukkit.logic.business.service
 import com.github.shynixn.petblocks.api.business.enumeration.MaterialType
 import com.github.shynixn.petblocks.api.business.proxy.PetProxy
 import com.github.shynixn.petblocks.api.business.service.AfraidOfWaterService
+import com.github.shynixn.petblocks.api.business.service.NavigationService
 import com.github.shynixn.petblocks.api.persistence.entity.AIAfraidOfWater
 import com.github.shynixn.petblocks.bukkit.logic.business.extension.isMaterial
+import com.google.inject.Inject
+import org.bukkit.Location
 import org.bukkit.Material
 import org.bukkit.entity.LivingEntity
 
@@ -35,13 +38,24 @@ import org.bukkit.entity.LivingEntity
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class AfraidOfWaterServiceImpl : AfraidOfWaterService {
+class AfraidOfWaterServiceImpl @Inject constructor(private val navigationService: NavigationService) : AfraidOfWaterService {
+    private val speed: Double = 20.0
+
     /**
      * Applies an escape path to the given [petProxy] to escape from water.
-     * Does nothing if the path is already activated.
      */
     override fun escapeWater(petProxy: PetProxy, ai: AIAfraidOfWater) {
-       
+        val location = petProxy.getLocation<Location>()
+
+        for (i in 0 until 20) {
+            for (j in -2 until 2) {
+                for (k in 0 until 20) {
+                    if (location.block.type == Material.AIR) {
+                        navigationService.navigateToLocation(petProxy, location, speed)
+                    }
+                }
+            }
+        }
     }
 
     /**

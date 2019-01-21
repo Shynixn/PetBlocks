@@ -65,7 +65,6 @@ class EditPetResetCommand @Inject constructor(
         configurationService.refresh()
 
         val newPetMeta = configurationService.generateDefaultPetMeta(playerProxy.uniqueId, playerProxy.name)
-        petMetaService.save(newPetMeta)
         messageService.sendSourceMessage(source, "Reset the pet of player ${playerProxy.name}.")
 
         return true

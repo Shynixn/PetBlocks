@@ -1,17 +1,16 @@
 package com.github.shynixn.petblocks.bukkit.logic.business.listener
 
-import com.github.shynixn.petblocks.api.business.service.ConcurrencyService
-import com.github.shynixn.petblocks.api.business.service.ConfigurationService
-import com.github.shynixn.petblocks.api.business.service.PetService
+import com.github.shynixn.petblocks.api.business.proxy.EntityPetProxy
+import com.github.shynixn.petblocks.api.business.service.*
 import com.github.shynixn.petblocks.bukkit.logic.business.extension.teleportUnsafe
 import com.github.shynixn.petblocks.core.logic.business.extension.sync
 import com.google.inject.Inject
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.entity.PlayerLeashEntityEvent
-import org.bukkit.event.player.PlayerRespawnEvent
-import org.bukkit.event.player.PlayerTeleportEvent
-import org.bukkit.event.player.PlayerToggleSneakEvent
+import org.bukkit.event.player.*
+import org.bukkit.event.world.ChunkLoadEvent
+import org.bukkit.event.world.ChunkUnloadEvent
 
 /**
  * Created by Shynixn 2018.
@@ -40,7 +39,74 @@ import org.bukkit.event.player.PlayerToggleSneakEvent
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class PetListener @Inject constructor(private val petService: PetService, private val concurrencyService: ConcurrencyService, private val configurationService: ConfigurationService) : Listener {
+class PetListener @Inject constructor(
+    private val petService: PetService,
+    private val persistencePetMetaService: PersistencePetMetaService,
+    private val concurrencyService: ConcurrencyService,
+    private val entityService: EntityService,
+    private val configurationService: ConfigurationService
+) : Listener {
+    private val joinCooldown = 20 * 3L // 3 seconds.
+
+    /**
+     * Gets called when a player joins the server. Join the pet if it was already enabled last time.
+     */
+    @EventHandler
+    fun onPlayerJoinEvent(event: PlayerJoinEvent) {
+        sync(concurrencyService, joinCooldown) {
+            val player = event.player
+
+            if (player.isOnline && player.world != null) {
+                persistencePetMetaService.getOrCreateFromPlayerUUID(player.uniqueId.toString()).thenAccept { petMeta ->
+                    if (petMeta.enabled) {
+                        petService.getOrSpawnPetFromPlayerUUID(player.uniqueId.toString())
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * Gets called when a player quits the server. Clear pet resources and fix enable state in persistence.
+     */
+    @EventHandler
+    fun onPlayerQuitEvent(event: PlayerQuitEvent) {
+        val uuid = event.player.uniqueId.toString()
+
+        persistencePetMetaService.cleanResources(uuid)
+
+        if (petService.hasPet(uuid)) {
+            petService.getOrSpawnPetFromPlayerUUID(uuid).thenAccept { pet ->
+                pet.remove()
+            }
+
+            persistencePetMetaService.getOrCreateFromPlayerUUID(uuid).thenAccept { petMeta ->
+                petMeta.enabled = true
+                persistencePetMetaService.cleanResources(uuid)
+            }
+        }
+    }
+
+    /**
+     * Avoids saving the pet into the chunk data.
+     */
+    @EventHandler
+    fun onChunkUnloadEvent(event: ChunkUnloadEvent) {
+        for (entity in event.chunk.entities) {
+            if (entity is EntityPetProxy) {
+                entity.deleteFromWorld()
+            }
+        }
+    }
+
+    /**
+     * Avoids loading an invalid pet into a chunk.
+     */
+    @EventHandler
+    fun onChunkLoadEvent(event: ChunkLoadEvent) {
+        entityService.cleanUpInvalidEntities(event.chunk.entities.toList())
+    }
+
     /**
      * Gets called when a player presses the sneak button and removes the pet of the players head if present.
      *
@@ -58,7 +124,7 @@ class PetListener @Inject constructor(private val petService: PetService, privat
 
         petService.getOrSpawnPetFromPlayerUUID(event.player.uniqueId.toString()).thenAccept { pet ->
             if (event.player.passenger == pet.getHeadArmorstand() || event.player.passenger == pet.getHitBoxLivingEntity()) {
-               // pet.stopWearing()
+                // pet.stopWearing()
             }
         }
     }
@@ -128,7 +194,7 @@ class PetListener @Inject constructor(private val petService: PetService, privat
         val pet = petService.getOrSpawnPetFromPlayerUUID(event.player.uniqueId.toString()).get()
 
         if (fallOffHead) {
-          //  pet.stopWearing()
+            //  pet.stopWearing()
 
             return
         }
