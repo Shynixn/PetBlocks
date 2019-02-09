@@ -1,15 +1,15 @@
 package com.github.shynixn.petblocks.api.bukkit.event
 
-import com.github.shynixn.petblocks.api.business.proxy.PetProxy
+import org.bukkit.event.Cancellable
 
 /**
- * Created by Shynixn 2018.
+ * Base Event extension for all PetBlocks cancelable events.
  * <p>
  * Version 1.2
  * <p>
  * MIT License
  * <p>
- * Copyright (c) 2018 by Shynixn
+ * Copyright (c) 2019 by Shynixn
  * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -29,4 +29,20 @@ import com.github.shynixn.petblocks.api.business.proxy.PetProxy
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class PetMoveEvent(pet: PetProxy) : PetEvent(pet)
+open class PetBlocksCancelableEvent : PetBlocksEvent(),Cancellable {
+    private var cancelled = false
+
+    /**
+     * Sets cancelled.
+     */
+    override fun setCancelled(cancel: Boolean) {
+        this.cancelled = cancel
+    }
+
+    /**
+     * Is cancelled.
+     */
+    override fun isCancelled(): Boolean {
+        return cancelled
+    }
+}

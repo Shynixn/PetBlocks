@@ -1,6 +1,7 @@
 package com.github.shynixn.petblocks.api.bukkit.event
 
 import com.github.shynixn.petblocks.api.business.proxy.PetProxy
+import org.bukkit.entity.Player
 
 /**
  * Created by Shynixn 2018.
@@ -29,8 +30,13 @@ import com.github.shynixn.petblocks.api.business.proxy.PetProxy
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-open class PetEvent(
-        /**
-         * Pet causing this event.
-         */
-        val pet: PetProxy) : PetBlocksEvent()
+class PetPostSpawnEvent(
+    /**
+     * Owner of the pet getting spawned.
+     */
+    val player: Player,
+    /**
+     * Pet which was spawned.
+     */
+    val pet: PetProxy
+) : PetBlocksEvent()

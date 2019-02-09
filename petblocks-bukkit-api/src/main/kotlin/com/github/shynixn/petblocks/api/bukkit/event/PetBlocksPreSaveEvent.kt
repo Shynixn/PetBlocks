@@ -1,16 +1,16 @@
 package com.github.shynixn.petblocks.api.bukkit.event
 
-import com.github.shynixn.petblocks.api.business.proxy.PetProxy
-import org.bukkit.event.Cancellable
+import com.github.shynixn.petblocks.api.persistence.entity.PetMeta
+import org.bukkit.entity.Player
 
 /**
- * Created by Shynixn 2018.
+ * Created by Shynixn 2019.
  * <p>
  * Version 1.2
  * <p>
  * MIT License
  * <p>
- * Copyright (c) 2018 by Shynixn
+ * Copyright (c) 2019 by Shynixn
  * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -30,20 +30,9 @@ import org.bukkit.event.Cancellable
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-open class PetCancelableEvent(pet: PetProxy) : PetEvent(pet), Cancellable {
-    private var cancelled = false
-
+class PetBlocksPreSaveEvent(
     /**
-     * Sets cancelled.
+     * PetMeta which was saved.
      */
-    override fun setCancelled(cancel: Boolean) {
-        this.cancelled = cancel
-    }
-
-    /**
-     * Is cancelled.
-     */
-    override fun isCancelled(): Boolean {
-        return cancelled
-    }
-}
+    val petMeta: PetMeta
+) : PetBlocksEvent()

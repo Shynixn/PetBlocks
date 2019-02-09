@@ -1,6 +1,7 @@
 package com.github.shynixn.petblocks.api.bukkit.event
 
 import com.github.shynixn.petblocks.api.business.proxy.PetProxy
+import org.bukkit.entity.Player
 
 /**
  * Created by Shynixn 2018.
@@ -29,4 +30,13 @@ import com.github.shynixn.petblocks.api.business.proxy.PetProxy
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class PetRemoveEvent(pet: PetProxy) : PetEvent(pet)
+class PetRemoveEvent(
+    /**
+     * Owner of the pet getting removed.
+     */
+    val player: Player,
+    /**
+     * Pet getting removed.
+     */
+    val pet: PetProxy
+) : PetBlocksCancelableEvent()

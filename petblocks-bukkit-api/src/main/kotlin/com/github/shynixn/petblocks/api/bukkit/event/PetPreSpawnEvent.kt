@@ -1,6 +1,7 @@
 package com.github.shynixn.petblocks.api.bukkit.event
 
-import com.github.shynixn.petblocks.api.business.proxy.PetProxy
+import com.github.shynixn.petblocks.api.persistence.entity.PetMeta
+import org.bukkit.entity.Player
 
 /**
  * Created by Shynixn 2018.
@@ -29,4 +30,13 @@ import com.github.shynixn.petblocks.api.business.proxy.PetProxy
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class PetSpawnEvent(pet : PetProxy) : PetCancelableEvent(pet)
+class PetPreSpawnEvent(
+    /**
+     * Owner of the pet getting spawned.
+     */
+    val player: Player,
+    /**
+     * PetMeta getting used to spawn a pet.
+     */
+    val petMeta: PetMeta
+) : PetBlocksCancelableEvent()

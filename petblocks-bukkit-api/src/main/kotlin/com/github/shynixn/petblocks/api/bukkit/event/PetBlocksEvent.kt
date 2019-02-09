@@ -4,7 +4,7 @@ import org.bukkit.event.Event
 import org.bukkit.event.HandlerList
 
 /**
- * Created by Shynixn 2018.
+ * Base Event for all PetBlocks events.
  * <p>
  * Version 1.2
  * <p>

@@ -1,15 +1,19 @@
 package com.github.shynixn.petblocks.api.bukkit.event
 
 import com.github.shynixn.petblocks.api.business.proxy.PetProxy
+import com.github.shynixn.petblocks.api.persistence.entity.PetMeta
+import org.bukkit.entity.Player
+import java.util.*
 
 /**
- * Created by Shynixn 2018.
+ * Event which gets called once a user has login on the server and all
+ * PetBlocks resources are ready for this user.
  * <p>
  * Version 1.2
  * <p>
  * MIT License
  * <p>
- * Copyright (c) 2018 by Shynixn
+ * Copyright (c) 2019 by Shynixn
  * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -29,8 +33,18 @@ import com.github.shynixn.petblocks.api.business.proxy.PetProxy
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class PetWearEvent(
-        /**
-         * Gets if the player starts or stops wearing the pet.
-         */
-        val isWearing: Boolean, pet: PetProxy) : PetCancelableEvent(pet)
+class PetBlocksLoginEvent(
+    /**
+     * Player which logs into the server.
+     */
+    val player: Player,
+    /**
+     *  PetMeta data which was created or restored for the given player.
+     */
+    val petMeta: PetMeta, private val petProxy: PetProxy? = null
+) : PetBlocksEvent() {
+    /**
+     * Pet of the player if it is active on join.
+     */
+    val pet: Optional<PetProxy> get() = Optional.ofNullable(petProxy)
+}
