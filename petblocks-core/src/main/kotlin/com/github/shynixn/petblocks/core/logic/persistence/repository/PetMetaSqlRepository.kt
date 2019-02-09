@@ -2,7 +2,6 @@
 
 package com.github.shynixn.petblocks.core.logic.persistence.repository
 
-import com.github.shynixn.petblocks.api.business.annotation.Inject
 import com.github.shynixn.petblocks.api.business.service.AIService
 import com.github.shynixn.petblocks.api.business.service.ConfigurationService
 import com.github.shynixn.petblocks.api.persistence.context.SqlDbContext
@@ -13,6 +12,7 @@ import com.github.shynixn.petblocks.core.logic.business.extension.getItem
 import com.github.shynixn.petblocks.core.logic.persistence.entity.PetMetaEntity
 import com.github.shynixn.petblocks.core.logic.persistence.entity.PlayerMetaEntity
 import com.github.shynixn.petblocks.core.logic.persistence.entity.SkinEntity
+import com.google.inject.Inject
 
 /**
  * Created by Shynixn 2018.

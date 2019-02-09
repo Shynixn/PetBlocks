@@ -4,7 +4,6 @@ package com.github.shynixn.petblocks.core.logic.business.service
 
 import com.github.shynixn.petblocks.api.business.proxy.AICreationProxy
 import com.github.shynixn.petblocks.api.business.service.YamlConfigurationService
-import com.github.shynixn.petblocks.api.business.annotation.Inject
 import com.github.shynixn.petblocks.api.business.proxy.PathfinderProxy
 import com.github.shynixn.petblocks.api.business.proxy.PetProxy
 import com.github.shynixn.petblocks.api.business.service.AIService
@@ -13,6 +12,7 @@ import com.github.shynixn.petblocks.api.business.service.ProxyService
 import com.github.shynixn.petblocks.api.persistence.entity.AIBase
 import com.github.shynixn.petblocks.api.persistence.entity.AIFollowBack
 import com.github.shynixn.petblocks.api.persistence.entity.AIFollowOwner
+import com.google.inject.Inject
 
 /**
  * Created by Shynixn 2018.

@@ -1,11 +1,11 @@
 package com.github.shynixn.petblocks.core.logic.business.command
 
-import com.github.shynixn.petblocks.api.business.annotation.Inject
 import com.github.shynixn.petblocks.api.business.command.SourceCommand
 import com.github.shynixn.petblocks.api.business.service.CommandService
 import com.github.shynixn.petblocks.api.business.service.MessageService
 import com.github.shynixn.petblocks.api.business.service.PersistencePetMetaService
 import com.github.shynixn.petblocks.api.business.service.ProxyService
+import com.google.inject.Inject
 
 /**
  * Created by Shynixn 2018.
@@ -55,15 +55,14 @@ class EditPetToggleParticleCommand @Inject constructor(
         }
 
         val playerProxy = proxyService.findPlayerProxyObject(result.first)
+        val petMeta = petMetaService.getPetMetaFromPlayer(playerProxy)
 
-        petMetaService.getOrCreateFromPlayerUUID(playerProxy.uniqueId).thenAccept { petMeta ->
-            petMeta.particleEnabled = !petMeta.particleEnabled
+        petMeta.particleEnabled = !petMeta.particleEnabled
 
-            if (petMeta.particleEnabled) {
-                messageService.sendSourceMessage(source, "Enabled particles for player ${playerProxy.name}.")
-            } else {
-                messageService.sendSourceMessage(source, "Disabled particles for player ${playerProxy.name}.")
-            }
+        if (petMeta.particleEnabled) {
+            messageService.sendSourceMessage(source, "Enabled particles for player ${playerProxy.name}.")
+        } else {
+            messageService.sendSourceMessage(source, "Disabled particles for player ${playerProxy.name}.")
         }
 
         return true

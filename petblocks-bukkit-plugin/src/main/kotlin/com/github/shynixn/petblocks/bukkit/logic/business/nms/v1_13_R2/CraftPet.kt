@@ -3,8 +3,13 @@
 package com.github.shynixn.petblocks.bukkit.logic.business.nms.v1_13_R2
 
 import com.github.shynixn.petblocks.api.business.proxy.EntityPetProxy
+import net.minecraft.server.v1_13_R2.EntityGuardian
+import net.minecraft.server.v1_13_R2.EntityPufferFish
+import net.minecraft.server.v1_13_R2.EntitySquid
+import net.minecraft.server.v1_13_R2.PathfinderGoalRandomSwim
 import org.bukkit.craftbukkit.v1_13_R2.CraftServer
 import org.bukkit.craftbukkit.v1_13_R2.entity.CraftCreature
+import org.bukkit.entity.Squid
 
 /**
  * Created by Shynixn 2019.
@@ -45,6 +50,7 @@ class CraftPet(server: CraftServer, nmsPet: NMSPet) : CraftCreature(server, nmsP
      * Hides the true type of the pet from everyone else.
      */
     override fun getType(): org.bukkit.entity.EntityType {
+        EntityGuardian
         return org.bukkit.entity.EntityType.UNKNOWN
     }
 

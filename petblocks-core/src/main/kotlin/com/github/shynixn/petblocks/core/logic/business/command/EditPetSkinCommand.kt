@@ -2,10 +2,10 @@
 
 package com.github.shynixn.petblocks.core.logic.business.command
 
-import com.github.shynixn.petblocks.api.business.annotation.Inject
 import com.github.shynixn.petblocks.api.business.command.SourceCommand
 import com.github.shynixn.petblocks.api.business.enumeration.ChatColor
 import com.github.shynixn.petblocks.api.business.service.*
+import com.google.inject.Inject
 
 /**
  * Created by Shynixn 2018.
@@ -56,20 +56,19 @@ class EditPetSkinCommand @Inject constructor(
         }
 
         val playerProxy = proxyService.findPlayerProxyObject(result.first)
+        val petMeta = petMetaService.getPetMetaFromPlayer(playerProxy)
 
-        petMetaService.getOrCreateFromPlayerUUID(playerProxy.uniqueId).thenAccept { petMeta ->
-            try {
-                val configuration = configurationService.findValue<Map<String, Any>>(args[1])
+        try {
+            val configuration = configurationService.findValue<Map<String, Any>>(args[1])
 
-                this.setItem<Int>("id", configuration) { value -> petMeta.skin.typeName = value.toString() }
-                this.setItem<Int>("damage", configuration) { value -> petMeta.skin.dataValue = value }
-                this.setItem<Boolean>("unbreakable", configuration) { value -> petMeta.skin.unbreakable = value }
-                this.setItem<String>("skin", configuration) { value -> petMeta.skin.owner = value }
+            this.setItem<Int>("id", configuration) { value -> petMeta.skin.typeName = value.toString() }
+            this.setItem<Int>("damage", configuration) { value -> petMeta.skin.dataValue = value }
+            this.setItem<Boolean>("unbreakable", configuration) { value -> petMeta.skin.unbreakable = value }
+            this.setItem<String>("skin", configuration) { value -> petMeta.skin.owner = value }
 
-                messageService.sendSourceMessage(source, "Changed the skin of the pet of player ${playerProxy.name}.")
-            } catch (e: Exception) {
-                messageService.sendSourceMessage(source, ChatColor.RED.toString() + e.message)
-            }
+            messageService.sendSourceMessage(source, "Changed the skin of the pet of player ${playerProxy.name}.")
+        } catch (e: Exception) {
+            messageService.sendSourceMessage(source, ChatColor.RED.toString() + e.message)
         }
 
         return true

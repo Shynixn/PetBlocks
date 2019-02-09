@@ -1,6 +1,6 @@
 package com.github.shynixn.petblocks.api.business.service
 
-import com.github.shynixn.petblocks.api.business.proxy.CompletableFutureProxy
+import java.util.concurrent.CompletableFuture
 
 /**
  * Created by Shynixn 2018.
@@ -33,5 +33,5 @@ interface UpdateCheckService {
     /**
      * Returns if there are any new updates for the PetBlocks plugin.
      */
-    fun checkForUpdates(): CompletableFutureProxy<Boolean>
+    fun checkForUpdates(): CompletableFuture<Boolean>
 }

@@ -1,5 +1,7 @@
 package com.github.shynixn.petblocks.api.business.service
 
+import com.github.shynixn.petblocks.api.business.proxy.PetProxy
+
 /**
  * Created by Shynixn 2018.
  * <p>
@@ -29,9 +31,8 @@ package com.github.shynixn.petblocks.api.business.service
  */
 interface FeedingPetService {
     /**
-     * Feeds the pet of the given [player] with the current item in hand.
-     * Returns if the pet could be feed.
-     * @param P the type of the player.
+     * Feeds the given [pet] with the given [itemStack].
+     * Returns true if [pet] can eat the [itemStack] otherwise false.
      */
-    fun <P> feedPet(player: P): Boolean
+    fun <I> feedPet(pet: PetProxy, itemStack: I): Boolean
 }

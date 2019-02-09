@@ -1,8 +1,6 @@
 package com.github.shynixn.petblocks.core.logic.business.commandexecutor
 
-import com.github.shynixn.petblocks.api.business.annotation.Inject
 import com.github.shynixn.petblocks.api.business.command.SourceCommand
-import com.github.shynixn.petblocks.api.business.commandexecutor.EditPetCommandExecutor
 import com.github.shynixn.petblocks.api.business.enumeration.ChatClickAction
 import com.github.shynixn.petblocks.api.business.enumeration.ChatColor
 import com.github.shynixn.petblocks.api.business.service.ConfigurationService
@@ -10,6 +8,7 @@ import com.github.shynixn.petblocks.api.business.service.MessageService
 import com.github.shynixn.petblocks.api.business.service.ProxyService
 import com.github.shynixn.petblocks.core.logic.business.command.*
 import com.github.shynixn.petblocks.core.logic.persistence.entity.ChatMessageEntity
+import com.google.inject.Inject
 
 /**
  * Created by Shynixn 2018.
@@ -52,7 +51,7 @@ class EditPetCommandExecutorImpl @Inject constructor(
     private val messageService: MessageService,
     private val proxyService: ProxyService,
     private val configurationService: ConfigurationService
-) : EditPetCommandExecutor {
+) : SourceCommand {
     private val commands = ArrayList<SourceCommand>()
 
     init {

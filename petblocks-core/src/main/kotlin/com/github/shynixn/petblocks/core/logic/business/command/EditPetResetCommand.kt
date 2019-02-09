@@ -1,9 +1,8 @@
 package com.github.shynixn.petblocks.core.logic.business.command
 
-import com.github.shynixn.petblocks.api.business.annotation.Inject
 import com.github.shynixn.petblocks.api.business.command.SourceCommand
 import com.github.shynixn.petblocks.api.business.service.*
-import com.github.shynixn.petblocks.api.persistence.repository.PetMetaRepository
+import com.google.inject.Inject
 
 /**
  * Created by Shynixn 2018.
@@ -35,7 +34,7 @@ import com.github.shynixn.petblocks.api.persistence.repository.PetMetaRepository
 class EditPetResetCommand @Inject constructor(
     private val proxyService: ProxyService,
     private val petService: PetService,
-    private val petMetaService: PetMetaRepository,
+    private val petMetaService: PersistencePetMetaService,
     private val configurationService: ConfigurationService,
     private val commandService: CommandService,
     private val messageService: MessageService
@@ -57,14 +56,15 @@ class EditPetResetCommand @Inject constructor(
         val playerProxy = proxyService.findPlayerProxyObject(result.first)
 
         if (petService.hasPet(playerProxy.uniqueId)) {
-            petService.getOrSpawnPetFromPlayerUUID(playerProxy.uniqueId).thenAccept { pet ->
-                pet.remove()
-            }
+            val pet = petService.getOrSpawnPetFromPlayer(playerProxy).get()
+            pet.remove()
         }
 
         configurationService.refresh()
 
         val newPetMeta = configurationService.generateDefaultPetMeta(playerProxy.uniqueId, playerProxy.name)
+        petMetaService.save(newPetMeta)
+        petMetaService.refreshPetMetaFromRepository(playerProxy)
         messageService.sendSourceMessage(source, "Reset the pet of player ${playerProxy.name}.")
 
         return true

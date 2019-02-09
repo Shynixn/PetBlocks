@@ -1,11 +1,11 @@
 package com.github.shynixn.petblocks.core.logic.business.command
 
-import com.github.shynixn.petblocks.api.business.annotation.Inject
 import com.github.shynixn.petblocks.api.business.command.SourceCommand
 import com.github.shynixn.petblocks.api.business.service.CommandService
 import com.github.shynixn.petblocks.api.business.service.MessageService
 import com.github.shynixn.petblocks.api.business.service.PetService
 import com.github.shynixn.petblocks.api.business.service.ProxyService
+import com.google.inject.Inject
 
 /**
  * Created by Shynixn 2018.
@@ -57,9 +57,8 @@ class EditPetDisableCommand @Inject constructor(
         val playerProxy = proxyService.findPlayerProxyObject(result.first)
 
         if (petService.hasPet(playerProxy.uniqueId)) {
-            petService.getOrSpawnPetFromPlayerUUID(playerProxy.uniqueId).thenAccept { pet ->
-                pet.remove()
-            }
+            val pet = petService.getOrSpawnPetFromPlayer(playerProxy).get()
+            pet.remove()
 
             messageService.sendSourceMessage(source, "Disabled pet of player ${playerProxy.name}.")
         } else {

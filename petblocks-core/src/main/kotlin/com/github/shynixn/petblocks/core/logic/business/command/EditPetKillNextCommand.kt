@@ -1,8 +1,8 @@
 package com.github.shynixn.petblocks.core.logic.business.command
 
-import com.github.shynixn.petblocks.api.business.annotation.Inject
 import com.github.shynixn.petblocks.api.business.command.SourceCommand
 import com.github.shynixn.petblocks.api.business.service.EntityService
+import com.google.inject.Inject
 
 /**
  * Created by Shynixn 2018.

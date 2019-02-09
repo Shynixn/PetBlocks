@@ -2,14 +2,11 @@
 
 package com.github.shynixn.petblocks.core.logic.business.service
 
-import com.github.shynixn.petblocks.api.business.annotation.Inject
 import com.github.shynixn.petblocks.api.business.enumeration.AIType
 import com.github.shynixn.petblocks.api.business.enumeration.MaterialType
-import com.github.shynixn.petblocks.api.business.proxy.CompletableFutureProxy
-import com.github.shynixn.petblocks.api.business.service.CarryPetService
-import com.github.shynixn.petblocks.api.business.service.ItemService
-import com.github.shynixn.petblocks.api.business.service.PetService
-import com.github.shynixn.petblocks.api.business.service.ProxyService
+import com.github.shynixn.petblocks.api.business.service.*
+import com.github.shynixn.petblocks.api.persistence.entity.AICarry
+import com.google.inject.Inject
 
 /**
  * Created by Shynixn 2018.
@@ -41,7 +38,8 @@ import com.github.shynixn.petblocks.api.business.service.ProxyService
 class CarryPetServiceImpl @Inject constructor(
     private val petService: PetService,
     private val proxyService: ProxyService,
-    private val itemService: ItemService
+    private val itemService: ItemService,
+    private val loggingService: LoggingService
 ) : CarryPetService {
     private val carryingPet: MutableMap<String, Any> = HashMap()
 
@@ -56,19 +54,27 @@ class CarryPetServiceImpl @Inject constructor(
             return
         }
 
-        petService.getOrSpawnPetFromPlayerUUID(playerProxy.uniqueId).thenAccept { pet ->
-            if (pet.meta.aiGoals.firstOrNull { a -> a.type == AIType.CARRY.type } != null) {
-                val itemInHand = playerProxy.getItemInHand<Any>(true)
+        val pet = petService.getOrSpawnPetFromPlayer(player).get()
 
-                if (itemInHand == null || itemService.isItemStackMaterialType(itemInHand, MaterialType.AIR)) {
-                    val cachePet = pet.getHeadArmorstandItemStack<Any>()
-                    carryingPet[playerProxy.uniqueId] = cachePet
-                    playerProxy.setItemInHand(cachePet, true)
-                    playerProxy.updateInventory()
+        val count = pet.meta.aiGoals.count { p -> p is AICarry }
 
-                    pet.remove()
-                }
-            }
+        if (count == 0) {
+            return
+        }
+
+        if (count > 1) {
+            loggingService.warn("Player ${pet.meta.playerMeta.name} has registered multiple ${AIType.HEALTH.type}. Please check your configuration.")
+        }
+
+        val itemInHand = playerProxy.getItemInHand<Any>(true)
+
+        if (itemInHand == null || itemService.isItemStackMaterialType(itemInHand, MaterialType.AIR)) {
+            val cachePet = pet.getHeadArmorstandItemStack<Any>()
+            carryingPet[playerProxy.uniqueId] = cachePet
+            playerProxy.setItemInHand(cachePet, true)
+            playerProxy.updateInventory()
+
+            pet.remove()
         }
     }
 
@@ -76,44 +82,34 @@ class CarryPetServiceImpl @Inject constructor(
      * Lets the given [player] drop his pet if he is currently carrying it.
      * Does nothing if the player isn't carrying it.
      */
-    override fun <P> dropPet(player: P): CompletableFutureProxy<Unit> {
+    override fun <P> dropPet(player: P) {
         val playerProxy = proxyService.findPlayerProxyObject(player)
-        val completableFuture = proxyService.createCompletableFuture<Unit>()
 
         if (!carryingPet.containsKey(playerProxy.uniqueId)) {
-            return completableFuture
+            return
         }
 
         carryingPet.remove(playerProxy.uniqueId)
         playerProxy.setItemInHand(null, true)
 
-        petService.getOrSpawnPetFromPlayerUUID(playerProxy.uniqueId).thenAccept {
-            completableFuture.complete(Unit)
-        }
-
-        return completableFuture
+        petService.getOrSpawnPetFromPlayer(player)
     }
 
     /**
      * Lets the given [player] throw his pet if he is currently carrying.
      * Does automatically drop it and does nothing if the player isn't carrying it.
      */
-    override fun <P> throwPet(player: P): CompletableFutureProxy<Unit> {
+    override fun <P> throwPet(player: P) {
         val playerProxy = proxyService.findPlayerProxyObject(player)
-        val completableFuture = proxyService.createCompletableFuture<Unit>()
 
         if (!carryingPet.containsKey(playerProxy.uniqueId)) {
-            return completableFuture
+            return
         }
 
-        dropPet(player).thenAccept {
-            petService.getOrSpawnPetFromPlayerUUID(playerProxy.uniqueId).thenAccept { pet ->
-                pet.setVelocity(playerProxy.getDirectionLaunchVector().multiply(1.2))
-                completableFuture.complete(Unit)
-            }
-        }
+        dropPet(player)
 
-        return completableFuture
+        val pet = petService.getOrSpawnPetFromPlayer(player).get()
+        pet.setVelocity(playerProxy.getDirectionLaunchVector().multiply(1.2))
     }
 
     /**

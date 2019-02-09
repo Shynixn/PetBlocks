@@ -59,6 +59,7 @@ shadowJar{
 
 dependencies {
     implementation project(':petblocks-core')
+    implementation project(':petblocks-api')
     implementation project(':petblocks-bukkit-api')
 
     implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk8'

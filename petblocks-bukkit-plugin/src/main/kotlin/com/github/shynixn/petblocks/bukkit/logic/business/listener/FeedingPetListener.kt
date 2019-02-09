@@ -1,13 +1,16 @@
 package com.github.shynixn.petblocks.bukkit.logic.business.listener
 
 import com.github.shynixn.petblocks.api.business.service.FeedingPetService
+import com.github.shynixn.petblocks.api.business.service.ItemService
 import com.github.shynixn.petblocks.api.business.service.PetService
 import com.google.inject.Inject
+import org.bukkit.Material
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.EventPriority
 import org.bukkit.event.Listener
 import org.bukkit.event.player.PlayerInteractAtEntityEvent
+import org.bukkit.inventory.ItemStack
 
 /**
  * Created by Shynixn 2018.
@@ -36,17 +39,23 @@ import org.bukkit.event.player.PlayerInteractAtEntityEvent
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class FeedingPetListener @Inject constructor(private val feedingPetService: FeedingPetService, private val petService: PetService) : Listener {
+class FeedingPetListener @Inject constructor(private val feedingPetService: FeedingPetService, private val petService: PetService, private val itemService: ItemService) :
+    Listener {
     /**
      * Gets called when a player interacts at the given entity.
      */
     @EventHandler(priority = EventPriority.LOWEST)
     fun entityRightClickEvent(event: PlayerInteractAtEntityEvent) {
-        val optPet = petService.findPetByEntity(event.rightClicked)
+        val pet = petService.findPetByEntity(event.rightClicked) ?: return
 
-        if (event.rightClicked != null && optPet != null && optPet.getPlayer<Player>() == event.player) {
-            val feed = feedingPetService.feedPet(event.player)
-            event.isCancelled = feed
+        if (event.rightClicked != null && pet.getPlayer<Player>() == event.player) {
+            val itemStack = itemService.getItemInHand<Player, ItemStack>(event.player)
+
+            if (itemStack.isPresent && itemStack.get().type != Material.AIR) {
+                val feed = feedingPetService.feedPet(pet, itemStack.get())
+
+                event.isCancelled = feed
+            }
         }
     }
 }

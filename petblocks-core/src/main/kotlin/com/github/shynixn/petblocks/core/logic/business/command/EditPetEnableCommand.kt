@@ -1,11 +1,11 @@
 package com.github.shynixn.petblocks.core.logic.business.command
 
-import com.github.shynixn.petblocks.api.business.annotation.Inject
 import com.github.shynixn.petblocks.api.business.command.SourceCommand
 import com.github.shynixn.petblocks.api.business.service.CommandService
 import com.github.shynixn.petblocks.api.business.service.MessageService
 import com.github.shynixn.petblocks.api.business.service.PetService
 import com.github.shynixn.petblocks.api.business.service.ProxyService
+import com.google.inject.Inject
 
 /**
  * Created by Shynixn 2018.
@@ -58,7 +58,7 @@ class EditPetEnableCommand @Inject constructor(
         val playerProxy = proxyService.findPlayerProxyObject(result.first)
 
         if (!petService.hasPet(playerProxy.uniqueId)) {
-            petService.getOrSpawnPetFromPlayerUUID(playerProxy.uniqueId)
+            petService.getOrSpawnPetFromPlayer(playerProxy.uniqueId)
             messageService.sendSourceMessage(source, "Enabled pet of player ${playerProxy.name}.")
         } else {
             messageService.sendSourceMessage(source, "There is already an active pet of player ${playerProxy.name}.")

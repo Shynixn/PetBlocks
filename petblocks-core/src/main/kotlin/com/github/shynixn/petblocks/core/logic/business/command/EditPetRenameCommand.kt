@@ -1,11 +1,11 @@
 package com.github.shynixn.petblocks.core.logic.business.command
 
-import com.github.shynixn.petblocks.api.business.annotation.Inject
 import com.github.shynixn.petblocks.api.business.command.SourceCommand
 import com.github.shynixn.petblocks.api.business.service.CommandService
 import com.github.shynixn.petblocks.api.business.service.MessageService
 import com.github.shynixn.petblocks.api.business.service.PersistencePetMetaService
 import com.github.shynixn.petblocks.api.business.service.ProxyService
+import com.google.inject.Inject
 
 /**
  * Created by Shynixn 2018.
@@ -57,10 +57,10 @@ class EditPetRenameCommand @Inject constructor(
         val playerProxy = proxyService.findPlayerProxyObject(result.first)
         val message = result.second
 
-        petMetaService.getOrCreateFromPlayerUUID(playerProxy.uniqueId).thenAccept { petMeta ->
-            petMeta.displayName = message
-            messageService.sendSourceMessage(source, "Renamed the pet of player ${playerProxy.name}.")
-        }
+        val petMeta = petMetaService.getPetMetaFromPlayer(playerProxy)
+
+        petMeta.displayName = message
+        messageService.sendSourceMessage(source, "Renamed the pet of player ${playerProxy.name}.")
 
         return true
     }

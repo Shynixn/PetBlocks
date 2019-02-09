@@ -1,13 +1,11 @@
 package com.github.shynixn.petblocks.core.logic.business.service
 
-import com.github.shynixn.petblocks.api.business.annotation.Inject
-import com.github.shynixn.petblocks.api.business.enumeration.MaterialType
 import com.github.shynixn.petblocks.api.business.proxy.PetProxy
-import com.github.shynixn.petblocks.api.business.proxy.PlayerProxy
 import com.github.shynixn.petblocks.api.business.service.*
-import com.github.shynixn.petblocks.api.persistence.entity.Particle
+import com.github.shynixn.petblocks.api.persistence.entity.AIFeeding
 import com.github.shynixn.petblocks.core.logic.business.extension.sync
 import com.github.shynixn.petblocks.core.logic.persistence.entity.PositionEntity
+import com.google.inject.Inject
 
 /**
  * Created by Shynixn 2018.
@@ -38,80 +36,60 @@ import com.github.shynixn.petblocks.core.logic.persistence.entity.PositionEntity
  */
 class FeedPetServiceImpl @Inject constructor(
     private val concurrencyService: ConcurrencyService,
-    private val configurationService: ConfigurationService,
     private val soundService: SoundService,
     private val particleService: ParticleService,
-    private val proxyService: ProxyService,
-    private val petService: PetService,
     private val inventoryItemService: ItemService
 ) : FeedingPetService {
-    private val jumpCache = HashSet<String>()
+
+    private val cache = HashSet<PetProxy>()
 
     /**
-     * Feeds the pet of the given [player] with the current item in hand.
+     * Feeds the given [pet] with the given [itemStack].
+     * Returns true if [pet] can eat the [itemStack] otherwise false.
      */
-    override fun <P> feedPet(player: P): Boolean {
-        val playerProxy = proxyService.findPlayerProxyObject(player)
+    override fun <I> feedPet(pet: PetProxy, itemStack: I): Boolean {
+        var feed = false
 
-        val feedingPetEnabled = configurationService.findValue<Boolean>("pet.feeding.enabled")
-
-        if (!feedingPetEnabled) {
+        if (cache.contains(pet)) {
             return false
         }
 
-        if (!petService.hasPet(playerProxy.uniqueId)) {
-            return false
+        for (aiGoal in pet.meta.aiGoals) {
+            if (aiGoal is AIFeeding) {
+                if (inventoryItemService.hasItemStackProperties(itemStack, aiGoal.typeName, aiGoal.dataValue)) {
+                    playFeedEffects(pet, aiGoal)
+                    feed = true
+                }
+            }
         }
 
-        val itemInHand = playerProxy.getItemInHand<Any>()
-
-        if (itemInHand == null || inventoryItemService.isItemStackMaterialType(itemInHand, MaterialType.CARROT_ITEM)) {
-            return false
-        }
-
-        petService.getOrSpawnPetFromPlayerUUID(playerProxy.uniqueId).thenAccept { petblock ->
-            feedPet(playerProxy, petblock, itemInHand)
-        }
-
-        return true
+        return feed
     }
 
     /**
-     * Feeds the pet if the conditions are right.
+     * Plays the feed effects to the players.
      */
-    private fun feedPet(playerProxy: PlayerProxy, pet: PetProxy, itemInHand: Any) {
-        // if (pet.meta.sound) {
-        //    val feedingSound = configurationService.findValue<Sound>("pet.feeding.click-sound")
-        //    this.soundService.playSound(pet.getLocation<Any>(), feedingSound, playerProxy.handle)
-        //  }
+    private fun playFeedEffects(pet: PetProxy, aiFeeding: AIFeeding) {
+        soundService.playSound(pet.getLocation<Any>(), aiFeeding.clickSound, pet.getPlayer<Any>())
+        particleService.playParticle(pet.getLocation<Any>(), aiFeeding.clickParticle, pet.getPlayer<Any>())
 
-        val feedingParticle = configurationService.findValue<Particle>("pet.feeding.click-particle")
-        particleService.playParticle(pet.getLocation<Any>(), feedingParticle, playerProxy.handle)
-
-        val amountInHand = inventoryItemService.getAmountOfItemStack(itemInHand)
-
-        if (amountInHand == 1) {
-            playerProxy.setItemInHand(null)
-        } else {
-            inventoryItemService.setAmountOfItemStack(itemInHand, amountInHand - 1)
-            playerProxy.setItemInHand(itemInHand)
+        if (cache.contains(pet)) {
+            return
         }
 
-        if (!jumpCache.contains(playerProxy.uniqueId)) {
-            jumpCache.add(playerProxy.uniqueId)
+        cache.add(pet)
 
-            val vectorPosition = PositionEntity()
-            with(vectorPosition) {
-                x = 0.0
-                y = 0.5
-                z = 0.0
-            }
+        val vectorPosition = PositionEntity()
+        with(vectorPosition) {
+            x = 0.0
+            y = 0.5
+            z = 0.0
+        }
 
-            pet.setVelocity(vectorPosition)
+        pet.setVelocity(vectorPosition)
 
-            sync(concurrencyService, 20L) {
-                jumpCache.remove(playerProxy.uniqueId)
-            }
+        sync(concurrencyService, 20L) {
+            cache.remove(pet)
         }
     }
 }

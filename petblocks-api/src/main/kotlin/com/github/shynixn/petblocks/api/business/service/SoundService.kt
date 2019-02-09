@@ -37,11 +37,4 @@ interface SoundService {
      * @param L the type of the location.
      */
     fun <L, P> playSound(location: L, sound: Sound, player: P)
-
-    /**
-     * Plays the given [sound] at the given [location] for the given [players].
-     * @param P the type of the player.
-     * @param L the type of the location.
-     */
-    fun <L, P> playSound(location: L, sound: Sound, players: Collection<P>)
 }

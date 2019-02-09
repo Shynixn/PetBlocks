@@ -37,11 +37,4 @@ interface ParticleService {
      * @param L the type of the location.
      */
     fun <L, P> playParticle(location: L, particle: Particle, player: P)
-
-    /**
-     * Plays the given [particle] at the given [location] for the given [players].
-     * @param P the type of the player.
-     * @param L the type of the location.
-     */
-    fun <L, P> playParticle(location: L, particle: Particle, players: Collection<P>)
 }

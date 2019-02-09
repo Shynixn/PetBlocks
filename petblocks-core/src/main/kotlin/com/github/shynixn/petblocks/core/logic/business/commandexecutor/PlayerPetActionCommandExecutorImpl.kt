@@ -1,12 +1,12 @@
 package com.github.shynixn.petblocks.core.logic.business.commandexecutor
 
-import com.github.shynixn.petblocks.api.business.annotation.Inject
-import com.github.shynixn.petblocks.api.business.commandexecutor.PlayerPetActionCommandExecutor
+import com.github.shynixn.petblocks.api.business.command.PlayerCommand
 import com.github.shynixn.petblocks.api.business.enumeration.Permission
 import com.github.shynixn.petblocks.api.business.service.GUIService
 import com.github.shynixn.petblocks.api.business.service.PetActionService
 import com.github.shynixn.petblocks.api.business.service.ProxyService
 import com.github.shynixn.petblocks.core.logic.business.extension.mergeArgs
+import com.google.inject.Inject
 
 /**
  * Created by Shynixn 2019.
@@ -39,7 +39,7 @@ class PlayerPetActionCommandExecutorImpl @Inject constructor(
     private val petActionService: PetActionService,
     private val guiService: GUIService,
     private val proxyService: ProxyService
-) : PlayerPetActionCommandExecutor {
+) : PlayerCommand {
     /**
      * Gets called when the given [player] executes the defined command with the given [args].
      */

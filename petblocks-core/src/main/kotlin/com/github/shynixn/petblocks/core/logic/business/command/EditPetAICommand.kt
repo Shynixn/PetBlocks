@@ -2,11 +2,11 @@
 
 package com.github.shynixn.petblocks.core.logic.business.command
 
-import com.github.shynixn.petblocks.api.business.annotation.Inject
 import com.github.shynixn.petblocks.api.business.command.SourceCommand
 import com.github.shynixn.petblocks.api.business.enumeration.ChatColor
 import com.github.shynixn.petblocks.api.business.service.*
 import com.github.shynixn.petblocks.api.persistence.entity.AIBase
+import com.google.inject.Inject
 
 /**
  * Created by Shynixn 2018.
@@ -58,43 +58,42 @@ class EditPetAICommand @Inject constructor(
         }
 
         val playerProxy = proxyService.findPlayerProxyObject(result.first)
+        val petMeta = petMetaService.getPetMetaFromPlayer(playerProxy)
 
-        petMetaService.getOrCreateFromPlayerUUID(playerProxy.uniqueId).thenAccept { petMeta ->
-            try {
-                val configuration = configurationService.findValue<Map<String, Any>>(args[1])
-                var addAmount = 0
-                var removeAmount = 0
+        try {
+            val configuration = configurationService.findValue<Map<String, Any>>(args[1])
+            var addAmount = 0
+            var removeAmount = 0
 
-                if (configuration.containsKey("remove-ai")) {
-                    val removeAis = configuration["remove-ai"] as Map<String, Any?>
+            if (configuration.containsKey("remove-ai")) {
+                val removeAis = configuration["remove-ai"] as Map<String, Any?>
 
-                    for (mapData in removeAis.keys) {
-                        val data = removeAis[mapData] as Map<String, Any?>
-                        val aiBase = aiService.deserializeAiBase<AIBase>(data["type"] as String, data)
+                for (mapData in removeAis.keys) {
+                    val data = removeAis[mapData] as Map<String, Any?>
+                    val aiBase = aiService.deserializeAiBase<AIBase>(data["type"] as String, data)
 
-                        removeAmount += petMeta.aiGoals.filter { a -> a.type == aiBase.type }.size
-                        petMeta.aiGoals.removeAll { a -> a.type == aiBase.type }
-                    }
+                    removeAmount += petMeta.aiGoals.filter { a -> a.type == aiBase.type }.size
+                    petMeta.aiGoals.removeAll { a -> a.type == aiBase.type }
                 }
-
-                if (configuration.containsKey("add-ai")) {
-                    val addAis = configuration["add-ai"] as Map<String, Any?>
-
-                    for (mapData in addAis.keys) {
-                        val data = addAis[mapData] as Map<String, Any?>
-                        val aiBase = aiService.deserializeAiBase<AIBase>(data["type"] as String, data)
-
-                        removeAmount += petMeta.aiGoals.filter { a -> a.type == aiBase.type }.size
-                        petMeta.aiGoals.removeAll { a -> a.type == aiBase.type }
-                    }
-
-                    addAmount += addAis.size
-                }
-
-                messageService.sendSourceMessage(source, "Added $addAmount new ais and removed $removeAmount ais to/from player ${playerProxy.name}.")
-            } catch (e: Exception) {
-                messageService.sendSourceMessage(source, ChatColor.RED.toString() + e.message)
             }
+
+            if (configuration.containsKey("add-ai")) {
+                val addAis = configuration["add-ai"] as Map<String, Any?>
+
+                for (mapData in addAis.keys) {
+                    val data = addAis[mapData] as Map<String, Any?>
+                    val aiBase = aiService.deserializeAiBase<AIBase>(data["type"] as String, data)
+
+                    removeAmount += petMeta.aiGoals.filter { a -> a.type == aiBase.type }.size
+                    petMeta.aiGoals.removeAll { a -> a.type == aiBase.type }
+                }
+
+                addAmount += addAis.size
+            }
+
+            messageService.sendSourceMessage(source, "Added $addAmount new ais and removed $removeAmount ais to/from player ${playerProxy.name}.")
+        } catch (e: Exception) {
+            messageService.sendSourceMessage(source, ChatColor.RED.toString() + e.message)
         }
 
         return true

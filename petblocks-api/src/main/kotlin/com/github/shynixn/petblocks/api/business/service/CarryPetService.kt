@@ -1,7 +1,5 @@
 package com.github.shynixn.petblocks.api.business.service
 
-import com.github.shynixn.petblocks.api.business.proxy.CompletableFutureProxy
-
 /**
  * Created by Shynixn 2018.
  * <p>
@@ -43,7 +41,7 @@ interface CarryPetService {
      * Returns when the action was completed.
      * @param P the type of the player.
      */
-    fun <P> dropPet(player: P): CompletableFutureProxy<Unit>
+    fun <P> dropPet(player: P)
 
     /**
      * Lets the given [player] throw his pet if he is currently carrying.
@@ -51,7 +49,7 @@ interface CarryPetService {
      * Returns when the action was completed.
      * @param P the type of the player.
      */
-    fun <P> throwPet(player: P): CompletableFutureProxy<Unit>
+    fun <P> throwPet(player: P)
 
     /**
      * Gets the itemstack from the carrying pet.

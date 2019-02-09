@@ -1,6 +1,7 @@
 package com.github.shynixn.petblocks.api.business.service
 
 import com.github.shynixn.petblocks.api.business.enumeration.MaterialType
+import java.util.*
 
 /**
  * Created by Shynixn 2018.
@@ -64,6 +65,16 @@ interface ItemService {
      * Sets the lore of an itemstack.
      */
     fun <I> setLoreOfItemStack(itemstack: I, index: Int, text: String)
+
+    /**
+     * Gets if the given [itemStack] has got the given [type] and [dataValue].
+     */
+    fun <I> hasItemStackProperties(itemStack: I, type: Any, dataValue: Int = 0): Boolean
+
+    /**
+     * Gets the itemstack in the hand of the player with optional offHand flag.
+     */
+    fun <P, I> getItemInHand(player: P, offHand: Boolean = false): Optional<I>
 
     /**
      * Gets if the given itemstack is the given materialType.
