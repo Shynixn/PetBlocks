@@ -32,6 +32,11 @@ import com.github.shynixn.petblocks.api.persistence.entity.AIFleeInCombat
  */
 class AIFleeInCombatEntity : AIBaseEntity(), AIFleeInCombat {
     /**
+     * Current amount of seconds until the pet reappears.
+     */
+    @YamlSerialize(value = "current-reappear-delay", orderNumber = 1)
+    override var currentAppearsInSeconds: Int = 0
+    /**
      * Name of the type.
      */
     override var type: String = "flee-in-combat"

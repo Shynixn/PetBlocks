@@ -4,8 +4,10 @@ package com.github.shynixn.petblocks.core.logic.business.extension
 
 import com.github.shynixn.petblocks.api.business.service.PropertyTrackingService
 import api.persistence.entity.PropertyTrackable
+import com.github.shynixn.petblocks.api.PetBlocksApi
 import com.github.shynixn.petblocks.api.business.enumeration.ChatColor
 import com.github.shynixn.petblocks.api.business.service.ConcurrencyService
+import com.github.shynixn.petblocks.api.business.service.LoggingService
 import com.github.shynixn.petblocks.api.persistence.entity.ChatMessage
 import com.github.shynixn.petblocks.core.logic.persistence.entity.ChatMessageEntity
 import kotlin.reflect.KProperty
@@ -90,6 +92,12 @@ inline fun sync(
     concurrencyService.runTaskSync(delayTicks, repeatingTicks) {
         f.invoke()
     }
+}
+
+inline fun CompletableFuture. thenAccept(function).exceptionally { e ->
+    val loggingService = PetBlocksApi.resolve<LoggingService>(LoggingService::class.java)
+    loggingService.error("Failed to execute Task.", e)
+    throw RuntimeException(e)
 }
 
 /**

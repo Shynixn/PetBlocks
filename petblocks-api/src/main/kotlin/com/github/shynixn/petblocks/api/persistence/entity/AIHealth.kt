@@ -39,7 +39,12 @@ interface AIHealth {
     var health: Double
 
     /**
+     * Current delay for respawning.
+     */
+    var currentRespawningDelay: Int
+
+    /**
      * Amount of seconds until the pet can respawn after it has died.
      */
-    var respawningDelay: Double
+    var respawningDelay: Int
 }

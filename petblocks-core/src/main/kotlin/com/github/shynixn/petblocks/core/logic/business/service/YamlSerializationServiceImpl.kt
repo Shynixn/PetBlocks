@@ -1,6 +1,6 @@
 @file:Suppress("UNCHECKED_CAST", "CascadeIf", "FoldInitializerAndIfToElvis")
 
-package com.github.shynixn.petblocks.core.jvm.logic.persistence.service
+package com.github.shynixn.petblocks.core.logic.business.service
 
 import com.github.shynixn.petblocks.api.business.annotation.YamlSerialize
 import com.github.shynixn.petblocks.api.business.serializer.YamlSerializer

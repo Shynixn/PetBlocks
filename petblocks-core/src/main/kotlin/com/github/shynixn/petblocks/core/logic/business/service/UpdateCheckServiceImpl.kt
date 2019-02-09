@@ -1,19 +1,18 @@
-package com.github.shynixn.petblocks.core.jvm.logic.persistence.service
+package com.github.shynixn.petblocks.core.logic.business.service
 
-import com.github.shynixn.petblocks.api.business.annotation.Inject
 import com.github.shynixn.petblocks.api.business.enumeration.ChatColor
-import com.github.shynixn.petblocks.api.business.proxy.CompletableFutureProxy
 import com.github.shynixn.petblocks.api.business.service.LoggingService
 import com.github.shynixn.petblocks.api.business.service.ConcurrencyService
 import com.github.shynixn.petblocks.api.business.service.ConfigurationService
 import com.github.shynixn.petblocks.api.business.service.MessageService
 import com.github.shynixn.petblocks.api.business.service.UpdateCheckService
-import com.github.shynixn.petblocks.core.jvm.logic.business.proxy.CompletableFutureProxyImpl
 import com.github.shynixn.petblocks.core.logic.business.extension.async
+import com.google.inject.Inject
 import java.io.BufferedReader
 import java.io.IOException
 import java.io.InputStreamReader
 import java.net.URL
+import java.util.concurrent.CompletableFuture
 import javax.net.ssl.HttpsURLConnection
 
 /**
@@ -53,8 +52,8 @@ class UpdateCheckServiceImpl @Inject constructor(configurationService: Configura
     /**
      * Returns if there are any new updates for the PetBlocks plugin.
      */
-    override fun checkForUpdates() : CompletableFutureProxy<Boolean>{
-        val completableFuture = CompletableFutureProxyImpl<Boolean>()
+    override fun checkForUpdates() : CompletableFuture<Boolean>{
+        val completableFuture = CompletableFuture<Boolean>()
 
         async(concurrencyService) {
             try {

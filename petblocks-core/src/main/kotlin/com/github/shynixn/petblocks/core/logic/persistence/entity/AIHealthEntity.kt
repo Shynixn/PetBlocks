@@ -50,5 +50,11 @@ class AIHealthEntity : AIBaseEntity(), AIHealth {
      * Amount of seconds until the pet can respawn after it has died.
      */
     @YamlSerialize(value = "respawn-delay", orderNumber = 3)
-    override var respawningDelay: Double = 5.0
+    override var respawningDelay: Int = 5
+
+    /**
+     * Current delay for respawning.
+     */
+    @YamlSerialize(value = "current-respawn-delay", orderNumber = 4)
+    override var currentRespawningDelay: Int = 0
 }

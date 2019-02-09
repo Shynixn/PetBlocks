@@ -1,14 +1,18 @@
 package com.github.shynixn.petblocks.core.logic.business.service
 
-import com.github.shynixn.petblocks.api.business.annotation.Inject
-import com.github.shynixn.petblocks.api.business.proxy.CompletableFutureProxy
 import com.github.shynixn.petblocks.api.business.service.ConcurrencyService
+import com.github.shynixn.petblocks.api.business.service.EventService
 import com.github.shynixn.petblocks.api.business.service.PersistencePetMetaService
 import com.github.shynixn.petblocks.api.business.service.ProxyService
 import com.github.shynixn.petblocks.api.persistence.entity.PetMeta
 import com.github.shynixn.petblocks.api.persistence.repository.PetMetaRepository
 import com.github.shynixn.petblocks.core.logic.business.extension.async
 import com.github.shynixn.petblocks.core.logic.business.extension.sync
+import com.github.shynixn.petblocks.core.logic.persistence.entity.PetBlocksPostSaveEntity
+import com.github.shynixn.petblocks.core.logic.persistence.entity.PetBlocksPreSaveEntity
+import com.google.inject.Inject
+import java.util.*
+import java.util.concurrent.CompletableFuture
 
 /**
  * Created by Shynixn 2018.
@@ -40,9 +44,9 @@ import com.github.shynixn.petblocks.core.logic.business.extension.sync
 class PersistencePetMetaServiceImpl @Inject constructor(
     private val proxyService: ProxyService,
     private val petMetaRepository: PetMetaRepository,
-    private val concurrencyService: ConcurrencyService
+    private val concurrencyService: ConcurrencyService,
+    private val eventService: EventService
 ) : PersistencePetMetaService {
-
     private val cache = HashMap<String, PetMeta>()
 
     /**
@@ -57,10 +61,40 @@ class PersistencePetMetaServiceImpl @Inject constructor(
     }
 
     /**
-     * Returns [CompletableFutureProxy] with a list of stored [PetMeta].
+     * Clears the cache of the player and saves the allocated resources.
+     * Should only be called once a player leaves the server.
      */
-    override fun getAll(): CompletableFutureProxy<List<PetMeta>> {
-        val completableFuture = proxyService.createCompletableFuture<List<PetMeta>>()
+    override fun <P> close(player: P) {
+        val playerProxy = proxyService.findPlayerProxyObject(player)
+
+        if (!cache.containsKey(playerProxy.uniqueId)) {
+            return
+        }
+
+        val petMeta = cache[playerProxy.uniqueId]!!
+        save(petMeta)
+        cache.remove(playerProxy.uniqueId)
+    }
+
+    /**
+     * Gets the petMeta from the player. This call will never return null.
+     */
+    override fun <P> getPetMetaFromPlayer(player: P): PetMeta {
+        val playerProxy = proxyService.findPlayerProxyObject(player)
+
+        if (!cache.containsKey(playerProxy.uniqueId)) {
+            throw IllegalArgumentException("PetMeta is in an invalid State!")
+        }
+
+        return cache[playerProxy.uniqueId]!!
+    }
+
+    /**
+     * Returns future with a list of all stored [PetMeta].
+     * As not all PetMeta data is available during runtime this call completes in the future.
+     */
+    override fun getAll(): CompletableFuture<List<PetMeta>> {
+        val completableFuture = CompletableFuture<List<PetMeta>>()
 
         async(concurrencyService) {
             val items = petMetaRepository.getAll()
@@ -70,7 +104,6 @@ class PersistencePetMetaServiceImpl @Inject constructor(
                     if (!cache.containsKey(item.playerMeta.uuid)) {
                         cache[item.playerMeta.uuid] = item
                     }
-
                 }
 
                 completableFuture.complete(cache.values.toList())
@@ -81,29 +114,26 @@ class PersistencePetMetaServiceImpl @Inject constructor(
     }
 
     /**
-     * Returns the petMeta of from the given player uniqueId. Creates
-     * a new one if it does not exist yet. Gets it from the runtime when a pet
-     * currently uses the meta data of the player.
+     * Gets or creates petMeta from the player.
+     * Should only be called once a player joins the server.
      */
-    override fun getOrCreateFromPlayerUUID(uuid: String): CompletableFutureProxy<PetMeta> {
-        val completableFuture = proxyService.createCompletableFuture<PetMeta>()
+    override fun <P> refreshPetMetaFromRepository(player: P): CompletableFuture<PetMeta> {
+        val playerProxy = proxyService.findPlayerProxyObject(player)
+        val completableFuture = CompletableFuture<PetMeta>()
 
-        if (cache.containsKey(uuid)) {
+        if (cache.containsKey(playerProxy.uniqueId)) {
             sync(concurrencyService) {
-                completableFuture.complete(cache[uuid]!!)
+                completableFuture.complete(cache[playerProxy.uniqueId]!!)
             }
 
             return completableFuture
         }
 
-        val playerProxy = proxyService.findPlayerProxyObjectFromUUID(uuid)!!
-        val playerName = playerProxy.name
-
         async(concurrencyService) {
-            val petMeta = petMetaRepository.getOrCreateFromPlayerIdentifiers(playerName, uuid)
+            val petMeta = petMetaRepository.getOrCreateFromPlayerIdentifiers(playerProxy.name, playerProxy.uniqueId)
 
             sync(concurrencyService) {
-                cache[uuid] = petMeta
+                cache[playerProxy.uniqueId] = petMeta
                 completableFuture.complete(petMeta)
             }
         }
@@ -112,25 +142,18 @@ class PersistencePetMetaServiceImpl @Inject constructor(
     }
 
     /**
-     * Clears the cache of the player.
+     * Saves the given [petMeta] instance and returns a future.
      */
-    override fun cleanResources(uuid: String) {
-        if (cache.containsKey(uuid)) {
-            save(cache[uuid]!!)
-            cache.remove(uuid)
-        }
-    }
+    override fun save(petMeta: PetMeta): CompletableFuture<PetMeta> {
+        val completableFuture = CompletableFuture<PetMeta>()
 
-    /**
-     * Saves the given [petMeta] instance and returns a [CompletableFutureProxy] with the same petMeta instance.
-     */
-    override fun save(petMeta: PetMeta): CompletableFutureProxy<PetMeta> {
-        val completableFuture = proxyService.createCompletableFuture<PetMeta>()
+        eventService.callEvent(PetBlocksPreSaveEntity(petMeta))
 
         async(concurrencyService) {
             petMetaRepository.save(petMeta)
 
             sync(concurrencyService) {
+                eventService.callEvent(PetBlocksPostSaveEntity(petMeta))
                 completableFuture.complete(petMeta)
             }
         }

@@ -1,13 +1,16 @@
-package com.github.shynixn.petblocks.api.business.proxy
+package com.github.shynixn.petblocks.core.logic.persistence.entity
+
+import com.github.shynixn.petblocks.api.business.proxy.PetProxy
+import com.github.shynixn.petblocks.api.persistence.entity.PetPostSpawn
 
 /**
- * Created by Shynixn 2018.
+ * Created by Shynixn 2019.
  * <p>
  * Version 1.2
  * <p>
  * MIT License
  * <p>
- * Copyright (c) 2018 by Shynixn
+ * Copyright (c) 2019 by Shynixn
  * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -27,19 +30,4 @@ package com.github.shynixn.petblocks.api.business.proxy
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-interface CompletableFutureProxy<T> {
-    /**
-     * Blocks the current thread to get the result.
-     */
-    fun get(): T
-
-    /**
-     * Accepts the future result safely.
-     */
-    fun thenAccept(function: (T) -> Unit)
-
-    /**
-     * Completes the future.
-     */
-    fun complete(value: T): Boolean
-}
+class PetPostSpawnEntity(override val player: Any, override val pet: PetProxy) : PetPostSpawn

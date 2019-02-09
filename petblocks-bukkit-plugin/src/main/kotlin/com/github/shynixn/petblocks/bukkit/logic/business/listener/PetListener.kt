@@ -1,5 +1,6 @@
 package com.github.shynixn.petblocks.bukkit.logic.business.listener
 
+import com.github.shynixn.petblocks.api.business.enumeration.MaterialType
 import com.github.shynixn.petblocks.api.business.proxy.EntityPetProxy
 import com.github.shynixn.petblocks.api.business.service.*
 import com.github.shynixn.petblocks.bukkit.logic.business.extension.teleportUnsafe
@@ -7,6 +8,7 @@ import com.github.shynixn.petblocks.core.logic.business.extension.sync
 import com.google.inject.Inject
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
+import org.bukkit.event.entity.EntityInteractEvent
 import org.bukkit.event.entity.PlayerLeashEntityEvent
 import org.bukkit.event.player.*
 import org.bukkit.event.world.ChunkLoadEvent
@@ -47,6 +49,7 @@ class PetListener @Inject constructor(
     private val configurationService: ConfigurationService
 ) : Listener {
     private val joinCooldown = 20 * 3L // 3 seconds.
+    private val soilMaterial = MaterialType.SOIL
 
     /**
      * Gets called when a player joins the server. Join the pet if it was already enabled last time.
@@ -73,7 +76,7 @@ class PetListener @Inject constructor(
     fun onPlayerQuitEvent(event: PlayerQuitEvent) {
         val uuid = event.player.uniqueId.toString()
 
-        persistencePetMetaService.cleanResources(uuid)
+        persistencePetMetaService.closeAndSave(uuid)
 
         if (petService.hasPet(uuid)) {
             petService.getOrSpawnPetFromPlayerUUID(uuid).thenAccept { pet ->
@@ -82,7 +85,7 @@ class PetListener @Inject constructor(
 
             persistencePetMetaService.getOrCreateFromPlayerUUID(uuid).thenAccept { petMeta ->
                 petMeta.enabled = true
-                persistencePetMetaService.cleanResources(uuid)
+                persistencePetMetaService.closeAndSave(uuid)
             }
         }
     }
@@ -105,6 +108,22 @@ class PetListener @Inject constructor(
     @EventHandler
     fun onChunkLoadEvent(event: ChunkLoadEvent) {
         entityService.cleanUpInvalidEntities(event.chunk.entities.toList())
+    }
+
+    /**
+     * Cancels the entity interact event for pets.
+     *
+     * @param event event
+     */
+    @EventHandler
+    fun onEntityInteractEvent(event: EntityInteractEvent) {
+        val optPet = petService.findPetByEntity(event.entity)
+
+        if (optPet != null && event.block.type == soilMaterial.type) {
+            event.isCancelled = true
+        }
+
+        AsyncPlayerPreLoginEvent
     }
 
     /**

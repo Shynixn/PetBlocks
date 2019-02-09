@@ -1,5 +1,7 @@
 package com.github.shynixn.petblocks.api.business.service
 
+import com.github.shynixn.petblocks.api.business.proxy.PetProxy
+
 /**
  * Created by Shynixn 2018.
  * <p>
@@ -29,8 +31,12 @@ package com.github.shynixn.petblocks.api.business.service
  */
 interface CombatPetService {
     /**
-     * Lets the pet flee when the given player is the owner of the pet and gets attacked or is the
-     * source of a attack on another player.
+     * Lets the pet flee and reappears after some time.
      */
-    fun <P> flee(player: P)
+    fun flee(pet: PetProxy)
+
+    /**
+     * Clears the allocated resources from the given [player].
+     */
+    fun <P> close(player: P)
 }

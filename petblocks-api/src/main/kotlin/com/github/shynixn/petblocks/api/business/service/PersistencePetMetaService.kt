@@ -1,7 +1,7 @@
 package com.github.shynixn.petblocks.api.business.service
 
-import com.github.shynixn.petblocks.api.business.proxy.CompletableFutureProxy
 import com.github.shynixn.petblocks.api.persistence.entity.PetMeta
+import java.util.concurrent.CompletableFuture
 
 /**
  * Created by Shynixn 2018.
@@ -32,24 +32,29 @@ import com.github.shynixn.petblocks.api.persistence.entity.PetMeta
  */
 interface PersistencePetMetaService {
     /**
-     * Returns future with a list of stored [PetMeta].
+     * Returns future with a list of all stored [PetMeta].
+     * As not all PetMeta data is available during runtime this call completes in the future.
      */
-    fun getAll(): CompletableFutureProxy<List<PetMeta>>
+    fun getAll(): CompletableFuture<List<PetMeta>>
 
     /**
-     * Clears the cache of the player.
+     * Clears the cache of the player and saves the allocated resources.
      */
-    fun cleanResources(uuid  : String)
+    fun <P> close(player: P)
 
     /**
-     * Returns the petMeta of from the given player uniqueId. Creates
-     * a new one if it does not exist yet. Gets it from the runtime when a pet
-     * currently uses the meta data of the player.
+     * Gets the [PetMeta] from the player.
+     * This will never return null.
      */
-    fun getOrCreateFromPlayerUUID(uuid: String): CompletableFutureProxy<PetMeta>
+    fun <P> getPetMetaFromPlayer(player: P): PetMeta
 
     /**
-     * Saves the given [petMeta] instance and returns a future with the same petMeta instance.
+     * Gets or creates [PetMeta] from the player.
      */
-    fun save(petMeta: PetMeta): CompletableFutureProxy<PetMeta>
+    fun <P> refreshPetMetaFromRepository(player: P): CompletableFuture<PetMeta>
+
+    /**
+     * Saves the given [petMeta] instance and returns a future.
+     */
+    fun save(petMeta: PetMeta): CompletableFuture<PetMeta>
 }

@@ -32,11 +32,6 @@ import com.github.shynixn.petblocks.api.business.proxy.PlayerProxy
  */
 interface ProxyService {
     /**
-     * Creates a new completable future.
-     */
-    fun <T> createCompletableFuture(): CompletableFutureProxy<T>
-
-    /**
      * Returns a proxy object for the given instance.
      * Throws a [IllegalArgumentException] if the proxy could not be generated.
      */

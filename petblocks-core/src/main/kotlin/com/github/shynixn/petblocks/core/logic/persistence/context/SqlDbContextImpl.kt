@@ -1,11 +1,11 @@
 @file:Suppress("UNCHECKED_CAST")
 
-package com.github.shynixn.petblocks.core.jvm.logic.persistence.context
+package com.github.shynixn.petblocks.core.logic.persistence.context
 
-import com.github.shynixn.petblocks.api.business.annotation.Inject
 import com.github.shynixn.petblocks.api.business.proxy.SqlConnectionPoolProxy
 import com.github.shynixn.petblocks.api.business.service.LoggingService
 import com.github.shynixn.petblocks.api.persistence.context.SqlDbContext
+import com.google.inject.Inject
 import java.sql.Connection
 import java.sql.SQLException
 import java.sql.Statement

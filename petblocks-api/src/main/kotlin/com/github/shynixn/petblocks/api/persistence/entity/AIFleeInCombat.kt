@@ -32,4 +32,9 @@ interface AIFleeInCombat : AIBase {
      * After how many seconds should the pet reappear?
      */
     var reAppearsInSeconds: Int
+
+    /**
+     * Current amount of seconds until the pet reappears.
+     */
+    var currentAppearsInSeconds: Int
 }

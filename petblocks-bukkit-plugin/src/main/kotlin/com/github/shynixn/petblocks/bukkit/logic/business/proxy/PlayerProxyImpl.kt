@@ -4,12 +4,9 @@ package com.github.shynixn.petblocks.bukkit.logic.business.proxy
 
 import com.github.shynixn.petblocks.api.business.enumeration.Permission
 import com.github.shynixn.petblocks.api.business.enumeration.Version
-import com.github.shynixn.petblocks.api.business.proxy.PlayerProxy
 import com.github.shynixn.petblocks.api.persistence.entity.Position
 import com.github.shynixn.petblocks.bukkit.logic.business.extension.getServerVersion
-import com.github.shynixn.petblocks.bukkit.logic.business.extension.hasPermission
 import com.github.shynixn.petblocks.bukkit.logic.business.extension.toPosition
-import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 import org.bukkit.util.Vector
 
@@ -40,7 +37,7 @@ import org.bukkit.util.Vector
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class PlayerProxyImpl(private val player: Player) : PlayerProxy {
+class PlayerProxyImpl(private val player: Player) : com.github.shynixn.petblocks.api.business.proxy.PlayerProxy {
     private val version = getServerVersion()
 
     /**

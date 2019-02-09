@@ -1,8 +1,14 @@
 package com.github.shynixn.petblocks.core.logic.business.service
 
-import com.github.shynixn.petblocks.api.business.annotation.Inject
-import com.github.shynixn.petblocks.api.business.service.*
+import com.github.shynixn.petblocks.api.business.enumeration.AIType
+import com.github.shynixn.petblocks.api.business.proxy.PetProxy
+import com.github.shynixn.petblocks.api.business.service.CombatPetService
+import com.github.shynixn.petblocks.api.business.service.ConcurrencyService
+import com.github.shynixn.petblocks.api.business.service.LoggingService
+import com.github.shynixn.petblocks.api.business.service.PersistencePetMetaService
+import com.github.shynixn.petblocks.api.persistence.entity.AIFleeInCombat
 import com.github.shynixn.petblocks.core.logic.business.extension.sync
+import com.google.inject.Inject
 
 /**
  * Created by Shynixn 2018.
@@ -32,48 +38,91 @@ import com.github.shynixn.petblocks.core.logic.business.extension.sync
  * SOFTWARE.
  */
 class CombatPetServiceImpl @Inject constructor(
-    private val petService: PetService,
-    private val configurationService: ConfigurationService,
-    private val concurrencyService: ConcurrencyService,
-    private val proxyService: ProxyService
-) : CombatPetService {
-    private val fleeCache = ArrayList<Any>()
+    concurrencyService: ConcurrencyService,
+    private val persistencePetMetaService: PersistencePetMetaService,
+    private val loggingService: LoggingService
+) : CombatPetService, Runnable {
+
+    private val fleeCache = HashSet<Any>()
 
     /**
-     * Lets the pet flee when the given player is the owner of the pet and gets attacked or is the
-     * source of a attack on another player.
+     * Initialize.
      */
-    override fun <P> flee(player: P) {
-        if (player !is Any) {
-            throw IllegalArgumentException("Player has to be Anything!")
+    init {
+        sync(concurrencyService, 0L, 20L) {
+            this.run()
         }
+    }
 
-        if (fleeCache.contains(player)) {
+    /**
+     * Lets the pet flee and reappears after some time.
+     */
+    override fun flee(pet: PetProxy) {
+        val count = pet.meta.aiGoals.count { p -> p is AIFleeInCombat }
+
+        if (count == 0) {
             return
         }
 
-        val playerProxy = proxyService.findPlayerProxyObject(player)
+        if (count > 1) {
+            loggingService.warn("Player ${pet.meta.playerMeta.name} has registered multiple ${AIType.FLEE_IN_COMBAT.type}. Please check your configuration.")
+        }
 
-        if (!petService.hasPet(playerProxy.uniqueId)) {
+        if (fleeCache.contains(pet.getPlayer())) {
             return
         }
 
-        val fleeInCombat = configurationService.findValue<Boolean>("pet.flee.flee-in-combat")
+        val aiBase = pet.meta.aiGoals.first { a -> a is AIFleeInCombat } as AIFleeInCombat
+        aiBase.currentAppearsInSeconds = aiBase.reAppearsInSeconds
 
-        if (!fleeInCombat) {
+        fleeCache.add(pet.getPlayer())
+    }
+
+    /**
+     * When an object implementing interface `Runnable` is used
+     * to create a thread, starting the thread causes the object's
+     * `run` method to be called in that separately executing
+     * thread.
+     *
+     *
+     * The general contract of the method `run` is that it may
+     * take any action whatsoever.
+     *
+     * @see java.lang.Thread.run
+     */
+    override fun run() {
+        if (fleeCache.isEmpty()) {
             return
         }
 
-        fleeCache.add(player)
-        val reappearSeconds = configurationService.findValue<Int>("pet.flee.reappears-in-seconds") * 20L
+        for (player in fleeCache.toTypedArray()) {
+            val petMeta = persistencePetMetaService.getPetMetaFromPlayer(player)
 
-        petService.getOrSpawnPetFromPlayerUUID(playerProxy.uniqueId).thenAccept { pet ->
-            pet.remove()
+            val aiBase = petMeta.aiGoals.firstOrNull { a -> a is AIFleeInCombat }
+
+            if (aiBase == null) {
+                fleeCache.remove(player)
+            }
+
+            val aiHealth = aiBase as AIFleeInCombat
+
+            when {
+                aiHealth.currentAppearsInSeconds > 0 -> aiHealth.currentAppearsInSeconds--
+
+                else -> {
+                    persistencePetMetaService.save(petMeta)
+                    fleeCache.remove(player)
+                }
+            }
         }
+    }
 
-        sync(concurrencyService, reappearSeconds) {
+    /**
+     * Clears the allocated resources from the given [player].
+     */
+    override fun <P> close(player: P) {
+        if (player is Any && fleeCache.contains(player)) {
             fleeCache.remove(player)
-            petService.getOrSpawnPetFromPlayerUUID(playerProxy.uniqueId)
         }
     }
 }

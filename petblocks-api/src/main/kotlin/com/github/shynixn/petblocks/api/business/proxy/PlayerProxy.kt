@@ -52,6 +52,11 @@ interface PlayerProxy {
     val position : Position
 
     /**
+     * Gets if the player is still online.
+     */
+    val isOnline : Boolean
+
+    /**
      * Sends a message to the player.
      */
     fun sendMessage(text: String)

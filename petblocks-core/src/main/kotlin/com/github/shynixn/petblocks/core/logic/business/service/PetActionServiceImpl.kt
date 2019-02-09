@@ -1,9 +1,9 @@
 package com.github.shynixn.petblocks.core.logic.business.service
 
-import com.github.shynixn.petblocks.api.business.annotation.Inject
 import com.github.shynixn.petblocks.api.business.service.*
 import com.github.shynixn.petblocks.core.logic.business.extension.translateChatColors
 import com.github.shynixn.petblocks.core.logic.persistence.entity.SoundEntity
+import com.google.inject.Inject
 
 /**
  * Created by Shynixn 2019.
@@ -54,11 +54,9 @@ class PetActionServiceImpl @Inject constructor(
         direction.multiply(3.0)
 
         if (petService.hasPet(playerProxy.uniqueId)) {
-            petService.getOrSpawnPetFromPlayerUUID(playerProxy.uniqueId).thenAccept { pet ->
-                pet.setVelocity(direction)
-
-                soundService.playSound(pet.getLocation<Any>(), explosionSound, playerProxy.handle)
-            }
+            val pet = petService.getOrSpawnPetFromPlayer(player).get()
+            pet.setVelocity(direction)
+            soundService.playSound(pet.getLocation<Any>(), explosionSound, playerProxy.handle)
         }
     }
 
@@ -76,27 +74,31 @@ class PetActionServiceImpl @Inject constructor(
             return
         }
 
-        persistencePetMetaService.getOrCreateFromPlayerUUID(playerProxy.uniqueId).thenAccept { petMeta ->
-            petMeta.skin.typeName = "397"
-            petMeta.skin.dataValue = 3
-            petMeta.skin.owner = skin
+        val petMeta = persistencePetMetaService.getPetMetaFromPlayer(player)
+        petMeta.skin.typeName = "397"
+        petMeta.skin.dataValue = 3
+        petMeta.skin.owner = skin
 
-            val namingSuccessMessage = configurationService.findValue<String>("messages.skullnaming-success")
+        persistencePetMetaService.save(petMeta)
 
-            playerProxy.sendMessage(prefix + namingSuccessMessage)
-        }
+        val namingSuccessMessage = configurationService.findValue<String>("messages.skullnaming-success")
+        playerProxy.sendMessage(prefix + namingSuccessMessage)
     }
 
     /**
      * Calls the pet to the given player. If the pet is not enabled, it will be enabled after calling.
      */
     override fun <P> callPet(player: P) {
+        val pet = petService.getOrSpawnPetFromPlayer(player)
         val playerProxy = proxyService.findPlayerProxyObject(player)
 
-        petService.getOrSpawnPetFromPlayerUUID(playerProxy.uniqueId).thenAccept { pet ->
-            pet.teleport<Any>(playerProxy.getLocation())
+        if (pet.isPresent) {
+            pet.get().teleport<Any>(playerProxy.getLocation())
 
             val message = configurationService.findValue<String>("messages.prefix") + configurationService.findValue<String>("messages.called-success")
+            playerProxy.sendMessage(message)
+        } else {
+            val message = configurationService.findValue<String>("messages.prefix") + configurationService.findValue<String>("messages.called-failed")
             playerProxy.sendMessage(message)
         }
     }
@@ -109,17 +111,14 @@ class PetActionServiceImpl @Inject constructor(
         val playerProxy = proxyService.findPlayerProxyObject(player)
 
         if (petService.hasPet(playerProxy.uniqueId)) {
-            petService.getOrSpawnPetFromPlayerUUID(playerProxy.uniqueId).thenAccept { pet ->
-                pet.remove()
+            val pet = petService.getOrSpawnPetFromPlayer(player).get()
 
-                val message = configurationService.findValue<String>("messages.prefix") + configurationService.findValue<String>("messages.toggle-despawn")
-                playerProxy.sendMessage(message)
-            }
+            pet.remove()
+
+            val message = configurationService.findValue<String>("messages.prefix") + configurationService.findValue<String>("messages.removed-pet")
+            playerProxy.sendMessage(message)
         } else {
-            petService.getOrSpawnPetFromPlayerUUID(playerProxy.uniqueId).thenAccept {
-                val message = configurationService.findValue<String>("messages.prefix") + configurationService.findValue<String>("messages.toggle-spawn")
-                playerProxy.sendMessage(message)
-            }
+            this.callPet(player)
         }
     }
 
@@ -149,12 +148,13 @@ class PetActionServiceImpl @Inject constructor(
             }
         }
 
-        persistencePetMetaService.getOrCreateFromPlayerUUID(playerProxy.uniqueId).thenAccept { petMeta ->
-            val namingSuccessMessage = configurationService.findValue<String>("messages.naming-success")
+        val petMeta = persistencePetMetaService.getPetMetaFromPlayer(player)
+        val namingSuccessMessage = configurationService.findValue<String>("messages.naming-success")
 
-            petMeta.displayName = name.translateChatColors()
+        petMeta.displayName = name.translateChatColors()
 
-            playerProxy.sendMessage(prefix + namingSuccessMessage)
-        }
+        persistencePetMetaService.save(petMeta)
+
+        playerProxy.sendMessage(prefix + namingSuccessMessage)
     }
 }

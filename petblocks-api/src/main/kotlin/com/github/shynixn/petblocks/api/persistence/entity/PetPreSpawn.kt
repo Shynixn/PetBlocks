@@ -1,18 +1,13 @@
-package com.github.shynixn.petblocks.core.jvm.logic.business.proxy
-
-import com.github.shynixn.petblocks.api.PetBlocksApi
-import com.github.shynixn.petblocks.api.business.proxy.CompletableFutureProxy
-import com.github.shynixn.petblocks.api.business.service.LoggingService
-import java.util.concurrent.CompletableFuture
+package com.github.shynixn.petblocks.api.persistence.entity
 
 /**
- * Created by Shynixn 2018.
+ * Created by Shynixn 2019.
  * <p>
  * Version 1.2
  * <p>
  * MIT License
  * <p>
- * Copyright (c) 2018 by Shynixn
+ * Copyright (c) 2019 by Shynixn
  * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -32,15 +27,13 @@ import java.util.concurrent.CompletableFuture
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class CompletableFutureProxyImpl<T> : CompletableFuture<T>(), CompletableFutureProxy<T> {
+interface PetPreSpawn {
     /**
-     * Accepts the future result safely.
+     * Owner of the pet getting spawned.
      */
-    override fun thenAccept(function: (T) -> Unit) {
-        super.thenAccept(function).exceptionally { e ->
-            val loggingService = PetBlocksApi.resolve<LoggingService>(LoggingService::class.java)
-            loggingService.error("Failed to execute Task.", e)
-            throw RuntimeException(e)
-        }
-    }
+    val player: Any
+    /**
+     * PetMeta getting used to spawn a pet.
+     */
+    val petMeta: PetMeta
 }

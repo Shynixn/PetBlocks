@@ -3,12 +3,10 @@
 package com.github.shynixn.petblocks.bukkit.logic.business.service
 
 import com.github.shynixn.petblocks.api.business.proxy.CompletableFutureProxy
-import com.github.shynixn.petblocks.api.business.proxy.PlayerProxy
 import com.github.shynixn.petblocks.api.business.service.ProxyService
 import com.github.shynixn.petblocks.bukkit.logic.business.proxy.PlayerProxyImpl
 import com.github.shynixn.petblocks.core.jvm.logic.business.proxy.CompletableFutureProxyImpl
 import org.bukkit.Bukkit
-import org.bukkit.entity.Player
 import java.util.*
 
 /**
@@ -39,7 +37,7 @@ import java.util.*
  * SOFTWARE.
  */
 class ProxyServiceImpl : ProxyService {
-    private val playerCache = HashMap<Player, PlayerProxy>()
+    private val playerCache = HashMap<Player, com.github.shynixn.petblocks.api.business.proxy.PlayerProxy>()
 
     /**
      * Creates a new completable future.
@@ -69,7 +67,7 @@ class ProxyServiceImpl : ProxyService {
     /**
      * Tries to return a player proxy for the given player name.
      */
-    override fun findPlayerProxyObjectFromName(name: String): PlayerProxy? {
+    override fun findPlayerProxyObjectFromName(name: String): com.github.shynixn.petblocks.api.business.proxy.PlayerProxy? {
         val player = Bukkit.getPlayer(name) ?: return null
 
         return findPlayerProxyObject(player)
@@ -79,13 +77,13 @@ class ProxyServiceImpl : ProxyService {
      * Returns a player proxy object for the given instance.
      * Throws a [IllegalArgumentException] if the proxy could not be generated.
      */
-    override fun <P> findPlayerProxyObject(instance: P): PlayerProxy {
+    override fun <P> findPlayerProxyObject(instance: P): com.github.shynixn.petblocks.api.business.proxy.PlayerProxy {
         if (instance !is Player) {
             throw IllegalArgumentException("Instance has to be a BukkitPlayer!")
         }
 
         if (!playerCache.containsKey(instance)) {
-            playerCache[instance] = findProxyObject<PlayerProxy>(instance)
+            playerCache[instance] = findProxyObject<com.github.shynixn.petblocks.api.business.proxy.PlayerProxy>(instance)
         }
 
         return playerCache[instance]!!
@@ -106,7 +104,7 @@ class ProxyServiceImpl : ProxyService {
     /**
      * Tries to return a player proxy for the given player uuid.
      */
-    override fun findPlayerProxyObjectFromUUID(uuid: String): PlayerProxy? {
+    override fun findPlayerProxyObjectFromUUID(uuid: String): com.github.shynixn.petblocks.api.business.proxy.PlayerProxy? {
         val player = Bukkit.getPlayer(UUID.fromString(uuid))
 
         if (player != null && player.isOnline) {

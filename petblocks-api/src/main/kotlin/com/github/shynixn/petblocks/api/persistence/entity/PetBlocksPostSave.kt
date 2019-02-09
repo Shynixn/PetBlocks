@@ -1,15 +1,13 @@
-package com.github.shynixn.petblocks.api.persistence.repository
-
-import com.github.shynixn.petblocks.api.business.proxy.PetProxy
+package com.github.shynixn.petblocks.api.persistence.entity
 
 /**
- * Created by Shynixn 2018.
+ * Created by Shynixn 2019.
  * <p>
  * Version 1.2
  * <p>
  * MIT License
  * <p>
- * Copyright (c) 2018 by Shynixn
+ * Copyright (c) 2019 by Shynixn
  * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -29,29 +27,9 @@ import com.github.shynixn.petblocks.api.business.proxy.PetProxy
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-interface PetRepository {
+interface PetBlocksPostSave {
     /**
-     * Returns [List] with a list of stored [PetProxy].
+     * PetMeta which was saved.
      */
-    fun getAll(): List<PetProxy>
-
-    /**
-     * Removes the given petProxy from being managed.
-     */
-    fun remove(petProxy: PetProxy)
-
-    /**
-     * Saves the petProxy into the repository.
-     */
-    fun save(petProxy: PetProxy)
-
-    /**
-     * Gets the pet from the uuid. Throws exception if not exist.
-     */
-    fun getFromPlayerUUID(uuid: String): PetProxy
-
-    /**
-     * Gets if the given player uniqueId has got an active pet.
-     */
-    fun hasPet(uuid: String): Boolean
+    val petMeta: PetMeta
 }

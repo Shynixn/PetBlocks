@@ -17,8 +17,6 @@ import com.github.shynixn.petblocks.core.logic.business.proxy.AICreationProxyImp
 import org.bukkit.ChatColor
 import org.bukkit.GameMode
 import org.bukkit.Location
-import org.bukkit.Material
-import org.bukkit.entity.ArmorStand
 import org.bukkit.entity.Entity
 import org.bukkit.entity.LivingEntity
 import org.bukkit.entity.Player

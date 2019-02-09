@@ -1,14 +1,12 @@
 package com.github.shynixn.petblocks.core.logic.business.service
 
-import com.github.shynixn.petblocks.api.PetBlocksApi
-import com.github.shynixn.petblocks.api.business.annotation.Inject
-import com.github.shynixn.petblocks.api.business.enumeration.PluginDependency
-import com.github.shynixn.petblocks.api.business.proxy.CompletableFutureProxy
 import com.github.shynixn.petblocks.api.business.proxy.PetProxy
 import com.github.shynixn.petblocks.api.business.service.*
 import com.github.shynixn.petblocks.api.persistence.entity.Position
-import com.github.shynixn.petblocks.api.persistence.repository.PetRepository
-import com.github.shynixn.petblocks.core.logic.business.extension.sync
+import com.github.shynixn.petblocks.core.logic.persistence.entity.PetPostSpawnEntity
+import com.github.shynixn.petblocks.core.logic.persistence.entity.PetPreSpawnEntity
+import com.google.inject.Inject
+import java.util.*
 
 /**
  * Created by Shynixn 2018.
@@ -38,15 +36,20 @@ import com.github.shynixn.petblocks.core.logic.business.extension.sync
  * SOFTWARE.
  */
 class PetServiceImpl @Inject constructor(
+    concurrencyService: ConcurrencyService,
     private val petMetaService: PersistencePetMetaService,
     private val loggingService: LoggingService,
     private val configurationService: ConfigurationService,
     private val proxyService: ProxyService,
-    private val dependencyService: DependencyService,
-    private val petRepository: PetRepository,
-    private val concurrencyService: ConcurrencyService,
-    private val entityService: EntityService
+    private val entityService: EntityService,
+    private val eventService: EventService
 ) : PetService {
+
+    private val pets = ArrayList<PetProxy>()
+
+    /**
+     * Initialize task.
+     */
     init {
         concurrencyService.runTaskSync(0L, 20L * 60 * 5) {
             this.run()
@@ -54,53 +57,64 @@ class PetServiceImpl @Inject constructor(
     }
 
     /**
-     * Gets or spawns the pet of the given player uniqueId.
+     * Gets or spawns the pet of the given player.
+     * An empty optional gets returned if the pet cannot spawn by one of the following reasons:
+     * Current world, region is disabled for pets, PreSpawnEvent was cancelled or Pet is not available due to Ai State.
+     * For example HealthAI defines pet ai as 0 which results into impossibility to spawn.
      */
-    override fun getOrSpawnPetFromPlayerUUID(uuid: String): CompletableFutureProxy<PetProxy> {
-        val completableFuture = proxyService.createCompletableFuture<PetProxy>()
+    override fun <P> getOrSpawnPetFromPlayer(player: P): Optional<PetProxy> {
+        val playerProxy = proxyService.findPlayerProxyObject(player)
 
-        val playerProxy = proxyService.findPlayerProxyObjectFromUUID(uuid) ?: return completableFuture
-
-        if (!isAllowedToSpawn(playerProxy.position, playerProxy.getLocation())) {
-            return completableFuture
+        if (!playerProxy.isOnline) {
+            return Optional.empty()
         }
 
-        if (hasPet(uuid)) {
-            sync(concurrencyService) {
-                completableFuture.complete(petRepository.getFromPlayerUUID(uuid))
-            }
-        } else {
-            petMetaService.getOrCreateFromPlayerUUID(uuid).thenAccept { petMeta ->
-                val petProxy = entityService.spawnPetProxy(playerProxy.getLocation<Any>(), petMeta)
-                petMeta.enabled = true
-                petRepository.save(petProxy)
-                completableFuture.complete(petProxy)
-            }
+        if (hasPet(player)) {
+            return Optional.of(pets.find { p -> !p.isDead && p.meta.playerMeta.uuid == playerProxy.uniqueId }!!)
         }
 
-        return completableFuture
+        if (!isAllowedToSpawn(playerProxy.position)) {
+            return Optional.empty()
+        }
+
+        val petMeta = petMetaService.getPetMetaFromPlayer(player)
+        val cancelled = eventService.callEvent(PetPreSpawnEntity(playerProxy.handle, petMeta))
+
+        if (cancelled) {
+            return Optional.empty()
+        }
+
+        val petProxy = entityService.spawnPetProxy(playerProxy.getLocation<Any>(), petMeta)
+        petMeta.enabled = true
+        petMetaService.save(petMeta)
+
+        eventService.callEvent(PetPostSpawnEntity(playerProxy.handle, petProxy))
+
+        return Optional.of(petProxy)
+    }
+
+    /**
+     * Gets if the given [player] has got an active pet.
+     */
+    override fun <P> hasPet(player: P): Boolean {
+        val playerProxy = proxyService.findPlayerProxyObject(player)
+
+        return pets.firstOrNull { p -> !p.isDead && p.meta.playerMeta.uuid == playerProxy.uniqueId } != null
     }
 
     /**
      * Tries to find the pet from the given entity.
      */
     override fun <E> findPetByEntity(entity: E): PetProxy? {
-        petRepository.getAll().forEach { petBlock ->
-            if (!petBlock.isDead) {
-                if (petBlock.getHeadArmorstand<Any>() == entity || petBlock.getHitBoxLivingEntity<Any>() == entity) {
-                    return petBlock
+        for (pet in pets) {
+            if (!pet.isDead) {
+                if (pet.getHeadArmorstand<Any>() == entity || pet.getHitBoxLivingEntity<Any>() == entity) {
+                    return pet
                 }
             }
         }
 
         return null
-    }
-
-    /**
-     * Checks if the player with the given [uuid] has an active pet.
-     */
-    override fun hasPet(uuid: String): Boolean {
-        return petRepository.hasPet(uuid)
     }
 
     /**
@@ -114,9 +128,9 @@ class PetServiceImpl @Inject constructor(
      * take any action whatsoever.
      */
     private fun run() {
-        petRepository.getAll().toTypedArray().forEach { pet ->
+        for (pet in pets.toTypedArray()) {
             if (pet.isDead) {
-                petRepository.remove(pet)
+                pets.remove(pet)
             }
         }
     }
@@ -124,39 +138,14 @@ class PetServiceImpl @Inject constructor(
     /**
      * Gets if the pet is allowed to spawn at the given position.
      */
-    private fun isAllowedToSpawn(position: Position, location: Any): Boolean {
+    private fun isAllowedToSpawn(position: Position): Boolean {
         val includedWorlds = configurationService.findValue<List<String>>("world.included")
         val excludedWorlds = configurationService.findValue<List<String>>("world.excluded")
 
         when {
-            includedWorlds.contains("all") -> return !excludedWorlds.contains(position.worldName) && isAllowedToSpawnInWorldGuardRegion(location)
-            excludedWorlds.contains("all") -> return includedWorlds.contains(position.worldName) && isAllowedToSpawnInWorldGuardRegion(location)
+            includedWorlds.contains("all") -> return !excludedWorlds.contains(position.worldName)
+            excludedWorlds.contains("all") -> return includedWorlds.contains(position.worldName)
             else -> loggingService.warn("Please add 'all' to excluded or included worlds inside of the config.yml")
-        }
-
-        return true
-    }
-
-    /**
-     * Gets if the pet is allowed to spawn in WorldGuard region.
-     */
-    private fun isAllowedToSpawnInWorldGuardRegion(location: Any): Boolean {
-        if (!dependencyService.isInstalled(PluginDependency.WORLDGUARD)) {
-            return true
-        }
-
-        val worldGuardService = PetBlocksApi.resolve<DependencyWorldGuardService>(DependencyWorldGuardService::class)
-        val includedRegions = configurationService.findValue<List<String>>("region.included")
-        val excludedRegions = configurationService.findValue<List<String>>("region.excluded")
-
-        try {
-            when {
-                includedRegions.contains("all") -> return worldGuardService.getRegionNames(location).none { excludedRegions.contains(it) }
-                excludedRegions.contains("all") -> return worldGuardService.getRegionNames(location).any { includedRegions.contains(it) }
-                else -> loggingService.warn("Please add 'all' to excluded or included regions inside of the config.yml")
-            }
-        } catch (e: Exception) {
-            loggingService.warn("Failed to handle region spawning.", e)
         }
 
         return true

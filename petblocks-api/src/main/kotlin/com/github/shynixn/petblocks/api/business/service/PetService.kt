@@ -1,7 +1,7 @@
 package com.github.shynixn.petblocks.api.business.service
 
-import com.github.shynixn.petblocks.api.business.proxy.CompletableFutureProxy
 import com.github.shynixn.petblocks.api.business.proxy.PetProxy
+import java.util.*
 
 /**
  * Created by Shynixn 2018.
@@ -32,17 +32,21 @@ import com.github.shynixn.petblocks.api.business.proxy.PetProxy
  */
 interface PetService {
     /**
-     * Gets or spawns the pet of the given player uniqueId.
+     * Gets or spawns the pet of the given player.
+     * An empty optional gets returned if the pet cannot spawn by one of the following reasons:
+     * Current world, region is disabled for pets, PreSpawnEvent was cancelled or Pet is not available due to Ai State.
+     * For example HealthAI defines pet ai as 0 which results into impossibility to spawn.
      */
-    fun getOrSpawnPetFromPlayerUUID(uuid: String): CompletableFutureProxy<PetProxy>
+    fun <P> getOrSpawnPetFromPlayer(player: P): Optional<PetProxy>
 
     /**
      * Tries to find the pet from the given entity.
+     * Returns null if the pet does not exist.
      */
     fun <E> findPetByEntity(entity: E): PetProxy?
 
     /**
-     * Checks if the player with the given [uuid] has an active pet.
+     * Gets if the given [player] has got an active pet.
      */
-    fun hasPet(uuid: String): Boolean
+    fun <P> hasPet(player: P): Boolean
 }

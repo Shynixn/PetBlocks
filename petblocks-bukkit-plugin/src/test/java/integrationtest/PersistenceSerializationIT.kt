@@ -5,7 +5,7 @@ package integrationtest
 import com.github.shynixn.petblocks.api.business.enumeration.ParticleType
 import com.github.shynixn.petblocks.api.business.service.YamlSerializationService
 import com.github.shynixn.petblocks.bukkit.logic.business.extension.deserializeToMap
-import com.github.shynixn.petblocks.core.jvm.logic.persistence.service.YamlSerializationServiceImpl
+import com.github.shynixn.petblocks.core.logic.business.service.YamlSerializationServiceImpl
 import com.github.shynixn.petblocks.core.logic.persistence.entity.AIAfraidOfWaterEntity
 import com.github.shynixn.petblocks.core.logic.persistence.entity.AIAmbientSoundEntity
 import com.github.shynixn.petblocks.core.logic.persistence.entity.AIFeedingEntity

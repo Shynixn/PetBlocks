@@ -18,8 +18,8 @@ import com.github.shynixn.petblocks.bukkit.logic.business.proxy.SqlProxyImpl
 import com.github.shynixn.petblocks.bukkit.logic.business.service.*
 import com.github.shynixn.petblocks.core.jvm.logic.persistence.context.SqlDbContextImpl
 import com.github.shynixn.petblocks.core.jvm.logic.persistence.service.LoggingUtilServiceImpl
-import com.github.shynixn.petblocks.core.jvm.logic.persistence.service.UpdateCheckServiceImpl
-import com.github.shynixn.petblocks.core.jvm.logic.persistence.service.YamlSerializationServiceImpl
+import com.github.shynixn.petblocks.core.logic.business.service.UpdateCheckServiceImpl
+import com.github.shynixn.petblocks.core.logic.business.service.YamlSerializationServiceImpl
 import com.github.shynixn.petblocks.core.logic.business.command.*
 import com.github.shynixn.petblocks.core.logic.business.commandexecutor.EditPetCommandExecutorImpl
 import com.github.shynixn.petblocks.core.logic.business.commandexecutor.PlayerPetActionCommandExecutorImpl

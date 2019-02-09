@@ -1,11 +1,11 @@
 package com.github.shynixn.petblocks.core.logic.business.service
 
-import com.github.shynixn.petblocks.api.business.annotation.Inject
 import com.github.shynixn.petblocks.api.persistence.entity.ScriptResult
 import com.github.shynixn.petblocks.api.business.enumeration.ScriptAction
 import com.github.shynixn.petblocks.api.business.service.LoggingService
 import com.github.shynixn.petblocks.api.business.service.GUIScriptService
 import com.github.shynixn.petblocks.core.logic.persistence.entity.ScriptResultEntity
+import com.google.inject.Inject
 
 /**
  * Created by Shynixn 2018.
