@@ -1,6 +1,7 @@
 package com.github.shynixn.petblocks.api.business.service
 
 import com.github.shynixn.petblocks.api.business.enumeration.MaterialType
+import com.github.shynixn.petblocks.api.business.proxy.ItemStackProxy
 import java.util.*
 
 /**
@@ -32,39 +33,9 @@ import java.util.*
  */
 interface ItemService {
     /**
-     * Creates a new itemstack from the given materialType.
-     */
-    fun <I> createItemStack(materialType: MaterialType, dataValue: Int = 0, amount: Int = 0): I
-
-    /**
      * Creates a new itemstack from the given parameters.
      */
-    fun <I> createItemStack(typeName: String, dataValue: Int = 0, amount: Int = 1): I
-
-    /**
-     * Sets the amount of items on the given stack.
-     */
-    fun <I> setAmountOfItemStack(itemStack: I, amount: Int)
-
-    /**
-     * Gets the amount of items on the given stack.
-     */
-    fun getAmountOfItemStack(itemStack: Any): Int
-
-    /**
-     * Gets the material from the numeric value or string value.
-     */
-    fun <M> getMaterialValue(value: Any): M
-
-    /**
-     * Sets the displayName of an itemstack.
-     */
-    fun <I> setDisplayNameOfItemStack(itemstack: I, name: String)
-
-    /**
-     * Sets the lore of an itemstack.
-     */
-    fun <I> setLoreOfItemStack(itemstack: I, index: Int, text: String)
+    fun createItemStack(type: Any, dataValue: Int = 0): ItemStackProxy
 
     /**
      * Gets if the given [itemStack] has got the given [type] and [dataValue].
@@ -75,9 +46,4 @@ interface ItemService {
      * Gets the itemstack in the hand of the player with optional offHand flag.
      */
     fun <P, I> getItemInHand(player: P, offHand: Boolean = false): Optional<I>
-
-    /**
-     * Gets if the given itemstack is the given materialType.
-     */
-    fun <I> isItemStackMaterialType(itemStack: I, materialType: MaterialType): Boolean
 }

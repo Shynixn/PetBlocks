@@ -3,9 +3,6 @@ package com.github.shynixn.petblocks.bukkit.logic.business.proxy
 import com.github.shynixn.petblocks.api.business.proxy.EntityPetProxy
 import com.github.shynixn.petblocks.api.PetBlocksApi
 import com.github.shynixn.petblocks.api.bukkit.event.PetRemoveEvent
-import com.github.shynixn.petblocks.api.bukkit.event.PetRideEvent
-import com.github.shynixn.petblocks.api.bukkit.event.PetSpawnEvent
-import com.github.shynixn.petblocks.api.bukkit.event.PetWearEvent
 import com.github.shynixn.petblocks.api.business.proxy.NMSPetProxy
 import com.github.shynixn.petblocks.api.business.proxy.PetProxy
 import com.github.shynixn.petblocks.api.business.service.*
@@ -95,9 +92,6 @@ class PetProxyImpl(override val meta: PetMeta, private val design: ArmorStand, p
 
         design.equipment.boots = generateMarkerItemStack()
         hitBox.equipment.boots = generateMarkerItemStack()
-
-        val event = PetSpawnEvent(this)
-        Bukkit.getPluginManager().callEvent(event)
     }
 
     /**
@@ -136,12 +130,12 @@ class PetProxyImpl(override val meta: PetMeta, private val design: ArmorStand, p
             return
         }
 
-        val event = PetWearEvent(false, this)
-        Bukkit.getPluginManager().callEvent(event)
+       // val event = PetWearEvent(false, this)
+      //  Bukkit.getPluginManager().callEvent(event)
 
-        if (event.isCancelled) {
-            return
-        }
+     //   if (event.isCancelled) {
+      //      return
+      //  }
 
         design.isCustomNameVisible = false
         //designNbtChange["Marker"] = true
@@ -212,12 +206,12 @@ class PetProxyImpl(override val meta: PetMeta, private val design: ArmorStand, p
             return
         }
 
-        val event = PetRideEvent(false, this)
-        Bukkit.getPluginManager().callEvent(event)
+      //  val event = PetRideEvent(false, this)
+      //  Bukkit.getPluginManager().callEvent(event)
 
-        if (event.isCancelled) {
-            return
-        }
+      //  if (event.isCancelled) {
+      //      return
+      //  }
 
         design.velocity = Vector(0, 1, 0)
         design.passenger = owner
@@ -228,7 +222,7 @@ class PetProxyImpl(override val meta: PetMeta, private val design: ArmorStand, p
      * Stops the current target riding the pet.
      */
     fun stopRiding() {
-        if (owner.passenger != null) {
+   /*     if (owner.passenger != null) {
             return
         }
 
@@ -237,7 +231,7 @@ class PetProxyImpl(override val meta: PetMeta, private val design: ArmorStand, p
 
         if (event.isCancelled) {
             return
-        }
+        }*/
 
         owner.eject()
     }
@@ -267,7 +261,14 @@ class PetProxyImpl(override val meta: PetMeta, private val design: ArmorStand, p
      */
     override fun run() {
         if (!meta.enabled && !isDead) {
-            Bukkit.getPluginManager().callEvent(PetRemoveEvent(this))
+            val event = PetRemoveEvent(getPlayer(), this)
+            Bukkit.getPluginManager().callEvent(event)
+
+            if (event.isCancelled) {
+                meta.enabled = true
+                return
+            }
+
             (this.design as EntityPetProxy).deleteFromWorld()
             (this.hitBox as EntityPetProxy).deleteFromWorld()
 
@@ -281,10 +282,10 @@ class PetProxyImpl(override val meta: PetMeta, private val design: ArmorStand, p
         }
 
         if (displayNameChanged || Skin::typeName.hasChanged(meta.skin)) {
-            val itemStack = itemService.createItemStack<ItemStack>(meta.skin.typeName, meta.skin.dataValue)
+            val itemStack = itemService.createItemStack(meta.skin.typeName, meta.skin.dataValue).build<ItemStack>()
 
             itemStack.displayName = meta.displayName
-            itemStack.setSkin(meta.skin.owner)
+            itemStack.skin = meta.skin.owner
             itemStack.setUnbreakable(meta.skin.unbreakable)
 
             design.helmet = itemStack

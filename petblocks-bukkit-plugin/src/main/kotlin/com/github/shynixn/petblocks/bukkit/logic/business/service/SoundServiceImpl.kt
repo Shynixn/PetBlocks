@@ -2,11 +2,11 @@
 
 package com.github.shynixn.petblocks.bukkit.logic.business.service
 
-import com.github.shynixn.petblocks.api.business.annotation.Inject
 import com.github.shynixn.petblocks.api.business.enumeration.Version
 import com.github.shynixn.petblocks.api.business.service.ConfigurationService
 import com.github.shynixn.petblocks.api.business.service.SoundService
 import com.github.shynixn.petblocks.api.persistence.entity.Sound
+import com.google.inject.Inject
 import org.bukkit.Location
 import org.bukkit.entity.Player
 import org.bukkit.plugin.Plugin
@@ -61,7 +61,7 @@ class SoundServiceImpl @Inject constructor(private val plugin: Plugin, private v
     /**
      * Plays the given [sound] at the given [location] for the given [players].
      */
-    override fun <L, P> playSound(location: L, sound: Sound, players: Collection<P>) {
+    private fun <L, P> playSound(location: L, sound: Sound, players: Collection<P>) {
         if (location !is Location) {
             throw IllegalArgumentException("Location has to be a BukkitLocation!")
         }
@@ -106,6 +106,7 @@ class SoundServiceImpl @Inject constructor(private val plugin: Plugin, private v
                 }
             }
         }
+
         if (version.isVersionSameOrGreaterThan(Version.VERSION_1_9_R1)) {
             when (name) {
                 "ENDERMAN_IDLE" -> {

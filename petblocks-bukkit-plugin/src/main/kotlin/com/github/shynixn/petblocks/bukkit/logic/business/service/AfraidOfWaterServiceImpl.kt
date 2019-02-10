@@ -3,13 +3,14 @@ package com.github.shynixn.petblocks.bukkit.logic.business.service
 import com.github.shynixn.petblocks.api.business.enumeration.MaterialType
 import com.github.shynixn.petblocks.api.business.proxy.PetProxy
 import com.github.shynixn.petblocks.api.business.service.AfraidOfWaterService
+import com.github.shynixn.petblocks.api.business.service.ItemService
 import com.github.shynixn.petblocks.api.business.service.NavigationService
 import com.github.shynixn.petblocks.api.persistence.entity.AIAfraidOfWater
-import com.github.shynixn.petblocks.bukkit.logic.business.extension.isMaterial
 import com.google.inject.Inject
 import org.bukkit.Location
 import org.bukkit.Material
 import org.bukkit.entity.LivingEntity
+import org.bukkit.inventory.ItemStack
 
 /**
  * Created by Shynixn 2018.
@@ -38,7 +39,7 @@ import org.bukkit.entity.LivingEntity
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class AfraidOfWaterServiceImpl @Inject constructor(private val navigationService: NavigationService) : AfraidOfWaterService {
+class AfraidOfWaterServiceImpl @Inject constructor(private val navigationService: NavigationService, private val itemService: ItemService) : AfraidOfWaterService {
     private val speed: Double = 20.0
 
     /**
@@ -64,6 +65,7 @@ class AfraidOfWaterServiceImpl @Inject constructor(private val navigationService
     override fun isPetInWater(petProxy: PetProxy): Boolean {
         val livingEntity = petProxy.getHitBoxLivingEntity<LivingEntity>()
 
-        return livingEntity.location.block != null && (livingEntity.location.block.type == Material.WATER || livingEntity.location.block.type.isMaterial(MaterialType.STATIONARY_WATER))
+        return livingEntity.location.block != null && (livingEntity.location.block.type == Material.WATER
+                || itemService.hasItemStackProperties(itemService.createItemStack(livingEntity.location.block.type).build<ItemStack>(), MaterialType.STATIONARY_WATER))
     }
 }

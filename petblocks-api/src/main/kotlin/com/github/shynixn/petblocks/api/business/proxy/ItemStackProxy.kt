@@ -1,19 +1,13 @@
-package com.github.shynixn.petblocks.bukkit.logic.business.listener
-
-import com.github.shynixn.petblocks.api.business.service.CarryPetService
-import com.google.inject.Inject
-import org.bukkit.event.EventHandler
-import org.bukkit.event.Listener
-import org.bukkit.event.player.PlayerSwapHandItemsEvent
+package com.github.shynixn.petblocks.api.business.proxy
 
 /**
- * Created by Shynixn 2018.
+ * Created by Shynixn 2019.
  * <p>
  * Version 1.2
  * <p>
  * MIT License
  * <p>
- * Copyright (c) 2018 by Shynixn
+ * Copyright (c) 2019 by Shynixn
  * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -33,14 +27,34 @@ import org.bukkit.event.player.PlayerSwapHandItemsEvent
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class CarryPet19R1Listener @Inject constructor(private val carryPetService: CarryPetService) : Listener {
+interface ItemStackProxy {
     /**
-     * Gets called when the player swaps hand items.
+     *  ItemStack lore.
      */
-    @EventHandler
-    fun onPlayerSwapItems(event: PlayerSwapHandItemsEvent) {
-        if (carryPetService.isCarryingPet(event.player)) {
-            event.isCancelled = true
-        }
-    }
+    var lore: List<String>
+
+    /**
+     * ItemStack displayName.
+     */
+    var displayName: String
+
+    /**
+     * DataValue.
+     */
+    var data: Int
+
+    /**
+     * TypeName.
+     */
+    var typeName: String
+
+    /**
+     * Amount.
+     */
+    var amount: Int
+
+    /**
+     * Creates a new itemstack from this proxy.
+     */
+    fun <I> build(): I
 }

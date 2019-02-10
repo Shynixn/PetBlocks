@@ -9,11 +9,11 @@ buildscript {
     }
 }
 
-group 'com.github.shynixn'
+group 'com.github.shynixn.petblocks'
 version '8.0.0-SNAPSHOT'
 
 subprojects {
-    group = 'com.github.shynixn'
+    group = 'com.github.shynixn.petblocks'
     version = '8.0.0-SNAPSHOT'
 
     repositories {

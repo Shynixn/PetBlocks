@@ -31,36 +31,21 @@ import com.github.shynixn.petblocks.api.business.proxy.PlayerProxy
  */
 interface ProxyService {
     /**
-     * Returns a proxy object for the given instance.
-     * Throws a [IllegalArgumentException] if the proxy could not be generated.
-     */
-    fun <P> findProxyObject(instance: Any): P
-
-    /**
      * Returns a player proxy object for the given instance.
      * Throws a [IllegalArgumentException] if the proxy could not be generated.
      */
     fun <P> findPlayerProxyObject(instance: P): PlayerProxy
 
     /**
+     * Tries to return a player proxy for the given player uuid.
+     * Throws a [IllegalArgumentException] if the proxy could not be generated.
+     */
+    fun findPlayerProxyObjectFromUUID(uuid: String): PlayerProxy
+
+    /**
      * Gets if the given instance can be converted to a player.
      */
     fun <P> isPlayer(instance: P): Boolean
-
-    /**
-     * Gets the name of a  instance.
-     */
-    fun <I> getNameOfInstance(instance: I): String
-
-    /**
-     * Tries to return a player proxy for the given player name.
-     */
-    fun findPlayerProxyObjectFromName(name: String): PlayerProxy?
-
-    /**
-     * Tries to return a player proxy for the given player uuid.
-     */
-    fun findPlayerProxyObjectFromUUID(uuid: String) : PlayerProxy?
 
     /**
      * Clears any resources the given instance has allocated.

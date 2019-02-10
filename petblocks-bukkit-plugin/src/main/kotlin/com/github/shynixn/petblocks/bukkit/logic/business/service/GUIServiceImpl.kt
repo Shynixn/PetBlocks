@@ -2,7 +2,6 @@
 
 package com.github.shynixn.petblocks.bukkit.logic.business.service
 
-import com.github.shynixn.petblocks.api.business.annotation.Inject
 import com.github.shynixn.petblocks.api.business.enumeration.ChatClickAction
 import com.github.shynixn.petblocks.api.business.enumeration.ChatColor
 import com.github.shynixn.petblocks.api.business.enumeration.ScriptAction
@@ -11,14 +10,15 @@ import com.github.shynixn.petblocks.api.persistence.entity.GuiIcon
 import com.github.shynixn.petblocks.api.persistence.entity.GuiPlayerCache
 import com.github.shynixn.petblocks.api.persistence.entity.PetMeta
 import com.github.shynixn.petblocks.bukkit.logic.business.extension.displayName
-import com.github.shynixn.petblocks.bukkit.logic.business.extension.setSkin
 import com.github.shynixn.petblocks.bukkit.logic.business.extension.setUnbreakable
+import com.github.shynixn.petblocks.bukkit.logic.business.extension.skin
 import com.github.shynixn.petblocks.bukkit.logic.business.extension.updateInventory
 import com.github.shynixn.petblocks.core.logic.business.extension.chatMessage
 import com.github.shynixn.petblocks.core.logic.business.extension.sync
 import com.github.shynixn.petblocks.core.logic.business.extension.translateChatColors
 import com.github.shynixn.petblocks.core.logic.persistence.entity.GuiIconEntity
 import com.github.shynixn.petblocks.core.logic.persistence.entity.GuiPlayerCacheEntity
+import com.google.inject.Inject
 import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.entity.Player
@@ -234,10 +234,9 @@ class GUIServiceImpl @Inject constructor(
         val inventory = Bukkit.getServer().createInventory(player, 54, guiTitle)
         player.openInventory(inventory)
 
-        persistenceService.getOrCreateFromPlayerUUID(player.uniqueId.toString()).thenAccept { petMeta ->
-            pageCache[player] = GuiPlayerCacheEntity(page, inventory)
-            renderPage(player, petMeta, page)
-        }
+        val petMeta = persistenceService.getPetMetaFromPlayer(player)
+        pageCache[player] = GuiPlayerCacheEntity(page, inventory)
+        renderPage(player, petMeta, page)
     }
 
     /**
@@ -262,84 +261,84 @@ class GUIServiceImpl @Inject constructor(
             return
         }
 
-        persistenceService.getOrCreateFromPlayerUUID(player.uniqueId.toString()).thenAccept { petMeta ->
-            if (pageCache.containsKey(player)) {
-                var pageCache = pageCache[player]!!
+        val petMeta = persistenceService.getPetMetaFromPlayer(player)
 
-                if (optGuiItem.targetSkin != null) {
-                    val skin = optGuiItem.targetSkin!!
+        if (pageCache.containsKey(player)) {
+            var pageCache = pageCache[player]!!
 
-                    if (skin.sponsored) {
-                        sendSponsoringMessage(pageCache, player)
-                    }
+            if (optGuiItem.targetSkin != null) {
+                val skin = optGuiItem.targetSkin!!
 
-                    petMeta.skin.typeName = skin.typeName
-                    petMeta.skin.dataValue = skin.dataValue
-                    petMeta.skin.owner = skin.owner
-                    petMeta.skin.unbreakable = skin.unbreakable
-
-                    while (pageCache.parent != null) {
-                        pageCache = pageCache.parent!!
-                    }
-
-                    this.pageCache[player] = pageCache
-                    renderPage(player, petMeta, this.pageCache[player]!!.path)
-                }
-
-                if (optGuiItem.icon.skin.sponsored) {
+                if (skin.sponsored) {
                     sendSponsoringMessage(pageCache, player)
                 }
 
-                for (aiBase in optGuiItem.removeAIs.toTypedArray()) {
-                    petMeta.aiGoals.removeIf { a -> a.type == aiBase.type }
+                petMeta.skin.typeName = skin.typeName
+                petMeta.skin.dataValue = skin.dataValue
+                petMeta.skin.owner = skin.owner
+                petMeta.skin.unbreakable = skin.unbreakable
+
+                while (pageCache.parent != null) {
+                    pageCache = pageCache.parent!!
                 }
 
-                for (aiBase in optGuiItem.addAIs.toTypedArray()) {
-                    petMeta.aiGoals.add(aiBase)
-                }
+                this.pageCache[player] = pageCache
+                renderPage(player, petMeta, this.pageCache[player]!!.path)
             }
 
-            if (optGuiItem.script != null) {
-                val scriptResult = scriptService.executeScript(optGuiItem.script!!)
+            if (optGuiItem.icon.skin.sponsored) {
+                sendSponsoringMessage(pageCache, player)
+            }
 
-                if (scriptResult.action == ScriptAction.SCROLL_PAGE) {
-                    val result = scriptResult.valueContainer as Pair<Int, Int>
-                    pageCache[player]!!.offsetX += result.first
-                    pageCache[player]!!.offsetY += result.second
+            for (aiBase in optGuiItem.removeAIs.toTypedArray()) {
+                petMeta.aiGoals.removeIf { a -> a.type == aiBase.type }
+            }
 
-                    renderPage(player, petMeta, pageCache[player]!!.path)
-                } else if (scriptResult.action == ScriptAction.PRINT_CUSTOM_SKIN_MESSAGE) {
-                    messageService.sendPlayerMessage(player, skullNamingMessage)
-                    this.close(player)
-                } else if (scriptResult.action == ScriptAction.PRINT_SUGGEST_HEAD_MESSAGE) {
-                    messageService.sendPlayerMessage(player, suggestHeadMessage)
-                    this.close(player)
-                } else if (scriptResult.action == ScriptAction.PRINT_CUSTOM_NAME_MESSAGE) {
-                    messageService.sendPlayerMessage(player, namingMessage)
-                    this.close(player)
-                } else if (scriptResult.action == ScriptAction.CONNECT_HEAD_DATABASE) {
-                    headDatabaseService.openConnection(player)
-                } else if (scriptResult.action == ScriptAction.CALL_PET) {
-                    petActionService.callPet(player)
-                    this.close(player)
-                } else if (scriptResult.action == ScriptAction.LAUNCH_CANNON) {
-                    petActionService.launchPet(player)
-                    this.close(player)
-                } else if (scriptResult.action == ScriptAction.CLOSE_GUI) {
-                    val page = pageCache[player]!!
+            for (aiBase in optGuiItem.addAIs.toTypedArray()) {
+                petMeta.aiGoals.add(aiBase)
+            }
+        }
 
-                    if (page.parent == null) {
-                        this.close(player)
-                    } else {
-                        pageCache[player] = page.parent!!
-                        renderPage(player,  petMeta,pageCache[player]!!.path)
-                    }
-                } else if (scriptResult.action == ScriptAction.OPEN_PAGE) {
-                    val parent = pageCache[player]!!
-                    pageCache[player] = GuiPlayerCacheEntity(scriptResult.valueContainer as String, parent.getInventory(),parent.advertisingMessageTime)
-                    pageCache[player]!!.parent = parent
-                    renderPage(player,  petMeta,scriptResult.valueContainer as String)
+        if (optGuiItem.script != null) {
+            val scriptResult = scriptService.executeScript(optGuiItem.script!!)
+
+            if (scriptResult.action == ScriptAction.SCROLL_PAGE) {
+                val result = scriptResult.valueContainer as Pair<Int, Int>
+                pageCache[player]!!.offsetX += result.first
+                pageCache[player]!!.offsetY += result.second
+
+                renderPage(player, petMeta, pageCache[player]!!.path)
+            } else if (scriptResult.action == ScriptAction.PRINT_CUSTOM_SKIN_MESSAGE) {
+                messageService.sendPlayerMessage(player, skullNamingMessage)
+                this.close(player)
+            } else if (scriptResult.action == ScriptAction.PRINT_SUGGEST_HEAD_MESSAGE) {
+                messageService.sendPlayerMessage(player, suggestHeadMessage)
+                this.close(player)
+            } else if (scriptResult.action == ScriptAction.PRINT_CUSTOM_NAME_MESSAGE) {
+                messageService.sendPlayerMessage(player, namingMessage)
+                this.close(player)
+            } else if (scriptResult.action == ScriptAction.CONNECT_HEAD_DATABASE) {
+                headDatabaseService.openConnection(player)
+            } else if (scriptResult.action == ScriptAction.CALL_PET) {
+                petActionService.callPet(player)
+                this.close(player)
+            } else if (scriptResult.action == ScriptAction.LAUNCH_CANNON) {
+                petActionService.launchPet(player)
+                this.close(player)
+            } else if (scriptResult.action == ScriptAction.CLOSE_GUI) {
+                val page = pageCache[player]!!
+
+                if (page.parent == null) {
+                    this.close(player)
+                } else {
+                    pageCache[player] = page.parent!!
+                    renderPage(player,  petMeta,pageCache[player]!!.path)
                 }
+            } else if (scriptResult.action == ScriptAction.OPEN_PAGE) {
+                val parent = pageCache[player]!!
+                pageCache[player] = GuiPlayerCacheEntity(scriptResult.valueContainer as String, parent.getInventory(),parent.advertisingMessageTime)
+                pageCache[player]!!.parent = parent
+                renderPage(player,  petMeta,scriptResult.valueContainer as String)
             }
         }
     }
@@ -471,10 +470,10 @@ class GUIServiceImpl @Inject constructor(
             configurationService.findValue<String>("messages.perms-ico-no")
         }
 
-        val itemStack = itemService.createItemStack<ItemStack>(guiIcon.skin.typeName, guiIcon.skin.dataValue)
+        val itemStack = itemService.createItemStack(guiIcon.skin.typeName, guiIcon.skin.dataValue).build<ItemStack>()
 
         itemStack.displayName = guiIcon.displayName
-        itemStack.setSkin(guiIcon.skin.owner)
+        itemStack.skin = guiIcon.skin.owner
         itemStack.setUnbreakable(guiIcon.skin.unbreakable)
 
         val meta = itemStack.itemMeta

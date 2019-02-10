@@ -2,35 +2,25 @@
 
 package com.github.shynixn.petblocks.bukkit
 
-import com.github.shynixn.petblocks.api.business.service.YamlConfigurationService
-import com.github.shynixn.petblocks.api.business.annotation.Inject
-import com.github.shynixn.petblocks.api.business.commandexecutor.EditPetCommandExecutor
-import com.github.shynixn.petblocks.api.business.commandexecutor.PlayerPetActionCommandExecutor
-import com.github.shynixn.petblocks.api.business.commandexecutor.ReloadCommandExecutor
 import com.github.shynixn.petblocks.api.business.enumeration.Version
 import com.github.shynixn.petblocks.api.business.proxy.SqlConnectionPoolProxy
 import com.github.shynixn.petblocks.api.business.service.*
 import com.github.shynixn.petblocks.api.persistence.context.SqlDbContext
 import com.github.shynixn.petblocks.api.persistence.repository.PetMetaRepository
-import com.github.shynixn.petblocks.api.persistence.repository.PetRepository
 import com.github.shynixn.petblocks.bukkit.logic.business.extension.getServerVersion
 import com.github.shynixn.petblocks.bukkit.logic.business.proxy.SqlProxyImpl
 import com.github.shynixn.petblocks.bukkit.logic.business.service.*
-import com.github.shynixn.petblocks.core.jvm.logic.persistence.context.SqlDbContextImpl
 import com.github.shynixn.petblocks.core.jvm.logic.persistence.service.LoggingUtilServiceImpl
-import com.github.shynixn.petblocks.core.logic.business.service.UpdateCheckServiceImpl
-import com.github.shynixn.petblocks.core.logic.business.service.YamlSerializationServiceImpl
 import com.github.shynixn.petblocks.core.logic.business.command.*
 import com.github.shynixn.petblocks.core.logic.business.commandexecutor.EditPetCommandExecutorImpl
 import com.github.shynixn.petblocks.core.logic.business.commandexecutor.PlayerPetActionCommandExecutorImpl
 import com.github.shynixn.petblocks.core.logic.business.commandexecutor.ReloadCommandExecutorImpl
 import com.github.shynixn.petblocks.core.logic.business.service.*
+import com.github.shynixn.petblocks.core.logic.persistence.context.SqlDbContextImpl
 import com.github.shynixn.petblocks.core.logic.persistence.repository.PetMetaSqlRepository
-import com.github.shynixn.petblocks.core.logic.persistence.repository.PetRunTimeRepository
 import com.google.inject.AbstractModule
 import com.google.inject.Scopes
 import org.bukkit.plugin.Plugin
-import java.lang.reflect.Constructor
 
 /**
  * Created by Shynixn 2018.
@@ -66,110 +56,81 @@ class PetBlocksDependencyInjectionBinder(private val plugin: Plugin) : AbstractM
     override fun configure() {
         val version = getServerVersion()
 
-        bindInstance<Plugin>(plugin)
-        bindInstance<Version>(version)
-        bindInstance<LoggingService>(LoggingUtilServiceImpl(plugin.logger))
+        // General
+        bind(Plugin::class.java).toInstance(plugin)
+        bind(Version::class.java).toInstance(version)
+        bind(LoggingService::class.java).toInstance(LoggingUtilServiceImpl(plugin.logger))
 
         // Commands
-        bindClass<EditPetAICommand>()
-        bindClass<EditPetDisableCommand>()
-        bindClass<EditPetEnableCommand>()
-        bindClass<EditPetKillNextCommand>()
-        bindClass<EditPetRenameCommand>()
-        bindClass<EditPetResetCommand>()
-        bindClass<EditPetSkinCommand>()
-        bindClass<EditPetToggleCommand>()
-        bindClass<EditPetToggleParticleCommand>()
-        bindClass<EditPetToggleSoundCommand>()
+        bind(EditPetAICommand::class.java).`in`(Scopes.SINGLETON)
+        bind(EditPetDisableCommand::class.java).`in`(Scopes.SINGLETON)
+        bind(EditPetEnableCommand::class.java).`in`(Scopes.SINGLETON)
+        bind(EditPetKillNextCommand::class.java).`in`(Scopes.SINGLETON)
+        bind(EditPetRenameCommand::class.java).`in`(Scopes.SINGLETON)
+        bind(EditPetResetCommand::class.java).`in`(Scopes.SINGLETON)
+        bind(EditPetSkinCommand::class.java).`in`(Scopes.SINGLETON)
+        bind(EditPetToggleCommand::class.java).`in`(Scopes.SINGLETON)
+        bind(EditPetToggleParticleCommand::class.java).`in`(Scopes.SINGLETON)
+        bind(EditPetToggleSoundCommand::class.java).`in`(Scopes.SINGLETON)
 
         // CommandExecutors
-        bind<ReloadCommandExecutor, ReloadCommandExecutorImpl>()
-        bind<PlayerPetActionCommandExecutor, PlayerPetActionCommandExecutorImpl>()
-        bind<EditPetCommandExecutor, EditPetCommandExecutorImpl>()
+        bind(ReloadCommandExecutorImpl::class.java).`in`(Scopes.SINGLETON)
+        bind(PlayerPetActionCommandExecutorImpl::class.java).`in`(Scopes.SINGLETON)
+        bind(EditPetCommandExecutorImpl::class.java).`in`(Scopes.SINGLETON)
 
-        // Context
-        bind<SqlConnectionPoolProxy, SqlProxyImpl>()
-        bind<SqlDbContext, SqlDbContextImpl>()
+        // Contexts
+        bind(SqlConnectionPoolProxy::class.java).to(SqlProxyImpl::class.java).`in`(Scopes.SINGLETON)
+        bind(SqlDbContext::class.java).to(SqlDbContextImpl::class.java).`in`(Scopes.SINGLETON)
 
-        // Repository
-        bind<PetMetaRepository, PetMetaSqlRepository>()
-        bind<PetRepository, PetRunTimeRepository>()
+        // Repositories
+        bind(PetMetaRepository::class.java).to(PetMetaSqlRepository::class.java).`in`(Scopes.SINGLETON)
 
-        when {
-            version.isVersionSameOrGreaterThan(Version.VERSION_1_13_R1) -> bind<ItemService, Item113R1ServiceImpl>()
-            else -> bind<ItemService, Item18R1ServiceImpl>()
-        }
+        // Core Services
+        bind(AIService::class.java).to(AIServiceImpl::class.java).`in`(Scopes.SINGLETON)
+        bind(CarryPetService::class.java).to(CarryPetServiceImpl::class.java).`in`(Scopes.SINGLETON)
+        bind(CombatPetService::class.java).to(CombatPetServiceImpl::class.java).`in`(Scopes.SINGLETON)
+        bind(FeedingPetService::class.java).to(FeedPetServiceImpl::class.java).`in`(Scopes.SINGLETON)
+        bind(GUIService::class.java).to(GUIServiceImpl::class.java).`in`(Scopes.SINGLETON)
+        bind(HealthService::class.java).to(HealthServiceImpl::class.java).`in`(Scopes.SINGLETON)
+        bind(PersistencePetMetaService::class.java).to(PersistencePetMetaServiceImpl::class.java).`in`(Scopes.SINGLETON)
+        bind(PetActionService::class.java).to(PetActionServiceImpl::class.java).`in`(Scopes.SINGLETON)
+        bind(PetService::class.java).to(PetServiceImpl::class.java).`in`(Scopes.SINGLETON)
+        bind(UpdateCheckService::class.java).to(UpdateCheckServiceImpl::class.java).`in`(Scopes.SINGLETON)
+        bind(YamlSerializationService::class.java).to(YamlSerializationServiceImpl::class.java).`in`(Scopes.SINGLETON)
 
-        // Services
-        bind<ParticleService, ParticleServiceImpl>()
-        bind<SoundService, SoundServiceImpl>()
-        bind<GUIScriptService, GUIScriptServiceImpl>()
-        bind<UpdateCheckService, UpdateCheckServiceImpl>()
-        bind<MessageService, MessageServiceImpl>()
-        bind<PetActionService, PetActionServiceImpl>()
-        bind<ProxyService, ProxyServiceImpl>()
-        bind<EntityService, EntityServiceImpl>()
-        bind<ConcurrencyService, ConcurrencyServiceImpl>()
-        bind<CommandService, CommandServiceImpl>()
-        bind<PersistencePetMetaService, PersistencePetMetaServiceImpl>()
-        bind<ConfigurationService, ConfigurationServiceImpl>()
-        bind<GUIService, GUIServiceImpl>()
-        bind<FeedingPetService, FeedPetServiceImpl>()
-        bind<PetService, PetServiceImpl>()
-        bind<DependencyService, DependencyServiceImpl>()
-        bind<CarryPetService, CarryPetServiceImpl>()
-        bind<CombatPetService, CombatPetServiceImpl>()
-        bind<AIService, AIServiceImpl>()
-        bind<YamlConfigurationService, YamlConfigurationServiceImpl>()
-        bind<YamlSerializationService, YamlSerializationServiceImpl>()
-        bind<AfraidOfWaterService, AfraidOfWaterServiceImpl>()
-        bind<NavigationService, NavigationServiceImpl>()
-        bind<DependencyHeadDatabaseService, DependencyHeadDatabaseServiceImpl>()
+        // Bukkit Services
+        bind(AfraidOfWaterService::class.java).to(AfraidOfWaterServiceImpl::class.java).`in`(Scopes.SINGLETON)
+        bind(CommandService::class.java).to(CommandServiceImpl::class.java).`in`(Scopes.SINGLETON)
+        bind(ConcurrencyService::class.java).to(ConcurrencyServiceImpl::class.java).`in`(Scopes.SINGLETON)
+        bind(ConfigurationService::class.java).to(ConfigurationServiceImpl::class.java).`in`(Scopes.SINGLETON)
+        bind(DependencyHeadDatabaseService::class.java).to(DependencyHeadDatabaseServiceImpl::class.java).`in`(Scopes.SINGLETON)
+        bind(DependencyService::class.java).to(DependencyServiceImpl::class.java).`in`(Scopes.SINGLETON)
 
         when {
-            version.isVersionSameOrGreaterThan(Version.VERSION_1_13_R2) -> bind<EntityRegistrationService, EntityRegistration113R2ServiceImpl>()
-            version.isVersionSameOrGreaterThan(Version.VERSION_1_13_R1) -> bind<EntityRegistrationService, EntityRegistration113R1ServiceImpl>()
-            version.isVersionSameOrGreaterThan(Version.VERSION_1_11_R1) -> bind<EntityRegistrationService, EntityRegistration111R1ServiceImpl>()
-            else -> bind<EntityRegistrationService, EntityRegistration18R1ServiceImpl>()
+            version.isVersionSameOrGreaterThan(Version.VERSION_1_13_R2) -> bind(EntityRegistrationService::class.java).to(EntityRegistration113R2ServiceImpl::class.java).`in`(Scopes.SINGLETON)
+            version.isVersionSameOrGreaterThan(Version.VERSION_1_13_R1) -> bind(EntityRegistrationService::class.java).to(EntityRegistration113R1ServiceImpl::class.java).`in`(Scopes.SINGLETON)
+            version.isVersionSameOrGreaterThan(Version.VERSION_1_11_R1) -> bind(EntityRegistrationService::class.java).to(EntityRegistration111R1ServiceImpl::class.java).`in`(Scopes.SINGLETON)
+            else -> bind(EntityRegistrationService::class.java).to(EntityRegistration18R1ServiceImpl::class.java).`in`(Scopes.SINGLETON)
         }
+
+        bind(EntityService::class.java).to(EntityServiceImpl::class.java).`in`(Scopes.SINGLETON)
+        bind(EventService::class.java).to(EventServiceImpl::class.java).`in`(Scopes.SINGLETON)
+        bind(GUIService::class.java).to(GUIServiceImpl::class.java).`in`(Scopes.SINGLETON)
+
+        when {
+            version.isVersionSameOrGreaterThan(Version.VERSION_1_13_R1) -> bind(ItemService::class.java).to(Item113R1ServiceImpl::class.java).`in`(Scopes.SINGLETON)
+            else -> bind(ItemService::class.java).to(Item18R1ServiceImpl::class.java).`in`(Scopes.SINGLETON)
+        }
+
+        bind(MessageService::class.java).to(MessageServiceImpl::class.java).`in`(Scopes.SINGLETON)
+        bind(NavigationService::class.java).to(NavigationServiceImpl::class.java).`in`(Scopes.SINGLETON)
+        bind(ParticleService::class.java).to(ParticleServiceImpl::class.java).`in`(Scopes.SINGLETON)
+        bind(ProxyService::class.java).to(ProxyServiceImpl::class.java).`in`(Scopes.SINGLETON)
+        bind(SoundService::class.java).to(SoundServiceImpl::class.java).`in`(Scopes.SINGLETON)
+        bind(YamlConfigurationService::class.java).to(YamlConfigurationServiceImpl::class.java).`in`(Scopes.SINGLETON)
 
         // Dependency resolving
         val dependencyService = DependencyServiceImpl(plugin)
         dependencyService.checkForInstalledDependencies()
-    }
-
-    /**
-     * Binds an instance.
-     */
-    private inline fun <reified I> bindInstance(instance: Any) {
-        this.bind(I::class.java).toInstance(instance as I)
-    }
-
-    /**
-     * Binds an interface to its implementation via the custom annotation Inject.
-     */
-    private inline fun <reified I> bindClass() {
-        this.bind<I, I>()
-    }
-
-    /**
-     * Binds an interface to its implementation via the custom annotation Inject.
-     */
-    private inline fun <reified I, reified T> bind() {
-        T::class.java.declaredConstructors.forEach { constructor ->
-            constructor.declaredAnnotations.forEach { annotation ->
-                if (annotation is Inject) {
-                    bind(I::class.java).toConstructor(constructor as Constructor<I>).`in`(Scopes.SINGLETON)
-                    return
-                }
-            }
-        }
-
-        if (T::class.java.declaredConstructors.size == 1) {
-            bind(I::class.java).toConstructor(T::class.java.declaredConstructors[0] as Constructor<I>).`in`(Scopes.SINGLETON)
-            return
-        }
-
-        throw RuntimeException("Failed to bind PetBlocks dependency! Does the binding " + T::class.java + " contain the Inject annotation?")
     }
 }

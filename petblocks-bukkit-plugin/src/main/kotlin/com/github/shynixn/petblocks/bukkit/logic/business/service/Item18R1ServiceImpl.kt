@@ -3,11 +3,15 @@
 package com.github.shynixn.petblocks.bukkit.logic.business.service
 
 import com.github.shynixn.petblocks.api.business.enumeration.MaterialType
+import com.github.shynixn.petblocks.api.business.enumeration.Version
+import com.github.shynixn.petblocks.api.business.proxy.ItemStackProxy
 import com.github.shynixn.petblocks.api.business.service.ItemService
-import com.github.shynixn.petblocks.core.logic.business.extension.translateChatColors
+import com.github.shynixn.petblocks.bukkit.logic.business.proxy.ItemStackProxyImpl
 import org.bukkit.Material
+import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 import java.lang.reflect.Method
+import java.util.*
 
 /**
  * Created by Shynixn 2018.
@@ -36,124 +40,78 @@ import java.lang.reflect.Method
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class Item18R1ServiceImpl : ItemService {
+class Item18R1ServiceImpl(private val version: Version) : ItemService {
     private val getMaterialFromIdMethod: Method = Material::class.java.getDeclaredMethod("getMaterial", Int::class.javaPrimitiveType)
+    private val getItemInMainHandMethod: Method
+    private var getItemInOffHandMethod: Method? = null
+
+    /**
+     * Initialize.
+     */
+    init {
+        val inventoryClazz = Class.forName("org.bukkit.inventory.PlayerInventory")
+
+        getItemInMainHandMethod = if (version.isVersionSameOrGreaterThan(Version.VERSION_1_9_R1)) {
+            inventoryClazz.getDeclaredMethod("getItemInMainHand", ItemStack::class.java)
+        } else {
+            Class.forName("org.bukkit.entity.HumanEntity").getDeclaredMethod("getItemInHand", ItemStack::class.java)
+        }
+
+        if (version.isVersionSameOrGreaterThan(Version.VERSION_1_9_R1)) {
+            getItemInOffHandMethod = inventoryClazz.getDeclaredMethod("getItemInOffHand", ItemStack::class.java)
+        }
+    }
+
+    /**
+     * Gets the itemstack in the hand of the player with optional offHand flag.
+     */
+    override fun <P, I> getItemInHand(player: P, offHand: Boolean): Optional<I> {
+        if (player !is Player) {
+            throw IllegalArgumentException("Player has to be a BukkitPlayer!")
+        }
+
+        return if (version.isVersionSameOrGreaterThan(Version.VERSION_1_9_R1)) {
+            if (offHand) {
+                Optional.ofNullable(getItemInOffHandMethod!!.invoke(player.inventory) as I)
+            } else {
+                Optional.ofNullable(getItemInMainHandMethod.invoke(player.inventory) as I)
+            }
+        } else {
+            Optional.ofNullable(getItemInMainHandMethod.invoke(player) as I)
+        }
+    }
 
     /**
      * Creates a new itemstack from the given parameters.
      */
-    override fun <I> createItemStack(typeName: String, dataValue: Int, amount: Int): I {
-        val materialType = getMaterialValue<Material>(typeName)
-
-        return ItemStack(materialType, amount, dataValue.toShort()) as I
+    override fun createItemStack(type: Any, dataValue: Int): ItemStackProxy {
+        return ItemStackProxyImpl(getMaterialValue(type).name, dataValue)
     }
 
     /**
-     * Gets if the given itemstack is the given materialType.
+     * Gets if the given [itemStack] has got the given [type] and [dataValue].
      */
-    override fun <I> isItemStackMaterialType(itemStack: I, materialType: MaterialType): Boolean {
+    override fun <I> hasItemStackProperties(itemStack: I, type: Any, dataValue: Int): Boolean {
         if (itemStack !is ItemStack) {
             throw IllegalArgumentException("ItemStack has to be a BukkitItemStack!")
         }
 
-        val id = Material::class.java.getDeclaredMethod("getId").invoke(itemStack.type)
-
-        for (value in MaterialType.values()) {
-            if (value.MinecraftNumericId == id) {
-                return true
-            }
-        }
-
-        return false
+        val material = getMaterialValue(type)
+        return material == itemStack.type && dataValue == itemStack.durability.toInt()
     }
 
     /**
-     * Creates a new itemstack from the given materialType.
+     * Processing if there is any way the given [value] can be mapped to an material.
      */
-    override fun <I> createItemStack(materialType: MaterialType, dataValue: Int, amount: Int): I {
-        return ItemStack(getMaterialValue<Material>(materialType.MinecraftNumericId), amount, dataValue.toShort()) as I
-    }
-
-    /**
-     * Sets the amount of items on the given stack.
-     */
-    override fun <I> setAmountOfItemStack(itemStack: I, amount: Int) {
-        if (itemStack !is ItemStack) {
-            throw IllegalArgumentException("ItemStack has to be a BukkitItemStack!")
-        }
-
-        itemStack.amount = amount
-    }
-
-    /**
-     * Gets the amount of items on the given stack.
-     */
-    override fun getAmountOfItemStack(itemStack: Any): Int {
-        if (itemStack !is ItemStack) {
-            throw IllegalArgumentException("ItemStack has to be a BukkitItemStack!")
-        }
-
-        return itemStack.amount
-    }
-
-    /**
-     * Sets the displayName of an itemstack.
-     */
-    override fun <I> setDisplayNameOfItemStack(itemstack: I, name: String) {
-        if (itemstack !is ItemStack) {
-            throw IllegalArgumentException("ItemStack has to be a BukkitItemStack!")
-        }
-
-        val meta = itemstack.itemMeta
-        meta.displayName = name.translateChatColors()
-        itemstack.itemMeta = meta
-    }
-
-    /**
-     * Sets the lore of an itemstack.
-     */
-    override fun <I> setLoreOfItemStack(itemstack: I, index: Int, text: String) {
-        if (itemstack !is ItemStack) {
-            throw IllegalArgumentException("ItemStack has to be a BukkitItemStack!")
-        }
-
-        val meta = itemstack.itemMeta
-        var lore = meta.lore
-
-        if (lore == null) {
-            lore = ArrayList<String>()
-        }
-
-        if (index >= lore.size) {
-            val newLore = arrayOfNulls<String>(index + 1)
-
-            for (i in 0 until newLore.size) {
-                if (i < lore.size) {
-                    newLore[i] = lore[i]
-                } else {
-                    newLore[i] = ""
-                }
-            }
-
-            lore = newLore.toList()
-        }
-
-        lore[index] = text.translateChatColors()
-
-        meta.lore = lore
-        itemstack.itemMeta = meta
-    }
-
-    /**
-     * Gets the material from the numeric value or string value.
-     */
-    override fun <M> getMaterialValue(value: Any): M {
+    private fun getMaterialValue(value: Any): Material {
         if (value is Int) {
-            return getMaterialFromIdMethod.invoke(null, value) as M
+            return getMaterialFromIdMethod.invoke(null, value) as Material
         } else if (value is String && value.toIntOrNull() != null) {
-            return getMaterialFromIdMethod.invoke(null, value.toInt()) as M
+            return getMaterialFromIdMethod.invoke(null, value.toInt()) as Material
         } else if (value is String) {
-            return Material.getMaterial(value) as M ?: throw IllegalArgumentException("Material $value does not exist!")
+            return Material.getMaterial(value) ?: throw IllegalArgumentException("Material $value does not exist!")
+        } else if (value is MaterialType) {
+            return getMaterialValue(value.MinecraftNumericId)
         }
 
         throw  throw IllegalArgumentException("Material $value is not a string or int.")

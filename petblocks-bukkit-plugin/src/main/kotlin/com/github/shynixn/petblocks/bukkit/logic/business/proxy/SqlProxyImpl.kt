@@ -2,9 +2,9 @@
 
 package com.github.shynixn.petblocks.bukkit.logic.business.proxy
 
-import com.github.shynixn.petblocks.api.business.annotation.Inject
 import com.github.shynixn.petblocks.api.business.proxy.SqlConnectionPoolProxy
 import com.github.shynixn.petblocks.api.business.service.LoggingService
+import com.google.inject.Inject
 import com.zaxxer.hikari.HikariConfig
 import com.zaxxer.hikari.HikariDataSource
 import org.bukkit.plugin.Plugin

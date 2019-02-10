@@ -1,11 +1,17 @@
 package com.github.shynixn.petblocks.bukkit.logic.business.listener
 
+import com.github.shynixn.petblocks.api.bukkit.event.PetBlocksLoginEvent
 import com.github.shynixn.petblocks.api.business.enumeration.MaterialType
 import com.github.shynixn.petblocks.api.business.proxy.EntityPetProxy
+import com.github.shynixn.petblocks.api.business.proxy.PetProxy
 import com.github.shynixn.petblocks.api.business.service.*
+import com.github.shynixn.petblocks.api.persistence.entity.AIFlyRiding
+import com.github.shynixn.petblocks.api.persistence.entity.AIGroundRiding
+import com.github.shynixn.petblocks.api.persistence.entity.AIWearing
 import com.github.shynixn.petblocks.bukkit.logic.business.extension.teleportUnsafe
 import com.github.shynixn.petblocks.core.logic.business.extension.sync
 import com.google.inject.Inject
+import org.bukkit.Bukkit
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.entity.EntityInteractEvent
@@ -46,9 +52,10 @@ class PetListener @Inject constructor(
     private val persistencePetMetaService: PersistencePetMetaService,
     private val concurrencyService: ConcurrencyService,
     private val entityService: EntityService,
+    private val itemService: ItemService,
     private val configurationService: ConfigurationService
 ) : Listener {
-    private val joinCooldown = 20 * 3L // 3 seconds.
+    private val joinCooldown = 20 * 6L
     private val soilMaterial = MaterialType.SOIL
 
     /**
@@ -60,10 +67,21 @@ class PetListener @Inject constructor(
             val player = event.player
 
             if (player.isOnline && player.world != null) {
-                persistencePetMetaService.getOrCreateFromPlayerUUID(player.uniqueId.toString()).thenAccept { petMeta ->
-                    if (petMeta.enabled) {
-                        petService.getOrSpawnPetFromPlayerUUID(player.uniqueId.toString())
+                persistencePetMetaService.refreshPetMetaFromRepository(player).thenAccept { petMeta ->
+                    val optPet: PetProxy? = if (petMeta.enabled) {
+                        val pet = petService.getOrSpawnPetFromPlayer(player)
+
+                        if (pet.isPresent) {
+                            pet.get()
+                        } else {
+                            null
+                        }
+                    } else {
+                        null
                     }
+
+                    val joinEvent = PetBlocksLoginEvent(player, petMeta, optPet)
+                    Bukkit.getPluginManager().callEvent(joinEvent)
                 }
             }
         }
@@ -74,19 +92,10 @@ class PetListener @Inject constructor(
      */
     @EventHandler
     fun onPlayerQuitEvent(event: PlayerQuitEvent) {
-        val uuid = event.player.uniqueId.toString()
+        persistencePetMetaService.close(event.player)
 
-        persistencePetMetaService.closeAndSave(uuid)
-
-        if (petService.hasPet(uuid)) {
-            petService.getOrSpawnPetFromPlayerUUID(uuid).thenAccept { pet ->
-                pet.remove()
-            }
-
-            persistencePetMetaService.getOrCreateFromPlayerUUID(uuid).thenAccept { petMeta ->
-                petMeta.enabled = true
-                persistencePetMetaService.closeAndSave(uuid)
-            }
+        if (petService.hasPet(event.player)) {
+            petService.getOrSpawnPetFromPlayer(event.player).get().remove()
         }
     }
 
@@ -119,11 +128,9 @@ class PetListener @Inject constructor(
     fun onEntityInteractEvent(event: EntityInteractEvent) {
         val optPet = petService.findPetByEntity(event.entity)
 
-        if (optPet != null && event.block.type == soilMaterial.type) {
+        if (optPet != null && itemService.hasItemStackProperties(itemService.createItemStack(event.block.type), soilMaterial)) {
             event.isCancelled = true
         }
-
-        AsyncPlayerPreLoginEvent
     }
 
     /**
@@ -137,14 +144,14 @@ class PetListener @Inject constructor(
             return
         }
 
-        if (!petService.hasPet(event.player.uniqueId.toString())) {
+        if (!petService.hasPet(event.player)) {
             return
         }
 
-        petService.getOrSpawnPetFromPlayerUUID(event.player.uniqueId.toString()).thenAccept { pet ->
-            if (event.player.passenger == pet.getHeadArmorstand() || event.player.passenger == pet.getHitBoxLivingEntity()) {
-                // pet.stopWearing()
-            }
+        val pet = petService.getOrSpawnPetFromPlayer(event.player).get()
+
+        if (event.player.passenger == pet.getHeadArmorstand() || event.player.passenger == pet.getHitBoxLivingEntity()) {
+            pet.meta.aiGoals.removeIf { a -> a is AIGroundRiding || a is AIFlyRiding || a is AIWearing }
         }
     }
 
@@ -167,18 +174,17 @@ class PetListener @Inject constructor(
      */
     @EventHandler
     fun onPlayerRespawnEvent(event: PlayerRespawnEvent) {
-        if (!petService.hasPet(event.player.uniqueId.toString())) {
+        if (!petService.hasPet(event.player)) {
             return
         }
 
-        petService.getOrSpawnPetFromPlayerUUID(event.player.uniqueId.toString()).thenAccept { pet ->
-            pet.remove()
-        }
+        val pet = petService.getOrSpawnPetFromPlayer(event.player).get()
+        pet.remove()
 
         val warpDelay = configurationService.findValue<Int>("pet.warp.teleports-in-seconds") * 20L
 
         sync(concurrencyService, warpDelay) {
-            petService.getOrSpawnPetFromPlayerUUID(event.player.uniqueId.toString())
+            petService.getOrSpawnPetFromPlayer(event.player)
         }
     }
 
@@ -191,15 +197,16 @@ class PetListener @Inject constructor(
             return
         }
 
+        val pet = petService.getOrSpawnPetFromPlayer(event.player).get()
+
+
         if (event.to.world.name != event.from.world.name) {
-            petService.getOrSpawnPetFromPlayerUUID(event.player.uniqueId.toString()).thenAccept { pet ->
-                pet.remove()
-            }
+            pet.remove()
 
             val warpDelay = configurationService.findValue<Int>("pet.warp.teleports-in-seconds") * 20L
 
             sync(concurrencyService, warpDelay) {
-                petService.getOrSpawnPetFromPlayerUUID(event.player.uniqueId.toString())
+                petService.getOrSpawnPetFromPlayer(event.player)
             }
 
             return
@@ -210,11 +217,9 @@ class PetListener @Inject constructor(
         }
 
         val fallOffHead = configurationService.findValue<Boolean>("pet.follow.teleport-fall")
-        val pet = petService.getOrSpawnPetFromPlayerUUID(event.player.uniqueId.toString()).get()
 
         if (fallOffHead) {
-            //  pet.stopWearing()
-
+            pet.meta.aiGoals.removeIf { a -> a is AIGroundRiding || a is AIFlyRiding || a is AIWearing }
             return
         }
 

@@ -7,6 +7,7 @@ import com.github.shynixn.petblocks.api.business.enumeration.Version
 import com.github.shynixn.petblocks.api.persistence.entity.Position
 import com.github.shynixn.petblocks.bukkit.logic.business.extension.getServerVersion
 import com.github.shynixn.petblocks.bukkit.logic.business.extension.toPosition
+import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 import org.bukkit.util.Vector
 
@@ -58,6 +59,12 @@ class PlayerProxyImpl(private val player: Player) : com.github.shynixn.petblocks
         get() = player.location.toPosition()
 
     /**
+     * Gets if the player is still online.
+     */
+    override val isOnline: Boolean
+        get() = player.isOnline
+
+    /**
      * Sets the item in the players hand.
      */
     override fun <I> setItemInHand(itemStack: I, offHand: Boolean) {
@@ -97,7 +104,8 @@ class PlayerProxyImpl(private val player: Player) : com.github.shynixn.petblocks
      * Gets if this player has got permissions.
      */
     override fun hasPermission(permission: Permission): Boolean {
-        return player.hasPermission(permission)
+        println("Permission nto working")
+        return player.hasPermission("permission")
     }
 
     /**
@@ -149,6 +157,5 @@ class PlayerProxyImpl(private val player: Player) : com.github.shynixn.petblocks
     /**
      * Gets the unique id of the player.
      */
-    override val uniqueId: String
-        get() = player.uniqueId.toString()
+    override val uniqueId: String  = player.uniqueId.toString()
 }

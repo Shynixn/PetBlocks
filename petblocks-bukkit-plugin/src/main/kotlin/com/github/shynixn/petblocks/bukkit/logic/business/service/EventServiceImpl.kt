@@ -44,8 +44,8 @@ class EventServiceImpl : EventService {
         val cEvent: PetBlocksEvent = when (event) {
             is PetPreSpawn -> PetPreSpawnEvent(event.player as Player, event.petMeta)
             is PetPostSpawn -> PetPostSpawnEvent(event.player as Player, event.pet)
-            is PetBlocksPreSave -> PetBlocksPreSaveEvent(event.player as Player, event.petMeta)
-            is PetBlocksPostSave -> PetBlocksPostSaveEvent(event.player as Player, event.petMeta)
+            is PetBlocksPreSave -> PetBlocksPreSaveEvent(event.petMeta)
+            is PetBlocksPostSave -> PetBlocksPostSaveEvent(event.petMeta)
             else -> throw IllegalArgumentException("Event is not mapped to PetBlocks!")
         }
 

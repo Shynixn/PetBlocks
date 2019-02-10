@@ -2,12 +2,9 @@
 
 package com.github.shynixn.petblocks.bukkit.logic.business.extension
 
-import com.github.shynixn.petblocks.api.PetBlocksApi
-import com.github.shynixn.petblocks.api.business.enumeration.MaterialType
 import com.github.shynixn.petblocks.api.business.enumeration.ParticleType
 import com.github.shynixn.petblocks.api.business.enumeration.Permission
 import com.github.shynixn.petblocks.api.business.enumeration.Version
-import com.github.shynixn.petblocks.api.business.service.ItemService
 import com.github.shynixn.petblocks.api.persistence.entity.Position
 import com.github.shynixn.petblocks.core.logic.business.extension.translateChatColors
 import com.github.shynixn.petblocks.core.logic.persistence.entity.PositionEntity
@@ -15,11 +12,9 @@ import com.mojang.authlib.GameProfile
 import com.mojang.authlib.properties.Property
 import org.bukkit.Bukkit
 import org.bukkit.Location
-import org.bukkit.Material
 import org.bukkit.configuration.MemorySection
 import org.bukkit.configuration.file.FileConfiguration
 import org.bukkit.entity.Player
-import org.bukkit.inventory.Inventory
 import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.PlayerInventory
 import org.bukkit.inventory.meta.SkullMeta
@@ -57,25 +52,6 @@ import java.util.*
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-/**
- * Sets the item in the players arm.
- */
-fun PlayerInventory.setItemStackInHand(itemStack: ItemStack?, offHand: Boolean = false) {
-    val version = getServerVersion()
-
-    if (version.isVersionSameOrGreaterThan(Version.VERSION_1_9_R1)) {
-        val inventoryClazz = Class.forName("org.bukkit.inventory.PlayerInventory")
-
-        if (offHand) {
-            inventoryClazz.getDeclaredMethod("setItemInOffHand", ItemStack::class.java).invoke(this, itemStack)
-        } else {
-            inventoryClazz.getDeclaredMethod("setItemInMainHand", ItemStack::class.java).invoke(this, itemStack)
-        }
-    } else {
-        Class.forName("org.bukkit.entity.HumanEntity").getDeclaredMethod("setItemInHand", ItemStack::class.java)
-            .invoke(this.holder, itemStack)
-    }
-}
 
 /**
  * Deserializes the configuraiton section path to a map.
@@ -148,6 +124,13 @@ fun Location.toPosition(): Position {
  */
 fun PlayerInventory.updateInventory() {
     (this.holder as Player).updateInventory()
+}
+
+/**
+ * Finds a class for the current version.
+ */
+fun Version.findClazz(name: String): Class<*> {
+    return Class.forName(name.replace("VERSION", this.bukkitId))
 }
 
 /**
@@ -305,7 +288,7 @@ fun String.toParticleType(): ParticleType {
 /**
  * Gets the skin of an itemstack.
  */
-val ItemStack.skin: String?
+var ItemStack.skin: String?
     get() {
         val currentMeta = this.itemMeta as? SkullMeta ?: return null
 
@@ -321,75 +304,37 @@ val ItemStack.skin: String?
 
         return profile.properties.get("textures").toTypedArray()[0].value
     }
+    set(value) {
+        val currentMeta = this.itemMeta as? SkullMeta ?: return
 
-/**
- * Sets the skin of an itemstack.
- */
-internal fun ItemStack.setSkin(skin: String) {
-    val currentMeta = this.itemMeta as? SkullMeta ?: return
-
-    var newSkin = skin
-
-    if (newSkin.length > 32) {
-        val cls = Class.forName("org.bukkit.craftbukkit.VERSION.inventory.CraftMetaSkull".replace("VERSION", getServerVersion().bukkitId))
-        val real = cls.cast(currentMeta)
-        val field = real.javaClass.getDeclaredField("profile")
-        val newSkinProfile = GameProfile(UUID.randomUUID(), null)
-
-        if (newSkin.contains("textures.minecraft.net")) {
-            if (!newSkin.startsWith("http://")) {
-                newSkin = "http://$newSkin"
-            }
-
-            newSkin = Base64Coder.encodeString("{textures:{SKIN:{url:\"$newSkin\"}}}")
+        if (value == null) {
+            return
         }
 
-        newSkinProfile.properties.put("textures", Property("textures", newSkin))
-        field.isAccessible = true
-        field.set(real, newSkinProfile)
-        itemMeta = SkullMeta::class.java.cast(real)
-    } else if (skin.isNotEmpty()) {
-        currentMeta.owner = skin
-        itemMeta = currentMeta
-    }
-}
+        var newSkin = value
 
-/**
- * Is the material the given type?
- */
-fun Material.isMaterial(type: MaterialType): Boolean {
-    val itemService = PetBlocksApi.resolve<ItemService>(ItemService::class.java)
+        if (newSkin.length > 32) {
+            val cls = Class.forName("org.bukkit.craftbukkit.VERSION.inventory.CraftMetaSkull".replace("VERSION", getServerVersion().bukkitId))
+            val real = cls.cast(currentMeta)
+            val field = real.javaClass.getDeclaredField("profile")
+            val newSkinProfile = GameProfile(UUID.randomUUID(), null)
 
-    return this == itemService.getMaterialValue<Material>(type.MinecraftNumericId)
-}
+            if (newSkin.contains("textures.minecraft.net")) {
+                if (!newSkin.startsWith("http://")) {
+                    newSkin = "http://$newSkin"
+                }
 
-/**
- * Converts the given string to a material.
- */
-fun String.toMaterial(): Material {
-    return Cache.itemService.getMaterialValue(this)
-}
+                newSkin = Base64Coder.encodeString("{textures:{SKIN:{url:\"$newSkin\"}}}")
+            }
 
-/**
- * Finds a version clazz.
- */
-fun findClazz(name: String): Class<*> {
-    return Class.forName(name.replace("VERSION", Cache.version.bukkitId))
-}
-
-/**
- * Converts the given int to a material.
- */
-fun Int.toMaterial(): Material {
-    return Cache.itemService.getMaterialValue(this)
-}
-
-/**
- * TypeName of the material.
- */
-val MaterialType.type: Material
-    get() {
-        return Cache.itemService.getMaterialValue<Material>(this.MinecraftNumericId)
+            newSkinProfile.properties.put("textures", Property("textures", newSkin))
+            field.isAccessible = true
+            field.set(real, newSkinProfile)
+            itemMeta = SkullMeta::class.java.cast(real)
+        } else if (value.isNotEmpty()) {
+            currentMeta.owner = value
+            itemMeta = currentMeta
+        }
     }
 
 /**
@@ -419,9 +364,4 @@ fun Field.removeFinalModifier() {
     val modifiersField = Field::class.java.getDeclaredField("modifiers")
     modifiersField.isAccessible = true
     modifiersField.setInt(this, this.modifiers and Modifier.FINAL.inv())
-}
-
-private object Cache {
-    val version = getServerVersion()
-    val itemService = PetBlocksApi.resolve<ItemService>(ItemService::class.java)
 }

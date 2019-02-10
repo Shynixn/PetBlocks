@@ -28,25 +28,16 @@ package com.github.shynixn.petblocks.api.business.enumeration
  * SOFTWARE.
  */
 enum class PluginDependency(
-        /**
-         * Plugin name.
-         */
-        val pluginName: String) {
+    /**
+     * Plugin name.
+     */
+    val pluginName: String
+) {
 
     /**
      * HeadDatabase plugin.
      */
     HEADDATABASE("HeadDatabase"),
-
-    /**
-     * ClearLag plugin.
-     */
-    CLEARLAG("ClearLag"),
-
-    /**
-     * WorldGuard plugin.
-     */
-    WORLDGUARD("WorldGuard"),
 
     /**
      * GriefPrevention plugin.

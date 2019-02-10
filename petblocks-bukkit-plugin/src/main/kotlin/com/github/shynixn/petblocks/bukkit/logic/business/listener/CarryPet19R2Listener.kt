@@ -1,11 +1,10 @@
 package com.github.shynixn.petblocks.bukkit.logic.business.listener
 
-import me.minebuilders.clearlag.events.EntityRemoveEvent
-import org.bukkit.entity.ArmorStand
-import org.bukkit.entity.Entity
-import org.bukkit.entity.Rabbit
+import com.github.shynixn.petblocks.api.business.service.CarryPetService
+import com.google.inject.Inject
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
+import org.bukkit.event.player.PlayerSwapHandItemsEvent
 
 /**
  * Created by Shynixn 2018.
@@ -34,34 +33,14 @@ import org.bukkit.event.Listener
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class DependencyClearLagListener : Listener {
+class CarryPet19R2Listener @Inject constructor(private val carryPetService: CarryPetService) : Listener {
     /**
-     * Gets called from clear lag when an entity gets removed.
+     * Gets called when the player swaps hand items.
      */
     @EventHandler
-    fun onEntityRemoveEvent(event: EntityRemoveEvent) {
-        for (entity in event.entityList.toTypedArray()) {
-            if (this.isPet(entity)) {
-                event.entityList.remove(entity)
-            }
+    fun onPlayerSwapItems(event: PlayerSwapHandItemsEvent) {
+        if (carryPetService.isCarryingPet(event.player)) {
+            event.isCancelled = true
         }
-    }
-
-    /**
-     * Checks if the given [entity] is a petblock pet.
-     */
-    private fun isPet(entity: Entity): Boolean {
-        if (entity is ArmorStand) {
-            val xidentifier = entity.bodyPose.z.toInt()
-            val identifier = entity.rightArmPose.x.toInt()
-
-            if (xidentifier == 2877 && identifier == 2877) {
-                return true
-            }
-        } else if (entity is Rabbit && entity.getCustomName() != null && entity.getCustomName() == "PetBlockIdentifier") {
-            return true
-        }
-
-        return false
     }
 }

@@ -2,7 +2,6 @@
 
 package com.github.shynixn.petblocks.bukkit.logic.business.service
 
-import com.github.shynixn.petblocks.api.business.annotation.Inject
 import com.github.shynixn.petblocks.api.business.enumeration.AIType
 import com.github.shynixn.petblocks.api.business.enumeration.EntityType
 import com.github.shynixn.petblocks.api.business.enumeration.Version
@@ -14,6 +13,7 @@ import com.github.shynixn.petblocks.api.persistence.entity.*
 import com.github.shynixn.petblocks.bukkit.logic.business.extension.findClazz
 import com.github.shynixn.petblocks.bukkit.logic.business.proxy.PathfinderProxyImpl
 import com.github.shynixn.petblocks.core.logic.business.proxy.AICreationProxyImpl
+import com.google.inject.Inject
 import org.bukkit.ChatColor
 import org.bukkit.GameMode
 import org.bukkit.Location
@@ -65,7 +65,6 @@ class EntityServiceImpl @Inject constructor(
 ) : EntityService {
 
     private var registered = false
-
     private val getHandleMethod = Class.forName("org.bukkit.craftbukkit.VERSION.entity.CraftLivingEntity".replace("VERSION", version.bukkitId)).getDeclaredMethod("getHandle")!!
 
     init {
@@ -116,8 +115,8 @@ class EntityServiceImpl @Inject constructor(
         this.register<AIFeeding>(AIType.FEEDING)
 
         this.register<AIFloatInWater>(AIType.FLOAT_IN_WATER) { pet, _ ->
-            findClazz("net.minecraft.server.VERSION.PathfinderGoalFloat")
-                .getDeclaredConstructor(findClazz("net.minecraft.server.VERSION.EntityInsentient"))
+            version.findClazz("net.minecraft.server.VERSION.PathfinderGoalFloat")
+                .getDeclaredConstructor(version.findClazz("net.minecraft.server.VERSION.EntityInsentient"))
                 .newInstance(getHandleMethod.invoke(pet.getHitBoxLivingEntity<LivingEntity>()))
         }
 
@@ -240,7 +239,7 @@ class EntityServiceImpl @Inject constructor(
         }
 
         return (designClazz.getDeclaredConstructor(Player::class.java, PetMeta::class.java, EntityType::class.java)
-            .newInstance(playerProxy!!.handle, petMeta, entityType) as NMSPetProxy).proxy
+            .newInstance(playerProxy.handle, petMeta, entityType) as NMSPetProxy).proxy
     }
 
     /**

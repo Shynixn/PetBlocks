@@ -1,16 +1,15 @@
 package com.github.shynixn.petblocks.bukkit.logic.business.service
 
-import com.github.shynixn.petblocks.api.business.annotation.Inject
 import com.github.shynixn.petblocks.api.business.enumeration.ChatClickAction
 import com.github.shynixn.petblocks.api.business.enumeration.ChatColor
 import com.github.shynixn.petblocks.api.business.enumeration.MaterialType
 import com.github.shynixn.petblocks.api.business.enumeration.PluginDependency
 import com.github.shynixn.petblocks.api.business.service.*
 import com.github.shynixn.petblocks.bukkit.logic.business.extension.skin
-import com.github.shynixn.petblocks.bukkit.logic.business.extension.type
 import com.github.shynixn.petblocks.bukkit.logic.business.extension.updateInventory
 import com.github.shynixn.petblocks.core.logic.business.extension.chatMessage
 import com.github.shynixn.petblocks.core.logic.business.extension.sync
+import com.google.inject.Inject
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
@@ -47,7 +46,8 @@ class DependencyHeadDatabaseServiceImpl @Inject constructor(
     private val configurationService: ConfigurationService,
     private val messageService: MessageService,
     private val petMetaService: PersistencePetMetaService,
-    private val concurrencyService: ConcurrencyService
+    private val concurrencyService: ConcurrencyService,
+    private val itemService: ItemService
 ) : DependencyHeadDatabaseService {
     private val headDatabasePlayers = HashSet<Player>()
     private var headDatabaseTitle: String? = null
@@ -130,7 +130,7 @@ class DependencyHeadDatabaseServiceImpl @Inject constructor(
             return false
         }
 
-        if (item.type != skullItemType.type || item.itemMeta == null
+        if (!itemService.hasItemStackProperties(item, skullItemType) || item.itemMeta == null
             || item.itemMeta.displayName == null || !item.itemMeta.displayName.startsWith(org.bukkit.ChatColor.BLUE.toString())
         ) {
             return false
@@ -138,14 +138,16 @@ class DependencyHeadDatabaseServiceImpl @Inject constructor(
 
         player.closeInventory()
 
-        petMetaService.getOrCreateFromPlayerUUID(player.uniqueId.toString()).thenAccept { petMeta ->
-            petMeta.skin.typeName = item.type.name
-            petMeta.skin.dataValue = item.durability.toInt()
-            petMeta.skin.owner = item.skin!!
+        val petMeta = petMetaService.getPetMetaFromPlayer(player)
 
-            val command = configurationService.findValue<String>("commands.petblock.command")
-            player.performCommand(command)
-        }
+        petMeta.skin.typeName = item.type.name
+        petMeta.skin.dataValue = item.durability.toInt()
+        petMeta.skin.owner = item.skin!!
+
+        petMetaService.save(petMeta)
+
+        val command = configurationService.findValue<String>("commands.petblock.command")
+        player.performCommand(command)
 
         sync(concurrencyService, 5L) {
             for (itemStack in player.openInventory.topInventory.contents) {

@@ -2,7 +2,6 @@
 
 package com.github.shynixn.petblocks.bukkit.logic.business.service
 
-import com.github.shynixn.petblocks.api.business.annotation.Inject
 import com.github.shynixn.petblocks.api.business.service.AIService
 import com.github.shynixn.petblocks.api.business.service.ConfigurationService
 import com.github.shynixn.petblocks.api.business.service.ItemService
@@ -10,14 +9,13 @@ import com.github.shynixn.petblocks.api.persistence.entity.GuiItem
 import com.github.shynixn.petblocks.api.persistence.entity.PetMeta
 import com.github.shynixn.petblocks.bukkit.logic.business.extension.deserialize
 import com.github.shynixn.petblocks.bukkit.logic.business.extension.deserializeToMap
-import com.github.shynixn.petblocks.bukkit.logic.business.extension.toMaterial
 import com.github.shynixn.petblocks.core.logic.business.extension.translateChatColors
 import com.github.shynixn.petblocks.core.logic.persistence.entity.GuiItemEntity
 import com.github.shynixn.petblocks.core.logic.persistence.entity.PetMetaEntity
 import com.github.shynixn.petblocks.core.logic.persistence.entity.PlayerMetaEntity
 import com.github.shynixn.petblocks.core.logic.persistence.entity.SkinEntity
+import com.google.inject.Inject
 import org.bukkit.ChatColor
-import org.bukkit.Material
 import org.bukkit.configuration.MemorySection
 import org.bukkit.inventory.ItemStack
 import org.bukkit.plugin.Plugin
@@ -125,7 +123,7 @@ class ConfigurationServiceImpl @Inject constructor(
 
             val iconDescription = (description["icon"] as MemorySection).getValues(false)
 
-            this.setItem<Int>("id", iconDescription) { value -> guiIcon.skin.typeName = value.toMaterial().name }
+            this.setItem<Int>("id", iconDescription) { value -> guiIcon.skin.typeName = value.toString() }
             this.setItem<Int>("damage", iconDescription) { value -> guiIcon.skin.dataValue = value }
             this.setItem<String>("name", iconDescription) { value -> guiIcon.displayName = value }
             this.setItem<Boolean>("unbreakable", iconDescription) { value -> guiIcon.skin.unbreakable = value }
@@ -140,7 +138,7 @@ class ConfigurationServiceImpl @Inject constructor(
                 null
             }
 
-            this.setItem<Int>("id", skinDescription) { value -> guiItem.targetSkin!!.typeName = value.toMaterial().name }
+            this.setItem<Int>("id", skinDescription) { value -> guiItem.targetSkin!!.typeName = value.toString()}
             this.setItem<Int>("damage", skinDescription) { value -> guiItem.targetSkin!!.dataValue = value }
             this.setItem<Boolean>("unbreakable", skinDescription) { value -> guiItem.targetSkin!!.unbreakable = value }
             this.setItem<String>("skin", skinDescription) { value ->
@@ -257,7 +255,7 @@ class ConfigurationServiceImpl @Inject constructor(
         val typePayload = skin["id"]
 
         val typename = if (typePayload is Int) {
-            itemService.getMaterialValue<Material>(typePayload).name
+            itemService.createItemStack(typePayload).typeName
         } else {
             typePayload as String
         }

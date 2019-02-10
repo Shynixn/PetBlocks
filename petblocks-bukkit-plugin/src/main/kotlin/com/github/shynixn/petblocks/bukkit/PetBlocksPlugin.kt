@@ -3,9 +3,6 @@
 package com.github.shynixn.petblocks.bukkit
 
 import com.github.shynixn.petblocks.api.PetBlocksApi
-import com.github.shynixn.petblocks.api.business.commandexecutor.EditPetCommandExecutor
-import com.github.shynixn.petblocks.api.business.commandexecutor.PlayerPetActionCommandExecutor
-import com.github.shynixn.petblocks.api.business.commandexecutor.ReloadCommandExecutor
 import com.github.shynixn.petblocks.api.business.enumeration.PluginDependency
 import com.github.shynixn.petblocks.api.business.enumeration.Version
 import com.github.shynixn.petblocks.api.business.proxy.PluginProxy
@@ -13,13 +10,15 @@ import com.github.shynixn.petblocks.api.business.service.*
 import com.github.shynixn.petblocks.bukkit.logic.business.extension.getServerVersion
 import com.github.shynixn.petblocks.bukkit.logic.business.extension.yamlMap
 import com.github.shynixn.petblocks.bukkit.logic.business.listener.*
+import com.github.shynixn.petblocks.core.logic.business.commandexecutor.EditPetCommandExecutorImpl
+import com.github.shynixn.petblocks.core.logic.business.commandexecutor.PlayerPetActionCommandExecutorImpl
+import com.github.shynixn.petblocks.core.logic.business.commandexecutor.ReloadCommandExecutorImpl
 import com.google.inject.Guice
 import com.google.inject.Injector
 import org.apache.commons.io.IOUtils
 import org.bstats.bukkit.Metrics
 import org.bukkit.Bukkit
 import org.bukkit.ChatColor
-import org.bukkit.entity.Player
 import org.bukkit.plugin.java.JavaPlugin
 import java.io.File
 import java.io.FileOutputStream
@@ -102,17 +101,13 @@ class PetBlocksPlugin : JavaPlugin(), PluginProxy {
 
         // Register Listener
         Bukkit.getPluginManager().registerEvents(resolve(CarryPetCommonListener::class.java), this)
-        Bukkit.getPluginManager().registerEvents(resolve(CombatPetListener::class.java), this)
+        Bukkit.getPluginManager().registerEvents(resolve(DamagePetListener::class.java), this)
         Bukkit.getPluginManager().registerEvents(resolve(FeedingPetListener::class.java), this)
         Bukkit.getPluginManager().registerEvents(resolve(InventoryListener::class.java), this)
         Bukkit.getPluginManager().registerEvents(resolve(PetListener::class.java), this)
 
         if (getServerVersion().isVersionSameOrGreaterThan(Version.VERSION_1_9_R2)) {
-            Bukkit.getPluginManager().registerEvents(resolve(CarryPet19R1Listener::class.java), this)
-        }
-
-        if (dependencyService.isInstalled(PluginDependency.CLEARLAG)) {
-            Bukkit.getPluginManager().registerEvents(resolve(DependencyClearLagListener::class.java), this)
+            Bukkit.getPluginManager().registerEvents(resolve(CarryPet19R2Listener::class.java), this)
         }
 
         if (dependencyService.isInstalled(PluginDependency.HEADDATABASE)) {
@@ -120,9 +115,9 @@ class PetBlocksPlugin : JavaPlugin(), PluginProxy {
         }
 
         // Register CommandExecutor
-        commandService.registerCommandExecutor(this.config.get("commands.petblock").yamlMap(), this.resolve(PlayerPetActionCommandExecutor::class.java))
-        commandService.registerCommandExecutor(this.config.get("commands.petblocks").yamlMap(), this.resolve(EditPetCommandExecutor::class.java))
-        commandService.registerCommandExecutor("petblockreload", this.resolve(ReloadCommandExecutor::class.java))
+        commandService.registerCommandExecutor(this.config.get("commands.petblock").yamlMap(), this.resolve(PlayerPetActionCommandExecutorImpl::class.java))
+        commandService.registerCommandExecutor(this.config.get("commands.petblocks").yamlMap(), this.resolve(EditPetCommandExecutorImpl::class.java))
+        commandService.registerCommandExecutor("petblockreload", this.resolve(ReloadCommandExecutorImpl::class.java))
 
         if (config.getBoolean("metrics")) {
             val metrics = Metrics(this)
@@ -149,6 +144,20 @@ class PetBlocksPlugin : JavaPlugin(), PluginProxy {
      */
     override fun onDisable() {
         resolve<EntityRegistrationService>(EntityRegistrationService::class.java).clearResources()
+    }
+
+    /**
+     * Starts the plugin.
+     */
+    private fun startPlugin() {
+        try {
+            val method = PetBlocksApi::class.java.getDeclaredMethod("initializePetBlocks", PluginProxy::class.java)
+            method.isAccessible = true
+            method.invoke(PetBlocksApi, this)
+            logger.log(Level.INFO, "Using NMS Connector " + getServerVersion().bukkitId + ".")
+        } catch (e: Exception) {
+            logger.log(Level.WARNING, "Failed to enable PetBlocks.", e)
+        }
     }
 
     /**
@@ -204,20 +213,6 @@ class PetBlocksPlugin : JavaPlugin(), PluginProxy {
             return Class.forName("com.github.shynixn.petblocks.core.logic.persistence.entity.$entityName").newInstance() as E
         } catch (e: Exception) {
             throw IllegalArgumentException("Entity could not be created.", e)
-        }
-    }
-
-    /**
-     * Starts the plugin.
-     */
-    private fun startPlugin() {
-        try {
-            val method = PetBlocksApi::class.java.getDeclaredMethod("initializePetBlocks", PluginProxy::class.java)
-            method.isAccessible = true
-            method.invoke(PetBlocksApi, this)
-            logger.log(Level.INFO, "Using NMS Connector " + getServerVersion().bukkitId + ".")
-        } catch (e: Exception) {
-            logger.log(Level.WARNING, "Failed to enable PetBlocks.", e)
         }
     }
 }

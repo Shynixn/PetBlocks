@@ -1,9 +1,7 @@
 package com.github.shynixn.petblocks.bukkit.logic.business.service
 
-import com.github.shynixn.petblocks.api.business.annotation.Inject
-import com.github.shynixn.petblocks.api.business.proxy.CompletableFutureProxy
 import com.github.shynixn.petblocks.api.business.service.ConcurrencyService
-import com.github.shynixn.petblocks.core.jvm.logic.business.proxy.CompletableFutureProxyImpl
+import com.google.inject.Inject
 import org.bukkit.plugin.Plugin
 
 /**
