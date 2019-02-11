@@ -465,9 +465,9 @@ class GUIServiceImpl @Inject constructor(
         }
 
         val permissionMessage = if (hasPermission) {
-            configurationService.findValue("messages.perms-ico-yes")
+            configurationService.findValue("messages.has-permission")
         } else {
-            configurationService.findValue<String>("messages.perms-ico-no")
+            configurationService.findValue<String>("messages.has-no-permission")
         }
 
         val itemStack = itemService.createItemStack(guiIcon.skin.typeName, guiIcon.skin.dataValue).build<ItemStack>()

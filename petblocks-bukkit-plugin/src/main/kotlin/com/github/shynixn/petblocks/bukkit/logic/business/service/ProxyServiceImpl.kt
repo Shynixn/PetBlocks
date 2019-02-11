@@ -51,15 +51,17 @@ class ProxyServiceImpl : ProxyService {
      * Throws a [IllegalArgumentException] if the proxy could not be generated.
      */
     override fun <P> findPlayerProxyObject(instance: P): com.github.shynixn.petblocks.api.business.proxy.PlayerProxy {
-        if (instance !is Player) {
-            throw IllegalArgumentException("Instance has to be a BukkitPlayer!")
+        val mInstance = (if(instance is PlayerProxy){
+            instance.handle
+        }else{
+            instance
+        }) as? Player ?: throw IllegalArgumentException("Instance has to be a BukkitPlayer!")
+
+        if (!playerCache.containsKey(mInstance)) {
+            playerCache[mInstance] = PlayerProxyImpl(mInstance)
         }
 
-        if (!playerCache.containsKey(instance)) {
-            playerCache[instance] = PlayerProxyImpl(instance)
-        }
-
-        return playerCache[instance]!!
+        return playerCache[mInstance]!!
     }
 
     /**

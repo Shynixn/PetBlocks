@@ -120,7 +120,7 @@ class CombatPetServiceImpl @Inject constructor(
     /**
      * Clears the allocated resources from the given [player].
      */
-    override fun <P> close(player: P) {
+    override fun <P> clearResources(player: P) {
         if (player is Any && fleeCache.contains(player)) {
             fleeCache.remove(player)
         }

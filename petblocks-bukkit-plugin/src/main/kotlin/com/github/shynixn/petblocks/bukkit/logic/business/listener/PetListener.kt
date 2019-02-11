@@ -12,6 +12,7 @@ import com.github.shynixn.petblocks.bukkit.logic.business.extension.teleportUnsa
 import com.github.shynixn.petblocks.core.logic.business.extension.sync
 import com.google.inject.Inject
 import org.bukkit.Bukkit
+import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.entity.EntityInteractEvent
@@ -63,26 +64,11 @@ class PetListener @Inject constructor(
      */
     @EventHandler
     fun onPlayerJoinEvent(event: PlayerJoinEvent) {
-        sync(concurrencyService, joinCooldown) {
-            val player = event.player
-
-            if (player.isOnline && player.world != null) {
-                persistencePetMetaService.refreshPetMetaFromRepository(player).thenAccept { petMeta ->
-                    val optPet: PetProxy? = if (petMeta.enabled) {
-                        val pet = petService.getOrSpawnPetFromPlayer(player)
-
-                        if (pet.isPresent) {
-                            pet.get()
-                        } else {
-                            null
-                        }
-                    } else {
-                        null
-                    }
-
-                    val joinEvent = PetBlocksLoginEvent(player, petMeta, optPet)
-                    Bukkit.getPluginManager().callEvent(joinEvent)
-                }
+        if (event.joinMessage != null && event.joinMessage == "PetBlocksRunTime") {
+            this.loadPetBlocks(event.player)
+        } else {
+            sync(concurrencyService, joinCooldown) {
+                this.loadPetBlocks(event.player)
             }
         }
     }
@@ -92,7 +78,7 @@ class PetListener @Inject constructor(
      */
     @EventHandler
     fun onPlayerQuitEvent(event: PlayerQuitEvent) {
-        persistencePetMetaService.close(event.player)
+        persistencePetMetaService.clearResources(event.player)
 
         if (petService.hasPet(event.player)) {
             petService.getOrSpawnPetFromPlayer(event.player).get().remove()
@@ -193,7 +179,7 @@ class PetListener @Inject constructor(
      */
     @EventHandler
     fun onPlayerTeleportEvent(event: PlayerTeleportEvent) {
-        if (!petService.hasPet(event.player.uniqueId.toString())) {
+        if (!petService.hasPet(event.player)) {
             return
         }
 
@@ -225,5 +211,29 @@ class PetListener @Inject constructor(
 
         event.isCancelled = true
         event.player.teleportUnsafe(event.to)
+    }
+
+    /**
+     * Loads the PetBlocks data.
+     */
+    private fun loadPetBlocks(player: Player) {
+        if (player.isOnline && player.world != null) {
+            persistencePetMetaService.refreshPetMetaFromRepository(player).thenAccept { petMeta ->
+                val optPet: PetProxy? = if (petMeta.enabled) {
+                    val pet = petService.getOrSpawnPetFromPlayer(player)
+
+                    if (pet.isPresent) {
+                        pet.get()
+                    } else {
+                        null
+                    }
+                } else {
+                    null
+                }
+
+                val joinEvent = PetBlocksLoginEvent(player, petMeta, optPet)
+                Bukkit.getPluginManager().callEvent(joinEvent)
+            }
+        }
     }
 }

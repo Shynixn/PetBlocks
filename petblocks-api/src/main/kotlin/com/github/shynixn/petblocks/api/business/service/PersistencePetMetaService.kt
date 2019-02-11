@@ -40,7 +40,7 @@ interface PersistencePetMetaService {
     /**
      * Clears the cache of the player and saves the allocated resources.
      */
-    fun <P> close(player: P)
+    fun <P> clearResources(player: P)
 
     /**
      * Gets the [PetMeta] from the player.

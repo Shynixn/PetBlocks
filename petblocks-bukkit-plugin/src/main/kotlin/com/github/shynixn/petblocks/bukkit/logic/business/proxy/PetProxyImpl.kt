@@ -54,7 +54,7 @@ import org.bukkit.util.Vector
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class PetProxyImpl(override val meta: PetMeta, private val design: ArmorStand, private val nmsProxy: NMSPetProxy, private val hitBox: LivingEntity, private val owner: Player) :
+class PetProxyImpl(override val meta: PetMeta, private val design: ArmorStand, private val hitBox: LivingEntity, private val owner: Player) :
     PetProxy, Runnable {
 
     var teleportTarget: Location? = null
@@ -130,12 +130,12 @@ class PetProxyImpl(override val meta: PetMeta, private val design: ArmorStand, p
             return
         }
 
-       // val event = PetWearEvent(false, this)
-      //  Bukkit.getPluginManager().callEvent(event)
+        // val event = PetWearEvent(false, this)
+        //  Bukkit.getPluginManager().callEvent(event)
 
-     //   if (event.isCancelled) {
-      //      return
-      //  }
+        //   if (event.isCancelled) {
+        //      return
+        //  }
 
         design.isCustomNameVisible = false
         //designNbtChange["Marker"] = true
@@ -206,12 +206,12 @@ class PetProxyImpl(override val meta: PetMeta, private val design: ArmorStand, p
             return
         }
 
-      //  val event = PetRideEvent(false, this)
-      //  Bukkit.getPluginManager().callEvent(event)
+        //  val event = PetRideEvent(false, this)
+        //  Bukkit.getPluginManager().callEvent(event)
 
-      //  if (event.isCancelled) {
-      //      return
-      //  }
+        //  if (event.isCancelled) {
+        //      return
+        //  }
 
         design.velocity = Vector(0, 1, 0)
         design.passenger = owner
@@ -222,16 +222,16 @@ class PetProxyImpl(override val meta: PetMeta, private val design: ArmorStand, p
      * Stops the current target riding the pet.
      */
     fun stopRiding() {
-   /*     if (owner.passenger != null) {
-            return
-        }
+        /*     if (owner.passenger != null) {
+                 return
+             }
 
-        val event = PetRideEvent(true, this)
-        Bukkit.getPluginManager().callEvent(event)
+             val event = PetRideEvent(true, this)
+             Bukkit.getPluginManager().callEvent(event)
 
-        if (event.isCancelled) {
-            return
-        }*/
+             if (event.isCancelled) {
+                 return
+             }*/
 
         owner.eject()
     }

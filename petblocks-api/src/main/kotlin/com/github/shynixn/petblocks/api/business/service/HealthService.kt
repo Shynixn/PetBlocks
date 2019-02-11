@@ -46,5 +46,5 @@ interface HealthService {
     /**
      * Clears the allocated resources from the given [player].
      */
-    fun <P> close(player: P)
+    fun <P> clearResources(player: P)
 }

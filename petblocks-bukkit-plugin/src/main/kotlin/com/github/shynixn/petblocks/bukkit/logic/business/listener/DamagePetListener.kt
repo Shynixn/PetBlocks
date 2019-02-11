@@ -90,7 +90,7 @@ class DamagePetListener @Inject constructor(private val petService: PetService, 
      */
     @EventHandler
     fun onPlayerQuitEvent(event: PlayerQuitEvent) {
-        healthService.close(event.player)
-        combatPetService.close(event.player)
+        healthService.clearResources(event.player)
+        combatPetService.clearResources(event.player)
     }
 }

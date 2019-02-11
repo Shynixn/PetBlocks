@@ -36,14 +36,11 @@ import org.bukkit.event.entity.CreatureSpawnEvent
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class NMSPet(world: World) : EntityCreature(EntityTypes.RABBIT, world) {
+class NMSPet(petDesign: NMSPetArmorstand, location: Location) : EntityCreature(EntityTypes.RABBIT, (location.world as CraftWorld).handle) {
     private var petDesign: NMSPetArmorstand? = null
     private var pathfinderCounter = 0
 
-    /**
-     * Additional override constructor.
-     */
-    constructor(petDesign: NMSPetArmorstand, location: Location) : this((location.world as CraftWorld).handle) {
+    init {
         this.petDesign = petDesign
         this.isSilent = true
 

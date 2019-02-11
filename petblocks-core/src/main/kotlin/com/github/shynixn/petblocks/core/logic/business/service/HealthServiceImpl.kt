@@ -140,7 +140,7 @@ class HealthServiceImpl @Inject constructor(
     /**
      * Clears the allocated resources from the given [player].
      */
-    override fun <P> close(player: P) {
+    override fun <P> clearResources(player: P) {
         if (player is Any && regainingPlayers.contains(player)) {
             regainingPlayers.remove(player)
         }

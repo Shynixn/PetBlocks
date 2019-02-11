@@ -1,6 +1,5 @@
 package com.github.shynixn.petblocks.bukkit.logic.business.nms.v1_13_R2
 
-import com.github.shynixn.petblocks.api.business.enumeration.EntityType
 import com.github.shynixn.petblocks.api.business.proxy.NMSPetProxy
 import com.github.shynixn.petblocks.api.persistence.entity.PetMeta
 import com.github.shynixn.petblocks.bukkit.logic.business.proxy.PetProxyImpl
@@ -39,7 +38,7 @@ import java.lang.reflect.Field
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class NMSPetArmorstand(owner: Player, val petMeta: PetMeta, entityType: EntityType) : EntityArmorStand((owner.location.world as CraftWorld).handle), NMSPetProxy {
+class NMSPetArmorstand(owner: Player, val petMeta: PetMeta) : EntityArmorStand((owner.location.world as CraftWorld).handle), NMSPetProxy {
     private var internalProxy: PetProxyImpl? = null
     private var jumpingField: Field = EntityLiving::class.java.getDeclaredField("bg")
     private var hitBox: NMSPet
@@ -60,13 +59,8 @@ class NMSPetArmorstand(owner: Player, val petMeta: PetMeta, entityType: EntityTy
         this.setPositionRotation(location.x, location.y, location.z, location.yaw, location.pitch)
         mcWorld.addEntity(this, CreatureSpawnEvent.SpawnReason.CUSTOM)
 
-        hitBox = if (entityType == EntityType.RABBIT) {
-            NMSPet(this, location)
-        } else {
-            NMSPet(this, location)
-        }
-
-        internalProxy = PetProxyImpl(petMeta, this.bukkitEntity as ArmorStand, this, hitBox.bukkitEntity as LivingEntity, owner)
+        hitBox = NMSPet(this, location)
+        internalProxy = PetProxyImpl(petMeta, this.bukkitEntity as ArmorStand, hitBox.bukkitEntity as LivingEntity, owner)
 
         val compound = NBTTagCompound()
         compound.setBoolean("invulnerable", true)

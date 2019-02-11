@@ -64,7 +64,7 @@ class PersistencePetMetaServiceImpl @Inject constructor(
      * Clears the cache of the player and saves the allocated resources.
      * Should only be called once a player leaves the server.
      */
-    override fun <P> close(player: P) {
+    override fun <P> clearResources(player: P) {
         val playerProxy = proxyService.findPlayerProxyObject(player)
 
         if (!cache.containsKey(playerProxy.uniqueId)) {
@@ -83,7 +83,7 @@ class PersistencePetMetaServiceImpl @Inject constructor(
         val playerProxy = proxyService.findPlayerProxyObject(player)
 
         if (!cache.containsKey(playerProxy.uniqueId)) {
-            throw IllegalArgumentException("PetMeta is in an invalid State!")
+            throw IllegalArgumentException("PetMeta is in an invalid state!")
         }
 
         return cache[playerProxy.uniqueId]!!

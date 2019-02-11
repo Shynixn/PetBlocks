@@ -5,6 +5,7 @@ package com.github.shynixn.petblocks.bukkit
 import com.github.shynixn.petblocks.api.PetBlocksApi
 import com.github.shynixn.petblocks.api.business.enumeration.PluginDependency
 import com.github.shynixn.petblocks.api.business.enumeration.Version
+import com.github.shynixn.petblocks.api.business.proxy.EntityPetProxy
 import com.github.shynixn.petblocks.api.business.proxy.PluginProxy
 import com.github.shynixn.petblocks.api.business.service.*
 import com.github.shynixn.petblocks.bukkit.logic.business.extension.getServerVersion
@@ -19,6 +20,9 @@ import org.apache.commons.io.IOUtils
 import org.bstats.bukkit.Metrics
 import org.bukkit.Bukkit
 import org.bukkit.ChatColor
+import org.bukkit.entity.LivingEntity
+import org.bukkit.entity.Player
+import org.bukkit.event.player.PlayerJoinEvent
 import org.bukkit.plugin.java.JavaPlugin
 import java.io.File
 import java.io.FileOutputStream
@@ -157,6 +161,29 @@ class PetBlocksPlugin : JavaPlugin(), PluginProxy {
      */
     override fun onDisable() {
         resolve<EntityRegistrationService>(EntityRegistrationService::class.java).clearResources()
+
+        for (world in Bukkit.getWorlds()) {
+            for (player in world.players) {
+                resolve<DependencyHeadDatabaseService>(DependencyHeadDatabaseService::class.java).clearResources(player)
+                resolve<GUIService>(GUIService::class.java).cleanResources(player)
+                resolve<ProxyService>(ProxyService::class.java).cleanResources(player)
+                resolve<CarryPetService>(CarryPetService::class.java).clearResources(player)
+                resolve<CombatPetService>(CombatPetService::class.java).clearResources(player)
+                resolve<HealthService>(HealthService::class.java).clearResources(player)
+                resolve<PersistencePetMetaService>(PersistencePetMetaService::class.java).clearResources(player)
+
+                val petService = resolve<PetService>(PetService::class.java)
+
+                if (petService.hasPet(player)) {
+                    val pet = petService.getOrSpawnPetFromPlayer(player).get()
+
+                    pet.getHitBoxLivingEntity<EntityPetProxy>().deleteFromWorld()
+                    pet.getHeadArmorstand<EntityPetProxy>().deleteFromWorld()
+
+                    pet.remove()
+                }
+            }
+        }
     }
 
     /**
@@ -167,6 +194,13 @@ class PetBlocksPlugin : JavaPlugin(), PluginProxy {
             val method = PetBlocksApi::class.java.getDeclaredMethod("initializePetBlocks", PluginProxy::class.java)
             method.isAccessible = true
             method.invoke(PetBlocksApi, this)
+
+            for (world in Bukkit.getWorlds()) {
+                for (player in world.players) {
+                    resolve<PetListener>(PetListener::class.java).onPlayerJoinEvent(PlayerJoinEvent(player, "PetBlocksRunTime"))
+                }
+            }
+
             logger.log(Level.INFO, "Using NMS Connector " + getServerVersion().bukkitId + ".")
         } catch (e: Exception) {
             logger.log(Level.WARNING, "Failed to enable PetBlocks.", e)

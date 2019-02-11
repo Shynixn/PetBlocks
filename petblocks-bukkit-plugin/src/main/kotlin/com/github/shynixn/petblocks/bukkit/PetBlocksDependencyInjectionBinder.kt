@@ -8,6 +8,7 @@ import com.github.shynixn.petblocks.api.business.service.*
 import com.github.shynixn.petblocks.api.persistence.context.SqlDbContext
 import com.github.shynixn.petblocks.api.persistence.repository.PetMetaRepository
 import com.github.shynixn.petblocks.bukkit.logic.business.extension.getServerVersion
+import com.github.shynixn.petblocks.bukkit.logic.business.listener.PetListener
 import com.github.shynixn.petblocks.bukkit.logic.business.proxy.SqlProxyImpl
 import com.github.shynixn.petblocks.bukkit.logic.business.service.*
 import com.github.shynixn.petblocks.core.jvm.logic.persistence.service.LoggingUtilServiceImpl
@@ -77,6 +78,9 @@ class PetBlocksDependencyInjectionBinder(private val plugin: Plugin) : AbstractM
         bind(ReloadCommandExecutorImpl::class.java).`in`(Scopes.SINGLETON)
         bind(PlayerPetActionCommandExecutorImpl::class.java).`in`(Scopes.SINGLETON)
         bind(EditPetCommandExecutorImpl::class.java).`in`(Scopes.SINGLETON)
+
+        // Listener
+        bind(PetListener::class.java).`in`(Scopes.SINGLETON)
 
         // Contexts
         bind(SqlConnectionPoolProxy::class.java).to(SqlProxyImpl::class.java).`in`(Scopes.SINGLETON)

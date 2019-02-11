@@ -104,7 +104,7 @@ class EntityServiceImpl @Inject constructor(
 
             pathfinder.onExecute = {
                 if (Math.random() > 0.90) {
-                    soundService.playSound(hitBox.location, aiBase.sound, hitBox.world.players)
+                    soundService.playSound(hitBox.location, aiBase.sound, owner)
                 }
             }
 
@@ -203,13 +203,13 @@ class EntityServiceImpl @Inject constructor(
                     val lore = boots.itemMeta.lore[0]
 
                     if (ChatColor.stripColor(lore) == "PetBlocks") {
-                        if (entity is EntityPetProxy) {
-                            entity.deleteFromWorld()
-                        } else {
+                        try {
+                            (entity as Any).javaClass.getDeclaredMethod("deleteFromWorld").invoke(entity)
+                        }catch (e : Exception){
                             entity.remove()
                         }
 
-                        plugin.logger.log(Level.INFO, "Removed invalid pet in chunk.")
+                        plugin.logger.log(Level.INFO, "Removed invalid pet in chunk. Fixed Wrong 'Wrong location'.")
                     }
                 }
             }
@@ -223,23 +223,10 @@ class EntityServiceImpl @Inject constructor(
         this.registerEntitiesOnServer()
 
         val playerProxy = proxyService.findPlayerProxyObjectFromUUID(petMeta.playerMeta.uuid)
-        val designClazz = Class.forName("com.github.shynixn.petblocks.bukkit.logic.business.nms.VERSION.PetDesign".replace("VERSION", version.bukkitId))
+        val designClazz = Class.forName("com.github.shynixn.petblocks.bukkit.logic.business.nms.VERSION.NMSPetArmorstand".replace("VERSION", version.bukkitId))
 
-        var entityType = EntityType.RABBIT
-
-        for (aiGoal in petMeta.aiGoals) {
-            if (aiGoal is AIHopping) {
-                break
-            }
-
-            if (aiGoal is AIWalking) {
-                entityType = EntityType.VILLAGER
-                break
-            }
-        }
-
-        return (designClazz.getDeclaredConstructor(Player::class.java, PetMeta::class.java, EntityType::class.java)
-            .newInstance(playerProxy.handle, petMeta, entityType) as NMSPetProxy).proxy
+        return (designClazz.getDeclaredConstructor(Player::class.java, PetMeta::class.java)
+            .newInstance(playerProxy.handle, petMeta) as NMSPetProxy).proxy
     }
 
     /**
@@ -251,7 +238,7 @@ class EntityServiceImpl @Inject constructor(
             return true
         }
 
-        val rabbitClazz = Class.forName("com.github.shynixn.petblocks.bukkit.logic.business.nms.VERSION.PetRabbitHitBox".replace("VERSION", version.bukkitId))
+        val rabbitClazz = Class.forName("com.github.shynixn.petblocks.bukkit.logic.business.nms.VERSION.NMSPet".replace("VERSION", version.bukkitId))
         entityRegistrationService.register(rabbitClazz, EntityType.RABBIT)
 
         registered = true
