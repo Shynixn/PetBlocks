@@ -46,13 +46,13 @@ class PlayerPetActionCommandExecutorImpl @Inject constructor(
     override fun <P> onPlayerExecuteCommand(player: P, args: Array<out String>): Boolean {
         val playerProxy = proxyService.findPlayerProxyObject(player)
 
-        if (args.size == 1 && args[0].equals("call", true)) {
+        if (args.size == 1 && args[0].equals("call", true) && playerProxy.hasPermission(Permission.CALL)) {
             petActionService.callPet(player)
-        } else if (args.size == 1 && args[0].equals("toggle", true)) {
+        } else if (args.size == 1 && args[0].equals("toggle", true) && playerProxy.hasPermission(Permission.TOGGLE)) {
             petActionService.togglePet(player)
-        } else if (args.size >= 2 && args[0].equals("rename", true) && playerProxy.hasPermission(Permission.ACTION_RENAME)) {
+        } else if (args.size >= 2 && args[0].equals("rename", true) && playerProxy.hasPermission(Permission.RENAME)) {
             petActionService.renamePet(player, mergeArgs(args))
-        } else if (args.size == 2 && args[0].equals("skin", true) && playerProxy.hasPermission(Permission.ACTION_CUSTOMSKULL)) {
+        } else if (args.size == 2 && args[0].equals("skin", true) && playerProxy.hasPermission(Permission.CUSTOMHEAD)) {
             petActionService.changePetSkin(player, args[1])
         } else {
             guiService.open(player)

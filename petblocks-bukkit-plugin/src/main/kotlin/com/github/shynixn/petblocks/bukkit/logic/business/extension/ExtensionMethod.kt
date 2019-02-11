@@ -235,23 +235,6 @@ var ItemStack.displayName: String
     }
 
 /**
- * Checks if this player has got the given [permission].
- */
-fun Player.hasPermission(permission: Permission, vararg placeholder: String): Boolean {
-    for (s in permission.getPermission()) {
-        var perm = s
-        for (i in placeholder.indices) {
-            val plc = "$$i"
-            perm = perm.replace(plc, placeholder[i])
-        }
-        if (player.hasPermission(perm)) {
-            return true
-        }
-    }
-    return false
-}
-
-/**
  * Sets the itemstack lore.
  */
 fun ItemStack.setLore(lore: List<String>): ItemStack {

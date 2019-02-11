@@ -28,7 +28,7 @@ metrics: true
 
 ############################
 
-config-version: 1.0
+config-version: 1
 
 ############################
 
@@ -68,13 +68,6 @@ commands:
     description: Opens the pet GUI.
     permission: petblocks.command.use
     permission-message: You don't have permission
-  petblocks:
-    enabled: true
-    command: petblocks
-    useage: /<command>
-    description: Command to configure pets.
-    permission: petblocks.command.admin
-    permission-message: You don't have permission
 
 ############################
 
@@ -86,43 +79,42 @@ commands:
 
 messages:
   prefix: '&2[&aPetBlocks&2]&a '
-  default-petname: ":player's pet"
   gui-title: 'PetBlocks'
-  naming-suggest-prefix: ''
-  naming-suggest-clickable: '&e<<Click here>> '
-  naming-suggest-suffix: '&ato rename your pet.'
-  naming-suggest-hover: 'Click me to rename your pet.'
-  naming-success: '&aYou changed the name of your pet.'
-  naming-error: '&cYou cannot name your pet like that.'
-  skullnaming-suggest-prefix: ''
-  skullnaming-suggest-clickable: '&e<<Click here>> '
-  skullnaming-suggest-suffix: '&ato change the skin of your pet.'
-  skullnaming-suggest-hover: 'Click me to change the skin of your pet.'
-  skullnaming-success: '&aYou changed the skin of your pet.'
-  skullnaming-error: '&eThis skin is invalid.'
+  rename-suggest-prefix: ''
+  rename-suggest-clickable: '&e<<Click here>> '
+  rename-suggest-suffix: '&ato rename your pet.'
+  rename-suggest-hover: 'Click me to rename your pet.'
+  rename-success: '&aYou changed the name of your pet.'
+  rename-error: '&cYou cannot name your pet like that.'
+  customhead-suggest-prefix: ''
+  customhead-suggest-clickable: '&e<<Click here>> '
+  customhead-suggest-suffix: '&ato change the skin of your pet.'
+  customhead-suggest-hover: 'Click me to change the skin of your pet.'
+  customhead-success: '&aYou changed the skin of your pet.'
+  customhead-error: '&eThis skin is invalid.'
   called-success: '&aYou have called your pet.'
-  toggle-spawn: '&aYour pet has spawned.'
-  toggle-despawn: '&aYour pet has despawned.'
-  perms-ico-yes: '&aYes'
-  perms-ico-no: '&cNo'
-  no-perms: '&cYou do not have permissions.'
+  called-error: '&cYour pet cannot be called here.'
+  despawn: '&aYour pet has despawned.'
+  has-permission: '&aYes'
+  has-no-permission: '&cNo'
+  no-permission: '&cYou do not have permissions.'
 
-  ############################
+############################
 
-  # Global settings
+# Global settings
 
-  # These are global settings which belong to the whole PetBlocks plugin without being specific to a single pet.
+# These are global settings which belong to the whole PetBlocks plugin without being specific to a single pet.
 
-  # Please take a look into the official documentation mentioned at the top of this file if you need an explanation for all values.
+# Please take a look into the official documentation mentioned at the top of this file if you need an explanation for all values.
 
-  ############################
+############################
 
 global-configuration:
   respawn-delay: 4
   teleport-delay: 0
   teleport-fall: true
-  flying-wall-colliding: true
-  apply-pet-on-spawn: false
+  fly-wall-colision: true
+  apply-pet-on-first-spawn: false
   overwrite-previous-pet: false
   sounds-other-players: true
   particles-other-players: true
@@ -228,28 +220,6 @@ world:
 
 ############################
 
-# Region settings
-
-# These settings are for the WorldGuard plugin to allow spawning or deny spawning pets in certain regions.
-# If you do not have WorldGuard installed, you can ignore these settings.
-
-# region-excluded: Add regions where the pets should not be able to spawn.
-# (When 'all' is added to excluded all regions are disabled for spawning except the added regions to included)
-# region-included: Add regions where the pets should be able to spawn.
-# (When 'all' is added to included all regions are enabled for spawning except the added regions to excluded)
-
-# DO NOT PUT 'all' into both included and excluded!
-
-############################
-
-region:
-  excluded:
-  - ''
-  included:
-  - 'all'
-
-############################
-
 # Static GUI settings.
 
 # These settings are global settings for the gui which do not get dynamically parsed.
@@ -314,7 +284,6 @@ gui:
       row: 2
       col: 2
       script: 'open-page gui.wardrobe'
-      permission: 'open.wardrobe'
       icon:
         id: 397
         damage: 3
@@ -346,8 +315,7 @@ gui:
       row: 5
       col: 2
       script: 'executing action call-pet'
-      hidden-when-no-permission: true
-      permission: 'call.pet'
+      permission: 'petblocks.action.call'
       icon:
         id: 420
         name: '&2&lCall'
@@ -367,6 +335,7 @@ gui:
     hat-pet:
       row: 1
       col: 7
+      permission: 'petblocks.action.ride'
       icon:
         id: 397
         damage: 3
@@ -377,6 +346,7 @@ gui:
     ride-pet:
       row: 2
       col: 9
+      permission: 'petblocks.action.ride'
       icon:
         id: 329
         damage: 0
@@ -387,12 +357,23 @@ gui:
       row: 5
       col: 7
       script: 'print-rename-message'
+      permission: 'petblocks.action.rename'
       icon:
         id: 421
         damage: 0
         name: '&6&lRename'
         lore:
         - '&7Change the name of your pet.'
+    particles-enabled:
+      row: 6
+      col: 9
+      icon:
+        id: 397
+        damage: 3
+        skin: 'eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNDFiYzUwZDUyYTJhMmNkYTgxMjAzMWQxMTdmNWZkMDlmOGYwMGRlZWEyNjcxOGZmMTVmNTEyMzE3YjgzNjhmNiJ9fX0='
+        name: '&c&lPet particles enabled'
+        lore:
+        - '&7Click to disable the particles of your pet.'
     particles-disabled:
       row: 6
       col: 9
@@ -498,6 +479,7 @@ gui:
       row: 5
       col: 8
       script: 'print-custom-skin-message'
+      permission: 'petblocks.action.customhead'
       icon:
         id: 397
         damage: 3

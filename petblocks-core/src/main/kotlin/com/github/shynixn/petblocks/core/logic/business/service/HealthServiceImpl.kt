@@ -36,9 +36,9 @@ import com.google.inject.Inject
  * SOFTWARE.
  */
 class HealthServiceImpl @Inject constructor(
+    concurrencyService: ConcurrencyService,
     private val persistencePetMetaService: PersistencePetMetaService,
     private val loggingService: LoggingService,
-    private val concurrencyService: ConcurrencyService,
     private val proxyService: ProxyService
 ) : HealthService, Runnable {
     private val regainingPlayers = HashSet<Any>()
@@ -133,7 +133,7 @@ class HealthServiceImpl @Inject constructor(
             return
         }
 
-        val playerProxy = proxyService.findPlayerProxyObjectFromUUID(petMeta.playerMeta.uuid)!!
+        val playerProxy = proxyService.findPlayerProxyObjectFromUUID(petMeta.playerMeta.uuid)
         regainingPlayers.add(playerProxy.handle)
     }
 

@@ -8,36 +8,35 @@ Java
 
 Java 8, Java 9, Java 10 or Java 11 can be used to run PetBlocks.
 
-Spigot/CraftBukkit/Sponge/Bedrock
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Spigot/CraftBukkit
+~~~~~~~~~~~~~~~~~~
 
-* Spigot *(1.8.0 - 1.13.1)* ✔
-* PaperSpigot *(1.8.0 - 1.13.1)* ✔
-* CraftBukkit *(1.8.0 - 1.13.1)* ✔
-* SpongeVanilla *(1.12.0 - 1.12.2)* ✔
-* SpongeForge *(1.12.0 - 1.12.2)* ✔
+* Spigot *(1.8.0 - 1.13.2)* ✔
+* PaperSpigot *(1.8.0 - 1.13.2)* ✔
+* CraftBukkit *(1.8.0 - 1.13.2)* ✔
 * Bedrock ✘ (not compatible)
 
-.. note:: Take a look into the `FAQ section <../faq>`__ if you have
-          troubles getting the pets working on your server.
+SpongeVanilla/SpongeForge
+~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. warning::
+    PetBlocks v8.0.0 SNAPSHOTS are bukkit only.
+
+* SpongeVanilla *(1.12.0 - 1.12.2)* ✔
+* SpongeForge *(1.12.0 - 1.12.2)* ✔
+
+.. warning::
+    Sponge is still in heavy development and **not all builds** are compatible to PetBlocks.
+    Below you can find the **latest stable Sponge build** PetBlocks was tested on.
+
+.. note::
+ PetBlocks |version| was tested with the following configuration:
+
+  * Minecraft Forge **1.12.2 - 14.23.4.2705** (Server + Client)
+  * SpongeForge **1.12.2-2705-7.1.0-BETA-3361**
 
 SpongeForge
 ~~~~~~~~~~~
-
-PetBlocks |version| was tested with the following configuration:
-
-* Minecraft Forge **1.12.2 - 14.23.4.2705** (Server + Client)
-* SpongeForge **1.12.2-2705-7.1.0-BETA-3361**
-
-.. warning::  There seem to be some issues concerning compatibility with server-only entities and Forge.
-              However it is more likely that you have a more common error which can be easily fixed
-              by taking a look into the `FAQ section <../faq>`__.
-
-If you are experiencing any crashes refer to the following pages:
-
-* `PetBlocks Issue <https://github.com/Shynixn/PetBlocks/issues/134>`__
-* `Forge Forum Post <http://www.minecraftforge.net/forum/topic/64251-registering-server-only-entity-112/>`__
-* `Forge Drop of server-only entities in 1.12 <https://github.com/MinecraftForge/MinecraftForge/issues/4870>`__
 
 
 Download

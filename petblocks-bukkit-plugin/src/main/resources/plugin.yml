@@ -2,10 +2,14 @@ name: PetBlocks
 version: 8.0.0-SNAPSHOT
 author: Shynixn
 main: com.github.shynixn.petblocks.bukkit.PetBlocksPlugin
-softdepend: [WorldGuard, ClearLag]
 commands:
+  petblocks:
+    description: Command to configure pets.
+    useage: /<command>
+    permission: petblocks.admin.command.pets
+    permission-message: You don't have permission.
   petblockreload:
     description: Reloads the petblock config and lang file.
     usage: /<command>
-    permission: petblocks.command.reload
+    permission: petblocks.admin.command.reload
     permission-message: You don't have permission.

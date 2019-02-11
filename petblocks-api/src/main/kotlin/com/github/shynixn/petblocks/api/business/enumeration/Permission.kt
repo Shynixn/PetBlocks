@@ -27,35 +27,27 @@ package com.github.shynixn.petblocks.api.business.enumeration
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-enum class Permission(vararg perm: String) {
-    ALL_ENGINES("petblocks.pet.type.all", "petblocks.selection.engines.all"),
-    SINGLE_ENGINE("petblocks.pet.type.$0", "petblocks.selection.engines.$0"),
-    ALL_SIMPLEBLOCKCOSTUMES("petblocks.pet.defaultcostumes.all", "petblocks.selection.simpleblockcostumes.all"),
-    SINGLE_SIMPLEBLOCKCOSTUME("petblocks.pet.defaultcostumes.$0", "petblocks.selection.simpleblockcostumes.$0"),
-    ALL_COLOREDBLOCKCOSTUMES("petblocks.pet.colorcostumes.all", "petblocks.selection.coloredblockcostumes.all"),
-    SINGLE_COLOREDBLOCKCOSTUME("petblocks.pet.colorcostumes.$0", "petblocks.selection.coloredblockcostumes.$0"),
-    ALL_PLAYERHEADCOSTUMES("petblocks.pet.customcostumes.all", "petblocks.selection.playerheadcostumes.all"),
-    SINGLE_PLAYERHEADCOSTUME("petblocks.pet.customcostumes.$0", "petblocks.selection.playerheadcostumes.$0"),
-    ALL_MINECRAFTHEADCOSTUMES("petblocks.pet.minecraft-heads-costumes.all", "petblocks.selection.petcostumes.all"),
-    SINGLE_MINECRAFTHEADCOSTUME("petblocks.pet.minecraft-heads-costumes.$0", "petblocks.selection.petcostumes.$0"),
-    ALL_HEADDATABASECOSTUMES("petblocks.pet.head-database-costumes.all", "petblocks.selection.headdatabasecostumes.all"),
-    ALL_PARTICLES("petblocks.pet.particles.all", "petblocks.selection.particles.all"),
-    SINGLE_PARTICLE("petblocks.pet.particles.$0", "petblocks.selection.particles.$0"),
-
-    ACTION_RENAME("petblocks.pet.rename", "petblocks.action.rename"),
-    ACTION_CUSTOMSKULL("petblocks.pet.skin", "petblocks.action.customskin"),
-    ACTION_CANNON("petblocks.pet.cannon", "petblocks.action.cannon"),
-    ACTION_RIDE("petblocks.pet.ride", "petblocks.action.ride"),
-    ACTION_WEAR("petblocks.pet.wear", "petblocks.action.wear");
-
-    private val permissions = perm
+enum class Permission(
+    /**
+     * Permission
+     */
+    val permission: String
+) {
 
     /**
-     * Returns all permission in an array.
-     *
-     * @return permission
+     * Call Pet.
      */
-    fun getPermission(): Array<out String> {
-        return this.permissions.copyOf()
-    }
+    CALL("petblocks.command.call"),
+    /**
+     * Rename pet.
+     */
+    RENAME("petblocks.command.rename"),
+    /**
+     * Custom head pet.
+     */
+    CUSTOMHEAD("petblocks.command.customhead"),
+    /**
+     * Toggle pet.
+     */
+    TOGGLE("petblocks.command.toggle")
 }
