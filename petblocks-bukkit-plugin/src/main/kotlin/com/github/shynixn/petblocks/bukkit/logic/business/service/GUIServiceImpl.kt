@@ -131,45 +131,45 @@ class GUIServiceImpl @Inject constructor(
 
     private var skullNamingMessage = chatMessage {
         text {
-            configurationService.findValue<String>("messages.prefix") + configurationService.findValue("messages.skullnaming-suggest-prefix")
+            configurationService.findValue<String>("messages.prefix") + configurationService.findValue("messages.customhead-suggest-prefix")
         }
         component {
             text {
-                configurationService.findValue("messages.skullnaming-suggest-clickable")
+                configurationService.findValue("messages.customhead-suggest-clickable")
             }
             clickAction {
                 ChatClickAction.SUGGEST_COMMAND to "/" + configurationService.findValue("commands.petblock.command") + " skin "
             }
             hover {
                 text {
-                    configurationService.findValue("messages.skullnaming-suggest-hover")
+                    configurationService.findValue("messages.customhead-suggest-hover")
                 }
             }
         }
         text {
-            configurationService.findValue("messages.skullnaming-suggest-suffix")
+            configurationService.findValue("messages.customhead-suggest-suffix")
         }
     }
 
     private var namingMessage = chatMessage {
         text {
-            configurationService.findValue<String>("messages.prefix") + configurationService.findValue("messages.naming-suggest-prefix")
+            configurationService.findValue<String>("messages.prefix") + configurationService.findValue("messages.rename-suggest-prefix")
         }
         component {
             text {
-                configurationService.findValue("messages.naming-suggest-clickable")
+                configurationService.findValue("messages.rename-suggest-clickable")
             }
             clickAction {
-                ChatClickAction.SUGGEST_COMMAND to "/" + configurationService.findValue("commands.petblocks.command") + " rename "
+                ChatClickAction.SUGGEST_COMMAND to "/" + configurationService.findValue("commands.petblock.command") + " rename "
             }
             hover {
                 text {
-                    configurationService.findValue("messages.naming-suggest-hover")
+                    configurationService.findValue("messages.rename-suggest-hover")
                 }
             }
         }
         text {
-            configurationService.findValue("messages.naming-suggest-suffix")
+            configurationService.findValue("messages.rename-suggest-suffix")
         }
     }
 

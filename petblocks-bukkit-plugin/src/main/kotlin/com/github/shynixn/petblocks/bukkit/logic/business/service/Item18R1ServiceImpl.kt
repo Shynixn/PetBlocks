@@ -52,13 +52,13 @@ class Item18R1ServiceImpl(private val version: Version) : ItemService {
         val inventoryClazz = Class.forName("org.bukkit.inventory.PlayerInventory")
 
         getItemInMainHandMethod = if (version.isVersionSameOrGreaterThan(Version.VERSION_1_9_R1)) {
-            inventoryClazz.getDeclaredMethod("getItemInMainHand", ItemStack::class.java)
+            inventoryClazz.getDeclaredMethod("getItemInMainHand")
         } else {
-            Class.forName("org.bukkit.entity.HumanEntity").getDeclaredMethod("getItemInHand", ItemStack::class.java)
+            Class.forName("org.bukkit.entity.HumanEntity").getDeclaredMethod("getItemInHand")
         }
 
         if (version.isVersionSameOrGreaterThan(Version.VERSION_1_9_R1)) {
-            getItemInOffHandMethod = inventoryClazz.getDeclaredMethod("getItemInOffHand", ItemStack::class.java)
+            getItemInOffHandMethod = inventoryClazz.getDeclaredMethod("getItemInOffHand")
         }
     }
 

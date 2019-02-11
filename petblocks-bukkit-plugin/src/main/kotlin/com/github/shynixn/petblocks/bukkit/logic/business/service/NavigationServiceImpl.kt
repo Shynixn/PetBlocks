@@ -3,6 +3,7 @@ package com.github.shynixn.petblocks.bukkit.logic.business.service
 import com.github.shynixn.petblocks.api.business.enumeration.Version
 import com.github.shynixn.petblocks.api.business.proxy.PetProxy
 import com.github.shynixn.petblocks.api.business.service.NavigationService
+import com.google.inject.Inject
 import org.bukkit.Location
 
 /**
@@ -32,7 +33,7 @@ import org.bukkit.Location
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class NavigationServiceImpl(private val version: Version) : NavigationService {
+class NavigationServiceImpl @Inject constructor(private val version: Version) : NavigationService {
     private val getHandleMethod = findClazz("org.bukkit.craftbukkit.VERSION.entity.CraftLivingEntity").getDeclaredMethod("getHandle")!!
     private val clearCurrentPath = findClazz("net.minecraft.server.VERSION.NavigationAbstract").getDeclaredMethod("q")
     private val navigationAbstractMethod = findClazz("net.minecraft.server.VERSION.EntityInsentient").getDeclaredMethod("getNavigation")

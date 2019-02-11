@@ -90,7 +90,7 @@ class PetBlocksDependencyInjectionBinder(private val plugin: Plugin) : AbstractM
         bind(CarryPetService::class.java).to(CarryPetServiceImpl::class.java).`in`(Scopes.SINGLETON)
         bind(CombatPetService::class.java).to(CombatPetServiceImpl::class.java).`in`(Scopes.SINGLETON)
         bind(FeedingPetService::class.java).to(FeedPetServiceImpl::class.java).`in`(Scopes.SINGLETON)
-        bind(GUIService::class.java).to(GUIServiceImpl::class.java).`in`(Scopes.SINGLETON)
+        bind(GUIScriptService::class.java).to(GUIScriptServiceImpl::class.java).`in`(Scopes.SINGLETON)
         bind(HealthService::class.java).to(HealthServiceImpl::class.java).`in`(Scopes.SINGLETON)
         bind(PersistencePetMetaService::class.java).to(PersistencePetMetaServiceImpl::class.java).`in`(Scopes.SINGLETON)
         bind(PetActionService::class.java).to(PetActionServiceImpl::class.java).`in`(Scopes.SINGLETON)

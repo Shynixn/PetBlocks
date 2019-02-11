@@ -49,8 +49,8 @@ class Item113R1ServiceImpl : ItemService {
      */
     init {
         val inventoryClazz = Class.forName("org.bukkit.inventory.PlayerInventory")
-        getItemInMainHandMethod = inventoryClazz.getDeclaredMethod("getItemInMainHand", ItemStack::class.java)
-        getItemInOffHandMethod = inventoryClazz.getDeclaredMethod("getItemInOffHand", ItemStack::class.java)
+        getItemInMainHandMethod = inventoryClazz.getDeclaredMethod("getItemInMainHand")
+        getItemInOffHandMethod = inventoryClazz.getDeclaredMethod("getItemInOffHand")
     }
 
     /**
