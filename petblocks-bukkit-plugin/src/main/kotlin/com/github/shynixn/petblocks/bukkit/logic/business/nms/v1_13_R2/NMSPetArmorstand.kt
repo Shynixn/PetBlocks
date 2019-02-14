@@ -4,6 +4,8 @@ import com.github.shynixn.petblocks.api.PetBlocksApi
 import com.github.shynixn.petblocks.api.business.proxy.EntityPetProxy
 import com.github.shynixn.petblocks.api.business.proxy.NMSPetProxy
 import com.github.shynixn.petblocks.api.business.service.AIService
+import com.github.shynixn.petblocks.api.business.service.ConfigurationService
+import com.github.shynixn.petblocks.api.persistence.entity.AIFlyRiding
 import com.github.shynixn.petblocks.api.persistence.entity.AIGroundRiding
 import com.github.shynixn.petblocks.api.persistence.entity.AIHopping
 import com.github.shynixn.petblocks.api.persistence.entity.PetMeta
@@ -20,6 +22,7 @@ import org.bukkit.plugin.java.JavaPlugin
 import org.bukkit.util.Vector
 import java.lang.reflect.Field
 import java.util.logging.Level
+import org.bukkit.Location
 
 /**
  * Created by Shynixn 2018.
@@ -53,6 +56,12 @@ class NMSPetArmorstand(owner: Player, val petMeta: PetMeta) : EntityArmorStand((
     private var jumpingField: Field = EntityLiving::class.java.getDeclaredField("bg")
     private var internalHitBox: EntityCreature? = null
     private val aiService = PetBlocksApi.resolve<AIService>(AIService::class.java)
+
+    private val flyCanHitWalls = PetBlocksApi.resolve<ConfigurationService>(ConfigurationService::class.java).findValue<Boolean>("global-configuration.fly-wall-colision")
+    private var flyHasTakenOffGround = false
+    private var flyIsOnGround: Boolean = false
+    private var flyHasHitFloor: Boolean = false
+    private var flyWallCollisionVector: Vector? = null
 
     /**
      * Proxy handler.
@@ -92,9 +101,9 @@ class NMSPetArmorstand(owner: Player, val petMeta: PetMeta) : EntityArmorStand((
             proxy.changeHitBox(internalHitBox)
         }
 
-        val groundRidingAi = petMeta.aiGoals.firstOrNull { a -> a is AIGroundRiding }
+        val hasRidingAi = petMeta.aiGoals.count { a -> a is AIGroundRiding || a is AIFlyRiding } > 0
 
-        if (groundRidingAi != null) {
+        if (hasRidingAi) {
             val player = proxy.getPlayer<Player>()
             val armorstand = proxy.getHeadArmorstand<ArmorStand>()
 
@@ -155,11 +164,18 @@ class NMSPetArmorstand(owner: Player, val petMeta: PetMeta) : EntityArmorStand((
             return
         }
 
-        val aiGoal = this.petMeta.aiGoals.firstOrNull { a -> a is AIGroundRiding } ?: return
+        val groundAi = this.petMeta.aiGoals.firstOrNull { a -> a is AIGroundRiding }
+        val airAi = this.petMeta.aiGoals.firstOrNull { a -> a is AIFlyRiding }
+
+        val offSet = when {
+            groundAi != null -> (groundAi as AIGroundRiding).ridingYOffSet
+            airAi != null -> (airAi as AIFlyRiding).ridingYOffSet
+            else -> 0.0
+        }
 
         val axisBoundingBox = this.boundingBox
         this.locX = (axisBoundingBox.minX + axisBoundingBox.maxX) / 2.0
-        this.locY = axisBoundingBox.minY + (aiGoal as AIGroundRiding).ridingYOffSet
+        this.locY = axisBoundingBox.minY + offSet
         this.locZ = (axisBoundingBox.minZ + axisBoundingBox.maxZ) / 2.0
     }
 
@@ -181,13 +197,88 @@ class NMSPetArmorstand(owner: Player, val petMeta: PetMeta) : EntityArmorStand((
         val human = this.passengers.firstOrNull { p -> p is EntityHuman }
 
         if (this.passengers == null || human == null) {
+            flyHasTakenOffGround = false
             return
         }
 
-        val aiGoal = this.petMeta.aiGoals.firstOrNull { a -> a is AIGroundRiding }
+        val aiFlyRiding = this.petMeta.aiGoals.firstOrNull { a -> a is AIFlyRiding }
 
-        if (aiGoal != null) {
-            rideOnGround(human as EntityHuman, aiGoal as AIGroundRiding, f2)
+        if (aiFlyRiding != null) {
+            rideInAir(human as EntityHuman, aiFlyRiding as AIFlyRiding, f2)
+            return
+        }
+
+        val aiGroundRiding = this.petMeta.aiGoals.firstOrNull { a -> a is AIGroundRiding }
+
+        if (aiGroundRiding != null) {
+            rideOnGround(human as EntityHuman, aiGroundRiding as AIGroundRiding, f2)
+            return
+        }
+    }
+
+    /**
+     * Handles the riding in air.
+     */
+    private fun rideInAir(human: EntityHuman, ai: AIFlyRiding, f2: Float) {
+        val sideMot: Float = human.bh * 0.5f
+        val forMot: Float = human.bj
+
+        this.yaw = human.yaw
+        this.lastYaw = this.yaw
+        this.pitch = human.pitch * 0.5f
+        this.setYawPitch(this.yaw, this.pitch)
+        this.aQ = this.yaw
+        this.aS = this.aQ
+
+        val flyingVector = Vector()
+        val flyingLocation = Location(this.world.world, this.locX, this.locY, this.locZ)
+
+        if (sideMot < 0.0f) {
+            flyingLocation.yaw = human.yaw - 90
+            flyingVector.add(flyingLocation.direction.normalize().multiply(-0.5))
+        } else if (sideMot > 0.0f) {
+            flyingLocation.yaw = human.yaw + 90
+            flyingVector.add(flyingLocation.direction.normalize().multiply(-0.5))
+        }
+
+        if (forMot < 0.0f) {
+            flyingLocation.yaw = human.yaw
+            flyingVector.add(flyingLocation.direction.normalize().multiply(0.5))
+        } else if (forMot > 0.0f) {
+            flyingLocation.yaw = human.yaw
+            flyingVector.add(flyingLocation.direction.normalize().multiply(0.5))
+        }
+
+        if (!flyHasTakenOffGround) {
+            flyHasTakenOffGround = true
+            flyingVector.setY(1f)
+        }
+
+        if (this.isPassengerJumping()) {
+            flyingVector.setY(0.5f)
+            this.flyIsOnGround = true
+            this.flyHasHitFloor = false
+        } else if (this.flyIsOnGround) {
+            flyingVector.setY(-0.2f)
+        }
+
+        if (this.flyHasHitFloor) {
+            flyingVector.setY(0)
+            flyingLocation.add(flyingVector.multiply(2.25).multiply(ai.ridingSpeed))
+            this.setPosition(flyingLocation.x, flyingLocation.y, flyingLocation.z)
+        } else {
+            flyingLocation.add(flyingVector.multiply(2.25).multiply(ai.ridingSpeed))
+            this.setPosition(flyingLocation.x, flyingLocation.y, flyingLocation.z)
+        }
+
+        val vec3d = Vec3D(this.locX, this.locY, this.locZ)
+        val vec3d1 = Vec3D(this.locX + this.motX, this.locY + this.motY, this.locZ + this.motZ)
+        val movingObjectPosition = this.world.rayTrace(vec3d, vec3d1)
+
+        if (movingObjectPosition == null) {
+            this.flyWallCollisionVector = flyingLocation.toVector()
+        } else if (this.flyWallCollisionVector != null && flyCanHitWalls) {
+            this.setPosition(this.flyWallCollisionVector!!.x, this.flyWallCollisionVector!!.y, this.flyWallCollisionVector!!.z)
         }
     }
 

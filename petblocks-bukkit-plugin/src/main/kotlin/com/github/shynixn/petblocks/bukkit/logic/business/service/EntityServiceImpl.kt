@@ -119,6 +119,8 @@ class EntityServiceImpl @Inject constructor(
                 .newInstance(getHandleMethod.invoke(pet.getHitBoxLivingEntity<LivingEntity>().get()))
         }
 
+        this.register<AIFlyRiding>(AIType.FLY_RIDING)
+
         this.register<AIFollowBack>(AIType.FOLLOW_BACK) { pet, aiBase ->
             val pathfinder = PathfinderProxyImpl(plugin, aiBase)
             val owner = pet.getPlayer<Player>()
@@ -204,7 +206,7 @@ class EntityServiceImpl @Inject constructor(
                     if (ChatColor.stripColor(lore) == "PetBlocks") {
                         try {
                             (entity as Any).javaClass.getDeclaredMethod("deleteFromWorld").invoke(entity)
-                        }catch (e : Exception){
+                        } catch (e: Exception) {
                             entity.remove()
                         }
 
