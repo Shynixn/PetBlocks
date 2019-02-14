@@ -114,6 +114,9 @@ class NMSPet(petDesign: NMSPetArmorstand, location: Location) : EntityRabbit((lo
         passenger.aQ = this.yaw
         passenger.aS = this.yaw
 
+        val location = bukkitEntity.location
+        passenger.setPositionRotation(location.x, location.y, location.z, location.yaw, location.pitch)
+
         super.a(sidemot, f2, formot)
     }
 
@@ -128,6 +131,12 @@ class NMSPet(petDesign: NMSPetArmorstand, location: Location) : EntityRabbit((lo
         if (!this.isInWater) {
             petDesign!!.proxy.playMovementEffects()
         }
+    }
+
+    /**
+     * Disable health.
+     */
+    override fun setHealth(f: Float) {
     }
 
     /**

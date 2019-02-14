@@ -48,12 +48,11 @@ class CarryPetServiceImpl @Inject constructor(
      * Does nothing if the pet is already getting carried.
      */
     override fun <P> carryPet(player: P) {
-        val playerProxy = proxyService.findPlayerProxyObject(player)
-
-        if (!petService.hasPet(playerProxy.uniqueId)) {
+        if (!petService.hasPet(player)) {
             return
         }
 
+        val playerProxy = proxyService.findPlayerProxyObject(player)
         val pet = petService.getOrSpawnPetFromPlayer(player).get()
 
         val count = pet.meta.aiGoals.count { p -> p is AICarry }

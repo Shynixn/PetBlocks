@@ -20,6 +20,8 @@ import org.bukkit.entity.LivingEntity
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 import org.bukkit.metadata.FixedMetadataValue
+import org.bukkit.potion.PotionEffect
+import org.bukkit.potion.PotionEffectType
 import org.bukkit.util.EulerAngle
 import org.bukkit.util.Vector
 import java.util.*
@@ -65,28 +67,6 @@ class PetProxyImpl(override val meta: PetMeta, private val design: ArmorStand, p
     private val itemService = PetBlocksApi.resolve<ItemService>(ItemService::class.java)
 
     /**
-     * Gets called when the hitbox changes.
-     */
-    fun changeHitBox(hitBox: LivingEntity?) {
-        this.hitBox = hitBox
-
-        if (hitBox == null) {
-            return
-        }
-
-        // hitBox.addPotionEffect(PotionEffect(PotionEffectType.INVISIBILITY, 9999999, 1))
-        hitBox.setMetadata("keep", FixedMetadataValue(Bukkit.getPluginManager().getPlugin("PetBlocks"), true))
-        hitBox.isCustomNameVisible = false
-        hitBox.equipment.boots = generateMarkerItemStack()
-    }
-
-    /**
-     * Gets if the pet is dead or was removed.
-     */
-    override val isDead: Boolean
-        get() = this.design.isDead || (hitBox != null && hitBox!!.isDead)
-
-    /**
      * Init.
      */
     init {
@@ -104,6 +84,12 @@ class PetProxyImpl(override val meta: PetMeta, private val design: ArmorStand, p
 
         design.equipment.boots = generateMarkerItemStack()
     }
+
+    /**
+     * Gets if the pet is dead or was removed.
+     */
+    override val isDead: Boolean
+        get() = this.design.isDead || (hitBox != null && hitBox!!.isDead)
 
     /**
      * Gets the pet owner.
@@ -134,29 +120,6 @@ class PetProxyImpl(override val meta: PetMeta, private val design: ArmorStand, p
     }
 
     /**
-     * Sets the entity wearing the pet.
-     */
-    fun startWearing() {
-        if (design.passenger != null) {
-            return
-        }
-
-        // val event = PetWearEvent(false, this)
-        //  Bukkit.getPluginManager().callEvent(event)
-
-        //   if (event.isCancelled) {
-        //      return
-        //  }
-
-        design.isCustomNameVisible = false
-        //designNbtChange["Marker"] = true
-        //   hitBoxNbtChange["NoAI"] = true
-
-        owner.passenger = design
-        owner.closeInventory()
-    }
-
-    /**
      * Gets called from any Movement AI to play movement effects.
      */
     fun playMovementEffects() {
@@ -175,38 +138,19 @@ class PetProxyImpl(override val meta: PetMeta, private val design: ArmorStand, p
     }
 
     /**
-     * Stops the current target wearing the pet.
+     * Gets called when the hitbox changes.
      */
-    fun stopWearing() {
-        /**
-         *
-        /**
-         * Runnable value which represents internal nbt changes of the design armorstand.
-         * Gets automatically applied next pet tick.
-        */
-        override val designNbtChange = HashMap<String, Any>()
-        /**
-         * Runnable value which represents internal nbt changes of the hitboxEntity.
-         * Gets automatically applied next pet tick.
-        */
-        override val hitBoxNbtChange = HashMap<String, Any>()
+    fun changeHitBox(hitBox: LivingEntity?) {
+        this.hitBox = hitBox
 
-        if (design.passenger == null) {
-        return
+        if (hitBox == null) {
+            return
         }
 
-        val event = PetWearEvent(true, this)
-        Bukkit.getPluginManager().callEvent(event)
-
-        if (event.isCancelled) {
-        return
-        }
-
-        design.isCustomNameVisible = true
-        designNbtChange["Marker"] = false
-        hitBoxNbtChange["NoAI"] = false
-
-        owner.eject()    */
+        hitBox.addPotionEffect(PotionEffect(PotionEffectType.INVISIBILITY, 9999999, 1))
+        hitBox.setMetadata("keep", FixedMetadataValue(Bukkit.getPluginManager().getPlugin("PetBlocks"), true))
+        hitBox.isCustomNameVisible = false
+        hitBox.equipment.boots = generateMarkerItemStack()
     }
 
     /**

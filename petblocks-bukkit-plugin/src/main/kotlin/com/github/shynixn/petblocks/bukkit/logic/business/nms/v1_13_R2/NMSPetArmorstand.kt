@@ -1,6 +1,7 @@
 package com.github.shynixn.petblocks.bukkit.logic.business.nms.v1_13_R2
 
 import com.github.shynixn.petblocks.api.PetBlocksApi
+import com.github.shynixn.petblocks.api.bukkit.event.PetBlocksAIPreChangeEvent
 import com.github.shynixn.petblocks.api.business.proxy.EntityPetProxy
 import com.github.shynixn.petblocks.api.business.proxy.NMSPetProxy
 import com.github.shynixn.petblocks.api.business.service.AIService
@@ -10,6 +11,7 @@ import com.github.shynixn.petblocks.bukkit.PetBlocksPlugin
 import com.github.shynixn.petblocks.bukkit.logic.business.proxy.PetProxyImpl
 import com.github.shynixn.petblocks.core.logic.business.extension.hasChanged
 import net.minecraft.server.v1_13_R2.*
+import org.bukkit.Bukkit
 import org.bukkit.craftbukkit.v1_13_R2.CraftWorld
 import org.bukkit.entity.ArmorStand
 import org.bukkit.entity.LivingEntity
@@ -102,7 +104,7 @@ class NMSPetArmorstand(owner: Player, val petMeta: PetMeta) : EntityArmorStand((
         this.b(compound)
         compound.setBoolean("Marker", false)
         this.a(compound)
-        this.customNameVisible = true;
+        this.customNameVisible = true
 
         val hasRidingAi = petMeta.aiGoals.count { a -> a is AIGroundRiding || a is AIFlyRiding } > 0
 
@@ -166,6 +168,13 @@ class NMSPetArmorstand(owner: Player, val petMeta: PetMeta) : EntityArmorStand((
             }
 
             if (PetMeta::aiGoals.hasChanged(petMeta)) {
+                val event = PetBlocksAIPreChangeEvent(proxy.getPlayer(), proxy)
+                Bukkit.getPluginManager().callEvent(event)
+
+                if (event.isCancelled) {
+                    return
+                }
+
                 spawnHitBox()
                 proxy.aiGoals = null
             }
