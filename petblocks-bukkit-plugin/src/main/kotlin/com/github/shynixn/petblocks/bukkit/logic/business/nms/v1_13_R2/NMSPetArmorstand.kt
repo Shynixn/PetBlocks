@@ -5,10 +5,7 @@ import com.github.shynixn.petblocks.api.business.proxy.EntityPetProxy
 import com.github.shynixn.petblocks.api.business.proxy.NMSPetProxy
 import com.github.shynixn.petblocks.api.business.service.AIService
 import com.github.shynixn.petblocks.api.business.service.ConfigurationService
-import com.github.shynixn.petblocks.api.persistence.entity.AIFlyRiding
-import com.github.shynixn.petblocks.api.persistence.entity.AIGroundRiding
-import com.github.shynixn.petblocks.api.persistence.entity.AIHopping
-import com.github.shynixn.petblocks.api.persistence.entity.PetMeta
+import com.github.shynixn.petblocks.api.persistence.entity.*
 import com.github.shynixn.petblocks.bukkit.PetBlocksPlugin
 import com.github.shynixn.petblocks.bukkit.logic.business.proxy.PetProxyImpl
 import com.github.shynixn.petblocks.core.logic.business.extension.hasChanged
@@ -101,6 +98,12 @@ class NMSPetArmorstand(owner: Player, val petMeta: PetMeta) : EntityArmorStand((
             proxy.changeHitBox(internalHitBox)
         }
 
+        val compound = NBTTagCompound()
+        this.b(compound)
+        compound.setBoolean("Marker", false)
+        this.a(compound)
+        this.customNameVisible = true;
+
         val hasRidingAi = petMeta.aiGoals.count { a -> a is AIGroundRiding || a is AIFlyRiding } > 0
 
         if (hasRidingAi) {
@@ -109,6 +112,23 @@ class NMSPetArmorstand(owner: Player, val petMeta: PetMeta) : EntityArmorStand((
 
             armorstand.velocity = Vector(0, 1, 0)
             armorstand.passenger = player
+
+            return
+        }
+
+        val aiWearing = this.petMeta.aiGoals.firstOrNull { a -> a is AIWearing }
+
+        if (aiWearing != null) {
+            val internalCompound = NBTTagCompound()
+            this.b(internalCompound)
+            internalCompound.setBoolean("Marker", true)
+            this.a(internalCompound)
+            this.customNameVisible = false
+
+            val player = proxy.getPlayer<Player>()
+            val armorstand = proxy.getHeadArmorstand<ArmorStand>()
+
+            player.passenger = armorstand
 
             return
         }
