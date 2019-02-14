@@ -63,8 +63,13 @@ class AfraidOfWaterServiceImpl @Inject constructor(private val navigationService
      * Gets if the given pet is in water.
      */
     override fun isPetInWater(petProxy: PetProxy): Boolean {
-        val livingEntity = petProxy.getHitBoxLivingEntity<LivingEntity>()
+        val livingEntityOpt = petProxy.getHitBoxLivingEntity<LivingEntity>()
 
+        if (!livingEntityOpt.isPresent) {
+            return false
+        }
+
+        val livingEntity = livingEntityOpt.get()
         return livingEntity.location.block != null && (livingEntity.location.block.type == Material.WATER
                 || itemService.hasItemStackProperties(itemService.createItemStack(livingEntity.location.block.type).build<ItemStack>(), MaterialType.STATIONARY_WATER))
     }

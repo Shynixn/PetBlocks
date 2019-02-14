@@ -1,9 +1,8 @@
 package com.github.shynixn.petblocks.bukkit.logic.business.proxy
 
-import com.github.shynixn.petblocks.api.business.proxy.EntityPetProxy
 import com.github.shynixn.petblocks.api.PetBlocksApi
 import com.github.shynixn.petblocks.api.bukkit.event.PetRemoveEvent
-import com.github.shynixn.petblocks.api.business.proxy.NMSPetProxy
+import com.github.shynixn.petblocks.api.business.proxy.EntityPetProxy
 import com.github.shynixn.petblocks.api.business.proxy.PetProxy
 import com.github.shynixn.petblocks.api.business.service.*
 import com.github.shynixn.petblocks.api.persistence.entity.AIMovement
@@ -21,10 +20,9 @@ import org.bukkit.entity.LivingEntity
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 import org.bukkit.metadata.FixedMetadataValue
-import org.bukkit.potion.PotionEffect
-import org.bukkit.potion.PotionEffectType
 import org.bukkit.util.EulerAngle
 import org.bukkit.util.Vector
+import java.util.*
 
 @Suppress("UNCHECKED_CAST")
 /**
@@ -54,23 +52,39 @@ import org.bukkit.util.Vector
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class PetProxyImpl(override val meta: PetMeta, private val design: ArmorStand, private val hitBox: LivingEntity, private val owner: Player) :
+class PetProxyImpl(override val meta: PetMeta, private val design: ArmorStand, private val owner: Player) :
     PetProxy, Runnable {
 
     var teleportTarget: Location? = null
     var aiGoals: List<Any>? = null
+    var hitBox: LivingEntity? = null
 
     private val particleService = PetBlocksApi.resolve<ParticleService>(ParticleService::class.java)
     private val soundService = PetBlocksApi.resolve<SoundService>(SoundService::class.java)
     private val logger: LoggingService = PetBlocksApi.resolve(LoggingService::class.java)
     private val itemService = PetBlocksApi.resolve<ItemService>(ItemService::class.java)
-    private val aiService = PetBlocksApi.resolve<AIService>(AIService::class.java)
+
+    /**
+     * Gets called when the hitbox changes.
+     */
+    fun changeHitBox(hitBox: LivingEntity?) {
+        this.hitBox = hitBox
+
+        if (hitBox == null) {
+            return
+        }
+
+        // hitBox.addPotionEffect(PotionEffect(PotionEffectType.INVISIBILITY, 9999999, 1))
+        hitBox.setMetadata("keep", FixedMetadataValue(Bukkit.getPluginManager().getPlugin("PetBlocks"), true))
+        hitBox.isCustomNameVisible = false
+        hitBox.equipment.boots = generateMarkerItemStack()
+    }
 
     /**
      * Gets if the pet is dead or was removed.
      */
     override val isDead: Boolean
-        get() = this.design.isDead || hitBox.isDead
+        get() = this.design.isDead || (hitBox != null && hitBox!!.isDead)
 
     /**
      * Init.
@@ -82,16 +96,13 @@ class PetProxyImpl(override val meta: PetMeta, private val design: ArmorStand, p
         design.isCustomNameVisible = true
         design.removeWhenFarAway = false
 
-        hitBox.addPotionEffect(PotionEffect(PotionEffectType.INVISIBILITY, 9999999, 1))
-        hitBox.setMetadata("keep", FixedMetadataValue(Bukkit.getPluginManager().getPlugin("PetBlocks"), true))
-        hitBox.isCustomNameVisible = false
-
         meta.enabled = true
+
         meta.propertyTracker.onPropertyChanged(PetMeta::displayName)
+        meta.propertyTracker.onPropertyChanged(PetMeta::aiGoals)
         meta.propertyTracker.onPropertyChanged(Skin::typeName)
 
         design.equipment.boots = generateMarkerItemStack()
-        hitBox.equipment.boots = generateMarkerItemStack()
     }
 
     /**
@@ -118,8 +129,8 @@ class PetProxyImpl(override val meta: PetMeta, private val design: ArmorStand, p
     /**
      * Gets a living hitbox entity.
      */
-    override fun <L> getHitBoxLivingEntity(): L {
-        return hitBox as L
+    override fun <L> getHitBoxLivingEntity(): Optional<L> {
+        return Optional.ofNullable(hitBox as L)
     }
 
     /**
@@ -199,44 +210,6 @@ class PetProxyImpl(override val meta: PetMeta, private val design: ArmorStand, p
     }
 
     /**
-     * Starts riding the pet.zg
-     */
-    fun startRiding() {
-        if (owner.passenger != null) {
-            return
-        }
-
-        //  val event = PetRideEvent(false, this)
-        //  Bukkit.getPluginManager().callEvent(event)
-
-        //  if (event.isCancelled) {
-        //      return
-        //  }
-
-        design.velocity = Vector(0, 1, 0)
-        design.passenger = owner
-        owner.closeInventory()
-    }
-
-    /**
-     * Stops the current target riding the pet.
-     */
-    fun stopRiding() {
-        /*     if (owner.passenger != null) {
-                 return
-             }
-
-             val event = PetRideEvent(true, this)
-             Bukkit.getPluginManager().callEvent(event)
-
-             if (event.isCancelled) {
-                 return
-             }*/
-
-        owner.eject()
-    }
-
-    /**
      * Teleports the pet to the given [location].
      */
     override fun <L> teleport(location: L) {
@@ -270,7 +243,10 @@ class PetProxyImpl(override val meta: PetMeta, private val design: ArmorStand, p
             }
 
             (this.design as EntityPetProxy).deleteFromWorld()
-            (this.hitBox as EntityPetProxy).deleteFromWorld()
+
+            if (this.hitBox != null) {
+                (this.hitBox as EntityPetProxy).deleteFromWorld()
+            }
 
             return
         }
@@ -290,18 +266,17 @@ class PetProxyImpl(override val meta: PetMeta, private val design: ArmorStand, p
 
             design.helmet = itemStack
         }
-
-
-        if (PetMeta::aiGoals.hasChanged(meta)) {
-            aiGoals = aiService.convertPetAiBasesToPathfinders(this, meta.aiGoals)
-        }
     }
 
     /**
      * Gets the location of the pet.
      */
     override fun <L> getLocation(): L {
-        return hitBox.location as L
+        if (hitBox == null) {
+            return this.design.location as L
+        }
+
+        return hitBox!!.location as L
     }
 
     /**
@@ -316,7 +291,12 @@ class PetProxyImpl(override val meta: PetMeta, private val design: ArmorStand, p
      */
     override fun <V> setVelocity(vector: V) {
         if (vector is Position) {
-            hitBox.velocity = vector.toVector()
+            if (hitBox != null) {
+                hitBox!!.velocity = vector.toVector()
+            } else {
+                design.velocity = vector.toVector()
+            }
+
             return
         }
 
@@ -324,14 +304,22 @@ class PetProxyImpl(override val meta: PetMeta, private val design: ArmorStand, p
             throw IllegalArgumentException("Vector has to be a BukkitVector!")
         }
 
-        hitBox.velocity = vector
+        if (hitBox != null) {
+            hitBox!!.velocity = vector
+        } else {
+            design.velocity = vector
+        }
     }
 
     /**
      * Gets the velocity of the pet.
      */
     override fun <V> getVelocity(): V {
-        return hitBox.velocity as V
+        if (hitBox == null) {
+            return this.design.velocity as V
+        }
+
+        return hitBox!!.velocity as V
     }
 
     /**

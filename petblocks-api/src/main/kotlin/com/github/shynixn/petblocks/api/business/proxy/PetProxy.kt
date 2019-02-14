@@ -1,7 +1,7 @@
 package com.github.shynixn.petblocks.api.business.proxy
 
-import com.github.shynixn.petblocks.api.business.service.LoggingService
 import com.github.shynixn.petblocks.api.persistence.entity.PetMeta
+import java.util.*
 
 /**
  * Created by Shynixn 2018.
@@ -78,8 +78,9 @@ interface PetProxy {
 
     /**
      * Gets a living hitbox entity.
+     * The hitbox can be empty depending on the ai configuration.
      */
-    fun <L> getHitBoxLivingEntity(): L
+    fun <L> getHitBoxLivingEntity(): Optional<L>
 
     /**
      * Removes the pet.

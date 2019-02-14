@@ -1,15 +1,25 @@
 package com.github.shynixn.petblocks.bukkit.logic.business.nms.v1_13_R2
 
+import com.github.shynixn.petblocks.api.PetBlocksApi
+import com.github.shynixn.petblocks.api.business.proxy.EntityPetProxy
 import com.github.shynixn.petblocks.api.business.proxy.NMSPetProxy
+import com.github.shynixn.petblocks.api.business.service.AIService
+import com.github.shynixn.petblocks.api.persistence.entity.AIGroundRiding
+import com.github.shynixn.petblocks.api.persistence.entity.AIHopping
 import com.github.shynixn.petblocks.api.persistence.entity.PetMeta
+import com.github.shynixn.petblocks.bukkit.PetBlocksPlugin
 import com.github.shynixn.petblocks.bukkit.logic.business.proxy.PetProxyImpl
+import com.github.shynixn.petblocks.core.logic.business.extension.hasChanged
 import net.minecraft.server.v1_13_R2.*
 import org.bukkit.craftbukkit.v1_13_R2.CraftWorld
 import org.bukkit.entity.ArmorStand
 import org.bukkit.entity.LivingEntity
 import org.bukkit.entity.Player
 import org.bukkit.event.entity.CreatureSpawnEvent
+import org.bukkit.plugin.java.JavaPlugin
+import org.bukkit.util.Vector
 import java.lang.reflect.Field
+import java.util.logging.Level
 
 /**
  * Created by Shynixn 2018.
@@ -41,7 +51,8 @@ import java.lang.reflect.Field
 class NMSPetArmorstand(owner: Player, val petMeta: PetMeta) : EntityArmorStand((owner.location.world as CraftWorld).handle), NMSPetProxy {
     private var internalProxy: PetProxyImpl? = null
     private var jumpingField: Field = EntityLiving::class.java.getDeclaredField("bg")
-    private var hitBox: NMSPet
+    private var internalHitBox: EntityCreature? = null
+    private val aiService = PetBlocksApi.resolve<AIService>(AIService::class.java)
 
     /**
      * Proxy handler.
@@ -59,8 +70,8 @@ class NMSPetArmorstand(owner: Player, val petMeta: PetMeta) : EntityArmorStand((
         this.setPositionRotation(location.x, location.y, location.z, location.yaw, location.pitch)
         mcWorld.addEntity(this, CreatureSpawnEvent.SpawnReason.CUSTOM)
 
-        hitBox = NMSPet(this, location)
-        internalProxy = PetProxyImpl(petMeta, this.bukkitEntity as ArmorStand, hitBox.bukkitEntity as LivingEntity, owner)
+        internalProxy = PetProxyImpl(petMeta, this.bukkitEntity as ArmorStand, owner)
+        petMeta.propertyTracker.onPropertyChanged(PetMeta::aiGoals, true)
 
         val compound = NBTTagCompound()
         compound.setBoolean("invulnerable", true)
@@ -69,8 +80,40 @@ class NMSPetArmorstand(owner: Player, val petMeta: PetMeta) : EntityArmorStand((
         compound.setBoolean("ShowArms", true)
         compound.setBoolean("NoBasePlate", true)
         this.a(compound)
+    }
 
-        hitBox.passengers.add(this)
+    /**
+     * Spawns a new hitbox
+     */
+    private fun spawnHitBox() {
+        if (internalHitBox != null) {
+            (internalHitBox!!.bukkitEntity as EntityPetProxy).deleteFromWorld()
+            internalHitBox = null
+            proxy.changeHitBox(internalHitBox)
+        }
+
+        val groundRidingAi = petMeta.aiGoals.firstOrNull { a -> a is AIGroundRiding }
+
+        if (groundRidingAi != null) {
+            val player = proxy.getPlayer<Player>()
+            val armorstand = proxy.getHeadArmorstand<ArmorStand>()
+
+            armorstand.velocity = Vector(0, 1, 0)
+            armorstand.passenger = player
+
+            return
+        }
+
+        val hoppingAi = petMeta.aiGoals.firstOrNull { a -> a is AIHopping }
+
+        if (hoppingAi != null) {
+            internalHitBox = NMSPet(this, getBukkitEntity().location)
+            proxy.changeHitBox(internalHitBox!!.bukkitEntity as LivingEntity)
+            val aiGoals = aiService.convertPetAiBasesToPathfinders(proxy, petMeta.aiGoals)
+            (internalHitBox as NMSPet).applyPathfinders(aiGoals)
+            internalHitBox!!.passengers.add(this)
+            return
+        }
     }
 
     /**
@@ -79,18 +122,26 @@ class NMSPetArmorstand(owner: Player, val petMeta: PetMeta) : EntityArmorStand((
     override fun doTick() {
         super.doTick()
 
-        proxy.run()
+        try {
+            proxy.run()
 
-        if (proxy.teleportTarget != null) {
-            val location = proxy.teleportTarget!!
-            this.hitBox.setPositionRotation(location.x, location.y, location.z, location.yaw, location.pitch)
-            this.setPositionRotation(location.x, location.y, location.z, location.yaw, location.pitch)
-            proxy.teleportTarget = null
-        }
+            if (proxy.teleportTarget != null) {
+                val location = proxy.teleportTarget!!
 
-        if (proxy.aiGoals != null) {
-            this.hitBox.applyPathfinders(proxy.aiGoals!!)
-            proxy.aiGoals = null
+                if (this.internalHitBox != null) {
+                    this.internalHitBox!!.setPositionRotation(location.x, location.y, location.z, location.yaw, location.pitch)
+                }
+
+                this.setPositionRotation(location.x, location.y, location.z, location.yaw, location.pitch)
+                proxy.teleportTarget = null
+            }
+
+            if (PetMeta::aiGoals.hasChanged(petMeta)) {
+                spawnHitBox()
+                proxy.aiGoals = null
+            }
+        } catch (e: Exception) {
+            JavaPlugin.getPlugin(PetBlocksPlugin::class.java).logger.log(Level.WARNING, "Failed to execute tick.", e)
         }
     }
 
@@ -100,19 +151,16 @@ class NMSPetArmorstand(owner: Player, val petMeta: PetMeta) : EntityArmorStand((
     override fun move(enummovetype: EnumMoveType?, d0: Double, d1: Double, d2: Double) {
         super.move(enummovetype, d0, d1, d2)
 
-        if (this.passengers != null && this.passengers.firstOrNull { p -> p is EntityHuman } != null) {
-            val axisBoundingBox = this.boundingBox
-
-            val minXA = axisBoundingBox.minX
-            val minXB = axisBoundingBox.minY
-            val minXC = axisBoundingBox.minZ
-            val maxXD = axisBoundingBox.maxX
-            val maxXF = axisBoundingBox.maxZ
-
-            this.locX = (minXA + maxXD) / 2.0
-            this.locY = minXB + 0
-            this.locZ = (minXC + maxXF) / 2.0
+        if (passengers == null || this.passengers.firstOrNull { p -> p is EntityHuman } == null) {
+            return
         }
+
+        val aiGoal = this.petMeta.aiGoals.firstOrNull { a -> a is AIGroundRiding } ?: return
+
+        val axisBoundingBox = this.boundingBox
+        this.locX = (axisBoundingBox.minX + axisBoundingBox.maxX) / 2.0
+        this.locY = axisBoundingBox.minY + (aiGoal as AIGroundRiding).ridingYOffSet
+        this.locZ = (axisBoundingBox.minZ + axisBoundingBox.maxZ) / 2.0
     }
 
     /**
@@ -130,14 +178,25 @@ class NMSPetArmorstand(owner: Player, val petMeta: PetMeta) : EntityArmorStand((
      * Riding function.
      */
     override fun a(sidemot: Float, f2: Float, formot: Float) {
-        val sideMot: Float
-        var forMot: Float
+        val human = this.passengers.firstOrNull { p -> p is EntityHuman }
 
-        if (this.passengers == null || this.passengers.firstOrNull { p -> p is EntityHuman } == null) {
+        if (this.passengers == null || human == null) {
             return
         }
 
-        val human = this.passengers.first { p -> p is EntityHuman } as EntityHuman
+        val aiGoal = this.petMeta.aiGoals.firstOrNull { a -> a is AIGroundRiding }
+
+        if (aiGoal != null) {
+            rideOnGround(human as EntityHuman, aiGoal as AIGroundRiding, f2)
+        }
+    }
+
+    /**
+     * Handles the riding on ground.
+     */
+    private fun rideOnGround(human: EntityHuman, ai: AIGroundRiding, f2: Float) {
+        val sideMot: Float = human.bh * 0.5f
+        var forMot: Float = human.bj
 
         this.yaw = human.yaw
         this.lastYaw = this.yaw
@@ -145,9 +204,6 @@ class NMSPetArmorstand(owner: Player, val petMeta: PetMeta) : EntityArmorStand((
         this.setYawPitch(this.yaw, this.pitch)
         this.aQ = this.yaw
         this.aS = this.aQ
-
-        sideMot = human.bh * 0.5f
-        forMot = human.bj
 
         if (forMot <= 0.0f) {
             forMot *= 0.25f
@@ -157,14 +213,12 @@ class NMSPetArmorstand(owner: Player, val petMeta: PetMeta) : EntityArmorStand((
             this.motY = 0.5
         }
 
-        this.Q = 2.0F // TODO: Climing height
+        this.Q = ai.climbingHeight.toFloat()
         this.aU = this.cK() * 0.1f
 
         if (!this.world.isClientSide) {
             this.o(0.35f)
-
-            // TODO: Pet Riding speed modifier
-            super.a(sideMot, f2, forMot)
+            super.a(sideMot * ai.ridingSpeed.toFloat(), f2, forMot * ai.ridingSpeed.toFloat())
         }
 
         this.aI = this.aJ

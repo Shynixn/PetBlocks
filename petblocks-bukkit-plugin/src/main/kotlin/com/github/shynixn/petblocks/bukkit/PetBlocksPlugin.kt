@@ -20,8 +20,6 @@ import org.apache.commons.io.IOUtils
 import org.bstats.bukkit.Metrics
 import org.bukkit.Bukkit
 import org.bukkit.ChatColor
-import org.bukkit.entity.LivingEntity
-import org.bukkit.entity.Player
 import org.bukkit.event.player.PlayerJoinEvent
 import org.bukkit.plugin.java.JavaPlugin
 import java.io.File
@@ -177,7 +175,7 @@ class PetBlocksPlugin : JavaPlugin(), PluginProxy {
                 if (petService.hasPet(player)) {
                     val pet = petService.getOrSpawnPetFromPlayer(player).get()
 
-                    pet.getHitBoxLivingEntity<EntityPetProxy>().deleteFromWorld()
+                    pet.getHitBoxLivingEntity<EntityPetProxy>().ifPresent { p -> p.deleteFromWorld() }
                     pet.getHeadArmorstand<EntityPetProxy>().deleteFromWorld()
 
                     pet.remove()

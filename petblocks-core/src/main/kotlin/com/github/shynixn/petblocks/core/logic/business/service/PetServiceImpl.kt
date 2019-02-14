@@ -84,7 +84,17 @@ class PetServiceImpl @Inject constructor(
             return Optional.empty()
         }
 
-        val petProxy = entityService.spawnPetProxy(playerProxy.getLocation<Any>(), petMeta)
+        val petProxy: PetProxy
+
+        try {
+            petProxy = entityService.spawnPetProxy(playerProxy.getLocation<Any>(), petMeta)
+        } catch (e: Exception) {
+            loggingService.warn("Failed to spawn pet.", e)
+            return Optional.empty()
+        }
+
+        pets.add(petProxy)
+
         petMeta.enabled = true
         petMetaService.save(petMeta)
 

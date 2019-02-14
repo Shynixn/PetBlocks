@@ -5,7 +5,6 @@ package com.github.shynixn.petblocks.bukkit.logic.business.service
 import com.github.shynixn.petblocks.api.business.enumeration.AIType
 import com.github.shynixn.petblocks.api.business.enumeration.EntityType
 import com.github.shynixn.petblocks.api.business.enumeration.Version
-import com.github.shynixn.petblocks.api.business.proxy.EntityPetProxy
 import com.github.shynixn.petblocks.api.business.proxy.NMSPetProxy
 import com.github.shynixn.petblocks.api.business.proxy.PetProxy
 import com.github.shynixn.petblocks.api.business.service.*
@@ -70,7 +69,7 @@ class EntityServiceImpl @Inject constructor(
     init {
         this.register<AIAfraidOfWater>(AIType.AFRAID_OF_WATER) { pet, aiBase ->
             val pathfinder = PathfinderProxyImpl(plugin, aiBase)
-            val hitBox = pet.getHitBoxLivingEntity<LivingEntity>()
+            val hitBox = pet.getHitBoxLivingEntity<LivingEntity>().get()
             val owner = pet.getPlayer<Player>()
             var milliseconds = 0L
 
@@ -95,7 +94,7 @@ class EntityServiceImpl @Inject constructor(
 
         this.register<AIAmbientSound>(AIType.AMBIENT_SOUND) { pet, aiBase ->
             val pathfinder = PathfinderProxyImpl(plugin, aiBase)
-            val hitBox = pet.getHitBoxLivingEntity<LivingEntity>()
+            val hitBox = pet.getHitBoxLivingEntity<LivingEntity>().get()
             val owner = pet.getPlayer<Player>()
 
             pathfinder.shouldGoalBeExecuted = {
@@ -117,7 +116,7 @@ class EntityServiceImpl @Inject constructor(
         this.register<AIFloatInWater>(AIType.FLOAT_IN_WATER) { pet, _ ->
             version.findClazz("net.minecraft.server.VERSION.PathfinderGoalFloat")
                 .getDeclaredConstructor(version.findClazz("net.minecraft.server.VERSION.EntityInsentient"))
-                .newInstance(getHandleMethod.invoke(pet.getHitBoxLivingEntity<LivingEntity>()))
+                .newInstance(getHandleMethod.invoke(pet.getHitBoxLivingEntity<LivingEntity>().get()))
         }
 
         this.register<AIFollowBack>(AIType.FOLLOW_BACK) { pet, aiBase ->
@@ -147,7 +146,7 @@ class EntityServiceImpl @Inject constructor(
             var lastLocation: Location? = null
             val pathfinder = PathfinderProxyImpl(plugin, aiBase)
             val owner = pet.getPlayer<Player>()
-            val hitBox = pet.getHitBoxLivingEntity<LivingEntity>()
+            val hitBox = pet.getHitBoxLivingEntity<LivingEntity>().get()
 
             pathfinder.shouldGoalContinueExecuting = {
                 when {

@@ -126,18 +126,16 @@ class PetListener @Inject constructor(
      */
     @EventHandler
     fun onEntityToggleSneakEvent(event: PlayerToggleSneakEvent) {
-        if (event.player.passenger == null) {
-            return
-        }
-
         if (!petService.hasPet(event.player)) {
             return
         }
 
         val pet = petService.getOrSpawnPetFromPlayer(event.player).get()
 
-        if (event.player.passenger == pet.getHeadArmorstand() || event.player.passenger == pet.getHitBoxLivingEntity()) {
-            pet.meta.aiGoals.removeIf { a -> a is AIGroundRiding || a is AIFlyRiding || a is AIWearing }
+        for (ai in pet.meta.aiGoals.toTypedArray()) {
+            if (ai is AIGroundRiding || ai is AIFlyRiding || ai is AIWearing) {
+                pet.meta.aiGoals.remove(ai)
+            }
         }
     }
 

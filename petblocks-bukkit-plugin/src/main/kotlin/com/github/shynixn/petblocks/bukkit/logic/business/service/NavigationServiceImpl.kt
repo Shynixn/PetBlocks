@@ -5,6 +5,7 @@ import com.github.shynixn.petblocks.api.business.proxy.PetProxy
 import com.github.shynixn.petblocks.api.business.service.NavigationService
 import com.google.inject.Inject
 import org.bukkit.Location
+import org.bukkit.entity.LivingEntity
 
 /**
  * Created by Shynixn 2018.
@@ -48,7 +49,11 @@ class NavigationServiceImpl @Inject constructor(private val version: Version) : 
             throw IllegalArgumentException("Location has to be a BukkitLocation!")
         }
 
-        val nmsEntity = getHandleMethod.invoke(petProxy.getHitBoxLivingEntity())
+        if (!petProxy.getHitBoxLivingEntity<LivingEntity>().isPresent) {
+            return
+        }
+
+        val nmsEntity = getHandleMethod.invoke(petProxy.getHitBoxLivingEntity<LivingEntity>().get())
         val navigation = navigationAbstractMethod.invoke(nmsEntity)
         goToEntityNavigationMethod.invoke(navigation, location.x, location.y, location.z, speed)
     }
@@ -57,7 +62,11 @@ class NavigationServiceImpl @Inject constructor(private val version: Version) : 
      * Clears the current navigation target from the petProxy.
      */
     override fun clearNavigation(petProxy: PetProxy) {
-        val nmsEntity = getHandleMethod.invoke(petProxy.getHitBoxLivingEntity())
+        if (!petProxy.getHitBoxLivingEntity<LivingEntity>().isPresent) {
+            return
+        }
+
+        val nmsEntity = getHandleMethod.invoke(petProxy.getHitBoxLivingEntity<LivingEntity>().get())
         val navigation = navigationAbstractMethod.invoke(nmsEntity)
         clearCurrentPath.invoke(navigation)
     }

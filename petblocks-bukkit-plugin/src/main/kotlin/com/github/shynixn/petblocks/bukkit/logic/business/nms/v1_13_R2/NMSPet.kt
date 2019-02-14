@@ -36,7 +36,7 @@ import org.bukkit.event.entity.CreatureSpawnEvent
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class NMSPet(petDesign: NMSPetArmorstand, location: Location) : EntityCreature(EntityTypes.RABBIT, (location.world as CraftWorld).handle) {
+class NMSPet(petDesign: NMSPetArmorstand, location: Location) : EntityRabbit((location.world as CraftWorld).handle) {
     private var petDesign: NMSPetArmorstand? = null
     private var pathfinderCounter = 0
 
@@ -86,17 +86,11 @@ class NMSPet(petDesign: NMSPetArmorstand, location: Location) : EntityCreature(E
         }
 
         val aiGoal = petDesign!!.petMeta.aiGoals.lastOrNull { p -> p is AIMovement } ?: return
+
         val axisBoundingBox = this.boundingBox
-
-        val minXA = axisBoundingBox.minX
-        val minXB = axisBoundingBox.minY
-        val minXC = axisBoundingBox.minZ
-        val maxXD = axisBoundingBox.maxX
-        val maxXF = axisBoundingBox.maxZ
-
-        this.locX = (minXA + maxXD) / 2.0
-        this.locY = minXB - 2.0 + (aiGoal as AIMovement).movementYOffSet
-        this.locZ = (minXC + maxXF) / 2.0
+        this.locX = (axisBoundingBox.minX + axisBoundingBox.maxX) / 2.0
+        this.locY = axisBoundingBox.minY - 2.0 + (aiGoal as AIMovement).movementYOffSet
+        this.locZ = (axisBoundingBox.minZ + axisBoundingBox.maxZ) / 2.0
     }
 
     /**

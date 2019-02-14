@@ -57,6 +57,10 @@ class AIServiceImpl @Inject constructor(
         val player = proxyService.findPlayerProxyObject(petProxy.getPlayer<Any>())
         val pathfinders = ArrayList<Any>()
 
+        if (!petProxy.getHitBoxLivingEntity<Any>().isPresent) {
+            return pathfinders
+        }
+
         for (meta in metas) {
             if (!registeredAIS.containsKey(meta.type)) {
                 loggingService.warn("Pet of ${player.name} tried to use ai type + " + meta.type + " which is not registered in the AI Service. Please register it first.")

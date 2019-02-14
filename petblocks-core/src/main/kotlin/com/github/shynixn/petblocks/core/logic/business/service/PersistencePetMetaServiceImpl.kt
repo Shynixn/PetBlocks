@@ -83,7 +83,8 @@ class PersistencePetMetaServiceImpl @Inject constructor(
         val playerProxy = proxyService.findPlayerProxyObject(player)
 
         if (!cache.containsKey(playerProxy.uniqueId)) {
-            throw IllegalArgumentException("PetMeta is in an invalid state!")
+            // Blocks the calling (main) thread and should not be executed on an normal server.
+            return petMetaRepository.getOrCreateFromPlayerIdentifiers(playerProxy.name, playerProxy.uniqueId)
         }
 
         return cache[playerProxy.uniqueId]!!
