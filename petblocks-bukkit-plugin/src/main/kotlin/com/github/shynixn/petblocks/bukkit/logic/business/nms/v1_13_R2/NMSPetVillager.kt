@@ -36,7 +36,7 @@ import org.bukkit.event.entity.CreatureSpawnEvent
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class NMSPet(petDesign: NMSPetArmorstand, location: Location) : EntityRabbit((location.world as CraftWorld).handle) {
+class NMSPetVillager(petDesign: NMSPetArmorstand, location: Location) : EntityPig((location.world as CraftWorld).handle) {
     private var petDesign: NMSPetArmorstand? = null
     private var pathfinderCounter = 0
 

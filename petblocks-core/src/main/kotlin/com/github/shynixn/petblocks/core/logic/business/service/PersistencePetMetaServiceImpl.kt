@@ -122,14 +122,6 @@ class PersistencePetMetaServiceImpl @Inject constructor(
         val playerProxy = proxyService.findPlayerProxyObject(player)
         val completableFuture = CompletableFuture<PetMeta>()
 
-        if (cache.containsKey(playerProxy.uniqueId)) {
-            sync(concurrencyService) {
-                completableFuture.complete(cache[playerProxy.uniqueId]!!)
-            }
-
-            return completableFuture
-        }
-
         async(concurrencyService) {
             val petMeta = petMetaRepository.getOrCreateFromPlayerIdentifiers(playerProxy.name, playerProxy.uniqueId)
 

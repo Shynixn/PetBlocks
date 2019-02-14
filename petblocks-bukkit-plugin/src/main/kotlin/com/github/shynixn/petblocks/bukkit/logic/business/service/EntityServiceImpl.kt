@@ -13,6 +13,7 @@ import com.github.shynixn.petblocks.bukkit.logic.business.extension.findClazz
 import com.github.shynixn.petblocks.bukkit.logic.business.proxy.PathfinderProxyImpl
 import com.github.shynixn.petblocks.core.logic.business.proxy.AICreationProxyImpl
 import com.google.inject.Inject
+import net.minecraft.server.v1_13_R2.EntityTypes
 import org.bukkit.ChatColor
 import org.bukkit.GameMode
 import org.bukkit.Location
@@ -180,6 +181,7 @@ class EntityServiceImpl @Inject constructor(
 
         this.register<AIGroundRiding>(AIType.GROUND_RIDING) { _, aiBase -> PathfinderProxyImpl(plugin, aiBase) }
         this.register<AIHopping>(AIType.HOPPING) { _, aiBase -> PathfinderProxyImpl(plugin, aiBase) }
+        this.register<AIWalking>(AIType.WALKING)
         this.register<AIWearing>(AIType.WEARING) { _, aiBase -> PathfinderProxyImpl(plugin, aiBase) }
     }
 
@@ -239,8 +241,11 @@ class EntityServiceImpl @Inject constructor(
             return true
         }
 
-        val rabbitClazz = Class.forName("com.github.shynixn.petblocks.bukkit.logic.business.nms.VERSION.NMSPet".replace("VERSION", version.bukkitId))
+        val rabbitClazz = Class.forName("com.github.shynixn.petblocks.bukkit.logic.business.nms.VERSION.NMSPetRabbit".replace("VERSION", version.bukkitId))
         entityRegistrationService.register(rabbitClazz, EntityType.RABBIT)
+
+        val villagerClazz = Class.forName("com.github.shynixn.petblocks.bukkit.logic.business.nms.VERSION.NMSPetVillager".replace("VERSION", version.bukkitId))
+        entityRegistrationService.register(villagerClazz, EntityType.RABBIT)
 
         registered = true
 
