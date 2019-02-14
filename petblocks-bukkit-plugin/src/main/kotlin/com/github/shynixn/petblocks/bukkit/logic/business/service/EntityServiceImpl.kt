@@ -120,6 +120,7 @@ class EntityServiceImpl @Inject constructor(
                 .newInstance(getHandleMethod.invoke(pet.getHitBoxLivingEntity<LivingEntity>().get()))
         }
 
+        this.register<AIFlying>(AIType.FLYING)
         this.register<AIFlyRiding>(AIType.FLY_RIDING)
 
         this.register<AIFollowBack>(AIType.FOLLOW_BACK) { pet, aiBase ->
@@ -179,10 +180,10 @@ class EntityServiceImpl @Inject constructor(
             pathfinder
         }
 
-        this.register<AIGroundRiding>(AIType.GROUND_RIDING) { _, aiBase -> PathfinderProxyImpl(plugin, aiBase) }
-        this.register<AIHopping>(AIType.HOPPING) { _, aiBase -> PathfinderProxyImpl(plugin, aiBase) }
+        this.register<AIGroundRiding>(AIType.GROUND_RIDING)
+        this.register<AIHopping>(AIType.HOPPING)
         this.register<AIWalking>(AIType.WALKING)
-        this.register<AIWearing>(AIType.WEARING) { _, aiBase -> PathfinderProxyImpl(plugin, aiBase) }
+        this.register<AIWearing>(AIType.WEARING)
     }
 
     /**
@@ -246,6 +247,9 @@ class EntityServiceImpl @Inject constructor(
 
         val villagerClazz = Class.forName("com.github.shynixn.petblocks.bukkit.logic.business.nms.VERSION.NMSPetVillager".replace("VERSION", version.bukkitId))
         entityRegistrationService.register(villagerClazz, EntityType.RABBIT)
+
+        val batClazz = Class.forName("com.github.shynixn.petblocks.bukkit.logic.business.nms.VERSION.NMSPetBat".replace("VERSION", version.bukkitId))
+        entityRegistrationService.register(batClazz, EntityType.RABBIT)
 
         registered = true
 

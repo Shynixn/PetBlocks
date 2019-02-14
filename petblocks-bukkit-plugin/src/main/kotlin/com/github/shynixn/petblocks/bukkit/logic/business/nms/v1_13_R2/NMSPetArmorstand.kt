@@ -53,7 +53,7 @@ import org.bukkit.Location
 class NMSPetArmorstand(owner: Player, val petMeta: PetMeta) : EntityArmorStand((owner.location.world as CraftWorld).handle), NMSPetProxy {
     private var internalProxy: PetProxyImpl? = null
     private var jumpingField: Field = EntityLiving::class.java.getDeclaredField("bg")
-    private var internalHitBox: EntityCreature? = null
+    private var internalHitBox: EntityInsentient? = null
     private val aiService = PetBlocksApi.resolve<AIService>(AIService::class.java)
 
     private val flyCanHitWalls = PetBlocksApi.resolve<ConfigurationService>(ConfigurationService::class.java).findValue<Boolean>("global-configuration.fly-wall-colision")
@@ -132,6 +132,17 @@ class NMSPetArmorstand(owner: Player, val petMeta: PetMeta) : EntityArmorStand((
 
             player.passenger = armorstand
 
+            return
+        }
+
+        val flyingAi = petMeta.aiGoals.firstOrNull { a -> a is AIFlying }
+
+        if (flyingAi != null) {
+            internalHitBox = NMSPetBat(this, getBukkitEntity().location)
+            proxy.changeHitBox(internalHitBox!!.bukkitEntity as LivingEntity)
+            val aiGoals = aiService.convertPetAiBasesToPathfinders(proxy, petMeta.aiGoals)
+            (internalHitBox as NMSPetBat).applyPathfinders(aiGoals)
+            internalHitBox!!.passengers.add(this)
             return
         }
 
@@ -244,7 +255,7 @@ class NMSPetArmorstand(owner: Player, val petMeta: PetMeta) : EntityArmorStand((
         val aiFlyRiding = this.petMeta.aiGoals.firstOrNull { a -> a is AIFlyRiding }
 
         if (aiFlyRiding != null) {
-            rideInAir(human as EntityHuman, aiFlyRiding as AIFlyRiding, f2)
+            rideInAir(human as EntityHuman, aiFlyRiding as AIFlyRiding)
             return
         }
 
@@ -259,7 +270,7 @@ class NMSPetArmorstand(owner: Player, val petMeta: PetMeta) : EntityArmorStand((
     /**
      * Handles the riding in air.
      */
-    private fun rideInAir(human: EntityHuman, ai: AIFlyRiding, f2: Float) {
+    private fun rideInAir(human: EntityHuman, ai: AIFlyRiding) {
         val sideMot: Float = human.bh * 0.5f
         val forMot: Float = human.bj
 

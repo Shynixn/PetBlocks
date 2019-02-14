@@ -3,9 +3,9 @@
 package com.github.shynixn.petblocks.bukkit.logic.business.nms.v1_13_R2
 
 import com.github.shynixn.petblocks.api.business.proxy.EntityPetProxy
-import net.minecraft.server.v1_13_R2.EntityCreature
+import net.minecraft.server.v1_13_R2.EntityInsentient
 import org.bukkit.craftbukkit.v1_13_R2.CraftServer
-import org.bukkit.craftbukkit.v1_13_R2.entity.CraftCreature
+import org.bukkit.craftbukkit.v1_13_R2.entity.CraftLivingEntity
 
 /**
  * Created by Shynixn 2019.
@@ -34,7 +34,7 @@ import org.bukkit.craftbukkit.v1_13_R2.entity.CraftCreature
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class CraftPet(server: CraftServer, nmsPet: EntityCreature) : CraftCreature(server, nmsPet), EntityPetProxy {
+class CraftPet(server: CraftServer, nmsPet: EntityInsentient) : CraftLivingEntity(server, nmsPet), EntityPetProxy {
     /**
      * Removes this entity.
      */
