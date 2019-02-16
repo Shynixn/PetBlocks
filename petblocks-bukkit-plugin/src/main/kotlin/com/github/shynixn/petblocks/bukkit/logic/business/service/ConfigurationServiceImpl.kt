@@ -114,9 +114,7 @@ class ConfigurationServiceImpl @Inject constructor(
             }
 
             this.setItem<String>("permission", description) { value -> guiItem.permission = value }
-            this.setItem<Boolean>("hidden-when-no-permission", description) { value -> guiItem.hiddenWhenNoPermission = value }
             this.setItem<Boolean>("hidden", description) { value -> guiItem.hidden = value }
-            this.setItem<Boolean>("hidden-when-pet-is-spawned", description) { value -> guiItem.hiddenWhenPetIsSpawned = value }
             this.setItem<Int>("position", description) { value -> guiItem.position = value - 1 }
             this.setItem<Boolean>("fixed", description) { value -> guiItem.fixed = value }
             this.setItem<String>("script", description) { value -> guiItem.script = value }
@@ -138,7 +136,7 @@ class ConfigurationServiceImpl @Inject constructor(
                 null
             }
 
-            this.setItem<Int>("id", skinDescription) { value -> guiItem.targetSkin!!.typeName = value.toString()}
+            this.setItem<Int>("id", skinDescription) { value -> guiItem.targetSkin!!.typeName = value.toString() }
             this.setItem<Int>("damage", skinDescription) { value -> guiItem.targetSkin!!.dataValue = value }
             this.setItem<Boolean>("unbreakable", skinDescription) { value -> guiItem.targetSkin!!.unbreakable = value }
             this.setItem<String>("skin", skinDescription) { value ->
@@ -168,8 +166,28 @@ class ConfigurationServiceImpl @Inject constructor(
                 for (goalKey in goalsMap.keys) {
                     val aiMap = goalsMap[goalKey] as Map<String, Any>
                     val type = aiMap["type"] as String
-                    guiItem.addAIs.add(aiService.deserializeAiBase(type, aiMap))
+                    guiItem.removeAIs.add(aiService.deserializeAiBase(type, aiMap))
                 }
+            }
+
+            if (description.containsKey("replace-ai")) {
+                val goalsMap = (description["replace-ai"] as MemorySection).getValues(false)
+                deserialize(goalsMap)
+
+                for (goalKey in goalsMap.keys) {
+                    val aiMap = goalsMap[goalKey] as Map<String, Any>
+                    val type = aiMap["type"] as String
+                    guiItem.addAIs.add(aiService.deserializeAiBase(type, aiMap))
+                    guiItem.removeAIs.add(aiService.deserializeAiBase(type, aiMap))
+                }
+            }
+
+            if (description.containsKey("blocked-on")) {
+                guiItem.blockedCondition = (description["blocked-on"] as List<String>).toTypedArray()
+            }
+
+            if (description.containsKey("hidden-on")) {
+                guiItem.hiddenCondition = (description["hidden-on"] as List<String>).toTypedArray()
             }
 
             if (guiItem.icon.displayName.startsWith("minecraft-heads.com/")) {

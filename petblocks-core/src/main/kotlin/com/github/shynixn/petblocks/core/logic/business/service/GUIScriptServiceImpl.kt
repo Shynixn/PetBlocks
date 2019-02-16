@@ -71,17 +71,26 @@ class GUIScriptServiceImpl @Inject constructor(private val logger: LoggingServic
             } else if (script.startsWith("print-custom-skin-message")) {
                 scriptResult.action = ScriptAction.PRINT_CUSTOM_SKIN_MESSAGE
                 return scriptResult
-            }
-            else if (script.startsWith("print-rename-message")) {
+            } else if (script.startsWith("print-rename-message")) {
                 scriptResult.action = ScriptAction.PRINT_CUSTOM_NAME_MESSAGE
                 return scriptResult
-            }
-            else if (script.startsWith("connect-head-database")) {
+            } else if (script.startsWith("connect-head-database")) {
                 scriptResult.action = ScriptAction.CONNECT_HEAD_DATABASE
                 return scriptResult
-            }
-            else if (script.startsWith("launch-cannon")) {
+            } else if (script.startsWith("launch-cannon")) {
                 scriptResult.action = ScriptAction.LAUNCH_CANNON
+                return scriptResult
+            } else if (script.startsWith("enable-sound")) {
+                scriptResult.action = ScriptAction.ENABLE_SOUND
+                return scriptResult
+            } else if (script.startsWith("disable-sound")) {
+                scriptResult.action = ScriptAction.DISABLE_SOUND
+                return scriptResult
+            } else if (script.startsWith("enable-particles")) {
+                scriptResult.action = ScriptAction.ENABLE_PARTICLES
+                return scriptResult
+            } else if (script.startsWith("disable-particles")) {
+                scriptResult.action = ScriptAction.DISABLE_PARTICLES
                 return scriptResult
             }
         } catch (e: Exception) {

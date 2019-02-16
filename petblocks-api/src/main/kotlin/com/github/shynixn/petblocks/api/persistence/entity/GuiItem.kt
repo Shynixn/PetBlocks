@@ -45,19 +45,19 @@ interface GuiItem {
     var hidden: Boolean
 
     /**
-     * Should this icon be hidden when the pet is spawned?
+     * Is this gui item hidden when a player has certain condition.
      */
-    var hiddenWhenPetIsSpawned: Boolean
+    var hiddenCondition: Array<String>?
+
+    /**
+     * Is this gui item not clickable when a player has certain condition.
+     */
+    var blockedCondition: Array<String>?
 
     /**
      * Required permission to perform this action.
      */
     var permission: String
-
-    /**
-     * Should the item be hidden if the player has not not the permissions.
-     */
-    var hiddenWhenNoPermission: Boolean
 
     /** Returns the position in the inventory. */
     var position: Int

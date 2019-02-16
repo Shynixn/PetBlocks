@@ -34,6 +34,14 @@ import com.github.shynixn.petblocks.api.persistence.entity.Skin
  */
 class GuiItemEntity : GuiItem {
     /**
+     * Is this gui item hidden when a player has certain condition.
+     */
+    override var hiddenCondition: Array<String>? = null
+    /**
+     * Is this gui item not clickable when a player has certain ais.
+     */
+    override var blockedCondition: Array<String>? = null
+    /**
      * Target skin.
      */
     override var targetSkin: Skin? = null
@@ -50,10 +58,6 @@ class GuiItemEntity : GuiItem {
      * Required permission to perform this action.
      */
     override var permission: String = ""
-    /**
-     * Should the item be hidden if the player has not not the permissions.
-     */
-    override var hiddenWhenNoPermission: Boolean = false
 
     /**
      * Position in the inventory which cannot be scrolled.
@@ -64,11 +68,6 @@ class GuiItemEntity : GuiItem {
      * Should this icon always be hidden?
      */
     override var hidden: Boolean = false
-
-    /**
-     * Should this icon be hidden when the pet is spawned?
-     */
-    override var hiddenWhenPetIsSpawned: Boolean = false
     /**
      * Gets a nullable script
      * which can be used for defining the action of the gui item.

@@ -263,6 +263,10 @@ class GUIServiceImpl @Inject constructor(
 
         val petMeta = persistenceService.getPetMetaFromPlayer(player)
 
+        if (optGuiItem.blockedCondition != null && isConditionMatching(petMeta, optGuiItem.blockedCondition!!)) {
+            return
+        }
+
         if (pageCache.containsKey(player)) {
             var pageCache = pageCache[player]!!
 
@@ -325,6 +329,18 @@ class GUIServiceImpl @Inject constructor(
             } else if (scriptResult.action == ScriptAction.LAUNCH_CANNON) {
                 petActionService.launchPet(player)
                 this.close(player)
+            } else if (scriptResult.action == ScriptAction.ENABLE_SOUND) {
+                petMeta.soundEnabled = true
+                renderPage(player, petMeta, pageCache[player]!!.path)
+            } else if (scriptResult.action == ScriptAction.DISABLE_SOUND) {
+                petMeta.soundEnabled = false
+                renderPage(player, petMeta, pageCache[player]!!.path)
+            } else if (scriptResult.action == ScriptAction.ENABLE_PARTICLES) {
+                petMeta.particleEnabled = true
+                renderPage(player, petMeta, pageCache[player]!!.path)
+            } else if (scriptResult.action == ScriptAction.DISABLE_PARTICLES) {
+                petMeta.particleEnabled = false
+                renderPage(player, petMeta, pageCache[player]!!.path)
             } else if (scriptResult.action == ScriptAction.CLOSE_GUI) {
                 val page = pageCache[player]!!
 
@@ -332,13 +348,13 @@ class GUIServiceImpl @Inject constructor(
                     this.close(player)
                 } else {
                     pageCache[player] = page.parent!!
-                    renderPage(player,  petMeta,pageCache[player]!!.path)
+                    renderPage(player, petMeta, pageCache[player]!!.path)
                 }
             } else if (scriptResult.action == ScriptAction.OPEN_PAGE) {
                 val parent = pageCache[player]!!
-                pageCache[player] = GuiPlayerCacheEntity(scriptResult.valueContainer as String, parent.getInventory(),parent.advertisingMessageTime)
+                pageCache[player] = GuiPlayerCacheEntity(scriptResult.valueContainer as String, parent.getInventory(), parent.advertisingMessageTime)
                 pageCache[player]!!.parent = parent
-                renderPage(player,  petMeta,scriptResult.valueContainer as String)
+                renderPage(player, petMeta, scriptResult.valueContainer as String)
             }
         }
     }
@@ -362,7 +378,7 @@ class GUIServiceImpl @Inject constructor(
                 continue
             }
 
-            if (petMeta.enabled && item.hiddenWhenPetIsSpawned) {
+            if (item.hiddenCondition != null && isConditionMatching(petMeta, item.hiddenCondition!!)) {
                 continue
             }
 
@@ -370,10 +386,10 @@ class GUIServiceImpl @Inject constructor(
 
             if (item.permission.isNotEmpty()) {
                 hasPermission = player.hasPermission(item.permission)
-            }
 
-            if (!hasPermission && item.hiddenWhenNoPermission) {
-                continue
+                if (!hasPermission && item.hiddenCondition != null && item.hiddenCondition!!.contains("no-permission")) {
+                    continue
+                }
             }
 
             val position = if (item.fixed) {
@@ -413,10 +429,6 @@ class GUIServiceImpl @Inject constructor(
                     if (offsetData.first > 0) {
                         for (s in items) {
                             if (s.hidden) {
-                                continue
-                            }
-
-                            if (petMeta.enabled && s.hiddenWhenPetIsSpawned) {
                                 continue
                             }
 
@@ -487,6 +499,45 @@ class GUIServiceImpl @Inject constructor(
         itemStack.itemMeta = meta
 
         inventory.setItem(position, itemStack)
+    }
+
+    /**
+     * Checks if the condition holds or not.
+     */
+    private fun isConditionMatching(petMeta: PetMeta, names: Array<String>): Boolean {
+        for (name in names) {
+            for (aiGoal in petMeta.aiGoals) {
+                if (aiGoal.type.equals(name, true)) {
+                    return true
+                }
+            }
+
+            if (petMeta.enabled && name.equals("pet-enabled", true)) {
+                return true
+            }
+
+            if (!petMeta.enabled && name.equals("pet-disabled", true)) {
+                return true
+            }
+
+            if (petMeta.soundEnabled && name.equals("sound-enabled", true)) {
+                return true
+            }
+
+            if (!petMeta.soundEnabled && name.equals("sound-disabled", true)) {
+                return true
+            }
+
+            if (petMeta.particleEnabled && name.equals("particle-enabled", true)) {
+                return true
+            }
+
+            if (!petMeta.particleEnabled && name.equals("particle-disabled", true)) {
+                return true
+            }
+        }
+
+        return false
     }
 
     /**

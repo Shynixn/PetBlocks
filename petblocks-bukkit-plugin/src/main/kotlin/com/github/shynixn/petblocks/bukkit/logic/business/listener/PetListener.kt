@@ -165,7 +165,7 @@ class PetListener @Inject constructor(
         val pet = petService.getOrSpawnPetFromPlayer(event.player).get()
         pet.remove()
 
-        val warpDelay = configurationService.findValue<Int>("pet.warp.teleports-in-seconds") * 20L
+        val warpDelay = configurationService.findValue<Int>("global-configuration.respawn-delay") * 20L
 
         sync(concurrencyService, warpDelay) {
             petService.getOrSpawnPetFromPlayer(event.player)
@@ -187,7 +187,7 @@ class PetListener @Inject constructor(
         if (event.to.world.name != event.from.world.name) {
             pet.remove()
 
-            val warpDelay = configurationService.findValue<Int>("pet.warp.teleports-in-seconds") * 20L
+            val warpDelay = configurationService.findValue<Int>("global-configuration.teleport-delay") * 20L
 
             sync(concurrencyService, warpDelay) {
                 petService.getOrSpawnPetFromPlayer(event.player)
@@ -200,7 +200,7 @@ class PetListener @Inject constructor(
             return
         }
 
-        val fallOffHead = configurationService.findValue<Boolean>("pet.follow.teleport-fall")
+        val fallOffHead = configurationService.findValue<Boolean>("global-configuration.teleport-fall")
 
         if (fallOffHead) {
             pet.meta.aiGoals.removeIf { a -> a is AIGroundRiding || a is AIFlyRiding || a is AIWearing }

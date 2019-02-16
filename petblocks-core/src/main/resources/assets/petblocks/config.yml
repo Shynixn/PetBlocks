@@ -343,6 +343,9 @@ gui:
         name: '&2&lHat'
         lore:
         - '&7Wear your pet like a hat.'
+      replace-ai:
+        1:
+          type: 'wearing'
     ride-pet:
       row: 2
       col: 9
@@ -353,6 +356,12 @@ gui:
         name: '&2&lRide'
         lore:
         - '&7Start to ride your pet.'
+      replace-ai:
+        1:
+          type: 'ground-riding'
+          climbing-height: 1.0
+          speed: 2.0
+          offset-y: -1
     rename-pet:
       row: 5
       col: 7

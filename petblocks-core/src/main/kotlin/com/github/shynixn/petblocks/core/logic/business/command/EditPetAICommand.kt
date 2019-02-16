@@ -65,6 +65,20 @@ class EditPetAICommand @Inject constructor(
             var addAmount = 0
             var removeAmount = 0
 
+            if (configuration.containsKey("replace-ai")) {
+                val replaceAis = configuration["replace-ai"] as Map<String, Any?>
+
+                for (mapData in replaceAis.keys) {
+                    val data = replaceAis[mapData] as Map<String, Any?>
+                    val aiBase = aiService.deserializeAiBase<AIBase>(data["type"] as String, data)
+
+                    removeAmount += petMeta.aiGoals.filter { a -> a.type == aiBase.type }.size
+                    petMeta.aiGoals.removeAll { a -> a.type == aiBase.type }
+
+                    petMeta.aiGoals.add(aiBase)
+                }
+            }
+
             if (configuration.containsKey("remove-ai")) {
                 val removeAis = configuration["remove-ai"] as Map<String, Any?>
 
@@ -84,8 +98,7 @@ class EditPetAICommand @Inject constructor(
                     val data = addAis[mapData] as Map<String, Any?>
                     val aiBase = aiService.deserializeAiBase<AIBase>(data["type"] as String, data)
 
-                    removeAmount += petMeta.aiGoals.filter { a -> a.type == aiBase.type }.size
-                    petMeta.aiGoals.removeAll { a -> a.type == aiBase.type }
+                    petMeta.aiGoals.add(aiBase)
                 }
 
                 addAmount += addAis.size

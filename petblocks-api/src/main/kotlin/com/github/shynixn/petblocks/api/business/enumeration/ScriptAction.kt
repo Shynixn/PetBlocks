@@ -65,6 +65,25 @@ enum class ScriptAction {
     LAUNCH_CANNON,
 
     /**
+     * Enable pet sounds.
+     */
+    ENABLE_SOUND,
+
+    /**
+     * Disables pet sounds.
+     */
+    DISABLE_SOUND,
+
+    /**
+     * Enables pet particles.
+     */
+    ENABLE_PARTICLES,
+
+    /**
+     * Disables pet particles.
+     */
+    DISABLE_PARTICLES,
+    /**
      * Prints the suggest head message.
      */
     PRINT_SUGGEST_HEAD_MESSAGE,
