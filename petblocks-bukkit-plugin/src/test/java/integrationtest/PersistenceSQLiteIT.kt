@@ -99,12 +99,12 @@ class PersistenceSQLiteIT {
         Assertions.assertEquals("", actual.skin.owner)
         Assertions.assertEquals(1, actual.playerMeta.id)
         Assertions.assertEquals("Kenny", actual.playerMeta.name)
-        Assertions.assertEquals(7, actual.aiGoals.size)
+        Assertions.assertEquals(5, actual.aiGoals.size)
 
         Assertions.assertEquals("hopping", (actual.aiGoals[0] as AIMovementEntity).type)
         Assertions.assertEquals(1.0, (actual.aiGoals[0] as AIMovementEntity).climbingHeight)
         Assertions.assertEquals(1.0, (actual.aiGoals[0] as AIMovementEntity).movementSpeed)
-        Assertions.assertEquals(0.75, (actual.aiGoals[0] as AIMovementEntity).movementYOffSet)
+        Assertions.assertEquals(0.5, (actual.aiGoals[0] as AIMovementEntity).movementYOffSet)
         Assertions.assertEquals("CHICKEN_WALK", (actual.aiGoals[0] as AIMovementEntity).movementSound.name)
         Assertions.assertEquals(1.0, (actual.aiGoals[0] as AIMovementEntity).movementSound.volume)
         Assertions.assertEquals(1.0, (actual.aiGoals[0] as AIMovementEntity).movementSound.pitch)
@@ -117,20 +117,14 @@ class PersistenceSQLiteIT {
         Assertions.assertEquals(2.5, (actual.aiGoals[1] as AIFollowOwner).speed)
 
         Assertions.assertEquals("float-in-water", (actual.aiGoals[2] as AIFloatInWater).type)
-        Assertions.assertEquals("wearing", (actual.aiGoals[3] as AIWearing).type)
 
-        Assertions.assertEquals("ground-riding", (actual.aiGoals[4] as AIGroundRiding).type)
-        Assertions.assertEquals(1.0, (actual.aiGoals[4] as AIGroundRiding).climbingHeight)
-        Assertions.assertEquals(1.0, (actual.aiGoals[4] as AIGroundRiding).ridingSpeed)
-        Assertions.assertEquals(1.0, (actual.aiGoals[4] as AIGroundRiding).ridingYOffSet)
+        Assertions.assertEquals("feeding", (actual.aiGoals[3] as AIFeeding).type)
+        Assertions.assertEquals("391", (actual.aiGoals[3] as AIFeeding).typeName)
+        Assertions.assertEquals(ParticleType.HEART, (actual.aiGoals[3] as AIFeeding).clickParticle.type)
+        Assertions.assertEquals("EAT", (actual.aiGoals[3] as AIFeeding).clickSound.name)
 
-        Assertions.assertEquals("feeding", (actual.aiGoals[5] as AIFeeding).type)
-        Assertions.assertEquals("391", (actual.aiGoals[5] as AIFeeding).typeName)
-        Assertions.assertEquals(ParticleType.HEART, (actual.aiGoals[5] as AIFeeding).clickParticle.type)
-        Assertions.assertEquals("EAT", (actual.aiGoals[5] as AIFeeding).clickSound.name)
-
-        Assertions.assertEquals("ambient-sound", (actual.aiGoals[6] as AIAmbientSound).type)
-        Assertions.assertEquals("CHICKEN_IDLE", (actual.aiGoals[6] as AIAmbientSound).sound.name)
+        Assertions.assertEquals("ambient-sound", (actual.aiGoals[4] as AIAmbientSound).type)
+        Assertions.assertEquals("CHICKEN_IDLE", (actual.aiGoals[4] as AIAmbientSound).sound.name)
     }
 
     /**
@@ -174,17 +168,13 @@ class PersistenceSQLiteIT {
         (petMeta.aiGoals[1] as AIFollowOwner).speed = 42.2
 
         (petMeta.aiGoals[2] as AIFloatInWater).userId = "43"
-        (petMeta.aiGoals[3] as AIWearing).userId = "465"
-        (petMeta.aiGoals[4] as AIGroundRiding).climbingHeight = 88.2
-        (petMeta.aiGoals[4] as AIGroundRiding).ridingSpeed = 165.2
-        (petMeta.aiGoals[4] as AIGroundRiding).ridingYOffSet = 99.44
 
-        (petMeta.aiGoals[5] as AIFeeding).clickParticle.offSetZ = 25.4
-        (petMeta.aiGoals[5] as AIFeeding).clickSound.name = "COOKIE_SOUND"
-        (petMeta.aiGoals[5] as AIFeeding).dataValue = 4
-        (petMeta.aiGoals[5] as AIFeeding).typeName = "POWER_BANK"
+        (petMeta.aiGoals[3] as AIFeeding).clickParticle.offSetZ = 25.4
+        (petMeta.aiGoals[3] as AIFeeding).clickSound.name = "COOKIE_SOUND"
+        (petMeta.aiGoals[3] as AIFeeding).dataValue = 4
+        (petMeta.aiGoals[3] as AIFeeding).typeName = "POWER_BANK"
 
-        (petMeta.aiGoals[6] as AIAmbientSound).sound.volume = 41.55
+        (petMeta.aiGoals[4] as AIAmbientSound).sound.volume = 41.55
 
         classUnderTest.save(petMeta).get()
         val actual = classUnderTest.getPetMetaFromPlayer(player)
@@ -218,21 +208,15 @@ class PersistenceSQLiteIT {
         Assertions.assertEquals(42.2, (actual.aiGoals[1] as AIFollowOwner).speed)
 
         Assertions.assertEquals("43", (actual.aiGoals[2] as AIFloatInWater).userId!!)
-        Assertions.assertEquals("465", (actual.aiGoals[3] as AIWearing).userId)
 
-        Assertions.assertEquals("ground-riding", (actual.aiGoals[4] as AIGroundRiding).type)
-        Assertions.assertEquals(88.2, (actual.aiGoals[4] as AIGroundRiding).climbingHeight)
-        Assertions.assertEquals(165.2, (actual.aiGoals[4] as AIGroundRiding).ridingSpeed)
-        Assertions.assertEquals(99.44, (actual.aiGoals[4] as AIGroundRiding).ridingYOffSet)
+        Assertions.assertEquals("feeding", (actual.aiGoals[3] as AIFeeding).type)
+        Assertions.assertEquals("POWER_BANK", (actual.aiGoals[3] as AIFeeding).typeName)
+        Assertions.assertEquals(4, (actual.aiGoals[3] as AIFeeding).dataValue)
+        Assertions.assertEquals("COOKIE_SOUND", (actual.aiGoals[3] as AIFeeding).clickSound.name)
+        Assertions.assertEquals(25.4, (actual.aiGoals[3] as AIFeeding).clickParticle.offSetZ)
 
-        Assertions.assertEquals("feeding", (actual.aiGoals[5] as AIFeeding).type)
-        Assertions.assertEquals("POWER_BANK", (actual.aiGoals[5] as AIFeeding).typeName)
-        Assertions.assertEquals(4, (actual.aiGoals[5] as AIFeeding).dataValue)
-        Assertions.assertEquals("COOKIE_SOUND", (actual.aiGoals[5] as AIFeeding).clickSound.name)
-        Assertions.assertEquals(25.4, (actual.aiGoals[5] as AIFeeding).clickParticle.offSetZ)
-
-        Assertions.assertEquals("ambient-sound", (actual.aiGoals[6] as AIAmbientSound).type)
-        Assertions.assertEquals(41.55, (actual.aiGoals[6] as AIAmbientSound).sound.volume)
+        Assertions.assertEquals("ambient-sound", (actual.aiGoals[4] as AIAmbientSound).type)
+        Assertions.assertEquals(41.55, (actual.aiGoals[4] as AIAmbientSound).sound.volume)
     }
 
     companion object {
