@@ -55,10 +55,10 @@ class DependencyServiceTest {
      * When
      *    checkForInstalledDependencies is called
      * Then
-     *    Message should be called twice per dependency.
+     *    Message should be called once per dependency.
      */
     @Test
-    fun checkForInstalledDependencies_TwoInstalledDependencies_ShouldCallMessageTwicePerDependency() {
+    fun checkForInstalledDependencies_TwoInstalledDependencies_ShouldCallMessageOncePerDependency() {
         // Arrange
         val consoleSender = MockedConsoleSender()
         val classUnderTest = createWithDependencies(consoleSender)
@@ -67,7 +67,7 @@ class DependencyServiceTest {
         classUnderTest.checkForInstalledDependencies()
 
         // Assert
-        Assertions.assertEquals(4, consoleSender.messageCounter)
+        Assertions.assertEquals(2, consoleSender.messageCounter)
     }
 
     /**
@@ -103,7 +103,7 @@ class DependencyServiceTest {
     fun getVersion_InstalledDependencies_ShouldReturnVersion() {
         // Arrange
         val version = "1.0"
-        val dependency = PluginDependency.WORLDGUARD
+        val dependency = PluginDependency.HEADDATABASE
         val classUnderTest = createWithDependencies()
 
         // Act
@@ -124,7 +124,7 @@ class DependencyServiceTest {
     @Test
     fun getVersion_NoInstalledDependencies_ShouldThrowException() {
         // Arrange
-        val dependency = PluginDependency.WORLDGUARD
+        val dependency = PluginDependency.HEADDATABASE
         val classUnderTest = createWithDependencies(null, false)
 
         // Act
@@ -144,7 +144,7 @@ class DependencyServiceTest {
     @Test
     fun isInstalled_InstalledDependencies_ShouldReturnTrue() {
         // Arrange
-        val dependency = PluginDependency.WORLDGUARD
+        val dependency = PluginDependency.HEADDATABASE
         val classUnderTest = createWithDependencies()
 
         // Act
@@ -166,7 +166,7 @@ class DependencyServiceTest {
     @Test
     fun isInstalled_InstalledDependencies_ShouldReturnFalse() {
         // Arrange
-        val dependency = PluginDependency.WORLDGUARD
+        val dependency = PluginDependency.HEADDATABASE
         val classUnderTest = createWithDependencies(null, false)
 
         // Act

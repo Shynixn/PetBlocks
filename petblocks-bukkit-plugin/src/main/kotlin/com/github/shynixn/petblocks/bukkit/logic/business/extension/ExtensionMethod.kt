@@ -324,16 +324,20 @@ var ItemStack.skin: String?
  * Gets the server version the plugin is running on.
  */
 fun getServerVersion(): Version {
-    if (Bukkit.getServer() == null || Bukkit.getServer().javaClass.getPackage() == null) {
-        return Version.VERSION_UNKNOWN
-    }
-
-    val version = Bukkit.getServer().javaClass.getPackage().name.replace(".", ",").split(",".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()[3]
-
-    for (versionSupport in Version.values()) {
-        if (versionSupport.bukkitId == version) {
-            return versionSupport
+    try {
+        if (Bukkit.getServer() == null || Bukkit.getServer().javaClass.getPackage() == null) {
+            return Version.VERSION_UNKNOWN
         }
+
+        val version = Bukkit.getServer().javaClass.getPackage().name.replace(".", ",").split(",".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()[3]
+
+        for (versionSupport in Version.values()) {
+            if (versionSupport.bukkitId == version) {
+                return versionSupport
+            }
+        }
+
+    }catch (e : Exception){
     }
 
     return Version.VERSION_UNKNOWN

@@ -13,7 +13,6 @@ import com.github.shynixn.petblocks.bukkit.logic.business.extension.findClazz
 import com.github.shynixn.petblocks.bukkit.logic.business.proxy.PathfinderProxyImpl
 import com.github.shynixn.petblocks.core.logic.business.proxy.AICreationProxyImpl
 import com.google.inject.Inject
-import net.minecraft.server.v1_13_R2.EntityTypes
 import org.bukkit.ChatColor
 import org.bukkit.GameMode
 import org.bukkit.Location
@@ -65,7 +64,6 @@ class EntityServiceImpl @Inject constructor(
 ) : EntityService {
 
     private var registered = false
-    private val getHandleMethod = Class.forName("org.bukkit.craftbukkit.VERSION.entity.CraftLivingEntity".replace("VERSION", version.bukkitId)).getDeclaredMethod("getHandle")!!
 
     init {
         this.register<AIAfraidOfWater>(AIType.AFRAID_OF_WATER) { pet, aiBase ->
@@ -115,6 +113,8 @@ class EntityServiceImpl @Inject constructor(
         this.register<AIFeeding>(AIType.FEEDING)
 
         this.register<AIFloatInWater>(AIType.FLOAT_IN_WATER) { pet, _ ->
+            val getHandleMethod = Class.forName("org.bukkit.craftbukkit.VERSION.entity.CraftLivingEntity".replace("VERSION", version.bukkitId)).getDeclaredMethod("getHandle")!!
+
             version.findClazz("net.minecraft.server.VERSION.PathfinderGoalFloat")
                 .getDeclaredConstructor(version.findClazz("net.minecraft.server.VERSION.EntityInsentient"))
                 .newInstance(getHandleMethod.invoke(pet.getHitBoxLivingEntity<LivingEntity>().get()))

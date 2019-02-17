@@ -11,7 +11,7 @@ import com.github.shynixn.petblocks.bukkit.logic.business.extension.getServerVer
 import com.github.shynixn.petblocks.bukkit.logic.business.listener.PetListener
 import com.github.shynixn.petblocks.bukkit.logic.business.proxy.SqlProxyImpl
 import com.github.shynixn.petblocks.bukkit.logic.business.service.*
-import com.github.shynixn.petblocks.core.jvm.logic.persistence.service.LoggingUtilServiceImpl
+import com.github.shynixn.petblocks.core.logic.business.service.LoggingUtilServiceImpl
 import com.github.shynixn.petblocks.core.logic.business.command.*
 import com.github.shynixn.petblocks.core.logic.business.commandexecutor.EditPetCommandExecutorImpl
 import com.github.shynixn.petblocks.core.logic.business.commandexecutor.PlayerPetActionCommandExecutorImpl

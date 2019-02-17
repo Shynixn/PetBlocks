@@ -1,4 +1,4 @@
-package api.persistence.entity
+package com.github.shynixn.petblocks.api.persistence.entity
 
 import com.github.shynixn.petblocks.api.business.service.PropertyTrackingService
 

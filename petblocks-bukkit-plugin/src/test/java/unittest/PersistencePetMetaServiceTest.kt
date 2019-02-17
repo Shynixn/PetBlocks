@@ -2,20 +2,21 @@
 
 package unittest
 
-import com.github.shynixn.petblocks.api.business.proxy.CompletableFutureProxy
-import com.github.shynixn.petblocks.api.business.proxy.PetProxy
 import com.github.shynixn.petblocks.api.business.proxy.PlayerProxy
 import com.github.shynixn.petblocks.api.business.service.ConcurrencyService
+import com.github.shynixn.petblocks.api.business.service.EventService
 import com.github.shynixn.petblocks.api.business.service.PersistencePetMetaService
 import com.github.shynixn.petblocks.api.business.service.ProxyService
 import com.github.shynixn.petblocks.api.persistence.entity.PetMeta
 import com.github.shynixn.petblocks.api.persistence.repository.PetMetaRepository
-import com.github.shynixn.petblocks.api.persistence.repository.PetRepository
-import com.github.shynixn.petblocks.core.jvm.logic.business.proxy.CompletableFutureProxyImpl
+import com.github.shynixn.petblocks.bukkit.logic.business.proxy.PlayerProxyImpl
 import com.github.shynixn.petblocks.core.logic.business.service.PersistencePetMetaServiceImpl
 import com.github.shynixn.petblocks.core.logic.persistence.entity.PetMetaEntity
 import com.github.shynixn.petblocks.core.logic.persistence.entity.PlayerMetaEntity
 import com.github.shynixn.petblocks.core.logic.persistence.entity.SkinEntity
+import org.bukkit.Location
+import org.bukkit.World
+import org.bukkit.entity.Player
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito
@@ -52,30 +53,6 @@ import java.util.*
 class PersistencePetMetaServiceTest {
     /**
      * Given
-     *      petMetas in runtime cache and petMetas in database
-     * When
-     *      getAll is called
-     * Then
-     *     all petMeta of the runtime and database cache should be returned without one being double returned.
-     */
-    @Test
-    fun getAll_RunTimePetMetaStoredPetMeta_ShouldReturnUniquePetMetas() {
-        // Arrange
-        val classUnderTest = createWithDependencies()
-
-        // Act
-        val petMetas = classUnderTest.getAll().get()
-        val amountWithSameId = petMetas.count { p -> p.id == 1L }
-        val petMeta = petMetas[1]
-
-        // Assert
-        Assertions.assertEquals(1, amountWithSameId)
-        Assertions.assertEquals("Keks", petMeta.displayName)
-        Assertions.assertEquals("Batman", petMeta.playerMeta.name)
-    }
-
-    /**
-     * Given
      *      one existing petMeta in the repository
      * When
      *      getOrCreateFromPlayerUUID by uuid is called
@@ -86,36 +63,15 @@ class PersistencePetMetaServiceTest {
     fun getOrCreateFromPlayerUUID_ExistingPetMeta_ShouldReturnThisPetMeta() {
         // Arrange
         val classUnderTest = createWithDependencies()
-        val uuid = UUID.fromString("ecd66f19-3b5b-4910-b8e6-1716b5a636bf")
+        val player = Mockito.mock(Player::class.java)
+        `when`(player.uniqueId).thenReturn(UUID.fromString("ecd66f19-3b5b-4910-b8e6-1716b5a636bf"))
 
         // Act
-        val petMeta = classUnderTest.getOrCreateFromPlayerUUID(uuid.toString()).get()
+        val petMeta = classUnderTest.getPetMetaFromPlayer(player)
 
         // Assert
         Assertions.assertEquals("Kenny", petMeta.playerMeta.name)
         Assertions.assertEquals("Cloud", petMeta.skin.owner)
-    }
-
-    /**
-     * Given
-     *      one existing petMeta in the runtime cache.
-     * When
-     *      getOrCreateFromPlayerUUID by uuid is called
-     * Then
-     *     the petMeta in runtime cache of this uuid should be returned.
-     */
-    @Test
-    fun getOrCreateFromPlayerUUID_ExistingPetMetaRunTime_ShouldReturnThisPetMeta() {
-        // Arrange
-        val classUnderTest = createWithDependencies()
-        val uuid = UUID.fromString("c7d21810-d2a0-407d-a389-14efd3eb79d2")
-
-        // Act
-        val petMeta = classUnderTest.getOrCreateFromPlayerUUID(uuid.toString()).get()
-
-        // Assert
-        Assertions.assertEquals("Beeman", petMeta.playerMeta.name)
-        Assertions.assertEquals("Test", petMeta.displayName)
     }
 
     /**
@@ -169,66 +125,7 @@ class PersistencePetMetaServiceTest {
 
     companion object {
         fun createWithDependencies(petMetaRepository: PetMetaRepository = MockedPetMetaRepository()): PersistencePetMetaService {
-            return PersistencePetMetaServiceImpl(MockedConcurrencyService(), MockedProxyService(), petMetaRepository, MockedPetRepository())
-        }
-    }
-
-    class MockedPetRepository : PetRepository {
-        /**
-         * Returns [List] with a list of stored [PetProxy].
-         */
-        override fun getAll(): List<PetProxy> {
-            val pet = Mockito.mock(PetProxy::class.java)
-            val petMeta = PetMetaEntity(PlayerMetaEntity(UUID.randomUUID().toString(), "Batman"), SkinEntity())
-            petMeta.displayName = "Keks"
-            petMeta.id = 1
-
-            `when`(pet.meta).thenReturn(petMeta)
-
-            return arrayListOf(pet)
-        }
-
-        /**
-         * Removes the given petProxy from being managed.
-         */
-        override fun remove(petProxy: PetProxy) {
-            throw IllegalArgumentException()
-        }
-
-        /**
-         * Saves the petProxy into the repository.
-         */
-        override fun save(petProxy: PetProxy) {
-            throw IllegalArgumentException()
-        }
-
-        /**
-         * Gets the pet from the uuid. Throws exception if not exist.
-         */
-        override fun getFromPlayerUUID(uuid: String): PetProxy {
-            if (uuid == "c7d21810-d2a0-407d-a389-14efd3eb79d2") {
-                val pet = Mockito.mock(PetProxy::class.java)
-                val petMeta = PetMetaEntity(PlayerMetaEntity(UUID.randomUUID().toString(), "Beeman"), SkinEntity())
-                petMeta.displayName = "Test"
-                petMeta.id = 1
-
-                `when`(pet.meta).thenReturn(petMeta)
-
-                return pet
-            }
-
-            throw IllegalArgumentException()
-        }
-
-        /**
-         * Gets if the given player uniqueId has got an active pet.
-         */
-        override fun hasPet(uuid: String): Boolean {
-            if (uuid == "c7d21810-d2a0-407d-a389-14efd3eb79d2") {
-                return true
-            }
-
-            return false
+            return PersistencePetMetaServiceImpl(MockedProxyService(), petMetaRepository, MockedConcurrencyService(), MockedEventService())
         }
     }
 
@@ -280,20 +177,20 @@ class PersistencePetMetaServiceTest {
     }
 
     class MockedProxyService : ProxyService {
-        /**
-         * Returns a proxy object for the given instance.
-         * Throws a [IllegalArgumentException] if the proxy could not be generated.
-         */
-        override fun <P> findProxyObject(instance: Any): P {
-            throw IllegalArgumentException()
-        }
 
         /**
          * Returns a player proxy object for the given instance.
          * Throws a [IllegalArgumentException] if the proxy could not be generated.
          */
         override fun <P> findPlayerProxyObject(instance: P): PlayerProxy {
-            throw IllegalArgumentException()
+            if(instance !is Player){
+                throw RuntimeException()
+            }
+
+            `when`(instance.name).thenReturn("tmp")
+            `when`(instance.location).thenReturn(Location(Mockito.mock(World::class.java), 20.2, 20.2, 20.2))
+
+            return PlayerProxyImpl(instance as Player)
         }
 
         /**
@@ -304,23 +201,9 @@ class PersistencePetMetaServiceTest {
         }
 
         /**
-         * Gets the name of a  instance.
-         */
-        override fun <I> getNameOfInstance(instance: I): String {
-            throw IllegalArgumentException()
-        }
-
-        /**
-         * Tries to return a player proxy for the given player name.
-         */
-        override fun findPlayerProxyObjectFromName(name: String): PlayerProxy? {
-            throw IllegalArgumentException()
-        }
-
-        /**
          * Tries to return a player proxy for the given player uuid.
          */
-        override fun findPlayerProxyObjectFromUUID(uuid: String): PlayerProxy? {
+        override fun findPlayerProxyObjectFromUUID(uuid: String): PlayerProxy {
             if (uuid == "ecd66f19-3b5b-4910-b8e6-1716b5a636bf") {
                 val playerProxy = Mockito.mock(PlayerProxy::class.java)
                 `when`(playerProxy.name).thenReturn("Kenny")
@@ -339,14 +222,16 @@ class PersistencePetMetaServiceTest {
         }
     }
 
-    class MockedConcurrencyService : ConcurrencyService {
+    class MockedEventService : EventService {
         /**
-         * Creates a new completable future.
+         * Calls a framework event and returns if it was cancelled.
          */
-        override fun <T> createCompletableFuture(): CompletableFutureProxy<T> {
-            return CompletableFutureProxyImpl()
+        override fun callEvent(event: Any): Boolean {
+            return true
         }
+    }
 
+    class MockedConcurrencyService : ConcurrencyService {
         /**
          * Runs the given [function] synchronised with the given [delayTicks] and [repeatingTicks].
          */

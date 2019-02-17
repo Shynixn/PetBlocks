@@ -1,7 +1,7 @@
 package unittest
 
 import com.github.shynixn.petblocks.api.business.service.LoggingService
-import com.github.shynixn.petblocks.core.jvm.logic.persistence.service.LoggingSlf4jServiceImpl
+import com.github.shynixn.petblocks.core.logic.business.service.LoggingSlf4jServiceImpl
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito

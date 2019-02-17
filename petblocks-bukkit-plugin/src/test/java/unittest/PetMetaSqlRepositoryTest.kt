@@ -2,19 +2,20 @@
 
 package unittest
 
+import com.github.shynixn.petblocks.api.business.proxy.PlayerProxy
 import com.github.shynixn.petblocks.api.business.service.ConfigurationService
+import com.github.shynixn.petblocks.api.business.service.ProxyService
 import com.github.shynixn.petblocks.api.persistence.context.SqlDbContext
 import com.github.shynixn.petblocks.api.persistence.entity.GuiItem
 import com.github.shynixn.petblocks.api.persistence.entity.PetMeta
 import com.github.shynixn.petblocks.api.persistence.repository.PetMetaRepository
-import com.github.shynixn.petblocks.bukkit.logic.business.service.AIServiceImpl
-import com.github.shynixn.petblocks.core.logic.business.service.YamlSerializationServiceImpl
-import com.github.shynixn.petblocks.core.jvm.logic.persistence.service.LoggingUtilServiceImpl
+import com.github.shynixn.petblocks.bukkit.logic.business.service.YamlConfigurationServiceImpl
+import com.github.shynixn.petblocks.core.logic.business.service.LoggingUtilServiceImpl
+import com.github.shynixn.petblocks.core.logic.business.service.AIServiceImpl
 import com.github.shynixn.petblocks.core.logic.persistence.entity.PetMetaEntity
 import com.github.shynixn.petblocks.core.logic.persistence.entity.PlayerMetaEntity
 import com.github.shynixn.petblocks.core.logic.persistence.entity.SkinEntity
 import com.github.shynixn.petblocks.core.logic.persistence.repository.PetMetaSqlRepository
-import org.bukkit.plugin.Plugin
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito
@@ -162,7 +163,7 @@ class PetMetaSqlRepositoryTest {
 
     companion object {
         fun createWithDependencies(dbContext: SqlDbContext = MockedSqlDbContext()): PetMetaRepository {
-            return PetMetaSqlRepository(dbContext, AIServiceImpl(Mockito.mock(Plugin::class.java), LoggingUtilServiceImpl(Logger.getAnonymousLogger()), YamlSerializationServiceImpl()), MockedConfigurationService())
+            return PetMetaSqlRepository(dbContext, AIServiceImpl(LoggingUtilServiceImpl(Logger.getAnonymousLogger()), MockedProxyService(), YamlConfigurationServiceImpl()), MockedConfigurationService())
         }
     }
 
@@ -276,6 +277,45 @@ class PetMetaSqlRepositoryTest {
          */
         override fun <C> update(connection: C, table: String, rowSelection: String, vararg parameters: Pair<String, Any?>) {
             updateCalled = true
+        }
+    }
+
+    class MockedProxyService : ProxyService {
+
+        /**
+         * Returns a player proxy object for the given instance.
+         * Throws a [IllegalArgumentException] if the proxy could not be generated.
+         */
+        override fun <P> findPlayerProxyObject(instance: P): PlayerProxy {
+            throw IllegalArgumentException()
+        }
+
+        /**
+         * Gets if the given instance can be converted to a player.
+         */
+        override fun <P> isPlayer(instance: P): Boolean {
+            throw IllegalArgumentException()
+        }
+
+        /**
+         * Tries to return a player proxy for the given player uuid.
+         */
+        override fun findPlayerProxyObjectFromUUID(uuid: String): PlayerProxy {
+            if (uuid == "ecd66f19-3b5b-4910-b8e6-1716b5a636bf") {
+                val playerProxy = Mockito.mock(PlayerProxy::class.java)
+                Mockito.`when`(playerProxy.name).thenReturn("Kenny")
+
+                return playerProxy
+            }
+
+            throw IllegalArgumentException()
+        }
+
+        /**
+         * Clears any resources the given instance has allocated.
+         */
+        override fun cleanResources(instance: Any) {
+            throw IllegalArgumentException()
         }
     }
 }

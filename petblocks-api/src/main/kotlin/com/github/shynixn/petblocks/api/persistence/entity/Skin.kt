@@ -1,7 +1,5 @@
 package com.github.shynixn.petblocks.api.persistence.entity
 
-import api.persistence.entity.PropertyTrackable
-
 /**
  * Created by Shynixn 2018.
  * <p>

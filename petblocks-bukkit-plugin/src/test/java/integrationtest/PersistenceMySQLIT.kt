@@ -5,28 +5,28 @@ package integrationtest
 import ch.vorburger.mariadb4j.DB
 import com.github.shynixn.petblocks.api.PetBlocksApi
 import com.github.shynixn.petblocks.api.business.enumeration.ParticleType
-import com.github.shynixn.petblocks.api.business.proxy.CompletableFutureProxy
+import com.github.shynixn.petblocks.api.business.enumeration.Version
 import com.github.shynixn.petblocks.api.business.proxy.PlayerProxy
 import com.github.shynixn.petblocks.api.business.proxy.PluginProxy
-import com.github.shynixn.petblocks.api.business.service.ConcurrencyService
-import com.github.shynixn.petblocks.api.business.service.ItemService
-import com.github.shynixn.petblocks.api.business.service.PersistencePetMetaService
-import com.github.shynixn.petblocks.api.business.service.ProxyService
+import com.github.shynixn.petblocks.api.business.service.*
 import com.github.shynixn.petblocks.api.persistence.entity.*
-import com.github.shynixn.petblocks.bukkit.logic.business.extension.toMaterial
+import com.github.shynixn.petblocks.bukkit.logic.business.proxy.PlayerProxyImpl
 import com.github.shynixn.petblocks.bukkit.logic.business.proxy.SqlProxyImpl
-import com.github.shynixn.petblocks.bukkit.logic.business.service.AIServiceImpl
 import com.github.shynixn.petblocks.bukkit.logic.business.service.ConfigurationServiceImpl
+import com.github.shynixn.petblocks.bukkit.logic.business.service.EntityServiceImpl
 import com.github.shynixn.petblocks.bukkit.logic.business.service.Item18R1ServiceImpl
-import com.github.shynixn.petblocks.core.jvm.logic.business.proxy.CompletableFutureProxyImpl
-import com.github.shynixn.petblocks.core.jvm.logic.persistence.context.SqlDbContextImpl
+import com.github.shynixn.petblocks.bukkit.logic.business.service.YamlConfigurationServiceImpl
+import com.github.shynixn.petblocks.core.logic.business.service.AIServiceImpl
+import com.github.shynixn.petblocks.core.logic.business.service.LoggingUtilServiceImpl
 import com.github.shynixn.petblocks.core.logic.business.service.YamlSerializationServiceImpl
-import com.github.shynixn.petblocks.core.jvm.logic.persistence.service.LoggingUtilServiceImpl
 import com.github.shynixn.petblocks.core.logic.business.service.PersistencePetMetaServiceImpl
+import com.github.shynixn.petblocks.core.logic.persistence.context.SqlDbContextImpl
 import com.github.shynixn.petblocks.core.logic.persistence.entity.AIMovementEntity
 import com.github.shynixn.petblocks.core.logic.persistence.repository.PetMetaSqlRepository
-import com.github.shynixn.petblocks.core.logic.persistence.repository.PetRunTimeRepository
+import org.bukkit.Location
+import org.bukkit.World
 import org.bukkit.configuration.file.YamlConfiguration
+import org.bukkit.entity.Player
 import org.bukkit.plugin.Plugin
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
@@ -78,10 +78,12 @@ class PersistenceMySQLIT {
         // Arrange
         val classUnderTest = createWithDependencies()
         val uuid = UUID.fromString("c7d21810-d2a0-407d-a389-14efd3eb79d2")
+        val player = Mockito.mock(Player::class.java)
+        Mockito.`when`(player.uniqueId).thenReturn(uuid)
 
         // Act
         val initialSize = classUnderTest.getAll().get().size
-        val actual = classUnderTest.getOrCreateFromPlayerUUID(uuid.toString()).get()
+        val actual = classUnderTest.getPetMetaFromPlayer(player)
         sqlProxy!!.close()
 
         // Assert
@@ -103,7 +105,7 @@ class PersistenceMySQLIT {
         Assertions.assertEquals("hopping", (actual.aiGoals[0] as AIMovementEntity).type)
         Assertions.assertEquals(1.0, (actual.aiGoals[0] as AIMovementEntity).climbingHeight)
         Assertions.assertEquals(1.0, (actual.aiGoals[0] as AIMovementEntity).movementSpeed)
-        Assertions.assertEquals(1.0, (actual.aiGoals[0] as AIMovementEntity).movementYOffSet)
+        Assertions.assertEquals(0.75, (actual.aiGoals[0] as AIMovementEntity).movementYOffSet)
         Assertions.assertEquals("CHICKEN_WALK", (actual.aiGoals[0] as AIMovementEntity).movementSound.name)
         Assertions.assertEquals(1.0, (actual.aiGoals[0] as AIMovementEntity).movementSound.volume)
         Assertions.assertEquals(1.0, (actual.aiGoals[0] as AIMovementEntity).movementSound.pitch)
@@ -124,7 +126,7 @@ class PersistenceMySQLIT {
         Assertions.assertEquals(1.0, (actual.aiGoals[4] as AIGroundRiding).ridingYOffSet)
 
         Assertions.assertEquals("feeding", (actual.aiGoals[5] as AIFeeding).type)
-        Assertions.assertEquals("CARROT_ITEM", (actual.aiGoals[5] as AIFeeding).typeName.toMaterial().name)
+        Assertions.assertEquals("391", (actual.aiGoals[5] as AIFeeding).typeName)
         Assertions.assertEquals(ParticleType.HEART, (actual.aiGoals[5] as AIFeeding).clickParticle.type)
         Assertions.assertEquals("EAT", (actual.aiGoals[5] as AIFeeding).clickSound.name)
 
@@ -145,10 +147,12 @@ class PersistenceMySQLIT {
         // Arrange
         val classUnderTest = createWithDependencies()
         val uuid = UUID.fromString("c7d21810-d2a0-407d-a389-14efd3eb79d2")
+        val player = Mockito.mock(Player::class.java)
+        Mockito.`when`(player.uniqueId).thenReturn(uuid)
 
         // Act
         val initialSize = classUnderTest.getAll().get().size
-        val petMeta = classUnderTest.getOrCreateFromPlayerUUID(uuid.toString()).get()
+        val petMeta = classUnderTest.getPetMetaFromPlayer(player)
 
         petMeta.enabled = true
         petMeta.displayName = "Captain Pet"
@@ -184,7 +188,7 @@ class PersistenceMySQLIT {
         (petMeta.aiGoals[6] as AIAmbientSound).sound.volume = 41.55
 
         classUnderTest.save(petMeta).get()
-        val actual = classUnderTest.getOrCreateFromPlayerUUID(uuid.toString()).get()
+        val actual = classUnderTest.getPetMetaFromPlayer(player)
         sqlProxy!!.close()
 
         // Assert
@@ -267,15 +271,25 @@ class PersistenceMySQLIT {
             }
 
             sqlProxy = SqlProxyImpl(plugin, LoggingUtilServiceImpl(Logger.getAnonymousLogger()))
+
+            val aiService = AIServiceImpl(LoggingUtilServiceImpl(Logger.getAnonymousLogger()), MockedProxyService(), YamlConfigurationServiceImpl())
+            val configService = ConfigurationServiceImpl(plugin, Item18R1ServiceImpl(Version.VERSION_1_8_R1), aiService)
+            EntityServiceImpl(configService,
+                MockedProxyService(),
+                Mockito.mock(EntityRegistrationService::class.java),
+                YamlSerializationServiceImpl()
+                ,
+                aiService,
+                Mockito.mock(PetService::class.java),
+                plugin,
+                Mockito.mock(AfraidOfWaterService::class.java),
+                Mockito.mock(NavigationService::class.java),
+                Mockito.mock(SoundService::class.java),
+                Version.VERSION_1_8_R1)
+
             val sqlite = PetMetaSqlRepository(SqlDbContextImpl(sqlProxy!!, LoggingUtilServiceImpl(Logger.getAnonymousLogger())),
-                    AIServiceImpl(plugin, LoggingUtilServiceImpl(Logger.getAnonymousLogger()), YamlSerializationServiceImpl()), ConfigurationServiceImpl(plugin, Item18R1ServiceImpl(),  AIServiceImpl(plugin, LoggingUtilServiceImpl(Logger.getAnonymousLogger()), YamlSerializationServiceImpl())))
-            val repo = PetRunTimeRepository()
-
-            val method = PetBlocksApi::class.java.getDeclaredMethod("initializePetBlocks", PluginProxy::class.java)
-            method.isAccessible = true
-            method.invoke(PetBlocksApi, MockedPluginProxy())
-
-            return PersistencePetMetaServiceImpl(MockedConcurrencyService(), MockedProxyService(), sqlite, repo)
+                aiService, configService)
+            return PersistencePetMetaServiceImpl(MockedProxyService(), sqlite, MockedConcurrencyService(), MockedEventService())
         }
     }
 
@@ -288,7 +302,7 @@ class PersistenceMySQLIT {
          */
         override fun <S> resolve(service: Any): S {
             if (service == ItemService::class.java) {
-                return Item18R1ServiceImpl() as S
+                return Item18R1ServiceImpl(Version.VERSION_1_9_R1) as S
             }
 
             throw IllegalArgumentException()
@@ -306,19 +320,18 @@ class PersistenceMySQLIT {
 
     class MockedProxyService : ProxyService {
         /**
-         * Returns a proxy object for the given instance.
-         * Throws a [IllegalArgumentException] if the proxy could not be generated.
-         */
-        override fun <P> findProxyObject(instance: Any): P {
-            throw IllegalArgumentException()
-        }
-
-        /**
          * Returns a player proxy object for the given instance.
          * Throws a [IllegalArgumentException] if the proxy could not be generated.
          */
         override fun <P> findPlayerProxyObject(instance: P): PlayerProxy {
-            throw IllegalArgumentException()
+            if (instance !is Player) {
+                throw RuntimeException()
+            }
+
+            Mockito.`when`(instance.name).thenReturn("Kenny")
+            Mockito.`when`(instance.location).thenReturn(Location(Mockito.mock(World::class.java), 20.2, 20.2, 20.2))
+
+            return PlayerProxyImpl(instance as Player)
         }
 
         /**
@@ -329,23 +342,9 @@ class PersistenceMySQLIT {
         }
 
         /**
-         * Gets the name of a  instance.
-         */
-        override fun <I> getNameOfInstance(instance: I): String {
-            throw IllegalArgumentException()
-        }
-
-        /**
-         * Tries to return a player proxy for the given player name.
-         */
-        override fun findPlayerProxyObjectFromName(name: String): PlayerProxy? {
-            throw IllegalArgumentException()
-        }
-
-        /**
          * Tries to return a player proxy for the given player uuid.
          */
-        override fun findPlayerProxyObjectFromUUID(uuid: String): PlayerProxy? {
+        override fun findPlayerProxyObjectFromUUID(uuid: String): PlayerProxy {
             val playerProxy = Mockito.mock(PlayerProxy::class.java)
             Mockito.`when`(playerProxy.uniqueId).thenReturn(uuid)
             Mockito.`when`(playerProxy.name).thenReturn("Kenny")
@@ -363,13 +362,6 @@ class PersistenceMySQLIT {
 
     class MockedConcurrencyService : ConcurrencyService {
         /**
-         * Creates a new completable future.
-         */
-        override fun <T> createCompletableFuture(): CompletableFutureProxy<T> {
-            return CompletableFutureProxyImpl()
-        }
-
-        /**
          * Runs the given [function] synchronised with the given [delayTicks] and [repeatingTicks].
          */
         override fun runTaskSync(delayTicks: Long, repeatingTicks: Long, function: () -> Unit) {
@@ -381,6 +373,15 @@ class PersistenceMySQLIT {
          */
         override fun runTaskAsync(delayTicks: Long, repeatingTicks: Long, function: () -> Unit) {
             function.invoke()
+        }
+    }
+
+    class MockedEventService : EventService {
+        /**
+         * Calls a framework event and returns if it was cancelled.
+         */
+        override fun callEvent(event: Any): Boolean {
+            return false
         }
     }
 }

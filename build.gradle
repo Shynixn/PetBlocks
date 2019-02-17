@@ -6,8 +6,15 @@ buildscript {
     }
     dependencies {
         classpath group: 'org.jetbrains.kotlin', name: 'kotlin-gradle-plugin', version: kotlinVersion
+        classpath "org.jetbrains.dokka:dokka-gradle-plugin:0.9.17"
     }
 }
+
+plugins {
+    id 'org.jetbrains.kotlin.jvm' version '1.3.20'
+}
+
+apply plugin: 'org.jetbrains.dokka'
 
 group 'com.github.shynixn.petblocks'
 version '8.0.0-SNAPSHOT'
@@ -16,8 +23,62 @@ subprojects {
     group = 'com.github.shynixn.petblocks'
     version = '8.0.0-SNAPSHOT'
 
+    apply plugin: 'kotlin-platform-jvm'
+
     repositories {
+        mavenCentral()
         mavenLocal()
         jcenter()
     }
+
+    dependencies {
+        implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk8'
+    }
+}
+
+task generateJavaDocPages(type: org.jetbrains.dokka.gradle.DokkaTask) {
+    outputFormat = 'javadoc'
+    outputDirectory = "docs/apidocs"
+    sourceDirs = files(new File(this.projectDir as File, '/petblocks-api/src/main/kotlin')
+            , new File(this.projectDir as File, '/petblocks-bukkit-api/src/main/kotlin')
+            , new File(this.projectDir as File, '/petblocks-core/src/main/kotlin')
+            , new File(this.projectDir as File, '/petblocks-bukkit-plugin/src/main/kotlin'))
+}
+
+task downloadDependencies(type: Exec) {
+    def build = new File('build')
+
+    if (!build.exists()) {
+        build.mkdir()
+    }
+
+    def folder = new File(build, 'buildtools')
+
+    if (!folder.exists()) {
+        folder.mkdir()
+    }
+
+    def file = new File(folder, "BuildTools.jar")
+
+    if (!file.exists()) {
+        new URL('https://hub.spigotmc.org/jenkins/job/BuildTools/lastSuccessfulBuild/artifact/target/BuildTools.jar').withInputStream { i -> file.withOutputStream { it << i } }
+    }
+
+    def text = "cd build/buildtools"
+    text += " && java -jar BuildTools.jar --rev 1.13.2"
+    text += " && mvn install:install-file -Dfile=spigot-1.13.2.jar -DgroupId=org.spigotmc -DartifactId=spigot113R2 -Dversion=1.13.2-R2.0 -Dpackaging=jar"
+
+    standardOutput = new ByteArrayOutputStream()
+
+    if (System.getProperty('os.name').toLowerCase(Locale.ROOT).contains('windows')) {
+        commandLine 'cmd', '/c', text
+    } else {
+        commandLine 'sh', '-c', text
+    }
+}
+
+repositories {
+    mavenCentral()
+    mavenLocal()
+    jcenter()
 }

@@ -3,11 +3,9 @@
 package unittest
 
 import com.github.shynixn.petblocks.api.business.enumeration.ChatColor
-import com.github.shynixn.petblocks.api.business.proxy.CompletableFutureProxy
 import com.github.shynixn.petblocks.api.business.proxy.PluginProxy
 import com.github.shynixn.petblocks.api.business.service.ConcurrencyService
 import com.github.shynixn.petblocks.api.business.service.LoggingService
-import com.github.shynixn.petblocks.core.jvm.logic.business.proxy.CompletableFutureProxyImpl
 import com.github.shynixn.petblocks.core.logic.business.extension.*
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
@@ -161,12 +159,6 @@ class ExtensionMethodTest {
     class MockedConcurrencyService : ConcurrencyService {
         var calledSync = false
         var calledASync = false
-        /**
-         * Creates a new completable future.
-         */
-        override fun <T> createCompletableFuture(): CompletableFutureProxy<T> {
-            return CompletableFutureProxyImpl()
-        }
 
         /**
          * Runs the given [function] synchronised with the given [delayTicks] and [repeatingTicks].
