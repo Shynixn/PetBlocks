@@ -78,7 +78,7 @@ class EditPetCommandExecutorImpl @Inject constructor(
             return true
         }
 
-        val command = "/" + configurationService.findValue<String>("commands.petblocks.command") + " "
+        val command = "/petblocks "
         val senderName = if (proxyService.isPlayer(source)) {
             proxyService.findPlayerProxyObject(source).name
         } else {
@@ -207,7 +207,7 @@ class EditPetCommandExecutorImpl @Inject constructor(
      * Sends a message to the commandSender.
      */
     private fun <S> sendMessage(commandSender: S, message: String, hoverText: Array<String>) {
-        val command = "/" + configurationService.findValue<String>("commands.petblocks.command") + " "
+        val command = "/petblocks "
         val prefix = configurationService.findValue<String>("messages.prefix")
 
         if (proxyService.isPlayer(commandSender)) {

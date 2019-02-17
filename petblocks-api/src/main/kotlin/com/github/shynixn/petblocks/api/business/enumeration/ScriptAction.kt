@@ -40,6 +40,11 @@ enum class ScriptAction {
     CALL_PET,
 
     /**
+     * Disable the pet to the player.
+     */
+    DISABLE_PET,
+
+    /**
      * Scrolls the whole gui page.
      */
     SCROLL_PAGE,

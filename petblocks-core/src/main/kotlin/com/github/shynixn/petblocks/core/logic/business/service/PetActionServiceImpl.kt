@@ -104,6 +104,23 @@ class PetActionServiceImpl @Inject constructor(
     }
 
     /**
+     * Disables the pet of the given [player].
+     */
+    override fun <P> disablePet(player: P) {
+        val playerProxy = proxyService.findPlayerProxyObject(player)
+
+        if (!petService.hasPet(player)) {
+            return
+        }
+
+        val pet = petService.getOrSpawnPetFromPlayer(player).get()
+        pet.remove()
+
+        val message = configurationService.findValue<String>("messages.prefix") + configurationService.findValue<String>("messages.despawn")
+        playerProxy.sendMessage(message)
+    }
+
+    /**
      * Toggles the pet of the given [player]. If the pet is disabled it will be enabled and when enabled it will be
      * disabled.
      */
@@ -111,12 +128,7 @@ class PetActionServiceImpl @Inject constructor(
         val playerProxy = proxyService.findPlayerProxyObject(player)
 
         if (petService.hasPet(playerProxy)) {
-            val pet = petService.getOrSpawnPetFromPlayer(player).get()
-
-            pet.remove()
-
-            val message = configurationService.findValue<String>("messages.prefix") + configurationService.findValue<String>("messages.despawn")
-            playerProxy.sendMessage(message)
+            this.disablePet(player)
         } else {
             this.callPet(player)
         }

@@ -20,6 +20,7 @@ import org.bukkit.event.entity.PlayerLeashEntityEvent
 import org.bukkit.event.player.*
 import org.bukkit.event.world.ChunkLoadEvent
 import org.bukkit.event.world.ChunkUnloadEvent
+import java.util.*
 
 /**
  * Created by Shynixn 2018.
@@ -74,14 +75,34 @@ class PetListener @Inject constructor(
     }
 
     /**
+     * Gets called when the pet meta data would be prepared for a player.
+     */
+    @EventHandler
+    fun onPetBlocksLoginEvent(event: PetBlocksLoginEvent) {
+        val overwrite = configurationService.findValue<Boolean>("global-configuration.overwrite-previous-pet")
+
+        if (overwrite) {
+            val newPetMeta = configurationService.generateDefaultPetMeta(event.player.uniqueId.toString(), event.player.name)
+            persistencePetMetaService.save(newPetMeta)
+            persistencePetMetaService.refreshPetMetaFromRepository(event.player).thenAccept {
+                performFirstSpawn(event.player)
+            }
+        }
+
+        if (event.petMeta.new) {
+            performFirstSpawn(event.player)
+        }
+    }
+
+    /**
      * Gets called when a player quits the server. Clear pet resources and fix enable state in persistence.
      */
     @EventHandler
     fun onPlayerQuitEvent(event: PlayerQuitEvent) {
-        persistencePetMetaService.clearResources(event.player)
-
-        if (petService.hasPet(event.player)) {
-            petService.getOrSpawnPetFromPlayer(event.player).get().remove()
+        persistencePetMetaService.clearResources(event.player).thenAccept {
+            if (petService.hasPet(event.player)) {
+                petService.getOrSpawnPetFromPlayer(event.player).get().remove()
+            }
         }
     }
 
@@ -132,9 +153,11 @@ class PetListener @Inject constructor(
 
         val pet = petService.getOrSpawnPetFromPlayer(event.player).get()
 
-        for (ai in pet.meta.aiGoals.toTypedArray()) {
-            if (ai is AIGroundRiding || ai is AIFlyRiding || ai is AIWearing) {
-                pet.meta.aiGoals.remove(ai)
+        for (name in configurationService.findValue<List<String>>("global-configuration.disable-on-sneak")) {
+            for (ai in pet.meta.aiGoals.toTypedArray()) {
+                if (ai.type == name) {
+                    pet.meta.aiGoals.remove(ai)
+                }
             }
         }
     }
@@ -212,11 +235,26 @@ class PetListener @Inject constructor(
     }
 
     /**
+     * Performs the first spawn of the pet if enabled.
+     */
+    private fun performFirstSpawn(player: Player) {
+        val applyPetOnFirstSpawn = configurationService.findValue<Boolean>("global-configuration.apply-pet-on-first-spawn")
+
+        if (applyPetOnFirstSpawn) {
+            petService.getOrSpawnPetFromPlayer(player)
+        }
+    }
+
+    /**
      * Loads the PetBlocks data.
      */
     private fun loadPetBlocks(player: Player) {
-        if (player.isOnline && player.world != null) {
-            persistencePetMetaService.refreshPetMetaFromRepository(player).thenAccept { petMeta ->
+        if (!player.isOnline || player.world == null) {
+            return
+        }
+
+        persistencePetMetaService.refreshPetMetaFromRepository(player).thenAccept { petMeta ->
+            if (player.isOnline && player.world != null) {
                 val optPet: PetProxy? = if (petMeta.enabled) {
                     val pet = petService.getOrSpawnPetFromPlayer(player)
 

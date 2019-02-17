@@ -42,10 +42,13 @@ class GUIScriptServiceImpl @Inject constructor(private val logger: LoggingServic
         val scriptResult = ScriptResultEntity()
 
         try {
-            if (script.startsWith("executing action copy-pet-skin")) {
+            if (script.startsWith("copy-pet-skin")) {
                 scriptResult.action = ScriptAction.COPY_PET_SKIN
                 return scriptResult
-            } else if (script.startsWith("executing action call-pet")) {
+            } else if (script.startsWith("disable-pet")) {
+                scriptResult.action = ScriptAction.DISABLE_PET
+                return scriptResult
+            } else if (script.startsWith("call-pet")) {
                 scriptResult.action = ScriptAction.CALL_PET
                 return scriptResult
             } else if (script.startsWith("close-gui")) {

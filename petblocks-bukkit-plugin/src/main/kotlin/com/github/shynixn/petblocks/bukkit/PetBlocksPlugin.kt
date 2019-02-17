@@ -159,6 +159,7 @@ class PetBlocksPlugin : JavaPlugin(), PluginProxy {
      */
     override fun onDisable() {
         resolve<EntityRegistrationService>(EntityRegistrationService::class.java).clearResources()
+        resolve<PersistencePetMetaService>(PersistencePetMetaService::class.java).close()
 
         for (world in Bukkit.getWorlds()) {
             for (player in world.players) {
@@ -168,7 +169,6 @@ class PetBlocksPlugin : JavaPlugin(), PluginProxy {
                 resolve<CarryPetService>(CarryPetService::class.java).clearResources(player)
                 resolve<CombatPetService>(CombatPetService::class.java).clearResources(player)
                 resolve<HealthService>(HealthService::class.java).clearResources(player)
-                resolve<PersistencePetMetaService>(PersistencePetMetaService::class.java).clearResources(player)
 
                 val petService = resolve<PetService>(PetService::class.java)
 

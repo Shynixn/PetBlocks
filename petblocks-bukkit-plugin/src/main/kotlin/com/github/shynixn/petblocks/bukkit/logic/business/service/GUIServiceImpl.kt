@@ -321,6 +321,9 @@ class GUIServiceImpl @Inject constructor(
             } else if (scriptResult.action == ScriptAction.PRINT_CUSTOM_NAME_MESSAGE) {
                 messageService.sendPlayerMessage(player, namingMessage)
                 this.close(player)
+            } else if (scriptResult.action == ScriptAction.DISABLE_PET) {
+                petActionService.disablePet(player)
+                this.close(player)
             } else if (scriptResult.action == ScriptAction.CONNECT_HEAD_DATABASE) {
                 headDatabaseService.openConnection(player)
             } else if (scriptResult.action == ScriptAction.CALL_PET) {

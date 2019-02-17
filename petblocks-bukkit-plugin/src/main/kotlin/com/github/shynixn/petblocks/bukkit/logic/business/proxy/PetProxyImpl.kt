@@ -128,8 +128,13 @@ class PetProxyImpl(override val meta: PetMeta, private val design: ArmorStand, p
                 if (aiBase is AIMovement) {
                     val location = getLocation<Location>()
 
-                    particleService.playParticle(location, aiBase.movementParticle, owner)
-                    soundService.playSound(location, aiBase.movementSound, owner)
+                    if (meta.particleEnabled) {
+                        particleService.playParticle(location.add(0.0, 0.75, 0.0), aiBase.movementParticle, owner)
+                    }
+
+                    if (meta.soundEnabled) {
+                        soundService.playSound(location, aiBase.movementSound, owner)
+                    }
                 }
             }
         } catch (e: Exception) {
@@ -147,7 +152,7 @@ class PetProxyImpl(override val meta: PetMeta, private val design: ArmorStand, p
             return
         }
 
-       // hitBox.addPotionEffect(PotionEffect(PotionEffectType.INVISIBILITY, 9999999, 1))
+        // hitBox.addPotionEffect(PotionEffect(PotionEffectType.INVISIBILITY, 9999999, 1))
         hitBox.setMetadata("keep", FixedMetadataValue(Bukkit.getPluginManager().getPlugin("PetBlocks"), true))
         hitBox.isCustomNameVisible = false
         hitBox.equipment.boots = generateMarkerItemStack()

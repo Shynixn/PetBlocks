@@ -118,6 +118,10 @@ global-configuration:
   overwrite-previous-pet: false
   sounds-other-players: true
   particles-other-players: true
+  disable-on-sneak:
+  - 'wearing'
+  - 'ground-riding'
+  - 'fly-riding'
   max-petname-length: 20
   petname-blacklist:
   - 'petty'
@@ -150,7 +154,7 @@ pet:
       type: 'hopping'
       climbing-height: 1.0
       speed: 1.0
-      offset-y: 0.75
+      offset-y: 0.5
       sound:
         name: 'CHICKEN_WALK'
         volume: 1.0
@@ -170,13 +174,6 @@ pet:
     3:
       type: 'float-in-water'
     4:
-      type: 'wearing'
-    5:
-      type: 'ground-riding'
-      climbing-height: 1.0
-      speed: 1.0
-      offset-y: 1.0
-    6:
       type: 'feeding'
       item-id: 391
       item-damage: 0
@@ -255,12 +252,13 @@ gui:
     player-pet:
       row: 2
       col: 5
-      script: 'executing action call-pet'
+      script: 'call-pet'
       icon:
-        script: 'executing action copy-pet-skin'
+        script: 'copy-pet-skin'
     disable-pet:
       row: 4
       col: 5
+      script: 'disable-pet'
       icon:
         id: 397
         damage: 3
@@ -268,18 +266,21 @@ gui:
         name: '&a&lPet enabled'
         lore:
         - '&7Click to disable the pet.'
+      hidden-on:
+      - 'pet-disabled'
     enable-pet:
       row: 4
       col: 5
-      hidden-when-pet-is-spawned: true
-      script: 'executing action call-pet'
+      script: 'call-pet'
       icon:
         id: 397
         damage: 3
         skin: 'textures.minecraft.net/texture/ad5fcd31287d63e7826ea760a7ed154f685dfdc7f3465732a96e619b2e1347'
-        name: '&c&lPetdisabled'
+        name: '&c&lPet disabled'
         lore:
         - '&7Click to enable the pet.'
+      hidden-on:
+      - 'pet-enabled'
     wardrobe:
       row: 2
       col: 2
@@ -294,6 +295,7 @@ gui:
     sounds-enabled:
       row: 4
       col: 9
+      script: 'disable-sound'
       icon:
         id: 397
         damage: 3
@@ -301,9 +303,12 @@ gui:
         name: '&a&lPet unmuted'
         lore:
         - '&7Click to disable the sounds of your pet.'
+      hidden-on:
+      - 'sound-disabled'
     sounds-disabled:
       row: 4
       col: 9
+      script: 'enable-sound'
       icon:
         id: 397
         damage: 3
@@ -311,14 +316,15 @@ gui:
         name: '&c&lPet muted'
         lore:
         - '&7Click to enable the sounds of your pet.'
+      hidden-on:
+      - 'sound-enabled'
     call-pet:
       row: 5
       col: 2
-      script: 'executing action call-pet'
-      permission: 'petblocks.action.call'
+      script: 'call-pet'
       icon:
         id: 420
-        name: '&2&lCall'
+        name: '&2&lCall Pet'
         lore:
         - '&7Teleports your pet to you.'
     launch-pet:
@@ -329,31 +335,39 @@ gui:
         id: 397
         damage: 3
         skin: 'textures.minecraft.net/texture/996754d330435345aae3a9f063cfca42afb28b7c5c4bb9f294ed2527d961'
-        name: '&2&lLaunch'
+        name: '&2&lLaunch Pet'
         lore:
         - '&7Shoot your pet like a cannon.'
+      hidden-on:
+      - 'pet-disabled'
+      - 'wearing'
+      - 'ground-riding'
+      - 'fly-riding'
     hat-pet:
       row: 1
       col: 7
-      permission: 'petblocks.action.ride'
       icon:
         id: 397
         damage: 3
         skin: 'textures.minecraft.net/texture/9b5f247a7f5b37bbfa488ab4efaddcbad2e526e94fc542b1fe2f7cfeb6e'
-        name: '&2&lHat'
+        name: '&2&lHat Pet'
         lore:
         - '&7Wear your pet like a hat.'
       replace-ai:
         1:
           type: 'wearing'
+      hidden-on:
+      - 'pet-disabled'
+      - 'wearing'
+      - 'ground-riding'
+      - 'fly-riding'
     ride-pet:
       row: 2
       col: 9
-      permission: 'petblocks.action.ride'
       icon:
         id: 329
         damage: 0
-        name: '&2&lRide'
+        name: '&2&lRide Pet'
         lore:
         - '&7Start to ride your pet.'
       replace-ai:
@@ -362,30 +376,38 @@ gui:
           climbing-height: 1.0
           speed: 2.0
           offset-y: -1
+      hidden-on:
+      - 'pet-disabled'
+      - 'wearing'
+      - 'ground-riding'
+      - 'fly-riding'
     rename-pet:
       row: 5
       col: 7
       script: 'print-rename-message'
-      permission: 'petblocks.action.rename'
       icon:
         id: 421
         damage: 0
-        name: '&6&lRename'
+        name: '&6&lRename Pet'
         lore:
         - '&7Change the name of your pet.'
     particles-enabled:
       row: 6
       col: 9
+      script: 'disable-particles'
       icon:
         id: 397
         damage: 3
-        skin: 'eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNDFiYzUwZDUyYTJhMmNkYTgxMjAzMWQxMTdmNWZkMDlmOGYwMGRlZWEyNjcxOGZmMTVmNTEyMzE3YjgzNjhmNiJ9fX0='
-        name: '&c&lPet particles enabled'
+        skin: 'eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZjM1MjE0ZmUyNmUyZTBlMGJjMzAyMjA1ZmM3YjllYmE2OWQ2ZWI3OWEyMTVlODQ2Nzk0OTM5NGZmNWZiM2YwNSJ9fX0='
+        name: '&a&lPet particles enabled'
         lore:
         - '&7Click to disable the particles of your pet.'
+      hidden-on:
+      - 'particle-disabled'
     particles-disabled:
       row: 6
       col: 9
+      script: 'enable-particles'
       icon:
         id: 397
         damage: 3
@@ -393,6 +415,8 @@ gui:
         name: '&c&lPet particles disabled'
         lore:
         - '&7Click to enable the particles of your pet.'
+      hidden-on:
+      - 'particle-enabled'
     back:
       row: 6
       col: 5
@@ -488,7 +512,6 @@ gui:
       row: 5
       col: 8
       script: 'print-custom-skin-message'
-      permission: 'petblocks.action.customhead'
       icon:
         id: 397
         damage: 3

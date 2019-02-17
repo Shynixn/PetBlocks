@@ -33,6 +33,11 @@ import com.github.shynixn.petblocks.core.logic.business.service.PropertyTracking
  */
 class PetMetaEntity(override val playerMeta: PlayerMeta, override val skin: Skin) : PetMeta {
     /**
+     * Is the pet meta new?
+     */
+    override var new: Boolean = false
+
+    /**
      * Gets a list of all ai goals of this pet.
      */
     override val aiGoals: MutableList<AIBase> = ObserveableArrayList {

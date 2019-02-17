@@ -13,6 +13,7 @@ import com.github.shynixn.petblocks.core.logic.persistence.entity.PetBlocksPreSa
 import com.google.inject.Inject
 import java.util.*
 import java.util.concurrent.CompletableFuture
+import kotlin.collections.HashSet
 
 /**
  * Created by Shynixn 2018.
@@ -64,16 +65,23 @@ class PersistencePetMetaServiceImpl @Inject constructor(
      * Clears the cache of the player and saves the allocated resources.
      * Should only be called once a player leaves the server.
      */
-    override fun <P> clearResources(player: P) {
+    override fun <P> clearResources(player: P)  : CompletableFuture<Void?>{
         val playerProxy = proxyService.findPlayerProxyObject(player)
+        val completableFuture = CompletableFuture<Void?>()
 
         if (!cache.containsKey(playerProxy.uniqueId)) {
-            return
+            return completableFuture
         }
 
         val petMeta = cache[playerProxy.uniqueId]!!
-        save(petMeta)
+        val completable = save(petMeta)
         cache.remove(playerProxy.uniqueId)
+
+        completable.thenAccept {
+            completableFuture.complete(null)
+        }
+
+        return completableFuture
     }
 
     /**
@@ -132,6 +140,17 @@ class PersistencePetMetaServiceImpl @Inject constructor(
         }
 
         return completableFuture
+    }
+
+    /**
+     * Closes all resources immediately.
+     */
+    override fun close() {
+        for(player in cache.keys){
+            petMetaRepository.save(cache[player]!!)
+        }
+
+        cache.clear()
     }
 
     /**

@@ -61,6 +61,7 @@ class ConfigurationServiceImpl @Inject constructor(
     private val aiService: AIService
 ) : ConfigurationService {
     private val cache = HashMap<String, List<GuiItem>>()
+    private var disableOnSneak: List<String>? = null
 
     /**
      * Tries to load the config value from the given [path].
@@ -74,6 +75,14 @@ class ConfigurationServiceImpl @Inject constructor(
 
         if (!plugin.config.contains(path)) {
             throw IllegalArgumentException("Path '$path' could not be found!")
+        }
+
+        if (path == "global-configuration.disable-on-sneak") {
+            if (disableOnSneak == null) {
+                disableOnSneak = plugin.config.getStringList(path)
+            }
+
+            return disableOnSneak!! as C
         }
 
         var data = this.plugin.config.get(path)
@@ -232,7 +241,7 @@ class ConfigurationServiceImpl @Inject constructor(
             return null
         }
 
-        this.cache[path]!!.forEach { guiItem ->
+        for(guiItem in this.cache[path]!!){
             try {
                 if (item.itemMeta.displayName == guiItem.icon.displayName.translateChatColors()) {
                     if ((item.itemMeta.lore == null && guiItem.icon.lore.isEmpty()) || (item.itemMeta.lore.size == guiItem.icon.lore.size)) {
@@ -251,6 +260,7 @@ class ConfigurationServiceImpl @Inject constructor(
      * Clears cached resources and refreshes the used configuration.
      */
     override fun refresh() {
+        disableOnSneak = null
         cache.clear()
         plugin.reloadConfig()
     }
@@ -292,6 +302,8 @@ class ConfigurationServiceImpl @Inject constructor(
             val type = aiMap["type"] as String
             petMeta.aiGoals.add(aiService.deserializeAiBase(type, aiMap))
         }
+
+        petMeta.new = true
 
         return petMeta
     }

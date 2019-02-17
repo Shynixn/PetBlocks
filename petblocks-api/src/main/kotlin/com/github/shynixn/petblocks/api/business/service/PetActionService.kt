@@ -36,6 +36,11 @@ interface PetActionService {
     fun <P> callPet(player: P)
 
     /**
+     * Disables the pet of the given [player].
+     */
+    fun <P> disablePet(player : P)
+
+    /**
      * Toggles the pet of the given [player]. If the pet is disabled it will be enabled and when enabled it will be
      * disabled.
      */

@@ -101,8 +101,10 @@ class EntityServiceImpl @Inject constructor(
             }
 
             pathfinder.onExecute = {
-                if (Math.random() > 0.90) {
-                    soundService.playSound(hitBox.location, aiBase.sound, owner)
+                if(pet.meta.soundEnabled){
+                    if (Math.random() > 0.95) {
+                        soundService.playSound(hitBox.location, aiBase.sound, owner)
+                    }
                 }
             }
 

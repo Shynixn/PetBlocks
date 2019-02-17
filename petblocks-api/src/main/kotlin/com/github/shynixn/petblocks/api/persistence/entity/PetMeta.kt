@@ -44,6 +44,11 @@ interface PetMeta : PropertyTrackable {
     var displayName: String
 
     /**
+     * Is the pet meta new?
+     */
+    var new : Boolean
+
+    /**
      * Pet sounds enabled.
      */
     var soundEnabled: Boolean
