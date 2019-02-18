@@ -55,7 +55,7 @@ class EditPetToggleCommand @Inject constructor(
         }
 
         val playerProxy = proxyService.findPlayerProxyObject(result.first)
-        val hasPet = petService.hasPet(playerProxy.uniqueId)
+        val hasPet = petService.hasPet(playerProxy)
 
         if (hasPet) {
             val pet = petService.getOrSpawnPetFromPlayer(playerProxy).get()

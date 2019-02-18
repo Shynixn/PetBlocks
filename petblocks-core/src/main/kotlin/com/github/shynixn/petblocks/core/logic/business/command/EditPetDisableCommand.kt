@@ -56,7 +56,7 @@ class EditPetDisableCommand @Inject constructor(
 
         val playerProxy = proxyService.findPlayerProxyObject(result.first)
 
-        if (petService.hasPet(playerProxy.uniqueId)) {
+        if (petService.hasPet(playerProxy)) {
             val pet = petService.getOrSpawnPetFromPlayer(playerProxy).get()
             pet.remove()
 

@@ -8,12 +8,11 @@ import com.github.shynixn.petblocks.api.persistence.entity.PetMeta
 import com.github.shynixn.petblocks.api.persistence.repository.PetMetaRepository
 import com.github.shynixn.petblocks.core.logic.business.extension.async
 import com.github.shynixn.petblocks.core.logic.business.extension.sync
+import com.github.shynixn.petblocks.core.logic.business.extension.thenAcceptSafely
 import com.github.shynixn.petblocks.core.logic.persistence.entity.PetBlocksPostSaveEntity
 import com.github.shynixn.petblocks.core.logic.persistence.entity.PetBlocksPreSaveEntity
 import com.google.inject.Inject
-import java.util.*
 import java.util.concurrent.CompletableFuture
-import kotlin.collections.HashSet
 
 /**
  * Created by Shynixn 2018.
@@ -77,7 +76,7 @@ class PersistencePetMetaServiceImpl @Inject constructor(
         val completable = save(petMeta)
         cache.remove(playerProxy.uniqueId)
 
-        completable.thenAccept {
+        completable.thenAcceptSafely {
             completableFuture.complete(null)
         }
 

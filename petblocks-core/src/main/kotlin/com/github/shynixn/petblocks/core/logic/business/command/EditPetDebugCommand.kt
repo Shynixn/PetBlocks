@@ -2,7 +2,6 @@ package com.github.shynixn.petblocks.core.logic.business.command
 
 import com.github.shynixn.petblocks.api.business.command.SourceCommand
 import com.github.shynixn.petblocks.api.business.service.*
-import com.github.shynixn.petblocks.core.logic.business.extension.thenAcceptSafely
 import com.google.inject.Inject
 
 /**
@@ -32,11 +31,9 @@ import com.google.inject.Inject
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class EditPetResetCommand @Inject constructor(
+class EditPetDebugCommand @Inject constructor(
     private val proxyService: ProxyService,
-    private val petService: PetService,
-    private val petMetaService: PersistencePetMetaService,
-    private val configurationService: ConfigurationService,
+    private val petDebugService: PetDebugService,
     private val commandService: CommandService,
     private val messageService: MessageService
 ) : SourceCommand {
@@ -44,7 +41,7 @@ class EditPetResetCommand @Inject constructor(
      * Gets called when the given [source] executes the defined command with the given [args].
      */
     override fun <S> onExecuteCommand(source: S, args: Array<out String>): Boolean {
-        if (args.isEmpty() || !args[0].equals("reset", true)) {
+        if (args.isEmpty() || !args[0].equals("debug", true)) {
             return false
         }
 
@@ -54,22 +51,15 @@ class EditPetResetCommand @Inject constructor(
             return false
         }
 
+        val sourceProxy = proxyService.findPlayerProxyObject(source)
         val playerProxy = proxyService.findPlayerProxyObject(result.first)
 
-        if (petService.hasPet(playerProxy)) {
-            val pet = petService.getOrSpawnPetFromPlayer(playerProxy).get()
-            pet.remove()
-        }
-
-        configurationService.refresh()
-
-        messageService.sendSourceMessage(source, "Resetting the pet of player ${playerProxy.name}...")
-
-        val newPetMeta = configurationService.generateDefaultPetMeta(playerProxy.uniqueId, playerProxy.name)
-        petMetaService.save(newPetMeta).thenAcceptSafely {
-            petMetaService.refreshPetMetaFromRepository(playerProxy).thenAcceptSafely {
-                messageService.sendSourceMessage(source, "Finished resetting the pet of player ${playerProxy.name}.")
-            }
+        if (petDebugService.isRegistered(source)) {
+            petDebugService.unRegister(source)
+            messageService.sendSourceMessage(source, "Disabled debug for player ${sourceProxy.name}.")
+        } else {
+            petDebugService.register(sourceProxy.handle, playerProxy.handle)
+            messageService.sendSourceMessage(source, "Enabled debug for player ${sourceProxy.name} watching ${playerProxy.name}")
         }
 
         return true

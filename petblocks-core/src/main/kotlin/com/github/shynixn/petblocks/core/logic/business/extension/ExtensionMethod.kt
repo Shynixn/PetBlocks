@@ -2,11 +2,15 @@
 
 package com.github.shynixn.petblocks.core.logic.business.extension
 
+import com.github.shynixn.petblocks.api.PetBlocksApi
 import com.github.shynixn.petblocks.api.persistence.entity.PropertyTrackable
 import com.github.shynixn.petblocks.api.business.enumeration.ChatColor
 import com.github.shynixn.petblocks.api.business.service.ConcurrencyService
+import com.github.shynixn.petblocks.api.business.service.LoggingService
 import com.github.shynixn.petblocks.api.persistence.entity.ChatMessage
 import com.github.shynixn.petblocks.core.logic.persistence.entity.ChatMessageEntity
+import java.util.concurrent.CompletableFuture
+import java.util.logging.Level
 import kotlin.reflect.KProperty
 
 /**
@@ -111,6 +115,16 @@ inline fun async(
 ) {
     concurrencyService.runTaskAsync(delayTicks, repeatingTicks) {
         f.invoke()
+    }
+}
+
+/**
+ * Accepts the action safely.
+ */
+fun <T> CompletableFuture<T>.thenAcceptSafely(f: (T) -> Unit) {
+    this.thenAccept(f).exceptionally { e ->
+        PetBlocksApi.resolve<LoggingService>(LoggingService::class.java).error("Failed to execute Task.", e)
+        throw RuntimeException(e)
     }
 }
 

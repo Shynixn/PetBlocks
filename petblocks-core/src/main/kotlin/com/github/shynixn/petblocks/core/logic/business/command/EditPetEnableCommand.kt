@@ -57,8 +57,8 @@ class EditPetEnableCommand @Inject constructor(
 
         val playerProxy = proxyService.findPlayerProxyObject(result.first)
 
-        if (!petService.hasPet(playerProxy.uniqueId)) {
-            petService.getOrSpawnPetFromPlayer(playerProxy.uniqueId)
+        if (!petService.hasPet(playerProxy)) {
+            petService.getOrSpawnPetFromPlayer(playerProxy)
             messageService.sendSourceMessage(source, "Enabled pet of player ${playerProxy.name}.")
         } else {
             messageService.sendSourceMessage(source, "There is already an active pet of player ${playerProxy.name}.")

@@ -48,6 +48,7 @@ class EditPetCommandExecutorImpl @Inject constructor(
     editPetToggleCommand: EditPetToggleCommand,
     editPetToggleParticleCommand: EditPetToggleParticleCommand,
     editPetToggleSoundCommand: EditPetToggleSoundCommand,
+    editPetDebugCommand: EditPetDebugCommand,
     private val messageService: MessageService,
     private val proxyService: ProxyService,
     private val configurationService: ConfigurationService
@@ -57,7 +58,7 @@ class EditPetCommandExecutorImpl @Inject constructor(
     init {
         commands.addAll(arrayOf(editPetAICommand, editPetDisableCommand, editPetEnableCommand,
             killNextCommand, editPetRenameCommand, editPetResetCommand, editPetSkinCommand,
-            editPetToggleCommand, editPetToggleParticleCommand, editPetToggleSoundCommand))
+            editPetToggleCommand, editPetToggleParticleCommand, editPetToggleSoundCommand, editPetDebugCommand))
     }
 
     /**
@@ -105,6 +106,14 @@ class EditPetCommandExecutorImpl @Inject constructor(
                     ChatColor.YELLOW.toString() + "Examples:" + ChatColor.RESET,
                     command + "toggleparticle",
                     command + "toggleparticle " + senderName,
+                    ChatColor.GOLD.toString() + "<<Click me>>"))
+            this.sendMessage(source,
+                "debug [player]",
+                arrayOf(ChatColor.BLUE.toString() + "Description:" + ChatColor.RESET,
+                    "Debugs the pet of the given player.",
+                    ChatColor.YELLOW.toString() + "Examples:" + ChatColor.RESET,
+                    command + "debug",
+                    command + "debug " + senderName,
                     ChatColor.GOLD.toString() + "<<Click me>>"))
             this.sendMessage(source,
                 "killnext",

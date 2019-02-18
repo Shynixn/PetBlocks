@@ -73,6 +73,7 @@ class PetBlocksDependencyInjectionBinder(private val plugin: Plugin) : AbstractM
         bind(EditPetToggleCommand::class.java).`in`(Scopes.SINGLETON)
         bind(EditPetToggleParticleCommand::class.java).`in`(Scopes.SINGLETON)
         bind(EditPetToggleSoundCommand::class.java).`in`(Scopes.SINGLETON)
+        bind(EditPetDebugCommand::class.java).`in`(Scopes.SINGLETON)
 
         // CommandExecutors
         bind(ReloadCommandExecutorImpl::class.java).`in`(Scopes.SINGLETON)
@@ -101,6 +102,7 @@ class PetBlocksDependencyInjectionBinder(private val plugin: Plugin) : AbstractM
         bind(PetService::class.java).to(PetServiceImpl::class.java).`in`(Scopes.SINGLETON)
         bind(UpdateCheckService::class.java).to(UpdateCheckServiceImpl::class.java).`in`(Scopes.SINGLETON)
         bind(YamlSerializationService::class.java).to(YamlSerializationServiceImpl::class.java).`in`(Scopes.SINGLETON)
+        bind(PetDebugService::class.java).to(PetDebugServiceImpl::class.java).`in`(Scopes.SINGLETON)
 
         // Bukkit Services
         bind(AfraidOfWaterService::class.java).to(AfraidOfWaterServiceImpl::class.java).`in`(Scopes.SINGLETON)

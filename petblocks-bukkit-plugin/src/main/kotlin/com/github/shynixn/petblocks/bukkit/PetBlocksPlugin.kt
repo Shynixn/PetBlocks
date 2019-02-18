@@ -163,6 +163,7 @@ class PetBlocksPlugin : JavaPlugin(), PluginProxy {
 
         for (world in Bukkit.getWorlds()) {
             for (player in world.players) {
+                resolve<PetDebugService>(PetDebugService::class.java).unRegister(player)
                 resolve<DependencyHeadDatabaseService>(DependencyHeadDatabaseService::class.java).clearResources(player)
                 resolve<GUIService>(GUIService::class.java).cleanResources(player)
                 resolve<ProxyService>(ProxyService::class.java).cleanResources(player)

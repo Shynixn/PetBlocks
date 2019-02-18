@@ -10,6 +10,7 @@ import com.github.shynixn.petblocks.api.persistence.entity.AIGroundRiding
 import com.github.shynixn.petblocks.api.persistence.entity.AIWearing
 import com.github.shynixn.petblocks.bukkit.logic.business.extension.teleportUnsafe
 import com.github.shynixn.petblocks.core.logic.business.extension.sync
+import com.github.shynixn.petblocks.core.logic.business.extension.thenAcceptSafely
 import com.google.inject.Inject
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
@@ -21,6 +22,7 @@ import org.bukkit.event.player.*
 import org.bukkit.event.world.ChunkLoadEvent
 import org.bukkit.event.world.ChunkUnloadEvent
 import java.util.*
+import kotlin.collections.HashSet
 
 /**
  * Created by Shynixn 2018.
@@ -55,10 +57,12 @@ class PetListener @Inject constructor(
     private val concurrencyService: ConcurrencyService,
     private val entityService: EntityService,
     private val itemService: ItemService,
+    private val debugService: PetDebugService,
     private val configurationService: ConfigurationService
 ) : Listener {
     private val joinCooldown = 20 * 6L
     private val soilMaterial = MaterialType.SOIL
+    private val alreadyLoading = HashSet<UUID>()
 
     /**
      * Gets called when a player joins the server. Join the pet if it was already enabled last time.
@@ -68,6 +72,14 @@ class PetListener @Inject constructor(
         if (event.joinMessage != null && event.joinMessage == "PetBlocksRunTime") {
             this.loadPetBlocks(event.player)
         } else {
+            val uuid = event.player.uniqueId
+
+            if(alreadyLoading.contains(uuid)){
+                return
+            }
+
+            alreadyLoading.add(uuid)
+
             sync(concurrencyService, joinCooldown) {
                 this.loadPetBlocks(event.player)
             }
@@ -84,7 +96,7 @@ class PetListener @Inject constructor(
         if (overwrite) {
             val newPetMeta = configurationService.generateDefaultPetMeta(event.player.uniqueId.toString(), event.player.name)
             persistencePetMetaService.save(newPetMeta)
-            persistencePetMetaService.refreshPetMetaFromRepository(event.player).thenAccept {
+            persistencePetMetaService.refreshPetMetaFromRepository(event.player).thenAcceptSafely {
                 performFirstSpawn(event.player)
             }
         }
@@ -99,11 +111,13 @@ class PetListener @Inject constructor(
      */
     @EventHandler
     fun onPlayerQuitEvent(event: PlayerQuitEvent) {
-        persistencePetMetaService.clearResources(event.player).thenAccept {
+        persistencePetMetaService.clearResources(event.player).thenAcceptSafely {
             if (petService.hasPet(event.player)) {
                 petService.getOrSpawnPetFromPlayer(event.player).get().remove()
             }
         }
+
+        debugService.unRegister(event.player)
     }
 
     /**
@@ -253,7 +267,7 @@ class PetListener @Inject constructor(
             return
         }
 
-        persistencePetMetaService.refreshPetMetaFromRepository(player).thenAccept { petMeta ->
+        persistencePetMetaService.refreshPetMetaFromRepository(player).thenAcceptSafely { petMeta ->
             if (player.isOnline && player.world != null) {
                 val optPet: PetProxy? = if (petMeta.enabled) {
                     val pet = petService.getOrSpawnPetFromPlayer(player)
@@ -269,6 +283,10 @@ class PetListener @Inject constructor(
 
                 val joinEvent = PetBlocksLoginEvent(player, petMeta, optPet)
                 Bukkit.getPluginManager().callEvent(joinEvent)
+            }
+
+            if(alreadyLoading.contains(player.uniqueId)){
+                alreadyLoading.remove(player.uniqueId)
             }
         }
     }
