@@ -96,6 +96,7 @@
             
               <ul>
 <li class="toctree-l1"><a class="reference internal" href="gettingstarted/index.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pets/index.html">Pets</a></li>
 <li class="toctree-l1"><a class="reference internal" href="customizing/index.html">Customizing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="commands/index.html">Commands</a></li>
 <li class="toctree-l1"><a class="reference internal" href="general/index.html">General</a></li>
@@ -182,7 +183,8 @@
 <li class="toctree-l1"><a class="reference internal" href="gettingstarted/index.html">Getting Started</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="gettingstarted/installing.html">Installing</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="gettingstarted/installing.html#java">Java</a></li>
-<li class="toctree-l3"><a class="reference internal" href="gettingstarted/installing.html#spigot-sponge">Spigot/Sponge</a></li>
+<li class="toctree-l3"><a class="reference internal" href="gettingstarted/installing.html#spigot-craftbukkit">Spigot/CraftBukkit</a></li>
+<li class="toctree-l3"><a class="reference internal" href="gettingstarted/installing.html#spongevanilla-spongeforge">SpongeVanilla/SpongeForge</a></li>
 <li class="toctree-l3"><a class="reference internal" href="gettingstarted/installing.html#spongeforge">SpongeForge</a></li>
 <li class="toctree-l3"><a class="reference internal" href="gettingstarted/installing.html#download">Download</a></li>
 </ul>
@@ -193,15 +195,28 @@
 <li class="toctree-l3"><a class="reference internal" href="gettingstarted/permissions.html#permissionlist">Permissionlist</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="gettingstarted/playing.html">Playing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gettingstarted/petsetup.html">Setting up pets for your server</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="pets/index.html">Pets</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="pets/defaultpet.html">Default Pet</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="customizing/index.html">Customizing</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="customizing/gui.html">GUI</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="customizing/guiblocktypeskin.html">Change the block type and damage</a></li>
-<li class="toctree-l3"><a class="reference internal" href="customizing/guiblockskin.html">Change the block skin</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="customizing/guiblockskin.html#skin-from-player-name">Skin from player name</a></li>
-<li class="toctree-l4"><a class="reference internal" href="customizing/guiblockskin.html#skin-from-skin-url">Skin from skin URL</a></li>
+<li class="toctree-l3"><a class="reference internal" href="customizing/guipages.html">GUI Pages</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="customizing/guipages.html#usage-ingame">Usage ingame</a></li>
+<li class="toctree-l4"><a class="reference internal" href="customizing/guipages.html#configuring-in-the-config-yml">Configuring in the config.yml</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="customizing/guieditpages.html">Edit GUI page</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="customizing/guieditpages.html#changing-the-main-page">Changing the main page</a></li>
+<li class="toctree-l4"><a class="reference internal" href="customizing/guieditpages.html#changing-row-and-column">Changing row and column</a></li>
+<li class="toctree-l4"><a class="reference internal" href="customizing/guieditpages.html#changing-the-icon">Changing the icon</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="customizing/guistatic.html">Static GUI Items</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="customizing/guistatic.html#configuring-in-the-config-yml">Configuring in the config.yml</a></li>
 </ul>
 </li>
 </ul>
@@ -234,13 +249,47 @@
 <li class="toctree-l3"><a class="reference internal" href="customizing/regions.html#region-settings">Region Settings</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="customizing/minecraftheads.html">Minecraft-Heads.com</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="customizing/minecraftheadschangecategories.html">Minecraft-Heads.com Categories</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="customizing/minecraftheadschangecategories.html#usage-ingame">Usage ingame</a></li>
+<li class="toctree-l4"><a class="reference internal" href="customizing/minecraftheadschangecategories.html#configuring-in-the-config-yml">Configuring in the config.yml</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="customizing/headdatabase.html">Head Database</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="customizing/headdatabase.html#configuring-in-the-config-yml">Configuring in the config.yml</a></li>
+<li class="toctree-l3"><a class="reference internal" href="customizing/headdatabase.html#usage-ingame">Usage ingame</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="commands/index.html">Commands</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="commands/index.html#rename-commands">Rename Commands</a></li>
-<li class="toctree-l2"><a class="reference internal" href="commands/index.html#useage">Useage</a></li>
-<li class="toctree-l2"><a class="reference internal" href="commands/index.html#commandlist">Commandlist</a></li>
-<li class="toctree-l2"><a class="reference internal" href="commands/index.html#console-or-command-blocks">Console or Command blocks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="commands/commandlist.html">Commandslist</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="commands/commandlist.html#user-commands">User Commands</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="commands/commandlist.html#petblock">/petblock</a></li>
+<li class="toctree-l4"><a class="reference internal" href="commands/commandlist.html#petblock-call">/petblock call</a></li>
+<li class="toctree-l4"><a class="reference internal" href="commands/commandlist.html#petblock-toggle">/petblock toggle</a></li>
+<li class="toctree-l4"><a class="reference internal" href="commands/commandlist.html#petblock-rename-name">/petblock rename &lt;name&gt;</a></li>
+<li class="toctree-l4"><a class="reference internal" href="commands/commandlist.html#petblock-skin-skin">/petblock skin &lt;skin&gt;</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="commands/commandlist.html#admin-commands">Admin Commands</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="commands/commandlist.html#petblocks-page">/petblocks [page]</a></li>
+<li class="toctree-l4"><a class="reference internal" href="commands/commandlist.html#petblocks-enable-player">/petblocks enable [player]</a></li>
+<li class="toctree-l4"><a class="reference internal" href="commands/commandlist.html#petblocks-disable-player">/petblocks disable [player]</a></li>
+<li class="toctree-l4"><a class="reference internal" href="commands/commandlist.html#petblocks-toggle-player">/petblocks toggle [player]</a></li>
+<li class="toctree-l4"><a class="reference internal" href="commands/commandlist.html#petblocks-ai-path-player">/petblocks ai &lt;path&gt; [player]</a></li>
+<li class="toctree-l4"><a class="reference internal" href="commands/commandlist.html#petblocks-skin-path-player">/petblocks skin &lt;path&gt; [player]</a></li>
+<li class="toctree-l4"><a class="reference internal" href="commands/commandlist.html#petblocks-rename-player">/petblocks rename [player]</a></li>
+<li class="toctree-l4"><a class="reference internal" href="commands/commandlist.html#petblocks-togglesound-player">/petblocks togglesound [player]</a></li>
+<li class="toctree-l4"><a class="reference internal" href="commands/commandlist.html#petblocks-toggleparticle-player">/petblocks toggleparticle [player]</a></li>
+<li class="toctree-l4"><a class="reference internal" href="commands/commandlist.html#petblocks-killnext">/petblocks killnext</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="commands/renamecommands.html">Rename Commands</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="general/index.html">General</a><ul>

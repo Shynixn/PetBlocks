@@ -7,42 +7,33 @@ cache:
   directories:
   - $HOME/.m2/repository/org/spigotmc
   - $HOME/.m2/repository/org/mcp
-  - $HOME/.m2/repository/me/minebuilders
-install:
-     - cd /home/travis/build/Shynixn/PetBlocks/
-     - mkdir lib
-     - wget https://hub.spigotmc.org/jenkins/job/BuildTools/lastStableBuild/artifact/target/BuildTools.jar -P /home/travis/build/Shynixn/PetBlocks/lib/
-     - cd /home/travis/build/Shynixn/PetBlocks/lib/
-#    - java -jar BuildTools.jar --rev 1.8 > /dev/null
-#    - java -jar BuildTools.jar --rev 1.8.3 > /dev/null
-#    - java -jar BuildTools.jar --rev 1.8.8 > /dev/null
-#    - java -jar BuildTools.jar --rev 1.9 > /dev/null
-#    - java -jar BuildTools.jar --rev 1.9.4 > /dev/null
-#    - java -jar BuildTools.jar --rev 1.10 > /dev/null
- #   - java -jar BuildTools.jar --rev 1.11 > /dev/null
-#    - java -jar BuildTools.jar --rev 1.12 > /dev/null
- #   - java -jar BuildTools.jar --rev 1.13 > /dev/null
-     - java -jar BuildTools.jar --rev 1.13.1 > /dev/null
-#    - mvn install:install-file -Dfile=spigot-1.8.jar -DgroupId=org.spigotmc -DartifactId=spigot18R1 -Dversion=1.8.0-R1.0 -Dpackaging=jar
-#    - mvn install:install-file -Dfile=spigot-1.8.3.jar -DgroupId=org.spigotmc -DartifactId=spigot18R2 -Dversion=1.8.3-R2.0 -Dpackaging=jar
-#    - mvn install:install-file -Dfile=spigot-1.8.8.jar -DgroupId=org.spigotmc -DartifactId=spigot18R3 -Dversion=1.8.8-R3.0 -Dpackaging=jar
-#    - mvn install:install-file -Dfile=spigot-1.9.jar -DgroupId=org.spigotmc -DartifactId=spigot19R1 -Dversion=1.9.0-R1.0 -Dpackaging=jar
-#    - mvn install:install-file -Dfile=spigot-1.9.4.jar -DgroupId=org.spigotmc -DartifactId=spigot19R2 -Dversion=1.9.4-R2.0 -Dpackaging=jar
-#    - mvn install:install-file -Dfile=spigot-1.10.2.jar -DgroupId=org.spigotmc -DartifactId=spigot110R1 -Dversion=1.10.2-R1.0 -Dpackaging=jar
-#    - mvn install:install-file -Dfile=spigot-1.11.jar -DgroupId=org.spigotmc -DartifactId=spigot111R1 -Dversion=1.11.0-R1.0 -Dpackaging=jar
-#    - mvn install:install-file -Dfile=spigot-1.12.jar -DgroupId=org.spigotmc -DartifactId=spigot112R1 -Dversion=1.12.0-R1.0 -Dpackaging=jar
-#    - mvn install:install-file -Dfile=spigot-1.13.jar -DgroupId=org.spigotmc -DartifactId=spigot113R1 -Dversion=1.13.0-R1.0 -Dpackaging=jar
-     - mvn install:install-file -Dfile=spigot-1.13.1.jar -DgroupId=org.spigotmc -DartifactId=spigot113R2 -Dversion=1.13.1-R2.0 -Dpackaging=jar
-#    - wget https://dev.bukkit.org/projects/clearlagg/files/2442450/download -P /home/travis/build/Shynixn/PetBlocks/lib/ -O Clearlag.jar
- #   - mvn install:install-file -Dfile=Clearlag.jar -DgroupId=me.minebuilders -DartifactId=clearlag-core -Dversion=2.9.7 -Dpackaging=jar
- #   - cd /home/travis/build/Shynixn/PetBlocks/petblocks-sponge-plugin
- #   - mvn anchornms:generate-mcp-libraries -X > /dev/null
-#    - cd target/nms-tools/
-#    - mvn install:install-file -Dfile=mcp-1.12.jar -DgroupId=org.mcp -DartifactId=minecraft112R1 -Dversion=1.12.0-R1.0 -Dpackaging=jar > /dev/null
-     - cd /home/travis/build/Shynixn/PetBlocks/
-before_script:
-  - sudo /etc/init.d/mysql stop
+before_install:
+    - chmod +x gradlew
+    - chmod +x petblocks-tools/travis-status.sh
+    - chmod +x petblocks-tools/travis-documentation.sh
+    - sudo /etc/init.d/mysql stop
+    - echo $GPG_SECRET_KEYS | base64 --decode | $GPG_EXECUTABLE --import
+    - echo $GPG_OWNERTRUST | base64 --decode | $GPG_EXECUTABLE --import-ownertrust
+    - if [[ $TRAVIS_COMMIT_MESSAGE == *"--refresh-dependencies"* ]]; then ./gradlew downloadDependencies; fi ;
 script:
-  - mvn install
+  - ./gradlew clean build
 after_success:
+  - ./gradlew jacocoTestReport
   - bash <(curl -s https://codecov.io/bash)
+  - if [[ $TRAVIS_COMMIT_MESSAGE == *"--snapshot"* ]]; then java -jar petblocks-tools/Deploy.jar --snapshot $WEBHOOK_URL; fi ;
+  - if [[ $TRAVIS_BRANCH == *"master"* ]]; then ./petblocks-tools/travis-documentation.sh; fi ;
+  - ./petblocks-tools/travis-status.sh success $WEBHOOK_URL
+after_failure:
+  - ./petblocks-tools/travis-status.sh failure $WEBHOOK_URL
+
+  #- mvn clean deploy --settings .travis_settings.xml
+#after_success:
+#  - bash <(curl -s https://codecov.io/bash)
+#  - wget https://github.com/Shynixn/travis-ci-discord-webhook/raw/master/nexus-query-snapshot.jar
+#  - wget https://raw.githubusercontent.com/Shynixn/travis-ci-discord-webhook/master/petblocks.sh
+ # - chmod +x petblocks.sh
+ # - ./petblocks.sh success $WEBHOOK_URL $WEBHOOK_SNAPSHOT_URL $SNAPSHOT_REPOSITORY_BUKKIT $SNAPSHOT_REPOSITORY_SPONGE
+#after_failure:
+#  - wget https://raw.githubusercontent.com/Shynixn/travis-ci-discord-webhook/master/send.sh
+#  - chmod +x send.sh
+ # - ./send.sh failure $WEBHOOK_URL

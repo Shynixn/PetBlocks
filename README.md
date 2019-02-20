@@ -1,23 +1,18 @@
-# PetBlocks [![GitHub license](https://img.shields.io/badge/license-Apache%20License%202.0-blue.svg)](https://raw.githubusercontent.com/Shynixn/PetBlocks/master/LICENSE)
-
-| branch        | status        | coverage | download |
-| ------------- | ------------- | -------- | ---------| 
-| master        | [![Build Status](https://travis-ci.org/Shynixn/PetBlocks.svg?branch=master)](https://travis-ci.org/Shynixn/PetBlocks)| [![Coverage](https://img.shields.io/codecov/c/github/shynixn/petblocks/master.svg)](https://codecov.io/gh/Shynixn/PetBlocks/branch/master) |[Download latest release (recommend)](https://github.com/Shynixn/PetBlocks/releases)|
-| development   | [![Build Status](https://travis-ci.org/Shynixn/PetBlocks.svg?branch=development)](https://travis-ci.org/Shynixn/PetBlocks)|[![Coverage](https://img.shields.io/codecov/c/github/shynixn/petblocks/development.svg)](https://codecov.io/gh/Shynixn/PetBlocks/branch/development) | [Download snapshots](https://oss.sonatype.org/content/repositories/snapshots/com/github/shynixn/petblocks/petblocks-bukkit-plugin/) |
+# PetBlocks  [![Build Status](https://maven-badges.herokuapp.com/maven-central/com.github.shynixn.petblocks/petblocks-api/badge.svg?style=flat-square)](https://maven-badges.herokuapp.com/maven-central/com.github.shynixn.petblocks/petblocks-api) [![GitHub license](https://img.shields.io/badge/license-Apache%20License%202.0-blue.svg?style=flat-square)](https://raw.githubusercontent.com/Shynixn/PetBlocks/master/LICENCE)
 
 
-Documentation:  https://shynixn.github.io/PetBlocks/
-
-JavaDocs: https://shynixn.github.io/PetBlocks/apidocs/
-
+| branch        | status        | coverage | version | download |
+| ------------- | ------------- | -------- | --------| ---------| 
+| master        | [![Build Status](https://img.shields.io/travis/Shynixn/PetBlocks/master.svg?style=flat-square)](https://travis-ci.org/Shynixn/PetBlocks) | [![Coverage](https://img.shields.io/codecov/c/github/shynixn/petblocks/master.svg?style=flat-square)](https://codecov.io/gh/Shynixn/PetBlocks/branch/master)|![GitHub license](https://img.shields.io/nexus/r/https/oss.sonatype.org/com.github.shynixn.petblocks/petblocks-bukkit-plugin.svg?style=flat-square)  |[Download latest release](https://github.com/Shynixn/PetBlocks/releases)|
+| development   | [![Build Status](https://img.shields.io/travis/Shynixn/PetBlocks/development.svg?style=flat-square)](https://travis-ci.org/Shynixn/PetBlocks)|[![Coverage](https://img.shields.io/codecov/c/github/shynixn/petblocks/development.svg?style=flat-square)](https://codecov.io/gh/Shynixn/PetBlocks/branch/development) |![GitHub license](https://img.shields.io/nexus/s/https/oss.sonatype.org/com.github.shynixn.petblocks/petblocks-bukkit-plugin.svg?style=flat-square) |  [Download snapshots](https://oss.sonatype.org/content/repositories/snapshots/com/github/shynixn/petblocks) |
 ## Description
 
 PetBlocks is a spigot and also a sponge plugin to use blocks and custom heads as pets in Minecraft.
 
 ## Features
 
-* Adds a new pet to every player
-* Customizable GUI 
+* Use blocks as pets in minecraft
+* The GUI and pets are completely customizable
 * Version support 1.8.R1 - 1.13.R2
 * Check out the [PetBlocks-Spigot-Page](https://www.spigotmc.org/resources/12056/) to get more information. 
 
@@ -31,7 +26,7 @@ PetBlocks is a spigot and also a sponge plugin to use blocks and custom heads as
 
 ## Licence
 
-Copyright 2015-2018 Shynixn
+Copyright 2015-2019 Shynixn
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.

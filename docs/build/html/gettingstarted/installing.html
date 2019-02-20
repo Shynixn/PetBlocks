@@ -100,15 +100,17 @@
 <li class="toctree-l1 current"><a class="reference internal" href="index.html">Getting Started</a><ul class="current">
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Installing</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#java">Java</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#spigot-sponge">Spigot/Sponge</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#spigot-craftbukkit">Spigot/CraftBukkit</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#spongevanilla-spongeforge">SpongeVanilla/SpongeForge</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#spongeforge">SpongeForge</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#download">Download</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="permissions.html">Configuring Permissions</a></li>
-<li class="toctree-l2"><a class="reference internal" href="playing.html">Playing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="petsetup.html">Setting up pets for your server</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="../pets/index.html">Pets</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../customizing/index.html">Customizing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../commands/index.html">Commands</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../general/index.html">General</a></li>
@@ -187,42 +189,45 @@
 <p>The following items have to be installed in order to use PetBlocks:</p>
 <div class="section" id="java">
 <h2>Java<a class="headerlink" href="#java" title="Permalink to this headline">¶</a></h2>
-<p>Java 8, Java 9 and Java 10 can be used to run PetBlocks.</p>
+<p>Java 8, Java 9, Java 10 or Java 11 can be used to run PetBlocks.</p>
 </div>
-<div class="section" id="spigot-sponge">
-<h2>Spigot/Sponge<a class="headerlink" href="#spigot-sponge" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="spigot-craftbukkit">
+<h2>Spigot/CraftBukkit<a class="headerlink" href="#spigot-craftbukkit" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
-<li>Spigot <em>(1.8.0 - 1.13.1)</em> ✔</li>
-<li>PaperSpigot <em>(1.8.0 - 1.13.1)</em> ✔</li>
-<li>CraftBukkit <em>(1.8.0 - 1.13.1)</em> ✔</li>
-<li>SpongeVanilla <em>(1.12.0 - 1.12.2)</em> ✔</li>
-<li>SpongeForge <em>(1.12.0 - 1.12.2)</em> <strong>Please see below.</strong></li>
+<li>Spigot <em>(1.8.0 - 1.13.2)</em> ✔</li>
+<li>PaperSpigot <em>(1.8.0 - 1.13.2)</em> ✔</li>
+<li>CraftBukkit <em>(1.8.0 - 1.13.2)</em> ✔</li>
+<li>Bedrock ✘ (not compatible)</li>
 </ul>
+</div>
+<div class="section" id="spongevanilla-spongeforge">
+<h2>SpongeVanilla/SpongeForge<a class="headerlink" href="#spongevanilla-spongeforge" title="Permalink to this headline">¶</a></h2>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">PetBlocks v8.0.0 SNAPSHOTS are bukkit only.</p>
+</div>
+<ul class="simple">
+<li>SpongeVanilla <em>(1.12.0 - 1.12.2)</em> ✔</li>
+<li>SpongeForge <em>(1.12.0 - 1.12.2)</em> ✔</li>
+</ul>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">Sponge is still in heavy development and <strong>not all builds</strong> are compatible to PetBlocks.
+Below you can find the <strong>latest stable Sponge build</strong> PetBlocks was tested on.</p>
+</div>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last">Take a look into the <a class="reference external" href="../faq">FAQ section</a> if you have
-troubles getting the pets working on your server.</p>
+<p>PetBlocks 7.3.0 was tested with the following configuration:</p>
+<blockquote class="last">
+<div><ul class="simple">
+<li>Minecraft Forge <strong>1.12.2 - 14.23.4.2705</strong> (Server + Client)</li>
+<li>SpongeForge <strong>1.12.2-2705-7.1.0-BETA-3361</strong></li>
+</ul>
+</div></blockquote>
 </div>
 </div>
 <div class="section" id="spongeforge">
 <h2>SpongeForge<a class="headerlink" href="#spongeforge" title="Permalink to this headline">¶</a></h2>
-<p>PetBlocks 7.3.0 was tested with the following configuration:</p>
-<ul class="simple">
-<li>Minecraft Forge <strong>1.12.2 - 14.23.4.2705</strong> (Server + Client)</li>
-<li>SpongeForge <strong>1.12.2-2705-7.1.0-BETA-3361</strong></li>
-</ul>
-<div class="admonition warning">
-<p class="first admonition-title">Warning</p>
-<p class="last">There seem to be some issues concerning compatibility with server-only entities and Forge.
-However it is more likely that you have a more common error which can be easily fixed
-by taking a look into the <a class="reference external" href="../faq">FAQ section</a>.</p>
-</div>
-<p>If you are experiencing any crashes refer to the following pages:</p>
-<ul class="simple">
-<li><a class="reference external" href="https://github.com/Shynixn/PetBlocks/issues/134">PetBlocks Issue</a></li>
-<li><a class="reference external" href="http://www.minecraftforge.net/forum/topic/64251-registering-server-only-entity-112/">Forge Forum Post</a></li>
-<li><a class="reference external" href="https://github.com/MinecraftForge/MinecraftForge/issues/4870">Forge Drop of server-only entities in 1.12</a></li>
-</ul>
 </div>
 <div class="section" id="download">
 <h2>Download<a class="headerlink" href="#download" title="Permalink to this headline">¶</a></h2>

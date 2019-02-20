@@ -8,3 +8,5 @@ Customizing
    particleeffects
    scripting
    regions
+   minecraftheads
+   headdatabase

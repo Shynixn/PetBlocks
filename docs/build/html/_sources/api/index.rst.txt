@@ -9,8 +9,8 @@ https://shynixn.github.io/PetBlocks/apidocs/
 Including the PetBlocks API
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-.. image:: https://maven-badges.herokuapp.com/maven-central/com.github.shynixn.petblocks/petblocks-api/badge.svg
-    :target: https://maven-badges.herokuapp.com/maven-central/com.github.shynixn.petblocks/petblocks-api
+.. image:: https://maven-badges.herokuapp.com/maven-central/com.github.shynixn.petblocks/petblocks-api/badge.svg?style=flat-square
+:target: https://maven-badges.herokuapp.com/maven-central/com.github.shynixn.petblocks/petblocks-api
 
 PetBlocks is using maven as build system and is available in the central repository.
 
@@ -101,6 +101,40 @@ Registering the dependency
 Working with the PetBlocks API
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+.. note::  **Pet** - Bukkit/Sponge - Accessing the pet entity of a player.
+
+.. code-block:: java
+
+    Player player; // Any player instance
+
+    PetService petService = PetBlocksApi.INSTANCE.resolve(PetService.class);
+    CompletableFuture<PetBlock<Object, Object>> completeAblePetBlock = petService.getOrSpawnPetBlockFromPlayerUUID(player.getUniqueId());
+
+    completeAblePetBlock.thenAccept(petBlock -> {
+        // Let the player ride the pet if he does not already do it.
+        // If this code segment is not called check your console for error messages.
+        petBlock.ride(player);
+    });
+
+.. note::  **Pet Metadata** - Bukkit/Sponge - Manipulating the name of the pet of a player.
+
+.. code-block:: java
+
+    Player player;  // Any player instance
+    PersistencePetMetaService petMetaService = PetBlocksApi.INSTANCE.resolve(PersistencePetMetaService.class);
+
+    CompletableFuture<PetMeta> completeAblePetMeta = petMetaService.getOrCreateFromPlayerUUID(player.getUniqueId());
+
+    completeAblePetMeta.thenAccept(petMeta -> {
+        // Sets the display to Pikachu so the pet shows up with the name Pikachu when a respawn gets
+        // triggered.
+        petMeta.setPetDisplayName(ChatColor.YELLOW + "Pikachu");
+
+        // Stores the changed data and triggers a respawn if the pet is already spawned. Does not
+        // respawn the pet when the pet is not spawned.
+        petMetaService.save(petMeta);
+    });
+
 .. note::  **Configuration** - Bukkit/Sponge - Accessing the stored configuration.
 
 .. code-block:: java
@@ -184,6 +218,27 @@ Working with the PetBlocks API
     FeedingPetService feedingPetService = PetBlocksApi.INSTANCE.resolve(FeedingPetService.class);
     feedingPetService.feedPet(player);
 
+.. note::  **Messages** - Bukkit/Sponge - Sending a clickable chat message.
+
+.. code-block:: java
+
+    Player player; // Any player instance
+
+    MessageService messageService = PetBlocksApi.INSTANCE.resolve(MessageService.class);
+    ChatMessage chatMessage = PetBlocksApi.INSTANCE.create(ChatMessage.class);
+
+    chatMessage.append("This is a ")
+            .appendComponent()
+            .append(ChatColor.YELLOW)
+            .append("<<clickable link>>")
+            .setClickAction(ChatClickAction.OPEN_URL, "https://shynixn.github.io/PetBlocks/build/html/index.html")
+            .appendHoverComponent().append("Opens the PetBlocks wiki.")
+            .getRoot() // Goes back to the root chatMessage builder.
+            .append(ChatColor.WHITE)
+            .append(" to the PetBlocks wiki.");
+
+    messageService.sendPlayerMessage(player, chatMessage);
+
 .. note::  **WorldGuard** - Bukkit - Accessing the WorldGuard dependency.
 
 .. code-block:: java
@@ -204,198 +259,6 @@ Working with the PetBlocks API
     UpdateCheckService updateCheckService = PetBlocksApi.INSTANCE.resolve(UpdateCheckService.class);
 
     updateCheckService.checkForUpdates();
-
-
-.. warning:: Accessing the PetMeta and PetBlock is not stable via this API. This is going to be replaced by services in the future.
-
-**(Bukkit) Creating a new PetMeta for a player:**
-
-.. code-block:: java
-
-    Player player; //Any player instance
-    Plugin plugin; //Any plugin instance
-
-    PetMetaController<Player> metaController = PetBlocksApi.getDefaultPetMetaController();
-    PetMeta petMeta = metaController.create(player);
-    petMeta.setPetDisplayName(ChatColor.GREEN + "This is my new pet."); //Modify the petMeta
-
-    Bukkit.getServer().getScheduler().runTaskAsynchronously(plugin, new Runnable() {
-        @Override
-        public void run() {
-            metaController.store(petMeta); //It is recommend to save the petMeta asynchronously into the database
-        }
-    });
-
-**(Sponge) Creating a new PetMeta for a player:**
-
-.. code-block:: java
-
-    Player player; //Any player instance
-    PluginContainer plugin; //Any plugin instance
-
-    PetMetaController<Player> metaController = PetBlocksApi.getDefaultPetMetaController();
-    PetMeta petMeta = metaController.create(player);
-    petMeta.setPetDisplayName("This is my new pet."); //Modify the petMeta
-
-    Task.builder().async().execute(new Runnable() {
-        @Override
-        public void run() {
-            metaController.store(petMeta); //It is recommend to save the petMeta asynchronously into the database
-        }
-    }).submit(plugin);
-
-
-**(Bukkit) Obtaining an existing PetMeta for a player from the database:**
-
-You can see that this gets easily very complicated if
-you need to manage asynchronous and synchronous server tasks.
-
-.. code-block:: java
-
-            final Player player; //Any player instance
-            final Plugin plugin; //Any plugin instance
-            PetMetaController<Player> metaController = PetBlocksApi.getDefaultPetMetaController();
-
-            Bukkit.getServer().getScheduler().runTaskAsynchronously(plugin, new Runnable() {
-                @Override
-                public void run() {
-                    Optional<PetMeta> optPetMeta = metaController.getFromPlayer(player);   //Acquire the PetMeta async from the database.
-                    if (optPetMeta.isPresent()) { //Check if the player has got a petMeta?
-                        Bukkit.getServer().getScheduler().runTask(plugin, new Runnable() {
-                            @Override
-                            public void run() {
-                                PetMeta petMeta = optPetMeta.get();
-                                petMeta.setSkin(5, 0, null, false); //Change skin to a wooden block
-
-                                Bukkit.getServer().getScheduler().runTaskAsynchronously(plugin, new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        metaController.store(petMeta);
-                                    }
-                                });
-                            }
-                        });
-                    }
-                }
-            });
-::
-
-Using lamda expressions can reduce the code above significantly.
-
-.. code-block:: java
-
-            final Player player; //Any player instance
-            final Plugin plugin; //Any plugin instance
-            PetMetaController<Player> metaController = PetBlocksApi.getDefaultPetMetaController();
-
-            Bukkit.getServer().getScheduler().runTaskAsynchronously(plugin, () -> {
-                Optional<PetMeta> optPetMeta = metaController.getFromPlayer(player);   //Acquire the PetMeta async from the database.
-                if (optPetMeta.isPresent()) { //Check if the player has got a petMeta?
-                    Bukkit.getServer().getScheduler().runTask(plugin, () -> {
-                        PetMeta petMeta = optPetMeta.get();
-                        petMeta.setSkin(5, 0, null, false); //Change skin to a wooden block
-                        Bukkit.getServer().getScheduler().runTaskAsynchronously(plugin, () -> metaController.store(petMeta));
-                    });
-                }
-            });
-
-**(Sponge) Obtaining an existing PetMeta for a player from the database:**
-
-You can see that this gets easily very complicated if
-you need to manage asynchronous and synchronous server tasks.
-
-.. code-block:: java
-
-            final Player player; //Any player instance
-            final PluginContainer plugin; //Any plugin instance
-            PetMetaController<Player> metaController = PetBlocksApi.getDefaultPetMetaController();
-
-            Task.builder().async().execute(new Runnable() {
-                @Override
-                public void run() {
-                    Optional<PetMeta> optPetMeta = metaController.getFromPlayer(player);   //Acquire the PetMeta async from the database.
-                    if (optPetMeta.isPresent()) { //Check if the player has got a petMeta?
-                           Task.builder().async().execute(new Runnable() {
-                            @Override
-                            public void run() {
-                                PetMeta petMeta = optPetMeta.get();
-                                petMeta.setSkin(5, 0, null, false); //Change skin to a wooden block
-
-                                 Task.builder().async().execute(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        metaController.store(petMeta);
-                                    }
-                                }).submit(plugin);
-                            }
-                        }).submit(plugin);
-                    }
-                }
-            }).submit(plugin);
-::
-
-Using lamda expressions can reduce the code above significantly.
-
-.. code-block:: java
-
-            final Player player; //Any player instance
-            final PluginContainer plugin; //Any plugin instance
-            PetMetaController<Player> metaController = PetBlocksApi.getDefaultPetMetaController();
-
-            Task.builder().async().execute(() -> {
-                Optional<PetMeta> optPetMeta = metaController.getFromPlayer(player);   //Acquire the PetMeta async from the database.
-                if (optPetMeta.isPresent()) { //Check if the player has got a petMeta?
-                      Task.builder().execute(() -> {
-                        PetMeta petMeta = optPetMeta.get();
-                        petMeta.setSkin(5, 0, null, false); //Change skin to a wooden block
-                        Task.builder().async().execute(() -> metaController.store(petMeta)).submit(plugin);
-                    }).submit(plugin);
-                }
-            }).submit(plugin);
-
-**(Bukkit/Sponge) Spawning a petblock for a player:**
-
-.. code-block:: java
-
-    final Player player; //Any player instance
-    final PetMeta petMeta; //Any PetMeta instance
-    final Location location; //Any target location
-
-    final PetBlockController<Player> petBlockController = PetBlocksApi.getDefaultPetBlockController();
-    final PetBlock petBlock = petBlockController.create(player, petMeta); //Spawn PetBlock
-    petBlockController.store(petBlock); //Set it managed by the PetBlocks plugin
-
-    petBlock.teleport(location);    //Teleport the petblock to the target location
-
-**(Bukkit/Sponge) Obtaining an existing petblock for a player:**
-
-.. code-block:: java
-
-            final Player player; //Any player instance
-            final Location location; //Any target location
-
-            final PetBlockController<Player> petBlockController = PetBlocksApi.getDefaultPetBlockController();
-            final Optional<PetBlock> optPetBlock = petBlockController.getFromPlayer(player); //PetBlock is already managed
-            if (optPetBlock.isPresent()) {
-                final PetBlock petBlock = optPetBlock.get();
-                petBlock.teleport(location);    //Teleport the petblock to the target location
-            }
-
-**(Bukkit/Sponge) Applying changes to the PetBlock**
-
-You can also directly change the meta data of the spawned PetBlock:
-
-.. code-block:: java
-
-    final PetBlock petBlock; //Any PetBlock instance
-    petBlock.getMeta().setPetDisplayName("New name");
-
-However, for applying the changes you need to respawn the PetBlock:
-
-.. code-block:: java
-
-    final PetBlock petBlock; //Any PetBlock instance
-    petBlock.respawn();
 
 Listen to Events
 ~~~~~~~~~~~~~~~~
