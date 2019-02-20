@@ -9,16 +9,21 @@ cache:
   - $HOME/.m2/repository/org/mcp
 before_install:
     - chmod +x gradlew
+    - chmod +x petblocks-tools/travis-status.sh
     - sudo /etc/init.d/mysql stop
     - echo $GPG_SECRET_KEYS | base64 --decode | $GPG_EXECUTABLE --import
     - echo $GPG_OWNERTRUST | base64 --decode | $GPG_EXECUTABLE --import-ownertrust
     - if [[ $TRAVIS_COMMIT_MESSAGE == *"--refresh-dependencies"* ]]; then ./gradlew downloadDependencies; fi ;
 script:
-  - ./gradlew clean build || [./gradlew downloadDependencies && ./gradlew clean build]
+  - ./gradlew clean build
 after_success:
   - ./gradlew jacocoTestReport
   - bash <(curl -s https://codecov.io/bash)
   - if [[ $TRAVIS_COMMIT_MESSAGE == *"--snapshot"* ]]; then java -jar petblocks-tools/Deploy.jar --snapshot $WEBHOOK_URL; fi ;
+  - ./petblocks-tools/travis-status.sh success $WEBHOOK_URL
+after_failure:
+  - ./petblocks-tools/travis-status.sh failure $WEBHOOK_URL
+
   #- mvn clean deploy --settings .travis_settings.xml
 #after_success:
 #  - bash <(curl -s https://codecov.io/bash)
