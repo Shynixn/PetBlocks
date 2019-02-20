@@ -15,6 +15,8 @@ before_install:
     - echo $GPG_SECRET_KEYS | base64 --decode | $GPG_EXECUTABLE --import
     - echo $GPG_OWNERTRUST | base64 --decode | $GPG_EXECUTABLE --import-ownertrust
     - if [[ $TRAVIS_COMMIT_MESSAGE == *"--refresh-dependencies"* ]]; then ./gradlew downloadDependencies; fi ;
+install:
+    - ./gradlew assemble || ./gradlew downloadDependencies
 script:
   - ./gradlew clean build
 after_success:
