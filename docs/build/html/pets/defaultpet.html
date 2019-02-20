@@ -1,0 +1,348 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Default Pet &mdash; PetBlocks 7.3.0 documentation</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="../_static/favicon.png"/>
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="../genindex.html"/>
+        <link rel="search" title="Search" href="../search.html"/>
+    <link rel="top" title="PetBlocks 7.3.0 documentation" href="../index.html"/>
+        <link rel="up" title="Pets" href="index.html"/>
+        <link rel="next" title="Customizing" href="../customizing/index.html"/>
+        <link rel="prev" title="Pets" href="index.html"/> 
+
+  
+  <script src="../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> PetBlocks
+          
+
+          
+            
+            <img src="../_static/PetBlocks-small.png" class="logo" />
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                7.3.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../gettingstarted/index.html">Getting Started</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Pets</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Default Pet</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../customizing/index.html">Customizing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../commands/index.html">Commands</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../general/index.html">General</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/index.html">Developer API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../faq/index.html">FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../contributing/index.html">Contributing to PetBlock</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">PetBlocks</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="index.html">Pets</a> &raquo;</li>
+        
+      <li>Default Pet</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            
+              <a href="https://github.com/Shynixn/PetBlocks/tree/master/docs/source/pets/defaultpet.rst" class="fa fa-github"> Edit on GitHub</a>
+            
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="default-pet">
+<h1>Default Pet<a class="headerlink" href="#default-pet" title="Permalink to this headline">¶</a></h1>
+<p>It is recommend to setup the default pet players are receiving when they are trying to use PetBlocks for the first time.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Make sure you have confirmed that PetBlocks is working correctly on your server and
+<strong>pets can spawn at the position of your player</strong>. Otherwise, please read this guide.</p>
+</div>
+<p>As everything is customizeable via the <strong>config.yml</strong> in the PetBlocks folder, open this file to start editing.
+An editor like Notepad++ or VisualStudio Code is highly recommend for this task.</p>
+<ol class="arabic simple">
+<li>Locate the following section in your config.yml.</li>
+</ol>
+<p><strong>config.yml</strong></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1">############################</span>
+
+<span class="c1"># Default Pet settings</span>
+
+<span class="c1"># The pets of this plugin are very, very customizeable.</span>
+<span class="c1"># Please take a look into the official documentation mentioned at the top of this file</span>
+<span class="c1"># in order to configure your pet correctly.</span>
+
+<span class="c1"># These are the settings players are starting with when they get their first pet. However,</span>
+<span class="c1"># you can add all of these settings to templates in order to change them per skin or particle</span>
+<span class="c1"># or whatever.</span>
+
+<span class="c1"># You can find a list of all available goals on the documentation.</span>
+
+<span class="c1">############################</span>
+
+<span class="k">global</span><span class="o">-</span><span class="n">configuration</span><span class="p">:</span>
+  <span class="n">respawn</span><span class="o">-</span><span class="n">delay</span><span class="p">:</span> <span class="mi">4</span>
+  <span class="n">teleport</span><span class="o">-</span><span class="n">delay</span><span class="p">:</span> <span class="mi">0</span>
+  <span class="n">apply</span><span class="o">-</span><span class="n">pet</span><span class="o">-</span><span class="n">on</span><span class="o">-</span><span class="n">spawn</span><span class="p">:</span> <span class="n">false</span>
+  <span class="n">overwrite</span><span class="o">-</span><span class="n">previous</span><span class="o">-</span><span class="n">pet</span><span class="p">:</span> <span class="n">false</span>
+  <span class="n">sounds</span><span class="o">-</span><span class="n">other</span><span class="o">-</span><span class="n">players</span><span class="p">:</span> <span class="n">true</span>
+  <span class="n">particles</span><span class="o">-</span><span class="n">other</span><span class="o">-</span><span class="n">players</span><span class="p">:</span> <span class="n">true</span>
+  <span class="nb">max</span><span class="o">-</span><span class="n">petname</span><span class="o">-</span><span class="n">length</span><span class="p">:</span> <span class="mi">20</span>
+  <span class="n">petname</span><span class="o">-</span><span class="n">blacklist</span><span class="p">:</span>
+  <span class="o">-</span> <span class="s1">&#39;petty&#39;</span>
+  <span class="o">-</span> <span class="s1">&#39;shitty&#39;</span>
+
+<span class="n">default</span><span class="o">-</span><span class="n">pet</span><span class="p">:</span>
+  <span class="n">enabled</span><span class="p">:</span> <span class="n">false</span>
+  <span class="n">name</span><span class="p">:</span> <span class="s2">&quot;&lt;player&gt;&#39;s Pet&quot;</span>
+  <span class="n">health</span><span class="p">:</span> <span class="mf">20.0</span>
+  <span class="n">invincible</span><span class="p">:</span> <span class="n">true</span>
+  <span class="n">hitbox</span><span class="o">-</span><span class="n">entitytype</span><span class="p">:</span> <span class="n">RABBIT</span>
+  <span class="n">sound</span><span class="o">-</span><span class="n">enabled</span><span class="p">:</span> <span class="n">true</span>
+  <span class="n">particle</span><span class="o">-</span><span class="n">enabled</span><span class="p">:</span> <span class="n">true</span>
+  <span class="n">skin</span><span class="p">:</span>
+    <span class="n">typename</span><span class="p">:</span> <span class="mi">2</span>
+    <span class="n">datavalue</span><span class="p">:</span> <span class="mi">0</span>
+    <span class="n">unbreakable</span><span class="p">:</span> <span class="n">false</span>
+    <span class="n">owner</span><span class="p">:</span> <span class="s1">&#39;&#39;</span>
+  <span class="n">modifier</span><span class="p">:</span>
+    <span class="n">climbing</span><span class="o">-</span><span class="n">height</span><span class="p">:</span> <span class="mf">0.0</span>
+    <span class="n">movement</span><span class="o">-</span><span class="n">speed</span><span class="p">:</span> <span class="mf">0.0</span>
+  <span class="n">goals</span><span class="p">:</span>
+    <span class="mi">1</span><span class="p">:</span>
+      <span class="nb">id</span><span class="p">:</span> <span class="s1">&#39;follow-owner&#39;</span>
+      <span class="nb">max</span><span class="o">-</span><span class="n">distance</span><span class="p">:</span> <span class="mi">50</span>
+    <span class="mi">2</span><span class="p">:</span>
+      <span class="nb">id</span><span class="p">:</span> <span class="s1">&#39;walking-particle&#39;</span>
+      <span class="n">name</span><span class="p">:</span> <span class="s1">&#39;largesmoke&#39;</span>
+      <span class="n">speed</span><span class="p">:</span> <span class="mf">0.01</span>
+      <span class="n">amount</span><span class="p">:</span> <span class="mi">2</span>
+      <span class="n">offx</span><span class="p">:</span> <span class="mf">0.5</span>
+      <span class="n">offy</span><span class="p">:</span> <span class="mf">0.5</span>
+      <span class="n">offz</span><span class="p">:</span> <span class="mf">0.5</span>
+    <span class="mi">3</span><span class="p">:</span>
+      <span class="nb">id</span><span class="p">:</span> <span class="s1">&#39;ambient-sound&#39;</span>
+      <span class="n">name</span><span class="p">:</span> <span class="s1">&#39;CHICKEN_IDLE&#39;</span>
+      <span class="n">volume</span><span class="p">:</span> <span class="mf">1.0</span>
+      <span class="n">pitch</span><span class="p">:</span> <span class="mf">1.0</span>
+    <span class="mi">4</span><span class="p">:</span>
+      <span class="nb">id</span><span class="p">:</span> <span class="s1">&#39;walking-sound&#39;</span>
+      <span class="n">name</span><span class="p">:</span> <span class="s1">&#39;CHICKEN_WALK&#39;</span>
+      <span class="n">volume</span><span class="p">:</span> <span class="mf">1.0</span>
+      <span class="n">pitch</span><span class="p">:</span> <span class="mf">1.0</span>
+
+<span class="c1">############################</span>
+</pre></div>
+</div>
+</div>
+
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../customizing/index.html" class="btn btn-neutral float-right" title="Customizing" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="index.html" class="btn btn-neutral" title="Pets" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2015 - 2018, Shynixn.
+
+    </p>
+  </div>
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'7.3.0',
+            LANGUAGE:'None',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+      <script type="text/javascript" src="../_static/language_data.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+  
+ 
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-111364476-1"></script>
+<script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'UA-111364476-1');
+</script>
+
+
+</body>
+</html>
