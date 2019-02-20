@@ -10,6 +10,7 @@ cache:
 before_install:
     - chmod +x gradlew
     - chmod +x petblocks-tools/travis-status.sh
+    - chmod +x petblocks-tools/travis-documentation.sh
     - sudo /etc/init.d/mysql stop
     - echo $GPG_SECRET_KEYS | base64 --decode | $GPG_EXECUTABLE --import
     - echo $GPG_OWNERTRUST | base64 --decode | $GPG_EXECUTABLE --import-ownertrust
@@ -20,6 +21,7 @@ after_success:
   - ./gradlew jacocoTestReport
   - bash <(curl -s https://codecov.io/bash)
   - if [[ $TRAVIS_COMMIT_MESSAGE == *"--snapshot"* ]]; then java -jar petblocks-tools/Deploy.jar --snapshot $WEBHOOK_URL; fi ;
+  - if [[ $TRAVIS_BRANCH == *"master"* ]]; then ./petblocks-tools/travis-documentation.sh; fi ;
   - ./petblocks-tools/travis-status.sh success $WEBHOOK_URL
 after_failure:
   - ./petblocks-tools/travis-status.sh failure $WEBHOOK_URL
