@@ -3,5 +3,5 @@ include 'petblocks-api'
 include 'petblocks-bukkit-api'
 include 'petblocks-bukkit-plugin'
 include 'petblocks-core'
-include 'petblocks-heads-tool'
+include 'petblocks-tools'
 
