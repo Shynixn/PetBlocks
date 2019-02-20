@@ -15,27 +15,22 @@ before_install:
     - echo $GPG_SECRET_KEYS | base64 --decode | $GPG_EXECUTABLE --import
     - echo $GPG_OWNERTRUST | base64 --decode | $GPG_EXECUTABLE --import-ownertrust
     - if [[ $TRAVIS_COMMIT_MESSAGE == *"--refresh-dependencies"* ]]; then ./gradlew downloadDependencies; fi ;
+    - sudo apt-get install python3-pip
+    - sudo pip3 install https://github.com/Shynixn/sphinx_rtd_theme/releases/download/C1.0/sphinx_rtd_theme.zip
+    - sudo pip3 install -U sphinx
+    - git config --global user.email "travis@travis-ci.org" && git config --global user.name "Travis CI"
 install:
     - ./gradlew assemble || ./gradlew downloadDependencies
 script:
   - ./gradlew clean build
+  - if [[ $TRAVIS_BRANCH == *"master"* ]]; then rm -rf docs/build && rm -rf docs/apidocs; fi ;
+  - if [[ $TRAVIS_BRANCH == *"master"* ]]; then python3 -msphinx -M html docs/source docs/build; fi ;
+  - if [[ $TRAVIS_BRANCH == *"master"* ]]; then git add docs && git commit --message "Travis build $TRAVIS_BUILD_NUMBER [skip travis-ci]"; fi ;
+  - if [[ $TRAVIS_BRANCH == *"master"* ]]; then git push --quiet https://Shynixn:$GH_TOKEN@github.com/Shynixn/PetBlocks.git HEAD:master; fi ;
 after_success:
   - ./gradlew jacocoTestReport
   - bash <(curl -s https://codecov.io/bash)
   - if [[ $TRAVIS_COMMIT_MESSAGE == *"--snapshot"* ]]; then java -jar petblocks-tools/Deploy.jar --snapshot $WEBHOOK_URL; fi ;
-  - if [[ $TRAVIS_BRANCH == *"master"* ]]; then sudo ./petblocks-tools/travis-documentation.sh; fi ;
   - ./petblocks-tools/travis-status.sh success $WEBHOOK_URL
 after_failure:
   - ./petblocks-tools/travis-status.sh failure $WEBHOOK_URL
-
-  #- mvn clean deploy --settings .travis_settings.xml
-#after_success:
-#  - bash <(curl -s https://codecov.io/bash)
-#  - wget https://github.com/Shynixn/travis-ci-discord-webhook/raw/master/nexus-query-snapshot.jar
-#  - wget https://raw.githubusercontent.com/Shynixn/travis-ci-discord-webhook/master/petblocks.sh
- # - chmod +x petblocks.sh
- # - ./petblocks.sh success $WEBHOOK_URL $WEBHOOK_SNAPSHOT_URL $SNAPSHOT_REPOSITORY_BUKKIT $SNAPSHOT_REPOSITORY_SPONGE
-#after_failure:
-#  - wget https://raw.githubusercontent.com/Shynixn/travis-ci-discord-webhook/master/send.sh
-#  - chmod +x send.sh
- # - ./send.sh failure $WEBHOOK_URL
