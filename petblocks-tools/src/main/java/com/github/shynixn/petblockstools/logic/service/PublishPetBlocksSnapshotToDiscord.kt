@@ -41,8 +41,7 @@ import java.util.*
  */
 class PublishPetBlocksSnapshotToDiscord(
     private val snapshotService: SnapshotService = SnapshotServiceImpl(),
-    private val discordWebHookService: DiscordWebhookService = DiscordWebhookServiceImpl()
-) {
+    private val discordWebHookService: DiscordWebhookService = DiscordWebhookServiceImpl()) {
     private val bukkitSnapshotRepo = "https://oss.sonatype.org/content/repositories/snapshots/com/github/shynixn/petblocks/petblocks-bukkit-plugin/"
     private val petBlocksImage = "https://raw.githubusercontent.com/Shynixn/travis-ci-discord-webhook/master/pet.jpg"
 
