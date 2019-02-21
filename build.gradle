@@ -30,8 +30,9 @@ subprojects {
     sourceCompatibility = 1.8
 
     apply plugin: 'kotlin-platform-jvm'
-    apply plugin: 'maven'
+    apply plugin: 'maven-publish'
     apply plugin: 'signing'
+    apply plugin: 'java-library'
 
     compileKotlin {
         kotlinOptions.jvmTarget = "1.8"
@@ -40,9 +41,9 @@ subprojects {
         kotlinOptions.jvmTarget = "1.8"
     }
 
-    task sourceJar(type: Jar) {
-        classifier "sources"
+    task sourcesJar(type: Jar) {
         from sourceSets.main.allJava
+        classifier = 'sources'
     }
 
     task dokkaJavadoc(type: org.jetbrains.dokka.gradle.DokkaTask) {
@@ -51,60 +52,57 @@ subprojects {
     }
 
     task javadocJar(type: Jar, dependsOn: dokkaJavadoc) {
-        classifier = 'javadoc'
-        from "$buildDir/javadoc"
+        from javadoc
+        classifier  = 'javadoc'
     }
 
-    artifacts {
-        archives jar
-        archives sourceJar
-        archives javadocJar
-    }
-
-    signing {
-        required { gradle.taskGraph.hasTask("uploadArchives") }
-        sign configurations.archives
-    }
-
-    uploadArchives {
-        repositories {
-            mavenDeployer {
-                beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
-
-                repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
-                    authentication(userName: findProperty('ossrhUsername'), password: findProperty('ossrhPassword'))
-                }
-                snapshotRepository(url: "https://oss.sonatype.org/content/repositories/snapshots/") {
-                    authentication(userName: findProperty('ossrhUsername'), password: findProperty('ossrhPassword'))
-                }
-
-                pom.project {
-                    name 'PetBlocks'
-                    packaging 'jar'
-                    description 'PetBlocks is a spigot and also a sponge plugin to use blocks and custom heads as pets in Minecraft.'
-                    url 'https://github.com/Shynixn/PetBlocks'
-
-                    scm {
-                        connection 'scm:git:git://github.com/Shynixn/PetBlocks.git'
-                        developerConnection 'scm:git:ssh://github.com:Shynixn/PetBlocks.git'
-                        url 'http://github.com/Shynixn/PetBlocks.git/tree/master'
-                    }
+    publishing {
+        publications {
+            mavenJava(MavenPublication) {
+                from components.java
+                artifact sourcesJar
+                artifact javadocJar
+                pom {
+                    name = 'PetBlocks'
+                    description = 'PetBlocks is a spigot and also a sponge plugin to use blocks and custom heads as pets in Minecraft.'
+                    url = 'https://github.com/Shynixn/PetBlocks'
                     licenses {
                         license {
-                            name 'The Apache License, Version 2.0'
-                            url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                            name = 'The Apache License, Version 2.0'
+                            url = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
                         }
                     }
-
                     developers {
                         developer {
-                            name 'Shynixn'
-                            url 'https://github.com/Shynixn'
+                            name = 'Shynixn'
+                            url = 'https://github.com/Shynixn'
                         }
+                    }
+                    scm {
+                        connection = 'scm:git:git://github.com/Shynixn/PetBlocks.git'
+                        developerConnection = 'scm:git:ssh://github.com:Shynixn/PetBlocks.git'
+                        url = 'http://github.com/Shynixn/PetBlocks.git/tree/master'
                     }
                 }
             }
         }
+        repositories {
+            maven {
+                def releasesRepoUrl = "https://oss.sonatype.org/service/local/staging/deploy/maven2/"
+                def snapshotsRepoUrl = "https://oss.sonatype.org/content/repositories/snapshots/"
+                url = version.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
+
+                credentials {
+                    username findProperty('ossrhUsername')
+                    password findProperty('ossrhPassword')
+                }
+            }
+        }
+    }
+
+    signing {
+        required { gradle.taskGraph.hasTask("uploadArchives") }
+        sign publishing.publications.mavenJava
     }
 
     repositories {

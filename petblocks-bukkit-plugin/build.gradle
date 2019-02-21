@@ -34,10 +34,12 @@ jacocoTestReport {
     }
 }
 
-artifacts {
-    archives shadowJar
-    archives sourceJar
-    archives javadocJar
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            artifact shadowJar
+        }
+    }
 }
 
 repositories {
