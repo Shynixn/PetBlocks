@@ -12,18 +12,100 @@ buildscript {
 
 plugins {
     id 'org.jetbrains.kotlin.jvm' version '1.3.21'
+    id 'io.codearte.nexus-staging' version '0.20.0'
 }
 
 apply plugin: 'org.jetbrains.dokka'
 
-group 'com.github.shynixn.petblocks'
-version '8.0.0-SNAPSHOT'
+repositories {
+    mavenCentral()
+    mavenLocal()
+    jcenter()
+}
 
 subprojects {
-    group = 'com.github.shynixn.petblocks'
-    version = '8.0.0-SNAPSHOT'
+    group 'com.github.shynixn.petblocks'
+    version '8.0.0-SNAPSHOT'
+
+    sourceCompatibility = 1.8
 
     apply plugin: 'kotlin-platform-jvm'
+    apply plugin: 'maven'
+    apply plugin: 'signing'
+
+    compileKotlin {
+        kotlinOptions.jvmTarget = "1.8"
+    }
+    compileTestKotlin {
+        kotlinOptions.jvmTarget = "1.8"
+    }
+
+    task sourceJar(type: Jar) {
+        classifier "sources"
+        from sourceSets.main.allJava
+    }
+
+    task dokkaJavadoc(type: org.jetbrains.dokka.gradle.DokkaTask) {
+        outputFormat = 'javadoc'
+        outputDirectory = "$buildDir/javadoc"
+    }
+
+    task javadocJar(type: Jar, dependsOn: dokkaJavadoc) {
+        classifier = 'javadoc'
+        from "$buildDir/javadoc"
+    }
+
+    artifacts {
+        archives jar
+        archives sourceJar
+        archives javadocJar
+    }
+
+    signing {
+        required { gradle.taskGraph.hasTask("uploadArchives") }
+        sign configurations.archives
+    }
+
+    uploadArchives {
+        repositories {
+            mavenDeployer {
+                beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
+
+                repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
+                    authentication(userName: findProperty('ossrhUsername'), password: findProperty('ossrhPassword'))
+                }
+                snapshotRepository(url: "https://oss.sonatype.org/content/repositories/snapshots/") {
+                    authentication(userName: findProperty('ossrhUsername'), password: findProperty('ossrhPassword'))
+                }
+
+                pom.project {
+                    name 'PetBlocks'
+                    packaging 'jar'
+                    description 'PetBlocks is a spigot and also a sponge plugin to use blocks and custom heads as pets in Minecraft.'
+                    url 'https://github.com/Shynixn/PetBlocks'
+
+                    scm {
+                        connection 'scm:git:git://github.com/Shynixn/PetBlocks.git'
+                        developerConnection 'scm:git:ssh://github.com:Shynixn/PetBlocks.git'
+                        url 'http://github.com/Shynixn/PetBlocks.git/tree/master'
+                    }
+                    licenses {
+                        license {
+                            name 'The Apache License, Version 2.0'
+                            url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                        }
+                    }
+
+                    developers {
+                        developer {
+                            name 'Shynixn'
+                            url 'https://github.com/Shynixn'
+                        }
+                    }
+                }
+            }
+        }
+    }
 
     repositories {
         mavenCentral()
@@ -93,10 +175,4 @@ task downloadDependencies(type: Exec) {
     } else {
         commandLine 'sh', '-c', text
     }
-}
-
-repositories {
-    mavenCentral()
-    mavenLocal()
-    jcenter()
 }
