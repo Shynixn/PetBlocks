@@ -207,11 +207,14 @@ class PetProxyImpl(override val meta: PetMeta, private val design: ArmorStand, p
         }
 
         if (displayNameChanged || Skin::typeName.hasChanged(meta.skin)) {
-            val itemStack = itemService.createItemStack(meta.skin.typeName, meta.skin.dataValue).build<ItemStack>()
+            var itemStack = itemService.createItemStack(meta.skin.typeName, meta.skin.dataValue).build<ItemStack>()
 
             itemStack.displayName = meta.displayName
             itemStack.skin = meta.skin.owner
-            itemStack.setUnbreakable(meta.skin.unbreakable)
+
+            if (meta.skin.unbreakable) {
+                itemStack = itemStack.createUnbreakableCopy()
+            }
 
             design.helmet = itemStack
         }

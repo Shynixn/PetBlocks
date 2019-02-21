@@ -254,6 +254,7 @@ gui:
       col: 5
       script: 'call-pet'
       icon:
+        name: 'player-pet'
         script: 'copy-pet-skin'
     disable-pet:
       row: 4

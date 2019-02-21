@@ -9,10 +9,7 @@ import com.github.shynixn.petblocks.api.business.service.*
 import com.github.shynixn.petblocks.api.persistence.entity.GuiIcon
 import com.github.shynixn.petblocks.api.persistence.entity.GuiPlayerCache
 import com.github.shynixn.petblocks.api.persistence.entity.PetMeta
-import com.github.shynixn.petblocks.bukkit.logic.business.extension.displayName
-import com.github.shynixn.petblocks.bukkit.logic.business.extension.setUnbreakable
-import com.github.shynixn.petblocks.bukkit.logic.business.extension.skin
-import com.github.shynixn.petblocks.bukkit.logic.business.extension.updateInventory
+import com.github.shynixn.petblocks.bukkit.logic.business.extension.*
 import com.github.shynixn.petblocks.core.logic.business.extension.chatMessage
 import com.github.shynixn.petblocks.core.logic.business.extension.sync
 import com.github.shynixn.petblocks.core.logic.business.extension.translateChatColors
@@ -485,11 +482,14 @@ class GUIServiceImpl @Inject constructor(
             configurationService.findValue<String>("messages.has-no-permission")
         }
 
-        val itemStack = itemService.createItemStack(guiIcon.skin.typeName, guiIcon.skin.dataValue).build<ItemStack>()
+        var itemStack = itemService.createItemStack(guiIcon.skin.typeName, guiIcon.skin.dataValue).build<ItemStack>()
 
         itemStack.displayName = guiIcon.displayName
         itemStack.skin = guiIcon.skin.owner
-        itemStack.setUnbreakable(guiIcon.skin.unbreakable)
+
+        if (guiIcon.skin.unbreakable) {
+            itemStack = itemStack.createUnbreakableCopy()
+        }
 
         val meta = itemStack.itemMeta
         val tmpLore = ArrayList<String>()

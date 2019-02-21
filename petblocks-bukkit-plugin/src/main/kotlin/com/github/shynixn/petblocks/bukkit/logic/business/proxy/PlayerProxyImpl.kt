@@ -78,7 +78,7 @@ class PlayerProxyImpl(private val player: Player) : com.github.shynixn.petblocks
             }
         } else {
             Class.forName("org.bukkit.entity.HumanEntity").getDeclaredMethod("setItemInHand", ItemStack::class.java)
-                    .invoke(this.player, itemStack)
+                .invoke(this.player, itemStack)
         }
     }
 
@@ -96,7 +96,7 @@ class PlayerProxyImpl(private val player: Player) : com.github.shynixn.petblocks
             }
         } else {
             Class.forName("org.bukkit.entity.HumanEntity").getDeclaredMethod("getItemInHand")
-                    .invoke(this.player) as I
+                .invoke(this.player) as I
         }
     }
 
@@ -104,8 +104,7 @@ class PlayerProxyImpl(private val player: Player) : com.github.shynixn.petblocks
      * Gets if this player has got permissions.
      */
     override fun hasPermission(permission: Permission): Boolean {
-        println("Permission nto working")
-        return player.hasPermission("permission")
+        return player.hasPermission(permission.permission)
     }
 
     /**
@@ -157,5 +156,5 @@ class PlayerProxyImpl(private val player: Player) : com.github.shynixn.petblocks
     /**
      * Gets the unique id of the player.
      */
-    override val uniqueId: String  = player.uniqueId.toString()
+    override val uniqueId: String = player.uniqueId.toString()
 }
