@@ -93,8 +93,8 @@ subprojects {
                 url = version.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
 
                 credentials {
-                    username findProperty('ossrhUsername')
-                    password findProperty('ossrhPassword')
+                    username = hasProperty("ossrhUsername") ? findProperty("ossrhUsername") : System.getenv('SONATYPE_USERNAME')
+                    password = hasProperty("ossrhPassword") ? findProperty("ossrhPassword") : System.getenv('SONATYPE_PASSWORD')
                 }
             }
         }
