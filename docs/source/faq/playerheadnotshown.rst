@@ -1,5 +1,5 @@
 The player head is not visible in the GUI or when the Pet spawns?
-================================================================
+=================================================================
 
 There are rare cases where skins are not correctly fetched from the
 given player names and an Alex or Steve skin is shown instead.
@@ -21,8 +21,3 @@ Enter your Playername, leave the Skullname empty and press Create Give-Code.
 
 If your skin is unique and not added to the database of Minecraft-Heads.com, it is highly recommend to select a category and submit the head
 to the database to **support the community**.
-
-
-Now you can simply use this give code and continue with using the `the custom skin URL. <howcustomskin.html>`_
-
-

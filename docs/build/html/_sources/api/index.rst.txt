@@ -10,11 +10,13 @@ Including the PetBlocks API
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. image:: https://maven-badges.herokuapp.com/maven-central/com.github.shynixn.petblocks/petblocks-api/badge.svg?style=flat-square
-:target: https://maven-badges.herokuapp.com/maven-central/com.github.shynixn.petblocks/petblocks-api
+  :target: https://maven-badges.herokuapp.com/maven-central/com.github.shynixn.petblocks/petblocks-api
 
-PetBlocks is using maven as build system and is available in the central repository.
+PetBlocks is using gradle as build system and is available in the central repository.
 
-.. note::  **Maven** - Bukkit
+.. note::  The following dependencies are needed to access the PetBlocks **Bukkit** Api.
+
+**Maven:**
 
 .. parsed-literal::
 
@@ -31,41 +33,18 @@ PetBlocks is using maven as build system and is available in the central reposit
         <scope>provided</scope>
     </dependency>
 
-.. note::  **Maven** - Sponge
+**Gradle:**
 
 .. parsed-literal::
 
-   <dependency>
-        <groupId>com.github.shynixn.petblocks</groupId>
-        <artifactId>petblocks-api</artifactId>
-        <version>\ |release|\ </version>
-        <scope>provided</scope>
-    </dependency>
-    <dependency>
-        <groupId>com.github.shynixn.petblocks</groupId>
-        <artifactId>petblocks-sponge-api</artifactId>
-        <version>\ |release|\ </version>
-        <scope>provided</scope>
-   </dependency>
+    compileOnly 'com.github.shynixn.petblocks:petblocks-api:\ |release|\ '
+    compileOnly 'com.github.shynixn.petblocks:petblocks-bukkit-api:\ |release|\ '
 
-.. note::  **Gradle** - Bukkit
 
-.. parsed-literal::
+**Jar files:**
 
-    dependencies {
-        compileOnly 'com.github.shynixn.petblocks:petblocks-api:\ |release|\ '
-        compileOnly 'com.github.shynixn.petblocks:petblocks-bukkit-api:\ |release|\ '
-    }
-
-.. note::  **Gradle** - Sponge
-
-.. parsed-literal::
-
-    dependencies {
-        compileOnly 'com.github.shynixn.petblocks:petblocks-api:\ |release|\ '
-        compileOnly 'com.github.shynixn.petblocks:petblocks-sponge-api:\ |release|\ '
-    }
-
+* `Download PetBlocks-Api <http://repository.sonatype.org/service/local/artifact/maven/redirect?r=central-proxy&g=com.github.shynixn.petblocks&a=petblocks-api&v=LATEST>`__
+* `Download PetBlocks-Bukkit-Api <http://repository.sonatype.org/service/local/artifact/maven/redirect?r=central-proxy&g=com.github.shynixn.petblocks&a=petblocks-bukkit-api&v=LATEST>`__
 
 Registering the dependency
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -76,6 +55,12 @@ Registering the dependency
 
     softdepend: [PetBlocks]
 
+.. note::  **Bukkit** - Add the following tag to your plugin.yml if your plugin  **requires** PetBlocks to work.
+
+.. code-block:: yaml
+
+    depend: [PetBlocks]
+
 .. note::  **Sponge** - Add the following tag to your mcmod.info if you **optionally** want to use PetBlocks.
 
 .. code-block:: java
@@ -83,12 +68,6 @@ Registering the dependency
  "dependencies": [
     "petblocks"
  ]
-
-.. note::  **Bukkit** - Add the following tag to your plugin.yml if your plugin  **requires** PetBlocks to work.
-
-.. code-block:: yaml
-
-    depend: [PetBlocks]
 
 .. note::  **Sponge** - Add the following tag to your mcmod.info if your plugin **requires** PetBlocks to work.
 
@@ -101,245 +80,133 @@ Registering the dependency
 Working with the PetBlocks API
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-.. note::  **Pet** - Bukkit/Sponge - Accessing the pet entity of a player.
+.. note::  There are 4 simple steps to access the **whole** business logic of PetBlocks.
+
+* Check out the package **com.github.shynixn.petblocks.api.business.service** in the JavaDocs to find the part of the business logic you want to access.
+* Get the instance by using the following line.
+
+.. code-block:: java
+
+    YourBusinessService service = PetBlocksApi.INSTANCE.resolve(YourBusinessService.class);
+
+* If the service methods require additional data entities, check out the JavaDocs to find other services which provide these data entities
+  or create new entities by checking out the package **com.github.shynixn.petblocks.api.persistence.entity**.
+
+.. code-block:: java
+
+    YourPersistenceEntity entity = PetBlocksApi.INSTANCE.create(YourPersistenceEntity.class);
+
+* There are some samples below to get your started.
+
+.. note::  **Pets -** Changing the displayname of a pet of a player.
 
 .. code-block:: java
 
     Player player; // Any player instance
 
-    PetService petService = PetBlocksApi.INSTANCE.resolve(PetService.class);
-    CompletableFuture<PetBlock<Object, Object>> completeAblePetBlock = petService.getOrSpawnPetBlockFromPlayerUUID(player.getUniqueId());
-
-    completeAblePetBlock.thenAccept(petBlock -> {
-        // Let the player ride the pet if he does not already do it.
-        // If this code segment is not called check your console for error messages.
-        petBlock.ride(player);
-    });
-
-.. note::  **Pet Metadata** - Bukkit/Sponge - Manipulating the name of the pet of a player.
-
-.. code-block:: java
-
-    Player player;  // Any player instance
     PersistencePetMetaService petMetaService = PetBlocksApi.INSTANCE.resolve(PersistencePetMetaService.class);
+    PetMeta petMeta = petMetaService.getPetMetaFromPlayer(player); // Does always return a correct PetMeta instance. Never returns null.
 
-    CompletableFuture<PetMeta> completeAblePetMeta = petMetaService.getOrCreateFromPlayerUUID(player.getUniqueId());
+    petMeta.setDisplayName(ChatColor.GREEN + "This is a cool Pet.");
 
-    completeAblePetMeta.thenAccept(petMeta -> {
-        // Sets the display to Pikachu so the pet shows up with the name Pikachu when a respawn gets
-        // triggered.
-        petMeta.setPetDisplayName(ChatColor.YELLOW + "Pikachu");
+**Things to notice** regarding PetMeta:
 
-        // Stores the changed data and triggers a respawn if the pet is already spawned. Does not
-        // respawn the pet when the pet is not spawned.
-        petMetaService.save(petMeta);
-    });
+* PetMeta instance will be always available for each player.
+* Changes to the PetMeta instance are persistent. Changes will be saved.
+* PetMeta changes will automatically applied to a spawned pet if it is present.
+* Prefer using the PetMeta instance instead of using the Pet instance.
+* Saving the PetMeta is automatically handled and does not have to be explicitly called.
 
-.. note::  **Configuration** - Bukkit/Sponge - Accessing the stored configuration.
-
-.. code-block:: java
-
-   String path = "pet.design.max-petname-length";
-
-   ConfigurationService configurationService = PetBlocksApi.INSTANCE.resolve(ConfigurationService.class);
-   int length = configurationService.findValue(path);
-
-.. note::  **GUI** - Bukkit/Sponge - Using the GUI.
+.. note::  **Pets -** Changing the skin of a pet of a player.
 
 .. code-block:: java
 
-    Player player; // Any player instance
-    final GUIService guiService = PetBlocksApi.INSTANCE.resolve(GUIService.class)
+        Player player; // Any player instance
 
-    guiService.open(player);
+        PersistencePetMetaService petMetaService = PetBlocksApi.INSTANCE.resolve(PersistencePetMetaService.class);
+        PetMeta petMeta = petMetaService.getPetMetaFromPlayer(player); // Does always return a correct PetMeta instance. Never returns null.
 
-.. note::  **Scripts** - Bukkit/Sponge - Parsing GUI scripts.
+        Skin skin = petMeta.getSkin();
+        skin.setTypeName("397"); //Typename accepts (deprecated) ids and Bukkit Material names.
+        skin.setDataValue(3);
+        // Owner accepts player names, base64EncodedUrls and skin urls.
+        skin.setOwner("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYzc4NzhiYmYxYjA5ZjdmMjFhZjBiNDA2ZWY3MzEyZWUyMjViOGNjMTAyY2QwOWVlZmYyNDAyNDkzYzUwMzQ0MiJ9fX0=")
 
-.. code-block:: java
-
-   Inventory inventory; // Any inventory instance.
-   String script = "binding collection minecraft-heads-com.pet petblocks.selection.petcostumes";
-
-   GUIScriptService guiScriptService = PetBlocksApi.INSTANCE.resolve(GUIScriptService.class);
-   ScriptResult scriptResult = guiScriptService.executeScript(inventory, script);
-
-   if (scriptResult.getAction() == ScriptAction.LOAD_COLLECTION) {
-         // Parsed script is a loaded collection.
-   }
-
-.. note::  **Sounds** - Bukkit/Sponge - Creating and sending sounds.
+.. note::  **Pets -** Setting the player fly riding his pet by modifying ais.
 
 .. code-block:: java
 
-     Player player; // Any player instance.
-     Location location; // Any location instance.
+        Player player; // Any player instance
 
-     Sound sound = PetBlocksApi.INSTANCE.create(Sound.class);
-     sound.setName("AMBIENT_CAVE"); // Name of the sound for Minecraft 1.13.
-     sound.setVolume(1.0);
-     sound.setPitch(1.0);
+        PersistencePetMetaService petMetaService = PetBlocksApi.INSTANCE.resolve(PersistencePetMetaService.class);
+        PetMeta petMeta = petMetaService.getPetMetaFromPlayer(player); // Does always return a correct PetMeta instance. Never returns null.
 
-     SoundService soundService = PetBlocksApi.INSTANCE.resolve(SoundService.class);
-     soundService.playSound(location, sound, player);
+        AIFlyRiding aiFlyRiding = PetBlocksApi.INSTANCE.create(AIFlyRiding.class); // Create a new registered ai instance.
+        aiFlyRiding.setRidingSpeed(2.0);
 
-.. note::  **Particles** - Bukkit/Sponge - Creating and sending particles.
+        petMeta.getAiGoals().add(aiFlyRiding); // Apply the ai to the pet.
 
-.. code-block:: java
 
-    Player player; // Any player instance.
-    Location location; // Any location instance.
-
-    Particle particle = PetBlocksApi.INSTANCE.create(Particle.class);
-    particle.setType(ParticleType.PORTAL);
-    particle.setSpeed(0.1);
-    particle.setAmount(20);
-    particle.setOffSetX(5);
-    particle.setOffSetY(5);
-    particle.setOffSetZ(5);
-
-    ParticleService particleService = PetBlocksApi.INSTANCE.resolve(ParticleService.class);
-    particleService.playParticle(location, particle, player);
-
-.. note::  **Carry** - Bukkit/Sponge - Let the player carry his pet.
+.. note::  **Pets -** Teleporting the pet entity
 
 .. code-block:: java
 
-     Player player; // Any player instance
+        Player player; // Any player instance
+        Location targetLocation; // Any location instance
 
-     CarryPetService carryPetService = PetBlocksApi.INSTANCE.resolve(CarryPetService.class);
-     carryPetService.carryPet(player);
+        PetService petService = PetBlocksApi.INSTANCE.resolve(PetService.class);
+        // The pet of a player might not be able to spawn due to defined world restrictions or cancelled PetBlocksSpawnEvent.
+        Optional<PetProxy> optPet = petService.getOrSpawnPetFromPlayer(player);
 
-.. note::  **Feeding** - Bukkit/Sponge - Execute the feeding effect.
+        if (optPet.isPresent()) {
+            PetProxy pet = optPet.get();
+             // When the location is too far away, the current ais will probably teleport the pet back to the player.
+            pet.teleport(targetLocation);
+        }
 
-.. code-block:: java
+**Things to notice** regarding PetProxy:
 
-    Player player; // Any player instance
+* PetProxy instance is not always available for each player.
+* Calling remove() allows you to remove the pet.
+* Changes to the PetProxy instance are transient. Changes will be lost.
+* Prefer using the PetMeta instance instead of using the Pet instance.
 
-    FeedingPetService feedingPetService = PetBlocksApi.INSTANCE.resolve(FeedingPetService.class);
-    feedingPetService.feedPet(player);
+.. warning::
+  If you want to perform changes to the PetMeta or PetProxy when a player logs into your server, use
+  the **PetBlocksLoginEvent** instead of the PlayerJoinEvent. The plugin performs async operations which
+  complete later. You can find an example below.
 
-.. note::  **Messages** - Bukkit/Sponge - Sending a clickable chat message.
-
-.. code-block:: java
-
-    Player player; // Any player instance
-
-    MessageService messageService = PetBlocksApi.INSTANCE.resolve(MessageService.class);
-    ChatMessage chatMessage = PetBlocksApi.INSTANCE.create(ChatMessage.class);
-
-    chatMessage.append("This is a ")
-            .appendComponent()
-            .append(ChatColor.YELLOW)
-            .append("<<clickable link>>")
-            .setClickAction(ChatClickAction.OPEN_URL, "https://shynixn.github.io/PetBlocks/build/html/index.html")
-            .appendHoverComponent().append("Opens the PetBlocks wiki.")
-            .getRoot() // Goes back to the root chatMessage builder.
-            .append(ChatColor.WHITE)
-            .append(" to the PetBlocks wiki.");
-
-    messageService.sendPlayerMessage(player, chatMessage);
-
-.. note::  **WorldGuard** - Bukkit - Accessing the WorldGuard dependency.
-
-.. code-block:: java
-
-    Location location; // Any location instance.
-
-    DependencyService dependencyService = PetBlocksApi.INSTANCE.resolve(DependencyService.class);
-
-    if (dependencyService.isInstalled(PluginDependency.WORLDGUARD)) {
-         DependencyWorldGuardService dependencyWorldGuardService = PetBlocksApi.INSTANCE.resolve(DependencyWorldGuardService.class);
-         dependencyWorldGuardService.prepareSpawningRegion(location);
-    }
-
-.. note::  **Updates** - Bukkit/Sponge - Checking for updates.
-
-.. code-block:: java
-
-    UpdateCheckService updateCheckService = PetBlocksApi.INSTANCE.resolve(UpdateCheckService.class);
-
-    updateCheckService.checkForUpdates();
-
-Listen to Events
-~~~~~~~~~~~~~~~~
+Listening to Events
+~~~~~~~~~~~~~~~~~~~
 
 There are many PetBlock events in order to listen to actions. Please take a look into the `JavaDocs <https://shynixn.github.io/PetBlocks/apidocs/>`__  for all events.
 
-.. note::  **SpawnEvent** - Bukkit - Listening to the spawn event.
+.. note::  **PreSpawnEvent** - Listening to the pre spawn event and cancel it if necessary.
 
 .. code-block:: java
 
     @EventHandler
-    public void onPetBlockSpawnEvent(PetBlockSpawnEvent event){
-        Player owner = event.getPlayer();
-        PetBlock petBlock = event.getPetBlock();
+    public void onPetPreSpawnEvent(PetPreSpawnEvent event){
+        Player player = event.getPlayer();
+        PetMeta petMeta = event.getPetMeta();
 
         //Do something
     }
 
-.. note::  **SpawnEvent** - Sponge - Listening to the spawn event.
+.. note::  **PetBlocksLoginEvent** - Listening to the login event.
 
 .. code-block:: java
 
-    @Listener
-    public void onPetBlockSpawnEvent(PetBlockSpawnEvent event){
-        Player owner = event.getPlayer();
-        PetBlock petBlock = event.getPetBlock();
+    @EventHandler
+    public void onPetBlocksLoginEvent(PetBlocksLoginEvent event){
+        PetMeta petMeta = event.getPetMeta();
 
-        //Do something
+        LocalDateTime localDateTime = LocalDateTime.now();
+        petMeta.setDisplayName("Pet login at " + localDateTime.toString() + ".");
+
+        if(event.getPet().isPresent()){
+            PetProxy petProxy = event.getPet().get();
+
+            petProxy.setVelocity(new Vector(0,2,0));
+        }
     }
-
-
-Contributing and setting up your workspace
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-.. warning:: PetBlocks is **partially** written in `Kotlin <https://kotlinlang.org/>`__ instead of pure Java. Especially the sponge implementation. If you are not familiar with Kotlin, modifying PetBlocks might be a difficult task.
-
-* Fork the PetBlocks project on github and clone it to your local environment.
-
-* Use BuildTools.jar from spigotmc.org to build the following dependencies.
-
-.. code-block:: java
-
-    - java -jar BuildTools.jar --rev 1.8
-    - java -jar BuildTools.jar --rev 1.8.3
-    - java -jar BuildTools.jar --rev 1.8.8
-    - java -jar BuildTools.jar --rev 1.9
-    - java -jar BuildTools.jar --rev 1.9.4
-    - java -jar BuildTools.jar --rev 1.10
-    - java -jar BuildTools.jar --rev 1.11
-    - java -jar BuildTools.jar --rev 1.12
-    - java -jar BuildTools.jar --rev 1.13
-    - java -jar BuildTools.jar --rev 1.13.1
-
-* Install the created libraries to your local maven repository.
-
-.. code-block:: java
-
-    - mvn install:install-file -Dfile=spigot-1.8.jar -DgroupId=org.spigotmc -DartifactId=spigot18R1 -Dversion=1.8.0-R1.0 -Dpackaging=jar
-    - mvn install:install-file -Dfile=spigot-1.8.3.jar -DgroupId=org.spigotmc -DartifactId=spigot18R2 -Dversion=1.8.3-R2.0 -Dpackaging=jar
-    - mvn install:install-file -Dfile=spigot-1.8.8.jar -DgroupId=org.spigotmc -DartifactId=spigot18R3 -Dversion=1.8.8-R3.0 -Dpackaging=jar
-    - mvn install:install-file -Dfile=spigot-1.9.jar -DgroupId=org.spigotmc -DartifactId=spigot19R1 -Dversion=1.9.0-R1.0 -Dpackaging=jar
-    - mvn install:install-file -Dfile=spigot-1.9.4.jar -DgroupId=org.spigotmc -DartifactId=spigot19R2 -Dversion=1.9.4-R2.0 -Dpackaging=jar
-    - mvn install:install-file -Dfile=spigot-1.10.2.jar -DgroupId=org.spigotmc -DartifactId=spigot110R1 -Dversion=1.10.2-R1.0 -Dpackaging=jar
-    - mvn install:install-file -Dfile=spigot-1.11.jar -DgroupId=org.spigotmc -DartifactId=spigot111R1 -Dversion=1.11.0-R1.0 -Dpackaging=jar
-    - mvn install:install-file -Dfile=spigot-1.12.jar -DgroupId=org.spigotmc -DartifactId=spigot112R1 -Dversion=1.12.0-R1.0 -Dpackaging=jar
-    - mvn install:install-file -Dfile=spigot-1.13.jar -DgroupId=org.spigotmc -DartifactId=spigot113R1 -Dversion=1.13.0-R1.0 -Dpackaging=jar
-    - mvn install:install-file -Dfile=spigot-1.13.1.jar -DgroupId=org.spigotmc -DartifactId=spigot113R2 -Dversion=1.13.1-R2.0 -Dpackaging=jar
-
-* Execute the following maven goal on the petblocks-sponge-plugin project.
-
-.. code-block:: java
-
-    mvn anchornms:generate-mcp-libraries
-
-
-* Go to the petblocks-sponge-plugin/target/nms-tools folder and install the generated libraries to your local maven repository.
-
-.. code-block:: java
-
-    mvn install:install-file -Dfile=mcp-1.12.jar -DgroupId=org.mcp -DartifactId=minecraft112R1 -Dversion=1.12.0-R1.0 -Dpackaging=jar
-
-* Reimport the PetBlocks maven project and execute 'mvn package' afterwards.
-
-* The generated petblocks-bukkit-plugin/target/petblocks-bukkit-plugin-###.jar or petblocks-sponge-plugin/target/petblocks-sponge-plugin-###.ja can be used for testing on a server.

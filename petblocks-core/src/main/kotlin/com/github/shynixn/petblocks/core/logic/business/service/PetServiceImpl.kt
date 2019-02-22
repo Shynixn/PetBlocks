@@ -70,7 +70,7 @@ class PetServiceImpl @Inject constructor(
         }
 
         if (hasPet(player)) {
-            return Optional.of(pets.find { p -> !p.isDead && p.meta.playerMeta.uuid == playerProxy.uniqueId }!!)
+            return Optional.of(pets.first { p -> !p.isDead && p.meta.playerMeta.uuid == playerProxy.uniqueId }!!)
         }
 
         if (!isAllowedToSpawn(playerProxy.position)) {
