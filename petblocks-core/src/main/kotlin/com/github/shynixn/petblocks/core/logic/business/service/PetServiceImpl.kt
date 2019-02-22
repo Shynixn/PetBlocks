@@ -65,10 +65,6 @@ class PetServiceImpl @Inject constructor(
     override fun <P> getOrSpawnPetFromPlayer(player: P): Optional<PetProxy> {
         val playerProxy = proxyService.findPlayerProxyObject(player)
 
-        if (!playerProxy.isOnline) {
-            return Optional.empty()
-        }
-
         if (hasPet(player)) {
             return Optional.of(pets.first { p -> !p.isDead && p.meta.playerMeta.uuid == playerProxy.uniqueId }!!)
         }
