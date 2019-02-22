@@ -101,8 +101,10 @@ class EntityServiceImpl @Inject constructor(
             }
 
             pathfinder.onExecute = {
-                if(pet.meta.soundEnabled){
-                    if (Math.random() > 0.95) {
+                if (pet.meta.soundEnabled) {
+                    val value = Math.random()
+
+                    if (value > 0.98) {
                         soundService.playSound(hitBox.location, aiBase.sound, owner)
                     }
                 }
@@ -171,12 +173,20 @@ class EntityServiceImpl @Inject constructor(
             }
 
             pathfinder.onStopExecuting = {
+
                 navigationService.clearNavigation(pet)
             }
 
             pathfinder.onStartExecuting = {
                 lastLocation = owner.location.clone()
-                navigationService.navigateToLocation(pet, owner.location, aiBase.speed)
+
+                val speed = if (pet.meta.aiGoals.firstOrNull { p -> p is AIHopping } != null) {
+                    aiBase.speed + 1.0
+                } else {
+                    aiBase.speed
+                }
+
+                navigationService.navigateToLocation(pet, owner.location, speed)
             }
 
             pathfinder

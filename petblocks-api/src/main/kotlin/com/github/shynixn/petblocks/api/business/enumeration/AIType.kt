@@ -58,11 +58,6 @@ enum class AIType(
     CARRY("carry", AICarry::class),
 
     /**
-     * Diving
-     */
-    DIVING("diving", AIDiving::class),
-
-    /**
      * Feeding.
      */
     FEEDING("feeding", AIFeeding::class),

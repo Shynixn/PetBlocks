@@ -54,6 +54,14 @@ class FeedingPetListener @Inject constructor(private val feedingPetService: Feed
             if (itemStack.isPresent && itemStack.get().type != Material.AIR) {
                 val feed = feedingPetService.feedPet(pet, itemStack.get())
 
+                if (feed) {
+                    if (itemStack.get().amount == 1) {
+                        pet.getPlayer<Player>().itemInHand = null
+                    } else {
+                        itemStack.get().amount = itemStack.get().amount - 1
+                    }
+                }
+
                 event.isCancelled = feed
             }
         }
