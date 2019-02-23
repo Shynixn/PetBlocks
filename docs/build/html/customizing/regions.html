@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Regions &mdash; PetBlocks 8.0.0-SNAPSHOT documentation</title>
+  <title>Worlds and Regions &mdash; PetBlocks 8.0.0-SNAPSHOT documentation</title>
   
 
   
@@ -40,7 +40,7 @@
     <link rel="top" title="PetBlocks 8.0.0-SNAPSHOT documentation" href="../index.html"/>
         <link rel="up" title="Customizing" href="index.html"/>
         <link rel="next" title="Minecraft-Heads.com" href="minecraftheads.html"/>
-        <link rel="prev" title="Scripting" href="scripting.html"/> 
+        <link rel="prev" title="Example: Adding a new pokemon category" href="samplepokemoncategory.html"/> 
 
   
   <script src="../_static/js/modernizr.min.js"></script>
@@ -101,13 +101,10 @@
 <li class="toctree-l1"><a class="reference internal" href="../pets/index.html">Pets</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="index.html">Customizing</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="gui.html">GUI</a></li>
-<li class="toctree-l2"><a class="reference internal" href="sounds.html">Sounds</a></li>
-<li class="toctree-l2"><a class="reference internal" href="particleeffects.html">Particles</a></li>
-<li class="toctree-l2"><a class="reference internal" href="scripting.html">Scripting</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">Regions</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#worldguard">WorldGuard</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#griefprevention">GriefPrevention</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#region-settings">Region Settings</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Worlds and Regions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#worlds">Worlds</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#regions-in-bukkit">Regions in Bukkit</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#regions-in-sponge">Regions in Sponge</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="minecraftheads.html">Minecraft-Heads.com</a></li>
@@ -165,7 +162,7 @@
         
           <li><a href="index.html">Customizing</a> &raquo;</li>
         
-      <li>Regions</li>
+      <li>Worlds and Regions</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -186,55 +183,55 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="regions">
-<h1>Regions<a class="headerlink" href="#regions" title="Permalink to this headline">¶</a></h1>
-<p>It is often the case that you have got a region management plugin installed on your server regardless if you are using Spigot or Sponge.
-They can cause issues when spawning pets when certain region restrictions are enabled.</p>
-<p>Simply allow spawning <strong>rabbits and zombies</strong> in your regions and PetBlocks should work correctly. If it is not possible to allow this,
-PetBlocks also hooks into the following popular region plugins to allow spawning its pets anyway. Please request a region management plugin
-if it is not supported on this list.</p>
-<p>The following <strong>Bukkit plugins</strong> are supported:</p>
-<ul class="simple">
-<li>WorldGuard</li>
-</ul>
-<p>The following <strong>Sponge plugins</strong> are supported:</p>
-<ul class="simple">
-<li>GriefPrevention</li>
-</ul>
-<div class="section" id="worldguard">
-<h2>WorldGuard<a class="headerlink" href="#worldguard" title="Permalink to this headline">¶</a></h2>
-<ul class="simple">
-<li>PetBlocks should automatically hook into any installed WorldGuard plugin and allows spawning pets in any region you configure.
-You can restrict the regions by taking a look at the region settings below.</li>
-</ul>
+  <div class="section" id="worlds-and-regions">
+<h1>Worlds and Regions<a class="headerlink" href="#worlds-and-regions" title="Permalink to this headline">¶</a></h1>
+<p>It is often the case that you have got a world or region management plugin installed on your server regardless if you are using Spigot or Sponge.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">PetBlocks includes a restriction that pets <strong>cannot</strong> be deleted by other plugins.</p>
 </div>
-<div class="section" id="griefprevention">
-<h2>GriefPrevention<a class="headerlink" href="#griefprevention" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="worlds">
+<h2>Worlds<a class="headerlink" href="#worlds" title="Permalink to this headline">¶</a></h2>
+<p>Restricting the pets to certain worlds is very easy. Decide if you want to whitelist or blacklist (default) worlds by moving
+the ‘all’ tag to excluded or included. Afterwards, add the world names.</p>
+<p><strong>config.yml</strong>:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="c1">############################</span>
+
+<span class="c1"># World settings</span>
+
+<span class="c1"># These settings allow spawning or deny spawning pets in certain worlds.</span>
+
+<span class="c1"># world-excluded: Add worlds where the pets should not be able to spawn.</span>
+<span class="c1"># (When &#39;all&#39; is added to excluded all worlds are disabled for spawning except the added worlds to included)</span>
+<span class="c1"># world-included: Add worlds where the pets should be able to spawn.</span>
+<span class="c1"># (When &#39;all&#39; is added to included all worlds are enabled for spawning except the added worlds to excluded)</span>
+
+<span class="c1"># DO NOT PUT &#39;all&#39; into both included and excluded!</span>
+
+<span class="c1">############################</span>
+
+<span class="n">world</span><span class="p">:</span>
+  <span class="n">excluded</span><span class="p">:</span>
+  <span class="o">-</span> <span class="s1">&#39;&#39;</span>
+  <span class="n">included</span><span class="p">:</span>
+  <span class="o">-</span> <span class="s1">&#39;all&#39;</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="regions-in-bukkit">
+<h2>Regions in Bukkit<a class="headerlink" href="#regions-in-bukkit" title="Permalink to this headline">¶</a></h2>
+<p>Pets currently cannot be restricted by specific plugins regarding regions as there are too many of them.</p>
+<p>However, some region plugins allow executing commands when a player enters a region. Simply execute the command <strong>/petblocks disable &lt;player-name-entering-region&gt;</strong> to disable the pet.
+To lock the player from calling the pet you should also remove the pet calling permission via a command from your permission plugin.</p>
+</div>
+<div class="section" id="regions-in-sponge">
+<h2>Regions in Sponge<a class="headerlink" href="#regions-in-sponge" title="Permalink to this headline">¶</a></h2>
+<p>You can use the plugin called <strong>GriefPrevention</strong> to restrict spawning of pets in certain regions.</p>
 <ul class="simple">
-<li>PetBlocks uses the same way as the popular Pixelmon mod to allow or deny pets in certain regions.</li>
 <li>Use the modid <strong>petblocks</strong> and <strong>any</strong> for settings flags. (rabbit,zombie,armorstand)</li>
 </ul>
 <p><strong>command</strong>:</p>
 <div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">/</span><span class="n">cf</span> <span class="n">entity</span><span class="o">-</span><span class="n">spawn</span> <span class="n">petblocks</span><span class="p">:</span><span class="nb">any</span> <span class="n">true</span>
-</pre></div>
-</div>
-</div>
-<div class="section" id="region-settings">
-<h2>Region Settings<a class="headerlink" href="#region-settings" title="Permalink to this headline">¶</a></h2>
-<p>You can also specify where pets are allowed to spawn. The world settings are available for both Spigot and Sponge, however
-the region settings are only available when WorldGuard is installed.</p>
-<p><strong>config.yml</strong>:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="c1"># World-region settings</span>
-   <span class="n">world</span><span class="p">:</span>
-       <span class="n">excluded</span><span class="p">:</span>
-         <span class="o">-</span> <span class="s1">&#39;&#39;</span>
-       <span class="n">included</span><span class="p">:</span>
-         <span class="o">-</span> <span class="s1">&#39;all&#39;</span>
-   <span class="n">region</span><span class="p">:</span>
-       <span class="n">excluded</span><span class="p">:</span>
-         <span class="o">-</span> <span class="s1">&#39;&#39;</span>
-       <span class="n">included</span><span class="p">:</span>
-         <span class="o">-</span> <span class="s1">&#39;all&#39;</span>
 </pre></div>
 </div>
 </div>
@@ -253,7 +250,7 @@ the region settings are only available when WorldGuard is installed.</p>
         <a href="minecraftheads.html" class="btn btn-neutral float-right" title="Minecraft-Heads.com" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="scripting.html" class="btn btn-neutral" title="Scripting" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="samplepokemoncategory.html" class="btn btn-neutral" title="Example: Adding a new pokemon category" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

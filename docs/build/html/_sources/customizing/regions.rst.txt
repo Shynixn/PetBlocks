@@ -1,53 +1,55 @@
-Regions
-=======
+Worlds and Regions
+==================
 
-It is often the case that you have got a region management plugin installed on your server regardless if you are using Spigot or Sponge.
-They can cause issues when spawning pets when certain region restrictions are enabled.
+It is often the case that you have got a world or region management plugin installed on your server regardless if you are using Spigot or Sponge.
 
-Simply allow spawning **rabbits and zombies** in your regions and PetBlocks should work correctly. If it is not possible to allow this,
-PetBlocks also hooks into the following popular region plugins to allow spawning its pets anyway. Please request a region management plugin
-if it is not supported on this list.
+.. note::
+ PetBlocks includes a restriction that pets **cannot** be deleted by other plugins.
 
-The following **Bukkit plugins** are supported:
+Worlds
+~~~~~~
 
-* WorldGuard
+Restricting the pets to certain worlds is very easy. Decide if you want to whitelist or blacklist (default) worlds by moving
+the 'all' tag to excluded or included. Afterwards, add the world names.
 
-The following **Sponge plugins** are supported:
+**config.yml**:
+::
+    ############################
 
-* GriefPrevention
+    # World settings
 
-WorldGuard
-~~~~~~~~~~
+    # These settings allow spawning or deny spawning pets in certain worlds.
 
-* PetBlocks should automatically hook into any installed WorldGuard plugin and allows spawning pets in any region you configure.
-  You can restrict the regions by taking a look at the region settings below.
+    # world-excluded: Add worlds where the pets should not be able to spawn.
+    # (When 'all' is added to excluded all worlds are disabled for spawning except the added worlds to included)
+    # world-included: Add worlds where the pets should be able to spawn.
+    # (When 'all' is added to included all worlds are enabled for spawning except the added worlds to excluded)
 
-GriefPrevention
-~~~~~~~~~~~~~~~
+    # DO NOT PUT 'all' into both included and excluded!
 
-* PetBlocks uses the same way as the popular Pixelmon mod to allow or deny pets in certain regions.
+    ############################
+
+    world:
+      excluded:
+      - ''
+      included:
+      - 'all'
+
+Regions in Bukkit
+~~~~~~~~~~~~~~~~~
+
+Pets currently cannot be restricted by specific plugins regarding regions as there are too many of them.
+
+However, some region plugins allow executing commands when a player enters a region. Simply execute the command **/petblocks disable <player-name-entering-region>** to disable the pet.
+To lock the player from calling the pet you should also remove the pet calling permission via a command from your permission plugin.
+
+Regions in Sponge
+~~~~~~~~~~~~~~~~~
+
+You can use the plugin called **GriefPrevention** to restrict spawning of pets in certain regions.
+
 * Use the modid **petblocks** and **any** for settings flags. (rabbit,zombie,armorstand)
 
 **command**:
 ::
  /cf entity-spawn petblocks:any true
-
-Region Settings
-~~~~~~~~~~~~~~~
-
-You can also specify where pets are allowed to spawn. The world settings are available for both Spigot and Sponge, however
-the region settings are only available when WorldGuard is installed.
-
-**config.yml**:
-::
- # World-region settings
-    world:
-        excluded:
-          - ''
-        included:
-          - 'all'
-    region:
-        excluded:
-          - ''
-        included:
-          - 'all'
