@@ -3,7 +3,6 @@
 package com.github.shynixn.petblocks.bukkit.logic.business.extension
 
 import com.github.shynixn.petblocks.api.business.enumeration.ParticleType
-import com.github.shynixn.petblocks.api.business.enumeration.Permission
 import com.github.shynixn.petblocks.api.business.enumeration.Version
 import com.github.shynixn.petblocks.api.persistence.entity.Position
 import com.github.shynixn.petblocks.core.logic.business.extension.translateChatColors
@@ -163,57 +162,31 @@ fun Player.sendPacket(packet: Any) {
 }
 
 /**
- * Sets the itemstack unbreakable.
+ * Converts the current itemstack to an unbreakable itemstack.
  */
-fun ItemStack.setUnbreakable(unbreakable: Boolean): ItemStack {
-    val data = HashMap<String, Any>()
-    data["Unbreakable"] = unbreakable
-    setNBTTags(data)
-    return this
-}
-
-/**
- * Sets nbt tags to the itemstack.
- */
-fun ItemStack.setNBTTags(tags: Map<String, Any>) {
+fun ItemStack.createUnbreakableCopy(): ItemStack {
     val version = getServerVersion()
-    val nmsCopyMethod =
-        Class.forName("org.bukkit.craftbukkit.VERSION.inventory.CraftItemStack".replace("VERSION", version.bukkitId)).getDeclaredMethod("asNMSCopy", ItemStack::class.java)
+    val nmsItemStackClass = Class.forName("net.minecraft.server.VERSION.ItemStack".replace("VERSION", version.bukkitId))
+    val craftItemStackClass = Class.forName("org.bukkit.craftbukkit.VERSION.inventory.CraftItemStack".replace("VERSION", version.bukkitId))
+    val nmsCopyMethod = craftItemStackClass.getDeclaredMethod("asNMSCopy", ItemStack::class.java)
+    val nmsToBukkitMethod = craftItemStackClass.getDeclaredMethod("asBukkitCopy", nmsItemStackClass)
 
     val nbtTagClass = Class.forName("net.minecraft.server.VERSION.NBTTagCompound".replace("VERSION", version.bukkitId))
-    val nmsItemStackClass = Class.forName("net.minecraft.server.VERSION.ItemStack".replace("VERSION", version.bukkitId))
     val getNBTTag = nmsItemStackClass.getDeclaredMethod("getTag")
     val setNBTTag = nmsItemStackClass.getDeclaredMethod("setTag", nbtTagClass)
-    val nmsItemStack = nmsCopyMethod.invoke(null, this)
-
-    val nbtSetString = nbtTagClass.getDeclaredMethod("setString", String::class.java, String::class.java)
     val nbtSetBoolean = nbtTagClass.getDeclaredMethod("setBoolean", String::class.java, Boolean::class.javaPrimitiveType)
-    val nbtSetInteger = nbtTagClass.getDeclaredMethod("setInt", String::class.java, Int::class.javaPrimitiveType)
 
-    for (key in tags.keys) {
-        val value = tags[key]
-        var nbtTag = getNBTTag.invoke(nmsItemStack)
+    val nmsItemStack = nmsCopyMethod.invoke(null, this)
+    var nbtTag = getNBTTag.invoke(nmsItemStack)
 
-        if (nbtTag == null) {
-            nbtTag = nbtTagClass.newInstance()
-        }
-
-        when (value) {
-            is String -> {
-                nbtSetString.invoke(nbtTag, key, value)
-            }
-
-            is Int -> {
-                nbtSetInteger.invoke(nbtTag, key, value)
-            }
-
-            is Boolean -> {
-                nbtSetBoolean.invoke(nbtTag, key, value)
-            }
-        }
-
-        setNBTTag.invoke(nmsItemStack, nbtTag)
+    if (nbtTag == null) {
+        nbtTag = nbtTagClass.newInstance()
     }
+
+    nbtSetBoolean.invoke(nbtTag, "Unbreakable", true)
+    setNBTTag.invoke(nmsItemStack, nbtTag)
+
+    return nmsToBukkitMethod.invoke(null, nmsItemStack) as ItemStack
 }
 
 /**
@@ -337,7 +310,7 @@ fun getServerVersion(): Version {
             }
         }
 
-    }catch (e : Exception){
+    } catch (e: Exception) {
     }
 
     return Version.VERSION_UNKNOWN

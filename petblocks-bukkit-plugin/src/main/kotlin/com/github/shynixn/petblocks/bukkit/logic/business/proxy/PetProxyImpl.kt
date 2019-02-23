@@ -129,7 +129,7 @@ class PetProxyImpl(override val meta: PetMeta, private val design: ArmorStand, p
                     val location = getLocation<Location>()
 
                     if (meta.particleEnabled) {
-                        particleService.playParticle(location.add(0.0, 0.75, 0.0), aiBase.movementParticle, owner)
+                        particleService.playParticle(location, aiBase.movementParticle, owner)
                     }
 
                     if (meta.soundEnabled) {
@@ -152,7 +152,7 @@ class PetProxyImpl(override val meta: PetMeta, private val design: ArmorStand, p
             return
         }
 
-        // hitBox.addPotionEffect(PotionEffect(PotionEffectType.INVISIBILITY, 9999999, 1))
+        hitBox.addPotionEffect(PotionEffect(PotionEffectType.INVISIBILITY, 9999999, 1))
         hitBox.setMetadata("keep", FixedMetadataValue(Bukkit.getPluginManager().getPlugin("PetBlocks"), true))
         hitBox.isCustomNameVisible = false
         hitBox.equipment.boots = generateMarkerItemStack()
@@ -207,11 +207,14 @@ class PetProxyImpl(override val meta: PetMeta, private val design: ArmorStand, p
         }
 
         if (displayNameChanged || Skin::typeName.hasChanged(meta.skin)) {
-            val itemStack = itemService.createItemStack(meta.skin.typeName, meta.skin.dataValue).build<ItemStack>()
+            var itemStack = itemService.createItemStack(meta.skin.typeName, meta.skin.dataValue).build<ItemStack>()
 
             itemStack.displayName = meta.displayName
             itemStack.skin = meta.skin.owner
-            itemStack.setUnbreakable(meta.skin.unbreakable)
+
+            if (meta.skin.unbreakable) {
+                itemStack = itemStack.createUnbreakableCopy()
+            }
 
             design.helmet = itemStack
         }

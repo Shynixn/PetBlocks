@@ -6,7 +6,6 @@ import com.github.shynixn.petblocks.api.PetBlocksApi
 import com.github.shynixn.petblocks.api.business.proxy.PluginProxy
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
-import java.lang.RuntimeException
 
 /**
  * Created by Shynixn 2018.
@@ -51,7 +50,7 @@ class PetBlocksApiTest {
         val classUnderTest = createWithDependencies(proxy)
 
         // Act
-        classUnderTest.resolve<Any>(String::class.java)
+        classUnderTest.resolve(String::class.java)
 
         // Assert
         Assertions.assertTrue(proxy.called)
@@ -72,7 +71,7 @@ class PetBlocksApiTest {
         val classUnderTest = createWithDependencies(proxy)
 
         // Act
-        classUnderTest.create<Any>(String::class.java)
+        classUnderTest.create(String::class.java)
 
         // Assert
         Assertions.assertTrue(proxy.called)

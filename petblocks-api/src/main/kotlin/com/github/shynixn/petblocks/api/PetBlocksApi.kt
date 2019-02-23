@@ -44,7 +44,7 @@ object PetBlocksApi {
      * All types in the service package can be accessed.
      * Throws a [IllegalArgumentException] if the service could not be found.
      */
-    fun <S> resolve(service: Any): S {
+    fun <S> resolve(service: Class<S>): S {
         return plugin!!.resolve(service)
     }
 
@@ -52,7 +52,7 @@ object PetBlocksApi {
      * Creates a new entity from the given [entity] clazz.
      * Throws a [IllegalArgumentException] if the entity could not be found.
      */
-    fun <E> create(entity: Any): E {
+    fun <E> create(entity: Class<E>): E {
         return plugin!!.create(entity)
     }
 }

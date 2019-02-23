@@ -143,15 +143,17 @@ global-configuration:
 ############################
 
 pet:
-  enabled: false
+  enabled: true
   name: "<player>'s Pet"
   sound-enabled: true
   particle-enabled: true
   skin:
-    id: 2
+    id: 397
+    damage: 3
+    skin: 'eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYzc4NzhiYmYxYjA5ZjdmMjFhZjBiNDA2ZWY3MzEyZWUyMjViOGNjMTAyY2QwOWVlZmYyNDAyNDkzYzUwMzQ0MiJ9fX0='
   add-ai:
     1:
-      type: 'hopping'
+      type: 'walking'
       climbing-height: 1.0
       speed: 1.0
       offset-y: -1.0
@@ -429,6 +431,17 @@ gui:
         lore:
         - '&7Closes the current window.'
   wardrobe:
+    pokemon-skins:
+      row: 4
+      col: 5
+      script: 'open-page gui.pokemon-skins'
+      icon:
+        id: 397
+        damage: 3
+        name: '&e&lPokemon costumes'
+        skin: 'http://textures.minecraft.net/texture/e3a88146def8154a3a913a5b2ab72b625bb20c74c5461f00a29b3c0ae732ec58'
+        lore:
+        - '&7Use Pokemon heads as costume.'    
     block-skins:
       row: 2
       col: 3
@@ -10370,4 +10383,74 @@ gui:
         id: 397
         damage: 3
         skin: 'minecraft-heads.com/661'
+  pokemon-skins:
+    next-page:
+      row: 6
+      col: 9
+      fixed: true
+      script: 'scroll 2 0'
+      icon:
+        id: 397
+        damage: 3
+        skin: 'http://textures.minecraft.net/texture/1b6f1a25b6bc199946472aedb370522584ff6f4e83221e5946bd2e41b5ca13b'
+        name: '&aNext page'
+        script: 'hide-right-scroll'
+    previous-page:
+      row: 6
+      col: 1
+      fixed: true
+      script: 'scroll -2 0'
+      icon:
+        id: 397
+        damage: 3
+        skin: 'http://textures.minecraft.net/texture/3ebf907494a935e955bfcadab81beafb90fb9be49c7026ba97d798d5f1a23'
+        name: '&aPrevious page'
+        script: 'hide-left-scroll'
+    back:
+      row: 6
+      col: 5
+      fixed: true
+      script: 'close-gui'
+      icon:
+        id: 166
+        damage: 0
+        name: '&cBack'
+        lore:
+        - '&7Closes the current window.'  
+    skin-flareon:
+      row: 1
+      col: 1
+      icon:
+        id: 397
+        damage: 3
+        name: 'Falreon'
+        skin: 'http://textures.minecraft.net/texture/e3a88146def8154a3a913a5b2ab72b625bb20c74c5461f00a29b3c0ae732ec58'
+      set-skin:
+        id: 397
+        damage: 3
+        skin: 'http://textures.minecraft.net/texture/e3a88146def8154a3a913a5b2ab72b625bb20c74c5461f00a29b3c0ae732ec58'  
+    skin-jolteon:
+      row: 1
+      col: 2
+      icon:
+        id: 397
+        damage: 3
+        name: 'Jolteon'
+        skin: 'http://textures.minecraft.net/texture/c5ea93557401e05432aebf876f91250154e7a784287b1616a4e72977c570ffa0'
+      set-skin:
+        id: 397
+        damage: 3
+        skin: 'http://textures.minecraft.net/texture/c5ea93557401e05432aebf876f91250154e7a784287b1616a4e72977c570ffa0'  
+    skin-espeon:
+      row: 1
+      col: 3
+      icon:
+        id: 397
+        damage: 3
+        name: 'Espeon'
+        skin: 'http://textures.minecraft.net/texture/ca88655b16a8331a8d130c172243ce18ef7d28573ccd3c9faee464be6fdaf346'
+      set-skin:
+        id: 397
+        damage: 3
+        skin: 'http://textures.minecraft.net/texture/ca88655b16a8331a8d130c172243ce18ef7d28573ccd3c9faee464be6fdaf346'  
 # Append new items above this line <---

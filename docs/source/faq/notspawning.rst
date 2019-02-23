@@ -1,11 +1,6 @@
 The pet does not spawn?
-============================
+=======================
 
-It is important to understand how PetBlocks works in order to fix this problem. A PetBlock consist out of
-2 entities, an **armorstand** and a **rabbit/zombie** (depending on the movement type).
-
-Simply check if armorstands, rabbits and zombies are allowed to spawn in your world or region and change these
-settings if necessary. It is often easier to simple restrict mob spawning by using a game rule. **/gamerule doMobSpawning false**
-
-PetBlocks also allows some basic region management. `Click here <../customizing/regions.html>`__ to get more information.
+* Make sure the world you are trying to spawn a pet is not excluded in the world section.
+* Make sure no other plugin you have installed using the PetBlocksApi cancels spawning the pet.
 
