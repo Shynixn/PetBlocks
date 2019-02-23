@@ -12,3 +12,5 @@ The articles in this section explain how pets are constructed and used in PetBlo
 .. toctree::
    petblocks
    petblocksskins
+   petblocksais
+   petblocksconfiguration

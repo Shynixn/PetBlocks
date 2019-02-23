@@ -182,8 +182,35 @@
 <p>PetBlocks uses a SQLite database per default which is the file called PetBlocks.db inside of the PetBlocks plugin folder.</p>
 <p>If you rename or delete the file it gets automatically regenerated but all of your saves are lost. So it might be
 useful to copy the PetBlocks.db file from time to time in order to create backups.</p>
-<p>One option you should consider is using a MySQL database instead of a SQLite database, the advantages and how to set it up
-are listed <a class="reference external" href="../faq/howmysql.html">here.</a></p>
+<p>One option you should consider is using a MySQL database instead of a SQLite database.</p>
+<p>Using the MySQL database configuration is recommend for:</p>
+<ul class="simple">
+<li>A large player base</li>
+<li>Performance</li>
+<li>There is one available (included in the hosting package)</li>
+</ul>
+<p><strong>config.yml</strong></p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="c1">############################</span>
+
+<span class="c1"># Database settings</span>
+
+<span class="c1"># All pets are stored in a SQLite database per default which is basically the</span>
+<span class="c1"># PetBlocks.db file in the plugin folder.</span>
+<span class="c1"># Available types are &#39;sqlite&#39; and &#39;mysql&#39;.</span>
+<span class="c1"># Use the same mysql database for 2 or more server in order to allow cross server pets.</span>
+
+<span class="c1">############################</span>
+
+<span class="n">sql</span><span class="p">:</span>
+  <span class="nb">type</span><span class="p">:</span> <span class="s1">&#39;mysql&#39;</span>
+  <span class="n">host</span><span class="p">:</span> <span class="s1">&#39;yourHostName&#39;</span>
+  <span class="n">port</span><span class="p">:</span> <span class="mi">3306</span>
+  <span class="n">database</span><span class="p">:</span> <span class="s1">&#39;yourDbName&#39;</span>
+  <span class="n">usessl</span><span class="p">:</span> <span class="n">true</span>
+  <span class="n">username</span><span class="p">:</span> <span class="s1">&#39;yourUserName&#39;</span>
+  <span class="n">password</span><span class="p">:</span> <span class="s1">&#39;yourPassword&#39;</span>
+</pre></div>
+</div>
 </div>
 
 

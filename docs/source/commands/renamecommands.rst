@@ -1,7 +1,7 @@
 Rename Commands
 ~~~~~~~~~~~~~~~
 
-You are also allowed to rename the commands /petblock and /petblocks in the config.yml. You can even customize the permissions.
+You are also allowed to rename the command /petblock in the config.yml. You can even customize the permissions.
 
 **config.yml**
 ::
@@ -22,11 +22,4 @@ You are also allowed to rename the commands /petblock and /petblocks in the conf
         useage: /<command>
         description: Opens the pet GUI.
         permission: petblocks.command.use
-        permission-message: You don't have permission
-      petblocks:
-        enabled: true
-        command: petblocks
-        useage: /<command>
-        description: Command to configure pets.
-        permission: petblocks.command.admin
         permission-message: You don't have permission

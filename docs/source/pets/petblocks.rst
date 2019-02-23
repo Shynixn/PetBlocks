@@ -1,4 +1,4 @@
-A journey of Ais, skins and user settings
+A journey of ais, skins and user settings
 =========================================
 
 Let's take a look at our default pet which gets spawned via the default config, by entering the command
