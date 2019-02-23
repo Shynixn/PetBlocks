@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Database and Storage &mdash; PetBlocks 7.3.0 documentation</title>
+  <title>Database and Storage &mdash; PetBlocks 8.0.0-SNAPSHOT documentation</title>
   
 
   
@@ -37,7 +37,7 @@
         <link rel="index" title="Index"
               href="../genindex.html"/>
         <link rel="search" title="Search" href="../search.html"/>
-    <link rel="top" title="PetBlocks 7.3.0 documentation" href="../index.html"/>
+    <link rel="top" title="PetBlocks 8.0.0-SNAPSHOT documentation" href="../index.html"/>
         <link rel="up" title="General" href="index.html"/>
         <link rel="next" title="Datacollecting" href="datacollecting.html"/>
         <link rel="prev" title="Updating" href="updating.html"/> 
@@ -72,7 +72,7 @@
             
             
               <div class="version">
-                7.3.0
+                8.0.0-SNAPSHOT
               </div>
             
           
@@ -182,8 +182,35 @@
 <p>PetBlocks uses a SQLite database per default which is the file called PetBlocks.db inside of the PetBlocks plugin folder.</p>
 <p>If you rename or delete the file it gets automatically regenerated but all of your saves are lost. So it might be
 useful to copy the PetBlocks.db file from time to time in order to create backups.</p>
-<p>One option you should consider is using a MySQL database instead of a SQLite database, the advantages and how to set it up
-are listed <a class="reference external" href="../faq/howmysql.html">here.</a></p>
+<p>One option you should consider is using a MySQL database instead of a SQLite database.</p>
+<p>Using the MySQL database configuration is recommend for:</p>
+<ul class="simple">
+<li>A large player base</li>
+<li>Performance</li>
+<li>There is one available (included in the hosting package)</li>
+</ul>
+<p><strong>config.yml</strong></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1">############################</span>
+
+<span class="c1"># Database settings</span>
+
+<span class="c1"># All pets are stored in a SQLite database per default which is basically the</span>
+<span class="c1"># PetBlocks.db file in the plugin folder.</span>
+<span class="c1"># Available types are &#39;sqlite&#39; and &#39;mysql&#39;.</span>
+<span class="c1"># Use the same mysql database for 2 or more server in order to allow cross server pets.</span>
+
+<span class="c1">############################</span>
+
+<span class="n">sql</span><span class="p">:</span>
+  <span class="nb">type</span><span class="p">:</span> <span class="s1">&#39;mysql&#39;</span>
+  <span class="n">host</span><span class="p">:</span> <span class="s1">&#39;yourHostName&#39;</span>
+  <span class="n">port</span><span class="p">:</span> <span class="mi">3306</span>
+  <span class="n">database</span><span class="p">:</span> <span class="s1">&#39;yourDbName&#39;</span>
+  <span class="n">usessl</span><span class="p">:</span> <span class="n">true</span>
+  <span class="n">username</span><span class="p">:</span> <span class="s1">&#39;yourUserName&#39;</span>
+  <span class="n">password</span><span class="p">:</span> <span class="s1">&#39;yourPassword&#39;</span>
+</pre></div>
+</div>
 </div>
 
 
@@ -229,7 +256,7 @@ are listed <a class="reference external" href="../faq/howmysql.html">here.</a></
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'7.3.0',
+            VERSION:'8.0.0-SNAPSHOT',
             LANGUAGE:'None',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
