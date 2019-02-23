@@ -3,6 +3,10 @@ Customizing
 
 .. toctree::
    gui
-   database
-   commands
-   datacollecting
+   engines
+   sounds
+   particleeffects
+   scripting
+   regions
+   minecraftheads
+   headdatabase

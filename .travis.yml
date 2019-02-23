@@ -1,30 +1,36 @@
 language: java
 sudo: true
-install:
-    - cd /home/travis/build/Shynixn/PetBlocks/
-    - mkdir lib
-    - wget https://hub.spigotmc.org/jenkins/job/BuildTools/lastStableBuild/artifact/target/BuildTools.jar -P /home/travis/build/Shynixn/PetBlocks/lib/
-before_script:
-  - sudo /etc/init.d/mysql stop
-script:
-    - cd /home/travis/build/Shynixn/PetBlocks/petblocks-sponge-plugin
-    - mvn anchornms:generate-mcp-libraries -X
-    - cp target/nms-tools/mcp-1.12.jar /home/travis/build/Shynixn/PetBlocks/lib/mcp-1.12.jar
-    - cd /home/travis/build/Shynixn/PetBlocks/lib/
-    - ls
-    - java -jar BuildTools.jar --rev 1.8 > /dev/null
-    - java -jar BuildTools.jar --rev 1.8.3 > /dev/null
-    - java -jar BuildTools.jar --rev 1.8.8 > /dev/null
-    - java -jar BuildTools.jar --rev 1.9 > /dev/null
-    - java -jar BuildTools.jar --rev 1.9.4 > /dev/null
-    - java -jar BuildTools.jar --rev 1.10 > /dev/null
-    - java -jar BuildTools.jar --rev 1.11 > /dev/null
-    - java -jar BuildTools.jar --rev 1.12 > /dev/null
-    - ls
-    - cd -
-    - mvn install
 jdk:
   - oraclejdk8
-#jdk 8a
-
-
+cache:
+  timeout: 1000
+  directories:
+  - $HOME/.m2/repository/org/spigotmc
+  - $HOME/.m2/repository/org/mcp
+before_install:
+    - chmod +x gradlew
+    - chmod +x petblocks-tools/travis-status.sh
+    - sudo /etc/init.d/mysql stop
+    - echo $GPG_SECRET_KEYS | base64 --decode | $GPG_EXECUTABLE --import
+    - echo $GPG_OWNERTRUST | base64 --decode | $GPG_EXECUTABLE --import-ownertrust
+    - if [[ $TRAVIS_COMMIT_MESSAGE == *"--refresh-dependencies"* ]]; then ./gradlew downloadDependencies; fi ;
+    - sudo apt-get install python3-pip
+    - sudo pip3 install https://github.com/Shynixn/sphinx_rtd_theme/releases/download/C1.0/sphinx_rtd_theme.zip
+    - sudo pip3 install -U sphinx
+    - git config --global user.email "travis@travis-ci.org" && git config --global user.name "Travis CI"
+install:
+    - ./gradlew assemble || ./gradlew downloadDependencies
+script:
+  - ./gradlew clean build
+  - if [[ $TRAVIS_BRANCH == *"master"* ]]; then rm -rf docs/build && rm -rf docs/apidocs; fi ;
+  - if [[ $TRAVIS_BRANCH == *"master"* ]]; then python3 -msphinx -M html docs/source docs/build; fi ;
+  - if [[ $TRAVIS_BRANCH == *"master"* ]]; then ./gradlew generateJavaDocPages > /dev/null; fi ;
+  - if [[ $TRAVIS_BRANCH == *"master"* ]]; then git add docs && git commit --message "Travis build $TRAVIS_BUILD_NUMBER [skip travis-ci]"; fi ;
+  - if [[ $TRAVIS_BRANCH == *"master"* ]]; then git push --quiet https://Shynixn:$GH_TOKEN@github.com/Shynixn/PetBlocks.git HEAD:master; fi ;
+after_success:
+  - ./gradlew jacocoTestReport
+  - bash <(curl -s https://codecov.io/bash)
+  - if [[ $TRAVIS_COMMIT_MESSAGE == *"--snapshot"* ]]; then java -jar petblocks-tools/Deploy.jar --snapshot $WEBHOOK_URL; fi ;
+  - ./petblocks-tools/travis-status.sh success $WEBHOOK_URL
+after_failure:
+  - ./petblocks-tools/travis-status.sh failure $WEBHOOK_URL

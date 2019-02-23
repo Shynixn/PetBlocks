@@ -1,0 +1,102 @@
+buildscript {
+    repositories {
+        jcenter()
+        maven { url 'https://plugins.gradle.org/m2/' }
+        mavenCentral()
+    }
+    dependencies {
+        classpath group: 'org.jetbrains.kotlin', name: 'kotlin-gradle-plugin', version: kotlinVersion
+        classpath "org.jetbrains.dokka:dokka-gradle-plugin:0.9.17"
+    }
+}
+
+plugins {
+    id 'org.jetbrains.kotlin.jvm' version '1.3.21'
+}
+
+apply plugin: 'org.jetbrains.dokka'
+
+group 'com.github.shynixn.petblocks'
+version '8.0.0-SNAPSHOT'
+
+subprojects {
+    group = 'com.github.shynixn.petblocks'
+    version = '8.0.0-SNAPSHOT'
+
+    apply plugin: 'kotlin-platform-jvm'
+
+    repositories {
+        mavenCentral()
+        mavenLocal()
+        jcenter()
+    }
+
+    dependencies {
+        implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk8'
+    }
+}
+
+task generateJavaDocPages(type: org.jetbrains.dokka.gradle.DokkaTask) {
+    outputFormat = 'javadoc'
+    outputDirectory = "docs/apidocs"
+    sourceDirs = files(new File(this.projectDir as File, '/petblocks-api/src/main/kotlin')
+            , new File(this.projectDir as File, '/petblocks-bukkit-api/src/main/kotlin')
+            , new File(this.projectDir as File, '/petblocks-core/src/main/kotlin')
+            , new File(this.projectDir as File, '/petblocks-bukkit-plugin/src/main/kotlin'))
+}
+
+task downloadDependencies(type: Exec) {
+    def build = new File('build')
+
+    if (!build.exists()) {
+        build.mkdir()
+    }
+
+    def folder = new File(build, 'buildtools')
+
+    if (!folder.exists()) {
+        folder.mkdir()
+    }
+
+    def file = new File(folder, "BuildTools.jar")
+
+    if (!file.exists()) {
+        new URL('https://hub.spigotmc.org/jenkins/job/BuildTools/lastSuccessfulBuild/artifact/target/BuildTools.jar').withInputStream { i -> file.withOutputStream { it << i } }
+    }
+
+    def text = "cd build/buildtools"
+    text += " && java -jar BuildTools.jar --rev 1.8"
+    text += " && java -jar BuildTools.jar --rev 1.8.3"
+    text += " && java -jar BuildTools.jar --rev 1.8.8"
+    text += " && java -jar BuildTools.jar --rev 1.9"
+    text += " && java -jar BuildTools.jar --rev 1.9.4"
+    text += " && java -jar BuildTools.jar --rev 1.10"
+    text += " && java -jar BuildTools.jar --rev 1.11"
+    text += " && java -jar BuildTools.jar --rev 1.12"
+    text += " && java -jar BuildTools.jar --rev 1.13"
+    text += " && java -jar BuildTools.jar --rev 1.13.2"
+    text += " && mvn install:install-file -Dfile=spigot-1.8.jar -DgroupId=org.spigotmc -DartifactId=spigot18R1 -Dversion=1.8.0-R1.0 -Dpackaging=jar"
+    text += " && mvn install:install-file -Dfile=spigot-1.8.3.jar -DgroupId=org.spigotmc -DartifactId=spigot18R2 -Dversion=1.8.3-R2.0 -Dpackaging=jar"
+    text += " && mvn install:install-file -Dfile=spigot-1.8.8.jar -DgroupId=org.spigotmc -DartifactId=spigot18R3 -Dversion=1.8.8-R3.0 -Dpackaging=jar"
+    text += " && mvn install:install-file -Dfile=spigot-1.9.jar -DgroupId=org.spigotmc -DartifactId=spigot19R1 -Dversion=1.9.0-R1.0 -Dpackaging=jar"
+    text += " && mvn install:install-file -Dfile=spigot-1.9.4.jar -DgroupId=org.spigotmc -DartifactId=spigot19R2 -Dversion=1.9.4-R2.0 -Dpackaging=jar"
+    text += " && mvn install:install-file -Dfile=spigot-1.10.2.jar -DgroupId=org.spigotmc -DartifactId=spigot110R1 -Dversion=1.10.2-R1.0 -Dpackaging=jar"
+    text += " && mvn install:install-file -Dfile=spigot-1.11.jar -DgroupId=org.spigotmc -DartifactId=spigot111R1 -Dversion=1.11.0-R1.0 -Dpackaging=jar"
+    text += " && mvn install:install-file -Dfile=spigot-1.12.jar -DgroupId=org.spigotmc -DartifactId=spigot112R1 -Dversion=1.12.0-R1.0 -Dpackaging=jar"
+    text += " && mvn install:install-file -Dfile=spigot-1.13.jar -DgroupId=org.spigotmc -DartifactId=spigot113R1 -Dversion=1.13.0-R1.0 -Dpackaging=jar"
+    text += " && mvn install:install-file -Dfile=spigot-1.13.2.jar -DgroupId=org.spigotmc -DartifactId=spigot113R2 -Dversion=1.13.2-R2.0 -Dpackaging=jar"
+
+    standardOutput = new ByteArrayOutputStream()
+
+    if (System.getProperty('os.name').toLowerCase(Locale.ROOT).contains('windows')) {
+        commandLine 'cmd', '/c', text
+    } else {
+        commandLine 'sh', '-c', text
+    }
+}
+
+repositories {
+    mavenCentral()
+    mavenLocal()
+    jcenter()
+}

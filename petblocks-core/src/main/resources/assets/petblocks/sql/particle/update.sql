@@ -1,1 +1,0 @@
-UPDATE SHY_PARTICLE_EFFECT SET name=?, amount=?, speed=?, x=?, y=?, z=?, material=?, data=? WHERE id=?
