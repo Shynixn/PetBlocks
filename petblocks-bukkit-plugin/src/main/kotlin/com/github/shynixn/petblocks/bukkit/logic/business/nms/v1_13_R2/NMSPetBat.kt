@@ -77,51 +77,6 @@ class NMSPetBat(petDesign: NMSPetArmorstand, location: Location) : EntityBat((lo
     }
 
     /**
-     * Overrides the moving of the pet design.
-     */
-    override fun move(enummovetype: EnumMoveType?, d0: Double, d1: Double, d2: Double) {
-        super.move(enummovetype, d0, d1, d2)
-
-        if (petDesign == null) {
-            return
-        }
-
-        val aiGoal = petDesign!!.petMeta.aiGoals.lastOrNull { p -> p is AIMovement } ?: return
-
-        val axisBoundingBox = this.boundingBox
-        this.locX = (axisBoundingBox.minX + axisBoundingBox.maxX) / 2.0
-        this.locY = axisBoundingBox.minY - 2.0 + (aiGoal as AIMovement).movementYOffSet
-        this.locZ = (axisBoundingBox.minZ + axisBoundingBox.maxZ) / 2.0
-    }
-
-    /**
-     * Riding function.
-     */
-    override fun a(sidemot: Float, f2: Float, formot: Float) {
-        if (petDesign == null) {
-            super.a(sidemot, f2, formot)
-            return
-        }
-
-        if (this.passengers == null) {
-            super.a(sidemot, f2, formot)
-            return
-        }
-
-        val passenger = this.passengers.first() as EntityArmorStand
-        passenger.yaw = this.yaw
-        passenger.pitch = this.pitch * 0.5f
-        passenger.lastYaw = this.yaw
-        passenger.aQ = this.yaw
-        passenger.aS = this.yaw
-
-        val location = bukkitEntity.location
-        passenger.setPositionRotation(location.x, location.y, location.z, location.yaw, location.pitch)
-
-        super.a(sidemot, f2, formot)
-    }
-
-    /**
      * Gets called on move to play sounds.
      */
     override fun a(blockposition: BlockPosition, iblockdata: IBlockData) {
@@ -135,6 +90,9 @@ class NMSPetBat(petDesign: NMSPetArmorstand, location: Location) : EntityBat((lo
     }
 
     override fun mobTick() {
+        if (!this.onGround && this.motY < 0.0) {
+            this.motY *= 0.6
+        }
     }
 
     /**

@@ -50,10 +50,6 @@ class FeedPetServiceImpl @Inject constructor(
     override fun <I> feedPet(pet: PetProxy, itemStack: I): Boolean {
         var feed = false
 
-        if (cache.contains(pet)) {
-            return false
-        }
-
         for (aiGoal in pet.meta.aiGoals) {
             if (aiGoal is AIFeeding) {
                 if (inventoryItemService.hasItemStackProperties(itemStack, aiGoal.typeName, aiGoal.dataValue)) {

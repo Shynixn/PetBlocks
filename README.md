@@ -24,6 +24,24 @@ PetBlocks is a spigot and also a sponge plugin to use blocks and custom heads as
 
 ![alt tag](http://www.mediafire.com/convkey/8853/81wf7uswm0xh9qgzg.jpg)
 
+## Contributing
+
+* Clone the repository to your local environment
+* Execute gradle sync for dependencies
+* Install the additional spigot dependencies by executing the following gradle task
+
+```xml
+[./gradlew|gradlew.bat] downloadDependencies
+```
+
+* Build the plugin by executing
+
+```xml
+[./gradlew|gradlew.bat] shadowJar
+```
+
+* The .jar file gets generated at petblocks-bukkit-plugin/build/libs/petblocks-bukkit-plugin.jar
+
 ## Licence
 
 Copyright 2015-2019 Shynixn

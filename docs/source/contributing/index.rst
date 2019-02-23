@@ -32,4 +32,4 @@ private messages on spigot.
 Developer? How can I customize PetBlocks?
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Take a look at setting up your personal `PetBlocks workspace. <../api/index.html#setup-your-personal-petblocks-workspace>`__
+Take a look at setting up `PetBlocks on your local environment. <https://github.com/Shynixn/PetBlocks#contributing>`__

@@ -1,9 +1,17 @@
 plugins {
     id 'com.github.johnrengelman.shadow' version '4.0.2'
-    id 'application'
 }
 
 apply plugin: 'kotlin-platform-jvm'
+
+shadowJar{
+    archiveName = 'Deploy.jar'
+    classifier = null
+    version = null
+    mergeServiceFiles{
+        path='META-INF/cxf'
+    }
+}
 
 dependencies {
     implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk8'
@@ -14,15 +22,4 @@ dependencies {
     implementation 'com.zaxxer:HikariCP:3.2.0'
     implementation 'org.xerial:sqlite-jdbc:3.8.11.2'
     implementation 'org.spigotmc:spigot18R3:1.8.8-R3.0'
-}
-
-setMainClassName("com.github.shynixn.petblockstools.MainKt")
-
-shadowJar{
-    archiveName = 'Deploy.jar'
-    classifier = null
-    version = null
-    mergeServiceFiles{
-        path='META-INF/cxf'
-    }
 }

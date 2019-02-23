@@ -104,7 +104,7 @@ class PersistenceSQLiteIT {
         Assertions.assertEquals("hopping", (actual.aiGoals[0] as AIMovementEntity).type)
         Assertions.assertEquals(1.0, (actual.aiGoals[0] as AIMovementEntity).climbingHeight)
         Assertions.assertEquals(1.0, (actual.aiGoals[0] as AIMovementEntity).movementSpeed)
-        Assertions.assertEquals(0.5, (actual.aiGoals[0] as AIMovementEntity).movementYOffSet)
+        Assertions.assertEquals(-1.0, (actual.aiGoals[0] as AIMovementEntity).movementYOffSet)
         Assertions.assertEquals("CHICKEN_WALK", (actual.aiGoals[0] as AIMovementEntity).movementSound.name)
         Assertions.assertEquals(1.0, (actual.aiGoals[0] as AIMovementEntity).movementSound.volume)
         Assertions.assertEquals(1.0, (actual.aiGoals[0] as AIMovementEntity).movementSound.pitch)
@@ -114,7 +114,7 @@ class PersistenceSQLiteIT {
         Assertions.assertEquals("follow-owner", (actual.aiGoals[1] as AIFollowOwner).type)
         Assertions.assertEquals(3.0, (actual.aiGoals[1] as AIFollowOwner).distanceToOwner)
         Assertions.assertEquals(50.0, (actual.aiGoals[1] as AIFollowOwner).maxRange)
-        Assertions.assertEquals(2.5, (actual.aiGoals[1] as AIFollowOwner).speed)
+        Assertions.assertEquals(1.5, (actual.aiGoals[1] as AIFollowOwner).speed)
 
         Assertions.assertEquals("float-in-water", (actual.aiGoals[2] as AIFloatInWater).type)
 

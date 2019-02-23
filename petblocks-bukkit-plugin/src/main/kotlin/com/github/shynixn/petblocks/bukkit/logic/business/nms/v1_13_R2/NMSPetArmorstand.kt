@@ -142,7 +142,6 @@ class NMSPetArmorstand(owner: Player, val petMeta: PetMeta) : EntityArmorStand((
             proxy.changeHitBox(internalHitBox!!.bukkitEntity as LivingEntity)
             val aiGoals = aiService.convertPetAiBasesToPathfinders(proxy, petMeta.aiGoals)
             (internalHitBox as NMSPetBat).applyPathfinders(aiGoals)
-            internalHitBox!!.passengers.add(this)
             return
         }
 
@@ -153,7 +152,6 @@ class NMSPetArmorstand(owner: Player, val petMeta: PetMeta) : EntityArmorStand((
             proxy.changeHitBox(internalHitBox!!.bukkitEntity as LivingEntity)
             val aiGoals = aiService.convertPetAiBasesToPathfinders(proxy, petMeta.aiGoals)
             (internalHitBox as NMSPetRabbit).applyPathfinders(aiGoals)
-            internalHitBox!!.passengers.add(this)
             return
         }
 
@@ -164,7 +162,6 @@ class NMSPetArmorstand(owner: Player, val petMeta: PetMeta) : EntityArmorStand((
             proxy.changeHitBox(internalHitBox!!.bukkitEntity as LivingEntity)
             val aiGoals = aiService.convertPetAiBasesToPathfinders(proxy, petMeta.aiGoals)
             (internalHitBox as NMSPetVillager).applyPathfinders(aiGoals)
-            internalHitBox!!.passengers.add(this)
             return
         }
     }
@@ -177,6 +174,18 @@ class NMSPetArmorstand(owner: Player, val petMeta: PetMeta) : EntityArmorStand((
 
         try {
             proxy.run()
+
+            if (this.internalHitBox != null) {
+                val location = internalHitBox!!.bukkitEntity.location
+                val aiGoal = petMeta.aiGoals.lastOrNull { p -> p is AIMovement } ?: return
+                val y = location.y + (aiGoal as AIMovement).movementYOffSet
+
+                this.setPositionRotation(location.x, y, location.z, location.yaw, location.pitch)
+
+                this.motX = this.internalHitBox!!.motX
+                this.motY = this.internalHitBox!!.motY
+                this.motZ = this.internalHitBox!!.motZ
+            }
 
             if (proxy.teleportTarget != null) {
                 val location = proxy.teleportTarget!!
