@@ -222,21 +222,21 @@ compileOnly 'com.github.shynixn.petblocks:petblocks-bukkit-api:8.0.0-SNAPSHOT'
 <p class="first admonition-title">Note</p>
 <p class="last"><strong>Bukkit</strong> - Add the following tag to your plugin.yml if you <strong>optionally</strong> want to use PetBlocks.</p>
 </div>
-<div class="highlight-yaml"><div class="highlight"><pre><span></span><span class="l l-Scalar l-Scalar-Plain">softdepend</span><span class="p p-Indicator">:</span> <span class="p p-Indicator">[</span><span class="nv">PetBlocks</span><span class="p p-Indicator">]</span>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">softdepend</span><span class="p">:</span> <span class="p p-Indicator">[</span><span class="nv">PetBlocks</span><span class="p p-Indicator">]</span>
 </pre></div>
 </div>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p class="last"><strong>Bukkit</strong> - Add the following tag to your plugin.yml if your plugin  <strong>requires</strong> PetBlocks to work.</p>
 </div>
-<div class="highlight-yaml"><div class="highlight"><pre><span></span><span class="l l-Scalar l-Scalar-Plain">depend</span><span class="p p-Indicator">:</span> <span class="p p-Indicator">[</span><span class="nv">PetBlocks</span><span class="p p-Indicator">]</span>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">depend</span><span class="p">:</span> <span class="p p-Indicator">[</span><span class="nv">PetBlocks</span><span class="p p-Indicator">]</span>
 </pre></div>
 </div>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p class="last"><strong>Sponge</strong> - Add the following tag to your mcmod.info if you <strong>optionally</strong> want to use PetBlocks.</p>
 </div>
-<div class="highlight-java"><div class="highlight"><pre><span></span><span class="s">&quot;dependencies&quot;</span><span class="o">:</span> <span class="o">[</span>
+<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="s">&quot;dependencies&quot;</span><span class="o">:</span> <span class="o">[</span>
    <span class="s">&quot;petblocks&quot;</span>
 <span class="o">]</span>
 </pre></div>
@@ -245,7 +245,7 @@ compileOnly 'com.github.shynixn.petblocks:petblocks-bukkit-api:8.0.0-SNAPSHOT'
 <p class="first admonition-title">Note</p>
 <p class="last"><strong>Sponge</strong> - Add the following tag to your mcmod.info if your plugin <strong>requires</strong> PetBlocks to work.</p>
 </div>
-<div class="highlight-java"><div class="highlight"><pre><span></span><span class="s">&quot;requiredMods&quot;</span><span class="o">:</span> <span class="o">[</span>
+<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="s">&quot;requiredMods&quot;</span><span class="o">:</span> <span class="o">[</span>
    <span class="s">&quot;petblocks&quot;</span>
 <span class="o">]</span>
 </pre></div>
@@ -261,14 +261,14 @@ compileOnly 'com.github.shynixn.petblocks:petblocks-bukkit-api:8.0.0-SNAPSHOT'
 <li>Check out the package <strong>com.github.shynixn.petblocks.api.business.service</strong> in the JavaDocs to find the part of the business logic you want to access.</li>
 <li>Get the instance by using the following line.</li>
 </ul>
-<div class="highlight-java"><div class="highlight"><pre><span></span><span class="n">YourBusinessService</span> <span class="n">service</span> <span class="o">=</span> <span class="n">PetBlocksApi</span><span class="o">.</span><span class="na">INSTANCE</span><span class="o">.</span><span class="na">resolve</span><span class="o">(</span><span class="n">YourBusinessService</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
+<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="n">YourBusinessService</span> <span class="n">service</span> <span class="o">=</span> <span class="n">PetBlocksApi</span><span class="o">.</span><span class="na">INSTANCE</span><span class="o">.</span><span class="na">resolve</span><span class="o">(</span><span class="n">YourBusinessService</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
 </pre></div>
 </div>
 <ul class="simple">
 <li>If the service methods require additional data entities, check out the JavaDocs to find other services which provide these data entities
 or create new entities by checking out the package <strong>com.github.shynixn.petblocks.api.persistence.entity</strong>.</li>
 </ul>
-<div class="highlight-java"><div class="highlight"><pre><span></span><span class="n">YourPersistenceEntity</span> <span class="n">entity</span> <span class="o">=</span> <span class="n">PetBlocksApi</span><span class="o">.</span><span class="na">INSTANCE</span><span class="o">.</span><span class="na">create</span><span class="o">(</span><span class="n">YourPersistenceEntity</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
+<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="n">YourPersistenceEntity</span> <span class="n">entity</span> <span class="o">=</span> <span class="n">PetBlocksApi</span><span class="o">.</span><span class="na">INSTANCE</span><span class="o">.</span><span class="na">create</span><span class="o">(</span><span class="n">YourPersistenceEntity</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
 </pre></div>
 </div>
 <ul class="simple">
@@ -278,7 +278,7 @@ or create new entities by checking out the package <strong>com.github.shynixn.pe
 <p class="first admonition-title">Note</p>
 <p class="last"><strong>Pets -</strong> Changing the displayname of a pet of a player.</p>
 </div>
-<div class="highlight-java"><div class="highlight"><pre><span></span><span class="n">Player</span> <span class="n">player</span><span class="o">;</span> <span class="c1">// Any player instance</span>
+<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="n">Player</span> <span class="n">player</span><span class="o">;</span> <span class="c1">// Any player instance</span>
 
 <span class="n">PersistencePetMetaService</span> <span class="n">petMetaService</span> <span class="o">=</span> <span class="n">PetBlocksApi</span><span class="o">.</span><span class="na">INSTANCE</span><span class="o">.</span><span class="na">resolve</span><span class="o">(</span><span class="n">PersistencePetMetaService</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
 <span class="n">PetMeta</span> <span class="n">petMeta</span> <span class="o">=</span> <span class="n">petMetaService</span><span class="o">.</span><span class="na">getPetMetaFromPlayer</span><span class="o">(</span><span class="n">player</span><span class="o">);</span> <span class="c1">// Does always return a correct PetMeta instance. Never returns null.</span>
@@ -298,7 +298,7 @@ or create new entities by checking out the package <strong>com.github.shynixn.pe
 <p class="first admonition-title">Note</p>
 <p class="last"><strong>Pets -</strong> Changing the skin of a pet of a player.</p>
 </div>
-<div class="highlight-java"><div class="highlight"><pre><span></span><span class="n">Player</span> <span class="n">player</span><span class="o">;</span> <span class="c1">// Any player instance</span>
+<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="n">Player</span> <span class="n">player</span><span class="o">;</span> <span class="c1">// Any player instance</span>
 
 <span class="n">PersistencePetMetaService</span> <span class="n">petMetaService</span> <span class="o">=</span> <span class="n">PetBlocksApi</span><span class="o">.</span><span class="na">INSTANCE</span><span class="o">.</span><span class="na">resolve</span><span class="o">(</span><span class="n">PersistencePetMetaService</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
 <span class="n">PetMeta</span> <span class="n">petMeta</span> <span class="o">=</span> <span class="n">petMetaService</span><span class="o">.</span><span class="na">getPetMetaFromPlayer</span><span class="o">(</span><span class="n">player</span><span class="o">);</span> <span class="c1">// Does always return a correct PetMeta instance. Never returns null.</span>
@@ -314,7 +314,7 @@ or create new entities by checking out the package <strong>com.github.shynixn.pe
 <p class="first admonition-title">Note</p>
 <p class="last"><strong>Pets -</strong> Setting the player fly riding his pet by modifying ais.</p>
 </div>
-<div class="highlight-java"><div class="highlight"><pre><span></span><span class="n">Player</span> <span class="n">player</span><span class="o">;</span> <span class="c1">// Any player instance</span>
+<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="n">Player</span> <span class="n">player</span><span class="o">;</span> <span class="c1">// Any player instance</span>
 
 <span class="n">PersistencePetMetaService</span> <span class="n">petMetaService</span> <span class="o">=</span> <span class="n">PetBlocksApi</span><span class="o">.</span><span class="na">INSTANCE</span><span class="o">.</span><span class="na">resolve</span><span class="o">(</span><span class="n">PersistencePetMetaService</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
 <span class="n">PetMeta</span> <span class="n">petMeta</span> <span class="o">=</span> <span class="n">petMetaService</span><span class="o">.</span><span class="na">getPetMetaFromPlayer</span><span class="o">(</span><span class="n">player</span><span class="o">);</span> <span class="c1">// Does always return a correct PetMeta instance. Never returns null.</span>
@@ -329,7 +329,7 @@ or create new entities by checking out the package <strong>com.github.shynixn.pe
 <p class="first admonition-title">Note</p>
 <p class="last"><strong>Pets -</strong> Teleporting the pet entity</p>
 </div>
-<div class="highlight-java"><div class="highlight"><pre><span></span><span class="n">Player</span> <span class="n">player</span><span class="o">;</span> <span class="c1">// Any player instance</span>
+<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="n">Player</span> <span class="n">player</span><span class="o">;</span> <span class="c1">// Any player instance</span>
 <span class="n">Location</span> <span class="n">targetLocation</span><span class="o">;</span> <span class="c1">// Any location instance</span>
 
 <span class="n">PetService</span> <span class="n">petService</span> <span class="o">=</span> <span class="n">PetBlocksApi</span><span class="o">.</span><span class="na">INSTANCE</span><span class="o">.</span><span class="na">resolve</span><span class="o">(</span><span class="n">PetService</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
@@ -364,7 +364,7 @@ complete later. You can find an example below.</p>
 <p class="first admonition-title">Note</p>
 <p class="last"><strong>PreSpawnEvent</strong> - Listening to the pre spawn event and cancel it if necessary.</p>
 </div>
-<div class="highlight-java"><div class="highlight"><pre><span></span><span class="nd">@EventHandler</span>
+<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="nd">@EventHandler</span>
 <span class="kd">public</span> <span class="kt">void</span> <span class="nf">onPetPreSpawnEvent</span><span class="o">(</span><span class="n">PetPreSpawnEvent</span> <span class="n">event</span><span class="o">){</span>
     <span class="n">Player</span> <span class="n">player</span> <span class="o">=</span> <span class="n">event</span><span class="o">.</span><span class="na">getPlayer</span><span class="o">();</span>
     <span class="n">PetMeta</span> <span class="n">petMeta</span> <span class="o">=</span> <span class="n">event</span><span class="o">.</span><span class="na">getPetMeta</span><span class="o">();</span>
@@ -377,7 +377,7 @@ complete later. You can find an example below.</p>
 <p class="first admonition-title">Note</p>
 <p class="last"><strong>PetBlocksLoginEvent</strong> - Listening to the login event.</p>
 </div>
-<div class="highlight-java"><div class="highlight"><pre><span></span><span class="nd">@EventHandler</span>
+<div class="highlight-java notranslate"><div class="highlight"><pre><span></span><span class="nd">@EventHandler</span>
 <span class="kd">public</span> <span class="kt">void</span> <span class="nf">onPetBlocksLoginEvent</span><span class="o">(</span><span class="n">PetBlocksLoginEvent</span> <span class="n">event</span><span class="o">){</span>
     <span class="n">PetMeta</span> <span class="n">petMeta</span> <span class="o">=</span> <span class="n">event</span><span class="o">.</span><span class="na">getPetMeta</span><span class="o">();</span>
 
@@ -417,7 +417,7 @@ complete later. You can find an example below.</p>
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2015 - 2019, Shynixn.
+        &copy; Copyright 2015 - 2018, Shynixn.
 
     </p>
   </div>
@@ -449,6 +449,7 @@ complete later. You can find an example below.</p>
       <script type="text/javascript" src="../_static/jquery.js"></script>
       <script type="text/javascript" src="../_static/underscore.js"></script>
       <script type="text/javascript" src="../_static/doctools.js"></script>
+      <script type="text/javascript" src="../_static/language_data.js"></script>
 
   
 

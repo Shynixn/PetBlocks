@@ -39,7 +39,7 @@
         <link rel="search" title="Search" href="../search.html"/>
     <link rel="top" title="PetBlocks 8.0.0-SNAPSHOT documentation" href="../index.html"/>
         <link rel="up" title="GUI" href="gui.html"/>
-        <link rel="next" title="Icon and Skins" href="skins.html"/>
+        <link rel="next" title="Static GUI Items" href="guistatic.html"/>
         <link rel="prev" title="GUI Pages" href="guipages.html"/> 
 
   
@@ -105,15 +105,13 @@
 <li class="toctree-l3 current"><a class="current reference internal" href="#">Edit GUI page</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#changing-the-main-page">Changing the main page</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#changing-row-and-column">Changing row and column</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#changing-the-icon">Changing the icon</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="skins.html">Icon and Skins</a></li>
 <li class="toctree-l3"><a class="reference internal" href="guistatic.html">Static GUI Items</a></li>
-<li class="toctree-l3"><a class="reference internal" href="guialltags.html">All tags</a></li>
 <li class="toctree-l3"><a class="reference internal" href="samplepokemoncategory.html">Example: Adding a new pokemon category</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="ai.html">AIS</a></li>
 <li class="toctree-l2"><a class="reference internal" href="regions.html">Worlds and Regions</a></li>
 <li class="toctree-l2"><a class="reference internal" href="minecraftheads.html">Minecraft-Heads.com</a></li>
 <li class="toctree-l2"><a class="reference internal" href="headdatabase.html">Head Database</a></li>
@@ -202,19 +200,20 @@
 <p>There are lots of complex items on the <strong>main</strong> page so to keep things simply we start by taking a look at the <strong>wardrobe</strong> item on the <strong>main page</strong>.</p>
 <p>The name of the item <strong>wardrobe is not</strong> related to the <strong>page wardrobe</strong> it can be named like you want. The only restrictions is that the name has to be unique on the main page.</p>
 <p><strong>config.yml</strong></p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">gui</span><span class="p">:</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">gui</span><span class="p">:</span>
   <span class="n">main</span><span class="p">:</span>
     <span class="n">wardrobe</span><span class="p">:</span>
       <span class="n">row</span><span class="p">:</span> <span class="mi">2</span>
       <span class="n">col</span><span class="p">:</span> <span class="mi">2</span>
       <span class="n">script</span><span class="p">:</span> <span class="s1">&#39;open-page gui.wardrobe&#39;</span>
+      <span class="n">permission</span><span class="p">:</span> <span class="s1">&#39;open.wardrobe&#39;</span>
       <span class="n">icon</span><span class="p">:</span>
         <span class="nb">id</span><span class="p">:</span> <span class="mi">397</span>
         <span class="n">damage</span><span class="p">:</span> <span class="mi">3</span>
         <span class="n">skin</span><span class="p">:</span> <span class="s1">&#39;textures.minecraft.net/texture/55507d6517eff952dd38fa8bc551dd6d6a7a5e4ea134519b44650ac1ffa59c3&#39;</span>
-        <span class="n">name</span><span class="p">:</span> <span class="s1">&#39;&amp;6&amp;lPet Customization&#39;</span>
+        <span class="n">name</span><span class="p">:</span> <span class="s1">&#39;&amp;6&amp;lPet Customization &lt;permission&gt;&#39;</span>
         <span class="n">lore</span><span class="p">:</span>
-        <span class="o">-</span> <span class="s1">&#39;&amp;7Change the appearance of your pet.&#39;</span>
+        <span class="o">-</span> <span class="s1">&#39;&amp;7Change the appearance of your pet. &lt;permission&gt;&#39;</span>
 </pre></div>
 </div>
 <img alt="../_images/gui-pageselectwardrobe.png" src="../_images/gui-pageselectwardrobe.png" />
@@ -225,12 +224,13 @@
 <p>The GUI is basically a grid view which has got items at a certain row and column.</p>
 <p>Let’s increase the row value by one.</p>
 <p><strong>config.yml</strong></p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">gui</span><span class="p">:</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">gui</span><span class="p">:</span>
   <span class="n">main</span><span class="p">:</span>
     <span class="n">wardrobe</span><span class="p">:</span>
       <span class="n">row</span><span class="p">:</span> <span class="mi">3</span>
       <span class="n">col</span><span class="p">:</span> <span class="mi">2</span>
       <span class="n">script</span><span class="p">:</span> <span class="s1">&#39;open-page gui.wardrobe&#39;</span>
+      <span class="n">permission</span><span class="p">:</span> <span class="s1">&#39;open.wardrobe&#39;</span>
       <span class="n">icon</span><span class="p">:</span>
         <span class="nb">id</span><span class="p">:</span> <span class="mi">397</span>
         <span class="n">damage</span><span class="p">:</span> <span class="mi">3</span>
@@ -241,6 +241,39 @@
 </pre></div>
 </div>
 <img alt="../_images/gui-moveditem.png" src="../_images/gui-moveditem.png" />
+</div>
+<div class="section" id="changing-the-icon">
+<h2>Changing the icon<a class="headerlink" href="#changing-the-icon" title="Permalink to this headline">¶</a></h2>
+<p>Let’s ignore the <strong>script</strong> and <strong>permission</strong> tag for now because they are more complex to understand.</p>
+<p>Take a look at the <strong>icon</strong> tag. This tag contains all available options to describe the item in the GUI.</p>
+<ul class="simple">
+<li>Id 397 is the id of a skull</li>
+<li>Damage 3 is the damage for a player skull</li>
+<li>Skin is the skin for the player skull</li>
+<li>Name is the displayname of the item.</li>
+<li>Lore can accept multiple lines for the lore of the item.</li>
+</ul>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Please take a look at the skin page to understand how the <strong>skin tag works</strong> and how to use <strong>custom skins</strong>.</p>
+</div>
+<p><strong>config.yml</strong></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">gui</span><span class="p">:</span>
+  <span class="n">main</span><span class="p">:</span>
+    <span class="n">wardrobe</span><span class="p">:</span>
+      <span class="n">row</span><span class="p">:</span> <span class="mi">3</span>
+      <span class="n">col</span><span class="p">:</span> <span class="mi">2</span>
+      <span class="n">script</span><span class="p">:</span> <span class="s1">&#39;open-page gui.wardrobe&#39;</span>
+      <span class="n">permission</span><span class="p">:</span> <span class="s1">&#39;open.wardrobe&#39;</span>
+      <span class="n">icon</span><span class="p">:</span>
+        <span class="nb">id</span><span class="p">:</span> <span class="mi">397</span>
+        <span class="n">damage</span><span class="p">:</span> <span class="mi">3</span>
+        <span class="n">skin</span><span class="p">:</span> <span class="s1">&#39;textures.minecraft.net/texture/55507d6517eff952dd38fa8bc551dd6d6a7a5e4ea134519b44650ac1ffa59c3&#39;</span>
+        <span class="n">name</span><span class="p">:</span> <span class="s1">&#39;&amp;6&amp;lPet Customization &lt;permission&gt;&#39;</span>
+        <span class="n">lore</span><span class="p">:</span>
+        <span class="o">-</span> <span class="s1">&#39;&amp;7Change the appearance of your pet. &lt;permission&gt;&#39;</span>
+</pre></div>
+</div>
 </div>
 </div>
 
@@ -254,7 +287,7 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="skins.html" class="btn btn-neutral float-right" title="Icon and Skins" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="guistatic.html" class="btn btn-neutral float-right" title="Static GUI Items" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="guipages.html" class="btn btn-neutral" title="GUI Pages" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
@@ -266,7 +299,7 @@
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2015 - 2019, Shynixn.
+        &copy; Copyright 2015 - 2018, Shynixn.
 
     </p>
   </div>
@@ -298,6 +331,7 @@
       <script type="text/javascript" src="../_static/jquery.js"></script>
       <script type="text/javascript" src="../_static/underscore.js"></script>
       <script type="text/javascript" src="../_static/doctools.js"></script>
+      <script type="text/javascript" src="../_static/language_data.js"></script>
 
   
 
