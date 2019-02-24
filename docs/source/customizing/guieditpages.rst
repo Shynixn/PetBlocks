@@ -20,14 +20,13 @@ The name of the item **wardrobe is not** related to the **page wardrobe** it can
           row: 2
           col: 2
           script: 'open-page gui.wardrobe'
-          permission: 'open.wardrobe'
           icon:
             id: 397
             damage: 3
             skin: 'textures.minecraft.net/texture/55507d6517eff952dd38fa8bc551dd6d6a7a5e4ea134519b44650ac1ffa59c3'
-            name: '&6&lPet Customization <permission>'
+            name: '&6&lPet Customization'
             lore:
-            - '&7Change the appearance of your pet. <permission>'
+            - '&7Change the appearance of your pet.'
 
 .. image:: ../_static/images/gui-pageselectwardrobe.png
 
@@ -49,7 +48,6 @@ Let's increase the row value by one.
           row: 3
           col: 2
           script: 'open-page gui.wardrobe'
-          permission: 'open.wardrobe'
           icon:
             id: 397
             damage: 3
@@ -59,39 +57,3 @@ Let's increase the row value by one.
             - '&7Change the appearance of your pet. <permission>'
 
 .. image:: ../_static/images/gui-moveditem.png
-
-
-Changing the icon
-~~~~~~~~~~~~~~~~~
-
-Let's ignore the **script** and **permission** tag for now because they are more complex to understand.
-
-Take a look at the **icon** tag. This tag contains all available options to describe the item in the GUI.
-
-* Id 397 is the id of a skull
-* Damage 3 is the damage for a player skull
-* Skin is the skin for the player skull
-* Name is the displayname of the item.
-* Lore can accept multiple lines for the lore of the item.
-
-.. note:: Please take a look at the skin page to understand how the **skin tag works** and how to use **custom skins**.
-
-**config.yml**
-::
-    gui:
-      main:
-        wardrobe:
-          row: 3
-          col: 2
-          script: 'open-page gui.wardrobe'
-          permission: 'open.wardrobe'
-          icon:
-            id: 397
-            damage: 3
-            skin: 'textures.minecraft.net/texture/55507d6517eff952dd38fa8bc551dd6d6a7a5e4ea134519b44650ac1ffa59c3'
-            name: '&6&lPet Customization <permission>'
-            lore:
-            - '&7Change the appearance of your pet. <permission>'
-
-
-

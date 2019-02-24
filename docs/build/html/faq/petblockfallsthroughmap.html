@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>The pet falls through the ground when riding? &mdash; PetBlocks 7.3.0 documentation</title>
+  <title>The pet falls through the ground when riding? &mdash; PetBlocks 8.0.0-SNAPSHOT documentation</title>
   
 
   
@@ -37,10 +37,10 @@
         <link rel="index" title="Index"
               href="../genindex.html"/>
         <link rel="search" title="Search" href="../search.html"/>
-    <link rel="top" title="PetBlocks 7.3.0 documentation" href="../index.html"/>
+    <link rel="top" title="PetBlocks 8.0.0-SNAPSHOT documentation" href="../index.html"/>
         <link rel="up" title="FAQ" href="index.html"/>
-        <link rel="next" title="The pet does not spawn?" href="notspawning.html"/>
-        <link rel="prev" title="FAQ" href="index.html"/> 
+        <link rel="next" title="Are there any differences between Sponge and Bukkit PetBlocks?" href="petblockspongebukkit.html"/>
+        <link rel="prev" title="The pet does not spawn?" href="notspawning.html"/> 
 
   
   <script src="../_static/js/modernizr.min.js"></script>
@@ -72,7 +72,7 @@
             
             
               <div class="version">
-                7.3.0
+                8.0.0-SNAPSHOT
               </div>
             
           
@@ -104,18 +104,14 @@
 <li class="toctree-l1"><a class="reference internal" href="../general/index.html">General</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../api/index.html">Developer API</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="index.html">FAQ</a><ul class="current">
-<li class="toctree-l2 current"><a class="current reference internal" href="#">The pet falls through the ground when riding?</a></li>
 <li class="toctree-l2"><a class="reference internal" href="notspawning.html">The pet does not spawn?</a></li>
-<li class="toctree-l2"><a class="reference internal" href="petflasheswhenspawning.html">The pet flashes or does not spawn correctly on fresh a installment?</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">The pet falls through the ground when riding?</a></li>
 <li class="toctree-l2"><a class="reference internal" href="petblockspongebukkit.html">Are there any differences between Sponge and Bukkit PetBlocks?</a></li>
 <li class="toctree-l2"><a class="reference internal" href="selling.html">How can you sell costumes/skins?</a></li>
 <li class="toctree-l2"><a class="reference internal" href="support.html">Can you support Minecraft 1.7.x or below?</a></li>
-<li class="toctree-l2"><a class="reference internal" href="howcustomskin.html">How to use a custom skin URL?</a></li>
-<li class="toctree-l2"><a class="reference internal" href="howmysql.html">How to use the MySQL database?</a></li>
 <li class="toctree-l2"><a class="reference internal" href="howbungee.html">How to use the same pets on multiple servers?</a></li>
 <li class="toctree-l2"><a class="reference internal" href="canpetwal.html">Can the pet walk instead of hopping like a rabbit?</a></li>
 <li class="toctree-l2"><a class="reference internal" href="playerheadnotshown.html">The player head is not visible in the GUI or when the Pet spawns?</a></li>
-<li class="toctree-l2"><a class="reference internal" href="candisablegrabbing.html">How can I disable rightclicking the pet?</a></li>
 <li class="toctree-l2"><a class="reference internal" href="caniusereload.html">Can I use the /reload command?</a></li>
 </ul>
 </li>
@@ -189,12 +185,13 @@
             
   <div class="section" id="the-pet-falls-through-the-ground-when-riding">
 <h1>The pet falls through the ground when riding?<a class="headerlink" href="#the-pet-falls-through-the-ground-when-riding" title="Permalink to this headline">¶</a></h1>
-<p>Sometimes the pet is not synchronized with your world or simply requires another hitbox-height for
-your server version. Simply play around with the following config option until it fits you.</p>
+<p>Sometimes the pet is not synchronized with your world or simply requires another hitbox for
+your server version. Play around with the offset-y value of the riding ai.</p>
 <p><strong>config.yml</strong></p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pet</span><span class="p">:</span>
- <span class="n">follow</span><span class="p">:</span>
-   <span class="n">running</span><span class="o">-</span><span class="n">hitbox</span><span class="o">-</span><span class="n">height</span><span class="p">:</span> <span class="o">-</span><span class="mf">1.5</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="nb">type</span><span class="p">:</span> <span class="s1">&#39;ground-riding&#39;</span>
+<span class="n">climbing</span><span class="o">-</span><span class="n">height</span><span class="p">:</span> <span class="mf">1.0</span>
+<span class="n">speed</span><span class="p">:</span> <span class="mf">2.0</span>
+<span class="n">offset</span><span class="o">-</span><span class="n">y</span><span class="p">:</span> <span class="o">-</span><span class="mi">1</span>
 </pre></div>
 </div>
 </div>
@@ -209,10 +206,10 @@ your server version. Simply play around with the following config option until i
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="notspawning.html" class="btn btn-neutral float-right" title="The pet does not spawn?" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="petblockspongebukkit.html" class="btn btn-neutral float-right" title="Are there any differences between Sponge and Bukkit PetBlocks?" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="index.html" class="btn btn-neutral" title="FAQ" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="notspawning.html" class="btn btn-neutral" title="The pet does not spawn?" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
@@ -242,7 +239,7 @@ your server version. Simply play around with the following config option until i
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'7.3.0',
+            VERSION:'8.0.0-SNAPSHOT',
             LANGUAGE:'None',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
@@ -253,7 +250,6 @@ your server version. Simply play around with the following config option until i
       <script type="text/javascript" src="../_static/jquery.js"></script>
       <script type="text/javascript" src="../_static/underscore.js"></script>
       <script type="text/javascript" src="../_static/doctools.js"></script>
-      <script type="text/javascript" src="../_static/language_data.js"></script>
 
   
 

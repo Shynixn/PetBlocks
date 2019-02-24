@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Can the pet walk instead of hopping like a rabbit? &mdash; PetBlocks 7.3.0 documentation</title>
+  <title>Can the pet walk instead of hopping like a rabbit? &mdash; PetBlocks 8.0.0-SNAPSHOT documentation</title>
   
 
   
@@ -37,7 +37,7 @@
         <link rel="index" title="Index"
               href="../genindex.html"/>
         <link rel="search" title="Search" href="../search.html"/>
-    <link rel="top" title="PetBlocks 7.3.0 documentation" href="../index.html"/>
+    <link rel="top" title="PetBlocks 8.0.0-SNAPSHOT documentation" href="../index.html"/>
         <link rel="up" title="FAQ" href="index.html"/>
         <link rel="next" title="The player head is not visible in the GUI or when the Pet spawns?" href="playerheadnotshown.html"/>
         <link rel="prev" title="How to use the same pets on multiple servers?" href="howbungee.html"/> 
@@ -72,7 +72,7 @@
             
             
               <div class="version">
-                7.3.0
+                8.0.0-SNAPSHOT
               </div>
             
           
@@ -104,18 +104,14 @@
 <li class="toctree-l1"><a class="reference internal" href="../general/index.html">General</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../api/index.html">Developer API</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="index.html">FAQ</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="petblockfallsthroughmap.html">The pet falls through the ground when riding?</a></li>
 <li class="toctree-l2"><a class="reference internal" href="notspawning.html">The pet does not spawn?</a></li>
-<li class="toctree-l2"><a class="reference internal" href="petflasheswhenspawning.html">The pet flashes or does not spawn correctly on fresh a installment?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="petblockfallsthroughmap.html">The pet falls through the ground when riding?</a></li>
 <li class="toctree-l2"><a class="reference internal" href="petblockspongebukkit.html">Are there any differences between Sponge and Bukkit PetBlocks?</a></li>
 <li class="toctree-l2"><a class="reference internal" href="selling.html">How can you sell costumes/skins?</a></li>
 <li class="toctree-l2"><a class="reference internal" href="support.html">Can you support Minecraft 1.7.x or below?</a></li>
-<li class="toctree-l2"><a class="reference internal" href="howcustomskin.html">How to use a custom skin URL?</a></li>
-<li class="toctree-l2"><a class="reference internal" href="howmysql.html">How to use the MySQL database?</a></li>
 <li class="toctree-l2"><a class="reference internal" href="howbungee.html">How to use the same pets on multiple servers?</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Can the pet walk instead of hopping like a rabbit?</a></li>
 <li class="toctree-l2"><a class="reference internal" href="playerheadnotshown.html">The player head is not visible in the GUI or when the Pet spawns?</a></li>
-<li class="toctree-l2"><a class="reference internal" href="candisablegrabbing.html">How can I disable rightclicking the pet?</a></li>
 <li class="toctree-l2"><a class="reference internal" href="caniusereload.html">Can I use the /reload command?</a></li>
 </ul>
 </li>
@@ -189,98 +185,7 @@
             
   <div class="section" id="can-the-pet-walk-instead-of-hopping-like-a-rabbit">
 <h1>Can the pet walk instead of hopping like a rabbit?<a class="headerlink" href="#can-the-pet-walk-instead-of-hopping-like-a-rabbit" title="Permalink to this headline">¶</a></h1>
-<p>Yes it is possible to change the behaviour entity of the engines from <strong>RABBIT</strong> to <strong>ZOMBIE</strong>.</p>
-<p>Do not forget to allow zombie spawning in your world/region.</p>
-<p><strong>before</strong></p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1">############################</span>
-
-<span class="c1"># Engines-settings</span>
-
-<span class="c1"># Settings for the petblock-engines-category.</span>
-<span class="c1"># You can find all sound names at the bottom of this file.</span>
-<span class="c1"># [Warning! Sound names have changed between 1.8 and 1.9, select the right one. All default sounds get automatically translated to 1.9]</span>
-<span class="c1"># You can add new engines by yourself!</span>
-
-<span class="c1"># gui id: item id in the GUI</span>
-<span class="c1"># gui damage: item damage in the the GUI</span>
-<span class="c1"># gui skin: item skin in the GUI (Name of the player or the skin URL)</span>
-<span class="c1"># gui name: item name in the GUI</span>
-<span class="c1"># gui unbreakable: item unbreakable tag in the GUI</span>
-<span class="c1"># gui lore: item lore in the GUI (Multiple lines support)</span>
-
-<span class="c1"># behaviour entity types: RABBIT (HOPPING), ZOMBIE (WALKING)</span>
-
-<span class="c1">############################</span>
-
-<span class="n">engines</span><span class="p">:</span>
-   <span class="mi">1</span><span class="p">:</span>
-     <span class="n">gui</span><span class="p">:</span>
-        <span class="nb">id</span><span class="p">:</span> <span class="mi">397</span>
-        <span class="n">damage</span><span class="p">:</span> <span class="mi">3</span>
-        <span class="n">skin</span><span class="p">:</span> <span class="s1">&#39;textures.minecraft.net/texture/621668ef7cb79dd9c22ce3d1f3f4cb6e2559893b6df4a469514e667c16aa4&#39;</span>
-        <span class="n">name</span><span class="p">:</span> <span class="s1">&#39;&amp;d&amp;lPig&#39;</span>
-        <span class="n">unbreakable</span><span class="p">:</span> <span class="n">true</span>
-        <span class="n">lore</span><span class="p">:</span>
-          <span class="o">-</span> <span class="s1">&#39;&amp;7Permission: &lt;permission&gt;&#39;</span>
-     <span class="n">behaviour</span><span class="p">:</span>
-        <span class="n">entity</span><span class="p">:</span> <span class="s1">&#39;RABBIT&#39;</span>
-        <span class="n">riding</span><span class="p">:</span> <span class="s1">&#39;RUNNING&#39;</span>
-     <span class="n">sound</span><span class="p">:</span>
-        <span class="n">ambient</span><span class="p">:</span>
-          <span class="n">name</span><span class="p">:</span> <span class="s1">&#39;PIG_IDLE&#39;</span>
-          <span class="n">volume</span><span class="p">:</span> <span class="mf">1.0</span>
-          <span class="n">pitch</span><span class="p">:</span> <span class="mf">1.0</span>
-        <span class="n">walking</span><span class="p">:</span>
-          <span class="n">name</span><span class="p">:</span> <span class="s1">&#39;PIG_WALK&#39;</span>
-          <span class="n">volume</span><span class="p">:</span> <span class="mf">1.0</span>
-          <span class="n">pitch</span><span class="p">:</span> <span class="mf">1.0</span>
-</pre></div>
-</div>
-<p><strong>after</strong></p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1">############################</span>
-
-<span class="c1"># Engines-settings</span>
-
-<span class="c1"># Settings for the petblock-engines-category.</span>
-<span class="c1"># You can find all sound names at the bottom of this file.</span>
-<span class="c1"># [Warning! Sound names have changed between 1.8 and 1.9, select the right one. All default sounds get automatically translated to 1.9]</span>
-<span class="c1"># You can add new engines by yourself!</span>
-
-<span class="c1"># gui id: item id in the GUI</span>
-<span class="c1"># gui damage: item damage in the the GUI</span>
-<span class="c1"># gui skin: item skin in the GUI (Name of the player or the skin URL)</span>
-<span class="c1"># gui name: item name in the GUI</span>
-<span class="c1"># gui unbreakable: item unbreakable tag in the GUI</span>
-<span class="c1"># gui lore: item lore in the GUI (Multiple lines support)</span>
-
-<span class="c1"># behaviour entity types: RABBIT (HOPPING), ZOMBIE (WALKING)</span>
-
-<span class="c1">############################</span>
-
-<span class="n">engines</span><span class="p">:</span>
-   <span class="mi">1</span><span class="p">:</span>
-     <span class="n">gui</span><span class="p">:</span>
-        <span class="nb">id</span><span class="p">:</span> <span class="mi">397</span>
-        <span class="n">damage</span><span class="p">:</span> <span class="mi">3</span>
-        <span class="n">skin</span><span class="p">:</span> <span class="s1">&#39;textures.minecraft.net/texture/621668ef7cb79dd9c22ce3d1f3f4cb6e2559893b6df4a469514e667c16aa4&#39;</span>
-        <span class="n">name</span><span class="p">:</span> <span class="s1">&#39;&amp;d&amp;lPig&#39;</span>
-        <span class="n">unbreakable</span><span class="p">:</span> <span class="n">true</span>
-        <span class="n">lore</span><span class="p">:</span>
-          <span class="o">-</span> <span class="s1">&#39;&amp;7Permission: &lt;permission&gt;&#39;</span>
-     <span class="n">behaviour</span><span class="p">:</span>
-        <span class="n">entity</span><span class="p">:</span> <span class="s1">&#39;ZOMBIE&#39;</span>
-        <span class="n">riding</span><span class="p">:</span> <span class="s1">&#39;RUNNING&#39;</span>
-     <span class="n">sound</span><span class="p">:</span>
-        <span class="n">ambient</span><span class="p">:</span>
-          <span class="n">name</span><span class="p">:</span> <span class="s1">&#39;PIG_IDLE&#39;</span>
-          <span class="n">volume</span><span class="p">:</span> <span class="mf">1.0</span>
-          <span class="n">pitch</span><span class="p">:</span> <span class="mf">1.0</span>
-        <span class="n">walking</span><span class="p">:</span>
-          <span class="n">name</span><span class="p">:</span> <span class="s1">&#39;PIG_WALK&#39;</span>
-          <span class="n">volume</span><span class="p">:</span> <span class="mf">1.0</span>
-          <span class="n">pitch</span><span class="p">:</span> <span class="mf">1.0</span>
-</pre></div>
-</div>
+<p>Please take a look into the Customizing section. However, this is even handled in the <a class="reference external" href="../pets/petblocks.html">introduction example</a> of ais.</p>
 </div>
 
 
@@ -326,7 +231,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'7.3.0',
+            VERSION:'8.0.0-SNAPSHOT',
             LANGUAGE:'None',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
@@ -337,7 +242,6 @@
       <script type="text/javascript" src="../_static/jquery.js"></script>
       <script type="text/javascript" src="../_static/underscore.js"></script>
       <script type="text/javascript" src="../_static/doctools.js"></script>
-      <script type="text/javascript" src="../_static/language_data.js"></script>
 
   
 

@@ -314,6 +314,44 @@ Toggles the particle of player Shynixn
 ::
   /petblocks toggleparticle  Shynixn
 
+/petblocks reset [player]
+~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Resets the pet settings of the given player to the default pet settings in the config.yml.
+
+* Players (require permissions) ✔
+* Server console ✔
+* Command blocks ✔
+
+**Sample list:**
+
+Resets the pet
+::
+  /petblocks reset
+
+Resets the pet of player Shynixn
+::
+  /petblocks reset Shynixn
+
+/petblocks debug [player]
+~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Displays the debug menu of the pet of the specified player to the player executing this command.
+
+* Players (require permissions) ✔
+* Server console ✘
+* Command blocks ✘
+
+**Sample list:**
+
+Displays the debug menu of your own pet
+::
+  /petblocks debug
+
+Displays the debug menu of Shynixn to yourself
+::
+  /petblocks debug Shynixn
+
 /petblocks killnext
 ~~~~~~~~~~~~~~~~~~~
 
