@@ -252,7 +252,7 @@ class GUIServiceImpl @Inject constructor(
 
         if (optGuiItem.permission.isNotEmpty() && !player.hasPermission(optGuiItem.permission)) {
             if (!lockGui(player)) {
-                player.sendMessage(configurationService.findValue<String>("messages.prefix") + configurationService.findValue<String>("messages.no-perms"))
+                player.sendMessage(configurationService.findValue<String>("messages.prefix") + configurationService.findValue<String>("messages.no-permission"))
             }
 
             return

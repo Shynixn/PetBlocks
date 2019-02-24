@@ -7,7 +7,7 @@ Introduction
 
 Welcome to PetBlocksDocs, the official documentation for the open-source `PetBlocks <https://github.com/Shynixn/PetBlocks>`__ project.
 
-.. warning:: This documentation is currently under construction. If you are looking for the PetBlocks documentation pre 8.0.0 you are currently out of luck and need to contact Shynixn on his discord server.
+.. warning:: If you are looking for the PetBlocks documentation pre 8.0.0 you are currently out of luck and need to contact Shynixn on his discord server.
 
 PetBlocks is a spigot and also a sponge plugin to use blocks and custom heads as pets in Minecraft.
 

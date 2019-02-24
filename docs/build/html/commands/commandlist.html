@@ -199,6 +199,8 @@
 <li class="toctree-l3"><a class="reference internal" href="#petblocks-rename-player">/petblocks rename [player]</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#petblocks-togglesound-player">/petblocks togglesound [player]</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#petblocks-toggleparticle-player">/petblocks toggleparticle [player]</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#petblocks-reset-player">/petblocks reset [player]</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#petblocks-debug-player">/petblocks debug [player]</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#petblocks-killnext">/petblocks killnext</a></li>
 </ul>
 </li>
@@ -245,15 +247,15 @@
 </ul>
 <p><strong>Sample list:</strong></p>
 <p>Set your pet name to the name MyPet.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">/</span><span class="n">petblock</span> <span class="n">rename</span> <span class="n">MyPet</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">/</span><span class="n">petblock</span> <span class="n">rename</span> <span class="n">MyPet</span>
 </pre></div>
 </div>
 <p>Set your pet name to the name My Super Cool Pet.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">/</span><span class="n">petblock</span> <span class="n">rename</span> <span class="n">My</span> <span class="n">Super</span> <span class="n">Cool</span> <span class="n">Pet</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">/</span><span class="n">petblock</span> <span class="n">rename</span> <span class="n">My</span> <span class="n">Super</span> <span class="n">Cool</span> <span class="n">Pet</span>
 </pre></div>
 </div>
 <p>Set your pet name to the name My Cool Pet with colors.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">/</span><span class="n">petblock</span> <span class="n">rename</span> <span class="o">&amp;</span><span class="n">eMy</span> <span class="o">&amp;</span><span class="n">aCool</span> <span class="o">&amp;</span><span class="n">cPet</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">/</span><span class="n">petblock</span> <span class="n">rename</span> <span class="o">&amp;</span><span class="n">eMy</span> <span class="o">&amp;</span><span class="n">aCool</span> <span class="o">&amp;</span><span class="n">cPet</span>
 </pre></div>
 </div>
 </div>
@@ -267,19 +269,19 @@
 </ul>
 <p><strong>Sample list:</strong></p>
 <p>Set your pet skin to the player skin Shynixn:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">/</span><span class="n">petblock</span> <span class="n">skin</span> <span class="n">Shynixn</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">/</span><span class="n">petblock</span> <span class="n">skin</span> <span class="n">Shynixn</span>
 </pre></div>
 </div>
 <p>Set your pet skin to the skin Black Cat by a base64 encoded url</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">/</span><span class="n">petblock</span> <span class="n">skin</span> <span class="n">eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOWU0ZmNiOWNjYWU0ZjA2MzljNjg5ZTY1NjViNTIwNWQ3YWJhY2EyMTYwY2ZmNmIwYTVlOTA2ZDhiMTQ4MTkzMyJ9fX0</span><span class="o">=</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">/</span><span class="n">petblock</span> <span class="n">skin</span> <span class="n">eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOWU0ZmNiOWNjYWU0ZjA2MzljNjg5ZTY1NjViNTIwNWQ3YWJhY2EyMTYwY2ZmNmIwYTVlOTA2ZDhiMTQ4MTkzMyJ9fX0</span><span class="o">=</span>
 </pre></div>
 </div>
 <p>Set your pet skin to the skin Black Cat by a full texture url</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">/</span><span class="n">petblock</span> <span class="n">skin</span> <span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">textures</span><span class="o">.</span><span class="n">minecraft</span><span class="o">.</span><span class="n">net</span><span class="o">/</span><span class="n">texture</span><span class="o">/</span><span class="mf">9e4</span><span class="n">fcb9ccae4f0639c689e6565b5205d7abaca2160cff6b0a5e906d8b1481933</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">/</span><span class="n">petblock</span> <span class="n">skin</span> <span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">textures</span><span class="o">.</span><span class="n">minecraft</span><span class="o">.</span><span class="n">net</span><span class="o">/</span><span class="n">texture</span><span class="o">/</span><span class="mf">9e4</span><span class="n">fcb9ccae4f0639c689e6565b5205d7abaca2160cff6b0a5e906d8b1481933</span>
 </pre></div>
 </div>
 <p>Set your pet skin to the skin Black Cat by a shortened texture url</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">/</span><span class="n">petblock</span> <span class="n">skin</span> <span class="n">textures</span><span class="o">.</span><span class="n">minecraft</span><span class="o">.</span><span class="n">net</span><span class="o">/</span><span class="n">texture</span><span class="o">/</span><span class="mf">9e4</span><span class="n">fcb9ccae4f0639c689e6565b5205d7abaca2160cff6b0a5e906d8b1481933</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">/</span><span class="n">petblock</span> <span class="n">skin</span> <span class="n">textures</span><span class="o">.</span><span class="n">minecraft</span><span class="o">.</span><span class="n">net</span><span class="o">/</span><span class="n">texture</span><span class="o">/</span><span class="mf">9e4</span><span class="n">fcb9ccae4f0639c689e6565b5205d7abaca2160cff6b0a5e906d8b1481933</span>
 </pre></div>
 </div>
 </div>
@@ -300,11 +302,11 @@
 <li>Command blocks ✔</li>
 </ul>
 <p>Opens page 1</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">/</span><span class="n">petblocks</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">/</span><span class="n">petblocks</span>
 </pre></div>
 </div>
 <p>Opens page 2</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">/</span><span class="n">petblocks</span> <span class="mi">2</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">/</span><span class="n">petblocks</span> <span class="mi">2</span>
 </pre></div>
 </div>
 </div>
@@ -319,11 +321,11 @@
 </ul>
 <p><strong>Sample list:</strong></p>
 <p>Enable your pet</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">/</span><span class="n">petblocks</span> <span class="n">enable</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">/</span><span class="n">petblocks</span> <span class="n">enable</span>
 </pre></div>
 </div>
 <p>Enable the pet of player Mario</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">/</span><span class="n">petblocks</span> <span class="n">enable</span> <span class="n">Mario</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">/</span><span class="n">petblocks</span> <span class="n">enable</span> <span class="n">Mario</span>
 </pre></div>
 </div>
 </div>
@@ -338,11 +340,11 @@
 </ul>
 <p><strong>Sample list:</strong></p>
 <p>Disable your pet</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">/</span><span class="n">petblocks</span> <span class="n">disable</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">/</span><span class="n">petblocks</span> <span class="n">disable</span>
 </pre></div>
 </div>
 <p>Disable the pet of player Mario</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">/</span><span class="n">petblocks</span> <span class="n">disable</span> <span class="n">Mario</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">/</span><span class="n">petblocks</span> <span class="n">disable</span> <span class="n">Mario</span>
 </pre></div>
 </div>
 </div>
@@ -357,11 +359,11 @@
 </ul>
 <p><strong>Sample list:</strong></p>
 <p>Toggles your pet</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">/</span><span class="n">petblocks</span> <span class="n">toggle</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">/</span><span class="n">petblocks</span> <span class="n">toggle</span>
 </pre></div>
 </div>
 <p>Toggles the pet of player Mario</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">/</span><span class="n">petblocks</span> <span class="n">disable</span> <span class="n">Mario</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">/</span><span class="n">petblocks</span> <span class="n">disable</span> <span class="n">Mario</span>
 </pre></div>
 </div>
 </div>
@@ -380,7 +382,7 @@
 </div>
 <p><strong>Sample list:</strong></p>
 <p>Applies the pet ai from the default pet configuration in the config.yml.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">/</span><span class="n">petblocks</span> <span class="n">ai</span> <span class="n">pet</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">/</span><span class="n">petblocks</span> <span class="n">ai</span> <span class="n">pet</span>
 </pre></div>
 </div>
 <p>Apply a custom ai to a pet.</p>
@@ -388,7 +390,7 @@
 <li>Include the follow ai section anywhere in your config.yml.</li>
 </ol>
 <p><strong>config.yml</strong></p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">mycustomais</span><span class="p">:</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">mycustomais</span><span class="p">:</span>
  <span class="n">fastfollowai</span><span class="p">:</span>
    <span class="n">add</span><span class="o">-</span><span class="n">ai</span><span class="p">:</span>
     <span class="mi">1</span><span class="p">:</span>
@@ -406,7 +408,7 @@
 <p class="last">Execute the <strong>/petblockreload</strong> command after changing the config.yml.</p>
 </div>
 <p>2. Execute the follow command</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">/</span><span class="n">petblocks</span> <span class="n">ai</span> <span class="n">mycustomais</span><span class="o">.</span><span class="n">fastfollowai</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">/</span><span class="n">petblocks</span> <span class="n">ai</span> <span class="n">mycustomais</span><span class="o">.</span><span class="n">fastfollowai</span>
 </pre></div>
 </div>
 </div>
@@ -421,7 +423,7 @@
 </ul>
 <p><strong>Sample list:</strong></p>
 <p>Applies the pet skin from the default pet configuration in the config.yml.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">/</span><span class="n">petblocks</span> <span class="n">skin</span> <span class="n">pet</span><span class="o">.</span><span class="n">skin</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">/</span><span class="n">petblocks</span> <span class="n">skin</span> <span class="n">pet</span><span class="o">.</span><span class="n">skin</span>
 </pre></div>
 </div>
 <p>Apply a custom skin to a pet.</p>
@@ -429,7 +431,7 @@
 <li>Include the follow skin section anywhere in your config.yml.</li>
 </ol>
 <p><strong>config.yml</strong></p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">mycustomskins</span><span class="p">:</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">mycustomskins</span><span class="p">:</span>
  <span class="n">marioskin</span><span class="p">:</span>
   <span class="nb">id</span><span class="p">:</span> <span class="mi">397</span>
   <span class="n">damage</span><span class="p">:</span> <span class="mi">3</span>
@@ -441,7 +443,7 @@
 <p class="last">Execute the <strong>/petblockreload</strong> command after changing the config.yml.</p>
 </div>
 <p>2. Execute the follow command</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">/</span><span class="n">petblocks</span> <span class="n">skin</span> <span class="n">mycustomskins</span><span class="o">.</span><span class="n">marioskin</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">/</span><span class="n">petblocks</span> <span class="n">skin</span> <span class="n">mycustomskins</span><span class="o">.</span><span class="n">marioskin</span>
 </pre></div>
 </div>
 </div>
@@ -456,11 +458,11 @@
 </ul>
 <p><strong>Sample list:</strong></p>
 <p>Renames your pet to Beast</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">/</span><span class="n">petblocks</span> <span class="n">rename</span> <span class="n">Beast</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">/</span><span class="n">petblocks</span> <span class="n">rename</span> <span class="n">Beast</span>
 </pre></div>
 </div>
 <p>Renames your pet to My awesome Pet</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">/</span><span class="n">petblocks</span> <span class="n">rename</span> <span class="o">&amp;</span><span class="n">aMy</span> <span class="n">awesome</span> <span class="n">Pet</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">/</span><span class="n">petblocks</span> <span class="n">rename</span> <span class="o">&amp;</span><span class="n">aMy</span> <span class="n">awesome</span> <span class="n">Pet</span>
 </pre></div>
 </div>
 </div>
@@ -475,11 +477,11 @@
 </ul>
 <p><strong>Sample list:</strong></p>
 <p>Toggles the sound</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">/</span><span class="n">petblocks</span> <span class="n">togglesound</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">/</span><span class="n">petblocks</span> <span class="n">togglesound</span>
 </pre></div>
 </div>
 <p>Toggles the sound of player Shynixn</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">/</span><span class="n">petblocks</span> <span class="n">togglesound</span> <span class="n">Shynixn</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">/</span><span class="n">petblocks</span> <span class="n">togglesound</span> <span class="n">Shynixn</span>
 </pre></div>
 </div>
 </div>
@@ -494,11 +496,47 @@
 </ul>
 <p><strong>Sample list:</strong></p>
 <p>Toggles the particle</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">/</span><span class="n">petblocks</span> <span class="n">toggleparticle</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">/</span><span class="n">petblocks</span> <span class="n">toggleparticle</span>
 </pre></div>
 </div>
 <p>Toggles the particle of player Shynixn</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">/</span><span class="n">petblocks</span> <span class="n">toggleparticle</span>  <span class="n">Shynixn</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">/</span><span class="n">petblocks</span> <span class="n">toggleparticle</span>  <span class="n">Shynixn</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="petblocks-reset-player">
+<h3>/petblocks reset [player]<a class="headerlink" href="#petblocks-reset-player" title="Permalink to this headline">¶</a></h3>
+<p>Resets the pet settings of the given player to the default pet settings in the config.yml.</p>
+<ul class="simple">
+<li>Players (require permissions) ✔</li>
+<li>Server console ✔</li>
+<li>Command blocks ✔</li>
+</ul>
+<p><strong>Sample list:</strong></p>
+<p>Resets the pet</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">/</span><span class="n">petblocks</span> <span class="n">reset</span>
+</pre></div>
+</div>
+<p>Resets the pet of player Shynixn</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">/</span><span class="n">petblocks</span> <span class="n">reset</span> <span class="n">Shynixn</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="petblocks-debug-player">
+<h3>/petblocks debug [player]<a class="headerlink" href="#petblocks-debug-player" title="Permalink to this headline">¶</a></h3>
+<p>Displays the debug menu of the pet of the specified player to the player executing this command.</p>
+<ul class="simple">
+<li>Players (require permissions) ✔</li>
+<li>Server console ✘</li>
+<li>Command blocks ✘</li>
+</ul>
+<p><strong>Sample list:</strong></p>
+<p>Displays the debug menu of your own pet</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">/</span><span class="n">petblocks</span> <span class="n">debug</span>
+</pre></div>
+</div>
+<p>Displays the debug menu of Shynixn to yourself</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">/</span><span class="n">petblocks</span> <span class="n">debug</span> <span class="n">Shynixn</span>
 </pre></div>
 </div>
 </div>
@@ -512,7 +550,7 @@
 </ul>
 <p><strong>Sample list:</strong></p>
 <p>Kills the nearest entity in the current chunk</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">/</span><span class="n">petblocks</span> <span class="n">killnext</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">/</span><span class="n">petblocks</span> <span class="n">killnext</span>
 </pre></div>
 </div>
 </div>
@@ -541,7 +579,7 @@
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2015 - 2018, Shynixn.
+        &copy; Copyright 2015 - 2019, Shynixn.
 
     </p>
   </div>
@@ -573,7 +611,6 @@
       <script type="text/javascript" src="../_static/jquery.js"></script>
       <script type="text/javascript" src="../_static/underscore.js"></script>
       <script type="text/javascript" src="../_static/doctools.js"></script>
-      <script type="text/javascript" src="../_static/language_data.js"></script>
 
   
 
