@@ -76,6 +76,7 @@ class EditPetAICommand @Inject constructor(
                     petMeta.aiGoals.removeAll { a -> a.type == aiBase.type }
 
                     petMeta.aiGoals.add(aiBase)
+                    addAmount++
                 }
             }
 

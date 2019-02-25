@@ -8,8 +8,10 @@ import com.github.shynixn.petblocks.api.business.service.AIService
 import com.github.shynixn.petblocks.api.business.service.ConfigurationService
 import com.github.shynixn.petblocks.api.persistence.entity.*
 import com.github.shynixn.petblocks.bukkit.PetBlocksPlugin
+import com.github.shynixn.petblocks.bukkit.logic.business.extension.toPosition
 import com.github.shynixn.petblocks.bukkit.logic.business.proxy.PetProxyImpl
 import com.github.shynixn.petblocks.core.logic.business.extension.hasChanged
+import com.github.shynixn.petblocks.core.logic.business.extension.relativeFront
 import net.minecraft.server.v1_13_R2.*
 import org.bukkit.Bukkit
 import org.bukkit.craftbukkit.v1_13_R2.CraftWorld
@@ -75,7 +77,9 @@ class NMSPetArmorstand(owner: Player, val petMeta: PetMeta) : EntityArmorStand((
 
         val location = owner.location
         val mcWorld = (location.world as CraftWorld).handle
-        this.setPositionRotation(location.x, location.y, location.z, location.yaw, location.pitch)
+        val position = location.toPosition().relativeFront(3.0)
+
+        this.setPositionRotation(position.x, position.y, position.z, location.yaw, location.pitch)
         mcWorld.addEntity(this, CreatureSpawnEvent.SpawnReason.CUSTOM)
 
         internalProxy = PetProxyImpl(petMeta, this.bukkitEntity as ArmorStand, owner)
