@@ -3,5 +3,8 @@ include 'petblocks-api'
 include 'petblocks-bukkit-api'
 include 'petblocks-bukkit-plugin'
 include 'petblocks-core'
+include 'petblocks-sponge-api'
+include 'petblocks-sponge-plugin'
 include 'petblocks-tools'
+include 'petblocks-sponge-api'
 
