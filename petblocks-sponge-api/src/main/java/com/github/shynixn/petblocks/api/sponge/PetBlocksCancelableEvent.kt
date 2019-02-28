@@ -1,9 +1,9 @@
-package com.github.shynixn.petblocks.sponge
+package com.github.shynixn.petblocks.api.sponge
 
-import org.spongepowered.api.entity.living.player.Player
+import org.spongepowered.api.event.Cancellable
 
 /**
- * Created by Shynixn 2019.
+ * Base Event extension for all PetBlocks cancelable events.
  * <p>
  * Version 1.2
  * <p>
@@ -29,10 +29,20 @@ import org.spongepowered.api.entity.living.player.Player
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class Main {
-    fun doSomething() {
-        println("This is a test.")
+open class PetBlocksCancelableEvent : PetBlocksEvent(), Cancellable {
+    private var cancelled = false
 
-        val player: Player
+    /**
+     * Sets cancelled.
+     */
+    override fun setCancelled(cancel: Boolean) {
+        this.cancelled = cancel
+    }
+
+    /**
+     * Is cancelled.
+     */
+    override fun isCancelled(): Boolean {
+        return cancelled
     }
 }
