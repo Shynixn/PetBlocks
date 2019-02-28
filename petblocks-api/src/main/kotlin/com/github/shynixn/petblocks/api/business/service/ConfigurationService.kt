@@ -42,6 +42,11 @@ interface ConfigurationService {
     fun <C> findValue(path: String): C
 
     /**
+     * Checks if the given path is containing in the config.yml.
+     */
+    fun contains(path: String): Boolean
+
+    /**
      * Tries to return a [GuiItem] matching the displayName and the lore of the given [item].
      * Can be called asynchronly. Uses the [path] parameter for faster fetching.
      * @param I the type of the itemstack.
