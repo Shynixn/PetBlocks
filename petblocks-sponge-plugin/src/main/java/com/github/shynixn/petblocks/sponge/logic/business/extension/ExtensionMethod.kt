@@ -3,14 +3,18 @@
 package com.github.shynixn.petblocks.sponge.logic.business.extension
 
 import com.github.shynixn.petblocks.api.business.enumeration.Version
+import com.github.shynixn.petblocks.api.persistence.entity.Position
 import com.github.shynixn.petblocks.core.logic.business.extension.translateChatColors
+import com.github.shynixn.petblocks.core.logic.persistence.entity.PositionEntity
 import net.minecraft.entity.player.EntityPlayerMP
 import org.spongepowered.api.Game
 import org.spongepowered.api.Sponge
 import org.spongepowered.api.command.source.ConsoleSource
+import org.spongepowered.api.entity.Transform
 import org.spongepowered.api.item.inventory.type.CarriedInventory
 import org.spongepowered.api.text.Text
 import org.spongepowered.api.text.serializer.TextSerializers
+import org.spongepowered.api.world.World
 import java.lang.reflect.Field
 import java.lang.reflect.Modifier
 
@@ -78,6 +82,13 @@ fun Text.toTextString(): String {
 fun CarriedInventory<*>.updateInventory() {
     val player = this.carrier.get()
     (player as EntityPlayerMP).sendContainerToPlayer((player as EntityPlayerMP).openContainer)
+}
+
+/**
+ * Converts the [Transform] to a Position.
+ */
+fun Transform<World>.toPosition(): Position {
+    return PositionEntity(this.position.x, this.position.y, this.position.z, this.yaw.toDouble(), this.pitch.toDouble(), this.extent.name)
 }
 
 /**

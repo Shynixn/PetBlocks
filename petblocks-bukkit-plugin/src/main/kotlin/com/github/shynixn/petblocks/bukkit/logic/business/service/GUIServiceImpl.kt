@@ -501,7 +501,11 @@ class GUIServiceImpl @Inject constructor(
         meta.lore = tmpLore
         itemStack.itemMeta = meta
 
-        inventory.setItem(position, itemStack)
+        try {
+            inventory.setItem(position, itemStack)
+        } catch (e: Exception) {
+            // Inventory might not be available.
+        }
     }
 
     /**
