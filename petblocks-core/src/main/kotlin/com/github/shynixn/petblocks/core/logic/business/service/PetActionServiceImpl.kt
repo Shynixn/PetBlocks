@@ -1,6 +1,7 @@
 package com.github.shynixn.petblocks.core.logic.business.service
 
 import com.github.shynixn.petblocks.api.business.service.*
+import com.github.shynixn.petblocks.core.logic.business.extension.relativeFront
 import com.github.shynixn.petblocks.core.logic.business.extension.translateChatColors
 import com.github.shynixn.petblocks.core.logic.persistence.entity.SoundEntity
 import com.google.inject.Inject
@@ -93,7 +94,7 @@ class PetActionServiceImpl @Inject constructor(
         val playerProxy = proxyService.findPlayerProxyObject(player)
 
         if (pet.isPresent) {
-            pet.get().teleport<Any>(playerProxy.getLocation())
+            pet.get().teleport<Any>(playerProxy.position.relativeFront(3.0))
 
             val message = configurationService.findValue<String>("messages.prefix") + configurationService.findValue<String>("messages.called-success")
             playerProxy.sendMessage(message)

@@ -105,6 +105,13 @@ fun Position.toVector(): Vector {
 }
 
 /**
+ * Converts the [Position] to a BukkitLocation.
+ */
+fun Position.toLocation(): Location {
+    return Location(Bukkit.getWorld(this.worldName), this.x, this.y, this.z, this.yaw.toFloat(), this.pitch.toFloat())
+}
+
+/**
  * Converts the [Vector] to a position
  */
 fun Vector.toPosition(): Position {

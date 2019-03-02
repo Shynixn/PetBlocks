@@ -61,10 +61,10 @@ class PetProxyImpl(override val meta: PetMeta, private val design: ArmorStand, p
     var aiGoals: List<Any>? = null
     var hitBox: LivingEntity? = null
 
-    private val particleService = PetBlocksApi.resolve<ParticleService>(ParticleService::class.java)
-    private val soundService = PetBlocksApi.resolve<SoundService>(SoundService::class.java)
+    private val particleService = PetBlocksApi.resolve(ParticleService::class.java)
+    private val soundService = PetBlocksApi.resolve(SoundService::class.java)
     private val logger: LoggingService = PetBlocksApi.resolve(LoggingService::class.java)
-    private val itemService = PetBlocksApi.resolve<ItemService>(ItemService::class.java)
+    private val itemService = PetBlocksApi.resolve(ItemService::class.java)
 
     /**
      * Init.
@@ -162,11 +162,17 @@ class PetProxyImpl(override val meta: PetMeta, private val design: ArmorStand, p
      * Teleports the pet to the given [location].
      */
     override fun <L> teleport(location: L) {
-        if (location !is Location) {
+        var target: Any = location as Any
+
+        if (target is Position) {
+            target = target.toLocation()
+        }
+
+        if (target !is Location) {
             throw IllegalArgumentException("Location has to be a BukkitLocation!")
         }
 
-        teleportTarget = location
+        teleportTarget = target
     }
 
     /**

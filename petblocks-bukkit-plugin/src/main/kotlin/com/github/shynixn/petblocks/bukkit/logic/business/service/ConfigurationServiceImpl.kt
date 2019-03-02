@@ -100,6 +100,13 @@ class ConfigurationServiceImpl @Inject constructor(
     }
 
     /**
+     * Checks if the given path is containing in the config.yml.
+     */
+    override fun contains(path: String): Boolean {
+        return plugin.config.contains(path)
+    }
+
+    /**
      * Tries to return a list of [GuiItem] matching the given path from the config.
      * Can be called asynchronly.
      */
@@ -241,7 +248,7 @@ class ConfigurationServiceImpl @Inject constructor(
             return null
         }
 
-        for(guiItem in this.cache[path]!!){
+        for (guiItem in this.cache[path]!!) {
             try {
                 if (item.itemMeta.displayName == guiItem.icon.displayName.translateChatColors()) {
                     if ((item.itemMeta.lore == null && guiItem.icon.lore.isEmpty()) || (item.itemMeta.lore.size == guiItem.icon.lore.size)) {

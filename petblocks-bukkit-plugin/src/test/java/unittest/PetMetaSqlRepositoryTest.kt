@@ -168,6 +168,12 @@ class PetMetaSqlRepositoryTest {
     }
 
     class MockedConfigurationService : ConfigurationService{
+        /**
+         * Checks if the given path is containing in the config.yml.
+         */
+        override fun contains(path: String): Boolean {
+            throw IllegalArgumentException()
+        }
 
         /**
          * Tries to load the config value from the given [path].

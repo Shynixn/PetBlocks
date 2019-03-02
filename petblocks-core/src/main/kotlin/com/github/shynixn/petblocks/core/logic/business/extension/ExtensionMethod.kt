@@ -3,14 +3,14 @@
 package com.github.shynixn.petblocks.core.logic.business.extension
 
 import com.github.shynixn.petblocks.api.PetBlocksApi
-import com.github.shynixn.petblocks.api.persistence.entity.PropertyTrackable
 import com.github.shynixn.petblocks.api.business.enumeration.ChatColor
 import com.github.shynixn.petblocks.api.business.service.ConcurrencyService
 import com.github.shynixn.petblocks.api.business.service.LoggingService
 import com.github.shynixn.petblocks.api.persistence.entity.ChatMessage
+import com.github.shynixn.petblocks.api.persistence.entity.Position
+import com.github.shynixn.petblocks.api.persistence.entity.PropertyTrackable
 import com.github.shynixn.petblocks.core.logic.persistence.entity.ChatMessageEntity
 import java.util.concurrent.CompletableFuture
-import java.util.logging.Level
 import kotlin.reflect.KProperty
 
 /**
@@ -48,6 +48,15 @@ fun chatMessage(f: ChatMessage.() -> Unit): ChatMessage {
     val chatMessage = ChatMessageEntity()
     f.invoke(chatMessage)
     return chatMessage
+}
+
+/**
+ * Changes the position to it's yaw front by the given amount.
+ */
+fun Position.relativeFront(amount: Double): Position {
+    this.x = x + amount * Math.cos(Math.toRadians(yaw + 90))
+    this.z = z + amount * Math.sin(Math.toRadians(yaw + 90))
+    return this
 }
 
 /**
