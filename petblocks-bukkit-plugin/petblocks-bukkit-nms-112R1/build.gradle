@@ -1,0 +1,7 @@
+dependencies {
+    implementation project(':petblocks-core')
+    implementation project(':petblocks-bukkit-api')
+    implementation project(':petblocks-api')
+
+    compileOnly 'org.spigotmc:spigot112R1:1.12.0-R1.0'
+}

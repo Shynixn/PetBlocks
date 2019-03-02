@@ -42,6 +42,31 @@ interface PetProxy {
     val isDead: Boolean
 
     /**
+     * Gets the internal teleport target.
+     */
+    var teleportTarget: Any?
+
+    /**
+     * Gets the internal aiGoals target.
+     */
+    var aiGoals : List<Any>?
+
+    /**
+     * Runnable of the proxy. Should not be called directly.
+     */
+    fun run()
+
+    /**
+     * Changes the hitbox of the current entity. Should not be called directly.
+     */
+    fun changeHitBox(hitBox: Any?)
+
+    /**
+     * Gets called from any Movement AI to play movement effects.
+     */
+    fun playMovementEffects()
+
+    /**
      * Sets the velocity of the pet.
      */
     fun <V> setVelocity(vector: V)

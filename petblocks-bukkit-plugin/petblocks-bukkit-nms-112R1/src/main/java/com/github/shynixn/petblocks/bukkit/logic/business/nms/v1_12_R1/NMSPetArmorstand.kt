@@ -1,29 +1,27 @@
-package com.github.shynixn.petblocks.bukkit.logic.business.nms.v1_13_R2
+package com.github.shynixn.petblocks.bukkit.logic.business.nms.v1_12_R1
 
 import com.github.shynixn.petblocks.api.PetBlocksApi
 import com.github.shynixn.petblocks.api.bukkit.event.PetBlocksAIPreChangeEvent
 import com.github.shynixn.petblocks.api.business.proxy.EntityPetProxy
 import com.github.shynixn.petblocks.api.business.proxy.NMSPetProxy
+import com.github.shynixn.petblocks.api.business.proxy.PetProxy
 import com.github.shynixn.petblocks.api.business.service.AIService
 import com.github.shynixn.petblocks.api.business.service.ConfigurationService
+import com.github.shynixn.petblocks.api.business.service.LoggingService
 import com.github.shynixn.petblocks.api.persistence.entity.*
-import com.github.shynixn.petblocks.bukkit.PetBlocksPlugin
-import com.github.shynixn.petblocks.bukkit.logic.business.extension.toPosition
-import com.github.shynixn.petblocks.bukkit.logic.business.proxy.PetProxyImpl
 import com.github.shynixn.petblocks.core.logic.business.extension.hasChanged
 import com.github.shynixn.petblocks.core.logic.business.extension.relativeFront
-import net.minecraft.server.v1_13_R2.*
+import com.github.shynixn.petblocks.core.logic.persistence.entity.PositionEntity
+import net.minecraft.server.v1_12_R1.*
 import org.bukkit.Bukkit
 import org.bukkit.Location
-import org.bukkit.craftbukkit.v1_13_R2.CraftWorld
+import org.bukkit.craftbukkit.v1_12_R1.CraftWorld
 import org.bukkit.entity.ArmorStand
 import org.bukkit.entity.LivingEntity
 import org.bukkit.entity.Player
 import org.bukkit.event.entity.CreatureSpawnEvent
-import org.bukkit.plugin.java.JavaPlugin
 import org.bukkit.util.Vector
 import java.lang.reflect.Field
-import java.util.logging.Level
 
 /**
  * Created by Shynixn 2018.
@@ -53,7 +51,7 @@ import java.util.logging.Level
  * SOFTWARE.
  */
 class NMSPetArmorstand(owner: Player, val petMeta: PetMeta) : EntityArmorStand((owner.location.world as CraftWorld).handle), NMSPetProxy {
-    private var internalProxy: PetProxyImpl? = null
+    private var internalProxy: PetProxy? = null
     private var jumpingField: Field = EntityLiving::class.java.getDeclaredField("bg")
     private var internalHitBox: EntityInsentient? = null
     private val aiService = PetBlocksApi.resolve(AIService::class.java)
@@ -67,7 +65,7 @@ class NMSPetArmorstand(owner: Player, val petMeta: PetMeta) : EntityArmorStand((
     /**
      * Proxy handler.
      */
-    override val proxy: PetProxyImpl get() = internalProxy!!
+    override val proxy: PetProxy get() = internalProxy!!
 
     /**
      * Initializes the nms design.
@@ -77,12 +75,14 @@ class NMSPetArmorstand(owner: Player, val petMeta: PetMeta) : EntityArmorStand((
 
         val location = owner.location
         val mcWorld = (location.world as CraftWorld).handle
-        val position = location.toPosition().relativeFront(3.0)
+        val position = PositionEntity(location.x, location.y, location.z, location.yaw.toDouble(), location.pitch.toDouble(), location.world.name).relativeFront(3.0)
 
         this.setPositionRotation(position.x, position.y, position.z, location.yaw, location.pitch)
         mcWorld.addEntity(this, CreatureSpawnEvent.SpawnReason.CUSTOM)
 
-        internalProxy = PetProxyImpl(petMeta, this.bukkitEntity as ArmorStand, owner)
+        internalProxy = Class.forName("com.github.shynixn.petblocks.bukkit.logic.business.proxy.PetProxyImpl")
+            .getDeclaredConstructor(PetMeta::class.java, ArmorStand::class.java, Player::class.java).newInstance(petMeta, this.bukkitEntity, owner) as PetProxy
+
         petMeta.propertyTracker.onPropertyChanged(PetMeta::aiGoals, true)
 
         val compound = NBTTagCompound()
@@ -117,7 +117,12 @@ class NMSPetArmorstand(owner: Player, val petMeta: PetMeta) : EntityArmorStand((
             val armorstand = proxy.getHeadArmorstand<ArmorStand>()
 
             armorstand.velocity = Vector(0, 1, 0)
-            armorstand.passenger = player
+
+            for (passenger in armorstand.passengers) {
+                armorstand.removePassenger(passenger)
+            }
+
+            armorstand.addPassenger(player)
 
             return
         }
@@ -134,7 +139,11 @@ class NMSPetArmorstand(owner: Player, val petMeta: PetMeta) : EntityArmorStand((
             val player = proxy.getPlayer<Player>()
             val armorstand = proxy.getHeadArmorstand<ArmorStand>()
 
-            player.passenger = armorstand
+            for (passenger in player.passengers) {
+                player.removePassenger(passenger)
+            }
+
+            player.addPassenger(armorstand)
 
             return
         }
@@ -214,7 +223,7 @@ class NMSPetArmorstand(owner: Player, val petMeta: PetMeta) : EntityArmorStand((
                 proxy.aiGoals = null
             }
         } catch (e: Exception) {
-            JavaPlugin.getPlugin(PetBlocksPlugin::class.java).logger.log(Level.WARNING, "Failed to execute tick.", e)
+            PetBlocksApi.resolve(LoggingService::class.java).error("Failed to execute tick.", e)
         }
     }
 
@@ -238,9 +247,9 @@ class NMSPetArmorstand(owner: Player, val petMeta: PetMeta) : EntityArmorStand((
         }
 
         val axisBoundingBox = this.boundingBox
-        this.locX = (axisBoundingBox.minX + axisBoundingBox.maxX) / 2.0
-        this.locY = axisBoundingBox.minY + offSet
-        this.locZ = (axisBoundingBox.minZ + axisBoundingBox.maxZ) / 2.0
+        this.locX = (axisBoundingBox.a + axisBoundingBox.d) / 2.0
+        this.locY = axisBoundingBox.b + offSet
+        this.locZ = (axisBoundingBox.c + axisBoundingBox.f) / 2.0
     }
 
     /**
@@ -284,15 +293,15 @@ class NMSPetArmorstand(owner: Player, val petMeta: PetMeta) : EntityArmorStand((
      * Handles the riding in air.
      */
     private fun rideInAir(human: EntityHuman, ai: AIFlyRiding) {
-        val sideMot: Float = human.bh * 0.5f
-        val forMot: Float = human.bj
+        val sideMot: Float = human.be * 0.5f
+        val forMot: Float = human.bg
 
         this.yaw = human.yaw
         this.lastYaw = this.yaw
         this.pitch = human.pitch * 0.5f
         this.setYawPitch(this.yaw, this.pitch)
-        this.aQ = this.yaw
-        this.aS = this.aQ
+        this.aP = this.yaw
+        this.aN = this.aP
 
         val flyingVector = Vector()
         val flyingLocation = Location(this.world.world, this.locX, this.locY, this.locZ)
@@ -350,15 +359,15 @@ class NMSPetArmorstand(owner: Player, val petMeta: PetMeta) : EntityArmorStand((
      * Handles the riding on ground.
      */
     private fun rideOnGround(human: EntityHuman, ai: AIGroundRiding, f2: Float) {
-        val sideMot: Float = human.bh * 0.5f
-        var forMot: Float = human.bj
+        val sideMot: Float = human.be * 0.5f
+        var forMot: Float = human.bg
 
         this.yaw = human.yaw
         this.lastYaw = this.yaw
         this.pitch = human.pitch * 0.5f
         this.setYawPitch(this.yaw, this.pitch)
-        this.aQ = this.yaw
-        this.aS = this.aQ
+        this.aP = this.yaw
+        this.aN = this.aP
 
         if (forMot <= 0.0f) {
             forMot *= 0.25f
@@ -368,15 +377,15 @@ class NMSPetArmorstand(owner: Player, val petMeta: PetMeta) : EntityArmorStand((
             this.motY = 0.5
         }
 
-        this.Q = ai.climbingHeight.toFloat()
-        this.aU = this.cK() * 0.1f
+        this.P = ai.climbingHeight.toFloat()
+        this.aR = this.cy() * 0.1f
 
         if (!this.world.isClientSide) {
-            this.o(0.35f)
+            this.k(0.35f)
             super.a(sideMot * ai.ridingSpeed.toFloat(), f2, forMot * ai.ridingSpeed.toFloat())
         }
 
-        this.aI = this.aJ
+        this.aF = this.aG
         val d0 = this.locX - this.lastX
         val d1 = this.locZ - this.lastZ
         var f4 = MathHelper.sqrt(d0 * d0 + d1 * d1) * 4.0f
@@ -385,8 +394,8 @@ class NMSPetArmorstand(owner: Player, val petMeta: PetMeta) : EntityArmorStand((
             f4 = 1.0f
         }
 
-        this.aJ += (f4 - this.aJ) * 0.4f
-        this.aK += this.aJ
+        this.aG += (f4 - this.aG) * 0.4f
+        this.aH += this.aG
     }
 
     /**

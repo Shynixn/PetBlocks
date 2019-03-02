@@ -1,12 +1,12 @@
-package com.github.shynixn.petblocks.bukkit.logic.business.nms.v1_13_R2
+package com.github.shynixn.petblocks.bukkit.logic.business.nms.v1_12_R1
 
 import com.github.shynixn.petblocks.api.business.proxy.PathfinderProxy
 import com.github.shynixn.petblocks.api.persistence.entity.AIMovement
 import com.github.shynixn.petblocks.core.logic.business.extension.removeFinalModifier
 import com.google.common.collect.Sets
-import net.minecraft.server.v1_13_R2.*
+import net.minecraft.server.v1_12_R1.*
 import org.bukkit.Location
-import org.bukkit.craftbukkit.v1_13_R2.CraftWorld
+import org.bukkit.craftbukkit.v1_12_R1.CraftWorld
 import org.bukkit.event.entity.CreatureSpawnEvent
 
 /**
@@ -36,7 +36,7 @@ import org.bukkit.event.entity.CreatureSpawnEvent
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class NMSPetVillager(petDesign: NMSPetArmorstand, location: Location) : EntityPig((location.world as CraftWorld).handle) {
+class NMSPetRabbit(petDesign: NMSPetArmorstand, location: Location) : EntityRabbit((location.world as CraftWorld).handle) {
     private var petDesign: NMSPetArmorstand? = null
     private var pathfinderCounter = 0
 
@@ -46,7 +46,7 @@ class NMSPetVillager(petDesign: NMSPetArmorstand, location: Location) : EntityPi
 
         clearAIGoals()
         this.getAttributeInstance(GenericAttributes.MOVEMENT_SPEED).value = 0.30000001192092896 * 0.75
-        this.Q = 1.0F
+        this.P = 1.0F
 
         val mcWorld = (location.world as CraftWorld).handle
         this.setPosition(location.x, location.y + 1, location.z)
@@ -67,7 +67,7 @@ class NMSPetVillager(petDesign: NMSPetArmorstand, location: Location) : EntityPi
 
                 if (aiBase is AIMovement) {
                     this.getAttributeInstance(GenericAttributes.MOVEMENT_SPEED).value = 0.30000001192092896 * aiBase.movementSpeed
-                    this.Q = aiBase.climbingHeight.toFloat()
+                    this.P = aiBase.climbingHeight.toFloat()
                 }
             } else {
                 this.goalSelector.a(pathfinderCounter++, pathfinder as PathfinderGoal)
@@ -78,7 +78,7 @@ class NMSPetVillager(petDesign: NMSPetArmorstand, location: Location) : EntityPi
     /**
      * Gets called on move to play sounds.
      */
-    override fun a(blockposition: BlockPosition, iblockdata: IBlockData) {
+    override fun a(blockposition: BlockPosition, block: Block) {
         if (petDesign == null) {
             return
         }

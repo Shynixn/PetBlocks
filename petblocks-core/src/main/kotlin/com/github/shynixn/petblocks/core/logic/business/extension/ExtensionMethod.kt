@@ -10,6 +10,8 @@ import com.github.shynixn.petblocks.api.persistence.entity.ChatMessage
 import com.github.shynixn.petblocks.api.persistence.entity.Position
 import com.github.shynixn.petblocks.api.persistence.entity.PropertyTrackable
 import com.github.shynixn.petblocks.core.logic.persistence.entity.ChatMessageEntity
+import java.lang.reflect.Field
+import java.lang.reflect.Modifier
 import java.util.concurrent.CompletableFuture
 import kotlin.reflect.KProperty
 
@@ -48,6 +50,16 @@ fun chatMessage(f: ChatMessage.() -> Unit): ChatMessage {
     val chatMessage = ChatMessageEntity()
     f.invoke(chatMessage)
     return chatMessage
+}
+
+/**
+ * Removes the final modifier from this field to allow editing.
+ */
+fun Field.removeFinalModifier() {
+    isAccessible = true
+    val modifiersField = Field::class.java.getDeclaredField("modifiers")
+    modifiersField.isAccessible = true
+    modifiersField.setInt(this, this.modifiers and Modifier.FINAL.inv())
 }
 
 /**

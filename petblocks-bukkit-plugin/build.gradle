@@ -49,9 +49,10 @@ repositories {
 }
 
 dependencies {
-    implementation project(':petblocks-core')
     implementation project(':petblocks-api')
+    implementation project(':petblocks-core')
     implementation project(':petblocks-bukkit-api')
+    implementation project(':petblocks-bukkit-plugin:petblocks-bukkit-nms-112R1')
 
     implementation 'org.slf4j:slf4j-jdk14:1.7.25'
     implementation 'com.zaxxer:HikariCP:3.2.0'

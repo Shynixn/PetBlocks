@@ -2,12 +2,11 @@ package com.github.shynixn.petblocks.bukkit.logic.business.nms.v1_13_R2
 
 import com.github.shynixn.petblocks.api.business.proxy.PathfinderProxy
 import com.github.shynixn.petblocks.api.persistence.entity.AIMovement
-import com.github.shynixn.petblocks.bukkit.logic.business.extension.removeFinalModifier
+import com.github.shynixn.petblocks.core.logic.business.extension.removeFinalModifier
 import com.google.common.collect.Sets
 import net.minecraft.server.v1_13_R2.*
 import org.bukkit.Location
 import org.bukkit.craftbukkit.v1_13_R2.CraftWorld
-import org.bukkit.entity.Player
 import org.bukkit.event.entity.CreatureSpawnEvent
 
 /**
