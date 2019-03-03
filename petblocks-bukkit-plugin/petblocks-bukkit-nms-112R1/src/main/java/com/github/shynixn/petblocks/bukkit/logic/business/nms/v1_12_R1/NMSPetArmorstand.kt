@@ -52,7 +52,7 @@ import java.lang.reflect.Field
  */
 class NMSPetArmorstand(owner: Player, val petMeta: PetMeta) : EntityArmorStand((owner.location.world as CraftWorld).handle), NMSPetProxy {
     private var internalProxy: PetProxy? = null
-    private var jumpingField: Field = EntityLiving::class.java.getDeclaredField("bg")
+    private var jumpingField: Field = EntityLiving::class.java.getDeclaredField("bd")
     private var internalHitBox: EntityInsentient? = null
     private val aiService = PetBlocksApi.resolve(AIService::class.java)
 
@@ -104,6 +104,8 @@ class NMSPetArmorstand(owner: Player, val petMeta: PetMeta) : EntityArmorStand((
             proxy.changeHitBox(internalHitBox)
         }
 
+        val player = proxy.getPlayer<Player>()
+
         val compound = NBTTagCompound()
         this.b(compound)
         compound.setBoolean("Marker", false)
@@ -113,7 +115,6 @@ class NMSPetArmorstand(owner: Player, val petMeta: PetMeta) : EntityArmorStand((
         val hasRidingAi = petMeta.aiGoals.count { a -> a is AIGroundRiding || a is AIFlyRiding } > 0
 
         if (hasRidingAi) {
-            val player = proxy.getPlayer<Player>()
             val armorstand = proxy.getHeadArmorstand<ArmorStand>()
 
             armorstand.velocity = Vector(0, 1, 0)
@@ -125,6 +126,12 @@ class NMSPetArmorstand(owner: Player, val petMeta: PetMeta) : EntityArmorStand((
             armorstand.addPassenger(player)
 
             return
+        } else {
+            for (passenger in player.passengers) {
+                if (passenger == this.bukkitEntity) {
+                    player.removePassenger(passenger)
+                }
+            }
         }
 
         val aiWearing = this.petMeta.aiGoals.firstOrNull { a -> a is AIWearing }
@@ -136,7 +143,6 @@ class NMSPetArmorstand(owner: Player, val petMeta: PetMeta) : EntityArmorStand((
             this.a(internalCompound)
             this.customNameVisible = false
 
-            val player = proxy.getPlayer<Player>()
             val armorstand = proxy.getHeadArmorstand<ArmorStand>()
 
             for (passenger in player.passengers) {

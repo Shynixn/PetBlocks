@@ -104,6 +104,8 @@ class NMSPetArmorstand(owner: Player, val petMeta: PetMeta) : EntityArmorStand((
             proxy.changeHitBox(internalHitBox)
         }
 
+        val player = proxy.getPlayer<Player>()
+
         val compound = NBTTagCompound()
         this.b(compound)
         compound.setBoolean("Marker", false)
@@ -113,13 +115,19 @@ class NMSPetArmorstand(owner: Player, val petMeta: PetMeta) : EntityArmorStand((
         val hasRidingAi = petMeta.aiGoals.count { a -> a is AIGroundRiding || a is AIFlyRiding } > 0
 
         if (hasRidingAi) {
-            val player = proxy.getPlayer<Player>()
             val armorstand = proxy.getHeadArmorstand<ArmorStand>()
 
             armorstand.velocity = Vector(0, 1, 0)
             armorstand.passenger = player
 
             return
+        }
+        else {
+            for (passenger in player.passengers) {
+                if (passenger == this.bukkitEntity) {
+                    player.removePassenger(passenger)
+                }
+            }
         }
 
         val aiWearing = this.petMeta.aiGoals.firstOrNull { a -> a is AIWearing }
@@ -131,7 +139,6 @@ class NMSPetArmorstand(owner: Player, val petMeta: PetMeta) : EntityArmorStand((
             this.a(internalCompound)
             this.customNameVisible = false
 
-            val player = proxy.getPlayer<Player>()
             val armorstand = proxy.getHeadArmorstand<ArmorStand>()
 
             player.passenger = armorstand

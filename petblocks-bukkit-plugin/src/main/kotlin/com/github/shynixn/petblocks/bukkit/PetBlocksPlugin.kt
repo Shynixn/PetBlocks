@@ -69,7 +69,6 @@ class PetBlocksPlugin : JavaPlugin(), PluginProxy {
     override fun onEnable() {
         Bukkit.getServer().consoleSender.sendMessage(PREFIX_CONSOLE + ChatColor.GREEN + "Loading PetBlocks ...")
         this.saveDefaultConfig()
-        this.injector = Guice.createInjector(PetBlocksDependencyInjectionBinder(this))
 
         if (!getServerVersion().isCompatible(
                 /*  Version.VERSION_1_8_R1,
@@ -78,15 +77,14 @@ class PetBlocksPlugin : JavaPlugin(), PluginProxy {
                   Version.VERSION_1_9_R1,
                   Version.VERSION_1_9_R2,
                   Version.VERSION_1_10_R1,
-                  Version.VERSION_1_11_R1,
-                  Version.VERSION_1_12_R1,
-                  Version.VERSION_1_13_R1,*/
+                  Version.VERSION_1_11_R1,*/
+                Version.VERSION_1_12_R1,
                 Version.VERSION_1_13_R2)
         ) {
             Bukkit.getServer().consoleSender.sendMessage(PREFIX_CONSOLE + ChatColor.RED + "================================================")
             Bukkit.getServer().consoleSender.sendMessage(PREFIX_CONSOLE + ChatColor.RED + "PetBlocks does not support your server version")
             Bukkit.getServer()
-                .consoleSender.sendMessage(PREFIX_CONSOLE + ChatColor.RED + "Install v" + Version.VERSION_1_13_R2.id + " - v" + Version.VERSION_1_13_R2.id)
+                .consoleSender.sendMessage(PREFIX_CONSOLE + ChatColor.RED + "Install v" + Version.VERSION_1_12_R1.id + " - v" + Version.VERSION_1_13_R2.id)
             Bukkit.getServer().consoleSender.sendMessage(PREFIX_CONSOLE + ChatColor.RED + "Plugin gets now disabled!")
             Bukkit.getServer().consoleSender.sendMessage(PREFIX_CONSOLE + ChatColor.RED + "================================================")
 
@@ -95,6 +93,8 @@ class PetBlocksPlugin : JavaPlugin(), PluginProxy {
 
             return
         }
+
+        this.injector = Guice.createInjector(PetBlocksDependencyInjectionBinder(this))
 
         if (!this.config.contains("config-version") || this.config.getInt("config-version") != configVersion) {
             Bukkit.getServer().consoleSender.sendMessage(PREFIX_CONSOLE + ChatColor.RED + "================================================")
@@ -165,7 +165,7 @@ class PetBlocksPlugin : JavaPlugin(), PluginProxy {
      * OnDisable.
      */
     override fun onDisable() {
-        if(immediateDisable){
+        if (immediateDisable) {
             return
         }
 

@@ -36,7 +36,6 @@ import org.bukkit.entity.LivingEntity
  */
 class NavigationServiceImpl @Inject constructor(private val version: Version) : NavigationService {
     private val getHandleMethod = findClazz("org.bukkit.craftbukkit.VERSION.entity.CraftLivingEntity").getDeclaredMethod("getHandle")!!
-    private val clearCurrentPath = findClazz("net.minecraft.server.VERSION.NavigationAbstract").getDeclaredMethod("q")
     private val navigationAbstractMethod = findClazz("net.minecraft.server.VERSION.EntityInsentient").getDeclaredMethod("getNavigation")
     private val goToEntityNavigationMethod =
         findClazz("net.minecraft.server.VERSION.NavigationAbstract").getDeclaredMethod("a", Double::class.java, Double::class.java, Double::class.java, Double::class.java)
@@ -68,7 +67,12 @@ class NavigationServiceImpl @Inject constructor(private val version: Version) : 
 
         val nmsEntity = getHandleMethod.invoke(petProxy.getHitBoxLivingEntity<LivingEntity>().get())
         val navigation = navigationAbstractMethod.invoke(nmsEntity)
-        clearCurrentPath.invoke(navigation)
+
+        when (version) {
+            Version.VERSION_1_13_R2 -> findClazz("net.minecraft.server.VERSION.NavigationAbstract").getDeclaredMethod("q").invoke(navigation)
+            Version.VERSION_1_12_R1 -> findClazz("net.minecraft.server.VERSION.NavigationAbstract").getDeclaredMethod("p").invoke(navigation)
+            else -> throw IllegalArgumentException("This version is not supported!")
+        }
     }
 
     /**

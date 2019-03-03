@@ -125,7 +125,8 @@ class PetBlocksDependencyInjectionBinder(private val plugin: Plugin) : AbstractM
 
         when {
             version.isVersionSameOrGreaterThan(Version.VERSION_1_13_R1) -> bind(ItemService::class.java).to(Item113R1ServiceImpl::class.java).`in`(Scopes.SINGLETON)
-            else -> bind(ItemService::class.java).to(Item18R1ServiceImpl::class.java).`in`(Scopes.SINGLETON)
+            version.isVersionSameOrGreaterThan(Version.VERSION_1_9_R1) -> bind(ItemService::class.java).to(Item119R1ServiceImpl::class.java).`in`(Scopes.SINGLETON)
+            else -> throw IllegalArgumentException()
         }
 
         bind(MessageService::class.java).to(MessageServiceImpl::class.java).`in`(Scopes.SINGLETON)

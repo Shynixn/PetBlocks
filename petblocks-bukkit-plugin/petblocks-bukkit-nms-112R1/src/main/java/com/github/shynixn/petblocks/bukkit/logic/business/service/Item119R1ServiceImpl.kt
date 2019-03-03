@@ -3,24 +3,21 @@
 package com.github.shynixn.petblocks.bukkit.logic.business.service
 
 import com.github.shynixn.petblocks.api.business.enumeration.MaterialType
-import com.github.shynixn.petblocks.api.business.enumeration.Version
 import com.github.shynixn.petblocks.api.business.proxy.ItemStackProxy
 import com.github.shynixn.petblocks.api.business.service.ItemService
-import com.github.shynixn.petblocks.bukkit.logic.business.proxy.ItemStackProxyImpl
 import org.bukkit.Material
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
-import java.lang.reflect.Method
 import java.util.*
 
 /**
- * Created by Shynixn 2018.
+ * Created by Shynixn 2019.
  * <p>
  * Version 1.2
  * <p>
  * MIT License
  * <p>
- * Copyright (c) 2018 by Shynixn
+ * Copyright (c) 2019 by Shynixn
  * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -40,52 +37,14 @@ import java.util.*
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class Item18R1ServiceImpl(private val version: Version) : ItemService {
-    private val getMaterialFromIdMethod: Method = Material::class.java.getDeclaredMethod("getMaterial", Int::class.javaPrimitiveType)
-    private val getItemInMainHandMethod: Method
-    private var getItemInOffHandMethod: Method? = null
-
-    /**
-     * Initialize.
-     */
-    init {
-        val inventoryClazz = Class.forName("org.bukkit.inventory.PlayerInventory")
-
-        getItemInMainHandMethod = if (version.isVersionSameOrGreaterThan(Version.VERSION_1_9_R1)) {
-            inventoryClazz.getDeclaredMethod("getItemInMainHand")
-        } else {
-            Class.forName("org.bukkit.entity.HumanEntity").getDeclaredMethod("getItemInHand")
-        }
-
-        if (version.isVersionSameOrGreaterThan(Version.VERSION_1_9_R1)) {
-            getItemInOffHandMethod = inventoryClazz.getDeclaredMethod("getItemInOffHand")
-        }
-    }
-
-    /**
-     * Gets the itemstack in the hand of the player with optional offHand flag.
-     */
-    override fun <P, I> getItemInHand(player: P, offHand: Boolean): Optional<I> {
-        if (player !is Player) {
-            throw IllegalArgumentException("Player has to be a BukkitPlayer!")
-        }
-
-        return if (version.isVersionSameOrGreaterThan(Version.VERSION_1_9_R1)) {
-            if (offHand) {
-                Optional.ofNullable(getItemInOffHandMethod!!.invoke(player.inventory) as I)
-            } else {
-                Optional.ofNullable(getItemInMainHandMethod.invoke(player.inventory) as I)
-            }
-        } else {
-            Optional.ofNullable(getItemInMainHandMethod.invoke(player) as I)
-        }
-    }
-
+class Item119R1ServiceImpl : ItemService {
     /**
      * Creates a new itemstack from the given parameters.
      */
     override fun createItemStack(type: Any, dataValue: Int): ItemStackProxy {
-        return ItemStackProxyImpl(getMaterialValue(type).name, dataValue)
+        return Class.forName("com.github.shynixn.petblocks.bukkit.logic.business.proxy.ItemStackProxyImpl")
+            .getDeclaredConstructor(String::class.java, Int::class.java)
+            .newInstance(getMaterialValue(type).name, dataValue) as ItemStackProxy
     }
 
     /**
@@ -101,13 +60,28 @@ class Item18R1ServiceImpl(private val version: Version) : ItemService {
     }
 
     /**
+     * Gets the itemstack in the hand of the player with optional offHand flag.
+     */
+    override fun <P, I> getItemInHand(player: P, offHand: Boolean): Optional<I> {
+        if (player !is Player) {
+            throw IllegalArgumentException("Player has to be a BukkitPlayer!")
+        }
+
+        if (offHand) {
+            return Optional.ofNullable(player.inventory.itemInOffHand as I)
+        }
+
+        return Optional.ofNullable(player.inventory.itemInMainHand as I)
+    }
+
+    /**
      * Processing if there is any way the given [value] can be mapped to an material.
      */
     private fun getMaterialValue(value: Any): Material {
         if (value is Int) {
-            return getMaterialFromIdMethod.invoke(null, value) as Material
+            return Material.getMaterial(value)
         } else if (value is String && value.toIntOrNull() != null) {
-            return getMaterialFromIdMethod.invoke(null, value.toInt()) as Material
+            return Material.getMaterial(value.toInt())
         } else if (value is String) {
             return Material.getMaterial(value) ?: throw IllegalArgumentException("Material $value does not exist!")
         } else if (value is MaterialType) {
