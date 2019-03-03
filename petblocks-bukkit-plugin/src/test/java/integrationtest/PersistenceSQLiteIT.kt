@@ -13,7 +13,7 @@ import com.github.shynixn.petblocks.bukkit.logic.business.proxy.PlayerProxyImpl
 import com.github.shynixn.petblocks.bukkit.logic.business.proxy.SqlProxyImpl
 import com.github.shynixn.petblocks.bukkit.logic.business.service.ConfigurationServiceImpl
 import com.github.shynixn.petblocks.bukkit.logic.business.service.EntityServiceImpl
-import com.github.shynixn.petblocks.bukkit.logic.business.service.Item18R1ServiceImpl
+import com.github.shynixn.petblocks.bukkit.logic.business.service.Item119R1ServiceImpl
 import com.github.shynixn.petblocks.bukkit.logic.business.service.YamlConfigurationServiceImpl
 import com.github.shynixn.petblocks.core.logic.business.service.AIServiceImpl
 import com.github.shynixn.petblocks.core.logic.business.service.LoggingUtilServiceImpl
@@ -252,7 +252,7 @@ class PersistenceSQLiteIT {
             sqlProxy = SqlProxyImpl(plugin, LoggingUtilServiceImpl(Logger.getAnonymousLogger()))
 
             val aiService = AIServiceImpl(LoggingUtilServiceImpl(Logger.getAnonymousLogger()), MockedProxyService(),YamlConfigurationServiceImpl())
-            val configService = ConfigurationServiceImpl(plugin, Item18R1ServiceImpl(Version.VERSION_1_8_R1), aiService)
+            val configService = ConfigurationServiceImpl(plugin, Item119R1ServiceImpl(), aiService)
             EntityServiceImpl(configService, MockedProxyService(), Mockito.mock(EntityRegistrationService::class.java), YamlSerializationServiceImpl()
                 , aiService, Mockito.mock(PetService::class.java), plugin, Mockito.mock(AfraidOfWaterService::class.java), Mockito.mock(NavigationService::class.java), Mockito.mock(SoundService::class.java), Version.VERSION_1_8_R1)
 
@@ -271,7 +271,7 @@ class PersistenceSQLiteIT {
          */
         override fun <S> resolve(service: Any): S {
             if (service == ItemService::class.java) {
-                return Item18R1ServiceImpl(Version.VERSION_1_9_R1) as S
+                return Item119R1ServiceImpl() as S
             }
 
             throw IllegalArgumentException()
