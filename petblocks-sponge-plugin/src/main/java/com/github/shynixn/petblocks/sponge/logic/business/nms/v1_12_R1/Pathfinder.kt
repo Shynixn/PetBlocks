@@ -1,4 +1,7 @@
-package com.github.shynixn.petblocks.api.persistence.entity
+package com.github.shynixn.petblocks.sponge.logic.business.nms.v1_12_R1
+
+import com.github.shynixn.petblocks.api.business.proxy.PathfinderProxy
+import net.minecraft.entity.ai.EntityAIBase
 
 /**
  * Created by Shynixn 2018.
@@ -27,51 +30,47 @@ package com.github.shynixn.petblocks.api.persistence.entity
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-interface Position {
-    /** [worldName] which world the location is. */
-    var worldName: String?
-
-    /** [x] coordinate. */
-    var x: Double
-
-    /** [y] coordinate. */
-    var y: Double
-
-    /** [z] coordinate. */
-    var z: Double
-
-    /** [yaw] rotation yaw. */
-    var yaw: Double
-
-    /** [pitch] rotation pitch. */
-    var pitch: Double
-
-    /** [blockX] coordinate as Int. */
-    val blockX: Int
-
-    /** [blockY] coordinate as Int. */
-    val blockY: Int
-
-    /** [blockZ] coordinate as Int. */
-    val blockZ: Int
+class Pathfinder(private val pathfinderProxy: PathfinderProxy) : EntityAIBase() {
 
     /**
-     * Adds the parameters to this position.
+     * Override ShouldExecute.
      */
-    fun add(x: Double, y: Double = 0.0, z: Double = 0.0, yaw: Double = 0.0, pitch: Double = 0.0)
+    override fun shouldExecute(): Boolean {
+        return pathfinderProxy.shouldGoalBeExecuted()
+    }
 
     /**
-     * Adds the parameters to this position.
+     * Override continue executing.
      */
-    fun add(position: Position)
+    override fun shouldContinueExecuting(): Boolean {
+        return pathfinderProxy.shouldGoalContinueExecuting()
+    }
 
     /**
-     * Gets the direction of the yaw and pitch.
+     * Override isInterrupting.
      */
-    fun getDirection(): Position
+    override fun isInterruptible(): Boolean {
+        return pathfinderProxy.isInteruptible
+    }
 
     /**
-     * Multiply position.
+     * Override startExecuting.
      */
-    fun multiply(multiplier: Double)
+    override fun startExecuting() {
+        this.pathfinderProxy.onStartExecuting()
+    }
+
+    /**
+     * Override reset.
+     */
+    override fun resetTask() {
+        this.pathfinderProxy.onStopExecuting()
+    }
+
+    /**
+     * Override update.
+     */
+    override fun updateTask() {
+        this.pathfinderProxy.onExecute()
+    }
 }

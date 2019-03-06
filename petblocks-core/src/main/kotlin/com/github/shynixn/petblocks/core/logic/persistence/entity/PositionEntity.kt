@@ -44,14 +44,6 @@ class PositionEntity(
     /** [worldName] which world the location is. */
     override var worldName: String? = null
 ) : Position {
-    /**
-     * Multiply position.
-     */
-    override fun multiply(multiplier: Double) {
-        this.x *= multiplier
-        this.y *= multiplier
-        this.z *= multiplier
-    }
 
     /** [blockX] coordinate as Int. */
     override val blockX: Int
@@ -62,6 +54,47 @@ class PositionEntity(
     /** [blockZ] coordinate as Int. */
     override val blockZ: Int
         get() = z.toInt()
+
+    /**
+     * Multiply position.
+     */
+    override fun multiply(multiplier: Double) {
+        this.x *= multiplier
+        this.y *= multiplier
+        this.z *= multiplier
+    }
+
+    /**
+     * Adds the parameters to this position.
+     */
+    override fun add(x: Double, y: Double, z: Double, yaw: Double, pitch: Double) {
+        this.x += x
+        this.y += y
+        this.z += z
+        this.yaw += yaw
+        this.pitch += pitch
+    }
+
+    /**
+     * Adds the parameters to this position.
+     */
+    override fun add(position: Position) {
+        this.add(position.x, position.y, position.z, position.yaw, position.pitch)
+    }
+
+    /**
+     * Gets the yaw and pitch direction.
+     */
+    override fun getDirection(): Position {
+        val vector = PositionEntity()
+        val rotX = this.yaw
+        val rotY = this.pitch
+        vector.y = (-Math.sin(Math.toRadians(rotY)))
+        val xz = Math.cos(Math.toRadians(rotY))
+        vector.x = (-xz * Math.sin(Math.toRadians(rotX)))
+        vector.z = (xz * Math.cos(Math.toRadians(rotX)))
+        return vector
+    }
 
     /**
      * Indicates whether some other object is "equal to" this one. Implementations must fulfil the following
