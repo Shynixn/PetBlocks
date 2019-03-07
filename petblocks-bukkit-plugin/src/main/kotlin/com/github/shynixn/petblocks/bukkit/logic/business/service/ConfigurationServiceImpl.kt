@@ -20,7 +20,9 @@ import org.bukkit.configuration.MemorySection
 import org.bukkit.inventory.ItemStack
 import org.bukkit.plugin.Plugin
 import java.io.BufferedReader
+import java.io.InputStream
 import java.io.InputStreamReader
+import java.nio.file.Path
 import java.util.*
 import javax.crypto.Cipher
 import javax.crypto.CipherInputStream
@@ -60,8 +62,17 @@ class ConfigurationServiceImpl @Inject constructor(
     private val itemService: ItemService,
     private val aiService: AIService
 ) : ConfigurationService {
+
     private val cache = HashMap<String, List<GuiItem>>()
     private var disableOnSneak: List<String>? = null
+
+    /**
+     * Gets the dataFolder.
+     */
+    override val dataFolder: Path
+        get() {
+            return plugin.dataFolder.toPath()
+        }
 
     /**
      * Tries to load the config value from the given [path].
@@ -97,6 +108,13 @@ class ConfigurationServiceImpl @Inject constructor(
         }
 
         return data as C
+    }
+
+    /**
+     * Opens a new inputStream to the given [resource].
+     */
+    override fun openResourceInputStream(resource: String): InputStream {
+        return plugin.getResource(resource)
     }
 
     /**
@@ -322,10 +340,19 @@ class ConfigurationServiceImpl @Inject constructor(
         val identifier = id.toString()
         val decipher = Cipher.getInstance("AES/CBC/PKCS5PADDING")
 
-        decipher.init(Cipher.DECRYPT_MODE,
+        decipher.init(
+            Cipher.DECRYPT_MODE,
             SecretKeySpec(Base64.getDecoder().decode("YjJjNWIzOTQ0NTY1NDJlNQ=="), "AES"),
-            IvParameterSpec("RandomInitVector".toByteArray(charset("UTF-8"))))
-        BufferedReader(InputStreamReader(CipherInputStream(plugin.getResource("assets/petblocks/minecraftheads.db"), decipher))).use { reader ->
+            IvParameterSpec("RandomInitVector".toByteArray(charset("UTF-8")))
+        )
+        BufferedReader(
+            InputStreamReader(
+                CipherInputStream(
+                    plugin.getResource("assets/petblocks/minecraftheads.db"),
+                    decipher
+                )
+            )
+        ).use { reader ->
             while (true) {
                 val s = reader.readLine() ?: break
 

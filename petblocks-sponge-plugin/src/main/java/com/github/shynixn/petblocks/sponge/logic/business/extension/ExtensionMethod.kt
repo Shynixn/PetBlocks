@@ -3,6 +3,7 @@
 package com.github.shynixn.petblocks.sponge.logic.business.extension
 
 import com.flowpowered.math.vector.Vector3d
+import com.flowpowered.math.vector.Vector3i
 import com.github.shynixn.petblocks.api.business.enumeration.Version
 import com.github.shynixn.petblocks.api.persistence.entity.Position
 import com.github.shynixn.petblocks.core.logic.business.extension.translateChatColors
@@ -122,6 +123,12 @@ fun Transform<World>.toPosition(): Position {
     return PositionEntity(this.x, this.y, this.z, this.yaw, this.pitch, this.extent.name)
 }
 
+/**
+ * Converts the [Vector3d] to [Vector3i].
+ */
+fun Vector3d.toVector3i() : Vector3i{
+    return Vector3i()
+}
 
 /**
  * Converts the [Transform] to a Position.

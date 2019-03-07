@@ -29,6 +29,11 @@ package com.github.shynixn.petblocks.api.persistence.context
  */
 interface SqlDbContext {
     /**
+     * Closes remaining resources.
+     */
+    fun close()
+
+    /**
      * Creates a new transaction to the database.
      * [f] Handles creation and closing the transaction connection automatically and
      * manages connection pools in the background.
@@ -41,7 +46,12 @@ interface SqlDbContext {
      * result set automatically. Does not close the connection.
      * [R] result type.
      */
-    fun <R, C> multiQuery(connection: C, sqlStatement: String, f: (Map<String, Any>) -> R, vararg parameters: Any): List<R>
+    fun <R, C> multiQuery(
+        connection: C,
+        sqlStatement: String,
+        f: (Map<String, Any>) -> R,
+        vararg parameters: Any
+    ): List<R>
 
     /**
      * Creates a query to the database with the given [connection] [sqlStatement] [parameters]. Iterates the

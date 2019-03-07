@@ -3,6 +3,8 @@ package com.github.shynixn.petblocks.api.business.service
 import com.github.shynixn.petblocks.api.persistence.entity.AIBase
 import com.github.shynixn.petblocks.api.persistence.entity.GuiItem
 import com.github.shynixn.petblocks.api.persistence.entity.PetMeta
+import java.io.InputStream
+import java.nio.file.Path
 
 /**
  * Created by Shynixn 2018.
@@ -32,6 +34,15 @@ import com.github.shynixn.petblocks.api.persistence.entity.PetMeta
  * SOFTWARE.
  */
 interface ConfigurationService {
+    /**
+     * Gets the [Path] to the configuration folder.
+     */
+    val dataFolder: Path
+
+    /**
+     * Opens a new inputStream to the given [resource].
+     */
+    fun openResourceInputStream(resource: String) : InputStream
 
     /**
      * Tries to load the config value from the given [path].

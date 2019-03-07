@@ -2,10 +2,15 @@
 
 package com.github.shynixn.petblocks.core.logic.persistence.context
 
-import com.github.shynixn.petblocks.api.business.proxy.SqlConnectionPoolProxy
+import com.github.shynixn.petblocks.api.business.service.ConfigurationService
 import com.github.shynixn.petblocks.api.business.service.LoggingService
 import com.github.shynixn.petblocks.api.persistence.context.SqlDbContext
 import com.google.inject.Inject
+import com.zaxxer.hikari.HikariConfig
+import com.zaxxer.hikari.HikariDataSource
+import java.nio.file.Files
+import java.nio.file.Path
+import java.nio.file.Paths
 import java.sql.Connection
 import java.sql.SQLException
 import java.sql.Statement
@@ -39,7 +44,44 @@ import kotlin.collections.HashMap
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class SqlDbContextImpl @Inject constructor(private val sqlConnectionPoolProxy: SqlConnectionPoolProxy, private val loggingService: LoggingService) : SqlDbContext {
+class SqlDbContextImpl @Inject constructor(
+    private val configurationService: ConfigurationService,
+    private val loggingService: LoggingService
+) : SqlDbContext {
+    companion object {
+        /**
+         * SQLiteDriver classPath.
+         */
+        const val SQLITE_DRIVER = "org.sqlite.JDBC"
+
+        /**
+         * MySQLDriver classPath.
+         */
+        const val MYSQL_DRIVER = "com.mysql.jdbc.Driver"
+    }
+
+    private lateinit var dataSource: HikariDataSource
+
+    init {
+        initializeDriver(SQLITE_DRIVER)
+
+        if (configurationService.findValue<String>("sql.type") == "sqlite") {
+
+            connectToSqlite()
+        } else {
+            initializeDriver(MYSQL_DRIVER)
+
+            try {
+                connectToMySql()
+            } catch (e: Exception) {
+                loggingService.warn("Cannot connect to the MYSQL database!", e)
+                loggingService.warn("Fallback mode activated. Using SQLite database instead.")
+                connectToSqlite()
+            }
+        }
+    }
+
+
     /**
      * Deletes the given [parameters] into the given [connection] [table].
      */
@@ -152,7 +194,12 @@ class SqlDbContextImpl @Inject constructor(private val sqlConnectionPoolProxy: S
      * result set automatically. Does not close the connection.
      * [R] result type.
      */
-    override fun <R, C> multiQuery(connection: C, sqlStatement: String, f: (Map<String, Any>) -> R, vararg parameters: Any): List<R> {
+    override fun <R, C> multiQuery(
+        connection: C,
+        sqlStatement: String,
+        f: (Map<String, Any>) -> R,
+        vararg parameters: Any
+    ): List<R> {
         if (connection !is Connection) {
             throw IllegalArgumentException("Connection has to be a Java Connection!")
         }
@@ -189,7 +236,12 @@ class SqlDbContextImpl @Inject constructor(private val sqlConnectionPoolProxy: S
      * result set automatically. Does not close the connection.
      * [R] result type.
      */
-    override fun <R, C> singleQuery(connection: C, sqlStatement: String, f: (Map<String, Any>) -> R, vararg parameters: Any): R? {
+    override fun <R, C> singleQuery(
+        connection: C,
+        sqlStatement: String,
+        f: (Map<String, Any>) -> R,
+        vararg parameters: Any
+    ): R? {
         if (connection !is Connection) {
             throw IllegalArgumentException("Connection has to be a Java Connection!")
         }
@@ -226,7 +278,7 @@ class SqlDbContextImpl @Inject constructor(private val sqlConnectionPoolProxy: S
      * manages connection pools in the background.
      */
     override fun <R, C> transaction(f: (C) -> R): R {
-        val con = sqlConnectionPoolProxy.openConnection<Connection>()
+        val con = this.dataSource.connection
         var result: R? = null
 
         con.use { connection ->
@@ -243,5 +295,138 @@ class SqlDbContextImpl @Inject constructor(private val sqlConnectionPoolProxy: S
         }
 
         return result!!
+    }
+
+    /**
+     * Closes remaining resources.
+     */
+    override fun close() {
+        if (!this.dataSource.isClosed) {
+            this.dataSource.close()
+        }
+    }
+
+    /**
+     * Connects the service to sqlite.
+     */
+    private fun connectToSqlite() {
+        val path = createSQLLiteFile()
+        this.dataSource = createDataSource(SQLITE_DRIVER, "jdbc:sqlite:" + path.toAbsolutePath().toString())
+
+        val connection = this.dataSource.connection
+
+        connection.use {
+            connection.prepareStatement("PRAGMA foreign_keys=ON").use { statement ->
+                statement.execute()
+            }
+
+            configurationService.openResourceInputStream("assets/petblocks/sql/create-sqlite.sql").bufferedReader()
+                .use { reader ->
+                    for (text in reader.readText().split(";")) {
+                        connection.prepareStatement(text).use { statement ->
+                            statement.execute()
+                        }
+                    }
+                }
+        }
+
+        loggingService.info("Connected to " + this.dataSource.jdbcUrl)
+    }
+
+    /**
+     * Connect to the mysql database.
+     */
+    private fun connectToMySql() {
+        this.dataSource = createDataSource(
+            MYSQL_DRIVER,
+            "jdbc:mysql://" + configurationService.findValue<String>("sql.host") + ":" + configurationService.findValue<String>(
+                "sql.port"
+            ) + "/" + configurationService.findValue<String>(
+                "sql.database"
+            ),
+            configurationService.findValue<String>("sql.username"),
+            configurationService.findValue<String>("sql.password"),
+            configurationService.findValue<Boolean>("sql.usessl")
+        )
+
+        val connection = this.dataSource.connection
+
+        connection.use {
+            configurationService.openResourceInputStream("assets/petblocks/sql/create-mysql.sql").bufferedReader()
+                .use { reader ->
+                    for (text in reader.readText().split(";")) {
+                        connection.prepareStatement(text).use { statement ->
+                            statement.execute()
+                        }
+                    }
+                }
+        }
+
+        loggingService.info("Connected to " + this.dataSource.jdbcUrl)
+    }
+
+    /**
+     * Creates the sqlLite file.
+     */
+    private fun createSQLLiteFile(): Path {
+        if (!Files.exists(configurationService.dataFolder)) {
+            Files.createDirectories(configurationService.dataFolder)
+        }
+
+        val path = Paths.get(configurationService.dataFolder.toFile().absolutePath, "PetBlocks.db")
+
+        if (!Files.exists(path)) {
+            Files.createFile(path)
+        }
+
+        return path
+    }
+
+    /**
+     * Creates a new hikari datasource.
+     */
+    private fun createDataSource(
+        driver: String,
+        url: String,
+        userName: String? = null,
+        password: String? = null,
+        useSSL: Boolean = false
+    ): HikariDataSource {
+        val config = HikariConfig()
+        config.driverClassName = driver
+        config.connectionTestQuery = "SELECT 1"
+        config.jdbcUrl = url
+
+        if (userName != null) {
+            config.username = userName
+        }
+
+        if (password != null) {
+            config.password = password
+        }
+
+        config.addDataSourceProperty("useSSL", useSSL)
+        config.addDataSourceProperty("cachePrepStmts", "true")
+        config.addDataSourceProperty("prepStmtCacheSize", "250")
+        config.addDataSourceProperty("prepStmtCacheSqlLimit", "2048")
+
+        if (driver == SQLITE_DRIVER) {
+            config.maximumPoolSize = 1
+        } else {
+            config.maximumPoolSize = 10
+        }
+
+        return HikariDataSource(config)
+    }
+
+    /**
+     * Initializes the given driver.
+     */
+    private fun initializeDriver(driver: String) {
+        try {
+            Class.forName(driver)
+        } catch (ex: ClassNotFoundException) {
+            loggingService.warn("JDBC Driver not found!", ex)
+        }
     }
 }

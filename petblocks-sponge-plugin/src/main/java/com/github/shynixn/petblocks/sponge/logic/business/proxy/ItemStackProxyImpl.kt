@@ -1,13 +1,18 @@
-package com.github.shynixn.petblocks.api.business.proxy
+@file:Suppress("UNCHECKED_CAST")
+
+package com.github.shynixn.petblocks.sponge.logic.business.proxy
+
+import com.github.shynixn.petblocks.api.business.proxy.ItemStackProxy
+import org.spongepowered.api.item.inventory.ItemStack
 
 /**
- * Created by Shynixn 2018.
+ * Created by Shynixn 2019.
  * <p>
  * Version 1.2
  * <p>
  * MIT License
  * <p>
- * Copyright (c) 2018 by Shynixn
+ * Copyright (c) 2019 by Shynixn
  * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -27,14 +32,52 @@ package com.github.shynixn.petblocks.api.business.proxy
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-interface SqlConnectionPoolProxy {
+class ItemStackProxyImpl(
     /**
-     * Creates a basic jdbc connection which the caller is responsible for.
+     * TypeName.
      */
-    fun <C> openConnection(): C
+    override var typeName: String,
+    /**
+     * DataValue.
+     */
+    override var data: Int = 0
+) : ItemStackProxy {
+
+    private var internalDisplayName: String? = null
 
     /**
-     * Closes remaining resources.
+     *  ItemStack lore.
      */
-    fun close()
+    override var lore: List<String> = ArrayList()
+
+    /**
+     * ItemStack displayName.
+     */
+    override var displayName: String
+        get() {
+            if (internalDisplayName == null) {
+                return ""
+            }
+
+            return internalDisplayName!!
+        }
+        set(value) {
+            internalDisplayName = value
+        }
+
+    /**
+     * Amount.
+     */
+    override var amount: Int = 1
+
+    /**
+     * Creates a new itemstack from this proxy.
+     */
+    override fun <I> build(): I {
+        val itemstack = ItemStack.builder()
+
+        throw RuntimeException()
+
+        return itemstack as I
+    }
 }

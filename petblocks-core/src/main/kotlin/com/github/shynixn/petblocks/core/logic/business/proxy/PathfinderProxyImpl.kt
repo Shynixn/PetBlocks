@@ -1,9 +1,8 @@
-package com.github.shynixn.petblocks.bukkit.logic.business.proxy
+package com.github.shynixn.petblocks.core.logic.business.proxy
 
 import com.github.shynixn.petblocks.api.business.proxy.PathfinderProxy
+import com.github.shynixn.petblocks.api.business.service.LoggingService
 import com.github.shynixn.petblocks.api.persistence.entity.AIBase
-import org.bukkit.plugin.Plugin
-import java.util.logging.Level
 
 /**
  * Created by Shynixn 2018.
@@ -32,7 +31,8 @@ import java.util.logging.Level
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-open class PathfinderProxyImpl(private val plugin: Plugin, override val aiBase: AIBase) : PathfinderProxy {
+open class PathfinderProxyImpl(private val loggingService: LoggingService, override val aiBase: AIBase) :
+    PathfinderProxy {
     /**
      * Should Goal executed function.
      */
@@ -71,7 +71,7 @@ open class PathfinderProxyImpl(private val plugin: Plugin, override val aiBase: 
             return try {
                 shouldGoalBeExecuted!!.invoke()
             } catch (e: Exception) {
-                plugin.logger.log(Level.WARNING, "Failed shouldGoalBeExecuted.", e)
+                loggingService.error("Failed shouldGoalBeExecuted.", e)
                 false
             }
         }
@@ -87,7 +87,7 @@ open class PathfinderProxyImpl(private val plugin: Plugin, override val aiBase: 
             return try {
                 shouldGoalContinueExecuting!!.invoke()
             } catch (e: Exception) {
-                plugin.logger.log(Level.WARNING, "Failed shouldGoalContinueExecuting.", e)
+                loggingService.error("Failed shouldGoalContinueExecuting.", e)
                 false
             }
         }
@@ -102,7 +102,7 @@ open class PathfinderProxyImpl(private val plugin: Plugin, override val aiBase: 
         try {
             onStartExecuting?.invoke()
         } catch (e: Exception) {
-            plugin.logger.log(Level.WARNING, "Failed onStartExecuting.", e)
+            loggingService.error("Failed onStartExecuting.", e)
         }
     }
 
@@ -113,7 +113,7 @@ open class PathfinderProxyImpl(private val plugin: Plugin, override val aiBase: 
         try {
             onStopExecuting?.invoke()
         } catch (e: Exception) {
-            plugin.logger.log(Level.WARNING, "Failed onStopExecuting.", e)
+            loggingService.error("Failed onStopExecuting.", e)
         }
     }
 
@@ -124,7 +124,7 @@ open class PathfinderProxyImpl(private val plugin: Plugin, override val aiBase: 
         try {
             onExecute?.invoke()
         } catch (e: Exception) {
-            plugin.logger.log(Level.WARNING, "Failed onExecute.", e)
+            loggingService.error("Failed onExecute.", e)
         }
     }
 }
