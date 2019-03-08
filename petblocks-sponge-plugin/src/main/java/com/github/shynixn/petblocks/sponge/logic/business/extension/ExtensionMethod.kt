@@ -12,6 +12,7 @@ import net.minecraft.entity.player.EntityPlayerMP
 import org.spongepowered.api.Game
 import org.spongepowered.api.Sponge
 import org.spongepowered.api.command.source.ConsoleSource
+import org.spongepowered.api.data.key.Keys
 import org.spongepowered.api.entity.Transform
 import org.spongepowered.api.item.inventory.ItemStack
 import org.spongepowered.api.item.inventory.type.CarriedInventory
@@ -126,7 +127,7 @@ fun Transform<World>.toPosition(): Position {
 /**
  * Converts the [Vector3d] to [Vector3i].
  */
-fun Vector3d.toVector3i() : Vector3i{
+fun Vector3d.toVector3i(): Vector3i {
     return Vector3i()
 }
 
@@ -134,7 +135,11 @@ fun Vector3d.toVector3i() : Vector3i{
  * Converts the [Transform] to a Position.
  */
 fun Position.toTransform(): Transform<World> {
-    return Transform(Sponge.getServer().getWorld(worldName!!).get(), Vector3d(this.x, this.y, this.z), Vector3d(0.0, this.yaw, this.pitch))
+    return Transform(
+        Sponge.getServer().getWorld(worldName!!).get(),
+        Vector3d(this.x, this.y, this.z),
+        Vector3d(0.0, this.yaw, this.pitch)
+    )
 }
 
 /**
@@ -154,17 +159,31 @@ fun Position.toVector(): Vector3d {
 /**
  * Sets the itemstack lore.
  */
-fun ItemStack.setLore(lore: List<String>): ItemStack {
-    val items = ArrayList<Text>()
+var ItemStack.lore: List<String>?
+    get() {
+        val lore = this.get(Keys.ITEM_LORE)
 
-    for (line in lore) {
-        items.add(line.toText())
+        if (lore.isPresent) {
+            val items = ArrayList<String>()
+
+            for (line in lore.get()) {
+                items.add(line.toTextString())
+            }
+
+            return items
+        }
+
+        return null
     }
+    set(value) {
+        val items = ArrayList<Text>()
 
-    this.offer(org.spongepowered.api.data.key.Keys.ITEM_LORE, items)
+        for (line in value!!) {
+            items.add(line.toText())
+        }
 
-    return this
-}
+        this.offer(org.spongepowered.api.data.key.Keys.ITEM_LORE, items)
+    }
 
 /**
  * Changes the displayname of the itemstack.
@@ -174,7 +193,7 @@ var ItemStack.displayName: String
     get() {
         val optDisplay = this.get(org.spongepowered.api.data.key.Keys.DISPLAY_NAME)
 
-        if(optDisplay.isPresent){
+        if (optDisplay.isPresent) {
             return optDisplay.get().toTextString()
         }
 
@@ -196,40 +215,40 @@ var ItemStack.skin: String?
             return
         }
 
-  /*      var newSkin = value
+        /*      var newSkin = value
 
-        if (newSkin.length > 32) {
+              if (newSkin.length > 32) {
 
-        } else if (value.isNotEmpty()) {
+              } else if (value.isNotEmpty()) {
 
-        }
-
-
-        val item = itemStack as Any as net.minecraft.anchor.v1_12_mcpR1.item.ItemStack
-
-        var compound = item.getTagCompound()
-        if (compound == null) {
-            compound = NBTTagCompound()
-        }
-
-        val newSkinProfile = Sponge.getServer().gameProfileManager.createProfile(UUID.randomUUID(), null)
-        val profileProperty = Sponge.getServer().gameProfileManager.createProfileProperty(
-            "textures", Base64.getEncoder().encodeToString(
-                "{textures:{SKIN:{url:\"$skinUrl\"}}}".getBytes()
-            ), null
-        )
-        newSkinProfile.propertyMap.put("textures", profileProperty)
-
-        var nbttagcompound = NBTTagCompound()
-        nbttagcompound = writeGameProfile(nbttagcompound, newSkinProfile)
-        compound!!.setTag("SkullOwner", nbttagcompound)
-        item.setTagCompound(compound)
+              }
 
 
+              val item = itemStack as Any as net.minecraft.anchor.v1_12_mcpR1.item.ItemStack
+
+              var compound = item.getTagCompound()
+              if (compound == null) {
+                  compound = NBTTagCompound()
+              }
+
+              val newSkinProfile = Sponge.getServer().gameProfileManager.createProfile(UUID.randomUUID(), null)
+              val profileProperty = Sponge.getServer().gameProfileManager.createProfileProperty(
+                  "textures", Base64.getEncoder().encodeToString(
+                      "{textures:{SKIN:{url:\"$skinUrl\"}}}".getBytes()
+                  ), null
+              )
+              newSkinProfile.propertyMap.put("textures", profileProperty)
+
+              var nbttagcompound = NBTTagCompound()
+              nbttagcompound = writeGameProfile(nbttagcompound, newSkinProfile)
+              compound!!.setTag("SkullOwner", nbttagcompound)
+              item.setTagCompound(compound)
 
 
 
-*/
+
+
+      */
 
 
     }
@@ -239,7 +258,7 @@ var ItemStack.skin: String?
  * Converts the current itemstack to an unbreakable itemstack.
  */
 fun ItemStack.createUnbreakableCopy(): ItemStack {
-   throw RuntimeException()
+    throw RuntimeException()
 }
 
 
