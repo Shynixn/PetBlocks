@@ -82,7 +82,6 @@ class PersistenceMySQLIT {
         // Act
         val initialSize = classUnderTest.getAll().get().size
         val actual = classUnderTest.getPetMetaFromPlayer(player)
-        sqlProxy!!.close()
 
         // Assert
         Assertions.assertEquals(0, initialSize)
@@ -176,7 +175,6 @@ class PersistenceMySQLIT {
 
         classUnderTest.save(petMeta).get()
         val actual = classUnderTest.getPetMetaFromPlayer(player)
-        sqlProxy!!.close()
 
         // Assert
         Assertions.assertEquals(0, initialSize)
@@ -218,7 +216,6 @@ class PersistenceMySQLIT {
     }
 
     companion object {
-        private var sqlProxy: SqlProxyImpl? = null
         private var database: DB? = null
 
         fun createWithDependencies(): PersistencePetMetaService {
@@ -251,15 +248,13 @@ class PersistenceMySQLIT {
                 }
             }
 
-            sqlProxy = SqlProxyImpl(plugin, LoggingUtilServiceImpl(Logger.getAnonymousLogger()))
-
             val aiService = AIServiceImpl(LoggingUtilServiceImpl(Logger.getAnonymousLogger()), MockedProxyService(), YamlConfigurationServiceImpl())
             val configService = ConfigurationServiceImpl(plugin, Item119R1ServiceImpl(), aiService)
             EntityServiceImpl(configService,
                 MockedProxyService(),
                 Mockito.mock(EntityRegistrationService::class.java),
-                YamlSerializationServiceImpl()
-                ,
+                YamlSerializationServiceImpl(),
+                LoggingUtilServiceImpl(Logger.getAnonymousLogger()),
                 aiService,
                 Mockito.mock(PetService::class.java),
                 plugin,
@@ -268,7 +263,7 @@ class PersistenceMySQLIT {
                 Mockito.mock(SoundService::class.java),
                 Version.VERSION_1_8_R1)
 
-            val sqlite = PetMetaSqlRepository(SqlDbContextImpl(sqlProxy!!, LoggingUtilServiceImpl(Logger.getAnonymousLogger())),
+            val sqlite = PetMetaSqlRepository(SqlDbContextImpl(configService, LoggingUtilServiceImpl(Logger.getAnonymousLogger())),
                 aiService, configService)
             return PersistencePetMetaServiceImpl(MockedProxyService(), sqlite, MockedConcurrencyService(), MockedEventService())
         }

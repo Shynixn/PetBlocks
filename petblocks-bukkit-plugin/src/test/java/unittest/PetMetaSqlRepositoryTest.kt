@@ -19,6 +19,8 @@ import com.github.shynixn.petblocks.core.logic.persistence.repository.PetMetaSql
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito
+import java.io.InputStream
+import java.nio.file.Path
 import java.sql.Connection
 import java.util.*
 import java.util.logging.Logger
@@ -163,11 +165,26 @@ class PetMetaSqlRepositoryTest {
 
     companion object {
         fun createWithDependencies(dbContext: SqlDbContext = MockedSqlDbContext()): PetMetaRepository {
-            return PetMetaSqlRepository(dbContext, AIServiceImpl(LoggingUtilServiceImpl(Logger.getAnonymousLogger()), MockedProxyService(), YamlConfigurationServiceImpl()), MockedConfigurationService())
+            return PetMetaSqlRepository(dbContext,
+                AIServiceImpl(LoggingUtilServiceImpl(Logger.getAnonymousLogger()), MockedProxyService(), YamlConfigurationServiceImpl()),
+                MockedConfigurationService())
         }
     }
 
-    class MockedConfigurationService : ConfigurationService{
+    class MockedConfigurationService : ConfigurationService {
+        /**
+         * Opens a new inputStream to the given [resource].
+         */
+        override fun openResourceInputStream(resource: String): InputStream {
+            throw IllegalArgumentException()
+        }
+
+        /**
+         * Gets the [Path] to the configuration folder.
+         */
+        override val dataFolder: Path
+            get() = Mockito.mock(Path::class.java)
+
         /**
          * Checks if the given path is containing in the config.yml.
          */
@@ -218,6 +235,12 @@ class PetMetaSqlRepositoryTest {
     }
 
     class MockedSqlDbContext : SqlDbContext {
+        /**
+         * Closes remaining resources.
+         */
+        override fun close() {
+        }
+
         /**
          * Deletes the given [parameters] into the given [connection] [table].
          */

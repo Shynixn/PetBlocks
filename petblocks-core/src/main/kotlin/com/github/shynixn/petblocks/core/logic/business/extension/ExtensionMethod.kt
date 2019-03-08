@@ -13,6 +13,7 @@ import com.github.shynixn.petblocks.core.logic.persistence.entity.ChatMessageEnt
 import java.lang.reflect.Field
 import java.lang.reflect.Modifier
 import java.util.concurrent.CompletableFuture
+import java.util.regex.Pattern
 import kotlin.reflect.KProperty
 
 /**
@@ -155,3 +156,13 @@ fun <T> CompletableFuture<T>.thenAcceptSafely(f: (T) -> Unit) {
 fun String.translateChatColors(): String {
     return ChatColor.translateChatColorCodes('&', this)
 }
+
+private val STRIP_COLOR_PATTERN = Pattern.compile("(?i)" + '§'.toString() + "[0-9A-FK-OR]")
+
+/**
+ * Strips the chat colors from the string.
+ */
+fun String.stripChatColors() : String{
+    return STRIP_COLOR_PATTERN.matcher(this).replaceAll("")
+}
+

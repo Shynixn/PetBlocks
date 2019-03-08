@@ -1,15 +1,15 @@
+@file:Suppress("UNCHECKED_CAST")
+
 package com.github.shynixn.petblocks.sponge.logic.business.service
 
 import com.github.shynixn.petblocks.api.business.enumeration.EntityType
-import com.github.shynixn.petblocks.api.business.enumeration.Version
 import com.github.shynixn.petblocks.api.business.service.EntityRegistrationService
-import com.github.shynixn.petblocks.sponge.logic.business.nms.v1_12_R1.NMSPetVillager
+import com.github.shynixn.petblocks.api.business.service.LoggingService
 import com.google.inject.Inject
-import org.spongepowered.api.Sponge
+import net.minecraft.entity.Entity
 import net.minecraft.entity.EntityList
-import net.minecraft.util.registry.RegistryNamespaced
-
-
+import net.minecraft.util.ResourceLocation
+import org.spongepowered.api.text.translation.Translation
 
 /**
  * Created by Shynixn 2018.
@@ -38,7 +38,7 @@ import net.minecraft.util.registry.RegistryNamespaced
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class EntityRegistrationServiceImpl : EntityRegistrationService {
+class EntityRegistrationServiceImpl @Inject constructor(private val loggingService: LoggingService) : EntityRegistrationService {
     private val classes = HashMap<Class<*>, EntityType>()
 
     /**
@@ -46,43 +46,37 @@ class EntityRegistrationServiceImpl : EntityRegistrationService {
      * Does nothing if the class is already registered.
      */
     override fun <C> register(customEntityClazz: C, entityType: EntityType) {
-        Sponge.getRegistry().getAllOf(org.spongepowered.api.entity.EntityType::class.java).forEach { type ->
-            if (type.id.split(":")[0].toLowerCase() == "petblocks") {
-                return
-            }
+        if (customEntityClazz !is Class<*>) {
+            throw IllegalArgumentException("CustomEntityClass has to be a Class!")
+        }
+
+        if (classes.containsKey(customEntityClazz)) {
+            return
         }
 
         try {
             val entityTypeRegistryModuleClazz = Class.forName("org.spongepowered.common.registry.type.entity.EntityTypeRegistryModule")
-            val entityRegistrationMethod = entityTypeRegistryModuleClazz.getDeclaredMethod("registerEntityType",org.spongepowered.api.entity.EntityType::class.java)
+            val entityRegistrationMethod = entityTypeRegistryModuleClazz.getDeclaredMethod("registerEntityType", org.spongepowered.api.entity.EntityType::class.java)
             val spongeEntityTypeClazzConstructor = Class.forName("org.spongepowered.common.entity.SpongeEntityType")
                 .getDeclaredConstructor(Int::class.java, String::class.java, String::class.java, Class::class.java, Translation::class.java)
 
             val registryInstance = entityTypeRegistryModuleClazz.getDeclaredMethod("getInstance").invoke(null)
-            val rabbitSpongeEntityType = spongeEntityTypeClazzConstructor.newInstance(EntityType.RABBIT.entityId, EntityType.RABBIT.saveGame_11, "petblocks", CustomRabbit::class.java, null)
-            val zombieSpongeEntityType = spongeEntityTypeClazzConstructor.newInstance(EntityType.VILLAGER.entityId, EntityType.VILLAGER.saveGame_11, "petblocks", NMSPetVillager::class.java, null)
-            val armorstandSpongeEntityType = spongeEntityTypeClazzConstructor.newInstance(EntityType.ARMORSTAND.entityId, EntityType.ARMORSTAND.saveGame_11, "petblocks", CustomGroundArmorstand::class.java, null)
+            val customEntityType = spongeEntityTypeClazzConstructor.newInstance(entityType.entityId, entityType.saveGame_11, "petblocks", customEntityClazz, null)
 
-            entityRegistrationMethod.invoke(registryInstance, rabbitSpongeEntityType)
-            entityRegistrationMethod.invoke(registryInstance, zombieSpongeEntityType)
-            entityRegistrationMethod.invoke(registryInstance, armorstandSpongeEntityType)
+            entityRegistrationMethod.invoke(registryInstance, customEntityType)
         } catch (e: Exception) {
-            logger.warn("Failed to register Entities in Sponge Internal registry. GriefPreventionFlags using petblocks may not work correctly.", e)
-            return false
+            loggingService.warn("Failed to register Entities in Sponge Internal registry. GriefPreventionFlags using petblocks may not work correctly.", e)
         }
 
-        val minecraftKey = ResourceLocation("PetBlocks", customEntityType.getSaveGame_11())
         try {
+            val minecraftKey = ResourceLocation("petblocks", entityType.saveGame_11)
             val materialRegistry = EntityList.REGISTRY
-            materialRegistry.register(
-                customEntityType.getEntityId(),
-                minecraftKey,
-                customEntityClazz as Class<out Entity>
-            )
-            this.registeredClasses.add(customEntityClazz)
+            materialRegistry.register(entityType.entityId, minecraftKey, customEntityClazz as Class<out Entity>)
         } catch (error: NoSuchFieldError) {
-            // SpongeForge does not allow server only entities.
+            // SpongeForge does not allow registering custom server entities.
         }
+
+        classes[customEntityClazz] = entityType
     }
 
     /**
@@ -90,5 +84,17 @@ class EntityRegistrationServiceImpl : EntityRegistrationService {
      * nms changes.
      */
     override fun clearResources() {
+        try {
+            val materialRegistry = EntityList.REGISTRY
+
+            classes.forEach { _, entityType ->
+                val minecraftKey = ResourceLocation("PetBlocks", entityType.saveGame_11)
+                materialRegistry.registryObjects.remove(minecraftKey)
+            }
+        } catch (error: NoSuchFieldError) {
+            // @Forge is responsible for removing the key if this happens.
+        }
+
+        classes.clear()
     }
 }

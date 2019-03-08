@@ -82,7 +82,6 @@ class PersistenceSQLiteIT {
         // Act
         val initialSize = classUnderTest.getAll().get().size
         val actual = classUnderTest.getPetMetaFromPlayer(player)
-        sqlProxy!!.close()
 
         // Assert
         Assertions.assertEquals(0, initialSize)
@@ -177,7 +176,6 @@ class PersistenceSQLiteIT {
 
         classUnderTest.save(petMeta).get()
         val actual = classUnderTest.getPetMetaFromPlayer(player)
-        sqlProxy!!.close()
 
         // Assert
         Assertions.assertEquals(0, initialSize)
@@ -219,8 +217,6 @@ class PersistenceSQLiteIT {
     }
 
     companion object {
-        private var sqlProxy: SqlProxyImpl? = null
-
         fun createWithDependencies(): PersistencePetMetaService {
 
             println(File(".").absolutePath)
@@ -248,14 +244,22 @@ class PersistenceSQLiteIT {
             method.isAccessible = true
             method.invoke(PetBlocksApi, MockedPluginProxy())
 
-            sqlProxy = SqlProxyImpl(plugin, LoggingUtilServiceImpl(Logger.getAnonymousLogger()))
-
-            val aiService = AIServiceImpl(LoggingUtilServiceImpl(Logger.getAnonymousLogger()), MockedProxyService(),YamlConfigurationServiceImpl())
+            val aiService = AIServiceImpl(LoggingUtilServiceImpl(Logger.getAnonymousLogger()), MockedProxyService(), YamlConfigurationServiceImpl())
             val configService = ConfigurationServiceImpl(plugin, Item119R1ServiceImpl(), aiService)
-            EntityServiceImpl(configService, MockedProxyService(), Mockito.mock(EntityRegistrationService::class.java), YamlSerializationServiceImpl()
-                , aiService, Mockito.mock(PetService::class.java), plugin, Mockito.mock(AfraidOfWaterService::class.java), Mockito.mock(NavigationService::class.java), Mockito.mock(SoundService::class.java), Version.VERSION_1_8_R1)
+            EntityServiceImpl(configService,
+                MockedProxyService(),
+                Mockito.mock(EntityRegistrationService::class.java),
+                YamlSerializationServiceImpl(),
+                LoggingUtilServiceImpl(Logger.getAnonymousLogger()),
+                aiService,
+                Mockito.mock(PetService::class.java),
+                plugin,
+                Mockito.mock(AfraidOfWaterService::class.java),
+                Mockito.mock(NavigationService::class.java),
+                Mockito.mock(SoundService::class.java),
+                Version.VERSION_1_8_R1)
 
-            val sqlite = PetMetaSqlRepository(SqlDbContextImpl(sqlProxy!!, LoggingUtilServiceImpl(Logger.getAnonymousLogger())),
+            val sqlite = PetMetaSqlRepository(SqlDbContextImpl(configService, LoggingUtilServiceImpl(Logger.getAnonymousLogger())),
                 aiService, configService)
             return PersistencePetMetaServiceImpl(MockedProxyService(), sqlite, MockedConcurrencyService(), MockedEventService())
         }
@@ -292,7 +296,7 @@ class PersistenceSQLiteIT {
          * Throws a [IllegalArgumentException] if the proxy could not be generated.
          */
         override fun <P> findPlayerProxyObject(instance: P): PlayerProxy {
-            if(instance !is Player){
+            if (instance !is Player) {
                 throw RuntimeException()
             }
 
@@ -344,7 +348,7 @@ class PersistenceSQLiteIT {
         }
     }
 
-    class MockedEventService : EventService{
+    class MockedEventService : EventService {
         /**
          * Calls a framework event and returns if it was cancelled.
          */

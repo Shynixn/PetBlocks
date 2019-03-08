@@ -14,12 +14,18 @@ import org.spongepowered.api.Sponge
 import org.spongepowered.api.command.source.ConsoleSource
 import org.spongepowered.api.data.key.Keys
 import org.spongepowered.api.entity.Transform
+import org.spongepowered.api.entity.living.player.Player
+import org.spongepowered.api.entity.living.player.gamemode.GameMode
+import org.spongepowered.api.item.inventory.Inventory
 import org.spongepowered.api.item.inventory.ItemStack
+import org.spongepowered.api.item.inventory.property.SlotIndex
+import org.spongepowered.api.item.inventory.property.SlotPos
 import org.spongepowered.api.item.inventory.type.CarriedInventory
+import org.spongepowered.api.item.inventory.type.GridInventory
 import org.spongepowered.api.text.Text
 import org.spongepowered.api.text.serializer.TextSerializers
 import org.spongepowered.api.world.World
-
+import java.util.*
 
 /**
  * Created by Shynixn 2018.
@@ -88,6 +94,19 @@ fun CarriedInventory<*>.updateInventory() {
 }
 
 /**
+ * Sends a text message to the player.
+ */
+fun Player.sendMessage(text : String){
+    this.sendMessage(text.toText())
+}
+
+/**
+ * Gets the current gamemode.
+ */
+val Player.gameMode : GameMode
+    get() = this.gameMode().get()
+
+/**
  * Gets the x coordinate.
  */
 val Transform<World>.x
@@ -116,6 +135,39 @@ val Transform<World>.yaw
  */
 val Transform<World>.pitch
     get() = this.rotation.x
+
+/**
+ * Sets an item at the given index.
+ */
+fun CarriedInventory<Player>.setItem(index : Int, itemStack: ItemStack){
+    if (index== 0) {
+        query<Inventory>(GridInventory::class.java)
+            .query<Inventory>(SlotPos.of(0, 0)).set(itemStack)
+    } else {
+        query<Inventory>(GridInventory::class.java)
+            .query<Inventory>(SlotIndex.of(index)).set(itemStack)
+    }
+}
+
+/**
+ * Gets an item at the given index.
+ */
+fun CarriedInventory<Player>.getItem(index : Int) : Optional<ItemStack>{
+    if (index== 0) {
+        query<Inventory>(GridInventory::class.java)
+            .query<Inventory>(SlotPos.of(0, 0)).peek()
+    } else {
+        query<Inventory>(GridInventory::class.java)
+            .query<Inventory>(SlotIndex.of(index)).peek()
+    }
+}
+
+/**
+ * Calculates the distance between 2 transforms.
+ */
+fun Transform<World>.distance(other : Transform<World>) : Double{
+    return this.position.distance(other.position)
+}
 
 /**
  * Converts the [Transform] to a Position.
