@@ -8,6 +8,7 @@ import com.github.shynixn.petblocks.api.business.enumeration.Version
 import com.github.shynixn.petblocks.api.business.proxy.PlayerProxy
 import com.github.shynixn.petblocks.api.business.proxy.PluginProxy
 import com.github.shynixn.petblocks.api.business.service.*
+import com.github.shynixn.petblocks.api.persistence.context.SqlDbContext
 import com.github.shynixn.petblocks.api.persistence.entity.*
 import com.github.shynixn.petblocks.bukkit.logic.business.proxy.PlayerProxyImpl
 import com.github.shynixn.petblocks.bukkit.logic.business.service.ConfigurationServiceImpl
@@ -217,12 +218,17 @@ class PersistenceMySQLIT {
 
     companion object {
         private var database: DB? = null
+        private var dbContext: SqlDbContext? = null
 
         fun createWithDependencies(): PersistencePetMetaService {
             val configuration = YamlConfiguration()
             configuration.load(File("../petblocks-core/src/main/resources/assets/petblocks/config.yml"))
             configuration.set("sql.type", "mysql")
             configuration.set("sql.database", "db")
+
+            if (dbContext != null) {
+                dbContext!!.close()
+            }
 
             if (database != null) {
                 database!!.stop()
@@ -263,7 +269,9 @@ class PersistenceMySQLIT {
                 Mockito.mock(SoundService::class.java),
                 Version.VERSION_1_8_R1)
 
-            val sqlite = PetMetaSqlRepository(SqlDbContextImpl(configService, LoggingUtilServiceImpl(Logger.getAnonymousLogger())),
+            dbContext = SqlDbContextImpl(configService, LoggingUtilServiceImpl(Logger.getAnonymousLogger()))
+
+            val sqlite = PetMetaSqlRepository(dbContext!!,
                 aiService, configService)
             return PersistencePetMetaServiceImpl(MockedProxyService(), sqlite, MockedConcurrencyService(), MockedEventService())
         }

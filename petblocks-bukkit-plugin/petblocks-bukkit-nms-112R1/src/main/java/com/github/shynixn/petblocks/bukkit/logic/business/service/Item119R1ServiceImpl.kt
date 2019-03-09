@@ -85,7 +85,7 @@ class Item119R1ServiceImpl : ItemService {
         } else if (value is String) {
             return Material.getMaterial(value) ?: throw IllegalArgumentException("Material $value does not exist!")
         } else if (value is MaterialType) {
-            return getMaterialValue(value.MinecraftNumericId)
+            return getMaterialValue(value.numericId)
         }
 
         throw  throw IllegalArgumentException("Material $value is not a string or int.")

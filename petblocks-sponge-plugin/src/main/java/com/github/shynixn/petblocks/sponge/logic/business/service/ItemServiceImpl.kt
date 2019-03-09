@@ -1,25 +1,27 @@
 @file:Suppress("UNCHECKED_CAST")
 
-package com.github.shynixn.petblocks.bukkit.logic.business.service
+package com.github.shynixn.petblocks.sponge.logic.business.service
 
 import com.github.shynixn.petblocks.api.business.enumeration.MaterialType
 import com.github.shynixn.petblocks.api.business.proxy.ItemStackProxy
 import com.github.shynixn.petblocks.api.business.service.ItemService
-import com.github.shynixn.petblocks.bukkit.logic.business.proxy.ItemStackProxyImpl
-import org.bukkit.Material
-import org.bukkit.entity.Player
-import org.bukkit.inventory.ItemStack
-import java.lang.reflect.Method
+import com.github.shynixn.petblocks.sponge.logic.business.extension.durability
+import com.github.shynixn.petblocks.sponge.logic.business.proxy.ItemStackProxyImpl
+import org.spongepowered.api.data.type.HandTypes
+import org.spongepowered.api.entity.living.player.Player
+import org.spongepowered.api.item.ItemType
+import org.spongepowered.api.item.inventory.ItemStack
 import java.util.*
+import org.spongepowered.api.Sponge
 
 /**
- * Created by Shynixn 2018.
+ * Created by Shynixn 2019.
  * <p>
  * Version 1.2
  * <p>
  * MIT License
  * <p>
- * Copyright (c) 2018 by Shynixn
+ * Copyright (c) 2019 by Shynixn
  * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -39,25 +41,12 @@ import java.util.*
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class Item113R1ServiceImpl : ItemService {
-    private val getIdFromMaterialMethod: Method = { Material::class.java.getDeclaredMethod("getId") }.invoke()
-    private val getItemInMainHandMethod: Method
-    private val getItemInOffHandMethod: Method
-
-    /**
-     * Initialize.
-     */
-    init {
-        val inventoryClazz = Class.forName("org.bukkit.inventory.PlayerInventory")
-        getItemInMainHandMethod = inventoryClazz.getDeclaredMethod("getItemInMainHand")
-        getItemInOffHandMethod = inventoryClazz.getDeclaredMethod("getItemInOffHand")
-    }
-
+class ItemServiceImpl : ItemService {
     /**
      * Creates a new itemstack from the given parameters.
      */
     override fun createItemStack(type: Any, dataValue: Int): ItemStackProxy {
-        return ItemStackProxyImpl(getMaterialValue(type).name, dataValue)
+        return ItemStackProxyImpl(getItemTypeValue(type).name, dataValue)
     }
 
     /**
@@ -65,11 +54,11 @@ class Item113R1ServiceImpl : ItemService {
      */
     override fun <I> hasItemStackProperties(itemStack: I, type: Any, dataValue: Int): Boolean {
         if (itemStack !is ItemStack) {
-            throw IllegalArgumentException("ItemStack has to be a BukkitItemStack!")
+            throw IllegalArgumentException("ItemStack has to be a SpongeItemStack!")
         }
 
-        val material = getMaterialValue(type)
-        return material == itemStack.type && dataValue == itemStack.durability.toInt()
+        val material = getItemTypeValue(type)
+        return material == itemStack.type && dataValue == itemStack.durability
     }
 
     /**
@@ -77,36 +66,36 @@ class Item113R1ServiceImpl : ItemService {
      */
     override fun <P, I> getItemInHand(player: P, offHand: Boolean): Optional<I> {
         if (player !is Player) {
-            throw IllegalArgumentException("Player has to be a BukkitPlayer!")
+            throw IllegalArgumentException("Player has to be a SpongePlayer!")
         }
 
         return if (offHand) {
-            Optional.ofNullable(getItemInOffHandMethod.invoke(player.inventory) as I)
+            player.getItemInHand(HandTypes.OFF_HAND) as Optional<I>
         } else {
-            Optional.ofNullable(getItemInMainHandMethod.invoke(player.inventory) as I)
+            player.getItemInHand(HandTypes.MAIN_HAND) as Optional<I>
         }
     }
 
     /**
-     * Processing if there is any way the given [value] can be mapped to an material.
+     * Processing if there is any way the given [value] can be mapped to an itemType.
      */
-    private fun getMaterialValue(value: Any): Material {
+    private fun getItemTypeValue(value: Any): ItemType {
         if (value is Int) {
-            for (material in Material.values()) {
-                if (getIdFromMaterialMethod(material) == value) {
-                    return material
+            for (material in MaterialType.values()) {
+                if (material.numericId == value) {
+                    return Sponge.getGame().registry.getType(ItemType::class.java, material.minecraftName).get()
                 }
             }
         } else if (value is String && value.toIntOrNull() != null) {
-            for (material in Material.values()) {
-                if (getIdFromMaterialMethod(material) == value.toInt()) {
-                    return material
+            for (material in MaterialType.values()) {
+                if (material.numericId == value.toInt()) {
+                    return Sponge.getGame().registry.getType(ItemType::class.java, material.minecraftName).get()
                 }
             }
         } else if (value is String) {
-            return Material.getMaterial(value) ?: throw IllegalArgumentException("Material $value does not exist!")
+            return Sponge.getGame().registry.getType(ItemType::class.java, MaterialType.valueOf(value).minecraftName).get()
         } else if (value is MaterialType) {
-            return getMaterialValue(value.numericId)
+            return Sponge.getGame().registry.getType(ItemType::class.java, value.minecraftName).get()
         }
 
         throw  throw IllegalArgumentException("Material $value is not a string or int.")

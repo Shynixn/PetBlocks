@@ -14,10 +14,12 @@ import com.github.shynixn.petblocks.api.persistence.entity.Position
 import com.github.shynixn.petblocks.api.persistence.entity.Skin
 import com.github.shynixn.petblocks.api.sponge.PetRemoveEvent
 import com.github.shynixn.petblocks.core.logic.business.extension.hasChanged
-import com.github.shynixn.petblocks.core.logic.business.extension.translateChatColors
 import com.github.shynixn.petblocks.sponge.logic.business.extension.*
 import org.spongepowered.api.Sponge
 import org.spongepowered.api.data.key.Keys
+import org.spongepowered.api.data.manipulator.mutable.PotionEffectData
+import org.spongepowered.api.effect.potion.PotionEffect
+import org.spongepowered.api.effect.potion.PotionEffectTypes
 import org.spongepowered.api.entity.ArmorEquipable
 import org.spongepowered.api.entity.Transform
 import org.spongepowered.api.entity.living.ArmorStand
@@ -27,12 +29,6 @@ import org.spongepowered.api.item.ItemTypes
 import org.spongepowered.api.item.inventory.ItemStack
 import org.spongepowered.api.world.World
 import java.util.*
-import org.spongepowered.api.data.manipulator.mutable.PotionEffectData
-import org.spongepowered.api.effect.potion.PotionEffectTypes
-import org.spongepowered.api.command.args.GenericArguments.duration
-import org.spongepowered.api.data.key.Key
-import org.spongepowered.api.effect.potion.PotionEffect
-
 
 @Suppress("UNCHECKED_CAST")
 /**
@@ -305,7 +301,7 @@ class PetProxyImpl(override val meta: PetMeta, private val design: ArmorStand, p
      */
     private fun generateMarkerItemStack(): ItemStack {
         val item = ItemStack.builder().itemType(ItemTypes.APPLE).build()
-        item.setLore(arrayListOf("PetBlocks"))
+        item.lore = arrayListOf("PetBlocks")
         return item
     }
 }

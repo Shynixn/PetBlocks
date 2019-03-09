@@ -1,4 +1,4 @@
-@file:Suppress("UNCHECKED_CAST")
+@file:Suppress("UNCHECKED_CAST", "unused", "UNUSED_PARAMETER")
 
 package com.github.shynixn.petblocks.sponge
 
@@ -16,7 +16,6 @@ import com.github.shynixn.petblocks.sponge.logic.business.extension.getServerVer
 import com.github.shynixn.petblocks.sponge.logic.business.extension.sendMessage
 import com.github.shynixn.petblocks.sponge.logic.business.extension.toText
 import com.github.shynixn.petblocks.sponge.logic.business.listener.*
-import com.google.inject.Guice
 import com.google.inject.Inject
 import com.google.inject.Injector
 import org.bstats.sponge.Metrics
@@ -112,7 +111,7 @@ class PetBlocksPlugin : PluginProxy {
             return
         }
 
-        configurationService = resolve<ConfigurationService>(ConfigurationService::class.java)
+        configurationService = resolve(ConfigurationService::class.java)
 
         if (!configurationService.contains("config-version") || configurationService.findValue<Int>("config-version") != configVersion) {
             Sponge.getServer().console.sendMessage(PREFIX_CONSOLE + ChatColor.RED + "================================================")

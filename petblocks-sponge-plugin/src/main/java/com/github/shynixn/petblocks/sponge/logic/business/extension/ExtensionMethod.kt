@@ -26,6 +26,7 @@ import org.spongepowered.api.text.Text
 import org.spongepowered.api.text.serializer.TextSerializers
 import org.spongepowered.api.world.World
 import java.util.*
+import org.spongepowered.api.item.inventory.ItemStackBuilderPopulators.itemStack
 
 /**
  * Created by Shynixn 2018.
@@ -96,51 +97,62 @@ fun CarriedInventory<*>.updateInventory() {
 /**
  * Sends a text message to the player.
  */
-fun Player.sendMessage(text : String){
+fun Player.sendMessage(text: String) {
     this.sendMessage(text.toText())
 }
 
 /**
  * Gets the current gamemode.
  */
-val Player.gameMode : GameMode
+val Player.gameMode: GameMode
     get() = this.gameMode().get()
 
 /**
  * Gets the x coordinate.
  */
-val Transform<World>.x
+val Transform<*>.x
     get() = this.position.x
 
 /**
  * Gets the y coordinate.
  */
-val Transform<World>.y
+val Transform<*>.y
     get() = this.position.y
 
 /**
  * Gets the z coordinate.
  */
-val Transform<World>.z
+val Transform<*>.z
     get() = this.position.z
 
 /**
  * Gets the yaw.
  */
-val Transform<World>.yaw
+val Transform<*>.yaw
     get() = this.rotation.y
 
 /**
  * Gets the pitch.
  */
-val Transform<World>.pitch
+val Transform<*>.pitch
     get() = this.rotation.x
+
+/**
+ * Itemstack durability.
+ */
+var ItemStack.durability: Int
+    get() {
+        return (this as net.minecraft.item.ItemStack).itemDamage
+    }
+    set(value) {
+        (this as net.minecraft.item.ItemStack).itemDamage = value
+    }
 
 /**
  * Sets an item at the given index.
  */
-fun CarriedInventory<Player>.setItem(index : Int, itemStack: ItemStack){
-    if (index== 0) {
+fun CarriedInventory<Player>.setItem(index: Int, itemStack: ItemStack) {
+    if (index == 0) {
         query<Inventory>(GridInventory::class.java)
             .query<Inventory>(SlotPos.of(0, 0)).set(itemStack)
     } else {
@@ -152,8 +164,8 @@ fun CarriedInventory<Player>.setItem(index : Int, itemStack: ItemStack){
 /**
  * Gets an item at the given index.
  */
-fun CarriedInventory<Player>.getItem(index : Int) : Optional<ItemStack>{
-    if (index== 0) {
+fun CarriedInventory<Player>.getItem(index: Int): Optional<ItemStack> {
+    return if (index == 0) {
         query<Inventory>(GridInventory::class.java)
             .query<Inventory>(SlotPos.of(0, 0)).peek()
     } else {
@@ -165,7 +177,7 @@ fun CarriedInventory<Player>.getItem(index : Int) : Optional<ItemStack>{
 /**
  * Calculates the distance between 2 transforms.
  */
-fun Transform<World>.distance(other : Transform<World>) : Double{
+fun Transform<World>.distance(other: Transform<World>): Double {
     return this.position.distance(other.position)
 }
 
@@ -302,9 +314,7 @@ var ItemStack.skin: String?
 
       */
 
-
     }
-
 
 /**
  * Converts the current itemstack to an unbreakable itemstack.
@@ -312,7 +322,6 @@ var ItemStack.skin: String?
 fun ItemStack.createUnbreakableCopy(): ItemStack {
     throw RuntimeException()
 }
-
 
 /**
  * Gets the server version the plugin is running on.

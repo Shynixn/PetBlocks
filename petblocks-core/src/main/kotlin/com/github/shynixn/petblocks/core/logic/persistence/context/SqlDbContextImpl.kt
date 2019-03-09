@@ -81,7 +81,6 @@ class SqlDbContextImpl @Inject constructor(
         }
     }
 
-
     /**
      * Deletes the given [parameters] into the given [connection] [table].
      */
@@ -339,14 +338,14 @@ class SqlDbContextImpl @Inject constructor(
     private fun connectToMySql() {
         this.dataSource = createDataSource(
             MYSQL_DRIVER,
-            "jdbc:mysql://" + configurationService.findValue<String>("sql.host") + ":" + configurationService.findValue<String>(
+            "jdbc:mysql://" + configurationService.findValue<String>("sql.host") + ":" + configurationService.findValue<Int>(
                 "sql.port"
             ) + "/" + configurationService.findValue<String>(
                 "sql.database"
             ),
             configurationService.findValue<String>("sql.username"),
             configurationService.findValue<String>("sql.password"),
-            configurationService.findValue<Boolean>("sql.usessl")
+            configurationService.findValue("sql.usessl")
         )
 
         val connection = this.dataSource.connection

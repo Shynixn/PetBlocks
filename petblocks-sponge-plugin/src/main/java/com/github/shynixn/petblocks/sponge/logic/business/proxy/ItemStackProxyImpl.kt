@@ -3,6 +3,12 @@
 package com.github.shynixn.petblocks.sponge.logic.business.proxy
 
 import com.github.shynixn.petblocks.api.business.proxy.ItemStackProxy
+import com.github.shynixn.petblocks.core.logic.business.extension.translateChatColors
+import com.github.shynixn.petblocks.sponge.logic.business.extension.displayName
+import com.github.shynixn.petblocks.sponge.logic.business.extension.durability
+import com.github.shynixn.petblocks.sponge.logic.business.extension.lore
+import org.spongepowered.api.Sponge
+import org.spongepowered.api.item.ItemType
 import org.spongepowered.api.item.inventory.ItemStack
 
 /**
@@ -75,8 +81,15 @@ class ItemStackProxyImpl(
      */
     override fun <I> build(): I {
         val itemstack = ItemStack.builder()
+            .itemType(Sponge.getGame().registry.getType(ItemType::class.java, typeName).get()).build()
 
-        throw RuntimeException()
+        itemstack.durability = data
+
+        if (this.internalDisplayName != null) {
+            itemstack.displayName = this.internalDisplayName!!.translateChatColors()
+        }
+
+        itemstack.lore = lore
 
         return itemstack as I
     }
