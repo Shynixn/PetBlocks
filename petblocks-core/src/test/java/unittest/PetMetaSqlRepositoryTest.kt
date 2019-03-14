@@ -5,11 +5,11 @@ package unittest
 import com.github.shynixn.petblocks.api.business.proxy.PlayerProxy
 import com.github.shynixn.petblocks.api.business.service.ConfigurationService
 import com.github.shynixn.petblocks.api.business.service.ProxyService
+import com.github.shynixn.petblocks.api.business.service.YamlConfigurationService
 import com.github.shynixn.petblocks.api.persistence.context.SqlDbContext
 import com.github.shynixn.petblocks.api.persistence.entity.GuiItem
 import com.github.shynixn.petblocks.api.persistence.entity.PetMeta
 import com.github.shynixn.petblocks.api.persistence.repository.PetMetaRepository
-import com.github.shynixn.petblocks.bukkit.logic.business.service.YamlConfigurationServiceImpl
 import com.github.shynixn.petblocks.core.logic.business.service.LoggingUtilServiceImpl
 import com.github.shynixn.petblocks.core.logic.business.service.AIServiceImpl
 import com.github.shynixn.petblocks.core.logic.persistence.entity.PetMetaEntity
@@ -165,9 +165,31 @@ class PetMetaSqlRepositoryTest {
 
     companion object {
         fun createWithDependencies(dbContext: SqlDbContext = MockedSqlDbContext()): PetMetaRepository {
-            return PetMetaSqlRepository(dbContext,
-                AIServiceImpl(LoggingUtilServiceImpl(Logger.getAnonymousLogger()), MockedProxyService(), YamlConfigurationServiceImpl()),
-                MockedConfigurationService())
+            return PetMetaSqlRepository(
+                dbContext,
+                AIServiceImpl(
+                    LoggingUtilServiceImpl(Logger.getAnonymousLogger()),
+                    MockedProxyService(),
+                    MockedYamlConfigurationService()
+                ),
+                MockedConfigurationService()
+            )
+        }
+    }
+
+    class MockedYamlConfigurationService : YamlConfigurationService {
+        /**
+         * Serializes the given [map] and [key] to a string.
+         */
+        override fun serializeToString(key: String, map: Map<String, Any?>): String {
+            throw IllegalArgumentException()
+        }
+
+        /**
+         * DeSerializes the given [data] and turns all memory sections into maps.
+         */
+        override fun deserializeToMap(key: String, data: String): Map<String, Any?> {
+            throw IllegalArgumentException()
         }
     }
 
@@ -244,14 +266,24 @@ class PetMetaSqlRepositoryTest {
         /**
          * Deletes the given [parameters] into the given [connection] [table].
          */
-        override fun <C> delete(connection: C, table: String, rowSelection: String, vararg parameters: Pair<String, Any?>) {
+        override fun <C> delete(
+            connection: C,
+            table: String,
+            rowSelection: String,
+            vararg parameters: Pair<String, Any?>
+        ) {
         }
 
         var insertCalled = false
         var updateCalled = false
         var singleQueryCounter = 0
-        private val petMetas = arrayListOf(PetMetaEntity(PlayerMetaEntity(UUID.fromString("16625034-af3d-4781-b157-64572759ad1c").toString(), "Alina"), SkinEntity()),
-            PetMetaEntity(PlayerMetaEntity(UUID.randomUUID().toString(), "Elias"), SkinEntity()))
+        private val petMetas = arrayListOf(
+            PetMetaEntity(
+                PlayerMetaEntity(UUID.fromString("16625034-af3d-4781-b157-64572759ad1c").toString(), "Alina"),
+                SkinEntity()
+            ),
+            PetMetaEntity(PlayerMetaEntity(UUID.randomUUID().toString(), "Elias"), SkinEntity())
+        )
 
         /**
          * Creates a new transaction to the database.
@@ -269,7 +301,12 @@ class PetMetaSqlRepositoryTest {
          * result set automatically. Does not close the connection.
          * [R] result type.
          */
-        override fun <R, C> multiQuery(connection: C, sqlStatement: String, f: (Map<String, Any>) -> R, vararg parameters: Any): List<R> {
+        override fun <R, C> multiQuery(
+            connection: C,
+            sqlStatement: String,
+            f: (Map<String, Any>) -> R,
+            vararg parameters: Any
+        ): List<R> {
             return petMetas as List<R>
         }
 
@@ -278,7 +315,12 @@ class PetMetaSqlRepositoryTest {
          * result set automatically. Does not close the connection.
          * [R] result type.
          */
-        override fun <R, C> singleQuery(connection: C, sqlStatement: String, f: (Map<String, Any>) -> R, vararg parameters: Any): R? {
+        override fun <R, C> singleQuery(
+            connection: C,
+            sqlStatement: String,
+            f: (Map<String, Any>) -> R,
+            vararg parameters: Any
+        ): R? {
             if (parameters.isNotEmpty() && parameters[0] == "16625034-af3d-4781-b157-64572759ad1c") {
                 return petMetas[0] as R
             }
@@ -304,7 +346,12 @@ class PetMetaSqlRepositoryTest {
          * Updates the given row by the [rowSelection] of the given [table] with the given [parameters].
          * Does not close the connection.
          */
-        override fun <C> update(connection: C, table: String, rowSelection: String, vararg parameters: Pair<String, Any?>) {
+        override fun <C> update(
+            connection: C,
+            table: String,
+            rowSelection: String,
+            vararg parameters: Pair<String, Any?>
+        ) {
             updateCalled = true
         }
     }

@@ -2,22 +2,27 @@ package unittest
 
 import com.github.shynixn.petblocks.api.business.enumeration.PluginDependency
 import com.github.shynixn.petblocks.api.business.service.DependencyService
-import com.github.shynixn.petblocks.bukkit.logic.business.service.DependencyServiceImpl
-import org.bukkit.Bukkit
-import org.bukkit.Server
-import org.bukkit.command.ConsoleCommandSender
-import org.bukkit.conversations.Conversation
-import org.bukkit.conversations.ConversationAbandonedEvent
-import org.bukkit.permissions.Permission
-import org.bukkit.permissions.PermissionAttachment
-import org.bukkit.permissions.PermissionAttachmentInfo
-import org.bukkit.plugin.Plugin
-import org.bukkit.plugin.PluginDescriptionFile
-import org.bukkit.plugin.PluginManager
+import com.github.shynixn.petblocks.core.logic.business.extension.removeFinalModifier
+import com.github.shynixn.petblocks.sponge.logic.business.service.DependencyServiceImpl
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito
-import java.util.logging.Logger
+import org.spongepowered.api.Game
+import org.spongepowered.api.Server
+import org.spongepowered.api.Sponge
+import org.spongepowered.api.command.CommandSource
+import org.spongepowered.api.command.source.ConsoleSource
+import org.spongepowered.api.plugin.PluginContainer
+import org.spongepowered.api.service.context.Context
+import org.spongepowered.api.service.permission.SubjectCollection
+import org.spongepowered.api.service.permission.SubjectData
+import org.spongepowered.api.service.permission.SubjectReference
+import org.spongepowered.api.text.Text
+import org.spongepowered.api.text.channel.MessageChannel
+import org.spongepowered.api.text.serializer.FormattingCodeTextSerializer
+import org.spongepowered.api.text.serializer.TextSerializers
+import org.spongepowered.api.util.Tristate
+import java.util.*
 
 /**
  * Created by Shynixn 2018.
@@ -175,70 +180,77 @@ class DependencyServiceTest {
     }
 
     companion object {
-        fun createWithDependencies(consoleCommandSender: ConsoleCommandSender? = null, shouldInstallDependencies: Boolean = true): DependencyService {
-            val plugin = Mockito.mock(Plugin::class.java)
+        fun createWithDependencies(
+            consoleCommandSender: ConsoleSource? = null,
+            shouldInstallDependencies: Boolean = true
+        ): DependencyService {
+            val plugin = Mockito.mock(PluginContainer::class.java)
+            val game = Mockito.mock(Game::class.java)
             val server = Mockito.mock(Server::class.java)
-            val pluginManager = Mockito.mock(PluginManager::class.java)
 
-            Mockito.`when`(server.logger).thenReturn(Logger.getGlobal())
-            if (Bukkit.getServer() == null) {
-                Bukkit.setServer(server)
-            }
-
-            Mockito.`when`(plugin.server).thenReturn(server)
-            Mockito.`when`(plugin.description).thenReturn(PluginDescriptionFile("Custom", "1.0", null))
-            Mockito.`when`(server.pluginManager).thenReturn(pluginManager)
-
-            if (shouldInstallDependencies) {
-                Mockito.`when`(pluginManager.getPlugin(Mockito.anyString())).thenReturn(plugin)
-            }
+            Mockito.`when`(game.server).thenReturn(server)
 
             if (consoleCommandSender == null) {
-                Mockito.`when`(server.consoleSender).thenReturn(MockedConsoleSender())
+                Mockito.`when`(server.console).thenReturn(MockedConsoleSender())
             } else {
-                Mockito.`when`(server.consoleSender).thenReturn(consoleCommandSender)
+                Mockito.`when`(server.console).thenReturn(consoleCommandSender)
+            }
+
+            val textSerializer = Mockito.mock(FormattingCodeTextSerializer::class.java)
+            Mockito.`when`(textSerializer.deserialize(Mockito.anyString())).thenReturn(Text.EMPTY)
+
+            val fieldL = TextSerializers::class.java.getDeclaredField("LEGACY_FORMATTING_CODE")
+            fieldL.removeFinalModifier()
+            fieldL.set(null, textSerializer)
+
+            val field = Sponge::class.java.getDeclaredField("game")
+            field.isAccessible = true
+            field.set(null, game)
+
+            if (shouldInstallDependencies) {
+                Mockito.`when`(plugin.getDependency(Mockito.anyString()))
+                    .thenReturn(
+                        Optional.of(
+                            org.spongepowered.plugin.meta.PluginDependency(
+                                org.spongepowered.plugin.meta.PluginDependency.LoadOrder.NONE,
+                                "Custom",
+                                "1.0",
+                                false
+                            )
+                        )
+                    )
             }
 
             return DependencyServiceImpl(plugin)
         }
     }
 
-    private class MockedConsoleSender : ConsoleCommandSender {
-        var messageCounter = 0
-
-        override fun sendMessage(p0: String?) {
+    class MockedConsoleSender(var messageCounter: Int = 0) : ConsoleSource {
+        override fun sendMessage(message: Text) {
             messageCounter++
         }
 
-        override fun sendMessage(p0: Array<out String>?) {
+        override fun setMessageChannel(channel: MessageChannel) {
             throw IllegalArgumentException()
         }
 
-        override fun beginConversation(p0: Conversation?): Boolean {
+        override fun getIdentifier(): String {
             throw IllegalArgumentException()
         }
 
-        override fun isPermissionSet(p0: String?): Boolean {
+        override fun asSubjectReference(): SubjectReference {
             throw IllegalArgumentException()
         }
 
-        override fun isPermissionSet(p0: Permission?): Boolean {
+        override fun getMessageChannel(): MessageChannel {
             throw IllegalArgumentException()
         }
 
-        override fun addAttachment(p0: Plugin?, p1: String?, p2: Boolean): PermissionAttachment {
+        override fun getCommandSource(): Optional<CommandSource> {
             throw IllegalArgumentException()
         }
 
-        override fun addAttachment(p0: Plugin?): PermissionAttachment {
-            throw IllegalArgumentException()
-        }
-
-        override fun addAttachment(p0: Plugin?, p1: String?, p2: Boolean, p3: Int): PermissionAttachment {
-            throw IllegalArgumentException()
-        }
-
-        override fun addAttachment(p0: Plugin?, p1: Int): PermissionAttachment {
+        override fun getOption(contexts: MutableSet<Context>, key: String): Optional<String> {
             throw IllegalArgumentException()
         }
 
@@ -246,55 +258,35 @@ class DependencyServiceTest {
             throw IllegalArgumentException()
         }
 
-        override fun isOp(): Boolean {
+        override fun getTransientSubjectData(): SubjectData {
             throw IllegalArgumentException()
         }
 
-        override fun acceptConversationInput(p0: String?) {
+        override fun getParents(contexts: MutableSet<Context>): MutableList<SubjectReference> {
             throw IllegalArgumentException()
         }
 
-        override fun sendRawMessage(p0: String?) {
+        override fun getContainingCollection(): SubjectCollection {
             throw IllegalArgumentException()
         }
 
-        override fun getEffectivePermissions(): MutableSet<PermissionAttachmentInfo> {
+        override fun getSubjectData(): SubjectData {
             throw IllegalArgumentException()
         }
 
-        override fun isConversing(): Boolean {
+        override fun isChildOf(contexts: MutableSet<Context>, parent: SubjectReference): Boolean {
             throw IllegalArgumentException()
         }
 
-        override fun getServer(): Server {
+        override fun getActiveContexts(): MutableSet<Context> {
             throw IllegalArgumentException()
         }
 
-        override fun removeAttachment(p0: PermissionAttachment?) {
+        override fun getPermissionValue(contexts: MutableSet<Context>, permission: String): Tristate {
             throw IllegalArgumentException()
         }
 
-        override fun recalculatePermissions() {
-            throw IllegalArgumentException()
-        }
-
-        override fun hasPermission(p0: String?): Boolean {
-            throw IllegalArgumentException()
-        }
-
-        override fun hasPermission(p0: Permission?): Boolean {
-            throw IllegalArgumentException()
-        }
-
-        override fun abandonConversation(p0: Conversation?) {
-            throw IllegalArgumentException()
-        }
-
-        override fun abandonConversation(p0: Conversation?, p1: ConversationAbandonedEvent?) {
-            throw IllegalArgumentException()
-        }
-
-        override fun setOp(p0: Boolean) {
+        override fun isSubjectDataPersisted(): Boolean {
             throw IllegalArgumentException()
         }
     }

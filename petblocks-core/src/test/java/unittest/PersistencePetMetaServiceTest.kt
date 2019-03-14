@@ -2,21 +2,20 @@
 
 package unittest
 
+import com.github.shynixn.petblocks.api.business.enumeration.Permission
 import com.github.shynixn.petblocks.api.business.proxy.PlayerProxy
 import com.github.shynixn.petblocks.api.business.service.ConcurrencyService
 import com.github.shynixn.petblocks.api.business.service.EventService
 import com.github.shynixn.petblocks.api.business.service.PersistencePetMetaService
 import com.github.shynixn.petblocks.api.business.service.ProxyService
 import com.github.shynixn.petblocks.api.persistence.entity.PetMeta
+import com.github.shynixn.petblocks.api.persistence.entity.Position
 import com.github.shynixn.petblocks.api.persistence.repository.PetMetaRepository
-import com.github.shynixn.petblocks.bukkit.logic.business.proxy.PlayerProxyImpl
 import com.github.shynixn.petblocks.core.logic.business.service.PersistencePetMetaServiceImpl
 import com.github.shynixn.petblocks.core.logic.persistence.entity.PetMetaEntity
 import com.github.shynixn.petblocks.core.logic.persistence.entity.PlayerMetaEntity
+import com.github.shynixn.petblocks.core.logic.persistence.entity.PositionEntity
 import com.github.shynixn.petblocks.core.logic.persistence.entity.SkinEntity
-import org.bukkit.Location
-import org.bukkit.World
-import org.bukkit.entity.Player
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito
@@ -63,8 +62,7 @@ class PersistencePetMetaServiceTest {
     fun getOrCreateFromPlayerUUID_ExistingPetMeta_ShouldReturnThisPetMeta() {
         // Arrange
         val classUnderTest = createWithDependencies()
-        val player = Mockito.mock(Player::class.java)
-        `when`(player.uniqueId).thenReturn(UUID.fromString("ecd66f19-3b5b-4910-b8e6-1716b5a636bf"))
+        val player = "ecd66f19-3b5b-4910-b8e6-1716b5a636bf"
 
         // Act
         val petMeta = classUnderTest.getPetMetaFromPlayer(player)
@@ -125,7 +123,12 @@ class PersistencePetMetaServiceTest {
 
     companion object {
         fun createWithDependencies(petMetaRepository: PetMetaRepository = MockedPetMetaRepository()): PersistencePetMetaService {
-            return PersistencePetMetaServiceImpl(MockedProxyService(), petMetaRepository, MockedConcurrencyService(), MockedEventService())
+            return PersistencePetMetaServiceImpl(
+                MockedProxyService(),
+                petMetaRepository,
+                MockedConcurrencyService(),
+                MockedEventService()
+            )
         }
     }
 
@@ -176,6 +179,70 @@ class PersistencePetMetaServiceTest {
         }
     }
 
+    class MockedPlayerProxy(
+        override val uniqueId: String,
+        override val handle: Any = "?",
+        override val name: String = "tmp",
+        override val position: Position = PositionEntity(20.2, 20.2, 20.2, 0.0, 0.0),
+        override val isOnline: Boolean = true
+    ) : PlayerProxy{
+        /**
+         * Sends a message to the player.
+         */
+        override fun sendMessage(text: String) {
+            throw IllegalArgumentException()
+        }
+
+        /**
+         * Sets the item at the given index in the inventory.
+         */
+        override fun <I> setInventoryItem(index: Int, itemstack: I) {
+            throw IllegalArgumentException()
+        }
+
+        /**
+         * Sets the item in the players hand.
+         */
+        override fun <I> setItemInHand(itemStack: I, offHand: Boolean) {
+            throw IllegalArgumentException()
+        }
+
+        /**
+         * Gets the item in the players hand.
+         */
+        override fun <I> getItemInHand(offHand: Boolean): I? {
+            throw IllegalArgumentException()
+        }
+
+        /**
+         * Gets the location of the player.
+         */
+        override fun <L> getLocation(): L {
+            throw IllegalArgumentException()
+        }
+
+        /**
+         * Gets if this player has got permissions.
+         */
+        override fun hasPermission(permission: Permission): Boolean {
+            throw IllegalArgumentException()
+        }
+
+        /**
+         * Updates the player inventory.
+         */
+        override fun updateInventory() {
+            throw IllegalArgumentException()
+        }
+
+        /**
+         * Generates a vector for the launching direction.
+         */
+        override fun getDirectionLaunchVector(): Position {
+            throw IllegalArgumentException()
+        }
+    }
+
     class MockedProxyService : ProxyService {
 
         /**
@@ -183,14 +250,7 @@ class PersistencePetMetaServiceTest {
          * Throws a [IllegalArgumentException] if the proxy could not be generated.
          */
         override fun <P> findPlayerProxyObject(instance: P): PlayerProxy {
-            if(instance !is Player){
-                throw RuntimeException()
-            }
-
-            `when`(instance.name).thenReturn("tmp")
-            `when`(instance.location).thenReturn(Location(Mockito.mock(World::class.java), 20.2, 20.2, 20.2))
-
-            return PlayerProxyImpl(instance as Player)
+            return MockedPlayerProxy(instance as String)
         }
 
         /**
