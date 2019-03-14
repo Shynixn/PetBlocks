@@ -1,6 +1,8 @@
 package com.github.shynixn.petblocks.sponge.logic.business.service
 
 import com.github.shynixn.petblocks.api.business.service.YamlConfigurationService
+import org.yaml.snakeyaml.DumperOptions
+import org.yaml.snakeyaml.Yaml
 
 /**
  * Created by Shynixn 2019.
@@ -34,13 +36,19 @@ class YamlConfigurationServiceImpl : YamlConfigurationService {
      * Serializes the given [map] and [key] to a string.
      */
     override fun serializeToString(key: String, map: Map<String, Any?>): String {
-        throw RuntimeException("Not implemented.")
+        val options = DumperOptions()
+        options.defaultFlowStyle = DumperOptions.FlowStyle.BLOCK
+        options.isPrettyFlow = true
+
+        val yaml = Yaml(options)
+        return yaml.dump(map)
     }
 
     /**
      * DeSerializes the given [data] and turns all memory sections into maps.
      */
     override fun deserializeToMap(key: String, data: String): Map<String, Any?> {
-        throw RuntimeException("Not implemented.")
+        val yaml = Yaml()
+        return yaml.load(data) as Map<String, Any?>
     }
 }

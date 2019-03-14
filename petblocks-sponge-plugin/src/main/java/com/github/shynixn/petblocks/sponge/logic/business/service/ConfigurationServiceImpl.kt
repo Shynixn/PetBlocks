@@ -109,8 +109,8 @@ class ConfigurationServiceImpl @Inject constructor(
             return disableOnSneak!! as C
         }
 
-        val items = path.split(".")
-        val data = this.configurationNode!!.getNode(items).value
+        val items = path.split(".").toTypedArray()
+        val data = this.configurationNode!!.getNode(*items as Array<Any>).value
 
         if (data is String) {
             return data.translateChatColors() as C
@@ -131,8 +131,8 @@ class ConfigurationServiceImpl @Inject constructor(
      */
     override fun contains(path: String): Boolean {
         try {
-            val items = path.split(".")
-            val targetNode = this.configurationNode!!.getNode(items)
+            val items = path.split(".").toTypedArray()
+            val targetNode = this.configurationNode!!.getNode(*items as Array<Any>)
             targetNode.value ?: return false
 
             return true
@@ -336,7 +336,7 @@ class ConfigurationServiceImpl @Inject constructor(
 
         petMeta.aiGoals.clear()
 
-        val goalsMap = defaultConfig["add-ai"] as Map<String, Any?>
+        val goalsMap = defaultConfig["add-ai"] as Map<Int, Any?>
 
         for (goalKey in goalsMap.keys) {
             val aiMap = goalsMap[goalKey] as Map<String, Any>
