@@ -9,6 +9,7 @@ import com.github.shynixn.petblocks.api.persistence.entity.Position
 import com.github.shynixn.petblocks.core.logic.business.extension.translateChatColors
 import com.github.shynixn.petblocks.core.logic.persistence.entity.PositionEntity
 import net.minecraft.entity.player.EntityPlayerMP
+import net.minecraft.nbt.NBTTagCompound
 import org.spongepowered.api.Game
 import org.spongepowered.api.Sponge
 import org.spongepowered.api.command.source.ConsoleSource
@@ -25,8 +26,8 @@ import org.spongepowered.api.item.inventory.type.GridInventory
 import org.spongepowered.api.text.Text
 import org.spongepowered.api.text.serializer.TextSerializers
 import org.spongepowered.api.world.World
+import java.lang.RuntimeException
 import java.util.*
-import org.spongepowered.api.item.inventory.ItemStackBuilderPopulators.itemStack
 
 /**
  * Created by Shynixn 2018.
@@ -279,48 +280,41 @@ var ItemStack.skin: String?
             return
         }
 
-        /*      var newSkin = value
+        val nmsItemStack = this as net.minecraft.item.ItemStack
+        var newSkin = value
 
-              if (newSkin.length > 32) {
+        val nbtTagCompound = if (nmsItemStack.tagCompound != null) {
+            nmsItemStack.tagCompound!!
+        } else {
+            NBTTagCompound()
+        }
 
-              } else if (value.isNotEmpty()) {
+        if (newSkin.length > 32) {
+            throw RuntimeException("Add complex old solution.")
+        } else if (value.isNotEmpty()) {
+            nbtTagCompound.setString("SkullOwner", value)
+        }
 
-              }
-
-
-              val item = itemStack as Any as net.minecraft.anchor.v1_12_mcpR1.item.ItemStack
-
-              var compound = item.getTagCompound()
-              if (compound == null) {
-                  compound = NBTTagCompound()
-              }
-
-              val newSkinProfile = Sponge.getServer().gameProfileManager.createProfile(UUID.randomUUID(), null)
-              val profileProperty = Sponge.getServer().gameProfileManager.createProfileProperty(
-                  "textures", Base64.getEncoder().encodeToString(
-                      "{textures:{SKIN:{url:\"$skinUrl\"}}}".getBytes()
-                  ), null
-              )
-              newSkinProfile.propertyMap.put("textures", profileProperty)
-
-              var nbttagcompound = NBTTagCompound()
-              nbttagcompound = writeGameProfile(nbttagcompound, newSkinProfile)
-              compound!!.setTag("SkullOwner", nbttagcompound)
-              item.setTagCompound(compound)
-
-
-
-
-
-      */
-
+        nmsItemStack.tagCompound = nbtTagCompound
     }
 
 /**
  * Converts the current itemstack to an unbreakable itemstack.
  */
 fun ItemStack.createUnbreakableCopy(): ItemStack {
-    throw RuntimeException()
+    val nmsItemStack = this as net.minecraft.item.ItemStack
+
+    val nbtTagCompound = if (nmsItemStack.tagCompound != null) {
+        nmsItemStack.tagCompound!!
+    } else {
+        NBTTagCompound()
+    }
+
+    nbtTagCompound.setBoolean("Unbreakable", true)
+
+    nmsItemStack.tagCompound = nbtTagCompound
+
+    return nmsItemStack as ItemStack
 }
 
 /**
