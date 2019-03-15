@@ -10,6 +10,7 @@ import com.github.shynixn.petblocks.core.logic.business.extension.translateChatC
 import com.github.shynixn.petblocks.core.logic.persistence.entity.PositionEntity
 import net.minecraft.entity.player.EntityPlayerMP
 import net.minecraft.nbt.NBTTagCompound
+import net.minecraft.nbt.NBTTagList
 import org.spongepowered.api.Game
 import org.spongepowered.api.Sponge
 import org.spongepowered.api.command.source.ConsoleSource
@@ -26,7 +27,7 @@ import org.spongepowered.api.item.inventory.type.GridInventory
 import org.spongepowered.api.text.Text
 import org.spongepowered.api.text.serializer.TextSerializers
 import org.spongepowered.api.world.World
-import java.lang.RuntimeException
+import org.yaml.snakeyaml.external.biz.base64Coder.Base64Coder
 import java.util.*
 
 /**
@@ -290,7 +291,42 @@ var ItemStack.skin: String?
         }
 
         if (newSkin.length > 32) {
-            throw RuntimeException("Add complex old solution.")
+            if (newSkin.contains("textures.minecraft.net")) {
+                if (!newSkin.startsWith("http://")) {
+                    newSkin = "http://$newSkin"
+                }
+
+                newSkin = Base64Coder.encodeString("{textures:{SKIN:{url:\"$newSkin\"}}}")
+            }
+
+            val skinProfile = Sponge.getServer().gameProfileManager.createProfile(UUID.randomUUID(), null)
+            val profileProperty = Sponge.getServer().gameProfileManager.createProfileProperty("textures", newSkin, null)
+            skinProfile.propertyMap.put("textures", profileProperty)
+
+            val internalTag = NBTTagCompound()
+            internalTag.setString("Id", skinProfile.uniqueId.toString())
+
+            val propertiesTag = NBTTagCompound()
+
+            for (content in skinProfile.propertyMap.keySet()) {
+                val nbtTagList = NBTTagList()
+
+                for (item in skinProfile.propertyMap.get(content)) {
+                    val nbtItem = NBTTagCompound()
+                    nbtItem.setString("Value", item.value)
+
+                    if (item.hasSignature()) {
+                        nbtItem.setString("Signature", item.signature.get())
+                    }
+
+                    nbtTagList.appendTag(nbtItem)
+                }
+
+                propertiesTag.setTag(content, nbtTagList)
+            }
+
+            internalTag.setTag("Properties", propertiesTag)
+            nbtTagCompound.setTag("SkullOwner", internalTag)
         } else if (value.isNotEmpty()) {
             nbtTagCompound.setString("SkullOwner", value)
         }

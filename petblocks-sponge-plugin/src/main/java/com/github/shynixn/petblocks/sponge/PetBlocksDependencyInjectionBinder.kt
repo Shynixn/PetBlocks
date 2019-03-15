@@ -55,7 +55,6 @@ class PetBlocksDependencyInjectionBinder(private val plugin: PluginContainer) : 
         val version = getServerVersion()
 
         // General
-        bind(PluginContainer::class.java).toInstance(plugin)
         bind(Version::class.java).toInstance(version)
         bind(LoggingService::class.java).toInstance(LoggingSlf4jServiceImpl(plugin.logger))
 
@@ -106,7 +105,7 @@ class PetBlocksDependencyInjectionBinder(private val plugin: PluginContainer) : 
         bind(ConcurrencyService::class.java).to(ConcurrencyServiceImpl::class.java).`in`(Scopes.SINGLETON)
         bind(ConfigurationService::class.java).to(ConfigurationServiceImpl::class.java).`in`(Scopes.SINGLETON)
         bind(DependencyService::class.java).to(DependencyServiceImpl::class.java).`in`(Scopes.SINGLETON)
-        bind(EntityRegistrationService::class.java).to(EntityRegistrationService::class.java).`in`(Scopes.SINGLETON)
+        bind(EntityRegistrationService::class.java).to(EntityRegistrationServiceImpl::class.java).`in`(Scopes.SINGLETON)
         bind(EntityService::class.java).to(EntityServiceImpl::class.java).`in`(Scopes.SINGLETON)
         bind(EventService::class.java).to(EventServiceImpl::class.java).`in`(Scopes.SINGLETON)
         bind(GUIService::class.java).to(GUIServiceImpl::class.java).`in`(Scopes.SINGLETON)

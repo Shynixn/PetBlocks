@@ -19,12 +19,15 @@ import com.github.shynixn.petblocks.sponge.logic.business.listener.*
 import com.google.inject.Inject
 import com.google.inject.Injector
 import org.bstats.sponge.Metrics
+import org.bstats.sponge.Metrics2
 import org.slf4j.Logger
 import org.spongepowered.api.Sponge
 import org.spongepowered.api.entity.living.player.Player
 import org.spongepowered.api.event.Listener
 import org.spongepowered.api.event.cause.Cause
 import org.spongepowered.api.event.game.GameReloadEvent
+import org.spongepowered.api.event.game.state.GameInitializationEvent
+import org.spongepowered.api.event.game.state.GameStoppingServerEvent
 import org.spongepowered.api.event.message.MessageEvent
 import org.spongepowered.api.event.network.ClientConnectionEvent
 import org.spongepowered.api.plugin.Plugin
@@ -78,7 +81,7 @@ class PetBlocksPlugin : PluginProxy {
     private lateinit var plugin: PluginContainer
 
     @Inject
-    private lateinit var metrics: Metrics
+    private lateinit var metrics: Metrics2
 
     @Inject
     private lateinit var logger: Logger
@@ -92,7 +95,7 @@ class PetBlocksPlugin : PluginProxy {
      * Enables the plugin PetBlocks.
      */
     @Listener
-    fun onEnable() {
+    fun onEnable(event: GameInitializationEvent) {
         Sponge.getServer().console.sendMessage(PREFIX_CONSOLE + ChatColor.GREEN + "Loading PetBlocks ...")
         this.injector = spongeInjector.createChildInjector(PetBlocksDependencyInjectionBinder(plugin))
 
@@ -173,7 +176,7 @@ class PetBlocksPlugin : PluginProxy {
      * OnDisable.
      */
     @Listener
-    fun onDisable() {
+    fun onDisable(event: GameStoppingServerEvent) {
         if (immediateDisable) {
             return
         }
