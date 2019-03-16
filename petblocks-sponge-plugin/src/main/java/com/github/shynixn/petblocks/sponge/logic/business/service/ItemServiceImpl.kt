@@ -93,7 +93,11 @@ class ItemServiceImpl : ItemService {
                 }
             }
         } else if (value is String) {
-            return Sponge.getGame().registry.getType(ItemType::class.java, MaterialType.valueOf(value).minecraftName).get()
+            return try {
+                Sponge.getGame().registry.getType(ItemType::class.java, MaterialType.valueOf(value).minecraftName).get()
+            } catch (e: Exception) {
+                Sponge.getGame().registry.getType(ItemType::class.java, value).get()
+            }
         } else if (value is MaterialType) {
             return Sponge.getGame().registry.getType(ItemType::class.java, value.minecraftName).get()
         }

@@ -99,7 +99,7 @@ class PetBlocksDependencyInjectionBinder(private val plugin: PluginContainer) : 
         bind(YamlSerializationService::class.java).to(YamlSerializationServiceImpl::class.java).`in`(Scopes.SINGLETON)
         bind(PetDebugService::class.java).to(PetDebugServiceImpl::class.java).`in`(Scopes.SINGLETON)
 
-        // Bukkit Services
+        // Sponge Services
         bind(AfraidOfWaterService::class.java).to(AfraidOfWaterServiceImpl::class.java).`in`(Scopes.SINGLETON)
         bind(CommandService::class.java).to(CommandServiceImpl::class.java).`in`(Scopes.SINGLETON)
         bind(ConcurrencyService::class.java).to(ConcurrencyServiceImpl::class.java).`in`(Scopes.SINGLETON)

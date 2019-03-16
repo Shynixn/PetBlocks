@@ -18,7 +18,8 @@ import com.github.shynixn.petblocks.sponge.logic.business.extension.*
 import com.google.inject.Inject
 import net.minecraft.entity.EntityLiving
 import net.minecraft.entity.ai.EntityAISwimming
-import org.spongepowered.api.entity.ArmorEquipable
+import net.minecraft.inventory.EntityEquipmentSlot
+import net.minecraft.item.ItemStack
 import org.spongepowered.api.entity.Entity
 import org.spongepowered.api.entity.Transform
 import org.spongepowered.api.entity.living.Living
@@ -173,7 +174,6 @@ class EntityServiceImpl @Inject constructor(
             }
 
             pathfinder.onStopExecuting = {
-
                 navigationService.clearNavigation(pet)
             }
 
@@ -186,7 +186,7 @@ class EntityServiceImpl @Inject constructor(
                     aiBase.speed
                 }
 
-                navigationService.navigateToLocation(pet, owner.location, speed)
+                navigationService.navigateToLocation(pet, owner.transform, speed)
             }
 
             pathfinder
@@ -212,8 +212,8 @@ class EntityServiceImpl @Inject constructor(
             }
 
             // Pets of PetBlocks hide a marker in the boots of every entity. This marker is persistent even on server crashes.
-            if (entity is ArmorEquipable && entity.boots.isPresent) {
-                val boots = entity.boots.get()
+            if (entity is EntityLiving && entity.getItemStackFromSlot(EntityEquipmentSlot.FEET) != ItemStack.EMPTY) {
+                val boots = entity.getItemStackFromSlot(EntityEquipmentSlot.FEET) as org.spongepowered.api.item.inventory.ItemStack
 
                 if (boots.lore != null) {
                     val lore = boots.lore!![0]
@@ -239,7 +239,7 @@ class EntityServiceImpl @Inject constructor(
         this.registerEntitiesOnServer()
 
         val playerProxy = proxyService.findPlayerProxyObjectFromUUID(petMeta.playerMeta.uuid)
-        val designClazz = Class.forName("com.github.shynixn.petblocks.bukkit.logic.business.nms.VERSION.NMSPetArmorstand".replace("VERSION", version.bukkitId))
+        val designClazz = Class.forName("com.github.shynixn.petblocks.sponge.logic.business.nms.VERSION.NMSPetArmorstand".replace("VERSION", version.bukkitId))
 
         return (designClazz.getDeclaredConstructor(Player::class.java, PetMeta::class.java)
             .newInstance(playerProxy.handle, petMeta) as NMSPetProxy).proxy
@@ -254,13 +254,13 @@ class EntityServiceImpl @Inject constructor(
             return true
         }
 
-        val rabbitClazz = Class.forName("com.github.shynixn.petblocks.bukkit.logic.business.nms.VERSION.NMSPetRabbit".replace("VERSION", version.bukkitId))
+        val rabbitClazz = Class.forName("com.github.shynixn.petblocks.sponge.logic.business.nms.VERSION.NMSPetRabbit".replace("VERSION", version.bukkitId))
         entityRegistrationService.register(rabbitClazz, EntityType.RABBIT)
 
-        val villagerClazz = Class.forName("com.github.shynixn.petblocks.bukkit.logic.business.nms.VERSION.NMSPetVillager".replace("VERSION", version.bukkitId))
+        val villagerClazz = Class.forName("com.github.shynixn.petblocks.sponge.logic.business.nms.VERSION.NMSPetVillager".replace("VERSION", version.bukkitId))
         entityRegistrationService.register(villagerClazz, EntityType.RABBIT)
 
-        val batClazz = Class.forName("com.github.shynixn.petblocks.bukkit.logic.business.nms.VERSION.NMSPetBat".replace("VERSION", version.bukkitId))
+        val batClazz = Class.forName("com.github.shynixn.petblocks.sponge.logic.business.nms.VERSION.NMSPetBat".replace("VERSION", version.bukkitId))
         entityRegistrationService.register(batClazz, EntityType.RABBIT)
 
         registered = true
@@ -273,7 +273,7 @@ class EntityServiceImpl @Inject constructor(
      */
     override fun <P> killNearestEntity(player: P) {
         if (player !is Player) {
-            throw IllegalArgumentException("Player has to be a BukkitPlayer!")
+            throw IllegalArgumentException("Player has to be a SpongePlayer!")
         }
 
         var distance = 100.0

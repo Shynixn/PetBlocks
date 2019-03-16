@@ -22,8 +22,10 @@ import org.spongepowered.api.config.ConfigDir
 import org.spongepowered.api.item.inventory.ItemStack
 import org.spongepowered.api.plugin.PluginContainer
 import java.io.BufferedReader
+import java.io.IOException
 import java.io.InputStream
 import java.io.InputStreamReader
+import java.nio.file.Files
 import java.nio.file.Path
 import java.util.*
 import javax.crypto.Cipher
@@ -102,8 +104,8 @@ class ConfigurationServiceImpl @Inject constructor(
 
         if (path == "global-configuration.disable-on-sneak") {
             if (disableOnSneak == null) {
-                val items = path.split(".")
-                disableOnSneak = this.configurationNode!!.getNode(items).value as List<String>
+                val items = path.split(".").toTypedArray()
+                disableOnSneak = this.configurationNode!!.getNode(*items as Array<Any>).value as List<String>
             }
 
             return disableOnSneak!! as C
@@ -123,7 +125,15 @@ class ConfigurationServiceImpl @Inject constructor(
      * Opens a new inputStream to the given [resource].
      */
     override fun openResourceInputStream(resource: String): InputStream {
-        return this.pluginContainer.getAsset(resource).get().url.openStream()
+        val rootAsset = this.pluginContainer.getAsset(resource)
+
+        if (rootAsset.isPresent) {
+            return rootAsset.get().url.openStream()
+        }
+
+        val assetName = resource.replace("assets/petblocks/", "")
+
+        return this.pluginContainer.getAsset(assetName).get().url.openStream()
     }
 
     /**
@@ -151,7 +161,7 @@ class ConfigurationServiceImpl @Inject constructor(
         }
 
         val items = ArrayList<GuiItem>()
-        val section = findValue<Map<String,Any>>(path)
+        val section = findValue<Map<String, Any>>(path)
 
         section.keys.forEach { key ->
             val guiItem = GuiItemEntity()
@@ -170,7 +180,7 @@ class ConfigurationServiceImpl @Inject constructor(
             this.setItem<Boolean>("fixed", description) { value -> guiItem.fixed = value }
             this.setItem<String>("script", description) { value -> guiItem.script = value }
 
-            val iconDescription = (description["icon"] as Map<String,Any>)
+            val iconDescription = (description["icon"] as Map<String, Any>)
 
             this.setItem<Int>("id", iconDescription) { value -> guiIcon.skin.typeName = value.toString() }
             this.setItem<Int>("damage", iconDescription) { value -> guiIcon.skin.dataValue = value }
@@ -182,7 +192,7 @@ class ConfigurationServiceImpl @Inject constructor(
 
             val skinDescription = if (description.containsKey("set-skin")) {
                 guiItem.targetSkin = SkinEntity()
-                (description["set-skin"] as Map<String,Any>)
+                (description["set-skin"] as Map<String, Any>)
             } else {
                 null
             }
@@ -220,7 +230,7 @@ class ConfigurationServiceImpl @Inject constructor(
             }
 
             if (description.containsKey("replace-ai")) {
-                val goalsMap = (description["replace-ai"] as Map<String, Any>)
+                val goalsMap = (description["replace-ai"] as Map<Int, Any>)
 
                 for (goalKey in goalsMap.keys) {
                     val aiMap = goalsMap[goalKey] as Map<String, Any>
@@ -259,7 +269,7 @@ class ConfigurationServiceImpl @Inject constructor(
      */
     private fun <T> setItem(key: String, map: Map<String, Any>?, f: (T) -> Unit) {
         if (map != null && map.containsKey(key)) {
-            f.invoke(map[key]!! as T)
+            f.invoke(map[key] as T)
         }
     }
 
@@ -299,10 +309,20 @@ class ConfigurationServiceImpl @Inject constructor(
             this.privateConfigDir.toFile().mkdir()
         }
 
+        val configFile = privateConfigDir.resolve("config.yml")
+
+        if (!Files.exists(configFile)) {
+            try {
+                pluginContainer.getAsset("config.yml").get().copyToFile(configFile)
+            } catch (e: IOException) {
+                loggingService.warn("Failed to create config.yml.", e)
+            }
+        }
+
         disableOnSneak = null
         cache.clear()
 
-        val loader = YAMLConfigurationLoader.builder().setPath(privateConfigDir.resolve("config.yml")).build()
+        val loader = YAMLConfigurationLoader.builder().setPath(configFile).build()
         this.configurationNode = loader.load()
     }
 

@@ -55,7 +55,7 @@ class ProxyServiceImpl : ProxyService {
             instance.handle
         } else {
             instance
-        }) as? Player ?: throw IllegalArgumentException("Instance has to be a BukkitPlayer!")
+        }) as? Player ?: throw IllegalArgumentException("Instance has to be a SpongePlayer!")
 
         if (!playerCache.containsKey(mInstance)) {
             playerCache[mInstance] = PlayerProxyImpl(mInstance)

@@ -358,11 +358,10 @@ fun ItemStack.createUnbreakableCopy(): ItemStack {
  */
 fun getServerVersion(): Version {
     try {
-        val version =
-            Sponge.getPluginManager().getPlugin("sponge").get().version.get().split("-").dropLastWhile { it.isEmpty() }.toTypedArray()[0]
+        val version = Sponge.getPluginManager().getPlugin("sponge").get().version.get().split("-")[0]
 
         for (versionSupport in Version.values()) {
-            if (versionSupport.bukkitId == version) {
+            if (versionSupport.id == version) {
                 return versionSupport
             }
         }

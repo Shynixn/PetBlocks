@@ -8,6 +8,7 @@ import com.github.shynixn.petblocks.api.business.enumeration.Version
 import com.github.shynixn.petblocks.api.business.proxy.EntityPetProxy
 import com.github.shynixn.petblocks.api.business.proxy.PluginProxy
 import com.github.shynixn.petblocks.api.business.service.*
+import com.github.shynixn.petblocks.api.persistence.context.SqlDbContext
 import com.github.shynixn.petblocks.core.logic.business.commandexecutor.EditPetCommandExecutorImpl
 import com.github.shynixn.petblocks.core.logic.business.commandexecutor.PlayerPetActionCommandExecutorImpl
 import com.github.shynixn.petblocks.core.logic.business.commandexecutor.ReloadCommandExecutorImpl
@@ -104,7 +105,7 @@ class PetBlocksPlugin : PluginProxy {
         ) {
             Sponge.getServer().console.sendMessage(PREFIX_CONSOLE + ChatColor.RED + "================================================")
             Sponge.getServer().console.sendMessage(PREFIX_CONSOLE + ChatColor.RED + "PetBlocks does not support your server version")
-            Sponge.getServer().console.sendMessage(PREFIX_CONSOLE + ChatColor.RED + "Install v" + Version.VERSION_1_13_R2.id + " - v" + Version.VERSION_1_13_R2.id)
+            Sponge.getServer().console.sendMessage(PREFIX_CONSOLE + ChatColor.RED + "Install v" + Version.VERSION_1_12_R1.id + " - v" + Version.VERSION_1_12_R1.id)
             Sponge.getServer().console.sendMessage(PREFIX_CONSOLE + ChatColor.RED + "Plugin gets now disabled!")
             Sponge.getServer().console.sendMessage(PREFIX_CONSOLE + ChatColor.RED + "================================================")
 
@@ -206,6 +207,8 @@ class PetBlocksPlugin : PluginProxy {
                 }
             }
         }
+
+        resolve<SqlDbContext>(SqlDbContext::class.java).close()
     }
 
     /**

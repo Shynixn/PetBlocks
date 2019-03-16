@@ -1,5 +1,6 @@
 package com.github.shynixn.petblocks.sponge.logic.business.nms.v1_12_R1
 
+import com.github.shynixn.petblocks.api.business.proxy.EntityPetProxy
 import com.github.shynixn.petblocks.api.business.proxy.PathfinderProxy
 import com.github.shynixn.petblocks.api.persistence.entity.AIMovement
 import com.github.shynixn.petblocks.sponge.logic.business.extension.x
@@ -10,8 +11,10 @@ import net.minecraft.block.Block
 import net.minecraft.entity.SharedMonsterAttributes
 import net.minecraft.entity.ai.EntityAIBase
 import net.minecraft.entity.passive.EntityBat
+import net.minecraft.inventory.EntityEquipmentSlot
 import net.minecraft.util.math.BlockPos
 import org.spongepowered.api.entity.Transform
+import org.spongepowered.api.entity.living.Living
 import org.spongepowered.api.world.World
 
 /**
@@ -42,7 +45,8 @@ import org.spongepowered.api.world.World
  * SOFTWARE.
  */
 class NMSPetBat(petDesign: NMSPetArmorstand, location: Transform<World>) :
-    EntityBat(location.extent as net.minecraft.world.World) {
+    EntityBat(location.extent as net.minecraft.world.World), EntityPetProxy {
+
     private var petDesign: NMSPetArmorstand? = null
     private var pathfinderCounter = 0
 
@@ -58,6 +62,24 @@ class NMSPetBat(petDesign: NMSPetArmorstand, location: Transform<World>) :
         this.setPosition(location.x, location.y + 1, location.z)
         mcWorld.spawnEntity(this)
     }
+
+    /**
+     * Removes this entity.
+     */
+    override fun deleteFromWorld() {
+        (this as Living).remove()
+    }
+
+    /**
+     * Boots marker.
+     */
+    override var bootsItemStack: Any?
+        get() {
+            return this.getItemStackFromSlot(EntityEquipmentSlot.FEET)
+        }
+        set(value) {
+            this.setItemStackToSlot(EntityEquipmentSlot.FEET, value as net.minecraft.item.ItemStack)
+        }
 
     /**
      * Applies pathfinders to the entity.

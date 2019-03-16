@@ -20,6 +20,7 @@ import net.minecraft.entity.MoverType
 import net.minecraft.entity.SharedMonsterAttributes
 import net.minecraft.entity.item.EntityArmorStand
 import net.minecraft.entity.player.EntityPlayerMP
+import net.minecraft.inventory.EntityEquipmentSlot
 import net.minecraft.nbt.NBTTagCompound
 import net.minecraft.util.math.MathHelper
 import net.minecraft.util.math.Vec3d
@@ -101,8 +102,19 @@ class NMSPetArmorstand(owner: Player, val petMeta: PetMeta) : EntityArmorStand(o
      * Removes this entity.
      */
     override fun deleteFromWorld() {
-        (this as ArmorStand).remove()
+        (this as Living).remove()
     }
+
+    /**
+     * Boots marker.
+     */
+    override var bootsItemStack: Any?
+        get() {
+            return this.getItemStackFromSlot(EntityEquipmentSlot.FEET)
+        }
+        set(value) {
+            this.setItemStackToSlot(EntityEquipmentSlot.FEET, value as net.minecraft.item.ItemStack)
+        }
 
     /**
      * Spawns a new hitbox

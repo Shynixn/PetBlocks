@@ -38,7 +38,7 @@ import org.spongepowered.api.entity.living.Living
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class NavigationServiceImpl @Inject constructor(private val version: Version) : NavigationService {
+class NavigationServiceImpl : NavigationService {
     /**
      * Lets the given [petProxy] navigate to the given [location].
      */

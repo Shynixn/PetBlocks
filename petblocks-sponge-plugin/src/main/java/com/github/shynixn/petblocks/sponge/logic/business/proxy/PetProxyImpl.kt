@@ -20,7 +20,6 @@ import org.spongepowered.api.data.key.Keys
 import org.spongepowered.api.data.manipulator.mutable.PotionEffectData
 import org.spongepowered.api.effect.potion.PotionEffect
 import org.spongepowered.api.effect.potion.PotionEffectTypes
-import org.spongepowered.api.entity.ArmorEquipable
 import org.spongepowered.api.entity.Transform
 import org.spongepowered.api.entity.living.ArmorStand
 import org.spongepowered.api.entity.living.Living
@@ -169,9 +168,9 @@ class PetProxyImpl(override val meta: PetMeta, private val design: ArmorStand, p
         effects.addElement(effect)
         hitBox.offer(effects)
 
-        hitBox.offer(Keys.CUSTOM_NAME_VISIBLE, false);
+        hitBox.offer(Keys.CUSTOM_NAME_VISIBLE, false)
 
-        (this.hitBox as ArmorEquipable).setBoots(generateMarkerItemStack())
+        (this.hitBox as EntityPetProxy).bootsItemStack = generateMarkerItemStack()
     }
 
     /**
@@ -238,7 +237,7 @@ class PetProxyImpl(override val meta: PetMeta, private val design: ArmorStand, p
                 itemStack = itemStack.createUnbreakableCopy()
             }
 
-            (design as ArmorEquipable).setHelmet(itemStack)
+            design.setHelmet(itemStack)
         }
     }
 
@@ -275,7 +274,7 @@ class PetProxyImpl(override val meta: PetMeta, private val design: ArmorStand, p
         }
 
         if (vector !is Vector3d) {
-            throw IllegalArgumentException("Vector has to be a BukkitVector!")
+            throw IllegalArgumentException("Vector has to be a SpongeVector!")
         }
 
         if (hitBox != null) {

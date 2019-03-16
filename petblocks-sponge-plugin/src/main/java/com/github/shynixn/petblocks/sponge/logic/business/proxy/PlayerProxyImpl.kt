@@ -3,13 +3,13 @@
 package com.github.shynixn.petblocks.sponge.logic.business.proxy
 
 import com.github.shynixn.petblocks.api.business.enumeration.Permission
-import com.github.shynixn.petblocks.api.business.enumeration.Version
 import com.github.shynixn.petblocks.api.persistence.entity.Position
 import com.github.shynixn.petblocks.core.logic.persistence.entity.PositionEntity
 import com.github.shynixn.petblocks.sponge.logic.business.extension.getServerVersion
 import com.github.shynixn.petblocks.sponge.logic.business.extension.toPosition
 import com.github.shynixn.petblocks.sponge.logic.business.extension.toText
 import com.github.shynixn.petblocks.sponge.logic.business.extension.updateInventory
+import org.spongepowered.api.data.type.HandTypes
 import org.spongepowered.api.entity.living.player.Player
 import org.spongepowered.api.item.inventory.ItemStack
 import org.spongepowered.api.item.inventory.property.SlotIndex
@@ -76,17 +76,14 @@ class PlayerProxyImpl(private val player: Player) : com.github.shynixn.petblocks
      * Sets the item in the players hand.
      */
     override fun <I> setItemInHand(itemStack: I, offHand: Boolean) {
-        if (version.isVersionSameOrGreaterThan(Version.VERSION_1_9_R1)) {
-            val inventoryClazz = Class.forName("org.bukkit.inventory.PlayerInventory")
+        if (itemStack !is ItemStack) {
+            throw IllegalArgumentException("ItemStack has to be a SpongeItemStack!")
+        }
 
-            if (offHand) {
-                inventoryClazz.getDeclaredMethod("setItemInOffHand", ItemStack::class.java).invoke(player.inventory, itemStack)
-            } else {
-                inventoryClazz.getDeclaredMethod("setItemInMainHand", ItemStack::class.java).invoke(player.inventory, itemStack)
-            }
+        if (offHand) {
+            this.player.setItemInHand(HandTypes.OFF_HAND, itemStack)
         } else {
-            Class.forName("org.bukkit.entity.HumanEntity").getDeclaredMethod("setItemInHand", ItemStack::class.java)
-                .invoke(this.player, itemStack)
+            this.player.setItemInHand(HandTypes.MAIN_HAND, itemStack)
         }
     }
 
@@ -94,18 +91,17 @@ class PlayerProxyImpl(private val player: Player) : com.github.shynixn.petblocks
      * Gets the item in the players hand.
      */
     override fun <I> getItemInHand(offHand: Boolean): I? {
-        return if (version.isVersionSameOrGreaterThan(Version.VERSION_1_9_R1)) {
-            val inventoryClazz = Class.forName("org.bukkit.inventory.PlayerInventory")
-
-            if (offHand) {
-                inventoryClazz.getDeclaredMethod("getItemInOffHand").invoke(player.inventory) as I
-            } else {
-                inventoryClazz.getDeclaredMethod("getItemInMainHand").invoke(player.inventory) as I
-            }
+        val opt = if (offHand) {
+            this.player.getItemInHand(HandTypes.OFF_HAND)
         } else {
-            Class.forName("org.bukkit.entity.HumanEntity").getDeclaredMethod("getItemInHand")
-                .invoke(this.player) as I
+            this.player.getItemInHand(HandTypes.MAIN_HAND)
         }
+
+        if (opt.isPresent) {
+            return opt.get() as I
+        }
+
+        return null
     }
 
     /**
@@ -134,7 +130,7 @@ class PlayerProxyImpl(private val player: Player) : com.github.shynixn.petblocks
      */
     override fun <I> setInventoryItem(index: Int, itemstack: I) {
         if (itemstack !is ItemStack) {
-            throw IllegalArgumentException("ItemStack has to be a BukkitItemStack!")
+            throw IllegalArgumentException("ItemStack has to be a SpongeItemStack!")
         }
 
         (player.inventory as GridInventory).set(SlotIndex.of(index), itemstack)

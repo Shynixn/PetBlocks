@@ -33,6 +33,11 @@ import org.bukkit.craftbukkit.v1_12_R1.entity.CraftArmorStand
  */
 class CraftPetArmorstand(server: CraftServer, nmsPet: NMSPetArmorstand) : CraftArmorStand(server, nmsPet), EntityPetProxy {
     /**
+     * Boots marker.
+     */
+    override var bootsItemStack: Any? = null
+
+    /**
      * Removes this entity.
      */
     override fun deleteFromWorld() {

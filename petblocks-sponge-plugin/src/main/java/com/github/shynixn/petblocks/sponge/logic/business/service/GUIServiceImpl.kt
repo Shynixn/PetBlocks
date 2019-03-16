@@ -23,6 +23,7 @@ import org.spongepowered.api.item.inventory.InventoryArchetypes
 import org.spongepowered.api.item.inventory.ItemStack
 import org.spongepowered.api.item.inventory.property.InventoryTitle
 import org.spongepowered.api.item.inventory.type.CarriedInventory
+import org.spongepowered.api.item.inventory.type.GridInventory
 import org.spongepowered.api.plugin.PluginContainer
 import java.util.*
 import kotlin.collections.HashMap
@@ -60,7 +61,7 @@ class GUIServiceImpl @Inject constructor(
     private val scriptService: GUIScriptService,
     private val persistenceService: PersistencePetMetaService,
     private val itemService: ItemService,
-    private val plugin : PluginContainer,
+    private val plugin: PluginContainer,
     private val concurrencyService: ConcurrencyService,
     private val loggingService: LoggingService,
     private val messageService: MessageService
@@ -209,7 +210,7 @@ class GUIServiceImpl @Inject constructor(
 
         val player = inventory.carrier.get()
 
-        return this.pageCache.containsKey(player) && this.pageCache[player]!!.getInventory<Inventory>() == inventory
+        return this.pageCache.containsKey(player)
     }
 
     /**
@@ -217,7 +218,7 @@ class GUIServiceImpl @Inject constructor(
      */
     override fun <P> open(player: P, pageName: String?) {
         if (player !is Player) {
-            throw IllegalArgumentException("Player has to be a BukkitPlayer!")
+            throw IllegalArgumentException("Player has to be a SpongePlayer!")
         }
 
         if (player.openInventory.isPresent) {
@@ -231,7 +232,8 @@ class GUIServiceImpl @Inject constructor(
         }
 
         val guiTitle = configurationService.findValue<String>("messages.gui-title")
-        val inventory = Inventory.builder().of(InventoryArchetypes.DOUBLE_CHEST).withCarrier(player).property(InventoryTitle.PROPERTY_NAME, InventoryTitle.of(guiTitle.toText())).build(plugin)
+        val inventory =
+            Inventory.builder().of(InventoryArchetypes.DOUBLE_CHEST).withCarrier(player).property(InventoryTitle.PROPERTY_NAME, InventoryTitle.of(guiTitle.toText())).build(plugin)
         player.openInventory(inventory)
 
         val petMeta = persistenceService.getPetMetaFromPlayer(player)
@@ -244,11 +246,11 @@ class GUIServiceImpl @Inject constructor(
      */
     override fun <P, I> clickInventoryItem(player: P, relativeSlot: Int, item: I) {
         if (player !is Player) {
-            throw IllegalArgumentException("Player has to be a BukkitPlayer!")
+            throw IllegalArgumentException("Player has to be a SpongePlayer!")
         }
 
         if (item !is ItemStack) {
-            throw IllegalArgumentException("Item has to be a BukkitItemStack!")
+            throw IllegalArgumentException("Item has to be a SpongeItemStack!")
         }
 
         val optGuiItem = configurationService.findClickedGUIItem(pageCache[player]!!.path, item) ?: return
@@ -287,7 +289,10 @@ class GUIServiceImpl @Inject constructor(
                 }
 
                 this.pageCache[player] = pageCache
-                renderPage(player, petMeta, this.pageCache[player]!!.path)
+
+                sync(concurrencyService, 1L) {
+                    renderPage(player, petMeta, this.pageCache[player]!!.path)
+                }
             }
 
             if (optGuiItem.icon.skin.sponsored) {
@@ -304,58 +309,60 @@ class GUIServiceImpl @Inject constructor(
         }
 
         if (optGuiItem.script != null) {
-            val scriptResult = scriptService.executeScript(optGuiItem.script!!)
+            sync(concurrencyService, 1L) {
+                val scriptResult = scriptService.executeScript(optGuiItem.script!!)
 
-            if (scriptResult.action == ScriptAction.SCROLL_PAGE) {
-                val result = scriptResult.valueContainer as Pair<Int, Int>
-                pageCache[player]!!.offsetX += result.first
-                pageCache[player]!!.offsetY += result.second
+                if (scriptResult.action == ScriptAction.SCROLL_PAGE) {
+                    val result = scriptResult.valueContainer as Pair<Int, Int>
+                    pageCache[player]!!.offsetX += result.first
+                    pageCache[player]!!.offsetY += result.second
 
-                renderPage(player, petMeta, pageCache[player]!!.path)
-            } else if (scriptResult.action == ScriptAction.PRINT_CUSTOM_SKIN_MESSAGE) {
-                messageService.sendPlayerMessage(player, skullNamingMessage)
-                this.close(player)
-            } else if (scriptResult.action == ScriptAction.PRINT_SUGGEST_HEAD_MESSAGE) {
-                messageService.sendPlayerMessage(player, suggestHeadMessage)
-                this.close(player)
-            } else if (scriptResult.action == ScriptAction.PRINT_CUSTOM_NAME_MESSAGE) {
-                messageService.sendPlayerMessage(player, namingMessage)
-                this.close(player)
-            } else if (scriptResult.action == ScriptAction.DISABLE_PET) {
-                petActionService.disablePet(player)
-                this.close(player)
-            } else if (scriptResult.action == ScriptAction.CALL_PET) {
-                petActionService.callPet(player)
-                this.close(player)
-            } else if (scriptResult.action == ScriptAction.LAUNCH_CANNON) {
-                petActionService.launchPet(player)
-                this.close(player)
-            } else if (scriptResult.action == ScriptAction.ENABLE_SOUND) {
-                petMeta.soundEnabled = true
-                renderPage(player, petMeta, pageCache[player]!!.path)
-            } else if (scriptResult.action == ScriptAction.DISABLE_SOUND) {
-                petMeta.soundEnabled = false
-                renderPage(player, petMeta, pageCache[player]!!.path)
-            } else if (scriptResult.action == ScriptAction.ENABLE_PARTICLES) {
-                petMeta.particleEnabled = true
-                renderPage(player, petMeta, pageCache[player]!!.path)
-            } else if (scriptResult.action == ScriptAction.DISABLE_PARTICLES) {
-                petMeta.particleEnabled = false
-                renderPage(player, petMeta, pageCache[player]!!.path)
-            } else if (scriptResult.action == ScriptAction.CLOSE_GUI) {
-                val page = pageCache[player]!!
-
-                if (page.parent == null) {
-                    this.close(player)
-                } else {
-                    pageCache[player] = page.parent!!
                     renderPage(player, petMeta, pageCache[player]!!.path)
+                } else if (scriptResult.action == ScriptAction.PRINT_CUSTOM_SKIN_MESSAGE) {
+                    messageService.sendPlayerMessage(player, skullNamingMessage)
+                    this.close(player)
+                } else if (scriptResult.action == ScriptAction.PRINT_SUGGEST_HEAD_MESSAGE) {
+                    messageService.sendPlayerMessage(player, suggestHeadMessage)
+                    this.close(player)
+                } else if (scriptResult.action == ScriptAction.PRINT_CUSTOM_NAME_MESSAGE) {
+                    messageService.sendPlayerMessage(player, namingMessage)
+                    this.close(player)
+                } else if (scriptResult.action == ScriptAction.DISABLE_PET) {
+                    petActionService.disablePet(player)
+                    this.close(player)
+                } else if (scriptResult.action == ScriptAction.CALL_PET) {
+                    petActionService.callPet(player)
+                    this.close(player)
+                } else if (scriptResult.action == ScriptAction.LAUNCH_CANNON) {
+                    petActionService.launchPet(player)
+                    this.close(player)
+                } else if (scriptResult.action == ScriptAction.ENABLE_SOUND) {
+                    petMeta.soundEnabled = true
+                    renderPage(player, petMeta, pageCache[player]!!.path)
+                } else if (scriptResult.action == ScriptAction.DISABLE_SOUND) {
+                    petMeta.soundEnabled = false
+                    renderPage(player, petMeta, pageCache[player]!!.path)
+                } else if (scriptResult.action == ScriptAction.ENABLE_PARTICLES) {
+                    petMeta.particleEnabled = true
+                    renderPage(player, petMeta, pageCache[player]!!.path)
+                } else if (scriptResult.action == ScriptAction.DISABLE_PARTICLES) {
+                    petMeta.particleEnabled = false
+                    renderPage(player, petMeta, pageCache[player]!!.path)
+                } else if (scriptResult.action == ScriptAction.CLOSE_GUI) {
+                    val page = pageCache[player]!!
+
+                    if (page.parent == null) {
+                        this.close(player)
+                    } else {
+                        pageCache[player] = page.parent!!
+                        renderPage(player, petMeta, pageCache[player]!!.path)
+                    }
+                } else if (scriptResult.action == ScriptAction.OPEN_PAGE) {
+                    val parent = pageCache[player]!!
+                    pageCache[player] = GuiPlayerCacheEntity(scriptResult.valueContainer as String, parent.getInventory(), parent.advertisingMessageTime)
+                    pageCache[player]!!.parent = parent
+                    renderPage(player, petMeta, scriptResult.valueContainer as String)
                 }
-            } else if (scriptResult.action == ScriptAction.OPEN_PAGE) {
-                val parent = pageCache[player]!!
-                pageCache[player] = GuiPlayerCacheEntity(scriptResult.valueContainer as String, parent.getInventory(), parent.advertisingMessageTime)
-                pageCache[player]!!.parent = parent
-                renderPage(player, petMeta, scriptResult.valueContainer as String)
             }
         }
     }
@@ -477,6 +484,19 @@ class GUIServiceImpl @Inject constructor(
             return
         }
 
+        val itemStack = createItemStackIcon(guiIcon, hasPermission)
+
+        try {
+            inventory.setItem(position, itemStack)
+        } catch (e: Exception) {
+            // Inventory might not be available.
+        }
+    }
+
+    /**
+     * Creates a new rendered item stack.
+     */
+    private fun createItemStackIcon(guiIcon: GuiIcon, hasPermission: Boolean): ItemStack {
         val permissionMessage = if (hasPermission) {
             configurationService.findValue("messages.has-permission")
         } else {
@@ -500,11 +520,7 @@ class GUIServiceImpl @Inject constructor(
 
         itemStack.lore = tmpLore
 
-        try {
-            inventory.setItem(position, itemStack)
-        } catch (e: Exception) {
-            // Inventory might not be available.
-        }
+        return itemStack
     }
 
     /**
@@ -566,10 +582,10 @@ class GUIServiceImpl @Inject constructor(
     private fun fillEmptySlots(inventory: CarriedInventory<Player>) {
         val guiItem = this.configurationService.findGUIItemCollection("static-gui")!![0]
 
-        for (i in 0 until 53) {
-            if (!inventory.getItem(i).isPresent || inventory.getItem(i).get() == ItemTypes.AIR) {
-                renderIcon(inventory, i, guiItem.icon, true)
-            }
+        for (i in 0..53) {
+            inventory.query<Inventory>(GridInventory::class.java)
+                .query<Inventory>(ItemTypes.AIR)
+                .offer(createItemStackIcon(guiItem.icon, true))
         }
     }
 
