@@ -50,7 +50,7 @@ class CarryPetListener @Inject constructor(private val carryPetService: CarryPet
      * Gets called when a player interacts at the given entity.
      */
     @Listener
-    fun entityRightClickEvent(event: InteractEntityEvent.Secondary) {
+    fun entityRightClickEvent(event: InteractEntityEvent.Secondary, @First(typeFilter = [Player::class]) player: Player) {
         if (event.isCancelled) {
             return
         }
@@ -59,15 +59,15 @@ class CarryPetListener @Inject constructor(private val carryPetService: CarryPet
             return
         }
 
-        if (carryPetService.isCarryingPet(event.targetEntity)) {
+        if (carryPetService.isCarryingPet(player)) {
             event.isCancelled = true
             return
         }
 
-        val optPet = petService.findPetByEntity(event.cause.first(Entity::class.java).get())
+        val optPet = petService.findPetByEntity(event.targetEntity)
 
-        if (optPet != null && optPet.getPlayer<Player>() == event.targetEntity) {
-            carryPetService.carryPet(event.targetEntity)
+        if (optPet != null && optPet.getPlayer<Player>() == player) {
+            carryPetService.carryPet(player)
             event.isCancelled = true
             return
         }

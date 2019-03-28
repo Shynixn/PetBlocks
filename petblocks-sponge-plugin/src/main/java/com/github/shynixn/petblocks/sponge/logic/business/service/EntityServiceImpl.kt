@@ -160,7 +160,7 @@ class EntityServiceImpl @Inject constructor(
             pathfinder.shouldGoalContinueExecuting = {
                 when {
                     owner.transform.distance(hitBox.transform) > aiBase.maxRange -> {
-                        pet.teleport(owner.location)
+                        pet.teleport(owner.transform)
                         false
                     }
 

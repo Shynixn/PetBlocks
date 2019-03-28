@@ -14,6 +14,7 @@ import com.github.shynixn.petblocks.core.logic.business.extension.thenAcceptSafe
 import com.github.shynixn.petblocks.sponge.logic.business.extension.toTextString
 import com.google.inject.Inject
 import org.spongepowered.api.Sponge
+import org.spongepowered.api.data.manipulator.mutable.entity.SneakingData
 import org.spongepowered.api.entity.living.player.Player
 import org.spongepowered.api.event.Listener
 import org.spongepowered.api.event.data.ChangeDataHolderEvent
@@ -165,6 +166,10 @@ class PetListener @Inject constructor(
     @Listener
     fun onEntityToggleSneakEvent(event: ChangeDataHolderEvent) {
         if (event.targetHolder !is Player || !petService.hasPet(event.targetHolder)) {
+            return
+        }
+
+        if (!event.targetHolder.get(SneakingData::class.java).get().sneaking().get()) {
             return
         }
 

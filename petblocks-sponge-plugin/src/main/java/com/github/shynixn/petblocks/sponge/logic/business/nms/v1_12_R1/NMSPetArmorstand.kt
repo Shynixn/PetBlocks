@@ -148,7 +148,8 @@ class NMSPetArmorstand(owner: Player, val petMeta: PetMeta) : EntityArmorStand(o
         else {
             for (passenger in player.passengers) {
                 if (passenger == (this as ArmorStand)) {
-                    player.removePassenger(passenger)
+                    player.clearPassengers()
+                    break
                 }
             }
         }
