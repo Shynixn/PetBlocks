@@ -19,6 +19,7 @@ import net.minecraft.entity.EntityLivingBase
 import net.minecraft.entity.MoverType
 import net.minecraft.entity.SharedMonsterAttributes
 import net.minecraft.entity.item.EntityArmorStand
+import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.entity.player.EntityPlayerMP
 import net.minecraft.inventory.EntityEquipmentSlot
 import net.minecraft.nbt.NBTTagCompound
@@ -278,7 +279,7 @@ class NMSPetArmorstand(owner: Player, val petMeta: PetMeta) : EntityArmorStand(o
      * Riding function.
      */
     override fun travel(sidemot: Float, f2: Float, formot: Float){
-        val human = this.passengers.firstOrNull { p -> p is Human }
+        val human = this.passengers.firstOrNull { p -> p is EntityPlayer }
 
         if (this.passengers.isEmpty() || human == null) {
             flyHasTakenOffGround = false

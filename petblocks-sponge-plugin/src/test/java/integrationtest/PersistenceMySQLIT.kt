@@ -250,7 +250,7 @@ class PersistenceMySQLIT {
             content = content.replace("type: 'sqlite'", "type: 'mysql'").replace("database: ''","database: 'db'").replace("username: ''", "username: 'root'")
             FileUtils.write(File("integration-test/assets/petblocks", "config.yml"), content,  "UTF-8")
 
-            DriverManager.getConnection("jdbc:mysql://localhost:3306/?user=root&password=").use { conn ->
+            DriverManager.getConnection("jdbc:mysql://localhost:3306/?user=root&password=&useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC").use { conn ->
                 conn.createStatement().use { statement ->
                     statement.executeUpdate("CREATE DATABASE db")
                 }

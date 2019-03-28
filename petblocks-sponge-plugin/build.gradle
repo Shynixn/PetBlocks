@@ -97,5 +97,6 @@ dependencies {
     testCompile 'ch.vorburger.mariaDB4j:mariaDB4j:2.2.3'
     testCompile 'mysql:mysql-connector-java:8.0.15'
 
+    testRuntime 'com.zaxxer:HikariCP:3.2.0'
     testRuntime 'org.junit.jupiter:junit-jupiter-engine:5.3.1'
 }

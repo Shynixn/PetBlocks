@@ -7,10 +7,11 @@ import com.github.shynixn.petblocks.sponge.logic.business.extension.toText
 import com.github.shynixn.petblocks.sponge.logic.business.proxy.CommandProxyImpl
 import com.google.inject.Inject
 import org.spongepowered.api.Sponge
+import org.spongepowered.api.command.args.GenericArguments
 import org.spongepowered.api.command.spec.CommandSpec
 import org.spongepowered.api.entity.living.player.Player
 import org.spongepowered.api.plugin.PluginContainer
-
+import org.spongepowered.api.text.Text
 
 /**
  * Created by Shynixn 2018.
@@ -46,11 +47,11 @@ class CommandServiceImpl @Inject constructor(private val plugin: PluginContainer
     override fun registerCommandExecutor(command: String, commandExecutorInstance: Any) {
         if (command == "petblocks") {
             val data = HashMap<String, Any>()
-            data.put("command", "petblocks")
-            data.put("description", "Command to configure pets.")
-            data.put("usage", "/petblocks")
-            data.put("permission", "petblocks.admin.command.pets")
-            data.put("permission-message", "You don't have permission.")
+            data["command"] = "petblocks"
+            data["description"] = "Command to configure pets."
+            data["usage"] = "/petblocks"
+            data["permission"] = "petblocks.admin.command.pets"
+            data["permission-message"] = "You don't have permission."
 
             registerCommandExecutor(data, commandExecutorInstance)
 
@@ -59,11 +60,11 @@ class CommandServiceImpl @Inject constructor(private val plugin: PluginContainer
 
         if (command == "petblockreload") {
             val data = HashMap<String, Any>()
-            data.put("command", "petblockreload")
-            data.put("description", "Reloads the petblock config and lang file.")
-            data.put("usage", "/petblockreload")
-            data.put("permission", "petblocks.admin.command.reload")
-            data.put("permission-message", "You don't have permission.")
+            data["command"] = "petblockreload"
+            data["description"] = "Reloads the petblock config and lang file."
+            data["usage"] = "/petblockreload"
+            data["permission"] = "petblocks.admin.command.reload"
+            data["permission-message"] = "You don't have permission."
 
             registerCommandExecutor(data, commandExecutorInstance)
 
@@ -113,6 +114,7 @@ class CommandServiceImpl @Inject constructor(private val plugin: PluginContainer
         val commandSpec = CommandSpec.builder()
             .description(description.toText())
             .permission(permission)
+            .arguments(GenericArguments.optionalWeak(GenericArguments.remainingRawJoinedStrings(Text.of("text"))))
             .executor(commandExecutor).build()
 
         Sponge.getCommandManager().register(this.plugin, commandSpec, command)

@@ -289,10 +289,6 @@ class GUIServiceImpl @Inject constructor(
                 }
 
                 this.pageCache[player] = pageCache
-
-                sync(concurrencyService, 1L) {
-                    renderPage(player, petMeta, this.pageCache[player]!!.path)
-                }
             }
 
             if (optGuiItem.icon.skin.sponsored) {
@@ -305,6 +301,10 @@ class GUIServiceImpl @Inject constructor(
 
             for (aiBase in optGuiItem.addAIs.toTypedArray()) {
                 petMeta.aiGoals.add(aiBase)
+            }
+
+            sync(concurrencyService, 1L) {
+                renderPage(player, petMeta, this.pageCache[player]!!.path)
             }
         }
 

@@ -110,7 +110,7 @@ class EntityServiceImpl @Inject constructor(
                     val value = Math.random()
 
                     if (value > 0.98) {
-                        soundService.playSound(hitBox.location, aiBase.sound, owner)
+                        soundService.playSound(hitBox.transform, aiBase.sound, owner)
                     }
                 }
             }
