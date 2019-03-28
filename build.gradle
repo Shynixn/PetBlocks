@@ -124,9 +124,9 @@ task generateJavaDocPages(type: org.jetbrains.dokka.gradle.DokkaTask) {
     outputFormat = 'javadoc'
     outputDirectory = "docs/apidocs"
     sourceDirs = files(new File(this.projectDir as File, '/petblocks-api/src/main/kotlin')
-            , new File(this.projectDir as File, '/petblocks-bukkit-api/src/main/kotlin')
-            , new File(this.projectDir as File, '/petblocks-core/src/main/kotlin')
-            , new File(this.projectDir as File, '/petblocks-bukkit-plugin/src/main/kotlin'))
+             , new File(this.projectDir as File, '/petblocks-bukkit-api/src/main/kotlin')
+             , new File(this.projectDir as File, '/petblocks-core/src/main/kotlin')
+             , new File(this.projectDir as File, '/petblocks-bukkit-plugin/src/main/kotlin'))
 }
 
 task downloadDependencies(type: Exec) {
