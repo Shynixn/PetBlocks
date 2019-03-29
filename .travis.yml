@@ -34,5 +34,7 @@ after_success:
   - if [[ $TRAVIS_COMMIT_MESSAGE == *"--snapshot"* ]]; then java -jar petblocks-tools/Deploy.jar --snapshot $WEBHOOK_SNAPSHOT_URL; fi ;
   - if [[ $TRAVIS_COMMIT_MESSAGE == *"--snapshot"* ]]; then java -jar petblocks-tools/Deploy.jar --snapshot $WEBHOOK_URL; fi ;
   - ./petblocks-tools/travis-status.sh success $WEBHOOK_URL
+  - cd petblocks-tools/build/libs
+  - ls
 after_failure:
   - ./petblocks-tools/travis-status.sh failure $WEBHOOK_URL

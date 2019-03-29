@@ -5,7 +5,6 @@ package com.github.shynixn.petblocks.bukkit.logic.business.service
 import com.github.shynixn.petblocks.api.business.enumeration.MaterialType
 import com.github.shynixn.petblocks.api.business.proxy.ItemStackProxy
 import com.github.shynixn.petblocks.api.business.service.ItemService
-import com.github.shynixn.petblocks.bukkit.logic.business.proxy.ItemStackProxyImpl
 import org.bukkit.Material
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
@@ -57,7 +56,9 @@ class Item113R1ServiceImpl : ItemService {
      * Creates a new itemstack from the given parameters.
      */
     override fun createItemStack(type: Any, dataValue: Int): ItemStackProxy {
-        return ItemStackProxyImpl(getMaterialValue(type).name, dataValue)
+        return Class.forName("com.github.shynixn.petblocks.bukkit.logic.business.proxy.ItemStackProxyImpl")
+            .getDeclaredConstructor(String::class.java, Int::class.java)
+            .newInstance(getMaterialValue(type).name, dataValue) as ItemStackProxy
     }
 
     /**

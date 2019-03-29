@@ -19,7 +19,6 @@ import com.github.shynixn.petblocks.sponge.logic.business.extension.toText
 import com.github.shynixn.petblocks.sponge.logic.business.listener.*
 import com.google.inject.Inject
 import com.google.inject.Injector
-import org.bstats.sponge.Metrics
 import org.bstats.sponge.Metrics2
 import org.slf4j.Logger
 import org.spongepowered.api.Sponge

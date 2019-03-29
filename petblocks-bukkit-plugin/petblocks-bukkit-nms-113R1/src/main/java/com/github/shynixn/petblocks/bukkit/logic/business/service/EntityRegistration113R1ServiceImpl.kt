@@ -39,7 +39,7 @@ class EntityRegistration113R1ServiceImpl @Inject constructor(private val version
      * Registers a new customEntity Clazz as the given [entityType].
      * Does nothing if the class is already registered.
      */
-    override fun <C >register(customEntityClazz:C, entityType: EntityType) {
+    override fun <C> register(customEntityClazz: C, entityType: EntityType) {
         if (customEntityClazz !is Class<*>) {
             throw IllegalArgumentException("CustomEntityClass has to be a Class!")
         }

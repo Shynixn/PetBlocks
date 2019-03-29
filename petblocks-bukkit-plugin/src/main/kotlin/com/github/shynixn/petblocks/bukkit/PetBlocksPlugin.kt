@@ -80,6 +80,7 @@ class PetBlocksPlugin : JavaPlugin(), PluginProxy {
                   Version.VERSION_1_10_R1,
                   Version.VERSION_1_11_R1,*/
                 Version.VERSION_1_12_R1,
+                Version.VERSION_1_13_R1,
                 Version.VERSION_1_13_R2
             )
         ) {

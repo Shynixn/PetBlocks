@@ -68,9 +68,9 @@ class NavigationServiceImpl @Inject constructor(private val version: Version) : 
         val nmsEntity = getHandleMethod.invoke(petProxy.getHitBoxLivingEntity<LivingEntity>().get())
         val navigation = navigationAbstractMethod.invoke(nmsEntity)
 
-        when (version) {
-            Version.VERSION_1_13_R2 -> findClazz("net.minecraft.server.VERSION.NavigationAbstract").getDeclaredMethod("q").invoke(navigation)
-            Version.VERSION_1_12_R1 -> findClazz("net.minecraft.server.VERSION.NavigationAbstract").getDeclaredMethod("p").invoke(navigation)
+        when {
+            version.isVersionSameOrGreaterThan(Version.VERSION_1_13_R1) -> findClazz("net.minecraft.server.VERSION.NavigationAbstract").getDeclaredMethod("q").invoke(navigation)
+            version.isVersionSameOrGreaterThan(Version.VERSION_1_12_R1) -> findClazz("net.minecraft.server.VERSION.NavigationAbstract").getDeclaredMethod("p").invoke(navigation)
             else -> throw IllegalArgumentException("This version is not supported!")
         }
     }
