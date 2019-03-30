@@ -71,7 +71,7 @@ class NavigationServiceImpl @Inject constructor(private val version: Version) : 
         when {
             version.isVersionSameOrGreaterThan(Version.VERSION_1_13_R1) -> findClazz("net.minecraft.server.VERSION.NavigationAbstract").getDeclaredMethod("q").invoke(navigation)
             version.isVersionSameOrGreaterThan(Version.VERSION_1_12_R1) -> findClazz("net.minecraft.server.VERSION.NavigationAbstract").getDeclaredMethod("p").invoke(navigation)
-            version.isVersionSameOrGreaterThan(Version.VERSION_1_10_R1) -> findClazz("net.minecraft.server.VERSION.NavigationAbstract").getDeclaredMethod("o").invoke(navigation)
+            version.isVersionSameOrGreaterThan(Version.VERSION_1_9_R2) -> findClazz("net.minecraft.server.VERSION.NavigationAbstract").getDeclaredMethod("o").invoke(navigation)
             else -> throw IllegalArgumentException("This version is not supported!")
         }
     }

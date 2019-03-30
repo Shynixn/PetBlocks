@@ -52,6 +52,7 @@ dependencies {
     implementation project(':petblocks-api')
     implementation project(':petblocks-core')
     implementation project(':petblocks-bukkit-api')
+    implementation project(':petblocks-bukkit-plugin:petblocks-bukkit-nms-109R2')
     implementation project(':petblocks-bukkit-plugin:petblocks-bukkit-nms-110R1')
     implementation project(':petblocks-bukkit-plugin:petblocks-bukkit-nms-111R1')
     implementation project(':petblocks-bukkit-plugin:petblocks-bukkit-nms-112R1')
