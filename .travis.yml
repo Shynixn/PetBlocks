@@ -31,9 +31,10 @@ script:
 after_success:
   - ./gradlew jacocoTestReport
   - bash <(curl -s https://codecov.io/bash)
+  - ./petblocks-tools/travis-status.sh success $WEBHOOK_URL
   - if [[ $TRAVIS_COMMIT_MESSAGE == *"--snapshot"* ]]; then java -jar petblocks-tools/Deploy.jar --snapshot $WEBHOOK_SNAPSHOT_URL; fi ;
   - if [[ $TRAVIS_COMMIT_MESSAGE == *"--snapshot"* ]]; then java -jar petblocks-tools/Deploy.jar --snapshot $WEBHOOK_URL; fi ;
-  - ./petblocks-tools/travis-status.sh success $WEBHOOK_URL
+  - ./gradlew shadowJar
   - cd petblocks-tools/build/libs
   - ls
 after_failure:
