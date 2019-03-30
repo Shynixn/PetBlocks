@@ -74,9 +74,9 @@ class PetBlocksPlugin : JavaPlugin(), PluginProxy {
         if (!getServerVersion().isCompatible(
                 /*  Version.VERSION_1_8_R1,
                   Version.VERSION_1_8_R2,
-                  Version.VERSION_1_8_R3,
-                  Version.VERSION_1_9_R1,*/
-                  Version.VERSION_1_9_R2,
+                  Version.VERSION_1_8_R3,*/
+                Version.VERSION_1_9_R1,
+                Version.VERSION_1_9_R2,
                 Version.VERSION_1_10_R1,
                 Version.VERSION_1_11_R1,
                 Version.VERSION_1_12_R1,
