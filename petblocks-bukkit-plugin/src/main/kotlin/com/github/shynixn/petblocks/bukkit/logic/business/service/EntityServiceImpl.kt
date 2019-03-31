@@ -5,6 +5,7 @@ package com.github.shynixn.petblocks.bukkit.logic.business.service
 import com.github.shynixn.petblocks.api.business.enumeration.AIType
 import com.github.shynixn.petblocks.api.business.enumeration.EntityType
 import com.github.shynixn.petblocks.api.business.enumeration.Version
+import com.github.shynixn.petblocks.api.business.proxy.EntityPetProxy
 import com.github.shynixn.petblocks.api.business.proxy.NMSPetProxy
 import com.github.shynixn.petblocks.api.business.proxy.PetProxy
 import com.github.shynixn.petblocks.api.business.service.*
@@ -288,7 +289,11 @@ class EntityServiceImpl @Inject constructor(
         }
 
         if (nearest != null) {
-            nearest.remove()
+            if (nearest is EntityPetProxy) {
+                nearest.deleteFromWorld()
+            } else {
+                nearest.remove()
+            }
 
             val prefix = configurationService.findValue<String>("messages.prefix")
             player.sendMessage(prefix + "" + ChatColor.GREEN + "You removed entity " + nearest.type + '.'.toString())
