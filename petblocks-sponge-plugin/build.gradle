@@ -25,6 +25,8 @@ minecraft {
 apply plugin: 'jacoco'
 
 shadowJar{
+    from sourceSets.main.resources.srcDirs
+
     archiveName = "$baseName-$version.$extension"
 
     // Change the output folder of the plugin.
@@ -35,6 +37,8 @@ shadowJar{
     relocate 'org.jetbrains', 'com.github.shynixn.petblocks.lib.org.jetbrains'
     relocate 'javax.inject', 'com.github.shynixn.petblocks.lib.javax.inject'
     relocate 'org.aopalliance', 'com.github.shynixn.petblocks.lib.org.aopalliance'
+
+    exclude "dummyThing"
 }
 
 jar {

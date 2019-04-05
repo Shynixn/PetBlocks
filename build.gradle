@@ -13,6 +13,7 @@ buildscript {
 plugins {
     id 'org.jetbrains.kotlin.jvm' version '1.3.21'
     id 'io.codearte.nexus-staging' version '0.20.0'
+    id 'de.marcphilipp.nexus-publish' version '0.2.0'
 }
 
 apply plugin: 'org.jetbrains.dokka'
@@ -21,6 +22,16 @@ repositories {
     mavenCentral()
     mavenLocal()
     jcenter()
+}
+
+nexusStaging {
+    packageGroup = "com.github.shynixn"
+    username = project.hasProperty("ossrhUsername") ? project.findProperty("ossrhUsername") : System.getenv('SONATYPE_USERNAME')
+    password = project.hasProperty("ossrhPassword") ? project.findProperty("ossrhPassword") : System.getenv('SONATYPE_PASSWORD')
+}
+
+allprojects {
+    apply plugin: 'jacoco'
 }
 
 subprojects {
@@ -33,12 +44,26 @@ subprojects {
     apply plugin: 'maven-publish'
     apply plugin: 'signing'
     apply plugin: 'java-library'
+    apply plugin: 'de.marcphilipp.nexus-publish'
 
     compileKotlin {
         kotlinOptions.jvmTarget = "1.8"
     }
     compileTestKotlin {
         kotlinOptions.jvmTarget = "1.8"
+    }
+
+    jacocoTestReport {
+        reports {
+            xml.enabled = true
+            html.enabled = false
+        }
+    }
+
+    test {
+        useJUnitPlatform()
+        testLogging.showStandardStreams = true
+        failFast = true
     }
 
     task sourcesJar(type: Jar) {
@@ -53,7 +78,7 @@ subprojects {
 
     task javadocJar(type: Jar, dependsOn: dokkaJavadoc) {
         from javadoc
-        classifier  = 'javadoc'
+        classifier = 'javadoc'
     }
 
     publishing {
@@ -101,7 +126,6 @@ subprojects {
     }
 
     signing {
-        required { gradle.taskGraph.hasTask("uploadArchives") }
         sign publishing.publications.mavenJava
     }
 
@@ -117,6 +141,37 @@ subprojects {
 
     dependencies {
         implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk8'
+
+        testCompile 'org.jetbrains.kotlin:kotlin-test'
+        testCompile 'org.jetbrains.kotlin:kotlin-test-junit'
+    }
+}
+
+gradle.taskGraph.whenReady { taskGraph ->
+    if (project.findProperty("signing.keyId") == null) {
+        ext."signing.keyId" = System.getenv('SIGNING_KEYID')
+        ext."signing.password" = System.getenv('SIGNING_KEYPASSWORD')
+        ext."signing.secretKeyRingFile" = '/home/travis/build/Shynixn/BlockBall/travis_secret_key'
+    }
+}
+
+task jacocoRootReport(type: org.gradle.testing.jacoco.tasks.JacocoReport) {
+    additionalSourceDirs = files(subprojects.sourceSets.main.allSource.srcDirs)
+    sourceDirectories = files(subprojects.sourceSets.main.allSource.srcDirs)
+    classDirectories =  files(subprojects.sourceSets.main.output)
+    executionData = files(subprojects.jacocoTestReport.executionData)
+    reports {
+        html.enabled = true
+        xml.enabled = true
+        csv.enabled = false
+    }
+    onlyIf = {
+        true
+    }
+    doFirst {
+        executionData = files(executionData.findAll {
+            it.exists()
+        })
     }
 }
 

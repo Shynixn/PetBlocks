@@ -68,12 +68,14 @@ class EntityRegistrationServiceImpl @Inject constructor(private val loggingServi
             loggingService.warn("Failed to register Entities in Sponge Internal registry. GriefPreventionFlags using petblocks may not work correctly.", e)
         }
 
-        try {
-            val minecraftKey = ResourceLocation("petblocks", entityType.saveGame_11)
-            val materialRegistry = EntityList.REGISTRY
-            materialRegistry.register(entityType.entityId, minecraftKey, customEntityClazz as Class<out Entity>)
-        } catch (error: NoSuchFieldError) {
-            // SpongeForge does not allow registering custom server entities.
+        if (entityType != EntityType.ARMORSTAND) {
+            try {
+                val minecraftKey = ResourceLocation("petblocks", entityType.saveGame_11)
+                val materialRegistry = EntityList.REGISTRY
+                materialRegistry.register(entityType.entityId, minecraftKey, customEntityClazz as Class<out Entity>)
+            } catch (error: NoSuchFieldError) {
+                // SpongeForge does not allow registering custom server entities.
+            }
         }
 
         classes[customEntityClazz] = entityType

@@ -89,7 +89,7 @@ class PetBlocksPlugin : JavaPlugin(), PluginProxy {
             Bukkit.getServer()
                 .consoleSender.sendMessage(PREFIX_CONSOLE + ChatColor.RED + "PetBlocks does not support your server version")
             Bukkit.getServer()
-                .consoleSender.sendMessage(PREFIX_CONSOLE + ChatColor.RED + "Install v" + Version.VERSION_1_12_R1.id + " - v" + Version.VERSION_1_13_R2.id)
+                .consoleSender.sendMessage(PREFIX_CONSOLE + ChatColor.RED + "Install v" + Version.VERSION_1_8_R1.id + " - v" + Version.VERSION_1_13_R2.id)
             Bukkit.getServer().consoleSender.sendMessage(PREFIX_CONSOLE + ChatColor.RED + "Plugin gets now disabled!")
             Bukkit.getServer()
                 .consoleSender.sendMessage(PREFIX_CONSOLE + ChatColor.RED + "================================================")

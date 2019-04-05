@@ -65,7 +65,6 @@ import java.util.*
  */
 @Plugin(id = "petblocks",
     name = "PetBlocks",
-    version = "8.0.0-SNAPSHOT",
     description = "PetBlocks is a spigot and also a sponge plugin to use blocks and custom heads as pets in Minecraft.")
 class PetBlocksPlugin : PluginProxy {
     companion object {

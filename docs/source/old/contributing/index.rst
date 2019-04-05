@@ -9,7 +9,7 @@ Leave a like/review/diamond...
 
 The easiest thing is to rate the plugin on spigotmc.org, planetminecraft.com or github.com. It encourages me to continue supporting PetBlocks. :)
 
-.. image:: ../_static/images/contr1.jpg
+.. image:: ../_static/images/contr1.JPG
 
 
 Supporting and Donating
@@ -32,4 +32,4 @@ private messages on spigot.
 Developer? How can I customize PetBlocks?
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Take a look at setting up `PetBlocks on your local environment. <https://github.com/Shynixn/PetBlocks#contributing>`__
+Take a look at setting up your personal `PetBlocks workspace. <../api/index.html#setup-your-personal-petblocks-workspace>`__

@@ -263,6 +263,9 @@ class EntityServiceImpl @Inject constructor(
         val batClazz = Class.forName("com.github.shynixn.petblocks.sponge.logic.business.nms.VERSION.NMSPetBat".replace("VERSION", version.bukkitId))
         entityRegistrationService.register(batClazz, EntityType.RABBIT)
 
+        val armorStandClazz = Class.forName("com.github.shynixn.petblocks.sponge.logic.business.nms.VERSION.NMSPetArmorstand".replace("VERSION", version.bukkitId))
+        entityRegistrationService.register(armorStandClazz, EntityType.ARMORSTAND)
+
         registered = true
 
         return true

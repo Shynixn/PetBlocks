@@ -34,13 +34,20 @@ PetBlocks is a spigot and also a sponge plugin to use blocks and custom heads as
 [./gradlew|gradlew.bat] downloadDependencies
 ```
 
+* Install the ForgeGradle development workspace for sponge
+
+```xml
+[./gradlew|gradlew.bat] setupDecompWorkspace
+```
+
 * Build the plugin by executing
 
 ```xml
 [./gradlew|gradlew.bat] shadowJar
 ```
 
-* The .jar file gets generated at petblocks-bukkit-plugin/build/libs/petblocks-bukkit-plugin.jar
+* The PetBlocks-Bukkit.jar file gets generated at petblocks-bukkit-plugin/build/libs/petblocks-bukkit-plugin.jar
+* The PetBlocks-Sponge.jar file gets generated at petblocks-sponge-plugin/build/libs/petblocks-sponge-plugin.jar
 
 ## Licence
 
