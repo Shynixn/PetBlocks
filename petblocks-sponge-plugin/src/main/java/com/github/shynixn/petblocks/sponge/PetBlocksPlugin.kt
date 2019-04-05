@@ -1,4 +1,4 @@
-@file:Suppress("UNCHECKED_CAST")
+@file:Suppress("UNCHECKED_CAST", "unused", "UNUSED_PARAMETER")
 
 package com.github.shynixn.petblocks.sponge
 
@@ -8,6 +8,7 @@ import com.github.shynixn.petblocks.api.business.enumeration.Version
 import com.github.shynixn.petblocks.api.business.proxy.EntityPetProxy
 import com.github.shynixn.petblocks.api.business.proxy.PluginProxy
 import com.github.shynixn.petblocks.api.business.service.*
+import com.github.shynixn.petblocks.api.persistence.context.SqlDbContext
 import com.github.shynixn.petblocks.core.logic.business.commandexecutor.EditPetCommandExecutorImpl
 import com.github.shynixn.petblocks.core.logic.business.commandexecutor.PlayerPetActionCommandExecutorImpl
 import com.github.shynixn.petblocks.core.logic.business.commandexecutor.ReloadCommandExecutorImpl
@@ -16,16 +17,17 @@ import com.github.shynixn.petblocks.sponge.logic.business.extension.getServerVer
 import com.github.shynixn.petblocks.sponge.logic.business.extension.sendMessage
 import com.github.shynixn.petblocks.sponge.logic.business.extension.toText
 import com.github.shynixn.petblocks.sponge.logic.business.listener.*
-import com.google.inject.Guice
 import com.google.inject.Inject
 import com.google.inject.Injector
-import org.bstats.sponge.Metrics
+import org.bstats.sponge.Metrics2
 import org.slf4j.Logger
 import org.spongepowered.api.Sponge
 import org.spongepowered.api.entity.living.player.Player
 import org.spongepowered.api.event.Listener
 import org.spongepowered.api.event.cause.Cause
 import org.spongepowered.api.event.game.GameReloadEvent
+import org.spongepowered.api.event.game.state.GameInitializationEvent
+import org.spongepowered.api.event.game.state.GameStoppingServerEvent
 import org.spongepowered.api.event.message.MessageEvent
 import org.spongepowered.api.event.network.ClientConnectionEvent
 import org.spongepowered.api.plugin.Plugin
@@ -63,7 +65,6 @@ import java.util.*
  */
 @Plugin(id = "petblocks",
     name = "PetBlocks",
-    version = "8.0.0-SNAPSHOT",
     description = "PetBlocks is a spigot and also a sponge plugin to use blocks and custom heads as pets in Minecraft.")
 class PetBlocksPlugin : PluginProxy {
     companion object {
@@ -79,7 +80,7 @@ class PetBlocksPlugin : PluginProxy {
     private lateinit var plugin: PluginContainer
 
     @Inject
-    private lateinit var metrics: Metrics
+    private lateinit var metrics: Metrics2
 
     @Inject
     private lateinit var logger: Logger
@@ -93,7 +94,7 @@ class PetBlocksPlugin : PluginProxy {
      * Enables the plugin PetBlocks.
      */
     @Listener
-    fun onEnable() {
+    fun onEnable(event: GameInitializationEvent) {
         Sponge.getServer().console.sendMessage(PREFIX_CONSOLE + ChatColor.GREEN + "Loading PetBlocks ...")
         this.injector = spongeInjector.createChildInjector(PetBlocksDependencyInjectionBinder(plugin))
 
@@ -102,7 +103,7 @@ class PetBlocksPlugin : PluginProxy {
         ) {
             Sponge.getServer().console.sendMessage(PREFIX_CONSOLE + ChatColor.RED + "================================================")
             Sponge.getServer().console.sendMessage(PREFIX_CONSOLE + ChatColor.RED + "PetBlocks does not support your server version")
-            Sponge.getServer().console.sendMessage(PREFIX_CONSOLE + ChatColor.RED + "Install v" + Version.VERSION_1_13_R2.id + " - v" + Version.VERSION_1_13_R2.id)
+            Sponge.getServer().console.sendMessage(PREFIX_CONSOLE + ChatColor.RED + "Install v" + Version.VERSION_1_12_R1.id + " - v" + Version.VERSION_1_12_R1.id)
             Sponge.getServer().console.sendMessage(PREFIX_CONSOLE + ChatColor.RED + "Plugin gets now disabled!")
             Sponge.getServer().console.sendMessage(PREFIX_CONSOLE + ChatColor.RED + "================================================")
 
@@ -112,7 +113,7 @@ class PetBlocksPlugin : PluginProxy {
             return
         }
 
-        configurationService = resolve<ConfigurationService>(ConfigurationService::class.java)
+        configurationService = resolve(ConfigurationService::class.java)
 
         if (!configurationService.contains("config-version") || configurationService.findValue<Int>("config-version") != configVersion) {
             Sponge.getServer().console.sendMessage(PREFIX_CONSOLE + ChatColor.RED + "================================================")
@@ -174,7 +175,7 @@ class PetBlocksPlugin : PluginProxy {
      * OnDisable.
      */
     @Listener
-    fun onDisable() {
+    fun onDisable(event: GameStoppingServerEvent) {
         if (immediateDisable) {
             return
         }
@@ -204,6 +205,8 @@ class PetBlocksPlugin : PluginProxy {
                 }
             }
         }
+
+        resolve<SqlDbContext>(SqlDbContext::class.java).close()
     }
 
     /**

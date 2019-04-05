@@ -3,13 +3,11 @@
 package com.github.shynixn.petblocks.bukkit
 
 import com.github.shynixn.petblocks.api.business.enumeration.Version
-import com.github.shynixn.petblocks.api.business.proxy.SqlConnectionPoolProxy
 import com.github.shynixn.petblocks.api.business.service.*
 import com.github.shynixn.petblocks.api.persistence.context.SqlDbContext
 import com.github.shynixn.petblocks.api.persistence.repository.PetMetaRepository
 import com.github.shynixn.petblocks.bukkit.logic.business.extension.getServerVersion
 import com.github.shynixn.petblocks.bukkit.logic.business.listener.PetListener
-import com.github.shynixn.petblocks.bukkit.logic.business.proxy.SqlProxyImpl
 import com.github.shynixn.petblocks.bukkit.logic.business.service.*
 import com.github.shynixn.petblocks.core.logic.business.service.LoggingUtilServiceImpl
 import com.github.shynixn.petblocks.core.logic.business.command.*
@@ -84,7 +82,6 @@ class PetBlocksDependencyInjectionBinder(private val plugin: Plugin) : AbstractM
         bind(PetListener::class.java).`in`(Scopes.SINGLETON)
 
         // Contexts
-        bind(SqlConnectionPoolProxy::class.java).to(SqlProxyImpl::class.java).`in`(Scopes.SINGLETON)
         bind(SqlDbContext::class.java).to(SqlDbContextImpl::class.java).`in`(Scopes.SINGLETON)
 
         // Repositories
@@ -125,7 +122,8 @@ class PetBlocksDependencyInjectionBinder(private val plugin: Plugin) : AbstractM
 
         when {
             version.isVersionSameOrGreaterThan(Version.VERSION_1_13_R1) -> bind(ItemService::class.java).to(Item113R1ServiceImpl::class.java).`in`(Scopes.SINGLETON)
-            else -> bind(ItemService::class.java).to(Item18R1ServiceImpl::class.java).`in`(Scopes.SINGLETON)
+            version.isVersionSameOrGreaterThan(Version.VERSION_1_9_R1) -> bind(ItemService::class.java).to(Item119R1ServiceImpl::class.java).`in`(Scopes.SINGLETON)
+            else -> bind(ItemService::class.java).to(Item118R1ServiceImpl::class.java).`in`(Scopes.SINGLETON)
         }
 
         bind(MessageService::class.java).to(MessageServiceImpl::class.java).`in`(Scopes.SINGLETON)

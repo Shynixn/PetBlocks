@@ -10,7 +10,10 @@ import com.github.shynixn.petblocks.api.persistence.entity.ChatMessage
 import com.github.shynixn.petblocks.api.persistence.entity.Position
 import com.github.shynixn.petblocks.api.persistence.entity.PropertyTrackable
 import com.github.shynixn.petblocks.core.logic.persistence.entity.ChatMessageEntity
+import java.lang.reflect.Field
+import java.lang.reflect.Modifier
 import java.util.concurrent.CompletableFuture
+import java.util.regex.Pattern
 import kotlin.reflect.KProperty
 
 /**
@@ -48,6 +51,16 @@ fun chatMessage(f: ChatMessage.() -> Unit): ChatMessage {
     val chatMessage = ChatMessageEntity()
     f.invoke(chatMessage)
     return chatMessage
+}
+
+/**
+ * Removes the final modifier from this field to allow editing.
+ */
+fun Field.removeFinalModifier() {
+    isAccessible = true
+    val modifiersField = Field::class.java.getDeclaredField("modifiers")
+    modifiersField.isAccessible = true
+    modifiersField.setInt(this, this.modifiers and Modifier.FINAL.inv())
 }
 
 /**
@@ -143,3 +156,13 @@ fun <T> CompletableFuture<T>.thenAcceptSafely(f: (T) -> Unit) {
 fun String.translateChatColors(): String {
     return ChatColor.translateChatColorCodes('&', this)
 }
+
+private val STRIP_COLOR_PATTERN = Pattern.compile("(?i)" + '§'.toString() + "[0-9A-FK-OR]")
+
+/**
+ * Strips the chat colors from the string.
+ */
+fun String.stripChatColors() : String{
+    return STRIP_COLOR_PATTERN.matcher(this).replaceAll("")
+}
+

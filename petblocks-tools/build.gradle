@@ -1,7 +1,10 @@
 plugins {
+    id 'application'
     id 'com.github.johnrengelman.shadow' version '4.0.2'
 }
 
+
+mainClassName="com.github.shynixn.petblockstools.MainKt"
 apply plugin: 'kotlin-platform-jvm'
 
 shadowJar{

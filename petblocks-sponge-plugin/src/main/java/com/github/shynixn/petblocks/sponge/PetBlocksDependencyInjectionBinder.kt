@@ -15,6 +15,7 @@ import com.github.shynixn.petblocks.core.logic.persistence.context.SqlDbContextI
 import com.github.shynixn.petblocks.core.logic.persistence.repository.PetMetaSqlRepository
 import com.github.shynixn.petblocks.sponge.logic.business.extension.getServerVersion
 import com.github.shynixn.petblocks.sponge.logic.business.listener.PetListener
+import com.github.shynixn.petblocks.sponge.logic.business.service.*
 import com.google.inject.AbstractModule
 import com.google.inject.Scopes
 import org.spongepowered.api.plugin.PluginContainer
@@ -54,7 +55,6 @@ class PetBlocksDependencyInjectionBinder(private val plugin: PluginContainer) : 
         val version = getServerVersion()
 
         // General
-        bind(PluginContainer::class.java).toInstance(plugin)
         bind(Version::class.java).toInstance(version)
         bind(LoggingService::class.java).toInstance(LoggingSlf4jServiceImpl(plugin.logger))
 
@@ -80,7 +80,6 @@ class PetBlocksDependencyInjectionBinder(private val plugin: PluginContainer) : 
         bind(PetListener::class.java).`in`(Scopes.SINGLETON)
 
         // Contexts
-       // bind(SqlConnectionPoolProxy::class.java).to(SqlProxyImpl::class.java).`in`(Scopes.SINGLETON)
         bind(SqlDbContext::class.java).to(SqlDbContextImpl::class.java).`in`(Scopes.SINGLETON)
 
         // Repositories
@@ -101,19 +100,16 @@ class PetBlocksDependencyInjectionBinder(private val plugin: PluginContainer) : 
         bind(PetDebugService::class.java).to(PetDebugServiceImpl::class.java).`in`(Scopes.SINGLETON)
 
         // Sponge Services
-     /*   bind(AfraidOfWaterService::class.java).to(AfraidOfWaterServiceImpl::class.java).`in`(Scopes.SINGLETON)
+        bind(AfraidOfWaterService::class.java).to(AfraidOfWaterServiceImpl::class.java).`in`(Scopes.SINGLETON)
         bind(CommandService::class.java).to(CommandServiceImpl::class.java).`in`(Scopes.SINGLETON)
         bind(ConcurrencyService::class.java).to(ConcurrencyServiceImpl::class.java).`in`(Scopes.SINGLETON)
         bind(ConfigurationService::class.java).to(ConfigurationServiceImpl::class.java).`in`(Scopes.SINGLETON)
-        bind(DependencyHeadDatabaseService::class.java).to(DependencyHeadDatabaseServiceImpl::class.java).`in`(Scopes.SINGLETON)
         bind(DependencyService::class.java).to(DependencyServiceImpl::class.java).`in`(Scopes.SINGLETON)
-        bind(EntityRegistrationService::class.java).to(EntityRegistration18R1ServiceImpl::class.java).`in`(Scopes.SINGLETON)
-
+        bind(EntityRegistrationService::class.java).to(EntityRegistrationServiceImpl::class.java).`in`(Scopes.SINGLETON)
         bind(EntityService::class.java).to(EntityServiceImpl::class.java).`in`(Scopes.SINGLETON)
         bind(EventService::class.java).to(EventServiceImpl::class.java).`in`(Scopes.SINGLETON)
         bind(GUIService::class.java).to(GUIServiceImpl::class.java).`in`(Scopes.SINGLETON)
         bind(ItemService::class.java).to(ItemServiceImpl::class.java).`in`(Scopes.SINGLETON)
-
         bind(MessageService::class.java).to(MessageServiceImpl::class.java).`in`(Scopes.SINGLETON)
         bind(NavigationService::class.java).to(NavigationServiceImpl::class.java).`in`(Scopes.SINGLETON)
         bind(ParticleService::class.java).to(ParticleServiceImpl::class.java).`in`(Scopes.SINGLETON)
@@ -123,6 +119,6 @@ class PetBlocksDependencyInjectionBinder(private val plugin: PluginContainer) : 
 
         // Dependency resolving
         val dependencyService = DependencyServiceImpl(plugin)
-        dependencyService.checkForInstalledDependencies()*/
+        dependencyService.checkForInstalledDependencies()
     }
 }

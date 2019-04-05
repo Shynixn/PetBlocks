@@ -55,10 +55,10 @@ import java.util.*
  * SOFTWARE.
  */
 class PetProxyImpl(override val meta: PetMeta, private val design: ArmorStand, private val owner: Player) :
-    PetProxy, Runnable {
+    PetProxy {
 
-    var teleportTarget: Location? = null
-    var aiGoals: List<Any>? = null
+    override var teleportTarget: Any? = null
+    override var aiGoals: List<Any>? = null
     var hitBox: LivingEntity? = null
 
     private val particleService = PetBlocksApi.resolve(ParticleService::class.java)
@@ -122,7 +122,7 @@ class PetProxyImpl(override val meta: PetMeta, private val design: ArmorStand, p
     /**
      * Gets called from any Movement AI to play movement effects.
      */
-    fun playMovementEffects() {
+    override fun playMovementEffects() {
         try {
             for (aiBase in meta.aiGoals) {
                 if (aiBase is AIMovement) {
@@ -145,7 +145,11 @@ class PetProxyImpl(override val meta: PetMeta, private val design: ArmorStand, p
     /**
      * Gets called when the hitbox changes.
      */
-    fun changeHitBox(hitBox: LivingEntity?) {
+    override fun changeHitBox(hitBox: Any?) {
+        if (hitBox !is LivingEntity?) {
+            return
+        }
+
         this.hitBox = hitBox
 
         if (hitBox == null) {

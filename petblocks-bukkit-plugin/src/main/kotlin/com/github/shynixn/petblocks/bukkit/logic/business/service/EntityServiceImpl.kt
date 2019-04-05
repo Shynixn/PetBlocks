@@ -5,13 +5,14 @@ package com.github.shynixn.petblocks.bukkit.logic.business.service
 import com.github.shynixn.petblocks.api.business.enumeration.AIType
 import com.github.shynixn.petblocks.api.business.enumeration.EntityType
 import com.github.shynixn.petblocks.api.business.enumeration.Version
+import com.github.shynixn.petblocks.api.business.proxy.EntityPetProxy
 import com.github.shynixn.petblocks.api.business.proxy.NMSPetProxy
 import com.github.shynixn.petblocks.api.business.proxy.PetProxy
 import com.github.shynixn.petblocks.api.business.service.*
 import com.github.shynixn.petblocks.api.persistence.entity.*
 import com.github.shynixn.petblocks.bukkit.logic.business.extension.findClazz
-import com.github.shynixn.petblocks.bukkit.logic.business.proxy.PathfinderProxyImpl
 import com.github.shynixn.petblocks.core.logic.business.proxy.AICreationProxyImpl
+import com.github.shynixn.petblocks.core.logic.business.proxy.PathfinderProxyImpl
 import com.google.inject.Inject
 import org.bukkit.ChatColor
 import org.bukkit.GameMode
@@ -54,6 +55,7 @@ class EntityServiceImpl @Inject constructor(
     private val proxyService: ProxyService,
     private val entityRegistrationService: EntityRegistrationService,
     private val yamlSerializationService: YamlSerializationService,
+    private val loggingService: LoggingService,
     private val aiService: AIService,
     private val petService: PetService,
     private val plugin: Plugin,
@@ -67,7 +69,7 @@ class EntityServiceImpl @Inject constructor(
 
     init {
         this.register<AIAfraidOfWater>(AIType.AFRAID_OF_WATER) { pet, aiBase ->
-            val pathfinder = PathfinderProxyImpl(plugin, aiBase)
+            val pathfinder = PathfinderProxyImpl(loggingService, aiBase)
             val hitBox = pet.getHitBoxLivingEntity<LivingEntity>().get()
             val owner = pet.getPlayer<Player>()
             var milliseconds = 0L
@@ -92,7 +94,7 @@ class EntityServiceImpl @Inject constructor(
         }
 
         this.register<AIAmbientSound>(AIType.AMBIENT_SOUND) { pet, aiBase ->
-            val pathfinder = PathfinderProxyImpl(plugin, aiBase)
+            val pathfinder = PathfinderProxyImpl(loggingService, aiBase)
             val hitBox = pet.getHitBoxLivingEntity<LivingEntity>().get()
             val owner = pet.getPlayer<Player>()
 
@@ -128,7 +130,7 @@ class EntityServiceImpl @Inject constructor(
         this.register<AIFlyRiding>(AIType.FLY_RIDING)
 
         this.register<AIFollowBack>(AIType.FOLLOW_BACK) { pet, aiBase ->
-            val pathfinder = PathfinderProxyImpl(plugin, aiBase)
+            val pathfinder = PathfinderProxyImpl(loggingService, aiBase)
             val owner = pet.getPlayer<Player>()
 
             pathfinder.shouldGoalBeExecuted = {
@@ -152,7 +154,7 @@ class EntityServiceImpl @Inject constructor(
 
         this.register<AIFollowOwner>(AIType.FOLLOW_OWNER) { pet, aiBase ->
             var lastLocation: Location? = null
-            val pathfinder = PathfinderProxyImpl(plugin, aiBase)
+            val pathfinder = PathfinderProxyImpl(loggingService, aiBase)
             val owner = pet.getPlayer<Player>()
             val hitBox = pet.getHitBoxLivingEntity<LivingEntity>().get()
 
@@ -287,7 +289,11 @@ class EntityServiceImpl @Inject constructor(
         }
 
         if (nearest != null) {
-            nearest.remove()
+            if (nearest is EntityPetProxy) {
+                nearest.deleteFromWorld()
+            } else {
+                nearest.remove()
+            }
 
             val prefix = configurationService.findValue<String>("messages.prefix")
             player.sendMessage(prefix + "" + ChatColor.GREEN + "You removed entity " + nearest.type + '.'.toString())

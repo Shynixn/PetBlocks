@@ -284,7 +284,6 @@ class GUIServiceImpl @Inject constructor(
                 }
 
                 this.pageCache[player] = pageCache
-                renderPage(player, petMeta, this.pageCache[player]!!.path)
             }
 
             if (optGuiItem.icon.skin.sponsored) {
@@ -298,6 +297,8 @@ class GUIServiceImpl @Inject constructor(
             for (aiBase in optGuiItem.addAIs.toTypedArray()) {
                 petMeta.aiGoals.add(aiBase)
             }
+
+            renderPage(player, petMeta, this.pageCache[player]!!.path)
         }
 
         if (optGuiItem.script != null) {

@@ -9,7 +9,7 @@ Leave a like/review/diamond...
 
 The easiest thing is to rate the plugin on spigotmc.org, planetminecraft.com or github.com. It encourages me to continue supporting PetBlocks. :)
 
-.. image:: ../_static/images/contr1.jpg
+.. image:: ../_static/images/contr1.JPG
 
 
 Supporting and Donating

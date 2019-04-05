@@ -46,6 +46,39 @@ PetBlocks is using gradle as build system and is available in the central reposi
 * `Download PetBlocks-Api <http://repository.sonatype.org/service/local/artifact/maven/redirect?r=central-proxy&g=com.github.shynixn.petblocks&a=petblocks-api&v=LATEST>`__
 * `Download PetBlocks-Bukkit-Api <http://repository.sonatype.org/service/local/artifact/maven/redirect?r=central-proxy&g=com.github.shynixn.petblocks&a=petblocks-bukkit-api&v=LATEST>`__
 
+.. note::  The following dependencies are needed to access the PetBlocks **Sponge** Api.
+
+**Maven:**
+
+.. parsed-literal::
+
+    <dependency>
+        <groupId>com.github.shynixn.petblocks</groupId>
+        <artifactId>petblocks-api</artifactId>
+        <version>\ |release|\ </version>
+        <scope>provided</scope>
+    </dependency>
+    <dependency>
+        <groupId>com.github.shynixn.petblocks</groupId>
+        <artifactId>petblocks-sponge-api</artifactId>
+        <version>\ |release|\ </version>
+        <scope>provided</scope>
+    </dependency>
+
+**Gradle:**
+
+.. parsed-literal::
+
+    compileOnly 'com.github.shynixn.petblocks:petblocks-api:\ |release|\ '
+    compileOnly 'com.github.shynixn.petblocks:petblocks-sponge-api:\ |release|\ '
+
+
+**Jar files:**
+
+* `Download PetBlocks-Api <http://repository.sonatype.org/service/local/artifact/maven/redirect?r=central-proxy&g=com.github.shynixn.petblocks&a=petblocks-api&v=LATEST>`__
+* `Download PetBlocks-Sponge-Api <http://repository.sonatype.org/service/local/artifact/maven/redirect?r=central-proxy&g=com.github.shynixn.petblocks&a=petblocks-sponge-api&v=LATEST>`__
+
+
 Registering the dependency
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 

@@ -8,12 +8,12 @@ import com.github.shynixn.petblocks.api.business.enumeration.Version
 import com.github.shynixn.petblocks.api.business.proxy.PlayerProxy
 import com.github.shynixn.petblocks.api.business.proxy.PluginProxy
 import com.github.shynixn.petblocks.api.business.service.*
+import com.github.shynixn.petblocks.api.persistence.context.SqlDbContext
 import com.github.shynixn.petblocks.api.persistence.entity.*
 import com.github.shynixn.petblocks.bukkit.logic.business.proxy.PlayerProxyImpl
-import com.github.shynixn.petblocks.bukkit.logic.business.proxy.SqlProxyImpl
 import com.github.shynixn.petblocks.bukkit.logic.business.service.ConfigurationServiceImpl
 import com.github.shynixn.petblocks.bukkit.logic.business.service.EntityServiceImpl
-import com.github.shynixn.petblocks.bukkit.logic.business.service.Item18R1ServiceImpl
+import com.github.shynixn.petblocks.bukkit.logic.business.service.Item119R1ServiceImpl
 import com.github.shynixn.petblocks.bukkit.logic.business.service.YamlConfigurationServiceImpl
 import com.github.shynixn.petblocks.core.logic.business.service.AIServiceImpl
 import com.github.shynixn.petblocks.core.logic.business.service.LoggingUtilServiceImpl
@@ -83,7 +83,6 @@ class PersistenceSQLiteIT {
         // Act
         val initialSize = classUnderTest.getAll().get().size
         val actual = classUnderTest.getPetMetaFromPlayer(player)
-        sqlProxy!!.close()
 
         // Assert
         Assertions.assertEquals(0, initialSize)
@@ -178,7 +177,6 @@ class PersistenceSQLiteIT {
 
         classUnderTest.save(petMeta).get()
         val actual = classUnderTest.getPetMetaFromPlayer(player)
-        sqlProxy!!.close()
 
         // Assert
         Assertions.assertEquals(0, initialSize)
@@ -220,9 +218,12 @@ class PersistenceSQLiteIT {
     }
 
     companion object {
-        private var sqlProxy: SqlProxyImpl? = null
+        private var dbContext: SqlDbContext? = null
 
         fun createWithDependencies(): PersistencePetMetaService {
+            if (dbContext != null) {
+                dbContext!!.close()
+            }
 
             println(File(".").absolutePath)
             val configuration = YamlConfiguration()
@@ -249,15 +250,24 @@ class PersistenceSQLiteIT {
             method.isAccessible = true
             method.invoke(PetBlocksApi, MockedPluginProxy())
 
-            sqlProxy = SqlProxyImpl(plugin, LoggingUtilServiceImpl(Logger.getAnonymousLogger()))
+            val aiService = AIServiceImpl(LoggingUtilServiceImpl(Logger.getAnonymousLogger()), MockedProxyService(), YamlConfigurationServiceImpl())
+            val configService = ConfigurationServiceImpl(plugin, Item119R1ServiceImpl(), aiService)
+            EntityServiceImpl(configService,
+                MockedProxyService(),
+                Mockito.mock(EntityRegistrationService::class.java),
+                YamlSerializationServiceImpl(),
+                LoggingUtilServiceImpl(Logger.getAnonymousLogger()),
+                aiService,
+                Mockito.mock(PetService::class.java),
+                plugin,
+                Mockito.mock(AfraidOfWaterService::class.java),
+                Mockito.mock(NavigationService::class.java),
+                Mockito.mock(SoundService::class.java),
+                Version.VERSION_1_8_R1)
 
-            val aiService = AIServiceImpl(LoggingUtilServiceImpl(Logger.getAnonymousLogger()), MockedProxyService(),YamlConfigurationServiceImpl())
-            val configService = ConfigurationServiceImpl(plugin, Item18R1ServiceImpl(Version.VERSION_1_8_R1), aiService)
-            EntityServiceImpl(configService, MockedProxyService(), Mockito.mock(EntityRegistrationService::class.java), YamlSerializationServiceImpl()
-                , aiService, Mockito.mock(PetService::class.java), plugin, Mockito.mock(AfraidOfWaterService::class.java), Mockito.mock(NavigationService::class.java), Mockito.mock(SoundService::class.java), Version.VERSION_1_8_R1)
+            dbContext = SqlDbContextImpl(configService, LoggingUtilServiceImpl(Logger.getAnonymousLogger()))
 
-            val sqlite = PetMetaSqlRepository(SqlDbContextImpl(sqlProxy!!, LoggingUtilServiceImpl(Logger.getAnonymousLogger())),
-                aiService, configService)
+            val sqlite = PetMetaSqlRepository(dbContext!!, aiService, configService)
             return PersistencePetMetaServiceImpl(MockedProxyService(), sqlite, MockedConcurrencyService(), MockedEventService())
         }
     }
@@ -271,7 +281,7 @@ class PersistenceSQLiteIT {
          */
         override fun <S> resolve(service: Any): S {
             if (service == ItemService::class.java) {
-                return Item18R1ServiceImpl(Version.VERSION_1_9_R1) as S
+                return Item119R1ServiceImpl() as S
             }
 
             throw IllegalArgumentException()
@@ -293,7 +303,7 @@ class PersistenceSQLiteIT {
          * Throws a [IllegalArgumentException] if the proxy could not be generated.
          */
         override fun <P> findPlayerProxyObject(instance: P): PlayerProxy {
-            if(instance !is Player){
+            if (instance !is Player) {
                 throw RuntimeException()
             }
 
@@ -345,7 +355,7 @@ class PersistenceSQLiteIT {
         }
     }
 
-    class MockedEventService : EventService{
+    class MockedEventService : EventService {
         /**
          * Calls a framework event and returns if it was cancelled.
          */

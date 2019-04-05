@@ -56,7 +56,22 @@ interface Position {
     val blockZ: Int
 
     /**
+     * Adds the parameters to this position.
+     */
+    fun add(x: Double, y: Double = 0.0, z: Double = 0.0, yaw: Double = 0.0, pitch: Double = 0.0)
+
+    /**
+     * Adds the parameters to this position.
+     */
+    fun add(position: Position)
+
+    /**
+     * Gets the direction of the yaw and pitch.
+     */
+    fun getDirection(): Position
+
+    /**
      * Multiply position.
      */
-    fun multiply(multiplier : Double)
+    fun multiply(multiplier: Double)
 }

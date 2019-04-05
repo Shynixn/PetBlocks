@@ -14,6 +14,7 @@ import com.github.shynixn.petblocks.core.logic.business.extension.hasChanged
 import com.github.shynixn.petblocks.core.logic.business.extension.relativeFront
 import net.minecraft.server.v1_13_R2.*
 import org.bukkit.Bukkit
+import org.bukkit.Location
 import org.bukkit.craftbukkit.v1_13_R2.CraftWorld
 import org.bukkit.entity.ArmorStand
 import org.bukkit.entity.LivingEntity
@@ -23,7 +24,6 @@ import org.bukkit.plugin.java.JavaPlugin
 import org.bukkit.util.Vector
 import java.lang.reflect.Field
 import java.util.logging.Level
-import org.bukkit.Location
 
 /**
  * Created by Shynixn 2018.
@@ -56,9 +56,9 @@ class NMSPetArmorstand(owner: Player, val petMeta: PetMeta) : EntityArmorStand((
     private var internalProxy: PetProxyImpl? = null
     private var jumpingField: Field = EntityLiving::class.java.getDeclaredField("bg")
     private var internalHitBox: EntityInsentient? = null
-    private val aiService = PetBlocksApi.resolve<AIService>(AIService::class.java)
+    private val aiService = PetBlocksApi.resolve(AIService::class.java)
 
-    private val flyCanHitWalls = PetBlocksApi.resolve<ConfigurationService>(ConfigurationService::class.java).findValue<Boolean>("global-configuration.fly-wall-colision")
+    private val flyCanHitWalls = PetBlocksApi.resolve(ConfigurationService::class.java).findValue<Boolean>("global-configuration.fly-wall-colision")
     private var flyHasTakenOffGround = false
     private var flyIsOnGround: Boolean = false
     private var flyHasHitFloor: Boolean = false
@@ -104,6 +104,8 @@ class NMSPetArmorstand(owner: Player, val petMeta: PetMeta) : EntityArmorStand((
             proxy.changeHitBox(internalHitBox)
         }
 
+        val player = proxy.getPlayer<Player>()
+
         val compound = NBTTagCompound()
         this.b(compound)
         compound.setBoolean("Marker", false)
@@ -113,13 +115,19 @@ class NMSPetArmorstand(owner: Player, val petMeta: PetMeta) : EntityArmorStand((
         val hasRidingAi = petMeta.aiGoals.count { a -> a is AIGroundRiding || a is AIFlyRiding } > 0
 
         if (hasRidingAi) {
-            val player = proxy.getPlayer<Player>()
             val armorstand = proxy.getHeadArmorstand<ArmorStand>()
 
             armorstand.velocity = Vector(0, 1, 0)
             armorstand.passenger = player
 
             return
+        }
+        else {
+            for (passenger in player.passengers) {
+                if (passenger == this.bukkitEntity) {
+                    player.removePassenger(passenger)
+                }
+            }
         }
 
         val aiWearing = this.petMeta.aiGoals.firstOrNull { a -> a is AIWearing }
@@ -131,7 +139,6 @@ class NMSPetArmorstand(owner: Player, val petMeta: PetMeta) : EntityArmorStand((
             this.a(internalCompound)
             this.customNameVisible = false
 
-            val player = proxy.getPlayer<Player>()
             val armorstand = proxy.getHeadArmorstand<ArmorStand>()
 
             player.passenger = armorstand
@@ -192,7 +199,7 @@ class NMSPetArmorstand(owner: Player, val petMeta: PetMeta) : EntityArmorStand((
             }
 
             if (proxy.teleportTarget != null) {
-                val location = proxy.teleportTarget!!
+                val location = proxy.teleportTarget!! as Location
 
                 if (this.internalHitBox != null) {
                     this.internalHitBox!!.setPositionRotation(location.x, location.y, location.z, location.yaw, location.pitch)

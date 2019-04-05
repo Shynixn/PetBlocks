@@ -8,6 +8,7 @@ import com.github.shynixn.petblocks.api.business.enumeration.Version
 import com.github.shynixn.petblocks.api.business.proxy.EntityPetProxy
 import com.github.shynixn.petblocks.api.business.proxy.PluginProxy
 import com.github.shynixn.petblocks.api.business.service.*
+import com.github.shynixn.petblocks.api.persistence.context.SqlDbContext
 import com.github.shynixn.petblocks.bukkit.logic.business.extension.getServerVersion
 import com.github.shynixn.petblocks.bukkit.logic.business.extension.yamlMap
 import com.github.shynixn.petblocks.bukkit.logic.business.listener.*
@@ -69,26 +70,29 @@ class PetBlocksPlugin : JavaPlugin(), PluginProxy {
     override fun onEnable() {
         Bukkit.getServer().consoleSender.sendMessage(PREFIX_CONSOLE + ChatColor.GREEN + "Loading PetBlocks ...")
         this.saveDefaultConfig()
-        this.injector = Guice.createInjector(PetBlocksDependencyInjectionBinder(this))
 
         if (!getServerVersion().isCompatible(
-                /*  Version.VERSION_1_8_R1,
-                  Version.VERSION_1_8_R2,
-                  Version.VERSION_1_8_R3,
-                  Version.VERSION_1_9_R1,
-                  Version.VERSION_1_9_R2,
-                  Version.VERSION_1_10_R1,
-                  Version.VERSION_1_11_R1,
-                  Version.VERSION_1_12_R1,
-                  Version.VERSION_1_13_R1,*/
-                Version.VERSION_1_13_R2)
+                Version.VERSION_1_8_R1,
+                Version.VERSION_1_8_R2,
+                Version.VERSION_1_8_R3,
+                Version.VERSION_1_9_R1,
+                Version.VERSION_1_9_R2,
+                Version.VERSION_1_10_R1,
+                Version.VERSION_1_11_R1,
+                Version.VERSION_1_12_R1,
+                Version.VERSION_1_13_R1,
+                Version.VERSION_1_13_R2
+            )
         ) {
-            Bukkit.getServer().consoleSender.sendMessage(PREFIX_CONSOLE + ChatColor.RED + "================================================")
-            Bukkit.getServer().consoleSender.sendMessage(PREFIX_CONSOLE + ChatColor.RED + "PetBlocks does not support your server version")
             Bukkit.getServer()
-                .consoleSender.sendMessage(PREFIX_CONSOLE + ChatColor.RED + "Install v" + Version.VERSION_1_13_R2.id + " - v" + Version.VERSION_1_13_R2.id)
+                .consoleSender.sendMessage(PREFIX_CONSOLE + ChatColor.RED + "================================================")
+            Bukkit.getServer()
+                .consoleSender.sendMessage(PREFIX_CONSOLE + ChatColor.RED + "PetBlocks does not support your server version")
+            Bukkit.getServer()
+                .consoleSender.sendMessage(PREFIX_CONSOLE + ChatColor.RED + "Install v" + Version.VERSION_1_8_R1.id + " - v" + Version.VERSION_1_13_R2.id)
             Bukkit.getServer().consoleSender.sendMessage(PREFIX_CONSOLE + ChatColor.RED + "Plugin gets now disabled!")
-            Bukkit.getServer().consoleSender.sendMessage(PREFIX_CONSOLE + ChatColor.RED + "================================================")
+            Bukkit.getServer()
+                .consoleSender.sendMessage(PREFIX_CONSOLE + ChatColor.RED + "================================================")
 
             immediateDisable = true
             Bukkit.getPluginManager().disablePlugin(this)
@@ -96,14 +100,22 @@ class PetBlocksPlugin : JavaPlugin(), PluginProxy {
             return
         }
 
+        this.injector = Guice.createInjector(PetBlocksDependencyInjectionBinder(this))
+
         if (!this.config.contains("config-version") || this.config.getInt("config-version") != configVersion) {
-            Bukkit.getServer().consoleSender.sendMessage(PREFIX_CONSOLE + ChatColor.RED + "================================================")
-            Bukkit.getServer().consoleSender.sendMessage(PREFIX_CONSOLE + ChatColor.RED + "PetBlocks config.yml config-version does not match")
-            Bukkit.getServer().consoleSender.sendMessage(PREFIX_CONSOLE + ChatColor.RED + "with your installed PetBlocks.jar.")
-            Bukkit.getServer().consoleSender.sendMessage(PREFIX_CONSOLE + ChatColor.RED + "Carefully read the patch notes to get the correct config-version.")
-            Bukkit.getServer().consoleSender.sendMessage(PREFIX_CONSOLE + ChatColor.RED + "https://github.com/Shynixn/PetBlocks/releases")
+            Bukkit.getServer()
+                .consoleSender.sendMessage(PREFIX_CONSOLE + ChatColor.RED + "================================================")
+            Bukkit.getServer()
+                .consoleSender.sendMessage(PREFIX_CONSOLE + ChatColor.RED + "PetBlocks config.yml config-version does not match")
+            Bukkit.getServer()
+                .consoleSender.sendMessage(PREFIX_CONSOLE + ChatColor.RED + "with your installed PetBlocks.jar.")
+            Bukkit.getServer()
+                .consoleSender.sendMessage(PREFIX_CONSOLE + ChatColor.RED + "Carefully read the patch notes to get the correct config-version.")
+            Bukkit.getServer()
+                .consoleSender.sendMessage(PREFIX_CONSOLE + ChatColor.RED + "https://github.com/Shynixn/PetBlocks/releases")
             Bukkit.getServer().consoleSender.sendMessage(PREFIX_CONSOLE + ChatColor.RED + "Plugin gets now disabled!")
-            Bukkit.getServer().consoleSender.sendMessage(PREFIX_CONSOLE + ChatColor.RED + "================================================")
+            Bukkit.getServer()
+                .consoleSender.sendMessage(PREFIX_CONSOLE + ChatColor.RED + "================================================")
 
             immediateDisable = true
             Bukkit.getPluginManager().disablePlugin(this)
@@ -137,7 +149,10 @@ class PetBlocksPlugin : JavaPlugin(), PluginProxy {
         }
 
         // Register CommandExecutor
-        commandService.registerCommandExecutor(this.config.get("commands.petblock").yamlMap(), this.resolve(PlayerPetActionCommandExecutorImpl::class.java))
+        commandService.registerCommandExecutor(
+            this.config.get("commands.petblock").yamlMap(),
+            this.resolve(PlayerPetActionCommandExecutorImpl::class.java)
+        )
         commandService.registerCommandExecutor("petblocks", this.resolve(EditPetCommandExecutorImpl::class.java))
         commandService.registerCommandExecutor("petblockreload", this.resolve(ReloadCommandExecutorImpl::class.java))
 
@@ -158,14 +173,15 @@ class PetBlocksPlugin : JavaPlugin(), PluginProxy {
         }
 
         startPlugin()
-        Bukkit.getServer().consoleSender.sendMessage(PREFIX_CONSOLE + ChatColor.GREEN + "Enabled PetBlocks " + this.description.version + " by Shynixn")
+        Bukkit.getServer()
+            .consoleSender.sendMessage(PREFIX_CONSOLE + ChatColor.GREEN + "Enabled PetBlocks " + this.description.version + " by Shynixn")
     }
 
     /**
      * OnDisable.
      */
     override fun onDisable() {
-        if(immediateDisable){
+        if (immediateDisable) {
             return
         }
 
@@ -194,6 +210,8 @@ class PetBlocksPlugin : JavaPlugin(), PluginProxy {
                 }
             }
         }
+
+        resolve<SqlDbContext>(SqlDbContext::class.java).close()
     }
 
     /**
@@ -207,7 +225,12 @@ class PetBlocksPlugin : JavaPlugin(), PluginProxy {
 
             for (world in Bukkit.getWorlds()) {
                 for (player in world.players) {
-                    resolve<PetListener>(PetListener::class.java).onPlayerJoinEvent(PlayerJoinEvent(player, "PetBlocksRunTime"))
+                    resolve<PetListener>(PetListener::class.java).onPlayerJoinEvent(
+                        PlayerJoinEvent(
+                            player,
+                            "PetBlocksRunTime"
+                        )
+                    )
                 }
             }
 

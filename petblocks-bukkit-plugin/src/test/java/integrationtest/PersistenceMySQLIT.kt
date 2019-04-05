@@ -3,18 +3,17 @@
 package integrationtest
 
 import ch.vorburger.mariadb4j.DB
-import com.github.shynixn.petblocks.api.PetBlocksApi
 import com.github.shynixn.petblocks.api.business.enumeration.ParticleType
 import com.github.shynixn.petblocks.api.business.enumeration.Version
 import com.github.shynixn.petblocks.api.business.proxy.PlayerProxy
 import com.github.shynixn.petblocks.api.business.proxy.PluginProxy
 import com.github.shynixn.petblocks.api.business.service.*
+import com.github.shynixn.petblocks.api.persistence.context.SqlDbContext
 import com.github.shynixn.petblocks.api.persistence.entity.*
 import com.github.shynixn.petblocks.bukkit.logic.business.proxy.PlayerProxyImpl
-import com.github.shynixn.petblocks.bukkit.logic.business.proxy.SqlProxyImpl
 import com.github.shynixn.petblocks.bukkit.logic.business.service.ConfigurationServiceImpl
 import com.github.shynixn.petblocks.bukkit.logic.business.service.EntityServiceImpl
-import com.github.shynixn.petblocks.bukkit.logic.business.service.Item18R1ServiceImpl
+import com.github.shynixn.petblocks.bukkit.logic.business.service.Item119R1ServiceImpl
 import com.github.shynixn.petblocks.bukkit.logic.business.service.YamlConfigurationServiceImpl
 import com.github.shynixn.petblocks.core.logic.business.service.AIServiceImpl
 import com.github.shynixn.petblocks.core.logic.business.service.LoggingUtilServiceImpl
@@ -84,7 +83,6 @@ class PersistenceMySQLIT {
         // Act
         val initialSize = classUnderTest.getAll().get().size
         val actual = classUnderTest.getPetMetaFromPlayer(player)
-        sqlProxy!!.close()
 
         // Assert
         Assertions.assertEquals(0, initialSize)
@@ -178,7 +176,6 @@ class PersistenceMySQLIT {
 
         classUnderTest.save(petMeta).get()
         val actual = classUnderTest.getPetMetaFromPlayer(player)
-        sqlProxy!!.close()
 
         // Assert
         Assertions.assertEquals(0, initialSize)
@@ -220,14 +217,18 @@ class PersistenceMySQLIT {
     }
 
     companion object {
-        private var sqlProxy: SqlProxyImpl? = null
         private var database: DB? = null
+        private var dbContext: SqlDbContext? = null
 
         fun createWithDependencies(): PersistencePetMetaService {
             val configuration = YamlConfiguration()
             configuration.load(File("../petblocks-core/src/main/resources/assets/petblocks/config.yml"))
             configuration.set("sql.type", "mysql")
             configuration.set("sql.database", "db")
+
+            if (dbContext != null) {
+                dbContext!!.close()
+            }
 
             if (database != null) {
                 database!!.stop()
@@ -253,15 +254,13 @@ class PersistenceMySQLIT {
                 }
             }
 
-            sqlProxy = SqlProxyImpl(plugin, LoggingUtilServiceImpl(Logger.getAnonymousLogger()))
-
             val aiService = AIServiceImpl(LoggingUtilServiceImpl(Logger.getAnonymousLogger()), MockedProxyService(), YamlConfigurationServiceImpl())
-            val configService = ConfigurationServiceImpl(plugin, Item18R1ServiceImpl(Version.VERSION_1_8_R1), aiService)
+            val configService = ConfigurationServiceImpl(plugin, Item119R1ServiceImpl(), aiService)
             EntityServiceImpl(configService,
                 MockedProxyService(),
                 Mockito.mock(EntityRegistrationService::class.java),
-                YamlSerializationServiceImpl()
-                ,
+                YamlSerializationServiceImpl(),
+                LoggingUtilServiceImpl(Logger.getAnonymousLogger()),
                 aiService,
                 Mockito.mock(PetService::class.java),
                 plugin,
@@ -270,7 +269,9 @@ class PersistenceMySQLIT {
                 Mockito.mock(SoundService::class.java),
                 Version.VERSION_1_8_R1)
 
-            val sqlite = PetMetaSqlRepository(SqlDbContextImpl(sqlProxy!!, LoggingUtilServiceImpl(Logger.getAnonymousLogger())),
+            dbContext = SqlDbContextImpl(configService, LoggingUtilServiceImpl(Logger.getAnonymousLogger()))
+
+            val sqlite = PetMetaSqlRepository(dbContext!!,
                 aiService, configService)
             return PersistencePetMetaServiceImpl(MockedProxyService(), sqlite, MockedConcurrencyService(), MockedEventService())
         }
@@ -285,7 +286,7 @@ class PersistenceMySQLIT {
          */
         override fun <S> resolve(service: Any): S {
             if (service == ItemService::class.java) {
-                return Item18R1ServiceImpl(Version.VERSION_1_9_R1) as S
+                return Item119R1ServiceImpl() as S
             }
 
             throw IllegalArgumentException()

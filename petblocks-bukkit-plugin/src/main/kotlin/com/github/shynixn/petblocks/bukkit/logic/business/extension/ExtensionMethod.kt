@@ -322,13 +322,3 @@ fun getServerVersion(): Version {
 
     return Version.VERSION_UNKNOWN
 }
-
-/**
- * Removes the final modifier from this field to allow editing.
- */
-fun Field.removeFinalModifier() {
-    isAccessible = true
-    val modifiersField = Field::class.java.getDeclaredField("modifiers")
-    modifiersField.isAccessible = true
-    modifiersField.setInt(this, this.modifiers and Modifier.FINAL.inv())
-}

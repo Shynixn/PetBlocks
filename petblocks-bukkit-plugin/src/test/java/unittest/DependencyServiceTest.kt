@@ -5,7 +5,6 @@ import com.github.shynixn.petblocks.api.business.service.DependencyService
 import com.github.shynixn.petblocks.bukkit.logic.business.service.DependencyServiceImpl
 import org.bukkit.Bukkit
 import org.bukkit.Server
-import org.bukkit.command.CommandSender
 import org.bukkit.command.ConsoleCommandSender
 import org.bukkit.conversations.Conversation
 import org.bukkit.conversations.ConversationAbandonedEvent
@@ -18,7 +17,6 @@ import org.bukkit.plugin.PluginManager
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito
-import java.lang.RuntimeException
 import java.util.logging.Logger
 
 /**

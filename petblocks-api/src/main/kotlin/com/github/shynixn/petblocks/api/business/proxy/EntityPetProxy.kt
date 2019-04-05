@@ -32,4 +32,9 @@ interface EntityPetProxy{
      * Removes this entity.
      */
     fun deleteFromWorld()
+
+    /**
+     * Boots marker.
+     */
+    var bootsItemStack : Any?
 }

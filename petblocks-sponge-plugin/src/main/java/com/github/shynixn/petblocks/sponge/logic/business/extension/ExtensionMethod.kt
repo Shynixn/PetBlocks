@@ -2,21 +2,33 @@
 
 package com.github.shynixn.petblocks.sponge.logic.business.extension
 
+import com.flowpowered.math.vector.Vector3d
+import com.flowpowered.math.vector.Vector3i
 import com.github.shynixn.petblocks.api.business.enumeration.Version
 import com.github.shynixn.petblocks.api.persistence.entity.Position
 import com.github.shynixn.petblocks.core.logic.business.extension.translateChatColors
 import com.github.shynixn.petblocks.core.logic.persistence.entity.PositionEntity
 import net.minecraft.entity.player.EntityPlayerMP
+import net.minecraft.nbt.NBTTagCompound
+import net.minecraft.nbt.NBTTagList
 import org.spongepowered.api.Game
 import org.spongepowered.api.Sponge
 import org.spongepowered.api.command.source.ConsoleSource
+import org.spongepowered.api.data.key.Keys
 import org.spongepowered.api.entity.Transform
+import org.spongepowered.api.entity.living.player.Player
+import org.spongepowered.api.entity.living.player.gamemode.GameMode
+import org.spongepowered.api.item.inventory.Inventory
+import org.spongepowered.api.item.inventory.ItemStack
+import org.spongepowered.api.item.inventory.property.SlotIndex
+import org.spongepowered.api.item.inventory.property.SlotPos
 import org.spongepowered.api.item.inventory.type.CarriedInventory
+import org.spongepowered.api.item.inventory.type.GridInventory
 import org.spongepowered.api.text.Text
 import org.spongepowered.api.text.serializer.TextSerializers
 import org.spongepowered.api.world.World
-import java.lang.reflect.Field
-import java.lang.reflect.Modifier
+import org.yaml.snakeyaml.external.biz.base64Coder.Base64Coder
+import java.util.*
 
 /**
  * Created by Shynixn 2018.
@@ -85,10 +97,260 @@ fun CarriedInventory<*>.updateInventory() {
 }
 
 /**
+ * Sends a text message to the player.
+ */
+fun Player.sendMessage(text: String) {
+    this.sendMessage(text.toText())
+}
+
+/**
+ * Gets the current gamemode.
+ */
+val Player.gameMode: GameMode
+    get() = this.gameMode().get()
+
+/**
+ * Gets the x coordinate.
+ */
+val Transform<*>.x
+    get() = this.position.x
+
+/**
+ * Gets the y coordinate.
+ */
+val Transform<*>.y
+    get() = this.position.y
+
+/**
+ * Gets the z coordinate.
+ */
+val Transform<*>.z
+    get() = this.position.z
+
+/**
+ * Gets the yaw.
+ */
+val Transform<*>.yaw
+    get() = this.rotation.y
+
+/**
+ * Gets the pitch.
+ */
+val Transform<*>.pitch
+    get() = this.rotation.x
+
+/**
+ * Itemstack durability.
+ */
+var ItemStack.durability: Int
+    get() {
+        return (this as net.minecraft.item.ItemStack).itemDamage
+    }
+    set(value) {
+        (this as net.minecraft.item.ItemStack).itemDamage = value
+    }
+
+/**
+ * Sets an item at the given index.
+ */
+fun CarriedInventory<Player>.setItem(index: Int, itemStack: ItemStack) {
+    if (index == 0) {
+        query<Inventory>(GridInventory::class.java)
+            .query<Inventory>(SlotPos.of(0, 0)).set(itemStack)
+    } else {
+        query<Inventory>(GridInventory::class.java)
+            .query<Inventory>(SlotIndex.of(index)).set(itemStack)
+    }
+}
+
+/**
+ * Gets an item at the given index.
+ */
+fun CarriedInventory<Player>.getItem(index: Int): Optional<ItemStack> {
+    return if (index == 0) {
+        query<Inventory>(GridInventory::class.java)
+            .query<Inventory>(SlotPos.of(0, 0)).peek()
+    } else {
+        query<Inventory>(GridInventory::class.java)
+            .query<Inventory>(SlotIndex.of(index)).peek()
+    }
+}
+
+/**
+ * Calculates the distance between 2 transforms.
+ */
+fun Transform<World>.distance(other: Transform<World>): Double {
+    return this.position.distance(other.position)
+}
+
+/**
  * Converts the [Transform] to a Position.
  */
 fun Transform<World>.toPosition(): Position {
-    return PositionEntity(this.position.x, this.position.y, this.position.z, this.yaw.toDouble(), this.pitch.toDouble(), this.extent.name)
+    return PositionEntity(this.x, this.y, this.z, this.yaw, this.pitch, this.extent.name)
+}
+
+/**
+ * Converts the [Vector3d] to [Vector3i].
+ */
+fun Vector3d.toVector3i(): Vector3i {
+    return Vector3i()
+}
+
+/**
+ * Converts the [Transform] to a Position.
+ */
+fun Position.toTransform(): Transform<World> {
+    return Transform(
+        Sponge.getServer().getWorld(worldName!!).get(),
+        Vector3d(this.x, this.y, this.z),
+        Vector3d(0.0, this.yaw, this.pitch)
+    )
+}
+
+/**
+ * Converts the [Vector3d] to a Position.
+ */
+fun Vector3d.toPosition(): Position {
+    return PositionEntity(this.x, this.y, this.z)
+}
+
+/**
+ * Converts the [Position] to a Vector.
+ */
+fun Position.toVector(): Vector3d {
+    return Vector3d(this.x, this.y, this.z)
+}
+
+/**
+ * Sets the itemstack lore.
+ */
+var ItemStack.lore: List<String>?
+    get() {
+        val lore = this.get(Keys.ITEM_LORE)
+
+        if (lore.isPresent) {
+            val items = ArrayList<String>()
+
+            for (line in lore.get()) {
+                items.add(line.toTextString())
+            }
+
+            return items
+        }
+
+        return null
+    }
+    set(value) {
+        val items = ArrayList<Text>()
+
+        for (line in value!!) {
+            items.add(line.toText())
+        }
+
+        this.offer(org.spongepowered.api.data.key.Keys.ITEM_LORE, items)
+    }
+
+/**
+ * Changes the displayname of the itemstack.
+ * Gets an empty string if the displayName is not present.
+ */
+var ItemStack.displayName: String
+    get() {
+        val optDisplay = this.get(org.spongepowered.api.data.key.Keys.DISPLAY_NAME)
+
+        if (optDisplay.isPresent) {
+            return optDisplay.get().toTextString()
+        }
+
+        return ""
+    }
+    set(value) {
+        this.offer(org.spongepowered.api.data.key.Keys.DISPLAY_NAME, value.toText())
+    }
+
+/**
+ * Gets the skin of an itemstack.
+ */
+var ItemStack.skin: String?
+    get() {
+        return null
+    }
+    set(value) {
+        if (value == null) {
+            return
+        }
+
+        val nmsItemStack = this as net.minecraft.item.ItemStack
+        var newSkin = value
+
+        val nbtTagCompound = if (nmsItemStack.tagCompound != null) {
+            nmsItemStack.tagCompound!!
+        } else {
+            NBTTagCompound()
+        }
+
+        if (newSkin.length > 32) {
+            if (newSkin.contains("textures.minecraft.net")) {
+                if (!newSkin.startsWith("http://")) {
+                    newSkin = "http://$newSkin"
+                }
+
+                newSkin = Base64Coder.encodeString("{textures:{SKIN:{url:\"$newSkin\"}}}")
+            }
+
+            val skinProfile = Sponge.getServer().gameProfileManager.createProfile(UUID.randomUUID(), null)
+            val profileProperty = Sponge.getServer().gameProfileManager.createProfileProperty("textures", newSkin, null)
+            skinProfile.propertyMap.put("textures", profileProperty)
+
+            val internalTag = NBTTagCompound()
+            internalTag.setString("Id", skinProfile.uniqueId.toString())
+
+            val propertiesTag = NBTTagCompound()
+
+            for (content in skinProfile.propertyMap.keySet()) {
+                val nbtTagList = NBTTagList()
+
+                for (item in skinProfile.propertyMap.get(content)) {
+                    val nbtItem = NBTTagCompound()
+                    nbtItem.setString("Value", item.value)
+
+                    if (item.hasSignature()) {
+                        nbtItem.setString("Signature", item.signature.get())
+                    }
+
+                    nbtTagList.appendTag(nbtItem)
+                }
+
+                propertiesTag.setTag(content, nbtTagList)
+            }
+
+            internalTag.setTag("Properties", propertiesTag)
+            nbtTagCompound.setTag("SkullOwner", internalTag)
+        } else if (value.isNotEmpty()) {
+            nbtTagCompound.setString("SkullOwner", value)
+        }
+
+        nmsItemStack.tagCompound = nbtTagCompound
+    }
+
+/**
+ * Converts the current itemstack to an unbreakable itemstack.
+ */
+fun ItemStack.createUnbreakableCopy(): ItemStack {
+    val nmsItemStack = this as net.minecraft.item.ItemStack
+
+    val nbtTagCompound = if (nmsItemStack.tagCompound != null) {
+        nmsItemStack.tagCompound!!
+    } else {
+        NBTTagCompound()
+    }
+
+    nbtTagCompound.setBoolean("Unbreakable", true)
+
+    nmsItemStack.tagCompound = nbtTagCompound
+
+    return nmsItemStack as ItemStack
 }
 
 /**
@@ -96,10 +358,10 @@ fun Transform<World>.toPosition(): Position {
  */
 fun getServerVersion(): Version {
     try {
-        val version = Sponge.getPluginManager().getPlugin("sponge").get().version.get().split("-").dropLastWhile { it.isEmpty() }.toTypedArray()[0]
+        val version = Sponge.getPluginManager().getPlugin("sponge").get().version.get().split("-")[0]
 
         for (versionSupport in Version.values()) {
-            if (versionSupport.bukkitId == version) {
+            if (versionSupport.id == version) {
                 return versionSupport
             }
         }
@@ -108,14 +370,4 @@ fun getServerVersion(): Version {
     }
 
     return Version.VERSION_UNKNOWN
-}
-
-/**
- * Removes the final modifier from this field to allow editing.
- */
-fun Field.removeFinalModifier() {
-    isAccessible = true
-    val modifiersField = Field::class.java.getDeclaredField("modifiers")
-    modifiersField.isAccessible = true
-    modifiersField.setInt(this, this.modifiers and Modifier.FINAL.inv())
 }
