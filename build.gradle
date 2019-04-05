@@ -36,7 +36,7 @@ allprojects {
 
 subprojects {
     group 'com.github.shynixn.petblocks'
-    version '7.9.1'
+    version '8.0.0-SNAPSHOT'
 
     sourceCompatibility = 1.8
 
@@ -151,7 +151,7 @@ gradle.taskGraph.whenReady { taskGraph ->
     if (project.findProperty("signing.keyId") == null) {
         ext."signing.keyId" = System.getenv('SIGNING_KEYID')
         ext."signing.password" = System.getenv('SIGNING_KEYPASSWORD')
-        ext."signing.secretKeyRingFile" = '/home/travis/build/Shynixn/BlockBall/travis_secret_key'
+        ext."signing.secretKeyRingFile" = '/home/travis/build/Shynixn/PetBlocks/travis_secret_key'
     }
 }
 
