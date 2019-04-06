@@ -214,11 +214,11 @@ class EntityServiceImpl @Inject constructor(
             }
 
             // Pets of PetBlocks hide a marker in the boots of every entity. This marker is persistent even on server crashes.
-            if (entity.equipment != null && entity.equipment.boots != null) {
-                val boots = entity.equipment.boots
+            if (entity.equipment != null && entity.equipment!!.boots != null) {
+                val boots = entity.equipment!!.boots
 
-                if (boots.itemMeta != null && boots.itemMeta.lore != null && boots.itemMeta.lore.size > 0) {
-                    val lore = boots.itemMeta.lore[0]
+                if (boots!!.itemMeta != null && boots.itemMeta!!.lore != null && boots.itemMeta!!.lore!!.size > 0) {
+                    val lore = boots.itemMeta!!.lore!![0]
 
                     if (ChatColor.stripColor(lore) == "PetBlocks") {
                         try {

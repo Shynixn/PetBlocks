@@ -20,6 +20,7 @@ import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.entity.Player
 import org.bukkit.inventory.Inventory
+import org.bukkit.inventory.InventoryView
 import org.bukkit.inventory.ItemStack
 import org.bukkit.plugin.Plugin
 import java.util.*
@@ -215,7 +216,7 @@ class GUIServiceImpl @Inject constructor(
             throw IllegalArgumentException("Player has to be a BukkitPlayer!")
         }
 
-        if (player.openInventory != null) {
+        if ((player.openInventory as InventoryView?) != null) {
             player.closeInventory()
         }
 
@@ -499,7 +500,7 @@ class GUIServiceImpl @Inject constructor(
             tmpLore.add(l.replace("<permission>", permissionMessage).translateChatColors())
         }
 
-        meta.lore = tmpLore
+        meta!!.lore = tmpLore
         itemStack.itemMeta = meta
 
         try {
@@ -569,7 +570,7 @@ class GUIServiceImpl @Inject constructor(
         val guiItem = this.configurationService.findGUIItemCollection("static-gui")!![0]
 
         for (i in 0 until inventory.contents.size) {
-            if (inventory.getItem(i) == null || inventory.getItem(i).type == Material.AIR) {
+            if (inventory.getItem(i) == null || inventory.getItem(i)!!.type == Material.AIR) {
                 renderIcon(inventory, i, guiItem.icon, true)
             }
         }

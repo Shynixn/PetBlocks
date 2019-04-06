@@ -76,11 +76,11 @@ class ItemStackProxyImpl(
      * Creates a new itemstack from this proxy.
      */
     override fun <I> build(): I {
-        val itemstack = ItemStack(Material.getMaterial(typeName), amount, data.toShort())
-        val meta = itemstack.itemMeta
+        val itemstack = ItemStack(Material.getMaterial(typeName)!!, amount, data.toShort())
+        val meta = itemstack.itemMeta!!
 
         if (this.internalDisplayName != null) {
-            meta.displayName = this.internalDisplayName!!.translateChatColors()
+            meta.setDisplayName(this.internalDisplayName!!.translateChatColors())
         }
 
         meta.lore = this.lore

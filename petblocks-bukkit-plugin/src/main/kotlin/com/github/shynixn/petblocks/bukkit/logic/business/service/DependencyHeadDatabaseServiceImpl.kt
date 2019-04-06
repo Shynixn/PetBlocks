@@ -119,19 +119,19 @@ class DependencyHeadDatabaseServiceImpl @Inject constructor(
         }
 
         if (headDatabaseTitle == null) {
-            val plugin = Bukkit.getPluginManager().getPlugin("HeadDatabase")
-            this.headDatabaseTitle = this.constructPrefix(ChatColor.translateChatColorCodes('&', "&4&r" + plugin.config.getString("messages.database").split("%count%")[0]))
-            this.headDatabaseSearch = this.constructPrefix(ChatColor.translateChatColorCodes('&', "&4&r" + plugin.config.getString("messages.search").split("%count%")[0]))
+            val plugin = Bukkit.getPluginManager().getPlugin("HeadDatabase")!!
+            this.headDatabaseTitle = this.constructPrefix(ChatColor.translateChatColorCodes('&', "&4&r" + plugin.config.getString("messages.database")!!.split("%count%")[0]))
+            this.headDatabaseSearch = this.constructPrefix(ChatColor.translateChatColorCodes('&', "&4&r" + plugin.config.getString("messages.search")!!.split("%count%")[0]))
         }
 
-        val currentTitleName = org.bukkit.ChatColor.stripColor(player.openInventory.topInventory.title)
+        val currentTitleName = org.bukkit.ChatColor.stripColor(player.openInventory.topInventory.title)!!
 
         if (!currentTitleName.startsWith(this.headDatabaseTitle!!) && !currentTitleName.startsWith(this.headDatabaseSearch!!)) {
             return false
         }
 
         if (!itemService.hasItemStackProperties(item, skullItemType) || item.itemMeta == null
-            || item.itemMeta.displayName == null || !item.itemMeta.displayName.startsWith(org.bukkit.ChatColor.BLUE.toString())
+            || (item.itemMeta!!.displayName as String?) == null || !item.itemMeta!!.displayName.startsWith(org.bukkit.ChatColor.BLUE.toString())
         ) {
             return false
         }
@@ -153,9 +153,9 @@ class DependencyHeadDatabaseServiceImpl @Inject constructor(
             for (itemStack in player.openInventory.topInventory.contents) {
                 if (itemStack != null
                     && itemStack.itemMeta != null
-                    && itemStack.itemMeta.displayName != null
+                    && (itemStack.itemMeta!!.displayName as String?) != null
                 ) {
-                    if (itemStack.itemMeta.displayName == item.itemMeta.displayName) {
+                    if (itemStack.itemMeta!!.displayName == item.itemMeta!!.displayName) {
                         player.inventory.remove(itemStack)
                         player.inventory.updateInventory()
                         break
@@ -194,10 +194,10 @@ class DependencyHeadDatabaseServiceImpl @Inject constructor(
             if (t != '%') {
                 b.append(t)
             } else {
-                return org.bukkit.ChatColor.stripColor(b.toString())
+                return org.bukkit.ChatColor.stripColor(b.toString())!!
             }
         }
 
-        return org.bukkit.ChatColor.stripColor(b.toString())
+        return org.bukkit.ChatColor.stripColor(b.toString())!!
     }
 }

@@ -114,7 +114,7 @@ class ConfigurationServiceImpl @Inject constructor(
      * Opens a new inputStream to the given [resource].
      */
     override fun openResourceInputStream(resource: String): InputStream {
-        return plugin.getResource(resource)
+        return plugin.getResource(resource)!!
     }
 
     /**
@@ -245,7 +245,7 @@ class ConfigurationServiceImpl @Inject constructor(
      */
     private fun <T> setItem(key: String, map: Map<String, Any>?, f: (T) -> Unit) {
         if (map != null && map.containsKey(key)) {
-            f.invoke(map[key]!! as T)
+            f.invoke(map.getValue(key) as T)
         }
     }
 
@@ -262,14 +262,14 @@ class ConfigurationServiceImpl @Inject constructor(
             return null
         }
 
-        if (item.itemMeta == null || item.itemMeta.displayName == null) {
+        if (item.itemMeta == null || (item.itemMeta!!.displayName as String?) == null) {
             return null
         }
 
         for (guiItem in this.cache[path]!!) {
             try {
-                if (item.itemMeta.displayName == guiItem.icon.displayName.translateChatColors()) {
-                    if ((item.itemMeta.lore == null && guiItem.icon.lore.isEmpty()) || (item.itemMeta.lore.size == guiItem.icon.lore.size)) {
+                if (item.itemMeta!!.displayName == guiItem.icon.displayName.translateChatColors()) {
+                    if ((item.itemMeta!!.lore == null && guiItem.icon.lore.isEmpty()) || (item.itemMeta!!.lore!!.size == guiItem.icon.lore.size)) {
                         return guiItem
                     }
                 }
