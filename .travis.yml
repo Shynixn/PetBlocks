@@ -2,6 +2,8 @@ language: java
 sudo: true
 jdk:
   - oraclejdk8
+python:
+  - "3.7"
 cache:
   timeout: 1000
   directories:
