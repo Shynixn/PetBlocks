@@ -51,7 +51,7 @@ class InventoryListener @Inject constructor(private val guiService: GUIService, 
             return
         }
 
-        if (event.currentItem == null || event.currentItem.type == Material.AIR) {
+        if (event.currentItem == null || event.currentItem!!.type == Material.AIR) {
             return
         }
 

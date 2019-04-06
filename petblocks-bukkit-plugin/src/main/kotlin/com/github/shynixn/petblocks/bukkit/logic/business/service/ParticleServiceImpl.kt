@@ -100,7 +100,7 @@ class ParticleServiceImpl @Inject constructor(
 
             if (dataType == ItemStack::class.java && particle.materialName != null) {
                 val itemStack = findClazz("org.bukkit.craftbukkit.VERSION.inventory.CraftItemStack").getDeclaredMethod("asNMSCopy")
-                    .invoke(null, ItemStack(Material.getMaterial(particle.materialName), 1, particle.data.toShort()))
+                    .invoke(null, ItemStack(Material.getMaterial(particle.materialName!!)!!, 1, particle.data.toShort()))
 
                 internalParticleType = findClazz("net.minecraft.server.VERSION.ParticleParamItem")
                     .getDeclaredConstructor(particleClazz, itemStack.javaClass).newInstance(internalParticleType, itemStack)
@@ -109,7 +109,7 @@ class ParticleServiceImpl @Inject constructor(
 
                 val data = craftBlockStateClazz
                     .getDeclaredConstructor(Material::class.java)
-                    .newInstance(Material.getMaterial(particle.materialName))
+                    .newInstance(Material.getMaterial(particle.materialName!!))
 
                 craftBlockStateClazz.getDeclaredMethod("setRawData", Byte::class.java).invoke(data, particle.data.toByte())
                 val handle = craftBlockStateClazz.getDeclaredMethod("getHandle").invoke(data)
@@ -149,9 +149,9 @@ class ParticleServiceImpl @Inject constructor(
 
             if (particle.materialName != null) {
                 additionalPayload = if (particle.type == ParticleType.ITEM_CRACK) {
-                    intArrayOf(getIdFromMaterialMethod.invoke(Material.getMaterial(particle.materialName)) as Int, particle.data)
+                    intArrayOf(getIdFromMaterialMethod.invoke(Material.getMaterial(particle.materialName!!)) as Int, particle.data)
                 } else {
-                    intArrayOf(getIdFromMaterialMethod.invoke(Material.getMaterial(particle.materialName)) as Int, (particle.data shl 12))
+                    intArrayOf(getIdFromMaterialMethod.invoke(Material.getMaterial(particle.materialName!!)) as Int, (particle.data shl 12))
                 }
             }
 
@@ -229,7 +229,7 @@ class ParticleServiceImpl @Inject constructor(
     }
 
     private fun isLongDistance(location: Location, players: Array<out Player>): Boolean {
-        return players.any { location.world.name == it.location.world.name && it.location.distanceSquared(location) > 65536 }
+        return players.any { location.world!!.name == it.location.world!!.name && it.location.distanceSquared(location) > 65536 }
     }
 
     private fun getInternalEnumValue(particle: ParticleType): Any {

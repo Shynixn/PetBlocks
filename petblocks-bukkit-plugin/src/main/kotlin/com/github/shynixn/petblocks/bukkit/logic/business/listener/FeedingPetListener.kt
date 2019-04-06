@@ -48,7 +48,7 @@ class FeedingPetListener @Inject constructor(private val feedingPetService: Feed
     fun entityRightClickEvent(event: PlayerInteractAtEntityEvent) {
         val pet = petService.findPetByEntity(event.rightClicked) ?: return
 
-        if (event.rightClicked != null && pet.getPlayer<Player>() == event.player) {
+        if (pet.getPlayer<Player>() == event.player) {
             val itemStack = itemService.getItemInHand<Player, ItemStack>(event.player)
 
             if (itemStack.isPresent && itemStack.get().type != Material.AIR) {
@@ -56,7 +56,7 @@ class FeedingPetListener @Inject constructor(private val feedingPetService: Feed
 
                 if (feed) {
                     if (itemStack.get().amount == 1) {
-                        pet.getPlayer<Player>().itemInHand = null
+                        pet.getPlayer<Player>().setItemInHand(null)
                     } else {
                         itemStack.get().amount = itemStack.get().amount - 1
                     }

@@ -72,7 +72,7 @@ class PetProxyImpl(override val meta: PetMeta, private val design: ArmorStand, p
     init {
         design.bodyPose = EulerAngle(0.0, 0.0, 2878.0)
         design.leftArmPose = EulerAngle(2878.0, 0.0, 0.0)
-        design.setMetadata("keep", FixedMetadataValue(Bukkit.getPluginManager().getPlugin("PetBlocks"), true))
+        design.setMetadata("keep", FixedMetadataValue(Bukkit.getPluginManager().getPlugin("PetBlocks")!!, true))
         design.isCustomNameVisible = true
         design.removeWhenFarAway = false
 
@@ -82,7 +82,7 @@ class PetProxyImpl(override val meta: PetMeta, private val design: ArmorStand, p
         meta.propertyTracker.onPropertyChanged(PetMeta::aiGoals)
         meta.propertyTracker.onPropertyChanged(Skin::typeName)
 
-        design.equipment.boots = generateMarkerItemStack()
+        design.equipment!!.boots = generateMarkerItemStack()
     }
 
     /**
@@ -157,9 +157,9 @@ class PetProxyImpl(override val meta: PetMeta, private val design: ArmorStand, p
         }
 
         hitBox.addPotionEffect(PotionEffect(PotionEffectType.INVISIBILITY, 9999999, 1))
-        hitBox.setMetadata("keep", FixedMetadataValue(Bukkit.getPluginManager().getPlugin("PetBlocks"), true))
+        hitBox.setMetadata("keep", FixedMetadataValue(Bukkit.getPluginManager().getPlugin("PetBlocks")!!, true))
         hitBox.isCustomNameVisible = false
-        hitBox.equipment.boots = generateMarkerItemStack()
+        hitBox.equipment!!.boots = generateMarkerItemStack()
     }
 
     /**
@@ -226,7 +226,7 @@ class PetProxyImpl(override val meta: PetMeta, private val design: ArmorStand, p
                 itemStack = itemStack.createUnbreakableCopy()
             }
 
-            design.helmet = itemStack
+            design.setHelmet(itemStack)
         }
     }
 

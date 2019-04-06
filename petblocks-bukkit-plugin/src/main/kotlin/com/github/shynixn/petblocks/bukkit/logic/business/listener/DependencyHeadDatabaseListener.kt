@@ -1,7 +1,6 @@
 package com.github.shynixn.petblocks.bukkit.logic.business.listener
 
 import com.github.shynixn.petblocks.api.business.service.DependencyHeadDatabaseService
-import com.github.shynixn.petblocks.bukkit.logic.business.extension.updateInventory
 import com.google.inject.Inject
 import org.bukkit.Bukkit
 import org.bukkit.Material
@@ -46,7 +45,7 @@ class DependencyHeadDatabaseListener @Inject constructor(private val headDatabas
     fun playerClickInInventoryEvent(event: InventoryClickEvent) {
         val player = event.whoClicked as Player
 
-        if (event.currentItem == null || event.currentItem.type == Material.AIR) {
+        if (event.currentItem == null || event.currentItem!!.type == Material.AIR) {
             return
         }
 

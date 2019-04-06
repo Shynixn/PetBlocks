@@ -56,7 +56,7 @@ import java.util.*
  * Deserializes the configuraiton section path to a map.
  */
 fun FileConfiguration.deserializeToMap(path: String): Map<String, Any?> {
-    val section = getConfigurationSection(path).getValues(false)
+    val section = getConfigurationSection(path)!!.getValues(false)
     deserialize(section)
     return section
 }
@@ -92,7 +92,7 @@ fun Player.teleportUnsafe(location: Location) {
     val packetTeleport = Class.forName("net.minecraft.server.VERSION.PacketPlayOutEntityTeleport".replace("VERSION", version.bukkitId))
         .getDeclaredConstructor(entityClazz).newInstance(entityPlayer)
 
-    location.world.players.forEach { worldPlayer ->
+    location.world!!.players.forEach { worldPlayer ->
         worldPlayer.sendPacket(packetTeleport)
     }
 }
@@ -108,7 +108,7 @@ fun Position.toVector(): Vector {
  * Converts the [Position] to a BukkitLocation.
  */
 fun Position.toLocation(): Location {
-    return Location(Bukkit.getWorld(this.worldName), this.x, this.y, this.z, this.yaw.toFloat(), this.pitch.toFloat())
+    return Location(Bukkit.getWorld(this.worldName!!), this.x, this.y, this.z, this.yaw.toFloat(), this.pitch.toFloat())
 }
 
 /**
@@ -122,7 +122,7 @@ fun Vector.toPosition(): Position {
  * Converts the [Location] to a Position.
  */
 fun Location.toPosition(): Position {
-    return PositionEntity(this.x, this.y, this.z, this.yaw.toDouble(), this.pitch.toDouble(), this.world.name)
+    return PositionEntity(this.x, this.y, this.z, this.yaw.toDouble(), this.pitch.toDouble(), this.world!!.name)
 }
 
 /**
@@ -202,15 +202,15 @@ fun ItemStack.createUnbreakableCopy(): ItemStack {
  */
 var ItemStack.displayName: String
     get() {
-        if (this.itemMeta != null && this.itemMeta.displayName != null) {
-            return itemMeta.displayName
+        if (this.itemMeta != null && (this.itemMeta!!.displayName as String?) != null) {
+            return itemMeta!!.displayName
         }
 
         return ""
     }
     set(value) {
         val meta = itemMeta
-        meta.displayName = value.translateChatColors()
+        meta!!.setDisplayName(value.translateChatColors())
         itemMeta = meta
     }
 
@@ -225,7 +225,7 @@ fun ItemStack.setLore(lore: List<String>): ItemStack {
         tmpLore.add(l.translateChatColors())
     }
 
-    meta.lore = tmpLore
+    meta!!.lore = tmpLore
 
     itemMeta = meta
     return this

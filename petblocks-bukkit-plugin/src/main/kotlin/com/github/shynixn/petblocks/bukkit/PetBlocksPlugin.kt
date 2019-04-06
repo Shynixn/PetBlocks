@@ -150,7 +150,7 @@ class PetBlocksPlugin : JavaPlugin(), PluginProxy {
 
         // Register CommandExecutor
         commandService.registerCommandExecutor(
-            this.config.get("commands.petblock").yamlMap(),
+            this.config.get("commands.petblock")!!.yamlMap(),
             this.resolve(PlayerPetActionCommandExecutorImpl::class.java)
         )
         commandService.registerCommandExecutor("petblocks", this.resolve(EditPetCommandExecutorImpl::class.java))

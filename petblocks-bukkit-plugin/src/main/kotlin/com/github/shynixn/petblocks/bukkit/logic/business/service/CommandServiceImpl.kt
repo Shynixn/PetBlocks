@@ -51,7 +51,7 @@ class CommandServiceImpl @Inject constructor(private val plugin: Plugin) : Comma
             throw IllegalArgumentException("Plugin has to be a JavaPlugin!")
         }
 
-        plugin.getCommand(command).executor = CommandRegisteredProxyImpl(commandExecutorInstance)
+        plugin.getCommand(command)!!.setExecutor(CommandRegisteredProxyImpl(commandExecutorInstance))
     }
 
     /**

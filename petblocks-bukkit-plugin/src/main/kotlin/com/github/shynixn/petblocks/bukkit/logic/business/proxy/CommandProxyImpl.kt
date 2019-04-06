@@ -47,8 +47,8 @@ class CommandProxyImpl(command: String, description: String, usage: String, perm
      * Gets called when the user enters a command.
      */
     override fun execute(commandSender: CommandSender, alias: String, args: Array<out String>): Boolean {
-        if (!commandSender.hasPermission(this.permission)) {
-            commandSender.sendMessage(this.permissionMessage)
+        if (!commandSender.hasPermission(this.permission!!)) {
+            commandSender.sendMessage(this.permissionMessage!!)
             return true
         }
 

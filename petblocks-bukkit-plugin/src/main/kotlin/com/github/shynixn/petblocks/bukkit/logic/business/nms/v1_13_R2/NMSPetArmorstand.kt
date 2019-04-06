@@ -118,11 +118,10 @@ class NMSPetArmorstand(owner: Player, val petMeta: PetMeta) : EntityArmorStand((
             val armorstand = proxy.getHeadArmorstand<ArmorStand>()
 
             armorstand.velocity = Vector(0, 1, 0)
-            armorstand.passenger = player
+            armorstand.setPassenger(player)
 
             return
-        }
-        else {
+        } else {
             for (passenger in player.passengers) {
                 if (passenger == this.bukkitEntity) {
                     player.removePassenger(passenger)
@@ -141,7 +140,7 @@ class NMSPetArmorstand(owner: Player, val petMeta: PetMeta) : EntityArmorStand((
 
             val armorstand = proxy.getHeadArmorstand<ArmorStand>()
 
-            player.passenger = armorstand
+            player.setPassenger(armorstand)
 
             return
         }

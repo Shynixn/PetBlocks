@@ -13,6 +13,7 @@ import com.github.shynixn.petblocks.core.logic.business.extension.sync
 import com.github.shynixn.petblocks.core.logic.business.extension.thenAcceptSafely
 import com.google.inject.Inject
 import org.bukkit.Bukkit
+import org.bukkit.World
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
@@ -69,7 +70,7 @@ class PetListener @Inject constructor(
      */
     @EventHandler
     fun onPlayerJoinEvent(event: PlayerJoinEvent) {
-        if (event.joinMessage != null && event.joinMessage == "PetBlocksRunTime") {
+        if ((event.joinMessage as String?) != null && event.joinMessage == "PetBlocksRunTime") {
             this.loadPetBlocks(event.player)
         } else {
             val uuid = event.player.uniqueId
@@ -221,7 +222,7 @@ class PetListener @Inject constructor(
         val pet = petService.getOrSpawnPetFromPlayer(event.player).get()
 
 
-        if (event.to.world.name != event.from.world.name) {
+        if (event.to!!.world!!.name != event.from.world!!.name) {
             pet.remove()
 
             val warpDelay = configurationService.findValue<Int>("global-configuration.teleport-delay") * 20L
@@ -245,7 +246,7 @@ class PetListener @Inject constructor(
         }
 
         event.isCancelled = true
-        event.player.teleportUnsafe(event.to)
+        event.player.teleportUnsafe(event.to!!)
     }
 
     /**
@@ -263,12 +264,12 @@ class PetListener @Inject constructor(
      * Loads the PetBlocks data.
      */
     private fun loadPetBlocks(player: Player) {
-        if (!player.isOnline || player.world == null) {
+        if (!player.isOnline || (player.world as World?) == null) {
             return
         }
 
         persistencePetMetaService.refreshPetMetaFromRepository(player).thenAcceptSafely { petMeta ->
-            if (player.isOnline && player.world != null) {
+            if (player.isOnline && (player.world as World?) != null) {
                 val optPet: PetProxy? = if (petMeta.enabled) {
                     val pet = petService.getOrSpawnPetFromPlayer(player)
 
