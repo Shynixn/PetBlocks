@@ -2,7 +2,6 @@ language: java
 sudo: true
 jdk:
   - oraclejdk8
-dist: xenial
 cache:
   timeout: 1000
   directories:
@@ -19,6 +18,7 @@ before_install:
     - sudo pip3 install https://github.com/Shynixn/sphinx_rtd_theme/releases/download/C1.0/sphinx_rtd_theme.zip
     - sudo pip3 install -U sphinx
     - python3 --version
+    - sudo apt-get upgrade python3
     - git config --global user.email "travis@travis-ci.org" && git config --global user.name "Travis CI"
     - gpg2 --batch --cipher-algo AES256 --passphrase $SIGNING_KEYPASSWORD travis_secret_key.gpg
 install:
