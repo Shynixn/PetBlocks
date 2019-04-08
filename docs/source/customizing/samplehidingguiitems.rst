@@ -30,7 +30,7 @@ As mentioned before a powerful editor like Notepad++ in this example is recommen
 .. raw:: html
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-    <a class="btn" style="width:100%" href="../_static/samples/config-samplehidingpermission.yml.yml" download="config.yml"><i class="fa fa-download"></i>Download config.yml</a>
+    <a class="btn" style="width:100%" href="../_static/samples/config-samplehidingpermission.yml" download="config.yml"><i class="fa fa-download"></i>Download config.yml</a>
     <br/><br/><br/>
 
 .. note::
