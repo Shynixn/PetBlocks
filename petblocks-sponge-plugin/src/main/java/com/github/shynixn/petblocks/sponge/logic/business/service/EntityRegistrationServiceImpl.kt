@@ -9,6 +9,7 @@ import com.google.inject.Inject
 import net.minecraft.entity.Entity
 import net.minecraft.entity.EntityList
 import net.minecraft.util.ResourceLocation
+import net.minecraft.util.registry.RegistrySimple
 import org.spongepowered.api.text.translation.Translation
 
 /**
@@ -89,9 +90,13 @@ class EntityRegistrationServiceImpl @Inject constructor(private val loggingServi
         try {
             val materialRegistry = EntityList.REGISTRY
 
+            val registryField = RegistrySimple::class.java.getDeclaredField("field_82596_a")
+            registryField.isAccessible = true
+            val registryObjects = registryField.get(materialRegistry) as MutableMap<*, *>
+
             classes.forEach { _, entityType ->
                 val minecraftKey = ResourceLocation("PetBlocks", entityType.saveGame_11)
-                materialRegistry.registryObjects.remove(minecraftKey)
+                registryObjects.remove(minecraftKey)
             }
         } catch (error: NoSuchFieldError) {
             // @Forge is responsible for removing the key if this happens.

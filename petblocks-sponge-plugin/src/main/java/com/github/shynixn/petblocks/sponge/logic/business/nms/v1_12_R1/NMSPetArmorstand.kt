@@ -145,8 +145,7 @@ class NMSPetArmorstand(owner: Player, val petMeta: PetMeta) : EntityArmorStand(o
             armorstand.addPassenger(player)
 
             return
-        }
-        else {
+        } else {
             for (passenger in player.passengers) {
                 if (passenger == (this as ArmorStand)) {
                     player.clearPassengers()
@@ -194,7 +193,7 @@ class NMSPetArmorstand(owner: Player, val petMeta: PetMeta) : EntityArmorStand(o
         val walkingAi = petMeta.aiGoals.firstOrNull { a -> a is AIWalking }
 
         if (walkingAi != null) {
-            internalHitBox = NMSPetVillager(this,(this as ArmorStand).transform)
+            internalHitBox = NMSPetVillager(this, (this as ArmorStand).transform)
             proxy.changeHitBox(internalHitBox!! as Living)
             val aiGoals = aiService.convertPetAiBasesToPathfinders(proxy, petMeta.aiGoals)
             (internalHitBox as NMSPetVillager).applyPathfinders(aiGoals)
@@ -256,7 +255,7 @@ class NMSPetArmorstand(owner: Player, val petMeta: PetMeta) : EntityArmorStand(o
     override fun move(type: MoverType?, x: Double, y: Double, z: Double) {
         super.move(type, x, y, z)
 
-        if (passengers.isEmpty() || this.passengers.firstOrNull { p -> p is Human} == null) {
+        if (passengers.isEmpty() || this.passengers.firstOrNull { p -> p is Human } == null) {
             return
         }
 
@@ -278,7 +277,7 @@ class NMSPetArmorstand(owner: Player, val petMeta: PetMeta) : EntityArmorStand(o
     /**
      * Riding function.
      */
-    override fun travel(sidemot: Float, f2: Float, formot: Float){
+    override fun travel(sidemot: Float, f2: Float, formot: Float) {
         val human = this.passengers.firstOrNull { p -> p is EntityPlayer }
 
         if (this.passengers.isEmpty() || human == null) {
@@ -296,7 +295,7 @@ class NMSPetArmorstand(owner: Player, val petMeta: PetMeta) : EntityArmorStand(o
         val aiGroundRiding = this.petMeta.aiGoals.firstOrNull { a -> a is AIGroundRiding }
 
         if (aiGroundRiding != null) {
-            rideOnGround(human as  EntityPlayerMP, aiGroundRiding as AIGroundRiding, f2)
+            rideOnGround(human as EntityPlayerMP, aiGroundRiding as AIGroundRiding, f2)
             return
         }
     }
@@ -316,7 +315,7 @@ class NMSPetArmorstand(owner: Player, val petMeta: PetMeta) : EntityArmorStand(o
         this.renderYawOffset = this.rotationYaw
 
         val flyingVector = PositionEntity()
-        val flyingLocation = PositionEntity(this.posX, this.posY, this.posZ,0.0, 0.0, (world as org.spongepowered.api.world.World).name)
+        val flyingLocation = PositionEntity(this.posX, this.posY, this.posZ, 0.0, 0.0, (world as org.spongepowered.api.world.World).name)
 
         if (sideMot < 0.0f) {
             flyingLocation.yaw = human.rotationYaw - 90.0
@@ -414,6 +413,11 @@ class NMSPetArmorstand(owner: Player, val petMeta: PetMeta) : EntityArmorStand(o
      * Gets if a passenger of the pet is jumping.
      */
     private fun isPassengerJumping(): Boolean {
-        return !this.passengers.isEmpty() && (this.passengers[0] as EntityLivingBase).isJumping
+        val jumpingField = EntityLivingBase::class.java.getDeclaredField("field_70703_bu")
+        jumpingField.isAccessible = true
+
+        val isJumping = jumpingField.get(this.passengers[0]) as Boolean
+
+        return !this.passengers.isEmpty() && isJumping
     }
 }

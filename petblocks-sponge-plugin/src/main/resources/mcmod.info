@@ -1,7 +1,7 @@
 [{
     "modid": "petblocks",
     "name": "PetBlocks",
-    "version": "8.0.0",
+    "version": "8.0.1-SNAPSHOT",
     "description": "PetBlocks is a spigot and sponge plugin to use blocks and custom heads as pets in Minecraft.",
     "authorList": [
         "Shynixn"
