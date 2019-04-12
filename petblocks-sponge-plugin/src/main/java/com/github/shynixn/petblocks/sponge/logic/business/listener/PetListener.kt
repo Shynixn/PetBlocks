@@ -159,6 +159,34 @@ class PetListener @Inject constructor(
     }
 
     /**
+     * Cancels the entity interact event for pets.
+     *
+     * @param event event
+     */
+    @Listener
+    fun onEntityInteractEventSecondary(event: InteractEntityEvent.Secondary) {
+        val optPet = petService.findPetByEntity(event.targetEntity)
+
+        if (optPet != null) {
+            event.isCancelled = true
+        }
+    }
+
+    /**
+     * Cancels the entity interact event for pets.
+     *
+     * @param event event
+     */
+    @Listener
+    fun onEntityInteractEventSecondary(event: InteractEntityEvent.Primary) {
+        val optPet = petService.findPetByEntity(event.targetEntity)
+
+        if (optPet != null) {
+            event.isCancelled = true
+        }
+    }
+
+    /**
      * Gets called when a player presses the sneak button and removes the pet of the players head if present.
      *
      * @param event event
