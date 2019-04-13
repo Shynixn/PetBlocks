@@ -6,6 +6,7 @@ import com.github.shynixn.petblocks.core.logic.business.extension.sync
 import com.github.shynixn.petblocks.core.logic.business.extension.translateChatColors
 import com.github.shynixn.petblocks.core.logic.persistence.entity.ChatMessageEntity
 import com.google.inject.Inject
+import java.io.StringWriter
 
 /**
  * Created by Shynixn 2019.
@@ -38,7 +39,6 @@ class PetDebugServiceImpl @Inject constructor(
     private val proxyService: ProxyService,
     concurrencyService: ConcurrencyService,
     private val yamlSerializationService: YamlSerializationService,
-    private val yamlConfigurationService: YamlConfigurationService,
     private val messageService: MessageService,
     private val configurationService: ConfigurationService,
     private val petMetaService: PersistencePetMetaService
@@ -107,7 +107,9 @@ class PetDebugServiceImpl @Inject constructor(
                 false)
 
             messageService.sendSourceMessage(source, "", false)
-            messageService.sendSourceMessage(source, ChatColor.DARK_GREEN.toString() + "" + ChatColor.ITALIC + "Move your mouse over the text! Disable debug mode via: /petblocks debug ", false)
+            messageService.sendSourceMessage(source,
+                ChatColor.DARK_GREEN.toString() + "" + ChatColor.ITALIC + "Move your mouse over the text! Disable debug mode via: /petblocks debug ",
+                false)
             messageService.sendSourceMessage(source, "", false)
 
             val playerProxy = proxyService.findPlayerProxyObject(registeredSources[source])
@@ -128,11 +130,13 @@ class PetDebugServiceImpl @Inject constructor(
                 .append(prefix).append(ChatColor.GREEN.toString() + "Sound: ${petMeta.soundEnabled} Particles: ${petMeta.particleEnabled}").append("\n")
                 .append(prefix).append(ChatColor.GREEN.toString() + "AI: ").append("\n")
 
-            for(ai in petMeta.aiGoals){
-                val serialized = yamlSerializationService.serialize(ai)
-                val data = yamlConfigurationService.serializeToString("ai", serialized)
+            for (ai in petMeta.aiGoals) {
+                StringWriter().use { r ->
+                    yamlSerializationService.serialize(ai, r)
+                    val data = r.toString()
 
-                internalMessage.appendComponent().append(prefix).append("- ${ai.type}").appendHoverComponent().append(data).getRoot().append("\n")
+                    internalMessage.appendComponent().append(prefix).append("- ${ai.type}").appendHoverComponent().append(data).getRoot().append("\n")
+                }
             }
 
             this.messageService.sendPlayerMessage(source, internalMessage)

@@ -5,7 +5,6 @@ package unittest
 import com.github.shynixn.petblocks.api.business.proxy.PlayerProxy
 import com.github.shynixn.petblocks.api.business.service.ConfigurationService
 import com.github.shynixn.petblocks.api.business.service.ProxyService
-import com.github.shynixn.petblocks.api.business.service.YamlConfigurationService
 import com.github.shynixn.petblocks.api.persistence.context.SqlDbContext
 import com.github.shynixn.petblocks.api.persistence.entity.GuiItem
 import com.github.shynixn.petblocks.api.persistence.entity.PetMeta
@@ -169,27 +168,10 @@ class PetMetaSqlRepositoryTest {
                 dbContext,
                 AIServiceImpl(
                     LoggingUtilServiceImpl(Logger.getAnonymousLogger()),
-                    MockedProxyService(),
-                    MockedYamlConfigurationService()
+                    MockedProxyService()
                 ),
                 MockedConfigurationService()
             )
-        }
-    }
-
-    class MockedYamlConfigurationService : YamlConfigurationService {
-        /**
-         * Serializes the given [map] and [key] to a string.
-         */
-        override fun serializeToString(key: String, map: Map<String, Any?>): String {
-            throw IllegalArgumentException()
-        }
-
-        /**
-         * DeSerializes the given [data] and turns all memory sections into maps.
-         */
-        override fun deserializeToMap(key: String, data: String): Map<String, Any?> {
-            throw IllegalArgumentException()
         }
     }
 

@@ -24,7 +24,6 @@ import com.github.shynixn.petblocks.sponge.logic.business.proxy.PlayerProxyImpl
 import com.github.shynixn.petblocks.sponge.logic.business.service.ConfigurationServiceImpl
 import com.github.shynixn.petblocks.sponge.logic.business.service.EntityServiceImpl
 import com.github.shynixn.petblocks.sponge.logic.business.service.ItemServiceImpl
-import com.github.shynixn.petblocks.sponge.logic.business.service.YamlConfigurationServiceImpl
 import org.apache.commons.io.FileUtils
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
@@ -260,7 +259,7 @@ class PersistenceMySQLIT {
 
             Mockito.`when`(plugin.getAsset(Mockito.anyString())).then { p ->
                 val path = p.getArgument<String>(0)
-                val url = File("integration-test/" + path).toURI()
+                val url = File("integration-test/$path").toURI()
                 val asset = Mockito.mock(Asset::class.java)
                 Mockito.`when`(asset.url).thenReturn(url.toURL())
 
@@ -269,8 +268,7 @@ class PersistenceMySQLIT {
 
             val aiService = AIServiceImpl(
                 LoggingUtilServiceImpl(Logger.getAnonymousLogger()),
-                MockedProxyService(),
-                YamlConfigurationServiceImpl()
+                MockedProxyService()
             )
 
             val configurationService = ConfigurationServiceImpl(

@@ -5,7 +5,7 @@ import com.github.shynixn.petblocks.api.persistence.entity.PetBlocksPostSave
 import com.github.shynixn.petblocks.api.persistence.entity.PetBlocksPreSave
 import com.github.shynixn.petblocks.api.persistence.entity.PetPostSpawn
 import com.github.shynixn.petblocks.api.persistence.entity.PetPreSpawn
-import com.github.shynixn.petblocks.api.sponge.*
+import com.github.shynixn.petblocks.api.sponge.event.*
 import org.spongepowered.api.Sponge
 import org.spongepowered.api.entity.living.player.Player
 

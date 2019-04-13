@@ -8,7 +8,7 @@ import com.github.shynixn.petblocks.api.business.service.*
 import com.github.shynixn.petblocks.api.persistence.entity.AIFlyRiding
 import com.github.shynixn.petblocks.api.persistence.entity.AIGroundRiding
 import com.github.shynixn.petblocks.api.persistence.entity.AIWearing
-import com.github.shynixn.petblocks.api.sponge.PetBlocksLoginEvent
+import com.github.shynixn.petblocks.api.sponge.event.PetBlocksLoginEvent
 import com.github.shynixn.petblocks.core.logic.business.extension.sync
 import com.github.shynixn.petblocks.core.logic.business.extension.thenAcceptSafely
 import com.github.shynixn.petblocks.sponge.logic.business.extension.toTextString

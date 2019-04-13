@@ -1,13 +1,16 @@
 package com.github.shynixn.petblocks.api.business.service
 
+import java.io.Reader
+import java.io.Writer
+
 /**
- * Created by Shynixn 2018.
+ * Created by Shynixn 2019.
  * <p>
  * Version 1.2
  * <p>
  * MIT License
  * <p>
- * Copyright (c) 2018 by Shynixn
+ * Copyright (c) 2019 by Shynixn
  * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -28,14 +31,23 @@ package com.github.shynixn.petblocks.api.business.service
  * SOFTWARE.
  */
 interface YamlSerializationService {
-
     /**
      * Serializes the given [instance] to a key value pair map.
      */
     fun serialize(instance: Any): Map<String, Any?>
 
     /**
-     * Deserializes the given [dataSource] into a new instance of the given [targetObjectClass].
+     * Serializes the given [instance] to the target [writer].
      */
-    fun <R> deserialize(targetObjectClass: Any, dataSource: Map<String, Any?>) : R
+    fun serialize(instance: Any, writer: Writer)
+
+    /**
+     * DeSerializes the given [dataSource] into a new instance of the given [targetObjectClass].
+     */
+    fun <R> deserialize(targetObjectClass: Any, dataSource: Map<String, Any?>): R
+
+    /**
+     * DeSerializes the given [reader] into a new instance of the given [targetObjectClass].
+     */
+    fun <R> deserialize(targetObjectClass: Any, reader: Reader): R
 }

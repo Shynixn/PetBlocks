@@ -36,7 +36,7 @@ allprojects {
 
 subprojects {
     group 'com.github.shynixn.petblocks'
-    version '8.0.1'
+    version '8.0.2-SNAPSHOT'
 
     sourceCompatibility = 1.8
 
@@ -158,7 +158,7 @@ gradle.taskGraph.whenReady { taskGraph ->
 task jacocoRootReport(type: org.gradle.testing.jacoco.tasks.JacocoReport) {
     additionalSourceDirs = files(subprojects.sourceSets.main.allSource.srcDirs)
     sourceDirectories = files(subprojects.sourceSets.main.allSource.srcDirs)
-    classDirectories =  files(subprojects.sourceSets.main.output)
+    classDirectories = files(subprojects.sourceSets.main.output)
     executionData = files(subprojects.jacocoTestReport.executionData)
     reports {
         html.enabled = true
@@ -179,9 +179,58 @@ task generateJavaDocPages(type: org.jetbrains.dokka.gradle.DokkaTask) {
     outputFormat = 'javadoc'
     outputDirectory = "docs/apidocs"
     sourceDirs = files(new File(this.projectDir as File, '/petblocks-api/src/main/kotlin')
-             , new File(this.projectDir as File, '/petblocks-bukkit-api/src/main/kotlin')
-             , new File(this.projectDir as File, '/petblocks-core/src/main/kotlin')
-             , new File(this.projectDir as File, '/petblocks-bukkit-plugin/src/main/kotlin'))
+            , new File(this.projectDir as File, '/petblocks-bukkit-api/src/main/kotlin')
+            , new File(this.projectDir as File, '/petblocks-core/src/main/kotlin')
+            , new File(this.projectDir as File, '/petblocks-bukkit-plugin/src/main/kotlin')
+            , new File(this.projectDir as File, '/petblocks-sponge-api/src/main/java')
+            , new File(this.projectDir as File, '/petblocks-sponge-plugin/src/main/java')
+    )
+    externalDocumentationLink {
+        url = new URL("https://hub.spigotmc.org/javadocs/spigot/")
+    }
+    externalDocumentationLink {
+        url = new URL("https://hub.spigotmc.org/javadocs/spigot/package-list")
+    }
+    externalDocumentationLink {
+        url = new URL("https://jd.spongepowered.org/7.1.0/")
+    }
+    externalDocumentationLink {
+        url = new URL("https://jd.spongepowered.org/7.1.0/package-list")
+    }
+
+    def build = new File('build')
+
+    if (!build.exists()) {
+        build.mkdir()
+    }
+
+    def folder = new File(build, 'buildjavadocs')
+
+    if (!folder.exists()) {
+        folder.mkdir()
+    }
+
+    def spigotApiFile = new File(folder, "spigot.jar")
+
+    if (!spigotApiFile.exists()) {
+        new URL('https://hub.spigotmc.org/nexus/content/repositories/snapshots/org/spigotmc/spigot-api/1.13.2-R0.1-SNAPSHOT/spigot-api-1.13.2-R0.1-20190410.230407-204.jar').withInputStream { i ->
+            spigotApiFile.withOutputStream {
+                it << i
+            }
+        }
+    }
+
+    def spongeApiFile = new File(folder, "sponge.jar")
+
+    if (!spongeApiFile.exists()) {
+        new URL('https://repo.spongepowered.org/maven/org/spongepowered/spongeapi/7.1.0/spongeapi-7.1.0-shaded.jar').withInputStream { i ->
+            spongeApiFile.withOutputStream {
+                it << i
+            }
+        }
+    }
+
+    classpath = files(spigotApiFile, spongeApiFile)
 }
 
 task downloadDependencies(type: Exec) {

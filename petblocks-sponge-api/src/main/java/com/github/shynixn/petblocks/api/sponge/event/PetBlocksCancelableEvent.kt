@@ -1,4 +1,4 @@
-package com.github.shynixn.petblocks.api.sponge
+package com.github.shynixn.petblocks.api.sponge.event
 
 import org.spongepowered.api.event.Cancellable
 

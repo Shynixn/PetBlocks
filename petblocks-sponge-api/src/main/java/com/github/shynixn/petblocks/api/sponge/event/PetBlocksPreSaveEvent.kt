@@ -1,8 +1,6 @@
-package com.github.shynixn.petblocks.bukkit.logic.business.service
+package com.github.shynixn.petblocks.api.sponge.event
 
-import com.github.shynixn.petblocks.api.business.service.YamlConfigurationService
-import com.github.shynixn.petblocks.bukkit.logic.business.extension.deserializeToMap
-import org.bukkit.configuration.file.YamlConfiguration
+import com.github.shynixn.petblocks.api.persistence.entity.PetMeta
 
 /**
  * Created by Shynixn 2019.
@@ -31,22 +29,9 @@ import org.bukkit.configuration.file.YamlConfiguration
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class YamlConfigurationServiceImpl : YamlConfigurationService {
+class PetBlocksPreSaveEvent(
     /**
-     * Serializes the given [map] and [key] to a string.
+     * PetMeta which was saved.
      */
-    override fun serializeToString(key: String, map: Map<String, Any?>): String {
-        val yamlSerializer = YamlConfiguration()
-        yamlSerializer.set(key, map)
-        return yamlSerializer.saveToString()
-    }
-
-    /**
-     * DeSerializes the given [data] and turns all memory sections into maps.
-     */
-    override fun deserializeToMap(key: String, data: String): Map<String, Any?> {
-        val yamlSerializer = YamlConfiguration()
-        yamlSerializer.loadFromString(data)
-        return yamlSerializer.deserializeToMap(key)
-    }
-}
+    val petMeta: PetMeta
+) : PetBlocksEvent()

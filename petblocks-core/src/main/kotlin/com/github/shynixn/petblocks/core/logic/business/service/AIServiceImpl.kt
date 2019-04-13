@@ -3,7 +3,6 @@
 package com.github.shynixn.petblocks.core.logic.business.service
 
 import com.github.shynixn.petblocks.api.business.proxy.AICreationProxy
-import com.github.shynixn.petblocks.api.business.service.YamlConfigurationService
 import com.github.shynixn.petblocks.api.business.proxy.PathfinderProxy
 import com.github.shynixn.petblocks.api.business.proxy.PetProxy
 import com.github.shynixn.petblocks.api.business.service.AIService
@@ -13,6 +12,8 @@ import com.github.shynixn.petblocks.api.persistence.entity.AIBase
 import com.github.shynixn.petblocks.api.persistence.entity.AIFollowBack
 import com.github.shynixn.petblocks.api.persistence.entity.AIFollowOwner
 import com.google.inject.Inject
+import org.yaml.snakeyaml.DumperOptions
+import org.yaml.snakeyaml.Yaml
 
 /**
  * Created by Shynixn 2018.
@@ -43,8 +44,7 @@ import com.google.inject.Inject
  */
 class AIServiceImpl @Inject constructor(
     private val loggingService: LoggingService,
-    private val proxyService: ProxyService,
-    private val yamlConfigurationService: YamlConfigurationService
+    private val proxyService: ProxyService
 ) : AIService {
 
     private val registeredAIS = HashMap<String, AICreationProxy<AIBase>>()
@@ -112,7 +112,15 @@ class AIServiceImpl @Inject constructor(
      * Generates an AIBase from the given yaml source string.
      */
     override fun <A : AIBase> deserializeAiBase(type: String, source: String): A {
-        return deserializeAiBase(type, yamlConfigurationService.deserializeToMap("a", source))
+        val yaml = Yaml()
+        val serializedContent = yaml.load(source) as Map<String, Any?>
+
+        // Compatibility to 8.0.1.
+        return if (serializedContent.containsKey("a")) {
+            deserializeAiBase(type, serializedContent["a"] as Map<String, Any?>)
+        } else {
+            deserializeAiBase(type, serializedContent)
+        }
     }
 
     /**
@@ -131,7 +139,14 @@ class AIServiceImpl @Inject constructor(
      *  Serializes the given [aiBase] to a yaml string.
      */
     override fun serializeAiBaseToString(aiBase: AIBase): String {
-        return yamlConfigurationService.serializeToString("a", serializeAiBase(aiBase))
+        val serializedContent = serializeAiBase(aiBase)
+
+        val options = DumperOptions()
+        options.defaultFlowStyle = DumperOptions.FlowStyle.BLOCK
+        options.isPrettyFlow = true
+
+        val yaml = Yaml(options)
+        return yaml.dump(serializedContent)
     }
 
     /**

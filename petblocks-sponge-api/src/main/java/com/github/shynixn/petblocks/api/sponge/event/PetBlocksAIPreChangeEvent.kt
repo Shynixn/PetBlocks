@@ -1,16 +1,16 @@
-package com.github.shynixn.petblocks.api.sponge
+package com.github.shynixn.petblocks.api.sponge.event
 
 import com.github.shynixn.petblocks.api.business.proxy.PetProxy
 import org.spongepowered.api.entity.living.player.Player
 
 /**
- * Created by Shynixn 2018.
+ * Created by Shynixn 2019.
  * <p>
  * Version 1.2
  * <p>
  * MIT License
  * <p>
- * Copyright (c) 2018 by Shynixn
+ * Copyright (c) 2019 by Shynixn
  * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -30,13 +30,13 @@ import org.spongepowered.api.entity.living.player.Player
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class PetPostSpawnEvent(
+class PetBlocksAIPreChangeEvent(
     /**
-     * Owner of the pet getting spawned.
+     * Owner of the pet.
      */
     val player: Player,
     /**
-     * Pet which was spawned.
+     * Pet which gets the new ais in the PetMeta applied.
      */
     val pet: PetProxy
-) : PetBlocksEvent()
+) : PetBlocksCancelableEvent()

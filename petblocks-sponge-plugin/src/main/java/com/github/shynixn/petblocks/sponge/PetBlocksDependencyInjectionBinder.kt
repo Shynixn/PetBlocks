@@ -21,13 +21,13 @@ import com.google.inject.Scopes
 import org.spongepowered.api.plugin.PluginContainer
 
 /**
- * Created by Shynixn 2018.
+ * Created by Shynixn 2019.
  * <p>
  * Version 1.2
  * <p>
  * MIT License
  * <p>
- * Copyright (c) 2018 by Shynixn
+ * Copyright (c) 2019 by Shynixn
  * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -115,7 +115,6 @@ class PetBlocksDependencyInjectionBinder(private val plugin: PluginContainer) : 
         bind(ParticleService::class.java).to(ParticleServiceImpl::class.java).`in`(Scopes.SINGLETON)
         bind(ProxyService::class.java).to(ProxyServiceImpl::class.java).`in`(Scopes.SINGLETON)
         bind(SoundService::class.java).to(SoundServiceImpl::class.java).`in`(Scopes.SINGLETON)
-        bind(YamlConfigurationService::class.java).to(YamlConfigurationServiceImpl::class.java).`in`(Scopes.SINGLETON)
 
         // Dependency resolving
         val dependencyService = DependencyServiceImpl(plugin)

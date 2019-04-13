@@ -5,6 +5,10 @@ package com.github.shynixn.petblocks.core.logic.business.service
 import com.github.shynixn.petblocks.api.business.annotation.YamlSerialize
 import com.github.shynixn.petblocks.api.business.serializer.YamlSerializer
 import com.github.shynixn.petblocks.api.business.service.YamlSerializationService
+import org.yaml.snakeyaml.DumperOptions
+import org.yaml.snakeyaml.Yaml
+import java.io.Reader
+import java.io.Writer
 import java.lang.reflect.Field
 import java.lang.reflect.ParameterizedType
 import java.util.LinkedHashMap
@@ -20,13 +24,13 @@ import kotlin.collections.toTypedArray
 import kotlin.reflect.KClass
 
 /**
- * Created by Shynixn 2018.
+ * Created by Shynixn 2019.
  * <p>
  * Version 1.2
  * <p>
  * MIT License
  * <p>
- * Copyright (c) 2018 by Shynixn
+ * Copyright (c) 2019 by Shynixn
  * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -47,6 +51,30 @@ import kotlin.reflect.KClass
  * SOFTWARE.
  */
 class YamlSerializationServiceImpl : YamlSerializationService {
+    /**
+     * Serializes the given [instance] to the target [writer].
+     */
+    override fun serialize(instance: Any, writer: Writer) {
+        val serializedContent = serialize(instance)
+
+        val options = DumperOptions()
+        options.defaultFlowStyle = DumperOptions.FlowStyle.BLOCK
+        options.isPrettyFlow = true
+
+        val yaml = Yaml(options)
+        yaml.dump(serializedContent, writer)
+    }
+
+    /**
+     * DeSerializes the given [reader] into a new instance of the given [targetObjectClass].
+     */
+    override fun <R> deserialize(targetObjectClass: Any, reader: Reader): R {
+        val yaml = Yaml()
+        val serializedContent = yaml.load(reader) as Map<String, Any?>
+
+        return deserialize(targetObjectClass, serializedContent)
+    }
+
     /**
      * Serializes the given [instance] to a key value pair map.
      */

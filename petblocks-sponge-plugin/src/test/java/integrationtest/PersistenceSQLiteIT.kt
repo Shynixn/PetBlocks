@@ -23,11 +23,9 @@ import com.github.shynixn.petblocks.sponge.logic.business.proxy.PlayerProxyImpl
 import com.github.shynixn.petblocks.sponge.logic.business.service.ConfigurationServiceImpl
 import com.github.shynixn.petblocks.sponge.logic.business.service.EntityServiceImpl
 import com.github.shynixn.petblocks.sponge.logic.business.service.ItemServiceImpl
-import com.github.shynixn.petblocks.sponge.logic.business.service.YamlConfigurationServiceImpl
 import org.apache.commons.io.FileUtils
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
-import org.mockito.Mock
 import org.mockito.Mockito
 import org.spongepowered.api.asset.Asset
 import org.spongepowered.api.entity.living.player.Player
@@ -35,7 +33,6 @@ import org.spongepowered.api.plugin.PluginContainer
 import org.spongepowered.api.world.Location
 import org.spongepowered.api.world.World
 import java.io.File
-import java.net.URL
 import java.nio.file.Paths
 import java.util.*
 import java.util.logging.Logger
@@ -254,8 +251,7 @@ class PersistenceSQLiteIT {
 
             val aiService = AIServiceImpl(
                 LoggingUtilServiceImpl(Logger.getAnonymousLogger()),
-                MockedProxyService(),
-                YamlConfigurationServiceImpl()
+                MockedProxyService()
             )
 
             val configurationService = ConfigurationServiceImpl(
