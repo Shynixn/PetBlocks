@@ -10,6 +10,7 @@ import com.google.common.collect.Sets
 import net.minecraft.block.Block
 import net.minecraft.entity.SharedMonsterAttributes
 import net.minecraft.entity.ai.EntityAIBase
+import net.minecraft.entity.ai.EntityAITasks
 import net.minecraft.entity.passive.EntityRabbit
 import net.minecraft.inventory.EntityEquipmentSlot
 import net.minecraft.util.math.BlockPos
@@ -126,9 +127,14 @@ class NMSPetRabbit(petDesign: NMSPetArmorstand, location: Transform<World>) :
      * Clears all entity aiGoals.
      */
     private fun clearAIGoals() {
-        this.tasks.taskEntries = Sets.newLinkedHashSet();
-        this.tasks.executingTaskEntries = Sets.newLinkedHashSet();
-        this.targetTasks.taskEntries = Sets.newLinkedHashSet();
-        this.targetTasks.executingTaskEntries = Sets.newLinkedHashSet();
+        val taskEntriesField = EntityAITasks::class.java.getDeclaredField("field_75782_a")
+        taskEntriesField.isAccessible = true
+        taskEntriesField.set(this.tasks, Sets.newLinkedHashSet<Any>())
+        taskEntriesField.set(this.targetTasks, Sets.newLinkedHashSet<Any>())
+
+        val executingTaskEntries = EntityAITasks::class.java.getDeclaredField("field_75780_b")
+        executingTaskEntries.isAccessible = true
+        executingTaskEntries.set(this.tasks, Sets.newLinkedHashSet<Any>())
+        executingTaskEntries.set(this.targetTasks, Sets.newLinkedHashSet<Any>())
     }
 }

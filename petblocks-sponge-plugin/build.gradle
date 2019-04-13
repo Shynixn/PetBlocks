@@ -42,10 +42,6 @@ shadowJar{
 }
 
 jar {
-    manifest {
-        attributes 'FMLAT': 'petblocks_at.cfg'
-    }
-
     destinationDir = shadowJar.destinationDir
 
     dependsOn shadowJar
