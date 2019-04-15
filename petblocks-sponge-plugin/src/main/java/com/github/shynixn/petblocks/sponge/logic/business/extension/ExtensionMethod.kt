@@ -11,7 +11,6 @@ import com.github.shynixn.petblocks.core.logic.persistence.entity.PositionEntity
 import net.minecraft.entity.player.EntityPlayerMP
 import net.minecraft.nbt.NBTTagCompound
 import net.minecraft.nbt.NBTTagList
-import org.spongepowered.api.Game
 import org.spongepowered.api.Sponge
 import org.spongepowered.api.command.source.ConsoleSource
 import org.spongepowered.api.data.key.Keys
@@ -57,16 +56,6 @@ import java.util.*
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-
-/**
- * Unloads the given plugin.
- */
-fun Game.disablePlugin(plugin: Any) {
-    Sponge.getGame().eventManager.unregisterPluginListeners(plugin)
-    Sponge.getGame().commandManager.getOwnedBy(plugin).forEach { Sponge.getGame().commandManager.removeMapping(it) }
-    Sponge.getGame().scheduler.getScheduledTasks(plugin).forEach { it.cancel() }
-}
-
 /**
  * Sends the [message] to the console source.
  */
@@ -78,14 +67,14 @@ fun ConsoleSource.sendMessage(message: String) {
  * Converts the given string to a text.
  */
 fun String.toText(): Text {
-    return TextSerializers.LEGACY_FORMATTING_CODE.deserialize(this.translateChatColors())
+    return TextSerializers.formattingCode('§').deserialize(this.translateChatColors())
 }
 
 /**
  * Converts the given text to a string.
  */
 fun Text.toTextString(): String {
-    return TextSerializers.LEGACY_FORMATTING_CODE.serialize(this)
+    return TextSerializers.formattingCode('§').serialize(this)
 }
 
 /**
@@ -128,26 +117,14 @@ val Transform<*>.z
     get() = this.position.z
 
 /**
- * Gets the yaw.
- */
-val Transform<*>.yaw
-    get() = this.rotation.y
-
-/**
- * Gets the pitch.
- */
-val Transform<*>.pitch
-    get() = this.rotation.x
-
-/**
  * Itemstack durability.
  */
 var ItemStack.durability: Int
     get() {
-        return (this as net.minecraft.item.ItemStack).itemDamage
+        return this.cast<net.minecraft.item.ItemStack>().itemDamage
     }
     set(value) {
-        (this as net.minecraft.item.ItemStack).itemDamage = value
+        this.cast<net.minecraft.item.ItemStack>().itemDamage = value
     }
 
 /**
@@ -160,19 +137,6 @@ fun CarriedInventory<Player>.setItem(index: Int, itemStack: ItemStack) {
     } else {
         query<Inventory>(GridInventory::class.java)
             .query<Inventory>(SlotIndex.of(index)).set(itemStack)
-    }
-}
-
-/**
- * Gets an item at the given index.
- */
-fun CarriedInventory<Player>.getItem(index: Int): Optional<ItemStack> {
-    return if (index == 0) {
-        query<Inventory>(GridInventory::class.java)
-            .query<Inventory>(SlotPos.of(0, 0)).peek()
-    } else {
-        query<Inventory>(GridInventory::class.java)
-            .query<Inventory>(SlotIndex.of(index)).peek()
     }
 }
 
@@ -194,7 +158,7 @@ fun Transform<World>.toPosition(): Position {
  * Converts the [Vector3d] to [Vector3i].
  */
 fun Vector3d.toVector3i(): Vector3i {
-    return Vector3i()
+    return Vector3i(this.x, this.y, this.z)
 }
 
 /**
@@ -213,6 +177,13 @@ fun Position.toTransform(): Transform<World> {
  */
 fun Vector3d.toPosition(): Position {
     return PositionEntity(this.x, this.y, this.z)
+}
+
+/**
+ * Cast helper to ignore sponge mixing.
+ */
+fun <T> Any?.cast(): T {
+    return this as T
 }
 
 /**
@@ -281,7 +252,7 @@ var ItemStack.skin: String?
             return
         }
 
-        val nmsItemStack = this as net.minecraft.item.ItemStack
+        val nmsItemStack = this.cast<net.minecraft.item.ItemStack>()
         var newSkin = value
 
         val nbtTagCompound = if (nmsItemStack.tagCompound != null) {
@@ -300,7 +271,7 @@ var ItemStack.skin: String?
             }
 
             val skinProfile = Sponge.getServer().gameProfileManager.createProfile(UUID.randomUUID(), null)
-            val profileProperty = Sponge.getServer().gameProfileManager.createProfileProperty("textures", newSkin, null)
+            val profileProperty = Sponge.getServer().gameProfileManager.createProfileProperty("textures", newSkin!!, null)
             skinProfile.propertyMap.put("textures", profileProperty)
 
             val internalTag = NBTTagCompound()
@@ -338,7 +309,7 @@ var ItemStack.skin: String?
  * Converts the current itemstack to an unbreakable itemstack.
  */
 fun ItemStack.createUnbreakableCopy(): ItemStack {
-    val nmsItemStack = this as net.minecraft.item.ItemStack
+    val nmsItemStack = this.cast<net.minecraft.item.ItemStack>()
 
     val nbtTagCompound = if (nmsItemStack.tagCompound != null) {
         nmsItemStack.tagCompound!!
@@ -350,7 +321,7 @@ fun ItemStack.createUnbreakableCopy(): ItemStack {
 
     nmsItemStack.tagCompound = nbtTagCompound
 
-    return nmsItemStack as ItemStack
+    return nmsItemStack.cast()
 }
 
 /**

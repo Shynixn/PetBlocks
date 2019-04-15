@@ -12,7 +12,6 @@ import com.github.shynixn.petblocks.api.persistence.context.SqlDbContext
 import com.github.shynixn.petblocks.core.logic.business.commandexecutor.EditPetCommandExecutorImpl
 import com.github.shynixn.petblocks.core.logic.business.commandexecutor.PlayerPetActionCommandExecutorImpl
 import com.github.shynixn.petblocks.core.logic.business.commandexecutor.ReloadCommandExecutorImpl
-import com.github.shynixn.petblocks.sponge.logic.business.extension.disablePlugin
 import com.github.shynixn.petblocks.sponge.logic.business.extension.getServerVersion
 import com.github.shynixn.petblocks.sponge.logic.business.extension.sendMessage
 import com.github.shynixn.petblocks.sponge.logic.business.extension.toText
@@ -108,7 +107,7 @@ class PetBlocksPlugin : PluginProxy {
             Sponge.getServer().console.sendMessage(PREFIX_CONSOLE + ChatColor.RED + "================================================")
 
             immediateDisable = true
-            Sponge.getGame().disablePlugin(this)
+            disablePlugin()
 
             return
         }
@@ -125,7 +124,7 @@ class PetBlocksPlugin : PluginProxy {
             Sponge.getServer().console.sendMessage(PREFIX_CONSOLE + ChatColor.RED + "================================================")
 
             immediateDisable = true
-            Sponge.getGame().disablePlugin(this)
+            disablePlugin()
 
             return
         }
@@ -302,5 +301,14 @@ class PetBlocksPlugin : PluginProxy {
         } catch (e: Exception) {
             throw IllegalArgumentException("Entity could not be created.", e)
         }
+    }
+
+    /**
+     * Disables the plugin.
+     */
+    private fun disablePlugin() {
+        Sponge.getGame().eventManager.unregisterPluginListeners(this)
+        Sponge.getGame().commandManager.getOwnedBy(this).forEach { Sponge.getGame().commandManager.removeMapping(it) }
+        Sponge.getGame().scheduler.getScheduledTasks(this).forEach { it.cancel() }
     }
 }

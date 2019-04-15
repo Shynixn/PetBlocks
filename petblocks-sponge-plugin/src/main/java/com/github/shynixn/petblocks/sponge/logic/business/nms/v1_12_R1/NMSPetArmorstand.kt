@@ -8,7 +8,7 @@ import com.github.shynixn.petblocks.api.business.service.AIService
 import com.github.shynixn.petblocks.api.business.service.ConfigurationService
 import com.github.shynixn.petblocks.api.business.service.LoggingService
 import com.github.shynixn.petblocks.api.persistence.entity.*
-import com.github.shynixn.petblocks.api.sponge.PetBlocksAIPreChangeEvent
+import com.github.shynixn.petblocks.api.sponge.event.PetBlocksAIPreChangeEvent
 import com.github.shynixn.petblocks.core.logic.business.extension.hasChanged
 import com.github.shynixn.petblocks.core.logic.business.extension.relativeFront
 import com.github.shynixn.petblocks.core.logic.persistence.entity.PositionEntity

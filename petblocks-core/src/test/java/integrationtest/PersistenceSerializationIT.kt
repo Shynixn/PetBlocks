@@ -9,9 +9,10 @@ import com.github.shynixn.petblocks.core.logic.persistence.entity.AIAfraidOfWate
 import com.github.shynixn.petblocks.core.logic.persistence.entity.AIAmbientSoundEntity
 import com.github.shynixn.petblocks.core.logic.persistence.entity.AIFeedingEntity
 import com.github.shynixn.petblocks.core.logic.persistence.entity.AIFleeInCombatEntity
-import com.github.shynixn.petblocks.sponge.logic.business.service.YamlConfigurationServiceImpl
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
+import java.io.StringReader
+import java.io.StringWriter
 
 /**
  * Created by Shynixn 2018.
@@ -60,12 +61,11 @@ class PersistenceSerializationIT {
         entity.stoppingDelay = 7
 
         // Act
-        val yamlConfig = YamlConfigurationServiceImpl()
-        val serializedContent = classUnderTest.serialize(entity)
-        val textContent = yamlConfig.serializeToString("a", serializedContent)
-        val newConfig = YamlConfigurationServiceImpl()
-        val actualMap = newConfig.deserializeToMap("a", textContent)
-        val actual = classUnderTest.deserialize<AIAfraidOfWaterEntity>(AIAfraidOfWaterEntity::class.java, actualMap)
+        val writer = StringWriter()
+        classUnderTest.serialize(entity, writer)
+        val textContent = writer.toString()
+        val reader = StringReader(textContent)
+        val actual = classUnderTest.deserialize<AIAfraidOfWaterEntity>(AIAfraidOfWaterEntity::class.java, reader)
 
         // Assert
         Assertions.assertEquals(4, actual.id)
@@ -92,12 +92,11 @@ class PersistenceSerializationIT {
         entity.sound.name = "Experience"
 
         // Act
-        val yamlConfig = YamlConfigurationServiceImpl()
-        val serializedContent = classUnderTest.serialize(entity)
-        val textContent = yamlConfig.serializeToString("a", serializedContent)
-        val newConfig = YamlConfigurationServiceImpl()
-        val actualMap = newConfig.deserializeToMap("a", textContent)
-        val actual = classUnderTest.deserialize<AIAmbientSoundEntity>(AIAmbientSoundEntity::class.java, actualMap)
+        val writer = StringWriter()
+        classUnderTest.serialize(entity, writer)
+        val textContent = writer.toString()
+        val reader = StringReader(textContent)
+        val actual = classUnderTest.deserialize<AIAmbientSoundEntity>(AIAmbientSoundEntity::class.java, reader)
 
         // Assert
         Assertions.assertEquals(4, actual.id)
@@ -127,12 +126,11 @@ class PersistenceSerializationIT {
         entity.typeName = "Funny"
 
         // Act
-        val yamlConfig = YamlConfigurationServiceImpl()
-        val serializedContent = classUnderTest.serialize(entity)
-        val textContent = yamlConfig.serializeToString("a", serializedContent)
-        val newConfig = YamlConfigurationServiceImpl()
-        val actualMap = newConfig.deserializeToMap("a", textContent)
-        val actual = classUnderTest.deserialize<AIFeedingEntity>(AIFeedingEntity::class.java, actualMap)
+        val writer = StringWriter()
+        classUnderTest.serialize(entity, writer)
+        val textContent = writer.toString()
+        val reader = StringReader(textContent)
+        val actual = classUnderTest.deserialize<AIFeedingEntity>(AIFeedingEntity::class.java, reader)
 
         // Assert
         Assertions.assertEquals(4, actual.id)
@@ -162,12 +160,11 @@ class PersistenceSerializationIT {
         entity.reAppearsInSeconds = 774
 
         // Act
-        val yamlConfig = YamlConfigurationServiceImpl()
-        val serializedContent = classUnderTest.serialize(entity)
-        val textContent = yamlConfig.serializeToString("a", serializedContent)
-        val newConfig = YamlConfigurationServiceImpl()
-        val actualMap = newConfig.deserializeToMap("a", textContent)
-        val actual = classUnderTest.deserialize<AIFleeInCombatEntity>(AIFleeInCombatEntity::class.java, actualMap)
+        val writer = StringWriter()
+        classUnderTest.serialize(entity, writer)
+        val textContent = writer.toString()
+        val reader = StringReader(textContent)
+        val actual = classUnderTest.deserialize<AIFleeInCombatEntity>(AIFleeInCombatEntity::class.java, reader)
 
         // Assert
         Assertions.assertEquals(4, actual.id)

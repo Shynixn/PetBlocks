@@ -6,8 +6,8 @@ import com.github.shynixn.petblocks.api.business.service.CombatPetService
 import com.github.shynixn.petblocks.api.business.service.HealthService
 import com.github.shynixn.petblocks.api.business.service.PetService
 import com.github.shynixn.petblocks.api.persistence.entity.AIHealth
-import com.github.shynixn.petblocks.api.sponge.PetBlocksLoginEvent
-import com.github.shynixn.petblocks.api.sponge.PetPreSpawnEvent
+import com.github.shynixn.petblocks.api.sponge.event.PetBlocksLoginEvent
+import com.github.shynixn.petblocks.api.sponge.event.PetPreSpawnEvent
 import com.google.inject.Inject
 import org.spongepowered.api.entity.Entity
 import org.spongepowered.api.event.Listener

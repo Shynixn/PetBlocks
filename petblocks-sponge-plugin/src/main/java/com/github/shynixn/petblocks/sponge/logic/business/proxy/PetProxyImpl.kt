@@ -12,7 +12,7 @@ import com.github.shynixn.petblocks.api.persistence.entity.AIMovement
 import com.github.shynixn.petblocks.api.persistence.entity.PetMeta
 import com.github.shynixn.petblocks.api.persistence.entity.Position
 import com.github.shynixn.petblocks.api.persistence.entity.Skin
-import com.github.shynixn.petblocks.api.sponge.PetRemoveEvent
+import com.github.shynixn.petblocks.api.sponge.event.PetRemoveEvent
 import com.github.shynixn.petblocks.core.logic.business.extension.hasChanged
 import com.github.shynixn.petblocks.sponge.logic.business.extension.*
 import org.spongepowered.api.Sponge

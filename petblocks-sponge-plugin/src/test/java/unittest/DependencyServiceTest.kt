@@ -197,6 +197,7 @@ class DependencyServiceTest {
             }
 
             val textSerializer = Mockito.mock(FormattingCodeTextSerializer::class.java)
+            Mockito.`when`(textSerializer.character).thenReturn('§')
             Mockito.`when`(textSerializer.deserialize(Mockito.anyString())).thenReturn(Text.EMPTY)
 
             val fieldL = TextSerializers::class.java.getDeclaredField("LEGACY_FORMATTING_CODE")

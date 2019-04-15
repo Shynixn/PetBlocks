@@ -1,17 +1,16 @@
-package com.github.shynixn.petblocks.sponge.logic.business.service
+package com.github.shynixn.petblocks.api.sponge.event
 
-import com.github.shynixn.petblocks.api.business.service.YamlConfigurationService
-import org.yaml.snakeyaml.DumperOptions
-import org.yaml.snakeyaml.Yaml
+import com.github.shynixn.petblocks.api.business.proxy.PetProxy
+import org.spongepowered.api.entity.living.player.Player
 
 /**
- * Created by Shynixn 2019.
+ * Created by Shynixn 2018.
  * <p>
  * Version 1.2
  * <p>
  * MIT License
  * <p>
- * Copyright (c) 2019 by Shynixn
+ * Copyright (c) 2018 by Shynixn
  * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -31,24 +30,13 @@ import org.yaml.snakeyaml.Yaml
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class YamlConfigurationServiceImpl : YamlConfigurationService {
+class PetRemoveEvent(
     /**
-     * Serializes the given [map] and [key] to a string.
+     * Owner of the pet getting removed.
      */
-    override fun serializeToString(key: String, map: Map<String, Any?>): String {
-        val options = DumperOptions()
-        options.defaultFlowStyle = DumperOptions.FlowStyle.BLOCK
-        options.isPrettyFlow = true
-
-        val yaml = Yaml(options)
-        return yaml.dump(map)
-    }
-
+    val player: Player,
     /**
-     * DeSerializes the given [data] and turns all memory sections into maps.
+     * Pet getting removed.
      */
-    override fun deserializeToMap(key: String, data: String): Map<String, Any?> {
-        val yaml = Yaml()
-        return yaml.load(data) as Map<String, Any?>
-    }
-}
+    val pet: PetProxy
+) : PetBlocksCancelableEvent()

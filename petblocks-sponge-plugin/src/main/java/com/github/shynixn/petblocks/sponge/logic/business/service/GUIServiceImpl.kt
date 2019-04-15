@@ -16,6 +16,7 @@ import com.github.shynixn.petblocks.core.logic.persistence.entity.GuiIconEntity
 import com.github.shynixn.petblocks.core.logic.persistence.entity.GuiPlayerCacheEntity
 import com.github.shynixn.petblocks.sponge.logic.business.extension.*
 import com.google.inject.Inject
+import net.minecraft.inventory.ContainerChest
 import org.spongepowered.api.entity.living.player.Player
 import org.spongepowered.api.item.ItemTypes
 import org.spongepowered.api.item.inventory.Inventory
@@ -210,7 +211,13 @@ class GUIServiceImpl @Inject constructor(
 
         val player = inventory.carrier.get()
 
-        return this.pageCache.containsKey(player)
+        if (inventory !is ContainerChest) {
+            return false
+        }
+
+        val originInventory = inventory.lowerChestInventory
+
+        return this.pageCache.containsKey(player) && this.pageCache[player]!!.getInventory<Inventory>() == originInventory
     }
 
     /**

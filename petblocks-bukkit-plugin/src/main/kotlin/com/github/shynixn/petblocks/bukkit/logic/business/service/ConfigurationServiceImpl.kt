@@ -287,6 +287,7 @@ class ConfigurationServiceImpl @Inject constructor(
     override fun refresh() {
         disableOnSneak = null
         cache.clear()
+        plugin.saveDefaultConfig()
         plugin.reloadConfig()
     }
 
