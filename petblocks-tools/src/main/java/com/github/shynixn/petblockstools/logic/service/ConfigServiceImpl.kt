@@ -60,11 +60,13 @@ class ConfigServiceImpl : ConfigService {
         val existingSkins = loadExistingSkins(dbFile)
 
         existingSkins.addAll(sourceSkins.filter { s -> existingSkins.firstOrNull { e -> e.skin == s.skin } == null })
-        fixMapping(existingSkins)
+        val skins = existingSkins.distinctBy { s -> s.skin }.toList()
 
-        generateDecryptedDbFile(dbFile, existingSkins)
+        fixMapping(skins)
+
+        generateDecryptedDbFile(dbFile, skins)
         generateEncryptedDbFile(dbFile, encryptedFile)
-        generateYamlFile(yamlFile, existingSkins)
+        generateYamlFile(yamlFile, skins)
     }
 
     /**
@@ -187,7 +189,7 @@ class ConfigServiceImpl : ConfigService {
             while (true) {
                 val skinName = skin.name + " " + counter
 
-                if (skins.count { s -> s.name == skin.name } != 0) {
+                if (skins.count { s -> s.name == skinName } != 0) {
                     counter++
                     continue
                 }
