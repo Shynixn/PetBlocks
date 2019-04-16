@@ -1,7 +1,8 @@
 package com.github.shynixn.petblockstools
 
-import com.github.shynixn.petblockstools.logic.service.ConfigGenerationService
+import com.github.shynixn.petblockstools.logic.service.ConfigServiceImpl
 import com.github.shynixn.petblockstools.logic.service.PublishPetBlocksSnapshotToDiscord
+import java.nio.file.Paths
 
 /**
  * Created by Shynixn 2018.
@@ -35,18 +36,21 @@ import com.github.shynixn.petblockstools.logic.service.PublishPetBlocksSnapshotT
  * This is a quick and dirty tool program for generating the config.yml.
  */
 fun main(args: Array<String>) {
-    if(args.isEmpty()){
+    if (args.isEmpty()) {
         return
     }
 
-    if(args[0] == "--generate-config"){
-        val configGenerationService = ConfigGenerationService()
-        configGenerationService.generateConfigFile()
+    if (args[0] == "--generate-config") {
+        val sourceFile = Paths.get(Thread.currentThread().contextClassLoader.getResource("sourcefile.csv").toURI())
+        val sourceFolder = sourceFile.parent
+
+        val configService = ConfigServiceImpl()
+        configService.generateFiles(sourceFile, sourceFolder)
         return
     }
 
-    if(args[0] == "--snapshot"){
-        if(args.size != 2){
+    if (args[0] == "--snapshot") {
+        if (args.size != 2) {
             throw IllegalArgumentException("--snapshot requires 1 additional arguments [WebHookUrl]!")
         }
 
