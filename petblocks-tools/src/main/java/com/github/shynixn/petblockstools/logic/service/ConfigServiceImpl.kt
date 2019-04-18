@@ -87,7 +87,6 @@ class ConfigServiceImpl : ConfigService {
      * Generates a new section in the config.yml.
      */
     private fun generateSection(builder: StringBuilder, sectionTitle: String, skins: List<SkinDescription>) {
-        builder.append("  ")
         builder.appendln(sectionTitle)
 
         appendPageItems(builder)

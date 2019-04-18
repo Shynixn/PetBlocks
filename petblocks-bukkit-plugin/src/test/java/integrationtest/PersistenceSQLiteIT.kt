@@ -224,7 +224,6 @@ class PersistenceSQLiteIT {
                 dbContext!!.close()
             }
 
-            println(File(".").absolutePath)
             val configuration = YamlConfiguration()
             configuration.load(File("../petblocks-core/src/main/resources/assets/petblocks/config.yml"))
 

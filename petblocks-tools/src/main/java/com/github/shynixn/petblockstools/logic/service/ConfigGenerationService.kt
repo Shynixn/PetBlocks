@@ -134,8 +134,6 @@ class ConfigGenerationService {
 
                     sqlContext.update(connection, "SHY_MCHEAD", "WHERE id = $identifier", "name" to target)
 
-                    println(target)
-
                     nameChanges++
                 })
 
