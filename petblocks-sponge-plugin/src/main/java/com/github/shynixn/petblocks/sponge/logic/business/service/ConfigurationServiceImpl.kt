@@ -378,7 +378,7 @@ class ConfigurationServiceImpl @Inject constructor(
 
         decipher.init(
             Cipher.DECRYPT_MODE,
-            SecretKeySpec(Base64.getDecoder().decode("YjJjNWIzOTQ0NTY1NDJlNQ=="), "AES"),
+            SecretKeySpec(Base64.getDecoder().decode("OWRiNzkyYTRjNmIwNDYzNQ=="), "AES"),
             IvParameterSpec("RandomInitVector".toByteArray(charset("UTF-8")))
         )
         BufferedReader(
