@@ -178,6 +178,9 @@ Toggles the pet of player Mario
 
 Changes the pet ai from the given player to the specified ais at the given config.yml path.
 
+The <path> parameter specifies the section in your config.yml where the item is located. Please
+take a look at the example below.
+
 The optional [player] parameter specifies the target player otherwise the player executing the command gets used.
 
 * Players (require permissions) ✔
@@ -220,6 +223,9 @@ Apply a custom ai to a pet.
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Sets the pet skin from the given player to the specified skin at the given config.yml path.
+
+The <path> parameter specifies the section in your config.yml where the item is located. Please
+take a look at the example below.
 
 The optional [player] parameter specifies the target player otherwise the player executing the command gets used.
 
