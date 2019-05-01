@@ -36,7 +36,7 @@ allprojects {
 
 subprojects {
     group 'com.github.shynixn.petblocks'
-    version '8.1.0'
+    version '8.1.1-SNAPSHOT'
 
     sourceCompatibility = 1.8
 
@@ -213,7 +213,7 @@ task generateJavaDocPages(type: org.jetbrains.dokka.gradle.DokkaTask) {
     def spigotApiFile = new File(folder, "spigot.jar")
 
     if (!spigotApiFile.exists()) {
-        new URL('https://hub.spigotmc.org/nexus/content/repositories/snapshots/org/spigotmc/spigot-api/1.13.2-R0.1-SNAPSHOT/spigot-api-1.13.2-R0.1-20190410.230407-204.jar').withInputStream { i ->
+        new URL('https://hub.spigotmc.org/nexus/content/repositories/snapshots/org/spigotmc/spigot-api/1.13.2-R0.1-SNAPSHOT/spigot-api-1.13.2-R0.1-20190423.030901-214.jar').withInputStream { i ->
             spigotApiFile.withOutputStream {
                 it << i
             }
