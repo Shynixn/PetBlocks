@@ -10,6 +10,7 @@ import com.github.shynixn.petblocks.api.business.proxy.NMSPetProxy
 import com.github.shynixn.petblocks.api.business.proxy.PetProxy
 import com.github.shynixn.petblocks.api.business.service.*
 import com.github.shynixn.petblocks.api.persistence.entity.*
+import com.github.shynixn.petblocks.bukkit.logic.business.extension.distanceSafely
 import com.github.shynixn.petblocks.bukkit.logic.business.extension.findClazz
 import com.github.shynixn.petblocks.core.logic.business.proxy.AICreationProxyImpl
 import com.github.shynixn.petblocks.core.logic.business.proxy.PathfinderProxyImpl
@@ -160,18 +161,18 @@ class EntityServiceImpl @Inject constructor(
 
             pathfinder.shouldGoalContinueExecuting = {
                 when {
-                    owner.location.distance(hitBox.location) > aiBase.maxRange -> {
+                    owner.location.distanceSafely(hitBox.location) > aiBase.maxRange -> {
                         pet.teleport(owner.location)
                         false
                     }
 
-                    owner.location.distance(hitBox.location) < aiBase.distanceToOwner -> false
-                    else -> !(lastLocation != null && lastLocation!!.distance(owner.location) > 2)
+                    owner.location.distanceSafely(hitBox.location) < aiBase.distanceToOwner -> false
+                    else -> !(lastLocation != null && lastLocation!!.distanceSafely(owner.location) > 2)
                 }
             }
 
             pathfinder.shouldGoalBeExecuted = {
-                !hitBox.isDead && owner.gameMode != GameMode.SPECTATOR && owner.location.distance(hitBox.location) >= aiBase.distanceToOwner
+                !hitBox.isDead && owner.gameMode != GameMode.SPECTATOR && owner.location.distanceSafely(hitBox.location) >= aiBase.distanceToOwner
             }
 
             pathfinder.onStopExecuting = {
@@ -204,39 +205,27 @@ class EntityServiceImpl @Inject constructor(
      * Checks the entity collection for invalid pet entities and removes them.
      */
     override fun <E> cleanUpInvalidEntities(entities: Collection<E>) {
-        loggingService.info("Clean up requested")
-
         for (entity in entities) {
             if (entity !is LivingEntity) {
                 continue
             }
 
-            loggingService.info("Entity " + entity.type + " was found.")
-
             if (petService.findPetByEntity(entity) != null) {
                 continue
             }
-
-            loggingService.info("Entity " + entity.type + " is not a current pet.")
 
             // Pets of PetBlocks hide a marker in the boots of every entity. This marker is persistent even on server crashes.
             if (entity.equipment != null && entity.equipment!!.boots != null) {
                 val boots = entity.equipment!!.boots
 
-                loggingService.info("Entity " + entity.type + " has got boots." + entity.location)
-
                 if (boots!!.itemMeta != null && boots.itemMeta!!.lore != null && boots.itemMeta!!.lore!!.size > 0) {
                     val lore = boots.itemMeta!!.lore!![0]
-
-                    loggingService.info("Entity " + entity.type + " has got a boot marker: " + lore)
 
                     if (ChatColor.stripColor(lore) == "PetBlocks") {
                         try {
                             (entity as Any).javaClass.getDeclaredMethod("deleteFromWorld").invoke(entity)
-                            loggingService.info("Entity " + entity.type + " was removed with deleteFromWorld request")
                         } catch (e: Exception) {
                             entity.remove()
-                            loggingService.info("Entity " + entity.type + " was removed with remove() request")
                         }
 
                         plugin.logger.log(Level.INFO, "Removed invalid pet in chunk. Fixed Wrong 'Wrong location'.")
@@ -294,8 +283,8 @@ class EntityServiceImpl @Inject constructor(
         var nearest: Entity? = null
 
         for (entity in player.location.chunk.entities) {
-            if (entity !is Player && player.location.distance(entity.location) < distance) {
-                distance = player.location.distance(entity.location)
+            if (entity !is Player && player.location.distanceSafely(entity.location) < distance) {
+                distance = player.location.distanceSafely(entity.location)
                 nearest = entity
             }
         }

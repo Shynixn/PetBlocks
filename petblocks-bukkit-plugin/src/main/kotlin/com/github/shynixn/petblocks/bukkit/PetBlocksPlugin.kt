@@ -168,13 +168,9 @@ class PetBlocksPlugin : JavaPlugin(), PluginProxy {
             })
         }
 
-        Bukkit.getServer().logger.log(Level.INFO, "Startup clean up requested")
-
         for (world in Bukkit.getWorlds()) {
             entityService.cleanUpInvalidEntities(world.entities)
         }
-
-        Bukkit.getServer().logger.log(Level.INFO, "Startup clean up finished")
 
         startPlugin()
         Bukkit.getServer()

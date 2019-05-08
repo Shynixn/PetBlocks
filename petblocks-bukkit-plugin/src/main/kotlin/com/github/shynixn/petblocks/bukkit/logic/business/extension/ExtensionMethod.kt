@@ -19,9 +19,7 @@ import org.bukkit.inventory.PlayerInventory
 import org.bukkit.inventory.meta.SkullMeta
 import org.bukkit.util.Vector
 import org.yaml.snakeyaml.external.biz.base64Coder.Base64Coder
-import java.lang.reflect.Field
 import java.lang.reflect.InvocationTargetException
-import java.lang.reflect.Modifier
 import java.util.*
 
 /**
@@ -75,22 +73,43 @@ fun deserialize(section: MutableMap<String, Any?>) {
 }
 
 /**
+ * Calls the distance method safely.
+ */
+fun Location.distanceSafely(target: Location): Double {
+    if (this.world.name != target.world.name) {
+        return Double.MAX_VALUE
+    }
+
+    return this.distance(target)
+}
+
+/**
  * Teleports the player via packets to keep his state in the world.
  */
 fun Player.teleportUnsafe(location: Location) {
     val version = getServerVersion()
-    val craftPlayer = Class.forName("org.bukkit.craftbukkit.VERSION.entity.CraftPlayer".replace("VERSION", version.bukkitId)).cast(player)
+    val craftPlayer =
+        Class.forName("org.bukkit.craftbukkit.VERSION.entity.CraftPlayer".replace("VERSION", version.bukkitId))
+            .cast(player)
     val methodHandle = craftPlayer.javaClass.getDeclaredMethod("getHandle")
     val entityPlayer = methodHandle.invoke(craftPlayer)
     val entityClazz = Class.forName("net.minecraft.server.VERSION.Entity".replace("VERSION", version.bukkitId))
 
     val setPositionMethod = entityClazz
-        .getDeclaredMethod("setPositionRotation", Double::class.java, Double::class.java, Double::class.java, Float::class.java, Float::class.java)
+        .getDeclaredMethod(
+            "setPositionRotation",
+            Double::class.java,
+            Double::class.java,
+            Double::class.java,
+            Float::class.java,
+            Float::class.java
+        )
 
     setPositionMethod.invoke(entityPlayer, location.x, location.y, location.z, location.yaw, location.pitch)
 
-    val packetTeleport = Class.forName("net.minecraft.server.VERSION.PacketPlayOutEntityTeleport".replace("VERSION", version.bukkitId))
-        .getDeclaredConstructor(entityClazz).newInstance(entityPlayer)
+    val packetTeleport =
+        Class.forName("net.minecraft.server.VERSION.PacketPlayOutEntityTeleport".replace("VERSION", version.bukkitId))
+            .getDeclaredConstructor(entityClazz).newInstance(entityPlayer)
 
     location.world!!.players.forEach { worldPlayer ->
         worldPlayer.sendPacket(packetTeleport)
@@ -153,14 +172,23 @@ fun Any.yamlMap(deep: Boolean = false): Map<String, Any> {
 /**
  * Sends the given [packet] to this player.
  */
-@Throws(ClassNotFoundException::class, IllegalAccessException::class, NoSuchMethodException::class, InvocationTargetException::class, NoSuchFieldException::class)
+@Throws(
+    ClassNotFoundException::class,
+    IllegalAccessException::class,
+    NoSuchMethodException::class,
+    InvocationTargetException::class,
+    NoSuchFieldException::class
+)
 fun Player.sendPacket(packet: Any) {
     val version = getServerVersion()
-    val craftPlayer = Class.forName("org.bukkit.craftbukkit.VERSION.entity.CraftPlayer".replace("VERSION", version.bukkitId)).cast(player)
+    val craftPlayer =
+        Class.forName("org.bukkit.craftbukkit.VERSION.entity.CraftPlayer".replace("VERSION", version.bukkitId))
+            .cast(player)
     val methodHandle = craftPlayer.javaClass.getDeclaredMethod("getHandle")
     val entityPlayer = methodHandle.invoke(craftPlayer)
 
-    val field = Class.forName("net.minecraft.server.VERSION.EntityPlayer".replace("VERSION", version.bukkitId)).getDeclaredField("playerConnection")
+    val field = Class.forName("net.minecraft.server.VERSION.EntityPlayer".replace("VERSION", version.bukkitId))
+        .getDeclaredField("playerConnection")
     field.isAccessible = true
     val connection = field.get(entityPlayer)
 
@@ -174,14 +202,16 @@ fun Player.sendPacket(packet: Any) {
 fun ItemStack.createUnbreakableCopy(): ItemStack {
     val version = getServerVersion()
     val nmsItemStackClass = Class.forName("net.minecraft.server.VERSION.ItemStack".replace("VERSION", version.bukkitId))
-    val craftItemStackClass = Class.forName("org.bukkit.craftbukkit.VERSION.inventory.CraftItemStack".replace("VERSION", version.bukkitId))
+    val craftItemStackClass =
+        Class.forName("org.bukkit.craftbukkit.VERSION.inventory.CraftItemStack".replace("VERSION", version.bukkitId))
     val nmsCopyMethod = craftItemStackClass.getDeclaredMethod("asNMSCopy", ItemStack::class.java)
     val nmsToBukkitMethod = craftItemStackClass.getDeclaredMethod("asBukkitCopy", nmsItemStackClass)
 
     val nbtTagClass = Class.forName("net.minecraft.server.VERSION.NBTTagCompound".replace("VERSION", version.bukkitId))
     val getNBTTag = nmsItemStackClass.getDeclaredMethod("getTag")
     val setNBTTag = nmsItemStackClass.getDeclaredMethod("setTag", nbtTagClass)
-    val nbtSetBoolean = nbtTagClass.getDeclaredMethod("setBoolean", String::class.java, Boolean::class.javaPrimitiveType)
+    val nbtSetBoolean =
+        nbtTagClass.getDeclaredMethod("setBoolean", String::class.java, Boolean::class.javaPrimitiveType)
 
     val nmsItemStack = nmsCopyMethod.invoke(null, this)
     var nbtTag = getNBTTag.invoke(nmsItemStack)
@@ -259,7 +289,12 @@ var ItemStack.skin: String?
             return currentMeta.owner
         }
 
-        val cls = Class.forName("org.bukkit.craftbukkit.VERSION.inventory.CraftMetaSkull".replace("VERSION", getServerVersion().bukkitId))
+        val cls = Class.forName(
+            "org.bukkit.craftbukkit.VERSION.inventory.CraftMetaSkull".replace(
+                "VERSION",
+                getServerVersion().bukkitId
+            )
+        )
         val real = cls.cast(currentMeta)
         val field = real.javaClass.getDeclaredField("profile")
         field.isAccessible = true
@@ -277,7 +312,12 @@ var ItemStack.skin: String?
         var newSkin = value
 
         if (newSkin.length > 32) {
-            val cls = Class.forName("org.bukkit.craftbukkit.VERSION.inventory.CraftMetaSkull".replace("VERSION", getServerVersion().bukkitId))
+            val cls = Class.forName(
+                "org.bukkit.craftbukkit.VERSION.inventory.CraftMetaSkull".replace(
+                    "VERSION",
+                    getServerVersion().bukkitId
+                )
+            )
             val real = cls.cast(currentMeta)
             val field = real.javaClass.getDeclaredField("profile")
             val newSkinProfile = GameProfile(UUID.randomUUID(), null)
@@ -309,7 +349,10 @@ fun getServerVersion(): Version {
             return Version.VERSION_UNKNOWN
         }
 
-        val version = Bukkit.getServer().javaClass.getPackage().name.replace(".", ",").split(",".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()[3]
+        val version = Bukkit.getServer().javaClass.getPackage().name.replace(
+            ".",
+            ","
+        ).split(",".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()[3]
 
         for (versionSupport in Version.values()) {
             if (versionSupport.bukkitId == version) {
