@@ -12,7 +12,7 @@ import com.github.shynixn.petblocks.api.business.proxy.PluginProxy
 import com.github.shynixn.petblocks.api.business.service.*
 import com.github.shynixn.petblocks.api.persistence.context.SqlDbContext
 import com.github.shynixn.petblocks.api.persistence.entity.*
-import com.github.shynixn.petblocks.core.logic.business.service.AIServiceImpl
+import com.github.shynixn.petblocks.core.logic.business.service.AISerializationService
 import com.github.shynixn.petblocks.core.logic.business.service.LoggingUtilServiceImpl
 import com.github.shynixn.petblocks.core.logic.business.service.PersistencePetMetaServiceImpl
 import com.github.shynixn.petblocks.core.logic.business.service.YamlSerializationServiceImpl
@@ -266,7 +266,7 @@ class PersistenceMySQLIT {
                 Optional.of(asset)
             }
 
-            val aiService = AIServiceImpl(
+            val aiService = AISerializationService(
                 LoggingUtilServiceImpl(Logger.getAnonymousLogger()),
                 MockedProxyService()
             )

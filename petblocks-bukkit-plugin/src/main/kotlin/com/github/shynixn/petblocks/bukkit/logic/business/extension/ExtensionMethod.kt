@@ -11,6 +11,7 @@ import com.mojang.authlib.GameProfile
 import com.mojang.authlib.properties.Property
 import org.bukkit.Bukkit
 import org.bukkit.Location
+import org.bukkit.Material
 import org.bukkit.configuration.MemorySection
 import org.bukkit.configuration.file.FileConfiguration
 import org.bukkit.entity.Player
@@ -194,6 +195,13 @@ fun Player.sendPacket(packet: Any) {
 
     val sendMethod = connection.javaClass.getDeclaredMethod("sendPacket", packet.javaClass.interfaces[0])
     sendMethod.invoke(connection, packet)
+}
+
+/**
+ * Converts to an internal id representation.
+ */
+fun Material.toId() : Int{
+    return 0
 }
 
 /**

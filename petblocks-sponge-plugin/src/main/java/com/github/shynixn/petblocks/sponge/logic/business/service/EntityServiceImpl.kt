@@ -60,7 +60,7 @@ class EntityServiceImpl @Inject constructor(
     private val entityRegistrationService: EntityRegistrationService,
     private val yamlSerializationService: YamlSerializationService,
     private val loggingService: LoggingService,
-    private val aiService: AIService,
+    private val aiService: AISerializationService,
     private val petService: PetService,
     private val afraidOfWaterService: AfraidOfWaterService,
     private val navigationService: NavigationService,
@@ -302,6 +302,6 @@ class EntityServiceImpl @Inject constructor(
      */
     private fun <A : AIBase> register(aiType: AIType, function: ((PetProxy, A) -> Any)? = null) {
         val clazz = Class.forName("com.github.shynixn.petblocks.core.logic.persistence.entity.CUSTOMEntity".replace("CUSTOM", aiType.aiClazz.java.simpleName))
-        aiService.register(aiType.type, AICreationProxyImpl(yamlSerializationService, clazz.kotlin, function as ((PetProxy, AIBase) -> Any)?))
+        aiService.registerSerializationProxy(aiType.type, AICreationProxyImpl(yamlSerializationService, clazz.kotlin, function as ((PetProxy, AIBase) -> Any)?))
     }
 }

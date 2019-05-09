@@ -2,7 +2,7 @@
 
 package com.github.shynixn.petblocks.bukkit.logic.business.service
 
-import com.github.shynixn.petblocks.api.business.service.AIService
+import com.github.shynixn.petblocks.api.business.service.AISerializationService
 import com.github.shynixn.petblocks.api.business.service.ConfigurationService
 import com.github.shynixn.petblocks.api.business.service.ItemService
 import com.github.shynixn.petblocks.api.persistence.entity.GuiItem
@@ -60,7 +60,7 @@ import kotlin.collections.ArrayList
 class ConfigurationServiceImpl @Inject constructor(
     private val plugin: Plugin,
     private val itemService: ItemService,
-    private val aiService: AIService
+    private val aiService: AISerializationService
 ) : ConfigurationService {
 
     private val cache = HashMap<String, List<GuiItem>>()

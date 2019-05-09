@@ -14,7 +14,7 @@ import com.github.shynixn.petblocks.bukkit.logic.business.proxy.PlayerProxyImpl
 import com.github.shynixn.petblocks.bukkit.logic.business.service.ConfigurationServiceImpl
 import com.github.shynixn.petblocks.bukkit.logic.business.service.EntityServiceImpl
 import com.github.shynixn.petblocks.bukkit.logic.business.service.Item119R1ServiceImpl
-import com.github.shynixn.petblocks.core.logic.business.service.AIServiceImpl
+import com.github.shynixn.petblocks.core.logic.business.service.AISerializationService
 import com.github.shynixn.petblocks.core.logic.business.service.LoggingUtilServiceImpl
 import com.github.shynixn.petblocks.core.logic.business.service.PersistencePetMetaServiceImpl
 import com.github.shynixn.petblocks.core.logic.business.service.YamlSerializationServiceImpl
@@ -248,7 +248,7 @@ class PersistenceSQLiteIT {
             method.isAccessible = true
             method.invoke(PetBlocksApi, MockedPluginProxy())
 
-            val aiService = AIServiceImpl(LoggingUtilServiceImpl(Logger.getAnonymousLogger()), MockedProxyService())
+            val aiService = AISerializationService(LoggingUtilServiceImpl(Logger.getAnonymousLogger()), MockedProxyService())
             val configService = ConfigurationServiceImpl(plugin, Item119R1ServiceImpl(), aiService)
             EntityServiceImpl(configService,
                 MockedProxyService(),

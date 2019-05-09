@@ -5,7 +5,7 @@ package com.github.shynixn.petblocks.core.logic.business.service
 import com.github.shynixn.petblocks.api.business.proxy.AICreationProxy
 import com.github.shynixn.petblocks.api.business.proxy.PathfinderProxy
 import com.github.shynixn.petblocks.api.business.proxy.PetProxy
-import com.github.shynixn.petblocks.api.business.service.AIService
+import com.github.shynixn.petblocks.api.business.service.AISerializationService
 import com.github.shynixn.petblocks.api.business.service.LoggingService
 import com.github.shynixn.petblocks.api.business.service.ProxyService
 import com.github.shynixn.petblocks.api.persistence.entity.AIBase
@@ -42,10 +42,10 @@ import org.yaml.snakeyaml.Yaml
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class AIServiceImpl @Inject constructor(
+class AISerializationService @Inject constructor(
     private val loggingService: LoggingService,
     private val proxyService: ProxyService
-) : AIService {
+) : AISerializationService {
 
     private val registeredAIS = HashMap<String, AICreationProxy<AIBase>>()
 
@@ -63,7 +63,7 @@ class AIServiceImpl @Inject constructor(
 
         for (meta in metas) {
             if (!registeredAIS.containsKey(meta.type)) {
-                loggingService.warn("Pet of ${player.name} tried to use ai type + " + meta.type + " which is not registered in the AI Service. Please register it first.")
+                loggingService.warn("Pet of ${player.name} tried to use ai type + " + meta.type + " which is not registered in the AI Service. Please registerSerializationProxy it first.")
             }
 
             val aiCreation = registeredAIS[meta.type]!!
@@ -104,7 +104,7 @@ class AIServiceImpl @Inject constructor(
      * Registers a custom ai type with unique [type] and a proxy to create required AI actions.
      * Existing types can be overwritten if the given [type] already exists.
      */
-    override fun <A : AIBase> register(type: String, creator: AICreationProxy<A>) {
+    override fun <A : AIBase> registerSerializationProxy(type: String, creator: AICreationProxy<A>) {
         registeredAIS[type] = creator as AICreationProxy<AIBase>
     }
 

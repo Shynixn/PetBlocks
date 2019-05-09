@@ -73,6 +73,15 @@ fun Position.relativeFront(amount: Double): Position {
 }
 
 /**
+ * Changes the position to it's yaw back by the given amount.
+ */
+fun Position.relativeBack(amount: Double): Position {
+    this.x = x - amount * Math.cos(Math.toRadians(yaw + 90))
+    this.z = z - amount * Math.sin(Math.toRadians(yaw + 90))
+    return this
+}
+
+/**
  * Gets the column value.
  */
 inline fun <reified V> Map<String, Any>.getItem(key: String): V {

@@ -2,7 +2,7 @@
 
 package com.github.shynixn.petblocks.core.logic.persistence.repository
 
-import com.github.shynixn.petblocks.api.business.service.AIService
+import com.github.shynixn.petblocks.api.business.service.AISerializationService
 import com.github.shynixn.petblocks.api.business.service.ConfigurationService
 import com.github.shynixn.petblocks.api.persistence.context.SqlDbContext
 import com.github.shynixn.petblocks.api.persistence.entity.AIBase
@@ -43,7 +43,7 @@ import com.google.inject.Inject
  */
 class PetMetaSqlRepository @Inject constructor(
     private val sqlDbContext: SqlDbContext,
-    private val aiService: AIService,
+    private val aiService: AISerializationService,
     private val configurationService: ConfigurationService
 ) : PetMetaRepository {
     /**

@@ -86,7 +86,7 @@ class PetBlocksDependencyInjectionBinder(private val plugin: PluginContainer) : 
         bind(PetMetaRepository::class.java).to(PetMetaSqlRepository::class.java).`in`(Scopes.SINGLETON)
 
         // Core Services
-        bind(AIService::class.java).to(AIServiceImpl::class.java).`in`(Scopes.SINGLETON)
+        bind(AISerializationService::class.java).to(AISerializationService::class.java).`in`(Scopes.SINGLETON)
         bind(CarryPetService::class.java).to(CarryPetServiceImpl::class.java).`in`(Scopes.SINGLETON)
         bind(CombatPetService::class.java).to(CombatPetServiceImpl::class.java).`in`(Scopes.SINGLETON)
         bind(FeedingPetService::class.java).to(FeedPetServiceImpl::class.java).`in`(Scopes.SINGLETON)
