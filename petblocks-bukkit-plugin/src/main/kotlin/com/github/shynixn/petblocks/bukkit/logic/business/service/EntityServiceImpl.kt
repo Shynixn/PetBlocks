@@ -12,7 +12,6 @@ import com.github.shynixn.petblocks.api.business.service.*
 import com.github.shynixn.petblocks.api.persistence.entity.*
 import com.github.shynixn.petblocks.bukkit.logic.business.extension.distanceSafely
 import com.github.shynixn.petblocks.bukkit.logic.business.extension.findClazz
-import com.github.shynixn.petblocks.bukkit.logic.business.extension.getServerVersion
 import com.github.shynixn.petblocks.bukkit.logic.business.pathfinder.PathfinderAfraidOfWater113R2
 import com.github.shynixn.petblocks.bukkit.logic.business.pathfinder.PathfinderAmbientSound
 import com.github.shynixn.petblocks.bukkit.logic.business.pathfinder.PathfinderFollowBack
@@ -24,6 +23,7 @@ import org.bukkit.entity.Entity
 import org.bukkit.entity.LivingEntity
 import org.bukkit.entity.Player
 import org.bukkit.plugin.Plugin
+import java.lang.reflect.Method
 import java.util.logging.Level
 
 /**
@@ -57,20 +57,21 @@ class EntityServiceImpl @Inject constructor(
     private val configurationService: ConfigurationService,
     private val proxyService: ProxyService,
     private val entityRegistrationService: EntityRegistrationService,
-    private val yamlSerializationService: YamlSerializationService,
-    private val aiService: AISerializationService,
     private val petService: PetService,
+    private val yamlSerializationService: YamlSerializationService,
     private val plugin: Plugin,
-    private val navigationService: NavigationService,
-    private val version: Version
+    private val version: Version,
+    private val aiService: AIService
 ) : EntityService {
 
     private var registered = false
-    private val getHandleMethod =
-        getServerVersion().findClazz("org.bukkit.craftbukkit.VERSION.entity.CraftLivingEntity").getDeclaredMethod("getHandle")!!
 
+    /**
+     * Initializes the default ais.
+     */
     init {
         this.register<AIAfraidOfWater>(AIType.AFRAID_OF_WATER) { pet, aiBase ->
+            val getHandleMethod = version.findClazz("org.bukkit.craftbukkit.VERSION.entity.CraftLivingEntity").getDeclaredMethod("getHandle")!!
             val hitBox = pet.getHitBoxLivingEntity<LivingEntity>().get()
 
             PathfinderAfraidOfWater113R2(
@@ -92,6 +93,8 @@ class EntityServiceImpl @Inject constructor(
         this.register<AIFleeInCombat>(AIType.FLEE_IN_COMBAT)
 
         this.register<AIFloatInWater>(AIType.FLOAT_IN_WATER) { pet, _ ->
+            val getHandleMethod = version.findClazz("org.bukkit.craftbukkit.VERSION.entity.CraftLivingEntity").getDeclaredMethod("getHandle")!!
+
             version.findClazz("net.minecraft.server.VERSION.PathfinderGoalFloat")
                 .getDeclaredConstructor(version.findClazz("net.minecraft.server.VERSION.EntityInsentient"))
                 .newInstance(getHandleMethod.invoke(pet.getHitBoxLivingEntity<LivingEntity>().get()))
@@ -249,9 +252,7 @@ class EntityServiceImpl @Inject constructor(
                 aiType.aiClazz.java.simpleName
             )
         )
-        aiService.registerSerializationProxy(
-            aiType.type,
-            AICreationProxyImpl(yamlSerializationService, clazz.kotlin, function as ((PetProxy, AIBase) -> Any)?)
-        )
+
+        this.aiService.registerAI(aiType.type, AICreationProxyImpl(yamlSerializationService, clazz.kotlin, function as ((PetProxy, AIBase) -> Any)?))
     }
 }

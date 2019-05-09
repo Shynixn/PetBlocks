@@ -40,7 +40,7 @@ class EditPetAICommand @Inject constructor(
     private val petMetaService: PersistencePetMetaService,
     private val configurationService: ConfigurationService,
     private val messageService: MessageService,
-    private val aiService: AISerializationService,
+    private val aiService: AIService,
     private val commandService: CommandService
 ) : SourceCommand {
     /**

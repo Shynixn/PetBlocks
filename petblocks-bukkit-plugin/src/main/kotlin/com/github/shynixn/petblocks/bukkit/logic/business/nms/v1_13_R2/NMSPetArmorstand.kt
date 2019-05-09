@@ -4,7 +4,7 @@ import com.github.shynixn.petblocks.api.PetBlocksApi
 import com.github.shynixn.petblocks.api.bukkit.event.PetBlocksAIPreChangeEvent
 import com.github.shynixn.petblocks.api.business.proxy.EntityPetProxy
 import com.github.shynixn.petblocks.api.business.proxy.NMSPetProxy
-import com.github.shynixn.petblocks.api.business.service.AISerializationService
+import com.github.shynixn.petblocks.api.business.service.AIService
 import com.github.shynixn.petblocks.api.business.service.ConfigurationService
 import com.github.shynixn.petblocks.api.persistence.entity.*
 import com.github.shynixn.petblocks.bukkit.PetBlocksPlugin
@@ -56,7 +56,7 @@ class NMSPetArmorstand(owner: Player, val petMeta: PetMeta) : EntityArmorStand((
     private var internalProxy: PetProxyImpl? = null
     private var jumpingField: Field = EntityLiving::class.java.getDeclaredField("bg")
     private var internalHitBox: EntityInsentient? = null
-    private val aiService = PetBlocksApi.resolve(AISerializationService::class.java)
+    private val aiService = PetBlocksApi.resolve(AIService::class.java)
 
     private val flyCanHitWalls = PetBlocksApi.resolve(ConfigurationService::class.java).findValue<Boolean>("global-configuration.fly-wall-colision")
     private var flyHasTakenOffGround = false

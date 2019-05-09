@@ -14,7 +14,7 @@ import com.github.shynixn.petblocks.bukkit.logic.business.proxy.PlayerProxyImpl
 import com.github.shynixn.petblocks.bukkit.logic.business.service.ConfigurationServiceImpl
 import com.github.shynixn.petblocks.bukkit.logic.business.service.EntityServiceImpl
 import com.github.shynixn.petblocks.bukkit.logic.business.service.Item119R1ServiceImpl
-import com.github.shynixn.petblocks.core.logic.business.service.AISerializationService
+import com.github.shynixn.petblocks.core.logic.business.service.AIServiceImpl
 import com.github.shynixn.petblocks.core.logic.business.service.LoggingUtilServiceImpl
 import com.github.shynixn.petblocks.core.logic.business.service.PersistencePetMetaServiceImpl
 import com.github.shynixn.petblocks.core.logic.business.service.YamlSerializationServiceImpl
@@ -248,20 +248,11 @@ class PersistenceSQLiteIT {
             method.isAccessible = true
             method.invoke(PetBlocksApi, MockedPluginProxy())
 
-            val aiService = AISerializationService(LoggingUtilServiceImpl(Logger.getAnonymousLogger()), MockedProxyService())
+            val aiService = AIServiceImpl(LoggingUtilServiceImpl(Logger.getAnonymousLogger()), MockedProxyService())
             val configService = ConfigurationServiceImpl(plugin, Item119R1ServiceImpl(), aiService)
-            EntityServiceImpl(configService,
-                MockedProxyService(),
-                Mockito.mock(EntityRegistrationService::class.java),
-                YamlSerializationServiceImpl(),
-                LoggingUtilServiceImpl(Logger.getAnonymousLogger()),
-                aiService,
-                Mockito.mock(PetService::class.java),
-                plugin,
-                Mockito.mock(AfraidOfWaterService::class.java),
-                Mockito.mock(NavigationService::class.java),
-                Mockito.mock(SoundService::class.java),
-                Version.VERSION_1_8_R1)
+            EntityServiceImpl(configService, MockedProxyService(),
+                Mockito.mock(EntityRegistrationService::class.java), Mockito.mock(PetService::class.java), YamlSerializationServiceImpl(),
+                plugin, Version.VERSION_1_8_R1, aiService)
 
             dbContext = SqlDbContextImpl(configService, LoggingUtilServiceImpl(Logger.getAnonymousLogger()))
 

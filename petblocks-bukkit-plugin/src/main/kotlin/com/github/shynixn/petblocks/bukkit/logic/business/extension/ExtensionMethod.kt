@@ -77,7 +77,7 @@ fun deserialize(section: MutableMap<String, Any?>) {
  * Calls the distance method safely.
  */
 fun Location.distanceSafely(target: Location): Double {
-    if (this.world.name != target.world.name) {
+    if (this.world == null || target.world == null || this.world!!.name != target.world!!.name) {
         return Double.MAX_VALUE
     }
 
@@ -195,13 +195,6 @@ fun Player.sendPacket(packet: Any) {
 
     val sendMethod = connection.javaClass.getDeclaredMethod("sendPacket", packet.javaClass.interfaces[0])
     sendMethod.invoke(connection, packet)
-}
-
-/**
- * Converts to an internal id representation.
- */
-fun Material.toId() : Int{
-    return 0
 }
 
 /**

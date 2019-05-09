@@ -10,7 +10,7 @@ import com.github.shynixn.petblocks.api.persistence.entity.GuiItem
 import com.github.shynixn.petblocks.api.persistence.entity.PetMeta
 import com.github.shynixn.petblocks.api.persistence.repository.PetMetaRepository
 import com.github.shynixn.petblocks.core.logic.business.service.LoggingUtilServiceImpl
-import com.github.shynixn.petblocks.core.logic.business.service.AISerializationService
+import com.github.shynixn.petblocks.core.logic.business.service.AIServiceImpl
 import com.github.shynixn.petblocks.core.logic.persistence.entity.PetMetaEntity
 import com.github.shynixn.petblocks.core.logic.persistence.entity.PlayerMetaEntity
 import com.github.shynixn.petblocks.core.logic.persistence.entity.SkinEntity
@@ -166,7 +166,7 @@ class PetMetaSqlRepositoryTest {
         fun createWithDependencies(dbContext: SqlDbContext = MockedSqlDbContext()): PetMetaRepository {
             return PetMetaSqlRepository(
                 dbContext,
-                AISerializationService(
+                AIServiceImpl(
                     LoggingUtilServiceImpl(Logger.getAnonymousLogger()),
                     MockedProxyService()
                 ),
