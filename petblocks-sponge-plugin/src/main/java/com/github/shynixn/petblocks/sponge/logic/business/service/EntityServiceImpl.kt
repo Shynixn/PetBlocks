@@ -58,20 +58,17 @@ class EntityServiceImpl @Inject constructor(
     private val configurationService: ConfigurationService,
     private val proxyService: ProxyService,
     private val entityRegistrationService: EntityRegistrationService,
-    private val yamlSerializationService: YamlSerializationService,
-    private val loggingService: LoggingService,
-    private val aiService: AISerializationService,
     private val petService: PetService,
-    private val afraidOfWaterService: AfraidOfWaterService,
-    private val navigationService: NavigationService,
-    private val soundService: SoundService,
-    private val version: Version
+    private val yamlSerializationService: YamlSerializationService,
+    private val version: Version,
+    private val aiService: AIService,
+    private val loggingService: LoggingService
 ) : EntityService {
 
     private var registered = false
 
     init {
-        this.register<AIAfraidOfWater>(AIType.AFRAID_OF_WATER) { pet, aiBase ->
+       /* this.register<AIAfraidOfWater>(AIType.AFRAID_OF_WATER) { pet, aiBase ->
             val pathfinder = PathfinderProxyImpl(loggingService, aiBase)
             val hitBox = pet.getHitBoxLivingEntity<Living>().get()
             val owner = pet.getPlayer<Player>()
@@ -191,7 +188,7 @@ class EntityServiceImpl @Inject constructor(
 
             pathfinder
         }
-
+*/
         this.register<AIGroundRiding>(AIType.GROUND_RIDING)
         this.register<AIHopping>(AIType.HOPPING)
         this.register<AIWalking>(AIType.WALKING)
@@ -302,6 +299,6 @@ class EntityServiceImpl @Inject constructor(
      */
     private fun <A : AIBase> register(aiType: AIType, function: ((PetProxy, A) -> Any)? = null) {
         val clazz = Class.forName("com.github.shynixn.petblocks.core.logic.persistence.entity.CUSTOMEntity".replace("CUSTOM", aiType.aiClazz.java.simpleName))
-        aiService.registerSerializationProxy(aiType.type, AICreationProxyImpl(yamlSerializationService, clazz.kotlin, function as ((PetProxy, AIBase) -> Any)?))
+        aiService.registerAI(aiType.type, AICreationProxyImpl(yamlSerializationService, clazz.kotlin, function as ((PetProxy, AIBase) -> Any)?))
     }
 }

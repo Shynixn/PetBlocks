@@ -18,7 +18,6 @@ import com.github.shynixn.petblocks.sponge.logic.business.extension.toText
 import com.github.shynixn.petblocks.sponge.logic.business.listener.*
 import com.google.inject.Inject
 import com.google.inject.Injector
-import net.minecraft.entity.monster.EntityEnderman
 import org.bstats.sponge.Metrics2
 import org.slf4j.Logger
 import org.spongepowered.api.Sponge
@@ -101,8 +100,6 @@ class PetBlocksPlugin : PluginProxy {
         if (!getServerVersion().isCompatible(
                 Version.VERSION_1_12_R1)
         ) {
-            EntityEnderman
-
             Sponge.getServer().console.sendMessage(PREFIX_CONSOLE + ChatColor.RED + "================================================")
             Sponge.getServer().console.sendMessage(PREFIX_CONSOLE + ChatColor.RED + "PetBlocks does not support your server version")
             Sponge.getServer().console.sendMessage(PREFIX_CONSOLE + ChatColor.RED + "Install v" + Version.VERSION_1_12_R1.id + " - v" + Version.VERSION_1_12_R1.id)

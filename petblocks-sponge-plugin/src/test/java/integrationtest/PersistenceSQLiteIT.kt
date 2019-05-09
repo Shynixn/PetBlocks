@@ -11,7 +11,7 @@ import com.github.shynixn.petblocks.api.business.proxy.PluginProxy
 import com.github.shynixn.petblocks.api.business.service.*
 import com.github.shynixn.petblocks.api.persistence.context.SqlDbContext
 import com.github.shynixn.petblocks.api.persistence.entity.*
-import com.github.shynixn.petblocks.core.logic.business.service.AISerializationService
+import com.github.shynixn.petblocks.core.logic.business.service.AIServiceImpl
 import com.github.shynixn.petblocks.core.logic.business.service.LoggingUtilServiceImpl
 import com.github.shynixn.petblocks.core.logic.business.service.PersistencePetMetaServiceImpl
 import com.github.shynixn.petblocks.core.logic.business.service.YamlSerializationServiceImpl
@@ -249,7 +249,7 @@ class PersistenceSQLiteIT {
                 Optional.of(asset)
             }
 
-            val aiService = AISerializationService(
+            val aiService = AIServiceImpl(
                 LoggingUtilServiceImpl(Logger.getAnonymousLogger()),
                 MockedProxyService()
             )
@@ -264,19 +264,9 @@ class PersistenceSQLiteIT {
             method.isAccessible = true
             method.invoke(PetBlocksApi, MockedPluginProxy())
 
-            EntityServiceImpl(
-                configurationService,
-                MockedProxyService(),
-                Mockito.mock(EntityRegistrationService::class.java),
-                YamlSerializationServiceImpl(),
-                LoggingUtilServiceImpl(Logger.getAnonymousLogger()),
-                aiService,
-                Mockito.mock(PetService::class.java),
-                Mockito.mock(AfraidOfWaterService::class.java),
-                Mockito.mock(NavigationService::class.java),
-                Mockito.mock(SoundService::class.java),
-                Version.VERSION_1_12_R1
-            )
+            EntityServiceImpl(configurationService, MockedProxyService(),
+                Mockito.mock(EntityRegistrationService::class.java), Mockito.mock(PetService::class.java), YamlSerializationServiceImpl(),
+                Version.VERSION_1_12_R1, aiService, LoggingUtilServiceImpl(Logger.getAnonymousLogger()))
 
             dbContext = SqlDbContextImpl(configurationService, LoggingUtilServiceImpl(Logger.getAnonymousLogger()))
 

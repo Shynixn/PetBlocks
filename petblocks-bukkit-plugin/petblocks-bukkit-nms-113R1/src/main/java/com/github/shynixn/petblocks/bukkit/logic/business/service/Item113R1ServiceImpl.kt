@@ -44,6 +44,23 @@ class Item113R1ServiceImpl : ItemService {
     private val getItemInOffHandMethod: Method
 
     /**
+     * Converts the given type to an id.
+     */
+    override fun convertTypeToId(type: Any): Int {
+        if (type !is Material) {
+            throw IllegalArgumentException("Material has to be a BukkitMaterial!")
+        }
+
+        for (material in Material.values()) {
+            if (material == type) {
+                return getIdFromMaterialMethod(material) as Int
+            }
+        }
+
+        throw IllegalArgumentException("Material id not found!")
+    }
+
+    /**
      * Initialize.
      */
     init {

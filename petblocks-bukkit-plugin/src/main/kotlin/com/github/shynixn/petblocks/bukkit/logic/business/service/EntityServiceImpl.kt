@@ -12,7 +12,7 @@ import com.github.shynixn.petblocks.api.business.service.*
 import com.github.shynixn.petblocks.api.persistence.entity.*
 import com.github.shynixn.petblocks.bukkit.logic.business.extension.distanceSafely
 import com.github.shynixn.petblocks.bukkit.logic.business.extension.findClazz
-import com.github.shynixn.petblocks.bukkit.logic.business.pathfinder.PathfinderAfraidOfWater113R2
+import com.github.shynixn.petblocks.bukkit.logic.business.pathfinder.PathfinderAfraidOfWater
 import com.github.shynixn.petblocks.bukkit.logic.business.pathfinder.PathfinderAmbientSound
 import com.github.shynixn.petblocks.bukkit.logic.business.pathfinder.PathfinderFollowBack
 import com.github.shynixn.petblocks.bukkit.logic.business.pathfinder.PathfinderFollowOwner
@@ -23,7 +23,6 @@ import org.bukkit.entity.Entity
 import org.bukkit.entity.LivingEntity
 import org.bukkit.entity.Player
 import org.bukkit.plugin.Plugin
-import java.lang.reflect.Method
 import java.util.logging.Level
 
 /**
@@ -71,14 +70,12 @@ class EntityServiceImpl @Inject constructor(
      */
     init {
         this.register<AIAfraidOfWater>(AIType.AFRAID_OF_WATER) { pet, aiBase ->
-            val getHandleMethod = version.findClazz("org.bukkit.craftbukkit.VERSION.entity.CraftLivingEntity").getDeclaredMethod("getHandle")!!
             val hitBox = pet.getHitBoxLivingEntity<LivingEntity>().get()
 
-            PathfinderAfraidOfWater113R2(
+            PathfinderAfraidOfWater(
                 pet,
                 aiBase,
-                hitBox,
-                getHandleMethod.invoke(hitBox)
+                hitBox
             )
         }
 

@@ -2,8 +2,11 @@
 
 package com.github.shynixn.petblocks.bukkit.logic.business.extension
 
+import com.github.shynixn.petblocks.api.PetBlocksApi
+import com.github.shynixn.petblocks.api.business.enumeration.MaterialType
 import com.github.shynixn.petblocks.api.business.enumeration.ParticleType
 import com.github.shynixn.petblocks.api.business.enumeration.Version
+import com.github.shynixn.petblocks.api.business.service.ItemService
 import com.github.shynixn.petblocks.api.persistence.entity.Position
 import com.github.shynixn.petblocks.core.logic.business.extension.translateChatColors
 import com.github.shynixn.petblocks.core.logic.persistence.entity.PositionEntity
@@ -225,6 +228,14 @@ fun ItemStack.createUnbreakableCopy(): ItemStack {
     setNBTTag.invoke(nmsItemStack, nbtTag)
 
     return nmsToBukkitMethod.invoke(null, nmsItemStack) as ItemStack
+}
+
+/**
+ * Converts the material to an id.
+ */
+fun Material.toId(): Int {
+    val itemService = PetBlocksApi.resolve(ItemService::class.java)
+    return itemService.convertTypeToId(this)
 }
 
 /**

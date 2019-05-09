@@ -1,6 +1,8 @@
 package com.github.shynixn.petblocks.bukkit.logic.business.pathfinder
 
+import com.github.shynixn.petblocks.api.PetBlocksApi
 import com.github.shynixn.petblocks.api.business.proxy.PetProxy
+import com.github.shynixn.petblocks.api.business.service.LoggingService
 import com.github.shynixn.petblocks.api.persistence.entity.AIFollowBack
 import com.github.shynixn.petblocks.bukkit.logic.business.extension.toPosition
 import com.github.shynixn.petblocks.core.logic.business.extension.relativeBack
@@ -15,6 +17,9 @@ class PathfinderFollowBack(
     private val livingEntity: LivingEntity,
     private val player: Player
 ) : BasePathfinder(aiFollowBack) {
+
+    private val loggingService = PetBlocksApi.resolve(LoggingService::class.java)
+
     /**
      * Should the goal be executed.
      */
@@ -26,7 +31,11 @@ class PathfinderFollowBack(
      * On execute.
      */
     override fun onExecute() {
-        val position = player.location.toPosition().relativeBack(-1.0)
-        pet.teleport(position)
+        try {
+            val position = player.location.toPosition().relativeBack(-1.0)
+            pet.teleport(position)
+        } catch (e: Exception) {
+            loggingService.warn("Failed to execute PathfinderFollowBack.", e)
+        }
     }
 }

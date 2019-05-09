@@ -2,7 +2,7 @@
 
 package com.github.shynixn.petblocks.sponge.logic.business.service
 
-import com.github.shynixn.petblocks.api.business.service.AISerializationService
+import com.github.shynixn.petblocks.api.business.service.AIService
 import com.github.shynixn.petblocks.api.business.service.ConfigurationService
 import com.github.shynixn.petblocks.api.business.service.ItemService
 import com.github.shynixn.petblocks.api.business.service.LoggingService
@@ -66,7 +66,7 @@ class ConfigurationServiceImpl @Inject constructor(
     private val loggingService: LoggingService,
     private val pluginContainer: PluginContainer,
     private val itemService: ItemService,
-    private val aiService: AISerializationService
+    private val aiService: AIService
 ) : ConfigurationService {
 
     private val cache = HashMap<String, List<GuiItem>>()

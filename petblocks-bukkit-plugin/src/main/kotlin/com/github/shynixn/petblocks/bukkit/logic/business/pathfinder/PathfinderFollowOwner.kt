@@ -2,6 +2,7 @@ package com.github.shynixn.petblocks.bukkit.logic.business.pathfinder
 
 import com.github.shynixn.petblocks.api.PetBlocksApi
 import com.github.shynixn.petblocks.api.business.proxy.PetProxy
+import com.github.shynixn.petblocks.api.business.service.LoggingService
 import com.github.shynixn.petblocks.api.business.service.NavigationService
 import com.github.shynixn.petblocks.api.persistence.entity.AIFollowOwner
 import com.github.shynixn.petblocks.api.persistence.entity.AIHopping
@@ -21,28 +22,39 @@ class PathfinderFollowOwner(
 
     private var lastLocation: Location? = null
     private val navigationService = PetBlocksApi.resolve(NavigationService::class.java)
+    private val loggingService = PetBlocksApi.resolve(LoggingService::class.java)
 
     /**
      * Should the goal be executed.
      */
     override fun shouldGoalBeExecuted(): Boolean {
-        return !livingEntity.isDead && player.gameMode != GameMode.SPECTATOR && player.location.distanceSafely(
-            livingEntity.location
-        ) >= aiFollowBack.distanceToOwner
+        return try {
+            !livingEntity.isDead && player.gameMode != GameMode.SPECTATOR && player.location.distanceSafely(
+                livingEntity.location
+            ) >= aiFollowBack.distanceToOwner
+        } catch (e: Exception) {
+            loggingService.warn("Failed to execute PathfinderFollowOwner.", e)
+            false
+        }
     }
 
     /**
      * Should the goal continue executing.
      */
     override fun shouldGoalContinueExecuting(): Boolean {
-        return when {
-            player.location.distanceSafely(livingEntity.location) > aiFollowBack.maxRange -> {
-                pet.teleport(player.location)
-                false
-            }
+        return try {
+            when {
+                player.location.distanceSafely(livingEntity.location) > aiFollowBack.maxRange -> {
+                    pet.teleport(player.location)
+                    false
+                }
 
-            player.location.distanceSafely(livingEntity.location) < aiFollowBack.distanceToOwner -> false
-            else -> !(lastLocation != null && lastLocation!!.distanceSafely(player.location) > 2)
+                player.location.distanceSafely(livingEntity.location) < aiFollowBack.distanceToOwner -> false
+                else -> !(lastLocation != null && lastLocation!!.distanceSafely(player.location) > 2)
+            }
+        } catch (e: Exception) {
+            loggingService.warn("Failed to execute PathfinderFollowOwner.", e)
+            false
         }
     }
 
@@ -50,14 +62,18 @@ class PathfinderFollowOwner(
      * On start executing.
      */
     override fun onStartExecuting() {
-        lastLocation = player.location.clone()
+        try {
+            lastLocation = player.location.clone()
 
-        val speed = if (pet.meta.aiGoals.firstOrNull { p -> p is AIHopping } != null) {
-            aiFollowBack.speed + 1.0
-        } else {
-            aiFollowBack.speed
+            val speed = if (pet.meta.aiGoals.firstOrNull { p -> p is AIHopping } != null) {
+                aiFollowBack.speed + 1.0
+            } else {
+                aiFollowBack.speed
+            }
+
+            navigationService.navigateToLocation(pet, player.location, speed)
+        } catch (e: Exception) {
+            loggingService.warn("Failed to execute PathfinderFollowOwner.", e)
         }
-
-        navigationService.navigateToLocation(pet, player.location, speed)
     }
 }

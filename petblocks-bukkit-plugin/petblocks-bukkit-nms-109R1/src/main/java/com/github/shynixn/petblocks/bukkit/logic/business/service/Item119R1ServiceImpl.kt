@@ -39,6 +39,17 @@ import java.util.*
  */
 class Item119R1ServiceImpl : ItemService {
     /**
+     * Converts the given type to an id.
+     */
+    override fun convertTypeToId(type: Any): Int {
+        if (type !is Material) {
+            throw IllegalArgumentException("Material has to be a BukkitMaterial!")
+        }
+
+        return type.id
+    }
+
+    /**
      * Creates a new itemstack from the given parameters.
      */
     override fun createItemStack(type: Any, dataValue: Int): ItemStackProxy {

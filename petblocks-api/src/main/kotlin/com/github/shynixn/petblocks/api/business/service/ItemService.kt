@@ -38,6 +38,11 @@ interface ItemService {
     fun createItemStack(type: Any, dataValue: Int = 0): ItemStackProxy
 
     /**
+     * Converts the given type to an id.
+     */
+    fun convertTypeToId(type: Any): Int
+
+    /**
      * Gets if the given [itemStack] has got the given [type] and [dataValue].
      */
     fun <I> hasItemStackProperties(itemStack: I, type: Any, dataValue: Int = 0): Boolean
