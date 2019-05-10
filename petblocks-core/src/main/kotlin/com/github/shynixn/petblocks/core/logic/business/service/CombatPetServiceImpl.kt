@@ -76,6 +76,8 @@ class CombatPetServiceImpl @Inject constructor(
         aiBase.currentAppearsInSeconds = aiBase.reAppearsInSeconds
 
         fleeCache.add(pet.getPlayer())
+
+        pet.remove()
     }
 
     /**

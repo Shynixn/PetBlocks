@@ -58,7 +58,7 @@ class Hand19R1ServiceImpl : HandService {
             throw IllegalArgumentException("Player has to be a BukkitPlayer!")
         }
 
-        if (itemStack !is ItemStack) {
+        if (itemStack !is ItemStack?) {
             throw IllegalArgumentException("ItemStack has to be a BukkitItemStack!")
         }
 
