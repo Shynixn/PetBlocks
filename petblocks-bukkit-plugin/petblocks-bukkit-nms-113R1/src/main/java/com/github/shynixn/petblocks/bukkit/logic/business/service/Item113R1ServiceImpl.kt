@@ -84,8 +84,10 @@ class Item113R1ServiceImpl : ItemService {
             throw IllegalArgumentException("ItemStack has to be a BukkitItemStack!")
         }
 
-        val material = getMaterialValue(type)
-        return material == itemStack.type && dataValue == itemStack.durability.toInt()
+        val id1 = convertTypeToId(itemStack.type)
+        val id2 = convertTypeToId(getMaterialValue(type))
+
+        return id1 == id2 && (dataValue == 0 || dataValue == itemStack.durability.toInt())
     }
 
     /**

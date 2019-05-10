@@ -6,6 +6,7 @@ import com.github.shynixn.petblocks.api.business.enumeration.AIType
 import com.github.shynixn.petblocks.api.business.enumeration.MaterialType
 import com.github.shynixn.petblocks.api.business.service.*
 import com.github.shynixn.petblocks.api.persistence.entity.AICarry
+import com.github.shynixn.petblocks.core.logic.business.extension.sync
 import com.google.inject.Inject
 
 /**
@@ -39,7 +40,8 @@ class CarryPetServiceImpl @Inject constructor(
     private val petService: PetService,
     private val proxyService: ProxyService,
     private val itemService: ItemService,
-    private val loggingService: LoggingService
+    private val loggingService: LoggingService,
+    private val concurrencyService: ConcurrencyService
 ) : CarryPetService {
     private val carryingPet: MutableMap<String, Any> = HashMap()
 
@@ -108,7 +110,10 @@ class CarryPetServiceImpl @Inject constructor(
         dropPet(player)
 
         val pet = petService.getOrSpawnPetFromPlayer(player).get()
-        pet.setVelocity(playerProxy.getDirectionLaunchVector().multiply(1.2))
+
+        sync(concurrencyService, 1L) {
+            pet.setVelocity(playerProxy.getDirectionLaunchVector().multiply(1.2))
+        }
     }
 
     /**

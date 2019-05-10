@@ -79,5 +79,5 @@ interface Position {
     /**
      * Multiply position.
      */
-    fun multiply(multiplier: Double)
+    fun multiply(multiplier: Double) : Position
 }

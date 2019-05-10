@@ -68,10 +68,11 @@ class PositionEntity(
     /**
      * Multiply position.
      */
-    override fun multiply(multiplier: Double) {
+    override fun multiply(multiplier: Double): Position {
         this.x *= multiplier
         this.y *= multiplier
         this.z *= multiplier
+        return this
     }
 
     /**
