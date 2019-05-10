@@ -5,6 +5,7 @@ import com.github.shynixn.petblocks.api.business.enumeration.ChatColor
 import com.github.shynixn.petblocks.api.business.enumeration.MaterialType
 import com.github.shynixn.petblocks.api.business.enumeration.PluginDependency
 import com.github.shynixn.petblocks.api.business.service.*
+import com.github.shynixn.petblocks.bukkit.logic.business.extension.dataValue
 import com.github.shynixn.petblocks.bukkit.logic.business.extension.skin
 import com.github.shynixn.petblocks.bukkit.logic.business.extension.updateInventory
 import com.github.shynixn.petblocks.core.logic.business.extension.chatMessage
@@ -124,6 +125,7 @@ class DependencyHeadDatabaseServiceImpl @Inject constructor(
             this.headDatabaseSearch = this.constructPrefix(ChatColor.translateChatColorCodes('&', "&4&r" + plugin.config.getString("messages.search")!!.split("%count%")[0]))
         }
 
+        @Suppress("DEPRECATION")
         val currentTitleName = org.bukkit.ChatColor.stripColor(player.openInventory.topInventory.title)!!
 
         if (!currentTitleName.startsWith(this.headDatabaseTitle!!) && !currentTitleName.startsWith(this.headDatabaseSearch!!)) {
@@ -141,7 +143,7 @@ class DependencyHeadDatabaseServiceImpl @Inject constructor(
         val petMeta = petMetaService.getPetMetaFromPlayer(player)
 
         petMeta.skin.typeName = item.type.name
-        petMeta.skin.dataValue = item.durability.toInt()
+        petMeta.skin.dataValue = item.dataValue
         petMeta.skin.owner = item.skin!!
 
         petMetaService.save(petMeta)

@@ -1,4 +1,4 @@
-@file:Suppress("UNCHECKED_CAST")
+@file:Suppress("UNCHECKED_CAST", "DEPRECATION")
 
 package com.github.shynixn.petblocks.sponge.logic.business.service
 

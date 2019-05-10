@@ -3,6 +3,7 @@ package com.github.shynixn.petblocks.sponge.logic.business.nms.v1_12_R1
 import com.github.shynixn.petblocks.api.business.proxy.EntityPetProxy
 import com.github.shynixn.petblocks.api.business.proxy.PathfinderProxy
 import com.github.shynixn.petblocks.api.persistence.entity.AIMovement
+import com.github.shynixn.petblocks.core.logic.business.extension.cast
 import com.github.shynixn.petblocks.sponge.logic.business.extension.x
 import com.github.shynixn.petblocks.sponge.logic.business.extension.y
 import com.github.shynixn.petblocks.sponge.logic.business.extension.z
@@ -67,7 +68,7 @@ class NMSPetRabbit(petDesign: NMSPetArmorstand, location: Transform<World>) :
      * Removes this entity.
      */
     override fun deleteFromWorld() {
-        (this as Living).remove()
+        this.cast<Living>().remove()
     }
 
     /**

@@ -10,22 +10,24 @@ import com.github.shynixn.petblocks.api.business.proxy.NMSPetProxy
 import com.github.shynixn.petblocks.api.business.proxy.PetProxy
 import com.github.shynixn.petblocks.api.business.service.*
 import com.github.shynixn.petblocks.api.persistence.entity.*
+import com.github.shynixn.petblocks.core.logic.business.extension.cast
 import com.github.shynixn.petblocks.core.logic.business.extension.stripChatColors
 import com.github.shynixn.petblocks.core.logic.business.proxy.AICreationProxyImpl
-import com.github.shynixn.petblocks.core.logic.business.proxy.PathfinderProxyImpl
-import com.github.shynixn.petblocks.core.logic.persistence.entity.PositionEntity
-import com.github.shynixn.petblocks.sponge.logic.business.extension.*
+import com.github.shynixn.petblocks.sponge.logic.business.extension.lore
+import com.github.shynixn.petblocks.sponge.logic.business.extension.sendMessage
+import com.github.shynixn.petblocks.sponge.logic.business.extension.toVector3i
+import com.github.shynixn.petblocks.sponge.logic.business.pathfinder.PathfinderAfraidOfWater
+import com.github.shynixn.petblocks.sponge.logic.business.pathfinder.PathfinderAmbientSound
+import com.github.shynixn.petblocks.sponge.logic.business.pathfinder.PathfinderFollowBack
+import com.github.shynixn.petblocks.sponge.logic.business.pathfinder.PathfinderFollowOwner
 import com.google.inject.Inject
 import net.minecraft.entity.EntityLiving
 import net.minecraft.entity.ai.EntityAISwimming
 import net.minecraft.inventory.EntityEquipmentSlot
 import net.minecraft.item.ItemStack
 import org.spongepowered.api.entity.Entity
-import org.spongepowered.api.entity.Transform
 import org.spongepowered.api.entity.living.Living
 import org.spongepowered.api.entity.living.player.Player
-import org.spongepowered.api.entity.living.player.gamemode.GameModes
-import org.spongepowered.api.world.World
 
 /**
  * Created by Shynixn 2018.
@@ -68,55 +70,25 @@ class EntityServiceImpl @Inject constructor(
     private var registered = false
 
     init {
-       /* this.register<AIAfraidOfWater>(AIType.AFRAID_OF_WATER) { pet, aiBase ->
-            val pathfinder = PathfinderProxyImpl(loggingService, aiBase)
+        this.register<AIAfraidOfWater>(AIType.AFRAID_OF_WATER) { pet, aiBase ->
             val hitBox = pet.getHitBoxLivingEntity<Living>().get()
-            val owner = pet.getPlayer<Player>()
-            var milliseconds = 0L
 
-            pathfinder.shouldGoalBeExecuted = {
-                !hitBox.isRemoved && owner.gameMode != GameModes.SPECTATOR && afraidOfWaterService.isPetInWater(pet)
-            }
-
-            pathfinder.onExecute = {
-                afraidOfWaterService.escapeWater(pet, aiBase)
-            }
-
-            pathfinder.shouldGoalContinueExecuting = {
-                val current = System.currentTimeMillis()
-                val difference = current - milliseconds
-
-                milliseconds = current
-                difference < 2000
-            }
-
-            pathfinder
+            PathfinderAfraidOfWater(
+                pet,
+                aiBase,
+                hitBox
+            )
         }
 
         this.register<AIAmbientSound>(AIType.AMBIENT_SOUND) { pet, aiBase ->
-            val pathfinder = PathfinderProxyImpl(loggingService, aiBase)
             val hitBox = pet.getHitBoxLivingEntity<Living>().get()
-            val owner = pet.getPlayer<Player>()
 
-            pathfinder.shouldGoalBeExecuted = {
-                !hitBox.isRemoved && owner.gameMode != GameModes.SPECTATOR
-            }
-
-            pathfinder.onExecute = {
-                if (pet.meta.soundEnabled) {
-                    val value = Math.random()
-
-                    if (value > 0.98) {
-                        soundService.playSound(hitBox.transform, aiBase.sound, owner)
-                    }
-                }
-            }
-
-            pathfinder
+            PathfinderAmbientSound(pet, aiBase, hitBox, pet.getPlayer())
         }
 
         this.register<AICarry>(AIType.CARRY)
         this.register<AIFeeding>(AIType.FEEDING)
+        this.register<AIFleeInCombat>(AIType.FLEE_IN_COMBAT)
 
         this.register<AIFloatInWater>(AIType.FLOAT_IN_WATER) { pet, _ ->
             EntityAISwimming(pet.getHitBoxLivingEntity<Living>().get() as EntityLiving)
@@ -126,70 +98,19 @@ class EntityServiceImpl @Inject constructor(
         this.register<AIFlyRiding>(AIType.FLY_RIDING)
 
         this.register<AIFollowBack>(AIType.FOLLOW_BACK) { pet, aiBase ->
-            val pathfinder = PathfinderProxyImpl(loggingService, aiBase)
-            val owner = pet.getPlayer<Player>()
+            val hitBox = pet.getHitBoxLivingEntity<Living>().get()
 
-            pathfinder.shouldGoalBeExecuted = {
-                !pet.isDead && owner.gameMode != GameModes.SPECTATOR
-            }
-
-            pathfinder.onExecute = {
-                val location = owner.transform
-                val targetLocation = PositionEntity(
-                    (location.x + (-1 * Math.cos(Math.toRadians(location.yaw + 90.0)))),
-                    location.y,
-                    location.z + (-1 * Math.sin(Math.toRadians(location.yaw + 90.0))),
-                    location.yaw,
-                    location.pitch, location.extent.name)
-
-                pet.teleport(targetLocation)
-            }
-
-            pathfinder
+            PathfinderFollowBack(pet, aiBase, hitBox, pet.getPlayer())
         }
 
         this.register<AIFollowOwner>(AIType.FOLLOW_OWNER) { pet, aiBase ->
-            var lastLocation: Transform<World>? = null
-            val pathfinder = PathfinderProxyImpl(loggingService, aiBase)
-            val owner = pet.getPlayer<Player>()
             val hitBox = pet.getHitBoxLivingEntity<Living>().get()
 
-            pathfinder.shouldGoalContinueExecuting = {
-                when {
-                    owner.transform.distance(hitBox.transform) > aiBase.maxRange -> {
-                        pet.teleport(owner.transform)
-                        false
-                    }
-
-                    owner.transform.distance(hitBox.transform) < aiBase.distanceToOwner -> false
-                    else -> !(lastLocation != null && lastLocation!!.distance(owner.transform) > 2)
-                }
-            }
-
-            pathfinder.shouldGoalBeExecuted = {
-                !hitBox.isRemoved && owner.gameMode != GameModes.SPECTATOR && owner.transform.distance(hitBox.transform) >= aiBase.distanceToOwner
-            }
-
-            pathfinder.onStopExecuting = {
-                navigationService.clearNavigation(pet)
-            }
-
-            pathfinder.onStartExecuting = {
-                lastLocation = owner.transform.toPosition().toTransform()
-
-                val speed = if (pet.meta.aiGoals.firstOrNull { p -> p is AIHopping } != null) {
-                    aiBase.speed + 1.0
-                } else {
-                    aiBase.speed
-                }
-
-                navigationService.navigateToLocation(pet, owner.transform, speed)
-            }
-
-            pathfinder
+            PathfinderFollowOwner(pet, aiBase, hitBox, pet.getPlayer())
         }
-*/
+
         this.register<AIGroundRiding>(AIType.GROUND_RIDING)
+        this.register<AIHealth>(AIType.HEALTH)
         this.register<AIHopping>(AIType.HOPPING)
         this.register<AIWalking>(AIType.WALKING)
         this.register<AIWearing>(AIType.WEARING)
@@ -210,7 +131,7 @@ class EntityServiceImpl @Inject constructor(
 
             // Pets of PetBlocks hide a marker in the boots of every entity. This marker is persistent even on server crashes.
             if (entity is EntityLiving && entity.getItemStackFromSlot(EntityEquipmentSlot.FEET) != ItemStack.EMPTY) {
-                val boots = entity.getItemStackFromSlot(EntityEquipmentSlot.FEET) as org.spongepowered.api.item.inventory.ItemStack
+                val boots = entity.getItemStackFromSlot(EntityEquipmentSlot.FEET).cast<org.spongepowered.api.item.inventory.ItemStack>()
 
                 if (boots.lore != null) {
                     val lore = boots.lore!![0]

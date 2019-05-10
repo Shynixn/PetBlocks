@@ -301,6 +301,13 @@ class PersistenceMySQLIT {
 
     class MockedItemService : ItemService {
         /**
+         * Converts the given type to an id.
+         */
+        override fun convertTypeToId(type: Any): Int {
+            return 0
+        }
+
+        /**
          * Creates a new itemstack from the given parameters.
          */
         override fun createItemStack(type: Any, dataValue: Int): ItemStackProxy {
@@ -315,13 +322,6 @@ class PersistenceMySQLIT {
          * Gets if the given [itemStack] has got the given [type] and [dataValue].
          */
         override fun <I> hasItemStackProperties(itemStack: I, type: Any, dataValue: Int): Boolean {
-            throw IllegalArgumentException()
-        }
-
-        /**
-         * Gets the itemstack in the hand of the player with optional offHand flag.
-         */
-        override fun <P, I> getItemInHand(player: P, offHand: Boolean): Optional<I> {
             throw IllegalArgumentException()
         }
     }

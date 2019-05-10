@@ -1,17 +1,21 @@
-@file:Suppress("UNCHECKED_CAST")
+@file:Suppress("UNCHECKED_CAST", "DEPRECATION")
 
 package com.github.shynixn.petblocks.sponge.logic.business.extension
 
 import com.flowpowered.math.vector.Vector3d
 import com.flowpowered.math.vector.Vector3i
+import com.github.shynixn.petblocks.api.PetBlocksApi
 import com.github.shynixn.petblocks.api.business.enumeration.Version
+import com.github.shynixn.petblocks.api.business.service.ItemService
 import com.github.shynixn.petblocks.api.persistence.entity.Position
+import com.github.shynixn.petblocks.core.logic.business.extension.cast
 import com.github.shynixn.petblocks.core.logic.business.extension.translateChatColors
 import com.github.shynixn.petblocks.core.logic.persistence.entity.PositionEntity
 import net.minecraft.entity.player.EntityPlayerMP
 import net.minecraft.nbt.NBTTagCompound
 import net.minecraft.nbt.NBTTagList
 import org.spongepowered.api.Sponge
+import org.spongepowered.api.block.BlockType
 import org.spongepowered.api.command.source.ConsoleSource
 import org.spongepowered.api.data.key.Keys
 import org.spongepowered.api.entity.Transform
@@ -117,9 +121,9 @@ val Transform<*>.z
     get() = this.position.z
 
 /**
- * Itemstack durability.
+ * Itemstack dataValue.
  */
-var ItemStack.durability: Int
+var ItemStack.dataValue: Int
     get() {
         return this.cast<net.minecraft.item.ItemStack>().itemDamage
     }
@@ -180,17 +184,18 @@ fun Vector3d.toPosition(): Position {
 }
 
 /**
- * Cast helper to ignore sponge mixing.
- */
-fun <T> Any?.cast(): T {
-    return this as T
-}
-
-/**
  * Converts the [Position] to a Vector.
  */
 fun Position.toVector(): Vector3d {
     return Vector3d(this.x, this.y, this.z)
+}
+
+/**
+ * Converts the material to an id.
+ */
+fun BlockType.toId(): Int {
+    val itemService = PetBlocksApi.resolve(ItemService::class.java)
+    return itemService.convertTypeToId(this)
 }
 
 /**

@@ -76,7 +76,9 @@ class ItemStackProxyImpl(
      * Creates a new itemstack from this proxy.
      */
     override fun <I> build(): I {
-        val itemstack = ItemStack(Material.getMaterial(typeName)!!, amount, data.toShort())
+        val itemstack = ItemStack::class.java.getDeclaredConstructor(Material::class.java, Int::class.java, Short::class.java)
+            .newInstance(Material.getMaterial(typeName)!!, amount, data.toShort())
+
         val meta = itemstack.itemMeta!!
 
         if (this.internalDisplayName != null) {

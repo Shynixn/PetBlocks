@@ -6,9 +6,7 @@ import com.github.shynixn.petblocks.api.business.enumeration.MaterialType
 import com.github.shynixn.petblocks.api.business.proxy.ItemStackProxy
 import com.github.shynixn.petblocks.api.business.service.ItemService
 import org.bukkit.Material
-import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
-import java.util.*
 
 /**
  * Created by Shynixn 2019.
@@ -37,7 +35,7 @@ import java.util.*
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class Item118R1ServiceImpl : ItemService {
+class Item18R1ServiceImpl : ItemService {
     /**
      * Converts the given type to an id.
      */
@@ -46,6 +44,7 @@ class Item118R1ServiceImpl : ItemService {
             throw IllegalArgumentException("Material has to be a BukkitMaterial!")
         }
 
+        @Suppress("DEPRECATION")
         return type.id
     }
 
@@ -71,24 +70,13 @@ class Item118R1ServiceImpl : ItemService {
     }
 
     /**
-     * Gets the itemstack in the hand of the player with optional offHand flag.
-     */
-    override fun <P, I> getItemInHand(player: P, offHand: Boolean): Optional<I> {
-        if (player !is Player) {
-            throw IllegalArgumentException("Player has to be a BukkitPlayer!")
-        }
-
-        return Optional.ofNullable(player.inventory.itemInHand as I)
-    }
-
-    /**
      * Processing if there is any way the given [value] can be mapped to an material.
      */
     private fun getMaterialValue(value: Any): Material {
         if (value is Int) {
-            return Material.getMaterial(value)
+            return Material::class.java.getDeclaredMethod("getMaterial", Int::class.java).invoke(null, value) as Material
         } else if (value is String && value.toIntOrNull() != null) {
-            return Material.getMaterial(value.toInt())
+            return Material::class.java.getDeclaredMethod("getMaterial", Int::class.java).invoke(null, value.toInt()) as Material
         } else if (value is String) {
             return Material.getMaterial(value) ?: throw IllegalArgumentException("Material $value does not exist!")
         } else if (value is MaterialType) {

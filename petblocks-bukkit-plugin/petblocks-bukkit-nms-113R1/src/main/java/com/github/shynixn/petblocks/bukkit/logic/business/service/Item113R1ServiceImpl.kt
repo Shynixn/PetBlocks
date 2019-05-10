@@ -6,10 +6,8 @@ import com.github.shynixn.petblocks.api.business.enumeration.MaterialType
 import com.github.shynixn.petblocks.api.business.proxy.ItemStackProxy
 import com.github.shynixn.petblocks.api.business.service.ItemService
 import org.bukkit.Material
-import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 import java.lang.reflect.Method
-import java.util.*
 
 /**
  * Created by Shynixn 2018.
@@ -88,21 +86,6 @@ class Item113R1ServiceImpl : ItemService {
 
         val material = getMaterialValue(type)
         return material == itemStack.type && dataValue == itemStack.durability.toInt()
-    }
-
-    /**
-     * Gets the itemstack in the hand of the player with optional offHand flag.
-     */
-    override fun <P, I> getItemInHand(player: P, offHand: Boolean): Optional<I> {
-        if (player !is Player) {
-            throw IllegalArgumentException("Player has to be a BukkitPlayer!")
-        }
-
-        return if (offHand) {
-            Optional.ofNullable(getItemInOffHandMethod.invoke(player.inventory) as I)
-        } else {
-            Optional.ofNullable(getItemInMainHandMethod.invoke(player.inventory) as I)
-        }
     }
 
     /**

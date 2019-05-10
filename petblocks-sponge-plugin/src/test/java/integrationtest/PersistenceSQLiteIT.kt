@@ -242,7 +242,7 @@ class PersistenceSQLiteIT {
 
             Mockito.`when`(plugin.getAsset(Mockito.anyString())).then { p ->
                 val path = p.getArgument<String>(0)
-                val url = File("../petblocks-core/src/main/resources/" + path).toURI()
+                val url = File("../petblocks-core/src/main/resources/$path").toURI()
                 val asset = Mockito.mock(Asset::class.java)
                 Mockito.`when`(asset.url).thenReturn(url.toURL())
 
@@ -350,6 +350,13 @@ class PersistenceSQLiteIT {
 
     class MockedItemService : ItemService {
         /**
+         * Converts the given type to an id.
+         */
+        override fun convertTypeToId(type: Any): Int {
+            return 0
+        }
+
+        /**
          * Creates a new itemstack from the given parameters.
          */
         override fun createItemStack(type: Any, dataValue: Int): ItemStackProxy {
@@ -364,13 +371,6 @@ class PersistenceSQLiteIT {
          * Gets if the given [itemStack] has got the given [type] and [dataValue].
          */
         override fun <I> hasItemStackProperties(itemStack: I, type: Any, dataValue: Int): Boolean {
-            throw IllegalArgumentException()
-        }
-
-        /**
-         * Gets the itemstack in the hand of the player with optional offHand flag.
-         */
-        override fun <P, I> getItemInHand(player: P, offHand: Boolean): Optional<I> {
             throw IllegalArgumentException()
         }
     }

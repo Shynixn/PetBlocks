@@ -1,8 +1,8 @@
 package com.github.shynixn.petblocks.bukkit.logic.business.listener
 
 import com.github.shynixn.petblocks.api.business.service.FeedingPetService
-import com.github.shynixn.petblocks.api.business.service.ItemService
 import com.github.shynixn.petblocks.api.business.service.PetService
+import com.github.shynixn.petblocks.bukkit.logic.business.extension.itemStackInMainHand
 import com.google.inject.Inject
 import org.bukkit.Material
 import org.bukkit.entity.Player
@@ -10,7 +10,6 @@ import org.bukkit.event.EventHandler
 import org.bukkit.event.EventPriority
 import org.bukkit.event.Listener
 import org.bukkit.event.player.PlayerInteractAtEntityEvent
-import org.bukkit.inventory.ItemStack
 
 /**
  * Created by Shynixn 2018.
@@ -39,7 +38,7 @@ import org.bukkit.inventory.ItemStack
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class FeedingPetListener @Inject constructor(private val feedingPetService: FeedingPetService, private val petService: PetService, private val itemService: ItemService) :
+class FeedingPetListener @Inject constructor(private val feedingPetService: FeedingPetService, private val petService: PetService) :
     Listener {
     /**
      * Gets called when a player interacts at the given entity.
@@ -49,16 +48,16 @@ class FeedingPetListener @Inject constructor(private val feedingPetService: Feed
         val pet = petService.findPetByEntity(event.rightClicked) ?: return
 
         if (pet.getPlayer<Player>() == event.player) {
-            val itemStack = itemService.getItemInHand<Player, ItemStack>(event.player)
+            val itemStack = event.player.itemStackInMainHand
 
-            if (itemStack.isPresent && itemStack.get().type != Material.AIR) {
-                val feed = feedingPetService.feedPet(pet, itemStack.get())
+            if (itemStack != null && itemStack.type != Material.AIR) {
+                val feed = feedingPetService.feedPet(pet, itemStack)
 
                 if (feed) {
-                    if (itemStack.get().amount == 1) {
-                        pet.getPlayer<Player>().setItemInHand(null)
+                    if (itemStack.amount == 1) {
+                        event.player.itemStackInMainHand = null
                     } else {
-                        itemStack.get().amount = itemStack.get().amount - 1
+                        itemStack.amount = itemStack.amount - 1
                     }
                 }
 

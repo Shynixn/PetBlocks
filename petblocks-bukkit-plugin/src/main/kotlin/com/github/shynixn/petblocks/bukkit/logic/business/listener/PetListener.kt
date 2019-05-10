@@ -14,6 +14,7 @@ import com.github.shynixn.petblocks.core.logic.business.extension.thenAcceptSafe
 import com.google.inject.Inject
 import org.bukkit.Bukkit
 import org.bukkit.World
+import org.bukkit.entity.Entity
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.EventPriority
@@ -246,9 +247,7 @@ class PetListener @Inject constructor(
             return
         }
 
-        if (event.player.passenger == null) {
-            return
-        }
+        Entity::class.java.getDeclaredMethod("getPassenger").invoke(event.player) as Entity? ?: return
 
         val fallOffHead = configurationService.findValue<Boolean>("global-configuration.teleport-fall")
 

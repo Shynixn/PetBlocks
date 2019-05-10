@@ -5,14 +5,12 @@ package com.github.shynixn.petblocks.sponge.logic.business.service
 import com.github.shynixn.petblocks.api.business.enumeration.MaterialType
 import com.github.shynixn.petblocks.api.business.proxy.ItemStackProxy
 import com.github.shynixn.petblocks.api.business.service.ItemService
-import com.github.shynixn.petblocks.sponge.logic.business.extension.durability
+import com.github.shynixn.petblocks.sponge.logic.business.extension.dataValue
 import com.github.shynixn.petblocks.sponge.logic.business.proxy.ItemStackProxyImpl
-import org.spongepowered.api.data.type.HandTypes
-import org.spongepowered.api.entity.living.player.Player
+import org.spongepowered.api.Sponge
+import org.spongepowered.api.block.BlockType
 import org.spongepowered.api.item.ItemType
 import org.spongepowered.api.item.inventory.ItemStack
-import java.util.*
-import org.spongepowered.api.Sponge
 
 /**
  * Created by Shynixn 2019.
@@ -43,6 +41,21 @@ import org.spongepowered.api.Sponge
  */
 class ItemServiceImpl : ItemService {
     /**
+     * Converts the given type to an id.
+     */
+    override fun convertTypeToId(type: Any): Int {
+        if (type is BlockType) {
+            for (material in MaterialType.values()) {
+                if (material.minecraftName == type.name) {
+                    return material.numericId
+                }
+            }
+        }
+
+        throw IllegalArgumentException("Cannot convert type $type.")
+    }
+
+    /**
      * Creates a new itemstack from the given parameters.
      */
     override fun createItemStack(type: Any, dataValue: Int): ItemStackProxy {
@@ -58,22 +71,7 @@ class ItemServiceImpl : ItemService {
         }
 
         val material = getItemTypeValue(type)
-        return material == itemStack.type && dataValue == itemStack.durability
-    }
-
-    /**
-     * Gets the itemstack in the hand of the player with optional offHand flag.
-     */
-    override fun <P, I> getItemInHand(player: P, offHand: Boolean): Optional<I> {
-        if (player !is Player) {
-            throw IllegalArgumentException("Player has to be a SpongePlayer!")
-        }
-
-        return if (offHand) {
-            player.getItemInHand(HandTypes.OFF_HAND) as Optional<I>
-        } else {
-            player.getItemInHand(HandTypes.MAIN_HAND) as Optional<I>
-        }
+        return material == itemStack.type && dataValue == itemStack.dataValue
     }
 
     /**

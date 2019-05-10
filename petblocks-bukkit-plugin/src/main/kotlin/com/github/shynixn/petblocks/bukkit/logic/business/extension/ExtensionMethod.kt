@@ -3,11 +3,11 @@
 package com.github.shynixn.petblocks.bukkit.logic.business.extension
 
 import com.github.shynixn.petblocks.api.PetBlocksApi
-import com.github.shynixn.petblocks.api.business.enumeration.MaterialType
-import com.github.shynixn.petblocks.api.business.enumeration.ParticleType
 import com.github.shynixn.petblocks.api.business.enumeration.Version
+import com.github.shynixn.petblocks.api.business.service.HandService
 import com.github.shynixn.petblocks.api.business.service.ItemService
 import com.github.shynixn.petblocks.api.persistence.entity.Position
+import com.github.shynixn.petblocks.core.logic.business.extension.cast
 import com.github.shynixn.petblocks.core.logic.business.extension.translateChatColors
 import com.github.shynixn.petblocks.core.logic.persistence.entity.PositionEntity
 import com.mojang.authlib.GameProfile
@@ -15,6 +15,7 @@ import com.mojang.authlib.properties.Property
 import org.bukkit.Bukkit
 import org.bukkit.Location
 import org.bukkit.Material
+import org.bukkit.Server
 import org.bukkit.configuration.MemorySection
 import org.bukkit.configuration.file.FileConfiguration
 import org.bukkit.entity.Player
@@ -55,7 +56,7 @@ import java.util.*
  */
 
 /**
- * Deserializes the configuraiton section path to a map.
+ * DeSerializes the configuration section path to a map.
  */
 fun FileConfiguration.deserializeToMap(path: String): Map<String, Any?> {
     val section = getConfigurationSection(path)!!.getValues(false)
@@ -64,7 +65,7 @@ fun FileConfiguration.deserializeToMap(path: String): Map<String, Any?> {
 }
 
 /**
- * Deserializes the given section.
+ * DeSerializes the given section.
  */
 fun deserialize(section: MutableMap<String, Any?>) {
     section.keys.forEach { key ->
@@ -75,6 +76,32 @@ fun deserialize(section: MutableMap<String, Any?>) {
         }
     }
 }
+
+/**
+ * Gets/Sets the itemStack in the offhand. Returns the itemstack in
+ * the main hand if the version is below 1.9.
+ */
+var Player.itemStackInMainHand: ItemStack?
+    get() {
+        val optItemStack = PetBlocksApi.resolve(HandService::class.java).getItemInHand<Player, ItemStack>(this)
+        if (optItemStack.isPresent) {
+            return optItemStack.get()
+        }
+
+        return null
+    }
+    set(value) {
+        PetBlocksApi.resolve(HandService::class.java).setItemInHand(this, value)
+    }
+
+/**
+ * Gets/ the itemstack dataValue.
+ */
+val ItemStack.dataValue: Int
+    get() {
+        @Suppress("DEPRECATION")
+        return this.durability.toInt()
+    }
 
 /**
  * Calls the distance method safely.
@@ -274,31 +301,17 @@ fun ItemStack.setLore(lore: List<String>): ItemStack {
 }
 
 /**
- * Tries to return the [ParticleType] from the given [name].
- */
-fun String.toParticleType(): ParticleType {
-    val version = getServerVersion()
-
-    ParticleType.values().forEach { p ->
-        if (p.gameId_18.equals(this, true) || p.gameId_113.equals(this, true) || p.name.equals(this, true)) {
-            if (version.isVersionSameOrGreaterThan(p.sinceVersion)) {
-                return p
-            }
-        }
-    }
-
-    throw IllegalArgumentException("ParticleType cannot be parsed from '" + this + "'.")
-}
-
-/**
  * Gets the skin of an itemstack.
  */
 var ItemStack.skin: String?
     get() {
         val currentMeta = this.itemMeta as? SkullMeta ?: return null
 
-        if (!currentMeta.owner.isNullOrEmpty()) {
-            return currentMeta.owner
+        @Suppress("DEPRECATION")
+        val owner = currentMeta.owner
+
+        if (!owner.isNullOrEmpty()) {
+            return owner
         }
 
         val cls = Class.forName(
@@ -347,6 +360,7 @@ var ItemStack.skin: String?
             field.set(real, newSkinProfile)
             itemMeta = SkullMeta::class.java.cast(real)
         } else if (value.isNotEmpty()) {
+            @Suppress("DEPRECATION")
             currentMeta.owner = value
             itemMeta = currentMeta
         }
@@ -357,7 +371,7 @@ var ItemStack.skin: String?
  */
 fun getServerVersion(): Version {
     try {
-        if (Bukkit.getServer() == null || Bukkit.getServer().javaClass.getPackage() == null) {
+        if (Bukkit.getServer().cast<Server?>() == null || Bukkit.getServer().javaClass.getPackage() == null) {
             return Version.VERSION_UNKNOWN
         }
 

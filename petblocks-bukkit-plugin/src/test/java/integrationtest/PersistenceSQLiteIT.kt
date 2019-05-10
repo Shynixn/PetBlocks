@@ -13,7 +13,7 @@ import com.github.shynixn.petblocks.api.persistence.entity.*
 import com.github.shynixn.petblocks.bukkit.logic.business.proxy.PlayerProxyImpl
 import com.github.shynixn.petblocks.bukkit.logic.business.service.ConfigurationServiceImpl
 import com.github.shynixn.petblocks.bukkit.logic.business.service.EntityServiceImpl
-import com.github.shynixn.petblocks.bukkit.logic.business.service.Item119R1ServiceImpl
+import com.github.shynixn.petblocks.bukkit.logic.business.service.Item18R1ServiceImpl
 import com.github.shynixn.petblocks.core.logic.business.service.AIServiceImpl
 import com.github.shynixn.petblocks.core.logic.business.service.LoggingUtilServiceImpl
 import com.github.shynixn.petblocks.core.logic.business.service.PersistencePetMetaServiceImpl
@@ -249,7 +249,7 @@ class PersistenceSQLiteIT {
             method.invoke(PetBlocksApi, MockedPluginProxy())
 
             val aiService = AIServiceImpl(LoggingUtilServiceImpl(Logger.getAnonymousLogger()), MockedProxyService())
-            val configService = ConfigurationServiceImpl(plugin, Item119R1ServiceImpl(), aiService)
+            val configService = ConfigurationServiceImpl(plugin, Item18R1ServiceImpl(), aiService)
             EntityServiceImpl(configService, MockedProxyService(),
                 Mockito.mock(EntityRegistrationService::class.java), Mockito.mock(PetService::class.java), YamlSerializationServiceImpl(),
                 plugin, Version.VERSION_1_8_R1, aiService)
@@ -270,7 +270,7 @@ class PersistenceSQLiteIT {
          */
         override fun <S> resolve(service: Any): S {
             if (service == ItemService::class.java) {
-                return Item119R1ServiceImpl() as S
+                return Item18R1ServiceImpl() as S
             }
 
             throw IllegalArgumentException()

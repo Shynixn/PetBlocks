@@ -1,3 +1,5 @@
+@file:Suppress("UNCHECKED_CAST")
+
 package com.github.shynixn.petblocks.sponge.logic.business.nms.v1_12_R1
 
 import com.flowpowered.math.vector.Vector3d
@@ -9,6 +11,7 @@ import com.github.shynixn.petblocks.api.business.service.ConfigurationService
 import com.github.shynixn.petblocks.api.business.service.LoggingService
 import com.github.shynixn.petblocks.api.persistence.entity.*
 import com.github.shynixn.petblocks.api.sponge.event.PetBlocksAIPreChangeEvent
+import com.github.shynixn.petblocks.core.logic.business.extension.cast
 import com.github.shynixn.petblocks.core.logic.business.extension.hasChanged
 import com.github.shynixn.petblocks.core.logic.business.extension.relativeFront
 import com.github.shynixn.petblocks.core.logic.persistence.entity.PositionEntity
@@ -87,7 +90,7 @@ class NMSPetArmorstand(owner: Player, val petMeta: PetMeta) : EntityArmorStand(o
         this.setPositionAndRotation(position.x, position.y, position.z, location.yaw.toFloat(), location.pitch.toFloat())
         mcWorld.spawnEntity(this)
 
-        internalProxy = PetProxyImpl(petMeta, this as ArmorStand, owner)
+        internalProxy = PetProxyImpl(petMeta, this.cast(), owner)
         petMeta.propertyTracker.onPropertyChanged(PetMeta::aiGoals, true)
 
         val compound = NBTTagCompound()
@@ -103,7 +106,7 @@ class NMSPetArmorstand(owner: Player, val petMeta: PetMeta) : EntityArmorStand(o
      * Removes this entity.
      */
     override fun deleteFromWorld() {
-        (this as Living).remove()
+        this.cast<Living>().remove()
     }
 
     /**
@@ -147,7 +150,7 @@ class NMSPetArmorstand(owner: Player, val petMeta: PetMeta) : EntityArmorStand(o
             return
         } else {
             for (passenger in player.passengers) {
-                if (passenger == (this as ArmorStand)) {
+                if (passenger == (this.cast<ArmorStand>())) {
                     player.clearPassengers()
                     break
                 }
@@ -173,7 +176,7 @@ class NMSPetArmorstand(owner: Player, val petMeta: PetMeta) : EntityArmorStand(o
         val flyingAi = petMeta.aiGoals.firstOrNull { a -> a is AIFlying }
 
         if (flyingAi != null) {
-            internalHitBox = NMSPetBat(this, (this as ArmorStand).transform)
+            internalHitBox = NMSPetBat(this, this.cast<ArmorStand>().transform)
             proxy.changeHitBox(internalHitBox!! as Living)
             val aiGoals = aiService.convertPetAiBasesToPathfinders(proxy, petMeta.aiGoals)
             (internalHitBox as NMSPetBat).applyPathfinders(aiGoals)
@@ -183,7 +186,7 @@ class NMSPetArmorstand(owner: Player, val petMeta: PetMeta) : EntityArmorStand(o
         val hoppingAi = petMeta.aiGoals.firstOrNull { a -> a is AIHopping }
 
         if (hoppingAi != null) {
-            internalHitBox = NMSPetRabbit(this, (this as ArmorStand).transform)
+            internalHitBox = NMSPetRabbit(this, this.cast<ArmorStand>().transform)
             proxy.changeHitBox(internalHitBox!! as Living)
             val aiGoals = aiService.convertPetAiBasesToPathfinders(proxy, petMeta.aiGoals)
             (internalHitBox as NMSPetRabbit).applyPathfinders(aiGoals)
@@ -193,7 +196,7 @@ class NMSPetArmorstand(owner: Player, val petMeta: PetMeta) : EntityArmorStand(o
         val walkingAi = petMeta.aiGoals.firstOrNull { a -> a is AIWalking }
 
         if (walkingAi != null) {
-            internalHitBox = NMSPetVillager(this, (this as ArmorStand).transform)
+            internalHitBox = NMSPetVillager(this, this.cast<ArmorStand>().transform)
             proxy.changeHitBox(internalHitBox!! as Living)
             val aiGoals = aiService.convertPetAiBasesToPathfinders(proxy, petMeta.aiGoals)
             (internalHitBox as NMSPetVillager).applyPathfinders(aiGoals)
@@ -252,7 +255,7 @@ class NMSPetArmorstand(owner: Player, val petMeta: PetMeta) : EntityArmorStand(o
     /**
      * Overrides the moving of the pet design.
      */
-    override fun move(type: MoverType?, x: Double, y: Double, z: Double) {
+    override fun move(type: MoverType, x: Double, y: Double, z: Double) {
         super.move(type, x, y, z)
 
         if (passengers.isEmpty() || this.passengers.firstOrNull { p -> p is Human } == null) {
@@ -370,7 +373,7 @@ class NMSPetArmorstand(owner: Player, val petMeta: PetMeta) : EntityArmorStand(o
      * Handles the riding on ground.
      */
     private fun rideOnGround(human: EntityPlayerMP, ai: AIGroundRiding, f2: Float) {
-        var sideMot: Float = human.moveStrafing * 0.5f
+        val sideMot: Float = human.moveStrafing * 0.5f
         var forMot: Float = human.moveForward
 
         this.rotationYaw = human.rotationYaw
@@ -389,7 +392,7 @@ class NMSPetArmorstand(owner: Player, val petMeta: PetMeta) : EntityArmorStand(o
         }
 
         this.stepHeight = ai.climbingHeight.toFloat()
-        this.jumpMovementFactor = this.aiMoveSpeed * 0.1F;
+        this.jumpMovementFactor = this.aiMoveSpeed * 0.1F
 
         if (!this.world.isRemote) {
             this.aiMoveSpeed = this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).attributeValue.toFloat()
@@ -399,13 +402,13 @@ class NMSPetArmorstand(owner: Player, val petMeta: PetMeta) : EntityArmorStand(o
         this.prevLimbSwingAmount = this.limbSwingAmount
         val d1 = this.posX - this.prevPosX
         val d0 = this.posZ - this.prevPosZ
-        var f2 = MathHelper.sqrt(d1 * d1 + d0 * d0) * 4.0f
+        var f22 = MathHelper.sqrt(d1 * d1 + d0 * d0) * 4.0f
 
-        if (f2 > 1.0f) {
-            f2 = 1.0f
+        if (f22 > 1.0f) {
+            f22 = 1.0f
         }
 
-        this.limbSwingAmount += (f2 - this.limbSwingAmount) * 0.4f
+        this.limbSwingAmount += (f22 - this.limbSwingAmount) * 0.4f
         this.limbSwing += this.limbSwingAmount
     }
 

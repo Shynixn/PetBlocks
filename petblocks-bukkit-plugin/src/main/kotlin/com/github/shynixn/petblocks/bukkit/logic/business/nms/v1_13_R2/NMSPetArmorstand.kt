@@ -118,7 +118,7 @@ class NMSPetArmorstand(owner: Player, val petMeta: PetMeta) : EntityArmorStand((
             val armorstand = proxy.getHeadArmorstand<ArmorStand>()
 
             armorstand.velocity = Vector(0, 1, 0)
-            armorstand.setPassenger(player)
+            armorstand.addPassenger(player)
 
             return
         } else {
@@ -140,7 +140,7 @@ class NMSPetArmorstand(owner: Player, val petMeta: PetMeta) : EntityArmorStand((
 
             val armorstand = proxy.getHeadArmorstand<ArmorStand>()
 
-            player.setPassenger(armorstand)
+            player.addPassenger(armorstand)
 
             return
         }
