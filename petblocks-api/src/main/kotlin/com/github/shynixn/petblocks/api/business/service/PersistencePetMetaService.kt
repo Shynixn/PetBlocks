@@ -40,7 +40,7 @@ interface PersistencePetMetaService {
     /**
      * Clears the cache of the player and saves the allocated resources.
      */
-    fun <P> clearResources(player: P) : CompletableFuture<Void?>
+    fun <P> clearResources(player: P): CompletableFuture<Void?>
 
     /**
      * Gets the [PetMeta] from the player.
@@ -57,6 +57,11 @@ interface PersistencePetMetaService {
      * Saves the given [petMeta] instance and returns a future.
      */
     fun save(petMeta: PetMeta): CompletableFuture<PetMeta>
+
+    /**
+     * Gets all currently loaded pet metas.
+     */
+    val cache: List<PetMeta>
 
     /**
      * Closes all resources immediately.

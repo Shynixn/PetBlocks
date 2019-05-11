@@ -47,14 +47,22 @@ class PersistencePetMetaServiceImpl @Inject constructor(
     private val concurrencyService: ConcurrencyService,
     private val eventService: EventService
 ) : PersistencePetMetaService {
-    private val cache = HashMap<String, PetMeta>()
+    private val cacheInternal = HashMap<String, PetMeta>()
+
+    /**
+     * Gets all currently loaded pet metas.
+     */
+    override val cache: List<PetMeta>
+        get() {
+            return cacheInternal.values.toList()
+        }
 
     /**
      * Initialize.
      */
     init {
         sync(concurrencyService, 0L, 20 * 60L * 5) {
-            cache.values.forEach { p ->
+            cacheInternal.values.forEach { p ->
                 save(p)
             }
         }
@@ -64,17 +72,17 @@ class PersistencePetMetaServiceImpl @Inject constructor(
      * Clears the cache of the player and saves the allocated resources.
      * Should only be called once a player leaves the server.
      */
-    override fun <P> clearResources(player: P)  : CompletableFuture<Void?>{
+    override fun <P> clearResources(player: P): CompletableFuture<Void?> {
         val playerProxy = proxyService.findPlayerProxyObject(player)
         val completableFuture = CompletableFuture<Void?>()
 
-        if (!cache.containsKey(playerProxy.uniqueId)) {
+        if (!cacheInternal.containsKey(playerProxy.uniqueId)) {
             return completableFuture
         }
 
-        val petMeta = cache[playerProxy.uniqueId]!!
+        val petMeta = cacheInternal[playerProxy.uniqueId]!!
         val completable = save(petMeta)
-        cache.remove(playerProxy.uniqueId)
+        cacheInternal.remove(playerProxy.uniqueId)
 
         completable.thenAcceptSafely {
             completableFuture.complete(null)
@@ -89,12 +97,12 @@ class PersistencePetMetaServiceImpl @Inject constructor(
     override fun <P> getPetMetaFromPlayer(player: P): PetMeta {
         val playerProxy = proxyService.findPlayerProxyObject(player)
 
-        if (!cache.containsKey(playerProxy.uniqueId)) {
+        if (!cacheInternal.containsKey(playerProxy.uniqueId)) {
             // Blocks the calling (main) thread and should not be executed on an normal server.
             return petMetaRepository.getOrCreateFromPlayerIdentifiers(playerProxy.name, playerProxy.uniqueId)
         }
 
-        return cache[playerProxy.uniqueId]!!
+        return cacheInternal[playerProxy.uniqueId]!!
     }
 
     /**
@@ -109,12 +117,12 @@ class PersistencePetMetaServiceImpl @Inject constructor(
 
             sync(concurrencyService) {
                 items.forEach { item ->
-                    if (!cache.containsKey(item.playerMeta.uuid)) {
-                        cache[item.playerMeta.uuid] = item
+                    if (!cacheInternal.containsKey(item.playerMeta.uuid)) {
+                        cacheInternal[item.playerMeta.uuid] = item
                     }
                 }
 
-                completableFuture.complete(cache.values.toList())
+                completableFuture.complete(cacheInternal.values.toList())
             }
         }
 
@@ -133,7 +141,7 @@ class PersistencePetMetaServiceImpl @Inject constructor(
             val petMeta = petMetaRepository.getOrCreateFromPlayerIdentifiers(playerProxy.name, playerProxy.uniqueId)
 
             sync(concurrencyService) {
-                cache[playerProxy.uniqueId] = petMeta
+                cacheInternal[playerProxy.uniqueId] = petMeta
                 completableFuture.complete(petMeta)
             }
         }
@@ -145,11 +153,11 @@ class PersistencePetMetaServiceImpl @Inject constructor(
      * Closes all resources immediately.
      */
     override fun close() {
-        for(player in cache.keys){
-            petMetaRepository.save(cache[player]!!)
+        for (player in cacheInternal.keys) {
+            petMetaRepository.save(cacheInternal[player]!!)
         }
 
-        cache.clear()
+        cacheInternal.clear()
     }
 
     /**

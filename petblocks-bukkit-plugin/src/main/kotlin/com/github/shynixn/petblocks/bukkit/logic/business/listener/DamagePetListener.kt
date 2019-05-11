@@ -4,9 +4,12 @@ import com.github.shynixn.petblocks.api.bukkit.event.PetBlocksLoginEvent
 import com.github.shynixn.petblocks.api.bukkit.event.PetPreSpawnEvent
 import com.github.shynixn.petblocks.api.business.service.CombatPetService
 import com.github.shynixn.petblocks.api.business.service.HealthService
+import com.github.shynixn.petblocks.api.business.service.PersistencePetMetaService
 import com.github.shynixn.petblocks.api.business.service.PetService
+import com.github.shynixn.petblocks.api.persistence.entity.AIFleeInCombat
 import com.github.shynixn.petblocks.api.persistence.entity.AIHealth
 import com.google.inject.Inject
+import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.entity.EntityDamageByEntityEvent
@@ -40,19 +43,37 @@ import org.bukkit.event.player.PlayerQuitEvent
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class DamagePetListener @Inject constructor(private val petService: PetService, private val combatPetService: CombatPetService, private val healthService: HealthService) :
+class DamagePetListener @Inject constructor(
+    private val petService: PetService,
+    private val persistencePetMetaService: PersistencePetMetaService,
+    private val combatPetService: CombatPetService,
+    private val healthService: HealthService
+) :
     Listener {
     /**
      * The [event] gets called when a entity gets damaged. Redirects the damage to the PetBlocks implementation.
      */
     @EventHandler
     fun onEntityReceiveDamageEvent(event: EntityDamageEvent) {
-        val pet = petService.findPetByEntity(event.entity) ?: return
+        if (petService.findPetByEntity(event.entity) != null) {
+            val pet = petService.findPetByEntity(event.entity)!!
 
-        event.isCancelled = true
+            event.isCancelled = true
 
-        healthService.damagePet(pet, event.finalDamage)
-        combatPetService.flee(pet)
+            healthService.damagePet(pet, event.finalDamage)
+
+            if (event.cause != EntityDamageEvent.DamageCause.FALL) {
+                combatPetService.flee(pet.meta)
+            }
+
+            return
+        }
+
+        if (event.cause != EntityDamageEvent.DamageCause.FALL && event.entity is Player) {
+            val petMeta = persistencePetMetaService.getPetMetaFromPlayer(event.entity)
+
+            combatPetService.flee(petMeta)
+        }
     }
 
     /**
@@ -60,8 +81,16 @@ class DamagePetListener @Inject constructor(private val petService: PetService, 
      */
     @EventHandler
     fun onEntityDamageByEntityEvent(event: EntityDamageByEntityEvent) {
-        petService.findPetByEntity(event.damager) ?: return
-        event.isCancelled = true
+        if (petService.findPetByEntity(event.damager) != null) {
+            event.isCancelled = true
+            return
+        }
+
+        if (event.damager is Player) {
+            val petMeta = persistencePetMetaService.getPetMetaFromPlayer(event.damager)
+
+            combatPetService.flee(petMeta)
+        }
     }
 
     /**
@@ -69,11 +98,24 @@ class DamagePetListener @Inject constructor(private val petService: PetService, 
      */
     @EventHandler
     fun onPetSpawnEvent(event: PetPreSpawnEvent) {
-        val aiBase = event.petMeta.aiGoals.firstOrNull { a -> a is AIHealth } ?: return
-        val aiHealth = aiBase as AIHealth
+        if (event.petMeta.aiGoals.firstOrNull { a -> a is AIHealth } != null) {
+            val aiHealth = event.petMeta.aiGoals.firstOrNull { a -> a is AIHealth } as AIHealth
 
-        if (aiHealth.currentRespawningDelay > 0) {
-            event.isCancelled = true
+            if (aiHealth.currentRespawningDelay > 0) {
+                event.isCancelled = true
+            }
+
+            return
+        }
+
+        if (event.petMeta.aiGoals.firstOrNull { a -> a is AIFleeInCombat } != null) {
+            val aiFleeInCombat = event.petMeta.aiGoals.firstOrNull { a -> a is AIFleeInCombat } as AIFleeInCombat
+
+            if (aiFleeInCombat.currentAppearsInSeconds > 0) {
+                event.isCancelled = true
+            }
+
+            return
         }
     }
 
@@ -91,6 +133,5 @@ class DamagePetListener @Inject constructor(private val petService: PetService, 
     @EventHandler
     fun onPlayerQuitEvent(event: PlayerQuitEvent) {
         healthService.clearResources(event.player)
-        combatPetService.clearResources(event.player)
     }
 }

@@ -52,7 +52,7 @@ class DamagePetListener @Inject constructor(private val petService: PetService, 
         event.isCancelled = true
 
         healthService.damagePet(pet, event.finalDamage)
-        combatPetService.flee(pet)
+        combatPetService.flee(pet.meta)
     }
 
     /**
@@ -97,6 +97,5 @@ class DamagePetListener @Inject constructor(private val petService: PetService, 
     @Listener
     fun onPlayerQuitEvent(event: ClientConnectionEvent.Disconnect) {
         healthService.clearResources(event.targetEntity)
-        combatPetService.clearResources(event.targetEntity)
     }
 }
