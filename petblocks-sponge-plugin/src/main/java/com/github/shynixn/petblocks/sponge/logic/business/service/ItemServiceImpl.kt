@@ -52,7 +52,7 @@ class ItemServiceImpl : ItemService {
             }
         }
 
-        throw IllegalArgumentException("Cannot convert type $type.")
+        return -1
     }
 
     /**

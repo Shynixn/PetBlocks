@@ -40,7 +40,7 @@ class PathfinderAmbientSound(
             val value = Math.random()
 
             if (value > 0.98) {
-                soundService.playSound(livingEntity.location, aiAmbientSound.sound, player)
+                soundService.playSound(livingEntity.transform, aiAmbientSound.sound, player)
             }
         } catch (e: Exception) {
             loggingService.warn("Failed to execute PathfinderAmbientSound.", e)

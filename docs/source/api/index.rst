@@ -1,6 +1,9 @@
 Developer API
 =============
 
+.. toctree::
+    aidesign
+
 JavaDocs
 ~~~~~~~~
 

@@ -39,7 +39,7 @@ class PathfinderAfraidOfWater(
                 if (currentMilliseconds - lastPlayTime > this.aiAfraidOfWater.stoppingDelay * 1000) {
                     lastPlayTime = currentMilliseconds
 
-                    particleService.playParticle(livingEntity.location, aiAfraidOfWater.particle, pet.getPlayer<Player>())
+                    particleService.playParticle(livingEntity.transform, aiAfraidOfWater.particle, pet.getPlayer<Player>())
 
                     val escape = pet.getPlayer<Player>().transform.toPosition().subtract(pet.getLocation<Transform<World>>().toPosition()).toVector().normalize().mul(2.0)
 
