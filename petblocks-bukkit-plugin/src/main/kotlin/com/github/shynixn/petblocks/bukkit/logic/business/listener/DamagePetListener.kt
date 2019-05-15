@@ -1,6 +1,5 @@
 package com.github.shynixn.petblocks.bukkit.logic.business.listener
 
-import com.github.shynixn.petblocks.api.bukkit.event.PetBlocksLoginEvent
 import com.github.shynixn.petblocks.api.bukkit.event.PetPreSpawnEvent
 import com.github.shynixn.petblocks.api.business.service.CombatPetService
 import com.github.shynixn.petblocks.api.business.service.HealthService
@@ -14,7 +13,6 @@ import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.entity.EntityDamageByEntityEvent
 import org.bukkit.event.entity.EntityDamageEvent
-import org.bukkit.event.player.PlayerQuitEvent
 
 /**
  * Created by Shynixn 2018.
@@ -60,7 +58,7 @@ class DamagePetListener @Inject constructor(
 
             event.isCancelled = true
 
-            healthService.damagePet(pet, event.finalDamage)
+            healthService.damagePet(pet.meta, event.finalDamage)
 
             if (event.cause != EntityDamageEvent.DamageCause.FALL) {
                 combatPetService.flee(pet.meta)
@@ -86,10 +84,14 @@ class DamagePetListener @Inject constructor(
             return
         }
 
-        if (event.damager is Player) {
-            val petMeta = persistencePetMetaService.getPetMetaFromPlayer(event.damager)
+        if (petService.findPetByEntity(event.entity) != null) {
+            val pet = petService.findPetByEntity(event.entity)!!
+            combatPetService.flee(pet.meta)
 
-            combatPetService.flee(petMeta)
+            val vector = event.entity.location.toVector().subtract(event.damager.location.toVector()).normalize().multiply(0.5)
+            vector.y = 0.1
+
+            pet.setVelocity(vector)
         }
     }
 
@@ -117,21 +119,5 @@ class DamagePetListener @Inject constructor(
 
             return
         }
-    }
-
-    /**
-     * The [event] gets called when a pet tries to get spawned by a player. Checks if the pet is currently respawning blocked.
-     */
-    @EventHandler
-    fun onPetBlocksLoginEvent(event: PetBlocksLoginEvent) {
-        healthService.registerForHealthRegain(event.petMeta)
-    }
-
-    /**
-     * The [event] gets called when a player quits the server. Executes clean ups.
-     */
-    @EventHandler
-    fun onPlayerQuitEvent(event: PlayerQuitEvent) {
-        healthService.clearResources(event.player)
     }
 }

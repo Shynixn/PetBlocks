@@ -1,6 +1,5 @@
 package com.github.shynixn.petblocks.api.business.service
 
-import com.github.shynixn.petblocks.api.business.proxy.PetProxy
 import com.github.shynixn.petblocks.api.persistence.entity.PetMeta
 
 /**
@@ -32,19 +31,8 @@ import com.github.shynixn.petblocks.api.persistence.entity.PetMeta
  */
 interface HealthService {
     /**
-     * Damages the given [pet] with the given [damage].
+     * Damages the given [petMeta] with the given [damage].
      * The pet needs a health ai otherwise this operation gets ignored.
      */
-    fun damagePet(pet: PetProxy, damage: Double)
-
-    /**
-     * Registers the given [petMeta] for health regain.
-     * The pet needs a health ai otherwise this operation gets ignored.
-     */
-    fun registerForHealthRegain(petMeta: PetMeta)
-
-    /**
-     * Clears the allocated resources from the given [player].
-     */
-    fun <P> clearResources(player: P)
+    fun damagePet(petMeta: PetMeta, damage: Double)
 }

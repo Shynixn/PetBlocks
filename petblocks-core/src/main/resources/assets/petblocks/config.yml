@@ -93,7 +93,7 @@ messages:
   customhead-success: '&aYou changed the skin of your pet.'
   customhead-error: '&eThis skin is invalid.'
   called-success: '&aYou have called your pet.'
-  called-error: '&cYour pet cannot be called here.'
+  called-error: '&cYour pet cannot be called right now.'
   despawn: '&aYour pet has despawned.'
   has-permission: '&aYes'
   has-no-permission: '&cNo'
@@ -119,13 +119,13 @@ global-configuration:
   sounds-other-players: true
   particles-other-players: true
   disable-on-sneak:
-  - 'wearing'
-  - 'ground-riding'
-  - 'fly-riding'
+    - 'wearing'
+    - 'ground-riding'
+    - 'fly-riding'
   max-petname-length: 20
   petname-blacklist:
-  - 'petty'
-  - 'shit'
+    - 'petty'
+    - 'shit'
 
 ############################
 
@@ -211,9 +211,9 @@ pet:
 
 world:
   excluded:
-  - ''
+    - ''
   included:
-  - 'all'
+    - 'all'
 
 ############################
 
@@ -234,7 +234,7 @@ static-gui:
       name: 'none'
       unbreakable: false
       lore:
-      - 'none'
+        - 'none'
 
 ############################
 
@@ -266,9 +266,9 @@ gui:
         skin: 'http://textures.minecraft.net/texture/f45c9acea8da71b4f252cd4deb5943f49e7dbc0764274b25a6a6f5875baea3'
         name: '&a&lPet enabled'
         lore:
-        - '&7Click to disable the pet.'
+          - '&7Click to disable the pet.'
       hidden-on:
-      - 'pet-disabled'
+        - 'pet-disabled'
     enable-pet:
       row: 4
       col: 5
@@ -279,9 +279,9 @@ gui:
         skin: 'textures.minecraft.net/texture/ad5fcd31287d63e7826ea760a7ed154f685dfdc7f3465732a96e619b2e1347'
         name: '&c&lPet disabled'
         lore:
-        - '&7Click to enable the pet.'
+          - '&7Click to enable the pet.'
       hidden-on:
-      - 'pet-enabled'
+        - 'pet-enabled'
     wardrobe:
       row: 2
       col: 2
@@ -292,7 +292,7 @@ gui:
         skin: 'textures.minecraft.net/texture/55507d6517eff952dd38fa8bc551dd6d6a7a5e4ea134519b44650ac1ffa59c3'
         name: '&6&lPet Customization'
         lore:
-        - '&7Change the appearance of your pet.'
+          - '&7Change the appearance of your pet.'
     sounds-enabled:
       row: 4
       col: 9
@@ -303,9 +303,9 @@ gui:
         skin: 'textures.minecraft.net/texture/cb9c706c85572f05efc4170ada791154de2b5378e6252aadc8d43b19c5564'
         name: '&a&lPet unmuted'
         lore:
-        - '&7Click to disable the sounds of your pet.'
+          - '&7Click to disable the sounds of your pet.'
       hidden-on:
-      - 'sound-disabled'
+        - 'sound-disabled'
     sounds-disabled:
       row: 4
       col: 9
@@ -316,9 +316,9 @@ gui:
         skin: 'textures.minecraft.net/texture/ae7215c45d97d7bc55d9dfa58fcc73f4af74e4b3f5a15b4419127424c4268e'
         name: '&c&lPet muted'
         lore:
-        - '&7Click to enable the sounds of your pet.'
+          - '&7Click to enable the sounds of your pet.'
       hidden-on:
-      - 'sound-enabled'
+        - 'sound-enabled'
     call-pet:
       row: 5
       col: 2
@@ -327,7 +327,7 @@ gui:
         id: 420
         name: '&2&lCall Pet'
         lore:
-        - '&7Teleports your pet to you.'
+          - '&7Teleports your pet to you.'
     launch-pet:
       row: 3
       col: 7
@@ -338,12 +338,12 @@ gui:
         skin: 'textures.minecraft.net/texture/996754d330435345aae3a9f063cfca42afb28b7c5c4bb9f294ed2527d961'
         name: '&2&lLaunch Pet'
         lore:
-        - '&7Shoot your pet like a cannon.'
+          - '&7Shoot your pet like a cannon.'
       hidden-on:
-      - 'pet-disabled'
-      - 'wearing'
-      - 'ground-riding'
-      - 'fly-riding'
+        - 'pet-disabled'
+        - 'wearing'
+        - 'ground-riding'
+        - 'fly-riding'
     hat-pet:
       row: 1
       col: 7
@@ -353,15 +353,15 @@ gui:
         skin: 'textures.minecraft.net/texture/9b5f247a7f5b37bbfa488ab4efaddcbad2e526e94fc542b1fe2f7cfeb6e'
         name: '&2&lHat Pet'
         lore:
-        - '&7Wear your pet like a hat.'
+          - '&7Wear your pet like a hat.'
       replace-ai:
         1:
           type: 'wearing'
       hidden-on:
-      - 'pet-disabled'
-      - 'wearing'
-      - 'ground-riding'
-      - 'fly-riding'
+        - 'pet-disabled'
+        - 'wearing'
+        - 'ground-riding'
+        - 'fly-riding'
     ride-pet:
       row: 2
       col: 9
@@ -370,7 +370,7 @@ gui:
         damage: 0
         name: '&2&lRide Pet'
         lore:
-        - '&7Start to ride your pet.'
+          - '&7Start to ride your pet.'
       replace-ai:
         1:
           type: 'ground-riding'
@@ -378,10 +378,10 @@ gui:
           speed: 2.0
           offset-y: -1
       hidden-on:
-      - 'pet-disabled'
-      - 'wearing'
-      - 'ground-riding'
-      - 'fly-riding'
+        - 'pet-disabled'
+        - 'wearing'
+        - 'ground-riding'
+        - 'fly-riding'
     rename-pet:
       row: 5
       col: 7
@@ -391,7 +391,7 @@ gui:
         damage: 0
         name: '&6&lRename Pet'
         lore:
-        - '&7Change the name of your pet.'
+          - '&7Change the name of your pet.'
     particles-enabled:
       row: 6
       col: 9
@@ -402,9 +402,9 @@ gui:
         skin: 'eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZjM1MjE0ZmUyNmUyZTBlMGJjMzAyMjA1ZmM3YjllYmE2OWQ2ZWI3OWEyMTVlODQ2Nzk0OTM5NGZmNWZiM2YwNSJ9fX0='
         name: '&a&lPet particles enabled'
         lore:
-        - '&7Click to disable the particles of your pet.'
+          - '&7Click to disable the particles of your pet.'
       hidden-on:
-      - 'particle-disabled'
+        - 'particle-disabled'
     particles-disabled:
       row: 6
       col: 9
@@ -415,9 +415,9 @@ gui:
         skin: 'eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNDFiYzUwZDUyYTJhMmNkYTgxMjAzMWQxMTdmNWZkMDlmOGYwMGRlZWEyNjcxOGZmMTVmNTEyMzE3YjgzNjhmNiJ9fX0='
         name: '&c&lPet particles disabled'
         lore:
-        - '&7Click to enable the particles of your pet.'
+          - '&7Click to enable the particles of your pet.'
       hidden-on:
-      - 'particle-enabled'
+        - 'particle-enabled'
     back:
       row: 6
       col: 5
@@ -427,7 +427,7 @@ gui:
         damage: 0
         name: '&cBack'
         lore:
-        - '&7Closes the current window.'
+          - '&7Closes the current window.'
   wardrobe:
     block-skins:
       row: 2
@@ -439,7 +439,7 @@ gui:
         name: '&e&lSimple block costumes'
         skin: 'http://textures.minecraft.net/texture/c95d37993e594082678472bf9d86823413c250d4332a2c7d8c52de4976b362'
         lore:
-        - '&7Use Minecraft blocks as costume.'
+          - '&7Use Minecraft blocks as costume.'
     colored-block-skins:
       row: 2
       col: 5
@@ -450,7 +450,7 @@ gui:
         name: '&a&lColored block costumes'
         skin: 'http://textures.minecraft.net/texture/f1af46febd45c0f4d81e8fa1b66b275d89e272b2ad55c978553a99c733e1ff'
         lore:
-        - '&7Use colored Minecraft blocks as costume.'
+          - '&7Use colored Minecraft blocks as costume.'
     player-head-skins:
       row: 2
       col: 7
@@ -461,7 +461,7 @@ gui:
         name: '&d&lPlayer head costumes'
         skin: 'http://textures.minecraft.net/texture/a0c2549a893726988f3428bef799875ba871688ae64eb0cfdc43f7d6e24c6c'
         lore:
-        - '&7Use player heads as costume.'
+          - '&7Use player heads as costume.'
     minecraft-heads-pet-skins:
       row: 3
       col: 2
@@ -472,8 +472,8 @@ gui:
         name: '&9&lPet costumes'
         skin: 'http://textures.minecraft.net/texture/fec052be76e39148a27f255ec537dff92018c79744202d60c51bc67d618ae36a'
         lore:
-        - "&7Use exclusive pet heads as costume."
-        - "&eSponsored by Minecraft-Heads.com"
+          - "&7Use exclusive pet heads as costume."
+          - "&eSponsored by Minecraft-Heads.com"
     minecraft-heads-vehicle-skins:
       row: 3
       col: 4
@@ -484,8 +484,8 @@ gui:
         name: '&2&lVehicle costumes'
         skin: 'http://textures.minecraft.net/texture/e8778c34fba29652cfac8d3f6fb35c49cbc2362b2b8f1378d83b30f463b181'
         lore:
-        - "&7Use exclusive vehicle heads as costume."
-        - "&eSponsored by Minecraft-Heads.com"
+          - "&7Use exclusive vehicle heads as costume."
+          - "&eSponsored by Minecraft-Heads.com"
     minecraft-heads-puppet-skins:
       row: 3
       col: 6
@@ -496,8 +496,8 @@ gui:
         name: '&b&lPlushie costumes'
         skin: 'http://textures.minecraft.net/texture/3835da2685f7ad3f1919a018976ad56826691e26758a3a55a1918f7f17ad938'
         lore:
-        - "&7Use exclusive plushie heads as costume."
-        - "&eSponsored by Minecraft-Heads.com"
+          - "&7Use exclusive plushie heads as costume."
+          - "&eSponsored by Minecraft-Heads.com"
     headdatabase-skins:
       row: 3
       col: 8
@@ -508,7 +508,7 @@ gui:
         name: '&c&lHead Database costumes'
         skin: 'http://textures.minecraft.net/texture/3bb612eb495ede2c5ca5178d2d1ecf1ca5a255d25dfc3c254bc47f6848791d8'
         lore:
-        - '&7Use heads from an external plugin as costume.'
+          - '&7Use heads from an external plugin as costume.'
     enter-custom-head:
       row: 5
       col: 8
@@ -518,7 +518,7 @@ gui:
         damage: 3
         name: '&2&lCustom skin'
         lore:
-        - '&7Use the skin of another player as costume.'
+          - '&7Use the skin of another player as costume.'
     suggest-heads:
       row: 5
       col: 2
@@ -528,8 +528,8 @@ gui:
         damage: 0
         name: '&a&lSuggest Heads'
         lore:
-        - '&7Submit skins for pets or'
-        - '&7make a suggestion for a new pet.'
+          - '&7Submit skins for pets or'
+          - '&7make a suggestion for a new pet.'
     back:
       row: 6
       col: 5
@@ -539,7 +539,7 @@ gui:
         damage: 0
         name: '&cBack'
         lore:
-        - '&7Closes the current window.'
+          - '&7Closes the current window.'
   block-skins:
     next-page:
       row: 6
@@ -573,7 +573,7 @@ gui:
         damage: 0
         name: '&cBack'
         lore:
-        - '&7Closes the current window.'
+          - '&7Closes the current window.'
     block-1-1:
       row: 1
       col: 1
@@ -1087,7 +1087,7 @@ gui:
         damage: 0
         name: '&cBack'
         lore:
-        - '&7Closes the current window.'
+          - '&7Closes the current window.'
     block-1-1:
       row: 1
       col: 1
@@ -1591,7 +1591,7 @@ gui:
         damage: 0
         name: '&cBack'
         lore:
-        - '&7Closes the current window.'
+          - '&7Closes the current window.'
     block-1-1:
       row: 1
       col: 1

@@ -1,7 +1,6 @@
 package com.github.shynixn.petblocks.core.logic.business.service
 
 import com.github.shynixn.petblocks.api.business.enumeration.AIType
-import com.github.shynixn.petblocks.api.business.proxy.PetProxy
 import com.github.shynixn.petblocks.api.business.service.*
 import com.github.shynixn.petblocks.api.persistence.entity.AIHealth
 import com.github.shynixn.petblocks.api.persistence.entity.PetMeta
@@ -39,10 +38,9 @@ class HealthServiceImpl @Inject constructor(
     concurrencyService: ConcurrencyService,
     private val persistencePetMetaService: PersistencePetMetaService,
     private val loggingService: LoggingService,
-    private val proxyService: ProxyService
+    private val proxyService: ProxyService,
+    private val petService: PetService
 ) : HealthService, Runnable {
-    private val regainingPlayers = HashSet<Any>()
-
     /**
      * Initialize.
      */
@@ -53,11 +51,10 @@ class HealthServiceImpl @Inject constructor(
     }
 
     /**
-     * Damages the given [pet] with the given [damage].
+     * Damages the given [PetMeta] with the given [damage].
      * The pet needs a health ai otherwise this operation gets ignored.
      */
-    override fun damagePet(pet: PetProxy, damage: Double) {
-        val petMeta = pet.meta
+    override fun damagePet(petMeta: PetMeta, damage: Double) {
         val count = petMeta.aiGoals.count { p -> p is AIHealth }
 
         if (count == 0) {
@@ -71,10 +68,14 @@ class HealthServiceImpl @Inject constructor(
         val aiHealth = petMeta.aiGoals.first { a -> a is AIHealth } as AIHealth
         aiHealth.health = aiHealth.health - damage
 
-        this.registerForHealthRegain(petMeta)
-
         if (aiHealth.health <= 0) {
-            pet.remove()
+            val playerProxy = proxyService.findPlayerProxyObjectFromUUID(petMeta.playerMeta.uuid)
+            aiHealth.currentRespawningDelay = aiHealth.respawningDelay
+            aiHealth.health = 0.0
+
+            if (petService.hasPet(playerProxy.handle)) {
+                petService.getOrSpawnPetFromPlayer(playerProxy.handle).get().remove()
+            }
         }
     }
 
@@ -91,58 +92,26 @@ class HealthServiceImpl @Inject constructor(
      * @see java.lang.Thread.run
      */
     override fun run() {
-        if(regainingPlayers.isEmpty()){
-            return
-        }
+        for (petMeta in persistencePetMetaService.cache) {
+            val aiBase = petMeta.aiGoals.firstOrNull { a -> a is AIHealth } as AIHealth? ?: continue
 
-        for (player in regainingPlayers.toTypedArray()) {
-            val petMeta = persistencePetMetaService.getPetMetaFromPlayer(player)
+            if (aiBase.currentRespawningDelay > 0) {
+                aiBase.currentRespawningDelay--
 
-            val aiBase = petMeta.aiGoals.firstOrNull { a -> a is AIHealth }
+                if (aiBase.currentRespawningDelay == 0) {
+                    val playerProxy = proxyService.findPlayerProxyObjectFromUUID(petMeta.playerMeta.uuid)
 
-            if (aiBase == null) {
-                regainingPlayers.remove(player)
-            }
-
-            val aiHealth = aiBase as AIHealth
-
-            when {
-                aiHealth.currentRespawningDelay > 0 -> aiHealth.currentRespawningDelay--
-                aiBase.health < aiBase.maxHealth -> aiBase.health++
-
-                else -> {
-                    persistencePetMetaService.save(petMeta)
-                    regainingPlayers.remove(player)
+                    petService.getOrSpawnPetFromPlayer(playerProxy.handle)
                 }
             }
-        }
-    }
 
-    /**
-     * Registers the given [petMeta] for health regain.
-     * The pet needs a health ai otherwise this operation gets ignored.
-     */
-    override fun registerForHealthRegain(petMeta: PetMeta) {
-        if (regainingPlayers.contains(petMeta.playerMeta.uuid)) {
-            return
-        }
+            if (aiBase.health.toInt() < aiBase.maxHealth.toInt()) {
+                aiBase.health = aiBase.health + 1.0
 
-        val count = petMeta.aiGoals.count { p -> p is AIHealth }
-
-        if (count == 0) {
-            return
-        }
-
-        val playerProxy = proxyService.findPlayerProxyObjectFromUUID(petMeta.playerMeta.uuid)
-        regainingPlayers.add(playerProxy.handle)
-    }
-
-    /**
-     * Clears the allocated resources from the given [player].
-     */
-    override fun <P> clearResources(player: P) {
-        if (player is Any && regainingPlayers.contains(player)) {
-            regainingPlayers.remove(player)
+                if (aiBase.health > aiBase.maxHealth) {
+                    aiBase.health = aiBase.maxHealth
+                }
+            }
         }
     }
 }

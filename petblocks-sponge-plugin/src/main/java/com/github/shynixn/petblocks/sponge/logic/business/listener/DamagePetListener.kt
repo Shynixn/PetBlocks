@@ -6,13 +6,11 @@ import com.github.shynixn.petblocks.api.business.service.CombatPetService
 import com.github.shynixn.petblocks.api.business.service.HealthService
 import com.github.shynixn.petblocks.api.business.service.PetService
 import com.github.shynixn.petblocks.api.persistence.entity.AIHealth
-import com.github.shynixn.petblocks.api.sponge.event.PetBlocksLoginEvent
 import com.github.shynixn.petblocks.api.sponge.event.PetPreSpawnEvent
 import com.google.inject.Inject
 import org.spongepowered.api.entity.Entity
 import org.spongepowered.api.event.Listener
 import org.spongepowered.api.event.entity.DamageEntityEvent
-import org.spongepowered.api.event.network.ClientConnectionEvent
 
 /**
  * Created by Shynixn 2018.
@@ -51,7 +49,7 @@ class DamagePetListener @Inject constructor(private val petService: PetService, 
 
         event.isCancelled = true
 
-        healthService.damagePet(pet, event.finalDamage)
+        healthService.damagePet(pet.meta, event.finalDamage)
         combatPetService.flee(pet.meta)
     }
 
@@ -81,21 +79,5 @@ class DamagePetListener @Inject constructor(private val petService: PetService, 
         if (aiHealth.currentRespawningDelay > 0) {
             event.isCancelled = true
         }
-    }
-
-    /**
-     * The [event] gets called when a pet tries to get spawned by a player. Checks if the pet is currently respawning blocked.
-     */
-    @Listener
-    fun onPetBlocksLoginEvent(event: PetBlocksLoginEvent) {
-        healthService.registerForHealthRegain(event.petMeta)
-    }
-
-    /**
-     * The [event] gets called when a player quits the server. Executes clean ups.
-     */
-    @Listener
-    fun onPlayerQuitEvent(event: ClientConnectionEvent.Disconnect) {
-        healthService.clearResources(event.targetEntity)
     }
 }
