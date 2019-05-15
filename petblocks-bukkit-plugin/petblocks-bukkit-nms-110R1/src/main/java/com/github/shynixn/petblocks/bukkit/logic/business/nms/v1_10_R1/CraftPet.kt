@@ -51,7 +51,7 @@ class CraftPet(server: CraftServer, nmsPet: EntityInsentient) : CraftLivingEntit
      * Hides the true type of the pet from everyone else.
      */
     override fun getType(): org.bukkit.entity.EntityType {
-        return org.bukkit.entity.EntityType.UNKNOWN
+        return org.bukkit.entity.EntityType.RABBIT
     }
 
     /**
