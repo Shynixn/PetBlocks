@@ -182,12 +182,13 @@ class DependencyServiceTest {
             val pluginManager = Mockito.mock(PluginManager::class.java)
 
             Mockito.`when`(server.logger).thenReturn(Logger.getGlobal())
+
             if (Bukkit.getServer() == null) {
                 Bukkit.setServer(server)
             }
 
             Mockito.`when`(plugin.server).thenReturn(server)
-            Mockito.`when`(plugin.description).thenReturn(PluginDescriptionFile("Custom", "1.0", null))
+            Mockito.`when`(plugin.description).thenReturn(PluginDescriptionFile("Custom", "1.0", ""))
             Mockito.`when`(server.pluginManager).thenReturn(pluginManager)
 
             if (shouldInstallDependencies) {
@@ -205,45 +206,73 @@ class DependencyServiceTest {
     }
 
     private class MockedConsoleSender : ConsoleCommandSender {
+        override fun acceptConversationInput(p0: String) {
+            throw IllegalArgumentException()
+        }
+
+        override fun sendRawMessage(p0: String) {
+            throw IllegalArgumentException()
+        }
+
+        override fun removeAttachment(p0: PermissionAttachment) {
+            throw IllegalArgumentException()
+        }
+
+        override fun hasPermission(p0: String): Boolean {
+            throw IllegalArgumentException()
+        }
+
+        override fun hasPermission(p0: Permission): Boolean {
+            throw IllegalArgumentException()
+        }
+
+        override fun abandonConversation(p0: Conversation) {
+            throw IllegalArgumentException()
+        }
+
+        override fun abandonConversation(p0: Conversation, p1: ConversationAbandonedEvent) {
+            throw IllegalArgumentException()
+        }
+
         override fun spigot(): CommandSender.Spigot {
             throw IllegalArgumentException()
         }
 
         var messageCounter = 0
 
-        override fun sendMessage(p0: String?) {
+        override fun sendMessage(p0: String) {
             messageCounter++
         }
 
-        override fun sendMessage(p0: Array<out String>?) {
+        override fun sendMessage(p0: Array<out String>) {
             throw IllegalArgumentException()
         }
 
-        override fun beginConversation(p0: Conversation?): Boolean {
+        override fun beginConversation(p0: Conversation): Boolean {
             throw IllegalArgumentException()
         }
 
-        override fun isPermissionSet(p0: String?): Boolean {
+        override fun isPermissionSet(p0: String): Boolean {
             throw IllegalArgumentException()
         }
 
-        override fun isPermissionSet(p0: Permission?): Boolean {
+        override fun isPermissionSet(p0: Permission): Boolean {
             throw IllegalArgumentException()
         }
 
-        override fun addAttachment(p0: Plugin?, p1: String?, p2: Boolean): PermissionAttachment {
+        override fun addAttachment(p0: Plugin, p1: String, p2: Boolean): PermissionAttachment {
             throw IllegalArgumentException()
         }
 
-        override fun addAttachment(p0: Plugin?): PermissionAttachment {
+        override fun addAttachment(p0: Plugin): PermissionAttachment {
             throw IllegalArgumentException()
         }
 
-        override fun addAttachment(p0: Plugin?, p1: String?, p2: Boolean, p3: Int): PermissionAttachment {
+        override fun addAttachment(p0: Plugin, p1: String, p2: Boolean, p3: Int): PermissionAttachment {
             throw IllegalArgumentException()
         }
 
-        override fun addAttachment(p0: Plugin?, p1: Int): PermissionAttachment {
+        override fun addAttachment(p0: Plugin, p1: Int): PermissionAttachment {
             throw IllegalArgumentException()
         }
 
@@ -254,15 +283,6 @@ class DependencyServiceTest {
         override fun isOp(): Boolean {
             throw IllegalArgumentException()
         }
-
-        override fun acceptConversationInput(p0: String?) {
-            throw IllegalArgumentException()
-        }
-
-        override fun sendRawMessage(p0: String?) {
-            throw IllegalArgumentException()
-        }
-
         override fun getEffectivePermissions(): MutableSet<PermissionAttachmentInfo> {
             throw IllegalArgumentException()
         }
@@ -275,27 +295,7 @@ class DependencyServiceTest {
             throw IllegalArgumentException()
         }
 
-        override fun removeAttachment(p0: PermissionAttachment?) {
-            throw IllegalArgumentException()
-        }
-
         override fun recalculatePermissions() {
-            throw IllegalArgumentException()
-        }
-
-        override fun hasPermission(p0: String?): Boolean {
-            throw IllegalArgumentException()
-        }
-
-        override fun hasPermission(p0: Permission?): Boolean {
-            throw IllegalArgumentException()
-        }
-
-        override fun abandonConversation(p0: Conversation?) {
-            throw IllegalArgumentException()
-        }
-
-        override fun abandonConversation(p0: Conversation?, p1: ConversationAbandonedEvent?) {
             throw IllegalArgumentException()
         }
 
