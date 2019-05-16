@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="Gradle: org.spigotmc:spigot112R1:1.12.0-R1.0">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/org/spigotmc/spigot112R1/1.12.0-R1.0/spigot112R1-1.12.0-R1.0.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

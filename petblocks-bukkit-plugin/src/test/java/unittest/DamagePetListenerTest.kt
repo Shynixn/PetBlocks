@@ -125,25 +125,10 @@ class DamagePetListenerTest {
 
     private class MockedHealthService : HealthService {
         /**
-         * Damages the given [pet] with the given [damage].
+         * Damages the given [petMeta] with the given [damage].
          * The pet needs a health ai otherwise this operation gets ignored.
          */
-        override fun damagePet(pet: PetProxy, damage: Double) {
-        }
-
-        /**
-         * Registers the given [petMeta] for health regain.
-         * The pet needs a health ai otherwise this operation gets ignored.
-         */
-        override fun registerForHealthRegain(petMeta: PetMeta) {
-            throw IllegalArgumentException()
-        }
-
-        /**
-         * Clears the allocated resources from the given [player].
-         */
-        override fun <P> clearResources(player: P) {
-            throw IllegalArgumentException()
+        override fun damagePet(petMeta: PetMeta, damage: Double) {
         }
     }
 

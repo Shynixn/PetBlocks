@@ -12,7 +12,7 @@ import com.github.shynixn.petblocks.api.persistence.entity.*
 import com.github.shynixn.petblocks.bukkit.logic.business.proxy.PlayerProxyImpl
 import com.github.shynixn.petblocks.bukkit.logic.business.service.ConfigurationServiceImpl
 import com.github.shynixn.petblocks.bukkit.logic.business.service.EntityServiceImpl
-import com.github.shynixn.petblocks.bukkit.logic.business.service.Item18R1ServiceImpl
+import com.github.shynixn.petblocks.bukkit.logic.business.service.Item113R1ServiceImpl
 import com.github.shynixn.petblocks.core.logic.business.service.AIServiceImpl
 import com.github.shynixn.petblocks.core.logic.business.service.LoggingUtilServiceImpl
 import com.github.shynixn.petblocks.core.logic.business.service.PersistencePetMetaServiceImpl
@@ -90,7 +90,7 @@ class PersistenceMySQLIT {
         Assertions.assertEquals(true, actual.soundEnabled)
         Assertions.assertEquals(true, actual.particleEnabled)
         Assertions.assertEquals(1, actual.skin.id)
-        Assertions.assertEquals("GRASS", actual.skin.typeName)
+        Assertions.assertEquals("LEGACY_GRASS", actual.skin.typeName)
         Assertions.assertEquals(0, actual.skin.dataValue)
         Assertions.assertEquals(false, actual.skin.unbreakable)
         Assertions.assertEquals("", actual.skin.owner)
@@ -253,7 +253,7 @@ class PersistenceMySQLIT {
             }
 
             val aiService = AIServiceImpl(LoggingUtilServiceImpl(Logger.getAnonymousLogger()), MockedProxyService())
-            val configService = ConfigurationServiceImpl(plugin, Item18R1ServiceImpl(), aiService)
+            val configService = ConfigurationServiceImpl(plugin, Item113R1ServiceImpl(), aiService)
             EntityServiceImpl(configService, MockedProxyService(),
                 Mockito.mock(EntityRegistrationService::class.java), Mockito.mock(PetService::class.java), YamlSerializationServiceImpl(),
                 plugin, Version.VERSION_1_8_R1, aiService)
