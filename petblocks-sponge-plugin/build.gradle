@@ -27,13 +27,13 @@ minecraft {
 
 apply plugin: 'jacoco'
 
-shadowJar{
+shadowJar {
     from sourceSets.main.resources.srcDirs
 
     archiveName = "$baseName-$version.$extension"
 
     // Change the output folder of the plugin.
-    // destinationDir = new File('D:/Temp/SpongePowered/Sponge-2768-7.1.5/mods')
+    // destinationDir = new File('D:\\Benutzer\\Temp\\SpongePowered\\Sponge-2768-7.1.5\\mods')
 
     relocate 'kotlin', 'com.github.shynixn.petblocks.lib.kotlin'
     relocate 'org.intellij', 'com.github.shynixn.petblocks.lib.org.intellij'

@@ -78,12 +78,14 @@ class PositionEntity(
     /**
      * Adds the parameters to this position.
      */
-    override fun add(x: Double, y: Double, z: Double, yaw: Double, pitch: Double) {
+    override fun add(x: Double, y: Double, z: Double, yaw: Double, pitch: Double): Position {
         this.x += x
         this.y += y
         this.z += z
         this.yaw += yaw
         this.pitch += pitch
+
+        return this
     }
 
     /**

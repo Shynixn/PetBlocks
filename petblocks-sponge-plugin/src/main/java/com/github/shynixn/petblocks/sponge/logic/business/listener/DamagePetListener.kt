@@ -17,6 +17,7 @@ import org.spongepowered.api.entity.Entity
 import org.spongepowered.api.entity.living.player.Player
 import org.spongepowered.api.event.Listener
 import org.spongepowered.api.event.cause.entity.damage.DamageTypes
+import org.spongepowered.api.event.cause.entity.damage.source.DamageSources
 import org.spongepowered.api.event.entity.DamageEntityEvent
 
 /**
@@ -64,7 +65,7 @@ class DamagePetListener @Inject constructor(
 
             healthService.damagePet(pet.meta, event.finalDamage)
 
-            if (event.source != DamageTypes.FALL) {
+            if (event.cause.containsType(DamageSources.FALLING::class.java)) {
                 combatPetService.flee(pet.meta)
             }
 

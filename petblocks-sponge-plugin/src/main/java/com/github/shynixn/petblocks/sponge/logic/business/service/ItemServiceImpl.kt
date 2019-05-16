@@ -46,7 +46,7 @@ class ItemServiceImpl : ItemService {
     override fun convertTypeToId(type: Any): Int {
         if (type is BlockType) {
             for (material in MaterialType.values()) {
-                if (material.minecraftName == type.name) {
+                if (material.minecraftName.equals(type.name.replace("minecraft:", ""), true)) {
                     return material.numericId
                 }
             }

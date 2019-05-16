@@ -33,7 +33,7 @@ class PathfinderFollowBack(
      */
     override fun onExecute() {
         try {
-            val position = player.transform.toPosition().relativeBack(-1.0)
+            val position = player.transform.toPosition().add(0.0, -0.5).relativeBack(-1.0)
             pet.teleport(position)
         } catch (e: Exception) {
             loggingService.warn("Failed to execute PathfinderFollowBack.", e)
