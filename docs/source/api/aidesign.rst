@@ -1,12 +1,7 @@
-Creating AIS in the PetBlocks API
-=================================
+Creating AIS
+============
 
-Please read the introduction to the developer API first before you continue with this page.
-
-Getting started
-~~~~~~~~~~~~~~~
-
-There are 2 different types of AIs in PetBlocks:
+There are 2 different types of AIS in PetBlocks:
 
 * Pathfinder AIS
 * Event-based AIS
@@ -21,15 +16,19 @@ even schedulers.
 Decide for pathfinder based AIS if you only want to execute something once a pet is spawned, use a event-based AIS if you
 want to manage interactions with the pet.
 
+Example
+~~~~~~~
 
 .. note::  **RandomJumpAI** - In this example we are creating a new pathfinder ai which lets the pet randomly jump
  depending on a certain configurable chance in the config.yml.
+
+0. Include the PetBlocks API as mentioned in the getting started section.
 
 1. Define our data holding entity with a custom field chance and set it to 10 percent.
 
 .. code-block:: java
 
-    class RandomJumpAI implements AIBase {
+    public class RandomJumpAI implements AIBase {
         public static final String TYPENAME = "randomjump";
 
         private long id;
@@ -54,25 +53,23 @@ want to manage interactions with the pet.
             this.id = id;
         }
 
-        @NotNull
         @Override
         public String getType() {
             return this.type;
         }
 
         @Override
-        public void setType(@NotNull String type) {
+        public void setType(String type) {
             this.type = type;
         }
 
-        @Nullable
         @Override
         public String getUserId() {
             return null;
         }
 
         @Override
-        public void setUserId(@Nullable String s) {
+        public void setUserId(String s) {
         }
     }
 
@@ -81,7 +78,7 @@ various minecraft forums is useful to get familiar with this.
 
 .. code-block:: java
 
-    class RandomJumpAIPathfinder implements PathfinderProxy {
+    public class RandomJumpAIPathfinder implements PathfinderProxy {
         private final PetProxy pet;
         private final RandomJumpAI ai;
 
@@ -105,7 +102,7 @@ various minecraft forums is useful to get familiar with this.
             final double random = Math.random();
 
             // A chance of 10% only adds a jump vector 10 percent of the time.
-            if (random <= this.ai.chance) {
+            if (random <= this.ai.getChance()) {
                 final Vector vector = new Vector(0, 1, 0);
 
                 this.pet.setVelocity(vector);
@@ -114,7 +111,6 @@ various minecraft forums is useful to get familiar with this.
             this.lastTimeExecuted = currentMilliseconds;
         }
 
-        @NotNull
         @Override
         public AIBase getAiBase() {
             // Always return the ai data here.
@@ -174,9 +170,8 @@ various minecraft forums is useful to get familiar with this.
              * @param aiBase aiBase getting serialized.
              * @return serializedContent.
              */
-            @NotNull
             @Override
-            public Map<String, Object> onSerialization(@NotNull RandomJumpAI aiBase) {
+            public Map<String, Object> onSerialization(RandomJumpAI aiBase) {
                 final Map<String, Object> serializedContent = new HashMap<>();
 
                 // Id and type are automatically serialized. You only need to set your custom fields.
@@ -191,12 +186,11 @@ various minecraft forums is useful to get familiar with this.
              * @param source serializedContent.
              * @return ai instance.
              */
-            @NotNull
             @Override
-            public RandomJumpAI onDeserialization(@NotNull Map<String, ?> source) {
+            public RandomJumpAI onDeserialization(Map<String, ?> source) {
                 final RandomJumpAI randomJumpAI = new RandomJumpAI();
 
-                randomJumpAI.chance = (Double) source.get("chance");
+                randomJumpAI.setChance((Double) source.get("chance"));
 
                 return randomJumpAI;
             }
@@ -209,13 +203,19 @@ various minecraft forums is useful to get familiar with this.
              * instance of a class implementation PathfinderProxy or a
              * instance of a vanilla NMS pathfinder.
              */
-            @Nullable
             @Override
-            public Object onPathfinderCreation(@NotNull PetProxy pet, @NotNull RandomJumpAI aiBase) {
+            public Object onPathfinderCreation(PetProxy pet, RandomJumpAI aiBase) {
                 return new RandomJumpAIPathfinder(pet, aiBase);
             }
         });
     }
+
+4. Use your created ai like any other ai in the config.yml.
+
+config.yml
+::
+     type: 'randomjump'
+     chance: 0.1
 
 
 
