@@ -66,7 +66,7 @@ class Item18R1ServiceImpl : ItemService {
         }
 
         val material = getMaterialValue(type)
-        return material == itemStack.type && dataValue == itemStack.durability.toInt()
+        return material == itemStack.type && (dataValue == 0 || dataValue == itemStack.durability.toInt())
     }
 
     /**

@@ -60,7 +60,7 @@ class DamagePetListener @Inject constructor(
 
             healthService.damagePet(pet.meta, event.finalDamage)
 
-            if (event.cause != EntityDamageEvent.DamageCause.FALL) {
+            if (event.cause != EntityDamageEvent.DamageCause.FALL && event.cause != EntityDamageEvent.DamageCause.SUFFOCATION) {
                 combatPetService.flee(pet.meta)
             }
 
