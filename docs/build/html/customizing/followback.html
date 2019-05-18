@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Introduction to the ai system &mdash; PetBlocks 8.1.0 documentation</title>
+  <title>Follow Back &mdash; PetBlocks 8.2.0 documentation</title>
   
 
   
@@ -37,10 +37,10 @@
         <link rel="index" title="Index"
               href="../genindex.html"/>
         <link rel="search" title="Search" href="../search.html"/>
-    <link rel="top" title="PetBlocks 8.1.0 documentation" href="../index.html"/>
+    <link rel="top" title="PetBlocks 8.2.0 documentation" href="../index.html"/>
         <link rel="up" title="AIS" href="ai.html"/>
-        <link rel="next" title="List of all ais" href="aialltags.html"/>
-        <link rel="prev" title="AIS" href="ai.html"/> 
+        <link rel="next" title="Follow Owner" href="followowner.html"/>
+        <link rel="prev" title="Fly Riding" href="flyriding.html"/> 
 
   
   <script src="../_static/js/modernizr.min.js"></script>
@@ -72,7 +72,7 @@
             
             
               <div class="version">
-                8.1.0
+                8.2.0
               </div>
             
           
@@ -102,8 +102,26 @@
 <li class="toctree-l1 current"><a class="reference internal" href="index.html">Customizing</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="gui.html">GUI</a></li>
 <li class="toctree-l2 current"><a class="reference internal" href="ai.html">AIS</a><ul class="current">
-<li class="toctree-l3 current"><a class="current reference internal" href="#">Introduction to the ai system</a></li>
-<li class="toctree-l3"><a class="reference internal" href="aialltags.html">List of all ais</a></li>
+<li class="toctree-l3"><a class="reference internal" href="afraidofwater.html">Afraid of Water</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ambientsound.html">Ambient Sound</a></li>
+<li class="toctree-l3"><a class="reference internal" href="carry.html">Carry</a></li>
+<li class="toctree-l3"><a class="reference internal" href="feeding.html">Feeding</a></li>
+<li class="toctree-l3"><a class="reference internal" href="fleeincombat.html">Flee in Combat</a></li>
+<li class="toctree-l3"><a class="reference internal" href="floatinwater.html">Float in Water</a></li>
+<li class="toctree-l3"><a class="reference internal" href="flying.html">Flying</a></li>
+<li class="toctree-l3"><a class="reference internal" href="flyriding.html">Fly Riding</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Follow Back</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#requirements">Requirements</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#configuring-in-your-config-yml">Configuring in your config.yml</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#properties">Properties</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="followowner.html">Follow Owner</a></li>
+<li class="toctree-l3"><a class="reference internal" href="groundriding.html">Ground Riding</a></li>
+<li class="toctree-l3"><a class="reference internal" href="health.html">Health</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hopping.html">Hopping</a></li>
+<li class="toctree-l3"><a class="reference internal" href="walking.html">Walking</a></li>
+<li class="toctree-l3"><a class="reference internal" href="wearing.html">Wearing</a></li>
 <li class="toctree-l3"><a class="reference internal" href="samplealwayswearingai.html">Example: Always applying the wearing ai</a></li>
 </ul>
 </li>
@@ -165,14 +183,14 @@
         
           <li><a href="ai.html">AIS</a> &raquo;</li>
         
-      <li>Introduction to the ai system</li>
+      <li>Follow Back</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
             
-              <a href="https://github.com/Shynixn/PetBlocks/tree/master/docs/source/customizing/aiintroduction.rst" class="fa fa-github"> Edit on GitHub</a>
+              <a href="https://github.com/Shynixn/PetBlocks/tree/master/docs/source/customizing/followback.rst" class="fa fa-github"> Edit on GitHub</a>
             
           
         
@@ -186,22 +204,32 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="introduction-to-the-ai-system">
-<h1>Introduction to the ai system<a class="headerlink" href="#introduction-to-the-ai-system" title="Permalink to this headline">¶</a></h1>
-<p>The idea behind of the ai system is to let you, the owner of the server, craft a highly customizable pet
-with custom behaviour which perfectly fits your server environment.</p>
-<p>Brainstorming ideas can be:</p>
+  <div class="section" id="follow-back">
+<h1>Follow Back<a class="headerlink" href="#follow-back" title="Permalink to this headline">¶</a></h1>
+<p>The AI called “Follow Back” is a behaviour ai which lets the pet stick to the back of the player.</p>
+<div class="section" id="requirements">
+<h2>Requirements<a class="headerlink" href="#requirements" title="Permalink to this headline">¶</a></h2>
+<p>This ai is a <strong>pathfinder based ai</strong>, therefore this ai will only be active if one of the following ais is present:</p>
 <ul class="simple">
-<li><p>Combat pets</p></li>
-<li><p>Pets with health</p></li>
-<li><p>Pets which can be feed</p></li>
-<li><p>Fast travel pets</p></li>
-<li><p>Transport pets</p></li>
-<li><p>Flying pets</p></li>
-<li><p>Custom models on pets</p></li>
-<li><p>etc.</p></li>
+<li><p>Walking</p></li>
+<li><p>Hopping</p></li>
+<li><p>Flying</p></li>
 </ul>
-<p>There are tons of possibilities and actions can be chained by using the GUI other /petblocks ai &lt;path&gt; command.</p>
+</div>
+<div class="section" id="configuring-in-your-config-yml">
+<h2>Configuring in your config.yml<a class="headerlink" href="#configuring-in-your-config-yml" title="Permalink to this headline">¶</a></h2>
+<p>config.yml</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nb">type</span><span class="p">:</span> <span class="s1">&#39;follow-back&#39;</span>
+</pre></div>
+</div>
+<p>You can find all options explained at the bottom of this page.</p>
+</div>
+<div class="section" id="properties">
+<h2>Properties<a class="headerlink" href="#properties" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p>Type: Unique identifier of the ai.</p></li>
+</ul>
+</div>
 </div>
 
 
@@ -214,10 +242,10 @@ with custom behaviour which perfectly fits your server environment.</p>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="aialltags.html" class="btn btn-neutral float-right" title="List of all ais" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="followowner.html" class="btn btn-neutral float-right" title="Follow Owner" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="ai.html" class="btn btn-neutral" title="AIS" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="flyriding.html" class="btn btn-neutral" title="Fly Riding" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
@@ -247,7 +275,7 @@ with custom behaviour which perfectly fits your server environment.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'8.1.0',
+            VERSION:'8.2.0',
             LANGUAGE:'None',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
