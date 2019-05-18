@@ -3,7 +3,6 @@
 package com.github.shynixn.petblocks.sponge.logic.business.listener
 
 import com.github.shynixn.petblocks.api.business.service.FeedingPetService
-import com.github.shynixn.petblocks.api.business.service.ItemService
 import com.github.shynixn.petblocks.api.business.service.PetService
 import com.google.inject.Inject
 import org.spongepowered.api.data.type.HandTypes
@@ -14,7 +13,6 @@ import org.spongepowered.api.event.Order
 import org.spongepowered.api.event.entity.InteractEntityEvent
 import org.spongepowered.api.event.filter.cause.First
 import org.spongepowered.api.item.ItemTypes
-import org.spongepowered.api.item.inventory.ItemStack
 
 /**
  * Created by Shynixn 2018.
@@ -43,7 +41,7 @@ import org.spongepowered.api.item.inventory.ItemStack
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class FeedingPetListener @Inject constructor(private val feedingPetService: FeedingPetService, private val petService: PetService, private val itemService: ItemService) {
+class FeedingPetListener @Inject constructor(private val feedingPetService: FeedingPetService, private val petService: PetService) {
     /**
      * Gets called when a player interacts at the given entity.
      */
@@ -56,7 +54,7 @@ class FeedingPetListener @Inject constructor(private val feedingPetService: Feed
         val pet = petService.findPetByEntity(event.targetEntity) ?: return
 
         if (pet.getPlayer<Player>() == player) {
-            val itemStack = itemService.getItemInHand<Player, ItemStack>(player)
+            val itemStack = player.getItemInHand(HandTypes.MAIN_HAND)
 
             if (itemStack.isPresent && itemStack.get().type != ItemTypes.AIR) {
                 val feed = feedingPetService.feedPet(pet, itemStack.get())

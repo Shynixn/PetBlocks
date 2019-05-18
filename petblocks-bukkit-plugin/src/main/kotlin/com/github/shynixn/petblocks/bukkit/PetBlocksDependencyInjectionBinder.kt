@@ -102,7 +102,6 @@ class PetBlocksDependencyInjectionBinder(private val plugin: Plugin) : AbstractM
         bind(PetDebugService::class.java).to(PetDebugServiceImpl::class.java).`in`(Scopes.SINGLETON)
 
         // Bukkit Services
-        bind(AfraidOfWaterService::class.java).to(AfraidOfWaterServiceImpl::class.java).`in`(Scopes.SINGLETON)
         bind(CommandService::class.java).to(CommandServiceImpl::class.java).`in`(Scopes.SINGLETON)
         bind(ConcurrencyService::class.java).to(ConcurrencyServiceImpl::class.java).`in`(Scopes.SINGLETON)
         bind(ConfigurationService::class.java).to(ConfigurationServiceImpl::class.java).`in`(Scopes.SINGLETON)
@@ -110,9 +109,12 @@ class PetBlocksDependencyInjectionBinder(private val plugin: Plugin) : AbstractM
         bind(DependencyService::class.java).to(DependencyServiceImpl::class.java).`in`(Scopes.SINGLETON)
 
         when {
-            version.isVersionSameOrGreaterThan(Version.VERSION_1_13_R2) -> bind(EntityRegistrationService::class.java).to(EntityRegistration113R2ServiceImpl::class.java).`in`(Scopes.SINGLETON)
-            version.isVersionSameOrGreaterThan(Version.VERSION_1_13_R1) -> bind(EntityRegistrationService::class.java).to(EntityRegistration113R1ServiceImpl::class.java).`in`(Scopes.SINGLETON)
-            version.isVersionSameOrGreaterThan(Version.VERSION_1_11_R1) -> bind(EntityRegistrationService::class.java).to(EntityRegistration111R1ServiceImpl::class.java).`in`(Scopes.SINGLETON)
+            version.isVersionSameOrGreaterThan(Version.VERSION_1_13_R2) -> bind(EntityRegistrationService::class.java).to(EntityRegistration113R2ServiceImpl::class.java).`in`(
+                Scopes.SINGLETON)
+            version.isVersionSameOrGreaterThan(Version.VERSION_1_13_R1) -> bind(EntityRegistrationService::class.java).to(EntityRegistration113R1ServiceImpl::class.java).`in`(
+                Scopes.SINGLETON)
+            version.isVersionSameOrGreaterThan(Version.VERSION_1_11_R1) -> bind(EntityRegistrationService::class.java).to(EntityRegistration111R1ServiceImpl::class.java).`in`(
+                Scopes.SINGLETON)
             else -> bind(EntityRegistrationService::class.java).to(EntityRegistration18R1ServiceImpl::class.java).`in`(Scopes.SINGLETON)
         }
 
@@ -122,8 +124,12 @@ class PetBlocksDependencyInjectionBinder(private val plugin: Plugin) : AbstractM
 
         when {
             version.isVersionSameOrGreaterThan(Version.VERSION_1_13_R1) -> bind(ItemService::class.java).to(Item113R1ServiceImpl::class.java).`in`(Scopes.SINGLETON)
-            version.isVersionSameOrGreaterThan(Version.VERSION_1_9_R1) -> bind(ItemService::class.java).to(Item119R1ServiceImpl::class.java).`in`(Scopes.SINGLETON)
-            else -> bind(ItemService::class.java).to(Item118R1ServiceImpl::class.java).`in`(Scopes.SINGLETON)
+            else -> bind(ItemService::class.java).to(Item18R1ServiceImpl::class.java).`in`(Scopes.SINGLETON)
+        }
+
+        when {
+            version.isVersionSameOrGreaterThan(Version.VERSION_1_9_R1) -> bind(HandService::class.java).to(Hand19R1ServiceImpl::class.java).`in`(Scopes.SINGLETON)
+            else -> bind(HandService::class.java).to(Hand18R1ServiceImpl::class.java).`in`(Scopes.SINGLETON)
         }
 
         bind(MessageService::class.java).to(MessageServiceImpl::class.java).`in`(Scopes.SINGLETON)

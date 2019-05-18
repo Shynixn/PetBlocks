@@ -1,6 +1,6 @@
 package com.github.shynixn.petblocks.api.business.service
 
-import com.github.shynixn.petblocks.api.business.proxy.PetProxy
+import com.github.shynixn.petblocks.api.persistence.entity.PetMeta
 
 /**
  * Created by Shynixn 2018.
@@ -33,10 +33,5 @@ interface CombatPetService {
     /**
      * Lets the pet flee and reappears after some time.
      */
-    fun flee(pet: PetProxy)
-
-    /**
-     * Clears the allocated resources from the given [player].
-     */
-    fun <P> clearResources(player: P)
+    fun flee(petMeta: PetMeta)
 }

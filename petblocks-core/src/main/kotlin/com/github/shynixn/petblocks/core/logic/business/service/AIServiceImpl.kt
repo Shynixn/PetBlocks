@@ -63,7 +63,7 @@ class AIServiceImpl @Inject constructor(
 
         for (meta in metas) {
             if (!registeredAIS.containsKey(meta.type)) {
-                loggingService.warn("Pet of ${player.name} tried to use ai type + " + meta.type + " which is not registered in the AI Service. Please register it first.")
+                loggingService.warn("Pet of ${player.name} tried to use ai type + " + meta.type + " which is not registered in the AI Service. Please registerAI it first.")
             }
 
             val aiCreation = registeredAIS[meta.type]!!
@@ -104,7 +104,7 @@ class AIServiceImpl @Inject constructor(
      * Registers a custom ai type with unique [type] and a proxy to create required AI actions.
      * Existing types can be overwritten if the given [type] already exists.
      */
-    override fun <A : AIBase> register(type: String, creator: AICreationProxy<A>) {
+    override fun <A : AIBase> registerAI(type: String, creator: AICreationProxy<A>) {
         registeredAIS[type] = creator as AICreationProxy<AIBase>
     }
 

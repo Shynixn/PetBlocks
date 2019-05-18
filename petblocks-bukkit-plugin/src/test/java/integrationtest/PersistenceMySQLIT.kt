@@ -6,18 +6,17 @@ import ch.vorburger.mariadb4j.DB
 import com.github.shynixn.petblocks.api.business.enumeration.ParticleType
 import com.github.shynixn.petblocks.api.business.enumeration.Version
 import com.github.shynixn.petblocks.api.business.proxy.PlayerProxy
-import com.github.shynixn.petblocks.api.business.proxy.PluginProxy
 import com.github.shynixn.petblocks.api.business.service.*
 import com.github.shynixn.petblocks.api.persistence.context.SqlDbContext
 import com.github.shynixn.petblocks.api.persistence.entity.*
 import com.github.shynixn.petblocks.bukkit.logic.business.proxy.PlayerProxyImpl
 import com.github.shynixn.petblocks.bukkit.logic.business.service.ConfigurationServiceImpl
 import com.github.shynixn.petblocks.bukkit.logic.business.service.EntityServiceImpl
-import com.github.shynixn.petblocks.bukkit.logic.business.service.Item119R1ServiceImpl
+import com.github.shynixn.petblocks.bukkit.logic.business.service.Item113R1ServiceImpl
 import com.github.shynixn.petblocks.core.logic.business.service.AIServiceImpl
 import com.github.shynixn.petblocks.core.logic.business.service.LoggingUtilServiceImpl
-import com.github.shynixn.petblocks.core.logic.business.service.YamlSerializationServiceImpl
 import com.github.shynixn.petblocks.core.logic.business.service.PersistencePetMetaServiceImpl
+import com.github.shynixn.petblocks.core.logic.business.service.YamlSerializationServiceImpl
 import com.github.shynixn.petblocks.core.logic.persistence.context.SqlDbContextImpl
 import com.github.shynixn.petblocks.core.logic.persistence.entity.AIMovementEntity
 import com.github.shynixn.petblocks.core.logic.persistence.repository.PetMetaSqlRepository
@@ -91,7 +90,7 @@ class PersistenceMySQLIT {
         Assertions.assertEquals(true, actual.soundEnabled)
         Assertions.assertEquals(true, actual.particleEnabled)
         Assertions.assertEquals(1, actual.skin.id)
-        Assertions.assertEquals("GRASS", actual.skin.typeName)
+        Assertions.assertEquals("LEGACY_GRASS", actual.skin.typeName)
         Assertions.assertEquals(0, actual.skin.dataValue)
         Assertions.assertEquals(false, actual.skin.unbreakable)
         Assertions.assertEquals("", actual.skin.owner)
@@ -254,50 +253,16 @@ class PersistenceMySQLIT {
             }
 
             val aiService = AIServiceImpl(LoggingUtilServiceImpl(Logger.getAnonymousLogger()), MockedProxyService())
-            val configService = ConfigurationServiceImpl(plugin, Item119R1ServiceImpl(), aiService)
-            EntityServiceImpl(configService,
-                MockedProxyService(),
-                Mockito.mock(EntityRegistrationService::class.java),
-                YamlSerializationServiceImpl(),
-                LoggingUtilServiceImpl(Logger.getAnonymousLogger()),
-                aiService,
-                Mockito.mock(PetService::class.java),
-                plugin,
-                Mockito.mock(AfraidOfWaterService::class.java),
-                Mockito.mock(NavigationService::class.java),
-                Mockito.mock(SoundService::class.java),
-                Version.VERSION_1_8_R1)
+            val configService = ConfigurationServiceImpl(plugin, Item113R1ServiceImpl(), aiService)
+            EntityServiceImpl(configService, MockedProxyService(),
+                Mockito.mock(EntityRegistrationService::class.java), Mockito.mock(PetService::class.java), YamlSerializationServiceImpl(),
+                plugin, Version.VERSION_1_8_R1, aiService)
 
             dbContext = SqlDbContextImpl(configService, LoggingUtilServiceImpl(Logger.getAnonymousLogger()))
 
             val sqlite = PetMetaSqlRepository(dbContext!!,
                 aiService, configService)
             return PersistencePetMetaServiceImpl(MockedProxyService(), sqlite, MockedConcurrencyService(), MockedEventService())
-        }
-    }
-
-    class MockedPluginProxy : PluginProxy {
-        /**
-         * Gets a business logic from the PetBlocks plugin.
-         * All types in the service package can be accessed.
-         * Throws a [IllegalArgumentException] if the service could not be found.
-         * @param S the type of service class.
-         */
-        override fun <S> resolve(service: Any): S {
-            if (service == ItemService::class.java) {
-                return Item119R1ServiceImpl() as S
-            }
-
-            throw IllegalArgumentException()
-        }
-
-        /**
-         * Creates a new entity from the given [entity].
-         * Throws a [IllegalArgumentException] if the entity could not be found.
-         * @param E the type of entity class.
-         */
-        override fun <E> create(entity: Any): E {
-            throw IllegalArgumentException()
         }
     }
 

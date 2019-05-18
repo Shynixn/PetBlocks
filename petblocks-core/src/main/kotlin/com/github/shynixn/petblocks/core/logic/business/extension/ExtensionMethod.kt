@@ -54,6 +54,13 @@ fun chatMessage(f: ChatMessage.() -> Unit): ChatMessage {
 }
 
 /**
+ * Casts any instance to any type.
+ */
+fun <T> Any?.cast(): T {
+    return this as T
+}
+
+/**
  * Removes the final modifier from this field to allow editing.
  */
 fun Field.removeFinalModifier() {
@@ -67,6 +74,15 @@ fun Field.removeFinalModifier() {
  * Changes the position to it's yaw front by the given amount.
  */
 fun Position.relativeFront(amount: Double): Position {
+    this.x = x + amount * Math.cos(Math.toRadians(yaw + 90))
+    this.z = z + amount * Math.sin(Math.toRadians(yaw + 90))
+    return this
+}
+
+/**
+ * Changes the position to it's yaw back by the given amount.
+ */
+fun Position.relativeBack(amount: Double): Position {
     this.x = x + amount * Math.cos(Math.toRadians(yaw + 90))
     this.z = z + amount * Math.sin(Math.toRadians(yaw + 90))
     return this
@@ -162,7 +178,7 @@ private val STRIP_COLOR_PATTERN = Pattern.compile("(?i)" + '§'.toString() + "[0
 /**
  * Strips the chat colors from the string.
  */
-fun String.stripChatColors() : String{
+fun String.stripChatColors(): String {
     return STRIP_COLOR_PATTERN.matcher(this).replaceAll("")
 }
 

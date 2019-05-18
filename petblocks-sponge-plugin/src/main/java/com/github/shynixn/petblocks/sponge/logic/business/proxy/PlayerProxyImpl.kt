@@ -76,7 +76,7 @@ class PlayerProxyImpl(private val player: Player) : com.github.shynixn.petblocks
      * Sets the item in the players hand.
      */
     override fun <I> setItemInHand(itemStack: I, offHand: Boolean) {
-        if (itemStack !is ItemStack) {
+        if (itemStack !is ItemStack?) {
             throw IllegalArgumentException("ItemStack has to be a SpongeItemStack!")
         }
 

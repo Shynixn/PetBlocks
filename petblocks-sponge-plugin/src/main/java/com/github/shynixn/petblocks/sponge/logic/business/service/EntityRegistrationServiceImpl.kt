@@ -66,7 +66,7 @@ class EntityRegistrationServiceImpl @Inject constructor(private val loggingServi
 
             entityRegistrationMethod.invoke(registryInstance, customEntityType)
         } catch (e: Exception) {
-            loggingService.warn("Failed to register Entities in Sponge Internal registry. GriefPreventionFlags using petblocks may not work correctly.", e)
+            loggingService.warn("Failed to registerAI Entities in Sponge Internal registry. GriefPreventionFlags using petblocks may not work correctly.", e)
         }
 
         if (entityType != EntityType.ARMORSTAND) {

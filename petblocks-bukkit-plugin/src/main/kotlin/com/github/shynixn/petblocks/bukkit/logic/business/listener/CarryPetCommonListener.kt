@@ -4,7 +4,9 @@ package com.github.shynixn.petblocks.bukkit.logic.business.listener
 
 import com.github.shynixn.petblocks.api.business.service.CarryPetService
 import com.github.shynixn.petblocks.api.business.service.PetService
+import com.github.shynixn.petblocks.core.logic.business.extension.cast
 import com.google.inject.Inject
+import org.bukkit.entity.Entity
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
@@ -58,13 +60,13 @@ class CarryPetCommonListener @Inject constructor(private val carryPetService: Ca
 
         val optPet = petService.findPetByEntity(event.rightClicked)
 
-        if (event.rightClicked != null && optPet != null && optPet.getPlayer<Player>() == event.player) {
+        if (event.rightClicked.cast<Entity?>() != null && optPet != null && optPet.getPlayer<Player>() == event.player) {
             carryPetService.carryPet(event.player)
             event.isCancelled = true
             return
         }
 
-        if (event.rightClicked != null && optPet != null) {
+        if (event.rightClicked.cast<Entity?>() != null && optPet != null) {
             event.isCancelled = true
             return
         }

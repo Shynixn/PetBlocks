@@ -1,12 +1,9 @@
 package com.github.shynixn.petblocks.core.logic.business.service
 
 import com.github.shynixn.petblocks.api.business.enumeration.AIType
-import com.github.shynixn.petblocks.api.business.proxy.PetProxy
-import com.github.shynixn.petblocks.api.business.service.CombatPetService
-import com.github.shynixn.petblocks.api.business.service.ConcurrencyService
-import com.github.shynixn.petblocks.api.business.service.LoggingService
-import com.github.shynixn.petblocks.api.business.service.PersistencePetMetaService
+import com.github.shynixn.petblocks.api.business.service.*
 import com.github.shynixn.petblocks.api.persistence.entity.AIFleeInCombat
+import com.github.shynixn.petblocks.api.persistence.entity.PetMeta
 import com.github.shynixn.petblocks.core.logic.business.extension.sync
 import com.google.inject.Inject
 
@@ -40,10 +37,11 @@ import com.google.inject.Inject
 class CombatPetServiceImpl @Inject constructor(
     concurrencyService: ConcurrencyService,
     private val persistencePetMetaService: PersistencePetMetaService,
+    private val petService: PetService,
+    private val proxyService: ProxyService,
     private val loggingService: LoggingService
 ) : CombatPetService, Runnable {
 
-    private val fleeCache = HashSet<Any>()
 
     /**
      * Initialize.
@@ -57,25 +55,25 @@ class CombatPetServiceImpl @Inject constructor(
     /**
      * Lets the pet flee and reappears after some time.
      */
-    override fun flee(pet: PetProxy) {
-        val count = pet.meta.aiGoals.count { p -> p is AIFleeInCombat }
+    override fun flee(petMeta: PetMeta) {
+        val count = petMeta.aiGoals.count { p -> p is AIFleeInCombat }
 
         if (count == 0) {
             return
         }
 
         if (count > 1) {
-            loggingService.warn("Player ${pet.meta.playerMeta.name} has registered multiple ${AIType.FLEE_IN_COMBAT.type}. Please check your configuration.")
+            loggingService.warn("Player ${petMeta.playerMeta.name} has registered multiple ${AIType.FLEE_IN_COMBAT.type}. Please check your configuration.")
         }
 
-        if (fleeCache.contains(pet.getPlayer())) {
-            return
-        }
-
-        val aiBase = pet.meta.aiGoals.first { a -> a is AIFleeInCombat } as AIFleeInCombat
+        val aiBase = petMeta.aiGoals.first { a -> a is AIFleeInCombat } as AIFleeInCombat
         aiBase.currentAppearsInSeconds = aiBase.reAppearsInSeconds
 
-        fleeCache.add(pet.getPlayer())
+        val playerProxy = proxyService.findPlayerProxyObjectFromUUID(petMeta.playerMeta.uuid)
+
+        if (petService.hasPet(playerProxy.handle)) {
+            petService.getOrSpawnPetFromPlayer(playerProxy.handle).get().remove()
+        }
     }
 
     /**
@@ -91,38 +89,20 @@ class CombatPetServiceImpl @Inject constructor(
      * @see java.lang.Thread.run
      */
     override fun run() {
-        if (fleeCache.isEmpty()) {
-            return
-        }
+        for (petMeta in persistencePetMetaService.cache) {
+            val aiBase = petMeta.aiGoals.firstOrNull { a -> a is AIFleeInCombat } as AIFleeInCombat? ?: continue
 
-        for (player in fleeCache.toTypedArray()) {
-            val petMeta = persistencePetMetaService.getPetMetaFromPlayer(player)
-
-            val aiBase = petMeta.aiGoals.firstOrNull { a -> a is AIFleeInCombat }
-
-            if (aiBase == null) {
-                fleeCache.remove(player)
+            if (aiBase.currentAppearsInSeconds < 1) {
+                continue
             }
 
-            val aiHealth = aiBase as AIFleeInCombat
+            aiBase.currentAppearsInSeconds = aiBase.currentAppearsInSeconds - 1
 
-            when {
-                aiHealth.currentAppearsInSeconds > 0 -> aiHealth.currentAppearsInSeconds--
+            if (aiBase.currentAppearsInSeconds < 1) {
+                val playerProxy = proxyService.findPlayerProxyObjectFromUUID(petMeta.playerMeta.uuid)
 
-                else -> {
-                    persistencePetMetaService.save(petMeta)
-                    fleeCache.remove(player)
-                }
+                petService.getOrSpawnPetFromPlayer(playerProxy.handle)
             }
-        }
-    }
-
-    /**
-     * Clears the allocated resources from the given [player].
-     */
-    override fun <P> clearResources(player: P) {
-        if (player is Any && fleeCache.contains(player)) {
-            fleeCache.remove(player)
         }
     }
 }

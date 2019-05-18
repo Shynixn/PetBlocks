@@ -36,7 +36,7 @@ interface AIService {
      * Registers a custom ai type with unique [type] and a proxy to create required AI actions.
      * Existing types can be overwritten if the given [type] already exists.
      */
-    fun <A : AIBase> register(type: String, creator: AICreationProxy<A>)
+    fun <A : AIBase> registerAI(type: String, creator: AICreationProxy<A>)
 
     /**
      * Generates an AIBase from the given yaml source string.

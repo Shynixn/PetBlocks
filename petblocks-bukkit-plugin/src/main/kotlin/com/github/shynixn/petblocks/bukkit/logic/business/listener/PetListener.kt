@@ -14,10 +14,13 @@ import com.github.shynixn.petblocks.core.logic.business.extension.thenAcceptSafe
 import com.google.inject.Inject
 import org.bukkit.Bukkit
 import org.bukkit.World
+import org.bukkit.entity.Entity
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
+import org.bukkit.event.EventPriority
 import org.bukkit.event.Listener
 import org.bukkit.event.entity.EntityInteractEvent
+import org.bukkit.event.entity.EntitySpawnEvent
 import org.bukkit.event.entity.PlayerLeashEntityEvent
 import org.bukkit.event.player.*
 import org.bukkit.event.world.ChunkLoadEvent
@@ -75,7 +78,7 @@ class PetListener @Inject constructor(
         } else {
             val uuid = event.player.uniqueId
 
-            if(alreadyLoading.contains(uuid)){
+            if (alreadyLoading.contains(uuid)) {
                 return
             }
 
@@ -211,6 +214,16 @@ class PetListener @Inject constructor(
     }
 
     /**
+     * Handles allowing the entity spawn. Denies spawn prevention from other plugins.
+     */
+    @EventHandler(priority = EventPriority.HIGHEST)
+    fun onEntitySpawnEvent(event: EntitySpawnEvent) {
+        if (event.entity is EntityPetProxy) {
+            event.isCancelled = false
+        }
+    }
+
+    /**
      * Handles pet despawning and respawning on player teleport.
      */
     @EventHandler
@@ -234,9 +247,7 @@ class PetListener @Inject constructor(
             return
         }
 
-        if (event.player.passenger == null) {
-            return
-        }
+        Entity::class.java.getDeclaredMethod("getPassenger").invoke(event.player) as Entity? ?: return
 
         val fallOffHead = configurationService.findValue<Boolean>("global-configuration.teleport-fall")
 
@@ -286,7 +297,7 @@ class PetListener @Inject constructor(
                 Bukkit.getPluginManager().callEvent(joinEvent)
             }
 
-            if(alreadyLoading.contains(player.uniqueId)){
+            if (alreadyLoading.contains(player.uniqueId)) {
                 alreadyLoading.remove(player.uniqueId)
             }
         }

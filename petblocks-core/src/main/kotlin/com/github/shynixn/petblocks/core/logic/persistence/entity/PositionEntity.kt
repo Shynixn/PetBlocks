@@ -44,7 +44,6 @@ class PositionEntity(
     /** [worldName] which world the location is. */
     override var worldName: String? = null
 ) : Position {
-
     /** [blockX] coordinate as Int. */
     override val blockX: Int
         get() = x.toInt()
@@ -56,23 +55,37 @@ class PositionEntity(
         get() = z.toInt()
 
     /**
+     * Subtracts the given [position] from this position
+     * and returns this position.
+     */
+    override fun subtract(position: Position): Position {
+        this.x += position.x
+        this.y += position.y
+        this.z += position.z
+        return this
+    }
+
+    /**
      * Multiply position.
      */
-    override fun multiply(multiplier: Double) {
+    override fun multiply(multiplier: Double): Position {
         this.x *= multiplier
         this.y *= multiplier
         this.z *= multiplier
+        return this
     }
 
     /**
      * Adds the parameters to this position.
      */
-    override fun add(x: Double, y: Double, z: Double, yaw: Double, pitch: Double) {
+    override fun add(x: Double, y: Double, z: Double, yaw: Double, pitch: Double): Position {
         this.x += x
         this.y += y
         this.z += z
         this.yaw += yaw
         this.pitch += pitch
+
+        return this
     }
 
     /**

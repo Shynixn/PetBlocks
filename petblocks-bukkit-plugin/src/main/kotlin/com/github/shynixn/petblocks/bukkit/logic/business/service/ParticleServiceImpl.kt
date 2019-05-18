@@ -100,7 +100,10 @@ class ParticleServiceImpl @Inject constructor(
 
             if (dataType == ItemStack::class.java && particle.materialName != null) {
                 val itemStack = findClazz("org.bukkit.craftbukkit.VERSION.inventory.CraftItemStack").getDeclaredMethod("asNMSCopy")
-                    .invoke(null, ItemStack(Material.getMaterial(particle.materialName!!)!!, 1, particle.data.toShort()))
+                    .invoke(null, ItemStack::class.java.getDeclaredConstructor(Material::class.java, Int::class.java, Short::class.java)
+                        .newInstance(Material.getMaterial(particle.materialName!!)!!, 1, particle.data.toShort()))
+
+
 
                 internalParticleType = findClazz("net.minecraft.server.VERSION.ParticleParamItem")
                     .getDeclaredConstructor(particleClazz, itemStack.javaClass).newInstance(internalParticleType, itemStack)

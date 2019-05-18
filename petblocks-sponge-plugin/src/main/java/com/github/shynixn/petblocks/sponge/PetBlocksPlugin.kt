@@ -189,8 +189,6 @@ class PetBlocksPlugin : PluginProxy {
                 resolve<GUIService>(GUIService::class.java).cleanResources(player)
                 resolve<ProxyService>(ProxyService::class.java).cleanResources(player)
                 resolve<CarryPetService>(CarryPetService::class.java).clearResources(player)
-                resolve<CombatPetService>(CombatPetService::class.java).clearResources(player)
-                resolve<HealthService>(HealthService::class.java).clearResources(player)
 
                 val petService = resolve<PetService>(PetService::class.java)
 

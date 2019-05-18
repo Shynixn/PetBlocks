@@ -38,12 +38,12 @@ interface ItemService {
     fun createItemStack(type: Any, dataValue: Int = 0): ItemStackProxy
 
     /**
+     * Converts the given type to an id.
+     */
+    fun convertTypeToId(type: Any): Int
+
+    /**
      * Gets if the given [itemStack] has got the given [type] and [dataValue].
      */
     fun <I> hasItemStackProperties(itemStack: I, type: Any, dataValue: Int = 0): Boolean
-
-    /**
-     * Gets the itemstack in the hand of the player with optional offHand flag.
-     */
-    fun <P, I> getItemInHand(player: P, offHand: Boolean = false): Optional<I>
 }

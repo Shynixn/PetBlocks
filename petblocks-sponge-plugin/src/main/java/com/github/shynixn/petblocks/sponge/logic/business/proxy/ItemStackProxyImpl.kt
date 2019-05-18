@@ -5,7 +5,7 @@ package com.github.shynixn.petblocks.sponge.logic.business.proxy
 import com.github.shynixn.petblocks.api.business.proxy.ItemStackProxy
 import com.github.shynixn.petblocks.core.logic.business.extension.translateChatColors
 import com.github.shynixn.petblocks.sponge.logic.business.extension.displayName
-import com.github.shynixn.petblocks.sponge.logic.business.extension.durability
+import com.github.shynixn.petblocks.sponge.logic.business.extension.dataValue
 import com.github.shynixn.petblocks.sponge.logic.business.extension.lore
 import org.spongepowered.api.Sponge
 import org.spongepowered.api.item.ItemType
@@ -83,7 +83,7 @@ class ItemStackProxyImpl(
         val itemstack = ItemStack.builder()
             .itemType(Sponge.getGame().registry.getType(ItemType::class.java, typeName).get()).build()
 
-        itemstack.durability = data
+        itemstack.dataValue = data
 
         if (this.internalDisplayName != null) {
             itemstack.displayName = this.internalDisplayName!!.translateChatColors()

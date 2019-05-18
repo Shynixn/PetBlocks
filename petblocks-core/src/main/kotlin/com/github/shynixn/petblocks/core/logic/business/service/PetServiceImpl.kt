@@ -114,7 +114,7 @@ class PetServiceImpl @Inject constructor(
     override fun <E> findPetByEntity(entity: E): PetProxy? {
         for (pet in pets) {
             if (!pet.isDead) {
-                if (pet.getHeadArmorstand<Any>() == entity || pet.getHitBoxLivingEntity<Any>() == entity) {
+                if (pet.getHeadArmorstand<Any>() == entity || (pet.getHitBoxLivingEntity<Any>().isPresent && pet.getHitBoxLivingEntity<Any>().get() == entity)) {
                     return pet
                 }
             }

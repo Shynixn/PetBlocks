@@ -118,7 +118,7 @@ class NMSPetArmorstand(owner: Player, val petMeta: PetMeta) : EntityArmorStand((
             val armorstand = proxy.getHeadArmorstand<ArmorStand>()
 
             armorstand.velocity = Vector(0, 1, 0)
-            armorstand.setPassenger(player)
+            armorstand.addPassenger(player)
 
             return
         } else {
@@ -140,7 +140,7 @@ class NMSPetArmorstand(owner: Player, val petMeta: PetMeta) : EntityArmorStand((
 
             val armorstand = proxy.getHeadArmorstand<ArmorStand>()
 
-            player.setPassenger(armorstand)
+            player.addPassenger(armorstand)
 
             return
         }
@@ -165,15 +165,12 @@ class NMSPetArmorstand(owner: Player, val petMeta: PetMeta) : EntityArmorStand((
             return
         }
 
-        val walkingAi = petMeta.aiGoals.firstOrNull { a -> a is AIWalking }
+        internalHitBox = NMSPetVillager(this, getBukkitEntity().location)
+        proxy.changeHitBox(internalHitBox!!.bukkitEntity as LivingEntity)
+        val aiGoals = aiService.convertPetAiBasesToPathfinders(proxy, petMeta.aiGoals)
+        (internalHitBox as NMSPetVillager).applyPathfinders(aiGoals)
 
-        if (walkingAi != null) {
-            internalHitBox = NMSPetVillager(this, getBukkitEntity().location)
-            proxy.changeHitBox(internalHitBox!!.bukkitEntity as LivingEntity)
-            val aiGoals = aiService.convertPetAiBasesToPathfinders(proxy, petMeta.aiGoals)
-            (internalHitBox as NMSPetVillager).applyPathfinders(aiGoals)
-            return
-        }
+        return
     }
 
     /**

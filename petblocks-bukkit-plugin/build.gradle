@@ -1,3 +1,6 @@
+import org.gradle.api.tasks.testing.logging.TestExceptionFormat
+import org.gradle.api.tasks.testing.logging.TestLogEvent
+
 plugins {
     id 'com.github.johnrengelman.shadow' version '4.0.2'
 }
@@ -8,7 +11,7 @@ shadowJar{
     archiveName = "$baseName-$version.$extension"
 
     // Change the output folder of the plugin.
-    // destinationDir = new File('D:/Temp/plugins')
+    // destinationDir = new File('D:\\Benutzer\\Temp\\plugins')
 
     relocate 'kotlin', 'com.github.shynixn.petblocks.lib.kotlin'
     relocate 'org.intellij', 'com.github.shynixn.petblocks.lib.org.intellij'
@@ -21,10 +24,17 @@ shadowJar{
     relocate 'com.zaxxer', 'com.github.shynixn.petblocks.lib.com.zaxxer'
 }
 
-test {
-    useJUnitPlatform()
-    testLogging.showStandardStreams = true
-    failFast = true
+tasks {
+    test {
+        testLogging {
+            events(TestLogEvent.FAILED, TestLogEvent.PASSED, TestLogEvent.SKIPPED, TestLogEvent.STARTED)
+            displayGranularity = 0
+            showExceptions = true
+            showCauses = true
+            showStackTraces = true
+            exceptionFormat = TestExceptionFormat.FULL
+        }
+    }
 }
 
 jacocoTestReport {
@@ -76,7 +86,7 @@ dependencies {
     testCompile 'org.junit.jupiter:junit-jupiter-api:5.3.1'
     testCompile 'org.xerial:sqlite-jdbc:3.23.1'
     testCompile 'ch.vorburger.mariaDB4j:mariaDB4j:2.2.3'
-    testCompile 'org.spigotmc:spigot18R1:1.8.0-R1.0'
+    testCompile 'org.spigotmc:spigot113R2:1.13.2-R2.0'
 
     testRuntime 'org.junit.jupiter:junit-jupiter-engine:5.3.1'
 }

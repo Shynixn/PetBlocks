@@ -56,9 +56,15 @@ interface Position {
     val blockZ: Int
 
     /**
+     * Subtracts the given [position] from this position
+     * and returns this position.
+     */
+    fun subtract(position: Position): Position
+
+    /**
      * Adds the parameters to this position.
      */
-    fun add(x: Double, y: Double = 0.0, z: Double = 0.0, yaw: Double = 0.0, pitch: Double = 0.0)
+    fun add(x: Double, y: Double = 0.0, z: Double = 0.0, yaw: Double = 0.0, pitch: Double = 0.0): Position
 
     /**
      * Adds the parameters to this position.
@@ -73,5 +79,5 @@ interface Position {
     /**
      * Multiply position.
      */
-    fun multiply(multiplier: Double)
+    fun multiply(multiplier: Double): Position
 }

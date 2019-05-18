@@ -6,10 +6,8 @@ import com.github.shynixn.petblocks.api.business.enumeration.MaterialType
 import com.github.shynixn.petblocks.api.business.proxy.ItemStackProxy
 import com.github.shynixn.petblocks.api.business.service.ItemService
 import org.bukkit.Material
-import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 import java.lang.reflect.Method
-import java.util.*
 
 /**
  * Created by Shynixn 2018.
@@ -44,6 +42,23 @@ class Item113R1ServiceImpl : ItemService {
     private val getItemInOffHandMethod: Method
 
     /**
+     * Converts the given type to an id.
+     */
+    override fun convertTypeToId(type: Any): Int {
+        if (type !is Material) {
+            throw IllegalArgumentException("Material has to be a BukkitMaterial!")
+        }
+
+        for (material in Material.values()) {
+            if (material == type) {
+                return getIdFromMaterialMethod(material) as Int
+            }
+        }
+
+        throw IllegalArgumentException("Material id not found!")
+    }
+
+    /**
      * Initialize.
      */
     init {
@@ -69,23 +84,10 @@ class Item113R1ServiceImpl : ItemService {
             throw IllegalArgumentException("ItemStack has to be a BukkitItemStack!")
         }
 
-        val material = getMaterialValue(type)
-        return material == itemStack.type && dataValue == itemStack.durability.toInt()
-    }
+        val id1 = convertTypeToId(itemStack.type)
+        val id2 = convertTypeToId(getMaterialValue(type))
 
-    /**
-     * Gets the itemstack in the hand of the player with optional offHand flag.
-     */
-    override fun <P, I> getItemInHand(player: P, offHand: Boolean): Optional<I> {
-        if (player !is Player) {
-            throw IllegalArgumentException("Player has to be a BukkitPlayer!")
-        }
-
-        return if (offHand) {
-            Optional.ofNullable(getItemInOffHandMethod.invoke(player.inventory) as I)
-        } else {
-            Optional.ofNullable(getItemInMainHandMethod.invoke(player.inventory) as I)
-        }
+        return id1 == id2 && (dataValue == 0 || dataValue == itemStack.durability.toInt())
     }
 
     /**

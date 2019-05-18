@@ -238,7 +238,7 @@ class PersistenceMySQLIT {
             val sourceFolder = File("../petblocks-core/src/main/resources")
             val integrationDirectory = File("integration-test")
 
-            if(integrationDirectory.exists()){
+            if (integrationDirectory.exists()) {
                 integrationDirectory.deleteRecursively()
                 integrationDirectory.mkdir()
             }
@@ -246,14 +246,15 @@ class PersistenceMySQLIT {
             FileUtils.copyDirectory(sourceFolder, integrationDirectory)
 
             var content = FileUtils.readFileToString(File("integration-test/assets/petblocks", "config.yml"), "UTF-8")
-            content = content.replace("type: 'sqlite'", "type: 'mysql'").replace("database: ''","database: 'db'").replace("username: ''", "username: 'root'")
-            FileUtils.write(File("integration-test/assets/petblocks", "config.yml"), content,  "UTF-8")
+            content = content.replace("type: 'sqlite'", "type: 'mysql'").replace("database: ''", "database: 'db'").replace("username: ''", "username: 'root'")
+            FileUtils.write(File("integration-test/assets/petblocks", "config.yml"), content, "UTF-8")
 
-            DriverManager.getConnection("jdbc:mysql://localhost:3306/?user=root&password=&useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC").use { conn ->
-                conn.createStatement().use { statement ->
-                    statement.executeUpdate("CREATE DATABASE db")
+            DriverManager.getConnection("jdbc:mysql://localhost:3306/?user=root&password=&useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC")
+                .use { conn ->
+                    conn.createStatement().use { statement ->
+                        statement.executeUpdate("CREATE DATABASE db")
+                    }
                 }
-            }
 
             val plugin = Mockito.mock(PluginContainer::class.java)
 
@@ -281,19 +282,9 @@ class PersistenceMySQLIT {
             method.isAccessible = true
             method.invoke(PetBlocksApi, MockedPluginProxy())
 
-            EntityServiceImpl(
-                configurationService,
-                MockedProxyService(),
-                Mockito.mock(EntityRegistrationService::class.java),
-                YamlSerializationServiceImpl(),
-                LoggingUtilServiceImpl(Logger.getAnonymousLogger()),
-                aiService,
-                Mockito.mock(PetService::class.java),
-                Mockito.mock(AfraidOfWaterService::class.java),
-                Mockito.mock(NavigationService::class.java),
-                Mockito.mock(SoundService::class.java),
-                Version.VERSION_1_12_R1
-            )
+            EntityServiceImpl(configurationService, MockedProxyService(),
+                Mockito.mock(EntityRegistrationService::class.java), Mockito.mock(PetService::class.java), YamlSerializationServiceImpl(),
+                Version.VERSION_1_12_R1, aiService, LoggingUtilServiceImpl(Logger.getAnonymousLogger()))
 
             dbContext = SqlDbContextImpl(configurationService, LoggingUtilServiceImpl(Logger.getAnonymousLogger()))
 
@@ -309,6 +300,13 @@ class PersistenceMySQLIT {
     }
 
     class MockedItemService : ItemService {
+        /**
+         * Converts the given type to an id.
+         */
+        override fun convertTypeToId(type: Any): Int {
+            return 0
+        }
+
         /**
          * Creates a new itemstack from the given parameters.
          */
@@ -326,15 +324,7 @@ class PersistenceMySQLIT {
         override fun <I> hasItemStackProperties(itemStack: I, type: Any, dataValue: Int): Boolean {
             throw IllegalArgumentException()
         }
-
-        /**
-         * Gets the itemstack in the hand of the player with optional offHand flag.
-         */
-        override fun <P, I> getItemInHand(player: P, offHand: Boolean): Optional<I> {
-            throw IllegalArgumentException()
-        }
     }
-
 
     class MockedPluginProxy : PluginProxy {
         /**

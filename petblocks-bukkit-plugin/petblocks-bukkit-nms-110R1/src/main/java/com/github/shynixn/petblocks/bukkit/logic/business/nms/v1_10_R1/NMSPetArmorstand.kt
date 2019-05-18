@@ -179,15 +179,10 @@ class NMSPetArmorstand(owner: Player, val petMeta: PetMeta) : EntityArmorStand((
             return
         }
 
-        val walkingAi = petMeta.aiGoals.firstOrNull { a -> a is AIWalking }
-
-        if (walkingAi != null) {
-            internalHitBox = NMSPetVillager(this, getBukkitEntity().location)
-            proxy.changeHitBox(internalHitBox!!.bukkitEntity as LivingEntity)
-            val aiGoals = aiService.convertPetAiBasesToPathfinders(proxy, petMeta.aiGoals)
-            (internalHitBox as NMSPetVillager).applyPathfinders(aiGoals)
-            return
-        }
+        internalHitBox = NMSPetVillager(this, getBukkitEntity().location)
+        proxy.changeHitBox(internalHitBox!!.bukkitEntity as LivingEntity)
+        val aiGoals = aiService.convertPetAiBasesToPathfinders(proxy, petMeta.aiGoals)
+        (internalHitBox as NMSPetVillager).applyPathfinders(aiGoals)
     }
 
     /**

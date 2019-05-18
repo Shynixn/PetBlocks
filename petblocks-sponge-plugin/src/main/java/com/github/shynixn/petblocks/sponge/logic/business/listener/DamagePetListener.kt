@@ -2,17 +2,23 @@
 
 package com.github.shynixn.petblocks.sponge.logic.business.listener
 
+import com.flowpowered.math.vector.Vector3d
 import com.github.shynixn.petblocks.api.business.service.CombatPetService
 import com.github.shynixn.petblocks.api.business.service.HealthService
+import com.github.shynixn.petblocks.api.business.service.PersistencePetMetaService
 import com.github.shynixn.petblocks.api.business.service.PetService
+import com.github.shynixn.petblocks.api.persistence.entity.AIFleeInCombat
 import com.github.shynixn.petblocks.api.persistence.entity.AIHealth
-import com.github.shynixn.petblocks.api.sponge.event.PetBlocksLoginEvent
 import com.github.shynixn.petblocks.api.sponge.event.PetPreSpawnEvent
+import com.github.shynixn.petblocks.sponge.logic.business.extension.toPosition
+import com.github.shynixn.petblocks.sponge.logic.business.extension.toVector
 import com.google.inject.Inject
 import org.spongepowered.api.entity.Entity
+import org.spongepowered.api.entity.living.player.Player
 import org.spongepowered.api.event.Listener
+import org.spongepowered.api.event.cause.entity.damage.DamageTypes
+import org.spongepowered.api.event.cause.entity.damage.source.DamageSources
 import org.spongepowered.api.event.entity.DamageEntityEvent
-import org.spongepowered.api.event.network.ClientConnectionEvent
 
 /**
  * Created by Shynixn 2018.
@@ -41,18 +47,36 @@ import org.spongepowered.api.event.network.ClientConnectionEvent
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class DamagePetListener @Inject constructor(private val petService: PetService, private val combatPetService: CombatPetService, private val healthService: HealthService) {
+class DamagePetListener @Inject constructor(
+    private val petService: PetService,
+    private val combatPetService: CombatPetService,
+    private val healthService: HealthService,
+    private val persistencePetMetaService: PersistencePetMetaService
+) {
     /**
      * The [event] gets called when a entity gets damaged. Redirects the damage to the PetBlocks implementation.
      */
     @Listener
     fun onEntityReceiveDamageEvent(event: DamageEntityEvent) {
-        val pet = petService.findPetByEntity(event.targetEntity) ?: return
+        if (petService.findPetByEntity(event.targetEntity) != null) {
+            val pet = petService.findPetByEntity(event.targetEntity)!!
 
-        event.isCancelled = true
+            event.isCancelled = true
 
-        healthService.damagePet(pet, event.finalDamage)
-        combatPetService.flee(pet)
+            healthService.damagePet(pet.meta, event.finalDamage)
+
+            if (event.cause.containsType(DamageSources.FALLING::class.java)) {
+                combatPetService.flee(pet.meta)
+            }
+
+            return
+        }
+
+        if (event.source != DamageTypes.FALL && event.targetEntity is Player) {
+            val petMeta = persistencePetMetaService.getPetMetaFromPlayer(event.targetEntity)
+
+            combatPetService.flee(petMeta)
+        }
     }
 
     /**
@@ -66,20 +90,18 @@ class DamagePetListener @Inject constructor(private val petService: PetService, 
 
         val damager = event.cause.first(Entity::class.java).get()
 
-        petService.findPetByEntity(damager) ?: return
-        event.isCancelled = true
-    }
-
-    /**
-     * The [event] gets called when a pet tries to get spawned by a player. Checks if the pet is currently respawning blocked.
-     */
-    @Listener
-    fun onPetSpawnEvent(event: PetPreSpawnEvent) {
-        val aiBase = event.petMeta.aiGoals.firstOrNull { a -> a is AIHealth } ?: return
-        val aiHealth = aiBase as AIHealth
-
-        if (aiHealth.currentRespawningDelay > 0) {
+        if (petService.findPetByEntity(damager) != null) {
             event.isCancelled = true
+            return
+        }
+
+        if (petService.findPetByEntity(event.targetEntity) != null) {
+            val pet = petService.findPetByEntity(event.targetEntity)!!
+            combatPetService.flee(pet.meta)
+
+            val vector = event.targetEntity.transform.toPosition().subtract(damager.transform.toPosition()).toVector().normalize().mul(0.5)
+
+            pet.setVelocity(Vector3d(vector.x, 0.1, vector.z))
         }
     }
 
@@ -87,16 +109,25 @@ class DamagePetListener @Inject constructor(private val petService: PetService, 
      * The [event] gets called when a pet tries to get spawned by a player. Checks if the pet is currently respawning blocked.
      */
     @Listener
-    fun onPetBlocksLoginEvent(event: PetBlocksLoginEvent) {
-        healthService.registerForHealthRegain(event.petMeta)
-    }
+    fun onPetSpawnEvent(event: PetPreSpawnEvent) {
+        if (event.petMeta.aiGoals.firstOrNull { a -> a is AIHealth } != null) {
+            val aiHealth = event.petMeta.aiGoals.firstOrNull { a -> a is AIHealth } as AIHealth
 
-    /**
-     * The [event] gets called when a player quits the server. Executes clean ups.
-     */
-    @Listener
-    fun onPlayerQuitEvent(event: ClientConnectionEvent.Disconnect) {
-        healthService.clearResources(event.targetEntity)
-        combatPetService.clearResources(event.targetEntity)
+            if (aiHealth.currentRespawningDelay > 0) {
+                event.isCancelled = true
+            }
+
+            return
+        }
+
+        if (event.petMeta.aiGoals.firstOrNull { a -> a is AIFleeInCombat } != null) {
+            val aiFleeInCombat = event.petMeta.aiGoals.firstOrNull { a -> a is AIFleeInCombat } as AIFleeInCombat
+
+            if (aiFleeInCombat.currentAppearsInSeconds > 0) {
+                event.isCancelled = true
+            }
+
+            return
+        }
     }
 }

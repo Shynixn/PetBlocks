@@ -27,7 +27,7 @@ package com.github.shynixn.petblocks.api.persistence.entity
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-interface AIHealth {
+interface AIHealth : AIBase{
     /**
      * Max health of a ai item.
      */
