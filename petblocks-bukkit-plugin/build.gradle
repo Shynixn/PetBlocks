@@ -22,7 +22,7 @@ shadowJar{
     relocate 'org.slf4j', 'com.github.shynixn.petblocks.lib.org.slf4j'
     relocate 'com.google', 'com.github.shynixn.petblocks.lib.com.google'
     relocate 'com.zaxxer', 'com.github.shynixn.petblocks.lib.com.zaxxer'
-    relocate 'org.apache', 'com.github.shynixn.blockball.lib.org.apache'
+    relocate 'org.apache', 'com.github.shynixn.petblocks.lib.org.apache'
 }
 
 tasks {

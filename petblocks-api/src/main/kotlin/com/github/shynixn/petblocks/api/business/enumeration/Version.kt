@@ -96,7 +96,12 @@ enum class Version(
     /**
      * Version 1.13.1 - 1.13.1.
      */
-    VERSION_1_13_R2("v1_13_R2", "1.13.2", 1.132);
+    VERSION_1_13_R2("v1_13_R2", "1.13.2", 1.132),
+
+    /**
+     * Version 1.14.0 - 1.14.1.
+     */
+    VERSION_1_14_R1("v1_14_R1", "1.14.1", 1.141);
 
     /**
      * Checks if this version is same or greater than the given version by parameter.
