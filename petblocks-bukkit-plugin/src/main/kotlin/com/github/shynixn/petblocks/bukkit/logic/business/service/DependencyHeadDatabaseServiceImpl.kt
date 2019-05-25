@@ -126,7 +126,7 @@ class DependencyHeadDatabaseServiceImpl @Inject constructor(
         }
 
         @Suppress("DEPRECATION")
-        val currentTitleName = org.bukkit.ChatColor.stripColor(player.openInventory.topInventory.title)!!
+        val currentTitleName = org.bukkit.ChatColor.stripColor(player.openInventory.title)!!
 
         if (!currentTitleName.startsWith(this.headDatabaseTitle!!) && !currentTitleName.startsWith(this.headDatabaseSearch!!)) {
             return false

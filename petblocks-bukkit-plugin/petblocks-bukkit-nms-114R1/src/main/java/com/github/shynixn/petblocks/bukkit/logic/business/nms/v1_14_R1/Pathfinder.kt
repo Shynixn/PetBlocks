@@ -1,7 +1,7 @@
-package com.github.shynixn.petblocks.bukkit.logic.business.nms.v1_13_R2
+package com.github.shynixn.petblocks.bukkit.logic.business.nms.v1_14_R1
 
 import com.github.shynixn.petblocks.api.business.proxy.PathfinderProxy
-import net.minecraft.server.v1_13_R2.PathfinderGoal
+import net.minecraft.server.v1_14_R1.PathfinderGoal
 
 /**
  * Created by Shynixn 2018.
@@ -48,7 +48,7 @@ class Pathfinder(private val pathfinderProxy: PathfinderProxy) : PathfinderGoal(
     /**
      * Override isInterrupting.
      */
-    override fun f(): Boolean {
+    override fun C_(): Boolean {
         return pathfinderProxy.isInteruptible
     }
 

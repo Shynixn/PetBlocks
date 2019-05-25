@@ -1,14 +1,14 @@
 package unittest
 
-import com.github.shynixn.petblocks.bukkit.logic.business.nms.v1_13_R2.CraftPet
-import net.minecraft.server.v1_13_R2.EntityInsentient
-import org.bukkit.craftbukkit.v1_13_R2.CraftServer
+import com.github.shynixn.petblocks.bukkit.logic.business.nms.v1_14_R1.CraftPetArmorstand
+import com.github.shynixn.petblocks.bukkit.logic.business.nms.v1_14_R1.NMSPetArmorstand
+import org.bukkit.craftbukkit.v1_14_R1.CraftServer
 import org.bukkit.entity.EntityType
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito
 
-class CraftPetTest {
+class CraftPetArmorstandTest {
     /**
      * Given
      *    a pet
@@ -20,7 +20,7 @@ class CraftPetTest {
     @Test
     fun deleteFromWorld_CraftPet_ShouldExecuteDie() {
         // Arrange
-        val entityInsentient = Mockito.mock(EntityInsentient::class.java)
+        val entityInsentient = Mockito.mock(NMSPetArmorstand::class.java)
         val classUnderTest = createWithDependencies(entityInsentient)
 
         var called = false
@@ -48,7 +48,7 @@ class CraftPetTest {
     @Test
     fun remove_CraftPet_ShouldNotExecuteDie() {
         // Arrange
-        val entityInsentient = Mockito.mock(EntityInsentient::class.java)
+        val entityInsentient = Mockito.mock(NMSPetArmorstand::class.java)
         val classUnderTest = createWithDependencies(entityInsentient)
 
         var called = false
@@ -102,15 +102,14 @@ class CraftPetTest {
         val identifier = classUnderTest.toString()
 
         // Assert
-        Assertions.assertEquals("PetBlocks{Entity}", identifier)
+        Assertions.assertEquals("PetBlocks{ArmorstandEntity}", identifier)
     }
 
     companion object {
-        fun createWithDependencies(entityInsentient: EntityInsentient = Mockito.mock(EntityInsentient::class.java)): CraftPet {
-
+        fun createWithDependencies(entityInsentient: NMSPetArmorstand = Mockito.mock(NMSPetArmorstand::class.java)): CraftPetArmorstand {
             val server = Mockito.mock(CraftServer::class.java)
 
-            return CraftPet(server, entityInsentient)
+            return CraftPetArmorstand(server, entityInsentient)
         }
     }
 }

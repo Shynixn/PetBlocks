@@ -1,11 +1,11 @@
 @file:Suppress("KDocMissingDocumentation")
 
-package com.github.shynixn.petblocks.bukkit.logic.business.nms.v1_13_R2
+package com.github.shynixn.petblocks.bukkit.logic.business.nms.v1_14_R1
 
 import com.github.shynixn.petblocks.api.business.proxy.EntityPetProxy
-import net.minecraft.server.v1_13_R2.EntityInsentient
-import org.bukkit.craftbukkit.v1_13_R2.CraftServer
-import org.bukkit.craftbukkit.v1_13_R2.entity.CraftLivingEntity
+import net.minecraft.server.v1_14_R1.EntityInsentient
+import org.bukkit.craftbukkit.v1_14_R1.CraftServer
+import org.bukkit.craftbukkit.v1_14_R1.entity.CraftLivingEntity
 
 /**
  * Created by Shynixn 2019.

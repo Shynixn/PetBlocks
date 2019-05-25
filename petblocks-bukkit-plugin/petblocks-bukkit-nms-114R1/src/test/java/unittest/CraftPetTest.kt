@@ -1,14 +1,14 @@
 package unittest
 
-import com.github.shynixn.petblocks.bukkit.logic.business.nms.v1_13_R2.CraftPetArmorstand
-import com.github.shynixn.petblocks.bukkit.logic.business.nms.v1_13_R2.NMSPetArmorstand
-import org.bukkit.craftbukkit.v1_13_R2.CraftServer
+import com.github.shynixn.petblocks.bukkit.logic.business.nms.v1_14_R1.CraftPet
+import net.minecraft.server.v1_14_R1.EntityInsentient
+import org.bukkit.craftbukkit.v1_14_R1.CraftServer
 import org.bukkit.entity.EntityType
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito
 
-class CraftPetArmorstandTest {
+class CraftPetTest {
     /**
      * Given
      *    a pet
@@ -20,7 +20,7 @@ class CraftPetArmorstandTest {
     @Test
     fun deleteFromWorld_CraftPet_ShouldExecuteDie() {
         // Arrange
-        val entityInsentient = Mockito.mock(NMSPetArmorstand::class.java)
+        val entityInsentient = Mockito.mock(EntityInsentient::class.java)
         val classUnderTest = createWithDependencies(entityInsentient)
 
         var called = false
@@ -48,7 +48,7 @@ class CraftPetArmorstandTest {
     @Test
     fun remove_CraftPet_ShouldNotExecuteDie() {
         // Arrange
-        val entityInsentient = Mockito.mock(NMSPetArmorstand::class.java)
+        val entityInsentient = Mockito.mock(EntityInsentient::class.java)
         val classUnderTest = createWithDependencies(entityInsentient)
 
         var called = false
@@ -102,15 +102,14 @@ class CraftPetArmorstandTest {
         val identifier = classUnderTest.toString()
 
         // Assert
-        Assertions.assertEquals("PetBlocks{ArmorstandEntity}", identifier)
+        Assertions.assertEquals("PetBlocks{Entity}", identifier)
     }
 
     companion object {
-        fun createWithDependencies(entityInsentient: NMSPetArmorstand = Mockito.mock(NMSPetArmorstand::class.java)): CraftPetArmorstand {
-
+        fun createWithDependencies(entityInsentient: EntityInsentient = Mockito.mock(EntityInsentient::class.java)): CraftPet {
             val server = Mockito.mock(CraftServer::class.java)
 
-            return CraftPetArmorstand(server, entityInsentient)
+            return CraftPet(server, entityInsentient)
         }
     }
 }

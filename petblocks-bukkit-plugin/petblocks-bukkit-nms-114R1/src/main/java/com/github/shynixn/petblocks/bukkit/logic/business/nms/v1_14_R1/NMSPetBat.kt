@@ -1,12 +1,12 @@
-package com.github.shynixn.petblocks.bukkit.logic.business.nms.v1_13_R2
+package com.github.shynixn.petblocks.bukkit.logic.business.nms.v1_14_R1
 
 import com.github.shynixn.petblocks.api.business.proxy.PathfinderProxy
 import com.github.shynixn.petblocks.api.persistence.entity.AIMovement
 import com.github.shynixn.petblocks.core.logic.business.extension.removeFinalModifier
 import com.google.common.collect.Sets
-import net.minecraft.server.v1_13_R2.*
+import net.minecraft.server.v1_14_R1.*
 import org.bukkit.Location
-import org.bukkit.craftbukkit.v1_13_R2.CraftWorld
+import org.bukkit.craftbukkit.v1_14_R1.CraftWorld
 import org.bukkit.event.entity.CreatureSpawnEvent
 
 /**
@@ -36,7 +36,7 @@ import org.bukkit.event.entity.CreatureSpawnEvent
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class NMSPetRabbit(petDesign: NMSPetArmorstand, location: Location) : EntityRabbit((location.world as CraftWorld).handle) {
+class NMSPetBat(petDesign: NMSPetArmorstand, location: Location) : EntityBat(EntityTypes.BAT, (location.world as CraftWorld).handle) {
     private var petDesign: NMSPetArmorstand? = null
     private var pathfinderCounter = 0
 
@@ -46,7 +46,7 @@ class NMSPetRabbit(petDesign: NMSPetArmorstand, location: Location) : EntityRabb
 
         clearAIGoals()
         this.getAttributeInstance(GenericAttributes.MOVEMENT_SPEED).value = 0.30000001192092896 * 0.75
-        this.Q = 1.0F
+        this.K = 1.0F
 
         val mcWorld = (location.world as CraftWorld).handle
         this.setPosition(location.x, location.y + 1, location.z)
@@ -67,7 +67,7 @@ class NMSPetRabbit(petDesign: NMSPetArmorstand, location: Location) : EntityRabb
 
                 if (aiBase is AIMovement) {
                     this.getAttributeInstance(GenericAttributes.MOVEMENT_SPEED).value = 0.30000001192092896 * aiBase.movementSpeed
-                    this.Q = aiBase.climbingHeight.toFloat()
+                    this.K = aiBase.climbingHeight.toFloat()
                 }
             } else {
                 this.goalSelector.a(pathfinderCounter++, pathfinder as PathfinderGoal)
@@ -89,9 +89,26 @@ class NMSPetRabbit(petDesign: NMSPetArmorstand, location: Location) : EntityRabb
     }
 
     /**
+     * Override mob tick.
+     */
+    override fun mobTick() {
+        super.mobTick()
+
+        if (!this.onGround && this.mot.getY() < 0.0) {
+            this.setMot(this.mot.x, this.mot.y * 0.6, this.mot.z)
+        }
+    }
+
+    /**
      * Disable health.
      */
     override fun setHealth(f: Float) {
+    }
+
+    /**
+     * Override asleep.
+     */
+    override fun setAsleep(flag: Boolean) {
     }
 
     /**

@@ -7,6 +7,7 @@ import com.github.shynixn.petblocks.api.business.proxy.ItemStackProxy
 import com.github.shynixn.petblocks.api.business.service.ItemService
 import org.bukkit.Material
 import org.bukkit.inventory.ItemStack
+import java.lang.reflect.Field
 import java.lang.reflect.Method
 
 /**
@@ -37,9 +38,16 @@ import java.lang.reflect.Method
  * SOFTWARE.
  */
 class Item113R1ServiceImpl : ItemService {
-    private val getIdFromMaterialMethod: Method = { Material::class.java.getDeclaredMethod("getId") }.invoke()
+    private val idField : Field = Material::class.java.getDeclaredField("id")
     private val getItemInMainHandMethod: Method
     private val getItemInOffHandMethod: Method
+
+    /**
+     * Init.
+     */
+    init {
+        idField.isAccessible = true
+    }
 
     /**
      * Converts the given type to an id.
@@ -49,9 +57,9 @@ class Item113R1ServiceImpl : ItemService {
             throw IllegalArgumentException("Material has to be a BukkitMaterial!")
         }
 
-        for (material in Material.values()) {
+        for (material in Material::class.java.enumConstants) {
             if (material == type) {
-                return getIdFromMaterialMethod(material) as Int
+                return idField.get(material) as Int
             }
         }
 
@@ -87,6 +95,7 @@ class Item113R1ServiceImpl : ItemService {
         val id1 = convertTypeToId(itemStack.type)
         val id2 = convertTypeToId(getMaterialValue(type))
 
+        @Suppress("DEPRECATION")
         return id1 == id2 && (dataValue == 0 || dataValue == itemStack.durability.toInt())
     }
 
@@ -95,14 +104,14 @@ class Item113R1ServiceImpl : ItemService {
      */
     private fun getMaterialValue(value: Any): Material {
         if (value is Int) {
-            for (material in Material.values()) {
-                if (getIdFromMaterialMethod(material) == value) {
+            for (material in Material::class.java.enumConstants) {
+                if (idField.get(material) == value) {
                     return material
                 }
             }
         } else if (value is String && value.toIntOrNull() != null) {
-            for (material in Material.values()) {
-                if (getIdFromMaterialMethod(material) == value.toInt()) {
+            for (material in Material::class.java.enumConstants) {
+                if (idField.get(material) == value.toInt()) {
                     return material
                 }
             }
