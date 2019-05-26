@@ -109,15 +109,10 @@ class NMSPetVillager(petDesign: NMSPetArmorstand, location: Location) : EntityPi
      * Clears all entity aiGoals.
      */
     private fun clearAIGoals() {
-        val bField = PathfinderGoalSelector::class.java.getDeclaredField("b")
-        val cField = PathfinderGoalSelector::class.java.getDeclaredField("c")
-
+        val bField = PathfinderGoalSelector::class.java.getDeclaredField("d")
         bField.removeFinalModifier()
-        cField.removeFinalModifier()
 
         bField.set(this.goalSelector, Sets.newLinkedHashSet<Any>())
         bField.set(this.targetSelector, Sets.newLinkedHashSet<Any>())
-        cField.set(this.goalSelector, Sets.newLinkedHashSet<Any>())
-        cField.set(this.targetSelector, Sets.newLinkedHashSet<Any>())
     }
 }

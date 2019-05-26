@@ -65,6 +65,13 @@ fun FileConfiguration.deserializeToMap(path: String): Map<String, Any?> {
 }
 
 /**
+ * Finds the version compatible class.
+ */
+fun findClazz(name: String): Class<*> {
+    return Class.forName(name.replace("VERSION", getServerVersion().bukkitId))
+}
+
+/**
  * DeSerializes the given section.
  */
 fun deserialize(section: MutableMap<String, Any?>) {

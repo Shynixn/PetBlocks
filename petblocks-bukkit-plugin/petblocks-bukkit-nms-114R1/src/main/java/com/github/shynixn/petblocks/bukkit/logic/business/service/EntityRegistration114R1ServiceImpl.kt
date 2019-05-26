@@ -1,20 +1,17 @@
 package com.github.shynixn.petblocks.bukkit.logic.business.service
 
 import com.github.shynixn.petblocks.api.business.enumeration.EntityType
-import com.github.shynixn.petblocks.api.business.enumeration.Version
 import com.github.shynixn.petblocks.api.business.service.EntityRegistrationService
-import com.google.inject.Inject
-import net.minecraft.server.v1_14_R1.EntityCat
-import net.minecraft.server.v1_14_R1.EntityTypes
+import net.minecraft.server.v1_14_R1.*
 
 /**
- * Created by Shynixn 2018.
+ * The EntityRegistration114R1ServiceImpl handles registering the custom PetBlocks entities into Minecraft.
  * <p>
- * Version 1.2
+ * Version 1.3
  * <p>
  * MIT License
  * <p>
- * Copyright (c) 2018 by Shynixn
+ * Copyright (c) 2019 by Shynixn
  * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -34,7 +31,7 @@ import net.minecraft.server.v1_14_R1.EntityTypes
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class EntityRegistration114R1ServiceImpl @Inject constructor(private val version: Version) : EntityRegistrationService {
+class EntityRegistration114R1ServiceImpl : EntityRegistrationService {
     private val classes = HashMap<Class<*>, EntityType>()
 
     /**
@@ -50,23 +47,29 @@ class EntityRegistration114R1ServiceImpl @Inject constructor(private val version
             return
         }
 
-        val registryClazz = findClass("net.minecraft.server.VERSION.IRegistry")
-        val minecraftKeyConstructor = findClass("net.minecraft.server.VERSION.MinecraftKey").getDeclaredConstructor(String::class.java, String::class.java)
-        val wrapEntityMethod = findClass("net.minecraft.server.VERSION.EntityTypes\$a").getDeclaredMethod("a", Class::class.java)
-        val convertEntityMethod = findClass("net.minecraft.server.VERSION.EntityTypes\$a").getDeclaredMethod("a", String::class.java)
-        val materialField = registryClazz.getDeclaredField("ENTITY_TYPE")
-        val minecraftKey = minecraftKeyConstructor.newInstance("petblocks", entityType.saveGame_11)
-        val appendEntityMethod = findClass("net.minecraft.server.VERSION.RegistryMaterials").getDeclaredMethod(
-            "a",
-            Int::class.javaPrimitiveType,
-            findClass("net.minecraft.server.VERSION.MinecraftKey"),
-            Any::class.java
-        )
-        val materialRegistry = materialField.get(null)
+        val entityRegistry = IRegistry.ENTITY_TYPE as RegistryBlocks<EntityTypes<*>>
+        val key = entityType.saveGame_11
+        val size = entityRegistry.get(MinecraftKey(key)).j()
+        val entityTypes =
+            IRegistry.a(entityRegistry, "petblocks_" + key.toLowerCase(), EntityTypes.a.a<Entity>(EnumCreatureType.CREATURE).b().a().a(size.width, size.height).a(key))
 
-        val wrappedEntityType = wrapEntityMethod.invoke(null, customEntityClazz)
-        val wrappedEntity = convertEntityMethod.invoke(wrappedEntityType, entityType.saveGame_11)
-        appendEntityMethod.invoke(materialRegistry, entityType.entityId, minecraftKey, wrappedEntity)
+        val registryMaterialsField = RegistryMaterials::class.java.getDeclaredField("b")
+        registryMaterialsField.isAccessible = true
+        val registryId = registryMaterialsField.get(entityRegistry)
+
+        val dMethod = RegistryID::class.java.getDeclaredMethod("d", Any::class.java)
+        dMethod.isAccessible = true
+        val dValue = dMethod.invoke(registryId, entityTypes)
+
+        val bMethod = RegistryID::class.java.getDeclaredMethod("b", Any::class.java, Int::class.javaPrimitiveType)
+        bMethod.isAccessible = true
+        val bValue = bMethod.invoke(registryId, entityTypes, dValue) as Int
+
+        val cField = RegistryID::class.java.getDeclaredField("c")
+        cField.isAccessible = true
+        val c = cField.get(registryId) as IntArray
+
+        c[bValue] = entityType.entityId
 
         classes[customEntityClazz] = entityType
     }
@@ -76,25 +79,6 @@ class EntityRegistration114R1ServiceImpl @Inject constructor(private val version
      * nms changes.
      */
     override fun clearResources() {
-        val registryClazz = findClass("net.minecraft.server.VERSION.IRegistry")
-        val materialField = registryClazz.getDeclaredField("ENTITY_TYPE")
-        val minecraftKeyConstructor = findClass("net.minecraft.server.VERSION.MinecraftKey").getDeclaredConstructor(String::class.java, String::class.java)
-        val materialRegistry = materialField.get(null)
-        val removeMaterialField = findClass("net.minecraft.server.VERSION.RegistryMaterials").getDeclaredField("c")
-        removeMaterialField.isAccessible = true
-
-        classes.forEach { _, entityType ->
-            val minecraftKey = minecraftKeyConstructor.newInstance("petblocks", entityType.saveGame_11)
-            (removeMaterialField.get(materialRegistry) as MutableMap<*, *>).remove(minecraftKey)
-        }
-
         classes.clear()
-    }
-
-    /**
-     * Finds the given class by [name].
-     */
-    private fun findClass(name: String): Class<*> {
-        return Class.forName(name.replace("VERSION", version.bukkitId))
     }
 }

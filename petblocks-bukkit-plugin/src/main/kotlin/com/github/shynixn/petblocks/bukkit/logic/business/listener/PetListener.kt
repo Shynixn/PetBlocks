@@ -2,12 +2,15 @@ package com.github.shynixn.petblocks.bukkit.logic.business.listener
 
 import com.github.shynixn.petblocks.api.bukkit.event.PetBlocksLoginEvent
 import com.github.shynixn.petblocks.api.business.enumeration.MaterialType
+import com.github.shynixn.petblocks.api.business.enumeration.Version
 import com.github.shynixn.petblocks.api.business.proxy.EntityPetProxy
 import com.github.shynixn.petblocks.api.business.proxy.PetProxy
 import com.github.shynixn.petblocks.api.business.service.*
 import com.github.shynixn.petblocks.api.persistence.entity.AIFlyRiding
 import com.github.shynixn.petblocks.api.persistence.entity.AIGroundRiding
 import com.github.shynixn.petblocks.api.persistence.entity.AIWearing
+import com.github.shynixn.petblocks.bukkit.logic.business.extension.findClazz
+import com.github.shynixn.petblocks.bukkit.logic.business.extension.getServerVersion
 import com.github.shynixn.petblocks.bukkit.logic.business.extension.teleportUnsafe
 import com.github.shynixn.petblocks.core.logic.business.extension.sync
 import com.github.shynixn.petblocks.core.logic.business.extension.thenAcceptSafely
@@ -172,10 +175,25 @@ class PetListener @Inject constructor(
         val pet = petService.getOrSpawnPetFromPlayer(event.player).get()
 
         for (name in configurationService.findValue<List<String>>("global-configuration.disable-on-sneak")) {
+            var changed = false
+
             for (ai in pet.meta.aiGoals.toTypedArray()) {
                 if (ai.type == name) {
                     pet.meta.aiGoals.remove(ai)
+                    changed = true
                 }
+            }
+
+            if (changed && getServerVersion().isVersionSameOrGreaterThan(Version.VERSION_1_14_R1)) {
+                // Execute a tick on the Armorstand manually since 1.14 passengers do not tick.
+                val handle = findClazz("org.bukkit.craftbukkit.VERSION.entity.CraftLivingEntity").getDeclaredMethod("getHandle")
+                    .invoke(pet.getHeadArmorstand())
+
+                val method = findClazz("com.github.shynixn.petblocks.bukkit.logic.business.nms.VERSION.NMSPetArmorstand")
+                    .getDeclaredMethod("doTick")
+                method.isAccessible = true
+
+                method.invoke(handle)
             }
         }
     }
