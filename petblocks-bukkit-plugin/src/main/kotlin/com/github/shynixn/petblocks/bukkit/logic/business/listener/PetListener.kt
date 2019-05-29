@@ -118,12 +118,16 @@ class PetListener @Inject constructor(
      */
     @EventHandler
     fun onPlayerQuitEvent(event: PlayerQuitEvent) {
-        persistencePetMetaService.clearResources(event.player).thenAcceptSafely {
-            if (petService.hasPet(event.player)) {
-                petService.getOrSpawnPetFromPlayer(event.player).get().remove()
+        if (petService.hasPet(event.player)) {
+            val pet = petService.getOrSpawnPetFromPlayer(event.player).get()
+
+            (pet.getHeadArmorstand() as EntityPetProxy).deleteFromWorld()
+            pet.getHitBoxLivingEntity<EntityPetProxy>().ifPresent { p ->
+                p.deleteFromWorld()
             }
         }
 
+        persistencePetMetaService.clearResources(event.player)
         debugService.unRegister(event.player)
     }
 
