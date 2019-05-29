@@ -28,6 +28,7 @@ import org.bukkit.event.entity.PlayerLeashEntityEvent
 import org.bukkit.event.player.*
 import org.bukkit.event.world.ChunkLoadEvent
 import org.bukkit.event.world.ChunkUnloadEvent
+import org.spigotmc.event.entity.EntityDismountEvent
 import java.util.*
 import kotlin.collections.HashSet
 
@@ -171,12 +172,16 @@ class PetListener @Inject constructor(
      * @param event event
      */
     @EventHandler
-    fun onEntityToggleSneakEvent(event: PlayerToggleSneakEvent) {
-        if (!petService.hasPet(event.player)) {
+    fun onEntityToggleSneakEvent(event: EntityDismountEvent) {
+        if (event.entity !is Player) {
             return
         }
 
-        val pet = petService.getOrSpawnPetFromPlayer(event.player).get()
+        if (!petService.hasPet(event.entity)) {
+            return
+        }
+
+        val pet = petService.getOrSpawnPetFromPlayer(event.entity).get()
 
         for (name in configurationService.findValue<List<String>>("global-configuration.disable-on-sneak")) {
             var changed = false
