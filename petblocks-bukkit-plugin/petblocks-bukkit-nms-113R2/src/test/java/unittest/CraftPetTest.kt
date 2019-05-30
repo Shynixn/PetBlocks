@@ -107,7 +107,6 @@ class CraftPetTest {
 
     companion object {
         fun createWithDependencies(entityInsentient: EntityInsentient = Mockito.mock(EntityInsentient::class.java)): CraftPet {
-
             val server = Mockito.mock(CraftServer::class.java)
 
             return CraftPet(server, entityInsentient)

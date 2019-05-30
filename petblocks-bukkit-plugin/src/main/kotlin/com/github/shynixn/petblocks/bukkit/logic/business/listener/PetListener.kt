@@ -2,12 +2,15 @@ package com.github.shynixn.petblocks.bukkit.logic.business.listener
 
 import com.github.shynixn.petblocks.api.bukkit.event.PetBlocksLoginEvent
 import com.github.shynixn.petblocks.api.business.enumeration.MaterialType
+import com.github.shynixn.petblocks.api.business.enumeration.Version
 import com.github.shynixn.petblocks.api.business.proxy.EntityPetProxy
 import com.github.shynixn.petblocks.api.business.proxy.PetProxy
 import com.github.shynixn.petblocks.api.business.service.*
 import com.github.shynixn.petblocks.api.persistence.entity.AIFlyRiding
 import com.github.shynixn.petblocks.api.persistence.entity.AIGroundRiding
 import com.github.shynixn.petblocks.api.persistence.entity.AIWearing
+import com.github.shynixn.petblocks.bukkit.logic.business.extension.findClazz
+import com.github.shynixn.petblocks.bukkit.logic.business.extension.getServerVersion
 import com.github.shynixn.petblocks.bukkit.logic.business.extension.teleportUnsafe
 import com.github.shynixn.petblocks.core.logic.business.extension.sync
 import com.github.shynixn.petblocks.core.logic.business.extension.thenAcceptSafely
@@ -25,6 +28,7 @@ import org.bukkit.event.entity.PlayerLeashEntityEvent
 import org.bukkit.event.player.*
 import org.bukkit.event.world.ChunkLoadEvent
 import org.bukkit.event.world.ChunkUnloadEvent
+import org.spigotmc.event.entity.EntityDismountEvent
 import java.util.*
 import kotlin.collections.HashSet
 
@@ -115,12 +119,16 @@ class PetListener @Inject constructor(
      */
     @EventHandler
     fun onPlayerQuitEvent(event: PlayerQuitEvent) {
-        persistencePetMetaService.clearResources(event.player).thenAcceptSafely {
-            if (petService.hasPet(event.player)) {
-                petService.getOrSpawnPetFromPlayer(event.player).get().remove()
+        if (petService.hasPet(event.player)) {
+            val pet = petService.getOrSpawnPetFromPlayer(event.player).get()
+
+            (pet.getHeadArmorstand() as EntityPetProxy).deleteFromWorld()
+            pet.getHitBoxLivingEntity<EntityPetProxy>().ifPresent { p ->
+                p.deleteFromWorld()
             }
         }
 
+        persistencePetMetaService.clearResources(event.player)
         debugService.unRegister(event.player)
     }
 
@@ -165,19 +173,21 @@ class PetListener @Inject constructor(
      */
     @EventHandler
     fun onEntityToggleSneakEvent(event: PlayerToggleSneakEvent) {
-        if (!petService.hasPet(event.player)) {
+        unMountPet(event.player)
+    }
+
+    /**
+     * Gets called when a player passenger presses the sneak button and removes the riding player.
+     *
+     * @param event event
+     */
+    @EventHandler
+    fun onEntityDismountEvent(event: EntityDismountEvent) {
+        if (event.entity !is Player) {
             return
         }
 
-        val pet = petService.getOrSpawnPetFromPlayer(event.player).get()
-
-        for (name in configurationService.findValue<List<String>>("global-configuration.disable-on-sneak")) {
-            for (ai in pet.meta.aiGoals.toTypedArray()) {
-                if (ai.type == name) {
-                    pet.meta.aiGoals.remove(ai)
-                }
-            }
-        }
+        unMountPet(event.entity as Player)
     }
 
     /**
@@ -268,6 +278,41 @@ class PetListener @Inject constructor(
 
         if (applyPetOnFirstSpawn) {
             petService.getOrSpawnPetFromPlayer(player)
+        }
+    }
+
+    /**
+     * UnMounts the pet of the given [player].
+     */
+    private fun unMountPet(player: Player) {
+        if (!petService.hasPet(player)) {
+            return
+        }
+
+        val pet = petService.getOrSpawnPetFromPlayer(player).get()
+
+        for (name in configurationService.findValue<List<String>>("global-configuration.disable-on-sneak")) {
+            var changed = false
+
+            for (ai in pet.meta.aiGoals.toTypedArray()) {
+                if (ai.type == name) {
+                    pet.meta.aiGoals.remove(ai)
+                    changed = true
+                }
+            }
+
+            if (changed && getServerVersion().isVersionSameOrGreaterThan(Version.VERSION_1_14_R1)) {
+                // Execute a tick on the Armorstand manually since 1.14 passengers do not tick.
+                // This is required by wearing pets.
+                val handle = findClazz("org.bukkit.craftbukkit.VERSION.entity.CraftLivingEntity").getDeclaredMethod("getHandle")
+                    .invoke(pet.getHeadArmorstand())
+
+                val method = findClazz("com.github.shynixn.petblocks.bukkit.logic.business.nms.VERSION.NMSPetArmorstand")
+                    .getDeclaredMethod("doTick")
+                method.isAccessible = true
+
+                method.invoke(handle)
+            }
         }
     }
 

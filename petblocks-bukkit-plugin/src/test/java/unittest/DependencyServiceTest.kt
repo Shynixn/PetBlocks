@@ -3,6 +3,7 @@ package unittest
 import com.github.shynixn.petblocks.api.business.enumeration.PluginDependency
 import com.github.shynixn.petblocks.api.business.service.DependencyService
 import com.github.shynixn.petblocks.bukkit.logic.business.service.DependencyServiceImpl
+import com.github.shynixn.petblocks.core.logic.business.extension.cast
 import org.bukkit.Bukkit
 import org.bukkit.Server
 import org.bukkit.command.CommandSender
@@ -183,7 +184,7 @@ class DependencyServiceTest {
 
             Mockito.`when`(server.logger).thenReturn(Logger.getGlobal())
 
-            if (Bukkit.getServer() == null) {
+            if (Bukkit.getServer().cast<Server?>() == null) {
                 Bukkit.setServer(server)
             }
 
