@@ -13,7 +13,6 @@ com.github.shynixn.petblocks.api.sponge.event
 com.github.shynixn.petblocks.bukkit
 com.github.shynixn.petblocks.bukkit.logic.business.extension
 com.github.shynixn.petblocks.bukkit.logic.business.listener
-com.github.shynixn.petblocks.bukkit.logic.business.nms.v1_13_R2
 com.github.shynixn.petblocks.bukkit.logic.business.pathfinder
 com.github.shynixn.petblocks.bukkit.logic.business.proxy
 com.github.shynixn.petblocks.bukkit.logic.business.service
