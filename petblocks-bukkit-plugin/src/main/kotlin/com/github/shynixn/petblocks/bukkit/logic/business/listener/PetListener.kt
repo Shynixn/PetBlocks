@@ -172,39 +172,22 @@ class PetListener @Inject constructor(
      * @param event event
      */
     @EventHandler
-    fun onEntityToggleSneakEvent(event: EntityDismountEvent) {
+    fun onEntityToggleSneakEvent(event: PlayerToggleSneakEvent) {
+        unMountPet(event.player)
+    }
+
+    /**
+     * Gets called when a player passenger presses the sneak button and removes the riding player.
+     *
+     * @param event event
+     */
+    @EventHandler
+    fun onEntityDismountEvent(event: EntityDismountEvent) {
         if (event.entity !is Player) {
             return
         }
 
-        if (!petService.hasPet(event.entity)) {
-            return
-        }
-
-        val pet = petService.getOrSpawnPetFromPlayer(event.entity).get()
-
-        for (name in configurationService.findValue<List<String>>("global-configuration.disable-on-sneak")) {
-            var changed = false
-
-            for (ai in pet.meta.aiGoals.toTypedArray()) {
-                if (ai.type == name) {
-                    pet.meta.aiGoals.remove(ai)
-                    changed = true
-                }
-            }
-
-            if (changed && getServerVersion().isVersionSameOrGreaterThan(Version.VERSION_1_14_R1)) {
-                // Execute a tick on the Armorstand manually since 1.14 passengers do not tick.
-                val handle = findClazz("org.bukkit.craftbukkit.VERSION.entity.CraftLivingEntity").getDeclaredMethod("getHandle")
-                    .invoke(pet.getHeadArmorstand())
-
-                val method = findClazz("com.github.shynixn.petblocks.bukkit.logic.business.nms.VERSION.NMSPetArmorstand")
-                    .getDeclaredMethod("doTick")
-                method.isAccessible = true
-
-                method.invoke(handle)
-            }
-        }
+        unMountPet(event.entity as Player)
     }
 
     /**
@@ -295,6 +278,41 @@ class PetListener @Inject constructor(
 
         if (applyPetOnFirstSpawn) {
             petService.getOrSpawnPetFromPlayer(player)
+        }
+    }
+
+    /**
+     * UnMounts the pet of the given [player].
+     */
+    private fun unMountPet(player: Player) {
+        if (!petService.hasPet(player)) {
+            return
+        }
+
+        val pet = petService.getOrSpawnPetFromPlayer(player).get()
+
+        for (name in configurationService.findValue<List<String>>("global-configuration.disable-on-sneak")) {
+            var changed = false
+
+            for (ai in pet.meta.aiGoals.toTypedArray()) {
+                if (ai.type == name) {
+                    pet.meta.aiGoals.remove(ai)
+                    changed = true
+                }
+            }
+
+            if (changed && getServerVersion().isVersionSameOrGreaterThan(Version.VERSION_1_14_R1)) {
+                // Execute a tick on the Armorstand manually since 1.14 passengers do not tick.
+                // This is required by wearing pets.
+                val handle = findClazz("org.bukkit.craftbukkit.VERSION.entity.CraftLivingEntity").getDeclaredMethod("getHandle")
+                    .invoke(pet.getHeadArmorstand())
+
+                val method = findClazz("com.github.shynixn.petblocks.bukkit.logic.business.nms.VERSION.NMSPetArmorstand")
+                    .getDeclaredMethod("doTick")
+                method.isAccessible = true
+
+                method.invoke(handle)
+            }
         }
     }
 
