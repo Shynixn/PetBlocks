@@ -50,7 +50,8 @@ import java.lang.reflect.Field
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class NMSPetArmorstand(owner: Player, private val petMeta: PetMeta) : EntityArmorStand((owner.location.world as CraftWorld).handle, owner.location.x, owner.location.y, owner.location.z), NMSPetProxy {
+class NMSPetArmorstand(owner: Player, private val petMeta: PetMeta) :
+    EntityArmorStand((owner.location.world as CraftWorld).handle, owner.location.x, owner.location.y, owner.location.z), NMSPetProxy {
     private var internalProxy: PetProxy? = null
     private var jumpingField: Field = EntityLiving::class.java.getDeclaredField("jumping")
     private var internalHitBox: EntityInsentient? = null
@@ -61,6 +62,9 @@ class NMSPetArmorstand(owner: Player, private val petMeta: PetMeta) : EntityArmo
     private var flyIsOnGround: Boolean = false
     private var flyHasHitFloor: Boolean = false
     private var flyWallCollisionVector: Vector? = null
+
+    // BukkitEntity has to be self cached since 1.14.
+    private var entityBukkit: Any? = null
 
     /**
      * Proxy handler.
@@ -148,7 +152,7 @@ class NMSPetArmorstand(owner: Player, private val petMeta: PetMeta) : EntityArmo
         val flyingAi = petMeta.aiGoals.firstOrNull { a -> a is AIFlying }
 
         if (flyingAi != null) {
-            internalHitBox = NMSPetBat(this, getBukkitEntity().location)
+            internalHitBox = NMSPetBat(this, bukkitEntity.location)
             proxy.changeHitBox(internalHitBox!!.bukkitEntity as LivingEntity)
             val aiGoals = aiService.convertPetAiBasesToPathfinders(proxy, petMeta.aiGoals)
             (internalHitBox as NMSPetBat).applyPathfinders(aiGoals)
@@ -158,14 +162,14 @@ class NMSPetArmorstand(owner: Player, private val petMeta: PetMeta) : EntityArmo
         val hoppingAi = petMeta.aiGoals.firstOrNull { a -> a is AIHopping }
 
         if (hoppingAi != null) {
-            internalHitBox = NMSPetRabbit(this, getBukkitEntity().location)
+            internalHitBox = NMSPetRabbit(this, bukkitEntity.location)
             proxy.changeHitBox(internalHitBox!!.bukkitEntity as LivingEntity)
             val aiGoals = aiService.convertPetAiBasesToPathfinders(proxy, petMeta.aiGoals)
             (internalHitBox as NMSPetRabbit).applyPathfinders(aiGoals)
             return
         }
 
-        internalHitBox = NMSPetVillager(this, getBukkitEntity().location)
+        internalHitBox = NMSPetVillager(this, bukkitEntity.location)
         proxy.changeHitBox(internalHitBox!!.bukkitEntity as LivingEntity)
         val aiGoals = aiService.convertPetAiBasesToPathfinders(proxy, petMeta.aiGoals)
         (internalHitBox as NMSPetVillager).applyPathfinders(aiGoals)
@@ -247,11 +251,15 @@ class NMSPetArmorstand(owner: Player, private val petMeta: PetMeta) : EntityArmo
      * Gets the bukkit entity.
      */
     override fun getBukkitEntity(): CraftPetArmorstand {
-        if (this.bukkitEntity == null) {
-            this.bukkitEntity = CraftPetArmorstand(this.world.server, this)
+        if (this.entityBukkit == null) {
+            entityBukkit = CraftPetArmorstand(this.world.server, this)
+
+            val field = Entity::class.java.getDeclaredField("bukkitEntity")
+            field.isAccessible = true
+            field.set(this, entityBukkit)
         }
 
-        return this.bukkitEntity as CraftPetArmorstand
+        return this.entityBukkit as CraftPetArmorstand
     }
 
     /**
@@ -338,8 +346,7 @@ class NMSPetArmorstand(owner: Player, private val petMeta: PetMeta) : EntityArmo
         val vec3d = Vec3D(this.locX, this.locY, this.locZ)
         val vec3d1 = Vec3D(this.locX + this.mot.x, this.locY + this.mot.y, this.locZ + this.mot.z)
 
-
-        val rayTrace = RayTrace(vec3d, vec3d1,RayTrace.BlockCollisionOption.COLLIDER, RayTrace.FluidCollisionOption.NONE, null)
+        val rayTrace = RayTrace(vec3d, vec3d1, RayTrace.BlockCollisionOption.COLLIDER, RayTrace.FluidCollisionOption.NONE, null)
         val movingObjectPosition = this.world.rayTrace(rayTrace)
 
         if (movingObjectPosition == null) {
