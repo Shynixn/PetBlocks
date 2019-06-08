@@ -63,14 +63,9 @@ class SqlDbContextImpl @Inject constructor(
     private lateinit var dataSource: HikariDataSource
 
     init {
-        initializeDriver(SQLITE_DRIVER)
-
         if (configurationService.findValue<String>("sql.type") == "sqlite") {
-
             connectToSqlite()
         } else {
-            initializeDriver(MYSQL_DRIVER)
-
             try {
                 connectToMySql()
             } catch (e: Exception) {
@@ -392,7 +387,6 @@ class SqlDbContextImpl @Inject constructor(
         useSSL: Boolean = false
     ): HikariDataSource {
         val config = HikariConfig()
-        config.driverClassName = driver
         config.connectionTestQuery = "SELECT 1"
         config.jdbcUrl = url
 
@@ -416,16 +410,5 @@ class SqlDbContextImpl @Inject constructor(
         }
 
         return HikariDataSource(config)
-    }
-
-    /**
-     * Initializes the given driver.
-     */
-    private fun initializeDriver(driver: String) {
-        try {
-            Class.forName(driver)
-        } catch (ex: ClassNotFoundException) {
-            loggingService.warn("JDBC Driver not found!", ex)
-        }
     }
 }
