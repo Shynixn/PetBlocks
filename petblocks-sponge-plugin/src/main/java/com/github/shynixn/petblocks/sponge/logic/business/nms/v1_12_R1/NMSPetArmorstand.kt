@@ -5,6 +5,7 @@ package com.github.shynixn.petblocks.sponge.logic.business.nms.v1_12_R1
 import com.flowpowered.math.vector.Vector3d
 import com.github.shynixn.petblocks.api.PetBlocksApi
 import com.github.shynixn.petblocks.api.business.proxy.EntityPetProxy
+import com.github.shynixn.petblocks.api.business.proxy.HiddenProxy
 import com.github.shynixn.petblocks.api.business.proxy.NMSPetProxy
 import com.github.shynixn.petblocks.api.business.service.AIService
 import com.github.shynixn.petblocks.api.business.service.ConfigurationService
@@ -30,6 +31,7 @@ import net.minecraft.util.math.MathHelper
 import net.minecraft.util.math.Vec3d
 import net.minecraft.world.World
 import org.spongepowered.api.Sponge
+import org.spongepowered.api.entity.Entity
 import org.spongepowered.api.entity.Transform
 import org.spongepowered.api.entity.living.ArmorStand
 import org.spongepowered.api.entity.living.Human
@@ -63,7 +65,7 @@ import org.spongepowered.api.entity.living.player.Player
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class NMSPetArmorstand(owner: Player, val petMeta: PetMeta) : EntityArmorStand(owner.location.extent as World), NMSPetProxy, EntityPetProxy {
+class NMSPetArmorstand(owner: Player, val petMeta: PetMeta) : EntityArmorStand(owner.location.extent as World), NMSPetProxy, EntityPetProxy, HiddenProxy {
     private var internalProxy: PetProxyImpl? = null
     private var internalHitBox: EntityLiving? = null
     private val aiService = PetBlocksApi.resolve(AIService::class.java)
@@ -106,7 +108,7 @@ class NMSPetArmorstand(owner: Player, val petMeta: PetMeta) : EntityArmorStand(o
      * Removes this entity.
      */
     override fun deleteFromWorld() {
-        this.cast<Living>().remove()
+        this.setDead()
     }
 
     /**

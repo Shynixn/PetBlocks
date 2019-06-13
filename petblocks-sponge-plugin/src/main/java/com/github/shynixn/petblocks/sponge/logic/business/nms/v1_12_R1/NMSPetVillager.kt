@@ -1,6 +1,7 @@
 package com.github.shynixn.petblocks.sponge.logic.business.nms.v1_12_R1
 
 import com.github.shynixn.petblocks.api.business.proxy.EntityPetProxy
+import com.github.shynixn.petblocks.api.business.proxy.HiddenProxy
 import com.github.shynixn.petblocks.api.business.proxy.PathfinderProxy
 import com.github.shynixn.petblocks.api.persistence.entity.AIMovement
 import com.github.shynixn.petblocks.core.logic.business.extension.cast
@@ -47,7 +48,7 @@ import org.spongepowered.api.world.World
  * SOFTWARE.
  */
 class NMSPetVillager(petDesign: NMSPetArmorstand, location: Transform<World>) :
-    EntityPig(location.extent as net.minecraft.world.World), EntityPetProxy {
+    EntityPig(location.extent as net.minecraft.world.World), EntityPetProxy, HiddenProxy {
     private var petDesign: NMSPetArmorstand? = null
     private var pathfinderCounter = 0
 
@@ -68,7 +69,7 @@ class NMSPetVillager(petDesign: NMSPetArmorstand, location: Transform<World>) :
      * Removes this entity.
      */
     override fun deleteFromWorld() {
-        this.cast<Living>().remove()
+        this.setDead()
     }
 
     /**
