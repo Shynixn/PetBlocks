@@ -35,6 +35,7 @@ allprojects {
 }
 
 subprojects {
+
     group 'com.github.shynixn.petblocks'
     version '8.3.1-SNAPSHOT'
 
