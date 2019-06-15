@@ -24,8 +24,9 @@ before_install:
 install:
     - ./gradlew assemble || ./gradlew setupDecompWorkspace && ./gradlew assemble || ./gradlew downloadDependencies
 script:
-  - if [[ $TRAVIS_COMMIT_MESSAGE != *"--snapshot"* ]]; then ./gradlew clean build > /dev/null; fi ;
-  - if [[ $TRAVIS_COMMIT_MESSAGE == *"--snapshot"* ]]; then ./gradlew clean publish > /dev/null; fi ;
+  - ./gradlew clean build
+  - ./gradlew dokkaJavadoc > /dev/null
+  - if [[ $TRAVIS_COMMIT_MESSAGE == *"--snapshot"* ]]; then ./gradlew publish; fi ;
   - if [[ $TRAVIS_COMMIT_MESSAGE == *"--release"* && $TRAVIS_BRANCH == *"master"* ]]; then ./gradlew clean publishToNexus > /dev/null; fi ;
   - if [[ $TRAVIS_COMMIT_MESSAGE == *"--release"* && $TRAVIS_BRANCH == *"master"* ]]; then ./gradlew closeAndReleaseRepository; fi ;
   - if [[ $TRAVIS_BRANCH == *"master"* ]]; then rm -rf docs/build && rm -rf docs/apidocs; fi ;
