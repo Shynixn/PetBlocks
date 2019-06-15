@@ -26,8 +26,12 @@ install:
 script:
   - ./gradlew clean build
   - ./gradlew :petblocks-api:dokkaJavadoc > /dev/null
-  - ./gradlew petblocks-root:petblocks-bukkit-api dokkaJavadoc > /dev/null
-  - ./gradlew dokkaJavadoc > /dev/null
+  - ./gradlew :petblocks-core:dokkaJavadoc > /dev/null
+  - ./gradlew :petblocks-bukkit-api:dokkaJavadoc > /dev/null
+  - ./gradlew :petblocks-bukkit-plugin:dokkaJavadoc > /dev/
+  - ./gradlew :petblocks-sponge-api:dokkaJavadoc > /dev/null
+  - ./gradlew :petblocks-sponge-plugin:dokkaJavadoc > /dev/null
+  - ./gradlew :petblocks-tools:dokkaJavadoc > /dev/null
   - if [[ $TRAVIS_COMMIT_MESSAGE == *"--snapshot"* ]]; then ./gradlew publish; fi ;
   - if [[ $TRAVIS_COMMIT_MESSAGE == *"--release"* && $TRAVIS_BRANCH == *"master"* ]]; then ./gradlew clean publishToNexus > /dev/null; fi ;
   - if [[ $TRAVIS_COMMIT_MESSAGE == *"--release"* && $TRAVIS_BRANCH == *"master"* ]]; then ./gradlew closeAndReleaseRepository; fi ;
