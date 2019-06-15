@@ -28,7 +28,7 @@ script:
   - ./gradlew :petblocks-api:dokkaJavadoc > /dev/null
   - ./gradlew :petblocks-core:dokkaJavadoc > /dev/null
   - ./gradlew :petblocks-bukkit-api:dokkaJavadoc > /dev/null
-  - ./gradlew :petblocks-bukkit-plugin:dokkaJavadoc > /dev/
+  - ./gradlew :petblocks-bukkit-plugin:dokkaJavadoc > /dev/null
   - ./gradlew :petblocks-sponge-api:dokkaJavadoc > /dev/null
   - ./gradlew :petblocks-sponge-plugin:dokkaJavadoc > /dev/null
   - ./gradlew :petblocks-tools:dokkaJavadoc > /dev/null
