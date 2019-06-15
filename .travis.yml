@@ -37,6 +37,8 @@ script:
   - if [[ $TRAVIS_COMMIT_MESSAGE == *"--snapshot"* ]]; then ./gradlew :petblocks-bukkit-api:publish; fi ;
   - if [[ $TRAVIS_COMMIT_MESSAGE == *"--snapshot"* ]]; then ./gradlew :petblocks-bukkit-plugin:publish; fi ;
   - if [[ $TRAVIS_COMMIT_MESSAGE == *"--snapshot"* ]]; then ./gradlew :petblocks-sponge-api:publish; fi ;
+  - if [[ $TRAVIS_COMMIT_MESSAGE == *"--snapshot"* ]]; then ./gradlew :petblocks-sponge-plugin:shadowJar; fi ;
+  - if [[ $TRAVIS_COMMIT_MESSAGE == *"--snapshot"* ]]; then ./gradlew :petblocks-sponge-plugin:reobfJar; fi ;
   - if [[ $TRAVIS_COMMIT_MESSAGE == *"--snapshot"* ]]; then ./gradlew :petblocks-sponge-plugin:publish; fi ;
   - if [[ $TRAVIS_COMMIT_MESSAGE == *"--release"* && $TRAVIS_BRANCH == *"master"* ]]; then ./gradlew publishToNexus > /dev/null; fi ;
   - if [[ $TRAVIS_COMMIT_MESSAGE == *"--release"* && $TRAVIS_BRANCH == *"master"* ]]; then ./gradlew closeAndReleaseRepository; fi ;
