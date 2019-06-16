@@ -137,6 +137,9 @@ class PetBlocksPlugin : PluginProxy {
         dependencyService.checkForInstalledDependencies()
         updateCheckService.checkForUpdates()
 
+        // GrievPrevention requires eager entity registration.
+        entityService.registerEntitiesOnServer()
+
         // Register Listener
         Sponge.getEventManager().registerListeners(plugin, resolve(CarryPetListener::class.java))
         Sponge.getEventManager().registerListeners(plugin, resolve(DamagePetListener::class.java))

@@ -208,7 +208,11 @@ class EntityServiceImpl @Inject constructor(
         }
 
         if (nearest != null) {
-            nearest.remove()
+            try {
+                (nearest as Any).javaClass.getDeclaredMethod("deleteFromWorld").invoke(nearest)
+            } catch (e: Exception) {
+                nearest.remove()
+            }
 
             val prefix = configurationService.findValue<String>("messages.prefix")
             player.sendMessage(prefix + "" + ChatColor.GREEN + "You removed entity " + nearest.type + '.'.toString())

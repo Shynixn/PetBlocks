@@ -28,7 +28,6 @@ package com.github.shynixn.petblocks.api.business.enumeration
  * SOFTWARE.
  */
 enum class ScriptAction {
-
     /**
      * Action for not interpreting the script.
      */

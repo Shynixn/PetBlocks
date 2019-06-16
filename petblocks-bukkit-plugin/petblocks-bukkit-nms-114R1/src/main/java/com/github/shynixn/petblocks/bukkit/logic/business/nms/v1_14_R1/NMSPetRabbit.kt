@@ -7,7 +7,6 @@ import com.google.common.collect.Sets
 import net.minecraft.server.v1_14_R1.*
 import org.bukkit.Location
 import org.bukkit.craftbukkit.v1_14_R1.CraftWorld
-import org.bukkit.entity.EntityType
 import org.bukkit.event.entity.CreatureSpawnEvent
 
 /**
@@ -40,6 +39,8 @@ import org.bukkit.event.entity.CreatureSpawnEvent
 class NMSPetRabbit(petDesign: NMSPetArmorstand, location: Location) : EntityRabbit(EntityTypes.RABBIT, (location.world as CraftWorld).handle) {
     private var petDesign: NMSPetArmorstand? = null
     private var pathfinderCounter = 0
+    // BukkitEntity has to be self cached since 1.14.
+    private var entityBukkit: Any? = null
 
     init {
         this.petDesign = petDesign
@@ -99,11 +100,15 @@ class NMSPetRabbit(petDesign: NMSPetArmorstand, location: Location) : EntityRabb
      * Gets the bukkit entity.
      */
     override fun getBukkitEntity(): CraftPet {
-        if (this.bukkitEntity == null) {
-            this.bukkitEntity = CraftPet(this.world.server, this)
+        if (this.entityBukkit == null) {
+            entityBukkit = CraftPet(this.world.server, this)
+
+            val field = Entity::class.java.getDeclaredField("bukkitEntity")
+            field.isAccessible = true
+            field.set(this, entityBukkit)
         }
 
-        return this.bukkitEntity as CraftPet
+        return this.entityBukkit as CraftPet
     }
 
     /**

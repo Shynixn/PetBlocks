@@ -30,11 +30,7 @@ SpongeVanilla/SpongeForge
  PetBlocks |version| was tested with the following configuration:
 
   * Minecraft Forge **1.12.2 - 14.23.5.2768** (Server + Client)
-  * SpongeForge **1.12.2-2768-7.1.5**
-
-SpongeForge
-~~~~~~~~~~~
-
+  * SpongeForge **1.12.2-2825-7.1.6**
 
 Download
 ~~~~~~~~

@@ -35,21 +35,10 @@ the 'all' tag to excluded or included. Afterwards, add the world names.
       included:
       - 'all'
 
-Regions in Bukkit
-~~~~~~~~~~~~~~~~~
+Regions
+~~~~~~~
 
-Pets currently cannot be restricted by specific plugins regarding regions as there are too many of them.
+Pets cannot be restricted by specific plugins regarding regions as there are too many of them.
 
 However, some region plugins allow executing commands when a player enters a region. Simply execute the command **/petblocks disable <player-name-entering-region>** to disable the pet.
 To lock the player from calling the pet you should also remove the pet calling permission via a command from your permission plugin.
-
-Regions in Sponge
-~~~~~~~~~~~~~~~~~
-
-You can use the plugin called **GriefPrevention** to restrict spawning of pets in certain regions.
-
-* Use the modid **petblocks** and **any** for settings flags. (rabbit,zombie,armorstand)
-
-**command**:
-::
- /cf entity-spawn petblocks:any true

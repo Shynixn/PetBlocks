@@ -17,10 +17,12 @@ import org.spongepowered.api.Sponge
 import org.spongepowered.api.data.manipulator.mutable.entity.SneakingData
 import org.spongepowered.api.entity.living.player.Player
 import org.spongepowered.api.event.Listener
+import org.spongepowered.api.event.Order
 import org.spongepowered.api.event.data.ChangeDataHolderEvent
 import org.spongepowered.api.event.entity.InteractEntityEvent
 import org.spongepowered.api.event.entity.LeashEntityEvent
 import org.spongepowered.api.event.entity.MoveEntityEvent
+import org.spongepowered.api.event.entity.SpawnEntityEvent
 import org.spongepowered.api.event.entity.living.humanoid.player.RespawnPlayerEvent
 import org.spongepowered.api.event.network.ClientConnectionEvent
 import org.spongepowered.api.event.world.chunk.LoadChunkEvent
@@ -159,6 +161,18 @@ class PetListener @Inject constructor(
 
         if (optPet != null) {
             event.isCancelled = true
+        }
+    }
+
+    /**
+     * Handles allowing the entity spawn. Denies spawn prevention from other plugins.
+     */
+    @Listener(order = Order.LAST)
+    fun onEntitySpawnEvent(event: SpawnEntityEvent) {
+        for (entity in event.entities) {
+            if (entity is EntityPetProxy) {
+                event.isCancelled = false
+            }
         }
     }
 

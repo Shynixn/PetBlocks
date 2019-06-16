@@ -57,8 +57,16 @@ class EntityRegistrationServiceImpl @Inject constructor(private val loggingServi
 
         try {
             val entityTypeRegistryModuleClazz = Class.forName("org.spongepowered.common.registry.type.entity.EntityTypeRegistryModule")
-            val entityRegistrationMethod = entityTypeRegistryModuleClazz.getDeclaredMethod("registerEntityType", org.spongepowered.api.entity.EntityType::class.java)
-            val spongeEntityTypeClazzConstructor = Class.forName("org.spongepowered.common.entity.SpongeEntityType")
+            val spongeEntityTypeClazz = Class.forName("org.spongepowered.common.entity.SpongeEntityType")
+
+            val entityRegistrationMethod = try {
+                entityTypeRegistryModuleClazz.getDeclaredMethod("registerEntityType", spongeEntityTypeClazz)
+            } catch (e: Exception) {
+                // The entity registration worked differently in 2768. This should stay for compatibility reasons.
+                entityTypeRegistryModuleClazz.getDeclaredMethod("registerEntityType", org.spongepowered.api.entity.EntityType::class.java)
+            }
+
+            val spongeEntityTypeClazzConstructor = spongeEntityTypeClazz
                 .getDeclaredConstructor(Int::class.java, String::class.java, String::class.java, Class::class.java, Translation::class.java)
 
             val registryInstance = entityTypeRegistryModuleClazz.getDeclaredMethod("getInstance").invoke(null)
