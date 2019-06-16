@@ -61,6 +61,19 @@ fun <T> Any?.cast(): T {
 }
 
 /**
+ * Gets if the given server is a bukkit server.
+ */
+val isBukkitServer: Boolean
+    get() {
+        return try {
+            Class.forName("com.github.shynixn.petblocks.bukkit.PetBlocksPlugin")
+            true
+        } catch (e: Exception) {
+            false
+        }
+    }
+
+/**
  * Removes the final modifier from this field to allow editing.
  */
 fun Field.removeFinalModifier() {

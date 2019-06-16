@@ -5,6 +5,7 @@ package com.github.shynixn.petblocks.core.logic.persistence.context
 import com.github.shynixn.petblocks.api.business.service.ConfigurationService
 import com.github.shynixn.petblocks.api.business.service.LoggingService
 import com.github.shynixn.petblocks.api.persistence.context.SqlDbContext
+import com.github.shynixn.petblocks.core.logic.business.extension.isBukkitServer
 import com.google.inject.Inject
 import com.zaxxer.hikari.HikariConfig
 import com.zaxxer.hikari.HikariDataSource
@@ -389,6 +390,10 @@ class SqlDbContextImpl @Inject constructor(
         val config = HikariConfig()
         config.connectionTestQuery = "SELECT 1"
         config.jdbcUrl = url
+
+        if (isBukkitServer) {
+            config.driverClassName = driver
+        }
 
         if (userName != null) {
             config.username = userName
