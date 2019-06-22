@@ -6,6 +6,9 @@ import com.github.shynixn.petblocks.api.business.proxy.EntityPetProxy
 import net.minecraft.server.v1_13_R2.EntityInsentient
 import org.bukkit.craftbukkit.v1_13_R2.CraftServer
 import org.bukkit.craftbukkit.v1_13_R2.entity.CraftLivingEntity
+import org.bukkit.entity.LivingEntity
+import org.bukkit.entity.Slime
+import org.bukkit.loot.LootTable
 
 /**
  * Created by Shynixn 2019.
@@ -34,7 +37,7 @@ import org.bukkit.craftbukkit.v1_13_R2.entity.CraftLivingEntity
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class CraftPet(server: CraftServer, nmsPet: EntityInsentient) : CraftLivingEntity(server, nmsPet), EntityPetProxy {
+class CraftPet(server: CraftServer, nmsPet: EntityInsentient) : CraftLivingEntity(server, nmsPet), EntityPetProxy, Slime {
     /**
      * Boots marker.
      */
@@ -51,7 +54,7 @@ class CraftPet(server: CraftServer, nmsPet: EntityInsentient) : CraftLivingEntit
      * Hides the true type of the pet from everyone else.
      */
     override fun getType(): org.bukkit.entity.EntityType {
-        return org.bukkit.entity.EntityType.RABBIT
+        return org.bukkit.entity.EntityType.SLIME
     }
 
     /**
@@ -78,5 +81,33 @@ class CraftPet(server: CraftServer, nmsPet: EntityInsentient) : CraftLivingEntit
      */
     override fun toString(): String {
         return "PetBlocks{Entity}"
+    }
+
+    override fun getLootTable(): LootTable? {
+        return null
+    }
+
+    override fun setTarget(p0: LivingEntity?) {
+    }
+
+    override fun getTarget(): LivingEntity? {
+        return null
+    }
+
+    override fun getSize(): Int {
+        return 1
+    }
+
+    override fun setLootTable(p0: LootTable?) {
+    }
+
+    override fun setSize(p0: Int) {
+    }
+
+    override fun setSeed(p0: Long) {
+    }
+
+    override fun getSeed(): Long {
+        return 0L
     }
 }

@@ -45,13 +45,6 @@ class CraftPetArmorstand(server: CraftServer, nmsPet: NMSPetArmorstand) : CraftA
     }
 
     /**
-     * Hides the true type of the pet from everyone else.
-     */
-    override fun getType(): org.bukkit.entity.EntityType {
-        return org.bukkit.entity.EntityType.RABBIT
-    }
-
-    /**
      * Ignore all other plugins trying to remove this entity. This is the entity of PetBlocks,
      * no one else is allowed to modify this!
      */

@@ -6,6 +6,7 @@ import com.github.shynixn.petblocks.api.business.proxy.EntityPetProxy
 import net.minecraft.server.v1_11_R1.EntityInsentient
 import org.bukkit.craftbukkit.v1_11_R1.CraftServer
 import org.bukkit.craftbukkit.v1_11_R1.entity.CraftLivingEntity
+import org.bukkit.entity.Slime
 
 /**
  * Created by Shynixn 2019.
@@ -34,7 +35,7 @@ import org.bukkit.craftbukkit.v1_11_R1.entity.CraftLivingEntity
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class CraftPet(server: CraftServer, nmsPet: EntityInsentient) : CraftLivingEntity(server, nmsPet), EntityPetProxy {
+class CraftPet(server: CraftServer, nmsPet: EntityInsentient) : CraftLivingEntity(server, nmsPet), EntityPetProxy, Slime {
     /**
      * Boots marker.
      */
@@ -51,7 +52,7 @@ class CraftPet(server: CraftServer, nmsPet: EntityInsentient) : CraftLivingEntit
      * Hides the true type of the pet from everyone else.
      */
     override fun getType(): org.bukkit.entity.EntityType {
-        return org.bukkit.entity.EntityType.RABBIT
+        return org.bukkit.entity.EntityType.SLIME
     }
 
     /**
@@ -66,5 +67,12 @@ class CraftPet(server: CraftServer, nmsPet: EntityInsentient) : CraftLivingEntit
      */
     override fun toString(): String {
         return "PetBlocks{Entity}"
+    }
+
+    override fun getSize(): Int {
+        return 1
+    }
+
+    override fun setSize(p0: Int) {
     }
 }
