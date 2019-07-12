@@ -105,6 +105,7 @@ messages:
 # Global settings
 
 # These are global settings which belong to the whole PetBlocks plugin without being specific to a single pet.
+# Apply-Pet-On-First-spawn requires pet.enabled be set true.
 
 # Please take a look into the official documentation mentioned at the top of this file if you need an explanation for all values.
 
