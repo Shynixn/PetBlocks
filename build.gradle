@@ -37,7 +37,7 @@ allprojects {
 subprojects {
 
     group 'com.github.shynixn.petblocks'
-    version '8.5.0'
+    version '8.5.1'
 
     sourceCompatibility = 1.8
 
