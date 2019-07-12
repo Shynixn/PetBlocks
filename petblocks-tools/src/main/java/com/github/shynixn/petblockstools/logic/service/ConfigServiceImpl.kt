@@ -52,6 +52,8 @@ class ConfigServiceImpl : ConfigService {
      * the yaml file content for minecraft-heads.com into the given output path.
      */
     override fun generateFiles(minecraftHeadsSource: Path, ouputFolder: Path) {
+        logger.log(Level.INFO, "Folder ${ouputFolder.toAbsolutePath()}.")
+
         val dbFile = ouputFolder.resolve("minecraft-heads-generated.db")
         val encryptedFile = ouputFolder.resolve("minecraft-heads-encrypted.db")
         val yamlFile = ouputFolder.resolve("target.yml")
