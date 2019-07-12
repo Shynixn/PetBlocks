@@ -5,6 +5,7 @@ package com.github.shynixn.petblocks.core.logic.persistence.context
 import com.github.shynixn.petblocks.api.business.service.ConfigurationService
 import com.github.shynixn.petblocks.api.business.service.LoggingService
 import com.github.shynixn.petblocks.api.persistence.context.SqlDbContext
+import com.github.shynixn.petblocks.core.logic.business.extension.isBukkitServer
 import com.google.inject.Inject
 import com.zaxxer.hikari.HikariConfig
 import com.zaxxer.hikari.HikariDataSource
@@ -314,9 +315,16 @@ class SqlDbContextImpl @Inject constructor(
                 statement.execute()
             }
 
+            // Compatibility < 8.5.0
+            val tablePrefix = if (configurationService.contains("sql.table-prefix")) {
+                configurationService.findValue("sql.table-prefix")
+            } else {
+                "SHY"
+            }
+
             configurationService.openResourceInputStream("assets/petblocks/sql/create-sqlite.sql").bufferedReader()
                 .use { reader ->
-                    for (text in reader.readText().split(";")) {
+                    for (text in reader.readText().replace("TABLE_PREFIX", tablePrefix).split(";")) {
                         connection.prepareStatement(text).use { statement ->
                             statement.execute()
                         }
@@ -345,10 +353,17 @@ class SqlDbContextImpl @Inject constructor(
 
         val connection = this.dataSource.connection
 
+        // Compatibility < 8.5.0
+        val tablePrefix = if (configurationService.contains("sql.table-prefix")) {
+            configurationService.findValue("sql.table-prefix")
+        } else {
+            "SHY"
+        }
+
         connection.use {
             configurationService.openResourceInputStream("assets/petblocks/sql/create-mysql.sql").bufferedReader()
                 .use { reader ->
-                    for (text in reader.readText().split(";")) {
+                    for (text in reader.readText().replace("TABLE_PREFIX", tablePrefix).split(";")) {
                         connection.prepareStatement(text).use { statement ->
                             statement.execute()
                         }
@@ -389,6 +404,10 @@ class SqlDbContextImpl @Inject constructor(
         val config = HikariConfig()
         config.connectionTestQuery = "SELECT 1"
         config.jdbcUrl = url
+
+        if (isBukkitServer) {
+            config.driverClassName = driver
+        }
 
         if (userName != null) {
             config.username = userName

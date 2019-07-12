@@ -61,14 +61,17 @@ fun <T> Any?.cast(): T {
 }
 
 /**
- * Removes the final modifier from this field to allow editing.
+ * Gets if the given server is a bukkit server.
  */
-fun Field.removeFinalModifier() {
-    isAccessible = true
-    val modifiersField = Field::class.java.getDeclaredField("modifiers")
-    modifiersField.isAccessible = true
-    modifiersField.setInt(this, this.modifiers and Modifier.FINAL.inv())
-}
+val isBukkitServer: Boolean
+    get() {
+        return try {
+            Class.forName("com.github.shynixn.petblocks.bukkit.PetBlocksPlugin")
+            true
+        } catch (e: Exception) {
+            false
+        }
+    }
 
 /**
  * Changes the position to it's yaw front by the given amount.

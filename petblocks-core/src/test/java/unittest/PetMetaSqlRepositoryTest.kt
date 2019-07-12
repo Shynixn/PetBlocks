@@ -193,7 +193,7 @@ class PetMetaSqlRepositoryTest {
          * Checks if the given path is containing in the config.yml.
          */
         override fun contains(path: String): Boolean {
-            throw IllegalArgumentException()
+            return false
         }
 
         /**
