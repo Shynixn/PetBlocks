@@ -21,7 +21,7 @@ CREATE TABLE IF NOT EXISTS SHY_PET
   shy_player_id INTEGER,
   shy_skin_id INTEGER,
   enabled INTEGER,
-  displayname VARCHAR(32) NOT NULL,
+  displayname TEXT NOT NULL,
   soundenabled INTEGER,
   particleenabled INTEGER,
  CONSTRAINT foreignkey_player_id_cs FOREIGN KEY (shy_player_id) REFERENCES SHY_PLAYER(id),
