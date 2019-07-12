@@ -74,16 +74,6 @@ val isBukkitServer: Boolean
     }
 
 /**
- * Removes the final modifier from this field to allow editing.
- */
-fun Field.removeFinalModifier() {
-    isAccessible = true
-    val modifiersField = Field::class.java.getDeclaredField("modifiers")
-    modifiersField.isAccessible = true
-    modifiersField.setInt(this, this.modifiers and Modifier.FINAL.inv())
-}
-
-/**
  * Changes the position to it's yaw front by the given amount.
  */
 fun Position.relativeFront(amount: Double): Position {

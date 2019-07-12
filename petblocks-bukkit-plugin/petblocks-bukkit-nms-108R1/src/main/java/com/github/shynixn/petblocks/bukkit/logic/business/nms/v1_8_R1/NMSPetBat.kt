@@ -2,11 +2,9 @@ package com.github.shynixn.petblocks.bukkit.logic.business.nms.v1_8_R1
 
 import com.github.shynixn.petblocks.api.business.proxy.PathfinderProxy
 import com.github.shynixn.petblocks.api.persistence.entity.AIMovement
-import com.github.shynixn.petblocks.core.logic.business.extension.removeFinalModifier
 import net.minecraft.server.v1_8_R1.*
 import org.bukkit.Location
 import org.bukkit.craftbukkit.v1_8_R1.CraftWorld
-import org.bukkit.craftbukkit.v1_8_R1.util.UnsafeList
 import org.bukkit.event.entity.CreatureSpawnEvent
 
 /**
@@ -125,14 +123,13 @@ class NMSPetBat(petDesign: NMSPetArmorstand, location: Location) : EntityBat((lo
      */
     private fun clearAIGoals() {
         val bField = PathfinderGoalSelector::class.java.getDeclaredField("b")
+        bField.isAccessible = true
+        (bField.get(this.goalSelector) as MutableList<*>).clear()
+        (bField.get(this.targetSelector) as MutableList<*>).clear()
+
         val cField = PathfinderGoalSelector::class.java.getDeclaredField("c")
-
-        bField.removeFinalModifier()
-        cField.removeFinalModifier()
-
-        bField.set(this.goalSelector, UnsafeList<PathfinderGoalSelector>())
-        bField.set(this.targetSelector, UnsafeList<PathfinderGoalSelector>())
-        cField.set(this.goalSelector, UnsafeList<PathfinderGoalSelector>())
-        cField.set(this.targetSelector, UnsafeList<PathfinderGoalSelector>())
+        cField.isAccessible = true
+        (cField.get(this.goalSelector) as MutableList<*>).clear()
+        (cField.get(this.targetSelector) as MutableList<*>).clear()
     }
 }

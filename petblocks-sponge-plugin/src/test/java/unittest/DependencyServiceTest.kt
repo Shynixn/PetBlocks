@@ -2,7 +2,6 @@ package unittest
 
 import com.github.shynixn.petblocks.api.business.enumeration.PluginDependency
 import com.github.shynixn.petblocks.api.business.service.DependencyService
-import com.github.shynixn.petblocks.core.logic.business.extension.removeFinalModifier
 import com.github.shynixn.petblocks.sponge.logic.business.service.DependencyServiceImpl
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
@@ -22,6 +21,8 @@ import org.spongepowered.api.text.channel.MessageChannel
 import org.spongepowered.api.text.serializer.FormattingCodeTextSerializer
 import org.spongepowered.api.text.serializer.TextSerializers
 import org.spongepowered.api.util.Tristate
+import java.lang.reflect.Field
+import java.lang.reflect.Modifier
 import java.util.*
 
 /**
@@ -157,7 +158,6 @@ class DependencyServiceTest {
         Assertions.assertTrue(actual)
     }
 
-
     /**
      * Given
      *   no installed plugin dependencies
@@ -201,7 +201,7 @@ class DependencyServiceTest {
             Mockito.`when`(textSerializer.deserialize(Mockito.anyString())).thenReturn(Text.EMPTY)
 
             val fieldL = TextSerializers::class.java.getDeclaredField("LEGACY_FORMATTING_CODE")
-            fieldL.removeFinalModifier()
+            removeFinalMofifier(fieldL)
             fieldL.set(null, textSerializer)
 
             val field = Sponge::class.java.getDeclaredField("game")
@@ -223,6 +223,13 @@ class DependencyServiceTest {
             }
 
             return DependencyServiceImpl(plugin)
+        }
+
+        private fun removeFinalMofifier(field: Field) {
+            field.isAccessible = true
+            val modifiersField = Field::class.java.getDeclaredField("modifiers")
+            modifiersField.isAccessible = true
+            modifiersField.setInt(field, field.modifiers and Modifier.FINAL.inv())
         }
     }
 

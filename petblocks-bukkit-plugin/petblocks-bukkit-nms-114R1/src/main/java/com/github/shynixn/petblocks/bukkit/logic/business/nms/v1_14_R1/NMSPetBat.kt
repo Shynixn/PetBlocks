@@ -2,8 +2,6 @@ package com.github.shynixn.petblocks.bukkit.logic.business.nms.v1_14_R1
 
 import com.github.shynixn.petblocks.api.business.proxy.PathfinderProxy
 import com.github.shynixn.petblocks.api.persistence.entity.AIMovement
-import com.github.shynixn.petblocks.core.logic.business.extension.removeFinalModifier
-import com.google.common.collect.Sets
 import net.minecraft.server.v1_14_R1.*
 import org.bukkit.Location
 import org.bukkit.craftbukkit.v1_14_R1.CraftWorld
@@ -132,10 +130,9 @@ class NMSPetBat(petDesign: NMSPetArmorstand, location: Location) : EntityBat(Ent
      * Clears all entity aiGoals.
      */
     private fun clearAIGoals() {
-        val bField = PathfinderGoalSelector::class.java.getDeclaredField("d")
-        bField.removeFinalModifier()
-
-        bField.set(this.goalSelector, Sets.newLinkedHashSet<Any>())
-        bField.set(this.targetSelector, Sets.newLinkedHashSet<Any>())
+        val dField = PathfinderGoalSelector::class.java.getDeclaredField("d")
+        dField.isAccessible = true
+        (dField.get(this.goalSelector) as MutableSet<*>).clear()
+        (dField.get(this.targetSelector) as MutableSet<*>).clear()
     }
 }

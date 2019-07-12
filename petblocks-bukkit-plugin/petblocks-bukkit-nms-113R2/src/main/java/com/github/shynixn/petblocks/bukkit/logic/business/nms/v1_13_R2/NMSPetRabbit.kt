@@ -2,8 +2,6 @@ package com.github.shynixn.petblocks.bukkit.logic.business.nms.v1_13_R2
 
 import com.github.shynixn.petblocks.api.business.proxy.PathfinderProxy
 import com.github.shynixn.petblocks.api.persistence.entity.AIMovement
-import com.github.shynixn.petblocks.core.logic.business.extension.removeFinalModifier
-import com.google.common.collect.Sets
 import net.minecraft.server.v1_13_R2.*
 import org.bukkit.Location
 import org.bukkit.craftbukkit.v1_13_R2.CraftWorld
@@ -110,14 +108,13 @@ class NMSPetRabbit(petDesign: NMSPetArmorstand, location: Location) : EntityRabb
      */
     private fun clearAIGoals() {
         val bField = PathfinderGoalSelector::class.java.getDeclaredField("b")
+        bField.isAccessible = true
+        (bField.get(this.goalSelector) as MutableSet<*>).clear()
+        (bField.get(this.targetSelector) as MutableSet<*>).clear()
+
         val cField = PathfinderGoalSelector::class.java.getDeclaredField("c")
-
-        bField.removeFinalModifier()
-        cField.removeFinalModifier()
-
-        bField.set(this.goalSelector, Sets.newLinkedHashSet<Any>())
-        bField.set(this.targetSelector, Sets.newLinkedHashSet<Any>())
-        cField.set(this.goalSelector, Sets.newLinkedHashSet<Any>())
-        cField.set(this.targetSelector, Sets.newLinkedHashSet<Any>())
+        cField.isAccessible = true
+        (cField.get(this.goalSelector) as MutableSet<*>).clear()
+        (cField.get(this.targetSelector) as MutableSet<*>).clear()
     }
 }
