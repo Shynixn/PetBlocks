@@ -46,6 +46,16 @@ class PetMetaSqlRepository @Inject constructor(
     private val aiService: AIService,
     private val configurationService: ConfigurationService
 ) : PetMetaRepository {
+
+    private val tablePrefix: String
+        get() {
+            return if (configurationService.contains("sql.table-prefix")) {
+                configurationService.findValue("sql.table-prefix")
+            } else {
+                "SHY"
+            }
+        }
+
     /**
      * Returns the petMeta of from the given player uniqueId. Creates
      * a new one if it does not exist yet. Gets it from the runtime when a pet
@@ -62,11 +72,11 @@ class PetMetaSqlRepository @Inject constructor(
         return sqlDbContext.transaction<List<PetMeta>, Any> { connection ->
             val statement =
                 "SELECT * " +
-                        "FROM SHY_PET pet, SHY_SKIN skin, SHY_PLAYER player " +
+                        "FROM ${tablePrefix}_PET pet, ${tablePrefix}_SKIN skin, ${tablePrefix}_PLAYER player " +
                         "WHERE pet.shy_player_id = player.id " +
                         "AND shy_skin_id = skin.id "
 
-            val aiStatement = "SELECT * FROM SHY_PET_AI WHERE shy_pet_id = ?"
+            val aiStatement = "SELECT * FROM ${tablePrefix}_PET_AI WHERE shy_pet_id = ?"
 
             sqlDbContext.multiQuery(connection, statement, { resultSet ->
                 val petMeta = mapResultSetToPetMeta(resultSet)
@@ -131,12 +141,12 @@ class PetMetaSqlRepository @Inject constructor(
      */
     private fun getPetMeta(connection: Any, uuid: String): PetMeta? {
         val statement = "SELECT * " +
-                "FROM SHY_PET pet, SHY_SKIN skin, SHY_PLAYER player " +
+                "FROM ${tablePrefix}_PET pet, ${tablePrefix}_SKIN skin, ${tablePrefix}_PLAYER player " +
                 "WHERE player.uuid = ? " +
                 "AND pet.shy_player_id = player.id " +
                 "AND shy_skin_id = skin.id "
 
-        val aiStatement = "SELECT * FROM SHY_PET_AI WHERE shy_pet_id = ?"
+        val aiStatement = "SELECT * FROM ${tablePrefix}_PET_AI WHERE shy_pet_id = ?"
 
         return sqlDbContext.singleQuery(connection, statement, { resultSet ->
             val petMeta = mapResultSetToPetMeta(resultSet)
@@ -155,14 +165,14 @@ class PetMetaSqlRepository @Inject constructor(
     private fun update(connection: Any, petMeta: PetMeta): PetMeta {
         val playerMeta = petMeta.playerMeta
         sqlDbContext.update(
-            connection, "SHY_PLAYER", "WHERE id=" + playerMeta.id
+            connection, "${tablePrefix}_PLAYER", "WHERE id=" + playerMeta.id
             , "uuid" to playerMeta.uuid
             , "name" to playerMeta.name
         )
 
         val skinMeta = petMeta.skin
         sqlDbContext.update(
-            connection, "SHY_SKIN", "WHERE id=" + skinMeta.id
+            connection, "${tablePrefix}_SKIN", "WHERE id=" + skinMeta.id
             , "typename" to skinMeta.typeName
             , "owner" to skinMeta.owner
             , "datavalue" to skinMeta.dataValue
@@ -170,19 +180,19 @@ class PetMetaSqlRepository @Inject constructor(
         )
 
         sqlDbContext.update(
-            connection, "SHY_PET", "WHERE id=" + petMeta.id
+            connection, "${tablePrefix}_PET", "WHERE id=" + petMeta.id
             , "enabled" to petMeta.enabled
             , "displayname" to petMeta.displayName
             , "soundenabled" to petMeta.soundEnabled
             , "particleenabled" to petMeta.particleEnabled
         )
 
-        sqlDbContext.delete(connection, "SHY_PET_AI", "WHERE shy_pet_id=" + petMeta.id)
+        sqlDbContext.delete(connection, "${tablePrefix}_PET_AI", "WHERE shy_pet_id=" + petMeta.id)
 
         for (aiItem in petMeta.aiGoals) {
             val payloadString = aiService.serializeAiBaseToString(aiItem)
 
-            aiItem.id = sqlDbContext.insert(connection, "SHY_PET_AI"
+            aiItem.id = sqlDbContext.insert(connection, "${tablePrefix}_PET_AI"
                 , "shy_pet_id" to petMeta.id
                 , "typename" to aiItem.type
                 , "content" to payloadString)
@@ -197,13 +207,13 @@ class PetMetaSqlRepository @Inject constructor(
     private fun insertInto(connection: Any, petMeta: PetMeta): PetMeta {
         val playerMeta = petMeta.playerMeta
 
-        sqlDbContext.singleQuery(connection, "SELECT * from SHY_PLAYER WHERE uuid = ?", { resultSet ->
+        sqlDbContext.singleQuery(connection, "SELECT * from ${tablePrefix}_PLAYER WHERE uuid = ?", { resultSet ->
             playerMeta.id = resultSet.getItem<Int>("id").toLong()
         }, playerMeta.uuid)
 
         if (playerMeta.id == 0L) {
             playerMeta.id = sqlDbContext.insert(
-                connection, "SHY_PLAYER"
+                connection, "${tablePrefix}_PLAYER"
                 , "uuid" to playerMeta.uuid
                 , "name" to playerMeta.name
             )
@@ -211,7 +221,7 @@ class PetMetaSqlRepository @Inject constructor(
 
         val skinMeta = petMeta.skin
         skinMeta.id = sqlDbContext.insert(
-            connection, "SHY_SKIN"
+            connection, "${tablePrefix}_SKIN"
             , "typename" to skinMeta.typeName
             , "owner" to skinMeta.owner
             , "datavalue" to skinMeta.dataValue
@@ -219,7 +229,7 @@ class PetMetaSqlRepository @Inject constructor(
         )
 
         petMeta.id = sqlDbContext.insert(
-            connection, "SHY_PET"
+            connection, "${tablePrefix}_PET"
             , "shy_player_id" to playerMeta.id
             , "shy_skin_id" to skinMeta.id
             , "enabled" to petMeta.enabled
@@ -231,7 +241,7 @@ class PetMetaSqlRepository @Inject constructor(
         for (aiItem in petMeta.aiGoals) {
             val payloadString = aiService.serializeAiBaseToString(aiItem)
 
-            aiItem.id = sqlDbContext.insert(connection, "SHY_PET_AI"
+            aiItem.id = sqlDbContext.insert(connection, "${tablePrefix}_PET_AI"
                 , "shy_pet_id" to petMeta.id
                 , "typename" to aiItem.type
                 , "content" to payloadString)
