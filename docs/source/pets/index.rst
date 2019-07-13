@@ -5,8 +5,7 @@ The articles in this section explain how pets are constructed and used in PetBlo
 
 
 .. note::
- It is **important to understand the concepts** discussed in this section before you continue with the customization
- section.
+ It is **important to understand the concepts** discussed in this section before you continue with the customization section.
 
 
 .. toctree::
