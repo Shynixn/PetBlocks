@@ -49,7 +49,15 @@ class EntityRegistration114R1ServiceImpl : EntityRegistrationService {
 
         val entityRegistry = IRegistry.ENTITY_TYPE as RegistryBlocks<EntityTypes<*>>
         val key = entityType.saveGame_11
-        val size = entityRegistry.get(MinecraftKey(key)).j()
+        val internalRegistry = (entityRegistry.get(MinecraftKey(key)));
+
+        val size = try {
+            // Compatibility to 1.14.3 and below.
+            EntityTypes::class.java.getDeclaredMethod("j").invoke(internalRegistry) as EntitySize
+        } catch (e: Exception) {    // 1.14.4 and above.
+            EntityTypes::class.java.getDeclaredMethod("k").invoke(internalRegistry) as EntitySize
+        }
+
         val entityTypes =
             IRegistry.a(entityRegistry, "petblocks_" + key.toLowerCase(), EntityTypes.a.a<Entity>(EnumCreatureType.CREATURE).b().a().a(size.width, size.height).a(key))
 
