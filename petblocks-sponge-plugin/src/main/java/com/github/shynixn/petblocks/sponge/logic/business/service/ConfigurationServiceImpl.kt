@@ -210,7 +210,7 @@ class ConfigurationServiceImpl @Inject constructor(
             }
 
             if (description.containsKey("add-ai")) {
-                val goalsMap = (description["add-ai"] as Map<String, Any>)
+                val goalsMap = (description["add-ai"] as Map<Any, Any>)
 
                 for (goalKey in goalsMap.keys) {
                     val aiMap = goalsMap[goalKey] as Map<String, Any>
@@ -220,7 +220,7 @@ class ConfigurationServiceImpl @Inject constructor(
             }
 
             if (description.containsKey("remove-ai")) {
-                val goalsMap = (description["remove-ai"] as Map<String, Any>)
+                val goalsMap = (description["remove-ai"] as Map<Any, Any>)
 
                 for (goalKey in goalsMap.keys) {
                     val aiMap = goalsMap[goalKey] as Map<String, Any>
@@ -230,7 +230,7 @@ class ConfigurationServiceImpl @Inject constructor(
             }
 
             if (description.containsKey("replace-ai")) {
-                val goalsMap = (description["replace-ai"] as Map<Int, Any>)
+                val goalsMap = (description["replace-ai"] as Map<Any, Any>)
 
                 for (goalKey in goalsMap.keys) {
                     val aiMap = goalsMap[goalKey] as Map<String, Any>
@@ -356,7 +356,7 @@ class ConfigurationServiceImpl @Inject constructor(
 
         petMeta.aiGoals.clear()
 
-        val goalsMap = defaultConfig["add-ai"] as Map<Int, Any?>
+        val goalsMap = defaultConfig["add-ai"] as Map<Any, Any?>
 
         for (goalKey in goalsMap.keys) {
             val aiMap = goalsMap[goalKey] as Map<String, Any>
