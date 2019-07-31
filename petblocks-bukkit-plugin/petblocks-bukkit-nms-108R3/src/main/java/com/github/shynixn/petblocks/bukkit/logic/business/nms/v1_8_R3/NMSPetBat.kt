@@ -6,6 +6,7 @@ import net.minecraft.server.v1_8_R3.*
 import org.bukkit.Location
 import org.bukkit.craftbukkit.v1_8_R3.CraftWorld
 import org.bukkit.event.entity.CreatureSpawnEvent
+import org.bukkit.util.Vector
 
 /**
  * Created by Shynixn 2018.
@@ -37,6 +38,7 @@ import org.bukkit.event.entity.CreatureSpawnEvent
 class NMSPetBat(petDesign: NMSPetArmorstand, location: Location) : EntityBat((location.world as CraftWorld).handle) {
     private var petDesign: NMSPetArmorstand? = null
     private var pathfinderCounter = 0
+    private var lastPosition: Vector? = null
 
     init {
         this.petDesign = petDesign
@@ -74,24 +76,22 @@ class NMSPetBat(petDesign: NMSPetArmorstand, location: Location) : EntityBat((lo
     }
 
     /**
-     * Gets called on move to play sounds.
-     */
-    override fun a(blockposition: BlockPosition, block: Block) {
-        if (petDesign == null) {
-            return
-        }
-
-        if (!this.inWater) {
-            petDesign!!.proxy.playMovementEffects()
-        }
-    }
-
-    /**
      * Mobtick.
      */
     override fun E() {
         if (!this.onGround && this.motY < 0.0) {
             this.motY *= 0.6
+        }
+
+        if (petDesign == null) {
+            return
+        }
+
+        val currentPosition = this.getBukkitEntity().location.toVector()
+
+        if (!this.inWater && (lastPosition == null || lastPosition!!.distance(currentPosition) > 1)) {
+            petDesign!!.proxy.playMovementEffects()
+            lastPosition = currentPosition
         }
     }
 
