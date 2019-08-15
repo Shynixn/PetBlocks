@@ -34,6 +34,10 @@ import com.github.shynixn.petblocks.api.persistence.entity.Skin
  */
 class GuiItemEntity : GuiItem {
     /**
+     * Target pet name.
+     */
+    override var targetPetName: String? = null
+    /**
      * Is this gui item hidden when a player has certain condition.
      */
     override var hiddenCondition: Array<String>? = null

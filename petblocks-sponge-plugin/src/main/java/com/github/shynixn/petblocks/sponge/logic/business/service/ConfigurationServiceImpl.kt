@@ -179,6 +179,7 @@ class ConfigurationServiceImpl @Inject constructor(
             this.setItem<Int>("position", description) { value -> guiItem.position = value - 1 }
             this.setItem<Boolean>("fixed", description) { value -> guiItem.fixed = value }
             this.setItem<String>("script", description) { value -> guiItem.script = value }
+            this.setItem<String>("petname", description) {value -> guiItem.targetPetName = value}
 
             val iconDescription = (description["icon"] as Map<String, Any>)
 

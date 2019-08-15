@@ -302,6 +302,10 @@ class GUIServiceImpl @Inject constructor(
                 sendSponsoringMessage(pageCache, player)
             }
 
+            if (optGuiItem.targetPetName != null) {
+                petMeta.displayName = optGuiItem.targetPetName!!
+            }
+
             for (aiBase in optGuiItem.removeAIs.toTypedArray()) {
                 petMeta.aiGoals.removeIf { a -> a.type == aiBase.type }
             }
