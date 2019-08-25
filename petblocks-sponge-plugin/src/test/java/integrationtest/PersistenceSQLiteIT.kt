@@ -4,9 +4,9 @@ package integrationtest
 
 import com.github.shynixn.petblocks.api.PetBlocksApi
 import com.github.shynixn.petblocks.api.business.enumeration.ParticleType
+import com.github.shynixn.petblocks.api.business.enumeration.Permission
 import com.github.shynixn.petblocks.api.business.enumeration.Version
 import com.github.shynixn.petblocks.api.business.proxy.ItemStackProxy
-import com.github.shynixn.petblocks.api.business.proxy.PlayerProxy
 import com.github.shynixn.petblocks.api.business.proxy.PluginProxy
 import com.github.shynixn.petblocks.api.business.service.*
 import com.github.shynixn.petblocks.api.persistence.context.SqlDbContext
@@ -19,7 +19,6 @@ import com.github.shynixn.petblocks.core.logic.persistence.context.SqlDbContextI
 import com.github.shynixn.petblocks.core.logic.persistence.entity.AIMovementEntity
 import com.github.shynixn.petblocks.core.logic.persistence.repository.PetMetaSqlRepository
 import com.github.shynixn.petblocks.sponge.logic.business.proxy.ItemStackProxyImpl
-import com.github.shynixn.petblocks.sponge.logic.business.proxy.PlayerProxyImpl
 import com.github.shynixn.petblocks.sponge.logic.business.service.ConfigurationServiceImpl
 import com.github.shynixn.petblocks.sponge.logic.business.service.EntityServiceImpl
 import com.github.shynixn.petblocks.sponge.logic.business.service.ItemServiceImpl
@@ -30,8 +29,6 @@ import org.mockito.Mockito
 import org.spongepowered.api.asset.Asset
 import org.spongepowered.api.entity.living.player.Player
 import org.spongepowered.api.plugin.PluginContainer
-import org.spongepowered.api.world.Location
-import org.spongepowered.api.world.World
 import java.io.File
 import java.nio.file.Paths
 import java.util.*
@@ -308,42 +305,79 @@ class PersistenceSQLiteIT {
 
     class MockedProxyService : ProxyService {
         /**
-         * Returns a player proxy object for the given instance.
-         * Throws a [IllegalArgumentException] if the proxy could not be generated.
-         */
-        override fun <P> findPlayerProxyObject(instance: P): PlayerProxy {
-            if (instance !is Player) {
-                throw RuntimeException()
-            }
-
-            Mockito.`when`(instance.name).thenReturn("Kenny")
-            Mockito.`when`(instance.location).thenReturn(Location(Mockito.mock(World::class.java), 20.2, 20.2, 20.2))
-
-            return PlayerProxyImpl(instance as Player)
-        }
-
-        /**
          * Gets if the given instance can be converted to a player.
          */
         override fun <P> isPlayer(instance: P): Boolean {
+            return true
+        }
+
+        /**
+         * Gets the name of a player.
+         */
+        override fun <P> getPlayerName(player: P): String {
+            return "Kenny"
+        }
+
+        /**
+         * Gets the player from the given UUID.
+         */
+        override fun <P> getPlayerFromUUID(uuid: String): P {
             throw IllegalArgumentException()
         }
 
         /**
-         * Tries to return a player proxy for the given player uuid.
+         * Gets the location of the player.
          */
-        override fun findPlayerProxyObjectFromUUID(uuid: String): PlayerProxy {
-            val playerProxy = Mockito.mock(PlayerProxy::class.java)
-            Mockito.`when`(playerProxy.uniqueId).thenReturn(uuid)
-            Mockito.`when`(playerProxy.name).thenReturn("Kenny")
-
-            return playerProxy
+        override fun <L, P> getPlayerLocation(player: P): L {
+            throw IllegalArgumentException()
         }
 
         /**
-         * Clears any resources the given instance has allocated.
+         * Converts the given [location] to a [Position].
          */
-        override fun cleanResources(instance: Any) {
+        override fun <L> toPosition(location: L): Position {
+            throw IllegalArgumentException()
+        }
+
+        /**
+         * Gets the looking direction of the player.
+         */
+        override fun <P> getDirectionVector(player: P): Position {
+            throw IllegalArgumentException()
+        }
+
+        /**
+         * Gets the item in the player hand.
+         */
+        override fun <P, I> getPlayerItemInHand(player: P, offhand: Boolean): I? {
+            throw IllegalArgumentException()
+        }
+
+        /**
+         * Sets the item in the player hand.
+         */
+        override fun <P, I> setPlayerItemInHand(player: P, itemStack: I, offhand: Boolean) {
+            throw IllegalArgumentException()
+        }
+
+        /**
+         * Gets if the given player has got the given permission.
+         */
+        override fun <P> hasPermission(player: P, permission: Permission): Boolean {
+            throw IllegalArgumentException()
+        }
+
+        /**
+         * Gets the player uuid.
+         */
+        override fun <P> getPlayerUUID(player: P): String {
+            return (player as Player).uniqueId.toString()
+        }
+
+        /**
+         * Sends a message to the [sender].
+         */
+        override fun <S> sendMessage(sender: S, message: String) {
             throw IllegalArgumentException()
         }
     }

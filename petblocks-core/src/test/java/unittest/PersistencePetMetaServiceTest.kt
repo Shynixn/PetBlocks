@@ -3,7 +3,6 @@
 package unittest
 
 import com.github.shynixn.petblocks.api.business.enumeration.Permission
-import com.github.shynixn.petblocks.api.business.proxy.PlayerProxy
 import com.github.shynixn.petblocks.api.business.service.ConcurrencyService
 import com.github.shynixn.petblocks.api.business.service.EventService
 import com.github.shynixn.petblocks.api.business.service.PersistencePetMetaService
@@ -14,12 +13,9 @@ import com.github.shynixn.petblocks.api.persistence.repository.PetMetaRepository
 import com.github.shynixn.petblocks.core.logic.business.service.PersistencePetMetaServiceImpl
 import com.github.shynixn.petblocks.core.logic.persistence.entity.PetMetaEntity
 import com.github.shynixn.petblocks.core.logic.persistence.entity.PlayerMetaEntity
-import com.github.shynixn.petblocks.core.logic.persistence.entity.PositionEntity
 import com.github.shynixn.petblocks.core.logic.persistence.entity.SkinEntity
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
-import org.mockito.Mockito
-import org.mockito.Mockito.`when`
 import java.util.*
 
 /**
@@ -179,105 +175,93 @@ class PersistencePetMetaServiceTest {
         }
     }
 
-    class MockedPlayerProxy(
-        override val uniqueId: String,
-        override val handle: Any = "?",
-        override val name: String = "tmp",
-        override val position: Position = PositionEntity(20.2, 20.2, 20.2, 0.0, 0.0),
-        override val isOnline: Boolean = true
-    ) : PlayerProxy{
+    /*   class MockedPlayerProxy(
+           override val uniqueId: String,
+           override val handle: Any = "?",
+           override val name: String = "tmp",
+           override val position: Position = PositionEntity(20.2, 20.2, 20.2, 0.0, 0.0),
+           override val isOnline: Boolean = true
+       ) : PlayerProxy {*/
+
+    class MockedProxyService : ProxyService {
         /**
-         * Sends a message to the player.
+         * Gets if the given instance can be converted to a player.
          */
-        override fun sendMessage(text: String) {
-            throw IllegalArgumentException()
+        override fun <P> isPlayer(instance: P): Boolean {
+            return true
         }
 
         /**
-         * Sets the item at the given index in the inventory.
+         * Gets the name of a player.
          */
-        override fun <I> setInventoryItem(index: Int, itemstack: I) {
-            throw IllegalArgumentException()
+        override fun <P> getPlayerName(player: P): String {
+            return "Kenny"
         }
 
         /**
-         * Sets the item in the players hand.
+         * Gets the player from the given UUID.
          */
-        override fun <I> setItemInHand(itemStack: I, offHand: Boolean) {
-            throw IllegalArgumentException()
-        }
-
-        /**
-         * Gets the item in the players hand.
-         */
-        override fun <I> getItemInHand(offHand: Boolean): I? {
+        override fun <P> getPlayerFromUUID(uuid: String): P {
             throw IllegalArgumentException()
         }
 
         /**
          * Gets the location of the player.
          */
-        override fun <L> getLocation(): L {
+        override fun <L, P> getPlayerLocation(player: P): L {
             throw IllegalArgumentException()
         }
 
         /**
-         * Gets if this player has got permissions.
+         * Converts the given [location] to a [Position].
          */
-        override fun hasPermission(permission: Permission): Boolean {
+        override fun <L> toPosition(location: L): Position {
             throw IllegalArgumentException()
         }
 
         /**
-         * Updates the player inventory.
+         * Gets the looking direction of the player.
          */
-        override fun updateInventory() {
+        override fun <P> getDirectionVector(player: P): Position {
             throw IllegalArgumentException()
         }
 
         /**
-         * Generates a vector for the launching direction.
+         * Gets the item in the player hand.
          */
-        override fun getDirectionLaunchVector(): Position {
-            throw IllegalArgumentException()
-        }
-    }
-
-    class MockedProxyService : ProxyService {
-
-        /**
-         * Returns a player proxy object for the given instance.
-         * Throws a [IllegalArgumentException] if the proxy could not be generated.
-         */
-        override fun <P> findPlayerProxyObject(instance: P): PlayerProxy {
-            return MockedPlayerProxy(instance as String)
-        }
-
-        /**
-         * Gets if the given instance can be converted to a player.
-         */
-        override fun <P> isPlayer(instance: P): Boolean {
+        override fun <P, I> getPlayerItemInHand(player: P, offhand: Boolean): I? {
             throw IllegalArgumentException()
         }
 
         /**
-         * Tries to return a player proxy for the given player uuid.
+         * Sets the item in the player hand.
          */
-        override fun findPlayerProxyObjectFromUUID(uuid: String): PlayerProxy {
-            if (uuid == "ecd66f19-3b5b-4910-b8e6-1716b5a636bf") {
-                val playerProxy = Mockito.mock(PlayerProxy::class.java)
-                `when`(playerProxy.name).thenReturn("Kenny")
+        override fun <P, I> setPlayerItemInHand(player: P, itemStack: I, offhand: Boolean) {
+            throw IllegalArgumentException()
+        }
 
-                return playerProxy
+        /**
+         * Gets if the given player has got the given permission.
+         */
+        override fun <P> hasPermission(player: P, permission: Permission): Boolean {
+            throw IllegalArgumentException()
+        }
+
+        /**
+         * Gets the player uuid.
+         */
+        override fun <P> getPlayerUUID(player: P): String {
+            if (player == "ecd66f19-3b5b-4910-b8e6-1716b5a636bf") {
+                return "ecd66f19-3b5b-4910-b8e6-1716b5a636bf"
             }
 
             throw IllegalArgumentException()
         }
 
         /**
-         * Clears any resources the given instance has allocated.
+         * Sends a message to the [sender].
          */
-        override fun cleanResources(instance: Any) {
+        override fun <S> sendMessage(sender: S, message: String) {
             throw IllegalArgumentException()
         }
     }

@@ -69,10 +69,10 @@ class CombatPetServiceImpl @Inject constructor(
         val aiBase = petMeta.aiGoals.first { a -> a is AIFleeInCombat } as AIFleeInCombat
         aiBase.currentAppearsInSeconds = aiBase.reAppearsInSeconds
 
-        val playerProxy = proxyService.findPlayerProxyObjectFromUUID(petMeta.playerMeta.uuid)
+        val player = proxyService.getPlayerFromUUID<Any>(petMeta.playerMeta.uuid)
 
-        if (petService.hasPet(playerProxy.handle)) {
-            petService.getOrSpawnPetFromPlayer(playerProxy.handle).get().remove()
+        if (petService.hasPet(player)) {
+            petService.getOrSpawnPetFromPlayer(player).get().remove()
         }
     }
 
@@ -99,9 +99,9 @@ class CombatPetServiceImpl @Inject constructor(
             aiBase.currentAppearsInSeconds = aiBase.currentAppearsInSeconds - 1
 
             if (aiBase.currentAppearsInSeconds < 1) {
-                val playerProxy = proxyService.findPlayerProxyObjectFromUUID(petMeta.playerMeta.uuid)
+                val player = proxyService.getPlayerFromUUID<Any>(petMeta.playerMeta.uuid)
 
-                petService.getOrSpawnPetFromPlayer(playerProxy.handle)
+                petService.getOrSpawnPetFromPlayer(player)
             }
         }
     }

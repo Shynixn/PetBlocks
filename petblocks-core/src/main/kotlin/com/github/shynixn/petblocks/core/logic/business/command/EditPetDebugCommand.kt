@@ -51,15 +51,15 @@ class EditPetDebugCommand @Inject constructor(
             return false
         }
 
-        val sourceProxy = proxyService.findPlayerProxyObject(source)
-        val playerProxy = proxyService.findPlayerProxyObject(result.first)
+        val sourceName = proxyService.getPlayerName(source)
+        val playerName = proxyService.getPlayerName(result.first)
 
         if (petDebugService.isRegistered(source)) {
             petDebugService.unRegister(source)
-            messageService.sendSourceMessage(source, "Disabled debug for player ${sourceProxy.name}.")
+            messageService.sendSourceMessage(source, "Disabled debug for player $sourceName.")
         } else {
-            petDebugService.register(sourceProxy.handle, playerProxy.handle)
-            messageService.sendSourceMessage(source, "Enabled debug for player ${sourceProxy.name} watching ${playerProxy.name}")
+            petDebugService.register(source, result.first)
+            messageService.sendSourceMessage(source, "Enabled debug for player $sourceName watching $playerName")
         }
 
         return true

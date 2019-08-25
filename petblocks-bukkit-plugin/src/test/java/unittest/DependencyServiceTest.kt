@@ -154,7 +154,6 @@ class DependencyServiceTest {
         Assertions.assertTrue(actual)
     }
 
-
     /**
      * Given
      *   no installed plugin dependencies
@@ -235,10 +234,6 @@ class DependencyServiceTest {
             throw IllegalArgumentException()
         }
 
-        override fun spigot(): CommandSender.Spigot {
-            throw IllegalArgumentException()
-        }
-
         var messageCounter = 0
 
         override fun sendMessage(p0: String) {
@@ -284,6 +279,7 @@ class DependencyServiceTest {
         override fun isOp(): Boolean {
             throw IllegalArgumentException()
         }
+
         override fun getEffectivePermissions(): MutableSet<PermissionAttachmentInfo> {
             throw IllegalArgumentException()
         }

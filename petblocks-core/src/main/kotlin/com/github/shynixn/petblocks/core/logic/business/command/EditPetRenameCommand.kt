@@ -54,13 +54,14 @@ class EditPetRenameCommand @Inject constructor(
             return false
         }
 
-        val playerProxy = proxyService.findPlayerProxyObject(result.first)
+        val player = result.first
+        val playerName = proxyService.getPlayerName(player)
         val message = result.second
 
-        val petMeta = petMetaService.getPetMetaFromPlayer(playerProxy)
+        val petMeta = petMetaService.getPetMetaFromPlayer(player)
 
         petMeta.displayName = message
-        messageService.sendSourceMessage(source, "Renamed the pet of player ${playerProxy.name}.")
+        messageService.sendSourceMessage(source, "Renamed the pet of player ${playerName}.")
 
         return true
     }

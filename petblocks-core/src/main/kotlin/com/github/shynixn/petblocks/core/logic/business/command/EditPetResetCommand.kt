@@ -54,21 +54,23 @@ class EditPetResetCommand @Inject constructor(
             return false
         }
 
-        val playerProxy = proxyService.findPlayerProxyObject(result.first)
+        val player = result.first
+        val playerName = proxyService.getPlayerName(player)
+        val playerUuid = proxyService.getPlayerUUID(player)
 
-        if (petService.hasPet(playerProxy)) {
-            val pet = petService.getOrSpawnPetFromPlayer(playerProxy).get()
+        if (petService.hasPet(player)) {
+            val pet = petService.getOrSpawnPetFromPlayer(player).get()
             pet.remove()
         }
 
         configurationService.refresh()
 
-        messageService.sendSourceMessage(source, "Resetting the pet of player ${playerProxy.name}...")
+        messageService.sendSourceMessage(source, "Resetting the pet of player $playerName...")
 
-        val newPetMeta = configurationService.generateDefaultPetMeta(playerProxy.uniqueId, playerProxy.name)
+        val newPetMeta = configurationService.generateDefaultPetMeta(playerUuid, playerName)
         petMetaService.save(newPetMeta).thenAcceptSafely {
-            petMetaService.refreshPetMetaFromRepository(playerProxy).thenAcceptSafely {
-                messageService.sendSourceMessage(source, "Finished resetting the pet of player ${playerProxy.name}.")
+            petMetaService.refreshPetMetaFromRepository(player).thenAcceptSafely {
+                messageService.sendSourceMessage(source, "Finished resetting the pet of player $playerName.")
             }
         }
 

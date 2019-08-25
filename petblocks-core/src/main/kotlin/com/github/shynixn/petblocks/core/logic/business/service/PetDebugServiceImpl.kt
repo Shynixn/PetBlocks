@@ -112,12 +112,14 @@ class PetDebugServiceImpl @Inject constructor(
                 false)
             messageService.sendSourceMessage(source, "", false)
 
-            val playerProxy = proxyService.findPlayerProxyObject(registeredSources[source])
-            val petMeta = petMetaService.getPetMetaFromPlayer(playerProxy)
+            val player = registeredSources[source]
+            val petMeta = petMetaService.getPetMetaFromPlayer(player)
+            val playerUUID = proxyService.getPlayerUUID(player)
+            val playerName = proxyService.getPlayerName(player)
 
             val internalMessage = ChatMessageEntity()
                 .appendComponent()
-                .append(prefix).append("Player: ${playerProxy.name} ").appendHoverComponent().append("UUID: " + playerProxy.uniqueId).getRoot().append("\n")
+                .append(prefix).append("Player: $playerName ").appendHoverComponent().append("UUID: $playerUUID").getRoot().append("\n")
                 .appendComponent()
                 .append(prefix).append("Petname: ${petMeta.displayName.translateChatColors()}").append("\n")
                 .appendComponent()

@@ -69,12 +69,12 @@ class HealthServiceImpl @Inject constructor(
         aiHealth.health = aiHealth.health - damage
 
         if (aiHealth.health <= 0) {
-            val playerProxy = proxyService.findPlayerProxyObjectFromUUID(petMeta.playerMeta.uuid)
+            val player = proxyService.getPlayerFromUUID<Any>(petMeta.playerMeta.uuid)
             aiHealth.currentRespawningDelay = aiHealth.respawningDelay
             aiHealth.health = 0.0
 
-            if (petService.hasPet(playerProxy.handle)) {
-                petService.getOrSpawnPetFromPlayer(playerProxy.handle).get().remove()
+            if (petService.hasPet(player)) {
+                petService.getOrSpawnPetFromPlayer(player).get().remove()
             }
         }
     }
@@ -99,9 +99,8 @@ class HealthServiceImpl @Inject constructor(
                 aiBase.currentRespawningDelay--
 
                 if (aiBase.currentRespawningDelay == 0) {
-                    val playerProxy = proxyService.findPlayerProxyObjectFromUUID(petMeta.playerMeta.uuid)
-
-                    petService.getOrSpawnPetFromPlayer(playerProxy.handle)
+                    val player = proxyService.getPlayerFromUUID<Any>(petMeta.playerMeta.uuid)
+                    petService.getOrSpawnPetFromPlayer(player)
                 }
             }
 
