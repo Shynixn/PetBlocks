@@ -54,15 +54,16 @@ class EditPetToggleSoundCommand @Inject constructor(
             return false
         }
 
-        val playerProxy = proxyService.findPlayerProxyObject(result.first)
-        val petMeta = petMetaService.getPetMetaFromPlayer(playerProxy)
+        val player = result.first
+        val playerName = proxyService.getPlayerName(player)
+        val petMeta = petMetaService.getPetMetaFromPlayer(player as Any)
 
         petMeta.soundEnabled = !petMeta.soundEnabled
 
         if (petMeta.soundEnabled) {
-            messageService.sendSourceMessage(source, "Enabled sound for player ${playerProxy.name}.")
+            messageService.sendSourceMessage(source, "Enabled sound for player $playerName.")
         } else {
-            messageService.sendSourceMessage(source, "Disabled sound for player ${playerProxy.name}.")
+            messageService.sendSourceMessage(source, "Disabled sound for player $playerName.")
         }
 
         return true

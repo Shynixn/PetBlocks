@@ -156,11 +156,11 @@ class EntityServiceImpl @Inject constructor(
     override fun <L> spawnPetProxy(location: L, petMeta: PetMeta): PetProxy {
         this.registerEntitiesOnServer()
 
-        val playerProxy = proxyService.findPlayerProxyObjectFromUUID(petMeta.playerMeta.uuid)
         val designClazz = Class.forName("com.github.shynixn.petblocks.sponge.logic.business.nms.VERSION.NMSPetArmorstand".replace("VERSION", version.bukkitId))
+        val player = proxyService.getPlayerFromUUID<Any>(petMeta.playerMeta.uuid)
 
         return (designClazz.getDeclaredConstructor(Player::class.java, PetMeta::class.java)
-            .newInstance(playerProxy.handle, petMeta) as NMSPetProxy).proxy
+            .newInstance(player, petMeta) as NMSPetProxy).proxy
     }
 
     /**

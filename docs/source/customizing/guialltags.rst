@@ -18,6 +18,7 @@ col                               yes       Column grid index starting from 1 le
 hidden                            no        Hides the gui item per default                           hidden: false (default), hidden: true
 fixed                             no        Fixed the gui item at the same slot on scrolling         fixed: false (default), fixed: true
 permission                        no        Custom required permission to execute this item          permission: 'petblocks.wardrobe.open', permission: 'strange.perm'
+petname                           no        Sets the name of the pet to this value                   petname: 'Creeper'
 **script**                        no        Execute one of the actions defined below                 script: 'call-pet', 'open-page gui.colored-block-skins'
 **hidden-on**                     no        Hides the gui item on certain states                     hidden-on
 **blocked-on**                    no        Blocks the gui item on certain states                    blocked-on

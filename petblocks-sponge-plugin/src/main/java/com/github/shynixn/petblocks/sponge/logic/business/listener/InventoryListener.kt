@@ -75,6 +75,5 @@ class InventoryListener @Inject constructor(private val guiService: GUIService, 
     @Listener
     fun playerQuitEvent(event: ClientConnectionEvent.Disconnect) {
         guiService.cleanResources(event.targetEntity)
-        proxyService.cleanResources(event.targetEntity)
     }
 }

@@ -54,15 +54,16 @@ class EditPetToggleParticleCommand @Inject constructor(
             return false
         }
 
-        val playerProxy = proxyService.findPlayerProxyObject(result.first)
-        val petMeta = petMetaService.getPetMetaFromPlayer(playerProxy)
+        val player = result.first
+        val playerName = proxyService.getPlayerName(player)
+        val petMeta = petMetaService.getPetMetaFromPlayer(player)
 
         petMeta.particleEnabled = !petMeta.particleEnabled
 
         if (petMeta.particleEnabled) {
-            messageService.sendSourceMessage(source, "Enabled particles for player ${playerProxy.name}.")
+            messageService.sendSourceMessage(source, "Enabled particles for player $playerName.")
         } else {
-            messageService.sendSourceMessage(source, "Disabled particles for player ${playerProxy.name}.")
+            messageService.sendSourceMessage(source, "Disabled particles for player $playerName.")
         }
 
         return true

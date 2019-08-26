@@ -90,7 +90,7 @@ dependencies {
     testCompile 'org.junit.jupiter:junit-jupiter-api:5.3.1'
     testCompile 'org.xerial:sqlite-jdbc:3.23.1'
     testCompile 'ch.vorburger.mariaDB4j:mariaDB4j:2.2.3'
-    testCompile 'org.spigotmc:spigot114R1:1.14.4-R1.0'
+    testCompile 'org.spigotmc:spigot18R1:1.8.0-R1.0'
 
     testRuntime 'org.junit.jupiter:junit-jupiter-engine:5.3.1'
 }

@@ -2,6 +2,7 @@
 
 package com.github.shynixn.petblocks.bukkit.logic.business.service
 
+import com.github.shynixn.petblocks.api.business.enumeration.SoundType
 import com.github.shynixn.petblocks.api.business.enumeration.Version
 import com.github.shynixn.petblocks.api.business.service.ConfigurationService
 import com.github.shynixn.petblocks.api.business.service.SoundService
@@ -40,6 +41,8 @@ import java.util.logging.Level
  * SOFTWARE.
  */
 class SoundServiceImpl @Inject constructor(private val plugin: Plugin, private val configurationService: ConfigurationService, private val version: Version) : SoundService {
+    private val soundCache = HashMap<String, org.bukkit.Sound>()
+
     /**
      * Plays the given [sound] at the given [location] for the given [player] or
      * all players in the world if the config option is enabled.
@@ -66,119 +69,35 @@ class SoundServiceImpl @Inject constructor(private val plugin: Plugin, private v
             throw IllegalArgumentException("Location has to be a BukkitLocation!")
         }
 
-        if (sound.name.equals("none", true)) {
+        val soundName = sound.name.toUpperCase()
+
+        if (soundName.equals("NONE", true)) {
             return
         }
 
-        val targets = (players as Collection<Player>).toTypedArray()
-        val name = convertName(sound.name)
-
         try {
-            targets.forEach { p ->
-                p.playSound(location, org.bukkit.Sound.valueOf(name), sound.volume.toFloat(), sound.pitch.toFloat())
+            if (!soundCache.containsKey(soundName)) {
+                val soundType = SoundType.values().firstOrNull { s -> s.name == soundName }
+                if (soundType != null) {
+                    for (name in soundType.soundNames) {
+                        try {
+                            soundCache[soundName] = org.bukkit.Sound.valueOf(name)
+                            break
+                        } catch (i: IllegalArgumentException) {
+                        }
+                    }
+                } else {
+                    soundCache[soundName] = org.bukkit.Sound.valueOf(soundName)
+                }
+            }
+
+            val playSound = soundCache[soundName] ?: throw IllegalArgumentException("Cannot find sound.")
+
+            for (player in players) {
+                (player as Player).playSound(location, playSound, sound.volume.toFloat(), sound.pitch.toFloat())
             }
         } catch (e: Exception) {
             plugin.logger.log(Level.WARNING, "Failed to send sound. Is the sound '" + sound.name + "' supported by this server version?", e)
         }
-    }
-
-    private fun convertName(name: String): String {
-        if (version.isVersionSameOrGreaterThan(Version.VERSION_1_13_R1)) {
-            when (name) {
-                "MAGMACUBE_WALK" -> {
-                    return "ENTITY_MAGMA_CUBE_JUMP"
-                }
-
-                "ENDERMAN_IDLE" -> {
-                    return "ENTITY_ENDERMAN_AMBIENT"
-                }
-
-                "ENDERDRAGON_GROWL" -> {
-                    return "ENTITY_ENDER_DRAGON_GROWL"
-                }
-
-                "ENDERDRAGON_WINGS" -> {
-                    return "ENTITY_ENDER_DRAGON_FLAP"
-                }
-
-                "IRONGOLEM_WALK" -> {
-                    return "ENTITY_IRON_GOLEM_STEP"
-                }
-            }
-        }
-
-        if (version.isVersionSameOrGreaterThan(Version.VERSION_1_9_R1)) {
-            when (name) {
-                "ENDERMAN_IDLE" -> {
-                    return "ENTITY_ENDERMEN_AMBIENT"
-                }
-
-                "MAGMACUBE_WALK" -> {
-                    return "ENTITY_MAGMACUBE_JUMP"
-                }
-
-                "SLIME_WALK" -> {
-                    return "ENTITY_SLIME_JUMP"
-                }
-
-                "EXPLODE" -> {
-                    return "ENTITY_GENERIC_EXPLODE"
-                }
-
-                "EAT" -> {
-                    return "ENTITY_GENERIC_EAT"
-                }
-
-                "WOLF_GROWL" -> {
-                    return "ENTITY_WOLF_GROWL"
-                }
-
-                "CAT_MEOW" -> {
-                    return "ENTITY_CAT_PURREOW"
-                }
-
-                "HORSE_GALLOP" -> {
-                    return "ENTITY_GENERIC_EXPLODE"
-                }
-
-                "ENTITY_HORSE_GALLOP" -> {
-                    return "ENTITY_GENERIC_EXPLODE"
-                }
-
-                "BAT_LOOP" -> {
-                    return "ENTITY_BAT_LOOP"
-                }
-
-                "GHAST_SCREAM" -> {
-                    return "ENTITY_GHAST_SCREAM"
-                }
-
-                "BLAZE_BREATH" -> {
-                    return "ENTITY_BLAZE_AMBIENT"
-                }
-
-                "ENDERDRAGON_WINGS" -> {
-                    return "ENTITY_ENDERDRAGON_FLAP"
-                }
-
-                "ENDERDRAGON_GROWL" -> {
-                    return "ENTITY_ENDERDRAGON_GROWL"
-                }
-
-                "none" -> {
-                    return "none"
-                }
-
-                else -> {
-                    if (name.contains("WALK")) {
-                        return "ENTITY_" + name.toUpperCase().split("_".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()[0] + "_STEP"
-                    } else if (name.contains("IDLE")) {
-                        return "ENTITY_" + name.toUpperCase().split("_".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()[0] + "_AMBIENT"
-                    }
-                }
-            }
-        }
-
-        return name
     }
 }

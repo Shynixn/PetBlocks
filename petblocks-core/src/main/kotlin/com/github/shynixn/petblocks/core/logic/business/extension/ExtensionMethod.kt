@@ -10,8 +10,6 @@ import com.github.shynixn.petblocks.api.persistence.entity.ChatMessage
 import com.github.shynixn.petblocks.api.persistence.entity.Position
 import com.github.shynixn.petblocks.api.persistence.entity.PropertyTrackable
 import com.github.shynixn.petblocks.core.logic.persistence.entity.ChatMessageEntity
-import java.lang.reflect.Field
-import java.lang.reflect.Modifier
 import java.util.concurrent.CompletableFuture
 import java.util.regex.Pattern
 import kotlin.reflect.KProperty

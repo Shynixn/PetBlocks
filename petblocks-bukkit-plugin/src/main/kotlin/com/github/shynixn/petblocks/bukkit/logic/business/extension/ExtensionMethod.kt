@@ -285,8 +285,8 @@ var ItemStack.displayName: String
         return ""
     }
     set(value) {
-        val meta = itemMeta
-        meta!!.setDisplayName(value.translateChatColors())
+        val meta = itemMeta ?: return
+        meta.setDisplayName(value.translateChatColors())
         itemMeta = meta
     }
 
@@ -294,14 +294,14 @@ var ItemStack.displayName: String
  * Sets the itemstack lore.
  */
 fun ItemStack.setLore(lore: List<String>): ItemStack {
-    val meta = itemMeta
+    val meta = itemMeta ?: return this
     val tmpLore = ArrayList<String>()
 
     lore.forEach { l ->
         tmpLore.add(l.translateChatColors())
     }
 
-    meta!!.lore = tmpLore
+    meta.lore = tmpLore
 
     itemMeta = meta
     return this

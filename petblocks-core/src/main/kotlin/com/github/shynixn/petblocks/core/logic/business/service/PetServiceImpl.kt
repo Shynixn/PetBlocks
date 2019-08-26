@@ -63,18 +63,20 @@ class PetServiceImpl @Inject constructor(
      * For example HealthAI defines pet ai as 0 which results into impossibility to spawn.
      */
     override fun <P> getOrSpawnPetFromPlayer(player: P): Optional<PetProxy> {
-        val playerProxy = proxyService.findPlayerProxyObject(player)
+        val playerUUID = proxyService.getPlayerUUID(player)
+        val playerLocation = proxyService.getPlayerLocation<Any, P>(player)
+        val playerPosition = proxyService.toPosition(playerLocation)
 
         if (hasPet(player)) {
-            return Optional.of(pets.first { p -> !p.isDead && p.meta.playerMeta.uuid == playerProxy.uniqueId })
+            return Optional.of(pets.first { p -> !p.isDead && p.meta.playerMeta.uuid == playerUUID })
         }
 
-        if (!isAllowedToSpawn(playerProxy.position)) {
+        if (!isAllowedToSpawn(playerPosition)) {
             return Optional.empty()
         }
 
         val petMeta = petMetaService.getPetMetaFromPlayer(player)
-        val cancelled = eventService.callEvent(PetPreSpawnEntity(playerProxy.handle, petMeta))
+        val cancelled = eventService.callEvent(PetPreSpawnEntity(player as Any, petMeta))
 
         if (cancelled) {
             return Optional.empty()
@@ -83,7 +85,7 @@ class PetServiceImpl @Inject constructor(
         val petProxy: PetProxy
 
         try {
-            petProxy = entityService.spawnPetProxy(playerProxy.getLocation<Any>(), petMeta)
+            petProxy = entityService.spawnPetProxy(playerLocation, petMeta)
         } catch (e: Exception) {
             loggingService.warn("Failed to spawn pet.", e)
             return Optional.empty()
@@ -94,7 +96,7 @@ class PetServiceImpl @Inject constructor(
         petMeta.enabled = true
         petMetaService.save(petMeta)
 
-        eventService.callEvent(PetPostSpawnEntity(playerProxy.handle, petProxy))
+        eventService.callEvent(PetPostSpawnEntity(player as Any, petProxy))
 
         return Optional.of(petProxy)
     }
@@ -103,9 +105,8 @@ class PetServiceImpl @Inject constructor(
      * Gets if the given [player] has got an active pet.
      */
     override fun <P> hasPet(player: P): Boolean {
-        val playerProxy = proxyService.findPlayerProxyObject(player)
-
-        return pets.firstOrNull { p -> !p.isDead && p.meta.playerMeta.uuid == playerProxy.uniqueId } != null
+        val playerUUID = proxyService.getPlayerUUID(player)
+        return pets.firstOrNull { p -> !p.isDead && p.meta.playerMeta.uuid == playerUUID } != null
     }
 
     /**

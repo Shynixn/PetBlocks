@@ -291,6 +291,10 @@ class GUIServiceImpl @Inject constructor(
                 sendSponsoringMessage(pageCache, player)
             }
 
+            if (optGuiItem.targetPetName != null) {
+                petMeta.displayName = optGuiItem.targetPetName!!
+            }
+
             for (aiBase in optGuiItem.removeAIs.toTypedArray()) {
                 petMeta.aiGoals.removeIf { a -> a.type == aiBase.type }
             }
@@ -494,14 +498,17 @@ class GUIServiceImpl @Inject constructor(
         }
 
         val meta = itemStack.itemMeta
-        val tmpLore = ArrayList<String>()
 
-        guiIcon.lore.forEach { l ->
-            tmpLore.add(l.replace("<permission>", permissionMessage).translateChatColors())
+        if (meta != null) {
+            val tmpLore = ArrayList<String>()
+
+            guiIcon.lore.forEach { l ->
+                tmpLore.add(l.replace("<permission>", permissionMessage).translateChatColors())
+            }
+
+            meta!!.lore = tmpLore
+            itemStack.itemMeta = meta
         }
-
-        meta!!.lore = tmpLore
-        itemStack.itemMeta = meta
 
         try {
             inventory.setItem(position, itemStack)

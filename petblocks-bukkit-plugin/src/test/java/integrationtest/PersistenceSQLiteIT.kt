@@ -4,16 +4,16 @@ package integrationtest
 
 import com.github.shynixn.petblocks.api.PetBlocksApi
 import com.github.shynixn.petblocks.api.business.enumeration.ParticleType
+import com.github.shynixn.petblocks.api.business.enumeration.Permission
 import com.github.shynixn.petblocks.api.business.enumeration.Version
-import com.github.shynixn.petblocks.api.business.proxy.PlayerProxy
 import com.github.shynixn.petblocks.api.business.proxy.PluginProxy
 import com.github.shynixn.petblocks.api.business.service.*
 import com.github.shynixn.petblocks.api.persistence.context.SqlDbContext
 import com.github.shynixn.petblocks.api.persistence.entity.*
-import com.github.shynixn.petblocks.bukkit.logic.business.proxy.PlayerProxyImpl
 import com.github.shynixn.petblocks.bukkit.logic.business.service.ConfigurationServiceImpl
 import com.github.shynixn.petblocks.bukkit.logic.business.service.EntityServiceImpl
 import com.github.shynixn.petblocks.bukkit.logic.business.service.Item113R1ServiceImpl
+import com.github.shynixn.petblocks.bukkit.logic.business.service.Item18R1ServiceImpl
 import com.github.shynixn.petblocks.core.logic.business.service.AIServiceImpl
 import com.github.shynixn.petblocks.core.logic.business.service.LoggingUtilServiceImpl
 import com.github.shynixn.petblocks.core.logic.business.service.PersistencePetMetaServiceImpl
@@ -91,7 +91,7 @@ class PersistenceSQLiteIT {
         Assertions.assertEquals(true, actual.soundEnabled)
         Assertions.assertEquals(true, actual.particleEnabled)
         Assertions.assertEquals(1, actual.skin.id)
-        Assertions.assertEquals("LEGACY_GRASS", actual.skin.typeName)
+        Assertions.assertEquals("GRASS", actual.skin.typeName)
         Assertions.assertEquals(0, actual.skin.dataValue)
         Assertions.assertEquals(false, actual.skin.unbreakable)
         Assertions.assertEquals("", actual.skin.owner)
@@ -249,7 +249,7 @@ class PersistenceSQLiteIT {
             method.invoke(PetBlocksApi, MockedPluginProxy())
 
             val aiService = AIServiceImpl(LoggingUtilServiceImpl(Logger.getAnonymousLogger()), MockedProxyService())
-            val configService = ConfigurationServiceImpl(plugin, Item113R1ServiceImpl(), aiService)
+            val configService = ConfigurationServiceImpl(plugin, Item18R1ServiceImpl(), aiService)
             EntityServiceImpl(configService, MockedProxyService(),
                 Mockito.mock(EntityRegistrationService::class.java), Mockito.mock(PetService::class.java), YamlSerializationServiceImpl(),
                 plugin, Version.VERSION_1_8_R1, aiService)
@@ -288,42 +288,79 @@ class PersistenceSQLiteIT {
 
     class MockedProxyService : ProxyService {
         /**
-         * Returns a player proxy object for the given instance.
-         * Throws a [IllegalArgumentException] if the proxy could not be generated.
-         */
-        override fun <P> findPlayerProxyObject(instance: P): PlayerProxy {
-            if (instance !is Player) {
-                throw RuntimeException()
-            }
-
-            Mockito.`when`(instance.name).thenReturn("Kenny")
-            Mockito.`when`(instance.location).thenReturn(Location(Mockito.mock(World::class.java), 20.2, 20.2, 20.2))
-
-            return PlayerProxyImpl(instance as Player)
-        }
-
-        /**
          * Gets if the given instance can be converted to a player.
          */
         override fun <P> isPlayer(instance: P): Boolean {
+            return true
+        }
+
+        /**
+         * Gets the name of a player.
+         */
+        override fun <P> getPlayerName(player: P): String {
+            return "Kenny"
+        }
+
+        /**
+         * Gets the player from the given UUID.
+         */
+        override fun <P> getPlayerFromUUID(uuid: String): P {
             throw IllegalArgumentException()
         }
 
         /**
-         * Tries to return a player proxy for the given player uuid.
+         * Gets the location of the player.
          */
-        override fun findPlayerProxyObjectFromUUID(uuid: String): PlayerProxy {
-            val playerProxy = Mockito.mock(PlayerProxy::class.java)
-            Mockito.`when`(playerProxy.uniqueId).thenReturn(uuid)
-            Mockito.`when`(playerProxy.name).thenReturn("Kenny")
-
-            return playerProxy
+        override fun <L, P> getPlayerLocation(player: P): L {
+            throw IllegalArgumentException()
         }
 
         /**
-         * Clears any resources the given instance has allocated.
+         * Converts the given [location] to a [Position].
          */
-        override fun cleanResources(instance: Any) {
+        override fun <L> toPosition(location: L): Position {
+            throw IllegalArgumentException()
+        }
+
+        /**
+         * Gets the looking direction of the player.
+         */
+        override fun <P> getDirectionVector(player: P): Position {
+            throw IllegalArgumentException()
+        }
+
+        /**
+         * Gets the item in the player hand.
+         */
+        override fun <P, I> getPlayerItemInHand(player: P, offhand: Boolean): I? {
+            throw IllegalArgumentException()
+        }
+
+        /**
+         * Sets the item in the player hand.
+         */
+        override fun <P, I> setPlayerItemInHand(player: P, itemStack: I, offhand: Boolean) {
+            throw IllegalArgumentException()
+        }
+
+        /**
+         * Gets if the given player has got the given permission.
+         */
+        override fun <P> hasPermission(player: P, permission: Permission): Boolean {
+            throw IllegalArgumentException()
+        }
+
+        /**
+         * Gets the player uuid.
+         */
+        override fun <P> getPlayerUUID(player: P): String {
+            return (player as Player).uniqueId.toString()
+        }
+
+        /**
+         * Sends a message to the [sender].
+         */
+        override fun <S> sendMessage(sender: S, message: String) {
             throw IllegalArgumentException()
         }
     }

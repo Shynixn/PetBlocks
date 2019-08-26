@@ -1,6 +1,7 @@
 package com.github.shynixn.petblocks.api.business.service
 
-import com.github.shynixn.petblocks.api.business.proxy.PlayerProxy
+import com.github.shynixn.petblocks.api.business.enumeration.Permission
+import com.github.shynixn.petblocks.api.persistence.entity.Position
 
 /**
  * Created by Shynixn 2018.
@@ -31,16 +32,49 @@ import com.github.shynixn.petblocks.api.business.proxy.PlayerProxy
  */
 interface ProxyService {
     /**
-     * Returns a player proxy object for the given instance.
-     * Throws a [IllegalArgumentException] if the proxy could not be generated.
+     * Gets the name of a player.
      */
-    fun <P> findPlayerProxyObject(instance: P): PlayerProxy
+    fun <P> getPlayerName(player: P): String
 
     /**
-     * Tries to return a player proxy for the given player uuid.
-     * Throws a [IllegalArgumentException] if the proxy could not be generated.
+     * Gets the player from the given UUID.
      */
-    fun findPlayerProxyObjectFromUUID(uuid: String): PlayerProxy
+    fun <P> getPlayerFromUUID(uuid: String): P
+
+    /**
+     * Gets the location of the player.
+     */
+    fun <L, P> getPlayerLocation(player: P): L
+
+    /**
+     * Converts the given [location] to a [Position].
+     */
+    fun <L> toPosition(location: L): Position
+
+    /**
+     * Gets the looking direction of the player.
+     */
+    fun <P> getDirectionVector(player: P): Position
+
+    /**
+     * Gets the item in the player hand.
+     */
+    fun <P, I> getPlayerItemInHand(player: P, offhand: Boolean = false): I?
+
+    /**
+     * Sets the item in the player hand.
+     */
+    fun <P, I> setPlayerItemInHand(player: P, itemStack: I, offhand: Boolean = false)
+
+    /**
+     * Gets if the given player has got the given permission.
+     */
+    fun <P> hasPermission(player: P, permission: Permission): Boolean
+
+    /**
+     * Gets the player uuid.
+     */
+    fun <P> getPlayerUUID(player: P): String
 
     /**
      * Gets if the given instance can be converted to a player.
@@ -48,7 +82,7 @@ interface ProxyService {
     fun <P> isPlayer(instance: P): Boolean
 
     /**
-     * Clears any resources the given instance has allocated.
+     * Sends a message to the [sender].
      */
-    fun cleanResources(instance: Any)
+    fun <S> sendMessage(sender: S, message: String)
 }

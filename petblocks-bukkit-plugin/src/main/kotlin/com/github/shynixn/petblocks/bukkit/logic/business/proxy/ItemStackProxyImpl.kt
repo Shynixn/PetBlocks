@@ -79,6 +79,10 @@ class ItemStackProxyImpl(
         val itemstack = ItemStack::class.java.getDeclaredConstructor(Material::class.java, Int::class.java, Short::class.java)
             .newInstance(Material.getMaterial(typeName)!!, amount, data.toShort())
 
+        if (itemstack.itemMeta == null) {
+            return itemstack as I
+        }
+
         val meta = itemstack.itemMeta!!
 
         if (this.internalDisplayName != null) {

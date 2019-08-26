@@ -57,8 +57,8 @@ class EditPetAICommand @Inject constructor(
             return false
         }
 
-        val playerProxy = proxyService.findPlayerProxyObject(result.first)
-        val petMeta = petMetaService.getPetMetaFromPlayer(playerProxy)
+        val playerName = proxyService.getPlayerName(result.first)
+        val petMeta = petMetaService.getPetMetaFromPlayer(result.first)
 
         try {
             val configuration = configurationService.findValue<Map<String, Any>>(args[1])
@@ -105,7 +105,7 @@ class EditPetAICommand @Inject constructor(
                 addAmount += addAis.size
             }
 
-            messageService.sendSourceMessage(source, "Added $addAmount new ais and removed $removeAmount ais to/from player ${playerProxy.name}.")
+            messageService.sendSourceMessage(source, "Added $addAmount new ais and removed $removeAmount ais to/from player ${playerName}.")
         } catch (e: Exception) {
             messageService.sendSourceMessage(source, ChatColor.RED.toString() + e.message)
         }

@@ -54,7 +54,6 @@ class CarryPetServiceImpl @Inject constructor(
             return
         }
 
-        val playerProxy = proxyService.findPlayerProxyObject(player)
         val pet = petService.getOrSpawnPetFromPlayer(player).get()
 
         val count = pet.meta.aiGoals.count { p -> p is AICarry }
@@ -67,13 +66,14 @@ class CarryPetServiceImpl @Inject constructor(
             loggingService.warn("Player ${pet.meta.playerMeta.name} has registered multiple ${AIType.HEALTH.type}. Please check your configuration.")
         }
 
-        val itemInHand = playerProxy.getItemInHand<Any>(true)
+        val itemInHand = proxyService.getPlayerItemInHand<P, Any>(player, true)
 
         if (itemInHand == null || itemService.hasItemStackProperties(itemInHand, MaterialType.AIR)) {
             val cachePet = pet.getHeadArmorstandItemStack<Any>()
-            carryingPet[playerProxy.uniqueId] = cachePet
-            playerProxy.setItemInHand(cachePet, true)
-            playerProxy.updateInventory()
+            val playerUUID = proxyService.getPlayerUUID(player)
+
+            carryingPet[playerUUID] = cachePet
+            proxyService.setPlayerItemInHand(player, cachePet, true)
 
             pet.remove()
         }
@@ -84,14 +84,14 @@ class CarryPetServiceImpl @Inject constructor(
      * Does nothing if the player isn't carrying it.
      */
     override fun <P> dropPet(player: P) {
-        val playerProxy = proxyService.findPlayerProxyObject(player)
+        val playerUUID = proxyService.getPlayerUUID(player)
 
-        if (!carryingPet.containsKey(playerProxy.uniqueId)) {
+        if (!carryingPet.containsKey(playerUUID)) {
             return
         }
 
-        carryingPet.remove(playerProxy.uniqueId)
-        playerProxy.setItemInHand(null, true)
+        carryingPet.remove(playerUUID)
+        proxyService.setPlayerItemInHand(player, null, true)
 
         petService.getOrSpawnPetFromPlayer(player)
     }
@@ -101,9 +101,9 @@ class CarryPetServiceImpl @Inject constructor(
      * Does automatically drop it and does nothing if the player isn't carrying it.
      */
     override fun <P> throwPet(player: P) {
-        val playerProxy = proxyService.findPlayerProxyObject(player)
+        val playerUUID = proxyService.getPlayerUUID(player)
 
-        if (!carryingPet.containsKey(playerProxy.uniqueId)) {
+        if (!carryingPet.containsKey(playerUUID)) {
             return
         }
 
@@ -112,7 +112,8 @@ class CarryPetServiceImpl @Inject constructor(
         val pet = petService.getOrSpawnPetFromPlayer(player).get()
 
         sync(concurrencyService, 1L) {
-            pet.setVelocity(playerProxy.getDirectionLaunchVector().multiply(1.2))
+            val direction = proxyService.getDirectionVector(player)
+            pet.setVelocity(direction.multiply(1.2))
         }
     }
 
@@ -121,10 +122,10 @@ class CarryPetServiceImpl @Inject constructor(
      * Returns an empty optional if the player is carrying anything.
      */
     override fun <P, I> getCarryPetItemStack(player: P): I? {
-        val playerProxy = proxyService.findPlayerProxyObject(player)
+        val playerUUID = proxyService.getPlayerUUID(player)
 
         return if (isCarryingPet(player)) {
-            this.carryingPet[playerProxy.uniqueId]!! as I
+            this.carryingPet[playerUUID]!! as I
         } else {
             null
         }
@@ -134,8 +135,8 @@ class CarryPetServiceImpl @Inject constructor(
      * Gets if the given player is carrying a pet.
      */
     override fun <P> isCarryingPet(player: P): Boolean {
-        val playerProxy = proxyService.findPlayerProxyObject(player)
-        return carryingPet.containsKey(playerProxy.uniqueId)
+        val playerUUID = proxyService.getPlayerUUID(player)
+        return carryingPet.containsKey(playerUUID)
     }
 
     /**

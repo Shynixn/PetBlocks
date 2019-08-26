@@ -73,6 +73,11 @@ interface GuiItem {
     var targetSkin: Skin?
 
     /**
+     * Target pet name.
+     */
+    var targetPetName : String?
+
+    /**
      * Ai which should be added on click.
      */
     val addAIs: MutableList<AIBase>

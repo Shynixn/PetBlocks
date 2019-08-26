@@ -55,8 +55,9 @@ class EditPetSkinCommand @Inject constructor(
             return false
         }
 
-        val playerProxy = proxyService.findPlayerProxyObject(result.first)
-        val petMeta = petMetaService.getPetMetaFromPlayer(playerProxy)
+        val player = result.first
+        val playerName = proxyService.getPlayerName(player)
+        val petMeta = petMetaService.getPetMetaFromPlayer(player)
 
         try {
             val configuration = configurationService.findValue<Map<String, Any>>(args[1])
@@ -66,7 +67,7 @@ class EditPetSkinCommand @Inject constructor(
             this.setItem<Boolean>("unbreakable", configuration) { value -> petMeta.skin.unbreakable = value }
             this.setItem<String>("skin", configuration) { value -> petMeta.skin.owner = value }
 
-            messageService.sendSourceMessage(source, "Changed the skin of the pet of player ${playerProxy.name}.")
+            messageService.sendSourceMessage(source, "Changed the skin of the pet of player $playerName.")
         } catch (e: Exception) {
             messageService.sendSourceMessage(source, ChatColor.RED.toString() + e.message)
         }

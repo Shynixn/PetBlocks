@@ -161,8 +161,12 @@ class PetListener @Inject constructor(
     fun onEntityInteractEvent(event: EntityInteractEvent) {
         val optPet = petService.findPetByEntity(event.entity)
 
-        if (optPet != null && itemService.hasItemStackProperties(itemService.createItemStack(event.block.type), soilMaterial)) {
-            event.isCancelled = true
+        try {
+            if (optPet != null && itemService.hasItemStackProperties(itemService.createItemStack(event.block.type), soilMaterial)) {
+                event.isCancelled = true
+            }
+        } catch (e: Exception) {
+            // Ignored. Sometimes ItemStacks cannot be parsed but we do not care.
         }
     }
 

@@ -54,16 +54,17 @@ class EditPetToggleCommand @Inject constructor(
             return false
         }
 
-        val playerProxy = proxyService.findPlayerProxyObject(result.first)
-        val hasPet = petService.hasPet(playerProxy)
+        val player = result.first
+        val playerName = proxyService.getPlayerName(player)
+        val hasPet = petService.hasPet(player)
 
         if (hasPet) {
-            val pet = petService.getOrSpawnPetFromPlayer(playerProxy).get()
+            val pet = petService.getOrSpawnPetFromPlayer(player).get()
             pet.remove()
-            messageService.sendSourceMessage(source, "Disabled pet of player ${playerProxy.name}.")
+            messageService.sendSourceMessage(source, "Disabled pet of player $playerName.")
         } else {
-            petService.getOrSpawnPetFromPlayer(playerProxy).get()
-            messageService.sendSourceMessage(source, "Enabled pet of player ${playerProxy.name}.")
+            petService.getOrSpawnPetFromPlayer(player).get()
+            messageService.sendSourceMessage(source, "Enabled pet of player $playerName.")
         }
 
         return true

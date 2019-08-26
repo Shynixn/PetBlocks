@@ -48,16 +48,14 @@ class PetActionServiceImpl @Inject constructor(
      * Launches the pet of the player.
      */
     override fun <P> launchPet(player: P) {
-        val playerProxy = proxyService.findPlayerProxyObject(player)
-
-        val direction = playerProxy.getDirectionLaunchVector()
+        val direction = proxyService.getDirectionVector(player)
         direction.y = 0.5
         direction.multiply(3.0)
 
-        if (petService.hasPet(playerProxy)) {
+        if (petService.hasPet(player)) {
             val pet = petService.getOrSpawnPetFromPlayer(player).get()
             pet.setVelocity(direction)
-            soundService.playSound(pet.getLocation<Any>(), explosionSound, playerProxy.handle)
+            soundService.playSound(pet.getLocation<Any>(), explosionSound, player)
         }
     }
 
@@ -65,12 +63,11 @@ class PetActionServiceImpl @Inject constructor(
      * Sets the pet of the given [player] to the given skin.
      */
     override fun <P> changePetSkin(player: P, skin: String) {
-        val playerProxy = proxyService.findPlayerProxyObject(player)
         val prefix = configurationService.findValue<String>("messages.prefix")
 
         if (skin.length > maxSkinLength) {
             val namingSuccessMessage = configurationService.findValue<String>("messages.customhead-error")
-            playerProxy.sendMessage(prefix + namingSuccessMessage)
+            proxyService.sendMessage(player, prefix + namingSuccessMessage)
 
             return
         }
@@ -83,7 +80,7 @@ class PetActionServiceImpl @Inject constructor(
         persistencePetMetaService.save(petMeta)
 
         val namingSuccessMessage = configurationService.findValue<String>("messages.customhead-success")
-        playerProxy.sendMessage(prefix + namingSuccessMessage)
+        proxyService.sendMessage(player, prefix + namingSuccessMessage)
     }
 
     /**
@@ -91,25 +88,22 @@ class PetActionServiceImpl @Inject constructor(
      */
     override fun <P> callPet(player: P) {
         val pet = petService.getOrSpawnPetFromPlayer(player)
-        val playerProxy = proxyService.findPlayerProxyObject(player)
 
-        if (pet.isPresent) {
-            pet.get().teleport<Any>(playerProxy.position.relativeFront(3.0))
+        val message = if (pet.isPresent) {
+            pet.get().teleport<Any>(proxyService.toPosition(proxyService.getPlayerLocation<Any, P>(player)).relativeFront(3.0))
 
-            val message = configurationService.findValue<String>("messages.prefix") + configurationService.findValue<String>("messages.called-success")
-            playerProxy.sendMessage(message)
+            configurationService.findValue<String>("messages.prefix") + configurationService.findValue<String>("messages.called-success")
         } else {
-            val message = configurationService.findValue<String>("messages.prefix") + configurationService.findValue<String>("messages.called-error")
-            playerProxy.sendMessage(message)
+            configurationService.findValue<String>("messages.prefix") + configurationService.findValue<String>("messages.called-error")
         }
+
+        proxyService.sendMessage(player, message)
     }
 
     /**
      * Disables the pet of the given [player].
      */
     override fun <P> disablePet(player: P) {
-        val playerProxy = proxyService.findPlayerProxyObject(player)
-
         if (!petService.hasPet(player)) {
             return
         }
@@ -118,7 +112,7 @@ class PetActionServiceImpl @Inject constructor(
         pet.remove()
 
         val message = configurationService.findValue<String>("messages.prefix") + configurationService.findValue<String>("messages.despawn")
-        playerProxy.sendMessage(message)
+        proxyService.sendMessage(player, message)
     }
 
     /**
@@ -126,9 +120,7 @@ class PetActionServiceImpl @Inject constructor(
      * disabled.
      */
     override fun <P> togglePet(player: P) {
-        val playerProxy = proxyService.findPlayerProxyObject(player)
-
-        if (petService.hasPet(playerProxy)) {
+        if (petService.hasPet(player)) {
             this.disablePet(player)
         } else {
             this.callPet(player)
@@ -139,14 +131,12 @@ class PetActionServiceImpl @Inject constructor(
      * Renames the pet of the given [player] to the given [name].
      */
     override fun <P> renamePet(player: P, name: String) {
-        val playerProxy = proxyService.findPlayerProxyObject(player)
-
         val prefix = configurationService.findValue<String>("messages.prefix")
         val maxPetNameLength = configurationService.findValue<Int>("global-configuration.max-petname-length")
 
         if (name.length > maxPetNameLength) {
             val namingErrorMessage = configurationService.findValue<String>("messages.rename-error")
-            playerProxy.sendMessage(prefix + namingErrorMessage)
+            proxyService.sendMessage(player, prefix + namingErrorMessage)
             return
         }
 
@@ -156,7 +146,7 @@ class PetActionServiceImpl @Inject constructor(
         for (blackName in petNameBlackList) {
             if (upperCaseName.contains(blackName)) {
                 val namingErrorMessage = configurationService.findValue<String>("messages.rename-error")
-                playerProxy.sendMessage(prefix + namingErrorMessage)
+                proxyService.sendMessage(player, prefix + namingErrorMessage)
                 return
             }
         }
@@ -167,6 +157,6 @@ class PetActionServiceImpl @Inject constructor(
         petMeta.displayName = name.translateChatColors()
         persistencePetMetaService.save(petMeta)
 
-        playerProxy.sendMessage(prefix + namingSuccessMessage)
+        proxyService.sendMessage(player, prefix + namingSuccessMessage)
     }
 }

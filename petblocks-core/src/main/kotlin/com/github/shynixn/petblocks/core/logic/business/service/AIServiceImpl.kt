@@ -54,7 +54,8 @@ class AIServiceImpl @Inject constructor(
      * type specified in the [AIBase] and registers types of this service.
      */
     override fun convertPetAiBasesToPathfinders(petProxy: PetProxy, metas: List<AIBase>): List<Any> {
-        val player = proxyService.findPlayerProxyObject(petProxy.getPlayer<Any>())
+        val player = petProxy.getPlayer<Any>()
+        val playerName = proxyService.getPlayerName(player)
         val pathfinders = ArrayList<Any>()
 
         if (!petProxy.getHitBoxLivingEntity<Any>().isPresent) {
@@ -63,7 +64,7 @@ class AIServiceImpl @Inject constructor(
 
         for (meta in metas) {
             if (!registeredAIS.containsKey(meta.type)) {
-                loggingService.warn("Pet of ${player.name} tried to use ai type + " + meta.type + " which is not registered in the AI Service. Please registerAI it first.")
+                loggingService.warn("Pet of $playerName tried to use ai type + " + meta.type + " which is not registered in the AI Service. Please registerAI it first.")
             }
 
             val aiCreation = registeredAIS[meta.type]!!
@@ -75,7 +76,7 @@ class AIServiceImpl @Inject constructor(
         }
 
         if (pathfinders.count { p -> p is PathfinderProxy && p.aiBase is AIFollowBack } > 1) {
-            loggingService.warn("Pet of ${player.name} tried to apply ai follow-back atleast twice. Please check your configuration!")
+            loggingService.warn("Pet of $playerName} tried to apply ai follow-back atleast twice. Please check your configuration!")
 
             val resultPathfinder = pathfinders.first { p -> p is PathfinderProxy && p.aiBase is AIFollowBack }
             pathfinders.removeAll { p -> p is PathfinderProxy && p.aiBase is AIFollowBack }
@@ -83,7 +84,7 @@ class AIServiceImpl @Inject constructor(
         }
 
         if (pathfinders.count { p -> p is PathfinderProxy && p.aiBase is AIFollowOwner } > 1) {
-            loggingService.warn("Pet of ${player.name} tried to apply ai follow-owner atleast twice. Please check your configuration!")
+            loggingService.warn("Pet of $playerName tried to apply ai follow-owner atleast twice. Please check your configuration!")
 
             val resultPathfinder = pathfinders.first { p -> p is PathfinderProxy && p.aiBase is AIFollowOwner }
             pathfinders.removeAll { p -> p is PathfinderProxy && p.aiBase is AIFollowOwner }
@@ -92,7 +93,7 @@ class AIServiceImpl @Inject constructor(
 
         if (pathfinders.singleOrNull { p -> p is PathfinderProxy && p.aiBase is AIFollowOwner } != null) {
             if (pathfinders.singleOrNull { p -> p is PathfinderProxy && p.aiBase is AIFollowBack } != null) {
-                loggingService.warn("Pet of ${player.name} tried to apply both follow-owner and follow-back. Please check your configuration!")
+                loggingService.warn("Pet of $playerName tried to apply both follow-owner and follow-back. Please check your configuration!")
                 pathfinders.removeAll { p -> p is PathfinderProxy && p.aiBase is AIFollowBack }
             }
         }

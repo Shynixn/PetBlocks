@@ -73,16 +73,16 @@ class PersistencePetMetaServiceImpl @Inject constructor(
      * Should only be called once a player leaves the server.
      */
     override fun <P> clearResources(player: P): CompletableFuture<Void?> {
-        val playerProxy = proxyService.findPlayerProxyObject(player)
         val completableFuture = CompletableFuture<Void?>()
+        val playerUUID = proxyService.getPlayerUUID(player)
 
-        if (!cacheInternal.containsKey(playerProxy.uniqueId)) {
+        if (!cacheInternal.containsKey(playerUUID)) {
             return completableFuture
         }
 
-        val petMeta = cacheInternal[playerProxy.uniqueId]!!
+        val petMeta = cacheInternal[playerUUID]!!
         val completable = save(petMeta)
-        cacheInternal.remove(playerProxy.uniqueId)
+        cacheInternal.remove(playerUUID)
 
         completable.thenAcceptSafely {
             completableFuture.complete(null)
@@ -95,14 +95,15 @@ class PersistencePetMetaServiceImpl @Inject constructor(
      * Gets the petMeta from the player. This call will never return null.
      */
     override fun <P> getPetMetaFromPlayer(player: P): PetMeta {
-        val playerProxy = proxyService.findPlayerProxyObject(player)
+        val playerUUID = proxyService.getPlayerUUID(player)
+        val playerName = proxyService.getPlayerName(player)
 
-        if (!cacheInternal.containsKey(playerProxy.uniqueId)) {
+        if (!cacheInternal.containsKey(playerUUID)) {
             // Blocks the calling (main) thread and should not be executed on an normal server.
-            return petMetaRepository.getOrCreateFromPlayerIdentifiers(playerProxy.name, playerProxy.uniqueId)
+            return petMetaRepository.getOrCreateFromPlayerIdentifiers(playerName, playerUUID)
         }
 
-        return cacheInternal[playerProxy.uniqueId]!!
+        return cacheInternal[playerUUID]!!
     }
 
     /**
@@ -134,14 +135,15 @@ class PersistencePetMetaServiceImpl @Inject constructor(
      * Should only be called once a player joins the server.
      */
     override fun <P> refreshPetMetaFromRepository(player: P): CompletableFuture<PetMeta> {
-        val playerProxy = proxyService.findPlayerProxyObject(player)
+        val playerUUID = proxyService.getPlayerUUID(player)
+        val playerName = proxyService.getPlayerName(player)
         val completableFuture = CompletableFuture<PetMeta>()
 
         async(concurrencyService) {
-            val petMeta = petMetaRepository.getOrCreateFromPlayerIdentifiers(playerProxy.name, playerProxy.uniqueId)
+            val petMeta = petMetaRepository.getOrCreateFromPlayerIdentifiers(playerName, playerUUID)
 
             sync(concurrencyService) {
-                cacheInternal[playerProxy.uniqueId] = petMeta
+                cacheInternal[playerUUID] = petMeta
                 completableFuture.complete(petMeta)
             }
         }

@@ -179,6 +179,7 @@ class ConfigurationServiceImpl @Inject constructor(
             this.setItem<Int>("position", description) { value -> guiItem.position = value - 1 }
             this.setItem<Boolean>("fixed", description) { value -> guiItem.fixed = value }
             this.setItem<String>("script", description) { value -> guiItem.script = value }
+            this.setItem<String>("petname", description) {value -> guiItem.targetPetName = value}
 
             val iconDescription = (description["icon"] as Map<String, Any>)
 
@@ -210,7 +211,7 @@ class ConfigurationServiceImpl @Inject constructor(
             }
 
             if (description.containsKey("add-ai")) {
-                val goalsMap = (description["add-ai"] as Map<String, Any>)
+                val goalsMap = (description["add-ai"] as Map<Any, Any>)
 
                 for (goalKey in goalsMap.keys) {
                     val aiMap = goalsMap[goalKey] as Map<String, Any>
@@ -220,7 +221,7 @@ class ConfigurationServiceImpl @Inject constructor(
             }
 
             if (description.containsKey("remove-ai")) {
-                val goalsMap = (description["remove-ai"] as Map<String, Any>)
+                val goalsMap = (description["remove-ai"] as Map<Any, Any>)
 
                 for (goalKey in goalsMap.keys) {
                     val aiMap = goalsMap[goalKey] as Map<String, Any>
@@ -230,7 +231,7 @@ class ConfigurationServiceImpl @Inject constructor(
             }
 
             if (description.containsKey("replace-ai")) {
-                val goalsMap = (description["replace-ai"] as Map<Int, Any>)
+                val goalsMap = (description["replace-ai"] as Map<Any, Any>)
 
                 for (goalKey in goalsMap.keys) {
                     val aiMap = goalsMap[goalKey] as Map<String, Any>
@@ -356,7 +357,7 @@ class ConfigurationServiceImpl @Inject constructor(
 
         petMeta.aiGoals.clear()
 
-        val goalsMap = defaultConfig["add-ai"] as Map<Int, Any?>
+        val goalsMap = defaultConfig["add-ai"] as Map<Any, Any?>
 
         for (goalKey in goalsMap.keys) {
             val aiMap = goalsMap[goalKey] as Map<String, Any>
