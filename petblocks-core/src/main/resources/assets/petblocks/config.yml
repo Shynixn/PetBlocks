@@ -1608,7 +1608,11 @@ gui:
         skin: 'http://textures.minecraft.net/texture/621668ef7cb79dd9c22ce3d1f3f4cb6e2559893b6df4a469514e667c16aa4'
       remove-ai:
         1:
+          type: 'hopping'
+        2:
           type: 'flying'
+        3:
+          type: 'walking'
       replace-ai:
         1:
           type: 'walking'
@@ -1645,7 +1649,11 @@ gui:
         skin: 'http://textures.minecraft.net/texture/1638469a599ceef7207537603248a9ab11ff591fd378bea4735b346a7fae893'
       remove-ai:
         1:
+          type: 'hopping'
+        2:
           type: 'flying'
+        3:
+          type: 'walking'
       replace-ai:
         1:
           type: 'walking'
@@ -1682,7 +1690,11 @@ gui:
         skin: 'http://textures.minecraft.net/texture/e95cbb4f75ea87617f2f713c6d49dac3209ba1bd4b9369654b1459ea15317'
       remove-ai:
         1:
+          type: 'hopping'
+        2:
           type: 'flying'
+        3:
+          type: 'walking'
       replace-ai:
         1:
           type: 'walking'
@@ -1725,7 +1737,11 @@ gui:
         skin: 'http://textures.minecraft.net/texture/5657cd5c2989ff97570fec4ddcdc6926a68a3393250c1be1f0b114a1db1'
       remove-ai:
         1:
+          type: 'hopping'
+        2:
           type: 'flying'
+        3:
+          type: 'walking'
       replace-ai:
         1:
           type: 'walking'
@@ -1768,7 +1784,11 @@ gui:
         skin: 'http://textures.minecraft.net/texture/5d6c6eda942f7f5f71c3161c7306f4aed307d82895f9d2b07ab4525718edc5'
       remove-ai:
         1:
+          type: 'hopping'
+        2:
           type: 'flying'
+        3:
+          type: 'walking'
       replace-ai:
         1:
           type: 'walking'
@@ -1805,7 +1825,11 @@ gui:
         skin: 'http://textures.minecraft.net/texture/f31f9ccc6b3e32ecf13b8a11ac29cd33d18c95fc73db8a66c5d657ccb8be70'
       remove-ai:
         1:
+          type: 'hopping'
+        2:
           type: 'flying'
+        3:
+          type: 'walking'
       replace-ai:
         1:
           type: 'walking'
@@ -1842,7 +1866,11 @@ gui:
         skin: 'http://textures.minecraft.net/texture/61902898308730c4747299cb5a5da9c25838b1d059fe46fc36896fee662729'
       remove-ai:
         1:
+          type: 'hopping'
+        2:
           type: 'flying'
+        3:
+          type: 'walking'
       replace-ai:
         1:
           type: 'walking'
@@ -1879,12 +1907,16 @@ gui:
         skin: 'http://textures.minecraft.net/texture/f2542c19cbcd964274244af6bed1ac8560b3f36fd3b3268061f8a614a9b59e35'
       remove-ai:
         1:
+          type: 'hopping'
+        2:
+          type: 'flying'
+        3:
           type: 'walking'
       replace-ai:
         1:
-          type: 'flying'
+          type: 'walking'
           speed: 1.5
-          offset-y: 1
+          offset-y: 2
           sound:
             name: 'NONE'
             volume: 1.0
@@ -1916,12 +1948,16 @@ gui:
         skin: 'http://textures.minecraft.net/texture/4cf1b3b3f539d2f63c172e94cacfaa391e8b385cdd633f3b991c74e44b28'
       remove-ai:
         1:
+          type: 'hopping'
+        2:
+          type: 'flying'
+        3:
           type: 'walking'
       replace-ai:
         1:
-          type: 'flying'
+          type: 'walking'
           speed: 1.5
-          offset-y: 1
+          offset-y: 2
           sound:
             name: 'NONE'
             volume: 1.0
