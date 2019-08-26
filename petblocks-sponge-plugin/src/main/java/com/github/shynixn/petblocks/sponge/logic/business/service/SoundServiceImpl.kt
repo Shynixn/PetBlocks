@@ -39,7 +39,7 @@ import org.spongepowered.api.entity.living.player.Player
  * SOFTWARE.
  */
 class SoundServiceImpl @Inject constructor(private val configurationService: ConfigurationService, private val loggingService: LoggingService) : SoundService {
-    private val mappings = hashMapOf("EAT" to "ENTITY_GENERIC_EAT", "EXPLODE" to "ENTITY_GENERIC_EXPLODE")
+    private val soundCache = HashMap<String, SoundType>()
 
     /**
      * Plays the given [sound] at the given [location] for the given [player] or
@@ -69,20 +69,33 @@ class SoundServiceImpl @Inject constructor(private val configurationService: Con
      * Plays the given [sound] at the given [location] for the given [players].
      */
     private fun playSoundToPlayers(location: Vector3d, sound: Sound, players: Collection<Player>) {
-        if (sound.name.equals("none", true)) {
+        val soundName = sound.name.toUpperCase()
+
+        if (soundName.equals("NONE", true)) {
             return
         }
 
-        val name = when {
-            mappings.contains(sound.name) -> mappings[sound.name]!!
-            sound.name.contains("WALK") -> "ENTITY_" + sound.name.split("_")[0] + "_STEP"
-            sound.name.contains("IDLE") -> "ENTITY_" + sound.name.split("_")[0] + "_AMBIENT"
-            else -> sound.name
-        }
-
         try {
+            if (!soundCache.containsKey(soundName)) {
+                val soundType = com.github.shynixn.petblocks.api.business.enumeration.SoundType.values().firstOrNull { s -> s.name == soundName }
+
+                if (soundType != null) {
+                    for (name in soundType.soundNames) {
+                        try {
+                            soundCache[soundName] = getSoundTypeFromName(name)
+                            break
+                        } catch (i: IllegalArgumentException) {
+                        }
+                    }
+                } else {
+                    soundCache[soundName] = getSoundTypeFromName(soundName)
+                }
+            }
+
+            val playSound = soundCache[soundName] ?: throw IllegalArgumentException("Cannot find sound.")
+
             for (player in players) {
-                player.playSound(this.getSoundTypeFromName(name), location, sound.volume, sound.pitch)
+                player.playSound(playSound, location, sound.volume, sound.pitch)
             }
         } catch (e: Exception) {
             loggingService.warn("Failed to send sound. Is the sound '" + sound.name + "' supported by this server version?", e)
@@ -100,6 +113,6 @@ class SoundServiceImpl @Inject constructor(private val configurationService: Con
             }
         }
 
-        throw RuntimeException("The sound '$name' is not known to Sponge!")
+        throw IllegalArgumentException()
     }
 }
