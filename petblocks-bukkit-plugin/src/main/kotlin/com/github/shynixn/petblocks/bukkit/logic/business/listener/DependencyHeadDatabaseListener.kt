@@ -2,12 +2,10 @@ package com.github.shynixn.petblocks.bukkit.logic.business.listener
 
 import com.github.shynixn.petblocks.api.business.service.DependencyHeadDatabaseService
 import com.google.inject.Inject
-import org.bukkit.Bukkit
+import me.arcaniax.hdb.api.PlayerClickHeadEvent
 import org.bukkit.Material
-import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
-import org.bukkit.event.inventory.InventoryClickEvent
 import org.bukkit.event.player.PlayerQuitEvent
 
 /**
@@ -39,17 +37,22 @@ import org.bukkit.event.player.PlayerQuitEvent
  */
 class DependencyHeadDatabaseListener @Inject constructor(private val headDatabaseService: DependencyHeadDatabaseService) : Listener {
     /**
-     * Gets called from [Bukkit] and handles action to the inventory.
+     * Gets called from HeadDatabase and handles action to the inventory.
      */
     @EventHandler
-    fun playerClickInInventoryEvent(event: InventoryClickEvent) {
-        val player = event.whoClicked as Player
+    fun playerClickOnHeadEvent(event: PlayerClickHeadEvent) {
+        val player = event.player
 
-        if (event.currentItem == null || event.currentItem!!.type == Material.AIR) {
+        if (event.head == null || event.head!!.type == Material.AIR) {
             return
         }
 
-        headDatabaseService.clickInventoryItem(player, event.slot, event.currentItem)
+        val cancelEvent = headDatabaseService.clickInventoryItem(player, event.head)
+
+        if (!event.isCancelled && cancelEvent) {
+            // Other plugins can modify this so check before manipulating.
+            event.isCancelled = cancelEvent
+        }
     }
 
     /**

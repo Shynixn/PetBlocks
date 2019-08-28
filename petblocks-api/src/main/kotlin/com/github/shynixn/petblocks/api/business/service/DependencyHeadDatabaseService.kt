@@ -32,17 +32,17 @@ interface DependencyHeadDatabaseService {
      * Opens the virtual connection to the HeadDatabase plugin.
      * Prints a message to the console if connection is not possible.
      */
-    fun <P> openConnection(player : P)
+    fun <P> openConnection(player: P)
 
     /**
-     * Executes actions when the given [player] clicks on an [item] at the given [relativeSlot].
+     * Executes actions when the given [player] clicks on an [item].
      * @param P the type of the player.
      * @param I the type of the inventory.
      */
-    fun <P, I> clickInventoryItem(player: P, relativeSlot: Int, item: I) : Boolean
+    fun <P, I> clickInventoryItem(player: P, item: I): Boolean
 
     /**
      * Clears all resources the given [player] has allocated from this service.
      */
-    fun <P> clearResources(player : P)
+    fun <P> clearResources(player: P)
 }
