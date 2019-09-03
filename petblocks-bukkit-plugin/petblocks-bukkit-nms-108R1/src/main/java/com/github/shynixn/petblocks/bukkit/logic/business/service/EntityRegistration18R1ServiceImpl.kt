@@ -51,13 +51,9 @@ class EntityRegistration18R1ServiceImpl @Inject constructor(private val version:
         }
 
         val entityTypeClazz = findClass("net.minecraft.server.VERSION.EntityTypes")
-        val entityTypeC = this.findMap<String, Class<*>>(entityTypeClazz, "c")
         val entityTypeD = this.findMap<Class<*>, String>(entityTypeClazz, "d")
         val entityTypeF = this.findMap<Class<*>, Int>(entityTypeClazz, "f")
-        val entityTypeG = this.findMap<String, Int>(entityTypeClazz, "g")
 
-        entityTypeC[entityType.saveGame_18] = customEntityClazz
-        entityTypeG[entityType.saveGame_18] = entityType.entityId
         entityTypeD[customEntityClazz] = entityType.saveGame_18
         entityTypeF[customEntityClazz] = entityType.entityId
 
@@ -70,14 +66,10 @@ class EntityRegistration18R1ServiceImpl @Inject constructor(private val version:
      */
     override fun clearResources() {
         val entityTypeClazz = findClass("net.minecraft.server.VERSION.EntityTypes")
-        val entityTypeC = this.findMap<String, Class<*>>(entityTypeClazz, "c")
         val entityTypeD = this.findMap<Class<*>, String>(entityTypeClazz, "d")
         val entityTypeF = this.findMap<Class<*>, Int>(entityTypeClazz, "f")
-        val entityTypeG = this.findMap<String, Int>(entityTypeClazz, "g")
 
         classes.forEach { customEntityClazz, entityType ->
-            entityTypeC.remove(entityType.saveGame_18)
-            entityTypeG.remove(entityType.saveGame_18)
             entityTypeD.remove(customEntityClazz)
             entityTypeF.remove(customEntityClazz)
         }
