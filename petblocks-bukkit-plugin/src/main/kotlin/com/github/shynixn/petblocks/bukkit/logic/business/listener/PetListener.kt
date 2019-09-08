@@ -253,7 +253,7 @@ class PetListener @Inject constructor(
         if (event.to!!.world!!.name != event.from.world!!.name) {
             pet.remove()
 
-            val warpDelay = configurationService.findValue<Int>("global-configuration.teleport-delay") * 20L
+            val warpDelay = configurationService.findValue<Int>("global-configuration.teleport-delay") * 20L + 120
 
             sync(concurrencyService, warpDelay) {
                 petService.getOrSpawnPetFromPlayer(event.player)
