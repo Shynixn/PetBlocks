@@ -2,7 +2,6 @@ package com.github.shynixn.petblocks.bukkit.logic.business.service
 
 import com.github.shynixn.petblocks.api.business.enumeration.ChatClickAction
 import com.github.shynixn.petblocks.api.business.enumeration.ChatColor
-import com.github.shynixn.petblocks.api.business.enumeration.MaterialType
 import com.github.shynixn.petblocks.api.business.enumeration.PluginDependency
 import com.github.shynixn.petblocks.api.business.service.*
 import com.github.shynixn.petblocks.bukkit.logic.business.extension.dataValue
@@ -11,7 +10,6 @@ import com.github.shynixn.petblocks.bukkit.logic.business.extension.updateInvent
 import com.github.shynixn.petblocks.core.logic.business.extension.chatMessage
 import com.github.shynixn.petblocks.core.logic.business.extension.sync
 import com.google.inject.Inject
-import org.bukkit.Bukkit
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 
@@ -47,13 +45,9 @@ class DependencyHeadDatabaseServiceImpl @Inject constructor(
     private val configurationService: ConfigurationService,
     private val messageService: MessageService,
     private val petMetaService: PersistencePetMetaService,
-    private val concurrencyService: ConcurrencyService,
-    private val itemService: ItemService
+    private val concurrencyService: ConcurrencyService
 ) : DependencyHeadDatabaseService {
     private val headDatabasePlayers = HashSet<Player>()
-    private var headDatabaseTitle: String? = null
-    private var headDatabaseSearch: String? = null
-    private val skullItemType = MaterialType.SKULL_ITEM
 
     /**
      * Opens the virtual connection to the HeadDatabase plugin.
@@ -102,11 +96,11 @@ class DependencyHeadDatabaseServiceImpl @Inject constructor(
     }
 
     /**
-     * Executes actions when the given [player] clicks on an [item] at the given [relativeSlot].
+     * Executes actions when the given [player] clicks on an [item].
      * @param P the type of the player.
      * @param I the type of the inventory.
      */
-    override fun <P, I> clickInventoryItem(player: P, relativeSlot: Int, item: I): Boolean {
+    override fun <P, I> clickInventoryItem(player: P, item: I): Boolean {
         if (player !is Player) {
             throw IllegalArgumentException("Player has to be a BukkitPlayer!")
         }
@@ -119,33 +113,12 @@ class DependencyHeadDatabaseServiceImpl @Inject constructor(
             return false
         }
 
-        if (headDatabaseTitle == null) {
-            val plugin = Bukkit.getPluginManager().getPlugin("HeadDatabase")!!
-            this.headDatabaseTitle = this.constructPrefix(ChatColor.translateChatColorCodes('&', "&4&r" + plugin.config.getString("messages.database")!!.split("%count%")[0]))
-            this.headDatabaseSearch = this.constructPrefix(ChatColor.translateChatColorCodes('&', "&4&r" + plugin.config.getString("messages.search")!!.split("%count%")[0]))
-        }
-
-        @Suppress("DEPRECATION")
-        val currentTitleName = org.bukkit.ChatColor.stripColor(player.openInventory.title)!!
-
-        if (!currentTitleName.startsWith(this.headDatabaseTitle!!) && !currentTitleName.startsWith(this.headDatabaseSearch!!)) {
-            return false
-        }
-
-        if (!itemService.hasItemStackProperties(item, skullItemType) || item.itemMeta == null
-            || (item.itemMeta!!.displayName as String?) == null || !item.itemMeta!!.displayName.startsWith(org.bukkit.ChatColor.BLUE.toString())
-        ) {
-            return false
-        }
-
         player.closeInventory()
 
         val petMeta = petMetaService.getPetMetaFromPlayer(player)
-
         petMeta.skin.typeName = item.type.name
         petMeta.skin.dataValue = item.dataValue
         petMeta.skin.owner = item.skin!!
-
         petMetaService.save(petMeta)
 
         val command = configurationService.findValue<String>("commands.petblock.command")
@@ -180,26 +153,5 @@ class DependencyHeadDatabaseServiceImpl @Inject constructor(
         if (headDatabasePlayers.contains(player)) {
             headDatabasePlayers.remove(player)
         }
-    }
-
-    /**
-     * Constructs a prefix from the given source.
-     *
-     * @param source source
-     * @return prefix
-     */
-    private fun constructPrefix(source: String): String {
-        val b = StringBuilder()
-
-        for (i in 0 until source.length) {
-            val t = source[i]
-            if (t != '%') {
-                b.append(t)
-            } else {
-                return org.bukkit.ChatColor.stripColor(b.toString())!!
-            }
-        }
-
-        return org.bukkit.ChatColor.stripColor(b.toString())!!
     }
 }

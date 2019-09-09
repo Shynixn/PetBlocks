@@ -6,7 +6,7 @@ import com.github.shynixn.petblocks.api.business.proxy.EntityPetProxy
 import net.minecraft.server.v1_9_R2.EntityInsentient
 import org.bukkit.craftbukkit.v1_9_R2.CraftServer
 import org.bukkit.craftbukkit.v1_9_R2.entity.CraftLivingEntity
-import org.bukkit.entity.Slime
+import org.bukkit.entity.*
 
 /**
  * Created by Shynixn 2019.
@@ -35,7 +35,7 @@ import org.bukkit.entity.Slime
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class CraftPet(server: CraftServer, nmsPet: EntityInsentient) : CraftLivingEntity(server, nmsPet), EntityPetProxy, Slime {
+class CraftPet(server: CraftServer, nmsPet: EntityInsentient) : CraftLivingEntity(server, nmsPet), EntityPetProxy, Slime, Pig, Rabbit, Bat {
     /**
      * Boots marker.
      */
@@ -74,5 +74,64 @@ class CraftPet(server: CraftServer, nmsPet: EntityInsentient) : CraftLivingEntit
     }
 
     override fun setSize(p0: Int) {
+    }
+
+    override fun setTarget(p0: LivingEntity?) {
+    }
+
+    override fun getTarget(): LivingEntity? {
+        return null
+    }
+
+    override fun setAdult() {
+    }
+
+    override fun setBaby() {
+    }
+
+    override fun setAge(p0: Int) {
+    }
+
+    override fun getAge(): Int {
+        return 2
+    }
+
+    override fun canBreed(): Boolean {
+        return false
+    }
+
+    override fun setSaddle(p0: Boolean) {
+    }
+
+    override fun isAdult(): Boolean {
+        return false
+    }
+
+    override fun hasSaddle(): Boolean {
+        return false
+    }
+
+    override fun getAgeLock(): Boolean {
+        return false
+    }
+
+    override fun setAgeLock(p0: Boolean) {
+    }
+
+    override fun setBreed(p0: Boolean) {
+    }
+
+    override fun setRabbitType(p0: Rabbit.Type) {
+    }
+
+    override fun isAwake(): Boolean {
+        return true
+    }
+
+    override fun setAwake(p0: Boolean) {
+    }
+
+    override fun getRabbitType(): Rabbit.Type {
+        return Rabbit.Type.BLACK
     }
 }

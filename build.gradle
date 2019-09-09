@@ -37,7 +37,7 @@ allprojects {
 subprojects {
 
     group 'com.github.shynixn.petblocks'
-    version '8.7.0'
+    version '8.8.0'
 
     sourceCompatibility = 1.8
 
@@ -253,7 +253,25 @@ task downloadDependencies(type: Exec) {
         new URL('https://hub.spigotmc.org/jenkins/job/BuildTools/lastSuccessfulBuild/artifact/target/BuildTools.jar').withInputStream { i -> file.withOutputStream { it << i } }
     }
 
+    def hdbFile = new File(folder, "HeadDatabaseAPI.jar")
+
+    if (!hdbFile.exists()) {
+        def lookConnection = new URL('http://www.mediafire.com/file/x0pl7biy9picco1/HeadDatabaseAPI.jar/file').openConnection()
+        lookConnection.setRequestProperty("User-Agent", "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.4; en-US; rv:1.9.2.2) Gecko/20100316 Firefox/3.6.2");
+        def text = lookConnection.getInputStream().text
+        def startIndex = text.indexOf("aria-label=\"Download file\"") + 40
+        def endIndex = text.indexOf(">\n" + "                        Download (")
+        def downloadLink = text.substring(startIndex as int,endIndex as int).replace("href=\"","").trim()
+
+        def connection = new URL(downloadLink).openConnection()
+        connection.setRequestProperty("User-Agent", "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.4; en-US; rv:1.9.2.2) Gecko/20100316 Firefox/3.6.2");
+        def out = new BufferedOutputStream(new FileOutputStream(hdbFile))
+        out << connection.inputStream
+        out.close()
+    }
+
     def text = "cd build/buildtools"
+    text += " && mvn install:install-file -Dfile=HeadDatabaseAPI.jar -DgroupId=me.arcaniax.hdb -DartifactId=HeadDatabaseAPI -Dversion=1.0 -Dpackaging=jar"
     text += " && java -jar BuildTools.jar --rev 1.8"
     text += " && java -jar BuildTools.jar --rev 1.8.3"
     text += " && java -jar BuildTools.jar --rev 1.8.8"

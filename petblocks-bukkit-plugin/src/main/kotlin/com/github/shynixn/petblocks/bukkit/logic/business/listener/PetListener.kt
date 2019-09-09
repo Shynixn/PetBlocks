@@ -12,6 +12,7 @@ import com.github.shynixn.petblocks.api.persistence.entity.AIWearing
 import com.github.shynixn.petblocks.bukkit.logic.business.extension.findClazz
 import com.github.shynixn.petblocks.bukkit.logic.business.extension.getServerVersion
 import com.github.shynixn.petblocks.bukkit.logic.business.extension.teleportUnsafe
+import com.github.shynixn.petblocks.core.logic.business.extension.cast
 import com.github.shynixn.petblocks.core.logic.business.extension.sync
 import com.github.shynixn.petblocks.core.logic.business.extension.thenAcceptSafely
 import com.google.inject.Inject
@@ -77,7 +78,7 @@ class PetListener @Inject constructor(
      */
     @EventHandler
     fun onPlayerJoinEvent(event: PlayerJoinEvent) {
-        if ((event.joinMessage as String?) != null && event.joinMessage == "PetBlocksRunTime") {
+        if ((event.joinMessage.cast<String?>()) != null && event.joinMessage == "PetBlocksRunTime") {
             this.loadPetBlocks(event.player)
         } else {
             val uuid = event.player.uniqueId
@@ -252,7 +253,7 @@ class PetListener @Inject constructor(
         if (event.to!!.world!!.name != event.from.world!!.name) {
             pet.remove()
 
-            val warpDelay = configurationService.findValue<Int>("global-configuration.teleport-delay") * 20L
+            val warpDelay = configurationService.findValue<Int>("global-configuration.teleport-delay") * 20L + 120
 
             sync(concurrencyService, warpDelay) {
                 petService.getOrSpawnPetFromPlayer(event.player)

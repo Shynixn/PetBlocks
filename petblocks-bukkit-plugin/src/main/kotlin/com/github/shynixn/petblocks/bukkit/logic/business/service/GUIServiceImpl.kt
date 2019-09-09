@@ -506,7 +506,7 @@ class GUIServiceImpl @Inject constructor(
                 tmpLore.add(l.replace("<permission>", permissionMessage).translateChatColors())
             }
 
-            meta!!.lore = tmpLore
+            meta.lore = tmpLore
             itemStack.itemMeta = meta
         }
 
