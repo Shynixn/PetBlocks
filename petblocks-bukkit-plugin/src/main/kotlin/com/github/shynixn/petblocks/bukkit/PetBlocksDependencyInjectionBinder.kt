@@ -84,6 +84,7 @@ class PetBlocksDependencyInjectionBinder(private val plugin: PetBlocksPlugin) : 
         bind(ParticleService::class.java).to(ParticleServiceImpl::class.java).`in`(Scopes.SINGLETON)
         bind(ProxyService::class.java).to(ProxyServiceImpl::class.java).`in`(Scopes.SINGLETON)
         bind(SoundService::class.java).to(SoundServiceImpl::class.java).`in`(Scopes.SINGLETON)
+        bind(GUIItemLoadService::class.java).to(GUIItemLoadServiceImpl::class.java).`in`(Scopes.SINGLETON)
 
         when {
             version.isVersionSameOrGreaterThan(Version.VERSION_1_14_R1) -> bind(EntityRegistrationService::class.java).to(EntityRegistration114R1ServiceImpl::class.java).`in`(

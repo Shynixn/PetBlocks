@@ -72,7 +72,7 @@ class ItemTypeServiceImpl @Inject constructor(private val version: Version) : It
         if (itemStack.itemMeta != null) {
             var currentMeta = itemStack.itemMeta
 
-            if (item.skin != null && currentMeta is SkullMeta) {
+            if (!item.skin.isNullOrEmpty() && currentMeta is SkullMeta) {
                 var newSkin = item.skin!!
 
                 if (newSkin.length > 32) {
@@ -184,8 +184,13 @@ class ItemTypeServiceImpl @Inject constructor(private val version: Version) : It
                 val real = cls.cast(currentMeta)
                 val field = real.javaClass.getDeclaredField("profile")
                 field.isAccessible = true
-                val profile = field.get(real) as GameProfile
-                profile.properties.get("textures").toTypedArray()[0].value
+                val profile = field.get(real) as GameProfile?
+
+                if (profile == null) {
+                    null
+                } else {
+                    profile.properties.get("textures").toTypedArray()[0].value
+                }
             }
         } else {
             null
@@ -247,9 +252,12 @@ class ItemTypeServiceImpl @Inject constructor(private val version: Version) : It
 
         if (descHint is String) {
             for (material in Material::class.java.enumConstants) {
-                if (material.name.equals(descHint, true) || ("LEGACY_$descHint" == material.name)) {
-                    cache[sourceHint] = material
-                    return cache[sourceHint]!! as I
+                try {
+                    if (material.name.equals(descHint, true) || ("LEGACY_$descHint" == material.name)) {
+                        cache[sourceHint] = material
+                        return cache[sourceHint]!! as I
+                    }
+                } catch (e: Exception) {
                 }
             }
         }

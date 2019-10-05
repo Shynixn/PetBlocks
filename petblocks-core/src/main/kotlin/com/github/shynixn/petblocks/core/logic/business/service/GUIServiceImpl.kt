@@ -580,7 +580,7 @@ class GUIServiceImpl @Inject constructor(
         var scriptResult = ScriptAction.NONE
 
         for (action in ScriptAction.values()) {
-            if (action.action.startsWith(script)) {
+            if (action != ScriptAction.NONE && script.toLowerCase().startsWith(action.action.toLowerCase())) {
                 scriptResult = action
                 break
             }
