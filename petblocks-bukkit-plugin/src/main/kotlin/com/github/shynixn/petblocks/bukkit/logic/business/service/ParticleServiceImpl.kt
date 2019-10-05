@@ -8,7 +8,6 @@ import com.github.shynixn.petblocks.api.business.service.ConfigurationService
 import com.github.shynixn.petblocks.api.business.service.LoggingService
 import com.github.shynixn.petblocks.api.business.service.ParticleService
 import com.github.shynixn.petblocks.api.persistence.entity.Particle
-import com.github.shynixn.petblocks.bukkit.logic.business.extension.getServerVersion
 import com.github.shynixn.petblocks.bukkit.logic.business.extension.sendPacket
 import com.google.inject.Inject
 import org.bukkit.Bukkit
@@ -48,10 +47,9 @@ import java.util.logging.Level
  */
 class ParticleServiceImpl @Inject constructor(
     private val logger: LoggingService,
-    private val configurationService: ConfigurationService
+    private val configurationService: ConfigurationService,
+    private val version: Version
 ) : ParticleService {
-    private val version = getServerVersion()
-
     private val getIdFromMaterialMethod: Method = { Material::class.java.getDeclaredMethod("getId") }.invoke()
 
     /**
@@ -100,8 +98,10 @@ class ParticleServiceImpl @Inject constructor(
 
             if (dataType == ItemStack::class.java && particle.materialName != null) {
                 val itemStack = findClazz("org.bukkit.craftbukkit.VERSION.inventory.CraftItemStack").getDeclaredMethod("asNMSCopy")
-                    .invoke(null, ItemStack::class.java.getDeclaredConstructor(Material::class.java, Int::class.java, Short::class.java)
-                        .newInstance(Material.getMaterial(particle.materialName!!)!!, 1, particle.data.toShort()))
+                    .invoke(
+                        null, ItemStack::class.java.getDeclaredConstructor(Material::class.java, Int::class.java, Short::class.java)
+                            .newInstance(Material.getMaterial(particle.materialName!!)!!, 1, particle.data.toShort())
+                    )
 
 
 
@@ -127,7 +127,8 @@ class ParticleServiceImpl @Inject constructor(
             }
 
             findClazz("net.minecraft.server.VERSION.PacketPlayOutWorldParticles")
-                .getDeclaredConstructor(particleParamClazz,
+                .getDeclaredConstructor(
+                    particleParamClazz,
                     Boolean::class.java,
                     Float::class.java,
                     Float::class.java,
@@ -136,8 +137,10 @@ class ParticleServiceImpl @Inject constructor(
                     Float::class.java,
                     Float::class.java,
                     Float::class.java,
-                    Int::class.java)
-                .newInstance(internalParticleType,
+                    Int::class.java
+                )
+                .newInstance(
+                    internalParticleType,
                     isLongDistance(location, targets),
                     location.x.toFloat(),
                     location.y.toFloat(),
@@ -146,7 +149,8 @@ class ParticleServiceImpl @Inject constructor(
                     particle.offSetY.toFloat(),
                     particle.offSetZ.toFloat(),
                     particle.speed.toFloat(),
-                    particle.amount)
+                    particle.amount
+                )
         } else {
             var additionalPayload: IntArray? = null
 
@@ -165,7 +169,8 @@ class ParticleServiceImpl @Inject constructor(
                 }
 
                 val constructor = Class.forName("net.minecraft.server.VERSION.PacketPlayOutWorldParticles".replace("VERSION", version.bukkitId))
-                    .getDeclaredConstructor(internalParticleType.javaClass,
+                    .getDeclaredConstructor(
+                        internalParticleType.javaClass,
                         Boolean::class.javaPrimitiveType,
                         Float::class.javaPrimitiveType,
                         Float::class.javaPrimitiveType,
@@ -175,8 +180,10 @@ class ParticleServiceImpl @Inject constructor(
                         Float::class.javaPrimitiveType,
                         Float::class.javaPrimitiveType,
                         Int::class.javaPrimitiveType,
-                        IntArray::class.java)
-                constructor.newInstance(internalParticleType,
+                        IntArray::class.java
+                    )
+                constructor.newInstance(
+                    internalParticleType,
                     isLongDistance(location, targets),
                     location.x.toFloat(),
                     location.y.toFloat(),
@@ -186,11 +193,13 @@ class ParticleServiceImpl @Inject constructor(
                     particle.colorBlue.toFloat() / 255.0f,
                     particle.speed.toFloat(),
                     particle.amount,
-                    additionalPayload)
+                    additionalPayload
+                )
             } else {
 
                 val constructor = Class.forName("net.minecraft.server.VERSION.PacketPlayOutWorldParticles".replace("VERSION", version.bukkitId))
-                    .getDeclaredConstructor(internalParticleType.javaClass,
+                    .getDeclaredConstructor(
+                        internalParticleType.javaClass,
                         Boolean::class.javaPrimitiveType,
                         Float::class.javaPrimitiveType,
                         Float::class.javaPrimitiveType,
@@ -200,8 +209,10 @@ class ParticleServiceImpl @Inject constructor(
                         Float::class.javaPrimitiveType,
                         Float::class.javaPrimitiveType,
                         Int::class.javaPrimitiveType,
-                        IntArray::class.java)
-                constructor.newInstance(internalParticleType,
+                        IntArray::class.java
+                    )
+                constructor.newInstance(
+                    internalParticleType,
                     isLongDistance(location, targets),
                     location.x.toFloat(),
                     location.y.toFloat(),
@@ -211,7 +222,8 @@ class ParticleServiceImpl @Inject constructor(
                     particle.offSetZ.toFloat(),
                     particle.speed.toFloat(),
                     particle.amount,
-                    additionalPayload)
+                    additionalPayload
+                )
             }
         }
 
@@ -245,14 +257,16 @@ class ParticleServiceImpl @Inject constructor(
                 }
 
                 version == Version.VERSION_1_13_R1 -> {
-                    val minecraftKey = findClazz("net.minecraft.server.VERSION.MinecraftKey").getDeclaredConstructor(String::class.java).newInstance(particle.gameId_113)
+                    val minecraftKey =
+                        findClazz("net.minecraft.server.VERSION.MinecraftKey").getDeclaredConstructor(String::class.java).newInstance(particle.gameId_113)
                     val registry = findClazz("net.minecraft.server.VERSION.Particle").getDeclaredField("REGISTRY").get(null)
 
                     findClazz("net.minecraft.server.VERSION.RegistryMaterials").getDeclaredMethod("get", Any::class.java).invoke(registry, minecraftKey)
                 }
 
                 else -> {
-                    val minecraftKey = findClazz("net.minecraft.server.VERSION.MinecraftKey").getDeclaredConstructor(String::class.java).newInstance(particle.gameId_113)
+                    val minecraftKey =
+                        findClazz("net.minecraft.server.VERSION.MinecraftKey").getDeclaredConstructor(String::class.java).newInstance(particle.gameId_113)
                     val registry = findClazz("net.minecraft.server.VERSION.IRegistry").getDeclaredField("PARTICLE_TYPE").get(null)
                     findClazz("net.minecraft.server.VERSION.RegistryMaterials").getDeclaredMethod("get", findClazz("net.minecraft.server.VERSION.MinecraftKey"))
                         .invoke(registry, minecraftKey)

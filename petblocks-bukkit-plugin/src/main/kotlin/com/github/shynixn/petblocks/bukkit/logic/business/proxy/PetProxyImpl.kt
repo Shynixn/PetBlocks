@@ -12,9 +12,9 @@ import com.github.shynixn.petblocks.api.persistence.entity.Skin
 import com.github.shynixn.petblocks.bukkit.logic.business.extension.*
 import com.github.shynixn.petblocks.core.logic.business.extension.hasChanged
 import com.github.shynixn.petblocks.core.logic.business.extension.translateChatColors
+import com.github.shynixn.petblocks.core.logic.persistence.entity.ItemEntity
 import org.bukkit.Bukkit
 import org.bukkit.Location
-import org.bukkit.Material
 import org.bukkit.entity.ArmorStand
 import org.bukkit.entity.LivingEntity
 import org.bukkit.entity.Player
@@ -64,7 +64,7 @@ class PetProxyImpl(override val meta: PetMeta, private val design: ArmorStand, p
     private val particleService = PetBlocksApi.resolve(ParticleService::class.java)
     private val soundService = PetBlocksApi.resolve(SoundService::class.java)
     private val logger: LoggingService = PetBlocksApi.resolve(LoggingService::class.java)
-    private val itemService = PetBlocksApi.resolve(ItemService::class.java)
+    private val itemService = PetBlocksApi.resolve(ItemTypeService::class.java)
 
     /**
      * Init.
@@ -217,15 +217,16 @@ class PetProxyImpl(override val meta: PetMeta, private val design: ArmorStand, p
         }
 
         if (displayNameChanged || Skin::typeName.hasChanged(meta.skin)) {
-            var itemStack = itemService.createItemStack(meta.skin.typeName, meta.skin.dataValue).build<ItemStack>()
+            val item = ItemEntity(
+                meta.skin.typeName,
+                meta.skin.dataValue,
+                meta.skin.unbreakable,
+                meta.displayName,
+                null,
+                meta.skin.owner
+            )
 
-            itemStack.displayName = meta.displayName
-            itemStack.skin = meta.skin.owner
-
-            if (meta.skin.unbreakable) {
-                itemStack = itemStack.createUnbreakableCopy()
-            }
-
+            val itemStack = itemService.toItemStack<ItemStack>(item)
             design.setHelmet(itemStack)
         }
     }
@@ -288,8 +289,7 @@ class PetProxyImpl(override val meta: PetMeta, private val design: ArmorStand, p
      * Gets a new marker itemstack.
      */
     private fun generateMarkerItemStack(): ItemStack {
-        val item = ItemStack(Material.APPLE)
-        item.setLore(arrayListOf("PetBlocks"))
-        return item
+        val item = ItemEntity("APPLE", 0, false, null, arrayListOf("PetBlocks"))
+        return itemService.toItemStack(item)
     }
 }

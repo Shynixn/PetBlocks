@@ -7,7 +7,7 @@ plugins {
 
 apply plugin: 'jacoco'
 
-shadowJar{
+shadowJar {
     archiveName = "$baseName-$version.$extension"
 
     // Change the output folder of the plugin.
@@ -56,6 +56,14 @@ publishing {
 repositories {
     maven {
         url "https://jitpack.io"
+    }
+}
+
+task dockerJar(type: Exec, dependsOn: shadowJar) {
+    if (System.getProperty('os.name').toLowerCase(Locale.ROOT).contains('windows')) {
+        commandLine 'cmd', '/c', "docker cp build/libs/. petblocks:/minecraft/spigot/plugins"
+    } else {
+        commandLine 'sh', '-c', "docker cp build/libs/. petblocks:/minecraft/spigot/plugins"
     }
 }
 

@@ -11,11 +11,9 @@ import com.github.shynixn.petblocks.api.persistence.context.SqlDbContext
 import com.github.shynixn.petblocks.api.persistence.entity.*
 import com.github.shynixn.petblocks.bukkit.logic.business.service.ConfigurationServiceImpl
 import com.github.shynixn.petblocks.bukkit.logic.business.service.EntityServiceImpl
-import com.github.shynixn.petblocks.bukkit.logic.business.service.Item18R1ServiceImpl
-import com.github.shynixn.petblocks.core.logic.business.service.AIServiceImpl
-import com.github.shynixn.petblocks.core.logic.business.service.LoggingUtilServiceImpl
-import com.github.shynixn.petblocks.core.logic.business.service.PersistencePetMetaServiceImpl
-import com.github.shynixn.petblocks.core.logic.business.service.YamlSerializationServiceImpl
+import com.github.shynixn.petblocks.bukkit.logic.business.service.ItemTypeServiceImpl
+import com.github.shynixn.petblocks.bukkit.logic.business.service.ProxyServiceImpl
+import com.github.shynixn.petblocks.core.logic.business.service.*
 import com.github.shynixn.petblocks.core.logic.persistence.context.SqlDbContextImpl
 import com.github.shynixn.petblocks.core.logic.persistence.entity.AIMovementEntity
 import com.github.shynixn.petblocks.core.logic.persistence.repository.PetMetaSqlRepository
@@ -250,20 +248,95 @@ class PersistenceMySQLIT {
             }
 
             val aiService = AIServiceImpl(LoggingUtilServiceImpl(Logger.getAnonymousLogger()), MockedProxyService())
-            val configService = ConfigurationServiceImpl(plugin, Item18R1ServiceImpl(), aiService)
-            EntityServiceImpl(configService, MockedProxyService(),
+            val configService = ConfigurationServiceImpl(plugin)
+
+            EntityServiceImpl(
+                configService, MockedProxyService(),
                 Mockito.mock(EntityRegistrationService::class.java), Mockito.mock(PetService::class.java), YamlSerializationServiceImpl(),
-                plugin, Version.VERSION_1_8_R1, aiService)
+                plugin, Version.VERSION_1_8_R1, aiService
+            )
+
+            val guiItemLoadService =
+                GUIItemLoadServiceImpl(
+                    configService,
+                    ItemTypeServiceImpl(Version.VERSION_UNKNOWN),
+                    aiService
+                )
 
             dbContext = SqlDbContextImpl(configService, LoggingUtilServiceImpl(Logger.getAnonymousLogger()))
 
-            val sqlite = PetMetaSqlRepository(dbContext!!,
-                aiService, configService)
+            val sqlite = PetMetaSqlRepository(
+                dbContext!!,
+                aiService, guiItemLoadService, configService
+            )
             return PersistencePetMetaServiceImpl(MockedProxyService(), sqlite, MockedConcurrencyService(), MockedEventService())
         }
     }
 
     class MockedProxyService : ProxyService {
+        /**
+         * Gets the inventory item at the given index.
+         */
+        override fun <I, IT> getInventoryItem(inventory: I, index: Int): IT? {
+            throw IllegalArgumentException()
+        }
+
+        /**
+         * Gets if the given player has got the given permission.
+         */
+        override fun <P> hasPermission(player: P, permission: String): Boolean {
+            throw IllegalArgumentException()
+        }
+
+        /**
+         * Closes the inventory of the given player.
+         */
+        override fun <P> closeInventory(player: P) {
+            throw IllegalArgumentException()
+        }
+
+        /**
+         * Gets if the given inventory belongs to a player. Returns null if not.
+         */
+        override fun <P, I> getPlayerFromInventory(inventory: I): P? {
+            throw IllegalArgumentException()
+        }
+
+        /**
+         * Gets the lower inventory of an inventory.
+         */
+        override fun <I> getLowerInventory(inventory: I): I {
+            throw IllegalArgumentException()
+        }
+
+        /**
+         * Clears the given inventory.
+         */
+        override fun <I> clearInventory(inventory: I) {
+            throw IllegalArgumentException()
+        }
+
+        /**
+         * Opens a new inventory for the given player.
+         */
+        override fun <P, I> openInventory(player: P, title: String, size: Int): I {
+            throw IllegalArgumentException()
+        }
+
+        /**
+         * Updates the inventory.
+         */
+        override fun <I, IT> setInventoryItem(inventory: I, index: Int, item: IT) {
+            throw IllegalArgumentException()
+        }
+
+        /**
+         * Updates the given player inventory.
+         */
+        override fun <P> updateInventory(player: P) {
+            throw IllegalArgumentException()
+        }
+
         /**
          * Gets if the given instance can be converted to a player.
          */

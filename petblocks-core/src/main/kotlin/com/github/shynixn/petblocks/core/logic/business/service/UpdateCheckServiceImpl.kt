@@ -1,9 +1,9 @@
 package com.github.shynixn.petblocks.core.logic.business.service
 
 import com.github.shynixn.petblocks.api.business.enumeration.ChatColor
-import com.github.shynixn.petblocks.api.business.service.LoggingService
+import com.github.shynixn.petblocks.api.business.proxy.PluginProxy
 import com.github.shynixn.petblocks.api.business.service.ConcurrencyService
-import com.github.shynixn.petblocks.api.business.service.ConfigurationService
+import com.github.shynixn.petblocks.api.business.service.LoggingService
 import com.github.shynixn.petblocks.api.business.service.MessageService
 import com.github.shynixn.petblocks.api.business.service.UpdateCheckService
 import com.github.shynixn.petblocks.core.logic.business.extension.async
@@ -42,27 +42,31 @@ import javax.net.ssl.HttpsURLConnection
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class UpdateCheckServiceImpl @Inject constructor(configurationService: ConfigurationService, private val loggingService: LoggingService, private val messageService: MessageService, private val concurrencyService: ConcurrencyService) : UpdateCheckService {
+class UpdateCheckServiceImpl @Inject constructor(
+    private val pluginProxy: PluginProxy,
+    private val loggingService: LoggingService,
+    private val messageService: MessageService,
+    private val concurrencyService: ConcurrencyService
+) : UpdateCheckService {
     private val baseUrl = "https://api.spigotmc.org/legacy/update.php?resource="
     private val spigotResourceId: Long = 12056
     private val prefix: String = ChatColor.AQUA.toString() + "[PetBlocks] "
-    private val pluginVersion = configurationService.findValue<String>("plugin.version")
     private val pluginName = "PetBlocks"
 
     /**
      * Returns if there are any new updates for the PetBlocks plugin.
      */
-    override fun checkForUpdates() : CompletableFuture<Boolean>{
+    override fun checkForUpdates(): CompletableFuture<Boolean> {
         val completableFuture = CompletableFuture<Boolean>()
 
         async(concurrencyService) {
             try {
                 val resourceVersion = getLatestReleaseVersion(spigotResourceId)
 
-                if (resourceVersion == pluginVersion) {
+                if (resourceVersion == pluginProxy.version) {
                     completableFuture.complete(false)
                 } else {
-                    if (pluginVersion.endsWith("SNAPSHOT")) {
+                    if (pluginProxy.version.endsWith("SNAPSHOT")) {
                         messageService.sendConsoleMessage(prefix + ChatColor.YELLOW + "================================================")
                         messageService.sendConsoleMessage(prefix + ChatColor.YELLOW + "You are using a snapshot of " + pluginName)
                         messageService.sendConsoleMessage(prefix + ChatColor.YELLOW + "Please check if there is a new version available")

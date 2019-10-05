@@ -90,10 +90,10 @@ class EntityServiceImpl @Inject constructor(
         this.register<AIFleeInCombat>(AIType.FLEE_IN_COMBAT)
 
         this.register<AIFloatInWater>(AIType.FLOAT_IN_WATER) { pet, _ ->
-            val getHandleMethod = version.findClazz("org.bukkit.craftbukkit.VERSION.entity.CraftLivingEntity").getDeclaredMethod("getHandle")!!
+            val getHandleMethod = findClazz("org.bukkit.craftbukkit.VERSION.entity.CraftLivingEntity").getDeclaredMethod("getHandle")!!
 
-            version.findClazz("net.minecraft.server.VERSION.PathfinderGoalFloat")
-                .getDeclaredConstructor(version.findClazz("net.minecraft.server.VERSION.EntityInsentient"))
+            findClazz("net.minecraft.server.VERSION.PathfinderGoalFloat")
+                .getDeclaredConstructor(findClazz("net.minecraft.server.VERSION.EntityInsentient"))
                 .newInstance(getHandleMethod.invoke(pet.getHitBoxLivingEntity<LivingEntity>().get()))
         }
 

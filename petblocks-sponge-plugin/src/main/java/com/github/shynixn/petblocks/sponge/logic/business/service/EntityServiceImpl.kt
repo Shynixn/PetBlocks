@@ -13,7 +13,6 @@ import com.github.shynixn.petblocks.api.persistence.entity.*
 import com.github.shynixn.petblocks.core.logic.business.extension.cast
 import com.github.shynixn.petblocks.core.logic.business.extension.stripChatColors
 import com.github.shynixn.petblocks.core.logic.business.proxy.AICreationProxyImpl
-import com.github.shynixn.petblocks.sponge.logic.business.extension.lore
 import com.github.shynixn.petblocks.sponge.logic.business.extension.sendMessage
 import com.github.shynixn.petblocks.sponge.logic.business.extension.toVector3i
 import com.github.shynixn.petblocks.sponge.logic.business.pathfinder.PathfinderAfraidOfWater
@@ -64,7 +63,8 @@ class EntityServiceImpl @Inject constructor(
     private val yamlSerializationService: YamlSerializationService,
     private val version: Version,
     private val aiService: AIService,
-    private val loggingService: LoggingService
+    private val loggingService: LoggingService,
+    private val itemTypeService: ItemTypeService
 ) : EntityService {
 
     private var registered = false
@@ -132,9 +132,10 @@ class EntityServiceImpl @Inject constructor(
             // Pets of PetBlocks hide a marker in the boots of every entity. This marker is persistent even on server crashes.
             if (entity is EntityLiving && entity.getItemStackFromSlot(EntityEquipmentSlot.FEET) != ItemStack.EMPTY) {
                 val boots = entity.getItemStackFromSlot(EntityEquipmentSlot.FEET).cast<org.spongepowered.api.item.inventory.ItemStack>()
+                val bootsItem = itemTypeService.toItem(boots)
 
-                if (boots.lore != null) {
-                    val lore = boots.lore!![0]
+                if (bootsItem.lore != null) {
+                    val lore = bootsItem.lore!![0]
 
                     if (lore.stripChatColors() == "PetBlocks") {
                         try {

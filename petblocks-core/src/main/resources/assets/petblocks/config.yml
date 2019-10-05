@@ -150,7 +150,7 @@ pet:
   sound-enabled: true
   particle-enabled: true
   skin:
-    id: 2
+    id: "GRASS"
   add-ai:
     1:
       type: 'hopping'

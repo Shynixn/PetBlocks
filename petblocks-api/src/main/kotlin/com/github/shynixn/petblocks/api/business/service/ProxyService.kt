@@ -42,6 +42,11 @@ interface ProxyService {
     fun <P> getPlayerFromUUID(uuid: String): P
 
     /**
+     * Gets the inventory item at the given index.
+     */
+    fun <I, IT> getInventoryItem(inventory: I, index: Int): IT?
+
+    /**
      * Gets the location of the player.
      */
     fun <L, P> getPlayerLocation(player: P): L
@@ -72,6 +77,36 @@ interface ProxyService {
     fun <P> hasPermission(player: P, permission: Permission): Boolean
 
     /**
+     * Gets if the given player has got the given permission.
+     */
+    fun <P> hasPermission(player: P, permission: String): Boolean
+
+    /**
+     * Closes the inventory of the given player.
+     */
+    fun <P> closeInventory(player: P)
+
+    /**
+     * Gets if the given inventory belongs to a player. Returns null if not.
+     */
+    fun <P, I> getPlayerFromInventory(inventory: I): P?
+
+    /**
+     * Gets the lower inventory of an inventory.
+     */
+    fun <I> getLowerInventory(inventory: I): I
+
+    /**
+     * Clears the given inventory.
+     */
+    fun <I> clearInventory(inventory: I)
+
+    /**
+     * Opens a new inventory for the given player.
+     */
+    fun <P, I> openInventory(player: P, title: String, size: Int): I
+
+    /**
      * Gets the player uuid.
      */
     fun <P> getPlayerUUID(player: P): String
@@ -80,6 +115,16 @@ interface ProxyService {
      * Gets if the given instance can be converted to a player.
      */
     fun <P> isPlayer(instance: P): Boolean
+
+    /**
+     * Updates the inventory.
+     */
+    fun <I, IT> setInventoryItem(inventory: I, index: Int, item: IT)
+
+    /**
+     * Updates the given player inventory.
+     */
+    fun <P> updateInventory(player: P)
 
     /**
      * Sends a message to the [sender].

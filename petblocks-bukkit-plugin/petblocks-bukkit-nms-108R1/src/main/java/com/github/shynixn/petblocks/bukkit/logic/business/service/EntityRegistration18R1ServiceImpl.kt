@@ -69,7 +69,7 @@ class EntityRegistration18R1ServiceImpl @Inject constructor(private val version:
         val entityTypeD = this.findMap<Class<*>, String>(entityTypeClazz, "d")
         val entityTypeF = this.findMap<Class<*>, Int>(entityTypeClazz, "f")
 
-        classes.forEach { customEntityClazz, entityType ->
+        classes.forEach { (customEntityClazz, _) ->
             entityTypeD.remove(customEntityClazz)
             entityTypeF.remove(customEntityClazz)
         }

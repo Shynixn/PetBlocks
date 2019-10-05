@@ -2,6 +2,7 @@ package com.github.shynixn.petblocks.core.logic.business.commandexecutor
 
 import com.github.shynixn.petblocks.api.business.command.SourceCommand
 import com.github.shynixn.petblocks.api.business.service.ConfigurationService
+import com.github.shynixn.petblocks.api.business.service.GUIItemLoadService
 import com.github.shynixn.petblocks.api.business.service.MessageService
 import com.google.inject.Inject
 
@@ -32,12 +33,17 @@ import com.google.inject.Inject
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class ReloadCommandExecutorImpl @Inject constructor(private val configurationService: ConfigurationService, private val messageService: MessageService) : SourceCommand {
+class ReloadCommandExecutorImpl @Inject constructor(
+    private val configurationService: ConfigurationService,
+    private val loadService: GUIItemLoadService,
+    private val messageService: MessageService
+) : SourceCommand {
     /**
      * Gets called when the given [source] executes the defined command with the given [args].
      */
     override fun <S> onExecuteCommand(source: S, args: Array<out String>): Boolean {
-        configurationService.refresh()
+        loadService.reload()
+        configurationService.reload()
         messageService.sendSourceMessage(source, "Reloaded PetBlocks.")
 
         return true

@@ -38,6 +38,7 @@ class EditPetResetCommand @Inject constructor(
     private val petMetaService: PersistencePetMetaService,
     private val configurationService: ConfigurationService,
     private val commandService: CommandService,
+    private val loadService: GUIItemLoadService,
     private val messageService: MessageService
 ) : SourceCommand {
     /**
@@ -63,11 +64,12 @@ class EditPetResetCommand @Inject constructor(
             pet.remove()
         }
 
-        configurationService.refresh()
+        loadService.reload()
+        configurationService.reload()
 
         messageService.sendSourceMessage(source, "Resetting the pet of player $playerName...")
 
-        val newPetMeta = configurationService.generateDefaultPetMeta(playerUuid, playerName)
+        val newPetMeta = loadService.generateDefaultPetMeta(playerUuid, playerName)
         petMetaService.save(newPetMeta).thenAcceptSafely {
             petMetaService.refreshPetMetaFromRepository(player).thenAcceptSafely {
                 messageService.sendSourceMessage(source, "Finished resetting the pet of player $playerName.")

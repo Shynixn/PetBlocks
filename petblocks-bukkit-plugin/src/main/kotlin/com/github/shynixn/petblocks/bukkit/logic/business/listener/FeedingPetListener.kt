@@ -1,15 +1,19 @@
+@file:Suppress("unused")
+
 package com.github.shynixn.petblocks.bukkit.logic.business.listener
 
+import com.github.shynixn.petblocks.api.business.enumeration.MaterialType
 import com.github.shynixn.petblocks.api.business.service.FeedingPetService
+import com.github.shynixn.petblocks.api.business.service.HandService
+import com.github.shynixn.petblocks.api.business.service.ItemTypeService
 import com.github.shynixn.petblocks.api.business.service.PetService
-import com.github.shynixn.petblocks.bukkit.logic.business.extension.itemStackInMainHand
 import com.google.inject.Inject
-import org.bukkit.Material
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.EventPriority
 import org.bukkit.event.Listener
 import org.bukkit.event.player.PlayerInteractAtEntityEvent
+import org.bukkit.inventory.ItemStack
 
 /**
  * Created by Shynixn 2018.
@@ -38,8 +42,12 @@ import org.bukkit.event.player.PlayerInteractAtEntityEvent
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class FeedingPetListener @Inject constructor(private val feedingPetService: FeedingPetService, private val petService: PetService) :
-    Listener {
+class FeedingPetListener @Inject constructor(
+    private val feedingPetService: FeedingPetService,
+    private val handService: HandService,
+    private val itemTypeService: ItemTypeService,
+    private val petService: PetService
+) : Listener {
     /**
      * Gets called when a player interacts at the given entity.
      */
@@ -48,16 +56,16 @@ class FeedingPetListener @Inject constructor(private val feedingPetService: Feed
         val pet = petService.findPetByEntity(event.rightClicked) ?: return
 
         if (pet.getPlayer<Player>() == event.player) {
-            val itemStack = event.player.itemStackInMainHand
+            val itemStack = handService.getItemInHand<Player, ItemStack>(event.player)
 
-            if (itemStack != null && itemStack.type != Material.AIR) {
+            if (itemStack.isPresent && itemTypeService.findItemType<Any>(itemStack.get()) != itemTypeService.findItemType(MaterialType.AIR)) {
                 val feed = feedingPetService.feedPet(pet, itemStack)
 
                 if (feed) {
-                    if (itemStack.amount == 1) {
-                        event.player.itemStackInMainHand = null
+                    if (itemStack.get().amount == 1) {
+                        handService.setItemInHand(event.player, null)
                     } else {
-                        itemStack.amount = itemStack.amount - 1
+                        itemStack.get().amount = itemStack.get().amount - 1
                     }
                 }
 

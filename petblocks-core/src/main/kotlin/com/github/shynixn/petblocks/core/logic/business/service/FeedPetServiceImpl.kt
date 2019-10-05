@@ -38,7 +38,7 @@ class FeedPetServiceImpl @Inject constructor(
     private val concurrencyService: ConcurrencyService,
     private val soundService: SoundService,
     private val particleService: ParticleService,
-    private val inventoryItemService: ItemService
+    private val inventoryItemService: ItemTypeService
 ) : FeedingPetService {
 
     private val cache = HashSet<PetProxy>()
@@ -52,7 +52,9 @@ class FeedPetServiceImpl @Inject constructor(
 
         for (aiGoal in pet.meta.aiGoals) {
             if (aiGoal is AIFeeding) {
-                if (inventoryItemService.hasItemStackProperties(itemStack, aiGoal.typeName, aiGoal.dataValue)) {
+                if (inventoryItemService.findItemDataValue(itemStack as Any) == aiGoal.dataValue
+                    && inventoryItemService.findItemType<Any>(itemStack) == inventoryItemService.findItemType(aiGoal.typeName)
+                ) {
                     playFeedEffects(pet, aiGoal)
                     feed = true
                 }

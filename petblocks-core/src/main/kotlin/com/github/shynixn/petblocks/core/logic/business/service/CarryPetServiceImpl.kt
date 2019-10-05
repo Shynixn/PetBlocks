@@ -39,8 +39,8 @@ import com.google.inject.Inject
 class CarryPetServiceImpl @Inject constructor(
     private val petService: PetService,
     private val proxyService: ProxyService,
-    private val itemService: ItemService,
     private val loggingService: LoggingService,
+    private val itemTypeService: ItemTypeService,
     private val concurrencyService: ConcurrencyService
 ) : CarryPetService {
     private val carryingPet: MutableMap<String, Any> = HashMap()
@@ -68,7 +68,7 @@ class CarryPetServiceImpl @Inject constructor(
 
         val itemInHand = proxyService.getPlayerItemInHand<P, Any>(player, true)
 
-        if (itemInHand == null || itemService.hasItemStackProperties(itemInHand, MaterialType.AIR)) {
+        if (itemInHand == null || itemTypeService.findItemType<Any>(itemInHand) ==  itemTypeService.findItemType(MaterialType.AIR)) {
             val cachePet = pet.getHeadArmorstandItemStack<Any>()
             val playerUUID = proxyService.getPlayerUUID(player)
 

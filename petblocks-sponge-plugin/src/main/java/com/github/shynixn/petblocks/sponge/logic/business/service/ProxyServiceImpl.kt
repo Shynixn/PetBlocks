@@ -1,4 +1,4 @@
-@file:Suppress("UNCHECKED_CAST", "RemoveExplicitTypeArguments")
+@file:Suppress("UNCHECKED_CAST", "RemoveExplicitTypeArguments", "DEPRECATION")
 
 package com.github.shynixn.petblocks.sponge.logic.business.service
 
@@ -9,12 +9,23 @@ import com.github.shynixn.petblocks.core.logic.persistence.entity.PositionEntity
 import com.github.shynixn.petblocks.sponge.logic.business.extension.toPosition
 import com.github.shynixn.petblocks.sponge.logic.business.extension.toText
 import com.github.shynixn.petblocks.sponge.logic.business.extension.updateInventory
+import com.google.inject.Inject
+import net.minecraft.entity.player.EntityPlayerMP
+import net.minecraft.inventory.ContainerChest
 import org.spongepowered.api.Sponge
 import org.spongepowered.api.command.CommandSource
 import org.spongepowered.api.data.type.HandTypes
 import org.spongepowered.api.entity.Transform
 import org.spongepowered.api.entity.living.player.Player
+import org.spongepowered.api.item.inventory.Inventory
+import org.spongepowered.api.item.inventory.InventoryArchetypes
 import org.spongepowered.api.item.inventory.ItemStack
+import org.spongepowered.api.item.inventory.property.InventoryTitle
+import org.spongepowered.api.item.inventory.property.SlotIndex
+import org.spongepowered.api.item.inventory.property.SlotPos
+import org.spongepowered.api.item.inventory.type.CarriedInventory
+import org.spongepowered.api.item.inventory.type.GridInventory
+import org.spongepowered.api.plugin.PluginContainer
 import org.spongepowered.api.world.World
 import java.util.*
 
@@ -45,14 +56,108 @@ import java.util.*
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class ProxyServiceImpl : ProxyService {
+class ProxyServiceImpl @Inject constructor(private val pluginContainer: PluginContainer) : ProxyService {
+    /**
+     * Gets the inventory item at the given index.
+     */
+    override fun <I, IT> getInventoryItem(inventory: I, index: Int): IT? {
+        require(inventory is CarriedInventory<*>)
+        return if (index == 0) {
+            inventory.query<Inventory>(GridInventory::class.java)
+                .query<Inventory>(SlotPos.of(0, 0)).peek().orElse(null) as IT
+        } else {
+            inventory.query<Inventory>(GridInventory::class.java)
+                .query<Inventory>(SlotIndex.of(index)).peek().orElse(null) as IT
+        }
+    }
+
+    /**
+     * Gets if the given player has got the given permission.
+     */
+    override fun <P> hasPermission(player: P, permission: String): Boolean {
+        require(player is Player) { "Player has to be a SpongePlayer!" }
+        return player.hasPermission(permission)
+    }
+
+    /**
+     * Clears the given inventory.
+     */
+    override fun <I> clearInventory(inventory: I) {
+        require(inventory is CarriedInventory<*>)
+        inventory.clear()
+    }
+
+    /**
+     * Gets if the given inventory belongs to a player. Returns null if not.
+     */
+    override fun <P, I> getPlayerFromInventory(inventory: I): P? {
+        require(inventory is CarriedInventory<*>)
+
+        if (!inventory.carrier.isPresent) {
+            return null
+        }
+
+        return inventory.carrier.get() as P
+    }
+
+    /**
+     * Gets the lower inventory of an inventory.
+     */
+    override fun <I> getLowerInventory(inventory: I): I {
+        require(inventory is ContainerChest)
+        return inventory.lowerChestInventory as I
+    }
+
+    /**
+     * Closes the inventory of the given player.
+     */
+    override fun <P> closeInventory(player: P) {
+        require(player is Player) { "Player has to be a SpongePlayer!" }
+        player.closeInventory()
+    }
+
+    /**
+     * Opens a new inventory for the given player.
+     */
+    override fun <P, I> openInventory(player: P, title: String, size: Int): I {
+        require(player is Player) { "Player has to be a SpongePlayer!" }
+
+        val inventory =
+            Inventory.builder().of(InventoryArchetypes.DOUBLE_CHEST).withCarrier(player)
+                .property(InventoryTitle.PROPERTY_NAME, InventoryTitle.of(title.toText())).build(pluginContainer)
+        player.openInventory(inventory)
+        return inventory as I
+    }
+
+    /**
+     * Updates the inventory.
+     */
+    override fun <I, IT> setInventoryItem(inventory: I, index: Int, item: IT) {
+        require(inventory is CarriedInventory<*>) { "Inventory has to be a SpongeInventory!" }
+        require(item is ItemStack) { "Item has to be a SpongeItem!" }
+
+        if (index == 0) {
+            inventory.query<Inventory>(GridInventory::class.java)
+                .query<Inventory>(SlotPos.of(0, 0)).set(item)
+        } else {
+            inventory.query<Inventory>(GridInventory::class.java)
+                .query<Inventory>(SlotIndex.of(index)).set(item)
+        }
+    }
+
+    /**
+     * Updates the given player inventory.
+     */
+    override fun <P> updateInventory(player: P) {
+        require(player is Player) { "Player has to be a SpongePlayer!" }
+        (player as EntityPlayerMP).sendContainerToPlayer((player as EntityPlayerMP).openContainer)
+    }
+
     /**
      * Gets the name of a player.
      */
     override fun <P> getPlayerName(player: P): String {
-        if (player !is Player) {
-            throw IllegalArgumentException("Player has to be a SpongePlayer!")
-        }
+        require(player is Player) { "Player has to be a SpongePlayer!" }
 
         return player.name
     }
@@ -116,9 +221,7 @@ class ProxyServiceImpl : ProxyService {
      * Gets the item in the player hand.
      */
     override fun <P, I> getPlayerItemInHand(player: P, offhand: Boolean): I? {
-        if (player !is Player) {
-            throw IllegalArgumentException("Player has to be a SpongePlayer!")
-        }
+        require(player is Player) { "Player has to be a SpongePlayer!" }
 
         val opt = if (offhand) {
             player.getItemInHand(HandTypes.OFF_HAND)
@@ -137,13 +240,8 @@ class ProxyServiceImpl : ProxyService {
      * Sets the item in the player hand.
      */
     override fun <P, I> setPlayerItemInHand(player: P, itemStack: I, offhand: Boolean) {
-        if (player !is Player) {
-            throw IllegalArgumentException("Player has to be a SpongePlayer!")
-        }
-
-        if (itemStack !is ItemStack?) {
-            throw IllegalArgumentException("ItemStack has to be a SpongeItemStack!")
-        }
+        require(player is Player) { "Player has to be a SpongePlayer!" }
+        require(itemStack is ItemStack?) { "ItemStack has to be a SpongeItemStack!" }
 
         if (offhand) {
             player.setItemInHand(HandTypes.OFF_HAND, itemStack)
@@ -158,20 +256,14 @@ class ProxyServiceImpl : ProxyService {
      * Gets if the given player has got the given permission.
      */
     override fun <P> hasPermission(player: P, permission: Permission): Boolean {
-        if (player !is Player) {
-            throw IllegalArgumentException("Player has to be a SpongePlayer!")
-        }
-
-        return player.hasPermission(permission.permission)
+        return hasPermission(player, permission.permission)
     }
 
     /**
      * Gets the player uuid.
      */
     override fun <P> getPlayerUUID(player: P): String {
-        if (player !is Player) {
-            throw IllegalArgumentException("Player has to be a SpongePlayer!")
-        }
+        require(player is Player) { "Player has to be a SpongePlayer!" }
 
         return player.uniqueId.toString()
     }
@@ -180,9 +272,7 @@ class ProxyServiceImpl : ProxyService {
      * Sends a message to the [sender].
      */
     override fun <S> sendMessage(sender: S, message: String) {
-        if (sender !is CommandSource) {
-            throw IllegalArgumentException("Sender has to be a SpongeSender!")
-        }
+        require(sender is CommandSource) { "Sender has to be a SpongeSender!" }
 
         sender.sendMessage(message.toText())
     }

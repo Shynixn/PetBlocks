@@ -4,14 +4,15 @@ package unittest
 
 import com.github.shynixn.petblocks.api.business.enumeration.Permission
 import com.github.shynixn.petblocks.api.business.service.ConfigurationService
+import com.github.shynixn.petblocks.api.business.service.GUIItemLoadService
 import com.github.shynixn.petblocks.api.business.service.ProxyService
 import com.github.shynixn.petblocks.api.persistence.context.SqlDbContext
 import com.github.shynixn.petblocks.api.persistence.entity.GuiItem
 import com.github.shynixn.petblocks.api.persistence.entity.PetMeta
 import com.github.shynixn.petblocks.api.persistence.entity.Position
 import com.github.shynixn.petblocks.api.persistence.repository.PetMetaRepository
-import com.github.shynixn.petblocks.core.logic.business.service.LoggingUtilServiceImpl
 import com.github.shynixn.petblocks.core.logic.business.service.AIServiceImpl
+import com.github.shynixn.petblocks.core.logic.business.service.LoggingUtilServiceImpl
 import com.github.shynixn.petblocks.core.logic.persistence.entity.PetMetaEntity
 import com.github.shynixn.petblocks.core.logic.persistence.entity.PlayerMetaEntity
 import com.github.shynixn.petblocks.core.logic.persistence.entity.SkinEntity
@@ -19,8 +20,6 @@ import com.github.shynixn.petblocks.core.logic.persistence.repository.PetMetaSql
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito
-import java.io.InputStream
-import java.nio.file.Path
 import java.sql.Connection
 import java.util.*
 import java.util.logging.Logger
@@ -170,50 +169,20 @@ class PetMetaSqlRepositoryTest {
                 AIServiceImpl(
                     LoggingUtilServiceImpl(Logger.getAnonymousLogger()),
                     MockedProxyService()
-                ),
-                MockedConfigurationService()
+                ), MockedGUIItemLoadService(),
+                Mockito.mock(ConfigurationService::class.java)
             )
         }
     }
 
-    class MockedConfigurationService : ConfigurationService {
-        /**
-         * Opens a new inputStream to the given [resource].
-         */
-        override fun openResourceInputStream(resource: String): InputStream {
-            throw IllegalArgumentException()
-        }
-
-        /**
-         * Gets the [Path] to the configuration folder.
-         */
-        override val dataFolder: Path
-            get() = Mockito.mock(Path::class.java)
-
-        /**
-         * Checks if the given path is containing in the config.yml.
-         */
-        override fun contains(path: String): Boolean {
-            return false
-        }
-
-        /**
-         * Tries to load the config value from the given [path].
-         * Throws a [IllegalArgumentException] if the path could not be correctly
-         * loaded.
-         * @param C the type of the returned value.
-         */
-        override fun <C> findValue(path: String): C {
-            throw IllegalArgumentException()
-        }
-
+    class MockedGUIItemLoadService : GUIItemLoadService{
         /**
          * Tries to return a [GuiItem] matching the displayName and the lore of the given [item].
          * Can be called asynchronly. Uses the [path] parameter for faster fetching.
          * @param I the type of the itemstack.
          */
         override fun <I> findClickedGUIItem(path: String, item: I): GuiItem? {
-            throw IllegalArgumentException()
+            return null
         }
 
         /**
@@ -221,7 +190,7 @@ class PetMetaSqlRepositoryTest {
          * Can be called asynchronly.
          */
         override fun findGUIItemCollection(path: String): List<GuiItem>? {
-            throw IllegalArgumentException()
+            return null
         }
 
         /**
@@ -234,8 +203,7 @@ class PetMetaSqlRepositoryTest {
         /**
          * Clears cached resources and refreshes the used configuration.
          */
-        override fun refresh() {
-            throw IllegalArgumentException()
+        override fun reload() {
         }
     }
 
@@ -340,6 +308,69 @@ class PetMetaSqlRepositoryTest {
     }
 
     class MockedProxyService : ProxyService {
+        /**
+         * Gets the inventory item at the given index.
+         */
+        override fun <I, IT> getInventoryItem(inventory: I, index: Int): IT? {
+            throw IllegalArgumentException()
+        }
+
+        /**
+         * Gets if the given player has got the given permission.
+         */
+        override fun <P> hasPermission(player: P, permission: String): Boolean {
+            throw IllegalArgumentException()
+        }
+
+        /**
+         * Closes the inventory of the given player.
+         */
+        override fun <P> closeInventory(player: P) {
+            throw IllegalArgumentException()
+        }
+
+        /**
+         * Gets if the given inventory belongs to a player. Returns null if not.
+         */
+        override fun <P, I> getPlayerFromInventory(inventory: I): P? {
+            throw IllegalArgumentException()
+        }
+
+        /**
+         * Gets the lower inventory of an inventory.
+         */
+        override fun <I> getLowerInventory(inventory: I): I {
+            throw IllegalArgumentException()
+        }
+
+        /**
+         * Clears the given inventory.
+         */
+        override fun <I> clearInventory(inventory: I) {
+            throw IllegalArgumentException()
+        }
+
+        /**
+         * Opens a new inventory for the given player.
+         */
+        override fun <P, I> openInventory(player: P, title: String, size: Int): I {
+            throw IllegalArgumentException()
+        }
+
+        /**
+         * Updates the inventory.
+         */
+        override fun <I, IT> setInventoryItem(inventory: I, index: Int, item: IT) {
+            throw IllegalArgumentException()
+        }
+
+        /**
+         * Updates the given player inventory.
+         */
+        override fun <P> updateInventory(player: P) {
+            throw IllegalArgumentException()
+        }
+
         /**
          * Gets if the given instance can be converted to a player.
          */

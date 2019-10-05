@@ -1,4 +1,4 @@
-@file:Suppress("CAST_NEVER_SUCCEEDS")
+@file:Suppress("unused")
 
 package com.github.shynixn.petblocks.bukkit.logic.business.listener
 

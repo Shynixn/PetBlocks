@@ -3,6 +3,7 @@
 package unittest
 
 import com.github.shynixn.petblocks.api.PetBlocksApi
+import com.github.shynixn.petblocks.api.business.enumeration.Version
 import com.github.shynixn.petblocks.api.business.proxy.PluginProxy
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
@@ -93,6 +94,19 @@ class PetBlocksApiTest {
     }
 
     class MockedPluginProxy : PluginProxy {
+        /**
+         * Gets the installed version of the plugin.
+         */
+        override val version: String
+            get() = ""
+
+        /**
+         * Gets the server version this plugin is currently running on.
+         */
+        override fun getServerVersion(): Version {
+            return Version.VERSION_UNKNOWN
+        }
+
         var called = false
 
         /**

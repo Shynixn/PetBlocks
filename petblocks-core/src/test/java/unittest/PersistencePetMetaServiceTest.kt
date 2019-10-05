@@ -175,15 +175,70 @@ class PersistencePetMetaServiceTest {
         }
     }
 
-    /*   class MockedPlayerProxy(
-           override val uniqueId: String,
-           override val handle: Any = "?",
-           override val name: String = "tmp",
-           override val position: Position = PositionEntity(20.2, 20.2, 20.2, 0.0, 0.0),
-           override val isOnline: Boolean = true
-       ) : PlayerProxy {*/
-
     class MockedProxyService : ProxyService {
+        /**
+         * Gets the inventory item at the given index.
+         */
+        override fun <I, IT> getInventoryItem(inventory: I, index: Int): IT? {
+            throw IllegalArgumentException()
+        }
+
+        /**
+         * Gets if the given player has got the given permission.
+         */
+        override fun <P> hasPermission(player: P, permission: String): Boolean {
+            throw IllegalArgumentException()
+        }
+
+        /**
+         * Closes the inventory of the given player.
+         */
+        override fun <P> closeInventory(player: P) {
+            throw IllegalArgumentException()
+        }
+
+        /**
+         * Gets if the given inventory belongs to a player. Returns null if not.
+         */
+        override fun <P, I> getPlayerFromInventory(inventory: I): P? {
+            throw IllegalArgumentException()
+        }
+
+        /**
+         * Gets the lower inventory of an inventory.
+         */
+        override fun <I> getLowerInventory(inventory: I): I {
+            throw IllegalArgumentException()
+        }
+
+        /**
+         * Clears the given inventory.
+         */
+        override fun <I> clearInventory(inventory: I) {
+            throw IllegalArgumentException()
+        }
+
+        /**
+         * Opens a new inventory for the given player.
+         */
+        override fun <P, I> openInventory(player: P, title: String, size: Int): I {
+            throw IllegalArgumentException()
+        }
+
+        /**
+         * Updates the inventory.
+         */
+        override fun <I, IT> setInventoryItem(inventory: I, index: Int, item: IT) {
+            throw IllegalArgumentException()
+        }
+
+        /**
+         * Updates the given player inventory.
+         */
+        override fun <P> updateInventory(player: P) {
+            throw IllegalArgumentException()
+        }
+
         /**
          * Gets if the given instance can be converted to a player.
          */

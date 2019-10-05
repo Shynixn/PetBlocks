@@ -33,7 +33,7 @@ interface GUIService {
      * Opens the gui for the given [player]. Does nothing when the GUI is already open.
      * @param P the type of the player.
      */
-    fun <P> open(player: P, pageName : String? = null)
+    fun <P> open(player: P, pageName: String? = null)
 
     /**
      * Closes the gui for the given [player]. Does nothing when the GUI is already closed.
@@ -44,8 +44,9 @@ interface GUIService {
     /**
      * Returns if the given [inventory] matches the inventory of this service.
      * @param I the type of the inventory.
+     * @param relativeSlot which determines half managed gui inventories.
      */
-    fun <I> isGUIInventory(inventory: I): Boolean
+    fun <I> isGUIInventory(inventory: I, relativeSlot: Int = 0): Boolean
 
     /**
      * Clears all resources the given player has allocated from this service.

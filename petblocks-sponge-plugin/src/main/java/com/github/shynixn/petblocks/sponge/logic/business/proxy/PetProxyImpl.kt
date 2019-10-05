@@ -2,9 +2,10 @@ package com.github.shynixn.petblocks.sponge.logic.business.proxy
 
 import com.flowpowered.math.vector.Vector3d
 import com.github.shynixn.petblocks.api.PetBlocksApi
+import com.github.shynixn.petblocks.api.business.enumeration.MaterialType
 import com.github.shynixn.petblocks.api.business.proxy.EntityPetProxy
 import com.github.shynixn.petblocks.api.business.proxy.PetProxy
-import com.github.shynixn.petblocks.api.business.service.ItemService
+import com.github.shynixn.petblocks.api.business.service.ItemTypeService
 import com.github.shynixn.petblocks.api.business.service.LoggingService
 import com.github.shynixn.petblocks.api.business.service.ParticleService
 import com.github.shynixn.petblocks.api.business.service.SoundService
@@ -14,7 +15,10 @@ import com.github.shynixn.petblocks.api.persistence.entity.Position
 import com.github.shynixn.petblocks.api.persistence.entity.Skin
 import com.github.shynixn.petblocks.api.sponge.event.PetRemoveEvent
 import com.github.shynixn.petblocks.core.logic.business.extension.hasChanged
-import com.github.shynixn.petblocks.sponge.logic.business.extension.*
+import com.github.shynixn.petblocks.core.logic.persistence.entity.ItemEntity
+import com.github.shynixn.petblocks.sponge.logic.business.extension.toText
+import com.github.shynixn.petblocks.sponge.logic.business.extension.toTransform
+import com.github.shynixn.petblocks.sponge.logic.business.extension.toVector
 import org.spongepowered.api.Sponge
 import org.spongepowered.api.data.key.Keys
 import org.spongepowered.api.data.manipulator.mutable.PotionEffectData
@@ -24,7 +28,6 @@ import org.spongepowered.api.entity.Transform
 import org.spongepowered.api.entity.living.ArmorStand
 import org.spongepowered.api.entity.living.Living
 import org.spongepowered.api.entity.living.player.Player
-import org.spongepowered.api.item.ItemTypes
 import org.spongepowered.api.item.inventory.ItemStack
 import org.spongepowered.api.world.World
 import java.util.*
@@ -67,7 +70,7 @@ class PetProxyImpl(override val meta: PetMeta, private val design: ArmorStand, p
     private val particleService = PetBlocksApi.resolve(ParticleService::class.java)
     private val soundService = PetBlocksApi.resolve(SoundService::class.java)
     private val logger: LoggingService = PetBlocksApi.resolve(LoggingService::class.java)
-    private val itemService = PetBlocksApi.resolve(ItemService::class.java)
+    private val itemService = PetBlocksApi.resolve(ItemTypeService::class.java)
 
     /**
      * Init.
@@ -228,16 +231,8 @@ class PetProxyImpl(override val meta: PetMeta, private val design: ArmorStand, p
         }
 
         if (displayNameChanged || Skin::typeName.hasChanged(meta.skin)) {
-            var itemStack = itemService.createItemStack(meta.skin.typeName, meta.skin.dataValue).build<ItemStack>()
-
-            itemStack.displayName = meta.displayName
-            itemStack.skin = meta.skin.owner
-
-            if (meta.skin.unbreakable) {
-                itemStack = itemStack.createUnbreakableCopy()
-            }
-
-            design.setHelmet(itemStack)
+            val item = ItemEntity(meta.skin.typeName, meta.skin.dataValue, meta.skin.unbreakable, meta.displayName, null, meta.skin.owner)
+            design.setHelmet(itemService.toItemStack(item))
         }
     }
 
@@ -299,8 +294,7 @@ class PetProxyImpl(override val meta: PetMeta, private val design: ArmorStand, p
      * Gets a new marker itemstack.
      */
     private fun generateMarkerItemStack(): ItemStack {
-        val item = ItemStack.builder().itemType(ItemTypes.APPLE).build()
-        item.lore = arrayListOf("PetBlocks")
-        return item
+        val item = ItemEntity(MaterialType.APPLE.name, 0, false, null, arrayListOf("PetBlocks"))
+        return itemService.toItemStack(item)
     }
 }

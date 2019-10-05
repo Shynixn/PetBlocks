@@ -1,8 +1,5 @@
 package com.github.shynixn.petblocks.api.business.service
 
-import com.github.shynixn.petblocks.api.persistence.entity.AIBase
-import com.github.shynixn.petblocks.api.persistence.entity.GuiItem
-import com.github.shynixn.petblocks.api.persistence.entity.PetMeta
 import java.io.InputStream
 import java.nio.file.Path
 
@@ -35,48 +32,30 @@ import java.nio.file.Path
  */
 interface ConfigurationService {
     /**
-     * Gets the [Path] to the configuration folder.
+     * Gets the path to the folder where the application is allowed to store
+     * save data.
      */
-    val dataFolder: Path
+    val applicationDir: Path
 
     /**
-     * Opens a new inputStream to the given [resource].
+     * Reloads the config.
      */
-    fun openResourceInputStream(resource: String) : InputStream
+    fun reload()
 
     /**
      * Tries to load the config value from the given [path].
      * Throws a [IllegalArgumentException] if the path could not be correctly
      * loaded.
-     * @param C the type of the returned value.
      */
     fun <C> findValue(path: String): C
 
     /**
-     * Checks if the given path is containing in the config.yml.
+     * Opens an inputStream to the given resource name.
      */
-    fun contains(path: String): Boolean
+    fun openResource(name: String): InputStream
 
     /**
-     * Tries to return a [GuiItem] matching the displayName and the lore of the given [item].
-     * Can be called asynchronly. Uses the [path] parameter for faster fetching.
-     * @param I the type of the itemstack.
+     * Checks if the given [path] contains a value.
      */
-    fun <I> findClickedGUIItem(path: String, item: I): GuiItem?
-
-    /**
-     * Tries to return a list of [GuiItem] matching the given path from the config.
-     * Can be called asynchronly.
-     */
-    fun findGUIItemCollection(path: String): List<GuiItem>?
-
-    /**
-     * Generates the default pet meta.
-     */
-    fun generateDefaultPetMeta(uuid: String, name: String): PetMeta
-
-    /**
-     * Clears cached resources and refreshes the used configuration.
-     */
-    fun refresh()
+    fun containsValue(path: String): Boolean
 }

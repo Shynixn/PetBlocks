@@ -2,8 +2,8 @@
 
 package com.github.shynixn.petblocks.bukkit.logic.business.service
 
+import com.github.shynixn.petblocks.api.business.enumeration.Version
 import com.github.shynixn.petblocks.api.business.service.CommandService
-import com.github.shynixn.petblocks.bukkit.logic.business.extension.getServerVersion
 import com.github.shynixn.petblocks.bukkit.logic.business.proxy.CommandProxyImpl
 import com.github.shynixn.petblocks.bukkit.logic.business.proxy.CommandRegisteredProxyImpl
 import com.google.inject.Inject
@@ -40,9 +40,7 @@ import org.bukkit.plugin.java.JavaPlugin
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class CommandServiceImpl @Inject constructor(private val plugin: Plugin) : CommandService {
-    private val version = getServerVersion()
-
+class CommandServiceImpl @Inject constructor(private val plugin: Plugin, private val version: Version) : CommandService {
     /**
      * Registers a command executor.
      */

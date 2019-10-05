@@ -3,12 +3,13 @@ package com.github.shynixn.petblocks.bukkit.logic.business.pathfinder
 import com.github.shynixn.petblocks.api.PetBlocksApi
 import com.github.shynixn.petblocks.api.business.enumeration.MaterialType
 import com.github.shynixn.petblocks.api.business.proxy.PetProxy
+import com.github.shynixn.petblocks.api.business.service.ItemTypeService
 import com.github.shynixn.petblocks.api.business.service.LoggingService
 import com.github.shynixn.petblocks.api.business.service.ParticleService
 import com.github.shynixn.petblocks.api.persistence.entity.AIAfraidOfWater
-import com.github.shynixn.petblocks.bukkit.logic.business.extension.toId
 import com.github.shynixn.petblocks.core.logic.business.pathfinder.BasePathfinder
 import org.bukkit.Location
+import org.bukkit.Material
 import org.bukkit.entity.LivingEntity
 import org.bukkit.entity.Player
 
@@ -22,6 +23,7 @@ class PathfinderAfraidOfWater(
 
     private val particleService = PetBlocksApi.resolve(ParticleService::class.java)
     private val loggingService = PetBlocksApi.resolve(LoggingService::class.java)
+    private val itemService = PetBlocksApi.resolve(ItemTypeService::class.java)
 
     /**
      * Should the goal be executed.
@@ -30,14 +32,25 @@ class PathfinderAfraidOfWater(
         try {
             val currentMilliseconds = System.currentTimeMillis()
 
-            if (livingEntity.location.block.type.toId() == MaterialType.WATER.numericId || livingEntity.location.block.type.toId() == MaterialType.STATIONARY_WATER.numericId
+            if (itemService.findItemType<Material>(livingEntity.location.block.type) == itemService.findItemType(
+                    MaterialType.WATER
+                )
+                || itemService.findItemType<Material>(livingEntity.location.block.type) == itemService.findItemType(
+                    MaterialType.STATIONARY_WATER
+                )
             ) {
                 if (currentMilliseconds - lastPlayTime > this.aiAfraidOfWater.stoppingDelay * 1000) {
                     lastPlayTime = currentMilliseconds
 
-                    particleService.playParticle(livingEntity.location, aiAfraidOfWater.particle, pet.getPlayer<Player>())
+                    particleService.playParticle(
+                        livingEntity.location,
+                        aiAfraidOfWater.particle,
+                        pet.getPlayer<Player>()
+                    )
 
-                    val escape = pet.getPlayer<Player>().location.toVector().subtract(pet.getLocation<Location>().toVector()).normalize().multiply(2)
+                    val escape =
+                        pet.getPlayer<Player>().location.toVector().subtract(pet.getLocation<Location>().toVector())
+                            .normalize().multiply(2)
                     escape.y = 1.5
                     pet.setVelocity(escape)
                 }

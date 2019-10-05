@@ -3,6 +3,7 @@
 package unittest
 
 import com.github.shynixn.petblocks.api.business.service.ConfigurationService
+import com.github.shynixn.petblocks.api.business.service.GUIItemLoadService
 import com.github.shynixn.petblocks.api.business.service.MessageService
 import com.github.shynixn.petblocks.api.persistence.entity.ChatMessage
 import com.github.shynixn.petblocks.api.persistence.entity.GuiItem
@@ -71,7 +72,7 @@ class ReloadCommandExecutorTest {
             configService: ConfigurationService = MockedConfigurationService(),
             messageService: MessageService = MockedMessageService()
         ): ReloadCommandExecutorImpl {
-            return ReloadCommandExecutorImpl(configService, messageService)
+            return ReloadCommandExecutorImpl(configService, Mockito.mock(GUIItemLoadService::class.java), messageService)
         }
     }
 
@@ -101,64 +102,40 @@ class ReloadCommandExecutorTest {
 
     class MockedConfigurationService(var refreshCalled: Boolean = false) : ConfigurationService {
         /**
-         * Gets the [Path] to the configuration folder.
+         * Gets the path to the folder where the application is allowed to store
+         * save data.
          */
-        override val dataFolder: Path
-            get() = Mockito.mock(Path::class.java)
+        override val applicationDir: Path
+            get() = TODO("not implemented") //To change initializer of created properties use File | Settings | File Templates.
 
         /**
-         * Opens a new inputStream to the given [resource].
+         * Reloads the config.
          */
-        override fun openResourceInputStream(resource: String): InputStream {
-            throw IllegalArgumentException()
+        override fun reload() {
+            refreshCalled = true
         }
 
         /**
          * Tries to load the config value from the given [path].
          * Throws a [IllegalArgumentException] if the path could not be correctly
          * loaded.
-         * @param C the type of the returned value.
          */
         override fun <C> findValue(path: String): C {
             throw IllegalArgumentException()
         }
 
         /**
-         * Checks if the given path is containing in the config.yml.
+         * Opens an inputStream to the given resource name.
          */
-        override fun contains(path: String): Boolean {
+        override fun openResource(name: String): InputStream {
             throw IllegalArgumentException()
         }
 
         /**
-         * Tries to return a [GuiItem] matching the displayName and the lore of the given [item].
-         * Can be called asynchronly. Uses the [path] parameter for faster fetching.
-         * @param I the type of the itemstack.
+         * Checks if the given [path] contains a value.
          */
-        override fun <I> findClickedGUIItem(path: String, item: I): GuiItem? {
+        override fun containsValue(path: String): Boolean {
             throw IllegalArgumentException()
-        }
-
-        /**
-         * Tries to return a list of [GuiItem] matching the given path from the config.
-         * Can be called asynchronly.
-         */
-        override fun findGUIItemCollection(path: String): List<GuiItem>? {
-            throw IllegalArgumentException()
-        }
-
-        /**
-         * Generates the default pet meta.
-         */
-        override fun generateDefaultPetMeta(uuid: String, name: String): PetMeta {
-            throw IllegalArgumentException()
-        }
-
-        /**
-         * Clears cached resources and refreshes the used configuration.
-         */
-        override fun refresh() {
-            refreshCalled = true
         }
     }
 }

@@ -47,15 +47,16 @@ class InventoryListener @Inject constructor(private val guiService: GUIService, 
      */
     @Listener
     fun playerClickInInventoryEvent(event: ClickInventoryEvent, @First(typeFilter = [Player::class]) player: Player) {
-        if (!guiService.isGUIInventory(event.targetInventory)) {
-            return
-        }
-
         if (event.transactions.isEmpty()) {
             return
         }
 
         val currentItemStack = event.transactions[0].original.createStack()
+        val slot = event.transactions[0].slot.getProperties(SlotIndex::class.java).toTypedArray()[0].value!!
+
+        if (!guiService.isGUIInventory(event.targetInventory, slot)) {
+            return
+        }
 
         if (currentItemStack.type == ItemTypes.AIR) {
             return
@@ -63,8 +64,6 @@ class InventoryListener @Inject constructor(private val guiService: GUIService, 
 
         event.isCancelled = true
         player.inventory.updateInventory()
-
-        val slot = event.transactions[0].slot.getProperties(SlotIndex::class.java).toTypedArray()[0].value!!
 
         guiService.clickInventoryItem(player, slot, currentItemStack)
     }

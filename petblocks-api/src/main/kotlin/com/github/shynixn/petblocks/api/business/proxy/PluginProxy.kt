@@ -1,5 +1,7 @@
 package com.github.shynixn.petblocks.api.business.proxy
 
+import com.github.shynixn.petblocks.api.business.enumeration.Version
+
 /**
  * Created by Shynixn 2018.
  * <p>
@@ -28,6 +30,16 @@ package com.github.shynixn.petblocks.api.business.proxy
  * SOFTWARE.
  */
 interface PluginProxy {
+    /**
+     * Gets the installed version of the plugin.
+     */
+    val version: String
+
+    /**
+     * Gets the server version this plugin is currently running on.
+     */
+    fun getServerVersion(): Version
+
     /**
      * Gets a business logic from the PetBlocks plugin.
      * All types in the service package can be accessed.

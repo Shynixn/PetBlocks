@@ -63,7 +63,8 @@ class PetListener @Inject constructor(
     private val concurrencyService: ConcurrencyService,
     private val entityService: EntityService,
     private val debugService: PetDebugService,
-    private val configurationService: ConfigurationService
+    private val configurationService: ConfigurationService,
+    private val guiItemLoadService: GUIItemLoadService
 ) {
     private val joinCooldown = 20 * 6L
     private val alreadyLoading = HashSet<UUID>()
@@ -100,7 +101,7 @@ class PetListener @Inject constructor(
         val overwrite = configurationService.findValue<Boolean>("global-configuration.overwrite-previous-pet")
 
         if (overwrite) {
-            val newPetMeta = configurationService.generateDefaultPetMeta(event.player.uniqueId.toString(), event.player.name)
+            val newPetMeta = guiItemLoadService.generateDefaultPetMeta(event.player.uniqueId.toString(), event.player.name)
             persistencePetMetaService.save(newPetMeta)
             persistencePetMetaService.refreshPetMetaFromRepository(event.player).thenAcceptSafely {
                 performFirstSpawn(event.player)

@@ -1,10 +1,10 @@
+@file:Suppress("unused")
+
 package com.github.shynixn.petblocks.bukkit.logic.business.listener
 
 import com.github.shynixn.petblocks.api.business.service.GUIService
 import com.github.shynixn.petblocks.api.business.service.ProxyService
-import com.github.shynixn.petblocks.bukkit.logic.business.extension.updateInventory
 import com.google.inject.Inject
-import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
@@ -39,9 +39,12 @@ import org.bukkit.event.player.PlayerQuitEvent
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class InventoryListener @Inject constructor(private val guiService: GUIService, private val proxyService: ProxyService) : Listener {
+class InventoryListener @Inject constructor(
+    private val guiService: GUIService,
+    private val proxyService: ProxyService
+) : Listener {
     /**
-     * Gets called from [Bukkit] and handles action to the inventory.
+     * Gets called and handles action to the gui inventory.
      */
     @EventHandler
     fun playerClickInInventoryEvent(event: InventoryClickEvent) {
@@ -56,13 +59,13 @@ class InventoryListener @Inject constructor(private val guiService: GUIService, 
         }
 
         event.isCancelled = true
-        player.inventory.updateInventory()
+        player.updateInventory()
 
         guiService.clickInventoryItem(player, event.slot, event.currentItem)
     }
 
     /**
-     * Gets called from [Bukkit] and handles cleaning up remaining resources.
+     * Gets called and handles cleaning up remaining resources.
      */
     @EventHandler
     fun playerQuitEvent(event: PlayerQuitEvent) {
