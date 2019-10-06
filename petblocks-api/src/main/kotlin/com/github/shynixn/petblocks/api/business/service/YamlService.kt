@@ -1,8 +1,4 @@
-package com.github.shynixn.petblocks.core.logic.persistence.entity
-
-import com.github.shynixn.petblocks.api.business.annotation.YamlSerialize
-import com.github.shynixn.petblocks.api.business.serializer.ItemStackSerializer
-import com.github.shynixn.petblocks.api.persistence.entity.AIInventoryStorage
+package com.github.shynixn.petblocks.api.business.service
 
 /**
  * Created by Shynixn 2019.
@@ -31,15 +27,14 @@ import com.github.shynixn.petblocks.api.persistence.entity.AIInventoryStorage
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class AIInventoryStorageEntity : AIBaseEntity(), AIInventoryStorage {
+interface YamlService {
     /**
-     * Name of the type.
+     * Writes the given yaml content to a string.
      */
-    override var type: String = "inventory-storage"
+    fun writeToString(content: Map<String, Any?>): String
 
     /**
-     * Ordered itemStacks in the inventory.
+     * Reads the given yaml content from a string.
      */
-    @YamlSerialize(value = "items", orderNumber = 1, customserializer = ItemStackSerializer::class)
-    override val items: MutableList<Any> = ArrayList()
+    fun readFromString(content: String): Map<String, Any>
 }

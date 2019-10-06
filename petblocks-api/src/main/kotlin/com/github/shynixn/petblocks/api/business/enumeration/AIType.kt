@@ -108,6 +108,11 @@ enum class AIType(
     HOPPING("hopping", AIHopping::class),
 
     /**
+     * Inventory.
+     */
+    INVENTORY("inventory", AIInventory::class),
+
+    /**
      * Walking.
      */
     WALKING("walking", AIWalking::class),

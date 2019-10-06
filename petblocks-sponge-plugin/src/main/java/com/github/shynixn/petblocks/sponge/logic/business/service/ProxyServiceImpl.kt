@@ -15,6 +15,7 @@ import net.minecraft.inventory.ContainerChest
 import org.spongepowered.api.Sponge
 import org.spongepowered.api.command.CommandSource
 import org.spongepowered.api.data.type.HandTypes
+import org.spongepowered.api.entity.EntityTypes
 import org.spongepowered.api.entity.Transform
 import org.spongepowered.api.entity.living.player.Player
 import org.spongepowered.api.item.inventory.Inventory
@@ -57,6 +58,16 @@ import java.util.*
  * SOFTWARE.
  */
 class ProxyServiceImpl @Inject constructor(private val pluginContainer: PluginContainer) : ProxyService {
+    /**
+     * Drops the given item at the given position.
+     */
+    override fun <L, I> dropInventoryItem(location: L, item: I) {
+        require(location is Transform<*>)
+        require(item is ItemStack)
+
+        location.extent.createEntity(EntityTypes.ITEM, location.position)
+    }
+
     /**
      * Gets the inventory item at the given index.
      */

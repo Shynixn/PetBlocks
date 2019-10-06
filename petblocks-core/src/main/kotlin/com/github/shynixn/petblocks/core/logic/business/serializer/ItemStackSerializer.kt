@@ -1,7 +1,8 @@
-package com.github.shynixn.petblocks.bukkit.logic.business.serializer
+@file:Suppress("UNCHECKED_CAST")
 
-import com.github.shynixn.petblocks.api.business.serializer.ItemStackSerializer
-import org.bukkit.inventory.ItemStack
+package com.github.shynixn.petblocks.core.logic.business.serializer
+
+import com.github.shynixn.petblocks.api.business.serializer.YamlSerializer
 
 /**
  * Created by Shynixn 2019.
@@ -30,19 +31,32 @@ import org.bukkit.inventory.ItemStack
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class ItemStackSerializerImpl : ItemStackSerializer {
+class ItemStackSerializer : YamlSerializer<Any, Map<String, Any?>> {
     /**
      * Gets called on serialization.
      */
-    override fun onSerialization(item: Any): Map<String, Any> {
-        require(item is ItemStack)
-        return item.serialize()
+    override fun onSerialization(item: Any): Map<String, Any?> {
+        try {
+            val clazz = Class.forName("org.bukkit.inventory.ItemStack")
+            return clazz.getDeclaredMethod("serialize").invoke(item) as Map<String, Any?>
+        } catch (e: Exception) {
+
+        }
+
+        throw IllegalArgumentException("Serialization does not work for $item")
     }
 
     /**
      * Gets called on Deserialization.
      */
-    override fun onDeserialization(item: Map<String, Any>): Any {
-        return ItemStack.deserialize(item)
+    override fun onDeserialization(item: Map<String, Any?>): Any {
+        try {
+            val clazz = Class.forName("org.bukkit.inventory.ItemStack")
+            return clazz.getDeclaredMethod("deserialize", Map::class.java).invoke(null, item)
+        } catch (e: Exception) {
+
+        }
+
+        throw IllegalArgumentException("DeSerialization does not work for $item")
     }
 }

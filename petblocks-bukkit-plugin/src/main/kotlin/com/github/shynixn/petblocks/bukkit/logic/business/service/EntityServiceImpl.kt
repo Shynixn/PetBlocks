@@ -117,6 +117,7 @@ class EntityServiceImpl @Inject constructor(
         this.register<AIHopping>(AIType.HOPPING)
         this.register<AIWalking>(AIType.WALKING)
         this.register<AIWearing>(AIType.WEARING)
+        this.register<AIInventory>(AIType.INVENTORY)
     }
 
     /**
@@ -214,9 +215,7 @@ class EntityServiceImpl @Inject constructor(
      * Kills the nearest entity of the [player].
      */
     override fun <P> killNearestEntity(player: P) {
-        if (player !is Player) {
-            throw IllegalArgumentException("Player has to be a BukkitPlayer!")
-        }
+        require(player is Player) { "Player has to be a BukkitPlayer!" }
 
         var distance = 100.0
         var nearest: Entity? = null

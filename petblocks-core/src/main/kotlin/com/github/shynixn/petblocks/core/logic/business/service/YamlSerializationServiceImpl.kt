@@ -140,6 +140,8 @@ class YamlSerializationServiceImpl : YamlSerializationService {
                     collection.add(java.lang.Enum.valueOf<Any>(getArgumentType(field, 0) as Class<Any>, value.toString().toUpperCase()))
                 } else if (isPrimitive(value.javaClass)) {
                     collection.add(value)
+                } else if (annotation.customserializer != Any::class) {
+                    collection.add((annotation.customserializer.java.newInstance() as YamlSerializer<*, Map<String, Any?>>).onDeserialization(value as Map<String, Any?>))
                 } else {
                     collection.add(deserialize(getArgumentType(field, 0) as Class<Any>, value as Map<String, Any?>))
                 }
@@ -203,7 +205,8 @@ class YamlSerializationServiceImpl : YamlSerializationService {
                 if (value == null) {
                     array[keyPlace] = null
                 } else if (annotation.customserializer != Any::class) {
-                    array[keyPlace] = (annotation.customserializer.java.newInstance() as YamlSerializer<*, Map<String, Any?>>).onDeserialization(value as Map<String, Any?>)
+                    array[keyPlace] =
+                        (annotation.customserializer.java.newInstance() as YamlSerializer<*, Map<String, Any?>>).onDeserialization(value as Map<String, Any?>)
                 } else if (field.type.componentType.isEnum) {
                     @Suppress("UPPER_BOUND_VIOLATED", "UNCHECKED_CAST")
                     array[keyPlace] = java.lang.Enum.valueOf<Any>(field.type as Class<Any>, value.toString().toUpperCase())

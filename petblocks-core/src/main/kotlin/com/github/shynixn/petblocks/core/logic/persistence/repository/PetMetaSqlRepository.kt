@@ -7,9 +7,11 @@ import com.github.shynixn.petblocks.api.business.service.ConfigurationService
 import com.github.shynixn.petblocks.api.business.service.GUIItemLoadService
 import com.github.shynixn.petblocks.api.persistence.context.SqlDbContext
 import com.github.shynixn.petblocks.api.persistence.entity.AIBase
+import com.github.shynixn.petblocks.api.persistence.entity.AIInventory
 import com.github.shynixn.petblocks.api.persistence.entity.PetMeta
 import com.github.shynixn.petblocks.api.persistence.repository.PetMetaRepository
 import com.github.shynixn.petblocks.core.logic.business.extension.getItem
+import com.github.shynixn.petblocks.core.logic.persistence.entity.AIInventoryEntity
 import com.github.shynixn.petblocks.core.logic.persistence.entity.PetMetaEntity
 import com.github.shynixn.petblocks.core.logic.persistence.entity.PlayerMetaEntity
 import com.github.shynixn.petblocks.core.logic.persistence.entity.SkinEntity
@@ -64,13 +66,20 @@ class PetMetaSqlRepository @Inject constructor(
      * currently uses the meta data of the player.
      */
     override fun getOrCreateFromPlayerIdentifiers(name: String, uuid: String): PetMeta {
-        return sqlDbContext.transaction<PetMeta, Any> { connection ->
+        val petMeta = sqlDbContext.transaction<PetMeta, Any> { connection ->
             getOrCreateFromPlayerIdentifiers(
                 connection,
                 name,
                 uuid
             )
         }
+
+        // Every pet should have an inventory.
+        if (petMeta.aiGoals.firstOrNull { a -> a is AIInventory } == null) {
+            petMeta.aiGoals.add(AIInventoryEntity())
+        }
+
+        return petMeta
     }
 
     /**
@@ -92,6 +101,11 @@ class PetMetaSqlRepository @Inject constructor(
                 petMeta.aiGoals.addAll(sqlDbContext.multiQuery(connection, aiStatement, { aiResultSet ->
                     mapResultSetToAI(aiResultSet)
                 }, petMeta.id))
+
+                // Every pet should have an inventory.
+                if (petMeta.aiGoals.firstOrNull { a -> a is AIInventory} == null) {
+                    petMeta.aiGoals.add(AIInventoryEntity())
+                }
 
                 petMeta
             })

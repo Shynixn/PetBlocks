@@ -48,6 +48,16 @@ import kotlin.math.sin
  */
 class ProxyServiceImpl @Inject constructor(private val version: Version) : ProxyService {
     /**
+     * Drops the given item at the given position.
+     */
+    override fun <L, I> dropInventoryItem(location: L, item: I) {
+        require(location is Location)
+        require(item is ItemStack)
+
+        location.world!!.dropItem(location, item)
+    }
+
+    /**
      * Gets the inventory item at the given index.
      */
     override fun <I, IT> getInventoryItem(inventory: I, index: Int): IT? {

@@ -108,6 +108,11 @@ enum class ScriptAction(val action: String) {
     CONNECT_HEAD_DATABASE("connect-head-database"),
 
     /**
+     * Shows the inventory to the player.
+     */
+    SHOW_INVENTORY("show-inventory"),
+
+    /**
      * Hides the item on left scroll outside of the bounding box.
      */
     HIDE_LEFT_SCROLL("hide-left-scroll"),
@@ -115,10 +120,5 @@ enum class ScriptAction(val action: String) {
     /**
      * Hides the item on right scroll outside of the bounding box.
      */
-    HIDE_RIGHT_SCROLL("hide-right-scroll"),
-
-    /**
-     * Shows the pet inventory to the player.
-     */
-    SHOW_INVENTORY("show-inventory")
+    HIDE_RIGHT_SCROLL("hide-right-scroll")
 }

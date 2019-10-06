@@ -42,6 +42,11 @@ interface ProxyService {
     fun <P> getPlayerFromUUID(uuid: String): P
 
     /**
+     * Drops the given item at the given position.
+     */
+    fun <L, I> dropInventoryItem(location : L, item: I)
+
+    /**
      * Gets the inventory item at the given index.
      */
     fun <I, IT> getInventoryItem(inventory: I, index: Int): IT?

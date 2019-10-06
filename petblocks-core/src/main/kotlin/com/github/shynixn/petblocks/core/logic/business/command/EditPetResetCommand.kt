@@ -2,6 +2,7 @@ package com.github.shynixn.petblocks.core.logic.business.command
 
 import com.github.shynixn.petblocks.api.business.command.SourceCommand
 import com.github.shynixn.petblocks.api.business.service.*
+import com.github.shynixn.petblocks.api.persistence.entity.AIInventory
 import com.github.shynixn.petblocks.core.logic.business.extension.thenAcceptSafely
 import com.google.inject.Inject
 
@@ -64,10 +65,34 @@ class EditPetResetCommand @Inject constructor(
             pet.remove()
         }
 
+        val petMeta = petMetaService.getPetMetaFromPlayer(player)
+        var itemAmount = 0
+
+        val dropLocation = if (proxyService.isPlayer(source)) {
+            proxyService.getPlayerLocation<Any, Any>(source)
+        } else {
+            proxyService.getPlayerLocation(player!!)
+        }
+
+        val dropPosition = proxyService.toPosition(dropLocation)
+
+        petMeta.aiGoals.filterIsInstance<AIInventory>().forEach { storage ->
+            storage.items.forEach { item ->
+                proxyService.dropInventoryItem(dropLocation, item)
+                itemAmount++
+            }
+        }
+
         loadService.reload()
         configurationService.reload()
 
         messageService.sendSourceMessage(source, "Resetting the pet of player $playerName...")
+        if (itemAmount > 0) {
+            messageService.sendSourceMessage(
+                source,
+                "Dropped $itemAmount item(s) at ${dropPosition.worldName} ${dropPosition.x.toInt()},${dropPosition.y.toInt()},${dropPosition.z.toInt()}"
+            )
+        }
 
         val newPetMeta = loadService.generateDefaultPetMeta(playerUuid, playerName)
         petMetaService.save(newPetMeta).thenAcceptSafely {

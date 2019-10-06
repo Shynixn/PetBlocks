@@ -10,6 +10,7 @@ import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.inventory.InventoryClickEvent
+import org.bukkit.event.inventory.InventoryCloseEvent
 import org.bukkit.event.player.PlayerQuitEvent
 
 /**
@@ -62,6 +63,18 @@ class InventoryListener @Inject constructor(
         player.updateInventory()
 
         guiService.clickInventoryItem(player, event.slot, event.currentItem)
+    }
+
+    /**
+     * Saves the storage inventory on close.
+     */
+    @EventHandler
+    fun playerCloseInventoryInvent(event: InventoryCloseEvent) {
+        if (!guiService.isStorageInventory(event.inventory)) {
+            return
+        }
+
+        guiService.saveStorageInventory(event.inventory)
     }
 
     /**

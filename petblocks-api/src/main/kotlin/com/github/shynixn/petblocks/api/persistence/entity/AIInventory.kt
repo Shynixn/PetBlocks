@@ -2,7 +2,7 @@ package com.github.shynixn.petblocks.api.persistence.entity
 
 interface AIInventory : AIBase {
     /**
-     * Amount of items being accessible of the inventory storage.
+     * Ordered itemStacks in the inventory.
      */
-    val slotsAmount: Int
+    var items: MutableList<Any?>
 }

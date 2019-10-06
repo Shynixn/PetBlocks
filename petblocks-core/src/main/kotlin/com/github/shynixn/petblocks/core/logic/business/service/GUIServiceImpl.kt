@@ -14,8 +14,10 @@ import com.github.shynixn.petblocks.core.logic.business.extension.translateChatC
 import com.github.shynixn.petblocks.core.logic.persistence.entity.GuiIconEntity
 import com.github.shynixn.petblocks.core.logic.persistence.entity.GuiPlayerCacheEntity
 import com.github.shynixn.petblocks.core.logic.persistence.entity.ItemEntity
+import com.github.shynixn.petblocks.core.logic.persistence.entity.StorageInventoryCache
 import com.google.inject.Inject
 import java.util.*
+import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 
 /**
@@ -58,9 +60,10 @@ class GUIServiceImpl @Inject constructor(
     private val proxyService: ProxyService
 ) : GUIService {
 
+
     private val clickProtection = ArrayList<Any>()
     private val pageCache = HashMap<Any, GuiPlayerCache>()
-    private val inventoryStoragePath = "storage-inventory"
+    private val storageCache = HashMap<Any, StorageInventoryCache>()
 
     private var collectedMinecraftHeadsMessage = chatMessage {
         text {
@@ -180,6 +183,11 @@ class GUIServiceImpl @Inject constructor(
         if (pageCache.containsKey(player)) {
             pageCache.remove(player)
         }
+
+        if (storageCache.containsKey(player)) {
+            saveStorageInventory(storageCache[player]!!.inventory)
+            storageCache.remove(player)
+        }
     }
 
     /**
@@ -191,7 +199,48 @@ class GUIServiceImpl @Inject constructor(
         val holder = proxyService.getPlayerFromInventory<Any, I>(inventory) ?: return false
         val originInventory = proxyService.getLowerInventory(inventory)
         return this.pageCache.containsKey(holder) && this.pageCache[holder]!!.getInventory<Any>() == originInventory
-                && (this.pageCache[holder]!!.path != inventoryStoragePath || relativeSlot < 46)
+    }
+
+    /**
+     * Returns if the given [inventory] matches the storage inventory of this service.
+     */
+    override fun <I> isStorageInventory(inventory: I): Boolean {
+        require(inventory is Any)
+        val holder = proxyService.getPlayerFromInventory<Any, I>(inventory) ?: return false
+        val originInventory = proxyService.getLowerInventory(inventory)
+        return this.storageCache.containsKey(holder) && this.storageCache[holder]!!.inventory == originInventory
+    }
+
+    /**
+     * Saves the storage inventory to the database.
+     */
+    override fun <I> saveStorageInventory(inventory: I) {
+        require(inventory is Any)
+        val player = proxyService.getPlayerFromInventory<Any, I>(inventory)
+        val lowerBoundary = (storageCache[player]!!.section - 1) * 27
+        val upperBoundary = lowerBoundary + 27
+        val petMeta = persistenceService.getPetMetaFromPlayer(player)
+        val inventoryAI = petMeta.aiGoals.first { a -> a is AIInventory } as AIInventory
+        val newItems = ArrayList<Any?>()
+        var i = 0
+        var inventoryI = 0
+
+        while (true) {
+            if (i in lowerBoundary until upperBoundary) {
+                val item = proxyService.getInventoryItem<Any, Any>(inventory, inventoryI)
+                newItems.add(item)
+                inventoryI++
+            } else if (i >= inventoryAI.items.size) {
+                break
+            } else {
+                newItems.add(inventoryAI.items[i])
+            }
+
+            i++
+        }
+
+        inventoryAI.items = newItems
+        storageCache.remove(player)
     }
 
     /**
@@ -298,11 +347,6 @@ class GUIServiceImpl @Inject constructor(
      * Renders a single gui page.
      */
     private fun renderPage(player: Any, petMeta: PetMeta, path: String) {
-        if (path == inventoryStoragePath) {
-            renderInventoryPage(player, petMeta)
-            return
-        }
-
         val inventory = this.pageCache[player]!!.getInventory<Any>()
         proxyService.clearInventory(inventory)
 
@@ -408,44 +452,31 @@ class GUIServiceImpl @Inject constructor(
     /**
      * Renders the inventory page.
      */
-    private fun renderInventoryPage(player: Any, petMeta: PetMeta) {
-        val inventory = this.pageCache[player]!!.getInventory<Any>()
+    private fun renderInventoryPage(player: Any, petMeta: PetMeta, section: Int) {
+        val guiTitle = configurationService.findValue<String>("messages.gui-title")
+        val inventory = proxyService.openInventory<Any, Any>(player, guiTitle, 27)
         val inventoryAI = petMeta.aiGoals.firstOrNull { a -> a is AIInventory } as AIInventory?
 
         if (inventoryAI == null) {
             loggingService.warn("Player " + proxyService.getPlayerName(player) + " tried to open a pet inventory without a AIInventory.")
-            loggingService.warn("Apply a AIInventory to your players.")
+            loggingService.warn("Apply an AIInventory to your players.")
             close(player)
             return
         }
 
-        val inventoryStorageAI = petMeta.aiGoals.firstOrNull { a -> a is AIInventoryStorage } as AIInventoryStorage?
+        var index = (section - 1) * 27
 
-        if (inventoryStorageAI == null) {
-            loggingService.warn("Player " + proxyService.getPlayerName(player) + " tried to open a pet inventory without a AIInventory.")
-            loggingService.warn("Apply a AIInventory to your players.")
-            close(player)
-            return
-        }
-
-        var slotCounter = 1
-
-        for (item in inventoryStorageAI.items) {
-            val position = scrollCollection(player, slotCounter)
-
-            if (position < 0 || position > 53) {
-                continue
-            }
-
+        for (i in 0 until 27) {
             try {
-                proxyService.setInventoryItem(inventory, position, item)
+                proxyService.setInventoryItem(inventory, i, inventoryAI.items[i])
             } catch (e: Exception) {
                 // Inventory might not be available.
             }
 
-            slotCounter++
+            index++
         }
 
+        storageCache[player] = StorageInventoryCache(section, inventory)
         proxyService.updateInventory(player)
     }
 
@@ -634,7 +665,10 @@ class GUIServiceImpl @Inject constructor(
             petMeta.particleEnabled = false
             renderPage(player, petMeta, pageCache[player]!!.path)
         } else if (scriptResult == ScriptAction.SHOW_INVENTORY) {
-            renderPage(player, petMeta, inventoryStoragePath)
+            close(player)
+            sync(concurrencyService, 10L) {
+                renderInventoryPage(player, petMeta, guiItem.script!!.split(" ")[1].toInt())
+            }
         } else if (scriptResult == ScriptAction.CLOSE_GUI) {
             val page = pageCache[player]!!
 

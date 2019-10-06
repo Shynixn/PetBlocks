@@ -49,6 +49,16 @@ interface GUIService {
     fun <I> isGUIInventory(inventory: I, relativeSlot: Int = 0): Boolean
 
     /**
+     * Returns if the given [inventory] matches the storage inventory of this service.
+     */
+    fun <I> isStorageInventory(inventory: I): Boolean
+
+    /**
+     * Saves the storage inventory to the database.
+     */
+    fun <I> saveStorageInventory(inventory: I)
+
+    /**
      * Clears all resources the given player has allocated from this service.
      * @param P the type of the player.
      */

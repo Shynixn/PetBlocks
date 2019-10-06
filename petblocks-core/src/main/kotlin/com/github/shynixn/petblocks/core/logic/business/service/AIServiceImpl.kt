@@ -8,12 +8,11 @@ import com.github.shynixn.petblocks.api.business.proxy.PetProxy
 import com.github.shynixn.petblocks.api.business.service.AIService
 import com.github.shynixn.petblocks.api.business.service.LoggingService
 import com.github.shynixn.petblocks.api.business.service.ProxyService
+import com.github.shynixn.petblocks.api.business.service.YamlService
 import com.github.shynixn.petblocks.api.persistence.entity.AIBase
 import com.github.shynixn.petblocks.api.persistence.entity.AIFollowBack
 import com.github.shynixn.petblocks.api.persistence.entity.AIFollowOwner
 import com.google.inject.Inject
-import org.yaml.snakeyaml.DumperOptions
-import org.yaml.snakeyaml.Yaml
 
 /**
  * Created by Shynixn 2018.
@@ -44,7 +43,8 @@ import org.yaml.snakeyaml.Yaml
  */
 class AIServiceImpl @Inject constructor(
     private val loggingService: LoggingService,
-    private val proxyService: ProxyService
+    private val proxyService: ProxyService,
+    private val yamlService: YamlService
 ) : AIService {
 
     private val registeredAIS = HashMap<String, AICreationProxy<AIBase>>()
@@ -113,8 +113,7 @@ class AIServiceImpl @Inject constructor(
      * Generates an AIBase from the given yaml source string.
      */
     override fun <A : AIBase> deserializeAiBase(type: String, source: String): A {
-        val yaml = Yaml()
-        val serializedContent = yaml.load(source) as Map<String, Any?>
+        val serializedContent = yamlService.readFromString(source)
 
         // Compatibility to 8.0.1.
         return if (serializedContent.containsKey("a")) {
@@ -141,13 +140,7 @@ class AIServiceImpl @Inject constructor(
      */
     override fun serializeAiBaseToString(aiBase: AIBase): String {
         val serializedContent = serializeAiBase(aiBase)
-
-        val options = DumperOptions()
-        options.defaultFlowStyle = DumperOptions.FlowStyle.BLOCK
-        options.isPrettyFlow = true
-
-        val yaml = Yaml(options)
-        return yaml.dump(serializedContent)
+        return yamlService.writeToString(serializedContent)
     }
 
     /**
