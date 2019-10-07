@@ -54,7 +54,11 @@ class ProxyServiceImpl @Inject constructor(private val version: Version) : Proxy
         require(location is Location)
         require(item is ItemStack)
 
-        location.world!!.dropItem(location, item)
+        try {
+            location.world!!.dropItem(location, item)
+        } catch (e: Exception) {
+            // Cannot drop air.
+        }
     }
 
     /**

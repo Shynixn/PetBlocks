@@ -558,12 +558,21 @@ gui:
     equipment-main:
       row: 2
       col: 2
-      script: 'show-inventory 1'
+      script: 'show-inventory 1 27'
       icon:
         id: "CHEST"
-        name: '&6&lMain Equipment'
+        name: '&a&lMain Equipment'
         lore:
           - '&7Open the main equipment of your pet.'
+    equipment-secondary:
+      row: 2
+      col: 8
+      script: 'show-inventory 28 54'
+      icon:
+        id: "ENDER_CHEST"
+        name: '&9&lSecondary Equipment'
+        lore:
+          - '&7Open the secondary equipment of your pet.'
     back:
       row: 6
       col: 5

@@ -60,7 +60,6 @@ class GUIServiceImpl @Inject constructor(
     private val proxyService: ProxyService
 ) : GUIService {
 
-
     private val clickProtection = ArrayList<Any>()
     private val pageCache = HashMap<Any, GuiPlayerCache>()
     private val storageCache = HashMap<Any, StorageInventoryCache>()
@@ -217,8 +216,14 @@ class GUIServiceImpl @Inject constructor(
     override fun <I> saveStorageInventory(inventory: I) {
         require(inventory is Any)
         val player = proxyService.getPlayerFromInventory<Any, I>(inventory)
-        val lowerBoundary = (storageCache[player]!!.section - 1) * 27
-        val upperBoundary = lowerBoundary + 27
+
+        if (storageCache[player]!!.readOnly) {
+            storageCache.remove(player)
+            return
+        }
+
+        val from = storageCache[player]!!.from - 1
+        val to = storageCache[player]!!.to
         val petMeta = persistenceService.getPetMetaFromPlayer(player)
         val inventoryAI = petMeta.aiGoals.first { a -> a is AIInventory } as AIInventory
         val newItems = ArrayList<Any?>()
@@ -226,9 +231,14 @@ class GUIServiceImpl @Inject constructor(
         var inventoryI = 0
 
         while (true) {
-            if (i in lowerBoundary until upperBoundary) {
+            if (i in from until to) {
                 val item = proxyService.getInventoryItem<Any, Any>(inventory, inventoryI)
-                newItems.add(item)
+                if (item == null) {
+                    newItems.add(itemService.toItemStack(ItemEntity(MaterialType.AIR.name)))
+                } else {
+                    newItems.add(item)
+                }
+
                 inventoryI++
             } else if (i >= inventoryAI.items.size) {
                 break
@@ -344,6 +354,56 @@ class GUIServiceImpl @Inject constructor(
     }
 
     /**
+     * Opens the storage of the given [petMeta] for the given player.
+     * The petMeta can belong to a different player.
+     */
+    override fun <P> openStorage(player: P, petMeta: PetMeta, from: Int, to: Int) {
+        require(player is Any)
+
+        if (from > to) {
+            loggingService.warn("Cannot open storage. Script parameter to cannot be smaller than from!")
+            return
+        }
+
+        val size = if (to - from > 27) {
+            54
+        } else {
+            27
+        }
+
+        val guiTitle = configurationService.findValue<String>("messages.gui-title") + " " + from + "-" + (from + size - 1)
+        val inventory = proxyService.openInventory<Any, Any>(player, guiTitle, size)
+        val inventoryAI = petMeta.aiGoals.firstOrNull { a -> a is AIInventory } as AIInventory?
+
+        if (inventoryAI == null) {
+            loggingService.warn("Player " + proxyService.getPlayerName(player) + " tried to open a pet inventory without a AIInventory.")
+            loggingService.warn("Apply an AIInventory to your players.")
+            close(player)
+            return
+        }
+
+        var index = from - 1
+
+        for (i in 0 until size) {
+            if (index >= inventoryAI.items.size) {
+                break
+            }
+
+            try {
+                proxyService.setInventoryItem(inventory, i, inventoryAI.items[index])
+            } catch (e: Exception) {
+                // Inventory might not be available.
+            }
+
+            index++
+        }
+
+        storageCache[player] =
+            StorageInventoryCache(from, to, inventory, proxyService.getPlayerUUID(player) != petMeta.playerMeta.uuid)
+        proxyService.updateInventory(player)
+    }
+
+    /**
      * Renders a single gui page.
      */
     private fun renderPage(player: Any, petMeta: PetMeta, path: String) {
@@ -446,37 +506,6 @@ class GUIServiceImpl @Inject constructor(
         }
 
         fillEmptySlots(inventory)
-        proxyService.updateInventory(player)
-    }
-
-    /**
-     * Renders the inventory page.
-     */
-    private fun renderInventoryPage(player: Any, petMeta: PetMeta, section: Int) {
-        val guiTitle = configurationService.findValue<String>("messages.gui-title")
-        val inventory = proxyService.openInventory<Any, Any>(player, guiTitle, 27)
-        val inventoryAI = petMeta.aiGoals.firstOrNull { a -> a is AIInventory } as AIInventory?
-
-        if (inventoryAI == null) {
-            loggingService.warn("Player " + proxyService.getPlayerName(player) + " tried to open a pet inventory without a AIInventory.")
-            loggingService.warn("Apply an AIInventory to your players.")
-            close(player)
-            return
-        }
-
-        var index = (section - 1) * 27
-
-        for (i in 0 until 27) {
-            try {
-                proxyService.setInventoryItem(inventory, i, inventoryAI.items[i])
-            } catch (e: Exception) {
-                // Inventory might not be available.
-            }
-
-            index++
-        }
-
-        storageCache[player] = StorageInventoryCache(section, inventory)
         proxyService.updateInventory(player)
     }
 
@@ -667,7 +696,8 @@ class GUIServiceImpl @Inject constructor(
         } else if (scriptResult == ScriptAction.SHOW_INVENTORY) {
             close(player)
             sync(concurrencyService, 10L) {
-                renderInventoryPage(player, petMeta, guiItem.script!!.split(" ")[1].toInt())
+                val split = guiItem.script!!.split(" ")
+                openStorage(player, petMeta, split[1].toInt(), split[2].toInt())
             }
         } else if (scriptResult == ScriptAction.CLOSE_GUI) {
             val page = pageCache[player]!!

@@ -10,10 +10,7 @@ import com.github.shynixn.petblocks.api.business.proxy.PluginProxy
 import com.github.shynixn.petblocks.api.business.service.*
 import com.github.shynixn.petblocks.api.persistence.context.SqlDbContext
 import com.github.shynixn.petblocks.api.persistence.entity.*
-import com.github.shynixn.petblocks.bukkit.logic.business.service.ConfigurationServiceImpl
-import com.github.shynixn.petblocks.bukkit.logic.business.service.EntityServiceImpl
-import com.github.shynixn.petblocks.bukkit.logic.business.service.ItemTypeServiceImpl
-import com.github.shynixn.petblocks.bukkit.logic.business.service.ProxyServiceImpl
+import com.github.shynixn.petblocks.bukkit.logic.business.service.*
 import com.github.shynixn.petblocks.core.logic.business.service.*
 import com.github.shynixn.petblocks.core.logic.persistence.context.SqlDbContextImpl
 import com.github.shynixn.petblocks.core.logic.persistence.entity.AIMovementEntity
@@ -92,7 +89,7 @@ class PersistenceSQLiteIT {
         Assertions.assertEquals("", actual.skin.owner)
         Assertions.assertEquals(1, actual.playerMeta.id)
         Assertions.assertEquals("Kenny", actual.playerMeta.name)
-        Assertions.assertEquals(5, actual.aiGoals.size)
+        Assertions.assertEquals(6, actual.aiGoals.size)
 
         Assertions.assertEquals("hopping", (actual.aiGoals[0] as AIMovementEntity).type)
         Assertions.assertEquals(1.0, (actual.aiGoals[0] as AIMovementEntity).climbingHeight)
@@ -243,7 +240,7 @@ class PersistenceSQLiteIT {
             method.isAccessible = true
             method.invoke(PetBlocksApi, MockedPluginProxy())
 
-            val aiService = AIServiceImpl(LoggingUtilServiceImpl(Logger.getAnonymousLogger()), MockedProxyService())
+            val aiService = AIServiceImpl(LoggingUtilServiceImpl(Logger.getAnonymousLogger()), MockedProxyService(),YamlServiceImpl())
             val configService = ConfigurationServiceImpl(plugin)
             val guiItemLoadService =
                 GUIItemLoadServiceImpl(
@@ -298,6 +295,13 @@ class PersistenceSQLiteIT {
     }
 
     class MockedProxyService : ProxyService {
+        /**
+         * Drops the given item at the given position.
+         */
+        override fun <L, I> dropInventoryItem(location: L, item: I) {
+            throw IllegalArgumentException()
+        }
+
         /**
          * Gets the inventory item at the given index.
          */

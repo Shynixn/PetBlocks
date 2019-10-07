@@ -1,5 +1,7 @@
 package com.github.shynixn.petblocks.api.business.service
 
+import com.github.shynixn.petblocks.api.persistence.entity.PetMeta
+
 /**
  * Created by Shynixn 2018.
  * <p>
@@ -34,6 +36,12 @@ interface GUIService {
      * @param P the type of the player.
      */
     fun <P> open(player: P, pageName: String? = null)
+
+    /**
+     * Opens the storage of the given [petMeta] for the given player.
+     * The petMeta can belong to a different player.
+     */
+    fun <P> openStorage(player: P, petMeta: PetMeta, from: Int, to: Int)
 
     /**
      * Closes the gui for the given [player]. Does nothing when the GUI is already closed.

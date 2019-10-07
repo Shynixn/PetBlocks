@@ -48,7 +48,7 @@ class YamlServiceImpl : YamlService {
     override fun readFromString(content: String): Map<String, Any> {
         val configuration = YamlConfiguration()
         configuration.loadFromString(content)
-        val section = configuration.getValues(true)
+        val section = configuration.getValues(false)
         deserialize(section)
         return section
     }

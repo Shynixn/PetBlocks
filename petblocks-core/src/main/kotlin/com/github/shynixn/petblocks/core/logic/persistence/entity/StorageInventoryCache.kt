@@ -27,4 +27,4 @@ package com.github.shynixn.petblocks.core.logic.persistence.entity
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class StorageInventoryCache(var section: Int, var inventory: Any)
+class StorageInventoryCache(var from: Int, var to: Int, var inventory: Any, var readOnly: Boolean = false)
