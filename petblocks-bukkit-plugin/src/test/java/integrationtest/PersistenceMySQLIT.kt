@@ -112,8 +112,8 @@ class PersistenceMySQLIT {
         Assertions.assertEquals(ParticleType.HEART, (actual.aiGoals[3] as AIFeeding).clickParticle.type)
         Assertions.assertEquals("EAT", (actual.aiGoals[3] as AIFeeding).clickSound.name)
 
-        Assertions.assertEquals("ambient-sound", (actual.aiGoals[4] as AIAmbientSound).type)
-        Assertions.assertEquals("CHICKEN_IDLE", (actual.aiGoals[4] as AIAmbientSound).sound.name)
+        Assertions.assertEquals("ambient-sound", (actual.aiGoals[5] as AIAmbientSound).type)
+        Assertions.assertEquals("CHICKEN_IDLE", (actual.aiGoals[5] as AIAmbientSound).sound.name)
     }
 
     /**
@@ -162,7 +162,7 @@ class PersistenceMySQLIT {
         (petMeta.aiGoals[3] as AIFeeding).dataValue = 4
         (petMeta.aiGoals[3] as AIFeeding).typeName = "POWER_BANK"
 
-        (petMeta.aiGoals[4] as AIAmbientSound).sound.volume = 41.55
+        (petMeta.aiGoals[5] as AIAmbientSound).sound.volume = 41.55
 
         classUnderTest.save(petMeta).get()
         val actual = classUnderTest.getPetMetaFromPlayer(player)
@@ -202,8 +202,8 @@ class PersistenceMySQLIT {
         Assertions.assertEquals("COOKIE_SOUND", (actual.aiGoals[3] as AIFeeding).clickSound.name)
         Assertions.assertEquals(25.4, (actual.aiGoals[3] as AIFeeding).clickParticle.offSetZ)
 
-        Assertions.assertEquals("ambient-sound", (actual.aiGoals[4] as AIAmbientSound).type)
-        Assertions.assertEquals(41.55, (actual.aiGoals[4] as AIAmbientSound).sound.volume)
+        Assertions.assertEquals("ambient-sound", (actual.aiGoals[5] as AIAmbientSound).type)
+        Assertions.assertEquals(41.55, (actual.aiGoals[5] as AIAmbientSound).sound.volume)
     }
 
     companion object {
