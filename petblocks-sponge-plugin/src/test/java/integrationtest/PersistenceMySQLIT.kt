@@ -18,6 +18,7 @@ import com.github.shynixn.petblocks.core.logic.persistence.repository.PetMetaSql
 import com.github.shynixn.petblocks.sponge.logic.business.service.ConfigurationServiceImpl
 import com.github.shynixn.petblocks.sponge.logic.business.service.EntityServiceImpl
 import com.github.shynixn.petblocks.sponge.logic.business.service.ItemTypeServiceImpl
+import com.github.shynixn.petblocks.sponge.logic.business.service.YamlServiceImpl
 import org.apache.commons.io.FileUtils
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
@@ -117,8 +118,8 @@ class PersistenceMySQLIT {
         Assertions.assertEquals(ParticleType.HEART, (actual.aiGoals[3] as AIFeeding).clickParticle.type)
         Assertions.assertEquals("EAT", (actual.aiGoals[3] as AIFeeding).clickSound.name)
 
-        Assertions.assertEquals("ambient-sound", (actual.aiGoals[4] as AIAmbientSound).type)
-        Assertions.assertEquals("CHICKEN_IDLE", (actual.aiGoals[4] as AIAmbientSound).sound.name)
+        Assertions.assertEquals("ambient-sound", (actual.aiGoals[5] as AIAmbientSound).type)
+        Assertions.assertEquals("CHICKEN_IDLE", (actual.aiGoals[5] as AIAmbientSound).sound.name)
     }
 
     /**
@@ -167,7 +168,7 @@ class PersistenceMySQLIT {
         (petMeta.aiGoals[3] as AIFeeding).dataValue = 4
         (petMeta.aiGoals[3] as AIFeeding).typeName = "POWER_BANK"
 
-        (petMeta.aiGoals[4] as AIAmbientSound).sound.volume = 41.55
+        (petMeta.aiGoals[5] as AIAmbientSound).sound.volume = 41.55
 
         classUnderTest.save(petMeta).get()
         val actual = classUnderTest.getPetMetaFromPlayer(player)
@@ -207,8 +208,8 @@ class PersistenceMySQLIT {
         Assertions.assertEquals("COOKIE_SOUND", (actual.aiGoals[3] as AIFeeding).clickSound.name)
         Assertions.assertEquals(25.4, (actual.aiGoals[3] as AIFeeding).clickParticle.offSetZ)
 
-        Assertions.assertEquals("ambient-sound", (actual.aiGoals[4] as AIAmbientSound).type)
-        Assertions.assertEquals(41.55, (actual.aiGoals[4] as AIAmbientSound).sound.volume)
+        Assertions.assertEquals("ambient-sound", (actual.aiGoals[5] as AIAmbientSound).type)
+        Assertions.assertEquals(41.55, (actual.aiGoals[5] as AIAmbientSound).sound.volume)
     }
 
     companion object {
@@ -261,7 +262,8 @@ class PersistenceMySQLIT {
 
             val aiService = AIServiceImpl(
                 LoggingUtilServiceImpl(Logger.getAnonymousLogger()),
-                MockedProxyService()
+                MockedProxyService(),
+                YamlServiceImpl()
             )
 
             val configurationService = ConfigurationServiceImpl(
@@ -334,6 +336,13 @@ class PersistenceMySQLIT {
     }
 
     class MockedProxyService : ProxyService {
+        /**
+         * Drops the given item at the given position.
+         */
+        override fun <L, I> dropInventoryItem(location: L, item: I) {
+            throw IllegalArgumentException()
+        }
+
         /**
          * Gets the inventory item at the given index.
          */

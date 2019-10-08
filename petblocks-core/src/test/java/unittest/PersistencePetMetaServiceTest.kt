@@ -177,6 +177,13 @@ class PersistencePetMetaServiceTest {
 
     class MockedProxyService : ProxyService {
         /**
+         * Drops the given item at the given position.
+         */
+        override fun <L, I> dropInventoryItem(location: L, item: I) {
+            throw IllegalArgumentException()
+        }
+
+        /**
          * Gets the inventory item at the given index.
          */
         override fun <I, IT> getInventoryItem(inventory: I, index: Int): IT? {

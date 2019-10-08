@@ -164,7 +164,7 @@ class PersistenceSQLiteIT {
         (petMeta.aiGoals[3] as AIFeeding).dataValue = 4
         (petMeta.aiGoals[3] as AIFeeding).typeName = "POWER_BANK"
 
-        (petMeta.aiGoals[4] as AIAmbientSound).sound.volume = 41.55
+        (petMeta.aiGoals[5] as AIAmbientSound).sound.volume = 41.55
 
         classUnderTest.save(petMeta).get()
         val actual = classUnderTest.getPetMetaFromPlayer(player)

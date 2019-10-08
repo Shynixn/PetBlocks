@@ -6,6 +6,7 @@ import com.github.shynixn.petblocks.api.business.enumeration.Permission
 import com.github.shynixn.petblocks.api.business.service.ConfigurationService
 import com.github.shynixn.petblocks.api.business.service.GUIItemLoadService
 import com.github.shynixn.petblocks.api.business.service.ProxyService
+import com.github.shynixn.petblocks.api.business.service.YamlService
 import com.github.shynixn.petblocks.api.persistence.context.SqlDbContext
 import com.github.shynixn.petblocks.api.persistence.entity.GuiItem
 import com.github.shynixn.petblocks.api.persistence.entity.PetMeta
@@ -168,14 +169,15 @@ class PetMetaSqlRepositoryTest {
                 dbContext,
                 AIServiceImpl(
                     LoggingUtilServiceImpl(Logger.getAnonymousLogger()),
-                    MockedProxyService()
-                ), MockedGUIItemLoadService(),
+                    MockedProxyService(),
+                    Mockito.mock(YamlService::class.java)
+                    ), MockedGUIItemLoadService(),
                 Mockito.mock(ConfigurationService::class.java)
             )
         }
     }
 
-    class MockedGUIItemLoadService : GUIItemLoadService{
+    class MockedGUIItemLoadService : GUIItemLoadService {
         /**
          * Tries to return a [GuiItem] matching the displayName and the lore of the given [item].
          * Can be called asynchronly. Uses the [path] parameter for faster fetching.
@@ -308,6 +310,13 @@ class PetMetaSqlRepositoryTest {
     }
 
     class MockedProxyService : ProxyService {
+        /**
+         * Drops the given item at the given position.
+         */
+        override fun <L, I> dropInventoryItem(location: L, item: I) {
+            throw IllegalArgumentException()
+        }
+
         /**
          * Gets the inventory item at the given index.
          */
