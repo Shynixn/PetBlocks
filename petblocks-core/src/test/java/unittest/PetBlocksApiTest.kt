@@ -81,6 +81,7 @@ class PetBlocksApiTest {
     companion object {
         fun createWithDependencies(proxy: PluginProxy? = null): PetBlocksApi {
             var internalProxy = proxy
+
             if (internalProxy == null) {
                 internalProxy = MockedPluginProxy()
             }
