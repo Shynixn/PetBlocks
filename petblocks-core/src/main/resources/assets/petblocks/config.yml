@@ -192,7 +192,6 @@ pet:
         pitch: 1.0
     5:
       type: 'inventory'
-      slots-amount: 30
     6:
       type: 'ambient-sound'
       sound:
