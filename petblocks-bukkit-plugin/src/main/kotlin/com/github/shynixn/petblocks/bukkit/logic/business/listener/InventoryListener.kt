@@ -4,7 +4,6 @@ package com.github.shynixn.petblocks.bukkit.logic.business.listener
 
 import com.github.shynixn.petblocks.api.business.service.GUIPetStorageService
 import com.github.shynixn.petblocks.api.business.service.GUIService
-import com.github.shynixn.petblocks.api.business.service.ProxyService
 import com.google.inject.Inject
 import org.bukkit.Material
 import org.bukkit.entity.Player
@@ -43,14 +42,13 @@ import org.bukkit.event.player.PlayerQuitEvent
  */
 class InventoryListener @Inject constructor(
     private val guiService: GUIService,
-    private val guiPetStorageService: GUIPetStorageService,
-    private val proxyService: ProxyService
+    private val guiPetStorageService: GUIPetStorageService
 ) : Listener {
     /**
      * Gets called and handles action to the gui inventory.
      */
     @EventHandler
-    fun playerClickInInventoryEvent(event: InventoryClickEvent) {
+    fun onPlayerClickInInventoryEvent(event: InventoryClickEvent) {
         val player = event.whoClicked as Player
 
         if (!guiService.isGUIInventory(event.inventory)) {
@@ -71,7 +69,7 @@ class InventoryListener @Inject constructor(
      * Saves the storage inventory on close.
      */
     @EventHandler
-    fun playerCloseInventoryInvent(event: InventoryCloseEvent) {
+    fun onPlayerCloseInventoryEvent(event: InventoryCloseEvent) {
         if (!guiPetStorageService.isStorage(event.inventory)) {
             return
         }
@@ -83,7 +81,7 @@ class InventoryListener @Inject constructor(
      * Gets called and handles cleaning up remaining resources.
      */
     @EventHandler
-    fun playerQuitEvent(event: PlayerQuitEvent) {
+    fun onPlayerQuitEvent(event: PlayerQuitEvent) {
         guiService.cleanResources(event.player)
     }
 }
