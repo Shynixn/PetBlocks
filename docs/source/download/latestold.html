@@ -1,0 +1,92 @@
+<html>
+    <head>
+        <style>
+            .download-button {
+                box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 2px 20px 0 rgba(0, 0, 0, 0.19);
+                border: none;
+                color: white;
+                text-align: center;
+                text-decoration: none;
+                display: inline-block;
+                font-size: 18px;
+                margin: 4px 2px 20px 20px;
+                cursor: pointer;
+            }
+
+            .download-button-title{
+                color: white;
+                cursor: pointer;
+                margin: 0 0 10px 0;
+                text-decoration: underline;
+            }
+            .download-button-sub-title{
+                color: white;
+                cursor: pointer;
+            }
+            .download-button-icon{
+                color: white;
+                text-align: center;
+                padding: 20px 20px;
+                float: left;
+            }
+            .download-button-text {
+                padding: 20px 0 20px 40px;
+                float: left
+            }
+            .green {
+                background-color: #4CAF50
+            }
+
+            .green:hover {
+                background-color: #48914b;
+            }
+
+            .blue {
+                background-color: #008CBA;
+            }
+
+            .blue:hover {
+                background-color: #087aa0;
+            }
+        </style>
+    </head>
+    <body>
+    <div class="jumbotron text-center">
+        <h1>My First Bootstrap Page</h1>
+        <p>Resize this responsive page to see the effect!</p>
+
+        <div class="download-button blue" style="width:80%">
+            <a href="https://repository.sonatype.org/service/local/artifact/maven/redirect?r=snapshots&g=com.github.shynixn.blockball&a=blockball-bukkit-plugin&v=LATEST" style="display:block;height=100%">
+                <div class="download-button-icon">
+                    <i class="fas fa-2x fa-moon button-image"></i>
+                </div>
+                <div class="download-button-text">
+                    <div class="download-button-title">BlockBall Latest Nightly</div>
+                    <div class="download-button-sub-title">Version 6.0.0</div>
+                </div>
+            </a>
+        </div>
+
+        <a href="https://repository.sonatype.org/service/local/artifact/maven/content?r=snapshots&g=com.github.shynixn.blockball&a=blockball-plugin&v=6.0.0-SNAPSHOT&p=jar"" style="display:block;height=100%">
+            <div class="download-button green" style="width:80%">
+                <div class="download-button-icon">
+                    <i class="fas fa-2x fa-cloud-download-alt button-image"></i>
+                </div>
+                <div class="download-button-text">
+                    <div class="download-button-title">BlockBall Recommend Release</div>
+                    <div class="download-button-sub-title">Version 6.0.0</div>
+                </div>
+            </div>
+        </a>
+
+    </div>
+
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+        <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+
+
+    </body>
+</html>
