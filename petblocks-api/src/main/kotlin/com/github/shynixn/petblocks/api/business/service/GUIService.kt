@@ -1,7 +1,5 @@
 package com.github.shynixn.petblocks.api.business.service
 
-import com.github.shynixn.petblocks.api.persistence.entity.PetMeta
-
 /**
  * Created by Shynixn 2018.
  * <p>
@@ -30,18 +28,11 @@ import com.github.shynixn.petblocks.api.persistence.entity.PetMeta
  * SOFTWARE.
  */
 interface GUIService {
-
     /**
      * Opens the gui for the given [player]. Does nothing when the GUI is already open.
      * @param P the type of the player.
      */
     fun <P> open(player: P, pageName: String? = null)
-
-    /**
-     * Opens the storage of the given [petMeta] for the given player.
-     * The petMeta can belong to a different player.
-     */
-    fun <P> openStorage(player: P, petMeta: PetMeta, from: Int, to: Int)
 
     /**
      * Closes the gui for the given [player]. Does nothing when the GUI is already closed.
@@ -55,16 +46,6 @@ interface GUIService {
      * @param relativeSlot which determines half managed gui inventories.
      */
     fun <I> isGUIInventory(inventory: I, relativeSlot: Int = 0): Boolean
-
-    /**
-     * Returns if the given [inventory] matches the storage inventory of this service.
-     */
-    fun <I> isStorageInventory(inventory: I): Boolean
-
-    /**
-     * Saves the storage inventory to the database.
-     */
-    fun <I> saveStorageInventory(inventory: I)
 
     /**
      * Clears all resources the given player has allocated from this service.

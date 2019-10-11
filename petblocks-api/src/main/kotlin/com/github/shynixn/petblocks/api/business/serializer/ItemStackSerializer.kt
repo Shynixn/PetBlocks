@@ -1,10 +1,4 @@
-@file:Suppress("UNCHECKED_CAST")
-
-package com.github.shynixn.petblocks.core.logic.business.serializer
-
-import com.github.shynixn.petblocks.api.PetBlocksApi
-import com.github.shynixn.petblocks.api.business.serializer.ItemStackSerializer
-import com.github.shynixn.petblocks.api.business.serializer.YamlSerializer
+package com.github.shynixn.petblocks.api.business.serializer
 
 /**
  * Created by Shynixn 2019.
@@ -33,18 +27,4 @@ import com.github.shynixn.petblocks.api.business.serializer.YamlSerializer
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class ItemStackSerializer : YamlSerializer<Any, Map<String, Any?>> {
-    /**
-     * Gets called on serialization.
-     */
-    override fun onSerialization(item: Any): Map<String, Any?> {
-        return PetBlocksApi.resolve(ItemStackSerializer::class.java).onSerialization(item) as Map<String, Any?>
-    }
-
-    /**
-     * Gets called on Deserialization.
-     */
-    override fun onDeserialization(item: Map<String, Any?>): Any {
-        return PetBlocksApi.resolve(ItemStackSerializer::class.java).onDeserialization(item)
-    }
-}
+interface ItemStackSerializer : YamlSerializer<Any, Any>

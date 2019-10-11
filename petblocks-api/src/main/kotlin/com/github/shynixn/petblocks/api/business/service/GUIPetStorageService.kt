@@ -1,10 +1,6 @@
-@file:Suppress("UNCHECKED_CAST")
+package com.github.shynixn.petblocks.api.business.service
 
-package com.github.shynixn.petblocks.core.logic.business.serializer
-
-import com.github.shynixn.petblocks.api.PetBlocksApi
-import com.github.shynixn.petblocks.api.business.serializer.ItemStackSerializer
-import com.github.shynixn.petblocks.api.business.serializer.YamlSerializer
+import com.github.shynixn.petblocks.api.persistence.entity.PetMeta
 
 /**
  * Created by Shynixn 2019.
@@ -33,18 +29,21 @@ import com.github.shynixn.petblocks.api.business.serializer.YamlSerializer
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class ItemStackSerializer : YamlSerializer<Any, Map<String, Any?>> {
+interface GUIPetStorageService {
     /**
-     * Gets called on serialization.
+     * Opens the storage of the given [petMeta] for the given player.
+     * If the petMeta belongs to a different player than the given player, the
+     * inventory gets opened in readOnlyMode.
      */
-    override fun onSerialization(item: Any): Map<String, Any?> {
-        return PetBlocksApi.resolve(ItemStackSerializer::class.java).onSerialization(item) as Map<String, Any?>
-    }
+    fun <P> openStorage(player: P, petMeta: PetMeta, from: Int, to: Int)
 
     /**
-     * Gets called on Deserialization.
+     * Returns if the given [inventory] matches the storage inventory of this service.
      */
-    override fun onDeserialization(item: Map<String, Any?>): Any {
-        return PetBlocksApi.resolve(ItemStackSerializer::class.java).onDeserialization(item)
-    }
+    fun <I> isStorage(inventory: I): Boolean
+
+    /**
+     * Saves the storage inventory to the database and clears all resources.
+     */
+    fun <P> saveStorage(player: P)
 }

@@ -2,6 +2,7 @@
 
 package com.github.shynixn.petblocks.bukkit.logic.business.listener
 
+import com.github.shynixn.petblocks.api.business.service.GUIPetStorageService
 import com.github.shynixn.petblocks.api.business.service.GUIService
 import com.github.shynixn.petblocks.api.business.service.ProxyService
 import com.google.inject.Inject
@@ -42,6 +43,7 @@ import org.bukkit.event.player.PlayerQuitEvent
  */
 class InventoryListener @Inject constructor(
     private val guiService: GUIService,
+    private val guiPetStorageService: GUIPetStorageService,
     private val proxyService: ProxyService
 ) : Listener {
     /**
@@ -70,11 +72,11 @@ class InventoryListener @Inject constructor(
      */
     @EventHandler
     fun playerCloseInventoryInvent(event: InventoryCloseEvent) {
-        if (!guiService.isStorageInventory(event.inventory)) {
+        if (!guiPetStorageService.isStorage(event.inventory)) {
             return
         }
 
-        guiService.saveStorageInventory(event.inventory)
+        guiPetStorageService.saveStorage(event.player)
     }
 
     /**

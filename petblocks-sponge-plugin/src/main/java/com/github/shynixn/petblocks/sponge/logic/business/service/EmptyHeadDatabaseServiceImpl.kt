@@ -1,10 +1,6 @@
-@file:Suppress("UNCHECKED_CAST")
+package com.github.shynixn.petblocks.sponge.logic.business.service
 
-package com.github.shynixn.petblocks.core.logic.business.serializer
-
-import com.github.shynixn.petblocks.api.PetBlocksApi
-import com.github.shynixn.petblocks.api.business.serializer.ItemStackSerializer
-import com.github.shynixn.petblocks.api.business.serializer.YamlSerializer
+import com.github.shynixn.petblocks.api.business.service.DependencyHeadDatabaseService
 
 /**
  * Created by Shynixn 2019.
@@ -33,18 +29,27 @@ import com.github.shynixn.petblocks.api.business.serializer.YamlSerializer
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class ItemStackSerializer : YamlSerializer<Any, Map<String, Any?>> {
+class EmptyHeadDatabaseServiceImpl : DependencyHeadDatabaseService {
     /**
-     * Gets called on serialization.
+     * Opens the virtual connection to the HeadDatabase plugin.
+     * Prints a message to the console if connection is not possible.
      */
-    override fun onSerialization(item: Any): Map<String, Any?> {
-        return PetBlocksApi.resolve(ItemStackSerializer::class.java).onSerialization(item) as Map<String, Any?>
+    override fun <P> openConnection(player: P) {
+
     }
 
     /**
-     * Gets called on Deserialization.
+     * Executes actions when the given [player] clicks on an [item].
+     * @param P the type of the player.
+     * @param I the type of the inventory.
      */
-    override fun onDeserialization(item: Map<String, Any?>): Any {
-        return PetBlocksApi.resolve(ItemStackSerializer::class.java).onDeserialization(item)
+    override fun <P, I> clickInventoryItem(player: P, item: I): Boolean {
+        return false
+    }
+
+    /**
+     * Clears all resources the given [player] has allocated from this service.
+     */
+    override fun <P> clearResources(player: P) {
     }
 }

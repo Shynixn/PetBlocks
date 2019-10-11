@@ -1,10 +1,9 @@
 @file:Suppress("UNCHECKED_CAST")
 
-package com.github.shynixn.petblocks.core.logic.business.serializer
+package com.github.shynixn.petblocks.bukkit.logic.business.serializer
 
-import com.github.shynixn.petblocks.api.PetBlocksApi
 import com.github.shynixn.petblocks.api.business.serializer.ItemStackSerializer
-import com.github.shynixn.petblocks.api.business.serializer.YamlSerializer
+import org.bukkit.inventory.ItemStack
 
 /**
  * Created by Shynixn 2019.
@@ -33,18 +32,20 @@ import com.github.shynixn.petblocks.api.business.serializer.YamlSerializer
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class ItemStackSerializer : YamlSerializer<Any, Map<String, Any?>> {
+class ItemStackSerializerImpl : ItemStackSerializer {
     /**
      * Gets called on serialization.
      */
-    override fun onSerialization(item: Any): Map<String, Any?> {
-        return PetBlocksApi.resolve(ItemStackSerializer::class.java).onSerialization(item) as Map<String, Any?>
+    override fun onSerialization(item: Any): Any {
+        require(item is ItemStack)
+        return item.serialize()
     }
 
     /**
      * Gets called on Deserialization.
      */
-    override fun onDeserialization(item: Map<String, Any?>): Any {
-        return PetBlocksApi.resolve(ItemStackSerializer::class.java).onDeserialization(item)
+    override fun onDeserialization(item: Any): Any {
+        require(item is Map<*, *>)
+        return ItemStack.deserialize(item as Map<String, Any>)
     }
 }

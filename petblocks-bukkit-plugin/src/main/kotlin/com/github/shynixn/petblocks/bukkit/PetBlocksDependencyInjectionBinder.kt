@@ -4,9 +4,11 @@ package com.github.shynixn.petblocks.bukkit
 
 import com.github.shynixn.petblocks.api.business.enumeration.Version
 import com.github.shynixn.petblocks.api.business.proxy.PluginProxy
+import com.github.shynixn.petblocks.api.business.serializer.ItemStackSerializer
 import com.github.shynixn.petblocks.api.business.service.*
 import com.github.shynixn.petblocks.api.persistence.context.SqlDbContext
 import com.github.shynixn.petblocks.api.persistence.repository.PetMetaRepository
+import com.github.shynixn.petblocks.bukkit.logic.business.serializer.ItemStackSerializerImpl
 import com.github.shynixn.petblocks.bukkit.logic.business.service.*
 import com.github.shynixn.petblocks.core.logic.business.service.*
 import com.github.shynixn.petblocks.core.logic.persistence.context.SqlDbContextImpl
@@ -86,6 +88,8 @@ class PetBlocksDependencyInjectionBinder(private val plugin: PetBlocksPlugin) : 
         bind(SoundService::class.java).to(SoundServiceImpl::class.java).`in`(Scopes.SINGLETON)
         bind(GUIItemLoadService::class.java).to(GUIItemLoadServiceImpl::class.java).`in`(Scopes.SINGLETON)
         bind(YamlService::class.java).to(YamlServiceImpl::class.java).`in`(Scopes.SINGLETON)
+        bind(GUIPetStorageService::class.java).to(GUIPetStorageServiceImpl::class.java).`in`(Scopes.SINGLETON)
+        bind(ItemStackSerializer::class.java).to(ItemStackSerializerImpl::class.java).`in`(Scopes.SINGLETON)
 
         when {
             version.isVersionSameOrGreaterThan(Version.VERSION_1_14_R1) -> bind(EntityRegistrationService::class.java).to(EntityRegistration114R1ServiceImpl::class.java).`in`(

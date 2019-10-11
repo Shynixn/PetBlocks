@@ -37,7 +37,7 @@ constructor(
     private val petService: PersistencePetMetaService,
     private val commandService: CommandService,
     private val messageService: MessageService,
-    private val guiService: GUIService
+    private val guiService: GUIPetStorageService
 ) : SourceCommand {
     /**
      * Gets called when the given [source] executes the defined command with the given [args].

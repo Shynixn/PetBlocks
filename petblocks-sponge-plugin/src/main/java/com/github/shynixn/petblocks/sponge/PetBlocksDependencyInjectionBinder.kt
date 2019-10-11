@@ -4,6 +4,7 @@ package com.github.shynixn.petblocks.sponge
 
 import com.github.shynixn.petblocks.api.business.enumeration.Version
 import com.github.shynixn.petblocks.api.business.proxy.PluginProxy
+import com.github.shynixn.petblocks.api.business.serializer.ItemStackSerializer
 import com.github.shynixn.petblocks.api.business.service.*
 import com.github.shynixn.petblocks.api.persistence.context.SqlDbContext
 import com.github.shynixn.petblocks.api.persistence.repository.PetMetaRepository
@@ -13,6 +14,7 @@ import com.github.shynixn.petblocks.core.logic.business.commandexecutor.ReloadCo
 import com.github.shynixn.petblocks.core.logic.business.service.*
 import com.github.shynixn.petblocks.core.logic.persistence.context.SqlDbContextImpl
 import com.github.shynixn.petblocks.core.logic.persistence.repository.PetMetaSqlRepository
+import com.github.shynixn.petblocks.sponge.logic.business.serializer.ItemStackSerializerImpl
 import com.github.shynixn.petblocks.sponge.logic.business.service.*
 import com.google.inject.AbstractModule
 import com.google.inject.Scopes
@@ -91,5 +93,10 @@ class PetBlocksDependencyInjectionBinder(private val pluginContainer: PluginCont
         bind(ParticleService::class.java).to(ParticleServiceImpl::class.java).`in`(Scopes.SINGLETON)
         bind(ProxyService::class.java).to(ProxyServiceImpl::class.java).`in`(Scopes.SINGLETON)
         bind(SoundService::class.java).to(SoundServiceImpl::class.java).`in`(Scopes.SINGLETON)
+        bind(YamlService::class.java).to(YamlServiceImpl::class.java).`in`(Scopes.SINGLETON)
+        bind(GUIItemLoadService::class.java).to(GUIItemLoadServiceImpl::class.java).`in`(Scopes.SINGLETON)
+        bind(GUIPetStorageService::class.java).to(GUIPetStorageServiceImpl::class.java).`in`(Scopes.SINGLETON)
+        bind(DependencyHeadDatabaseService::class.java).to(EmptyHeadDatabaseServiceImpl::class.java).`in`(Scopes.SINGLETON)
+        bind(ItemStackSerializer::class.java).to(ItemStackSerializerImpl::class.java).`in`(Scopes.SINGLETON)
     }
 }

@@ -22,8 +22,8 @@ import org.spongepowered.api.item.inventory.Inventory
 import org.spongepowered.api.item.inventory.InventoryArchetypes
 import org.spongepowered.api.item.inventory.ItemStack
 import org.spongepowered.api.item.inventory.property.InventoryTitle
-import org.spongepowered.api.item.inventory.property.SlotIndex
 import org.spongepowered.api.item.inventory.property.SlotPos
+import org.spongepowered.api.item.inventory.transaction.InventoryTransactionResult
 import org.spongepowered.api.item.inventory.type.CarriedInventory
 import org.spongepowered.api.item.inventory.type.GridInventory
 import org.spongepowered.api.plugin.PluginContainer
@@ -73,13 +73,12 @@ class ProxyServiceImpl @Inject constructor(private val pluginContainer: PluginCo
      */
     override fun <I, IT> getInventoryItem(inventory: I, index: Int): IT? {
         require(inventory is CarriedInventory<*>)
-        return if (index == 0) {
-            inventory.query<Inventory>(GridInventory::class.java)
-                .query<Inventory>(SlotPos.of(0, 0)).peek().orElse(null) as IT
-        } else {
-            inventory.query<Inventory>(GridInventory::class.java)
-                .query<Inventory>(SlotIndex.of(index)).peek().orElse(null) as IT
-        }
+
+        val row = index / 9
+        val column = index % 9
+
+        return inventory.query<Inventory>(GridInventory::class.java)
+            .query<Inventory>(SlotPos.of(column, row)).peek().orElse(null) as IT
     }
 
     /**
@@ -115,8 +114,11 @@ class ProxyServiceImpl @Inject constructor(private val pluginContainer: PluginCo
      * Gets the lower inventory of an inventory.
      */
     override fun <I> getLowerInventory(inventory: I): I {
-        require(inventory is ContainerChest)
-        return inventory.lowerChestInventory as I
+        if (inventory is ContainerChest) {
+            return inventory.lowerChestInventory as I
+        }
+
+        return inventory
     }
 
     /**
@@ -133,8 +135,14 @@ class ProxyServiceImpl @Inject constructor(private val pluginContainer: PluginCo
     override fun <P, I> openInventory(player: P, title: String, size: Int): I {
         require(player is Player) { "Player has to be a SpongePlayer!" }
 
+        val type = if (size <= 27) {
+            InventoryArchetypes.CHEST
+        } else {
+            InventoryArchetypes.DOUBLE_CHEST
+        }
+
         val inventory =
-            Inventory.builder().of(InventoryArchetypes.DOUBLE_CHEST).withCarrier(player)
+            Inventory.builder().of(type).withCarrier(player)
                 .property(InventoryTitle.PROPERTY_NAME, InventoryTitle.of(title.toText())).build(pluginContainer)
         player.openInventory(inventory)
         return inventory as I
@@ -147,12 +155,14 @@ class ProxyServiceImpl @Inject constructor(private val pluginContainer: PluginCo
         require(inventory is CarriedInventory<*>) { "Inventory has to be a SpongeInventory!" }
         require(item is ItemStack) { "Item has to be a SpongeItem!" }
 
-        if (index == 0) {
-            inventory.query<Inventory>(GridInventory::class.java)
-                .query<Inventory>(SlotPos.of(0, 0)).set(item)
-        } else {
-            inventory.query<Inventory>(GridInventory::class.java)
-                .query<Inventory>(SlotIndex.of(index)).set(item)
+        val row = index / 9
+        val column = index % 9
+
+        val queryResult = inventory.query<Inventory>(GridInventory::class.java)
+            .query<Inventory>(SlotPos.of(column, row))
+
+        if (queryResult.offer(item).type != InventoryTransactionResult.Type.SUCCESS) {
+            queryResult.set(item)
         }
     }
 
