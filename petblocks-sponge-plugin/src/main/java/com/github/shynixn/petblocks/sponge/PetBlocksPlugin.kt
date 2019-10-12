@@ -12,7 +12,6 @@ import com.github.shynixn.petblocks.api.persistence.context.SqlDbContext
 import com.github.shynixn.petblocks.core.logic.business.commandexecutor.EditPetCommandExecutorImpl
 import com.github.shynixn.petblocks.core.logic.business.commandexecutor.PlayerPetActionCommandExecutorImpl
 import com.github.shynixn.petblocks.core.logic.business.commandexecutor.ReloadCommandExecutorImpl
-import com.github.shynixn.petblocks.sponge.logic.business.extension.getServerVersion
 import com.github.shynixn.petblocks.sponge.logic.business.extension.sendMessage
 import com.github.shynixn.petblocks.sponge.logic.business.extension.toText
 import com.github.shynixn.petblocks.sponge.logic.business.listener.*
@@ -62,9 +61,11 @@ import java.util.*
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-@Plugin(id = "petblocks",
+@Plugin(
+    id = "petblocks",
     name = "PetBlocks",
-    description = "PetBlocks is a spigot and also a sponge plugin to use blocks and custom heads as pets in Minecraft.")
+    description = "PetBlocks is a spigot and also a sponge plugin to use blocks and custom heads as pets in Minecraft."
+)
 class PetBlocksPlugin : PluginProxy {
     companion object {
         /** Final Prefix of PetBlocks in the console */
@@ -74,6 +75,7 @@ class PetBlocksPlugin : PluginProxy {
     private val configVersion = 1
     private var injector: Injector? = null
     private var immediateDisable: Boolean = false
+    private var serverVersion: Version? = null
 
     @Inject
     private lateinit var plugin: PluginContainer
@@ -87,7 +89,13 @@ class PetBlocksPlugin : PluginProxy {
     @Inject
     private lateinit var spongeInjector: Injector
 
-    private lateinit var configurationService: ConfigurationService
+    /**
+     * Gets the installed version of the plugin.
+     */
+    override val version: String
+        get() {
+            return plugin.version.get()
+        }
 
     /**
      * Enables the plugin PetBlocks.
@@ -95,14 +103,16 @@ class PetBlocksPlugin : PluginProxy {
     @Listener
     fun onEnable(event: GameInitializationEvent) {
         Sponge.getServer().console.sendMessage(PREFIX_CONSOLE + ChatColor.GREEN + "Loading PetBlocks ...")
-        this.injector = spongeInjector.createChildInjector(PetBlocksDependencyInjectionBinder(plugin))
+        this.injector = spongeInjector.createChildInjector(PetBlocksDependencyInjectionBinder(plugin,this))
 
         if (!getServerVersion().isCompatible(
-                Version.VERSION_1_12_R1)
+                Version.VERSION_1_12_R1
+            )
         ) {
             Sponge.getServer().console.sendMessage(PREFIX_CONSOLE + ChatColor.RED + "================================================")
             Sponge.getServer().console.sendMessage(PREFIX_CONSOLE + ChatColor.RED + "PetBlocks does not support your server version")
-            Sponge.getServer().console.sendMessage(PREFIX_CONSOLE + ChatColor.RED + "Install v" + Version.VERSION_1_12_R1.id + " - v" + Version.VERSION_1_12_R1.id)
+            Sponge.getServer()
+                .console.sendMessage(PREFIX_CONSOLE + ChatColor.RED + "Install v" + Version.VERSION_1_12_R1.id + " - v" + Version.VERSION_1_12_R1.id)
             Sponge.getServer().console.sendMessage(PREFIX_CONSOLE + ChatColor.RED + "Plugin gets now disabled!")
             Sponge.getServer().console.sendMessage(PREFIX_CONSOLE + ChatColor.RED + "================================================")
 
@@ -112,9 +122,9 @@ class PetBlocksPlugin : PluginProxy {
             return
         }
 
-        configurationService = resolve(ConfigurationService::class.java)
+        val configurationService = resolve<ConfigurationService>(ConfigurationService::class.java)
 
-        if (!configurationService.contains("config-version") || configurationService.findValue<Int>("config-version") != configVersion) {
+        if (!configurationService.containsValue("config-version") || configurationService.findValue<Int>("config-version") != configVersion) {
             Sponge.getServer().console.sendMessage(PREFIX_CONSOLE + ChatColor.RED + "================================================")
             Sponge.getServer().console.sendMessage(PREFIX_CONSOLE + ChatColor.RED + "PetBlocks config.yml config-version does not match")
             Sponge.getServer().console.sendMessage(PREFIX_CONSOLE + ChatColor.RED + "with your installed PetBlocks.jar.")
@@ -148,7 +158,10 @@ class PetBlocksPlugin : PluginProxy {
         Sponge.getEventManager().registerListeners(plugin, resolve(PetListener::class.java))
 
         // Register CommandExecutor
-        commandService.registerCommandExecutor(configurationService.findValue<Map<String, Any>>("commands.petblock"), this.resolve(PlayerPetActionCommandExecutorImpl::class.java))
+        commandService.registerCommandExecutor(
+            configurationService.findValue<Map<String, Any>>("commands.petblock"),
+            this.resolve(PlayerPetActionCommandExecutorImpl::class.java)
+        )
         commandService.registerCommandExecutor("petblocks", this.resolve(EditPetCommandExecutorImpl::class.java))
         commandService.registerCommandExecutor("petblockreload", this.resolve(ReloadCommandExecutorImpl::class.java))
 
@@ -169,7 +182,9 @@ class PetBlocksPlugin : PluginProxy {
             return
         }
 
-        configurationService.refresh()
+        resolve<ConfigurationService>(ConfigurationService::class.java).reload()
+        resolve<GUIItemLoadService>(GUIItemLoadService::class.java).reload()
+
         Sponge.getServer().console.sendMessage(PREFIX_CONSOLE + ChatColor.GREEN + "Reloaded PetBlocks configuration.")
     }
 
@@ -265,6 +280,30 @@ class PetBlocksPlugin : PluginProxy {
         } catch (e: Exception) {
             logger.warn("Failed to enable PetBlocks.", e)
         }
+    }
+
+    /**
+     * Gets the server version this plugin is currently running on.
+     */
+    override fun getServerVersion(): Version {
+        if (serverVersion != null) {
+            return serverVersion!!
+        }
+
+        try {
+            val version = Sponge.getPluginManager().getPlugin("sponge").get().version.get().split("-")[0]
+
+            for (versionSupport in Version.values()) {
+                if (versionSupport.id == version) {
+                    serverVersion = versionSupport
+                    return versionSupport
+                }
+            }
+
+        } catch (e: Exception) {
+        }
+
+        return Version.VERSION_UNKNOWN
     }
 
     /**

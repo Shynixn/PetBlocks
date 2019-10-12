@@ -1,3 +1,5 @@
+@file:Suppress("unused")
+
 package com.github.shynixn.petblocks.bukkit.logic.business.listener
 
 import com.github.shynixn.petblocks.api.bukkit.event.PetBlocksLoginEvent
@@ -10,7 +12,6 @@ import com.github.shynixn.petblocks.api.persistence.entity.AIFlyRiding
 import com.github.shynixn.petblocks.api.persistence.entity.AIGroundRiding
 import com.github.shynixn.petblocks.api.persistence.entity.AIWearing
 import com.github.shynixn.petblocks.bukkit.logic.business.extension.findClazz
-import com.github.shynixn.petblocks.bukkit.logic.business.extension.getServerVersion
 import com.github.shynixn.petblocks.bukkit.logic.business.extension.teleportUnsafe
 import com.github.shynixn.petblocks.core.logic.business.extension.cast
 import com.github.shynixn.petblocks.core.logic.business.extension.sync
@@ -65,12 +66,13 @@ class PetListener @Inject constructor(
     private val persistencePetMetaService: PersistencePetMetaService,
     private val concurrencyService: ConcurrencyService,
     private val entityService: EntityService,
-    private val itemService: ItemService,
+    private val loadService: GUIItemLoadService,
     private val debugService: PetDebugService,
-    private val configurationService: ConfigurationService
+    private val itemTypeService: ItemTypeService,
+    private val configurationService: ConfigurationService,
+    private val version: Version
 ) : Listener {
     private val joinCooldown = 20 * 6L
-    private val soilMaterial = MaterialType.SOIL
     private val alreadyLoading = HashSet<UUID>()
 
     /**
@@ -103,7 +105,7 @@ class PetListener @Inject constructor(
         val overwrite = configurationService.findValue<Boolean>("global-configuration.overwrite-previous-pet")
 
         if (overwrite) {
-            val newPetMeta = configurationService.generateDefaultPetMeta(event.player.uniqueId.toString(), event.player.name)
+            val newPetMeta = loadService.generateDefaultPetMeta(event.player.uniqueId.toString(), event.player.name)
             persistencePetMetaService.save(newPetMeta)
             persistencePetMetaService.refreshPetMetaFromRepository(event.player).thenAcceptSafely {
                 performFirstSpawn(event.player)
@@ -163,7 +165,10 @@ class PetListener @Inject constructor(
         val optPet = petService.findPetByEntity(event.entity)
 
         try {
-            if (optPet != null && itemService.hasItemStackProperties(itemService.createItemStack(event.block.type), soilMaterial)) {
+            if (optPet != null && itemTypeService.findItemType<Any>(event.block.type) == itemTypeService.findItemType(
+                    MaterialType.SOIL
+                )
+            ) {
                 event.isCancelled = true
             }
         } catch (e: Exception) {
@@ -279,7 +284,8 @@ class PetListener @Inject constructor(
      * Performs the first spawn of the pet if enabled.
      */
     private fun performFirstSpawn(player: Player) {
-        val applyPetOnFirstSpawn = configurationService.findValue<Boolean>("global-configuration.apply-pet-on-first-spawn")
+        val applyPetOnFirstSpawn =
+            configurationService.findValue<Boolean>("global-configuration.apply-pet-on-first-spawn")
 
         if (applyPetOnFirstSpawn) {
             petService.getOrSpawnPetFromPlayer(player)
@@ -306,14 +312,16 @@ class PetListener @Inject constructor(
                 }
             }
 
-            if (changed && getServerVersion().isVersionSameOrGreaterThan(Version.VERSION_1_14_R1)) {
+            if (changed && version.isVersionSameOrGreaterThan(Version.VERSION_1_14_R1)) {
                 // Execute a tick on the Armorstand manually since 1.14 passengers do not tick.
                 // This is required by wearing pets.
-                val handle = findClazz("org.bukkit.craftbukkit.VERSION.entity.CraftLivingEntity").getDeclaredMethod("getHandle")
-                    .invoke(pet.getHeadArmorstand())
+                val handle =
+                    findClazz("org.bukkit.craftbukkit.VERSION.entity.CraftLivingEntity").getDeclaredMethod("getHandle")
+                        .invoke(pet.getHeadArmorstand())
 
-                val method = findClazz("com.github.shynixn.petblocks.bukkit.logic.business.nms.VERSION.NMSPetArmorstand")
-                    .getDeclaredMethod("doTick")
+                val method =
+                    findClazz("com.github.shynixn.petblocks.bukkit.logic.business.nms.VERSION.NMSPetArmorstand")
+                        .getDeclaredMethod("doTick")
                 method.isAccessible = true
 
                 method.invoke(handle)

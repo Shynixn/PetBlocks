@@ -112,6 +112,7 @@ messages:
 ############################
 
 global-configuration:
+  ignore-ticking-settings: false
   respawn-delay: 4
   teleport-delay: 0
   teleport-fall: true
@@ -150,7 +151,7 @@ pet:
   sound-enabled: true
   particle-enabled: true
   skin:
-    id: 2
+    id: "GRASS"
   add-ai:
     1:
       type: 'hopping'
@@ -190,7 +191,9 @@ pet:
         name: 'EAT'
         volume: 5.0
         pitch: 1.0
-    7:
+    5:
+      type: 'inventory'
+    6:
       type: 'ambient-sound'
       sound:
         name: 'CHICKEN_IDLE'
@@ -296,7 +299,7 @@ gui:
         lore:
           - '&7Change the appearance of your pet.'
     sounds-enabled:
-      row: 4
+      row: 5
       col: 9
       script: 'disable-sound'
       icon:
@@ -309,7 +312,7 @@ gui:
       hidden-on:
         - 'sound-disabled'
     sounds-disabled:
-      row: 4
+      row: 5
       col: 9
       script: 'enable-sound'
       icon:
@@ -331,8 +334,8 @@ gui:
         lore:
           - '&7Teleports your pet to you.'
     launch-pet:
-      row: 3
-      col: 7
+      row: 4
+      col: 9
       script: 'launch-cannon'
       icon:
         id: 397
@@ -347,8 +350,8 @@ gui:
         - 'ground-riding'
         - 'fly-riding'
     hat-pet:
-      row: 1
-      col: 7
+      row: 2
+      col: 9
       icon:
         id: 397
         damage: 3
@@ -365,7 +368,7 @@ gui:
         - 'ground-riding'
         - 'fly-riding'
     ride-pet:
-      row: 2
+      row: 3
       col: 9
       icon:
         id: 329
@@ -394,6 +397,15 @@ gui:
         name: '&6&lRename Pet'
         lore:
           - '&7Change the name of your pet.'
+    inventory-pet:
+      row: 2
+      col: 7
+      script: 'open-page gui.storage'
+      icon:
+        id: "CHEST"
+        name: '&6&lPet Inventory'
+        lore:
+          - '&7Open the inventory of your pet.'
     particles-enabled:
       row: 6
       col: 9
@@ -535,6 +547,36 @@ gui:
     back:
       row: 6
       col: 5
+      script: 'close-gui'
+      icon:
+        id: 166
+        damage: 0
+        name: '&cBack'
+        lore:
+          - '&7Closes the current window.'
+  storage:
+    equipment-main:
+      row: 2
+      col: 2
+      script: 'show-inventory 1 27'
+      icon:
+        id: "CHEST"
+        name: '&a&lMain Equipment'
+        lore:
+          - '&7Open the main equipment of your pet.'
+    equipment-secondary:
+      row: 2
+      col: 8
+      script: 'show-inventory 28 54'
+      icon:
+        id: "ENDER_CHEST"
+        name: '&9&lSecondary Equipment'
+        lore:
+          - '&7Open the secondary equipment of your pet.'
+    back:
+      row: 6
+      col: 5
+      fixed: true
       script: 'close-gui'
       icon:
         id: 166

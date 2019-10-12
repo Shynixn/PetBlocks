@@ -4,9 +4,6 @@ import com.github.shynixn.petblocks.api.business.enumeration.ChatClickAction
 import com.github.shynixn.petblocks.api.business.enumeration.ChatColor
 import com.github.shynixn.petblocks.api.business.enumeration.PluginDependency
 import com.github.shynixn.petblocks.api.business.service.*
-import com.github.shynixn.petblocks.bukkit.logic.business.extension.dataValue
-import com.github.shynixn.petblocks.bukkit.logic.business.extension.skin
-import com.github.shynixn.petblocks.bukkit.logic.business.extension.updateInventory
 import com.github.shynixn.petblocks.core.logic.business.extension.chatMessage
 import com.github.shynixn.petblocks.core.logic.business.extension.sync
 import com.google.inject.Inject
@@ -45,7 +42,8 @@ class DependencyHeadDatabaseServiceImpl @Inject constructor(
     private val configurationService: ConfigurationService,
     private val messageService: MessageService,
     private val petMetaService: PersistencePetMetaService,
-    private val concurrencyService: ConcurrencyService
+    private val concurrencyService: ConcurrencyService,
+    private val itemTypeService: ItemTypeService
 ) : DependencyHeadDatabaseService {
     private val headDatabasePlayers = HashSet<Player>()
 
@@ -54,10 +52,7 @@ class DependencyHeadDatabaseServiceImpl @Inject constructor(
      * Prints a message to the console if connection is not possible.
      */
     override fun <P> openConnection(player: P) {
-        if (player !is Player) {
-            throw IllegalArgumentException("Player has to be a BukkitPlayer!")
-        }
-
+        require(player is Player) { "Player has to be a BukkitPlayer!" }
         player.closeInventory()
 
         if (!dependencyService.isInstalled(PluginDependency.HEADDATABASE)) {
@@ -101,13 +96,8 @@ class DependencyHeadDatabaseServiceImpl @Inject constructor(
      * @param I the type of the inventory.
      */
     override fun <P, I> clickInventoryItem(player: P, item: I): Boolean {
-        if (player !is Player) {
-            throw IllegalArgumentException("Player has to be a BukkitPlayer!")
-        }
-
-        if (item !is ItemStack) {
-            throw IllegalArgumentException("Item has to be a BukkitItemStack!")
-        }
+        require(player is Player)
+        require(item is ItemStack)
 
         if (!headDatabasePlayers.contains(player)) {
             return false
@@ -116,9 +106,11 @@ class DependencyHeadDatabaseServiceImpl @Inject constructor(
         player.closeInventory()
 
         val petMeta = petMetaService.getPetMetaFromPlayer(player)
-        petMeta.skin.typeName = item.type.name
-        petMeta.skin.dataValue = item.dataValue
-        petMeta.skin.owner = item.skin!!
+        val convertedItem = itemTypeService.toItem(item)
+
+        petMeta.skin.typeName = convertedItem.type
+        petMeta.skin.dataValue = convertedItem.dataValue
+        petMeta.skin.owner = convertedItem.skin!!
         petMetaService.save(petMeta)
 
         val command = configurationService.findValue<String>("commands.petblock.command")
@@ -132,7 +124,7 @@ class DependencyHeadDatabaseServiceImpl @Inject constructor(
                 ) {
                     if (itemStack.itemMeta!!.displayName == item.itemMeta!!.displayName) {
                         player.inventory.remove(itemStack)
-                        player.inventory.updateInventory()
+                        player.updateInventory()
                         break
                     }
                 }
@@ -146,9 +138,7 @@ class DependencyHeadDatabaseServiceImpl @Inject constructor(
      * Clears all resources the given [player] has allocated from this service.
      */
     override fun <P> clearResources(player: P) {
-        if (player !is Player) {
-            throw IllegalArgumentException("Player has to be a BukkitPlayer!")
-        }
+        require(player is Player)
 
         if (headDatabasePlayers.contains(player)) {
             headDatabasePlayers.remove(player)

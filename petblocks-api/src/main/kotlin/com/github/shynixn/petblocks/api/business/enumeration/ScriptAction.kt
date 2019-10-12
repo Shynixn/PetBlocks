@@ -27,93 +27,98 @@ package com.github.shynixn.petblocks.api.business.enumeration
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-enum class ScriptAction {
+enum class ScriptAction(val action: String) {
     /**
      * Action for not interpreting the script.
      */
-    NONE,
+    NONE(""),
 
     /**
      * Calls the pet to the player.
      */
-    CALL_PET,
+    CALL_PET("call-pet"),
 
     /**
      * Disable the pet to the player.
      */
-    DISABLE_PET,
+    DISABLE_PET("disable-pet"),
 
     /**
      * Scrolls the whole gui page.
      */
-    SCROLL_PAGE,
+    SCROLL_PAGE("scroll"),
 
     /**
      * Closes the gui.
      */
-    CLOSE_GUI,
+    CLOSE_GUI("close-gui"),
 
     /**
      * Opens a GUI page.
      */
-    OPEN_PAGE,
+    OPEN_PAGE("open-page"),
 
     /**
      * Copies the pet skin to the icon.
      */
-    COPY_PET_SKIN,
+    COPY_PET_SKIN("copy-pet-skin"),
 
     /**
      * Launch cannon.
      */
-    LAUNCH_CANNON,
+    LAUNCH_CANNON("launch-cannon"),
 
     /**
      * Enable pet sounds.
      */
-    ENABLE_SOUND,
+    ENABLE_SOUND("enable-sound"),
 
     /**
      * Disables pet sounds.
      */
-    DISABLE_SOUND,
+    DISABLE_SOUND("disable-sound"),
 
     /**
      * Enables pet particles.
      */
-    ENABLE_PARTICLES,
+    ENABLE_PARTICLES("enable-particles"),
 
     /**
      * Disables pet particles.
      */
-    DISABLE_PARTICLES,
+    DISABLE_PARTICLES("disable-particles"),
     /**
      * Prints the suggest head message.
      */
-    PRINT_SUGGEST_HEAD_MESSAGE,
+    PRINT_SUGGEST_HEAD_MESSAGE("print-suggest-heads-message"),
 
     /**
      * Prints the custom skin message.
      */
-    PRINT_CUSTOM_SKIN_MESSAGE,
+    PRINT_CUSTOM_SKIN_MESSAGE("print-custom-skin-message"),
 
     /**
      * Prints the rename message.
      */
-    PRINT_CUSTOM_NAME_MESSAGE,
+    PRINT_CUSTOM_NAME_MESSAGE("print-rename-message"),
 
     /**
      * Connects to the head database plugin.
      */
-    CONNECT_HEAD_DATABASE,
+    CONNECT_HEAD_DATABASE("connect-head-database"),
+
+    /**
+     * Shows the inventory to the player.
+     */
+    SHOW_INVENTORY("show-inventory"),
 
     /**
      * Hides the item on left scroll outside of the bounding box.
      */
-    HIDE_LEFT_SCROLL,
+    HIDE_LEFT_SCROLL("hide-left-scroll"),
 
     /**
      * Hides the item on right scroll outside of the bounding box.
      */
-    HIDE_RIGHT_SCROLL
+    HIDE_RIGHT_SCROLL("hide-right-scroll")
 }

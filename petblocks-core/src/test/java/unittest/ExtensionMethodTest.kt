@@ -3,6 +3,7 @@
 package unittest
 
 import com.github.shynixn.petblocks.api.business.enumeration.ChatColor
+import com.github.shynixn.petblocks.api.business.enumeration.Version
 import com.github.shynixn.petblocks.api.business.proxy.PluginProxy
 import com.github.shynixn.petblocks.api.business.service.ConcurrencyService
 import com.github.shynixn.petblocks.api.business.service.LoggingService
@@ -201,6 +202,19 @@ class ExtensionMethodTest {
     }
 
     class MockedPluginProxy(private val logger: LoggingService) : PluginProxy {
+        /**
+         * Gets the installed version of the plugin.
+         */
+        override val version: String
+            get() = ""
+
+        /**
+         * Gets the server version this plugin is currently running on.
+         */
+        override fun getServerVersion(): Version {
+            return Version.VERSION_UNKNOWN
+        }
+
         /**
          * Gets a business logic from the PetBlocks plugin.
          * All types in the service package can be accessed.

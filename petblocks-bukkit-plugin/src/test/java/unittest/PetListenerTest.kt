@@ -1,5 +1,6 @@
 package unittest
 
+import com.github.shynixn.petblocks.api.business.enumeration.Version
 import com.github.shynixn.petblocks.api.business.proxy.EntityPetProxy
 import com.github.shynixn.petblocks.api.business.proxy.PetProxy
 import com.github.shynixn.petblocks.api.business.service.*
@@ -59,11 +60,13 @@ class PetListenerTest {
         val persistencePetMetaService = MockedPersistencePetMetaService()
         val debugService = MockedPetDebugService()
 
-        val classUnderTest = createWithDependencies(petService,
+        val classUnderTest = createWithDependencies(
+            petService,
             persistencePetMetaService,
             MockedConcurrencyService(),
             Mockito.mock(EntityService::class.java),
-            Mockito.mock(ItemService::class.java), debugService)
+            Mockito.mock(ItemTypeService::class.java), debugService
+        )
 
         // Act
         classUnderTest.onPlayerQuitEvent(event)
@@ -106,11 +109,13 @@ class PetListenerTest {
         val persistencePetMetaService = MockedPersistencePetMetaService()
         val debugService = MockedPetDebugService()
 
-        val classUnderTest = createWithDependencies(petService,
+        val classUnderTest = createWithDependencies(
+            petService,
             persistencePetMetaService,
             MockedConcurrencyService(),
             Mockito.mock(EntityService::class.java),
-            Mockito.mock(ItemService::class.java), debugService)
+            Mockito.mock(ItemTypeService::class.java), debugService
+        )
 
         // Act
         classUnderTest.onPlayerQuitEvent(event)
@@ -126,10 +131,21 @@ class PetListenerTest {
         fun createWithDependencies(
             petService: PetService = MockedPetService(), persistencePetMetaService: PersistencePetMetaService = MockedPersistencePetMetaService(),
             concurrencyService: ConcurrencyService = MockedConcurrencyService(), entityService: EntityService = Mockito.mock(EntityService::class.java),
-            itemService: ItemService = Mockito.mock(ItemService::class.java), debugService: PetDebugService = Mockito.mock(PetDebugService::class.java),
-            configurationService: ConfigurationService = Mockito.mock(ConfigurationService::class.java)
+            itemService: ItemTypeService = Mockito.mock(ItemTypeService::class.java), debugService: PetDebugService = Mockito.mock(PetDebugService::class.java),
+            configurationService: ConfigurationService = Mockito.mock(ConfigurationService::class.java),
+            loadGUIItemLoadService: GUIItemLoadService = Mockito.mock(GUIItemLoadService::class.java)
         ): PetListener {
-            return PetListener(petService, persistencePetMetaService, concurrencyService, entityService, itemService, debugService, configurationService)
+            return PetListener(
+                petService,
+                persistencePetMetaService,
+                concurrencyService,
+                entityService,
+                loadGUIItemLoadService,
+                debugService,
+                itemService,
+                configurationService,
+                Version.VERSION_UNKNOWN
+            )
         }
     }
 

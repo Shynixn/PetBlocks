@@ -4,11 +4,14 @@ package com.github.shynixn.petblocks.core.logic.persistence.repository
 
 import com.github.shynixn.petblocks.api.business.service.AIService
 import com.github.shynixn.petblocks.api.business.service.ConfigurationService
+import com.github.shynixn.petblocks.api.business.service.GUIItemLoadService
 import com.github.shynixn.petblocks.api.persistence.context.SqlDbContext
 import com.github.shynixn.petblocks.api.persistence.entity.AIBase
+import com.github.shynixn.petblocks.api.persistence.entity.AIInventory
 import com.github.shynixn.petblocks.api.persistence.entity.PetMeta
 import com.github.shynixn.petblocks.api.persistence.repository.PetMetaRepository
 import com.github.shynixn.petblocks.core.logic.business.extension.getItem
+import com.github.shynixn.petblocks.core.logic.persistence.entity.AIInventoryEntity
 import com.github.shynixn.petblocks.core.logic.persistence.entity.PetMetaEntity
 import com.github.shynixn.petblocks.core.logic.persistence.entity.PlayerMetaEntity
 import com.github.shynixn.petblocks.core.logic.persistence.entity.SkinEntity
@@ -44,12 +47,13 @@ import com.google.inject.Inject
 class PetMetaSqlRepository @Inject constructor(
     private val sqlDbContext: SqlDbContext,
     private val aiService: AIService,
+    private val loadService: GUIItemLoadService,
     private val configurationService: ConfigurationService
 ) : PetMetaRepository {
 
     private val tablePrefix: String
         get() {
-            return if (configurationService.contains("sql.table-prefix")) {
+            return if (configurationService.containsValue("sql.table-prefix")) {
                 configurationService.findValue("sql.table-prefix")
             } else {
                 "SHY"
@@ -62,7 +66,20 @@ class PetMetaSqlRepository @Inject constructor(
      * currently uses the meta data of the player.
      */
     override fun getOrCreateFromPlayerIdentifiers(name: String, uuid: String): PetMeta {
-        return sqlDbContext.transaction<PetMeta, Any> { connection -> getOrCreateFromPlayerIdentifiers(connection, name, uuid) }
+        val petMeta = sqlDbContext.transaction<PetMeta, Any> { connection ->
+            getOrCreateFromPlayerIdentifiers(
+                connection,
+                name,
+                uuid
+            )
+        }
+
+        // Every pet should have an inventory.
+        if (petMeta.aiGoals.firstOrNull { a -> a is AIInventory } == null) {
+            petMeta.aiGoals.add(AIInventoryEntity())
+        }
+
+        return petMeta
     }
 
     /**
@@ -84,6 +101,11 @@ class PetMetaSqlRepository @Inject constructor(
                 petMeta.aiGoals.addAll(sqlDbContext.multiQuery(connection, aiStatement, { aiResultSet ->
                     mapResultSetToAI(aiResultSet)
                 }, petMeta.id))
+
+                // Every pet should have an inventory.
+                if (petMeta.aiGoals.firstOrNull { a -> a is AIInventory} == null) {
+                    petMeta.aiGoals.add(AIInventoryEntity())
+                }
 
                 petMeta
             })
@@ -129,7 +151,7 @@ class PetMetaSqlRepository @Inject constructor(
         val optResult = getPetMeta(connection, uuid)
 
         return if (optResult == null) {
-            val petMeta = configurationService.generateDefaultPetMeta(uuid, name)
+            val petMeta = loadService.generateDefaultPetMeta(uuid, name)
             return insertInto(connection, petMeta)
         } else {
             optResult
@@ -192,10 +214,12 @@ class PetMetaSqlRepository @Inject constructor(
         for (aiItem in petMeta.aiGoals) {
             val payloadString = aiService.serializeAiBaseToString(aiItem)
 
-            aiItem.id = sqlDbContext.insert(connection, "${tablePrefix}_PET_AI"
+            aiItem.id = sqlDbContext.insert(
+                connection, "${tablePrefix}_PET_AI"
                 , "shy_pet_id" to petMeta.id
                 , "typename" to aiItem.type
-                , "content" to payloadString)
+                , "content" to payloadString
+            )
         }
 
         return petMeta
@@ -241,10 +265,12 @@ class PetMetaSqlRepository @Inject constructor(
         for (aiItem in petMeta.aiGoals) {
             val payloadString = aiService.serializeAiBaseToString(aiItem)
 
-            aiItem.id = sqlDbContext.insert(connection, "${tablePrefix}_PET_AI"
+            aiItem.id = sqlDbContext.insert(
+                connection, "${tablePrefix}_PET_AI"
                 , "shy_pet_id" to petMeta.id
                 , "typename" to aiItem.type
-                , "content" to payloadString)
+                , "content" to payloadString
+            )
         }
 
         return petMeta

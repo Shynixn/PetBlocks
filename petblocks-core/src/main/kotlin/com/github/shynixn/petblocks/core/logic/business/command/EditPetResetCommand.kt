@@ -1,7 +1,9 @@
 package com.github.shynixn.petblocks.core.logic.business.command
 
 import com.github.shynixn.petblocks.api.business.command.SourceCommand
+import com.github.shynixn.petblocks.api.business.enumeration.MaterialType
 import com.github.shynixn.petblocks.api.business.service.*
+import com.github.shynixn.petblocks.api.persistence.entity.AIInventory
 import com.github.shynixn.petblocks.core.logic.business.extension.thenAcceptSafely
 import com.google.inject.Inject
 
@@ -38,7 +40,9 @@ class EditPetResetCommand @Inject constructor(
     private val petMetaService: PersistencePetMetaService,
     private val configurationService: ConfigurationService,
     private val commandService: CommandService,
-    private val messageService: MessageService
+    private val loadService: GUIItemLoadService,
+    private val messageService: MessageService,
+    private val itemTypeService: ItemTypeService
 ) : SourceCommand {
     /**
      * Gets called when the given [source] executes the defined command with the given [args].
@@ -63,11 +67,34 @@ class EditPetResetCommand @Inject constructor(
             pet.remove()
         }
 
-        configurationService.refresh()
+        val petMeta = petMetaService.getPetMetaFromPlayer(player)
+
+        val dropLocation = if (proxyService.isPlayer(source)) {
+            proxyService.getPlayerLocation<Any, Any>(source)
+        } else {
+            proxyService.getPlayerLocation(player!!)
+        }
+
+        val dropPosition = proxyService.toPosition(dropLocation)
+
+        petMeta.aiGoals.filterIsInstance<AIInventory>().forEach { storage ->
+            for (item in storage.items) {
+                if (item != null) {
+                    proxyService.dropInventoryItem(dropLocation, item)
+                }
+            }
+        }
+
+        loadService.reload()
+        configurationService.reload()
 
         messageService.sendSourceMessage(source, "Resetting the pet of player $playerName...")
+        messageService.sendSourceMessage(
+            source,
+            "Dropped item(s) at ${dropPosition.worldName} ${dropPosition.x.toInt()},${dropPosition.y.toInt()},${dropPosition.z.toInt()}"
+        )
 
-        val newPetMeta = configurationService.generateDefaultPetMeta(playerUuid, playerName)
+        val newPetMeta = loadService.generateDefaultPetMeta(playerUuid, playerName)
         petMetaService.save(newPetMeta).thenAcceptSafely {
             petMetaService.refreshPetMetaFromRepository(player).thenAcceptSafely {
                 messageService.sendSourceMessage(source, "Finished resetting the pet of player $playerName.")

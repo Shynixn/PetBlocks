@@ -22,9 +22,9 @@ Make sure you have read the `introduction to PetBlocks <../pets/index.html>`_ fi
  groundriding
  health
  hopping
+ inventory
  walking
  wearing
- samplealwayswearingai
 
 .. note::
  You can always list up the current ais of any pet of any player via the administration command. **/petblocks debug**

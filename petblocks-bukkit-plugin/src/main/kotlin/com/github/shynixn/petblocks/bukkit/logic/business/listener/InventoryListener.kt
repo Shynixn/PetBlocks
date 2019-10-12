@@ -1,15 +1,16 @@
+@file:Suppress("unused")
+
 package com.github.shynixn.petblocks.bukkit.logic.business.listener
 
+import com.github.shynixn.petblocks.api.business.service.GUIPetStorageService
 import com.github.shynixn.petblocks.api.business.service.GUIService
-import com.github.shynixn.petblocks.api.business.service.ProxyService
-import com.github.shynixn.petblocks.bukkit.logic.business.extension.updateInventory
 import com.google.inject.Inject
-import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.inventory.InventoryClickEvent
+import org.bukkit.event.inventory.InventoryCloseEvent
 import org.bukkit.event.player.PlayerQuitEvent
 
 /**
@@ -39,12 +40,15 @@ import org.bukkit.event.player.PlayerQuitEvent
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class InventoryListener @Inject constructor(private val guiService: GUIService, private val proxyService: ProxyService) : Listener {
+class InventoryListener @Inject constructor(
+    private val guiService: GUIService,
+    private val guiPetStorageService: GUIPetStorageService
+) : Listener {
     /**
-     * Gets called from [Bukkit] and handles action to the inventory.
+     * Gets called and handles action to the gui inventory.
      */
     @EventHandler
-    fun playerClickInInventoryEvent(event: InventoryClickEvent) {
+    fun onPlayerClickInInventoryEvent(event: InventoryClickEvent) {
         val player = event.whoClicked as Player
 
         if (!guiService.isGUIInventory(event.inventory)) {
@@ -56,16 +60,28 @@ class InventoryListener @Inject constructor(private val guiService: GUIService, 
         }
 
         event.isCancelled = true
-        player.inventory.updateInventory()
+        player.updateInventory()
 
         guiService.clickInventoryItem(player, event.slot, event.currentItem)
     }
 
     /**
-     * Gets called from [Bukkit] and handles cleaning up remaining resources.
+     * Saves the storage inventory on close.
      */
     @EventHandler
-    fun playerQuitEvent(event: PlayerQuitEvent) {
+    fun onPlayerCloseInventoryEvent(event: InventoryCloseEvent) {
+        if (!guiPetStorageService.isStorage(event.inventory)) {
+            return
+        }
+
+        guiPetStorageService.saveStorage(event.player)
+    }
+
+    /**
+     * Gets called and handles cleaning up remaining resources.
+     */
+    @EventHandler
+    fun onPlayerQuitEvent(event: PlayerQuitEvent) {
         guiService.cleanResources(event.player)
     }
 }

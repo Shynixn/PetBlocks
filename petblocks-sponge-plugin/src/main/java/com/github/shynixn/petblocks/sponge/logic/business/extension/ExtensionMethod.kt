@@ -4,34 +4,19 @@ package com.github.shynixn.petblocks.sponge.logic.business.extension
 
 import com.flowpowered.math.vector.Vector3d
 import com.flowpowered.math.vector.Vector3i
-import com.github.shynixn.petblocks.api.PetBlocksApi
-import com.github.shynixn.petblocks.api.business.enumeration.Version
-import com.github.shynixn.petblocks.api.business.service.ItemService
 import com.github.shynixn.petblocks.api.persistence.entity.Position
-import com.github.shynixn.petblocks.core.logic.business.extension.cast
 import com.github.shynixn.petblocks.core.logic.business.extension.translateChatColors
 import com.github.shynixn.petblocks.core.logic.persistence.entity.PositionEntity
 import net.minecraft.entity.player.EntityPlayerMP
-import net.minecraft.nbt.NBTTagCompound
-import net.minecraft.nbt.NBTTagList
 import org.spongepowered.api.Sponge
-import org.spongepowered.api.block.BlockType
 import org.spongepowered.api.command.source.ConsoleSource
-import org.spongepowered.api.data.key.Keys
 import org.spongepowered.api.entity.Transform
 import org.spongepowered.api.entity.living.player.Player
 import org.spongepowered.api.entity.living.player.gamemode.GameMode
-import org.spongepowered.api.item.inventory.Inventory
-import org.spongepowered.api.item.inventory.ItemStack
-import org.spongepowered.api.item.inventory.property.SlotIndex
-import org.spongepowered.api.item.inventory.property.SlotPos
 import org.spongepowered.api.item.inventory.type.CarriedInventory
-import org.spongepowered.api.item.inventory.type.GridInventory
 import org.spongepowered.api.text.Text
 import org.spongepowered.api.text.serializer.TextSerializers
 import org.spongepowered.api.world.World
-import org.yaml.snakeyaml.external.biz.base64Coder.Base64Coder
-import java.util.*
 
 /**
  * Created by Shynixn 2018.
@@ -121,30 +106,6 @@ val Transform<*>.z
     get() = this.position.z
 
 /**
- * Itemstack dataValue.
- */
-var ItemStack.dataValue: Int
-    get() {
-        return this.cast<net.minecraft.item.ItemStack>().itemDamage
-    }
-    set(value) {
-        this.cast<net.minecraft.item.ItemStack>().itemDamage = value
-    }
-
-/**
- * Sets an item at the given index.
- */
-fun CarriedInventory<Player>.setItem(index: Int, itemStack: ItemStack) {
-    if (index == 0) {
-        query<Inventory>(GridInventory::class.java)
-            .query<Inventory>(SlotPos.of(0, 0)).set(itemStack)
-    } else {
-        query<Inventory>(GridInventory::class.java)
-            .query<Inventory>(SlotIndex.of(index)).set(itemStack)
-    }
-}
-
-/**
  * Calculates the distance between 2 transforms.
  */
 fun Transform<World>.distance(other: Transform<World>): Double {
@@ -188,162 +149,4 @@ fun Vector3d.toPosition(): Position {
  */
 fun Position.toVector(): Vector3d {
     return Vector3d(this.x, this.y, this.z)
-}
-
-/**
- * Converts the material to an id.
- */
-fun BlockType.toId(): Int {
-    val itemService = PetBlocksApi.resolve(ItemService::class.java)
-    return itemService.convertTypeToId(this)
-}
-
-/**
- * Sets the itemstack lore.
- */
-var ItemStack.lore: List<String>?
-    get() {
-        val lore = this.get(Keys.ITEM_LORE)
-
-        if (lore.isPresent) {
-            val items = ArrayList<String>()
-
-            for (line in lore.get()) {
-                items.add(line.toTextString())
-            }
-
-            return items
-        }
-
-        return null
-    }
-    set(value) {
-        val items = ArrayList<Text>()
-
-        for (line in value!!) {
-            items.add(line.toText())
-        }
-
-        this.offer(org.spongepowered.api.data.key.Keys.ITEM_LORE, items)
-    }
-
-/**
- * Changes the displayname of the itemstack.
- * Gets an empty string if the displayName is not present.
- */
-var ItemStack.displayName: String
-    get() {
-        val optDisplay = this.get(org.spongepowered.api.data.key.Keys.DISPLAY_NAME)
-
-        if (optDisplay.isPresent) {
-            return optDisplay.get().toTextString()
-        }
-
-        return ""
-    }
-    set(value) {
-        this.offer(org.spongepowered.api.data.key.Keys.DISPLAY_NAME, value.toText())
-    }
-
-/**
- * Gets the skin of an itemstack.
- */
-var ItemStack.skin: String?
-    get() {
-        return null
-    }
-    set(value) {
-        if (value == null) {
-            return
-        }
-
-        val nmsItemStack = this.cast<net.minecraft.item.ItemStack>()
-        var newSkin = value
-
-        val nbtTagCompound = if (nmsItemStack.tagCompound != null) {
-            nmsItemStack.tagCompound!!
-        } else {
-            NBTTagCompound()
-        }
-
-        if (newSkin.length > 32) {
-            if (newSkin.contains("textures.minecraft.net")) {
-                if (!newSkin.startsWith("http://")) {
-                    newSkin = "http://$newSkin"
-                }
-
-                newSkin = Base64Coder.encodeString("{textures:{SKIN:{url:\"$newSkin\"}}}")
-            }
-
-            val skinProfile = Sponge.getServer().gameProfileManager.createProfile(UUID.randomUUID(), null)
-            val profileProperty = Sponge.getServer().gameProfileManager.createProfileProperty("textures", newSkin!!, null)
-            skinProfile.propertyMap.put("textures", profileProperty)
-
-            val internalTag = NBTTagCompound()
-            internalTag.setString("Id", skinProfile.uniqueId.toString())
-
-            val propertiesTag = NBTTagCompound()
-
-            for (content in skinProfile.propertyMap.keySet()) {
-                val nbtTagList = NBTTagList()
-
-                for (item in skinProfile.propertyMap.get(content)) {
-                    val nbtItem = NBTTagCompound()
-                    nbtItem.setString("Value", item.value)
-
-                    if (item.hasSignature()) {
-                        nbtItem.setString("Signature", item.signature.get())
-                    }
-
-                    nbtTagList.appendTag(nbtItem)
-                }
-
-                propertiesTag.setTag(content, nbtTagList)
-            }
-
-            internalTag.setTag("Properties", propertiesTag)
-            nbtTagCompound.setTag("SkullOwner", internalTag)
-        } else if (value.isNotEmpty()) {
-            nbtTagCompound.setString("SkullOwner", value)
-        }
-
-        nmsItemStack.tagCompound = nbtTagCompound
-    }
-
-/**
- * Converts the current itemstack to an unbreakable itemstack.
- */
-fun ItemStack.createUnbreakableCopy(): ItemStack {
-    val nmsItemStack = this.cast<net.minecraft.item.ItemStack>()
-
-    val nbtTagCompound = if (nmsItemStack.tagCompound != null) {
-        nmsItemStack.tagCompound!!
-    } else {
-        NBTTagCompound()
-    }
-
-    nbtTagCompound.setBoolean("Unbreakable", true)
-
-    nmsItemStack.tagCompound = nbtTagCompound
-
-    return nmsItemStack.cast()
-}
-
-/**
- * Gets the server version the plugin is running on.
- */
-fun getServerVersion(): Version {
-    try {
-        val version = Sponge.getPluginManager().getPlugin("sponge").get().version.get().split("-")[0]
-
-        for (versionSupport in Version.values()) {
-            if (versionSupport.id == version) {
-                return versionSupport
-            }
-        }
-
-    } catch (e: Exception) {
-    }
-
-    return Version.VERSION_UNKNOWN
 }

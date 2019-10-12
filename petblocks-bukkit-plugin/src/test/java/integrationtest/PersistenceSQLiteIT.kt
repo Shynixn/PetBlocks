@@ -10,20 +10,12 @@ import com.github.shynixn.petblocks.api.business.proxy.PluginProxy
 import com.github.shynixn.petblocks.api.business.service.*
 import com.github.shynixn.petblocks.api.persistence.context.SqlDbContext
 import com.github.shynixn.petblocks.api.persistence.entity.*
-import com.github.shynixn.petblocks.bukkit.logic.business.service.ConfigurationServiceImpl
-import com.github.shynixn.petblocks.bukkit.logic.business.service.EntityServiceImpl
-import com.github.shynixn.petblocks.bukkit.logic.business.service.Item113R1ServiceImpl
-import com.github.shynixn.petblocks.bukkit.logic.business.service.Item18R1ServiceImpl
-import com.github.shynixn.petblocks.core.logic.business.service.AIServiceImpl
-import com.github.shynixn.petblocks.core.logic.business.service.LoggingUtilServiceImpl
-import com.github.shynixn.petblocks.core.logic.business.service.PersistencePetMetaServiceImpl
-import com.github.shynixn.petblocks.core.logic.business.service.YamlSerializationServiceImpl
+import com.github.shynixn.petblocks.bukkit.logic.business.service.*
+import com.github.shynixn.petblocks.core.logic.business.service.*
 import com.github.shynixn.petblocks.core.logic.persistence.context.SqlDbContextImpl
 import com.github.shynixn.petblocks.core.logic.persistence.entity.AIMovementEntity
 import com.github.shynixn.petblocks.core.logic.persistence.repository.PetMetaSqlRepository
 import org.apache.commons.io.FileUtils
-import org.bukkit.Location
-import org.bukkit.World
 import org.bukkit.configuration.file.YamlConfiguration
 import org.bukkit.entity.Player
 import org.bukkit.plugin.Plugin
@@ -97,7 +89,7 @@ class PersistenceSQLiteIT {
         Assertions.assertEquals("", actual.skin.owner)
         Assertions.assertEquals(1, actual.playerMeta.id)
         Assertions.assertEquals("Kenny", actual.playerMeta.name)
-        Assertions.assertEquals(5, actual.aiGoals.size)
+        Assertions.assertEquals(6, actual.aiGoals.size)
 
         Assertions.assertEquals("hopping", (actual.aiGoals[0] as AIMovementEntity).type)
         Assertions.assertEquals(1.0, (actual.aiGoals[0] as AIMovementEntity).climbingHeight)
@@ -121,8 +113,8 @@ class PersistenceSQLiteIT {
         Assertions.assertEquals(ParticleType.HEART, (actual.aiGoals[3] as AIFeeding).clickParticle.type)
         Assertions.assertEquals("EAT", (actual.aiGoals[3] as AIFeeding).clickSound.name)
 
-        Assertions.assertEquals("ambient-sound", (actual.aiGoals[4] as AIAmbientSound).type)
-        Assertions.assertEquals("CHICKEN_IDLE", (actual.aiGoals[4] as AIAmbientSound).sound.name)
+        Assertions.assertEquals("ambient-sound", (actual.aiGoals[5] as AIAmbientSound).type)
+        Assertions.assertEquals("CHICKEN_IDLE", (actual.aiGoals[5] as AIAmbientSound).sound.name)
     }
 
     /**
@@ -172,7 +164,7 @@ class PersistenceSQLiteIT {
         (petMeta.aiGoals[3] as AIFeeding).dataValue = 4
         (petMeta.aiGoals[3] as AIFeeding).typeName = "POWER_BANK"
 
-        (petMeta.aiGoals[4] as AIAmbientSound).sound.volume = 41.55
+        (petMeta.aiGoals[5] as AIAmbientSound).sound.volume = 41.55
 
         classUnderTest.save(petMeta).get()
         val actual = classUnderTest.getPetMetaFromPlayer(player)
@@ -212,8 +204,8 @@ class PersistenceSQLiteIT {
         Assertions.assertEquals("COOKIE_SOUND", (actual.aiGoals[3] as AIFeeding).clickSound.name)
         Assertions.assertEquals(25.4, (actual.aiGoals[3] as AIFeeding).clickParticle.offSetZ)
 
-        Assertions.assertEquals("ambient-sound", (actual.aiGoals[4] as AIAmbientSound).type)
-        Assertions.assertEquals(41.55, (actual.aiGoals[4] as AIAmbientSound).sound.volume)
+        Assertions.assertEquals("ambient-sound", (actual.aiGoals[5] as AIAmbientSound).type)
+        Assertions.assertEquals(41.55, (actual.aiGoals[5] as AIAmbientSound).sound.volume)
     }
 
     companion object {
@@ -248,20 +240,40 @@ class PersistenceSQLiteIT {
             method.isAccessible = true
             method.invoke(PetBlocksApi, MockedPluginProxy())
 
-            val aiService = AIServiceImpl(LoggingUtilServiceImpl(Logger.getAnonymousLogger()), MockedProxyService())
-            val configService = ConfigurationServiceImpl(plugin, Item18R1ServiceImpl(), aiService)
+            val aiService = AIServiceImpl(LoggingUtilServiceImpl(Logger.getAnonymousLogger()), MockedProxyService(),YamlServiceImpl())
+            val configService = ConfigurationServiceImpl(plugin)
+            val guiItemLoadService =
+                GUIItemLoadServiceImpl(
+                    configService,
+                    ItemTypeServiceImpl(Version.VERSION_UNKNOWN),
+                    aiService
+                )
+
             EntityServiceImpl(configService, MockedProxyService(),
                 Mockito.mock(EntityRegistrationService::class.java), Mockito.mock(PetService::class.java), YamlSerializationServiceImpl(),
                 plugin, Version.VERSION_1_8_R1, aiService)
 
             dbContext = SqlDbContextImpl(configService, LoggingUtilServiceImpl(Logger.getAnonymousLogger()))
 
-            val sqlite = PetMetaSqlRepository(dbContext!!, aiService, configService)
+            val sqlite = PetMetaSqlRepository(dbContext!!, aiService, guiItemLoadService, configService)
             return PersistencePetMetaServiceImpl(MockedProxyService(), sqlite, MockedConcurrencyService(), MockedEventService())
         }
     }
 
     class MockedPluginProxy : PluginProxy {
+        /**
+         * Gets the installed version of the plugin.
+         */
+        override val version: String
+            get() = ""
+
+        /**
+         * Gets the server version this plugin is currently running on.
+         */
+        override fun getServerVersion(): Version {
+            return Version.VERSION_UNKNOWN
+        }
+
         /**
          * Gets a business logic from the PetBlocks plugin.
          * All types in the service package can be accessed.
@@ -269,10 +281,6 @@ class PersistenceSQLiteIT {
          * @param S the type of service class.
          */
         override fun <S> resolve(service: Any): S {
-            if (service == ItemService::class.java) {
-                return Item113R1ServiceImpl() as S
-            }
-
             throw IllegalArgumentException()
         }
 
@@ -287,6 +295,76 @@ class PersistenceSQLiteIT {
     }
 
     class MockedProxyService : ProxyService {
+        /**
+         * Drops the given item at the given position.
+         */
+        override fun <L, I> dropInventoryItem(location: L, item: I) {
+            throw IllegalArgumentException()
+        }
+
+        /**
+         * Gets the inventory item at the given index.
+         */
+        override fun <I, IT> getInventoryItem(inventory: I, index: Int): IT? {
+            throw IllegalArgumentException()
+        }
+
+        /**
+         * Gets if the given player has got the given permission.
+         */
+        override fun <P> hasPermission(player: P, permission: String): Boolean {
+            throw IllegalArgumentException()
+        }
+
+        /**
+         * Closes the inventory of the given player.
+         */
+        override fun <P> closeInventory(player: P) {
+            throw IllegalArgumentException()
+        }
+
+        /**
+         * Gets if the given inventory belongs to a player. Returns null if not.
+         */
+        override fun <P, I> getPlayerFromInventory(inventory: I): P? {
+            throw IllegalArgumentException()
+        }
+
+        /**
+         * Gets the lower inventory of an inventory.
+         */
+        override fun <I> getLowerInventory(inventory: I): I {
+            throw IllegalArgumentException()
+        }
+
+        /**
+         * Clears the given inventory.
+         */
+        override fun <I> clearInventory(inventory: I) {
+            throw IllegalArgumentException()
+        }
+
+        /**
+         * Opens a new inventory for the given player.
+         */
+        override fun <P, I> openInventory(player: P, title: String, size: Int): I {
+            throw IllegalArgumentException()
+        }
+
+        /**
+         * Updates the inventory.
+         */
+        override fun <I, IT> setInventoryItem(inventory: I, index: Int, item: IT) {
+            throw IllegalArgumentException()
+        }
+
+        /**
+         * Updates the given player inventory.
+         */
+        override fun <P> updateInventory(player: P) {
+            throw IllegalArgumentException()
+        }
+
         /**
          * Gets if the given instance can be converted to a player.
          */

@@ -90,10 +90,10 @@ class EntityServiceImpl @Inject constructor(
         this.register<AIFleeInCombat>(AIType.FLEE_IN_COMBAT)
 
         this.register<AIFloatInWater>(AIType.FLOAT_IN_WATER) { pet, _ ->
-            val getHandleMethod = version.findClazz("org.bukkit.craftbukkit.VERSION.entity.CraftLivingEntity").getDeclaredMethod("getHandle")!!
+            val getHandleMethod = findClazz("org.bukkit.craftbukkit.VERSION.entity.CraftLivingEntity").getDeclaredMethod("getHandle")!!
 
-            version.findClazz("net.minecraft.server.VERSION.PathfinderGoalFloat")
-                .getDeclaredConstructor(version.findClazz("net.minecraft.server.VERSION.EntityInsentient"))
+            findClazz("net.minecraft.server.VERSION.PathfinderGoalFloat")
+                .getDeclaredConstructor(findClazz("net.minecraft.server.VERSION.EntityInsentient"))
                 .newInstance(getHandleMethod.invoke(pet.getHitBoxLivingEntity<LivingEntity>().get()))
         }
 
@@ -117,6 +117,7 @@ class EntityServiceImpl @Inject constructor(
         this.register<AIHopping>(AIType.HOPPING)
         this.register<AIWalking>(AIType.WALKING)
         this.register<AIWearing>(AIType.WEARING)
+        this.register<AIInventory>(AIType.INVENTORY)
     }
 
     /**
@@ -214,9 +215,7 @@ class EntityServiceImpl @Inject constructor(
      * Kills the nearest entity of the [player].
      */
     override fun <P> killNearestEntity(player: P) {
-        if (player !is Player) {
-            throw IllegalArgumentException("Player has to be a BukkitPlayer!")
-        }
+        require(player is Player) { "Player has to be a BukkitPlayer!" }
 
         var distance = 100.0
         var nearest: Entity? = null

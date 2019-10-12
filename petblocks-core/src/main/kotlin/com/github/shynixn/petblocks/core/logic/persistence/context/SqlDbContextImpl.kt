@@ -316,13 +316,13 @@ class SqlDbContextImpl @Inject constructor(
             }
 
             // Compatibility < 8.5.0
-            val tablePrefix = if (configurationService.contains("sql.table-prefix")) {
+            val tablePrefix = if (configurationService.containsValue("sql.table-prefix")) {
                 configurationService.findValue("sql.table-prefix")
             } else {
                 "SHY"
             }
 
-            configurationService.openResourceInputStream("assets/petblocks/sql/create-sqlite.sql").bufferedReader()
+            configurationService.openResource("assets/petblocks/sql/create-sqlite.sql").bufferedReader()
                 .use { reader ->
                     for (text in reader.readText().replace("TABLE_PREFIX", tablePrefix).split(";")) {
                         connection.prepareStatement(text).use { statement ->
@@ -354,14 +354,14 @@ class SqlDbContextImpl @Inject constructor(
         val connection = this.dataSource.connection
 
         // Compatibility < 8.5.0
-        val tablePrefix = if (configurationService.contains("sql.table-prefix")) {
+        val tablePrefix = if (configurationService.containsValue("sql.table-prefix")) {
             configurationService.findValue("sql.table-prefix")
         } else {
             "SHY"
         }
 
         connection.use {
-            configurationService.openResourceInputStream("assets/petblocks/sql/create-mysql.sql").bufferedReader()
+            configurationService.openResource("assets/petblocks/sql/create-mysql.sql").bufferedReader()
                 .use { reader ->
                     for (text in reader.readText().replace("TABLE_PREFIX", tablePrefix).split(";")) {
                         connection.prepareStatement(text).use { statement ->
@@ -378,11 +378,11 @@ class SqlDbContextImpl @Inject constructor(
      * Creates the sqlLite file.
      */
     private fun createSQLLiteFile(): Path {
-        if (!Files.exists(configurationService.dataFolder)) {
-            Files.createDirectories(configurationService.dataFolder)
+        if (!Files.exists(configurationService.applicationDir)) {
+            Files.createDirectories(configurationService.applicationDir)
         }
 
-        val path = Paths.get(configurationService.dataFolder.toFile().absolutePath, "PetBlocks.db")
+        val path = Paths.get(configurationService.applicationDir.toFile().absolutePath, "PetBlocks.db")
 
         if (!Files.exists(path)) {
             Files.createFile(path)

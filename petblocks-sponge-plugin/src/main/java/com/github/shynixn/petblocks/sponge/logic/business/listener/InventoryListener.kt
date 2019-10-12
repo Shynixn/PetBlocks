@@ -2,14 +2,17 @@
 
 package com.github.shynixn.petblocks.sponge.logic.business.listener
 
+import com.github.shynixn.petblocks.api.business.service.ConcurrencyService
+import com.github.shynixn.petblocks.api.business.service.GUIPetStorageService
 import com.github.shynixn.petblocks.api.business.service.GUIService
-import com.github.shynixn.petblocks.api.business.service.ProxyService
+import com.github.shynixn.petblocks.core.logic.business.extension.sync
 import com.github.shynixn.petblocks.sponge.logic.business.extension.updateInventory
 import com.google.inject.Inject
 import org.spongepowered.api.entity.living.player.Player
 import org.spongepowered.api.event.Listener
 import org.spongepowered.api.event.filter.cause.First
 import org.spongepowered.api.event.item.inventory.ClickInventoryEvent
+import org.spongepowered.api.event.item.inventory.InteractInventoryEvent
 import org.spongepowered.api.event.network.ClientConnectionEvent
 import org.spongepowered.api.item.ItemTypes
 import org.spongepowered.api.item.inventory.property.SlotIndex
@@ -41,21 +44,26 @@ import org.spongepowered.api.item.inventory.property.SlotIndex
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class InventoryListener @Inject constructor(private val guiService: GUIService, private val proxyService: ProxyService) {
+class InventoryListener @Inject constructor(
+    private val guiService: GUIService,
+    private val storageService: GUIPetStorageService,
+    private val concurrencyService: ConcurrencyService
+) {
     /**
      * Gets called to handle actions to the inventory.
      */
     @Listener
-    fun playerClickInInventoryEvent(event: ClickInventoryEvent, @First(typeFilter = [Player::class]) player: Player) {
-        if (!guiService.isGUIInventory(event.targetInventory)) {
-            return
-        }
-
+    fun onPlayerClickInInventoryEvent(event: ClickInventoryEvent, @First(typeFilter = [Player::class]) player: Player) {
         if (event.transactions.isEmpty()) {
             return
         }
 
         val currentItemStack = event.transactions[0].original.createStack()
+        val slot = event.transactions[0].slot.getProperties(SlotIndex::class.java).toTypedArray()[0].value!!
+
+        if (!guiService.isGUIInventory(event.targetInventory, slot)) {
+            return
+        }
 
         if (currentItemStack.type == ItemTypes.AIR) {
             return
@@ -64,16 +72,29 @@ class InventoryListener @Inject constructor(private val guiService: GUIService, 
         event.isCancelled = true
         player.inventory.updateInventory()
 
-        val slot = event.transactions[0].slot.getProperties(SlotIndex::class.java).toTypedArray()[0].value!!
+        sync(concurrencyService, 1L) {
+            // SpongeInventory bug if they get manipulated on the same tick as the event.
+            guiService.clickInventoryItem(player, slot, currentItemStack)
+        }
+    }
 
-        guiService.clickInventoryItem(player, slot, currentItemStack)
+    /**
+     * Saves the storage inventory on close.
+     */
+    @Listener
+    fun onPlayerCloseInventoryEvent(event: InteractInventoryEvent.Close, @First(typeFilter = [Player::class]) player: Player) {
+        if (!storageService.isStorage(event.targetInventory)) {
+            return
+        }
+
+        storageService.saveStorage(player)
     }
 
     /**
      * Gets called to handle cleaning up remaining resources.
      */
     @Listener
-    fun playerQuitEvent(event: ClientConnectionEvent.Disconnect) {
+    fun onPlayerQuitEvent(event: ClientConnectionEvent.Disconnect) {
         guiService.cleanResources(event.targetEntity)
     }
 }

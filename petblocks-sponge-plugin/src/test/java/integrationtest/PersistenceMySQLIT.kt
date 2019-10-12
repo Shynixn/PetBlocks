@@ -7,22 +7,18 @@ import com.github.shynixn.petblocks.api.PetBlocksApi
 import com.github.shynixn.petblocks.api.business.enumeration.ParticleType
 import com.github.shynixn.petblocks.api.business.enumeration.Permission
 import com.github.shynixn.petblocks.api.business.enumeration.Version
-import com.github.shynixn.petblocks.api.business.proxy.ItemStackProxy
 import com.github.shynixn.petblocks.api.business.proxy.PluginProxy
 import com.github.shynixn.petblocks.api.business.service.*
 import com.github.shynixn.petblocks.api.persistence.context.SqlDbContext
 import com.github.shynixn.petblocks.api.persistence.entity.*
-import com.github.shynixn.petblocks.core.logic.business.service.AIServiceImpl
-import com.github.shynixn.petblocks.core.logic.business.service.LoggingUtilServiceImpl
-import com.github.shynixn.petblocks.core.logic.business.service.PersistencePetMetaServiceImpl
-import com.github.shynixn.petblocks.core.logic.business.service.YamlSerializationServiceImpl
+import com.github.shynixn.petblocks.core.logic.business.service.*
 import com.github.shynixn.petblocks.core.logic.persistence.context.SqlDbContextImpl
 import com.github.shynixn.petblocks.core.logic.persistence.entity.AIMovementEntity
 import com.github.shynixn.petblocks.core.logic.persistence.repository.PetMetaSqlRepository
-import com.github.shynixn.petblocks.sponge.logic.business.proxy.ItemStackProxyImpl
 import com.github.shynixn.petblocks.sponge.logic.business.service.ConfigurationServiceImpl
 import com.github.shynixn.petblocks.sponge.logic.business.service.EntityServiceImpl
-import com.github.shynixn.petblocks.sponge.logic.business.service.ItemServiceImpl
+import com.github.shynixn.petblocks.sponge.logic.business.service.ItemTypeServiceImpl
+import com.github.shynixn.petblocks.sponge.logic.business.service.YamlServiceImpl
 import org.apache.commons.io.FileUtils
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
@@ -98,7 +94,7 @@ class PersistenceMySQLIT {
         Assertions.assertEquals("", actual.skin.owner)
         Assertions.assertEquals(1, actual.playerMeta.id)
         Assertions.assertEquals("Kenny", actual.playerMeta.name)
-        Assertions.assertEquals(5, actual.aiGoals.size)
+        Assertions.assertEquals(6, actual.aiGoals.size)
 
         Assertions.assertEquals("hopping", (actual.aiGoals[0] as AIMovementEntity).type)
         Assertions.assertEquals(1.0, (actual.aiGoals[0] as AIMovementEntity).climbingHeight)
@@ -122,8 +118,8 @@ class PersistenceMySQLIT {
         Assertions.assertEquals(ParticleType.HEART, (actual.aiGoals[3] as AIFeeding).clickParticle.type)
         Assertions.assertEquals("EAT", (actual.aiGoals[3] as AIFeeding).clickSound.name)
 
-        Assertions.assertEquals("ambient-sound", (actual.aiGoals[4] as AIAmbientSound).type)
-        Assertions.assertEquals("CHICKEN_IDLE", (actual.aiGoals[4] as AIAmbientSound).sound.name)
+        Assertions.assertEquals("ambient-sound", (actual.aiGoals[5] as AIAmbientSound).type)
+        Assertions.assertEquals("CHICKEN_IDLE", (actual.aiGoals[5] as AIAmbientSound).sound.name)
     }
 
     /**
@@ -172,7 +168,7 @@ class PersistenceMySQLIT {
         (petMeta.aiGoals[3] as AIFeeding).dataValue = 4
         (petMeta.aiGoals[3] as AIFeeding).typeName = "POWER_BANK"
 
-        (petMeta.aiGoals[4] as AIAmbientSound).sound.volume = 41.55
+        (petMeta.aiGoals[5] as AIAmbientSound).sound.volume = 41.55
 
         classUnderTest.save(petMeta).get()
         val actual = classUnderTest.getPetMetaFromPlayer(player)
@@ -212,8 +208,8 @@ class PersistenceMySQLIT {
         Assertions.assertEquals("COOKIE_SOUND", (actual.aiGoals[3] as AIFeeding).clickSound.name)
         Assertions.assertEquals(25.4, (actual.aiGoals[3] as AIFeeding).clickParticle.offSetZ)
 
-        Assertions.assertEquals("ambient-sound", (actual.aiGoals[4] as AIAmbientSound).type)
-        Assertions.assertEquals(41.55, (actual.aiGoals[4] as AIAmbientSound).sound.volume)
+        Assertions.assertEquals("ambient-sound", (actual.aiGoals[5] as AIAmbientSound).type)
+        Assertions.assertEquals(41.55, (actual.aiGoals[5] as AIAmbientSound).sound.volume)
     }
 
     companion object {
@@ -266,26 +262,35 @@ class PersistenceMySQLIT {
 
             val aiService = AIServiceImpl(
                 LoggingUtilServiceImpl(Logger.getAnonymousLogger()),
-                MockedProxyService()
+                MockedProxyService(),
+                YamlServiceImpl()
             )
 
             val configurationService = ConfigurationServiceImpl(
                 Paths.get("integration-test/assets/petblocks")
-                , LoggingUtilServiceImpl(Logger.getAnonymousLogger()), plugin,
-                MockedItemService(), aiService
+                , LoggingUtilServiceImpl(Logger.getAnonymousLogger()), plugin
             )
+
+            val guiItemLoadService =
+                GUIItemLoadServiceImpl(
+                    configurationService,
+                    ItemTypeServiceImpl(),
+                    aiService
+                )
 
             val method = PetBlocksApi::class.java.getDeclaredMethod("initializePetBlocks", PluginProxy::class.java)
             method.isAccessible = true
             method.invoke(PetBlocksApi, MockedPluginProxy())
 
-            EntityServiceImpl(configurationService, MockedProxyService(),
+            EntityServiceImpl(
+                configurationService, MockedProxyService(),
                 Mockito.mock(EntityRegistrationService::class.java), Mockito.mock(PetService::class.java), YamlSerializationServiceImpl(),
-                Version.VERSION_1_12_R1, aiService, LoggingUtilServiceImpl(Logger.getAnonymousLogger()))
+                Version.VERSION_1_12_R1, aiService, LoggingUtilServiceImpl(Logger.getAnonymousLogger()), ItemTypeServiceImpl()
+            )
 
             dbContext = SqlDbContextImpl(configurationService, LoggingUtilServiceImpl(Logger.getAnonymousLogger()))
 
-            val sqlite = PetMetaSqlRepository(dbContext!!, aiService, configurationService)
+            val sqlite = PetMetaSqlRepository(dbContext!!, aiService, guiItemLoadService, configurationService)
 
             return PersistencePetMetaServiceImpl(
                 MockedProxyService(),
@@ -296,34 +301,20 @@ class PersistenceMySQLIT {
         }
     }
 
-    class MockedItemService : ItemService {
-        /**
-         * Converts the given type to an id.
-         */
-        override fun convertTypeToId(type: Any): Int {
-            return 0
-        }
-
-        /**
-         * Creates a new itemstack from the given parameters.
-         */
-        override fun createItemStack(type: Any, dataValue: Int): ItemStackProxy {
-            if (type == 2) {
-                return ItemStackProxyImpl("GRASS")
-            }
-
-            throw IllegalArgumentException()
-        }
-
-        /**
-         * Gets if the given [itemStack] has got the given [type] and [dataValue].
-         */
-        override fun <I> hasItemStackProperties(itemStack: I, type: Any, dataValue: Int): Boolean {
-            throw IllegalArgumentException()
-        }
-    }
-
     class MockedPluginProxy : PluginProxy {
+        /**
+         * Gets the installed version of the plugin.
+         */
+        override val version: String
+            get() = ""
+
+        /**
+         * Gets the server version this plugin is currently running on.
+         */
+        override fun getServerVersion(): Version {
+            return Version.VERSION_UNKNOWN
+        }
+
         /**
          * Gets a business logic from the PetBlocks plugin.
          * All types in the service package can be accessed.
@@ -331,10 +322,6 @@ class PersistenceMySQLIT {
          * @param S the type of service class.
          */
         override fun <S> resolve(service: Any): S {
-            if (service == ItemService::class.java) {
-                return ItemServiceImpl() as S
-            }
-
             throw IllegalArgumentException()
         }
 
@@ -349,6 +336,76 @@ class PersistenceMySQLIT {
     }
 
     class MockedProxyService : ProxyService {
+        /**
+         * Drops the given item at the given position.
+         */
+        override fun <L, I> dropInventoryItem(location: L, item: I) {
+            throw IllegalArgumentException()
+        }
+
+        /**
+         * Gets the inventory item at the given index.
+         */
+        override fun <I, IT> getInventoryItem(inventory: I, index: Int): IT? {
+            throw IllegalArgumentException()
+        }
+
+        /**
+         * Gets if the given player has got the given permission.
+         */
+        override fun <P> hasPermission(player: P, permission: String): Boolean {
+            throw IllegalArgumentException()
+        }
+
+        /**
+         * Closes the inventory of the given player.
+         */
+        override fun <P> closeInventory(player: P) {
+            throw IllegalArgumentException()
+        }
+
+        /**
+         * Gets if the given inventory belongs to a player. Returns null if not.
+         */
+        override fun <P, I> getPlayerFromInventory(inventory: I): P? {
+            throw IllegalArgumentException()
+        }
+
+        /**
+         * Gets the lower inventory of an inventory.
+         */
+        override fun <I> getLowerInventory(inventory: I): I {
+            throw IllegalArgumentException()
+        }
+
+        /**
+         * Clears the given inventory.
+         */
+        override fun <I> clearInventory(inventory: I) {
+            throw IllegalArgumentException()
+        }
+
+        /**
+         * Opens a new inventory for the given player.
+         */
+        override fun <P, I> openInventory(player: P, title: String, size: Int): I {
+            throw IllegalArgumentException()
+        }
+
+        /**
+         * Updates the inventory.
+         */
+        override fun <I, IT> setInventoryItem(inventory: I, index: Int, item: IT) {
+            throw IllegalArgumentException()
+        }
+
+        /**
+         * Updates the given player inventory.
+         */
+        override fun <P> updateInventory(player: P) {
+            throw IllegalArgumentException()
+        }
+
         /**
          * Gets if the given instance can be converted to a player.
          */

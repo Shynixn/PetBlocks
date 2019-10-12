@@ -97,6 +97,7 @@ enable-sound                     Enables the pet sounds
 disable-sound                    Disables the pet sounds
 enable-particles                 Enables the pet particles
 disable-particles                Disables the pet particles
+show-inventory <from> <to>       Opens the pet storage from the index <from> to <to>.
 ================================ ========================================================
 
 The hidden-on tag and blocked-on tag

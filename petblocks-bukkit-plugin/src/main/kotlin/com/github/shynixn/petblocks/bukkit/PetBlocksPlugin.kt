@@ -9,22 +9,25 @@ import com.github.shynixn.petblocks.api.business.proxy.EntityPetProxy
 import com.github.shynixn.petblocks.api.business.proxy.PluginProxy
 import com.github.shynixn.petblocks.api.business.service.*
 import com.github.shynixn.petblocks.api.persistence.context.SqlDbContext
-import com.github.shynixn.petblocks.bukkit.logic.business.extension.getServerVersion
-import com.github.shynixn.petblocks.bukkit.logic.business.extension.yamlMap
 import com.github.shynixn.petblocks.bukkit.logic.business.listener.*
 import com.github.shynixn.petblocks.core.logic.business.commandexecutor.EditPetCommandExecutorImpl
 import com.github.shynixn.petblocks.core.logic.business.commandexecutor.PlayerPetActionCommandExecutorImpl
 import com.github.shynixn.petblocks.core.logic.business.commandexecutor.ReloadCommandExecutorImpl
+import com.github.shynixn.petblocks.core.logic.business.extension.cast
 import com.google.inject.Guice
 import com.google.inject.Injector
 import org.apache.commons.io.IOUtils
 import org.bstats.bukkit.Metrics
 import org.bukkit.Bukkit
 import org.bukkit.ChatColor
+import org.bukkit.Server
+import org.bukkit.configuration.MemorySection
 import org.bukkit.event.player.PlayerJoinEvent
 import org.bukkit.plugin.java.JavaPlugin
 import java.io.File
 import java.io.FileOutputStream
+import java.nio.file.Files
+import java.nio.file.Paths
 import java.util.logging.Level
 
 /**
@@ -63,6 +66,15 @@ class PetBlocksPlugin : JavaPlugin(), PluginProxy {
     private val configVersion = 1
     private var injector: Injector? = null
     private var immediateDisable: Boolean = false
+    private var serverVersion: Version? = null
+
+    /**
+     * Gets the installed version of the plugin.
+     */
+    override val version: String
+        get() {
+            return description.version
+        }
 
     /**
      * Enables the plugin PetBlocks.
@@ -91,6 +103,27 @@ class PetBlocksPlugin : JavaPlugin(), PluginProxy {
                 .consoleSender.sendMessage(PREFIX_CONSOLE + ChatColor.RED + "PetBlocks does not support your server version")
             Bukkit.getServer()
                 .consoleSender.sendMessage(PREFIX_CONSOLE + ChatColor.RED + "Install v" + Version.VERSION_1_8_R1.id + " - v" + Version.VERSION_1_14_R1.id)
+            Bukkit.getServer().consoleSender.sendMessage(PREFIX_CONSOLE + ChatColor.RED + "Plugin gets now disabled!")
+            Bukkit.getServer()
+                .consoleSender.sendMessage(PREFIX_CONSOLE + ChatColor.RED + "================================================")
+
+            immediateDisable = true
+            Bukkit.getPluginManager().disablePlugin(this)
+
+            return
+        }
+
+        if (isArmorStandTickingDisabled()) {
+            Bukkit.getServer()
+                .consoleSender.sendMessage(PREFIX_CONSOLE + ChatColor.RED + "================================================")
+            Bukkit.getServer()
+                .consoleSender.sendMessage(PREFIX_CONSOLE + ChatColor.RED + "PetBlocks does only work with armor-stands-tick: true")
+            Bukkit.getServer()
+                .consoleSender.sendMessage(PREFIX_CONSOLE + ChatColor.RED + "Please enable it in your paper.yml file!")
+            Bukkit.getServer()
+                .consoleSender.sendMessage(PREFIX_CONSOLE + ChatColor.GRAY + "You can disable this security check on your own risk by")
+            Bukkit.getServer()
+                .consoleSender.sendMessage(PREFIX_CONSOLE + ChatColor.GRAY + "setting ignore-ticking-settings: true in the config.yml of PetBlocks.")
             Bukkit.getServer().consoleSender.sendMessage(PREFIX_CONSOLE + ChatColor.RED + "Plugin gets now disabled!")
             Bukkit.getServer()
                 .consoleSender.sendMessage(PREFIX_CONSOLE + ChatColor.RED + "================================================")
@@ -150,12 +183,12 @@ class PetBlocksPlugin : JavaPlugin(), PluginProxy {
         }
 
         // Register CommandExecutor
-        commandService.registerCommandExecutor(
-            this.config.get("commands.petblock")!!.yamlMap(),
-            this.resolve(PlayerPetActionCommandExecutorImpl::class.java)
-        )
         commandService.registerCommandExecutor("petblocks", this.resolve(EditPetCommandExecutorImpl::class.java))
         commandService.registerCommandExecutor("petblockreload", this.resolve(ReloadCommandExecutorImpl::class.java))
+        commandService.registerCommandExecutor(
+            (config.get("commands.petblock") as MemorySection).getValues(false) as Map<String, String>,
+            this.resolve(PlayerPetActionCommandExecutorImpl::class.java)
+        )
 
         if (config.getBoolean("metrics")) {
             val metrics = Metrics(this)
@@ -259,15 +292,45 @@ class PetBlocksPlugin : JavaPlugin(), PluginProxy {
     }
 
     /**
+     * Gets the server version this plugin is currently running on.
+     */
+    override fun getServerVersion(): Version {
+        if (this.serverVersion != null) {
+            return this.serverVersion!!
+        }
+
+        try {
+            if (Bukkit.getServer().cast<Server?>() == null || Bukkit.getServer().javaClass.getPackage() == null) {
+                this.serverVersion = Version.VERSION_UNKNOWN
+                return this.serverVersion!!
+            }
+
+            val version = Bukkit.getServer().javaClass.getPackage().name.replace(".", ",").split(",")[3]
+
+            for (versionSupport in Version.values()) {
+                if (versionSupport.bukkitId == version) {
+                    this.serverVersion = versionSupport
+                    return versionSupport
+                }
+            }
+
+        } catch (e: Exception) {
+            // Ignore parsing exceptions.
+        }
+
+        this.serverVersion = Version.VERSION_UNKNOWN
+
+        return this.serverVersion!!
+    }
+
+    /**
      * Gets a business logic from the PetBlocks plugin.
      * All types in the service package can be accessed.
      * Throws a [IllegalArgumentException] if the service could not be found.
      * @param S the type of service class.
      */
     override fun <S> resolve(service: Any): S {
-        if (service !is Class<*>) {
-            throw IllegalArgumentException("Service has to be a Class!")
-        }
+        require(service is Class<*>) { "Service has to be a Class!" }
 
         try {
             return this.injector!!.getBinding(service).provider.get() as S
@@ -282,9 +345,7 @@ class PetBlocksPlugin : JavaPlugin(), PluginProxy {
      * @param E the type of entity class.
      */
     override fun <E> create(entity: Any): E {
-        if (entity !is Class<*>) {
-            throw IllegalArgumentException("Entity has to be a Class!")
-        }
+        require(entity is Class<*>) { "Entity has to be a Class!" }
 
         try {
             val entityName = entity.simpleName + "Entity"
@@ -292,5 +353,28 @@ class PetBlocksPlugin : JavaPlugin(), PluginProxy {
         } catch (e: Exception) {
             throw IllegalArgumentException("Entity could not be created.", e)
         }
+    }
+
+    /**
+     * Checks if armorStand ticking is disabled when PaperSpigot is being used.
+     */
+    private fun isArmorStandTickingDisabled(): Boolean {
+        if (config.getBoolean("global-configuration.ignore-ticking-settings")) {
+            return false
+        }
+
+        val path = Paths.get("paper.yml")
+
+        if (!Files.exists(path)) {
+            return false
+        }
+
+        for (line in Files.readAllLines(path)) {
+            if (line.contains("armor-stands-tick: false")) {
+                return true
+            }
+        }
+
+        return false
     }
 }

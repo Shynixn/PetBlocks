@@ -12,9 +12,12 @@ import org.bukkit.Bukkit
 import org.bukkit.Location
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
+import org.bukkit.inventory.Inventory
 import org.bukkit.inventory.ItemStack
 import org.bukkit.util.Vector
 import java.util.*
+import kotlin.math.cos
+import kotlin.math.sin
 
 /**
  * Created by Shynixn 2018.
@@ -45,13 +48,105 @@ import java.util.*
  */
 class ProxyServiceImpl @Inject constructor(private val version: Version) : ProxyService {
     /**
+     * Drops the given item at the given position.
+     */
+    override fun <L, I> dropInventoryItem(location: L, item: I) {
+        require(location is Location)
+        require(item is ItemStack)
+
+        try {
+            location.world!!.dropItem(location, item)
+        } catch (e: Exception) {
+            // Cannot drop air.
+        }
+    }
+
+    /**
+     * Gets the inventory item at the given index.
+     */
+    override fun <I, IT> getInventoryItem(inventory: I, index: Int): IT? {
+        require(inventory is Inventory)
+        return inventory.getItem(index) as IT?
+    }
+
+    /**
+     * Gets if the given player has got the given permission.
+     */
+    override fun <P> hasPermission(player: P, permission: String): Boolean {
+        require(player is Player)
+        return player.hasPermission(permission)
+    }
+
+    /**
+     * Clears the given inventory.
+     */
+    override fun <I> clearInventory(inventory: I) {
+        require(inventory is Inventory)
+        inventory.clear()
+    }
+
+    /**
+     * Gets the lower inventory of an inventory.
+     */
+    override fun <I> getLowerInventory(inventory: I): I {
+        // Only necessary for sponge.
+        return inventory
+    }
+
+    /**
+     * Gets if the given inventory belongs to a player. Returns null if not.
+     */
+    override fun <P, I> getPlayerFromInventory(inventory: I): P? {
+        require(inventory is Inventory)
+
+        if (inventory.holder is Player) {
+            return inventory.holder as P
+        }
+
+        return null
+    }
+
+    /**
+     * Updates the inventory.
+     */
+    override fun <I, IT> setInventoryItem(inventory: I, index: Int, item: IT) {
+        require(inventory is Inventory)
+        require(item is ItemStack?)
+
+        inventory.setItem(index, item)
+    }
+
+    /**
+     * Updates the given player inventory.
+     */
+    override fun <P> updateInventory(player: P) {
+        require(player is Player)
+        player.updateInventory()
+    }
+
+    /**
+     * Opens a new inventory for the given player.
+     */
+    override fun <P, I> openInventory(player: P, title: String, size: Int): I {
+        require(player is Player)
+        val inventory = Bukkit.getServer().createInventory(player, size, title)
+        player.openInventory(inventory)
+        return inventory as I
+    }
+
+    /**
+     * Closes the inventory of the given player.
+     */
+    override fun <P> closeInventory(player: P) {
+        require(player is Player)
+        player.closeInventory()
+    }
+
+    /**
      * Gets the name of a player.
      */
     override fun <P> getPlayerName(player: P): String {
-        if (player !is Player) {
-            throw IllegalArgumentException("Player has to be a BukkitPlayer!")
-        }
-
+        require(player is Player)
         return player.name
     }
 
@@ -72,10 +167,7 @@ class ProxyServiceImpl @Inject constructor(private val version: Version) : Proxy
      * Gets the location of the player.
      */
     override fun <L, P> getPlayerLocation(player: P): L {
-        if (player !is Player) {
-            throw IllegalArgumentException("Player has to be a BukkitPlayer!")
-        }
-
+        require(player is Player)
         return player.location as L
     }
 
@@ -83,10 +175,7 @@ class ProxyServiceImpl @Inject constructor(private val version: Version) : Proxy
      * Converts the given [location] to a [Position].
      */
     override fun <L> toPosition(location: L): Position {
-        if (location !is Location) {
-            throw IllegalArgumentException("Location has to be a BukkitLocation!")
-        }
-
+        require(location is Location)
         return location.toPosition()
     }
 
@@ -94,17 +183,14 @@ class ProxyServiceImpl @Inject constructor(private val version: Version) : Proxy
      * Gets the looking direction of the player.
      */
     override fun <P> getDirectionVector(player: P): Position {
-        if (player !is Player) {
-            throw IllegalArgumentException("Player has to be a BukkitPlayer!")
-        }
-
+        require(player is Player)
         val vector = Vector()
         val rotX = player.location.yaw.toDouble()
         val rotY = player.location.pitch.toDouble()
-        vector.y = -Math.sin(Math.toRadians(rotY))
-        val h = Math.cos(Math.toRadians(rotY))
-        vector.x = -h * Math.sin(Math.toRadians(rotX))
-        vector.z = h * Math.cos(Math.toRadians(rotX))
+        vector.y = -sin(Math.toRadians(rotY))
+        val h = cos(Math.toRadians(rotY))
+        vector.x = -h * sin(Math.toRadians(rotX))
+        vector.z = h * cos(Math.toRadians(rotX))
         return vector.toPosition()
     }
 
@@ -112,9 +198,7 @@ class ProxyServiceImpl @Inject constructor(private val version: Version) : Proxy
      * Gets the item in the player hand.
      */
     override fun <P, I> getPlayerItemInHand(player: P, offhand: Boolean): I? {
-        if (player !is Player) {
-            throw IllegalArgumentException("Player has to be a BukkitPlayer!")
-        }
+        require(player is Player)
 
         return if (version.isVersionSameOrGreaterThan(Version.VERSION_1_9_R1)) {
             val inventoryClazz = Class.forName("org.bukkit.inventory.PlayerInventory")
@@ -134,17 +218,17 @@ class ProxyServiceImpl @Inject constructor(private val version: Version) : Proxy
      * Sets the item in the player hand.
      */
     override fun <P, I> setPlayerItemInHand(player: P, itemStack: I, offhand: Boolean) {
-        if (player !is Player) {
-            throw IllegalArgumentException("Player has to be a BukkitPlayer!")
-        }
+        require(player is Player)
 
         if (version.isVersionSameOrGreaterThan(Version.VERSION_1_9_R1)) {
             val inventoryClazz = Class.forName("org.bukkit.inventory.PlayerInventory")
 
             if (offhand) {
-                inventoryClazz.getDeclaredMethod("setItemInOffHand", ItemStack::class.java).invoke(player.inventory, itemStack)
+                inventoryClazz.getDeclaredMethod("setItemInOffHand", ItemStack::class.java)
+                    .invoke(player.inventory, itemStack)
             } else {
-                inventoryClazz.getDeclaredMethod("setItemInMainHand", ItemStack::class.java).invoke(player.inventory, itemStack)
+                inventoryClazz.getDeclaredMethod("setItemInMainHand", ItemStack::class.java)
+                    .invoke(player.inventory, itemStack)
             }
         } else {
             Class.forName("org.bukkit.entity.HumanEntity").getDeclaredMethod("setItemInHand", ItemStack::class.java)
@@ -158,10 +242,7 @@ class ProxyServiceImpl @Inject constructor(private val version: Version) : Proxy
      * Gets if the given player has got the given permission.
      */
     override fun <P> hasPermission(player: P, permission: Permission): Boolean {
-        if (player !is Player) {
-            throw IllegalArgumentException("Player has to be a BukkitPlayer!")
-        }
-
+        require(player is Player)
         return player.hasPermission(permission.permission)
     }
 
@@ -169,10 +250,7 @@ class ProxyServiceImpl @Inject constructor(private val version: Version) : Proxy
      * Gets the player uuid.
      */
     override fun <P> getPlayerUUID(player: P): String {
-        if (player !is Player) {
-            throw IllegalArgumentException("Player has to be a BukkitPlayer!")
-        }
-
+        require(player is Player)
         return player.uniqueId.toString()
     }
 
@@ -180,10 +258,7 @@ class ProxyServiceImpl @Inject constructor(private val version: Version) : Proxy
      * Sends a message to the [sender].
      */
     override fun <S> sendMessage(sender: S, message: String) {
-        if (sender !is CommandSender) {
-            throw IllegalArgumentException("Sender has to be a BukkitCommandSender!")
-        }
-
+        require(sender is CommandSender)
         sender.sendMessage(message)
     }
 
@@ -193,5 +268,4 @@ class ProxyServiceImpl @Inject constructor(private val version: Version) : Proxy
     override fun <P> isPlayer(instance: P): Boolean {
         return instance is Player
     }
-
 }
