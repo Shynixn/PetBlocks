@@ -26,6 +26,8 @@ import org.bukkit.event.player.PlayerJoinEvent
 import org.bukkit.plugin.java.JavaPlugin
 import java.io.File
 import java.io.FileOutputStream
+import java.nio.file.Files
+import java.nio.file.Paths
 import java.util.logging.Level
 
 /**
@@ -101,6 +103,27 @@ class PetBlocksPlugin : JavaPlugin(), PluginProxy {
                 .consoleSender.sendMessage(PREFIX_CONSOLE + ChatColor.RED + "PetBlocks does not support your server version")
             Bukkit.getServer()
                 .consoleSender.sendMessage(PREFIX_CONSOLE + ChatColor.RED + "Install v" + Version.VERSION_1_8_R1.id + " - v" + Version.VERSION_1_14_R1.id)
+            Bukkit.getServer().consoleSender.sendMessage(PREFIX_CONSOLE + ChatColor.RED + "Plugin gets now disabled!")
+            Bukkit.getServer()
+                .consoleSender.sendMessage(PREFIX_CONSOLE + ChatColor.RED + "================================================")
+
+            immediateDisable = true
+            Bukkit.getPluginManager().disablePlugin(this)
+
+            return
+        }
+
+        if (isArmorStandTickingDisabled()) {
+            Bukkit.getServer()
+                .consoleSender.sendMessage(PREFIX_CONSOLE + ChatColor.RED + "================================================")
+            Bukkit.getServer()
+                .consoleSender.sendMessage(PREFIX_CONSOLE + ChatColor.RED + "PetBlocks does only work with armor-stands-tick: true")
+            Bukkit.getServer()
+                .consoleSender.sendMessage(PREFIX_CONSOLE + ChatColor.RED + "Please enable it in your paper.yml file!")
+            Bukkit.getServer()
+                .consoleSender.sendMessage(PREFIX_CONSOLE + ChatColor.GRAY + "You can disable this security check on your own risk by")
+            Bukkit.getServer()
+                .consoleSender.sendMessage(PREFIX_CONSOLE + ChatColor.GRAY + "setting ignore-ticking-settings: true in the config.yml of PetBlocks.")
             Bukkit.getServer().consoleSender.sendMessage(PREFIX_CONSOLE + ChatColor.RED + "Plugin gets now disabled!")
             Bukkit.getServer()
                 .consoleSender.sendMessage(PREFIX_CONSOLE + ChatColor.RED + "================================================")
@@ -330,5 +353,28 @@ class PetBlocksPlugin : JavaPlugin(), PluginProxy {
         } catch (e: Exception) {
             throw IllegalArgumentException("Entity could not be created.", e)
         }
+    }
+
+    /**
+     * Checks if armorStand ticking is disabled when PaperSpigot is being used.
+     */
+    private fun isArmorStandTickingDisabled(): Boolean {
+        if (config.getBoolean("global-configuration.ignore-ticking-settings")) {
+            return false
+        }
+
+        val path = Paths.get("paper.yml")
+
+        if (!Files.exists(path)) {
+            return false
+        }
+
+        for (line in Files.readAllLines(path)) {
+            if (line.contains("armor-stands-tick: false")) {
+                return true
+            }
+        }
+
+        return false
     }
 }

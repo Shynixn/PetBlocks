@@ -112,6 +112,7 @@ messages:
 ############################
 
 global-configuration:
+  ignore-ticking-settings: false
   respawn-delay: 4
   teleport-delay: 0
   teleport-fall: true
