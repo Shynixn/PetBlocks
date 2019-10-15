@@ -71,7 +71,7 @@ class SoundServiceImpl @Inject constructor(private val configurationService: Con
     private fun playSoundToPlayers(location: Vector3d, sound: Sound, players: Collection<Player>) {
         val soundName = sound.name.toUpperCase()
 
-        if (soundName.equals("NONE", true)) {
+        if (soundName.equals("NONE", true) || soundName.equals("")) {
             return
         }
 

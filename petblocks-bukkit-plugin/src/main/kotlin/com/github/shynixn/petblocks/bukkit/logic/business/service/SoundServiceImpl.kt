@@ -71,7 +71,7 @@ class SoundServiceImpl @Inject constructor(private val plugin: Plugin, private v
 
         val soundName = sound.name.toUpperCase()
 
-        if (soundName.equals("NONE", true)) {
+        if (soundName.equals("NONE", true) || soundName.equals("")) {
             return
         }
 
