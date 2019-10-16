@@ -1,4 +1,4 @@
-@file:Suppress("UNCHECKED_CAST", "unused", "UNUSED_PARAMETER")
+@file:Suppress("UNCHECKED_CAST", "unused", "UNUSED_PARAMETER", "RemoveRedundantQualifierName")
 
 package com.github.shynixn.petblocks.sponge
 
@@ -74,7 +74,6 @@ class PetBlocksPlugin : PluginProxy {
 
     private val configVersion = 1
     private var injector: Injector? = null
-    private var immediateDisable: Boolean = false
     private var serverVersion: Version? = null
 
     @Inject
@@ -102,40 +101,34 @@ class PetBlocksPlugin : PluginProxy {
      */
     @Listener
     fun onEnable(event: GameInitializationEvent) {
-        Sponge.getServer().console.sendMessage(PREFIX_CONSOLE + ChatColor.GREEN + "Loading PetBlocks ...")
-        this.injector = spongeInjector.createChildInjector(PetBlocksDependencyInjectionBinder(plugin,this))
+        sendConsoleMessage(PREFIX_CONSOLE + ChatColor.GREEN + "Loading PetBlocks ...")
+        this.injector = spongeInjector.createChildInjector(PetBlocksDependencyInjectionBinder(plugin, this))
 
-        if (!getServerVersion().isCompatible(
-                Version.VERSION_1_12_R1
-            )
-        ) {
-            Sponge.getServer().console.sendMessage(PREFIX_CONSOLE + ChatColor.RED + "================================================")
-            Sponge.getServer().console.sendMessage(PREFIX_CONSOLE + ChatColor.RED + "PetBlocks does not support your server version")
-            Sponge.getServer()
-                .console.sendMessage(PREFIX_CONSOLE + ChatColor.RED + "Install v" + Version.VERSION_1_12_R1.id + " - v" + Version.VERSION_1_12_R1.id)
-            Sponge.getServer().console.sendMessage(PREFIX_CONSOLE + ChatColor.RED + "Plugin gets now disabled!")
-            Sponge.getServer().console.sendMessage(PREFIX_CONSOLE + ChatColor.RED + "================================================")
+        val versions = arrayOf(Version.VERSION_1_12_R1)
 
-            immediateDisable = true
+        if (!getServerVersion().isCompatible(versions)) {
+            sendConsoleMessage(ChatColor.RED.toString() + "================================================")
+            sendConsoleMessage(ChatColor.RED.toString() + "PetBlocks does not support your server version")
+            sendConsoleMessage(ChatColor.RED.toString() + "Install v" + Version.VERSION_1_12_R1.id + " - v" + Version.VERSION_1_12_R1.id)
+            sendConsoleMessage(ChatColor.RED.toString() + "Plugin gets now disabled!")
+            sendConsoleMessage(ChatColor.RED.toString() + "================================================")
+
             disablePlugin()
-
             return
         }
 
         val configurationService = resolve<ConfigurationService>(ConfigurationService::class.java)
 
         if (!configurationService.containsValue("config-version") || configurationService.findValue<Int>("config-version") != configVersion) {
-            Sponge.getServer().console.sendMessage(PREFIX_CONSOLE + ChatColor.RED + "================================================")
-            Sponge.getServer().console.sendMessage(PREFIX_CONSOLE + ChatColor.RED + "PetBlocks config.yml config-version does not match")
-            Sponge.getServer().console.sendMessage(PREFIX_CONSOLE + ChatColor.RED + "with your installed PetBlocks.jar.")
-            Sponge.getServer().console.sendMessage(PREFIX_CONSOLE + ChatColor.RED + "Carefully read the patch notes to get the correct config-version.")
-            Sponge.getServer().console.sendMessage(PREFIX_CONSOLE + ChatColor.RED + "https://github.com/Shynixn/PetBlocks/releases")
-            Sponge.getServer().console.sendMessage(PREFIX_CONSOLE + ChatColor.RED + "Plugin gets now disabled!")
-            Sponge.getServer().console.sendMessage(PREFIX_CONSOLE + ChatColor.RED + "================================================")
+            sendConsoleMessage(ChatColor.RED.toString() + "================================================")
+            sendConsoleMessage(ChatColor.RED.toString() + "PetBlocks config.yml config-version does not match")
+            sendConsoleMessage(ChatColor.RED.toString() + "with your installed PetBlocks.jar.")
+            sendConsoleMessage(ChatColor.RED.toString() + "Carefully read the patch notes to get the correct config-version.")
+            sendConsoleMessage(ChatColor.RED.toString() + "https://github.com/Shynixn/PetBlocks/releases")
+            sendConsoleMessage(ChatColor.RED.toString() + "Plugin gets now disabled!")
+            sendConsoleMessage(ChatColor.RED.toString() + "================================================")
 
-            immediateDisable = true
             disablePlugin()
-
             return
         }
 
@@ -158,19 +151,27 @@ class PetBlocksPlugin : PluginProxy {
         Sponge.getEventManager().registerListeners(plugin, resolve(PetListener::class.java))
 
         // Register CommandExecutor
+        commandService.registerCommandExecutor("petblocks", this.resolve(EditPetCommandExecutorImpl::class.java))
+        commandService.registerCommandExecutor("petblockreload", this.resolve(ReloadCommandExecutorImpl::class.java))
         commandService.registerCommandExecutor(
             configurationService.findValue<Map<String, Any>>("commands.petblock"),
             this.resolve(PlayerPetActionCommandExecutorImpl::class.java)
         )
-        commandService.registerCommandExecutor("petblocks", this.resolve(EditPetCommandExecutorImpl::class.java))
-        commandService.registerCommandExecutor("petblockreload", this.resolve(ReloadCommandExecutorImpl::class.java))
 
         for (world in Sponge.getGame().server.worlds) {
             entityService.cleanUpInvalidEntities(world.entities)
         }
 
+        metrics.addCustomChart(Metrics2.SimplePie("storage") {
+            if (configurationService.findValue("sql.enabled")) {
+                "MySQL"
+            } else {
+                "SQLite"
+            }
+        })
+
         startPlugin()
-        Sponge.getServer().console.sendMessage(PREFIX_CONSOLE + ChatColor.GREEN + "Enabled PetBlocks " + plugin.version.get() + " by Shynixn")
+        sendConsoleMessage(ChatColor.GREEN.toString() + "Enabled PetBlocks " + plugin.version.get() + " by Shynixn")
     }
 
     /**
@@ -178,14 +179,10 @@ class PetBlocksPlugin : PluginProxy {
      */
     @Listener
     fun onReload(event: GameReloadEvent) {
-        if (immediateDisable) {
-            return
-        }
-
         resolve<ConfigurationService>(ConfigurationService::class.java).reload()
         resolve<GUIItemLoadService>(GUIItemLoadService::class.java).reload()
 
-        Sponge.getServer().console.sendMessage(PREFIX_CONSOLE + ChatColor.GREEN + "Reloaded PetBlocks configuration.")
+        sendConsoleMessage(ChatColor.GREEN.toString() + "Reloaded PetBlocks configuration.")
     }
 
     /**
@@ -193,10 +190,6 @@ class PetBlocksPlugin : PluginProxy {
      */
     @Listener
     fun onDisable(event: GameStoppingServerEvent) {
-        if (immediateDisable) {
-            return
-        }
-
         resolve<EntityRegistrationService>(EntityRegistrationService::class.java).clearResources()
         resolve<PersistencePetMetaService>(PersistencePetMetaService::class.java).close()
 
@@ -313,9 +306,7 @@ class PetBlocksPlugin : PluginProxy {
      * @param S the type of service class.
      */
     override fun <S> resolve(service: Any): S {
-        if (service !is Class<*>) {
-            throw IllegalArgumentException("Service has to be a Class!")
-        }
+        require(service is Class<*>) { "Service has to be a Class!" }
 
         try {
             return this.injector!!.getBinding(service).provider.get() as S
@@ -330,9 +321,7 @@ class PetBlocksPlugin : PluginProxy {
      * @param E the type of entity class.
      */
     override fun <E> create(entity: Any): E {
-        if (entity !is Class<*>) {
-            throw IllegalArgumentException("Entity has to be a Class!")
-        }
+        require(entity is Class<*>) { "Entity has to be a Class!" }
 
         try {
             val entityName = entity.simpleName + "Entity"
@@ -340,6 +329,13 @@ class PetBlocksPlugin : PluginProxy {
         } catch (e: Exception) {
             throw IllegalArgumentException("Entity could not be created.", e)
         }
+    }
+
+    /**
+     * Sends a console message from this plugin.
+     */
+    private fun sendConsoleMessage(message: String) {
+        Sponge.getServer().console.sendMessage(PREFIX_CONSOLE + message)
     }
 
     /**

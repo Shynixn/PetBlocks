@@ -128,13 +128,7 @@ enum class Version(
     /**
      * Gets if this version is compatible to the versions given as parameter.
      */
-    fun isCompatible(vararg versions: Version): Boolean {
-        versions.forEach { version ->
-            if (this.bukkitId == version.bukkitId) {
-                return true
-            }
-        }
-
-        return false
+    fun isCompatible(versions: Array<Version>): Boolean {
+        return versions.singleOrNull { v -> v.bukkitId == this.bukkitId } != null
     }
 }

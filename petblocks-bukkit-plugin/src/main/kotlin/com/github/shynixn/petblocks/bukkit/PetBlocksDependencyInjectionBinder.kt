@@ -98,9 +98,6 @@ class PetBlocksDependencyInjectionBinder(private val plugin: PetBlocksPlugin) : 
             version.isVersionSameOrGreaterThan(Version.VERSION_1_13_R2) -> bind(EntityRegistrationService::class.java).to(EntityRegistration113R2ServiceImpl::class.java).`in`(
                 Scopes.SINGLETON
             )
-            version.isVersionSameOrGreaterThan(Version.VERSION_1_13_R1) -> bind(EntityRegistrationService::class.java).to(EntityRegistration113R1ServiceImpl::class.java).`in`(
-                Scopes.SINGLETON
-            )
             version.isVersionSameOrGreaterThan(Version.VERSION_1_11_R1) -> bind(EntityRegistrationService::class.java).to(EntityRegistration111R1ServiceImpl::class.java).`in`(
                 Scopes.SINGLETON
             )
