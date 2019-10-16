@@ -66,9 +66,9 @@ commands:
     enabled: true
     command: petblock
     useage: /<command>
-    description: Opens the pet GUI.
+    description: 打开宠物菜单.
     permission: petblocks.command.use
-    permission-message: You don't have permission
+    permission-message: 你没有对应的权限
 
 ############################
 
