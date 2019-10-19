@@ -36,7 +36,7 @@ import org.bukkit.loot.LootTable
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class CraftPet(server: CraftServer, nmsPet: EntityInsentient) : CraftLivingEntity(server, nmsPet), EntityPetProxy, Slime, Pig, Rabbit, Bat {
+class CraftPet(server: CraftServer, nmsPet: EntityInsentient) : CraftLivingEntity(server, nmsPet), EntityPetProxy,  Pig, Rabbit, Bat {
     /**
      * Boots marker.
      */
@@ -53,7 +53,7 @@ class CraftPet(server: CraftServer, nmsPet: EntityInsentient) : CraftLivingEntit
      * Hides the true type of the pet from everyone else.
      */
     override fun getType(): org.bukkit.entity.EntityType {
-        return org.bukkit.entity.EntityType.SLIME
+        return org.bukkit.entity.EntityType.PIG
     }
 
     /**
@@ -81,15 +81,10 @@ class CraftPet(server: CraftServer, nmsPet: EntityInsentient) : CraftLivingEntit
         return null
     }
 
-    override fun getSize(): Int {
-        return 1
-    }
-
     override fun setLootTable(p0: LootTable?) {
     }
 
-    override fun setSize(p0: Int) {
-    }
+
 
     override fun setSeed(p0: Long) {
     }
