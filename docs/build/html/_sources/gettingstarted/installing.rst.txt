@@ -11,9 +11,9 @@ Java 8 - Java 12 can be used to run PetBlocks.
 Spigot/CraftBukkit
 ~~~~~~~~~~~~~~~~~~
 
-* Spigot *(1.8.0 - 1.13.2)* ✔
-* PaperSpigot *(1.8.0 - 1.13.2)* ✔
-* CraftBukkit *(1.8.0 - 1.13.2)* ✔
+* Spigot *(1.8.0 - 1.14.2)* ✔
+* PaperSpigot *(1.8.0 - 1.14.2)* ✔
+* CraftBukkit ✘ (no longer supported)
 * Bedrock ✘ (not compatible)
 
 SpongeVanilla/SpongeForge
@@ -30,11 +30,7 @@ SpongeVanilla/SpongeForge
  PetBlocks |version| was tested with the following configuration:
 
   * Minecraft Forge **1.12.2 - 14.23.5.2768** (Server + Client)
-  * SpongeForge **1.12.2-2768-7.1.5**
-
-SpongeForge
-~~~~~~~~~~~
-
+  * SpongeForge **1.12.2-2825-7.1.6**
 
 Download
 ~~~~~~~~

@@ -10,10 +10,3 @@ your server version. Play around with the offset-y value of the riding ai.
   climbing-height: 1.0
   speed: 2.0
   offset-y: -1
-
-
-
-
-
-
-
