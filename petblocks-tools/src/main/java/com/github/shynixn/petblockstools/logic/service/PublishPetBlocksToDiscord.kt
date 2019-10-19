@@ -8,7 +8,7 @@ import com.github.shynixn.discordwebhook.entity.DiscordPayload
 import com.github.shynixn.discordwebhook.extension.decimal
 import com.github.shynixn.discordwebhook.extension.timestampIso8601
 import com.github.shynixn.discordwebhook.impl.DiscordWebhookServiceImpl
-import com.github.shynixn.petblockstools.contract.SnapshotService
+import com.github.shynixn.petblockstools.contract.SonaTypeService
 import java.awt.Color
 import java.util.*
 
@@ -39,9 +39,10 @@ import java.util.*
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class PublishPetBlocksSnapshotToDiscord(
-    private val snapshotService: SnapshotService = SnapshotServiceImpl(),
-    private val discordWebHookService: DiscordWebhookService = DiscordWebhookServiceImpl()) {
+class PublishPetBlocksToDiscord(
+    private val snapshotService: SonaTypeService = SnapshotServiceImpl(),
+    private val discordWebHookService: DiscordWebhookService = DiscordWebhookServiceImpl()
+) {
     private val bukkitSnapshotRepo = "https://oss.sonatype.org/content/repositories/snapshots/com/github/shynixn/petblocks/petblocks-bukkit-plugin/"
     private val spongeSnapshotRepo = "https://oss.sonatype.org/content/repositories/snapshots/com/github/shynixn/petblocks/petblocks-sponge-plugin/"
     private val petBlocksImage = "https://raw.githubusercontent.com/Shynixn/travis-ci-discord-webhook/master/pet.jpg"
@@ -50,9 +51,9 @@ class PublishPetBlocksSnapshotToDiscord(
      * Sends the snapshot status to discord.
      */
     fun publishSnapshotToDiscord(webHookUrl: String) {
-        val bukkitSnapshotDownloadUrl = snapshotService.findSnapshotDownloadUrl(bukkitSnapshotRepo)
-        val spongeSnapshotDownloadUrl = snapshotService.findSnapshotDownloadUrl(spongeSnapshotRepo)
-        val snapshotId = snapshotService.findSnapshotId(bukkitSnapshotRepo)
+        val bukkitSnapshotDownloadUrl = snapshotService.findDownloadUrl(bukkitSnapshotRepo)
+        val spongeSnapshotDownloadUrl = snapshotService.findDownloadUrl(spongeSnapshotRepo)
+        val snapshotId = snapshotService.findId(bukkitSnapshotRepo)
 
         val payload = DiscordPayload("PetBlocks-Snapshots", petBlocksImage)
 
@@ -68,7 +69,39 @@ class PublishPetBlocksSnapshotToDiscord(
         embeddedMessage.fields.add(DiscordField("Sponge", "<:sponge:493038148629168138> [`Direct Download`]($spongeSnapshotDownloadUrl)"))
 
         payload.embeds.add(embeddedMessage)
+        discordWebHookService.sendDiscordPayload(webHookUrl, payload)
+    }
 
+    /**
+     * Sends the release status to discord.
+     */
+    fun publishReleaseToDiscord(webHookUrl: String) {
+        val payload = DiscordPayload("PetBlocks", petBlocksImage)
+
+        val embeddedMessage = DiscordEmbed(
+            "Downloads",
+            Color(251, 140, 0).decimal,
+            DiscordAuthor("PetBlocks Releases - Shynixn/PetBlocks - Latest", "", petBlocksImage),
+            "Author Shynixn released a new version of PetBlocks",
+            Date().timestampIso8601
+        )
+
+        embeddedMessage.fields.add(
+            DiscordField(
+                "Spigot/Bukkit",
+                "<:bukkit:493024859555627009> [`Download from Spigot`](https://www.spigotmc.org/resources/12056/)"
+            )
+        )
+        embeddedMessage.fields.add(
+            DiscordField(
+                "Sponge",
+                "<:sponge:493038148629168138> [`Download from Ore`](https://ore.spongepowered.org/Shynixn/PetBlocks)"
+            )
+        )
+        embeddedMessage.fields.add(DiscordField("Leave a Star", "https://github.com/Shynixn/PetBlocks"))
+        embeddedMessage.fields.add(DiscordField("Like or Review", "https://www.spigotmc.org/resources/12056/"))
+
+        payload.embeds.add(embeddedMessage)
         discordWebHookService.sendDiscordPayload(webHookUrl, payload)
     }
 }
