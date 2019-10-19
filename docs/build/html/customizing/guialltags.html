@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>All tags &mdash; PetBlocks 8.1.0 documentation</title>
+  <title>All tags &mdash; PetBlocks 8.9.0 documentation</title>
   
 
   
@@ -37,9 +37,9 @@
         <link rel="index" title="Index"
               href="../genindex.html"/>
         <link rel="search" title="Search" href="../search.html"/>
-    <link rel="top" title="PetBlocks 8.1.0 documentation" href="../index.html"/>
+    <link rel="top" title="PetBlocks 8.9.0 documentation" href="../index.html"/>
         <link rel="up" title="GUI" href="gui.html"/>
-        <link rel="next" title="Example: Adding a new pokemon category" href="samplepokemoncategory.html"/>
+        <link rel="next" title="AIS" href="ai.html"/>
         <link rel="prev" title="Static GUI Items" href="guistatic.html"/> 
 
   
@@ -72,7 +72,7 @@
             
             
               <div class="version">
-                8.1.0
+                8.9.0
               </div>
             
           
@@ -115,11 +115,10 @@
 <li class="toctree-l4"><a class="reference internal" href="#the-add-ai-remove-ai-replace-ai-tag">The add-ai, remove-ai, replace-ai tag</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="samplepokemoncategory.html">Example: Adding a new pokemon category</a></li>
-<li class="toctree-l3"><a class="reference internal" href="samplehidingguiitems.html">Example: Hiding GUI items when the player does not have certain permissions</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="ai.html">AIS</a></li>
+<li class="toctree-l2"><a class="reference internal" href="example.html">Examples</a></li>
 <li class="toctree-l2"><a class="reference internal" href="regions.html">Worlds and Regions</a></li>
 <li class="toctree-l2"><a class="reference internal" href="minecraftheads.html">Minecraft-Heads.com</a></li>
 <li class="toctree-l2"><a class="reference internal" href="headdatabase.html">Head Database</a></li>
@@ -205,7 +204,7 @@
 <p>Tags with additional information below are marked bold.</p>
 <div class="section" id="list-of-root-gui-item-tags">
 <h2>List of root gui item tags<a class="headerlink" href="#list-of-root-gui-item-tags" title="Permalink to this headline">¶</a></h2>
-<table class="docutils align-center">
+<table class="docutils align-default">
 <colgroup>
 <col style="width: 19%" />
 <col style="width: 5%" />
@@ -250,37 +249,42 @@
 <td><p>Custom required permission to execute this item</p></td>
 <td><p>permission: ‘petblocks.wardrobe.open’, permission: ‘strange.perm’</p></td>
 </tr>
-<tr class="row-even"><td><p><strong>script</strong></p></td>
+<tr class="row-even"><td><p>petname</p></td>
+<td><p>no</p></td>
+<td><p>Sets the name of the pet to this value</p></td>
+<td><p>petname: ‘Creeper’</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>script</strong></p></td>
 <td><p>no</p></td>
 <td><p>Execute one of the actions defined below</p></td>
 <td><p>script: ‘call-pet’, ‘open-page gui.colored-block-skins’</p></td>
 </tr>
-<tr class="row-odd"><td><p><strong>hidden-on</strong></p></td>
+<tr class="row-even"><td><p><strong>hidden-on</strong></p></td>
 <td><p>no</p></td>
 <td><p>Hides the gui item on certain states</p></td>
 <td><p>hidden-on</p></td>
 </tr>
-<tr class="row-even"><td><p><strong>blocked-on</strong></p></td>
+<tr class="row-odd"><td><p><strong>blocked-on</strong></p></td>
 <td><p>no</p></td>
 <td><p>Blocks the gui item on certain states</p></td>
 <td><p>blocked-on</p></td>
 </tr>
-<tr class="row-odd"><td><p><strong>set-skin</strong></p></td>
+<tr class="row-even"><td><p><strong>set-skin</strong></p></td>
 <td><p>no</p></td>
 <td><p>Skin which gets applied to your pet on click</p></td>
 <td><p>set-skin</p></td>
 </tr>
-<tr class="row-even"><td><p><strong>add-ai</strong></p></td>
+<tr class="row-odd"><td><p><strong>add-ai</strong></p></td>
 <td><p>no</p></td>
 <td><p>Ais which get applied to your pet on click</p></td>
 <td><p>add-ai</p></td>
 </tr>
-<tr class="row-odd"><td><p><strong>remove-ai</strong></p></td>
+<tr class="row-even"><td><p><strong>remove-ai</strong></p></td>
 <td><p>no</p></td>
 <td><p>Ais which get removed from your pet on click</p></td>
 <td><p>remove-ai</p></td>
 </tr>
-<tr class="row-even"><td><p><strong>replace-ai</strong></p></td>
+<tr class="row-odd"><td><p><strong>replace-ai</strong></p></td>
 <td><p>no</p></td>
 <td><p>Ais which get replaced from your pet on click</p></td>
 <td><p>replace-ai</p></td>
@@ -300,7 +304,7 @@
   <span class="o">-</span> <span class="s1">&#39;&amp;7Click to disable the pet.&#39;</span>
 </pre></div>
 </div>
-<table class="docutils align-center">
+<table class="docutils align-default">
 <colgroup>
 <col style="width: 16%" />
 <col style="width: 4%" />
@@ -360,7 +364,7 @@
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">script</span><span class="p">:</span> <span class="s1">&#39;copy-pet-skin&#39;</span>
 </pre></div>
 </div>
-<table class="docutils align-center">
+<table class="docutils align-default">
 <colgroup>
 <col style="width: 33%" />
 <col style="width: 67%" />
@@ -390,7 +394,7 @@
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">script</span><span class="p">:</span> <span class="s1">&#39;call-pet&#39;</span>
 </pre></div>
 </div>
-<table class="docutils align-center">
+<table class="docutils align-default">
 <colgroup>
 <col style="width: 35%" />
 <col style="width: 65%" />
@@ -443,6 +447,9 @@
 <tr class="row-odd"><td><p>disable-particles</p></td>
 <td><p>Disables the pet particles</p></td>
 </tr>
+<tr class="row-even"><td><p>show-inventory &lt;from&gt; &lt;to&gt;</p></td>
+<td><p>Opens the pet storage from the index &lt;from&gt; to &lt;to&gt;.</p></td>
+</tr>
 </tbody>
 </table>
 </div>
@@ -457,7 +464,7 @@ Only one condition has to match.</p>
    <span class="o">-</span> <span class="s1">&#39;float-in-water&#39;</span>
 </pre></div>
 </div>
-<table class="docutils align-center">
+<table class="docutils align-default">
 <colgroup>
 <col style="width: 26%" />
 <col style="width: 74%" />
@@ -505,7 +512,7 @@ Only one condition has to match.</p>
     <span class="n">skin</span><span class="p">:</span> <span class="s1">&#39;http://textures.minecraft.net/texture/456eec1c2169c8c60a7ae436abcd2dc5417d56f8adef84f11343dc1188fe138&#39;</span>
 </pre></div>
 </div>
-<table class="docutils align-center">
+<table class="docutils align-default">
 <colgroup>
 <col style="width: 16%" />
 <col style="width: 4%" />
@@ -606,7 +613,7 @@ Each available ai is explained in the ai section of customizing.</p>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="samplepokemoncategory.html" class="btn btn-neutral float-right" title="Example: Adding a new pokemon category" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="ai.html" class="btn btn-neutral float-right" title="AIS" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="guistatic.html" class="btn btn-neutral" title="Static GUI Items" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
@@ -639,7 +646,7 @@ Each available ai is explained in the ai section of customizing.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'8.1.0',
+            VERSION:'8.9.0',
             LANGUAGE:'None',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
