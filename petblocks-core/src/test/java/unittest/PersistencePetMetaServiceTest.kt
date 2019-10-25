@@ -184,6 +184,13 @@ class PersistencePetMetaServiceTest {
         }
 
         /**
+         * Gets a list of points between 2 locations.
+         */
+        override fun <L> getPointsBetweenLocations(location1: L, location2: L, amount: Int): List<L> {
+            throw IllegalArgumentException()
+        }
+
+        /**
          * Drops the given item at the given position.
          */
         override fun <L, I> dropInventoryItem(location: L, item: I) {
