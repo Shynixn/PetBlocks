@@ -2,6 +2,7 @@ package com.github.shynixn.petblocks.api.business.service
 
 import com.github.shynixn.petblocks.api.business.enumeration.Permission
 import com.github.shynixn.petblocks.api.persistence.entity.Position
+import com.github.shynixn.petblocks.api.persistence.entity.PotionEffect
 
 /**
  * Created by Shynixn 2018.
@@ -42,9 +43,19 @@ interface ProxyService {
     fun <P> getPlayerFromUUID(uuid: String): P
 
     /**
+     * Applies the given [potionEffect] to the given [player].
+     */
+    fun <P> applyPotionEffect(player: P, potionEffect: PotionEffect)
+
+    /**
+     * Gets a list of points between 2 locations.
+     */
+    fun <L> getPointsBetweenLocations(location1: L, location2: L, amount: Int): List<L>
+
+    /**
      * Drops the given item at the given position.
      */
-    fun <L, I> dropInventoryItem(location : L, item: I)
+    fun <L, I> dropInventoryItem(location: L, item: I)
 
     /**
      * Gets the inventory item at the given index.

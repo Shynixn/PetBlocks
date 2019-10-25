@@ -3,8 +3,10 @@
 package com.github.shynixn.petblocks.sponge.logic.business.service
 
 import com.github.shynixn.petblocks.api.business.enumeration.Permission
+import com.github.shynixn.petblocks.api.business.service.LoggingService
 import com.github.shynixn.petblocks.api.business.service.ProxyService
 import com.github.shynixn.petblocks.api.persistence.entity.Position
+import com.github.shynixn.petblocks.api.persistence.entity.PotionEffect
 import com.github.shynixn.petblocks.core.logic.persistence.entity.PositionEntity
 import com.github.shynixn.petblocks.sponge.logic.business.extension.toPosition
 import com.github.shynixn.petblocks.sponge.logic.business.extension.toText
@@ -14,7 +16,10 @@ import net.minecraft.entity.player.EntityPlayerMP
 import net.minecraft.inventory.ContainerChest
 import org.spongepowered.api.Sponge
 import org.spongepowered.api.command.CommandSource
+import org.spongepowered.api.data.manipulator.mutable.PotionEffectData
 import org.spongepowered.api.data.type.HandTypes
+import org.spongepowered.api.effect.potion.PotionEffectType
+import org.spongepowered.api.effect.potion.PotionEffectTypes
 import org.spongepowered.api.entity.EntityTypes
 import org.spongepowered.api.entity.Transform
 import org.spongepowered.api.entity.living.player.Player
@@ -57,7 +62,61 @@ import java.util.*
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class ProxyServiceImpl @Inject constructor(private val pluginContainer: PluginContainer) : ProxyService {
+class ProxyServiceImpl @Inject constructor(private val pluginContainer: PluginContainer, private val loggingService: LoggingService) : ProxyService {
+    /**
+     * Gets a list of points between 2 locations.
+     */
+    override fun <L> getPointsBetweenLocations(location1: L, location2: L, amount: Int): List<L> {
+        require(location1 is Transform<*>)
+        require(location2 is Transform<*>)
+
+        if (location1.extent != location2.extent) {
+            return ArrayList()
+        }
+
+        val locations = ArrayList<Transform<*>>()
+        val vectorBetween = location1.position.sub(location2.position)
+        val onePointLength = vectorBetween.length() / amount
+
+        for (i in 0 until amount) {
+            val location = Transform(location2.extent, location2.position)
+            val pos1 = location.position.add(0.0, 0.7, 0.0)
+            val pos2 = pos1.add(vectorBetween.normalize().mul(i.toFloat()).mul(onePointLength))
+            locations.add(Transform(location2.extent, pos2))
+        }
+
+        return locations as List<L>
+    }
+
+    /**
+     * Applies the given [potionEffect] to the given [player].
+     */
+    override fun <P> applyPotionEffect(player: P, potionEffect: PotionEffect) {
+        require(player is Player)
+
+        val foundPotionTypeField =
+            PotionEffectTypes::class.java.declaredFields.firstOrNull { t -> t.name.equals(potionEffect.potionType, true) }
+
+        if (foundPotionTypeField == null) {
+            loggingService.warn("PotionEffectType: ${potionEffect.potionType} does not exist!")
+            return
+        }
+
+        val foundPotionEffect = foundPotionTypeField.get(null) as PotionEffectType
+
+        val potionEffectSponge = org.spongepowered.api.effect.potion.PotionEffect.builder().potionType(foundPotionEffect).duration(potionEffect.duration * 20)
+            .amplifier(potionEffect.amplifier).ambience(potionEffect.ambient).particles(potionEffect.particles)
+
+        val dataClazz = player.getOrCreate(PotionEffectData::class.java).get()
+
+        for (prevItem in dataClazz.asList().filter { d -> d.type == foundPotionEffect }) {
+            dataClazz.remove(prevItem)
+        }
+
+        dataClazz.addElement(potionEffectSponge.build())
+        player.offer(dataClazz)
+    }
+
     /**
      * Drops the given item at the given position.
      */

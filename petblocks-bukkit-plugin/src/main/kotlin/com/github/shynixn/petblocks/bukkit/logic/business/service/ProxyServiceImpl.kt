@@ -4,8 +4,10 @@ package com.github.shynixn.petblocks.bukkit.logic.business.service
 
 import com.github.shynixn.petblocks.api.business.enumeration.Permission
 import com.github.shynixn.petblocks.api.business.enumeration.Version
+import com.github.shynixn.petblocks.api.business.service.LoggingService
 import com.github.shynixn.petblocks.api.business.service.ProxyService
 import com.github.shynixn.petblocks.api.persistence.entity.Position
+import com.github.shynixn.petblocks.api.persistence.entity.PotionEffect
 import com.github.shynixn.petblocks.bukkit.logic.business.extension.toPosition
 import com.google.inject.Inject
 import org.bukkit.Bukkit
@@ -14,8 +16,10 @@ import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 import org.bukkit.inventory.Inventory
 import org.bukkit.inventory.ItemStack
+import org.bukkit.potion.PotionEffectType
 import org.bukkit.util.Vector
 import java.util.*
+import kotlin.collections.ArrayList
 import kotlin.math.cos
 import kotlin.math.sin
 
@@ -46,7 +50,54 @@ import kotlin.math.sin
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class ProxyServiceImpl @Inject constructor(private val version: Version) : ProxyService {
+class ProxyServiceImpl @Inject constructor(private val version: Version, private val loggingService: LoggingService) : ProxyService {
+    /**
+     * Gets a list of points between 2 locations.
+     */
+    override fun <L> getPointsBetweenLocations(location1: L, location2: L, amount: Int): List<L> {
+        require(location1 is Location)
+        require(location2 is Location)
+
+        if (location1.world != location2.world) {
+            return ArrayList()
+        }
+
+        val locations = ArrayList<Location>()
+        val vectorBetween = location1.subtract(location2)
+        val onePointLength = vectorBetween.length() / amount
+
+        for (i in 0 until amount) {
+            val location = location2.clone().add(0.0, 0.7, 0.0).add(vectorBetween.toVector().normalize().multiply(i).multiply(onePointLength))
+            locations.add(location)
+        }
+
+        return locations as List<L>
+    }
+
+    /**
+     * Applies the given [potionEffect] to the given [player].
+     */
+    override fun <P> applyPotionEffect(player: P, potionEffect: PotionEffect) {
+        require(player is Player)
+
+        val foundPotionType = PotionEffectType.values().firstOrNull { t -> t.name.equals(potionEffect.potionType, true) }
+
+        if (foundPotionType == null) {
+            loggingService.warn("PotionEffectType: ${potionEffect.potionType} does not exist!")
+            return
+        }
+
+        val potionEffectBukkit = org.bukkit.potion.PotionEffect(
+            foundPotionType, potionEffect.duration * 20, potionEffect.amplifier, potionEffect.ambient, potionEffect.particles
+        )
+
+        if (player.hasPotionEffect(foundPotionType)) {
+            player.removePotionEffect(foundPotionType)
+        }
+
+        player.addPotionEffect(potionEffectBukkit)
+    }
+
     /**
      * Drops the given item at the given position.
      */

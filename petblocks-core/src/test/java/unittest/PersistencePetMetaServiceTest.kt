@@ -9,6 +9,7 @@ import com.github.shynixn.petblocks.api.business.service.PersistencePetMetaServi
 import com.github.shynixn.petblocks.api.business.service.ProxyService
 import com.github.shynixn.petblocks.api.persistence.entity.PetMeta
 import com.github.shynixn.petblocks.api.persistence.entity.Position
+import com.github.shynixn.petblocks.api.persistence.entity.PotionEffect
 import com.github.shynixn.petblocks.api.persistence.repository.PetMetaRepository
 import com.github.shynixn.petblocks.core.logic.business.service.PersistencePetMetaServiceImpl
 import com.github.shynixn.petblocks.core.logic.persistence.entity.PetMetaEntity
@@ -176,6 +177,12 @@ class PersistencePetMetaServiceTest {
     }
 
     class MockedProxyService : ProxyService {
+        /**
+         * Applies the given [potionEffect] to the given [player].
+         */
+        override fun <P> applyPotionEffect(player: P, potionEffect: PotionEffect) {
+        }
+
         /**
          * Drops the given item at the given position.
          */

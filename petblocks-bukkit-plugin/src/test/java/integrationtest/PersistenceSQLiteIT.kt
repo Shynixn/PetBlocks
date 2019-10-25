@@ -240,7 +240,7 @@ class PersistenceSQLiteIT {
             method.isAccessible = true
             method.invoke(PetBlocksApi, MockedPluginProxy())
 
-            val aiService = AIServiceImpl(LoggingUtilServiceImpl(Logger.getAnonymousLogger()), MockedProxyService(),YamlServiceImpl())
+            val aiService = AIServiceImpl(LoggingUtilServiceImpl(Logger.getAnonymousLogger()), MockedProxyService(), YamlServiceImpl())
             val configService = ConfigurationServiceImpl(plugin)
             val guiItemLoadService =
                 GUIItemLoadServiceImpl(
@@ -249,9 +249,11 @@ class PersistenceSQLiteIT {
                     aiService
                 )
 
-            EntityServiceImpl(configService, MockedProxyService(),
+            EntityServiceImpl(
+                configService, MockedProxyService(),
                 Mockito.mock(EntityRegistrationService::class.java), Mockito.mock(PetService::class.java), YamlSerializationServiceImpl(),
-                plugin, Version.VERSION_1_8_R1, aiService)
+                plugin, Version.VERSION_1_8_R1, aiService
+            )
 
             dbContext = SqlDbContextImpl(configService, LoggingUtilServiceImpl(Logger.getAnonymousLogger()))
 
@@ -295,6 +297,12 @@ class PersistenceSQLiteIT {
     }
 
     class MockedProxyService : ProxyService {
+        /**
+         * Applies the given [potionEffect] to the given [player].
+         */
+        override fun <P> applyPotionEffect(player: P, potionEffect: PotionEffect) {
+        }
+
         /**
          * Drops the given item at the given position.
          */

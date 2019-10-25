@@ -319,6 +319,12 @@ class PersistenceSQLiteIT {
 
     class MockedProxyService : ProxyService {
         /**
+         * Applies the given [potionEffect] to the given [player].
+         */
+        override fun <P> applyPotionEffect(player: P, potionEffect: PotionEffect) {
+        }
+
+        /**
          * Drops the given item at the given position.
          */
         override fun <L, I> dropInventoryItem(location: L, item: I) {
