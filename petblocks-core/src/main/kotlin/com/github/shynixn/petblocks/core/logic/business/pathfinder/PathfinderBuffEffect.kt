@@ -72,7 +72,7 @@ class PathfinderBuffEffect(private val aiBuffEffect: AIBuffEffect, private val p
     }
 
     /**
-     * Displays the particles.
+     * Displays the particle trail.
      */
     private fun displayParticle() {
         if (!pet.meta.particleEnabled) {
@@ -85,7 +85,7 @@ class PathfinderBuffEffect(private val aiBuffEffect: AIBuffEffect, private val p
     }
 
     /**
-     * Displays the sound.
+     * Plays a feedback sound.
      */
     private fun displaySound() {
         if (!pet.meta.soundEnabled) {
