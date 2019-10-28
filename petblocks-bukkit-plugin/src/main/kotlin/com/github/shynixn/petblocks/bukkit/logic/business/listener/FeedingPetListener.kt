@@ -57,8 +57,15 @@ class FeedingPetListener @Inject constructor(
 
         if (pet.getPlayer<Player>() == event.player) {
             val itemStack = handService.getItemInHand<Player, ItemStack>(event.player)
+            val itemType: Any
 
-            if (itemStack.isPresent && itemTypeService.findItemType<Any>(itemStack.get()) != itemTypeService.findItemType(MaterialType.AIR)) {
+            try {
+                itemType = itemTypeService.findItemType(itemStack.get())
+            } catch (e: Exception) {
+                return
+            }
+
+            if (itemStack.isPresent && itemType != itemTypeService.findItemType(MaterialType.AIR)) {
                 val feed = feedingPetService.feedPet(pet, itemStack.get())
 
                 if (feed) {
