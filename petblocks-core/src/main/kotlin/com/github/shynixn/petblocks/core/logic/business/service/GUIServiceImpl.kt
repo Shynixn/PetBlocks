@@ -1,4 +1,4 @@
-@file:Suppress("UNCHECKED_CAST")
+@file:Suppress("UNCHECKED_CAST", "DuplicatedCode")
 
 package com.github.shynixn.petblocks.core.logic.business.service
 
@@ -224,17 +224,20 @@ class GUIServiceImpl @Inject constructor(
     override fun <P, I> clickInventoryItem(player: P, relativeSlot: Int, item: I) {
         require(player is Any)
 
+        if (lockGui(player)) {
+            return
+        }
+
         val optGuiItem = loadService.findClickedGUIItem(pageCache[player]!!.path, item) ?: return
 
         if (optGuiItem.permission.isNotEmpty() && !proxyService.hasPermission(player, optGuiItem.permission)) {
-            if (!lockGui(player)) {
-                proxyService.sendMessage(
-                    player,
-                    configurationService.findValue<String>("messages.prefix") + configurationService.findValue<String>(
-                        "messages.no-permission"
-                    )
+
+            proxyService.sendMessage(
+                player,
+                configurationService.findValue<String>("messages.prefix") + configurationService.findValue<String>(
+                    "messages.no-permission"
                 )
-            }
+            )
 
             return
         }
@@ -276,7 +279,14 @@ class GUIServiceImpl @Inject constructor(
             }
 
             for (aiBase in optGuiItem.removeAIs.toTypedArray()) {
-                petMeta.aiGoals.removeIf { a -> a.type == aiBase.type }
+                val finalRemove = petMeta.aiGoals.filter { a ->
+                    a.type == aiBase.type && (a.userId == null || aiBase.userId == null || a.userId.equals(
+                        aiBase.userId,
+                        true
+                    ))
+                }
+
+                petMeta.aiGoals.removeAll(finalRemove)
             }
 
             for (aiBase in optGuiItem.addAIs.toTypedArray()) {
@@ -445,6 +455,12 @@ class GUIServiceImpl @Inject constructor(
         for (name in names) {
             for (aiGoal in petMeta.aiGoals) {
                 if (aiGoal.type.equals(name, true)) {
+                    return true
+                }
+
+                if (aiGoal.userId != null && name.toLowerCase().endsWith(aiGoal.userId!!.toLowerCase())
+                    && name.toLowerCase().startsWith(aiGoal.type.toLowerCase())
+                ) {
                     return true
                 }
             }

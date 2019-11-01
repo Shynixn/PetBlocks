@@ -61,9 +61,9 @@ repositories {
 
 task dockerJar(type: Exec, dependsOn: shadowJar) {
     if (System.getProperty('os.name').toLowerCase(Locale.ROOT).contains('windows')) {
-        commandLine 'cmd', '/c', "docker cp build/libs/. petblocks:/minecraft/spigot/plugins"
+        commandLine 'cmd', '/c', "docker cp build/libs/. petblocks-1.14.4:/minecraft/plugins"
     } else {
-        commandLine 'sh', '-c', "docker cp build/libs/. petblocks:/minecraft/spigot/plugins"
+        commandLine 'sh', '-c', "docker cp build/libs/. petblocks-1.14.4:/minecraft/plugins"
     }
 }
 

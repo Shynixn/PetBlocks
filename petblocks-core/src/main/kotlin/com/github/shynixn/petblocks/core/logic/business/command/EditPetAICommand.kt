@@ -71,9 +71,15 @@ class EditPetAICommand @Inject constructor(
                 for (mapData in replaceAis.keys) {
                     val data = replaceAis[mapData] as Map<String, Any?>
                     val aiBase = aiService.deserializeAiBase<AIBase>(data["type"] as String, data)
+                    val finalRemove = petMeta.aiGoals.filter { a ->
+                        a.type == aiBase.type && (a.userId == null || aiBase.userId == null || a.userId.equals(
+                            aiBase.userId,
+                            true
+                        ))
+                    }
 
-                    removeAmount += petMeta.aiGoals.filter { a -> a.type == aiBase.type }.size
-                    petMeta.aiGoals.removeAll { a -> a.type == aiBase.type }
+                    removeAmount += finalRemove.size
+                    petMeta.aiGoals.removeAll(finalRemove)
 
                     petMeta.aiGoals.add(aiBase)
                     addAmount++
@@ -86,9 +92,15 @@ class EditPetAICommand @Inject constructor(
                 for (mapData in removeAis.keys) {
                     val data = removeAis[mapData] as Map<String, Any?>
                     val aiBase = aiService.deserializeAiBase<AIBase>(data["type"] as String, data)
+                    val finalRemove = petMeta.aiGoals.filter { a ->
+                        a.type == aiBase.type && (a.userId == null || aiBase.userId == null || a.userId.equals(
+                            aiBase.userId,
+                            true
+                        ))
+                    }
 
-                    removeAmount += petMeta.aiGoals.filter { a -> a.type == aiBase.type }.size
-                    petMeta.aiGoals.removeAll { a -> a.type == aiBase.type }
+                    removeAmount += finalRemove.size
+                    petMeta.aiGoals.removeAll(finalRemove)
                 }
             }
 
