@@ -42,6 +42,7 @@ Properties
 ~~~~~~~~~~
 
 * Type: Unique identifier of the ai.
+* Tag: Optional tag to identify a specific ai configuration.
 * Speed: The hopping speed of the pet.
 * Offset-Y: The offset value from the player's head position.
 * ClickParticle.Name: Name of the particle effect. All names can be found `here. <https://shynixn.github.io/PetBlocks/apidocs/com/github/shynixn/petblocks/api/business/enumeration/ParticleType.html>`_

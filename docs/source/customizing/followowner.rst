@@ -30,6 +30,7 @@ Properties
 ~~~~~~~~~~
 
 * Type: Unique identifier of the ai.
+* Tag: Optional tag to identify a specific ai configuration.
 * Min-Distance: The minimum amount of distance the pet tries to stay away from the player.
 * Max-Distance: The maximum amount of distance the pet tries to stay away from the player.
 * Speed: Additional, speed modifier. Should be carefully adjusted together with the speed of the (Walking, Hopping, Flying) ai.

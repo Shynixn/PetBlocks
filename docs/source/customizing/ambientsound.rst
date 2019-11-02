@@ -33,6 +33,7 @@ Properties
 ~~~~~~~~~~
 
 * Type: Unique identifier of the ai.
+* Tag: Optional tag to identify a specific ai configuration.
 * Sound.Name: Name of the sound. All names can be found `here. <https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Sound.html>`_
 * Sound.Volume: Volume of the sound.
 * Sound.Pitch: Pitch of the sound.
