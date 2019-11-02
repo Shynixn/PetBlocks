@@ -11,6 +11,7 @@ Make sure you have read the `introduction to PetBlocks <../pets/index.html>`_ fi
 .. toctree::
  afraidofwater
  ambientsound
+ buffeffect
  carry
  feeding
  fleeincombat

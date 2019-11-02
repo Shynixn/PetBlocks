@@ -33,4 +33,5 @@ Properties
 ~~~~~~~~~~
 
 * Type: Unique identifier of the ai.
+* Tag: Optional tag to identify a specific ai configuration.
 * Reappear delay: Time in seconds until the pet will be able to spawn again.

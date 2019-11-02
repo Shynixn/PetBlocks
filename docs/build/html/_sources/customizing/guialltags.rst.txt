@@ -112,7 +112,7 @@ Only one condition has to match.
       - 'pet-disabled'
       - 'sound-disabled'
       - 'float-in-water'
-
+      - 'buff-effect:my-speed-buff-effect'
 ================================ ========================================================
 Tag                              Description
 ================================ ========================================================
@@ -124,6 +124,7 @@ particle-enabled                 Hides or blocks when the pet particle is enable
 particle-disabled                Hides or blocks when the pet particle is disabled
 no-permission                    Hides or blocks when the player has not got the permission specified in the permission tag
 <aitype>                         Hides or blocks when the pet has got the specified ai type name
+<aitype>:<tag>                    Hides or blocks when the pet has got the specified ai type name and tag name
 ================================ ========================================================
 
 The set-skin tag
@@ -158,6 +159,9 @@ If the replace-ai tag is set to any gui item, then the pet will replace any ai w
 
 .. note:: For best practises, prefer using the **replace-ai** as endless stacking of ais is easier to avoid.
 
+.. note:: If you add a **tag** to an ai, you can remove/replace this ai specifically by also adding the same tag to
+ the replace-ai, remove-ai section.
+
 **config.yml**
 ::
     add-ai:
@@ -183,6 +187,7 @@ If the replace-ai tag is set to any gui item, then the pet will replace any ai w
           type: 'wearing'
         2:
           type: 'feeding'
+          tag: 'my-custom-feed-ai'
           item-id: 391
           item-damage: 0
           click-particle:

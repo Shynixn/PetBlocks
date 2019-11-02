@@ -25,7 +25,7 @@ config.yml
     type: 'health'
     max-health: 20.0
     health: 20.0
-    respawning-delay: 5
+    respawn-delay: 5
 
 You can find all options explained at the bottom of this page.
 
@@ -33,6 +33,7 @@ Properties
 ~~~~~~~~~~
 
 * Type: Unique identifier of the ai.
+* Tag: Optional tag to identify a specific ai configuration.
 * Max-Health: The max amount of health points a pet can reach while regaining health.
 * Health: The current amount of health points of a pet.
 * Respawning-Delay: The time in seconds until the pet is able to respawn after it has died.

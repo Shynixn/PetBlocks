@@ -29,6 +29,7 @@ Properties
 ~~~~~~~~~~
 
 * Type: Unique identifier of the ai.
+* Tag: Optional tag to identify a specific ai configuration.
 * Climbing Height: Climbing height while riding the pet.
 * Speed: The riding speed of the pet.
 * Offset-Y: Offset from the ground.

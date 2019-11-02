@@ -462,6 +462,7 @@ Only one condition has to match.</p>
    <span class="o">-</span> <span class="s1">&#39;pet-disabled&#39;</span>
    <span class="o">-</span> <span class="s1">&#39;sound-disabled&#39;</span>
    <span class="o">-</span> <span class="s1">&#39;float-in-water&#39;</span>
+   <span class="o">-</span> <span class="s1">&#39;buff-effect:my-speed-buff-effect&#39;</span>
 </pre></div>
 </div>
 <table class="docutils align-default">
@@ -498,6 +499,9 @@ Only one condition has to match.</p>
 </tr>
 <tr class="row-odd"><td><p>&lt;aitype&gt;</p></td>
 <td><p>Hides or blocks when the pet has got the specified ai type name</p></td>
+</tr>
+<tr class="row-even"><td><p>&lt;aitype&gt;:&lt;tag&gt;</p></td>
+<td><p>Hides or blocks when the pet has got the specified ai type name and tag name</p></td>
 </tr>
 </tbody>
 </table>
@@ -559,6 +563,11 @@ Only one condition has to match.</p>
 <p class="admonition-title">Note</p>
 <p>For best practises, prefer using the <strong>replace-ai</strong> as endless stacking of ais is easier to avoid.</p>
 </div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If you add a <strong>tag</strong> to an ai, you can remove/replace this ai specifically by also adding the same tag to
+the replace-ai, remove-ai section.</p>
+</div>
 <p><strong>config.yml</strong></p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">add</span><span class="o">-</span><span class="n">ai</span><span class="p">:</span>
     <span class="mi">1</span><span class="p">:</span>
@@ -583,6 +592,7 @@ Only one condition has to match.</p>
       <span class="nb">type</span><span class="p">:</span> <span class="s1">&#39;wearing&#39;</span>
     <span class="mi">2</span><span class="p">:</span>
       <span class="nb">type</span><span class="p">:</span> <span class="s1">&#39;feeding&#39;</span>
+      <span class="n">tag</span><span class="p">:</span> <span class="s1">&#39;my-custom-feed-ai&#39;</span>
       <span class="n">item</span><span class="o">-</span><span class="nb">id</span><span class="p">:</span> <span class="mi">391</span>
       <span class="n">item</span><span class="o">-</span><span class="n">damage</span><span class="p">:</span> <span class="mi">0</span>
       <span class="n">click</span><span class="o">-</span><span class="n">particle</span><span class="p">:</span>

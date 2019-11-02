@@ -109,6 +109,7 @@
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="ambientsound.html">Ambient Sound</a></li>
+<li class="toctree-l3"><a class="reference internal" href="buffeffect.html">Buff Effect</a></li>
 <li class="toctree-l3"><a class="reference internal" href="carry.html">Carry</a></li>
 <li class="toctree-l3"><a class="reference internal" href="feeding.html">Feeding</a></li>
 <li class="toctree-l3"><a class="reference internal" href="fleeincombat.html">Flee in Combat</a></li>
@@ -229,6 +230,7 @@ when applying this ai to the pet, the pet will leap back to their owner on conta
 </ul>
 <p>config.yml</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nb">type</span><span class="p">:</span> <span class="s1">&#39;afraid-of-water&#39;</span>
+<span class="n">tag</span><span class="p">:</span> <span class="s1">&#39;my-ai&#39;</span>
 <span class="n">stop</span><span class="o">-</span><span class="n">delay</span><span class="p">:</span> <span class="mi">5</span>
 <span class="n">particle</span><span class="p">:</span>
   <span class="n">name</span><span class="p">:</span> <span class="s1">&#39;VILLAGER_ANGRY&#39;</span>
@@ -245,6 +247,7 @@ when applying this ai to the pet, the pet will leap back to their owner on conta
 <h2>Properties<a class="headerlink" href="#properties" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p>Type: Unique identifier of the ai.</p></li>
+<li><p>Tag: Optional tag to identify a specific ai configuration.</p></li>
 <li><p>Stop-Delay: Time in seconds until the pet performs another leap. This option gets relevant when a pet immediately touches water again after trying to leap back to the player.</p></li>
 <li><p>Particle.Name: Name of the particle effect. All names can be found <a class="reference external" href="https://shynixn.github.io/PetBlocks/apidocs/com/github/shynixn/petblocks/api/business/enumeration/ParticleType.html">here.</a></p></li>
 <li><p>Particle.Speed: Speed of the particle effect.</p></li>

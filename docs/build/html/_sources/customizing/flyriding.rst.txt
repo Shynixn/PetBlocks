@@ -27,4 +27,5 @@ Properties
 ~~~~~~~~~~
 
 * Type: Unique identifier of the ai.
+* Tag: Optional tag to identify a specific ai configuration.
 * Speed: The riding speed of the pet.

@@ -24,3 +24,4 @@ Properties
 ~~~~~~~~~~
 
 * Type: Unique identifier of the ai.
+* Tag: Optional tag to identify a specific ai configuration.

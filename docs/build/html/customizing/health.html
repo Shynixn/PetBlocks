@@ -104,6 +104,7 @@
 <li class="toctree-l2 current"><a class="reference internal" href="ai.html">AIS</a><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="afraidofwater.html">Afraid of Water</a></li>
 <li class="toctree-l3"><a class="reference internal" href="ambientsound.html">Ambient Sound</a></li>
+<li class="toctree-l3"><a class="reference internal" href="buffeffect.html">Buff Effect</a></li>
 <li class="toctree-l3"><a class="reference internal" href="carry.html">Carry</a></li>
 <li class="toctree-l3"><a class="reference internal" href="feeding.html">Feeding</a></li>
 <li class="toctree-l3"><a class="reference internal" href="fleeincombat.html">Flee in Combat</a></li>
@@ -230,7 +231,7 @@
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nb">type</span><span class="p">:</span> <span class="s1">&#39;health&#39;</span>
 <span class="nb">max</span><span class="o">-</span><span class="n">health</span><span class="p">:</span> <span class="mf">20.0</span>
 <span class="n">health</span><span class="p">:</span> <span class="mf">20.0</span>
-<span class="n">respawning</span><span class="o">-</span><span class="n">delay</span><span class="p">:</span> <span class="mi">5</span>
+<span class="n">respawn</span><span class="o">-</span><span class="n">delay</span><span class="p">:</span> <span class="mi">5</span>
 </pre></div>
 </div>
 <p>You can find all options explained at the bottom of this page.</p>
@@ -239,6 +240,7 @@
 <h2>Properties<a class="headerlink" href="#properties" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p>Type: Unique identifier of the ai.</p></li>
+<li><p>Tag: Optional tag to identify a specific ai configuration.</p></li>
 <li><p>Max-Health: The max amount of health points a pet can reach while regaining health.</p></li>
 <li><p>Health: The current amount of health points of a pet.</p></li>
 <li><p>Respawning-Delay: The time in seconds until the pet is able to respawn after it has died.</p></li>
