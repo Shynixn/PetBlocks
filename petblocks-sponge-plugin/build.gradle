@@ -82,9 +82,9 @@ tasks {
 
 task dockerJar(type: Exec, dependsOn: shadowJar) {
     if (System.getProperty('os.name').toLowerCase(Locale.ROOT).contains('windows')) {
-        commandLine 'cmd', '/c', "docker cp build/libs/. petblocks-sponge:/minecraft/sponge/mods"
+        commandLine 'cmd', '/c', "docker cp build/libs/. petblocks-sponge-1.12.2:/minecraft/mods"
     } else {
-        commandLine 'sh', '-c', "docker cp build/libs/. petblocks-sponge:/minecraft/sponge/mods"
+        commandLine 'sh', '-c', "docker cp build/libs/. petblocks-sponge-1.12.2:/minecraft/mods"
     }
 }
 

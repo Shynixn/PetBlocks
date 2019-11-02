@@ -28,7 +28,6 @@ import org.spongepowered.api.item.inventory.InventoryArchetypes
 import org.spongepowered.api.item.inventory.ItemStack
 import org.spongepowered.api.item.inventory.property.InventoryTitle
 import org.spongepowered.api.item.inventory.property.SlotPos
-import org.spongepowered.api.item.inventory.transaction.InventoryTransactionResult
 import org.spongepowered.api.item.inventory.type.CarriedInventory
 import org.spongepowered.api.item.inventory.type.GridInventory
 import org.spongepowered.api.plugin.PluginContainer
@@ -78,11 +77,15 @@ class ProxyServiceImpl @Inject constructor(private val pluginContainer: PluginCo
         val vectorBetween = location1.position.sub(location2.position)
         val onePointLength = vectorBetween.length() / amount
 
-        for (i in 0 until amount) {
-            val location = Transform(location2.extent, location2.position)
-            val pos1 = location.position.add(0.0, 0.7, 0.0)
-            val pos2 = pos1.add(vectorBetween.normalize().mul(i.toFloat()).mul(onePointLength))
-            locations.add(Transform(location2.extent, pos2))
+        try {
+            for (i in 0 until amount) {
+                val location = Transform(location2.extent, location2.position)
+                val pos1 = location.position.add(0.0, 0.7, 0.0)
+                val pos2 = pos1.add(vectorBetween.normalize().mul(i.toFloat()).mul(onePointLength))
+                locations.add(Transform(location2.extent, pos2))
+            }
+        } catch (e: Exception) {
+            // Ignore normalizing errors.
         }
 
         return locations as List<L>
@@ -94,11 +97,15 @@ class ProxyServiceImpl @Inject constructor(private val pluginContainer: PluginCo
     override fun <P> applyPotionEffect(player: P, potionEffect: PotionEffect) {
         require(player is Player)
 
-        val foundPotionTypeField =
+        var foundPotionTypeField =
             PotionEffectTypes::class.java.declaredFields.firstOrNull { t -> t.name.equals(potionEffect.potionType, true) }
 
+        if (foundPotionTypeField == null && potionEffect.potionType.equals("INCREASE_DAMAGE", true)) {
+            foundPotionTypeField = PotionEffectTypes::class.java.declaredFields.single { f -> f.name == "STRENGTH" }
+        }
+
         if (foundPotionTypeField == null) {
-            loggingService.warn("PotionEffectType: ${potionEffect.potionType} does not exist!")
+            loggingService.warn("PotionEffectType: ${potionEffect.potionType} does not exist! Check your config.yml.")
             return
         }
 
@@ -217,12 +224,8 @@ class ProxyServiceImpl @Inject constructor(private val pluginContainer: PluginCo
         val row = index / 9
         val column = index % 9
 
-        val queryResult = inventory.query<Inventory>(GridInventory::class.java)
-            .query<Inventory>(SlotPos.of(column, row))
-
-        if (queryResult.offer(item).type != InventoryTransactionResult.Type.SUCCESS) {
-            queryResult.set(item)
-        }
+        inventory.query<Inventory>(GridInventory::class.java)
+            .query<Inventory>(SlotPos.of(column, row)).set(item)
     }
 
     /**
