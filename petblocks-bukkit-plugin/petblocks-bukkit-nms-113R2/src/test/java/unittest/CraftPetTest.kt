@@ -82,7 +82,7 @@ class CraftPetTest {
         val entityType = classUnderTest.type
 
         // Assert
-        Assertions.assertEquals(EntityType.SLIME, entityType)
+        Assertions.assertEquals(EntityType.PIG, entityType)
     }
 
     /**

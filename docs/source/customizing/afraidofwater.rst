@@ -28,6 +28,7 @@ Configuring in your config.yml
 config.yml
 ::
       type: 'afraid-of-water'
+      tag: 'my-ai'
       stop-delay: 5
       particle:
         name: 'VILLAGER_ANGRY'
@@ -43,6 +44,7 @@ Properties
 ~~~~~~~~~~
 
 * Type: Unique identifier of the ai.
+* Tag: Optional tag to identify a specific ai configuration.
 * Stop-Delay: Time in seconds until the pet performs another leap. This option gets relevant when a pet immediately touches water again after trying to leap back to the player.
 * Particle.Name: Name of the particle effect. All names can be found `here. <https://shynixn.github.io/PetBlocks/apidocs/com/github/shynixn/petblocks/api/business/enumeration/ParticleType.html>`_
 * Particle.Speed: Speed of the particle effect.

@@ -319,6 +319,19 @@ class PersistenceSQLiteIT {
 
     class MockedProxyService : ProxyService {
         /**
+         * Applies the given [potionEffect] to the given [player].
+         */
+        override fun <P> applyPotionEffect(player: P, potionEffect: PotionEffect) {
+        }
+
+        /**
+         * Gets a list of points between 2 locations.
+         */
+        override fun <L> getPointsBetweenLocations(location1: L, location2: L, amount: Int): List<L> {
+            throw IllegalArgumentException()
+        }
+
+        /**
          * Drops the given item at the given position.
          */
         override fun <L, I> dropInventoryItem(location: L, item: I) {

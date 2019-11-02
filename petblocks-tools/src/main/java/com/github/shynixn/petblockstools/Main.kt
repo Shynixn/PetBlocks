@@ -1,7 +1,7 @@
 package com.github.shynixn.petblockstools
 
 import com.github.shynixn.petblockstools.logic.service.ConfigServiceImpl
-import com.github.shynixn.petblockstools.logic.service.PublishPetBlocksSnapshotToDiscord
+import com.github.shynixn.petblockstools.logic.service.PublishPetBlocksToDiscord
 import java.nio.file.Paths
 
 /**
@@ -55,9 +55,22 @@ fun main(args: Array<String>) {
         }
 
         val webHookUrl = args[1]
-        val publishService = PublishPetBlocksSnapshotToDiscord()
+        val publishService = PublishPetBlocksToDiscord()
 
         publishService.publishSnapshotToDiscord(webHookUrl)
+
+        return
+    }
+
+    if (args[0] == "--release") {
+        if (args.size != 2) {
+            throw IllegalArgumentException("--release requires 1 additional arguments [WebHookUrl]!")
+        }
+
+        val webHookUrl = args[1]
+        val publishService = PublishPetBlocksToDiscord()
+
+        publishService.publishReleaseToDiscord(webHookUrl)
 
         return
     }

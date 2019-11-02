@@ -39,6 +39,6 @@ abstract class AIBaseEntity : AIBase {
     /**
      * Optional user identifier.
      */
-    @YamlSerialize(value = "user-id", orderNumber = 2)
+    @YamlSerialize(value = "tag", orderNumber = 2)
     override var userId: String? = null
 }

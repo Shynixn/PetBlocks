@@ -11,6 +11,7 @@ import com.github.shynixn.petblocks.api.persistence.context.SqlDbContext
 import com.github.shynixn.petblocks.api.persistence.entity.GuiItem
 import com.github.shynixn.petblocks.api.persistence.entity.PetMeta
 import com.github.shynixn.petblocks.api.persistence.entity.Position
+import com.github.shynixn.petblocks.api.persistence.entity.PotionEffect
 import com.github.shynixn.petblocks.api.persistence.repository.PetMetaRepository
 import com.github.shynixn.petblocks.core.logic.business.service.AIServiceImpl
 import com.github.shynixn.petblocks.core.logic.business.service.LoggingUtilServiceImpl
@@ -310,6 +311,19 @@ class PetMetaSqlRepositoryTest {
     }
 
     class MockedProxyService : ProxyService {
+        /**
+         * Gets a list of points between 2 locations.
+         */
+        override fun <L> getPointsBetweenLocations(location1: L, location2: L, amount: Int): List<L> {
+            throw IllegalArgumentException()
+        }
+
+        /**
+         * Applies the given [potionEffect] to the given [player].
+         */
+        override fun <P> applyPotionEffect(player: P, potionEffect: PotionEffect) {
+        }
+
         /**
          * Drops the given item at the given position.
          */

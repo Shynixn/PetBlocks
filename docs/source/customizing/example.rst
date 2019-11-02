@@ -6,5 +6,7 @@ The articles in this section deal with full examples including downloadable conf
 .. toctree::
    samplepokemoncategory
    sampleinventories
+   samplesellingeffects
+   samplepvppets
    samplehidingguiitems
    samplealwayswearingai

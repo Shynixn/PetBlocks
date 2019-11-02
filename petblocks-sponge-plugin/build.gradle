@@ -82,9 +82,9 @@ tasks {
 
 task dockerJar(type: Exec, dependsOn: shadowJar) {
     if (System.getProperty('os.name').toLowerCase(Locale.ROOT).contains('windows')) {
-        commandLine 'cmd', '/c', "docker cp build/libs/. petblocks-sponge:/minecraft/sponge/mods"
+        commandLine 'cmd', '/c', "docker cp build/libs/. petblocks-sponge-1.12.2:/minecraft/mods"
     } else {
-        commandLine 'sh', '-c', "docker cp build/libs/. petblocks-sponge:/minecraft/sponge/mods"
+        commandLine 'sh', '-c', "docker cp build/libs/. petblocks-sponge-1.12.2:/minecraft/mods"
     }
 }
 
@@ -110,7 +110,7 @@ dependencies {
     compileOnly 'com.zaxxer:HikariCP:3.2.0'
     compileOnly 'org.spongepowered:spongeapi:7.1.0'
 
-    implementation 'org.bstats.bStats-Metrics:bstats-sponge:1.3'
+    implementation 'org.bstats.bStats-Metrics:bstats-sponge:1.5'
 
     testCompile 'org.jetbrains.kotlin:kotlin-test'
     testCompile 'org.jetbrains.kotlin:kotlin-test-junit'

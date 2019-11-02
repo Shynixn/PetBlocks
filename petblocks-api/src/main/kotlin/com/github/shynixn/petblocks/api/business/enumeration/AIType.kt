@@ -53,6 +53,11 @@ enum class AIType(
     AMBIENT_SOUND("ambient-sound", AIAmbientSound::class),
 
     /**
+     * BuffEffect ai.
+     */
+    BUFF_EFFECT("buff-effect", AIBuffEffect::class),
+
+    /**
      * Carry.
      */
     CARRY("carry", AICarry::class),

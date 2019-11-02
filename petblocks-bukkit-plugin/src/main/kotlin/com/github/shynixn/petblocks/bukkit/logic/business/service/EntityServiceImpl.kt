@@ -16,6 +16,7 @@ import com.github.shynixn.petblocks.bukkit.logic.business.pathfinder.PathfinderA
 import com.github.shynixn.petblocks.bukkit.logic.business.pathfinder.PathfinderAmbientSound
 import com.github.shynixn.petblocks.bukkit.logic.business.pathfinder.PathfinderFollowBack
 import com.github.shynixn.petblocks.bukkit.logic.business.pathfinder.PathfinderFollowOwner
+import com.github.shynixn.petblocks.core.logic.business.pathfinder.PathfinderBuffEffect
 import com.github.shynixn.petblocks.core.logic.business.proxy.AICreationProxyImpl
 import com.google.inject.Inject
 import org.bukkit.ChatColor
@@ -83,6 +84,10 @@ class EntityServiceImpl @Inject constructor(
             val hitBox = pet.getHitBoxLivingEntity<LivingEntity>().get()
 
             PathfinderAmbientSound(pet, aiBase, hitBox, pet.getPlayer())
+        }
+
+        this.register<AIBuffEffect>(AIType.BUFF_EFFECT) { pet, aiBase ->
+            PathfinderBuffEffect(aiBase, pet)
         }
 
         this.register<AICarry>(AIType.CARRY)

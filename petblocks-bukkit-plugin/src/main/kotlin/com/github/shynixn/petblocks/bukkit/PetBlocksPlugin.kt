@@ -65,7 +65,6 @@ class PetBlocksPlugin : JavaPlugin(), PluginProxy {
 
     private val configVersion = 1
     private var injector: Injector? = null
-    private var immediateDisable: Boolean = false
     private var serverVersion: Version? = null
 
     /**
@@ -80,83 +79,73 @@ class PetBlocksPlugin : JavaPlugin(), PluginProxy {
      * Enables the plugin PetBlocks.
      */
     override fun onEnable() {
-        Bukkit.getServer().consoleSender.sendMessage(PREFIX_CONSOLE + ChatColor.GREEN + "Loading PetBlocks ...")
+        sendConsoleMessage(ChatColor.GREEN.toString() + "Loading PetBlocks ...")
         this.saveDefaultConfig()
 
-        if (!getServerVersion().isCompatible(
-                Version.VERSION_1_8_R1,
-                Version.VERSION_1_8_R2,
-                Version.VERSION_1_8_R3,
-                Version.VERSION_1_9_R1,
-                Version.VERSION_1_9_R2,
-                Version.VERSION_1_10_R1,
-                Version.VERSION_1_11_R1,
-                Version.VERSION_1_12_R1,
-                Version.VERSION_1_13_R1,
-                Version.VERSION_1_13_R2,
-                Version.VERSION_1_14_R1
-            )
-        ) {
-            Bukkit.getServer()
-                .consoleSender.sendMessage(PREFIX_CONSOLE + ChatColor.RED + "================================================")
-            Bukkit.getServer()
-                .consoleSender.sendMessage(PREFIX_CONSOLE + ChatColor.RED + "PetBlocks does not support your server version")
-            Bukkit.getServer()
-                .consoleSender.sendMessage(PREFIX_CONSOLE + ChatColor.RED + "Install v" + Version.VERSION_1_8_R1.id + " - v" + Version.VERSION_1_14_R1.id)
-            Bukkit.getServer().consoleSender.sendMessage(PREFIX_CONSOLE + ChatColor.RED + "Plugin gets now disabled!")
-            Bukkit.getServer()
-                .consoleSender.sendMessage(PREFIX_CONSOLE + ChatColor.RED + "================================================")
+        if (disableForVersion(Version.VERSION_1_8_R1, Version.VERSION_1_8_R3)) {
+            return
+        }
 
-            immediateDisable = true
+        if (disableForVersion(Version.VERSION_1_8_R2, Version.VERSION_1_8_R3)) {
+            return
+        }
+
+        if (disableForVersion(Version.VERSION_1_9_R1, Version.VERSION_1_9_R2)) {
+            return
+        }
+
+        if (disableForVersion(Version.VERSION_1_13_R1, Version.VERSION_1_13_R2)) {
+            return
+        }
+
+        val versions = arrayOf(
+            Version.VERSION_1_8_R3,
+            Version.VERSION_1_9_R2,
+            Version.VERSION_1_10_R1,
+            Version.VERSION_1_11_R1,
+            Version.VERSION_1_12_R1,
+            Version.VERSION_1_13_R2,
+            Version.VERSION_1_14_R1
+        )
+
+        if (!getServerVersion().isCompatible(versions)) {
+            sendConsoleMessage(ChatColor.RED.toString() + "================================================")
+            sendConsoleMessage(ChatColor.RED.toString() + "PetBlocks does not support your server version")
+            sendConsoleMessage(ChatColor.RED.toString() + "Install v" + Version.VERSION_1_8_R1.id + " - v" + Version.VERSION_1_14_R1.id)
+            sendConsoleMessage(ChatColor.RED.toString() + "Plugin gets now disabled!")
+            sendConsoleMessage(ChatColor.RED.toString() + "================================================")
+
             Bukkit.getPluginManager().disablePlugin(this)
-
             return
         }
 
         if (isArmorStandTickingDisabled()) {
-            Bukkit.getServer()
-                .consoleSender.sendMessage(PREFIX_CONSOLE + ChatColor.RED + "================================================")
-            Bukkit.getServer()
-                .consoleSender.sendMessage(PREFIX_CONSOLE + ChatColor.RED + "PetBlocks does only work with armor-stands-tick: true")
-            Bukkit.getServer()
-                .consoleSender.sendMessage(PREFIX_CONSOLE + ChatColor.RED + "Please enable it in your paper.yml file!")
-            Bukkit.getServer()
-                .consoleSender.sendMessage(PREFIX_CONSOLE + ChatColor.GRAY + "You can disable this security check on your own risk by")
-            Bukkit.getServer()
-                .consoleSender.sendMessage(PREFIX_CONSOLE + ChatColor.GRAY + "setting ignore-ticking-settings: true in the config.yml of PetBlocks.")
-            Bukkit.getServer().consoleSender.sendMessage(PREFIX_CONSOLE + ChatColor.RED + "Plugin gets now disabled!")
-            Bukkit.getServer()
-                .consoleSender.sendMessage(PREFIX_CONSOLE + ChatColor.RED + "================================================")
+            sendConsoleMessage(ChatColor.RED.toString() + "================================================")
+            sendConsoleMessage(ChatColor.RED.toString() + "PetBlocks does only work with armor-stands-tick: true")
+            sendConsoleMessage(ChatColor.RED.toString() + "Please enable it in your paper.yml file!")
+            sendConsoleMessage(ChatColor.GRAY.toString() + "You can disable this security check on your own risk by")
+            sendConsoleMessage(ChatColor.GRAY.toString() + "setting ignore-ticking-settings: true in the config.yml of PetBlocks.")
+            sendConsoleMessage(ChatColor.RED.toString() + "Plugin gets now disabled!")
+            sendConsoleMessage(ChatColor.RED.toString() + "================================================")
 
-            immediateDisable = true
             Bukkit.getPluginManager().disablePlugin(this)
+            return
+        }
 
+        if (!this.config.contains("config-version") || this.config.getInt("config-version") != configVersion) {
+            sendConsoleMessage(ChatColor.RED.toString() + "================================================")
+            sendConsoleMessage(ChatColor.RED.toString() + "PetBlocks config.yml config-version does not match")
+            sendConsoleMessage(ChatColor.RED.toString() + "with your installed PetBlocks.jar.")
+            sendConsoleMessage(ChatColor.RED.toString() + "Carefully read the patch notes to get the correct config-version.")
+            sendConsoleMessage(ChatColor.RED.toString() + "https://github.com/Shynixn/PetBlocks/releases")
+            sendConsoleMessage(ChatColor.RED.toString() + "Plugin gets now disabled!")
+            sendConsoleMessage(ChatColor.RED.toString() + "================================================")
+
+            Bukkit.getPluginManager().disablePlugin(this)
             return
         }
 
         this.injector = Guice.createInjector(PetBlocksDependencyInjectionBinder(this))
-
-        if (!this.config.contains("config-version") || this.config.getInt("config-version") != configVersion) {
-            Bukkit.getServer()
-                .consoleSender.sendMessage(PREFIX_CONSOLE + ChatColor.RED + "================================================")
-            Bukkit.getServer()
-                .consoleSender.sendMessage(PREFIX_CONSOLE + ChatColor.RED + "PetBlocks config.yml config-version does not match")
-            Bukkit.getServer()
-                .consoleSender.sendMessage(PREFIX_CONSOLE + ChatColor.RED + "with your installed PetBlocks.jar.")
-            Bukkit.getServer()
-                .consoleSender.sendMessage(PREFIX_CONSOLE + ChatColor.RED + "Carefully read the patch notes to get the correct config-version.")
-            Bukkit.getServer()
-                .consoleSender.sendMessage(PREFIX_CONSOLE + ChatColor.RED + "https://github.com/Shynixn/PetBlocks/releases")
-            Bukkit.getServer().consoleSender.sendMessage(PREFIX_CONSOLE + ChatColor.RED + "Plugin gets now disabled!")
-            Bukkit.getServer()
-                .consoleSender.sendMessage(PREFIX_CONSOLE + ChatColor.RED + "================================================")
-
-            immediateDisable = true
-            Bukkit.getPluginManager().disablePlugin(this)
-
-            return
-        }
-
         this.reloadConfig()
 
         val dependencyService = resolve<DependencyService>(DependencyService::class.java)
@@ -207,15 +196,14 @@ class PetBlocksPlugin : JavaPlugin(), PluginProxy {
         }
 
         startPlugin()
-        Bukkit.getServer()
-            .consoleSender.sendMessage(PREFIX_CONSOLE + ChatColor.GREEN + "Enabled PetBlocks " + this.description.version + " by Shynixn")
+        sendConsoleMessage(ChatColor.GREEN.toString() + "Enabled PetBlocks " + this.description.version + " by Shynixn")
     }
 
     /**
      * OnDisable.
      */
     override fun onDisable() {
-        if (immediateDisable) {
+        if (injector == null) {
             return
         }
 
@@ -353,6 +341,30 @@ class PetBlocksPlugin : JavaPlugin(), PluginProxy {
         } catch (e: Exception) {
             throw IllegalArgumentException("Entity could not be created.", e)
         }
+    }
+
+    /**
+     * Sends a console message from this plugin.
+     */
+    private fun sendConsoleMessage(message: String) {
+        Bukkit.getServer().consoleSender.sendMessage(PREFIX_CONSOLE + message)
+    }
+
+    /**
+     * Disables the plugin for the given version and prints the supported version.
+     */
+    private fun disableForVersion(version: Version, supportedVersion: Version): Boolean {
+        if (getServerVersion() == version) {
+            sendConsoleMessage(ChatColor.RED.toString() + "================================================")
+            sendConsoleMessage(ChatColor.RED.toString() + "PetBlocks does not support this subversion")
+            sendConsoleMessage(ChatColor.RED.toString() + "Please upgrade from v" + version.id + " to v" + supportedVersion.id)
+            sendConsoleMessage(ChatColor.RED.toString() + "Plugin gets now disabled!")
+            sendConsoleMessage(ChatColor.RED.toString() + "================================================")
+            Bukkit.getPluginManager().disablePlugin(this)
+            return true
+        }
+
+        return false
     }
 
     /**

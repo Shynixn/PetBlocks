@@ -4,21 +4,22 @@ plugins {
 }
 
 
-mainClassName="com.github.shynixn.petblockstools.MainKt"
+mainClassName = "com.github.shynixn.petblockstools.MainKt"
 apply plugin: 'kotlin-platform-jvm'
 
-shadowJar{
+shadowJar {
     archiveName = 'Deploy.jar'
     classifier = null
     version = null
-    mergeServiceFiles{
-        path='META-INF/cxf'
+    mergeServiceFiles {
+        path = 'META-INF/cxf'
     }
 }
 
 dependencies {
+    implementation 'org.jsoup:jsoup:1.11.3'
     implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk8'
-    implementation'com.github.shynixn:discordwebhook-ktl:1.2'
+    implementation 'com.github.shynixn:discordwebhook-ktl:1.2'
     implementation 'org.apache.cxf:cxf-rt-rs-client:3.3.0'
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.9.8'
     implementation 'commons-io:commons-io:2.4'

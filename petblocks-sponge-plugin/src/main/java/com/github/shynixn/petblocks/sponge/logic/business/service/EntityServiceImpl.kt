@@ -12,6 +12,7 @@ import com.github.shynixn.petblocks.api.business.service.*
 import com.github.shynixn.petblocks.api.persistence.entity.*
 import com.github.shynixn.petblocks.core.logic.business.extension.cast
 import com.github.shynixn.petblocks.core.logic.business.extension.stripChatColors
+import com.github.shynixn.petblocks.core.logic.business.pathfinder.PathfinderBuffEffect
 import com.github.shynixn.petblocks.core.logic.business.proxy.AICreationProxyImpl
 import com.github.shynixn.petblocks.sponge.logic.business.extension.sendMessage
 import com.github.shynixn.petblocks.sponge.logic.business.extension.toVector3i
@@ -84,6 +85,10 @@ class EntityServiceImpl @Inject constructor(
             val hitBox = pet.getHitBoxLivingEntity<Living>().get()
 
             PathfinderAmbientSound(pet, aiBase, hitBox, pet.getPlayer())
+        }
+
+        this.register<AIBuffEffect>(AIType.BUFF_EFFECT) { pet, aiBase ->
+            PathfinderBuffEffect(aiBase, pet)
         }
 
         this.register<AICarry>(AIType.CARRY)
