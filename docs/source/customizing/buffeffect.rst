@@ -52,4 +52,5 @@ Properties
 * Sound: Sound effect
 
 .. note::
-    You can find all available potion effect types on `this page <https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/potion/PotionEffectType.html>`_. Use the field value for example "ABSORPTION".
+    You can find all available potion effect types for spigot on `this page <https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/potion/PotionEffectType.html>`_. Use the field value for example "ABSORPTION".
+    The potion effect types for sponge can be found on `this page <https://jd.spongepowered.org/7.1.0/org/spongepowered/api/effect/potion/PotionEffectTypes.html>`_.
