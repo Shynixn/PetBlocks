@@ -9,7 +9,7 @@ is being active.
 Requirements
 ~~~~~~~~~~~~
 
-This ai is a **event based ai**, therefore this ai will always be active once applied.
+This ai is an **event based ai**, therefore this ai will always be active once applied.
 
 Configuring in your config.yml
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
