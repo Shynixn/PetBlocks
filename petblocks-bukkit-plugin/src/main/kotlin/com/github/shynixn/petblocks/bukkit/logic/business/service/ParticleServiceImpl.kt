@@ -57,9 +57,7 @@ class ParticleServiceImpl @Inject constructor(
      * all players in the world if the config option all alwaysVisible is enabled.
      */
     override fun <L, P> playParticle(location: L, particle: Particle, player: P) {
-        if (player !is Player) {
-            throw IllegalArgumentException("Player has to be a BukkitPlayer!")
-        }
+        require(player is Player) { "Player has to be a BukkitPlayer!" }
 
         val canOtherPlayersSeeParticles = configurationService.findValue<Boolean>("global-configuration.particles-other-players")
 
@@ -74,9 +72,7 @@ class ParticleServiceImpl @Inject constructor(
      * Plays the given [particle] at the given [location] for the given [players].
      */
     private fun <L, P> playParticle(location: L, particle: Particle, players: Collection<P>) {
-        if (location !is Location) {
-            throw IllegalArgumentException("Location has to be a BukkitLocation!")
-        }
+        require(location is Location) { "Location has to be a BukkitLocation!" }
 
         if (particle.type == ParticleType.NONE) {
             return

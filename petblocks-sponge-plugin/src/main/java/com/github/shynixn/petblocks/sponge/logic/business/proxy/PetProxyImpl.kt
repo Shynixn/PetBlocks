@@ -134,7 +134,7 @@ class PetProxyImpl(override val meta: PetMeta, private val design: ArmorStand, p
         try {
             for (aiBase in meta.aiGoals) {
                 if (aiBase is AIMovement) {
-                    val location = getLocation<Transform<World>>()
+                    val location = getLocation<Transform<World>>().addTranslation(Vector3d(0.0, aiBase.movementYOffSet + 1, 0.0))
 
                     if (meta.particleEnabled) {
                         particleService.playParticle(location, aiBase.movementParticle, owner)

@@ -52,13 +52,8 @@ class ParticleServiceImpl @Inject constructor(private val configurationService: 
      * @param L the type of the location.
      */
     override fun <L, P> playParticle(location: L, particle: Particle, player: P) {
-        if (player !is Player) {
-            throw IllegalArgumentException("Player has to be a SpongePlayer!")
-        }
-
-        if (location !is Transform<*>) {
-            throw IllegalArgumentException("Location has to be a SpongeTransform!")
-        }
+        require(player is Player) { "Player has to be a SpongePlayer!" }
+        require(location is Transform<*>) { "Location has to be a SpongeTransform!" }
 
         val canOtherPlayersSeeParticles = configurationService.findValue<Boolean>("global-configuration.particles-other-players")
 
