@@ -183,7 +183,7 @@ class PetBlocksPlugin : JavaPlugin(), PluginProxy {
             val metrics = Metrics(this)
 
             metrics.addCustomChart(Metrics.SimplePie("storage") {
-                if (config.getBoolean("sql.enabled")) {
+                if (config.getString("sql.type") == "mysql") {
                     "MySQL"
                 } else {
                     "SQLite"
