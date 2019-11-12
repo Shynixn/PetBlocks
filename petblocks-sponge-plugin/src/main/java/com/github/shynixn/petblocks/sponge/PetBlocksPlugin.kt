@@ -163,7 +163,7 @@ class PetBlocksPlugin : PluginProxy {
         }
 
         metrics.addCustomChart(Metrics2.SimplePie("storage") {
-            if (configurationService.findValue("sql.enabled")) {
+            if (configurationService.findValue<String>("sql.type") == "mysql") {
                 "MySQL"
             } else {
                 "SQLite"
