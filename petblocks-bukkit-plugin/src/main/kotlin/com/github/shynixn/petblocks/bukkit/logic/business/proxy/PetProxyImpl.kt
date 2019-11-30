@@ -239,7 +239,14 @@ class PetProxyImpl(override val meta: PetMeta, private val design: ArmorStand, p
             return this.design.location as L
         }
 
-        return hitBox!!.location as L
+        val movementAi = this.meta.aiGoals.firstOrNull { a -> a is AIMovement } as AIMovement?
+        val location = hitBox!!.location
+
+        if (movementAi == null) {
+            return location as L
+        }
+
+        return location.add(0.0, movementAi.movementYOffSet + 1, 0.0) as L
     }
 
     /**

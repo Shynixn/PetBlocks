@@ -9,6 +9,7 @@ import com.github.shynixn.petblocks.api.business.service.ProxyService
 import com.github.shynixn.petblocks.api.persistence.entity.Position
 import com.github.shynixn.petblocks.api.persistence.entity.PotionEffect
 import com.github.shynixn.petblocks.bukkit.logic.business.extension.toPosition
+import com.github.shynixn.petblocks.core.logic.business.extension.cast
 import com.google.inject.Inject
 import org.bukkit.Bukkit
 import org.bukkit.Location
@@ -80,7 +81,9 @@ class ProxyServiceImpl @Inject constructor(private val version: Version, private
     override fun <P> applyPotionEffect(player: P, potionEffect: PotionEffect) {
         require(player is Player)
 
-        val foundPotionType = PotionEffectType.values().firstOrNull { t -> t.name.equals(potionEffect.potionType, true) }
+        // PotionEffectType.values() can return null values in some minecraft versions.
+        val foundPotionType =
+            PotionEffectType.values().cast<Array<PotionEffectType?>>().firstOrNull { t -> t != null && t.name.equals(potionEffect.potionType, true) }
 
         if (foundPotionType == null) {
             loggingService.warn("PotionEffectType: ${potionEffect.potionType} does not exist!")

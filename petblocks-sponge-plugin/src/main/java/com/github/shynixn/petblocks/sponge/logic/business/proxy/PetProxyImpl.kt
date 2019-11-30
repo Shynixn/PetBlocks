@@ -78,7 +78,7 @@ class PetProxyImpl(override val meta: PetMeta, private val design: ArmorStand, p
     init {
         design.bodyPartRotationalData.bodyRotation().set(Vector3d(0.0, 0.0, 2878.0))
         design.bodyPartRotationalData.bodyRotation().set(Vector3d(2878.0, 0.0, 0.0))
-        design.offer(Keys.CUSTOM_NAME_VISIBLE, true);
+        design.offer(Keys.CUSTOM_NAME_VISIBLE, true)
 
         meta.enabled = true
 
@@ -244,7 +244,14 @@ class PetProxyImpl(override val meta: PetMeta, private val design: ArmorStand, p
             return this.design.transform as L
         }
 
-        return hitBox!!.transform as L
+        val movementAi = this.meta.aiGoals.firstOrNull { a -> a is AIMovement } as AIMovement?
+        val location = hitBox!!.transform
+
+        if (movementAi == null) {
+            return location as L
+        }
+
+        return location.addTranslation(Vector3d(0.0, movementAi.movementYOffSet + 1, 0.0)) as L
     }
 
     /**

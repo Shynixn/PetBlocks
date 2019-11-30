@@ -57,9 +57,9 @@ class NMSPetArmorstand(owner: Player, private val petMeta: PetMeta) :
     private var internalHitBox: EntityInsentient? = null
     private val aiService = PetBlocksApi.resolve(AIService::class.java)
 
-    private val flyCanHitWalls = PetBlocksApi.resolve(ConfigurationService::class.java).findValue<Boolean>("global-configuration.fly-wall-colision")
+    private val hasFlyCollisionsEnabled = PetBlocksApi.resolve(ConfigurationService::class.java).findValue<Boolean>("global-configuration.fly-wall-colision")
     private var flyHasTakenOffGround = false
-    private var flyIsOnGround: Boolean = false
+    private var flyGravity: Boolean = false
     private var flyHasHitFloor: Boolean = false
     private var flyWallCollisionVector: Vector? = null
 
@@ -79,7 +79,8 @@ class NMSPetArmorstand(owner: Player, private val petMeta: PetMeta) :
 
         val location = owner.location
         val mcWorld = (location.world as CraftWorld).handle
-        val position = PositionEntity(location.x, location.y, location.z, location.yaw.toDouble(), location.pitch.toDouble(), location.world!!.name).relativeFront(3.0)
+        val position =
+            PositionEntity(location.x, location.y, location.z, location.yaw.toDouble(), location.pitch.toDouble(), location.world!!.name).relativeFront(3.0)
 
         this.setPositionRotation(position.x, position.y, position.z, location.yaw, location.pitch)
         mcWorld.addEntity(this, CreatureSpawnEvent.SpawnReason.CUSTOM)
@@ -292,9 +293,9 @@ class NMSPetArmorstand(owner: Player, private val petMeta: PetMeta) :
      * Handles the riding in air.
      */
     private fun rideInAir(human: EntityHuman, ai: AIFlyRiding) {
+        // Show entity and player rotation.
         val sideMot: Float = human.bb * 0.5f
         val forMot: Float = human.bd
-
         this.yaw = human.yaw
         this.lastYaw = this.yaw
         this.pitch = human.pitch * 0.5f
@@ -302,6 +303,7 @@ class NMSPetArmorstand(owner: Player, private val petMeta: PetMeta) :
         this.aK = this.yaw
         this.aM = this.aK
 
+        // Calculate flying direction and fix yaw in flying direction.
         val flyingVector = Vector()
         val flyingLocation = Location(this.world.world, this.locX, this.locY, this.locZ)
 
@@ -321,6 +323,7 @@ class NMSPetArmorstand(owner: Player, private val petMeta: PetMeta) :
             flyingVector.add(flyingLocation.direction.normalize().multiply(0.5))
         }
 
+        // If the player has just started riding move it up.
         if (!flyHasTakenOffGround) {
             flyHasTakenOffGround = true
             flyingVector.setY(1f)
@@ -328,32 +331,37 @@ class NMSPetArmorstand(owner: Player, private val petMeta: PetMeta) :
 
         if (this.isPassengerJumping()) {
             flyingVector.setY(0.5f)
-            this.flyIsOnGround = true
-            this.flyHasHitFloor = false
-        } else if (this.flyIsOnGround) {
+            this.flyGravity = true
+            this.flyWallCollisionVector = null
+        } else if (this.flyGravity) {
             flyingVector.setY(-0.2f)
         }
 
-        if (this.flyHasHitFloor) {
-            flyingVector.setY(0)
-            flyingLocation.add(flyingVector.multiply(2.25).multiply(ai.ridingSpeed))
-            this.setPosition(flyingLocation.x, flyingLocation.y, flyingLocation.z)
-        } else {
-            flyingLocation.add(flyingVector.multiply(2.25).multiply(ai.ridingSpeed))
-            this.setPosition(flyingLocation.x, flyingLocation.y, flyingLocation.z)
+        // If wall collision has happened.
+        if (flyWallCollisionVector != null) {
+            this.setPosition(this.flyWallCollisionVector!!.x, this.flyWallCollisionVector!!.y, this.flyWallCollisionVector!!.z)
+            return
         }
 
-        val vec3d = Vec3D(this.locX, this.locY, this.locZ)
-        val vec3d1 = Vec3D(this.locX + this.mot.x, this.locY + this.mot.y, this.locZ + this.mot.z)
+        flyingLocation.add(flyingVector.multiply(2.25).multiply(ai.ridingSpeed))
+        this.setPosition(flyingLocation.x, flyingLocation.y, flyingLocation.z)
 
-        val rayTrace = RayTrace(vec3d, vec3d1, RayTrace.BlockCollisionOption.COLLIDER, RayTrace.FluidCollisionOption.NONE, null)
+        if (isCollidingWithWall()) {
+            // Cache current position if entity is going to collide with wall.
+            this.flyWallCollisionVector = flyingLocation.toVector()
+        }
+    }
+
+    /**
+     *  Gets if this entity is going to collide with a wall.
+     */
+    private fun isCollidingWithWall(): Boolean {
+        val currentLocationVector = Vec3D(this.locX, this.locY, this.locZ)
+        val directionVector = Vec3D(this.locX + this.mot.x * 1.5, this.locY + this.mot.y * 1.5, this.locZ + this.mot.z * 1.5)
+        val rayTrace = RayTrace(currentLocationVector, directionVector, RayTrace.BlockCollisionOption.COLLIDER, RayTrace.FluidCollisionOption.NONE, null)
         val movingObjectPosition = this.world.rayTrace(rayTrace)
 
-        if (movingObjectPosition == null) {
-            this.flyWallCollisionVector = flyingLocation.toVector()
-        } else if (this.flyWallCollisionVector != null && flyCanHitWalls) {
-            this.setPosition(this.flyWallCollisionVector!!.x, this.flyWallCollisionVector!!.y, this.flyWallCollisionVector!!.z)
-        }
+        return movingObjectPosition.type == MovingObjectPosition.EnumMovingObjectType.BLOCK && hasFlyCollisionsEnabled
     }
 
     /**
