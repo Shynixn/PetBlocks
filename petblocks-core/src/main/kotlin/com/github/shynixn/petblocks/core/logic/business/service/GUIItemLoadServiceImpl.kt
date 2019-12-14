@@ -331,7 +331,7 @@ class GUIItemLoadServiceImpl @Inject constructor(
 
         decipher.init(
             Cipher.DECRYPT_MODE,
-            SecretKeySpec(Base64.getDecoder().decode("MTZjNzQ3YmRkMmQ4NDAxOA=="), "AES"),
+            SecretKeySpec(Base64.getDecoder().decode("ZGNmMzhiNDZlYjIxNDI2Yg=="), "AES"),
             IvParameterSpec("RandomInitVector".toByteArray(charset("UTF-8")))
         )
         BufferedReader(
