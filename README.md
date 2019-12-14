@@ -27,6 +27,7 @@ PetBlocks is a spigot and also a sponge plugin to use blocks and custom heads as
 ## Contributing
 
 * Clone the repository to your local environment
+* Make sure ``java`` and ``mvn`` can be called in your terminal
 * Execute gradle sync for dependencies
 * Install the additional spigot dependencies by executing the following gradle task
 

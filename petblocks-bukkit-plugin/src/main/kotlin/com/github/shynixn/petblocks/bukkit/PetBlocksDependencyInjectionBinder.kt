@@ -92,6 +92,9 @@ class PetBlocksDependencyInjectionBinder(private val plugin: PetBlocksPlugin) : 
         bind(ItemStackSerializer::class.java).to(ItemStackSerializerImpl::class.java).`in`(Scopes.SINGLETON)
 
         when {
+            version.isVersionSameOrGreaterThan(Version.VERSION_1_15_R1) -> bind(EntityRegistrationService::class.java).to(EntityRegistration115R1ServiceImpl::class.java).`in`(
+                Scopes.SINGLETON
+            )
             version.isVersionSameOrGreaterThan(Version.VERSION_1_14_R1) -> bind(EntityRegistrationService::class.java).to(EntityRegistration114R1ServiceImpl::class.java).`in`(
                 Scopes.SINGLETON
             )

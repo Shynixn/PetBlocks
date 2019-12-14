@@ -61,9 +61,9 @@ repositories {
 
 task dockerJar(type: Exec, dependsOn: shadowJar) {
     if (System.getProperty('os.name').toLowerCase(Locale.ROOT).contains('windows')) {
-        commandLine 'cmd', '/c', "docker cp build/libs/. petblocks-1.14.4:/minecraft/plugins"
+        commandLine 'cmd', '/c', "docker cp build/libs/. petblocks-1.15.4:/minecraft/plugins"
     } else {
-        commandLine 'sh', '-c', "docker cp build/libs/. petblocks-1.14.4:/minecraft/plugins"
+        commandLine 'sh', '-c', "docker cp build/libs/. petblocks-1.15.4:/minecraft/plugins"
     }
 }
 
@@ -79,6 +79,7 @@ dependencies {
     implementation project(':petblocks-bukkit-plugin:petblocks-bukkit-nms-112R1')
     implementation project(':petblocks-bukkit-plugin:petblocks-bukkit-nms-113R2')
     implementation project(':petblocks-bukkit-plugin:petblocks-bukkit-nms-114R1')
+    implementation project(':petblocks-bukkit-plugin:petblocks-bukkit-nms-115R1')
 
     implementation 'org.slf4j:slf4j-jdk14:1.7.25'
     implementation 'commons-io:commons-io:2.6'
