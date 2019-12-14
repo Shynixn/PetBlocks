@@ -35,7 +35,7 @@ import javax.net.ssl.HttpsURLConnection
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class SnapshotServiceImpl : SonaTypeService {
+class SonaTypeServiceImpl : SonaTypeService {
     /**
      * Searches the repository for the latest download link. Throws
      * a [IllegalArgumentException] if not found.

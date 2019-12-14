@@ -40,7 +40,7 @@ import java.util.*
  * SOFTWARE.
  */
 class PublishPetBlocksToDiscord(
-    private val snapshotService: SonaTypeService = SnapshotServiceImpl(),
+    private val sonaTypeService: SonaTypeService = SonaTypeServiceImpl(),
     private val discordWebHookService: DiscordWebhookService = DiscordWebhookServiceImpl()
 ) {
     private val bukkitSnapshotRepo = "https://oss.sonatype.org/content/repositories/snapshots/com/github/shynixn/petblocks/petblocks-bukkit-plugin/"
@@ -51,9 +51,9 @@ class PublishPetBlocksToDiscord(
      * Sends the snapshot status to discord.
      */
     fun publishSnapshotToDiscord(webHookUrl: String) {
-        val bukkitSnapshotDownloadUrl = snapshotService.findDownloadUrl(bukkitSnapshotRepo)
-        val spongeSnapshotDownloadUrl = snapshotService.findDownloadUrl(spongeSnapshotRepo)
-        val snapshotId = snapshotService.findId(bukkitSnapshotRepo)
+        val bukkitSnapshotDownloadUrl = sonaTypeService.findDownloadUrl(bukkitSnapshotRepo)
+        val spongeSnapshotDownloadUrl = sonaTypeService.findDownloadUrl(spongeSnapshotRepo)
+        val snapshotId = sonaTypeService.findId(bukkitSnapshotRepo)
 
         val payload = DiscordPayload("PetBlocks-Snapshots", petBlocksImage)
 

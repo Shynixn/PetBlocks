@@ -31,8 +31,7 @@ import java.nio.file.Path
  */
 interface ConfigService {
     /**
-     * Generates an encrypted, an decrypted minecraft-heads.com db and
-     * the yaml file content for minecraft-heads.com into the given output path.
+     * Generates the required files for the given parameters.
      */
-    fun generateFiles(minecraftHeadsSource: Path, ouputFolder: Path)
+    fun generateNewConfigFiles(encryptedDatabasePath: Path, decryptionKey: String, sourceExcel: Path, targetFolder: Path)
 }
