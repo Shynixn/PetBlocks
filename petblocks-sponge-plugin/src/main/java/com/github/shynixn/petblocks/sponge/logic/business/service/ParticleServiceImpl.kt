@@ -44,7 +44,8 @@ import org.spongepowered.api.util.Color
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class ParticleServiceImpl @Inject constructor(private val configurationService: ConfigurationService, private val loggingService: LoggingService) : ParticleService {
+class ParticleServiceImpl @Inject constructor(private val configurationService: ConfigurationService, private val loggingService: LoggingService) :
+    ParticleService {
     /**
      * Plays the given [particle] at the given [location] for the given [player] or
      * all players in the world if the config option all alwaysVisible is enabled.
@@ -68,18 +69,22 @@ class ParticleServiceImpl @Inject constructor(private val configurationService: 
      * Plays the given [particle] at the given [location] for the given [players].
      */
     private fun playParticleToPlayers(location: Vector3d, particle: Particle, players: Collection<Player>) {
-        if (particle.type == ParticleType.NONE) {
+        var partType = findParticleType(particle.typeName)
+
+        if (partType == ParticleType.NONE) {
             return
         }
 
-        if (particle.type == ParticleType.REDSTONE || particle.type == ParticleType.NOTE) {
+        if (partType == ParticleType.REDSTONE || partType == ParticleType.NOTE) {
             particle.amount = 0
             particle.speed = 1.0f.toDouble()
         }
 
-        val type = Sponge.getGame().registry.getType(org.spongepowered.api.effect.particle.ParticleType::class.java, "minecraft:" + particle.type.minecraftId_112).get()
+        val type =
+            Sponge.getGame().registry.getType(org.spongepowered.api.effect.particle.ParticleType::class.java, "minecraft:" + partType.minecraftId_112)
+                .get()
 
-        val builder = if (particle.type == ParticleType.REDSTONE) {
+        val builder = if (partType == ParticleType.REDSTONE) {
             ParticleEffect.builder()
                 .type(type).option(ParticleOptions.COLOR, Color.ofRgb(particle.colorRed, particle.colorGreen, particle.colorBlue))
         } else {
@@ -90,8 +95,10 @@ class ParticleServiceImpl @Inject constructor(private val configurationService: 
                 .velocity(Vector3d(particle.speed, particle.speed, particle.speed))
         }
         if (particle.materialName != null) {
-            builder.option(ParticleOptions.BLOCK_STATE, BlockState.builder().blockType(particle.materialName as BlockType)
-                .add(Keys.ITEM_DURABILITY, particle.data).build())
+            builder.option(
+                ParticleOptions.BLOCK_STATE, BlockState.builder().blockType(particle.materialName as BlockType)
+                    .add(Keys.ITEM_DURABILITY, particle.data).build()
+            )
         }
 
         try {
@@ -101,7 +108,20 @@ class ParticleServiceImpl @Inject constructor(private val configurationService: 
                 player.spawnParticles(effect, location)
             }
         } catch (e: Exception) {
-            loggingService.warn("Failed to send particle. Is the particle '" + particle.type.name + "' supported by this server version?", e)
+            loggingService.warn("Failed to send particle. Is the particle '" + partType.name + "' supported by this server version?", e)
         }
+    }
+
+    /**
+     * Finds the particle type.
+     */
+    private fun findParticleType(item: String): ParticleType {
+        ParticleType.values().forEach { p ->
+            if (p.name == item || p.gameId_18 == item || p.gameId_113 == item || p.minecraftId_112 == item) {
+                return p
+            }
+        }
+
+        return ParticleType.NONE
     }
 }

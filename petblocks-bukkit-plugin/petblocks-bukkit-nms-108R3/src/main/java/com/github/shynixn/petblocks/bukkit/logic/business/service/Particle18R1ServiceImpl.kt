@@ -14,7 +14,6 @@ import org.bukkit.Bukkit
 import org.bukkit.Location
 import org.bukkit.Material
 import org.bukkit.entity.Player
-import org.bukkit.inventory.ItemStack
 import java.lang.reflect.Method
 import java.util.logging.Level
 
@@ -45,7 +44,7 @@ import java.util.logging.Level
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class ParticleServiceImpl @Inject constructor(
+class Particle18R1ServiceImpl @Inject constructor(
     private val logger: LoggingService,
     private val configurationService: ConfigurationService,
     private val version: Version
@@ -73,92 +72,33 @@ class ParticleServiceImpl @Inject constructor(
      */
     private fun <L, P> playParticle(location: L, particle: Particle, players: Collection<P>) {
         require(location is Location) { "Location has to be a BukkitLocation!" }
+        val partType = findParticleType(particle.typeName)
 
-        if (particle.type == ParticleType.NONE) {
+        if (partType == ParticleType.NONE) {
             return
         }
 
         val targets = (players as Collection<Player>).toTypedArray()
 
-        if (particle.type == ParticleType.REDSTONE || particle.type == ParticleType.NOTE) {
+        if (partType == ParticleType.REDSTONE || partType == ParticleType.NOTE) {
             particle.amount = 0
             particle.speed = 1.0f.toDouble()
         }
 
-        var internalParticleType = getInternalEnumValue(particle.type)
+        val internalParticleType = getInternalEnumValue(partType)
 
-        val packet = if (version.isVersionSameOrGreaterThan(Version.VERSION_1_13_R1)) {
-            val dataType = internalParticleType
-            val particleParamClazz = findClazz("net.minecraft.server.VERSION.ParticleParam")
-            val particleClazz = findClazz("net.minecraft.server.VERSION.Particle")
-
-            if (dataType == ItemStack::class.java && particle.materialName != null) {
-                val itemStack = findClazz("org.bukkit.craftbukkit.VERSION.inventory.CraftItemStack").getDeclaredMethod("asNMSCopy")
-                    .invoke(
-                        null, ItemStack::class.java.getDeclaredConstructor(Material::class.java, Int::class.java, Short::class.java)
-                            .newInstance(Material.getMaterial(particle.materialName!!)!!, 1, particle.data.toShort())
-                    )
-
-
-
-                internalParticleType = findClazz("net.minecraft.server.VERSION.ParticleParamItem")
-                    .getDeclaredConstructor(particleClazz, itemStack.javaClass).newInstance(internalParticleType, itemStack)
-            } else if (particle.type == ParticleType.BLOCK_CRACK || particle.type == ParticleType.BLOCK_DUST) {
-                val craftBlockStateClazz = findClazz("org.bukkit.craftbukkit.VERSION.block.CraftBlockState")
-
-                val data = craftBlockStateClazz
-                    .getDeclaredConstructor(Material::class.java)
-                    .newInstance(Material.getMaterial(particle.materialName!!))
-
-                craftBlockStateClazz.getDeclaredMethod("setRawData", Byte::class.java).invoke(data, particle.data.toByte())
-                val handle = craftBlockStateClazz.getDeclaredMethod("getHandle").invoke(data)
-
-                internalParticleType = findClazz("net.minecraft.server.VERSION.ParticleParamBlock")
-                    .getDeclaredConstructor(particleClazz, findClazz("net.minecraft.server.VERSION.IBlockData"))
-                    .newInstance(internalParticleType, handle)
-            } else if (particle.type == ParticleType.REDSTONE) {
-                internalParticleType = findClazz("net.minecraft.server.VERSION.ParticleParamRedstone")
-                    .getDeclaredConstructor(Float::class.java, Float::class.java, Float::class.java, Float::class.java)
-                    .newInstance(particle.colorRed.toFloat() / 255.0f, particle.colorGreen.toFloat() / 255.0f, particle.colorBlue.toFloat() / 255.0f, 1.0F)
-            }
-
-            findClazz("net.minecraft.server.VERSION.PacketPlayOutWorldParticles")
-                .getDeclaredConstructor(
-                    particleParamClazz,
-                    Boolean::class.java,
-                    Float::class.java,
-                    Float::class.java,
-                    Float::class.java,
-                    Float::class.java,
-                    Float::class.java,
-                    Float::class.java,
-                    Float::class.java,
-                    Int::class.java
-                )
-                .newInstance(
-                    internalParticleType,
-                    isLongDistance(location, targets),
-                    location.x.toFloat(),
-                    location.y.toFloat(),
-                    location.z.toFloat(),
-                    particle.offSetX.toFloat(),
-                    particle.offSetY.toFloat(),
-                    particle.offSetZ.toFloat(),
-                    particle.speed.toFloat(),
-                    particle.amount
-                )
-        } else {
+        val packet = {
             var additionalPayload: IntArray? = null
 
             if (particle.materialName != null) {
-                additionalPayload = if (particle.type == ParticleType.ITEM_CRACK) {
+                additionalPayload = if (partType == ParticleType.ITEM_CRACK) {
                     intArrayOf(getIdFromMaterialMethod.invoke(Material.getMaterial(particle.materialName!!)) as Int, particle.data)
                 } else {
                     intArrayOf(getIdFromMaterialMethod.invoke(Material.getMaterial(particle.materialName!!)) as Int, (particle.data shl 12))
                 }
             }
 
-            if (particle.type == ParticleType.REDSTONE) {
+            if (partType == ParticleType.REDSTONE) {
                 var red = particle.colorRed.toFloat() / 255.0F
                 if (red <= 0) {
                     red = Float.MIN_VALUE
@@ -192,7 +132,6 @@ class ParticleServiceImpl @Inject constructor(
                     additionalPayload
                 )
             } else {
-
                 val constructor = Class.forName("net.minecraft.server.VERSION.PacketPlayOutWorldParticles".replace("VERSION", version.bukkitId))
                     .getDeclaredConstructor(
                         internalParticleType.javaClass,
@@ -241,6 +180,19 @@ class ParticleServiceImpl @Inject constructor(
 
     private fun isLongDistance(location: Location, players: Array<out Player>): Boolean {
         return players.any { location.world!!.name == it.location.world!!.name && it.location.distanceSquared(location) > 65536 }
+    }
+
+    /**
+     * Finds the particle type.
+     */
+    private fun findParticleType(item: String): ParticleType {
+        ParticleType.values().forEach { p ->
+            if (p.name == item || p.gameId_18 == item || p.gameId_113 == item || p.minecraftId_112 == item) {
+                return p
+            }
+        }
+
+        return ParticleType.NONE
     }
 
     private fun getInternalEnumValue(particle: ParticleType): Any {

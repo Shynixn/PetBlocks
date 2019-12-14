@@ -1,8 +1,5 @@
 package com.github.shynixn.petblocks.api.persistence.entity
 
-import com.github.shynixn.petblocks.api.business.enumeration.ParticleColor
-import com.github.shynixn.petblocks.api.business.enumeration.ParticleType
-
 /**
  * Created by Shynixn 2018.
  * <p>
@@ -32,14 +29,9 @@ import com.github.shynixn.petblocks.api.business.enumeration.ParticleType
  */
 interface Particle {
     /**
-     * Id.
+     * Gets or sets the particle typeName.
      */
-    var id: Long
-
-    /**
-     * Color of the particle effect.
-     */
-    var color: ParticleColor
+    var typeName: String
 
     /**
      * RGB Color code of red.
@@ -55,11 +47,6 @@ interface Particle {
      * RGB Color code of blue.
      */
     var colorBlue: Int
-
-    /**
-     * Custom note color code.
-     */
-    var noteColor: Int
 
     /**
      * Amount of particles.
@@ -85,11 +72,6 @@ interface Particle {
      * Offset for the z coordinate.
      */
     var offSetZ: Double
-
-    /**
-     * Type of the particle.
-     */
-    var type: ParticleType
 
     /**
      * Material value.
