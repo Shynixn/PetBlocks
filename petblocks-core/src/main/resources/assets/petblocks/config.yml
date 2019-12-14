@@ -163,7 +163,7 @@ pet:
         volume: 1.0
         itch: 1.0
       particle:
-        name: 'reddust'
+        name: 'REDSTONE'
         speed: 0.01
         amount: 20
         offx: 0
@@ -181,7 +181,7 @@ pet:
       item-id: 391
       item-damage: 0
       click-particle:
-        name: 'heart'
+        name: 'HEART'
         speed: 0.1
         amount: 20
         offx: 1.0
@@ -654,7 +654,7 @@ gui:
             ambient: false
             particles: false
           particle:
-            name: 'reddust'
+            name: 'REDSTONE'
             amount: 20
             offx: 0
             offy: 255
@@ -697,7 +697,7 @@ gui:
             ambient: false
             particles: false
           particle:
-            name: 'reddust'
+            name: 'REDSTONE'
             amount: 20
             offx: 255
             offy: 0
@@ -1797,8 +1797,8 @@ gui:
             name: 'PIG_WALK'
             volume: 1.0
             itch: 1.0
-          particle: # Reddust converts offx, offy, offz into RGB colors.
-            name: 'reddust'
+          particle: # REDSTONE converts offx, offy, offz into RGB colors.
+            name: 'REDSTONE'
             speed: 0.01
             amount: 20
             offx: 255
@@ -1839,7 +1839,7 @@ gui:
             volume: 1.0
             itch: 1.0
           particle:
-            name: 'reddust'
+            name: 'REDSTONE'
             speed: 0.01
             amount: 20
             offx: 255
@@ -1880,7 +1880,7 @@ gui:
             volume: 1.0
             itch: 1.0
           particle:
-            name: 'reddust'
+            name: 'REDSTONE'
             speed: 0.01
             amount: 20
             offx: 255
@@ -1927,7 +1927,7 @@ gui:
             volume: 1.0
             itch: 1.0
           particle:
-            name: 'reddust'
+            name: 'REDSTONE'
             speed: 0.01
             amount: 20
             offx: 255
@@ -1974,7 +1974,7 @@ gui:
             volume: 1.0
             itch: 1.0
           particle:
-            name: 'reddust'
+            name: 'REDSTONE'
             speed: 0.01
             amount: 20
             offx: 255
@@ -2015,7 +2015,7 @@ gui:
             volume: 1.0
             itch: 1.0
           particle:
-            name: 'reddust'
+            name: 'REDSTONE'
             speed: 0.01
             amount: 20
             offx: 255
@@ -2056,7 +2056,7 @@ gui:
             volume: 1.0
             itch: 1.0
           particle:
-            name: 'reddust'
+            name: 'REDSTONE'
             speed: 0.01
             amount: 20
             offx: 255
@@ -2098,7 +2098,7 @@ gui:
             volume: 1.0
             itch: 1.0
           particle:
-            name: 'heart'
+            name: 'HEART'
             speed: 4.0
             amount: 2
             offx: 0.5
