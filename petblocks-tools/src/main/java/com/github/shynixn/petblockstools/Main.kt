@@ -40,12 +40,14 @@ fun main(args: Array<String>) {
         return
     }
 
-    if (args[0] == "--generate-config") {
-        val sourceFile = Paths.get(Thread.currentThread().contextClassLoader.getResource("sourcefile.csv").toURI())
-        val sourceFolder = sourceFile.parent
-
+    if (args[0] == "--update-skins") {
         val configService = ConfigServiceImpl()
-        configService.generateFiles(sourceFile, sourceFolder)
+        configService.generateNewConfigFiles(
+            Paths.get(""),
+            "",
+            Paths.get(""),
+            Paths.get("")
+        )
         return
     }
 

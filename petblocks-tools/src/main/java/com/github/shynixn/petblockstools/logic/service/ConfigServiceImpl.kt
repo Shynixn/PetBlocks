@@ -4,14 +4,13 @@ import com.github.shynixn.petblockstools.contract.ConfigService
 import com.github.shynixn.petblockstools.logic.entity.SkinDescription
 import org.apache.commons.io.FileUtils
 import org.apache.commons.io.IOUtils
-import java.io.FileInputStream
-import java.io.FileOutputStream
-import java.io.IOException
+import java.io.*
 import java.nio.file.Files
 import java.nio.file.Path
 import java.util.*
 import java.util.logging.*
 import javax.crypto.Cipher
+import javax.crypto.CipherInputStream
 import javax.crypto.CipherOutputStream
 import javax.crypto.spec.IvParameterSpec
 import javax.crypto.spec.SecretKeySpec
@@ -48,23 +47,26 @@ class ConfigServiceImpl : ConfigService {
     private val logger = generateLogger()
 
     /**
-     * Generates an encrypted, an decrypted minecraft-heads.com db and
-     * the yaml file content for minecraft-heads.com into the given output path.
+     * Generates the required files for the given parameters.
      */
-    override fun generateFiles(minecraftHeadsSource: Path, ouputFolder: Path) {
-        logger.log(Level.INFO, "Folder ${ouputFolder.toAbsolutePath()}.")
+    override fun generateNewConfigFiles(encryptedDatabasePath: Path, decryptionKey: String, sourceExcel: Path, targetFolder: Path) {
+        logger.log(Level.INFO, "Folder ${targetFolder.toAbsolutePath()}.")
 
-        val dbFile = ouputFolder.resolve("minecraft-heads-generated.db")
-        val encryptedFile = ouputFolder.resolve("minecraft-heads-encrypted.db")
-        val yamlFile = ouputFolder.resolve("target.yml")
+        val sourceSkins = loadSourceFile(sourceExcel)
+        val existingSkins = loadExistingSkins(encryptedDatabasePath, decryptionKey)
 
-        val sourceSkins = loadSourceFile(minecraftHeadsSource)
-        val existingSkins = loadExistingSkins(dbFile)
+        for (sourceSkin in sourceSkins) {
+            if (existingSkins.asSequence().firstOrNull { e -> e.skin == sourceSkin.skin } == null) {
+                existingSkins.add(sourceSkin)
+            }
+        }
 
-        existingSkins.addAll(sourceSkins.filter { s -> existingSkins.firstOrNull { e -> e.skin == s.skin } == null })
         val skins = existingSkins.distinctBy { s -> s.skin }.toList()
-
         fixMapping(skins)
+
+        val dbFile = targetFolder.resolve("minecraft-heads-generated.db")
+        val encryptedFile = targetFolder.resolve("minecraftheads.db")
+        val yamlFile = targetFolder.resolve("target.yml")
 
         generateDecryptedDbFile(dbFile, skins)
         generateEncryptedDbFile(dbFile, encryptedFile)
@@ -160,8 +162,10 @@ class ConfigServiceImpl : ConfigService {
 
         try {
             FileInputStream(inputFile.toFile()).use { inputStream ->
-                CipherOutputStream(FileOutputStream(outputFile.toFile()),
-                    encipher).use { outputStream -> IOUtils.copy(inputStream, outputStream) }
+                CipherOutputStream(
+                    FileOutputStream(outputFile.toFile()),
+                    encipher
+                ).use { outputStream -> IOUtils.copy(inputStream, outputStream) }
             }
         } catch (e: IOException) {
             e.printStackTrace()
@@ -214,7 +218,7 @@ class ConfigServiceImpl : ConfigService {
     /**
      * Loads the existing contents.
      */
-    private fun loadExistingSkins(sourceFile: Path): MutableList<SkinDescription> {
+    private fun loadExistingSkins(sourceFile: Path, decryptionKey: String): MutableList<SkinDescription> {
         val skins = ArrayList<SkinDescription>()
 
         logger.log(Level.INFO, "Loading existing skins file...")
@@ -225,7 +229,27 @@ class ConfigServiceImpl : ConfigService {
         }
 
         try {
-            val lines = Files.readAllLines(sourceFile)
+            val lines = ArrayList<String>()
+
+            val decipher = Cipher.getInstance("AES/CBC/PKCS5PADDING")
+            decipher.init(
+                Cipher.DECRYPT_MODE,
+                SecretKeySpec(Base64.getDecoder().decode(decryptionKey), "AES"),
+                IvParameterSpec("RandomInitVector".toByteArray(charset("UTF-8")))
+            )
+            BufferedReader(
+                InputStreamReader(
+                    CipherInputStream(
+                        FileInputStream(sourceFile.toFile()),
+                        decipher
+                    )
+                )
+            ).use { reader ->
+                while (true) {
+                    val s = reader.readLine() ?: break
+                    lines.add(s)
+                }
+            }
 
             for (line in lines) {
                 val content = line.split(";")
@@ -233,10 +257,6 @@ class ConfigServiceImpl : ConfigService {
 
                 skins.add(skin)
             }
-
-            val dateTime = Date().time
-
-            Files.copy(sourceFile, sourceFile.parent.resolve("old_minecraft-heads-$dateTime.db"))
         } catch (e: Exception) {
             logger.log(Level.WARNING, "Existing file is not correct.", e)
         }
@@ -284,7 +304,8 @@ class ConfigServiceImpl : ConfigService {
 
             @Synchronized
             override fun format(lr: LogRecord): String {
-                return String.format(format,
+                return String.format(
+                    format,
                     Date(lr.millis),
                     lr.level.localizedName,
                     lr.message
@@ -299,39 +320,41 @@ class ConfigServiceImpl : ConfigService {
      * Appends the default page items.
      */
     private fun appendPageItems(builder: StringBuilder) {
-        builder.appendln("    next-page:\n" +
-                "      row: 6\n" +
-                "      col: 9\n" +
-                "      fixed: true\n" +
-                "      script: 'scroll 2 0'\n" +
-                "      icon: \n" +
-                "       id: 397\n" +
-                "       damage: 3\n" +
-                "       skin: 'http://textures.minecraft.net/texture/1b6f1a25b6bc199946472aedb370522584ff6f4e83221e5946bd2e41b5ca13b'\n" +
-                "       name: '&aNext page'\n" +
-                "       script: 'hide-right-scroll'\n" +
-                "    previous-page:\n" +
-                "      row: 6\n" +
-                "      col: 1\n" +
-                "      fixed: true\n" +
-                "      script: 'scroll -2 0'\n" +
-                "      icon: \n" +
-                "       id: 397\n" +
-                "       damage: 3\n" +
-                "       skin: 'http://textures.minecraft.net/texture/3ebf907494a935e955bfcadab81beafb90fb9be49c7026ba97d798d5f1a23'\n" +
-                "       name: '&aPrevious page'\n" +
-                "       script: 'hide-left-scroll'\n" +
-                "    back:\n" +
-                "      row: 6\n" +
-                "      col: 5\n" +
-                "      fixed: true\n" +
-                "      script: 'close-gui'\n" +
-                "      icon:\n" +
-                "        id: 166\n" +
-                "        damage: 0\n" +
-                "        name: '&cBack'\n" +
-                "        lore:\n" +
-                "        - '&7Closes the current window.'")
+        builder.appendln(
+            "    next-page:\n" +
+                    "      row: 6\n" +
+                    "      col: 9\n" +
+                    "      fixed: true\n" +
+                    "      script: 'scroll 2 0'\n" +
+                    "      icon: \n" +
+                    "       id: 397\n" +
+                    "       damage: 3\n" +
+                    "       skin: 'http://textures.minecraft.net/texture/1b6f1a25b6bc199946472aedb370522584ff6f4e83221e5946bd2e41b5ca13b'\n" +
+                    "       name: '&aNext page'\n" +
+                    "       script: 'hide-right-scroll'\n" +
+                    "    previous-page:\n" +
+                    "      row: 6\n" +
+                    "      col: 1\n" +
+                    "      fixed: true\n" +
+                    "      script: 'scroll -2 0'\n" +
+                    "      icon: \n" +
+                    "       id: 397\n" +
+                    "       damage: 3\n" +
+                    "       skin: 'http://textures.minecraft.net/texture/3ebf907494a935e955bfcadab81beafb90fb9be49c7026ba97d798d5f1a23'\n" +
+                    "       name: '&aPrevious page'\n" +
+                    "       script: 'hide-left-scroll'\n" +
+                    "    back:\n" +
+                    "      row: 6\n" +
+                    "      col: 5\n" +
+                    "      fixed: true\n" +
+                    "      script: 'close-gui'\n" +
+                    "      icon:\n" +
+                    "        id: 166\n" +
+                    "        damage: 0\n" +
+                    "        name: '&cBack'\n" +
+                    "        lore:\n" +
+                    "        - '&7Closes the current window.'"
+        )
     }
 
 }

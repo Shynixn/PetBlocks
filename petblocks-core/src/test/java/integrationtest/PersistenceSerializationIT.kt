@@ -120,7 +120,7 @@ class PersistenceSerializationIT {
         entity.id = 4
         entity.userId = "Yeah"
         entity.itemId = 4
-        entity.clickParticle.type = ParticleType.BARRIER
+        entity.clickParticle.typeName = ParticleType.BARRIER.name
         entity.clickSound.pitch = 93.0
         entity.dataValue = 42
         entity.typeName = "Funny"
@@ -136,7 +136,7 @@ class PersistenceSerializationIT {
         Assertions.assertEquals(4, actual.id)
         Assertions.assertEquals("Yeah", actual.userId)
         Assertions.assertEquals(4, actual.itemId)
-        Assertions.assertEquals(ParticleType.BARRIER, actual.clickParticle.type)
+        Assertions.assertEquals(ParticleType.BARRIER.name, actual.clickParticle.typeName)
         Assertions.assertEquals(93.0, actual.clickSound.pitch)
         Assertions.assertEquals(42, actual.dataValue)
         Assertions.assertEquals("Funny", actual.typeName)

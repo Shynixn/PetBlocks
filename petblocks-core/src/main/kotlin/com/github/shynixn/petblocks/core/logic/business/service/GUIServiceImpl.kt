@@ -534,7 +534,7 @@ class GUIServiceImpl @Inject constructor(
 
         this.clickProtection.add(player)
 
-        sync(concurrencyService, 10L) {
+        sync(concurrencyService, 5L) {
             this.clickProtection.remove(player)
         }
 

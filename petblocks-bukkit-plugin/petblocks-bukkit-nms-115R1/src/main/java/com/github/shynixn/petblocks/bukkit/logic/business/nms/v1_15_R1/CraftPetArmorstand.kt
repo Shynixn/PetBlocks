@@ -1,16 +1,17 @@
-package com.github.shynixn.petblocks.core.logic.business.serializer
+package com.github.shynixn.petblocks.bukkit.logic.business.nms.v1_15_R1
 
-import com.github.shynixn.petblocks.api.business.enumeration.ParticleType
-import com.github.shynixn.petblocks.api.business.serializer.YamlSerializer
+import com.github.shynixn.petblocks.api.business.proxy.EntityPetProxy
+import org.bukkit.craftbukkit.v1_15_R1.CraftServer
+import org.bukkit.craftbukkit.v1_15_R1.entity.CraftArmorStand
 
 /**
- * Created by Shynixn 2018.
+ * Created by Shynixn 2019.
  * <p>
  * Version 1.2
  * <p>
  * MIT License
  * <p>
- * Copyright (c) 2018 by Shynixn
+ * Copyright (c) 2019 by Shynixn
  * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -30,24 +31,42 @@ import com.github.shynixn.petblocks.api.business.serializer.YamlSerializer
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class ParticleTypeSerializer : YamlSerializer<ParticleType, String> {
+class CraftPetArmorstand(server: CraftServer, nmsPet: NMSPetArmorstand) : CraftArmorStand(server, nmsPet), EntityPetProxy {
     /**
-     * Gets called on serialization.
+     * Boots marker.
      */
-    override fun onSerialization(item: ParticleType): String {
-        return item.name
+    override var bootsItemStack: Any? = null
+
+    /**
+     * Removes this entity.
+     */
+    override fun deleteFromWorld() {
+        super.remove()
     }
 
     /**
-     * Gets called on Deserialization.
+     * Ignore all other plugins trying to remove this entity. This is the entity of PetBlocks,
+     * no one else is allowed to modify this!
      */
-    override fun onDeserialization(item: String): ParticleType {
-        ParticleType.values().forEach { p ->
-            if (p.name == item || p.gameId_18 == item || p.gameId_113 == item || p.minecraftId_112 == item) {
-                return p
-            }
-        }
+    override fun remove() {
+    }
 
-        throw RuntimeException("Item '$item' cannot be deserialized to ParticleType!")
+    /**
+     * Pet should never be persistent.
+     */
+    override fun isPersistent(): Boolean {
+        return false
+    }
+
+    /**
+     * Pet should never be persistent.
+     */
+    override fun setPersistent(b: Boolean) {}
+
+    /**
+     * Custom type.
+     */
+    override fun toString(): String {
+        return "PetBlocks{ArmorstandEntity}"
     }
 }

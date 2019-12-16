@@ -101,7 +101,7 @@ class PersistenceSQLiteIT {
         Assertions.assertEquals("CHICKEN_WALK", (actual.aiGoals[0] as AIMovementEntity).movementSound.name)
         Assertions.assertEquals(1.0, (actual.aiGoals[0] as AIMovementEntity).movementSound.volume)
         Assertions.assertEquals(1.0, (actual.aiGoals[0] as AIMovementEntity).movementSound.pitch)
-        Assertions.assertEquals(ParticleType.REDSTONE, (actual.aiGoals[0] as AIMovementEntity).movementParticle.type)
+        Assertions.assertEquals(ParticleType.REDSTONE.name, (actual.aiGoals[0] as AIMovementEntity).movementParticle.typeName)
         Assertions.assertEquals(20, (actual.aiGoals[0] as AIMovementEntity).movementParticle.amount)
 
         Assertions.assertEquals("follow-owner", (actual.aiGoals[1] as AIFollowOwner).type)
@@ -113,7 +113,7 @@ class PersistenceSQLiteIT {
 
         Assertions.assertEquals("feeding", (actual.aiGoals[3] as AIFeeding).type)
         Assertions.assertEquals("391", (actual.aiGoals[3] as AIFeeding).typeName)
-        Assertions.assertEquals(ParticleType.HEART, (actual.aiGoals[3] as AIFeeding).clickParticle.type)
+        Assertions.assertEquals(ParticleType.HEART.name, (actual.aiGoals[3] as AIFeeding).clickParticle.typeName)
         Assertions.assertEquals("EAT", (actual.aiGoals[3] as AIFeeding).clickSound.name)
 
         Assertions.assertEquals("ambient-sound", (actual.aiGoals[5] as AIAmbientSound).type)

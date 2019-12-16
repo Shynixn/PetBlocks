@@ -13,7 +13,7 @@ PetBlocks is a spigot and also a sponge plugin to use blocks and custom heads as
 
 * Use blocks as pets in minecraft
 * The GUI and pets are completely customizable
-* Version support 1.8.R1 - 1.14.R1
+* Version support 1.8.R1 - 1.15.R1
 * Check out the [PetBlocks-Spigot-Page](https://www.spigotmc.org/resources/12056/) to get more information. 
 
 ## Installation
@@ -27,6 +27,7 @@ PetBlocks is a spigot and also a sponge plugin to use blocks and custom heads as
 ## Contributing
 
 * Clone the repository to your local environment
+* Make sure ``java`` and ``mvn`` can be called in your terminal
 * Execute gradle sync for dependencies
 * Install the additional spigot dependencies by executing the following gradle task
 

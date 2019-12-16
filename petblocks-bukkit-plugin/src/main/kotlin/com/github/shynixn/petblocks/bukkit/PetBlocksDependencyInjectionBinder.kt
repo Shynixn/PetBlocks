@@ -83,7 +83,6 @@ class PetBlocksDependencyInjectionBinder(private val plugin: PetBlocksPlugin) : 
         bind(ItemTypeService::class.java).to(ItemTypeServiceImpl::class.java).`in`(Scopes.SINGLETON)
         bind(MessageService::class.java).to(MessageServiceImpl::class.java).`in`(Scopes.SINGLETON)
         bind(NavigationService::class.java).to(NavigationServiceImpl::class.java).`in`(Scopes.SINGLETON)
-        bind(ParticleService::class.java).to(ParticleServiceImpl::class.java).`in`(Scopes.SINGLETON)
         bind(ProxyService::class.java).to(ProxyServiceImpl::class.java).`in`(Scopes.SINGLETON)
         bind(SoundService::class.java).to(SoundServiceImpl::class.java).`in`(Scopes.SINGLETON)
         bind(GUIItemLoadService::class.java).to(GUIItemLoadServiceImpl::class.java).`in`(Scopes.SINGLETON)
@@ -92,6 +91,9 @@ class PetBlocksDependencyInjectionBinder(private val plugin: PetBlocksPlugin) : 
         bind(ItemStackSerializer::class.java).to(ItemStackSerializerImpl::class.java).`in`(Scopes.SINGLETON)
 
         when {
+            version.isVersionSameOrGreaterThan(Version.VERSION_1_15_R1) -> bind(EntityRegistrationService::class.java).to(EntityRegistration115R1ServiceImpl::class.java).`in`(
+                Scopes.SINGLETON
+            )
             version.isVersionSameOrGreaterThan(Version.VERSION_1_14_R1) -> bind(EntityRegistrationService::class.java).to(EntityRegistration114R1ServiceImpl::class.java).`in`(
                 Scopes.SINGLETON
             )
@@ -107,6 +109,13 @@ class PetBlocksDependencyInjectionBinder(private val plugin: PetBlocksPlugin) : 
         when {
             version.isVersionSameOrGreaterThan(Version.VERSION_1_9_R1) -> bind(HandService::class.java).to(Hand19R1ServiceImpl::class.java).`in`(Scopes.SINGLETON)
             else -> bind(HandService::class.java).to(Hand18R1ServiceImpl::class.java).`in`(Scopes.SINGLETON)
+        }
+
+        when {
+            version.isVersionSameOrGreaterThan(Version.VERSION_1_13_R2) -> bind(ParticleService::class.java).to(Particle113R2ServiceImpl::class.java).`in`(
+                Scopes.SINGLETON
+            )
+            else -> bind(ParticleService::class.java).to(Particle18R1ServiceImpl::class.java).`in`(Scopes.SINGLETON)
         }
     }
 }

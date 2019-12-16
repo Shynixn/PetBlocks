@@ -1,4 +1,7 @@
-package com.github.shynixn.petblocks.api.business.enumeration
+package com.github.shynixn.petblocks.bukkit.logic.business.nms.v1_15_R1
+
+import com.github.shynixn.petblocks.api.business.proxy.PathfinderProxy
+import net.minecraft.server.v1_15_R1.PathfinderGoal
 
 /**
  * Created by Shynixn 2018.
@@ -27,81 +30,46 @@ package com.github.shynixn.petblocks.api.business.enumeration
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-enum class ParticleColor(
-        /**
-         * Red color value.
-         */
-        val red: Int,
-        /**
-         * Green color value.
-         */
-        val green: Int,
-        /**
-         * Blue color value.
-         */
-        val blue: Int) {
+class Pathfinder(private val pathfinderProxy: PathfinderProxy) : PathfinderGoal() {
     /**
-     * Black.
+     * Override ShouldExecute.
      */
-    BLACK(0, 0, 0),
+    override fun a(): Boolean {
+        return pathfinderProxy.shouldGoalBeExecuted()
+    }
+
     /**
-     * Dark blue.
+     * Override continue executing.
      */
-    DARK_BLUE(0, 0, 170),
+    override fun b(): Boolean {
+        return pathfinderProxy.shouldGoalContinueExecuting()
+    }
+
     /**
-     * Dark green.
+     * Override isInterrupting.
      */
-    DARK_GREEN(0, 170, 0),
+    override fun E_(): Boolean {
+        return pathfinderProxy.isInteruptible
+    }
+
     /**
-     * Dark aqua.
+     * Override startExecuting.
      */
-    DARK_AQUA(0, 170, 170),
+    override fun c() {
+        this.pathfinderProxy.onStartExecuting()
+    }
+
     /**
-     * Dark red.
+     * Override reset.
      */
-    DARK_RED(170, 0, 0),
+    override fun d() {
+        this.pathfinderProxy.onStopExecuting()
+    }
+
     /**
-     * Dark purple.
+     * Override update.
      */
-    DARK_PURPLE(170, 0, 170),
-    /**
-     * Gold.
-     */
-    GOLD(255, 170, 0),
-    /**
-     * Gray.
-     */
-    GRAY(170, 170, 170),
-    /**
-     * Dark blue.
-     */
-    DARK_GRAY(85, 85, 85),
-    /**
-     * Blue.
-     */
-    BLUE(85, 85, 255),
-    /**
-     * Green.
-     */
-    GREEN(85, 255, 85),
-    /**
-     * Aqua.
-     */
-    AQUA(85, 255, 255),
-    /**
-     * Red.
-     */
-    RED(255, 85, 85),
-    /**
-     * Light Purple.
-     */
-    LIGHT_PURPLE(255, 85, 255),
-    /**
-     * Yellow.
-     */
-    YELLOW(255, 255, 85),
-    /**
-     * White.
-     */
-    WHITE(255, 255, 255);
+    override fun e() {
+        this.pathfinderProxy.onExecute()
+    }
 }

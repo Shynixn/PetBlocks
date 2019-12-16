@@ -1,10 +1,8 @@
 package com.github.shynixn.petblocks.core.logic.persistence.entity
 
 import com.github.shynixn.petblocks.api.business.annotation.YamlSerialize
-import com.github.shynixn.petblocks.api.business.enumeration.ParticleColor
 import com.github.shynixn.petblocks.api.business.enumeration.ParticleType
 import com.github.shynixn.petblocks.api.persistence.entity.Particle
-import com.github.shynixn.petblocks.core.logic.business.serializer.ParticleTypeSerializer
 
 /**
  * Created by Shynixn 2018.
@@ -34,12 +32,13 @@ import com.github.shynixn.petblocks.core.logic.business.serializer.ParticleTypeS
  * SOFTWARE.
  */
 class ParticleEntity(
-    @YamlSerialize(value = "name", orderNumber = 1, customserializer = ParticleTypeSerializer::class)
-    override var type: ParticleType = ParticleType.NONE) : Particle {
+    @YamlSerialize(value = "name", orderNumber = 1)
+    override var typeName: String = ParticleType.NONE.name
+) : Particle {
     /**
      * Database Id.
      */
-    override var id: Long = 0
+    var id: Long = 0
     /**
      * Amount of particles.
      */
@@ -76,26 +75,6 @@ class ParticleEntity(
      */
     @YamlSerialize(value = "data", orderNumber = 8)
     override var data: Int = 0
-
-    /**
-     * Custom note color code.
-     */
-    override var noteColor: Int
-        get() = this.offSetX.toInt()
-        set(value) {
-            this.offSetX = value.toDouble()
-        }
-
-    /**
-     * Color of the particle effect.
-     */
-    override var color: ParticleColor
-        get() = ParticleColor.WHITE
-        set(value) {
-            colorRed = value.red
-            colorGreen = value.green
-            colorBlue = value.blue
-        }
 
     /**
      * RGB Color code of red.
