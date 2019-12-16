@@ -11,8 +11,8 @@ Java 8 - Java 13 can be used to run PetBlocks.
 Spigot/CraftBukkit
 ~~~~~~~~~~~~~~~~~~
 
-* Spigot *(1.8.0 - 1.14.4)* ✔
-* PaperSpigot *(1.8.0 - 1.14.4)* ✔
+* Spigot *(1.8.0 - 1.15)* ✔
+* PaperSpigot *(1.8.0 - 1.15)* ✔
 * CraftBukkit ✘ (no longer supported)
 * Bedrock ✘ (not compatible)
 
