@@ -87,79 +87,77 @@ class Particle18R1ServiceImpl @Inject constructor(
 
         val internalParticleType = getInternalEnumValue(partType)
 
-        val packet = {
-            var additionalPayload: IntArray? = null
+        var additionalPayload: IntArray? = null
 
-            if (particle.materialName != null) {
-                additionalPayload = if (partType == ParticleType.ITEM_CRACK) {
-                    intArrayOf(getIdFromMaterialMethod.invoke(Material.getMaterial(particle.materialName!!)) as Int, particle.data)
-                } else {
-                    intArrayOf(getIdFromMaterialMethod.invoke(Material.getMaterial(particle.materialName!!)) as Int, (particle.data shl 12))
-                }
-            }
-
-            if (partType == ParticleType.REDSTONE) {
-                var red = particle.colorRed.toFloat() / 255.0F
-                if (red <= 0) {
-                    red = Float.MIN_VALUE
-                }
-
-                val constructor = Class.forName("net.minecraft.server.VERSION.PacketPlayOutWorldParticles".replace("VERSION", version.bukkitId))
-                    .getDeclaredConstructor(
-                        internalParticleType.javaClass,
-                        Boolean::class.javaPrimitiveType,
-                        Float::class.javaPrimitiveType,
-                        Float::class.javaPrimitiveType,
-                        Float::class.javaPrimitiveType,
-                        Float::class.javaPrimitiveType,
-                        Float::class.javaPrimitiveType,
-                        Float::class.javaPrimitiveType,
-                        Float::class.javaPrimitiveType,
-                        Int::class.javaPrimitiveType,
-                        IntArray::class.java
-                    )
-                constructor.newInstance(
-                    internalParticleType,
-                    isLongDistance(location, targets),
-                    location.x.toFloat(),
-                    location.y.toFloat(),
-                    location.z.toFloat(),
-                    red,
-                    particle.colorGreen.toFloat() / 255.0f,
-                    particle.colorBlue.toFloat() / 255.0f,
-                    particle.speed.toFloat(),
-                    particle.amount,
-                    additionalPayload
-                )
+        if (particle.materialName != null) {
+            additionalPayload = if (partType == ParticleType.ITEM_CRACK) {
+                intArrayOf(getIdFromMaterialMethod.invoke(Material.getMaterial(particle.materialName!!)) as Int, particle.data)
             } else {
-                val constructor = Class.forName("net.minecraft.server.VERSION.PacketPlayOutWorldParticles".replace("VERSION", version.bukkitId))
-                    .getDeclaredConstructor(
-                        internalParticleType.javaClass,
-                        Boolean::class.javaPrimitiveType,
-                        Float::class.javaPrimitiveType,
-                        Float::class.javaPrimitiveType,
-                        Float::class.javaPrimitiveType,
-                        Float::class.javaPrimitiveType,
-                        Float::class.javaPrimitiveType,
-                        Float::class.javaPrimitiveType,
-                        Float::class.javaPrimitiveType,
-                        Int::class.javaPrimitiveType,
-                        IntArray::class.java
-                    )
-                constructor.newInstance(
-                    internalParticleType,
-                    isLongDistance(location, targets),
-                    location.x.toFloat(),
-                    location.y.toFloat(),
-                    location.z.toFloat(),
-                    particle.offSetX.toFloat(),
-                    particle.offSetY.toFloat(),
-                    particle.offSetZ.toFloat(),
-                    particle.speed.toFloat(),
-                    particle.amount,
-                    additionalPayload
-                )
+                intArrayOf(getIdFromMaterialMethod.invoke(Material.getMaterial(particle.materialName!!)) as Int, (particle.data shl 12))
             }
+        }
+
+        val packet = if (partType == ParticleType.REDSTONE) {
+            var red = particle.colorRed.toFloat() / 255.0F
+            if (red <= 0) {
+                red = Float.MIN_VALUE
+            }
+
+            val constructor = Class.forName("net.minecraft.server.VERSION.PacketPlayOutWorldParticles".replace("VERSION", version.bukkitId))
+                .getDeclaredConstructor(
+                    internalParticleType.javaClass,
+                    Boolean::class.javaPrimitiveType,
+                    Float::class.javaPrimitiveType,
+                    Float::class.javaPrimitiveType,
+                    Float::class.javaPrimitiveType,
+                    Float::class.javaPrimitiveType,
+                    Float::class.javaPrimitiveType,
+                    Float::class.javaPrimitiveType,
+                    Float::class.javaPrimitiveType,
+                    Int::class.javaPrimitiveType,
+                    IntArray::class.java
+                )
+            constructor.newInstance(
+                internalParticleType,
+                isLongDistance(location, targets),
+                location.x.toFloat(),
+                location.y.toFloat(),
+                location.z.toFloat(),
+                red,
+                particle.colorGreen.toFloat() / 255.0f,
+                particle.colorBlue.toFloat() / 255.0f,
+                particle.speed.toFloat(),
+                particle.amount,
+                additionalPayload
+            )
+        } else {
+            val constructor = Class.forName("net.minecraft.server.VERSION.PacketPlayOutWorldParticles".replace("VERSION", version.bukkitId))
+                .getDeclaredConstructor(
+                    internalParticleType.javaClass,
+                    Boolean::class.javaPrimitiveType,
+                    Float::class.javaPrimitiveType,
+                    Float::class.javaPrimitiveType,
+                    Float::class.javaPrimitiveType,
+                    Float::class.javaPrimitiveType,
+                    Float::class.javaPrimitiveType,
+                    Float::class.javaPrimitiveType,
+                    Float::class.javaPrimitiveType,
+                    Int::class.javaPrimitiveType,
+                    IntArray::class.java
+                )
+            constructor.newInstance(
+                internalParticleType,
+                isLongDistance(location, targets),
+                location.x.toFloat(),
+                location.y.toFloat(),
+                location.z.toFloat(),
+                particle.offSetX.toFloat(),
+                particle.offSetY.toFloat(),
+                particle.offSetZ.toFloat(),
+                particle.speed.toFloat(),
+                particle.amount,
+                additionalPayload
+            )
         }
 
         try {
