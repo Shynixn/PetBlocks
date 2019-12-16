@@ -1,12 +1,9 @@
 package com.github.shynixn.petblocks.core.logic.persistence.entity
 
 import com.github.shynixn.petblocks.api.business.annotation.YamlSerialize
-import com.github.shynixn.petblocks.api.business.enumeration.ParticleType
-import com.github.shynixn.petblocks.api.business.service.ParticleService
 import com.github.shynixn.petblocks.api.persistence.entity.AIMovement
 import com.github.shynixn.petblocks.api.persistence.entity.Particle
 import com.github.shynixn.petblocks.api.persistence.entity.Sound
-import com.github.shynixn.petblocks.core.logic.business.serializer.ParticleTypeSerializer
 
 /**
  * Created by Shynixn 2018.

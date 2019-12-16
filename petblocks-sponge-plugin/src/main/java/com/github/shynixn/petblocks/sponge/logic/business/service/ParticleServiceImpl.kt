@@ -69,7 +69,7 @@ class ParticleServiceImpl @Inject constructor(private val configurationService: 
      * Plays the given [particle] at the given [location] for the given [players].
      */
     private fun playParticleToPlayers(location: Vector3d, particle: Particle, players: Collection<Player>) {
-        var partType = findParticleType(particle.typeName)
+        val partType = findParticleType(particle.typeName)
 
         if (partType == ParticleType.NONE) {
             return
