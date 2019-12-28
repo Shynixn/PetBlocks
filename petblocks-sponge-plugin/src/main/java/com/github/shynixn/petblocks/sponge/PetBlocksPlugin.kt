@@ -24,7 +24,7 @@ import org.spongepowered.api.entity.living.player.Player
 import org.spongepowered.api.event.Listener
 import org.spongepowered.api.event.cause.Cause
 import org.spongepowered.api.event.game.GameReloadEvent
-import org.spongepowered.api.event.game.state.GameInitializationEvent
+import org.spongepowered.api.event.game.state.GameStartedServerEvent
 import org.spongepowered.api.event.game.state.GameStoppingServerEvent
 import org.spongepowered.api.event.message.MessageEvent
 import org.spongepowered.api.event.network.ClientConnectionEvent
@@ -100,7 +100,7 @@ class PetBlocksPlugin : PluginProxy {
      * Enables the plugin PetBlocks.
      */
     @Listener
-    fun onEnable(event: GameInitializationEvent) {
+    fun onEnable(event: GameStartedServerEvent) {
         sendConsoleMessage(PREFIX_CONSOLE + ChatColor.GREEN + "Loading PetBlocks ...")
         this.injector = spongeInjector.createChildInjector(PetBlocksDependencyInjectionBinder(plugin, this))
 
