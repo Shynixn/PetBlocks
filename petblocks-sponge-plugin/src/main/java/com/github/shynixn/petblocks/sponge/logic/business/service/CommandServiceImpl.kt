@@ -117,6 +117,13 @@ class CommandServiceImpl @Inject constructor(private val plugin: PluginContainer
             .arguments(GenericArguments.optionalWeak(GenericArguments.remainingRawJoinedStrings(Text.of("text"))))
             .executor(commandExecutor).build()
 
-        Sponge.getCommandManager().register(this.plugin, commandSpec, command)
+        val aliases = ArrayList<String>()
+        aliases.add(command)
+
+        if (commandConfiguration.containsKey("aliases")) {
+            aliases.addAll(commandConfiguration["aliases"] as List<String>)
+        }
+
+        Sponge.getCommandManager().register(this.plugin, commandSpec, aliases)
     }
 }

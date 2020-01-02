@@ -5,7 +5,6 @@ import com.github.shynixn.petblocks.api.business.command.SourceCommand
 import org.bukkit.command.CommandSender
 import org.bukkit.command.defaults.BukkitCommand
 import org.bukkit.entity.Player
-import java.util.ArrayList
 
 /**
  * Created by Shynixn 2018.
@@ -34,13 +33,24 @@ import java.util.ArrayList
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class CommandProxyImpl(command: String, description: String, usage: String, permission: String, permissionMessage: String, private val instance: Any) : BukkitCommand(command) {
+class CommandProxyImpl(
+    command: String,
+    description: String,
+    usage: String,
+    permission: String,
+    permissionMessage: String,
+    aliases: List<String>,
+    private val instance: Any
+) : BukkitCommand(command) {
+    /**
+     * Init.
+     */
     init {
         this.setDescription(description)
         this.usage = usage
         this.permission = permission
         this.permissionMessage = permissionMessage
-        this.aliases = ArrayList()
+        this.aliases = aliases
     }
 
     /**

@@ -65,6 +65,7 @@ commands:
   petblock:
     enabled: true
     command: petblock
+    aliases: []
     useage: /<command>
     description: Opens the pet GUI.
     permission: petblocks.command.use
