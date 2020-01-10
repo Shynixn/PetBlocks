@@ -63,6 +63,11 @@ enum class AIType(
     CARRY("carry", AICarry::class),
 
     /**
+     * Entity Nbt.
+     */
+    ENTITY_NBT("entity-nbt", AIEntityNbt::class),
+
+    /**
      * Feeding.
      */
     FEEDING("feeding", AIFeeding::class),

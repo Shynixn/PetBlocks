@@ -123,6 +123,7 @@ class EntityServiceImpl @Inject constructor(
         this.register<AIWalking>(AIType.WALKING)
         this.register<AIWearing>(AIType.WEARING)
         this.register<AIInventory>(AIType.INVENTORY)
+        this.register<AIEntityNbt>(AIType.ENTITY_NBT)
     }
 
     /**
