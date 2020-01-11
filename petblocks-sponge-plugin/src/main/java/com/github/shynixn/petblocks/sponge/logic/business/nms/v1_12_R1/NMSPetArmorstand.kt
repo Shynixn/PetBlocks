@@ -26,12 +26,12 @@ import net.minecraft.entity.item.EntityArmorStand
 import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.entity.player.EntityPlayerMP
 import net.minecraft.inventory.EntityEquipmentSlot
+import net.minecraft.nbt.JsonToNBT
 import net.minecraft.nbt.NBTTagCompound
 import net.minecraft.util.math.MathHelper
 import net.minecraft.util.math.Vec3d
 import net.minecraft.world.World
 import org.spongepowered.api.Sponge
-import org.spongepowered.api.entity.Entity
 import org.spongepowered.api.entity.Transform
 import org.spongepowered.api.entity.living.ArmorStand
 import org.spongepowered.api.entity.living.Human
@@ -95,12 +95,7 @@ class NMSPetArmorstand(owner: Player, val petMeta: PetMeta) : EntityArmorStand(o
         internalProxy = PetProxyImpl(petMeta, this.cast(), owner)
         petMeta.propertyTracker.onPropertyChanged(PetMeta::aiGoals, true)
 
-        val compound = NBTTagCompound()
-        compound.setBoolean("invulnerable", true)
-        compound.setBoolean("Invisible", true)
-        compound.setBoolean("PersistenceRequired", true)
-        compound.setBoolean("ShowArms", true)
-        compound.setBoolean("NoBasePlate", true)
+        val compound = this.prepareNBTTagForArmorstand()
         this.readEntityFromNBT(compound)
     }
 
@@ -134,8 +129,7 @@ class NMSPetArmorstand(owner: Player, val petMeta: PetMeta) : EntityArmorStand(o
 
         val player = proxy.getPlayer<Player>()
 
-        val compound = NBTTagCompound()
-        this.writeEntityToNBT(compound)
+        val compound = this.prepareNBTTagForArmorstand()
         compound.setBoolean("Marker", false)
         this.readEntityFromNBT(compound)
 
@@ -162,16 +156,12 @@ class NMSPetArmorstand(owner: Player, val petMeta: PetMeta) : EntityArmorStand(o
         val aiWearing = this.petMeta.aiGoals.firstOrNull { a -> a is AIWearing }
 
         if (aiWearing != null) {
-            val internalCompound = NBTTagCompound()
-            this.writeEntityToNBT(internalCompound)
+            val internalCompound = this.prepareNBTTagForArmorstand()
             internalCompound.setBoolean("Marker", true)
             this.readEntityFromNBT(internalCompound)
             this.alwaysRenderNameTag = false
-
             val armorstand = proxy.getHeadArmorstand<ArmorStand>()
-
             player.addPassenger(armorstand)
-
             return
         }
 
@@ -182,6 +172,8 @@ class NMSPetArmorstand(owner: Player, val petMeta: PetMeta) : EntityArmorStand(o
             proxy.changeHitBox(internalHitBox!! as Living)
             val aiGoals = aiService.convertPetAiBasesToPathfinders(proxy, petMeta.aiGoals)
             (internalHitBox as NMSPetBat).applyPathfinders(aiGoals)
+            val nbtCompound = prepareNBTTagForHitBox(internalHitBox!!)
+            internalHitBox!!.readEntityFromNBT(nbtCompound)
             return
         }
 
@@ -192,6 +184,8 @@ class NMSPetArmorstand(owner: Player, val petMeta: PetMeta) : EntityArmorStand(o
             proxy.changeHitBox(internalHitBox!! as Living)
             val aiGoals = aiService.convertPetAiBasesToPathfinders(proxy, petMeta.aiGoals)
             (internalHitBox as NMSPetRabbit).applyPathfinders(aiGoals)
+            val nbtCompound = prepareNBTTagForHitBox(internalHitBox!!)
+            internalHitBox!!.readEntityFromNBT(nbtCompound)
             return
         }
 
@@ -199,6 +193,8 @@ class NMSPetArmorstand(owner: Player, val petMeta: PetMeta) : EntityArmorStand(o
         proxy.changeHitBox(internalHitBox!! as Living)
         val aiGoals = aiService.convertPetAiBasesToPathfinders(proxy, petMeta.aiGoals)
         (internalHitBox as NMSPetVillager).applyPathfinders(aiGoals)
+        val nbtCompound = prepareNBTTagForHitBox(internalHitBox!!)
+        internalHitBox!!.readEntityFromNBT(nbtCompound)
     }
 
     /**
@@ -213,7 +209,11 @@ class NMSPetArmorstand(owner: Player, val petMeta: PetMeta) : EntityArmorStand(o
             if (this.internalHitBox != null) {
                 val location = (internalHitBox!! as Living).transform
                 val aiGoal = petMeta.aiGoals.lastOrNull { p -> p is AIMovement } ?: return
-                val y = location.y + (aiGoal as AIMovement).movementYOffSet
+                var y = location.y + (aiGoal as AIMovement).movementYOffSet
+
+                if (this.isSmall) {
+                    y += 0.6
+                }
 
                 this.setPositionAndRotation(location.x, y, location.z, location.yaw.toFloat(), location.pitch.toFloat())
 
@@ -262,10 +262,14 @@ class NMSPetArmorstand(owner: Player, val petMeta: PetMeta) : EntityArmorStand(o
         val groundAi = this.petMeta.aiGoals.firstOrNull { a -> a is AIGroundRiding }
         val airAi = this.petMeta.aiGoals.firstOrNull { a -> a is AIFlyRiding }
 
-        val offSet = when {
+        var offSet = when {
             groundAi != null -> (groundAi as AIGroundRiding).ridingYOffSet
             airAi != null -> (airAi as AIFlyRiding).ridingYOffSet
             else -> 0.0
+        }
+
+        if (this.isSmall) {
+            offSet += 0.6
         }
 
         val axisBoundingBox = this.entityBoundingBox
@@ -407,6 +411,60 @@ class NMSPetArmorstand(owner: Player, val petMeta: PetMeta) : EntityArmorStand(o
 
         this.limbSwingAmount += (f22 - this.limbSwingAmount) * 0.4f
         this.limbSwing += this.limbSwingAmount
+    }
+
+    /**
+     * Prepares the nbt tags for applying to the given hitBox.
+     */
+    private fun prepareNBTTagForHitBox(hitBox: EntityLiving): NBTTagCompound {
+        val compound = NBTTagCompound()
+        hitBox.writeEntityToNBT(compound)
+        applyAIEntityNbt(compound, this.petMeta.aiGoals.asSequence().filterIsInstance<AIEntityNbt>().map { a -> a.hitBoxNbt }.toList())
+        return compound
+    }
+
+    /**
+     * Prepares the nbt tags for applying to this armorstand.
+     */
+    private fun prepareNBTTagForArmorstand(): NBTTagCompound {
+        val compound = NBTTagCompound()
+        this.writeEntityToNBT(compound)
+        applyAIEntityNbt(compound, this.petMeta.aiGoals.asSequence().filterIsInstance<AIEntityNbt>().map { a -> a.armorStandNbt }.toList())
+
+        compound.setBoolean("invulnerable", true)
+        compound.setBoolean("Invisible", true)
+        compound.setBoolean("PersistenceRequired", true)
+        compound.setBoolean("ShowArms", true)
+        compound.setBoolean("NoBasePlate", true)
+
+        return compound
+    }
+
+    /**
+     * Applies the raw NbtData to the given target.
+     */
+    private fun applyAIEntityNbt(target: NBTTagCompound, rawNbtDatas: List<String>) {
+        val compoundMapField = NBTTagCompound::class.java.getDeclaredField("field_74784_a")
+        compoundMapField.isAccessible = true
+        val rootCompoundMap = compoundMapField.get(target) as MutableMap<Any?, Any?>
+
+        for (rawNbtData in rawNbtDatas) {
+            if (rawNbtData.isEmpty()) {
+                continue
+            }
+
+            val parsedCompound = try {
+                JsonToNBT.getTagFromJson(rawNbtData)
+            } catch (e: Exception) {
+                throw RuntimeException("NBT Tag '$rawNbtData' cannot be parsed.", e)
+            }
+
+            val parsedCompoundMap = compoundMapField.get(parsedCompound) as Map<*, *>
+
+            for (key in parsedCompoundMap.keys) {
+                rootCompoundMap[key] = parsedCompoundMap[key]
+            }
+        }
     }
 
     /**

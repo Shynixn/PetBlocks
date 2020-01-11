@@ -92,8 +92,13 @@ class CommandServiceImpl @Inject constructor(private val plugin: Plugin, private
         val usage = commandConfiguration["useage"] as String
         val permission = commandConfiguration["permission"] as String
         val permissionMessage = commandConfiguration["permission-message"] as String
+        val aliases = if (commandConfiguration.containsKey("aliases")) {
+            commandConfiguration["aliases"] as List<String>
+        } else {
+            ArrayList()
+        }
 
-        val commandExecutor = CommandProxyImpl(command, description, usage, permission, permissionMessage, commandExecutorInstance)
+        val commandExecutor = CommandProxyImpl(command, description, usage, permission, permissionMessage, aliases, commandExecutorInstance)
         val clazz = Class.forName("org.bukkit.craftbukkit.VERSION.CraftServer".replace("VERSION", version.bukkitId))
         val server = clazz.cast(Bukkit.getServer())
         val map = server.javaClass.getDeclaredMethod("getCommandMap").invoke(server) as SimpleCommandMap

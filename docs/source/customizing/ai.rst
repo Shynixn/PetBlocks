@@ -13,6 +13,7 @@ Make sure you have read the `introduction to PetBlocks <../pets/index.html>`_ fi
  ambientsound
  buffeffect
  carry
+ entitynbt
  feeding
  fleeincombat
  floatinwater

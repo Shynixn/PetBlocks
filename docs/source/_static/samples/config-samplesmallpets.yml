@@ -200,6 +200,9 @@ pet:
         name: 'CHICKEN_IDLE'
         volume: 5.0
         pitch: 1.0
+    7:
+      type: 'entity-nbt'
+      armorstand-nbt: '{Small:1}'
 ############################
 
 # World settings
