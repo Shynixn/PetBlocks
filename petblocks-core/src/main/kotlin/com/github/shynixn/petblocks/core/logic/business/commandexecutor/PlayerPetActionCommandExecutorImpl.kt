@@ -2,6 +2,7 @@ package com.github.shynixn.petblocks.core.logic.business.commandexecutor
 
 import com.github.shynixn.petblocks.api.business.command.PlayerCommand
 import com.github.shynixn.petblocks.api.business.enumeration.Permission
+import com.github.shynixn.petblocks.api.business.service.ConfigurationService
 import com.github.shynixn.petblocks.api.business.service.GUIService
 import com.github.shynixn.petblocks.api.business.service.PetActionService
 import com.github.shynixn.petblocks.api.business.service.ProxyService
@@ -38,7 +39,8 @@ import com.google.inject.Inject
 class PlayerPetActionCommandExecutorImpl @Inject constructor(
     private val petActionService: PetActionService,
     private val guiService: GUIService,
-    private val proxyService: ProxyService
+    private val proxyService: ProxyService,
+    private val configurationService: ConfigurationService
 ) : PlayerCommand {
     /**
      * Gets called when the given [player] executes the defined command with the given [args].
@@ -52,6 +54,12 @@ class PlayerPetActionCommandExecutorImpl @Inject constructor(
             petActionService.renamePet(player, mergeArgs(args))
         } else if (args.size == 2 && args[0].equals("skin", true) && proxyService.hasPermission(player, Permission.CUSTOMHEAD)) {
             petActionService.changePetSkin(player, args[1])
+        } else if (args.size == 1 && proxyService.hasPermission(
+                player,
+                configurationService.findValue<String>("commands.petblock.permission") + "." + args[0]
+            )
+        ) {
+            guiService.open(player, args[0])
         } else {
             guiService.open(player)
         }

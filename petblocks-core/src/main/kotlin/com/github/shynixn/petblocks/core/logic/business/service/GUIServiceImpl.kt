@@ -204,7 +204,7 @@ class GUIServiceImpl @Inject constructor(
         proxyService.closeInventory(player)
         var page = pageName
 
-        if (page == null) {
+        if (page == null || !configurationService.containsValue(page)) {
             page = "gui.main"
         }
 
