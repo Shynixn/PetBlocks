@@ -201,6 +201,26 @@ class PetListener @Inject constructor(
     }
 
     /**
+     * Gets called when the player moves and removes the pet if mounted.
+     */
+    @EventHandler
+    fun onPlayerMoveEvent(event: PlayerMoveEvent) {
+        if (!petService.hasPet(event.player)) {
+            return
+        }
+
+        if (!isInWater(event.player)) {
+            return
+        }
+
+        val pet = petService.getOrSpawnPetFromPlayer(event.player).get()
+        val hatAi = pet.meta.aiGoals.firstOrNull { a -> a is AIWearing } as AIWearing? ?: return
+
+        pet.meta.aiGoals.remove(hatAi)
+        executeMountingTick(pet)
+    }
+
+    /**
      * Gets called when an animal gets leashed and cancels it for all pet entities.
      *
      * @param event event
@@ -281,6 +301,20 @@ class PetListener @Inject constructor(
     }
 
     /**
+     * Gets if the player is in water.
+     */
+    private fun isInWater(player: Player): Boolean {
+        val blockType = player.location.block.type
+
+        return try {
+            itemTypeService.findItemType<Any>(blockType) == itemTypeService.findItemType(MaterialType.WATER)
+                    || itemTypeService.findItemType<Any>(blockType) == itemTypeService.findItemType(MaterialType.STATIONARY_WATER)
+        } catch (e: Exception) {
+            false
+        }
+    }
+
+    /**
      * Performs the first spawn of the pet if enabled.
      */
     private fun performFirstSpawn(player: Player) {
@@ -312,21 +346,32 @@ class PetListener @Inject constructor(
                 }
             }
 
-            if (changed && version.isVersionSameOrGreaterThan(Version.VERSION_1_14_R1)) {
-                // Execute a tick on the Armorstand manually since 1.14 passengers do not tick.
-                // This is required by wearing pets.
-                val handle =
-                    findClazz("org.bukkit.craftbukkit.VERSION.entity.CraftLivingEntity").getDeclaredMethod("getHandle")
-                        .invoke(pet.getHeadArmorstand())
-
-                val method =
-                    findClazz("com.github.shynixn.petblocks.bukkit.logic.business.nms.VERSION.NMSPetArmorstand")
-                        .getDeclaredMethod("doTick")
-                method.isAccessible = true
-
-                method.invoke(handle)
+            if (changed) {
+                executeMountingTick(pet)
             }
         }
+    }
+
+    /**
+     * Executes additional mounting tick.
+     */
+    private fun executeMountingTick(pet: PetProxy) {
+        if (!version.isVersionSameOrGreaterThan(Version.VERSION_1_14_R1)) {
+            return
+        }
+
+        // Execute a tick on the Armorstand manually since 1.14 passengers do not tick.
+        // This is required by wearing pets.
+        val handle =
+            findClazz("org.bukkit.craftbukkit.VERSION.entity.CraftLivingEntity").getDeclaredMethod("getHandle")
+                .invoke(pet.getHeadArmorstand())
+
+        val method =
+            findClazz("com.github.shynixn.petblocks.bukkit.logic.business.nms.VERSION.NMSPetArmorstand")
+                .getDeclaredMethod("doTick")
+        method.isAccessible = true
+
+        method.invoke(handle)
     }
 
     /**
