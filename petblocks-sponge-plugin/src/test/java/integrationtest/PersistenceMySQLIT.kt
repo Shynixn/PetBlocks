@@ -271,11 +271,15 @@ class PersistenceMySQLIT {
                 , LoggingUtilServiceImpl(Logger.getAnonymousLogger()), plugin
             )
 
+            val localizationService =
+                LocalizationServiceImpl(configurationService, LoggingUtilServiceImpl(Logger.getAnonymousLogger()), MockedConcurrencyService())
+
             val guiItemLoadService =
                 GUIItemLoadServiceImpl(
                     configurationService,
                     ItemTypeServiceImpl(),
-                    aiService
+                    aiService,
+                    localizationService
                 )
 
             val method = PetBlocksApi::class.java.getDeclaredMethod("initializePetBlocks", PluginProxy::class.java)

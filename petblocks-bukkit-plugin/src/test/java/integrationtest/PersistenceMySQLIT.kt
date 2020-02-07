@@ -248,16 +248,19 @@ class PersistenceMySQLIT {
             val configService = ConfigurationServiceImpl(plugin)
 
             EntityServiceImpl(
-                configService, MockedProxyService(),
+                MockedProxyService(),
                 Mockito.mock(EntityRegistrationService::class.java), Mockito.mock(PetService::class.java), YamlSerializationServiceImpl(),
                 plugin, Version.VERSION_1_8_R1, aiService
             )
+
+            val localizationService = LocalizationServiceImpl(configService, LoggingUtilServiceImpl(Logger.getAnonymousLogger()), MockedConcurrencyService())
 
             val guiItemLoadService =
                 GUIItemLoadServiceImpl(
                     configService,
                     ItemTypeServiceImpl(Version.VERSION_UNKNOWN),
-                    aiService
+                    aiService,
+                    localizationService
                 )
 
             dbContext = SqlDbContextImpl(configService, LoggingUtilServiceImpl(Logger.getAnonymousLogger()))

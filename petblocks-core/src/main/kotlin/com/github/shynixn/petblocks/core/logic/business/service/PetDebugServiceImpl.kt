@@ -1,6 +1,7 @@
 package com.github.shynixn.petblocks.core.logic.business.service
 
 import com.github.shynixn.petblocks.api.business.enumeration.ChatColor
+import com.github.shynixn.petblocks.api.business.localization.Messages
 import com.github.shynixn.petblocks.api.business.service.*
 import com.github.shynixn.petblocks.core.logic.business.extension.sync
 import com.github.shynixn.petblocks.core.logic.business.extension.translateChatColors
@@ -94,8 +95,6 @@ class PetDebugServiceImpl @Inject constructor(
      * @see java.lang.Thread.run
      */
     override fun run() {
-        val prefix = configurationService.findValue<String>("messages.prefix")
-
         for (source in registeredSources.keys) {
             for (i in 0..19) {
                 messageService.sendSourceMessage(source, "", false)
@@ -119,25 +118,25 @@ class PetDebugServiceImpl @Inject constructor(
 
             val internalMessage = ChatMessageEntity()
                 .appendComponent()
-                .append(prefix).append("Player: $playerName ").appendHoverComponent().append("UUID: $playerUUID").getRoot().append("\n")
+                .append(Messages.prefix).append("Player: $playerName ").appendHoverComponent().append("UUID: $playerUUID").getRoot().append("\n")
                 .appendComponent()
-                .append(prefix).append("Petname: ${petMeta.displayName.translateChatColors()}").append("\n")
+                .append(Messages.prefix).append("Petname: ${petMeta.displayName.translateChatColors()}").append("\n")
                 .appendComponent()
-                .append(prefix).append("Enabled: ${petMeta.enabled}").append("\n")
+                .append(Messages.prefix).append("Enabled: ${petMeta.enabled}").append("\n")
                 .appendComponent()
-                .append(prefix).append("Skin").append("\n")
-                .append(prefix).append("- Type: ${petMeta.skin.typeName}").append("\n")
-                .append(prefix).append("- Data: ${petMeta.skin.dataValue}").append("\n")
-                .append(prefix).append("- Unbreakable: ${petMeta.skin.unbreakable}").append("\n").appendHoverComponent().append("Skin: " + petMeta.skin.owner).getRoot()
-                .append(prefix).append(ChatColor.GREEN.toString() + "Sound: ${petMeta.soundEnabled} Particles: ${petMeta.particleEnabled}").append("\n")
-                .append(prefix).append(ChatColor.GREEN.toString() + "AI: ").append("\n")
+                .append(Messages.prefix).append("Skin").append("\n")
+                .append(Messages.prefix).append("- Type: ${petMeta.skin.typeName}").append("\n")
+                .append(Messages.prefix).append("- Data: ${petMeta.skin.dataValue}").append("\n")
+                .append(Messages.prefix).append("- Unbreakable: ${petMeta.skin.unbreakable}").append("\n").appendHoverComponent().append("Skin: " + petMeta.skin.owner).getRoot()
+                .append(Messages.prefix).append(ChatColor.GREEN.toString() + "Sound: ${petMeta.soundEnabled} Particles: ${petMeta.particleEnabled}").append("\n")
+                .append(Messages.prefix).append(ChatColor.GREEN.toString() + "AI: ").append("\n")
 
             for (ai in petMeta.aiGoals) {
                 StringWriter().use { r ->
                     yamlSerializationService.serialize(ai, r)
                     val data = r.toString()
 
-                    internalMessage.appendComponent().append(prefix).append("- ${ai.type}").appendHoverComponent().append(data).getRoot().append("\n")
+                    internalMessage.appendComponent().append(Messages.prefix).append("- ${ai.type}").appendHoverComponent().append(data).getRoot().append("\n")
                 }
             }
 

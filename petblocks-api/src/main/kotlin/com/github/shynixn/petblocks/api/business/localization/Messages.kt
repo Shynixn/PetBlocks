@@ -33,100 +33,120 @@ object Messages {
     /**
      * Message prefix.
      */
-    val prefix: String = "prefix"
+    var prefix: String = "prefix"
+        private set
 
     /**
      * Gui title.
      */
-    val guiTitle: String = "title-gui"
+    var guiTitle: String = "title-gui"
+        private set
 
     /**
      * No permission message.
      */
-    val noPermissionMessage = "message-no-permission"
+    var noPermissionMessage = "message-no-permission"
+        private set
 
     /**
      * Call success message.
      */
-    val callSuccessMessage = "message-call-pet-success"
+    var callSuccessMessage = "message-call-pet-success"
+        private set
 
     /**
      * Call error message.
      */
-    val callErrorMessage = "message-call-pet-error"
+    var callErrorMessage = "message-call-pet-error"
+        private set
 
     /**
      * Despawn message.
      */
-    val despawnMessage = "message-despawn-pet"
+    var despawnMessage = "message-despawn-pet"
+        private set
 
     /**
      * Custom head suggest prefix.
      */
-    val customHeadSuggestPrefix = "suggest-customhead-prefix"
+    var customHeadSuggestPrefix = "suggest-customhead-prefix"
+        private set
 
     /**
      * Custom head suggest clickable.
      */
-    val customHeadSuggestClickable = "suggest-customhead-clickable"
+    var customHeadSuggestClickable = "suggest-customhead-clickable"
+        private set
 
     /**
      * Custom head suggest suffix.
      */
-    val customHeadSuggestSuffix = "suggest-customhead-suffix"
+    var customHeadSuggestSuffix = "suggest-customhead-suffix"
+        private set
 
     /**
      * Custom head suggest hover.
      */
-    val customHeadSuggestHover = "suggest-customhead-hover"
+    var customHeadSuggestHover = "suggest-customhead-hover"
+        private set
 
     /**
      * Custom head success message.
      */
-    val customHeadSuccessMessage = "message-customhead-success"
+    var customHeadSuccessMessage = "message-customhead-success"
+        private set
 
     /**
      * Custom head success message.
      */
-    val customHeadErrorMessage = "message-customhead-error"
+    var customHeadErrorMessage = "message-customhead-error"
+        private set
 
     /**
      * Has permission selection yes.
      */
-    val permissionTranslationYes = "permission-translation-yes"
+    var permissionTranslationYes = "permission-translation-yes"
+        private set
 
     /**
      * Has permission selection no.
      */
-    val permissionTranslationNo = "permission-translation-no"
+    var permissionTranslationNo = "permission-translation-no"
+        private set
 
     /**
      * Rename suggest prefix.
      */
-    val renameSuggestPrefix = "suggest-rename-prefix"
+    var renameSuggestPrefix = "suggest-rename-prefix"
+        private set
 
     /**
      * Rename suggest clickable.
      */
-    val renameSuggestClickable = "suggest-rename-clickable"
+    var renameSuggestClickable = "suggest-rename-clickable"
+        private set
 
     /**
      * Rename suggest suffix.
      */
-    val renameSuggestSuffix = "suggest-rename-suffix"
+    var renameSuggestSuffix = "suggest-rename-suffix"
+        private set
 
     /**
      * Rename suggest hover.
      */
-    val renameSuggestHover = "suggest-rename-hover"
+    var renameSuggestHover = "suggest-rename-hover"
+        private set
 
     /**
      * Rename success message.
      */
-    val renameSuccessMessage = "message-rename-success"
+    var renameSuccessMessage = "message-rename-success"
+        private set
 
     /**
      * Rename error message.
      */
-    val renameErrorMessage = "message-rename-error"
+    var renameErrorMessage = "message-rename-error"
+        private set
 }

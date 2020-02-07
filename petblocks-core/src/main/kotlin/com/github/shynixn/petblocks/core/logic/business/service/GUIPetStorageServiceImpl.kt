@@ -1,6 +1,7 @@
 package com.github.shynixn.petblocks.core.logic.business.service
 
 import com.github.shynixn.petblocks.api.business.enumeration.MaterialType
+import com.github.shynixn.petblocks.api.business.localization.Messages
 import com.github.shynixn.petblocks.api.business.service.*
 import com.github.shynixn.petblocks.api.persistence.entity.AIInventory
 import com.github.shynixn.petblocks.api.persistence.entity.PetMeta
@@ -37,7 +38,6 @@ import com.google.inject.Inject
  */
 class GUIPetStorageServiceImpl @Inject constructor(
     private val persistencePetMetaService: PersistencePetMetaService,
-    private val configurationService: ConfigurationService,
     private val itemTypeService: ItemTypeService,
     private val proxyService: ProxyService,
     private val loggingService: LoggingService
@@ -64,7 +64,7 @@ class GUIPetStorageServiceImpl @Inject constructor(
             27
         }
 
-        val guiTitle = configurationService.findValue<String>("messages.gui-title") + " " + from + "-" + (from + size - 1)
+        val guiTitle = Messages.guiTitle + " " + from + "-" + (from + size - 1)
         val inventory = proxyService.openInventory<Any, Any>(player, guiTitle, size)
         val inventoryAI = petMeta.aiGoals.firstOrNull { a -> a is AIInventory } as AIInventory?
 

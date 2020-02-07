@@ -2,10 +2,7 @@
 
 package com.github.shynixn.petblocks.core.logic.business.service
 
-import com.github.shynixn.petblocks.api.business.service.AIService
-import com.github.shynixn.petblocks.api.business.service.ConfigurationService
-import com.github.shynixn.petblocks.api.business.service.GUIItemLoadService
-import com.github.shynixn.petblocks.api.business.service.ItemTypeService
+import com.github.shynixn.petblocks.api.business.service.*
 import com.github.shynixn.petblocks.api.persistence.entity.GuiItem
 import com.github.shynixn.petblocks.api.persistence.entity.PetMeta
 import com.github.shynixn.petblocks.core.logic.business.extension.translateChatColors
@@ -52,7 +49,8 @@ import javax.crypto.spec.SecretKeySpec
 class GUIItemLoadServiceImpl @Inject constructor(
     private val configurationService: ConfigurationService,
     private val itemTypeService: ItemTypeService,
-    private val aiService: AIService
+    private val aiService: AIService,
+    private val localizationService: LocalizationService
 ) : GUIItemLoadService {
     private val cache = HashMap<String, List<GuiItem>>()
 
@@ -135,6 +133,7 @@ class GUIItemLoadServiceImpl @Inject constructor(
 
             if (hasConfiguration(description, "petname")) {
                 guiItem.targetPetName = description["petname"] as String
+                guiItem.targetPetName = localizationService.translate(guiItem.targetPetName!!)
             }
 
             val iconDescription = description["icon"] as Map<String, Any>
@@ -153,6 +152,7 @@ class GUIItemLoadServiceImpl @Inject constructor(
 
             if (hasConfiguration(iconDescription, "name")) {
                 guiIcon.displayName = iconDescription["name"] as String
+                guiIcon.displayName = localizationService.translate(guiIcon.displayName)
             }
 
             if (hasConfiguration(iconDescription, "unbreakable")) {
@@ -169,6 +169,13 @@ class GUIItemLoadServiceImpl @Inject constructor(
 
             if (hasConfiguration(iconDescription, "lore")) {
                 guiIcon.lore = iconDescription["lore"] as List<String>
+
+                val copiedLore = guiIcon.lore.toTypedArray()
+                for (i in copiedLore.indices) {
+                    copiedLore[i] = localizationService.translate(copiedLore[i])
+                }
+
+                guiIcon.lore = copiedLore.toList()
             }
 
             val skinDescription = if (description.containsKey("set-skin")) {
@@ -268,7 +275,8 @@ class GUIItemLoadServiceImpl @Inject constructor(
         }
 
         if (hasConfiguration(defaultConfig, "name")) {
-            petMeta.displayName = (defaultConfig["name"] as String).replace("<player>", name)
+            petMeta.displayName = (defaultConfig["name"] as String)
+            petMeta.displayName= localizationService.translate(petMeta.displayName).replace("<player>", name)
         }
 
         if (hasConfiguration(defaultConfig, "sound-enabled")) {

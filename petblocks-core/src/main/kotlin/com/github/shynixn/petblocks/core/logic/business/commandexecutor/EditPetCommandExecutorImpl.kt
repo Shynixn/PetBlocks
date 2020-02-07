@@ -3,6 +3,7 @@ package com.github.shynixn.petblocks.core.logic.business.commandexecutor
 import com.github.shynixn.petblocks.api.business.command.SourceCommand
 import com.github.shynixn.petblocks.api.business.enumeration.ChatClickAction
 import com.github.shynixn.petblocks.api.business.enumeration.ChatColor
+import com.github.shynixn.petblocks.api.business.localization.Messages
 import com.github.shynixn.petblocks.api.business.service.ConfigurationService
 import com.github.shynixn.petblocks.api.business.service.MessageService
 import com.github.shynixn.petblocks.api.business.service.ProxyService
@@ -51,8 +52,7 @@ class EditPetCommandExecutorImpl @Inject constructor(
     editPetDebugCommand: EditPetDebugCommand,
     editPetInventoryCommand: EditPetInventoryCommand,
     private val messageService: MessageService,
-    private val proxyService: ProxyService,
-    private val configurationService: ConfigurationService
+    private val proxyService: ProxyService
 ) : SourceCommand {
     private val commands = ArrayList<SourceCommand>()
 
@@ -298,7 +298,6 @@ class EditPetCommandExecutorImpl @Inject constructor(
      */
     private fun <S> sendMessage(commandSender: S, message: String, hoverText: Array<String>) {
         val command = "/petblocks "
-        val prefix = configurationService.findValue<String>("messages.prefix")
 
         if (proxyService.isPlayer(commandSender)) {
             val builder = StringBuilder()
@@ -318,7 +317,7 @@ class EditPetCommandExecutorImpl @Inject constructor(
 
             val finalFullCommand = fullCommand
             val internalMessage = ChatMessageEntity().appendComponent()
-                .append(prefix + command + message)
+                .append(Messages.prefix + command + message)
                 .setClickAction(ChatClickAction.SUGGEST_COMMAND, finalFullCommand)
                 .appendHoverComponent().append(builder.toString()).getRoot()
 

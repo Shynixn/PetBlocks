@@ -1,7 +1,7 @@
 package com.github.shynixn.petblocks.sponge.logic.business.service
 
 import com.github.shynixn.petblocks.api.business.enumeration.ChatColor
-import com.github.shynixn.petblocks.api.business.service.ConfigurationService
+import com.github.shynixn.petblocks.api.business.localization.Messages
 import com.github.shynixn.petblocks.api.business.service.MessageService
 import com.github.shynixn.petblocks.api.persistence.entity.ChatMessage
 import com.github.shynixn.petblocks.sponge.logic.business.extension.sendMessage
@@ -42,7 +42,7 @@ import net.minecraft.util.text.ITextComponent
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class MessageServiceImpl @Inject constructor(private val configurationService: ConfigurationService) : MessageService {
+class MessageServiceImpl : MessageService {
     /**
      * Sends a colored console message.
      */
@@ -59,8 +59,7 @@ class MessageServiceImpl @Inject constructor(private val configurationService: C
         }
 
         if (prefix) {
-            val textPrefix = configurationService.findValue<String>("messages.prefix")
-            source.sendMessage((textPrefix + message).toText())
+            source.sendMessage((Messages.prefix + message).toText())
         } else {
             source.sendMessage(message.toText())
         }

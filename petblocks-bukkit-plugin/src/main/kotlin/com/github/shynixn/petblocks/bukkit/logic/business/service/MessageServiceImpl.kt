@@ -2,7 +2,7 @@ package com.github.shynixn.petblocks.bukkit.logic.business.service
 
 import com.github.shynixn.petblocks.api.business.enumeration.ChatColor
 import com.github.shynixn.petblocks.api.business.enumeration.Version
-import com.github.shynixn.petblocks.api.business.service.ConfigurationService
+import com.github.shynixn.petblocks.api.business.localization.Messages
 import com.github.shynixn.petblocks.api.business.service.MessageService
 import com.github.shynixn.petblocks.api.persistence.entity.ChatMessage
 import com.github.shynixn.petblocks.bukkit.logic.business.extension.findClazz
@@ -39,7 +39,7 @@ import org.bukkit.entity.Player
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class MessageServiceImpl @Inject constructor(private val version: Version, private val configurationService: ConfigurationService) : MessageService {
+class MessageServiceImpl @Inject constructor(private val version: Version) : MessageService {
     /**
      * Sends a message to the given source.
      */
@@ -49,8 +49,7 @@ class MessageServiceImpl @Inject constructor(private val version: Version, priva
         }
 
         if (prefix) {
-            val textPrefix = configurationService.findValue<String>("messages.prefix")
-            source.sendMessage(textPrefix + message)
+            source.sendMessage(Messages.prefix + message)
         } else {
             source.sendMessage(message)
         }

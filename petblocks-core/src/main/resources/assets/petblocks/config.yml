@@ -32,6 +32,16 @@ config-version: 1
 
 ############################
 
+# Language
+
+# Change the language below to select one of the available templates.
+
+############################
+
+lang: 'en'
+
+############################
+
 # Database settings
 
 # All pets are stored in a SQLite database per default which is basically the

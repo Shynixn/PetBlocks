@@ -6,6 +6,7 @@ import com.github.shynixn.petblocks.api.business.enumeration.ChatClickAction
 import com.github.shynixn.petblocks.api.business.enumeration.ChatColor
 import com.github.shynixn.petblocks.api.business.enumeration.MaterialType
 import com.github.shynixn.petblocks.api.business.enumeration.ScriptAction
+import com.github.shynixn.petblocks.api.business.localization.Messages
 import com.github.shynixn.petblocks.api.business.service.*
 import com.github.shynixn.petblocks.api.persistence.entity.*
 import com.github.shynixn.petblocks.core.logic.business.extension.chatMessage
@@ -14,7 +15,6 @@ import com.github.shynixn.petblocks.core.logic.business.extension.translateChatC
 import com.github.shynixn.petblocks.core.logic.persistence.entity.GuiIconEntity
 import com.github.shynixn.petblocks.core.logic.persistence.entity.GuiPlayerCacheEntity
 import com.github.shynixn.petblocks.core.logic.persistence.entity.ItemEntity
-import com.github.shynixn.petblocks.core.logic.persistence.entity.StorageInventoryCache
 import com.google.inject.Inject
 import java.util.*
 import kotlin.collections.ArrayList
@@ -66,7 +66,7 @@ class GUIServiceImpl @Inject constructor(
 
     private var collectedMinecraftHeadsMessage = chatMessage {
         text {
-            configurationService.findValue<String>("messages.prefix") + "Pets collected by "
+            configurationService.findValue<String>(Messages.prefix) + "Pets collected by "
         }
         component {
             color(ChatColor.YELLOW) {
@@ -87,7 +87,7 @@ class GUIServiceImpl @Inject constructor(
 
     private var suggestHeadMessage = chatMessage {
         text {
-            configurationService.findValue<String>("messages.prefix") + "Click here: "
+            configurationService.findValue<String>(Messages.prefix) + "Click here: "
         }
         component {
             color(ChatColor.YELLOW) {
@@ -124,45 +124,45 @@ class GUIServiceImpl @Inject constructor(
 
     private var skullNamingMessage = chatMessage {
         text {
-            configurationService.findValue<String>("messages.prefix") + configurationService.findValue("messages.customhead-suggest-prefix")
+            Messages.prefix + Messages.customHeadSuggestPrefix
         }
         component {
             text {
-                configurationService.findValue("messages.customhead-suggest-clickable")
+                Messages.customHeadSuggestClickable
             }
             clickAction {
                 ChatClickAction.SUGGEST_COMMAND to "/" + configurationService.findValue("commands.petblock.command") + " skin "
             }
             hover {
                 text {
-                    configurationService.findValue("messages.customhead-suggest-hover")
+                    Messages.customHeadSuggestHover
                 }
             }
         }
         text {
-            configurationService.findValue("messages.customhead-suggest-suffix")
+            Messages.customHeadSuggestSuffix
         }
     }
 
     private var namingMessage = chatMessage {
         text {
-            configurationService.findValue<String>("messages.prefix") + configurationService.findValue("messages.rename-suggest-prefix")
+            Messages.prefix + Messages.renameSuggestPrefix
         }
         component {
             text {
-                configurationService.findValue("messages.rename-suggest-clickable")
+                Messages.renameSuggestClickable
             }
             clickAction {
                 ChatClickAction.SUGGEST_COMMAND to "/" + configurationService.findValue("commands.petblock.command") + " rename "
             }
             hover {
                 text {
-                    configurationService.findValue("messages.rename-suggest-hover")
+                    Messages.renameSuggestHover
                 }
             }
         }
         text {
-            configurationService.findValue("messages.rename-suggest-suffix")
+            Messages.renameSuggestSuffix
         }
     }
 
@@ -210,8 +210,7 @@ class GUIServiceImpl @Inject constructor(
 
         headDatabaseService.clearResources(player)
 
-        val guiTitle = configurationService.findValue<String>("messages.gui-title")
-        val inventory = proxyService.openInventory<Any, Any>(player, guiTitle, 54)
+        val inventory = proxyService.openInventory<Any, Any>(player, Messages.guiTitle, 54)
         val petMeta = persistenceService.getPetMetaFromPlayer(player)
 
         pageCache[player] = GuiPlayerCacheEntity(page, inventory)
@@ -231,14 +230,7 @@ class GUIServiceImpl @Inject constructor(
         val optGuiItem = loadService.findClickedGUIItem(pageCache[player]!!.path, item) ?: return
 
         if (optGuiItem.permission.isNotEmpty() && !proxyService.hasPermission(player, optGuiItem.permission)) {
-
-            proxyService.sendMessage(
-                player,
-                configurationService.findValue<String>("messages.prefix") + configurationService.findValue<String>(
-                    "messages.no-permission"
-                )
-            )
-
+            proxyService.sendMessage(player, Messages.prefix + Messages.noPermissionMessage)
             return
         }
 
@@ -420,9 +412,9 @@ class GUIServiceImpl @Inject constructor(
         }
 
         val permissionMessage = if (hasPermission) {
-            configurationService.findValue("messages.has-permission")
+            Messages.permissionTranslationYes
         } else {
-            configurationService.findValue<String>("messages.has-no-permission")
+            Messages.permissionTranslationNo
         }
 
         val lore = ArrayList<String>()
