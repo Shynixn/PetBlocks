@@ -255,6 +255,7 @@ class PersistenceSQLiteIT {
 
             val localizationService =
                 LocalizationServiceImpl(configurationService, LoggingUtilServiceImpl(Logger.getAnonymousLogger()), MockedConcurrencyService())
+            localizationService.reload()
 
             val guiItemLoadService =
                 GUIItemLoadServiceImpl(

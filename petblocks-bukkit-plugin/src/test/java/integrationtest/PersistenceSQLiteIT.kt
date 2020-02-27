@@ -243,6 +243,7 @@ class PersistenceSQLiteIT {
             val aiService = AIServiceImpl(LoggingUtilServiceImpl(Logger.getAnonymousLogger()), MockedProxyService(), YamlServiceImpl())
             val configService = ConfigurationServiceImpl(plugin)
             val localizationService = LocalizationServiceImpl(configService, LoggingUtilServiceImpl(Logger.getAnonymousLogger()), MockedConcurrencyService())
+            localizationService.reload()
 
             val guiItemLoadService =
                 GUIItemLoadServiceImpl(
