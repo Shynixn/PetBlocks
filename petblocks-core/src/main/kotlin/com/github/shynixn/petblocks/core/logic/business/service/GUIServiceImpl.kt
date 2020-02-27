@@ -64,105 +64,113 @@ class GUIServiceImpl @Inject constructor(
     private val clickProtection = ArrayList<Any>()
     private val pageCache = HashMap<Any, GuiPlayerCache>()
 
-    private var collectedMinecraftHeadsMessage = chatMessage {
-        text {
-            Messages.prefix + "Pets collected by "
-        }
-        component {
-            color(ChatColor.YELLOW) {
-                text {
-                    ">>Minecraft-Heads.com<<"
-                }
-            }
-            clickAction {
-                ChatClickAction.OPEN_URL to "http://minecraft-heads.com"
-            }
-            hover {
-                text {
-                    "Goto the Minecraft-Heads website!"
-                }
-            }
-        }
-    }
-
-    private var suggestHeadMessage = chatMessage {
-        text {
-            Messages.prefix + "Click here: "
-        }
-        component {
-            color(ChatColor.YELLOW) {
-                text {
-                    ">>Submit skin<<"
-                }
-            }
-            clickAction {
-                ChatClickAction.OPEN_URL to "http://minecraft-heads.com/custom/heads-generator"
-            }
-            hover {
-                text {
-                    "Goto the Minecraft-Heads website!"
-                }
-            }
-        }
-        text { " " }
-        component {
-            color(ChatColor.YELLOW) {
-                text {
-                    ">>Suggest new pet<<"
-                }
-            }
-            clickAction {
-                ChatClickAction.OPEN_URL to "http://minecraft-heads.com/forum/suggesthead"
-            }
-            hover {
-                text {
-                    "Goto the Minecraft-Heads website!"
-                }
-            }
-        }
-    }
-
-    private var skullNamingMessage = chatMessage {
-        text {
-            Messages.prefix + Messages.customHeadSuggestPrefix
-        }
-        component {
+    private var collectedMinecraftHeadsMessage = lazy {
+        chatMessage {
             text {
-                Messages.customHeadSuggestClickable
+                Messages.prefix + "Pets collected by "
             }
-            clickAction {
-                ChatClickAction.SUGGEST_COMMAND to "/" + configurationService.findValue("commands.petblock.command") + " skin "
-            }
-            hover {
-                text {
-                    Messages.customHeadSuggestHover
+            component {
+                color(ChatColor.YELLOW) {
+                    text {
+                        ">>Minecraft-Heads.com<<"
+                    }
+                }
+                clickAction {
+                    ChatClickAction.OPEN_URL to "http://minecraft-heads.com"
+                }
+                hover {
+                    text {
+                        "Goto the Minecraft-Heads website!"
+                    }
                 }
             }
-        }
-        text {
-            Messages.customHeadSuggestSuffix
         }
     }
 
-    private var namingMessage = chatMessage {
-        text {
-            Messages.prefix + Messages.renameSuggestPrefix
-        }
-        component {
+    private var suggestHeadMessage = lazy {
+        chatMessage {
             text {
-                Messages.renameSuggestClickable
+                Messages.prefix + "Click here: "
             }
-            clickAction {
-                ChatClickAction.SUGGEST_COMMAND to "/" + configurationService.findValue("commands.petblock.command") + " rename "
+            component {
+                color(ChatColor.YELLOW) {
+                    text {
+                        ">>Submit skin<<"
+                    }
+                }
+                clickAction {
+                    ChatClickAction.OPEN_URL to "http://minecraft-heads.com/custom/heads-generator"
+                }
+                hover {
+                    text {
+                        "Goto the Minecraft-Heads website!"
+                    }
+                }
             }
-            hover {
-                text {
-                    Messages.renameSuggestHover
+            text { " " }
+            component {
+                color(ChatColor.YELLOW) {
+                    text {
+                        ">>Suggest new pet<<"
+                    }
+                }
+                clickAction {
+                    ChatClickAction.OPEN_URL to "http://minecraft-heads.com/forum/suggesthead"
+                }
+                hover {
+                    text {
+                        "Goto the Minecraft-Heads website!"
+                    }
                 }
             }
         }
-        text {
-            Messages.renameSuggestSuffix
+    }
+
+    private var skullNamingMessage = lazy {
+        chatMessage {
+            text {
+                Messages.prefix + Messages.customHeadSuggestPrefix
+            }
+            component {
+                text {
+                    Messages.customHeadSuggestClickable
+                }
+                clickAction {
+                    ChatClickAction.SUGGEST_COMMAND to "/" + configurationService.findValue("commands.petblock.command") + " skin "
+                }
+                hover {
+                    text {
+                        Messages.customHeadSuggestHover
+                    }
+                }
+            }
+            text {
+                Messages.customHeadSuggestSuffix
+            }
+        }
+    }
+
+    private var namingMessage = lazy {
+        chatMessage {
+            text {
+                Messages.prefix + Messages.renameSuggestPrefix
+            }
+            component {
+                text {
+                    Messages.renameSuggestClickable
+                }
+                clickAction {
+                    ChatClickAction.SUGGEST_COMMAND to "/" + configurationService.findValue("commands.petblock.command") + " rename "
+                }
+                hover {
+                    text {
+                        Messages.renameSuggestHover
+                    }
+                }
+            }
+            text {
+                Messages.renameSuggestSuffix
+            }
         }
     }
 
@@ -494,7 +502,7 @@ class GUIServiceImpl @Inject constructor(
         val timeOut = 2 * 60 * 1000
 
         if (difference > timeOut) {
-            messageService.sendPlayerMessage(player, collectedMinecraftHeadsMessage)
+            messageService.sendPlayerMessage(player, collectedMinecraftHeadsMessage.value)
             guiPlayerCache.advertisingMessageTime = current
         }
     }
@@ -562,13 +570,13 @@ class GUIServiceImpl @Inject constructor(
 
             renderPage(player, petMeta, pageCache[player]!!.path)
         } else if (scriptResult == ScriptAction.PRINT_CUSTOM_SKIN_MESSAGE) {
-            messageService.sendPlayerMessage(player, skullNamingMessage)
+            messageService.sendPlayerMessage(player, skullNamingMessage.value)
             this.close(player)
         } else if (scriptResult == ScriptAction.PRINT_SUGGEST_HEAD_MESSAGE) {
-            messageService.sendPlayerMessage(player, suggestHeadMessage)
+            messageService.sendPlayerMessage(player, suggestHeadMessage.value)
             this.close(player)
         } else if (scriptResult == ScriptAction.PRINT_CUSTOM_NAME_MESSAGE) {
-            messageService.sendPlayerMessage(player, namingMessage)
+            messageService.sendPlayerMessage(player, namingMessage.value)
             this.close(player)
         } else if (scriptResult == ScriptAction.DISABLE_PET) {
             petActionService.disablePet(player)

@@ -58,7 +58,7 @@ class LocalizationServiceImpl @Inject constructor(
 
         for (item in properties.keys) {
             val fullKey = "\$lang.$item"
-            currentText = currentText.replace(fullKey, properties.getProperty(item as String))
+            currentText = currentText.replace(fullKey, properties.getProperty(item as String).replace("\"", ""))
         }
 
         return currentText
@@ -113,7 +113,7 @@ class LocalizationServiceImpl @Inject constructor(
                     continue
                 }
 
-                field.set(null, properties.getProperty(fieldValue).translateChatColors())
+                field.set(null, properties.getProperty(fieldValue).replace("\"", "").translateChatColors())
             }
 
             sync(concurrencyService) {

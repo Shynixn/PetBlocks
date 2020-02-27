@@ -312,9 +312,9 @@ gui:
       icon:
         id: 329
         damage: 0
-        name: $lang.gui.item.ridePet
+        name: $lang.gui.item.flyRidePet
         lore:
-          - $lang.gui.lore.ridePet
+          - $lang.gui.lore.flyRidePet
       replace-ai:
         1:
           type: 'fly-riding'
@@ -353,7 +353,7 @@ gui:
         id: "CHEST"
         name: $lang.gui.item.openInventory
         lore:
-          - gui.lore.openInventory
+          - $lang.gui.lore.openInventory
     settings-pet:
       row: 5
       col: 8
@@ -420,6 +420,7 @@ gui:
         skin: 'http://textures.minecraft.net/texture/fec052be76e39148a27f255ec537dff92018c79744202d60c51bc67d618ae36a'
         lore:
           - $lang.gui.lore.pets
+          - $lang.gui.lore.sponsoredMinecraftHeads
     minecraft-heads-vehicle-skins:
       row: 3
       col: 4
@@ -431,6 +432,7 @@ gui:
         skin: 'http://textures.minecraft.net/texture/e8778c34fba29652cfac8d3f6fb35c49cbc2362b2b8f1378d83b30f463b181'
         lore:
           - $lang.gui.lore.vehicles
+          - $lang.gui.lore.sponsoredMinecraftHeads
     minecraft-heads-puppet-skins:
       row: 3
       col: 6
@@ -442,6 +444,7 @@ gui:
         skin: 'http://textures.minecraft.net/texture/3835da2685f7ad3f1919a018976ad56826691e26758a3a55a1918f7f17ad938'
         lore:
           - $lang.gui.lore.plushies
+          - $lang.gui.lore.sponsoredMinecraftHeads
     headdatabase-skins:
       row: 3
       col: 8
@@ -530,7 +533,7 @@ gui:
       script: 'open-page gui.buff-effects'
       icon:
         id: 384
-        name: $lang.&5&lPet Effects
+        name: $lang.gui.item.openEffects
         lore:
           - $lang.gui.lore.openEffects
     sounds-enabled:
@@ -556,7 +559,7 @@ gui:
         skin: 'textures.minecraft.net/texture/ae7215c45d97d7bc55d9dfa58fcc73f4af74e4b3f5a15b4419127424c4268e'
         name: $lang.gui.item.soundDisabled
         lore:
-          - $lang.gui.lore.soundEnabl
+          - $lang.gui.lore.soundEnable
       hidden-on:
         - 'sound-enabled'
     particles-enabled:
@@ -657,7 +660,7 @@ gui:
       col: 8
       icon:
         id: "152"
-        name: $lang.gui.item.strengthOneEnabled
+        name: $lang.gui.item.strengthOneDisabled
         lore:
           - $lang.gui.lore.effectEnable
       hidden-on:
@@ -715,7 +718,7 @@ gui:
         id: 397
         damage: 3
         skin: 'http://textures.minecraft.net/texture/3ebf907494a935e955bfcadab81beafb90fb9be49c7026ba97d798d5f1a23'
-        name: $lang.gui.item.previousPag
+        name: $lang.gui.item.previousPage
         script: 'hide-left-scroll'
     back:
       row: 6
@@ -13860,7 +13863,7 @@ gui:
         damage: 0
         name: $lang.gui.item.back
         lore:
-          - $lang.gui.ilore.back
+          - $lang.gui.lore.back
     block-1-1:
       row: 1
       col: 1
