@@ -66,7 +66,7 @@ class GUIServiceImpl @Inject constructor(
 
     private var collectedMinecraftHeadsMessage = chatMessage {
         text {
-            configurationService.findValue<String>(Messages.prefix) + "Pets collected by "
+            Messages.prefix + "Pets collected by "
         }
         component {
             color(ChatColor.YELLOW) {
@@ -87,7 +87,7 @@ class GUIServiceImpl @Inject constructor(
 
     private var suggestHeadMessage = chatMessage {
         text {
-            configurationService.findValue<String>(Messages.prefix) + "Click here: "
+            Messages.prefix + "Click here: "
         }
         component {
             color(ChatColor.YELLOW) {

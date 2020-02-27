@@ -1,5 +1,6 @@
 package com.github.shynixn.petblocks.core.logic.business.service
 
+import com.github.shynixn.petblocks.api.business.annotation.Key
 import com.github.shynixn.petblocks.api.business.localization.Messages
 import com.github.shynixn.petblocks.api.business.service.ConcurrencyService
 import com.github.shynixn.petblocks.api.business.service.ConfigurationService
@@ -47,14 +48,7 @@ class LocalizationServiceImpl @Inject constructor(
 ) :
     LocalizationService {
     private var properties = Properties()
-    private val defaultLanguages = arrayListOf("en")
-
-    /**
-     * Reloads the localization.
-     */
-    init {
-        reload()
-    }
+    private val defaultLanguages = arrayListOf("en_us")
 
     /**
      * Checks if the given text contains the lang prefix and replaces it with the localized value.
@@ -111,7 +105,7 @@ class LocalizationServiceImpl @Inject constructor(
                     continue
                 }
 
-                val fieldValue = field.get(null) as String
+                val fieldValue = field.getDeclaredAnnotation(Key::class.java).value
 
                 if (!properties.containsKey(fieldValue)) {
                     loggingService.warn("Loaded language '$selectedLang' does not have definition for message '$fieldValue'!")

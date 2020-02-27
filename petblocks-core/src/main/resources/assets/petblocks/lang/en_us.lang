@@ -8,15 +8,16 @@ petName=<player>'s Pet
 
 gui.title=PetBlocks
 
-gui.category.simpleBlocks=&e&lSimple block costumes
-gui.category.coloredBlocks=&a&lColored block costumes
-gui.category.playerHeads=&d&lPlayer head costumes
-gui.category.pets=&9&lPet costumes
-gui.category.vehicles=&2&lVehicle costumes
-gui.category.plushies=&b&lPlushie costumes
-gui.category.headdatabase=&c&lHead Database costumes
-
 gui.item.back=back=&cBack
+gui.item.nextPage=&aNext page
+gui.item.previousPage=&aPrevious page
+gui.item.simpleBlocks=&e&lSimple block costumes
+gui.item.coloredBlocks=&a&lColored block costumes
+gui.item.playerHeads=&d&lPlayer head costumes
+gui.item.pets=&9&lPet costumes
+gui.item.vehicles=&2&lVehicle costumes
+gui.item.plushies=&b&lPlushie costumes
+gui.item.headdatabase=&c&lHead Database costumes
 gui.item.customSkin=&2&lCustom skin
 gui.item.petDisabled=&c&lPet disabled
 gui.item.petEnabled=&a&lPet enabled
