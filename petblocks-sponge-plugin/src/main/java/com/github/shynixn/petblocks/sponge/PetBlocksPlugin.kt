@@ -136,9 +136,11 @@ class PetBlocksPlugin : PluginProxy {
         val updateCheckService = resolve<UpdateCheckService>(UpdateCheckService::class.java)
         val commandService = resolve<CommandService>(CommandService::class.java)
         val entityService = resolve<EntityService>(EntityService::class.java)
+        val localizationService = resolve<LocalizationService>(LocalizationService::class.java)
 
         dependencyService.checkForInstalledDependencies()
         updateCheckService.checkForUpdates()
+        localizationService.reload()
 
         // GrievPrevention requires eager entity registration.
         entityService.registerEntitiesOnServer()

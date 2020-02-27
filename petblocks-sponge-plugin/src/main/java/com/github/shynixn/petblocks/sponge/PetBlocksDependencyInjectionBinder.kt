@@ -98,5 +98,6 @@ class PetBlocksDependencyInjectionBinder(private val pluginContainer: PluginCont
         bind(GUIPetStorageService::class.java).to(GUIPetStorageServiceImpl::class.java).`in`(Scopes.SINGLETON)
         bind(DependencyHeadDatabaseService::class.java).to(EmptyHeadDatabaseServiceImpl::class.java).`in`(Scopes.SINGLETON)
         bind(ItemStackSerializer::class.java).to(ItemStackSerializerImpl::class.java).`in`(Scopes.SINGLETON)
+        bind(LocalizationService::class.java).to(LocalizationServiceImpl::class.java).`in`(Scopes.SINGLETON)
     }
 }
