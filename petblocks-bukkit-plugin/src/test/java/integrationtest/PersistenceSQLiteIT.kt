@@ -232,8 +232,7 @@ class PersistenceSQLiteIT {
             Mockito.`when`(plugin.config).thenReturn(configuration)
             Mockito.`when`(plugin.dataFolder).thenReturn(File("integrationtest-sqlite"))
             Mockito.`when`(plugin.getResource(Mockito.anyString())).then { parameter ->
-                val rootPath = File("../petblocks-core/src/main/resources/" + parameter.arguments[0].toString())
-                FileInputStream(rootPath)
+                FileInputStream(File("../petblocks-core/src/main/resources/${parameter.arguments[0]}"))
             }
 
             val method = PetBlocksApi::class.java.getDeclaredMethod("initializePetBlocks", PluginProxy::class.java)
