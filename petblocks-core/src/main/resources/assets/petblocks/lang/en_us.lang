@@ -1,7 +1,7 @@
 language.name=English
 language.region=United States
 language.code=en_us
-language.translator=Shynixn
+language.translator.1=Shynixn
 
 prefix="&2[&aPetBlocks&2]&a "
 petName=<player>'s Pet

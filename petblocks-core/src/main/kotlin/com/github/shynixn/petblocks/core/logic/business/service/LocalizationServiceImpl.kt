@@ -10,6 +10,8 @@ import com.github.shynixn.petblocks.core.logic.business.extension.async
 import com.github.shynixn.petblocks.core.logic.business.extension.sync
 import com.github.shynixn.petblocks.core.logic.business.extension.translateChatColors
 import com.google.inject.Inject
+import java.io.InputStreamReader
+import java.nio.charset.Charset
 import java.nio.file.Files
 import java.util.*
 import java.util.concurrent.CompletableFuture
@@ -48,7 +50,7 @@ class LocalizationServiceImpl @Inject constructor(
 ) :
     LocalizationService {
     private var properties = Properties()
-    private val defaultLanguages = arrayListOf("en_us")
+    private val defaultLanguages = arrayListOf("en_us", "zh_cn")
 
     /**
      * Checks if the given text contains the lang prefix and replaces it with the localized value.
@@ -75,7 +77,7 @@ class LocalizationServiceImpl @Inject constructor(
             val langFileFolder = configurationService.applicationDir.resolve("lang")
 
             if (!Files.exists(langFileFolder)) {
-                Files.createDirectory(langFileFolder)
+                Files.createDirectories(langFileFolder)
             }
 
             for (lang in defaultLanguages) {
@@ -95,7 +97,7 @@ class LocalizationServiceImpl @Inject constructor(
             }
 
             Files.newInputStream(langFile).use { stream ->
-                properties.load(stream)
+                properties.load(InputStreamReader(stream, Charset.forName("UTF-8")))
             }
 
             for (field in Messages::class.java.declaredFields) {
