@@ -6,6 +6,7 @@ import com.github.shynixn.petblocks.api.business.enumeration.AIType
 import com.github.shynixn.petblocks.api.business.enumeration.ChatColor
 import com.github.shynixn.petblocks.api.business.enumeration.EntityType
 import com.github.shynixn.petblocks.api.business.enumeration.Version
+import com.github.shynixn.petblocks.api.business.localization.Messages
 import com.github.shynixn.petblocks.api.business.proxy.NMSPetProxy
 import com.github.shynixn.petblocks.api.business.proxy.PetProxy
 import com.github.shynixn.petblocks.api.business.service.*
@@ -223,8 +224,7 @@ class EntityServiceImpl @Inject constructor(
                 nearest.remove()
             }
 
-            val prefix = configurationService.findValue<String>("messages.prefix")
-            player.sendMessage(prefix + "" + ChatColor.GREEN + "You removed entity " + nearest.type + '.'.toString())
+            player.sendMessage(Messages.prefix + ChatColor.GREEN + "You removed entity " + nearest.type + '.'.toString())
         }
     }
 

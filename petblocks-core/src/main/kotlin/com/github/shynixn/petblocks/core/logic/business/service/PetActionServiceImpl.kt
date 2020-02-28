@@ -1,5 +1,6 @@
 package com.github.shynixn.petblocks.core.logic.business.service
 
+import com.github.shynixn.petblocks.api.business.localization.Messages
 import com.github.shynixn.petblocks.api.business.service.*
 import com.github.shynixn.petblocks.core.logic.business.extension.relativeFront
 import com.github.shynixn.petblocks.core.logic.business.extension.translateChatColors
@@ -63,12 +64,8 @@ class PetActionServiceImpl @Inject constructor(
      * Sets the pet of the given [player] to the given skin.
      */
     override fun <P> changePetSkin(player: P, skin: String) {
-        val prefix = configurationService.findValue<String>("messages.prefix")
-
         if (skin.length > maxSkinLength) {
-            val namingSuccessMessage = configurationService.findValue<String>("messages.customhead-error")
-            proxyService.sendMessage(player, prefix + namingSuccessMessage)
-
+            proxyService.sendMessage(player, Messages.prefix + Messages.customHeadErrorMessage)
             return
         }
 
@@ -78,9 +75,7 @@ class PetActionServiceImpl @Inject constructor(
         petMeta.skin.owner = skin
 
         persistencePetMetaService.save(petMeta)
-
-        val namingSuccessMessage = configurationService.findValue<String>("messages.customhead-success")
-        proxyService.sendMessage(player, prefix + namingSuccessMessage)
+        proxyService.sendMessage(player, Messages.prefix + Messages.customHeadSuccessMessage)
     }
 
     /**
@@ -91,10 +86,9 @@ class PetActionServiceImpl @Inject constructor(
 
         val message = if (pet.isPresent) {
             pet.get().teleport<Any>(proxyService.toPosition(proxyService.getPlayerLocation<Any, P>(player)).relativeFront(3.0))
-
-            configurationService.findValue<String>("messages.prefix") + configurationService.findValue<String>("messages.called-success")
+            Messages.prefix + Messages.callSuccessMessage
         } else {
-            configurationService.findValue<String>("messages.prefix") + configurationService.findValue<String>("messages.called-error")
+            Messages.prefix + Messages.callErrorMessage
         }
 
         proxyService.sendMessage(player, message)
@@ -111,8 +105,7 @@ class PetActionServiceImpl @Inject constructor(
         val pet = petService.getOrSpawnPetFromPlayer(player).get()
         pet.remove()
 
-        val message = configurationService.findValue<String>("messages.prefix") + configurationService.findValue<String>("messages.despawn")
-        proxyService.sendMessage(player, message)
+        proxyService.sendMessage(player, Messages.prefix + Messages.despawnMessage)
     }
 
     /**
@@ -131,12 +124,10 @@ class PetActionServiceImpl @Inject constructor(
      * Renames the pet of the given [player] to the given [name].
      */
     override fun <P> renamePet(player: P, name: String) {
-        val prefix = configurationService.findValue<String>("messages.prefix")
         val maxPetNameLength = configurationService.findValue<Int>("global-configuration.max-petname-length")
 
         if (name.length > maxPetNameLength) {
-            val namingErrorMessage = configurationService.findValue<String>("messages.rename-error")
-            proxyService.sendMessage(player, prefix + namingErrorMessage)
+            proxyService.sendMessage(player, Messages.prefix + Messages.renameErrorMessage)
             return
         }
 
@@ -145,18 +136,15 @@ class PetActionServiceImpl @Inject constructor(
 
         for (blackName in petNameBlackList) {
             if (upperCaseName.contains(blackName)) {
-                val namingErrorMessage = configurationService.findValue<String>("messages.rename-error")
-                proxyService.sendMessage(player, prefix + namingErrorMessage)
+                proxyService.sendMessage(player, Messages.prefix + Messages.renameErrorMessage)
                 return
             }
         }
 
         val petMeta = persistencePetMetaService.getPetMetaFromPlayer(player)
-        val namingSuccessMessage = configurationService.findValue<String>("messages.rename-success")
-
         petMeta.displayName = name.translateChatColors()
         persistencePetMetaService.save(petMeta)
 
-        proxyService.sendMessage(player, prefix + namingSuccessMessage)
+        proxyService.sendMessage(player, Messages.prefix + Messages.renameSuccessMessage)
     }
 }

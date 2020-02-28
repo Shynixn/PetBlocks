@@ -72,7 +72,7 @@ class PetBlocksPlugin : PluginProxy {
         val PREFIX_CONSOLE: String = ChatColor.AQUA.toString() + "[PetBlocks] "
     }
 
-    private val configVersion = 1
+    private val configVersion = 2
     private var injector: Injector? = null
     private var serverVersion: Version? = null
 
@@ -136,9 +136,11 @@ class PetBlocksPlugin : PluginProxy {
         val updateCheckService = resolve<UpdateCheckService>(UpdateCheckService::class.java)
         val commandService = resolve<CommandService>(CommandService::class.java)
         val entityService = resolve<EntityService>(EntityService::class.java)
+        val localizationService = resolve<LocalizationService>(LocalizationService::class.java)
 
         dependencyService.checkForInstalledDependencies()
         updateCheckService.checkForUpdates()
+        localizationService.reload()
 
         // GrievPrevention requires eager entity registration.
         entityService.registerEntitiesOnServer()

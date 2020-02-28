@@ -2,6 +2,7 @@
 
 package com.github.shynixn.petblocks.sponge.logic.business.listener
 
+import com.github.shynixn.petblocks.api.business.enumeration.MaterialType
 import com.github.shynixn.petblocks.api.business.proxy.EntityPetProxy
 import com.github.shynixn.petblocks.api.business.proxy.PetProxy
 import com.github.shynixn.petblocks.api.business.service.*
@@ -64,7 +65,8 @@ class PetListener @Inject constructor(
     private val entityService: EntityService,
     private val debugService: PetDebugService,
     private val configurationService: ConfigurationService,
-    private val guiItemLoadService: GUIItemLoadService
+    private val guiItemLoadService: GUIItemLoadService,
+    private val itemTypeService: ItemTypeService
 ) {
     private val joinCooldown = 20 * 6L
     private val alreadyLoading = HashSet<UUID>()
@@ -91,6 +93,31 @@ class PetListener @Inject constructor(
                 this.loadPetBlocks(event.targetEntity)
             }
         }
+    }
+
+    /**
+     * Gets called when the player moves and removes the pet if mounted.
+     */
+    @Listener
+    fun onPlayerMoveEvent(event: MoveEntityEvent) {
+        if (event.targetEntity !is Player) {
+            return
+        }
+
+        val player = event.targetEntity as Player
+
+        if (!petService.hasPet(player)) {
+            return
+        }
+
+        if (!isInWater(player)) {
+            return
+        }
+
+        val pet = petService.getOrSpawnPetFromPlayer(player).get()
+        val hatAi = pet.meta.aiGoals.firstOrNull { a -> a is AIWearing } as AIWearing? ?: return
+
+        pet.meta.aiGoals.remove(hatAi)
     }
 
     /**
@@ -315,6 +342,20 @@ class PetListener @Inject constructor(
 
         if (applyPetOnFirstSpawn) {
             petService.getOrSpawnPetFromPlayer(player)
+        }
+    }
+
+    /**
+     * Gets if the player is in water.
+     */
+    private fun isInWater(player: Player): Boolean {
+        val blockType = player.location.block.type
+
+        return try {
+            itemTypeService.findItemType<Any>(blockType) == itemTypeService.findItemType(MaterialType.WATER)
+                    || itemTypeService.findItemType<Any>(blockType) == itemTypeService.findItemType(MaterialType.STATIONARY_WATER)
+        } catch (e: Exception) {
+            false
         }
     }
 

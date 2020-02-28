@@ -6,6 +6,7 @@ import com.github.shynixn.petblocks.api.business.enumeration.ChatClickAction
 import com.github.shynixn.petblocks.api.business.enumeration.ChatColor
 import com.github.shynixn.petblocks.api.business.enumeration.MaterialType
 import com.github.shynixn.petblocks.api.business.enumeration.ScriptAction
+import com.github.shynixn.petblocks.api.business.localization.Messages
 import com.github.shynixn.petblocks.api.business.service.*
 import com.github.shynixn.petblocks.api.persistence.entity.*
 import com.github.shynixn.petblocks.core.logic.business.extension.chatMessage
@@ -14,7 +15,6 @@ import com.github.shynixn.petblocks.core.logic.business.extension.translateChatC
 import com.github.shynixn.petblocks.core.logic.persistence.entity.GuiIconEntity
 import com.github.shynixn.petblocks.core.logic.persistence.entity.GuiPlayerCacheEntity
 import com.github.shynixn.petblocks.core.logic.persistence.entity.ItemEntity
-import com.github.shynixn.petblocks.core.logic.persistence.entity.StorageInventoryCache
 import com.google.inject.Inject
 import java.util.*
 import kotlin.collections.ArrayList
@@ -64,105 +64,113 @@ class GUIServiceImpl @Inject constructor(
     private val clickProtection = ArrayList<Any>()
     private val pageCache = HashMap<Any, GuiPlayerCache>()
 
-    private var collectedMinecraftHeadsMessage = chatMessage {
-        text {
-            configurationService.findValue<String>("messages.prefix") + "Pets collected by "
-        }
-        component {
-            color(ChatColor.YELLOW) {
-                text {
-                    ">>Minecraft-Heads.com<<"
-                }
-            }
-            clickAction {
-                ChatClickAction.OPEN_URL to "http://minecraft-heads.com"
-            }
-            hover {
-                text {
-                    "Goto the Minecraft-Heads website!"
-                }
-            }
-        }
-    }
-
-    private var suggestHeadMessage = chatMessage {
-        text {
-            configurationService.findValue<String>("messages.prefix") + "Click here: "
-        }
-        component {
-            color(ChatColor.YELLOW) {
-                text {
-                    ">>Submit skin<<"
-                }
-            }
-            clickAction {
-                ChatClickAction.OPEN_URL to "http://minecraft-heads.com/custom/heads-generator"
-            }
-            hover {
-                text {
-                    "Goto the Minecraft-Heads website!"
-                }
-            }
-        }
-        text { " " }
-        component {
-            color(ChatColor.YELLOW) {
-                text {
-                    ">>Suggest new pet<<"
-                }
-            }
-            clickAction {
-                ChatClickAction.OPEN_URL to "http://minecraft-heads.com/forum/suggesthead"
-            }
-            hover {
-                text {
-                    "Goto the Minecraft-Heads website!"
-                }
-            }
-        }
-    }
-
-    private var skullNamingMessage = chatMessage {
-        text {
-            configurationService.findValue<String>("messages.prefix") + configurationService.findValue("messages.customhead-suggest-prefix")
-        }
-        component {
+    private var collectedMinecraftHeadsMessage = lazy {
+        chatMessage {
             text {
-                configurationService.findValue("messages.customhead-suggest-clickable")
+                Messages.prefix + "Pets collected by "
             }
-            clickAction {
-                ChatClickAction.SUGGEST_COMMAND to "/" + configurationService.findValue("commands.petblock.command") + " skin "
-            }
-            hover {
-                text {
-                    configurationService.findValue("messages.customhead-suggest-hover")
+            component {
+                color(ChatColor.YELLOW) {
+                    text {
+                        ">>Minecraft-Heads.com<<"
+                    }
+                }
+                clickAction {
+                    ChatClickAction.OPEN_URL to "http://minecraft-heads.com"
+                }
+                hover {
+                    text {
+                        "Goto the Minecraft-Heads website!"
+                    }
                 }
             }
-        }
-        text {
-            configurationService.findValue("messages.customhead-suggest-suffix")
         }
     }
 
-    private var namingMessage = chatMessage {
-        text {
-            configurationService.findValue<String>("messages.prefix") + configurationService.findValue("messages.rename-suggest-prefix")
-        }
-        component {
+    private var suggestHeadMessage = lazy {
+        chatMessage {
             text {
-                configurationService.findValue("messages.rename-suggest-clickable")
+                Messages.prefix + "Click here: "
             }
-            clickAction {
-                ChatClickAction.SUGGEST_COMMAND to "/" + configurationService.findValue("commands.petblock.command") + " rename "
+            component {
+                color(ChatColor.YELLOW) {
+                    text {
+                        ">>Submit skin<<"
+                    }
+                }
+                clickAction {
+                    ChatClickAction.OPEN_URL to "http://minecraft-heads.com/custom/heads-generator"
+                }
+                hover {
+                    text {
+                        "Goto the Minecraft-Heads website!"
+                    }
+                }
             }
-            hover {
-                text {
-                    configurationService.findValue("messages.rename-suggest-hover")
+            text { " " }
+            component {
+                color(ChatColor.YELLOW) {
+                    text {
+                        ">>Suggest new pet<<"
+                    }
+                }
+                clickAction {
+                    ChatClickAction.OPEN_URL to "http://minecraft-heads.com/forum/suggesthead"
+                }
+                hover {
+                    text {
+                        "Goto the Minecraft-Heads website!"
+                    }
                 }
             }
         }
-        text {
-            configurationService.findValue("messages.rename-suggest-suffix")
+    }
+
+    private var skullNamingMessage = lazy {
+        chatMessage {
+            text {
+                Messages.prefix + Messages.customHeadSuggestPrefix
+            }
+            component {
+                text {
+                    Messages.customHeadSuggestClickable
+                }
+                clickAction {
+                    ChatClickAction.SUGGEST_COMMAND to "/" + configurationService.findValue("commands.petblock.command") + " skin "
+                }
+                hover {
+                    text {
+                        Messages.customHeadSuggestHover
+                    }
+                }
+            }
+            text {
+                Messages.customHeadSuggestSuffix
+            }
+        }
+    }
+
+    private var namingMessage = lazy {
+        chatMessage {
+            text {
+                Messages.prefix + Messages.renameSuggestPrefix
+            }
+            component {
+                text {
+                    Messages.renameSuggestClickable
+                }
+                clickAction {
+                    ChatClickAction.SUGGEST_COMMAND to "/" + configurationService.findValue("commands.petblock.command") + " rename "
+                }
+                hover {
+                    text {
+                        Messages.renameSuggestHover
+                    }
+                }
+            }
+            text {
+                Messages.renameSuggestSuffix
+            }
         }
     }
 
@@ -204,14 +212,13 @@ class GUIServiceImpl @Inject constructor(
         proxyService.closeInventory(player)
         var page = pageName
 
-        if (page == null) {
+        if (page == null || !configurationService.containsValue(page)) {
             page = "gui.main"
         }
 
         headDatabaseService.clearResources(player)
 
-        val guiTitle = configurationService.findValue<String>("messages.gui-title")
-        val inventory = proxyService.openInventory<Any, Any>(player, guiTitle, 54)
+        val inventory = proxyService.openInventory<Any, Any>(player, Messages.guiTitle, 54)
         val petMeta = persistenceService.getPetMetaFromPlayer(player)
 
         pageCache[player] = GuiPlayerCacheEntity(page, inventory)
@@ -231,14 +238,7 @@ class GUIServiceImpl @Inject constructor(
         val optGuiItem = loadService.findClickedGUIItem(pageCache[player]!!.path, item) ?: return
 
         if (optGuiItem.permission.isNotEmpty() && !proxyService.hasPermission(player, optGuiItem.permission)) {
-
-            proxyService.sendMessage(
-                player,
-                configurationService.findValue<String>("messages.prefix") + configurationService.findValue<String>(
-                    "messages.no-permission"
-                )
-            )
-
+            proxyService.sendMessage(player, Messages.prefix + Messages.noPermissionMessage)
             return
         }
 
@@ -420,9 +420,9 @@ class GUIServiceImpl @Inject constructor(
         }
 
         val permissionMessage = if (hasPermission) {
-            configurationService.findValue("messages.has-permission")
+            Messages.permissionTranslationYes
         } else {
-            configurationService.findValue<String>("messages.has-no-permission")
+            Messages.permissionTranslationNo
         }
 
         val lore = ArrayList<String>()
@@ -502,7 +502,7 @@ class GUIServiceImpl @Inject constructor(
         val timeOut = 2 * 60 * 1000
 
         if (difference > timeOut) {
-            messageService.sendPlayerMessage(player, collectedMinecraftHeadsMessage)
+            messageService.sendPlayerMessage(player, collectedMinecraftHeadsMessage.value)
             guiPlayerCache.advertisingMessageTime = current
         }
     }
@@ -570,13 +570,13 @@ class GUIServiceImpl @Inject constructor(
 
             renderPage(player, petMeta, pageCache[player]!!.path)
         } else if (scriptResult == ScriptAction.PRINT_CUSTOM_SKIN_MESSAGE) {
-            messageService.sendPlayerMessage(player, skullNamingMessage)
+            messageService.sendPlayerMessage(player, skullNamingMessage.value)
             this.close(player)
         } else if (scriptResult == ScriptAction.PRINT_SUGGEST_HEAD_MESSAGE) {
-            messageService.sendPlayerMessage(player, suggestHeadMessage)
+            messageService.sendPlayerMessage(player, suggestHeadMessage.value)
             this.close(player)
         } else if (scriptResult == ScriptAction.PRINT_CUSTOM_NAME_MESSAGE) {
-            messageService.sendPlayerMessage(player, namingMessage)
+            messageService.sendPlayerMessage(player, namingMessage.value)
             this.close(player)
         } else if (scriptResult == ScriptAction.DISABLE_PET) {
             petActionService.disablePet(player)

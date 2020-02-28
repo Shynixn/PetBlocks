@@ -4,8 +4,10 @@ package com.github.shynixn.petblocks.bukkit.logic.business.service
 
 import com.github.shynixn.petblocks.api.business.enumeration.Version
 import com.github.shynixn.petblocks.api.business.service.CommandService
+import com.github.shynixn.petblocks.api.business.service.LocalizationService
 import com.github.shynixn.petblocks.bukkit.logic.business.proxy.CommandProxyImpl
 import com.github.shynixn.petblocks.bukkit.logic.business.proxy.CommandRegisteredProxyImpl
+import com.github.shynixn.petblocks.core.logic.business.extension.translateChatColors
 import com.google.inject.Inject
 import org.bukkit.Bukkit
 import org.bukkit.command.SimpleCommandMap
@@ -40,7 +42,8 @@ import org.bukkit.plugin.java.JavaPlugin
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class CommandServiceImpl @Inject constructor(private val plugin: Plugin, private val version: Version) : CommandService {
+class CommandServiceImpl @Inject constructor(private val plugin: Plugin, private val version: Version, private val localizationService: LocalizationService) :
+    CommandService {
     /**
      * Registers a command executor.
      */
@@ -91,7 +94,7 @@ class CommandServiceImpl @Inject constructor(private val plugin: Plugin, private
         val description = commandConfiguration["description"] as String
         val usage = commandConfiguration["useage"] as String
         val permission = commandConfiguration["permission"] as String
-        val permissionMessage = commandConfiguration["permission-message"] as String
+        val permissionMessage = localizationService.translate(commandConfiguration["permission-message"] as String).translateChatColors()
         val aliases = if (commandConfiguration.containsKey("aliases")) {
             commandConfiguration["aliases"] as List<String>
         } else {

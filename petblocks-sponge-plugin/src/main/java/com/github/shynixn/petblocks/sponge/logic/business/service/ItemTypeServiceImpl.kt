@@ -100,7 +100,11 @@ class ItemTypeServiceImpl : ItemTypeService {
             cache[sourceHint] = try {
                 Sponge.getGame().registry.getType(ItemType::class.java, MaterialType.valueOf(descHint).minecraftName).get()
             } catch (e: Exception) {
-                Sponge.getGame().registry.getType(ItemType::class.java, descHint).get()
+                try {
+                    Sponge.getGame().registry.getType(ItemType::class.java, descHint).get()
+                } catch (e: Exception) {
+                    Sponge.getGame().registry.getType(BlockType::class.java, descHint).get()
+                }
             }
 
             return cache[sourceHint]!! as I

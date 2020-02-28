@@ -253,11 +253,16 @@ class PersistenceSQLiteIT {
                 , LoggingUtilServiceImpl(Logger.getAnonymousLogger()), plugin
             )
 
+            val localizationService =
+                LocalizationServiceImpl(configurationService, LoggingUtilServiceImpl(Logger.getAnonymousLogger()))
+            localizationService.reload()
+
             val guiItemLoadService =
                 GUIItemLoadServiceImpl(
                     configurationService,
                     ItemTypeServiceImpl(),
-                    aiService
+                    aiService,
+                    localizationService
                 )
 
             val method = PetBlocksApi::class.java.getDeclaredMethod("initializePetBlocks", PluginProxy::class.java)

@@ -28,7 +28,17 @@ metrics: true
 
 ############################
 
-config-version: 1
+config-version: 2
+
+############################
+
+# Language
+
+# Change the language below to select one of the available templates.
+
+############################
+
+lang: 'en_us'
 
 ############################
 
@@ -67,39 +77,9 @@ commands:
     command: petblock
     aliases: []
     useage: /<command>
-    description: Opens the pet GUI.
+    description: $lang.messages.openPetGui
     permission: petblocks.command.use
-    permission-message: You don't have permission
-
-############################
-
-# Messages settings
-
-# Change the messages of the PetBlocks plugin.
-
-############################
-
-messages:
-  prefix: '&2[&aPetBlocks&2]&a '
-  gui-title: 'PetBlocks'
-  rename-suggest-prefix: ''
-  rename-suggest-clickable: '&e<<Click here>> '
-  rename-suggest-suffix: '&ato rename your pet.'
-  rename-suggest-hover: 'Click me to rename your pet.'
-  rename-success: '&aYou changed the name of your pet.'
-  rename-error: '&cYou cannot name your pet like that.'
-  customhead-suggest-prefix: ''
-  customhead-suggest-clickable: '&e<<Click here>> '
-  customhead-suggest-suffix: '&ato change the skin of your pet.'
-  customhead-suggest-hover: 'Click me to change the skin of your pet.'
-  customhead-success: '&aYou changed the skin of your pet.'
-  customhead-error: '&eThis skin is invalid.'
-  called-success: '&aYou have called your pet.'
-  called-error: '&cYour pet cannot be called right now.'
-  despawn: '&aYour pet has despawned.'
-  has-permission: '&aYes'
-  has-no-permission: '&cNo'
-  no-permission: '&cYou do not have permissions.'
+    permission-message: $lang.messages.noPermissions
 
 ############################
 
@@ -148,7 +128,7 @@ global-configuration:
 
 pet:
   enabled: false
-  name: "<player>'s Pet"
+  name: $lang.petName
   sound-enabled: true
   particle-enabled: true
   skin:
@@ -270,9 +250,9 @@ gui:
         id: 397
         damage: 3
         skin: 'http://textures.minecraft.net/texture/f45c9acea8da71b4f252cd4deb5943f49e7dbc0764274b25a6a6f5875baea3'
-        name: '&a&lPet enabled'
+        name: $lang.gui.item.petEnabled
         lore:
-          - '&7Click to disable the pet.'
+          - $lang.gui.lore.petDisable
       hidden-on:
         - 'pet-disabled'
     enable-pet:
@@ -282,10 +262,10 @@ gui:
       icon:
         id: 397
         damage: 3
-        skin: 'textures.minecraft.net/texture/ad5fcd31287d63e7826ea760a7ed154f685dfdc7f3465732a96e619b2e1347'
-        name: '&c&lPet disabled'
+        skin: 'http://textures.minecraft.net/texture/ad5fcd31287d63e7826ea760a7ed154f685dfdc7f3465732a96e619b2e1347'
+        name: $lang.gui.item.petDisabled
         lore:
-          - '&7Click to enable the pet.'
+          - $lang.gui.lore.petEnable
       hidden-on:
         - 'pet-enabled'
     wardrobe:
@@ -295,29 +275,29 @@ gui:
       icon:
         id: 397
         damage: 3
-        skin: 'textures.minecraft.net/texture/55507d6517eff952dd38fa8bc551dd6d6a7a5e4ea134519b44650ac1ffa59c3'
-        name: '&6&lPet Customization'
+        skin: 'http://textures.minecraft.net/texture/55507d6517eff952dd38fa8bc551dd6d6a7a5e4ea134519b44650ac1ffa59c3'
+        name: $lang.gui.item.appearance
         lore:
-          - '&7Change the appearance of your pet.'
+          - $lang.gui.lore.appearance
     call-pet:
       row: 5
       col: 2
       script: 'call-pet'
       icon:
         id: 420
-        name: '&2&lCall Pet'
+        name: $lang.gui.item.callPet
         lore:
-          - '&7Teleports your pet to you.'
+          - $lang.gui.lore.teleportPet
     hat-pet:
       row: 3
       col: 9
       icon:
         id: 397
         damage: 3
-        skin: 'textures.minecraft.net/texture/9b5f247a7f5b37bbfa488ab4efaddcbad2e526e94fc542b1fe2f7cfeb6e'
-        name: '&E&lHat Pet'
+        skin: 'http://textures.minecraft.net/texture/9b5f247a7f5b37bbfa488ab4efaddcbad2e526e94fc542b1fe2f7cfeb6e'
+        name: $lang.gui.item.wearPet
         lore:
-          - '&7Wear your pet like a hat.'
+          - $lang.gui.lore.wearPet
       replace-ai:
         1:
           type: 'wearing'
@@ -332,9 +312,9 @@ gui:
       icon:
         id: 329
         damage: 0
-        name: '&e&lRide Pet F'
+        name: $lang.gui.item.flyRidePet
         lore:
-          - '&7Start to ride your pet.'
+          - $lang.gui.lore.flyRidePet
       replace-ai:
         1:
           type: 'fly-riding'
@@ -350,9 +330,9 @@ gui:
       icon:
         id: 329
         damage: 0
-        name: '&e&lRide Pet'
+        name: $lang.gui.item.ridePet
         lore:
-          - '&7Start to ride your pet.'
+          - $lang.gui.lore.ridePet
       replace-ai:
         1:
           type: 'ground-riding'
@@ -371,9 +351,9 @@ gui:
       script: 'open-page gui.storage'
       icon:
         id: "CHEST"
-        name: '&6&lPet Inventory'
+        name: $lang.gui.item.openInventory
         lore:
-          - '&7Open the inventory of your pet.'
+          - $lang.gui.lore.openInventory
     settings-pet:
       row: 5
       col: 8
@@ -382,9 +362,9 @@ gui:
         id: 397
         damage: 3
         skin: 'textures.minecraft.net/texture/ec2ff244dfc9dd3a2cef63112e7502dc6367b0d02132950347b2b479a72366dd'
-        name: '&2&lPet Settings'
+        name: $lang.gui.item.openSettings
         lore:
-          - '&7Open the settings of your pet.'
+          - $lang.gui.lore.openSettings
     back:
       row: 6
       col: 5
@@ -392,9 +372,9 @@ gui:
       icon:
         id: 166
         damage: 0
-        name: '&cBack'
+        name: $lang.gui.item.back
         lore:
-          - '&7Closes the current window.'
+          - $lang.gui.lore.back
   wardrobe:
     block-skins:
       row: 2
@@ -403,10 +383,10 @@ gui:
       icon:
         id: 397
         damage: 3
-        name: '&e&lSimple block costumes'
+        name: $lang.gui.item.simpleBlocks
         skin: 'http://textures.minecraft.net/texture/c95d37993e594082678472bf9d86823413c250d4332a2c7d8c52de4976b362'
         lore:
-          - '&7Use Minecraft blocks as costume.'
+          - $lang.gui.lore.simpleBlocks
     colored-block-skins:
       row: 2
       col: 5
@@ -414,10 +394,10 @@ gui:
       icon:
         id: 397
         damage: 3
-        name: '&a&lColored block costumes'
+        name: $lang.gui.item.coloredBlocks
         skin: 'http://textures.minecraft.net/texture/f1af46febd45c0f4d81e8fa1b66b275d89e272b2ad55c978553a99c733e1ff'
         lore:
-          - '&7Use colored Minecraft blocks as costume.'
+          - $lang.gui.lore.coloredBlocks
     player-head-skins:
       row: 2
       col: 7
@@ -425,10 +405,10 @@ gui:
       icon:
         id: 397
         damage: 3
-        name: '&d&lPlayer head costumes'
+        name: $lang.gui.item.playerHeads
         skin: 'http://textures.minecraft.net/texture/a0c2549a893726988f3428bef799875ba871688ae64eb0cfdc43f7d6e24c6c'
         lore:
-          - '&7Use player heads as costume.'
+          - $lang.gui.lore.playerHeads
     minecraft-heads-pet-skins:
       row: 3
       col: 2
@@ -436,11 +416,11 @@ gui:
       icon:
         id: 397
         damage: 3
-        name: '&9&lPet costumes'
+        name: $lang.gui.item.pets
         skin: 'http://textures.minecraft.net/texture/fec052be76e39148a27f255ec537dff92018c79744202d60c51bc67d618ae36a'
         lore:
-          - "&7Use exclusive pet heads as costume."
-          - "&eSponsored by Minecraft-Heads.com"
+          - $lang.gui.lore.pets
+          - $lang.gui.lore.sponsoredMinecraftHeads
     minecraft-heads-vehicle-skins:
       row: 3
       col: 4
@@ -448,11 +428,11 @@ gui:
       icon:
         id: 397
         damage: 3
-        name: '&2&lVehicle costumes'
+        name: $lang.gui.item.vehicles
         skin: 'http://textures.minecraft.net/texture/e8778c34fba29652cfac8d3f6fb35c49cbc2362b2b8f1378d83b30f463b181'
         lore:
-          - "&7Use exclusive vehicle heads as costume."
-          - "&eSponsored by Minecraft-Heads.com"
+          - $lang.gui.lore.vehicles
+          - $lang.gui.lore.sponsoredMinecraftHeads
     minecraft-heads-puppet-skins:
       row: 3
       col: 6
@@ -460,11 +440,11 @@ gui:
       icon:
         id: 397
         damage: 3
-        name: '&b&lPlushie costumes'
+        name: $lang.gui.item.plushies
         skin: 'http://textures.minecraft.net/texture/3835da2685f7ad3f1919a018976ad56826691e26758a3a55a1918f7f17ad938'
         lore:
-          - "&7Use exclusive plushie heads as costume."
-          - "&eSponsored by Minecraft-Heads.com"
+          - $lang.gui.lore.plushies
+          - $lang.gui.lore.sponsoredMinecraftHeads
     headdatabase-skins:
       row: 3
       col: 8
@@ -472,10 +452,10 @@ gui:
       icon:
         id: 397
         damage: 3
-        name: '&c&lHead Database costumes'
+        name: $lang.gui.item.headdatabase
         skin: 'http://textures.minecraft.net/texture/3bb612eb495ede2c5ca5178d2d1ecf1ca5a255d25dfc3c254bc47f6848791d8'
         lore:
-          - '&7Use heads from an external plugin as costume.'
+          - $lang.gui.lore.headDatabase
     enter-custom-head:
       row: 5
       col: 8
@@ -483,9 +463,9 @@ gui:
       icon:
         id: 397
         damage: 3
-        name: '&2&lCustom skin'
+        name: $lang.gui.item.customSkin
         lore:
-          - '&7Use the skin of another player as costume.'
+          - $lang.gui.lore.customSkin
     suggest-heads:
       row: 5
       col: 2
@@ -493,10 +473,9 @@ gui:
       icon:
         id: 386
         damage: 0
-        name: '&a&lSuggest Heads'
+        name: $lang.gui.item.submitSkins
         lore:
-          - '&7Submit skins for pets or'
-          - '&7make a suggestion for a new pet.'
+          - $lang.gui.lore.submitSkins
     back:
       row: 6
       col: 5
@@ -504,9 +483,9 @@ gui:
       icon:
         id: 166
         damage: 0
-        name: '&cBack'
+        name: $lang.gui.item.back
         lore:
-          - '&7Closes the current window.'
+          - $lang.gui.lore.back
   storage:
     equipment-main:
       row: 2
@@ -514,18 +493,18 @@ gui:
       script: 'show-inventory 1 27'
       icon:
         id: "CHEST"
-        name: '&a&lMain Equipment'
+        name: $lang.gui.item.openMainEquipment
         lore:
-          - '&7Open the main equipment of your pet.'
+          - $lang.gui.lore.openMainEquipment
     equipment-secondary:
       row: 2
       col: 8
       script: 'show-inventory 28 54'
       icon:
         id: "ENDER_CHEST"
-        name: '&9&lSecondary Equipment'
+        name: $lang.gui.item.openSecondaryEquipment
         lore:
-          - '&7Open the secondary equipment of your pet.'
+          - $lang.gui.lore.openSecondaryEquipment
     back:
       row: 6
       col: 5
@@ -534,9 +513,9 @@ gui:
       icon:
         id: 166
         damage: 0
-        name: '&cBack'
+        name: $lang.gui.item.back
         lore:
-          - '&7Closes the current window.'
+          - $lang.gui.lore.back
   settings:
     rename-pet:
       row: 2
@@ -545,18 +524,18 @@ gui:
       icon:
         id: 421
         damage: 0
-        name: '&6&lRename Pet'
+        name: $lang.gui.item.changeName
         lore:
-          - '&7Change the name of your pet.'
+          - $lang.gui.lore.changeName
     effects-pet:
       row: 5
       col: 3
       script: 'open-page gui.buff-effects'
       icon:
         id: 384
-        name: '&5&lPet Effects'
+        name: $lang.gui.item.openEffects
         lore:
-          - '&7Open the effects of your pet.'
+          - $lang.gui.lore.openEffects
     sounds-enabled:
       row: 2
       col: 7
@@ -565,9 +544,9 @@ gui:
         id: 397
         damage: 3
         skin: 'textures.minecraft.net/texture/cb9c706c85572f05efc4170ada791154de2b5378e6252aadc8d43b19c5564'
-        name: '&a&lPet unmuted'
+        name: $lang.gui.item.soundEnabled
         lore:
-          - '&7Click to disable the sounds of your pet.'
+          - $lang.gui.lore.soundDisable
       hidden-on:
         - 'sound-disabled'
     sounds-disabled:
@@ -578,9 +557,9 @@ gui:
         id: 397
         damage: 3
         skin: 'textures.minecraft.net/texture/ae7215c45d97d7bc55d9dfa58fcc73f4af74e4b3f5a15b4419127424c4268e'
-        name: '&c&lPet muted'
+        name: $lang.gui.item.soundDisabled
         lore:
-          - '&7Click to enable the sounds of your pet.'
+          - $lang.gui.lore.soundEnable
       hidden-on:
         - 'sound-enabled'
     particles-enabled:
@@ -591,9 +570,9 @@ gui:
         id: 397
         damage: 3
         skin: 'eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZjM1MjE0ZmUyNmUyZTBlMGJjMzAyMjA1ZmM3YjllYmE2OWQ2ZWI3OWEyMTVlODQ2Nzk0OTM5NGZmNWZiM2YwNSJ9fX0='
-        name: '&a&lPet particles enabled'
+        name: $lang.gui.item.particleEnabled
         lore:
-          - '&7Click to disable the particles of your pet.'
+          - $lang.gui.lore.particleDisable
       hidden-on:
         - 'particle-disabled'
     particles-disabled:
@@ -604,9 +583,9 @@ gui:
         id: 397
         damage: 3
         skin: 'eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNDFiYzUwZDUyYTJhMmNkYTgxMjAzMWQxMTdmNWZkMDlmOGYwMGRlZWEyNjcxOGZmMTVmNTEyMzE3YjgzNjhmNiJ9fX0='
-        name: '&c&lPet particles disabled'
+        name: $lang.gui.item.particleDisabled
         lore:
-          - '&7Click to enable the particles of your pet.'
+          - $lang.gui.lore.particleEnable
       hidden-on:
         - 'particle-enabled'
     back:
@@ -617,18 +596,18 @@ gui:
       icon:
         id: 166
         damage: 0
-        name: '&cBack'
+        name: $lang.gui.item.back
         lore:
-          - '&7Closes the current window.'
+          - $lang.gui.lore.back
   buff-effects:
     speed-one-enabled:
       row: 2
       col: 2
       icon:
         id: "133"
-        name: '&a&lSpeed one enabled'
+        name: $lang.gui.item.speedOneEnabled
         lore:
-          - '&7Click to disable this effect of your pet.'
+          - $lang.gui.lore.effectDisable
       remove-ai:
         1:
           type: 'buff-effect'
@@ -638,9 +617,9 @@ gui:
       col: 2
       icon:
         id: "152"
-        name: '&c&lSpeed one disabled'
+        name: $lang.gui.item.speedOneDisabled
         lore:
-          - '&7Click to enable this effect of your pet.'
+          - $lang.gui.lore.effectEnable
       hidden-on:
         - 'buff-effect:speed-one-buff-effect'
       replace-ai:
@@ -669,9 +648,9 @@ gui:
       col: 8
       icon:
         id: "133"
-        name: '&a&lStrength one enabled'
+        name: $lang.gui.item.strengthOneEnabled
         lore:
-          - '&7Click to disable this effect of your pet.'
+          - $lang.gui.lore.effectDisable
       remove-ai:
         1:
           type: 'buff-effect'
@@ -681,9 +660,9 @@ gui:
       col: 8
       icon:
         id: "152"
-        name: '&c&lStrength one disabled'
+        name: $lang.gui.item.strengthOneDisabled
         lore:
-          - '&7Click to enable this effect of your pet.'
+          - $lang.gui.lore.effectEnable
       hidden-on:
         - 'buff-effect:strength-one-buff-effect'
       replace-ai:
@@ -715,9 +694,9 @@ gui:
       icon:
         id: 166
         damage: 0
-        name: '&cBack'
+        name: $lang.gui.item.back
         lore:
-          - '&7Closes the current window.'
+          - $lang.gui.lore.back
   block-skins:
     next-page:
       row: 6
@@ -728,7 +707,7 @@ gui:
         id: 397
         damage: 3
         skin: 'http://textures.minecraft.net/texture/1b6f1a25b6bc199946472aedb370522584ff6f4e83221e5946bd2e41b5ca13b'
-        name: '&aNext page'
+        name: $lang.gui.item.nextPage
         script: 'hide-right-scroll'
     previous-page:
       row: 6
@@ -739,7 +718,7 @@ gui:
         id: 397
         damage: 3
         skin: 'http://textures.minecraft.net/texture/3ebf907494a935e955bfcadab81beafb90fb9be49c7026ba97d798d5f1a23'
-        name: '&aPrevious page'
+        name: $lang.gui.item.previousPage
         script: 'hide-left-scroll'
     back:
       row: 6
@@ -749,9 +728,9 @@ gui:
       icon:
         id: 166
         damage: 0
-        name: '&cBack'
+        name: $lang.gui.item.back
         lore:
-          - '&7Closes the current window.'
+          - $lang.gui.lore.back
     block-1-1:
       row: 1
       col: 1
@@ -1242,7 +1221,7 @@ gui:
         id: 397
         damage: 3
         skin: 'http://textures.minecraft.net/texture/1b6f1a25b6bc199946472aedb370522584ff6f4e83221e5946bd2e41b5ca13b'
-        name: '&aNext page'
+        name: $lang.gui.item.nextPage
         script: 'hide-right-scroll'
     previous-page:
       row: 6
@@ -1253,7 +1232,7 @@ gui:
         id: 397
         damage: 3
         skin: 'http://textures.minecraft.net/texture/3ebf907494a935e955bfcadab81beafb90fb9be49c7026ba97d798d5f1a23'
-        name: '&aPrevious page'
+        name: $lang.gui.item.previousPage
         script: 'hide-left-scroll'
     back:
       row: 6
@@ -1263,9 +1242,9 @@ gui:
       icon:
         id: 166
         damage: 0
-        name: '&cBack'
+        name: $lang.gui.item.back
         lore:
-          - '&7Closes the current window.'
+          - $lang.gui.lore.back
     block-1-1:
       row: 1
       col: 1
@@ -1746,7 +1725,7 @@ gui:
         id: 397
         damage: 3
         skin: 'http://textures.minecraft.net/texture/1b6f1a25b6bc199946472aedb370522584ff6f4e83221e5946bd2e41b5ca13b'
-        name: '&aNext page'
+        name: $lang.gui.item.nextPage
         script: 'hide-right-scroll'
     previous-page:
       row: 6
@@ -1757,7 +1736,7 @@ gui:
         id: 397
         damage: 3
         skin: 'http://textures.minecraft.net/texture/3ebf907494a935e955bfcadab81beafb90fb9be49c7026ba97d798d5f1a23'
-        name: '&aPrevious page'
+        name: $lang.gui.item.previousPage
         script: 'hide-left-scroll'
     back:
       row: 6
@@ -1767,9 +1746,9 @@ gui:
       icon:
         id: 166
         damage: 0
-        name: '&cBack'
+        name: $lang.gui.item.back
         lore:
-          - '&7Closes the current window.'
+          - $lang.gui.lore.back
     block-1-1:
       row: 1
       col: 1
@@ -2799,7 +2778,7 @@ gui:
         id: 397
         damage: 3
         skin: 'http://textures.minecraft.net/texture/1b6f1a25b6bc199946472aedb370522584ff6f4e83221e5946bd2e41b5ca13b'
-        name: '&aNext page'
+        name: $lang.gui.item.nextPage
         script: 'hide-right-scroll'
     previous-page:
       row: 6
@@ -2810,7 +2789,7 @@ gui:
         id: 397
         damage: 3
         skin: 'http://textures.minecraft.net/texture/3ebf907494a935e955bfcadab81beafb90fb9be49c7026ba97d798d5f1a23'
-        name: '&aPrevious page'
+        name: $lang.gui.item.previousPage
         script: 'hide-left-scroll'
     back:
       row: 6
@@ -2820,9 +2799,9 @@ gui:
       icon:
         id: 166
         damage: 0
-        name: '&cBack'
+        name: $lang.gui.item.back
         lore:
-          - '&7Closes the current window.'
+          - $lang.gui.lore.back
     block-1-1:
       row: 1
       col: 1
@@ -13861,7 +13840,7 @@ gui:
         id: 397
         damage: 3
         skin: 'http://textures.minecraft.net/texture/1b6f1a25b6bc199946472aedb370522584ff6f4e83221e5946bd2e41b5ca13b'
-        name: '&aNext page'
+        name: $lang.gui.item.nextPage
         script: 'hide-right-scroll'
     previous-page:
       row: 6
@@ -13872,7 +13851,7 @@ gui:
         id: 397
         damage: 3
         skin: 'http://textures.minecraft.net/texture/3ebf907494a935e955bfcadab81beafb90fb9be49c7026ba97d798d5f1a23'
-        name: '&aPrevious page'
+        name: $lang.gui.item.previousPage
         script: 'hide-left-scroll'
     back:
       row: 6
@@ -13882,9 +13861,9 @@ gui:
       icon:
         id: 166
         damage: 0
-        name: '&cBack'
+        name: $lang.gui.item.back
         lore:
-          - '&7Closes the current window.'
+          - $lang.gui.lore.back
     block-1-1:
       row: 1
       col: 1
@@ -16295,7 +16274,7 @@ gui:
         id: 397
         damage: 3
         skin: 'http://textures.minecraft.net/texture/1b6f1a25b6bc199946472aedb370522584ff6f4e83221e5946bd2e41b5ca13b'
-        name: '&aNext page'
+        name: $lang.gui.item.nextPage
         script: 'hide-right-scroll'
     previous-page:
       row: 6
@@ -16306,7 +16285,7 @@ gui:
         id: 397
         damage: 3
         skin: 'http://textures.minecraft.net/texture/3ebf907494a935e955bfcadab81beafb90fb9be49c7026ba97d798d5f1a23'
-        name: '&aPrevious page'
+        name: $lang.gui.item.previousPage
         script: 'hide-left-scroll'
     back:
       row: 6
@@ -16316,9 +16295,9 @@ gui:
       icon:
         id: 166
         damage: 0
-        name: '&cBack'
+        name: $lang.gui.item.back
         lore:
-          - '&7Closes the current window.'
+          - $lang.gui.lore.back
     block-1-1:
       row: 1
       col: 1

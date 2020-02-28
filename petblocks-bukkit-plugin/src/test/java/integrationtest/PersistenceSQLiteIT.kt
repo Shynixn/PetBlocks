@@ -24,6 +24,7 @@ import org.junit.jupiter.api.Test
 import org.mockito.Mockito
 import java.io.File
 import java.io.FileInputStream
+import java.nio.file.Files
 import java.util.*
 import java.util.logging.Logger
 
@@ -225,15 +226,13 @@ class PersistenceSQLiteIT {
                 FileUtils.deleteDirectory(folder)
             }
 
+            Files.createDirectory(folder.toPath())
+
             val plugin = Mockito.mock(Plugin::class.java)
             Mockito.`when`(plugin.config).thenReturn(configuration)
             Mockito.`when`(plugin.dataFolder).thenReturn(File("integrationtest-sqlite"))
             Mockito.`when`(plugin.getResource(Mockito.anyString())).then { parameter ->
-                if (parameter.arguments[0].toString() == "assets/petblocks/sql/create-sqlite.sql") {
-                    FileInputStream(File("../petblocks-core/src/main/resources/assets/petblocks/sql/create-sqlite.sql"))
-                } else {
-                    Unit
-                }
+                FileInputStream(File("../petblocks-core/src/main/resources/${parameter.arguments[0]}"))
             }
 
             val method = PetBlocksApi::class.java.getDeclaredMethod("initializePetBlocks", PluginProxy::class.java)
@@ -242,15 +241,19 @@ class PersistenceSQLiteIT {
 
             val aiService = AIServiceImpl(LoggingUtilServiceImpl(Logger.getAnonymousLogger()), MockedProxyService(), YamlServiceImpl())
             val configService = ConfigurationServiceImpl(plugin)
+            val localizationService = LocalizationServiceImpl(configService, LoggingUtilServiceImpl(Logger.getAnonymousLogger()))
+            localizationService.reload()
+
             val guiItemLoadService =
                 GUIItemLoadServiceImpl(
                     configService,
                     ItemTypeServiceImpl(Version.VERSION_UNKNOWN),
-                    aiService
+                    aiService,
+                    localizationService
                 )
 
             EntityServiceImpl(
-                configService, MockedProxyService(),
+                MockedProxyService(),
                 Mockito.mock(EntityRegistrationService::class.java), Mockito.mock(PetService::class.java), YamlSerializationServiceImpl(),
                 plugin, Version.VERSION_1_8_R1, aiService
             )

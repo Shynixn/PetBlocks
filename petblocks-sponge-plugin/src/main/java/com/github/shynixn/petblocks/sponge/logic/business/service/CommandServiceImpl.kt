@@ -3,6 +3,8 @@
 package com.github.shynixn.petblocks.sponge.logic.business.service
 
 import com.github.shynixn.petblocks.api.business.service.CommandService
+import com.github.shynixn.petblocks.api.business.service.LocalizationService
+import com.github.shynixn.petblocks.core.logic.business.extension.translateChatColors
 import com.github.shynixn.petblocks.sponge.logic.business.extension.toText
 import com.github.shynixn.petblocks.sponge.logic.business.proxy.CommandProxyImpl
 import com.google.inject.Inject
@@ -40,7 +42,7 @@ import org.spongepowered.api.text.Text
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class CommandServiceImpl @Inject constructor(private val plugin: PluginContainer) : CommandService {
+class CommandServiceImpl @Inject constructor(private val plugin: PluginContainer, private val localizationService: LocalizationService) : CommandService {
     /**
      * Registers a command executor.
      */
@@ -108,7 +110,7 @@ class CommandServiceImpl @Inject constructor(private val plugin: PluginContainer
         val command = commandConfiguration["command"] as String
         val description = commandConfiguration["description"] as String
         val permission = commandConfiguration["permission"] as String
-        val permissionMessage = commandConfiguration["permission-message"] as String
+        val permissionMessage = localizationService.translate(commandConfiguration["permission-message"] as String).translateChatColors()
 
         val commandExecutor = CommandProxyImpl(permission, permissionMessage, commandExecutorInstance)
         val commandSpec = CommandSpec.builder()

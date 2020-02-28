@@ -3,6 +3,7 @@ package com.github.shynixn.petblocks.bukkit.logic.business.service
 import com.github.shynixn.petblocks.api.business.enumeration.ChatClickAction
 import com.github.shynixn.petblocks.api.business.enumeration.ChatColor
 import com.github.shynixn.petblocks.api.business.enumeration.PluginDependency
+import com.github.shynixn.petblocks.api.business.localization.Messages
 import com.github.shynixn.petblocks.api.business.service.*
 import com.github.shynixn.petblocks.core.logic.business.extension.chatMessage
 import com.github.shynixn.petblocks.core.logic.business.extension.sync
@@ -56,10 +57,9 @@ class DependencyHeadDatabaseServiceImpl @Inject constructor(
         player.closeInventory()
 
         if (!dependencyService.isInstalled(PluginDependency.HEADDATABASE)) {
-            val prefix = configurationService.findValue<String>("messages.prefix")
             val message = chatMessage {
                 text {
-                    prefix + "Download the plugin "
+                    Messages.prefix + "Download the plugin "
                 }
                 component {
                     color(ChatColor.YELLOW) {
@@ -79,7 +79,7 @@ class DependencyHeadDatabaseServiceImpl @Inject constructor(
             }
 
             messageService.sendPlayerMessage(player, message)
-            player.sendMessage(prefix + ChatColor.GRAY + "Please consider that PetBlocks is not responsible for any legal agreements between the author of Head Database and yourself.")
+            player.sendMessage(Messages.prefix + ChatColor.GRAY + "Please consider that PetBlocks is not responsible for any legal agreements between the author of Head Database and yourself.")
 
             return
         }
