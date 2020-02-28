@@ -3,6 +3,7 @@ com.github.shynixn.petblocks.api.bukkit.event
 com.github.shynixn.petblocks.api.business.annotation
 com.github.shynixn.petblocks.api.business.command
 com.github.shynixn.petblocks.api.business.enumeration
+com.github.shynixn.petblocks.api.business.localization
 com.github.shynixn.petblocks.api.business.proxy
 com.github.shynixn.petblocks.api.business.serializer
 com.github.shynixn.petblocks.api.business.service

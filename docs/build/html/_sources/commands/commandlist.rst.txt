@@ -18,6 +18,26 @@ This user command opens the PetBlocks GUI.
 * Server console ✘
 * Command blocks ✘
 
+/petblock [gui-path]
+~~~~~~~~~
+
+This user command opens the PetBlocks GUI at the given gui path.
+Opening gui paths directly requires the corresponding permission to this path.
+
+* Players (require permissions) ✔
+* Server console ✘
+* Command blocks ✘
+
+**Sample list:**
+
+Opens the gui storage page (Requires the permission **petblocks.command.use.gui.storage**)
+::
+  /petblock gui.storage
+
+Opens the gui main page (Requires the permission **petblocks.command.use.gui.main**)
+::
+  /petblocks gui.main
+
 /petblock call
 ~~~~~~~~~~~~~~
 
