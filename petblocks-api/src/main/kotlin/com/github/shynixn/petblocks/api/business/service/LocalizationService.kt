@@ -33,7 +33,7 @@ interface LocalizationService {
     /**
      * Reloads the localization of the messages.
      */
-    fun reload(): CompletableFuture<Void?>
+    fun reload()
 
     /**
      * Checks if the given text contains the lang prefix and replaces it with the localized value.

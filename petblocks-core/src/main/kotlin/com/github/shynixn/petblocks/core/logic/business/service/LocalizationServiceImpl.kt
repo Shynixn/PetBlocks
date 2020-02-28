@@ -6,15 +6,12 @@ import com.github.shynixn.petblocks.api.business.service.ConcurrencyService
 import com.github.shynixn.petblocks.api.business.service.ConfigurationService
 import com.github.shynixn.petblocks.api.business.service.LocalizationService
 import com.github.shynixn.petblocks.api.business.service.LoggingService
-import com.github.shynixn.petblocks.core.logic.business.extension.async
-import com.github.shynixn.petblocks.core.logic.business.extension.sync
 import com.github.shynixn.petblocks.core.logic.business.extension.translateChatColors
 import com.google.inject.Inject
 import java.io.InputStreamReader
 import java.nio.charset.Charset
 import java.nio.file.Files
 import java.util.*
-import java.util.concurrent.CompletableFuture
 
 /**
  * Created by Shynixn 2020.
@@ -45,8 +42,7 @@ import java.util.concurrent.CompletableFuture
  */
 class LocalizationServiceImpl @Inject constructor(
     private val configurationService: ConfigurationService,
-    private val loggingService: LoggingService,
-    private val concurrencyService: ConcurrencyService
+    private val loggingService: LoggingService
 ) :
     LocalizationService {
     private var properties = Properties()
@@ -69,60 +65,50 @@ class LocalizationServiceImpl @Inject constructor(
     /**
      * Reloads the localization of the messages.
      */
-    override fun reload(): CompletableFuture<Void?> {
-        val completableFuture = CompletableFuture<Void?>()
+    override fun reload() {
+        properties = Properties()
+        val langFileFolder = configurationService.applicationDir.resolve("lang")
 
-        async(concurrencyService) {
-            properties = Properties()
-            val langFileFolder = configurationService.applicationDir.resolve("lang")
+        if (!Files.exists(langFileFolder)) {
+            Files.createDirectories(langFileFolder)
+        }
 
-            if (!Files.exists(langFileFolder)) {
-                Files.createDirectories(langFileFolder)
-            }
+        for (lang in defaultLanguages) {
+            val targetFile = langFileFolder.resolve("$lang.lang")
 
-            for (lang in defaultLanguages) {
-                val targetFile = langFileFolder.resolve("$lang.lang")
-
-                if (!Files.exists(targetFile)) {
-                    Files.copy(configurationService.openResource("assets/petblocks/lang/$lang.lang"), targetFile)
-                }
-            }
-
-            val selectedLang = configurationService.findValue<String>("lang")
-            val langFile = langFileFolder.resolve("$selectedLang.lang")
-
-            if (!Files.exists(langFile)) {
-                loggingService.warn("Selected language '$selectedLang' cannot be found in ${langFile.toFile().absolutePath}.")
-                loggingService.warn("Messages will no longer be available!")
-            }
-
-            Files.newInputStream(langFile).use { stream ->
-                properties.load(InputStreamReader(stream, Charset.forName("UTF-8")))
-            }
-
-            for (field in Messages::class.java.declaredFields) {
-                field.isAccessible = true
-
-                if (field.type != String::class.java) {
-                    continue
-                }
-
-                val fieldValue = field.getDeclaredAnnotation(Key::class.java).value
-
-                if (!properties.containsKey(fieldValue)) {
-                    loggingService.warn("Loaded language '$selectedLang' does not have definition for message '$fieldValue'!")
-                    loggingService.warn("This message will not be available!")
-                    continue
-                }
-
-                field.set(null, properties.getProperty(fieldValue).replace("\"", "").translateChatColors())
-            }
-
-            sync(concurrencyService) {
-                completableFuture.complete(null)
+            if (!Files.exists(targetFile)) {
+                Files.copy(configurationService.openResource("assets/petblocks/lang/$lang.lang"), targetFile)
             }
         }
 
-        return completableFuture
+        val selectedLang = configurationService.findValue<String>("lang")
+        val langFile = langFileFolder.resolve("$selectedLang.lang")
+
+        if (!Files.exists(langFile)) {
+            loggingService.warn("Selected language '$selectedLang' cannot be found in ${langFile.toFile().absolutePath}.")
+            loggingService.warn("Messages will no longer be available!")
+        }
+
+        Files.newInputStream(langFile).use { stream ->
+            properties.load(InputStreamReader(stream, Charset.forName("UTF-8")))
+        }
+
+        for (field in Messages::class.java.declaredFields) {
+            field.isAccessible = true
+
+            if (field.type != String::class.java) {
+                continue
+            }
+
+            val fieldValue = field.getDeclaredAnnotation(Key::class.java).value
+
+            if (!properties.containsKey(fieldValue)) {
+                loggingService.warn("Loaded language '$selectedLang' does not have definition for message '$fieldValue'!")
+                loggingService.warn("This message will not be available!")
+                continue
+            }
+
+            field.set(null, properties.getProperty(fieldValue).replace("\"", "").translateChatColors())
+        }
     }
 }

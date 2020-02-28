@@ -131,7 +131,8 @@ class PetListenerTest {
             debugService: PetDebugService = Mockito.mock(PetDebugService::class.java),
             configurationService: ConfigurationService = Mockito.mock(ConfigurationService::class.java)
         ): PetListener {
-            return PetListener(petService, persistencePetMetaService, concurrencyService, entityService, debugService, configurationService, Mockito.mock(GUIItemLoadService::class.java))
+            return PetListener(petService, persistencePetMetaService, concurrencyService, entityService, debugService, configurationService, Mockito.mock(GUIItemLoadService::class.java),
+                Mockito.mock(ItemTypeService::class.java))
         }
     }
 

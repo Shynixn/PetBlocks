@@ -249,7 +249,7 @@ class PersistenceMySQLIT {
                 plugin, Version.VERSION_1_8_R1, aiService
             )
 
-            val localizationService = LocalizationServiceImpl(configService, LoggingUtilServiceImpl(Logger.getAnonymousLogger()), MockedConcurrencyService())
+            val localizationService = LocalizationServiceImpl(configService, LoggingUtilServiceImpl(Logger.getAnonymousLogger()))
             localizationService.reload()
 
             val guiItemLoadService =
