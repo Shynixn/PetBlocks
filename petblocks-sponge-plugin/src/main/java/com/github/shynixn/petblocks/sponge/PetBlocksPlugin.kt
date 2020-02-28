@@ -72,7 +72,7 @@ class PetBlocksPlugin : PluginProxy {
         val PREFIX_CONSOLE: String = ChatColor.AQUA.toString() + "[PetBlocks] "
     }
 
-    private val configVersion = 1
+    private val configVersion = 2
     private var injector: Injector? = null
     private var serverVersion: Version? = null
 
