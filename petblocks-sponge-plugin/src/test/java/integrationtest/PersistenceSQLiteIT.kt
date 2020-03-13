@@ -270,8 +270,8 @@ class PersistenceSQLiteIT {
             method.invoke(PetBlocksApi, MockedPluginProxy())
 
             EntityServiceImpl(
-                configurationService, MockedProxyService(),
-                Mockito.mock(EntityRegistrationService::class.java), Mockito.mock(PetService::class.java), YamlSerializationServiceImpl(),
+                MockedProxyService(),
+                Mockito.mock(PetService::class.java), YamlSerializationServiceImpl(),
                 Version.VERSION_1_12_R1, aiService, LoggingUtilServiceImpl(Logger.getAnonymousLogger()), ItemTypeServiceImpl()
             )
 
