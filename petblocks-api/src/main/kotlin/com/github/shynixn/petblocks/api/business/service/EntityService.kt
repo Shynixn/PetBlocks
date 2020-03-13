@@ -32,12 +32,6 @@ import com.github.shynixn.petblocks.api.persistence.entity.PetMeta
  */
 interface EntityService {
     /**
-     * Registers entities on the server when not already registered.
-     * Returns true if registered. Returns false when not registered.
-     */
-    fun registerEntitiesOnServer(): Boolean
-
-    /**
      * Checks the entity collection for invalid pet entities and removes them.
      */
     fun <E> cleanUpInvalidEntities(entities: Collection<E>)

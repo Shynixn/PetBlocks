@@ -58,9 +58,7 @@ import org.spongepowered.api.entity.living.player.Player
  * SOFTWARE.
  */
 class EntityServiceImpl @Inject constructor(
-    private val configurationService: ConfigurationService,
     private val proxyService: ProxyService,
-    private val entityRegistrationService: EntityRegistrationService,
     private val petService: PetService,
     private val yamlSerializationService: YamlSerializationService,
     private val version: Version,
@@ -68,9 +66,6 @@ class EntityServiceImpl @Inject constructor(
     private val loggingService: LoggingService,
     private val itemTypeService: ItemTypeService
 ) : EntityService {
-
-    private var registered = false
-
     init {
         this.register<AIAfraidOfWater>(AIType.AFRAID_OF_WATER) { pet, aiBase ->
             val hitBox = pet.getHitBoxLivingEntity<Living>().get()
@@ -163,40 +158,11 @@ class EntityServiceImpl @Inject constructor(
      * Spawns a new unManaged petProxy.
      */
     override fun <L> spawnPetProxy(location: L, petMeta: PetMeta): PetProxy {
-        this.registerEntitiesOnServer()
-
         val designClazz = Class.forName("com.github.shynixn.petblocks.sponge.logic.business.nms.VERSION.NMSPetArmorstand".replace("VERSION", version.bukkitId))
         val player = proxyService.getPlayerFromUUID<Any>(petMeta.playerMeta.uuid)
 
         return (designClazz.getDeclaredConstructor(Player::class.java, PetMeta::class.java)
             .newInstance(player, petMeta) as NMSPetProxy).proxy
-    }
-
-    /**
-     * Registers entities on the server when not already registered.
-     * Returns true if registered. Returns false when not registered.
-     */
-    override fun registerEntitiesOnServer(): Boolean {
-        if (registered) {
-            return true
-        }
-
-        val rabbitClazz = Class.forName("com.github.shynixn.petblocks.sponge.logic.business.nms.VERSION.NMSPetRabbit".replace("VERSION", version.bukkitId))
-        entityRegistrationService.register(rabbitClazz, EntityType.RABBIT)
-
-        val villagerClazz = Class.forName("com.github.shynixn.petblocks.sponge.logic.business.nms.VERSION.NMSPetVillager".replace("VERSION", version.bukkitId))
-        entityRegistrationService.register(villagerClazz, EntityType.RABBIT)
-
-        val batClazz = Class.forName("com.github.shynixn.petblocks.sponge.logic.business.nms.VERSION.NMSPetBat".replace("VERSION", version.bukkitId))
-        entityRegistrationService.register(batClazz, EntityType.RABBIT)
-
-        val armorStandClazz =
-            Class.forName("com.github.shynixn.petblocks.sponge.logic.business.nms.VERSION.NMSPetArmorstand".replace("VERSION", version.bukkitId))
-        entityRegistrationService.register(armorStandClazz, EntityType.ARMORSTAND)
-
-        registered = true
-
-        return true
     }
 
     /**

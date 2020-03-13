@@ -183,7 +183,7 @@ class EntityServiceImpl @Inject constructor(
      * Registers entities on the server when not already registered.
      * Returns true if registered. Returns false when not registered.
      */
-    override fun registerEntitiesOnServer(): Boolean {
+    private fun registerEntitiesOnServer(): Boolean {
         if (registered) {
             return true
         }

@@ -4,6 +4,7 @@ package com.github.shynixn.petblocks.sponge
 
 import com.github.shynixn.petblocks.api.PetBlocksApi
 import com.github.shynixn.petblocks.api.business.enumeration.ChatColor
+import com.github.shynixn.petblocks.api.business.enumeration.EntityType
 import com.github.shynixn.petblocks.api.business.enumeration.Version
 import com.github.shynixn.petblocks.api.business.proxy.EntityPetProxy
 import com.github.shynixn.petblocks.api.business.proxy.PluginProxy
@@ -12,9 +13,11 @@ import com.github.shynixn.petblocks.api.persistence.context.SqlDbContext
 import com.github.shynixn.petblocks.core.logic.business.commandexecutor.EditPetCommandExecutorImpl
 import com.github.shynixn.petblocks.core.logic.business.commandexecutor.PlayerPetActionCommandExecutorImpl
 import com.github.shynixn.petblocks.core.logic.business.commandexecutor.ReloadCommandExecutorImpl
+import com.github.shynixn.petblocks.core.logic.business.service.LoggingSlf4jServiceImpl
 import com.github.shynixn.petblocks.sponge.logic.business.extension.sendMessage
 import com.github.shynixn.petblocks.sponge.logic.business.extension.toText
 import com.github.shynixn.petblocks.sponge.logic.business.listener.*
+import com.github.shynixn.petblocks.sponge.logic.business.service.EntityRegistrationServiceImpl
 import com.google.inject.Inject
 import com.google.inject.Injector
 import org.bstats.sponge.Metrics2
@@ -24,6 +27,7 @@ import org.spongepowered.api.entity.living.player.Player
 import org.spongepowered.api.event.Listener
 import org.spongepowered.api.event.cause.Cause
 import org.spongepowered.api.event.game.GameReloadEvent
+import org.spongepowered.api.event.game.state.GameInitializationEvent
 import org.spongepowered.api.event.game.state.GameStartedServerEvent
 import org.spongepowered.api.event.game.state.GameStoppingServerEvent
 import org.spongepowered.api.event.message.MessageEvent
@@ -97,6 +101,15 @@ class PetBlocksPlugin : PluginProxy {
         }
 
     /**
+     * Before enabling the plugin PetBlocks.
+     */
+    @Listener
+    fun onInitialization(event: GameInitializationEvent) {
+        // GrievPrevention requires eager entity registration before the GameStartedServerEvent.
+        registerEntitiesOnServer()
+    }
+
+    /**
      * Enables the plugin PetBlocks.
      */
     @Listener
@@ -141,9 +154,6 @@ class PetBlocksPlugin : PluginProxy {
         dependencyService.checkForInstalledDependencies()
         updateCheckService.checkForUpdates()
         localizationService.reload()
-
-        // GrievPrevention requires eager entity registration.
-        entityService.registerEntitiesOnServer()
 
         // Register Listener
         Sponge.getEventManager().registerListeners(plugin, resolve(CarryPetListener::class.java))
@@ -331,6 +341,28 @@ class PetBlocksPlugin : PluginProxy {
         } catch (e: Exception) {
             throw IllegalArgumentException("Entity could not be created.", e)
         }
+    }
+
+    /**
+     * Registers entities on the server when not already registered.
+     */
+    private fun registerEntitiesOnServer() {
+        // Has to happen immediately after startup and cannot be moved to service classes.
+        val version = getServerVersion()
+        val entityRegistrationService = EntityRegistrationServiceImpl(LoggingSlf4jServiceImpl(plugin.logger))
+
+        val rabbitClazz = Class.forName("com.github.shynixn.petblocks.sponge.logic.business.nms.VERSION.NMSPetRabbit".replace("VERSION", version.bukkitId))
+        entityRegistrationService.register(rabbitClazz, EntityType.RABBIT)
+
+        val villagerClazz = Class.forName("com.github.shynixn.petblocks.sponge.logic.business.nms.VERSION.NMSPetVillager".replace("VERSION", version.bukkitId))
+        entityRegistrationService.register(villagerClazz, EntityType.RABBIT)
+
+        val batClazz = Class.forName("com.github.shynixn.petblocks.sponge.logic.business.nms.VERSION.NMSPetBat".replace("VERSION", version.bukkitId))
+        entityRegistrationService.register(batClazz, EntityType.RABBIT)
+
+        val armorStandClazz =
+            Class.forName("com.github.shynixn.petblocks.sponge.logic.business.nms.VERSION.NMSPetArmorstand".replace("VERSION", version.bukkitId))
+        entityRegistrationService.register(armorStandClazz, EntityType.ARMORSTAND)
     }
 
     /**
