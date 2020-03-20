@@ -88,7 +88,7 @@ class PersistenceSQLiteIT {
         Assertions.assertEquals(1, actual.skin.id)
         Assertions.assertEquals("GRASS", actual.skin.typeName)
         Assertions.assertEquals(0, actual.skin.dataValue)
-        Assertions.assertEquals("{Unbreakable:1}", actual.skin.nbtTag)
+        Assertions.assertEquals("", actual.skin.nbtTag)
         Assertions.assertEquals("", actual.skin.owner)
         Assertions.assertEquals(1, actual.playerMeta.id)
         Assertions.assertEquals("Kenny", actual.playerMeta.name)
