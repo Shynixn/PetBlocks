@@ -49,12 +49,12 @@ interface Skin : PropertyTrackable {
     var dataValue: Int
 
     /**
-     * Unbreakable.
+     * Nbt tag.
      */
-    var unbreakable: Boolean
+    var nbtTag: String
 
     /**
      * Is the skin sponsored?
      */
-    var sponsored : Boolean
+    var sponsored: Boolean
 }

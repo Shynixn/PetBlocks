@@ -114,7 +114,7 @@ class ItemTypeServiceImpl @Inject constructor(private val version: Version) : It
             itemStack.itemMeta = currentMeta
         }
 
-        return if (item.unbreakable) {
+        return if (item.nbtTag != "") {
             val nmsItemStackClass =
                 Class.forName("net.minecraft.server.VERSION.ItemStack".replace("VERSION", version.bukkitId))
             val craftItemStackClass =
@@ -129,20 +129,17 @@ class ItemTypeServiceImpl @Inject constructor(private val version: Version) : It
 
             val nbtTagClass =
                 Class.forName("net.minecraft.server.VERSION.NBTTagCompound".replace("VERSION", version.bukkitId))
-            val getNBTTag = nmsItemStackClass.getDeclaredMethod("getTag")
             val setNBTTag = nmsItemStackClass.getDeclaredMethod("setTag", nbtTagClass)
-            val nbtSetBoolean =
-                nbtTagClass.getDeclaredMethod("setBoolean", String::class.java, Boolean::class.javaPrimitiveType)
 
             val nmsItemStack = nmsCopyMethod.invoke(null, itemStack)
-            var nbtTag = getNBTTag.invoke(nmsItemStack)
 
-            if (nbtTag == null) {
-                nbtTag = nbtTagClass.newInstance()
+            try {
+                val nbtTag = Class.forName("net.minecraft.server.VERSION.MojangsonParser")
+                    .getDeclaredMethod("parse", String::class.java).invoke(null, item.nbtTag)
+                setNBTTag.invoke(nmsItemStack, nbtTag)
+            } catch (e: Exception) {
+                e.printStackTrace()
             }
-
-            nbtSetBoolean.invoke(nbtTag, "Unbreakable", true)
-            setNBTTag.invoke(nmsItemStack, nbtTag)
 
             return nmsToBukkitMethod.invoke(null, nmsItemStack) as I
         } else {
@@ -199,7 +196,7 @@ class ItemTypeServiceImpl @Inject constructor(private val version: Version) : It
         return ItemEntity(
             findItemType<Material>(itemStack).name,
             itemStack.durability.toInt(),
-            false,
+            "",
             displayName,
             lore,
             skin

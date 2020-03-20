@@ -155,8 +155,8 @@ class GUIItemLoadServiceImpl @Inject constructor(
                 guiIcon.displayName = localizationService.translate(guiIcon.displayName)
             }
 
-            if (hasConfiguration(iconDescription, "unbreakable")) {
-                guiIcon.skin.unbreakable = iconDescription["unbreakable"] as Boolean
+            if (hasConfiguration(iconDescription, "nbt")) {
+                guiIcon.skin.nbtTag = iconDescription["nbt"] as String
             }
 
             if (hasConfiguration(iconDescription, "skin")) {
@@ -193,8 +193,8 @@ class GUIItemLoadServiceImpl @Inject constructor(
                 guiItem.targetSkin!!.dataValue = skinDescription!!["damage"] as Int
             }
 
-            if (hasConfiguration(skinDescription, "unbreakable")) {
-                guiItem.targetSkin!!.unbreakable = skinDescription!!["unbreakable"] as Boolean
+            if (hasConfiguration(skinDescription, "nbt")) {
+                guiItem.targetSkin!!.nbtTag = skinDescription!!["nbt"] as String
             }
 
             if (hasConfiguration(skinDescription, "skin")) {
@@ -276,7 +276,7 @@ class GUIItemLoadServiceImpl @Inject constructor(
 
         if (hasConfiguration(defaultConfig, "name")) {
             petMeta.displayName = (defaultConfig["name"] as String)
-            petMeta.displayName= localizationService.translate(petMeta.displayName).replace("<player>", name)
+            petMeta.displayName = localizationService.translate(petMeta.displayName).replace("<player>", name)
         }
 
         if (hasConfiguration(defaultConfig, "sound-enabled")) {
@@ -300,8 +300,8 @@ class GUIItemLoadServiceImpl @Inject constructor(
             petMeta.skin.dataValue = skin["damage"] as Int
         }
 
-        if (hasConfiguration(skin, "unbreakable")) {
-            petMeta.skin.unbreakable = skin["unbreakable"] as Boolean
+        if (hasConfiguration(skin, "nbt")) {
+            petMeta.skin.nbtTag = skin["nbt"] as String
         }
 
         if (hasConfiguration(skin, "skin")) {

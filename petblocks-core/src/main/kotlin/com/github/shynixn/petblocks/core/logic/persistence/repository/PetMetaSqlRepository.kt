@@ -103,7 +103,7 @@ class PetMetaSqlRepository @Inject constructor(
                 }, petMeta.id))
 
                 // Every pet should have an inventory.
-                if (petMeta.aiGoals.firstOrNull { a -> a is AIInventory} == null) {
+                if (petMeta.aiGoals.firstOrNull { a -> a is AIInventory } == null) {
                     petMeta.aiGoals.add(AIInventoryEntity())
                 }
 
@@ -198,7 +198,7 @@ class PetMetaSqlRepository @Inject constructor(
             , "typename" to skinMeta.typeName
             , "owner" to skinMeta.owner
             , "datavalue" to skinMeta.dataValue
-            , "unbreakable" to skinMeta.unbreakable
+            , "nbt" to skinMeta.nbtTag
         )
 
         sqlDbContext.update(
@@ -249,7 +249,8 @@ class PetMetaSqlRepository @Inject constructor(
             , "typename" to skinMeta.typeName
             , "owner" to skinMeta.owner
             , "datavalue" to skinMeta.dataValue
-            , "unbreakable" to skinMeta.unbreakable
+            , "nbt" to skinMeta.nbtTag
+            , "unbreakable" to false // Compatibility < 8.15.0
         )
 
         petMeta.id = sqlDbContext.insert(
@@ -287,7 +288,7 @@ class PetMetaSqlRepository @Inject constructor(
             typeName = resultSet.getItem("typename")
             owner = resultSet.getItem("owner")
             dataValue = resultSet.getItem("datavalue")
-            unbreakable = resultSet.getItem("unbreakable")
+            nbtTag = resultSet.getItem("nbt")
         }
 
         val playerMeta = PlayerMetaEntity("")

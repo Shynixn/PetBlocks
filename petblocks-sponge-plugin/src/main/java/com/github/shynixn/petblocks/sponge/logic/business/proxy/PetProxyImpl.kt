@@ -231,7 +231,7 @@ class PetProxyImpl(override val meta: PetMeta, private val design: ArmorStand, p
         }
 
         if (displayNameChanged || Skin::typeName.hasChanged(meta.skin)) {
-            val item = ItemEntity(meta.skin.typeName, meta.skin.dataValue, meta.skin.unbreakable, meta.displayName, null, meta.skin.owner)
+            val item = ItemEntity(meta.skin.typeName, meta.skin.dataValue, meta.skin.nbtTag, meta.displayName, null, meta.skin.owner)
             design.setHelmet(itemService.toItemStack(item))
         }
     }
@@ -301,7 +301,7 @@ class PetProxyImpl(override val meta: PetMeta, private val design: ArmorStand, p
      * Gets a new marker itemstack.
      */
     private fun generateMarkerItemStack(): ItemStack {
-        val item = ItemEntity(MaterialType.APPLE.name, 0, false, null, arrayListOf("PetBlocks"))
+        val item = ItemEntity(MaterialType.APPLE.name, 0, "", null, arrayListOf("PetBlocks"))
         return itemService.toItemStack(item)
     }
 }

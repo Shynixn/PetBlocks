@@ -127,7 +127,7 @@ class PetDebugServiceImpl @Inject constructor(
                 .append(Messages.prefix).append("Skin").append("\n")
                 .append(Messages.prefix).append("- Type: ${petMeta.skin.typeName}").append("\n")
                 .append(Messages.prefix).append("- Data: ${petMeta.skin.dataValue}").append("\n")
-                .append(Messages.prefix).append("- Unbreakable: ${petMeta.skin.unbreakable}").append("\n").appendHoverComponent().append("Skin: " + petMeta.skin.owner).getRoot()
+                .append(Messages.prefix).append("- NBT: ${petMeta.skin.nbtTag}").append("\n").appendHoverComponent().append("Skin: " + petMeta.skin.owner).getRoot()
                 .append(Messages.prefix).append(ChatColor.GREEN.toString() + "Sound: ${petMeta.soundEnabled} Particles: ${petMeta.particleEnabled}").append("\n")
                 .append(Messages.prefix).append(ChatColor.GREEN.toString() + "AI: ").append("\n")
 

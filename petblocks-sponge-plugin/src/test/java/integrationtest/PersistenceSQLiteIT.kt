@@ -88,7 +88,7 @@ class PersistenceSQLiteIT {
         Assertions.assertEquals(1, actual.skin.id)
         Assertions.assertEquals("GRASS", actual.skin.typeName)
         Assertions.assertEquals(0, actual.skin.dataValue)
-        Assertions.assertEquals(false, actual.skin.unbreakable)
+        Assertions.assertEquals("{Unbreakable:1}", actual.skin.nbtTag)
         Assertions.assertEquals("", actual.skin.owner)
         Assertions.assertEquals(1, actual.playerMeta.id)
         Assertions.assertEquals("Kenny", actual.playerMeta.name)
@@ -146,7 +146,7 @@ class PersistenceSQLiteIT {
         petMeta.particleEnabled = false
         petMeta.skin.typeName = "DIRT"
         petMeta.skin.dataValue = 2
-        petMeta.skin.unbreakable = true
+        petMeta.skin.nbtTag = "{Unbreakable:1}"
         petMeta.skin.owner = "Pikachu"
         petMeta.playerMeta.name = "Superman"
 
@@ -182,7 +182,7 @@ class PersistenceSQLiteIT {
         Assertions.assertEquals(1, actual.skin.id)
         Assertions.assertEquals("DIRT", actual.skin.typeName)
         Assertions.assertEquals(2, actual.skin.dataValue)
-        Assertions.assertEquals(true, actual.skin.unbreakable)
+        Assertions.assertEquals("{Unbreakable:1}", actual.skin.nbtTag)
         Assertions.assertEquals("Pikachu", actual.skin.owner)
         Assertions.assertEquals(1, actual.playerMeta.id)
         Assertions.assertEquals("Superman", actual.playerMeta.name)

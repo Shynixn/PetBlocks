@@ -330,6 +330,27 @@ class SqlDbContextImpl @Inject constructor(
                         }
                     }
                 }
+
+            // Compatibility < 8.15.0
+            var foundColumnName = true
+            val skinTable = "${tablePrefix}_SKIN"
+            connection.prepareStatement("PRAGMA table_info($skinTable);").use { statement ->
+                statement.executeQuery().use { resultSet ->
+                    while (resultSet.next()) {
+                        foundColumnName = false
+                        val columnName = resultSet.getString("name")
+                        if (columnName == "nbt") {
+                            foundColumnName = true
+                            break
+                        }
+                    }
+                }
+            }
+
+            // Compatibility < 8.15.0
+            if (!foundColumnName) {
+                addNbtColumn(connection, skinTable)
+            }
         }
 
         loggingService.info("Connected to " + this.dataSource.jdbcUrl)
@@ -369,9 +390,68 @@ class SqlDbContextImpl @Inject constructor(
                         }
                     }
                 }
+
+            // Compatibility < 8.15.0
+            var foundColumnName = true
+            val skinTable = "${tablePrefix}_SKIN"
+            connection.prepareStatement("select COLUMN_NAME from INFORMATION_SCHEMA.COLUMNS where TABLE_NAME = '$skinTable'").use { statement ->
+                statement.executeQuery().use { resultSet ->
+                    while (resultSet.next()) {
+                        foundColumnName = false
+                        val columnName = resultSet.getString(1)
+                        if (columnName == "nbt") {
+                            foundColumnName = true
+                            break
+                        }
+                    }
+                }
+            }
+
+            // Compatibility < 8.15.0
+            if (!foundColumnName) {
+                addNbtColumn(connection, skinTable)
+            }
         }
 
         loggingService.info("Connected to " + this.dataSource.jdbcUrl)
+    }
+
+    /**
+     * Adds the nbt tag item column.
+     */
+    private fun addNbtColumn(connection: Connection, skinTable: String) {
+        loggingService.info("Updating database to support item NBT tags...")
+
+        connection.prepareStatement("ALTER TABLE $skinTable ADD COLUMN nbt TEXT").use { statement ->
+            statement.execute()
+        }
+
+        var hasRowsLeft = true
+        var offset = 0
+
+        while (hasRowsLeft) {
+            hasRowsLeft = false
+
+            multiQuery(connection, "SELECT * FROM $skinTable LIMIT 100 OFFSET $offset", { map -> map }).forEach { e ->
+                hasRowsLeft = true
+
+                val unbreakableNumber = if (e["unbreakable"] as Boolean) {
+                    1
+                } else {
+                    0
+                }
+
+                update(
+                    connection, skinTable, "WHERE id=" + e["id"],
+                    "unbreakable" to false,
+                    "nbt" to "{Unbreakable:$unbreakableNumber}"
+                )
+            }
+
+            offset += 100
+        }
+
+        loggingService.info("Finished updating database.")
     }
 
     /**

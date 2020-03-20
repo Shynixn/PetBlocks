@@ -261,7 +261,7 @@ class GUIServiceImpl @Inject constructor(
                 petMeta.skin.typeName = skin.typeName
                 petMeta.skin.dataValue = skin.dataValue
                 petMeta.skin.owner = skin.owner
-                petMeta.skin.unbreakable = skin.unbreakable
+                petMeta.skin.nbtTag = skin.nbtTag
 
                 while (pageCache.parent != null) {
                     pageCache = pageCache.parent!!
@@ -359,7 +359,7 @@ class GUIServiceImpl @Inject constructor(
                         typeName = petMeta.skin.typeName
                         dataValue = petMeta.skin.dataValue
                         owner = petMeta.skin.owner
-                        unbreakable = petMeta.skin.unbreakable
+                        nbtTag = petMeta.skin.nbtTag
                     }
 
                     renderIcon(inventory, position, guiIcon, hasPermission)
@@ -434,7 +434,7 @@ class GUIServiceImpl @Inject constructor(
         val item = ItemEntity(
             guiIcon.skin.typeName,
             guiIcon.skin.dataValue,
-            guiIcon.skin.unbreakable,
+            guiIcon.skin.nbtTag,
             guiIcon.displayName,
             lore,
             guiIcon.skin.owner
