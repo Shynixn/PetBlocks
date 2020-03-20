@@ -12,7 +12,7 @@ Skin                              Required  Samples
 id                                yes       1, 2, 397
 damage                            no        0, 1, 2
 skin                              no        Notch, eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYzc4NzhiYmYxYjA5ZjdmMjFhZjBiNDA2ZWY3MzEyZWUyMjViOGNjMTAyY2QwOWVlZmYyNDAyNDkzYzUwMzQ0MiJ9fX0=,  http://textures.minecraft.net/texture/f31f9ccc6b3e32ecf13b8a11ac29cd33d18c95fc73db8a66c5d657ccb8be70
-unbreakable                       no        yes, no
+nbt                               no        {Unbreakable:1}
 ================================  ========= =======================================================================
 
 The pet you can see on your screen uses the skin configured at the default pet specified in the config.yml.

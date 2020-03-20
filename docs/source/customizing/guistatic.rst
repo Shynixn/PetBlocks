@@ -32,7 +32,6 @@ Each of the category has got its own page in the GUI.
           damage: 15
           skin: 'none'
           name: 'none'
-          unbreakable: false
           lore:
           - 'none'
 
