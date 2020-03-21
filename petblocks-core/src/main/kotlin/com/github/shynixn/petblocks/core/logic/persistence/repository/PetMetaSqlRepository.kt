@@ -280,7 +280,7 @@ class PetMetaSqlRepository @Inject constructor(
     /**
      * Maps the resultSet to a new petMeta.
      */
-    private fun mapResultSetToPetMeta(resultSet: Map<String, Any>): PetMeta {
+    private fun mapResultSetToPetMeta(resultSet: Map<String, Any?>): PetMeta {
         val skinEntity = SkinEntity()
 
         with(skinEntity) {
@@ -315,7 +315,7 @@ class PetMetaSqlRepository @Inject constructor(
     /**
      * Maps the resultSet to a new ai base.
      */
-    private fun mapResultSetToAI(resultSet: Map<String, Any>): AIBase {
+    private fun mapResultSetToAI(resultSet: Map<String, Any?>): AIBase {
         val contentString = resultSet["content"] as String
         val type = resultSet["typename"] as String
 

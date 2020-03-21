@@ -92,7 +92,7 @@ fun Position.relativeBack(amount: Double): Position {
 /**
  * Gets the column value.
  */
-inline fun <reified V> Map<String, Any>.getItem(key: String): V {
+inline fun <reified V> Map<String, Any?>.getItem(key: String): V {
     val data = this[key]
 
     if (data is Int && V::class == Boolean::class) {

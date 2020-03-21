@@ -49,7 +49,7 @@ interface SqlDbContext {
     fun <R, C> multiQuery(
         connection: C,
         sqlStatement: String,
-        f: (Map<String, Any>) -> R,
+        f: (Map<String, Any?>) -> R,
         vararg parameters: Any
     ): List<R>
 
@@ -58,7 +58,7 @@ interface SqlDbContext {
      * result set automatically. Does not close the connection.
      * [R] result type.
      */
-    fun <R, C> singleQuery(connection: C, sqlStatement: String, f: (Map<String, Any>) -> R, vararg parameters: Any): R?
+    fun <R, C> singleQuery(connection: C, sqlStatement: String, f: (Map<String, Any?>) -> R, vararg parameters: Any): R?
 
     /**
      * Inserts the given [parameters] into the given [connection] [table].

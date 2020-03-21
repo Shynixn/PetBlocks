@@ -192,7 +192,7 @@ class SqlDbContextImpl @Inject constructor(
     override fun <R, C> multiQuery(
         connection: C,
         sqlStatement: String,
-        f: (Map<String, Any>) -> R,
+        f: (Map<String, Any?>) -> R,
         vararg parameters: Any
     ): List<R> {
         if (connection !is Connection) {
@@ -212,7 +212,7 @@ class SqlDbContextImpl @Inject constructor(
             resultSet.use {
                 while (resultSet.next()) {
                     val metaData = resultSet.metaData
-                    val data = HashMap<String, Any>()
+                    val data = HashMap<String, Any?>()
 
                     for (i in 1..metaData.columnCount) {
                         data[metaData.getColumnLabel(i)] = resultSet.getObject(i)
@@ -234,7 +234,7 @@ class SqlDbContextImpl @Inject constructor(
     override fun <R, C> singleQuery(
         connection: C,
         sqlStatement: String,
-        f: (Map<String, Any>) -> R,
+        f: (Map<String, Any?>) -> R,
         vararg parameters: Any
     ): R? {
         if (connection !is Connection) {
@@ -253,7 +253,7 @@ class SqlDbContextImpl @Inject constructor(
             resultSet.use {
                 while (resultSet.next()) {
                     val metaData = resultSet.metaData
-                    val data = HashMap<String, Any>()
+                    val data = HashMap<String, Any?>()
 
                     for (i in 1..metaData.columnCount) {
                         data[metaData.getColumnName(i)] = resultSet.getObject(i)
@@ -434,12 +434,7 @@ class SqlDbContextImpl @Inject constructor(
 
             multiQuery(connection, "SELECT * FROM $skinTable LIMIT 100 OFFSET $offset", { map -> map }).forEach { e ->
                 hasRowsLeft = true
-
-                val unbreakableNumber = if (e["unbreakable"] as Boolean) {
-                    1
-                } else {
-                    0
-                }
+                val unbreakableNumber = e["unbreakable"] as Int
 
                 update(
                     connection, skinTable, "WHERE id=" + e["id"],
