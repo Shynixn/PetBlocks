@@ -258,7 +258,7 @@ class PetMetaSqlRepositoryTest {
         override fun <R, C> multiQuery(
             connection: C,
             sqlStatement: String,
-            f: (Map<String, Any>) -> R,
+            f: (Map<String, Any?>) -> R,
             vararg parameters: Any
         ): List<R> {
             return petMetas as List<R>
@@ -272,7 +272,7 @@ class PetMetaSqlRepositoryTest {
         override fun <R, C> singleQuery(
             connection: C,
             sqlStatement: String,
-            f: (Map<String, Any>) -> R,
+            f: (Map<String, Any?>) -> R,
             vararg parameters: Any
         ): R? {
             if (parameters.isNotEmpty() && parameters[0] == "16625034-af3d-4781-b157-64572759ad1c") {
