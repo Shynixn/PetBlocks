@@ -246,10 +246,24 @@ class ItemTypeServiceImpl : ItemTypeService {
 
         if (item.nbtTag != "") {
             val nmsItemStack = itemstack.cast<net.minecraft.item.ItemStack>()
+            val targetNbtTag = if (nmsItemStack.tagCompound != null) {
+                nmsItemStack.tagCompound!!
+            } else {
+                NBTTagCompound()
+            }
+            val compoundMapField = NBTTagCompound::class.java.getDeclaredField("field_74784_a")
+            compoundMapField.isAccessible = true
+            val targetNbtMap = compoundMapField.get(targetNbtTag) as MutableMap<Any?, Any?>
 
             try {
-                val nbtTagCompound = JsonToNBT.getTagFromJson(item.nbtTag)
-                nmsItemStack.tagCompound = nbtTagCompound
+                val sourceNbtTag = JsonToNBT.getTagFromJson(item.nbtTag)
+                val sourceNbtMap = compoundMapField.get(sourceNbtTag) as MutableMap<Any?, Any?>
+
+                for (key in sourceNbtMap.keys) {
+                    targetNbtMap[key] = sourceNbtMap[key]
+                }
+
+                nmsItemStack.tagCompound = targetNbtTag
             } catch (e: Exception) {
                 e.printStackTrace()
             }
