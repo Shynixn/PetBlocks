@@ -129,14 +129,30 @@ class ItemTypeServiceImpl @Inject constructor(private val version: Version) : It
 
             val nbtTagClass =
                 Class.forName("net.minecraft.server.VERSION.NBTTagCompound".replace("VERSION", version.bukkitId))
+            val getNBTTag = nmsItemStackClass.getDeclaredMethod("getTag")
             val setNBTTag = nmsItemStackClass.getDeclaredMethod("setTag", nbtTagClass)
 
             val nmsItemStack = nmsCopyMethod.invoke(null, itemStack)
+            var targetNbtTag = getNBTTag.invoke(nmsItemStack)
+
+            if (targetNbtTag == null) {
+                targetNbtTag = nbtTagClass.newInstance()
+            }
+
+            val compoundMapField = nbtTagClass.getDeclaredField("map")
+            compoundMapField.isAccessible = true
+            val targetNbtMap = compoundMapField.get(targetNbtTag) as MutableMap<Any?, Any?>
 
             try {
-                val nbtTag = Class.forName("net.minecraft.server.VERSION.MojangsonParser")
+                val sourceNbtTag = Class.forName("net.minecraft.server.VERSION.MojangsonParser".replace("VERSION", version.bukkitId))
                     .getDeclaredMethod("parse", String::class.java).invoke(null, item.nbtTag)
-                setNBTTag.invoke(nmsItemStack, nbtTag)
+                val sourceNbtMap = compoundMapField.get(sourceNbtTag) as MutableMap<Any?, Any?>
+
+                for (key in sourceNbtMap.keys) {
+                    targetNbtMap[key] = sourceNbtMap[key]
+                }
+
+                setNBTTag.invoke(nmsItemStack, targetNbtTag)
             } catch (e: Exception) {
                 e.printStackTrace()
             }
