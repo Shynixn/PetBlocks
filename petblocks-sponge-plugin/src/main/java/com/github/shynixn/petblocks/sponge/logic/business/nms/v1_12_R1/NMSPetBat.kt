@@ -3,8 +3,7 @@ package com.github.shynixn.petblocks.sponge.logic.business.nms.v1_12_R1
 import com.github.shynixn.petblocks.api.business.proxy.EntityPetProxy
 import com.github.shynixn.petblocks.api.business.proxy.HiddenProxy
 import com.github.shynixn.petblocks.api.business.proxy.PathfinderProxy
-import com.github.shynixn.petblocks.api.persistence.entity.AIMovement
-import com.github.shynixn.petblocks.core.logic.business.extension.cast
+import com.github.shynixn.petblocks.api.persistence.entity.AIFlying
 import com.github.shynixn.petblocks.sponge.logic.business.extension.x
 import com.github.shynixn.petblocks.sponge.logic.business.extension.y
 import com.github.shynixn.petblocks.sponge.logic.business.extension.z
@@ -13,11 +12,10 @@ import net.minecraft.block.Block
 import net.minecraft.entity.SharedMonsterAttributes
 import net.minecraft.entity.ai.EntityAIBase
 import net.minecraft.entity.ai.EntityAITasks
-import net.minecraft.entity.passive.EntityBat
+import net.minecraft.entity.passive.EntityParrot
 import net.minecraft.inventory.EntityEquipmentSlot
 import net.minecraft.util.math.BlockPos
 import org.spongepowered.api.entity.Transform
-import org.spongepowered.api.entity.living.Living
 import org.spongepowered.api.world.World
 
 /**
@@ -48,7 +46,7 @@ import org.spongepowered.api.world.World
  * SOFTWARE.
  */
 class NMSPetBat(petDesign: NMSPetArmorstand, location: Transform<World>) :
-    EntityBat(location.extent as net.minecraft.world.World), EntityPetProxy, HiddenProxy {
+    EntityParrot(location.extent as net.minecraft.world.World), EntityPetProxy, HiddenProxy {
 
     private var petDesign: NMSPetArmorstand? = null
     private var pathfinderCounter = 0
@@ -56,10 +54,18 @@ class NMSPetBat(petDesign: NMSPetArmorstand, location: Transform<World>) :
     init {
         this.petDesign = petDesign
         this.isSilent = true
-
         clearAIGoals()
-        this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).baseValue = 0.30000001192092896 * 0.75
-        this.stepHeight = 1.0F
+
+        // NMS can sometimes instantiate this object without petDesign.
+        if (this.petDesign != null) {
+            val flyingAI = this.petDesign!!.proxy.meta.aiGoals.firstOrNull { a -> a is AIFlying } as AIFlying?
+
+            if (flyingAI != null) {
+                this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).baseValue = 0.30000001192092896 * flyingAI.movementSpeed
+                this.getEntityAttribute(SharedMonsterAttributes.FLYING_SPEED).baseValue = 0.30000001192092896 * flyingAI.movementSpeed
+                this.stepHeight = flyingAI.climbingHeight.toFloat()
+            }
+        }
 
         val mcWorld = location.extent as net.minecraft.world.World
         this.setPosition(location.x, location.y + 1, location.z)
@@ -93,14 +99,6 @@ class NMSPetBat(petDesign: NMSPetArmorstand, location: Transform<World>) :
         for (pathfinder in pathfinders) {
             if (pathfinder is PathfinderProxy) {
                 this.tasks.addTask(pathfinderCounter++, Pathfinder(pathfinder))
-
-                val aiBase = pathfinder.aiBase
-
-                if (aiBase is AIMovement) {
-                    this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).baseValue = 0.30000001192092896 *
-                            aiBase.movementSpeed
-                    this.stepHeight = aiBase.climbingHeight.toFloat()
-                }
             } else {
                 this.tasks.addTask(pathfinderCounter++, pathfinder as EntityAIBase)
             }
@@ -118,20 +116,6 @@ class NMSPetBat(petDesign: NMSPetArmorstand, location: Transform<World>) :
         if (!this.isInWater) {
             petDesign!!.proxy.playMovementEffects()
         }
-    }
-
-    /**
-     * Override.
-     */
-    override fun updateAITasks() {
-
-    }
-
-    /**
-     * Override.
-     */
-    override fun setIsBatHanging(hanging: Boolean) {
-        return
     }
 
     /**
