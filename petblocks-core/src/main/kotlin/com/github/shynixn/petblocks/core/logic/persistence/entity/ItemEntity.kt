@@ -32,7 +32,7 @@ import com.github.shynixn.petblocks.api.persistence.entity.Item
 class ItemEntity(
     override var type: String,
     override var dataValue: Int = 0,
-    override var unbreakable: Boolean = false,
+    override var nbtTag: String = "",
     override var displayName: String? = null,
     override var lore: List<String>? = null,
     override var skin: String? = null

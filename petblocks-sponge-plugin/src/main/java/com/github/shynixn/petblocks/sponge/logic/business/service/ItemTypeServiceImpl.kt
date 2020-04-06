@@ -9,6 +9,7 @@ import com.github.shynixn.petblocks.core.logic.business.extension.cast
 import com.github.shynixn.petblocks.core.logic.persistence.entity.ItemEntity
 import com.github.shynixn.petblocks.sponge.logic.business.extension.toText
 import com.github.shynixn.petblocks.sponge.logic.business.extension.toTextString
+import net.minecraft.nbt.JsonToNBT
 import net.minecraft.nbt.NBTTagCompound
 import net.minecraft.nbt.NBTTagList
 import org.spongepowered.api.Sponge
@@ -158,7 +159,7 @@ class ItemTypeServiceImpl : ItemTypeService {
         return ItemEntity(
             findItemType<ItemType>(itemStack).name,
             findItemDataValue(itemStack),
-            false,
+            "",
             displayName,
             lore,
             null
@@ -243,18 +244,29 @@ class ItemTypeServiceImpl : ItemTypeService {
             nmsItemStack.tagCompound = nbtTagCompound
         }
 
-        if (item.unbreakable) {
+        if (item.nbtTag != "") {
             val nmsItemStack = itemstack.cast<net.minecraft.item.ItemStack>()
-
-            val nbtTagCompound = if (nmsItemStack.tagCompound != null) {
+            val targetNbtTag = if (nmsItemStack.tagCompound != null) {
                 nmsItemStack.tagCompound!!
             } else {
                 NBTTagCompound()
             }
+            val compoundMapField = NBTTagCompound::class.java.getDeclaredField("field_74784_a")
+            compoundMapField.isAccessible = true
+            val targetNbtMap = compoundMapField.get(targetNbtTag) as MutableMap<Any?, Any?>
 
-            nbtTagCompound.setBoolean("Unbreakable", true)
+            try {
+                val sourceNbtTag = JsonToNBT.getTagFromJson(item.nbtTag)
+                val sourceNbtMap = compoundMapField.get(sourceNbtTag) as MutableMap<Any?, Any?>
 
-            nmsItemStack.tagCompound = nbtTagCompound
+                for (key in sourceNbtMap.keys) {
+                    targetNbtMap[key] = sourceNbtMap[key]
+                }
+
+                nmsItemStack.tagCompound = targetNbtTag
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
         }
 
         return itemstack as I

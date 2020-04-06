@@ -90,11 +90,11 @@ class PersistenceMySQLIT {
         Assertions.assertEquals(1, actual.skin.id)
         Assertions.assertEquals("GRASS", actual.skin.typeName)
         Assertions.assertEquals(0, actual.skin.dataValue)
-        Assertions.assertEquals(false, actual.skin.unbreakable)
+        Assertions.assertEquals("", actual.skin.nbtTag)
         Assertions.assertEquals("", actual.skin.owner)
         Assertions.assertEquals(1, actual.playerMeta.id)
         Assertions.assertEquals("Kenny", actual.playerMeta.name)
-        Assertions.assertEquals(6, actual.aiGoals.size)
+        Assertions.assertEquals(9, actual.aiGoals.size)
 
         Assertions.assertEquals("hopping", (actual.aiGoals[0] as AIMovementEntity).type)
         Assertions.assertEquals(1.0, (actual.aiGoals[0] as AIMovementEntity).climbingHeight)
@@ -148,7 +148,7 @@ class PersistenceMySQLIT {
         petMeta.particleEnabled = false
         petMeta.skin.typeName = "DIRT"
         petMeta.skin.dataValue = 2
-        petMeta.skin.unbreakable = true
+        petMeta.skin.nbtTag = "{Unbreakable:1}"
         petMeta.skin.owner = "Pikachu"
         petMeta.playerMeta.name = "Superman"
 
@@ -183,7 +183,7 @@ class PersistenceMySQLIT {
         Assertions.assertEquals(1, actual.skin.id)
         Assertions.assertEquals("DIRT", actual.skin.typeName)
         Assertions.assertEquals(2, actual.skin.dataValue)
-        Assertions.assertEquals(true, actual.skin.unbreakable)
+        Assertions.assertEquals("{Unbreakable:1}", actual.skin.nbtTag)
         Assertions.assertEquals("Pikachu", actual.skin.owner)
         Assertions.assertEquals(1, actual.playerMeta.id)
         Assertions.assertEquals("Superman", actual.playerMeta.name)
@@ -260,15 +260,16 @@ class PersistenceMySQLIT {
                 Optional.of(asset)
             }
 
-            val aiService = AIServiceImpl(
-                LoggingUtilServiceImpl(Logger.getAnonymousLogger()),
-                MockedProxyService(),
-                YamlServiceImpl()
-            )
-
             val configurationService = ConfigurationServiceImpl(
                 Paths.get("integration-test/assets/petblocks")
                 , LoggingUtilServiceImpl(Logger.getAnonymousLogger()), plugin
+            )
+
+            val aiService = AIServiceImpl(
+                LoggingUtilServiceImpl(Logger.getAnonymousLogger()),
+                MockedProxyService(),
+                YamlServiceImpl(),
+                configurationService
             )
 
             val localizationService =
@@ -288,8 +289,7 @@ class PersistenceMySQLIT {
             method.invoke(PetBlocksApi, MockedPluginProxy())
 
             EntityServiceImpl(
-                configurationService, MockedProxyService(),
-                Mockito.mock(EntityRegistrationService::class.java), Mockito.mock(PetService::class.java), YamlSerializationServiceImpl(),
+                MockedProxyService(), Mockito.mock(PetService::class.java), YamlSerializationServiceImpl(),
                 Version.VERSION_1_12_R1, aiService, LoggingUtilServiceImpl(Logger.getAnonymousLogger()), ItemTypeServiceImpl()
             )
 

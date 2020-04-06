@@ -3,6 +3,7 @@
 package com.github.shynixn.petblocks.core.logic.business.service
 
 import com.github.shynixn.petblocks.api.business.service.*
+import com.github.shynixn.petblocks.api.persistence.entity.AIBase
 import com.github.shynixn.petblocks.api.persistence.entity.GuiItem
 import com.github.shynixn.petblocks.api.persistence.entity.PetMeta
 import com.github.shynixn.petblocks.core.logic.business.extension.translateChatColors
@@ -155,8 +156,8 @@ class GUIItemLoadServiceImpl @Inject constructor(
                 guiIcon.displayName = localizationService.translate(guiIcon.displayName)
             }
 
-            if (hasConfiguration(iconDescription, "unbreakable")) {
-                guiIcon.skin.unbreakable = iconDescription["unbreakable"] as Boolean
+            if (hasConfiguration(iconDescription, "nbt")) {
+                guiIcon.skin.nbtTag = iconDescription["nbt"] as String
             }
 
             if (hasConfiguration(iconDescription, "skin")) {
@@ -193,8 +194,8 @@ class GUIItemLoadServiceImpl @Inject constructor(
                 guiItem.targetSkin!!.dataValue = skinDescription!!["damage"] as Int
             }
 
-            if (hasConfiguration(skinDescription, "unbreakable")) {
-                guiItem.targetSkin!!.unbreakable = skinDescription!!["unbreakable"] as Boolean
+            if (hasConfiguration(skinDescription, "nbt")) {
+                guiItem.targetSkin!!.nbtTag = skinDescription!!["nbt"] as String
             }
 
             if (hasConfiguration(skinDescription, "skin")) {
@@ -208,36 +209,9 @@ class GUIItemLoadServiceImpl @Inject constructor(
                 }
             }
 
-            if (description.containsKey("add-ai")) {
-                val goalsMap = (description["add-ai"] as Map<Any, Any>)
-
-                for (goalKey in goalsMap.keys) {
-                    val aiMap = goalsMap[goalKey] as Map<String, Any>
-                    val type = aiMap["type"] as String
-                    guiItem.addAIs.add(aiService.deserializeAiBase(type, aiMap))
-                }
-            }
-
-            if (description.containsKey("remove-ai")) {
-                val goalsMap = (description["remove-ai"] as Map<Any, Any>)
-
-                for (goalKey in goalsMap.keys) {
-                    val aiMap = goalsMap[goalKey] as Map<String, Any>
-                    val type = aiMap["type"] as String
-                    guiItem.removeAIs.add(aiService.deserializeAiBase(type, aiMap))
-                }
-            }
-
-            if (description.containsKey("replace-ai")) {
-                val goalsMap = (description["replace-ai"] as Map<Any, Any>)
-
-                for (goalKey in goalsMap.keys) {
-                    val aiMap = goalsMap[goalKey] as Map<String, Any>
-                    val type = aiMap["type"] as String
-                    guiItem.addAIs.add(aiService.deserializeAiBase(type, aiMap))
-                    guiItem.removeAIs.add(aiService.deserializeAiBase(type, aiMap))
-                }
-            }
+            val aiSet = aiService.loadAisFromConfig<AIBase>("$path.$key")
+            guiItem.addAIs.addAll(aiSet.first)
+            guiItem.removeAIs.addAll(aiSet.second)
 
             if (description.containsKey("blocked-on")) {
                 guiItem.blockedCondition = (description["blocked-on"] as List<String>).toTypedArray()
@@ -276,7 +250,7 @@ class GUIItemLoadServiceImpl @Inject constructor(
 
         if (hasConfiguration(defaultConfig, "name")) {
             petMeta.displayName = (defaultConfig["name"] as String)
-            petMeta.displayName= localizationService.translate(petMeta.displayName).replace("<player>", name)
+            petMeta.displayName = localizationService.translate(petMeta.displayName).replace("<player>", name)
         }
 
         if (hasConfiguration(defaultConfig, "sound-enabled")) {
@@ -300,8 +274,8 @@ class GUIItemLoadServiceImpl @Inject constructor(
             petMeta.skin.dataValue = skin["damage"] as Int
         }
 
-        if (hasConfiguration(skin, "unbreakable")) {
-            petMeta.skin.unbreakable = skin["unbreakable"] as Boolean
+        if (hasConfiguration(skin, "nbt")) {
+            petMeta.skin.nbtTag = skin["nbt"] as String
         }
 
         if (hasConfiguration(skin, "skin")) {
@@ -310,13 +284,8 @@ class GUIItemLoadServiceImpl @Inject constructor(
 
         petMeta.aiGoals.clear()
 
-        val goalsMap = defaultConfig["add-ai"] as Map<Any, Any>
-
-        for (goalKey in goalsMap.keys) {
-            val aiMap = goalsMap[goalKey] as Map<String, Any>
-            val type = aiMap["type"] as String
-            petMeta.aiGoals.add(aiService.deserializeAiBase(type, aiMap))
-        }
+        val aiSet = aiService.loadAisFromConfig<AIBase>("pet")
+        petMeta.aiGoals.addAll(aiSet.first)
 
         petMeta.new = true
 

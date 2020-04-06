@@ -1,7 +1,7 @@
 package com.github.shynixn.petblocks.bukkit.logic.business.nms.v1_14_R1
 
 import com.github.shynixn.petblocks.api.business.proxy.PathfinderProxy
-import com.github.shynixn.petblocks.api.persistence.entity.AIMovement
+import com.github.shynixn.petblocks.api.persistence.entity.AIFlying
 import net.minecraft.server.v1_14_R1.*
 import org.bukkit.Location
 import org.bukkit.craftbukkit.v1_14_R1.CraftWorld
@@ -34,7 +34,7 @@ import org.bukkit.event.entity.CreatureSpawnEvent
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class NMSPetBat(petDesign: NMSPetArmorstand, location: Location) : EntityBat(EntityTypes.BAT, (location.world as CraftWorld).handle) {
+class NMSPetBat(petDesign: NMSPetArmorstand, location: Location) : EntityParrot(EntityTypes.PARROT, (location.world as CraftWorld).handle) {
     private var petDesign: NMSPetArmorstand? = null
     private var pathfinderCounter = 0
     // BukkitEntity has to be self cached since 1.14.
@@ -43,10 +43,18 @@ class NMSPetBat(petDesign: NMSPetArmorstand, location: Location) : EntityBat(Ent
     init {
         this.petDesign = petDesign
         this.isSilent = true
-
         clearAIGoals()
-        this.getAttributeInstance(GenericAttributes.MOVEMENT_SPEED).value = 0.30000001192092896 * 0.75
-        this.K = 1.0F
+
+        // NMS can sometimes instantiate this object without petDesign.
+        if (this.petDesign != null) {
+            val flyingAI = this.petDesign!!.proxy.meta.aiGoals.firstOrNull { a -> a is AIFlying } as AIFlying?
+
+            if (flyingAI != null) {
+                this.getAttributeInstance(GenericAttributes.MOVEMENT_SPEED).value = 0.30000001192092896 * flyingAI.movementSpeed
+                this.getAttributeInstance(GenericAttributes.FLYING_SPEED).value = 0.30000001192092896 * flyingAI.movementSpeed
+                this.K = flyingAI.climbingHeight.toFloat()
+            }
+        }
 
         val mcWorld = (location.world as CraftWorld).handle
         this.setPosition(location.x, location.y + 1, location.z)
@@ -62,13 +70,6 @@ class NMSPetBat(petDesign: NMSPetArmorstand, location: Location) : EntityBat(Ent
         for (pathfinder in pathfinders) {
             if (pathfinder is PathfinderProxy) {
                 this.goalSelector.a(pathfinderCounter++, Pathfinder(pathfinder))
-
-                val aiBase = pathfinder.aiBase
-
-                if (aiBase is AIMovement) {
-                    this.getAttributeInstance(GenericAttributes.MOVEMENT_SPEED).value = 0.30000001192092896 * aiBase.movementSpeed
-                    this.K = aiBase.climbingHeight.toFloat()
-                }
             } else {
                 this.goalSelector.a(pathfinderCounter++, pathfinder as PathfinderGoal)
             }
@@ -89,26 +90,9 @@ class NMSPetBat(petDesign: NMSPetArmorstand, location: Location) : EntityBat(Ent
     }
 
     /**
-     * Override mob tick.
-     */
-    override fun mobTick() {
-        super.mobTick()
-
-        if (!this.onGround && this.mot.getY() < 0.0) {
-            this.setMot(this.mot.x, this.mot.y * 0.6, this.mot.z)
-        }
-    }
-
-    /**
      * Disable health.
      */
     override fun setHealth(f: Float) {
-    }
-
-    /**
-     * Override asleep.
-     */
-    override fun setAsleep(flag: Boolean) {
     }
 
     /**

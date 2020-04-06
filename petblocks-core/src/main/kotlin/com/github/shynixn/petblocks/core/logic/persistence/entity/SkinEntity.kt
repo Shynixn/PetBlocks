@@ -55,7 +55,7 @@ class SkinEntity : Skin {
                 value
             }
 
-            if(preField != field){
+            if (preField != field) {
                 propertyTracker.onPropertyChanged(this::typeName)
             }
         }
@@ -83,11 +83,10 @@ class SkinEntity : Skin {
 
             field = value
         }
-
     /**
-     * Unbreakable.
+     * Nbt tag.
      */
-    override var unbreakable: Boolean = false
+    override var nbtTag: String = ""
         set(value) {
             if (field != value) {
                 propertyTracker.onPropertyChanged(this::typeName)

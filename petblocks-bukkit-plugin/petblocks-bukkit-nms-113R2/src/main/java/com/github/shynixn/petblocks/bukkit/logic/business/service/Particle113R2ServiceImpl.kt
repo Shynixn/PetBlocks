@@ -82,6 +82,10 @@ class Particle113R2ServiceImpl @Inject constructor(private val configurationServ
      */
     private fun playParticleEffect(location: Location, particle: Particle, playerList: List<Player>) {
         try {
+            if (particle.typeName == "" || particle.typeName.equals("none", true)) {
+                return
+            }
+
             val partType = findParticleType(particle.typeName)
             val bukkitType = org.bukkit.Particle.values().asSequence().first { p -> p.name.equals(particle.typeName, true) || partType.name == p.name }
             val dataType = bukkitType.dataType

@@ -114,7 +114,7 @@ class ItemTypeServiceImpl @Inject constructor(private val version: Version) : It
             itemStack.itemMeta = currentMeta
         }
 
-        return if (item.unbreakable) {
+        return if (item.nbtTag != "") {
             val nmsItemStackClass =
                 Class.forName("net.minecraft.server.VERSION.ItemStack".replace("VERSION", version.bukkitId))
             val craftItemStackClass =
@@ -131,18 +131,31 @@ class ItemTypeServiceImpl @Inject constructor(private val version: Version) : It
                 Class.forName("net.minecraft.server.VERSION.NBTTagCompound".replace("VERSION", version.bukkitId))
             val getNBTTag = nmsItemStackClass.getDeclaredMethod("getTag")
             val setNBTTag = nmsItemStackClass.getDeclaredMethod("setTag", nbtTagClass)
-            val nbtSetBoolean =
-                nbtTagClass.getDeclaredMethod("setBoolean", String::class.java, Boolean::class.javaPrimitiveType)
 
             val nmsItemStack = nmsCopyMethod.invoke(null, itemStack)
-            var nbtTag = getNBTTag.invoke(nmsItemStack)
+            var targetNbtTag = getNBTTag.invoke(nmsItemStack)
 
-            if (nbtTag == null) {
-                nbtTag = nbtTagClass.newInstance()
+            if (targetNbtTag == null) {
+                targetNbtTag = nbtTagClass.newInstance()
             }
 
-            nbtSetBoolean.invoke(nbtTag, "Unbreakable", true)
-            setNBTTag.invoke(nmsItemStack, nbtTag)
+            val compoundMapField = nbtTagClass.getDeclaredField("map")
+            compoundMapField.isAccessible = true
+            val targetNbtMap = compoundMapField.get(targetNbtTag) as MutableMap<Any?, Any?>
+
+            try {
+                val sourceNbtTag = Class.forName("net.minecraft.server.VERSION.MojangsonParser".replace("VERSION", version.bukkitId))
+                    .getDeclaredMethod("parse", String::class.java).invoke(null, item.nbtTag)
+                val sourceNbtMap = compoundMapField.get(sourceNbtTag) as MutableMap<Any?, Any?>
+
+                for (key in sourceNbtMap.keys) {
+                    targetNbtMap[key] = sourceNbtMap[key]
+                }
+
+                setNBTTag.invoke(nmsItemStack, targetNbtTag)
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
 
             return nmsToBukkitMethod.invoke(null, nmsItemStack) as I
         } else {
@@ -199,7 +212,7 @@ class ItemTypeServiceImpl @Inject constructor(private val version: Version) : It
         return ItemEntity(
             findItemType<Material>(itemStack).name,
             itemStack.durability.toInt(),
-            false,
+            "",
             displayName,
             lore,
             skin

@@ -39,9 +39,9 @@ interface Item {
     var dataValue: Int
 
     /**
-     * Unbreakable.
+     * NBT tag.
      */
-    var unbreakable: Boolean
+    var nbtTag: String
 
     /**
      * DisplayName.

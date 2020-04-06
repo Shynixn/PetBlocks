@@ -261,7 +261,7 @@ class GUIServiceImpl @Inject constructor(
                 petMeta.skin.typeName = skin.typeName
                 petMeta.skin.dataValue = skin.dataValue
                 petMeta.skin.owner = skin.owner
-                petMeta.skin.unbreakable = skin.unbreakable
+                petMeta.skin.nbtTag = skin.nbtTag
 
                 while (pageCache.parent != null) {
                     pageCache = pageCache.parent!!
@@ -278,21 +278,7 @@ class GUIServiceImpl @Inject constructor(
                 petMeta.displayName = optGuiItem.targetPetName!!
             }
 
-            for (aiBase in optGuiItem.removeAIs.toTypedArray()) {
-                val finalRemove = petMeta.aiGoals.filter { a ->
-                    a.type == aiBase.type && (a.userId == null || aiBase.userId == null || a.userId.equals(
-                        aiBase.userId,
-                        true
-                    ))
-                }
-
-                petMeta.aiGoals.removeAll(finalRemove)
-            }
-
-            for (aiBase in optGuiItem.addAIs.toTypedArray()) {
-                petMeta.aiGoals.add(aiBase)
-            }
-
+            petActionService.applyAI(player, optGuiItem.addAIs, optGuiItem.removeAIs)
             renderPage(player, petMeta, this.pageCache[player]!!.path)
         }
 
@@ -359,7 +345,7 @@ class GUIServiceImpl @Inject constructor(
                         typeName = petMeta.skin.typeName
                         dataValue = petMeta.skin.dataValue
                         owner = petMeta.skin.owner
-                        unbreakable = petMeta.skin.unbreakable
+                        nbtTag = petMeta.skin.nbtTag
                     }
 
                     renderIcon(inventory, position, guiIcon, hasPermission)
@@ -434,7 +420,7 @@ class GUIServiceImpl @Inject constructor(
         val item = ItemEntity(
             guiIcon.skin.typeName,
             guiIcon.skin.dataValue,
-            guiIcon.skin.unbreakable,
+            guiIcon.skin.nbtTag,
             guiIcon.displayName,
             lore,
             guiIcon.skin.owner

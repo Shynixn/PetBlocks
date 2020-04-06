@@ -131,7 +131,7 @@ of amazing and `well explained videos <https://www.youtube.com/watch?v=iS7xeriOu
 .. image:: ../_static/images/petblx-1.png
 
 * The numeric **id of the stone_hoe is 291** which we set to both icon and skin.
-* Configure the correct damage (which model you would like to show) and set unbreakable to true.
+* Configure the correct damage (which model you would like to show) and set the skin nbt tag {Unbreakable:1}.
 * Additionally, we also setup the walking ai with a high ground offset to set the pet flying.
 
 .. image:: ../_static/images/bee-model-show.png

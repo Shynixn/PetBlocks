@@ -5,10 +5,7 @@ package com.github.shynixn.petblocks.core.logic.business.service
 import com.github.shynixn.petblocks.api.business.proxy.AICreationProxy
 import com.github.shynixn.petblocks.api.business.proxy.PathfinderProxy
 import com.github.shynixn.petblocks.api.business.proxy.PetProxy
-import com.github.shynixn.petblocks.api.business.service.AIService
-import com.github.shynixn.petblocks.api.business.service.LoggingService
-import com.github.shynixn.petblocks.api.business.service.ProxyService
-import com.github.shynixn.petblocks.api.business.service.YamlService
+import com.github.shynixn.petblocks.api.business.service.*
 import com.github.shynixn.petblocks.api.persistence.entity.AIBase
 import com.github.shynixn.petblocks.api.persistence.entity.AIFollowBack
 import com.github.shynixn.petblocks.api.persistence.entity.AIFollowOwner
@@ -44,10 +41,12 @@ import com.google.inject.Inject
 class AIServiceImpl @Inject constructor(
     private val loggingService: LoggingService,
     private val proxyService: ProxyService,
-    private val yamlService: YamlService
+    private val yamlService: YamlService,
+    private val configurationService: ConfigurationService
 ) : AIService {
 
     private val registeredAIS = HashMap<String, AICreationProxy<AIBase>>()
+    private val cachedAIS = HashMap<String, Pair<List<AIBase>, List<AIBase>>>()
 
     /**
      * Generates pathfinders from the given ai bases depending on the
@@ -133,6 +132,59 @@ class AIServiceImpl @Inject constructor(
 
         val creationProxy = registeredAIS[type]!!
         return creationProxy.onDeserialization(source) as A
+    }
+
+    /**
+     * Gets a pair of ais to be added and ais to be removed from the config path.
+     */
+    override fun <A : AIBase> loadAisFromConfig(path: String): Pair<List<A>, List<A>> {
+        if (cachedAIS.containsKey(path)) {
+            return cachedAIS[path] as Pair<List<A>, List<A>>
+        }
+
+        val description = this.configurationService.findValue<Map<String, Any>>(path)
+        val resultSet = Pair(ArrayList<A>(), ArrayList<A>())
+
+        if (description.containsKey("add-ai")) {
+            val goalsMap = (description["add-ai"] as Map<Any, Any>)
+
+            for (goalKey in goalsMap.keys) {
+                val aiMap = goalsMap[goalKey] as Map<String, Any>
+                val type = aiMap["type"] as String
+                resultSet.first.add(deserializeAiBase(type, aiMap))
+            }
+        }
+
+        if (description.containsKey("remove-ai")) {
+            val goalsMap = (description["remove-ai"] as Map<Any, Any>)
+
+            for (goalKey in goalsMap.keys) {
+                val aiMap = goalsMap[goalKey] as Map<String, Any>
+                val type = aiMap["type"] as String
+                resultSet.second.add(deserializeAiBase(type, aiMap))
+            }
+        }
+
+        if (description.containsKey("replace-ai")) {
+            val goalsMap = (description["replace-ai"] as Map<Any, Any>)
+
+            for (goalKey in goalsMap.keys) {
+                val aiMap = goalsMap[goalKey] as Map<String, Any>
+                val type = aiMap["type"] as String
+                resultSet.first.add(deserializeAiBase(type, aiMap))
+                resultSet.second.add(deserializeAiBase(type, aiMap))
+            }
+        }
+
+        cachedAIS[path] = resultSet
+        return resultSet
+    }
+
+    /**
+     * Clears allocated resources.
+     */
+    override fun clearResources() {
+        cachedAIS.clear()
     }
 
     /**

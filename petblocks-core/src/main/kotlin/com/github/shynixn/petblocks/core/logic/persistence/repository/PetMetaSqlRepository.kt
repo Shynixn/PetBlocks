@@ -103,7 +103,7 @@ class PetMetaSqlRepository @Inject constructor(
                 }, petMeta.id))
 
                 // Every pet should have an inventory.
-                if (petMeta.aiGoals.firstOrNull { a -> a is AIInventory} == null) {
+                if (petMeta.aiGoals.firstOrNull { a -> a is AIInventory } == null) {
                     petMeta.aiGoals.add(AIInventoryEntity())
                 }
 
@@ -198,7 +198,7 @@ class PetMetaSqlRepository @Inject constructor(
             , "typename" to skinMeta.typeName
             , "owner" to skinMeta.owner
             , "datavalue" to skinMeta.dataValue
-            , "unbreakable" to skinMeta.unbreakable
+            , "nbt" to skinMeta.nbtTag
         )
 
         sqlDbContext.update(
@@ -211,7 +211,7 @@ class PetMetaSqlRepository @Inject constructor(
 
         sqlDbContext.delete(connection, "${tablePrefix}_PET_AI", "WHERE shy_pet_id=" + petMeta.id)
 
-        for (aiItem in petMeta.aiGoals) {
+        for (aiItem in petMeta.aiGoals.toTypedArray()) {
             val payloadString = aiService.serializeAiBaseToString(aiItem)
 
             aiItem.id = sqlDbContext.insert(
@@ -249,7 +249,8 @@ class PetMetaSqlRepository @Inject constructor(
             , "typename" to skinMeta.typeName
             , "owner" to skinMeta.owner
             , "datavalue" to skinMeta.dataValue
-            , "unbreakable" to skinMeta.unbreakable
+            , "nbt" to skinMeta.nbtTag
+            , "unbreakable" to false // Compatibility < 8.15.0
         )
 
         petMeta.id = sqlDbContext.insert(
@@ -262,7 +263,7 @@ class PetMetaSqlRepository @Inject constructor(
             , "particleenabled" to petMeta.particleEnabled
         )
 
-        for (aiItem in petMeta.aiGoals) {
+        for (aiItem in petMeta.aiGoals.toTypedArray()) {
             val payloadString = aiService.serializeAiBaseToString(aiItem)
 
             aiItem.id = sqlDbContext.insert(
@@ -279,7 +280,7 @@ class PetMetaSqlRepository @Inject constructor(
     /**
      * Maps the resultSet to a new petMeta.
      */
-    private fun mapResultSetToPetMeta(resultSet: Map<String, Any>): PetMeta {
+    private fun mapResultSetToPetMeta(resultSet: Map<String, Any?>): PetMeta {
         val skinEntity = SkinEntity()
 
         with(skinEntity) {
@@ -287,7 +288,7 @@ class PetMetaSqlRepository @Inject constructor(
             typeName = resultSet.getItem("typename")
             owner = resultSet.getItem("owner")
             dataValue = resultSet.getItem("datavalue")
-            unbreakable = resultSet.getItem("unbreakable")
+            nbtTag = resultSet.getItem("nbt")
         }
 
         val playerMeta = PlayerMetaEntity("")
@@ -314,7 +315,7 @@ class PetMetaSqlRepository @Inject constructor(
     /**
      * Maps the resultSet to a new ai base.
      */
-    private fun mapResultSetToAI(resultSet: Map<String, Any>): AIBase {
+    private fun mapResultSetToAI(resultSet: Map<String, Any?>): AIBase {
         val contentString = resultSet["content"] as String
         val type = resultSet["typename"] as String
 

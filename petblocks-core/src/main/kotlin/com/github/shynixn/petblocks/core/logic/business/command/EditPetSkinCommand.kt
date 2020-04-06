@@ -64,7 +64,7 @@ class EditPetSkinCommand @Inject constructor(
 
             this.setItem<Int>("id", configuration) { value -> petMeta.skin.typeName = value.toString() }
             this.setItem<Int>("damage", configuration) { value -> petMeta.skin.dataValue = value }
-            this.setItem<Boolean>("unbreakable", configuration) { value -> petMeta.skin.unbreakable = value }
+            this.setItem<String>("nbt", configuration) { value -> petMeta.skin.nbtTag = value }
             this.setItem<String>("skin", configuration) { value -> petMeta.skin.owner = value }
 
             messageService.sendSourceMessage(source, "Changed the skin of the pet of player $playerName.")

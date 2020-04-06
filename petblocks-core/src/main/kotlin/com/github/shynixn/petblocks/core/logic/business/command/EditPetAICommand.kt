@@ -37,8 +37,7 @@ import com.google.inject.Inject
  */
 class EditPetAICommand @Inject constructor(
     private val proxyService: ProxyService,
-    private val petMetaService: PersistencePetMetaService,
-    private val configurationService: ConfigurationService,
+    private val petActionService: PetActionService,
     private val messageService: MessageService,
     private val aiService: AIService,
     private val commandService: CommandService
@@ -57,67 +56,16 @@ class EditPetAICommand @Inject constructor(
             return false
         }
 
-        val playerName = proxyService.getPlayerName(result.first)
-        val petMeta = petMetaService.getPetMetaFromPlayer(result.first)
+        val player = result.first
+        val playerName = proxyService.getPlayerName(player)
 
         try {
-            val configuration = configurationService.findValue<Map<String, Any>>(args[1])
-            var addAmount = 0
-            var removeAmount = 0
-
-            if (configuration.containsKey("replace-ai")) {
-                val replaceAis = configuration["replace-ai"] as Map<String, Any?>
-
-                for (mapData in replaceAis.keys) {
-                    val data = replaceAis[mapData] as Map<String, Any?>
-                    val aiBase = aiService.deserializeAiBase<AIBase>(data["type"] as String, data)
-                    val finalRemove = petMeta.aiGoals.filter { a ->
-                        a.type == aiBase.type && (a.userId == null || aiBase.userId == null || a.userId.equals(
-                            aiBase.userId,
-                            true
-                        ))
-                    }
-
-                    removeAmount += finalRemove.size
-                    petMeta.aiGoals.removeAll(finalRemove)
-
-                    petMeta.aiGoals.add(aiBase)
-                    addAmount++
-                }
-            }
-
-            if (configuration.containsKey("remove-ai")) {
-                val removeAis = configuration["remove-ai"] as Map<String, Any?>
-
-                for (mapData in removeAis.keys) {
-                    val data = removeAis[mapData] as Map<String, Any?>
-                    val aiBase = aiService.deserializeAiBase<AIBase>(data["type"] as String, data)
-                    val finalRemove = petMeta.aiGoals.filter { a ->
-                        a.type == aiBase.type && (a.userId == null || aiBase.userId == null || a.userId.equals(
-                            aiBase.userId,
-                            true
-                        ))
-                    }
-
-                    removeAmount += finalRemove.size
-                    petMeta.aiGoals.removeAll(finalRemove)
-                }
-            }
-
-            if (configuration.containsKey("add-ai")) {
-                val addAis = configuration["add-ai"] as Map<String, Any?>
-
-                for (mapData in addAis.keys) {
-                    val data = addAis[mapData] as Map<String, Any?>
-                    val aiBase = aiService.deserializeAiBase<AIBase>(data["type"] as String, data)
-
-                    petMeta.aiGoals.add(aiBase)
-                }
-
-                addAmount += addAis.size
-            }
-
-            messageService.sendSourceMessage(source, "Added $addAmount new ais and removed $removeAmount ais to/from player ${playerName}.")
+            val aiSet = aiService.loadAisFromConfig<AIBase>(args[1])
+            val aiApplyResult = petActionService.applyAI(player, aiSet.first, aiSet.second)
+            messageService.sendSourceMessage(
+                source,
+                "Added ${aiApplyResult.first} new ais and removed ${aiApplyResult.second} ais to/from player ${playerName}."
+            )
         } catch (e: Exception) {
             messageService.sendSourceMessage(source, ChatColor.RED.toString() + e.message)
         }

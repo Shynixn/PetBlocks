@@ -192,7 +192,7 @@ class SqlDbContextImpl @Inject constructor(
     override fun <R, C> multiQuery(
         connection: C,
         sqlStatement: String,
-        f: (Map<String, Any>) -> R,
+        f: (Map<String, Any?>) -> R,
         vararg parameters: Any
     ): List<R> {
         if (connection !is Connection) {
@@ -212,7 +212,7 @@ class SqlDbContextImpl @Inject constructor(
             resultSet.use {
                 while (resultSet.next()) {
                     val metaData = resultSet.metaData
-                    val data = HashMap<String, Any>()
+                    val data = HashMap<String, Any?>()
 
                     for (i in 1..metaData.columnCount) {
                         data[metaData.getColumnLabel(i)] = resultSet.getObject(i)
@@ -234,7 +234,7 @@ class SqlDbContextImpl @Inject constructor(
     override fun <R, C> singleQuery(
         connection: C,
         sqlStatement: String,
-        f: (Map<String, Any>) -> R,
+        f: (Map<String, Any?>) -> R,
         vararg parameters: Any
     ): R? {
         if (connection !is Connection) {
@@ -253,7 +253,7 @@ class SqlDbContextImpl @Inject constructor(
             resultSet.use {
                 while (resultSet.next()) {
                     val metaData = resultSet.metaData
-                    val data = HashMap<String, Any>()
+                    val data = HashMap<String, Any?>()
 
                     for (i in 1..metaData.columnCount) {
                         data[metaData.getColumnName(i)] = resultSet.getObject(i)
@@ -330,6 +330,27 @@ class SqlDbContextImpl @Inject constructor(
                         }
                     }
                 }
+
+            // Compatibility < 8.15.0
+            var foundColumnName = true
+            val skinTable = "${tablePrefix}_SKIN"
+            connection.prepareStatement("PRAGMA table_info($skinTable);").use { statement ->
+                statement.executeQuery().use { resultSet ->
+                    while (resultSet.next()) {
+                        foundColumnName = false
+                        val columnName = resultSet.getString("name")
+                        if (columnName == "nbt") {
+                            foundColumnName = true
+                            break
+                        }
+                    }
+                }
+            }
+
+            // Compatibility < 8.15.0
+            if (!foundColumnName) {
+                addNbtColumn(connection, skinTable)
+            }
         }
 
         loggingService.info("Connected to " + this.dataSource.jdbcUrl)
@@ -369,9 +390,63 @@ class SqlDbContextImpl @Inject constructor(
                         }
                     }
                 }
+
+            // Compatibility < 8.15.0
+            var foundColumnName = true
+            val skinTable = "${tablePrefix}_SKIN"
+            connection.prepareStatement("select COLUMN_NAME from INFORMATION_SCHEMA.COLUMNS where TABLE_NAME = '$skinTable'").use { statement ->
+                statement.executeQuery().use { resultSet ->
+                    while (resultSet.next()) {
+                        foundColumnName = false
+                        val columnName = resultSet.getString(1)
+                        if (columnName == "nbt") {
+                            foundColumnName = true
+                            break
+                        }
+                    }
+                }
+            }
+
+            // Compatibility < 8.15.0
+            if (!foundColumnName) {
+                addNbtColumn(connection, skinTable)
+            }
         }
 
         loggingService.info("Connected to " + this.dataSource.jdbcUrl)
+    }
+
+    /**
+     * Adds the nbt tag item column.
+     */
+    private fun addNbtColumn(connection: Connection, skinTable: String) {
+        loggingService.info("Updating database to support item NBT tags...")
+
+        connection.prepareStatement("ALTER TABLE $skinTable ADD COLUMN nbt TEXT").use { statement ->
+            statement.execute()
+        }
+
+        var hasRowsLeft = true
+        var offset = 0
+
+        while (hasRowsLeft) {
+            hasRowsLeft = false
+
+            multiQuery(connection, "SELECT * FROM $skinTable LIMIT 100 OFFSET $offset", { map -> map }).forEach { e ->
+                hasRowsLeft = true
+                val unbreakableNumber = e["unbreakable"] as Int
+
+                update(
+                    connection, skinTable, "WHERE id=" + e["id"],
+                    "unbreakable" to false,
+                    "nbt" to "{Unbreakable:$unbreakableNumber}"
+                )
+            }
+
+            offset += 100
+        }
+
+        loggingService.info("Finished updating database.")
     }
 
     /**

@@ -21,9 +21,6 @@ import com.github.shynixn.petblocks.sponge.logic.business.extension.toTransform
 import com.github.shynixn.petblocks.sponge.logic.business.extension.toVector
 import org.spongepowered.api.Sponge
 import org.spongepowered.api.data.key.Keys
-import org.spongepowered.api.data.manipulator.mutable.PotionEffectData
-import org.spongepowered.api.effect.potion.PotionEffect
-import org.spongepowered.api.effect.potion.PotionEffectTypes
 import org.spongepowered.api.entity.Transform
 import org.spongepowered.api.entity.living.ArmorStand
 import org.spongepowered.api.entity.living.Living
@@ -76,10 +73,6 @@ class PetProxyImpl(override val meta: PetMeta, private val design: ArmorStand, p
      * Init.
      */
     init {
-        design.bodyPartRotationalData.bodyRotation().set(Vector3d(0.0, 0.0, 2878.0))
-        design.bodyPartRotationalData.bodyRotation().set(Vector3d(2878.0, 0.0, 0.0))
-        design.offer(Keys.CUSTOM_NAME_VISIBLE, true)
-
         meta.enabled = true
 
         meta.propertyTracker.onPropertyChanged(PetMeta::displayName)
@@ -164,15 +157,6 @@ class PetProxyImpl(override val meta: PetMeta, private val design: ArmorStand, p
             return
         }
 
-        val effect = PotionEffect.builder()
-            .potionType(PotionEffectTypes.INVISIBILITY)
-            .duration(9999999).amplifier(1).build()
-        val effects = hitBox.getOrCreate(PotionEffectData::class.java).get()
-        effects.addElement(effect)
-        hitBox.offer(effects)
-
-        hitBox.offer(Keys.CUSTOM_NAME_VISIBLE, false)
-
         (this.hitBox as EntityPetProxy).bootsItemStack = generateMarkerItemStack()
     }
 
@@ -231,7 +215,7 @@ class PetProxyImpl(override val meta: PetMeta, private val design: ArmorStand, p
         }
 
         if (displayNameChanged || Skin::typeName.hasChanged(meta.skin)) {
-            val item = ItemEntity(meta.skin.typeName, meta.skin.dataValue, meta.skin.unbreakable, meta.displayName, null, meta.skin.owner)
+            val item = ItemEntity(meta.skin.typeName, meta.skin.dataValue, meta.skin.nbtTag, meta.displayName, null, meta.skin.owner)
             design.setHelmet(itemService.toItemStack(item))
         }
     }
@@ -301,7 +285,7 @@ class PetProxyImpl(override val meta: PetMeta, private val design: ArmorStand, p
      * Gets a new marker itemstack.
      */
     private fun generateMarkerItemStack(): ItemStack {
-        val item = ItemEntity(MaterialType.APPLE.name, 0, false, null, arrayListOf("PetBlocks"))
+        val item = ItemEntity(MaterialType.APPLE.name, 0, "", null, arrayListOf("PetBlocks"))
         return itemService.toItemStack(item)
     }
 }
