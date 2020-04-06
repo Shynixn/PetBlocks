@@ -49,7 +49,7 @@ name                              yes       Unique name on the current gui page 
 damage                            no        Damage or DataValue to describe the minecraft item       damage: 0, damage:1
 skin                              no        `Skin of a player head <skins.html>`_                    'Shynixn', 'textures.minecraft.net/texture/ad5fcd31287d63e7826ea760a7ed154f685dfdc7f3465732a96e619b2e1347'
 lore                              no        List of lore text.                                       lore:
-unbreakable                       no        Unbreakable item tag.                                    unbreakable: false (default), unbreakable: true
+nbt                               no        NBT tags for the item.                                   {Unbreakable:1}
 **script**                        no        Special script tags only available for icons             script:
 ================================  ========= ======================================================== =======================================================================
 
@@ -145,7 +145,7 @@ Tag                               Required  Description                         
 id                                yes       Numeric id of the minecraft item                         id: 1, id: 397
 damage                            no        Damage or DataValue to describe the minecraft item       damage: 0, damage:1
 skin                              no        `Skin of a player head <skins.html>`_                    'Shynixn', 'textures.minecraft.net/texture/ad5fcd31287d63e7826ea760a7ed154f685dfdc7f3465732a96e619b2e1347'
-unbreakable                       no        Unbreakable item tag.                                    unbreakable: false (default), unbreakable: true
+nbt                               no        NBT tags for the item.                                   {Unbreakable:1}
 ================================  ========= ======================================================== =======================================================================
 
 The add-ai, remove-ai, replace-ai tag
