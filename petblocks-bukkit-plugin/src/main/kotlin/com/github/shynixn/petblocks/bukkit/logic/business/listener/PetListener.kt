@@ -119,16 +119,20 @@ class PetListener @Inject constructor(
             performFirstSpawn(event.player)
         }
 
-        val aiSet = aiService.loadAisFromConfig<AIBase>("update")
+        // Concurrency protection.
+        sync(concurrencyService, 20 * 2L) {
+            val petMeta = persistencePetMetaService.getPetMetaFromPlayer(event.player)
+            val aiSet = aiService.loadAisFromConfig<AIBase>("update")
 
-        for (ai in aiSet.first) {
-            if (event.petMeta.aiGoals.firstOrNull { e ->
-                    e.type == ai.type && (e.userId == null || ai.userId == null || e.userId.equals(
-                        ai.userId,
-                        true
-                    ))
-                } == null) {
-                event.petMeta.aiGoals.add(ai)
+            for (ai in aiSet.first) {
+                if (petMeta.aiGoals.firstOrNull { e ->
+                        e.type == ai.type && (e.userId == null || ai.userId == null || e.userId.equals(
+                            ai.userId,
+                            true
+                        ))
+                    } == null) {
+                    petMeta.aiGoals.add(ai)
+                }
             }
         }
     }

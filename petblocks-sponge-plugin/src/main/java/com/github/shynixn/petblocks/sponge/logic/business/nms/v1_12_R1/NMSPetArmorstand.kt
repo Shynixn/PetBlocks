@@ -94,9 +94,7 @@ class NMSPetArmorstand(owner: Player, val petMeta: PetMeta) : EntityArmorStand(o
 
         internalProxy = PetProxyImpl(petMeta, this.cast(), owner)
         petMeta.propertyTracker.onPropertyChanged(PetMeta::aiGoals, true)
-
-        val compound = this.prepareNBTTagForArmorstand()
-        this.readEntityFromNBT(compound)
+        this.applyNBTTagForArmorstand()
     }
 
     /**
@@ -128,13 +126,7 @@ class NMSPetArmorstand(owner: Player, val petMeta: PetMeta) : EntityArmorStand(o
         }
 
         val player = proxy.getPlayer<Player>()
-
-        val compound = this.prepareNBTTagForArmorstand()
-        compound.setBoolean("Marker", false)
-        this.readEntityFromNBT(compound)
-
-        this.alwaysRenderNameTag = true
-
+        this.applyNBTTagForArmorstand()
         val hasRidingAi = petMeta.aiGoals.count { a -> a is AIGroundRiding || a is AIFlyRiding } > 0
 
         if (hasRidingAi) {
@@ -156,10 +148,7 @@ class NMSPetArmorstand(owner: Player, val petMeta: PetMeta) : EntityArmorStand(o
         val aiWearing = this.petMeta.aiGoals.firstOrNull { a -> a is AIWearing }
 
         if (aiWearing != null) {
-            val internalCompound = this.prepareNBTTagForArmorstand()
-            internalCompound.setBoolean("Marker", true)
-            this.readEntityFromNBT(internalCompound)
-            this.alwaysRenderNameTag = false
+            this.applyNBTTagForArmorstand()
             val armorstand = proxy.getHeadArmorstand<ArmorStand>()
             player.addPassenger(armorstand)
             return
@@ -172,8 +161,7 @@ class NMSPetArmorstand(owner: Player, val petMeta: PetMeta) : EntityArmorStand(o
             proxy.changeHitBox(internalHitBox!! as Living)
             val aiGoals = aiService.convertPetAiBasesToPathfinders(proxy, petMeta.aiGoals)
             (internalHitBox as NMSPetBat).applyPathfinders(aiGoals)
-            val nbtCompound = prepareNBTTagForHitBox(internalHitBox!!)
-            internalHitBox!!.readEntityFromNBT(nbtCompound)
+            this.applyNBTTagToHitBox(internalHitBox!!)
             return
         }
 
@@ -184,8 +172,7 @@ class NMSPetArmorstand(owner: Player, val petMeta: PetMeta) : EntityArmorStand(o
             proxy.changeHitBox(internalHitBox!! as Living)
             val aiGoals = aiService.convertPetAiBasesToPathfinders(proxy, petMeta.aiGoals)
             (internalHitBox as NMSPetRabbit).applyPathfinders(aiGoals)
-            val nbtCompound = prepareNBTTagForHitBox(internalHitBox!!)
-            internalHitBox!!.readEntityFromNBT(nbtCompound)
+            this.applyNBTTagToHitBox(internalHitBox!!)
             return
         }
 
@@ -193,8 +180,7 @@ class NMSPetArmorstand(owner: Player, val petMeta: PetMeta) : EntityArmorStand(o
         proxy.changeHitBox(internalHitBox!! as Living)
         val aiGoals = aiService.convertPetAiBasesToPathfinders(proxy, petMeta.aiGoals)
         (internalHitBox as NMSPetVillager).applyPathfinders(aiGoals)
-        val nbtCompound = prepareNBTTagForHitBox(internalHitBox!!)
-        internalHitBox!!.readEntityFromNBT(nbtCompound)
+        this.applyNBTTagToHitBox(internalHitBox!!)
     }
 
     /**
@@ -412,32 +398,28 @@ class NMSPetArmorstand(owner: Player, val petMeta: PetMeta) : EntityArmorStand(o
         this.limbSwingAmount += (f22 - this.limbSwingAmount) * 0.4f
         this.limbSwing += this.limbSwingAmount
     }
-
     /**
-     * Prepares the nbt tags for applying to the given hitBox.
+     * Applies the entity NBT to the hitbox.
      */
-    private fun prepareNBTTagForHitBox(hitBox: EntityLiving): NBTTagCompound {
+    private fun applyNBTTagToHitBox(hitBox: EntityLiving) {
         val compound = NBTTagCompound()
         hitBox.writeEntityToNBT(compound)
         applyAIEntityNbt(compound, this.petMeta.aiGoals.asSequence().filterIsInstance<AIEntityNbt>().map { a -> a.hitBoxNbt }.toList())
-        return compound
+        hitBox.readEntityFromNBT(compound)
+        // CustomNameVisible does not working via NBT Tags.
+        hitBox.alwaysRenderNameTag = compound.hasKey("CustomNameVisible") && compound.getInteger("CustomNameVisible") == 1
     }
 
     /**
-     * Prepares the nbt tags for applying to this armorstand.
+     * Applies the entity NBT to the armorstand.
      */
-    private fun prepareNBTTagForArmorstand(): NBTTagCompound {
+    private fun applyNBTTagForArmorstand() {
         val compound = NBTTagCompound()
         this.writeEntityToNBT(compound)
         applyAIEntityNbt(compound, this.petMeta.aiGoals.asSequence().filterIsInstance<AIEntityNbt>().map { a -> a.armorStandNbt }.toList())
-
-        compound.setBoolean("invulnerable", true)
-        compound.setBoolean("Invisible", true)
-        compound.setBoolean("PersistenceRequired", true)
-        compound.setBoolean("ShowArms", true)
-        compound.setBoolean("NoBasePlate", true)
-
-        return compound
+        this.readEntityFromNBT(compound)
+        // CustomNameVisible does not working via NBT Tags.
+        this.alwaysRenderNameTag = compound.hasKey("CustomNameVisible") && compound.getInteger("CustomNameVisible") == 1
     }
 
     /**
