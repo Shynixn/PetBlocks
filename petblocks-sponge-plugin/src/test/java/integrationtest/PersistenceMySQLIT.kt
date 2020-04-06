@@ -94,7 +94,7 @@ class PersistenceMySQLIT {
         Assertions.assertEquals("", actual.skin.owner)
         Assertions.assertEquals(1, actual.playerMeta.id)
         Assertions.assertEquals("Kenny", actual.playerMeta.name)
-        Assertions.assertEquals(6, actual.aiGoals.size)
+        Assertions.assertEquals(9, actual.aiGoals.size)
 
         Assertions.assertEquals("hopping", (actual.aiGoals[0] as AIMovementEntity).type)
         Assertions.assertEquals(1.0, (actual.aiGoals[0] as AIMovementEntity).climbingHeight)
@@ -260,15 +260,16 @@ class PersistenceMySQLIT {
                 Optional.of(asset)
             }
 
-            val aiService = AIServiceImpl(
-                LoggingUtilServiceImpl(Logger.getAnonymousLogger()),
-                MockedProxyService(),
-                YamlServiceImpl()
-            )
-
             val configurationService = ConfigurationServiceImpl(
                 Paths.get("integration-test/assets/petblocks")
                 , LoggingUtilServiceImpl(Logger.getAnonymousLogger()), plugin
+            )
+
+            val aiService = AIServiceImpl(
+                LoggingUtilServiceImpl(Logger.getAnonymousLogger()),
+                MockedProxyService(),
+                YamlServiceImpl(),
+                configurationService
             )
 
             val localizationService =

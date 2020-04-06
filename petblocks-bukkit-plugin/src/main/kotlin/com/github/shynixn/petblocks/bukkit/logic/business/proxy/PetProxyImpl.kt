@@ -4,12 +4,16 @@ import com.github.shynixn.petblocks.api.PetBlocksApi
 import com.github.shynixn.petblocks.api.bukkit.event.PetRemoveEvent
 import com.github.shynixn.petblocks.api.business.proxy.EntityPetProxy
 import com.github.shynixn.petblocks.api.business.proxy.PetProxy
-import com.github.shynixn.petblocks.api.business.service.*
+import com.github.shynixn.petblocks.api.business.service.ItemTypeService
+import com.github.shynixn.petblocks.api.business.service.LoggingService
+import com.github.shynixn.petblocks.api.business.service.ParticleService
+import com.github.shynixn.petblocks.api.business.service.SoundService
 import com.github.shynixn.petblocks.api.persistence.entity.AIMovement
 import com.github.shynixn.petblocks.api.persistence.entity.PetMeta
 import com.github.shynixn.petblocks.api.persistence.entity.Position
 import com.github.shynixn.petblocks.api.persistence.entity.Skin
-import com.github.shynixn.petblocks.bukkit.logic.business.extension.*
+import com.github.shynixn.petblocks.bukkit.logic.business.extension.toLocation
+import com.github.shynixn.petblocks.bukkit.logic.business.extension.toVector
 import com.github.shynixn.petblocks.core.logic.business.extension.hasChanged
 import com.github.shynixn.petblocks.core.logic.business.extension.translateChatColors
 import com.github.shynixn.petblocks.core.logic.persistence.entity.ItemEntity
@@ -19,10 +23,6 @@ import org.bukkit.entity.ArmorStand
 import org.bukkit.entity.LivingEntity
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
-import org.bukkit.metadata.FixedMetadataValue
-import org.bukkit.potion.PotionEffect
-import org.bukkit.potion.PotionEffectType
-import org.bukkit.util.EulerAngle
 import org.bukkit.util.Vector
 import java.util.*
 
@@ -70,12 +70,6 @@ class PetProxyImpl(override val meta: PetMeta, private val design: ArmorStand, p
      * Init.
      */
     init {
-        design.bodyPose = EulerAngle(0.0, 0.0, 2878.0)
-        design.leftArmPose = EulerAngle(2878.0, 0.0, 0.0)
-        design.setMetadata("keep", FixedMetadataValue(Bukkit.getPluginManager().getPlugin("PetBlocks")!!, true))
-        design.isCustomNameVisible = true
-        design.removeWhenFarAway = false
-
         meta.enabled = true
 
         meta.propertyTracker.onPropertyChanged(PetMeta::displayName)
@@ -156,9 +150,6 @@ class PetProxyImpl(override val meta: PetMeta, private val design: ArmorStand, p
             return
         }
 
-        hitBox.addPotionEffect(PotionEffect(PotionEffectType.INVISIBILITY, 9999999, 1))
-        hitBox.setMetadata("keep", FixedMetadataValue(Bukkit.getPluginManager().getPlugin("PetBlocks")!!, true))
-        hitBox.isCustomNameVisible = false
         hitBox.equipment!!.boots = generateMarkerItemStack()
     }
 

@@ -3,6 +3,7 @@
 package com.github.shynixn.petblocks.core.logic.business.service
 
 import com.github.shynixn.petblocks.api.business.service.*
+import com.github.shynixn.petblocks.api.persistence.entity.AIBase
 import com.github.shynixn.petblocks.api.persistence.entity.GuiItem
 import com.github.shynixn.petblocks.api.persistence.entity.PetMeta
 import com.github.shynixn.petblocks.core.logic.business.extension.translateChatColors
@@ -208,36 +209,9 @@ class GUIItemLoadServiceImpl @Inject constructor(
                 }
             }
 
-            if (description.containsKey("add-ai")) {
-                val goalsMap = (description["add-ai"] as Map<Any, Any>)
-
-                for (goalKey in goalsMap.keys) {
-                    val aiMap = goalsMap[goalKey] as Map<String, Any>
-                    val type = aiMap["type"] as String
-                    guiItem.addAIs.add(aiService.deserializeAiBase(type, aiMap))
-                }
-            }
-
-            if (description.containsKey("remove-ai")) {
-                val goalsMap = (description["remove-ai"] as Map<Any, Any>)
-
-                for (goalKey in goalsMap.keys) {
-                    val aiMap = goalsMap[goalKey] as Map<String, Any>
-                    val type = aiMap["type"] as String
-                    guiItem.removeAIs.add(aiService.deserializeAiBase(type, aiMap))
-                }
-            }
-
-            if (description.containsKey("replace-ai")) {
-                val goalsMap = (description["replace-ai"] as Map<Any, Any>)
-
-                for (goalKey in goalsMap.keys) {
-                    val aiMap = goalsMap[goalKey] as Map<String, Any>
-                    val type = aiMap["type"] as String
-                    guiItem.addAIs.add(aiService.deserializeAiBase(type, aiMap))
-                    guiItem.removeAIs.add(aiService.deserializeAiBase(type, aiMap))
-                }
-            }
+            val aiSet = aiService.loadAisFromConfig<AIBase>("$path.$key")
+            guiItem.addAIs.addAll(aiSet.first)
+            guiItem.removeAIs.addAll(aiSet.second)
 
             if (description.containsKey("blocked-on")) {
                 guiItem.blockedCondition = (description["blocked-on"] as List<String>).toTypedArray()
@@ -310,13 +284,8 @@ class GUIItemLoadServiceImpl @Inject constructor(
 
         petMeta.aiGoals.clear()
 
-        val goalsMap = defaultConfig["add-ai"] as Map<Any, Any>
-
-        for (goalKey in goalsMap.keys) {
-            val aiMap = goalsMap[goalKey] as Map<String, Any>
-            val type = aiMap["type"] as String
-            petMeta.aiGoals.add(aiService.deserializeAiBase(type, aiMap))
-        }
+        val aiSet = aiService.loadAisFromConfig<AIBase>("pet")
+        petMeta.aiGoals.addAll(aiSet.first)
 
         petMeta.new = true
 

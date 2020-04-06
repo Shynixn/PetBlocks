@@ -2,6 +2,7 @@ package com.github.shynixn.petblocks.core.logic.business.service
 
 import com.github.shynixn.petblocks.api.business.localization.Messages
 import com.github.shynixn.petblocks.api.business.service.*
+import com.github.shynixn.petblocks.api.persistence.entity.AIBase
 import com.github.shynixn.petblocks.core.logic.business.extension.relativeFront
 import com.github.shynixn.petblocks.core.logic.business.extension.translateChatColors
 import com.github.shynixn.petblocks.core.logic.persistence.entity.SoundEntity
@@ -118,6 +119,32 @@ class PetActionServiceImpl @Inject constructor(
         } else {
             this.callPet(player)
         }
+    }
+
+    /**
+     * Applies the given ais to the pet of the given player.
+     * Returns a pair of added and removed ais amount.
+     */
+    override fun <P> applyAI(player: P, addAis: List<AIBase>, removeAis: List<AIBase>): Pair<Int, Int> {
+        val petMeta = persistencePetMetaService.getPetMetaFromPlayer(player)
+        var removeAmount = 0
+        var addAmount = 0
+
+        for (aiBase in removeAis) {
+            val finalRemove = petMeta.aiGoals.filter { a ->
+                a.type == aiBase.type && (a.userId == null || aiBase.userId == null || a.userId.equals(
+                    aiBase.userId,
+                    true
+                ))
+            }
+            removeAmount += finalRemove.size
+            petMeta.aiGoals.removeAll(finalRemove)
+        }
+
+        petMeta.aiGoals.addAll(addAis)
+        addAmount += addAis.size
+
+        return Pair(addAmount, removeAmount)
     }
 
     /**

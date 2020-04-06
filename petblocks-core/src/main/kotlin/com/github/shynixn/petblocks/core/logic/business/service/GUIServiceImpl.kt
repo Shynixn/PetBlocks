@@ -278,21 +278,7 @@ class GUIServiceImpl @Inject constructor(
                 petMeta.displayName = optGuiItem.targetPetName!!
             }
 
-            for (aiBase in optGuiItem.removeAIs.toTypedArray()) {
-                val finalRemove = petMeta.aiGoals.filter { a ->
-                    a.type == aiBase.type && (a.userId == null || aiBase.userId == null || a.userId.equals(
-                        aiBase.userId,
-                        true
-                    ))
-                }
-
-                petMeta.aiGoals.removeAll(finalRemove)
-            }
-
-            for (aiBase in optGuiItem.addAIs.toTypedArray()) {
-                petMeta.aiGoals.add(aiBase)
-            }
-
+            petActionService.applyAI(player, optGuiItem.addAIs, optGuiItem.removeAIs)
             renderPage(player, petMeta, this.pageCache[player]!!.path)
         }
 

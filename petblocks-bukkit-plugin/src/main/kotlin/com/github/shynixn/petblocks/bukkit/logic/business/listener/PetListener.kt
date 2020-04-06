@@ -8,6 +8,7 @@ import com.github.shynixn.petblocks.api.business.enumeration.Version
 import com.github.shynixn.petblocks.api.business.proxy.EntityPetProxy
 import com.github.shynixn.petblocks.api.business.proxy.PetProxy
 import com.github.shynixn.petblocks.api.business.service.*
+import com.github.shynixn.petblocks.api.persistence.entity.AIBase
 import com.github.shynixn.petblocks.api.persistence.entity.AIFlyRiding
 import com.github.shynixn.petblocks.api.persistence.entity.AIGroundRiding
 import com.github.shynixn.petblocks.api.persistence.entity.AIWearing
@@ -70,6 +71,8 @@ class PetListener @Inject constructor(
     private val debugService: PetDebugService,
     private val itemTypeService: ItemTypeService,
     private val configurationService: ConfigurationService,
+    private val aiService: AIService,
+    private val petActionService: PetActionService,
     private val version: Version
 ) : Listener {
     private val joinCooldown = 20 * 6L
@@ -114,6 +117,19 @@ class PetListener @Inject constructor(
 
         if (event.petMeta.new) {
             performFirstSpawn(event.player)
+        }
+
+        val aiSet = aiService.loadAisFromConfig<AIBase>("update")
+
+        for (ai in aiSet.first) {
+            if (event.petMeta.aiGoals.firstOrNull { e ->
+                    e.type == ai.type && (e.userId == null || ai.userId == null || e.userId.equals(
+                        ai.userId,
+                        true
+                    ))
+                } == null) {
+                event.petMeta.aiGoals.add(ai)
+            }
         }
     }
 
@@ -334,21 +350,12 @@ class PetListener @Inject constructor(
             return
         }
 
-        val pet = petService.getOrSpawnPetFromPlayer(player).get()
+        val aiSet = aiService.loadAisFromConfig<AIBase>("events.onsneak")
+        val applyResult = petActionService.applyAI(player, aiSet.first, aiSet.second)
 
-        for (name in configurationService.findValue<List<String>>("global-configuration.disable-on-sneak")) {
-            var changed = false
-
-            for (ai in pet.meta.aiGoals.toTypedArray()) {
-                if (ai.type == name) {
-                    pet.meta.aiGoals.remove(ai)
-                    changed = true
-                }
-            }
-
-            if (changed) {
-                executeMountingTick(pet)
-            }
+        if (applyResult.first > 0 || applyResult.second > 0) {
+            val pet = petService.getOrSpawnPetFromPlayer(player).get()
+            executeMountingTick(pet)
         }
     }
 

@@ -6,6 +6,7 @@ import com.github.shynixn.petblocks.api.business.enumeration.MaterialType
 import com.github.shynixn.petblocks.api.business.proxy.EntityPetProxy
 import com.github.shynixn.petblocks.api.business.proxy.PetProxy
 import com.github.shynixn.petblocks.api.business.service.*
+import com.github.shynixn.petblocks.api.persistence.entity.AIBase
 import com.github.shynixn.petblocks.api.persistence.entity.AIFlyRiding
 import com.github.shynixn.petblocks.api.persistence.entity.AIGroundRiding
 import com.github.shynixn.petblocks.api.persistence.entity.AIWearing
@@ -66,7 +67,9 @@ class PetListener @Inject constructor(
     private val debugService: PetDebugService,
     private val configurationService: ConfigurationService,
     private val guiItemLoadService: GUIItemLoadService,
-    private val itemTypeService: ItemTypeService
+    private val itemTypeService: ItemTypeService,
+    private val aiService: AIService,
+    private val petActionService: PetActionService
 ) {
     private val joinCooldown = 20 * 6L
     private val alreadyLoading = HashSet<UUID>()
@@ -137,6 +140,19 @@ class PetListener @Inject constructor(
 
         if (event.petMeta.new) {
             performFirstSpawn(event.player)
+        }
+
+        val aiSet = aiService.loadAisFromConfig<AIBase>("update")
+
+        for (ai in aiSet.first) {
+            if (event.petMeta.aiGoals.firstOrNull { e ->
+                    e.type == ai.type && (e.userId == null || ai.userId == null || e.userId.equals(
+                        ai.userId,
+                        true
+                    ))
+                } == null) {
+                event.petMeta.aiGoals.add(ai)
+            }
         }
     }
 
@@ -247,15 +263,8 @@ class PetListener @Inject constructor(
             return
         }
 
-        val pet = petService.getOrSpawnPetFromPlayer(event.targetHolder).get()
-
-        for (name in configurationService.findValue<List<String>>("global-configuration.disable-on-sneak")) {
-            for (ai in pet.meta.aiGoals.toTypedArray()) {
-                if (ai.type == name) {
-                    pet.meta.aiGoals.remove(ai)
-                }
-            }
-        }
+        val aiSet = aiService.loadAisFromConfig<AIBase>("events.onsneak")
+        petActionService.applyAI(event.targetHolder, aiSet.first, aiSet.second)
     }
 
     /**

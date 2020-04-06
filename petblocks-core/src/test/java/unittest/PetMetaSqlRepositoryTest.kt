@@ -171,8 +171,9 @@ class PetMetaSqlRepositoryTest {
                 AIServiceImpl(
                     LoggingUtilServiceImpl(Logger.getAnonymousLogger()),
                     MockedProxyService(),
-                    Mockito.mock(YamlService::class.java)
-                    ), MockedGUIItemLoadService(),
+                    Mockito.mock(YamlService::class.java),
+                    Mockito.mock(ConfigurationService::class.java)
+                ), MockedGUIItemLoadService(),
                 Mockito.mock(ConfigurationService::class.java)
             )
         }

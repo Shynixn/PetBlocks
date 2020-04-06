@@ -38,13 +38,19 @@ interface PetActionService {
     /**
      * Disables the pet of the given [player].
      */
-    fun <P> disablePet(player : P)
+    fun <P> disablePet(player: P)
 
     /**
      * Toggles the pet of the given [player]. If the pet is disabled it will be enabled and when enabled it will be
      * disabled.
      */
     fun <P> togglePet(player: P)
+
+    /**
+     * Applies the given ais to the pet of the given player.
+     * Returns a pair of added and removed ais amount.
+     */
+    fun <P> applyAI(player: P, addAis: List<AIBase>, removeAis: List<AIBase>): Pair<Int, Int>
 
     /**
      * Renames the pet of the given [player] to the given [name].
@@ -54,10 +60,10 @@ interface PetActionService {
     /**
      * Launches the pet of the player.
      */
-    fun <P> launchPet(player : P)
+    fun <P> launchPet(player: P)
 
     /**
      * Sets the pet of the given [player] to the given skin.
      */
-    fun <P> changePetSkin(player : P, skin : String)
+    fun <P> changePetSkin(player: P, skin: String)
 }

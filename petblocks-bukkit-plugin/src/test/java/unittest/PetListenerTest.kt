@@ -133,7 +133,9 @@ class PetListenerTest {
             concurrencyService: ConcurrencyService = MockedConcurrencyService(), entityService: EntityService = Mockito.mock(EntityService::class.java),
             itemService: ItemTypeService = Mockito.mock(ItemTypeService::class.java), debugService: PetDebugService = Mockito.mock(PetDebugService::class.java),
             configurationService: ConfigurationService = Mockito.mock(ConfigurationService::class.java),
-            loadGUIItemLoadService: GUIItemLoadService = Mockito.mock(GUIItemLoadService::class.java)
+            loadGUIItemLoadService: GUIItemLoadService = Mockito.mock(GUIItemLoadService::class.java),
+            aiService: AIService = Mockito.mock(AIService::class.java),
+            petActionService: PetActionService = Mockito.mock(PetActionService::class.java)
         ): PetListener {
             return PetListener(
                 petService,
@@ -144,6 +146,8 @@ class PetListenerTest {
                 debugService,
                 itemService,
                 configurationService,
+                aiService,
+                petActionService,
                 Version.VERSION_UNKNOWN
             )
         }

@@ -41,12 +41,22 @@ interface AIService {
     /**
      * Generates an AIBase from the given yaml source string.
      */
-    fun <A : AIBase> deserializeAiBase(type : String, source: String): A
+    fun <A : AIBase> deserializeAiBase(type: String, source: String): A
 
     /**
      * Generates an AIBase from the given yaml map data.
      */
-    fun <A : AIBase> deserializeAiBase(type : String, source: Map<String, Any?>): A
+    fun <A : AIBase> deserializeAiBase(type: String, source: Map<String, Any?>): A
+
+    /**
+     * Gets a pair of ais to be added and ais to be removed from the config path.
+     */
+    fun <A : AIBase> loadAisFromConfig(path: String): Pair<List<A>, List<A>>
+
+    /**
+     * Clears allocated resources.
+     */
+    fun clearResources()
 
     /**
      *  Serializes the given [aiBase] to a yaml string.

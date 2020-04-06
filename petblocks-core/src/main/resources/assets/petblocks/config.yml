@@ -102,10 +102,6 @@ global-configuration:
   overwrite-previous-pet: false
   sounds-other-players: true
   particles-other-players: true
-  disable-on-sneak:
-    - 'wearing'
-    - 'ground-riding'
-    - 'fly-riding'
   max-petname-length: 20
   petname-blacklist:
     - 'petty'
@@ -180,6 +176,69 @@ pet:
         name: 'CHICKEN_IDLE'
         volume: 5.0
         pitch: 1.0
+    7:
+      type: 'entity-nbt'
+      tag: 'nbt-default'
+      armorstand-nbt: '{Invulnerable:1,Invisible:1,PersistenceRequired:1,ShowArms:1,NoBasePlate:1}'
+      hitbox-nbt: '{CustomNameVisible:0,ActiveEffects:[{Id:14,Duration:999999999,Amplifier:0,ShowParticles:0b}]}'
+    8:
+      type: 'entity-nbt'
+      tag: 'nbt-custom-name-visibility'
+      armorstand-nbt: '{CustomNameVisible:1}'
+    9:
+      type: 'entity-nbt'
+      tag: 'nbt-marker'
+      armorstand-nbt: '{Marker:0}'
+############################
+
+# Update settings
+
+# These settings allow to add/replace/remove ais for all players when they join the server
+# for the next time.
+
+############################
+
+update:
+  add-ai:
+    1:
+      type: 'entity-nbt'
+      tag: 'nbt-default'
+      armorstand-nbt: '{Invulnerable:1,Invisible:1,PersistenceRequired:1,ShowArms:1,NoBasePlate:1}'
+      hitbox-nbt: '{CustomNameVisible:0,ActiveEffects:[{Id:14,Duration:999999999,Amplifier:0,ShowParticles:0b}]}'
+    2:
+      type: 'entity-nbt'
+      tag: 'nbt-custom-name-visibility'
+      armorstand-nbt: '{CustomNameVisible:1}'
+    3:
+      type: 'entity-nbt'
+      tag: 'nbt-marker'
+      armorstand-nbt: '{Marker:0}'
+############################
+
+# Event settings
+
+# These settings allow to add/replace/remove ais when certain events happen.
+
+############################
+
+events:
+  onsneak:
+    replace-ai:
+      1:
+        type: 'entity-nbt'
+        tag: 'nbt-custom-name-visibility'
+        armorstand-nbt: '{CustomNameVisible:1}'
+      2:
+        type: 'entity-nbt'
+        tag: 'nbt-marker'
+        armorstand-nbt: '{Marker:0}'
+    remove-ai:
+      1:
+        type: 'wearing'
+      2:
+        type: 'ground-riding'
+      3:
+        type: 'fly-riding'
 ############################
 
 # World settings
@@ -300,6 +359,14 @@ gui:
       replace-ai:
         1:
           type: 'wearing'
+        2:
+          type: 'entity-nbt'
+          tag: 'nbt-custom-name-visibility'
+          armorstand-nbt: '{CustomNameVisible:0}'
+        3:
+          type: 'entity-nbt'
+          tag: 'nbt-marker'
+          armorstand-nbt: '{Marker:1}'
       hidden-on:
         - 'pet-disabled'
         - 'wearing'
