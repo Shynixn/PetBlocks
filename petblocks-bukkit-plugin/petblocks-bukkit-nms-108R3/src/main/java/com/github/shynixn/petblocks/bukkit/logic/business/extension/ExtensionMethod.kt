@@ -101,17 +101,19 @@ fun Location.toPosition(): Position {
  * Sends the given [packet] to this player.
  */
 fun Player.sendPacket(packet: Any) {
-    val version = PetBlocksApi.resolve(PluginProxy::class.java).getServerVersion()
-    val craftPlayer = Class.forName("org.bukkit.craftbukkit.VERSION.entity.CraftPlayer".replace("VERSION", version.bukkitId)).cast(player)
-    val methodHandle = craftPlayer.javaClass.getDeclaredMethod("getHandle")
-    val entityPlayer = methodHandle.invoke(craftPlayer)
+    val craftPlayerClazz = findClazz("org.bukkit.craftbukkit.VERSION.entity.CraftPlayer")
+    val getHandleMethod = craftPlayerClazz.getDeclaredMethod("getHandle")
+    val nmsPlayer = getHandleMethod.invoke(player)
 
-    val field = Class.forName("net.minecraft.server.VERSION.EntityPlayer".replace("VERSION", version.bukkitId)).getDeclaredField("playerConnection")
-    field.isAccessible = true
-    val connection = field.get(entityPlayer)
+    val nmsPlayerClazz = findClazz("net.minecraft.server.VERSION.EntityPlayer")
+    val playerConnectionField = nmsPlayerClazz.getDeclaredField("playerConnection")
+    playerConnectionField.isAccessible = true
+    val connection = playerConnectionField.get(nmsPlayer)
 
-    val sendMethod = connection.javaClass.getDeclaredMethod("sendPacket", packet.javaClass.interfaces[0])
-    sendMethod.invoke(connection, packet)
+    val playerConnectionClazz = findClazz("net.minecraft.server.VERSION.PlayerConnection")
+    val packetClazz = findClazz("net.minecraft.server.VERSION.Packet")
+    val sendPacketMethod = playerConnectionClazz.getDeclaredMethod("sendPacket", packetClazz)
+    sendPacketMethod.invoke(connection, packet)
 }
 
 
