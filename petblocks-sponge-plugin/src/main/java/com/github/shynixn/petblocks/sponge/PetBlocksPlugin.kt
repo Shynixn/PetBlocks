@@ -170,9 +170,7 @@ class PetBlocksPlugin : PluginProxy {
             this.resolve(PlayerPetActionCommandExecutorImpl::class.java)
         )
 
-        for (world in Sponge.getGame().server.worlds) {
-            entityService.cleanUpInvalidEntities(world.entities)
-        }
+        entityService.cleanUpInvalidEntitiesInAllWorlds()
 
         metrics.addCustomChart(Metrics2.SimplePie("storage") {
             if (configurationService.findValue<String>("sql.type") == "mysql") {
@@ -193,6 +191,11 @@ class PetBlocksPlugin : PluginProxy {
     fun onReload(event: GameReloadEvent) {
         resolve<ConfigurationService>(ConfigurationService::class.java).reload()
         resolve<GUIItemLoadService>(GUIItemLoadService::class.java).reload()
+        val entityService = resolve<EntityService>(EntityService::class.java)
+
+        for (world in Sponge.getGame().server.worlds) {
+            entityService.cleanUpInvalidEntities(world.entities)
+        }
 
         sendConsoleMessage(ChatColor.GREEN.toString() + "Reloaded PetBlocks configuration.")
     }
@@ -337,7 +340,9 @@ class PetBlocksPlugin : PluginProxy {
 
         try {
             val entityName = entity.simpleName + "Entity"
-            return Class.forName("com.github.shynixn.petblocks.core.logic.persistence.entity.$entityName").newInstance() as E
+            return Class.forName("com.github.shynixn.petblocks.core.logic.persistence.entity.$entityName")
+                .getDeclaredConstructor()
+                .newInstance() as E
         } catch (e: Exception) {
             throw IllegalArgumentException("Entity could not be created.", e)
         }

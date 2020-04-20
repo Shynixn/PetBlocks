@@ -160,11 +160,7 @@ class PetListener @Inject constructor(
      */
     @EventHandler
     fun onChunkUnloadEvent(event: ChunkUnloadEvent) {
-        for (entity in event.chunk.entities) {
-            if (entity is EntityPetProxy) {
-                entity.deleteFromWorld()
-            }
-        }
+        entityService.cleanUpInvalidEntities(event.chunk.entities.toList())
     }
 
     /**

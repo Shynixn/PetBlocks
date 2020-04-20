@@ -192,6 +192,10 @@ class NMSPetArmorstand(owner: Player, val petMeta: PetMeta) : EntityArmorStand(o
         try {
             proxy.run()
 
+            if (isDead) {
+                return
+            }
+
             if (this.internalHitBox != null) {
                 val location = (internalHitBox!! as Living).transform
                 val aiGoal = petMeta.aiGoals.lastOrNull { p -> p is AIMovement } ?: return
@@ -398,6 +402,7 @@ class NMSPetArmorstand(owner: Player, val petMeta: PetMeta) : EntityArmorStand(o
         this.limbSwingAmount += (f22 - this.limbSwingAmount) * 0.4f
         this.limbSwing += this.limbSwingAmount
     }
+
     /**
      * Applies the entity NBT to the hitbox.
      */

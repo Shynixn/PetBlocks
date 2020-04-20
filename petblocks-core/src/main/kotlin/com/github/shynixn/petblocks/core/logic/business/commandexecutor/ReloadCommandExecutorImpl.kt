@@ -1,10 +1,7 @@
 package com.github.shynixn.petblocks.core.logic.business.commandexecutor
 
 import com.github.shynixn.petblocks.api.business.command.SourceCommand
-import com.github.shynixn.petblocks.api.business.service.AIService
-import com.github.shynixn.petblocks.api.business.service.ConfigurationService
-import com.github.shynixn.petblocks.api.business.service.GUIItemLoadService
-import com.github.shynixn.petblocks.api.business.service.MessageService
+import com.github.shynixn.petblocks.api.business.service.*
 import com.google.inject.Inject
 
 /**
@@ -38,7 +35,8 @@ class ReloadCommandExecutorImpl @Inject constructor(
     private val configurationService: ConfigurationService,
     private val loadService: GUIItemLoadService,
     private val messageService: MessageService,
-    private val aiService: AIService
+    private val aiService: AIService,
+    private val entityService: EntityService
 ) : SourceCommand {
     /**
      * Gets called when the given [source] executes the defined command with the given [args].
@@ -47,6 +45,7 @@ class ReloadCommandExecutorImpl @Inject constructor(
         loadService.reload()
         configurationService.reload()
         aiService.clearResources()
+        entityService.cleanUpInvalidEntitiesInAllWorlds()
         messageService.sendSourceMessage(source, "Reloaded PetBlocks.")
         return true
     }

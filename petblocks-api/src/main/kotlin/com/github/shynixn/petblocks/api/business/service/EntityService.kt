@@ -32,6 +32,11 @@ import com.github.shynixn.petblocks.api.persistence.entity.PetMeta
  */
 interface EntityService {
     /**
+     * Cleans up all invalid entities.
+     */
+    fun cleanUpInvalidEntitiesInAllWorlds()
+
+    /**
      * Checks the entity collection for invalid pet entities and removes them.
      */
     fun <E> cleanUpInvalidEntities(entities: Collection<E>)

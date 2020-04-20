@@ -194,9 +194,7 @@ class PetBlocksPlugin : JavaPlugin(), PluginProxy {
             })
         }
 
-        for (world in Bukkit.getWorlds()) {
-            entityService.cleanUpInvalidEntities(world.entities)
-        }
+        entityService.cleanUpInvalidEntitiesInAllWorlds()
 
         startPlugin()
         sendConsoleMessage(ChatColor.GREEN.toString() + "Enabled PetBlocks " + this.description.version + " by Shynixn")

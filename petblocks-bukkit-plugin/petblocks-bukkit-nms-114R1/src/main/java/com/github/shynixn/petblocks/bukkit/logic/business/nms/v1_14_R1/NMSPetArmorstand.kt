@@ -172,6 +172,10 @@ class NMSPetArmorstand(owner: Player, private val petMeta: PetMeta) :
         try {
             proxy.run()
 
+            if (dead) {
+                return
+            }
+
             if (this.internalHitBox != null) {
                 val location = internalHitBox!!.bukkitEntity.location
                 val aiGoal = petMeta.aiGoals.lastOrNull { p -> p is AIMovement } ?: return
