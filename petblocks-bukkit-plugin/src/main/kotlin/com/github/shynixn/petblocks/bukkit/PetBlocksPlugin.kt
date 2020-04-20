@@ -66,6 +66,7 @@ class PetBlocksPlugin : JavaPlugin(), PluginProxy {
     private val configVersion = 2
     private var injector: Injector? = null
     private var serverVersion: Version? = null
+    private val bstatsPluginId = 1323
 
     /**
      * Gets the installed version of the plugin.
@@ -183,7 +184,7 @@ class PetBlocksPlugin : JavaPlugin(), PluginProxy {
         )
 
         if (config.getBoolean("metrics")) {
-            val metrics = Metrics(this)
+            val metrics = Metrics(this, bstatsPluginId)
 
             metrics.addCustomChart(Metrics.SimplePie("storage") {
                 if (config.getString("sql.type") == "mysql") {
