@@ -2,7 +2,6 @@ package com.github.shynixn.petblocks.core.logic.business.service
 
 import com.github.shynixn.petblocks.api.business.annotation.Key
 import com.github.shynixn.petblocks.api.business.localization.Messages
-import com.github.shynixn.petblocks.api.business.service.ConcurrencyService
 import com.github.shynixn.petblocks.api.business.service.ConfigurationService
 import com.github.shynixn.petblocks.api.business.service.LocalizationService
 import com.github.shynixn.petblocks.api.business.service.LoggingService
@@ -46,7 +45,7 @@ class LocalizationServiceImpl @Inject constructor(
 ) :
     LocalizationService {
     private var properties = Properties()
-    private val defaultLanguages = arrayListOf("en_us", "zh_cn")
+    private val defaultLanguages = arrayListOf("en_us", "zh_cn", "de_de")
 
     /**
      * Checks if the given text contains the lang prefix and replaces it with the localized value.

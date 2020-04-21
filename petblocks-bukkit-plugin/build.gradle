@@ -89,6 +89,7 @@ dependencies {
     implementation 'com.google.inject:guice:4.1.0'
     implementation 'com.zaxxer:HikariCP:3.2.0'
     implementation 'org.bstats:bstats-bukkit:1.7'
+    implementation 'com.google.code.gson:gson:2.8.6'
 
     compileOnly 'org.spigotmc:spigot114R1:1.14.4-R1.0'
     compileOnly 'me.arcaniax.hdb:HeadDatabaseAPI:1.0'
