@@ -26,6 +26,7 @@ import net.minecraft.entity.EntityLiving
 import net.minecraft.entity.ai.EntityAISwimming
 import net.minecraft.inventory.EntityEquipmentSlot
 import net.minecraft.item.ItemStack
+import org.spongepowered.api.Sponge
 import org.spongepowered.api.entity.Entity
 import org.spongepowered.api.entity.living.Living
 import org.spongepowered.api.entity.living.player.Player
@@ -117,6 +118,15 @@ class EntityServiceImpl @Inject constructor(
         this.register<AIWearing>(AIType.WEARING)
         this.register<AIInventory>(AIType.INVENTORY)
         this.register<AIEntityNbt>(AIType.ENTITY_NBT)
+    }
+
+    /**
+     * Cleans up all invalid entities.
+     */
+    override fun cleanUpInvalidEntitiesInAllWorlds() {
+        for (world in Sponge.getGame().server.worlds) {
+            cleanUpInvalidEntities(world.entities)
+        }
     }
 
     /**

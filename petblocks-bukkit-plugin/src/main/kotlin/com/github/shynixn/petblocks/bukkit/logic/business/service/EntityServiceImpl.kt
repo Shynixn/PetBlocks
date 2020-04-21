@@ -20,6 +20,7 @@ import com.github.shynixn.petblocks.bukkit.logic.business.pathfinder.PathfinderF
 import com.github.shynixn.petblocks.core.logic.business.pathfinder.PathfinderBuffEffect
 import com.github.shynixn.petblocks.core.logic.business.proxy.AICreationProxyImpl
 import com.google.inject.Inject
+import org.bukkit.Bukkit
 import org.bukkit.ChatColor
 import org.bukkit.entity.Entity
 import org.bukkit.entity.LivingEntity
@@ -124,6 +125,15 @@ class EntityServiceImpl @Inject constructor(
         this.register<AIWearing>(AIType.WEARING)
         this.register<AIInventory>(AIType.INVENTORY)
         this.register<AIEntityNbt>(AIType.ENTITY_NBT)
+    }
+
+    /**
+     * Cleans up all invalid entities.
+     */
+    override fun cleanUpInvalidEntitiesInAllWorlds() {
+        for (world in Bukkit.getWorlds()) {
+            cleanUpInvalidEntities(world.entities)
+        }
     }
 
     /**

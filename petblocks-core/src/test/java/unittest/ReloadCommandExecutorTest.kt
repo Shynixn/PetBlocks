@@ -2,10 +2,7 @@
 
 package unittest
 
-import com.github.shynixn.petblocks.api.business.service.AIService
-import com.github.shynixn.petblocks.api.business.service.ConfigurationService
-import com.github.shynixn.petblocks.api.business.service.GUIItemLoadService
-import com.github.shynixn.petblocks.api.business.service.MessageService
+import com.github.shynixn.petblocks.api.business.service.*
 import com.github.shynixn.petblocks.api.persistence.entity.ChatMessage
 import com.github.shynixn.petblocks.api.persistence.entity.GuiItem
 import com.github.shynixn.petblocks.api.persistence.entity.PetMeta
@@ -73,7 +70,13 @@ class ReloadCommandExecutorTest {
             configService: ConfigurationService = MockedConfigurationService(),
             messageService: MessageService = MockedMessageService()
         ): ReloadCommandExecutorImpl {
-            return ReloadCommandExecutorImpl(configService, Mockito.mock(GUIItemLoadService::class.java), messageService, Mockito.mock(AIService::class.java))
+            return ReloadCommandExecutorImpl(
+                configService,
+                Mockito.mock(GUIItemLoadService::class.java),
+                messageService,
+                Mockito.mock(AIService::class.java),
+                Mockito.mock(EntityService::class.java)
+            )
         }
     }
 
