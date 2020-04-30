@@ -83,8 +83,8 @@ class PetBlocksPlugin : PluginProxy {
     @Inject
     private lateinit var plugin: PluginContainer
 
-    @Inject
-    private lateinit var metrics: Metrics2
+   // @Inject TODO:
+  //  private lateinit var metrics: Metrics2
 
     @Inject
     private lateinit var logger: Logger
@@ -172,13 +172,13 @@ class PetBlocksPlugin : PluginProxy {
 
         entityService.cleanUpInvalidEntitiesInAllWorlds()
 
-        metrics.addCustomChart(Metrics2.SimplePie("storage") {
+        /*metrics.addCustomChart(Metrics2.SimplePie("storage") { TODO:
             if (configurationService.findValue<String>("sql.type") == "mysql") {
                 "MySQL"
             } else {
                 "SQLite"
             }
-        })
+        })*/
 
         startPlugin()
         sendConsoleMessage(ChatColor.GREEN.toString() + "Enabled PetBlocks " + plugin.version.get() + " by Shynixn")
