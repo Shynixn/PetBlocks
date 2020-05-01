@@ -82,4 +82,19 @@ class PetMetaEntity(override val playerMeta: PlayerMeta, override val skin: Skin
      * Gets the property tracker.
      */
     override val propertyTracker: PropertyTrackingService = PropertyTrackingServiceImpl()
+
+    /**
+     * Creates a shallow clone.
+     */
+    override fun clone(): PetMeta {
+        val petMeta = PetMetaEntity(this.playerMeta, this.skin)
+        petMeta.new = this.new
+        petMeta.aiGoals.addAll(this.aiGoals)
+        petMeta.id = this.id
+        petMeta.enabled = this.enabled
+        petMeta.displayName = this.displayName
+        petMeta.soundEnabled = this.soundEnabled
+        petMeta.particleEnabled = this.particleEnabled
+        return petMeta
+    }
 }

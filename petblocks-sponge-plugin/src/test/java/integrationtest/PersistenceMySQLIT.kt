@@ -301,7 +301,8 @@ class PersistenceMySQLIT {
                 MockedProxyService(),
                 sqlite,
                 MockedConcurrencyService(),
-                MockedEventService()
+                MockedEventService(),
+                aiService
             )
         }
     }

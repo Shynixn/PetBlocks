@@ -46,7 +46,7 @@ interface PetMeta : PropertyTrackable {
     /**
      * Is the pet meta new?
      */
-    var new : Boolean
+    var new: Boolean
 
     /**
      * Pet sounds enabled.
@@ -72,4 +72,9 @@ interface PetMeta : PropertyTrackable {
      * Gets a list of all ai goals of this pet.
      */
     val aiGoals: MutableList<AIBase>
+
+    /**
+     * Creates a shallow clone.
+     */
+    fun clone(): PetMeta
 }

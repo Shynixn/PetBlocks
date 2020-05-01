@@ -266,7 +266,7 @@ class PersistenceMySQLIT {
                 dbContext!!,
                 aiService, guiItemLoadService, configService
             )
-            return PersistencePetMetaServiceImpl(MockedProxyService(), sqlite, MockedConcurrencyService(), MockedEventService())
+            return PersistencePetMetaServiceImpl(MockedProxyService(), sqlite, MockedConcurrencyService(), MockedEventService(), aiService)
         }
     }
 

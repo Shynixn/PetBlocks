@@ -3,10 +3,7 @@
 package unittest
 
 import com.github.shynixn.petblocks.api.business.enumeration.Permission
-import com.github.shynixn.petblocks.api.business.service.ConcurrencyService
-import com.github.shynixn.petblocks.api.business.service.EventService
-import com.github.shynixn.petblocks.api.business.service.PersistencePetMetaService
-import com.github.shynixn.petblocks.api.business.service.ProxyService
+import com.github.shynixn.petblocks.api.business.service.*
 import com.github.shynixn.petblocks.api.persistence.entity.PetMeta
 import com.github.shynixn.petblocks.api.persistence.entity.Position
 import com.github.shynixn.petblocks.api.persistence.entity.PotionEffect
@@ -17,6 +14,7 @@ import com.github.shynixn.petblocks.core.logic.persistence.entity.PlayerMetaEnti
 import com.github.shynixn.petblocks.core.logic.persistence.entity.SkinEntity
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
+import org.mockito.Mockito
 import java.util.*
 
 /**
@@ -124,7 +122,8 @@ class PersistencePetMetaServiceTest {
                 MockedProxyService(),
                 petMetaRepository,
                 MockedConcurrencyService(),
-                MockedEventService()
+                MockedEventService(),
+                Mockito.mock(AIService::class.java)
             )
         }
     }

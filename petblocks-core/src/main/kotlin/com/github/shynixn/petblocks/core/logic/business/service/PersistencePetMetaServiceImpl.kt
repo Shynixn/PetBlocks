@@ -1,9 +1,7 @@
 package com.github.shynixn.petblocks.core.logic.business.service
 
-import com.github.shynixn.petblocks.api.business.service.ConcurrencyService
-import com.github.shynixn.petblocks.api.business.service.EventService
-import com.github.shynixn.petblocks.api.business.service.PersistencePetMetaService
-import com.github.shynixn.petblocks.api.business.service.ProxyService
+import com.github.shynixn.petblocks.api.business.service.*
+import com.github.shynixn.petblocks.api.persistence.entity.AIBase
 import com.github.shynixn.petblocks.api.persistence.entity.PetMeta
 import com.github.shynixn.petblocks.api.persistence.repository.PetMetaRepository
 import com.github.shynixn.petblocks.core.logic.business.extension.async
@@ -45,7 +43,8 @@ class PersistencePetMetaServiceImpl @Inject constructor(
     private val proxyService: ProxyService,
     private val petMetaRepository: PetMetaRepository,
     private val concurrencyService: ConcurrencyService,
-    private val eventService: EventService
+    private val eventService: EventService,
+    private val aiService: AIService
 ) : PersistencePetMetaService {
     private val cacheInternal = HashMap<String, PetMeta>()
 
@@ -63,7 +62,7 @@ class PersistencePetMetaServiceImpl @Inject constructor(
     init {
         sync(concurrencyService, 0L, 20 * 60L * 5) {
             cacheInternal.values.forEach { p ->
-                save(p)
+                save(p).thenAcceptSafely {}
             }
         }
     }
@@ -170,8 +169,18 @@ class PersistencePetMetaServiceImpl @Inject constructor(
 
         eventService.callEvent(PetBlocksPreSaveEntity(petMeta))
 
+        // Only use clones for saving otherwise concurrency exceptions may or may not occur.
+        // AIS have to be deeply cloned using serializers.
+        val petMetaClone = petMeta.clone()
+        val clonedAis = petMetaClone.aiGoals.asSequence()
+            .map { e -> Pair(aiService.serializeAiBase(e), e.type) }
+            .map { e -> aiService.deserializeAiBase<AIBase>(e.second, e.first) }
+            .toMutableList()
+        petMetaClone.aiGoals.clear()
+        petMetaClone.aiGoals.addAll(clonedAis)
+
         async(concurrencyService) {
-            petMetaRepository.save(petMeta)
+            petMetaRepository.save(petMetaClone)
 
             sync(concurrencyService) {
                 eventService.callEvent(PetBlocksPostSaveEntity(petMeta))
