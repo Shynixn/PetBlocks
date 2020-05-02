@@ -102,5 +102,5 @@ dependencies {
     testCompile 'ch.vorburger.mariaDB4j:mariaDB4j:2.2.3'
     testCompile 'org.spigotmc:spigot18R3:1.8.8-R3.0'
 
-    testRuntime 'org.junit.jupiter:junit-jupiter-engine:5.3.1'
+    testRuntime 'org.junit.jupiter:junit-jupiter-engine:5.6.2'
 }
