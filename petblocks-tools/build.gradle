@@ -17,7 +17,7 @@ shadowJar {
 }
 
 dependencies {
-    implementation 'org.jsoup:jsoup:1.11.3'
+    implementation 'org.jsoup:jsoup:1.13.1'
     implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk8'
     implementation 'com.github.shynixn:discordwebhook-ktl:1.2'
     implementation 'org.apache.cxf:cxf-rt-rs-client:3.3.0'
