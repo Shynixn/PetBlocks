@@ -84,7 +84,7 @@ dependencies {
     implementation project(':petblocks-bukkit-plugin:petblocks-bukkit-nms-114R1')
     implementation project(':petblocks-bukkit-plugin:petblocks-bukkit-nms-115R1')
 
-    implementation 'org.slf4j:slf4j-jdk14:1.7.25'
+    implementation 'org.slf4j:slf4j-jdk14:1.7.30'
     implementation 'commons-io:commons-io:2.6'
     implementation 'com.google.inject:guice:4.2.3'
     implementation 'com.zaxxer:HikariCP:3.4.3'
