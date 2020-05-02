@@ -110,7 +110,7 @@ dependencies {
     implementation project(':petblocks-api')
     implementation project(':petblocks-sponge-api')
 
-    compileOnly 'com.zaxxer:HikariCP:3.2.0'
+    compileOnly 'com.zaxxer:HikariCP:3.4.3'
     compileOnly 'org.spongepowered:spongeapi:7.1.0'
 
     implementation 'org.bstats:bstats-sponge:1.7'
