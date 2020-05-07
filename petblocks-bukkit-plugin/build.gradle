@@ -1,8 +1,5 @@
-import org.gradle.api.tasks.testing.logging.TestExceptionFormat
-import org.gradle.api.tasks.testing.logging.TestLogEvent
-
 plugins {
-    id 'com.github.johnrengelman.shadow' version '4.0.2'
+    id 'com.github.johnrengelman.shadow' version '5.2.0'
 }
 
 apply plugin: 'jacoco'
@@ -23,19 +20,6 @@ shadowJar {
     relocate 'com.google', 'com.github.shynixn.petblocks.lib.com.google'
     relocate 'com.zaxxer', 'com.github.shynixn.petblocks.lib.com.zaxxer'
     relocate 'org.apache', 'com.github.shynixn.petblocks.lib.org.apache'
-}
-
-tasks {
-    test {
-        testLogging {
-            events(TestLogEvent.FAILED, TestLogEvent.PASSED, TestLogEvent.SKIPPED, TestLogEvent.STARTED)
-            displayGranularity = 0
-            showExceptions = true
-            showCauses = true
-            showStackTraces = true
-            exceptionFormat = TestExceptionFormat.FULL
-        }
-    }
 }
 
 jacocoTestReport {
@@ -84,23 +68,17 @@ dependencies {
     implementation project(':petblocks-bukkit-plugin:petblocks-bukkit-nms-114R1')
     implementation project(':petblocks-bukkit-plugin:petblocks-bukkit-nms-115R1')
 
-    implementation 'org.slf4j:slf4j-jdk14:1.7.25'
+    implementation 'org.slf4j:slf4j-jdk14:1.7.30'
     implementation 'commons-io:commons-io:2.6'
-    implementation 'com.google.inject:guice:4.1.0'
-    implementation 'com.zaxxer:HikariCP:3.2.0'
+    implementation 'com.google.inject:guice:4.2.3'
+    implementation 'com.zaxxer:HikariCP:3.4.3'
     implementation 'org.bstats:bstats-bukkit:1.7'
     implementation 'com.google.code.gson:gson:2.8.6'
 
     compileOnly 'org.spigotmc:spigot114R1:1.14.4-R1.0'
     compileOnly 'me.arcaniax.hdb:HeadDatabaseAPI:1.0'
 
-    testCompile 'org.jetbrains.kotlin:kotlin-test'
-    testCompile 'org.jetbrains.kotlin:kotlin-test-junit'
-    testCompile 'org.mockito:mockito-core:2.23.0'
-    testCompile 'org.junit.jupiter:junit-jupiter-api:5.3.1'
-    testCompile 'org.xerial:sqlite-jdbc:3.23.1'
-    testCompile 'ch.vorburger.mariaDB4j:mariaDB4j:2.2.3'
+    testCompile 'org.xerial:sqlite-jdbc:3.31.1'
+    testCompile 'ch.vorburger.mariaDB4j:mariaDB4j:2.4.0'
     testCompile 'org.spigotmc:spigot18R3:1.8.8-R3.0'
-
-    testRuntime 'org.junit.jupiter:junit-jupiter-engine:5.3.1'
 }

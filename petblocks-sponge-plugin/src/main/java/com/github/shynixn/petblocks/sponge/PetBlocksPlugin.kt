@@ -14,13 +14,13 @@ import com.github.shynixn.petblocks.core.logic.business.commandexecutor.EditPetC
 import com.github.shynixn.petblocks.core.logic.business.commandexecutor.PlayerPetActionCommandExecutorImpl
 import com.github.shynixn.petblocks.core.logic.business.commandexecutor.ReloadCommandExecutorImpl
 import com.github.shynixn.petblocks.core.logic.business.service.LoggingSlf4jServiceImpl
+import com.github.shynixn.petblocks.sponge.logic.business.dependency.Metrics2
 import com.github.shynixn.petblocks.sponge.logic.business.extension.sendMessage
 import com.github.shynixn.petblocks.sponge.logic.business.extension.toText
 import com.github.shynixn.petblocks.sponge.logic.business.listener.*
 import com.github.shynixn.petblocks.sponge.logic.business.service.EntityRegistrationServiceImpl
 import com.google.inject.Inject
 import com.google.inject.Injector
-import org.bstats.sponge.Metrics2
 import org.slf4j.Logger
 import org.spongepowered.api.Sponge
 import org.spongepowered.api.entity.living.player.Player
@@ -70,7 +70,7 @@ import java.util.*
     name = "PetBlocks",
     description = "PetBlocks is a spigot and also a sponge plugin to use blocks and custom heads as pets in Minecraft."
 )
-class PetBlocksPlugin : PluginProxy {
+class PetBlocksPlugin @Inject constructor(private val metricsFactory : Metrics2.Factory) : PluginProxy {
     companion object {
         /** Final Prefix of PetBlocks in the console */
         val PREFIX_CONSOLE: String = ChatColor.AQUA.toString() + "[PetBlocks] "
@@ -79,12 +79,10 @@ class PetBlocksPlugin : PluginProxy {
     private val configVersion = 2
     private var injector: Injector? = null
     private var serverVersion: Version? = null
+    private val bstatsPluginId = 1997
 
     @Inject
     private lateinit var plugin: PluginContainer
-
-    @Inject
-    private lateinit var metrics: Metrics2
 
     @Inject
     private lateinit var logger: Logger
@@ -171,6 +169,8 @@ class PetBlocksPlugin : PluginProxy {
         )
 
         entityService.cleanUpInvalidEntitiesInAllWorlds()
+
+        val metrics = metricsFactory.make(bstatsPluginId);
 
         metrics.addCustomChart(Metrics2.SimplePie("storage") {
             if (configurationService.findValue<String>("sql.type") == "mysql") {

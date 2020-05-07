@@ -261,7 +261,7 @@ class PersistenceSQLiteIT {
             dbContext = SqlDbContextImpl(configService, LoggingUtilServiceImpl(Logger.getAnonymousLogger()))
 
             val sqlite = PetMetaSqlRepository(dbContext!!, aiService, guiItemLoadService, configService)
-            return PersistencePetMetaServiceImpl(MockedProxyService(), sqlite, MockedConcurrencyService(), MockedEventService())
+            return PersistencePetMetaServiceImpl(MockedProxyService(), sqlite, MockedConcurrencyService(), MockedEventService(), aiService)
         }
     }
 

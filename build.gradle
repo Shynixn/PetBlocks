@@ -1,3 +1,7 @@
+import org.gradle.api.tasks.testing.logging.TestExceptionFormat
+import org.gradle.api.tasks.testing.logging.TestLogEvent
+import org.jetbrains.dokka.gradle.DokkaTask
+
 buildscript {
     repositories {
         jcenter()
@@ -6,14 +10,14 @@ buildscript {
     }
     dependencies {
         classpath group: 'org.jetbrains.kotlin', name: 'kotlin-gradle-plugin', version: kotlinVersion
-        classpath "org.jetbrains.dokka:dokka-gradle-plugin:0.9.17"
+        classpath "org.jetbrains.dokka:dokka-gradle-plugin:0.10.1"
     }
 }
 
 plugins {
-    id 'org.jetbrains.kotlin.jvm' version '1.3.21'
+    id 'org.jetbrains.kotlin.jvm' version '1.3.72'
     id 'io.codearte.nexus-staging' version '0.20.0'
-    id 'de.marcphilipp.nexus-publish' version '0.2.0'
+    id 'de.marcphilipp.nexus-publish' version '0.4.0'
 }
 
 apply plugin: 'org.jetbrains.dokka'
@@ -36,7 +40,7 @@ allprojects {
 
 subprojects {
     group 'com.github.shynixn.petblocks'
-    version '8.16.0'
+    version '8.17.0'
 
     sourceCompatibility = 1.8
 
@@ -45,6 +49,7 @@ subprojects {
     apply plugin: 'signing'
     apply plugin: 'java-library'
     apply plugin: 'de.marcphilipp.nexus-publish'
+    apply plugin: 'org.jetbrains.dokka'
 
     compileKotlin {
         kotlinOptions.jvmTarget = "1.8"
@@ -64,6 +69,15 @@ subprojects {
         useJUnitPlatform()
         testLogging.showStandardStreams = true
         failFast = true
+
+        testLogging {
+            events(TestLogEvent.FAILED, TestLogEvent.PASSED, TestLogEvent.SKIPPED, TestLogEvent.STARTED)
+            displayGranularity = 0
+            showExceptions = true
+            showCauses = true
+            showStackTraces = true
+            exceptionFormat = TestExceptionFormat.FULL
+        }
     }
 
     task sourcesJar(type: Jar) {
@@ -144,6 +158,10 @@ subprojects {
 
         testCompile 'org.jetbrains.kotlin:kotlin-test'
         testCompile 'org.jetbrains.kotlin:kotlin-test-junit'
+        testCompile 'org.mockito:mockito-core:3.3.3'
+        testCompile 'org.junit.jupiter:junit-jupiter-api:5.6.2'
+
+        testRuntime 'org.junit.jupiter:junit-jupiter-engine:5.6.2'
     }
 }
 
@@ -174,30 +192,11 @@ task jacocoRootReport(type: org.gradle.testing.jacoco.tasks.JacocoReport) {
         })
     }
 }
-
-task generateJavaDocPages(type: org.jetbrains.dokka.gradle.DokkaTask) {
-    outputFormat = 'javadoc'
-    outputDirectory = "docs/apidocs"
-    sourceDirs = files(new File(this.projectDir as File, '/petblocks-api/src/main/kotlin')
-            , new File(this.projectDir as File, '/petblocks-bukkit-api/src/main/kotlin')
-            , new File(this.projectDir as File, '/petblocks-core/src/main/kotlin')
-            , new File(this.projectDir as File, '/petblocks-bukkit-plugin/src/main/kotlin')
-            , new File(this.projectDir as File, '/petblocks-sponge-api/src/main/java')
-            , new File(this.projectDir as File, '/petblocks-sponge-plugin/src/main/java')
-    )
-    externalDocumentationLink {
-        url = new URL("https://hub.spigotmc.org/javadocs/spigot/")
-    }
-    externalDocumentationLink {
-        url = new URL("https://hub.spigotmc.org/javadocs/spigot/package-list")
-    }
-    externalDocumentationLink {
-        url = new URL("https://jd.spongepowered.org/7.1.0/")
-    }
-    externalDocumentationLink {
-        url = new URL("https://jd.spongepowered.org/7.1.0/package-list")
-    }
-
+/**
+ * Downloads dependencies and generates JavaDocs in the
+ * docs/api folder.
+ */
+task generateJavaDocPages(type: DokkaTask) {
     def build = new File('build')
 
     if (!build.exists()) {
@@ -230,7 +229,66 @@ task generateJavaDocPages(type: org.jetbrains.dokka.gradle.DokkaTask) {
         }
     }
 
-    classpath = files(spigotApiFile, spongeApiFile)
+    outputFormat = 'javadoc'
+    outputDirectory = "docs/apidocs"
+    configuration {
+        sourceRoot{
+            path = "petblocks-api/src/main/kotlin"
+        }
+        sourceRoot {
+            path = "petblocks-core/src/main/kotlin"
+        }
+        sourceRoot {
+            path = "petblocks-bukkit-api/src/main/kotlin"
+        }
+        sourceRoot {
+            path = "petblocks-bukkit-plugin/src/main/kotlin"
+        }
+        sourceRoot {
+            path = "petblocks-bukkit-plugin/petblocks-bukkit-nms-108R3/src/main/java"
+        }
+        sourceRoot {
+            path = "petblocks-bukkit-plugin/petblocks-bukkit-nms-109R2/src/main/java"
+        }
+        sourceRoot {
+            path = "petblocks-bukkit-plugin/petblocks-bukkit-nms-110R1/src/main/java"
+        }
+        sourceRoot {
+            path = "petblocks-bukkit-plugin/petblocks-bukkit-nms-111R1/src/main/java"
+        }
+        sourceRoot {
+            path = "petblocks-bukkit-plugin/petblocks-bukkit-nms-112R1/src/main/java"
+        }
+        sourceRoot {
+            path = "petblocks-bukkit-plugin/petblocks-bukkit-nms-113R2/src/main/java"
+        }
+        sourceRoot {
+            path = "petblocks-bukkit-plugin/petblocks-bukkit-nms-114R1/src/main/java"
+        }
+        sourceRoot {
+            path = "petblocks-bukkit-plugin/petblocks-bukkit-nms-115R1/src/main/java"
+        }
+        sourceRoot {
+            path = "petblocks-sponge-api/src/main/java"
+        }
+        sourceRoot {
+            path = "petblocks-sponge-plugin/src/main/java"
+        }
+        externalDocumentationLink {
+            url = new URL("https://hub.spigotmc.org/javadocs/spigot/")
+        }
+        externalDocumentationLink {
+            url = new URL("https://hub.spigotmc.org/javadocs/spigot/package-list")
+        }
+   /*   Disabled because website shows a 500 error.
+        externalDocumentationLink {
+            url = new URL("https://jd.spongepowered.org/7.1.0/")
+        }
+        externalDocumentationLink {
+            url = new URL("https://jd.spongepowered.org/7.1.0/package-list")
+        }*/
+        classpath = [spigotApiFile, spongeApiFile]
+    }
 }
 
 task downloadDependencies(type: Exec) {
@@ -260,7 +318,7 @@ task downloadDependencies(type: Exec) {
         def text = lookConnection.getInputStream().text
         def startIndex = text.indexOf("aria-label=\"Download file\"") + 40
         def endIndex = text.indexOf(">\n" + "                        Download (")
-        def downloadLink = text.substring(startIndex as int,endIndex as int).replace("href=\"","").trim()
+        def downloadLink = text.substring(startIndex as int, endIndex as int).replace("href=\"", "").trim()
 
         def connection = new URL(downloadLink).openConnection()
         connection.setRequestProperty("User-Agent", "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.4; en-US; rv:1.9.2.2) Gecko/20100316 Firefox/3.6.2");

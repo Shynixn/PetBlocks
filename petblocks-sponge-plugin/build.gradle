@@ -1,6 +1,3 @@
-import org.gradle.api.tasks.testing.logging.TestExceptionFormat
-import org.gradle.api.tasks.testing.logging.TestLogEvent
-
 buildscript {
     repositories {
         maven {
@@ -17,7 +14,7 @@ buildscript {
 plugins {
     id 'org.spongepowered.plugin' version '0.9.0'
     id 'net.minecrell.vanillagradle.server' version '2.2-6'
-    id 'com.github.johnrengelman.shadow' version '4.0.2'
+    id 'com.github.johnrengelman.shadow' version '5.2.0'
 }
 
 minecraft {
@@ -54,29 +51,10 @@ jar {
 
 shadowJar.finalizedBy reobfJar
 
-test {
-    useJUnitPlatform()
-    testLogging.showStandardStreams = true
-    failFast = true
-}
-
 jacocoTestReport {
     reports {
         xml.enabled = true
         html.enabled = false
-    }
-}
-
-tasks {
-    test {
-        testLogging {
-            events(TestLogEvent.FAILED, TestLogEvent.PASSED, TestLogEvent.SKIPPED, TestLogEvent.STARTED)
-            displayGranularity = 0
-            showExceptions = true
-            showCauses = true
-            showStackTraces = true
-            exceptionFormat = TestExceptionFormat.FULL
-        }
     }
 }
 
@@ -110,21 +88,16 @@ dependencies {
     implementation project(':petblocks-api')
     implementation project(':petblocks-sponge-api')
 
-    compileOnly 'com.zaxxer:HikariCP:3.2.0'
+    compileOnly 'com.zaxxer:HikariCP:3.4.3'
     compileOnly 'org.spongepowered:spongeapi:7.1.0'
 
     implementation 'org.bstats:bstats-sponge:1.7'
 
-    testCompile 'org.jetbrains.kotlin:kotlin-test'
-    testCompile 'org.jetbrains.kotlin:kotlin-test-junit'
-    testCompile 'org.mockito:mockito-core:2.23.0'
-    testCompile 'org.junit.jupiter:junit-jupiter-api:5.3.1'
-    testCompile 'org.xerial:sqlite-jdbc:3.23.1'
+    testCompile 'org.xerial:sqlite-jdbc:3.31.1'
     testCompile 'org.spongepowered:spongeapi:7.1.0'
-    testCompile 'ch.vorburger.mariaDB4j:mariaDB4j:2.2.3'
+    testCompile 'ch.vorburger.mariaDB4j:mariaDB4j:2.4.0'
     testCompile 'mysql:mysql-connector-java:5.1.24'
 
     testRuntime 'com.zaxxer:HikariCP:3.2.0'
-    testRuntime 'org.slf4j:slf4j-jdk14:1.7.25'
-    testRuntime 'org.junit.jupiter:junit-jupiter-engine:5.3.1'
+    testRuntime 'org.slf4j:slf4j-jdk14:1.7.30'
 }

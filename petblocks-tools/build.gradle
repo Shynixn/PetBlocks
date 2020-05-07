@@ -1,6 +1,6 @@
 plugins {
     id 'application'
-    id 'com.github.johnrengelman.shadow' version '4.0.2'
+    id 'com.github.johnrengelman.shadow' version '5.2.0'
 }
 
 
@@ -20,10 +20,10 @@ dependencies {
     implementation 'org.jsoup:jsoup:1.11.3'
     implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk8'
     implementation 'com.github.shynixn:discordwebhook-ktl:1.2'
-    implementation 'org.apache.cxf:cxf-rt-rs-client:3.3.0'
+    implementation 'org.apache.cxf:cxf-rt-rs-client:3.3.6'
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.9.8'
     implementation 'commons-io:commons-io:2.4'
-    implementation 'com.zaxxer:HikariCP:3.2.0'
-    implementation 'org.xerial:sqlite-jdbc:3.8.11.2'
+    implementation 'com.zaxxer:HikariCP:3.4.3'
+    implementation 'org.xerial:sqlite-jdbc:3.31.1'
     implementation 'org.spigotmc:spigot18R3:1.8.8-R3.0'
 }

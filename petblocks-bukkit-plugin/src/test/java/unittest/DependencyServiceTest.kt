@@ -6,7 +6,6 @@ import com.github.shynixn.petblocks.bukkit.logic.business.service.DependencyServ
 import com.github.shynixn.petblocks.core.logic.business.extension.cast
 import org.bukkit.Bukkit
 import org.bukkit.Server
-import org.bukkit.command.CommandSender
 import org.bukkit.command.ConsoleCommandSender
 import org.bukkit.conversations.Conversation
 import org.bukkit.conversations.ConversationAbandonedEvent

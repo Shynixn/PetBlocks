@@ -284,7 +284,8 @@ class PersistenceSQLiteIT {
                 MockedProxyService(),
                 sqlite,
                 MockedConcurrencyService(),
-                MockedEventService()
+                MockedEventService(),
+                aiService
             )
         }
     }

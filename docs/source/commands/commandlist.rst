@@ -111,6 +111,21 @@ Admin Commands
 
 .. note:: All admin commands can be executed via the server console.
 
+.. warning:: The admin commands do not work on offline players.
+
+/petblockreload
+~~~~~~~~~~~~~~~~~
+
+This admin command reloads the config.yml and runtime cache of the plugin.
+
+* Players (require permissions) ✔
+* Server console ✔
+* Command blocks ✔
+
+Reloads the PetBlocks plugin
+::
+  /petblockreload
+
 /petblocks [page]
 ~~~~~~~~~~~~~~~~~
 
@@ -339,6 +354,32 @@ Toggles the particle
 Toggles the particle of player Shynixn
 ::
   /petblocks toggleparticle  Shynixn
+
+/petblocks inv <from> <to> [player]
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. warning:: Editing the pet inventory is not possible. Use the /petblocks reset command to
+ delete the pet inventory of a certain player if the player violates a rule.
+
+Opens the pet inventory of the given player in readonly mode.
+
+The <from> and <to> parameters specify the index range of the slots of the unlimited inventory.
+
+The optional [player] parameter specifies the target player otherwise the player executing the command gets used.
+
+* Players (require permissions) ✔
+* Server console ✘
+* Command blocks ✘
+
+**Sample list:**
+
+Opens your pet inventory in readonly mode.
+::
+  /petblocks inv 1 54
+
+Opens the pet inventory of player Shynixn in readonly mode.
+::
+  /petblocks inv 1 54 Shynixn
 
 /petblocks reset [player]
 ~~~~~~~~~~~~~~~~~~~~~~~~~
