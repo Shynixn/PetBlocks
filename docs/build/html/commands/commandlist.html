@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Commandslist &mdash; PetBlocks 8.16.0 documentation</title>
+  <title>Commandslist &mdash; PetBlocks 8.17.0 documentation</title>
   
 
   
@@ -37,7 +37,7 @@
         <link rel="index" title="Index"
               href="../genindex.html"/>
         <link rel="search" title="Search" href="../search.html"/>
-    <link rel="top" title="PetBlocks 8.16.0 documentation" href="../index.html"/>
+    <link rel="top" title="PetBlocks 8.17.0 documentation" href="../index.html"/>
         <link rel="up" title="Commands" href="index.html"/>
         <link rel="next" title="Rename Commands" href="renamecommands.html"/>
         <link rel="prev" title="Commands" href="index.html"/> 
@@ -72,7 +72,7 @@
             
             
               <div class="version">
-                8.16.0
+                8.17.0
               </div>
             
           
@@ -96,41 +96,11 @@
               
             
             
-              <ul class="current">
+              <ul>
 <li class="toctree-l1"><a class="reference internal" href="../gettingstarted/index.html">Getting Started</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../pets/index.html">Pets</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../customizing/index.html">Customizing</a></li>
-<li class="toctree-l1 current"><a class="reference internal" href="index.html">Commands</a><ul class="current">
-<li class="toctree-l2 current"><a class="current reference internal" href="#">Commandslist</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#user-commands">User Commands</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#petblock">/petblock</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#petblock-gui-path">/petblock [gui-path]</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#petblock-call">/petblock call</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#petblock-toggle">/petblock toggle</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#petblock-rename-name">/petblock rename &lt;name&gt;</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#petblock-skin-skin">/petblock skin &lt;skin&gt;</a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="#admin-commands">Admin Commands</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#petblocks-page">/petblocks [page]</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#petblocks-enable-player">/petblocks enable [player]</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#petblocks-disable-player">/petblocks disable [player]</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#petblocks-toggle-player">/petblocks toggle [player]</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#petblocks-ai-path-player">/petblocks ai &lt;path&gt; [player]</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#petblocks-skin-path-player">/petblocks skin &lt;path&gt; [player]</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#petblocks-rename-player">/petblocks rename [player]</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#petblocks-togglesound-player">/petblocks togglesound [player]</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#petblocks-toggleparticle-player">/petblocks toggleparticle [player]</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#petblocks-reset-player">/petblocks reset [player]</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#petblocks-debug-player">/petblocks debug [player]</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#petblocks-killnext">/petblocks killnext</a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="renamecommands.html">Rename Commands</a></li>
-</ul>
-</li>
+<li class="toctree-l1"><a class="reference internal" href="index.html">Commands</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../general/index.html">General</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../api/index.html">Developer API</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../faq/index.html">FAQ</a></li>
@@ -221,6 +191,7 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#admin-commands">Admin Commands</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#petblockreload">/petblockreload</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#petblocks-page">/petblocks [page]</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#petblocks-enable-player">/petblocks enable [player]</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#petblocks-disable-player">/petblocks disable [player]</a></li>
@@ -230,6 +201,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#petblocks-rename-player">/petblocks rename [player]</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#petblocks-togglesound-player">/petblocks togglesound [player]</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#petblocks-toggleparticle-player">/petblocks toggleparticle [player]</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#petblocks-inv-from-to-player">/petblocks inv &lt;from&gt; &lt;to&gt; [player]</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#petblocks-reset-player">/petblocks reset [player]</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#petblocks-debug-player">/petblocks debug [player]</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#petblocks-killnext">/petblocks killnext</a></li>
@@ -341,6 +313,23 @@ Opening gui paths directly requires the corresponding permission to this path.</
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>All admin commands can be executed via the server console.</p>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>The admin commands do not work on offline players.</p>
+</div>
+<div class="section" id="petblockreload">
+<h3>/petblockreload<a class="headerlink" href="#petblockreload" title="Permalink to this headline">¶</a></h3>
+<p>This admin command reloads the config.yml and runtime cache of the plugin.</p>
+<ul class="simple">
+<li><p>Players (require permissions) ✔</p></li>
+<li><p>Server console ✔</p></li>
+<li><p>Command blocks ✔</p></li>
+</ul>
+<p>Reloads the PetBlocks plugin</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">/</span><span class="n">petblockreload</span>
+</pre></div>
+</div>
 </div>
 <div class="section" id="petblocks-page">
 <h3>/petblocks [page]<a class="headerlink" href="#petblocks-page" title="Permalink to this headline">¶</a></h3>
@@ -558,6 +547,31 @@ take a look at the example below.</p>
 </pre></div>
 </div>
 </div>
+<div class="section" id="petblocks-inv-from-to-player">
+<h3>/petblocks inv &lt;from&gt; &lt;to&gt; [player]<a class="headerlink" href="#petblocks-inv-from-to-player" title="Permalink to this headline">¶</a></h3>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Editing the pet inventory is not possible. Use the /petblocks reset command to
+delete the pet inventory of a certain player if the player violates a rule.</p>
+</div>
+<p>Opens the pet inventory of the given player in readonly mode.</p>
+<p>The &lt;from&gt; and &lt;to&gt; parameters specify the index range of the slots of the unlimited inventory.</p>
+<p>The optional [player] parameter specifies the target player otherwise the player executing the command gets used.</p>
+<ul class="simple">
+<li><p>Players (require permissions) ✔</p></li>
+<li><p>Server console ✘</p></li>
+<li><p>Command blocks ✘</p></li>
+</ul>
+<p><strong>Sample list:</strong></p>
+<p>Opens your pet inventory in readonly mode.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">/</span><span class="n">petblocks</span> <span class="n">inv</span> <span class="mi">1</span> <span class="mi">54</span>
+</pre></div>
+</div>
+<p>Opens the pet inventory of player Shynixn in readonly mode.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">/</span><span class="n">petblocks</span> <span class="n">inv</span> <span class="mi">1</span> <span class="mi">54</span> <span class="n">Shynixn</span>
+</pre></div>
+</div>
+</div>
 <div class="section" id="petblocks-reset-player">
 <h3>/petblocks reset [player]<a class="headerlink" href="#petblocks-reset-player" title="Permalink to this headline">¶</a></h3>
 <p>Resets the pet settings of the given player to the default pet settings in the config.yml.</p>
@@ -654,7 +668,7 @@ take a look at the example below.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'8.16.0',
+            VERSION:'8.17.0',
             LANGUAGE:'None',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
