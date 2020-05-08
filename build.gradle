@@ -291,6 +291,10 @@ task generateJavaDocPages(type: DokkaTask) {
     }
 }
 
+/**
+ * Downloads additional dependencies which are not available in
+ * maven central or other repositories.
+ */
 task downloadDependencies(type: Exec) {
     def build = new File('build')
 
