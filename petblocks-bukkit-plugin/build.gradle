@@ -20,6 +20,9 @@ shadowJar {
     relocate 'com.google', 'com.github.shynixn.petblocks.lib.com.google'
     relocate 'com.zaxxer', 'com.github.shynixn.petblocks.lib.com.zaxxer'
     relocate 'org.apache', 'com.github.shynixn.petblocks.lib.org.apache'
+    relocate 'org.codehaus', 'com.github.shynixn.petblocks.lib.org.codehaus'
+    relocate 'org.checkerframework', 'com.github.shynixn.petblocks.lib.org.checkerframework'
+    relocate 'javax.annotation', 'com.github.shynixn.petblocks.lib.javax.annotation'
 }
 
 jacocoTestReport {
