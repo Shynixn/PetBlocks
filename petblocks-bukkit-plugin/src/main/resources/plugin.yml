@@ -1,5 +1,5 @@
 name: PetBlocks
-version: 8.17.1
+version: 8.18.0-SNAPSHOT
 author: Shynixn
 main: com.github.shynixn.petblocks.bukkit.PetBlocksPlugin
 commands:
