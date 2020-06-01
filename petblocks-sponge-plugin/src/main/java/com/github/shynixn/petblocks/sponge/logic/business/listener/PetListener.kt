@@ -142,6 +142,10 @@ class PetListener @Inject constructor(
             performFirstSpawn(event.player)
         }
 
+        if (!configurationService.containsValue("update")) {
+            return
+        }
+
         // Concurrency protection.
         sync(concurrencyService, 20 * 2L) {
             val petMeta = persistencePetMetaService.getPetMetaFromPlayer(event.player)
@@ -267,8 +271,16 @@ class PetListener @Inject constructor(
             return
         }
 
-        val aiSet = aiService.loadAisFromConfig<AIBase>("events.onsneak")
-        petActionService.applyAI(event.targetHolder, aiSet.first, aiSet.second)
+        if (configurationService.containsValue("events.onsneak")) {
+            val aiSet = aiService.loadAisFromConfig<AIBase>("events.onsneak")
+            petActionService.applyAI(event.targetHolder, aiSet.first, aiSet.second)
+        }
+
+        val petMeta = persistencePetMetaService.getPetMetaFromPlayer(event.targetHolder)
+
+        if (petMeta.aiGoals.firstOrNull { e -> e is AIGroundRiding || e is AIFlyRiding } != null) {
+            event.isCancelled = true
+        }
     }
 
     /**

@@ -8,10 +8,8 @@ import com.github.shynixn.petblocks.api.business.service.ItemTypeService
 import com.github.shynixn.petblocks.api.business.service.LoggingService
 import com.github.shynixn.petblocks.api.business.service.ParticleService
 import com.github.shynixn.petblocks.api.business.service.SoundService
-import com.github.shynixn.petblocks.api.persistence.entity.AIMovement
-import com.github.shynixn.petblocks.api.persistence.entity.PetMeta
-import com.github.shynixn.petblocks.api.persistence.entity.Position
-import com.github.shynixn.petblocks.api.persistence.entity.Skin
+import com.github.shynixn.petblocks.api.persistence.entity.*
+import com.github.shynixn.petblocks.bukkit.logic.business.extension.findClazz
 import com.github.shynixn.petblocks.bukkit.logic.business.extension.toLocation
 import com.github.shynixn.petblocks.bukkit.logic.business.extension.toVector
 import com.github.shynixn.petblocks.core.logic.business.extension.hasChanged
@@ -171,6 +169,22 @@ class PetProxyImpl(override val meta: PetMeta, private val design: ArmorStand, p
     }
 
     /**
+     * Triggers a manual tick for tickless ais.
+     */
+    override fun triggerTick() {
+        val handle =
+            findClazz("org.bukkit.craftbukkit.VERSION.entity.CraftLivingEntity").getDeclaredMethod("getHandle")
+                .invoke(getHeadArmorstand())
+
+        val method =
+            findClazz("com.github.shynixn.petblocks.bukkit.logic.business.nms.VERSION.NMSPetArmorstand")
+                .getDeclaredMethod("doTick")
+        method.isAccessible = true
+
+        method.invoke(handle)
+    }
+
+    /**
      * When an object implementing interface `Runnable` is used
      * to create a thread, starting the thread causes the object's
      * `run` method to be called in that separately executing
@@ -245,6 +259,7 @@ class PetProxyImpl(override val meta: PetMeta, private val design: ArmorStand, p
      */
     override fun remove() {
         meta.enabled = false
+        triggerTick()
     }
 
     /**

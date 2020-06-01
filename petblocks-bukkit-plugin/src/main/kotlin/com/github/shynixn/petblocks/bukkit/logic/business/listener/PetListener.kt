@@ -12,7 +12,6 @@ import com.github.shynixn.petblocks.api.persistence.entity.AIBase
 import com.github.shynixn.petblocks.api.persistence.entity.AIFlyRiding
 import com.github.shynixn.petblocks.api.persistence.entity.AIGroundRiding
 import com.github.shynixn.petblocks.api.persistence.entity.AIWearing
-import com.github.shynixn.petblocks.bukkit.logic.business.extension.findClazz
 import com.github.shynixn.petblocks.bukkit.logic.business.extension.teleportUnsafe
 import com.github.shynixn.petblocks.core.logic.business.extension.cast
 import com.github.shynixn.petblocks.core.logic.business.extension.sync
@@ -119,6 +118,10 @@ class PetListener @Inject constructor(
             performFirstSpawn(event.player)
         }
 
+        if (!configurationService.containsValue("update")) {
+            return
+        }
+
         // Concurrency protection.
         sync(concurrencyService, 20 * 2L) {
             val petMeta = persistencePetMetaService.getPetMetaFromPlayer(event.player)
@@ -200,6 +203,12 @@ class PetListener @Inject constructor(
     @EventHandler
     fun onEntityToggleSneakEvent(event: PlayerToggleSneakEvent) {
         unMountPet(event.player)
+
+        val petMeta = persistencePetMetaService.getPetMetaFromPlayer(event.player)
+
+        if (petMeta.aiGoals.firstOrNull { e -> e is AIGroundRiding || e is AIFlyRiding } != null) {
+            event.isCancelled = true
+        }
     }
 
     /**
@@ -214,6 +223,12 @@ class PetListener @Inject constructor(
         }
 
         unMountPet(event.entity as Player)
+
+        val petMeta = persistencePetMetaService.getPetMetaFromPlayer(event.entity as Player)
+
+        if (petMeta.aiGoals.firstOrNull { e -> e is AIGroundRiding || e is AIFlyRiding } != null) {
+            event.isCancelled = true
+        }
     }
 
     /**
@@ -350,6 +365,10 @@ class PetListener @Inject constructor(
             return
         }
 
+        if (!configurationService.containsValue("events.onsneak")) {
+            return
+        }
+
         val aiSet = aiService.loadAisFromConfig<AIBase>("events.onsneak")
         val applyResult = petActionService.applyAI(player, aiSet.first, aiSet.second)
 
@@ -367,18 +386,7 @@ class PetListener @Inject constructor(
             return
         }
 
-        // Execute a tick on the Armorstand manually since 1.14 passengers do not tick.
-        // This is required by wearing pets.
-        val handle =
-            findClazz("org.bukkit.craftbukkit.VERSION.entity.CraftLivingEntity").getDeclaredMethod("getHandle")
-                .invoke(pet.getHeadArmorstand())
-
-        val method =
-            findClazz("com.github.shynixn.petblocks.bukkit.logic.business.nms.VERSION.NMSPetArmorstand")
-                .getDeclaredMethod("doTick")
-        method.isAccessible = true
-
-        method.invoke(handle)
+        pet.triggerTick()
     }
 
     /**

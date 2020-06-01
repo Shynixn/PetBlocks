@@ -178,6 +178,12 @@ class PetProxyImpl(override val meta: PetMeta, private val design: ArmorStand, p
     }
 
     /**
+     * Triggers a manual tick for tickless ais.
+     */
+    override fun triggerTick() {
+    }
+
+    /**
      * When an object implementing interface `Runnable` is used
      * to create a thread, starting the thread causes the object's
      * `run` method to be called in that separately executing

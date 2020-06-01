@@ -36,7 +36,7 @@ import java.util.*
  * SOFTWARE.
  */
 class PetServiceImpl @Inject constructor(
-    concurrencyService: ConcurrencyService,
+    private val concurrencyService: ConcurrencyService,
     private val petMetaService: PersistencePetMetaService,
     private val loggingService: LoggingService,
     private val configurationService: ConfigurationService,
@@ -97,6 +97,10 @@ class PetServiceImpl @Inject constructor(
         petMetaService.save(petMeta)
 
         eventService.callEvent(PetPostSpawnEntity(player as Any, petProxy))
+
+        concurrencyService.runTaskSync(1L){
+            petProxy.triggerTick()
+        }
 
         return Optional.of(petProxy)
     }
