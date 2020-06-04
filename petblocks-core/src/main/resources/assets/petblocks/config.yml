@@ -179,7 +179,7 @@ pet:
     7:
       type: 'entity-nbt'
       tag: 'nbt-default'
-      armorstand-nbt: '{Invulnerable:1,Invisible:1,PersistenceRequired:1,ShowArms:1,NoBasePlate:1}'
+      armorstand-nbt: '{Invulnerable:1,Invisible:1,PersistenceRequired:1,ShowArms:1,NoBasePlate:1,DisabledSlots:2039583}'
       hitbox-nbt: '{CustomNameVisible:0,ActiveEffects:[{Id:14,Duration:999999999,Amplifier:0,ShowParticles:0b}]}'
     8:
       type: 'entity-nbt'
@@ -203,7 +203,7 @@ update:
     1:
       type: 'entity-nbt'
       tag: 'nbt-default'
-      armorstand-nbt: '{Invulnerable:1,Invisible:1,PersistenceRequired:1,ShowArms:1,NoBasePlate:1}'
+      armorstand-nbt: '{Invulnerable:1,Invisible:1,PersistenceRequired:1,ShowArms:1,NoBasePlate:1,DisabledSlots:2039583}'
       hitbox-nbt: '{CustomNameVisible:0,ActiveEffects:[{Id:14,Duration:999999999,Amplifier:0,ShowParticles:0b}]}'
     2:
       type: 'entity-nbt'
