@@ -296,14 +296,16 @@ gui:
     player-pet:
       row: 2
       col: 5
-      script: 'call-pet'
+      script:
+       - 'call-pet'
       icon:
         name: 'player-pet'
         script: 'copy-pet-skin'
     disable-pet:
       row: 4
       col: 5
-      script: 'disable-pet'
+      script:
+       - 'disable-pet'
       icon:
         id: 397
         damage: 3
@@ -316,7 +318,8 @@ gui:
     enable-pet:
       row: 4
       col: 5
-      script: 'call-pet'
+      script:
+       - 'call-pet'
       icon:
         id: 397
         damage: 3
@@ -329,7 +332,8 @@ gui:
     wardrobe:
       row: 2
       col: 2
-      script: 'open-page gui.wardrobe'
+      script:
+       - 'open-page gui.wardrobe'
       icon:
         id: 397
         damage: 3
@@ -340,7 +344,8 @@ gui:
     call-pet:
       row: 5
       col: 2
-      script: 'call-pet'
+      script:
+       - 'call-pet'
       icon:
         id: 420
         name: $lang.gui.item.callPet
@@ -414,7 +419,8 @@ gui:
     inventory-pet:
       row: 2
       col: 8
-      script: 'open-page gui.storage'
+      script:
+       - 'open-page gui.storage'
       icon:
         id: "CHEST"
         name: $lang.gui.item.openInventory
@@ -423,7 +429,8 @@ gui:
     settings-pet:
       row: 5
       col: 8
-      script: 'open-page gui.settings'
+      script:
+       - 'open-page gui.settings'
       icon:
         id: 397
         damage: 3
@@ -434,7 +441,8 @@ gui:
     back:
       row: 6
       col: 5
-      script: 'close-gui'
+      script:
+       - 'close-gui'
       icon:
         id: 166
         damage: 0
@@ -445,7 +453,8 @@ gui:
     block-skins:
       row: 2
       col: 3
-      script: 'open-page gui.block-skins'
+      script:
+       - 'open-page gui.block-skins'
       icon:
         id: 397
         damage: 3
@@ -456,7 +465,8 @@ gui:
     colored-block-skins:
       row: 2
       col: 5
-      script: 'open-page gui.colored-block-skins'
+      script:
+       - 'open-page gui.colored-block-skins'
       icon:
         id: 397
         damage: 3
@@ -467,7 +477,8 @@ gui:
     player-head-skins:
       row: 2
       col: 7
-      script: 'open-page gui.player-head-skins'
+      script:
+       - 'open-page gui.player-head-skins'
       icon:
         id: 397
         damage: 3
@@ -478,7 +489,8 @@ gui:
     minecraft-heads-pet-skins:
       row: 3
       col: 2
-      script: 'open-page gui.minecraft-heads-pet-skins'
+      script:
+       - 'open-page gui.minecraft-heads-pet-skins'
       icon:
         id: 397
         damage: 3
@@ -490,7 +502,8 @@ gui:
     minecraft-heads-vehicle-skins:
       row: 3
       col: 4
-      script: 'open-page gui.minecraft-heads-vehicle-skins'
+      script:
+       - 'open-page gui.minecraft-heads-vehicle-skins'
       icon:
         id: 397
         damage: 3
@@ -502,7 +515,8 @@ gui:
     minecraft-heads-puppet-skins:
       row: 3
       col: 6
-      script: 'open-page gui.minecraft-heads-puppet-skins'
+      script:
+       - 'open-page gui.minecraft-heads-puppet-skins'
       icon:
         id: 397
         damage: 3
@@ -514,7 +528,8 @@ gui:
     headdatabase-skins:
       row: 3
       col: 8
-      script: 'connect-head-database'
+      script:
+       - 'connect-head-database'
       icon:
         id: 397
         damage: 3
@@ -525,7 +540,8 @@ gui:
     enter-custom-head:
       row: 5
       col: 8
-      script: 'print-custom-skin-message'
+      script:
+       - 'print-custom-skin-message'
       icon:
         id: 397
         damage: 3
@@ -535,7 +551,8 @@ gui:
     suggest-heads:
       row: 5
       col: 2
-      script: 'print-suggest-heads-message'
+      script:
+       - 'print-suggest-heads-message'
       icon:
         id: 386
         damage: 0
@@ -545,7 +562,8 @@ gui:
     back:
       row: 6
       col: 5
-      script: 'close-gui'
+      script:
+      - 'close-gui'
       icon:
         id: 166
         damage: 0
@@ -556,7 +574,8 @@ gui:
     equipment-main:
       row: 2
       col: 2
-      script: 'show-inventory 1 27'
+      script:
+       - 'show-inventory 1 27'
       icon:
         id: "CHEST"
         name: $lang.gui.item.openMainEquipment
@@ -565,7 +584,8 @@ gui:
     equipment-secondary:
       row: 2
       col: 8
-      script: 'show-inventory 28 54'
+      script:
+       - 'show-inventory 28 54'
       icon:
         id: "ENDER_CHEST"
         name: $lang.gui.item.openSecondaryEquipment
@@ -575,7 +595,8 @@ gui:
       row: 6
       col: 5
       fixed: true
-      script: 'close-gui'
+      script:
+       - 'close-gui'
       icon:
         id: 166
         damage: 0
@@ -586,7 +607,8 @@ gui:
     rename-pet:
       row: 2
       col: 3
-      script: 'print-rename-message'
+      script:
+       - 'print-rename-message'
       icon:
         id: 421
         damage: 0
@@ -596,7 +618,8 @@ gui:
     effects-pet:
       row: 5
       col: 3
-      script: 'open-page gui.buff-effects'
+      script:
+       - 'open-page gui.buff-effects'
       icon:
         id: 384
         name: $lang.gui.item.openEffects
@@ -605,7 +628,8 @@ gui:
     sounds-enabled:
       row: 2
       col: 7
-      script: 'disable-sound'
+      script:
+       - 'disable-sound'
       icon:
         id: 397
         damage: 3
@@ -618,7 +642,8 @@ gui:
     sounds-disabled:
       row: 2
       col: 7
-      script: 'enable-sound'
+      script:
+       - 'enable-sound'
       icon:
         id: 397
         damage: 3
@@ -631,7 +656,8 @@ gui:
     particles-enabled:
       row: 5
       col: 7
-      script: 'disable-particles'
+      script:
+       - 'disable-particles'
       icon:
         id: 397
         damage: 3
@@ -644,7 +670,8 @@ gui:
     particles-disabled:
       row: 5
       col: 7
-      script: 'enable-particles'
+      script:
+       - 'enable-particles'
       icon:
         id: 397
         damage: 3
@@ -658,7 +685,8 @@ gui:
       row: 6
       col: 5
       fixed: true
-      script: 'close-gui'
+      script:
+       - 'close-gui'
       icon:
         id: 166
         damage: 0
@@ -756,7 +784,8 @@ gui:
       row: 6
       col: 5
       fixed: true
-      script: 'close-gui'
+      script:
+       - 'close-gui'
       icon:
         id: 166
         damage: 0
@@ -768,7 +797,8 @@ gui:
       row: 6
       col: 9
       fixed: true
-      script: 'scroll 2 0'
+      script:
+       - 'scroll 2 0'
       icon:
         id: 397
         damage: 3
@@ -779,7 +809,8 @@ gui:
       row: 6
       col: 1
       fixed: true
-      script: 'scroll -2 0'
+      script:
+       - 'scroll -2 0'
       icon:
         id: 397
         damage: 3
@@ -790,7 +821,8 @@ gui:
       row: 6
       col: 5
       fixed: true
-      script: 'close-gui'
+      script:
+       - 'close-gui'
       icon:
         id: 166
         damage: 0
@@ -1282,7 +1314,8 @@ gui:
       row: 6
       col: 9
       fixed: true
-      script: 'scroll 2 0'
+      script:
+       - 'scroll 2 0'
       icon:
         id: 397
         damage: 3
@@ -1293,7 +1326,8 @@ gui:
       row: 6
       col: 1
       fixed: true
-      script: 'scroll -2 0'
+      script:
+       - 'scroll -2 0'
       icon:
         id: 397
         damage: 3
@@ -1304,7 +1338,8 @@ gui:
       row: 6
       col: 5
       fixed: true
-      script: 'close-gui'
+      script:
+       - 'close-gui'
       icon:
         id: 166
         damage: 0
@@ -1786,7 +1821,8 @@ gui:
       row: 6
       col: 9
       fixed: true
-      script: 'scroll 2 0'
+      script:
+       - 'scroll 2 0'
       icon:
         id: 397
         damage: 3
@@ -1797,7 +1833,8 @@ gui:
       row: 6
       col: 1
       fixed: true
-      script: 'scroll -2 0'
+      script:
+       - 'scroll -2 0'
       icon:
         id: 397
         damage: 3
@@ -1808,7 +1845,8 @@ gui:
       row: 6
       col: 5
       fixed: true
-      script: 'close-gui'
+      script:
+       - 'close-gui'
       icon:
         id: 166
         damage: 0
@@ -2839,7 +2877,8 @@ gui:
       row: 6
       col: 9
       fixed: true
-      script: 'scroll 2 0'
+      script:
+       - 'scroll 2 0'
       icon:
         id: 397
         damage: 3
@@ -2850,7 +2889,8 @@ gui:
       row: 6
       col: 1
       fixed: true
-      script: 'scroll -2 0'
+      script:
+       - 'scroll -2 0'
       icon:
         id: 397
         damage: 3
@@ -2861,7 +2901,8 @@ gui:
       row: 6
       col: 5
       fixed: true
-      script: 'close-gui'
+      script:
+       - 'close-gui'
       icon:
         id: 166
         damage: 0
@@ -13901,7 +13942,8 @@ gui:
       row: 6
       col: 9
       fixed: true
-      script: 'scroll 2 0'
+      script:
+       - 'scroll 2 0'
       icon:
         id: 397
         damage: 3
@@ -13912,7 +13954,8 @@ gui:
       row: 6
       col: 1
       fixed: true
-      script: 'scroll -2 0'
+      script:
+       - 'scroll -2 0'
       icon:
         id: 397
         damage: 3
@@ -13923,7 +13966,8 @@ gui:
       row: 6
       col: 5
       fixed: true
-      script: 'close-gui'
+      script:
+       - 'close-gui'
       icon:
         id: 166
         damage: 0
@@ -16335,7 +16379,8 @@ gui:
       row: 6
       col: 9
       fixed: true
-      script: 'scroll 2 0'
+      script:
+      - 'scroll 2 0'
       icon:
         id: 397
         damage: 3
@@ -16346,7 +16391,8 @@ gui:
       row: 6
       col: 1
       fixed: true
-      script: 'scroll -2 0'
+      script:
+       - 'scroll -2 0'
       icon:
         id: 397
         damage: 3
@@ -16357,7 +16403,8 @@ gui:
       row: 6
       col: 5
       fixed: true
-      script: 'close-gui'
+      script:
+       - 'close-gui'
       icon:
         id: 166
         damage: 0
