@@ -118,6 +118,16 @@ enum class ScriptAction(val action: String) {
     HIDE_LEFT_SCROLL("hide-left-scroll"),
 
     /**
+     * Executes a player command.
+     */
+    EXECUTE_PLAYERCOMMAND("playercommand"),
+
+    /**
+     * Executes a server command.
+     */
+    EXECUTE_SERVERCOMMAND("servercommand"),
+
+    /**
      * Hides the item on right scroll outside of the bounding box.
      */
     HIDE_RIGHT_SCROLL("hide-right-scroll")

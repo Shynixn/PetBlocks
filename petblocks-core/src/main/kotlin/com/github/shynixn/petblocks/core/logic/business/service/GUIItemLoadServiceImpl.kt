@@ -129,7 +129,11 @@ class GUIItemLoadServiceImpl @Inject constructor(
             }
 
             if (hasConfiguration(description, "script")) {
-                guiItem.script = description["script"] as String
+                guiItem.scripts = if (description["script"] is List<*>) {
+                    description["script"] as List<String>
+                } else {
+                    listOf(description["script"] as String)
+                }
             }
 
             if (hasConfiguration(description, "petname")) {

@@ -29,10 +29,9 @@ package com.github.shynixn.petblocks.api.persistence.entity
  */
 interface GuiItem {
     /**
-     * Gets a nullable script
-     * which can be used for defining the action of the gui item.
+     * Multiple scripts.
      */
-    var script: String?
+    val scripts : List<String>
 
     /**
      * Icon of the gui item.

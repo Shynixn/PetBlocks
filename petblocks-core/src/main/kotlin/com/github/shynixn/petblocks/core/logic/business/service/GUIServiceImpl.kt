@@ -282,11 +282,11 @@ class GUIServiceImpl @Inject constructor(
             renderPage(player, petMeta, this.pageCache[player]!!.path)
         }
 
-        if (optGuiItem.script != null) {
+        for (script in optGuiItem.scripts) {
             try {
-                executeScript(player, optGuiItem, petMeta)
+                executeScript(player, petMeta, script)
             } catch (e: Exception) {
-                loggingService.warn("Failed to execute script '$optGuiItem.script'.")
+                loggingService.warn("Failed to execute script '$script'.")
             }
         }
     }
@@ -349,43 +349,63 @@ class GUIServiceImpl @Inject constructor(
                     }
 
                     renderIcon(inventory, position, guiIcon, hasPermission)
-                } else if (scriptResult == ScriptAction.HIDE_RIGHT_SCROLL && item.script != null) {
-                    val offsetData = Pair(item.script!!.split(" ")[1].toInt(), item.script!!.split(" ")[2].toInt())
+                } else if (scriptResult == ScriptAction.HIDE_RIGHT_SCROLL) {
+                    for (script in item.scripts) {
+                        try {
+                            val scriptAction = getScriptActionFromScript(script)
 
-                    val cachedData = Pair(pageCache[player]!!.offsetX, pageCache[player]!!.offsetY)
-                    pageCache[player]!!.offsetX += offsetData.first
+                            if (scriptAction == ScriptAction.SCROLL_PAGE) {
+                                val offsetData = Pair(script.split(" ")[1].toInt(), script.split(" ")[2].toInt())
+                                val cachedData = Pair(pageCache[player]!!.offsetX, pageCache[player]!!.offsetY)
+                                pageCache[player]!!.offsetX += offsetData.first
 
-                    var found = false
+                                var found = false
 
-                    if (offsetData.first > 0) {
-                        for (s in items) {
-                            if (s.hidden) {
-                                continue
+                                if (offsetData.first > 0) {
+                                    for (s in items) {
+                                        if (s.hidden) {
+                                            continue
+                                        }
+
+                                        val pos = scrollCollection(player, s.position)
+
+                                        if (pos in 0..53) {
+                                            found = true
+                                        }
+                                    }
+                                }
+
+                                pageCache[player]!!.offsetX = cachedData.first
+                                pageCache[player]!!.offsetY = cachedData.second
+
+                                if (found) {
+                                    renderIcon(inventory, position, item.icon, hasPermission)
+                                }
                             }
-
-                            val pos = scrollCollection(player, s.position)
-
-                            if (pos in 0..53) {
-                                found = true
-                            }
+                        } catch (e: Exception) {
+                            loggingService.warn("Failed to execute script '$script'.")
                         }
                     }
+                } else if (scriptResult == ScriptAction.HIDE_LEFT_SCROLL) {
+                    for (script in item.scripts) {
+                        try {
+                            val scriptAction = getScriptActionFromScript(script)
 
-                    pageCache[player]!!.offsetX = cachedData.first
-                    pageCache[player]!!.offsetY = cachedData.second
+                            if (scriptAction == ScriptAction.SCROLL_PAGE) {
+                                val offsetData = Pair(script.split(" ")[1].toInt(), script.split(" ")[2].toInt())
 
-                    if (found) {
-                        renderIcon(inventory, position, item.icon, hasPermission)
-                    }
-                } else if (scriptResult == ScriptAction.HIDE_LEFT_SCROLL && item.script != null) {
-                    val offsetData = Pair(item.script!!.split(" ")[1].toInt(), item.script!!.split(" ")[2].toInt())
+                                if (offsetData.first < 0) {
+                                    if (pageCache[player]!!.offsetX > 0) {
+                                        renderIcon(inventory, position, item.icon, hasPermission)
+                                    }
 
-                    if (offsetData.first < 0) {
-                        if (pageCache[player]!!.offsetX > 0) {
-                            renderIcon(inventory, position, item.icon, hasPermission)
+                                    continue
+                                }
+                            }
+
+                        } catch (e: Exception) {
+                            loggingService.warn("Failed to execute script '$script'.")
                         }
-
-                        continue
                     }
                 }
             } else {
@@ -546,71 +566,101 @@ class GUIServiceImpl @Inject constructor(
     /**
      * Executes the given scripts.
      */
-    private fun executeScript(player: Any, guiItem: GuiItem, petMeta: PetMeta) {
-        val scriptResult = getScriptActionFromScript(guiItem.script!!)
+    private fun executeScript(player: Any, petMeta: PetMeta, script: String) {
+        when (getScriptActionFromScript(script)) {
+            ScriptAction.SCROLL_PAGE -> {
+                val result = Pair(script.split(" ")[1].toInt(), script.split(" ")[2].toInt())
+                pageCache[player]!!.offsetX += result.first
+                pageCache[player]!!.offsetY += result.second
 
-        if (scriptResult == ScriptAction.SCROLL_PAGE) {
-            val result = Pair(guiItem.script!!.split(" ")[1].toInt(), guiItem.script!!.split(" ")[2].toInt())
-            pageCache[player]!!.offsetX += result.first
-            pageCache[player]!!.offsetY += result.second
-
-            renderPage(player, petMeta, pageCache[player]!!.path)
-        } else if (scriptResult == ScriptAction.PRINT_CUSTOM_SKIN_MESSAGE) {
-            messageService.sendPlayerMessage(player, skullNamingMessage.value)
-            this.close(player)
-        } else if (scriptResult == ScriptAction.PRINT_SUGGEST_HEAD_MESSAGE) {
-            messageService.sendPlayerMessage(player, suggestHeadMessage.value)
-            this.close(player)
-        } else if (scriptResult == ScriptAction.PRINT_CUSTOM_NAME_MESSAGE) {
-            messageService.sendPlayerMessage(player, namingMessage.value)
-            this.close(player)
-        } else if (scriptResult == ScriptAction.DISABLE_PET) {
-            petActionService.disablePet(player)
-            this.close(player)
-        } else if (scriptResult == ScriptAction.CONNECT_HEAD_DATABASE) {
-            headDatabaseService.openConnection(player)
-        } else if (scriptResult == ScriptAction.CALL_PET) {
-            petActionService.callPet(player)
-            this.close(player)
-        } else if (scriptResult == ScriptAction.LAUNCH_CANNON) {
-            petActionService.launchPet(player)
-            this.close(player)
-        } else if (scriptResult == ScriptAction.ENABLE_SOUND) {
-            petMeta.soundEnabled = true
-            renderPage(player, petMeta, pageCache[player]!!.path)
-        } else if (scriptResult == ScriptAction.DISABLE_SOUND) {
-            petMeta.soundEnabled = false
-            renderPage(player, petMeta, pageCache[player]!!.path)
-        } else if (scriptResult == ScriptAction.ENABLE_PARTICLES) {
-            petMeta.particleEnabled = true
-            renderPage(player, petMeta, pageCache[player]!!.path)
-        } else if (scriptResult == ScriptAction.DISABLE_PARTICLES) {
-            petMeta.particleEnabled = false
-            renderPage(player, petMeta, pageCache[player]!!.path)
-        } else if (scriptResult == ScriptAction.SHOW_INVENTORY) {
-            close(player)
-            sync(concurrencyService, 10L) {
-                val split = guiItem.script!!.split(" ")
-                guiPetStorageService.openStorage(player, petMeta, split[1].toInt(), split[2].toInt())
-            }
-        } else if (scriptResult == ScriptAction.CLOSE_GUI) {
-            val page = pageCache[player]!!
-
-            if (page.parent == null) {
-                this.close(player)
-            } else {
-                pageCache[player] = page.parent!!
                 renderPage(player, petMeta, pageCache[player]!!.path)
             }
-        } else if (scriptResult == ScriptAction.OPEN_PAGE) {
-            val parent = pageCache[player]!!
-            pageCache[player] = GuiPlayerCacheEntity(
-                guiItem.script!!.split(" ")[1],
-                parent.getInventory(),
-                parent.advertisingMessageTime
-            )
-            pageCache[player]!!.parent = parent
-            renderPage(player, petMeta, guiItem.script!!.split(" ")[1])
+            ScriptAction.PRINT_CUSTOM_SKIN_MESSAGE -> {
+                messageService.sendPlayerMessage(player, skullNamingMessage.value)
+                this.close(player)
+            }
+            ScriptAction.PRINT_SUGGEST_HEAD_MESSAGE -> {
+                messageService.sendPlayerMessage(player, suggestHeadMessage.value)
+                this.close(player)
+            }
+            ScriptAction.PRINT_CUSTOM_NAME_MESSAGE -> {
+                messageService.sendPlayerMessage(player, namingMessage.value)
+                this.close(player)
+            }
+            ScriptAction.DISABLE_PET -> {
+                petActionService.disablePet(player)
+                this.close(player)
+            }
+            ScriptAction.CONNECT_HEAD_DATABASE -> {
+                headDatabaseService.openConnection(player)
+            }
+            ScriptAction.CALL_PET -> {
+                petActionService.callPet(player)
+                this.close(player)
+            }
+            ScriptAction.LAUNCH_CANNON -> {
+                petActionService.launchPet(player)
+                this.close(player)
+            }
+            ScriptAction.ENABLE_SOUND -> {
+                petMeta.soundEnabled = true
+                renderPage(player, petMeta, pageCache[player]!!.path)
+            }
+            ScriptAction.DISABLE_SOUND -> {
+                petMeta.soundEnabled = false
+                renderPage(player, petMeta, pageCache[player]!!.path)
+            }
+            ScriptAction.ENABLE_PARTICLES -> {
+                petMeta.particleEnabled = true
+                renderPage(player, petMeta, pageCache[player]!!.path)
+            }
+            ScriptAction.DISABLE_PARTICLES -> {
+                petMeta.particleEnabled = false
+                renderPage(player, petMeta, pageCache[player]!!.path)
+            }
+            ScriptAction.SHOW_INVENTORY -> {
+                close(player)
+                sync(concurrencyService, 10L) {
+                    val split = script.split(" ")
+                    guiPetStorageService.openStorage(player, petMeta, split[1].toInt(), split[2].toInt())
+                }
+            }
+            ScriptAction.CLOSE_GUI -> {
+                val page = pageCache[player]!!
+
+                if (page.parent == null) {
+                    this.close(player)
+                } else {
+                    pageCache[player] = page.parent!!
+                    renderPage(player, petMeta, pageCache[player]!!.path)
+                }
+            }
+            ScriptAction.OPEN_PAGE -> {
+                val parent = pageCache[player]!!
+                pageCache[player] = GuiPlayerCacheEntity(
+                    script.split(" ")[1],
+                    parent.getInventory(),
+                    parent.advertisingMessageTime
+                )
+                pageCache[player]!!.parent = parent
+                renderPage(player, petMeta, script.split(" ")[1])
+            }
+            ScriptAction.EXECUTE_PLAYERCOMMAND -> {
+                val splitScript = script.split(" ")
+                val command = splitScript.subList(1, splitScript.size)
+                    .joinToString(" ")
+                    .replace("<player>", proxyService.getPlayerName(player))
+                proxyService.executePlayerCommand(player, command)
+            }
+            ScriptAction.EXECUTE_SERVERCOMMAND -> {
+                val splitScript = script.split(" ")
+                val command = splitScript.subList(1, splitScript.size)
+                    .joinToString(" ")
+                    .replace("<player>", proxyService.getPlayerName(player))
+                proxyService.executeServerCommand(command)
+            }
+            else -> {
+            }
         }
     }
 
