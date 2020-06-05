@@ -46,12 +46,22 @@ interface GuiItem {
     /**
      * Is this gui item hidden when a player has certain condition.
      */
-    var hiddenCondition: Array<String>?
+    var hiddenConditions: List<String>
+
+    /**
+     * Is this gui item hidden when a player has certain condition.
+     */
+    var showConditions: List<String>
 
     /**
      * Is this gui item not clickable when a player has certain condition.
      */
-    var blockedCondition: Array<String>?
+    var blockedConditions: List<String>
+
+    /**
+     * Is this gui item clickable when a player has certain condition.
+     */
+    var allowedConditions: List<String>
 
     /**
      * Required permission to perform this action.

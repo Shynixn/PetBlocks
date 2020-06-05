@@ -39,16 +39,6 @@ class GuiItemEntity : GuiItem {
     override var targetPetName: String? = null
 
     /**
-     * Is this gui item hidden when a player has certain condition.
-     */
-    override var hiddenCondition: Array<String>? = null
-
-    /**
-     * Is this gui item not clickable when a player has certain ais.
-     */
-    override var blockedCondition: Array<String>? = null
-
-    /**
      * Target skin.
      */
     override var targetSkin: Skin? = null
@@ -77,6 +67,26 @@ class GuiItemEntity : GuiItem {
      * Should this icon always be hidden?
      */
     override var hidden: Boolean = false
+
+    /**
+     * Is this gui item hidden when a player has certain condition.
+     */
+    override var hiddenConditions: List<String> = ArrayList()
+
+    /**
+     * Is this gui item hidden when a player has certain condition.
+     */
+    override var showConditions: List<String> = ArrayList()
+
+    /**
+     * Is this gui item not clickable when a player has certain condition.
+     */
+    override var blockedConditions: List<String> = ArrayList()
+
+    /**
+     * Is this gui item clickable when a player has certain condition.
+     */
+    override var allowedConditions: List<String> = ArrayList()
 
     /**
      * Multiple scripts.

@@ -2,10 +2,7 @@
 
 package com.github.shynixn.petblocks.core.logic.business.service
 
-import com.github.shynixn.petblocks.api.business.enumeration.ChatClickAction
-import com.github.shynixn.petblocks.api.business.enumeration.ChatColor
-import com.github.shynixn.petblocks.api.business.enumeration.MaterialType
-import com.github.shynixn.petblocks.api.business.enumeration.ScriptAction
+import com.github.shynixn.petblocks.api.business.enumeration.*
 import com.github.shynixn.petblocks.api.business.localization.Messages
 import com.github.shynixn.petblocks.api.business.service.*
 import com.github.shynixn.petblocks.api.persistence.entity.*
@@ -244,7 +241,11 @@ class GUIServiceImpl @Inject constructor(
 
         val petMeta = persistenceService.getPetMetaFromPlayer(player)
 
-        if (optGuiItem.blockedCondition != null && isConditionMatching(petMeta, optGuiItem.blockedCondition!!)) {
+        if (optGuiItem.blockedConditions.isNotEmpty() && isConditionMatching(petMeta, optGuiItem.blockedConditions)) {
+            return
+        }
+
+        if (optGuiItem.allowedConditions.isNotEmpty() && !isConditionMatching(petMeta, optGuiItem.allowedConditions)) {
             return
         }
 
@@ -310,18 +311,14 @@ class GUIServiceImpl @Inject constructor(
                 continue
             }
 
-            if (item.hiddenCondition != null && isConditionMatching(petMeta, item.hiddenCondition!!)) {
+            val hasPermission = hasGUIItemPermission(player, item)
+
+            if (item.hiddenConditions.isNotEmpty() && isConditionMatching(petMeta, item.hiddenConditions, hasPermission)) {
                 continue
             }
 
-            var hasPermission = true
-
-            if (item.permission.isNotEmpty()) {
-                hasPermission = proxyService.hasPermission(player, item.permission)
-
-                if (!hasPermission && item.hiddenCondition != null && item.hiddenCondition!!.contains("no-permission")) {
-                    continue
-                }
+            if (item.showConditions.isNotEmpty() && !isConditionMatching(petMeta, item.showConditions, hasPermission)) {
+                continue
             }
 
             val position = if (item.fixed) {
@@ -456,43 +453,54 @@ class GUIServiceImpl @Inject constructor(
 
     /**
      * Checks if the condition holds or not.
+     * HasPermission value can be ignored if a check for permission is not necessary.
      */
-    private fun isConditionMatching(petMeta: PetMeta, names: Array<String>): Boolean {
-        for (name in names) {
+    private fun isConditionMatching(petMeta: PetMeta,conditions: List<String>, hasPermission : Boolean = true): Boolean {
+        for (condition in conditions) {
             for (aiGoal in petMeta.aiGoals) {
-                if (aiGoal.type.equals(name, true)) {
+                if (aiGoal.type.equals(condition, true)) {
                     return true
                 }
 
-                if (aiGoal.userId != null && name.toLowerCase().endsWith(aiGoal.userId!!.toLowerCase())
-                    && name.toLowerCase().startsWith(aiGoal.type.toLowerCase())
+                if (aiGoal.userId != null && condition.toLowerCase().endsWith(aiGoal.userId!!.toLowerCase())
+                    && condition.toLowerCase().startsWith(aiGoal.type.toLowerCase())
                 ) {
                     return true
                 }
             }
 
-            if (petMeta.enabled && name.equals("pet-enabled", true)) {
-                return true
+            val conditionState = try {
+                PetState.values().first { e -> e.description.equals(condition, true) }
+            } catch (e: Exception) {
+                loggingService.warn("Failed to parse condition '$condition'.")
+                return false
             }
 
-            if (!petMeta.enabled && name.equals("pet-disabled", true)) {
-                return true
-            }
-
-            if (petMeta.soundEnabled && name.equals("sound-enabled", true)) {
-                return true
-            }
-
-            if (!petMeta.soundEnabled && name.equals("sound-disabled", true)) {
-                return true
-            }
-
-            if (petMeta.particleEnabled && name.equals("particle-enabled", true)) {
-                return true
-            }
-
-            if (!petMeta.particleEnabled && name.equals("particle-disabled", true)) {
-                return true
+            when (conditionState) {
+                PetState.ENABLED -> {
+                    return petMeta.enabled
+                }
+                PetState.DISABLED -> {
+                    return !petMeta.enabled
+                }
+                PetState.SOUND_ENABLED -> {
+                    return petMeta.soundEnabled
+                }
+                PetState.SOUND_DISABLED -> {
+                    return !petMeta.soundEnabled
+                }
+                PetState.PARTICLE_ENABLED -> {
+                    return petMeta.particleEnabled
+                }
+                PetState.PARTICLE_DISABLED -> {
+                    return !petMeta.particleEnabled
+                }
+                PetState.PERMISSION_ENABLED -> {
+                    return hasPermission
+                }
+                PetState.PERMISSION_DISABLED -> {
+                    return !hasPermission
+                }
             }
         }
 
@@ -662,6 +670,17 @@ class GUIServiceImpl @Inject constructor(
             else -> {
             }
         }
+    }
+
+    /**
+     * Gets if the given player has got the permission defined at the gui item.
+     */
+    private fun hasGUIItemPermission(player: Any, guiItem: GuiItem): Boolean {
+        if(guiItem.permission.isEmpty()){
+            return true
+        }
+
+        return proxyService.hasPermission(player, guiItem.permission)
     }
 
     /**

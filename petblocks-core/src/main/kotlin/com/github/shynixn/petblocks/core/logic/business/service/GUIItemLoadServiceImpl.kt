@@ -218,11 +218,19 @@ class GUIItemLoadServiceImpl @Inject constructor(
             guiItem.removeAIs.addAll(aiSet.second)
 
             if (description.containsKey("blocked-on")) {
-                guiItem.blockedCondition = (description["blocked-on"] as List<String>).toTypedArray()
+                guiItem.blockedConditions = (description["blocked-on"] as List<String>)
+            }
+
+            if (description.containsKey("allowed-on")) {
+                guiItem.allowedConditions = (description["allowed-on"] as List<String>)
             }
 
             if (description.containsKey("hidden-on")) {
-                guiItem.hiddenCondition = (description["hidden-on"] as List<String>).toTypedArray()
+                guiItem.hiddenConditions = (description["hidden-on"] as List<String>)
+            }
+
+            if (description.containsKey("show-on")) {
+                guiItem.showConditions = (description["show-on"] as List<String>)
             }
 
             if (guiItem.icon.displayName.startsWith("minecraft-heads.com/")) {
