@@ -287,7 +287,7 @@ class GUIServiceImpl @Inject constructor(
             try {
                 executeScript(player, petMeta, script)
             } catch (e: Exception) {
-                loggingService.warn("Failed to execute script '$script'.")
+                loggingService.warn("Failed to execute script '$script'.", e)
             }
         }
     }
