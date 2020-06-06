@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Example: Using custom texture and 3d models for your pets &mdash; PetBlocks 8.17.1 documentation</title>
+  <title>Example: Using custom texture and 3d models for your pets &mdash; PetBlocks 8.18.0 documentation</title>
   
 
   
@@ -37,7 +37,7 @@
         <link rel="index" title="Index"
               href="../genindex.html"/>
         <link rel="search" title="Search" href="../search.html"/>
-    <link rel="top" title="PetBlocks 8.17.1 documentation" href="../index.html"/>
+    <link rel="top" title="PetBlocks 8.18.0 documentation" href="../index.html"/>
         <link rel="up" title="Examples" href="example.html"/>
         <link rel="next" title="Example: Creating small pets" href="samplesmallpets.html"/>
         <link rel="prev" title="Example: Adding a new pokemon category" href="samplepokemoncategory.html"/> 
@@ -72,7 +72,7 @@
             
             
               <div class="version">
-                8.17.1
+                8.18.0
               </div>
             
           
@@ -106,7 +106,8 @@
 <li class="toctree-l3"><a class="reference internal" href="samplepokemoncategory.html">Example: Adding a new pokemon category</a></li>
 <li class="toctree-l3 current"><a class="current reference internal" href="#">Example: Using custom texture and 3d models for your pets</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#goal">Goal</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#step-by-step">Step by Step</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#way-1-using-the-nbt-tag-custommodeldata">Way 1: Using the NBT tag CustomModelData</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#way-2-using-the-damage-value-and-unbreakable">Way 2: Using the damage value and unbreakable</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="samplesmallpets.html">Example: Creating small pets</a></li>
@@ -200,24 +201,45 @@
 <h1>Example: Using custom texture and 3d models for your pets<a class="headerlink" href="#example-using-custom-texture-and-3d-models-for-your-pets" title="Permalink to this headline">¶</a></h1>
 <p>This example shows how to create a <a class="reference external" href="https://minecraft.gamepedia.com/Resource_pack">resource pack</a> in order to put
 custom textures or 3d models on to the pets of PetBlocks.</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>This tutorial works for all version above and including 1.9+. There are new ways to get the same result
-in more recent versions of minecraft but this is still a working solution.</p>
-</div>
 <div class="section" id="goal">
 <h2>Goal<a class="headerlink" href="#goal" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p>All players should see and select a 3d model of a pet in the pet inventory.</p></li>
-<li><p>When the pet is being active a 3d model should be shown.</p></li>
+<li><p>When the pet is being active, a 3d model should be shown.</p></li>
 </ul>
 <img alt="../_images/custom-textures-bee-inventory.png" src="../_images/custom-textures-bee-inventory.png" />
 <img alt="../_images/custom-textures-bee-flying.png" src="../_images/custom-textures-bee-flying.png" />
 <img alt="../_images/bee-gif-1.gif" src="../_images/bee-gif-1.gif" />
 <img alt="../_images/bee-gif-2.gif" src="../_images/bee-gif-2.gif" />
 </div>
-<div class="section" id="step-by-step">
-<h2>Step by Step<a class="headerlink" href="#step-by-step" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="way-1-using-the-nbt-tag-custommodeldata">
+<h2>Way 1: Using the NBT tag CustomModelData<a class="headerlink" href="#way-1-using-the-nbt-tag-custommodeldata" title="Permalink to this headline">¶</a></h2>
+<p>Version: <strong>Minecraft 1.14-Latest</strong></p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This is the <strong>recommend way</strong> to create custom models for PetBlocks</p>
+</div>
+<p>As mentioned before a powerful editor like Notepad++ in this example is recommend.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p><strong>1. Make a copy of your config.yml!</strong> YAML, the configuration language this config.yml is using, takes spaces and tabs very serious, so be careful otherwise
+the config.yml cannot be parsed when executing the reload command.</p>
+</div>
+<ol class="arabic simple" start="2">
+<li><p>Create a resource pack with the CustomModelData NBT tag</p></li>
+</ol>
+<p>A good starting point is the following link: <a class="reference external" href="https://www.planetminecraft.com/forums/communities/texturing/new-1-14-custom-item-models-tuto-578834/">https://www.planetminecraft.com/forums/communities/texturing/new-1-14-custom-item-models-tuto-578834/</a></p>
+<ol class="arabic simple" start="3">
+<li><p>Open the config.yml of PetBlocks and enter your custom model name using the NBT tag.</p></li>
+</ol>
+<img alt="../_images/bee-model-show-2.png" src="../_images/bee-model-show-2.png" />
+<ol class="arabic simple" start="4">
+<li><p>Reload the <strong>config.yml</strong>, activate the resource pack and check out if your model works ingame.</p></li>
+</ol>
+</div>
+<div class="section" id="way-2-using-the-damage-value-and-unbreakable">
+<h2>Way 2: Using the damage value and unbreakable<a class="headerlink" href="#way-2-using-the-damage-value-and-unbreakable" title="Permalink to this headline">¶</a></h2>
+<p>Version: <strong>Minecraft 1.9-Latest</strong></p>
 <p>As mentioned before a powerful editor like Notepad++ in this example is recommend.</p>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
@@ -300,15 +322,12 @@ of amazing and <a class="reference external" href="https://www.youtube.com/watch
 <ul class="simple">
 <li><p>The numeric <strong>id of the stone_hoe is 291</strong> which we set to both icon and skin.</p></li>
 <li><p>Configure the correct damage (which model you would like to show) and set the skin nbt tag {Unbreakable:1}.</p></li>
-<li><p>Additionally, we also setup the walking ai with a high ground offset to set the pet flying.</p></li>
 </ul>
 <img alt="../_images/bee-model-show.png" src="../_images/bee-model-show.png" />
 <ol class="arabic simple" start="7">
 <li><p>Reload the <strong>config.yml</strong>, activate the resource pack and check out if your model works ingame.</p></li>
 </ol>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-<a class="btn" style="width:100%" href="../_static/samples/config-beemodel.yml" download="config.yml"><i class="fa fa-download"></i>Download config.yml</a>
-<br/><br/><br/><div class="admonition note">
+<div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>If the server console now displays an error then the config.yml cannot be parsed. In this case
 apply your backup you have made and try the steps again being extra carefully.</p>
@@ -359,7 +378,7 @@ apply your backup you have made and try the steps again being extra carefully.</
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'8.17.1',
+            VERSION:'8.18.0',
             LANGUAGE:'None',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',

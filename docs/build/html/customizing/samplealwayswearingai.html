@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Example: Always applying the wearing ai &mdash; PetBlocks 8.17.1 documentation</title>
+  <title>Example: Always applying the wearing ai &mdash; PetBlocks 8.18.0 documentation</title>
   
 
   
@@ -37,7 +37,7 @@
         <link rel="index" title="Index"
               href="../genindex.html"/>
         <link rel="search" title="Search" href="../search.html"/>
-    <link rel="top" title="PetBlocks 8.17.1 documentation" href="../index.html"/>
+    <link rel="top" title="PetBlocks 8.18.0 documentation" href="../index.html"/>
         <link rel="up" title="Examples" href="example.html"/>
         <link rel="next" title="Worlds and Regions" href="regions.html"/>
         <link rel="prev" title="Example: Hiding GUI items when the player does not have certain permissions" href="samplehidingguiitems.html"/> 
@@ -72,7 +72,7 @@
             
             
               <div class="version">
-                8.17.1
+                8.18.0
               </div>
             
           
@@ -204,17 +204,11 @@ to the user. This also means the ‘wearing’ ai gets represented like that.</p
 <h2>Goal<a class="headerlink" href="#goal" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p>Force the pet to be always shown on top of the head of the player.</p></li>
-<li><p>Inspiration comes the game called ‘Pokémon: Let’s Go’ where the main pokemon is always riding on the player.</p></li>
-</ul>
-<img alt="https://files.pokefans.net/images/lets-go/screenshots/1.png" src="https://files.pokefans.net/images/lets-go/screenshots/1.png" />
-<p>Source: <a class="reference external" href="https://pokefans.net/spiele/pokemon-lets-go/screenshots">https://pokefans.net/spiele/pokemon-lets-go/screenshots</a>. The linked
-image was initially checked and PetBlocks is not associated with <a class="reference external" href="https://pokefans.net">https://pokefans.net</a> in any way.</p>
-<ul class="simple">
 <li><p>However, in minecraft this would of course look a bit strange similar to this.</p></li>
 </ul>
 <img alt="../_images/petaipokemontop.png" src="../_images/petaipokemontop.png" />
 <ul class="simple">
-<li><p>Still, putting <strong>custom models</strong> over the PetBlocks pet would allow to create something similar to the pokemon game. Unfortunately, I do not posses the skills to create such a model but PetBlocks offers a great sandbox using them.</p></li>
+<li><p>Still, putting <strong>custom models</strong> over the PetBlocks pet would allow to create something similar to the pokemon game.</p></li>
 </ul>
 </div>
 <div class="section" id="step-by-step">
@@ -226,10 +220,7 @@ image was initially checked and PetBlocks is not associated with <a class="refer
 the config.yml cannot be parsed when executing the reload command.</p>
 </div>
 <ol class="arabic simple" start="2">
-<li><p>Delete the ai ‘wearing’ from the disable-on-sneak section to force the player to keep the pet on his hat.</p></li>
-</ol>
-<img alt="../_images/aiwearing-sample-1.png" src="../_images/aiwearing-sample-1.png" />
-<ol class="arabic simple" start="3">
+<li><p>Delete the ai ‘wearing’ from the onsneak section to force the player to keep the pet on his hat.</p></li>
 <li><p>Add the wearing ai to the default pet. You can also delete the other ais however the wearing ai has got a higher priority anyway.</p></li>
 </ol>
 <img alt="../_images/aiwearing-sample-2.png" src="../_images/aiwearing-sample-2.png" />
@@ -289,7 +280,7 @@ apply your backup you have made and try the steps again being extra carefully.</
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'8.17.1',
+            VERSION:'8.18.0',
             LANGUAGE:'None',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',

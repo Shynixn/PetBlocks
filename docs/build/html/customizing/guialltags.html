@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>All tags &mdash; PetBlocks 8.17.1 documentation</title>
+  <title>All tags &mdash; PetBlocks 8.18.0 documentation</title>
   
 
   
@@ -37,7 +37,7 @@
         <link rel="index" title="Index"
               href="../genindex.html"/>
         <link rel="search" title="Search" href="../search.html"/>
-    <link rel="top" title="PetBlocks 8.17.1 documentation" href="../index.html"/>
+    <link rel="top" title="PetBlocks 8.18.0 documentation" href="../index.html"/>
         <link rel="up" title="GUI" href="gui.html"/>
         <link rel="next" title="AIS" href="ai.html"/>
         <link rel="prev" title="Static GUI Items" href="guistatic.html"/> 
@@ -72,7 +72,7 @@
             
             
               <div class="version">
-                8.17.1
+                8.18.0
               </div>
             
           
@@ -110,7 +110,7 @@
 <li class="toctree-l4"><a class="reference internal" href="#list-of-icon-tags">List of icon tags</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#the-icon-script-tag">The icon script tag</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#the-script-tag">The script tag</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#the-hidden-on-tag-and-blocked-on-tag">The hidden-on tag and blocked-on tag</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#the-show-on-hidden-on-allowed-on-blocked-on-tag">The show-on, hidden-on, allowed-on, blocked-on tag</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#the-set-skin-tag">The set-skin tag</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#the-add-ai-remove-ai-replace-ai-tag">The add-ai, remove-ai, replace-ai tag</a></li>
 </ul>
@@ -201,7 +201,10 @@
   <div class="section" id="all-tags">
 <h1>All tags<a class="headerlink" href="#all-tags" title="Permalink to this headline">¶</a></h1>
 <p>Each gui item has got the following sub tags in the <strong>config.yml</strong> where some are required.</p>
-<p>Tags with additional information below are marked bold.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Tags with additional information below are marked <strong>bold</strong>.</p>
+</div>
 <div class="section" id="list-of-root-gui-item-tags">
 <h2>List of root gui item tags<a class="headerlink" href="#list-of-root-gui-item-tags" title="Permalink to this headline">¶</a></h2>
 <table class="docutils align-default">
@@ -256,13 +259,23 @@
 </tr>
 <tr class="row-odd"><td><p><strong>script</strong></p></td>
 <td><p>no</p></td>
-<td><p>Execute one of the actions defined below</p></td>
-<td><p>script: ‘call-pet’, ‘open-page gui.colored-block-skins’</p></td>
+<td><p>Executes multiple actions defined below</p></td>
+<td><p>script:</p></td>
 </tr>
-<tr class="row-even"><td><p><strong>hidden-on</strong></p></td>
+<tr class="row-even"><td><p><strong>show-on</strong></p></td>
+<td><p>no</p></td>
+<td><p>Shows the gui item on certain states</p></td>
+<td><p>show-on</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>hidden-on</strong></p></td>
 <td><p>no</p></td>
 <td><p>Hides the gui item on certain states</p></td>
 <td><p>hidden-on</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>allowed-on</strong></p></td>
+<td><p>no</p></td>
+<td><p>Allows the gui item on certain states</p></td>
+<td><p>allowed-on</p></td>
 </tr>
 <tr class="row-odd"><td><p><strong>blocked-on</strong></p></td>
 <td><p>no</p></td>
@@ -359,7 +372,7 @@
 </div>
 <div class="section" id="the-icon-script-tag">
 <h2>The icon script tag<a class="headerlink" href="#the-icon-script-tag" title="Permalink to this headline">¶</a></h2>
-<p>These are scripts exclusive for icons.</p>
+<p>These are scripts exclusive for the icon tag and only allow <strong>1 single line</strong> of script.</p>
 <p><strong>config.yml</strong></p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">script</span><span class="p">:</span> <span class="s1">&#39;copy-pet-skin&#39;</span>
 </pre></div>
@@ -389,15 +402,18 @@
 </div>
 <div class="section" id="the-script-tag">
 <h2>The script tag<a class="headerlink" href="#the-script-tag" title="Permalink to this headline">¶</a></h2>
-<p>These are scripts for the gui items.</p>
+<p>The script tag allows to define multiple scripts to a GUI item in order to change the
+action when a user clicks on it.</p>
 <p><strong>config.yml</strong></p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">script</span><span class="p">:</span> <span class="s1">&#39;call-pet&#39;</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">script</span><span class="p">:</span>
+ <span class="o">-</span> <span class="s1">&#39;call-pet&#39;</span>
+ <span class="o">-</span> <span class="s1">&#39;servercommand say Player &lt;player&gt; has called his/her pet.&#39;</span>
 </pre></div>
 </div>
 <table class="docutils align-default">
 <colgroup>
-<col style="width: 35%" />
-<col style="width: 65%" />
+<col style="width: 21%" />
+<col style="width: 79%" />
 </colgroup>
 <thead>
 <tr class="row-odd"><th class="head"><p>Tag</p></th>
@@ -408,35 +424,17 @@
 <tr class="row-even"><td><p>call-pet</p></td>
 <td><p>Calls the pet to the player.</p></td>
 </tr>
-<tr class="row-odd"><td><p>disable-pet</p></td>
-<td><p>Disables the pet of the player</p></td>
-</tr>
-<tr class="row-even"><td><p>close-gui</p></td>
+<tr class="row-odd"><td><p>close-gui</p></td>
 <td><p>Goes back to the previous gui page or closes the gui</p></td>
-</tr>
-<tr class="row-odd"><td><p>open-page &lt;name&gt;</p></td>
-<td><p>Opens the specified gui page. See wardrobe item</p></td>
-</tr>
-<tr class="row-even"><td><p>scroll &lt;x&gt; 0</p></td>
-<td><p>Scrolls the gui page to the x axe</p></td>
-</tr>
-<tr class="row-odd"><td><p>print-suggest-heads-message</p></td>
-<td><p>Sends the suggest head message to the player</p></td>
-</tr>
-<tr class="row-even"><td><p>print-custom-skin-message</p></td>
-<td><p>Sends the custom skin message to the player</p></td>
-</tr>
-<tr class="row-odd"><td><p>print-rename-message</p></td>
-<td><p>Sends the rename message to the player</p></td>
 </tr>
 <tr class="row-even"><td><p>connect-head-database</p></td>
 <td><p>Connects the player to the HeadDatabase plugin if available</p></td>
 </tr>
-<tr class="row-odd"><td><p>launch-cannon</p></td>
-<td><p>Launches the pet like a cannon</p></td>
+<tr class="row-odd"><td><p>disable-particles</p></td>
+<td><p>Disables the pet particles</p></td>
 </tr>
-<tr class="row-even"><td><p>enable-sound</p></td>
-<td><p>Enables the pet sounds</p></td>
+<tr class="row-even"><td><p>disable-pet</p></td>
+<td><p>Disables the pet of the player</p></td>
 </tr>
 <tr class="row-odd"><td><p>disable-sound</p></td>
 <td><p>Disables the pet sounds</p></td>
@@ -444,8 +442,32 @@
 <tr class="row-even"><td><p>enable-particles</p></td>
 <td><p>Enables the pet particles</p></td>
 </tr>
-<tr class="row-odd"><td><p>disable-particles</p></td>
-<td><p>Disables the pet particles</p></td>
+<tr class="row-odd"><td><p>enable-sound</p></td>
+<td><p>Enables the pet sounds</p></td>
+</tr>
+<tr class="row-even"><td><p>launch-cannon</p></td>
+<td><p>Launches the pet like a cannon</p></td>
+</tr>
+<tr class="row-odd"><td><p>open-page &lt;name&gt;</p></td>
+<td><p>Opens the specified gui page. See wardrobe item</p></td>
+</tr>
+<tr class="row-even"><td><p>playercommand &lt;command&gt;</p></td>
+<td><p>Executes a command with player level permission and replaces the &lt;player&gt; placeholder with the name of the clicking player</p></td>
+</tr>
+<tr class="row-odd"><td><p>print-custom-skin-message</p></td>
+<td><p>Sends the custom skin message to the player</p></td>
+</tr>
+<tr class="row-even"><td><p>print-rename-message</p></td>
+<td><p>Sends the rename message to the player</p></td>
+</tr>
+<tr class="row-odd"><td><p>print-suggest-heads-message</p></td>
+<td><p>Sends the suggest head message to the player</p></td>
+</tr>
+<tr class="row-even"><td><p>scroll &lt;x&gt; 0</p></td>
+<td><p>Scrolls the gui page to the x axe</p></td>
+</tr>
+<tr class="row-odd"><td><p>servercommand &lt;command&gt;</p></td>
+<td><p>Executes a command with console level permission and replaces the &lt;player&gt; placeholder with the name of the clicking player</p></td>
 </tr>
 <tr class="row-even"><td><p>show-inventory &lt;from&gt; &lt;to&gt;</p></td>
 <td><p>Opens the pet storage from the index &lt;from&gt; to &lt;to&gt;.</p></td>
@@ -453,10 +475,10 @@
 </tbody>
 </table>
 </div>
-<div class="section" id="the-hidden-on-tag-and-blocked-on-tag">
-<h2>The hidden-on tag and blocked-on tag<a class="headerlink" href="#the-hidden-on-tag-and-blocked-on-tag" title="Permalink to this headline">¶</a></h2>
-<p>The difference between the hidden-on and blocked-on tag is that gui items get hidden entirely when using hidden-on.
-Only one condition has to match.</p>
+<div class="section" id="the-show-on-hidden-on-allowed-on-blocked-on-tag">
+<h2>The show-on, hidden-on, allowed-on, blocked-on tag<a class="headerlink" href="#the-show-on-hidden-on-allowed-on-blocked-on-tag" title="Permalink to this headline">¶</a></h2>
+<p>These tags are being used to check for certain conditions and allow, block, show or hide
+the item when <strong>1</strong> of those conditions match.</p>
 <p><strong>config.yml</strong></p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">hidden</span><span class="o">-</span><span class="n">on</span><span class="p">:</span>
    <span class="o">-</span> <span class="s1">&#39;pet-disabled&#39;</span>
@@ -467,8 +489,8 @@ Only one condition has to match.</p>
 </div>
 <table class="docutils align-default">
 <colgroup>
-<col style="width: 26%" />
-<col style="width: 74%" />
+<col style="width: 23%" />
+<col style="width: 77%" />
 </colgroup>
 <thead>
 <tr class="row-odd"><th class="head"><p>Tag</p></th>
@@ -477,31 +499,34 @@ Only one condition has to match.</p>
 </thead>
 <tbody>
 <tr class="row-even"><td><p>pet-enabled</p></td>
-<td><p>Hides or blocks when the pet is enabled</p></td>
+<td><p>Allows, blocks, shows or hides when the pet is enabled</p></td>
 </tr>
 <tr class="row-odd"><td><p>pet-disabled</p></td>
-<td><p>Hides or blocks when the pet is disabled</p></td>
+<td><p>Allows, blocks, shows or hides when the pet is disabled</p></td>
 </tr>
 <tr class="row-even"><td><p>sound-enabled</p></td>
-<td><p>Hides or blocks when the pet sound is enabled</p></td>
+<td><p>Allows, blocks, shows or hides when the pet sound is enabled</p></td>
 </tr>
 <tr class="row-odd"><td><p>sound-disabled</p></td>
-<td><p>Hides or blocks when the pet sound is disabled</p></td>
+<td><p>Allows, blocks, shows or hides when the pet sound is disabled</p></td>
 </tr>
 <tr class="row-even"><td><p>particle-enabled</p></td>
-<td><p>Hides or blocks when the pet particle is enabled</p></td>
+<td><p>Allows, blocks, shows or hides when the pet particle is enabled</p></td>
 </tr>
 <tr class="row-odd"><td><p>particle-disabled</p></td>
-<td><p>Hides or blocks when the pet particle is disabled</p></td>
+<td><p>Allows, blocks, shows or hides when the pet particle is disabled</p></td>
 </tr>
-<tr class="row-even"><td><p>no-permission</p></td>
-<td><p>Hides or blocks when the player has not got the permission specified in the permission tag</p></td>
+<tr class="row-even"><td><p>permission</p></td>
+<td><p>Allows, blocks, shows or hides when the player has got the permission specified in the permission tag</p></td>
 </tr>
-<tr class="row-odd"><td><p>&lt;aitype&gt;</p></td>
-<td><p>Hides or blocks when the pet has got the specified ai type name</p></td>
+<tr class="row-odd"><td><p>no-permission</p></td>
+<td><p>Allows, blocks, shows or hides when the player has not got the permission specified in the permission tag</p></td>
 </tr>
-<tr class="row-even"><td><p>&lt;aitype&gt;:&lt;tag&gt;</p></td>
-<td><p>Hides or blocks when the pet has got the specified ai type name and tag name</p></td>
+<tr class="row-even"><td><p>&lt;aitype&gt;</p></td>
+<td><p>Allows, blocks, shows or hides when the pet has got the specified ai type name</p></td>
+</tr>
+<tr class="row-odd"><td><p>&lt;aitype&gt;:&lt;tag&gt;</p></td>
+<td><p>Allows, blocks, shows or hides when the pet has got the specified ai type name and tag name</p></td>
 </tr>
 </tbody>
 </table>
@@ -656,7 +681,7 @@ Each available ai is explained in the ai section of customizing.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'8.17.1',
+            VERSION:'8.18.0',
             LANGUAGE:'None',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
