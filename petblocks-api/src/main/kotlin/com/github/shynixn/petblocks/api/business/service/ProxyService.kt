@@ -146,4 +146,14 @@ interface ProxyService {
      * Sends a message to the [sender].
      */
     fun <S> sendMessage(sender: S, message: String)
+
+    /**
+     * Executes a server command.
+     */
+    fun executeServerCommand(message: String)
+
+    /**
+     * Executes a player command.
+     */
+    fun <P> executePlayerCommand(player: P, message: String)
 }

@@ -317,6 +317,21 @@ class ProxyServiceImpl @Inject constructor(private val version: Version, private
     }
 
     /**
+     * Executes a server command.
+     */
+    override fun executeServerCommand(message: String) {
+        Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), message)
+    }
+
+    /**
+     * Executes a player command.
+     */
+    override fun <P> executePlayerCommand(player: P, message: String) {
+        require(player is Player)
+        player.performCommand(message)
+    }
+
+    /**
      * Gets if the given instance can be converted to a player.
      */
     override fun <P> isPlayer(instance: P): Boolean {

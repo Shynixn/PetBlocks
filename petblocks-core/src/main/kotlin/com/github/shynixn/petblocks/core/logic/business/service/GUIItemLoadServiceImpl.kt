@@ -129,7 +129,11 @@ class GUIItemLoadServiceImpl @Inject constructor(
             }
 
             if (hasConfiguration(description, "script")) {
-                guiItem.script = description["script"] as String
+                guiItem.scripts = if (description["script"] is List<*>) {
+                    description["script"] as List<String>
+                } else {
+                    listOf(description["script"] as String)
+                }
             }
 
             if (hasConfiguration(description, "petname")) {
@@ -214,11 +218,19 @@ class GUIItemLoadServiceImpl @Inject constructor(
             guiItem.removeAIs.addAll(aiSet.second)
 
             if (description.containsKey("blocked-on")) {
-                guiItem.blockedCondition = (description["blocked-on"] as List<String>).toTypedArray()
+                guiItem.blockedConditions = (description["blocked-on"] as List<String>)
+            }
+
+            if (description.containsKey("allowed-on")) {
+                guiItem.allowedConditions = (description["allowed-on"] as List<String>)
             }
 
             if (description.containsKey("hidden-on")) {
-                guiItem.hiddenCondition = (description["hidden-on"] as List<String>).toTypedArray()
+                guiItem.hiddenConditions = (description["hidden-on"] as List<String>)
+            }
+
+            if (description.containsKey("show-on")) {
+                guiItem.showConditions = (description["show-on"] as List<String>)
             }
 
             if (guiItem.icon.displayName.startsWith("minecraft-heads.com/")) {
@@ -308,7 +320,7 @@ class GUIItemLoadServiceImpl @Inject constructor(
 
         decipher.init(
             Cipher.DECRYPT_MODE,
-            SecretKeySpec(Base64.getDecoder().decode("ZGNmMzhiNDZlYjIxNDI2Yg=="), "AES"),
+            SecretKeySpec(Base64.getDecoder().decode("ZGM2NGIxYjhmZTI4NDZmMA=="), "AES"),
             IvParameterSpec("RandomInitVector".toByteArray(charset("UTF-8")))
         )
         BufferedReader(

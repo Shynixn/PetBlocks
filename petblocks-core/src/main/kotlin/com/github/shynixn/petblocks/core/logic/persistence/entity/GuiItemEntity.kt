@@ -37,18 +37,12 @@ class GuiItemEntity : GuiItem {
      * Target pet name.
      */
     override var targetPetName: String? = null
-    /**
-     * Is this gui item hidden when a player has certain condition.
-     */
-    override var hiddenCondition: Array<String>? = null
-    /**
-     * Is this gui item not clickable when a player has certain ais.
-     */
-    override var blockedCondition: Array<String>? = null
+
     /**
      * Target skin.
      */
     override var targetSkin: Skin? = null
+
     /**
      * Ai which should be added on click.
      */
@@ -58,6 +52,7 @@ class GuiItemEntity : GuiItem {
      * Ai which should be removed on click.
      */
     override val removeAIs: MutableList<AIBase> = ArrayList()
+
     /**
      * Required permission to perform this action.
      */
@@ -72,11 +67,32 @@ class GuiItemEntity : GuiItem {
      * Should this icon always be hidden?
      */
     override var hidden: Boolean = false
+
     /**
-     * Gets a nullable script
-     * which can be used for defining the action of the gui item.
+     * Is this gui item hidden when a player has certain condition.
      */
-    override var script: String? = null
+    override var hiddenConditions: List<String> = ArrayList()
+
+    /**
+     * Is this gui item hidden when a player has certain condition.
+     */
+    override var showConditions: List<String> = ArrayList()
+
+    /**
+     * Is this gui item not clickable when a player has certain condition.
+     */
+    override var blockedConditions: List<String> = ArrayList()
+
+    /**
+     * Is this gui item clickable when a player has certain condition.
+     */
+    override var allowedConditions: List<String> = ArrayList()
+
+    /**
+     * Multiple scripts.
+     */
+    override var scripts: List<String> = ArrayList()
+
     /**
      * Icon of the gui item.
      */

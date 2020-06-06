@@ -471,5 +471,19 @@ class PetMetaSqlRepositoryTest {
         override fun <S> sendMessage(sender: S, message: String) {
             throw IllegalArgumentException()
         }
+
+        /**
+         * Executes a server command.
+         */
+        override fun executeServerCommand(message: String) {
+            throw IllegalArgumentException()
+        }
+
+        /**
+         * Executes a player command.
+         */
+        override fun <P> executePlayerCommand(player: P, message: String) {
+            throw IllegalArgumentException()
+        }
     }
 }

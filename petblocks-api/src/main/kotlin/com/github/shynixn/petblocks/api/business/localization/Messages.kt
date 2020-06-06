@@ -49,7 +49,7 @@ object Messages {
     /**
      * No permission message.
      */
-    @Key("messages.permissionNo")
+    @Key("messages.noPermissions")
     var noPermissionMessage = "messages.permissionNo"
         private set
 

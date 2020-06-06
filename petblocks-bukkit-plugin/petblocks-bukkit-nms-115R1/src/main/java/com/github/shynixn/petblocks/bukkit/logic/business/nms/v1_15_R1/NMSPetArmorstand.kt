@@ -64,6 +64,10 @@ class NMSPetArmorstand(owner: Player, private val petMeta: PetMeta) :
     private var flyGravity: Boolean = false
     private var flyWallCollisionVector: Vector? = null
 
+    private val locFieldX = Entity::class.java.getDeclaredField("locX")
+    private val locFieldY = Entity::class.java.getDeclaredField("locY")
+    private val locFieldZ = Entity::class.java.getDeclaredField("locZ")
+
     // BukkitEntity has to be self cached since 1.14.
     private var entityBukkit: Any? = null
 
@@ -77,6 +81,9 @@ class NMSPetArmorstand(owner: Player, private val petMeta: PetMeta) :
      */
     init {
         jumpingField.isAccessible = true
+        locFieldX.isAccessible = true
+        locFieldY.isAccessible = true
+        locFieldZ.isAccessible = true
 
         val location = owner.location
         val mcWorld = (location.world as CraftWorld).handle
@@ -238,7 +245,11 @@ class NMSPetArmorstand(owner: Player, private val petMeta: PetMeta) :
         }
 
         val axisBoundingBox = this.boundingBox
-        setPositionRaw((axisBoundingBox.minX + axisBoundingBox.maxX) / 2.0, axisBoundingBox.minY + offSet, (axisBoundingBox.minZ + axisBoundingBox.maxZ) / 2.0)
+
+        // This way of setting the locations fields ensures compatibility with PaperSpigot.
+        this.locFieldX.set(this, (axisBoundingBox.minX + axisBoundingBox.maxX) / 2.0)
+        this.locFieldY.set(this, axisBoundingBox.minY + offSet)
+        this.locFieldZ.set(this, (axisBoundingBox.minZ + axisBoundingBox.maxZ) / 2.0)
     }
 
     /**

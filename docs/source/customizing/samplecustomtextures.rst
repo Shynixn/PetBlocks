@@ -4,15 +4,11 @@ Example: Using custom texture and 3d models for your pets
 This example shows how to create a `resource pack <https://minecraft.gamepedia.com/Resource_pack>`_ in order to put
 custom textures or 3d models on to the pets of PetBlocks.
 
-.. note::
- This tutorial works for all version above and including 1.9+. There are new ways to get the same result
- in more recent versions of minecraft but this is still a working solution.
-
 Goal
 ~~~~
 
 * All players should see and select a 3d model of a pet in the pet inventory.
-* When the pet is being active a 3d model should be shown.
+* When the pet is being active, a 3d model should be shown.
 
 .. image:: ../_static/images/custom-textures-bee-inventory.png
 
@@ -22,8 +18,34 @@ Goal
 
 .. image:: ../_static/images/bee-gif-2.gif
 
-Step by Step
+Way 1: Using the NBT tag CustomModelData
 ~~~~~~~~~~~~
+
+Version: **Minecraft 1.14-Latest**
+
+.. note::
+ This is the **recommend way** to create custom models for PetBlocks
+
+As mentioned before a powerful editor like Notepad++ in this example is recommend.
+
+.. warning::
+ **1. Make a copy of your config.yml!** YAML, the configuration language this config.yml is using, takes spaces and tabs very serious, so be careful otherwise
+ the config.yml cannot be parsed when executing the reload command.
+
+2. Create a resource pack with the CustomModelData NBT tag
+
+A good starting point is the following link: https://www.planetminecraft.com/forums/communities/texturing/new-1-14-custom-item-models-tuto-578834/
+
+3. Open the config.yml of PetBlocks and enter your custom model name using the NBT tag.
+
+.. image:: ../_static/images/bee-model-show-2.png
+
+4. Reload the **config.yml**, activate the resource pack and check out if your model works ingame.
+
+Way 2: Using the damage value and unbreakable
+~~~~~~~~~~~~
+
+Version: **Minecraft 1.9-Latest**
 
 As mentioned before a powerful editor like Notepad++ in this example is recommend.
 
@@ -132,17 +154,10 @@ of amazing and `well explained videos <https://www.youtube.com/watch?v=iS7xeriOu
 
 * The numeric **id of the stone_hoe is 291** which we set to both icon and skin.
 * Configure the correct damage (which model you would like to show) and set the skin nbt tag {Unbreakable:1}.
-* Additionally, we also setup the walking ai with a high ground offset to set the pet flying.
 
 .. image:: ../_static/images/bee-model-show.png
 
 7. Reload the **config.yml**, activate the resource pack and check out if your model works ingame.
-
-.. raw:: html
-
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-    <a class="btn" style="width:100%" href="../_static/samples/config-beemodel.yml" download="config.yml"><i class="fa fa-download"></i>Download config.yml</a>
-    <br/><br/><br/>
 
 .. note::
  If the server console now displays an error then the config.yml cannot be parsed. In this case

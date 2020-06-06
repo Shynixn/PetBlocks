@@ -361,6 +361,21 @@ class ProxyServiceImpl @Inject constructor(private val pluginContainer: PluginCo
     }
 
     /**
+     * Executes a server command.
+     */
+    override fun executeServerCommand(message: String) {
+        Sponge.getCommandManager().process(Sponge.getServer().console, message);
+    }
+
+    /**
+     * Executes a player command.
+     */
+    override fun <P> executePlayerCommand(player: P, message: String) {
+        require(player is Player)
+        Sponge.getCommandManager().process(player, message);
+    }
+
+    /**
      * Gets if the given instance can be converted to a player.
      */
     override fun <P> isPlayer(instance: P): Boolean {

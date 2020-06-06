@@ -82,6 +82,11 @@ interface PetProxy {
     fun <L> teleport(location: L)
 
     /**
+     * Triggers a manual tick for tickless ais.
+     */
+    fun triggerTick()
+
+    /**
      * Gets the location of the pet.
      */
     fun <L> getLocation(): L
