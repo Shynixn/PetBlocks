@@ -3,8 +3,7 @@ All tags
 
 Each gui item has got the following sub tags in the **config.yml** where some are required.
 
-Tags with additional information below are marked bold.
-
+.. note:: Tags with additional information below are marked **bold**.
 
 List of root gui item tags
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -19,8 +18,10 @@ hidden                            no        Hides the gui item per default      
 fixed                             no        Fixed the gui item at the same slot on scrolling         fixed: false (default), fixed: true
 permission                        no        Custom required permission to execute this item          permission: 'petblocks.wardrobe.open', permission: 'strange.perm'
 petname                           no        Sets the name of the pet to this value                   petname: 'Creeper'
-**script**                        no        Execute one of the actions defined below                 script: 'call-pet', 'open-page gui.colored-block-skins'
+**script**                        no        Executes multiple actions defined below                   script:
+**show-on**                       no        Shows the gui item on certain states                     show-on
 **hidden-on**                     no        Hides the gui item on certain states                     hidden-on
+**allowed-on**                    no        Allows the gui item on certain states                    allowed-on
 **blocked-on**                    no        Blocks the gui item on certain states                    blocked-on
 **set-skin**                      no        Skin which gets applied to your pet on click             set-skin
 **add-ai**                        no        Ais which get applied to your pet on click               add-ai
@@ -56,7 +57,7 @@ nbt                               no        NBT tags for the item.              
 The icon script tag
 ~~~~~~~~~~~~~~~~~~~
 
-These are scripts exclusive for icons.
+These are scripts exclusive for the icon tag and only allow **1 single line** of script.
 
 **config.yml**
 ::
@@ -73,38 +74,42 @@ hide-right-scroll                Hides the gui item if the gui scroll has reache
 The script tag
 ~~~~~~~~~~~~~~
 
-These are scripts for the gui items.
-
+The script tag allows to define multiple scripts to a GUI item in order to change the
+action when a user clicks on it.
 
 **config.yml**
 ::
-   script: 'call-pet'
+   script:
+    - 'call-pet'
+    - 'servercommand say Player <player> has called his/her pet.'
 
 ================================ ========================================================
 Tag                              Description
 ================================ ========================================================
 call-pet                         Calls the pet to the player.
-disable-pet                      Disables the pet of the player
 close-gui                        Goes back to the previous gui page or closes the gui
-open-page <name>                 Opens the specified gui page. See wardrobe item
-scroll <x> 0                     Scrolls the gui page to the x axe
-print-suggest-heads-message      Sends the suggest head message to the player
-print-custom-skin-message        Sends the custom skin message to the player
-print-rename-message             Sends the rename message to the player
 connect-head-database            Connects the player to the HeadDatabase plugin if available
-launch-cannon                    Launches the pet like a cannon
-enable-sound                     Enables the pet sounds
+disable-particles                Disables the pet particles
+disable-pet                      Disables the pet of the player
 disable-sound                    Disables the pet sounds
 enable-particles                 Enables the pet particles
-disable-particles                Disables the pet particles
+enable-sound                     Enables the pet sounds
+launch-cannon                    Launches the pet like a cannon
+open-page <name>                 Opens the specified gui page. See wardrobe item
+playercommand <command>          Executes a command with player level permission and replaces the <player> placeholder with the name of the clicking player
+print-custom-skin-message        Sends the custom skin message to the player
+print-rename-message             Sends the rename message to the player
+print-suggest-heads-message      Sends the suggest head message to the player
+scroll <x> 0                     Scrolls the gui page to the x axe
+servercommand <command>          Executes a command with console level permission and replaces the <player> placeholder with the name of the clicking player
 show-inventory <from> <to>       Opens the pet storage from the index <from> to <to>.
 ================================ ========================================================
 
-The hidden-on tag and blocked-on tag
+The show-on, hidden-on, allowed-on, blocked-on tag
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The difference between the hidden-on and blocked-on tag is that gui items get hidden entirely when using hidden-on.
-Only one condition has to match.
+These tags are being used to check for certain conditions and allow, block, show or hide
+the item when **1** of those conditions match.
 
 **config.yml**
 ::
@@ -116,15 +121,16 @@ Only one condition has to match.
 ================================ ========================================================
 Tag                              Description
 ================================ ========================================================
-pet-enabled                      Hides or blocks when the pet is enabled
-pet-disabled                     Hides or blocks when the pet is disabled
-sound-enabled                    Hides or blocks when the pet sound is enabled
-sound-disabled                   Hides or blocks when the pet sound is disabled
-particle-enabled                 Hides or blocks when the pet particle is enabled
-particle-disabled                Hides or blocks when the pet particle is disabled
-no-permission                    Hides or blocks when the player has not got the permission specified in the permission tag
-<aitype>                         Hides or blocks when the pet has got the specified ai type name
-<aitype>:<tag>                    Hides or blocks when the pet has got the specified ai type name and tag name
+pet-enabled                      Allows, blocks, shows or hides when the pet is enabled
+pet-disabled                     Allows, blocks, shows or hides when the pet is disabled
+sound-enabled                    Allows, blocks, shows or hides when the pet sound is enabled
+sound-disabled                   Allows, blocks, shows or hides when the pet sound is disabled
+particle-enabled                 Allows, blocks, shows or hides when the pet particle is enabled
+particle-disabled                Allows, blocks, shows or hides when the pet particle is disabled
+permission                       Allows, blocks, shows or hides when the player has got the permission specified in the permission tag
+no-permission                    Allows, blocks, shows or hides when the player has not got the permission specified in the permission tag
+<aitype>                         Allows, blocks, shows or hides when the pet has got the specified ai type name
+<aitype>:<tag>                   Allows, blocks, shows or hides when the pet has got the specified ai type name and tag name
 ================================ ========================================================
 
 The set-skin tag
