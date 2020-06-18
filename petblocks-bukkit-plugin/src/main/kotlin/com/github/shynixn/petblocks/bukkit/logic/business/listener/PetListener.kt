@@ -76,6 +76,7 @@ class PetListener @Inject constructor(
 ) : Listener {
     private val joinCooldown = 20 * 6L
     private val alreadyLoading = HashSet<UUID>()
+    private val sneakSpamProtection = HashSet<UUID>()
 
     /**
      * Gets called when a player joins the server. Join the pet if it was already enabled last time.
@@ -206,7 +207,7 @@ class PetListener @Inject constructor(
 
         val petMeta = persistencePetMetaService.getPetMetaFromPlayer(event.player)
 
-        if (petMeta.aiGoals.firstOrNull { e -> e is AIGroundRiding || e is AIFlyRiding } != null) {
+        if (petService.hasPet(event.player) && petMeta.aiGoals.firstOrNull { e -> e is AIGroundRiding || e is AIFlyRiding } != null) {
             event.isCancelled = true
         }
     }
@@ -226,7 +227,7 @@ class PetListener @Inject constructor(
 
         val petMeta = persistencePetMetaService.getPetMetaFromPlayer(event.entity as Player)
 
-        if (petMeta.aiGoals.firstOrNull { e -> e is AIGroundRiding || e is AIFlyRiding } != null) {
+        if (petService.hasPet(event.entity) && petMeta.aiGoals.firstOrNull { e -> e is AIGroundRiding || e is AIFlyRiding } != null) {
             event.isCancelled = true
         }
     }
@@ -367,6 +368,16 @@ class PetListener @Inject constructor(
 
         if (!configurationService.containsValue("events.onsneak")) {
             return
+        }
+
+        if (sneakSpamProtection.contains(player.uniqueId)) {
+            return
+        }
+
+        sneakSpamProtection.add(player.uniqueId)
+
+        concurrencyService.runTaskSync(40L) {
+            sneakSpamProtection.remove(player.uniqueId)
         }
 
         val aiSet = aiService.loadAisFromConfig<AIBase>("events.onsneak")
