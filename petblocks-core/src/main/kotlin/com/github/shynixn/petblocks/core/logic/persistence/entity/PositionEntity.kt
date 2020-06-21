@@ -1,6 +1,7 @@
 package com.github.shynixn.petblocks.core.logic.persistence.entity
 
 import com.github.shynixn.petblocks.api.persistence.entity.Position
+import kotlin.math.sqrt
 
 /**
  * Created by Shynixn 2018.
@@ -47,9 +48,11 @@ class PositionEntity(
     /** [blockX] coordinate as Int. */
     override val blockX: Int
         get() = x.toInt()
+
     /** [blockY] coordinate as Int. */
     override val blockY: Int
         get() = y.toInt()
+
     /** [blockZ] coordinate as Int. */
     override val blockZ: Int
         get() = z.toInt()
@@ -96,6 +99,26 @@ class PositionEntity(
     }
 
     /**
+     * Calculates the distance to the other location.
+     */
+    override fun distance(o: Position): Double {
+        return sqrt(distanceSquared(o))
+    }
+
+    /**
+     * Calculates the square distance to the other location.
+     */
+    override fun distanceSquared(o: Position): Double {
+        if (this.worldName != null && o.worldName != null) {
+            if (this.worldName != o.worldName) {
+                return Double.MAX_VALUE
+            }
+        }
+
+        return square(x - o.x) + square(y - o.y) + square(z - o.z)
+    }
+
+    /**
      * Gets the yaw and pitch direction.
      */
     override fun getDirection(): Position {
@@ -129,5 +152,19 @@ class PositionEntity(
             return false
         }
         return super.equals(other)
+    }
+
+    /**
+     * Returns the vector length.
+     */
+    private fun length(): Double {
+        return sqrt(square(x) + square(y) + square(z))
+    }
+
+    /**
+     * Multiplies the given number with itself.
+     */
+    private fun square(num: Double): Double {
+        return num * num
     }
 }

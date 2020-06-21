@@ -1,6 +1,8 @@
 package com.github.shynixn.petblocks.bukkit.logic.business.nms.v1_15_R1
 
+import com.github.shynixn.petblocks.api.PetBlocksApi
 import com.github.shynixn.petblocks.api.business.proxy.PathfinderProxy
+import com.github.shynixn.petblocks.api.business.service.ConcurrencyService
 import com.github.shynixn.petblocks.api.persistence.entity.AIMovement
 import net.minecraft.server.v1_15_R1.*
 import org.bukkit.Location
@@ -49,8 +51,16 @@ class NMSPetRabbit(petDesign: NMSPetArmorstand, location: Location) : EntityRabb
         this.H = 1.0F
 
         val mcWorld = (location.world as CraftWorld).handle
-        this.setPosition(location.x, location.y + 1, location.z)
+        this.setPosition(location.x, location.y - 200, location.z)
         mcWorld.addEntity(this, CreatureSpawnEvent.SpawnReason.CUSTOM)
+
+        val targetLocation = location.clone()
+        PetBlocksApi.resolve(ConcurrencyService::class.java).runTaskSync(20L) {
+            // Only fix location if it is not already fixed.
+            if (this.bukkitEntity.location.distance(targetLocation) > 20) {
+                this.setPosition(targetLocation.x, targetLocation.y + 1.0, targetLocation.z)
+            }
+        }
     }
 
     /**
