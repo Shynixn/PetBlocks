@@ -7,6 +7,8 @@ import com.github.shynixn.petblocks.api.business.service.NavigationService
 import com.github.shynixn.petblocks.api.persistence.entity.AIFollowOwner
 import com.github.shynixn.petblocks.api.persistence.entity.AIHopping
 import com.github.shynixn.petblocks.bukkit.logic.business.extension.distanceSafely
+import com.github.shynixn.petblocks.bukkit.logic.business.extension.toPosition
+import com.github.shynixn.petblocks.core.logic.business.extension.relativeFront
 import com.github.shynixn.petblocks.core.logic.business.pathfinder.BasePathfinder
 import org.bukkit.GameMode
 import org.bukkit.Location
@@ -45,7 +47,7 @@ class PathfinderFollowOwner(
         return try {
             when {
                 player.location.distanceSafely(livingEntity.location) > aiFollowBack.maxRange -> {
-                    pet.teleport(player.location)
+                    pet.teleport<Any>(player.location.toPosition().relativeFront(3.0))
                     false
                 }
 
