@@ -11,6 +11,7 @@ import com.google.inject.Inject
 import org.bukkit.Bukkit
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
+import java.util.*
 
 /**
  * Created by Shynixn 2018.
@@ -122,11 +123,23 @@ class MessageServiceImpl @Inject constructor(private val version: Version) : Mes
         val chatComponent = method.invoke(null, finalMessage.toString())
         val packet: Any
 
-        packet = if (version.isVersionSameOrGreaterThan(Version.VERSION_1_12_R1)) {
-            val chatEnumMessage = findClazz("net.minecraft.server.VERSION.ChatMessageType")
-            packetClazz.getDeclaredConstructor(chatBaseComponentClazz, chatEnumMessage).newInstance(chatComponent, chatEnumMessage.enumConstants[0])
-        } else {
-            packetClazz.getDeclaredConstructor(chatBaseComponentClazz, Byte::class.javaPrimitiveType!!).newInstance(chatComponent, 0.toByte())
+        packet = when {
+            version.isVersionSameOrGreaterThan(Version.VERSION_1_16_R1) -> {
+                val systemUtilsClazz = findClazz("net.minecraft.server.VERSION.SystemUtils")
+                val defaultUUID = systemUtilsClazz.getDeclaredField("b").get(null) as UUID
+                val chatEnumMessage = findClazz("net.minecraft.server.VERSION.ChatMessageType")
+                packetClazz.getDeclaredConstructor(chatBaseComponentClazz, chatEnumMessage, UUID::class.java)
+                    .newInstance(chatComponent, chatEnumMessage.enumConstants[0], defaultUUID)
+            }
+            version.isVersionSameOrGreaterThan(Version.VERSION_1_12_R1) -> {
+                val chatEnumMessage = findClazz("net.minecraft.server.VERSION.ChatMessageType")
+                packetClazz.getDeclaredConstructor(chatBaseComponentClazz, chatEnumMessage)
+                    .newInstance(chatComponent, chatEnumMessage.enumConstants[0])
+            }
+            else -> {
+                packetClazz.getDeclaredConstructor(chatBaseComponentClazz, Byte::class.javaPrimitiveType!!)
+                    .newInstance(chatComponent, 0.toByte())
+            }
         }
 
         player.sendPacket(packet)
