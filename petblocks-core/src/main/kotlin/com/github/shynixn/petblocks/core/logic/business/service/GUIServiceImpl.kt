@@ -472,7 +472,6 @@ class GUIServiceImpl @Inject constructor(
             val conditionState = try {
                 PetState.values().first { e -> e.description.equals(condition, true) }
             } catch (e: Exception) {
-                loggingService.warn("Failed to parse condition '$condition'.")
                 return false
             }
 
