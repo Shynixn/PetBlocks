@@ -1,5 +1,6 @@
 package com.github.shynixn.petblocks.core.logic.business.service
 
+import com.github.shynixn.petblocks.api.business.enumeration.Permission
 import com.github.shynixn.petblocks.api.business.proxy.PetProxy
 import com.github.shynixn.petblocks.api.business.service.*
 import com.github.shynixn.petblocks.api.persistence.entity.Position
@@ -59,13 +60,17 @@ class PetServiceImpl @Inject constructor(
     /**
      * Gets or spawns the pet of the given player.
      * An empty optional gets returned if the pet cannot spawn by one of the following reasons:
-     * Current world, region is disabled for pets, PreSpawnEvent was cancelled or Pet is not available due to Ai State.
+     * Current world, player has not got permission, region is disabled for pets, PreSpawnEvent was cancelled or Pet is not available due to Ai State.
      * For example HealthAI defines pet ai as 0 which results into impossibility to spawn.
      */
     override fun <P> getOrSpawnPetFromPlayer(player: P): Optional<PetProxy> {
         val playerUUID = proxyService.getPlayerUUID(player)
         val playerLocation = proxyService.getPlayerLocation<Any, P>(player)
         val playerPosition = proxyService.toPosition(playerLocation)
+
+        if (!proxyService.hasPermission(player, Permission.CALL)) {
+            return Optional.empty()
+        }
 
         if (hasPet(player)) {
             return Optional.of(pets.first { p -> !p.isDead && p.meta.playerMeta.uuid == playerUUID })
@@ -98,7 +103,7 @@ class PetServiceImpl @Inject constructor(
 
         eventService.callEvent(PetPostSpawnEntity(player as Any, petProxy))
 
-        concurrencyService.runTaskSync(1L){
+        concurrencyService.runTaskSync(1L) {
             petProxy.triggerTick()
         }
 
@@ -119,7 +124,9 @@ class PetServiceImpl @Inject constructor(
     override fun <E> findPetByEntity(entity: E): PetProxy? {
         for (pet in pets) {
             if (!pet.isDead) {
-                if (pet.getHeadArmorstand<Any>() == entity || (pet.getHitBoxLivingEntity<Any>().isPresent && pet.getHitBoxLivingEntity<Any>().get() == entity)) {
+                if (pet.getHeadArmorstand<Any>() == entity || (pet.getHitBoxLivingEntity<Any>().isPresent && pet.getHitBoxLivingEntity<Any>()
+                        .get() == entity)
+                ) {
                     return pet
                 }
             }

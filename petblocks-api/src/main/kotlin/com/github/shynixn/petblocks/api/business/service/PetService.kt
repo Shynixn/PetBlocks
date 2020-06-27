@@ -34,7 +34,7 @@ interface PetService {
     /**
      * Gets or spawns the pet of the given player.
      * An empty optional gets returned if the pet cannot spawn by one of the following reasons:
-     * Current world, region is disabled for pets, PreSpawnEvent was cancelled or Pet is not available due to Ai State.
+     * Current world, player has not got permission, region is disabled for pets, PreSpawnEvent was cancelled or Pet is not available due to Ai State.
      * For example HealthAI defines pet ai as 0 which results into impossibility to spawn.
      */
     fun <P> getOrSpawnPetFromPlayer(player: P): Optional<PetProxy>
