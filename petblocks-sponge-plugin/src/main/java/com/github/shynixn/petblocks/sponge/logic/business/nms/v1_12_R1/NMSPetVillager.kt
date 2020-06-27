@@ -1,10 +1,13 @@
 package com.github.shynixn.petblocks.sponge.logic.business.nms.v1_12_R1
 
+import com.github.shynixn.petblocks.api.PetBlocksApi
 import com.github.shynixn.petblocks.api.business.proxy.EntityPetProxy
 import com.github.shynixn.petblocks.api.business.proxy.HiddenProxy
 import com.github.shynixn.petblocks.api.business.proxy.PathfinderProxy
+import com.github.shynixn.petblocks.api.business.service.ConcurrencyService
 import com.github.shynixn.petblocks.api.persistence.entity.AIMovement
 import com.github.shynixn.petblocks.core.logic.business.extension.cast
+import com.github.shynixn.petblocks.sponge.logic.business.extension.toPosition
 import com.github.shynixn.petblocks.sponge.logic.business.extension.x
 import com.github.shynixn.petblocks.sponge.logic.business.extension.y
 import com.github.shynixn.petblocks.sponge.logic.business.extension.z
@@ -61,8 +64,16 @@ class NMSPetVillager(petDesign: NMSPetArmorstand, location: Transform<World>) :
         this.stepHeight = 1.0F
 
         val mcWorld = location.extent as net.minecraft.world.World
-        this.setPosition(location.x, location.y + 1, location.z)
+        this.setPosition(location.x, location.y - 200, location.z)
         mcWorld.spawnEntity(this)
+
+        val targetLocation = location.toPosition()
+        PetBlocksApi.resolve(ConcurrencyService::class.java).runTaskSync(20L) {
+            // Only fix location if it is not already fixed.
+            if (petDesign.proxy.getLocation<Transform<World>>().toPosition().distance(targetLocation) > 20) {
+                this.setPosition(targetLocation.x, targetLocation.y + 1.0, targetLocation.z)
+            }
+        }
     }
 
     /**

@@ -72,6 +72,16 @@ interface Position {
     fun add(position: Position)
 
     /**
+     * Calculates the distance to the other location.
+     */
+    fun distance(o: Position): Double
+
+    /**
+     * Calculates the square distance to the other location.
+     */
+    fun distanceSquared(o: Position): Double
+
+    /**
      * Gets the direction of the yaw and pitch.
      */
     fun getDirection(): Position
