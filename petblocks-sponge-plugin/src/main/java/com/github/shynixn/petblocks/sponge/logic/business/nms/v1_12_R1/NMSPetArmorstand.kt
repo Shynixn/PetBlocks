@@ -119,7 +119,9 @@ class NMSPetArmorstand(owner: Player, val petMeta: PetMeta) : EntityArmorStand(o
      * Spawns a new hitbox
      */
     private fun spawnHitBox() {
-        if (internalHitBox != null) {
+        val shouldDeleteHitBox = shouldDeleteHitBox()
+
+        if (shouldDeleteHitBox && internalHitBox != null) {
             (internalHitBox!! as EntityPetProxy).deleteFromWorld()
             internalHitBox = null
             proxy.changeHitBox(internalHitBox)
@@ -157,8 +159,11 @@ class NMSPetArmorstand(owner: Player, val petMeta: PetMeta) : EntityArmorStand(o
         val flyingAi = petMeta.aiGoals.firstOrNull { a -> a is AIFlying }
 
         if (flyingAi != null) {
-            internalHitBox = NMSPetBat(this, this.cast<ArmorStand>().transform)
-            proxy.changeHitBox(internalHitBox!! as Living)
+            if (internalHitBox == null) {
+                internalHitBox = NMSPetBat(this, this.cast<ArmorStand>().transform)
+                proxy.changeHitBox(internalHitBox!! as Living)
+            }
+
             val aiGoals = aiService.convertPetAiBasesToPathfinders(proxy, petMeta.aiGoals)
             (internalHitBox as NMSPetBat).applyPathfinders(aiGoals)
             this.applyNBTTagToHitBox(internalHitBox!!)
@@ -168,16 +173,22 @@ class NMSPetArmorstand(owner: Player, val petMeta: PetMeta) : EntityArmorStand(o
         val hoppingAi = petMeta.aiGoals.firstOrNull { a -> a is AIHopping }
 
         if (hoppingAi != null) {
-            internalHitBox = NMSPetRabbit(this, this.cast<ArmorStand>().transform)
-            proxy.changeHitBox(internalHitBox!! as Living)
+            if (internalHitBox == null) {
+                internalHitBox = NMSPetRabbit(this, this.cast<ArmorStand>().transform)
+                proxy.changeHitBox(internalHitBox!! as Living)
+            }
+
             val aiGoals = aiService.convertPetAiBasesToPathfinders(proxy, petMeta.aiGoals)
             (internalHitBox as NMSPetRabbit).applyPathfinders(aiGoals)
             this.applyNBTTagToHitBox(internalHitBox!!)
             return
         }
 
-        internalHitBox = NMSPetVillager(this, this.cast<ArmorStand>().transform)
-        proxy.changeHitBox(internalHitBox!! as Living)
+        if (internalHitBox == null) {
+            internalHitBox = NMSPetVillager(this, this.cast<ArmorStand>().transform)
+            proxy.changeHitBox(internalHitBox!! as Living)
+        }
+
         val aiGoals = aiService.convertPetAiBasesToPathfinders(proxy, petMeta.aiGoals)
         (internalHitBox as NMSPetVillager).applyPathfinders(aiGoals)
         this.applyNBTTagToHitBox(internalHitBox!!)
@@ -452,6 +463,29 @@ class NMSPetArmorstand(owner: Player, val petMeta: PetMeta) : EntityArmorStand(o
                 rootCompoundMap[key] = parsedCompoundMap[key]
             }
         }
+    }
+
+    /**
+     * Should the hitbox of the armorstand be deleted.
+     */
+    private fun shouldDeleteHitBox(): Boolean {
+        val hasEmptyHitBoxAi = petMeta.aiGoals.firstOrNull { a -> a is AIGroundRiding || a is AIFlyRiding || a is AIWearing } != null
+
+        if (hasEmptyHitBoxAi) {
+            return true
+        }
+
+        if (internalHitBox != null) {
+            if (internalHitBox is NMSPetVillager && petMeta.aiGoals.firstOrNull { a -> a is AIWalking } == null) {
+                return true
+            } else if (internalHitBox is NMSPetRabbit && petMeta.aiGoals.firstOrNull { a -> a is AIHopping } == null) {
+                return true
+            } else if (internalHitBox is NMSPetBat && petMeta.aiGoals.firstOrNull { a -> a is AIFlying } == null) {
+                return true
+            }
+        }
+
+        return false
     }
 
     /**
