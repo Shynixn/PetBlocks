@@ -8,6 +8,7 @@ import com.github.shynixn.petblocks.core.logic.persistence.entity.PetPostSpawnEn
 import com.github.shynixn.petblocks.core.logic.persistence.entity.PetPreSpawnEntity
 import com.google.inject.Inject
 import java.util.*
+import kotlin.collections.HashMap
 
 /**
  * Created by Shynixn 2018.
@@ -45,17 +46,7 @@ class PetServiceImpl @Inject constructor(
     private val entityService: EntityService,
     private val eventService: EventService
 ) : PetService {
-
-    private val pets = ArrayList<PetProxy>()
-
-    /**
-     * Initialize task.
-     */
-    init {
-        concurrencyService.runTaskSync(0L, 20L * 60 * 5) {
-            this.run()
-        }
-    }
+    private val pets = HashMap<String, PetProxy>()
 
     /**
      * Gets or spawns the pet of the given player.
@@ -65,19 +56,9 @@ class PetServiceImpl @Inject constructor(
      */
     override fun <P> getOrSpawnPetFromPlayer(player: P): Optional<PetProxy> {
         val playerUUID = proxyService.getPlayerUUID(player)
-        val playerLocation = proxyService.getPlayerLocation<Any, P>(player)
-        val playerPosition = proxyService.toPosition(playerLocation)
-
-        if (!proxyService.hasPermission(player, Permission.CALL)) {
-            return Optional.empty()
-        }
 
         if (hasPet(player)) {
-            return Optional.of(pets.first { p -> !p.isDead && p.meta.playerMeta.uuid == playerUUID })
-        }
-
-        if (!isAllowedToSpawn(playerPosition)) {
-            return Optional.empty()
+            return Optional.of(pets[playerUUID]!!)
         }
 
         val petMeta = petMetaService.getPetMetaFromPlayer(player)
@@ -87,6 +68,7 @@ class PetServiceImpl @Inject constructor(
             return Optional.empty()
         }
 
+        val playerLocation = proxyService.getPlayerLocation<Any, P>(player)
         val petProxy: PetProxy
 
         try {
@@ -96,10 +78,8 @@ class PetServiceImpl @Inject constructor(
             return Optional.empty()
         }
 
-        pets.add(petProxy)
-
+        pets[playerUUID] = petProxy
         petMeta.enabled = true
-        petMetaService.save(petMeta)
 
         eventService.callEvent(PetPostSpawnEntity(player as Any, petProxy))
 
@@ -115,18 +95,57 @@ class PetServiceImpl @Inject constructor(
      */
     override fun <P> hasPet(player: P): Boolean {
         val playerUUID = proxyService.getPlayerUUID(player)
-        return pets.firstOrNull { p -> !p.isDead && p.meta.playerMeta.uuid == playerUUID } != null
+
+        if (!pets.containsKey(playerUUID)) {
+            return false
+        }
+
+        val petAllowed = isPetAllowedToBeInSpawnState(player)
+        val pet = pets[playerUUID]!!
+
+        if (!petAllowed) {
+            if (!pet.isDead) {
+                pet.remove()
+            }
+
+            val petMeta = petMetaService.getPetMetaFromPlayer(player)
+            petMeta.enabled = false
+            this.pets.remove(playerUUID)
+            return false
+        }
+
+        if (pet.isDead) {
+            val petMeta = petMetaService.getPetMetaFromPlayer(player)
+            petMeta.enabled = false
+            this.pets.remove(playerUUID)
+            return false
+        }
+
+        return true
+    }
+
+    /**
+     * Clears the allocated player resources.
+     * Should not be called by external plugins.
+     */
+    override fun <P> clearPlayerResources(player: P) {
+        val playerUUID = proxyService.getPlayerUUID(player)
+
+        if (this.pets.containsKey(playerUUID)) {
+            this.pets.remove(playerUUID)
+        }
     }
 
     /**
      * Tries to find the pet from the given entity.
      */
     override fun <E> findPetByEntity(entity: E): PetProxy? {
-        for (pet in pets) {
-            if (!pet.isDead) {
-                if (pet.getHeadArmorstand<Any>() == entity || (pet.getHitBoxLivingEntity<Any>().isPresent && pet.getHitBoxLivingEntity<Any>()
-                        .get() == entity)
-                ) {
+        for (pet in pets.values) {
+            if (pet.getHeadArmorstand<Any>() == entity || (pet.getHitBoxLivingEntity<Any>().isPresent && pet.getHitBoxLivingEntity<Any>()
+                    .get() == entity)
+            ) {
+                val owner = pet.getPlayer<Any>()
+                if (hasPet(owner)) {
                     return pet
                 }
             }
@@ -136,27 +155,23 @@ class PetServiceImpl @Inject constructor(
     }
 
     /**
-     * When an object implementing interface `Runnable` is used
-     * to create a thread, starting the thread causes the object's
-     * `run` method to be called in that separately executing
-     * thread.
-     *
-     *
-     * The general contract of the method `run` is that it may
-     * take any action whatsoever.
+     * Is the pet allowed to be spawned.
      */
-    private fun run() {
-        for (pet in pets.toTypedArray()) {
-            if (pet.isDead) {
-                pets.remove(pet)
-            }
+    private fun <P> isPetAllowedToBeInSpawnState(player: P): Boolean {
+        if (!proxyService.hasPermission(player, Permission.CALL)) {
+            return false
         }
+
+        val playerLocation = proxyService.getPlayerLocation<Any, P>(player)
+        val playerPosition = proxyService.toPosition(playerLocation)
+
+        return isAllowedToSpawnAtPosition(playerPosition)
     }
 
     /**
      * Gets if the pet is allowed to spawn at the given position.
      */
-    private fun isAllowedToSpawn(position: Position): Boolean {
+    private fun isAllowedToSpawnAtPosition(position: Position): Boolean {
         val includedWorlds = configurationService.findValue<List<String>>("world.included")
         val excludedWorlds = configurationService.findValue<List<String>>("world.excluded")
 

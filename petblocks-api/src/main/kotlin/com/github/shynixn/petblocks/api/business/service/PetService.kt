@@ -49,4 +49,10 @@ interface PetService {
      * Gets if the given [player] has got an active pet.
      */
     fun <P> hasPet(player: P): Boolean
+
+    /**
+     * Clears the allocated player resources.
+     * Should not be called by external plugins.
+     */
+    fun <P> clearPlayerResources(player : P)
 }
