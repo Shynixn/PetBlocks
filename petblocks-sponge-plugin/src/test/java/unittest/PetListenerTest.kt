@@ -256,5 +256,12 @@ class PetListenerTest {
         override fun <P> hasPet(player: P): Boolean {
             return hasPet
         }
+
+        /**
+         * Clears the allocated player resources.
+         * Should not be called by external plugins.
+         */
+        override fun <P> clearPlayerResources(player: P) {
+        }
     }
 }

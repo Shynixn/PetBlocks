@@ -213,5 +213,12 @@ class DamagePetListenerTest {
         override fun <P> hasPet(player: P): Boolean {
             throw IllegalArgumentException()
         }
+
+        /**
+         * Clears the allocated player resources.
+         * Should not be called by external plugins.
+         */
+        override fun <P> clearPlayerResources(player: P) {
+        }
     }
 }
