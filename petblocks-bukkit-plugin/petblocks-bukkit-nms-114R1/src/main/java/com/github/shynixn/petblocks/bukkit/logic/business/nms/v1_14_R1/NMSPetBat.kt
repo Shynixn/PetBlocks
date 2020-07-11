@@ -38,7 +38,12 @@ import org.bukkit.event.entity.CreatureSpawnEvent
  */
 class NMSPetBat(petDesign: NMSPetArmorstand, location: Location) : EntityParrot(EntityTypes.PARROT, (location.world as CraftWorld).handle) {
     private var petDesign: NMSPetArmorstand? = null
+
+    // Pathfinders need to be self cached for Paper.
+    private var initialClear = true
     private var pathfinderCounter = 0
+    private var cachedPathfinders = HashSet<PathfinderGoal>()
+
     // BukkitEntity has to be self cached since 1.14.
     private var entityBukkit: Any? = null
 
@@ -76,12 +81,16 @@ class NMSPetBat(petDesign: NMSPetArmorstand, location: Location) : EntityParrot(
      */
     fun applyPathfinders(pathfinders: List<Any>) {
         clearAIGoals()
+        pathfinderCounter = 0
 
         for (pathfinder in pathfinders) {
             if (pathfinder is PathfinderProxy) {
-                this.goalSelector.a(pathfinderCounter++, Pathfinder(pathfinder))
+                val wrappedPathfinder = Pathfinder(pathfinder)
+                this.cachedPathfinders.add(wrappedPathfinder)
+                this.goalSelector.a(pathfinderCounter++, wrappedPathfinder)
             } else {
                 this.goalSelector.a(pathfinderCounter++, pathfinder as PathfinderGoal)
+                this.cachedPathfinders.add(pathfinder)
             }
         }
     }
@@ -124,9 +133,18 @@ class NMSPetBat(petDesign: NMSPetArmorstand, location: Location) : EntityParrot(
      * Clears all entity aiGoals.
      */
     private fun clearAIGoals() {
-        val dField = PathfinderGoalSelector::class.java.getDeclaredField("d")
-        dField.isAccessible = true
-        (dField.get(this.goalSelector) as MutableSet<*>).clear()
-        (dField.get(this.targetSelector) as MutableSet<*>).clear()
+        if (initialClear) {
+            val dField = PathfinderGoalSelector::class.java.getDeclaredField("d")
+            dField.isAccessible = true
+            (dField.get(this.goalSelector) as MutableSet<*>).clear()
+            (dField.get(this.targetSelector) as MutableSet<*>).clear()
+            initialClear = false
+        }
+
+        for (pathfinder in cachedPathfinders) {
+            this.goalSelector.a(pathfinder)
+        }
+
+        this.cachedPathfinders.clear()
     }
 }
