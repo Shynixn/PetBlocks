@@ -8,3 +8,4 @@ Customizing
    regions
    minecraftheads
    headdatabase
+   placeholders

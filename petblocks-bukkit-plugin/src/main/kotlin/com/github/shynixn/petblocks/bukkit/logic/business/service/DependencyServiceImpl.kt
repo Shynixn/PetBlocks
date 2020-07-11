@@ -41,6 +41,7 @@ class DependencyServiceImpl @Inject constructor(private val plugin: Plugin) : De
      */
     override fun checkForInstalledDependencies() {
         printInstallment(PluginDependency.HEADDATABASE)
+        printInstallment(PluginDependency.PLACEHOLDERAPI)
     }
 
     /**

@@ -1,13 +1,13 @@
-package com.github.shynixn.petblocks.api.business.enumeration
+package com.github.shynixn.petblocks.api.business.service
 
 /**
- * Created by Shynixn 2018.
+ * Created by Shynixn 2020.
  * <p>
- * Version 1.2
+ * Version 1.5
  * <p>
  * MIT License
  * <p>
- * Copyright (c) 2018 by Shynixn
+ * Copyright (c) 2020 by Shynixn
  * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -27,20 +27,9 @@ package com.github.shynixn.petblocks.api.business.enumeration
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-enum class PluginDependency(
+interface DependencyPlaceholderApiService {
     /**
-     * Plugin name.
+     * Registers the placeholder hook if it is not already registered.
      */
-    val pluginName: String
-) {
-
-    /**
-     * HeadDatabase plugin.
-     */
-    HEADDATABASE("HeadDatabase"),
-
-    /**
-     * PlaceHolderApi plugin.
-     */
-    PLACEHOLDERAPI("PlaceholderAPI")
+    fun registerListener()
 }
