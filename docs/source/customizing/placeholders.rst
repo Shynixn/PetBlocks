@@ -12,6 +12,8 @@ This means you display the states of the pets on other plugins and displays such
 * Holograms
 * ...
 
+.. note:: You can use placeholders of other plugins inside of the **name** of the pet.
+
 Placeholderlist
 ~~~~~~~~~~~~~~~
 
