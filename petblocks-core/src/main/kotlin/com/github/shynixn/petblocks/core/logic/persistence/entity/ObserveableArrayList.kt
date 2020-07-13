@@ -116,7 +116,11 @@ class ObserveableArrayList<E>(private val hasChanged: () -> Unit) : MutableList<
      */
     override fun addAll(index: Int, elements: Collection<E>): Boolean {
         val item = backedArrayList.addAll(index, elements)
-        this.hasChanged.invoke()
+
+        if (item) {
+            this.hasChanged.invoke()
+        }
+
         return item
     }
 
@@ -129,7 +133,11 @@ class ObserveableArrayList<E>(private val hasChanged: () -> Unit) : MutableList<
      */
     override fun addAll(elements: Collection<E>): Boolean {
         val item = backedArrayList.addAll(elements)
-        this.hasChanged.invoke()
+
+        if (item) {
+            this.hasChanged.invoke()
+        }
+
         return item
     }
 
@@ -146,7 +154,11 @@ class ObserveableArrayList<E>(private val hasChanged: () -> Unit) : MutableList<
 
     override fun removeAll(elements: Collection<E>): Boolean {
         val item = backedArrayList.removeAll(elements)
-        this.hasChanged.invoke()
+
+        if (item) {
+            this.hasChanged.invoke()
+        }
+
         return item
     }
 
