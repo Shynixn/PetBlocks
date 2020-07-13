@@ -2,6 +2,7 @@
 
 package com.github.shynixn.petblocks.core.logic.business.service
 
+import com.github.shynixn.petblocks.api.PetBlocksApi
 import com.github.shynixn.petblocks.api.business.enumeration.*
 import com.github.shynixn.petblocks.api.business.localization.Messages
 import com.github.shynixn.petblocks.api.business.service.*
@@ -55,11 +56,13 @@ class GUIServiceImpl @Inject constructor(
     private val headDatabaseService: DependencyHeadDatabaseService,
     private val messageService: MessageService,
     private val proxyService: ProxyService,
-    private val guiPetStorageService: GUIPetStorageService
+    private val guiPetStorageService: GUIPetStorageService,
+    private val dependencyService: DependencyService
 ) : GUIService {
 
     private val clickProtection = ArrayList<Any>()
     private val pageCache = HashMap<Any, GuiPlayerCache>()
+    private var placeHolderService: DependencyPlaceholderApiService? = null
 
     private var collectedMinecraftHeadsMessage = lazy {
         chatMessage {
@@ -206,6 +209,10 @@ class GUIServiceImpl @Inject constructor(
     override fun <P> open(player: P, pageName: String?) {
         require(player is Any)
 
+        if (placeHolderService == null && dependencyService.isInstalled(PluginDependency.PLACEHOLDERAPI)) {
+            placeHolderService = PetBlocksApi.resolve(DependencyPlaceholderApiService::class.java)
+        }
+
         proxyService.closeInventory(player)
         var page = pageName
 
@@ -342,6 +349,11 @@ class GUIServiceImpl @Inject constructor(
                 if (scriptResult == ScriptAction.COPY_PET_SKIN) {
                     val guiIcon = GuiIconEntity()
                     guiIcon.displayName = petMeta.displayName
+
+                    if (placeHolderService != null) {
+                        guiIcon.displayName =
+                            placeHolderService!!.applyPlaceHolders(player, petMeta.displayName).translateChatColors()
+                    }
 
                     with(guiIcon.skin) {
                         typeName = petMeta.skin.typeName
