@@ -2,12 +2,10 @@ package com.github.shynixn.petblocks.bukkit.logic.business.proxy
 
 import com.github.shynixn.petblocks.api.PetBlocksApi
 import com.github.shynixn.petblocks.api.bukkit.event.PetRemoveEvent
+import com.github.shynixn.petblocks.api.business.enumeration.PluginDependency
 import com.github.shynixn.petblocks.api.business.proxy.EntityPetProxy
 import com.github.shynixn.petblocks.api.business.proxy.PetProxy
-import com.github.shynixn.petblocks.api.business.service.ItemTypeService
-import com.github.shynixn.petblocks.api.business.service.LoggingService
-import com.github.shynixn.petblocks.api.business.service.ParticleService
-import com.github.shynixn.petblocks.api.business.service.SoundService
+import com.github.shynixn.petblocks.api.business.service.*
 import com.github.shynixn.petblocks.api.persistence.entity.*
 import com.github.shynixn.petblocks.bukkit.logic.business.extension.findClazz
 import com.github.shynixn.petblocks.bukkit.logic.business.extension.toLocation
@@ -63,6 +61,8 @@ class PetProxyImpl(override val meta: PetMeta, private val design: ArmorStand, p
     private val soundService = PetBlocksApi.resolve(SoundService::class.java)
     private val logger: LoggingService = PetBlocksApi.resolve(LoggingService::class.java)
     private val itemService = PetBlocksApi.resolve(ItemTypeService::class.java)
+    private val dependencyService = PetBlocksApi.resolve(DependencyService::class.java)
+    private var placeHolderApiService: DependencyPlaceholderApiService? = null
 
     /**
      * Init.
@@ -75,6 +75,10 @@ class PetProxyImpl(override val meta: PetMeta, private val design: ArmorStand, p
         meta.propertyTracker.onPropertyChanged(Skin::typeName)
 
         design.equipment!!.boots = generateMarkerItemStack()
+
+        if (dependencyService.isInstalled(PluginDependency.PLACEHOLDERAPI)) {
+            placeHolderApiService = PetBlocksApi.resolve(DependencyPlaceholderApiService::class.java)
+        }
     }
 
     /**
@@ -219,6 +223,10 @@ class PetProxyImpl(override val meta: PetMeta, private val design: ArmorStand, p
 
         if (displayNameChanged) {
             design.customName = meta.displayName.translateChatColors()
+        }
+
+        if (placeHolderApiService != null) {
+            design.customName = placeHolderApiService!!.applyPlaceHolders(owner, meta.displayName).translateChatColors()
         }
 
         if (displayNameChanged || Skin::typeName.hasChanged(meta.skin)) {

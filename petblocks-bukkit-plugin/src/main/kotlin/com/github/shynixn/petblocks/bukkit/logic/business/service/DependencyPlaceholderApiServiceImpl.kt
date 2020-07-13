@@ -4,6 +4,7 @@ import com.github.shynixn.petblocks.api.business.enumeration.PlaceHolder
 import com.github.shynixn.petblocks.api.business.service.DependencyPlaceholderApiService
 import com.github.shynixn.petblocks.api.business.service.PersistencePetMetaService
 import com.google.inject.Inject
+import me.clip.placeholderapi.PlaceholderAPI
 import me.clip.placeholderapi.expansion.PlaceholderExpansion
 import org.bukkit.entity.Player
 import org.bukkit.plugin.Plugin
@@ -49,6 +50,19 @@ class DependencyPlaceholderApiServiceImpl @Inject constructor(
         if (!registerd) {
             this.register()
             registerd = true
+        }
+    }
+
+    /**
+     * Applies external placeHolders to the given text and returns the new text.
+     */
+    override fun <P> applyPlaceHolders(player: P, text: String): String {
+        require(player is Player)
+
+        return try {
+            PlaceholderAPI.setPlaceholders(player, text)
+        } catch (e: Throwable) {
+            text
         }
     }
 

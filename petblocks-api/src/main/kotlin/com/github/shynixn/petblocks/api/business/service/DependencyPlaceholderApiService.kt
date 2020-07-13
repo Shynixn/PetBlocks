@@ -32,4 +32,9 @@ interface DependencyPlaceholderApiService {
      * Registers the placeholder hook if it is not already registered.
      */
     fun registerListener()
+
+    /**
+     * Applies external placeHolders to the given text and returns the new text.
+     */
+    fun <P> applyPlaceHolders(player : P, text : String) : String
 }
