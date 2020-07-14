@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Can the pet walk instead of hopping like a rabbit? &mdash; PetBlocks 8.20.0 documentation</title>
+  <title>Placeholders &mdash; PetBlocks 8.20.0 documentation</title>
   
 
   
@@ -38,9 +38,9 @@
               href="../genindex.html"/>
         <link rel="search" title="Search" href="../search.html"/>
     <link rel="top" title="PetBlocks 8.20.0 documentation" href="../index.html"/>
-        <link rel="up" title="FAQ" href="index.html"/>
-        <link rel="next" title="The player head is not visible in the GUI or when the Pet spawns?" href="playerheadnotshown.html"/>
-        <link rel="prev" title="How to use the same pets on multiple servers?" href="howbungee.html"/> 
+        <link rel="up" title="Customizing" href="index.html"/>
+        <link rel="next" title="Commands" href="../commands/index.html"/>
+        <link rel="prev" title="Head Database" href="headdatabase.html"/> 
 
   
   <script src="../_static/js/modernizr.min.js"></script>
@@ -99,24 +99,23 @@
               <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../gettingstarted/index.html">Getting Started</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../pets/index.html">Pets</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../customizing/index.html">Customizing</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Customizing</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="gui.html">GUI</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ai.html">AIS</a></li>
+<li class="toctree-l2"><a class="reference internal" href="example.html">Examples</a></li>
+<li class="toctree-l2"><a class="reference internal" href="regions.html">Worlds and Regions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="minecraftheads.html">Minecraft-Heads.com</a></li>
+<li class="toctree-l2"><a class="reference internal" href="headdatabase.html">Head Database</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Placeholders</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#placeholderlist">Placeholderlist</a></li>
+</ul>
+</li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="../commands/index.html">Commands</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../general/index.html">General</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../api/index.html">Developer API</a></li>
-<li class="toctree-l1 current"><a class="reference internal" href="index.html">FAQ</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="notspawning.html">The pet does not spawn?</a></li>
-<li class="toctree-l2"><a class="reference internal" href="petblockfallsthroughmap.html">The pet falls through the ground when riding?</a></li>
-<li class="toctree-l2"><a class="reference internal" href="howcustomtextures.html">How to use custom textures and 3d models?</a></li>
-<li class="toctree-l2"><a class="reference internal" href="howsingleplayer.html">How to use PetBlocks in SinglePlayer?</a></li>
-<li class="toctree-l2"><a class="reference internal" href="petblockspongebukkit.html">Are there any differences between Sponge and Bukkit PetBlocks?</a></li>
-<li class="toctree-l2"><a class="reference internal" href="selling.html">How can you sell costumes/skins?</a></li>
-<li class="toctree-l2"><a class="reference internal" href="support.html">Can you support Minecraft 1.7.x or below?</a></li>
-<li class="toctree-l2"><a class="reference internal" href="howbungee.html">How to use the same pets on multiple servers?</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">Can the pet walk instead of hopping like a rabbit?</a></li>
-<li class="toctree-l2"><a class="reference internal" href="playerheadnotshown.html">The player head is not visible in the GUI or when the Pet spawns?</a></li>
-<li class="toctree-l2"><a class="reference internal" href="caniusereload.html">Can I use the /reload command?</a></li>
-</ul>
-</li>
+<li class="toctree-l1"><a class="reference internal" href="../faq/index.html">FAQ</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../contributing/index.html">Contributing to PetBlock</a></li>
 </ul>
 
@@ -162,16 +161,16 @@
     
       <li><a href="../index.html">Docs</a> &raquo;</li>
         
-          <li><a href="index.html">FAQ</a> &raquo;</li>
+          <li><a href="index.html">Customizing</a> &raquo;</li>
         
-      <li>Can the pet walk instead of hopping like a rabbit?</li>
+      <li>Placeholders</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
             
-              <a href="https://github.com/Shynixn/PetBlocks/tree/master/docs/source/faq/canpetwal.rst" class="fa fa-github"> Edit on GitHub</a>
+              <a href="https://github.com/Shynixn/PetBlocks/tree/master/docs/source/customizing/placeholders.rst" class="fa fa-github"> Edit on GitHub</a>
             
           
         
@@ -185,9 +184,72 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="can-the-pet-walk-instead-of-hopping-like-a-rabbit">
-<h1>Can the pet walk instead of hopping like a rabbit?<a class="headerlink" href="#can-the-pet-walk-instead-of-hopping-like-a-rabbit" title="Permalink to this headline">¶</a></h1>
-<p>Please take a look into the Customizing section. However, this is even handled in the <a class="reference external" href="../pets/petblocks.html">introduction example</a> of ais.</p>
+  <div class="section" id="placeholders">
+<h1>Placeholders<a class="headerlink" href="#placeholders" title="Permalink to this headline">¶</a></h1>
+<p>PetBlocks adds new placeholders to the PlaceHolderAPI plugin if you have installed it.</p>
+<p>This means you display the states of the pets on other plugins and displays such as:</p>
+<ul class="simple">
+<li><p>Messages</p></li>
+<li><p>Signs</p></li>
+<li><p>Scoreboards</p></li>
+<li><p>Bossbars</p></li>
+<li><p>Holograms</p></li>
+<li><p>…</p></li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>You can use placeholders of other plugins inside of the <strong>name</strong> of the pet.</p>
+</div>
+<div class="section" id="placeholderlist">
+<h2>Placeholderlist<a class="headerlink" href="#placeholderlist" title="Permalink to this headline">¶</a></h2>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 58%" />
+<col style="width: 26%" />
+<col style="width: 16%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Description</p></th>
+<th class="head"><p>Placeholder</p></th>
+<th class="head"><p>Sample Values</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Enabled state of the pet</p></td>
+<td><p>%petblocks_pet_enabled%</p></td>
+<td><p>true/false</p></td>
+</tr>
+<tr class="row-odd"><td><p>Name of the pet</p></td>
+<td><p>%petblocks_pet_name%</p></td>
+<td><p>Shynixn’s pet</p></td>
+</tr>
+<tr class="row-even"><td><p>Enabled state of the pet sounds</p></td>
+<td><p>%petblocks_pet_sound_enabled%</p></td>
+<td><p>true/false</p></td>
+</tr>
+<tr class="row-odd"><td><p>Enabled state of the pet particles</p></td>
+<td><p>%petblocks_pet_particle_enabled%</p></td>
+<td><p>true/false</p></td>
+</tr>
+<tr class="row-even"><td><p>Type of the skin</p></td>
+<td><p>%petblocks_pet_skin_typename%</p></td>
+<td><p>1, Grass</p></td>
+</tr>
+<tr class="row-odd"><td><p>Data of the skin</p></td>
+<td><p>%petblocks_pet_skin_data%</p></td>
+<td><p>0, 1</p></td>
+</tr>
+<tr class="row-even"><td><p>Head of the skin</p></td>
+<td><p>%petblocks_pet_skin_head%</p></td>
+<td><p>owner name, url</p></td>
+</tr>
+<tr class="row-odd"><td><p>NBT of the skin</p></td>
+<td><p>%petblocks_pet_skin_nbt%</p></td>
+<td><p>{…}</p></td>
+</tr>
+</tbody>
+</table>
+</div>
 </div>
 
 
@@ -200,10 +262,10 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="playerheadnotshown.html" class="btn btn-neutral float-right" title="The player head is not visible in the GUI or when the Pet spawns?" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="../commands/index.html" class="btn btn-neutral float-right" title="Commands" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="howbungee.html" class="btn btn-neutral" title="How to use the same pets on multiple servers?" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="headdatabase.html" class="btn btn-neutral" title="Head Database" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
