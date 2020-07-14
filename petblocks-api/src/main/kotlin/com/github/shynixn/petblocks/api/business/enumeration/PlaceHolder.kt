@@ -1,13 +1,13 @@
 package com.github.shynixn.petblocks.api.business.enumeration
 
 /**
- * Created by Shynixn 2018.
+ * Created by Shynixn 2020.
  * <p>
- * Version 1.2
+ * Version 1.5
  * <p>
  * MIT License
  * <p>
- * Copyright (c) 2018 by Shynixn
+ * Copyright (c) 2020 by Shynixn
  * <p>
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -27,20 +27,25 @@ package com.github.shynixn.petblocks.api.business.enumeration
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-enum class PluginDependency(
+enum class PlaceHolder(
     /**
-     * Plugin name.
+     * Placeholder value.
      */
-    val pluginName: String
+    val placeHolder: String
 ) {
+    PET_ENABLED("pet_enabled"),
 
-    /**
-     * HeadDatabase plugin.
-     */
-    HEADDATABASE("HeadDatabase"),
+    PET_NAME("pet_name"),
 
-    /**
-     * PlaceHolderApi plugin.
-     */
-    PLACEHOLDERAPI("PlaceholderAPI")
+    PET_SOUND_ENABLED("pet_sound_enabled"),
+
+    PET_PARTICLE_ENABLED("pet_particle_enabled"),
+
+    PET_SKIN_TYPENAME("pet_skin_typename"),
+
+    PET_SKIN_DATA("pet_skin_data"),
+
+    PET_SKIN_HEAD("pet_skin_head"),
+
+    PET_SKIN_NBT("pet_skin_nbt")
 }

@@ -2,6 +2,7 @@
 
 package com.github.shynixn.petblocks.bukkit
 
+import com.github.shynixn.petblocks.api.business.enumeration.PluginDependency
 import com.github.shynixn.petblocks.api.business.enumeration.Version
 import com.github.shynixn.petblocks.api.business.proxy.PluginProxy
 import com.github.shynixn.petblocks.api.business.serializer.ItemStackSerializer
@@ -50,6 +51,7 @@ class PetBlocksDependencyInjectionBinder(private val plugin: PetBlocksPlugin) : 
      */
     override fun configure() {
         val version = plugin.getServerVersion()
+        val dependencyService = DependencyServiceImpl(plugin)
 
         bind(Plugin::class.java).toInstance(plugin)
         bind(Version::class.java).toInstance(version)
@@ -75,7 +77,8 @@ class PetBlocksDependencyInjectionBinder(private val plugin: PetBlocksPlugin) : 
         bind(CommandService::class.java).to(CommandServiceImpl::class.java).`in`(Scopes.SINGLETON)
         bind(ConcurrencyService::class.java).to(ConcurrencyServiceImpl::class.java).`in`(Scopes.SINGLETON)
         bind(ConfigurationService::class.java).to(ConfigurationServiceImpl::class.java).`in`(Scopes.SINGLETON)
-        bind(DependencyHeadDatabaseService::class.java).to(DependencyHeadDatabaseServiceImpl::class.java).`in`(Scopes.SINGLETON)
+        bind(DependencyHeadDatabaseService::class.java).to(DependencyHeadDatabaseServiceImpl::class.java)
+            .`in`(Scopes.SINGLETON)
         bind(DependencyService::class.java).to(DependencyServiceImpl::class.java).`in`(Scopes.SINGLETON)
         bind(EntityService::class.java).to(EntityServiceImpl::class.java).`in`(Scopes.SINGLETON)
         bind(EventService::class.java).to(EventServiceImpl::class.java).`in`(Scopes.SINGLETON)
@@ -92,34 +95,53 @@ class PetBlocksDependencyInjectionBinder(private val plugin: PetBlocksPlugin) : 
         bind(LocalizationService::class.java).to(LocalizationServiceImpl::class.java).`in`(Scopes.SINGLETON)
 
         when {
-            version.isVersionSameOrGreaterThan(Version.VERSION_1_16_R1) -> bind(EntityRegistrationService::class.java).to(EntityRegistration116R1ServiceImpl::class.java).`in`(
+            version.isVersionSameOrGreaterThan(Version.VERSION_1_16_R1) -> bind(EntityRegistrationService::class.java).to(
+                EntityRegistration116R1ServiceImpl::class.java
+            ).`in`(
                 Scopes.SINGLETON
             )
-            version.isVersionSameOrGreaterThan(Version.VERSION_1_15_R1) -> bind(EntityRegistrationService::class.java).to(EntityRegistration115R1ServiceImpl::class.java).`in`(
+            version.isVersionSameOrGreaterThan(Version.VERSION_1_15_R1) -> bind(EntityRegistrationService::class.java).to(
+                EntityRegistration115R1ServiceImpl::class.java
+            ).`in`(
                 Scopes.SINGLETON
             )
-            version.isVersionSameOrGreaterThan(Version.VERSION_1_14_R1) -> bind(EntityRegistrationService::class.java).to(EntityRegistration114R1ServiceImpl::class.java).`in`(
+            version.isVersionSameOrGreaterThan(Version.VERSION_1_14_R1) -> bind(EntityRegistrationService::class.java).to(
+                EntityRegistration114R1ServiceImpl::class.java
+            ).`in`(
                 Scopes.SINGLETON
             )
-            version.isVersionSameOrGreaterThan(Version.VERSION_1_13_R2) -> bind(EntityRegistrationService::class.java).to(EntityRegistration113R2ServiceImpl::class.java).`in`(
+            version.isVersionSameOrGreaterThan(Version.VERSION_1_13_R2) -> bind(EntityRegistrationService::class.java).to(
+                EntityRegistration113R2ServiceImpl::class.java
+            ).`in`(
                 Scopes.SINGLETON
             )
-            version.isVersionSameOrGreaterThan(Version.VERSION_1_11_R1) -> bind(EntityRegistrationService::class.java).to(EntityRegistration111R1ServiceImpl::class.java).`in`(
+            version.isVersionSameOrGreaterThan(Version.VERSION_1_11_R1) -> bind(EntityRegistrationService::class.java).to(
+                EntityRegistration111R1ServiceImpl::class.java
+            ).`in`(
                 Scopes.SINGLETON
             )
-            else -> bind(EntityRegistrationService::class.java).to(EntityRegistration18R1ServiceImpl::class.java).`in`(Scopes.SINGLETON)
+            else -> bind(EntityRegistrationService::class.java).to(EntityRegistration18R1ServiceImpl::class.java)
+                .`in`(Scopes.SINGLETON)
         }
 
         when {
-            version.isVersionSameOrGreaterThan(Version.VERSION_1_9_R1) -> bind(HandService::class.java).to(Hand19R1ServiceImpl::class.java).`in`(Scopes.SINGLETON)
+            version.isVersionSameOrGreaterThan(Version.VERSION_1_9_R1) -> bind(HandService::class.java).to(
+                Hand19R1ServiceImpl::class.java
+            ).`in`(Scopes.SINGLETON)
             else -> bind(HandService::class.java).to(Hand18R1ServiceImpl::class.java).`in`(Scopes.SINGLETON)
         }
 
         when {
-            version.isVersionSameOrGreaterThan(Version.VERSION_1_13_R2) -> bind(ParticleService::class.java).to(Particle113R2ServiceImpl::class.java).`in`(
+            version.isVersionSameOrGreaterThan(Version.VERSION_1_13_R2) -> bind(ParticleService::class.java).to(
+                Particle113R2ServiceImpl::class.java
+            ).`in`(
                 Scopes.SINGLETON
             )
             else -> bind(ParticleService::class.java).to(Particle18R1ServiceImpl::class.java).`in`(Scopes.SINGLETON)
+        }
+
+        if (dependencyService.isInstalled(PluginDependency.PLACEHOLDERAPI)) {
+            bind(DependencyPlaceholderApiService::class.java).to(DependencyPlaceholderApiServiceImpl::class.java)
         }
     }
 }

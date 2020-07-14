@@ -354,6 +354,7 @@ gui:
     hat-pet:
       row: 3
       col: 9
+      script: 'close-gui'
       icon:
         id: 397
         damage: 3
@@ -380,6 +381,7 @@ gui:
     ride-flying-pet:
       row: 4
       col: 9
+      script: 'close-gui'
       icon:
         id: 329
         damage: 0
@@ -398,6 +400,7 @@ gui:
     ride-ground-pet:
       row: 4
       col: 9
+      script: 'close-gui'
       icon:
         id: 329
         damage: 0

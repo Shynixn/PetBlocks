@@ -47,6 +47,9 @@ repositories {
     maven {
         url "https://repo.codemc.org/repository/maven-public"
     }
+    maven {
+        url "http://repo.extendedclip.com/content/repositories/placeholderapi"
+    }
 }
 
 task dockerJar(type: Exec, dependsOn: shadowJar) {
@@ -81,6 +84,7 @@ dependencies {
 
     compileOnly 'org.spigotmc:spigot114R1:1.14.4-R1.0'
     compileOnly 'me.arcaniax.hdb:HeadDatabaseAPI:1.0'
+    compileOnly("me.clip:placeholderapi:2.9.2")
 
     testCompile 'org.xerial:sqlite-jdbc:3.31.1'
     testCompile 'ch.vorburger.mariaDB4j:mariaDB4j:2.4.0'

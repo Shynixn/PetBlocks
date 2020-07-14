@@ -36,9 +36,15 @@ import org.bukkit.event.entity.CreatureSpawnEvent
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class NMSPetVillager(petDesign: NMSPetArmorstand, location: Location) : EntityPig(EntityTypes.PIG, (location.world as CraftWorld).handle) {
+class NMSPetVillager(petDesign: NMSPetArmorstand, location: Location) :
+    EntityPig(EntityTypes.PIG, (location.world as CraftWorld).handle) {
     private var petDesign: NMSPetArmorstand? = null
+
+    // Pathfinders need to be self cached for Paper.
+    private var initialClear = true
     private var pathfinderCounter = 0
+    private var cachedPathfinders = HashSet<PathfinderGoal>()
+
     // BukkitEntity has to be self cached since 1.14.
     private var entityBukkit: Any? = null
 
@@ -68,19 +74,24 @@ class NMSPetVillager(petDesign: NMSPetArmorstand, location: Location) : EntityPi
      */
     fun applyPathfinders(pathfinders: List<Any>) {
         clearAIGoals()
+        pathfinderCounter = 0
 
         for (pathfinder in pathfinders) {
             if (pathfinder is PathfinderProxy) {
-                this.goalSelector.a(pathfinderCounter++, Pathfinder(pathfinder))
+                val wrappedPathfinder = Pathfinder(pathfinder)
+                this.cachedPathfinders.add(wrappedPathfinder)
+                this.goalSelector.a(pathfinderCounter++, wrappedPathfinder)
 
                 val aiBase = pathfinder.aiBase
 
                 if (aiBase is AIMovement) {
-                    this.getAttributeInstance(GenericAttributes.MOVEMENT_SPEED)!!.value = 0.30000001192092896 * aiBase.movementSpeed
+                    this.getAttributeInstance(GenericAttributes.MOVEMENT_SPEED)!!.value =
+                        0.30000001192092896 * aiBase.movementSpeed
                     this.G = aiBase.climbingHeight.toFloat()
                 }
             } else {
                 this.goalSelector.a(pathfinderCounter++, pathfinder as PathfinderGoal)
+                this.cachedPathfinders.add(pathfinder)
             }
         }
     }
@@ -123,9 +134,18 @@ class NMSPetVillager(petDesign: NMSPetArmorstand, location: Location) : EntityPi
      * Clears all entity aiGoals.
      */
     private fun clearAIGoals() {
-        val dField = PathfinderGoalSelector::class.java.getDeclaredField("d")
-        dField.isAccessible = true
-        (dField.get(this.goalSelector) as MutableSet<*>).clear()
-        (dField.get(this.targetSelector) as MutableSet<*>).clear()
+        if (initialClear) {
+            val dField = PathfinderGoalSelector::class.java.getDeclaredField("d")
+            dField.isAccessible = true
+            (dField.get(this.goalSelector) as MutableSet<*>).clear()
+            (dField.get(this.targetSelector) as MutableSet<*>).clear()
+            initialClear = false
+        }
+
+        for (pathfinder in cachedPathfinders) {
+            this.goalSelector.a(pathfinder)
+        }
+
+        this.cachedPathfinders.clear()
     }
 }

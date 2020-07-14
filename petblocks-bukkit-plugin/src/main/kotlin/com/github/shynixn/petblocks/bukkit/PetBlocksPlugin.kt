@@ -194,6 +194,12 @@ class PetBlocksPlugin : JavaPlugin(), PluginProxy {
             })
         }
 
+        if (dependencyService.isInstalled(PluginDependency.PLACEHOLDERAPI)) {
+            val placeHolderService =
+                resolve<DependencyPlaceholderApiService>(DependencyPlaceholderApiService::class.java)
+            placeHolderService.registerListener()
+        }
+
         entityService.cleanUpInvalidEntitiesInAllWorlds()
 
         startPlugin()
@@ -338,7 +344,8 @@ class PetBlocksPlugin : JavaPlugin(), PluginProxy {
 
         try {
             val entityName = entity.simpleName + "Entity"
-            return Class.forName("com.github.shynixn.petblocks.core.logic.persistence.entity.$entityName").newInstance() as E
+            return Class.forName("com.github.shynixn.petblocks.core.logic.persistence.entity.$entityName")
+                .newInstance() as E
         } catch (e: Exception) {
             throw IllegalArgumentException("Entity could not be created.", e)
         }
@@ -385,7 +392,11 @@ class PetBlocksPlugin : JavaPlugin(), PluginProxy {
         val text = FileUtils.readFileToString(path.toFile(), "UTF-8")
 
         if (text.contains("armor-stands-tick: false")) {
-            FileUtils.writeStringToFile(path.toFile(), text.replace("armor-stands-tick: false", "armor-stands-tick: true"), "UTF-8")
+            FileUtils.writeStringToFile(
+                path.toFile(),
+                text.replace("armor-stands-tick: false", "armor-stands-tick: true"),
+                "UTF-8"
+            )
             return true
         }
 

@@ -52,13 +52,15 @@ import java.lang.reflect.Field
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class NMSPetArmorstand(owner: Player, val petMeta: PetMeta) : EntityArmorStand((owner.location.world as CraftWorld).handle), NMSPetProxy {
+class NMSPetArmorstand(owner: Player, val petMeta: PetMeta) :
+    EntityArmorStand((owner.location.world as CraftWorld).handle), NMSPetProxy {
     private var internalProxy: PetProxy? = null
     private var jumpingField: Field = EntityLiving::class.java.getDeclaredField("bd")
     private var internalHitBox: EntityInsentient? = null
     private val aiService = PetBlocksApi.resolve(AIService::class.java)
 
-    private val flyCanHitWalls = PetBlocksApi.resolve(ConfigurationService::class.java).findValue<Boolean>("global-configuration.fly-wall-colision")
+    private val flyCanHitWalls = PetBlocksApi.resolve(ConfigurationService::class.java)
+        .findValue<Boolean>("global-configuration.fly-wall-colision")
     private var flyHasTakenOffGround = false
     private var flyIsOnGround: Boolean = false
     private var flyHasHitFloor: Boolean = false
@@ -78,13 +80,21 @@ class NMSPetArmorstand(owner: Player, val petMeta: PetMeta) : EntityArmorStand((
         val location = owner.location
         val mcWorld = (location.world as CraftWorld).handle
         val position =
-            PositionEntity(location.x, location.y, location.z, location.yaw.toDouble(), location.pitch.toDouble(), location.world.name).relativeFront(3.0)
+            PositionEntity(
+                location.x,
+                location.y,
+                location.z,
+                location.yaw.toDouble(),
+                location.pitch.toDouble(),
+                location.world.name
+            ).relativeFront(3.0)
 
         this.setPositionRotation(position.x, position.y, position.z, location.yaw, location.pitch)
         mcWorld.addEntity(this, CreatureSpawnEvent.SpawnReason.CUSTOM)
 
         internalProxy = Class.forName("com.github.shynixn.petblocks.bukkit.logic.business.proxy.PetProxyImpl")
-            .getDeclaredConstructor(PetMeta::class.java, ArmorStand::class.java, Player::class.java).newInstance(petMeta, this.bukkitEntity, owner) as PetProxy
+            .getDeclaredConstructor(PetMeta::class.java, ArmorStand::class.java, Player::class.java)
+            .newInstance(petMeta, this.bukkitEntity, owner) as PetProxy
 
         petMeta.propertyTracker.onPropertyChanged(PetMeta::aiGoals, true)
         applyNBTTagForArmorstand()
@@ -109,13 +119,10 @@ class NMSPetArmorstand(owner: Player, val petMeta: PetMeta) : EntityArmorStand((
         if (hasRidingAi) {
             val armorstand = proxy.getHeadArmorstand<ArmorStand>()
 
-            armorstand.velocity = Vector(0, 1, 0)
-
-            for (passenger in armorstand.passengers) {
-                armorstand.removePassenger(passenger)
+            if (!armorstand.passengers.contains(player)) {
+                armorstand.velocity = Vector(0, 1, 0)
+                armorstand.addPassenger(player)
             }
-
-            armorstand.addPassenger(player)
 
             return
         } else {
@@ -132,11 +139,9 @@ class NMSPetArmorstand(owner: Player, val petMeta: PetMeta) : EntityArmorStand((
             this.applyNBTTagForArmorstand()
             val armorstand = proxy.getHeadArmorstand<ArmorStand>()
 
-            for (passenger in player.passengers) {
-                player.removePassenger(passenger)
+            if (!player.passengers.contains(armorstand)) {
+                player.addPassenger(armorstand)
             }
-
-            player.addPassenger(armorstand)
 
             return
         }
@@ -201,18 +206,25 @@ class NMSPetArmorstand(owner: Player, val petMeta: PetMeta) : EntityArmorStand((
                     y += 0.6
                 }
 
-                this.setPositionRotation(location.x, y, location.z, location.yaw, location.pitch)
-
-                this.motX = this.internalHitBox!!.motX
-                this.motY = this.internalHitBox!!.motY
-                this.motZ = this.internalHitBox!!.motZ
+                if (y > -100) {
+                    this.setPositionRotation(location.x, y, location.z, location.yaw, location.pitch)
+                    this.motX = this.internalHitBox!!.motX
+                    this.motY = this.internalHitBox!!.motY
+                    this.motZ = this.internalHitBox!!.motZ
+                }
             }
 
             if (proxy.teleportTarget != null) {
                 val location = proxy.teleportTarget!! as Location
 
                 if (this.internalHitBox != null) {
-                    this.internalHitBox!!.setPositionRotation(location.x, location.y, location.z, location.yaw, location.pitch)
+                    this.internalHitBox!!.setPositionRotation(
+                        location.x,
+                        location.y,
+                        location.z,
+                        location.yaw,
+                        location.pitch
+                    )
                 }
 
                 this.setPositionRotation(location.x, location.y, location.z, location.yaw, location.pitch)
@@ -363,7 +375,11 @@ class NMSPetArmorstand(owner: Player, val petMeta: PetMeta) : EntityArmorStand((
         if (movingObjectPosition == null) {
             this.flyWallCollisionVector = flyingLocation.toVector()
         } else if (this.flyWallCollisionVector != null && flyCanHitWalls) {
-            this.setPosition(this.flyWallCollisionVector!!.x, this.flyWallCollisionVector!!.y, this.flyWallCollisionVector!!.z)
+            this.setPosition(
+                this.flyWallCollisionVector!!.x,
+                this.flyWallCollisionVector!!.y,
+                this.flyWallCollisionVector!!.z
+            )
         }
     }
 
@@ -416,7 +432,10 @@ class NMSPetArmorstand(owner: Player, val petMeta: PetMeta) : EntityArmorStand((
     private fun applyNBTTagToHitBox(hitBox: EntityInsentient) {
         val compound = NBTTagCompound()
         hitBox.b(compound)
-        applyAIEntityNbt(compound, this.petMeta.aiGoals.asSequence().filterIsInstance<AIEntityNbt>().map { a -> a.hitBoxNbt }.toList())
+        applyAIEntityNbt(
+            compound,
+            this.petMeta.aiGoals.asSequence().filterIsInstance<AIEntityNbt>().map { a -> a.hitBoxNbt }.toList()
+        )
         hitBox.a(compound)
         // CustomNameVisible does not working via NBT Tags.
         hitBox.customNameVisible = compound.hasKey("CustomNameVisible") && compound.getInt("CustomNameVisible") == 1
@@ -428,7 +447,10 @@ class NMSPetArmorstand(owner: Player, val petMeta: PetMeta) : EntityArmorStand((
     private fun applyNBTTagForArmorstand() {
         val compound = NBTTagCompound()
         this.b(compound)
-        applyAIEntityNbt(compound, this.petMeta.aiGoals.asSequence().filterIsInstance<AIEntityNbt>().map { a -> a.armorStandNbt }.toList())
+        applyAIEntityNbt(
+            compound,
+            this.petMeta.aiGoals.asSequence().filterIsInstance<AIEntityNbt>().map { a -> a.armorStandNbt }.toList()
+        )
         this.a(compound)
         // CustomNameVisible does not working via NBT Tags.
         this.customNameVisible = compound.hasKey("CustomNameVisible") && compound.getInt("CustomNameVisible") == 1
@@ -465,7 +487,8 @@ class NMSPetArmorstand(owner: Player, val petMeta: PetMeta) : EntityArmorStand((
      * Should the hitbox of the armorstand be deleted.
      */
     private fun shouldDeleteHitBox(): Boolean {
-        val hasEmptyHitBoxAi = petMeta.aiGoals.firstOrNull { a -> a is AIGroundRiding || a is AIFlyRiding || a is AIWearing } != null
+        val hasEmptyHitBoxAi =
+            petMeta.aiGoals.firstOrNull { a -> a is AIGroundRiding || a is AIFlyRiding || a is AIWearing } != null
 
         if (hasEmptyHitBoxAi) {
             return true

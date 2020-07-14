@@ -53,13 +53,15 @@ import java.lang.reflect.Field
  * SOFTWARE.
  */
 class NMSPetArmorstand(owner: Player, private val petMeta: PetMeta) :
-    EntityArmorStand((owner.location.world as CraftWorld).handle, owner.location.x, owner.location.y, owner.location.z), NMSPetProxy {
+    EntityArmorStand((owner.location.world as CraftWorld).handle, owner.location.x, owner.location.y, owner.location.z),
+    NMSPetProxy {
     private var internalProxy: PetProxy? = null
     private var jumpingField: Field = EntityLiving::class.java.getDeclaredField("jumping")
     private var internalHitBox: EntityInsentient? = null
     private val aiService = PetBlocksApi.resolve(AIService::class.java)
 
-    private val hasFlyCollisionsEnabled = PetBlocksApi.resolve(ConfigurationService::class.java).findValue<Boolean>("global-configuration.fly-wall-colision")
+    private val hasFlyCollisionsEnabled = PetBlocksApi.resolve(ConfigurationService::class.java)
+        .findValue<Boolean>("global-configuration.fly-wall-colision")
     private var flyHasTakenOffGround = false
     private var flyGravity: Boolean = false
     private var flyHasHitFloor: Boolean = false
@@ -82,13 +84,21 @@ class NMSPetArmorstand(owner: Player, private val petMeta: PetMeta) :
         val location = owner.location
         val mcWorld = (location.world as CraftWorld).handle
         val position =
-            PositionEntity(location.x, location.y, location.z, location.yaw.toDouble(), location.pitch.toDouble(), location.world!!.name).relativeFront(3.0)
+            PositionEntity(
+                location.x,
+                location.y,
+                location.z,
+                location.yaw.toDouble(),
+                location.pitch.toDouble(),
+                location.world!!.name
+            ).relativeFront(3.0)
 
         this.setPositionRotation(position.x, position.y, position.z, location.yaw, location.pitch)
         mcWorld.addEntity(this, CreatureSpawnEvent.SpawnReason.CUSTOM)
 
         internalProxy = Class.forName("com.github.shynixn.petblocks.bukkit.logic.business.proxy.PetProxyImpl")
-            .getDeclaredConstructor(PetMeta::class.java, ArmorStand::class.java, Player::class.java).newInstance(petMeta, this.bukkitEntity, owner) as PetProxy
+            .getDeclaredConstructor(PetMeta::class.java, ArmorStand::class.java, Player::class.java)
+            .newInstance(petMeta, this.bukkitEntity, owner) as PetProxy
 
         petMeta.propertyTracker.onPropertyChanged(PetMeta::aiGoals, true)
         applyNBTTagForArmorstand()
@@ -113,8 +123,10 @@ class NMSPetArmorstand(owner: Player, private val petMeta: PetMeta) :
         if (hasRidingAi) {
             val armorstand = proxy.getHeadArmorstand<ArmorStand>()
 
-            armorstand.velocity = Vector(0, 1, 0)
-            armorstand.addPassenger(player)
+            if (!armorstand.passengers.contains(player)) {
+                armorstand.velocity = Vector(0, 1, 0)
+                armorstand.addPassenger(player)
+            }
 
             return
         } else {
@@ -131,7 +143,9 @@ class NMSPetArmorstand(owner: Player, private val petMeta: PetMeta) :
             this.applyNBTTagForArmorstand()
             val armorstand = proxy.getHeadArmorstand<ArmorStand>()
 
-            player.addPassenger(armorstand)
+            if (!player.passengers.contains(armorstand)) {
+                player.addPassenger(armorstand)
+            }
 
             return
         }
@@ -196,15 +210,23 @@ class NMSPetArmorstand(owner: Player, private val petMeta: PetMeta) :
                     y += 0.6
                 }
 
-                this.setPositionRotation(location.x, y, location.z, location.yaw, location.pitch)
-                this.setMot(this.internalHitBox!!.mot.x, this.internalHitBox!!.mot.y, this.internalHitBox!!.mot.z)
+                if (y > -100) {
+                    this.setPositionRotation(location.x, y, location.z, location.yaw, location.pitch)
+                    this.setMot(this.internalHitBox!!.mot.x, this.internalHitBox!!.mot.y, this.internalHitBox!!.mot.z)
+                }
             }
 
             if (proxy.teleportTarget != null) {
                 val location = proxy.teleportTarget!! as Location
 
                 if (this.internalHitBox != null) {
-                    this.internalHitBox!!.setPositionRotation(location.x, location.y, location.z, location.yaw, location.pitch)
+                    this.internalHitBox!!.setPositionRotation(
+                        location.x,
+                        location.y,
+                        location.z,
+                        location.yaw,
+                        location.pitch
+                    )
                 }
 
                 this.setPositionRotation(location.x, location.y, location.z, location.yaw, location.pitch)
@@ -347,7 +369,11 @@ class NMSPetArmorstand(owner: Player, private val petMeta: PetMeta) :
 
         // If wall collision has happened.
         if (flyWallCollisionVector != null) {
-            this.setPosition(this.flyWallCollisionVector!!.x, this.flyWallCollisionVector!!.y, this.flyWallCollisionVector!!.z)
+            this.setPosition(
+                this.flyWallCollisionVector!!.x,
+                this.flyWallCollisionVector!!.y,
+                this.flyWallCollisionVector!!.z
+            )
             return
         }
 
@@ -365,8 +391,15 @@ class NMSPetArmorstand(owner: Player, private val petMeta: PetMeta) :
      */
     private fun isCollidingWithWall(): Boolean {
         val currentLocationVector = Vec3D(this.locX, this.locY, this.locZ)
-        val directionVector = Vec3D(this.locX + this.mot.x * 1.5, this.locY + this.mot.y * 1.5, this.locZ + this.mot.z * 1.5)
-        val rayTrace = RayTrace(currentLocationVector, directionVector, RayTrace.BlockCollisionOption.COLLIDER, RayTrace.FluidCollisionOption.NONE, null)
+        val directionVector =
+            Vec3D(this.locX + this.mot.x * 1.5, this.locY + this.mot.y * 1.5, this.locZ + this.mot.z * 1.5)
+        val rayTrace = RayTrace(
+            currentLocationVector,
+            directionVector,
+            RayTrace.BlockCollisionOption.COLLIDER,
+            RayTrace.FluidCollisionOption.NONE,
+            null
+        )
         val movingObjectPosition = this.world.rayTrace(rayTrace)
 
         return movingObjectPosition.type == MovingObjectPosition.EnumMovingObjectType.BLOCK && hasFlyCollisionsEnabled
@@ -421,7 +454,10 @@ class NMSPetArmorstand(owner: Player, private val petMeta: PetMeta) :
     private fun applyNBTTagToHitBox(hitBox: EntityInsentient) {
         val compound = NBTTagCompound()
         hitBox.b(compound)
-        applyAIEntityNbt(compound, this.petMeta.aiGoals.asSequence().filterIsInstance<AIEntityNbt>().map { a -> a.hitBoxNbt }.toList())
+        applyAIEntityNbt(
+            compound,
+            this.petMeta.aiGoals.asSequence().filterIsInstance<AIEntityNbt>().map { a -> a.hitBoxNbt }.toList()
+        )
         hitBox.a(compound)
         // CustomNameVisible does not working via NBT Tags.
         hitBox.customNameVisible = compound.hasKey("CustomNameVisible") && compound.getInt("CustomNameVisible") == 1
@@ -433,7 +469,10 @@ class NMSPetArmorstand(owner: Player, private val petMeta: PetMeta) :
     private fun applyNBTTagForArmorstand() {
         val compound = NBTTagCompound()
         this.b(compound)
-        applyAIEntityNbt(compound, this.petMeta.aiGoals.asSequence().filterIsInstance<AIEntityNbt>().map { a -> a.armorStandNbt }.toList())
+        applyAIEntityNbt(
+            compound,
+            this.petMeta.aiGoals.asSequence().filterIsInstance<AIEntityNbt>().map { a -> a.armorStandNbt }.toList()
+        )
         this.a(compound)
         // CustomNameVisible does not working via NBT Tags.
         this.customNameVisible = compound.hasKey("CustomNameVisible") && compound.getInt("CustomNameVisible") == 1
@@ -470,7 +509,8 @@ class NMSPetArmorstand(owner: Player, private val petMeta: PetMeta) :
      * Should the hitbox of the armorstand be deleted.
      */
     private fun shouldDeleteHitBox(): Boolean {
-        val hasEmptyHitBoxAi = petMeta.aiGoals.firstOrNull { a -> a is AIGroundRiding || a is AIFlyRiding || a is AIWearing } != null
+        val hasEmptyHitBoxAi =
+            petMeta.aiGoals.firstOrNull { a -> a is AIGroundRiding || a is AIFlyRiding || a is AIWearing } != null
 
         if (hasEmptyHitBoxAi) {
             return true

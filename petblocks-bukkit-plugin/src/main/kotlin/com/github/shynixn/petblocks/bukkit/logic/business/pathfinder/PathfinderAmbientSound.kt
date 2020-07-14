@@ -9,6 +9,7 @@ import com.github.shynixn.petblocks.core.logic.business.pathfinder.BasePathfinde
 import org.bukkit.GameMode
 import org.bukkit.entity.LivingEntity
 import org.bukkit.entity.Player
+import java.util.*
 
 class PathfinderAmbientSound(
     private val pet: PetProxy,
@@ -19,6 +20,7 @@ class PathfinderAmbientSound(
 
     private val soundService = PetBlocksApi.resolve(SoundService::class.java)
     private val loggingService = PetBlocksApi.resolve(LoggingService::class.java)
+    private var lastTimeSent = 0L
 
     /**
      * Should the goal be executed.
@@ -36,9 +38,17 @@ class PathfinderAmbientSound(
                 return
             }
 
+            val currentDate = Date().time
+
+            if (currentDate - lastTimeSent < (5 * 1000)) {
+                return
+            }
+
+            lastTimeSent = currentDate
+
             val value = Math.random()
 
-            if (value > 0.98) {
+            if (value > 0.75) {
                 soundService.playSound(livingEntity.location, aiAmbientSound.sound, player)
             }
         } catch (e: Exception) {

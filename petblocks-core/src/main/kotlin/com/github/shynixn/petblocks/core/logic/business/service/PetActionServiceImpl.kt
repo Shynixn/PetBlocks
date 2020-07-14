@@ -86,7 +86,9 @@ class PetActionServiceImpl @Inject constructor(
         val pet = petService.getOrSpawnPetFromPlayer(player)
 
         val message = if (pet.isPresent) {
-            pet.get().teleport<Any>(proxyService.toPosition(proxyService.getPlayerLocation<Any, P>(player)).relativeFront(3.0))
+            pet.get().teleport<Any>(
+                proxyService.toPosition(proxyService.getPlayerLocation<Any, P>(player)).relativeFront(3.0)
+            )
             Messages.prefix + Messages.callSuccessMessage
         } else {
             Messages.prefix + Messages.callErrorMessage
@@ -144,6 +146,12 @@ class PetActionServiceImpl @Inject constructor(
         petMeta.aiGoals.addAll(addAis)
         addAmount += addAis.size
 
+        if (petService.hasPet(player)) {
+            petService.getOrSpawnPetFromPlayer(player).ifPresent { pet ->
+                pet.triggerTick()
+            }
+        }
+
         return Pair(addAmount, removeAmount)
     }
 
@@ -158,7 +166,8 @@ class PetActionServiceImpl @Inject constructor(
             return
         }
 
-        val petNameBlackList = configurationService.findValue<List<String>>("global-configuration.petname-blacklist").map { s -> s.toUpperCase() }
+        val petNameBlackList = configurationService.findValue<List<String>>("global-configuration.petname-blacklist")
+            .map { s -> s.toUpperCase() }
         val upperCaseName = name.toUpperCase()
 
         for (blackName in petNameBlackList) {

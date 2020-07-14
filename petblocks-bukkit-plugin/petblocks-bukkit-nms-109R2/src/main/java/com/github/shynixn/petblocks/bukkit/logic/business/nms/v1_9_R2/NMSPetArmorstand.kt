@@ -110,13 +110,10 @@ class NMSPetArmorstand(owner: Player, val petMeta: PetMeta) : EntityArmorStand((
         if (hasRidingAi) {
             val armorstand = proxy.getHeadArmorstand<ArmorStand>()
 
-            armorstand.velocity = Vector(0, 1, 0)
-
-            if (armorstand.passenger != null) {
-                armorstand.passenger.eject()
+            if (armorstand.passenger != player) {
+                armorstand.velocity = Vector(0, 1, 0)
+                armorstand.passenger = player
             }
-
-            armorstand.passenger = player
 
             return
         } else {
@@ -134,11 +131,9 @@ class NMSPetArmorstand(owner: Player, val petMeta: PetMeta) : EntityArmorStand((
             this.applyNBTTagForArmorstand()
             val armorstand = proxy.getHeadArmorstand<ArmorStand>()
 
-            if (player.passenger != null) {
-                player.eject()
+            if(player.passenger != armorstand){
+                player.passenger = armorstand
             }
-
-            player.passenger = armorstand
 
             // A bug in this spigot version requires to send a mounting packet manually.
             sendMountingPacket(player)
@@ -206,11 +201,12 @@ class NMSPetArmorstand(owner: Player, val petMeta: PetMeta) : EntityArmorStand((
                     y += 0.6
                 }
 
-                this.setPositionRotation(location.x, y, location.z, location.yaw, location.pitch)
-
-                this.motX = this.internalHitBox!!.motX
-                this.motY = this.internalHitBox!!.motY
-                this.motZ = this.internalHitBox!!.motZ
+                if(y > -100){
+                    this.setPositionRotation(location.x, y, location.z, location.yaw, location.pitch)
+                    this.motX = this.internalHitBox!!.motX
+                    this.motY = this.internalHitBox!!.motY
+                    this.motZ = this.internalHitBox!!.motZ
+                }
             }
 
             if (proxy.teleportTarget != null) {
@@ -505,6 +501,6 @@ class NMSPetArmorstand(owner: Player, val petMeta: PetMeta) : EntityArmorStand((
      * Gets if a passenger of the pet is jumping.
      */
     private fun isPassengerJumping(): Boolean {
-        return passengers != null && !this.passengers.isEmpty() && jumpingField.getBoolean(this.passengers[0])
+        return passengers != null && this.passengers.isNotEmpty() && jumpingField.getBoolean(this.passengers[0])
     }
 }

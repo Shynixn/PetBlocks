@@ -66,7 +66,7 @@ class DependencyServiceTest {
         classUnderTest.checkForInstalledDependencies()
 
         // Assert
-        Assertions.assertEquals(2, consoleSender.messageCounter)
+        Assertions.assertEquals(4, consoleSender.messageCounter)
     }
 
     /**
