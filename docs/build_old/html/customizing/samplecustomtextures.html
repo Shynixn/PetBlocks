@@ -1,0 +1,402 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Example: Using custom texture and 3d models for your pets &mdash; PetBlocks 8.17.0 documentation</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="../_static/favicon.png"/>
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="../genindex.html"/>
+        <link rel="search" title="Search" href="../search.html"/>
+    <link rel="top" title="PetBlocks 8.17.0 documentation" href="../index.html"/>
+        <link rel="up" title="Examples" href="example.html"/>
+        <link rel="next" title="Example: Creating small pets" href="samplesmallpets.html"/>
+        <link rel="prev" title="Example: Adding a new pokemon category" href="samplepokemoncategory.html"/> 
+
+  
+  <script src="../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> PetBlocks
+          
+
+          
+            
+            <img src="../_static/PetBlocks-small.png" class="logo" />
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                8.17.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../gettingstarted/index.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../pets/index.html">Pets</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Customizing</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="gui.html">GUI</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ai.html">AIS</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="example.html">Examples</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="samplepokemoncategory.html">Example: Adding a new pokemon category</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Example: Using custom texture and 3d models for your pets</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#goal">Goal</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#step-by-step">Step by Step</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="samplesmallpets.html">Example: Creating small pets</a></li>
+<li class="toctree-l3"><a class="reference internal" href="sampleinventories.html">Example: Increasing the pet storage by a premium storage</a></li>
+<li class="toctree-l3"><a class="reference internal" href="samplesellingeffects.html">Example: Selling pet buff effects to your players</a></li>
+<li class="toctree-l3"><a class="reference internal" href="samplepvppets.html">Example: Integrating PVE and buff effects</a></li>
+<li class="toctree-l3"><a class="reference internal" href="samplehidingguiitems.html">Example: Hiding GUI items when the player does not have certain permissions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="samplealwayswearingai.html">Example: Always applying the wearing ai</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="regions.html">Worlds and Regions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="minecraftheads.html">Minecraft-Heads.com</a></li>
+<li class="toctree-l2"><a class="reference internal" href="headdatabase.html">Head Database</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../commands/index.html">Commands</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../general/index.html">General</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/index.html">Developer API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../faq/index.html">FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../contributing/index.html">Contributing to PetBlock</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">PetBlocks</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="index.html">Customizing</a> &raquo;</li>
+        
+          <li><a href="example.html">Examples</a> &raquo;</li>
+        
+      <li>Example: Using custom texture and 3d models for your pets</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            
+              <a href="https://github.com/Shynixn/PetBlocks/tree/master/docs/source/customizing/samplecustomtextures.rst" class="fa fa-github"> Edit on GitHub</a>
+            
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="example-using-custom-texture-and-3d-models-for-your-pets">
+<h1>Example: Using custom texture and 3d models for your pets<a class="headerlink" href="#example-using-custom-texture-and-3d-models-for-your-pets" title="Permalink to this headline">¶</a></h1>
+<p>This example shows how to create a <a class="reference external" href="https://minecraft.gamepedia.com/Resource_pack">resource pack</a> in order to put
+custom textures or 3d models on to the pets of PetBlocks.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">This tutorial works for all version above and including 1.9+. There are new ways to get the same result
+in more recent versions of minecraft but this is still a working solution.</p>
+</div>
+<div class="section" id="goal">
+<h2>Goal<a class="headerlink" href="#goal" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li>All players should see and select a 3d model of a pet in the pet inventory.</li>
+<li>When the pet is being active a 3d model should be shown.</li>
+</ul>
+<img alt="../_images/custom-textures-bee-inventory.png" src="../_images/custom-textures-bee-inventory.png" />
+<img alt="../_images/custom-textures-bee-flying.png" src="../_images/custom-textures-bee-flying.png" />
+<img alt="../_images/bee-gif-1.gif" src="../_images/bee-gif-1.gif" />
+<img alt="../_images/bee-gif-2.gif" src="../_images/bee-gif-2.gif" />
+</div>
+<div class="section" id="step-by-step">
+<h2>Step by Step<a class="headerlink" href="#step-by-step" title="Permalink to this headline">¶</a></h2>
+<p>As mentioned before a powerful editor like Notepad++ in this example is recommend.</p>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last"><strong>1. Make a copy of your config.yml!</strong> YAML, the configuration language this config.yml is using, takes spaces and tabs very serious, so be careful otherwise
+the config.yml cannot be parsed when executing the reload command.</p>
+</div>
+<ol class="arabic simple" start="2">
+<li>Download the ready to use resource pack PetBlx which was created by <a class="reference external" href="https://www.spigotmc.org/members/nullblox.3822/">NullBlox</a>.</li>
+</ol>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<a class="btn" style="width:100%" href="../_static/samples/PetBlocks-Resource-Pack.zip" download="PetBlocks-Resource-Pack.zip"><i class="fa fa-download"></i> Download Resource Pack</a>
+<br/><br/><br/><ol class="arabic simple" start="3">
+<li>Take a look at the <strong>/assets/minecraft/models/item</strong> directory inside the downloaded .zip file.
+You can see a stone_hoe.json file which contains the whole configuration how minecraft should interprete the models
+in this resource pack.</li>
+</ol>
+<img alt="../_images/petblx-1.png" src="../_images/petblx-1.png" />
+<p>4. (Optional) Editing the resource pack. This resource pack is already finished to work together with PetBlocks to show 2 models (we will only show the bee model).
+Anyway, this how you would edit it:</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The following section was copied from the guide <a class="reference external" href="https://www.spigotmc.org/wiki/custom-item-models-in-1-9-and-up/">https://www.spigotmc.org/wiki/custom-item-models-in-1-9-and-up/</a> created and owned by the spigot community. It was accessed on the 9th November 2019.</p>
+</div>
+<p>In this item folder, create a new file called wooden_hoe.json. This will be the “container” for all of your custom items. It tells the client which models to use for certain durability values of the wooden hoe.</p>
+<p>This file will look something like this:</p>
+<div class="highlight-json"><div class="highlight"><pre><span></span><span class="p">{</span>
+  <span class="nt">&quot;parent&quot;</span><span class="p">:</span> <span class="s2">&quot;item/handheld&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;textures&quot;</span><span class="p">:</span> <span class="p">{</span>
+    <span class="nt">&quot;layer0&quot;</span><span class="p">:</span> <span class="s2">&quot;items/wood_hoe&quot;</span>
+  <span class="p">},</span>
+  <span class="nt">&quot;overrides&quot;</span><span class="p">:</span> <span class="p">[</span>
+    <span class="p">{</span><span class="nt">&quot;predicate&quot;</span><span class="p">:</span> <span class="p">{</span><span class="nt">&quot;damaged&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="nt">&quot;damage&quot;</span><span class="p">:</span> <span class="mf">0.01666666666667</span><span class="p">},</span> <span class="nt">&quot;model&quot;</span><span class="p">:</span> <span class="s2">&quot;item/my_cool_custom_item&quot;</span><span class="p">}</span>
+  <span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>Ok, so let’s break this down.</p>
+<p>We are overriding wood hoe, but extending the base version. So the “parent” and “textures” are telling the client to use the wood hoe defaults. This means that a wood hoe with zero damage will look normal.</p>
+<p>Now for the new stuff- the “overrides” block lets you specify different models to use depending on certain properties of the item. These properties are called “predicates”, and for our purposes we will focus on the “damage” predicate.</p>
+<p>This will vary the model based on damage, as a percentage from 0 to 1. So the value “0.016666” in there comes from the ratio “1/60” - because I want to apply this model at a damage/durability value of 1, and a wood hoe has a max durability of 60.</p>
+<p>See the mc wiki for all the durabilities of items: <a class="reference external" href="http://minecraft.gamepedia.com/Hoe">http://minecraft.gamepedia.com/Hoe</a></p>
+<p>You can add as many damage predicates as you want, up to the max durability of the item- just do the “x/60” math for each one.</p>
+<p>You can also use this tool to auto-generate a template given a specific type of tool, saving you from the maths: <a class="reference external" href="http://accidentalgames.com/media/durabilityModels.php">http://accidentalgames.com/media/durabilityModels.php</a>
+(If you are using 1.13 version or later, here’s the updated version of this generator:
+<a class="reference external" href="https://geenium.github.io/damage-value-generator/">https://geenium.github.io/damage-value-generator/</a> )</p>
+<p>Preserving the original items
+If you want to still be able to use the vanilla damageable items, this is possible!
+Add another entry to your model file, so it ends up looking like this: ssss</p>
+<div class="highlight-json"><div class="highlight"><pre><span></span><span class="p">{</span>
+  <span class="nt">&quot;parent&quot;</span><span class="p">:</span> <span class="s2">&quot;item/handheld&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;textures&quot;</span><span class="p">:</span> <span class="p">{</span>
+    <span class="nt">&quot;layer0&quot;</span><span class="p">:</span> <span class="s2">&quot;items/wood_hoe&quot;</span>
+  <span class="p">},</span>
+  <span class="nt">&quot;overrides&quot;</span><span class="p">:</span> <span class="p">[</span>
+    <span class="p">{</span><span class="nt">&quot;predicate&quot;</span><span class="p">:</span> <span class="p">{</span><span class="nt">&quot;damaged&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="nt">&quot;damage&quot;</span><span class="p">:</span> <span class="mf">0.01666666666667</span><span class="p">},</span> <span class="nt">&quot;model&quot;</span><span class="p">:</span> <span class="s2">&quot;item/my_cool_custom_item&quot;</span><span class="p">},</span>
+    <span class="p">{</span><span class="nt">&quot;predicate&quot;</span><span class="p">:</span> <span class="p">{</span><span class="nt">&quot;damaged&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="nt">&quot;damage&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">},</span> <span class="nt">&quot;model&quot;</span><span class="p">:</span> <span class="s2">&quot;item/wooden_hoe&quot;</span><span class="p">}</span>
+  <span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>This will cause damaged versions to continue to use the base model. Note that if you use the JSON generator I linked above, you’ll need to edit the final entry- it needs to refer to the model name, so wooden_hoe instead of wood_hoe for instance.</p>
+<p>Finally, put your custom item model in the same item folder in the resource pack, in this case it would be in “my_cool_custom_item.json”. (Creating custom item models is not in the scope of this tutorial, I think there are some good ones out there already and also tools like Cubik you can use)</p>
+<p>Zip up the root folder of your RP, add it to your &lt;minecraft&gt;/resourcepacks folder and you should be able to load it and see your custom item!</p>
+<p>If in doubt, feel free to take a look at my resource pack structure on github:</p>
+<p><a class="reference external" href="https://github.com/elBukkit/MagicPlugin/tree/master/Magic/src/resource-pack/default">https://github.com/elBukkit/MagicPlugin/tree/master/Magic/src/resource-pack/default</a></p>
+<p>FINAL NOTES</p>
+<ul class="simple">
+<li>Once you have this all working, there are some things to consider.</li>
+<li>The higher-level tools will give you more item models to work with. A diamond hoe has a max durability of 1,562 (!)</li>
+</ul>
+<ol class="arabic simple" start="5">
+<li>(Optional) Create your own 3d models for minecraft.</li>
+</ol>
+<p><a class="reference external" href="https://www.spigotmc.org/members/nullblox.3822/">NullBlox</a> who has originally created the PetBlx resource pack has created tons
+of amazing and <a class="reference external" href="https://www.youtube.com/watch?v=iS7xeriOu80&amp;list=PLhgAh4tPmxSpgo8y2ZcnAgH5ZndYYCs5z">well explained videos</a> how to setup resource packs and create 3d models. You can check out his youtube playlist:</p>
+<iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/iS7xeriOu80" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe><ol class="arabic simple" start="6">
+<li>The downloaded resource pack therefore contains a configuration for the <strong>stone_hoe</strong> item which we now need to setup in PetBlocks.</li>
+</ol>
+<img alt="../_images/petblx-1.png" src="../_images/petblx-1.png" />
+<ul class="simple">
+<li>The numeric <strong>id of the stone_hoe is 291</strong> which we set to both icon and skin.</li>
+<li>Configure the correct damage (which model you would like to show) and set the skin nbt tag {Unbreakable:1}.</li>
+<li>Additionally, we also setup the walking ai with a high ground offset to set the pet flying.</li>
+</ul>
+<img alt="../_images/bee-model-show.png" src="../_images/bee-model-show.png" />
+<ol class="arabic simple" start="7">
+<li>Reload the <strong>config.yml</strong>, activate the resource pack and check out if your model works ingame.</li>
+</ol>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<a class="btn" style="width:100%" href="../_static/samples/config-beemodel.yml" download="config.yml"><i class="fa fa-download"></i>Download config.yml</a>
+<br/><br/><br/><div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">If the server console now displays an error then the config.yml cannot be parsed. In this case
+apply your backup you have made and try the steps again being extra carefully.</p>
+</div>
+</div>
+</div>
+
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="samplesmallpets.html" class="btn btn-neutral float-right" title="Example: Creating small pets" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="samplepokemoncategory.html" class="btn btn-neutral" title="Example: Adding a new pokemon category" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2015 - 2020, Shynixn.
+
+    </p>
+  </div>
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'8.17.0',
+            LANGUAGE:'None',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+  
+ 
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-111364476-1"></script>
+<script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'UA-111364476-1');
+</script>
+
+
+</body>
+</html>

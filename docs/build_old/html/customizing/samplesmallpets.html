@@ -1,0 +1,322 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Example: Creating small pets &mdash; PetBlocks 8.17.0 documentation</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="../_static/favicon.png"/>
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="../genindex.html"/>
+        <link rel="search" title="Search" href="../search.html"/>
+    <link rel="top" title="PetBlocks 8.17.0 documentation" href="../index.html"/>
+        <link rel="up" title="Examples" href="example.html"/>
+        <link rel="next" title="Example: Increasing the pet storage by a premium storage" href="sampleinventories.html"/>
+        <link rel="prev" title="Example: Using custom texture and 3d models for your pets" href="samplecustomtextures.html"/> 
+
+  
+  <script src="../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> PetBlocks
+          
+
+          
+            
+            <img src="../_static/PetBlocks-small.png" class="logo" />
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                8.17.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../gettingstarted/index.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../pets/index.html">Pets</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Customizing</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="gui.html">GUI</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ai.html">AIS</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="example.html">Examples</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="samplepokemoncategory.html">Example: Adding a new pokemon category</a></li>
+<li class="toctree-l3"><a class="reference internal" href="samplecustomtextures.html">Example: Using custom texture and 3d models for your pets</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Example: Creating small pets</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#goal">Goal</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#step-by-step">Step by Step</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="sampleinventories.html">Example: Increasing the pet storage by a premium storage</a></li>
+<li class="toctree-l3"><a class="reference internal" href="samplesellingeffects.html">Example: Selling pet buff effects to your players</a></li>
+<li class="toctree-l3"><a class="reference internal" href="samplepvppets.html">Example: Integrating PVE and buff effects</a></li>
+<li class="toctree-l3"><a class="reference internal" href="samplehidingguiitems.html">Example: Hiding GUI items when the player does not have certain permissions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="samplealwayswearingai.html">Example: Always applying the wearing ai</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="regions.html">Worlds and Regions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="minecraftheads.html">Minecraft-Heads.com</a></li>
+<li class="toctree-l2"><a class="reference internal" href="headdatabase.html">Head Database</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../commands/index.html">Commands</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../general/index.html">General</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/index.html">Developer API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../faq/index.html">FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../contributing/index.html">Contributing to PetBlock</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">PetBlocks</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="index.html">Customizing</a> &raquo;</li>
+        
+          <li><a href="example.html">Examples</a> &raquo;</li>
+        
+      <li>Example: Creating small pets</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            
+              <a href="https://github.com/Shynixn/PetBlocks/tree/master/docs/source/customizing/samplesmallpets.rst" class="fa fa-github"> Edit on GitHub</a>
+            
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="example-creating-small-pets">
+<h1>Example: Creating small pets<a class="headerlink" href="#example-creating-small-pets" title="Permalink to this headline">¶</a></h1>
+<p>This example changes all of your pets to small pets by changing the default pet ais.</p>
+<p>Make sure you have understood the <a class="reference external" href="gui.html">introduction</a> to this topic.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">You can also apply this ai to gui items to toggle small/big pets or set specific skins small.</p>
+</div>
+<div class="section" id="goal">
+<h2>Goal<a class="headerlink" href="#goal" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li>All pets should become small.</li>
+</ul>
+<img alt="../_images/small-pets-sample.png" src="../_images/small-pets-sample.png" />
+</div>
+<div class="section" id="step-by-step">
+<h2>Step by Step<a class="headerlink" href="#step-by-step" title="Permalink to this headline">¶</a></h2>
+<p>As mentioned before a powerful editor like Notepad++ in this example is recommend.</p>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last"><strong>1. Make a copy of your config.yml!</strong> YAML, the configuration language this config.yml is using, takes spaces and tabs very serious, so be careful otherwise
+the config.yml cannot be parsed when executing the reload command.</p>
+</div>
+<ol class="arabic simple" start="2">
+<li>Extend your existing default ais by the <strong>entity-nbt</strong> ai.</li>
+</ol>
+<img alt="../_images/sample-small-pets-2.JPG" src="../_images/sample-small-pets-2.JPG" />
+<ol class="arabic simple" start="3">
+<li>(Optional) Reset your pet via the <strong>/petblocks reset</strong> command</li>
+</ol>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<a class="btn" style="width:100%" href="../_static/samples/config-samplesmallpets.yml" download="config.yml"><i class="fa fa-download"></i>Download config.yml</a>
+<br/><br/><br/><div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">If the server console now displays an error then the config.yml cannot be parsed. In this case
+apply your backup you have made and try the steps again being extra carefully.</p>
+</div>
+</div>
+</div>
+
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="sampleinventories.html" class="btn btn-neutral float-right" title="Example: Increasing the pet storage by a premium storage" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="samplecustomtextures.html" class="btn btn-neutral" title="Example: Using custom texture and 3d models for your pets" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2015 - 2020, Shynixn.
+
+    </p>
+  </div>
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'8.17.0',
+            LANGUAGE:'None',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+  
+ 
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-111364476-1"></script>
+<script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'UA-111364476-1');
+</script>
+
+
+</body>
+</html>
