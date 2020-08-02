@@ -3,6 +3,7 @@
 package com.github.shynixn.petblocks.bukkit
 
 import com.github.shynixn.petblocks.api.PetBlocksApi
+import com.github.shynixn.petblocks.api.business.enumeration.ChatColor
 import com.github.shynixn.petblocks.api.business.enumeration.PluginDependency
 import com.github.shynixn.petblocks.api.business.enumeration.Version
 import com.github.shynixn.petblocks.api.business.proxy.EntityPetProxy
@@ -20,7 +21,6 @@ import org.apache.commons.io.FileUtils
 import org.apache.commons.io.IOUtils
 import org.bstats.bukkit.Metrics
 import org.bukkit.Bukkit
-import org.bukkit.ChatColor
 import org.bukkit.Server
 import org.bukkit.configuration.MemorySection
 import org.bukkit.event.player.PlayerJoinEvent

@@ -4,6 +4,7 @@ package com.github.shynixn.petblocks.bukkit.logic.business.nms.v1_16_R1
 
 import com.github.shynixn.petblocks.api.business.proxy.EntityPetProxy
 import net.minecraft.server.v1_16_R1.EntityInsentient
+import org.bukkit.Material
 import org.bukkit.craftbukkit.v1_16_R1.CraftServer
 import org.bukkit.craftbukkit.v1_16_R1.entity.CraftLivingEntity
 import org.bukkit.entity.*
@@ -64,6 +65,10 @@ class CraftPet(server: CraftServer, nmsPet: EntityInsentient) : CraftLivingEntit
         return EntityType.PIG
     }
 
+    override fun getSteerMaterial(): Material {
+        return Material.AIR
+    }
+
     /**
      * Ignore all other plugins trying to remove this entity. This is the entity of PetBlocks,
      * no one else is allowed to modify this!
@@ -104,8 +109,6 @@ class CraftPet(server: CraftServer, nmsPet: EntityInsentient) : CraftLivingEntit
     override fun setLootTable(p0: LootTable?) {
     }
 
-
-
     override fun setSeed(p0: Long) {
     }
 
@@ -122,6 +125,9 @@ class CraftPet(server: CraftServer, nmsPet: EntityInsentient) : CraftLivingEntit
     override fun setBaby() {
     }
 
+    override fun setBoostTicks(p0: Int) {
+    }
+
     override fun setAge(p0: Int) {
     }
 
@@ -133,11 +139,19 @@ class CraftPet(server: CraftServer, nmsPet: EntityInsentient) : CraftLivingEntit
         return 2
     }
 
+    override fun getCurrentBoostTicks(): Int {
+        return 0
+    }
+
     override fun canBreed(): Boolean {
         return false
     }
 
     override fun setSaddle(p0: Boolean) {
+    }
+
+    override fun getBoostTicks(): Int {
+        return 0
     }
 
     override fun isAdult(): Boolean {
@@ -146,6 +160,9 @@ class CraftPet(server: CraftServer, nmsPet: EntityInsentient) : CraftLivingEntit
 
     override fun hasSaddle(): Boolean {
         return false
+    }
+
+    override fun setCurrentBoostTicks(p0: Int) {
     }
 
     override fun getAgeLock(): Boolean {

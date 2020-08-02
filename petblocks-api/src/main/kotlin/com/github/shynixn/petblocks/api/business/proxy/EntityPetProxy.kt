@@ -27,7 +27,7 @@ package com.github.shynixn.petblocks.api.business.proxy
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-interface EntityPetProxy{
+interface EntityPetProxy {
     /**
      * Removes this entity.
      */
@@ -36,5 +36,5 @@ interface EntityPetProxy{
     /**
      * Boots marker.
      */
-    var bootsItemStack : Any?
+    var bootsItemStack: Any?
 }

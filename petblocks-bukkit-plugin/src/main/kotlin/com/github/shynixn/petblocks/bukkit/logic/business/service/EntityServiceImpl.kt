@@ -3,6 +3,7 @@
 package com.github.shynixn.petblocks.bukkit.logic.business.service
 
 import com.github.shynixn.petblocks.api.business.enumeration.AIType
+import com.github.shynixn.petblocks.api.business.enumeration.ChatColor
 import com.github.shynixn.petblocks.api.business.enumeration.EntityType
 import com.github.shynixn.petblocks.api.business.enumeration.Version
 import com.github.shynixn.petblocks.api.business.localization.Messages
@@ -17,11 +18,11 @@ import com.github.shynixn.petblocks.bukkit.logic.business.pathfinder.PathfinderA
 import com.github.shynixn.petblocks.bukkit.logic.business.pathfinder.PathfinderAmbientSound
 import com.github.shynixn.petblocks.bukkit.logic.business.pathfinder.PathfinderFollowBack
 import com.github.shynixn.petblocks.bukkit.logic.business.pathfinder.PathfinderFollowOwner
+import com.github.shynixn.petblocks.core.logic.business.extension.stripChatColors
 import com.github.shynixn.petblocks.core.logic.business.pathfinder.PathfinderBuffEffect
 import com.github.shynixn.petblocks.core.logic.business.proxy.AICreationProxyImpl
 import com.google.inject.Inject
 import org.bukkit.Bukkit
-import org.bukkit.ChatColor
 import org.bukkit.entity.Entity
 import org.bukkit.entity.LivingEntity
 import org.bukkit.entity.Player
@@ -156,7 +157,7 @@ class EntityServiceImpl @Inject constructor(
                 if (boots!!.itemMeta != null && boots.itemMeta!!.lore != null && boots.itemMeta!!.lore!!.size > 0) {
                     val lore = boots.itemMeta!!.lore!![0]
 
-                    if (ChatColor.stripColor(lore) == "PetBlocks") {
+                    if (lore.stripChatColors() == "PetBlocks") {
                         try {
                             (entity as Any).javaClass.getDeclaredMethod("deleteFromWorld").invoke(entity)
                         } catch (e: Exception) {

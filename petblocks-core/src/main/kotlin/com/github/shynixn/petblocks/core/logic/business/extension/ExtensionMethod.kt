@@ -11,7 +11,6 @@ import com.github.shynixn.petblocks.api.persistence.entity.Position
 import com.github.shynixn.petblocks.api.persistence.entity.PropertyTrackable
 import com.github.shynixn.petblocks.core.logic.persistence.entity.ChatMessageEntity
 import java.util.concurrent.CompletableFuture
-import java.util.regex.Pattern
 import kotlin.reflect.KProperty
 
 /**
@@ -174,12 +173,9 @@ fun String.translateChatColors(): String {
     return ChatColor.translateChatColorCodes('&', this)
 }
 
-private val STRIP_COLOR_PATTERN = Pattern.compile("(?i)" + '§'.toString() + "[0-9A-FK-OR]")
-
 /**
- * Strips the chat colors from the string.
+ * Strips the chatcolors.
  */
 fun String.stripChatColors(): String {
-    return STRIP_COLOR_PATTERN.matcher(this).replaceAll("")
+    return ChatColor.stripChatColors(this)
 }
-

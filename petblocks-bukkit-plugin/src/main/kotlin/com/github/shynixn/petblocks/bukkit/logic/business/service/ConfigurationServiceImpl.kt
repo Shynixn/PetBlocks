@@ -3,8 +3,8 @@
 package com.github.shynixn.petblocks.bukkit.logic.business.service
 
 import com.github.shynixn.petblocks.api.business.service.ConfigurationService
+import com.github.shynixn.petblocks.core.logic.business.extension.translateChatColors
 import com.google.inject.Inject
-import org.bukkit.ChatColor
 import org.bukkit.configuration.MemorySection
 import org.bukkit.plugin.Plugin
 import java.io.InputStream
@@ -75,11 +75,10 @@ class ConfigurationServiceImpl @Inject constructor(private val plugin: Plugin) :
     override fun <C> findValue(path: String): C {
         require(containsValue(path)) { "Path '$path' could not be found!" }
 
-        var data = this.plugin.config.get(path)
+        val data = this.plugin.config.get(path)
 
         if (data is String) {
-            data = ChatColor.translateAlternateColorCodes('&', data)
-            return data as C
+            return data.translateChatColors() as C
         }
 
         if (data is MemorySection) {
