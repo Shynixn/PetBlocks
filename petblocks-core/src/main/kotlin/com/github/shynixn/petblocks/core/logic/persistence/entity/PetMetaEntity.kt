@@ -1,6 +1,9 @@
 package com.github.shynixn.petblocks.core.logic.persistence.entity
 
+import com.github.shynixn.petblocks.api.PetBlocksApi
+import com.github.shynixn.petblocks.api.business.service.PetService
 import com.github.shynixn.petblocks.api.business.service.PropertyTrackingService
+import com.github.shynixn.petblocks.api.business.service.ProxyService
 import com.github.shynixn.petblocks.api.persistence.entity.AIBase
 import com.github.shynixn.petblocks.api.persistence.entity.PetMeta
 import com.github.shynixn.petblocks.api.persistence.entity.PlayerMeta
@@ -35,6 +38,9 @@ import com.github.shynixn.petblocks.core.logic.business.service.PropertyTracking
  * SOFTWARE.
  */
 class PetMetaEntity(override val playerMeta: PlayerMeta, override val skin: Skin) : PetMeta {
+    private val proxyService = PetBlocksApi.resolve(ProxyService::class.java)
+    private val petService = PetBlocksApi.resolve(PetService::class.java)
+
     /**
      * Is the pet meta new?
      */
@@ -45,12 +51,21 @@ class PetMetaEntity(override val playerMeta: PlayerMeta, override val skin: Skin
      */
     override val aiGoals: MutableList<AIBase> = ObserveableArrayList {
         propertyTracker.onPropertyChanged(this::aiGoals, true)
+
+        val player = proxyService.getPlayerFromUUID<Any>(this.playerMeta.uuid)
+
+        if (petService.hasPet(player)) {
+            petService.getOrSpawnPetFromPlayer(player).ifPresent { pet ->
+                pet.triggerTick()
+            }
+        }
     }
 
     /**
      * Database id.
      */
     override var id: Long = 0
+
     /**
      * Is the pet enabled. Should not get modified directly.
      */
