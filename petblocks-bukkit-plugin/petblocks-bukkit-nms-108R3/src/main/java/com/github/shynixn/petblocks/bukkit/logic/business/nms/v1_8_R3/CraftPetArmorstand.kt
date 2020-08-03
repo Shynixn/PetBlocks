@@ -1,8 +1,10 @@
 package com.github.shynixn.petblocks.bukkit.logic.business.nms.v1_8_R3
 
-import com.github.shynixn.petblocks.api.business.proxy.EntityPetProxy
+import com.github.shynixn.petblocks.api.business.proxy.ArmorstandPetProxy
 import org.bukkit.craftbukkit.v1_8_R3.CraftServer
 import org.bukkit.craftbukkit.v1_8_R3.entity.CraftArmorStand
+import org.bukkit.craftbukkit.v1_8_R3.inventory.CraftItemStack
+import org.bukkit.inventory.ItemStack
 
 /**
  * Created by Shynixn 2019.
@@ -31,11 +33,25 @@ import org.bukkit.craftbukkit.v1_8_R3.entity.CraftArmorStand
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class CraftPetArmorstand(server: CraftServer, nmsPet: NMSPetArmorstand) : CraftArmorStand(server, nmsPet), EntityPetProxy {
+class CraftPetArmorstand(server: CraftServer, nmsPet: NMSPetArmorstand) : CraftArmorStand(server, nmsPet),
+    ArmorstandPetProxy {
     /**
-     * Boots marker.
+     * Sets the helmet item stack securely if
+     * blocked by the NMS call.
      */
-    override var bootsItemStack: Any? = null
+    override fun <I> setHelmetItemStack(item: I) {
+        require(item is ItemStack?)
+        (handle as NMSPetArmorstand).setSecureSlot(4, CraftItemStack.asNMSCopy(item))
+    }
+
+    /**
+     * Sets the boots item stack securely if
+     * blocked by the NMS call.
+     */
+    override fun <I> setBootsItemStack(item: I) {
+        require(item is ItemStack?)
+        (handle as NMSPetArmorstand).setSecureSlot(1, CraftItemStack.asNMSCopy(item))
+    }
 
     /**
      * Removes this entity.

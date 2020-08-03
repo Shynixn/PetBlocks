@@ -49,15 +49,19 @@ class PetMetaEntity(override val playerMeta: PlayerMeta, override val skin: Skin
     /**
      * Gets a list of all ai goals of this pet.
      */
-    override val aiGoals: MutableList<AIBase> = ObserveableArrayList {
+    override val aiGoals: ObserveableArrayList<AIBase> = ObserveableArrayList {
         propertyTracker.onPropertyChanged(this::aiGoals, true)
 
-        val player = proxyService.getPlayerFromUUID<Any>(this.playerMeta.uuid)
+        try {
+            val player = proxyService.getPlayerFromUUID<Any>(this.playerMeta.uuid)
 
-        if (petService.hasPet(player)) {
-            petService.getOrSpawnPetFromPlayer(player).ifPresent { pet ->
-                pet.triggerTick()
+            if (petService.hasPet(player)) {
+                petService.getOrSpawnPetFromPlayer(player).ifPresent { pet ->
+                    pet.triggerTick()
+                }
             }
+        } catch (e: Exception) {
+            // We do not care if a problem appears here.
         }
     }
 
@@ -104,7 +108,7 @@ class PetMetaEntity(override val playerMeta: PlayerMeta, override val skin: Skin
     override fun clone(): PetMeta {
         val petMeta = PetMetaEntity(this.playerMeta, this.skin)
         petMeta.new = this.new
-        petMeta.aiGoals.addAll(this.aiGoals)
+        petMeta.aiGoals.addAllWithoutChangeTrigger(this.aiGoals)
         petMeta.id = this.id
         petMeta.enabled = this.enabled
         petMeta.displayName = this.displayName

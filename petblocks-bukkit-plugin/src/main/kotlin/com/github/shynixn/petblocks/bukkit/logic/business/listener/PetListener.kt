@@ -146,7 +146,10 @@ class PetListener @Inject constructor(
      */
     @EventHandler
     fun onPlayerQuitEvent(event: PlayerQuitEvent) {
+        var activePet = false
+
         if (petService.hasPet(event.player)) {
+            activePet = true
             val pet = petService.getOrSpawnPetFromPlayer(event.player).get()
 
             (pet.getHeadArmorstand() as EntityPetProxy).deleteFromWorld()
@@ -155,6 +158,7 @@ class PetListener @Inject constructor(
             }
         }
 
+        persistencePetMetaService.getPetMetaFromPlayer(event.player).enabled = activePet
         persistencePetMetaService.clearResources(event.player)
         debugService.unRegister(event.player)
         petService.clearPlayerResources(event.player)

@@ -3,6 +3,7 @@ package com.github.shynixn.petblocks.sponge.logic.business.proxy
 import com.flowpowered.math.vector.Vector3d
 import com.github.shynixn.petblocks.api.PetBlocksApi
 import com.github.shynixn.petblocks.api.business.enumeration.MaterialType
+import com.github.shynixn.petblocks.api.business.proxy.ArmorstandPetProxy
 import com.github.shynixn.petblocks.api.business.proxy.EntityPetProxy
 import com.github.shynixn.petblocks.api.business.proxy.PetProxy
 import com.github.shynixn.petblocks.api.business.service.ItemTypeService
@@ -79,7 +80,7 @@ class PetProxyImpl(override val meta: PetMeta, private val design: ArmorStand, p
         meta.propertyTracker.onPropertyChanged(PetMeta::aiGoals)
         meta.propertyTracker.onPropertyChanged(Skin::typeName)
 
-        design.setBoots(generateMarkerItemStack())
+        (this.design as EntityPetProxy).setBootsItemStack(generateMarkerItemStack())
     }
 
     /**
@@ -157,7 +158,7 @@ class PetProxyImpl(override val meta: PetMeta, private val design: ArmorStand, p
             return
         }
 
-        (this.hitBox as EntityPetProxy).bootsItemStack = generateMarkerItemStack()
+        (this.hitBox as EntityPetProxy).setBootsItemStack(generateMarkerItemStack())
     }
 
     /**
@@ -221,8 +222,15 @@ class PetProxyImpl(override val meta: PetMeta, private val design: ArmorStand, p
         }
 
         if (displayNameChanged || Skin::typeName.hasChanged(meta.skin)) {
-            val item = ItemEntity(meta.skin.typeName, meta.skin.dataValue, meta.skin.nbtTag, meta.displayName, null, meta.skin.owner)
-            design.setHelmet(itemService.toItemStack(item))
+            val item = ItemEntity(
+                meta.skin.typeName,
+                meta.skin.dataValue,
+                meta.skin.nbtTag,
+                meta.displayName,
+                null,
+                meta.skin.owner
+            )
+            (design as ArmorstandPetProxy).setHelmetItemStack(itemService.toItemStack<Any>(item))
         }
     }
 

@@ -38,11 +38,17 @@ import java.util.*
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class CraftPet(server: CraftServer, nmsPet: EntityInsentient) : CraftLivingEntity(server, nmsPet), EntityPetProxy,  Pig, Rabbit, Bat {
+class CraftPet(server: CraftServer, nmsPet: EntityInsentient) : CraftLivingEntity(server, nmsPet), EntityPetProxy, Pig,
+    Rabbit, Bat {
+    private var itemStackBoots: Any? = null
+
     /**
-     * Boots marker.
+     * Sets the boots item stack securely if
+     * blocked by the NMS call.
      */
-    override var bootsItemStack: Any? = null
+    override fun <I> setBootsItemStack(item: I) {
+        itemStackBoots = item
+    }
 
     /**
      * Removes this entity.

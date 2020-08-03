@@ -141,6 +141,17 @@ class ObserveableArrayList<E>(private val hasChanged: () -> Unit) : MutableList<
         return item
     }
 
+    /**
+     * Adds all of the elements of the specified collection to the end of this list.
+     *
+     * The elements are appended in the order they appear in the [elements] collection.
+     *
+     * @return `true` if the list was changed as the result of the operation.
+     */
+    fun addAllWithoutChangeTrigger(elements: Collection<E>): Boolean {
+        return backedArrayList.addAll(elements)
+    }
+
     override fun clear() {
         backedArrayList.clear()
         this.hasChanged.invoke()

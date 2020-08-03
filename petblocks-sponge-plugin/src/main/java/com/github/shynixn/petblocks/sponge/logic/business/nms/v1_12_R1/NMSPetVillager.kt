@@ -6,7 +6,6 @@ import com.github.shynixn.petblocks.api.business.proxy.HiddenProxy
 import com.github.shynixn.petblocks.api.business.proxy.PathfinderProxy
 import com.github.shynixn.petblocks.api.business.service.ConcurrencyService
 import com.github.shynixn.petblocks.api.persistence.entity.AIMovement
-import com.github.shynixn.petblocks.core.logic.business.extension.cast
 import com.github.shynixn.petblocks.sponge.logic.business.extension.toPosition
 import com.github.shynixn.petblocks.sponge.logic.business.extension.x
 import com.github.shynixn.petblocks.sponge.logic.business.extension.y
@@ -20,7 +19,6 @@ import net.minecraft.entity.passive.EntityPig
 import net.minecraft.inventory.EntityEquipmentSlot
 import net.minecraft.util.math.BlockPos
 import org.spongepowered.api.entity.Transform
-import org.spongepowered.api.entity.living.Living
 import org.spongepowered.api.world.World
 
 /**
@@ -84,15 +82,12 @@ class NMSPetVillager(petDesign: NMSPetArmorstand, location: Transform<World>) :
     }
 
     /**
-     * Boots marker.
+     * Sets the boots item stack securely if
+     * blocked by the NMS call.
      */
-    override var bootsItemStack: Any?
-        get() {
-            return this.getItemStackFromSlot(EntityEquipmentSlot.FEET)
-        }
-        set(value) {
-            this.setItemStackToSlot(EntityEquipmentSlot.FEET, value as net.minecraft.item.ItemStack)
-        }
+    override fun <I> setBootsItemStack(item: I) {
+        this.setItemStackToSlot(EntityEquipmentSlot.FEET, item as net.minecraft.item.ItemStack)
+    }
 
     /**
      * Applies pathfinders to the entity.
