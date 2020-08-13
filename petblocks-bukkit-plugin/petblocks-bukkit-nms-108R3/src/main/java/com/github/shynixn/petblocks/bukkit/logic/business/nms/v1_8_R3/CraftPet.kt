@@ -35,17 +35,8 @@ import org.bukkit.entity.*
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class CraftPet(server: CraftServer, nmsPet: EntityInsentient) : CraftLivingEntity(server, nmsPet), EntityPetProxy, Pig, Rabbit, Bat {
-    private var itemStackBoots: Any? = null
-
-    /**
-     * Sets the boots item stack securely if
-     * blocked by the NMS call.
-     */
-    override fun <I> setBootsItemStack(item: I) {
-        itemStackBoots = item
-    }
-
+class CraftPet(server: CraftServer, nmsPet: EntityInsentient) : CraftLivingEntity(server, nmsPet), EntityPetProxy, Pig,
+    Rabbit, Bat {
     /**
      * Removes this entity.
      */

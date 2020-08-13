@@ -6,4 +6,10 @@ interface ArmorstandPetProxy : EntityPetProxy {
      * blocked by the NMS call.
      */
     fun <I> setHelmetItemStack(item: I)
+
+    /**
+     * Sets the boots item stack securely if
+     * blocked by the NMS call.
+     */
+    fun <I> setBootsItemStack(item: I)
 }

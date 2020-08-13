@@ -84,14 +84,6 @@ class NMSPetRabbit(petDesign: NMSPetArmorstand, location: Transform<World>) :
     }
 
     /**
-     * Sets the boots item stack securely if
-     * blocked by the NMS call.
-     */
-    override fun <I> setBootsItemStack(item: I) {
-        this.setItemStackToSlot(EntityEquipmentSlot.FEET, item as net.minecraft.item.ItemStack)
-    }
-
-    /**
      * Applies pathfinders to the entity.
      */
     fun applyPathfinders(pathfinders: List<Any>) {

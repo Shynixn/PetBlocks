@@ -38,16 +38,6 @@ import java.util.*
  * SOFTWARE.
  */
 class CraftPet(server: CraftServer, nmsPet: EntityInsentient) : CraftLivingEntity(server, nmsPet), EntityPetProxy,  Pig, Rabbit, Bat {
-    private var itemStackBoots: Any? = null
-
-    /**
-     * Sets the boots item stack securely if
-     * blocked by the NMS call.
-     */
-    override fun <I> setBootsItemStack(item: I) {
-        itemStackBoots = item
-    }
-
     /**
      * Removes this entity.
      */

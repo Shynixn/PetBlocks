@@ -32,10 +32,4 @@ interface EntityPetProxy {
      * Removes this entity.
      */
     fun deleteFromWorld()
-
-    /**
-     * Sets the boots item stack securely if
-     * blocked by the NMS call.
-     */
-    fun <I> setBootsItemStack(item: I)
 }

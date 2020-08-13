@@ -75,7 +75,7 @@ class PetProxyImpl(override val meta: PetMeta, private val design: ArmorStand, p
         meta.propertyTracker.onPropertyChanged(PetMeta::aiGoals)
         meta.propertyTracker.onPropertyChanged(Skin::typeName)
 
-        (design as EntityPetProxy).setBootsItemStack(generateMarkerItemStack())
+        (design as ArmorstandPetProxy).setBootsItemStack(generateMarkerItemStack())
 
         if (dependencyService.isInstalled(PluginDependency.PLACEHOLDERAPI)) {
             placeHolderApiService = PetBlocksApi.resolve(DependencyPlaceholderApiService::class.java)
@@ -153,7 +153,7 @@ class PetProxyImpl(override val meta: PetMeta, private val design: ArmorStand, p
             return
         }
 
-        (hitBox as EntityPetProxy).setBootsItemStack(generateMarkerItemStack())
+        hitBox.equipment!!.boots = generateMarkerItemStack()
     }
 
     /**
