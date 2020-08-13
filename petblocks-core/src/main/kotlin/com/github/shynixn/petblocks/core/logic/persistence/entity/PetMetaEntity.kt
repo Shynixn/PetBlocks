@@ -38,8 +38,8 @@ import com.github.shynixn.petblocks.core.logic.business.service.PropertyTracking
  * SOFTWARE.
  */
 class PetMetaEntity(override val playerMeta: PlayerMeta, override val skin: Skin) : PetMeta {
-    private val proxyService = PetBlocksApi.resolve(ProxyService::class.java)
-    private val petService = PetBlocksApi.resolve(PetService::class.java)
+    private var proxyService: ProxyService? = null
+    private var petService: PetService? = null
 
     /**
      * Is the pet meta new?
@@ -53,10 +53,18 @@ class PetMetaEntity(override val playerMeta: PlayerMeta, override val skin: Skin
         propertyTracker.onPropertyChanged(this::aiGoals, true)
 
         try {
-            val player = proxyService.getPlayerFromUUID<Any>(this.playerMeta.uuid)
+            if (proxyService == null) {
+                proxyService = PetBlocksApi.resolve(ProxyService::class.java)
+            }
 
-            if (petService.hasPet(player)) {
-                petService.getOrSpawnPetFromPlayer(player).ifPresent { pet ->
+            if (petService == null) {
+                petService = PetBlocksApi.resolve(PetService::class.java)
+            }
+
+            val player = proxyService!!.getPlayerFromUUID<Any>(this.playerMeta.uuid)
+
+            if (petService!!.hasPet(player)) {
+                petService!!.getOrSpawnPetFromPlayer(player).ifPresent { pet ->
                     pet.triggerTick()
                 }
             }

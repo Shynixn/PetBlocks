@@ -6,6 +6,9 @@ import com.github.shynixn.petblocks.api.business.proxy.PetProxy
 import com.github.shynixn.petblocks.api.business.service.*
 import com.github.shynixn.petblocks.api.persistence.entity.PetMeta
 import com.github.shynixn.petblocks.bukkit.logic.business.listener.PetListener
+import com.github.shynixn.petblocks.core.logic.persistence.entity.PetMetaEntity
+import com.github.shynixn.petblocks.core.logic.persistence.entity.PlayerMetaEntity
+import com.github.shynixn.petblocks.core.logic.persistence.entity.SkinEntity
 import org.bukkit.entity.Player
 import org.bukkit.event.player.PlayerQuitEvent
 import org.junit.jupiter.api.Assertions
@@ -214,7 +217,7 @@ class PetListenerTest {
          * This will never return null.
          */
         override fun <P> getPetMetaFromPlayer(player: P): PetMeta {
-            throw IllegalArgumentException()
+            return PetMetaEntity(PlayerMetaEntity(UUID.randomUUID().toString()), SkinEntity())
         }
 
         /**
