@@ -1,6 +1,9 @@
 package com.github.shynixn.petblocks.core.logic.persistence.entity
 
+import com.github.shynixn.petblocks.api.PetBlocksApi
+import com.github.shynixn.petblocks.api.business.service.PetService
 import com.github.shynixn.petblocks.api.business.service.PropertyTrackingService
+import com.github.shynixn.petblocks.api.business.service.ProxyService
 import com.github.shynixn.petblocks.api.persistence.entity.AIBase
 import com.github.shynixn.petblocks.api.persistence.entity.PetMeta
 import com.github.shynixn.petblocks.api.persistence.entity.PlayerMeta
@@ -35,6 +38,9 @@ import com.github.shynixn.petblocks.core.logic.business.service.PropertyTracking
  * SOFTWARE.
  */
 class PetMetaEntity(override val playerMeta: PlayerMeta, override val skin: Skin) : PetMeta {
+    private var proxyService: ProxyService? = null
+    private var petService: PetService? = null
+
     /**
      * Is the pet meta new?
      */
@@ -43,14 +49,35 @@ class PetMetaEntity(override val playerMeta: PlayerMeta, override val skin: Skin
     /**
      * Gets a list of all ai goals of this pet.
      */
-    override val aiGoals: MutableList<AIBase> = ObserveableArrayList {
+    override val aiGoals: ObserveableArrayList<AIBase> = ObserveableArrayList {
         propertyTracker.onPropertyChanged(this::aiGoals, true)
+
+        try {
+            if (proxyService == null) {
+                proxyService = PetBlocksApi.resolve(ProxyService::class.java)
+            }
+
+            if (petService == null) {
+                petService = PetBlocksApi.resolve(PetService::class.java)
+            }
+
+            val player = proxyService!!.getPlayerFromUUID<Any>(this.playerMeta.uuid)
+
+            if (petService!!.hasPet(player)) {
+                petService!!.getOrSpawnPetFromPlayer(player).ifPresent { pet ->
+                    pet.triggerTick()
+                }
+            }
+        } catch (e: Exception) {
+            // We do not care if a problem appears here.
+        }
     }
 
     /**
      * Database id.
      */
     override var id: Long = 0
+
     /**
      * Is the pet enabled. Should not get modified directly.
      */
@@ -89,7 +116,7 @@ class PetMetaEntity(override val playerMeta: PlayerMeta, override val skin: Skin
     override fun clone(): PetMeta {
         val petMeta = PetMetaEntity(this.playerMeta, this.skin)
         petMeta.new = this.new
-        petMeta.aiGoals.addAll(this.aiGoals)
+        petMeta.aiGoals.addAllWithoutChangeTrigger(this.aiGoals)
         petMeta.id = this.id
         petMeta.enabled = this.enabled
         petMeta.displayName = this.displayName

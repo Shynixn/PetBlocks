@@ -3,6 +3,7 @@ package com.github.shynixn.petblocks.bukkit.logic.business.proxy
 import com.github.shynixn.petblocks.api.PetBlocksApi
 import com.github.shynixn.petblocks.api.bukkit.event.PetRemoveEvent
 import com.github.shynixn.petblocks.api.business.enumeration.PluginDependency
+import com.github.shynixn.petblocks.api.business.proxy.ArmorstandPetProxy
 import com.github.shynixn.petblocks.api.business.proxy.EntityPetProxy
 import com.github.shynixn.petblocks.api.business.proxy.PetProxy
 import com.github.shynixn.petblocks.api.business.service.*
@@ -74,7 +75,7 @@ class PetProxyImpl(override val meta: PetMeta, private val design: ArmorStand, p
         meta.propertyTracker.onPropertyChanged(PetMeta::aiGoals)
         meta.propertyTracker.onPropertyChanged(Skin::typeName)
 
-        design.equipment!!.boots = generateMarkerItemStack()
+        (design as ArmorstandPetProxy).setBootsItemStack(generateMarkerItemStack())
 
         if (dependencyService.isInstalled(PluginDependency.PLACEHOLDERAPI)) {
             placeHolderApiService = PetBlocksApi.resolve(DependencyPlaceholderApiService::class.java)
@@ -240,7 +241,7 @@ class PetProxyImpl(override val meta: PetMeta, private val design: ArmorStand, p
             )
 
             val itemStack = itemService.toItemStack<ItemStack>(item)
-            design.setHelmet(itemStack)
+            (design as ArmorstandPetProxy).setHelmetItemStack(itemStack)
         }
     }
 

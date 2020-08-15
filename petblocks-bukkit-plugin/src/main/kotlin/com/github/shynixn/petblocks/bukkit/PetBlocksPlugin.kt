@@ -109,13 +109,14 @@ class PetBlocksPlugin : JavaPlugin(), PluginProxy {
             Version.VERSION_1_13_R2,
             Version.VERSION_1_14_R1,
             Version.VERSION_1_15_R1,
-            Version.VERSION_1_16_R1
+            Version.VERSION_1_16_R1,
+            Version.VERSION_1_16_R2
         )
 
         if (!getServerVersion().isCompatible(versions)) {
             sendConsoleMessage(ChatColor.RED.toString() + "================================================")
             sendConsoleMessage(ChatColor.RED.toString() + "PetBlocks does not support your server version")
-            sendConsoleMessage(ChatColor.RED.toString() + "Install v" + Version.VERSION_1_8_R1.id + " - v" + Version.VERSION_1_15_R1.id)
+            sendConsoleMessage(ChatColor.RED.toString() + "Install v" + Version.VERSION_1_8_R1.id + " - v" + Version.VERSION_1_16_R2.id)
             sendConsoleMessage(ChatColor.RED.toString() + "Plugin gets now disabled!")
             sendConsoleMessage(ChatColor.RED.toString() + "================================================")
 

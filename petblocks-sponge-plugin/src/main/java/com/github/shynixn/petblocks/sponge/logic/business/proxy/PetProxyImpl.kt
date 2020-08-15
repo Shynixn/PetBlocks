@@ -3,6 +3,7 @@ package com.github.shynixn.petblocks.sponge.logic.business.proxy
 import com.flowpowered.math.vector.Vector3d
 import com.github.shynixn.petblocks.api.PetBlocksApi
 import com.github.shynixn.petblocks.api.business.enumeration.MaterialType
+import com.github.shynixn.petblocks.api.business.proxy.ArmorstandPetProxy
 import com.github.shynixn.petblocks.api.business.proxy.EntityPetProxy
 import com.github.shynixn.petblocks.api.business.proxy.PetProxy
 import com.github.shynixn.petblocks.api.business.service.ItemTypeService
@@ -14,11 +15,14 @@ import com.github.shynixn.petblocks.api.persistence.entity.PetMeta
 import com.github.shynixn.petblocks.api.persistence.entity.Position
 import com.github.shynixn.petblocks.api.persistence.entity.Skin
 import com.github.shynixn.petblocks.api.sponge.event.PetRemoveEvent
+import com.github.shynixn.petblocks.core.logic.business.extension.cast
 import com.github.shynixn.petblocks.core.logic.business.extension.hasChanged
 import com.github.shynixn.petblocks.core.logic.persistence.entity.ItemEntity
 import com.github.shynixn.petblocks.sponge.logic.business.extension.toText
 import com.github.shynixn.petblocks.sponge.logic.business.extension.toTransform
 import com.github.shynixn.petblocks.sponge.logic.business.extension.toVector
+import net.minecraft.entity.EntityLiving
+import net.minecraft.inventory.EntityEquipmentSlot
 import org.spongepowered.api.Sponge
 import org.spongepowered.api.data.key.Keys
 import org.spongepowered.api.entity.Transform
@@ -79,7 +83,7 @@ class PetProxyImpl(override val meta: PetMeta, private val design: ArmorStand, p
         meta.propertyTracker.onPropertyChanged(PetMeta::aiGoals)
         meta.propertyTracker.onPropertyChanged(Skin::typeName)
 
-        design.setBoots(generateMarkerItemStack())
+        (this.design as ArmorstandPetProxy).setBootsItemStack(generateMarkerItemStack())
     }
 
     /**
@@ -157,7 +161,8 @@ class PetProxyImpl(override val meta: PetMeta, private val design: ArmorStand, p
             return
         }
 
-        (this.hitBox as EntityPetProxy).bootsItemStack = generateMarkerItemStack()
+        require(hitBox is EntityLiving)
+        hitBox.setItemStackToSlot(EntityEquipmentSlot.FEET, generateMarkerItemStack().cast())
     }
 
     /**
@@ -221,8 +226,15 @@ class PetProxyImpl(override val meta: PetMeta, private val design: ArmorStand, p
         }
 
         if (displayNameChanged || Skin::typeName.hasChanged(meta.skin)) {
-            val item = ItemEntity(meta.skin.typeName, meta.skin.dataValue, meta.skin.nbtTag, meta.displayName, null, meta.skin.owner)
-            design.setHelmet(itemService.toItemStack(item))
+            val item = ItemEntity(
+                meta.skin.typeName,
+                meta.skin.dataValue,
+                meta.skin.nbtTag,
+                meta.displayName,
+                null,
+                meta.skin.owner
+            )
+            (design as ArmorstandPetProxy).setHelmetItemStack(itemService.toItemStack<Any>(item))
         }
     }
 

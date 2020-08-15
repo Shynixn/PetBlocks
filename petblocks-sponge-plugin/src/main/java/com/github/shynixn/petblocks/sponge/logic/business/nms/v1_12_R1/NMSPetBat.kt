@@ -91,17 +91,6 @@ class NMSPetBat(petDesign: NMSPetArmorstand, location: Transform<World>) :
     }
 
     /**
-     * Boots marker.
-     */
-    override var bootsItemStack: Any?
-        get() {
-            return this.getItemStackFromSlot(EntityEquipmentSlot.FEET)
-        }
-        set(value) {
-            this.setItemStackToSlot(EntityEquipmentSlot.FEET, value as net.minecraft.item.ItemStack)
-        }
-
-    /**
      * Applies pathfinders to the entity.
      */
     fun applyPathfinders(pathfinders: List<Any>) {

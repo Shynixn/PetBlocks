@@ -183,6 +183,19 @@ class NMSPetArmorstand(owner: Player, val petMeta: PetMeta) :
     }
 
     /**
+     * Disable setting slots.
+     */
+    override fun setSlot(enumitemslot: EnumItemSlot?, itemstack: ItemStack?) {
+    }
+
+    /**
+     * Sets the slot securely.
+     */
+    fun setSecureSlot(enumitemslot: EnumItemSlot?, itemstack: ItemStack?) {
+        super.setSlot(enumitemslot, itemstack)
+    }
+
+    /**
      * Entity tick.
      */
     override fun doTick() {

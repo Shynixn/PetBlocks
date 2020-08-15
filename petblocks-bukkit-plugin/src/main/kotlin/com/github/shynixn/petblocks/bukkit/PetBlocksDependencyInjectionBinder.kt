@@ -95,6 +95,11 @@ class PetBlocksDependencyInjectionBinder(private val plugin: PetBlocksPlugin) : 
         bind(LocalizationService::class.java).to(LocalizationServiceImpl::class.java).`in`(Scopes.SINGLETON)
 
         when {
+            version.isVersionSameOrGreaterThan(Version.VERSION_1_16_R2) -> bind(EntityRegistrationService::class.java).to(
+                EntityRegistration116R2ServiceImpl::class.java
+            ).`in`(
+                Scopes.SINGLETON
+            )
             version.isVersionSameOrGreaterThan(Version.VERSION_1_16_R1) -> bind(EntityRegistrationService::class.java).to(
                 EntityRegistration116R1ServiceImpl::class.java
             ).`in`(

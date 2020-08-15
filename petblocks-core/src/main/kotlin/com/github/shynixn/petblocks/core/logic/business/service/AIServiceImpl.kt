@@ -12,7 +12,7 @@ import com.github.shynixn.petblocks.api.persistence.entity.AIFollowOwner
 import com.google.inject.Inject
 
 /**
- * Created by Shynixn 2018.
+ * Handles the registration states of the ais.
  * <p>
  * Version 1.2
  * <p>

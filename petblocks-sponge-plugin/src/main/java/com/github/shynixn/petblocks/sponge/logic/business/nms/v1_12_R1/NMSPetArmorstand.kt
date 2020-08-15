@@ -4,6 +4,7 @@ package com.github.shynixn.petblocks.sponge.logic.business.nms.v1_12_R1
 
 import com.flowpowered.math.vector.Vector3d
 import com.github.shynixn.petblocks.api.PetBlocksApi
+import com.github.shynixn.petblocks.api.business.proxy.ArmorstandPetProxy
 import com.github.shynixn.petblocks.api.business.proxy.EntityPetProxy
 import com.github.shynixn.petblocks.api.business.proxy.HiddenProxy
 import com.github.shynixn.petblocks.api.business.proxy.NMSPetProxy
@@ -26,6 +27,7 @@ import net.minecraft.entity.item.EntityArmorStand
 import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.entity.player.EntityPlayerMP
 import net.minecraft.inventory.EntityEquipmentSlot
+import net.minecraft.item.ItemStack
 import net.minecraft.nbt.JsonToNBT
 import net.minecraft.nbt.NBTTagCompound
 import net.minecraft.util.math.MathHelper
@@ -66,7 +68,7 @@ import org.spongepowered.api.entity.living.player.Player
  * SOFTWARE.
  */
 class NMSPetArmorstand(owner: Player, val petMeta: PetMeta) : EntityArmorStand(owner.location.extent as World),
-    NMSPetProxy, EntityPetProxy, HiddenProxy {
+    NMSPetProxy, ArmorstandPetProxy, HiddenProxy {
     private var internalProxy: PetProxyImpl? = null
     private var internalHitBox: EntityLiving? = null
     private val aiService = PetBlocksApi.resolve(AIService::class.java)
@@ -113,15 +115,33 @@ class NMSPetArmorstand(owner: Player, val petMeta: PetMeta) : EntityArmorStand(o
     }
 
     /**
-     * Boots marker.
+     * Disable automatic item settings.
      */
-    override var bootsItemStack: Any?
-        get() {
-            return this.getItemStackFromSlot(EntityEquipmentSlot.FEET)
-        }
-        set(value) {
-            this.setItemStackToSlot(EntityEquipmentSlot.FEET, value as net.minecraft.item.ItemStack)
-        }
+    override fun setItemStackToSlot(slotIn: EntityEquipmentSlot, stack: ItemStack) {
+    }
+
+    /**
+     * Sets the helmet item stack securely if
+     * blocked by the NMS call.
+     */
+    override fun <I> setHelmetItemStack(item: I) {
+        setItemStackToSlotSecurely(EntityEquipmentSlot.HEAD, item as net.minecraft.item.ItemStack)
+    }
+
+    /**
+     * Sets the boots item stack securely if
+     * blocked by the NMS call.
+     */
+    override fun <I> setBootsItemStack(item: I) {
+        setItemStackToSlotSecurely(EntityEquipmentSlot.FEET, item as net.minecraft.item.ItemStack)
+    }
+
+    /**
+     * Secure item stack settings.
+     */
+    fun setItemStackToSlotSecurely(slotIn: EntityEquipmentSlot, stack: ItemStack) {
+        super.setItemStackToSlot(slotIn, stack)
+    }
 
     /**
      * Spawns a new hitbox

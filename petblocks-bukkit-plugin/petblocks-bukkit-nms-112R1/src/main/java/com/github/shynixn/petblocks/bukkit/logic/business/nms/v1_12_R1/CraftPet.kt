@@ -37,11 +37,6 @@ import org.bukkit.entity.*
  */
 class CraftPet(server: CraftServer, nmsPet: EntityInsentient) : CraftLivingEntity(server, nmsPet), EntityPetProxy,  Pig, Rabbit, Bat {
     /**
-     * Boots marker.
-     */
-    override var bootsItemStack: Any? = null
-
-    /**
      * Removes this entity.
      */
     override fun deleteFromWorld() {

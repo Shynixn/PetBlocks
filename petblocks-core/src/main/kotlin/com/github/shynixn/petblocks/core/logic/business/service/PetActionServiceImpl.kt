@@ -146,12 +146,6 @@ class PetActionServiceImpl @Inject constructor(
         petMeta.aiGoals.addAll(addAis)
         addAmount += addAis.size
 
-        if (petService.hasPet(player)) {
-            petService.getOrSpawnPetFromPlayer(player).ifPresent { pet ->
-                pet.triggerTick()
-            }
-        }
-
         return Pair(addAmount, removeAmount)
     }
 

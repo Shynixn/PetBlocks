@@ -35,7 +35,7 @@ import java.util.*
 import kotlin.collections.HashSet
 
 /**
- * Created by Shynixn 2018.
+ * Event listener for common pet events.
  * <p>
  * Version 1.2
  * <p>
@@ -146,7 +146,10 @@ class PetListener @Inject constructor(
      */
     @EventHandler
     fun onPlayerQuitEvent(event: PlayerQuitEvent) {
+        var activePet = false
+
         if (petService.hasPet(event.player)) {
+            activePet = true
             val pet = petService.getOrSpawnPetFromPlayer(event.player).get()
 
             (pet.getHeadArmorstand() as EntityPetProxy).deleteFromWorld()
@@ -155,6 +158,7 @@ class PetListener @Inject constructor(
             }
         }
 
+        persistencePetMetaService.getPetMetaFromPlayer(event.player).enabled = activePet
         persistencePetMetaService.clearResources(event.player)
         debugService.unRegister(event.player)
         petService.clearPlayerResources(event.player)
@@ -250,7 +254,6 @@ class PetListener @Inject constructor(
         val hatAi = pet.meta.aiGoals.firstOrNull { a -> a is AIWearing } as AIWearing? ?: return
 
         pet.meta.aiGoals.remove(hatAi)
-        executeMountingTick(pet)
     }
 
     /**
@@ -385,20 +388,8 @@ class PetListener @Inject constructor(
         val applyResult = petActionService.applyAI(player, aiSet.first, aiSet.second)
 
         if (applyResult.first > 0 || applyResult.second > 0) {
-            val pet = petService.getOrSpawnPetFromPlayer(player).get()
-            executeMountingTick(pet)
+            petService.getOrSpawnPetFromPlayer(player).get()
         }
-    }
-
-    /**
-     * Executes additional mounting tick.
-     */
-    private fun executeMountingTick(pet: PetProxy) {
-        if (!version.isVersionSameOrGreaterThan(Version.VERSION_1_14_R1)) {
-            return
-        }
-
-        pet.triggerTick()
     }
 
     /**
