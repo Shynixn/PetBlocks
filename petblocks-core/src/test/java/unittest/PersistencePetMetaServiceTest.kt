@@ -12,6 +12,7 @@ import com.github.shynixn.petblocks.core.logic.business.service.PersistencePetMe
 import com.github.shynixn.petblocks.core.logic.persistence.entity.PetMetaEntity
 import com.github.shynixn.petblocks.core.logic.persistence.entity.PlayerMetaEntity
 import com.github.shynixn.petblocks.core.logic.persistence.entity.SkinEntity
+import helper.MockedLoggingService
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito
@@ -123,7 +124,8 @@ class PersistencePetMetaServiceTest {
                 petMetaRepository,
                 MockedConcurrencyService(),
                 MockedEventService(),
-                Mockito.mock(AIService::class.java)
+                Mockito.mock(AIService::class.java),
+                MockedLoggingService()
             )
         }
     }

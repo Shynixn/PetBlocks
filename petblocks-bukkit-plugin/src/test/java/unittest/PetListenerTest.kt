@@ -9,6 +9,7 @@ import com.github.shynixn.petblocks.bukkit.logic.business.listener.PetListener
 import com.github.shynixn.petblocks.core.logic.persistence.entity.PetMetaEntity
 import com.github.shynixn.petblocks.core.logic.persistence.entity.PlayerMetaEntity
 import com.github.shynixn.petblocks.core.logic.persistence.entity.SkinEntity
+import helper.MockedLoggingService
 import org.bukkit.entity.Player
 import org.bukkit.event.player.PlayerQuitEvent
 import org.junit.jupiter.api.Assertions
@@ -151,7 +152,8 @@ class PetListenerTest {
                 configurationService,
                 aiService,
                 petActionService,
-                Version.VERSION_UNKNOWN
+                Version.VERSION_UNKNOWN,
+                MockedLoggingService()
             )
         }
     }
@@ -232,6 +234,13 @@ class PetListenerTest {
          */
         override fun save(petMeta: PetMeta): CompletableFuture<PetMeta> {
             throw IllegalArgumentException()
+        }
+
+        /**
+         * Gets if the given player has got a cached pet meta.
+         */
+        override fun <P> hasPetMeta(player: P): Boolean {
+            return true
         }
 
         /**

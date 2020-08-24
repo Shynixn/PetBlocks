@@ -44,7 +44,8 @@ class PersistencePetMetaServiceImpl @Inject constructor(
     private val petMetaRepository: PetMetaRepository,
     private val concurrencyService: ConcurrencyService,
     private val eventService: EventService,
-    private val aiService: AIService
+    private val aiService: AIService,
+    private val loggingService: LoggingService
 ) : PersistencePetMetaService {
     private val cacheInternal = HashMap<String, PetMeta>()
 
@@ -65,6 +66,15 @@ class PersistencePetMetaServiceImpl @Inject constructor(
                 save(p).thenAcceptSafely {}
             }
         }
+    }
+
+
+    /**
+     * Gets if the given player has got a cached pet meta.
+     */
+    override fun <P> hasPetMeta(player: P): Boolean {
+        val playerUUID = proxyService.getPlayerUUID(player)
+        return cacheInternal.containsKey(playerUUID)
     }
 
     /**
@@ -98,6 +108,11 @@ class PersistencePetMetaServiceImpl @Inject constructor(
         val playerName = proxyService.getPlayerName(player)
 
         if (!cacheInternal.containsKey(playerUUID)) {
+            try {
+                throw RuntimeException()
+            } catch (e: Exception) {
+                loggingService.warn("Cache Miss! The server is blocking.", e)
+            }
             // Blocks the calling (main) thread and should not be executed on an normal server.
             return petMetaRepository.getOrCreateFromPlayerIdentifiers(playerName, playerUUID)
         }

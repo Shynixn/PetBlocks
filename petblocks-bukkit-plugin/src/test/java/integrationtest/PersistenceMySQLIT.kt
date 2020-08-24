@@ -14,6 +14,7 @@ import com.github.shynixn.petblocks.core.logic.business.service.*
 import com.github.shynixn.petblocks.core.logic.persistence.context.SqlDbContextImpl
 import com.github.shynixn.petblocks.core.logic.persistence.entity.AIMovementEntity
 import com.github.shynixn.petblocks.core.logic.persistence.repository.PetMetaSqlRepository
+import helper.MockedLoggingService
 import org.bukkit.configuration.file.YamlConfiguration
 import org.bukkit.entity.Player
 import org.bukkit.plugin.Plugin
@@ -266,7 +267,7 @@ class PersistenceMySQLIT {
                 dbContext!!,
                 aiService, guiItemLoadService, configService
             )
-            return PersistencePetMetaServiceImpl(MockedProxyService(), sqlite, MockedConcurrencyService(), MockedEventService(), aiService)
+            return PersistencePetMetaServiceImpl(MockedProxyService(), sqlite, MockedConcurrencyService(), MockedEventService(), aiService, MockedLoggingService())
         }
     }
 

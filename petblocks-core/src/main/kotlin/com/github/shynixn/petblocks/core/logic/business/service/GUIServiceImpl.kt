@@ -209,6 +209,10 @@ class GUIServiceImpl @Inject constructor(
     override fun <P> open(player: P, pageName: String?) {
         require(player is Any)
 
+        if (!persistenceService.hasPetMeta(player)) {
+            return
+        }
+
         if (placeHolderService == null && dependencyService.isInstalled(PluginDependency.PLACEHOLDERAPI)) {
             placeHolderService = PetBlocksApi.resolve(DependencyPlaceholderApiService::class.java)
         }

@@ -19,6 +19,7 @@ import com.github.shynixn.petblocks.sponge.logic.business.service.ConfigurationS
 import com.github.shynixn.petblocks.sponge.logic.business.service.EntityServiceImpl
 import com.github.shynixn.petblocks.sponge.logic.business.service.ItemTypeServiceImpl
 import com.github.shynixn.petblocks.sponge.logic.business.service.YamlServiceImpl
+import helper.MockedLoggingService
 import org.apache.commons.io.FileUtils
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
@@ -103,7 +104,10 @@ class PersistenceMySQLIT {
         Assertions.assertEquals("CHICKEN_WALK", (actual.aiGoals[0] as AIMovementEntity).movementSound.name)
         Assertions.assertEquals(1.0, (actual.aiGoals[0] as AIMovementEntity).movementSound.volume)
         Assertions.assertEquals(1.0, (actual.aiGoals[0] as AIMovementEntity).movementSound.pitch)
-        Assertions.assertEquals(ParticleType.REDSTONE.name, (actual.aiGoals[0] as AIMovementEntity).movementParticle.typeName)
+        Assertions.assertEquals(
+            ParticleType.REDSTONE.name,
+            (actual.aiGoals[0] as AIMovementEntity).movementParticle.typeName
+        )
         Assertions.assertEquals(20, (actual.aiGoals[0] as AIMovementEntity).movementParticle.amount)
 
         Assertions.assertEquals("follow-owner", (actual.aiGoals[1] as AIFollowOwner).type)
@@ -177,7 +181,10 @@ class PersistenceMySQLIT {
         Assertions.assertEquals(0, initialSize)
         Assertions.assertEquals(1, actual.id)
         Assertions.assertEquals(true, actual.enabled)
-        Assertions.assertEquals("This is a very long displayname in order to check if column size is dynamic", actual.displayName)
+        Assertions.assertEquals(
+            "This is a very long displayname in order to check if column size is dynamic",
+            actual.displayName
+        )
         Assertions.assertEquals(false, actual.soundEnabled)
         Assertions.assertEquals(false, actual.particleEnabled)
         Assertions.assertEquals(1, actual.skin.id)
@@ -239,7 +246,8 @@ class PersistenceMySQLIT {
             FileUtils.copyDirectory(sourceFolder, integrationDirectory)
 
             var content = FileUtils.readFileToString(File("integration-test/assets/petblocks", "config.yml"), "UTF-8")
-            content = content.replace("type: 'sqlite'", "type: 'mysql'").replace("database: ''", "database: 'db'").replace("username: ''", "username: 'root'")
+            content = content.replace("type: 'sqlite'", "type: 'mysql'").replace("database: ''", "database: 'db'")
+                .replace("username: ''", "username: 'root'")
             FileUtils.write(File("integration-test/assets/petblocks", "config.yml"), content, "UTF-8")
 
             DriverManager.getConnection("jdbc:mysql://localhost:3306/?user=root&password=&useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC")
@@ -289,8 +297,13 @@ class PersistenceMySQLIT {
             method.invoke(PetBlocksApi, MockedPluginProxy())
 
             EntityServiceImpl(
-                MockedProxyService(), Mockito.mock(PetService::class.java), YamlSerializationServiceImpl(),
-                Version.VERSION_1_12_R1, aiService, LoggingUtilServiceImpl(Logger.getAnonymousLogger()), ItemTypeServiceImpl()
+                MockedProxyService(),
+                Mockito.mock(PetService::class.java),
+                YamlSerializationServiceImpl(),
+                Version.VERSION_1_12_R1,
+                aiService,
+                LoggingUtilServiceImpl(Logger.getAnonymousLogger()),
+                ItemTypeServiceImpl()
             )
 
             dbContext = SqlDbContextImpl(configurationService, LoggingUtilServiceImpl(Logger.getAnonymousLogger()))
@@ -302,7 +315,8 @@ class PersistenceMySQLIT {
                 sqlite,
                 MockedConcurrencyService(),
                 MockedEventService(),
-                aiService
+                aiService,
+                MockedLoggingService()
             )
         }
     }

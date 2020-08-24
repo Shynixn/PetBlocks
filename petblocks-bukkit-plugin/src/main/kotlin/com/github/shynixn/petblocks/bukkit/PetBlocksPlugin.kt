@@ -346,7 +346,7 @@ class PetBlocksPlugin : JavaPlugin(), PluginProxy {
         try {
             val entityName = entity.simpleName + "Entity"
             return Class.forName("com.github.shynixn.petblocks.core.logic.persistence.entity.$entityName")
-                .newInstance() as E
+                .getDeclaredConstructor().newInstance() as E
         } catch (e: Exception) {
             throw IllegalArgumentException("Entity could not be created.", e)
         }

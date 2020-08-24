@@ -18,6 +18,7 @@ import com.github.shynixn.petblocks.sponge.logic.business.service.ConfigurationS
 import com.github.shynixn.petblocks.sponge.logic.business.service.EntityServiceImpl
 import com.github.shynixn.petblocks.sponge.logic.business.service.ItemTypeServiceImpl
 import com.github.shynixn.petblocks.sponge.logic.business.service.YamlServiceImpl
+import helper.MockedLoggingService
 import org.apache.commons.io.FileUtils
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
@@ -285,7 +286,8 @@ class PersistenceSQLiteIT {
                 sqlite,
                 MockedConcurrencyService(),
                 MockedEventService(),
-                aiService
+                aiService,
+                MockedLoggingService()
             )
         }
     }

@@ -131,7 +131,8 @@ class PetListener @Inject constructor(
         val overwrite = configurationService.findValue<Boolean>("global-configuration.overwrite-previous-pet")
 
         if (overwrite) {
-            val newPetMeta = guiItemLoadService.generateDefaultPetMeta(event.player.uniqueId.toString(), event.player.name)
+            val newPetMeta =
+                guiItemLoadService.generateDefaultPetMeta(event.player.uniqueId.toString(), event.player.name)
             persistencePetMetaService.save(newPetMeta)
             persistencePetMetaService.refreshPetMetaFromRepository(event.player).thenAcceptSafely {
                 performFirstSpawn(event.player)
@@ -267,6 +268,10 @@ class PetListener @Inject constructor(
             return
         }
 
+        if (!persistencePetMetaService.hasPetMeta(event.targetHolder)) {
+            return
+        }
+
         if (!event.targetHolder.get(SneakingData::class.java).get().sneaking().get()) {
             return
         }
@@ -363,7 +368,8 @@ class PetListener @Inject constructor(
      * Performs the first spawn of the pet if enabled.
      */
     private fun performFirstSpawn(player: Player) {
-        val applyPetOnFirstSpawn = configurationService.findValue<Boolean>("global-configuration.apply-pet-on-first-spawn")
+        val applyPetOnFirstSpawn =
+            configurationService.findValue<Boolean>("global-configuration.apply-pet-on-first-spawn")
 
         if (applyPetOnFirstSpawn) {
             petService.getOrSpawnPetFromPlayer(player)
@@ -389,6 +395,9 @@ class PetListener @Inject constructor(
      */
     private fun loadPetBlocks(player: Player) {
         if (!player.isOnline) {
+            if (alreadyLoading.contains(player.uniqueId)) {
+                alreadyLoading.remove(player.uniqueId)
+            }
             return
         }
 

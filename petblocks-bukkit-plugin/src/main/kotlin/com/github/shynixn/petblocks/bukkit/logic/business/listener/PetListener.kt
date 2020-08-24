@@ -72,7 +72,8 @@ class PetListener @Inject constructor(
     private val configurationService: ConfigurationService,
     private val aiService: AIService,
     private val petActionService: PetActionService,
-    private val version: Version
+    private val version: Version,
+    private val loggingService: LoggingService
 ) : Listener {
     private val joinCooldown = 20 * 6L
     private val alreadyLoading = HashSet<UUID>()
@@ -92,6 +93,7 @@ class PetListener @Inject constructor(
                 return
             }
 
+            loggingService.info("Loading pet of player [${event.player.name}]...")
             alreadyLoading.add(uuid)
 
             sync(concurrencyService, joinCooldown) {
@@ -105,6 +107,8 @@ class PetListener @Inject constructor(
      */
     @EventHandler
     fun onPetBlocksLoginEvent(event: PetBlocksLoginEvent) {
+        loggingService.info("Loaded pet of player [${event.player.name}].")
+
         val overwrite = configurationService.findValue<Boolean>("global-configuration.overwrite-previous-pet")
 
         if (overwrite) {
@@ -158,8 +162,11 @@ class PetListener @Inject constructor(
             }
         }
 
-        persistencePetMetaService.getPetMetaFromPlayer(event.player).enabled = activePet
-        persistencePetMetaService.clearResources(event.player)
+        if (persistencePetMetaService.hasPetMeta(event.player)) {
+            persistencePetMetaService.getPetMetaFromPlayer(event.player).enabled = activePet
+            persistencePetMetaService.clearResources(event.player)
+        }
+
         debugService.unRegister(event.player)
         petService.clearPlayerResources(event.player)
     }
@@ -208,6 +215,10 @@ class PetListener @Inject constructor(
      */
     @EventHandler
     fun onEntityToggleSneakEvent(event: PlayerToggleSneakEvent) {
+        if (!persistencePetMetaService.hasPetMeta(event.player)) {
+            return
+        }
+
         unMountPet(event.player)
 
         val petMeta = persistencePetMetaService.getPetMetaFromPlayer(event.player)
@@ -225,6 +236,10 @@ class PetListener @Inject constructor(
     @EventHandler
     fun onEntityDismountEvent(event: EntityDismountEvent) {
         if (event.entity !is Player) {
+            return
+        }
+
+        if (!persistencePetMetaService.hasPetMeta(event.entity)) {
             return
         }
 
@@ -397,6 +412,9 @@ class PetListener @Inject constructor(
      */
     private fun loadPetBlocks(player: Player) {
         if (!player.isOnline || (player.world as World?) == null) {
+            if (alreadyLoading.contains(player.uniqueId)) {
+                alreadyLoading.remove(player.uniqueId)
+            }
             return
         }
 

@@ -61,6 +61,10 @@ class PetServiceImpl @Inject constructor(
             return Optional.of(pets[playerUUID]!!)
         }
 
+        if (!petMetaService.hasPetMeta(player)) {
+            return Optional.empty()
+        }
+
         val petMeta = petMetaService.getPetMetaFromPlayer(player)
         val cancelled = eventService.callEvent(PetPreSpawnEntity(player as Any, petMeta))
 
@@ -97,6 +101,10 @@ class PetServiceImpl @Inject constructor(
         val playerUUID = proxyService.getPlayerUUID(player)
 
         if (!pets.containsKey(playerUUID)) {
+            return false
+        }
+
+        if (!petMetaService.hasPetMeta(player)) {
             return false
         }
 

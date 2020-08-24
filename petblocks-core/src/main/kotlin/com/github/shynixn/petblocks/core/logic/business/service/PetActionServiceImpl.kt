@@ -65,6 +65,10 @@ class PetActionServiceImpl @Inject constructor(
      * Sets the pet of the given [player] to the given skin.
      */
     override fun <P> changePetSkin(player: P, skin: String) {
+        if (!persistencePetMetaService.hasPetMeta(player)) {
+            return
+        }
+
         if (skin.length > maxSkinLength) {
             proxyService.sendMessage(player, Messages.prefix + Messages.customHeadErrorMessage)
             return
@@ -128,6 +132,10 @@ class PetActionServiceImpl @Inject constructor(
      * Returns a pair of added and removed ais amount.
      */
     override fun <P> applyAI(player: P, addAis: List<AIBase>, removeAis: List<AIBase>): Pair<Int, Int> {
+        if (!persistencePetMetaService.hasPetMeta(player)) {
+            return Pair(0, 0)
+        }
+
         val petMeta = persistencePetMetaService.getPetMetaFromPlayer(player)
         var removeAmount = 0
         var addAmount = 0
@@ -153,6 +161,10 @@ class PetActionServiceImpl @Inject constructor(
      * Renames the pet of the given [player] to the given [name].
      */
     override fun <P> renamePet(player: P, name: String) {
+        if (!persistencePetMetaService.hasPetMeta(player)) {
+            return
+        }
+
         val maxPetNameLength = configurationService.findValue<Int>("global-configuration.max-petname-length")
 
         if (name.length > maxPetNameLength) {

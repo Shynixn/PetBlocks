@@ -95,6 +95,10 @@ class DependencyPlaceholderApiServiceImpl @Inject constructor(
             return null
         }
 
+        if (!persistencePetMetaService.hasPetMeta(player)) {
+            return null
+        }
+
         if (placeHolderName == null) {
             return null
         }
