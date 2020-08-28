@@ -2,6 +2,7 @@ package com.github.shynixn.petblocks.core.logic.business.commandexecutor
 
 import com.github.shynixn.petblocks.api.business.command.PlayerCommand
 import com.github.shynixn.petblocks.api.business.enumeration.Permission
+import com.github.shynixn.petblocks.api.business.localization.Messages
 import com.github.shynixn.petblocks.api.business.service.*
 import com.github.shynixn.petblocks.core.logic.business.extension.mergeArgs
 import com.google.inject.Inject
@@ -48,36 +49,82 @@ class PlayerPetActionCommandExecutorImpl @Inject constructor(
             return true
         }
 
-        if (args.size == 1 && args[0].equals("call", true) && proxyService.hasPermission(player, Permission.CALL)) {
+        if (args.size == 1 && args[0].equals("call", true)) {
+            if (!checkForPermission(player, Permission.CALL)) {
+                return true
+            }
+
             petActionService.callPet(player)
-        } else if (args.size == 1 && args[0].equals("toggle", true) && proxyService.hasPermission(
-                player,
-                Permission.TOGGLE
-            )
-        ) {
-            petActionService.togglePet(player)
-        } else if (args.size >= 2 && args[0].equals("rename", true) && proxyService.hasPermission(
-                player,
-                Permission.RENAME
-            )
-        ) {
-            petActionService.renamePet(player, mergeArgs(args))
-        } else if (args.size == 2 && args[0].equals("skin", true) && proxyService.hasPermission(
-                player,
-                Permission.CUSTOMHEAD
-            )
-        ) {
-            petActionService.changePetSkin(player, args[1])
-        } else if (args.size == 1 && proxyService.hasPermission(
-                player,
-                configurationService.findValue<String>("commands.petblock.permission") + "." + args[0]
-            )
-        ) {
-            guiService.open(player, args[0])
-        } else {
-            guiService.open(player)
+            return true
         }
 
+        if (args.size == 1 && args[0].equals("toggle", true)) {
+            if (!checkForPermission(player, Permission.TOGGLE)) {
+                return true
+            }
+
+            petActionService.togglePet(player)
+            return true
+        }
+
+        if (args.size >= 2 && args[0].equals("rename", true)) {
+            if (!checkForPermission(player, Permission.RENAME)) {
+                return true
+            }
+
+            petActionService.renamePet(player, mergeArgs(args))
+            return true
+        }
+
+        if (args.size == 2 && args[0].equals("skin", true)) {
+            if (!checkForPermission(player, Permission.CUSTOMHEAD)) {
+                return true
+            }
+
+            petActionService.changePetSkin(player, args[1])
+            return true
+        }
+
+        if (args.size == 1) {
+            if (!checkForPermission(player, Permission.GUI)) {
+                return true
+            }
+
+            val pathPermission = configurationService.findValue<String>("commands.petblock.permission") + "." + args[0]
+
+            if (!checkForPermission(player, pathPermission)) {
+                return true
+            }
+
+            guiService.open(player, args[0])
+            return true
+        }
+
+        if (!checkForPermission(player, Permission.GUI)) {
+            return true
+        }
+
+        guiService.open(player)
         return true
+    }
+
+    /**
+     * Permission check.
+     */
+    private fun <P> checkForPermission(player: P, permission: Permission): Boolean {
+        return checkForPermission(player, permission.permission)
+    }
+
+    /**
+     * Permission check.
+     */
+    private fun <P> checkForPermission(player: P, permission: String): Boolean {
+        val hasPermission = proxyService.hasPermission(player, permission)
+
+        if (!hasPermission) {
+            proxyService.sendMessage(player, Messages.prefix + Messages.noPermissionMessage)
+        }
+
+        return hasPermission
     }
 }
