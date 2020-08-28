@@ -234,7 +234,7 @@ task generateJavaDocPages(type: DokkaTask) {
     outputFormat = 'javadoc'
     outputDirectory = "docs/apidocs"
     configuration {
-        sourceRoot{
+        sourceRoot {
             path = "petblocks-api/src/main/kotlin"
         }
         sourceRoot {
@@ -280,15 +280,11 @@ task generateJavaDocPages(type: DokkaTask) {
             url = new URL("https://hub.spigotmc.org/javadocs/spigot/")
         }
         externalDocumentationLink {
-            url = new URL("https://hub.spigotmc.org/javadocs/spigot/package-list")
-        }
-   /*   Disabled because website shows a 500 error.
-        externalDocumentationLink {
-            url = new URL("https://jd.spongepowered.org/7.1.0/")
+            url = new URL("https://jd.spongepowered.org/7.2.0/")
         }
         externalDocumentationLink {
-            url = new URL("https://jd.spongepowered.org/7.1.0/package-list")
-        }*/
+            url = new URL("https://jd.spongepowered.org/7.2.0/package-list")
+        }
         classpath = [spigotApiFile, spongeApiFile]
     }
 }
