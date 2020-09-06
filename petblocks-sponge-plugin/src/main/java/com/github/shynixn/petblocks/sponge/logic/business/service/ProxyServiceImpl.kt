@@ -20,6 +20,7 @@ import org.spongepowered.api.data.manipulator.mutable.PotionEffectData
 import org.spongepowered.api.data.type.HandTypes
 import org.spongepowered.api.effect.potion.PotionEffectType
 import org.spongepowered.api.effect.potion.PotionEffectTypes
+import org.spongepowered.api.entity.Entity
 import org.spongepowered.api.entity.EntityTypes
 import org.spongepowered.api.entity.Transform
 import org.spongepowered.api.entity.living.player.Player
@@ -61,7 +62,10 @@ import java.util.*
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class ProxyServiceImpl @Inject constructor(private val pluginContainer: PluginContainer, private val loggingService: LoggingService) : ProxyService {
+class ProxyServiceImpl @Inject constructor(
+    private val pluginContainer: PluginContainer,
+    private val loggingService: LoggingService
+) : ProxyService {
     /**
      * Gets a list of points between 2 locations.
      */
@@ -98,7 +102,12 @@ class ProxyServiceImpl @Inject constructor(private val pluginContainer: PluginCo
         require(player is Player)
 
         var foundPotionTypeField =
-            PotionEffectTypes::class.java.declaredFields.firstOrNull { t -> t.name.equals(potionEffect.potionType, true) }
+            PotionEffectTypes::class.java.declaredFields.firstOrNull { t ->
+                t.name.equals(
+                    potionEffect.potionType,
+                    true
+                )
+            }
 
         if (foundPotionTypeField == null && potionEffect.potionType.equals("INCREASE_DAMAGE", true)) {
             foundPotionTypeField = PotionEffectTypes::class.java.declaredFields.single { f -> f.name == "STRENGTH" }
@@ -111,8 +120,10 @@ class ProxyServiceImpl @Inject constructor(private val pluginContainer: PluginCo
 
         val foundPotionEffect = foundPotionTypeField.get(null) as PotionEffectType
 
-        val potionEffectSponge = org.spongepowered.api.effect.potion.PotionEffect.builder().potionType(foundPotionEffect).duration(potionEffect.duration * 20)
-            .amplifier(potionEffect.amplifier).ambience(potionEffect.ambient).particles(potionEffect.particles)
+        val potionEffectSponge =
+            org.spongepowered.api.effect.potion.PotionEffect.builder().potionType(foundPotionEffect)
+                .duration(potionEffect.duration * 20)
+                .amplifier(potionEffect.amplifier).ambience(potionEffect.ambient).particles(potionEffect.particles)
 
         val dataClazz = player.getOrCreate(PotionEffectData::class.java).get()
 
@@ -256,6 +267,14 @@ class ProxyServiceImpl @Inject constructor(private val pluginContainer: PluginCo
         }
 
         throw IllegalArgumentException("Player is no longer online!")
+    }
+
+    /**
+     * Gets the entity id.
+     */
+    override fun <E> getEntityId(entity: E): Int {
+        require(entity is net.minecraft.entity.Entity)
+        return entity.entityId
     }
 
     /**

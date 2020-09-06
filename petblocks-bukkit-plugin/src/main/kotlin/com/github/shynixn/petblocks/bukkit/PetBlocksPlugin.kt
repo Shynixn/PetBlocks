@@ -202,8 +202,9 @@ class PetBlocksPlugin : JavaPlugin(), PluginProxy {
         }
 
         entityService.cleanUpInvalidEntitiesInAllWorlds()
-
         startPlugin()
+
+        Bukkit.getPluginManager().registerEvents(resolve(ProtocolListener::class.java), this)
         sendConsoleMessage(ChatColor.GREEN.toString() + "Enabled PetBlocks " + this.description.version + " by Shynixn")
     }
 
@@ -215,6 +216,7 @@ class PetBlocksPlugin : JavaPlugin(), PluginProxy {
             return
         }
 
+        resolve<ProtocolService>(ProtocolService::class.java).close()
         resolve<EntityRegistrationService>(EntityRegistrationService::class.java).clearResources()
         resolve<PersistencePetMetaService>(PersistencePetMetaService::class.java).close()
 
@@ -258,6 +260,8 @@ class PetBlocksPlugin : JavaPlugin(), PluginProxy {
                             "PetBlocksRunTime"
                         )
                     )
+                    val protocolService = resolve<ProtocolService>(ProtocolService::class.java)
+                    protocolService.registerPlayer(player)
                 }
             }
 

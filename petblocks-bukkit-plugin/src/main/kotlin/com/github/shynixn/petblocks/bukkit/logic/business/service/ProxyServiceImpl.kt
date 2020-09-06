@@ -14,6 +14,7 @@ import com.google.inject.Inject
 import org.bukkit.Bukkit
 import org.bukkit.Location
 import org.bukkit.command.CommandSender
+import org.bukkit.entity.Entity
 import org.bukkit.entity.Player
 import org.bukkit.inventory.Inventory
 import org.bukkit.inventory.ItemStack
@@ -215,6 +216,14 @@ class ProxyServiceImpl @Inject constructor(private val version: Version, private
         }
 
         throw IllegalArgumentException("Player is no longer online!")
+    }
+
+    /**
+     * Gets the entity id.
+     */
+    override fun <E> getEntityId(entity: E): Int {
+        require(entity is Entity)
+        return entity.entityId
     }
 
     /**

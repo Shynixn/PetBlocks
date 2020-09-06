@@ -43,6 +43,11 @@ interface ProxyService {
     fun <P> getPlayerFromUUID(uuid: String): P
 
     /**
+     * Gets the entity id.
+     */
+    fun <E> getEntityId(entity: E): Int
+
+    /**
      * Applies the given [potionEffect] to the given [player].
      */
     fun <P> applyPotionEffect(player: P, potionEffect: PotionEffect)

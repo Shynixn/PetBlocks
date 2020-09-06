@@ -10,6 +10,7 @@ import com.github.shynixn.petblocks.api.persistence.entity.ChatMessage
 import com.github.shynixn.petblocks.api.persistence.entity.Position
 import com.github.shynixn.petblocks.api.persistence.entity.PropertyTrackable
 import com.github.shynixn.petblocks.core.logic.persistence.entity.ChatMessageEntity
+import java.lang.reflect.Field
 import java.util.concurrent.CompletableFuture
 import kotlin.reflect.KProperty
 
@@ -154,6 +155,14 @@ inline fun async(
     concurrencyService.runTaskAsync(delayTicks, repeatingTicks) {
         f.invoke()
     }
+}
+
+/**
+ * Change the accessible field.
+ */
+fun Field.accessible(flag: Boolean) : Field {
+    this.isAccessible = flag
+    return this
 }
 
 /**
