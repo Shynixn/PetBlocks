@@ -14,6 +14,7 @@ import com.github.shynixn.petblocks.core.logic.business.commandexecutor.EditPetC
 import com.github.shynixn.petblocks.core.logic.business.commandexecutor.PlayerPetActionCommandExecutorImpl
 import com.github.shynixn.petblocks.core.logic.business.commandexecutor.ReloadCommandExecutorImpl
 import com.github.shynixn.petblocks.core.logic.business.service.LoggingSlf4jServiceImpl
+import com.github.shynixn.petblocks.core.logic.persistence.entity.PacketPlayInPosition
 import com.github.shynixn.petblocks.sponge.logic.business.dependency.Metrics2
 import com.github.shynixn.petblocks.sponge.logic.business.extension.sendMessage
 import com.github.shynixn.petblocks.sponge.logic.business.extension.toText
@@ -70,7 +71,7 @@ import java.util.*
     name = "PetBlocks",
     description = "PetBlocks is a spigot and also a sponge plugin to use blocks and custom heads as pets in Minecraft."
 )
-class PetBlocksPlugin @Inject constructor(private val metricsFactory : Metrics2.Factory) : PluginProxy {
+class PetBlocksPlugin @Inject constructor(private val metricsFactory: Metrics2.Factory) : PluginProxy {
     companion object {
         /** Final Prefix of PetBlocks in the console */
         val PREFIX_CONSOLE: String = ChatColor.AQUA.toString() + "[PetBlocks] "
@@ -169,7 +170,6 @@ class PetBlocksPlugin @Inject constructor(private val metricsFactory : Metrics2.
         )
 
         entityService.cleanUpInvalidEntitiesInAllWorlds()
-
         val metrics = metricsFactory.make(bstatsPluginId);
 
         metrics.addCustomChart(Metrics2.SimplePie("storage") {
@@ -181,6 +181,7 @@ class PetBlocksPlugin @Inject constructor(private val metricsFactory : Metrics2.
         })
 
         startPlugin()
+        Sponge.getEventManager().registerListeners(plugin, resolve(ProtocolListener::class.java))
         sendConsoleMessage(ChatColor.GREEN.toString() + "Enabled PetBlocks " + plugin.version.get() + " by Shynixn")
     }
 
@@ -214,6 +215,7 @@ class PetBlocksPlugin @Inject constructor(private val metricsFactory : Metrics2.
                 resolve<DependencyHeadDatabaseService>(DependencyHeadDatabaseService::class.java).clearResources(player)
                 resolve<GUIService>(GUIService::class.java).cleanResources(player)
                 resolve<CarryPetService>(CarryPetService::class.java).clearResources(player)
+                resolve<ProtocolService>(ProtocolService::class.java).unRegisterPlayer(player)
 
                 val petService = resolve<PetService>(PetService::class.java)
 
@@ -242,7 +244,9 @@ class PetBlocksPlugin @Inject constructor(private val metricsFactory : Metrics2.
 
             for (world in Sponge.getGame().server.worlds) {
                 for (player in world.players) {
-                    resolve<PetListener>(PetListener::class.java).onPlayerJoinEvent(object : ClientConnectionEvent.Join {
+                    resolve<ProtocolService>(ProtocolService::class.java).registerPlayer(player)
+                    resolve<PetListener>(PetListener::class.java).onPlayerJoinEvent(object :
+                        ClientConnectionEvent.Join {
                         override fun getOriginalChannel(): MessageChannel? {
                             return null
                         }
@@ -356,17 +360,37 @@ class PetBlocksPlugin @Inject constructor(private val metricsFactory : Metrics2.
         val version = getServerVersion()
         val entityRegistrationService = EntityRegistrationServiceImpl(LoggingSlf4jServiceImpl(plugin.logger))
 
-        val rabbitClazz = Class.forName("com.github.shynixn.petblocks.sponge.logic.business.nms.VERSION.NMSPetRabbit".replace("VERSION", version.bukkitId))
+        val rabbitClazz = Class.forName(
+            "com.github.shynixn.petblocks.sponge.logic.business.nms.VERSION.NMSPetRabbit".replace(
+                "VERSION",
+                version.bukkitId
+            )
+        )
         entityRegistrationService.register(rabbitClazz, EntityType.RABBIT)
 
-        val villagerClazz = Class.forName("com.github.shynixn.petblocks.sponge.logic.business.nms.VERSION.NMSPetVillager".replace("VERSION", version.bukkitId))
+        val villagerClazz = Class.forName(
+            "com.github.shynixn.petblocks.sponge.logic.business.nms.VERSION.NMSPetVillager".replace(
+                "VERSION",
+                version.bukkitId
+            )
+        )
         entityRegistrationService.register(villagerClazz, EntityType.RABBIT)
 
-        val batClazz = Class.forName("com.github.shynixn.petblocks.sponge.logic.business.nms.VERSION.NMSPetBat".replace("VERSION", version.bukkitId))
+        val batClazz = Class.forName(
+            "com.github.shynixn.petblocks.sponge.logic.business.nms.VERSION.NMSPetBat".replace(
+                "VERSION",
+                version.bukkitId
+            )
+        )
         entityRegistrationService.register(batClazz, EntityType.RABBIT)
 
         val armorStandClazz =
-            Class.forName("com.github.shynixn.petblocks.sponge.logic.business.nms.VERSION.NMSPetArmorstand".replace("VERSION", version.bukkitId))
+            Class.forName(
+                "com.github.shynixn.petblocks.sponge.logic.business.nms.VERSION.NMSPetArmorstand".replace(
+                    "VERSION",
+                    version.bukkitId
+                )
+            )
         entityRegistrationService.register(armorStandClazz, EntityType.ARMORSTAND)
     }
 

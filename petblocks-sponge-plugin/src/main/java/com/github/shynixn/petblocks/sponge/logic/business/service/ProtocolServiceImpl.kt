@@ -1,12 +1,11 @@
 @file:Suppress("UNCHECKED_CAST")
 
-package com.github.shynixn.petblocks.bukkit.logic.business.service
+package com.github.shynixn.petblocks.sponge.logic.business.service
 
 import com.github.shynixn.petblocks.api.business.service.ConcurrencyService
 import com.github.shynixn.petblocks.api.business.service.LoggingService
 import com.github.shynixn.petblocks.api.business.service.ProtocolService
 import com.github.shynixn.petblocks.api.business.service.ProxyService
-import com.github.shynixn.petblocks.bukkit.logic.business.extension.findClazz
 import com.github.shynixn.petblocks.core.logic.business.extension.accessible
 import com.github.shynixn.petblocks.core.logic.persistence.entity.PacketPlayInPosition
 import com.github.shynixn.petblocks.core.logic.persistence.entity.PacketPlayInSteerVehicle
@@ -15,7 +14,13 @@ import com.google.inject.Inject
 import io.netty.channel.Channel
 import io.netty.channel.ChannelDuplexHandler
 import io.netty.channel.ChannelHandlerContext
-import org.bukkit.entity.Player
+import net.minecraft.entity.player.EntityPlayerMP
+import net.minecraft.network.NetworkManager
+import net.minecraft.network.Packet
+import net.minecraft.network.play.client.CPacketInput
+import net.minecraft.network.play.client.CPacketPlayer
+import net.minecraft.network.play.server.SPacketSetPassengers
+import org.spongepowered.api.entity.living.player.Player
 import java.util.*
 import java.util.function.Function
 import kotlin.collections.HashMap
@@ -35,23 +40,16 @@ class ProtocolServiceImpl @Inject constructor(
     private val listeners = HashMap<Class<*>, MutableSet<(Any) -> Unit>>()
     private val nmsPacketToInternalPacket = HashMap<Class<*>, Function<Pair<Any, Player>, Any?>>()
     private val internalPacketToNMSPacket = HashMap<Class<*>, Function<Any, Any?>>()
-    private val playerToNmsPlayer = findClazz("org.bukkit.craftbukkit.VERSION.entity.CraftPlayer")
-        .getDeclaredMethod("getHandle")
-    private val playerConnectionField = findClazz("net.minecraft.server.VERSION.EntityPlayer")
-        .getDeclaredField("playerConnection")
-    private val sendPacketMethod = findClazz("net.minecraft.server.VERSION.PlayerConnection")
-        .getDeclaredMethod("sendPacket", findClazz("net.minecraft.server.VERSION.Packet"))
 
     /**
      * Init.
      */
     init {
         val packetPlayInPosition = object : Function<Pair<Any, Player>, Any?> {
-            private val upperClazz = findClazz("net.minecraft.server.VERSION.PacketPlayInFlying")
-            private val x = upperClazz.getDeclaredField("x").accessible(true)
-            private val y = upperClazz.getDeclaredField("y").accessible(true)
-            private val z = upperClazz.getDeclaredField("z").accessible(true)
-            val clazz = findClazz("net.minecraft.server.VERSION.PacketPlayInFlying\$PacketPlayInPosition")
+            val clazz = CPacketPlayer::class.java
+            private val x = clazz.getDeclaredField("field_149479_a").accessible(true)
+            private val y = clazz.getDeclaredField("field_149477_b").accessible(true)
+            private val z = clazz.getDeclaredField("field_149478_c").accessible(true)
             override fun apply(t: Pair<Any, Player>): Any? {
                 val packet = t.first
                 val source = t.second
@@ -66,11 +64,11 @@ class ProtocolServiceImpl @Inject constructor(
         nmsPacketToInternalPacket[packetPlayInPosition.clazz] = packetPlayInPosition
 
         val packetPlayInSteerVehicle = object : Function<Pair<Any, Player>, Any?> {
-            val clazz = findClazz("net.minecraft.server.VERSION.PacketPlayInSteerVehicle")
-            private val sideWays = clazz.getDeclaredField("a").accessible(true)
-            private val forward = clazz.getDeclaredField("b").accessible(true)
-            private val jump = clazz.getDeclaredField("c").accessible(true)
-            private val unMount = clazz.getDeclaredField("d").accessible(true)
+            val clazz = CPacketInput::class.java
+            private val sideWays = clazz.getDeclaredField("field_149624_a").accessible(true)
+            private val forward = clazz.getDeclaredField("field_192621_b").accessible(true)
+            private val jump = clazz.getDeclaredField("field_149623_c").accessible(true)
+            private val unMount = clazz.getDeclaredField("field_149621_d").accessible(true)
 
             override fun apply(t: Pair<Any, Player>): Any? {
                 val packet = t.first
@@ -87,9 +85,9 @@ class ProtocolServiceImpl @Inject constructor(
         nmsPacketToInternalPacket[packetPlayInSteerVehicle.clazz] = packetPlayInSteerVehicle
 
         internalPacketToNMSPacket[PacketPlayOutMount::class.java] = object : Function<Any, Any?> {
-            val clazz = findClazz("net.minecraft.server.VERSION.PacketPlayOutMount")
-            private val entityId = clazz.getDeclaredField("a").accessible(true)
-            private val passengerIds = clazz.getDeclaredField("b").accessible(true)
+            val clazz = SPacketSetPassengers::class.java
+            private val entityId = clazz.getDeclaredField("field_186973_a").accessible(true)
+            private val passengerIds = clazz.getDeclaredField("field_186974_b").accessible(true)
 
             override fun apply(t: Any): Any? {
                 require(t is PacketPlayOutMount)
@@ -115,16 +113,11 @@ class ProtocolServiceImpl @Inject constructor(
             return
         }
 
-        val nmsPlayer = playerToNmsPlayer
-            .invoke(player)
-        val connection = playerConnectionField
-            .get(nmsPlayer)
-        val netWorkManager = findClazz("net.minecraft.server.VERSION.PlayerConnection")
-            .getDeclaredField("networkManager")
-            .get(connection)
-        val channel = findClazz("net.minecraft.server.VERSION.NetworkManager")
-            .getDeclaredField("channel")
-            .get(netWorkManager) as Channel
+        require(player is EntityPlayerMP)
+        val channel = NetworkManager::class.java
+            .getDeclaredField("field_150746_k")
+            .accessible(true)
+            .get(player.connection.netManager) as Channel
 
         val internalInterceptor = PacketInterceptor(player, this, loggingService)
         channel.pipeline().addBefore("packet_handler", handlerName, internalInterceptor)
@@ -165,12 +158,8 @@ class ProtocolServiceImpl @Inject constructor(
         }
 
         val nmsPacket = internalPacketToNMSPacket[packet.javaClass]!!.apply(packet)
-
-        val nmsPlayer = playerToNmsPlayer
-            .invoke(player)
-        val connection = playerConnectionField
-            .get(nmsPlayer)
-        sendPacketMethod.invoke(connection, nmsPacket)
+        require(player is EntityPlayerMP)
+        player.connection.sendPacket(nmsPacket as Packet<*>)
     }
 
     /**
