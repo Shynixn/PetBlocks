@@ -75,7 +75,11 @@ fun Position.toLocation(): Location {
  * Converts the [Vector] to a position
  */
 fun Vector.toPosition(): Position {
-    return PositionEntity(this.x, this.y, this.z)
+    val position = PositionEntity()
+    position.x = this.x
+    position.y = this.y
+    position.z = this.z
+    return position
 }
 
 /**

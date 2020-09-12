@@ -41,6 +41,10 @@ gui.item.speedOneDisabled=&c&lVelocidad I deshabilitada
 gui.item.speedOneEnabled=&a&lVelocidad I habilitada
 gui.item.strengthOneDisabled=&c&lFuerza I deshabilitado
 gui.item.strengthOneEnabled=&a&lFuerza I habilitado
+gui.item.cannon=&b&lCannon Pet
+gui.item.particleRemove=&c&lRemove Particles
+gui.item.particleLargeSmoke=&e&lLarge Smoke Particles
+gui.item.particle=&b&lPet Particles
 
 gui.lore.back=&7Cierra el menú actual
 gui.lore.simpleBlocks=&7Usar bloques de Minecraft como traje.
@@ -72,6 +76,10 @@ gui.lore.soundDisable=&7Haz clic para deshabilitar los sonidos de tu mascota.
 gui.lore.soundEnable=&7Haz clic para habilitar los sonidos de tu mascota.
 gui.lore.submitSkins=&7Sugiere skins para usar en mascotas.
 gui.lore.teleportPet=&7Teletransporta a tu mascota hacia ti.
+gui.lore.cannon=&7Click to shoot your pet like a cannon.
+gui.lore.particleRemove=&7Click to remove the particles from your pet.
+gui.lore.particleLargeSmoke=&7Click to enable the smoke particles of your pet.
+gui.lore.particle=&7Open the particles of your pet.
 
 messages.callPetSuccess=&aHas llamado a tu mascota con éxito.
 messages.callPetError=&cNo puedes llamar a tu mascota ahora mismo.

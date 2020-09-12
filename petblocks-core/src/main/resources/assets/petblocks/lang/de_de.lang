@@ -41,6 +41,10 @@ gui.item.speedOneDisabled=&c&lGeschwindigkeit 1 deaktiviert
 gui.item.speedOneEnabled=&a&lGeschwindigkeit 1 aktiviert
 gui.item.strengthOneDisabled=&c&lStärke 1 deaktiviert
 gui.item.strengthOneEnabled=&a&lStärke 1 aktiviert
+gui.item.cannon=&b&lCannon Pet
+gui.item.particleRemove=&c&lRemove Particles
+gui.item.particleLargeSmoke=&e&lLarge Smoke Particles
+gui.item.particle=&b&lPet Particles
 
 gui.lore.back=&7Schließt das offene Fenster.
 gui.lore.simpleBlocks=&7Verwende Minecraftblöcke als Skins.
@@ -72,6 +76,10 @@ gui.lore.soundDisable=&7Klicke, um die Geräusche deines Haustieres zu deaktivie
 gui.lore.soundEnable=&7Klicke, um die Effekte deines Haustieres zu aktivieren.
 gui.lore.submitSkins=&7Lade Skins für Haustiere hoch oder &7mach Vorschläge für neue Haustiere.
 gui.lore.teleportPet=&7Teleportiert dein Haustier zu dir.
+gui.lore.cannon=&7Click to shoot your pet like a cannon.
+gui.lore.particleRemove=&7Click to remove the particles from your pet.
+gui.lore.particleLargeSmoke=&7Click to enable the smoke particles of your pet.
+gui.lore.particle=&7Open the particles of your pet.
 
 messages.callPetSuccess=&aDu hast dein Haustier gerufen.
 messages.callPetError=&cDein Haustier kann gerade nicht gerufen werden.

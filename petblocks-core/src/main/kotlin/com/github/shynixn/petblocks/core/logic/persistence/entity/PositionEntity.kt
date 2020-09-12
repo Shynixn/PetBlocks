@@ -1,5 +1,6 @@
 package com.github.shynixn.petblocks.core.logic.persistence.entity
 
+import com.github.shynixn.petblocks.api.business.annotation.YamlSerialize
 import com.github.shynixn.petblocks.api.persistence.entity.Position
 import kotlin.math.sqrt
 
@@ -30,21 +31,31 @@ import kotlin.math.sqrt
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class PositionEntity(
+class PositionEntity : Position {
     /** [x] coordinate. */
-    override var x: Double = 0.0,
+    @YamlSerialize(orderNumber = 1, value = "x")
+    override var x: Double = 0.0
+
     /** [y] coordinate. */
-    override var y: Double = 0.0,
+    @YamlSerialize(orderNumber = 2, value = "y")
+    override var y: Double = 0.0
+
     /** [z] coordinate. */
-    override var z: Double = 0.0,
+    @YamlSerialize(orderNumber = 3, value = "z")
+    override var z: Double = 0.0
+
     /** [yaw] rotation yaw. */
-    override var yaw: Double = 0.0,
+    @YamlSerialize(orderNumber = 4, value = "yaw")
+    override var yaw: Double = 0.0
+
     /** [pitch] rotation pitch. */
-    override var pitch: Double = 0.0,
+    @YamlSerialize(orderNumber = 5, value = "pitch")
+    override var pitch: Double = 0.0
 
     /** [worldName] which world the location is. */
+    @YamlSerialize(orderNumber = 6, value = "world")
     override var worldName: String? = null
-) : Position {
+
     /** [blockX] coordinate as Int. */
     override val blockX: Int
         get() = x.toInt()

@@ -78,6 +78,11 @@ interface ProxyService {
     fun <L> toPosition(location: L): Position
 
     /**
+     * Converts the given [position] to a Location..
+     */
+    fun <L> toLocation(position: Position): L
+
+    /**
      * Gets the looking direction of the player.
      */
     fun <P> getDirectionVector(player: P): Position

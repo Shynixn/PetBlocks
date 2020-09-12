@@ -52,7 +52,8 @@ import kotlin.math.sin
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class ProxyServiceImpl @Inject constructor(private val version: Version, private val loggingService: LoggingService) : ProxyService {
+class ProxyServiceImpl @Inject constructor(private val version: Version, private val loggingService: LoggingService) :
+    ProxyService {
     /**
      * Gets a list of points between 2 locations.
      */
@@ -69,7 +70,8 @@ class ProxyServiceImpl @Inject constructor(private val version: Version, private
         val onePointLength = vectorBetween.length() / amount
 
         for (i in 0 until amount) {
-            val location = location2.clone().add(0.0, 0.7, 0.0).add(vectorBetween.toVector().normalize().multiply(i).multiply(onePointLength))
+            val location = location2.clone().add(0.0, 0.7, 0.0)
+                .add(vectorBetween.toVector().normalize().multiply(i).multiply(onePointLength))
             locations.add(location)
         }
 
@@ -84,7 +86,8 @@ class ProxyServiceImpl @Inject constructor(private val version: Version, private
 
         // PotionEffectType.values() can return null values in some minecraft versions.
         val foundPotionType =
-            PotionEffectType.values().cast<Array<PotionEffectType?>>().firstOrNull { t -> t != null && t.name.equals(potionEffect.potionType, true) }
+            PotionEffectType.values().cast<Array<PotionEffectType?>>()
+                .firstOrNull { t -> t != null && t.name.equals(potionEffect.potionType, true) }
 
         if (foundPotionType == null) {
             loggingService.warn("PotionEffectType: ${potionEffect.potionType} does not exist!")
@@ -92,7 +95,11 @@ class ProxyServiceImpl @Inject constructor(private val version: Version, private
         }
 
         val potionEffectBukkit = org.bukkit.potion.PotionEffect(
-            foundPotionType, potionEffect.duration * 20, potionEffect.amplifier, potionEffect.ambient, potionEffect.particles
+            foundPotionType,
+            potionEffect.duration * 20,
+            potionEffect.amplifier,
+            potionEffect.ambient,
+            potionEffect.particles
         )
 
         if (player.hasPotionEffect(foundPotionType)) {
@@ -240,6 +247,20 @@ class ProxyServiceImpl @Inject constructor(private val version: Version, private
     override fun <L> toPosition(location: L): Position {
         require(location is Location)
         return location.toPosition()
+    }
+
+    /**
+     * Converts the given [position] to a Location..
+     */
+    override fun <L> toLocation(position: Position): L {
+        return Location(
+            Bukkit.getWorld(position.worldName!!),
+            position.x,
+            position.y,
+            position.z,
+            position.yaw.toFloat(),
+            position.pitch.toFloat()
+        ) as L
     }
 
     /**

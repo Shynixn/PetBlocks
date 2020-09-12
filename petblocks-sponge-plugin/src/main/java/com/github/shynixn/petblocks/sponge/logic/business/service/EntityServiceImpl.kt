@@ -14,6 +14,7 @@ import com.github.shynixn.petblocks.api.persistence.entity.*
 import com.github.shynixn.petblocks.core.logic.business.extension.cast
 import com.github.shynixn.petblocks.core.logic.business.extension.stripChatColors
 import com.github.shynixn.petblocks.core.logic.business.pathfinder.PathfinderBuffEffect
+import com.github.shynixn.petblocks.core.logic.business.pathfinder.PathfinderParticle
 import com.github.shynixn.petblocks.core.logic.business.proxy.AICreationProxyImpl
 import com.github.shynixn.petblocks.sponge.logic.business.extension.sendMessage
 import com.github.shynixn.petblocks.sponge.logic.business.extension.toVector3i
@@ -118,6 +119,9 @@ class EntityServiceImpl @Inject constructor(
         this.register<AIWearing>(AIType.WEARING)
         this.register<AIInventory>(AIType.INVENTORY)
         this.register<AIEntityNbt>(AIType.ENTITY_NBT)
+        this.register<AIParticle>(AIType.PARTICLE) { pet, aiBase ->
+            PathfinderParticle(aiBase, pet)
+        }
     }
 
     /**
@@ -144,7 +148,8 @@ class EntityServiceImpl @Inject constructor(
 
             // Pets of PetBlocks hide a marker in the boots of every entity. This marker is persistent even on server crashes.
             if (entity is EntityLiving && entity.getItemStackFromSlot(EntityEquipmentSlot.FEET) != ItemStack.EMPTY) {
-                val boots = entity.getItemStackFromSlot(EntityEquipmentSlot.FEET).cast<org.spongepowered.api.item.inventory.ItemStack>()
+                val boots = entity.getItemStackFromSlot(EntityEquipmentSlot.FEET)
+                    .cast<org.spongepowered.api.item.inventory.ItemStack>()
                 val bootsItem = itemTypeService.toItem(boots)
 
                 if (bootsItem.lore != null) {
@@ -168,7 +173,12 @@ class EntityServiceImpl @Inject constructor(
      * Spawns a new unManaged petProxy.
      */
     override fun <L> spawnPetProxy(location: L, petMeta: PetMeta): PetProxy {
-        val designClazz = Class.forName("com.github.shynixn.petblocks.sponge.logic.business.nms.VERSION.NMSPetArmorstand".replace("VERSION", version.bukkitId))
+        val designClazz = Class.forName(
+            "com.github.shynixn.petblocks.sponge.logic.business.nms.VERSION.NMSPetArmorstand".replace(
+                "VERSION",
+                version.bukkitId
+            )
+        )
         val player = proxyService.getPlayerFromUUID<Any>(petMeta.playerMeta.uuid)
 
         return (designClazz.getDeclaredConstructor(Player::class.java, PetMeta::class.java)
@@ -208,7 +218,15 @@ class EntityServiceImpl @Inject constructor(
      * Registers a default ai type.
      */
     private fun <A : AIBase> register(aiType: AIType, function: ((PetProxy, A) -> Any)? = null) {
-        val clazz = Class.forName("com.github.shynixn.petblocks.core.logic.persistence.entity.CUSTOMEntity".replace("CUSTOM", aiType.aiClazz.java.simpleName))
-        aiService.registerAI(aiType.type, AICreationProxyImpl(yamlSerializationService, clazz.kotlin, function as ((PetProxy, AIBase) -> Any)?))
+        val clazz = Class.forName(
+            "com.github.shynixn.petblocks.core.logic.persistence.entity.CUSTOMEntity".replace(
+                "CUSTOM",
+                aiType.aiClazz.java.simpleName
+            )
+        )
+        aiService.registerAI(
+            aiType.type,
+            AICreationProxyImpl(yamlSerializationService, clazz.kotlin, function as ((PetProxy, AIBase) -> Any)?)
+        )
     }
 }

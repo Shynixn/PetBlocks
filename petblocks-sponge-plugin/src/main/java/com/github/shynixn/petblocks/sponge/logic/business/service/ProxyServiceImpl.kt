@@ -10,6 +10,7 @@ import com.github.shynixn.petblocks.api.persistence.entity.PotionEffect
 import com.github.shynixn.petblocks.core.logic.persistence.entity.PositionEntity
 import com.github.shynixn.petblocks.sponge.logic.business.extension.toPosition
 import com.github.shynixn.petblocks.sponge.logic.business.extension.toText
+import com.github.shynixn.petblocks.sponge.logic.business.extension.toTransform
 import com.github.shynixn.petblocks.sponge.logic.business.extension.updateInventory
 import com.google.inject.Inject
 import net.minecraft.entity.player.EntityPlayerMP
@@ -297,6 +298,13 @@ class ProxyServiceImpl @Inject constructor(
         }
 
         return (location as Transform<World>).toPosition()
+    }
+
+    /**
+     * Converts the given [position] to a Location..
+     */
+    override fun <L> toLocation(position: Position): L {
+        return position.toTransform() as L
     }
 
     /**

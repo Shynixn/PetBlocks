@@ -80,15 +80,14 @@ class NMSPetArmorstand(owner: Player, val petMeta: PetMeta) :
 
         val location = owner.location
         val mcWorld = (location.world as CraftWorld).handle
-        val position =
-            PositionEntity(
-                location.x,
-                location.y,
-                location.z,
-                location.yaw.toDouble(),
-                location.pitch.toDouble(),
-                location.world.name
-            ).relativeFront(3.0)
+        val position = PositionEntity()
+        position.x =  location.x
+        position.y = location.y
+        position.z = location.z
+        position.yaw = location.yaw.toDouble()
+        position.pitch = location.pitch.toDouble()
+        position.worldName = location.world.name
+        position.relativeFront(3.0)
 
         this.setPositionRotation(position.x, position.y, position.z, location.yaw, location.pitch)
         mcWorld.addEntity(this, CreatureSpawnEvent.SpawnReason.CUSTOM)

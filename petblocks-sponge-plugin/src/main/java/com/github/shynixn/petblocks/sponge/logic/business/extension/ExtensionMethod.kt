@@ -116,7 +116,14 @@ fun Transform<World>.distance(other: Transform<World>): Double {
  * Converts the [Transform] to a Position.
  */
 fun Transform<World>.toPosition(): Position {
-    return PositionEntity(this.x, this.y, this.z, this.yaw, this.pitch, this.extent.name)
+    val positionEntity = PositionEntity()
+    positionEntity.x = this.x
+    positionEntity.y = this.y
+    positionEntity.z = this.z
+    positionEntity.yaw = this.yaw
+    positionEntity.pitch = this.pitch
+    positionEntity.worldName = this.extent.name
+    return positionEntity
 }
 
 /**
@@ -141,7 +148,11 @@ fun Position.toTransform(): Transform<World> {
  * Converts the [Vector3d] to a Position.
  */
 fun Vector3d.toPosition(): Position {
-    return PositionEntity(this.x, this.y, this.z)
+    val positionEntity = PositionEntity()
+    positionEntity.x = this.x
+    positionEntity.y = this.y
+    positionEntity.z = this.z
+    return positionEntity
 }
 
 /**

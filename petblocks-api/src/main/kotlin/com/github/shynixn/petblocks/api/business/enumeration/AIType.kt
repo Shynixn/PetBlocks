@@ -123,6 +123,11 @@ enum class AIType(
     INVENTORY("inventory", AIInventory::class),
 
     /**
+     * Particle.
+     */
+    PARTICLE("particle", AIParticle::class),
+
+    /**
      * Walking.
      */
     WALKING("walking", AIWalking::class),

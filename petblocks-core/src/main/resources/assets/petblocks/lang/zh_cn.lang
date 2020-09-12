@@ -41,6 +41,10 @@ gui.item.speedOneDisabled=&c&l速度1已禁用
 gui.item.speedOneEnabled=&a&l速度1已启用
 gui.item.strengthOneDisabled=&c&l力量1已禁用
 gui.item.strengthOneEnabled=&a&l力量1已启用
+gui.item.cannon=&b&lCannon Pet
+gui.item.particleRemove=&c&lRemove Particles
+gui.item.particleLargeSmoke=&e&lLarge Smoke Particles
+gui.item.particle=&b&lPet Particles
 
 gui.lore.back=&7回到上一个窗口.
 gui.lore.simpleBlocks=&7使用Minecraft自带的基础方块作为宠物的皮肤.
@@ -72,6 +76,10 @@ gui.lore.soundDisable=&7点击此处禁用宠物音效.
 gui.lore.soundEnable=&7点击此处启用宠物音效.
 gui.lore.submitSkins=&7为Petblocks提交更多宠物的皮肤或&7提交关于Petblocks插件的漏洞和建议.
 gui.lore.teleportPet=&7将宠物传送到您的身边.
+gui.lore.cannon=&7Click to shoot your pet like a cannon.
+gui.lore.particleRemove=&7Click to remove the particles from your pet.
+gui.lore.particleLargeSmoke=&7Click to enable the smoke particles of your pet.
+gui.lore.particle=&7Open the particles of your pet.
 
 messages.callPetSuccess=&a您已经召唤了您的宠物.
 messages.callPetError=&c您当前无法召唤您的宠物.
