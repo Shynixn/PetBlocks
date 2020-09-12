@@ -7,9 +7,6 @@ import com.github.shynixn.petblocks.api.business.service.LoggingService
 import com.github.shynixn.petblocks.api.business.service.ProtocolService
 import com.github.shynixn.petblocks.api.business.service.ProxyService
 import com.github.shynixn.petblocks.core.logic.business.extension.accessible
-import com.github.shynixn.petblocks.core.logic.persistence.entity.PacketPlayInPosition
-import com.github.shynixn.petblocks.core.logic.persistence.entity.PacketPlayInSteerVehicle
-import com.github.shynixn.petblocks.core.logic.persistence.entity.PacketPlayOutMount
 import com.google.inject.Inject
 import io.netty.channel.Channel
 import io.netty.channel.ChannelDuplexHandler
@@ -40,67 +37,6 @@ class ProtocolServiceImpl @Inject constructor(
     private val listeners = HashMap<Class<*>, MutableSet<(Any) -> Unit>>()
     private val nmsPacketToInternalPacket = HashMap<Class<*>, Function<Pair<Any, Player>, Any?>>()
     private val internalPacketToNMSPacket = HashMap<Class<*>, Function<Any, Any?>>()
-
-    /**
-     * Init.
-     */
-    init {
-        val packetPlayInPosition = object : Function<Pair<Any, Player>, Any?> {
-            val clazz = CPacketPlayer::class.java
-            private val x = clazz.getDeclaredField("field_149479_a").accessible(true)
-            private val y = clazz.getDeclaredField("field_149477_b").accessible(true)
-            private val z = clazz.getDeclaredField("field_149478_c").accessible(true)
-            override fun apply(t: Pair<Any, Player>): Any? {
-                val packet = t.first
-                val source = t.second
-                return PacketPlayInPosition(
-                    source,
-                    x.getDouble(packet),
-                    y.getDouble(packet),
-                    z.getDouble(packet)
-                )
-            }
-        }
-        nmsPacketToInternalPacket[packetPlayInPosition.clazz] = packetPlayInPosition
-
-        val packetPlayInSteerVehicle = object : Function<Pair<Any, Player>, Any?> {
-            val clazz = CPacketInput::class.java
-            private val sideWays = clazz.getDeclaredField("field_149624_a").accessible(true)
-            private val forward = clazz.getDeclaredField("field_192621_b").accessible(true)
-            private val jump = clazz.getDeclaredField("field_149623_c").accessible(true)
-            private val unMount = clazz.getDeclaredField("field_149621_d").accessible(true)
-
-            override fun apply(t: Pair<Any, Player>): Any? {
-                val packet = t.first
-                val source = t.second
-                return PacketPlayInSteerVehicle(
-                    source,
-                    forward.getFloat(packet).toDouble(),
-                    sideWays.getFloat(packet).toDouble(),
-                    jump.getBoolean(packet),
-                    unMount.getBoolean(packet)
-                )
-            }
-        }
-        nmsPacketToInternalPacket[packetPlayInSteerVehicle.clazz] = packetPlayInSteerVehicle
-
-        internalPacketToNMSPacket[PacketPlayOutMount::class.java] = object : Function<Any, Any?> {
-            val clazz = SPacketSetPassengers::class.java
-            private val entityId = clazz.getDeclaredField("field_186973_a").accessible(true)
-            private val passengerIds = clazz.getDeclaredField("field_186974_b").accessible(true)
-
-            override fun apply(t: Any): Any? {
-                require(t is PacketPlayOutMount)
-                val packet = clazz.getDeclaredConstructor().newInstance()
-                entityId.set(packet, proxyService.getEntityId(t.entity))
-                passengerIds.set(
-                    packet,
-                    t.passengers.map { p -> proxyService.getEntityId(p) }.toTypedArray().toIntArray()
-                )
-                return packet
-            }
-        }
-    }
 
     /**
      * Registers a player for incoming packets.
