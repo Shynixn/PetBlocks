@@ -2,6 +2,7 @@
 
 package com.github.shynixn.petblocks.sponge.logic.business.listener
 
+import com.github.shynixn.petblocks.api.business.enumeration.ConfigEventType
 import com.github.shynixn.petblocks.api.business.enumeration.MaterialType
 import com.github.shynixn.petblocks.api.business.proxy.EntityPetProxy
 import com.github.shynixn.petblocks.api.business.proxy.PetProxy
@@ -11,6 +12,8 @@ import com.github.shynixn.petblocks.api.persistence.entity.AIFlyRiding
 import com.github.shynixn.petblocks.api.persistence.entity.AIGroundRiding
 import com.github.shynixn.petblocks.api.persistence.entity.AIWearing
 import com.github.shynixn.petblocks.api.sponge.event.PetBlocksLoginEvent
+import com.github.shynixn.petblocks.api.sponge.event.PetPreSpawnEvent
+import com.github.shynixn.petblocks.api.sponge.event.PetRemoveEvent
 import com.github.shynixn.petblocks.core.logic.business.extension.sync
 import com.github.shynixn.petblocks.core.logic.business.extension.thenAcceptSafely
 import com.github.shynixn.petblocks.sponge.logic.business.extension.toTextString
@@ -143,26 +146,7 @@ class PetListener @Inject constructor(
             performFirstSpawn(event.player)
         }
 
-        if (!configurationService.containsValue("update")) {
-            return
-        }
-
-        // Concurrency protection.
-        sync(concurrencyService, 20 * 2L) {
-            val petMeta = persistencePetMetaService.getPetMetaFromPlayer(event.player)
-            val aiSet = aiService.loadAisFromConfig<AIBase>("update")
-
-            for (ai in aiSet.first) {
-                if (petMeta.aiGoals.firstOrNull { e ->
-                        e.type == ai.type && (e.userId == null || ai.userId == null || e.userId.equals(
-                            ai.userId,
-                            true
-                        ))
-                    } == null) {
-                    petMeta.aiGoals.add(ai)
-                }
-            }
-        }
+        applyEventAi(ConfigEventType.ONJOIN, event.player)
     }
 
     /**
@@ -181,6 +165,24 @@ class PetListener @Inject constructor(
 
         persistencePetMetaService.clearResources(event.targetEntity)
         debugService.unRegister(event.targetEntity)
+    }
+
+    /**
+     * Event which gets called before the pet spawns to
+     * modify the pet meta.
+     */
+    @Listener
+    fun onPetSpawnEvent(event: PetPreSpawnEvent) {
+        applyEventAi(ConfigEventType.ONPETSPAWN, event.player)
+    }
+
+    /**
+     * Event which gets called before the pet despawns to
+     * modify the pet meta.
+     */
+    @Listener
+    fun onPetRemoveEvent(event: PetRemoveEvent) {
+        applyEventAi(ConfigEventType.ONPETDESPAWN, event.player)
     }
 
     /**
@@ -276,11 +278,7 @@ class PetListener @Inject constructor(
             return
         }
 
-        if (configurationService.containsValue("events.onsneak")) {
-            val aiSet = aiService.loadAisFromConfig<AIBase>("events.onsneak")
-            petActionService.applyAI(event.targetHolder, aiSet.first, aiSet.second)
-        }
-
+        applyEventAi(ConfigEventType.ONSNEAK, event.targetHolder as Player)
         val petMeta = persistencePetMetaService.getPetMetaFromPlayer(event.targetHolder)
 
         if (petMeta.aiGoals.firstOrNull { e -> e is AIGroundRiding || e is AIFlyRiding } != null) {
@@ -388,6 +386,18 @@ class PetListener @Inject constructor(
         } catch (e: Exception) {
             false
         }
+    }
+
+    /**
+     * Applies the even ai if existing.
+     */
+    private fun applyEventAi(configEventType: ConfigEventType, player: Player) {
+        if (!configurationService.containsValue(configEventType.path)) {
+            return
+        }
+
+        val aiSet = aiService.loadAisFromConfig<AIBase>(configEventType.path)
+        petActionService.applyAI(player, aiSet.first, aiSet.second)
     }
 
     /**
