@@ -151,6 +151,7 @@ class PetListener @Inject constructor(
             persistencePetMetaService.clearResources(event.player)
         }
 
+        applyEventAi(ConfigEventType.ONQUIT, event.player)
         debugService.unRegister(event.player)
         petService.clearPlayerResources(event.player)
     }

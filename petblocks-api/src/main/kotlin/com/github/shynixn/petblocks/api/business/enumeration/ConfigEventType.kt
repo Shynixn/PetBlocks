@@ -12,6 +12,11 @@ enum class ConfigEventType(
     ONJOIN("events.onjoin"),
 
     /**
+     * Triggered when a player quits.
+     */
+    ONQUIT("events.onquit"),
+
+    /**
      * Triggered when a player sneaks.
      */
     ONSNEAK("events.onsneak"),

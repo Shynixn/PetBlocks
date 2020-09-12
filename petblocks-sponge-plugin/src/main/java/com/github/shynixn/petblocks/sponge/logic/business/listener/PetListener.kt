@@ -163,6 +163,7 @@ class PetListener @Inject constructor(
             }
         }
 
+        applyEventAi(ConfigEventType.ONQUIT, event.targetEntity)
         persistencePetMetaService.clearResources(event.targetEntity)
         debugService.unRegister(event.targetEntity)
     }
