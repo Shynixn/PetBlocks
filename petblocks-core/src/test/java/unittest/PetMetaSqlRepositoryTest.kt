@@ -417,6 +417,13 @@ class PetMetaSqlRepositoryTest {
         }
 
         /**
+         * Gets the entity id.
+         */
+        override fun <E> getEntityId(entity: E): Int {
+            throw IllegalArgumentException()
+        }
+
+        /**
          * Gets the location of the player.
          */
         override fun <L, P> getPlayerLocation(player: P): L {
@@ -427,6 +434,13 @@ class PetMetaSqlRepositoryTest {
          * Converts the given [location] to a [Position].
          */
         override fun <L> toPosition(location: L): Position {
+            throw IllegalArgumentException()
+        }
+
+        /**
+         * Converts the given [position] to a Location..
+         */
+        override fun <L> toLocation(position: Position): L {
             throw IllegalArgumentException()
         }
 

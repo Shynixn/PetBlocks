@@ -102,8 +102,8 @@ class PersistenceSQLiteIT {
         Assertions.assertEquals("CHICKEN_WALK", (actual.aiGoals[0] as AIMovementEntity).movementSound.name)
         Assertions.assertEquals(1.0, (actual.aiGoals[0] as AIMovementEntity).movementSound.volume)
         Assertions.assertEquals(1.0, (actual.aiGoals[0] as AIMovementEntity).movementSound.pitch)
-        Assertions.assertEquals(ParticleType.REDSTONE.name, (actual.aiGoals[0] as AIMovementEntity).movementParticle.typeName)
-        Assertions.assertEquals(20, (actual.aiGoals[0] as AIMovementEntity).movementParticle.amount)
+        Assertions.assertEquals(ParticleType.NONE.name, (actual.aiGoals[0] as AIMovementEntity).movementParticle.typeName)
+        Assertions.assertEquals(1, (actual.aiGoals[0] as AIMovementEntity).movementParticle.amount)
 
         Assertions.assertEquals("follow-owner", (actual.aiGoals[1] as AIFollowOwner).type)
         Assertions.assertEquals(3.0, (actual.aiGoals[1] as AIFollowOwner).distanceToOwner)
@@ -433,6 +433,13 @@ class PersistenceSQLiteIT {
         }
 
         /**
+         * Gets the entity id.
+         */
+        override fun <E> getEntityId(entity: E): Int {
+            throw IllegalArgumentException()
+        }
+
+        /**
          * Gets the location of the player.
          */
         override fun <L, P> getPlayerLocation(player: P): L {
@@ -443,6 +450,13 @@ class PersistenceSQLiteIT {
          * Converts the given [location] to a [Position].
          */
         override fun <L> toPosition(location: L): Position {
+            throw IllegalArgumentException()
+        }
+
+        /**
+         * Converts the given [position] to a Location..
+         */
+        override fun <L> toLocation(position: Position): L {
             throw IllegalArgumentException()
         }
 
