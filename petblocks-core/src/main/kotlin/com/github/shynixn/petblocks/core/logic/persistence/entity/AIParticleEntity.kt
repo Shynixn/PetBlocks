@@ -15,7 +15,7 @@ class AIParticleEntity : AIBaseEntity(), AIParticle {
      * Amount of seconds until the next particle is played.
      */
     @YamlSerialize(value = "delay-between", orderNumber = 1)
-    override var delayBetweenPlaying: Int = 1
+    override var delayBetweenPlaying: Double = 1.0
 
     /**
      * Offset from the pet source position.

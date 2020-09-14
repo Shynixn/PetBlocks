@@ -6,6 +6,7 @@ import com.github.shynixn.petblocks.api.business.service.LoggingService
 import com.github.shynixn.petblocks.api.business.service.ParticleService
 import com.github.shynixn.petblocks.api.business.service.ProxyService
 import com.github.shynixn.petblocks.api.persistence.entity.AIParticle
+import com.github.shynixn.petblocks.core.logic.business.extension.relativeBack
 
 class PathfinderParticle(private val aiParticle: AIParticle, private val pet: PetProxy) : BasePathfinder(aiParticle) {
     private val loggingService = PetBlocksApi.resolve(LoggingService::class.java)
@@ -37,7 +38,7 @@ class PathfinderParticle(private val aiParticle: AIParticle, private val pet: Pe
 
             lastPlay = currentMilliSeconds
             val petPosition = proxyService.toPosition(pet.getLocation<Any>())
-            petPosition.add(aiParticle.offset)
+            petPosition.relativePosition(aiParticle.offset.x, aiParticle.offset.y, aiParticle.offset.z)
             particleService.playParticle(
                 proxyService.toLocation<Any>(petPosition),
                 aiParticle.particle,

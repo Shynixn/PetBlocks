@@ -14,5 +14,5 @@ interface AIParticle : AIBase {
     /**
      * Amount of seconds until the next particle is played.
      */
-    var delayBetweenPlaying: Int
+    var delayBetweenPlaying: Double
 }

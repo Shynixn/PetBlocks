@@ -76,7 +76,7 @@ class PetBlocksPlugin @Inject constructor(private val metricsFactory: Metrics2.F
         val PREFIX_CONSOLE: String = ChatColor.AQUA.toString() + "[PetBlocks] "
     }
 
-    private val configVersion = 2
+    private val configVersion = 3
     private var injector: Injector? = null
     private var serverVersion: Version? = null
     private val bstatsPluginId = 1997

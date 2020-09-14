@@ -28,7 +28,7 @@ metrics: true
 
 ############################
 
-config-version: 2
+config-version: 3
 
 ############################
 
@@ -420,9 +420,9 @@ gui:
       script: 'open-page gui.particle'
       icon:
         id: 331
-        name: $lang.gui.item.particle
+        name: $lang.gui.item.particleMain
         lore:
-          - $lang.gui.lore.particle
+          - $lang.gui.lore.particleMain
     cannon-pet:
       row: 4
       col: 1
@@ -592,29 +592,206 @@ gui:
         1:
           type: 'particle'
           tag: 'common-particle'
-    smoke-particle:
-      row: 1
-      col: 2
+    reddust-red-particle:
+      row: 2
+      col: 3
       icon:
-        id: 95
-        damage: 7
-        name: $lang.gui.item.particleLargeSmoke
+        id: 351
+        damage: 1
+        name: $lang.gui.item.particleReddustRed
         lore:
-          - $lang.gui.lore.particleLargeSmoke
+          - $lang.gui.lore.particleSelect
       replace-ai:
         1:
           type: 'particle'
           tag: 'common-particle'
+          delay-between: 0.5
           offset:
             x: 0.0
-            y: 0.5
+            y: 0.0
             z: 0.0
           particle:
-            name: 'largesmoke'
-            amount: 5
-            offx: 0.2
-            offy: 0.2
-            offz: 0.2
+            name: 'reddust'
+            amount: 1
+            offx: 255.0
+            offy: 0.0
+            offz: 0.0
+    reddust-green-particle:
+      row: 3
+      col: 3
+      icon:
+        id: 351
+        damage: 2
+        name: $lang.gui.item.particleReddustGreen
+        lore:
+          - $lang.gui.lore.particleSelect
+      replace-ai:
+        1:
+          type: 'particle'
+          tag: 'common-particle'
+          delay-between: 0.5
+          offset:
+            x: 0.0
+            y: 0.0
+            z: 0.0
+          particle:
+            name: 'reddust'
+            amount: 1
+            offx: 0.0
+            offy: 255.0
+            offz: 0.0
+    reddust-blue-particle:
+      row: 4
+      col: 3
+      icon:
+        id: 351
+        damage: 12
+        name:  $lang.gui.item.particleReddustBlue
+        lore:
+          - $lang.gui.lore.particleSelect
+      replace-ai:
+        1:
+          type: 'particle'
+          tag: 'common-particle'
+          delay-between: 0.5
+          offset:
+            x: 0.0
+            y: 0.0
+            z: 0.0
+          particle:
+            name: 'reddust'
+            amount: 1
+            offx: 0.0
+            offy: 0.0
+            offz: 255.0
+    reddust-yellow-particle:
+      row: 5
+      col: 3
+      icon:
+        id: 351
+        damage: 11
+        name: $lang.gui.item.particleReddustYellow
+        lore:
+          - $lang.gui.lore.particleSelect
+      replace-ai:
+        1:
+          type: 'particle'
+          tag: 'common-particle'
+          delay-between: 0.5
+          offset:
+            x: 0.0
+            y: 0.0
+            z: 0.0
+          particle:
+            name: 'reddust'
+            amount: 1
+            offx: 255.0
+            offy: 255.0
+            offz: 0.0
+    blockcrack-barrier-particle:
+      row: 2
+      col: 7
+      icon:
+        id: 95
+        damage: 14
+        name: $lang.gui.item.particleBlockDustRed
+        lore:
+          - $lang.gui.lore.particleSelect
+      replace-ai:
+        1:
+          type: 'particle'
+          tag: 'common-particle'
+          delay-between: 0.5
+          offset:
+            x: 0.0
+            y: 0.0
+            z: 0.0
+          particle:
+            name: 'blockcrack'
+            material: '166'
+            data: 0
+            amount: 10
+            offx: 0.1
+            offy: 0.1
+            offz: 0.1
+    blockdust-leaf-particle:
+      row: 3
+      col: 7
+      icon:
+        id: 95
+        damage: 13
+        name: $lang.gui.item.particleBlockDustLeaf
+        lore:
+          - $lang.gui.lore.particleSelect
+      replace-ai:
+        1:
+          type: 'particle'
+          tag: 'common-particle'
+          delay-between: 0.5
+          offset:
+            x: 0.0
+            y: 0.0
+            z: 0.0
+          particle:
+            name: 'blockdust'
+            material: '18'
+            data: 0
+            amount: 10
+            offx: 0.1
+            offy: 0.1
+            offz: 0.1
+    blockdust-diamond-particle:
+      row: 4
+      col: 7
+      icon:
+        id: 95
+        damage: 9
+        name: $lang.gui.item.particleBlockDustDiamond
+        lore:
+          - $lang.gui.lore.particleSelect
+      replace-ai:
+        1:
+          type: 'particle'
+          tag: 'common-particle'
+          delay-between: 0.5
+          offset:
+            x: 0.0
+            y: 0.0
+            z: 0.0
+          particle:
+            name: 'blockdust'
+            material: '57'
+            data: 0
+            amount: 10
+            offx: 0.1
+            offy: 0.1
+            offz: 0.1
+    blockdust-gold-particle:
+      row: 5
+      col: 7
+      icon:
+        id: 95
+        damage: 4
+        name: $lang.gui.item.particleBlockDustGold
+        lore:
+          - $lang.gui.lore.particleSelect
+      replace-ai:
+        1:
+          type: 'particle'
+          tag: 'common-particle'
+          delay-between: 0.5
+          offset:
+            x: 0.0
+            y: 0.0
+            z: 0.0
+          particle:
+            name: 'blockdust'
+            material: '41'
+            data: 0
+            amount: 10
+            offx: 0.1
+            offy: 0.1
+            offz: 0.1
     back:
       row: 6
       col: 5

@@ -72,6 +72,13 @@ interface Position {
     fun add(position: Position)
 
     /**
+     * Returns the relative position given by this position rotation
+     * and offset parameters.
+     * @return This position.
+     */
+    fun relativePosition(forward: Double, up: Double, left: Double): Position
+
+    /**
      * Calculates the distance to the other location.
      */
     fun distance(o: Position): Double

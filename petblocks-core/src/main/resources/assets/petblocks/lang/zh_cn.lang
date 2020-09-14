@@ -43,8 +43,15 @@ gui.item.strengthOneDisabled=&c&l力量1已禁用
 gui.item.strengthOneEnabled=&a&l力量1已启用
 gui.item.cannon=&b&lCannon Pet
 gui.item.particleRemove=&c&lRemove Particles
-gui.item.particleLargeSmoke=&e&lLarge Smoke Particles
-gui.item.particle=&b&lPet Particles
+gui.item.particleMain=&b&lPet Particles
+gui.item.particleReddustRed=&eRed Dust Particles
+gui.item.particleReddustBlue=&eBlue Dust Particles
+gui.item.particleReddustGreen=&eGreen Dust Particles
+gui.item.particleReddustYellow=&eYellow Dust Particles
+gui.item.particleBlockDustRed=&eRed Block Particles
+gui.item.particleBlockDustDiamond=&eDiamond Block Particles
+gui.item.particleBlockDustGold=&eGold Block Particles
+gui.item.particleBlockDustLeaf=&eLeaf Block Particles
 
 gui.lore.back=&7回到上一个窗口.
 gui.lore.simpleBlocks=&7使用Minecraft自带的基础方块作为宠物的皮肤.
@@ -79,7 +86,8 @@ gui.lore.teleportPet=&7将宠物传送到您的身边.
 gui.lore.cannon=&7Click to shoot your pet like a cannon.
 gui.lore.particleRemove=&7Click to remove the particles from your pet.
 gui.lore.particleLargeSmoke=&7Click to enable the smoke particles of your pet.
-gui.lore.particle=&7Open the particles of your pet.
+gui.lore.particleMain=&7Open the particles of your pet.
+gui.lore.particleSelect=&7Click to enable the particles of your pet.
 
 messages.callPetSuccess=&a您已经召唤了您的宠物.
 messages.callPetError=&c您当前无法召唤您的宠物.

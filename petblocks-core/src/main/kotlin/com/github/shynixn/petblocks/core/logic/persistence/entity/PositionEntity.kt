@@ -2,6 +2,7 @@ package com.github.shynixn.petblocks.core.logic.persistence.entity
 
 import com.github.shynixn.petblocks.api.business.annotation.YamlSerialize
 import com.github.shynixn.petblocks.api.persistence.entity.Position
+import com.github.shynixn.petblocks.core.logic.business.extension.relativeBack
 import kotlin.math.sqrt
 
 /**
@@ -107,6 +108,20 @@ class PositionEntity : Position {
      */
     override fun add(position: Position) {
         this.add(position.x, position.y, position.z, position.yaw, position.pitch)
+    }
+
+    /**
+     * Returns the relative position given by this position rotation
+     * and offset parameters.
+     * @return This position.
+     */
+    override fun relativePosition(forward: Double, up: Double, left: Double): Position {
+        this.y += up
+        this.x = x + forward * Math.cos(Math.toRadians(yaw + 90))
+        this.z = z + forward * Math.sin(Math.toRadians(yaw + 90))
+        this.x = x + left * Math.cos(Math.toRadians(yaw))
+        this.z = z + left * Math.sin(Math.toRadians(yaw))
+        return this
     }
 
     /**
