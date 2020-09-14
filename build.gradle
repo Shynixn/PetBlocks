@@ -9,17 +9,17 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath group: 'org.jetbrains.kotlin', name: 'kotlin-gradle-plugin', version: kotlinVersion
+        classpath group: 'org.jetbrains.kotlin', name: 'kotlin-gradle-plugin', version: '1.4.10'
         classpath "org.jetbrains.dokka:dokka-gradle-plugin:0.10.1"
     }
 }
 
 plugins {
-    id 'org.jetbrains.kotlin.jvm' version '1.4.10'
     id 'io.codearte.nexus-staging' version '0.20.0'
     id 'de.marcphilipp.nexus-publish' version '0.2.0'
 }
 
+apply plugin: 'org.jetbrains.kotlin.jvm'
 apply plugin: 'org.jetbrains.dokka'
 
 repositories {
