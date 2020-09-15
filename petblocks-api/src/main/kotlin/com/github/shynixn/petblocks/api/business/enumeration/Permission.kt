@@ -35,17 +35,25 @@ enum class Permission(
 ) {
 
     /**
+     * Allows to access the petblocks GUI
+     */
+    GUI("petblocks.gui"),
+
+    /**
      * Call Pet.
      */
     CALL("petblocks.command.call"),
+
     /**
      * Rename pet.
      */
     RENAME("petblocks.command.rename"),
+
     /**
      * Custom head pet.
      */
     CUSTOMHEAD("petblocks.command.customhead"),
+
     /**
      * Toggle pet.
      */

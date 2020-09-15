@@ -20,6 +20,7 @@ import com.github.shynixn.petblocks.bukkit.logic.business.pathfinder.PathfinderF
 import com.github.shynixn.petblocks.bukkit.logic.business.pathfinder.PathfinderFollowOwner
 import com.github.shynixn.petblocks.core.logic.business.extension.stripChatColors
 import com.github.shynixn.petblocks.core.logic.business.pathfinder.PathfinderBuffEffect
+import com.github.shynixn.petblocks.core.logic.business.pathfinder.PathfinderParticle
 import com.github.shynixn.petblocks.core.logic.business.proxy.AICreationProxyImpl
 import com.google.inject.Inject
 import org.bukkit.Bukkit
@@ -97,7 +98,8 @@ class EntityServiceImpl @Inject constructor(
         this.register<AIFleeInCombat>(AIType.FLEE_IN_COMBAT)
 
         this.register<AIFloatInWater>(AIType.FLOAT_IN_WATER) { pet, _ ->
-            val getHandleMethod = findClazz("org.bukkit.craftbukkit.VERSION.entity.CraftLivingEntity").getDeclaredMethod("getHandle")!!
+            val getHandleMethod =
+                findClazz("org.bukkit.craftbukkit.VERSION.entity.CraftLivingEntity").getDeclaredMethod("getHandle")!!
 
             findClazz("net.minecraft.server.VERSION.PathfinderGoalFloat")
                 .getDeclaredConstructor(findClazz("net.minecraft.server.VERSION.EntityInsentient"))
@@ -126,6 +128,9 @@ class EntityServiceImpl @Inject constructor(
         this.register<AIWearing>(AIType.WEARING)
         this.register<AIInventory>(AIType.INVENTORY)
         this.register<AIEntityNbt>(AIType.ENTITY_NBT)
+        this.register<AIParticle>(AIType.PARTICLE) { pet, aiBase ->
+            PathfinderParticle(aiBase, pet)
+        }
     }
 
     /**
@@ -266,6 +271,9 @@ class EntityServiceImpl @Inject constructor(
             )
         )
 
-        this.aiService.registerAI(aiType.type, AICreationProxyImpl(yamlSerializationService, clazz.kotlin, function as ((PetProxy, AIBase) -> Any)?))
+        this.aiService.registerAI(
+            aiType.type,
+            AICreationProxyImpl(yamlSerializationService, clazz.kotlin, function as ((PetProxy, AIBase) -> Any)?)
+        )
     }
 }

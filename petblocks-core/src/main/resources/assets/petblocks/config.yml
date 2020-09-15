@@ -28,7 +28,7 @@ metrics: true
 
 ############################
 
-config-version: 2
+config-version: 3
 
 ############################
 
@@ -139,13 +139,6 @@ pet:
         name: 'CHICKEN_WALK'
         volume: 1.0
         itch: 1.0
-      particle:
-        name: 'REDSTONE'
-        speed: 0.01
-        amount: 20
-        offx: 0
-        offy: 0
-        offz: 255
     2:
       type: 'follow-owner'
       min-distance: 3.0
@@ -189,30 +182,7 @@ pet:
       type: 'entity-nbt'
       tag: 'nbt-marker'
       armorstand-nbt: '{Marker:0}'
-############################
 
-# Update settings
-
-# These settings allow to add/replace/remove ais for all players when they join the server
-# for the next time.
-
-############################
-
-update:
-  add-ai:
-    1:
-      type: 'entity-nbt'
-      tag: 'nbt-default'
-      armorstand-nbt: '{Invulnerable:1,Invisible:1,PersistenceRequired:1,ShowArms:1,NoBasePlate:1,DisabledSlots:2039583}'
-      hitbox-nbt: '{CustomNameVisible:0,ActiveEffects:[{Id:14,Duration:999999999,Amplifier:0,ShowParticles:0b}]}'
-    2:
-      type: 'entity-nbt'
-      tag: 'nbt-custom-name-visibility'
-      armorstand-nbt: '{CustomNameVisible:1}'
-    3:
-      type: 'entity-nbt'
-      tag: 'nbt-marker'
-      armorstand-nbt: '{Marker:0}'
 ############################
 
 # Event settings
@@ -222,6 +192,21 @@ update:
 ############################
 
 events:
+  onjoin:
+    replace-ai:
+      1:
+        type: 'entity-nbt'
+        tag: 'nbt-default'
+        armorstand-nbt: '{Invulnerable:1,Invisible:1,PersistenceRequired:1,ShowArms:1,NoBasePlate:1,DisabledSlots:2039583}'
+        hitbox-nbt: '{CustomNameVisible:0,ActiveEffects:[{Id:14,Duration:999999999,Amplifier:0,ShowParticles:0b}]}'
+      2:
+        type: 'entity-nbt'
+        tag: 'nbt-custom-name-visibility'
+        armorstand-nbt: '{CustomNameVisible:1}'
+      3:
+        type: 'entity-nbt'
+        tag: 'nbt-marker'
+        armorstand-nbt: '{Marker:0}'
   onsneak:
     replace-ai:
       1:
@@ -297,7 +282,7 @@ gui:
       row: 2
       col: 5
       script:
-       - 'call-pet'
+        - 'call-pet'
       icon:
         name: 'player-pet'
         script: 'copy-pet-skin'
@@ -305,7 +290,7 @@ gui:
       row: 4
       col: 5
       script:
-       - 'disable-pet'
+        - 'disable-pet'
       icon:
         id: 397
         damage: 3
@@ -319,7 +304,7 @@ gui:
       row: 4
       col: 5
       script:
-       - 'call-pet'
+        - 'call-pet'
       icon:
         id: 397
         damage: 3
@@ -333,7 +318,7 @@ gui:
       row: 2
       col: 2
       script:
-       - 'open-page gui.wardrobe'
+        - 'open-page gui.wardrobe'
       icon:
         id: 397
         damage: 3
@@ -345,7 +330,7 @@ gui:
       row: 5
       col: 2
       script:
-       - 'call-pet'
+        - 'call-pet'
       icon:
         id: 420
         name: $lang.gui.item.callPet
@@ -423,17 +408,37 @@ gui:
       row: 2
       col: 8
       script:
-       - 'open-page gui.storage'
+        - 'open-page gui.storage'
       icon:
         id: "CHEST"
         name: $lang.gui.item.openInventory
         lore:
           - $lang.gui.lore.openInventory
+    particle-pet:
+      row: 3
+      col: 1
+      script: 'open-page gui.particle'
+      icon:
+        id: 331
+        name: $lang.gui.item.particleMain
+        lore:
+          - $lang.gui.lore.particleMain
+    cannon-pet:
+      row: 4
+      col: 1
+      script: 'launch-cannon'
+      icon:
+        id: 397
+        damage: 3
+        skin: 'http://textures.minecraft.net/texture/22523e15e9986355a1f851f43f750ee3f23c89ae123631da241f872ba7a781'
+        name: $lang.gui.item.cannon
+        lore:
+          - $lang.gui.lore.cannon
     settings-pet:
       row: 5
       col: 8
       script:
-       - 'open-page gui.settings'
+        - 'open-page gui.settings'
       icon:
         id: 397
         damage: 3
@@ -445,7 +450,7 @@ gui:
       row: 6
       col: 5
       script:
-       - 'close-gui'
+        - 'close-gui'
       icon:
         id: 166
         damage: 0
@@ -457,7 +462,7 @@ gui:
       row: 2
       col: 3
       script:
-       - 'open-page gui.block-skins'
+        - 'open-page gui.block-skins'
       icon:
         id: 397
         damage: 3
@@ -469,7 +474,7 @@ gui:
       row: 2
       col: 5
       script:
-       - 'open-page gui.colored-block-skins'
+        - 'open-page gui.colored-block-skins'
       icon:
         id: 397
         damage: 3
@@ -481,7 +486,7 @@ gui:
       row: 2
       col: 7
       script:
-       - 'open-page gui.player-head-skins'
+        - 'open-page gui.player-head-skins'
       icon:
         id: 397
         damage: 3
@@ -493,7 +498,7 @@ gui:
       row: 3
       col: 2
       script:
-       - 'open-page gui.minecraft-heads-pet-skins'
+        - 'open-page gui.minecraft-heads-pet-skins'
       icon:
         id: 397
         damage: 3
@@ -506,7 +511,7 @@ gui:
       row: 3
       col: 4
       script:
-       - 'open-page gui.minecraft-heads-vehicle-skins'
+        - 'open-page gui.minecraft-heads-vehicle-skins'
       icon:
         id: 397
         damage: 3
@@ -519,7 +524,7 @@ gui:
       row: 3
       col: 6
       script:
-       - 'open-page gui.minecraft-heads-puppet-skins'
+        - 'open-page gui.minecraft-heads-puppet-skins'
       icon:
         id: 397
         damage: 3
@@ -532,7 +537,7 @@ gui:
       row: 3
       col: 8
       script:
-       - 'connect-head-database'
+        - 'connect-head-database'
       icon:
         id: 397
         damage: 3
@@ -544,7 +549,7 @@ gui:
       row: 5
       col: 8
       script:
-       - 'print-custom-skin-message'
+        - 'print-custom-skin-message'
       icon:
         id: 397
         damage: 3
@@ -555,7 +560,7 @@ gui:
       row: 5
       col: 2
       script:
-       - 'print-suggest-heads-message'
+        - 'print-suggest-heads-message'
       icon:
         id: 386
         damage: 0
@@ -566,7 +571,233 @@ gui:
       row: 6
       col: 5
       script:
-      - 'close-gui'
+        - 'close-gui'
+      icon:
+        id: 166
+        damage: 0
+        name: $lang.gui.item.back
+        lore:
+          - $lang.gui.lore.back
+  particle:
+    disable-particle:
+      row: 1
+      col: 1
+      icon:
+        id: 337
+        damage: 0
+        name: $lang.gui.item.particleRemove
+        lore:
+          - $lang.gui.lore.particleRemove
+      remove-ai:
+        1:
+          type: 'particle'
+          tag: 'common-particle'
+    reddust-red-particle:
+      row: 2
+      col: 3
+      icon:
+        id: 351
+        damage: 1
+        name: $lang.gui.item.particleReddustRed
+        lore:
+          - $lang.gui.lore.particleSelect
+      replace-ai:
+        1:
+          type: 'particle'
+          tag: 'common-particle'
+          delay-between: 0.5
+          offset:
+            x: 0.0
+            y: 0.0
+            z: 0.0
+          particle:
+            name: 'reddust'
+            amount: 1
+            offx: 255.0
+            offy: 0.0
+            offz: 0.0
+    reddust-green-particle:
+      row: 3
+      col: 3
+      icon:
+        id: 351
+        damage: 2
+        name: $lang.gui.item.particleReddustGreen
+        lore:
+          - $lang.gui.lore.particleSelect
+      replace-ai:
+        1:
+          type: 'particle'
+          tag: 'common-particle'
+          delay-between: 0.5
+          offset:
+            x: 0.0
+            y: 0.0
+            z: 0.0
+          particle:
+            name: 'reddust'
+            amount: 1
+            offx: 0.0
+            offy: 255.0
+            offz: 0.0
+    reddust-blue-particle:
+      row: 4
+      col: 3
+      icon:
+        id: 351
+        damage: 12
+        name:  $lang.gui.item.particleReddustBlue
+        lore:
+          - $lang.gui.lore.particleSelect
+      replace-ai:
+        1:
+          type: 'particle'
+          tag: 'common-particle'
+          delay-between: 0.5
+          offset:
+            x: 0.0
+            y: 0.0
+            z: 0.0
+          particle:
+            name: 'reddust'
+            amount: 1
+            offx: 0.0
+            offy: 0.0
+            offz: 255.0
+    reddust-yellow-particle:
+      row: 5
+      col: 3
+      icon:
+        id: 351
+        damage: 11
+        name: $lang.gui.item.particleReddustYellow
+        lore:
+          - $lang.gui.lore.particleSelect
+      replace-ai:
+        1:
+          type: 'particle'
+          tag: 'common-particle'
+          delay-between: 0.5
+          offset:
+            x: 0.0
+            y: 0.0
+            z: 0.0
+          particle:
+            name: 'reddust'
+            amount: 1
+            offx: 255.0
+            offy: 255.0
+            offz: 0.0
+    blockcrack-barrier-particle:
+      row: 2
+      col: 7
+      icon:
+        id: 95
+        damage: 14
+        name: $lang.gui.item.particleBlockDustRed
+        lore:
+          - $lang.gui.lore.particleSelect
+      replace-ai:
+        1:
+          type: 'particle'
+          tag: 'common-particle'
+          delay-between: 0.5
+          offset:
+            x: 0.0
+            y: 0.0
+            z: 0.0
+          particle:
+            name: 'blockcrack'
+            material: '166'
+            data: 0
+            amount: 10
+            offx: 0.1
+            offy: 0.1
+            offz: 0.1
+    blockdust-leaf-particle:
+      row: 3
+      col: 7
+      icon:
+        id: 95
+        damage: 13
+        name: $lang.gui.item.particleBlockDustLeaf
+        lore:
+          - $lang.gui.lore.particleSelect
+      replace-ai:
+        1:
+          type: 'particle'
+          tag: 'common-particle'
+          delay-between: 0.5
+          offset:
+            x: 0.0
+            y: 0.0
+            z: 0.0
+          particle:
+            name: 'blockdust'
+            material: '18'
+            data: 0
+            amount: 10
+            offx: 0.1
+            offy: 0.1
+            offz: 0.1
+    blockdust-diamond-particle:
+      row: 4
+      col: 7
+      icon:
+        id: 95
+        damage: 9
+        name: $lang.gui.item.particleBlockDustDiamond
+        lore:
+          - $lang.gui.lore.particleSelect
+      replace-ai:
+        1:
+          type: 'particle'
+          tag: 'common-particle'
+          delay-between: 0.5
+          offset:
+            x: 0.0
+            y: 0.0
+            z: 0.0
+          particle:
+            name: 'blockdust'
+            material: '57'
+            data: 0
+            amount: 10
+            offx: 0.1
+            offy: 0.1
+            offz: 0.1
+    blockdust-gold-particle:
+      row: 5
+      col: 7
+      icon:
+        id: 95
+        damage: 4
+        name: $lang.gui.item.particleBlockDustGold
+        lore:
+          - $lang.gui.lore.particleSelect
+      replace-ai:
+        1:
+          type: 'particle'
+          tag: 'common-particle'
+          delay-between: 0.5
+          offset:
+            x: 0.0
+            y: 0.0
+            z: 0.0
+          particle:
+            name: 'blockdust'
+            material: '41'
+            data: 0
+            amount: 10
+            offx: 0.1
+            offy: 0.1
+            offz: 0.1
+    back:
+      row: 6
+      col: 5
+      fixed: true
+      script:
+        - 'close-gui'
       icon:
         id: 166
         damage: 0
@@ -578,7 +809,7 @@ gui:
       row: 2
       col: 2
       script:
-       - 'show-inventory 1 27'
+        - 'show-inventory 1 27'
       icon:
         id: "CHEST"
         name: $lang.gui.item.openMainEquipment
@@ -588,7 +819,7 @@ gui:
       row: 2
       col: 8
       script:
-       - 'show-inventory 28 54'
+        - 'show-inventory 28 54'
       icon:
         id: "ENDER_CHEST"
         name: $lang.gui.item.openSecondaryEquipment
@@ -599,7 +830,7 @@ gui:
       col: 5
       fixed: true
       script:
-       - 'close-gui'
+        - 'close-gui'
       icon:
         id: 166
         damage: 0
@@ -611,7 +842,7 @@ gui:
       row: 2
       col: 3
       script:
-       - 'print-rename-message'
+        - 'print-rename-message'
       icon:
         id: 421
         damage: 0
@@ -622,7 +853,7 @@ gui:
       row: 5
       col: 3
       script:
-       - 'open-page gui.buff-effects'
+        - 'open-page gui.buff-effects'
       icon:
         id: 384
         name: $lang.gui.item.openEffects
@@ -632,7 +863,7 @@ gui:
       row: 2
       col: 7
       script:
-       - 'disable-sound'
+        - 'disable-sound'
       icon:
         id: 397
         damage: 3
@@ -646,7 +877,7 @@ gui:
       row: 2
       col: 7
       script:
-       - 'enable-sound'
+        - 'enable-sound'
       icon:
         id: 397
         damage: 3
@@ -660,7 +891,7 @@ gui:
       row: 5
       col: 7
       script:
-       - 'disable-particles'
+        - 'disable-particles'
       icon:
         id: 397
         damage: 3
@@ -674,7 +905,7 @@ gui:
       row: 5
       col: 7
       script:
-       - 'enable-particles'
+        - 'enable-particles'
       icon:
         id: 397
         damage: 3
@@ -689,7 +920,7 @@ gui:
       col: 5
       fixed: true
       script:
-       - 'close-gui'
+        - 'close-gui'
       icon:
         id: 166
         damage: 0
@@ -788,7 +1019,7 @@ gui:
       col: 5
       fixed: true
       script:
-       - 'close-gui'
+        - 'close-gui'
       icon:
         id: 166
         damage: 0
@@ -801,7 +1032,7 @@ gui:
       col: 9
       fixed: true
       script:
-       - 'scroll 2 0'
+        - 'scroll 2 0'
       icon:
         id: 397
         damage: 3
@@ -813,7 +1044,7 @@ gui:
       col: 1
       fixed: true
       script:
-       - 'scroll -2 0'
+        - 'scroll -2 0'
       icon:
         id: 397
         damage: 3
@@ -825,7 +1056,7 @@ gui:
       col: 5
       fixed: true
       script:
-       - 'close-gui'
+        - 'close-gui'
       icon:
         id: 166
         damage: 0
@@ -1318,7 +1549,7 @@ gui:
       col: 9
       fixed: true
       script:
-       - 'scroll 2 0'
+        - 'scroll 2 0'
       icon:
         id: 397
         damage: 3
@@ -1330,7 +1561,7 @@ gui:
       col: 1
       fixed: true
       script:
-       - 'scroll -2 0'
+        - 'scroll -2 0'
       icon:
         id: 397
         damage: 3
@@ -1342,7 +1573,7 @@ gui:
       col: 5
       fixed: true
       script:
-       - 'close-gui'
+        - 'close-gui'
       icon:
         id: 166
         damage: 0
@@ -1825,7 +2056,7 @@ gui:
       col: 9
       fixed: true
       script:
-       - 'scroll 2 0'
+        - 'scroll 2 0'
       icon:
         id: 397
         damage: 3
@@ -1837,7 +2068,7 @@ gui:
       col: 1
       fixed: true
       script:
-       - 'scroll -2 0'
+        - 'scroll -2 0'
       icon:
         id: 397
         damage: 3
@@ -1849,7 +2080,7 @@ gui:
       col: 5
       fixed: true
       script:
-       - 'close-gui'
+        - 'close-gui'
       icon:
         id: 166
         damage: 0
@@ -1884,13 +2115,6 @@ gui:
             name: 'PIG_WALK'
             volume: 1.0
             itch: 1.0
-          particle: # REDSTONE converts offx, offy, offz into RGB colors.
-            name: 'REDSTONE'
-            speed: 0.01
-            amount: 20
-            offx: 255
-            offy: 192
-            offz: 203
         2:
           type: 'ambient-sound'
           sound:
@@ -1925,13 +2149,6 @@ gui:
             name: 'CHICKEN_WALK'
             volume: 1.0
             itch: 1.0
-          particle:
-            name: 'REDSTONE'
-            speed: 0.01
-            amount: 20
-            offx: 255
-            offy: 255
-            offz: 255
         2:
           type: 'ambient-sound'
           sound:
@@ -1966,13 +2183,6 @@ gui:
             name: 'WOLF_WALK'
             volume: 1.0
             itch: 1.0
-          particle:
-            name: 'REDSTONE'
-            speed: 0.01
-            amount: 20
-            offx: 255
-            offy: 255
-            offz: 255
         2:
           type: 'ambient-sound'
           sound:
@@ -2013,13 +2223,6 @@ gui:
             name: 'NONE'
             volume: 1.0
             itch: 1.0
-          particle:
-            name: 'REDSTONE'
-            speed: 0.01
-            amount: 20
-            offx: 255
-            offy: 255
-            offz: 0
         2:
           type: 'ambient-sound'
           sound:
@@ -2060,13 +2263,6 @@ gui:
             name: 'COW_WALK'
             volume: 1.0
             itch: 1.0
-          particle:
-            name: 'REDSTONE'
-            speed: 0.01
-            amount: 20
-            offx: 255
-            offy: 255
-            offz: 255
         2:
           type: 'ambient-sound'
           sound:
@@ -2101,13 +2297,6 @@ gui:
             name: 'SHEEP_WALK'
             volume: 1.0
             itch: 1.0
-          particle:
-            name: 'REDSTONE'
-            speed: 0.01
-            amount: 20
-            offx: 255
-            offy: 255
-            offz: 255
         2:
           type: 'ambient-sound'
           sound:
@@ -2142,13 +2331,6 @@ gui:
             name: 'HORSE_GALLOP'
             volume: 1.0
             itch: 1.0
-          particle:
-            name: 'REDSTONE'
-            speed: 0.01
-            amount: 20
-            offx: 255
-            offy: 255
-            offz: 0
         2:
           type: 'ambient-sound'
           sound:
@@ -2184,13 +2366,6 @@ gui:
             name: 'NONE'
             volume: 1.0
             itch: 1.0
-          particle:
-            name: 'HEART'
-            speed: 4.0
-            amount: 2
-            offx: 0.5
-            offy: 0.5
-            offz: 0.5
         2:
           type: 'ambient-sound'
           sound:
@@ -2226,13 +2401,6 @@ gui:
             name: 'NONE'
             volume: 1.0
             itch: 1.0
-          particle:
-            name: 'portal'
-            speed: 1.0
-            amount: 50
-            offx: 0.1
-            offy: 2.0
-            offz: 0.1
         2:
           type: 'ambient-sound'
           sound:
@@ -2881,7 +3049,7 @@ gui:
       col: 9
       fixed: true
       script:
-       - 'scroll 2 0'
+        - 'scroll 2 0'
       icon:
         id: 397
         damage: 3
@@ -2893,7 +3061,7 @@ gui:
       col: 1
       fixed: true
       script:
-       - 'scroll -2 0'
+        - 'scroll -2 0'
       icon:
         id: 397
         damage: 3
@@ -2905,7 +3073,7 @@ gui:
       col: 5
       fixed: true
       script:
-       - 'close-gui'
+        - 'close-gui'
       icon:
         id: 166
         damage: 0
@@ -15230,7 +15398,7 @@ gui:
       col: 9
       fixed: true
       script:
-       - 'scroll 2 0'
+        - 'scroll 2 0'
       icon:
         id: 397
         damage: 3
@@ -15242,7 +15410,7 @@ gui:
       col: 1
       fixed: true
       script:
-       - 'scroll -2 0'
+        - 'scroll -2 0'
       icon:
         id: 397
         damage: 3
@@ -15254,7 +15422,7 @@ gui:
       col: 5
       fixed: true
       script:
-       - 'close-gui'
+        - 'close-gui'
       icon:
         id: 166
         damage: 0
@@ -18015,7 +18183,7 @@ gui:
       col: 9
       fixed: true
       script:
-      - 'scroll 2 0'
+        - 'scroll 2 0'
       icon:
         id: 397
         damage: 3
@@ -18027,7 +18195,7 @@ gui:
       col: 1
       fixed: true
       script:
-       - 'scroll -2 0'
+        - 'scroll -2 0'
       icon:
         id: 397
         damage: 3
@@ -18039,7 +18207,7 @@ gui:
       col: 5
       fixed: true
       script:
-       - 'close-gui'
+        - 'close-gui'
       icon:
         id: 166
         damage: 0

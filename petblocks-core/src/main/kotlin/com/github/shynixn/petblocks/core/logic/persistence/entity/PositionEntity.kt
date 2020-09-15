@@ -1,6 +1,8 @@
 package com.github.shynixn.petblocks.core.logic.persistence.entity
 
+import com.github.shynixn.petblocks.api.business.annotation.YamlSerialize
 import com.github.shynixn.petblocks.api.persistence.entity.Position
+import com.github.shynixn.petblocks.core.logic.business.extension.relativeBack
 import kotlin.math.sqrt
 
 /**
@@ -30,21 +32,31 @@ import kotlin.math.sqrt
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class PositionEntity(
+class PositionEntity : Position {
     /** [x] coordinate. */
-    override var x: Double = 0.0,
+    @YamlSerialize(orderNumber = 1, value = "x")
+    override var x: Double = 0.0
+
     /** [y] coordinate. */
-    override var y: Double = 0.0,
+    @YamlSerialize(orderNumber = 2, value = "y")
+    override var y: Double = 0.0
+
     /** [z] coordinate. */
-    override var z: Double = 0.0,
+    @YamlSerialize(orderNumber = 3, value = "z")
+    override var z: Double = 0.0
+
     /** [yaw] rotation yaw. */
-    override var yaw: Double = 0.0,
+    @YamlSerialize(orderNumber = 4, value = "yaw")
+    override var yaw: Double = 0.0
+
     /** [pitch] rotation pitch. */
-    override var pitch: Double = 0.0,
+    @YamlSerialize(orderNumber = 5, value = "pitch")
+    override var pitch: Double = 0.0
 
     /** [worldName] which world the location is. */
+    @YamlSerialize(orderNumber = 6, value = "world")
     override var worldName: String? = null
-) : Position {
+
     /** [blockX] coordinate as Int. */
     override val blockX: Int
         get() = x.toInt()
@@ -96,6 +108,20 @@ class PositionEntity(
      */
     override fun add(position: Position) {
         this.add(position.x, position.y, position.z, position.yaw, position.pitch)
+    }
+
+    /**
+     * Returns the relative position given by this position rotation
+     * and offset parameters.
+     * @return This position.
+     */
+    override fun relativePosition(forward: Double, up: Double, left: Double): Position {
+        this.y += up
+        this.x = x + forward * Math.cos(Math.toRadians(yaw + 90))
+        this.z = z + forward * Math.sin(Math.toRadians(yaw + 90))
+        this.x = x + left * Math.cos(Math.toRadians(yaw))
+        this.z = z + left * Math.sin(Math.toRadians(yaw))
+        return this
     }
 
     /**

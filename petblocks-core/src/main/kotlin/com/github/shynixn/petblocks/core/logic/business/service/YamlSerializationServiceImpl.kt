@@ -111,7 +111,7 @@ class YamlSerializationServiceImpl : YamlSerializationService {
         val instance: R?
 
         try {
-            instance = objectClazz.newInstance() as R
+            instance = objectClazz.getDeclaredConstructor().newInstance() as R
         } catch (e: Exception) {
             throw IllegalArgumentException("Cannot instanciet the class $objectClazz. Does it have a default constructor?")
         }
@@ -141,7 +141,7 @@ class YamlSerializationServiceImpl : YamlSerializationService {
                 } else if (isPrimitive(value.javaClass)) {
                     collection.add(value)
                 } else if (annotation.customserializer != Any::class) {
-                    collection.add((annotation.customserializer.java.newInstance() as YamlSerializer<*, Map<String, Any?>>).onDeserialization(value as Map<String, Any?>))
+                    collection.add((annotation.customserializer.java.getDeclaredConstructor().newInstance() as YamlSerializer<*, Map<String, Any?>>).onDeserialization(value as Map<String, Any?>))
                 } else {
                     collection.add(deserialize(getArgumentType(field, 0) as Class<Any>, value as Map<String, Any?>))
                 }
@@ -206,7 +206,7 @@ class YamlSerializationServiceImpl : YamlSerializationService {
                     array[keyPlace] = null
                 } else if (annotation.customserializer != Any::class) {
                     array[keyPlace] =
-                        (annotation.customserializer.java.newInstance() as YamlSerializer<*, Map<String, Any?>>).onDeserialization(value as Map<String, Any?>)
+                        (annotation.customserializer.java.getDeclaredConstructor().newInstance() as YamlSerializer<*, Map<String, Any?>>).onDeserialization(value as Map<String, Any?>)
                 } else if (field.type.componentType.isEnum) {
                     @Suppress("UPPER_BOUND_VIOLATED", "UNCHECKED_CAST")
                     array[keyPlace] = java.lang.Enum.valueOf<Any>(field.type as Class<Any>, value.toString().toUpperCase())
@@ -252,7 +252,7 @@ class YamlSerializationServiceImpl : YamlSerializationService {
         if (value == null) {
             field.set(instance, value)
         } else if (annotation.customserializer != Any::class && !field.type.isArray && !Collection::class.java.isAssignableFrom(field.type)) {
-            val deserializedValue = (annotation.customserializer.java.newInstance() as YamlSerializer<Any, Any>).onDeserialization(value)
+            val deserializedValue = (annotation.customserializer.java.getDeclaredConstructor().newInstance() as YamlSerializer<Any, Any>).onDeserialization(value)
             field.set(instance, deserializedValue)
         } else if (isPrimitive(field.type)) {
             field.set(instance, value)
@@ -324,7 +324,7 @@ class YamlSerializationServiceImpl : YamlSerializationService {
             } else if (isPrimitive(instance::class.java)) {
                 data[i.toString()] = instance
             } else if (annotation != null && annotation.customserializer != Any::class) {
-                data[i.toString()] = (annotation.customserializer.java.newInstance() as YamlSerializer<Any, Any>).onSerialization(instance)
+                data[i.toString()] = (annotation.customserializer.java.getDeclaredConstructor().newInstance() as YamlSerializer<Any, Any>).onSerialization(instance)
             } else if (instance::class.java.isEnum) {
                 data[i.toString()] = (instance as Enum<*>).name
             } else {
@@ -379,7 +379,7 @@ class YamlSerializationServiceImpl : YamlSerializationService {
 
             if (field.get(instance) == null) {
             } else if (yamlAnnotation.customserializer != Any::class && !field.type.isArray && !Collection::class.java.isAssignableFrom(field.type)) {
-                val serializedValue = (yamlAnnotation.customserializer.java.newInstance() as YamlSerializer<Any, Any>).onSerialization(field.get(instance))
+                val serializedValue = (yamlAnnotation.customserializer.java.getDeclaredConstructor().newInstance() as YamlSerializer<Any, Any>).onSerialization(field.get(instance))
                 data[yamlAnnotation.value] = serializedValue
             } else if (isPrimitive(field.type)) {
                 data[yamlAnnotation.value] = field.get(instance)

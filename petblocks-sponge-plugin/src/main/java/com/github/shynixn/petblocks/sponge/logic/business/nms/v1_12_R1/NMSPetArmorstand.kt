@@ -373,8 +373,11 @@ class NMSPetArmorstand(owner: Player, val petMeta: PetMeta) : EntityArmorStand(o
         this.renderYawOffset = this.rotationYaw
 
         val flyingVector = PositionEntity()
-        val flyingLocation =
-            PositionEntity(this.posX, this.posY, this.posZ, 0.0, 0.0, (world as org.spongepowered.api.world.World).name)
+        val flyingLocation = PositionEntity()
+        flyingLocation.x = this.posX
+        flyingLocation.y =  this.posY
+        flyingLocation.z =  this.posZ
+        flyingLocation.worldName = (world as org.spongepowered.api.world.World).name
 
         if (sideMot < 0.0f) {
             flyingLocation.yaw = human.rotationYaw - 90.0

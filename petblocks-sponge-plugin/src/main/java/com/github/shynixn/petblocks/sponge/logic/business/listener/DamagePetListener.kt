@@ -19,6 +19,7 @@ import org.spongepowered.api.event.Listener
 import org.spongepowered.api.event.cause.entity.damage.DamageTypes
 import org.spongepowered.api.event.cause.entity.damage.source.DamageSources
 import org.spongepowered.api.event.entity.DamageEntityEvent
+import java.util.*
 
 /**
  * Created by Shynixn 2018.
@@ -73,6 +74,10 @@ class DamagePetListener @Inject constructor(
         }
 
         if (event.source != DamageTypes.FALL && event.targetEntity is Player) {
+            if (!persistencePetMetaService.hasPetMeta(event.targetEntity)) {
+                return
+            }
+
             val petMeta = persistencePetMetaService.getPetMetaFromPlayer(event.targetEntity)
 
             combatPetService.flee(petMeta)

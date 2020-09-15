@@ -12,6 +12,7 @@ import com.github.shynixn.petblocks.core.logic.business.service.PersistencePetMe
 import com.github.shynixn.petblocks.core.logic.persistence.entity.PetMetaEntity
 import com.github.shynixn.petblocks.core.logic.persistence.entity.PlayerMetaEntity
 import com.github.shynixn.petblocks.core.logic.persistence.entity.SkinEntity
+import helper.MockedLoggingService
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito
@@ -123,7 +124,8 @@ class PersistencePetMetaServiceTest {
                 petMetaRepository,
                 MockedConcurrencyService(),
                 MockedEventService(),
-                Mockito.mock(AIService::class.java)
+                Mockito.mock(AIService::class.java),
+                MockedLoggingService()
             )
         }
     }
@@ -281,6 +283,13 @@ class PersistencePetMetaServiceTest {
         }
 
         /**
+         * Gets the entity id.
+         */
+        override fun <E> getEntityId(entity: E): Int {
+            throw IllegalArgumentException()
+        }
+
+        /**
          * Gets the location of the player.
          */
         override fun <L, P> getPlayerLocation(player: P): L {
@@ -291,6 +300,13 @@ class PersistencePetMetaServiceTest {
          * Converts the given [location] to a [Position].
          */
         override fun <L> toPosition(location: L): Position {
+            throw IllegalArgumentException()
+        }
+
+        /**
+         * Converts the given [position] to a Location..
+         */
+        override fun <L> toLocation(position: Position): L {
             throw IllegalArgumentException()
         }
 

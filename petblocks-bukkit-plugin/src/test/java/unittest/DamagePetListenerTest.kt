@@ -172,6 +172,13 @@ class DamagePetListenerTest {
         }
 
         /**
+         * Gets if the given player has got a cached pet meta.
+         */
+        override fun <P> hasPetMeta(player: P): Boolean {
+            return true
+        }
+
+        /**
          * Gets all currently loaded pet metas.
          */
         override val cache: List<PetMeta>

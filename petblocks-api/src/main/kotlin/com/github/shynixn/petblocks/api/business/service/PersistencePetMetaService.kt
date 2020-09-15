@@ -59,6 +59,13 @@ interface PersistencePetMetaService {
     fun save(petMeta: PetMeta): CompletableFuture<PetMeta>
 
     /**
+     * Gets if the given player has got a cached pet meta.
+     * Only makes sense to be checked in special cases. Do only check it
+     * before calling getPetMetaFromPlayer(#player) if you get cache miss errors.
+     */
+    fun <P> hasPetMeta(player: P): Boolean
+
+    /**
      * Gets all currently loaded pet metas.
      */
     val cache: List<PetMeta>

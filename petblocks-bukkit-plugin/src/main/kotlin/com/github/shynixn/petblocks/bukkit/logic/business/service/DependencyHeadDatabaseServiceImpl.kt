@@ -84,6 +84,10 @@ class DependencyHeadDatabaseServiceImpl @Inject constructor(
             return
         }
 
+        if (!petMetaService.hasPetMeta(player)) {
+            return
+        }
+
         sync(concurrencyService, 10L) {
             headDatabasePlayers.add(player)
             player.performCommand("hdb")

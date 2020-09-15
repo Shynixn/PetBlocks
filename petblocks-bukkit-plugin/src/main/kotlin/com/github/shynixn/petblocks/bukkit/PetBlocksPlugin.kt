@@ -64,7 +64,7 @@ class PetBlocksPlugin : JavaPlugin(), PluginProxy {
         val PREFIX_CONSOLE: String = ChatColor.AQUA.toString() + "[PetBlocks] "
     }
 
-    private val configVersion = 2
+    private val configVersion = 3
     private var injector: Injector? = null
     private var serverVersion: Version? = null
     private val bstatsPluginId = 1323
@@ -202,8 +202,9 @@ class PetBlocksPlugin : JavaPlugin(), PluginProxy {
         }
 
         entityService.cleanUpInvalidEntitiesInAllWorlds()
-
         startPlugin()
+
+        Bukkit.getPluginManager().registerEvents(resolve(ProtocolListener::class.java), this)
         sendConsoleMessage(ChatColor.GREEN.toString() + "Enabled PetBlocks " + this.description.version + " by Shynixn")
     }
 
@@ -215,6 +216,7 @@ class PetBlocksPlugin : JavaPlugin(), PluginProxy {
             return
         }
 
+        resolve<ProtocolService>(ProtocolService::class.java).close()
         resolve<EntityRegistrationService>(EntityRegistrationService::class.java).clearResources()
         resolve<PersistencePetMetaService>(PersistencePetMetaService::class.java).close()
 
@@ -258,6 +260,8 @@ class PetBlocksPlugin : JavaPlugin(), PluginProxy {
                             "PetBlocksRunTime"
                         )
                     )
+                    val protocolService = resolve<ProtocolService>(ProtocolService::class.java)
+                    protocolService.registerPlayer(player)
                 }
             }
 
@@ -346,7 +350,7 @@ class PetBlocksPlugin : JavaPlugin(), PluginProxy {
         try {
             val entityName = entity.simpleName + "Entity"
             return Class.forName("com.github.shynixn.petblocks.core.logic.persistence.entity.$entityName")
-                .newInstance() as E
+                .getDeclaredConstructor().newInstance() as E
         } catch (e: Exception) {
             throw IllegalArgumentException("Entity could not be created.", e)
         }

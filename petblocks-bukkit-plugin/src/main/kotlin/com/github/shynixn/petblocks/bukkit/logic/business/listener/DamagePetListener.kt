@@ -68,6 +68,10 @@ class DamagePetListener @Inject constructor(
         }
 
         if (event.cause != EntityDamageEvent.DamageCause.FALL && event.entity is Player) {
+            if (!persistencePetMetaService.hasPetMeta(event.entity)) {
+                return
+            }
+
             val petMeta = persistencePetMetaService.getPetMetaFromPlayer(event.entity)
 
             combatPetService.flee(petMeta)
@@ -88,7 +92,8 @@ class DamagePetListener @Inject constructor(
             val pet = petService.findPetByEntity(event.entity)!!
             combatPetService.flee(pet.meta)
 
-            val vector = event.entity.location.toVector().subtract(event.damager.location.toVector()).normalize().multiply(0.5)
+            val vector =
+                event.entity.location.toVector().subtract(event.damager.location.toVector()).normalize().multiply(0.5)
             vector.y = 0.1
 
             pet.setVelocity(vector)
