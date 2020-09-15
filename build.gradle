@@ -1,6 +1,5 @@
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 import org.gradle.api.tasks.testing.logging.TestLogEvent
-import org.jetbrains.dokka.gradle.DokkaTask
 
 buildscript {
     repositories {
@@ -194,45 +193,15 @@ task jacocoRootReport(type: org.gradle.testing.jacoco.tasks.JacocoReport) {
         })
     }
 }
+
+
 /**
- * Downloads dependencies and generates JavaDocs in the
- * docs/api folder.
+ * Generates javadocs.
  */
-task generateJavaDocPages(type: DokkaTask) {
-    def build = new File('build')
-
-    if (!build.exists()) {
-        build.mkdir()
-    }
-
-    def folder = new File(build, 'buildjavadocs')
-
-    if (!folder.exists()) {
-        folder.mkdir()
-    }
-
-    def spigotApiFile = new File(folder, "spigot.jar")
-
-    if (!spigotApiFile.exists()) {
-        new URL('https://hub.spigotmc.org/nexus/content/repositories/snapshots/org/spigotmc/spigot-api/1.13.2-R0.1-SNAPSHOT/spigot-api-1.13.2-R0.1-20190423.030901-214.jar').withInputStream { i ->
-            spigotApiFile.withOutputStream {
-                it << i
-            }
-        }
-    }
-
-    def spongeApiFile = new File(folder, "sponge.jar")
-
-    if (!spongeApiFile.exists()) {
-        new URL('https://repo.spongepowered.org/maven/org/spongepowered/spongeapi/7.1.0/spongeapi-7.1.0-shaded.jar').withInputStream { i ->
-            spongeApiFile.withOutputStream {
-                it << i
-            }
-        }
-    }
-
-    outputFormat = 'javadoc'
+task generateJavaDocPages(type: org.jetbrains.dokka.gradle.DokkaTask) {
+    outputFormat = "javadoc"
     outputDirectory = "docs/apidocs"
+
     configuration {
         sourceRoot {
             path = "petblocks-api/src/main/kotlin"
@@ -247,45 +216,11 @@ task generateJavaDocPages(type: DokkaTask) {
             path = "petblocks-bukkit-plugin/src/main/kotlin"
         }
         sourceRoot {
-            path = "petblocks-bukkit-plugin/petblocks-bukkit-nms-108R3/src/main/java"
-        }
-        sourceRoot {
-            path = "petblocks-bukkit-plugin/petblocks-bukkit-nms-109R2/src/main/java"
-        }
-        sourceRoot {
-            path = "petblocks-bukkit-plugin/petblocks-bukkit-nms-110R1/src/main/java"
-        }
-        sourceRoot {
-            path = "petblocks-bukkit-plugin/petblocks-bukkit-nms-111R1/src/main/java"
-        }
-        sourceRoot {
-            path = "petblocks-bukkit-plugin/petblocks-bukkit-nms-112R1/src/main/java"
-        }
-        sourceRoot {
-            path = "petblocks-bukkit-plugin/petblocks-bukkit-nms-113R2/src/main/java"
-        }
-        sourceRoot {
-            path = "petblocks-bukkit-plugin/petblocks-bukkit-nms-114R1/src/main/java"
-        }
-        sourceRoot {
-            path = "petblocks-bukkit-plugin/petblocks-bukkit-nms-115R1/src/main/java"
-        }
-        sourceRoot {
             path = "petblocks-sponge-api/src/main/java"
         }
         sourceRoot {
             path = "petblocks-sponge-plugin/src/main/java"
         }
-        externalDocumentationLink {
-            url = new URL("https://hub.spigotmc.org/javadocs/spigot/")
-        }
-        externalDocumentationLink {
-            url = new URL("https://jd.spongepowered.org/7.2.0/")
-        }
-        externalDocumentationLink {
-            url = new URL("https://jd.spongepowered.org/7.2.0/package-list")
-        }
-        classpath = [spigotApiFile, spongeApiFile]
     }
 }
 
