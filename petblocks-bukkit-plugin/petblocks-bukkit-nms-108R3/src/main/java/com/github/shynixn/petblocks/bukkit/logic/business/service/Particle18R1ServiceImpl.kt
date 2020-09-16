@@ -58,7 +58,8 @@ class Particle18R1ServiceImpl @Inject constructor(
     override fun <L, P> playParticle(location: L, particle: Particle, player: P) {
         require(player is Player) { "Player has to be a BukkitPlayer!" }
 
-        val canOtherPlayersSeeParticles = configurationService.findValue<Boolean>("global-configuration.particles-other-players")
+        val canOtherPlayersSeeParticles =
+            configurationService.findValue<Boolean>("global-configuration.particles-other-players")
 
         if (canOtherPlayersSeeParticles) {
             playParticle(location, particle, player.world.players)
@@ -91,9 +92,20 @@ class Particle18R1ServiceImpl @Inject constructor(
 
         if (particle.materialName != null) {
             additionalPayload = if (partType == ParticleType.ITEM_CRACK) {
-                intArrayOf(getIdFromMaterialMethod.invoke(Material.getMaterial(particle.materialName!!)) as Int, particle.data)
+                intArrayOf(
+                    getIdFromMaterialMethod.invoke(Material.getMaterial(particle.materialName!!)) as Int,
+                    particle.data
+                )
+            } else if (particle.materialName!!.toIntOrNull() != null) {
+                intArrayOf(
+                    particle.materialName!!.toInt(),
+                    (particle.data shl 12)
+                )
             } else {
-                intArrayOf(getIdFromMaterialMethod.invoke(Material.getMaterial(particle.materialName!!)) as Int, (particle.data shl 12))
+                intArrayOf(
+                    getIdFromMaterialMethod.invoke(Material.getMaterial(particle.materialName!!)) as Int,
+                    (particle.data shl 12)
+                )
             }
         }
 
@@ -103,7 +115,12 @@ class Particle18R1ServiceImpl @Inject constructor(
                 red = Float.MIN_VALUE
             }
 
-            val constructor = Class.forName("net.minecraft.server.VERSION.PacketPlayOutWorldParticles".replace("VERSION", version.bukkitId))
+            val constructor = Class.forName(
+                "net.minecraft.server.VERSION.PacketPlayOutWorldParticles".replace(
+                    "VERSION",
+                    version.bukkitId
+                )
+            )
                 .getDeclaredConstructor(
                     internalParticleType.javaClass,
                     Boolean::class.javaPrimitiveType,
@@ -131,7 +148,12 @@ class Particle18R1ServiceImpl @Inject constructor(
                 additionalPayload
             )
         } else {
-            val constructor = Class.forName("net.minecraft.server.VERSION.PacketPlayOutWorldParticles".replace("VERSION", version.bukkitId))
+            val constructor = Class.forName(
+                "net.minecraft.server.VERSION.PacketPlayOutWorldParticles".replace(
+                    "VERSION",
+                    version.bukkitId
+                )
+            )
                 .getDeclaredConstructor(
                     internalParticleType.javaClass,
                     Boolean::class.javaPrimitiveType,
@@ -197,24 +219,35 @@ class Particle18R1ServiceImpl @Inject constructor(
         try {
             return when {
                 version.isVersionLowerThan(Version.VERSION_1_13_R1) -> {
-                    val clazz = Class.forName("net.minecraft.server.VERSION.EnumParticle".replace("VERSION", version.bukkitId))
+                    val clazz =
+                        Class.forName("net.minecraft.server.VERSION.EnumParticle".replace("VERSION", version.bukkitId))
                     val method = clazz.getDeclaredMethod("valueOf", String::class.java)
                     method.invoke(null, particle.name)
                 }
 
                 version == Version.VERSION_1_13_R1 -> {
                     val minecraftKey =
-                        findClazz("net.minecraft.server.VERSION.MinecraftKey").getDeclaredConstructor(String::class.java).newInstance(particle.gameId_113)
-                    val registry = findClazz("net.minecraft.server.VERSION.Particle").getDeclaredField("REGISTRY").get(null)
+                        findClazz("net.minecraft.server.VERSION.MinecraftKey").getDeclaredConstructor(String::class.java)
+                            .newInstance(particle.gameId_113)
+                    val registry =
+                        findClazz("net.minecraft.server.VERSION.Particle").getDeclaredField("REGISTRY").get(null)
 
-                    findClazz("net.minecraft.server.VERSION.RegistryMaterials").getDeclaredMethod("get", Any::class.java).invoke(registry, minecraftKey)
+                    findClazz("net.minecraft.server.VERSION.RegistryMaterials").getDeclaredMethod(
+                        "get",
+                        Any::class.java
+                    ).invoke(registry, minecraftKey)
                 }
 
                 else -> {
                     val minecraftKey =
-                        findClazz("net.minecraft.server.VERSION.MinecraftKey").getDeclaredConstructor(String::class.java).newInstance(particle.gameId_113)
-                    val registry = findClazz("net.minecraft.server.VERSION.IRegistry").getDeclaredField("PARTICLE_TYPE").get(null)
-                    findClazz("net.minecraft.server.VERSION.RegistryMaterials").getDeclaredMethod("get", findClazz("net.minecraft.server.VERSION.MinecraftKey"))
+                        findClazz("net.minecraft.server.VERSION.MinecraftKey").getDeclaredConstructor(String::class.java)
+                            .newInstance(particle.gameId_113)
+                    val registry =
+                        findClazz("net.minecraft.server.VERSION.IRegistry").getDeclaredField("PARTICLE_TYPE").get(null)
+                    findClazz("net.minecraft.server.VERSION.RegistryMaterials").getDeclaredMethod(
+                        "get",
+                        findClazz("net.minecraft.server.VERSION.MinecraftKey")
+                    )
                         .invoke(registry, minecraftKey)
                 }
             }
