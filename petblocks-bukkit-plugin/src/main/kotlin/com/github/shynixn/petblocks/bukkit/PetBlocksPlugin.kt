@@ -382,7 +382,7 @@ class PetBlocksPlugin : JavaPlugin(), PluginProxy {
     }
 
     /**
-     * Checks if armorStand ticking is disabled when PaperSpigot is being used.
+     * Checks if armorStand ticking is disabled when Paper(Spigot) is being used.
      */
     private fun hasArmorstandTickingChanged(): Boolean {
         if (config.getBoolean("global-configuration.ignore-ticking-settings")) {
