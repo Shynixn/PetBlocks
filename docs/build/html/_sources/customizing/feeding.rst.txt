@@ -19,7 +19,7 @@ Configuring in your config.yml
 config.yml
 ::
     type: 'feeding'
-    item-id: 391
+    item-name: "Carrot"
     item-damage: 0
     click-particle:
       name: 'heart'
