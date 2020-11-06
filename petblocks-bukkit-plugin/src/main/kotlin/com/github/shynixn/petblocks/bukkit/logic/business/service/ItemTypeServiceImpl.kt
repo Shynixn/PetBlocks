@@ -266,6 +266,7 @@ class ItemTypeServiceImpl @Inject constructor(private val version: Version) : It
         if (descHint is String) {
             for (material in Material::class.java.enumConstants) {
                 try {
+                    // "${material} also delivers interesting hints.
                     if (material.name.equals(descHint, true) || ("LEGACY_$descHint" == material.name)) {
                         cache[sourceHint] = material
                         return cache[sourceHint]!! as I
