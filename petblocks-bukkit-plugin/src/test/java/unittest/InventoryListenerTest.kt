@@ -111,7 +111,7 @@ class InventoryListenerTest {
             guiService: GUIService = Mockito.mock(GUIService::class.java),
             storageService: GUIPetStorageService = Mockito.mock(GUIPetStorageService::class.java)
         ): InventoryListener {
-            return InventoryListener(guiService, storageService)
+            return InventoryListener(guiService, storageService, MockedConcurrencyService())
         }
     }
 

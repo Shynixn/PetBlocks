@@ -2,6 +2,7 @@
 
 package com.github.shynixn.petblocks.bukkit.logic.business.listener
 
+import com.github.shynixn.petblocks.api.business.service.ConcurrencyService
 import com.github.shynixn.petblocks.api.business.service.GUIPetStorageService
 import com.github.shynixn.petblocks.api.business.service.GUIService
 import com.google.inject.Inject
@@ -42,7 +43,8 @@ import org.bukkit.event.player.PlayerQuitEvent
  */
 class InventoryListener @Inject constructor(
     private val guiService: GUIService,
-    private val guiPetStorageService: GUIPetStorageService
+    private val guiPetStorageService: GUIPetStorageService,
+    private val concurrencyService: ConcurrencyService
 ) : Listener {
     /**
      * Gets called and handles action to the gui inventory.
@@ -70,6 +72,14 @@ class InventoryListener @Inject constructor(
      */
     @EventHandler
     fun onPlayerCloseInventoryEvent(event: InventoryCloseEvent) {
+        if (guiService.isGUIInventory(event.inventory)) {
+            // Fixes pressing F showing (not real) copy of item.
+            concurrencyService.runTaskSync(2L) {
+                (event.player as Player).updateInventory()
+            }
+            return
+        }
+
         if (!guiPetStorageService.isStorage(event.inventory)) {
             return
         }
