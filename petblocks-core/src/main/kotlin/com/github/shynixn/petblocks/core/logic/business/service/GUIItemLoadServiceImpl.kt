@@ -76,7 +76,11 @@ class GUIItemLoadServiceImpl @Inject constructor(
 
         for (guiItem in this.cache[path]!!) {
             try {
-                if (convertedItem.displayName == guiItem.icon.displayName.translateChatColors()) {
+                if (convertedItem.displayName != null && convertedItem.displayName!!.equals(
+                        guiItem.icon.displayName.translateChatColors(),
+                        true
+                    )
+                ) {
                     if ((convertedItem.lore == null && guiItem.icon.lore.isEmpty()) || (convertedItem.lore!!.size == guiItem.icon.lore.size)) {
                         return guiItem
                     }

@@ -82,7 +82,17 @@ class InventoryListener @Inject constructor(
      * Saves the storage inventory on close.
      */
     @Listener
-    fun onPlayerCloseInventoryEvent(event: InteractInventoryEvent.Close, @First(typeFilter = [Player::class]) player: Player) {
+    fun onPlayerCloseInventoryEvent(
+        event: InteractInventoryEvent.Close,
+        @First(typeFilter = [Player::class]) player: Player
+    ) {
+        if (guiService.isGUIInventory(event.targetInventory)) {
+            concurrencyService.runTaskSync(2L) {
+                player.inventory.updateInventory()
+            }
+            return
+        }
+
         if (!storageService.isStorage(event.targetInventory)) {
             return
         }
