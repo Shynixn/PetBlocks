@@ -25,6 +25,7 @@ Make sure you have read the `introduction to PetBlocks <../pets/index.html>`_ fi
  health
  hopping
  inventory
+ aiparticle
  walking
  wearing
 

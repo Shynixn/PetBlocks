@@ -12,16 +12,7 @@ com.github.shynixn.petblocks.api.persistence.entity
 com.github.shynixn.petblocks.api.persistence.repository
 com.github.shynixn.petblocks.api.sponge.event
 com.github.shynixn.petblocks.bukkit
-com.github.shynixn.petblocks.bukkit.logic.business.extension
 com.github.shynixn.petblocks.bukkit.logic.business.listener
-com.github.shynixn.petblocks.bukkit.logic.business.nms.v1_10_R1
-com.github.shynixn.petblocks.bukkit.logic.business.nms.v1_11_R1
-com.github.shynixn.petblocks.bukkit.logic.business.nms.v1_12_R1
-com.github.shynixn.petblocks.bukkit.logic.business.nms.v1_13_R2
-com.github.shynixn.petblocks.bukkit.logic.business.nms.v1_14_R1
-com.github.shynixn.petblocks.bukkit.logic.business.nms.v1_15_R1
-com.github.shynixn.petblocks.bukkit.logic.business.nms.v1_8_R3
-com.github.shynixn.petblocks.bukkit.logic.business.nms.v1_9_R2
 com.github.shynixn.petblocks.bukkit.logic.business.pathfinder
 com.github.shynixn.petblocks.bukkit.logic.business.proxy
 com.github.shynixn.petblocks.bukkit.logic.business.serializer
