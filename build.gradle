@@ -248,7 +248,6 @@ task downloadDependencies(type: Exec) {
     }
 
     def text = "cd build/buildtools"
-    text += " && mvn install:install-file -Dfile=HeadDatabaseAPI.jar -DgroupId=me.arcaniax.hdb -DartifactId=HeadDatabaseAPI -Dversion=1.0 -Dpackaging=jar"
     text += " && java -jar BuildTools.jar --rev 1.8.8"
     text += " && mvn install:install-file -Dfile=spigot-1.8.8.jar -DgroupId=org.spigotmc -DartifactId=spigot18R3 -Dversion=1.8.8-R3.0 -Dpackaging=jar"
     text += " && java -jar BuildTools.jar --rev 1.9.4"
