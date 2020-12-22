@@ -8,7 +8,7 @@ shadowJar {
     archiveName = "$baseName-$version.$extension"
 
     // Change the output folder of the plugin.
-    // destinationDir = new File('D:\\Benutzer\\Temp\\plugins')
+    //  destinationDir = new File('D:\\Benutzer\\Temp\\plugins')
 
     relocate 'kotlin', 'com.github.shynixn.petblocks.lib.kotlin'
     relocate 'org.intellij', 'com.github.shynixn.petblocks.lib.org.intellij'
@@ -45,9 +45,6 @@ repositories {
         url "https://jitpack.io"
     }
     maven {
-        url "https://repo.codemc.org/repository/maven-public"
-    }
-    maven {
         url "http://repo.extendedclip.com/content/repositories/placeholderapi"
     }
 }
@@ -81,11 +78,11 @@ dependencies {
     implementation 'commons-io:commons-io:2.6'
     implementation 'com.google.inject:guice:4.2.3'
     implementation 'com.zaxxer:HikariCP:3.4.3'
-    implementation 'org.bstats:bstats-bukkit:1.7'
+    implementation("com.github.shynixn.org.bstats:bstats-bukkit:1.7")
     implementation 'com.google.code.gson:gson:2.8.6'
 
     compileOnly 'org.spigotmc:spigot114R1:1.14.4-R1.0'
-    compileOnly 'me.arcaniax.hdb:HeadDatabaseAPI:1.0'
+    compileOnly("com.github.shynixn.headdatabase:hdb-api:1.0")
     compileOnly("me.clip:placeholderapi:2.9.2")
 
     testCompile 'org.xerial:sqlite-jdbc:3.31.1'

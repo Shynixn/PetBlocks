@@ -3,8 +3,8 @@
 
 | branch        | status        |  version | download |
 | ------------- | ------------- |  --------| ---------| 
-| master        | [![Build Status](https://img.shields.io/travis/Shynixn/PetBlocks/master.svg?style=flat-square)](https://travis-ci.org/Shynixn/PetBlocks)| ![GitHub license](https://img.shields.io/nexus/r/https/oss.sonatype.org/com.github.shynixn.petblocks/petblocks-bukkit-plugin.svg?style=flat-square)  |[Download latest release](https://github.com/Shynixn/PetBlocks/releases)|
-| development   | [![Build Status](https://img.shields.io/travis/Shynixn/PetBlocks/development.svg?style=flat-square)](https://travis-ci.org/Shynixn/PetBlocks) |![GitHub license](https://img.shields.io/nexus/s/https/oss.sonatype.org/com.github.shynixn.petblocks/petblocks-bukkit-plugin.svg?style=flat-square) |  [Download snapshots](https://oss.sonatype.org/content/repositories/snapshots/com/github/shynixn/petblocks) |
+| master        | [![Build Status](https://api.travis-ci.com/Shynixn/PetBlocks.svg?branch=master)](https://travis-ci.org/Shynixn/PetBlocks)| ![GitHub license](https://img.shields.io/nexus/r/https/oss.sonatype.org/com.github.shynixn.petblocks/petblocks-bukkit-plugin.svg?style=flat-square)  |[Download latest release](https://github.com/Shynixn/PetBlocks/releases)|
+| development   | [![Build Status](https://api.travis-ci.com/Shynixn/PetBlocks.svg?branch=development)](https://travis-ci.org/Shynixn/PetBlocks) |![GitHub license](https://img.shields.io/nexus/s/https/oss.sonatype.org/com.github.shynixn.petblocks/petblocks-bukkit-plugin.svg?style=flat-square) |  [Download snapshots](https://oss.sonatype.org/content/repositories/snapshots/com/github/shynixn/petblocks) |
 ## Description
 
 PetBlocks is a spigot and also a sponge plugin to use blocks and custom heads as pets in Minecraft.
@@ -58,7 +58,7 @@ PetBlocks is a spigot and also a sponge plugin to use blocks and custom heads as
 
 ## Licence
 
-Copyright 2015-2020 Shynixn
+Copyright 2015-2021 Shynixn
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
