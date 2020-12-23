@@ -246,12 +246,25 @@ class PetListener @Inject constructor(
             return
         }
 
+        // Dismount location is important as normal dismounting may result into players getting teleported into the void.
+        val dismountLocation = event.entity.location.add(0.0, 1.5, 0.0)
+        val petMeta = persistencePetMetaService.getPetMetaFromPlayer(event.entity as Player)
+        val isPreRiding =
+            petService.hasPet(event.entity) && petMeta.aiGoals.firstOrNull { e -> e is AIGroundRiding || e is AIFlyRiding } != null
+
         unMountPet(event.entity as Player)
 
-        val petMeta = persistencePetMetaService.getPetMetaFromPlayer(event.entity as Player)
+        val isPostRiding =
+            petService.hasPet(event.entity) && petMeta.aiGoals.firstOrNull { e -> e is AIGroundRiding || e is AIFlyRiding } != null
 
-        if (petService.hasPet(event.entity) && petMeta.aiGoals.firstOrNull { e -> e is AIGroundRiding || e is AIFlyRiding } != null) {
+        if (isPostRiding) {
             event.isCancelled = true
+            return
+        }
+
+        if (isPreRiding) {
+            event.entity.teleport(dismountLocation)
+            return
         }
     }
 
