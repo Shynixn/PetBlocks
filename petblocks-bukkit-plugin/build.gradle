@@ -77,7 +77,7 @@ dependencies {
     implementation 'org.slf4j:slf4j-jdk14:1.7.30'
     implementation 'commons-io:commons-io:2.6'
     implementation 'com.google.inject:guice:4.2.3'
-    implementation 'com.zaxxer:HikariCP:3.4.3'
+    implementation 'com.zaxxer:HikariCP:4.0.0'
     implementation("com.github.shynixn.org.bstats:bstats-bukkit:1.7")
     implementation 'com.google.code.gson:gson:2.8.6'
 
