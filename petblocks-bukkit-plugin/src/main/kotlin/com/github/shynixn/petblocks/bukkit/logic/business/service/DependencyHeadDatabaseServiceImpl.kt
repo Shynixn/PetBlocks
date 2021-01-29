@@ -113,7 +113,7 @@ class DependencyHeadDatabaseServiceImpl @Inject constructor(
         val convertedItem = itemTypeService.toItem(item)
 
         petMeta.skin.typeName = convertedItem.type
-        petMeta.skin.dataValue = convertedItem.dataValue
+        petMeta.skin.dataValue = 3 // Force type 3 head
         petMeta.skin.owner = convertedItem.skin!!
         petMetaService.save(petMeta)
 
