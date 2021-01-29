@@ -1,60 +1,106 @@
 package com.github.shynixn.petblocks.core.logic.persistence.repository
 
+import com.fasterxml.jackson.core.JsonFactory
 import com.fasterxml.jackson.core.type.TypeReference
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.dataformat.yaml.YAMLFactory
-import com.fasterxml.jackson.dataformat.yaml.YAMLGenerator
+import com.github.shynixn.petblocks.api.business.service.CoroutineSessionService
 import com.github.shynixn.petblocks.api.business.service.ProxyService
 import com.github.shynixn.petblocks.api.persistence.context.SqlContext
-import com.github.shynixn.petblocks.api.persistence.entity.PlayerData
-import com.github.shynixn.petblocks.api.persistence.repository.PlayerDataRepository
 import com.github.shynixn.petblocks.core.logic.persistence.entity.PlayerDataEntity
 import com.google.inject.Inject
 import kotlinx.coroutines.*
+import java.sql.Statement
 import java.util.*
-import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 
 class PlayerDataRepositoryImpl @Inject constructor(
     private val sqlContext: SqlContext,
-    private val proxyService: ProxyService
-) : PlayerDataRepository {
+    private val proxyService: ProxyService,
+    private val coroutineSessionService: CoroutineSessionService
+) {
     private val objectMapper: ObjectMapper =
-        ObjectMapper(YAMLFactory().disable(YAMLGenerator.Feature.WRITE_DOC_START_MARKER))
+        ObjectMapper(JsonFactory())
 
-    private val cache = HashMap<UUID, Deferred<PlayerData>>()
+    private val cache = HashMap<UUID, Deferred<PlayerDataEntity>>()
+
+    /**
+     * Time interval between auto saving.
+     */
+    var savingInterval = 1000 * 60L * 5L
+
+    /**
+     * Initialize
+     */
+    init {
+        coroutineSessionService.launch(coroutineSessionService.minecraftDispatcher) {
+            while (true) {
+                val dataCopy = cache.values.map { e ->
+                    val result = e.await()
+
+                    Pair(PlayerDataEntity {
+                        this.databaseId = result.databaseId
+                        this.uuid = result.uuid
+                        this.name = result.name
+                    }, objectMapper.writeValueAsString(result))
+                }
+
+                withContext(coroutineSessionService.asyncDispatcher) {
+                    for (data in dataCopy) {
+                        save(data.first, data.second)
+                    }
+                }
+
+                for (data in dataCopy) {
+                    val uuid = UUID.fromString(data.first.uuid)
+
+                    if (cache.containsKey(uuid)) {
+                        val content = cache[uuid]!!.await()
+                        content.databaseId = data.first.databaseId
+
+                        if (!proxyService.isPlayerUUIDOnline(data.first.uuid)) {
+                            cache.remove(uuid)?.await()
+                        }
+                    }
+                }
+
+                delay(savingInterval)
+            }
+        }
+    }
 
     /**
      * Gets the stored data for the given player.
      * If no stored data is available, it will be automatically created.
      */
-    override suspend fun <P> getPlayerDataFromPlayerAsync(player: P): Deferred<PlayerData> {
+    suspend fun <P> getPlayerDataFromPlayerAsync(player: P): Deferred<PlayerDataEntity> {
         val uuid = proxyService.getPlayerUUID(player)
         return getPlayerDataFromPlayerUUIDAsync(UUID.fromString(uuid))
     }
 
     /**
      * Gets the stored data for the given player uuid.
+     * @param playerUUID Identifier of a player.
      * If no stored data is available, it will be automatically created.
      */
-    override suspend fun getPlayerDataFromPlayerUUIDAsync(playerUUID: UUID): Deferred<PlayerData> {
+    suspend fun getPlayerDataFromPlayerUUIDAsync(playerUUID: UUID): Deferred<PlayerDataEntity> {
         if (cache.containsKey(playerUUID)) {
             return cache[playerUUID]!!
         }
 
         coroutineScope {
-            cache[playerUUID] = async {
+            cache[playerUUID] = async(coroutineSessionService.asyncDispatcher) {
                 sqlContext.getConnection().use { connection ->
                     connection.prepareStatement("SELECT * FROM PETBLOCKS WHERE UUID = ?").use { preparedStatement ->
+                        preparedStatement.setString(1, playerUUID.toString())
                         preparedStatement.executeQuery().use { resultSet ->
                             if (resultSet.next()) {
                                 val content = resultSet.getString("content")
                                 objectMapper.readValue<PlayerDataEntity>(
                                     content,
-                                    object : TypeReference<List<PlayerDataEntity>>() {})
+                                    object : TypeReference<PlayerDataEntity>() {})
                             } else {
                                 PlayerDataEntity {
-                                    this.uuid = playerUUID
+                                    this.uuid = playerUUID.toString()
                                 }
                             }
                         }
@@ -67,60 +113,42 @@ class PlayerDataRepositoryImpl @Inject constructor(
     }
 
     /**
-     * Gets the stored data for the given player name.
-     * As player names are not guranteed to be unique, a list of player data is
-     * returned which however mostly only contains 1 single element.
-     * If no stored data is available, the list will be empty.
+     * Disposes the repository.
      */
-    override suspend fun getPlayerDataFromPlayerNameAsync(playerName: String): Deferred<List<PlayerData>> {
-        val dataBaseResults = coroutineScope {
-            withContext(Dispatchers.IO) {
-                sqlContext.getConnection().use { connection ->
-                    connection.prepareStatement("SELECT * FROM PETBLOCKS WHERE NAME = ?").use { preparedStatement ->
-                        preparedStatement.executeQuery().use { resultSet ->
-                            val results = ArrayList<PlayerDataEntity>()
-
-                            while (resultSet.next()) {
-                                val content = resultSet.getString("content")
-                                val result = objectMapper.readValue<PlayerDataEntity>(
-                                    content,
-                                    object : TypeReference<List<PlayerDataEntity>>() {})
-                                results.add(result)
-                            }
-
-                            results
-                        }
-                    }
-                }
-            }
-        }
-
-        val playerDataResult = ArrayList<PlayerData>()
-
-        for (uuid in cache.keys) {
-            val playerDataDeferred = cache[uuid]!!
-            val playerData = playerDataDeferred.await()
-
-            if (playerData.name == playerName) {
-                playerDataResult.add(playerData)
-            }
-        }
-
-        for (dataBaseResult in dataBaseResults) {
-            val cacheElement = playerDataResult.firstOrNull { e -> e.name == playerName }
-
-            if (cacheElement == null) {
-                playerDataResult.add(dataBaseResult)
-            }
-        }
-
-        return
+    fun dispose() {
+        cache.clear()
     }
 
     /**
-     * Disposes the repository.
+     * Saves a player data to the database.
      */
-    override fun dispose() {
-        TODO("Not yet implemented")
+    private fun save(playerDataEntity: PlayerDataEntity, payload: String) {
+        sqlContext.getConnection().use { connection ->
+            if (playerDataEntity.databaseId == 0) {
+                connection.prepareStatement(
+                    "INSERT INTO PETBLOCKS (uuid, name, content) VALUES (?,?,?)",
+                    Statement.RETURN_GENERATED_KEYS
+                )
+                    .use {
+                        it.setString(1, playerDataEntity.uuid)
+                        it.setString(2, playerDataEntity.name)
+                        it.setString(3, payload)
+                        it.executeUpdate()
+
+                        it.generatedKeys.use { resultSet ->
+                            resultSet.next()
+                            playerDataEntity.databaseId = resultSet.getInt(1)
+                        }
+                    }
+                return
+            }
+
+            connection.prepareStatement("UPDATE PETBLOCKS SET name=?, content=? WHERE uuid = ?").use {
+                it.setString(1, playerDataEntity.name)
+                it.setString(2, payload)
+                it.setString(3, playerDataEntity.uuid)
+                it.executeUpdate()
+            }
+        }
     }
 }
