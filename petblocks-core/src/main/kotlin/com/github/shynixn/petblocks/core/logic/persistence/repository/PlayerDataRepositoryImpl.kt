@@ -34,19 +34,13 @@ class PlayerDataRepositoryImpl @Inject constructor(
     init {
         coroutineSessionService.launch(coroutineSessionService.minecraftDispatcher) {
             while (true) {
-                val dataCopy = cache.values.map { e ->
-                    val result = e.await()
-
-                    Pair(PlayerDataEntity {
-                        this.databaseId = result.databaseId
-                        this.uuid = result.uuid
-                        this.name = result.name
-                    }, objectMapper.writeValueAsString(result))
-                }
+                val dataCopy = createSaveChangeset()
 
                 withContext(coroutineSessionService.asyncDispatcher) {
-                    for (data in dataCopy) {
-                        save(data.first, data.second)
+                    synchronized(cache) {
+                        for (data in dataCopy) {
+                            save(data.first, data.second)
+                        }
                     }
                 }
 
@@ -95,9 +89,13 @@ class PlayerDataRepositoryImpl @Inject constructor(
                         preparedStatement.executeQuery().use { resultSet ->
                             if (resultSet.next()) {
                                 val content = resultSet.getString("content")
-                                objectMapper.readValue<PlayerDataEntity>(
+                                val id = resultSet.getInt("id")
+
+                                val result = objectMapper.readValue<PlayerDataEntity>(
                                     content,
                                     object : TypeReference<PlayerDataEntity>() {})
+                                result.databaseId = id
+                                result
                             } else {
                                 PlayerDataEntity {
                                     this.uuid = playerUUID.toString()
@@ -115,8 +113,31 @@ class PlayerDataRepositoryImpl @Inject constructor(
     /**
      * Disposes the repository.
      */
-    fun dispose() {
+    suspend fun dispose() {
+        val dataCopy = createSaveChangeset()
+
+        synchronized(cache) {
+            for (playerData in dataCopy) {
+                save(playerData.first, playerData.second)
+            }
+        }
+
         cache.clear()
+    }
+
+    /**
+     * Creates a changeset which can be saved to the database.
+     */
+    private suspend fun createSaveChangeset(): List<Pair<PlayerDataEntity, String>> {
+        return cache.values.map { e ->
+            val result = e.await()
+
+            Pair(PlayerDataEntity {
+                this.databaseId = result.databaseId
+                this.uuid = result.uuid
+                this.name = result.name
+            }, objectMapper.writeValueAsString(result))
+        }
     }
 
     /**

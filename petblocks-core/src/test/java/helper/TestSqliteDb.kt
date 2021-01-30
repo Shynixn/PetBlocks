@@ -4,18 +4,15 @@ import com.github.shynixn.petblocks.api.persistence.context.SqlContext
 import java.io.File
 import java.sql.Connection
 import java.sql.DriverManager
+import java.util.*
 
 class TestSqliteDb : SqlContext {
-    private val url = "jdbc:sqlite:test-db.sqlite"
+    private var databaseName = "test-db-" + UUID.randomUUID().toString() + ".sqlite"
+    private val url = "jdbc:sqlite:${databaseName}"
+    private val file = File(databaseName)
 
     init {
-        val file = File("test-db.sqlite")
-
-        if (file.exists()) {
-            file.delete()
-        }
-
-        getConnection().use {
+        DriverManager.getConnection(url).use {
             it.prepareStatement(
                 "CREATE TABLE PETBLOCKS (" +
                         "id INTEGER PRIMARY KEY AUTOINCREMENT" +
@@ -26,11 +23,25 @@ class TestSqliteDb : SqlContext {
         }
     }
 
+    fun shutdown() {
+        synchronized(file) {
+            if (file.exists()) {
+                file.delete()
+            }
+        }
+    }
+
     /**
      * Gets a new connection to the database.
      * Caller is responsible for closing the connection after using.
      */
     override fun getConnection(): Connection {
-        return DriverManager.getConnection(url)
+        synchronized(file) {
+            if (!file.exists()) {
+                throw RuntimeException("File does not longer exist.")
+            }
+
+            return DriverManager.getConnection(url)
+        }
     }
 }
