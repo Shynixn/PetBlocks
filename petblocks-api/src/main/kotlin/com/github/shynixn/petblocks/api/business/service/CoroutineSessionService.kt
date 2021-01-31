@@ -19,4 +19,9 @@ interface CoroutineSessionService {
      * Async.
      */
     val asyncDispatcher: CoroutineContext
+
+    /**
+     * Scope.
+     */
+    val scope: CoroutineScope
 }

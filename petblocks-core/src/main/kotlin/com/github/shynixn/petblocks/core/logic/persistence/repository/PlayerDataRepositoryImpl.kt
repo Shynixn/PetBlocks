@@ -9,8 +9,10 @@ import com.github.shynixn.petblocks.api.persistence.context.SqlContext
 import com.github.shynixn.petblocks.core.logic.persistence.entity.PlayerDataEntity
 import com.google.inject.Inject
 import kotlinx.coroutines.*
+import kotlinx.coroutines.future.future
 import java.sql.Statement
 import java.util.*
+import java.util.concurrent.CompletionStage
 import kotlin.collections.HashMap
 
 class PlayerDataRepositoryImpl @Inject constructor(
@@ -66,6 +68,16 @@ class PlayerDataRepositoryImpl @Inject constructor(
      * Gets the stored data for the given player.
      * If no stored data is available, it will be automatically created.
      */
+    fun <P> getPlayerDataFromPlayer(player: P): CompletionStage<PlayerDataEntity> {
+        return coroutineSessionService.scope.future {
+            getPlayerDataFromPlayerAsync(player).await()
+        }
+    }
+
+    /**
+     * Gets the stored data for the given player.
+     * If no stored data is available, it will be automatically created.
+     */
     suspend fun <P> getPlayerDataFromPlayerAsync(player: P): Deferred<PlayerDataEntity> {
         val uuid = proxyService.getPlayerUUID(player)
         return getPlayerDataFromPlayerUUIDAsync(UUID.fromString(uuid))
@@ -73,19 +85,30 @@ class PlayerDataRepositoryImpl @Inject constructor(
 
     /**
      * Gets the stored data for the given player uuid.
-     * @param playerUUID Identifier of a player.
+     * @param uuid Identifier of a player.
      * If no stored data is available, it will be automatically created.
      */
-    suspend fun getPlayerDataFromPlayerUUIDAsync(playerUUID: UUID): Deferred<PlayerDataEntity> {
-        if (cache.containsKey(playerUUID)) {
-            return cache[playerUUID]!!
+    fun <P> getPlayerDataFromPlayer(uuid: UUID): CompletionStage<PlayerDataEntity> {
+        return coroutineSessionService.scope.future {
+            getPlayerDataFromPlayerUUIDAsync(uuid).await()
+        }
+    }
+
+    /**
+     * Gets the stored data for the given player uuid.
+     * @param uuid Identifier of a player.
+     * If no stored data is available, it will be automatically created.
+     */
+    suspend fun getPlayerDataFromPlayerUUIDAsync(uuid: UUID): Deferred<PlayerDataEntity> {
+        if (cache.containsKey(uuid)) {
+            return cache[uuid]!!
         }
 
         coroutineScope {
-            cache[playerUUID] = async(coroutineSessionService.asyncDispatcher) {
+            cache[uuid] = async(coroutineSessionService.asyncDispatcher) {
                 sqlContext.getConnection().use { connection ->
                     connection.prepareStatement("SELECT * FROM PETBLOCKS WHERE UUID = ?").use { preparedStatement ->
-                        preparedStatement.setString(1, playerUUID.toString())
+                        preparedStatement.setString(1, uuid.toString())
                         preparedStatement.executeQuery().use { resultSet ->
                             if (resultSet.next()) {
                                 val content = resultSet.getString("content")
@@ -98,7 +121,7 @@ class PlayerDataRepositoryImpl @Inject constructor(
                                 result
                             } else {
                                 PlayerDataEntity {
-                                    this.uuid = playerUUID.toString()
+                                    this.uuid = uuid.toString()
                                 }
                             }
                         }
@@ -107,7 +130,7 @@ class PlayerDataRepositoryImpl @Inject constructor(
             }
         }
 
-        return cache[playerUUID]!!
+        return cache[uuid]!!
     }
 
     /**

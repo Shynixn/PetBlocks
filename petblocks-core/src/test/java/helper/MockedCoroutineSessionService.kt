@@ -23,4 +23,10 @@ class MockedCoroutineSessionService : CoroutineSessionService {
      */
     override val asyncDispatcher: CoroutineContext
         get() = Dispatchers.IO
+
+    /**
+     * Scope.
+     */
+    override val scope: CoroutineScope
+        get() = GlobalScope
 }
