@@ -84,7 +84,7 @@ dependencies {
     implementation("com.github.shynixn.mccoroutine:mccoroutine-bukkit-core:0.0.6")
 
     implementation("org.slf4j:slf4j-jdk14:1.7.30")
-    implementation("commons-io:commons-io:2.6")
+    implementation("commons-io:commons-io:2.8.0")
     implementation("com.google.inject:guice:4.2.3")
     implementation("com.zaxxer:HikariCP:3.4.3")
 
