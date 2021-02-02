@@ -39,7 +39,8 @@ jobs:
           ./gradlew assemble || ./gradlew setupDecompWorkspace && ./gradlew assemble || ./gradlew downloadDependencies
           ./gradlew clean build
           
-      - name: Publish Test Report             
+      - name: Publish Test Report
+        run: |	             
           ./gradlew jacocoTestReport
           bash <(curl -s https://codecov.io/bash)
           ./travis-status.sh success $WEBHOOK_URL # TODO: Replace it with new BOT
