@@ -43,7 +43,7 @@ jobs:
         run: |	             
           ./gradlew jacocoTestReport
           bash <(curl -s https://codecov.io/bash)
-          ./travis-status.sh success $WEBHOOK_URL # TODO: Replace it with new BOT
+        # Disabled ./travis-status.sh success $WEBHOOK_URL # TODO: Replace it with new BOT
    
       - name: Publish Snapshot
         if: "contains(github.event.head_commit.message, '--snapshot')"
