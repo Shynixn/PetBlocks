@@ -98,7 +98,7 @@ dependencies {
     compileOnly("com.github.shynixn.headdatabase:hdb-api:1.0")
     compileOnly("me.clip:placeholderapi:2.9.2")
 
-    testCompile("org.xerial:sqlite-jdbc:3.31.1")
+    testCompile("org.xerial:sqlite-jdbc:3.34.0")
     testCompile("ch.vorburger.mariaDB4j:mariaDB4j:2.4.0")
     testCompile("org.spigotmc:spigot18R3:1.8.8-R3.0")
 }

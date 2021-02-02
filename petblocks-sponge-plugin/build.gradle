@@ -95,7 +95,7 @@ dependencies {
     compileOnly 'com.zaxxer:HikariCP:3.4.3'
     compileOnly 'org.spongepowered:spongeapi:7.1.0'
 
-    testCompile 'org.xerial:sqlite-jdbc:3.31.1'
+    testCompile 'org.xerial:sqlite-jdbc:3.34.0'
     testCompile 'org.spongepowered:spongeapi:7.1.0'
     testCompile 'ch.vorburger.mariaDB4j:mariaDB4j:2.4.0'
     testCompile 'mysql:mysql-connector-java:5.1.24'
