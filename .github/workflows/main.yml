@@ -119,37 +119,3 @@ jobs:
            git add -f docs/build
            git commit --message "Automatic CI Documentation."
            git push --quiet https://Shynixn:${{ secrets.GITHUB_TOKEN }}@github.com/Shynixn/PetBlocks.git HEAD:master
-          
-          
-        
-          
-        
-          
-          
-          
-
-
-
-    
-      - name: Upload Release Mapping
-        if: "contains(github.event.head_commit.message, '--release')"
-        id: upload-release-mapping
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}  
-          asset_path: /home/runner/work/LobbyBalls/LobbyBalls/lobbyballs-bukkit-plugin/build/libs/mapping.txt
-          asset_name: mapping.txt
-          asset_content_type: text/plain
-      - name: Upload Release Seeds
-        if: "contains(github.event.head_commit.message, '--release')"
-        id: upload-release-seeds
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}  
-          asset_path: /home/runner/work/LobbyBalls/LobbyBalls/lobbyballs-bukkit-plugin/build/libs/seeds.txt
-          asset_name: seeds.txt
-          asset_content_type: text/plain
