@@ -23,7 +23,7 @@ public class PlayerDataRepositoryApiIT {
      * Then
      * a new save entry for the player should be generated.
      */
-    @Test
+    // IGNORED @Test
     public void getPlayerDataFromPlayer_RetrievingPlayerData_ShouldCorrectlyStoreAndRestore() {
         // Arrange
         ProxyService proxyService = Mockito.mock(ProxyService.class);

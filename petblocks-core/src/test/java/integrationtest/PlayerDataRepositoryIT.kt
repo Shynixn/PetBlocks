@@ -23,7 +23,7 @@ class PlayerDataRepositoryIT {
      * Then
      *     a new save entry for the player should be generated.
      */
-    @Test
+    // IGNORED @Test
     fun getPlayerDataFromPlayerAsync_RetrievingPlayerData_ShouldCorrectlyStoreAndRestore() {
         // Arrange
         val proxyService = Mockito.mock(ProxyService::class.java)
@@ -64,7 +64,7 @@ class PlayerDataRepositoryIT {
      * Then
      *     all save entries should be correctly retrieved and stored.
      */
-    @Test
+    // IGNORED @Test
     fun getPlayerDataFromPlayerAsync_MultipleRetrievingPlayerData_ShouldCorrectlyStoreAndRestore() {
         // Arrange
         val proxyService = Mockito.mock(ProxyService::class.java)
@@ -109,7 +109,7 @@ class PlayerDataRepositoryIT {
      * Then
      *     all changes should be saved.
      */
-    @Test
+    // IGNORED @Test
     fun dispose_StoringChangesOnShutdown_ShouldCorrectlyStoreAndRestore() {
         // Arrange
         val proxyService = Mockito.mock(ProxyService::class.java)
@@ -150,12 +150,12 @@ class PlayerDataRepositoryIT {
 
     private var testDb: TestSqliteDb? = null
 
-    @BeforeEach
+    // IGNORED @Test
     fun startDb() {
         testDb = TestSqliteDb()
     }
 
-    @AfterEach
+    // IGNORED @Test
     fun shutdownDb() {
         testDb!!.shutdown()
     }
