@@ -92,7 +92,7 @@ dependencies {
     implementation project(path: ':petblocks-api', configuration: 'default')
     implementation project(path: ':petblocks-sponge-api', configuration: 'default')
 
-    compileOnly 'com.zaxxer:HikariCP:3.4.3'
+    compileOnly 'com.zaxxer:HikariCP:4.0.1'
     compileOnly 'org.spongepowered:spongeapi:7.1.0'
 
     testCompile 'org.xerial:sqlite-jdbc:3.31.1'
@@ -100,6 +100,6 @@ dependencies {
     testCompile 'ch.vorburger.mariaDB4j:mariaDB4j:2.4.0'
     testCompile 'mysql:mysql-connector-java:5.1.24'
 
-    testRuntime 'com.zaxxer:HikariCP:3.2.0'
+    testRuntime 'com.zaxxer:HikariCP:4.0.1'
     testRuntime 'org.slf4j:slf4j-jdk14:1.7.30'
 }
