@@ -24,8 +24,8 @@ shadowJar {
     relocate 'com.zaxxer', 'com.github.shynixn.petblocks.lib.com.zaxxer'
     relocate 'org.apache', 'com.github.shynixn.petblocks.lib.org.apache'
     relocate 'org.codehaus', 'com.github.shynixn.petblocks.lib.org.codehaus'
-    relocate("org.checkerframework', 'com.github.shynixn.petblocks.lib.org.checkerframework")
-    relocate("javax.annotation', 'com.github.shynixn.petblocks.lib.javax.annotation")
+    relocate("org.checkerframework", "com.github.shynixn.petblocks.lib.org.checkerframework")
+    relocate("javax.annotation", "com.github.shynixn.petblocks.lib.javax.annotation")
     relocate("com.fasterxml", "com.github.shynixn.petblocks.lib.com.fasterxml")
     relocate("com.github.shynixn.mccoroutine", "com.github.shynixn.petblocks.lib.com.github.shynixn.mccoroutine")
 }
