@@ -36,9 +36,9 @@ jobs:
       - name: Cache Forge Dependencies
         id: cache-forge-dependencies
         uses: actions/cache@v2
-          with:
-            path: /home/runner/.gradle/caches/minecraft
-            key: forge-dependencies
+        with:
+          path: /home/runner/.gradle/caches/minecraft
+          key: forge-dependencies
           
       - name: Build Java Application
         run: |	
