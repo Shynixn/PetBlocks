@@ -76,11 +76,14 @@ class NMSPetVillager(petDesign: NMSPetArmorstand, location: Location) :
         clearAIGoals()
         pathfinderCounter = 0
 
+        val proxies = HashMap<PathfinderProxy, CombinedPathfinder.Cache>()
+        val hyperPathfinder = CombinedPathfinder(proxies)
+
         for (pathfinder in pathfinders) {
             if (pathfinder is PathfinderProxy) {
                 val wrappedPathfinder = Pathfinder(pathfinder)
                 this.cachedPathfinders.add(wrappedPathfinder)
-                this.goalSelector.a(pathfinderCounter++, wrappedPathfinder)
+                proxies[pathfinder] = CombinedPathfinder.Cache()
 
                 val aiBase = pathfinder.aiBase
 
@@ -94,6 +97,9 @@ class NMSPetVillager(petDesign: NMSPetArmorstand, location: Location) :
                 this.cachedPathfinders.add(pathfinder)
             }
         }
+
+        this.goalSelector.a(pathfinderCounter++, hyperPathfinder)
+        this.cachedPathfinders.add(hyperPathfinder)
     }
 
     /**
