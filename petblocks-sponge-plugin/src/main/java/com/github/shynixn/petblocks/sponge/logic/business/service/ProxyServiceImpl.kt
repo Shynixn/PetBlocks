@@ -403,6 +403,22 @@ class ProxyServiceImpl @Inject constructor(
     }
 
     /**
+     * Gets if the player is currently online.
+     */
+    override fun <P> isPlayerOnline(player: P): Boolean {
+        require(player is Player)
+        return player.isOnline
+    }
+
+    /**
+     * Gets if the player with the given uuid is currently online.
+     */
+    override fun isPlayerUUIDOnline(uuid: String): Boolean {
+        val optPlayer = Sponge.getServer().getPlayer(UUID.fromString(uuid))
+        return optPlayer.isPresent && optPlayer.get().isOnline
+    }
+
+    /**
      * Gets if the given instance can be converted to a player.
      */
     override fun <P> isPlayer(instance: P): Boolean {

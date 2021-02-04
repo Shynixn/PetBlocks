@@ -37,8 +37,12 @@ shadowJar {
     relocate 'org.jetbrains', 'com.github.shynixn.petblocks.lib.org.jetbrains'
     relocate 'javax.inject', 'com.github.shynixn.petblocks.lib.javax.inject'
     relocate 'org.aopalliance', 'com.github.shynixn.petblocks.lib.org.aopalliance'
+    relocate("com.fasterxml", "com.github.shynixn.petblocks.lib.com.fasterxml")
+    relocate("com.github.shynixn.mccoroutine", "com.github.shynixn.petblocks.lib.com.github.shynixn.mccoroutine")
 
     exclude "dummyThing"
+    exclude("DebugProbesKt.bin")
+    exclude("module-info.class")
 }
 
 jar {

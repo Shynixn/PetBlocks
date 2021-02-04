@@ -166,4 +166,14 @@ interface ProxyService {
      * Executes a player command.
      */
     fun <P> executePlayerCommand(player: P, message: String)
+
+    /**
+     * Gets if the player is currently online.
+     */
+    fun <P> isPlayerOnline(player: P): Boolean
+
+    /**
+     * Gets if the player with the given uuid is currently online.
+     */
+    fun isPlayerUUIDOnline(uuid: String): Boolean
 }

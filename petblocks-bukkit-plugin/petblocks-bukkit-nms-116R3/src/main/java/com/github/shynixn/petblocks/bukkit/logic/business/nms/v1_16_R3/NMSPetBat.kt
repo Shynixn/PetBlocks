@@ -36,7 +36,8 @@ import org.bukkit.event.entity.CreatureSpawnEvent
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-class NMSPetBat(petDesign: NMSPetArmorstand, location: Location) : EntityParrot(EntityTypes.PARROT, (location.world as CraftWorld).handle) {
+class NMSPetBat(petDesign: NMSPetArmorstand, location: Location) :
+    EntityParrot(EntityTypes.PARROT, (location.world as CraftWorld).handle) {
     // NMSPetBee might be instantiated from another source.
     private var petDesign: NMSPetArmorstand? = null
 
@@ -58,8 +59,10 @@ class NMSPetBat(petDesign: NMSPetArmorstand, location: Location) : EntityParrot(
             val flyingAI = this.petDesign!!.proxy.meta.aiGoals.firstOrNull { a -> a is AIFlying } as AIFlying?
 
             if (flyingAI != null) {
-                this.getAttributeInstance(GenericAttributes.MOVEMENT_SPEED)!!.value = 0.30000001192092896 * flyingAI.movementSpeed
-                this.getAttributeInstance(GenericAttributes.FLYING_SPEED)!!.value = 0.30000001192092896 * flyingAI.movementSpeed
+                this.getAttributeInstance(GenericAttributes.MOVEMENT_SPEED)!!.value =
+                    0.30000001192092896 * flyingAI.movementSpeed
+                this.getAttributeInstance(GenericAttributes.FLYING_SPEED)!!.value =
+                    0.30000001192092896 * flyingAI.movementSpeed
                 this.G = flyingAI.climbingHeight.toFloat()
             }
         }
@@ -84,16 +87,22 @@ class NMSPetBat(petDesign: NMSPetArmorstand, location: Location) : EntityParrot(
         clearAIGoals()
         pathfinderCounter = 0
 
+        val proxies = HashMap<PathfinderProxy, CombinedPathfinder.Cache>()
+        val hyperPathfinder = CombinedPathfinder(proxies)
+
         for (pathfinder in pathfinders) {
             if (pathfinder is PathfinderProxy) {
                 val wrappedPathfinder = Pathfinder(pathfinder)
                 this.cachedPathfinders.add(wrappedPathfinder)
-                this.goalSelector.a(pathfinderCounter++, wrappedPathfinder)
+                proxies[pathfinder] = CombinedPathfinder.Cache()
             } else {
                 this.goalSelector.a(pathfinderCounter++, pathfinder as PathfinderGoal)
                 this.cachedPathfinders.add(pathfinder)
             }
         }
+
+        this.goalSelector.a(pathfinderCounter++, hyperPathfinder)
+        this.cachedPathfinders.add(hyperPathfinder)
     }
 
     /**

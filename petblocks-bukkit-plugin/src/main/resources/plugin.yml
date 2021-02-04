@@ -1,8 +1,8 @@
 name: PetBlocks
-version: 8.23.0
+version: 8.24.0
 author: Shynixn
 main: com.github.shynixn.petblocks.bukkit.PetBlocksPlugin
-softdepend: [PlaceholderAPI]
+softdepend: [PlaceholderAPI, HeadDatabase]
 commands:
   petblocks:
     description: Command to configure pets.

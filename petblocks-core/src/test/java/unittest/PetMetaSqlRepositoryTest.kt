@@ -499,5 +499,19 @@ class PetMetaSqlRepositoryTest {
         override fun <P> executePlayerCommand(player: P, message: String) {
             throw IllegalArgumentException()
         }
+
+        /**
+         * Gets if the player is currently online.
+         */
+        override fun <P> isPlayerOnline(player: P): Boolean {
+            TODO("Not yet implemented")
+        }
+
+        /**
+         * Gets if the player with the given uuid is currently online.
+         */
+        override fun isPlayerUUIDOnline(uuid: String): Boolean {
+            TODO("Not yet implemented")
+        }
     }
 }
