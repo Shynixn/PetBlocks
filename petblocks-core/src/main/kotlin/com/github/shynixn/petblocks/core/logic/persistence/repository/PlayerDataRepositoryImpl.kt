@@ -24,6 +24,7 @@ class PlayerDataRepositoryImpl @Inject constructor(
         ObjectMapper(JsonFactory())
 
     private val cache = HashMap<UUID, Deferred<PlayerDataEntity>>()
+    private var disposed = false
 
     /**
      * Time interval between auto saving.
@@ -35,7 +36,7 @@ class PlayerDataRepositoryImpl @Inject constructor(
      */
     init {
         coroutineSessionService.launch(coroutineSessionService.minecraftDispatcher) {
-            while (true) {
+            while (!disposed) {
                 val dataCopy = createSaveChangeset()
 
                 withContext(coroutineSessionService.asyncDispatcher) {
@@ -146,6 +147,7 @@ class PlayerDataRepositoryImpl @Inject constructor(
         }
 
         cache.clear()
+        disposed = true
     }
 
     /**
