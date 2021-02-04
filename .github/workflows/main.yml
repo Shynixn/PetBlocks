@@ -68,6 +68,12 @@ jobs:
 
       - name: Publish Release
         if: "contains(github.event.head_commit.message, '--release') && contains(github.ref, 'master')"
+        env:
+          SIGNING_KEY_ID: ${{ secrets.SIGNING_KEY_ID }}
+          SIGNING_KEY_PASSWORD: ${{ secrets.SIGNING_KEY_PASSWORD }}
+          SIGNING_KEY_FILE: ${{ secrets.SIGNING_KEY_FILE }}
+          SONATYPE_USERNAME: ${{ secrets.SONATYPE_USERNAME }}
+          SONATYPE_PASSWORD: ${{ secrets.SONATYPE_PASSWORD }}
         run: |
           gpg2 --batch --cipher-algo AES256 --passphrase ${{ secrets.SIGNING_KEY_PASSWORD }} travis_secret_key.gpg
           ./gradlew publishToNexus > /dev/null
@@ -129,6 +135,7 @@ jobs:
           sudo pip3 install sphinx
           rm -rf docs/build
           rm -rf docs/apidocs
+          chmod +x gradlew
           ./gradlew generateJavaDocPages > /dev/null
           sudo python3 -msphinx -M html docs/source docs/build
           git add docs
