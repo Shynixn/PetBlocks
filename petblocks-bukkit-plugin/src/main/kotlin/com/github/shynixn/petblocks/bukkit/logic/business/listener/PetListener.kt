@@ -247,10 +247,10 @@ class PetListener @Inject constructor(
         }
 
         // Dismount location is important as normal dismounting may result into players getting teleported into the void.
-        val dismountLocation = event.entity.location.add(0.0, 1.5, 0.0)
+        val dismountLocation = event.entity.location.add(0.0, 1.5, 0.0).clone()
         val petMeta = persistencePetMetaService.getPetMetaFromPlayer(event.entity as Player)
-        val isPreRiding =
-            petService.hasPet(event.entity) && petMeta.aiGoals.firstOrNull { e -> e is AIGroundRiding || e is AIFlyRiding } != null
+        val isPreFlying =
+            petService.hasPet(event.entity) && petMeta.aiGoals.firstOrNull { e -> e is AIFlyRiding } != null
 
         unMountPet(event.entity as Player)
 
@@ -262,8 +262,12 @@ class PetListener @Inject constructor(
             return
         }
 
-        if (isPreRiding) {
-            event.entity.teleport(dismountLocation)
+        if (isPreFlying) {
+            // Fixes void teleporting for flying pets.
+            sync(concurrencyService, 10L) {
+                event.entity.teleport(dismountLocation)
+            }
+
             return
         }
     }
