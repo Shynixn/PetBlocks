@@ -44,7 +44,7 @@ jobs:
         run: |
           chmod +x gradlew
           ./gradlew assemble || ./gradlew setupDecompWorkspace && ./gradlew assemble || ./gradlew downloadDependencies
-          ./gradlew clean build
+          ./gradlew clean build shadowJar
 
       - name: Publish Test Report
         run: |
@@ -87,6 +87,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
+          body: "This release was automatically created by Github Actions. Please wait until the author manually sets the patchnotes for this release."
           tag_name: ${{ env.RELEASE_VERSION }}
           release_name: Release ${{ env.RELEASE_VERSION }}
           draft: false
