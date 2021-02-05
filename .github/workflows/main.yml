@@ -76,8 +76,6 @@ jobs:
           SONATYPE_PASSWORD: ${{ secrets.SONATYPE_PASSWORD }}
         run: |
           gpg2 --batch --cipher-algo AES256 --passphrase ${{ secrets.SIGNING_KEY_PASSWORD }} travis_secret_key.gpg
-        #  ./gradlew publishToNexus > /dev/null DISABLED TEMPORARY
-        #  ./gradlew closeAndReleaseRepository
           echo "RELEASE_VERSION=$(./gradlew -q printVersion)" >> $GITHUB_ENV
           java -jar petblocks-tools/build/libs/Deploy.jar --release ${{ secrets.DISCORD_WEBHOOK_SNAPSHOT }}
           java -jar petblocks-tools/build/libs/Deploy.jar --release ${{ secrets.DISCORD_WEBHOOK }}
