@@ -76,7 +76,7 @@ jobs:
           SONATYPE_PASSWORD: ${{ secrets.SONATYPE_PASSWORD }}
         run: |
           gpg2 --batch --cipher-algo AES256 --passphrase ${{ secrets.SIGNING_KEY_PASSWORD }} travis_secret_key.gpg
-          ./gradlew publish > /dev/null
+          ./gradlew publishToNexus > /dev/null
           ./gradlew closeAndReleaseRepository
           echo "RELEASE_VERSION=$(./gradlew -q printVersion)" >> $GITHUB_ENV
           java -jar petblocks-tools/build/libs/Deploy.jar --release ${{ secrets.DISCORD_WEBHOOK_SNAPSHOT }}
@@ -128,6 +128,7 @@ jobs:
 
       - name: Build Documentation
         run: |
+          git pull
           git config --global user.email "shynixn@email.com" && git config --global user.name "Shynixn CI Actions"
           sudo apt-get install python3-pip
           sudo apt-get install python3-setuptools
