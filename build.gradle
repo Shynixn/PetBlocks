@@ -15,7 +15,7 @@ buildscript {
 
 plugins {
     id 'io.codearte.nexus-staging' version '0.20.0'
-    id 'de.marcphilipp.nexus-publish' version '0.2.0'
+    id 'de.marcphilipp.nexus-publish' version '0.4.0'
 }
 
 apply plugin: 'org.jetbrains.kotlin.jvm'
@@ -27,12 +27,23 @@ repositories {
     jcenter()
 }
 
+/**
+ * Releases the artifacts on Nexus (io.codearte.nexus-staging)
+ */
 nexusStaging {
     packageGroup = "com.github.shynixn"
     username = project.hasProperty("ossrhUsername") ? project.findProperty("ossrhUsername") : System.getenv('SONATYPE_USERNAME')
     password = project.hasProperty("ossrhPassword") ? project.findProperty("ossrhPassword") : System.getenv('SONATYPE_PASSWORD')
     delayBetweenRetriesInMillis = 10000
     numberOfRetries = 100
+}
+
+/**
+ * Uploads the artifacts to Nexus (de.marcphilipp.nexus-publish)
+ */
+nexusPublishing {
+    connectTimeout = Duration.ofMinutes(15)
+    clientTimeout = Duration.ofMinutes(15)
 }
 
 allprojects {
