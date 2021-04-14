@@ -35,6 +35,8 @@ SpongeVanilla/SpongeForge
 Download Resource Pack PetBlx
 ~~~~~~~~
 
+.. image:: ../_static/images/petblx-logo.png
+
 .. raw:: html
 
    <style>
