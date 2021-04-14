@@ -54,7 +54,7 @@ Download Resource Pack PetBlx
          box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24),0 17px 50px 0 rgba(0,0,0,0.19);
        }
    </style>
-   <a class="button" href="https://shynixn.github.io/PetBlocks/source/_static/resource/PetBlx.zip" download="PetBlx.zip">Download PetBlx Resource Pack</button>
+   <a class="button" href="https://shynixn.github.io/PetBlocks/source/_static/resource/PetBlx.zip" download="PetBlx.zip">Download PetBlx Resource Pack</a>
 
 Download
 ~~~~~~~~
