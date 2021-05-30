@@ -5,10 +5,11 @@
 <!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  
+  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Developer API &mdash; PetBlocks 8.24.0 documentation</title>
+  <title>Developer API &mdash; PetBlocks 8.25.0 documentation</title>
   
 
   
@@ -32,12 +33,16 @@
   
 
   
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  
+    <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  
 
   
         <link rel="index" title="Index"
               href="../../genindex.html"/>
         <link rel="search" title="Search" href="../../search.html"/>
-    <link rel="top" title="PetBlocks 8.24.0 documentation" href="../../index.html"/> 
+    <link rel="top" title="PetBlocks 8.25.0 documentation" href="../../index.html"/> 
 
   
   <script src="../../_static/js/modernizr.min.js"></script>
@@ -69,7 +74,7 @@
             
             
               <div class="version">
-                8.24.0
+                8.25.0
               </div>
             
           
@@ -167,13 +172,13 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="developer-api">
+  <section id="developer-api">
 <h1>Developer API<a class="headerlink" href="#developer-api" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="javadocs">
+<section id="javadocs">
 <h2>JavaDocs<a class="headerlink" href="#javadocs" title="Permalink to this headline">¶</a></h2>
 <p><a class="reference external" href="https://shynixn.github.io/PetBlocks/apidocs/">https://shynixn.github.io/PetBlocks/apidocs/</a></p>
-</div>
-<div class="section" id="including-the-petblocks-api">
+</section>
+<section id="including-the-petblocks-api">
 <h2>Including the PetBlocks API<a class="headerlink" href="#including-the-petblocks-api" title="Permalink to this headline">¶</a></h2>
 <a class="reference external image-reference" href="https://maven-badges.herokuapp.com/maven-central/com.github.shynixn.petblocks/petblocks-api"><img alt="https://maven-badges.herokuapp.com/maven-central/com.github.shynixn.petblocks/petblocks-api/badge.svg" src="https://maven-badges.herokuapp.com/maven-central/com.github.shynixn.petblocks/petblocks-api/badge.svg" /></a>
 <p>PetBlocks is using maven as build system and is available in the central repository.</p>
@@ -184,13 +189,13 @@
 <pre class="literal-block">&lt;dependency&gt;
     &lt;groupId&gt;com.github.shynixn.petblocks&lt;/groupId&gt;
     &lt;artifactId&gt;petblocks-api&lt;/artifactId&gt;
-    &lt;version&gt;8.24.0&lt;/version&gt;
+    &lt;version&gt;8.25.0&lt;/version&gt;
     &lt;scope&gt;provided&lt;/scope&gt;
 &lt;/dependency&gt;
 &lt;dependency&gt;
     &lt;groupId&gt;com.github.shynixn.petblocks&lt;/groupId&gt;
     &lt;artifactId&gt;petblocks-bukkit-api&lt;/artifactId&gt;
-    &lt;version&gt;8.24.0&lt;/version&gt;
+    &lt;version&gt;8.25.0&lt;/version&gt;
     &lt;scope&gt;provided&lt;/scope&gt;
 &lt;/dependency&gt;</pre>
 <div class="admonition note">
@@ -200,13 +205,13 @@
 <pre class="literal-block">&lt;dependency&gt;
      &lt;groupId&gt;com.github.shynixn.petblocks&lt;/groupId&gt;
      &lt;artifactId&gt;petblocks-api&lt;/artifactId&gt;
-     &lt;version&gt;8.24.0&lt;/version&gt;
+     &lt;version&gt;8.25.0&lt;/version&gt;
      &lt;scope&gt;provided&lt;/scope&gt;
  &lt;/dependency&gt;
  &lt;dependency&gt;
      &lt;groupId&gt;com.github.shynixn.petblocks&lt;/groupId&gt;
      &lt;artifactId&gt;petblocks-sponge-api&lt;/artifactId&gt;
-     &lt;version&gt;8.24.0&lt;/version&gt;
+     &lt;version&gt;8.25.0&lt;/version&gt;
      &lt;scope&gt;provided&lt;/scope&gt;
 &lt;/dependency&gt;</pre>
 <div class="admonition note">
@@ -214,19 +219,19 @@
 <p><strong>Gradle</strong> - Bukkit</p>
 </div>
 <pre class="literal-block">dependencies {
-    compileOnly 'com.github.shynixn.petblocks:petblocks-api:8.24.0'
-    compileOnly 'com.github.shynixn.petblocks:petblocks-bukkit-api:8.24.0'
+    compileOnly 'com.github.shynixn.petblocks:petblocks-api:8.25.0'
+    compileOnly 'com.github.shynixn.petblocks:petblocks-bukkit-api:8.25.0'
 }</pre>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p><strong>Gradle</strong> - Sponge</p>
 </div>
 <pre class="literal-block">dependencies {
-    compileOnly 'com.github.shynixn.petblocks:petblocks-api:8.24.0'
-    compileOnly 'com.github.shynixn.petblocks:petblocks-sponge-api:8.24.0'
+    compileOnly 'com.github.shynixn.petblocks:petblocks-api:8.25.0'
+    compileOnly 'com.github.shynixn.petblocks:petblocks-sponge-api:8.25.0'
 }</pre>
-</div>
-<div class="section" id="registering-the-dependency">
+</section>
+<section id="registering-the-dependency">
 <h2>Registering the dependency<a class="headerlink" href="#registering-the-dependency" title="Permalink to this headline">¶</a></h2>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -260,8 +265,8 @@
 <span class="o">]</span>
 </pre></div>
 </div>
-</div>
-<div class="section" id="working-with-the-petblocks-api">
+</section>
+<section id="working-with-the-petblocks-api">
 <h2>Working with the PetBlocks API<a class="headerlink" href="#working-with-the-petblocks-api" title="Permalink to this headline">¶</a></h2>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -446,8 +451,8 @@
 <span class="o">}</span>
 </pre></div>
 </div>
-</div>
-<div class="section" id="listen-to-events">
+</section>
+<section id="listen-to-events">
 <h2>Listen to Events<a class="headerlink" href="#listen-to-events" title="Permalink to this headline">¶</a></h2>
 <p>There are many PetBlock events in order to listen to actions. Please take a look into the <a class="reference external" href="https://shynixn.github.io/PetBlocks/apidocs/">JavaDocs</a>  for all events.</p>
 <div class="admonition note">
@@ -476,8 +481,8 @@
 <span class="o">}</span>
 </pre></div>
 </div>
-</div>
-<div class="section" id="contributing-and-setting-up-your-workspace">
+</section>
+<section id="contributing-and-setting-up-your-workspace">
 <h2>Contributing and setting up your workspace<a class="headerlink" href="#contributing-and-setting-up-your-workspace" title="Permalink to this headline">¶</a></h2>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
@@ -530,8 +535,8 @@
 <li><p>Reimport the PetBlocks maven project and execute ‘mvn package’ afterwards.</p></li>
 <li><p>The generated petblocks-bukkit-plugin/target/petblocks-bukkit-plugin-###.jar or petblocks-sponge-plugin/target/petblocks-sponge-plugin-###.ja can be used for testing on a server.</p></li>
 </ul>
-</div>
-</div>
+</section>
+</section>
 
 
            </div>
@@ -567,7 +572,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../',
-            VERSION:'8.24.0',
+            VERSION:'8.25.0',
             LANGUAGE:'None',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
@@ -575,6 +580,7 @@
             SOURCELINK_SUFFIX: '.txt'
         };
     </script>
+      <script type="text/javascript" src="../../_static/documentation_options.js"></script>
       <script type="text/javascript" src="../../_static/jquery.js"></script>
       <script type="text/javascript" src="../../_static/underscore.js"></script>
       <script type="text/javascript" src="../../_static/doctools.js"></script>
