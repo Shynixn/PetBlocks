@@ -201,7 +201,6 @@ task jacocoRootReport(type: org.gradle.testing.jacoco.tasks.JacocoReport) {
     }
 }
 
-
 /**
  * Generates javadocs.
  */
