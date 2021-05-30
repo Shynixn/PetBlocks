@@ -139,6 +139,7 @@ jobs:
           rm -rf docs/build
           rm -rf docs/apidocs
           chmod +x gradlew
+          ./gradlew generateJavaDocPages > /dev/null
           sudo python3 -msphinx -M html docs/source docs/build
           git add docs
           git add -f docs/build
