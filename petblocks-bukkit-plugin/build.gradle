@@ -8,7 +8,7 @@ shadowJar {
     archiveName = "$baseName-$version.$extension"
 
     // Change the output folder of the plugin.
-    // destinationDir = new File('D:\\Benutzer\\Temp\\plugins')
+    // destinationDir = new File('C:\\temp\\plugins')
 
     exclude("DebugProbesKt.bin")
     exclude("module-info.class")
@@ -85,7 +85,7 @@ dependencies {
 
     implementation("org.slf4j:slf4j-jdk14:1.7.30")
     implementation("commons-io:commons-io:2.6")
-    implementation("com.google.inject:guice:4.2.3")
+    implementation("com.google.inject:guice:5.0.1")
     implementation("com.zaxxer:HikariCP:3.4.3")
 
     implementation("com.google.code.gson:gson:2.8.6")
