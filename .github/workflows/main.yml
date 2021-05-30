@@ -44,7 +44,7 @@ jobs:
         run: |
           chmod +x gradlew
           ./gradlew assemble || ./gradlew setupDecompWorkspace && ./gradlew assemble || ./gradlew downloadDependencies
-          ./gradlew clean build
+          ./gradlew clean build shadowJar
 
       - name: Publish Test Report
         run: |
@@ -76,8 +76,6 @@ jobs:
           SONATYPE_PASSWORD: ${{ secrets.SONATYPE_PASSWORD }}
         run: |
           gpg2 --batch --cipher-algo AES256 --passphrase ${{ secrets.SIGNING_KEY_PASSWORD }} travis_secret_key.gpg
-          ./gradlew publishToNexus > /dev/null
-          ./gradlew closeAndReleaseRepository
           echo "RELEASE_VERSION=$(./gradlew -q printVersion)" >> $GITHUB_ENV
           java -jar petblocks-tools/build/libs/Deploy.jar --snapshot ${{ secrets.DISCORD_WEBHOOK_SNAPSHOT }}
           java -jar petblocks-tools/build/libs/Deploy.jar --snapshot ${{ secrets.DISCORD_WEBHOOK_CHANNEL }}
@@ -89,6 +87,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
+          body: "This release was automatically created by Github Actions. Please wait until the author manually sets the patchnotes for this release."
           tag_name: ${{ env.RELEASE_VERSION }}
           release_name: Release ${{ env.RELEASE_VERSION }}
           draft: false
@@ -140,7 +139,6 @@ jobs:
           rm -rf docs/build
           rm -rf docs/apidocs
           chmod +x gradlew
-          ./gradlew generateJavaDocPages > /dev/null
           sudo python3 -msphinx -M html docs/source docs/build
           git add docs
           git add -f docs/build
