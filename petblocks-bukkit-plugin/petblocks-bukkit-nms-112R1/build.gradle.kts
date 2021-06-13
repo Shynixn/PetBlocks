@@ -3,8 +3,8 @@ dependencies {
     implementation(project(":petblocks-core"))
     implementation(project(":petblocks-bukkit-api"))
 
-    compileOnly("org.spigotmc:spigot112R1:1.12.0-R1.0")
+    compileOnly("org.spigotmc:spigot:1.12-R0.1-SNAPSHOT")
     compileOnly("com.google.inject:guice:5.0.1")
 
-    testCompile("org.spigotmc:spigot112R1:1.12.0-R1.0")
+    testCompile("org.spigotmc:spigot:1.12-R0.1-SNAPSHOT")
 }
