@@ -7,6 +7,7 @@ import org.bukkit.Material
 import org.bukkit.craftbukkit.v1_17_R1.CraftServer
 import org.bukkit.craftbukkit.v1_17_R1.entity.CraftLivingEntity
 import org.bukkit.entity.*
+import org.bukkit.inventory.ItemStack
 import org.bukkit.loot.LootTable
 import java.util.*
 
@@ -92,6 +93,14 @@ class CraftPet(server: CraftServer, nmsPet: net.minecraft.world.entity.LivingEnt
     }
 
     override fun setLoveModeTicks(p0: Int) {
+    }
+
+    override fun isBreedItem(p0: ItemStack): Boolean {
+        return false
+    }
+
+    override fun isBreedItem(p0: Material): Boolean {
+        return false
     }
 
     override fun setBaby() {
