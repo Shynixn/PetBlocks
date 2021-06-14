@@ -28,6 +28,7 @@ import net.minecraft.world.phys.HitResult
 import net.minecraft.world.phys.Vec3
 import org.bukkit.Bukkit
 import org.bukkit.Location
+import org.bukkit.craftbukkit.v1_17_R1.CraftServer
 import org.bukkit.craftbukkit.v1_17_R1.CraftWorld
 import org.bukkit.entity.LivingEntity
 import org.bukkit.event.entity.CreatureSpawnEvent
@@ -41,7 +42,7 @@ class NMSPetArmorstand(owner: org.bukkit.entity.Player, private val petMeta: Pet
     ArmorStand((owner.location.world as CraftWorld).handle, owner.location.x, owner.location.y, owner.location.z),
     NMSPetProxy {
     private var internalProxy: PetProxy? = null
-    private var jumpingField: Field = net.minecraft.world.entity.LivingEntity::class.java.getDeclaredField("jumping")
+    private var jumpingField: Field = net.minecraft.world.entity.LivingEntity::class.java.getDeclaredField("bn")
     private var internalHitBox: Mob? = null
     private val aiService = PetBlocksApi.resolve(AIService::class.java)
 
@@ -51,7 +52,22 @@ class NMSPetArmorstand(owner: org.bukkit.entity.Player, private val petMeta: Pet
     private var flyGravity: Boolean = false
     private var flyWallCollisionVector: Vector? = null
 
-    private val locField = Entity::class.java.getDeclaredField("loc")
+    // Compatibility method because spigot mapping is partially broken.
+    private val setPositionRotationMethod = Entity::class.java.getDeclaredMethod(
+        "setPositionRotation",
+        Double::class.java,
+        Double::class.java,
+        Double::class.java,
+        Float::class.java,
+        Float::class.java
+    )
+    private val saveNbtData = ArmorStand::class.java.getDeclaredMethod(
+        "saveData", CompoundTag::class.java
+    )
+    private val loadNbtData = ArmorStand::class.java.getDeclaredMethod(
+        "loadData", CompoundTag::class.java
+    )
+    private val locField = Entity::class.java.getDeclaredField("av")
 
     // BukkitEntity has to be self cached since 1.14.
     private var entityBukkit: Any? = null
@@ -79,11 +95,15 @@ class NMSPetArmorstand(owner: org.bukkit.entity.Player, private val petMeta: Pet
         position.worldName = location.world!!.name
         position.relativeFront(3.0)
 
-        this.moveTo(position.x, position.y, position.z, location.yaw, location.pitch)
+        this.setPosRotation(position.x, position.y, position.z, location.yaw, location.pitch)
         mcWorld.addEntity(this, CreatureSpawnEvent.SpawnReason.CUSTOM)
 
         internalProxy = Class.forName("com.github.shynixn.petblocks.bukkit.logic.business.proxy.PetProxyImpl")
-            .getDeclaredConstructor(PetMeta::class.java, ArmorStand::class.java, Player::class.java)
+            .getDeclaredConstructor(
+                PetMeta::class.java,
+                org.bukkit.entity.ArmorStand::class.java,
+                org.bukkit.entity.Player::class.java
+            )
             .newInstance(petMeta, this.bukkitEntity, owner) as PetProxy
 
         petMeta.propertyTracker.onPropertyChanged(PetMeta::aiGoals, true)
@@ -177,6 +197,7 @@ class NMSPetArmorstand(owner: org.bukkit.entity.Player, private val petMeta: Pet
      * Disable setting slots.
      */
     override fun setSlot(enumitemslot: EquipmentSlot?, itemstack: ItemStack?, silent: Boolean) {
+        super.setSlot(enumitemslot, itemstack, silent)
     }
 
     /**
@@ -189,14 +210,14 @@ class NMSPetArmorstand(owner: org.bukkit.entity.Player, private val petMeta: Pet
      * Sets the slot securely.
      */
     fun setSecureSlot(enumitemslot: EquipmentSlot?, itemstack: ItemStack?) {
-        super.setItemSlot(enumitemslot, itemstack)
+        setSlot(enumitemslot, itemstack, false)
     }
 
     /**
      * Entity tick.
      */
-    override fun tick() {
-        super.tick()
+    override fun serverAiStep() {
+        super.serverAiStep()
 
         try {
             proxy.run()
@@ -298,8 +319,7 @@ class NMSPetArmorstand(owner: org.bukkit.entity.Player, private val petMeta: Pet
      */
     override fun getBukkitEntity(): CraftPetArmorstand {
         if (this.entityBukkit == null) {
-            entityBukkit = CraftPet(this.level.craftServer, this)
-
+            entityBukkit = CraftPetArmorstand(Bukkit.getServer() as CraftServer, this)
             val field = Entity::class.java.getDeclaredField("bukkitEntity")
             field.isAccessible = true
             field.set(this, entityBukkit)
@@ -312,9 +332,9 @@ class NMSPetArmorstand(owner: org.bukkit.entity.Player, private val petMeta: Pet
      * Riding function.
      */
     override fun travel(vec3d: Vec3) {
-        val human = this.passengers.firstOrNull { p -> p is Player }
+        val human = this.bukkitEntity.passengers.firstOrNull { p -> p is Player }
 
-        if (this.passengers == null || human == null) {
+        if (this.bukkitEntity.passengers == null || human == null) {
             flyHasTakenOffGround = false
             return
         }
@@ -475,12 +495,12 @@ class NMSPetArmorstand(owner: org.bukkit.entity.Player, private val petMeta: Pet
      */
     private fun applyNBTTagForArmorstand() {
         val compound = CompoundTag()
-        this.addAdditionalSaveData(compound)
+        saveNbtData(compound)
         applyAIEntityNbt(
             compound,
             this.petMeta.aiGoals.asSequence().filterIsInstance<AIEntityNbt>().map { a -> a.armorStandNbt }.toList()
         )
-        this.readAdditionalSaveData(compound)
+        loadNbtData(compound)
         // CustomNameVisible does not working via NBT Tags.
         this.isCustomNameVisible = compound.contains("CustomNameVisible") && compound.getInt("CustomNameVisible") == 1
     }
@@ -489,7 +509,7 @@ class NMSPetArmorstand(owner: org.bukkit.entity.Player, private val petMeta: Pet
      * Applies the raw NbtData to the given target.
      */
     private fun applyAIEntityNbt(target: CompoundTag, rawNbtDatas: List<String>) {
-        val compoundMapField = CompoundTag::class.java.getDeclaredField("map")
+        val compoundMapField = CompoundTag::class.java.getDeclaredField("x")
         compoundMapField.isAccessible = true
         val rootCompoundMap = compoundMapField.get(target) as MutableMap<Any?, Any?>
 
@@ -541,5 +561,26 @@ class NMSPetArmorstand(owner: org.bukkit.entity.Player, private val petMeta: Pet
      */
     private fun isPassengerJumping(): Boolean {
         return passengers != null && !this.passengers.isEmpty() && jumpingField.getBoolean(this.passengers[0])
+    }
+
+    /**
+     * Compatibility.
+     */
+    private fun saveNbtData(compoundTag: CompoundTag) {
+        saveNbtData.invoke(this, compoundTag)
+    }
+
+    /**
+     * Compatibility.
+     */
+    private fun loadNbtData(compoundTag: CompoundTag) {
+        loadNbtData.invoke(this, compoundTag)
+    }
+
+    /**
+     * Compatibility.
+     */
+    private fun setPosRotation(d0: Double, d1: Double, d2: Double, f: Float, f1: Float) {
+        setPositionRotationMethod.invoke(this, d0, d1, d2, f, f1)
     }
 }

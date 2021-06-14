@@ -3,6 +3,7 @@
 package com.github.shynixn.petblocks.bukkit.logic.business.extension
 
 import com.github.shynixn.petblocks.api.PetBlocksApi
+import com.github.shynixn.petblocks.api.business.enumeration.Version
 import com.github.shynixn.petblocks.api.business.proxy.PluginProxy
 import com.github.shynixn.petblocks.api.persistence.entity.Position
 import com.github.shynixn.petblocks.core.logic.persistence.entity.PositionEntity
@@ -108,45 +109,27 @@ fun Player.sendPacket(packet: Any) {
     val craftPlayerClazz = findClazz("org.bukkit.craftbukkit.VERSION.entity.CraftPlayer")
     val getHandleMethod = craftPlayerClazz.getDeclaredMethod("getHandle")
     val nmsPlayer = getHandleMethod.invoke(player)
-
-    val nmsPlayerClazz = findClazz("net.minecraft.server.VERSION.EntityPlayer")
-    val playerConnectionField = nmsPlayerClazz.getDeclaredField("playerConnection")
-    playerConnectionField.isAccessible = true
-    val connection = playerConnectionField.get(nmsPlayer)
-
-    val playerConnectionClazz = findClazz("net.minecraft.server.VERSION.PlayerConnection")
-    val packetClazz = findClazz("net.minecraft.server.VERSION.Packet")
-    val sendPacketMethod = playerConnectionClazz.getDeclaredMethod("sendPacket", packetClazz)
-    sendPacketMethod.invoke(connection, packet)
-}
-
-
-/**
- * Teleports the player via packets to keep his state in the world.
- */
-fun Player.teleportUnsafe(location: Location) {
     val version = PetBlocksApi.resolve(PluginProxy::class.java).getServerVersion()
-    val craftPlayer = Class.forName("org.bukkit.craftbukkit.VERSION.entity.CraftPlayer".replace("VERSION", version.bukkitId)).cast(player)
-    val methodHandle = craftPlayer.javaClass.getDeclaredMethod("getHandle")
-    val entityPlayer = methodHandle.invoke(craftPlayer)
-    val entityClazz = Class.forName("net.minecraft.server.VERSION.Entity".replace("VERSION", version.bukkitId))
 
-    val setPositionMethod = entityClazz.getDeclaredMethod(
-        "setPositionRotation",
-        Double::class.java,
-        Double::class.java,
-        Double::class.java,
-        Float::class.java,
-        Float::class.java
-    )
+    if (version.isVersionSameOrGreaterThan(Version.VERSION_1_17_R1)) {
+        val nmsPlayerClazz = findClazz("net.minecraft.server.level.EntityPlayer")
+        val playerConnectionField = nmsPlayerClazz.getDeclaredField("b")
+        playerConnectionField.isAccessible = true
+        val connection = playerConnectionField.get(nmsPlayer)
 
-    setPositionMethod.invoke(entityPlayer, location.x, location.y, location.z, location.yaw, location.pitch)
+        val playerConnectionClazz = findClazz("net.minecraft.server.network.PlayerConnection")
+        val packetClazz = findClazz("net.minecraft.network.protocol.Packet")
+        val sendPacketMethod = playerConnectionClazz.getDeclaredMethod("sendPacket", packetClazz)
+        sendPacketMethod.invoke(connection, packet)
+    } else {
+        val nmsPlayerClazz = findClazz("net.minecraft.server.VERSION.EntityPlayer")
+        val playerConnectionField = nmsPlayerClazz.getDeclaredField("playerConnection")
+        playerConnectionField.isAccessible = true
+        val connection = playerConnectionField.get(nmsPlayer)
 
-    val packetTeleport = Class.forName("net.minecraft.server.VERSION.PacketPlayOutEntityTeleport".replace("VERSION", version.bukkitId))
-        .getDeclaredConstructor(entityClazz)
-        .newInstance(entityPlayer)
-
-    location.world!!.players.forEach { worldPlayer ->
-        worldPlayer.sendPacket(packetTeleport)
+        val playerConnectionClazz = findClazz("net.minecraft.server.VERSION.PlayerConnection")
+        val packetClazz = findClazz("net.minecraft.server.VERSION.Packet")
+        val sendPacketMethod = playerConnectionClazz.getDeclaredMethod("sendPacket", packetClazz)
+        sendPacketMethod.invoke(connection, packet)
     }
 }

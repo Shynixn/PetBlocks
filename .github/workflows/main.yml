@@ -61,7 +61,7 @@ jobs:
         run: |
           chmod +x gradlew
           ./gradlew assemble || ./gradlew setupDecompWorkspace && ./gradlew assemble
-          ./gradlew build pluginJar
+          ./gradlew build shadowJar pluginJar
 
       - name: Publish Test Report
         run: |

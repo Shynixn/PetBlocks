@@ -15,7 +15,6 @@ import com.github.shynixn.petblocks.api.persistence.entity.AIBase
 import com.github.shynixn.petblocks.api.persistence.entity.AIFlyRiding
 import com.github.shynixn.petblocks.api.persistence.entity.AIGroundRiding
 import com.github.shynixn.petblocks.api.persistence.entity.AIWearing
-import com.github.shynixn.petblocks.bukkit.logic.business.extension.teleportUnsafe
 import com.github.shynixn.petblocks.core.logic.business.extension.cast
 import com.github.shynixn.petblocks.core.logic.business.extension.sync
 import com.github.shynixn.petblocks.core.logic.business.extension.thenAcceptSafely
@@ -345,7 +344,6 @@ class PetListener @Inject constructor(
 
         val pet = petService.getOrSpawnPetFromPlayer(event.player).get()
 
-
         if (event.to!!.world!!.name != event.from.world!!.name) {
             pet.remove()
 
@@ -368,7 +366,7 @@ class PetListener @Inject constructor(
         }
 
         event.isCancelled = true
-        event.player.teleportUnsafe(event.to!!)
+        event.player.teleport(event.to!!)
     }
 
     /**

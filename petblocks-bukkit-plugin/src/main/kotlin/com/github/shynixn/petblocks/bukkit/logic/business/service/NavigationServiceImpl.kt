@@ -35,10 +35,33 @@ import org.bukkit.entity.LivingEntity
  * SOFTWARE.
  */
 class NavigationServiceImpl @Inject constructor(private val version: Version) : NavigationService {
-    private val getHandleMethod = findClazz("org.bukkit.craftbukkit.VERSION.entity.CraftLivingEntity").getDeclaredMethod("getHandle")!!
-    private val navigationAbstractMethod = findClazz("net.minecraft.server.VERSION.EntityInsentient").getDeclaredMethod("getNavigation")
+    private val getHandleMethod =
+        findClazz("org.bukkit.craftbukkit.VERSION.entity.CraftLivingEntity").getDeclaredMethod("getHandle")!!
+    private val navigationAbstractMethod =
+        try {
+            findClazz("net.minecraft.world.entity.EntityInsentient").getDeclaredMethod("getNavigation")
+        } catch (e: Exception) {
+            findClazz("net.minecraft.server.VERSION.EntityInsentient").getDeclaredMethod("getNavigation")
+        }
+
     private val goToEntityNavigationMethod =
-        findClazz("net.minecraft.server.VERSION.NavigationAbstract").getDeclaredMethod("a", Double::class.java, Double::class.java, Double::class.java, Double::class.java)
+        try {
+            findClazz("net.minecraft.world.entity.ai.navigation.NavigationAbstract").getDeclaredMethod(
+                "a",
+                Double::class.java,
+                Double::class.java,
+                Double::class.java,
+                Double::class.java
+            )
+        }catch (e : Exception){
+            findClazz("net.minecraft.server.VERSION.NavigationAbstract").getDeclaredMethod(
+                "a",
+                Double::class.java,
+                Double::class.java,
+                Double::class.java,
+                Double::class.java
+            )
+        }
 
     /**
      * Lets the given [petProxy] navigate to the given [location].
@@ -69,10 +92,21 @@ class NavigationServiceImpl @Inject constructor(private val version: Version) : 
         val navigation = navigationAbstractMethod.invoke(nmsEntity)
 
         when {
-            version.isVersionSameOrGreaterThan(Version.VERSION_1_13_R1) -> findClazz("net.minecraft.server.VERSION.NavigationAbstract").getDeclaredMethod("q").invoke(navigation)
-            version.isVersionSameOrGreaterThan(Version.VERSION_1_12_R1) -> findClazz("net.minecraft.server.VERSION.NavigationAbstract").getDeclaredMethod("p").invoke(navigation)
-            version.isVersionSameOrGreaterThan(Version.VERSION_1_9_R1) -> findClazz("net.minecraft.server.VERSION.NavigationAbstract").getDeclaredMethod("o").invoke(navigation)
-            version.isVersionSameOrGreaterThan(Version.VERSION_1_8_R1) -> findClazz("net.minecraft.server.VERSION.NavigationAbstract").getDeclaredMethod("n").invoke(navigation)
+            version.isVersionSameOrGreaterThan(Version.VERSION_1_17_R1) -> findClazz("net.minecraft.world.entity.ai.navigation.NavigationAbstract").getDeclaredMethod(
+                "getNodeEvaluator"
+            ).invoke(navigation)
+            version.isVersionSameOrGreaterThan(Version.VERSION_1_13_R1) -> findClazz("net.minecraft.server.VERSION.NavigationAbstract").getDeclaredMethod(
+                "q"
+            ).invoke(navigation)
+            version.isVersionSameOrGreaterThan(Version.VERSION_1_12_R1) -> findClazz("net.minecraft.server.VERSION.NavigationAbstract").getDeclaredMethod(
+                "p"
+            ).invoke(navigation)
+            version.isVersionSameOrGreaterThan(Version.VERSION_1_9_R1) -> findClazz("net.minecraft.server.VERSION.NavigationAbstract").getDeclaredMethod(
+                "o"
+            ).invoke(navigation)
+            version.isVersionSameOrGreaterThan(Version.VERSION_1_8_R1) -> findClazz("net.minecraft.server.VERSION.NavigationAbstract").getDeclaredMethod(
+                "n"
+            ).invoke(navigation)
             else -> throw IllegalArgumentException("This version is not supported!")
         }
     }

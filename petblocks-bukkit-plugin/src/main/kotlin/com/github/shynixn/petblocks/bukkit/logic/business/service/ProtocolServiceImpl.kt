@@ -33,10 +33,42 @@ class ProtocolServiceImpl @Inject constructor(
     private val internalPacketToNMSPacket = HashMap<Class<*>, Function<Any, Any?>>()
     private val playerToNmsPlayer = findClazz("org.bukkit.craftbukkit.VERSION.entity.CraftPlayer")
         .getDeclaredMethod("getHandle")
-    private val playerConnectionField = findClazz("net.minecraft.server.VERSION.EntityPlayer")
-        .getDeclaredField("playerConnection")
-    private val sendPacketMethod = findClazz("net.minecraft.server.VERSION.PlayerConnection")
-        .getDeclaredMethod("sendPacket", findClazz("net.minecraft.server.VERSION.Packet"))
+    private val playerConnectionField by lazy {
+        try {
+            findClazz("net.minecraft.server.level.EntityPlayer")
+                .getDeclaredField("b")
+        } catch (e: Exception) {
+            findClazz("net.minecraft.server.VERSION.EntityPlayer")
+                .getDeclaredField("playerConnection")
+        }
+    }
+    private val sendPacketMethod by lazy{
+        try {
+            findClazz("net.minecraft.server.network.PlayerConnection")
+                .getDeclaredMethod("sendPacket", findClazz("net.minecraft.network.protocol.Packet"))
+        } catch (e: Exception) {
+            findClazz("net.minecraft.server.VERSION.PlayerConnection")
+                .getDeclaredMethod("sendPacket", findClazz("net.minecraft.server.VERSION.Packet"))
+        }
+    }
+    private val networkManagerField by lazy {
+        try {
+            findClazz("net.minecraft.server.network.PlayerConnection")
+                .getDeclaredField("a")
+        } catch (e: Exception) {
+           findClazz("net.minecraft.server.VERSION.PlayerConnection")
+                .getDeclaredField("networkManager")
+        }
+    }
+    private val channelField by lazy {
+        try {
+            findClazz("net.minecraft.network.NetworkManager")
+                .getDeclaredField("k")
+        } catch (e: Exception) {
+            findClazz("net.minecraft.server.VERSION.NetworkManager")
+                .getDeclaredField("channel")
+        }
+    }
 
     /**
      * Registers a player for incoming packets.
@@ -53,11 +85,8 @@ class ProtocolServiceImpl @Inject constructor(
             .invoke(player)
         val connection = playerConnectionField
             .get(nmsPlayer)
-        val netWorkManager = findClazz("net.minecraft.server.VERSION.PlayerConnection")
-            .getDeclaredField("networkManager")
-            .get(connection)
-        val channel = findClazz("net.minecraft.server.VERSION.NetworkManager")
-            .getDeclaredField("channel")
+        val netWorkManager = networkManagerField.get(connection)
+        val channel =  channelField
             .get(netWorkManager) as Channel
 
         val internalInterceptor = PacketInterceptor(player, this, loggingService)

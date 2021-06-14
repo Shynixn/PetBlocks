@@ -14,7 +14,9 @@ import net.minecraft.world.entity.ai.goal.Goal
 import net.minecraft.world.entity.ai.goal.GoalSelector
 import net.minecraft.world.entity.animal.Rabbit
 import net.minecraft.world.level.block.state.BlockState
+import org.bukkit.Bukkit
 import org.bukkit.Location
+import org.bukkit.craftbukkit.v1_17_R1.CraftServer
 import org.bukkit.craftbukkit.v1_17_R1.CraftWorld
 import org.bukkit.event.entity.CreatureSpawnEvent
 
@@ -117,7 +119,7 @@ class NMSPetRabbit(petDesign: NMSPetArmorstand, location: Location) : Rabbit(Ent
      */
     override fun getBukkitEntity(): CraftPet {
         if (this.entityBukkit == null) {
-            entityBukkit = CraftPet(this.level.craftServer, this)
+            entityBukkit = CraftPet(Bukkit.getServer() as CraftServer, this)
 
             val field = Entity::class.java.getDeclaredField("bukkitEntity")
             field.isAccessible = true
