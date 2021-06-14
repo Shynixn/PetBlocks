@@ -50,17 +50,6 @@ jobs:
           docker cp petblocks-dependencies-jdk16:/root/.m2/repository/org/spigotmc ~/.m2/repository/org/
           docker rm -f petblocks-dependencies-jdk16
 
-      - name: Build Java Application
-        run: |
-          chmod +x gradlew
-          ./gradlew assemble || ./gradlew setupDecompWorkspace && ./gradlew assemble || ./gradlew downloadDependencies
-          ./gradlew build pluginJar
-
-      - name: Publish Test Report
-        run: |
-          ./gradlew jacocoTestReport
-          bash <(curl -s https://codecov.io/bash)
-
       - name: Publish Snapshot
         if: "contains(github.event.head_commit.message, '--snapshot')"
         env:
