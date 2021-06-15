@@ -27,8 +27,8 @@ RUN apt-get install git -y
 RUN wget "https://hub.spigotmc.org/jenkins/job/BuildTools/lastSuccessfulBuild/artifact/target/BuildTools.jar"
 RUN java -jar BuildTools.jar --rev 1.17 --remapped
 
-# 3. Build plugin for 1.8 - 1.17 with jdk16
-FROM adoptopenjdk/openjdk16 AS plugin-jdk16
+# 3. Build plugin for 1.8 - 1.17 with jdk8
+FROM openjdk:8 AS plugin-jdk8
 WORKDIR /tmp
 RUN apt-get update
 RUN apt-get install maven -y
@@ -38,7 +38,7 @@ COPY --from=dependencies-jdk16 /root/.m2/repository/org/spigotmc /root/.m2/repos
 COPY . /tmp
 RUN chmod +x gradlew
 RUN dos2unix gradlew
-RUN ./gradlew build pluginJar --no-daemon
+RUN ./gradlew setupDecompWorkspace build shadowJar --no-daemon
 
 # 4. Launch a minecraft server with jdk16 and plugin
 FROM adoptopenjdk/openjdk16
@@ -56,5 +56,5 @@ RUN echo "eula=true" > eula.txt && mkdir plugins
 COPY ./petblocks-tools/world-1.14 /app/
 COPY ./petblocks-tools/ops.json /app/
 COPY --from=dependencies-jdk16 /root/.m2/repository/org/spigotmc/spigot/$SERVER_VERSION /app/spigot.jar
-COPY --from=plugin-jdk16 /tmp/petblocks-bukkit-plugin/build/libs/petblocks-bukkit-plugin-$PLUGIN_VERSION.jar /app/plugins/PetBlocks.jar
+COPY --from=plugin-jdk8 /tmp/petblocks-bukkit-plugin/build/libs/petblocks-bukkit-plugin-$PLUGIN_VERSION.jar /app/plugins/PetBlocks.jar
 CMD ["sh","-c","java -DIReallyKnowWhatIAmDoingISwear -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5005 -jar spigot.jar"]

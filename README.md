@@ -54,6 +54,7 @@ docker rm -f petblocks-dependencies-jdk16
 
 * Setup your own minecraft server
 * Change ``// val destinationDir = File("C:/temp/plugins")`` to your plugins folder in the ``petblocks-bukkit-plugin/build.gradle.kts`` file.
+* Run the ``setupDecompWorkspace`` task to setup forge dependencies.
 * Run the ``shadowJar`` task to generate a plugin.jar file.
 * Run your minecraft server
 
