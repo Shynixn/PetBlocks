@@ -1,4 +1,4 @@
 dependencies {
     implementation(project(":petblocks-api", "default"))
-    compileOnly("org.spigotmc:spigot113R2:1.13.2-R2.0")
+    compileOnly("org.spigotmc:spigot:1.16.4-R0.1-SNAPSHOT")
 }

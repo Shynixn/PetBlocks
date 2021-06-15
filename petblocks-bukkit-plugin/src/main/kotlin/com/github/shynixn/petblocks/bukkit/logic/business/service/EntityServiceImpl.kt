@@ -101,9 +101,15 @@ class EntityServiceImpl @Inject constructor(
             val getHandleMethod =
                 findClazz("org.bukkit.craftbukkit.VERSION.entity.CraftLivingEntity").getDeclaredMethod("getHandle")!!
 
-            findClazz("net.minecraft.server.VERSION.PathfinderGoalFloat")
-                .getDeclaredConstructor(findClazz("net.minecraft.server.VERSION.EntityInsentient"))
-                .newInstance(getHandleMethod.invoke(pet.getHitBoxLivingEntity<LivingEntity>().get()))
+            try {
+                findClazz("net.minecraft.world.entity.ai.goal.PathfinderGoalFloat")
+                    .getDeclaredConstructor(findClazz("net.minecraft.world.entity.EntityInsentient"))
+                    .newInstance(getHandleMethod.invoke(pet.getHitBoxLivingEntity<LivingEntity>().get()))
+            }catch (e : Exception){
+                findClazz("net.minecraft.server.VERSION.PathfinderGoalFloat")
+                    .getDeclaredConstructor(findClazz("net.minecraft.server.VERSION.EntityInsentient"))
+                    .newInstance(getHandleMethod.invoke(pet.getHitBoxLivingEntity<LivingEntity>().get()))
+            }
         }
 
         this.register<AIFlying>(AIType.FLYING)

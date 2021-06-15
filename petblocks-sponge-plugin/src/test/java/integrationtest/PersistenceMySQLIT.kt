@@ -3,6 +3,7 @@
 package integrationtest
 
 import ch.vorburger.mariadb4j.DB
+import ch.vorburger.mariadb4j.DBConfigurationBuilder
 import com.github.shynixn.petblocks.api.PetBlocksApi
 import com.github.shynixn.petblocks.api.business.enumeration.ParticleType
 import com.github.shynixn.petblocks.api.business.enumeration.Permission
@@ -232,7 +233,10 @@ class PersistenceMySQLIT {
                 database!!.stop()
             }
 
-            database = DB.newEmbeddedDB(3306)
+            val config = DBConfigurationBuilder.newBuilder()
+            config.setPort(3306)
+            config.addArg("--user=root")
+            database = DB.newEmbeddedDB(config.build())
             database!!.start()
 
             val sourceFolder = File("../petblocks-core/src/main/resources")

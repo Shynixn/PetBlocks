@@ -181,12 +181,19 @@ class PetProxyImpl(override val meta: PetMeta, private val design: ArmorStand, p
             findClazz("org.bukkit.craftbukkit.VERSION.entity.CraftLivingEntity").getDeclaredMethod("getHandle")
                 .invoke(getHeadArmorstand())
 
-        val method =
-            findClazz("com.github.shynixn.petblocks.bukkit.logic.business.nms.VERSION.NMSPetArmorstand")
-                .getDeclaredMethod("doTick")
-        method.isAccessible = true
-
-        method.invoke(handle)
+        try {
+            val method =
+                findClazz("net.minecraft.world.entity.EntityLiving")
+                    .getDeclaredMethod("doTick")
+            method.isAccessible = true
+            method.invoke(handle)
+        }catch (e : Exception){
+            val method =
+                findClazz("com.github.shynixn.petblocks.bukkit.logic.business.nms.VERSION.NMSPetArmorstand")
+                    .getDeclaredMethod("doTick")
+            method.isAccessible = true
+            method.invoke(handle)
+        }
     }
 
     /**
