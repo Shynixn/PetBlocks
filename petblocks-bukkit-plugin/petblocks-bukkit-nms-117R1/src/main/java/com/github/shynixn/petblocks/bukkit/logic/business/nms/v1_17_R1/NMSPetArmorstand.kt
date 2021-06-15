@@ -252,42 +252,6 @@ class NMSPetArmorstand(owner: org.bukkit.entity.Player, private val petMeta: Pet
     }
 
     /**
-     * Overrides the moving of the pet design.
-     */
-    override fun move(enummovetype: EnumMoveType?, vec3d: Vec3D?) {
-        super.move(enummovetype, vec3d)
-
-        if (passengers == null || this.passengers.firstOrNull { p -> p is EntityHuman } == null) {
-            return
-        }
-
-        val groundAi = this.petMeta.aiGoals.firstOrNull { a -> a is AIGroundRiding }
-        val airAi = this.petMeta.aiGoals.firstOrNull { a -> a is AIFlyRiding }
-
-        var offSet = when {
-            groundAi != null -> (groundAi as AIGroundRiding).ridingYOffSet
-            airAi != null -> (airAi as AIFlyRiding).ridingYOffSet
-            else -> 0.0
-        }
-
-        if (this.isSmall) {
-            offSet += 0.6
-        }
-
-        val axisBoundingBox = this.boundingBox
-
-        // This way of setting the locations fields ensures compatibility with PaperSpigot.
-        locField.set(
-            this,
-            Vec3D(
-                (axisBoundingBox.a + axisBoundingBox.d) / 2.0,
-                axisBoundingBox.b + offSet,
-                (axisBoundingBox.c + axisBoundingBox.f) / 2.0
-            )
-        )
-    }
-
-    /**
      * Gets the bukkit entity.
      */
     override fun getBukkitEntity(): CraftPetArmorstand {
