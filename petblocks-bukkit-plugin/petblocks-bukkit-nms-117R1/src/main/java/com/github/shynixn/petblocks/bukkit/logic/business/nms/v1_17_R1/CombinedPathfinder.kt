@@ -1,16 +1,16 @@
 package com.github.shynixn.petblocks.bukkit.logic.business.nms.v1_17_R1
 
 import com.github.shynixn.petblocks.api.business.proxy.PathfinderProxy
-import net.minecraft.world.entity.ai.goal.Goal
+import net.minecraft.world.entity.ai.goal.PathfinderGoal
 
 /**
  * This pathfinder is a solution to Paper causing normal pathfinders to sometimes get ignored.
  */
-class CombinedPathfinder(val pathfinderProxy: Map<PathfinderProxy, Cache>) : Goal() {
+class CombinedPathfinder(val pathfinderProxy: Map<PathfinderProxy, Cache>) : PathfinderGoal() {
     /**
      * Override ShouldExecute.
      */
-    override fun canUse(): Boolean {
+    override fun a(): Boolean {
         for (proxy in pathfinderProxy.keys) {
             val cache = pathfinderProxy.getValue(proxy)
 
@@ -40,31 +40,34 @@ class CombinedPathfinder(val pathfinderProxy: Map<PathfinderProxy, Cache>) : Goa
     /**
      * Override continue executing.
      */
-    override fun canContinueToUse(): Boolean {
+    override fun b(): Boolean {
         return false
     }
 
     /**
      * Override isInterrupting.
      */
-    override fun isInterruptable(): Boolean {
+    override fun C_(): Boolean {
         return true
     }
 
     /**
      * Override startExecuting.
      */
-    override fun start() {}
+    override fun c() {
+    }
 
     /**
      * Override reset.
      */
-    override fun stop() {}
+    override fun d() {
+    }
 
     /**
      * Override update.
      */
-    override fun tick() {}
+    override fun e() {
+    }
 
     class Cache {
         var isExecuting = false

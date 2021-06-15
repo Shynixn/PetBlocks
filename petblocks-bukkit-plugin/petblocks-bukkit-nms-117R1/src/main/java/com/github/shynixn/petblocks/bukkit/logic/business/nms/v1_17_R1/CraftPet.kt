@@ -3,6 +3,7 @@
 package com.github.shynixn.petblocks.bukkit.logic.business.nms.v1_17_R1
 
 import com.github.shynixn.petblocks.api.business.proxy.EntityPetProxy
+import net.minecraft.world.entity.EntityInsentient
 import org.bukkit.Material
 import org.bukkit.craftbukkit.v1_17_R1.CraftServer
 import org.bukkit.craftbukkit.v1_17_R1.entity.CraftLivingEntity
@@ -14,8 +15,7 @@ import java.util.*
 /**
  * CraftBukkit Wrapper of the pet.
  */
-class CraftPet(server: CraftServer, nmsPet: net.minecraft.world.entity.LivingEntity) :
-    CraftLivingEntity(server, nmsPet), EntityPetProxy, Pig,
+class CraftPet(server: CraftServer, nmsPet: EntityInsentient) : CraftLivingEntity(server, nmsPet), EntityPetProxy, Pig,
     Rabbit, Bat {
     /**
      * Removes this entity.
@@ -25,6 +25,14 @@ class CraftPet(server: CraftServer, nmsPet: net.minecraft.world.entity.LivingEnt
     }
 
     override fun isAware(): Boolean {
+        return false
+    }
+
+    override fun isBreedItem(p0: ItemStack): Boolean {
+        return false
+    }
+
+    override fun isBreedItem(p0: Material): Boolean {
         return false
     }
 
@@ -93,14 +101,6 @@ class CraftPet(server: CraftServer, nmsPet: net.minecraft.world.entity.LivingEnt
     }
 
     override fun setLoveModeTicks(p0: Int) {
-    }
-
-    override fun isBreedItem(p0: ItemStack): Boolean {
-        return false
-    }
-
-    override fun isBreedItem(p0: Material): Boolean {
-        return false
     }
 
     override fun setBaby() {

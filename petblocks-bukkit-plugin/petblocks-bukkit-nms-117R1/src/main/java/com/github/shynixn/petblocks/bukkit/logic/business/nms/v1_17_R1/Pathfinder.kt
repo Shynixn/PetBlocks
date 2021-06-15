@@ -1,51 +1,51 @@
 package com.github.shynixn.petblocks.bukkit.logic.business.nms.v1_17_R1
 
 import com.github.shynixn.petblocks.api.business.proxy.PathfinderProxy
-import net.minecraft.world.entity.ai.goal.Goal
+import net.minecraft.world.entity.ai.goal.PathfinderGoal
 
 /**
  * Pathfinder NMS proxy to handle native calls.
  */
-class Pathfinder(private val pathfinderProxy: PathfinderProxy) : Goal() {
+class Pathfinder(private val pathfinderProxy: PathfinderProxy) : PathfinderGoal() {
     /**
      * Override ShouldExecute.
      */
-    override fun canUse(): Boolean {
+    override fun a(): Boolean {
         return pathfinderProxy.shouldGoalBeExecuted()
     }
 
     /**
      * Override continue executing.
      */
-    override fun canContinueToUse(): Boolean {
+    override fun b(): Boolean {
         return pathfinderProxy.shouldGoalContinueExecuting()
     }
 
     /**
      * Override isInterrupting.
      */
-    override fun isInterruptable(): Boolean {
+    override fun C_(): Boolean {
         return pathfinderProxy.isInteruptible
     }
 
     /**
      * Override startExecuting.
      */
-    override fun start() {
+    override fun c() {
         this.pathfinderProxy.onStartExecuting()
     }
 
     /**
      * Override reset.
      */
-    override fun stop() {
+    override fun d() {
         this.pathfinderProxy.onStopExecuting()
     }
 
     /**
      * Override update.
      */
-    override fun tick() {
+    override fun e() {
         this.pathfinderProxy.onExecute()
     }
 }

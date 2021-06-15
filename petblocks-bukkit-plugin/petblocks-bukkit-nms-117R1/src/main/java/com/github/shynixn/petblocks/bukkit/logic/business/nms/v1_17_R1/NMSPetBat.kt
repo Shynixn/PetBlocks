@@ -4,14 +4,14 @@ import com.github.shynixn.petblocks.api.PetBlocksApi
 import com.github.shynixn.petblocks.api.business.proxy.PathfinderProxy
 import com.github.shynixn.petblocks.api.business.service.ConcurrencyService
 import com.github.shynixn.petblocks.api.persistence.entity.AIFlying
-import net.minecraft.core.BlockPos
+import net.minecraft.core.BlockPosition
 import net.minecraft.world.entity.Entity
-import net.minecraft.world.entity.EntityType
-import net.minecraft.world.entity.ai.attributes.Attributes
-import net.minecraft.world.entity.ai.goal.Goal
-import net.minecraft.world.entity.ai.goal.GoalSelector
-import net.minecraft.world.entity.animal.Parrot
-import net.minecraft.world.level.block.state.BlockState
+import net.minecraft.world.entity.EntityTypes
+import net.minecraft.world.entity.ai.attributes.GenericAttributes
+import net.minecraft.world.entity.ai.goal.PathfinderGoal
+import net.minecraft.world.entity.ai.goal.PathfinderGoalSelector
+import net.minecraft.world.entity.animal.EntityParrot
+import net.minecraft.world.level.block.state.IBlockData
 import org.bukkit.Bukkit
 import org.bukkit.Location
 import org.bukkit.craftbukkit.v1_17_R1.CraftServer
@@ -21,14 +21,14 @@ import org.bukkit.event.entity.CreatureSpawnEvent
 /**
  * NMS implementation of the Parrot pet backend.
  */
-class NMSPetBat(petDesign: NMSPetArmorstand, location: Location) : Parrot(EntityType.PARROT, (location.world as CraftWorld).handle) {
+class NMSPetBat(petDesign: NMSPetArmorstand, location: Location) : EntityParrot(EntityTypes.al, (location.world as CraftWorld).handle) {
     // NMSPetBee might be instantiated from another source.
     private var petDesign: NMSPetArmorstand? = null
 
     // Pathfinders need to be self cached for Paper.
     private var initialClear = true
     private var pathfinderCounter = 0
-    private var cachedPathfinders = HashSet<Goal>()
+    private var cachedPathfinders = HashSet<PathfinderGoal>()
 
     // BukkitEntity has to be self cached since 1.14.
     private var entityBukkit: Any? = null
@@ -43,23 +43,22 @@ class NMSPetBat(petDesign: NMSPetArmorstand, location: Location) : Parrot(Entity
             val flyingAI = this.petDesign!!.proxy.meta.aiGoals.firstOrNull { a -> a is AIFlying } as AIFlying?
 
             if (flyingAI != null) {
-                this.getAttribute(Attributes.MOVEMENT_SPEED)!!.baseValue =
+                this.getAttributeInstance(GenericAttributes.d)!!.value = 0.30000001192092896 * 0.75
+                this.getAttributeInstance(GenericAttributes.e)!!.value =
                     0.30000001192092896 * flyingAI.movementSpeed
-                this.getAttribute(Attributes.FLYING_SPEED)!!.baseValue =
-                    0.30000001192092896 * flyingAI.movementSpeed
-                this.maxUpStep = flyingAI.climbingHeight.toFloat()
+                this.O = flyingAI.climbingHeight.toFloat()
             }
         }
 
         val mcWorld = (location.world as CraftWorld).handle
-        this.setPos(location.x, location.y - 200, location.z)
+        this.setPosition(location.x, location.y - 200, location.z)
         mcWorld.addEntity(this, CreatureSpawnEvent.SpawnReason.CUSTOM)
 
         val targetLocation = location.clone()
         PetBlocksApi.resolve(ConcurrencyService::class.java).runTaskSync(20L) {
             // Only fix location if it is not already fixed.
             if (this.bukkitEntity.location.distance(targetLocation) > 20) {
-                this.setPos(targetLocation.x, targetLocation.y + 1.0, targetLocation.z)
+                this.setPosition(targetLocation.x, targetLocation.y + 1.0, targetLocation.z)
             }
         }
     }
@@ -80,19 +79,19 @@ class NMSPetBat(petDesign: NMSPetArmorstand, location: Location) : Parrot(Entity
                 this.cachedPathfinders.add(wrappedPathfinder)
                 proxies[pathfinder] = CombinedPathfinder.Cache()
             } else {
-                this.goalSelector.addGoal(pathfinderCounter++, pathfinder as Goal)
+                this.bO.a(pathfinderCounter++, pathfinder as PathfinderGoal)
                 this.cachedPathfinders.add(pathfinder)
             }
         }
 
-        this.goalSelector.addGoal(pathfinderCounter++, hyperPathfinder)
+        this.bO.a(pathfinderCounter++, hyperPathfinder)
         this.cachedPathfinders.add(hyperPathfinder)
     }
 
     /**
      * Gets called on move to play sounds.
      */
-    override fun playStepSound(blockposition: BlockPos?, iblockdata: BlockState?) {
+    override fun b(blockposition: BlockPosition, iblockdata: IBlockData) {
         if (petDesign == null) {
             return
         }
@@ -128,16 +127,15 @@ class NMSPetBat(petDesign: NMSPetArmorstand, location: Location) : Parrot(Entity
      */
     private fun clearAIGoals() {
         if (initialClear) {
-            val dField = GoalSelector::class.java.getDeclaredField("d")
+            val dField = PathfinderGoalSelector::class.java.getDeclaredField("d")
             dField.isAccessible = true
-            (dField.get(this.goalSelector) as MutableSet<*>).clear()
-            (dField.get(this.targetSelector) as MutableSet<*>).clear()
+            (dField.get(this.bO) as MutableSet<*>).clear()
+            (dField.get(this.bP) as MutableSet<*>).clear()
             initialClear = false
         }
 
-        pathfinderCounter = 0
         for (pathfinder in cachedPathfinders) {
-            this.goalSelector.addGoal(pathfinderCounter++, pathfinder)
+            this.bO.a(pathfinder)
         }
 
         this.cachedPathfinders.clear()

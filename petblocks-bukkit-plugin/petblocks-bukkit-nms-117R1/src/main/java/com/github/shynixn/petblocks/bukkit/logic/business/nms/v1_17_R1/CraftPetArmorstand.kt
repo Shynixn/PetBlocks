@@ -1,7 +1,7 @@
 package com.github.shynixn.petblocks.bukkit.logic.business.nms.v1_17_R1
 
 import com.github.shynixn.petblocks.api.business.proxy.ArmorstandPetProxy
-import net.minecraft.world.entity.EquipmentSlot
+import net.minecraft.world.entity.EnumItemSlot
 import org.bukkit.craftbukkit.v1_17_R1.CraftServer
 import org.bukkit.craftbukkit.v1_17_R1.entity.CraftArmorStand
 import org.bukkit.craftbukkit.v1_17_R1.inventory.CraftItemStack
@@ -18,7 +18,7 @@ class CraftPetArmorstand(server: CraftServer, nmsPet: NMSPetArmorstand) : CraftA
      */
     override fun <I> setHelmetItemStack(item: I) {
         require(item is ItemStack?)
-        (handle as NMSPetArmorstand).setSecureSlot(EquipmentSlot.HEAD, CraftItemStack.asNMSCopy(item))
+        (handle as NMSPetArmorstand).setSecureSlot(EnumItemSlot.f, CraftItemStack.asNMSCopy(item))
     }
 
     /**
@@ -27,7 +27,7 @@ class CraftPetArmorstand(server: CraftServer, nmsPet: NMSPetArmorstand) : CraftA
      */
     override fun <I> setBootsItemStack(item: I) {
         require(item is ItemStack?)
-        (handle as NMSPetArmorstand).setSecureSlot(EquipmentSlot.FEET, CraftItemStack.asNMSCopy(item))
+        (handle as NMSPetArmorstand).setSecureSlot(EnumItemSlot.c, CraftItemStack.asNMSCopy(item))
     }
 
     /**

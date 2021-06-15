@@ -61,7 +61,7 @@ jobs:
         run: |
           chmod +x gradlew
           ./gradlew assemble || ./gradlew setupDecompWorkspace && ./gradlew assemble
-          ./gradlew build shadowJar pluginJar
+          ./gradlew build shadowJar
 
       - name: Publish Test Report
         run: |
@@ -95,8 +95,6 @@ jobs:
           echo "RELEASE_VERSION=$(./gradlew -q printVersion)" >> $GITHUB_ENV
           ./gradlew clean publishToNexus
           ./gradlew closeAndReleaseRepository
-          ./gradlew clean
-          ./gradlew pluginJar
           java -jar petblocks-tools/build/libs/Deploy.jar --snapshot ${{ secrets.DISCORD_WEBHOOK_SNAPSHOT }}
           java -jar petblocks-tools/build/libs/Deploy.jar --snapshot ${{ secrets.DISCORD_WEBHOOK_CHANNEL }}
 
