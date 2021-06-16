@@ -43,7 +43,7 @@ RUN ./gradlew setupDecompWorkspace build shadowJar --no-daemon
 # 4. Launch a minecraft server with jdk16 and plugin
 FROM adoptopenjdk/openjdk16
 # Change to the current plugin version present in build.gradle
-ENV PLUGIN_VERSION=8.26.1
+ENV PLUGIN_VERSION=8.26.2-SNAPSHOT
 # Change to the server version you want to test.
 ENV SERVER_VERSION=1.17-R0.1-SNAPSHOT/spigot-1.17-R0.1-SNAPSHOT.jar
 # Port of the Minecraft Server.
