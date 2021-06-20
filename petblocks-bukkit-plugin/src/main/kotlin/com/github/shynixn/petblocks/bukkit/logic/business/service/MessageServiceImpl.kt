@@ -133,9 +133,7 @@ class MessageServiceImpl @Inject constructor(private val version: Version) : Mes
             val method = clazz.getDeclaredMethod("a", String::class.java)
             method.isAccessible = true
             val chatComponent = method.invoke(null, finalMessage.toString())
-            val packet: Any
-
-            packet = when {
+            when {
                 version.isVersionSameOrGreaterThan(Version.VERSION_1_16_R1) -> {
                     val systemUtilsClazz = findClazz("net.minecraft.server.VERSION.SystemUtils")
                     val defaultUUID = systemUtilsClazz.getDeclaredField("b").get(null) as UUID
