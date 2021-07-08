@@ -79,12 +79,12 @@ class NMSPetBat(petDesign: NMSPetArmorstand, location: Location) : EntityParrot(
                 this.cachedPathfinders.add(wrappedPathfinder)
                 proxies[pathfinder] = CombinedPathfinder.Cache()
             } else {
-                this.bO.a(pathfinderCounter++, pathfinder as PathfinderGoal)
+                this.bP.a(pathfinderCounter++, pathfinder as PathfinderGoal)
                 this.cachedPathfinders.add(pathfinder)
             }
         }
 
-        this.bO.a(pathfinderCounter++, hyperPathfinder)
+        this.bP.a(pathfinderCounter++, hyperPathfinder)
         this.cachedPathfinders.add(hyperPathfinder)
     }
 
@@ -129,13 +129,13 @@ class NMSPetBat(petDesign: NMSPetArmorstand, location: Location) : EntityParrot(
         if (initialClear) {
             val dField = PathfinderGoalSelector::class.java.getDeclaredField("d")
             dField.isAccessible = true
-            (dField.get(this.bO) as MutableSet<*>).clear()
             (dField.get(this.bP) as MutableSet<*>).clear()
+            (dField.get(this.bQ) as MutableSet<*>).clear()
             initialClear = false
         }
 
         for (pathfinder in cachedPathfinders) {
-            this.bO.a(pathfinder)
+            this.bP.a(pathfinder)
         }
 
         this.cachedPathfinders.clear()
