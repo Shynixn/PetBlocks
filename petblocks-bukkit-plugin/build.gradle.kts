@@ -4,7 +4,7 @@ import java.nio.file.Files
 import java.util.*
 
 plugins {
-    id("com.github.johnrengelman.shadow") version ("2.0.4")
+    id("com.github.johnrengelman.shadow") version ("5.2.0")
 }
 
 tasks.withType<ShadowJar> {
