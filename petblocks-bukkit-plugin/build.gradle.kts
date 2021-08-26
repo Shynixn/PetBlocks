@@ -62,7 +62,7 @@ dependencies {
     implementation("org.slf4j:slf4j-jdk14:1.7.30")
     implementation("commons-io:commons-io:2.6")
     implementation("com.google.inject:guice:5.0.1")
-    implementation("com.zaxxer:HikariCP:3.4.3")
+    implementation("com.zaxxer:HikariCP:4.0.3")
 
     implementation("com.google.code.gson:gson:2.8.6")
     implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.3.0")

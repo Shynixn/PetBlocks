@@ -23,7 +23,7 @@ dependencies {
     implementation 'org.apache.cxf:cxf-rt-rs-client:3.3.6'
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.9.8'
     implementation 'commons-io:commons-io:2.4'
-    implementation 'com.zaxxer:HikariCP:3.4.3'
+    implementation 'com.zaxxer:HikariCP:4.0.3'
     implementation 'org.xerial:sqlite-jdbc:3.31.1'
     implementation "org.spigotmc:spigot:1.8.8-R0.1-SNAPSHOT"
 }

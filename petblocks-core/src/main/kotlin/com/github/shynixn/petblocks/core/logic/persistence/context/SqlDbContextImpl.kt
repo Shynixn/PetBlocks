@@ -15,36 +15,8 @@ import java.nio.file.Paths
 import java.sql.Connection
 import java.sql.SQLException
 import java.sql.Statement
-import java.util.*
-import kotlin.collections.HashMap
+import java.util.concurrent.TimeUnit
 
-/**
- * Created by Shynixn 2018.
- * <p>
- * Version 1.2
- * <p>
- * MIT License
- * <p>
- * Copyright (c) 2018 by Shynixn
- * <p>
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- * <p>
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
- * <p>
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- * SOFTWARE.
- */
 class SqlDbContextImpl @Inject constructor(
     private val configurationService: ConfigurationService,
     private val loggingService: LoggingService
@@ -360,6 +332,30 @@ class SqlDbContextImpl @Inject constructor(
      * Connect to the mysql database.
      */
     private fun connectToMySql() {
+        val maxLifetime = if (configurationService.containsValue("sql.maxLifetime")) {
+            TimeUnit.MINUTES.toMillis(configurationService.findValue<Int>("sql.maxLifetime").toLong())
+        } else {
+            TimeUnit.MINUTES.toMillis(30)
+        }
+
+        val connectionTimeout = if (configurationService.containsValue("sql.connectionTimeout")) {
+            TimeUnit.SECONDS.toMillis(configurationService.findValue<Int>("sql.connectionTimeout").toLong())
+        } else {
+            TimeUnit.SECONDS.toMillis(30)
+        }
+
+        val validationTimeout = if (configurationService.containsValue("sql.validationTimeout")) {
+            TimeUnit.SECONDS.toMillis(configurationService.findValue<Int>("sql.validationTimeout").toLong())
+        } else {
+            TimeUnit.SECONDS.toMillis(5)
+        }
+
+        val idleTimeout = if (configurationService.containsValue("sql.idleTimeout")) {
+            TimeUnit.MINUTES.toMillis(configurationService.findValue<Int>("sql.idleTimeout").toLong())
+        } else {
+            TimeUnit.MINUTES.toMillis(10)
+        }
+
         this.dataSource = createDataSource(
             MYSQL_DRIVER,
             "jdbc:mysql://" + configurationService.findValue<String>("sql.host") + ":" + configurationService.findValue<Int>(
@@ -369,7 +365,11 @@ class SqlDbContextImpl @Inject constructor(
             ),
             configurationService.findValue<String>("sql.username"),
             configurationService.findValue<String>("sql.password"),
-            configurationService.findValue("sql.usessl")
+            configurationService.findValue("sql.usessl"),
+            maxLifetime,
+            connectionTimeout,
+            validationTimeout,
+            idleTimeout
         )
 
         val connection = this.dataSource.connection
@@ -394,18 +394,19 @@ class SqlDbContextImpl @Inject constructor(
             // Compatibility < 8.15.0
             var foundColumnName = true
             val skinTable = "${tablePrefix}_SKIN"
-            connection.prepareStatement("select COLUMN_NAME from INFORMATION_SCHEMA.COLUMNS where TABLE_NAME = '$skinTable'").use { statement ->
-                statement.executeQuery().use { resultSet ->
-                    while (resultSet.next()) {
-                        foundColumnName = false
-                        val columnName = resultSet.getString(1)
-                        if (columnName == "nbt") {
-                            foundColumnName = true
-                            break
+            connection.prepareStatement("select COLUMN_NAME from INFORMATION_SCHEMA.COLUMNS where TABLE_NAME = '$skinTable'")
+                .use { statement ->
+                    statement.executeQuery().use { resultSet ->
+                        while (resultSet.next()) {
+                            foundColumnName = false
+                            val columnName = resultSet.getString(1)
+                            if (columnName == "nbt") {
+                                foundColumnName = true
+                                break
+                            }
                         }
                     }
                 }
-            }
 
             // Compatibility < 8.15.0
             if (!foundColumnName) {
@@ -474,7 +475,11 @@ class SqlDbContextImpl @Inject constructor(
         url: String,
         userName: String? = null,
         password: String? = null,
-        useSSL: Boolean = false
+        useSSL: Boolean = false,
+        maxLifetime: Long = TimeUnit.MINUTES.toMillis(30),
+        connectionTimeout: Long = TimeUnit.SECONDS.toMillis(30),
+        validationTimeout: Long = TimeUnit.SECONDS.toMillis(5),
+        idleTimeout: Long = TimeUnit.MINUTES.toMillis(10)
     ): HikariDataSource {
         val config = HikariConfig()
         config.connectionTestQuery = "SELECT 1"
@@ -502,6 +507,11 @@ class SqlDbContextImpl @Inject constructor(
         } else {
             config.maximumPoolSize = 10
         }
+
+        config.maxLifetime = maxLifetime
+        config.connectionTimeout = connectionTimeout
+        config.validationTimeout = validationTimeout
+        config.idleTimeout = idleTimeout
 
         return HikariDataSource(config)
     }
