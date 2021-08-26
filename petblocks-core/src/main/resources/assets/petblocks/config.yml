@@ -60,6 +60,10 @@ sql:
   table-prefix: 'SHY'
   username: ''
   password: ''
+  maxLifetime: 30 # Minutes
+  idleTimeout: 10 # Minutes
+  connectionTimeout: 30 # Seconds
+  validationTimeout: 5 # Seconds
 
 ############################
 
@@ -75,7 +79,7 @@ commands:
   petblock:
     enabled: true
     command: petblock
-    aliases: []
+    aliases: [ ]
     useage: /<command>
     description: $lang.messages.openPetGui
     permission: petblocks.command.use
@@ -646,7 +650,7 @@ gui:
       icon:
         id: 351
         damage: 12
-        name:  $lang.gui.item.particleReddustBlue
+        name: $lang.gui.item.particleReddustBlue
         lore:
           - $lang.gui.lore.particleSelect
       replace-ai:
