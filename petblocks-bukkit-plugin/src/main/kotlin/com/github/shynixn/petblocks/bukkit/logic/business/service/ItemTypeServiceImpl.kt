@@ -19,33 +19,6 @@ import org.yaml.snakeyaml.external.biz.base64Coder.Base64Coder
 import java.util.*
 import kotlin.collections.HashMap
 
-/**
- * Created by Shynixn 2019.
- * <p>
- * Version 1.2
- * <p>
- * MIT License
- * <p>
- * Copyright (c) 2019 by Shynixn
- * <p>
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- * <p>
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
- * <p>
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- * SOFTWARE.
- */
 class ItemTypeServiceImpl @Inject constructor(private val version: Version) : ItemTypeService {
     private val cache = HashMap<Any, Any>()
 
@@ -122,7 +95,7 @@ class ItemTypeServiceImpl @Inject constructor(private val version: Version) : It
                 val nmsCopyMethod = craftItemStackClass.getDeclaredMethod("asNMSCopy", ItemStack::class.java)
                 val nmsToBukkitMethod = craftItemStackClass.getDeclaredMethod("asBukkitCopy", nmsItemStackClass)
 
-                val nbtTagClass = findClazz("net.minecraft.nbt.CompoundTag")
+                val nbtTagClass = findClazz("net.minecraft.nbt.NBTTagCompound")
                 val getNBTTag = nmsItemStackClass.getDeclaredMethod("getTag")
                 val setNBTTag = nmsItemStackClass.getDeclaredMethod("setTag", nbtTagClass)
 
@@ -133,7 +106,7 @@ class ItemTypeServiceImpl @Inject constructor(private val version: Version) : It
                     targetNbtTag = nbtTagClass.newInstance()
                 }
 
-                val compoundMapField = nbtTagClass.getDeclaredField("map")
+                val compoundMapField = nbtTagClass.getDeclaredField("x")
                 compoundMapField.isAccessible = true
                 val targetNbtMap = compoundMapField.get(targetNbtTag) as MutableMap<Any?, Any?>
 
