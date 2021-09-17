@@ -93,8 +93,9 @@ jobs:
         run: |
           gpg2 --batch --cipher-algo AES256 --passphrase ${{ secrets.SIGNING_KEY_PASSWORD }} travis_secret_key.gpg
           echo "RELEASE_VERSION=$(./gradlew -q printVersion)" >> $GITHUB_ENV
-          ./gradlew publishToNexus
+          ./gradlew clean publishToNexus
           ./gradlew closeAndReleaseRepository
+          ./gradlew clean shadowJar
           java -jar petblocks-tools/build/libs/Deploy.jar --release ${{ secrets.DISCORD_WEBHOOK_SNAPSHOT }}
           java -jar petblocks-tools/build/libs/Deploy.jar --release ${{ secrets.DISCORD_WEBHOOK_CHANNEL }}
 
