@@ -93,12 +93,11 @@ jobs:
         run: |
           gpg2 --batch --cipher-algo AES256 --passphrase ${{ secrets.SIGNING_KEY_PASSWORD }} travis_secret_key.gpg
           echo "RELEASE_VERSION=$(./gradlew -q printVersion)" >> $GITHUB_ENV
-          ./gradlew clean publishToNexus
+          ./gradlew publishToNexus
           ./gradlew closeAndReleaseRepository
-          ./gradlew clean
-          ./gradlew shadowJar
-          java -jar petblocks-tools/build/libs/Deploy.jar --snapshot ${{ secrets.DISCORD_WEBHOOK_SNAPSHOT }}
-          java -jar petblocks-tools/build/libs/Deploy.jar --snapshot ${{ secrets.DISCORD_WEBHOOK_CHANNEL }}
+          ./gradlew clean shadowJar
+          java -jar petblocks-tools/build/libs/Deploy.jar --release ${{ secrets.DISCORD_WEBHOOK_SNAPSHOT }}
+          java -jar petblocks-tools/build/libs/Deploy.jar --release ${{ secrets.DISCORD_WEBHOOK_CHANNEL }}
 
       - name: Create Github Release
         if: "contains(github.event.head_commit.message, '--release') && contains(github.ref, 'master')"
