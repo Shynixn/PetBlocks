@@ -24,13 +24,13 @@ minecraft {
 
 apply plugin: 'jacoco'
 
-publishing {
+/*publishing {
     publications {
         shadow(MavenPublication) { publication ->
             project.shadow.component(publication)
         }
     }
-}
+}*/
 
 shadowJar {
     from sourceSets.main.resources.srcDirs
