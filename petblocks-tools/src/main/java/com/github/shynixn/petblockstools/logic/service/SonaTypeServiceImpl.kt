@@ -46,7 +46,7 @@ class SonaTypeServiceImpl : SonaTypeService {
 
         val repositoryContent = getSiteContent(lastSnapshotRepositoryURL)
         val snapshotPayload = repositoryContent.split("href=\"")
-        val subSnapshotPayload = snapshotPayload.filter { p -> p.contains(".jar\"") }
+        val subSnapshotPayload = snapshotPayload.filter { p -> p.contains("-plugin.jar\"") }
         val snapshotDownloadURLPayload = subSnapshotPayload[subSnapshotPayload.size - 1]
 
         return snapshotDownloadURLPayload.substring(0, snapshotDownloadURLPayload.indexOf("\">"))
