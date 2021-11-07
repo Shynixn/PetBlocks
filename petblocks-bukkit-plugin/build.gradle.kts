@@ -7,14 +7,14 @@ plugins {
     id("com.github.johnrengelman.shadow") version ("5.2.0")
 }
 
-publishing {
+/*publishing {
     publications {
         create<MavenPublication>("maven") {
             from(components["java"])
             artifact(tasks["shadowJar"])
         }
     }
-}
+}*/
 
 tasks.withType<ShadowJar> {
     dependsOn("jar")
