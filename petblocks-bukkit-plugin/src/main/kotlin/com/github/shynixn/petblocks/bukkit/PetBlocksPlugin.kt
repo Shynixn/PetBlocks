@@ -179,6 +179,10 @@ class PetBlocksPlugin : JavaPlugin(), PluginProxy {
             Bukkit.getPluginManager().registerEvents(resolve(DependencyHeadDatabaseListener::class.java), this)
         }
 
+        if (getServerVersion().isVersionSameOrGreaterThan(Version.VERSION_1_17_R1)) {
+            Bukkit.getPluginManager().registerEvents(resolve(EntityCleanUp117R1Listener::class.java), this)
+        }
+
         // Register CommandExecutor
         commandService.registerCommandExecutor("petblocks", this.resolve(EditPetCommandExecutorImpl::class.java))
         commandService.registerCommandExecutor("petblockreload", this.resolve(ReloadCommandExecutorImpl::class.java))
