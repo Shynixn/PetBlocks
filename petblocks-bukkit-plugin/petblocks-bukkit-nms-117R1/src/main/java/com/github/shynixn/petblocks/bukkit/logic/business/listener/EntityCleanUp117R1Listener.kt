@@ -15,12 +15,4 @@ class EntityCleanUp117R1Listener @Inject constructor(private val entityService: 
     fun onEntityLoad(event: EntitiesLoadEvent) {
         entityService.cleanUpInvalidEntities(event.chunk.entities.toList())
     }
-
-    /**
-     * Gets called when entities are requested to unload.
-     */
-    @EventHandler
-    fun onEntityUnload(event: EntitiesUnloadEvent) {
-        entityService.cleanUpInvalidEntities(event.chunk.entities.toList())
-    }
 }
