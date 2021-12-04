@@ -40,7 +40,7 @@ class NMSPetArmorstand(owner: org.bukkit.entity.Player, private val petMeta: Pet
     EntityArmorStand((owner.location.world as CraftWorld).handle, owner.location.x, owner.location.y, owner.location.z),
     NMSPetProxy {
     private var internalProxy: PetProxy? = null
-    private var jumpingField: Field = EntityLiving::class.java.getDeclaredField("bn")
+    private var jumpingField: Field = EntityLiving::class.java.getDeclaredField("bo")
     private var internalHitBox: EntityInsentient? = null
     private val aiService = PetBlocksApi.resolve(AIService::class.java)
 
@@ -268,7 +268,7 @@ class NMSPetArmorstand(owner: org.bukkit.entity.Player, private val petMeta: Pet
     /**
      * Riding function.
      */
-    override fun g(vec3d: Vec3D) {
+    override fun h(vec3d: Vec3D) {
         val human = this.cF().firstOrNull { p -> p is EntityHuman }
 
         if (this.cF() == null || human == null) {
@@ -307,7 +307,7 @@ class NMSPetArmorstand(owner: org.bukkit.entity.Player, private val petMeta: Pet
         this.ba = this.aY
 
         // Calculate flying direction and fix yaw in flying direction.
-        val flyingVector = Vector()
+        var flyingVector = Vector()
         val flyingLocation = Location(this.cA().world, this.dc(), this.de(), this.di())
 
         if (sideMot < 0.0f) {
@@ -406,7 +406,7 @@ class NMSPetArmorstand(owner: org.bukkit.entity.Player, private val petMeta: Pet
 
         if (!this.cA().k_()) {
             this.r(0.35f)
-            super.g(Vec3D(sideMot * ai.ridingSpeed, f2, forMot * ai.ridingSpeed))
+            super.h(Vec3D(sideMot * ai.ridingSpeed, f2, forMot * ai.ridingSpeed))
         }
     }
 
