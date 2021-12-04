@@ -20,10 +20,10 @@ CMD ["sh","-c","/bin/bash"]
 # 2. Resolve minecraft-dependencies for 1.17 - latest with jdk17
 FROM amazoncorretto:17 AS dependencies-jdk17
 WORKDIR /tmp
-RUN apt-get update
-RUN apt-get install maven -y
-RUN apt-get install wget -y
-RUN apt-get install git -y
+RUN yum update -y
+RUN yum install maven -y
+RUN yum install wget -y
+RUN yum install git -y
 RUN wget "https://hub.spigotmc.org/jenkins/job/BuildTools/lastSuccessfulBuild/artifact/target/BuildTools.jar"
 RUN java -jar BuildTools.jar --rev 1.17.1 --remapped
 RUN java -jar BuildTools.jar --rev 1.18 --remapped
@@ -31,9 +31,9 @@ RUN java -jar BuildTools.jar --rev 1.18 --remapped
 # 3. Build plugin for 1.8 - latest with jdk17
 FROM amazoncorretto:17 AS plugin-jdk17
 WORKDIR /tmp
-RUN apt-get update
-RUN apt-get install maven -y
-RUN apt-get install dos2unix -y
+RUN yum update -y
+RUN yum install maven -y
+RUN yum install dos2unix -y
 COPY --from=dependencies-jdk8 /root/.m2/repository/org/spigotmc /root/.m2/repository/org/spigotmc/
 COPY --from=dependencies-jdk17 /root/.m2/repository/org/spigotmc /root/.m2/repository/org/spigotmc/
 COPY . /tmp
@@ -52,7 +52,7 @@ EXPOSE 25565
 # Port for Remote Debugging
 EXPOSE 5005
 WORKDIR /app
-RUN apt-get update
+RUN yum update -y
 RUN echo "eula=true" > eula.txt && mkdir plugins
 COPY ./petblocks-tools/world-1.14 /app/
 COPY ./petblocks-tools/ops.json /app/
