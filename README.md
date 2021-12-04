@@ -12,7 +12,7 @@ PetBlocks is a spigot and also a sponge plugin to use blocks and custom heads as
 
 * Use blocks as pets in minecraft
 * The GUI and pets are completely customizable
-* Version support 1.8.R1 - 1.17.R1
+* Version support 1.8.R1 - 1.18.R1
 * Check out the [PetBlocks-Spigot-Page](https://www.spigotmc.org/resources/12056/) to get more information. 
 
 ## Installation
@@ -27,9 +27,9 @@ PetBlocks is a spigot and also a sponge plugin to use blocks and custom heads as
 
 ### Setting up development environment
 
-* Install Java 16 or higher
+* Install Java 17 or higher
 * Fork the PetBlocks project on github and clone it to your local environment.
-* PetBlocks requires spigot server implementations from 1.8.8 to 1.17 to be correctly installed in your local Maven cache.
+* PetBlocks requires spigot server implementations from 1.8.8 to 1.18 to be correctly installed in your local Maven cache.
   As this requires multiple java version to build different versions, a Dockerfile is provided to build these dependencies in a docker container
   and then copy it to your local Maven cache.
 
@@ -40,10 +40,10 @@ docker build --target dependencies-jdk8 -t petblocks-dependencies-jdk8 .
 docker create --name petblocks-dependencies-jdk8 petblocks-dependencies-jdk8 bash
 docker cp petblocks-dependencies-jdk8:/root/.m2/repository/org/spigotmc ~/.m2/repository/org/
 docker rm -f petblocks-dependencies-jdk8
-docker build --target dependencies-jdk16 -t petblocks-dependencies-jdk16 .
-docker create --name petblocks-dependencies-jdk16 petblocks-dependencies-jdk16 bash
-docker cp petblocks-dependencies-jdk16:/root/.m2/repository/org/spigotmc ~/.m2/repository/org/
-docker rm -f petblocks-dependencies-jdk16
+docker build --target dependencies-jdk17 -t petblocks-dependencies-jdk17 .
+docker create --name petblocks-dependencies-jdk17 petblocks-dependencies-jdk17 bash
+docker cp petblocks-dependencies-jdk17:/root/.m2/repository/org/spigotmc ~/.m2/repository/org/
+docker rm -f petblocks-dependencies-jdk17
 ````
 
 * Open the project with an IDE, gradle sync for dependencies.
