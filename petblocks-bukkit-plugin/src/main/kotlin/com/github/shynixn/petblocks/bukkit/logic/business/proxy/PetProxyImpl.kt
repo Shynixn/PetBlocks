@@ -187,12 +187,20 @@ class PetProxyImpl(override val meta: PetMeta, private val design: ArmorStand, p
                     .getDeclaredMethod("doTick")
             method.isAccessible = true
             method.invoke(handle)
-        }catch (e : Exception){
-            val method =
-                findClazz("com.github.shynixn.petblocks.bukkit.logic.business.nms.VERSION.NMSPetArmorstand")
-                    .getDeclaredMethod("doTick")
-            method.isAccessible = true
-            method.invoke(handle)
+        } catch (e: Exception) {
+            try {
+                val method =
+                    findClazz("com.github.shynixn.petblocks.bukkit.logic.business.nms.VERSION.NMSPetArmorstand")
+                        .getDeclaredMethod("doTick")
+                method.isAccessible = true
+                method.invoke(handle)
+            } catch (e2: Exception) {
+                val method =
+                    findClazz("com.github.shynixn.petblocks.bukkit.logic.business.nms.VERSION.NMSPetArmorstand")
+                        .getDeclaredMethod("eE")
+                method.isAccessible = true
+                method.invoke(handle)
+            }
         }
     }
 

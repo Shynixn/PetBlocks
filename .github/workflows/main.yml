@@ -2,7 +2,7 @@
 
 name: CI
 
-# Controls when the action will run. 
+# Controls when the action will run.
 on:
   # Triggers the workflow on push or pull request events but only for the master branch
   push:
@@ -52,10 +52,10 @@ jobs:
           docker create --name petblocks-dependencies-jdk8 petblocks-dependencies-jdk8 bash
           docker cp petblocks-dependencies-jdk8:/root/.m2/repository/org/spigotmc ~/.m2/repository/org/
           docker rm -f petblocks-dependencies-jdk8
-          docker build --target dependencies-jdk16 -t petblocks-dependencies-jdk16 .
-          docker create --name petblocks-dependencies-jdk16 petblocks-dependencies-jdk16 bash
-          docker cp petblocks-dependencies-jdk16:/root/.m2/repository/org/spigotmc ~/.m2/repository/org/
-          docker rm -f petblocks-dependencies-jdk16
+          docker build --target dependencies-jdk17 -t petblocks-dependencies-jdk17 .
+          docker create --name petblocks-dependencies-jdk17 petblocks-dependencies-jdk17 bash
+          docker cp petblocks-dependencies-jdk17:/root/.m2/repository/org/spigotmc ~/.m2/repository/org/
+          docker rm -f petblocks-dependencies-jdk17
 
       - name: Build Java Application
         run: |

@@ -44,7 +44,12 @@ import org.bukkit.util.Vector
  * Finds the version compatible class.
  */
 fun findClazz(name: String): Class<*> {
-    return Class.forName(name.replace("VERSION", PetBlocksApi.resolve(PluginProxy::class.java).getServerVersion().bukkitId))
+    return Class.forName(
+        name.replace(
+            "VERSION",
+            PetBlocksApi.resolve(PluginProxy::class.java).getServerVersion().bukkitId
+        )
+    )
 }
 
 /**
@@ -119,8 +124,14 @@ fun Player.sendPacket(packet: Any) {
 
         val playerConnectionClazz = findClazz("net.minecraft.server.network.PlayerConnection")
         val packetClazz = findClazz("net.minecraft.network.protocol.Packet")
-        val sendPacketMethod = playerConnectionClazz.getDeclaredMethod("sendPacket", packetClazz)
-        sendPacketMethod.invoke(connection, packet)
+
+        if (version.isVersionSameOrGreaterThan(Version.VERSION_1_18_R1)) {
+            val sendPacketMethod = playerConnectionClazz.getDeclaredMethod("a", packetClazz)
+            sendPacketMethod.invoke(connection, packet)
+        } else {
+            val sendPacketMethod = playerConnectionClazz.getDeclaredMethod("sendPacket", packetClazz)
+            sendPacketMethod.invoke(connection, packet)
+        }
     } else {
         val nmsPlayerClazz = findClazz("net.minecraft.server.VERSION.EntityPlayer")
         val playerConnectionField = nmsPlayerClazz.getDeclaredField("playerConnection")

@@ -96,8 +96,17 @@ class ItemTypeServiceImpl @Inject constructor(private val version: Version) : It
                 val nmsToBukkitMethod = craftItemStackClass.getDeclaredMethod("asBukkitCopy", nmsItemStackClass)
 
                 val nbtTagClass = findClazz("net.minecraft.nbt.NBTTagCompound")
-                val getNBTTag = nmsItemStackClass.getDeclaredMethod("getTag")
-                val setNBTTag = nmsItemStackClass.getDeclaredMethod("setTag", nbtTagClass)
+                val getNBTTag = if (version.isVersionSameOrGreaterThan(Version.VERSION_1_18_R1)) {
+                    nmsItemStackClass.getDeclaredMethod("s")
+                } else {
+                    nmsItemStackClass.getDeclaredMethod("getTag")
+                }
+
+                val setNBTTag = if (version.isVersionSameOrGreaterThan(Version.VERSION_1_18_R1)) {
+                    nmsItemStackClass.getDeclaredMethod("c", nbtTagClass)
+                } else {
+                    nmsItemStackClass.getDeclaredMethod("setTag", nbtTagClass)
+                }
 
                 val nmsItemStack = nmsCopyMethod.invoke(null, itemStack)
                 var targetNbtTag = getNBTTag.invoke(nmsItemStack)
@@ -111,10 +120,15 @@ class ItemTypeServiceImpl @Inject constructor(private val version: Version) : It
                 val targetNbtMap = compoundMapField.get(targetNbtTag) as MutableMap<Any?, Any?>
 
                 try {
-                    val sourceNbtTag = findClazz(
+                    val mojangsonParser = findClazz(
                         "net.minecraft.nbt.MojangsonParser"
                     )
-                        .getDeclaredMethod("parse", String::class.java).invoke(null, item.nbtTag)
+                    val sourceNbtTag = if (version.isVersionSameOrGreaterThan(Version.VERSION_1_18_R1)) {
+                        mojangsonParser.getDeclaredMethod("a", String::class.java).invoke(null, item.nbtTag)
+                    } else {
+                        mojangsonParser.getDeclaredMethod("parse", String::class.java).invoke(null, item.nbtTag)
+                    }
+
                     val sourceNbtMap = compoundMapField.get(sourceNbtTag) as MutableMap<Any?, Any?>
 
                     for (key in sourceNbtMap.keys) {
