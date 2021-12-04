@@ -14,11 +14,6 @@ interface ProtocolService {
     fun <P> unRegisterPlayer(player: P)
 
     /**
-     * Sends a packet to the given player.
-     */
-    fun <T, P> sendPacket(packet: T, player: P)
-
-    /**
      * Registers a listener for the given packet type.
      */
     fun <T> registerListener(clazz: Class<T>, f: (T) -> Unit)

@@ -109,7 +109,7 @@ class MessageServiceImpl @Inject constructor(private val version: Version) : Mes
 
         finalMessage.append("]}")
 
-        val packet = if(version == Version.VERSION_1_17_R1){
+        val packet = if(version.isVersionSameOrGreaterThan(Version.VERSION_1_17_R1)){
             val clazz = Class.forName("net.minecraft.network.chat.IChatBaseComponent\$ChatSerializer")
             val packetClazz = findClazz("net.minecraft.network.protocol.game.PacketPlayOutChat")
             val chatBaseComponentClazz = findClazz("net.minecraft.network.chat.IChatBaseComponent")

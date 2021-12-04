@@ -83,22 +83,6 @@ class ProtocolServiceImpl @Inject constructor(
     }
 
     /**
-     * Sends a packet to the given player.
-     */
-    override fun <T, P> sendPacket(packet: T, player: P) {
-        require(player is Player)
-        require(packet is Any)
-
-        if (!internalPacketToNMSPacket.containsKey(packet.javaClass)) {
-            throw IllegalArgumentException("Packet '$packet' does not have a valid mapping!")
-        }
-
-        val nmsPacket = internalPacketToNMSPacket[packet.javaClass]!!.apply(packet)
-        require(player is EntityPlayerMP)
-        player.connection.sendPacket(nmsPacket as Packet<*>)
-    }
-
-    /**
      * Registers a listener for the given packet type.
      */
     override fun <T> registerListener(clazz: Class<T>, f: (T) -> Unit) {

@@ -22,8 +22,7 @@ import kotlin.collections.HashSet
  */
 class ProtocolServiceImpl @Inject constructor(
     private val concurrencyService: ConcurrencyService,
-    private val loggingService: LoggingService,
-    private val proxyService: ProxyService
+    private val loggingService: LoggingService
 ) :
     ProtocolService {
     private val handlerName = "PetBlocks " + "-" + UUID.randomUUID().toString()
@@ -114,26 +113,6 @@ class ProtocolServiceImpl @Inject constructor(
             }
         }
         cachedPlayerChannels.remove(player)
-    }
-
-    /**
-     * Sends a packet to the given player.
-     */
-    override fun <T, P> sendPacket(packet: T, player: P) {
-        require(player is Player)
-        require(packet is Any)
-
-        if (!internalPacketToNMSPacket.containsKey(packet.javaClass)) {
-            throw IllegalArgumentException("Packet '$packet' does not have a valid mapping!")
-        }
-
-        val nmsPacket = internalPacketToNMSPacket[packet.javaClass]!!.apply(packet)
-
-        val nmsPlayer = playerToNmsPlayer
-            .invoke(player)
-        val connection = playerConnectionField
-            .get(nmsPlayer)
-        sendPacketMethod.invoke(connection, nmsPacket)
     }
 
     /**
