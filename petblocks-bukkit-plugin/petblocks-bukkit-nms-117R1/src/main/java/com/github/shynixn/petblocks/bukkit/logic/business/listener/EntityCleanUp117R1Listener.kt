@@ -5,7 +5,6 @@ import com.google.inject.Inject
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.world.EntitiesLoadEvent
-import org.bukkit.event.world.EntitiesUnloadEvent
 
 class EntityCleanUp117R1Listener @Inject constructor(private val entityService: EntityService) : Listener {
     /**
@@ -13,6 +12,6 @@ class EntityCleanUp117R1Listener @Inject constructor(private val entityService: 
      */
     @EventHandler
     fun onEntityLoad(event: EntitiesLoadEvent) {
-        entityService.cleanUpInvalidEntities(event.chunk.entities.toList())
+        entityService.cleanUpInvalidEntities(event.entities.toList())
     }
 }
