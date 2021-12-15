@@ -62,6 +62,7 @@ jobs:
           chmod +x gradlew
           ./gradlew assemble || ./gradlew setupDecompWorkspace && ./gradlew assemble
           ./gradlew build shadowJar
+          echo "RELEASE_VERSION=$(./gradlew -q printVersion)" >> $GITHUB_ENV
 
       - name: Publish Test Report
         run: |
@@ -91,8 +92,7 @@ jobs:
           SONATYPE_USERNAME: ${{ secrets.SONATYPE_USERNAME }}
           SONATYPE_PASSWORD: ${{ secrets.SONATYPE_PASSWORD }}
         run: |
-          gpg2 --batch --cipher-algo AES256 --passphrase ${{ secrets.SIGNING_KEY_PASSWORD }} travis_secret_key.gpg
-          echo "RELEASE_VERSION=$(./gradlew -q printVersion)" >> $GITHUB_ENV
+          gpg2 --batch --cipher-algo AES256 --passphrase ${{ secrets.SIGNING_KEY_PASSWORD }} travis_secret_key.gpg   
           ./gradlew clean publishToNexus
           ./gradlew closeAndReleaseRepository
           ./gradlew clean shadowJar
