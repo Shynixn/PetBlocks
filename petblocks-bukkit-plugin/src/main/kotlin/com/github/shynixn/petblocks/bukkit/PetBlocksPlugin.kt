@@ -32,7 +32,7 @@ import java.nio.file.Paths
 import java.util.logging.Level
 
 /**
- * Plugin created by Shynixn
+ * Plugin created by Shynixn.
  */
 class PetBlocksPlugin : JavaPlugin(), PluginProxy {
     companion object {
