@@ -1,6 +1,4 @@
-# This is a basic workflow to help you get started with Actions
-
-name: CI
+name: PetBlocks
 
 # Controls when the action will run.
 on:
@@ -83,7 +81,7 @@ jobs:
           java -jar petblocks-tools/build/libs/Deploy.jar --snapshot ${{ secrets.DISCORD_WEBHOOK_CHANNEL }}
 
       - name: Publish Release to Maven Central
-        if: "contains(github.event.head_commit.message, '--release') && contains(github.ref, 'master')"
+        if: "false && contains(github.event.head_commit.message, '--release') && contains(github.ref, 'master')"
         env:
           SIGNING_KEY_ID: ${{ secrets.SIGNING_KEY_ID }}
           SIGNING_KEY_PASSWORD: ${{ secrets.SIGNING_KEY_PASSWORD }}
