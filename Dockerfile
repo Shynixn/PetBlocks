@@ -27,13 +27,16 @@ RUN yum install git -y
 RUN wget "https://hub.spigotmc.org/jenkins/job/BuildTools/lastSuccessfulBuild/artifact/target/BuildTools.jar"
 RUN java -jar BuildTools.jar --rev 1.17.1 --remapped
 RUN java -jar BuildTools.jar --rev 1.18 --remapped
+RUN java -jar BuildTools.jar --rev 1.18.2 --remapped
+# TagKey depends on java.lang.Record and causes our build to fail eventhough we do not need it. Therefore remove it.
+RUN yum install zip -y && zip -d /root/.m2/repository/org/spigotmc/spigot/1.18.2-R0.1-SNAPSHOT/spigot-1.18.2-R0.1-SNAPSHOT.jar net/minecraft/tags/TagKey.class
 
-# 3. Build plugin for 1.8 - latest with jdk17
-FROM amazoncorretto:17 AS plugin-jdk17
+# 3. Build plugin for 1.8 - latest with jdk8
+FROM openjdk:8 AS plugin-jdk8
 WORKDIR /tmp
-RUN yum update -y
-RUN yum install maven -y
-RUN yum install dos2unix -y
+RUN apt-get update -y
+RUN apt-get install maven -y
+RUN apt-get install dos2unix -y
 COPY --from=dependencies-jdk8 /root/.m2/repository/org/spigotmc /root/.m2/repository/org/spigotmc/
 COPY --from=dependencies-jdk17 /root/.m2/repository/org/spigotmc /root/.m2/repository/org/spigotmc/
 COPY . /tmp

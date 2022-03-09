@@ -65,6 +65,7 @@ dependencies {
     implementation(project(":petblocks-bukkit-plugin:petblocks-bukkit-nms-116R3"))
     implementation(project(":petblocks-bukkit-plugin:petblocks-bukkit-nms-117R1"))
     implementation(project(":petblocks-bukkit-plugin:petblocks-bukkit-nms-118R1"))
+    implementation(project(":petblocks-bukkit-plugin:petblocks-bukkit-nms-118R2"))
 
     implementation("com.github.shynixn.org.bstats:bstats-bukkit:1.7")
     implementation("com.github.shynixn.mccoroutine:mccoroutine-bukkit-api:0.0.6")
