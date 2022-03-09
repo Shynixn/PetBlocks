@@ -2,8 +2,8 @@
 
 | branch        | status        |  version | download |
 | ------------- | ------------- |  --------| ---------| 
-| master        | [![Build Status](https://github.com/Shynixn/PetBlocks/workflows/CI/badge.svg?branch=master)](https://github.com/Shynixn/PetBlocks/actions)| ![GitHub license](https://img.shields.io/nexus/r/https/oss.sonatype.org/com.github.shynixn.petblocks/petblocks-bukkit-plugin.svg?style=flat-square)  |[Download latest release](https://github.com/Shynixn/PetBlocks/releases)|
-| development   | [![Build Status](https://github.com/Shynixn/PetBlocks/workflows/CI/badge.svg?branch=development)](https://github.com/Shynixn/PetBlocks/actions) |![GitHub license](https://img.shields.io/nexus/s/https/oss.sonatype.org/com.github.shynixn.petblocks/petblocks-bukkit-plugin.svg?style=flat-square) |  [Download snapshots](https://oss.sonatype.org/content/repositories/snapshots/com/github/shynixn/petblocks) |
+| master        | [![Build Status](https://github.com/Shynixn/PetBlocks/workflows/PetBlocks/badge.svg?branch=master)](https://github.com/Shynixn/PetBlocks/actions)| ![GitHub license](https://img.shields.io/nexus/r/https/oss.sonatype.org/com.github.shynixn.petblocks/petblocks-bukkit-plugin.svg?style=flat-square)  |[Download latest release](https://github.com/Shynixn/PetBlocks/releases)|
+| development   | [![Build Status](https://github.com/Shynixn/PetBlocks/workflows/PetBlocks/badge.svg?branch=development)](https://github.com/Shynixn/PetBlocks/actions) |![GitHub license](https://img.shields.io/nexus/s/https/oss.sonatype.org/com.github.shynixn.petblocks/petblocks-bukkit-plugin.svg?style=flat-square) |  [Download snapshots](https://oss.sonatype.org/content/repositories/snapshots/com/github/shynixn/petblocks) |
 ## Description
 
 PetBlocks is a spigot and also a sponge plugin to use blocks and custom heads as pets in Minecraft.
@@ -12,7 +12,7 @@ PetBlocks is a spigot and also a sponge plugin to use blocks and custom heads as
 
 * Use blocks as pets in minecraft
 * The GUI and pets are completely customizable
-* Version support 1.8.R1 - 1.18.R1
+* Version support 1.8.R1 - 1.18.R2
 * Check out the [PetBlocks-Spigot-Page](https://www.spigotmc.org/resources/12056/) to get more information. 
 
 ## Installation
@@ -71,16 +71,4 @@ docker run --name=petblocks -p 25565:25565 -p 5005:5005 petblocks
 
 ## Licence
 
-Copyright 2015-2021 Shynixn
-
 Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-   http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
