@@ -21,7 +21,7 @@ class LocalizationServiceImpl @Inject constructor(
 ) :
     LocalizationService {
     private var properties = Properties()
-    private val defaultLanguages = arrayListOf("en_us", "zh_cn", "de_de", "es_la", "pt_br")
+    private val defaultLanguages = arrayListOf("en_us", "zh_cn", "de_de", "es_la", "pt_br", "fr_eu")
 
     /**
      * Checks if the given text contains the lang prefix and replaces it with the localized value.
