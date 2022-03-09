@@ -2,16 +2,19 @@
 
 package com.github.shynixn.petblocks.bukkit.logic.business.service
 
+import com.github.shynixn.petblocks.api.business.enumeration.Version
 import com.github.shynixn.petblocks.api.business.service.ConcurrencyService
 import com.github.shynixn.petblocks.api.business.service.LoggingService
 import com.github.shynixn.petblocks.api.business.service.ProtocolService
 import com.github.shynixn.petblocks.api.business.service.ProxyService
 import com.github.shynixn.petblocks.bukkit.logic.business.extension.findClazz
+import com.github.shynixn.petblocks.core.logic.business.extension.accessible
 import com.google.inject.Inject
 import io.netty.channel.Channel
 import io.netty.channel.ChannelDuplexHandler
 import io.netty.channel.ChannelHandlerContext
 import org.bukkit.entity.Player
+import org.bukkit.plugin.Plugin
 import java.util.*
 import java.util.function.Function
 import kotlin.collections.HashMap
@@ -22,7 +25,9 @@ import kotlin.collections.HashSet
  */
 class ProtocolServiceImpl @Inject constructor(
     private val concurrencyService: ConcurrencyService,
-    private val loggingService: LoggingService
+    private val loggingService: LoggingService,
+    private val plugin : Plugin,
+    private val version: Version
 ) :
     ProtocolService {
     private val handlerName = "PetBlocks " + "-" + UUID.randomUUID().toString()
@@ -61,9 +66,18 @@ class ProtocolServiceImpl @Inject constructor(
     }
     private val channelField by lazy {
         try {
-            findClazz("net.minecraft.network.NetworkManager")
-                .getDeclaredField("k")
-        } catch (e: Exception) {
+            if (version.isVersionSameOrGreaterThan(Version.VERSION_1_18_R2)) {
+                findClazz("net.minecraft.network.NetworkManager")
+                    .getDeclaredField("m")
+                    .accessible(true)
+            } else if (version.isVersionSameOrGreaterThan(Version.VERSION_1_17_R1)) {
+                findClazz("net.minecraft.network.NetworkManager")
+                    .getDeclaredField("k")
+                    .accessible(true)
+            } else {
+                throw RuntimeException("Impl not found!")
+            }
+        } catch (e1: Exception) {
             findClazz("net.minecraft.server.VERSION.NetworkManager")
                 .getDeclaredField("channel")
         }

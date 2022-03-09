@@ -3,6 +3,7 @@ package com.github.shynixn.petblocks.bukkit.logic.business.proxy
 import com.github.shynixn.petblocks.api.PetBlocksApi
 import com.github.shynixn.petblocks.api.bukkit.event.PetRemoveEvent
 import com.github.shynixn.petblocks.api.business.enumeration.PluginDependency
+import com.github.shynixn.petblocks.api.business.enumeration.Version
 import com.github.shynixn.petblocks.api.business.proxy.ArmorstandPetProxy
 import com.github.shynixn.petblocks.api.business.proxy.EntityPetProxy
 import com.github.shynixn.petblocks.api.business.proxy.PetProxy
@@ -63,6 +64,7 @@ class PetProxyImpl(override val meta: PetMeta, private val design: ArmorStand, p
     private val logger: LoggingService = PetBlocksApi.resolve(LoggingService::class.java)
     private val itemService = PetBlocksApi.resolve(ItemTypeService::class.java)
     private val dependencyService = PetBlocksApi.resolve(DependencyService::class.java)
+    private val version = PetBlocksApi.resolve(Version::class.java)
     private var placeHolderApiService: DependencyPlaceholderApiService? = null
 
     /**
@@ -195,11 +197,19 @@ class PetProxyImpl(override val meta: PetMeta, private val design: ArmorStand, p
                 method.isAccessible = true
                 method.invoke(handle)
             } catch (e2: Exception) {
-                val method =
-                    findClazz("com.github.shynixn.petblocks.bukkit.logic.business.nms.VERSION.NMSPetArmorstand")
-                        .getDeclaredMethod("eE")
-                method.isAccessible = true
-                method.invoke(handle)
+                if(version.isVersionSameOrGreaterThan(Version.VERSION_1_18_R2)){
+                    val method =
+                        findClazz("com.github.shynixn.petblocks.bukkit.logic.business.nms.VERSION.NMSPetArmorstand")
+                            .getDeclaredMethod("eF")
+                    method.isAccessible = true
+                    method.invoke(handle)
+                }else{
+                    val method =
+                        findClazz("com.github.shynixn.petblocks.bukkit.logic.business.nms.VERSION.NMSPetArmorstand")
+                            .getDeclaredMethod("eE")
+                    method.isAccessible = true
+                    method.invoke(handle)
+                }
             }
         }
     }
