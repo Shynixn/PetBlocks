@@ -6,7 +6,6 @@ import com.github.shynixn.petblocks.api.business.enumeration.Version
 import com.github.shynixn.petblocks.api.business.service.ConcurrencyService
 import com.github.shynixn.petblocks.api.business.service.LoggingService
 import com.github.shynixn.petblocks.api.business.service.ProtocolService
-import com.github.shynixn.petblocks.api.business.service.ProxyService
 import com.github.shynixn.petblocks.bukkit.logic.business.extension.findClazz
 import com.github.shynixn.petblocks.core.logic.business.extension.accessible
 import com.google.inject.Inject
@@ -14,11 +13,8 @@ import io.netty.channel.Channel
 import io.netty.channel.ChannelDuplexHandler
 import io.netty.channel.ChannelHandlerContext
 import org.bukkit.entity.Player
-import org.bukkit.plugin.Plugin
 import java.util.*
 import java.util.function.Function
-import kotlin.collections.HashMap
-import kotlin.collections.HashSet
 
 /**
  * Handles packet level manipulation.
@@ -26,7 +22,6 @@ import kotlin.collections.HashSet
 class ProtocolServiceImpl @Inject constructor(
     private val concurrencyService: ConcurrencyService,
     private val loggingService: LoggingService,
-    private val plugin : Plugin,
     private val version: Version
 ) :
     ProtocolService {
@@ -34,7 +29,6 @@ class ProtocolServiceImpl @Inject constructor(
     private val cachedPlayerChannels = HashMap<Player, Channel>()
     private val listeners = HashMap<Class<*>, MutableSet<(Any) -> Unit>>()
     private val nmsPacketToInternalPacket = HashMap<Class<*>, Function<Pair<Any, Player>, Any?>>()
-    private val internalPacketToNMSPacket = HashMap<Class<*>, Function<Any, Any?>>()
     private val playerToNmsPlayer = findClazz("org.bukkit.craftbukkit.VERSION.entity.CraftPlayer")
         .getDeclaredMethod("getHandle")
     private val playerConnectionField by lazy {
@@ -46,21 +40,18 @@ class ProtocolServiceImpl @Inject constructor(
                 .getDeclaredField("playerConnection")
         }
     }
-    private val sendPacketMethod by lazy{
-        try {
-            findClazz("net.minecraft.server.network.PlayerConnection")
-                .getDeclaredMethod("sendPacket", findClazz("net.minecraft.network.protocol.Packet"))
-        } catch (e: Exception) {
-            findClazz("net.minecraft.server.VERSION.PlayerConnection")
-                .getDeclaredMethod("sendPacket", findClazz("net.minecraft.server.VERSION.Packet"))
-        }
-    }
     private val networkManagerField by lazy {
         try {
-            findClazz("net.minecraft.server.network.PlayerConnection")
-                .getDeclaredField("a")
+            if (version.isVersionSameOrGreaterThan(Version.VERSION_1_19_R1)) {
+                findClazz("net.minecraft.server.network.PlayerConnection")
+                    .getDeclaredField("b")
+                    .accessible(true)
+            } else {
+                findClazz("net.minecraft.server.network.PlayerConnection")
+                    .getDeclaredField("a")
+            }
         } catch (e: Exception) {
-           findClazz("net.minecraft.server.VERSION.PlayerConnection")
+            findClazz("net.minecraft.server.VERSION.PlayerConnection")
                 .getDeclaredField("networkManager")
         }
     }
@@ -99,7 +90,7 @@ class ProtocolServiceImpl @Inject constructor(
         val connection = playerConnectionField
             .get(nmsPlayer)
         val netWorkManager = networkManagerField.get(connection)
-        val channel =  channelField
+        val channel = channelField
             .get(netWorkManager) as Channel
 
         val internalInterceptor = PacketInterceptor(player, this, loggingService)

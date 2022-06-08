@@ -109,53 +109,62 @@ class MessageServiceImpl @Inject constructor(private val version: Version) : Mes
 
         finalMessage.append("]}")
 
-        val packet = if(version.isVersionSameOrGreaterThan(Version.VERSION_1_17_R1)){
-            val clazz = Class.forName("net.minecraft.network.chat.IChatBaseComponent\$ChatSerializer")
-            val packetClazz = findClazz("net.minecraft.network.protocol.game.PacketPlayOutChat")
-            val chatBaseComponentClazz = findClazz("net.minecraft.network.chat.IChatBaseComponent")
-            val chatComponent =
-                clazz.getDeclaredMethod("a", String::class.java).invoke(null, finalMessage.toString())
-            val systemUtilsClazz = findClazz("net.minecraft.SystemUtils")
-            val defaultUUID = if(version.isVersionSameOrGreaterThan(Version.VERSION_1_18_R2)){
-                systemUtilsClazz.getDeclaredField("c").get(null) as UUID
-            }else{
-                systemUtilsClazz.getDeclaredField("b").get(null) as UUID
-            }
-            val chatEnumMessage = findClazz("net.minecraft.network.chat.ChatMessageType")
-            packetClazz.getDeclaredConstructor(chatBaseComponentClazz, chatEnumMessage, UUID::class.java)
-                .newInstance(chatComponent, chatEnumMessage.enumConstants[0], defaultUUID)
-        }else{
-            val clazz: Class<*> = if (version == Version.VERSION_1_8_R1) {
-                findClazz("net.minecraft.server.VERSION.ChatSerializer")
+        val packet =
+            if (version.isVersionSameOrGreaterThan(Version.VERSION_1_19_R1)) {
+                val clazz = Class.forName("net.minecraft.network.chat.IChatBaseComponent\$ChatSerializer")
+                val packetClazz = findClazz("net.minecraft.network.protocol.game.ClientboundSystemChatPacket")
+                val chatBaseComponentClazz = findClazz("net.minecraft.network.chat.IChatBaseComponent")
+                val chatComponent =
+                    clazz.getDeclaredMethod("a", String::class.java).invoke(null, finalMessage.toString())
+                packetClazz.getDeclaredConstructor(chatBaseComponentClazz, Int::class.java)
+                    .newInstance(chatComponent,1)
+            } else if (version.isVersionSameOrGreaterThan(Version.VERSION_1_17_R1)) {
+                val clazz = Class.forName("net.minecraft.network.chat.IChatBaseComponent\$ChatSerializer")
+                val packetClazz = findClazz("net.minecraft.network.protocol.game.PacketPlayOutChat")
+                val chatBaseComponentClazz = findClazz("net.minecraft.network.chat.IChatBaseComponent")
+                val chatComponent =
+                    clazz.getDeclaredMethod("a", String::class.java).invoke(null, finalMessage.toString())
+                val systemUtilsClazz = findClazz("net.minecraft.SystemUtils")
+                val defaultUUID = if (version.isVersionSameOrGreaterThan(Version.VERSION_1_18_R2)) {
+                    systemUtilsClazz.getDeclaredField("c").get(null) as UUID
+                } else {
+                    systemUtilsClazz.getDeclaredField("b").get(null) as UUID
+                }
+                val chatEnumMessage = findClazz("net.minecraft.network.chat.ChatMessageType")
+                packetClazz.getDeclaredConstructor(chatBaseComponentClazz, chatEnumMessage, UUID::class.java)
+                    .newInstance(chatComponent, chatEnumMessage.enumConstants[0], defaultUUID)
             } else {
-                findClazz("net.minecraft.server.VERSION.IChatBaseComponent\$ChatSerializer")
-            }
+                val clazz: Class<*> = if (version == Version.VERSION_1_8_R1) {
+                    findClazz("net.minecraft.server.VERSION.ChatSerializer")
+                } else {
+                    findClazz("net.minecraft.server.VERSION.IChatBaseComponent\$ChatSerializer")
+                }
 
-            val packetClazz = findClazz("net.minecraft.server.VERSION.PacketPlayOutChat")
-            val chatBaseComponentClazz = findClazz("net.minecraft.server.VERSION.IChatBaseComponent")
+                val packetClazz = findClazz("net.minecraft.server.VERSION.PacketPlayOutChat")
+                val chatBaseComponentClazz = findClazz("net.minecraft.server.VERSION.IChatBaseComponent")
 
-            val method = clazz.getDeclaredMethod("a", String::class.java)
-            method.isAccessible = true
-            val chatComponent = method.invoke(null, finalMessage.toString())
-            when {
-                version.isVersionSameOrGreaterThan(Version.VERSION_1_16_R1) -> {
-                    val systemUtilsClazz = findClazz("net.minecraft.server.VERSION.SystemUtils")
-                    val defaultUUID = systemUtilsClazz.getDeclaredField("b").get(null) as UUID
-                    val chatEnumMessage = findClazz("net.minecraft.server.VERSION.ChatMessageType")
-                    packetClazz.getDeclaredConstructor(chatBaseComponentClazz, chatEnumMessage, UUID::class.java)
-                        .newInstance(chatComponent, chatEnumMessage.enumConstants[0], defaultUUID)
-                }
-                version.isVersionSameOrGreaterThan(Version.VERSION_1_12_R1) -> {
-                    val chatEnumMessage = findClazz("net.minecraft.server.VERSION.ChatMessageType")
-                    packetClazz.getDeclaredConstructor(chatBaseComponentClazz, chatEnumMessage)
-                        .newInstance(chatComponent, chatEnumMessage.enumConstants[0])
-                }
-                else -> {
-                    packetClazz.getDeclaredConstructor(chatBaseComponentClazz, Byte::class.javaPrimitiveType!!)
-                        .newInstance(chatComponent, 0.toByte())
+                val method = clazz.getDeclaredMethod("a", String::class.java)
+                method.isAccessible = true
+                val chatComponent = method.invoke(null, finalMessage.toString())
+                when {
+                    version.isVersionSameOrGreaterThan(Version.VERSION_1_16_R1) -> {
+                        val systemUtilsClazz = findClazz("net.minecraft.server.VERSION.SystemUtils")
+                        val defaultUUID = systemUtilsClazz.getDeclaredField("b").get(null) as UUID
+                        val chatEnumMessage = findClazz("net.minecraft.server.VERSION.ChatMessageType")
+                        packetClazz.getDeclaredConstructor(chatBaseComponentClazz, chatEnumMessage, UUID::class.java)
+                            .newInstance(chatComponent, chatEnumMessage.enumConstants[0], defaultUUID)
+                    }
+                    version.isVersionSameOrGreaterThan(Version.VERSION_1_12_R1) -> {
+                        val chatEnumMessage = findClazz("net.minecraft.server.VERSION.ChatMessageType")
+                        packetClazz.getDeclaredConstructor(chatBaseComponentClazz, chatEnumMessage)
+                            .newInstance(chatComponent, chatEnumMessage.enumConstants[0])
+                    }
+                    else -> {
+                        packetClazz.getDeclaredConstructor(chatBaseComponentClazz, Byte::class.javaPrimitiveType!!)
+                            .newInstance(chatComponent, 0.toByte())
+                    }
                 }
             }
-        }
 
         player.sendPacket(packet)
     }

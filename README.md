@@ -12,7 +12,7 @@ PetBlocks is a spigot and also a sponge plugin to use blocks and custom heads as
 
 * Use blocks as pets in minecraft
 * The GUI and pets are completely customizable
-* Version support 1.8.R1 - 1.18.R2
+* Version support 1.8.R1 - 1.19.R1
 * Check out the [PetBlocks-Spigot-Page](https://www.spigotmc.org/resources/12056/) to get more information. 
 
 ## Installation
@@ -29,7 +29,7 @@ PetBlocks is a spigot and also a sponge plugin to use blocks and custom heads as
 
 * Install Java 17 or higher
 * Fork the PetBlocks project on github and clone it to your local environment.
-* PetBlocks requires spigot server implementations from 1.8.8 to 1.18 to be correctly installed in your local Maven cache.
+* PetBlocks requires spigot server implementations from 1.8.8 to 1.19 to be correctly installed in your local Maven cache.
   As this requires multiple java version to build different versions, a Dockerfile is provided to build these dependencies in a docker container
   and then copy it to your local Maven cache.
 
