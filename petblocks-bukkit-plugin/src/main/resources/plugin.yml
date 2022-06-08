@@ -1,5 +1,5 @@
 name: PetBlocks
-version: 8.30.0
+version: 8.31.0
 author: Shynixn
 main: com.github.shynixn.petblocks.bukkit.PetBlocksPlugin
 softdepend: [PlaceholderAPI, HeadDatabase]
