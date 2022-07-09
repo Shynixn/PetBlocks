@@ -96,11 +96,16 @@ class ItemTypeServiceImpl @Inject constructor(private val version: Version) : It
                 val nmsToBukkitMethod = craftItemStackClass.getDeclaredMethod("asBukkitCopy", nmsItemStackClass)
 
                 val nbtTagClass = findClazz("net.minecraft.nbt.NBTTagCompound")
-                val getNBTTag = if (version.isVersionSameOrGreaterThan(Version.VERSION_1_18_R1)) {
-                    nmsItemStackClass.getDeclaredMethod("s")
-                } else {
-                    nmsItemStackClass.getDeclaredMethod("getTag")
-                }
+                val getNBTTag =
+                    if (version.isVersionSameOrGreaterThan(Version.VERSION_1_19_R1)) {
+                        nmsItemStackClass.getDeclaredMethod("u")
+                    } else if (version.isVersionSameOrGreaterThan(Version.VERSION_1_18_R2)) {
+                        nmsItemStackClass.getDeclaredMethod("t")
+                    } else if (version.isVersionSameOrGreaterThan(Version.VERSION_1_18_R1)) {
+                        nmsItemStackClass.getDeclaredMethod("s")
+                    } else {
+                        nmsItemStackClass.getDeclaredMethod("getTag")
+                    }
 
                 val setNBTTag = if (version.isVersionSameOrGreaterThan(Version.VERSION_1_18_R1)) {
                     nmsItemStackClass.getDeclaredMethod("c", nbtTagClass)
