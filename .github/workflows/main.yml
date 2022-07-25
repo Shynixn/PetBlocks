@@ -24,13 +24,6 @@ jobs:
         with:
           java-version: '8'
 
-      - name: Cache Forge Dependencies
-        id: cache-forge-dependencies
-        uses: actions/cache@v2
-        with:
-          path: /home/runner/.gradle/caches/minecraft
-          key: forge-dependencies
-
       - name: Cache Spigot Dependencies
         id: cache-spigot-dependencies
         uses: actions/cache@v2
@@ -86,17 +79,6 @@ jobs:
           asset_name: PetBlocks-Bukkit.jar
           asset_content_type: application/jar
 
-      - name: Upload Sponge Release to Github
-        if: "contains(github.event.head_commit.message, '--release') && contains(github.ref, 'master')"
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: /home/runner/work/PetBlocks/PetBlocks/petblocks-sponge-plugin/build/libs/petblocks-sponge-plugin-${{ env.RELEASE_VERSION }}.jar
-          asset_name: PetBlocks-Sponge.jar
-          asset_content_type: application/jar
-
   Documentation:
     runs-on: ubuntu-latest
     if: "contains(github.ref, 'master')"
@@ -113,7 +95,7 @@ jobs:
       - name: Create JavaDocs
         uses: Shynixn/jvm-docs-action@v1.0.0
         with:
-          source-dirs: "petblocks-api/src/main/kotlin;petblocks-bukkit-api/src/main/kotlin;petblocks-sponge-api/src/main/kotlin"
+          source-dirs: "petblocks-api/src/main/kotlin;petblocks-bukkit-api/src/main/kotlin"
           target-dir: "docs/apidocs"
           doctype: "javaDocs"
           github-secret: ${{ secrets.GITHUB_TOKEN }}
