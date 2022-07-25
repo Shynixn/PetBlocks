@@ -5,11 +5,11 @@
 <!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+  <meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Events &mdash; PetBlocks 8.31.1 documentation</title>
+  <title>Events &mdash; PetBlocks 8.31.2 documentation</title>
   
 
   
@@ -42,7 +42,7 @@
         <link rel="index" title="Index"
               href="../genindex.html"/>
         <link rel="search" title="Search" href="../search.html"/>
-    <link rel="top" title="PetBlocks 8.31.1 documentation" href="../index.html"/>
+    <link rel="top" title="PetBlocks 8.31.2 documentation" href="../index.html"/>
         <link rel="up" title="Customizing" href="index.html"/>
         <link rel="next" title="Examples" href="example.html"/>
         <link rel="prev" title="Wearing" href="wearing.html"/> 
@@ -77,7 +77,7 @@
             
             
               <div class="version">
-                8.31.1
+                8.31.2
               </div>
             
           
@@ -207,115 +207,115 @@
 <li><p>Search for the following section.</p></li>
 </ol>
 <p><strong>config.yml</strong></p>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1">############################</span>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1">############################</span><span class="w"></span>
 
-<span class="c1"># Event settings</span>
+<span class="c1"># Event settings</span><span class="w"></span>
 
-<span class="c1"># These settings allow to add/replace/remove ais when certain events happen.</span>
+<span class="c1"># These settings allow to add/replace/remove ais when certain events happen.</span><span class="w"></span>
 
-<span class="c1">############################</span>
+<span class="c1">############################</span><span class="w"></span>
 
-<span class="nt">events</span><span class="p">:</span>
-<span class="nn">...</span>
+<span class="nt">events</span><span class="p">:</span><span class="w"></span>
+<span class="nn">...</span><span class="w"></span>
 </pre></div>
 </div>
 <ol class="arabic simple" start="2">
 <li><p>Check the available events below. All are optional.</p></li>
 </ol>
 <p><strong>config.yml</strong></p>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1">############################</span>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1">############################</span><span class="w"></span>
 
-<span class="c1"># Event settings</span>
+<span class="c1"># Event settings</span><span class="w"></span>
 
-<span class="c1"># These settings allow to add/replace/remove ais when certain events happen.</span>
+<span class="c1"># These settings allow to add/replace/remove ais when certain events happen.</span><span class="w"></span>
 
-<span class="c1">############################</span>
+<span class="c1">############################</span><span class="w"></span>
 
-<span class="nt">events</span><span class="p">:</span>
-  <span class="nt">onjoin</span><span class="p">:</span>
-  <span class="nt">onquit</span><span class="p">:</span>
-  <span class="nt">onpetspawn</span><span class="p">:</span>
-  <span class="nt">onpetdespawn</span><span class="p">:</span>
-  <span class="nt">onsneak</span><span class="p">:</span>
+<span class="nt">events</span><span class="p">:</span><span class="w"></span>
+<span class="w">  </span><span class="nt">onjoin</span><span class="p">:</span><span class="w"></span>
+<span class="w">  </span><span class="nt">onquit</span><span class="p">:</span><span class="w"></span>
+<span class="w">  </span><span class="nt">onpetspawn</span><span class="p">:</span><span class="w"></span>
+<span class="w">  </span><span class="nt">onpetdespawn</span><span class="p">:</span><span class="w"></span>
+<span class="w">  </span><span class="nt">onsneak</span><span class="p">:</span><span class="w"></span>
 </pre></div>
 </div>
 <ol class="arabic simple" start="3">
 <li><p>Add ai modifications to them. You can find an example below.</p></li>
 </ol>
 <p><strong>config.yml</strong></p>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1">############################</span>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1">############################</span><span class="w"></span>
 
-<span class="c1"># Event settings</span>
+<span class="c1"># Event settings</span><span class="w"></span>
 
-<span class="c1"># These settings allow to add/replace/remove ais when certain events happen.</span>
+<span class="c1"># These settings allow to add/replace/remove ais when certain events happen.</span><span class="w"></span>
 
-<span class="c1">############################</span>
+<span class="c1">############################</span><span class="w"></span>
 
-<span class="nt">events</span><span class="p">:</span>
-  <span class="nt">onjoin</span><span class="p">:</span>
-    <span class="nt">replace-ai</span><span class="p">:</span>
-      <span class="nt">1</span><span class="p">:</span>
-        <span class="nt">type</span><span class="p">:</span> <span class="s">&#39;entity-nbt&#39;</span>
-        <span class="nt">tag</span><span class="p">:</span> <span class="s">&#39;nbt-default&#39;</span>
-        <span class="nt">armorstand-nbt</span><span class="p">:</span> <span class="s">&#39;{Invulnerable:1,Invisible:1,PersistenceRequired:1,ShowArms:1,NoBasePlate:1,DisabledSlots:2039583}&#39;</span>
-        <span class="nt">hitbox-nbt</span><span class="p">:</span> <span class="s">&#39;{CustomNameVisible:0,ActiveEffects:[{Id:14,Duration:999999999,Amplifier:0,ShowParticles:0b}]}&#39;</span>
-      <span class="nt">2</span><span class="p">:</span>
-        <span class="nt">type</span><span class="p">:</span> <span class="s">&#39;entity-nbt&#39;</span>
-        <span class="nt">tag</span><span class="p">:</span> <span class="s">&#39;nbt-custom-name-visibility&#39;</span>
-        <span class="nt">armorstand-nbt</span><span class="p">:</span> <span class="s">&#39;{CustomNameVisible:1}&#39;</span>
-      <span class="nt">3</span><span class="p">:</span>
-        <span class="nt">type</span><span class="p">:</span> <span class="s">&#39;entity-nbt&#39;</span>
-        <span class="nt">tag</span><span class="p">:</span> <span class="s">&#39;nbt-marker&#39;</span>
-        <span class="nt">armorstand-nbt</span><span class="p">:</span> <span class="s">&#39;{Marker:0}&#39;</span>
-  <span class="nt">onquit</span><span class="p">:</span>
-    <span class="nt">remove-ai</span><span class="p">:</span>
-      <span class="nt">1</span><span class="p">:</span>
-        <span class="nt">type</span><span class="p">:</span> <span class="s">&#39;buff-effect&#39;</span>
-        <span class="nt">tag</span><span class="p">:</span> <span class="s">&#39;my-buff-effect&#39;</span>
-  <span class="nt">onpetspawn</span><span class="p">:</span>
-    <span class="nt">replace-ai</span><span class="p">:</span>
-      <span class="nt">1</span><span class="p">:</span>
-        <span class="nt">type</span><span class="p">:</span> <span class="s">&#39;buff-effect&#39;</span>
-        <span class="nt">tag</span><span class="p">:</span> <span class="s">&#39;my-buff-effect&#39;</span>
-        <span class="nt">cooldown</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">5</span>
-        <span class="nt">effect</span><span class="p">:</span>
-          <span class="nt">potion-type</span><span class="p">:</span> <span class="s">&#39;SPEED&#39;</span>
-          <span class="nt">duration</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">10</span>
-          <span class="nt">amplifier</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0</span>
-          <span class="nt">ambient</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
-          <span class="nt">particles</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
-        <span class="nt">particle</span><span class="p">:</span>
-          <span class="nt">name</span><span class="p">:</span> <span class="s">&#39;reddust&#39;</span>
-          <span class="nt">amount</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">20</span>
-          <span class="nt">offx</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0</span>
-          <span class="nt">offy</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">255</span>
-          <span class="nt">offz</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">255</span>
-        <span class="nt">sound</span><span class="p">:</span>
-          <span class="nt">name</span><span class="p">:</span> <span class="s">&#39;NOTE_PLING&#39;</span>
-          <span class="nt">volume</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">10</span>
-          <span class="nt">pitch</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">2.0</span>
-  <span class="nt">onpetdespawn</span><span class="p">:</span>
-    <span class="nt">remove-ai</span><span class="p">:</span>
-      <span class="nt">1</span><span class="p">:</span>
-        <span class="nt">type</span><span class="p">:</span> <span class="s">&#39;buff-effect&#39;</span>
-        <span class="nt">tag</span><span class="p">:</span> <span class="s">&#39;my-buff-effect&#39;</span>
-  <span class="nt">onsneak</span><span class="p">:</span>
-    <span class="nt">replace-ai</span><span class="p">:</span>
-      <span class="nt">1</span><span class="p">:</span>
-        <span class="nt">type</span><span class="p">:</span> <span class="s">&#39;entity-nbt&#39;</span>
-        <span class="nt">tag</span><span class="p">:</span> <span class="s">&#39;nbt-custom-name-visibility&#39;</span>
-        <span class="nt">armorstand-nbt</span><span class="p">:</span> <span class="s">&#39;{CustomNameVisible:1}&#39;</span>
-      <span class="nt">2</span><span class="p">:</span>
-        <span class="nt">type</span><span class="p">:</span> <span class="s">&#39;entity-nbt&#39;</span>
-        <span class="nt">tag</span><span class="p">:</span> <span class="s">&#39;nbt-marker&#39;</span>
-        <span class="nt">armorstand-nbt</span><span class="p">:</span> <span class="s">&#39;{Marker:0}&#39;</span>
-    <span class="nt">remove-ai</span><span class="p">:</span>
-      <span class="nt">1</span><span class="p">:</span>
-        <span class="nt">type</span><span class="p">:</span> <span class="s">&#39;wearing&#39;</span>
-      <span class="nt">2</span><span class="p">:</span>
-        <span class="nt">type</span><span class="p">:</span> <span class="s">&#39;ground-riding&#39;</span>
-      <span class="nt">3</span><span class="p">:</span>
-        <span class="nt">type</span><span class="p">:</span> <span class="s">&#39;fly-riding&#39;</span>
+<span class="nt">events</span><span class="p">:</span><span class="w"></span>
+<span class="w">  </span><span class="nt">onjoin</span><span class="p">:</span><span class="w"></span>
+<span class="w">    </span><span class="nt">replace-ai</span><span class="p">:</span><span class="w"></span>
+<span class="w">      </span><span class="nt">1</span><span class="p">:</span><span class="w"></span>
+<span class="w">        </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;entity-nbt&#39;</span><span class="w"></span>
+<span class="w">        </span><span class="nt">tag</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;nbt-default&#39;</span><span class="w"></span>
+<span class="w">        </span><span class="nt">armorstand-nbt</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;{Invulnerable:1,Invisible:1,PersistenceRequired:1,ShowArms:1,NoBasePlate:1,DisabledSlots:2039583}&#39;</span><span class="w"></span>
+<span class="w">        </span><span class="nt">hitbox-nbt</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;{CustomNameVisible:0,ActiveEffects:[{Id:14,Duration:999999999,Amplifier:0,ShowParticles:0b}]}&#39;</span><span class="w"></span>
+<span class="w">      </span><span class="nt">2</span><span class="p">:</span><span class="w"></span>
+<span class="w">        </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;entity-nbt&#39;</span><span class="w"></span>
+<span class="w">        </span><span class="nt">tag</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;nbt-custom-name-visibility&#39;</span><span class="w"></span>
+<span class="w">        </span><span class="nt">armorstand-nbt</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;{CustomNameVisible:1}&#39;</span><span class="w"></span>
+<span class="w">      </span><span class="nt">3</span><span class="p">:</span><span class="w"></span>
+<span class="w">        </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;entity-nbt&#39;</span><span class="w"></span>
+<span class="w">        </span><span class="nt">tag</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;nbt-marker&#39;</span><span class="w"></span>
+<span class="w">        </span><span class="nt">armorstand-nbt</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;{Marker:0}&#39;</span><span class="w"></span>
+<span class="w">  </span><span class="nt">onquit</span><span class="p">:</span><span class="w"></span>
+<span class="w">    </span><span class="nt">remove-ai</span><span class="p">:</span><span class="w"></span>
+<span class="w">      </span><span class="nt">1</span><span class="p">:</span><span class="w"></span>
+<span class="w">        </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;buff-effect&#39;</span><span class="w"></span>
+<span class="w">        </span><span class="nt">tag</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;my-buff-effect&#39;</span><span class="w"></span>
+<span class="w">  </span><span class="nt">onpetspawn</span><span class="p">:</span><span class="w"></span>
+<span class="w">    </span><span class="nt">replace-ai</span><span class="p">:</span><span class="w"></span>
+<span class="w">      </span><span class="nt">1</span><span class="p">:</span><span class="w"></span>
+<span class="w">        </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;buff-effect&#39;</span><span class="w"></span>
+<span class="w">        </span><span class="nt">tag</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;my-buff-effect&#39;</span><span class="w"></span>
+<span class="w">        </span><span class="nt">cooldown</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">5</span><span class="w"></span>
+<span class="w">        </span><span class="nt">effect</span><span class="p">:</span><span class="w"></span>
+<span class="w">          </span><span class="nt">potion-type</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;SPEED&#39;</span><span class="w"></span>
+<span class="w">          </span><span class="nt">duration</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">10</span><span class="w"></span>
+<span class="w">          </span><span class="nt">amplifier</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0</span><span class="w"></span>
+<span class="w">          </span><span class="nt">ambient</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span><span class="w"></span>
+<span class="w">          </span><span class="nt">particles</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span><span class="w"></span>
+<span class="w">        </span><span class="nt">particle</span><span class="p">:</span><span class="w"></span>
+<span class="w">          </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;reddust&#39;</span><span class="w"></span>
+<span class="w">          </span><span class="nt">amount</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">20</span><span class="w"></span>
+<span class="w">          </span><span class="nt">offx</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0</span><span class="w"></span>
+<span class="w">          </span><span class="nt">offy</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">255</span><span class="w"></span>
+<span class="w">          </span><span class="nt">offz</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">255</span><span class="w"></span>
+<span class="w">        </span><span class="nt">sound</span><span class="p">:</span><span class="w"></span>
+<span class="w">          </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;NOTE_PLING&#39;</span><span class="w"></span>
+<span class="w">          </span><span class="nt">volume</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">10</span><span class="w"></span>
+<span class="w">          </span><span class="nt">pitch</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">2.0</span><span class="w"></span>
+<span class="w">  </span><span class="nt">onpetdespawn</span><span class="p">:</span><span class="w"></span>
+<span class="w">    </span><span class="nt">remove-ai</span><span class="p">:</span><span class="w"></span>
+<span class="w">      </span><span class="nt">1</span><span class="p">:</span><span class="w"></span>
+<span class="w">        </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;buff-effect&#39;</span><span class="w"></span>
+<span class="w">        </span><span class="nt">tag</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;my-buff-effect&#39;</span><span class="w"></span>
+<span class="w">  </span><span class="nt">onsneak</span><span class="p">:</span><span class="w"></span>
+<span class="w">    </span><span class="nt">replace-ai</span><span class="p">:</span><span class="w"></span>
+<span class="w">      </span><span class="nt">1</span><span class="p">:</span><span class="w"></span>
+<span class="w">        </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;entity-nbt&#39;</span><span class="w"></span>
+<span class="w">        </span><span class="nt">tag</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;nbt-custom-name-visibility&#39;</span><span class="w"></span>
+<span class="w">        </span><span class="nt">armorstand-nbt</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;{CustomNameVisible:1}&#39;</span><span class="w"></span>
+<span class="w">      </span><span class="nt">2</span><span class="p">:</span><span class="w"></span>
+<span class="w">        </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;entity-nbt&#39;</span><span class="w"></span>
+<span class="w">        </span><span class="nt">tag</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;nbt-marker&#39;</span><span class="w"></span>
+<span class="w">        </span><span class="nt">armorstand-nbt</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;{Marker:0}&#39;</span><span class="w"></span>
+<span class="w">    </span><span class="nt">remove-ai</span><span class="p">:</span><span class="w"></span>
+<span class="w">      </span><span class="nt">1</span><span class="p">:</span><span class="w"></span>
+<span class="w">        </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;wearing&#39;</span><span class="w"></span>
+<span class="w">      </span><span class="nt">2</span><span class="p">:</span><span class="w"></span>
+<span class="w">        </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;ground-riding&#39;</span><span class="w"></span>
+<span class="w">      </span><span class="nt">3</span><span class="p">:</span><span class="w"></span>
+<span class="w">        </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;fly-riding&#39;</span><span class="w"></span>
 </pre></div>
 </div>
 <ol class="arabic simple" start="4">
@@ -377,7 +377,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'8.31.1',
+            VERSION:'8.31.2',
             LANGUAGE:'en',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',

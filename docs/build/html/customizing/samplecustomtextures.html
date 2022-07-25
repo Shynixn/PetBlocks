@@ -5,11 +5,11 @@
 <!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+  <meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Example: Using custom texture and 3d models for your pets &mdash; PetBlocks 8.31.1 documentation</title>
+  <title>Example: Using custom texture and 3d models for your pets &mdash; PetBlocks 8.31.2 documentation</title>
   
 
   
@@ -42,7 +42,7 @@
         <link rel="index" title="Index"
               href="../genindex.html"/>
         <link rel="search" title="Search" href="../search.html"/>
-    <link rel="top" title="PetBlocks 8.31.1 documentation" href="../index.html"/>
+    <link rel="top" title="PetBlocks 8.31.2 documentation" href="../index.html"/>
         <link rel="up" title="Examples" href="example.html"/>
         <link rel="next" title="Example: Creating small pets" href="samplesmallpets.html"/>
         <link rel="prev" title="Example: Adding a new pokemon category" href="samplepokemoncategory.html"/> 
@@ -77,7 +77,7 @@
             
             
               <div class="version">
-                8.31.1
+                8.31.2
               </div>
             
           
@@ -272,15 +272,15 @@ Anyway, this how you would edit it:</p>
 </div>
 <p>In this item folder, create a new file called wooden_hoe.json. This will be the “container” for all of your custom items. It tells the client which models to use for certain durability values of the wooden hoe.</p>
 <p>This file will look something like this:</p>
-<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
-  <span class="nt">&quot;parent&quot;</span><span class="p">:</span> <span class="s2">&quot;item/handheld&quot;</span><span class="p">,</span>
-  <span class="nt">&quot;textures&quot;</span><span class="p">:</span> <span class="p">{</span>
-    <span class="nt">&quot;layer0&quot;</span><span class="p">:</span> <span class="s2">&quot;items/wood_hoe&quot;</span>
-  <span class="p">},</span>
-  <span class="nt">&quot;overrides&quot;</span><span class="p">:</span> <span class="p">[</span>
-    <span class="p">{</span><span class="nt">&quot;predicate&quot;</span><span class="p">:</span> <span class="p">{</span><span class="nt">&quot;damaged&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="nt">&quot;damage&quot;</span><span class="p">:</span> <span class="mf">0.01666666666667</span><span class="p">},</span> <span class="nt">&quot;model&quot;</span><span class="p">:</span> <span class="s2">&quot;item/my_cool_custom_item&quot;</span><span class="p">}</span>
-  <span class="p">]</span>
-<span class="p">}</span>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="w"></span>
+<span class="w">  </span><span class="nt">&quot;parent&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;item/handheld&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">  </span><span class="nt">&quot;textures&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="nt">&quot;layer0&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;items/wood_hoe&quot;</span><span class="w"></span>
+<span class="w">  </span><span class="p">},</span><span class="w"></span>
+<span class="w">  </span><span class="nt">&quot;overrides&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"></span>
+<span class="w">    </span><span class="p">{</span><span class="nt">&quot;predicate&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">&quot;damaged&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;damage&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">0.01666666666667</span><span class="p">},</span><span class="w"> </span><span class="nt">&quot;model&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;item/my_cool_custom_item&quot;</span><span class="p">}</span><span class="w"></span>
+<span class="w">  </span><span class="p">]</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
 </pre></div>
 </div>
 <p>Ok, so let’s break this down.</p>
@@ -295,16 +295,16 @@ Anyway, this how you would edit it:</p>
 <p>Preserving the original items
 If you want to still be able to use the vanilla damageable items, this is possible!
 Add another entry to your model file, so it ends up looking like this: ssss</p>
-<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
-  <span class="nt">&quot;parent&quot;</span><span class="p">:</span> <span class="s2">&quot;item/handheld&quot;</span><span class="p">,</span>
-  <span class="nt">&quot;textures&quot;</span><span class="p">:</span> <span class="p">{</span>
-    <span class="nt">&quot;layer0&quot;</span><span class="p">:</span> <span class="s2">&quot;items/wood_hoe&quot;</span>
-  <span class="p">},</span>
-  <span class="nt">&quot;overrides&quot;</span><span class="p">:</span> <span class="p">[</span>
-    <span class="p">{</span><span class="nt">&quot;predicate&quot;</span><span class="p">:</span> <span class="p">{</span><span class="nt">&quot;damaged&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="nt">&quot;damage&quot;</span><span class="p">:</span> <span class="mf">0.01666666666667</span><span class="p">},</span> <span class="nt">&quot;model&quot;</span><span class="p">:</span> <span class="s2">&quot;item/my_cool_custom_item&quot;</span><span class="p">},</span>
-    <span class="p">{</span><span class="nt">&quot;predicate&quot;</span><span class="p">:</span> <span class="p">{</span><span class="nt">&quot;damaged&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="nt">&quot;damage&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">},</span> <span class="nt">&quot;model&quot;</span><span class="p">:</span> <span class="s2">&quot;item/wooden_hoe&quot;</span><span class="p">}</span>
-  <span class="p">]</span>
-<span class="p">}</span>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="w"></span>
+<span class="w">  </span><span class="nt">&quot;parent&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;item/handheld&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">  </span><span class="nt">&quot;textures&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="nt">&quot;layer0&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;items/wood_hoe&quot;</span><span class="w"></span>
+<span class="w">  </span><span class="p">},</span><span class="w"></span>
+<span class="w">  </span><span class="nt">&quot;overrides&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"></span>
+<span class="w">    </span><span class="p">{</span><span class="nt">&quot;predicate&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">&quot;damaged&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;damage&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">0.01666666666667</span><span class="p">},</span><span class="w"> </span><span class="nt">&quot;model&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;item/my_cool_custom_item&quot;</span><span class="p">},</span><span class="w"></span>
+<span class="w">    </span><span class="p">{</span><span class="nt">&quot;predicate&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">&quot;damaged&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;damage&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">},</span><span class="w"> </span><span class="nt">&quot;model&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;item/wooden_hoe&quot;</span><span class="p">}</span><span class="w"></span>
+<span class="w">  </span><span class="p">]</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
 </pre></div>
 </div>
 <p>This will cause damaged versions to continue to use the base model. Note that if you use the JSON generator I linked above, you’ll need to edit the final entry- it needs to refer to the model name, so wooden_hoe instead of wood_hoe for instance.</p>
@@ -385,7 +385,7 @@ apply your backup you have made and try the steps again being extra carefully.</
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'8.31.1',
+            VERSION:'8.31.2',
             LANGUAGE:'en',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
