@@ -28,6 +28,7 @@ import org.bukkit.event.EventPriority
 import org.bukkit.event.Listener
 import org.bukkit.event.entity.EntityInteractEvent
 import org.bukkit.event.entity.EntitySpawnEvent
+import org.bukkit.event.entity.PigZapEvent
 import org.bukkit.event.entity.PlayerLeashEntityEvent
 import org.bukkit.event.player.*
 import org.bukkit.event.world.ChunkLoadEvent
@@ -261,6 +262,16 @@ class PetListener @Inject constructor(
 
         if (isPreFlying) {
             return
+        }
+    }
+
+    /**
+     * Avoids turning pig pets into pigzombies.
+     */
+    @EventHandler
+    fun onPigPetGettingZappedEvent(event: PigZapEvent) {
+        if (petService.findPetByEntity(event.entity) != null) {
+            event.isCancelled = true
         }
     }
 
