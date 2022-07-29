@@ -44,7 +44,7 @@ tasks.register("printVersion") {
 
 subprojects {
     group 'com.github.shynixn.petblocks'
-    version '8.31.2'
+    version '8.32.0'
 
     sourceCompatibility = 1.8
     targetCompatibility = 1.8

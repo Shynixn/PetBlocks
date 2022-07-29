@@ -17,7 +17,10 @@ import com.github.shynixn.petblocks.core.logic.persistence.entity.PositionEntity
 import net.minecraft.nbt.MojangsonParser
 import net.minecraft.nbt.NBTTagCompound
 import net.minecraft.network.protocol.game.PacketPlayOutMount
-import net.minecraft.world.entity.*
+import net.minecraft.world.entity.Entity
+import net.minecraft.world.entity.EntityInsentient
+import net.minecraft.world.entity.EntityLiving
+import net.minecraft.world.entity.EnumItemSlot
 import net.minecraft.world.entity.decoration.EntityArmorStand
 import net.minecraft.world.entity.player.EntityHuman
 import net.minecraft.world.item.ItemStack
@@ -199,7 +202,7 @@ class NMSPetArmorstand(owner: org.bukkit.entity.Player, private val petMeta: Pet
         try {
             proxy.run()
 
-            if (du()) { // isRemoved.
+            if (dt()) { // isRemoved.
                 return
             }
 
@@ -215,9 +218,9 @@ class NMSPetArmorstand(owner: org.bukkit.entity.Player, private val petMeta: Pet
                 if (y > -100) {
                     this.b(location.x, y, location.z, location.yaw, location.pitch)
                     this.n(
-                        this.internalHitBox!!.de().c,
-                        this.internalHitBox!!.de().d,
-                        this.internalHitBox!!.de().e // SetMot
+                        this.internalHitBox!!.dd().c,
+                        this.internalHitBox!!.dd().d,
+                        this.internalHitBox!!.dd().e // SetMot
                     )
                 }
             }
@@ -273,9 +276,9 @@ class NMSPetArmorstand(owner: org.bukkit.entity.Player, private val petMeta: Pet
      * Riding function.
      */
     override fun g(vec3d: Vec3D) {
-        val human = this.cJ().firstOrNull { p -> p is EntityHuman }
+        val human = cI().firstOrNull { p -> p is EntityHuman }
 
-        if (this.cJ() == null || human == null) {
+        if (human == null) {
             flyHasTakenOffGround = false
             return
         }
@@ -303,30 +306,30 @@ class NMSPetArmorstand(owner: org.bukkit.entity.Player, private val petMeta: Pet
         val sideMot: Float = human.bo * 0.5f
         var forMot: Float = human.bq
 
-        o(human.dr())
-        this.x = this.dr()
-        this.p(human.dr() * 0.5f)
-        this.a(dr(), dr())
-        this.aX = this.dr()
+        o(human.dq())
+        this.x = this.dq()
+        this.p(human.dq() * 0.5f)
+        this.a(dq(), dq())
+        this.aX = this.dq()
         this.aZ = this.aX
 
         // Calculate flying direction and fix yaw in flying direction.
         var flyingVector = Vector()
-        val flyingLocation = Location(this.cD().world, this.dg(), this.di(), this.dm())
+        val flyingLocation = Location(this.cC().world, this.df(), this.dh(), this.dl())
 
         if (sideMot < 0.0f) {
-            flyingLocation.yaw = human.dr() - 90
+            flyingLocation.yaw = human.dq() - 90
             flyingVector.add(flyingLocation.direction.normalize().multiply(-0.5))
         } else if (sideMot > 0.0f) {
-            flyingLocation.yaw = human.dr() + 90
+            flyingLocation.yaw = human.dq() + 90
             flyingVector.add(flyingLocation.direction.normalize().multiply(-0.5))
         }
 
         if (forMot < 0.0f) {
-            flyingLocation.yaw = human.dr()
+            flyingLocation.yaw = human.dq()
             flyingVector.add(flyingLocation.direction.normalize().multiply(0.5))
         } else if (forMot > 0.0f) {
-            flyingLocation.yaw = human.dr()
+            flyingLocation.yaw = human.dq()
             flyingVector.add(flyingLocation.direction.normalize().multiply(0.5))
         }
 
@@ -367,9 +370,9 @@ class NMSPetArmorstand(owner: org.bukkit.entity.Player, private val petMeta: Pet
      *  Gets if this entity is going to collide with a wall.
      */
     private fun isCollidingWithWall(): Boolean {
-        val currentLocationVector = Vec3D(this.dg(), this.di(), this.dm())
+        val currentLocationVector = Vec3D(this.df(), this.dh(), this.dl())
         val directionVector =
-            Vec3D(this.dg() + this.de().c * 1.5, this.di() + this.de().d * 1.5, this.dm() + this.de().e * 1.5)
+            Vec3D(this.df() + this.dd().c * 1.5, this.dh() + this.dd().d * 1.5, this.dl() + this.dd().e * 1.5)
         val rayTrace = RayTrace(
             currentLocationVector,
             directionVector,
@@ -378,7 +381,7 @@ class NMSPetArmorstand(owner: org.bukkit.entity.Player, private val petMeta: Pet
             null
         )
 
-        val movingObjectPosition = this.cD().a(rayTrace)
+        val movingObjectPosition = this.cC().a(rayTrace)
 
         return movingObjectPosition.c() == MovingObjectPosition.EnumMovingObjectType.b && hasFlyCollisionsEnabled
     }
@@ -390,11 +393,11 @@ class NMSPetArmorstand(owner: org.bukkit.entity.Player, private val petMeta: Pet
         val sideMot: Float = human.bo * 0.5f
         var forMot: Float = human.bq
 
-        o(human.dr())
-        this.x = this.dr()
-        this.p(human.dr() * 0.5f)
-        this.a(dr(), dr())
-        this.aX = this.dr()
+        o(human.dq())
+        this.x = this.dq()
+        this.p(human.dq() * 0.5f)
+        this.a(dq(), dq())
+        this.aX = this.dq()
         this.aZ = this.aX
 
         if (forMot <= 0.0f) {
@@ -402,13 +405,13 @@ class NMSPetArmorstand(owner: org.bukkit.entity.Player, private val petMeta: Pet
         }
 
         if (this.aw() && this.isPassengerJumping()) {
-            this.n(this.de().c, 0.5, this.de().e)
+            this.n(this.dd().c, 0.5, this.dd().e)
         }
 
         this.P = ai.climbingHeight.toFloat()
-        this.ba = this.ew() * 0.1f
+        this.ba = this.eD() * 0.1f
 
-        if (!this.cD().k_()) {
+        if (!this.cC().k_()) {
             this.r(0.35f)
             super.g(Vec3D(sideMot * ai.ridingSpeed, f2, forMot * ai.ridingSpeed))
         }
@@ -499,6 +502,6 @@ class NMSPetArmorstand(owner: org.bukkit.entity.Player, private val petMeta: Pet
      * Gets if a passenger of the pet is jumping.
      */
     private fun isPassengerJumping(): Boolean {
-        return cJ() != null && this.cJ().isNotEmpty() && jumpingField.getBoolean(this.cJ()[0])
+        return cI().isNotEmpty() && jumpingField.getBoolean(cI()[0])
     }
 }

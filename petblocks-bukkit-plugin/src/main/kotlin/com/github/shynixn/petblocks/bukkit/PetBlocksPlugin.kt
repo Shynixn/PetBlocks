@@ -60,23 +60,28 @@ class PetBlocksPlugin : JavaPlugin(), PluginProxy {
         sendConsoleMessage(ChatColor.GREEN.toString() + "Loading PetBlocks ...")
         this.saveDefaultConfig()
 
-        if (disableForVersion(Version.VERSION_1_8_R1, Version.VERSION_1_8_R3)) {
+        if (checkForDisabledVersion(Version.VERSION_1_8_R1, Version.VERSION_1_8_R3)) {
             return
         }
 
-        if (disableForVersion(Version.VERSION_1_8_R2, Version.VERSION_1_8_R3)) {
+        if (checkForDisabledVersion(Version.VERSION_1_8_R2, Version.VERSION_1_8_R3)) {
             return
         }
 
-        if (disableForVersion(Version.VERSION_1_9_R1, Version.VERSION_1_9_R2)) {
+        if (checkForDisabledVersion(Version.VERSION_1_9_R1, Version.VERSION_1_9_R2)) {
             return
         }
 
-        if (disableForVersion(Version.VERSION_1_13_R1, Version.VERSION_1_13_R2)) {
+        if (checkForDisabledVersion(Version.VERSION_1_13_R1, Version.VERSION_1_13_R2)) {
             return
         }
 
-        if (disableForVersion(Version.VERSION_1_16_R1, Version.VERSION_1_16_R3)) {
+        if (checkForDisabledVersion(Version.VERSION_1_16_R1, Version.VERSION_1_16_R3)) {
+            return
+        }
+
+        if (Bukkit.getVersion().contains("(MC: 1.19)")) {
+            disablePlugin(Version.VERSION_1_19_R1_S1, Version.VERSION_1_19_R1)
             return
         }
 
@@ -353,18 +358,25 @@ class PetBlocksPlugin : JavaPlugin(), PluginProxy {
     /**
      * Disables the plugin for the given version and prints the supported version.
      */
-    private fun disableForVersion(version: Version, supportedVersion: Version): Boolean {
+    private fun checkForDisabledVersion(version: Version, supportedVersion: Version): Boolean {
         if (getServerVersion() == version) {
-            sendConsoleMessage(ChatColor.RED.toString() + "================================================")
-            sendConsoleMessage(ChatColor.RED.toString() + "PetBlocks does not support this subversion")
-            sendConsoleMessage(ChatColor.RED.toString() + "Please upgrade from v" + version.id + " to v" + supportedVersion.id)
-            sendConsoleMessage(ChatColor.RED.toString() + "Plugin gets now disabled!")
-            sendConsoleMessage(ChatColor.RED.toString() + "================================================")
-            Bukkit.getPluginManager().disablePlugin(this)
+            disablePlugin(version, supportedVersion)
             return true
         }
 
         return false
+    }
+
+    /**
+     * Prints the disabled message.
+     */
+    private fun disablePlugin(version: Version, supportedVersion: Version) {
+        sendConsoleMessage(ChatColor.RED.toString() + "================================================")
+        sendConsoleMessage(ChatColor.RED.toString() + "PetBlocks does not support this subversion")
+        sendConsoleMessage(ChatColor.RED.toString() + "Please upgrade from v" + version.id + " to v" + supportedVersion.id)
+        sendConsoleMessage(ChatColor.RED.toString() + "Plugin gets now disabled!")
+        sendConsoleMessage(ChatColor.RED.toString() + "================================================")
+        Bukkit.getPluginManager().disablePlugin(this)
     }
 
     /**
