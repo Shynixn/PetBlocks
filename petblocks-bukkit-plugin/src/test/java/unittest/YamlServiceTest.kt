@@ -1,6 +1,6 @@
 package unittest
 
-import com.github.shynixn.petblocks.api.business.service.YamlService
+import com.github.shynixn.petblocks.api.legacy.business.service.YamlService
 import com.github.shynixn.petblocks.bukkit.logic.business.service.YamlServiceImpl
 import org.junit.Assert
 import org.junit.jupiter.api.Test

@@ -4,12 +4,12 @@ package integrationtest
 
 import ch.vorburger.mariadb4j.DB
 import ch.vorburger.mariadb4j.DBConfigurationBuilder
-import com.github.shynixn.petblocks.api.business.enumeration.ParticleType
-import com.github.shynixn.petblocks.api.business.enumeration.Permission
-import com.github.shynixn.petblocks.api.business.enumeration.Version
-import com.github.shynixn.petblocks.api.business.service.*
-import com.github.shynixn.petblocks.api.persistence.context.SqlDbContext
-import com.github.shynixn.petblocks.api.persistence.entity.*
+import com.github.shynixn.petblocks.api.legacy.business.enumeration.ParticleType
+import com.github.shynixn.petblocks.api.legacy.business.enumeration.Permission
+import com.github.shynixn.petblocks.api.legacy.business.enumeration.Version
+import com.github.shynixn.petblocks.api.legacy.business.service.*
+import com.github.shynixn.petblocks.api.legacy.persistence.entity.*
+import com.github.shynixn.petblocks.api.legacy.persistence.context.SqlDbContext
 import com.github.shynixn.petblocks.bukkit.logic.business.service.*
 import com.github.shynixn.petblocks.core.logic.business.service.*
 import com.github.shynixn.petblocks.core.logic.persistence.context.SqlDbContextImpl

@@ -1,10 +1,10 @@
 package unittest
 
-import com.github.shynixn.petblocks.api.business.enumeration.Version
-import com.github.shynixn.petblocks.api.business.proxy.EntityPetProxy
-import com.github.shynixn.petblocks.api.business.proxy.PetProxy
-import com.github.shynixn.petblocks.api.business.service.*
-import com.github.shynixn.petblocks.api.persistence.entity.PetMeta
+import com.github.shynixn.petblocks.api.legacy.business.enumeration.Version
+import com.github.shynixn.petblocks.api.legacy.business.proxy.EntityPetProxy
+import com.github.shynixn.petblocks.api.legacy.business.proxy.PetProxy
+import com.github.shynixn.petblocks.api.legacy.business.service.*
+import com.github.shynixn.petblocks.api.legacy.persistence.entity.PetMeta
 import com.github.shynixn.petblocks.bukkit.logic.business.listener.PetListener
 import com.github.shynixn.petblocks.core.logic.persistence.entity.PetMetaEntity
 import com.github.shynixn.petblocks.core.logic.persistence.entity.PlayerMetaEntity
@@ -134,8 +134,10 @@ class PetListenerTest {
     companion object {
         fun createWithDependencies(
             petService: PetService = MockedPetService(), persistencePetMetaService: PersistencePetMetaService = MockedPersistencePetMetaService(),
-            concurrencyService: ConcurrencyService = MockedConcurrencyService(), entityService: EntityService = Mockito.mock(EntityService::class.java),
-            itemService: ItemTypeService = Mockito.mock(ItemTypeService::class.java), debugService: PetDebugService = Mockito.mock(PetDebugService::class.java),
+            concurrencyService: ConcurrencyService = MockedConcurrencyService(), entityService: EntityService = Mockito.mock(
+                EntityService::class.java),
+            itemService: ItemTypeService = Mockito.mock(ItemTypeService::class.java), debugService: PetDebugService = Mockito.mock(
+                PetDebugService::class.java),
             configurationService: ConfigurationService = Mockito.mock(ConfigurationService::class.java),
             loadGUIItemLoadService: GUIItemLoadService = Mockito.mock(GUIItemLoadService::class.java),
             aiService: AIService = Mockito.mock(AIService::class.java),
@@ -256,7 +258,8 @@ class PetListenerTest {
         }
     }
 
-    private class MockedPetService(var hasPet: Boolean = false, val pet: PetProxy = Mockito.mock(PetProxy::class.java)) : PetService {
+    private class MockedPetService(var hasPet: Boolean = false, val pet: PetProxy = Mockito.mock(PetProxy::class.java)) :
+        PetService {
         /**
          * Gets or spawns the pet of the given player.
          * An empty optional gets returned if the pet cannot spawn by one of the following reasons:

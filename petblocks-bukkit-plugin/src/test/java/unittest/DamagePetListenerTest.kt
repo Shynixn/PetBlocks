@@ -1,11 +1,11 @@
 package unittest
 
-import com.github.shynixn.petblocks.api.business.proxy.PetProxy
-import com.github.shynixn.petblocks.api.business.service.CombatPetService
-import com.github.shynixn.petblocks.api.business.service.HealthService
-import com.github.shynixn.petblocks.api.business.service.PersistencePetMetaService
-import com.github.shynixn.petblocks.api.business.service.PetService
-import com.github.shynixn.petblocks.api.persistence.entity.PetMeta
+import com.github.shynixn.petblocks.api.legacy.business.proxy.PetProxy
+import com.github.shynixn.petblocks.api.legacy.business.service.CombatPetService
+import com.github.shynixn.petblocks.api.legacy.business.service.HealthService
+import com.github.shynixn.petblocks.api.legacy.business.service.PersistencePetMetaService
+import com.github.shynixn.petblocks.api.legacy.business.service.PetService
+import com.github.shynixn.petblocks.api.legacy.persistence.entity.PetMeta
 import com.github.shynixn.petblocks.bukkit.logic.business.listener.DamagePetListener
 import com.github.shynixn.petblocks.core.logic.persistence.entity.PetMetaEntity
 import com.github.shynixn.petblocks.core.logic.persistence.entity.PlayerMetaEntity

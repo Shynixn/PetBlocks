@@ -2,14 +2,14 @@
 
 package integrationtest
 
-import com.github.shynixn.petblocks.api.PetBlocksApi
-import com.github.shynixn.petblocks.api.business.enumeration.ParticleType
-import com.github.shynixn.petblocks.api.business.enumeration.Permission
-import com.github.shynixn.petblocks.api.business.enumeration.Version
-import com.github.shynixn.petblocks.api.business.proxy.PluginProxy
-import com.github.shynixn.petblocks.api.business.service.*
-import com.github.shynixn.petblocks.api.persistence.context.SqlDbContext
-import com.github.shynixn.petblocks.api.persistence.entity.*
+import com.github.shynixn.petblocks.api.legacy.OldPetBlocksApi
+import com.github.shynixn.petblocks.api.legacy.business.enumeration.ParticleType
+import com.github.shynixn.petblocks.api.legacy.business.enumeration.Permission
+import com.github.shynixn.petblocks.api.legacy.business.enumeration.Version
+import com.github.shynixn.petblocks.api.legacy.business.proxy.PluginProxy
+import com.github.shynixn.petblocks.api.legacy.business.service.*
+import com.github.shynixn.petblocks.api.legacy.persistence.entity.*
+import com.github.shynixn.petblocks.api.legacy.persistence.context.SqlDbContext
 import com.github.shynixn.petblocks.bukkit.logic.business.service.*
 import com.github.shynixn.petblocks.core.logic.business.service.*
 import com.github.shynixn.petblocks.core.logic.persistence.context.SqlDbContextImpl
@@ -239,9 +239,9 @@ class PersistenceSQLiteIT {
                 FileInputStream(File("../petblocks-core/src/main/resources/${parameter.arguments[0]}"))
             }
 
-            val method = PetBlocksApi::class.java.getDeclaredMethod("initializePetBlocks", PluginProxy::class.java)
+            val method = OldPetBlocksApi::class.java.getDeclaredMethod("initializePetBlocks", PluginProxy::class.java)
             method.isAccessible = true
-            method.invoke(PetBlocksApi, MockedPluginProxy())
+            method.invoke(OldPetBlocksApi, MockedPluginProxy())
 
             val configService = ConfigurationServiceImpl(plugin)
             val aiService = AIServiceImpl(

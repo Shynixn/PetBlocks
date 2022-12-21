@@ -1,9 +1,9 @@
 package unittest
 
-import com.github.shynixn.petblocks.api.business.service.ConcurrencyService
-import com.github.shynixn.petblocks.api.business.service.GUIPetStorageService
-import com.github.shynixn.petblocks.api.business.service.GUIService
-import com.github.shynixn.petblocks.api.persistence.entity.PetMeta
+import com.github.shynixn.petblocks.api.legacy.business.service.ConcurrencyService
+import com.github.shynixn.petblocks.api.legacy.business.service.GUIPetStorageService
+import com.github.shynixn.petblocks.api.legacy.business.service.GUIService
+import com.github.shynixn.petblocks.api.legacy.persistence.entity.PetMeta
 import com.github.shynixn.petblocks.bukkit.logic.business.listener.InventoryListener
 import org.bukkit.event.inventory.InventoryCloseEvent
 import org.bukkit.event.player.PlayerQuitEvent
@@ -115,7 +115,8 @@ class InventoryListenerTest {
         }
     }
 
-    private class MockedStorageService(var isStorageInventory: Boolean = false, var wasSaveCalled: Boolean = false) : GUIPetStorageService {
+    private class MockedStorageService(var isStorageInventory: Boolean = false, var wasSaveCalled: Boolean = false) :
+        GUIPetStorageService {
         override fun <P> openStorage(player: P, petMeta: PetMeta, from: Int, to: Int) {
         }
 

@@ -7,15 +7,6 @@ plugins {
     id("com.github.johnrengelman.shadow") version ("5.2.0")
 }
 
-/*publishing {
-    publications {
-        create<MavenPublication>("maven") {
-            from(components["java"])
-            artifact(tasks["shadowJar"])
-        }
-    }
-}*/
-
 tasks.withType<ShadowJar> {
     dependsOn("jar")
     classifier = "plugin"
@@ -47,48 +38,32 @@ tasks.withType<ShadowJar> {
 repositories {
     maven("https://jitpack.io")
     maven("https://repo.extendedclip.com/content/repositories/placeholderapi")
+    maven("https://shynixn.github.io/m2/repository/mcutils")
 }
 
 dependencies {
-    implementation(project(":petblocks-api"))
-    implementation(project(":petblocks-core"))
-    implementation(project(":petblocks-bukkit-api"))
+    // Compile Only
+    compileOnly("org.spigotmc:spigot-api:1.18.2-R0.1-SNAPSHOT")
+    compileOnly("me.clip:placeholderapi:2.9.2")
+    compileOnly("org.geysermc:geyser-api:2.0.4-SNAPSHOT")
 
-    implementation(project(":petblocks-bukkit-plugin:petblocks-bukkit-nms-108R3"))
-    implementation(project(":petblocks-bukkit-plugin:petblocks-bukkit-nms-109R2"))
-    implementation(project(":petblocks-bukkit-plugin:petblocks-bukkit-nms-110R1"))
-    implementation(project(":petblocks-bukkit-plugin:petblocks-bukkit-nms-111R1"))
-    implementation(project(":petblocks-bukkit-plugin:petblocks-bukkit-nms-112R1"))
-    implementation(project(":petblocks-bukkit-plugin:petblocks-bukkit-nms-113R2"))
-    implementation(project(":petblocks-bukkit-plugin:petblocks-bukkit-nms-114R1"))
-    implementation(project(":petblocks-bukkit-plugin:petblocks-bukkit-nms-115R1"))
-    implementation(project(":petblocks-bukkit-plugin:petblocks-bukkit-nms-116R3"))
-    implementation(project(":petblocks-bukkit-plugin:petblocks-bukkit-nms-117R1"))
-    implementation(project(":petblocks-bukkit-plugin:petblocks-bukkit-nms-118R1"))
-    implementation(project(":petblocks-bukkit-plugin:petblocks-bukkit-nms-118R2"))
-    implementation(project(":petblocks-bukkit-plugin:petblocks-bukkit-nms-119R1"))
-    implementation(project(":petblocks-bukkit-plugin:petblocks-bukkit-nms-119R2"))
-
-    implementation("com.github.shynixn.org.bstats:bstats-bukkit:1.7")
-    implementation("com.github.shynixn.mccoroutine:mccoroutine-bukkit-api:0.0.6")
-    implementation("com.github.shynixn.mccoroutine:mccoroutine-bukkit-core:0.0.6")
-
-    implementation("org.slf4j:slf4j-jdk14:1.7.30")
-    implementation("commons-io:commons-io:2.6")
+    // Plugin.yml Shade dependencies
+    implementation("com.github.shynixn.mccoroutine:mccoroutine-bukkit-api:2.7.0")
+    implementation("com.github.shynixn.mccoroutine:mccoroutine-bukkit-core:2.7.0")
     implementation("com.google.inject:guice:5.0.1")
-    implementation("com.zaxxer:HikariCP:4.0.3")
-
-    implementation("com.google.code.gson:gson:2.8.6")
     implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.3.0")
     implementation("com.fasterxml.jackson.core:jackson-databind:2.2.3")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.9")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-jdk8:1.3.9")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.2")
+    compileOnly("org.jetbrains.kotlinx:kotlinx-coroutines-jdk8:1.4.2")
+    implementation("com.google.code.gson:gson:2.8.6")
 
-    compileOnly("org.spigotmc:spigot:1.16.4-R0.1-SNAPSHOT")
-    compileOnly("com.github.shynixn.headdatabase:hdb-api:1.0")
-    compileOnly("me.clip:placeholderapi:2.9.2")
+    // Custom dependencies
+    implementation("com.github.shynixn.mcutils:common:1.0.19")
+    implementation("com.github.shynixn.mcutils:packet:1.0.29")
+    implementation("com.github.shynixn.mcutils:database:1.0.3")
+    implementation("com.github.shynixn.mcutils:physic:1.0.17")
 
-    testCompile("org.xerial:sqlite-jdbc:3.31.1")
-    testCompile("ch.vorburger.mariaDB4j:mariaDB4j:2.4.0")
-    testCompile("org.spigotmc:spigot:1.8.8-R0.1-SNAPSHOT")
+    testImplementation(kotlin("test"))
+    testImplementation("org.spigotmc:spigot-api:1.18.2-R0.1-SNAPSHOT")
+    testImplementation("org.mockito:mockito-core:2.23.0")
 }

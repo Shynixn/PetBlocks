@@ -1,7 +1,7 @@
 package unittest
 
-import com.github.shynixn.petblocks.api.business.enumeration.PluginDependency
-import com.github.shynixn.petblocks.api.business.service.DependencyService
+import com.github.shynixn.petblocks.api.legacy.business.enumeration.PluginDependency
+import com.github.shynixn.petblocks.api.legacy.business.service.DependencyService
 import com.github.shynixn.petblocks.bukkit.logic.business.service.DependencyServiceImpl
 import com.github.shynixn.petblocks.core.logic.business.extension.cast
 import org.bukkit.Bukkit
