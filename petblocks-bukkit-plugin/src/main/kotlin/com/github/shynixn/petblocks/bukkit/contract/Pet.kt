@@ -18,11 +18,6 @@ interface Pet {
     var displayName: String
 
     /**
-     * The template which was used to create this pet.
-     */
-    val template: PetTemplate
-
-    /**
      * Gets if the pet is currently atleast visible to the owner.
      * Check [visibility] to see if other players can see the pet as well.
      */
@@ -41,6 +36,7 @@ interface Pet {
 
     /**
      * Gets or sets the visibility of the pet.
+     * Should be used together with [isSpawned] to check if a pet can really be seen by a player at the moment.
      */
     var visibility: PetVisibility
 
@@ -56,10 +52,10 @@ interface Pet {
     fun call()
 
     /**
-     * Hides the pet for the owner and other players.
+     * DeSpawns the pet for the owner and other players.
      * The current location of the pet is stored.
      */
-    fun deSpawn()
+    fun remove()
 
     /**
      * Shows the pet for the owner (and other players depending on the visibility) at the location
@@ -69,11 +65,7 @@ interface Pet {
 
     /**
      * Permanently disposes this pet. Once disposed, this instance can no longer be used.
+     * The pet is not deleted however and can be retrieved again from the [PetService].
      */
-    suspend fun dispose()
-
-    /**
-     * Permanently disposes this pet. Once disposed, this instance can no longer be used.
-     */
-    fun disposeAsync(): CompletionStage<Void?>
+    fun dispose()
 }

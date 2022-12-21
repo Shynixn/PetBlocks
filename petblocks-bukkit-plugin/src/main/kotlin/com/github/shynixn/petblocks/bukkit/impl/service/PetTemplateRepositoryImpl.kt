@@ -1,4 +1,4 @@
-package com.github.shynixn.petblocks.bukkit.impl
+package com.github.shynixn.petblocks.bukkit.impl.service
 
 import com.fasterxml.jackson.core.type.TypeReference
 import com.fasterxml.jackson.databind.DeserializationFeature

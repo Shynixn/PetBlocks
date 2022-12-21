@@ -1,6 +1,7 @@
 package com.github.shynixn.petblocks.bukkit
 
 import com.github.shynixn.mccoroutine.bukkit.SuspendingJavaPlugin
+import com.github.shynixn.petblocks.bukkit.contract.Pet
 
 class PetBlocksPlugin : SuspendingJavaPlugin() {
     /**
@@ -10,8 +11,14 @@ class PetBlocksPlugin : SuspendingJavaPlugin() {
 
 
 
+        val pet : Pet
+
+        pet.template.
+
         super.onEnableAsync()
     }
+
+
 
     /**
      * Called when this plugin is disabled.

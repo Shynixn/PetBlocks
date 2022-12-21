@@ -5,7 +5,7 @@ import org.bukkit.Location
 import org.bukkit.entity.Player
 import java.util.concurrent.CompletionStage
 
-interface PetService {
+interface PetService : AutoCloseable {
     /**
      * Gets all the pets a player owns.
      * The pets may or be not be spawned at the moment.
@@ -31,7 +31,18 @@ interface PetService {
     fun getPetsFromPlayerAsync(player: Player): CompletionStage<List<Pet>>
 
     /**
+     * Clears all currently cached pets for the player.
+     * The pets are not deleted but removed from memory.
+     */
+    fun clearCache(player: Player)
+
+    /**
      *  Deletes the given pet.
      */
-    suspend fun deletePet(pet: Pet): CompletionStage<Void>
+    suspend fun deletePet(pet: Pet)
+
+    /**
+     *  Deletes the given pet.
+     */
+    fun deletePetAsync(pet: Pet): CompletionStage<Void?>
 }

@@ -2,17 +2,11 @@ package com.github.shynixn.petblocks.bukkit.entity
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.github.shynixn.mcutils.common.Vector3d
-import com.github.shynixn.mcutils.database.api.PlayerData
 
 /**
  * Persistence data.
  */
-class PetMeta : PlayerData {
-    /**
-     *  Marker if this player data has been stored before.
-     */
-    override var isPersisted: Boolean = false
-
+class PetMeta{
     /**
      * Identifier of the pet.
      */

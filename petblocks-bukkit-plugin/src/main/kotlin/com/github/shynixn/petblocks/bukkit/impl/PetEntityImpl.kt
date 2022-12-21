@@ -13,7 +13,7 @@ import org.bukkit.entity.Player
 class PetEntityImpl(
     private val physicsComponent: MathComponent,
     private val playerComponent: PlayerComponent,
-    private val entityComponent: PetArmorstandEntityComponent
+    private val entityComponent: PetArmorstandEntityComponentImpl
 ) : PhysicObject {
     private var currentLocation = Vector3d()
 

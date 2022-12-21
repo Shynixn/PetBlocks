@@ -10,7 +10,7 @@ import com.github.shynixn.petblocks.bukkit.entity.PetVisibility
 import org.bukkit.Location
 import org.bukkit.entity.Player
 
-class PetArmorstandEntityComponent(
+class PetArmorstandEntityComponentImpl(
     private val physicsComponent: MathComponent,
     private val playerComponent: PlayerComponent,
     val entityId: Int,

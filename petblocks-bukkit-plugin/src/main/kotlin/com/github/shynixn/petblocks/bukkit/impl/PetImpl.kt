@@ -1,21 +1,15 @@
 package com.github.shynixn.petblocks.bukkit.impl
 
-import com.github.shynixn.mccoroutine.bukkit.scope
 import com.github.shynixn.mcutils.common.toLocation
 import com.github.shynixn.mcutils.common.toVector3d
 import com.github.shynixn.mcutils.common.translateChatColors
 import com.github.shynixn.petblocks.bukkit.contract.Pet
 import com.github.shynixn.petblocks.bukkit.contract.PetEntityFactory
-import com.github.shynixn.petblocks.bukkit.contract.PetService
 import com.github.shynixn.petblocks.bukkit.entity.PetMeta
-import com.github.shynixn.petblocks.bukkit.entity.PetTemplate
 import com.github.shynixn.petblocks.bukkit.entity.PetVisibility
 import com.github.shynixn.petblocks.bukkit.exception.PetBlocksPetDisposedException
-import kotlinx.coroutines.future.future
 import org.bukkit.Location
 import org.bukkit.entity.Player
-import org.bukkit.plugin.Plugin
-import java.util.concurrent.CompletionStage
 
 /**
  * A facade to handle a single pet.
@@ -24,15 +18,9 @@ class PetImpl(
     /**
      * Gets the owner of the pet.
      */
-    override val player: Player,
-    /**
-     * The template which was used to create this pet.
-     */
-    override val template: PetTemplate,
+    private var playerParam: Player?,
     private val petMeta: PetMeta,
-    private val petService: PetService,
-    private val petEntityFactory: PetEntityFactory,
-    private val plugin: Plugin
+    private val petEntityFactory: PetEntityFactory
 ) : Pet {
     private var petEntity: PetEntityImpl? = null
     private var disposed = false
@@ -75,6 +63,18 @@ class PetImpl(
     override val isSpawned: Boolean
         get() {
             return petEntity != null
+        }
+
+    /**
+     * Gets the owner of the pet.
+     */
+    override val player: Player
+        get() {
+            if (isDisposed) {
+                throw PetBlocksPetDisposedException()
+            }
+
+            return playerParam!!
         }
 
     /**
@@ -159,7 +159,7 @@ class PetImpl(
      * Hides the pet for the owner and other players.
      * The current location of the pet is stored.
      */
-    override fun deSpawn() {
+    override fun remove() {
         if (isDisposed) {
             throw PetBlocksPetDisposedException()
         }
@@ -191,23 +191,14 @@ class PetImpl(
     /**
      * Permanently disposes this pet. Once disposed, this instance can no longer be used.
      */
-    override suspend fun dispose() {
+    override fun dispose() {
         if (isDisposed) {
             return
         }
 
         disposed = true
+        playerParam = null
         petEntity?.remove()
         petEntity = null
-        petService.deletePet(this)
-    }
-
-    /**
-     * Permanently disposes this pet. Once disposed, this instance can no longer be used.
-     */
-    override fun disposeAsync(): CompletionStage<Void?> {
-        return plugin.scope.future {
-            dispose()
-        }.thenApply { null }
     }
 }
