@@ -52,6 +52,11 @@ interface Pet {
     fun call()
 
     /**
+     * Executes the actions defined by rightClicking the pet found in the template.
+     */
+    fun rightClick()
+
+    /**
      * DeSpawns the pet for the owner and other players.
      * The current location of the pet is stored.
      */

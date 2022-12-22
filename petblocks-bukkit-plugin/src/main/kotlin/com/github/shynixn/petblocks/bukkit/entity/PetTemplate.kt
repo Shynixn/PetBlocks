@@ -4,10 +4,20 @@ class PetTemplate {
     /**
      * Unique Identifier.
      */
-    var id : String = "template"
+    var id: String = "template"
 
     /**
      * DisplayName of the pet.
      */
-    var displayName : String = ""
+    var displayName: String = ""
+
+    /**
+     * All RightClick actions.
+     */
+    var rightClickDefinition: PetActionDefinition = PetActionDefinition()
+
+    /**
+     * All loop actions.
+     */
+    var loopDefinition: PetActionDefinition = PetActionDefinition()
 }

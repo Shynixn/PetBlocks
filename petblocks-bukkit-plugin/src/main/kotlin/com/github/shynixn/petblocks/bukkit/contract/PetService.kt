@@ -7,6 +7,11 @@ import java.util.concurrent.CompletionStage
 
 interface PetService : AutoCloseable {
     /**
+     * Gets all pets which are currently loaded in memory
+     */
+    fun getActivePets(): List<Pet>
+
+    /**
      * Gets all the pets a player owns.
      * The pets may or be not be spawned at the moment.
      */

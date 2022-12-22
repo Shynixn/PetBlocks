@@ -22,15 +22,38 @@ riding: 'NO'
 # Permissions to allow players to change this value 'petblocks.pet.hat'.
 # Command /petblocks <name> hat <true/false>
 hat: false
-
-
+#
+# Defines the action a pet should perform when a player rightclicks on it.
+#
 rightclick:
   isEnabled: true
   actions:
     - name: 'Open the deluxe menu'
-      level: 'COMMAND_PLAYER'
-      errorMessage: 'Please install Deluxe Menu.'
+      type: 'command'
+      level: 'PLAYER'
       run: |
         /deluxe menu open '1'
+    - name: 'Play Heart Particles if rightclick with carrort'
+      type: 'command'
+      level: 'PLAYER'
+      debug: '%petblocks_player_inventory_itemInMainHand_type%'
+      condition: '%petblocks_player_inventory_itemInMainHand_type% == "CARROT"'
+      run: |
+        /tell %petblocks_player_name% I love carrots <3
+        /tell %petblocks_player_name% YES I LOVE THEM!
 
+#
+# Defines the action a pet should perform in an interval on its own.
+#
+loop:
+  isEnabled: true
+  actions:
+    - name: 'Delay Action'
+      type: 'delay'
+      ticks: 20
+    - name: 'Play Particle Effect'
+      type: 'command'
+      level: 'SERVER'
+      run: |
+        /effect %petblocks_player_name% 5 5 5 %petblocks_pet_location_front_3%
 

@@ -2,14 +2,8 @@ package com.github.shynixn.petblocks.bukkit.impl.service
 
 import com.github.shynixn.mccoroutine.bukkit.scope
 import com.github.shynixn.mcutils.database.api.PlayerDataRepository
-import com.github.shynixn.petblocks.bukkit.contract.Pet
-import com.github.shynixn.petblocks.bukkit.contract.PetEntityFactory
-import com.github.shynixn.petblocks.bukkit.contract.PetService
-import com.github.shynixn.petblocks.bukkit.contract.PetTemplateRepository
-import com.github.shynixn.petblocks.bukkit.entity.PetMeta
-import com.github.shynixn.petblocks.bukkit.entity.PetSpawnResult
-import com.github.shynixn.petblocks.bukkit.entity.PetSpawnResultType
-import com.github.shynixn.petblocks.bukkit.entity.PlayerInformation
+import com.github.shynixn.petblocks.bukkit.contract.*
+import com.github.shynixn.petblocks.bukkit.entity.*
 import com.github.shynixn.petblocks.bukkit.impl.PetImpl
 import com.google.inject.Inject
 import kotlinx.coroutines.future.future
@@ -22,7 +16,8 @@ class PetServiceImpl @Inject constructor(
     private val petMetaRepository: PlayerDataRepository<PlayerInformation>,
     private val plugin: Plugin,
     private val templateRepository: PetTemplateRepository,
-    private val petEntityFactory: PetEntityFactory
+    private val petEntityFactory: PetEntityFactory,
+    private val petActionExecutionService: PetActionExecutionService
 ) : PetService {
     private val cache = HashMap<Player, MutableList<Pet>>()
 
@@ -53,13 +48,31 @@ class PetServiceImpl @Inject constructor(
     }
 
     /**
+     * Gets all pets which are currently loaded in memory
+     */
+    override fun getActivePets(): List<Pet> {
+        val allPets = ArrayList<Pet>()
+        for (items in cache.values) {
+            allPets.addAll(items)
+        }
+
+        return allPets
+    }
+
+    /**
      * Gets all the pets a player owns.
      * The pets may or be not be spawned at the moment.
      */
     override suspend fun getPetsFromPlayer(player: Player): List<Pet> {
         if (!cache.containsKey(player)) {
             val playerInformation = petMetaRepository.getByPlayer(player) ?: return emptyList()
-            val pets = playerInformation.pets.map { e -> createPetInstance(player, e) }
+            val templates = templateRepository.getAll()
+            val pets = playerInformation.pets.map { e ->
+                val templateId = e.template
+                val template = templates.firstOrNull { inner -> inner.id.equals(templateId, true) }
+                    ?: throw IllegalArgumentException("Player '${player.name}' has a pet, which references a template '${templateId}' which  does not exist!")
+                createPetInstance(player, e, template)
+            }
             cache[player] = pets.toMutableList()
         }
 
@@ -71,9 +84,7 @@ class PetServiceImpl @Inject constructor(
      * Throws an exception if template id does not exist.
      */
     override fun createPetAsync(
-        player: Player,
-        location: Location,
-        templateId: String
+        player: Player, location: Location, templateId: String
     ): CompletionStage<PetSpawnResult> {
         return plugin.scope.future {
             createPet(player, location, templateId)
@@ -101,7 +112,7 @@ class PetServiceImpl @Inject constructor(
         }
 
         // Create pet instance.
-        val pet = createPetInstance(player, petMeta)
+        val pet = createPetInstance(player, petMeta, template)
 
         if (!cache.containsKey(player)) {
             cache[player] = arrayListOf()
@@ -158,8 +169,8 @@ class PetServiceImpl @Inject constructor(
     /**
      * Creates a new pet instance.
      */
-    private fun createPetInstance(player: Player, petMeta: PetMeta): Pet {
-        val pet = PetImpl(player, petMeta, petEntityFactory)
+    private fun createPetInstance(player: Player, petMeta: PetMeta, petTemplate: PetTemplate): Pet {
+        val pet = PetImpl(player, petMeta, petTemplate, petEntityFactory, petActionExecutionService)
         return pet
     }
 }

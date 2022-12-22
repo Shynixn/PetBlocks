@@ -4,8 +4,10 @@ import com.github.shynixn.mcutils.common.toLocation
 import com.github.shynixn.mcutils.common.toVector3d
 import com.github.shynixn.mcutils.common.translateChatColors
 import com.github.shynixn.petblocks.bukkit.contract.Pet
+import com.github.shynixn.petblocks.bukkit.contract.PetActionExecutionService
 import com.github.shynixn.petblocks.bukkit.contract.PetEntityFactory
 import com.github.shynixn.petblocks.bukkit.entity.PetMeta
+import com.github.shynixn.petblocks.bukkit.entity.PetTemplate
 import com.github.shynixn.petblocks.bukkit.entity.PetVisibility
 import com.github.shynixn.petblocks.bukkit.exception.PetBlocksPetDisposedException
 import org.bukkit.Location
@@ -20,7 +22,9 @@ class PetImpl(
      */
     private var playerParam: Player?,
     private val petMeta: PetMeta,
-    private val petEntityFactory: PetEntityFactory
+    private val template: PetTemplate,
+    private val petEntityFactory: PetEntityFactory,
+    private val petActionExecutionService: PetActionExecutionService
 ) : Pet {
     private var petEntity: PetEntityImpl? = null
     private var disposed = false
@@ -149,10 +153,26 @@ class PetImpl(
         val inFrontOfOwnerPosition = player.location.toVector3d().addRelativeFront(3.0)
 
         if (petEntity == null) {
-            petEntity = petEntityFactory.createPetEntity(inFrontOfOwnerPosition.toLocation(), petMeta, player)
+            petMeta.lastStoredLocation = inFrontOfOwnerPosition
+            petEntity = petEntityFactory.createPetEntity(this, petMeta, template)
         } else {
             petEntity!!.teleportInWorld(inFrontOfOwnerPosition)
         }
+    }
+
+    /**
+     * Executes the actions defined by rightClicking the pet found in the template.
+     */
+    override fun rightClick() {
+        if (isDisposed) {
+            throw PetBlocksPetDisposedException()
+        }
+
+        if (petEntity == null) {
+            return
+        }
+
+        petActionExecutionService.executeAction(this, template.rightClickDefinition)
     }
 
     /**
@@ -185,7 +205,7 @@ class PetImpl(
             return
         }
 
-        petEntity = petEntityFactory.createPetEntity(petMeta.lastStoredLocation.toLocation(), petMeta, player)
+        petEntity = petEntityFactory.createPetEntity(this, petMeta, template)
     }
 
     /**

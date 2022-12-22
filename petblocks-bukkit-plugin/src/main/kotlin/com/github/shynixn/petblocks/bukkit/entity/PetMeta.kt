@@ -6,7 +6,7 @@ import com.github.shynixn.mcutils.common.Vector3d
 /**
  * Persistence data.
  */
-class PetMeta{
+class PetMeta {
     /**
      * Identifier of the pet.
      */
@@ -16,6 +16,11 @@ class PetMeta{
      * DisplayName of the pet.
      */
     var displayName: String = "?"
+
+    /**
+     * Used template.
+     */
+    var template: String = "?"
 
     /**
      * Last persisted location of the pet.

@@ -1,21 +1,43 @@
 package com.github.shynixn.petblocks.bukkit.impl
 
+import com.github.shynixn.mccoroutine.bukkit.CoroutineTimings
+import com.github.shynixn.mccoroutine.bukkit.launch
+import com.github.shynixn.mccoroutine.bukkit.minecraftDispatcher
+import com.github.shynixn.mccoroutine.bukkit.ticks
 import com.github.shynixn.mcutils.common.Vector3d
 import com.github.shynixn.mcutils.packet.api.packetOutEntityMetadata
 import com.github.shynixn.mcutils.packet.api.sendPacket
 import com.github.shynixn.mcutils.physicobject.api.PhysicObject
 import com.github.shynixn.mcutils.physicobject.api.component.MathComponent
 import com.github.shynixn.mcutils.physicobject.api.component.PlayerComponent
+import com.github.shynixn.petblocks.bukkit.contract.Pet
+import com.github.shynixn.petblocks.bukkit.contract.PetActionExecutionService
+import com.github.shynixn.petblocks.bukkit.entity.PetTemplate
 import com.github.shynixn.petblocks.bukkit.entity.PetVisibility
+import kotlinx.coroutines.delay
 import org.bukkit.Location
 import org.bukkit.entity.Player
+import org.bukkit.plugin.Plugin
 
 class PetEntityImpl(
     private val physicsComponent: MathComponent,
     private val playerComponent: PlayerComponent,
-    private val entityComponent: PetArmorstandEntityComponentImpl
+    private val entityComponent: PetArmorstandEntityComponentImpl,
+    plugin: Plugin,
+    petActionExecutionService: PetActionExecutionService,
+    pet: Pet,
+    template : PetTemplate
 ) : PhysicObject {
     private var currentLocation = Vector3d()
+
+    init {
+        plugin.launch(plugin.minecraftDispatcher + object : CoroutineTimings() {}) {
+            while (!isDead) {
+                petActionExecutionService.executeAction(pet, template.loopDefinition)
+                delay(1.ticks)
+            }
+        }
+    }
 
     /**
      * Gets all entity ids.

@@ -1,7 +1,10 @@
 package com.github.shynixn.petblocks.bukkit
 
 import com.github.shynixn.mccoroutine.bukkit.SuspendingJavaPlugin
+import com.github.shynixn.mcutils.common.CommandServiceImpl
 import com.github.shynixn.petblocks.bukkit.contract.Pet
+import com.github.shynixn.petblocks.bukkit.contract.PetService
+import org.bukkit.entity.Player
 
 class PetBlocksPlugin : SuspendingJavaPlugin() {
     /**
@@ -10,12 +13,6 @@ class PetBlocksPlugin : SuspendingJavaPlugin() {
     override suspend fun onEnableAsync() {
 
 
-
-        val pet : Pet
-
-        pet.template.
-
-        super.onEnableAsync()
     }
 
 
