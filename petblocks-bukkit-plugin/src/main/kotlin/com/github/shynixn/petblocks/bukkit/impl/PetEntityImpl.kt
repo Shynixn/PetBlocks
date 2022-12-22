@@ -8,6 +8,7 @@ import com.github.shynixn.mcutils.common.Vector3d
 import com.github.shynixn.mcutils.packet.api.packetOutEntityMetadata
 import com.github.shynixn.mcutils.packet.api.sendPacket
 import com.github.shynixn.mcutils.physicobject.api.PhysicObject
+import com.github.shynixn.mcutils.physicobject.api.component.ArmorstandEntityComponent
 import com.github.shynixn.mcutils.physicobject.api.component.MathComponent
 import com.github.shynixn.mcutils.physicobject.api.component.PlayerComponent
 import com.github.shynixn.petblocks.bukkit.contract.Pet
@@ -24,9 +25,9 @@ class PetEntityImpl(
     private val playerComponent: PlayerComponent,
     private val entityComponent: PetArmorstandEntityComponentImpl,
     plugin: Plugin,
-    petActionExecutionService: PetActionExecutionService,
-    pet: Pet,
-    template : PetTemplate
+    private val petActionExecutionService: PetActionExecutionService,
+    private val pet: Pet,
+    private val template: PetTemplate
 ) : PhysicObject {
     private var currentLocation = Vector3d()
 
@@ -64,6 +65,19 @@ class PetEntityImpl(
      */
     fun teleportInWorld(vector3d: Vector3d) {
         this.physicsComponent.teleport(vector3d)
+    }
+
+    /**
+     * LeftClick on the physic object.
+     */
+    override fun leftClick(player: Player) {
+    }
+
+    /**
+     * RightClick on the physic object.
+     */
+    override fun rightClick(player: Player) {
+        petActionExecutionService.executeAction(pet, template.rightClickDefinition)
     }
 
     /**

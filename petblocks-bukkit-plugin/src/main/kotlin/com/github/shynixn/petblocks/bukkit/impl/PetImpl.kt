@@ -9,7 +9,10 @@ import com.github.shynixn.petblocks.bukkit.contract.PetEntityFactory
 import com.github.shynixn.petblocks.bukkit.entity.PetMeta
 import com.github.shynixn.petblocks.bukkit.entity.PetTemplate
 import com.github.shynixn.petblocks.bukkit.entity.PetVisibility
+import com.github.shynixn.petblocks.bukkit.event.PetRemoveEvent
+import com.github.shynixn.petblocks.bukkit.event.PetSpawnEvent
 import com.github.shynixn.petblocks.bukkit.exception.PetBlocksPetDisposedException
+import org.bukkit.Bukkit
 import org.bukkit.Location
 import org.bukkit.entity.Player
 
@@ -23,8 +26,7 @@ class PetImpl(
     private var playerParam: Player?,
     private val petMeta: PetMeta,
     private val template: PetTemplate,
-    private val petEntityFactory: PetEntityFactory,
-    private val petActionExecutionService: PetActionExecutionService
+    private val petEntityFactory: PetEntityFactory
 ) : Pet {
     private var petEntity: PetEntityImpl? = null
     private var disposed = false
@@ -161,21 +163,6 @@ class PetImpl(
     }
 
     /**
-     * Executes the actions defined by rightClicking the pet found in the template.
-     */
-    override fun rightClick() {
-        if (isDisposed) {
-            throw PetBlocksPetDisposedException()
-        }
-
-        if (petEntity == null) {
-            return
-        }
-
-        petActionExecutionService.executeAction(this, template.rightClickDefinition)
-    }
-
-    /**
      * Hides the pet for the owner and other players.
      * The current location of the pet is stored.
      */
@@ -185,6 +172,13 @@ class PetImpl(
         }
 
         if (petEntity == null) {
+            return
+        }
+
+        val event = PetRemoveEvent(this)
+        Bukkit.getPluginManager().callEvent(event)
+
+        if (event.isCancelled) {
             return
         }
 
@@ -202,6 +196,13 @@ class PetImpl(
         }
 
         if (petEntity != null) {
+            return
+        }
+
+        val event = PetSpawnEvent(this)
+        Bukkit.getPluginManager().callEvent(event)
+
+        if (event.isCancelled) {
             return
         }
 

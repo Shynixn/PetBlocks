@@ -16,8 +16,7 @@ class PetServiceImpl @Inject constructor(
     private val petMetaRepository: PlayerDataRepository<PlayerInformation>,
     private val plugin: Plugin,
     private val templateRepository: PetTemplateRepository,
-    private val petEntityFactory: PetEntityFactory,
-    private val petActionExecutionService: PetActionExecutionService
+    private val petEntityFactory: PetEntityFactory
 ) : PetService {
     private val cache = HashMap<Player, MutableList<Pet>>()
 
@@ -170,7 +169,7 @@ class PetServiceImpl @Inject constructor(
      * Creates a new pet instance.
      */
     private fun createPetInstance(player: Player, petMeta: PetMeta, petTemplate: PetTemplate): Pet {
-        val pet = PetImpl(player, petMeta, petTemplate, petEntityFactory, petActionExecutionService)
+        val pet = PetImpl(player, petMeta, petTemplate, petEntityFactory)
         return pet
     }
 }

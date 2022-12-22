@@ -1,10 +1,8 @@
 package com.github.shynixn.petblocks.bukkit.contract
 
-import com.github.shynixn.petblocks.bukkit.entity.PetTemplate
 import com.github.shynixn.petblocks.bukkit.entity.PetVisibility
 import org.bukkit.Location
 import org.bukkit.entity.Player
-import java.util.concurrent.CompletionStage
 
 interface Pet {
     /**
@@ -50,11 +48,6 @@ interface Pet {
      * right in front of the player.
      */
     fun call()
-
-    /**
-     * Executes the actions defined by rightClicking the pet found in the template.
-     */
-    fun rightClick()
 
     /**
      * DeSpawns the pet for the owner and other players.
