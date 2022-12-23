@@ -30,7 +30,8 @@ class PetBlocksDependencyInjectionBinder(private val plugin: PetBlocksPlugin) : 
         bind(PlaceHolderService::class.java).to(PlaceHolderServiceImpl::class.java).`in`(Scopes.SINGLETON)
 
         // Build Template Repository
-        val templateRepositoryImpl = PetTemplateRepositoryImpl(plugin.dataFolder.resolve("template").toPath())
+        val templateRepositoryImpl =
+            PetTemplateRepositoryImpl(plugin.dataFolder.resolve("template").toPath(), plugin, "pet_hopping.yml")
         bind(PetTemplateRepository::class.java).toInstance(templateRepositoryImpl)
 
         // Build Player Storage Repository

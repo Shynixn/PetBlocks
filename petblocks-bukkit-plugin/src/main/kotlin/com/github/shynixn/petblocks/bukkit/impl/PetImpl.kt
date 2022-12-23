@@ -187,8 +187,7 @@ class PetImpl(
     }
 
     /**
-     * Shows the pet for the owner (and other players depending on the visibility) at the location
-     * the pet remembers.
+     * Shows the pet for the owner (and other players depending on the visibility) at the location the pet remembers.
      */
     override fun spawn() {
         if (isDisposed) {
