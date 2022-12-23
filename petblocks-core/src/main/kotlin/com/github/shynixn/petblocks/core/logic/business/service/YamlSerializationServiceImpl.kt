@@ -2,9 +2,9 @@
 
 package com.github.shynixn.petblocks.core.logic.business.service
 
-import com.github.shynixn.petblocks.api.business.annotation.YamlSerialize
-import com.github.shynixn.petblocks.api.business.serializer.YamlSerializer
-import com.github.shynixn.petblocks.api.business.service.YamlSerializationService
+import com.github.shynixn.petblocks.api.legacy.business.annotation.YamlSerialize
+import com.github.shynixn.petblocks.api.legacy.business.serializer.YamlSerializer
+import com.github.shynixn.petblocks.api.legacy.business.service.YamlSerializationService
 import org.yaml.snakeyaml.DumperOptions
 import org.yaml.snakeyaml.Yaml
 import java.io.Reader

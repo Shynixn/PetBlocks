@@ -1,10 +1,10 @@
 package com.github.shynixn.petblocks.core.logic.business.service
 
-import com.github.shynixn.petblocks.api.business.annotation.Key
-import com.github.shynixn.petblocks.api.business.localization.Messages
-import com.github.shynixn.petblocks.api.business.service.ConfigurationService
-import com.github.shynixn.petblocks.api.business.service.LocalizationService
-import com.github.shynixn.petblocks.api.business.service.LoggingService
+import com.github.shynixn.petblocks.api.legacy.business.annotation.Key
+import com.github.shynixn.petblocks.api.legacy.business.localization.Messages
+import com.github.shynixn.petblocks.api.legacy.business.service.ConfigurationService
+import com.github.shynixn.petblocks.api.legacy.business.service.LocalizationService
+import com.github.shynixn.petblocks.api.legacy.business.service.LoggingService
 import com.github.shynixn.petblocks.core.logic.business.extension.translateChatColors
 import com.google.inject.Inject
 import java.io.InputStreamReader

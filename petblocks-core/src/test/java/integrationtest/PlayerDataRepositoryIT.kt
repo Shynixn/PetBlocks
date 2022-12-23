@@ -1,16 +1,13 @@
 package integrationtest
 
-import com.github.shynixn.petblocks.api.business.service.ProxyService
+import com.github.shynixn.petblocks.api.legacy.business.service.ProxyService
 import com.github.shynixn.petblocks.core.logic.persistence.entity.PlayerDataEntity
 import com.github.shynixn.petblocks.core.logic.persistence.repository.PlayerDataRepositoryImpl
 import helper.MockedCoroutineSessionService
 import helper.TestSqliteDb
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
-import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions
-import org.junit.jupiter.api.BeforeEach
-import org.junit.jupiter.api.Test
 import org.mockito.Mockito
 import java.util.*
 

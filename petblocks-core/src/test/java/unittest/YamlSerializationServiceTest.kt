@@ -1,7 +1,7 @@
 package unittest
 
-import com.github.shynixn.petblocks.api.business.service.YamlSerializationService
-import com.github.shynixn.petblocks.api.persistence.entity.AIHopping
+import com.github.shynixn.petblocks.api.legacy.business.service.YamlSerializationService
+import com.github.shynixn.petblocks.api.legacy.persistence.entity.AIHopping
 import com.github.shynixn.petblocks.core.logic.business.service.YamlSerializationServiceImpl
 import com.github.shynixn.petblocks.core.logic.persistence.entity.AIHoppingEntity
 import org.junit.jupiter.api.Assertions

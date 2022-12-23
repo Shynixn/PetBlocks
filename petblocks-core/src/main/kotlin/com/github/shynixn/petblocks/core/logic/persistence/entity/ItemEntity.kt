@@ -1,6 +1,6 @@
 package com.github.shynixn.petblocks.core.logic.persistence.entity
 
-import com.github.shynixn.petblocks.api.persistence.entity.Item
+import com.github.shynixn.petblocks.api.legacy.persistence.entity.Item
 
 /**
  * Created by Shynixn 2019.

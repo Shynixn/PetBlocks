@@ -1,6 +1,6 @@
 package helper
 
-import com.github.shynixn.petblocks.api.persistence.context.SqlContext
+import com.github.shynixn.petblocks.api.legacy.persistence.context.SqlContext
 import java.io.File
 import java.sql.Connection
 import java.sql.DriverManager

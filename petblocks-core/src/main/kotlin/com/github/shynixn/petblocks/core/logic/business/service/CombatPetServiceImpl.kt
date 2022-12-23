@@ -1,9 +1,9 @@
 package com.github.shynixn.petblocks.core.logic.business.service
 
-import com.github.shynixn.petblocks.api.business.enumeration.AIType
-import com.github.shynixn.petblocks.api.business.service.*
-import com.github.shynixn.petblocks.api.persistence.entity.AIFleeInCombat
-import com.github.shynixn.petblocks.api.persistence.entity.PetMeta
+import com.github.shynixn.petblocks.api.legacy.business.enumeration.AIType
+import com.github.shynixn.petblocks.api.legacy.business.service.*
+import com.github.shynixn.petblocks.api.legacy.persistence.entity.AIFleeInCombat
+import com.github.shynixn.petblocks.api.legacy.persistence.entity.PetMeta
 import com.github.shynixn.petblocks.core.logic.business.extension.sync
 import com.google.inject.Inject
 

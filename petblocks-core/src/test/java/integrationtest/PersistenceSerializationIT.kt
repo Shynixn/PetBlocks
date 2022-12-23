@@ -2,8 +2,8 @@
 
 package integrationtest
 
-import com.github.shynixn.petblocks.api.business.enumeration.ParticleType
-import com.github.shynixn.petblocks.api.business.service.YamlSerializationService
+import com.github.shynixn.petblocks.api.legacy.business.enumeration.ParticleType
+import com.github.shynixn.petblocks.api.legacy.business.service.YamlSerializationService
 import com.github.shynixn.petblocks.core.logic.business.service.YamlSerializationServiceImpl
 import com.github.shynixn.petblocks.core.logic.persistence.entity.AIAfraidOfWaterEntity
 import com.github.shynixn.petblocks.core.logic.persistence.entity.AIAmbientSoundEntity

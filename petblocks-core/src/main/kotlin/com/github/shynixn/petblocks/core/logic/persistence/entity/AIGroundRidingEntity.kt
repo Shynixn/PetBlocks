@@ -1,7 +1,7 @@
 package com.github.shynixn.petblocks.core.logic.persistence.entity
 
-import com.github.shynixn.petblocks.api.business.annotation.YamlSerialize
-import com.github.shynixn.petblocks.api.persistence.entity.AIGroundRiding
+import com.github.shynixn.petblocks.api.legacy.business.annotation.YamlSerialize
+import com.github.shynixn.petblocks.api.legacy.persistence.entity.AIGroundRiding
 
 /**
  * Created by Shynixn 2018.

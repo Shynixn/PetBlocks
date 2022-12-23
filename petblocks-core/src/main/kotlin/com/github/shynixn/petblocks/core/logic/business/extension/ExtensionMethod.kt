@@ -2,13 +2,13 @@
 
 package com.github.shynixn.petblocks.core.logic.business.extension
 
-import com.github.shynixn.petblocks.api.PetBlocksApi
-import com.github.shynixn.petblocks.api.business.enumeration.ChatColor
-import com.github.shynixn.petblocks.api.business.service.ConcurrencyService
-import com.github.shynixn.petblocks.api.business.service.LoggingService
-import com.github.shynixn.petblocks.api.persistence.entity.ChatMessage
-import com.github.shynixn.petblocks.api.persistence.entity.Position
-import com.github.shynixn.petblocks.api.persistence.entity.PropertyTrackable
+import com.github.shynixn.petblocks.api.legacy.OldPetBlocksApi
+import com.github.shynixn.petblocks.api.legacy.business.enumeration.ChatColor
+import com.github.shynixn.petblocks.api.legacy.business.service.ConcurrencyService
+import com.github.shynixn.petblocks.api.legacy.business.service.LoggingService
+import com.github.shynixn.petblocks.api.legacy.persistence.entity.ChatMessage
+import com.github.shynixn.petblocks.api.legacy.persistence.entity.Position
+import com.github.shynixn.petblocks.api.legacy.persistence.entity.PropertyTrackable
 import com.github.shynixn.petblocks.core.logic.persistence.entity.ChatMessageEntity
 import java.lang.reflect.Field
 import java.util.concurrent.CompletableFuture
@@ -170,7 +170,7 @@ fun Field.accessible(flag: Boolean) : Field {
  */
 fun <T> CompletableFuture<T>.thenAcceptSafely(f: (T) -> Unit) {
     this.thenAccept(f).exceptionally { e ->
-        PetBlocksApi.resolve<LoggingService>(LoggingService::class.java).error("Failed to execute Task.", e)
+        OldPetBlocksApi.resolve<LoggingService>(LoggingService::class.java).error("Failed to execute Task.", e)
         throw RuntimeException(e)
     }
 }

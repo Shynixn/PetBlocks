@@ -2,9 +2,9 @@
 
 package com.github.shynixn.petblocks.core.logic.business.command
 
-import com.github.shynixn.petblocks.api.business.command.SourceCommand
-import com.github.shynixn.petblocks.api.business.enumeration.ChatColor
-import com.github.shynixn.petblocks.api.business.service.*
+import com.github.shynixn.petblocks.api.legacy.business.command.SourceCommand
+import com.github.shynixn.petblocks.api.legacy.business.enumeration.ChatColor
+import com.github.shynixn.petblocks.api.legacy.business.service.*
 import com.google.inject.Inject
 
 /**

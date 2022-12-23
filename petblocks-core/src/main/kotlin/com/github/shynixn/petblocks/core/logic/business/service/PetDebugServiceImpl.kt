@@ -1,8 +1,8 @@
 package com.github.shynixn.petblocks.core.logic.business.service
 
-import com.github.shynixn.petblocks.api.business.enumeration.ChatColor
-import com.github.shynixn.petblocks.api.business.localization.Messages
-import com.github.shynixn.petblocks.api.business.service.*
+import com.github.shynixn.petblocks.api.legacy.business.enumeration.ChatColor
+import com.github.shynixn.petblocks.api.legacy.business.localization.Messages
+import com.github.shynixn.petblocks.api.legacy.business.service.*
 import com.github.shynixn.petblocks.core.logic.business.extension.sync
 import com.github.shynixn.petblocks.core.logic.business.extension.translateChatColors
 import com.github.shynixn.petblocks.core.logic.persistence.entity.ChatMessageEntity

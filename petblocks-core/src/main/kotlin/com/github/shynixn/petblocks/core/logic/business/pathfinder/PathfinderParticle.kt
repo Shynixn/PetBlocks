@@ -1,17 +1,16 @@
 package com.github.shynixn.petblocks.core.logic.business.pathfinder
 
-import com.github.shynixn.petblocks.api.PetBlocksApi
-import com.github.shynixn.petblocks.api.business.proxy.PetProxy
-import com.github.shynixn.petblocks.api.business.service.LoggingService
-import com.github.shynixn.petblocks.api.business.service.ParticleService
-import com.github.shynixn.petblocks.api.business.service.ProxyService
-import com.github.shynixn.petblocks.api.persistence.entity.AIParticle
-import com.github.shynixn.petblocks.core.logic.business.extension.relativeBack
+import com.github.shynixn.petblocks.api.legacy.OldPetBlocksApi
+import com.github.shynixn.petblocks.api.legacy.business.proxy.PetProxy
+import com.github.shynixn.petblocks.api.legacy.business.service.LoggingService
+import com.github.shynixn.petblocks.api.legacy.business.service.ParticleService
+import com.github.shynixn.petblocks.api.legacy.business.service.ProxyService
+import com.github.shynixn.petblocks.api.legacy.persistence.entity.AIParticle
 
 class PathfinderParticle(private val aiParticle: AIParticle, private val pet: PetProxy) : BasePathfinder(aiParticle) {
-    private val loggingService = PetBlocksApi.resolve(LoggingService::class.java)
-    private val proxyService = PetBlocksApi.resolve(ProxyService::class.java)
-    private val particleService = PetBlocksApi.resolve(ParticleService::class.java)
+    private val loggingService = OldPetBlocksApi.resolve(LoggingService::class.java)
+    private val proxyService = OldPetBlocksApi.resolve(ProxyService::class.java)
+    private val particleService = OldPetBlocksApi.resolve(ParticleService::class.java)
     private var lastPlay = System.currentTimeMillis()
 
     /**

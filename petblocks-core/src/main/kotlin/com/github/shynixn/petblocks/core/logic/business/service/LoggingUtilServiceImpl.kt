@@ -1,6 +1,6 @@
 package com.github.shynixn.petblocks.core.logic.business.service
 
-import com.github.shynixn.petblocks.api.business.service.LoggingService
+import com.github.shynixn.petblocks.api.legacy.business.service.LoggingService
 import java.util.logging.Level
 import java.util.logging.Logger
 

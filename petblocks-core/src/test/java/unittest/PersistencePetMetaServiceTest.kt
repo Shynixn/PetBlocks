@@ -2,12 +2,12 @@
 
 package unittest
 
-import com.github.shynixn.petblocks.api.business.enumeration.Permission
-import com.github.shynixn.petblocks.api.business.service.*
-import com.github.shynixn.petblocks.api.persistence.entity.PetMeta
-import com.github.shynixn.petblocks.api.persistence.entity.Position
-import com.github.shynixn.petblocks.api.persistence.entity.PotionEffect
-import com.github.shynixn.petblocks.api.persistence.repository.PetMetaRepository
+import com.github.shynixn.petblocks.api.legacy.business.enumeration.Permission
+import com.github.shynixn.petblocks.api.legacy.business.service.*
+import com.github.shynixn.petblocks.api.legacy.persistence.entity.PetMeta
+import com.github.shynixn.petblocks.api.legacy.persistence.entity.Position
+import com.github.shynixn.petblocks.api.legacy.persistence.entity.PotionEffect
+import com.github.shynixn.petblocks.api.legacy.persistence.repository.PetMetaRepository
 import com.github.shynixn.petblocks.core.logic.business.service.PersistencePetMetaServiceImpl
 import com.github.shynixn.petblocks.core.logic.persistence.entity.PetMetaEntity
 import com.github.shynixn.petblocks.core.logic.persistence.entity.PlayerMetaEntity

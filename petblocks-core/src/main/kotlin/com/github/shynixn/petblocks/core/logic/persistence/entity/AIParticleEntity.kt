@@ -1,9 +1,9 @@
 package com.github.shynixn.petblocks.core.logic.persistence.entity
 
-import com.github.shynixn.petblocks.api.business.annotation.YamlSerialize
-import com.github.shynixn.petblocks.api.persistence.entity.AIParticle
-import com.github.shynixn.petblocks.api.persistence.entity.Particle
-import com.github.shynixn.petblocks.api.persistence.entity.Position
+import com.github.shynixn.petblocks.api.legacy.business.annotation.YamlSerialize
+import com.github.shynixn.petblocks.api.legacy.persistence.entity.AIParticle
+import com.github.shynixn.petblocks.api.legacy.persistence.entity.Particle
+import com.github.shynixn.petblocks.api.legacy.persistence.entity.Position
 
 class AIParticleEntity : AIBaseEntity(), AIParticle {
     /**

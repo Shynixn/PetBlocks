@@ -1,9 +1,9 @@
 package com.github.shynixn.petblocks.core.logic.persistence.entity
 
-import com.github.shynixn.petblocks.api.business.enumeration.ChatClickAction
-import com.github.shynixn.petblocks.api.business.enumeration.ChatColor
-import com.github.shynixn.petblocks.api.persistence.entity.ChatMessage
-import com.github.shynixn.petblocks.api.persistence.entity.ChatMessageComponent
+import com.github.shynixn.petblocks.api.legacy.business.enumeration.ChatClickAction
+import com.github.shynixn.petblocks.api.legacy.business.enumeration.ChatColor
+import com.github.shynixn.petblocks.api.legacy.persistence.entity.ChatMessage
+import com.github.shynixn.petblocks.api.legacy.persistence.entity.ChatMessageComponent
 import com.github.shynixn.petblocks.core.logic.business.extension.translateChatColors
 
 /**

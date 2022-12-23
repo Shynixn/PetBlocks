@@ -1,12 +1,11 @@
 package com.github.shynixn.petblocks.core.logic.business.commandexecutor
 
-import com.github.shynixn.petblocks.api.business.command.SourceCommand
-import com.github.shynixn.petblocks.api.business.enumeration.ChatClickAction
-import com.github.shynixn.petblocks.api.business.enumeration.ChatColor
-import com.github.shynixn.petblocks.api.business.localization.Messages
-import com.github.shynixn.petblocks.api.business.service.ConfigurationService
-import com.github.shynixn.petblocks.api.business.service.MessageService
-import com.github.shynixn.petblocks.api.business.service.ProxyService
+import com.github.shynixn.petblocks.api.legacy.business.command.SourceCommand
+import com.github.shynixn.petblocks.api.legacy.business.enumeration.ChatClickAction
+import com.github.shynixn.petblocks.api.legacy.business.enumeration.ChatColor
+import com.github.shynixn.petblocks.api.legacy.business.localization.Messages
+import com.github.shynixn.petblocks.api.legacy.business.service.MessageService
+import com.github.shynixn.petblocks.api.legacy.business.service.ProxyService
 import com.github.shynixn.petblocks.core.logic.business.command.*
 import com.github.shynixn.petblocks.core.logic.persistence.entity.ChatMessageEntity
 import com.google.inject.Inject

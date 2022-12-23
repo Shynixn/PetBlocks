@@ -1,7 +1,7 @@
 package com.github.shynixn.petblocks.core.logic.persistence.entity
 
-import com.github.shynixn.petblocks.api.business.annotation.YamlSerialize
-import com.github.shynixn.petblocks.api.persistence.entity.AIFleeInCombat
+import com.github.shynixn.petblocks.api.legacy.business.annotation.YamlSerialize
+import com.github.shynixn.petblocks.api.legacy.persistence.entity.AIFleeInCombat
 
 /**
  * Created by Shynixn 2018.

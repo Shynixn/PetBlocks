@@ -1,9 +1,9 @@
 package com.github.shynixn.petblocks.core.logic.business.proxy
 
-import com.github.shynixn.petblocks.api.business.proxy.AICreationProxy
-import com.github.shynixn.petblocks.api.business.proxy.PetProxy
-import com.github.shynixn.petblocks.api.business.service.YamlSerializationService
-import com.github.shynixn.petblocks.api.persistence.entity.AIBase
+import com.github.shynixn.petblocks.api.legacy.business.proxy.AICreationProxy
+import com.github.shynixn.petblocks.api.legacy.business.proxy.PetProxy
+import com.github.shynixn.petblocks.api.legacy.business.service.YamlSerializationService
+import com.github.shynixn.petblocks.api.legacy.persistence.entity.AIBase
 import kotlin.reflect.KClass
 
 /**

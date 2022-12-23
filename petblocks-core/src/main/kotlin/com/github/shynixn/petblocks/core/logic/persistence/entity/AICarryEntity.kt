@@ -1,6 +1,6 @@
 package com.github.shynixn.petblocks.core.logic.persistence.entity
 
-import com.github.shynixn.petblocks.api.persistence.entity.AICarry
+import com.github.shynixn.petblocks.api.legacy.persistence.entity.AICarry
 
 /**
  * Created by Shynixn 2018.

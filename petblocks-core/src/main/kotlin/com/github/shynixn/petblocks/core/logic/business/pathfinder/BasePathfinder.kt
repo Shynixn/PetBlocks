@@ -1,7 +1,7 @@
 package com.github.shynixn.petblocks.core.logic.business.pathfinder
 
-import com.github.shynixn.petblocks.api.business.proxy.PathfinderProxy
-import com.github.shynixn.petblocks.api.persistence.entity.AIBase
+import com.github.shynixn.petblocks.api.legacy.business.proxy.PathfinderProxy
+import com.github.shynixn.petblocks.api.legacy.persistence.entity.AIBase
 
 abstract class BasePathfinder(
     /**

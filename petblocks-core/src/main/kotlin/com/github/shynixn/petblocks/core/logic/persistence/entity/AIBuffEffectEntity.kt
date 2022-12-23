@@ -1,11 +1,11 @@
 package com.github.shynixn.petblocks.core.logic.persistence.entity
 
-import com.github.shynixn.petblocks.api.business.annotation.YamlSerialize
-import com.github.shynixn.petblocks.api.business.enumeration.AIType
-import com.github.shynixn.petblocks.api.persistence.entity.AIBuffEffect
-import com.github.shynixn.petblocks.api.persistence.entity.Particle
-import com.github.shynixn.petblocks.api.persistence.entity.PotionEffect
-import com.github.shynixn.petblocks.api.persistence.entity.Sound
+import com.github.shynixn.petblocks.api.legacy.business.annotation.YamlSerialize
+import com.github.shynixn.petblocks.api.legacy.business.enumeration.AIType
+import com.github.shynixn.petblocks.api.legacy.persistence.entity.AIBuffEffect
+import com.github.shynixn.petblocks.api.legacy.persistence.entity.Particle
+import com.github.shynixn.petblocks.api.legacy.persistence.entity.PotionEffect
+import com.github.shynixn.petblocks.api.legacy.persistence.entity.Sound
 
 /**
  * Created by Shynixn 2019.

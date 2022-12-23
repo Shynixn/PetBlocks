@@ -1,13 +1,13 @@
 package com.github.shynixn.petblocks.core.logic.persistence.entity
 
-import com.github.shynixn.petblocks.api.PetBlocksApi
-import com.github.shynixn.petblocks.api.business.service.PetService
-import com.github.shynixn.petblocks.api.business.service.PropertyTrackingService
-import com.github.shynixn.petblocks.api.business.service.ProxyService
-import com.github.shynixn.petblocks.api.persistence.entity.AIBase
-import com.github.shynixn.petblocks.api.persistence.entity.PetMeta
-import com.github.shynixn.petblocks.api.persistence.entity.PlayerMeta
-import com.github.shynixn.petblocks.api.persistence.entity.Skin
+import com.github.shynixn.petblocks.api.legacy.OldPetBlocksApi
+import com.github.shynixn.petblocks.api.legacy.business.service.PetService
+import com.github.shynixn.petblocks.api.legacy.business.service.PropertyTrackingService
+import com.github.shynixn.petblocks.api.legacy.business.service.ProxyService
+import com.github.shynixn.petblocks.api.legacy.persistence.entity.AIBase
+import com.github.shynixn.petblocks.api.legacy.persistence.entity.PetMeta
+import com.github.shynixn.petblocks.api.legacy.persistence.entity.PlayerMeta
+import com.github.shynixn.petblocks.api.legacy.persistence.entity.Skin
 import com.github.shynixn.petblocks.core.logic.business.service.PropertyTrackingServiceImpl
 
 /**
@@ -54,11 +54,11 @@ class PetMetaEntity(override val playerMeta: PlayerMeta, override val skin: Skin
 
         try {
             if (proxyService == null) {
-                proxyService = PetBlocksApi.resolve(ProxyService::class.java)
+                proxyService = OldPetBlocksApi.resolve(ProxyService::class.java)
             }
 
             if (petService == null) {
-                petService = PetBlocksApi.resolve(PetService::class.java)
+                petService = OldPetBlocksApi.resolve(PetService::class.java)
             }
 
             val player = proxyService!!.getPlayerFromUUID<Any>(this.playerMeta.uuid)

@@ -1,6 +1,6 @@
 package com.github.shynixn.petblocks.core.logic.persistence.entity
 
-import com.github.shynixn.petblocks.api.persistence.entity.AIFloatInWater
+import com.github.shynixn.petblocks.api.legacy.persistence.entity.AIFloatInWater
 
 /**
  * Created by Shynixn 2018.

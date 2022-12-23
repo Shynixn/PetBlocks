@@ -10,7 +10,10 @@ import kotlinx.coroutines.future.future
 import org.bukkit.Location
 import org.bukkit.entity.Player
 import org.bukkit.plugin.Plugin
+import java.util.*
 import java.util.concurrent.CompletionStage
+import kotlin.collections.ArrayList
+import kotlin.collections.HashMap
 
 class PetServiceImpl @Inject constructor(
     private val petMetaRepository: PlayerDataRepository<PlayerInformation>,

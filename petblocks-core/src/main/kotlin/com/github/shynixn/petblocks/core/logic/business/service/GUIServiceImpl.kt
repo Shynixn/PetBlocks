@@ -2,11 +2,14 @@
 
 package com.github.shynixn.petblocks.core.logic.business.service
 
-import com.github.shynixn.petblocks.api.PetBlocksApi
-import com.github.shynixn.petblocks.api.business.enumeration.*
-import com.github.shynixn.petblocks.api.business.localization.Messages
-import com.github.shynixn.petblocks.api.business.service.*
-import com.github.shynixn.petblocks.api.persistence.entity.*
+import com.github.shynixn.petblocks.api.legacy.OldPetBlocksApi
+import com.github.shynixn.petblocks.api.legacy.business.localization.Messages
+import com.github.shynixn.petblocks.api.legacy.business.enumeration.*
+import com.github.shynixn.petblocks.api.legacy.business.service.*
+import com.github.shynixn.petblocks.api.legacy.persistence.entity.GuiIcon
+import com.github.shynixn.petblocks.api.legacy.persistence.entity.GuiItem
+import com.github.shynixn.petblocks.api.legacy.persistence.entity.GuiPlayerCache
+import com.github.shynixn.petblocks.api.legacy.persistence.entity.PetMeta
 import com.github.shynixn.petblocks.core.logic.business.extension.chatMessage
 import com.github.shynixn.petblocks.core.logic.business.extension.sync
 import com.github.shynixn.petblocks.core.logic.business.extension.translateChatColors
@@ -76,7 +79,7 @@ class GUIServiceImpl @Inject constructor(
                     }
                 }
                 clickAction {
-                    ChatClickAction.OPEN_URL to "http://minecraft-heads.com"
+                    com.github.shynixn.petblocks.api.legacy.business.enumeration.ChatClickAction.OPEN_URL to "http://minecraft-heads.com"
                 }
                 hover {
                     text {
@@ -99,7 +102,7 @@ class GUIServiceImpl @Inject constructor(
                     }
                 }
                 clickAction {
-                    ChatClickAction.OPEN_URL to "http://minecraft-heads.com/custom/heads-generator"
+                    com.github.shynixn.petblocks.api.legacy.business.enumeration.ChatClickAction.OPEN_URL to "http://minecraft-heads.com/custom/heads-generator"
                 }
                 hover {
                     text {
@@ -115,7 +118,7 @@ class GUIServiceImpl @Inject constructor(
                     }
                 }
                 clickAction {
-                    ChatClickAction.OPEN_URL to "http://minecraft-heads.com/forum/suggesthead"
+                    com.github.shynixn.petblocks.api.legacy.business.enumeration.ChatClickAction.OPEN_URL to "http://minecraft-heads.com/forum/suggesthead"
                 }
                 hover {
                     text {
@@ -136,7 +139,7 @@ class GUIServiceImpl @Inject constructor(
                     Messages.customHeadSuggestClickable
                 }
                 clickAction {
-                    ChatClickAction.SUGGEST_COMMAND to "/" + configurationService.findValue("commands.petblock.command") + " skin "
+                    com.github.shynixn.petblocks.api.legacy.business.enumeration.ChatClickAction.SUGGEST_COMMAND to "/" + configurationService.findValue("commands.petblock.command") + " skin "
                 }
                 hover {
                     text {
@@ -160,7 +163,7 @@ class GUIServiceImpl @Inject constructor(
                     Messages.renameSuggestClickable
                 }
                 clickAction {
-                    ChatClickAction.SUGGEST_COMMAND to "/" + configurationService.findValue("commands.petblock.command") + " rename "
+                    com.github.shynixn.petblocks.api.legacy.business.enumeration.ChatClickAction.SUGGEST_COMMAND to "/" + configurationService.findValue("commands.petblock.command") + " rename "
                 }
                 hover {
                     text {
@@ -214,7 +217,7 @@ class GUIServiceImpl @Inject constructor(
         }
 
         if (placeHolderService == null && dependencyService.isInstalled(PluginDependency.PLACEHOLDERAPI)) {
-            placeHolderService = PetBlocksApi.resolve(DependencyPlaceholderApiService::class.java)
+            placeHolderService = OldPetBlocksApi.resolve(DependencyPlaceholderApiService::class.java)
         }
 
         proxyService.closeInventory(player)

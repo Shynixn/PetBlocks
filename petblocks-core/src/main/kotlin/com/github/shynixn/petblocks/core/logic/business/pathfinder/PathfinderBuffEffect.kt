@@ -1,12 +1,12 @@
 package com.github.shynixn.petblocks.core.logic.business.pathfinder
 
-import com.github.shynixn.petblocks.api.PetBlocksApi
-import com.github.shynixn.petblocks.api.business.proxy.PetProxy
-import com.github.shynixn.petblocks.api.business.service.LoggingService
-import com.github.shynixn.petblocks.api.business.service.ParticleService
-import com.github.shynixn.petblocks.api.business.service.ProxyService
-import com.github.shynixn.petblocks.api.business.service.SoundService
-import com.github.shynixn.petblocks.api.persistence.entity.AIBuffEffect
+import com.github.shynixn.petblocks.api.legacy.OldPetBlocksApi
+import com.github.shynixn.petblocks.api.legacy.business.proxy.PetProxy
+import com.github.shynixn.petblocks.api.legacy.business.service.LoggingService
+import com.github.shynixn.petblocks.api.legacy.business.service.ParticleService
+import com.github.shynixn.petblocks.api.legacy.business.service.ProxyService
+import com.github.shynixn.petblocks.api.legacy.business.service.SoundService
+import com.github.shynixn.petblocks.api.legacy.persistence.entity.AIBuffEffect
 
 /**
  * Created by Shynixn 2019.
@@ -36,10 +36,10 @@ import com.github.shynixn.petblocks.api.persistence.entity.AIBuffEffect
  * SOFTWARE.
  */
 class PathfinderBuffEffect(private val aiBuffEffect: AIBuffEffect, private val pet: PetProxy) : BasePathfinder(aiBuffEffect) {
-    private val loggingService = PetBlocksApi.resolve(LoggingService::class.java)
-    private val proxyService = PetBlocksApi.resolve(ProxyService::class.java)
-    private val particleService = PetBlocksApi.resolve(ParticleService::class.java)
-    private val soundService = PetBlocksApi.resolve(SoundService::class.java)
+    private val loggingService = OldPetBlocksApi.resolve(LoggingService::class.java)
+    private val proxyService = OldPetBlocksApi.resolve(ProxyService::class.java)
+    private val particleService = OldPetBlocksApi.resolve(ParticleService::class.java)
+    private val soundService = OldPetBlocksApi.resolve(SoundService::class.java)
 
     private var lastPlay = System.currentTimeMillis()
 

@@ -1,6 +1,6 @@
 package helper
 
-import com.github.shynixn.petblocks.api.business.service.LoggingService
+import com.github.shynixn.petblocks.api.legacy.business.service.LoggingService
 
 class MockedLoggingService : LoggingService {
     /**

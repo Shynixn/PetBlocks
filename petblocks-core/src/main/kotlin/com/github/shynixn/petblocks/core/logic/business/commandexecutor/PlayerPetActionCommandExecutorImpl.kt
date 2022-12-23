@@ -1,9 +1,9 @@
 package com.github.shynixn.petblocks.core.logic.business.commandexecutor
 
-import com.github.shynixn.petblocks.api.business.command.PlayerCommand
-import com.github.shynixn.petblocks.api.business.enumeration.Permission
-import com.github.shynixn.petblocks.api.business.localization.Messages
-import com.github.shynixn.petblocks.api.business.service.*
+import com.github.shynixn.petblocks.api.legacy.business.command.PlayerCommand
+import com.github.shynixn.petblocks.api.legacy.business.enumeration.Permission
+import com.github.shynixn.petblocks.api.legacy.business.localization.Messages
+import com.github.shynixn.petblocks.api.legacy.business.service.*
 import com.github.shynixn.petblocks.core.logic.business.extension.mergeArgs
 import com.google.inject.Inject
 

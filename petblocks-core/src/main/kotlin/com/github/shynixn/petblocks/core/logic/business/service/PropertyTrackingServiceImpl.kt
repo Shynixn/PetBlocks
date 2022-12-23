@@ -1,6 +1,6 @@
 package com.github.shynixn.petblocks.core.logic.business.service
 
-import com.github.shynixn.petblocks.api.business.service.PropertyTrackingService
+import com.github.shynixn.petblocks.api.legacy.business.service.PropertyTrackingService
 import kotlin.reflect.KProperty
 
 /**

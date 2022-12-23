@@ -1,6 +1,6 @@
 package helper
 
-import com.github.shynixn.petblocks.api.business.service.CoroutineSessionService
+import com.github.shynixn.petblocks.api.legacy.business.service.CoroutineSessionService
 import kotlinx.coroutines.*
 import kotlin.coroutines.CoroutineContext
 

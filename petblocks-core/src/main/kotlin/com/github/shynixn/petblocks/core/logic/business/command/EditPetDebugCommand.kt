@@ -1,7 +1,10 @@
 package com.github.shynixn.petblocks.core.logic.business.command
 
-import com.github.shynixn.petblocks.api.business.command.SourceCommand
-import com.github.shynixn.petblocks.api.business.service.*
+import com.github.shynixn.petblocks.api.legacy.business.command.SourceCommand
+import com.github.shynixn.petblocks.api.legacy.business.service.CommandService
+import com.github.shynixn.petblocks.api.legacy.business.service.MessageService
+import com.github.shynixn.petblocks.api.legacy.business.service.PetDebugService
+import com.github.shynixn.petblocks.api.legacy.business.service.ProxyService
 import com.google.inject.Inject
 
 /**

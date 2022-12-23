@@ -2,8 +2,7 @@
 
 package com.github.shynixn.petblocks.core.logic.persistence.entity
 
-import com.github.shynixn.petblocks.api.persistence.entity.GuiPlayerCache
-import com.github.shynixn.petblocks.api.persistence.entity.PetMeta
+import com.github.shynixn.petblocks.api.legacy.persistence.entity.GuiPlayerCache
 
 /**
  * Created by Shynixn 2018.

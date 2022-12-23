@@ -1,8 +1,8 @@
 package com.github.shynixn.petblocks.core.logic.business.service
 
-import com.github.shynixn.petblocks.api.business.proxy.PetProxy
-import com.github.shynixn.petblocks.api.business.service.*
-import com.github.shynixn.petblocks.api.persistence.entity.AIFeeding
+import com.github.shynixn.petblocks.api.legacy.business.proxy.PetProxy
+import com.github.shynixn.petblocks.api.legacy.business.service.*
+import com.github.shynixn.petblocks.api.legacy.persistence.entity.AIFeeding
 import com.github.shynixn.petblocks.core.logic.business.extension.sync
 import com.github.shynixn.petblocks.core.logic.persistence.entity.PositionEntity
 import com.google.inject.Inject

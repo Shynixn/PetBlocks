@@ -2,14 +2,14 @@
 
 package com.github.shynixn.petblocks.core.logic.persistence.repository
 
-import com.github.shynixn.petblocks.api.business.service.AIService
-import com.github.shynixn.petblocks.api.business.service.ConfigurationService
-import com.github.shynixn.petblocks.api.business.service.GUIItemLoadService
-import com.github.shynixn.petblocks.api.persistence.context.SqlDbContext
-import com.github.shynixn.petblocks.api.persistence.entity.AIBase
-import com.github.shynixn.petblocks.api.persistence.entity.AIInventory
-import com.github.shynixn.petblocks.api.persistence.entity.PetMeta
-import com.github.shynixn.petblocks.api.persistence.repository.PetMetaRepository
+import com.github.shynixn.petblocks.api.legacy.business.service.AIService
+import com.github.shynixn.petblocks.api.legacy.business.service.ConfigurationService
+import com.github.shynixn.petblocks.api.legacy.business.service.GUIItemLoadService
+import com.github.shynixn.petblocks.api.legacy.persistence.context.SqlDbContext
+import com.github.shynixn.petblocks.api.legacy.persistence.entity.AIBase
+import com.github.shynixn.petblocks.api.legacy.persistence.entity.AIInventory
+import com.github.shynixn.petblocks.api.legacy.persistence.entity.PetMeta
+import com.github.shynixn.petblocks.api.legacy.persistence.repository.PetMetaRepository
 import com.github.shynixn.petblocks.core.logic.business.extension.getItem
 import com.github.shynixn.petblocks.core.logic.persistence.entity.AIInventoryEntity
 import com.github.shynixn.petblocks.core.logic.persistence.entity.PetMetaEntity

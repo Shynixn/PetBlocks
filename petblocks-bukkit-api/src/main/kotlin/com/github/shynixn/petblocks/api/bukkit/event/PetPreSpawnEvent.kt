@@ -1,6 +1,6 @@
 package com.github.shynixn.petblocks.api.bukkit.event
 
-import com.github.shynixn.petblocks.api.persistence.entity.PetMeta
+import com.github.shynixn.petblocks.api.legacy.persistence.entity.PetMeta
 import org.bukkit.entity.Player
 
 /**

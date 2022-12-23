@@ -155,7 +155,7 @@ implements <a href="../../../../../../../../com/github/shynixn/petblocks/api/bus
 <ul class="blockList">
 <li class="blockList">
 <h4>getCache</h4>
-<pre>public&nbsp;java.util.List&lt;com.github.shynixn.petblocks.api.persistence.entity.PetMeta&gt;&nbsp;getCache()</pre>
+<pre>public&nbsp;java.util.List&lt;com.github.shynixn.petblocks.api.legacy.PetMeta&gt;&nbsp;getCache()</pre>
 <div class="block"><p><p>Gets all currently loaded pet metas.</p></p></div>
 </li>
 </ul>
@@ -211,7 +211,7 @@ As not all PetMeta data is available during runtime this call completes in the f
 <ul class="blockList">
 <li class="blockList">
 <h4>refreshPetMetaFromRepository</h4>
-<pre>public&nbsp;&lt;P&gt;&nbsp;java.util.concurrent.CompletableFuture&lt;com.github.shynixn.petblocks.api.persistence.entity.PetMeta&gt;&nbsp;refreshPetMetaFromRepository(P&nbsp;player)</pre>
+<pre>public&nbsp;&lt;P&gt;&nbsp;java.util.concurrent.CompletableFuture&lt;com.github.shynixn.petblocks.api.legacy.PetMeta&gt;&nbsp;refreshPetMetaFromRepository(P&nbsp;player)</pre>
 <div class="block"><p><p>Gets or creates petMeta from the player.
 Should only be called once a player joins the server.</p></p></div>
 </li>
@@ -232,7 +232,7 @@ Should only be called once a player joins the server.</p></p></div>
 <ul class="blockListLast">
 <li class="blockList">
 <h4>save</h4>
-<pre>public&nbsp;java.util.concurrent.CompletableFuture&lt;com.github.shynixn.petblocks.api.persistence.entity.PetMeta&gt;&nbsp;save(<a href="../../../../../../../../com/github/shynixn/petblocks/api/persistence/entity/PetMeta.html" title="type parameter in PetMeta">PetMeta</a>&nbsp;petMeta)</pre>
+<pre>public&nbsp;java.util.concurrent.CompletableFuture&lt;com.github.shynixn.petblocks.api.legacy.PetMeta&gt;&nbsp;save(<a href="../../../../../../../../com/github/shynixn/petblocks/api/persistence/entity/PetMeta.html" title="type parameter in PetMeta">PetMeta</a>&nbsp;petMeta)</pre>
 <div class="block"><p><p>Saves the given <a href="../../../../../../../../com/github/shynixn/petblocks/core/logic/business/service/PersistencePetMetaServiceImpl.html#save-petMeta-"><code>petMeta</code></a> instance and returns a future.</p></p></div>
 <dl>
 <dt><span class="seeLabel">See Also:</span></dt>

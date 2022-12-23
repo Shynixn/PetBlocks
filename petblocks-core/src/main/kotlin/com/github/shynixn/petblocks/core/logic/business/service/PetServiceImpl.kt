@@ -1,9 +1,9 @@
 package com.github.shynixn.petblocks.core.logic.business.service
 
-import com.github.shynixn.petblocks.api.business.enumeration.Permission
-import com.github.shynixn.petblocks.api.business.proxy.PetProxy
-import com.github.shynixn.petblocks.api.business.service.*
-import com.github.shynixn.petblocks.api.persistence.entity.Position
+import com.github.shynixn.petblocks.api.legacy.business.enumeration.Permission
+import com.github.shynixn.petblocks.api.legacy.business.proxy.PetProxy
+import com.github.shynixn.petblocks.api.legacy.business.service.*
+import com.github.shynixn.petblocks.api.legacy.persistence.entity.Position
 import com.github.shynixn.petblocks.core.logic.persistence.entity.PetPostSpawnEntity
 import com.github.shynixn.petblocks.core.logic.persistence.entity.PetPreSpawnEntity
 import com.google.inject.Inject

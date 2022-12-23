@@ -1,10 +1,10 @@
 package com.github.shynixn.petblocks.core.logic.business.service
 
-import com.github.shynixn.petblocks.api.business.enumeration.MaterialType
-import com.github.shynixn.petblocks.api.business.localization.Messages
-import com.github.shynixn.petblocks.api.business.service.*
-import com.github.shynixn.petblocks.api.persistence.entity.AIInventory
-import com.github.shynixn.petblocks.api.persistence.entity.PetMeta
+import com.github.shynixn.petblocks.api.legacy.business.enumeration.MaterialType
+import com.github.shynixn.petblocks.api.legacy.business.localization.Messages
+import com.github.shynixn.petblocks.api.legacy.business.service.*
+import com.github.shynixn.petblocks.api.legacy.persistence.entity.AIInventory
+import com.github.shynixn.petblocks.api.legacy.persistence.entity.PetMeta
 import com.github.shynixn.petblocks.core.logic.persistence.entity.ItemEntity
 import com.github.shynixn.petblocks.core.logic.persistence.entity.StorageInventoryCache
 import com.google.inject.Inject

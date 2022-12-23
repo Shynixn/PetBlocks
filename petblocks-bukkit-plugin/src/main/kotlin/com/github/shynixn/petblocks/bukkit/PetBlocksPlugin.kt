@@ -12,7 +12,7 @@ import com.github.shynixn.mcutils.database.api.PlayerDataRepository
 import com.github.shynixn.mcutils.database.api.SqlConnectionService
 import com.github.shynixn.petblocks.bukkit.contract.PetService
 import com.github.shynixn.petblocks.bukkit.contract.PetTemplateRepository
-import com.github.shynixn.petblocks.bukkit.impl.command.PetBlocksCommandExecutor
+import com.github.shynixn.petblocks.bukkit.impl.commandexecutor.PetBlocksCommandExecutor
 import com.github.shynixn.petblocks.bukkit.impl.listener.PetListener
 import com.google.inject.Guice
 import com.google.inject.Injector

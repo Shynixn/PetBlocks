@@ -2,7 +2,7 @@
 
 package unittest
 
-import com.github.shynixn.petblocks.api.business.enumeration.ChatColor
+import com.github.shynixn.petblocks.api.legacy.business.enumeration.ChatColor
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 

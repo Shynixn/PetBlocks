@@ -2,10 +2,10 @@
 
 package com.github.shynixn.petblocks.core.logic.business.service
 
-import com.github.shynixn.petblocks.api.business.enumeration.AIType
-import com.github.shynixn.petblocks.api.business.enumeration.MaterialType
-import com.github.shynixn.petblocks.api.business.service.*
-import com.github.shynixn.petblocks.api.persistence.entity.AICarry
+import com.github.shynixn.petblocks.api.legacy.business.enumeration.AIType
+import com.github.shynixn.petblocks.api.legacy.business.enumeration.MaterialType
+import com.github.shynixn.petblocks.api.legacy.business.service.*
+import com.github.shynixn.petblocks.api.legacy.persistence.entity.AICarry
 import com.github.shynixn.petblocks.core.logic.business.extension.sync
 import com.google.inject.Inject
 
@@ -68,7 +68,8 @@ class CarryPetServiceImpl @Inject constructor(
 
         val itemInHand = proxyService.getPlayerItemInHand<P, Any>(player, true)
 
-        if (itemInHand == null || itemTypeService.findItemType<Any>(itemInHand) ==  itemTypeService.findItemType(MaterialType.AIR)) {
+        if (itemInHand == null || itemTypeService.findItemType<Any>(itemInHand) ==  itemTypeService.findItemType(
+                MaterialType.AIR)) {
             val cachePet = pet.getHeadArmorstandItemStack<Any>()
             val playerUUID = proxyService.getPlayerUUID(player)
 

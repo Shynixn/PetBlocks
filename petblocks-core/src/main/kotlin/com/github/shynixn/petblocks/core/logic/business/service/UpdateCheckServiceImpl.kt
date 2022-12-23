@@ -1,11 +1,11 @@
 package com.github.shynixn.petblocks.core.logic.business.service
 
-import com.github.shynixn.petblocks.api.business.enumeration.ChatColor
-import com.github.shynixn.petblocks.api.business.proxy.PluginProxy
-import com.github.shynixn.petblocks.api.business.service.ConcurrencyService
-import com.github.shynixn.petblocks.api.business.service.LoggingService
-import com.github.shynixn.petblocks.api.business.service.MessageService
-import com.github.shynixn.petblocks.api.business.service.UpdateCheckService
+import com.github.shynixn.petblocks.api.legacy.business.enumeration.ChatColor
+import com.github.shynixn.petblocks.api.legacy.business.proxy.PluginProxy
+import com.github.shynixn.petblocks.api.legacy.business.service.ConcurrencyService
+import com.github.shynixn.petblocks.api.legacy.business.service.LoggingService
+import com.github.shynixn.petblocks.api.legacy.business.service.MessageService
+import com.github.shynixn.petblocks.api.legacy.business.service.UpdateCheckService
 import com.github.shynixn.petblocks.core.logic.business.extension.async
 import com.google.inject.Inject
 import java.io.BufferedReader

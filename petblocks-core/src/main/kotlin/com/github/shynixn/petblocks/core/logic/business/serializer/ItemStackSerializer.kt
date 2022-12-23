@@ -2,9 +2,9 @@
 
 package com.github.shynixn.petblocks.core.logic.business.serializer
 
-import com.github.shynixn.petblocks.api.PetBlocksApi
-import com.github.shynixn.petblocks.api.business.serializer.ItemStackSerializer
-import com.github.shynixn.petblocks.api.business.serializer.YamlSerializer
+import com.github.shynixn.petblocks.api.legacy.OldPetBlocksApi
+import com.github.shynixn.petblocks.api.legacy.business.serializer.ItemStackSerializer
+import com.github.shynixn.petblocks.api.legacy.business.serializer.YamlSerializer
 
 /**
  * Created by Shynixn 2019.
@@ -38,13 +38,13 @@ class ItemStackSerializer : YamlSerializer<Any, Map<String, Any?>> {
      * Gets called on serialization.
      */
     override fun onSerialization(item: Any): Map<String, Any?> {
-        return PetBlocksApi.resolve(ItemStackSerializer::class.java).onSerialization(item) as Map<String, Any?>
+        return OldPetBlocksApi.resolve(ItemStackSerializer::class.java).onSerialization(item) as Map<String, Any?>
     }
 
     /**
      * Gets called on Deserialization.
      */
     override fun onDeserialization(item: Map<String, Any?>): Any {
-        return PetBlocksApi.resolve(ItemStackSerializer::class.java).onDeserialization(item)
+        return OldPetBlocksApi.resolve(ItemStackSerializer::class.java).onDeserialization(item)
     }
 }

@@ -2,9 +2,9 @@
 
 package unittest
 
-import com.github.shynixn.petblocks.api.PetBlocksApi
-import com.github.shynixn.petblocks.api.business.enumeration.Version
-import com.github.shynixn.petblocks.api.business.proxy.PluginProxy
+import com.github.shynixn.petblocks.api.legacy.OldPetBlocksApi
+import com.github.shynixn.petblocks.api.legacy.business.enumeration.Version
+import com.github.shynixn.petblocks.api.legacy.business.proxy.PluginProxy
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 
@@ -79,15 +79,15 @@ class PetBlocksApiTest {
     }
 
     companion object {
-        fun createWithDependencies(proxy: PluginProxy? = null): PetBlocksApi {
+        fun createWithDependencies(proxy: PluginProxy? = null): OldPetBlocksApi {
             var internalProxy = proxy
 
             if (internalProxy == null) {
                 internalProxy = MockedPluginProxy()
             }
 
-            val petblocksApi = PetBlocksApi
-            val method = PetBlocksApi::class.java.getDeclaredMethod("initializePetBlocks", PluginProxy::class.java)
+            val petblocksApi = OldPetBlocksApi
+            val method = OldPetBlocksApi::class.java.getDeclaredMethod("initializePetBlocks", PluginProxy::class.java)
             method.isAccessible = true
             method.invoke(petblocksApi, internalProxy)
             return petblocksApi

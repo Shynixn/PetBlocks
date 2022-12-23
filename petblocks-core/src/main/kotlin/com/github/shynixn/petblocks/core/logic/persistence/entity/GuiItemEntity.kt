@@ -1,9 +1,9 @@
 package com.github.shynixn.petblocks.core.logic.persistence.entity
 
-import com.github.shynixn.petblocks.api.persistence.entity.AIBase
-import com.github.shynixn.petblocks.api.persistence.entity.GuiIcon
-import com.github.shynixn.petblocks.api.persistence.entity.GuiItem
-import com.github.shynixn.petblocks.api.persistence.entity.Skin
+import com.github.shynixn.petblocks.api.legacy.persistence.entity.AIBase
+import com.github.shynixn.petblocks.api.legacy.persistence.entity.GuiIcon
+import com.github.shynixn.petblocks.api.legacy.persistence.entity.GuiItem
+import com.github.shynixn.petblocks.api.legacy.persistence.entity.Skin
 
 /**
  * Created by Shynixn 2018.

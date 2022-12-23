@@ -3,9 +3,9 @@ package com.github.shynixn.petblocks.core.logic.persistence.repository
 import com.fasterxml.jackson.core.JsonFactory
 import com.fasterxml.jackson.core.type.TypeReference
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.github.shynixn.petblocks.api.business.service.CoroutineSessionService
-import com.github.shynixn.petblocks.api.business.service.ProxyService
-import com.github.shynixn.petblocks.api.persistence.context.SqlContext
+import com.github.shynixn.petblocks.api.legacy.business.service.CoroutineSessionService
+import com.github.shynixn.petblocks.api.legacy.business.service.ProxyService
+import com.github.shynixn.petblocks.api.legacy.persistence.context.SqlContext
 import com.github.shynixn.petblocks.core.logic.persistence.entity.PlayerDataEntity
 import com.google.inject.Inject
 import kotlinx.coroutines.*

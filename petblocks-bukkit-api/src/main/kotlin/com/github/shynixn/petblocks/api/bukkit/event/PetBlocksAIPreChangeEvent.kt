@@ -1,6 +1,6 @@
 package com.github.shynixn.petblocks.api.bukkit.event
 
-import com.github.shynixn.petblocks.api.business.proxy.PetProxy
+import com.github.shynixn.petblocks.api.legacy.business.proxy.PetProxy
 import org.bukkit.entity.Player
 
 /**

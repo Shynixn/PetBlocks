@@ -1,9 +1,9 @@
 package com.github.shynixn.petblocks.core.logic.business.service
 
-import com.github.shynixn.petblocks.api.business.service.*
-import com.github.shynixn.petblocks.api.persistence.entity.AIBase
-import com.github.shynixn.petblocks.api.persistence.entity.PetMeta
-import com.github.shynixn.petblocks.api.persistence.repository.PetMetaRepository
+import com.github.shynixn.petblocks.api.legacy.business.service.*
+import com.github.shynixn.petblocks.api.legacy.persistence.entity.AIBase
+import com.github.shynixn.petblocks.api.legacy.persistence.entity.PetMeta
+import com.github.shynixn.petblocks.api.legacy.persistence.repository.PetMetaRepository
 import com.github.shynixn.petblocks.core.logic.business.extension.async
 import com.github.shynixn.petblocks.core.logic.business.extension.sync
 import com.github.shynixn.petblocks.core.logic.business.extension.thenAcceptSafely

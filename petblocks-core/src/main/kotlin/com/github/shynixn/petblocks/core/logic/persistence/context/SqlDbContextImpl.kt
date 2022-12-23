@@ -2,9 +2,9 @@
 
 package com.github.shynixn.petblocks.core.logic.persistence.context
 
-import com.github.shynixn.petblocks.api.business.service.ConfigurationService
-import com.github.shynixn.petblocks.api.business.service.LoggingService
-import com.github.shynixn.petblocks.api.persistence.context.SqlDbContext
+import com.github.shynixn.petblocks.api.legacy.business.service.ConfigurationService
+import com.github.shynixn.petblocks.api.legacy.business.service.LoggingService
+import com.github.shynixn.petblocks.api.legacy.persistence.context.SqlDbContext
 import com.github.shynixn.petblocks.core.logic.business.extension.isBukkitServer
 import com.google.inject.Inject
 import com.zaxxer.hikari.HikariConfig
