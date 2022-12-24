@@ -1,20 +1,23 @@
 package com.github.shynixn.petblocks.bukkit.impl
 
+import com.github.shynixn.mccoroutine.bukkit.launch
 import com.github.shynixn.mcutils.common.toLocation
 import com.github.shynixn.mcutils.common.toVector3d
 import com.github.shynixn.mcutils.common.translateChatColors
 import com.github.shynixn.petblocks.bukkit.contract.Pet
-import com.github.shynixn.petblocks.bukkit.contract.PetActionExecutionService
 import com.github.shynixn.petblocks.bukkit.contract.PetEntityFactory
+import com.github.shynixn.petblocks.bukkit.entity.Permission
 import com.github.shynixn.petblocks.bukkit.entity.PetMeta
 import com.github.shynixn.petblocks.bukkit.entity.PetTemplate
 import com.github.shynixn.petblocks.bukkit.entity.PetVisibility
 import com.github.shynixn.petblocks.bukkit.event.PetRemoveEvent
 import com.github.shynixn.petblocks.bukkit.event.PetSpawnEvent
 import com.github.shynixn.petblocks.bukkit.exception.PetBlocksPetDisposedException
+import kotlinx.coroutines.delay
 import org.bukkit.Bukkit
 import org.bukkit.Location
 import org.bukkit.entity.Player
+import org.bukkit.plugin.Plugin
 
 /**
  * A facade to handle a single pet.
@@ -26,10 +29,25 @@ class PetImpl(
     private var playerParam: Player?,
     private val petMeta: PetMeta,
     private val template: PetTemplate,
-    private val petEntityFactory: PetEntityFactory
+    private val petEntityFactory: PetEntityFactory,
+    plugin: Plugin
 ) : Pet {
     private var petEntity: PetEntityImpl? = null
     private var disposed = false
+
+    init {
+        plugin.launch {
+            // Remove pet if the player does not have any spawn or call permission.
+            while (!isDisposed) {
+                if (!player.hasPermission(Permission.SPAWN.text) && !player.hasPermission(Permission.CALL.text)) {
+                    petEntity?.remove()
+                    petEntity = null
+                }
+
+                delay(5000)
+            }
+        }
+    }
 
     /**
      * Identifier. Each pet of a player needs to have a unique identifier how to interact with it.

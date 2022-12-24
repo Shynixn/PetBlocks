@@ -11,5 +11,5 @@ class PetSpawnResult(
     /**
      * The newly spawned pet.
      */
-    val pet: Pet
+    val pet: Pet?
 )

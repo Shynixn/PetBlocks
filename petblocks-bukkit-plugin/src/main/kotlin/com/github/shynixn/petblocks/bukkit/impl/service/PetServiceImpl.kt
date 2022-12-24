@@ -2,18 +2,20 @@ package com.github.shynixn.petblocks.bukkit.impl.service
 
 import com.github.shynixn.mccoroutine.bukkit.scope
 import com.github.shynixn.mcutils.database.api.PlayerDataRepository
-import com.github.shynixn.petblocks.bukkit.contract.*
+import com.github.shynixn.petblocks.bukkit.contract.Pet
+import com.github.shynixn.petblocks.bukkit.contract.PetEntityFactory
+import com.github.shynixn.petblocks.bukkit.contract.PetService
+import com.github.shynixn.petblocks.bukkit.contract.PetTemplateRepository
 import com.github.shynixn.petblocks.bukkit.entity.*
+import com.github.shynixn.petblocks.bukkit.event.PetSpawnEvent
 import com.github.shynixn.petblocks.bukkit.impl.PetImpl
 import com.google.inject.Inject
 import kotlinx.coroutines.future.future
+import org.bukkit.Bukkit
 import org.bukkit.Location
 import org.bukkit.entity.Player
 import org.bukkit.plugin.Plugin
-import java.util.*
 import java.util.concurrent.CompletionStage
-import kotlin.collections.ArrayList
-import kotlin.collections.HashMap
 
 class PetServiceImpl @Inject constructor(
     private val petMetaRepository: PlayerDataRepository<PlayerInformation>,
@@ -120,7 +122,12 @@ class PetServiceImpl @Inject constructor(
             cache[player] = arrayListOf()
         }
 
-        // TODO: Add PetSpawnEvent here.
+        val petSpawnEvent = PetSpawnEvent(pet)
+        Bukkit.getPluginManager().callEvent(petSpawnEvent)
+
+        if (petSpawnEvent.isCancelled){
+            return PetSpawnResult(PetSpawnResultType.EVENT_CANCELLED,null)
+        }
 
         // Retrieve existing stored pets and add petMeta to it.
         var playerInformation = petMetaRepository.getByPlayer(player)
@@ -172,7 +179,7 @@ class PetServiceImpl @Inject constructor(
      * Creates a new pet instance.
      */
     private fun createPetInstance(player: Player, petMeta: PetMeta, petTemplate: PetTemplate): Pet {
-        val pet = PetImpl(player, petMeta, petTemplate, petEntityFactory)
+        val pet = PetImpl(player, petMeta, petTemplate, petEntityFactory, plugin)
         return pet
     }
 }

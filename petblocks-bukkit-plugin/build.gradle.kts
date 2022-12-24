@@ -22,6 +22,7 @@ repositories {
     maven("https://jitpack.io")
     maven("https://repo.extendedclip.com/content/repositories/placeholderapi")
     maven("https://shynixn.github.io/m2/repository/mcutils")
+    maven("https://hub.spigotmc.org/nexus/content/repositories/snapshots/")
 }
 
 dependencies {
@@ -46,6 +47,6 @@ dependencies {
     implementation("com.github.shynixn.mcutils:physic:1.0.17")
 
     testImplementation(kotlin("test"))
-    testImplementation("org.spigotmc:spigot-api:1.18.2-R0.1-SNAPSHOT")
+    testImplementation("org.spigotmc:spigot-api:1.19.3-R0.1-SNAPSHOT")
     testImplementation("org.mockito:mockito-core:2.23.0")
 }

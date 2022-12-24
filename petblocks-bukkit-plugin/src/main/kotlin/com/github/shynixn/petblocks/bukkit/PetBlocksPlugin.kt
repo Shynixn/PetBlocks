@@ -22,6 +22,7 @@ import java.util.logging.Level
 class PetBlocksPlugin : SuspendingJavaPlugin() {
     companion object {
         val prefix: String = ChatColor.BLUE.toString() + "[PetBlocks] " + ChatColor.WHITE
+        val languageFiles = arrayListOf("en_us")
     }
 
     private var injector: Injector? = null
@@ -65,7 +66,7 @@ class PetBlocksPlugin : SuspendingJavaPlugin() {
         mcTennisCommand.setSuspendingTabCompleter(petBlocksCommandExecutor)
 
         val language = configurationService.findValue<String>("language")
-        this.reloadTranslation(language, PetBlocksLanguage::class.java, "en_us")
+        this.reloadTranslation(language, PetBlocksLanguage::class.java, *languageFiles.toTypedArray())
         logger.log(Level.INFO, "Loaded language file $language.properties.")
 
         val sqlConnectionService = resolve(SqlConnectionService::class.java)
