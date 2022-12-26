@@ -11,5 +11,6 @@ enum class Permission(val text: String) {
     DISPLAYNAME("petblocks.pet.displayName"),
     SPAWN("petblocks.pet.spawn"),
     DESPAWN("petblocks.pet.despawn"),
-    VISIBILITY("petblocks.pet.visibility")
+    VISIBILITY("petblocks.pet.visibility"),
+    SKIN("petblocks.pet.skin")
 }

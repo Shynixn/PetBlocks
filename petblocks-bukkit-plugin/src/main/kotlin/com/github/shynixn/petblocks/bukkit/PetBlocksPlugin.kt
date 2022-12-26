@@ -98,7 +98,7 @@ class PetBlocksPlugin : SuspendingJavaPlugin() {
      * All types in the service package can be accessed.
      * Throws a [IllegalArgumentException] if the service could not be found.
      */
-    private fun <S> resolve(service: Class<S>): S {
+    fun <S> resolve(service: Class<S>): S {
         try {
             return this.injector!!.getBinding(service).provider.get() as S
         } catch (e: Exception) {

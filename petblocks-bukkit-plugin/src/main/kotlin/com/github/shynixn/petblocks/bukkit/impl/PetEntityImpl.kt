@@ -5,6 +5,8 @@ import com.github.shynixn.mccoroutine.bukkit.launch
 import com.github.shynixn.mccoroutine.bukkit.minecraftDispatcher
 import com.github.shynixn.mccoroutine.bukkit.ticks
 import com.github.shynixn.mcutils.common.Vector3d
+import com.github.shynixn.mcutils.packet.api.ArmorSlotType
+import com.github.shynixn.mcutils.packet.api.packetOutEntityEquipment
 import com.github.shynixn.mcutils.packet.api.packetOutEntityMetadata
 import com.github.shynixn.mcutils.packet.api.sendPacket
 import com.github.shynixn.mcutils.physicobject.api.PhysicObject
@@ -13,11 +15,14 @@ import com.github.shynixn.mcutils.physicobject.api.component.MathComponent
 import com.github.shynixn.mcutils.physicobject.api.component.PlayerComponent
 import com.github.shynixn.petblocks.bukkit.contract.Pet
 import com.github.shynixn.petblocks.bukkit.contract.PetActionExecutionService
+import com.github.shynixn.petblocks.bukkit.entity.PetMeta
+import com.github.shynixn.petblocks.bukkit.entity.PetRidingState
 import com.github.shynixn.petblocks.bukkit.entity.PetTemplate
 import com.github.shynixn.petblocks.bukkit.entity.PetVisibility
 import kotlinx.coroutines.delay
 import org.bukkit.Location
 import org.bukkit.entity.Player
+import org.bukkit.inventory.ItemStack
 import org.bukkit.plugin.Plugin
 
 class PetEntityImpl(
@@ -27,7 +32,8 @@ class PetEntityImpl(
     plugin: Plugin,
     private val petActionExecutionService: PetActionExecutionService,
     private val pet: Pet,
-    private val template: PetTemplate
+    private val template: PetTemplate,
+    private val petMeta: PetMeta
 ) : PhysicObject {
     private var currentLocation = Vector3d()
 
@@ -101,6 +107,42 @@ class PetEntityImpl(
             player.sendPacket(packetOutEntityMetadata {
                 this.customname = name
             })
+        }
+    }
+
+    /**
+     * Updates the head Itemstack.
+     */
+    fun updateHeadItemStack(itemStack: ItemStack){
+        for (player in playerComponent.visiblePlayers) {
+            player.sendPacket(packetOutEntityEquipment {
+                this.entityId = entityId
+                this.slot = ArmorSlotType.HELMET
+                this.itemStack = itemStack
+            })
+        }
+    }
+
+    /**
+     * Updates the riding state of the player.
+     */
+    fun updateRidingState(owner : Player) {
+        for (player in playerComponent.visiblePlayers) {
+            if (petMeta.visibility == PetVisibility.OWNER && player != owner) {
+                continue
+            }
+
+            if(petMeta.ridingState == PetRidingState.NO){
+                // Send Unmount Packet.
+            }
+
+            if (petMeta.ridingState == PetRidingState.HAT) {
+                // Send Hat Packet
+            }
+
+            if (petMeta.ridingState == PetRidingState.GROUND || petMeta.ridingState == PetRidingState.FLY) {
+                // Send Ground Packet
+            }
         }
     }
 

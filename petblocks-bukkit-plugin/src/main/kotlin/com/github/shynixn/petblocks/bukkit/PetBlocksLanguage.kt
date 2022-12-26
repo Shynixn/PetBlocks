@@ -27,4 +27,8 @@ object PetBlocksLanguage {
     var visibilityNotFoundMessage = "Visibility with name %s does not exist."
 
     var petVisibilityChangedMessage = "The visibility of pet %s has been changed."
+
+    var petSkinTypeChanged = "The skinType of pet %s has been changed."
+
+    var petSkinNbtChanged = "The nbt of pet %s has been changed."
 }

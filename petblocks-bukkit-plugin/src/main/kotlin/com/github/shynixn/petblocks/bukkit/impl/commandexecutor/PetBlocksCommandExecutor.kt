@@ -21,7 +21,6 @@ import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 import org.bukkit.plugin.Plugin
 import java.util.*
-import kotlin.collections.ArrayList
 
 class PetBlocksCommandExecutor @Inject constructor(
     private val petService: PetService,
@@ -42,6 +41,8 @@ class PetBlocksCommandExecutor @Inject constructor(
             "/petblocks displayName <name> <displayName> [player]"
         ),
         CommandDefinition("visibility", Permission.VISIBILITY, "/petblocks visibility <name> <visibility> [player]"),
+        CommandDefinition("skintype", Permission.SKIN, "/petblocks skintype <name> <material> [player]"),
+        CommandDefinition("skinnbt", Permission.SKIN, "/petblocks skinnbt <name> <nbt> [player]"),
         CommandDefinition("reload", Permission.CREATE, "/petblocks reload")
     )
 
@@ -191,6 +192,42 @@ class PetBlocksCommandExecutor @Inject constructor(
             return true
         }
 
+        if (args.size >= 3 && sender.hasPermission(Permission.SKIN) && args[0].equals("skintype", true)) {
+            val petName = args[1]
+            val skinType = args[2]
+            val player =
+                findPlayer(sender, 3, args) ?: throw PetBlocksException(PetBlocksLanguage.playerNotFoundMessage)
+            val pet =
+                findPetFromPlayer(player, petName)
+                    ?: throw PetBlocksException(String.format(PetBlocksLanguage.petNotFoundMessage, petName))
+
+            pet.headItem.typeName = skinType
+            sender.sendMessage(
+                String.format(
+                    PetBlocksLanguage.petSkinTypeChanged,
+                    petName
+                )
+            )
+        }
+
+        if (args.size >= 3 && sender.hasPermission(Permission.SKIN) && args[0].equals("skinnbt", true)) {
+            val petName = args[1]
+            val skinNbt = args[2]
+            val player =
+                findPlayer(sender, 3, args) ?: throw PetBlocksException(PetBlocksLanguage.playerNotFoundMessage)
+            val pet =
+                findPetFromPlayer(player, petName)
+                    ?: throw PetBlocksException(String.format(PetBlocksLanguage.petNotFoundMessage, petName))
+
+            pet.headItem.nbt = skinNbt
+            sender.sendMessage(
+                String.format(
+                    PetBlocksLanguage.petSkinNbtChanged,
+                    petName
+                )
+            )
+        }
+
         if (args.size == 1 && sender.hasPermission(Permission.RELOAD)) {
             configurationService.reload()
             val language = configurationService.findValue<String>("language")
@@ -237,18 +274,18 @@ class PetBlocksCommandExecutor @Inject constructor(
         }
 
         if (args.size == 2) {
-            if(sender is Player){
+            if (sender is Player) {
                 return petService.getPetsFromPlayer(sender).map { e -> e.name }
             }
 
             return emptyList()
         }
 
-        if(sender.hasPermission(Permission.CREATE) && args[0].equals("create", true)){
+        if (sender.hasPermission(Permission.CREATE) && args[0].equals("create", true)) {
             return templateRepository.getAll().map { e -> e.id }.sortedBy { e -> e }
         }
 
-        if(sender.hasPermission(Permission.VISIBILITY) && args[0].equals("visibility", true)){
+        if (sender.hasPermission(Permission.VISIBILITY) && args[0].equals("visibility", true)) {
             return PetVisibility.values().map { e -> e.name.toFirstLetterUpperCase() }
         }
 

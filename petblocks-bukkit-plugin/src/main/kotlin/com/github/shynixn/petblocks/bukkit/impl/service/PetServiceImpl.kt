@@ -52,18 +52,6 @@ class PetServiceImpl @Inject constructor(
     }
 
     /**
-     * Gets all pets which are currently loaded in memory
-     */
-    override fun getActivePets(): List<Pet> {
-        val allPets = ArrayList<Pet>()
-        for (items in cache.values) {
-            allPets.addAll(items)
-        }
-
-        return allPets
-    }
-
-    /**
      * Gets all the pets a player owns.
      * The pets may or be not be spawned at the moment.
      */

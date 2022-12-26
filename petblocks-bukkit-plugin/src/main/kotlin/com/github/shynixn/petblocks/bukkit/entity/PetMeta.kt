@@ -1,6 +1,7 @@
 package com.github.shynixn.petblocks.bukkit.entity
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
+import com.github.shynixn.mcutils.common.Item
 import com.github.shynixn.mcutils.common.Vector3d
 
 /**
@@ -32,4 +33,14 @@ class PetMeta {
      * Visibility state.
      */
     var visibility: PetVisibility = PetVisibility.ALL
+
+    /**
+     * Riding state.
+     */
+    var ridingState: PetRidingState = PetRidingState.NO
+
+    /**
+     * The item the pet is wearing.
+     */
+    var headItem : Item = Item("HEAD")
 }

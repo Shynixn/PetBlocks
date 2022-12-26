@@ -6,6 +6,7 @@ import com.github.shynixn.mcutils.physicobject.api.PhysicComponent
 import com.github.shynixn.mcutils.physicobject.api.component.MathComponent
 import com.github.shynixn.mcutils.physicobject.api.component.PlayerComponent
 import com.github.shynixn.petblocks.bukkit.entity.PetMeta
+import com.github.shynixn.petblocks.bukkit.entity.PetRidingState
 import com.github.shynixn.petblocks.bukkit.entity.PetVisibility
 import org.bukkit.Location
 import org.bukkit.entity.Player
@@ -52,6 +53,14 @@ class PetArmorstandEntityComponentImpl(
             this.isInvisible = true
             this.isArmorstandSmall = true
         })
+
+        if (petMeta.ridingState == PetRidingState.HAT) {
+
+        }
+
+        if (petMeta.ridingState == PetRidingState.GROUND || petMeta.ridingState == PetRidingState.FLY) {
+
+        }
     }
 
     private fun onPlayerRemove(player: Player) {

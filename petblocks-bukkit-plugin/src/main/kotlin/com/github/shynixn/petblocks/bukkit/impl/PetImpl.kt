@@ -1,15 +1,10 @@
 package com.github.shynixn.petblocks.bukkit.impl
 
 import com.github.shynixn.mccoroutine.bukkit.launch
-import com.github.shynixn.mcutils.common.toLocation
-import com.github.shynixn.mcutils.common.toVector3d
-import com.github.shynixn.mcutils.common.translateChatColors
+import com.github.shynixn.mcutils.common.*
 import com.github.shynixn.petblocks.bukkit.contract.Pet
 import com.github.shynixn.petblocks.bukkit.contract.PetEntityFactory
-import com.github.shynixn.petblocks.bukkit.entity.Permission
-import com.github.shynixn.petblocks.bukkit.entity.PetMeta
-import com.github.shynixn.petblocks.bukkit.entity.PetTemplate
-import com.github.shynixn.petblocks.bukkit.entity.PetVisibility
+import com.github.shynixn.petblocks.bukkit.entity.*
 import com.github.shynixn.petblocks.bukkit.event.PetRemoveEvent
 import com.github.shynixn.petblocks.bukkit.event.PetSpawnEvent
 import com.github.shynixn.petblocks.bukkit.exception.PetBlocksPetDisposedException
@@ -17,6 +12,7 @@ import kotlinx.coroutines.delay
 import org.bukkit.Bukkit
 import org.bukkit.Location
 import org.bukkit.entity.Player
+import org.bukkit.inventory.ItemStack
 import org.bukkit.plugin.Plugin
 
 /**
@@ -143,6 +139,30 @@ class PetImpl(
         }
 
     /**
+     * Gets or sets the itemStack being rendered.
+     */
+    override var headItemStack: ItemStack
+        get() {
+            return petMeta.headItem.toItemStack()
+        }
+        set(value) {
+            petMeta.headItem = value.toItem()
+            petEntity?.updateHeadItemStack(petMeta.headItem.toItemStack())
+        }
+
+    /**
+     * Gets or sets the itemStack in ItemFormat.
+     */
+    override var headItem: Item
+        get() {
+            return petMeta.headItem
+        }
+        set(value) {
+            petMeta.headItem = value
+            petEntity?.updateHeadItemStack(petMeta.headItem.toItemStack())
+        }
+
+    /**
      * Gets if the pet has been disposed. The pet can no longer be used then.
      */
     override val isDisposed: Boolean
@@ -174,7 +194,7 @@ class PetImpl(
 
         if (petEntity == null) {
             petMeta.lastStoredLocation = inFrontOfOwnerPosition
-            petEntity = petEntityFactory.createPetEntity(this, petMeta, template)
+            spawn()
         } else {
             petEntity!!.teleportInWorld(inFrontOfOwnerPosition)
         }
@@ -224,6 +244,88 @@ class PetImpl(
         }
 
         petEntity = petEntityFactory.createPetEntity(this, petMeta, template)
+    }
+
+    /**
+     * Starts riding the pet on the ground.
+     * Spawns the pet if it is not spawned.
+     */
+    override fun ride() {
+        if (isDisposed) {
+            throw PetBlocksPetDisposedException()
+        }
+
+        petMeta.ridingState = PetRidingState.GROUND
+        spawn()
+        petEntity?.updateRidingState(player)
+    }
+
+    /**
+     * Starts flying the pet around.
+     * Spawns the pet if it is not spawned.
+     */
+    override fun fly() {
+        if (isDisposed) {
+            throw PetBlocksPetDisposedException()
+        }
+
+        petMeta.ridingState = PetRidingState.FLY
+        spawn()
+        petEntity?.updateRidingState(player)
+    }
+
+    /**
+     * Starts wearing the pet as a hat.
+     * Spawns the pet if it is not spawned.
+     */
+    override fun hat() {
+        if (isDisposed) {
+            throw PetBlocksPetDisposedException()
+        }
+
+        petMeta.ridingState = PetRidingState.HAT
+        spawn()
+        petEntity?.updateRidingState(player)
+    }
+
+    /**
+     * Stops riding or flying if the pet currently performs it.
+     */
+    override fun umount() {
+        if (isDisposed) {
+            throw PetBlocksPetDisposedException()
+        }
+
+        petMeta.ridingState = PetRidingState.NO
+        petEntity?.updateRidingState(player)
+    }
+
+    /**
+     * Is the owner riding on the pet.
+     */
+    override fun isRiding(): Boolean {
+        return petEntity != null && petMeta.ridingState == PetRidingState.GROUND
+    }
+
+    /**
+     * Is the owner flying on the pet.
+     */
+    override fun isFlying(): Boolean {
+        return petEntity != null && petMeta.ridingState == PetRidingState.FLY
+    }
+
+    /**
+     * Is owner wearing the pet on its head?
+     */
+    override fun isHat(): Boolean {
+        return petEntity != null && petMeta.ridingState == PetRidingState.HAT
+    }
+
+    /**
+     * Is the pet mounted as a hat or is someone riding or flying it?
+     */
+    override fun isMounted(): Boolean {
+        return petEntity != null && petMeta.ridingState != PetRidingState.NO
     }
 
     /**

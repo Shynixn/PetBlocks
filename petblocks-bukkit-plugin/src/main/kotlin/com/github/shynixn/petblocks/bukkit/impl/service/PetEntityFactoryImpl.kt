@@ -44,7 +44,8 @@ class PetEntityFactoryImpl @Inject constructor(
             plugin,
             petActionExecutionService,
             pet,
-            template
+            template,
+            meta
         )
 
         physicObjectService.addPhysicObject(petEntity)
