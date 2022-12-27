@@ -10,10 +10,8 @@ import com.github.shynixn.petblocks.bukkit.Pet
 import com.github.shynixn.petblocks.bukkit.PetEntity
 import com.github.shynixn.petblocks.bukkit.entity.PetMeta
 import com.github.shynixn.petblocks.bukkit.entity.PetTemplate
-import com.github.shynixn.petblocks.bukkit.impl.PetArmorstandEntityComponentImpl
+import com.github.shynixn.petblocks.bukkit.impl.PetEntityRenderComponent
 import com.github.shynixn.petblocks.bukkit.impl.PetEntityImpl
-import com.github.shynixn.petblocks.bukkit.service.PetActionExecutionService
-import com.github.shynixn.petblocks.bukkit.service.PetEntityFactory
 import com.google.inject.Inject
 import org.bukkit.plugin.Plugin
 
@@ -37,7 +35,7 @@ class PetEntityFactoryImpl @Inject constructor(
         val armorStandEntityId = physicObjectService.createNewEntityId()
 
         val armorstandEntityComponent =
-            PetArmorstandEntityComponentImpl(mathPhysicComponent, playerComponent, armorStandEntityId, meta, pet.player)
+            PetEntityRenderComponent(mathPhysicComponent, playerComponent, armorStandEntityId, meta, pet.player)
         val petEntity = PetEntityImpl(
             mathPhysicComponent,
             playerComponent,

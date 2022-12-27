@@ -5,13 +5,15 @@ import com.github.shynixn.mccoroutine.bukkit.launch
 import com.github.shynixn.mccoroutine.bukkit.minecraftDispatcher
 import com.github.shynixn.mccoroutine.bukkit.ticks
 import com.github.shynixn.mcutils.common.Vector3d
+import com.github.shynixn.mcutils.common.toVector3d
 import com.github.shynixn.mcutils.packet.api.ArmorSlotType
 import com.github.shynixn.mcutils.packet.api.packetOutEntityEquipment
 import com.github.shynixn.mcutils.packet.api.packetOutEntityMetadata
 import com.github.shynixn.mcutils.packet.api.sendPacket
 import com.github.shynixn.mcutils.physicobject.api.PhysicObject
-import com.github.shynixn.mcutils.physicobject.api.component.ArmorstandEntityComponent
+import com.github.shynixn.mcutils.physicobject.api.component.AIComponent
 import com.github.shynixn.mcutils.physicobject.api.component.MathComponent
+import com.github.shynixn.mcutils.physicobject.api.component.MoveToTargetComponent
 import com.github.shynixn.mcutils.physicobject.api.component.PlayerComponent
 import com.github.shynixn.petblocks.bukkit.Pet
 import com.github.shynixn.petblocks.bukkit.PetEntity
@@ -27,16 +29,23 @@ import org.bukkit.inventory.ItemStack
 import org.bukkit.plugin.Plugin
 
 class PetEntityImpl(
-    private val physicsComponent: MathComponent,
+    val physicsComponent: MathComponent,
     private val playerComponent: PlayerComponent,
-    private val entityComponent: PetArmorstandEntityComponentImpl,
+    private val entityComponent: PetEntityRenderComponent,
     plugin: Plugin,
     private val petActionExecutionService: PetActionExecutionService,
     private val pet: Pet,
     private val template: PetTemplate,
-    private val petMeta: PetMeta
+    private val petMeta: PetMeta,
+    val moveToTargetComponent: MoveToTargetComponent,
+    val aiComponent: AIComponent<PetEntityImpl>,
 ) : PhysicObject, PetEntity {
     private var currentLocation = Vector3d()
+
+    /**
+     * Location of the owner.
+     */
+    var ownerLocation = Vector3d()
 
     init {
         plugin.launch(plugin.minecraftDispatcher + object : CoroutineTimings() {}) {
@@ -114,7 +123,7 @@ class PetEntityImpl(
     /**
      * Updates the head Itemstack.
      */
-    fun updateHeadItemStack(itemStack: ItemStack){
+    fun updateHeadItemStack(itemStack: ItemStack) {
         for (player in playerComponent.visiblePlayers) {
             player.sendPacket(packetOutEntityEquipment {
                 this.entityId = entityId
@@ -127,13 +136,13 @@ class PetEntityImpl(
     /**
      * Updates the riding state of the player.
      */
-    fun updateRidingState(owner : Player) {
+    fun updateRidingState(owner: Player) {
         for (player in playerComponent.visiblePlayers) {
             if (petMeta.visibility == PetVisibility.OWNER && player != owner) {
                 continue
             }
 
-            if(petMeta.ridingState == PetRidingState.NO){
+            if (petMeta.ridingState == PetRidingState.NO) {
                 // Send Unmount Packet.
             }
 
@@ -154,16 +163,21 @@ class PetEntityImpl(
         physicsComponent.tickAsync()
         playerComponent.tickAsync()
         entityComponent.tickAsync()
+        moveToTargetComponent.tickAsync()
+        aiComponent.tickAsync()
     }
 
     /**
      * Ticks on minecraft thread.
      */
     override fun tickMinecraft() {
+        this.ownerLocation = this.pet.player.location.toVector3d()
         this.currentLocation = physicsComponent.position.clone()
         physicsComponent.tickMinecraft()
         playerComponent.tickMinecraft()
         entityComponent.tickMinecraft()
+        moveToTargetComponent.tickMinecraft()
+        aiComponent.tickMinecraft()
     }
 
     /**
@@ -173,6 +187,8 @@ class PetEntityImpl(
         physicsComponent.close()
         playerComponent.close()
         entityComponent.close()
+        moveToTargetComponent.close()
+        aiComponent.close()
         isDead = true
     }
 }
