@@ -16,6 +16,7 @@ import com.github.shynixn.petblocks.core.logic.business.extension.relativeFront
 import com.github.shynixn.petblocks.core.logic.persistence.entity.PositionEntity
 import net.minecraft.nbt.MojangsonParser
 import net.minecraft.nbt.NBTTagCompound
+import net.minecraft.network.protocol.game.PacketPlayOutMount
 import net.minecraft.world.entity.Entity
 import net.minecraft.world.entity.EntityInsentient
 import net.minecraft.world.entity.EntityLiving
@@ -30,6 +31,7 @@ import org.bukkit.Bukkit
 import org.bukkit.Location
 import org.bukkit.craftbukkit.v1_19_R2.CraftServer
 import org.bukkit.craftbukkit.v1_19_R2.CraftWorld
+import org.bukkit.craftbukkit.v1_19_R2.entity.CraftPlayer
 import org.bukkit.entity.ArmorStand
 import org.bukkit.entity.LivingEntity
 import org.bukkit.event.entity.CreatureSpawnEvent
@@ -136,6 +138,9 @@ class NMSPetArmorstand(owner: org.bukkit.entity.Player, private val petMeta: Pet
             }
             return
         }
+        else {
+            player.world.players.forEach { e -> e.sendPacket(PacketPlayOutMount((player as CraftPlayer).handle)) }
+        }
 
         val flyingAi = petMeta.aiGoals.firstOrNull { a -> a is AIFlying }
 
@@ -212,7 +217,7 @@ class NMSPetArmorstand(owner: org.bukkit.entity.Player, private val petMeta: Pet
 
                 if (y > -100) {
                     this.b(location.x, y, location.z, location.yaw, location.pitch)
-                    this.n(
+                    this.o(
                         this.internalHitBox!!.dd().c,
                         this.internalHitBox!!.dd().d,
                         this.internalHitBox!!.dd().e // SetMot
@@ -231,10 +236,11 @@ class NMSPetArmorstand(owner: org.bukkit.entity.Player, private val petMeta: Pet
                         location.yaw,
                         location.pitch
                     )
+
+                    proxy.teleportTarget = null
                 }
 
                 this.b(location.x, location.y, location.z, location.yaw, location.pitch)
-                proxy.teleportTarget = null
             }
 
             if (PetMeta::aiGoals.hasChanged(petMeta)) {
@@ -400,7 +406,7 @@ class NMSPetArmorstand(owner: org.bukkit.entity.Player, private val petMeta: Pet
         }
 
         if (this.az() && this.isPassengerJumping()) {
-            this.n(this.dd().c, 0.5, this.dd().e)
+            this.o(this.dd().c, 0.5, this.dd().e)
         }
 
         this.P = ai.climbingHeight.toFloat()
