@@ -112,6 +112,12 @@ class PetListener @Inject constructor(
     fun onPetBlocksLoginEvent(event: PetBlocksLoginEvent) {
         loggingService.info("Loaded pet of player [${event.player.name}].")
 
+        if(version == Version.VERSION_1_19_R2){
+            event.petMeta.enabled = false
+            event.pet.ifPresent { e -> e.remove() }
+            return
+        }
+
         val overwrite = configurationService.findValue<Boolean>("global-configuration.overwrite-previous-pet")
 
         if (overwrite) {

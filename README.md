@@ -4,6 +4,13 @@
 | ------------- | ------------- |  --------| ---------| 
 | master        | [![Build Status](https://github.com/Shynixn/PetBlocks/workflows/PetBlocks/badge.svg?branch=master)](https://github.com/Shynixn/PetBlocks/actions)| ![GitHub license](https://img.shields.io/nexus/r/https/oss.sonatype.org/com.github.shynixn.petblocks/petblocks-bukkit-plugin.svg?style=flat-square)  |[Download latest release](https://github.com/Shynixn/PetBlocks/releases)|
 | development   | [![Build Status](https://github.com/Shynixn/PetBlocks/workflows/PetBlocks/badge.svg?branch=development)](https://github.com/Shynixn/PetBlocks/actions) |![GitHub license](https://img.shields.io/nexus/s/https/oss.sonatype.org/com.github.shynixn.petblocks/petblocks-bukkit-plugin.svg?style=flat-square) |  [Download snapshots](https://oss.sonatype.org/content/repositories/snapshots/com/github/shynixn/petblocks) |
+
+## [No longer supported - No Longer Works in Minecraft >=1.19.3]
+
+> __Warning__
+> I am really sorry to state this but it has become impossible to maintain PetBlocks.
+Mojang restructured the entire obfuscated NMS layers and PetBlocks requires a full rework to function again.
+
 ## Description
 
 PetBlocks is a spigot and also a sponge plugin to use blocks and custom heads as pets in Minecraft.

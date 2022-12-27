@@ -29,9 +29,11 @@ RUN java -jar BuildTools.jar --rev 1.17.1 --remapped
 RUN java -jar BuildTools.jar --rev 1.18 --remapped
 RUN java -jar BuildTools.jar --rev 1.18.2 --remapped
 RUN java -jar BuildTools.jar --rev 1.19.1 --remapped
+RUN java -jar BuildTools.jar --rev 1.19.3 --remapped
 # TagKey depends on java.lang.Record and causes our build to fail eventhough we do not need it. Therefore remove it.
 RUN yum install zip -y && zip -d /root/.m2/repository/org/spigotmc/spigot/1.18.2-R0.1-SNAPSHOT/spigot-1.18.2-R0.1-SNAPSHOT.jar net/minecraft/tags/TagKey.class
 RUN yum install zip -y && zip -d /root/.m2/repository/org/spigotmc/spigot/1.19.1-R0.1-SNAPSHOT/spigot-1.19.1-R0.1-SNAPSHOT.jar net/minecraft/tags/TagKey.class
+RUN yum install zip -y && zip -d /root/.m2/repository/org/spigotmc/spigot/1.19.3-R0.1-SNAPSHOT/spigot-1.19.3-R0.1-SNAPSHOT.jar net/minecraft/tags/TagKey.class
 
 # 3. Build plugin for 1.8 - latest with jdk8
 FROM openjdk:8 AS plugin-jdk8
@@ -49,7 +51,7 @@ RUN ./gradlew setupDecompWorkspace build shadowJar --no-daemon
 # 4. Launch a minecraft server with jdk17 and plugin
 FROM amazoncorretto:17
 # Change to the current plugin version present in build.gradle
-ENV PLUGIN_VERSION=8.32.0
+ENV PLUGIN_VERSION=8.33.0
 # Change to the server version you want to test.
 ENV SERVER_VERSION=spigot-1.18.jar
 # Port of the Minecraft Server.

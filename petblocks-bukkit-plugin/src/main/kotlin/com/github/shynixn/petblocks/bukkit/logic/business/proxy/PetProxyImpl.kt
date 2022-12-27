@@ -197,7 +197,14 @@ class PetProxyImpl(override val meta: PetMeta, private val design: ArmorStand, p
                 method.isAccessible = true
                 method.invoke(handle)
             } catch (e2: Exception) {
-                if(version.isVersionSameOrGreaterThan(Version.VERSION_1_19_R1)){
+                if(version.isVersionSameOrGreaterThan(Version.VERSION_1_19_R2)){
+                    val method =
+                        findClazz("com.github.shynixn.petblocks.bukkit.logic.business.nms.VERSION.NMSPetArmorstand")
+                            .getDeclaredMethod("eT")
+                    method.isAccessible = true
+                    method.invoke(handle)
+                }
+                else if(version.isVersionSameOrGreaterThan(Version.VERSION_1_19_R1)){
                     val method =
                         findClazz("com.github.shynixn.petblocks.bukkit.logic.business.nms.VERSION.NMSPetArmorstand")
                             .getDeclaredMethod("eN")

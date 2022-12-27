@@ -12,7 +12,11 @@ class NavigationServiceImpl @Inject constructor(private val version: Version) : 
         findClazz("org.bukkit.craftbukkit.VERSION.entity.CraftLivingEntity").getDeclaredMethod("getHandle")!!
     private val navigationAbstractMethod =
         try {
-            findClazz("net.minecraft.world.entity.EntityInsentient").getDeclaredMethod("D")
+            if(version.isVersionSameOrGreaterThan(Version.VERSION_1_19_R2)){
+                findClazz("net.minecraft.world.entity.EntityInsentient").getDeclaredMethod("E")
+            }else{
+                findClazz("net.minecraft.world.entity.EntityInsentient").getDeclaredMethod("D")
+            }
         } catch (e1: Exception) {
             try {
                 findClazz("net.minecraft.world.entity.EntityInsentient").getDeclaredMethod("getNavigation")
