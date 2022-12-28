@@ -7,6 +7,7 @@ enum class Permission(val text: String) {
     HELP("petblocks.help"),
     CALL("petblocks.pet.call"),
     AMOUNT("petblocks.pet.amount.1"),
+    LIST("petblocks.pet.list"),
     TEMPLATE("petblocks.pet.template.pet_hopping"),
     DELETE("petblocks.pet.delete"),
     DISPLAYNAME("petblocks.pet.displayName"),

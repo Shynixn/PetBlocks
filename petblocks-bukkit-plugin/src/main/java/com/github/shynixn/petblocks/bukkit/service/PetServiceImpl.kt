@@ -18,7 +18,8 @@ class PetServiceImpl @Inject constructor(
     private val petMetaRepository: PlayerDataRepository<PlayerInformation>,
     private val plugin: Plugin,
     private val templateRepository: PetTemplateRepository,
-    private val petEntityFactory: PetEntityFactory
+    private val petEntityFactory: PetEntityFactory,
+    private val placeHolderService: PlaceHolderService
 ) : PetService {
     private val cache = HashMap<Player, MutableList<Pet>>()
 
@@ -73,10 +74,10 @@ class PetServiceImpl @Inject constructor(
      * Throws an exception if template id does not exist.
      */
     override fun createPetAsync(
-        player: Player, location: Location, templateId: String
+        player: Player, location: Location, templateId: String, name: String
     ): CompletionStage<PetSpawnResult> {
         return plugin.scope.future {
-            createPet(player, location, templateId)
+            createPet(player, location, templateId, name)
         }
     }
 
@@ -84,9 +85,18 @@ class PetServiceImpl @Inject constructor(
      * Creates a pet for the given player, at the given location, with the given template.
      * Throws an exception if template id does not exist.
      */
-    override suspend fun createPet(player: Player, location: Location, templateId: String): PetSpawnResult {
+    override suspend fun createPet(
+        player: Player,
+        location: Location,
+        templateId: String,
+        name: String
+    ): PetSpawnResult {
         // Call to make sure the cache is filled.
-        getPetsFromPlayer(player)
+        val pets = getPetsFromPlayer(player)
+
+        if (pets.firstOrNull { e -> e.name.equals(name, true) } != null) {
+            throw IllegalArgumentException("Pet with the same name already exists!")
+        }
 
         // Retrieve template and build petMeta out of it.
         val templates = templateRepository.getAll()
@@ -97,7 +107,9 @@ class PetServiceImpl @Inject constructor(
         }
 
         val petMeta = PetMeta().also {
-            it.name = template.displayName
+            it.template = templateId
+            it.name = name
+            it.displayName = placeHolderService.replacePlaceHolders(player, template.displayName)
         }
 
         // Create pet instance.
@@ -110,8 +122,8 @@ class PetServiceImpl @Inject constructor(
         val petSpawnEvent = PetSpawnEvent(pet)
         Bukkit.getPluginManager().callEvent(petSpawnEvent)
 
-        if (petSpawnEvent.isCancelled){
-            return PetSpawnResult(PetSpawnResultType.EVENT_CANCELLED,null)
+        if (petSpawnEvent.isCancelled) {
+            return PetSpawnResult(PetSpawnResultType.EVENT_CANCELLED, null)
         }
 
         // Retrieve existing stored pets and add petMeta to it.

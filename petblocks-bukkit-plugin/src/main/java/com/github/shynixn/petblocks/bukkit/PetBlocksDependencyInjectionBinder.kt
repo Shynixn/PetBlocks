@@ -1,9 +1,7 @@
 package com.github.shynixn.petblocks.bukkit
 
 import com.fasterxml.jackson.core.type.TypeReference
-import com.github.shynixn.mcutils.common.ConfigurationService
-import com.github.shynixn.mcutils.common.ConfigurationServiceImpl
-import com.github.shynixn.mcutils.common.Version
+import com.github.shynixn.mcutils.common.*
 import com.github.shynixn.mcutils.database.api.CachePlayerRepository
 import com.github.shynixn.mcutils.database.api.PlayerDataRepository
 import com.github.shynixn.mcutils.database.api.SqlConnectionService
@@ -39,6 +37,7 @@ class PetBlocksDependencyInjectionBinder(private val plugin: PetBlocksPlugin) : 
 
         // Build Common Module
         bind(ConfigurationService::class.java).toInstance(ConfigurationServiceImpl(plugin))
+        bind(ItemService::class.java).toInstance(ItemServiceImpl())
 
         // Build Physic Module
         val physicObjectService = PhysicObjectServiceImpl(plugin)

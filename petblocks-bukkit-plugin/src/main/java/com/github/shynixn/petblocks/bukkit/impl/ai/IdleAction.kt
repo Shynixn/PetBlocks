@@ -13,6 +13,7 @@ class IdleAction : AIAction<PetEntityImpl> {
         ownerPosition.y += 2
         val directionVector = ownerPosition.subtract(actor.physicsComponent.position)
         actor.physicsComponent.position.setDirection(directionVector)
+        actor.teleportInWorld(actor.physicsComponent.position)
     }
 
     /**

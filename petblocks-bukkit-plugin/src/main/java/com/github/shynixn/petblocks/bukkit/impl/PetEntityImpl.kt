@@ -48,9 +48,10 @@ class PetEntityImpl(
     var ownerLocation = Vector3d()
 
     init {
+        aiComponent.actor = this
         plugin.launch(plugin.minecraftDispatcher + object : CoroutineTimings() {}) {
             while (!isDead) {
-                petActionExecutionService.executeAction(pet, template.loopDefinition)
+             //   petActionExecutionService.executeAction(pet, template.loopDefinition)
                 delay(1.ticks)
             }
         }

@@ -26,7 +26,7 @@ class PetMeta {
     /**
      * Last persisted location of the pet.
      */
-    @JsonIgnoreProperties(value = arrayOf("blockX", "blockY", "blockZ", "empty"))
+    @JsonIgnoreProperties(value = arrayOf("blockX", "blockY", "blockZ", "empty", "direction"))
     var lastStoredLocation: Vector3d = Vector3d()
 
     /**

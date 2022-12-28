@@ -23,7 +23,7 @@ allprojects{
         compileOnly("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4")
         compileOnly("org.spigotmc:spigot-api:1.16.3-R0.1-SNAPSHOT")
         compileOnly("com.github.shynixn.mcutils:common:1.0.19")
-        compileOnly("com.github.shynixn.mcutils:database:1.0.3")
+        compileOnly("com.github.shynixn.mcutils:database:1.0.5")
         compileOnly("com.fasterxml.jackson.core:jackson-databind:2.14.1")
 
         // Test

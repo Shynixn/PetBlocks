@@ -17,13 +17,18 @@ interface PetService : AutoCloseable {
      * Creates a pet for the given player, at the given location, with the given template.
      * Throws an exception if template id does not exist.
      */
-    suspend fun createPet(player: Player, location: Location, templateId: String): PetSpawnResult
+    suspend fun createPet(player: Player, location: Location, templateId: String, name: String): PetSpawnResult
 
     /**
      * Adds a pet for the given player, at the given location, with the given template.
      * Throws an exception if template id does not exist.
      */
-    fun createPetAsync(player: Player, location: Location, templateId: String): CompletionStage<PetSpawnResult>
+    fun createPetAsync(
+        player: Player,
+        location: Location,
+        templateId: String,
+        name: String
+    ): CompletionStage<PetSpawnResult>
 
     /**
      * Gets all the pets a player owns.

@@ -26,6 +26,13 @@ class PetTemplateRepositoryImpl(
     }
 
     /**
+     * Clears the runtime cache.
+     */
+    override fun clearCache() {
+        cache = null
+    }
+
+    /**
      * Creates all tempaltes if they do not exist yet.
      */
     override suspend fun copyTemplatesIfNotExist() {
@@ -60,7 +67,7 @@ class PetTemplateRepositoryImpl(
                     val templates = ArrayList<PetTemplate>()
 
                     for (file in folder.toFile().listFiles()) {
-                        if (file.endsWith(".yml")) {
+                        if (file.name.endsWith(".yml")) {
                             val template = objectMapper.readValue<PetTemplate>(
                                 file, typeReference
                             )

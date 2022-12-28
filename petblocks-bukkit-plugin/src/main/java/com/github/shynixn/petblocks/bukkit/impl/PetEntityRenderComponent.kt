@@ -39,9 +39,7 @@ class PetEntityRenderComponent(
             this.target = location
         })
         val itemStack = item {
-            this.typeName = "PLAYER_HEAD"
-            this.nbt =
-                "{SkullOwner:{Id:[I;1,1,1,1],Properties:{textures:[{Value:\"eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZjZkYThhNzk3N2VjOTIxNGM1YjcwMWY5YWU3ZTE1NWI4ZWIyMWQxZDM3MTU5OGUxYjk4NzVjNGM4NWM2NWFlNiJ9fX0=\"}]}}}"
+            this.typeName = "GRASS_BLOCK"
         }.toItemStack()
         player.sendPacket(packetOutEntityEquipment {
             this.entityId = outer.entityId
@@ -50,8 +48,7 @@ class PetEntityRenderComponent(
         })
         player.sendPacket(packetOutEntityMetadata {
             this.entityId = outer.entityId
-            this.isInvisible = true
-            this.isArmorstandSmall = true
+            this.isInvisible = false
         })
 
         if (petMeta.ridingState == PetRidingState.HAT) {

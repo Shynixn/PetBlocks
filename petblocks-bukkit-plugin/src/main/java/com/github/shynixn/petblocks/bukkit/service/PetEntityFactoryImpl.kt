@@ -32,7 +32,6 @@ class PetEntityFactoryImpl @Inject constructor(
     override fun createPetEntity(pet: Pet, meta: PetMeta, template: PetTemplate): PetEntity {
         val location = pet.location
         val mathComponentSettings = MathComponentSettings()
-        mathComponentSettings.gravityAbsolute = 1.0
         val mathPhysicComponent = MathComponent(location.toVector3d(), mathComponentSettings)
 
         val playerComponentSettings = PlayerComponentSettings()
@@ -43,7 +42,7 @@ class PetEntityFactoryImpl @Inject constructor(
         val armorstandEntityComponent =
             PetEntityRenderComponent(mathPhysicComponent, playerComponent, armorStandEntityId, meta, pet.player)
 
-        val moveToTargetComponent = MoveToTargetComponent(mathPhysicComponent, 1.0)
+        val moveToTargetComponent = MoveToTargetComponent(mathPhysicComponent, 0.4)
 
         val idleAction = IdleAction()
         val moveToOwnerAction = MoveToOwnerAction(pathfinderService, plugin)

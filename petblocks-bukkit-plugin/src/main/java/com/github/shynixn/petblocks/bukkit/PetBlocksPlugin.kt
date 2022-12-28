@@ -11,6 +11,7 @@ import com.github.shynixn.mcutils.common.reloadTranslation
 import com.github.shynixn.mcutils.database.api.CachePlayerRepository
 import com.github.shynixn.mcutils.database.api.PlayerDataRepository
 import com.github.shynixn.mcutils.database.api.SqlConnectionService
+import com.github.shynixn.mcutils.physicobject.api.PhysicObjectService
 import com.github.shynixn.petblocks.bukkit.commandexecutor.PetBlocksCommandExecutor
 import com.github.shynixn.petblocks.bukkit.listener.PetListener
 import com.github.shynixn.petblocks.bukkit.service.PetService
@@ -88,10 +89,14 @@ class PetBlocksPlugin : SuspendingJavaPlugin(), PetBlocksResolvePlugin {
         petService.close()
 
         val playerDataRepository = resolve(CachePlayerRepository::class.java)
+        playerDataRepository.saveCache()
         playerDataRepository.clearCache()
 
         val sqlConnectionService = resolve(SqlConnectionService::class.java)
         sqlConnectionService.close()
+
+        val physicService = resolve(PhysicObjectService::class.java)
+        physicService.close()
     }
 
     /**

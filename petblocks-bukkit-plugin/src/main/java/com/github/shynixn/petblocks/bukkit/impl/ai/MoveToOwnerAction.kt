@@ -9,20 +9,21 @@ import com.github.shynixn.mcutils.physicobject.api.AIAction
 import com.github.shynixn.petblocks.bukkit.impl.PetEntityImpl
 import kotlinx.coroutines.runBlocking
 import org.bukkit.plugin.Plugin
+import java.util.Date
 
 class MoveToOwnerAction(private val pathfinderService: PathfinderService, private val plugin: Plugin) :
     AIAction<PetEntityImpl> {
     private var playerLocation: Vector3d = Vector3d()
     private var worldSnapshot: WorldSnapshot? = null
+    private var lastTimeCalculated: Long = 0L
 
     /**
      * Is called when the action is started.
      */
     override fun start(actor: PetEntityImpl) {
-        // We are on async here, so it is fine.
         runBlocking {
             val location = actor.physicsComponent.position.toLocation()
-            worldSnapshot = pathfinderService.calculatePathfinderSnapshot(location, 10, 10, 10)
+            worldSnapshot = pathfinderService.calculatePathfinderSnapshot(location, 50, 10, 50)
         }
     }
 
@@ -30,15 +31,11 @@ class MoveToOwnerAction(private val pathfinderService: PathfinderService, privat
      * Is called when the action is continued to execute.
      */
     override fun execute(actor: PetEntityImpl) {
-        if (worldSnapshot == null) {
-            return
-        }
-
         val result =
             pathfinderService.findPath(
                 worldSnapshot!!,
                 actor.physicsComponent.position.toLocation(),
-                playerLocation.toLocation()
+                playerLocation.toLocation().add(0.0, 0.5, 0.0)
             )
 
         if (result.resultType == PathfinderResultType.FOUND) {
@@ -52,6 +49,6 @@ class MoveToOwnerAction(private val pathfinderService: PathfinderService, privat
     override fun score(actor: PetEntityImpl): Int {
         playerLocation = actor.ownerLocation.clone()
         // Minus 2 minimum distance.
-        return playerLocation.distance(actor.physicsComponent.position).toInt() - 2
+        return playerLocation.distance(actor.physicsComponent.position).toInt() - 1
     }
 }
