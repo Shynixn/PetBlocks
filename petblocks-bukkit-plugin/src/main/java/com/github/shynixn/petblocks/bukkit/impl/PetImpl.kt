@@ -190,7 +190,7 @@ class PetImpl(
             }
         }
 
-        val inFrontOfOwnerPosition = player.location.toVector3d().addRelativeFront(3.0).addRelativeUp(0.5)
+        val inFrontOfOwnerPosition = player.location.toVector3d().addRelativeFront(3.0)
 
         if (petEntity == null) {
             petMeta.lastStoredLocation = inFrontOfOwnerPosition

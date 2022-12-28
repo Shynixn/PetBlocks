@@ -17,7 +17,7 @@ dependencies {
     implementation("com.github.shynixn.mcutils:common:1.0.19")
     implementation("com.github.shynixn.mcutils:packet:1.0.29")
     implementation("com.github.shynixn.mcutils:database:1.0.5")
-    implementation("com.github.shynixn.mcutils:pathfinder:1.0.15")
+    implementation("com.github.shynixn.mcutils:pathfinder:1.0.16")
     implementation("com.github.shynixn.mcutils:physic:1.0.18")
 
     implementation(project(":petblocks-bukkit-api"))

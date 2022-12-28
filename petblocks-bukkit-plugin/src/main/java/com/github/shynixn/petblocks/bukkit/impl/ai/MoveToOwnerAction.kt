@@ -24,10 +24,8 @@ class MoveToOwnerAction(private val pathfinderService: PathfinderService, privat
      * Is called when the action is started.
      */
     override fun start(actor: PetEntityImpl) {
-        runBlocking {
-            val location = actor.physicsComponent.position.toLocation()
-            worldSnapshot = pathfinderService.calculatePathfinderSnapshot(location, 30, 12, 30)
-        }
+        val location = actor.physicsComponent.position.toLocation()
+        worldSnapshot = pathfinderService.calculateFastPathfinderSnapshot(location, 30, 12, 30)
     }
 
     /**
@@ -52,12 +50,14 @@ class MoveToOwnerAction(private val pathfinderService: PathfinderService, privat
             if (rescueCounter > 20) {
                 println("Rescue")
                 actor.teleportInWorld(playerLocation)
+                // Gravity after teleport.
+                actor.physicsComponent.setVelocity(Vector3d(0.0, 0.1, 0.0))
                 rescueCounter = 0
             }
         } else if (result.resultType == PathfinderResultType.INVALID_END) {
             rescueCounter++
 
-            if (rescueCounter > 5) {
+            if (rescueCounter > 20) {
                 println("Recalculate Path.")
                 start(actor)
                 rescueCounter = 0
