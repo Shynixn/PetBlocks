@@ -9,12 +9,18 @@ class IdleAction : AIAction<PetEntityImpl> {
      */
     override fun execute(actor: PetEntityImpl) {
         // Make look at owner.
+        println("Idle")
+
         val ownerPosition = actor.ownerLocation.clone()
-        ownerPosition.y += 2
         val directionVector = ownerPosition.subtract(actor.physicsComponent.position)
         actor.physicsComponent.position.setDirection(directionVector)
-        actor.teleportInWorld(actor.physicsComponent.position)
+
+
+
+        actor.teleportInWorld(actor.physicsComponent.position.clone())
     }
+
+
 
     /**
      * Calculates the current score of this action.

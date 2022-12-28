@@ -82,7 +82,7 @@ class PetEntityRenderComponent(
             })
             player.sendPacket(packetOutEntityTeleport {
                 this.entityId = outer.entityId
-                this.target = position.clone().addRelativeDown(0.3).toLocation()
+                this.target = position.clone().addRelativeDown(0.5).toLocation()
             })
         }
     }

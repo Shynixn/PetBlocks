@@ -7,6 +7,7 @@ import com.google.inject.Inject
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.player.PlayerJoinEvent
+import org.bukkit.event.player.PlayerQuitEvent
 import org.bukkit.plugin.Plugin
 import java.util.logging.Level
 
@@ -27,7 +28,7 @@ class PetListener @Inject constructor(private val petService: PetService, privat
      * Gets called when a player quits the server.
      */
     @EventHandler
-    suspend fun onPlayerQuitEvent(event: PlayerJoinEvent) {
+    suspend fun onPlayerQuitEvent(event: PlayerQuitEvent) {
         val pets = petService.getPetsFromPlayer(event.player)
         petService.clearCache(event.player)
 
