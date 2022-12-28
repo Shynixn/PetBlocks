@@ -1,6 +1,7 @@
 package com.github.shynixn.petblocks.bukkit
 
 import com.github.shynixn.mccoroutine.bukkit.SuspendingJavaPlugin
+import com.github.shynixn.mccoroutine.bukkit.registerSuspendingEvents
 import com.github.shynixn.mccoroutine.bukkit.setSuspendingExecutor
 import com.github.shynixn.mccoroutine.bukkit.setSuspendingTabCompleter
 import com.github.shynixn.mcutils.common.ChatColor
@@ -52,7 +53,7 @@ class PetBlocksPlugin : SuspendingJavaPlugin(), PetBlocksResolvePlugin {
         this.reloadConfig()
 
         // Register Listeners
-        Bukkit.getPluginManager().registerEvents(resolve(PetListener::class.java), this)
+        Bukkit.getPluginManager().registerSuspendingEvents(resolve(PetListener::class.java), this)
 
         // Register CommandExecutors
         val configurationService = resolve(ConfigurationService::class.java)

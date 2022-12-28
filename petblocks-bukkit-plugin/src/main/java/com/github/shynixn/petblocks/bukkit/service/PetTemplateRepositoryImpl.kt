@@ -11,6 +11,7 @@ import org.bukkit.plugin.Plugin
 import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.StandardCopyOption
+import java.util.logging.Level
 
 class PetTemplateRepositoryImpl(
     private val folder: Path, private val plugin: Plugin, private vararg val templateNames: String
@@ -29,7 +30,7 @@ class PetTemplateRepositoryImpl(
      */
     override suspend fun copyTemplatesIfNotExist() {
         withContext(Dispatchers.IO) {
-            val templateFolder = plugin.dataFolder.resolve("template")
+            val templateFolder = plugin.dataFolder.resolve("pets")
 
             if (!templateFolder.exists()) {
                 templateFolder.mkdir()
@@ -39,7 +40,7 @@ class PetTemplateRepositoryImpl(
                 val file = templateFolder.resolve(name)
 
                 if (!file.exists()) {
-                    val stream = plugin.getResource("template/$name")
+                    val stream = plugin.getResource("pets/$name")
 
                     stream.use {
                         Files.copy(it, file.toPath(), StandardCopyOption.REPLACE_EXISTING)
@@ -71,6 +72,8 @@ class PetTemplateRepositoryImpl(
                     templates
                 }
             }
+            val result = cache!!.await()
+            plugin.logger.log(Level.INFO, "Loaded ${result.size} pets.")
         }
 
         return cache!!.await()

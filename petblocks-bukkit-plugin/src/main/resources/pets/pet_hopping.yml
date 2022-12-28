@@ -14,19 +14,15 @@ isDisplayNameVisible: true
 # Command /petblocks <name> visibility <value>
 visibility: 'ALL'
 # Should the player be riding on the pet? Pet is called to the player if it is further away.
-# Possible values are 'NO', 'GROUND', 'FLY'.
+# Possible values are 'NO', 'GROUND', 'FLY', 'HAT'.
 # Permissions to allow players to change this value 'petblocks.pet.riding.no', 'petblocks.pet.riding.ground', 'petblocks.pet.riding.fly'.
 # Command /petblocks <name> visibility <value>
 riding: 'NO'
-# Should the pet be riding on the player? Pet is called to the player if it is further away.
-# Permissions to allow players to change this value 'petblocks.pet.hat'.
-# Command /petblocks <name> hat <true/false>
-hat: false
 #
 # Defines the action a pet should perform when a player rightclicks on it.
 #
 rightclick:
-  isEnabled: true
+  enabled: true
   actions:
     - name: 'Open the deluxe menu'
       type: 'command'
@@ -46,7 +42,7 @@ rightclick:
 # Defines the action a pet should perform in an interval on its own.
 #
 loop:
-  isEnabled: true
+  enabled: true
   actions:
     - name: 'Delay Action'
       type: 'delay'

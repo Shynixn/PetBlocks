@@ -202,7 +202,7 @@ class PetBlocksCommandExecutor @Inject constructor(
             pet.headItem.typeName = skinType
             sender.sendMessage(
                 String.format(
-                    PetBlocksLanguage.petSkinTypeChanged,
+                    PetBlocksLanguage.petSkinTypeChangedMessage,
                     petName
                 )
             )
@@ -220,7 +220,7 @@ class PetBlocksCommandExecutor @Inject constructor(
             pet.headItem.nbt = skinNbt
             sender.sendMessage(
                 String.format(
-                    PetBlocksLanguage.petSkinNbtChanged,
+                    PetBlocksLanguage.petSkinNbtChangedMessage,
                     petName
                 )
             )

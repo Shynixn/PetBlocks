@@ -1,16 +1,11 @@
 name: PetBlocks
-version: 8.33.0
+version: 9.0.0
 author: Shynixn
 main: com.github.shynixn.petblocks.bukkit.PetBlocksPlugin
 softdepend: [PlaceholderAPI, HeadDatabase]
 commands:
   petblocks:
-    description: Command to configure pets.
+    description: The command to interact with the PetBlocks plugin.
     useage: /<command>
-    permission: petblocks.admin.command.pets
-    permission-message: You don't have permission.
-  petblockreload:
-    description: Reloads the petblock config and lang file.
-    usage: /<command>
-    permission: petblocks.admin.command.reload
+    permission: petblocks.commmand
     permission-message: You don't have permission.

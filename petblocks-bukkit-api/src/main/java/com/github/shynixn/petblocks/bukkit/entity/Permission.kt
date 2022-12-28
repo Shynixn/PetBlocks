@@ -1,6 +1,7 @@
 package com.github.shynixn.petblocks.bukkit.entity
 
 enum class Permission(val text: String) {
+    COMMAND("petblocks.commmand"),
     CREATE("petblocks.pet.create"),
     RELOAD("petblocks.reload"),
     HELP("petblocks.help"),
