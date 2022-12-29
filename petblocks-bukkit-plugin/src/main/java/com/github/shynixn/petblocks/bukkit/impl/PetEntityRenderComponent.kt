@@ -91,6 +91,12 @@ class PetEntityRenderComponent(
      * Closes the component.
      */
     override fun close() {
+        val outer = this
+        for (player in playerComponent.visiblePlayers) {
+            player.sendPacket(packetOutEntityDestroy {
+                this.entityId = outer.entityId
+            })
+        }
         owner = null
     }
 }

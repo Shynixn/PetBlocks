@@ -6,10 +6,7 @@ import com.github.shynixn.mccoroutine.bukkit.minecraftDispatcher
 import com.github.shynixn.mccoroutine.bukkit.ticks
 import com.github.shynixn.mcutils.common.Vector3d
 import com.github.shynixn.mcutils.common.toVector3d
-import com.github.shynixn.mcutils.packet.api.ArmorSlotType
-import com.github.shynixn.mcutils.packet.api.packetOutEntityEquipment
-import com.github.shynixn.mcutils.packet.api.packetOutEntityMetadata
-import com.github.shynixn.mcutils.packet.api.sendPacket
+import com.github.shynixn.mcutils.packet.api.*
 import com.github.shynixn.mcutils.physicobject.api.PhysicObject
 import com.github.shynixn.mcutils.physicobject.api.component.AIComponent
 import com.github.shynixn.mcutils.physicobject.api.component.MathComponent
@@ -40,8 +37,6 @@ class PetEntityImpl(
     val moveToTargetComponent: MoveToTargetComponent,
     val aiComponent: AIComponent<PetEntityImpl>,
 ) : PhysicObject, PetEntity {
-    private var currentLocation = Vector3d()
-
     /**
      * Location of the owner.
      */
@@ -51,7 +46,7 @@ class PetEntityImpl(
         aiComponent.actor = this
         plugin.launch(plugin.minecraftDispatcher + object : CoroutineTimings() {}) {
             while (!isDead) {
-             //   petActionExecutionService.executeAction(pet, template.loopDefinition)
+                //   petActionExecutionService.executeAction(pet, template.loopDefinition)
                 delay(1.ticks)
             }
         }
@@ -74,7 +69,7 @@ class PetEntityImpl(
      * Gets the location of the pet.
      */
     fun getLocation(): Vector3d {
-        return currentLocation
+        return petMeta.lastStoredLocation
     }
 
     /**
@@ -98,6 +93,13 @@ class PetEntityImpl(
     }
 
     /**
+     * Gets called when the player is riding the entity.
+     */
+    override fun ride(player: Player, forward: Double, sideward: Double, isJumping: Boolean) {
+        println("Ride: " + player + "-" + forward + "-" + sideward + "-" + isJumping)
+    }
+
+    /**
      * If owner parameter is not null, only the owner receives packets.
      */
     fun updateVisibility(visibility: PetVisibility, owner: Player, location: Location) {
@@ -116,6 +118,7 @@ class PetEntityImpl(
     fun updateDisplayName(name: String) {
         for (player in playerComponent.visiblePlayers) {
             player.sendPacket(packetOutEntityMetadata {
+                this.entityId = entityComponent.entityId
                 this.customname = name
             })
         }
@@ -127,7 +130,7 @@ class PetEntityImpl(
     fun updateHeadItemStack(itemStack: ItemStack) {
         for (player in playerComponent.visiblePlayers) {
             player.sendPacket(packetOutEntityEquipment {
-                this.entityId = entityId
+                this.entityId = entityComponent.entityId
                 this.slot = ArmorSlotType.HELMET
                 this.itemStack = itemStack
             })
@@ -143,16 +146,41 @@ class PetEntityImpl(
                 continue
             }
 
-            if (petMeta.ridingState == PetRidingState.NO) {
-                // Send Unmount Packet.
+            val ridingState = petMeta.ridingState
+
+            if (ridingState == PetRidingState.NO) {
+                // Remove ground and fly
+                player.sendPacket(packetOutEntityMount {
+                    this.entityId = entityComponent.entityId
+                })
+                // Remove hat
+                player.sendPacket(packetOutEntityMount {
+                    this.entityId = player.entityId
+                })
             }
 
-            if (petMeta.ridingState == PetRidingState.HAT) {
-                // Send Hat Packet
+            if (ridingState == PetRidingState.HAT) {
+                // Remove ground and fly
+                player.sendPacket(packetOutEntityMount {
+                    this.entityId = entityComponent.entityId
+                })
+                // Set pet as passenger of player
+                player.sendPacket(packetOutEntityMount {
+                    this.entityId = player.entityId
+                    this.passengers = listOf(entityComponent.entityId)
+                })
             }
 
-            if (petMeta.ridingState == PetRidingState.GROUND || petMeta.ridingState == PetRidingState.FLY) {
-                // Send Ground Packet
+            if (ridingState == PetRidingState.GROUND) {
+                // Remove hat
+                player.sendPacket(packetOutEntityMount {
+                    this.entityId = player.entityId
+                })
+                // Set pet as passenger of player
+                player.sendPacket(packetOutEntityMount {
+                    this.entityId = entityComponent.entityId
+                    this.passengers = listOf(player.entityId)
+                })
             }
         }
     }
@@ -173,7 +201,7 @@ class PetEntityImpl(
      */
     override fun tickMinecraft() {
         this.ownerLocation = this.pet.player.location.toVector3d()
-        this.currentLocation = physicsComponent.position.clone()
+        this.petMeta.lastStoredLocation = physicsComponent.position.clone()
         physicsComponent.tickMinecraft()
         playerComponent.tickMinecraft()
         entityComponent.tickMinecraft()
@@ -185,9 +213,10 @@ class PetEntityImpl(
      * Removes the physic object.
      */
     override fun remove() {
+        // Entity needs to be closed first.
+        entityComponent.close()
         physicsComponent.close()
         playerComponent.close()
-        entityComponent.close()
         moveToTargetComponent.close()
         aiComponent.close()
         isDead = true

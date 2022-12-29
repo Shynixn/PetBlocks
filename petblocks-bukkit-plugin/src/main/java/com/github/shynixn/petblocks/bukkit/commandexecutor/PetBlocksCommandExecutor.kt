@@ -35,6 +35,10 @@ class PetBlocksCommandExecutor @Inject constructor(
         CommandDefinition("call", Permission.CALL, "/petblocks call <name> [player]"),
         CommandDefinition("spawn", Permission.SPAWN, "/petblocks spawn <name> [player]"),
         CommandDefinition("despawn", Permission.DESPAWN, "/petblocks despawn <name> [player]"),
+        CommandDefinition("ride", Permission.RIDE, "/petblocks ride <name> [player]"),
+        CommandDefinition("fly", Permission.FLY, "/petblocks fly <name> [player]"),
+        CommandDefinition("hat", Permission.HAT, "/petblocks hat <name> [player]"),
+        CommandDefinition("unmount", Permission.UNMOUNT, "/petblocks unmount <name> [player]"),
         CommandDefinition(
             "displayName", Permission.DISPLAYNAME, "/petblocks displayName <name> <displayName> [player]"
         ),
@@ -67,7 +71,7 @@ class PetBlocksCommandExecutor @Inject constructor(
     private suspend fun executeCommands(
         sender: CommandSender, args: Array<out String>
     ): Boolean {
-        if (args.size >= 3 && sender.hasPermission(Permission.CREATE) && args[0].equals("create", true)) {
+        if (args.size >= 3 && args[0].equals("create", true) && sender.hasPermission(Permission.CREATE)) {
             val petName = args[1]
             val templateId = args[2]
             val player =
@@ -81,7 +85,12 @@ class PetBlocksCommandExecutor @Inject constructor(
                 throw PetBlocksException(String.format(PetBlocksLanguage.petNameExistsMessage, petName))
             }
 
-            petService.createPet(player, player.location.toVector3d().addRelativeFront(3.0).toLocation(), template.id, petName)
+            petService.createPet(
+                player,
+                player.location.toVector3d().addRelativeFront(3.0).toLocation(),
+                template.id,
+                petName
+            )
             sender.sendMessage(String.format(PetBlocksLanguage.petCreatedMessage, petName))
             return true
         }
@@ -95,7 +104,7 @@ class PetBlocksCommandExecutor @Inject constructor(
             return true
         }
 
-        if (args.size >= 2 && sender.hasPermission(Permission.DELETE) && args[0].equals("delete", true)) {
+        if (args.size >= 2 && args[0].equals("delete", true) && sender.hasPermission(Permission.DELETE)) {
             val petName = args[1]
             val player =
                 findPlayer(sender, 2, args) ?: throw PetBlocksException(PetBlocksLanguage.playerNotFoundMessage)
@@ -106,9 +115,7 @@ class PetBlocksCommandExecutor @Inject constructor(
             return true
         }
 
-        if (args.size >= 2 && sender.hasPermission(Permission.CALL) && args[0].equals(
-                "call", true
-            )
+        if (args.size >= 2 && args[0].equals("call", true) && sender.hasPermission(Permission.CALL)
         ) {
             val petName = args[1]
             val player =
@@ -120,9 +127,7 @@ class PetBlocksCommandExecutor @Inject constructor(
             return true
         }
 
-        if (args.size >= 2 && sender.hasPermission(Permission.SPAWN) && args[0].equals(
-                "spawn", true
-            )
+        if (args.size >= 2 && args[0].equals("spawn", true) && sender.hasPermission(Permission.SPAWN)
         ) {
             val petName = args[1]
             val player =
@@ -134,9 +139,7 @@ class PetBlocksCommandExecutor @Inject constructor(
             return true
         }
 
-        if (args.size >= 2 && sender.hasPermission(Permission.DESPAWN) && args[0].equals(
-                "despawn", true
-            )
+        if (args.size >= 2 && args[0].equals("despawn", true) && sender.hasPermission(Permission.DESPAWN)
         ) {
             val petName = args[1]
             val player =
@@ -148,10 +151,7 @@ class PetBlocksCommandExecutor @Inject constructor(
             return true
         }
 
-        if (args.size >= 3 && sender.hasPermission(Permission.DISPLAYNAME) && args[0].equals(
-                "displayName", true
-            )
-        ) {
+        if (args.size >= 3 && args[0].equals("displayName", true) && sender.hasPermission(Permission.DISPLAYNAME)) {
             val petName = args[1]
             val displayName = args[2]
             val player =
@@ -166,7 +166,7 @@ class PetBlocksCommandExecutor @Inject constructor(
             )
             return true
         }
-        if (args.size >= 3 && sender.hasPermission(Permission.VISIBILITY) && args[0].equals("visibility", true)) {
+        if (args.size >= 3 && args[0].equals("visibility", true) && sender.hasPermission(Permission.VISIBILITY)) {
             val petName = args[1]
             val visibilityName = args[2]
             val visibility = PetVisibility.values().firstOrNull { e -> e.name.equals(visibilityName, true) }
@@ -184,7 +184,7 @@ class PetBlocksCommandExecutor @Inject constructor(
             return true
         }
 
-        if (args.size >= 3 && sender.hasPermission(Permission.SKIN) && args[0].equals("skintype", true)) {
+        if (args.size >= 3 && args[0].equals("skintype", true) && sender.hasPermission(Permission.SKIN)) {
             val petName = args[1]
             val skinType = args[2]
             val player =
@@ -200,7 +200,7 @@ class PetBlocksCommandExecutor @Inject constructor(
             )
         }
 
-        if (args.size >= 3 && sender.hasPermission(Permission.SKIN) && args[0].equals("skinnbt", true)) {
+        if (args.size >= 3 && args[0].equals("skinnbt", true) && sender.hasPermission(Permission.SKIN)) {
             val petName = args[1]
             val skinNbt = args[2]
             val player =
@@ -214,6 +214,54 @@ class PetBlocksCommandExecutor @Inject constructor(
                     PetBlocksLanguage.petSkinNbtChangedMessage, petName
                 )
             )
+        }
+
+        if (args.size >= 2 && args[0].equals("ride", true) && sender.hasPermission(Permission.RIDE)
+        ) {
+            val petName = args[1]
+            val player =
+                findPlayer(sender, 2, args) ?: throw PetBlocksException(PetBlocksLanguage.playerNotFoundMessage)
+            val pet = findPetFromPlayer(player, petName)
+                ?: throw PetBlocksException(String.format(PetBlocksLanguage.petNotFoundMessage, petName))
+            pet.ride()
+            sender.sendMessage(String.format(PetBlocksLanguage.petRideMessage, petName))
+            return true
+        }
+
+        if (args.size >= 2 && args[0].equals("fly", true) && sender.hasPermission(Permission.FLY)
+        ) {
+            val petName = args[1]
+            val player =
+                findPlayer(sender, 2, args) ?: throw PetBlocksException(PetBlocksLanguage.playerNotFoundMessage)
+            val pet = findPetFromPlayer(player, petName)
+                ?: throw PetBlocksException(String.format(PetBlocksLanguage.petNotFoundMessage, petName))
+            pet.fly()
+            sender.sendMessage(String.format(PetBlocksLanguage.petFlyMessage, petName))
+            return true
+        }
+
+        if (args.size >= 2 && args[0].equals("hat", true) && sender.hasPermission(Permission.HAT)
+        ) {
+            val petName = args[1]
+            val player =
+                findPlayer(sender, 2, args) ?: throw PetBlocksException(PetBlocksLanguage.playerNotFoundMessage)
+            val pet = findPetFromPlayer(player, petName)
+                ?: throw PetBlocksException(String.format(PetBlocksLanguage.petNotFoundMessage, petName))
+            pet.hat()
+            sender.sendMessage(String.format(PetBlocksLanguage.petHatMessage, petName))
+            return true
+        }
+
+        if (args.size >= 2 && args[0].equals("unmount", true) && sender.hasPermission(Permission.UNMOUNT)
+        ) {
+            val petName = args[1]
+            val player =
+                findPlayer(sender, 2, args) ?: throw PetBlocksException(PetBlocksLanguage.playerNotFoundMessage)
+            val pet = findPetFromPlayer(player, petName)
+                ?: throw PetBlocksException(String.format(PetBlocksLanguage.petNotFoundMessage, petName))
+            pet.fly()
+            sender.sendMessage(String.format(PetBlocksLanguage.petUnmountMessage, petName))
+            return true
         }
 
         if (args.size == 1 && args[0].equals("reload", true) && sender.hasPermission(Permission.RELOAD)) {

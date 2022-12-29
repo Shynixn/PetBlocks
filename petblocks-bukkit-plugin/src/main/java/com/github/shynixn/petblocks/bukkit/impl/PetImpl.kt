@@ -115,7 +115,13 @@ class PetImpl(
             }
 
             petMeta.lastStoredLocation = value.toVector3d()
-            petEntity?.teleportInWorld(value.toVector3d())
+
+            if (value.world?.name != petMeta.lastStoredLocation.world) {
+                remove()
+                spawn()
+            } else {
+                petEntity?.teleportInWorld(value.toVector3d())
+            }
         }
 
     /**
@@ -256,7 +262,7 @@ class PetImpl(
         }
 
         petMeta.ridingState = PetRidingState.GROUND
-        spawn()
+        call()
         petEntity?.updateRidingState(player)
     }
 
@@ -270,7 +276,7 @@ class PetImpl(
         }
 
         petMeta.ridingState = PetRidingState.FLY
-        spawn()
+        call()
         petEntity?.updateRidingState(player)
     }
 
@@ -284,7 +290,7 @@ class PetImpl(
         }
 
         petMeta.ridingState = PetRidingState.HAT
-        spawn()
+        call()
         petEntity?.updateRidingState(player)
     }
 

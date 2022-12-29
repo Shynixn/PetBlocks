@@ -1,6 +1,9 @@
 package com.github.shynixn.petblocks.bukkit
 
 object PetBlocksLanguage {
+  /** &f[&9PetBlocks&f] Started hat pet %s. **/
+  var petHatMessage : String = "&f[&9PetBlocks&f] Started hat pet %s."
+
   /** &f[&9PetBlocks&f] Pet with name %s has been called. **/
   var petCalledMessage : String = "&f[&9PetBlocks&f] Pet with name %s has been called."
 
@@ -22,6 +25,9 @@ object PetBlocksLanguage {
   /** &f[&9PetBlocks&f] &cVisibility with name %s does not exist. **/
   var visibilityNotFoundMessage : String = "&f[&9PetBlocks&f] &cVisibility with name %s does not exist."
 
+  /** &f[&9PetBlocks&f] Stopped mounting pet %s. **/
+  var petUnmountMessage : String = "&f[&9PetBlocks&f] Stopped mounting pet %s."
+
   /** &f[&9PetBlocks&f] Pet with name %s has been removed. **/
   var petDespawnedMessage : String = "&f[&9PetBlocks&f] Pet with name %s has been removed."
 
@@ -31,11 +37,11 @@ object PetBlocksLanguage {
   /** &f[&9PetBlocks&f] Your pets: %s **/
   var listPetsMessage : String = "&f[&9PetBlocks&f] Your pets: %s"
 
-  /** &f[&9PetBlocks&f] &cPlayer not found. **/
-  var playerNotFoundMessage : String = "&f[&9PetBlocks&f] &cPlayer not found."
-
   /** &f[&9PetBlocks&f] &cTemplate %s not found. **/
   var templateNotFoundMessage : String = "&f[&9PetBlocks&f] &cTemplate %s not found."
+
+  /** &f[&9PetBlocks&f] &cPlayer not found. **/
+  var playerNotFoundMessage : String = "&f[&9PetBlocks&f] &cPlayer not found."
 
   /** &f[&9PetBlocks&f] &cPet with name %s not found. **/
   var petNotFoundMessage : String = "&f[&9PetBlocks&f] &cPet with name %s not found."
@@ -45,4 +51,10 @@ object PetBlocksLanguage {
 
   /** &f[&9PetBlocks&f] &cPet with name %s has been deleted. **/
   var petDeletedMessage : String = "&f[&9PetBlocks&f] &cPet with name %s has been deleted."
+
+  /** &f[&9PetBlocks&f] Started flying pet %s. **/
+  var petFlyMessage : String = "&f[&9PetBlocks&f] Started flying pet %s."
+
+  /** &f[&9PetBlocks&f] Started riding pet %s. **/
+  var petRideMessage : String = "&f[&9PetBlocks&f] Started riding pet %s."
 }

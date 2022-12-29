@@ -6,13 +6,19 @@ enum class Permission(val text: String) {
     RELOAD("petblocks.reload"),
     HELP("petblocks.help"),
     CALL("petblocks.pet.call"),
-    AMOUNT("petblocks.pet.amount.1"),
+    RIDE("petblocks.pet.ride"),
+    FLY("petblocks.pet.fly"),
+    HAT("petblocks.pet.hat"),
+    UNMOUNT("petblocks.pet.unmount"),
     LIST("petblocks.pet.list"),
-    TEMPLATE("petblocks.pet.template.pet_hopping"),
     DELETE("petblocks.pet.delete"),
     DISPLAYNAME("petblocks.pet.displayName"),
     SPAWN("petblocks.pet.spawn"),
     DESPAWN("petblocks.pet.despawn"),
+    SKIN("petblocks.pet.skin"),
+
+
     VISIBILITY("petblocks.pet.visibility"),
-    SKIN("petblocks.pet.skin")
+    AMOUNT("petblocks.pet.amount.1"),
+    TEMPLATE("petblocks.pet.template.pet_hopping"),
 }
