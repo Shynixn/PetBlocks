@@ -61,7 +61,13 @@ class PetServiceImpl @Inject constructor(
                 val templateId = e.template
                 val template = templates.firstOrNull { inner -> inner.id.equals(templateId, true) }
                     ?: throw IllegalArgumentException("Player '${player.name}' has a pet, which references a template '${templateId}' which  does not exist!")
-                createPetInstance(player, e, template)
+                val pet = createPetInstance(player, e, template)
+
+                if (e.isSpawned) {
+                    pet.spawn()
+                }
+
+                pet
             }
             cache[player] = pets.toMutableList()
         }

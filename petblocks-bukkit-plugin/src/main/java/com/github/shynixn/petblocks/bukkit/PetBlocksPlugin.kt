@@ -19,6 +19,7 @@ import com.github.shynixn.petblocks.bukkit.service.PetTemplateRepository
 import com.google.inject.Guice
 import com.google.inject.Injector
 import org.bukkit.Bukkit
+import org.bukkit.event.player.PlayerJoinEvent
 import java.util.logging.Level
 
 class PetBlocksPlugin : SuspendingJavaPlugin(), PetBlocksResolvePlugin {
@@ -54,7 +55,8 @@ class PetBlocksPlugin : SuspendingJavaPlugin(), PetBlocksResolvePlugin {
         this.reloadConfig()
 
         // Register Listeners
-        Bukkit.getPluginManager().registerSuspendingEvents(resolve(PetListener::class.java), this)
+        val petListener = resolve(PetListener::class.java)
+        Bukkit.getPluginManager().registerSuspendingEvents(petListener, this)
 
         // Register CommandExecutors
         val configurationService = resolve(ConfigurationService::class.java)
@@ -77,6 +79,11 @@ class PetBlocksPlugin : SuspendingJavaPlugin(), PetBlocksResolvePlugin {
         playerDataRepository.createIfNotExist()
         val templateRepository = resolve(PetTemplateRepository::class.java)
         templateRepository.copyTemplatesIfNotExist()
+
+        // Fix already online players.
+        for (player in Bukkit.getOnlinePlayers()) {
+            petListener.onPlayerJoinEvent(PlayerJoinEvent(player, null))
+        }
 
         Bukkit.getServer().consoleSender.sendMessage(prefix + ChatColor.GREEN + "Enabled PetBlocks " + this.description.version + " by Shynixn")
     }

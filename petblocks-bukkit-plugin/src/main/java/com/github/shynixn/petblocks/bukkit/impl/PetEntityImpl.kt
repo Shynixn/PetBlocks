@@ -39,8 +39,7 @@ class PetEntityImpl(
     private val template: PetTemplate,
     private val petMeta: PetMeta,
     val moveToTargetComponent: MoveToTargetComponent,
-    val aiComponent: AIComponent<PetEntityImpl>,
-    private val mathComponentSettings: MathComponentSettings
+    val aiComponent: AIComponent<PetEntityImpl>
 ) : PhysicObject, PetEntity {
     private var positionUpdateCounter = 0
 
@@ -223,7 +222,6 @@ class PetEntityImpl(
             val ridingState = petMeta.ridingState
 
             if (ridingState == PetRidingState.NO) {
-                mathComponentSettings.rayTraceYOffset = 3.0
                 // Remove ground and fly
                 player.sendPacket(packetOutEntityMount {
                     this.entityId = entityComponent.entityId
@@ -275,6 +273,11 @@ class PetEntityImpl(
      * Ticks on minecraft thread.
      */
     override fun tickMinecraft() {
+        if (this.pet.isDisposed) {
+            this.remove()
+            return
+        }
+
         this.ownerLocation = this.pet.player.location.toVector3d()
         this.petMeta.lastStoredLocation = physicsComponent.position.clone()
         physicsComponent.tickMinecraft()

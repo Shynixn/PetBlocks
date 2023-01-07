@@ -63,8 +63,7 @@ class PetEntityFactoryImpl @Inject constructor(
             template,
             meta,
             moveToTargetComponent,
-            aiComponent,
-            mathComponentSettings
+            aiComponent
         )
 
         physicObjectService.addPhysicObject(petEntity)

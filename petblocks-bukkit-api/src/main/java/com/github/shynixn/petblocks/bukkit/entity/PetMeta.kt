@@ -24,6 +24,11 @@ class PetMeta {
     var template: String = "?"
 
     /**
+     * Is the pet currently spawned.
+     */
+    var isSpawned : Boolean = false
+
+    /**
      * Last persisted location of the pet.
      */
     @JsonIgnoreProperties(value = arrayOf("blockX", "blockY", "blockZ", "empty", "direction"))

@@ -38,6 +38,7 @@ class PetImpl(
                 if (!player.hasPermission(Permission.SPAWN.text) && !player.hasPermission(Permission.CALL.text)) {
                     petEntity?.remove()
                     petEntity = null
+                    petMeta.isSpawned = false
                 }
 
                 delay(5000)
@@ -116,11 +117,13 @@ class PetImpl(
 
             petMeta.lastStoredLocation = value.toVector3d()
 
-            if (value.world?.name != petMeta.lastStoredLocation.world) {
-                remove()
-                spawn()
-            } else {
-                petEntity?.teleportInWorld(value.toVector3d())
+            if (petEntity != null) {
+                if (value.world?.name != petMeta.lastStoredLocation.world) {
+                    remove()
+                    spawn()
+                } else {
+                    petEntity?.teleportInWorld(value.toVector3d())
+                }
             }
         }
 
@@ -204,6 +207,8 @@ class PetImpl(
         } else {
             petEntity!!.teleportInWorld(inFrontOfOwnerPosition)
         }
+
+        petMeta.isSpawned = true
     }
 
     /**
@@ -228,6 +233,7 @@ class PetImpl(
 
         petEntity!!.remove()
         petEntity = null
+        petMeta.isSpawned = false
     }
 
     /**
