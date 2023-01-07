@@ -10,10 +10,8 @@ import com.github.shynixn.mcutils.physicobject.api.AIAction
 import com.github.shynixn.petblocks.bukkit.impl.PetEntityImpl
 import org.bukkit.Bukkit
 import org.bukkit.Material
-import org.bukkit.plugin.Plugin
 
-class MoveToOwnerAction(private val pathfinderService: PathfinderService, private val plugin: Plugin) :
-    AIAction<PetEntityImpl> {
+class MoveToOwnerAction(private val pathfinderService: PathfinderService) : AIAction<PetEntityImpl> {
     private var playerLocation: Vector3d = Vector3d()
     private var worldSnapshot: WorldSnapshot? = null
     private var teleportInWorldRescue = 0
@@ -31,14 +29,10 @@ class MoveToOwnerAction(private val pathfinderService: PathfinderService, privat
      * Is called when the action is continued to execute.
      */
     override fun execute(actor: PetEntityImpl) {
-        val result =
-            pathfinderService.findPath(
-                worldSnapshot!!,
-                actor.physicsComponent.position.toLocation(),
-                playerLocation.toLocation()
-            )
+        val result = pathfinderService.findPath(
+            worldSnapshot!!, actor.physicsComponent.position.toLocation(), playerLocation.toLocation()
+        )
 
-        println(result.resultType)
         if (result.resultType == PathfinderResultType.FOUND) {
             //  visualizePath(result)
             actor.moveToTargetComponent.walkToTarget(result.steps)

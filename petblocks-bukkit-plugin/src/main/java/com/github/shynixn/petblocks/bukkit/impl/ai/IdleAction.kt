@@ -12,14 +12,13 @@ class IdleAction : AIAction<PetEntityImpl> {
         println("Idle")
 
         val ownerPosition = actor.ownerLocation.clone()
-        val directionVector = ownerPosition.subtract(actor.physicsComponent.position)
-        actor.physicsComponent.position.setDirection(directionVector)
 
-
-
-        actor.teleportInWorld(actor.physicsComponent.position.clone())
+        if (ownerPosition.world == actor.physicsComponent.position.world) {
+            val directionVector = ownerPosition.subtract(actor.physicsComponent.position)
+            actor.physicsComponent.position.setDirection(directionVector)
+            actor.teleportInWorld(actor.physicsComponent.position.clone())
+        }
     }
-
 
 
     /**

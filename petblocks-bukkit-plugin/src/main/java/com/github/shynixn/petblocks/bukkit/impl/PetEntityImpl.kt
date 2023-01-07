@@ -5,13 +5,15 @@ import com.github.shynixn.mccoroutine.bukkit.launch
 import com.github.shynixn.mccoroutine.bukkit.minecraftDispatcher
 import com.github.shynixn.mccoroutine.bukkit.ticks
 import com.github.shynixn.mcutils.common.Vector3d
+import com.github.shynixn.mcutils.common.toLocation
 import com.github.shynixn.mcutils.common.toVector3d
 import com.github.shynixn.mcutils.packet.api.*
+import com.github.shynixn.mcutils.physicobject.api.MathComponentSettings
 import com.github.shynixn.mcutils.physicobject.api.PhysicObject
 import com.github.shynixn.mcutils.physicobject.api.component.AIComponent
-import com.github.shynixn.mcutils.physicobject.api.component.MathComponent
 import com.github.shynixn.mcutils.physicobject.api.component.MoveToTargetComponent
 import com.github.shynixn.mcutils.physicobject.api.component.PlayerComponent
+import com.github.shynixn.mcutils.physicobject.impl.physicDispatcher
 import com.github.shynixn.petblocks.bukkit.Pet
 import com.github.shynixn.petblocks.bukkit.PetEntity
 import com.github.shynixn.petblocks.bukkit.entity.PetMeta
@@ -20,23 +22,28 @@ import com.github.shynixn.petblocks.bukkit.entity.PetTemplate
 import com.github.shynixn.petblocks.bukkit.entity.PetVisibility
 import com.github.shynixn.petblocks.bukkit.service.PetActionExecutionService
 import kotlinx.coroutines.delay
+import org.bukkit.FluidCollisionMode
 import org.bukkit.Location
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 import org.bukkit.plugin.Plugin
+import org.bukkit.util.Vector
 
 class PetEntityImpl(
-    val physicsComponent: MathComponent,
+    val physicsComponent: PetMathComponent,
     private val playerComponent: PlayerComponent,
     private val entityComponent: PetEntityRenderComponent,
-    plugin: Plugin,
+    private val plugin: Plugin,
     private val petActionExecutionService: PetActionExecutionService,
     private val pet: Pet,
     private val template: PetTemplate,
     private val petMeta: PetMeta,
     val moveToTargetComponent: MoveToTargetComponent,
     val aiComponent: AIComponent<PetEntityImpl>,
+    private val mathComponentSettings: MathComponentSettings
 ) : PhysicObject, PetEntity {
+    private var positionUpdateCounter = 0
+
     /**
      * Location of the owner.
      */
@@ -96,7 +103,74 @@ class PetEntityImpl(
      * Gets called when the player is riding the entity.
      */
     override fun ride(player: Player, forward: Double, sideward: Double, isJumping: Boolean) {
-        println("Ride: " + player + "-" + forward + "-" + sideward + "-" + isJumping)
+        positionUpdateCounter++
+        if (positionUpdateCounter > 10) {
+            // Required so the position of the player stays in sync while packet riding.
+            player.setPosition(physicsComponent.position)
+            positionUpdateCounter = 0
+        }
+
+        if (forward != 0.0) {
+            val movementVector = if (forward > 0.0) {
+                player.location.direction.normalize().multiply(0.5).toVector3d()
+            } else {
+                player.location.direction.normalize().multiply(-0.5).toVector3d()
+            }
+
+            val isOnGround = isOnGround(getLocation().toLocation())
+            val otherGround = physicsComponent.isOnGround
+
+            if (isJumping && isOnGround) {
+                movementVector.y = 0.5
+
+            } else if (isOnGround || otherGround) {
+                movementVector.y = 0.0
+            } else {
+                movementVector.y = -1.0
+            }
+
+            plugin.launch(plugin.physicDispatcher) {
+                physicsComponent.motion = movementVector
+            }
+        } else if (sideward != 0.0) {
+            val movementVector = if (sideward > 0.0) {
+                player.location.direction.normalize().rotateAroundY(90.0).multiply(0.5).toVector3d()
+            } else {
+                player.location.direction.normalize().rotateAroundY(-90.0).multiply(0.5).toVector3d()
+            }
+
+            val isOnGround = isOnGround(getLocation().toLocation())
+            val otherGround = physicsComponent.isOnGround
+
+            if (isJumping && isOnGround) {
+                movementVector.y = 0.5
+
+            } else if (isOnGround || otherGround) {
+                movementVector.y = 0.0
+            } else {
+                movementVector.y = -1.0
+            }
+
+            plugin.launch(plugin.physicDispatcher) {
+                physicsComponent.motion = movementVector
+            }
+        } else if (isJumping) {
+            val isOnGround = isOnGround(getLocation().toLocation())
+
+            if (isOnGround) {
+                plugin.launch(plugin.physicDispatcher) {
+                    physicsComponent.motion.y = 0.5
+                }
+            }
+        }
+
+        physicsComponent.position.yaw = player.location.yaw.toDouble()
+    }
+
+    private fun isOnGround(location: Location): Boolean {
+        val movingObjectPosition =
+            location.world!!.rayTraceBlocks(location, Vector(0, -1, 0), 2.0, FluidCollisionMode.NEVER, true)
+        return movingObjectPosition != null && movingObjectPosition.hitBlock != null
     }
 
     /**
@@ -149,6 +223,7 @@ class PetEntityImpl(
             val ridingState = petMeta.ridingState
 
             if (ridingState == PetRidingState.NO) {
+                mathComponentSettings.rayTraceYOffset = 3.0
                 // Remove ground and fly
                 player.sendPacket(packetOutEntityMount {
                     this.entityId = entityComponent.entityId
@@ -160,6 +235,8 @@ class PetEntityImpl(
             }
 
             if (ridingState == PetRidingState.HAT) {
+                mathComponentSettings.rayTraceYOffset = 3.0
+
                 // Remove ground and fly
                 player.sendPacket(packetOutEntityMount {
                     this.entityId = entityComponent.entityId
@@ -172,6 +249,9 @@ class PetEntityImpl(
             }
 
             if (ridingState == PetRidingState.GROUND) {
+                // Otherwise sink in ground.
+                mathComponentSettings.rayTraceYOffset = 1.5
+
                 // Remove hat
                 player.sendPacket(packetOutEntityMount {
                     this.entityId = player.entityId

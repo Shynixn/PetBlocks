@@ -36,7 +36,6 @@ class PetBlocksCommandExecutor @Inject constructor(
         CommandDefinition("spawn", Permission.SPAWN, "/petblocks spawn <name> [player]"),
         CommandDefinition("despawn", Permission.DESPAWN, "/petblocks despawn <name> [player]"),
         CommandDefinition("ride", Permission.RIDE, "/petblocks ride <name> [player]"),
-        CommandDefinition("fly", Permission.FLY, "/petblocks fly <name> [player]"),
         CommandDefinition("hat", Permission.HAT, "/petblocks hat <name> [player]"),
         CommandDefinition("unmount", Permission.UNMOUNT, "/petblocks unmount <name> [player]"),
         CommandDefinition(
@@ -228,18 +227,6 @@ class PetBlocksCommandExecutor @Inject constructor(
             return true
         }
 
-        if (args.size >= 2 && args[0].equals("fly", true) && sender.hasPermission(Permission.FLY)
-        ) {
-            val petName = args[1]
-            val player =
-                findPlayer(sender, 2, args) ?: throw PetBlocksException(PetBlocksLanguage.playerNotFoundMessage)
-            val pet = findPetFromPlayer(player, petName)
-                ?: throw PetBlocksException(String.format(PetBlocksLanguage.petNotFoundMessage, petName))
-            pet.fly()
-            sender.sendMessage(String.format(PetBlocksLanguage.petFlyMessage, petName))
-            return true
-        }
-
         if (args.size >= 2 && args[0].equals("hat", true) && sender.hasPermission(Permission.HAT)
         ) {
             val petName = args[1]
@@ -259,7 +246,7 @@ class PetBlocksCommandExecutor @Inject constructor(
                 findPlayer(sender, 2, args) ?: throw PetBlocksException(PetBlocksLanguage.playerNotFoundMessage)
             val pet = findPetFromPlayer(player, petName)
                 ?: throw PetBlocksException(String.format(PetBlocksLanguage.petNotFoundMessage, petName))
-            pet.fly()
+            pet.umount()
             sender.sendMessage(String.format(PetBlocksLanguage.petUnmountMessage, petName))
             return true
         }

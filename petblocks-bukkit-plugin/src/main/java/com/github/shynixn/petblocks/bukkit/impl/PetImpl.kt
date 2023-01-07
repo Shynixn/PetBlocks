@@ -261,22 +261,8 @@ class PetImpl(
             throw PetBlocksPetDisposedException()
         }
 
+        call()
         petMeta.ridingState = PetRidingState.GROUND
-        call()
-        petEntity?.updateRidingState(player)
-    }
-
-    /**
-     * Starts flying the pet around.
-     * Spawns the pet if it is not spawned.
-     */
-    override fun fly() {
-        if (isDisposed) {
-            throw PetBlocksPetDisposedException()
-        }
-
-        petMeta.ridingState = PetRidingState.FLY
-        call()
         petEntity?.updateRidingState(player)
     }
 
@@ -289,8 +275,8 @@ class PetImpl(
             throw PetBlocksPetDisposedException()
         }
 
-        petMeta.ridingState = PetRidingState.HAT
         call()
+        petMeta.ridingState = PetRidingState.HAT
         petEntity?.updateRidingState(player)
     }
 
@@ -311,13 +297,6 @@ class PetImpl(
      */
     override fun isRiding(): Boolean {
         return petEntity != null && petMeta.ridingState == PetRidingState.GROUND
-    }
-
-    /**
-     * Is the owner flying on the pet.
-     */
-    override fun isFlying(): Boolean {
-        return petEntity != null && petMeta.ridingState == PetRidingState.FLY
     }
 
     /**

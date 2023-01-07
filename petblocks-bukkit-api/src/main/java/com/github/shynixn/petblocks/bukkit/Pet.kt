@@ -80,12 +80,6 @@ interface Pet {
     fun ride()
 
     /**
-     * Starts flying the pet around.
-     * Spawns the pet if it is not spawned.
-     */
-    fun fly()
-
-    /**
      * Starts wearing the pet as a hat.
      * Spawns the pet if it is not spawned.
      */
@@ -100,11 +94,6 @@ interface Pet {
      * Is the owner riding on the pet.
      */
     fun isRiding(): Boolean
-
-    /**
-     * Is the owner flying on the pet.
-     */
-    fun isFlying(): Boolean
 
     /**
      * Is owner wearing the pet on its head?

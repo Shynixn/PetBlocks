@@ -3,7 +3,6 @@ package com.github.shynixn.petblocks.bukkit.impl
 import com.github.shynixn.mcutils.common.*
 import com.github.shynixn.mcutils.packet.api.*
 import com.github.shynixn.mcutils.physicobject.api.PhysicComponent
-import com.github.shynixn.mcutils.physicobject.api.component.MathComponent
 import com.github.shynixn.mcutils.physicobject.api.component.PlayerComponent
 import com.github.shynixn.petblocks.bukkit.entity.PetMeta
 import com.github.shynixn.petblocks.bukkit.entity.PetRidingState
@@ -12,7 +11,7 @@ import org.bukkit.Location
 import org.bukkit.entity.Player
 
 class PetEntityRenderComponent(
-    private val physicsComponent: MathComponent,
+    private val physicsComponent: PetMathComponent,
     private val playerComponent: PlayerComponent,
     val entityId: Int,
     val petMeta: PetMeta,
@@ -55,7 +54,7 @@ class PetEntityRenderComponent(
 
         }
 
-        if (petMeta.ridingState == PetRidingState.GROUND || petMeta.ridingState == PetRidingState.FLY) {
+        if (petMeta.ridingState == PetRidingState.GROUND) {
 
         }
     }
@@ -82,7 +81,7 @@ class PetEntityRenderComponent(
             })
             player.sendPacket(packetOutEntityTeleport {
                 this.entityId = outer.entityId
-                this.target = position.clone().addRelativeDown(0.5).toLocation()
+                this.target = position.clone().addRelativeUp(-1.0).toLocation()
             })
         }
     }
