@@ -9,8 +9,6 @@ class IdleAction : AIAction<PetEntityImpl> {
      */
     override fun execute(actor: PetEntityImpl) {
         // Make look at owner.
-        println("Idle")
-
         val ownerPosition = actor.ownerLocation.clone()
 
         if (ownerPosition.world == actor.physicsComponent.position.world) {

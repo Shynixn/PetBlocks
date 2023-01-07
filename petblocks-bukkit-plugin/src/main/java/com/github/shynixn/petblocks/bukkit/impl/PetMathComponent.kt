@@ -137,9 +137,9 @@ class PetMathComponent(
                 true
             )
 
-        val isOnGround = movingObjectPosition != null && movingObjectPosition.hitBlock != null
+        this.isOnGround = movingObjectPosition != null && movingObjectPosition.hitBlock != null
 
-        if (isOnGround) {
+        if (this.isOnGround) {
             if (rayTraceResult.hitBlock && rayTraceResult.blockDirection != BlockDirection.UP) {
                 calculateObjectInAir(this.position)
             } else {

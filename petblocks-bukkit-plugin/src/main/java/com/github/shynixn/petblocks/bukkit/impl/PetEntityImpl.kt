@@ -169,7 +169,7 @@ class PetEntityImpl(
 
     private fun isOnGround(location: Location): Boolean {
         val movingObjectPosition =
-            location.world!!.rayTraceBlocks(location, Vector(0, -1, 0), 2.0, FluidCollisionMode.NEVER, true)
+            location.world!!.rayTraceBlocks(location, Vector(0, -1, 0), 1.0, FluidCollisionMode.NEVER, true)
         return movingObjectPosition != null && movingObjectPosition.hitBlock != null
     }
 
@@ -235,8 +235,6 @@ class PetEntityImpl(
             }
 
             if (ridingState == PetRidingState.HAT) {
-                mathComponentSettings.rayTraceYOffset = 3.0
-
                 // Remove ground and fly
                 player.sendPacket(packetOutEntityMount {
                     this.entityId = entityComponent.entityId
@@ -249,9 +247,6 @@ class PetEntityImpl(
             }
 
             if (ridingState == PetRidingState.GROUND) {
-                // Otherwise sink in ground.
-                mathComponentSettings.rayTraceYOffset = 1.5
-
                 // Remove hat
                 player.sendPacket(packetOutEntityMount {
                     this.entityId = player.entityId

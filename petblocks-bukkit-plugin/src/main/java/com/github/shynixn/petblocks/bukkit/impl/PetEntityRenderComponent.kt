@@ -51,11 +51,17 @@ class PetEntityRenderComponent(
         })
 
         if (petMeta.ridingState == PetRidingState.HAT) {
-
+            player.sendPacket(packetOutEntityMount {
+                this.entityId = player.entityId
+                this.passengers = listOf(outer.entityId)
+            })
         }
 
         if (petMeta.ridingState == PetRidingState.GROUND) {
-
+            player.sendPacket(packetOutEntityMount {
+                this.entityId = outer.entityId
+                this.passengers = listOf(player.entityId)
+            })
         }
     }
 
