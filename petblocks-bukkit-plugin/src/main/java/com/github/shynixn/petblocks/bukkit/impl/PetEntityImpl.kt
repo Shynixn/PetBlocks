@@ -21,6 +21,7 @@ import com.github.shynixn.petblocks.bukkit.entity.PetRidingState
 import com.github.shynixn.petblocks.bukkit.entity.PetTemplate
 import com.github.shynixn.petblocks.bukkit.entity.PetVisibility
 import com.github.shynixn.petblocks.bukkit.service.PetActionExecutionService
+import com.github.shynixn.petblocks.bukkit.service.PlaceHolderService
 import kotlinx.coroutines.delay
 import org.bukkit.FluidCollisionMode
 import org.bukkit.Location
@@ -38,6 +39,7 @@ class PetEntityImpl(
     private val pet: Pet,
     private val template: PetTemplate,
     private val petMeta: PetMeta,
+    private val placeHolderService: PlaceHolderService,
     val moveToTargetComponent: MoveToTargetComponent,
     val aiComponent: AIComponent<PetEntityImpl>
 ) : PhysicObject, PetEntity {
@@ -192,7 +194,8 @@ class PetEntityImpl(
         for (player in playerComponent.visiblePlayers) {
             player.sendPacket(packetOutEntityMetadata {
                 this.entityId = entityComponent.entityId
-                this.customname = name
+                this.customname = placeHolderService.replacePetPlaceHolders(player, pet, name)
+                this.customNameVisible = true
             })
         }
     }

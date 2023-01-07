@@ -23,7 +23,8 @@ class PetEntityFactoryImpl @Inject constructor(
     private val physicObjectService: PhysicObjectService,
     private val plugin: Plugin,
     private val petActionExecutionService: PetActionExecutionService,
-    private val pathfinderService: PathfinderService
+    private val pathfinderService: PathfinderService,
+    private val placeHolderService: PlaceHolderService
 ) : PetEntityFactory {
     /**
      * Creates a new pet entity.
@@ -44,7 +45,7 @@ class PetEntityFactoryImpl @Inject constructor(
         val armorStandEntityId = physicObjectService.createNewEntityId()
 
         val armorstandEntityComponent =
-            PetEntityRenderComponent(mathPhysicComponent, playerComponent, armorStandEntityId, meta, pet.player)
+            PetEntityRenderComponent(mathPhysicComponent, playerComponent, armorStandEntityId, meta, pet,placeHolderService, pet.player)
 
         val moveToTargetComponent = MoveToTargetComponent(mathPhysicComponent, 0.2)
 
@@ -62,6 +63,7 @@ class PetEntityFactoryImpl @Inject constructor(
             pet,
             template,
             meta,
+            placeHolderService,
             moveToTargetComponent,
             aiComponent
         )

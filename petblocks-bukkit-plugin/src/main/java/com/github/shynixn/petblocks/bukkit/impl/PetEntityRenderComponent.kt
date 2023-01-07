@@ -4,9 +4,11 @@ import com.github.shynixn.mcutils.common.*
 import com.github.shynixn.mcutils.packet.api.*
 import com.github.shynixn.mcutils.physicobject.api.PhysicComponent
 import com.github.shynixn.mcutils.physicobject.api.component.PlayerComponent
+import com.github.shynixn.petblocks.bukkit.Pet
 import com.github.shynixn.petblocks.bukkit.entity.PetMeta
 import com.github.shynixn.petblocks.bukkit.entity.PetRidingState
 import com.github.shynixn.petblocks.bukkit.entity.PetVisibility
+import com.github.shynixn.petblocks.bukkit.service.PlaceHolderService
 import org.bukkit.Location
 import org.bukkit.entity.Player
 
@@ -15,6 +17,8 @@ class PetEntityRenderComponent(
     private val playerComponent: PlayerComponent,
     val entityId: Int,
     val petMeta: PetMeta,
+    private val pet: Pet,
+    private val placeHolderService: PlaceHolderService,
     /**
      * Reference to the owner.
      */
@@ -48,6 +52,9 @@ class PetEntityRenderComponent(
         player.sendPacket(packetOutEntityMetadata {
             this.entityId = outer.entityId
             this.isInvisible = false
+            this.customname =
+                placeHolderService.replacePetPlaceHolders(player, pet, petMeta.displayName.translateChatColors())
+            this.customNameVisible = true
         })
 
         if (petMeta.ridingState == PetRidingState.HAT) {

@@ -296,6 +296,7 @@ class PetImpl(
 
         petMeta.ridingState = PetRidingState.NO
         petEntity?.updateRidingState(player)
+        call()
     }
 
     /**

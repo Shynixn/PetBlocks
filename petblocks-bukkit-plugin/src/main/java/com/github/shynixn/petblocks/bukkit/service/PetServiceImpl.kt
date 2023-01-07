@@ -150,10 +150,15 @@ class PetServiceImpl @Inject constructor(
      *  Deletes the given pet.
      */
     override suspend fun deletePet(pet: Pet) {
+        val player = pet.player
         pet.dispose()
-        val playerInformation = petMetaRepository.getByPlayer(pet.player) ?: return
+        val playerInformation = petMetaRepository.getByPlayer(player) ?: return
         val petMetaToDelete = playerInformation.pets.firstOrNull { e -> e.name == pet.name } ?: return
         playerInformation.pets.remove(petMetaToDelete)
+
+        if (cache.containsKey(player)) {
+            cache[player]!!.remove(pet)
+        }
     }
 
     /**
