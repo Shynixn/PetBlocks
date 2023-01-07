@@ -12,7 +12,8 @@ dependencies {
     implementation("com.google.inject:guice:5.0.1")
     implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.14.1")
     implementation("com.fasterxml.jackson.core:jackson-databind:2.14.1")
-    runtimeOnly("com.zaxxer:HikariCP:4.0.3")
+    implementation("com.zaxxer:HikariCP:4.0.3")
+    implementation("org.openjdk.nashorn:nashorn-core:15.4")
 
     implementation("com.github.shynixn.mcutils:common:1.0.19")
     implementation("com.github.shynixn.mcutils:packet:1.0.37")

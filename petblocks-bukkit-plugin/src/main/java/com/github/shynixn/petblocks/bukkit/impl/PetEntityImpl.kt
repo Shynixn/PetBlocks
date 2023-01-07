@@ -8,7 +8,6 @@ import com.github.shynixn.mcutils.common.Vector3d
 import com.github.shynixn.mcutils.common.toLocation
 import com.github.shynixn.mcutils.common.toVector3d
 import com.github.shynixn.mcutils.packet.api.*
-import com.github.shynixn.mcutils.physicobject.api.MathComponentSettings
 import com.github.shynixn.mcutils.physicobject.api.PhysicObject
 import com.github.shynixn.mcutils.physicobject.api.component.AIComponent
 import com.github.shynixn.mcutils.physicobject.api.component.MoveToTargetComponent
@@ -54,7 +53,7 @@ class PetEntityImpl(
         aiComponent.actor = this
         plugin.launch(plugin.minecraftDispatcher + object : CoroutineTimings() {}) {
             while (!isDead) {
-                //   petActionExecutionService.executeAction(pet, template.loopDefinition)
+                petActionExecutionService.executeAction(pet, template.loopDefinition)
                 delay(1.ticks)
             }
         }
@@ -91,13 +90,18 @@ class PetEntityImpl(
      * LeftClick on the physic object.
      */
     override fun leftClick(player: Player) {
+        plugin.launch {
+            petActionExecutionService.executeAction(pet, template.leftClickDefinition)
+        }
     }
 
     /**
      * RightClick on the physic object.
      */
     override fun rightClick(player: Player) {
-        petActionExecutionService.executeAction(pet, template.rightClickDefinition)
+        plugin.launch {
+            petActionExecutionService.executeAction(pet, template.rightClickDefinition)
+        }
     }
 
     /**

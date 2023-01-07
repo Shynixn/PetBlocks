@@ -23,8 +23,9 @@ riding: "NO"
 #
 # Defines the action a pet should perform when a player rightclicks on it.
 #
-rightclick:
+rightClick:
   enabled: true
+  cooldown: 20
   actions:
     - name: "Open the deluxe menu"
       type: "command"
@@ -34,17 +35,27 @@ rightclick:
     - name: "Play Heart Particles if rightclick with carrort"
       type: "command"
       level: "PLAYER"
-      debug: "%petblocks_player_inventory_itemInMainHand_type%"
       condition: "%petblocks_player_inventory_itemInMainHand_type% == 'CARROT'"
       run: |
         /tell %petblocks_player_name% I love carrots <3
         /tell %petblocks_player_name% YES I LOVE THEM!
 
+
+leftClick:
+  enabled: true
+  cooldown: 20
+  actions:
+    - name: "Play hurt particles when clicked on."
+      type: "command"
+      level: "PLAYER"
+      run: |
+        /tell %petblocks_player_name% Ouch. That hurt.
 #
 # Defines the action a pet should perform in an interval on its own.
 #
 loop:
   enabled: true
+  cooldownTicks: 1
   actions:
     - name: "Delay Action"
       type: "delay"

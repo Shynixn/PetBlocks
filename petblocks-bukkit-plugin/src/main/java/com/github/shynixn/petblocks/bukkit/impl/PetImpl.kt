@@ -24,7 +24,7 @@ class PetImpl(
      */
     private var playerParam: Player?,
     private val petMeta: PetMeta,
-    private val template: PetTemplate,
+    override val template: PetTemplate,
     private val petEntityFactory: PetEntityFactory,
     plugin: Plugin
 ) : Pet {
@@ -292,6 +292,10 @@ class PetImpl(
     override fun umount() {
         if (isDisposed) {
             throw PetBlocksPetDisposedException()
+        }
+
+        if (petMeta.ridingState == PetRidingState.NO) {
+            return
         }
 
         petMeta.ridingState = PetRidingState.NO

@@ -1,6 +1,7 @@
 package com.github.shynixn.petblocks.bukkit
 
 import com.github.shynixn.mcutils.common.Item
+import com.github.shynixn.petblocks.bukkit.entity.PetTemplate
 import com.github.shynixn.petblocks.bukkit.entity.PetVisibility
 import org.bukkit.Location
 import org.bukkit.entity.Player
@@ -43,17 +44,22 @@ interface Pet {
     /**
      * Gets or sets the itemStack being rendered.
      */
-    var headItemStack : ItemStack
+    var headItemStack: ItemStack
 
     /**
      * Gets or sets the itemStack in ItemFormat.
      */
-    var headItem : Item
+    var headItem: Item
 
     /**
      * Gets if the pet has been disposed. The pet can no longer be used then.
      */
     val isDisposed: Boolean
+
+    /**
+     * Gets the template.
+     */
+    val template: PetTemplate
 
     /**
      * Calls the pet to the player. Spawns the pet if it is not spawned, and places the pet

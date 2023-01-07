@@ -220,6 +220,9 @@ class PetBlocksCommandExecutor @Inject constructor(
             val petName = args[1]
             val player =
                 findPlayer(sender, 2, args) ?: throw PetBlocksException(PetBlocksLanguage.playerNotFoundMessage)
+            petService.getPetsFromPlayer(player).forEach { pet ->
+                pet.umount()
+            }
             val pet = findPetFromPlayer(player, petName)
                 ?: throw PetBlocksException(String.format(PetBlocksLanguage.petNotFoundMessage, petName))
             pet.ride()
@@ -229,9 +232,13 @@ class PetBlocksCommandExecutor @Inject constructor(
 
         if (args.size >= 2 && args[0].equals("hat", true) && sender.hasPermission(Permission.HAT)
         ) {
+
             val petName = args[1]
             val player =
                 findPlayer(sender, 2, args) ?: throw PetBlocksException(PetBlocksLanguage.playerNotFoundMessage)
+            petService.getPetsFromPlayer(player).forEach { pet ->
+                pet.umount()
+            }
             val pet = findPetFromPlayer(player, petName)
                 ?: throw PetBlocksException(String.format(PetBlocksLanguage.petNotFoundMessage, petName))
             pet.hat()

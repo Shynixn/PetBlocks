@@ -7,5 +7,5 @@ interface PetActionExecutionService {
     /**
      * Executes an pet action.
      */
-    fun executeAction(pet: Pet, petActionDefinition: PetActionDefinition)
+    suspend fun executeAction(pet: Pet, petActionDefinition: PetActionDefinition)
 }

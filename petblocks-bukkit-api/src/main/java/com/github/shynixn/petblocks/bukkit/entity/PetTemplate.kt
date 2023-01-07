@@ -17,7 +17,17 @@ class PetTemplate {
     var rightClickDefinition: PetActionDefinition = PetActionDefinition()
 
     /**
+     * All leftclick actions.
+     */
+    var leftClickDefinition: PetActionDefinition = PetActionDefinition()
+
+    /**
      * All loop actions.
      */
     var loopDefinition: PetActionDefinition = PetActionDefinition()
+
+    /**
+     * A sneak definition.
+     */
+    var sneakDefinition: PetActionDefinition = PetActionDefinition()
 }

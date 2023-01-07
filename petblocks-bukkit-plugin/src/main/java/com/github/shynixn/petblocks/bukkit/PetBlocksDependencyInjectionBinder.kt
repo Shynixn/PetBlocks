@@ -34,6 +34,7 @@ class PetBlocksDependencyInjectionBinder(private val plugin: PetBlocksPlugin) : 
         bind(PetEntityFactory::class.java).to(PetEntityFactoryImpl::class.java).`in`(Scopes.SINGLETON)
         bind(PetService::class.java).to(PetServiceImpl::class.java).`in`(Scopes.SINGLETON)
         bind(PlaceHolderService::class.java).to(PlaceHolderServiceImpl::class.java).`in`(Scopes.SINGLETON)
+        bind(ConditionService::class.java).to(ConditionServiceImpl::class.java).`in`(Scopes.SINGLETON)
 
         // Build Common Module
         bind(ConfigurationService::class.java).toInstance(ConfigurationServiceImpl(plugin))

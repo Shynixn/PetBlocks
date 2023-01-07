@@ -14,6 +14,7 @@ import com.github.shynixn.mcutils.database.api.SqlConnectionService
 import com.github.shynixn.mcutils.physicobject.api.PhysicObjectService
 import com.github.shynixn.petblocks.bukkit.commandexecutor.PetBlocksCommandExecutor
 import com.github.shynixn.petblocks.bukkit.listener.PetListener
+import com.github.shynixn.petblocks.bukkit.service.ConditionService
 import com.github.shynixn.petblocks.bukkit.service.PetService
 import com.github.shynixn.petblocks.bukkit.service.PetTemplateRepository
 import com.google.inject.Guice
@@ -84,6 +85,9 @@ class PetBlocksPlugin : SuspendingJavaPlugin(), PetBlocksResolvePlugin {
         for (player in Bukkit.getOnlinePlayers()) {
             petListener.onPlayerJoinEvent(PlayerJoinEvent(player, null))
         }
+
+
+        println("Result: "+ resolve(ConditionService::class.java).evaluate("'nice Meme' == 'nice Meme'"))
 
         Bukkit.getServer().consoleSender.sendMessage(prefix + ChatColor.GREEN + "Enabled PetBlocks " + this.description.version + " by Shynixn")
     }
