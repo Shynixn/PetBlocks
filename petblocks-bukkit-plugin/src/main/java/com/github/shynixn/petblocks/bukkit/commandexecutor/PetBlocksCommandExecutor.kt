@@ -28,7 +28,7 @@ class PetBlocksCommandExecutor @Inject constructor(
     private val plugin: Plugin,
     private val configurationService: ConfigurationService
 ) : SuspendingCommandExecutor, SuspendingTabCompleter {
-    private var allCommands = arrayListOf<CommandDefinition>(
+    private var allCommands = arrayListOf(
         CommandDefinition("create", Permission.CREATE, "/petblocks create <name> <template> [player]"),
         CommandDefinition("delete", Permission.DELETE, "/petblocks delete <name> [player]"),
         CommandDefinition("list", Permission.LIST, "/petblocks list [player]"),

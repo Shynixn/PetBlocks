@@ -7,10 +7,8 @@ id: "pet_hopping"
 # Permission to allow players to change this value 'petblocks.pet.displayName'
 # Command /petblocks <name> displayName <value>
 displayName: "%petblocks_player_name%'s pet"
-# Should the name of the pet be shown above the pet?
-# Permission to allow players to change this value 'petblocks.pet.isDisplayNameVisible'
-# Command /petblocks <name> isDisplayNameVisible <true/false>
-isDisplayNameVisible: true
+# Should the pet immediately spawn once the create command has been executed?
+isSpawned: true
 # Should the pet be shown to all players (e.g. 'ALL') or shown to just the owner (e.g. 'OWNER')?
 # Permission to allow players to change this value 'petblocks.pet.visibility'
 # Command /petblocks <name> visibility <value>
@@ -20,6 +18,12 @@ visibility: "ALL"
 # Permissions to allow players to change this value 'petblocks.pet.riding.no', 'petblocks.pet.riding.ground'.
 # Command /petblocks <name> visibility <value>
 riding: "NO"
+# Defines the item being rendered for the pet.
+item:
+  # TypeName or id of the material.
+  typeName: 'GRASS_BLOCK'
+  # Optional NBT Tags for the item.
+  nbt: '{}'
 #
 # Defines the action a pet should perform when a player rightclicks on it.
 #
@@ -39,8 +43,9 @@ rightClick:
       run: |
         /tell %petblocks_player_name% I love carrots <3
         /tell %petblocks_player_name% YES I LOVE THEM!
-
-
+#
+# Defines the action a pet should perform when a player leftclicks on it.
+#
 leftClick:
   enabled: true
   cooldown: 20
@@ -65,4 +70,3 @@ loop:
       level: "SERVER"
       run: |
         /effect %petblocks_player_name% 5 5 5 %petblocks_pet_location_front_3%
-

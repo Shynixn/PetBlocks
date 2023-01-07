@@ -299,8 +299,11 @@ class PetImpl(
         }
 
         petMeta.ridingState = PetRidingState.NO
-        petEntity?.updateRidingState(player)
-        call()
+
+        if (petEntity != null) {
+            petEntity!!.updateRidingState(player)
+            call()
+        }
     }
 
     /**

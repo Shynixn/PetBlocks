@@ -13,6 +13,7 @@ import org.bukkit.Location
 import org.bukkit.entity.Player
 import org.bukkit.plugin.Plugin
 import java.util.concurrent.CompletionStage
+import java.util.logging.Level
 
 class PetServiceImpl @Inject constructor(
     private val petMetaRepository: PlayerDataRepository<PlayerInformation>,
@@ -61,10 +62,22 @@ class PetServiceImpl @Inject constructor(
                 val templateId = e.template
                 val template = templates.firstOrNull { inner -> inner.id.equals(templateId, true) }
                     ?: throw IllegalArgumentException("Player '${player.name}' has a pet, which references a template '${templateId}' which  does not exist!")
+
+                if (template.fileHashCode != e.templateHashCode) {
+                    applyPetTemplateToPetMeta(player, template, e)
+                    plugin.logger.log(
+                        Level.INFO,
+                        "Pet '${e.name}' uses template version '${e.templateHashCode}' but template has been changed to version '${template.fileHashCode}'. The latest template version has been applied to this pet."
+                    )
+                }
+
                 val pet = createPetInstance(player, e, template)
 
+                // Fix pet state.
                 if (e.isSpawned) {
                     pet.spawn()
+                } else {
+                    pet.umount()
                 }
 
                 pet
@@ -112,11 +125,10 @@ class PetServiceImpl @Inject constructor(
             throw IllegalArgumentException("Template '${templateId}' does not exist!")
         }
 
-        val petMeta = PetMeta().also {
-            it.template = templateId
-            it.name = name
-            it.displayName = placeHolderService.replacePlaceHolders(player, template.displayName)
-        }
+        val petMeta = PetMeta()
+        petMeta.name = name
+        petMeta.template = templateId
+        applyPetTemplateToPetMeta(player, template, petMeta)
 
         // Create pet instance.
         val pet = createPetInstance(player, petMeta, template)
@@ -143,6 +155,11 @@ class PetServiceImpl @Inject constructor(
         playerInformation.pets.add(petMeta)
 
         cache[player]!!.add(pet)
+
+        if (petMeta.isSpawned) {
+            pet.spawn()
+        }
+
         return PetSpawnResult(PetSpawnResultType.SUCCESS, pet)
     }
 
@@ -181,6 +198,17 @@ class PetServiceImpl @Inject constructor(
         }
 
         cache.values.clear()
+    }
+
+    /**
+     * Applies data to the petMeta.
+     */
+    private fun applyPetTemplateToPetMeta(player: Player, template: PetTemplate, petMeta: PetMeta) {
+        petMeta.displayName = placeHolderService.replacePlaceHolders(player, template.displayName)
+        petMeta.templateHashCode = template.fileHashCode
+        petMeta.isSpawned = template.isSpawned
+        petMeta.visibility = template.visibility
+        petMeta.ridingState = template.ridingState
     }
 
     /**

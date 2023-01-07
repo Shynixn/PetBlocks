@@ -8,9 +8,11 @@ import com.fasterxml.jackson.dataformat.yaml.YAMLGenerator
 import com.github.shynixn.petblocks.bukkit.entity.PetTemplate
 import kotlinx.coroutines.*
 import org.bukkit.plugin.Plugin
+import java.math.BigInteger
 import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.StandardCopyOption
+import java.security.MessageDigest
 import java.util.logging.Level
 
 class PetTemplateRepositoryImpl(
@@ -65,13 +67,16 @@ class PetTemplateRepositoryImpl(
             coroutineScope {
                 cache = async(Dispatchers.IO) {
                     val templates = ArrayList<PetTemplate>()
+                    val md5 = MessageDigest.getInstance("MD5")
 
                     for (file in folder.toFile().listFiles()) {
                         if (file.name.endsWith(".yml")) {
                             val template = objectMapper.readValue<PetTemplate>(
                                 file, typeReference
                             )
-
+                            template.fileHashCode =
+                                BigInteger(1, md5.digest(Files.readAllBytes(file.toPath()))).toString(16)
+                                    .padStart(32, '0')
                             templates.add(template)
                         }
                     }

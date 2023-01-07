@@ -24,15 +24,14 @@ class PetMeta {
     var template: String = "?"
 
     /**
-     * Is the pet currently spawned.
+     * Used to check which template version has been used.
      */
-    var isSpawned : Boolean = false
+    var templateHashCode: String = ""
 
     /**
-     * Last persisted location of the pet.
+     * Is the pet currently spawned.
      */
-    @JsonIgnoreProperties(value = arrayOf("blockX", "blockY", "blockZ", "empty", "direction"))
-    var lastStoredLocation: Vector3d = Vector3d()
+    var isSpawned: Boolean = false
 
     /**
      * Visibility state.
@@ -47,5 +46,11 @@ class PetMeta {
     /**
      * The item the pet is wearing.
      */
-    var headItem : Item = Item("HEAD")
+    var headItem: Item = Item("HEAD")
+
+    /**
+     * Last persisted location of the pet.
+     */
+    @JsonIgnoreProperties(value = arrayOf("blockX", "blockY", "blockZ", "empty", "direction"))
+    var lastStoredLocation: Vector3d = Vector3d()
 }
