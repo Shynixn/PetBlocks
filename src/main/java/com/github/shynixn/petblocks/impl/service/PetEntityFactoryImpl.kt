@@ -38,6 +38,11 @@ class PetEntityFactoryImpl @Inject constructor(
      * Creates a new pet entity.
      */
     override fun createPetEntity(pet: Pet, meta: PetMeta, template: PetTemplate): PetEntityImpl {
+        if (meta.lastStoredLocation.world == null) {
+            // On First spawn
+            meta.lastStoredLocation = pet.player.location.toVector3d()
+        }
+
         val location = pet.location
         val mathComponentSettings = MathSettings()
         // Needed that pets can work stairs.

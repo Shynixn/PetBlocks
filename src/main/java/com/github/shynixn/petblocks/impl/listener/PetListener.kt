@@ -40,7 +40,7 @@ class PetListener @Inject constructor(
         petService.clearCache(event.player)
 
         if (pets.isNotEmpty()) {
-            plugin.logger.log(Level.INFO, "Unloaded pets for player ${event.player.name}.")
+            plugin.logger.log(Level.INFO, "Unloaded pets of player ${event.player.name}.")
         }
     }
 

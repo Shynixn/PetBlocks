@@ -2,6 +2,7 @@ package com.github.shynixn.petblocks.impl.service
 
 import com.github.shynixn.mccoroutine.bukkit.scope
 import com.github.shynixn.mcutils.common.repository.Repository
+import com.github.shynixn.mcutils.database.api.CachePlayerRepository
 import com.github.shynixn.mcutils.database.api.PlayerDataRepository
 import com.github.shynixn.petblocks.contract.Pet
 import com.github.shynixn.petblocks.contract.PetEntityFactory
@@ -20,15 +21,16 @@ import org.bukkit.Bukkit
 import org.bukkit.Location
 import org.bukkit.entity.Player
 import org.bukkit.plugin.Plugin
+import java.util.UUID
 import java.util.concurrent.CompletionStage
 import java.util.logging.Level
 
 class PetServiceImpl @Inject constructor(
-    private val petMetaRepository: PlayerDataRepository<PlayerInformation>,
+    private val petMetaRepository: CachePlayerRepository<PlayerInformation>,
     private val plugin: Plugin,
     private val petEntityFactory: PetEntityFactory,
     private val placeHolderService: PlaceHolderService,
-    private val templateRepository : Repository<PetTemplate>
+    private val templateRepository: Repository<PetTemplate>
 ) : PetService {
     private val cache = HashMap<Player, MutableList<Pet>>()
 
@@ -46,7 +48,7 @@ class PetServiceImpl @Inject constructor(
      * Clears all currently cached pets for the player.
      * The pets are not deleted but removed from memory.
      */
-    override fun clearCache(player: Player) {
+    override suspend fun clearCache(player: Player) {
         if (!cache.containsKey(player)) {
             return
         }
@@ -55,6 +57,25 @@ class PetServiceImpl @Inject constructor(
 
         for (pet in pets) {
             pet.dispose()
+        }
+
+        val playerData = petMetaRepository.getByPlayer(player)
+
+        if (playerData != null) {
+            plugin.logger.info("Saving pets of player ${player.name}...")
+            petMetaRepository.save(player, playerData)
+            plugin.logger.info("Saved pets of player ${player.name}...")
+
+            val uuids = HashSet(playerData.retrievedUuids)
+            uuids.add(player.uniqueId)
+
+            for (uuid in uuids) {
+                plugin.logger.info("Removing cache of $uuid...")
+                if (petMetaRepository.getCache().containsKey(uuid)) {
+                    petMetaRepository.getCache().remove(uuid)!!.await()
+                }
+                plugin.logger.info("Removed cache of $uuid.")
+            }
         }
     }
 
@@ -157,7 +178,9 @@ class PetServiceImpl @Inject constructor(
 
         if (playerInformation == null) {
             playerInformation = PlayerInformation()
+            plugin.logger.info("Creating database entry for ${player.name} (${player.uniqueId})...")
             petMetaRepository.save(player, playerInformation)
+            plugin.logger.info("Created database entry for ${player.name} (${player.uniqueId}).")
         }
 
         playerInformation.pets.add(petMeta)

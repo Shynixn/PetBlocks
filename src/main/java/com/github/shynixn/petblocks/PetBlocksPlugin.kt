@@ -1,9 +1,6 @@
 package com.github.shynixn.petblocks
 
-import com.github.shynixn.mccoroutine.bukkit.SuspendingJavaPlugin
-import com.github.shynixn.mccoroutine.bukkit.registerSuspendingEvents
-import com.github.shynixn.mccoroutine.bukkit.setSuspendingExecutor
-import com.github.shynixn.mccoroutine.bukkit.setSuspendingTabCompleter
+import com.github.shynixn.mccoroutine.bukkit.*
 import com.github.shynixn.mcutils.common.ChatColor
 import com.github.shynixn.mcutils.common.ConfigurationService
 import com.github.shynixn.mcutils.common.Version
@@ -20,19 +17,21 @@ import com.github.shynixn.petblocks.impl.commandexecutor.PetBlocksCommandExecuto
 import com.github.shynixn.petblocks.impl.listener.PetListener
 import com.google.inject.Guice
 import com.google.inject.Injector
+import kotlinx.coroutines.runBlocking
 import org.bukkit.Bukkit
 import org.bukkit.event.player.PlayerJoinEvent
 import org.bukkit.plugin.ServicePriority
+import org.bukkit.plugin.java.JavaPlugin
 import java.util.logging.Level
 
-class PetBlocksPlugin : SuspendingJavaPlugin() {
+class PetBlocksPlugin : JavaPlugin() {
     private val prefix: String = ChatColor.BLUE.toString() + "[PetBlocks] " + ChatColor.WHITE
     private var injector: Injector? = null
 
     /**
      * Called when this plugin is enabled.
      */
-    override suspend fun onEnableAsync() {
+    override fun onEnable() {
         Bukkit.getServer().consoleSender.sendMessage(prefix + ChatColor.GREEN + "Loading PetBlocks ...")
         this.saveDefaultConfig()
 
@@ -86,39 +85,44 @@ class PetBlocksPlugin : SuspendingJavaPlugin() {
         mcTennisCommand.setSuspendingTabCompleter(petBlocksCommandExecutor)
 
         // Register Language
-        val language = configurationService.findValue<String>("language")
-        this.reloadTranslation(language, PetBlocksLanguage::class.java, "en_us")
-        logger.log(Level.INFO, "Loaded language file $language.properties.")
+        val plugin = this
+        this.launch {
+            val language = configurationService.findValue<String>("language")
+            plugin.reloadTranslation(language, PetBlocksLanguage::class.java, "en_us")
+            logger.log(Level.INFO, "Loaded language file $language.properties.")
 
-        // Connect
-        val sqlConnectionService = resolve(SqlConnectionService::class.java)
-        sqlConnectionService.connect()
-        val playerDataRepository = resolve(PlayerDataRepository::class.java)
-        playerDataRepository.createIfNotExist()
-        val templateRepository = resolve(Repository::class.java)
-        templateRepository.getAll()
+            // Connect
+            val sqlConnectionService = resolve(SqlConnectionService::class.java)
+            sqlConnectionService.connect()
+            val playerDataRepository = resolve(PlayerDataRepository::class.java)
+            playerDataRepository.createIfNotExist()
+            val templateRepository = resolve(Repository::class.java)
+            templateRepository.getAll()
 
-        // Fix already online players.
-        for (player in Bukkit.getOnlinePlayers()) {
-            petListener.onPlayerJoinEvent(PlayerJoinEvent(player, null))
+            // Fix already online players.
+            for (player in Bukkit.getOnlinePlayers()) {
+                petListener.onPlayerJoinEvent(PlayerJoinEvent(player, null))
+            }
+
+            // Register Dependencies
+            Bukkit.getServicesManager()
+                .register(PetService::class.java, resolve(PetService::class.java), plugin, ServicePriority.Normal)
+
+            Bukkit.getServer().consoleSender.sendMessage(prefix + ChatColor.GREEN + "Enabled PetBlocks " + plugin.description.version + " by Shynixn")
         }
-
-        // Register Dependencies
-        Bukkit.getServicesManager()
-            .register(PetService::class.java, resolve(PetService::class.java), this, ServicePriority.Normal)
-
-        Bukkit.getServer().consoleSender.sendMessage(prefix + ChatColor.GREEN + "Enabled PetBlocks " + this.description.version + " by Shynixn")
     }
 
     /**
      * Called when this plugin is disabled.
      */
-    override suspend fun onDisableAsync() {
+    override fun onDisable() {
         val petService = resolve(PetService::class.java)
         petService.close()
 
         val playerDataRepository = resolve(CachePlayerRepository::class.java)
-        playerDataRepository.saveCache()
+        runBlocking {
+            playerDataRepository.saveCache()
+        }
         playerDataRepository.clearCache()
 
         val sqlConnectionService = resolve(SqlConnectionService::class.java)

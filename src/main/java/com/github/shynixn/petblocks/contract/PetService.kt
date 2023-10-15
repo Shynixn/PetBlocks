@@ -40,7 +40,7 @@ interface PetService : AutoCloseable {
      * Clears all currently cached pets for the player.
      * The pets are not deleted but removed from memory.
      */
-    fun clearCache(player: Player)
+    suspend fun clearCache(player: Player)
 
     /**
      *  Deletes the given pet.

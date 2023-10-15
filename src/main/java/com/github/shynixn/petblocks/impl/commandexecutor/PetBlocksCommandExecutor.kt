@@ -34,10 +34,12 @@ class PetBlocksCommandExecutor @Inject constructor(
         CommandDefinition("despawn", Permission.DESPAWN, "/petblocks despawn <name> [player]"),
         CommandDefinition("ride", Permission.RIDE, "/petblocks ride <name> [player]"),
         CommandDefinition("hat", Permission.HAT, "/petblocks hat <name> [player]"),
-        CommandDefinition("move", Permission.HAT, "/petblocks move <name> <world> <x> <y> <z> [player]"),
-        CommandDefinition("move", Permission.HAT, "/petblocks lookat <name> <world> <x> <y> <z> [player]"),
-        CommandDefinition("move", Permission.HAT, "/petblocks teleport <name> <world> <x> <y> <z> [player]"),
         CommandDefinition("unmount", Permission.UNMOUNT, "/petblocks unmount <name> [player]"),
+        CommandDefinition("help", Permission.UNMOUNT, "/petblocks help 2"),
+
+        CommandDefinition("walk", Permission.HAT, "/petblocks move <name> <world> <x> <y> <z> [player]"),
+        CommandDefinition("lookat", Permission.HAT, "/petblocks lookat <name> <world> <x> <y> <z> [player]"),
+        CommandDefinition("teleport", Permission.HAT, "/petblocks teleport <name> <world> <x> <y> <z> [player]"),
         CommandDefinition(
             "displayName", Permission.DISPLAYNAME, "/petblocks displayname <name> <displayName> [player]"
         ),
@@ -75,9 +77,8 @@ class PetBlocksCommandExecutor @Inject constructor(
             val templateId = args[2]
             val player =
                 findPlayer(sender, 3, args) ?: throw PetBlocksException(PetBlocksLanguage.playerNotFoundMessage)
-            val template =
-                findTemplate(templateId)
-                    ?: throw PetBlocksException(String.format(PetBlocksLanguage.templateNotFoundMessage, templateId))
+            val template = findTemplate(templateId)
+                ?: throw PetBlocksException(String.format(PetBlocksLanguage.templateNotFoundMessage, templateId))
             val pet = findPetFromPlayer(player, petName)
 
             if (pet != null) {
@@ -85,10 +86,7 @@ class PetBlocksCommandExecutor @Inject constructor(
             }
 
             petService.createPet(
-                player,
-                player.location.toVector3d().addRelativeFront(3.0).toLocation(),
-                template.name,
-                petName
+                player, player.location.toVector3d().addRelativeFront(3.0).toLocation(), template.name, petName
             )
             sender.sendMessage(String.format(PetBlocksLanguage.petCreatedMessage, petName))
             return true
@@ -114,8 +112,7 @@ class PetBlocksCommandExecutor @Inject constructor(
             return true
         }
 
-        if (args.size >= 2 && args[0].equals("call", true) && sender.hasPermission(Permission.CALL.text)
-        ) {
+        if (args.size >= 2 && args[0].equals("call", true) && sender.hasPermission(Permission.CALL.text)) {
             val petName = args[1]
             val player =
                 findPlayer(sender, 2, args) ?: throw PetBlocksException(PetBlocksLanguage.playerNotFoundMessage)
@@ -126,8 +123,7 @@ class PetBlocksCommandExecutor @Inject constructor(
             return true
         }
 
-        if (args.size >= 2 && args[0].equals("spawn", true) && sender.hasPermission(Permission.SPAWN.text)
-        ) {
+        if (args.size >= 2 && args[0].equals("spawn", true) && sender.hasPermission(Permission.SPAWN.text)) {
             val petName = args[1]
             val player =
                 findPlayer(sender, 2, args) ?: throw PetBlocksException(PetBlocksLanguage.playerNotFoundMessage)
@@ -138,8 +134,7 @@ class PetBlocksCommandExecutor @Inject constructor(
             return true
         }
 
-        if (args.size >= 2 && args[0].equals("despawn", true) && sender.hasPermission(Permission.DESPAWN.text)
-        ) {
+        if (args.size >= 2 && args[0].equals("despawn", true) && sender.hasPermission(Permission.DESPAWN.text)) {
             val petName = args[1]
             val player =
                 findPlayer(sender, 2, args) ?: throw PetBlocksException(PetBlocksLanguage.playerNotFoundMessage)
@@ -150,7 +145,10 @@ class PetBlocksCommandExecutor @Inject constructor(
             return true
         }
 
-        if (args.size >= 3 && args[0].equals("displayName", true) && sender.hasPermission(Permission.DISPLAYNAME.text)) {
+        if (args.size >= 3 && args[0].equals(
+                "displayName", true
+            ) && sender.hasPermission(Permission.DISPLAYNAME.text)
+        ) {
             val petName = args[1]
             val displayName = args[2]
             val player =
@@ -169,7 +167,11 @@ class PetBlocksCommandExecutor @Inject constructor(
             val petName = args[1]
             val visibilityName = args[2]
             val visibility = PetVisibility.values().firstOrNull { e -> e.name.equals(visibilityName, true) }
-                ?: throw PetBlocksException(String.format(PetBlocksLanguage.visibilityTypeNotFoundMessage, visibilityName))
+                ?: throw PetBlocksException(
+                    String.format(
+                        PetBlocksLanguage.visibilityTypeNotFoundMessage, visibilityName
+                    )
+                )
             val player =
                 findPlayer(sender, 3, args) ?: throw PetBlocksException(PetBlocksLanguage.playerNotFoundMessage)
             val pet = findPetFromPlayer(player, petName)
@@ -221,8 +223,7 @@ class PetBlocksCommandExecutor @Inject constructor(
             )
         }
 
-        if (args.size >= 2 && args[0].equals("ride", true) && sender.hasPermission(Permission.RIDE.text)
-        ) {
+        if (args.size >= 2 && args[0].equals("ride", true) && sender.hasPermission(Permission.RIDE.text)) {
             val petName = args[1]
             val player =
                 findPlayer(sender, 2, args) ?: throw PetBlocksException(PetBlocksLanguage.playerNotFoundMessage)
@@ -236,8 +237,7 @@ class PetBlocksCommandExecutor @Inject constructor(
             return true
         }
 
-        if (args.size >= 2 && args[0].equals("hat", true) && sender.hasPermission(Permission.HAT.text)
-        ) {
+        if (args.size >= 2 && args[0].equals("hat", true) && sender.hasPermission(Permission.HAT.text)) {
 
             val petName = args[1]
             val player =
@@ -252,8 +252,7 @@ class PetBlocksCommandExecutor @Inject constructor(
             return true
         }
 
-        if (args.size >= 2 && args[0].equals("unmount", true) && sender.hasPermission(Permission.UNMOUNT.text)
-        ) {
+        if (args.size >= 2 && args[0].equals("unmount", true) && sender.hasPermission(Permission.UNMOUNT.text)) {
             val petName = args[1]
             val player =
                 findPlayer(sender, 2, args) ?: throw PetBlocksException(PetBlocksLanguage.playerNotFoundMessage)
@@ -274,17 +273,27 @@ class PetBlocksCommandExecutor @Inject constructor(
             return true
         }
 
-        if (args.size == 1 && args[0].equals(
-                "help", true
-            ) && sender.hasPermission(Permission.HELP.text)
-        ) {
+        if (args.size == 2 && args[0].equals("help", true) && sender.hasPermission(Permission.HELP.text) && args[1] == "2") {
             sender.sendMessage(ChatColor.GREEN.toString() + "---------PetBlocks---------")
-            for (commandDefinition in allCommands) {
+            for (commandDefinition in allCommands.stream().skip(10)) {
                 if (sender.hasPermission(commandDefinition.permission.text)) {
                     sender.sendMessage(ChatColor.GRAY.toString() + commandDefinition.helpMessage)
                 }
             }
-            sender.sendMessage(ChatColor.GREEN.toString() + "----------|1/1|----------")
+            sender.sendMessage(ChatColor.GREEN.toString() + "----------┌2/2┐----------")
+
+            return true
+        }
+
+        if (args.size == 1 && args[0].equals("help", true) && sender.hasPermission(Permission.HELP.text)
+        ) {
+            sender.sendMessage(ChatColor.GREEN.toString() + "---------PetBlocks---------")
+            for (commandDefinition in allCommands.take(10)) {
+                if (sender.hasPermission(commandDefinition.permission.text)) {
+                    sender.sendMessage(ChatColor.GRAY.toString() + commandDefinition.helpMessage)
+                }
+            }
+            sender.sendMessage(ChatColor.GREEN.toString() + "----------┌1/2┐----------")
 
             return true
         }

@@ -39,9 +39,9 @@ dependencies {
     compileOnly("org.jetbrains.kotlinx:kotlinx-coroutines-jdk8:1.4.3")
 
     // Custom dependencies
-    implementation("com.github.shynixn.mcutils:common:1.0.28")
+    implementation("com.github.shynixn.mcutils:common:1.0.29")
     implementation("com.github.shynixn.mcutils:packet:1.0.54")
-    implementation("com.github.shynixn.mcutils:database:1.0.8")
+    implementation("com.github.shynixn.mcutils:database:1.0.11")
     implementation("com.github.shynixn.mcutils:pathfinder:1.0.19")
 
     // Test
@@ -80,9 +80,25 @@ tasks.withType<KotlinCompile> {
 tasks.withType<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar> {
     dependsOn("jar")
     archiveName = "${baseName}-${version}-shadowjar.${extension}"
-    destinationDir = File("C:\\temp\\plugins")
     exclude("DebugProbesKt.bin")
     exclude("module-info.class")
+}
+
+/**
+ * Create latest plugin jar file.
+ */
+tasks.register("pluginJarLatest", com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar::class.java) {
+    dependsOn("shadowJar")
+    from(zipTree(File("./build/libs/" + (tasks.getByName("shadowJar") as Jar).archiveName)))
+    archiveName = "${baseName}-${version}-latest.${extension}"
+    destinationDir = File("C:\\temp\\plugins")
+    exclude("kotlin/**")
+    exclude("org/**")
+    exclude("kotlinx/**")
+    exclude("javax/**")
+    exclude("com/google/**")
+    exclude("com/fasterxml/**")
+    exclude("plugin-legacy.yml")
 }
 
 
