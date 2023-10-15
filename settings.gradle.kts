@@ -1,4 +1,7 @@
-
 rootProject.name = "petblocks-root"
-include("petblocks-bukkit-api")
-include("petblocks-bukkit-plugin")
+
+pluginManagement {
+    plugins {
+        kotlin("jvm") version "1.6.21"
+    }
+}
