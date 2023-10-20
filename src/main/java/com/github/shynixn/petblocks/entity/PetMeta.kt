@@ -48,7 +48,7 @@ class PetMeta {
     /**
      * The item the pet is wearing.
      */
-    var headItem: Item = Item("HEAD")
+    var headItem: Item = Item("minecraft:player_head,HEAD")
 
     /**
      * Last persisted location of the pet.

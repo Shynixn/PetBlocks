@@ -38,7 +38,6 @@ class ArmorstandEntityComponent(
 
         packetService.sendPacketOutEntityMetadata(player, PacketOutEntityMetadata().also {
             it.entityId = this.entityId
-            it.isInvisible = true
             it.isArmorstandSmall = true
         })
     }
@@ -63,6 +62,15 @@ class ArmorstandEntityComponent(
                 it.entityId = this.entityId
                 it.target = position.clone().addRelativeDown(0.3).toLocation()
             })
+
+            packetService.sendPacketOutEntityMetadata(player, PacketOutEntityMetadata().also {
+                it.entityId = this.entityId
+                it.armorStandHeadRotation = convertPitchToEulerAngle(position.pitch)
+            })
         }
+    }
+
+    private fun convertPitchToEulerAngle(pitch: Double): EulerAngle {
+        return EulerAngle(pitch, 0.0, 0.0)
     }
 }

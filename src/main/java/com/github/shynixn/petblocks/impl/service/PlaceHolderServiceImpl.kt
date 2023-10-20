@@ -16,8 +16,26 @@ class PlaceHolderServiceImpl : PlaceHolderService {
         if (pet != null) {
             output = output.replace(PlaceHolder.PET_NAME.fullPlaceHolder, pet.name)
                 .replace(PlaceHolder.PET_DISPLAYNAME.fullPlaceHolder, pet.displayName)
+
+            if (output.contains(PlaceHolder.PET_DISTANCETOOWNER.fullPlaceHolder)) {
+                output = output.replace(
+                    PlaceHolder.PET_DISTANCETOOWNER.fullPlaceHolder,
+                    calculatePetDistanceToOwner(pet).toString()
+                )
+            }
         }
 
         return output
+    }
+
+    private fun calculatePetDistanceToOwner(pet: Pet): Int {
+        val playerLocation = pet.player.location
+        val petLocation = pet.location
+
+        if (playerLocation.world != petLocation.world) {
+            return Int.MAX_VALUE
+        }
+
+        return playerLocation.distance(petLocation).toInt()
     }
 }

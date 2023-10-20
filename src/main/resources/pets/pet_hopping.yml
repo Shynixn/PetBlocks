@@ -15,31 +15,22 @@ isDisplayNameVisible: true
 # Permission to allow players to change this value "petblocks.pet.visibility"
 # Command /petblocks <name> visibility <value>
 visibility: "ALL"
-# Should the player be riding on the pet? Pet is called to the player if it is further away.
-# Possible values are "NO", "GROUND", "FLY".
-# Permissions to allow players to change this value "petblocks.pet.riding.no", "petblocks.pet.riding.ground", "petblocks.pet.riding.fly".
-# Command /petblocks <name> visibility <value>
-riding: "NO"
-# Should the pet be riding on the player? Pet is called to the player if it is further away.
-# Permissions to allow players to change this value "petblocks.pet.hat".
-# Command /petblocks <name> hat <true/false>
-hat: false
 #
 # Defines the action a pet should perform when a player rightclicks on it.
 #
 rightclick:
-  isEnabled: true
   actions:
-    - name: "Open the deluxe menu"
+    - name: "Open the deluxe menu" # Requires the DeluxeMenu plugin to be installed and configured to use the sample PetBlocks inventory.
       type: "command"
       level: "PLAYER"
+      condition: '%petblocks_player_name% == %petblocks_owner_name%' # Checks if the player rightClicking the pet is the owner of the pet.
       run: |
-        /deluxe menu open "1"
-    - name: "Play Heart Particles if rightclick with carrort"
+        /petblocksmenu %petblocks_pet_name%
+    - name: "Play effects when the owner rightclicks the pet"
       type: "command"
       level: "PLAYER"
       debug: "%petblocks_player_inventory_itemInMainHand_type%"
-      condition: '%petblocks_player_inventory_itemInMainHand_type% == "CARROT"'
+      condition: '%petblocks_player_name% == %petblocks_owner_name% && %petblocks_player_inventory_itemInMainHand_type% == "CARROT"'
       run: |
         /tell %petblocks_player_name% I love carrots <3
         /tell %petblocks_player_name% YES I LOVE THEM!
@@ -48,14 +39,67 @@ rightclick:
 # Defines the action a pet should perform in an interval on its own.
 #
 loops:
-  main:
-    isEnabled: true
+  idle:
     actions:
       - name: "Delay Action"
         type: "delay"
-        ticks: 20
+        ticks: 120
+      - name: "Look at owner"
+        type: "command"
+        level: "SERVER"
+        run: |
+          /petblocks lookat %petblocks_pet_name%  %petblocks_owner_location% %petblocks_owner_name%
+      - name: "Switch to moveToOwner if pet is too far away"
+        condition: "%petblocks_pet_distanceToOwner% > 10"
+        type: "command"
+        level: "SERVER"
+        run: |
+          /petblocks loop %petblocks_pet_name% moveToOwner %petblocks_owner_name%
+  moveToOwner:
+    actions:
+      - name: "Delay Action"
+        type: "delay"
+        ticks: 200
       - name: "Play Particle Effect"
         type: "command"
         level: "SERVER"
         run: |
-          /effect %petblocks_player_name% 5 5 5 %petblocks_pet_location_front_3%
+          /petblocks moveTo %petblocks_pet_name% %petblocks_owner_location% %petblocks_owner_name%
+      - name: "Switch to idle if the pet is beside the player"
+        condition: "%petblocks_pet_distanceToOwner% < 2"
+        type: "command"
+        level: "SERVER"
+        run: |
+          /petblocks loop %petblocks_pet_name% moveToOwner %petblocks_owner_name%
+      - name: "Teleport pet to player if the pet is too far away for the pathfinder."
+        condition: "%petblocks_pet_distanceToOwner% > 20"
+        type: "command"
+        level: "SERVER"
+        run: |
+          /petblocks teleport %petblocks_pet_name%  %petblocks_owner_location_back% %petblocks_owner_name%
+  riding:
+    actions:
+      - name: "Delay Action"
+        type: "delay"
+        ticks: 200
+      - name: "Play Particle Effect"
+        type: "command"
+        level: "SERVER"
+        run: |
+          /petblocks ride %petblocks_pet_name% %petblocks_owner_name%
+      - name: "Switch to idle if the pet is beside the player"
+        condition: "%petblocks_pet_distanceToOwner% < 2"
+        type: "command"
+        level: "SERVER"
+        run: |
+          /petblocks loop %petblocks_pet_name% moveToOwner %petblocks_owner_name%
+  hat:
+    actions:
+      - name: "Delay Action"
+        type: "delay"
+        ticks: 200
+      - name: "Switch to idle if the pet is beside the player"
+        type: "command"
+        level: "SERVER"
+        run: |
+          /petblocks hat %petblocks_pet_name% %petblocks_owner_name%

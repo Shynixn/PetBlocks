@@ -311,6 +311,26 @@ class PetImpl(
     }
 
     /**
+     * Turns the pet to look at the given location.
+     */
+    override fun lookAt(location: Location) {
+        if (isDisposed) {
+            throw PetBlocksPetDisposedException()
+        }
+
+        val sourceLocation = this.location
+
+        if (location.world != sourceLocation.world) {
+            return
+        }
+
+        val targetLocation = location.toVector()
+        val directionVector = targetLocation.subtract(sourceLocation.toVector())
+        sourceLocation.setDirection(directionVector)
+        this.location = sourceLocation
+    }
+
+    /**
      * Is the owner riding on the pet.
      */
     override fun isRiding(): Boolean {

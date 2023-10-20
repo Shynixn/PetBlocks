@@ -45,8 +45,7 @@ class PetEntityImpl(
     private val petMeta: PetMeta,
     private val placeHolderService: PlaceHolderService,
     private val packetService: PacketService,
-    private val physicObjectDispatcher: PhysicObjectDispatcher,
-    val aiComponent: AIComponent<PetEntityImpl>
+    private val physicObjectDispatcher: PhysicObjectDispatcher
 ) : PhysicObject {
     private var positionUpdateCounter = 0
 
@@ -56,7 +55,6 @@ class PetEntityImpl(
     var ownerLocation = Vector3d()
 
     init {
-        aiComponent.actor = this
         plugin.launch(plugin.minecraftDispatcher + object : CoroutineTimings() {}) {
             while (!isDead) {
                 petActionExecutionService.executeAction(pet, template.loopDefinition)
@@ -277,7 +275,6 @@ class PetEntityImpl(
         physicsComponent.tickPhysic()
         playerComponent.tickPhysic()
         entityComponent.tickPhysic()
-        aiComponent.tickPhysic()
     }
 
     /**
@@ -294,7 +291,6 @@ class PetEntityImpl(
         physicsComponent.tickMinecraft()
         playerComponent.tickMinecraft()
         entityComponent.tickMinecraft()
-        aiComponent.tickMinecraft()
     }
 
     /**
@@ -305,7 +301,6 @@ class PetEntityImpl(
         entityComponent.close()
         physicsComponent.close()
         playerComponent.close()
-        aiComponent.close()
         isDead = true
     }
 }

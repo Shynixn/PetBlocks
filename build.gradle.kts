@@ -39,9 +39,9 @@ dependencies {
     compileOnly("org.jetbrains.kotlinx:kotlinx-coroutines-jdk8:1.4.3")
 
     // Custom dependencies
-    implementation("com.github.shynixn.mcutils:common:1.0.29")
+    implementation("com.github.shynixn.mcutils:common:1.0.31")
     implementation("com.github.shynixn.mcutils:packet:1.0.54")
-    implementation("com.github.shynixn.mcutils:database:1.0.11")
+    implementation("com.github.shynixn.mcutils:database:1.0.13")
     implementation("com.github.shynixn.mcutils:pathfinder:1.0.19")
 
     // Test

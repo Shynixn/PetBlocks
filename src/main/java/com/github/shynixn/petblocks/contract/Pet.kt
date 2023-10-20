@@ -96,6 +96,11 @@ interface Pet {
     fun umount()
 
     /**
+     * Turns the pet to look at the given location.
+     */
+    fun lookAt(location: Location)
+
+    /**
      * Is the owner riding on the pet.
      */
     fun isRiding(): Boolean
