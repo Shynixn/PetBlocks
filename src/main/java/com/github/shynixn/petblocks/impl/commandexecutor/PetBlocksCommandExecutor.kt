@@ -63,12 +63,28 @@ class PetBlocksCommandExecutor @Inject constructor(
             walkToLocation(sender, player, args[1], location)
         },
         CommandDefinition(
-            "come",
+            "movetoowner",
             2,
-            Permission.MOVETO,
-            "/petblocks come <name>"
+            Permission. MOVETOOWNER,
+            "/petblocks movetoowner <name>"
         ) { sender, player, args ->
-            walkToLocation(sender, player, args[1], player.location)
+            walkToLocation(sender, player, args[1], player.location.toVector3d().addRelativeFront(3.0).toLocation())
+        },
+        CommandDefinition(
+            "hat",
+            2,
+            Permission.HAT,
+            "/petblocks hat <name>"
+        ) { sender, player, args ->
+            hat(sender, player, args[1])
+        },
+        CommandDefinition(
+            "unmount",
+            2,
+            Permission.UNMOUNT,
+            "/petblocks unmount <name>"
+        ) { sender, player, args ->
+            unmount(sender, player, args[1])
         },
 
         /*     CommandDefinition("despawn", 2, Permission.DESPAWN, "/petblocks despawn <name> [player]"),
@@ -76,8 +92,6 @@ class PetBlocksCommandExecutor @Inject constructor(
              CommandDefinition("hat", 2, Permission.HAT, "/petblocks hat <name> [player]"),
              CommandDefinition("unmount", 2, Permission.UNMOUNT, "/petblocks unmount <name> [player]"),
              CommandDefinition("help", 2, Permission.COMMAND, "/petblocks help 2"),
-             CommandDefinition("walk", 6, Permission.HAT, "/petblocks moveto <name> <world> <x> <y> <z> [player]"),
-             CommandDefinition("lookat", 6, Permission.HAT, "/petblocks lookat <name> <world> <x> <y> <z> [player]"),
              CommandDefinition("teleport", 6, Permission.HAT, "/petblocks teleport <name> <world> <x> <y> <z> [player]"),
              CommandDefinition(
                  "displayName", 3, Permission.DISPLAYNAME, "/petblocks displayname <name> <displayName> [player]"
@@ -87,6 +101,7 @@ class PetBlocksCommandExecutor @Inject constructor(
              CommandDefinition("skinnbt", 3, Permission.SKIN, "/petblocks skinnbt <name> <nbt> [player]"),
              CommandDefinition("reload", 1, Permission.CREATE, "/petblocks reload")*/
     )
+
 
 
     /**
@@ -373,6 +388,20 @@ class PetBlocksCommandExecutor @Inject constructor(
             ?: throw PetBlocksException(String.format(PetBlocksLanguage.petNotFoundMessage, petName))
         pet.lookAt(location)
         sender.sendMessage(String.format(PetBlocksLanguage.petLookAtMessage))
+    }
+
+    private suspend fun unmount(sender: CommandSender, player: Player, petName: String) {
+        val pet = findPetFromPlayer(player, petName)
+            ?: throw PetBlocksException(String.format(PetBlocksLanguage.petNotFoundMessage, petName))
+        pet.umount()
+        sender.sendMessage(String.format(PetBlocksLanguage.petUnmountMessage, petName))
+    }
+
+    private suspend fun hat(sender: CommandSender, player: Player, petName: String) {
+        val pet = findPetFromPlayer(player, petName)
+            ?: throw PetBlocksException(String.format(PetBlocksLanguage.petNotFoundMessage, petName))
+        pet.hat()
+        sender.sendMessage(String.format(PetBlocksLanguage.petHatMessage, petName))
     }
 
     private suspend fun walkToLocation(sender: CommandSender, player: Player, petName: String, location: Location) {

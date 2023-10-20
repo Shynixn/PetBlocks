@@ -48,6 +48,13 @@ class PetImpl(
                 delay(5000)
             }
         }
+
+        plugin.launch {
+            if (petMeta.ridingState == PetRidingState.HAT) {
+                delay(200)
+                hat()
+            }
+        }
     }
 
     /**
@@ -287,6 +294,11 @@ class PetImpl(
         }
 
         call()
+        val currentLocation = location
+        val playerLocation = player.location
+        currentLocation.yaw = playerLocation.yaw
+        currentLocation.pitch = 0.0F
+        location = currentLocation
         petMeta.ridingState = PetRidingState.HAT
         petEntity?.updateRidingState(player)
     }
