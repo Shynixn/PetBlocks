@@ -97,8 +97,17 @@ interface Pet {
 
     /**
      * Turns the pet to look at the given location.
+     *  The world property is ignored.
      */
     fun lookAt(location: Location)
+
+    /**
+     * Letss the pet path find to the given location.
+     * If the pet is too far away from the given location, the call will be ignored and false will be returned.
+     * True if the moving has been accepted.
+     *  The world property is ignored.
+     */
+    fun moveTo(location: Location, speed: Double): Boolean
 
     /**
      * Is the owner riding on the pet.

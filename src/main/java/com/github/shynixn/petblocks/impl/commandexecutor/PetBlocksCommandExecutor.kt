@@ -14,6 +14,7 @@ import com.github.shynixn.petblocks.exception.PetBlocksException
 import com.google.inject.Inject
 import org.bukkit.Bukkit
 import org.bukkit.Location
+import org.bukkit.World
 import org.bukkit.command.Command
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
@@ -45,13 +46,31 @@ class PetBlocksCommandExecutor @Inject constructor(
         },
         CommandDefinition(
             "lookat",
-            6,
+            5,
             Permission.LOOKAT,
-            "/petblocks lookat <name> <world> <x> <y> <z> [player]"
+            "/petblocks lookat <name> <x> <y> <z> [player]"
         ) { sender, player, args ->
-            val location = findLocation(args[2], args[3], args[4], args[5], "0", "0")
+            val location = findLocation(null, args[2], args[3], args[4], "0", "0")
             lookAtLocation(sender, player, args[1], location)
         },
+        CommandDefinition(
+            "moveto",
+            7,
+            Permission.MOVETO,
+            "/petblocks moveto <name> <x> <y> <z> <yaw> <pitch> [player]"
+        ) { sender, player, args ->
+            val location = findLocation(null, args[2], args[3], args[4], args[5], args[6])
+            walkToLocation(sender, player, args[1], location)
+        },
+        CommandDefinition(
+            "come",
+            2,
+            Permission.MOVETO,
+            "/petblocks come <name>"
+        ) { sender, player, args ->
+            walkToLocation(sender, player, args[1], player.location)
+        },
+
         /*     CommandDefinition("despawn", 2, Permission.DESPAWN, "/petblocks despawn <name> [player]"),
              CommandDefinition("ride", 2, Permission.RIDE, "/petblocks ride <name> [player]"),
              CommandDefinition("hat", 2, Permission.HAT, "/petblocks hat <name> [player]"),
@@ -356,6 +375,13 @@ class PetBlocksCommandExecutor @Inject constructor(
         sender.sendMessage(String.format(PetBlocksLanguage.petLookAtMessage))
     }
 
+    private suspend fun walkToLocation(sender: CommandSender, player: Player, petName: String, location: Location) {
+        val pet = findPetFromPlayer(player, petName)
+            ?: throw PetBlocksException(String.format(PetBlocksLanguage.petNotFoundMessage, petName))
+        pet.moveTo(location, 0.2)
+        sender.sendMessage(String.format(PetBlocksLanguage.petWalkToLocationMessage))
+    }
+
     private suspend fun callPet(sender: CommandSender, player: Player, petName: String) {
         val pet = findPetFromPlayer(player, petName)
             ?: throw PetBlocksException(String.format(PetBlocksLanguage.petNotFoundMessage, petName))
@@ -372,11 +398,22 @@ class PetBlocksCommandExecutor @Inject constructor(
         return templateRepository.getAll().firstOrNull { e -> e.name.equals(templateId, true) }
     }
 
-    private fun findLocation(worldName: String, x: String, y: String, z: String, yaw: String, pitch: String): Location {
-        val world = Bukkit.getWorld(worldName)
+    private fun findLocation(
+        worldName: String?,
+        x: String,
+        y: String,
+        z: String,
+        yaw: String,
+        pitch: String
+    ): Location {
+        var world : World? = null
 
-        if (world == null) {
-            throw PetBlocksException(String.format(PetBlocksLanguage.worldNotFoundMessage, worldName))
+        if (worldName != null) {
+            world = Bukkit.getWorld(worldName)
+
+            if (world == null) {
+                throw PetBlocksException(String.format(PetBlocksLanguage.worldNotFoundMessage, worldName))
+            }
         }
 
         if (x.toDoubleOrNull() == null) {

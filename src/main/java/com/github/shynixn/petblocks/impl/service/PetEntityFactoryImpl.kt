@@ -56,7 +56,7 @@ class PetEntityFactoryImpl @Inject constructor(
 
         val armorstandEntityComponent =
             ArmorstandEntityComponent(mathPhysicComponent, packetService, playerComponent, meta, armorStandEntityId)
-        val moveToTargetComponent = MoveToTargetComponent(mathPhysicComponent, 0.5)
+        val moveToTargetComponent = MoveToTargetComponent(mathPhysicComponent)
 
         val petEntity = PetEntityImpl(
             mathPhysicComponent,
@@ -70,7 +70,8 @@ class PetEntityFactoryImpl @Inject constructor(
             meta,
             placeHolderService,
             packetService,
-            physicObjectDispatcher
+            physicObjectDispatcher,
+            pathfinderService
         )
 
         physicObjectService.addPhysicObject(petEntity)

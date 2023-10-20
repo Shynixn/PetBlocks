@@ -16,3 +16,12 @@ commands:
     usage: "[&9PetBlocks&f] Use /petblocks help to see more info about the plugin."
     description: All commands for the PetBlocks plugin.
     permission-message: You do not have permission.
+
+############################
+# Global pet settings. For individual pet settings, use the files in the pets folder.
+############################
+pet:
+  # Render distance in blocks of the pets
+  renderDistance: 70
+  # Displays a virtual trail of gold blocks, which represents the calculated path of the pet. Rejoining the server removes the client side blocks.
+  showpathfinder: false

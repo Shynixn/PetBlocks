@@ -14,6 +14,10 @@ import com.github.shynixn.mcutils.packet.api.*
 import com.github.shynixn.mcutils.packet.api.packet.PacketOutEntityEquipment
 import com.github.shynixn.mcutils.packet.api.packet.PacketOutEntityMetadata
 import com.github.shynixn.mcutils.packet.api.packet.PacketOutEntityMount
+import com.github.shynixn.mcutils.pathfinder.api.PathfinderResult
+import com.github.shynixn.mcutils.pathfinder.api.PathfinderResultType
+import com.github.shynixn.mcutils.pathfinder.api.PathfinderService
+import com.github.shynixn.mcutils.pathfinder.api.WorldSnapshot
 import com.github.shynixn.petblocks.contract.Pet
 import com.github.shynixn.petblocks.contract.PetActionExecutionService
 import com.github.shynixn.petblocks.contract.PlaceHolderService
@@ -26,8 +30,10 @@ import com.github.shynixn.petblocks.impl.physic.MathComponent
 import com.github.shynixn.petblocks.impl.physic.MoveToTargetComponent
 import com.github.shynixn.petblocks.impl.physic.PlayerComponent
 import kotlinx.coroutines.delay
+import org.bukkit.Bukkit
 import org.bukkit.FluidCollisionMode
 import org.bukkit.Location
+import org.bukkit.Material
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 import org.bukkit.plugin.Plugin
@@ -35,7 +41,7 @@ import org.bukkit.util.Vector
 
 class PetEntityImpl(
     val physicsComponent: MathComponent,
-    val moveToTargetComponent: MoveToTargetComponent,
+    private val moveToTargetComponent: MoveToTargetComponent,
     private val playerComponent: PlayerComponent,
     private val entityComponent: ArmorstandEntityComponent,
     private val plugin: Plugin,
@@ -45,7 +51,8 @@ class PetEntityImpl(
     private val petMeta: PetMeta,
     private val placeHolderService: PlaceHolderService,
     private val packetService: PacketService,
-    private val physicObjectDispatcher: PhysicObjectDispatcher
+    private val physicObjectDispatcher: PhysicObjectDispatcher,
+    private val pathfinderService: PathfinderService
 ) : PhysicObject {
     private var positionUpdateCounter = 0
 
@@ -88,6 +95,61 @@ class PetEntityImpl(
      */
     fun teleportInWorld(vector3d: Vector3d) {
         this.physicsComponent.teleport(vector3d)
+    }
+
+    /**
+     * Moves to the given location.
+     */
+    fun moveToLocation(location: Location, speed: Double) {
+        val snapshot = pathfinderService.calculateFastPathfinderSnapshot(location, 28, 10, 28)
+
+        plugin.launch(physicObjectDispatcher) {
+            val sourceLocation = physicsComponent.position.toLocation()
+            val targetLocation = location.clone()
+            if (!attemptSolutions(snapshot, sourceLocation, targetLocation, speed)) {
+                if (!attemptSolutions(snapshot, sourceLocation.clone().add(0.0, 1.0, 0.0), targetLocation, speed)) {
+                    if (!attemptSolutions(
+                            snapshot,
+                            sourceLocation.clone().add(0.0, -1.0, 0.0),
+                            targetLocation,
+                            speed
+                        )
+                    ) {
+                        if (!attemptSolutions(
+                                snapshot,
+                                sourceLocation,
+                                targetLocation.clone().add(0.0, 1.0, 0.0),
+                                speed
+                            )
+                        ) {
+                            !attemptSolutions(
+                                snapshot,
+                                sourceLocation,
+                                targetLocation.clone().add(0.0, -1.0, 0.0),
+                                speed
+                            )
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private fun attemptSolutions(
+        snapshot: WorldSnapshot,
+        sourceLocation: Location,
+        targetLocation: Location,
+        speed: Double
+    ): Boolean {
+        val result = pathfinderService.findPath(snapshot, sourceLocation, targetLocation)
+
+        if (result.resultType == PathfinderResultType.FOUND) {
+            visualizePath(result)
+            moveToTargetComponent.walkToTarget(result.steps, speed)
+            return true
+        }
+
+        return false
     }
 
     /**
@@ -275,6 +337,7 @@ class PetEntityImpl(
         physicsComponent.tickPhysic()
         playerComponent.tickPhysic()
         entityComponent.tickPhysic()
+        moveToTargetComponent.tickPhysic()
     }
 
     /**
@@ -302,5 +365,29 @@ class PetEntityImpl(
         physicsComponent.close()
         playerComponent.close()
         isDead = true
+    }
+
+    /**
+     * For Debugging purposes.
+     */
+    private var copy: List<Pair<Vector3d, Pair<Material, Byte>>> = emptyList()
+
+    /**
+     * For Debugging purposes.
+     */
+    private fun visualizePath(pathfinderResult: PathfinderResult) {
+        pathfinderResult.steps.forEach { e -> e.world = "world" }
+
+        for (player in Bukkit.getOnlinePlayers()) {
+            for (item in copy) {
+                player.sendBlockChange(item.first.toLocation(), item.second.first, item.second.second)
+            }
+
+            for (item in pathfinderResult.steps) {
+                player.sendBlockChange(item.toLocation().add(0.0, -1.0, 0.0), Material.GOLD_BLOCK, 0)
+            }
+        }
+
+        copy = pathfinderResult.steps.map { e -> Pair(e, Pair(e.toLocation().block.type, e.toLocation().block.data)) }
     }
 }

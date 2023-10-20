@@ -49,6 +49,9 @@ object PetBlocksLanguage {
   /** [&9PetBlocks&f] &cPlayer %1$1s not found. **/
   var playerNotFoundMessage : String = "[&9PetBlocks&f] &cPlayer %1$1s not found."
 
+  /** [&9PetBlocks&f] Pet is walking to location. **/
+  var petWalkToLocationMessage : String = "[&9PetBlocks&f] Pet is walking to location."
+
   /** [&9PetBlocks&f] &cPet with name %1$1s not found. **/
   var petNotFoundMessage : String = "[&9PetBlocks&f] &cPet with name %1$1s not found."
 

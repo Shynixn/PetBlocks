@@ -204,6 +204,8 @@ class PetImpl(
         }
 
         val inFrontOfOwnerPosition = player.location.toVector3d().addRelativeFront(3.0)
+        inFrontOfOwnerPosition.yaw += 180
+        inFrontOfOwnerPosition.pitch *= -1
 
         if (petEntity == null) {
             petMeta.lastStoredLocation = inFrontOfOwnerPosition
@@ -211,8 +213,6 @@ class PetImpl(
         } else {
             petEntity!!.teleportInWorld(inFrontOfOwnerPosition)
         }
-
-        petMeta.isSpawned = true
     }
 
     /**
@@ -259,7 +259,8 @@ class PetImpl(
             return
         }
 
-        petEntity = petEntityFactory.createPetEntity(this, petMeta, template) as PetEntityImpl
+        petEntity = petEntityFactory.createPetEntity(this, petMeta, template)
+        petMeta.isSpawned = true
     }
 
     /**
@@ -319,15 +320,36 @@ class PetImpl(
         }
 
         val sourceLocation = this.location
-
-        if (location.world != sourceLocation.world) {
-            return
-        }
-
+        location.world = sourceLocation.world
         val targetLocation = location.toVector()
         val directionVector = targetLocation.subtract(sourceLocation.toVector())
         sourceLocation.setDirection(directionVector)
         this.location = sourceLocation
+    }
+
+    /**
+     * Letss the pet path find to the given location.
+     * If the pet is too far away from the given location, the call will be ignored.
+     */
+    override fun moveTo(location: Location, speed: Double): Boolean {
+        if (isDisposed) {
+            throw PetBlocksPetDisposedException()
+        }
+
+        if (!isSpawned){
+            return false
+        }
+
+        val sourceLocation = this.location
+        location.world = sourceLocation.world
+        val distanceBetweenLocations = location.distance(sourceLocation)
+
+        if (distanceBetweenLocations > 20) {
+            return false
+        }
+
+        petEntity!!.moveToLocation(location, speed)
+        return true
     }
 
     /**

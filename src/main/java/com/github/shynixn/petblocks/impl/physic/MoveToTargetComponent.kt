@@ -4,11 +4,12 @@ import com.github.shynixn.mcutils.common.Vector3d
 import com.github.shynixn.mcutils.common.physic.PhysicComponent
 import java.util.*
 
-class MoveToTargetComponent(private val mathComponent: MathComponent, private val speed: Double) : PhysicComponent {
+class MoveToTargetComponent(private val mathComponent: MathComponent) : PhysicComponent {
     private var currentPath: Queue<Vector3d>? = null
     private var currentTargetPosition: Vector3d? = null
     private var vectorPerTick: Vector3d? = null
     private var lastDistance: Double = Double.MAX_VALUE
+    private var speed = 0.5
 
     init {
         mathComponent.onPostPositionChange.add { position, _, rayTrace ->
@@ -19,11 +20,12 @@ class MoveToTargetComponent(private val mathComponent: MathComponent, private va
     /**
      * Walks to the given target using the given path.
      */
-    fun walkToTarget(path: List<Vector3d>) {
+    fun walkToTarget(path: List<Vector3d>, speed : Double) {
         currentPath = LinkedList(path)
         currentPath!!.poll()
         currentTargetPosition = null
         vectorPerTick = null
+        this.speed = speed
         lastDistance = Double.MAX_VALUE
     }
 
