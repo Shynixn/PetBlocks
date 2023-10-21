@@ -1,5 +1,6 @@
 package com.github.shynixn.petblocks.impl.service
 
+import com.github.shynixn.mcutils.common.translateChatColors
 import com.github.shynixn.petblocks.contract.Pet
 import com.github.shynixn.petblocks.contract.PlaceHolderService
 import com.github.shynixn.petblocks.enumeration.PlaceHolder

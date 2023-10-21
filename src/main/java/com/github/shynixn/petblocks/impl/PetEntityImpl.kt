@@ -10,6 +10,7 @@ import com.github.shynixn.mcutils.common.physic.PhysicObject
 import com.github.shynixn.mcutils.common.physic.PhysicObjectDispatcher
 import com.github.shynixn.mcutils.common.toLocation
 import com.github.shynixn.mcutils.common.toVector3d
+import com.github.shynixn.mcutils.common.translateChatColors
 import com.github.shynixn.mcutils.packet.api.*
 import com.github.shynixn.mcutils.packet.api.packet.PacketOutEntityEquipment
 import com.github.shynixn.mcutils.packet.api.packet.PacketOutEntityMetadata
@@ -253,7 +254,7 @@ class PetEntityImpl(
             packetService.sendPacketOutEntityMetadata(player, PacketOutEntityMetadata().also {
                 it.entityId = entityComponent.entityId
                 it.customNameVisible = true
-                it.customname = placeHolderService.replacePlaceHolders(player, name, pet)
+                it.customname = placeHolderService.replacePlaceHolders(player, name, pet).translateChatColors()
             })
         }
     }

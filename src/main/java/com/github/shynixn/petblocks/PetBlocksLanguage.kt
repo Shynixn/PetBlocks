@@ -61,6 +61,9 @@ object PetBlocksLanguage {
   /** [&9PetBlocks&f] &cMaterial %1$1s not found. **/
   var petSkinTypeNotFound : String = "[&9PetBlocks&f] &cMaterial %1$1s not found."
 
+  /** [&9PetBlocks&f] &cCannot parse nbt %1$1s. **/
+  var cannotParseNbtMessage : String = "[&9PetBlocks&f] &cCannot parse nbt %1$1s."
+
   /** [&9PetBlocks&f] Visibility with name %1$1s does not exist. **/
   var visibilityTypeNotFoundMessage : String = "[&9PetBlocks&f] Visibility with name %1$1s does not exist."
 
@@ -69,6 +72,9 @@ object PetBlocksLanguage {
 
   /** [&9PetBlocks&f] Pet has been teleported. **/
   var petTeleportedMessage : String = "[&9PetBlocks&f] Pet has been teleported."
+
+  /** [&9PetBlocks&f] &cThese character or words are not allowed. **/
+  var petCharacterNotAllowed : String = "[&9PetBlocks&f] &cThese character or words are not allowed."
 
   /** [&9PetBlocks&f] &cTemplate %1$1s not found. **/
   var templateNotFoundMessage : String = "[&9PetBlocks&f] &cTemplate %1$1s not found."
