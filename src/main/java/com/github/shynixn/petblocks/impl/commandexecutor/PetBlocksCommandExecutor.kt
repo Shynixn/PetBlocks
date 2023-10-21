@@ -3,6 +3,7 @@ package com.github.shynixn.petblocks.impl.commandexecutor
 import com.github.shynixn.mccoroutine.bukkit.SuspendingCommandExecutor
 import com.github.shynixn.mccoroutine.bukkit.SuspendingTabCompleter
 import com.github.shynixn.mcutils.common.*
+import com.github.shynixn.mcutils.common.item.Item
 import com.github.shynixn.mcutils.common.repository.CacheRepository
 import com.github.shynixn.petblocks.PetBlocksLanguage
 import com.github.shynixn.petblocks.contract.Pet
@@ -379,6 +380,7 @@ class PetBlocksCommandExecutor @Inject constructor(
             ?: throw PetBlocksException(String.format(PetBlocksLanguage.petNotFoundMessage, petName))
 
         try {
+            Item(material).toItemStack() // Test if material is valid.
             val item = pet.headItem
             item.typeName = material
             pet.headItem = item
