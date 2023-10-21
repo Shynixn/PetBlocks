@@ -2,6 +2,7 @@ package com.github.shynixn.petblocks.impl
 
 import com.github.shynixn.mccoroutine.bukkit.launch
 import com.github.shynixn.mcutils.common.*
+import com.github.shynixn.mcutils.common.item.Item
 import com.github.shynixn.petblocks.contract.Pet
 import com.github.shynixn.petblocks.contract.PetEntityFactory
 import com.github.shynixn.petblocks.entity.PetMeta
@@ -173,12 +174,12 @@ class PetImpl(
     /**
      * Gets or sets the itemStack in ItemFormat.
      */
-    override var headItem: ItemStack
+    override var headItem: Item
         get() {
-            return petMeta.headItem.toItemStack()
+            return petMeta.headItem
         }
         set(value) {
-            petMeta.headItem = value.toItem()
+            petMeta.headItem = value
             petEntity?.updateHeadItemStack(petMeta.headItem.toItemStack())
         }
 
@@ -348,7 +349,7 @@ class PetImpl(
             throw PetBlocksPetDisposedException()
         }
 
-        if (!isSpawned){
+        if (!isSpawned) {
             return false
         }
 

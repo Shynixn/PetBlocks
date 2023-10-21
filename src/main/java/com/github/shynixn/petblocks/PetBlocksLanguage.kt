@@ -58,6 +58,9 @@ object PetBlocksLanguage {
   /** [&9PetBlocks&f] Stopped mounting pet %1$1s. **/
   var petUnmountMessage : String = "[&9PetBlocks&f] Stopped mounting pet %1$1s."
 
+  /** [&9PetBlocks&f] &cMaterial %1$1s not found. **/
+  var petSkinTypeNotFound : String = "[&9PetBlocks&f] &cMaterial %1$1s not found."
+
   /** [&9PetBlocks&f] Visibility with name %1$1s does not exist. **/
   var visibilityTypeNotFoundMessage : String = "[&9PetBlocks&f] Visibility with name %1$1s does not exist."
 

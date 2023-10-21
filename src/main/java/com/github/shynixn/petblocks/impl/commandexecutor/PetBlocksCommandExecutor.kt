@@ -14,6 +14,7 @@ import com.github.shynixn.petblocks.exception.PetBlocksException
 import com.google.inject.Inject
 import org.bukkit.Bukkit
 import org.bukkit.Location
+import org.bukkit.Material
 import org.bukkit.World
 import org.bukkit.command.Command
 import org.bukkit.command.CommandSender
@@ -73,7 +74,7 @@ class PetBlocksCommandExecutor @Inject constructor(
         CommandDefinition(
             "movetoowner",
             2,
-            Permission. MOVETOOWNER,
+            Permission.MOVETOOWNER,
             "/petblocks movetoowner <name> [player]"
         ) { sender, player, args ->
             walkToLocation(sender, player, args[1], player.location.toVector3d().addRelativeFront(3.0).toLocation())
@@ -103,11 +104,18 @@ class PetBlocksCommandExecutor @Inject constructor(
             val location = findLocation(args[2], args[3], args[4], args[5], args[6], args[7])
             teleportPet(sender, player, args[1], location)
         },
+        CommandDefinition(
+            "skintype",
+            3,
+            Permission.SKIN,
+            "/petblocks skintype <name> <material> [player]"
+        ) { sender, player, args ->
+            setSkinType(sender, player, args[1], args[2])
+        },
 
 
         /*     CommandDefinition("despawn", 2, Permission.DESPAWN, "/petblocks despawn <name> [player]"),
              CommandDefinition("ride", 2, Permission.RIDE, "/petblocks ride <name> [player]"),
-             CommandDefinition("teleport", 6, Permission.HAT, "/petblocks teleport <name> <world> <x> <y> <z> [player]"),
              CommandDefinition(
                  "displayName", 3, Permission.DISPLAYNAME, "/petblocks displayname <name> <displayName> [player]"
              ),
@@ -116,8 +124,6 @@ class PetBlocksCommandExecutor @Inject constructor(
              CommandDefinition("skinnbt", 3, Permission.SKIN, "/petblocks skinnbt <name> <nbt> [player]"),
              CommandDefinition("reload", 1, Permission.CREATE, "/petblocks reload")*/
     )
-
-
 
 
     /**
@@ -270,31 +276,6 @@ class PetBlocksCommandExecutor @Inject constructor(
             return true
         }
 
-        if (args.size >= 2 && args[0].equals("hat", true) && sender.hasPermission(Permission.HAT.text)) {
-
-            val petName = args[1]
-            val player =
-                findPlayer(sender, 2, args) ?: throw PetBlocksException(PetBlocksLanguage.playerNotFoundMessage)
-            petService.getPetsFromPlayer(player).forEach { pet ->
-                pet.umount()
-            }
-            val pet = findPetFromPlayer(player, petName)
-                ?: throw PetBlocksException(String.format(PetBlocksLanguage.petNotFoundMessage, petName))
-            pet.hat()
-            sender.sendMessage(String.format(PetBlocksLanguage.petHatMessage, petName))
-            return true
-        }
-
-        if (args.size >= 2 && args[0].equals("unmount", true) && sender.hasPermission(Permission.UNMOUNT.text)) {
-            val petName = args[1]
-            val player =
-                findPlayer(sender, 2, args) ?: throw PetBlocksException(PetBlocksLanguage.playerNotFoundMessage)
-            val pet = findPetFromPlayer(player, petName)
-                ?: throw PetBlocksException(String.format(PetBlocksLanguage.petNotFoundMessage, petName))
-            pet.umount()
-            sender.sendMessage(String.format(PetBlocksLanguage.petUnmountMessage, petName))
-            return true
-        }
 
         if (args.size == 1 && args[0].equals("reload", true) && sender.hasPermission(Permission.RELOAD.text)) {
             configurationService.reload()
@@ -364,12 +345,19 @@ class PetBlocksCommandExecutor @Inject constructor(
             return templateRepository.getAll().map { e -> e.name }.sortedBy { e -> e }
         }
 
+        if (args.size >= 2 && sender.hasPermission(Permission.SKIN.text) && args[0].equals("skinType", true)) {
+            return Material.values().map { e ->
+                "minecraft:${e.name.lowercase()}"
+            }
+        }
+
         if (sender.hasPermission(Permission.VISIBILITY.text) && args[0].equals("visibility", true)) {
             return PetVisibility.values().map { e -> e.name.toFirstLetterUpperCase() }
         }
 
         return null
     }
+
 
     private suspend fun createPet(sender: CommandSender, player: Player, petName: String, templateId: String) {
         val template = findTemplate(templateId)
@@ -384,6 +372,20 @@ class PetBlocksCommandExecutor @Inject constructor(
             player, player.location.toVector3d().addRelativeFront(3.0).toLocation(), template.name, petName
         )
         sender.sendMessage(String.format(PetBlocksLanguage.petCreatedMessage, petName))
+    }
+
+    private suspend fun setSkinType(sender: CommandSender, player: Player, petName: String, material: String) {
+        val pet = findPetFromPlayer(player, petName)
+            ?: throw PetBlocksException(String.format(PetBlocksLanguage.petNotFoundMessage, petName))
+
+        try {
+            val item = pet.headItem
+            item.typeName = material
+            pet.headItem = item
+            sender.sendMessage(String.format(PetBlocksLanguage.petSkinTypeChangedMessage, petName))
+        } catch (e: Exception) {
+            sender.sendMessage(String.format(PetBlocksLanguage.petSkinTypeNotFound, material))
+        }
     }
 
     private suspend fun teleportPet(sender: CommandSender, player: Player, petName: String, location: Location) {
@@ -458,7 +460,7 @@ class PetBlocksCommandExecutor @Inject constructor(
         yaw: String = "0",
         pitch: String = "0"
     ): Location {
-        var world : World? = null
+        var world: World? = null
 
         if (worldName != null) {
             world = Bukkit.getWorld(worldName)

@@ -1,5 +1,6 @@
 package com.github.shynixn.petblocks.contract
 
+import com.github.shynixn.mcutils.common.item.Item
 import com.github.shynixn.petblocks.entity.PetTemplate
 import com.github.shynixn.petblocks.enumeration.PetVisibility
 import org.bukkit.Location
@@ -48,7 +49,7 @@ interface Pet {
     /**
      * Gets or sets the itemStack.
      */
-    var headItem: ItemStack
+    var headItem: Item
 
     /**
      * Gets if the pet has been disposed. The pet can no longer be used then.
