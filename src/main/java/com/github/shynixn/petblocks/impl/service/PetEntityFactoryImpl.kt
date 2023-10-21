@@ -55,7 +55,7 @@ class PetEntityFactoryImpl @Inject constructor(
         val armorStandEntityId = entityService.createNewEntityId()
 
         val armorstandEntityComponent =
-            ArmorstandEntityComponent(mathPhysicComponent, packetService, playerComponent, meta, armorStandEntityId)
+            ArmorstandEntityComponent(mathPhysicComponent, packetService, playerComponent, meta,placeHolderService, pet, armorStandEntityId)
         val moveToTargetComponent = MoveToTargetComponent(mathPhysicComponent)
 
         val petEntity = PetEntityImpl(

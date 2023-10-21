@@ -4,6 +4,8 @@ import com.github.shynixn.mcutils.common.*
 import com.github.shynixn.mcutils.common.physic.PhysicComponent
 import com.github.shynixn.mcutils.packet.api.*
 import com.github.shynixn.mcutils.packet.api.packet.*
+import com.github.shynixn.petblocks.contract.Pet
+import com.github.shynixn.petblocks.contract.PlaceHolderService
 import com.github.shynixn.petblocks.entity.PetMeta
 import org.bukkit.Location
 import org.bukkit.entity.Player
@@ -14,6 +16,8 @@ class ArmorstandEntityComponent(
     private val packetService: PacketService,
     private val playerComponent: PlayerComponent,
     private val petMeta: PetMeta,
+    private val placeHolderService: PlaceHolderService,
+    private val pet : Pet,
     val entityId: Int,
 ) : PhysicComponent {
     init {
@@ -26,7 +30,7 @@ class ArmorstandEntityComponent(
         packetService.sendPacketOutEntitySpawn(player, PacketOutEntitySpawn().also {
             it.entityId = this.entityId
             it.entityType = EntityType.ARMOR_STAND
-            it.target = location
+            it.target = location.toVector3d().addRelativeDown(0.35).toLocation()
         })
 
         val itemStack = petMeta.headItem.toItemStack()
@@ -39,6 +43,9 @@ class ArmorstandEntityComponent(
         packetService.sendPacketOutEntityMetadata(player, PacketOutEntityMetadata().also {
             it.entityId = this.entityId
             it.isArmorstandSmall = true
+            it.isInvisible = true
+            it.customNameVisible = true
+            it.customname = placeHolderService.replacePlaceHolders(pet.player, petMeta.displayName, pet)
         })
     }
 
@@ -60,7 +67,7 @@ class ArmorstandEntityComponent(
 
             packetService.sendPacketOutEntityTeleport(player, PacketOutEntityTeleport().also {
                 it.entityId = this.entityId
-                it.target = position.clone().addRelativeDown(0.3).toLocation()
+                it.target = position.clone().addRelativeDown(0.35).toLocation()
             })
 
             packetService.sendPacketOutEntityMetadata(player, PacketOutEntityMetadata().also {

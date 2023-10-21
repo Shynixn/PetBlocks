@@ -6,7 +6,7 @@ version: 1.0
 # The name of the pet shown above the pet. Supports ChatColors.
 # Permission to allow players to change this value "petblocks.pet.displayName"
 # Command /petblocks <name> displayName <value>
-displayName: "%player_name%'s pet"
+displayName: "%petblocks_owner_name%'s pet"
 # Should the name of the pet be shown above the pet?
 # Permission to allow players to change this value "petblocks.pet.isDisplayNameVisible"
 # Command /petblocks <name> isDisplayNameVisible <true/false>

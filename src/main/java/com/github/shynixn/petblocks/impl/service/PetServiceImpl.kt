@@ -3,7 +3,6 @@ package com.github.shynixn.petblocks.impl.service
 import com.github.shynixn.mccoroutine.bukkit.scope
 import com.github.shynixn.mcutils.common.repository.Repository
 import com.github.shynixn.mcutils.database.api.CachePlayerRepository
-import com.github.shynixn.mcutils.database.api.PlayerDataRepository
 import com.github.shynixn.petblocks.contract.Pet
 import com.github.shynixn.petblocks.contract.PetEntityFactory
 import com.github.shynixn.petblocks.contract.PetService
@@ -21,7 +20,6 @@ import org.bukkit.Bukkit
 import org.bukkit.Location
 import org.bukkit.entity.Player
 import org.bukkit.plugin.Plugin
-import java.util.UUID
 import java.util.concurrent.CompletionStage
 import java.util.logging.Level
 
@@ -77,6 +75,15 @@ class PetServiceImpl @Inject constructor(
                 plugin.logger.info("Removed cache of $uuid.")
             }
         }
+    }
+
+    /**
+     * Gets the pet cache.
+     * Using this cache should be avoided and only for critical compatibility bridges.
+     * e.g. DependencyPlaceHolderApi.
+     */
+    override fun getCache(): Map<Player, MutableList<Pet>> {
+        return cache
     }
 
     /**

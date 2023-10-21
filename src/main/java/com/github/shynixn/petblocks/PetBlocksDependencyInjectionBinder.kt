@@ -32,11 +32,15 @@ import com.github.shynixn.mcutils.pathfinder.impl.service.CubeWorldSnapshotServi
 import com.github.shynixn.petblocks.contract.*
 import com.github.shynixn.petblocks.entity.PetTemplate
 import com.github.shynixn.petblocks.entity.PlayerInformation
+import com.github.shynixn.petblocks.enumeration.PluginDependency
 import com.github.shynixn.petblocks.impl.service.*
 import com.google.inject.AbstractModule
 import com.google.inject.Scopes
 import com.google.inject.TypeLiteral
+import org.bukkit.Bukkit
 import org.bukkit.plugin.Plugin
+import java.util.logging.Level
+import javax.inject.Provider
 
 class PetBlocksDependencyInjectionBinder(private val plugin: PetBlocksPlugin) : AbstractModule() {
     companion object {
@@ -66,12 +70,12 @@ class PetBlocksDependencyInjectionBinder(private val plugin: PetBlocksPlugin) : 
         val sqliteConnectionServiceImpl =
             SqliteConnectionServiceImpl(plugin.dataFolder.toPath().resolve("PetBlocks.sqlite"), plugin.logger)
         val playerDataRepository = AutoSavePlayerDataRepositoryImpl(
-            "pets",1000 * 60 * 5L, CachePlayerDataRepositoryImpl(
+            "pets", 1000 * 60 * 5L, CachePlayerDataRepositoryImpl(
                 PlayerDataSqlRepositoryImpl<PlayerInformation>(
                     "PetBlocks", object : TypeReference<PlayerInformation>() {}, sqliteConnectionServiceImpl
                 ), plugin
-            )
-        , plugin)
+            ), plugin
+        )
         bind(SqlConnectionService::class.java).toInstance(sqliteConnectionServiceImpl)
         bind(object : TypeLiteral<PlayerDataRepository<PlayerInformation>>() {}).toInstance(playerDataRepository)
         bind(object : TypeLiteral<CachePlayerRepository<PlayerInformation>>() {}).toInstance(playerDataRepository)
@@ -91,8 +95,13 @@ class PetBlocksDependencyInjectionBinder(private val plugin: PetBlocksPlugin) : 
 
         bind(PetService::class.java).to(PetServiceImpl::class.java).`in`(Scopes.SINGLETON)
         bind(PetEntityFactory::class.java).to(PetEntityFactoryImpl::class.java).`in`(Scopes.SINGLETON)
-        bind(PlaceHolderService::class.java).to(PlaceHolderServiceImpl::class.java).`in`(Scopes.SINGLETON)
         bind(PetActionExecutionService::class.java).to(PetActionExecutionServiceImpl::class.java).`in`(Scopes.SINGLETON)
         bind(ConditionService::class.java).to(ConditionServiceImpl::class.java).`in`(Scopes.SINGLETON)
+        if (Bukkit.getPluginManager().getPlugin(PluginDependency.PLACEHOLDERAPI.pluginName) != null) {
+            bind(PlaceHolderService::class.java).to(DependencyPlaceHolderApiServiceImpl::class.java).`in`(Scopes.SINGLETON)
+            plugin.logger.log(Level.INFO, "Loaded dependency ${PluginDependency.PLACEHOLDERAPI.pluginName}.")
+        } else {
+            bind(PlaceHolderService::class.java).to(PlaceHolderServiceImpl::class.java).`in`(Scopes.SINGLETON)
+        }
     }
 }

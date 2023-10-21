@@ -105,41 +105,29 @@ class PetEntityImpl(
 
         plugin.launch(physicObjectDispatcher) {
             val sourceLocation = physicsComponent.position.toLocation()
-            val targetLocation = location.clone()
-            if (!attemptSolutions(snapshot, sourceLocation, targetLocation, speed)) {
-                if (!attemptSolutions(snapshot, sourceLocation.clone().add(0.0, 1.0, 0.0), targetLocation, speed)) {
-                    if (!attemptSolutions(
-                            snapshot,
-                            sourceLocation.clone().add(0.0, -1.0, 0.0),
-                            targetLocation,
-                            speed
-                        )
-                    ) {
-                        if (!attemptSolutions(
-                                snapshot,
-                                sourceLocation,
-                                targetLocation.clone().add(0.0, 1.0, 0.0),
-                                speed
-                            )
-                        ) {
-                            !attemptSolutions(
-                                snapshot,
-                                sourceLocation,
-                                targetLocation.clone().add(0.0, -1.0, 0.0),
-                                speed
-                            )
+
+            for (i in 0 until 3) {
+                val targetLocation = location.toVector3d().addRelativeFront(-1.0*i).toLocation()
+
+                if (!attemptSolutions(snapshot, sourceLocation, targetLocation, speed)) {
+                    if (!attemptSolutions(snapshot, sourceLocation.clone().add(0.0, 1.0, 0.0), targetLocation, speed)) {
+                        if (!attemptSolutions(snapshot, sourceLocation.clone().add(0.0, -1.0, 0.0), targetLocation, speed)) {
+                            if (!attemptSolutions(snapshot, sourceLocation, targetLocation.clone().add(0.0, 1.0, 0.0), speed)) {
+                                if(!attemptSolutions(snapshot, sourceLocation, targetLocation.clone().add(0.0, -1.0, 0.0), speed)){
+                                    continue
+                                }
+                            }
                         }
                     }
                 }
+
+                break
             }
         }
     }
 
     private fun attemptSolutions(
-        snapshot: WorldSnapshot,
-        sourceLocation: Location,
-        targetLocation: Location,
-        speed: Double
+        snapshot: WorldSnapshot, sourceLocation: Location, targetLocation: Location, speed: Double
     ): Boolean {
         val result = pathfinderService.findPath(snapshot, sourceLocation, targetLocation)
 
@@ -388,6 +376,7 @@ class PetEntityImpl(
             }
         }
 
-        copy = pathfinderResult.steps.map { e -> Pair(e, Pair(e.toLocation().block.type, e.toLocation().block.data)) }
+        copy =
+            pathfinderResult.steps.map { e -> Pair(e, Pair(e.toLocation().block.type, e.toLocation().block.data)) }
     }
 }

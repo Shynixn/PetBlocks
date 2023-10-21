@@ -7,6 +7,13 @@ import java.util.concurrent.CompletionStage
 
 interface PetService : AutoCloseable {
     /**
+     * Gets the pet cache.
+     * Using this cache should be avoided and only for critical compatibility bridges.
+     * e.g. DependencyPlaceHolderApi.
+     */
+    fun getCache(): Map<Player, MutableList<Pet>>
+
+    /**
      * Gets all the pets a player owns.
      * The pets may or be not be spawned at the moment.
      */

@@ -16,8 +16,10 @@ enum class Permission(val text: String) {
     DESPAWN("petblocks.pet.despawn"),
     SKIN("petblocks.pet.skin"),
     LOOKAT("petblocks.pet.lookat"),
+    LOOKATOWNER("petblocks.pet.lookatowner"),
     MOVETO("petblocks.pet.movetocoordinates"),
     MOVETOOWNER("petblocks.pet.movetoowner"),
+    TELEPORT("petblocks.pet.teleport"),
 
     VISIBILITY("petblocks.pet.visibility"),
     AMOUNT("petblocks.pet.amount.1"),

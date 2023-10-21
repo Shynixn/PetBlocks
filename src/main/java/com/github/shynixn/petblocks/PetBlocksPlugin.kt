@@ -86,7 +86,7 @@ class PetBlocksPlugin : JavaPlugin() {
 
         // Register Language
         val plugin = this
-        this.launch {
+        runBlocking {
             val language = configurationService.findValue<String>("language")
             plugin.reloadTranslation(language, PetBlocksLanguage::class.java, "en_us")
             logger.log(Level.INFO, "Loaded language file $language.properties.")
@@ -99,16 +99,18 @@ class PetBlocksPlugin : JavaPlugin() {
             val templateRepository = resolve(Repository::class.java)
             templateRepository.getAll()
 
-            // Fix already online players.
-            for (player in Bukkit.getOnlinePlayers()) {
-                petListener.onPlayerJoinEvent(PlayerJoinEvent(player, null))
-            }
-
             // Register Dependencies
             Bukkit.getServicesManager()
                 .register(PetService::class.java, resolve(PetService::class.java), plugin, ServicePriority.Normal)
 
             Bukkit.getServer().consoleSender.sendMessage(prefix + ChatColor.GREEN + "Enabled PetBlocks " + plugin.description.version + " by Shynixn")
+        }
+
+        plugin.launch {
+            // Fix already online players.
+            for (player in Bukkit.getOnlinePlayers()) {
+                petListener.onPlayerJoinEvent(PlayerJoinEvent(player, null))
+            }
         }
     }
 
