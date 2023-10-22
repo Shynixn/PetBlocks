@@ -34,6 +34,9 @@ object PetBlocksLanguage {
   /** [&9PetBlocks&f] &cCannot parse number %1$1s. **/
   var cannotParseNumberMessage : String = "[&9PetBlocks&f] &cCannot parse number %1$1s."
 
+  /** [&9PetBlocks&f] Pet has been moved. **/
+  var petVelocityAppliedMessage : String = "[&9PetBlocks&f] Pet has been moved."
+
   /** [&9PetBlocks&f] The visibility of pet %1$1s has been changed. **/
   var visibilityChangedMessage : String = "[&9PetBlocks&f] The visibility of pet %1$1s has been changed."
 
@@ -73,8 +76,8 @@ object PetBlocksLanguage {
   /** [&9PetBlocks&f] Pet has been teleported. **/
   var petTeleportedMessage : String = "[&9PetBlocks&f] Pet has been teleported."
 
-  /** [&9PetBlocks&f] &cThese character or words are not allowed. **/
-  var petCharacterNotAllowed : String = "[&9PetBlocks&f] &cThese character or words are not allowed."
+  /** [&9PetBlocks&f] &cThis pet name is not allowed. **/
+  var petCharacterNotAllowed : String = "[&9PetBlocks&f] &cThis pet name is not allowed."
 
   /** [&9PetBlocks&f] &cTemplate %1$1s not found. **/
   var templateNotFoundMessage : String = "[&9PetBlocks&f] &cTemplate %1$1s not found."

@@ -19,6 +19,7 @@ import org.bukkit.Location
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 import org.bukkit.plugin.Plugin
+import org.bukkit.util.Vector
 
 /**
  * A facade to handle a single pet.
@@ -136,6 +137,24 @@ class PetImpl(
                 } else {
                     petEntity?.teleportInWorld(value.toVector3d())
                 }
+            }
+        }
+
+
+    /**
+     * Movement Velocity vector.
+     */
+    override var velocity: Vector
+        get() {
+            if (petEntity != null) {
+                return petEntity!!.getVelocity().toVector()
+            }
+
+            return Vector(0.0, 0.0, 0.0)
+        }
+        set(value) {
+            if (petEntity != null) {
+                petEntity!!.setVelocity(value.toVector3d())
             }
         }
 

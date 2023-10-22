@@ -2,7 +2,6 @@
 
 package com.github.shynixn.petblocks.impl.listener
 
-import com.github.shynixn.mccoroutine.bukkit.launch
 import com.github.shynixn.petblocks.contract.PetActionExecutionService
 import com.github.shynixn.petblocks.contract.PetService
 import com.google.inject.Inject
@@ -50,20 +49,6 @@ class PetListener @Inject constructor(
     @EventHandler
     suspend fun onPlayerSneakEvent(event: PlayerToggleSneakEvent) {
         val pets = petService.getPetsFromPlayer(event.player)
-
-        for (pet in pets) {
-            if (pet.isRiding()) {
-                // When a player rides on a pet, it only affects this pet. Otherwise all pets.
-                petActionExecutionService.executeAction(pet, pet.template.sneakDefinition)
-                return
-            }
-        }
-
-        for (pet in pets) {
-            plugin.launch {
-                // Each pet can execute the actions concurrently.
-                petActionExecutionService.executeAction(pet, pet.template.sneakDefinition)
-            }
-        }
+        pets.size
     }
 }

@@ -6,6 +6,7 @@ import com.github.shynixn.petblocks.enumeration.PetVisibility
 import org.bukkit.Location
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
+import org.bukkit.util.Vector
 
 interface Pet {
     /**
@@ -34,6 +35,11 @@ interface Pet {
      * Can also be used while the pet is not spawned.
      */
     var location: Location
+
+    /**
+     * Movement Velocity vector.
+     */
+    var velocity: Vector
 
     /**
      * Gets or sets the visibility of the pet.

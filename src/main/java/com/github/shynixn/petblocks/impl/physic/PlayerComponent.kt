@@ -18,7 +18,7 @@ class PlayerComponent(
      */
     renderDistanceBlocks: Int = 70
 ) : PhysicComponent {
-    private var lastTimeRenderUpdate = 0L
+    var lastTimeRenderUpdate = 0L
 
     // Multiplied to save performance later.
     private val renderVisibilityDistance = renderDistanceBlocks * renderDistanceBlocks

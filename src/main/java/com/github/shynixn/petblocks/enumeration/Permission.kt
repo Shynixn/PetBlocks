@@ -20,7 +20,7 @@ enum class Permission(val text: String) {
     MOVETO("petblocks.pet.movetocoordinates"),
     MOVETOOWNER("petblocks.pet.movetoowner"),
     TELEPORT("petblocks.pet.teleport"),
-
+    VELOCITY("petblocks.pet.velocity"),
     VISIBILITY("petblocks.pet.visibility"),
     AMOUNT("petblocks.pet.amount.1"),
     TEMPLATE("petblocks.pet.template.pet_hopping"),

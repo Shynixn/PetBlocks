@@ -41,7 +41,7 @@ import org.bukkit.plugin.Plugin
 import org.bukkit.util.Vector
 
 class PetEntityImpl(
-    val physicsComponent: MathComponent,
+    private val physicsComponent: MathComponent,
     private val moveToTargetComponent: MoveToTargetComponent,
     private val playerComponent: PlayerComponent,
     private val entityComponent: ArmorstandEntityComponent,
@@ -56,11 +56,7 @@ class PetEntityImpl(
     private val pathfinderService: PathfinderService
 ) : PhysicObject {
     private var positionUpdateCounter = 0
-
-    /**
-     * Location of the owner.
-     */
-    var ownerLocation = Vector3d()
+    private var velocity = Vector3d(0.0, 0.0, 0.0)
 
     init {
         plugin.launch(plugin.minecraftDispatcher + object : CoroutineTimings() {}) {
@@ -89,6 +85,14 @@ class PetEntityImpl(
      */
     fun getLocation(): Vector3d {
         return petMeta.lastStoredLocation
+    }
+
+    fun getVelocity() : Vector3d{
+        return velocity
+    }
+
+    fun setVelocity(vector3d: Vector3d){
+        this.physicsComponent.setVelocity(vector3d)
     }
 
     /**
@@ -190,7 +194,7 @@ class PetEntityImpl(
             }
 
             plugin.launch(physicObjectDispatcher) {
-                physicsComponent.motion = movementVector
+             //   physicsComponent.motion = movementVector
             }
         } else if (sideward != 0.0) {
             val movementVector = if (sideward > 0.0) {
@@ -212,14 +216,14 @@ class PetEntityImpl(
             }
 
             plugin.launch(physicObjectDispatcher) {
-                physicsComponent.motion = movementVector
+               // physicsComponent.motion = movementVector
             }
         } else if (isJumping) {
             val isOnGround = isOnGround(getLocation().toLocation())
 
             if (isOnGround) {
                 plugin.launch(physicObjectDispatcher) {
-                    physicsComponent.motion.y = 0.5
+                   // physicsComponent.motion.y = 0.5
                 }
             }
         }
@@ -338,8 +342,8 @@ class PetEntityImpl(
             return
         }
 
-        this.ownerLocation = this.pet.player.location.toVector3d()
         this.petMeta.lastStoredLocation = physicsComponent.position.clone()
+        this.velocity = physicsComponent.motion.clone()
         physicsComponent.tickMinecraft()
         playerComponent.tickMinecraft()
         entityComponent.tickMinecraft()

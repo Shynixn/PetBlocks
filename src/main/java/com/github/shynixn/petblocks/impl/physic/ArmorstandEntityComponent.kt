@@ -23,7 +23,7 @@ class ArmorstandEntityComponent(
     init {
         playerComponent.onSpawnMinecraft.add { player, location -> onPlayerSpawn(player, location) }
         playerComponent.onRemoveMinecraft.add { player, _ -> onPlayerRemove(player) }
-        physicsComponent.onPostPositionChange.add { position, motion, _ -> onPositionChange(position, motion) }
+        physicsComponent.onPostPositionChange.add { position, motion -> onPositionChange(position, motion) }
     }
 
     private fun onPlayerSpawn(player: Player, location: Location) {

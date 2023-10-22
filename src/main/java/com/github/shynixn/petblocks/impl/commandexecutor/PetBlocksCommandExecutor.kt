@@ -22,7 +22,6 @@ import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 import org.bukkit.plugin.Plugin
 import java.util.*
-import java.util.regex.Pattern
 
 class PetBlocksCommandExecutor @Inject constructor(
     private val petService: PetService,
@@ -112,6 +111,15 @@ class PetBlocksCommandExecutor @Inject constructor(
             teleportPet(sender, player, args[1], location)
         },
         CommandDefinition(
+            "velocity",
+            5,
+            Permission.VELOCITY,
+            "/petblocks velocity <name> <x> <y> <z> [player]"
+        ) { sender, player, args ->
+            val vector = findLocation(null, args[2], args[3], args[4]).toVector()
+            setVelocityToPet(sender, player, args[1], vector)
+        },
+        CommandDefinition(
             "skintype",
             3,
             Permission.SKIN,
@@ -136,6 +144,8 @@ class PetBlocksCommandExecutor @Inject constructor(
             setDisplayName(sender, player, args[1], args[2])
         },
     )
+
+
 
 
     /**
@@ -333,6 +343,13 @@ class PetBlocksCommandExecutor @Inject constructor(
             ?: throw PetBlocksException(String.format(PetBlocksLanguage.petNotFoundMessage, petName))
         pet.location = location
         sender.sendMessage(String.format(PetBlocksLanguage.petTeleportedMessage, petName))
+    }
+
+    private suspend fun setVelocityToPet(sender: CommandSender, player: Player, petName: String, vector: org.bukkit.util.Vector) {
+        val pet = findPetFromPlayer(player, petName)
+            ?: throw PetBlocksException(String.format(PetBlocksLanguage.petNotFoundMessage, petName))
+        pet.velocity = vector
+        sender.sendMessage(String.format(PetBlocksLanguage.petVelocityAppliedMessage, petName))
     }
 
     private suspend fun deletePet(sender: CommandSender, player: Player, petName: String) {
