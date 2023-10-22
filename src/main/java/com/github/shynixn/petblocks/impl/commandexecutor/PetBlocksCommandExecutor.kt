@@ -143,10 +143,15 @@ class PetBlocksCommandExecutor @Inject constructor(
         ) { sender, player, args ->
             setDisplayName(sender, player, args[1], args[2])
         },
+        CommandDefinition(
+            "ride",
+            2,
+            Permission.DISPLAYNAME,
+            "/petblocks ride <name> [player]"
+        ) { sender, player, args ->
+            ridePet(sender, player, args[1])
+        },
     )
-
-
-
 
     /**
      * Executes the given command, returning its success.
@@ -287,6 +292,13 @@ class PetBlocksCommandExecutor @Inject constructor(
         } catch (e: Exception) {
             sender.sendMessage(String.format(PetBlocksLanguage.petSkinTypeNotFound, material))
         }
+    }
+
+    private suspend fun ridePet(sender: CommandSender, player: Player, petName: String){
+        val pet = findPetFromPlayer(player, petName)
+            ?: throw PetBlocksException(String.format(PetBlocksLanguage.petNotFoundMessage, petName))
+        pet.ride()
+        sender.sendMessage(String.format(PetBlocksLanguage.petRideMessage, petName))
     }
 
     private suspend fun setSkinNbt(sender: CommandSender, player: Player, petName: String, nbt: String) {

@@ -72,7 +72,7 @@ class PetBlocksPlugin : JavaPlugin() {
 
         // Register Listeners
         val petListener = resolve(PetListener::class.java)
-        Bukkit.getPluginManager().registerSuspendingEvents(petListener, this)
+        Bukkit.getPluginManager().registerEvents(petListener, this)
 
         // Register CommandExecutors
         val configurationService = resolve(ConfigurationService::class.java)

@@ -44,9 +44,6 @@ class PetEntityFactoryImpl @Inject constructor(
 
         val location = pet.location
         val mathComponentSettings = MathSettings()
-        // Needed that pets can work stairs.
-        mathComponentSettings.rayTraceYOffset = 3.0
-        mathComponentSettings.gravityAbsolute = 0.1
         val mathPhysicComponent = MathComponent(location.toVector3d(), mathComponentSettings, rayTracingService)
 
         val playerComponent = PlayerComponent(mathPhysicComponent)

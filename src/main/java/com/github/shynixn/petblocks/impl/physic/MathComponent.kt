@@ -30,12 +30,6 @@ class MathComponent(
     private var gravityRayTraceResult: RayTraceResult? = null
 
     /**
-     * Gets if the object is currrently on ground.
-     */
-    var isOnGround: Boolean = false
-        private set
-
-    /**
      * Sets the velocity which is applied per tick to the object.
      */
     fun setVelocity(vector: Vector3d) {

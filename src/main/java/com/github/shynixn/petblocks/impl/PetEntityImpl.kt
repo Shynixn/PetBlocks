@@ -5,7 +5,6 @@ import com.github.shynixn.mccoroutine.bukkit.launch
 import com.github.shynixn.mccoroutine.bukkit.minecraftDispatcher
 import com.github.shynixn.mccoroutine.bukkit.ticks
 import com.github.shynixn.mcutils.common.Vector3d
-import com.github.shynixn.mcutils.common.physic.AIComponent
 import com.github.shynixn.mcutils.common.physic.PhysicObject
 import com.github.shynixn.mcutils.common.physic.PhysicObjectDispatcher
 import com.github.shynixn.mcutils.common.toLocation
@@ -87,11 +86,11 @@ class PetEntityImpl(
         return petMeta.lastStoredLocation
     }
 
-    fun getVelocity() : Vector3d{
+    fun getVelocity(): Vector3d {
         return velocity
     }
 
-    fun setVelocity(vector3d: Vector3d){
+    fun setVelocity(vector3d: Vector3d) {
         this.physicsComponent.setVelocity(vector3d)
     }
 
@@ -112,13 +111,31 @@ class PetEntityImpl(
             val sourceLocation = physicsComponent.position.toLocation()
 
             for (i in 0 until 3) {
-                val targetLocation = location.toVector3d().addRelativeFront(-1.0*i).toLocation()
+                val targetLocation = location.toVector3d().addRelativeFront(-1.0 * i).toLocation()
 
                 if (!attemptSolutions(snapshot, sourceLocation, targetLocation, speed)) {
                     if (!attemptSolutions(snapshot, sourceLocation.clone().add(0.0, 1.0, 0.0), targetLocation, speed)) {
-                        if (!attemptSolutions(snapshot, sourceLocation.clone().add(0.0, -1.0, 0.0), targetLocation, speed)) {
-                            if (!attemptSolutions(snapshot, sourceLocation, targetLocation.clone().add(0.0, 1.0, 0.0), speed)) {
-                                if(!attemptSolutions(snapshot, sourceLocation, targetLocation.clone().add(0.0, -1.0, 0.0), speed)){
+                        if (!attemptSolutions(
+                                snapshot,
+                                sourceLocation.clone().add(0.0, -1.0, 0.0),
+                                targetLocation,
+                                speed
+                            )
+                        ) {
+                            if (!attemptSolutions(
+                                    snapshot,
+                                    sourceLocation,
+                                    targetLocation.clone().add(0.0, 1.0, 0.0),
+                                    speed
+                                )
+                            ) {
+                                if (!attemptSolutions(
+                                        snapshot,
+                                        sourceLocation,
+                                        targetLocation.clone().add(0.0, -1.0, 0.0),
+                                        speed
+                                    )
+                                ) {
                                     continue
                                 }
                             }
@@ -166,7 +183,7 @@ class PetEntityImpl(
     /**
      * Gets called when the player is riding the entity.
      */
-    fun ride(player: Player, forward: Double, sideward: Double, isJumping: Boolean) {
+    fun ride(player: Player, forward: Double, isJumping: Boolean) {
         positionUpdateCounter++
         if (positionUpdateCounter > 10) {
             // Required so the position of the player stays in sync while packet riding.
@@ -174,61 +191,31 @@ class PetEntityImpl(
             positionUpdateCounter = 0
         }
 
-        if (forward != 0.0) {
-            val movementVector = if (forward > 0.0) {
-                player.location.direction.normalize().multiply(0.5).toVector3d()
-            } else {
-                player.location.direction.normalize().multiply(-0.5).toVector3d()
-            }
-
-            val isOnGround = isOnGround(getLocation().toLocation())
-            val otherGround = physicsComponent.isOnGround
-
-            if (isJumping && isOnGround) {
-                movementVector.y = 0.5
-
-            } else if (isOnGround || otherGround) {
-                movementVector.y = 0.0
-            } else {
-                movementVector.y = -1.0
-            }
-
-            plugin.launch(physicObjectDispatcher) {
-             //   physicsComponent.motion = movementVector
-            }
-        } else if (sideward != 0.0) {
-            val movementVector = if (sideward > 0.0) {
-                player.location.direction.normalize().rotateAroundY(90.0).multiply(0.5).toVector3d()
-            } else {
-                player.location.direction.normalize().rotateAroundY(-90.0).multiply(0.5).toVector3d()
-            }
-
-            val isOnGround = isOnGround(getLocation().toLocation())
-            val otherGround = physicsComponent.isOnGround
-
-            if (isJumping && isOnGround) {
-                movementVector.y = 0.5
-
-            } else if (isOnGround || otherGround) {
-                movementVector.y = 0.0
-            } else {
-                movementVector.y = -1.0
-            }
-
-            plugin.launch(physicObjectDispatcher) {
-               // physicsComponent.motion = movementVector
-            }
-        } else if (isJumping) {
-            val isOnGround = isOnGround(getLocation().toLocation())
-
-            if (isOnGround) {
-                plugin.launch(physicObjectDispatcher) {
-                   // physicsComponent.motion.y = 0.5
-                }
-            }
+        val isOnGround = if (isJumping) {
+            isOnGround(getLocation().toLocation())
+        } else {
+            false
         }
 
-        physicsComponent.position.yaw = player.location.yaw.toDouble()
+        plugin.launch(physicObjectDispatcher) {
+            if (forward != 0.0) {
+                val movementVector = if (forward > 0.0) {
+                    player.location.direction.normalize().multiply(0.5).toVector3d()
+                } else {
+                    player.location.direction.normalize().multiply(-0.5).toVector3d()
+                }
+
+                physicsComponent.motion.x = movementVector.x
+                physicsComponent.motion.z = movementVector.z
+            }
+
+            if (isJumping && isOnGround) {
+                physicsComponent.motion.y = 1.0
+            }
+
+            physicsComponent.position.pitch = 0.0
+            physicsComponent.position.yaw = player.location.yaw.toDouble()
+        }
     }
 
     private fun isOnGround(location: Location): Boolean {
