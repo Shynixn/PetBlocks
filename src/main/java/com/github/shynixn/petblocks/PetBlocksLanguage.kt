@@ -55,6 +55,9 @@ object PetBlocksLanguage {
   /** [&9PetBlocks&f] Pet is looking at a location. **/
   var petLookAtMessage : String = "[&9PetBlocks&f] Pet is looking at a location."
 
+  /** [&9PetBlocks&f] PetBlocks has been reloaded. **/
+  var reloadMessage : String = "[&9PetBlocks&f] PetBlocks has been reloaded."
+
   /** No pet. **/
   var placeHolderPetNotFound : String = "No pet."
 
@@ -67,8 +70,8 @@ object PetBlocksLanguage {
   /** [&9PetBlocks&f] &cCannot parse nbt %1$1s. **/
   var cannotParseNbtMessage : String = "[&9PetBlocks&f] &cCannot parse nbt %1$1s."
 
-  /** [&9PetBlocks&f] Visibility with name %1$1s does not exist. **/
-  var visibilityTypeNotFoundMessage : String = "[&9PetBlocks&f] Visibility with name %1$1s does not exist."
+  /** [&9PetBlocks&f] Only the visibility types %1$1s are supported. **/
+  var visibilityTypeNotFoundMessage : String = "[&9PetBlocks&f] Only the visibility types %1$1s are supported."
 
   /** [&9PetBlocks&f] Pet with name %1$1s has been created. **/
   var petCreatedMessage : String = "[&9PetBlocks&f] Pet with name %1$1s has been created."

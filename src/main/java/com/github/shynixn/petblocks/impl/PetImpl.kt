@@ -56,6 +56,10 @@ class PetImpl(
                 delay(200)
                 hat()
             }
+            else if (petMeta.ridingState == PetRidingState.GROUND) {
+                delay(200)
+                ride()
+            }
         }
     }
 

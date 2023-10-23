@@ -22,6 +22,7 @@ import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 import org.bukkit.plugin.Plugin
 import java.util.*
+import java.util.logging.Level
 
 class PetBlocksCommandExecutor @Inject constructor(
     private val petService: PetService,
@@ -146,12 +147,21 @@ class PetBlocksCommandExecutor @Inject constructor(
         CommandDefinition(
             "ride",
             2,
-            Permission.DISPLAYNAME,
+            Permission.RIDE,
             "/petblocks ride <name> [player]"
         ) { sender, player, args ->
             ridePet(sender, player, args[1])
         },
+        CommandDefinition(
+            "visibility",
+            3,
+            Permission.VISIBILITY,
+            "/petblocks visibility <name> <type> [player]"
+        ) { sender, player, args ->
+            setVisibility(sender, player, args[1], args[2])
+        }
     )
+
 
     /**
      * Executes the given command, returning its success.
@@ -184,13 +194,23 @@ class PetBlocksCommandExecutor @Inject constructor(
                 val player = findPlayer(sender, definition.minArgsCount, args)
                     ?: throw PetBlocksException(PetBlocksLanguage.playerNotFoundMessage)
                 val newArgs = args.map { e -> e.replace("###", " ") }.toTypedArray()
-                definition.function.invoke(sender, player, newArgs)
+                definition.playerFunction.invoke(sender, player, newArgs)
                 return true
             }
         }
 
         val commandsPerPage = 10
         val amountOfPages = (allCommands.size.toDouble() / commandsPerPage.toDouble()).toInt() + 1
+
+        if(args.size == 1 && args[0].equals("reload", true)){
+            plugin.reloadConfig()
+            val language = configurationService.findValue<String>("language")
+            plugin.reloadTranslation(language, PetBlocksLanguage::class.java, "en_us")
+            plugin.logger.log(Level.INFO, "Loaded language file $language.properties.")
+            templateRepository.clearCache()
+            sender.sendMessage(PetBlocksLanguage.reloadMessage)
+            return true
+        }
 
         if (args.size == 2 && args[0].equals("help", true)
             && sender.hasPermission(Permission.HELP.text) && args[1].toIntOrNull() != null && args[1].toInt() > 1
@@ -294,7 +314,32 @@ class PetBlocksCommandExecutor @Inject constructor(
         }
     }
 
-    private suspend fun ridePet(sender: CommandSender, player: Player, petName: String){
+    private suspend fun setVisibility(
+        sender: CommandSender,
+        player: Player,
+        petName: String,
+        visibilityTypeName: String
+    ) {
+        val pet = findPetFromPlayer(player, petName)
+            ?: throw PetBlocksException(String.format(PetBlocksLanguage.petNotFoundMessage, petName))
+
+        val visibilityType = PetVisibility.values().firstOrNull { e -> e.name.equals(visibilityTypeName, true) }
+
+        if (visibilityType == null) {
+            sender.sendMessage(
+                String.format(
+                    PetBlocksLanguage.visibilityTypeNotFoundMessage,
+                    PetVisibility.values().map { e -> e.name.lowercase() }.joinToString(",")
+                )
+            )
+            return
+        }
+
+        pet.visibility = visibilityType
+        sender.sendMessage(String.format(PetBlocksLanguage.visibilityChangedMessage, visibilityTypeName))
+    }
+
+    private suspend fun ridePet(sender: CommandSender, player: Player, petName: String) {
         val pet = findPetFromPlayer(player, petName)
             ?: throw PetBlocksException(String.format(PetBlocksLanguage.petNotFoundMessage, petName))
         pet.ride()
@@ -347,7 +392,13 @@ class PetBlocksCommandExecutor @Inject constructor(
         val pet = findPetFromPlayer(player, petName)
             ?: throw PetBlocksException(String.format(PetBlocksLanguage.petNotFoundMessage, petName))
         pet.displayName = displayName
-        sender.sendMessage(String.format(PetBlocksLanguage.petNameChangeMessage, petName, displayName.translateChatColors()))
+        sender.sendMessage(
+            String.format(
+                PetBlocksLanguage.petNameChangeMessage,
+                petName,
+                displayName.translateChatColors()
+            )
+        )
     }
 
     private suspend fun teleportPet(sender: CommandSender, player: Player, petName: String, location: Location) {
@@ -357,7 +408,12 @@ class PetBlocksCommandExecutor @Inject constructor(
         sender.sendMessage(String.format(PetBlocksLanguage.petTeleportedMessage, petName))
     }
 
-    private suspend fun setVelocityToPet(sender: CommandSender, player: Player, petName: String, vector: org.bukkit.util.Vector) {
+    private suspend fun setVelocityToPet(
+        sender: CommandSender,
+        player: Player,
+        petName: String,
+        vector: org.bukkit.util.Vector
+    ) {
         val pet = findPetFromPlayer(player, petName)
             ?: throw PetBlocksException(String.format(PetBlocksLanguage.petNotFoundMessage, petName))
         pet.velocity = vector
@@ -484,6 +540,6 @@ class PetBlocksCommandExecutor @Inject constructor(
         val minArgsCount: Int,
         val permission: Permission,
         val helpMessage: String,
-        val function: suspend (CommandSender, Player, Array<String>) -> Unit
+        val playerFunction: suspend (CommandSender, Player, Array<String>) -> Unit
     )
 }

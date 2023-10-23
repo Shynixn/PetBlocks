@@ -46,7 +46,7 @@ class PetEntityFactoryImpl @Inject constructor(
         val mathComponentSettings = MathSettings()
         val mathPhysicComponent = MathComponent(location.toVector3d(), mathComponentSettings, rayTracingService)
 
-        val playerComponent = PlayerComponent(mathPhysicComponent)
+        val playerComponent = PlayerComponent(mathPhysicComponent, pet = pet)
         val armorStandEntityId = entityService.createNewEntityId()
 
         val armorstandEntityComponent =

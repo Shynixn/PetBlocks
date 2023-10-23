@@ -2,6 +2,9 @@ package com.github.shynixn.petblocks.impl.physic
 
 import com.github.shynixn.mcutils.common.physic.PhysicComponent
 import com.github.shynixn.mcutils.common.toLocation
+import com.github.shynixn.petblocks.contract.Pet
+import com.github.shynixn.petblocks.enumeration.PetVisibility
+import com.github.shynixn.petblocks.impl.PetEntityImpl
 import org.bukkit.Location
 import org.bukkit.entity.Player
 import java.util.*
@@ -16,7 +19,8 @@ class PlayerComponent(
     /**
      * Render distance blocks.
      */
-    renderDistanceBlocks: Int = 70
+    renderDistanceBlocks: Int = 70,
+    private val pet : Pet
 ) : PhysicComponent {
     var lastTimeRenderUpdate = 0L
 
@@ -45,7 +49,12 @@ class PlayerComponent(
             for (player in location.world!!.players) {
                 if (player.location.distanceSquared(location) <= renderVisibilityDistance) {
                     if (!visiblePlayers.contains(player)) {
-                        onSpawnMinecraft.forEach { e -> e.invoke(player, location) }
+                        if( pet.visibility == PetVisibility.ALL){
+                            onSpawnMinecraft.forEach { e -> e.invoke(player, location) }
+                        }else if(pet.visibility == PetVisibility.OWNER && player == pet.player){
+                            onSpawnMinecraft.forEach { e -> e.invoke(player, location) }
+                        }
+
                         visiblePlayers.add(player)
                     }
 
