@@ -45,7 +45,7 @@ class ArmorstandEntityComponent(
             it.isArmorstandSmall = true
             it.isInvisible = true
             it.customNameVisible = true
-            it.customname = placeHolderService.replacePlaceHolders(pet.player, petMeta.displayName, pet).translateChatColors()
+            it.customname = placeHolderService.replacePlaceHolders(pet.player, petMeta.displayName, pet)
         })
     }
 

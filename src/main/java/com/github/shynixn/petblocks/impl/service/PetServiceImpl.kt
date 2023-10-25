@@ -17,6 +17,7 @@ import com.github.shynixn.petblocks.impl.PetImpl
 import com.google.inject.Inject
 import kotlinx.coroutines.future.future
 import org.bukkit.Bukkit
+import org.bukkit.ChatColor
 import org.bukkit.Location
 import org.bukkit.entity.Player
 import org.bukkit.plugin.Plugin
@@ -158,7 +159,6 @@ class PetServiceImpl @Inject constructor(
         petMeta.isSpawned = template.isSpawned
         petMeta.visibility = template.visibility
         petMeta.ridingState = template.ridingState
-
         // Create pet instance.
         val pet = createPetInstance(player, petMeta, template)
 

@@ -14,7 +14,13 @@ import com.google.inject.Inject
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
 import org.bukkit.Bukkit
+import org.bukkit.Server
+import org.bukkit.command.CommandSender
+import org.bukkit.permissions.Permission
+import org.bukkit.permissions.PermissionAttachment
+import org.bukkit.permissions.PermissionAttachmentInfo
 import org.bukkit.plugin.Plugin
+import java.util.*
 import java.util.logging.Level
 
 class PetActionExecutionServiceImpl @Inject constructor(
@@ -22,6 +28,7 @@ class PetActionExecutionServiceImpl @Inject constructor(
     private val scriptService: ScriptService,
     private val placeHolderService: PlaceHolderService
 ) : PetActionExecutionService {
+    private val commandSender = PetBlocksCommandSender(Bukkit.getConsoleSender())
 
     /**
      * Executes an pet action.
@@ -30,8 +37,12 @@ class PetActionExecutionServiceImpl @Inject constructor(
         val player = pet.player
 
         for (action in petActionDefinition.actions) {
+            if (pet.isDisposed) {
+                break
+            }
+
             if (action.debug) {
-                plugin.logger.log(Level.INFO, "Start pet action ${action.name} ${action.actionType}.")
+                plugin.logger.log(Level.INFO, "> Start pet action ${action.name} ${action.actionType}.")
             }
 
             if (action.condition != null) {
@@ -81,7 +92,7 @@ class PetActionExecutionServiceImpl @Inject constructor(
             if (action.level == PetActionCommandLevelType.PLAYER) {
                 Bukkit.getServer().dispatchCommand(pet.player, executionCommand)
             } else {
-                Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), executionCommand)
+                Bukkit.getServer().dispatchCommand(commandSender, executionCommand)
             }
 
             if (action.debug) {
@@ -103,6 +114,84 @@ class PetActionExecutionServiceImpl @Inject constructor(
 
         if (action.debug) {
             plugin.logger.log(Level.INFO, "End delay '${action.ticks}'.")
+        }
+    }
+
+    private class PetBlocksCommandSender(private val handle: CommandSender) : CommandSender {
+        override fun isOp(): Boolean {
+            return handle.isOp
+        }
+
+        override fun setOp(value: Boolean) {
+            handle.isOp = value
+        }
+
+        override fun isPermissionSet(name: String): Boolean {
+            return handle.isPermissionSet(name)
+        }
+
+        override fun isPermissionSet(perm: Permission): Boolean {
+            return handle.isPermissionSet(perm)
+        }
+
+        override fun hasPermission(name: String): Boolean {
+            return handle.hasPermission(name)
+        }
+
+        override fun hasPermission(perm: Permission): Boolean {
+            return handle.hasPermission(perm)
+        }
+
+        override fun addAttachment(plugin: Plugin, name: String, value: Boolean): PermissionAttachment {
+            return handle.addAttachment(plugin, name, value)
+        }
+
+        override fun addAttachment(plugin: Plugin): PermissionAttachment {
+            return handle.addAttachment(plugin)
+        }
+
+        override fun addAttachment(plugin: Plugin, name: String, value: Boolean, ticks: Int): PermissionAttachment? {
+            return handle.addAttachment(plugin, name, value, ticks)
+        }
+
+        override fun addAttachment(plugin: Plugin, ticks: Int): PermissionAttachment? {
+            return handle.addAttachment(plugin, ticks)
+        }
+
+        override fun removeAttachment(attachment: PermissionAttachment) {
+            handle.removeAttachment(attachment)
+        }
+
+        override fun recalculatePermissions() {
+            handle.recalculatePermissions()
+        }
+
+        override fun getEffectivePermissions(): MutableSet<PermissionAttachmentInfo> {
+            return handle.effectivePermissions
+        }
+
+        override fun sendMessage(message: String) {
+        }
+
+        override fun sendMessage(vararg messages: String?) {
+        }
+
+        override fun sendMessage(sender: UUID?, message: String) {
+        }
+
+        override fun sendMessage(sender: UUID?, vararg messages: String?) {
+        }
+
+        override fun getServer(): Server {
+            return handle.server
+        }
+
+        override fun getName(): String {
+            return "PetBlocksCommandSender"
+        }
+
+        override fun spigot(): CommandSender.Spigot {
+            return handle.spigot()
         }
     }
 }

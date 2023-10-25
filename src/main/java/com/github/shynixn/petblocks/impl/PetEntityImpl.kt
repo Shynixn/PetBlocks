@@ -240,7 +240,7 @@ class PetEntityImpl(
             packetService.sendPacketOutEntityMetadata(player, PacketOutEntityMetadata().also {
                 it.entityId = entityComponent.entityId
                 it.customNameVisible = true
-                it.customname = placeHolderService.replacePlaceHolders(player, name, pet).translateChatColors()
+                it.customname = placeHolderService.replacePlaceHolders(player, name, pet)
             })
         }
     }
