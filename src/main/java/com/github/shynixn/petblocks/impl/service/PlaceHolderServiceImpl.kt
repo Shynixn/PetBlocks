@@ -21,15 +21,21 @@ class PlaceHolderServiceImpl : PlaceHolderService {
         simplePlaceHolderFunctions[PlaceHolder.PLAYER_NAME] = { player -> player.name }
         simplePlaceHolderFunctions[PlaceHolder.PLAYER_DISPLAYNAME] = { player -> player.displayName }
         simplePlaceHolderFunctions[PlaceHolder.PLAYER_OWNER_LOCATION_WORLD] = { player -> player.location.world!!.name }
-        simplePlaceHolderFunctions[PlaceHolder.PLAYER_OWNER_LOCATION_X] = { player -> String.format(Locale.ENGLISH, "%.2f", player.location.x) }
-        simplePlaceHolderFunctions[PlaceHolder.PLAYER_OWNER_LOCATION_Y] = { player -> String.format(Locale.ENGLISH, "%.2f", player.location.y) }
-        simplePlaceHolderFunctions[PlaceHolder.PLAYER_OWNER_LOCATION_Z] = { player -> String.format(Locale.ENGLISH, "%.2f", player.location.z) }
-        simplePlaceHolderFunctions[PlaceHolder.PLAYER_OWNER_LOCATION_YAW] = { player -> String.format(Locale.ENGLISH, "%.2f", player.location.yaw) }
-        simplePlaceHolderFunctions[PlaceHolder.PLAYER_OWNER_LOCATION_PITCH] = { player -> String.format(Locale.ENGLISH, "%.2f", player.location.pitch) }
+        simplePlaceHolderFunctions[PlaceHolder.PLAYER_OWNER_LOCATION_X] =
+            { player -> String.format(Locale.ENGLISH, "%.2f", player.location.x) }
+        simplePlaceHolderFunctions[PlaceHolder.PLAYER_OWNER_LOCATION_Y] =
+            { player -> String.format(Locale.ENGLISH, "%.2f", player.location.y) }
+        simplePlaceHolderFunctions[PlaceHolder.PLAYER_OWNER_LOCATION_Z] =
+            { player -> String.format(Locale.ENGLISH, "%.2f", player.location.z) }
+        simplePlaceHolderFunctions[PlaceHolder.PLAYER_OWNER_LOCATION_YAW] =
+            { player -> String.format(Locale.ENGLISH, "%.2f", player.location.yaw) }
+        simplePlaceHolderFunctions[PlaceHolder.PLAYER_OWNER_LOCATION_PITCH] =
+            { player -> String.format(Locale.ENGLISH, "%.2f", player.location.pitch) }
 
         petPlaceHolderFunctions[PlaceHolder.PET_NAME] = { player, pet -> pet.name }
         petPlaceHolderFunctions[PlaceHolder.PET_DISPLAYNAME] = { player, pet -> pet.displayName }
-        petPlaceHolderFunctions[PlaceHolder.PET_DISTANCETOOWNER] = { player, pet -> calculatePetDistanceToOwner(pet).toString() }
+        petPlaceHolderFunctions[PlaceHolder.PET_DISTANCETOOWNER] =
+            { player, pet -> calculatePetDistanceToOwner(pet).toString() }
     }
 
     /**
@@ -68,9 +74,14 @@ class PlaceHolderServiceImpl : PlaceHolderService {
             output = output.replace(locatedPlaceHolder.fullPlaceHolder, locatedPlaceHolders[locatedPlaceHolder]!!)
         }
 
+        if (pet != null) {
+            for (key in pet.javaScriptMemory.keys) {
+                output = output.replace("%petblocks_js_${key}%", pet.javaScriptMemory[key]!!)
+            }
+        }
+
         return output.translateChatColors()
     }
-
 
 
     private fun calculatePetDistanceToOwner(pet: Pet): Int {

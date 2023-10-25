@@ -2,7 +2,7 @@ package com.github.shynixn.petblocks.contract
 
 interface ScriptService {
     /**
-     * Evaluates a Javascript expression to a boolean expression.
+     * Evaluates a Javascript expression.
      */
-    fun evaluate(expression: String): Boolean
+    fun evaluate(expression: String): Any?
 }

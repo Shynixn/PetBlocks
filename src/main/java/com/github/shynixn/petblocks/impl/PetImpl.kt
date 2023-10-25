@@ -239,6 +239,11 @@ class PetImpl(
         }
 
     /**
+     * Calculated variables which can be used in subsequent operations by placeholders.
+     */
+    override var javaScriptMemory: MutableMap<String, String> = HashMap()
+
+    /**
      * Calls the pet to the player. Spawns the pet if it is not spawned, and places the pet
      * right in front of the player.
      */

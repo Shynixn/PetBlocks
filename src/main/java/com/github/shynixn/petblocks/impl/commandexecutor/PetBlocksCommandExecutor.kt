@@ -67,7 +67,7 @@ class PetBlocksCommandExecutor @Inject constructor(
             Permission.LOOKATOWNER,
             "/petblocks lookatowner <name> [player]"
         ) { sender, player, args ->
-            lookAtLocation(sender, player, args[1], player.location.add(0.0, 1.0,0.0))
+            lookAtLocation(sender, player, args[1], player.location.add(0.0, 1.0, 0.0))
         },
         CommandDefinition(
             "moveto",
@@ -385,6 +385,13 @@ class PetBlocksCommandExecutor @Inject constructor(
         val pet = findPetFromPlayer(player, petName)
             ?: throw PetBlocksException(String.format(PetBlocksLanguage.petNotFoundMessage, petName))
         pet.ride()
+
+        val loop = "ride"
+
+        if (pet.template.loops.containsKey(loop)) {
+            pet.loop = loop
+        }
+
         sender.sendMessage(String.format(PetBlocksLanguage.petRideMessage, petName))
     }
 
@@ -501,6 +508,13 @@ class PetBlocksCommandExecutor @Inject constructor(
         val pet = findPetFromPlayer(player, petName)
             ?: throw PetBlocksException(String.format(PetBlocksLanguage.petNotFoundMessage, petName))
         pet.umount()
+
+        val loop = "idle"
+
+        if (pet.template.loops.containsKey(loop)) {
+            pet.loop = loop
+        }
+
         sender.sendMessage(String.format(PetBlocksLanguage.petUnmountMessage, petName))
     }
 
@@ -508,6 +522,12 @@ class PetBlocksCommandExecutor @Inject constructor(
         val pet = findPetFromPlayer(player, petName)
             ?: throw PetBlocksException(String.format(PetBlocksLanguage.petNotFoundMessage, petName))
         pet.hat()
+        val loop = "hat"
+
+        if (pet.template.loops.containsKey(loop)) {
+            pet.loop = loop
+        }
+
         sender.sendMessage(String.format(PetBlocksLanguage.petHatMessage, petName))
     }
 

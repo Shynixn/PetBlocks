@@ -26,7 +26,9 @@ pet:
   # Displays a virtual trail of gold blocks, which represents the calculated path of the pet. Can be used for investigating pet paths. Rejoining the server removes the client side blocks.
   showPathfinder: false
   name:
-    regex: "[0-9a-zA-Z_&'\"\\s]*" # Allows only certain letters as regex validation. (letters, numbers, underline, single quote, double quote)
+    # Allows only certain letters as regex validation. (letters, numbers, underline, single quote).
+    # Be careful what you allow here, certain pet actions may break (scriptinjection) if you allow special characters.
+    regex: "[0-9a-zA-Z_&'\\s]*"
     minLength: 1
     maxLength: 20
     blacklist: # All values which are not allowed inside pet names. You probably need to add a lot of more swear words here for production servers.

@@ -26,12 +26,12 @@ class ScriptServiceImpl @Inject constructor(
     }
 
     /**
-     * Evaluates a Javascript expression to a boolean expression.
+     * Evaluates a Javascript expression.
      */
-    override fun evaluate(expression: String): Boolean {
+    override fun evaluate(expression: String): Any? {
         return try {
             // Script Engine is thread safe.
-            scriptEngine.eval(expression) as Boolean
+            scriptEngine.eval(expression)
         } catch (e: Exception) {
             plugin.logger.log(Level.SEVERE, "Cannot evaluate expression '$expression'.", e)
             false

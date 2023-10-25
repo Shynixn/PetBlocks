@@ -46,8 +46,10 @@ loops:
       - name: "Delay Action"
         type: "DELAY"
         debug: true
-        ticks: 120
-      - name: "Look at owner"
+        ticks: 20
+      - name: "Look at owner with a 60% change."
+        condition: "Math.floor(Math.random() * 100) > 40"
+        debug: true
         type: "COMMAND"
         level: "SERVER"
         run:
@@ -63,21 +65,25 @@ loops:
     actions:
       - name: "Delay Action"
         type: "DELAY"
-        ticks: 200
-      - name: "Play Particle Effect"
+        debug: true
+        ticks: 20
+      - name: "Recalculate path and start moving to owner."
         type: "COMMAND"
         level: "SERVER"
+        debug: true
         run:
-          - "/petblocks moveTo %petblocks_pet_name% %petblocks_owner_location% %petblocks_owner_name%"
+          - "/petblocks moveToOwner %petblocks_pet_name% %petblocks_owner_name%"
       - name: "Switch to idle if the pet is beside the player"
-        condition: "%petblocks_pet_distanceToOwner% < 2"
+        condition: "%petblocks_pet_distanceToOwner% < 4"
         type: "COMMAND"
         level: "SERVER"
+        debug: true
         run:
-          - "/petblocks loop %petblocks_pet_name% moveToOwner %petblocks_owner_name%"
+          - "/petblocks loop %petblocks_pet_name% idle %petblocks_owner_name%"
       - name: "Teleport pet to player if the pet is too far away for the pathfinder."
         condition: "%petblocks_pet_distanceToOwner% > 20"
         type: "COMMAND"
         level: "SERVER"
+        debug: true
         run:
-          - "/petblocks teleport %petblocks_pet_name%  %petblocks_owner_location_back% %petblocks_owner_name%"
+          - "/petblocks teleport %petblocks_pet_name% %petblocks_owner_locationWorld% %petblocks_owner_locationX% %petblocks_owner_locationY% %petblocks_owner_locationZ% %petblocks_owner_locationYaw% %petblocks_owner_locationPitch% %petblocks_owner_name%"

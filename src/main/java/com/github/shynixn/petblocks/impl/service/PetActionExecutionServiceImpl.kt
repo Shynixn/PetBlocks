@@ -16,6 +16,7 @@ import kotlinx.coroutines.withContext
 import org.bukkit.Bukkit
 import org.bukkit.Server
 import org.bukkit.command.CommandSender
+import org.bukkit.entity.Player
 import org.bukkit.permissions.Permission
 import org.bukkit.permissions.PermissionAttachment
 import org.bukkit.permissions.PermissionAttachmentInfo
@@ -56,7 +57,7 @@ class PetActionExecutionServiceImpl @Inject constructor(
 
                 val conditionResult = withContext(plugin.asyncDispatcher) {
                     scriptService.evaluate(placeHolderParsedCondition)
-                }
+                } as Boolean
 
                 if (action.debug) {
                     plugin.logger.log(Level.INFO, "End evaluating condition, result ${conditionResult}.")
@@ -71,6 +72,8 @@ class PetActionExecutionServiceImpl @Inject constructor(
                 executeCommandAction(pet, action)
             } else if (action.actionType == PetActionType.DELAY) {
                 executeDelayAction(action)
+            } else if (action.actionType == PetActionType.JAVASCRIPT) {
+                executeJavaScriptAction(player, pet, action)
             }
         }
     }
@@ -99,6 +102,36 @@ class PetActionExecutionServiceImpl @Inject constructor(
                 plugin.logger.log(Level.INFO, "End executing command '${executionCommand}'.")
             }
         }
+    }
+
+    private suspend fun executeJavaScriptAction(player: Player, pet: Pet, action: PetAction) {
+        if (action.initial != null && !pet.javaScriptMemory.containsKey(action.variable)) {
+            pet.javaScriptMemory[action.variable!!] = action.initial!!
+        }
+
+        val parsedJs =
+            placeHolderService.replacePlaceHolders(player, action.js!!, pet)
+
+        if (action.debug) {
+            plugin.logger.log(Level.INFO, "Start evaluating JavaScript '${parsedJs}'.")
+        }
+
+        val result = withContext(plugin.asyncDispatcher) {
+            scriptService.evaluate(parsedJs)
+        }
+
+        if (action.debug) {
+            plugin.logger.log(Level.INFO, "End evaluating JavaScript '${result}'.")
+        }
+
+        val memory = pet.javaScriptMemory
+
+        if (result == null && memory.containsKey(action.variable)) {
+            memory.remove(action.variable)
+            return
+        }
+
+        memory[action.variable!!] = result.toString()
     }
 
     private suspend fun executeDelayAction(action: PetAction) {

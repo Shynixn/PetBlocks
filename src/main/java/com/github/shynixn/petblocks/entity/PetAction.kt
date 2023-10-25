@@ -28,7 +28,7 @@ class PetAction {
     /**
      * Flag to print all parameters.
      */
-    var debug : Boolean = false
+    var debug: Boolean = false
 
     // endregion
 
@@ -54,4 +54,23 @@ class PetAction {
     var ticks: Int = 0
 
     // endregion
+
+    // region JavaScript
+
+    /**
+     * JavaScript to execute.
+     */
+    var js: String? = null
+
+    /**
+     * Name of the variable to store data.
+     */
+    var variable: String? = null
+
+    /**
+     * Initial value of the variable.
+     */
+    var initial: String? = null
+
+    // region JavaScript
 }

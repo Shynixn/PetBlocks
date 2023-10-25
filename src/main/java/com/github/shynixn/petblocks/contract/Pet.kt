@@ -73,6 +73,11 @@ interface Pet {
     var template: PetTemplate
 
     /**
+     * Calculated variables which can be used in subsequent operations by placeholders.
+     */
+    var javaScriptMemory : MutableMap<String, String>
+
+    /**
      * Calls the pet to the player. Spawns the pet if it is not spawned, and places the pet
      * right in front of the player.
      */
