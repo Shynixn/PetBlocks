@@ -26,11 +26,6 @@ class PetMeta {
     var template: String = "?"
 
     /**
-     * Used to check which template version has been used.
-     */
-    var templateHashCode: String = ""
-
-    /**
      * Is the pet currently spawned.
      */
     var isSpawned: Boolean = false
@@ -49,6 +44,11 @@ class PetMeta {
      * The item the pet is wearing.
      */
     var headItem: Item = Item("minecraft:player_head,HEAD")
+
+    /**
+     * The loop, the pet is executing.
+     */
+    var loop: String = ""
 
     /**
      * Last persisted location of the pet.

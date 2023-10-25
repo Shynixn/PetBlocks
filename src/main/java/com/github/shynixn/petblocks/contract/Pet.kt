@@ -58,14 +58,19 @@ interface Pet {
     var headItem: Item
 
     /**
+     * Gets or sets the execution loop of the pet.
+     */
+    var loop : String
+
+    /**
      * Gets if the pet has been disposed. The pet can no longer be used then.
      */
     val isDisposed: Boolean
 
     /**
-     * Gets the template.
+     * Gets or sets the template.
      */
-    val template: PetTemplate
+    var template: PetTemplate
 
     /**
      * Calls the pet to the player. Spawns the pet if it is not spawned, and places the pet

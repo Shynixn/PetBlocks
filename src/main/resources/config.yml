@@ -32,3 +32,12 @@ pet:
     blacklist: # All values which are not allowed inside pet names. You probably need to add a lot of more swear words here for production servers.
       - "fuck"
       - "ass"
+
+############################
+# Script Engine.
+############################
+scriptEngine:
+  # Option parameters for the NashornScriptEngine.
+  options:
+    - "--no-java-access=true"
+    - "--persistent-code-cache=true"

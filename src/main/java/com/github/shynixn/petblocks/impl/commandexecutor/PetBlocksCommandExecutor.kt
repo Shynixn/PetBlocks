@@ -67,7 +67,7 @@ class PetBlocksCommandExecutor @Inject constructor(
             Permission.LOOKATOWNER,
             "/petblocks lookatowner <name> [player]"
         ) { sender, player, args ->
-            lookAtLocation(sender, player, args[1], player.location)
+            lookAtLocation(sender, player, args[1], player.location.add(0.0, 1.0,0.0))
         },
         CommandDefinition(
             "moveto",
@@ -159,9 +159,24 @@ class PetBlocksCommandExecutor @Inject constructor(
             "/petblocks visibility <name> <type> [player]"
         ) { sender, player, args ->
             setVisibility(sender, player, args[1], args[2])
+        },
+        CommandDefinition(
+            "loop",
+            3,
+            Permission.LOOP,
+            "/petblocks loop <name> <loop> [player]"
+        ) { sender, player, args ->
+            setPetLoop(sender, player, args[1], args[2])
+        },
+        CommandDefinition(
+            "template",
+            3,
+            Permission.TEMPLATE,
+            "/petblocks template <name> <template> [player]"
+        ) { sender, player, args ->
+            setPetTemplate(sender, player, args[1], args[2])
         }
     )
-
 
     /**
      * Executes the given command, returning its success.
@@ -192,7 +207,12 @@ class PetBlocksCommandExecutor @Inject constructor(
                 ) && sender.hasPermission(definition.permission.text)
             ) {
                 val player = findPlayer(sender, definition.minArgsCount, args)
-                    ?: throw PetBlocksException(PetBlocksLanguage.playerNotFoundMessage)
+                    ?: throw PetBlocksException(
+                        String.format(
+                            PetBlocksLanguage.playerNotFoundMessage,
+                            args[args.size - 1]
+                        )
+                    )
                 val newArgs = args.map { e -> e.replace("###", " ") }.toTypedArray()
                 definition.playerFunction.invoke(sender, player, newArgs)
                 return true
@@ -202,12 +222,21 @@ class PetBlocksCommandExecutor @Inject constructor(
         val commandsPerPage = 10
         val amountOfPages = (allCommands.size.toDouble() / commandsPerPage.toDouble()).toInt() + 1
 
-        if(args.size == 1 && args[0].equals("reload", true)){
+        if (args.size == 1 && args[0].equals("reload", true)) {
             plugin.reloadConfig()
             val language = configurationService.findValue<String>("language")
             plugin.reloadTranslation(language, PetBlocksLanguage::class.java, "en_us")
             plugin.logger.log(Level.INFO, "Loaded language file $language.properties.")
             templateRepository.clearCache()
+            val templates = templateRepository.getAll()
+            for (pet in petService.getCache().values.flatten()) {
+                val matchingTemplate = templates.firstOrNull { e -> e.name.equals(pet.template.name, true) }
+
+                if (matchingTemplate != null) {
+                    pet.template = matchingTemplate
+                }
+            }
+
             sender.sendMessage(PetBlocksLanguage.reloadMessage)
             return true
         }
@@ -339,11 +368,39 @@ class PetBlocksCommandExecutor @Inject constructor(
         sender.sendMessage(String.format(PetBlocksLanguage.visibilityChangedMessage, visibilityTypeName))
     }
 
+    private suspend fun setPetLoop(sender: CommandSender, player: Player, petName: String, loop: String) {
+        val pet = findPetFromPlayer(player, petName)
+            ?: throw PetBlocksException(String.format(PetBlocksLanguage.petNotFoundMessage, petName))
+
+        if (!pet.template.loops.containsKey(loop)) {
+            sender.sendMessage(String.format(PetBlocksLanguage.petLoopNotFound, loop))
+            return
+        }
+
+        pet.loop = loop
+        sender.sendMessage(String.format(PetBlocksLanguage.petLoopChangedMessage, petName, loop))
+    }
+
     private suspend fun ridePet(sender: CommandSender, player: Player, petName: String) {
         val pet = findPetFromPlayer(player, petName)
             ?: throw PetBlocksException(String.format(PetBlocksLanguage.petNotFoundMessage, petName))
         pet.ride()
         sender.sendMessage(String.format(PetBlocksLanguage.petRideMessage, petName))
+    }
+
+    private suspend fun setPetTemplate(sender: CommandSender, player: Player, petName: String, templateName: String) {
+        val pet = findPetFromPlayer(player, petName)
+            ?: throw PetBlocksException(String.format(PetBlocksLanguage.petNotFoundMessage, petName))
+        val templates = templateRepository.getAll()
+        val template = templates.firstOrNull { e -> e.name.equals(templateName, true) }
+
+        if (template == null) {
+            sender.sendMessage(String.format(PetBlocksLanguage.templateNotFoundMessage, templateName))
+            return
+        }
+
+        pet.template = template
+        sender.sendMessage(String.format(PetBlocksLanguage.petTemplateChangeMessage, petName, templateName))
     }
 
     private suspend fun setSkinNbt(sender: CommandSender, player: Player, petName: String, nbt: String) {

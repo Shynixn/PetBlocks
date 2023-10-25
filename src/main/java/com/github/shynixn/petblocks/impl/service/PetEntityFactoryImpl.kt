@@ -59,14 +59,13 @@ class PetEntityFactoryImpl @Inject constructor(
             playerComponent,
             armorstandEntityComponent,
             plugin,
-            petActionExecutionService,
             pet,
-            template,
             meta,
             placeHolderService,
             packetService,
             physicObjectDispatcher,
-            pathfinderService
+            pathfinderService,
+            petActionExecutionService,
         )
 
         physicObjectService.addPhysicObject(petEntity)

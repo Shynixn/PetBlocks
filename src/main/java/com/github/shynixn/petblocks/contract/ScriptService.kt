@@ -1,8 +1,8 @@
 package com.github.shynixn.petblocks.contract
 
-interface ConditionService {
+interface ScriptService {
     /**
      * Evaluates a Javascript expression to a boolean expression.
      */
-    suspend fun evaluate(expression: String): Boolean
+    fun evaluate(expression: String): Boolean
 }

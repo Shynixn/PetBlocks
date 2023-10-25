@@ -4,17 +4,17 @@ name: classic
 # You can ignore this value, if it is not mentioned in the patchNotes.
 version: 1.0
 # The name of the pet shown above the pet. Supports ChatColors.
-# Permission to allow players to change this value "petblocks.pet.displayName"
 # Command /petblocks <name> displayName <value>
 displayName: "%petblocks_owner_name%'s pet"
 # Should the name of the pet be shown above the pet?
-# Permission to allow players to change this value "petblocks.pet.isDisplayNameVisible"
 # Command /petblocks <name> isDisplayNameVisible <true/false>
 isDisplayNameVisible: true
 # Should the pet be shown to all players (e.g. "ALL") or shown to just the owner (e.g. "OWNER")?
-# Permission to allow players to change this value "petblocks.pet.visibility"
 # Command /petblocks <name> visibility <value>
 visibility: "ALL"
+# The initial loop state the pet starts with on first spawn.
+# Command /petblocks loop <name> [player]
+loop: "idle"
 #
 # Defines the action a pet should perform when a player rightclicks on it.
 #
@@ -39,67 +39,45 @@ rightclick:
 # Defines the action a pet should perform in an interval on its own.
 #
 loops:
+  # You can add/remove new loops as you want here.
+  # Give it a name like "idle2" and define the list of actions below.
   idle:
     actions:
       - name: "Delay Action"
-        type: "delay"
+        type: "DELAY"
+        debug: true
         ticks: 120
       - name: "Look at owner"
-        type: "command"
+        type: "COMMAND"
         level: "SERVER"
-        run: |
-          /petblocks lookat %petblocks_pet_name%  %petblocks_owner_location% %petblocks_owner_name%
+        run:
+          - "/petblocks lookatowner %petblocks_pet_name% %petblocks_owner_name%"
       - name: "Switch to moveToOwner if pet is too far away"
         condition: "%petblocks_pet_distanceToOwner% > 10"
-        type: "command"
+        debug: true
+        type: "COMMAND"
         level: "SERVER"
-        run: |
-          /petblocks loop %petblocks_pet_name% moveToOwner %petblocks_owner_name%
+        run:
+          - "/petblocks loop %petblocks_pet_name% moveToOwner %petblocks_owner_name%"
   moveToOwner:
     actions:
       - name: "Delay Action"
-        type: "delay"
+        type: "DELAY"
         ticks: 200
       - name: "Play Particle Effect"
-        type: "command"
+        type: "COMMAND"
         level: "SERVER"
-        run: |
-          /petblocks moveTo %petblocks_pet_name% %petblocks_owner_location% %petblocks_owner_name%
+        run:
+          - "/petblocks moveTo %petblocks_pet_name% %petblocks_owner_location% %petblocks_owner_name%"
       - name: "Switch to idle if the pet is beside the player"
         condition: "%petblocks_pet_distanceToOwner% < 2"
-        type: "command"
+        type: "COMMAND"
         level: "SERVER"
-        run: |
-          /petblocks loop %petblocks_pet_name% moveToOwner %petblocks_owner_name%
+        run:
+          - "/petblocks loop %petblocks_pet_name% moveToOwner %petblocks_owner_name%"
       - name: "Teleport pet to player if the pet is too far away for the pathfinder."
         condition: "%petblocks_pet_distanceToOwner% > 20"
-        type: "command"
+        type: "COMMAND"
         level: "SERVER"
-        run: |
-          /petblocks teleport %petblocks_pet_name%  %petblocks_owner_location_back% %petblocks_owner_name%
-  riding:
-    actions:
-      - name: "Delay Action"
-        type: "delay"
-        ticks: 200
-      - name: "Play Particle Effect"
-        type: "command"
-        level: "SERVER"
-        run: |
-          /petblocks ride %petblocks_pet_name% %petblocks_owner_name%
-      - name: "Switch to idle if the pet is beside the player"
-        condition: "%petblocks_pet_distanceToOwner% < 2"
-        type: "command"
-        level: "SERVER"
-        run: |
-          /petblocks loop %petblocks_pet_name% moveToOwner %petblocks_owner_name%
-  hat:
-    actions:
-      - name: "Delay Action"
-        type: "delay"
-        ticks: 200
-      - name: "Switch to idle if the pet is beside the player"
-        type: "command"
-        level: "SERVER"
-        run: |
-          /petblocks hat %petblocks_pet_name% %petblocks_owner_name%
+        run:
+          - "/petblocks teleport %petblocks_pet_name%  %petblocks_owner_location_back% %petblocks_owner_name%"

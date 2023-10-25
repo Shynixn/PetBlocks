@@ -40,7 +40,6 @@ import com.google.inject.TypeLiteral
 import org.bukkit.Bukkit
 import org.bukkit.plugin.Plugin
 import java.util.logging.Level
-import javax.inject.Provider
 
 class PetBlocksDependencyInjectionBinder(private val plugin: PetBlocksPlugin) : AbstractModule() {
     companion object {
@@ -96,7 +95,7 @@ class PetBlocksDependencyInjectionBinder(private val plugin: PetBlocksPlugin) : 
         bind(PetService::class.java).to(PetServiceImpl::class.java).`in`(Scopes.SINGLETON)
         bind(PetEntityFactory::class.java).to(PetEntityFactoryImpl::class.java).`in`(Scopes.SINGLETON)
         bind(PetActionExecutionService::class.java).to(PetActionExecutionServiceImpl::class.java).`in`(Scopes.SINGLETON)
-        bind(ConditionService::class.java).to(ConditionServiceImpl::class.java).`in`(Scopes.SINGLETON)
+        bind(ScriptService::class.java).to(ScriptServiceImpl::class.java).`in`(Scopes.SINGLETON)
         if (Bukkit.getPluginManager().getPlugin(PluginDependency.PLACEHOLDERAPI.pluginName) != null) {
             bind(PlaceHolderService::class.java).to(DependencyPlaceHolderApiServiceImpl::class.java).`in`(Scopes.SINGLETON)
             plugin.logger.log(Level.INFO, "Loaded dependency ${PluginDependency.PLACEHOLDERAPI.pluginName}.")

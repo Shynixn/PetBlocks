@@ -12,11 +12,6 @@ class PetTemplate : Element {
     override var name: String = "template"
 
     /**
-     * Hashcode of the template file.
-     */
-    var fileHashCode: String = ""
-
-    /**
      * DisplayName of the pet.
      */
     var displayName: String = ""
@@ -39,25 +34,10 @@ class PetTemplate : Element {
     /**
      * The item the pet is wearing.
      */
-    var item: Item = Item("HEAD")
+    var item: Item = Item("minecraft:player_head,HEAD")
 
     /**
-     * All RightClick actions.
+     * Loops.
      */
-    var rightClickDefinition: PetActionDefinition = PetActionDefinition()
-
-    /**
-     * All leftclick actions.
-     */
-    var leftClickDefinition: PetActionDefinition = PetActionDefinition()
-
-    /**
-     * All loop actions.
-     */
-    var loopDefinition: PetActionDefinition = PetActionDefinition()
-
-    /**
-     * A sneak definition.
-     */
-    var sneakDefinition: PetActionDefinition = PetActionDefinition()
+    var loops: HashMap<String, PetActionDefinition> = hashMapOf()
 }

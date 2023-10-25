@@ -19,6 +19,9 @@ object PetBlocksLanguage {
   /** [&9PetBlocks&f] &cWorld %1$1s not found. **/
   var worldNotFoundMessage : String = "[&9PetBlocks&f] &cWorld %1$1s not found."
 
+  /** [&9PetBlocks&f] &cLoop %1$1s not found. **/
+  var petLoopNotFound : String = "[&9PetBlocks&f] &cLoop %1$1s not found."
+
   /** [&9PetBlocks&f] Pet with name %1$1s has been removed. **/
   var petDespawnedMessage : String = "[&9PetBlocks&f] Pet with name %1$1s has been removed."
 
@@ -27,6 +30,9 @@ object PetBlocksLanguage {
 
   /** [&9PetBlocks&f] &cPet with name %1$1s not found. **/
   var petNotFoundMessage : String = "[&9PetBlocks&f] &cPet with name %1$1s not found."
+
+  /** [&9PetBlocks&f] Changed pet %1$1s to loop %2$1s. **/
+  var petLoopChangedMessage : String = "[&9PetBlocks&f] Changed pet %1$1s to loop %2$1s."
 
   /** [&9PetBlocks&f] Pet with name %1$1s has been deleted. **/
   var petDeletedMessage : String = "[&9PetBlocks&f] Pet with name %1$1s has been deleted."
@@ -81,6 +87,9 @@ object PetBlocksLanguage {
 
   /** [&9PetBlocks&f] &cThis pet name is not allowed. **/
   var petCharacterNotAllowed : String = "[&9PetBlocks&f] &cThis pet name is not allowed."
+
+  /** [&9PetBlocks&f] Changed pet %1$1s to template %2$1s. **/
+  var petTemplateChangeMessage : String = "[&9PetBlocks&f] Changed pet %1$1s to template %2$1s."
 
   /** [&9PetBlocks&f] &cTemplate %1$1s not found. **/
   var templateNotFoundMessage : String = "[&9PetBlocks&f] &cTemplate %1$1s not found."

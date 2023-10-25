@@ -1,6 +1,8 @@
 package com.github.shynixn.petblocks.impl
 
+import com.github.shynixn.mccoroutine.bukkit.CoroutineTimings
 import com.github.shynixn.mccoroutine.bukkit.launch
+import com.github.shynixn.mccoroutine.bukkit.minecraftDispatcher
 import com.github.shynixn.mcutils.common.*
 import com.github.shynixn.mcutils.common.item.Item
 import com.github.shynixn.petblocks.contract.Pet
@@ -30,15 +32,15 @@ class PetImpl(
      */
     private var playerParam: Player?,
     private val petMeta: PetMeta,
-    override val template: PetTemplate,
     private val petEntityFactory: PetEntityFactory,
     plugin: Plugin
 ) : Pet {
     private var petEntity: PetEntityImpl? = null
     private var disposed = false
+    private var templateCache: PetTemplate? = null
 
     init {
-        plugin.launch {
+        plugin.launch(plugin.minecraftDispatcher + object : CoroutineTimings() {}) {
             // Remove pet if the player does not have any spawn or call permission.
             while (!isDisposed) {
                 if (!player.hasPermission(Permission.SPAWN.text) && !player.hasPermission(Permission.CALL.text)) {
@@ -55,8 +57,7 @@ class PetImpl(
             if (petMeta.ridingState == PetRidingState.HAT) {
                 delay(200)
                 hat()
-            }
-            else if (petMeta.ridingState == PetRidingState.GROUND) {
+            } else if (petMeta.ridingState == PetRidingState.GROUND) {
                 delay(200)
                 ride()
             }
@@ -207,11 +208,34 @@ class PetImpl(
         }
 
     /**
+     * Gets or sets the execution loop of the pet.
+     */
+    override var loop: String
+        get() {
+            return petMeta.loop
+        }
+        set(value) {
+            petMeta.loop = value
+        }
+
+    /**
      * Gets if the pet has been disposed. The pet can no longer be used then.
      */
     override val isDisposed: Boolean
         get() {
             return disposed
+        }
+
+    /**
+     * Gets or sets the template.
+     */
+    override var template: PetTemplate
+        get() {
+            return templateCache!!
+        }
+        set(value) {
+            templateCache = value
+            petMeta.template = value.name
         }
 
     /**

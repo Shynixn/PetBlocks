@@ -1,9 +1,13 @@
 package com.github.shynixn.petblocks.entity
 
+import com.fasterxml.jackson.annotation.JsonProperty
+import com.fasterxml.jackson.databind.annotation.JsonSerialize
 import com.github.shynixn.petblocks.enumeration.PetActionCommandLevelType
 import com.github.shynixn.petblocks.enumeration.PetActionType
 
 class PetAction {
+    // region Common
+
     /**
      * Name for easier debugging.
      */
@@ -13,17 +17,8 @@ class PetAction {
      * Action to use for execution.
      * Defaults to command.
      */
+    @JsonProperty("type")
     var actionType: PetActionType = PetActionType.COMMAND
-
-    /**
-     * Command level.
-     */
-    var level: PetActionCommandLevelType = PetActionCommandLevelType.PLAYER
-
-    /**
-     * Optional Debug string.
-     */
-    var debug: String? = null
 
     /**
      * Optional javascript condition.
@@ -31,12 +26,32 @@ class PetAction {
     var condition: String? = null
 
     /**
+     * Flag to print all parameters.
+     */
+    var debug : Boolean = false
+
+    // endregion
+
+    // region Command
+
+    /**
+     * Command level.
+     */
+    var level: PetActionCommandLevelType = PetActionCommandLevelType.PLAYER
+
+    /**
      * Commands.
      */
     var run: List<String> = emptyList()
+
+    // endregion
+
+    // region Delay
 
     /**
      * Amount of ticks to wait.
      */
     var ticks: Int = 0
+
+    // endregion
 }

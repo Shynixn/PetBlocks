@@ -23,4 +23,5 @@ enum class Permission(val text: String) {
     VISIBILITY("petblocks.pet.visibility"),
     AMOUNT("petblocks.pet.amount.1"),
     TEMPLATE("petblocks.pet.template.pet_hopping"),
+    LOOP("petblocks.pet.loop")
 }

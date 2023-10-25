@@ -1,9 +1,6 @@
 package com.github.shynixn.petblocks.impl
 
-import com.github.shynixn.mccoroutine.bukkit.CoroutineTimings
-import com.github.shynixn.mccoroutine.bukkit.launch
-import com.github.shynixn.mccoroutine.bukkit.minecraftDispatcher
-import com.github.shynixn.mccoroutine.bukkit.ticks
+import com.github.shynixn.mccoroutine.bukkit.*
 import com.github.shynixn.mcutils.common.Vector3d
 import com.github.shynixn.mcutils.common.physic.PhysicObject
 import com.github.shynixn.mcutils.common.physic.PhysicObjectDispatcher
@@ -22,7 +19,6 @@ import com.github.shynixn.petblocks.contract.Pet
 import com.github.shynixn.petblocks.contract.PetActionExecutionService
 import com.github.shynixn.petblocks.contract.PlaceHolderService
 import com.github.shynixn.petblocks.entity.PetMeta
-import com.github.shynixn.petblocks.entity.PetTemplate
 import com.github.shynixn.petblocks.enumeration.PetRidingState
 import com.github.shynixn.petblocks.enumeration.PetVisibility
 import com.github.shynixn.petblocks.impl.physic.ArmorstandEntityComponent
@@ -38,6 +34,7 @@ import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 import org.bukkit.plugin.Plugin
 import org.bukkit.util.Vector
+import java.util.logging.Level
 
 class PetEntityImpl(
     private val physicsComponent: MathComponent,
@@ -45,14 +42,13 @@ class PetEntityImpl(
     private val playerComponent: PlayerComponent,
     private val entityComponent: ArmorstandEntityComponent,
     private val plugin: Plugin,
-    private val petActionExecutionService: PetActionExecutionService,
     private val pet: Pet,
-    private val template: PetTemplate,
     private val petMeta: PetMeta,
     private val placeHolderService: PlaceHolderService,
     private val packetService: PacketService,
     private val physicObjectDispatcher: PhysicObjectDispatcher,
-    private val pathfinderService: PathfinderService
+    private val pathfinderService: PathfinderService,
+    private val petActionExecutionService: PetActionExecutionService
 ) : PhysicObject {
     private var positionUpdateCounter = 0
     private var velocity = Vector3d(0.0, 0.0, 0.0)
@@ -60,8 +56,25 @@ class PetEntityImpl(
     init {
         plugin.launch(plugin.minecraftDispatcher + object : CoroutineTimings() {}) {
             while (!isDead) {
-                petActionExecutionService.executeAction(pet, template.loopDefinition)
-                delay(1.ticks)
+                try {
+                    val template = pet.template
+                    val loop = template.loops[pet.loop]
+
+                    if (loop == null) {
+                        plugin.logger.log(
+                            Level.SEVERE,
+                            "Pet loop is set to '${pet.loop}' but it does not exist. Change the pet loop and respawn the pet."
+                        )
+                        break
+                    }
+
+                    petActionExecutionService.executeAction(pet, loop!!)
+                    delay(1.ticks)
+                }
+                catch (e: Exception) {
+                    plugin.logger.log(Level.SEVERE, "Cannot execute pet loop '${pet.loop}'.", e)
+                    break
+                }
             }
         }
     }
@@ -160,24 +173,6 @@ class PetEntityImpl(
         }
 
         return false
-    }
-
-    /**
-     * LeftClick on the physic object.
-     */
-    fun leftClick(player: Player) {
-        plugin.launch {
-            petActionExecutionService.executeAction(pet, template.leftClickDefinition)
-        }
-    }
-
-    /**
-     * RightClick on the physic object.
-     */
-    fun rightClick(player: Player) {
-        plugin.launch {
-            petActionExecutionService.executeAction(pet, template.rightClickDefinition)
-        }
     }
 
     /**
