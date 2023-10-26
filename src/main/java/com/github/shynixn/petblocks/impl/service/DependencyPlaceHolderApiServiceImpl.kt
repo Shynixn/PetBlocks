@@ -5,6 +5,7 @@ import com.github.shynixn.petblocks.contract.DependencyPlaceholderApiService
 import com.github.shynixn.petblocks.contract.Pet
 import com.github.shynixn.petblocks.contract.PetService
 import com.github.shynixn.petblocks.contract.PlaceHolderService
+import com.github.shynixn.petblocks.enumeration.PlaceHolder
 import com.google.inject.Inject
 import me.clip.placeholderapi.PlaceholderAPI
 import me.clip.placeholderapi.expansion.PlaceholderExpansion
@@ -52,9 +53,18 @@ class DependencyPlaceHolderApiServiceImpl @Inject constructor(
             }
 
             val index = finalPart.toInt() - 1
+            val newParams = parts.dropLast(1).joinToString("_")
 
             if (index >= 0 && index < pets.size) {
-                return placeHolderService.replacePlaceHolders(p, "%petblocks_${params}%", pets[0])
+                if (PlaceHolder.PET_EXISTS.fullPlaceHolder == newParams) {
+                    return "true"
+                }
+
+                return placeHolderService.replacePlaceHolders(p, "%petblocks_${newParams}%", pets[index])
+            }
+
+            if (PlaceHolder.PET_EXISTS.fullPlaceHolder == newParams) {
+                return "false"
             }
 
             return PetBlocksLanguage.placeHolderPetNotFound

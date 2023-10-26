@@ -3,37 +3,36 @@ name: classic
 # The version of this file.
 # You can ignore this value, if it is not mentioned in the patchNotes.
 version: 1.0
-# The name of the pet shown above the pet. Supports ChatColors.
-# Command /petblocks <name> displayName <value>
-displayName: "%petblocks_owner_name%'s pet"
-# Should the name of the pet be shown above the pet?
-# Command /petblocks <name> isDisplayNameVisible <true/false>
-isDisplayNameVisible: true
-# Should the pet be shown to all players (e.g. "ALL") or shown to just the owner (e.g. "OWNER")?
-# Command /petblocks <name> visibility <value>
-visibility: "ALL"
-# The initial loop state the pet starts with on first spawn.
-# Command /petblocks loop <name> [player]
-loop: "idle"
-#
-# Defines the action a pet should perform when a player rightclicks on it.
-#
-rightclick:
-  actions:
-    - name: "Open the deluxe menu" # Requires the DeluxeMenu plugin to be installed and configured to use the sample PetBlocks inventory.
-      type: "command"
-      level: "PLAYER"
-      condition: '%petblocks_player_name% == %petblocks_owner_name%' # Checks if the player rightClicking the pet is the owner of the pet.
-      run: |
-        /petblocksmenu %petblocks_pet_name%
-    - name: "Play effects when the owner rightclicks the pet"
-      type: "command"
-      level: "PLAYER"
-      debug: "%petblocks_player_inventory_itemInMainHand_type%"
-      condition: '%petblocks_player_name% == %petblocks_owner_name% && %petblocks_player_inventory_itemInMainHand_type% == "CARROT"'
-      run: |
-        /tell %petblocks_player_name% I love carrots <3
-        /tell %petblocks_player_name% YES I LOVE THEM!
+# Pet settings
+pet:
+  # The initial name of the pet shown above the pet on first spawn. Supports ChatColors.
+  displayName: "%petblocks_owner_name%'s pet"
+  # The initial visibility the pet starts with on first spawn.
+  # Should the pet be shown to all players (e.g. "ALL") or shown to just the owner (e.g. "OWNER")?
+  visibility: "ALL"
+  # The initial loop state the pet starts with on first spawn.
+  loop: "idle"
+  # Should the pet immediately spawn after creation with the /petblocks create command?
+  isSpawned: true
+  # Should the player immediately ride on the pet on initial spawn?
+  # Possible values "NO", "GROUND", "HAT"
+  ridingState: "NO"
+  # All item properties.
+  item:
+    # TypeName the pet is represented. For version compatibility, multiple identifiers can be added by separating with a comma.
+    typeName: "minecraft:player_head,HEAD"
+    # Optional NBT Tags in standard Minecraft NBT format.
+    nbt: "{Unbreakable:1}"
+  physics:
+    # The amount of acceleration in minus y axe direction which is applied after each tick.
+    gravity: 0.05
+    # If a velocity is applied to the pet, this is the percentage of the speed the pet preserves after each tick.
+    # e.g. 1.0 = Pet continuous to fly with the same speed into infinity.
+    # e.g. 0.8 = Pet speed is reduced to 80% of its previous value after each tick.
+    relativeVelocityReduce: 0.8
+    # If a velocity is applied to the pet, this is the absolute value which is taken from the velocity speed vector after each tick.
+    # e.g. 0.005 means that the speed is reduced by 0.005 after each tick
+    absoluteVelocityReduce: 0.0005
 
 #
 # Defines the action a pet should perform in an interval on its own.

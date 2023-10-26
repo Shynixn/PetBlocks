@@ -15,7 +15,7 @@ class PlaceHolderServiceImpl : PlaceHolderService {
 
     init {
         for (placeHolder in PlaceHolder.values()) {
-            placeHolders.put(placeHolder.fullPlaceHolder, placeHolder)
+            placeHolders[placeHolder.fullPlaceHolder] = placeHolder
         }
 
         simplePlaceHolderFunctions[PlaceHolder.PLAYER_NAME] = { player -> player.name }
@@ -35,7 +35,32 @@ class PlaceHolderServiceImpl : PlaceHolderService {
         petPlaceHolderFunctions[PlaceHolder.PET_NAME] = { player, pet -> pet.name }
         petPlaceHolderFunctions[PlaceHolder.PET_DISPLAYNAME] = { player, pet -> pet.displayName }
         petPlaceHolderFunctions[PlaceHolder.PET_DISTANCETOOWNER] =
-            { player, pet -> calculatePetDistanceToOwner(pet).toString() }
+            { _, pet -> calculatePetDistanceToOwner(pet).toString() }
+        petPlaceHolderFunctions[PlaceHolder.PET_ISSPAWNED] = { _, pet -> pet.isSpawned.toString() }
+        petPlaceHolderFunctions[PlaceHolder.PET_TEMPLATE] = { _, pet -> pet.template.name }
+        petPlaceHolderFunctions[PlaceHolder.PET_VISIBILITY] = { _, pet -> pet.visibility.name }
+        petPlaceHolderFunctions[PlaceHolder.PET_MOUNTED] = { _, pet -> pet.isMounted().toString() }
+        petPlaceHolderFunctions[PlaceHolder.PET_LOOP] = { _, pet -> pet.loop }
+        petPlaceHolderFunctions[PlaceHolder.PET_LOCATION_WORLD] =
+            { _, pet -> String.format(Locale.ENGLISH, "%.2f", pet.location.world!!.name) }
+        petPlaceHolderFunctions[PlaceHolder.PET_LOCATION_X] =
+            { _, pet -> String.format(Locale.ENGLISH, "%.2f", pet.location.x) }
+        petPlaceHolderFunctions[PlaceHolder.PET_LOCATION_Y] =
+            { _, pet -> String.format(Locale.ENGLISH, "%.2f", pet.location.y) }
+        petPlaceHolderFunctions[PlaceHolder.PET_LOCATION_Z] =
+            { _, pet -> String.format(Locale.ENGLISH, "%.2f", pet.location.z) }
+        petPlaceHolderFunctions[PlaceHolder.PET_LOCATION_YAW] =
+            { _, pet -> String.format(Locale.ENGLISH, "%.2f", pet.location.yaw) }
+        petPlaceHolderFunctions[PlaceHolder.PET_LOCATION_PITCH] =
+            { _, pet -> String.format(Locale.ENGLISH, "%.2f", pet.location.pitch) }
+        petPlaceHolderFunctions[PlaceHolder.PET_ITEM_TYPE] = { _, pet -> pet.headItem.typeName }
+        petPlaceHolderFunctions[PlaceHolder.PET_ITEM_NBT] = { _, pet ->
+            if (pet.headItem.nbt == null) {
+                ""
+            } else {
+                pet.headItem.nbt!!
+            }
+        }
     }
 
     /**
@@ -55,10 +80,10 @@ class PlaceHolderServiceImpl : PlaceHolderService {
                     if (!locatedPlaceHolders.containsKey(placeHolder)) {
                         if (pet != null && petPlaceHolderFunctions.containsKey(placeHolder)) {
                             val result = petPlaceHolderFunctions[placeHolder]!!.invoke(player, pet)
-                            locatedPlaceHolders.put(placeHolder, result)
+                            locatedPlaceHolders[placeHolder] = result
                         } else if (simplePlaceHolderFunctions.containsKey(placeHolder)) {
                             val result = simplePlaceHolderFunctions[placeHolder]!!.invoke(player)
-                            locatedPlaceHolders.put(placeHolder, result)
+                            locatedPlaceHolders[placeHolder] = result
                         }
                     }
                 }

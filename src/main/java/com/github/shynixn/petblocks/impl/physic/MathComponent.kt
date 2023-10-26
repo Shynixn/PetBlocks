@@ -7,11 +7,11 @@ import com.github.shynixn.mcutils.common.toVector
 import com.github.shynixn.mcutils.packet.api.BlockDirection
 import com.github.shynixn.mcutils.packet.api.RayTraceResult
 import com.github.shynixn.mcutils.packet.api.RayTracingService
-import com.github.shynixn.petblocks.entity.MathSettings
+import com.github.shynixn.petblocks.entity.PhysicSettings
 import kotlin.math.abs
 
 class MathComponent(
-    var position: Vector3d, private val settings: MathSettings,
+    var position: Vector3d, private val settings : PhysicSettings,
     private val rayTracingService: RayTracingService
 ) : PhysicComponent {
     /**
@@ -55,7 +55,7 @@ class MathComponent(
         }
 
         // Handle gravity
-        motion.y -= settings.gravityAbsolute
+        motion.y -= settings.gravity
 
         // Target location of the object.
         val targetLocation = position.toLocation().add(motion.toVector())
@@ -102,10 +102,10 @@ class MathComponent(
                     this.position.z = targetPosition.z
 
                     // Reduces the motion relative to its current speed.
-                    this.motion = this.motion.multiply(settings.airResistanceRelative)
+                    this.motion = this.motion.multiply(settings.relativeVelocityReduce)
 
                     // Reduces the motion absolute by a negative normalized value.
-                    val reductionVector = this.motion.clone().normalize().multiply(settings.airResistanceAbsolute)
+                    val reductionVector = this.motion.clone().normalize().multiply(settings.absoluteVelocityReduce)
                     reduceVectorIfBiggerZero(this.motion, reductionVector)
                     fixMotionFloatingPoints()
                 }

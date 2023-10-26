@@ -6,12 +6,6 @@ enum class PluginDependency(
      */
     val pluginName: String
 ) {
-
-    /**
-     * HeadDatabase plugin.
-     */
-    HEADDATABASE("HeadDatabase"),
-
     /**
      * PlaceHolderApi plugin.
      */

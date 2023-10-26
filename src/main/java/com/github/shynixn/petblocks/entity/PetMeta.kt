@@ -43,12 +43,17 @@ class PetMeta {
     /**
      * The item the pet is wearing.
      */
-    var headItem: Item = Item("minecraft:player_head,HEAD")
+    var headItem: Item = Item()
 
     /**
      * The loop, the pet is executing.
      */
     var loop: String = ""
+
+    /**
+     * Physic settings.
+     */
+    var physics : PhysicSettings = PhysicSettings()
 
     /**
      * Last persisted location of the pet.

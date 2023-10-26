@@ -11,9 +11,7 @@ import com.github.shynixn.petblocks.contract.Pet
 import com.github.shynixn.petblocks.contract.PetActionExecutionService
 import com.github.shynixn.petblocks.contract.PetEntityFactory
 import com.github.shynixn.petblocks.contract.PlaceHolderService
-import com.github.shynixn.petblocks.entity.MathSettings
 import com.github.shynixn.petblocks.entity.PetMeta
-import com.github.shynixn.petblocks.entity.PetTemplate
 import com.github.shynixn.petblocks.impl.PetEntityImpl
 import com.github.shynixn.petblocks.impl.physic.ArmorstandEntityComponent
 import com.github.shynixn.petblocks.impl.physic.MathComponent
@@ -36,15 +34,14 @@ class PetEntityFactoryImpl @Inject constructor(
     /**
      * Creates a new pet entity.
      */
-    override fun createPetEntity(pet: Pet, meta: PetMeta, template: PetTemplate): PetEntityImpl {
+    override fun createPetEntity(pet: Pet, meta: PetMeta): PetEntityImpl {
         if (meta.lastStoredLocation.world == null) {
             // On First spawn
             meta.lastStoredLocation = pet.player.location.toVector3d()
         }
 
         val location = pet.location
-        val mathComponentSettings = MathSettings()
-        val mathPhysicComponent = MathComponent(location.toVector3d(), mathComponentSettings, rayTracingService)
+        val mathPhysicComponent = MathComponent(location.toVector3d(), meta.physics, rayTracingService)
 
         val playerComponent = PlayerComponent(mathPhysicComponent, pet = pet)
         val armorStandEntityId = entityService.createNewEntityId()

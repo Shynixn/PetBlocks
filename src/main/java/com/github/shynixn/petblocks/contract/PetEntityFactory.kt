@@ -8,6 +8,6 @@ interface PetEntityFactory {
     /**
      * Creates a new pet entity.
      */
-    fun createPetEntity(pet: Pet, meta: PetMeta, template: PetTemplate): PetEntityImpl
+    fun createPetEntity(pet: Pet, meta: PetMeta): PetEntityImpl
 }
 

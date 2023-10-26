@@ -51,7 +51,7 @@ class PetAction {
     /**
      * Amount of ticks to wait.
      */
-    var ticks: Int = 0
+    var ticks: Int = 1
 
     // endregion
 

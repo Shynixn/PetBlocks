@@ -319,7 +319,7 @@ class PetImpl(
             return
         }
 
-        petEntity = petEntityFactory.createPetEntity(this, petMeta, template)
+        petEntity = petEntityFactory.createPetEntity(this, petMeta)
         petMeta.isSpawned = true
     }
 

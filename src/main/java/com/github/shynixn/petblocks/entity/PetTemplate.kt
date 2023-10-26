@@ -1,5 +1,6 @@
 package com.github.shynixn.petblocks.entity
 
+import com.fasterxml.jackson.annotation.JsonProperty
 import com.github.shynixn.mcutils.common.item.Item
 import com.github.shynixn.mcutils.common.repository.Element
 import com.github.shynixn.petblocks.enumeration.PetRidingState
@@ -14,27 +15,38 @@ class PetTemplate : Element {
     /**
      * DisplayName of the pet.
      */
+    @JsonProperty("pet.displayName")
     var displayName: String = ""
 
     /**
-     * Is the pet currently spawned.
+     * Is the pet initially spawned.
      */
+    @JsonProperty("pet.isSpawned")
     var isSpawned: Boolean = false
 
     /**
      * Visibility state.
      */
+    @JsonProperty("pet.visibility")
     var visibility: PetVisibility = PetVisibility.ALL
 
     /**
      * Riding state.
      */
+    @JsonProperty("pet.ridingState")
     var ridingState: PetRidingState = PetRidingState.NO
 
     /**
      * The item the pet is wearing.
      */
-    var item: Item = Item("minecraft:player_head,HEAD")
+    @JsonProperty("pet.item")
+    var item: Item = Item()
+
+    /**
+     * Physic settings.
+     */
+    @JsonProperty("pet.physics")
+    var physics: PhysicSettings = PhysicSettings()
 
     /**
      * Loops.

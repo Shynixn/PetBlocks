@@ -175,8 +175,33 @@ class PetBlocksCommandExecutor @Inject constructor(
             "/petblocks template <name> <template> [player]"
         ) { sender, player, args ->
             setPetTemplate(sender, player, args[1], args[2])
+        },
+        CommandDefinition(
+            "spawn",
+            2,
+            Permission.TEMPLATE,
+            "/petblocks spawn <name> [player]"
+        ) { sender, player, args ->
+            spawnPet(sender, player, args[1])
+        },
+        CommandDefinition(
+            "despawn",
+            2,
+            Permission.TEMPLATE,
+            "/petblocks despawn <name> [player]"
+        ) { sender, player, args ->
+            deSpawnPet(sender, player, args[1])
+        },
+        CommandDefinition(
+            "toggle",
+            2,
+            Permission.DESPAWN,
+            "/petblocks toggle <name> [player]"
+        ) { sender, player, args ->
+            togglePet(sender, player, args[1])
         }
     )
+
 
     /**
      * Executes the given command, returning its success.
@@ -222,7 +247,7 @@ class PetBlocksCommandExecutor @Inject constructor(
         val commandsPerPage = 10
         val amountOfPages = (allCommands.size.toDouble() / commandsPerPage.toDouble()).toInt() + 1
 
-        if (args.size == 1 && args[0].equals("reload", true)) {
+        if (args.size == 1 && args[0].equals("reload", true) && sender.hasPermission(Permission.RELOAD.text)) {
             plugin.reloadConfig()
             val language = configurationService.findValue<String>("language")
             plugin.reloadTranslation(language, PetBlocksLanguage::class.java, "en_us")
@@ -381,6 +406,7 @@ class PetBlocksCommandExecutor @Inject constructor(
         sender.sendMessage(String.format(PetBlocksLanguage.petLoopChangedMessage, petName, loop))
     }
 
+
     private suspend fun ridePet(sender: CommandSender, player: Player, petName: String) {
         val pet = findPetFromPlayer(player, petName)
             ?: throw PetBlocksException(String.format(PetBlocksLanguage.petNotFoundMessage, petName))
@@ -530,6 +556,32 @@ class PetBlocksCommandExecutor @Inject constructor(
 
         sender.sendMessage(String.format(PetBlocksLanguage.petHatMessage, petName))
     }
+
+    private suspend fun spawnPet(sender: CommandSender, player: Player, petName: String) {
+        val pet = findPetFromPlayer(player, petName)
+            ?: throw PetBlocksException(String.format(PetBlocksLanguage.petNotFoundMessage, petName))
+        pet.spawn()
+        sender.sendMessage(String.format(PetBlocksLanguage.petSpawnedMessage, petName))
+    }
+
+    private suspend fun togglePet(sender: CommandSender, player: Player, petName: String) {
+        val pet = findPetFromPlayer(player, petName)
+            ?: throw PetBlocksException(String.format(PetBlocksLanguage.petNotFoundMessage, petName))
+
+        if (pet.isSpawned) {
+            deSpawnPet(sender, player, petName)
+        } else {
+            spawnPet(sender, player, petName)
+        }
+    }
+
+    private suspend fun deSpawnPet(sender: CommandSender, player: Player, petName: String) {
+        val pet = findPetFromPlayer(player, petName)
+            ?: throw PetBlocksException(String.format(PetBlocksLanguage.petNotFoundMessage, petName))
+        pet.remove()
+        sender.sendMessage(String.format(PetBlocksLanguage.petDespawnedMessage, petName))
+    }
+
 
     private suspend fun walkToLocation(sender: CommandSender, player: Player, petName: String, location: Location) {
         val pet = findPetFromPlayer(player, petName)
