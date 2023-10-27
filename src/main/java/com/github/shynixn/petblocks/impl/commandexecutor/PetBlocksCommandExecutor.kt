@@ -71,20 +71,26 @@ class PetBlocksCommandExecutor @Inject constructor(
         },
         CommandDefinition(
             "moveto",
-            5,
+            6,
             Permission.MOVETO,
-            "/petblocks moveto <name> <x> <y> <z> [player]"
+            "/petblocks moveto <name> <x> <y> <z> <speed> [player]"
         ) { sender, player, args ->
             val location = findLocation(null, args[2], args[3], args[4])
-            walkToLocation(sender, player, args[1], location)
+            walkToLocation(sender, player, args[1], location, args[5])
         },
         CommandDefinition(
             "movetoowner",
-            2,
+            3,
             Permission.MOVETOOWNER,
-            "/petblocks movetoowner <name> [player]"
+            "/petblocks movetoowner <name> <speed> [player]"
         ) { sender, player, args ->
-            walkToLocation(sender, player, args[1], player.location.toVector3d().addRelativeFront(3.0).toLocation())
+            walkToLocation(
+                sender,
+                player,
+                args[1],
+                player.location.toVector3d().addRelativeFront(3.0).toLocation(),
+                args[2]
+            )
         },
         CommandDefinition(
             "hat",
@@ -179,7 +185,7 @@ class PetBlocksCommandExecutor @Inject constructor(
         CommandDefinition(
             "spawn",
             2,
-            Permission.TEMPLATE,
+            Permission.SPAWN,
             "/petblocks spawn <name> [player]"
         ) { sender, player, args ->
             spawnPet(sender, player, args[1])
@@ -187,7 +193,7 @@ class PetBlocksCommandExecutor @Inject constructor(
         CommandDefinition(
             "despawn",
             2,
-            Permission.TEMPLATE,
+            Permission.DESPAWN,
             "/petblocks despawn <name> [player]"
         ) { sender, player, args ->
             deSpawnPet(sender, player, args[1])
@@ -195,7 +201,7 @@ class PetBlocksCommandExecutor @Inject constructor(
         CommandDefinition(
             "toggle",
             2,
-            Permission.DESPAWN,
+            Permission.TOGGLE,
             "/petblocks toggle <name> [player]"
         ) { sender, player, args ->
             togglePet(sender, player, args[1])
@@ -347,6 +353,20 @@ class PetBlocksCommandExecutor @Inject constructor(
             throw PetBlocksException(String.format(PetBlocksLanguage.petNameExistsMessage, petName))
         }
 
+        val pets = petService.getPetsFromPlayer(player)
+
+        val petAmountPermission = Permission.DYN_AMOUNT.toString() + pets.size + 1
+
+        if (!player.hasPermission(petAmountPermission)) {
+            sender.sendMessage(String.format(PetBlocksLanguage.petAmountNotAllowed, (pets.size + 1).toString()))
+            return
+        }
+
+        if (!player.hasPermission(Permission.DYN_TEMPLATE.text + templateId)) {
+            sender.sendMessage(String.format(PetBlocksLanguage.templateNotAllowed, templateId))
+            return
+        }
+
         petService.createPet(
             player, player.location.toVector3d().addRelativeFront(3.0).toLocation(), template.name, petName
         )
@@ -421,19 +441,23 @@ class PetBlocksCommandExecutor @Inject constructor(
         sender.sendMessage(String.format(PetBlocksLanguage.petRideMessage, petName))
     }
 
-    private suspend fun setPetTemplate(sender: CommandSender, player: Player, petName: String, templateName: String) {
+    private suspend fun setPetTemplate(sender: CommandSender, player: Player, petName: String, templateId: String) {
         val pet = findPetFromPlayer(player, petName)
             ?: throw PetBlocksException(String.format(PetBlocksLanguage.petNotFoundMessage, petName))
-        val templates = templateRepository.getAll()
-        val template = templates.firstOrNull { e -> e.name.equals(templateName, true) }
+        val template = findTemplate(templateId)
 
         if (template == null) {
-            sender.sendMessage(String.format(PetBlocksLanguage.templateNotFoundMessage, templateName))
+            sender.sendMessage(String.format(PetBlocksLanguage.templateNotFoundMessage, templateId))
+            return
+        }
+
+        if (!player.hasPermission(Permission.DYN_TEMPLATE.text + templateId)) {
+            sender.sendMessage(String.format(PetBlocksLanguage.templateNotAllowed, templateId))
             return
         }
 
         pet.template = template
-        sender.sendMessage(String.format(PetBlocksLanguage.petTemplateChangeMessage, petName, templateName))
+        sender.sendMessage(String.format(PetBlocksLanguage.petTemplateChangeMessage, petName, templateId))
     }
 
     private suspend fun setSkinNbt(sender: CommandSender, player: Player, petName: String, nbt: String) {
@@ -583,10 +607,22 @@ class PetBlocksCommandExecutor @Inject constructor(
     }
 
 
-    private suspend fun walkToLocation(sender: CommandSender, player: Player, petName: String, location: Location) {
+    private suspend fun walkToLocation(
+        sender: CommandSender,
+        player: Player,
+        petName: String,
+        location: Location,
+        speed: String
+    ) {
         val pet = findPetFromPlayer(player, petName)
             ?: throw PetBlocksException(String.format(PetBlocksLanguage.petNotFoundMessage, petName))
-        pet.moveTo(location, 0.2)
+
+        if (speed.toDoubleOrNull() == null) {
+            sender.sendMessage(String.format(PetBlocksLanguage.speedCannotBeParsed, speed))
+            return
+        }
+
+        pet.moveTo(location, speed.toDouble())
         sender.sendMessage(String.format(PetBlocksLanguage.petWalkToLocationMessage))
     }
 
@@ -603,7 +639,7 @@ class PetBlocksCommandExecutor @Inject constructor(
     }
 
     private suspend fun findTemplate(templateId: String): PetTemplate? {
-        return templateRepository.getAll().firstOrNull { e -> e.name.equals(templateId, true) }
+        return templateRepository.getAll().firstOrNull { e -> e.name == templateId }
     }
 
     private fun findLocation(

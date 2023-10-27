@@ -16,4 +16,9 @@ class PhysicSettings {
     /*If a velocity is applied to the pet, this is the absolute value which is taken from the velocity speed vector after each tick.
      e.g. 0.005 means that the speed is reduced by 0.005 after each tick*/
     var absoluteVelocityReduce = 0.0
+
+    /**
+     * Offset from the ground.
+     */
+    var groundOffset = 0.0
 }

@@ -33,6 +33,8 @@ pet:
     # If a velocity is applied to the pet, this is the absolute value which is taken from the velocity speed vector after each tick.
     # e.g. 0.005 means that the speed is reduced by 0.005 after each tick
     absoluteVelocityReduce: 0.0005
+    # The distance the pet hovers above the ground. Depending on the entity type this should be set lower or higher.
+    groundOffset: 0.35
 
 #
 # Defines the action a pet should perform in an interval on its own.
@@ -71,7 +73,7 @@ loops:
         level: "SERVER"
         debug: true
         run:
-          - "/petblocks moveToOwner %petblocks_pet_name% %petblocks_owner_name%"
+          - "/petblocks moveToOwner %petblocks_pet_name% 0.2 %petblocks_owner_name%"
       - name: "Switch to idle if the pet is beside the player"
         condition: "%petblocks_pet_distanceToOwner% < 4"
         type: "COMMAND"

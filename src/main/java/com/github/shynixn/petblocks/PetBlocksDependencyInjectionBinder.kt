@@ -56,6 +56,8 @@ class PetBlocksDependencyInjectionBinder(private val plugin: PetBlocksPlugin) : 
     override fun configure() {
         bind(Plugin::class.java).toInstance(plugin)
 
+        val autoSaveMinutes = plugin.config.getInt("autoSaveIntervalMinutes")
+
         // Repositories
         val templateRepositoryImpl = YamlFileRepositoryImpl<PetTemplate>(plugin,
             "pets",
@@ -69,7 +71,7 @@ class PetBlocksDependencyInjectionBinder(private val plugin: PetBlocksPlugin) : 
         val sqliteConnectionServiceImpl =
             SqliteConnectionServiceImpl(plugin.dataFolder.toPath().resolve("PetBlocks.sqlite"), plugin.logger)
         val playerDataRepository = AutoSavePlayerDataRepositoryImpl(
-            "pets", 1000 * 60 * 5L, CachePlayerDataRepositoryImpl(
+            "pets", 1000 * 60L * autoSaveMinutes, CachePlayerDataRepositoryImpl(
                 PlayerDataSqlRepositoryImpl<PlayerInformation>(
                     "PetBlocks", object : TypeReference<PlayerInformation>() {}, sqliteConnectionServiceImpl
                 ), plugin
@@ -97,7 +99,8 @@ class PetBlocksDependencyInjectionBinder(private val plugin: PetBlocksPlugin) : 
         bind(PetActionExecutionService::class.java).to(PetActionExecutionServiceImpl::class.java).`in`(Scopes.SINGLETON)
         bind(ScriptService::class.java).to(ScriptServiceImpl::class.java).`in`(Scopes.SINGLETON)
         if (Bukkit.getPluginManager().getPlugin(PluginDependency.PLACEHOLDERAPI.pluginName) != null) {
-            bind(PlaceHolderService::class.java).to(DependencyPlaceHolderApiServiceImpl::class.java).`in`(Scopes.SINGLETON)
+            bind(PlaceHolderService::class.java).to(DependencyPlaceHolderApiServiceImpl::class.java)
+                .`in`(Scopes.SINGLETON)
             plugin.logger.log(Level.INFO, "Loaded dependency ${PluginDependency.PLACEHOLDERAPI.pluginName}.")
         } else {
             bind(PlaceHolderService::class.java).to(PlaceHolderServiceImpl::class.java).`in`(Scopes.SINGLETON)

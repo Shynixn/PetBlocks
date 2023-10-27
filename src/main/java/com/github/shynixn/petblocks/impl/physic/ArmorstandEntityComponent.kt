@@ -30,7 +30,7 @@ class ArmorstandEntityComponent(
         packetService.sendPacketOutEntitySpawn(player, PacketOutEntitySpawn().also {
             it.entityId = this.entityId
             it.entityType = EntityType.ARMOR_STAND
-            it.target = location.toVector3d().addRelativeDown(0.35).toLocation()
+            it.target = location.toVector3d().addRelativeDown(petMeta.physics.groundOffset).toLocation()
         })
 
         val itemStack = petMeta.headItem.toItemStack()
@@ -67,7 +67,7 @@ class ArmorstandEntityComponent(
 
             packetService.sendPacketOutEntityTeleport(player, PacketOutEntityTeleport().also {
                 it.entityId = this.entityId
-                it.target = position.clone().addRelativeDown(0.35).toLocation()
+                it.target = position.clone().addRelativeDown(petMeta.physics.groundOffset).toLocation()
             })
 
             packetService.sendPacketOutEntityMetadata(player, PacketOutEntityMetadata().also {

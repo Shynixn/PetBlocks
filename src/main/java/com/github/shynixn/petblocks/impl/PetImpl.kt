@@ -33,6 +33,7 @@ class PetImpl(
     private var playerParam: Player?,
     private val petMeta: PetMeta,
     private val petEntityFactory: PetEntityFactory,
+    private val maxPathfinderDistance : Double,
     plugin: Plugin
 ) : Pet {
     private var petEntity: PetEntityImpl? = null
@@ -41,9 +42,9 @@ class PetImpl(
 
     init {
         plugin.launch(plugin.minecraftDispatcher + object : CoroutineTimings() {}) {
-            // Remove pet if the player does not have any spawn or call permission.
+            // Remove pet if the player does not have any spawn permission.
             while (!isDisposed) {
-                if (!player.hasPermission(Permission.SPAWN.text) && !player.hasPermission(Permission.CALL.text)) {
+                if (!player.hasPermission(Permission.SPAWN.text)) {
                     petEntity?.remove()
                     petEntity = null
                     petMeta.isSpawned = false
@@ -409,7 +410,7 @@ class PetImpl(
         location.world = sourceLocation.world
         val distanceBetweenLocations = location.distance(sourceLocation)
 
-        if (distanceBetweenLocations > 20) {
+        if (distanceBetweenLocations > maxPathfinderDistance) {
             return false
         }
 

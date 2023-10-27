@@ -1,14 +1,23 @@
 package com.github.shynixn.petblocks
 
 object PetBlocksLanguage {
+  /** [&9PetBlocks&f] &cThe speed value %1$1s cannot be parsed. **/
+  var speedCannotBeParsed : String = "[&9PetBlocks&f] &cThe speed value %1$1s cannot be parsed."
+
   /** [&9PetBlocks&f] The nbt of pet %1$1s has been changed. **/
   var petSkinNbtChanged : String = "[&9PetBlocks&f] The nbt of pet %1$1s has been changed."
 
   /** [&9PetBlocks&f] Pet with name %1$1s has been spawned. **/
   var petSpawnedMessage : String = "[&9PetBlocks&f] Pet with name %1$1s has been spawned."
 
+  /** [&9PetBlocks&f] &cYou do not have permission to have %1$1s pet(s). **/
+  var petAmountNotAllowed : String = "[&9PetBlocks&f] &cYou do not have permission to have %1$1s pet(s)."
+
   /** [&9PetBlocks&f] The skinType of pet %1$1s has been changed. **/
   var petSkinTypeChangedMessage : String = "[&9PetBlocks&f] The skinType of pet %1$1s has been changed."
+
+  /** [&9PetBlocks&f] &cYou do not have permission for template %1$1s. **/
+  var templateNotAllowed : String = "[&9PetBlocks&f] &cYou do not have permission for template %1$1s."
 
   /** [&9PetBlocks&f] Count: %1$1d Names: %2$1s **/
   var petListMessage : String = "[&9PetBlocks&f] Count: %1$1d Names: %2$1s"
@@ -76,8 +85,8 @@ object PetBlocksLanguage {
   /** [&9PetBlocks&f] &cCannot parse nbt %1$1s. **/
   var cannotParseNbtMessage : String = "[&9PetBlocks&f] &cCannot parse nbt %1$1s."
 
-  /** [&9PetBlocks&f] Only the visibility types %1$1s are supported. **/
-  var visibilityTypeNotFoundMessage : String = "[&9PetBlocks&f] Only the visibility types %1$1s are supported."
+  /** [&9PetBlocks&f] &cOnly the visibility types %1$1s are supported. **/
+  var visibilityTypeNotFoundMessage : String = "[&9PetBlocks&f] &cOnly the visibility types %1$1s are supported."
 
   /** [&9PetBlocks&f] Pet with name %1$1s has been created. **/
   var petCreatedMessage : String = "[&9PetBlocks&f] Pet with name %1$1s has been created."

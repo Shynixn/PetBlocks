@@ -6,7 +6,6 @@ import com.github.shynixn.mcutils.common.physic.PhysicObject
 import com.github.shynixn.mcutils.common.physic.PhysicObjectDispatcher
 import com.github.shynixn.mcutils.common.toLocation
 import com.github.shynixn.mcutils.common.toVector3d
-import com.github.shynixn.mcutils.common.translateChatColors
 import com.github.shynixn.mcutils.packet.api.*
 import com.github.shynixn.mcutils.packet.api.packet.PacketOutEntityEquipment
 import com.github.shynixn.mcutils.packet.api.packet.PacketOutEntityMetadata
@@ -34,6 +33,7 @@ import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 import org.bukkit.plugin.Plugin
 import org.bukkit.util.Vector
+import java.util.Date
 import java.util.logging.Level
 
 class PetEntityImpl(
@@ -48,10 +48,13 @@ class PetEntityImpl(
     private val packetService: PacketService,
     private val physicObjectDispatcher: PhysicObjectDispatcher,
     private val pathfinderService: PathfinderService,
-    private val petActionExecutionService: PetActionExecutionService
+    private val petActionExecutionService: PetActionExecutionService,
+    private val clickCoolDownMs : Long,
+    private val pathFinderCube : Vector3d
 ) : PhysicObject {
     private var positionUpdateCounter = 0
     private var velocity = Vector3d(0.0, 0.0, 0.0)
+    private var lastClickTimeStamp = 0L
 
     init {
         plugin.launch(plugin.minecraftDispatcher + object : CoroutineTimings() {}) {
@@ -68,10 +71,9 @@ class PetEntityImpl(
                         break
                     }
 
-                    petActionExecutionService.executeAction(pet, loop!!)
+                    petActionExecutionService.executeAction(pet, loop)
                     delay(1.ticks)
-                }
-                catch (e: Exception) {
+                } catch (e: Exception) {
                     plugin.logger.log(Level.SEVERE, "Cannot execute pet loop '${pet.loop}'.", e)
                     break
                 }
@@ -115,10 +117,50 @@ class PetEntityImpl(
     }
 
     /**
+     * RightClicks the pet.
+     */
+    fun rightClick() {
+        val currentDateTime = Date().time
+
+        if (currentDateTime - lastClickTimeStamp < clickCoolDownMs) {
+            return
+        }
+
+        lastClickTimeStamp = currentDateTime
+
+        val rightClickEvent = pet.template.events["rightClick"]
+        if (rightClickEvent != null) {
+            plugin.launch(plugin.minecraftDispatcher + object : CoroutineTimings() {}) {
+                petActionExecutionService.executeAction(pet, rightClickEvent)
+            }
+        }
+    }
+
+    /**
+     * LeftClicks the pet.
+     */
+    fun leftClick() {
+        val currentDateTime = Date().time
+
+        if (currentDateTime - lastClickTimeStamp < clickCoolDownMs) {
+            return
+        }
+
+        lastClickTimeStamp = currentDateTime
+
+        val leftClickEvent = pet.template.events["leftClick"]
+        if (leftClickEvent != null) {
+            plugin.launch(plugin.minecraftDispatcher + object : CoroutineTimings() {}) {
+                petActionExecutionService.executeAction(pet, leftClickEvent)
+            }
+        }
+    }
+
+    /**
      * Moves to the given location.
      */
     fun moveToLocation(location: Location, speed: Double) {
-        val snapshot = pathfinderService.calculateFastPathfinderSnapshot(location, 28, 10, 28)
+        val snapshot = pathfinderService.calculateFastPathfinderSnapshot(location, pathFinderCube.x.toInt(), pathFinderCube.y.toInt(), pathFinderCube.z.toInt())
 
         plugin.launch(physicObjectDispatcher) {
             val sourceLocation = physicsComponent.position.toLocation()
@@ -351,7 +393,8 @@ class PetEntityImpl(
      * For Debugging purposes.
      */
     private fun visualizePath(pathfinderResult: PathfinderResult) {
-        pathfinderResult.steps.forEach { e -> e.world = "world" }
+        val worldName = pet.location.world!!.name
+        pathfinderResult.steps.forEach { e -> e.world = worldName }
 
         for (player in Bukkit.getOnlinePlayers()) {
             for (item in copy) {

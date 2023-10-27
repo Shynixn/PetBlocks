@@ -11,7 +11,7 @@ class MoveToTargetComponent(private val mathComponent: MathComponent) : PhysicCo
     private var currentTargetPosition: Vector3d? = null
     private var vectorPerTick: Vector3d? = null
     private var lastDistance: Double = Double.MAX_VALUE
-    private var speed = 0.5
+    private var speed = 0.0
 
     init {
         mathComponent.onPostPositionChange.add { position, _ ->

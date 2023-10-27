@@ -1,6 +1,7 @@
 package com.github.shynixn.petblocks.impl.service
 
 import com.github.shynixn.mccoroutine.bukkit.scope
+import com.github.shynixn.mcutils.common.ConfigurationService
 import com.github.shynixn.mcutils.common.repository.Repository
 import com.github.shynixn.mcutils.database.api.CachePlayerRepository
 import com.github.shynixn.petblocks.contract.Pet
@@ -17,10 +18,10 @@ import com.github.shynixn.petblocks.impl.PetImpl
 import com.google.inject.Inject
 import kotlinx.coroutines.future.future
 import org.bukkit.Bukkit
-import org.bukkit.ChatColor
 import org.bukkit.Location
 import org.bukkit.entity.Player
 import org.bukkit.plugin.Plugin
+import java.util.DoubleSummaryStatistics
 import java.util.concurrent.CompletionStage
 
 class PetServiceImpl @Inject constructor(
@@ -28,7 +29,8 @@ class PetServiceImpl @Inject constructor(
     private val plugin: Plugin,
     private val petEntityFactory: PetEntityFactory,
     private val placeHolderService: PlaceHolderService,
-    private val templateRepository: Repository<PetTemplate>
+    private val templateRepository: Repository<PetTemplate>,
+    private val configurationService: ConfigurationService
 ) : PetService {
     private val cache = HashMap<Player, MutableList<Pet>>()
 
@@ -235,8 +237,10 @@ class PetServiceImpl @Inject constructor(
      * Creates a new pet instance.
      */
     private fun createPetInstance(player: Player, petMeta: PetMeta, petTemplate: PetTemplate): Pet {
-        val pet = PetImpl(player, petMeta, petEntityFactory, plugin)
+        val maxPathfinderDistance = configurationService.findValue<Double>("pet.pathfinderdistance")
+        val pet = PetImpl(player, petMeta, petEntityFactory, maxPathfinderDistance, plugin)
         pet.template = petTemplate
+        petMeta.physics = petTemplate.physics
         return pet
     }
 }

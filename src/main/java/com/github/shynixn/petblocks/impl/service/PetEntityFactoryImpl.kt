@@ -1,5 +1,7 @@
 package com.github.shynixn.petblocks.impl.service
 
+import com.github.shynixn.mcutils.common.ConfigurationService
+import com.github.shynixn.mcutils.common.Vector3d
 import com.github.shynixn.mcutils.common.physic.PhysicObjectDispatcher
 import com.github.shynixn.mcutils.common.physic.PhysicObjectService
 import com.github.shynixn.mcutils.common.toVector3d
@@ -29,7 +31,8 @@ class PetEntityFactoryImpl @Inject constructor(
     private val entityService: EntityService,
     private val packetService: PacketService,
     private val rayTracingService: RayTracingService,
-    private val physicObjectDispatcher: PhysicObjectDispatcher
+    private val physicObjectDispatcher: PhysicObjectDispatcher,
+    private val configurationService: ConfigurationService
 ) : PetEntityFactory {
     /**
      * Creates a new pet entity.
@@ -47,8 +50,21 @@ class PetEntityFactoryImpl @Inject constructor(
         val armorStandEntityId = entityService.createNewEntityId()
 
         val armorstandEntityComponent =
-            ArmorstandEntityComponent(mathPhysicComponent, packetService, playerComponent, meta,placeHolderService, pet, armorStandEntityId)
+            ArmorstandEntityComponent(
+                mathPhysicComponent,
+                packetService,
+                playerComponent,
+                meta,
+                placeHolderService,
+                pet,
+                armorStandEntityId
+            )
         val moveToTargetComponent = MoveToTargetComponent(mathPhysicComponent)
+
+        val clickCoolDown = configurationService.findValue<Int>("pet.clickCoolDownMs")
+        val pathfinderCubeX = configurationService.findValue<Double>("pet.pathfindercube.x")
+        val pathfinderCubeY = configurationService.findValue<Double>("pet.pathfindercube.y")
+        val pathfinderCubeZ = configurationService.findValue<Double>("pet.pathfindercube.z")
 
         val petEntity = PetEntityImpl(
             mathPhysicComponent,
@@ -63,6 +79,8 @@ class PetEntityFactoryImpl @Inject constructor(
             physicObjectDispatcher,
             pathfinderService,
             petActionExecutionService,
+            clickCoolDown.toLong(),
+            Vector3d(null, pathfinderCubeX, pathfinderCubeY, pathfinderCubeZ)
         )
 
         physicObjectService.addPhysicObject(petEntity)

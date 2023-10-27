@@ -4,7 +4,9 @@ package com.github.shynixn.petblocks.impl.listener
 
 import com.github.shynixn.mccoroutine.bukkit.launch
 import com.github.shynixn.mcutils.common.physic.PhysicObjectService
+import com.github.shynixn.mcutils.packet.api.InteractionType
 import com.github.shynixn.mcutils.packet.api.event.PacketEvent
+import com.github.shynixn.mcutils.packet.api.packet.PacketInInteractEntity
 import com.github.shynixn.mcutils.packet.api.packet.PacketInSteerVehicle
 import com.github.shynixn.petblocks.contract.PetActionExecutionService
 import com.github.shynixn.petblocks.contract.PetService
@@ -59,6 +61,17 @@ class PetListener @Inject constructor(
         if (packet is PacketInSteerVehicle) {
             val physicObject = physicObjectService.findPhysicObjectById(packet.entityId) as PetEntityImpl?
             physicObject?.ride(event.player, packet.forward, packet.isJumping)
+            return
+        }
+
+        if (packet is PacketInInteractEntity && packet.actionType != InteractionType.OTHER) {
+            val physicObject = physicObjectService.findPhysicObjectById(packet.entityId) as PetEntityImpl? ?: return
+
+            if (packet.actionType == InteractionType.LEFT_CLICK) {
+                physicObject.leftClick()
+            } else if (packet.actionType == InteractionType.RIGHT_CLICK) {
+                physicObject.rightClick()
+            }
         }
     }
 }

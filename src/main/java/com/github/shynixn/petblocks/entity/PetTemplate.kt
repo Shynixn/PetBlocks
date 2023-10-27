@@ -48,8 +48,12 @@ class PetTemplate : Element {
     @JsonProperty("pet.physics")
     var physics: PhysicSettings = PhysicSettings()
 
+    @JsonProperty("events")
+    var events : HashMap<String, PetActionDefinition> = hashMapOf()
+
     /**
      * Loops.
      */
+    @JsonProperty("loops")
     var loops: HashMap<String, PetActionDefinition> = hashMapOf()
 }
