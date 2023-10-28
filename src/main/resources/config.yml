@@ -37,7 +37,7 @@ autoSaveIntervalMinutes: 5
 # For individual pet settings, use the files in the pets folder.
 ############################
 pet:
-  # Render distance in blocks of the pets
+  # Render distance of the pet. They become invisible for players outside that range.
   renderDistance: 70
   # Displays a virtual trail of gold blocks, which represents the calculated path of the pet. Can be used for investigating pet paths. Rejoining the server removes the client side blocks.
   showPathfinder: false
@@ -46,12 +46,12 @@ pet:
   # A pathfinder run of a pet starts with a cube snapshot of the world, where a A* pathfinder implementation is applied after wards.
   # This setting defines how big of an area this cube should be. A larger cube requires more processing time and memory consumption.
   # Using a large cube is not recommend, as the pet should teleport or stay at its place when the owner is too far away.
-  pathfindercube:
+  pathFinderCube:
     x: 28.0
     y: 10.0
     z: 28.0
   # The max amount of blocks, the pet accepts move to orders.
-  pathfinderdistance: 20.0
+  pathFinderDistance: 20.0
   name:
     # Allows only certain letters as regex validation. (letters, numbers, underline, single quote).
     # Be careful what you allow here, certain pet actions may break (scriptinjection) if you allow special characters.

@@ -31,12 +31,7 @@ class PetActionExecutionServiceImpl @Inject constructor(
 ) : PetActionExecutionService {
     private val commandSender = PetBlocksCommandSender(Bukkit.getConsoleSender())
 
-    /**
-     * Executes an pet action.
-     */
-    override suspend fun executeAction(pet: Pet, petActionDefinition: PetActionDefinition) {
-        val player = pet.player
-
+    override suspend fun executeAction(eventPlayer: Player, pet: Pet, petActionDefinition: PetActionDefinition) {
         for (action in petActionDefinition.actions) {
             if (pet.isDisposed) {
                 break
@@ -49,7 +44,7 @@ class PetActionExecutionServiceImpl @Inject constructor(
             if (action.condition != null) {
                 // If condition evaluates to false, do not execute action.
                 val placeHolderParsedCondition =
-                    placeHolderService.replacePlaceHolders(player, action.condition!!, pet)
+                    placeHolderService.replacePlaceHolders(eventPlayer, action.condition!!, pet)
 
                 if (action.debug) {
                     plugin.logger.log(Level.INFO, "Start evaluating condition '${placeHolderParsedCondition}'.")
@@ -68,17 +63,28 @@ class PetActionExecutionServiceImpl @Inject constructor(
                 }
             }
 
+            if (action.permission != null && !eventPlayer.hasPermission(action.permission!!)) {
+                if (action.debug) {
+                    plugin.logger.log(
+                        Level.INFO,
+                        "Player ${eventPlayer.name} does not have permission ${action.permission}."
+                    )
+                }
+
+                continue
+            }
+
             if (action.actionType == PetActionType.COMMAND) {
-                executeCommandAction(pet, action)
+                executeCommandAction(eventPlayer, pet, action)
             } else if (action.actionType == PetActionType.DELAY) {
                 executeDelayAction(action)
             } else if (action.actionType == PetActionType.JAVASCRIPT) {
-                executeJavaScriptAction(player, pet, action)
+                executeJavaScriptAction(eventPlayer, pet, action)
             }
         }
     }
 
-    private fun executeCommandAction(pet: Pet, action: PetAction) {
+    private fun executeCommandAction(eventPlayer: Player, pet: Pet, action: PetAction) {
         for (command in action.run) {
             var executionCommand = if (command.startsWith("/")) {
                 command.substring(1)
@@ -86,7 +92,7 @@ class PetActionExecutionServiceImpl @Inject constructor(
                 command
             }
 
-            executionCommand = placeHolderService.replacePlaceHolders(pet.player, executionCommand, pet)
+            executionCommand = placeHolderService.replacePlaceHolders(eventPlayer, executionCommand, pet)
 
             if (action.debug) {
                 plugin.logger.log(Level.INFO, "Start executing command '${executionCommand}'.")

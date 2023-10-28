@@ -1,55 +1,25 @@
 package com.github.shynixn.petblocks.entity
 
 import com.fasterxml.jackson.annotation.JsonProperty
-import com.github.shynixn.mcutils.common.item.Item
 import com.github.shynixn.mcutils.common.repository.Element
-import com.github.shynixn.petblocks.enumeration.PetRidingState
-import com.github.shynixn.petblocks.enumeration.PetVisibility
 
 class PetTemplate : Element {
+
     /**
      * Unique Identifier.
      */
     override var name: String = "template"
 
     /**
-     * DisplayName of the pet.
+     * Wrapper.
      */
-    @JsonProperty("pet.displayName")
-    var displayName: String = ""
+    var pet : PetTemplatePet = PetTemplatePet()
 
     /**
-     * Is the pet initially spawned.
+     * Event actions.
      */
-    @JsonProperty("pet.isSpawned")
-    var isSpawned: Boolean = false
-
-    /**
-     * Visibility state.
-     */
-    @JsonProperty("pet.visibility")
-    var visibility: PetVisibility = PetVisibility.ALL
-
-    /**
-     * Riding state.
-     */
-    @JsonProperty("pet.ridingState")
-    var ridingState: PetRidingState = PetRidingState.NO
-
-    /**
-     * The item the pet is wearing.
-     */
-    @JsonProperty("pet.item")
-    var item: Item = Item()
-
-    /**
-     * Physic settings.
-     */
-    @JsonProperty("pet.physics")
-    var physics: PhysicSettings = PhysicSettings()
-
     @JsonProperty("events")
-    var events : HashMap<String, PetActionDefinition> = hashMapOf()
+    var events: HashMap<String, PetActionDefinition> = hashMapOf()
 
     /**
      * Loops.
@@ -57,3 +27,5 @@ class PetTemplate : Element {
     @JsonProperty("loops")
     var loops: HashMap<String, PetActionDefinition> = hashMapOf()
 }
+
+

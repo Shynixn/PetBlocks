@@ -2,7 +2,7 @@ name: PetBlocks
 version: 9.0.0
 author: Shynixn
 main: com.github.shynixn.petblocks.PetBlocksPlugin
-softdepend: [ PlaceholderAPI, HeadDatabase ]
+softdepend: [ PlaceholderAPI]
 commands:
   petblocks:
     usage: Use /petblocks help to see more info about the plugin.

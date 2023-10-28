@@ -62,9 +62,10 @@ class PetEntityFactoryImpl @Inject constructor(
         val moveToTargetComponent = MoveToTargetComponent(mathPhysicComponent)
 
         val clickCoolDown = configurationService.findValue<Int>("pet.clickCoolDownMs")
-        val pathfinderCubeX = configurationService.findValue<Double>("pet.pathfindercube.x")
-        val pathfinderCubeY = configurationService.findValue<Double>("pet.pathfindercube.y")
-        val pathfinderCubeZ = configurationService.findValue<Double>("pet.pathfindercube.z")
+        val pathfinderCubeX = configurationService.findValue<Double>("pet.pathFinderCube.x")
+        val pathfinderCubeY = configurationService.findValue<Double>("pet.pathFinderCube.y")
+        val pathfinderCubeZ = configurationService.findValue<Double>("pet.pathFinderCube.z")
+        val visualizePath = configurationService.findValue<Boolean>("pet.showPathfinder")
 
         val petEntity = PetEntityImpl(
             mathPhysicComponent,
@@ -80,7 +81,8 @@ class PetEntityFactoryImpl @Inject constructor(
             pathfinderService,
             petActionExecutionService,
             clickCoolDown.toLong(),
-            Vector3d(null, pathfinderCubeX, pathfinderCubeY, pathfinderCubeZ)
+            Vector3d(null, pathfinderCubeX, pathfinderCubeY, pathfinderCubeZ),
+            visualizePath
         )
 
         physicObjectService.addPhysicObject(petEntity)

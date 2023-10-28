@@ -68,9 +68,9 @@ class PetListener @Inject constructor(
             val physicObject = physicObjectService.findPhysicObjectById(packet.entityId) as PetEntityImpl? ?: return
 
             if (packet.actionType == InteractionType.LEFT_CLICK) {
-                physicObject.leftClick()
+                physicObject.leftClick(event.player)
             } else if (packet.actionType == InteractionType.RIGHT_CLICK) {
-                physicObject.rightClick()
+                physicObject.rightClick(event.player)
             }
         }
     }

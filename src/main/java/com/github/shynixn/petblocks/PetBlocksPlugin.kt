@@ -97,7 +97,7 @@ class PetBlocksPlugin : JavaPlugin() {
             val playerDataRepository = resolve(PlayerDataRepository::class.java)
             playerDataRepository.createIfNotExist()
             val templateRepository = resolve(Repository::class.java)
-            templateRepository.getAll()
+            val templates = templateRepository.getAll()
 
             // Register Dependencies
             Bukkit.getServicesManager()

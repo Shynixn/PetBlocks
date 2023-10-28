@@ -2,6 +2,7 @@ package com.github.shynixn.petblocks.impl.service
 
 import com.github.shynixn.mccoroutine.bukkit.scope
 import com.github.shynixn.mcutils.common.ConfigurationService
+import com.github.shynixn.mcutils.common.item.Item
 import com.github.shynixn.mcutils.common.repository.Repository
 import com.github.shynixn.mcutils.database.api.CachePlayerRepository
 import com.github.shynixn.petblocks.contract.Pet
@@ -21,7 +22,6 @@ import org.bukkit.Bukkit
 import org.bukkit.Location
 import org.bukkit.entity.Player
 import org.bukkit.plugin.Plugin
-import java.util.DoubleSummaryStatistics
 import java.util.concurrent.CompletionStage
 
 class PetServiceImpl @Inject constructor(
@@ -157,10 +157,14 @@ class PetServiceImpl @Inject constructor(
         val petMeta = PetMeta()
         petMeta.name = name
         petMeta.template = templateId
-        petMeta.displayName = placeHolderService.replacePlaceHolders(player, template.displayName, null)
-        petMeta.isSpawned = template.isSpawned
-        petMeta.visibility = template.visibility
-        petMeta.ridingState = template.ridingState
+        petMeta.displayName = placeHolderService.replacePlaceHolders(player, template.pet.displayName, null)
+        petMeta.isSpawned = template.pet.spawned
+        petMeta.visibility = template.pet.visibility
+        petMeta.ridingState = template.pet.ridingState
+        petMeta.isSpawned = template.pet.spawned
+        petMeta.loop = template.pet.loop
+        petMeta.headItem = template.pet.item.copy()
+
         // Create pet instance.
         val pet = createPetInstance(player, petMeta, template)
 
@@ -237,10 +241,10 @@ class PetServiceImpl @Inject constructor(
      * Creates a new pet instance.
      */
     private fun createPetInstance(player: Player, petMeta: PetMeta, petTemplate: PetTemplate): Pet {
-        val maxPathfinderDistance = configurationService.findValue<Double>("pet.pathfinderdistance")
+        val maxPathfinderDistance = configurationService.findValue<Double>("pet.pathFinderDistance")
         val pet = PetImpl(player, petMeta, petEntityFactory, maxPathfinderDistance, plugin)
         pet.template = petTemplate
-        petMeta.physics = petTemplate.physics
+        petMeta.physics = petTemplate.pet.physics
         return pet
     }
 }

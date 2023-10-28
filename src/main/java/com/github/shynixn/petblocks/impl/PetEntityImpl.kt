@@ -49,8 +49,9 @@ class PetEntityImpl(
     private val physicObjectDispatcher: PhysicObjectDispatcher,
     private val pathfinderService: PathfinderService,
     private val petActionExecutionService: PetActionExecutionService,
-    private val clickCoolDownMs : Long,
-    private val pathFinderCube : Vector3d
+    private val clickCoolDownMs: Long,
+    private val pathFinderCube: Vector3d,
+    private val visualizePath: Boolean
 ) : PhysicObject {
     private var positionUpdateCounter = 0
     private var velocity = Vector3d(0.0, 0.0, 0.0)
@@ -71,7 +72,7 @@ class PetEntityImpl(
                         break
                     }
 
-                    petActionExecutionService.executeAction(pet, loop)
+                    petActionExecutionService.executeAction(pet.player, pet, loop)
                     delay(1.ticks)
                 } catch (e: Exception) {
                     plugin.logger.log(Level.SEVERE, "Cannot execute pet loop '${pet.loop}'.", e)
@@ -119,7 +120,7 @@ class PetEntityImpl(
     /**
      * RightClicks the pet.
      */
-    fun rightClick() {
+    fun rightClick(player : Player) {
         val currentDateTime = Date().time
 
         if (currentDateTime - lastClickTimeStamp < clickCoolDownMs) {
@@ -131,7 +132,7 @@ class PetEntityImpl(
         val rightClickEvent = pet.template.events["rightClick"]
         if (rightClickEvent != null) {
             plugin.launch(plugin.minecraftDispatcher + object : CoroutineTimings() {}) {
-                petActionExecutionService.executeAction(pet, rightClickEvent)
+                petActionExecutionService.executeAction(player, pet, rightClickEvent)
             }
         }
     }
@@ -139,7 +140,7 @@ class PetEntityImpl(
     /**
      * LeftClicks the pet.
      */
-    fun leftClick() {
+    fun leftClick(player : Player) {
         val currentDateTime = Date().time
 
         if (currentDateTime - lastClickTimeStamp < clickCoolDownMs) {
@@ -151,7 +152,7 @@ class PetEntityImpl(
         val leftClickEvent = pet.template.events["leftClick"]
         if (leftClickEvent != null) {
             plugin.launch(plugin.minecraftDispatcher + object : CoroutineTimings() {}) {
-                petActionExecutionService.executeAction(pet, leftClickEvent)
+                petActionExecutionService.executeAction(player, pet, leftClickEvent)
             }
         }
     }
@@ -160,7 +161,12 @@ class PetEntityImpl(
      * Moves to the given location.
      */
     fun moveToLocation(location: Location, speed: Double) {
-        val snapshot = pathfinderService.calculateFastPathfinderSnapshot(location, pathFinderCube.x.toInt(), pathFinderCube.y.toInt(), pathFinderCube.z.toInt())
+        val snapshot = pathfinderService.calculateFastPathfinderSnapshot(
+            location,
+            pathFinderCube.x.toInt(),
+            pathFinderCube.y.toInt(),
+            pathFinderCube.z.toInt()
+        )
 
         plugin.launch(physicObjectDispatcher) {
             val sourceLocation = physicsComponent.position.toLocation()
@@ -209,7 +215,10 @@ class PetEntityImpl(
         val result = pathfinderService.findPath(snapshot, sourceLocation, targetLocation)
 
         if (result.resultType == PathfinderResultType.FOUND) {
-            visualizePath(result)
+            if (visualizePath) {
+                visualizePath(result)
+            }
+
             moveToTargetComponent.walkToTarget(result.steps, speed)
             return true
         }

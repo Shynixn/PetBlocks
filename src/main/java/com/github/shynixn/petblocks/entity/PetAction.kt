@@ -30,6 +30,11 @@ class PetAction {
      */
     var debug: Boolean = false
 
+    /**
+     * Optional permission check for this action.
+     */
+    var permission : String? = null
+
     // endregion
 
     // region Command

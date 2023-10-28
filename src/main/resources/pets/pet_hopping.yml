@@ -3,7 +3,7 @@ name: classic
 # The version of this file.
 # You can ignore this value, if it is not mentioned in the patchNotes.
 version: 1.0
-# Pet settings
+# The initial settings of the pet on first spawn.
 pet:
   # The initial name of the pet shown above the pet on first spawn. Supports ChatColors.
   displayName: "%petblocks_owner_name%'s pet"
@@ -13,14 +13,16 @@ pet:
   # The initial loop state the pet starts with on first spawn.
   loop: "idle"
   # Should the pet immediately spawn after creation with the /petblocks create command?
-  isSpawned: true
+  spawned: true
   # Should the player immediately ride on the pet on initial spawn?
   # Possible values "NO", "GROUND", "HAT"
   ridingState: "NO"
   # All item properties.
   item:
     # TypeName the pet is represented. For version compatibility, multiple identifiers can be added by separating with a comma.
-    typeName: "minecraft:player_head,HEAD"
+    typeName: "minecraft:player_head,397"
+    # Optional durability tag.
+    durability: 3
     # Optional NBT Tags in standard Minecraft NBT format.
     nbt: "{Unbreakable:1}"
   physics:
@@ -35,6 +37,49 @@ pet:
     absoluteVelocityReduce: 0.0005
     # The distance the pet hovers above the ground. Depending on the entity type this should be set lower or higher.
     groundOffset: 0.35
+
+#
+# Defines the action a pet should perform on certain events.
+#
+events:
+  # You cannot add new events here. The event names are fixed.
+  leftClick:
+    actions:
+      - name: "Apply knockback to the pet if the owner punches it"
+        condition: "%petblocks_eventPlayer_name% == %petblocks_owner_name%"
+        type: "JAVASCRIPT"
+        debug: true
+        variable: "knockbackX"
+        js: |
+          function calculateVector() {
+            const positionPlayer = {
+              x: %petblocks_owner_locationX%,
+              y: %petblocks_owner_locationY%
+              z: %petblocks_owner_locationZ%
+            }
+            const positionPet = {
+              x: %petblocks_pet_locationX%,
+              y: %petblocks_pet_locationY%
+              z: %petblocks_pet_locationZ%
+            }
+            const directionVector = {
+              x: positionPet.x - positionPlayer.x,
+              y: positionPet.y - positionPlayer.y,
+              z: positionPet.z - positionPlayer.z
+            };
+            const magnitude = Math.sqrt(
+              directionVector.x ** 2 + directionVector.y ** 2 + directionVector.z ** 2
+            );
+            const normalizedMultipliedVector = {
+              x: directionVector.x / magnitude * 0.5,
+              y: directionVector.y / magnitude * 0.5,
+              z: directionVector.z / magnitude * 0.5
+            };
+            return normalizedMultipliedVector
+          }
+          calculateVector().x
+          
+          
 
 #
 # Defines the action a pet should perform in an interval on its own.
