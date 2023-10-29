@@ -12,7 +12,7 @@ enum class Permission(val text: String) {
     UNMOUNT("petblocks.pet.unmount"),
     LIST("petblocks.pet.list"),
     DELETE("petblocks.pet.delete"),
-    DISPLAYNAME("petblocks.pet.displayName"),
+    RENAME("petblocks.pet.displayName"),
     TOGGLE("petblocks.pet.toggle"),
     DESPAWN("petblocks.pet.despawn"),
     SKIN("petblocks.pet.skin"),
@@ -25,6 +25,7 @@ enum class Permission(val text: String) {
     VISIBILITY("petblocks.pet.visibility"),
     LOOP("petblocks.pet.loop"),
     TEMPLATE("petblocks.pet.settemplate"),
+    MANIPULATE_OTHER("petblocks.pet.manipulateOther"),
     // Dynamic
     DYN_AMOUNT("petblocks.pet.amount."),
     DYN_TEMPLATE("petblocks.pet.template."),

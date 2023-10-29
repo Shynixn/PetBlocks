@@ -20,6 +20,10 @@ class DependencyPlaceHolderApiServiceImpl @Inject constructor(
     private var registerd: Boolean = false
     private val placeHolderService = PlaceHolderServiceImpl()
 
+    init {
+        this.registerListener()
+    }
+
     /**
      * Registers the placeholder hook if it is not already registered.
      */

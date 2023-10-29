@@ -39,7 +39,6 @@ dependencies {
     compileOnly("org.jetbrains.kotlinx:kotlinx-coroutines-jdk8:1.4.3")
 
     // Custom dependencies
-    implementation("com.jayway.jsonpath:json-path:2.8.0")
     implementation("com.github.shynixn.mcutils:common:1.0.37")
     implementation("com.github.shynixn.mcutils:packet:1.0.55")
     implementation("com.github.shynixn.mcutils:database:1.0.13")

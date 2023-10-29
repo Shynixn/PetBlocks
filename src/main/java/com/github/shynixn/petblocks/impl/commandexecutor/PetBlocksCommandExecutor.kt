@@ -143,10 +143,10 @@ class PetBlocksCommandExecutor @Inject constructor(
             setSkinNbt(sender, player, args[1], args[2])
         },
         CommandDefinition(
-            "displayname",
+            "rename",
             3,
-            Permission.DISPLAYNAME,
-            "/petblocks displayname <name> <displayname> [player]"
+            Permission.RENAME,
+            "/petblocks rename <name> <displayname> [player]"
         ) { sender, player, args ->
             setDisplayName(sender, player, args[1], args[2])
         },
@@ -479,6 +479,7 @@ class PetBlocksCommandExecutor @Inject constructor(
     }
 
     private suspend fun setDisplayName(sender: CommandSender, player: Player, petName: String, displayName: String) {
+
         val regex = configurationService.findValue<String>(regexPath)
         val blackList = (configurationService.findValue<List<String>>(blackListPath)).map { e -> e.lowercase() }
         val minLength = configurationService.findValue<Int>(minLengthPath)
@@ -505,12 +506,12 @@ class PetBlocksCommandExecutor @Inject constructor(
 
         val pet = findPetFromPlayer(player, petName)
             ?: throw PetBlocksException(String.format(PetBlocksLanguage.petNotFoundMessage, petName))
-        pet.displayName = displayName
+        pet.displayName = displayName.replace("_", " ")
         sender.sendMessage(
             String.format(
                 PetBlocksLanguage.petNameChangeMessage,
                 petName,
-                displayName.translateChatColors()
+                pet.displayName.translateChatColors()
             )
         )
     }
@@ -684,20 +685,24 @@ class PetBlocksCommandExecutor @Inject constructor(
     }
 
     private fun findPlayer(sender: CommandSender, argIndex: Int, args: Array<out String>): Player? {
-        var player: Player? = null
+        try {
+            var player: Player? = null
 
-        if (args.size == argIndex + 1) {
-            val playerId = args[argIndex]
-            player = Bukkit.getPlayer(playerId)
+            if (args.size == argIndex + 1 && sender.hasPermission(Permission.MANIPULATE_OTHER.text)) {
+                val playerId = args[argIndex]
+                player = Bukkit.getPlayer(playerId)
 
-            if (player == null) {
-                player = Bukkit.getPlayer(UUID.fromString(playerId))
+                if (player == null) {
+                    player = Bukkit.getPlayer(UUID.fromString(playerId))
+                }
+            } else if (sender is Player) {
+                player = sender
             }
-        } else if (sender is Player) {
-            player = sender
-        }
 
-        return player
+            return player
+        }catch (e : Exception){
+            return null
+        }
     }
 
     private class CommandDefinition(

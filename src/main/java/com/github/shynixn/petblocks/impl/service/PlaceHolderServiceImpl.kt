@@ -5,14 +5,15 @@ import com.github.shynixn.petblocks.contract.Pet
 import com.github.shynixn.petblocks.contract.PlaceHolderService
 import com.github.shynixn.petblocks.enumeration.PlaceHolder
 import com.google.gson.Gson
+import com.google.gson.JsonParser
 import org.bukkit.entity.Player
 import java.util.*
-import kotlin.collections.HashMap
 
 class PlaceHolderServiceImpl : PlaceHolderService {
     private val simplePlaceHolderFunctions = HashMap<PlaceHolder, ((Player) -> String)>()
     private val petPlaceHolderFunctions = HashMap<PlaceHolder, ((Pet) -> String)>()
     private val placeHolders = HashMap<String, PlaceHolder>()
+    private val gson = Gson()
 
     init {
         for (placeHolder in PlaceHolder.values()) {
@@ -81,6 +82,17 @@ class PlaceHolderServiceImpl : PlaceHolderService {
                 pet.headItem.nbt!!
             }
         }
+        petPlaceHolderFunctions[PlaceHolder.PET_HEAD_BASE64] = { pet ->
+            if (pet.headItem.nbt == null) {
+                ""
+            } else {
+                val selector = "{textures:[{Value:\""
+                val nbt = pet.headItem.nbt!!
+                val rawSelection = nbt.substring(nbt.indexOf(selector)+ selector.length)
+                val result =rawSelection.replace("}","").replace("]", "").replace("\"","")
+                result
+            }
+        }
     }
 
     /**
@@ -124,13 +136,16 @@ class PlaceHolderServiceImpl : PlaceHolderService {
             output = output.replace(locatedPlaceHolder.fullPlaceHolder, locatedPlaceHolders[locatedPlaceHolder]!!)
         }
 
-        if (pet != null) {
+        if (pet != null && output.contains("%petblocks_js")) {
             for (key in pet.javaScriptMemory.keys) {
-                if(key.contains(".")){
-                // JSON PATH TODO:
-                    output = output.replace("%petblocks_js_${key}%", pet.javaScriptMemory[key]!!)
+                val value = pet.javaScriptMemory[key]!!
+                if(key.contains("json")){
+                   val parsedJsonObject = JsonParser().parse(value).getAsJsonObject()
+                    for(innerKey in parsedJsonObject.keySet()){
+                        output = output.replace("%petblocks_js_${key}_${innerKey}%", parsedJsonObject.get(innerKey).asString)
+                    }
                 }else{
-                    output = output.replace("%petblocks_js_${key}%", pet.javaScriptMemory[key]!!)
+                    output = output.replace("%petblocks_js_${key}%", value)
                 }
             }
         }

@@ -38,4 +38,5 @@ enum class PlaceHolder(val fullPlaceHolder : String) {
     PET_LOCATION_PITCH("%petblocks_pet_locationPitch%"),
     PET_ITEM_TYPE("%petblocks_pet_itemType%"),
     PET_ITEM_NBT("%petblocks_pet_itemNbt%"),
+    PET_HEAD_BASE64("%petblocks_pet_itemHeadBase64%"),
 }

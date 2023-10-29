@@ -34,7 +34,7 @@ class PetImpl(
     private val petMeta: PetMeta,
     private val petEntityFactory: PetEntityFactory,
     private val maxPathfinderDistance : Double,
-    plugin: Plugin
+    private val plugin: Plugin
 ) : Pet {
     private var petEntity: PetEntityImpl? = null
     private var disposed = false
@@ -51,16 +51,6 @@ class PetImpl(
                 }
 
                 delay(5000)
-            }
-        }
-
-        plugin.launch {
-            if (petMeta.ridingState == PetRidingState.HAT) {
-                delay(200)
-                hat()
-            } else if (petMeta.ridingState == PetRidingState.GROUND) {
-                delay(200)
-                ride()
             }
         }
     }
@@ -322,6 +312,17 @@ class PetImpl(
 
         petEntity = petEntityFactory.createPetEntity(this, petMeta)
         petMeta.isSpawned = true
+
+
+        plugin.launch {
+            if (petMeta.ridingState == PetRidingState.HAT) {
+                delay(200)
+                hat()
+            } else if (petMeta.ridingState == PetRidingState.GROUND) {
+                delay(200)
+                ride()
+            }
+        }
     }
 
     /**
