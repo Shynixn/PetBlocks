@@ -74,7 +74,7 @@ class PlaceHolderServiceImpl : PlaceHolderService {
             { pet -> String.format(Locale.ENGLISH, "%.2f", pet.location.yaw) }
         petPlaceHolderFunctions[PlaceHolder.PET_LOCATION_PITCH] =
             { pet -> String.format(Locale.ENGLISH, "%.2f", pet.location.pitch) }
-        petPlaceHolderFunctions[PlaceHolder.PET_ITEM_TYPE] = { pet -> pet.headItem.typeName }
+        petPlaceHolderFunctions[PlaceHolder.PET_ITEM_TYPE] = { pet -> pet.headItemStack.type.name }
         petPlaceHolderFunctions[PlaceHolder.PET_ITEM_NBT] = { pet ->
             if (pet.headItem.nbt == null) {
                 ""

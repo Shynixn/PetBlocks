@@ -14,7 +14,7 @@
 #   - <command1>
 #   - <command2>
 #
-open_command: petblocksmenu
+open_command: petblocksskinsmenu
 
 # Size
 #
@@ -78,121 +78,14 @@ items:
     material: "basehead-%petblocks_pet_itemHeadBase64_1%"
     slot: 4 
     display_name: "%petblocks_pet_displayName_1%"         
-  'enablePet':
-    priority: 2
-    material: "texture-ad5fcd31287d63e7826ea760a7ed154f685dfdc7f3465732a96e619b2e1347"
-    slot: 31
-    display_name: "&cPet disabled %petblocks_pet_itemType%"
+  'block-skins':
+    material: "texture-c95d37993e594082678472bf9d86823413c250d4332a2c7d8c52de4976b362"
+    slot: 20
+    display_name: "&eSimple block skins"
     lore:
-      - "&7Click to enable the pet."
+      - "&7Use Minecraft blocks as skin."
     left_click_commands:
-      - '[player] petblocks spawn %petblocks_pet_name_1%'
-      - '[close]'  
-  'disablePet':
-    priority: 1
-    view_requirement:
-        requirements:
-            joinable:
-                type: string equals
-                input: "%petblocks_pet_isSpawned_1%"
-                output: "true"    
-    material: "texture-f45c9acea8da71b4f252cd4deb5943f49e7dbc0764274b25a6a6f5875baea3"
-    slot: 31
-    display_name: "&aPet enabled"
-    lore:
-      - "&7Click to disable the pet."
-    left_click_commands:
-      - '[player] petblocks despawn %petblocks_pet_name_1%'
-      - '[close]'
-  'back':
-    material: "BARRIER"
-    slot: 49
-    display_name: "&cBack"
-    lore: 
-      - "&7Closes the current window."
-    left_click_commands:
-      - '[close]'
-  'ride':
-    priority: 2
-    material: "SADDLE"
-    slot: 42
-    display_name: "&eRide Pet"
-    lore: 
-      - "&7Click to ride your pet."
-    left_click_commands:
-      - '[player] petblocks ride %petblocks_pet_name_1%' 
-      - '[close]'
-  'unmountride':
-    priority: 1
-    view_requirement:
-        requirements:
-            joinable:
-                type: string equals
-                input: "%petblocks_pet_isMounted%"
-                output: "true"
-    material: "SADDLE"
-    slot: 42
-    display_name: "&eUnmount Pet"
-    lore: 
-      - "&7Click to unmount your pet."
-    left_click_commands:
-      - '[player] petblocks unmount %petblocks_pet_name_1%' 
-      - '[close]'
-  'hat':
-    priority: 2
-    material: texture-9b5f247a7f5b37bbfa488ab4efaddcbad2e526e94fc542b1fe2f7cfeb6e
-    slot: 15
-    damage: 3
-    update: true
-    display_name: "&eHat Pet"
-    lore: 
-      - "&7Click to wear your pet like a hat."
-    left_click_commands:
-      - '[player] petblocks hat %petblocks_pet_name_1%' 
-      - '[close]'
-  'unmounthat':
-    priority: 1
-    view_requirement:
-        requirements:
-            joinable:
-                type: string equals
-                input: "%petblocks_pet_isMounted_1%"
-                output: "true"
-    material: texture-9b5f247a7f5b37bbfa488ab4efaddcbad2e526e94fc542b1fe2f7cfeb6e
-    slot: 15
-    display_name: "&eUnmount Pet"
-    lore: 
-      - "&7Click to unmount your pet."
-    left_click_commands:
-      - '[player] petblocks unmount %petblocks_pet_name_1%' 
-      - '[close]'
-  'leash':
-    material: "LEAD"
-    slot: 38
-    display_name: "&eCall Pet"
-    lore: 
-      - "&7Click to call your pet."
-    left_click_commands:
-      - '[player] petblocks call %petblocks_pet_name_1%' 
-      - '[close]'
-  'nametag':
-    material: "NAME_TAG"
-    slot: 11
-    display_name: "&eRename Pet"
-    lore: 
-      - "&7Click to rename the pet."
-    left_click_commands:
-      - '[console] tellraw Shynixn {"text":"","extra":[{"text":"PetBlocks: <<Click me>> to rename your pet.","clickEvent":{"action":"suggest_command","value":"/petblocks rename %petblocks_pet_name_1% "}}]}'
-      - '[close]'
-  'wardrobe':
-    material: "texture-55507d6517eff952dd38fa8bc551dd6d6a7a5e4ea134519b44650ac1ffa59c3"
-    slot: 22
-    display_name: "&6Pet Skins"
-    lore:
-      - "&7Click to open the pet skins menu."
-    left_click_commands:
-      - '[openguimenu] petblocks_skins_overview_menu'       
-          
+      - '[openguimenu] petblocks_skins_blockskins_menu' 
 
 # ==============================================================
 #

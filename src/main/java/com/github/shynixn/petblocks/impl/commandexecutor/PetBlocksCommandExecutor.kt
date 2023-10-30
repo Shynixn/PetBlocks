@@ -30,6 +30,7 @@ class PetBlocksCommandExecutor @Inject constructor(
     private val plugin: Plugin,
     private val configurationService: ConfigurationService
 ) : SuspendingCommandExecutor, SuspendingTabCompleter {
+    private val random = Random()
     private val regexPath = "pet.name.regex"
     private val blackListPath = "pet.name.blacklist"
     private val minLengthPath = "pet.name.minLength"
@@ -143,6 +144,14 @@ class PetBlocksCommandExecutor @Inject constructor(
             setSkinNbt(sender, player, args[1], args[2])
         },
         CommandDefinition(
+            "skinnbt",
+            3,
+            Permission.SKIN,
+            "/petblocks skinBase64 <name> <skin> [player]"
+        ) { sender, player, args ->
+            setSkinBase64(sender, player, args[1], args[2])
+        },
+        CommandDefinition(
             "rename",
             3,
             Permission.RENAME,
@@ -207,7 +216,6 @@ class PetBlocksCommandExecutor @Inject constructor(
             togglePet(sender, player, args[1])
         }
     )
-
 
     /**
      * Executes the given command, returning its success.
@@ -386,6 +394,15 @@ class PetBlocksCommandExecutor @Inject constructor(
         } catch (e: Exception) {
             sender.sendMessage(String.format(PetBlocksLanguage.petSkinTypeNotFound, material))
         }
+    }
+
+    private suspend fun setSkinBase64(sender: CommandSender, player: Player, petName: String, base64EncodedSkinUrl: String) {
+        val id1 = random.nextInt()
+        val id2 = random.nextInt()
+        val id3 = random.nextInt()
+        val id4 = random.nextInt()
+        val nbt = "{SkullOwner:{Id:[I;${id1},${id2},${id3},${id4}],Name:\"${id1}\",Properties:{textures:[{Value:\"${base64EncodedSkinUrl}\"}]}}}"
+        setSkinNbt(sender, player, petName, nbt)
     }
 
     private suspend fun setVisibility(
