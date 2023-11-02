@@ -9,5 +9,10 @@ enum class PluginDependency(
     /**
      * PlaceHolderApi plugin.
      */
-    PLACEHOLDERAPI("PlaceholderAPI")
+    PLACEHOLDERAPI("PlaceholderAPI"),
+
+    /**
+     * HeadDatabase plugin.
+     */
+    HEADDATABASE("HeadDatabase")
 }

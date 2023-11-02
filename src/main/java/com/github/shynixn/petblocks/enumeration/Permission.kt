@@ -16,6 +16,7 @@ enum class Permission(val text: String) {
     TOGGLE("petblocks.pet.toggle"),
     DESPAWN("petblocks.pet.despawn"),
     SKIN("petblocks.pet.skin"),
+    SKIN_HEADDATABASE("petblocks.pet.skin.headDataBase"),
     LOOKAT("petblocks.pet.lookat"),
     LOOKATOWNER("petblocks.pet.lookatowner"),
     MOVETO("petblocks.pet.moveto"),
@@ -26,6 +27,7 @@ enum class Permission(val text: String) {
     LOOP("petblocks.pet.loop"),
     TEMPLATE("petblocks.pet.settemplate"),
     MANIPULATE_OTHER("petblocks.pet.manipulateOther"),
+    HEADDATABASE_INVENTORY_TO_PET("petblocks.pet.headDatabaseInventoryHook"),
     // Dynamic
     DYN_AMOUNT("petblocks.pet.amount."),
     DYN_TEMPLATE("petblocks.pet.template."),

@@ -105,5 +105,10 @@ class PetBlocksDependencyInjectionBinder(private val plugin: PetBlocksPlugin) : 
         } else {
             bind(PlaceHolderService::class.java).to(PlaceHolderServiceImpl::class.java).`in`(Scopes.SINGLETON)
         }
+        if (Bukkit.getPluginManager().getPlugin(PluginDependency.HEADDATABASE.pluginName) != null) {
+            bind(DependencyHeadDatabaseService::class.java).to(DependencyHeadDatabaseServiceImpl::class.java)
+                .`in`(Scopes.SINGLETON)
+            plugin.logger.log(Level.INFO, "Loaded dependency ${PluginDependency.HEADDATABASE.pluginName}.")
+        }
     }
 }

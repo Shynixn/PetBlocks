@@ -6,6 +6,8 @@ import com.github.shynixn.mcutils.common.*
 import com.github.shynixn.mcutils.common.item.Item
 import com.github.shynixn.mcutils.common.repository.CacheRepository
 import com.github.shynixn.petblocks.PetBlocksLanguage
+import com.github.shynixn.petblocks.PetBlocksPlugin
+import com.github.shynixn.petblocks.contract.DependencyHeadDatabaseService
 import com.github.shynixn.petblocks.contract.Pet
 import com.github.shynixn.petblocks.contract.PetService
 import com.github.shynixn.petblocks.entity.PetTemplate
@@ -28,13 +30,21 @@ class PetBlocksCommandExecutor @Inject constructor(
     private val petService: PetService,
     private val templateRepository: CacheRepository<PetTemplate>,
     private val plugin: Plugin,
-    private val configurationService: ConfigurationService
+    private val configurationService: ConfigurationService,
 ) : SuspendingCommandExecutor, SuspendingTabCompleter {
     private val random = Random()
     private val regexPath = "pet.name.regex"
     private val blackListPath = "pet.name.blacklist"
     private val minLengthPath = "pet.name.minLength"
     private val maxLengthPath = "pet.name.maxLength"
+
+    private val dependencyHeadDatabaseService: DependencyHeadDatabaseService? by lazy {
+        try {
+            (plugin as PetBlocksPlugin).resolve(DependencyHeadDatabaseService::class.java)
+        } catch (e: Exception) {
+            null
+        }
+    }
 
     // We can add a download/upload for player uuid data.
     private var allCommands = arrayListOf(
@@ -144,12 +154,20 @@ class PetBlocksCommandExecutor @Inject constructor(
             setSkinNbt(sender, player, args[1], args[2])
         },
         CommandDefinition(
-            "skinnbt",
+            "skinbase64",
             3,
             Permission.SKIN,
-            "/petblocks skinBase64 <name> <skin> [player]"
+            "/petblocks skinbase64 <name> <skin> [player]"
         ) { sender, player, args ->
             setSkinBase64(sender, player, args[1], args[2])
+        },
+        CommandDefinition(
+            "skinheaddatabase",
+            3,
+            Permission.SKIN_HEADDATABASE,
+            "/petblocks skinheaddatabase <name> <hdbId> [player]"
+        ) { sender, player, args ->
+            setSkinHeadDatabase(sender, player, args[1], args[2])
         },
         CommandDefinition(
             "rename",
@@ -396,13 +414,36 @@ class PetBlocksCommandExecutor @Inject constructor(
         }
     }
 
-    private suspend fun setSkinBase64(sender: CommandSender, player: Player, petName: String, base64EncodedSkinUrl: String) {
+    private suspend fun setSkinBase64(
+        sender: CommandSender,
+        player: Player,
+        petName: String,
+        base64EncodedSkinUrl: String
+    ) {
         val id1 = random.nextInt()
         val id2 = random.nextInt()
         val id3 = random.nextInt()
         val id4 = random.nextInt()
-        val nbt = "{SkullOwner:{Id:[I;${id1},${id2},${id3},${id4}],Name:\"${id1}\",Properties:{textures:[{Value:\"${base64EncodedSkinUrl}\"}]}}}"
+        val nbt =
+            "{SkullOwner:{Id:[I;${id1},${id2},${id3},${id4}],Name:\"${id1}\",Properties:{textures:[{Value:\"${base64EncodedSkinUrl}\"}]}}}"
+
+        val pet = findPetFromPlayer(player, petName)
+            ?: throw PetBlocksException(String.format(PetBlocksLanguage.petNotFoundMessage, petName))
+        val headItem = pet.headItem
+        headItem.typeName = "minecraft:player_head,397"
+        pet.headItem = headItem
         setSkinNbt(sender, player, petName, nbt)
+    }
+
+    private suspend fun setSkinHeadDatabase(sender: CommandSender, player: Player, petName: String, hdbId: String) {
+        try {
+            val itemStack = dependencyHeadDatabaseService!!.getItemStackFromId(hdbId)!!
+            val item = itemStack.toItem()
+            setSkinBase64(sender, player, petName, item.base64EncodedSkinUrl!!)
+        } catch (e: Exception) {
+            sender.sendMessage(PetBlocksLanguage.headDatabasePluginNotLoaded)
+            return
+        }
     }
 
     private suspend fun setVisibility(
@@ -717,7 +758,7 @@ class PetBlocksCommandExecutor @Inject constructor(
             }
 
             return player
-        }catch (e : Exception){
+        } catch (e: Exception) {
             return null
         }
     }

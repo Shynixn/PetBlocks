@@ -10,6 +10,9 @@ object PetBlocksLanguage {
   /** [&9PetBlocks&f] Pet with name %1$1s has been spawned. **/
   var petSpawnedMessage : String = "[&9PetBlocks&f] Pet with name %1$1s has been spawned."
 
+  /** [&9PetBlocks&f] &cThe plugin HeadDatabase is not loaded. **/
+  var headDatabasePluginNotLoaded : String = "[&9PetBlocks&f] &cThe plugin HeadDatabase is not loaded."
+
   /** [&9PetBlocks&f] &cYou do not have permission to have %1$1s pet(s). **/
   var petAmountNotAllowed : String = "[&9PetBlocks&f] &cYou do not have permission to have %1$1s pet(s)."
 

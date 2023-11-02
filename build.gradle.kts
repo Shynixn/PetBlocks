@@ -26,6 +26,7 @@ dependencies {
     // Compile Only
     compileOnly("org.spigotmc:spigot-api:1.18.2-R0.1-SNAPSHOT")
     compileOnly("me.clip:placeholderapi:2.9.2")
+    compileOnly("com.arcaniax:HeadDatabase-API:1.3.1")
 
     // Plugin.yml Shade dependencies
     compileOnly("com.github.shynixn.mccoroutine:mccoroutine-bukkit-api:2.13.0")
@@ -39,7 +40,7 @@ dependencies {
     compileOnly("org.jetbrains.kotlinx:kotlinx-coroutines-jdk8:1.4.3")
 
     // Custom dependencies
-    implementation("com.github.shynixn.mcutils:common:1.0.37")
+    implementation("com.github.shynixn.mcutils:common:1.0.39")
     implementation("com.github.shynixn.mcutils:packet:1.0.55")
     implementation("com.github.shynixn.mcutils:database:1.0.13")
     implementation("com.github.shynixn.mcutils:pathfinder:1.0.19")

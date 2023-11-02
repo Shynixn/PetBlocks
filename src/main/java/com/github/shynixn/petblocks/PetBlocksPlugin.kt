@@ -1,6 +1,8 @@
 package com.github.shynixn.petblocks
 
-import com.github.shynixn.mccoroutine.bukkit.*
+import com.github.shynixn.mccoroutine.bukkit.launch
+import com.github.shynixn.mccoroutine.bukkit.setSuspendingExecutor
+import com.github.shynixn.mccoroutine.bukkit.setSuspendingTabCompleter
 import com.github.shynixn.mcutils.common.ChatColor
 import com.github.shynixn.mcutils.common.ConfigurationService
 import com.github.shynixn.mcutils.common.Version
@@ -12,16 +14,20 @@ import com.github.shynixn.mcutils.database.api.PlayerDataRepository
 import com.github.shynixn.mcutils.database.api.SqlConnectionService
 import com.github.shynixn.mcutils.packet.api.PacketInType
 import com.github.shynixn.mcutils.packet.api.PacketService
+import com.github.shynixn.petblocks.contract.DependencyHeadDatabaseService
 import com.github.shynixn.petblocks.contract.PetService
+import com.github.shynixn.petblocks.enumeration.PluginDependency
 import com.github.shynixn.petblocks.impl.commandexecutor.PetBlocksCommandExecutor
 import com.github.shynixn.petblocks.impl.listener.PetListener
 import com.google.inject.Guice
 import com.google.inject.Injector
 import kotlinx.coroutines.runBlocking
 import org.bukkit.Bukkit
+import org.bukkit.Material
 import org.bukkit.event.player.PlayerJoinEvent
 import org.bukkit.plugin.ServicePriority
 import org.bukkit.plugin.java.JavaPlugin
+import java.io.File
 import java.util.logging.Level
 
 class PetBlocksPlugin : JavaPlugin() {
@@ -73,6 +79,9 @@ class PetBlocksPlugin : JavaPlugin() {
         // Register Listeners
         val petListener = resolve(PetListener::class.java)
         Bukkit.getPluginManager().registerEvents(petListener, this)
+        if (Bukkit.getPluginManager().getPlugin(PluginDependency.HEADDATABASE.pluginName) != null) {
+            Bukkit.getPluginManager().registerEvents(resolve(DependencyHeadDatabaseService::class.java), this)
+        }
 
         // Register CommandExecutors
         val configurationService = resolve(ConfigurationService::class.java)
@@ -112,6 +121,26 @@ class PetBlocksPlugin : JavaPlugin() {
                 petListener.onPlayerJoinEvent(PlayerJoinEvent(player, null))
             }
         }
+
+        var counter = 9
+
+        val builder = StringBuilder()
+
+        for (material in Material.values().drop(1)) {
+            val resultString = "  '${material.name.lowercase()}':\n" +
+                    "    material: \"${material.name.uppercase()}\"\n" +
+                    "    slot: ${counter}\n" +
+                    "    left_click_commands:\n" +
+                    "      - '[player] petblocks skinType %petblocks_pet_name_1% ${material.name.uppercase()}'\n" +
+                    "      - '[refresh]'"
+            builder.appendLine(resultString)
+            counter++
+        }
+
+
+
+
+        File("C:\\temp\\demoblocks.yml").writeText(builder.toString())
     }
 
     /**
@@ -137,7 +166,7 @@ class PetBlocksPlugin : JavaPlugin() {
         packetService.close()
     }
 
-    private fun <S> resolve(service: Class<S>): S {
+    fun <S> resolve(service: Class<S>): S {
         try {
             return this.injector!!.getBinding(service).provider.get() as S
         } catch (e: Exception) {
