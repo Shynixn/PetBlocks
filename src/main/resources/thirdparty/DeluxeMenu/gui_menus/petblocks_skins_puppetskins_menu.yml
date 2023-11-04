@@ -1,0 +1,591 @@
+#  A DeluxeMenus basic configuration guide for beginners
+#=========================================================
+#
+# This note will help you understand the basic functions and configuring of DeluxeMenus: commands, requirements, items and others, and from then on you can start to work with more advanced stuff. You can delete this note or any note below at any time. But if you are still here anyway, then let's move down below
+#
+
+# Open Command
+#
+# This setting is the command that will be used to open this menu. Supports normal String or a String List
+# NOTE: Use "open_command: []" to create a menu with no commands needed
+#
+# open_command: <command>
+# open_command:
+#   - <command1>
+#   - <command2>
+#
+open_command: petblockspuppetskinsmenu
+
+# Size
+#
+# This allows you to set the size of the menu inventory. Range from 9-54.
+# If this option is not present in the menu configuration, it will default to 54.
+#
+size: 54
+
+# Menu title
+#
+# This is the title of the menu. You can change it with your custom name
+# Color codes and placeholders are supported
+#
+menu_title: 'PetBlocks'
+
+# Open requirement
+#
+# This setting section allows you to define requirements the menu viewer must meet
+# to be allowed to open this menu in game.
+#
+# Any menu you want to restrict access to based on permission
+# should have a basic "has permission" requirement
+#
+# This setting and requirements can be explained more in depth by checking out
+# the requirements_menu.yml file in your menus folder.
+# For full reference, check https://wiki.helpch.at/clips-plugins/deluxemenus/options-and-configurations/requirements
+#
+open_requirement:
+  requirements:
+    permission:
+      type: has permission
+      permission: petblocks.deluxemenu
+      deny_commands:
+        - '[message] &cYou don''t have permission to do that!'
+
+# Item section. This is where you can start add items into menu, and add functions into each items that you did.
+# For depth explanation on the functions, you can check on the note given from config.yml
+# For full reference, check https://wiki.helpch.at/clips-plugins/deluxemenus/options-and-configurations/item
+#
+items:
+  'background':
+    material: "BLACK_STAINED_GLASS_PANE"
+    slots: 
+      - "0-53"
+    display_name: " "
+    lore:
+      - ""
+  'pettype':
+    priority: 2
+    material: "placeholder-%petblocks_pet_itemType_1%"
+    slot: 4 
+    display_name: "%petblocks_pet_displayName_1%"     
+  'pethead':
+    priority: 1
+    view_requirement:
+        requirements:
+            joinable:
+                type: string equals
+                input: "%petblocks_pet_itemType%"
+                output: "PLAYER_HEAD"    
+    material: "basehead-%petblocks_pet_itemHeadBase64_1%"
+    slot: 4 
+    display_name: "%petblocks_pet_displayName_1%"   
+  'back':
+    material: "BARRIER"
+    slot: 49
+    display_name: "&cBack"
+    lore: 
+      - "&7Closes the current window."
+    left_click_commands:
+      - '[openguimenu] petblocks_skins_overview_menu'  
+      - '[refresh]'  
+  'Steve Plushie 1':
+    material: "basehead-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMzgzNWRhMjY4NWY3YWQzZjE5MTlhMDE4OTc2YWQ1NjgyNjY5MWUyNjc1OGEzYTU1YTE5MThmN2YxN2FkOTM4In19fQ=="
+    slot: 9
+    display_name: 'Steve Plushie 1'
+    left_click_commands:
+      - '[player] petblocks skinbase64 %petblocks_pet_name_1% eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMzgzNWRhMjY4NWY3YWQzZjE5MTlhMDE4OTc2YWQ1NjgyNjY5MWUyNjc1OGEzYTU1YTE5MThmN2YxN2FkOTM4In19fQ=='
+      - '[refresh]'      
+  'Alex Plushie 1':
+    material: "basehead-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYzFjZDI3NjJhY2I0YjQyNzhjZjExMTc2YTVmODc3OTlmOTNhMWQ5MTE2Y2IzY2I1N2VlNGQxZTYwMTM0NTg4In19fQ=="
+    slot: 10
+    display_name: 'Alex Plushie 1'
+    left_click_commands:
+      - '[player] petblocks skinbase64 %petblocks_pet_name_1% eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYzFjZDI3NjJhY2I0YjQyNzhjZjExMTc2YTVmODc3OTlmOTNhMWQ5MTE2Y2IzY2I1N2VlNGQxZTYwMTM0NTg4In19fQ=='
+      - '[refresh]'
+  'Baby Doll (blue)':
+    material: "basehead-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNmQzNTZlYmI5YTFkMTY0YjVjNDhlZjYxNjc4MDJiZTZlOWI3NDJjZDU5ZDIxZWM1MjQwMTZjMmJhOWU2YiJ9fX0="
+    slot: 11
+    display_name: 'Baby Doll (blue)'
+    left_click_commands:
+      - '[player] petblocks skinbase64 %petblocks_pet_name_1% eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNmQzNTZlYmI5YTFkMTY0YjVjNDhlZjYxNjc4MDJiZTZlOWI3NDJjZDU5ZDIxZWM1MjQwMTZjMmJhOWU2YiJ9fX0='
+      - '[refresh]'
+  'Baby Doll (pink)':
+    material: "basehead-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZjg0Yjk0NjM5ZDk3YWJhYjFlNjI5YzcyMmFmMjk4MTVlOGM1Mjc1ZmNlMWY2YjI1YzkxODI0ZTljYjhmZiJ9fX0="
+    slot: 12
+    display_name: 'Baby Doll (pink)'
+    left_click_commands:
+      - '[player] petblocks skinbase64 %petblocks_pet_name_1% eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZjg0Yjk0NjM5ZDk3YWJhYjFlNjI5YzcyMmFmMjk4MTVlOGM1Mjc1ZmNlMWY2YjI1YzkxODI0ZTljYjhmZiJ9fX0='
+      - '[refresh]'
+  'Baby Doll (purple)':
+    material: "basehead-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNTJhYjYyNmRiYjc2NTg0NTk3YjU5MDZlZTY5OWVhOTNlNTFkMTc0ZWM2YTIxZWQ5ZjRjMTlmNWU3ZWJmOTM2In19fQ=="
+    slot: 13
+    display_name: 'Baby Doll (purple)'
+    left_click_commands:
+      - '[player] petblocks skinbase64 %petblocks_pet_name_1% eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNTJhYjYyNmRiYjc2NTg0NTk3YjU5MDZlZTY5OWVhOTNlNTFkMTc0ZWM2YTIxZWQ5ZjRjMTlmNWU3ZWJmOTM2In19fQ=='
+      - '[refresh]'
+  'Baby Doll (yellow)':
+    material: "basehead-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOWRiM2MyYzlkNWU4MGE0MTYxOTZiNDM4MmQ0Y2U5NDBkYTdmYjA3MWQzOTZkMWYyNzQzNjUwZjJmM2VmNGQifX19"
+    slot: 14
+    display_name: 'Baby Doll (yellow)'
+    left_click_commands:
+      - '[player] petblocks skinbase64 %petblocks_pet_name_1% eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOWRiM2MyYzlkNWU4MGE0MTYxOTZiNDM4MmQ0Y2U5NDBkYTdmYjA3MWQzOTZkMWYyNzQzNjUwZjJmM2VmNGQifX19'
+      - '[refresh]'
+  'Bendy Doll':
+    material: "basehead-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvN2Q1MGZiYWY1YmE5MmU2NWNkZDg4ZDY0NTFkYmE4YzBmYjgzMGFiNTE1YmZiZGExZGI0ZjQ1NzZjNjg2NzY3MiJ9fX0="
+    slot: 15
+    display_name: 'Bendy Doll'
+    left_click_commands:
+      - '[player] petblocks skinbase64 %petblocks_pet_name_1% eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvN2Q1MGZiYWY1YmE5MmU2NWNkZDg4ZDY0NTFkYmE4YzBmYjgzMGFiNTE1YmZiZGExZGI0ZjQ1NzZjNjg2NzY3MiJ9fX0='
+      - '[refresh]'
+  'Bonbon Plushie':
+    material: "basehead-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZGIzYTI1MGE4YzYxYmNhNTQ5YmVjNThmYTBiYWIzYzJhYmM4MmZmMDRkMmI4Y2E4NmI2OTE3ZTUxNDJhODQifX19"
+    slot: 16
+    display_name: 'Bonbon Plushie'
+    left_click_commands:
+      - '[player] petblocks skinbase64 %petblocks_pet_name_1% eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZGIzYTI1MGE4YzYxYmNhNTQ5YmVjNThmYTBiYWIzYzJhYmM4MmZmMDRkMmI4Y2E4NmI2OTE3ZTUxNDJhODQifX19'
+      - '[refresh]'
+  'Bonnet Plushie 1':
+    material: "basehead-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNTIxNTcyMzM1ZjlhNjM2ZDc5YzViMTM2MTI1MmNlODkzMzhhMzlmYmEzZDMyMDI0NzEwNjJiYmI3ZSJ9fX0="
+    slot: 17
+    display_name: 'Bonnet Plushie 1'
+    left_click_commands:
+      - '[player] petblocks skinbase64 %petblocks_pet_name_1% eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNTIxNTcyMzM1ZjlhNjM2ZDc5YzViMTM2MTI1MmNlODkzMzhhMzlmYmEzZDMyMDI0NzEwNjJiYmI3ZSJ9fX0='
+      - '[refresh]'
+  'Bonnie Plushie 1':
+    material: "basehead-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNDJkZWZjOTc0NTFmMGZiMTUyNGJhNDM3NWNjYzg1MzJiMjM2NDhmNzY1Y2E2NDhlOWM1YWNiODE0OGUifX19"
+    slot: 18
+    display_name: 'Bonnie Plushie 1'
+    left_click_commands:
+      - '[player] petblocks skinbase64 %petblocks_pet_name_1% eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNDJkZWZjOTc0NTFmMGZiMTUyNGJhNDM3NWNjYzg1MzJiMjM2NDhmNzY1Y2E2NDhlOWM1YWNiODE0OGUifX19'
+      - '[refresh]'
+  'Bonnie Plushie 2':
+    material: "basehead-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZjFhNDM0OWRjMDQzZTUyYjUwZjg2M2RiM2E4MzQ5NDg1YzlhMDJmZTNhMzFlNWQxNDgzZGFhODZhYTRhZWYifX19"
+    slot: 19
+    display_name: 'Bonnie Plushie 2'
+    left_click_commands:
+      - '[player] petblocks skinbase64 %petblocks_pet_name_1% eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZjFhNDM0OWRjMDQzZTUyYjUwZjg2M2RiM2E4MzQ5NDg1YzlhMDJmZTNhMzFlNWQxNDgzZGFhODZhYTRhZWYifX19'
+      - '[refresh]'
+  'Cakebear Plushie 1':
+    material: "basehead-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNDUwOGU3NzYwNzc2ZjFkMzU1NmYyNTk4N2VkYjY4YWE4ZmMyYzI4ZGIzYzMzNmEzMDJiMWM5NTc5MDQyMjY4NCJ9fX0="
+    slot: 20
+    display_name: 'Cakebear Plushie 1'
+    left_click_commands:
+      - '[player] petblocks skinbase64 %petblocks_pet_name_1% eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNDUwOGU3NzYwNzc2ZjFkMzU1NmYyNTk4N2VkYjY4YWE4ZmMyYzI4ZGIzYzMzNmEzMDJiMWM5NTc5MDQyMjY4NCJ9fX0='
+      - '[refresh]'
+  'Cakebear Plushie 2':
+    material: "basehead-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNmJhODc5NjVjNDRkYTc5MjcxZWFkZTY3OGRkNWE1NjI1NDZiZWZiYjgyODdkMzVjZmFhNGU2NTFhOWRjNjMifX19"
+    slot: 21
+    display_name: 'Cakebear Plushie 2'
+    left_click_commands:
+      - '[player] petblocks skinbase64 %petblocks_pet_name_1% eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNmJhODc5NjVjNDRkYTc5MjcxZWFkZTY3OGRkNWE1NjI1NDZiZWZiYjgyODdkMzVjZmFhNGU2NTFhOWRjNjMifX19'
+      - '[refresh]'
+  'Cakebear Plushie 3':
+    material: "basehead-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOTI2OGY4ZTcxODIwZTg5NGVmOWZjZDliYmE1ZjljZmUyODE3NWU5OTU4ODZlM2RkOGMzZjk2ZWI0OGY5MTM2NiJ9fX0="
+    slot: 22
+    display_name: 'Cakebear Plushie 3'
+    left_click_commands:
+      - '[player] petblocks skinbase64 %petblocks_pet_name_1% eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOTI2OGY4ZTcxODIwZTg5NGVmOWZjZDliYmE1ZjljZmUyODE3NWU5OTU4ODZlM2RkOGMzZjk2ZWI0OGY5MTM2NiJ9fX0='
+      - '[refresh]'
+  'Captain Mangle Plushie':
+    material: "basehead-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNjJiYTcyZTgzMzg1MzM1OGM2YmM2OTY4YTQzODhiNGQzZGRlZTcxOWMwZTRkMDgyYjVkYTg0YzU3N2EzZmEifX19"
+    slot: 23
+    display_name: 'Captain Mangle Plushie'
+    left_click_commands:
+      - '[player] petblocks skinbase64 %petblocks_pet_name_1% eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNjJiYTcyZTgzMzg1MzM1OGM2YmM2OTY4YTQzODhiNGQzZGRlZTcxOWMwZTRkMDgyYjVkYTg0YzU3N2EzZmEifX19'
+      - '[refresh]'
+  'Chica Plushie 1':
+    material: "basehead-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOTBjZGY0YWNmZDY4MjU1NGJmYWRkYjA1Y2QxNGZkOWYzZmZhYzIyODgyNDMxNDViMzQ4ZDMzZjUwNzU3NiJ9fX0="
+    slot: 24
+    display_name: 'Chica Plushie 1'
+    left_click_commands:
+      - '[player] petblocks skinbase64 %petblocks_pet_name_1% eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOTBjZGY0YWNmZDY4MjU1NGJmYWRkYjA1Y2QxNGZkOWYzZmZhYzIyODgyNDMxNDViMzQ4ZDMzZjUwNzU3NiJ9fX0='
+      - '[refresh]'
+  'Circus Baby Plushie':
+    material: "basehead-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYzVhMzM0NzAyNzJlYTVjZThjN2RlMTk3ZTViMmNiNTRhOWEwYjk3NmY4NzljMWFhYjExM2U1MDM5ZjUyMyJ9fX0="
+    slot: 25
+    display_name: 'Circus Baby Plushie'
+    left_click_commands:
+      - '[player] petblocks skinbase64 %petblocks_pet_name_1% eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYzVhMzM0NzAyNzJlYTVjZThjN2RlMTk3ZTViMmNiNTRhOWEwYjk3NmY4NzljMWFhYjExM2U1MDM5ZjUyMyJ9fX0='
+      - '[refresh]'
+  'Cow Plushie':
+    material: "basehead-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNGJkYTFkZjgwYmZhMzE0ODUzMzhkOTYzMzgzZDhkZTI2ZjA1ZjI5MzRmODc1Njk2ODYyNDU0ZTdjNzBmNDVmNiJ9fX0="
+    slot: 26
+    display_name: 'Cow Plushie'
+    left_click_commands:
+      - '[player] petblocks skinbase64 %petblocks_pet_name_1% eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNGJkYTFkZjgwYmZhMzE0ODUzMzhkOTYzMzgzZDhkZTI2ZjA1ZjI5MzRmODc1Njk2ODYyNDU0ZTdjNzBmNDVmNiJ9fX0='
+      - '[refresh]'
+  'Crash Bandicoot Doll':
+    material: "basehead-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMjZlM2JiOWI2Y2JiOWM0ZWU5YTg1MjlmOTg2ZTg1OTMxNWE5YzU1MjQyZmY4ODY0YTVkNDU0NGYyZDBkZDE2In19fQ=="
+    slot: 27
+    display_name: 'Crash Bandicoot Doll'
+    left_click_commands:
+      - '[player] petblocks skinbase64 %petblocks_pet_name_1% eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMjZlM2JiOWI2Y2JiOWM0ZWU5YTg1MjlmOTg2ZTg1OTMxNWE5YzU1MjQyZmY4ODY0YTVkNDU0NGYyZDBkZDE2In19fQ=='
+      - '[refresh]'
+  'Creeper Plushie 1':
+    material: "basehead-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZjhhNDEzOGZkYmJiMjgwOTdkYzVkY2ZjM2Y4ODE5MjVlZGE5NjhjNjI3NGUxNjlkYzgyZWVkZTYzMzZmNSJ9fX0="
+    slot: 28
+    display_name: 'Creeper Plushie 1'
+    left_click_commands:
+      - '[player] petblocks skinbase64 %petblocks_pet_name_1% eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZjhhNDEzOGZkYmJiMjgwOTdkYzVkY2ZjM2Y4ODE5MjVlZGE5NjhjNjI3NGUxNjlkYzgyZWVkZTYzMzZmNSJ9fX0='
+      - '[refresh]'
+  'Daruma Doll - Both eyes':
+    material: "basehead-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMjI4YTNhMDgzMzk4YTY2Y2ZiMzQwOWZkOGQzMjgyNmVjMTg5MzY4Y2MzMzA4Njg2ZGEyMjZmMjYyMWYxZWQifX19"
+    slot: 29
+    display_name: 'Daruma Doll - Both eyes'
+    left_click_commands:
+      - '[player] petblocks skinbase64 %petblocks_pet_name_1% eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMjI4YTNhMDgzMzk4YTY2Y2ZiMzQwOWZkOGQzMjgyNmVjMTg5MzY4Y2MzMzA4Njg2ZGEyMjZmMjYyMWYxZWQifX19'
+      - '[refresh]'
+  'Daruma Doll - Left eye':
+    material: "basehead-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOTE5NThjMTQzMTc2ODg2NjYyYmJlYWNmYzU4OWY4YTQzMGFmZmVhMGI3YjRlYWUzMjIzMjFjYWVhZTI1ZDQifX19"
+    slot: 30
+    display_name: 'Daruma Doll - Left eye'
+    left_click_commands:
+      - '[player] petblocks skinbase64 %petblocks_pet_name_1% eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOTE5NThjMTQzMTc2ODg2NjYyYmJlYWNmYzU4OWY4YTQzMGFmZmVhMGI3YjRlYWUzMjIzMjFjYWVhZTI1ZDQifX19'
+      - '[refresh]'
+  'Daruma Doll - No eye':
+    material: "basehead-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOGI1ZDNlZGFhNWFmZDQ1YmQ3ZWZlYmE3ZDIxMGRhMjVjYjg0ZDU0Y2NjMTU5OWQ0YjA0MzM1Mzc1OGViOWRkZCJ9fX0="
+    slot: 31
+    display_name: 'Daruma Doll - No eye'
+    left_click_commands:
+      - '[player] petblocks skinbase64 %petblocks_pet_name_1% eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOGI1ZDNlZGFhNWFmZDQ1YmQ3ZWZlYmE3ZDIxMGRhMjVjYjg0ZDU0Y2NjMTU5OWQ0YjA0MzM1Mzc1OGViOWRkZCJ9fX0='
+      - '[refresh]'
+  'Daruma Doll - Right eye':
+    material: "basehead-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZDA0MDM0Zjk4MWY5ODBhOThiNWFjNjFjZmU0OWI3NDY5NjhjMTVmZTFjZjc5ZjFhNzlkMGFjMTZkOGNkNDhjYyJ9fX0="
+    slot: 32
+    display_name: 'Daruma Doll - Right eye'
+    left_click_commands:
+      - '[player] petblocks skinbase64 %petblocks_pet_name_1% eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZDA0MDM0Zjk4MWY5ODBhOThiNWFjNjFjZmU0OWI3NDY5NjhjMTVmZTFjZjc5ZjFhNzlkMGFjMTZkOGNkNDhjYyJ9fX0='
+      - '[refresh]'
+  'Diner Freddy Plushie':
+    material: "basehead-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMzZlMzc3MmRjNmYzMWY2ZGU5ZWQxNTZjNTY5MTA2YmJmYTk5MDgyN2QyZDg2YjIxZTI0NWQzODQxYTI3ZDg5In19fQ=="
+    slot: 33
+    display_name: 'Diner Freddy Plushie'
+    left_click_commands:
+      - '[player] petblocks skinbase64 %petblocks_pet_name_1% eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMzZlMzc3MmRjNmYzMWY2ZGU5ZWQxNTZjNTY5MTA2YmJmYTk5MDgyN2QyZDg2YjIxZTI0NWQzODQxYTI3ZDg5In19fQ=='
+      - '[refresh]'
+  'Enderman Plushie':
+    material: "basehead-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNmVhYjc1ZWFhNWM5ZjJjNDNhMGQyM2NmZGNlMzVmNGRmNjMyZTk4MTUwMDE4NTAzNzczODVmN2IyZjAzOWNlMSJ9fX0="
+    slot: 34
+    display_name: 'Enderman Plushie'
+    left_click_commands:
+      - '[player] petblocks skinbase64 %petblocks_pet_name_1% eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNmVhYjc1ZWFhNWM5ZjJjNDNhMGQyM2NmZGNlMzVmNGRmNjMyZTk4MTUwMDE4NTAzNzczODVmN2IyZjAzOWNlMSJ9fX0='
+      - '[refresh]'
+  'Foxy Plushie 1':
+    material: "basehead-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMzE0MDRhZDQzMzE3YTE1MmU4ZDMzMGE2Y2MzNTg1OTI2ODU0Mjc4NGFiNjA1N2E4YTZmNTI2NWU3ODBiNGIifX19"
+    slot: 35
+    display_name: 'Foxy Plushie 1'
+    left_click_commands:
+      - '[player] petblocks skinbase64 %petblocks_pet_name_1% eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMzE0MDRhZDQzMzE3YTE1MmU4ZDMzMGE2Y2MzNTg1OTI2ODU0Mjc4NGFiNjA1N2E4YTZmNTI2NWU3ODBiNGIifX19'
+      - '[refresh]'
+  'Fredbear Plushie 1':
+    material: "basehead-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMzM0MTgzMmU4ODkxZDAxNzhkNTlkMzY5ZTU1NGQyZmY4NGQ2NDFlNGE2NmRlZDdjMjA5NjNlMWE4ZWM4ZmVhOSJ9fX0="
+    slot: 36
+    display_name: 'Fredbear Plushie 1'
+    left_click_commands:
+      - '[player] petblocks skinbase64 %petblocks_pet_name_1% eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMzM0MTgzMmU4ODkxZDAxNzhkNTlkMzY5ZTU1NGQyZmY4NGQ2NDFlNGE2NmRlZDdjMjA5NjNlMWE4ZWM4ZmVhOSJ9fX0='
+      - '[refresh]'
+  'Fredbear Plushie 2':
+    material: "basehead-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZGE0NjY5ZmZmMjJhMzhlYTA2MDk5YmZkNTFhZjQ4ODRkODllNDZhNmQ0ZTNhNzM2MzU1ZDRjOTgzMmU4MyJ9fX0="
+    slot: 37
+    display_name: 'Fredbear Plushie 2'
+    left_click_commands:
+      - '[player] petblocks skinbase64 %petblocks_pet_name_1% eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZGE0NjY5ZmZmMjJhMzhlYTA2MDk5YmZkNTFhZjQ4ODRkODllNDZhNmQ0ZTNhNzM2MzU1ZDRjOTgzMmU4MyJ9fX0='
+      - '[refresh]'
+  'Funtime Chica Plushie':
+    material: "basehead-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYjk5ZGJmNzNkMTgxMTEwODQxNzk2YTRiYzM2NDczOGZiMjAyZThiZjc2M2Y5OThiOWEzYzE4NjE3ZTI3In19fQ=="
+    slot: 38
+    display_name: 'Funtime Chica Plushie'
+    left_click_commands:
+      - '[player] petblocks skinbase64 %petblocks_pet_name_1% eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYjk5ZGJmNzNkMTgxMTEwODQxNzk2YTRiYzM2NDczOGZiMjAyZThiZjc2M2Y5OThiOWEzYzE4NjE3ZTI3In19fQ=='
+      - '[refresh]'
+  'Funtime Foxy Plushie 1':
+    material: "basehead-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNDZjNTIxYzc4OGFjMTYzYmE4YjFmNTg5N2MyMjRjYjU4ZjE0ZWJiMTc3YmRhMTg5NDcwYzJlNDc4NGVlYiJ9fX0="
+    slot: 39
+    display_name: 'Funtime Foxy Plushie 1'
+    left_click_commands:
+      - '[player] petblocks skinbase64 %petblocks_pet_name_1% eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNDZjNTIxYzc4OGFjMTYzYmE4YjFmNTg5N2MyMjRjYjU4ZjE0ZWJiMTc3YmRhMTg5NDcwYzJlNDc4NGVlYiJ9fX0='
+      - '[refresh]'
+  'Funtime Foxy Plushie 2':
+    material: "basehead-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYzllMTY1NWM4NjlhYjVlODA3MDY3MmIyYTY2MmJkMTc3NWZlNGRjMjVhYmNlNWIzNGM4ODZkMWRlMTk1NjgifX19"
+    slot: 40
+    display_name: 'Funtime Foxy Plushie 2'
+    left_click_commands:
+      - '[player] petblocks skinbase64 %petblocks_pet_name_1% eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYzllMTY1NWM4NjlhYjVlODA3MDY3MmIyYTY2MmJkMTc3NWZlNGRjMjVhYmNlNWIzNGM4ODZkMWRlMTk1NjgifX19'
+      - '[refresh]'
+  'Funtime Fredbear Plushie':
+    material: "basehead-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYmM2ZDllOWE0NmUwYjhmYjdiNjBkYzFjNWI1NTQwYWM4MmM3NTg2MzEwYTVlMDgwYTU4MjU5NzBmMGFlM2QifX19"
+    slot: 41
+    display_name: 'Funtime Fredbear Plushie'
+    left_click_commands:
+      - '[player] petblocks skinbase64 %petblocks_pet_name_1% eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYmM2ZDllOWE0NmUwYjhmYjdiNjBkYzFjNWI1NTQwYWM4MmM3NTg2MzEwYTVlMDgwYTU4MjU5NzBmMGFlM2QifX19'
+      - '[refresh]'
+  'Funtime Lolbit Plushie 1':
+    material: "basehead-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMWQzZjFkNjI0YTc5NWU1ODNlNWZkNzE0ODY4MzgzMzYyY2QzZDQ5YTczYzliNDAyOTljNmYxMTNkMWViNDUifX19"
+    slot: 42
+    display_name: 'Funtime Lolbit Plushie 1'
+    left_click_commands:
+      - '[player] petblocks skinbase64 %petblocks_pet_name_1% eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMWQzZjFkNjI0YTc5NWU1ODNlNWZkNzE0ODY4MzgzMzYyY2QzZDQ5YTczYzliNDAyOTljNmYxMTNkMWViNDUifX19'
+      - '[refresh]'
+  'Funtime Lolbit Plushie 2':
+    material: "basehead-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZWI2NjVjYzUxOGJiZTA3ZDcwNWFkZDYzNmY1ZTMyYmNkMzg3YzU3MGQ0OTFkODhhZmNmMjY0MTYwNTY1MWYwIn19fQ=="
+    slot: 43
+    display_name: 'Funtime Lolbit Plushie 2'
+    left_click_commands:
+      - '[player] petblocks skinbase64 %petblocks_pet_name_1% eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZWI2NjVjYzUxOGJiZTA3ZDcwNWFkZDYzNmY1ZTMyYmNkMzg3YzU3MGQ0OTFkODhhZmNmMjY0MTYwNTY1MWYwIn19fQ=='
+      - '[refresh]'
+  'Geisha Doll (blue)':
+    material: "basehead-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYWJiMjJiMjFjZTJlNmEzZTRjYjZkZTVmNzMyYWU1ZDRiZGFiOWM0NTk5NzJlOWU1NzIxOTI1NjE5MjUzNCJ9fX0="
+    slot: 44
+    display_name: 'Geisha Doll (blue)'
+    left_click_commands:
+      - '[player] petblocks skinbase64 %petblocks_pet_name_1% eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYWJiMjJiMjFjZTJlNmEzZTRjYjZkZTVmNzMyYWU1ZDRiZGFiOWM0NTk5NzJlOWU1NzIxOTI1NjE5MjUzNCJ9fX0='
+      - '[refresh]'      
+# ==============================================================
+#
+# Random tips, tricks, and useful info below
+#
+# ==============================================================
+#
+# PER ITEM PERMISSION AND PRIORITY INFO:
+#
+# Per item permissions and priorities are optional.
+# High priority = 1, Lowest priority = 2147483647.
+# This allows you to show different items for a specific menu slot depending on the highest priority
+# item permission a player has. This makes your menus very dynamic :)
+#
+# You CAN NOT specify a permission without a priority!
+# You CAN specify a priority without a permission.
+# You should always create a low priority item without a permission which will act as the no permission
+# item if a player does not have permission for any of the items that require permission, otherwise
+# no item will be set in the slot if a player does not have permission for any of the permission items.
+#
+# ==============================================================
+#
+# You specify the command which opens the menu. Make sure this command
+# does not conflict with any existing commands on your server!
+# A GUI menu without an open command specified will not be loaded!
+#
+# Menus configuration layout:
+# menu_title: '<title of menu goes here>'
+# command: <command to open this menu goes here>
+# inventory_type: '<add this option if you want to create a menu of a different InventoryType aside from chest>'
+# open_requirement:
+#   requirements:
+#     <unique name for this requirement>:
+#    type: <type for this requirement>
+#    <unique options per requirement type would go here>
+#    deny_commands:
+#    - '[message] you do not meet requirements to open this menu'
+#   size: <size of this menu, increments of 9, max size is 54>
+#   update_interval: <time in seconds this gui should update for a player if an item is set to update placeholders>
+#   items:
+#     <item identifier>:
+#       material: <name or id>
+#       material: basehead-<name of player>
+#       material: basebasehead-<value> from https://minecraft-heads.com/custom-heads
+#       material: hdb-<HeadDatabase id> (requires plugin HeadDatabase)
+#       data: <integer, us54ed for data values for wool etc>
+#       amount: <amount of this item to show>
+#       slot: <slot number to put this item, slots start at 0 and end at 53 for a size 54 inventory>
+#       priority: <this is used if you have multiple items set for the same slot>
+#       view_requirement: <see view requirement info below. The lowest priority item a player meets all view requirements for will be shown>
+#       update: <true/false if this item should update placeholders on the interval set for the gui menu this item is in>
+#       hide_attributes: <true/false if this item should display item attributes>
+#       hide_enchantments: <true/false if this item should display item enchantment / level> (useful for 'enchantment glow' items)
+#       hide_effects: <true/false if this item should display item effect attributes>
+#       hide_unbreakable: <true/false if this item should display item unbreakable attributes>
+#       banner_meta: (this is used if you want to display a custom banner with specific patterns)
+#       - <dyecolor>;<PatternType> (more information on where to find DyeColor and PatternType names below)
+#       - 'RED;BASE'
+#       - 'WHITE;CREEPER'
+#       display_name: <display name to show for this item>
+#       lore:
+#       - 'This is the lore of the item'
+#       - 'placeholders can be used in the display_name or lore.'
+#       enchantments: valid enchantment names can be found here: https://hub.spigotmc.org/javadocs/spigot/org/bukkit/enchantments/Enchantment.html
+#       - '<ENCHANTMENT>;<LEVEL>'
+#       - 'SILK_TOUCH;1'
+#       left_click_commands:
+#       right_click_commands:
+#       shift_left_click_commands:
+#       shift_right_click_commands:
+#       middle_click_commands:
+#       click_commands:
+#       left_click_requirement: <Learn how to use this option in the requirements_menu.yml>
+#       right_click_requirement: <Learn how to use this option in the requirements_menu.yml>
+#       shift_left_click_requirement: <Learn how to use this option in the requirements_menu.yml>
+#       shift_right_click_requirement: <Learn how to use this option in the requirements_menu.yml>
+#       middle_click_requirement: <Learn how to use this option in the requirements_menu.yml>
+#       click_requirement: <Learn how to use this option in the requirements_menu.yml>
+#
+#
+# You can specify if a GUI menu should be loaded from another file:
+#
+# gui_menus:
+#   <menu-name>:
+#     file: 'menu-file.yml'
+#
+# This allows you to keep your config clean and not have tons of GUI menus cluttering it.
+# The file format the GUI menu is loaded from must end in .yml
+# GUI menus loaded from other configuration files must follow a specific format as well...
+# To get started loading GUI menus from different files, simply create a GUI menu in this config and specify the file it will load from.
+# After that is done, use /dm reload and DeluxeMenus will create a folder and file specific to the GUI menu you specified.
+# If the file specified is created by DeluxeMenus (because it did not exist), a default GUI menu layout will be saved to that file.
+# From here you can edit it to your liking and use /dm reload to update your GUI menu!
+#
+# This loading from external config files is only available for gui menus and will not work for click menus yet....
+#
+# banner_meta must be listed with a specific format:
+# banner_meta:
+# - <DyeColor>;<PatternType>
+#
+# Valid DyeColor names can be found here: https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/DyeColor.html
+# Valid PatternTypes can be found here: https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/block/banner/PatternType.html
+# ==============================================================
+#
+# Requirement information
+#
+# Requirements can be set as the following:
+#
+# open_requirement: This requirement is checked when a menu is opened
+# view_requirement: This requirement determines if an item should be set in a menu slot
+# left_click_requirement: This requirement is checked when an item is left clicked
+# right_click_requirement: This requirement is checked when an item is right clicked
+#
+# Requirement types:
+#   javascript - Evaluates a javascript expression that must return true or false
+#     configuration options:
+#       expression
+#
+#   has item - Checks if a player has a specific item
+#     configuration options:
+#       material
+#       amount
+#       data
+#       name
+#       lore
+#
+#   has money - Checks if a player has enough money (Vault required)
+#     configuration options:
+#       amount
+#
+#   has permission - Checks if a player has a specific permission
+#     configuration options:
+#       permission
+#
+#   string contains - Checks if a string contains another string
+#     configuration options:
+#       input
+#       output
+#
+#   string equals - Checks if a string equals another string
+#     configuration options:
+#       input
+#       output
+#
+#   string equals ignorecase - Checks if a string equals another string ignoring case
+#     configuration options:
+#       input
+#       output
+#
+#   > - Checks if a number is greater than another number
+#     configuration options:
+#       input
+#       output
+#
+#   >= - Checks if a number is greater than or equal to another number
+#     configuration options:
+#       input
+#       output
+#
+#   == - Checks if a number is equal to another number
+#     configuration options:
+#       input
+#       output
+#
+#   <= - Checks if a number is less than or equal to another number
+#     configuration options:
+#       input
+#       output
+#
+#   < - Checks if a number is less than another number
+#     configuration options:
+#       input
+#       output
+#
+#   regex matches - Checks if a placeholder parsed string matches a regex pattern
+#     configuration options:
+#       input
+#       regex
+#
+#
+#
+# So why would we want to use requirements?
+# By default, DeluxeMenus does not require a player meet any conditions to open your menu.
+# If you want to require a menu need a certain permission node for it to be accessed, or a certain amount of money
+# for a menu to be opened, You do that with an 'open_requirement'.
+# Below is an example of how you would deny opening a menu if the viewer does not have permission:
+#
+# menu_title: 'Menu that requires permission to open'
+# open_command: testmenu
+# size: 9
+# open_requirement:
+#   requirements:
+#     this_requirement_name:
+#       type: has permission
+#       permission: 'testmenu.open'
+#       deny_commands:
+#       - '[message] you do not have permission to open testmenu'
+#
+# ==============================================================
+#
+# Every item in the items list must have a unique <item identifier>
+#
+# If you choose to update placeholders for a specific item, you must specify update_interval: <time>
+# in the menu options for the specific menu.
+#
+# Every click_command must start with a specific identifier to know what to do for the execution.
+# Valid click_command identifiers:
+#
+# [console] - Execute a command from the console
+# Usage: - '[console] <command with no slash>'
+#
+# [player] - Execute a command for the menu viewer
+# Usage: - '[player] <command with no slash>'
+#
+# [commandevent] - Fire a PlayerCommandPreprocessEvent for commands that do not use the bukkit command system
+# Usage: - '[commandevent] <command with no slash>'
+#
+# [message] - Send a message to the menu viewer
+# Usage: - [message] <message to send to the player
+#
+# [openguimenu] - Open a GUI menu (can only be used in GUI menu click_commands)
+# Usage: - '[openguimenu] <guiMenuName>'
+#
+# [connect] - Connect to the specified bungee server
+# Usage: - '[connect] <serverName>'
+#
+# [close] - Close the viewers open menu
+# Usage: - '[close]
+#
+# [refresh] - Refresh items in the current menu view
+# Usage: - '[refresh]
+#
+# [broadcastsound] - Broadcast a sound to the server
+# Usage: - '[broadcastsound]
+#
+# [sound] - Play a sound for a the specific player
+# Usage: - '[sound]
+#
+# [json] - Send a json message to the menu viewer
+# Usage: - '[json] {"text":"message"}'
+#
+#
+#
+# You can delay any of the click command being performed by ending the command with
+# <delay=(time in TICKS)>
+# example:
+#     - '[close]'
+#     - '[message] it has been 5 seconds since the menu closed!<delay=100>'
+#     - '[message] it has been 10 seconds since the menu closed!<delay=200>'
+#
+sweet: true

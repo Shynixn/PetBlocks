@@ -23,11 +23,12 @@ import com.google.inject.Guice
 import com.google.inject.Injector
 import kotlinx.coroutines.runBlocking
 import org.bukkit.Bukkit
-import org.bukkit.Material
 import org.bukkit.event.player.PlayerJoinEvent
 import org.bukkit.plugin.ServicePriority
 import org.bukkit.plugin.java.JavaPlugin
 import java.io.File
+import java.nio.file.Files
+import java.nio.file.StandardCopyOption
 import java.util.logging.Level
 
 class PetBlocksPlugin : JavaPlugin() {
@@ -93,6 +94,15 @@ class PetBlocksPlugin : JavaPlugin() {
         mcTennisCommand.setSuspendingExecutor(petBlocksCommandExecutor)
         mcTennisCommand.setSuspendingTabCompleter(petBlocksCommandExecutor)
 
+        // Copy Third Party
+        copyResourceToTarget("thirdparty/DeluxeMenu/config.yml")
+        copyResourceToTarget("thirdparty/DeluxeMenu/gui_menus/petblocks_menu.yml")
+        copyResourceToTarget("thirdparty/DeluxeMenu/gui_menus/petblocks_skins_overview_menu.yml")
+        copyResourceToTarget("thirdparty/DeluxeMenu/gui_menus/petblocks_skins_blockskins_menu.yml")
+        copyResourceToTarget("thirdparty/DeluxeMenu/gui_menus/petblocks_skins_petskins_menu.yml")
+        copyResourceToTarget("thirdparty/DeluxeMenu/gui_menus/petblocks_skins_vehicleskins_menu.yml")
+        copyResourceToTarget("thirdparty/DeluxeMenu/gui_menus/petblocks_skins_puppetskins_menu.yml")
+
         // Register Language
         val plugin = this
         runBlocking {
@@ -121,26 +131,6 @@ class PetBlocksPlugin : JavaPlugin() {
                 petListener.onPlayerJoinEvent(PlayerJoinEvent(player, null))
             }
         }
-
-        var counter = 9
-
-        val builder = StringBuilder()
-
-        for (material in Material.values().drop(1)) {
-            val resultString = "  '${material.name.lowercase()}':\n" +
-                    "    material: \"${material.name.uppercase()}\"\n" +
-                    "    slot: ${counter}\n" +
-                    "    left_click_commands:\n" +
-                    "      - '[player] petblocks skinType %petblocks_pet_name_1% ${material.name.uppercase()}'\n" +
-                    "      - '[refresh]'"
-            builder.appendLine(resultString)
-            counter++
-        }
-
-
-
-
-        File("C:\\temp\\demoblocks.yml").writeText(builder.toString())
     }
 
     /**
@@ -171,6 +161,14 @@ class PetBlocksPlugin : JavaPlugin() {
             return this.injector!!.getBinding(service).provider.get() as S
         } catch (e: Exception) {
             throw IllegalArgumentException("Service ${service.name} could not be resolved.", e)
+        }
+    }
+
+    private fun copyResourceToTarget(resourcePath : String){
+        val fullTargetFile = File(dataFolder, resourcePath)
+        Files.createDirectories(fullTargetFile.parentFile.toPath())
+        getResource(resourcePath).use { resourceStream ->
+            Files.copy(resourceStream, fullTargetFile.toPath(), StandardCopyOption.REPLACE_EXISTING)
         }
     }
 }

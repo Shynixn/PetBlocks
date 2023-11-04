@@ -14,6 +14,10 @@ gui_menus:
     file: petblocks_skins_blockskins_menu.yml
   petblocks_skins_petskins_menu:
     file: petblocks_skins_petskins_menu.yml
+  petblocks_skins_vehicleskins_menu:
+    file: petblocks_skins_vehicleskins_menu.yml
+  petblocks_skins_puppetskins_menu:
+    file: petblocks_skins_puppetskins_menu.yml
   basics_menu:
     file: basics_menu.yml
   advanced_menu:

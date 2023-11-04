@@ -110,7 +110,7 @@ items:
     lore:
       - "&7Use vehicle heads as skin."
     left_click_commands:
-      - '[openguimenu] petblocks_skins_blockskins_menu'       
+      - '[openguimenu] petblocks_skins_vehicleskins_menu'       
   'puppet-skins':
     material: "texture-3835da2685f7ad3f1919a018976ad56826691e26758a3a55a1918f7f17ad938"
     slot: 23
@@ -118,7 +118,7 @@ items:
     lore:
       - "&7Use puppet heads as skin."
     left_click_commands:
-      - '[openguimenu] petblocks_skins_blockskins_menu'                        
+      - '[openguimenu] petblocks_skins_puppetskins_menu'                        
   'hdb-skins':
     material: "texture-3bb612eb495ede2c5ca5178d2d1ecf1ca5a255d25dfc3c254bc47f6848791d8"
     slot: 24
