@@ -3,6 +3,7 @@
 package com.github.shynixn.petblocks.impl.listener
 
 import com.github.shynixn.mccoroutine.bukkit.launch
+import com.github.shynixn.mcutils.common.ConfigurationService
 import com.github.shynixn.mcutils.common.physic.PhysicObjectService
 import com.github.shynixn.mcutils.packet.api.InteractionType
 import com.github.shynixn.mcutils.packet.api.event.PacketEvent
@@ -12,6 +13,7 @@ import com.github.shynixn.petblocks.contract.PetActionExecutionService
 import com.github.shynixn.petblocks.contract.PetService
 import com.github.shynixn.petblocks.impl.PetEntityImpl
 import com.google.inject.Inject
+import org.bukkit.Bukkit
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.player.PlayerJoinEvent
@@ -23,18 +25,38 @@ class PetListener @Inject constructor(
     private val petService: PetService,
     private val plugin: Plugin,
     private val petActionExecutionService: PetActionExecutionService,
-    private val physicObjectService: PhysicObjectService
+    private val physicObjectService: PhysicObjectService,
+    private val configurationService: ConfigurationService
 ) : Listener {
+    private val petsToReceiveOnJoinKey = "pet.receivePetsOnJoin"
+
     /**
      * Gets called when a player joins the server.
      */
     @EventHandler
     fun onPlayerJoinEvent(event: PlayerJoinEvent) {
         plugin.launch {
-            val pets = petService.getPetsFromPlayer(event.player)
+            val player = event.player
+            val pets = petService.getPetsFromPlayer(player)
 
             if (pets.isNotEmpty()) {
-                plugin.logger.log(Level.INFO, "Loaded [${pets.size}] pets for player ${event.player.name}.")
+                plugin.logger.log(Level.INFO, "Loaded [${pets.size}] pets for player ${player.name}.")
+            }
+
+            val petsToReceive = configurationService.findValue<List<Map<String, String>>>(petsToReceiveOnJoinKey)
+
+            for (petToReceive in petsToReceive) {
+                val name = petToReceive["name"]
+                val template = petToReceive["template"]
+
+                val matchingPet = pets.firstOrNull { e -> e.name.equals(name, true) }
+
+                if (matchingPet == null) {
+                    Bukkit.getServer().dispatchCommand(
+                        Bukkit.getConsoleSender(),
+                        "petblocks create ${name} ${template} ${player.name}"
+                    )
+                }
             }
         }
     }

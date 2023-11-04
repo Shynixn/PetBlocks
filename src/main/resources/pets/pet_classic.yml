@@ -96,7 +96,6 @@ events:
           type: STRING_EQUALS
           left: "%petblocks_eventPlayer_name%"
           right: "%petblocks_owner_name%"
-        debug: true
         type: "COMMAND"
         level: "PLAYER"
         run:

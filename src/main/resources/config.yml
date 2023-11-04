@@ -37,6 +37,10 @@ autoSaveIntervalMinutes: 5
 # For individual pet settings, use the files in the pets folder.
 ############################
 pet:
+  # A list of pets the player receives when joining the server. This list may be empty.
+  receivePetsOnJoin:
+    - name: "pet"
+      template: "classic"
   # Render distance of the pet. They become invisible for players outside that range.
   renderDistance: 70
   # Displays a virtual trail of gold blocks, which represents the calculated path of the pet. Can be used for investigating pet paths. Rejoining the server removes the client side blocks.

@@ -40,7 +40,7 @@ class PetEntityFactoryImpl @Inject constructor(
     override fun createPetEntity(pet: Pet, meta: PetMeta): PetEntityImpl {
         if (meta.lastStoredLocation.world == null) {
             // On First spawn
-            meta.lastStoredLocation = pet.player.location.toVector3d()
+            meta.lastStoredLocation = pet.player.location.toVector3d().addRelativeFront(3.0)
         }
 
         val location = pet.location
