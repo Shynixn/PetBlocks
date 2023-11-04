@@ -57,16 +57,16 @@ open_requirement:
 items:
   'background':
     material: "BLACK_STAINED_GLASS_PANE"
-    slots: 
+    slots:
       - "0-53"
     display_name: " "
     lore:
       - ""
   'pettype':
     priority: 2
-    material: "placeholder-%petblocks_pet_itemType_1%"
-    slot: 4 
-    display_name: "%petblocks_pet_displayName_1%"     
+    material: "placeholder-%petblocks_pet_itemType_selected%"
+    slot: 4
+    display_name: "%petblocks_pet_displayName_selected%"
   'pethead':
     priority: 1
     view_requirement:
@@ -74,271 +74,271 @@ items:
             joinable:
                 type: string equals
                 input: "%petblocks_pet_itemType%"
-                output: "PLAYER_HEAD"    
-    material: "basehead-%petblocks_pet_itemHeadBase64_1%"
-    slot: 4 
-    display_name: "%petblocks_pet_displayName_1%"   
+                output: "PLAYER_HEAD"
+    material: "basehead-%petblocks_pet_itemHeadBase64_selected%"
+    slot: 4
+    display_name: "%petblocks_pet_displayName_selected%"
   'back':
     material: "BARRIER"
     slot: 49
     display_name: "&cBack"
-    lore: 
+    lore:
       - "&7Closes the current window."
     left_click_commands:
-      - '[openguimenu] petblocks_skins_overview_menu'  
-      - '[refresh]'  
+      - '[openguimenu] petblocks_skins_overview_menu'
+      - '[refresh]'
   'Steve Plushie 1':
     material: "basehead-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMzgzNWRhMjY4NWY3YWQzZjE5MTlhMDE4OTc2YWQ1NjgyNjY5MWUyNjc1OGEzYTU1YTE5MThmN2YxN2FkOTM4In19fQ=="
     slot: 9
     display_name: 'Steve Plushie 1'
     left_click_commands:
-      - '[player] petblocks skinbase64 %petblocks_pet_name_1% eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMzgzNWRhMjY4NWY3YWQzZjE5MTlhMDE4OTc2YWQ1NjgyNjY5MWUyNjc1OGEzYTU1YTE5MThmN2YxN2FkOTM4In19fQ=='
-      - '[refresh]'      
+      - '[player] petblocks skinbase64 %petblocks_pet_name_selected% eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMzgzNWRhMjY4NWY3YWQzZjE5MTlhMDE4OTc2YWQ1NjgyNjY5MWUyNjc1OGEzYTU1YTE5MThmN2YxN2FkOTM4In19fQ=='
+      - '[refresh]'
   'Alex Plushie 1':
     material: "basehead-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYzFjZDI3NjJhY2I0YjQyNzhjZjExMTc2YTVmODc3OTlmOTNhMWQ5MTE2Y2IzY2I1N2VlNGQxZTYwMTM0NTg4In19fQ=="
     slot: 10
     display_name: 'Alex Plushie 1'
     left_click_commands:
-      - '[player] petblocks skinbase64 %petblocks_pet_name_1% eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYzFjZDI3NjJhY2I0YjQyNzhjZjExMTc2YTVmODc3OTlmOTNhMWQ5MTE2Y2IzY2I1N2VlNGQxZTYwMTM0NTg4In19fQ=='
+      - '[player] petblocks skinbase64 %petblocks_pet_name_selected% eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYzFjZDI3NjJhY2I0YjQyNzhjZjExMTc2YTVmODc3OTlmOTNhMWQ5MTE2Y2IzY2I1N2VlNGQxZTYwMTM0NTg4In19fQ=='
       - '[refresh]'
   'Baby Doll (blue)':
     material: "basehead-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNmQzNTZlYmI5YTFkMTY0YjVjNDhlZjYxNjc4MDJiZTZlOWI3NDJjZDU5ZDIxZWM1MjQwMTZjMmJhOWU2YiJ9fX0="
     slot: 11
     display_name: 'Baby Doll (blue)'
     left_click_commands:
-      - '[player] petblocks skinbase64 %petblocks_pet_name_1% eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNmQzNTZlYmI5YTFkMTY0YjVjNDhlZjYxNjc4MDJiZTZlOWI3NDJjZDU5ZDIxZWM1MjQwMTZjMmJhOWU2YiJ9fX0='
+      - '[player] petblocks skinbase64 %petblocks_pet_name_selected% eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNmQzNTZlYmI5YTFkMTY0YjVjNDhlZjYxNjc4MDJiZTZlOWI3NDJjZDU5ZDIxZWM1MjQwMTZjMmJhOWU2YiJ9fX0='
       - '[refresh]'
   'Baby Doll (pink)':
     material: "basehead-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZjg0Yjk0NjM5ZDk3YWJhYjFlNjI5YzcyMmFmMjk4MTVlOGM1Mjc1ZmNlMWY2YjI1YzkxODI0ZTljYjhmZiJ9fX0="
     slot: 12
     display_name: 'Baby Doll (pink)'
     left_click_commands:
-      - '[player] petblocks skinbase64 %petblocks_pet_name_1% eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZjg0Yjk0NjM5ZDk3YWJhYjFlNjI5YzcyMmFmMjk4MTVlOGM1Mjc1ZmNlMWY2YjI1YzkxODI0ZTljYjhmZiJ9fX0='
+      - '[player] petblocks skinbase64 %petblocks_pet_name_selected% eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZjg0Yjk0NjM5ZDk3YWJhYjFlNjI5YzcyMmFmMjk4MTVlOGM1Mjc1ZmNlMWY2YjI1YzkxODI0ZTljYjhmZiJ9fX0='
       - '[refresh]'
   'Baby Doll (purple)':
     material: "basehead-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNTJhYjYyNmRiYjc2NTg0NTk3YjU5MDZlZTY5OWVhOTNlNTFkMTc0ZWM2YTIxZWQ5ZjRjMTlmNWU3ZWJmOTM2In19fQ=="
     slot: 13
     display_name: 'Baby Doll (purple)'
     left_click_commands:
-      - '[player] petblocks skinbase64 %petblocks_pet_name_1% eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNTJhYjYyNmRiYjc2NTg0NTk3YjU5MDZlZTY5OWVhOTNlNTFkMTc0ZWM2YTIxZWQ5ZjRjMTlmNWU3ZWJmOTM2In19fQ=='
+      - '[player] petblocks skinbase64 %petblocks_pet_name_selected% eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNTJhYjYyNmRiYjc2NTg0NTk3YjU5MDZlZTY5OWVhOTNlNTFkMTc0ZWM2YTIxZWQ5ZjRjMTlmNWU3ZWJmOTM2In19fQ=='
       - '[refresh]'
   'Baby Doll (yellow)':
     material: "basehead-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOWRiM2MyYzlkNWU4MGE0MTYxOTZiNDM4MmQ0Y2U5NDBkYTdmYjA3MWQzOTZkMWYyNzQzNjUwZjJmM2VmNGQifX19"
     slot: 14
     display_name: 'Baby Doll (yellow)'
     left_click_commands:
-      - '[player] petblocks skinbase64 %petblocks_pet_name_1% eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOWRiM2MyYzlkNWU4MGE0MTYxOTZiNDM4MmQ0Y2U5NDBkYTdmYjA3MWQzOTZkMWYyNzQzNjUwZjJmM2VmNGQifX19'
+      - '[player] petblocks skinbase64 %petblocks_pet_name_selected% eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOWRiM2MyYzlkNWU4MGE0MTYxOTZiNDM4MmQ0Y2U5NDBkYTdmYjA3MWQzOTZkMWYyNzQzNjUwZjJmM2VmNGQifX19'
       - '[refresh]'
   'Bendy Doll':
     material: "basehead-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvN2Q1MGZiYWY1YmE5MmU2NWNkZDg4ZDY0NTFkYmE4YzBmYjgzMGFiNTE1YmZiZGExZGI0ZjQ1NzZjNjg2NzY3MiJ9fX0="
     slot: 15
     display_name: 'Bendy Doll'
     left_click_commands:
-      - '[player] petblocks skinbase64 %petblocks_pet_name_1% eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvN2Q1MGZiYWY1YmE5MmU2NWNkZDg4ZDY0NTFkYmE4YzBmYjgzMGFiNTE1YmZiZGExZGI0ZjQ1NzZjNjg2NzY3MiJ9fX0='
+      - '[player] petblocks skinbase64 %petblocks_pet_name_selected% eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvN2Q1MGZiYWY1YmE5MmU2NWNkZDg4ZDY0NTFkYmE4YzBmYjgzMGFiNTE1YmZiZGExZGI0ZjQ1NzZjNjg2NzY3MiJ9fX0='
       - '[refresh]'
   'Bonbon Plushie':
     material: "basehead-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZGIzYTI1MGE4YzYxYmNhNTQ5YmVjNThmYTBiYWIzYzJhYmM4MmZmMDRkMmI4Y2E4NmI2OTE3ZTUxNDJhODQifX19"
     slot: 16
     display_name: 'Bonbon Plushie'
     left_click_commands:
-      - '[player] petblocks skinbase64 %petblocks_pet_name_1% eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZGIzYTI1MGE4YzYxYmNhNTQ5YmVjNThmYTBiYWIzYzJhYmM4MmZmMDRkMmI4Y2E4NmI2OTE3ZTUxNDJhODQifX19'
+      - '[player] petblocks skinbase64 %petblocks_pet_name_selected% eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZGIzYTI1MGE4YzYxYmNhNTQ5YmVjNThmYTBiYWIzYzJhYmM4MmZmMDRkMmI4Y2E4NmI2OTE3ZTUxNDJhODQifX19'
       - '[refresh]'
   'Bonnet Plushie 1':
     material: "basehead-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNTIxNTcyMzM1ZjlhNjM2ZDc5YzViMTM2MTI1MmNlODkzMzhhMzlmYmEzZDMyMDI0NzEwNjJiYmI3ZSJ9fX0="
     slot: 17
     display_name: 'Bonnet Plushie 1'
     left_click_commands:
-      - '[player] petblocks skinbase64 %petblocks_pet_name_1% eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNTIxNTcyMzM1ZjlhNjM2ZDc5YzViMTM2MTI1MmNlODkzMzhhMzlmYmEzZDMyMDI0NzEwNjJiYmI3ZSJ9fX0='
+      - '[player] petblocks skinbase64 %petblocks_pet_name_selected% eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNTIxNTcyMzM1ZjlhNjM2ZDc5YzViMTM2MTI1MmNlODkzMzhhMzlmYmEzZDMyMDI0NzEwNjJiYmI3ZSJ9fX0='
       - '[refresh]'
   'Bonnie Plushie 1':
     material: "basehead-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNDJkZWZjOTc0NTFmMGZiMTUyNGJhNDM3NWNjYzg1MzJiMjM2NDhmNzY1Y2E2NDhlOWM1YWNiODE0OGUifX19"
     slot: 18
     display_name: 'Bonnie Plushie 1'
     left_click_commands:
-      - '[player] petblocks skinbase64 %petblocks_pet_name_1% eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNDJkZWZjOTc0NTFmMGZiMTUyNGJhNDM3NWNjYzg1MzJiMjM2NDhmNzY1Y2E2NDhlOWM1YWNiODE0OGUifX19'
+      - '[player] petblocks skinbase64 %petblocks_pet_name_selected% eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNDJkZWZjOTc0NTFmMGZiMTUyNGJhNDM3NWNjYzg1MzJiMjM2NDhmNzY1Y2E2NDhlOWM1YWNiODE0OGUifX19'
       - '[refresh]'
   'Bonnie Plushie 2':
     material: "basehead-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZjFhNDM0OWRjMDQzZTUyYjUwZjg2M2RiM2E4MzQ5NDg1YzlhMDJmZTNhMzFlNWQxNDgzZGFhODZhYTRhZWYifX19"
     slot: 19
     display_name: 'Bonnie Plushie 2'
     left_click_commands:
-      - '[player] petblocks skinbase64 %petblocks_pet_name_1% eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZjFhNDM0OWRjMDQzZTUyYjUwZjg2M2RiM2E4MzQ5NDg1YzlhMDJmZTNhMzFlNWQxNDgzZGFhODZhYTRhZWYifX19'
+      - '[player] petblocks skinbase64 %petblocks_pet_name_selected% eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZjFhNDM0OWRjMDQzZTUyYjUwZjg2M2RiM2E4MzQ5NDg1YzlhMDJmZTNhMzFlNWQxNDgzZGFhODZhYTRhZWYifX19'
       - '[refresh]'
   'Cakebear Plushie 1':
     material: "basehead-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNDUwOGU3NzYwNzc2ZjFkMzU1NmYyNTk4N2VkYjY4YWE4ZmMyYzI4ZGIzYzMzNmEzMDJiMWM5NTc5MDQyMjY4NCJ9fX0="
     slot: 20
     display_name: 'Cakebear Plushie 1'
     left_click_commands:
-      - '[player] petblocks skinbase64 %petblocks_pet_name_1% eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNDUwOGU3NzYwNzc2ZjFkMzU1NmYyNTk4N2VkYjY4YWE4ZmMyYzI4ZGIzYzMzNmEzMDJiMWM5NTc5MDQyMjY4NCJ9fX0='
+      - '[player] petblocks skinbase64 %petblocks_pet_name_selected% eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNDUwOGU3NzYwNzc2ZjFkMzU1NmYyNTk4N2VkYjY4YWE4ZmMyYzI4ZGIzYzMzNmEzMDJiMWM5NTc5MDQyMjY4NCJ9fX0='
       - '[refresh]'
   'Cakebear Plushie 2':
     material: "basehead-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNmJhODc5NjVjNDRkYTc5MjcxZWFkZTY3OGRkNWE1NjI1NDZiZWZiYjgyODdkMzVjZmFhNGU2NTFhOWRjNjMifX19"
     slot: 21
     display_name: 'Cakebear Plushie 2'
     left_click_commands:
-      - '[player] petblocks skinbase64 %petblocks_pet_name_1% eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNmJhODc5NjVjNDRkYTc5MjcxZWFkZTY3OGRkNWE1NjI1NDZiZWZiYjgyODdkMzVjZmFhNGU2NTFhOWRjNjMifX19'
+      - '[player] petblocks skinbase64 %petblocks_pet_name_selected% eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNmJhODc5NjVjNDRkYTc5MjcxZWFkZTY3OGRkNWE1NjI1NDZiZWZiYjgyODdkMzVjZmFhNGU2NTFhOWRjNjMifX19'
       - '[refresh]'
   'Cakebear Plushie 3':
     material: "basehead-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOTI2OGY4ZTcxODIwZTg5NGVmOWZjZDliYmE1ZjljZmUyODE3NWU5OTU4ODZlM2RkOGMzZjk2ZWI0OGY5MTM2NiJ9fX0="
     slot: 22
     display_name: 'Cakebear Plushie 3'
     left_click_commands:
-      - '[player] petblocks skinbase64 %petblocks_pet_name_1% eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOTI2OGY4ZTcxODIwZTg5NGVmOWZjZDliYmE1ZjljZmUyODE3NWU5OTU4ODZlM2RkOGMzZjk2ZWI0OGY5MTM2NiJ9fX0='
+      - '[player] petblocks skinbase64 %petblocks_pet_name_selected% eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOTI2OGY4ZTcxODIwZTg5NGVmOWZjZDliYmE1ZjljZmUyODE3NWU5OTU4ODZlM2RkOGMzZjk2ZWI0OGY5MTM2NiJ9fX0='
       - '[refresh]'
   'Captain Mangle Plushie':
     material: "basehead-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNjJiYTcyZTgzMzg1MzM1OGM2YmM2OTY4YTQzODhiNGQzZGRlZTcxOWMwZTRkMDgyYjVkYTg0YzU3N2EzZmEifX19"
     slot: 23
     display_name: 'Captain Mangle Plushie'
     left_click_commands:
-      - '[player] petblocks skinbase64 %petblocks_pet_name_1% eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNjJiYTcyZTgzMzg1MzM1OGM2YmM2OTY4YTQzODhiNGQzZGRlZTcxOWMwZTRkMDgyYjVkYTg0YzU3N2EzZmEifX19'
+      - '[player] petblocks skinbase64 %petblocks_pet_name_selected% eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNjJiYTcyZTgzMzg1MzM1OGM2YmM2OTY4YTQzODhiNGQzZGRlZTcxOWMwZTRkMDgyYjVkYTg0YzU3N2EzZmEifX19'
       - '[refresh]'
   'Chica Plushie 1':
     material: "basehead-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOTBjZGY0YWNmZDY4MjU1NGJmYWRkYjA1Y2QxNGZkOWYzZmZhYzIyODgyNDMxNDViMzQ4ZDMzZjUwNzU3NiJ9fX0="
     slot: 24
     display_name: 'Chica Plushie 1'
     left_click_commands:
-      - '[player] petblocks skinbase64 %petblocks_pet_name_1% eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOTBjZGY0YWNmZDY4MjU1NGJmYWRkYjA1Y2QxNGZkOWYzZmZhYzIyODgyNDMxNDViMzQ4ZDMzZjUwNzU3NiJ9fX0='
+      - '[player] petblocks skinbase64 %petblocks_pet_name_selected% eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOTBjZGY0YWNmZDY4MjU1NGJmYWRkYjA1Y2QxNGZkOWYzZmZhYzIyODgyNDMxNDViMzQ4ZDMzZjUwNzU3NiJ9fX0='
       - '[refresh]'
   'Circus Baby Plushie':
     material: "basehead-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYzVhMzM0NzAyNzJlYTVjZThjN2RlMTk3ZTViMmNiNTRhOWEwYjk3NmY4NzljMWFhYjExM2U1MDM5ZjUyMyJ9fX0="
     slot: 25
     display_name: 'Circus Baby Plushie'
     left_click_commands:
-      - '[player] petblocks skinbase64 %petblocks_pet_name_1% eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYzVhMzM0NzAyNzJlYTVjZThjN2RlMTk3ZTViMmNiNTRhOWEwYjk3NmY4NzljMWFhYjExM2U1MDM5ZjUyMyJ9fX0='
+      - '[player] petblocks skinbase64 %petblocks_pet_name_selected% eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYzVhMzM0NzAyNzJlYTVjZThjN2RlMTk3ZTViMmNiNTRhOWEwYjk3NmY4NzljMWFhYjExM2U1MDM5ZjUyMyJ9fX0='
       - '[refresh]'
   'Cow Plushie':
     material: "basehead-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNGJkYTFkZjgwYmZhMzE0ODUzMzhkOTYzMzgzZDhkZTI2ZjA1ZjI5MzRmODc1Njk2ODYyNDU0ZTdjNzBmNDVmNiJ9fX0="
     slot: 26
     display_name: 'Cow Plushie'
     left_click_commands:
-      - '[player] petblocks skinbase64 %petblocks_pet_name_1% eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNGJkYTFkZjgwYmZhMzE0ODUzMzhkOTYzMzgzZDhkZTI2ZjA1ZjI5MzRmODc1Njk2ODYyNDU0ZTdjNzBmNDVmNiJ9fX0='
+      - '[player] petblocks skinbase64 %petblocks_pet_name_selected% eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNGJkYTFkZjgwYmZhMzE0ODUzMzhkOTYzMzgzZDhkZTI2ZjA1ZjI5MzRmODc1Njk2ODYyNDU0ZTdjNzBmNDVmNiJ9fX0='
       - '[refresh]'
   'Crash Bandicoot Doll':
     material: "basehead-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMjZlM2JiOWI2Y2JiOWM0ZWU5YTg1MjlmOTg2ZTg1OTMxNWE5YzU1MjQyZmY4ODY0YTVkNDU0NGYyZDBkZDE2In19fQ=="
     slot: 27
     display_name: 'Crash Bandicoot Doll'
     left_click_commands:
-      - '[player] petblocks skinbase64 %petblocks_pet_name_1% eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMjZlM2JiOWI2Y2JiOWM0ZWU5YTg1MjlmOTg2ZTg1OTMxNWE5YzU1MjQyZmY4ODY0YTVkNDU0NGYyZDBkZDE2In19fQ=='
+      - '[player] petblocks skinbase64 %petblocks_pet_name_selected% eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMjZlM2JiOWI2Y2JiOWM0ZWU5YTg1MjlmOTg2ZTg1OTMxNWE5YzU1MjQyZmY4ODY0YTVkNDU0NGYyZDBkZDE2In19fQ=='
       - '[refresh]'
   'Creeper Plushie 1':
     material: "basehead-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZjhhNDEzOGZkYmJiMjgwOTdkYzVkY2ZjM2Y4ODE5MjVlZGE5NjhjNjI3NGUxNjlkYzgyZWVkZTYzMzZmNSJ9fX0="
     slot: 28
     display_name: 'Creeper Plushie 1'
     left_click_commands:
-      - '[player] petblocks skinbase64 %petblocks_pet_name_1% eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZjhhNDEzOGZkYmJiMjgwOTdkYzVkY2ZjM2Y4ODE5MjVlZGE5NjhjNjI3NGUxNjlkYzgyZWVkZTYzMzZmNSJ9fX0='
+      - '[player] petblocks skinbase64 %petblocks_pet_name_selected% eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZjhhNDEzOGZkYmJiMjgwOTdkYzVkY2ZjM2Y4ODE5MjVlZGE5NjhjNjI3NGUxNjlkYzgyZWVkZTYzMzZmNSJ9fX0='
       - '[refresh]'
   'Daruma Doll - Both eyes':
     material: "basehead-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMjI4YTNhMDgzMzk4YTY2Y2ZiMzQwOWZkOGQzMjgyNmVjMTg5MzY4Y2MzMzA4Njg2ZGEyMjZmMjYyMWYxZWQifX19"
     slot: 29
     display_name: 'Daruma Doll - Both eyes'
     left_click_commands:
-      - '[player] petblocks skinbase64 %petblocks_pet_name_1% eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMjI4YTNhMDgzMzk4YTY2Y2ZiMzQwOWZkOGQzMjgyNmVjMTg5MzY4Y2MzMzA4Njg2ZGEyMjZmMjYyMWYxZWQifX19'
+      - '[player] petblocks skinbase64 %petblocks_pet_name_selected% eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMjI4YTNhMDgzMzk4YTY2Y2ZiMzQwOWZkOGQzMjgyNmVjMTg5MzY4Y2MzMzA4Njg2ZGEyMjZmMjYyMWYxZWQifX19'
       - '[refresh]'
   'Daruma Doll - Left eye':
     material: "basehead-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOTE5NThjMTQzMTc2ODg2NjYyYmJlYWNmYzU4OWY4YTQzMGFmZmVhMGI3YjRlYWUzMjIzMjFjYWVhZTI1ZDQifX19"
     slot: 30
     display_name: 'Daruma Doll - Left eye'
     left_click_commands:
-      - '[player] petblocks skinbase64 %petblocks_pet_name_1% eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOTE5NThjMTQzMTc2ODg2NjYyYmJlYWNmYzU4OWY4YTQzMGFmZmVhMGI3YjRlYWUzMjIzMjFjYWVhZTI1ZDQifX19'
+      - '[player] petblocks skinbase64 %petblocks_pet_name_selected% eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOTE5NThjMTQzMTc2ODg2NjYyYmJlYWNmYzU4OWY4YTQzMGFmZmVhMGI3YjRlYWUzMjIzMjFjYWVhZTI1ZDQifX19'
       - '[refresh]'
   'Daruma Doll - No eye':
     material: "basehead-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOGI1ZDNlZGFhNWFmZDQ1YmQ3ZWZlYmE3ZDIxMGRhMjVjYjg0ZDU0Y2NjMTU5OWQ0YjA0MzM1Mzc1OGViOWRkZCJ9fX0="
     slot: 31
     display_name: 'Daruma Doll - No eye'
     left_click_commands:
-      - '[player] petblocks skinbase64 %petblocks_pet_name_1% eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOGI1ZDNlZGFhNWFmZDQ1YmQ3ZWZlYmE3ZDIxMGRhMjVjYjg0ZDU0Y2NjMTU5OWQ0YjA0MzM1Mzc1OGViOWRkZCJ9fX0='
+      - '[player] petblocks skinbase64 %petblocks_pet_name_selected% eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOGI1ZDNlZGFhNWFmZDQ1YmQ3ZWZlYmE3ZDIxMGRhMjVjYjg0ZDU0Y2NjMTU5OWQ0YjA0MzM1Mzc1OGViOWRkZCJ9fX0='
       - '[refresh]'
   'Daruma Doll - Right eye':
     material: "basehead-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZDA0MDM0Zjk4MWY5ODBhOThiNWFjNjFjZmU0OWI3NDY5NjhjMTVmZTFjZjc5ZjFhNzlkMGFjMTZkOGNkNDhjYyJ9fX0="
     slot: 32
     display_name: 'Daruma Doll - Right eye'
     left_click_commands:
-      - '[player] petblocks skinbase64 %petblocks_pet_name_1% eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZDA0MDM0Zjk4MWY5ODBhOThiNWFjNjFjZmU0OWI3NDY5NjhjMTVmZTFjZjc5ZjFhNzlkMGFjMTZkOGNkNDhjYyJ9fX0='
+      - '[player] petblocks skinbase64 %petblocks_pet_name_selected% eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZDA0MDM0Zjk4MWY5ODBhOThiNWFjNjFjZmU0OWI3NDY5NjhjMTVmZTFjZjc5ZjFhNzlkMGFjMTZkOGNkNDhjYyJ9fX0='
       - '[refresh]'
   'Diner Freddy Plushie':
     material: "basehead-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMzZlMzc3MmRjNmYzMWY2ZGU5ZWQxNTZjNTY5MTA2YmJmYTk5MDgyN2QyZDg2YjIxZTI0NWQzODQxYTI3ZDg5In19fQ=="
     slot: 33
     display_name: 'Diner Freddy Plushie'
     left_click_commands:
-      - '[player] petblocks skinbase64 %petblocks_pet_name_1% eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMzZlMzc3MmRjNmYzMWY2ZGU5ZWQxNTZjNTY5MTA2YmJmYTk5MDgyN2QyZDg2YjIxZTI0NWQzODQxYTI3ZDg5In19fQ=='
+      - '[player] petblocks skinbase64 %petblocks_pet_name_selected% eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMzZlMzc3MmRjNmYzMWY2ZGU5ZWQxNTZjNTY5MTA2YmJmYTk5MDgyN2QyZDg2YjIxZTI0NWQzODQxYTI3ZDg5In19fQ=='
       - '[refresh]'
   'Enderman Plushie':
     material: "basehead-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNmVhYjc1ZWFhNWM5ZjJjNDNhMGQyM2NmZGNlMzVmNGRmNjMyZTk4MTUwMDE4NTAzNzczODVmN2IyZjAzOWNlMSJ9fX0="
     slot: 34
     display_name: 'Enderman Plushie'
     left_click_commands:
-      - '[player] petblocks skinbase64 %petblocks_pet_name_1% eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNmVhYjc1ZWFhNWM5ZjJjNDNhMGQyM2NmZGNlMzVmNGRmNjMyZTk4MTUwMDE4NTAzNzczODVmN2IyZjAzOWNlMSJ9fX0='
+      - '[player] petblocks skinbase64 %petblocks_pet_name_selected% eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNmVhYjc1ZWFhNWM5ZjJjNDNhMGQyM2NmZGNlMzVmNGRmNjMyZTk4MTUwMDE4NTAzNzczODVmN2IyZjAzOWNlMSJ9fX0='
       - '[refresh]'
   'Foxy Plushie 1':
     material: "basehead-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMzE0MDRhZDQzMzE3YTE1MmU4ZDMzMGE2Y2MzNTg1OTI2ODU0Mjc4NGFiNjA1N2E4YTZmNTI2NWU3ODBiNGIifX19"
     slot: 35
     display_name: 'Foxy Plushie 1'
     left_click_commands:
-      - '[player] petblocks skinbase64 %petblocks_pet_name_1% eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMzE0MDRhZDQzMzE3YTE1MmU4ZDMzMGE2Y2MzNTg1OTI2ODU0Mjc4NGFiNjA1N2E4YTZmNTI2NWU3ODBiNGIifX19'
+      - '[player] petblocks skinbase64 %petblocks_pet_name_selected% eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMzE0MDRhZDQzMzE3YTE1MmU4ZDMzMGE2Y2MzNTg1OTI2ODU0Mjc4NGFiNjA1N2E4YTZmNTI2NWU3ODBiNGIifX19'
       - '[refresh]'
   'Fredbear Plushie 1':
     material: "basehead-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMzM0MTgzMmU4ODkxZDAxNzhkNTlkMzY5ZTU1NGQyZmY4NGQ2NDFlNGE2NmRlZDdjMjA5NjNlMWE4ZWM4ZmVhOSJ9fX0="
     slot: 36
     display_name: 'Fredbear Plushie 1'
     left_click_commands:
-      - '[player] petblocks skinbase64 %petblocks_pet_name_1% eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMzM0MTgzMmU4ODkxZDAxNzhkNTlkMzY5ZTU1NGQyZmY4NGQ2NDFlNGE2NmRlZDdjMjA5NjNlMWE4ZWM4ZmVhOSJ9fX0='
+      - '[player] petblocks skinbase64 %petblocks_pet_name_selected% eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMzM0MTgzMmU4ODkxZDAxNzhkNTlkMzY5ZTU1NGQyZmY4NGQ2NDFlNGE2NmRlZDdjMjA5NjNlMWE4ZWM4ZmVhOSJ9fX0='
       - '[refresh]'
   'Fredbear Plushie 2':
     material: "basehead-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZGE0NjY5ZmZmMjJhMzhlYTA2MDk5YmZkNTFhZjQ4ODRkODllNDZhNmQ0ZTNhNzM2MzU1ZDRjOTgzMmU4MyJ9fX0="
     slot: 37
     display_name: 'Fredbear Plushie 2'
     left_click_commands:
-      - '[player] petblocks skinbase64 %petblocks_pet_name_1% eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZGE0NjY5ZmZmMjJhMzhlYTA2MDk5YmZkNTFhZjQ4ODRkODllNDZhNmQ0ZTNhNzM2MzU1ZDRjOTgzMmU4MyJ9fX0='
+      - '[player] petblocks skinbase64 %petblocks_pet_name_selected% eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZGE0NjY5ZmZmMjJhMzhlYTA2MDk5YmZkNTFhZjQ4ODRkODllNDZhNmQ0ZTNhNzM2MzU1ZDRjOTgzMmU4MyJ9fX0='
       - '[refresh]'
   'Funtime Chica Plushie':
     material: "basehead-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYjk5ZGJmNzNkMTgxMTEwODQxNzk2YTRiYzM2NDczOGZiMjAyZThiZjc2M2Y5OThiOWEzYzE4NjE3ZTI3In19fQ=="
     slot: 38
     display_name: 'Funtime Chica Plushie'
     left_click_commands:
-      - '[player] petblocks skinbase64 %petblocks_pet_name_1% eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYjk5ZGJmNzNkMTgxMTEwODQxNzk2YTRiYzM2NDczOGZiMjAyZThiZjc2M2Y5OThiOWEzYzE4NjE3ZTI3In19fQ=='
+      - '[player] petblocks skinbase64 %petblocks_pet_name_selected% eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYjk5ZGJmNzNkMTgxMTEwODQxNzk2YTRiYzM2NDczOGZiMjAyZThiZjc2M2Y5OThiOWEzYzE4NjE3ZTI3In19fQ=='
       - '[refresh]'
   'Funtime Foxy Plushie 1':
     material: "basehead-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNDZjNTIxYzc4OGFjMTYzYmE4YjFmNTg5N2MyMjRjYjU4ZjE0ZWJiMTc3YmRhMTg5NDcwYzJlNDc4NGVlYiJ9fX0="
     slot: 39
     display_name: 'Funtime Foxy Plushie 1'
     left_click_commands:
-      - '[player] petblocks skinbase64 %petblocks_pet_name_1% eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNDZjNTIxYzc4OGFjMTYzYmE4YjFmNTg5N2MyMjRjYjU4ZjE0ZWJiMTc3YmRhMTg5NDcwYzJlNDc4NGVlYiJ9fX0='
+      - '[player] petblocks skinbase64 %petblocks_pet_name_selected% eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNDZjNTIxYzc4OGFjMTYzYmE4YjFmNTg5N2MyMjRjYjU4ZjE0ZWJiMTc3YmRhMTg5NDcwYzJlNDc4NGVlYiJ9fX0='
       - '[refresh]'
   'Funtime Foxy Plushie 2':
     material: "basehead-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYzllMTY1NWM4NjlhYjVlODA3MDY3MmIyYTY2MmJkMTc3NWZlNGRjMjVhYmNlNWIzNGM4ODZkMWRlMTk1NjgifX19"
     slot: 40
     display_name: 'Funtime Foxy Plushie 2'
     left_click_commands:
-      - '[player] petblocks skinbase64 %petblocks_pet_name_1% eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYzllMTY1NWM4NjlhYjVlODA3MDY3MmIyYTY2MmJkMTc3NWZlNGRjMjVhYmNlNWIzNGM4ODZkMWRlMTk1NjgifX19'
+      - '[player] petblocks skinbase64 %petblocks_pet_name_selected% eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYzllMTY1NWM4NjlhYjVlODA3MDY3MmIyYTY2MmJkMTc3NWZlNGRjMjVhYmNlNWIzNGM4ODZkMWRlMTk1NjgifX19'
       - '[refresh]'
   'Funtime Fredbear Plushie':
     material: "basehead-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYmM2ZDllOWE0NmUwYjhmYjdiNjBkYzFjNWI1NTQwYWM4MmM3NTg2MzEwYTVlMDgwYTU4MjU5NzBmMGFlM2QifX19"
     slot: 41
     display_name: 'Funtime Fredbear Plushie'
     left_click_commands:
-      - '[player] petblocks skinbase64 %petblocks_pet_name_1% eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYmM2ZDllOWE0NmUwYjhmYjdiNjBkYzFjNWI1NTQwYWM4MmM3NTg2MzEwYTVlMDgwYTU4MjU5NzBmMGFlM2QifX19'
+      - '[player] petblocks skinbase64 %petblocks_pet_name_selected% eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYmM2ZDllOWE0NmUwYjhmYjdiNjBkYzFjNWI1NTQwYWM4MmM3NTg2MzEwYTVlMDgwYTU4MjU5NzBmMGFlM2QifX19'
       - '[refresh]'
   'Funtime Lolbit Plushie 1':
     material: "basehead-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMWQzZjFkNjI0YTc5NWU1ODNlNWZkNzE0ODY4MzgzMzYyY2QzZDQ5YTczYzliNDAyOTljNmYxMTNkMWViNDUifX19"
     slot: 42
     display_name: 'Funtime Lolbit Plushie 1'
     left_click_commands:
-      - '[player] petblocks skinbase64 %petblocks_pet_name_1% eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMWQzZjFkNjI0YTc5NWU1ODNlNWZkNzE0ODY4MzgzMzYyY2QzZDQ5YTczYzliNDAyOTljNmYxMTNkMWViNDUifX19'
+      - '[player] petblocks skinbase64 %petblocks_pet_name_selected% eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMWQzZjFkNjI0YTc5NWU1ODNlNWZkNzE0ODY4MzgzMzYyY2QzZDQ5YTczYzliNDAyOTljNmYxMTNkMWViNDUifX19'
       - '[refresh]'
   'Funtime Lolbit Plushie 2':
     material: "basehead-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZWI2NjVjYzUxOGJiZTA3ZDcwNWFkZDYzNmY1ZTMyYmNkMzg3YzU3MGQ0OTFkODhhZmNmMjY0MTYwNTY1MWYwIn19fQ=="
     slot: 43
     display_name: 'Funtime Lolbit Plushie 2'
     left_click_commands:
-      - '[player] petblocks skinbase64 %petblocks_pet_name_1% eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZWI2NjVjYzUxOGJiZTA3ZDcwNWFkZDYzNmY1ZTMyYmNkMzg3YzU3MGQ0OTFkODhhZmNmMjY0MTYwNTY1MWYwIn19fQ=='
+      - '[player] petblocks skinbase64 %petblocks_pet_name_selected% eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZWI2NjVjYzUxOGJiZTA3ZDcwNWFkZDYzNmY1ZTMyYmNkMzg3YzU3MGQ0OTFkODhhZmNmMjY0MTYwNTY1MWYwIn19fQ=='
       - '[refresh]'
   'Geisha Doll (blue)':
     material: "basehead-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYWJiMjJiMjFjZTJlNmEzZTRjYjZkZTVmNzMyYWU1ZDRiZGFiOWM0NTk5NzJlOWU1NzIxOTI1NjE5MjUzNCJ9fX0="
     slot: 44
     display_name: 'Geisha Doll (blue)'
     left_click_commands:
-      - '[player] petblocks skinbase64 %petblocks_pet_name_1% eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYWJiMjJiMjFjZTJlNmEzZTRjYjZkZTVmNzMyYWU1ZDRiZGFiOWM0NTk5NzJlOWU1NzIxOTI1NjE5MjUzNCJ9fX0='
-      - '[refresh]'      
+      - '[player] petblocks skinbase64 %petblocks_pet_name_selected% eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYWJiMjJiMjFjZTJlNmEzZTRjYjZkZTVmNzMyYWU1ZDRiZGFiOWM0NTk5NzJlOWU1NzIxOTI1NjE5MjUzNCJ9fX0='
+      - '[refresh]'
 # ==============================================================
 #
 # Random tips, tricks, and useful info below

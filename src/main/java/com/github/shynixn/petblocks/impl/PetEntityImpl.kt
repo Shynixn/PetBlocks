@@ -34,6 +34,7 @@ import org.bukkit.inventory.ItemStack
 import org.bukkit.plugin.Plugin
 import org.bukkit.util.Vector
 import java.util.Date
+import java.util.Random
 import java.util.logging.Level
 
 class PetEntityImpl(
@@ -56,6 +57,15 @@ class PetEntityImpl(
     private var positionUpdateCounter = 0
     private var velocity = Vector3d(0.0, 0.0, 0.0)
     private var lastClickTimeStamp = 0L
+    // Mover
+    private var lastRandomTimeStamp = 0L
+    private var randomMoveOne = 0
+    private var randomMoveTwo = 0
+    private var randomMoveThree = 0
+
+    companion object{
+        var random = Random()
+    }
 
     init {
         plugin.launch(plugin.minecraftDispatcher + object : CoroutineTimings() {}) {
@@ -168,11 +178,24 @@ class PetEntityImpl(
             pathFinderCube.z.toInt()
         )
 
+        val dateTime = Date().time
+
+        if(dateTime - lastRandomTimeStamp > 3000){
+            // For multiple pets.
+            lastRandomTimeStamp = dateTime
+            randomMoveOne = random.nextInt(3)
+            randomMoveTwo = random.nextInt(3)
+        }
+
         plugin.launch(physicObjectDispatcher) {
             val sourceLocation = physicsComponent.position.toLocation()
 
             for (i in 0 until 3) {
-                val targetLocation = location.toVector3d().addRelativeFront(-1.0 * i).toLocation()
+                val targetLocation = location.toVector3d()
+                    .addRelativeFront(-1.0 * i + randomMoveOne)
+                    .addRelativeLeft(randomMoveTwo.toDouble())
+                    .addRelativeRight(randomMoveThree.toDouble())
+                    .toLocation()
 
                 if (!attemptSolutions(snapshot, sourceLocation, targetLocation, speed)) {
                     if (!attemptSolutions(snapshot, sourceLocation.clone().add(0.0, 1.0, 0.0), targetLocation, speed)) {

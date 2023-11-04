@@ -99,7 +99,8 @@ events:
         type: "COMMAND"
         level: "PLAYER"
         run:
-          - "dm open petblocks_menu %petblocks_eventPlayer_name%"
+          - "/petblocks select %petblocks_pet_name%"
+          - "/dm open petblocks_menu %petblocks_eventPlayer_name%"
 
 #
 # Defines the action a pet should perform in an interval on its own.
@@ -158,9 +159,9 @@ loops:
     actions:
       - name: "Delay Action"
         type: "DELAY"
-        ticks: 5000
+        ticks: 60
   ride: # The ride loop is selected when you execute the ride command.
     actions:
       - name: "Delay Action"
         type: "DELAY"
-        ticks: 5000
+        ticks: 60

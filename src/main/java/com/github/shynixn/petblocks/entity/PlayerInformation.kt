@@ -11,6 +11,11 @@ class PlayerInformation : PlayerData {
     var pets: MutableList<PetMeta> = arrayListOf()
 
     /**
+     * Last selected pet.
+     */
+    var selectedPet: String? = null
+
+    /**
      * All uuids which where cached by this player.
      * Allows dispose watched pets.
      */

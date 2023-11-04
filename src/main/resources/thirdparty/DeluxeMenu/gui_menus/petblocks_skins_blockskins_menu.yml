@@ -57,16 +57,16 @@ open_requirement:
 items:
   'background':
     material: "BLACK_STAINED_GLASS_PANE"
-    slots: 
+    slots:
       - "0-53"
     display_name: " "
     lore:
       - ""
   'pettype':
     priority: 2
-    material: "placeholder-%petblocks_pet_itemType_1%"
-    slot: 4 
-    display_name: "%petblocks_pet_displayName_1%"     
+    material: "placeholder-%petblocks_pet_itemType_selected%"
+    slot: 4
+    display_name: "%petblocks_pet_displayName_selected%"
   'pethead':
     priority: 1
     view_requirement:
@@ -74,234 +74,234 @@ items:
             joinable:
                 type: string equals
                 input: "%petblocks_pet_itemType%"
-                output: "PLAYER_HEAD"    
-    material: "basehead-%petblocks_pet_itemHeadBase64_1%"
-    slot: 4 
-    display_name: "%petblocks_pet_displayName_1%"   
+                output: "PLAYER_HEAD"
+    material: "basehead-%petblocks_pet_itemHeadBase64_selected%"
+    slot: 4
+    display_name: "%petblocks_pet_displayName_selected%"
   'back':
     material: "BARRIER"
     slot: 49
     display_name: "&cBack"
-    lore: 
+    lore:
       - "&7Closes the current window."
     left_click_commands:
-      - '[openguimenu] petblocks_skins_overview_menu'  
-      - '[refresh]'    
+      - '[openguimenu] petblocks_skins_overview_menu'
+      - '[refresh]'
   'stone':
     material: "STONE"
     slot: 9
     left_click_commands:
-      - '[player] petblocks skinType %petblocks_pet_name_1% STONE'
+      - '[player] petblocks skinType %petblocks_pet_name_selected% STONE'
       - '[refresh]'
   'granite':
     material: "GRANITE"
     slot: 10
     left_click_commands:
-      - '[player] petblocks skinType %petblocks_pet_name_1% GRANITE'
+      - '[player] petblocks skinType %petblocks_pet_name_selected% GRANITE'
       - '[refresh]'
   'polished_granite':
     material: "POLISHED_GRANITE"
     slot: 11
     left_click_commands:
-      - '[player] petblocks skinType %petblocks_pet_name_1% POLISHED_GRANITE'
+      - '[player] petblocks skinType %petblocks_pet_name_selected% POLISHED_GRANITE'
       - '[refresh]'
   'diorite':
     material: "DIORITE"
     slot: 12
     left_click_commands:
-      - '[player] petblocks skinType %petblocks_pet_name_1% DIORITE'
+      - '[player] petblocks skinType %petblocks_pet_name_selected% DIORITE'
       - '[refresh]'
   'polished_diorite':
     material: "POLISHED_DIORITE"
     slot: 13
     left_click_commands:
-      - '[player] petblocks skinType %petblocks_pet_name_1% POLISHED_DIORITE'
+      - '[player] petblocks skinType %petblocks_pet_name_selected% POLISHED_DIORITE'
       - '[refresh]'
   'andesite':
     material: "ANDESITE"
     slot: 14
     left_click_commands:
-      - '[player] petblocks skinType %petblocks_pet_name_1% ANDESITE'
+      - '[player] petblocks skinType %petblocks_pet_name_selected% ANDESITE'
       - '[refresh]'
   'polished_andesite':
     material: "POLISHED_ANDESITE"
     slot: 15
     left_click_commands:
-      - '[player] petblocks skinType %petblocks_pet_name_1% POLISHED_ANDESITE'
+      - '[player] petblocks skinType %petblocks_pet_name_selected% POLISHED_ANDESITE'
       - '[refresh]'
   'deepslate':
     material: "DEEPSLATE"
     slot: 16
     left_click_commands:
-      - '[player] petblocks skinType %petblocks_pet_name_1% DEEPSLATE'
+      - '[player] petblocks skinType %petblocks_pet_name_selected% DEEPSLATE'
       - '[refresh]'
   'cobbled_deepslate':
     material: "COBBLED_DEEPSLATE"
     slot: 17
     left_click_commands:
-      - '[player] petblocks skinType %petblocks_pet_name_1% COBBLED_DEEPSLATE'
+      - '[player] petblocks skinType %petblocks_pet_name_selected% COBBLED_DEEPSLATE'
       - '[refresh]'
   'polished_deepslate':
     material: "POLISHED_DEEPSLATE"
     slot: 18
     left_click_commands:
-      - '[player] petblocks skinType %petblocks_pet_name_1% POLISHED_DEEPSLATE'
+      - '[player] petblocks skinType %petblocks_pet_name_selected% POLISHED_DEEPSLATE'
       - '[refresh]'
   'calcite':
     material: "CALCITE"
     slot: 19
     left_click_commands:
-      - '[player] petblocks skinType %petblocks_pet_name_1% CALCITE'
+      - '[player] petblocks skinType %petblocks_pet_name_selected% CALCITE'
       - '[refresh]'
   'tuff':
     material: "TUFF"
     slot: 20
     left_click_commands:
-      - '[player] petblocks skinType %petblocks_pet_name_1% TUFF'
+      - '[player] petblocks skinType %petblocks_pet_name_selected% TUFF'
       - '[refresh]'
   'dripstone_block':
     material: "DRIPSTONE_BLOCK"
     slot: 21
     left_click_commands:
-      - '[player] petblocks skinType %petblocks_pet_name_1% DRIPSTONE_BLOCK'
+      - '[player] petblocks skinType %petblocks_pet_name_selected% DRIPSTONE_BLOCK'
       - '[refresh]'
   'grass_block':
     material: "GRASS_BLOCK"
     slot: 22
     left_click_commands:
-      - '[player] petblocks skinType %petblocks_pet_name_1% GRASS_BLOCK'
+      - '[player] petblocks skinType %petblocks_pet_name_selected% GRASS_BLOCK'
       - '[refresh]'
   'dirt':
     material: "DIRT"
     slot: 23
     left_click_commands:
-      - '[player] petblocks skinType %petblocks_pet_name_1% DIRT'
+      - '[player] petblocks skinType %petblocks_pet_name_selected% DIRT'
       - '[refresh]'
   'coarse_dirt':
     material: "COARSE_DIRT"
     slot: 24
     left_click_commands:
-      - '[player] petblocks skinType %petblocks_pet_name_1% COARSE_DIRT'
+      - '[player] petblocks skinType %petblocks_pet_name_selected% COARSE_DIRT'
       - '[refresh]'
   'podzol':
     material: "PODZOL"
     slot: 25
     left_click_commands:
-      - '[player] petblocks skinType %petblocks_pet_name_1% PODZOL'
+      - '[player] petblocks skinType %petblocks_pet_name_selected% PODZOL'
       - '[refresh]'
   'rooted_dirt':
     material: "ROOTED_DIRT"
     slot: 26
     left_click_commands:
-      - '[player] petblocks skinType %petblocks_pet_name_1% ROOTED_DIRT'
+      - '[player] petblocks skinType %petblocks_pet_name_selected% ROOTED_DIRT'
       - '[refresh]'
   'mud':
     material: "MUD"
     slot: 27
     left_click_commands:
-      - '[player] petblocks skinType %petblocks_pet_name_1% MUD'
+      - '[player] petblocks skinType %petblocks_pet_name_selected% MUD'
       - '[refresh]'
   'crimson_nylium':
     material: "CRIMSON_NYLIUM"
     slot: 28
     left_click_commands:
-      - '[player] petblocks skinType %petblocks_pet_name_1% CRIMSON_NYLIUM'
+      - '[player] petblocks skinType %petblocks_pet_name_selected% CRIMSON_NYLIUM'
       - '[refresh]'
   'warped_nylium':
     material: "WARPED_NYLIUM"
     slot: 29
     left_click_commands:
-      - '[player] petblocks skinType %petblocks_pet_name_1% WARPED_NYLIUM'
+      - '[player] petblocks skinType %petblocks_pet_name_selected% WARPED_NYLIUM'
       - '[refresh]'
   'cobblestone':
     material: "COBBLESTONE"
     slot: 30
     left_click_commands:
-      - '[player] petblocks skinType %petblocks_pet_name_1% COBBLESTONE'
+      - '[player] petblocks skinType %petblocks_pet_name_selected% COBBLESTONE'
       - '[refresh]'
   'oak_planks':
     material: "OAK_PLANKS"
     slot: 31
     left_click_commands:
-      - '[player] petblocks skinType %petblocks_pet_name_1% OAK_PLANKS'
+      - '[player] petblocks skinType %petblocks_pet_name_selected% OAK_PLANKS'
       - '[refresh]'
   'spruce_planks':
     material: "SPRUCE_PLANKS"
     slot: 32
     left_click_commands:
-      - '[player] petblocks skinType %petblocks_pet_name_1% SPRUCE_PLANKS'
+      - '[player] petblocks skinType %petblocks_pet_name_selected% SPRUCE_PLANKS'
       - '[refresh]'
   'birch_planks':
     material: "BIRCH_PLANKS"
     slot: 33
     left_click_commands:
-      - '[player] petblocks skinType %petblocks_pet_name_1% BIRCH_PLANKS'
+      - '[player] petblocks skinType %petblocks_pet_name_selected% BIRCH_PLANKS'
       - '[refresh]'
   'jungle_planks':
     material: "JUNGLE_PLANKS"
     slot: 34
     left_click_commands:
-      - '[player] petblocks skinType %petblocks_pet_name_1% JUNGLE_PLANKS'
+      - '[player] petblocks skinType %petblocks_pet_name_selected% JUNGLE_PLANKS'
       - '[refresh]'
   'acacia_planks':
     material: "ACACIA_PLANKS"
     slot: 35
     left_click_commands:
-      - '[player] petblocks skinType %petblocks_pet_name_1% ACACIA_PLANKS'
+      - '[player] petblocks skinType %petblocks_pet_name_selected% ACACIA_PLANKS'
       - '[refresh]'
   'cherry_planks':
     material: "CHERRY_PLANKS"
     slot: 36
     left_click_commands:
-      - '[player] petblocks skinType %petblocks_pet_name_1% CHERRY_PLANKS'
+      - '[player] petblocks skinType %petblocks_pet_name_selected% CHERRY_PLANKS'
       - '[refresh]'
   'dark_oak_planks':
     material: "DARK_OAK_PLANKS"
     slot: 37
     left_click_commands:
-      - '[player] petblocks skinType %petblocks_pet_name_1% DARK_OAK_PLANKS'
+      - '[player] petblocks skinType %petblocks_pet_name_selected% DARK_OAK_PLANKS'
       - '[refresh]'
   'mangrove_planks':
     material: "MANGROVE_PLANKS"
     slot: 38
     left_click_commands:
-      - '[player] petblocks skinType %petblocks_pet_name_1% MANGROVE_PLANKS'
+      - '[player] petblocks skinType %petblocks_pet_name_selected% MANGROVE_PLANKS'
       - '[refresh]'
   'bamboo_planks':
     material: "BAMBOO_PLANKS"
     slot: 39
     left_click_commands:
-      - '[player] petblocks skinType %petblocks_pet_name_1% BAMBOO_PLANKS'
+      - '[player] petblocks skinType %petblocks_pet_name_selected% BAMBOO_PLANKS'
       - '[refresh]'
   'crimson_planks':
     material: "CRIMSON_PLANKS"
     slot: 40
     left_click_commands:
-      - '[player] petblocks skinType %petblocks_pet_name_1% CRIMSON_PLANKS'
+      - '[player] petblocks skinType %petblocks_pet_name_selected% CRIMSON_PLANKS'
       - '[refresh]'
   'warped_planks':
     material: "WARPED_PLANKS"
     slot: 41
     left_click_commands:
-      - '[player] petblocks skinType %petblocks_pet_name_1% WARPED_PLANKS'
+      - '[player] petblocks skinType %petblocks_pet_name_selected% WARPED_PLANKS'
       - '[refresh]'
   'bamboo_mosaic':
     material: "BAMBOO_MOSAIC"
     slot: 42
     left_click_commands:
-      - '[player] petblocks skinType %petblocks_pet_name_1% BAMBOO_MOSAIC'
+      - '[player] petblocks skinType %petblocks_pet_name_selected% BAMBOO_MOSAIC'
       - '[refresh]'
   'bedrock':
     material: "BEDROCK"
     slot: 43
     left_click_commands:
-      - '[player] petblocks skinType %petblocks_pet_name_1% BEDROCK'
+      - '[player] petblocks skinType %petblocks_pet_name_selected% BEDROCK'
       - '[refresh]'
   'sand':
     material: "SAND"
     slot: 44
     left_click_commands:
-      - '[player] petblocks skinType %petblocks_pet_name_1% SAND'
+      - '[player] petblocks skinType %petblocks_pet_name_selected% SAND'
       - '[refresh]'
 # ==============================================================
 #

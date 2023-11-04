@@ -57,16 +57,16 @@ open_requirement:
 items:
   'background':
     material: "BLACK_STAINED_GLASS_PANE"
-    slots: 
+    slots:
       - "0-53"
     display_name: " "
     lore:
       - ""
   'pettype':
     priority: 2
-    material: "placeholder-%petblocks_pet_itemType_1%"
-    slot: 4 
-    display_name: "%petblocks_pet_displayName_1%"     
+    material: "placeholder-%petblocks_pet_itemType_selected%"
+    slot: 4
+    display_name: "%petblocks_pet_displayName_selected%"
   'pethead':
     priority: 1
     view_requirement:
@@ -74,19 +74,19 @@ items:
             joinable:
                 type: string equals
                 input: "%petblocks_pet_itemType%"
-                output: "PLAYER_HEAD"    
-    material: "basehead-%petblocks_pet_itemHeadBase64_1%"
-    slot: 4 
-    display_name: "%petblocks_pet_displayName_1%"  
+                output: "PLAYER_HEAD"
+    material: "basehead-%petblocks_pet_itemHeadBase64_selected%"
+    slot: 4
+    display_name: "%petblocks_pet_displayName_selected%"
   'back':
     material: "BARRIER"
     slot: 49
     display_name: "&cBack"
-    lore: 
+    lore:
       - "&7Closes the current window."
     left_click_commands:
-      - '[openguimenu] petblocks_menu'  
-      - '[refresh]'        
+      - '[openguimenu] petblocks_menu'
+      - '[refresh]'
   'block-skins':
     material: "texture-c95d37993e594082678472bf9d86823413c250d4332a2c7d8c52de4976b362"
     slot: 20
@@ -94,7 +94,7 @@ items:
     lore:
       - "&7Use Minecraft blocks as skin."
     left_click_commands:
-      - '[openguimenu] petblocks_skins_blockskins_menu' 
+      - '[openguimenu] petblocks_skins_blockskins_menu'
   'pet-skins':
     material: "texture-fec052be76e39148a27f255ec537dff92018c79744202d60c51bc67d618ae36a"
     slot: 21
@@ -102,7 +102,7 @@ items:
     lore:
       - "&7Use pet heads as skin."
     left_click_commands:
-      - '[openguimenu] petblocks_skins_petskins_menu'       
+      - '[openguimenu] petblocks_skins_petskins_menu'
   'vehicle-skins':
     material: "texture-e8778c34fba29652cfac8d3f6fb35c49cbc2362b2b8f1378d83b30f463b181"
     slot: 22
@@ -110,7 +110,7 @@ items:
     lore:
       - "&7Use vehicle heads as skin."
     left_click_commands:
-      - '[openguimenu] petblocks_skins_vehicleskins_menu'       
+      - '[openguimenu] petblocks_skins_vehicleskins_menu'
   'puppet-skins':
     material: "texture-3835da2685f7ad3f1919a018976ad56826691e26758a3a55a1918f7f17ad938"
     slot: 23
@@ -118,7 +118,7 @@ items:
     lore:
       - "&7Use puppet heads as skin."
     left_click_commands:
-      - '[openguimenu] petblocks_skins_puppetskins_menu'                        
+      - '[openguimenu] petblocks_skins_puppetskins_menu'
   'hdb-skins':
     material: "texture-3bb612eb495ede2c5ca5178d2d1ecf1ca5a255d25dfc3c254bc47f6848791d8"
     slot: 24
@@ -126,7 +126,7 @@ items:
     lore:
       - "&7Open the plugin HeadDatabase for skins."
     left_click_commands:
-      - '[player] hdb' 
+      - '[player] hdb'
   'suggest-skins':
     material: "WRITABLE_BOOK"
     slot: 43
@@ -134,8 +134,8 @@ items:
     lore:
       - "&7Open minecraft-heads.com"
     left_click_commands:
-      - '[console] tellraw Shynixn {"text":"","extra":[{"text":"Go to https://minecraft-heads.com.","clickEvent":{"action":"open_url","value":"https://minecraft-heads.com"}}]}'   
-      - '[close]' 
+      - '[console] tellraw Shynixn {"text":"","extra":[{"text":"Go to https://minecraft-heads.com.","clickEvent":{"action":"open_url","value":"https://minecraft-heads.com"}}]}'
+      - '[close]'
 
 # ==============================================================
 #

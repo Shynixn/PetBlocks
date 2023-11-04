@@ -5,12 +5,14 @@ import com.github.shynixn.mccoroutine.bukkit.SuspendingTabCompleter
 import com.github.shynixn.mcutils.common.*
 import com.github.shynixn.mcutils.common.item.Item
 import com.github.shynixn.mcutils.common.repository.CacheRepository
+import com.github.shynixn.mcutils.database.api.CachePlayerRepository
 import com.github.shynixn.petblocks.PetBlocksLanguage
 import com.github.shynixn.petblocks.PetBlocksPlugin
 import com.github.shynixn.petblocks.contract.DependencyHeadDatabaseService
 import com.github.shynixn.petblocks.contract.Pet
 import com.github.shynixn.petblocks.contract.PetService
 import com.github.shynixn.petblocks.entity.PetTemplate
+import com.github.shynixn.petblocks.entity.PlayerInformation
 import com.github.shynixn.petblocks.enumeration.Permission
 import com.github.shynixn.petblocks.enumeration.PetVisibility
 import com.github.shynixn.petblocks.exception.PetBlocksException
@@ -31,6 +33,7 @@ class PetBlocksCommandExecutor @Inject constructor(
     private val templateRepository: CacheRepository<PetTemplate>,
     private val plugin: Plugin,
     private val configurationService: ConfigurationService,
+    private val petMetaRepository: CachePlayerRepository<PlayerInformation>,
 ) : SuspendingCommandExecutor, SuspendingTabCompleter {
     private val random = Random()
     private val regexPath = "pet.name.regex"
@@ -232,6 +235,14 @@ class PetBlocksCommandExecutor @Inject constructor(
             "/petblocks toggle <name> [player]"
         ) { sender, player, args ->
             togglePet(sender, player, args[1])
+        },
+        CommandDefinition(
+            "select",
+            2,
+            Permission.SELECT,
+            "/petblocks select <name> [player]"
+        ) { sender, player, args ->
+            selectPet(sender, player, args[1])
         }
     )
 
@@ -303,7 +314,7 @@ class PetBlocksCommandExecutor @Inject constructor(
         ) {
             val helpIndex = args[1].toInt()
             sender.sendMessage(ChatColor.GREEN.toString() + "---------PetBlocks---------")
-            for (commandDefinition in allCommands.stream().skip(commandsPerPage.toLong() * (helpIndex - 1))) {
+            for (commandDefinition in allCommands.drop(commandsPerPage * (helpIndex - 1)).take(commandsPerPage)) {
                 if (sender.hasPermission(commandDefinition.permission.text)) {
                     sender.sendMessage(ChatColor.GRAY.toString() + commandDefinition.helpMessage)
                 }
@@ -497,6 +508,15 @@ class PetBlocksCommandExecutor @Inject constructor(
         }
 
         sender.sendMessage(String.format(PetBlocksLanguage.petRideMessage, petName))
+    }
+
+    private suspend fun selectPet(sender: CommandSender, player: Player, petName: String) {
+        val pet = findPetFromPlayer(player, petName)
+            ?: throw PetBlocksException(String.format(PetBlocksLanguage.petNotFoundMessage, petName))
+
+        val playerInformation = petMetaRepository.getByPlayer(player) ?: return
+        playerInformation.selectedPet = pet.name
+        sender.sendMessage(String.format(PetBlocksLanguage.petSelectedMessage, petName))
     }
 
     private suspend fun setPetTemplate(sender: CommandSender, player: Player, petName: String, templateId: String) {

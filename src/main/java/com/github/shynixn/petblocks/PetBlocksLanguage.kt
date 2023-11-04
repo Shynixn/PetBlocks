@@ -4,8 +4,8 @@ object PetBlocksLanguage {
   /** [&9PetBlocks&f] &cThe speed value %1$1s cannot be parsed. **/
   var speedCannotBeParsed : String = "[&9PetBlocks&f] &cThe speed value %1$1s cannot be parsed."
 
-  /** [&9PetBlocks&f] The nbt of pet %1$1s has been changed. **/
-  var petSkinNbtChanged : String = "[&9PetBlocks&f] The nbt of pet %1$1s has been changed."
+  /** [&9PetBlocks&f] The skin of pet %1$1s has been changed. **/
+  var petSkinNbtChanged : String = "[&9PetBlocks&f] The skin of pet %1$1s has been changed."
 
   /** [&9PetBlocks&f] Pet with name %1$1s has been spawned. **/
   var petSpawnedMessage : String = "[&9PetBlocks&f] Pet with name %1$1s has been spawned."
@@ -33,6 +33,9 @@ object PetBlocksLanguage {
 
   /** [&9PetBlocks&f] &cLoop %1$1s not found. **/
   var petLoopNotFound : String = "[&9PetBlocks&f] &cLoop %1$1s not found."
+
+  /** [&9PetBlocks&f] Selected pet %1$1s. **/
+  var petSelectedMessage : String = "[&9PetBlocks&f] Selected pet %1$1s."
 
   /** [&9PetBlocks&f] Pet with name %1$1s has been removed. **/
   var petDespawnedMessage : String = "[&9PetBlocks&f] Pet with name %1$1s has been removed."
