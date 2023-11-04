@@ -349,7 +349,7 @@ class PetEntityImpl(
                 })
                 // Remove hat
                 packetService.sendPacketOutEntityMount(player, PacketOutEntityMount().also {
-                    it.entityId = player.entityId
+                    it.entityId = owner.entityId
                 })
             }
 
@@ -360,7 +360,7 @@ class PetEntityImpl(
                 })
                 // Set pet as passenger of player
                 packetService.sendPacketOutEntityMount(player, PacketOutEntityMount().also {
-                    it.entityId = player.entityId
+                    it.entityId = owner.entityId
                     it.passengers = listOf(entityComponent.entityId)
                 })
             }
@@ -368,12 +368,12 @@ class PetEntityImpl(
             if (ridingState == PetRidingState.GROUND) {
                 // Remove hat
                 packetService.sendPacketOutEntityMount(player, PacketOutEntityMount().also {
-                    it.entityId = player.entityId
+                    it.entityId = owner.entityId
                 })
                 // Set pet as passenger of player
                 packetService.sendPacketOutEntityMount(player, PacketOutEntityMount().also {
                     it.entityId = entityComponent.entityId
-                    it.passengers = listOf(player.entityId)
+                    it.passengers = listOf(owner.entityId)
                 })
             }
         }

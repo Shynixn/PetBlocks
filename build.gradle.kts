@@ -42,7 +42,7 @@ dependencies {
     // Custom dependencies
     implementation("com.github.shynixn.mcutils:common:1.0.39")
     implementation("com.github.shynixn.mcutils:packet:1.0.56")
-    implementation("com.github.shynixn.mcutils:database:1.0.13")
+    implementation("com.github.shynixn.mcutils:database:1.0.14")
     implementation("com.github.shynixn.mcutils:pathfinder:1.0.19")
 
     // Test
