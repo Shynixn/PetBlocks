@@ -21,9 +21,9 @@ class PetAction {
     var actionType: PetActionType = PetActionType.COMMAND
 
     /**
-     * Optional javascript condition.
+     * Optional condition.
      */
-    var condition: String? = null
+    var condition: PetActionCondition? = null
 
     /**
      * Flag to print all parameters.

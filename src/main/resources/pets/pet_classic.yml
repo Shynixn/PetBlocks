@@ -46,7 +46,10 @@ events:
   leftClick:
     actions: # You can add/remove actions as you want here. The JavaScript example below, highlights that pets are fully programmable if you need that.
       - name: "Calculate knockback vector when the owner punches the pet"
-        condition: "'%petblocks_eventPlayer_name%' == '%petblocks_owner_name%'"
+        condition: # Supported Condition Types are "STRING_EQUALS" and "JAVASCRIPT". Prefer using "STRING_EQUALS" as each JavaScript execution takes a delay of atleast 1 tick.
+          type: STRING_EQUALS
+          left: "%petblocks_eventPlayer_name%"
+          right: "%petblocks_owner_name%"
         type: "JAVASCRIPT"
         variable: "jsonKnockback" # If the variable name contains the word 'json', you can store entire json objects and retrieve all keys from the first depth level as placeholder.
         js: |
@@ -78,7 +81,10 @@ events:
           }
           JSON.stringify(calculateVector())
       - name: "Apply the knockback vector as velocity"
-        condition: "'%petblocks_eventPlayer_name%' == '%petblocks_owner_name%'"
+        condition:
+          type: STRING_EQUALS
+          left: "%petblocks_eventPlayer_name%"
+          right: "%petblocks_owner_name%"
         type: "COMMAND"
         level: "SERVER"
         run:
@@ -86,7 +92,10 @@ events:
   rightClick:
     actions:  # You can add/remove actions as you want here.
       - name: "Open the DeluxeMenu based pet inventory" #  You need to install the plugin DeluxeMenu for this to work and copy the premade PetBlocks inventory from the thirdparty folder.
-        condition: "'%petblocks_eventPlayer_name%' == '%petblocks_owner_name%'"
+        condition:
+          type: STRING_EQUALS
+          left: "%petblocks_eventPlayer_name%"
+          right: "%petblocks_owner_name%"
         debug: true
         type: "COMMAND"
         level: "PLAYER"
@@ -104,41 +113,48 @@ loops:
       - name: "Delay Action"
         type: "DELAY"
         ticks: 20
-      - name: "Look at owner with a 60% change."
-        condition: "Math.floor(Math.random() * 100) > 40"
-
+      - name: "Look at owner with a 90% change."
+        condition:
+          type: JAVASCRIPT
+          js: "Math.floor(Math.random() * 100) <= 90" # Calculate chance in JavaScript.
         type: "COMMAND"
         level: "SERVER"
         run:
           - "/petblocks lookatowner %petblocks_pet_name% %petblocks_owner_name%"
       - name: "Switch to moveToOwner if pet is too far away"
-        condition: "%petblocks_pet_distanceToOwner% > 10"
+        condition:
+          type: JAVASCRIPT
+          js: "%petblocks_pet_distanceToOwner% > 7"
         type: "COMMAND"
         level: "SERVER"
         run:
           - "/petblocks loop %petblocks_pet_name% moveToOwner %petblocks_owner_name%"
   moveToOwner:
     actions:
-      - name: "Delay Action"
-        type: "DELAY"
-        ticks: 20
       - name: "Recalculate path and start moving to owner."
         type: "COMMAND"
         level: "SERVER"
         run:
           - "/petblocks moveToOwner %petblocks_pet_name% 0.2 %petblocks_owner_name%"
       - name: "Switch to idle if the pet is beside the player"
-        condition: "%petblocks_pet_distanceToOwner% < 4"
+        condition:
+          type: JAVASCRIPT
+          js: "%petblocks_pet_distanceToOwner% < 4"
         type: "COMMAND"
         level: "SERVER"
         run:
           - "/petblocks loop %petblocks_pet_name% idle %petblocks_owner_name%"
       - name: "Teleport pet to player if the pet is too far away for the pathfinder."
-        condition: "%petblocks_pet_distanceToOwner% > 20"
+        condition:
+          type: JAVASCRIPT
+          js: "%petblocks_pet_distanceToOwner% > 20"
         type: "COMMAND"
         level: "SERVER"
         run:
           - "/petblocks teleport %petblocks_pet_name% %petblocks_owner_locationWorld% %petblocks_owner_locationX% %petblocks_owner_locationY% %petblocks_owner_locationZ% %petblocks_owner_locationYaw% %petblocks_owner_locationPitch% %petblocks_owner_name%"
+      - name: "Delay Action"
+        type: "DELAY"
+        ticks: 20
   hat: # The hat loop is selected when you execute the hat command.
     actions:
       - name: "Delay Action"

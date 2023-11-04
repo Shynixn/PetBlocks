@@ -9,6 +9,7 @@ import com.github.shynixn.petblocks.contract.ScriptService
 import com.github.shynixn.petblocks.entity.PetAction
 import com.github.shynixn.petblocks.entity.PetActionDefinition
 import com.github.shynixn.petblocks.enumeration.PetActionCommandLevelType
+import com.github.shynixn.petblocks.enumeration.PetActionConditionType
 import com.github.shynixn.petblocks.enumeration.PetActionType
 import com.google.inject.Inject
 import kotlinx.coroutines.delay
@@ -41,28 +42,6 @@ class PetActionExecutionServiceImpl @Inject constructor(
                 plugin.logger.log(Level.INFO, "> Start pet action ${action.name} ${action.actionType}.")
             }
 
-            if (action.condition != null) {
-                // If condition evaluates to false, do not execute action.
-                val placeHolderParsedCondition =
-                    placeHolderService.replacePlaceHolders(eventPlayer, action.condition!!, pet)
-
-                if (action.debug) {
-                    plugin.logger.log(Level.INFO, "Start evaluating condition '${placeHolderParsedCondition}'.")
-                }
-
-                val conditionResult = withContext(plugin.asyncDispatcher) {
-                    scriptService.evaluate(placeHolderParsedCondition)
-                } as Boolean
-
-                if (action.debug) {
-                    plugin.logger.log(Level.INFO, "End evaluating condition, result ${conditionResult}.")
-                }
-
-                if (!conditionResult) {
-                    continue
-                }
-            }
-
             if (action.permission != null && !eventPlayer.hasPermission(action.permission!!)) {
                 if (action.debug) {
                     plugin.logger.log(
@@ -72,6 +51,48 @@ class PetActionExecutionServiceImpl @Inject constructor(
                 }
 
                 continue
+            }
+
+            if (action.condition != null) {
+                val condition = action.condition!!
+
+                if (action.debug) {
+                    plugin.logger.log(Level.INFO, "Start evaluating condition '${condition.type}'.")
+                }
+
+                if (condition.type == PetActionConditionType.STRING_EQUALS) {
+                    val leftEscaped = placeHolderService.replacePlaceHolders(eventPlayer, condition.left!!, pet)
+                    val rightEscaped = placeHolderService.replacePlaceHolders(eventPlayer, condition.right!!, pet)
+                    val conditionResult = rightEscaped == leftEscaped
+
+                    if (action.debug) {
+                        plugin.logger.log(
+                            Level.INFO,
+                            "End evaluating condition, $leftEscaped == $rightEscaped -> ${conditionResult}."
+                        )
+                    }
+
+                    if (!conditionResult) {
+                        continue
+                    }
+                } else if (condition.type == PetActionConditionType.JAVASCRIPT) {
+                    val placeHolderParsedCondition =
+                        placeHolderService.replacePlaceHolders(eventPlayer, condition.js!!, pet)
+                    val conditionResult = withContext(plugin.asyncDispatcher) {
+                        scriptService.evaluate(placeHolderParsedCondition)
+                    } as Boolean
+
+                    if (action.debug) {
+                        plugin.logger.log(
+                            Level.INFO,
+                            "End evaluating condition, $placeHolderParsedCondition -> ${conditionResult}."
+                        )
+                    }
+
+                    if (!conditionResult) {
+                        continue
+                    }
+                }
             }
 
             if (action.actionType == PetActionType.COMMAND) {
