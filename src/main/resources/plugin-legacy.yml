@@ -1,0 +1,11 @@
+name: PetBlocks
+version: 9.0.0
+author: Shynixn
+main: com.github.shynixn.petblocks.PetBlocksPlugin
+softdepend: [ PlaceholderAPI, HeadDatabase]
+commands:
+  petblocks:
+    usage: Use /petblocks help to see more info about the plugin.
+    description: All commands for the PetBlocks plugin.
+    permission: petblocks.command
+    permission-message: You do not have permission.

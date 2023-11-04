@@ -34,6 +34,7 @@ import java.util.logging.Level
 class PetBlocksPlugin : JavaPlugin() {
     private val prefix: String = ChatColor.BLUE.toString() + "[PetBlocks] " + ChatColor.WHITE
     private var injector: Injector? = null
+    private var immidiateDisable = false
 
     /**
      * Called when this plugin is enabled.
@@ -59,9 +60,11 @@ class PetBlocksPlugin : JavaPlugin() {
 
         if (!Version.serverVersion.isCompatible(*versions.toTypedArray())
         ) {
+            immidiateDisable = true
             Bukkit.getServer().consoleSender.sendMessage(org.bukkit.ChatColor.RED.toString() + "================================================")
             Bukkit.getServer().consoleSender.sendMessage(org.bukkit.ChatColor.RED.toString() + "PetBlocks does not support your server version")
             Bukkit.getServer().consoleSender.sendMessage(org.bukkit.ChatColor.RED.toString() + "Install v" + versions[0].id + " - v" + versions[versions.size - 1].id)
+            Bukkit.getServer().consoleSender.sendMessage(org.bukkit.ChatColor.RED.toString() + "Need support for a particular version? Go to https://www.patreon.com/Shynixn")
             Bukkit.getServer().consoleSender.sendMessage(org.bukkit.ChatColor.RED.toString() + "Plugin gets now disabled!")
             Bukkit.getServer().consoleSender.sendMessage(org.bukkit.ChatColor.RED.toString() + "================================================")
             Bukkit.getPluginManager().disablePlugin(this)
@@ -116,7 +119,7 @@ class PetBlocksPlugin : JavaPlugin() {
             val playerDataRepository = resolve(PlayerDataRepository::class.java)
             playerDataRepository.createIfNotExist()
             val templateRepository = resolve(Repository::class.java)
-            val templates = templateRepository.getAll()
+            templateRepository.getAll()
 
             // Register Dependencies
             Bukkit.getServicesManager()
@@ -137,6 +140,10 @@ class PetBlocksPlugin : JavaPlugin() {
      * Called when this plugin is disabled.
      */
     override fun onDisable() {
+        if (immidiateDisable) {
+            return
+        }
+
         val petService = resolve(PetService::class.java)
         petService.close()
 
@@ -164,7 +171,7 @@ class PetBlocksPlugin : JavaPlugin() {
         }
     }
 
-    private fun copyResourceToTarget(resourcePath : String){
+    private fun copyResourceToTarget(resourcePath: String) {
         val fullTargetFile = File(dataFolder, resourcePath)
         Files.createDirectories(fullTargetFile.parentFile.toPath())
         getResource(resourcePath).use { resourceStream ->

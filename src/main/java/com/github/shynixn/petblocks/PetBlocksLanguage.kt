@@ -40,6 +40,9 @@ object PetBlocksLanguage {
   /** [&9PetBlocks&f] Pet with name %1$1s has been removed. **/
   var petDespawnedMessage : String = "[&9PetBlocks&f] Pet with name %1$1s has been removed."
 
+  /** [&9PetBlocks&f] PetBlocks-Premium is required to spawn multiple pets per player. **/
+  var premiumMultiplePets : String = "[&9PetBlocks&f] PetBlocks-Premium is required to spawn multiple pets per player."
+
   /** [&9PetBlocks&f] &cPlayer %1$1s not found. **/
   var playerNotFoundMessage : String = "[&9PetBlocks&f] &cPlayer %1$1s not found."
 

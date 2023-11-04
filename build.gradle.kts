@@ -8,7 +8,7 @@ plugins {
 }
 
 group = "com.github.shynixn"
-version = "1.0"
+version = "9.0.0"
 
 repositories {
     mavenCentral()
@@ -75,6 +75,7 @@ tasks.withType<KotlinCompile> {
     kotlinOptions.jvmTarget = "1.8"
 }
 
+
 /**
  * Include all but exclude debugging classes.
  */
@@ -86,13 +87,81 @@ tasks.withType<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar> {
 }
 
 /**
+ * Create all plugin jar files.
+ */
+tasks.register("pluginJars") {
+    dependsOn("pluginJarLatest")
+    dependsOn("pluginJarLegacy")
+    dependsOn("pluginJarPremium")
+}
+
+/**
+ * Create legacy plugin jar file.
+ */
+tasks.register("relocateLegacyPluginJar", com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar::class.java) {
+    dependsOn("shadowJar")
+    from(zipTree(File("./build/libs/" + (tasks.getByName("shadowJar") as Jar).archiveName)))
+    archiveName = "${baseName}-${version}-legacy-relocate.${extension}"
+    relocate("com.github.shynixn.mcutils", "com.github.shynixn.petblocks.lib.com.github.shynixn.mcutils")
+    relocate("kotlin", "com.github.shynixn.petblocks.lib.kotlin")
+    relocate("org.intellij", "com.github.shynixn.petblocks.lib.org.intelli")
+    relocate("javax", "com.github.shynixn.petblocks.lib.javax")
+    relocate("kotlinx", "com.github.shynixn.petblocks.lib.kotlinx")
+    relocate("com.google", "com.github.shynixn.petblocks.lib.com.google")
+    relocate("com.fasterxml", "com.github.shynixn.petblocks.lib.com.fasterxml")
+    relocate("com.github.shynixn.mccoroutine", "com.github.shynixn.petblocks.lib.com.github.shynixn.mccoroutine")
+    exclude("plugin.yml")
+    rename("plugin-legacy.yml", "plugin.yml")
+}
+
+/**
+ * Create legacy plugin jar file.
+ */
+tasks.register("pluginJarLegacy", com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar::class.java) {
+    dependsOn("relocateLegacyPluginJar")
+    from(zipTree(File("./build/libs/" + (tasks.getByName("relocateLegacyPluginJar") as Jar).archiveName)))
+    archiveName = "${baseName}-${version}-legacy.${extension}"
+    // destinationDir = File("C:\\temp\\plugins")
+    exclude("com/github/shynixn/mcutils/**")
+    exclude("org/**")
+    exclude("kotlin/**")
+    exclude("kotlinx/**")
+    exclude("javax/**")
+    exclude("com/google/**")
+    exclude("com/github/shynixn/mccoroutine/**")
+    exclude("com/fasterxml/**")
+    exclude("plugin-legacy.yml")
+}
+
+/**
+ * Create legacy plugin jar file.
+ */
+tasks.register("relocatePluginJar", com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar::class.java) {
+    dependsOn("shadowJar")
+    from(zipTree(File("./build/libs/" + (tasks.getByName("shadowJar") as Jar).archiveName)))
+    archiveName = "${baseName}-${version}-relocate.${extension}"
+    relocate("com.github.shynixn.mcutils", "com.github.shynixn.petblocks.lib.com.github.shynixn.mcutils")
+}
+
+/**
  * Create latest plugin jar file.
  */
 tasks.register("pluginJarLatest", com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar::class.java) {
-    dependsOn("shadowJar")
-    from(zipTree(File("./build/libs/" + (tasks.getByName("shadowJar") as Jar).archiveName)))
+    dependsOn("relocatePluginJar")
+    from(zipTree(File("./build/libs/" + (tasks.getByName("relocatePluginJar") as Jar).archiveName)))
     archiveName = "${baseName}-${version}-latest.${extension}"
-    destinationDir = File("C:\\temp\\plugins")
+    // destinationDir = File("C:\\temp\\plugins")
+
+    exclude("com/github/shynixn/petblocks/lib/com/github/shynixn/mcutils/packet/nms/v1_8_R3/**")
+    exclude("com/github/shynixn/petblocks/lib/com/github/shynixn/mcutils/packet/nms/v1_9_R2/**")
+    exclude("com/github/shynixn/petblocks/lib/com/github/shynixn/mcutils/packet/nms/v1_18_R1/**")
+    exclude("com/github/shynixn/petblocks/lib/com/github/shynixn/mcutils/packet/nms/v1_18_R2/**")
+    exclude("com/github/shynixn/petblocks/lib/com/github/shynixn/mcutils/packet/nms/v1_19_R1/**")
+    exclude("com/github/shynixn/petblocks/lib/com/github/shynixn/mcutils/packet/nms/v1_19_R2/**")
+    exclude("com/github/shynixn/petblocks/lib/com/github/shynixn/mcutils/packet/nms/v1_19_R3/**")
+    exclude("com/github/shynixn/petblocks/lib/com/github/shynixn/mcutils/packet/nms/v1_20_R1/**")
+    exclude("com/github/shynixn/mcutils/**")
+    exclude("com/github/shynixn/mccoroutine/**")
     exclude("kotlin/**")
     exclude("org/**")
     exclude("kotlinx/**")
@@ -102,6 +171,25 @@ tasks.register("pluginJarLatest", com.github.jengelman.gradle.plugins.shadow.tas
     exclude("plugin-legacy.yml")
 }
 
+/**
+ * Create premium plugin jar file.
+ */
+tasks.register("pluginJarPremium", com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar::class.java) {
+    dependsOn("relocatePluginJar")
+    from(zipTree(File("./build/libs/" + (tasks.getByName("relocatePluginJar") as Jar).archiveName)))
+    archiveName = "${baseName}-${version}-premium.${extension}"
+    // destinationDir = File("C:\\temp\\plugins")
+
+    exclude("com/github/shynixn/mcutils/**")
+    exclude("com/github/shynixn/mccoroutine/**")
+    exclude("kotlin/**")
+    exclude("org/**")
+    exclude("kotlinx/**")
+    exclude("javax/**")
+    exclude("com/google/**")
+    exclude("com/fasterxml/**")
+    exclude("plugin-legacy.yml")
+}
 
 tasks.register("languageFile") {
     val kotlinSrcFolder = project.sourceSets.toList()[0].allJava.srcDirs.first { e -> e.endsWith("java") }
