@@ -1,11 +1,10 @@
 package com.github.shynixn.petblocks.impl.service
 
+import com.fasterxml.jackson.databind.ObjectMapper
 import com.github.shynixn.mcutils.common.translateChatColors
 import com.github.shynixn.petblocks.contract.Pet
 import com.github.shynixn.petblocks.contract.PlaceHolderService
 import com.github.shynixn.petblocks.enumeration.PlaceHolder
-import com.google.gson.Gson
-import com.google.gson.JsonParser
 import org.bukkit.entity.Player
 import java.util.*
 
@@ -13,7 +12,7 @@ class PlaceHolderServiceImpl : PlaceHolderService {
     private val simplePlaceHolderFunctions = HashMap<PlaceHolder, ((Player) -> String)>()
     private val petPlaceHolderFunctions = HashMap<PlaceHolder, ((Pet) -> String)>()
     private val placeHolders = HashMap<String, PlaceHolder>()
-    private val gson = Gson()
+    private val mapper: ObjectMapper = ObjectMapper()
 
     init {
         for (placeHolder in PlaceHolder.values()) {
@@ -140,9 +139,9 @@ class PlaceHolderServiceImpl : PlaceHolderService {
             for (key in pet.javaScriptMemory.keys) {
                 val value = pet.javaScriptMemory[key]!!
                 if(key.contains("json")){
-                   val parsedJsonObject = JsonParser().parse(value).getAsJsonObject()
-                    for(innerKey in parsedJsonObject.keySet()){
-                        output = output.replace("%petblocks_js_${key}_${innerKey}%", parsedJsonObject.get(innerKey).asString)
+                   val parsedJsonObject = mapper.readValue(value, Map::class.java)
+                    for(innerKey in parsedJsonObject.keys){
+                        output = output.replace("%petblocks_js_${key}_${innerKey}%", parsedJsonObject[innerKey].toString())
                     }
                 }else{
                     output = output.replace("%petblocks_js_${key}%", value)

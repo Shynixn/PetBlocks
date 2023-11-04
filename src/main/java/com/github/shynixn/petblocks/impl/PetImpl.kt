@@ -124,12 +124,17 @@ class PetImpl(
                 throw PetBlocksPetDisposedException()
             }
 
-            petMeta.lastStoredLocation = value.toVector3d()
+            val previousWorld = petMeta.lastStoredLocation.world
+           petMeta.lastStoredLocation = value.toVector3d()
 
             if (petEntity != null) {
-                if (value.world?.name != petMeta.lastStoredLocation.world) {
-                    remove()
-                    spawn()
+                if (value.world?.name != previousWorld) {
+                    plugin.launch {
+                        delay(750)
+                        remove()
+                        delay(250)
+                        call()
+                    }
                 } else {
                     petEntity?.teleportInWorld(value.toVector3d())
                 }
