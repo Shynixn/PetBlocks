@@ -195,11 +195,11 @@ items:
     left_click_commands:
       - '[player] petblocks skinType %petblocks_pet_name_selected% ROOTED_DIRT'
       - '[refresh]'
-  'mud':
-    material: "MUD"
+  'gold_block':
+    material: "GOLD_BLOCK"
     slot: 27
     left_click_commands:
-      - '[player] petblocks skinType %petblocks_pet_name_selected% MUD'
+      - '[player] petblocks skinType %petblocks_pet_name_selected% GOLD_BLOCK'
       - '[refresh]'
   'crimson_nylium':
     material: "CRIMSON_NYLIUM"
@@ -249,11 +249,11 @@ items:
     left_click_commands:
       - '[player] petblocks skinType %petblocks_pet_name_selected% ACACIA_PLANKS'
       - '[refresh]'
-  'cherry_planks':
-    material: "CHERRY_PLANKS"
+  'diamond_block':
+    material: "DIAMOND_BLOCK"
     slot: 36
     left_click_commands:
-      - '[player] petblocks skinType %petblocks_pet_name_selected% CHERRY_PLANKS'
+      - '[player] petblocks skinType %petblocks_pet_name_selected% DIAMOND_BLOCK'
       - '[refresh]'
   'dark_oak_planks':
     material: "DARK_OAK_PLANKS"
@@ -261,17 +261,17 @@ items:
     left_click_commands:
       - '[player] petblocks skinType %petblocks_pet_name_selected% DARK_OAK_PLANKS'
       - '[refresh]'
-  'mangrove_planks':
-    material: "MANGROVE_PLANKS"
+  'iron_block':
+    material: "IRON_BLOCK"
     slot: 38
     left_click_commands:
-      - '[player] petblocks skinType %petblocks_pet_name_selected% MANGROVE_PLANKS'
+      - '[player] petblocks skinType %petblocks_pet_name_selected% IRON_BLOCK'
       - '[refresh]'
-  'bamboo_planks':
-    material: "BAMBOO_PLANKS"
+  'red_mushroom_block':
+    material: "RED_MUSHROOM_BLOCK"
     slot: 39
     left_click_commands:
-      - '[player] petblocks skinType %petblocks_pet_name_selected% BAMBOO_PLANKS'
+      - '[player] petblocks skinType %petblocks_pet_name_selected% RED_MUSHROOM_BLOCK'
       - '[refresh]'
   'crimson_planks':
     material: "CRIMSON_PLANKS"
@@ -285,11 +285,11 @@ items:
     left_click_commands:
       - '[player] petblocks skinType %petblocks_pet_name_selected% WARPED_PLANKS'
       - '[refresh]'
-  'bamboo_mosaic':
-    material: "BAMBOO_MOSAIC"
+  'beacon':
+    material: "BEACON"
     slot: 42
     left_click_commands:
-      - '[player] petblocks skinType %petblocks_pet_name_selected% BAMBOO_MOSAIC'
+      - '[player] petblocks skinType %petblocks_pet_name_selected% BEACON'
       - '[refresh]'
   'bedrock':
     material: "BEDROCK"
