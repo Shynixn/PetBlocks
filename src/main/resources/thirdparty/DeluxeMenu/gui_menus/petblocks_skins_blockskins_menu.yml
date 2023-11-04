@@ -57,7 +57,7 @@ open_requirement:
 items:
   'background':
     material: "BLACK_STAINED_GLASS_PANE"
-    slots:
+    slots: 
       - "0-53"
     display_name: " "
     lore:
@@ -65,28 +65,28 @@ items:
   'pettype':
     priority: 2
     material: "placeholder-%petblocks_pet_itemType_1%"
-    slot: 4
-    display_name: "%petblocks_pet_displayName_1%"
+    slot: 4 
+    display_name: "%petblocks_pet_displayName_1%"     
   'pethead':
     priority: 1
     view_requirement:
-      requirements:
-        joinable:
-          type: string equals
-          input: "%petblocks_pet_itemType%"
-          output: "PLAYER_HEAD"
+        requirements:
+            joinable:
+                type: string equals
+                input: "%petblocks_pet_itemType%"
+                output: "PLAYER_HEAD"    
     material: "basehead-%petblocks_pet_itemHeadBase64_1%"
-    slot: 4
-    display_name: "%petblocks_pet_displayName_1%"
+    slot: 4 
+    display_name: "%petblocks_pet_displayName_1%"   
   'back':
     material: "BARRIER"
     slot: 49
     display_name: "&cBack"
-    lore:
+    lore: 
       - "&7Closes the current window."
     left_click_commands:
-      - '[openguimenu] petblocks_skins_overview_menu'
-      - '[refresh]'
+      - '[openguimenu] petblocks_skins_overview_menu'  
+      - '[refresh]'    
   'stone':
     material: "STONE"
     slot: 9

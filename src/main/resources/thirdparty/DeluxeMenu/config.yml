@@ -1,0 +1,22 @@
+# DeluxeMenus 1.14.0-DEV-167 main configuration file
+#
+# A full wiki on how to use this plugin can be found at:
+# https://wiki.helpch.at/clips-plugins/deluxemenus
+
+debug: HIGHEST
+check_updates: true
+gui_menus:
+  petblocks_menu:
+    file: petblocks_menu.yml
+  petblocks_skins_overview_menu:
+    file: petblocks_skins_overview_menu.yml
+  petblocks_skins_blockskins_menu:
+    file: petblocks_skins_blockskins_menu.yml
+  petblocks_skins_petskins_menu:
+    file: petblocks_skins_petskins_menu.yml
+  basics_menu:
+    file: basics_menu.yml
+  advanced_menu:
+    file: advanced_menu.yml
+  requirements_menu:
+    file: requirements_menu.yml
