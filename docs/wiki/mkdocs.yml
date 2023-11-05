@@ -1,0 +1,30 @@
+site_name: PetBlocks
+repo_url: https://github.com/Shynixn/PetBlocks
+site_author: Shynixn
+nav:
+  - 'Getting Started':
+      - Introduction: README.md
+      - Permission: permission.md
+      - 'FAQ': faq.md
+theme:
+  name: material
+  features:
+    - navigation.instant
+    - navigation.tabs
+    - content.tabs.link
+    - content.code.copy
+    - navigation.footer
+extra:
+  generator: false
+markdown_extensions:
+  - pymdownx.highlight
+  - pymdownx.superfences
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences
+  - attr_list
+  - pymdownx.emoji:
+      emoji_index: !!python/name:materialx.emoji.twemoji
+      emoji_generator: !!python/name:materialx.emoji.to_svg
+  - pymdownx.tabbed:
+      alternate_style: true
