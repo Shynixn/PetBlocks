@@ -1,0 +1,1234 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+        <meta name="author" content="Shynixn">
+      
+      
+      
+        <link rel="prev" href="../permission/">
+      
+      
+        <link rel="next" href="../receivingpets/">
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.5.3, mkdocs-material-9.4.7">
+    
+    
+      
+        <title>Commands - PetBlocks</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.4b4a2bd9.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    <body dir="ltr">
+  
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&"object"==typeof palette.color)for(var key of Object.keys(palette.color))document.body.setAttribute("data-md-color-"+key,palette.color[key])</script>
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#commands" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="PetBlocks" class="md-header__button md-logo" aria-label="PetBlocks" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            PetBlocks
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Commands
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/Shynixn/PetBlocks" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.4.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2023 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href=".." class="md-tabs__link">
+          
+  
+  PetBlocks Wiki
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="PetBlocks" class="md-nav__button md-logo" aria-label="PetBlocks" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
+
+    </a>
+    PetBlocks
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/Shynixn/PetBlocks" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.4.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2023 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+    
+  
+  
+    
+    
+    
+    
+    
+      
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_1" id="__nav_1_label" tabindex="">
+            
+  
+  <span class="md-ellipsis">
+    PetBlocks Wiki
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_1_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_1">
+            <span class="md-nav__icon md-icon"></span>
+            PetBlocks Wiki
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Introduction
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../permission/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Permission
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    Commands
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  <span class="md-ellipsis">
+    Commands
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#command-petblocks" class="md-nav__link">
+    Command /petblocks
+  </a>
+  
+    <nav class="md-nav" aria-label="Command /petblocks">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#petblocks-create" class="md-nav__link">
+    /petblocks create
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#petblocks-delete" class="md-nav__link">
+    /petblocks delete
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#petblocks-list" class="md-nav__link">
+    /petblocks list
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#petblocks-call" class="md-nav__link">
+    /petblocks call
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#petblocks-lookat" class="md-nav__link">
+    /petblocks lookat
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#petblocks-lookatowner" class="md-nav__link">
+    /petblocks lookatowner
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#petblocks-moveto" class="md-nav__link">
+    /petblocks moveto
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#petblocks-movetoowner" class="md-nav__link">
+    /petblocks movetoowner
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#petblocks-hat" class="md-nav__link">
+    /petblocks hat
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#petblocks-ride" class="md-nav__link">
+    /petblocks ride
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#petblocks-unmount" class="md-nav__link">
+    /petblocks unmount
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#petblocks-teleport" class="md-nav__link">
+    /petblocks teleport
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#petblocks-velocity" class="md-nav__link">
+    /petblocks velocity
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#petblocks-skintype" class="md-nav__link">
+    /petblocks skintype
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#petblocks-skinnbt" class="md-nav__link">
+    /petblocks skinnbt
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#petblocks-skinbase64" class="md-nav__link">
+    /petblocks skinbase64
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#petblocks-skinheaddatabase" class="md-nav__link">
+    /petblocks skinheaddatabase
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#petblocks-rename" class="md-nav__link">
+    /petblocks rename
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#petblocks-visibility" class="md-nav__link">
+    /petblocks visibility
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#petblocks-loop" class="md-nav__link">
+    /petblocks loop
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#petblocks-template" class="md-nav__link">
+    /petblocks template
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#petblocks-spawn" class="md-nav__link">
+    /petblocks spawn
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#petblocks-despawn" class="md-nav__link">
+    /petblocks despawn
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#petblocks-toggle" class="md-nav__link">
+    /petblocks toggle
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#petblocks-select" class="md-nav__link">
+    /petblocks select
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../receivingpets/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Giving Pets to Players
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../template/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Templates
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../gui/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    GUI
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../placeholders/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    PlaceHolders
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../faq/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    FAQ
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#command-petblocks" class="md-nav__link">
+    Command /petblocks
+  </a>
+  
+    <nav class="md-nav" aria-label="Command /petblocks">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#petblocks-create" class="md-nav__link">
+    /petblocks create
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#petblocks-delete" class="md-nav__link">
+    /petblocks delete
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#petblocks-list" class="md-nav__link">
+    /petblocks list
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#petblocks-call" class="md-nav__link">
+    /petblocks call
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#petblocks-lookat" class="md-nav__link">
+    /petblocks lookat
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#petblocks-lookatowner" class="md-nav__link">
+    /petblocks lookatowner
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#petblocks-moveto" class="md-nav__link">
+    /petblocks moveto
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#petblocks-movetoowner" class="md-nav__link">
+    /petblocks movetoowner
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#petblocks-hat" class="md-nav__link">
+    /petblocks hat
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#petblocks-ride" class="md-nav__link">
+    /petblocks ride
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#petblocks-unmount" class="md-nav__link">
+    /petblocks unmount
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#petblocks-teleport" class="md-nav__link">
+    /petblocks teleport
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#petblocks-velocity" class="md-nav__link">
+    /petblocks velocity
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#petblocks-skintype" class="md-nav__link">
+    /petblocks skintype
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#petblocks-skinnbt" class="md-nav__link">
+    /petblocks skinnbt
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#petblocks-skinbase64" class="md-nav__link">
+    /petblocks skinbase64
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#petblocks-skinheaddatabase" class="md-nav__link">
+    /petblocks skinheaddatabase
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#petblocks-rename" class="md-nav__link">
+    /petblocks rename
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#petblocks-visibility" class="md-nav__link">
+    /petblocks visibility
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#petblocks-loop" class="md-nav__link">
+    /petblocks loop
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#petblocks-template" class="md-nav__link">
+    /petblocks template
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#petblocks-spawn" class="md-nav__link">
+    /petblocks spawn
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#petblocks-despawn" class="md-nav__link">
+    /petblocks despawn
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#petblocks-toggle" class="md-nav__link">
+    /petblocks toggle
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#petblocks-select" class="md-nav__link">
+    /petblocks select
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+  
+  
+
+
+<h1 id="commands">Commands</h1>
+<p>PetBlocks is a command line based pet plugin. This means, you can fully control the pets using commands, which may be executed by <strong>players</strong>, <strong>console</strong>,  <strong>other plugins</strong>, <strong>command blocks</strong>.</p>
+<p>e.g. Letting the pet named <code>pet</code> of player <code>Steve98</code> move to a certain location from the console. (The pet has to be in a nearby location)</p>
+<div class="highlight"><pre><span></span><code>/petblocks moveto pet &lt;x&gt; &lt;y&gt; &lt;z&gt; &lt;speed&gt; [player]
+</code></pre></div>
+<div class="highlight"><pre><span></span><code>petblocks moveto pet 250 5 300 0.2 Steve98
+</code></pre></div>
+<div class="admonition note">
+<p class="admonition-title">Removing the pet under certain conditions</p>
+<p>You can always take a way the <code>petblocks.pet.spawn</code> permission to remove the pet from players, if they enter certain areas (e.g. joining minigames, entering regions, etc.)</p>
+</div>
+<h2 id="command-petblocks">Command /petblocks</h2>
+<p>PetBlocks does only have 1 command, which is restricted using permissions.</p>
+<p><strong>Required Permission:</strong>
+<code>petblocks.command</code></p>
+<h3 id="petblocks-create">/petblocks create</h3>
+<div class="highlight"><pre><span></span><code>/petblocks create &lt;name&gt; &lt;template&gt; [player]
+</code></pre></div>
+<p>Creates a new pet for the player with the given pet template.</p>
+<ul>
+<li>Name: Identifier of a pet</li>
+<li>Template: Identifier of a template </li>
+<li>Player: Optional player_name/player_UUID parameter targeting a player from the console or command block.</li>
+</ul>
+<h3 id="petblocks-delete">/petblocks delete</h3>
+<div class="highlight"><pre><span></span><code>/petblocks delete &lt;name&gt; [player]
+</code></pre></div>
+<p>Deletes the pet for the player.</p>
+<ul>
+<li>Name: Identifier of a pet</li>
+<li>Player: Optional player_name/player_UUID parameter targeting a player from the console or command block.</li>
+</ul>
+<h3 id="petblocks-list">/petblocks list</h3>
+<div class="highlight"><pre><span></span><code>/petblocks list [player]
+</code></pre></div>
+<p>Lists all pets of a player.</p>
+<ul>
+<li>Player: Optional player_name/player_UUID parameter targeting a player from the console or command block.</li>
+</ul>
+<h3 id="petblocks-call">/petblocks call</h3>
+<div class="highlight"><pre><span></span><code>/petblocks call &lt;name&gt; [player]
+</code></pre></div>
+<p>Spawns and teleports the pet in front of the owner.</p>
+<ul>
+<li>Name: Identifier of a pet</li>
+<li>Player: Optional player_name/player_UUID parameter targeting a player from the console or command block.</li>
+</ul>
+<h3 id="petblocks-lookat">/petblocks lookat</h3>
+<div class="highlight"><pre><span></span><code>/petblocks lookat &lt;name&gt; &lt;x&gt; &lt;y&gt; &lt;z&gt; [player]
+</code></pre></div>
+<p>Makes the pet look at the given location.</p>
+<ul>
+<li>Name: Identifier of a pet</li>
+<li>X: X Coordinate</li>
+<li>Y: Y Coordinate</li>
+<li>Z: Z Coordinate</li>
+<li>Player: Optional player_name/player_UUID parameter targeting a player from the console or command block.</li>
+</ul>
+<h3 id="petblocks-lookatowner">/petblocks lookatowner</h3>
+<div class="highlight"><pre><span></span><code>/petblocks lookatowner [player]
+</code></pre></div>
+<p>Makes the pet look at the owner.</p>
+<ul>
+<li>Name: Identifier of a pet</li>
+<li>Player: Optional player_name/player_UUID parameter targeting a player from the console or command block.</li>
+</ul>
+<h3 id="petblocks-moveto">/petblocks moveto</h3>
+<div class="highlight"><pre><span></span><code>/petblocks moveto &lt;name&gt; &lt;x&gt; &lt;y&gt; &lt;z&gt; &lt;speed&gt; [player]
+</code></pre></div>
+<p>Makes the pet walk to a given location.</p>
+<ul>
+<li>Name: Identifier of a pet</li>
+<li>X: X Coordinate</li>
+<li>Y: Y Coordinate</li>
+<li>Z: Z Coordinate</li>
+<li>Speed: Walking speed of the pet</li>
+<li>Player: Optional player_name/player_UUID parameter targeting a player from the console or command block.</li>
+</ul>
+<h3 id="petblocks-movetoowner">/petblocks movetoowner</h3>
+<div class="highlight"><pre><span></span><code>/petblocks movetoowner &lt;name&gt; &lt;speed&gt; [player]
+</code></pre></div>
+<p>Makes the pet walk to the owner.</p>
+<ul>
+<li>Name: Identifier of a pet</li>
+<li>Speed: Walking speed of the pet</li>
+<li>Player: Optional player_name/player_UUID parameter targeting a player from the console or command block.</li>
+</ul>
+<h3 id="petblocks-hat">/petblocks hat</h3>
+<div class="highlight"><pre><span></span><code>/petblocks hat &lt;name&gt; [player]
+</code></pre></div>
+<p>Makes the owner wear the pet.</p>
+<ul>
+<li>Name: Identifier of a pet</li>
+<li>Player: Optional player_name/player_UUID parameter targeting a player from the console or command block.</li>
+</ul>
+<h3 id="petblocks-ride">/petblocks ride</h3>
+<div class="highlight"><pre><span></span><code>/petblocks ride &lt;name&gt; [player]
+</code></pre></div>
+<p>Makes the owner ride the pet.</p>
+<ul>
+<li>Name: Identifier of a pet</li>
+<li>Player: Optional player_name/player_UUID parameter targeting a player from the console or command block.</li>
+</ul>
+<h3 id="petblocks-unmount">/petblocks unmount</h3>
+<div class="highlight"><pre><span></span><code>/petblocks unmount &lt;name&gt; [player]
+</code></pre></div>
+<p>Makes the owner unmount (stop riding/hat) the pet.</p>
+<ul>
+<li>Name: Identifier of a pet</li>
+<li>Player: Optional player_name/player_UUID parameter targeting a player from the console or command block.</li>
+</ul>
+<h3 id="petblocks-teleport">/petblocks teleport</h3>
+<div class="highlight"><pre><span></span><code>/petblocks teleport &lt;name&gt; &lt;world&gt; &lt;x&gt; &lt;y&gt; &lt;z&gt; &lt;yaw&gt; &lt;pitch&gt; [player]
+</code></pre></div>
+<p>Teleports the pet to the given location.</p>
+<ul>
+<li>Name: Identifier of a pet</li>
+<li>World: Target world</li>
+<li>X: X Coordinate</li>
+<li>Y: Y Coordinate</li>
+<li>Z: Z Coordinate</li>
+<li>Yaw: Horizontal Axe</li>
+<li>Pitch: Vertical Axe</li>
+<li>Player: Optional player_name/player_UUID parameter targeting a player from the console or command block.</li>
+</ul>
+<h3 id="petblocks-velocity">/petblocks velocity</h3>
+<div class="highlight"><pre><span></span><code>/petblocks velocity &lt;name&gt; &lt;x&gt; &lt;y&gt; &lt;z&gt; [player]
+</code></pre></div>
+<p>Launches the pet into the given direction.</p>
+<ul>
+<li>Name: Identifier of a pet</li>
+<li>World: Target world</li>
+<li>X: X Vector</li>
+<li>Y: Y Vector</li>
+<li>Z: Z Vector</li>
+<li>Player: Optional player_name/player_UUID parameter targeting a player from the console or command block.</li>
+</ul>
+<h3 id="petblocks-skintype">/petblocks skintype</h3>
+<div class="highlight"><pre><span></span><code>/petblocks skintype &lt;name&gt; &lt;material&gt; [player]&quot;
+</code></pre></div>
+<p>Changes the material used as a head. </p>
+<ul>
+<li>Name: Identifier of a pet</li>
+<li>Material: Minecraft material name e.g. STONE</li>
+<li>Player: Optional player_name/player_UUID parameter targeting a player from the console or command block.</li>
+</ul>
+<h3 id="petblocks-skinnbt">/petblocks skinnbt</h3>
+<div class="highlight"><pre><span></span><code>/petblocks skinnbt &lt;name&gt; &lt;nbt&gt; [player]
+</code></pre></div>
+<p>Changes the NBT tags of the head item.</p>
+<ul>
+<li>Name: Identifier of a pet</li>
+<li>NBT: Standard Minecraft NBT format. e.g. {Unbreakable:1}</li>
+<li>Player: Optional player_name/player_UUID parameter targeting a player from the console or command block.</li>
+</ul>
+<h3 id="petblocks-skinbase64">/petblocks skinbase64</h3>
+<div class="highlight"><pre><span></span><code>/petblocks skinbase64 &lt;name&gt; &lt;skin&gt; [player]
+</code></pre></div>
+<p>Changes the head material to player_head and sets the base64 encoded texture url. </p>
+<ul>
+<li>Name: Identifier of a pet</li>
+<li>Skin: Bas64 Encoded Texture value e.g. <code>eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYThhZDZmYzEyNzA4NDQ2ZWI2NmM3NTY5ZTI4ZDVlMjUyMWQyMTQ2MzQ4YjQ4YmY2YzQ3ZjU0OGQ5ZWVjNDYwYSJ9fX0=</code> on https://minecraft-heads.com/custom-heads/humanoid/67436-beegsmol-mumei </li>
+<li>Player: Optional player_name/player_UUID parameter targeting a player from the console or command block.</li>
+</ul>
+<h3 id="petblocks-skinheaddatabase">/petblocks skinheaddatabase</h3>
+<div class="highlight"><pre><span></span><code>/petblocks skinheaddatabase &lt;name&gt; &lt;hdbId&gt; [player]
+</code></pre></div>
+<p>Changes the head material to player_head and sets the texture url from a skin loaded by the HeadDatabase plugin.</p>
+<ul>
+<li>Name: Identifier of a pet</li>
+<li>HdbId: Internal id the HeadDatabase plugin uses.</li>
+<li>Player: Optional player_name/player_UUID parameter targeting a player from the console or command block.</li>
+</ul>
+<h3 id="petblocks-rename">/petblocks rename</h3>
+<div class="highlight"><pre><span></span><code>/petblocks rename &lt;name&gt; &lt;displayname&gt; [player]
+</code></pre></div>
+<p>Changes the display name of the pet. Does not accept spaces. Underlines '_' are automatically replaced by spaces.
+Allows values should be set in the <code>config.yml</code>.</p>
+<ul>
+<li>Name: Identifier of a pet</li>
+<li>DisplayName: Name hovering above the pet, which supports ChatColors.</li>
+<li>Player: Optional player_name/player_UUID <em>p</em>arameter targeting a player from the console or command block.</li>
+</ul>
+<h3 id="petblocks-visibility">/petblocks visibility</h3>
+<div class="highlight"><pre><span></span><code>/petblocks visibility &lt;name&gt; &lt;type&gt; [player]
+</code></pre></div>
+<p>Changes who can see the pet. </p>
+<ul>
+<li>Name: Identifier of a pet</li>
+<li>Types: Possibles values: <code>ALL</code>, <code>OWNER</code></li>
+<li>Player: Optional player_name/player_UUID parameter targeting a player from the console or command block.</li>
+</ul>
+<h3 id="petblocks-loop">/petblocks loop</h3>
+<div class="highlight"><pre><span></span><code>/petblocks loop &lt;name&gt; &lt;loop&gt; [player]
+</code></pre></div>
+<p>Changes which loop from the template is being executed by the pet. Example loops are <code>idle</code>.</p>
+<ul>
+<li>Name: Identifier of a pet</li>
+<li>Loop: Identifier of a loop in the template of the pet.</li>
+<li>Player: Optional player_name/player_UUID parameter targeting a player from the console or command block.</li>
+</ul>
+<h3 id="petblocks-template">/petblocks template</h3>
+<div class="highlight"><pre><span></span><code>/petblocks template &lt;name&gt; &lt;template&gt; [player]
+</code></pre></div>
+<p>Changes the template of a pet without recreating the pet.</p>
+<ul>
+<li>Name: Identifier of a pet</li>
+<li>Template: Template identifier e.g. classic</li>
+<li>Player: Optional player_name/player_UUID parameter targeting a player from the console or command block.</li>
+</ul>
+<h3 id="petblocks-spawn">/petblocks spawn</h3>
+<div class="highlight"><pre><span></span><code>/petblocks spawn &lt;name&gt; [player]
+</code></pre></div>
+<p>Spawns the pet if it has not already spawned.</p>
+<ul>
+<li>Name: Identifier of a pet</li>
+<li>Player: Optional player_name/player_UUID parameter targeting a player from the console or command block.</li>
+</ul>
+<h3 id="petblocks-despawn">/petblocks despawn</h3>
+<div class="highlight"><pre><span></span><code>/petblocks despawn &lt;name&gt; [player]
+</code></pre></div>
+<p>Despawns the pet if it has not already despawned.</p>
+<ul>
+<li>Name: Identifier of a pet</li>
+<li>Player: Optional player_name/player_UUID parameter targeting a player from the console or command block.</li>
+</ul>
+<h3 id="petblocks-toggle">/petblocks toggle</h3>
+<div class="highlight"><pre><span></span><code>/petblocks toggle &lt;name&gt; [player]
+</code></pre></div>
+<p>Toggles the pet spawn state.</p>
+<ul>
+<li>Name: Identifier of a pet</li>
+<li>Player: Optional player_name/player_UUID parameter targeting a player from the console or command block.</li>
+</ul>
+<h3 id="petblocks-select">/petblocks select</h3>
+<div class="highlight"><pre><span></span><code>/petblocks select &lt;name&gt; [player]
+</code></pre></div>
+<p>Makes the owner select one of his pets as primary pet. This is only helpful if a single player has got multiple pets in PetBlocks-Premium.</p>
+<ul>
+<li>Name: Identifier of a pet</li>
+<li>Player: Optional player_name/player_UUID parameter targeting a player from the console or command block.</li>
+</ul>
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var tab,labels=set.querySelector(".tabbed-labels");for(tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Footer" >
+        
+          
+          <a href="../permission/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Permission">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              <div class="md-ellipsis">
+                Permission
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../receivingpets/" class="md-footer__link md-footer__link--next" aria-label="Next: Giving Pets to Players">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              <div class="md-ellipsis">
+                Giving Pets to Players
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4Z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    <script id="__config" type="application/json">{"base": "..", "features": ["navigation.instant", "navigation.tabs", "content.tabs.link", "content.code.copy", "navigation.footer"], "search": "../assets/javascripts/workers/search.f886a092.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.aecac24b.min.js"></script>
+      
+    
+  </body>
+</html>
