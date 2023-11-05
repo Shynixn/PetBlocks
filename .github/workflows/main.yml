@@ -40,19 +40,6 @@ jobs:
           body: "This release was automatically created by Github Actions. Please wait until the author manually sets the patchnotes for this release."
           tag_name: ${{ env.RELEASE_VERSION }}
           release_name: Release ${{ env.RELEASE_VERSION }}
-          draft: false
-          prerelease: false
-
-      - name: Create Github Release
-        if: "contains(github.event.head_commit.message, '--release') && contains(github.ref, 'master')"
-        id: create_release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          body: "This release was automatically created by Github Actions. Please wait until the author manually sets the patchnotes for this release."
-          tag_name: ${{ env.RELEASE_VERSION }}
-          release_name: Release ${{ env.RELEASE_VERSION }}
           draft: true
           prerelease: false
 
