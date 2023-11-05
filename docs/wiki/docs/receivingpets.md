@@ -43,9 +43,7 @@ In order to configure, if the pet should automatically spawn in front of the pla
 There are many ways how you can handle it. These are just examples below:
 
 !!! note "Building GUIS with DeluxeMenu"
-    PetBlocks distributes premade DeluxeMenu based inventories, which may help you design your own inventories. See ``plugins/PetBlocks/thirdparty/DeluxeMenu``.
-    You can try them by copying the contents of the ``plugins/PetBlocks/thirdparty/DeluxeMenu`` folder to the ``plugins/DeluxeMenu`` folder. Execute /petblocksmenu
-    with the permission ``petblocks.deluxemenu``.
+    PetBlocks distributes premade DeluxeMenu based inventories, which may help you design your own inventories. See the GUI page for more details.
       
 
 #### Option 1 - Just selling skins for your pet (easy)

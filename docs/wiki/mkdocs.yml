@@ -5,7 +5,10 @@ nav:
   - 'PetBlocks Wiki':
       - Introduction: README.md
       - Permission: permission.md
+      - Commands: commands.md
       - Giving Pets to Players: receivingpets.md
+      - Templates: template.md
+      - GUI: gui.md
       - 'FAQ': faq.md
 theme:
   name: material
