@@ -92,252 +92,252 @@ items:
     slot: 9
     display_name: 'Alien in UFO'
     left_click_commands:
-      - '[player] petblocks skinbase64 %petblocks_pet_name_selected% eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNTFjYWVhMTJmYzg2MTM4Y2RmMDdlMmJjZjc1MzRlYjY0ZTM0ZGEwY2RiYzNiYmMxNDFkODE0ZTYwYTRmOGJjNiJ9fX0='
+      - '[console] petblocks skinbase64 %petblocks_pet_name_selected% eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNTFjYWVhMTJmYzg2MTM4Y2RmMDdlMmJjZjc1MzRlYjY0ZTM0ZGEwY2RiYzNiYmMxNDFkODE0ZTYwYTRmOGJjNiJ9fX0= %petblocks_owner_name%'
       - '[refresh]'
   'Ambulance':
     material: "basehead-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMWRlYmM3YjJiYzYxNTE0YmQ0NDY2NjUwMzc1NTFiZjdjODMzMjM3ZTgzMjBmZWZiNDg1NDExZjhmNDJmNjZjOCJ9fX0="
     slot: 10
     display_name: 'Ambulance'
     left_click_commands:
-      - '[player] petblocks skinbase64 %petblocks_pet_name_selected% eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMWRlYmM3YjJiYzYxNTE0YmQ0NDY2NjUwMzc1NTFiZjdjODMzMjM3ZTgzMjBmZWZiNDg1NDExZjhmNDJmNjZjOCJ9fX0='
+      - '[console] petblocks skinbase64 %petblocks_pet_name_selected% eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMWRlYmM3YjJiYzYxNTE0YmQ0NDY2NjUwMzc1NTFiZjdjODMzMjM3ZTgzMjBmZWZiNDg1NDExZjhmNDJmNjZjOCJ9fX0= %petblocks_owner_name%'
       - '[refresh]'
   'Anger Core':
     material: "basehead-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMmYzZGRkN2Y4MTA4OWM4NWIyNmVkNTk3Njc1NTE5ZjAzYTFkY2Q2ZDE3MTNlMGNmYzY2YWZiODc0M2NiZTAifX19"
     slot: 11
     display_name: 'Anger Core'
     left_click_commands:
-      - '[player] petblocks skinbase64 %petblocks_pet_name_selected% eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMmYzZGRkN2Y4MTA4OWM4NWIyNmVkNTk3Njc1NTE5ZjAzYTFkY2Q2ZDE3MTNlMGNmYzY2YWZiODc0M2NiZTAifX19'
+      - '[console] petblocks skinbase64 %petblocks_pet_name_selected% eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMmYzZGRkN2Y4MTA4OWM4NWIyNmVkNTk3Njc1NTE5ZjAzYTFkY2Q2ZDE3MTNlMGNmYzY2YWZiODc0M2NiZTAifX19 %petblocks_owner_name%'
       - '[refresh]'
   'Bumblebee 1':
     material: "basehead-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNmYzNWFjNTUzNGIxYmYxYWI5NmJlMTk4ZTZhY2VhYzFhMzYxMTJkODY4NjNkMGE2MzdmODY1ODM5ZDJiYjRhNiJ9fX0="
     slot: 12
     display_name: 'Bumblebee 1'
     left_click_commands:
-      - '[player] petblocks skinbase64 %petblocks_pet_name_selected% eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNmYzNWFjNTUzNGIxYmYxYWI5NmJlMTk4ZTZhY2VhYzFhMzYxMTJkODY4NjNkMGE2MzdmODY1ODM5ZDJiYjRhNiJ9fX0='
+      - '[console] petblocks skinbase64 %petblocks_pet_name_selected% eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNmYzNWFjNTUzNGIxYmYxYWI5NmJlMTk4ZTZhY2VhYzFhMzYxMTJkODY4NjNkMGE2MzdmODY1ODM5ZDJiYjRhNiJ9fX0= %petblocks_owner_name%'
       - '[refresh]'
   'Bus':
     material: "basehead-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZWZhOGE1Mjc3YzVhMjEzNDQ3NWQ1Mjk4YWEzYWU3OTQyZTIxN2I1MjVkOTkxM2U1MzdmMTU4NmMxYWY5MzhkNSJ9fX0="
     slot: 13
     display_name: 'Bus'
     left_click_commands:
-      - '[player] petblocks skinbase64 %petblocks_pet_name_selected% eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZWZhOGE1Mjc3YzVhMjEzNDQ3NWQ1Mjk4YWEzYWU3OTQyZTIxN2I1MjVkOTkxM2U1MzdmMTU4NmMxYWY5MzhkNSJ9fX0='
+      - '[console] petblocks skinbase64 %petblocks_pet_name_selected% eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZWZhOGE1Mjc3YzVhMjEzNDQ3NWQ1Mjk4YWEzYWU3OTQyZTIxN2I1MjVkOTkxM2U1MzdmMTU4NmMxYWY5MzhkNSJ9fX0= %petblocks_owner_name%'
       - '[refresh]'
   'Car (black) 1':
     material: "basehead-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNDY1ODJkNmQ4YmM3MDdmYjA1N2I0NTMwYzc1ZTRkZmQ5ZWMyZTg2NWVkMjJkYThiOTdhNDc1ODQ0OWZlYWY3NiJ9fX0="
     slot: 14
     display_name: 'Car (black) 1'
     left_click_commands:
-      - '[player] petblocks skinbase64 %petblocks_pet_name_selected% eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNDY1ODJkNmQ4YmM3MDdmYjA1N2I0NTMwYzc1ZTRkZmQ5ZWMyZTg2NWVkMjJkYThiOTdhNDc1ODQ0OWZlYWY3NiJ9fX0='
+      - '[console] petblocks skinbase64 %petblocks_pet_name_selected% eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNDY1ODJkNmQ4YmM3MDdmYjA1N2I0NTMwYzc1ZTRkZmQ5ZWMyZTg2NWVkMjJkYThiOTdhNDc1ODQ0OWZlYWY3NiJ9fX0= %petblocks_owner_name%'
       - '[refresh]'
   'Car (black) 2':
     material: "basehead-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYzY5MjhkNzVhZWJlYjg1MWNiODFjYWM4YTMyYWM5NTExNmRhOTE4MWMzM2M5NGEyMzgzNGEwNDc2OGI4N2EifX19"
     slot: 15
     display_name: 'Car (black) 2'
     left_click_commands:
-      - '[player] petblocks skinbase64 %petblocks_pet_name_selected% eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYzY5MjhkNzVhZWJlYjg1MWNiODFjYWM4YTMyYWM5NTExNmRhOTE4MWMzM2M5NGEyMzgzNGEwNDc2OGI4N2EifX19'
+      - '[console] petblocks skinbase64 %petblocks_pet_name_selected% eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYzY5MjhkNzVhZWJlYjg1MWNiODFjYWM4YTMyYWM5NTExNmRhOTE4MWMzM2M5NGEyMzgzNGEwNDc2OGI4N2EifX19 %petblocks_owner_name%'
       - '[refresh]'
   'Car (blue)':
     material: "basehead-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvY2E0M2FmYWMyN2FmZTY3MmRjYWU2MzJhNjdjOTBlZWI1MTlkZTM5N2Q5ZDFmOGY2NjQ4MzM3ZjRmYTczZiJ9fX0="
     slot: 16
     display_name: 'Car (blue)'
     left_click_commands:
-      - '[player] petblocks skinbase64 %petblocks_pet_name_selected% eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvY2E0M2FmYWMyN2FmZTY3MmRjYWU2MzJhNjdjOTBlZWI1MTlkZTM5N2Q5ZDFmOGY2NjQ4MzM3ZjRmYTczZiJ9fX0='
+      - '[console] petblocks skinbase64 %petblocks_pet_name_selected% eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvY2E0M2FmYWMyN2FmZTY3MmRjYWU2MzJhNjdjOTBlZWI1MTlkZTM5N2Q5ZDFmOGY2NjQ4MzM3ZjRmYTczZiJ9fX0= %petblocks_owner_name%'
       - '[refresh]'
   'Car (gold)':
     material: "basehead-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNTZjZGI2M2Y5NjlhYThlYzlkYjgzZmVmMjg4MmExZGE3NmJhMjJlYmVhMzU2MzlmZDBiNTRlYmIxY2RlNzVkNSJ9fX0="
     slot: 17
     display_name: 'Car (gold)'
     left_click_commands:
-      - '[player] petblocks skinbase64 %petblocks_pet_name_selected% eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNTZjZGI2M2Y5NjlhYThlYzlkYjgzZmVmMjg4MmExZGE3NmJhMjJlYmVhMzU2MzlmZDBiNTRlYmIxY2RlNzVkNSJ9fX0='
+      - '[console] petblocks skinbase64 %petblocks_pet_name_selected% eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNTZjZGI2M2Y5NjlhYThlYzlkYjgzZmVmMjg4MmExZGE3NmJhMjJlYmVhMzU2MzlmZDBiNTRlYmIxY2RlNzVkNSJ9fX0= %petblocks_owner_name%'
       - '[refresh]'
   'Car (gray)':
     material: "basehead-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYmRlOWVkNDJjY2JlYTY3ODFjNzQ2MWJkODM3ZGNkZGQxNjU2ODk0NTZjYzJkMzMxYTEzNDJkMzQ2N2RiNTVhYSJ9fX0="
     slot: 18
     display_name: 'Car (gray)'
     left_click_commands:
-      - '[player] petblocks skinbase64 %petblocks_pet_name_selected% eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYmRlOWVkNDJjY2JlYTY3ODFjNzQ2MWJkODM3ZGNkZGQxNjU2ODk0NTZjYzJkMzMxYTEzNDJkMzQ2N2RiNTVhYSJ9fX0='
+      - '[console] petblocks skinbase64 %petblocks_pet_name_selected% eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYmRlOWVkNDJjY2JlYTY3ODFjNzQ2MWJkODM3ZGNkZGQxNjU2ODk0NTZjYzJkMzMxYTEzNDJkMzQ2N2RiNTVhYSJ9fX0= %petblocks_owner_name%'
       - '[refresh]'
   'Car (green) 1':
     material: "basehead-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYzVlNzJhNzFlZmQ0ODQyNzMwMjc0NjEyYjkzYTRkZTZlYTA3ODVlYTJjNzI0YjEzOWI2M2I2ZjkyNmQ3ZTI0ZiJ9fX0="
     slot: 19
     display_name: 'Car (green) 1'
     left_click_commands:
-      - '[player] petblocks skinbase64 %petblocks_pet_name_selected% eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYzVlNzJhNzFlZmQ0ODQyNzMwMjc0NjEyYjkzYTRkZTZlYTA3ODVlYTJjNzI0YjEzOWI2M2I2ZjkyNmQ3ZTI0ZiJ9fX0='
+      - '[console] petblocks skinbase64 %petblocks_pet_name_selected% eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYzVlNzJhNzFlZmQ0ODQyNzMwMjc0NjEyYjkzYTRkZTZlYTA3ODVlYTJjNzI0YjEzOWI2M2I2ZjkyNmQ3ZTI0ZiJ9fX0= %petblocks_owner_name%'
       - '[refresh]'
   'Car (green) 2':
     material: "basehead-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZWVlYjNkNGMzYWQxYzYzMDc5Y2FiZDcwMTBlNzRkNWQxNTVkMzhmNzIzZDliM2ZmOWI3OWZhYWNjNDM0In19fQ=="
     slot: 20
     display_name: 'Car (green) 2'
     left_click_commands:
-      - '[player] petblocks skinbase64 %petblocks_pet_name_selected% eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZWVlYjNkNGMzYWQxYzYzMDc5Y2FiZDcwMTBlNzRkNWQxNTVkMzhmNzIzZDliM2ZmOWI3OWZhYWNjNDM0In19fQ=='
+      - '[console] petblocks skinbase64 %petblocks_pet_name_selected% eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZWVlYjNkNGMzYWQxYzYzMDc5Y2FiZDcwMTBlNzRkNWQxNTVkMzhmNzIzZDliM2ZmOWI3OWZhYWNjNDM0In19fQ== %petblocks_owner_name%'
       - '[refresh]'
   'Car (light blue) 1':
     material: "basehead-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMDA3ZTg5NzkzYzdlMmM5NTY4NDYyMThkZjIyM2M0NmVmMDNhNWMxMmY1YzQ0ZjVhODBlMGViZTQ0NmYyYmUifX19"
     slot: 21
     display_name: 'Car (light blue) 1'
     left_click_commands:
-      - '[player] petblocks skinbase64 %petblocks_pet_name_selected% eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMDA3ZTg5NzkzYzdlMmM5NTY4NDYyMThkZjIyM2M0NmVmMDNhNWMxMmY1YzQ0ZjVhODBlMGViZTQ0NmYyYmUifX19'
+      - '[console] petblocks skinbase64 %petblocks_pet_name_selected% eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMDA3ZTg5NzkzYzdlMmM5NTY4NDYyMThkZjIyM2M0NmVmMDNhNWMxMmY1YzQ0ZjVhODBlMGViZTQ0NmYyYmUifX19 %petblocks_owner_name%'
       - '[refresh]'
   'Car (light blue) 2':
     material: "basehead-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZWEzZmVmNzllMTNiYmMyOWMxOTY4MzVjMjgwN2ZiNGYxMGY5MTljMTUwMWRhYWFkZmQyN2RmYjJlOThmNDBjOCJ9fX0="
     slot: 22
     display_name: 'Car (light blue) 2'
     left_click_commands:
-      - '[player] petblocks skinbase64 %petblocks_pet_name_selected% eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZWEzZmVmNzllMTNiYmMyOWMxOTY4MzVjMjgwN2ZiNGYxMGY5MTljMTUwMWRhYWFkZmQyN2RmYjJlOThmNDBjOCJ9fX0='
+      - '[console] petblocks skinbase64 %petblocks_pet_name_selected% eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZWEzZmVmNzllMTNiYmMyOWMxOTY4MzVjMjgwN2ZiNGYxMGY5MTljMTUwMWRhYWFkZmQyN2RmYjJlOThmNDBjOCJ9fX0= %petblocks_owner_name%'
       - '[refresh]'
   'Car (lime)':
     material: "basehead-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMzNkNjI2ZWI0NDFlZTZhMjc1NDMxZmRkMjhkYjY4MGI2Y2Y4MTBhMWEwMGRkY2I2ZTQwYTFmOGE4NzI5NzgzYSJ9fX0="
     slot: 23
     display_name: 'Car (lime)'
     left_click_commands:
-      - '[player] petblocks skinbase64 %petblocks_pet_name_selected% eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMzNkNjI2ZWI0NDFlZTZhMjc1NDMxZmRkMjhkYjY4MGI2Y2Y4MTBhMWEwMGRkY2I2ZTQwYTFmOGE4NzI5NzgzYSJ9fX0='
+      - '[console] petblocks skinbase64 %petblocks_pet_name_selected% eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMzNkNjI2ZWI0NDFlZTZhMjc1NDMxZmRkMjhkYjY4MGI2Y2Y4MTBhMWEwMGRkY2I2ZTQwYTFmOGE4NzI5NzgzYSJ9fX0= %petblocks_owner_name%'
       - '[refresh]'
   'Car (pink) 1':
     material: "basehead-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvM2I0ZWEwZWZhMTAzOGNlOTNiMThmY2JiNTM4ZTIxNDBkNTMzMDQzNTFlZmM0ZDlhODk1MWJkNGNiZjRmMmQzZSJ9fX0="
     slot: 24
     display_name: 'Car (pink) 1'
     left_click_commands:
-      - '[player] petblocks skinbase64 %petblocks_pet_name_selected% eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvM2I0ZWEwZWZhMTAzOGNlOTNiMThmY2JiNTM4ZTIxNDBkNTMzMDQzNTFlZmM0ZDlhODk1MWJkNGNiZjRmMmQzZSJ9fX0='
+      - '[console] petblocks skinbase64 %petblocks_pet_name_selected% eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvM2I0ZWEwZWZhMTAzOGNlOTNiMThmY2JiNTM4ZTIxNDBkNTMzMDQzNTFlZmM0ZDlhODk1MWJkNGNiZjRmMmQzZSJ9fX0= %petblocks_owner_name%'
       - '[refresh]'
   'Fire Truck':
     material: "basehead-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMzU3OTEzZmZmYTZlNzUzNjc1YTJlYmQzN2JiOGM0ODYzNjMzNmQ5OTE5YWE1ZGEzMzY4NDI0Mjk4OWU0MjQxMSJ9fX0="
     slot: 25
     display_name: 'Fire Truck'
     left_click_commands:
-      - '[player] petblocks skinbase64 %petblocks_pet_name_selected% eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMzU3OTEzZmZmYTZlNzUzNjc1YTJlYmQzN2JiOGM0ODYzNjMzNmQ5OTE5YWE1ZGEzMzY4NDI0Mjk4OWU0MjQxMSJ9fX0='
+      - '[console] petblocks skinbase64 %petblocks_pet_name_selected% eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMzU3OTEzZmZmYTZlNzUzNjc1YTJlYmQzN2JiOGM0ODYzNjMzNmQ5OTE5YWE1ZGEzMzY4NDI0Mjk4OWU0MjQxMSJ9fX0= %petblocks_owner_name%'
       - '[refresh]'
   'Francesco Bernoulli':
     material: "basehead-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMzY2YjkyYzZkNjc3MzAzZDE2YmFhMWY3MzE1OWY0ZjQxYmVjZDAyZTNmZDRlNzQ3ZTMyY2NlM2ZmNGQ4MTdlNCJ9fX0="
     slot: 26
     display_name: 'Francesco Bernoulli'
     left_click_commands:
-      - '[player] petblocks skinbase64 %petblocks_pet_name_selected% eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMzY2YjkyYzZkNjc3MzAzZDE2YmFhMWY3MzE1OWY0ZjQxYmVjZDAyZTNmZDRlNzQ3ZTMyY2NlM2ZmNGQ4MTdlNCJ9fX0='
+      - '[console] petblocks skinbase64 %petblocks_pet_name_selected% eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMzY2YjkyYzZkNjc3MzAzZDE2YmFhMWY3MzE1OWY0ZjQxYmVjZDAyZTNmZDRlNzQ3ZTMyY2NlM2ZmNGQ4MTdlNCJ9fX0= %petblocks_owner_name%'
       - '[refresh]'
   'Furnace Minecart':
     material: "basehead-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZTA3OWFiYmFmYjk4MWM3OTVhOWEyZjgyYmFiM2ZiZDlmMTY2YjhjMGRiZjlhMTc1MWQ3NjliZWFjNjY3YjYifX19"
     slot: 27
     display_name: 'Furnace Minecart'
     left_click_commands:
-      - '[player] petblocks skinbase64 %petblocks_pet_name_selected% eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZTA3OWFiYmFmYjk4MWM3OTVhOWEyZjgyYmFiM2ZiZDlmMTY2YjhjMGRiZjlhMTc1MWQ3NjliZWFjNjY3YjYifX19'
+      - '[console] petblocks skinbase64 %petblocks_pet_name_selected% eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZTA3OWFiYmFmYjk4MWM3OTVhOWEyZjgyYmFiM2ZiZDlmMTY2YjhjMGRiZjlhMTc1MWQ3NjliZWFjNjY3YjYifX19 %petblocks_owner_name%'
       - '[refresh]'
   'Minecart with Gold Ore':
     material: "basehead-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZmJjOGYyZjVmMzJjMTY3M2VjMjc2Y2YzZGU2ZWQ1M2E1YTg4Yjk1MWQ2MDljM2JjYzQ5YWU4ZmE5ODE2OCJ9fX0="
     slot: 28
     display_name: 'Minecart with Gold Ore'
     left_click_commands:
-      - '[player] petblocks skinbase64 %petblocks_pet_name_selected% eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZmJjOGYyZjVmMzJjMTY3M2VjMjc2Y2YzZGU2ZWQ1M2E1YTg4Yjk1MWQ2MDljM2JjYzQ5YWU4ZmE5ODE2OCJ9fX0='
+      - '[console] petblocks skinbase64 %petblocks_pet_name_selected% eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZmJjOGYyZjVmMzJjMTY3M2VjMjc2Y2YzZGU2ZWQ1M2E1YTg4Yjk1MWQ2MDljM2JjYzQ5YWU4ZmE5ODE2OCJ9fX0= %petblocks_owner_name%'
       - '[refresh]'
   'Minecart with Iron Ore':
     material: "basehead-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNzA5NWRlOTA4YjIzYTZmYzA0MTI5YTJlYzk1MmRmZmFjZTVjZWU5OTI0NzNlYWFjODUzYjdjYTk3YjM1YTYifX19"
     slot: 29
     display_name: 'Minecart with Iron Ore'
     left_click_commands:
-      - '[player] petblocks skinbase64 %petblocks_pet_name_selected% eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNzA5NWRlOTA4YjIzYTZmYzA0MTI5YTJlYzk1MmRmZmFjZTVjZWU5OTI0NzNlYWFjODUzYjdjYTk3YjM1YTYifX19'
+      - '[console] petblocks skinbase64 %petblocks_pet_name_selected% eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNzA5NWRlOTA4YjIzYTZmYzA0MTI5YTJlYzk1MmRmZmFjZTVjZWU5OTI0NzNlYWFjODUzYjdjYTk3YjM1YTYifX19 %petblocks_owner_name%'
       - '[refresh]'
   'Minecart with Lapis Lazuli Ore':
     material: "basehead-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYTNlNTE4OGRkMzRiMTQ4ZmJjYzQ2MjMzMWU0ZmRmNTY0NWU4YzNlN2EyNThjM2U3MWExYzJlYjRlNWI5YTdmNSJ9fX0="
     slot: 30
     display_name: 'Minecart with Lapis Lazuli Ore'
     left_click_commands:
-      - '[player] petblocks skinbase64 %petblocks_pet_name_selected% eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYTNlNTE4OGRkMzRiMTQ4ZmJjYzQ2MjMzMWU0ZmRmNTY0NWU4YzNlN2EyNThjM2U3MWExYzJlYjRlNWI5YTdmNSJ9fX0='
+      - '[console] petblocks skinbase64 %petblocks_pet_name_selected% eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYTNlNTE4OGRkMzRiMTQ4ZmJjYzQ2MjMzMWU0ZmRmNTY0NWU4YzNlN2EyNThjM2U3MWExYzJlYjRlNWI5YTdmNSJ9fX0= %petblocks_owner_name%'
       - '[refresh]'
   'Minecart with Redstone Ore':
     material: "basehead-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMzBkM2JlMWQxMzk0NWIyMDEwZmQxYjhkZDdkN2YzOWU1MzBmYWEzMmVlZjNhOWI1YTFlYzc3ODc4MzkwZGMifX19"
     slot: 31
     display_name: 'Minecart with Redstone Ore'
     left_click_commands:
-      - '[player] petblocks skinbase64 %petblocks_pet_name_selected% eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMzBkM2JlMWQxMzk0NWIyMDEwZmQxYjhkZDdkN2YzOWU1MzBmYWEzMmVlZjNhOWI1YTFlYzc3ODc4MzkwZGMifX19'
+      - '[console] petblocks skinbase64 %petblocks_pet_name_selected% eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMzBkM2JlMWQxMzk0NWIyMDEwZmQxYjhkZDdkN2YzOWU1MzBmYWEzMmVlZjNhOWI1YTFlYzc3ODc4MzkwZGMifX19 %petblocks_owner_name%'
       - '[refresh]'
   'TNT Minecart':
     material: "basehead-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYzRkN2ZjOGUzYTk1OWFkZTdkOWNmNjYzZjFlODJkYjc5NzU1NDNlMjg4YWI4ZDExZWIyNTQxODg4MjEzNTI2In19fQ=="
     slot: 32
     display_name: 'TNT Minecart'
     left_click_commands:
-      - '[player] petblocks skinbase64 %petblocks_pet_name_selected% eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYzRkN2ZjOGUzYTk1OWFkZTdkOWNmNjYzZjFlODJkYjc5NzU1NDNlMjg4YWI4ZDExZWIyNTQxODg4MjEzNTI2In19fQ=='
+      - '[console] petblocks skinbase64 %petblocks_pet_name_selected% eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYzRkN2ZjOGUzYTk1OWFkZTdkOWNmNjYzZjFlODJkYjc5NzU1NDNlMjg4YWI4ZDExZWIyNTQxODg4MjEzNTI2In19fQ== %petblocks_owner_name%'
       - '[refresh]'
   'Taxi':
     material: "basehead-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNzYxNjlmMzMwZTRhOGZlYTViNGJkNDkxZjg3YzUyNTY2NDNjN2Q1ZTNiNWMyYzM5MmRmY2VjNGZmZGIwMWQzYyJ9fX0="
     slot: 33
     display_name: 'Taxi'
     left_click_commands:
-      - '[player] petblocks skinbase64 %petblocks_pet_name_selected% eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNzYxNjlmMzMwZTRhOGZlYTViNGJkNDkxZjg3YzUyNTY2NDNjN2Q1ZTNiNWMyYzM5MmRmY2VjNGZmZGIwMWQzYyJ9fX0='
+      - '[console] petblocks skinbase64 %petblocks_pet_name_selected% eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNzYxNjlmMzMwZTRhOGZlYTViNGJkNDkxZjg3YzUyNTY2NDNjN2Q1ZTNiNWMyYzM5MmRmY2VjNGZmZGIwMWQzYyJ9fX0= %petblocks_owner_name%'
       - '[refresh]'
   'Tokyo Mater 1':
     material: "basehead-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNTQxODkyNjg0NmQxNjg5NmZmOTQ0NjA5MmU4NGRjYjJkZDZhYWNhNGE3NWEzNDA3YmE2NjUzNTM2ZGRmIn19fQ=="
     slot: 34
     display_name: 'Tokyo Mater 1'
     left_click_commands:
-      - '[player] petblocks skinbase64 %petblocks_pet_name_selected% eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNTQxODkyNjg0NmQxNjg5NmZmOTQ0NjA5MmU4NGRjYjJkZDZhYWNhNGE3NWEzNDA3YmE2NjUzNTM2ZGRmIn19fQ=='
+      - '[console] petblocks skinbase64 %petblocks_pet_name_selected% eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNTQxODkyNjg0NmQxNjg5NmZmOTQ0NjA5MmU4NGRjYjJkZDZhYWNhNGE3NWEzNDA3YmE2NjUzNTM2ZGRmIn19fQ== %petblocks_owner_name%'
       - '[refresh]'
   'Tokyo Mater 2':
     material: "basehead-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOTY2YzNkNDEzMGJjNjQxNjIzMTE0ZDhlOTZjNWYzZmMxY2M0MmEzZmYxZWQ2NzU3Mzk4MDI3ODk4N2Q0YmViYSJ9fX0="
     slot: 35
     display_name: 'Tokyo Mater 2'
     left_click_commands:
-      - '[player] petblocks skinbase64 %petblocks_pet_name_selected% eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOTY2YzNkNDEzMGJjNjQxNjIzMTE0ZDhlOTZjNWYzZmMxY2M0MmEzZmYxZWQ2NzU3Mzk4MDI3ODk4N2Q0YmViYSJ9fX0='
+      - '[console] petblocks skinbase64 %petblocks_pet_name_selected% eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOTY2YzNkNDEzMGJjNjQxNjIzMTE0ZDhlOTZjNWYzZmMxY2M0MmEzZmYxZWQ2NzU3Mzk4MDI3ODk4N2Q0YmViYSJ9fX0= %petblocks_owner_name%'
       - '[refresh]'
   'Toy Ship':
     material: "basehead-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYmEyOWVhMjRlNTI5ZGMxNzA4YWUzYTI5MDJkZTNlMjljMjJhOWVkYmJiMDdlY2JjZDI3Y2I1MzYwMmM3MSJ9fX0="
     slot: 36
     display_name: 'Toy Ship'
     left_click_commands:
-      - '[player] petblocks skinbase64 %petblocks_pet_name_selected% eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYmEyOWVhMjRlNTI5ZGMxNzA4YWUzYTI5MDJkZTNlMjljMjJhOWVkYmJiMDdlY2JjZDI3Y2I1MzYwMmM3MSJ9fX0='
+      - '[console] petblocks skinbase64 %petblocks_pet_name_selected% eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYmEyOWVhMjRlNTI5ZGMxNzA4YWUzYTI5MDJkZTNlMjljMjJhOWVkYmJiMDdlY2JjZDI3Y2I1MzYwMmM3MSJ9fX0= %petblocks_owner_name%'
       - '[refresh]'
   'Toy Tank (blue) 1':
     material: "basehead-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMTZmN2M4NjExNGQxMGJlZDA1M2MxMmUzNzY2M2MwZjkwNjVhZGFlMWQwN2IwYjcyYTNiNWViOWYyNmJlYzkwYiJ9fX0="
     slot: 37
     display_name: 'Toy Tank (blue) 1'
     left_click_commands:
-      - '[player] petblocks skinbase64 %petblocks_pet_name_selected% eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMTZmN2M4NjExNGQxMGJlZDA1M2MxMmUzNzY2M2MwZjkwNjVhZGFlMWQwN2IwYjcyYTNiNWViOWYyNmJlYzkwYiJ9fX0='
+      - '[console] petblocks skinbase64 %petblocks_pet_name_selected% eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMTZmN2M4NjExNGQxMGJlZDA1M2MxMmUzNzY2M2MwZjkwNjVhZGFlMWQwN2IwYjcyYTNiNWViOWYyNmJlYzkwYiJ9fX0= %petblocks_owner_name%'
       - '[refresh]'
   'Toy Tank (blue) 2':
     material: "basehead-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvODhhYWMxZDhiNGM3OTQwYjljNjcwM2ZkNDczMzkzOWQ4NzhkYjJiZDk2M2ZhNTM4MGI3MTgyN2IxZGYyOGY2NiJ9fX0="
     slot: 38
     display_name: 'Toy Tank (blue) 2'
     left_click_commands:
-      - '[player] petblocks skinbase64 %petblocks_pet_name_selected% eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvODhhYWMxZDhiNGM3OTQwYjljNjcwM2ZkNDczMzkzOWQ4NzhkYjJiZDk2M2ZhNTM4MGI3MTgyN2IxZGYyOGY2NiJ9fX0='
+      - '[console] petblocks skinbase64 %petblocks_pet_name_selected% eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvODhhYWMxZDhiNGM3OTQwYjljNjcwM2ZkNDczMzkzOWQ4NzhkYjJiZDk2M2ZhNTM4MGI3MTgyN2IxZGYyOGY2NiJ9fX0= %petblocks_owner_name%'
       - '[refresh]'
   'Toy Tank (blue) 3':
     material: "basehead-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZjRhNmI4MDA1ZjBiYWZiMzhjOWU3NzcwMWQ5MjE5Y2I0ODJlN2RlM2ExZDdmMTM5ZWE2ODllZTEzZjY1OTc3MyJ9fX0="
     slot: 39
     display_name: 'Toy Tank (blue) 3'
     left_click_commands:
-      - '[player] petblocks skinbase64 %petblocks_pet_name_selected% eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZjRhNmI4MDA1ZjBiYWZiMzhjOWU3NzcwMWQ5MjE5Y2I0ODJlN2RlM2ExZDdmMTM5ZWE2ODllZTEzZjY1OTc3MyJ9fX0='
+      - '[console] petblocks skinbase64 %petblocks_pet_name_selected% eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZjRhNmI4MDA1ZjBiYWZiMzhjOWU3NzcwMWQ5MjE5Y2I0ODJlN2RlM2ExZDdmMTM5ZWE2ODllZTEzZjY1OTc3MyJ9fX0= %petblocks_owner_name%'
       - '[refresh]'
   'Toy Tank (green)':
     material: "basehead-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNmVhZjViOTlmNzJkZjViNzI0NTkzZGI3MjQxYmMyMjY1NmQ3N2JhM2ZiMWZkYWFhNThmOWFjNTM0NDYyOTIifX19"
     slot: 40
     display_name: 'Toy Tank (green)'
     left_click_commands:
-      - '[player] petblocks skinbase64 %petblocks_pet_name_selected% eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNmVhZjViOTlmNzJkZjViNzI0NTkzZGI3MjQxYmMyMjY1NmQ3N2JhM2ZiMWZkYWFhNThmOWFjNTM0NDYyOTIifX19'
+      - '[console] petblocks skinbase64 %petblocks_pet_name_selected% eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNmVhZjViOTlmNzJkZjViNzI0NTkzZGI3MjQxYmMyMjY1NmQ3N2JhM2ZiMWZkYWFhNThmOWFjNTM0NDYyOTIifX19 %petblocks_owner_name%'
       - '[refresh]'
   'Toy Tank (lime)':
     material: "basehead-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMjJkYTBkYWEzNzg3MTEyMzliMGRiZjY5MDhmMGE1ZjA0MzFiNTI4NzQ4NDE3YTM4MzE2YzQ2NzdjNWIyZDA5YSJ9fX0="
     slot: 41
     display_name: 'Toy Tank (lime)'
     left_click_commands:
-      - '[player] petblocks skinbase64 %petblocks_pet_name_selected% eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMjJkYTBkYWEzNzg3MTEyMzliMGRiZjY5MDhmMGE1ZjA0MzFiNTI4NzQ4NDE3YTM4MzE2YzQ2NzdjNWIyZDA5YSJ9fX0='
+      - '[console] petblocks skinbase64 %petblocks_pet_name_selected% eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMjJkYTBkYWEzNzg3MTEyMzliMGRiZjY5MDhmMGE1ZjA0MzFiNTI4NzQ4NDE3YTM4MzE2YzQ2NzdjNWIyZDA5YSJ9fX0= %petblocks_owner_name%'
       - '[refresh]'
   'Toy Tank (orange)':
     material: "basehead-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMjNlZTVmMjhiYmMwM2QyNjEyZmM3NDRkOGEyMmNlMjZlYmRmMWU5OTIxZWM4YTEyNzk3MWRkMDUzMjhmYzhmNCJ9fX0="
     slot: 42
     display_name: 'Toy Tank (orange)'
     left_click_commands:
-      - '[player] petblocks skinbase64 %petblocks_pet_name_selected% eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMjNlZTVmMjhiYmMwM2QyNjEyZmM3NDRkOGEyMmNlMjZlYmRmMWU5OTIxZWM4YTEyNzk3MWRkMDUzMjhmYzhmNCJ9fX0='
+      - '[console] petblocks skinbase64 %petblocks_pet_name_selected% eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMjNlZTVmMjhiYmMwM2QyNjEyZmM3NDRkOGEyMmNlMjZlYmRmMWU5OTIxZWM4YTEyNzk3MWRkMDUzMjhmYzhmNCJ9fX0= %petblocks_owner_name%'
       - '[refresh]'
   'Toy Tank (pink)':
     material: "basehead-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYjgxNWFmN2NlNDhiNmEyMTVlYWNmYzM0ZjdiZmVlYWQ4Y2UwMzU5MjgwZjk1NzhhNTcwNTBjMWEzMGEzODExNSJ9fX0="
     slot: 43
     display_name: 'Toy Tank (pink)'
     left_click_commands:
-      - '[player] petblocks skinbase64 %petblocks_pet_name_selected% eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYjgxNWFmN2NlNDhiNmEyMTVlYWNmYzM0ZjdiZmVlYWQ4Y2UwMzU5MjgwZjk1NzhhNTcwNTBjMWEzMGEzODExNSJ9fX0='
+      - '[console] petblocks skinbase64 %petblocks_pet_name_selected% eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYjgxNWFmN2NlNDhiNmEyMTVlYWNmYzM0ZjdiZmVlYWQ4Y2UwMzU5MjgwZjk1NzhhNTcwNTBjMWEzMGEzODExNSJ9fX0= %petblocks_owner_name%'
       - '[refresh]'
   'Toy Tank (red)':
     material: "basehead-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNWJlMGM5OTI1Y2UxM2Q3N2NhOGY0MThkNGI4M2I0MTI4YTE0NjdhMGFkZjg2NzRkNDRlZmIzOTZjZTE4N2Y4YSJ9fX0="
     slot: 44
     display_name: 'Toy Tank (red)'
     left_click_commands:
-      - '[player] petblocks skinbase64 %petblocks_pet_name_selected% eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNWJlMGM5OTI1Y2UxM2Q3N2NhOGY0MThkNGI4M2I0MTI4YTE0NjdhMGFkZjg2NzRkNDRlZmIzOTZjZTE4N2Y4YSJ9fX0='
+      - '[console] petblocks skinbase64 %petblocks_pet_name_selected% eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNWJlMGM5OTI1Y2UxM2Q3N2NhOGY0MThkNGI4M2I0MTI4YTE0NjdhMGFkZjg2NzRkNDRlZmIzOTZjZTE4N2Y4YSJ9fX0= %petblocks_owner_name%'
       - '[refresh]'
 # ==============================================================
 #
@@ -549,8 +549,8 @@ items:
 # [console] - Execute a command from the console
 # Usage: - '[console] <command with no slash>'
 #
-# [player] - Execute a command for the menu viewer
-# Usage: - '[player] <command with no slash>'
+# [console] - Execute a command for the menu viewer
+# Usage: - '[console] <command with no slash>'
 #
 # [commandevent] - Fire a PlayerCommandPreprocessEvent for commands that do not use the bukkit command system
 # Usage: - '[commandevent] <command with no slash>'

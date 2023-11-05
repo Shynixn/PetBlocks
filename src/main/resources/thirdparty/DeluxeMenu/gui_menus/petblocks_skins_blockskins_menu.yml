@@ -91,217 +91,217 @@ items:
     material: "STONE"
     slot: 9
     left_click_commands:
-      - '[player] petblocks skinType %petblocks_pet_name_selected% STONE'
+      - '[console] petblocks skinType %petblocks_pet_name_selected% STONE %petblocks_owner_name%'
       - '[refresh]'
   'granite':
     material: "GRANITE"
     slot: 10
     left_click_commands:
-      - '[player] petblocks skinType %petblocks_pet_name_selected% GRANITE'
+      - '[console] petblocks skinType %petblocks_pet_name_selected% GRANITE %petblocks_owner_name%'
       - '[refresh]'
   'polished_granite':
     material: "POLISHED_GRANITE"
     slot: 11
     left_click_commands:
-      - '[player] petblocks skinType %petblocks_pet_name_selected% POLISHED_GRANITE'
+      - '[console] petblocks skinType %petblocks_pet_name_selected% POLISHED_GRANITE %petblocks_owner_name%'
       - '[refresh]'
   'diorite':
     material: "DIORITE"
     slot: 12
     left_click_commands:
-      - '[player] petblocks skinType %petblocks_pet_name_selected% DIORITE'
+      - '[console] petblocks skinType %petblocks_pet_name_selected% DIORITE %petblocks_owner_name%'
       - '[refresh]'
   'polished_diorite':
     material: "POLISHED_DIORITE"
     slot: 13
     left_click_commands:
-      - '[player] petblocks skinType %petblocks_pet_name_selected% POLISHED_DIORITE'
+      - '[console] petblocks skinType %petblocks_pet_name_selected% POLISHED_DIORITE %petblocks_owner_name%'
       - '[refresh]'
   'andesite':
     material: "ANDESITE"
     slot: 14
     left_click_commands:
-      - '[player] petblocks skinType %petblocks_pet_name_selected% ANDESITE'
+      - '[console] petblocks skinType %petblocks_pet_name_selected% ANDESITE %petblocks_owner_name%'
       - '[refresh]'
   'polished_andesite':
     material: "POLISHED_ANDESITE"
     slot: 15
     left_click_commands:
-      - '[player] petblocks skinType %petblocks_pet_name_selected% POLISHED_ANDESITE'
+      - '[console] petblocks skinType %petblocks_pet_name_selected% POLISHED_ANDESITE %petblocks_owner_name%'
       - '[refresh]'
   'deepslate':
     material: "DEEPSLATE"
     slot: 16
     left_click_commands:
-      - '[player] petblocks skinType %petblocks_pet_name_selected% DEEPSLATE'
+      - '[console] petblocks skinType %petblocks_pet_name_selected% DEEPSLATE %petblocks_owner_name%'
       - '[refresh]'
   'cobbled_deepslate':
     material: "COBBLED_DEEPSLATE"
     slot: 17
     left_click_commands:
-      - '[player] petblocks skinType %petblocks_pet_name_selected% COBBLED_DEEPSLATE'
+      - '[console] petblocks skinType %petblocks_pet_name_selected% COBBLED_DEEPSLATE %petblocks_owner_name%'
       - '[refresh]'
   'polished_deepslate':
     material: "POLISHED_DEEPSLATE"
     slot: 18
     left_click_commands:
-      - '[player] petblocks skinType %petblocks_pet_name_selected% POLISHED_DEEPSLATE'
+      - '[console] petblocks skinType %petblocks_pet_name_selected% POLISHED_DEEPSLATE %petblocks_owner_name%'
       - '[refresh]'
   'calcite':
     material: "CALCITE"
     slot: 19
     left_click_commands:
-      - '[player] petblocks skinType %petblocks_pet_name_selected% CALCITE'
+      - '[console] petblocks skinType %petblocks_pet_name_selected% CALCITE %petblocks_owner_name%'
       - '[refresh]'
   'tuff':
     material: "TUFF"
     slot: 20
     left_click_commands:
-      - '[player] petblocks skinType %petblocks_pet_name_selected% TUFF'
+      - '[console] petblocks skinType %petblocks_pet_name_selected% TUFF %petblocks_owner_name%'
       - '[refresh]'
   'dripstone_block':
     material: "DRIPSTONE_BLOCK"
     slot: 21
     left_click_commands:
-      - '[player] petblocks skinType %petblocks_pet_name_selected% DRIPSTONE_BLOCK'
+      - '[console] petblocks skinType %petblocks_pet_name_selected% DRIPSTONE_BLOCK %petblocks_owner_name%'
       - '[refresh]'
   'grass_block':
     material: "GRASS_BLOCK"
     slot: 22
     left_click_commands:
-      - '[player] petblocks skinType %petblocks_pet_name_selected% GRASS_BLOCK'
+      - '[console] petblocks skinType %petblocks_pet_name_selected% GRASS_BLOCK %petblocks_owner_name%'
       - '[refresh]'
   'dirt':
     material: "DIRT"
     slot: 23
     left_click_commands:
-      - '[player] petblocks skinType %petblocks_pet_name_selected% DIRT'
+      - '[console] petblocks skinType %petblocks_pet_name_selected% DIRT %petblocks_owner_name%'
       - '[refresh]'
   'coarse_dirt':
     material: "COARSE_DIRT"
     slot: 24
     left_click_commands:
-      - '[player] petblocks skinType %petblocks_pet_name_selected% COARSE_DIRT'
+      - '[console] petblocks skinType %petblocks_pet_name_selected% COARSE_DIRT %petblocks_owner_name%'
       - '[refresh]'
   'podzol':
     material: "PODZOL"
     slot: 25
     left_click_commands:
-      - '[player] petblocks skinType %petblocks_pet_name_selected% PODZOL'
+      - '[console] petblocks skinType %petblocks_pet_name_selected% PODZOL %petblocks_owner_name%'
       - '[refresh]'
   'rooted_dirt':
     material: "ROOTED_DIRT"
     slot: 26
     left_click_commands:
-      - '[player] petblocks skinType %petblocks_pet_name_selected% ROOTED_DIRT'
+      - '[console] petblocks skinType %petblocks_pet_name_selected% ROOTED_DIRT %petblocks_owner_name%'
       - '[refresh]'
   'gold_block':
     material: "GOLD_BLOCK"
     slot: 27
     left_click_commands:
-      - '[player] petblocks skinType %petblocks_pet_name_selected% GOLD_BLOCK'
+      - '[console] petblocks skinType %petblocks_pet_name_selected% GOLD_BLOCK %petblocks_owner_name%'
       - '[refresh]'
   'crimson_nylium':
     material: "CRIMSON_NYLIUM"
     slot: 28
     left_click_commands:
-      - '[player] petblocks skinType %petblocks_pet_name_selected% CRIMSON_NYLIUM'
+      - '[console] petblocks skinType %petblocks_pet_name_selected% CRIMSON_NYLIUM %petblocks_owner_name%'
       - '[refresh]'
   'warped_nylium':
     material: "WARPED_NYLIUM"
     slot: 29
     left_click_commands:
-      - '[player] petblocks skinType %petblocks_pet_name_selected% WARPED_NYLIUM'
+      - '[console] petblocks skinType %petblocks_pet_name_selected% WARPED_NYLIUM %petblocks_owner_name%'
       - '[refresh]'
   'cobblestone':
     material: "COBBLESTONE"
     slot: 30
     left_click_commands:
-      - '[player] petblocks skinType %petblocks_pet_name_selected% COBBLESTONE'
+      - '[console] petblocks skinType %petblocks_pet_name_selected% COBBLESTONE %petblocks_owner_name%'
       - '[refresh]'
   'oak_planks':
     material: "OAK_PLANKS"
     slot: 31
     left_click_commands:
-      - '[player] petblocks skinType %petblocks_pet_name_selected% OAK_PLANKS'
+      - '[console] petblocks skinType %petblocks_pet_name_selected% OAK_PLANKS %petblocks_owner_name%'
       - '[refresh]'
   'spruce_planks':
     material: "SPRUCE_PLANKS"
     slot: 32
     left_click_commands:
-      - '[player] petblocks skinType %petblocks_pet_name_selected% SPRUCE_PLANKS'
+      - '[console] petblocks skinType %petblocks_pet_name_selected% SPRUCE_PLANKS %petblocks_owner_name%'
       - '[refresh]'
   'birch_planks':
     material: "BIRCH_PLANKS"
     slot: 33
     left_click_commands:
-      - '[player] petblocks skinType %petblocks_pet_name_selected% BIRCH_PLANKS'
+      - '[console] petblocks skinType %petblocks_pet_name_selected% BIRCH_PLANKS %petblocks_owner_name%'
       - '[refresh]'
   'jungle_planks':
     material: "JUNGLE_PLANKS"
     slot: 34
     left_click_commands:
-      - '[player] petblocks skinType %petblocks_pet_name_selected% JUNGLE_PLANKS'
+      - '[console] petblocks skinType %petblocks_pet_name_selected% JUNGLE_PLANKS %petblocks_owner_name%'
       - '[refresh]'
   'acacia_planks':
     material: "ACACIA_PLANKS"
     slot: 35
     left_click_commands:
-      - '[player] petblocks skinType %petblocks_pet_name_selected% ACACIA_PLANKS'
+      - '[console] petblocks skinType %petblocks_pet_name_selected% ACACIA_PLANKS %petblocks_owner_name%'
       - '[refresh]'
   'diamond_block':
     material: "DIAMOND_BLOCK"
     slot: 36
     left_click_commands:
-      - '[player] petblocks skinType %petblocks_pet_name_selected% DIAMOND_BLOCK'
+      - '[console] petblocks skinType %petblocks_pet_name_selected% DIAMOND_BLOCK %petblocks_owner_name%'
       - '[refresh]'
   'dark_oak_planks':
     material: "DARK_OAK_PLANKS"
     slot: 37
     left_click_commands:
-      - '[player] petblocks skinType %petblocks_pet_name_selected% DARK_OAK_PLANKS'
+      - '[console] petblocks skinType %petblocks_pet_name_selected% DARK_OAK_PLANKS %petblocks_owner_name%'
       - '[refresh]'
   'iron_block':
     material: "IRON_BLOCK"
     slot: 38
     left_click_commands:
-      - '[player] petblocks skinType %petblocks_pet_name_selected% IRON_BLOCK'
+      - '[console] petblocks skinType %petblocks_pet_name_selected% IRON_BLOCK %petblocks_owner_name%'
       - '[refresh]'
   'red_mushroom_block':
     material: "RED_MUSHROOM_BLOCK"
     slot: 39
     left_click_commands:
-      - '[player] petblocks skinType %petblocks_pet_name_selected% RED_MUSHROOM_BLOCK'
+      - '[console] petblocks skinType %petblocks_pet_name_selected% RED_MUSHROOM_BLOCK %petblocks_owner_name%'
       - '[refresh]'
   'crimson_planks':
     material: "CRIMSON_PLANKS"
     slot: 40
     left_click_commands:
-      - '[player] petblocks skinType %petblocks_pet_name_selected% CRIMSON_PLANKS'
+      - '[console] petblocks skinType %petblocks_pet_name_selected% CRIMSON_PLANKS %petblocks_owner_name%'
       - '[refresh]'
   'warped_planks':
     material: "WARPED_PLANKS"
     slot: 41
     left_click_commands:
-      - '[player] petblocks skinType %petblocks_pet_name_selected% WARPED_PLANKS'
+      - '[console] petblocks skinType %petblocks_pet_name_selected% WARPED_PLANKS %petblocks_owner_name%'
       - '[refresh]'
   'beacon':
     material: "BEACON"
     slot: 42
     left_click_commands:
-      - '[player] petblocks skinType %petblocks_pet_name_selected% BEACON'
+      - '[console] petblocks skinType %petblocks_pet_name_selected% BEACON %petblocks_owner_name%'
       - '[refresh]'
   'bedrock':
     material: "BEDROCK"
     slot: 43
     left_click_commands:
-      - '[player] petblocks skinType %petblocks_pet_name_selected% BEDROCK'
+      - '[console] petblocks skinType %petblocks_pet_name_selected% BEDROCK %petblocks_owner_name%'
       - '[refresh]'
   'sand':
     material: "SAND"
     slot: 44
     left_click_commands:
-      - '[player] petblocks skinType %petblocks_pet_name_selected% SAND'
+      - '[console] petblocks skinType %petblocks_pet_name_selected% SAND %petblocks_owner_name%'
       - '[refresh]'
 # ==============================================================
 #
@@ -513,8 +513,8 @@ items:
 # [console] - Execute a command from the console
 # Usage: - '[console] <command with no slash>'
 #
-# [player] - Execute a command for the menu viewer
-# Usage: - '[player] <command with no slash>'
+# [console] - Execute a command for the menu viewer
+# Usage: - '[console] <command with no slash>'
 #
 # [commandevent] - Fire a PlayerCommandPreprocessEvent for commands that do not use the bukkit command system
 # Usage: - '[commandevent] <command with no slash>'

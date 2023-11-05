@@ -2,9 +2,10 @@ site_name: PetBlocks
 repo_url: https://github.com/Shynixn/PetBlocks
 site_author: Shynixn
 nav:
-  - 'Getting Started':
+  - 'PetBlocks Wiki':
       - Introduction: README.md
       - Permission: permission.md
+      - Giving Pets to Players: receivingpets.md
       - 'FAQ': faq.md
 theme:
   name: material

@@ -60,10 +60,12 @@ class DependencyPlaceHolderApiServiceImpl @Inject constructor(
                         }
 
                         val selectedPet = pets.firstOrNull { e -> e.name == playerInformation.selectedPet }
+                        val newParams = parts.dropLast(1).joinToString("_")
 
                         if (selectedPet != null) {
-                            val newParams = parts.dropLast(1).joinToString("_")
                             return placeHolderService.replacePlaceHolders(p, "%petblocks_${newParams}%", selectedPet)
+                        } else if (pets.size > 0) {
+                            return placeHolderService.replacePlaceHolders(p, "%petblocks_${newParams}%", pets[0])
                         }
                     }
                 }
