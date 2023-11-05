@@ -24,35 +24,10 @@ jobs:
         with:
           java-version: '8'
 
-      - name: Cache Spigot Dependencies
-        id: cache-spigot-dependencies
-        uses: actions/cache@v2
-        with:
-          path: /home/runner/.m2/repository/org/spigotmc
-          key: spigot-dependency
-
-      - name: Validate Spigot Dependencies
-        run: |
-          test -f ~/.m2/repository/org/spigotmc/spigot/1.19.1-R0.1-SNAPSHOT/spigot-1.19.1-R0.1-SNAPSHOT.jar && echo "DEPENDENCIES=true" >> $GITHUB_ENV || echo "DEPENDENCIES=false" >> $GITHUB_ENV
-
-      - name: Build Spigot Dependencies
-        if: ${{ env.DEPENDENCIES != 'true' }}
-        run: |
-          mkdir -p ~/.m2/repository/org/spigotmc/
-          docker build --target dependencies-jdk8 -t petblocks-dependencies-jdk8 .
-          docker create --name petblocks-dependencies-jdk8 petblocks-dependencies-jdk8 bash
-          docker cp petblocks-dependencies-jdk8:/root/.m2/repository/org/spigotmc ~/.m2/repository/org/
-          docker rm -f petblocks-dependencies-jdk8
-          docker build --target dependencies-jdk17 -t petblocks-dependencies-jdk17 .
-          docker create --name petblocks-dependencies-jdk17 petblocks-dependencies-jdk17 bash
-          docker cp petblocks-dependencies-jdk17:/root/.m2/repository/org/spigotmc ~/.m2/repository/org/
-          docker rm -f petblocks-dependencies-jdk17
-
       - name: Build Java Application
         run: |
           chmod +x gradlew
-          ./gradlew assemble || ./gradlew setupDecompWorkspace && ./gradlew assemble
-          ./gradlew build shadowJar
+          ./gradlew build pluginJars
           echo "RELEASE_VERSION=$(./gradlew -q printVersion)" >> $GITHUB_ENV
 
       - name: Create Github Release
@@ -68,15 +43,39 @@ jobs:
           draft: false
           prerelease: false
 
-      - name: Upload Bukkit Release to Github
+      - name: Create Github Release
+        if: "contains(github.event.head_commit.message, '--release') && contains(github.ref, 'master')"
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          body: "This release was automatically created by Github Actions. Please wait until the author manually sets the patchnotes for this release."
+          tag_name: ${{ env.RELEASE_VERSION }}
+          release_name: Release ${{ env.RELEASE_VERSION }}
+          draft: true
+          prerelease: false
+
+      - name: Upload Latest Bukkit Release to Github
         if: "contains(github.event.head_commit.message, '--release') && contains(github.ref, 'master')"
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: /home/runner/work/PetBlocks/PetBlocks/petblocks-bukkit-plugin/build/libs/petblocks-bukkit-plugin-${{ env.RELEASE_VERSION }}.jar
-          asset_name: PetBlocks-Bukkit.jar
+          asset_path: /home/runner/work/PetBlocks/PetBlocks/build/libs/petblocks-root-${{ env.RELEASE_VERSION }}-latest.jar
+          asset_name: PetBlocks.jar
+          asset_content_type: application/jar
+
+      - name: Upload Premium Bukkit Release to Github
+        if: "contains(github.event.head_commit.message, '--release') && contains(github.ref, 'master')"
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+            asset_path: /home/runner/work/PetBlocks/PetBlocks/build/libs/petblocks-root-${{ env.RELEASE_VERSION }}-premium.jar
+          asset_name: BlockBall-Premium.jar
           asset_content_type: application/jar
 
   Documentation:
@@ -84,18 +83,26 @@ jobs:
     if: "contains(github.ref, 'master')"
     steps:
       - uses: actions/checkout@v2
-
-      - name: Create Wiki
-        uses: Shynixn/sphinx-rdt-wiki-action@v1.0.0
+      - uses: actions/setup-java@v1
         with:
-          source-dir: "docs/source"
-          target-dir: "docs/build"
-          github-secret: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Create JavaDocs
-        uses: Shynixn/jvm-docs-action@v1.0.0
+          java-version: '8'
+      - uses: actions/setup-python@v2
         with:
-          source-dirs: "petblocks-api/src/main/kotlin;petblocks-bukkit-api/src/main/kotlin"
-          target-dir: "docs/apidocs"
-          doctype: "javaDocs"
-          github-secret: ${{ secrets.GITHUB_TOKEN }}
+          python-version: '3.x'
+          architecture: 'x64'
+
+      - name: Build Documentation
+        run: |
+          git pull
+          git config --global user.email "shynixn@email.com" && git config --global user.name "Shynixn CI Actions"
+          rm -rf docs/wiki/site
+          sudo apt-get install -y mkdocs
+          pip install mkdocs-material
+          pip install Pygments
+          cd docs/wiki
+          mkdocs build
+          cd ..
+          cd ..
+          git add docs
+          git commit --message "Automatic CI Documentation."
+          git push --quiet https://Shynixn:${{ secrets.GITHUB_TOKEN }}@github.com/Shynixn/PetBlocks.git HEAD:master

@@ -22,7 +22,7 @@ PetBlocks does only have 1 command, which is restricted using permissions.
 
 **Required Permission:**
 ``
-petblocks.petblocks.command
+petblocks.command
 ``
 
 ### /petblocks create 

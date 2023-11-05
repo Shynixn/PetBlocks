@@ -9,5 +9,5 @@ the old PetBlocks GUI back.
 
 * Install DeluxeMenu
 * Install PlaceHolderApi
-* Copy the contents from the ``plugins/PetBlocks/thirdparty/DeluxeMenu`` folder to the ``plugins/DeluxeMenu`` folder. Execute ``/petblocksmenu``
+* Copy the contents from the ``plugins/PetBlocks/thirdparty/DeluxeMenu`` folder to the ``plugins/DeluxeMenu`` folder. Restart the server. Execute ``/petblocksmenu``
   with the permission ``petblocks.deluxemenu``.
