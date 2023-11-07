@@ -115,7 +115,6 @@ class PetBlocksPlugin : JavaPlugin() {
             val language = configurationService.findValue<String>("language")
             plugin.reloadTranslation(language, PetBlocksLanguage::class.java, "en_us")
             logger.log(Level.INFO, "Loaded language file $language.properties.")
-
             // Connect
             val sqlConnectionService = resolve(SqlConnectionService::class.java)
             sqlConnectionService.connect()
