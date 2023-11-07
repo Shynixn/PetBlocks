@@ -31,6 +31,9 @@ import java.nio.file.Files
 import java.nio.file.StandardCopyOption
 import java.util.logging.Level
 
+/**
+ * Author Shynixn
+ */
 class PetBlocksPlugin : JavaPlugin() {
     private val prefix: String = ChatColor.BLUE.toString() + "[PetBlocks] " + ChatColor.WHITE
     private var injector: Injector? = null
