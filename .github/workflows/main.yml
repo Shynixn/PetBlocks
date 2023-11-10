@@ -62,7 +62,7 @@ jobs:
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: /home/runner/work/PetBlocks/PetBlocks/build/libs/petblocks-root-${{ env.RELEASE_VERSION }}-premium.jar
-          asset_name: BlockBall-Premium.jar
+          asset_name: PetBlocks-Premium.jar
           asset_content_type: application/jar
 
   Documentation:

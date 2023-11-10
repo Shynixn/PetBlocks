@@ -7,6 +7,8 @@ import com.github.shynixn.mcutils.packet.api.packet.*
 import com.github.shynixn.petblocks.contract.Pet
 import com.github.shynixn.petblocks.contract.PlaceHolderService
 import com.github.shynixn.petblocks.entity.PetMeta
+import com.github.shynixn.petblocks.enumeration.PetRidingState
+import com.github.shynixn.petblocks.enumeration.PetVisibility
 import org.bukkit.Location
 import org.bukkit.entity.Player
 import org.bukkit.util.EulerAngle
@@ -17,7 +19,7 @@ class ArmorstandEntityComponent(
     private val playerComponent: PlayerComponent,
     private val petMeta: PetMeta,
     private val placeHolderService: PlaceHolderService,
-    private val pet : Pet,
+    private val pet: Pet,
     val entityId: Int,
 ) : PhysicComponent {
     init {
@@ -30,16 +32,30 @@ class ArmorstandEntityComponent(
         packetService.sendPacketOutEntitySpawn(player, PacketOutEntitySpawn().also {
             it.entityId = this.entityId
             it.entityType = EntityType.ARMOR_STAND
-            it.target = location.toVector3d().addRelativeDown(petMeta.physics.groundOffset).toLocation()
+            it.target = location.toVector3d().addRelativeUp(petMeta.physics.groundOffset).toLocation()
         })
 
-        val itemStack = petMeta.headItem.toItemStack()
+        updateEquipment(player)
+        updateMetaData(player)
+        updateRidingState(player)
+    }
 
+    private fun onPlayerRemove(player: Player) {
+        val outer = this
+        packetService.sendPacketOutEntityDestroy(player, PacketOutEntityDestroy().also {
+            it.entityIds = listOf(outer.entityId)
+        })
+    }
+
+    fun updateEquipment(player: Player) {
+        val itemStack = petMeta.headItem.toItemStack()
         packetService.sendPacketOutEntityEquipment(player, PacketOutEntityEquipment().also {
             it.entityId = this.entityId
             it.items = listOf(Pair(ArmorSlotType.HELMET, itemStack))
         })
+    }
 
+    fun updateMetaData(player: Player) {
         packetService.sendPacketOutEntityMetadata(player, PacketOutEntityMetadata().also {
             it.entityId = this.entityId
             it.isArmorstandSmall = true
@@ -49,11 +65,49 @@ class ArmorstandEntityComponent(
         })
     }
 
-    private fun onPlayerRemove(player: Player) {
-        val outer = this
-        packetService.sendPacketOutEntityDestroy(player, PacketOutEntityDestroy().also {
-            it.entityIds = listOf(outer.entityId)
-        })
+    fun updateRidingState(player: Player) {
+        val owner = pet.player
+
+        if (petMeta.visibility == PetVisibility.OWNER && player != owner) {
+            return
+        }
+
+        val ridingState = petMeta.ridingState
+
+        if (ridingState == PetRidingState.NO) {
+            // Remove ground and fly
+            packetService.sendPacketOutEntityMount(player, PacketOutEntityMount().also {
+                it.entityId = entityId
+            })
+            // Remove hat
+            packetService.sendPacketOutEntityMount(player, PacketOutEntityMount().also {
+                it.entityId = owner.entityId
+            })
+        }
+
+        if (ridingState == PetRidingState.HAT) {
+            // Remove ground and fly
+            packetService.sendPacketOutEntityMount(player, PacketOutEntityMount().also {
+                it.entityId = entityId
+            })
+            // Set pet as passenger of player
+            packetService.sendPacketOutEntityMount(player, PacketOutEntityMount().also {
+                it.entityId = owner.entityId
+                it.passengers = listOf(entityId)
+            })
+        }
+
+        if (ridingState == PetRidingState.GROUND) {
+            // Remove hat
+            packetService.sendPacketOutEntityMount(player, PacketOutEntityMount().also {
+                it.entityId = owner.entityId
+            })
+            // Set pet as passenger of player
+            packetService.sendPacketOutEntityMount(player, PacketOutEntityMount().also {
+                it.entityId = entityId
+                it.passengers = listOf(owner.entityId)
+            })
+        }
     }
 
     private fun onPositionChange(position: Vector3d, motion: Vector3d) {
@@ -67,7 +121,7 @@ class ArmorstandEntityComponent(
 
             packetService.sendPacketOutEntityTeleport(player, PacketOutEntityTeleport().also {
                 it.entityId = this.entityId
-                it.target = position.clone().addRelativeDown(petMeta.physics.groundOffset).toLocation()
+                it.target = position.clone().addRelativeUp(petMeta.physics.groundOffset).toLocation()
             })
 
             packetService.sendPacketOutEntityMetadata(player, PacketOutEntityMetadata().also {

@@ -36,7 +36,7 @@ pet:
     # e.g. 0.005 means that the speed is reduced by 0.005 after each tick
     absoluteVelocityReduce: 0.0005
     # The distance the pet hovers above the ground. Depending on the entity type this should be set lower or higher.
-    groundOffset: 0.35
+    groundOffset: -0.35
 
 #
 # Defines the action a pet should perform on certain events.

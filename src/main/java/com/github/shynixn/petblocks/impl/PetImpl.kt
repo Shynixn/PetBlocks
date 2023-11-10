@@ -83,7 +83,7 @@ class PetImpl(
             }
 
             petMeta.displayName = value.translateChatColors()
-            petEntity?.updateDisplayName(petMeta.displayName)
+            petEntity?.updateDisplayName()
         }
 
     /**
@@ -188,7 +188,7 @@ class PetImpl(
         }
         set(value) {
             petMeta.headItem = value.toItem()
-            petEntity?.updateHeadItemStack(petMeta.headItem.toItemStack())
+            petEntity?.updateHeadItemStack()
         }
 
     /**
@@ -200,7 +200,7 @@ class PetImpl(
         }
         set(value) {
             petMeta.headItem = value
-            petEntity?.updateHeadItemStack(petMeta.headItem.toItemStack())
+            petEntity?.updateHeadItemStack()
         }
 
     /**
@@ -341,7 +341,7 @@ class PetImpl(
 
         call()
         petMeta.ridingState = PetRidingState.GROUND
-        petEntity?.updateRidingState(player)
+        petEntity?.updateRidingState()
     }
 
     /**
@@ -360,7 +360,7 @@ class PetImpl(
         currentLocation.pitch = 0.0F
         location = currentLocation
         petMeta.ridingState = PetRidingState.HAT
-        petEntity?.updateRidingState(player)
+        petEntity?.updateRidingState()
     }
 
     /**
@@ -378,7 +378,7 @@ class PetImpl(
         petMeta.ridingState = PetRidingState.NO
 
         if (petEntity != null) {
-            petEntity!!.updateRidingState(player)
+            petEntity!!.updateRidingState()
             call()
         }
     }

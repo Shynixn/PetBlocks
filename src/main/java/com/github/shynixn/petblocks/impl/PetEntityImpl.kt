@@ -1,24 +1,22 @@
 package com.github.shynixn.petblocks.impl
 
-import com.github.shynixn.mccoroutine.bukkit.*
+import com.github.shynixn.mccoroutine.bukkit.CoroutineTimings
+import com.github.shynixn.mccoroutine.bukkit.launch
+import com.github.shynixn.mccoroutine.bukkit.minecraftDispatcher
+import com.github.shynixn.mccoroutine.bukkit.ticks
 import com.github.shynixn.mcutils.common.Vector3d
 import com.github.shynixn.mcutils.common.physic.PhysicObject
 import com.github.shynixn.mcutils.common.physic.PhysicObjectDispatcher
 import com.github.shynixn.mcutils.common.toLocation
 import com.github.shynixn.mcutils.common.toVector3d
-import com.github.shynixn.mcutils.packet.api.*
-import com.github.shynixn.mcutils.packet.api.packet.PacketOutEntityEquipment
-import com.github.shynixn.mcutils.packet.api.packet.PacketOutEntityMetadata
-import com.github.shynixn.mcutils.packet.api.packet.PacketOutEntityMount
+import com.github.shynixn.mcutils.packet.api.PacketService
 import com.github.shynixn.mcutils.pathfinder.api.PathfinderResult
 import com.github.shynixn.mcutils.pathfinder.api.PathfinderResultType
 import com.github.shynixn.mcutils.pathfinder.api.PathfinderService
 import com.github.shynixn.mcutils.pathfinder.api.WorldSnapshot
 import com.github.shynixn.petblocks.contract.Pet
 import com.github.shynixn.petblocks.contract.PetActionExecutionService
-import com.github.shynixn.petblocks.contract.PlaceHolderService
 import com.github.shynixn.petblocks.entity.PetMeta
-import com.github.shynixn.petblocks.enumeration.PetRidingState
 import com.github.shynixn.petblocks.enumeration.PetVisibility
 import com.github.shynixn.petblocks.impl.physic.ArmorstandEntityComponent
 import com.github.shynixn.petblocks.impl.physic.MathComponent
@@ -30,11 +28,9 @@ import org.bukkit.FluidCollisionMode
 import org.bukkit.Location
 import org.bukkit.Material
 import org.bukkit.entity.Player
-import org.bukkit.inventory.ItemStack
 import org.bukkit.plugin.Plugin
 import org.bukkit.util.Vector
-import java.util.Date
-import java.util.Random
+import java.util.*
 import java.util.logging.Level
 
 class PetEntityImpl(
@@ -45,7 +41,6 @@ class PetEntityImpl(
     private val plugin: Plugin,
     private val pet: Pet,
     private val petMeta: PetMeta,
-    private val placeHolderService: PlaceHolderService,
     private val packetService: PacketService,
     private val physicObjectDispatcher: PhysicObjectDispatcher,
     private val pathfinderService: PathfinderService,
@@ -57,13 +52,14 @@ class PetEntityImpl(
     private var positionUpdateCounter = 0
     private var velocity = Vector3d(0.0, 0.0, 0.0)
     private var lastClickTimeStamp = 0L
+
     // Mover
     private var lastRandomTimeStamp = 0L
     private var randomMoveOne = 0
     private var randomMoveTwo = 0
     private var randomMoveThree = 0
 
-    companion object{
+    companion object {
         var random = Random()
     }
 
@@ -130,7 +126,7 @@ class PetEntityImpl(
     /**
      * RightClicks the pet.
      */
-    fun rightClick(player : Player) {
+    fun rightClick(player: Player) {
         val currentDateTime = Date().time
 
         if (currentDateTime - lastClickTimeStamp < clickCoolDownMs) {
@@ -150,7 +146,7 @@ class PetEntityImpl(
     /**
      * LeftClicks the pet.
      */
-    fun leftClick(player : Player) {
+    fun leftClick(player: Player) {
         val currentDateTime = Date().time
 
         if (currentDateTime - lastClickTimeStamp < clickCoolDownMs) {
@@ -180,7 +176,7 @@ class PetEntityImpl(
 
         val dateTime = Date().time
 
-        if(dateTime - lastRandomTimeStamp > 3000){
+        if (dateTime - lastRandomTimeStamp > 3000) {
             // For multiple pets.
             lastRandomTimeStamp = dateTime
             randomMoveOne = random.nextInt(3)
@@ -309,73 +305,27 @@ class PetEntityImpl(
     /**
      * Updates the displayName in the world.
      */
-    fun updateDisplayName(name: String) {
+    fun updateDisplayName() {
         for (player in playerComponent.visiblePlayers) {
-            packetService.sendPacketOutEntityMetadata(player, PacketOutEntityMetadata().also {
-                it.entityId = entityComponent.entityId
-                it.customNameVisible = true
-                it.customname = placeHolderService.replacePlaceHolders(player, name, pet)
-            })
+            entityComponent.updateMetaData(player)
         }
     }
 
     /**
      * Updates the head Itemstack.
      */
-    fun updateHeadItemStack(itemStack: ItemStack) {
+    fun updateHeadItemStack() {
         for (player in playerComponent.visiblePlayers) {
-            packetService.sendPacketOutEntityEquipment(player, PacketOutEntityEquipment().also {
-                it.entityId = entityComponent.entityId
-                it.items = listOf(Pair(ArmorSlotType.HELMET, itemStack))
-            })
+            entityComponent.updateEquipment(player)
         }
     }
 
     /**
      * Updates the riding state of the player.
      */
-    fun updateRidingState(owner: Player) {
+    fun updateRidingState() {
         for (player in playerComponent.visiblePlayers) {
-            if (petMeta.visibility == PetVisibility.OWNER && player != owner) {
-                continue
-            }
-
-            val ridingState = petMeta.ridingState
-
-            if (ridingState == PetRidingState.NO) {
-                // Remove ground and fly
-                packetService.sendPacketOutEntityMount(player, PacketOutEntityMount().also {
-                    it.entityId = entityComponent.entityId
-                })
-                // Remove hat
-                packetService.sendPacketOutEntityMount(player, PacketOutEntityMount().also {
-                    it.entityId = owner.entityId
-                })
-            }
-
-            if (ridingState == PetRidingState.HAT) {
-                // Remove ground and fly
-                packetService.sendPacketOutEntityMount(player, PacketOutEntityMount().also {
-                    it.entityId = entityComponent.entityId
-                })
-                // Set pet as passenger of player
-                packetService.sendPacketOutEntityMount(player, PacketOutEntityMount().also {
-                    it.entityId = owner.entityId
-                    it.passengers = listOf(entityComponent.entityId)
-                })
-            }
-
-            if (ridingState == PetRidingState.GROUND) {
-                // Remove hat
-                packetService.sendPacketOutEntityMount(player, PacketOutEntityMount().also {
-                    it.entityId = owner.entityId
-                })
-                // Set pet as passenger of player
-                packetService.sendPacketOutEntityMount(player, PacketOutEntityMount().also {
-                    it.entityId = entityComponent.entityId
-                    it.passengers = listOf(owner.entityId)
-                })
-            }
+            entityComponent.updateRidingState(player)
         }
     }
 

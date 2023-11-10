@@ -75,7 +75,6 @@ class PetEntityFactoryImpl @Inject constructor(
             plugin,
             pet,
             meta,
-            placeHolderService,
             packetService,
             physicObjectDispatcher,
             pathfinderService,
