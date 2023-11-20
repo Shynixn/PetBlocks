@@ -69,6 +69,10 @@ Select the action type. Support actions are ``COMMAND``, ``DELAY``, ``JAVASCRIPT
 
 Executes one or multiple commands as Console or Player.
 
+!!! note "Vanilla Commands"
+   A vanilla command may automatically log to the console and to the chat of every op player. You can disable the output for op players using vanilla game rules such as ``/gamerule sendCommandFeedback false``, ``/gamerule logAdminCommands false``, ``/gamerule commandBlockOutput false``. If you want to hide the output in your console (not recommend), you need to install a LogFilter plugin.
+
+
 ```yaml
 events:
   rightClick:
