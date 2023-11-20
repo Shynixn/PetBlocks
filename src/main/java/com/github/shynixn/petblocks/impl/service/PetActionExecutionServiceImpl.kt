@@ -17,6 +17,9 @@ import kotlinx.coroutines.withContext
 import org.bukkit.Bukkit
 import org.bukkit.Server
 import org.bukkit.command.CommandSender
+import org.bukkit.command.ConsoleCommandSender
+import org.bukkit.conversations.Conversation
+import org.bukkit.conversations.ConversationAbandonedEvent
 import org.bukkit.entity.Player
 import org.bukkit.permissions.Permission
 import org.bukkit.permissions.PermissionAttachment
@@ -177,7 +180,7 @@ class PetActionExecutionServiceImpl @Inject constructor(
         }
     }
 
-    private class PetBlocksCommandSender(private val handle: CommandSender) : CommandSender {
+    private class PetBlocksCommandSender(private val handle: CommandSender) : ConsoleCommandSender{
         override fun isOp(): Boolean {
             return handle.isOp
         }
@@ -252,6 +255,29 @@ class PetActionExecutionServiceImpl @Inject constructor(
 
         override fun spigot(): CommandSender.Spigot {
             return handle.spigot()
+        }
+
+        override fun isConversing(): Boolean {
+            return false
+        }
+
+        override fun acceptConversationInput(input: String) {
+        }
+
+        override fun beginConversation(conversation: Conversation): Boolean {
+            return true
+        }
+
+        override fun abandonConversation(conversation: Conversation) {
+        }
+
+        override fun abandonConversation(conversation: Conversation, details: ConversationAbandonedEvent) {
+        }
+
+        override fun sendRawMessage(message: String) {
+        }
+
+        override fun sendRawMessage(sender: UUID?, message: String) {
         }
     }
 }
