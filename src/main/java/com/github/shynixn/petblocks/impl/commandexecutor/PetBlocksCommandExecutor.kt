@@ -297,16 +297,21 @@ class PetBlocksCommandExecutor @Inject constructor(
             plugin.reloadTranslation(language, PetBlocksLanguage::class.java, "en_us")
             plugin.logger.log(Level.INFO, "Loaded language file $language.properties.")
             templateRepository.clearCache()
-            val templates = templateRepository.getAll()
-            for (pet in petService.getCache().values.flatten()) {
-                val matchingTemplate = templates.firstOrNull { e -> e.name.equals(pet.template.name, true) }
 
-                if (matchingTemplate != null) {
-                    pet.template = matchingTemplate
+            try {
+                val templates = templateRepository.getAll()
+                for (pet in petService.getCache().values.flatten()) {
+                    val matchingTemplate = templates.firstOrNull { e -> e.name.equals(pet.template.name, true) }
+
+                    if (matchingTemplate != null) {
+                        pet.template = matchingTemplate
+                    }
                 }
+                sender.sendPluginMessage(PetBlocksLanguage.reloadMessage)
+            } catch (e: Exception) {
+                plugin.logger.log(Level.SEVERE, "Failed to load file", e)
+                sender.sendPluginMessage(PetBlocksLanguage.errorLoadingTemplatesMessage)
             }
-
-            sender.sendPluginMessage(PetBlocksLanguage.reloadMessage)
             return true
         }
 

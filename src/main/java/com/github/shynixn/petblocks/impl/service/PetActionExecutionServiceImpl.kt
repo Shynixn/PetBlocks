@@ -1,19 +1,21 @@
 package com.github.shynixn.petblocks.impl.service
 
 import com.github.shynixn.mccoroutine.bukkit.asyncDispatcher
+import com.github.shynixn.mccoroutine.bukkit.launch
 import com.github.shynixn.mccoroutine.bukkit.ticks
+import com.github.shynixn.mcutils.common.CancellationToken
 import com.github.shynixn.petblocks.contract.Pet
 import com.github.shynixn.petblocks.contract.PetActionExecutionService
 import com.github.shynixn.petblocks.contract.PlaceHolderService
 import com.github.shynixn.petblocks.contract.ScriptService
 import com.github.shynixn.petblocks.entity.PetAction
+import com.github.shynixn.petblocks.entity.PetActionCondition
 import com.github.shynixn.petblocks.entity.PetActionDefinition
 import com.github.shynixn.petblocks.enumeration.PetActionCommandLevelType
 import com.github.shynixn.petblocks.enumeration.PetActionConditionType
 import com.github.shynixn.petblocks.enumeration.PetActionType
 import com.google.inject.Inject
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.*
 import org.bukkit.Bukkit
 import org.bukkit.Server
 import org.bukkit.command.CommandSender
@@ -35,10 +37,23 @@ class PetActionExecutionServiceImpl @Inject constructor(
 ) : PetActionExecutionService {
     private val commandSender = PetBlocksCommandSender(Bukkit.getConsoleSender())
 
-    override suspend fun executeAction(eventPlayer: Player, pet: Pet, petActionDefinition: PetActionDefinition) {
+    /**
+     * Executes an pet action.
+     * @param eventPlayer Related to the event. May not be the owner.
+     */
+    override suspend fun executeAction(
+        eventPlayer: Player,
+        pet: Pet,
+        petActionDefinition: PetActionDefinition,
+        cancellationToken: CancellationToken
+    ) {
         for (action in petActionDefinition.actions) {
             if (pet.isDisposed) {
-                break
+                return
+            }
+
+            if (cancellationToken.isCancelled) {
+                return
             }
 
             if (action.debug) {
@@ -57,55 +72,158 @@ class PetActionExecutionServiceImpl @Inject constructor(
             }
 
             if (action.condition != null) {
-                val condition = action.condition!!
+                val conditionResult = evaluateCondition(action, action.condition!!, pet, eventPlayer)
 
-                if (action.debug) {
-                    plugin.logger.log(Level.INFO, "Start evaluating condition '${condition.type}'.")
-                }
-
-                if (condition.type == PetActionConditionType.STRING_EQUALS) {
-                    val leftEscaped = placeHolderService.replacePlaceHolders(eventPlayer, condition.left!!, pet)
-                    val rightEscaped = placeHolderService.replacePlaceHolders(eventPlayer, condition.right!!, pet)
-                    val conditionResult = rightEscaped == leftEscaped
-
-                    if (action.debug) {
-                        plugin.logger.log(
-                            Level.INFO,
-                            "End evaluating condition, $leftEscaped == $rightEscaped -> ${conditionResult}."
-                        )
-                    }
-
-                    if (!conditionResult) {
-                        continue
-                    }
-                } else if (condition.type == PetActionConditionType.JAVASCRIPT) {
-                    val placeHolderParsedCondition =
-                        placeHolderService.replacePlaceHolders(eventPlayer, condition.js!!, pet)
-                    val conditionResult = withContext(plugin.asyncDispatcher) {
-                        scriptService.evaluate(placeHolderParsedCondition)
-                    } as Boolean
-
-                    if (action.debug) {
-                        plugin.logger.log(
-                            Level.INFO,
-                            "End evaluating condition, $placeHolderParsedCondition -> ${conditionResult}."
-                        )
-                    }
-
-                    if (!conditionResult) {
-                        continue
-                    }
+                if (!conditionResult) {
+                    continue
                 }
             }
 
             if (action.actionType == PetActionType.COMMAND) {
                 executeCommandAction(eventPlayer, pet, action)
             } else if (action.actionType == PetActionType.DELAY) {
-                executeDelayAction(action)
+                executeDelayAction(action, cancellationToken)
             } else if (action.actionType == PetActionType.JAVASCRIPT) {
                 executeJavaScriptAction(eventPlayer, pet, action)
             }
         }
+    }
+
+    private suspend fun evaluateCondition(
+        action: PetAction,
+        condition: PetActionCondition,
+        pet: Pet,
+        eventPlayer: Player
+    ): Boolean {
+        val conditionType = condition.type
+
+        if (action.debug) {
+            plugin.logger.log(Level.INFO, "Start evaluating condition '${conditionType}'.")
+        }
+
+        if (conditionType == PetActionConditionType.JAVASCRIPT) {
+            val placeHolderParsedCondition =
+                placeHolderService.replacePlaceHolders(eventPlayer, condition.js!!, pet)
+            val conditionResult = withContext(plugin.asyncDispatcher) {
+                scriptService.evaluate(placeHolderParsedCondition)
+            } as Boolean
+
+            if (action.debug) {
+                plugin.logger.log(
+                    Level.INFO,
+                    "End evaluating condition, $placeHolderParsedCondition -> ${conditionResult}."
+                )
+            }
+
+            return conditionResult
+        } else {
+            val leftEscaped = placeHolderService.replacePlaceHolders(eventPlayer, condition.left!!, pet)
+            val rightEscaped = placeHolderService.replacePlaceHolders(eventPlayer, condition.right!!, pet)
+
+            if (conditionType == PetActionConditionType.STRING_EQUALS) {
+                val conditionResult = rightEscaped == leftEscaped
+
+                if (action.debug) {
+                    plugin.logger.log(
+                        Level.INFO,
+                        "End evaluating condition, $leftEscaped == $rightEscaped -> ${conditionResult}."
+                    )
+                }
+
+                return conditionResult
+            } else if (conditionType == PetActionConditionType.STRING_NOT_EQUALS) {
+                val conditionResult = rightEscaped != leftEscaped
+
+                if (action.debug) {
+                    plugin.logger.log(
+                        Level.INFO,
+                        "End evaluating condition, $leftEscaped != $rightEscaped -> ${conditionResult}."
+                    )
+                }
+
+                return conditionResult
+            } else {
+                val leftNumber = leftEscaped.toDoubleOrNull()
+
+                if (leftNumber == null) {
+                    if (action.debug) {
+                        plugin.logger.log(
+                            Level.INFO,
+                            "Cannot convert $leftEscaped to number."
+                        )
+                    }
+
+                    return false
+                }
+
+                val rightNumber = rightEscaped.toDoubleOrNull()
+
+                if (rightNumber == null) {
+                    if (action.debug) {
+                        plugin.logger.log(
+                            Level.INFO,
+                            "Cannot convert $rightEscaped to number."
+                        )
+                    }
+
+                    return false
+                }
+
+                if (conditionType == PetActionConditionType.NUMBER_GREATER_THAN) {
+                    val conditionResult = leftNumber > rightNumber
+
+                    if (action.debug) {
+                        plugin.logger.log(
+                            Level.INFO,
+                            "End evaluating condition, $leftNumber > $rightNumber -> ${conditionResult}."
+                        )
+                    }
+
+                    return conditionResult
+                }
+
+                if (conditionType == PetActionConditionType.NUMBER_GREATER_THAN_OR_EQUAL) {
+                    val conditionResult = leftNumber >= rightNumber
+
+                    if (action.debug) {
+                        plugin.logger.log(
+                            Level.INFO,
+                            "End evaluating condition, $leftNumber >= $rightNumber -> ${conditionResult}."
+                        )
+                    }
+
+                    return conditionResult
+                }
+
+                if (conditionType == PetActionConditionType.NUMBER_LESS_THAN) {
+                    val conditionResult = leftNumber < rightNumber
+
+                    if (action.debug) {
+                        plugin.logger.log(
+                            Level.INFO,
+                            "End evaluating condition, $leftNumber < $rightNumber -> ${conditionResult}."
+                        )
+                    }
+
+                    return conditionResult
+                }
+
+                if (conditionType == PetActionConditionType.NUMBER_LESS_THAN_OR_EQUAL) {
+                    val conditionResult = leftNumber <= rightNumber
+
+                    if (action.debug) {
+                        plugin.logger.log(
+                            Level.INFO,
+                            "End evaluating condition, $leftNumber <= $rightNumber -> ${conditionResult}."
+                        )
+                    }
+
+                    return conditionResult
+                }
+            }
+        }
+
+        return true
     }
 
     private fun executeCommandAction(eventPlayer: Player, pet: Pet, action: PetAction) {
@@ -164,7 +282,7 @@ class PetActionExecutionServiceImpl @Inject constructor(
         memory[action.variable!!] = result.toString()
     }
 
-    private suspend fun executeDelayAction(action: PetAction) {
+    private suspend fun executeDelayAction(action: PetAction, cancellationToken: CancellationToken) {
         if (action.ticks <= 0) {
             return
         }
@@ -173,14 +291,42 @@ class PetActionExecutionServiceImpl @Inject constructor(
             plugin.logger.log(Level.INFO, "Start delay '${action.ticks}'.")
         }
 
-        delay(action.ticks.ticks)
+        val innerJob = plugin.launch {
+            delay(action.ticks.ticks)
+        }
+
+        plugin.launch(plugin.asyncDispatcher) {
+            while (true) {
+                if (innerJob.isCompleted || innerJob.isCancelled) {
+                    break
+                }
+
+                if (cancellationToken.isCancelled) {
+                    if (action.debug) {
+                        plugin.logger.log(Level.INFO, "Cancellation Token was cancelled.")
+                    }
+
+                    innerJob.cancel()
+                }
+
+                delay(50)
+            }
+        }
+
+        try {
+            innerJob.join()
+        } catch (e: Exception) {
+            if (action.debug) {
+                plugin.logger.log(Level.INFO, "Delay action was cancelled.")
+            }
+        }
 
         if (action.debug) {
             plugin.logger.log(Level.INFO, "End delay '${action.ticks}'.")
         }
     }
 
-    private class PetBlocksCommandSender(private val handle: CommandSender) : ConsoleCommandSender{
+    private class PetBlocksCommandSender(private val handle: CommandSender) : ConsoleCommandSender {
         override fun isOp(): Boolean {
             return handle.isOp
         }

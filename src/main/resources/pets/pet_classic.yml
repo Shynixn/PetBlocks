@@ -123,8 +123,9 @@ loops:
           - "/petblocks lookatowner %petblocks_pet_name% %petblocks_owner_name%"
       - name: "Switch to moveToOwner if pet is too far away"
         condition:
-          type: JAVASCRIPT
-          js: "%petblocks_pet_distanceToOwner% > 7"
+          type: NUMBER_GREATER_THAN
+          left: "%petblocks_pet_distanceToOwner%"
+          right: "7"
         type: "COMMAND"
         level: "SERVER"
         run:
@@ -138,16 +139,18 @@ loops:
           - "/petblocks moveToOwner %petblocks_pet_name% 0.2 %petblocks_owner_name%"
       - name: "Switch to idle if the pet is beside the player"
         condition:
-          type: JAVASCRIPT
-          js: "%petblocks_pet_distanceToOwner% < 4"
+          type: NUMBER_LESS_THAN
+          left: "%petblocks_pet_distanceToOwner%"
+          right: "4"
         type: "COMMAND"
         level: "SERVER"
         run:
           - "/petblocks loop %petblocks_pet_name% idle %petblocks_owner_name%"
       - name: "Teleport pet to player if the pet is too far away for the pathfinder."
         condition:
-          type: JAVASCRIPT
-          js: "%petblocks_pet_distanceToOwner% > 20"
+          type: NUMBER_GREATER_THAN
+          left: "%petblocks_pet_distanceToOwner%"
+          right: "20"
         type: "COMMAND"
         level: "SERVER"
         run:

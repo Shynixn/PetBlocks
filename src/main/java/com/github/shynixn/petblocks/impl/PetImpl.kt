@@ -212,6 +212,7 @@ class PetImpl(
         }
         set(value) {
             petMeta.loop = value
+            petEntity?.cancelLoop()
         }
 
     /**
