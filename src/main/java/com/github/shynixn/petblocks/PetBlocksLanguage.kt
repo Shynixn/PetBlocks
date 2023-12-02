@@ -79,6 +79,9 @@ object PetBlocksLanguage {
   /** [&9PetBlocks&f] Pet is looking at a location. **/
   var petLookAtMessage : String = "[&9PetBlocks&f] Pet is looking at a location."
 
+  /** [&9PetBlocks&f] &cCannot parse template file. See console log for details. **/
+  var errorLoadingTemplatesMessage : String = "[&9PetBlocks&f] &cCannot parse template file. See console log for details."
+
   /** [&9PetBlocks&f] PetBlocks has been reloaded. **/
   var reloadMessage : String = "[&9PetBlocks&f] PetBlocks has been reloaded."
 

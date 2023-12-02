@@ -126,6 +126,21 @@ events:
           createText();
 ```
 
+### Debugging Actions
+
+When you start creating actions, it is very helpful to know, which action is currently being executed and how
+variables are evaluated. Every action can be logged to your server console by setting the optional ``debug: true`` property of an action.
+
+```yaml
+events:
+  rightClick:
+    actions:  # You can add/remove actions as you want here.
+      - name: "Delay Action" # Required arbitrary name.
+        type: "DELAY" # Required action type.
+        ticks: 60 # Required for type DELAY. 60 Ticks delay.
+        debug: true # Optional flag to log this action to the console.
+```
+
 ### Restricting Actions
 
 #### Permission
@@ -146,9 +161,19 @@ events:
 
 #### Conditions
 
-Actions can optionally have conditions, which support 2 types: ``STRING_EQUALS`` and ``JAVASCRIPT``. 
-Prefer using ``STRING_EQUALS`` over ``JAVASCRIPT``. ``STRING_EQUALS`` checks if the 2 values in ``left`` and ``right``
-are the same. ``JAVASCRIPT`` evaluates a boolean expression.
+Actions can optionally have conditions, which support the following types:
+
+* ``STRING_EQUALS``
+* ``STRING_NOT_EQUALS``
+* ``STRING_EQUALS_IGNORE_CASE``
+* ``STRING_NOT_EQUALS_IGNORE_CASE``
+* ``NUMBER_GREATER_THAN``
+* ``NUMBER_GREATER_THAN_OR_EQUAL``
+* ``NUMBER_LESS_THAN``
+* ``NUMBER_LESS_THAN_OR_EQUAL``
+* ``JAVASCRIPT``
+
+Try to avoid using ``JAVASCRIPT`` because it requires more computation time. It should only be used if you want to create complex boolean expressions.
 
 ```yaml
 events:

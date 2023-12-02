@@ -4,6 +4,7 @@ import com.github.shynixn.mccoroutine.bukkit.CoroutineTimings
 import com.github.shynixn.mccoroutine.bukkit.launch
 import com.github.shynixn.mccoroutine.bukkit.minecraftDispatcher
 import com.github.shynixn.mccoroutine.bukkit.ticks
+import com.github.shynixn.mcutils.common.CancellationToken
 import com.github.shynixn.mcutils.common.Vector3d
 import com.github.shynixn.mcutils.common.physic.PhysicObject
 import com.github.shynixn.mcutils.common.physic.PhysicObjectDispatcher
@@ -52,6 +53,7 @@ class PetEntityImpl(
     private var positionUpdateCounter = 0
     private var velocity = Vector3d(0.0, 0.0, 0.0)
     private var lastClickTimeStamp = 0L
+    private var cancellationToken = CancellationToken()
 
     // Mover
     private var lastRandomTimeStamp = 0L
@@ -78,7 +80,8 @@ class PetEntityImpl(
                         break
                     }
 
-                    petActionExecutionService.executeAction(pet.player, pet, loop)
+                    cancellationToken = CancellationToken()
+                    petActionExecutionService.executeAction(pet.player, pet, loop, cancellationToken)
                     delay(1.ticks)
                 } catch (e: Exception) {
                     plugin.logger.log(Level.SEVERE, "Cannot execute pet loop '${pet.loop}'.", e)
@@ -124,6 +127,13 @@ class PetEntityImpl(
     }
 
     /**
+     * Cancels the execution of the currently executed loop.
+     */
+    fun cancelLoop() {
+        cancellationToken.isCancelled = true
+    }
+
+    /**
      * RightClicks the pet.
      */
     fun rightClick(player: Player) {
@@ -138,7 +148,7 @@ class PetEntityImpl(
         val rightClickEvent = pet.template.events["rightClick"]
         if (rightClickEvent != null) {
             plugin.launch(plugin.minecraftDispatcher + object : CoroutineTimings() {}) {
-                petActionExecutionService.executeAction(player, pet, rightClickEvent)
+                petActionExecutionService.executeAction(player, pet, rightClickEvent, CancellationToken())
             }
         }
     }
@@ -158,7 +168,7 @@ class PetEntityImpl(
         val leftClickEvent = pet.template.events["leftClick"]
         if (leftClickEvent != null) {
             plugin.launch(plugin.minecraftDispatcher + object : CoroutineTimings() {}) {
-                petActionExecutionService.executeAction(player, pet, leftClickEvent)
+                petActionExecutionService.executeAction(player, pet, leftClickEvent, CancellationToken())
             }
         }
     }

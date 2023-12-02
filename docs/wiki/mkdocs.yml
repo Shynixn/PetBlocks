@@ -10,6 +10,7 @@ nav:
       - Templates: template.md
       - GUI: gui.md
       - PlaceHolders: placeholders.md
+      - Developer Api: api.md
       - 'FAQ': faq.md
 theme:
   name: material

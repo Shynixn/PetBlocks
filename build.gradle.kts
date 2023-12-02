@@ -8,7 +8,7 @@ plugins {
 }
 
 group = "com.github.shynixn"
-version = "9.0.1"
+version = "9.0.2"
 
 repositories {
     mavenCentral()
@@ -40,8 +40,8 @@ dependencies {
     compileOnly("org.jetbrains.kotlinx:kotlinx-coroutines-jdk8:1.4.3")
 
     // Custom dependencies
-    implementation("com.github.shynixn.mcutils:common:1.0.39")
-    implementation("com.github.shynixn.mcutils:packet:1.0.56")
+    implementation("com.github.shynixn.mcutils:common:1.0.40")
+    implementation("com.github.shynixn.mcutils:packet:1.0.60")
     implementation("com.github.shynixn.mcutils:database:1.0.14")
     implementation("com.github.shynixn.mcutils:pathfinder:1.0.19")
 
@@ -91,46 +91,7 @@ tasks.withType<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar> {
  */
 tasks.register("pluginJars") {
     dependsOn("pluginJarLatest")
-    dependsOn("pluginJarLegacy")
     dependsOn("pluginJarPremium")
-}
-
-/**
- * Create legacy plugin jar file.
- */
-tasks.register("relocateLegacyPluginJar", com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar::class.java) {
-    dependsOn("shadowJar")
-    from(zipTree(File("./build/libs/" + (tasks.getByName("shadowJar") as Jar).archiveName)))
-    archiveName = "${baseName}-${version}-legacy-relocate.${extension}"
-    relocate("com.github.shynixn.mcutils", "com.github.shynixn.petblocks.lib.com.github.shynixn.mcutils")
-    relocate("kotlin", "com.github.shynixn.petblocks.lib.kotlin")
-    relocate("org.intellij", "com.github.shynixn.petblocks.lib.org.intelli")
-    relocate("javax", "com.github.shynixn.petblocks.lib.javax")
-    relocate("kotlinx", "com.github.shynixn.petblocks.lib.kotlinx")
-    relocate("com.google", "com.github.shynixn.petblocks.lib.com.google")
-    relocate("com.fasterxml", "com.github.shynixn.petblocks.lib.com.fasterxml")
-    relocate("com.github.shynixn.mccoroutine", "com.github.shynixn.petblocks.lib.com.github.shynixn.mccoroutine")
-    exclude("plugin.yml")
-    rename("plugin-legacy.yml", "plugin.yml")
-}
-
-/**
- * Create legacy plugin jar file.
- */
-tasks.register("pluginJarLegacy", com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar::class.java) {
-    dependsOn("relocateLegacyPluginJar")
-    from(zipTree(File("./build/libs/" + (tasks.getByName("relocateLegacyPluginJar") as Jar).archiveName)))
-    archiveName = "${baseName}-${version}-legacy.${extension}"
-    // destinationDir = File("C:\\temp\\plugins")
-    exclude("com/github/shynixn/mcutils/**")
-    exclude("org/**")
-    exclude("kotlin/**")
-    exclude("kotlinx/**")
-    exclude("javax/**")
-    exclude("com/google/**")
-    exclude("com/github/shynixn/mccoroutine/**")
-    exclude("com/fasterxml/**")
-    exclude("plugin-legacy.yml")
 }
 
 /**
@@ -168,7 +129,6 @@ tasks.register("pluginJarLatest", com.github.jengelman.gradle.plugins.shadow.tas
     exclude("javax/**")
     exclude("com/google/**")
     exclude("com/fasterxml/**")
-    exclude("plugin-legacy.yml")
 }
 
 /**
@@ -188,7 +148,6 @@ tasks.register("pluginJarPremium", com.github.jengelman.gradle.plugins.shadow.ta
     exclude("javax/**")
     exclude("com/google/**")
     exclude("com/fasterxml/**")
-    exclude("plugin-legacy.yml")
 }
 
 tasks.register("languageFile") {
