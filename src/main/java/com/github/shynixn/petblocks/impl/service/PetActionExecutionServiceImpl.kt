@@ -142,7 +142,31 @@ class PetActionExecutionServiceImpl @Inject constructor(
                 }
 
                 return conditionResult
-            } else {
+            }
+            else if (conditionType == PetActionConditionType.STRING_EQUALS_IGNORE_CASE) {
+                val conditionResult = rightEscaped.equals(leftEscaped,true)
+
+                if (action.debug) {
+                    plugin.logger.log(
+                        Level.INFO,
+                        "End evaluating condition, $leftEscaped == $rightEscaped -> ${conditionResult}."
+                    )
+                }
+
+                return conditionResult
+            } else if (conditionType == PetActionConditionType.STRING_NOT_EQUALS_IGNORE_CASE) {
+                val conditionResult = !rightEscaped.equals(leftEscaped,true)
+
+                if (action.debug) {
+                    plugin.logger.log(
+                        Level.INFO,
+                        "End evaluating condition, $leftEscaped != $rightEscaped -> ${conditionResult}."
+                    )
+                }
+
+                return conditionResult
+            }
+            else {
                 val leftNumber = leftEscaped.toDoubleOrNull()
 
                 if (leftNumber == null) {

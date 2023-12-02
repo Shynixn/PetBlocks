@@ -163,13 +163,15 @@ events:
 
 Actions can optionally have conditions, which support the following types:
 
-*  ``STRING_EQUALS``
-*  ``STRING_NOT_EQUALS``
-*  ``NUMBER_GREATER_THAN``
-*  ``NUMBER_GREATER_THAN_OR_EQUAL``
-*  ``NUMBER_LESS_THAN``
-*  ``NUMBER_LESS_THAN_OR_EQUAL``
-*  ``JAVASCRIPT``
+* ``STRING_EQUALS``
+* ``STRING_NOT_EQUALS``
+* ``STRING_EQUALS_IGNORE_CASE``
+* ``STRING_NOT_EQUALS_IGNORE_CASE``
+* ``NUMBER_GREATER_THAN``
+* ``NUMBER_GREATER_THAN_OR_EQUAL``
+* ``NUMBER_LESS_THAN``
+* ``NUMBER_LESS_THAN_OR_EQUAL``
+* ``JAVASCRIPT``
 
 Try to avoid using ``JAVASCRIPT`` because it requires more computation time. It should only be used if you want to create complex boolean expressions.
 
