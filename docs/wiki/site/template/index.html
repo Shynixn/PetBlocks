@@ -18,7 +18,7 @@
       
       
       <link rel="icon" href="../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.5.3, mkdocs-material-9.4.10">
+      <meta name="generator" content="mkdocs-1.5.3, mkdocs-material-9.4.14">
     
     
       
@@ -246,6 +246,7 @@
     
   
   
+  
     
     
     
@@ -285,6 +286,7 @@
   
   
   
+  
     <li class="md-nav__item">
       <a href=".." class="md-nav__link">
         
@@ -302,6 +304,7 @@
             
               
                 
+  
   
   
   
@@ -325,6 +328,7 @@
   
   
   
+  
     <li class="md-nav__item">
       <a href="../commands/" class="md-nav__link">
         
@@ -342,6 +346,7 @@
             
               
                 
+  
   
   
   
@@ -365,6 +370,7 @@
   
   
     
+  
   
   
     <li class="md-nav__item md-nav__item--active">
@@ -467,6 +473,15 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#debugging-actions" class="md-nav__link">
+    <span class="md-ellipsis">
+      Debugging Actions
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#restricting-actions" class="md-nav__link">
     <span class="md-ellipsis">
       Restricting Actions
@@ -551,6 +566,7 @@
   
   
   
+  
     <li class="md-nav__item">
       <a href="../gui/" class="md-nav__link">
         
@@ -571,6 +587,7 @@
   
   
   
+  
     <li class="md-nav__item">
       <a href="../placeholders/" class="md-nav__link">
         
@@ -588,6 +605,28 @@
             
               
                 
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Developer Api
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
   
   
   
@@ -689,6 +728,15 @@
   <a href="#javascript" class="md-nav__link">
     <span class="md-ellipsis">
       JAVASCRIPT
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#debugging-actions" class="md-nav__link">
+    <span class="md-ellipsis">
+      Debugging Actions
     </span>
   </a>
   
@@ -878,6 +926,17 @@ to be checked if you only want to allow certain actions for the owner of the pet
 <span class="w">          </span><span class="no">}</span>
 <span class="w">          </span><span class="no">createText();</span>
 </code></pre></div>
+<h3 id="debugging-actions">Debugging Actions</h3>
+<p>When you start creating actions, it is very helpful to know, which action is currently being executed and how
+variables are evaluated. Every action can be logged to your server console by setting the optional <code>debug: true</code> property of an action.</p>
+<div class="highlight"><pre><span></span><code><span class="nt">events</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">rightClick</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">actions</span><span class="p">:</span><span class="w">  </span><span class="c1"># You can add/remove actions as you want here.</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Delay</span><span class="nv"> </span><span class="s">Action&quot;</span><span class="w"> </span><span class="c1"># Required arbitrary name.</span>
+<span class="w">        </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;DELAY&quot;</span><span class="w"> </span><span class="c1"># Required action type.</span>
+<span class="w">        </span><span class="nt">ticks</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">60</span><span class="w"> </span><span class="c1"># Required for type DELAY. 60 Ticks delay.</span>
+<span class="w">        </span><span class="nt">debug</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span><span class="w"> </span><span class="c1"># Optional flag to log this action to the console.</span>
+</code></pre></div>
 <h3 id="restricting-actions">Restricting Actions</h3>
 <h4 id="permission">Permission</h4>
 <p>Actions can optionally have the permission tag:</p>
@@ -892,9 +951,19 @@ to be checked if you only want to allow certain actions for the owner of the pet
 <span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;/say</span><span class="nv"> </span><span class="s">Hello</span><span class="nv"> </span><span class="s">%petblocks_owner_name%&quot;</span><span class="w"> </span><span class="c1"># Required for type COMMAND. One or more commands are allowed.</span>
 </code></pre></div>
 <h4 id="conditions">Conditions</h4>
-<p>Actions can optionally have conditions, which support 2 types: <code>STRING_EQUALS</code> and <code>JAVASCRIPT</code>. 
-Prefer using <code>STRING_EQUALS</code> over <code>JAVASCRIPT</code>. <code>STRING_EQUALS</code> checks if the 2 values in <code>left</code> and <code>right</code>
-are the same. <code>JAVASCRIPT</code> evaluates a boolean expression.</p>
+<p>Actions can optionally have conditions, which support the following types:</p>
+<ul>
+<li><code>STRING_EQUALS</code></li>
+<li><code>STRING_NOT_EQUALS</code></li>
+<li><code>STRING_EQUALS_IGNORE_CASE</code></li>
+<li><code>STRING_NOT_EQUALS_IGNORE_CASE</code></li>
+<li><code>NUMBER_GREATER_THAN</code></li>
+<li><code>NUMBER_GREATER_THAN_OR_EQUAL</code></li>
+<li><code>NUMBER_LESS_THAN</code></li>
+<li><code>NUMBER_LESS_THAN_OR_EQUAL</code></li>
+<li><code>JAVASCRIPT</code></li>
+</ul>
+<p>Try to avoid using <code>JAVASCRIPT</code> because it requires more computation time. It should only be used if you want to create complex boolean expressions.</p>
 <div class="highlight"><pre><span></span><code><span class="nt">events</span><span class="p">:</span>
 <span class="w">  </span><span class="nt">rightClick</span><span class="p">:</span>
 <span class="w">    </span><span class="nt">actions</span><span class="p">:</span><span class="w">  </span><span class="c1"># You can add/remove actions as you want here.</span>
@@ -1100,7 +1169,7 @@ design your pets. </p>
     <script id="__config" type="application/json">{"base": "..", "features": ["navigation.instant", "navigation.tabs", "content.tabs.link", "content.code.copy", "navigation.footer"], "search": "../assets/javascripts/workers/search.f886a092.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
     
     
-      <script src="../assets/javascripts/bundle.6c14ae12.min.js"></script>
+      <script src="../assets/javascripts/bundle.cd18aaf1.min.js"></script>
       
     
   </body>
