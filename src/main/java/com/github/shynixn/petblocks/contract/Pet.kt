@@ -2,6 +2,7 @@ package com.github.shynixn.petblocks.contract
 
 import com.github.shynixn.mcutils.common.item.Item
 import com.github.shynixn.petblocks.entity.PetTemplate
+import com.github.shynixn.petblocks.enumeration.DropType
 import com.github.shynixn.petblocks.enumeration.PetVisibility
 import org.bukkit.Location
 import org.bukkit.entity.Player
@@ -60,7 +61,7 @@ interface Pet {
     /**
      * Gets or sets the execution loop of the pet.
      */
-    var loop : String
+    var loop: String
 
     /**
      * Gets if the pet has been disposed. The pet can no longer be used then.
@@ -75,7 +76,7 @@ interface Pet {
     /**
      * Calculated variables which can be used in subsequent operations by placeholders.
      */
-    val javaScriptMemory : MutableMap<String, String>
+    val javaScriptMemory: MutableMap<String, String>
 
     /**
      * Calls the pet to the player. Spawns the pet if it is not spawned, and places the pet
@@ -111,6 +112,14 @@ interface Pet {
      * Stops riding, flying or hat if the pet currently performs it.
      */
     fun umount()
+
+    /**
+     * Breaks the block which is in front of the pet and no more than 1 block away.
+     * The Drop Types are an ordered list, where the first element is attempted at first.
+     * If the first element is not possible (e.g. OwnerInventory is Full) the second action is attempted.
+     * If none work, the broken block item vanishes.
+     */
+    fun breakBlock(timeToBreakTicks: Int, dropTypes: List<DropType>)
 
     /**
      * Turns the pet to look at the given location.

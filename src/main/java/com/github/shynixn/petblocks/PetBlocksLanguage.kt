@@ -117,4 +117,7 @@ object PetBlocksLanguage {
 
   /** [&9PetBlocks&f] Pet is walking to location. **/
   var petWalkToLocationMessage : String = "[&9PetBlocks&f] Pet is walking to location."
+
+  /** [&9PetBlocks&f] &cDropType %1$1s not found. **/
+  var dropTypeNotFound : String = "[&9PetBlocks&f] &cDropType %1$1s not found."
 }

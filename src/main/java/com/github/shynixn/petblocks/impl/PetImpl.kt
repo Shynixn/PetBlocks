@@ -9,6 +9,7 @@ import com.github.shynixn.petblocks.contract.Pet
 import com.github.shynixn.petblocks.contract.PetEntityFactory
 import com.github.shynixn.petblocks.entity.PetMeta
 import com.github.shynixn.petblocks.entity.PetTemplate
+import com.github.shynixn.petblocks.enumeration.DropType
 import com.github.shynixn.petblocks.enumeration.Permission
 import com.github.shynixn.petblocks.enumeration.PetRidingState
 import com.github.shynixn.petblocks.enumeration.PetVisibility
@@ -33,7 +34,7 @@ class PetImpl(
     private var playerParam: Player?,
     private val petMeta: PetMeta,
     private val petEntityFactory: PetEntityFactory,
-    private val maxPathfinderDistance : Double,
+    private val maxPathfinderDistance: Double,
     private val plugin: Plugin
 ) : Pet {
     private var petEntity: PetEntityImpl? = null
@@ -125,7 +126,7 @@ class PetImpl(
             }
 
             val previousWorld = petMeta.lastStoredLocation.world
-           petMeta.lastStoredLocation = value.toVector3d()
+            petMeta.lastStoredLocation = value.toVector3d()
 
             if (petEntity != null) {
                 if (value.world?.name != previousWorld) {
@@ -381,6 +382,22 @@ class PetImpl(
         if (petEntity != null) {
             petEntity!!.updateRidingState()
             call()
+        }
+    }
+
+    /**
+     * Breaks the block which is in front of the pet and no more than 1 block away.
+     * The Drop Types are an ordered list, where the first element is attempted at first.
+     * If the first element is not possible (e.g. OwnerInventory is Full) the second action is attempted.
+     * If none work, the broken block item vanishes.
+     */
+    override fun breakBlock(timeToBreakTicks: Int, dropTypes: List<DropType>) {
+        if (isDisposed) {
+            throw PetBlocksPetDisposedException()
+        }
+
+        if (petEntity != null) {
+            petEntity!!.breakBlock(timeToBreakTicks, dropTypes)
         }
     }
 

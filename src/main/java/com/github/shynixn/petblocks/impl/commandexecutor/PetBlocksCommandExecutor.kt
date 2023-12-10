@@ -14,6 +14,7 @@ import com.github.shynixn.petblocks.contract.Pet
 import com.github.shynixn.petblocks.contract.PetService
 import com.github.shynixn.petblocks.entity.PetTemplate
 import com.github.shynixn.petblocks.entity.PlayerInformation
+import com.github.shynixn.petblocks.enumeration.DropType
 import com.github.shynixn.petblocks.enumeration.Permission
 import com.github.shynixn.petblocks.enumeration.PetVisibility
 import com.github.shynixn.petblocks.exception.PetBlocksException
@@ -244,6 +245,16 @@ class PetBlocksCommandExecutor @Inject constructor(
             "/petblocks select <name> [player]"
         ) { sender, player, args ->
             selectPet(sender, player, args[1])
+        },
+        CommandDefinition(
+            "breakblock",
+            2,
+            Permission.BREAK_BLOCK,
+            "/petblocks breakblock <name> <timeToBreak> <dropType> [player]"
+        ) { sender, player, args ->
+            if (args[2].toIntOrNull() != null) {
+                breakBlock(sender, player, args[1], args[3], args[2].toInt())
+            }
         }
     )
 
@@ -528,6 +539,26 @@ class PetBlocksCommandExecutor @Inject constructor(
         val playerInformation = petMetaRepository.getByPlayer(player) ?: return
         playerInformation.selectedPet = pet.name
         sender.sendPluginMessage(String.format(PetBlocksLanguage.petSelectedMessage, petName))
+    }
+
+    private suspend fun breakBlock(
+        sender: CommandSender,
+        player: Player,
+        petName: String,
+        dropTypes: String,
+        timeToBreak: Int
+    ) {
+        val pet = findPetFromPlayer(player, petName)
+            ?: throw PetBlocksException(String.format(PetBlocksLanguage.petNotFoundMessage, petName))
+
+        val dropTypes = try {
+            dropTypes.split(",").map { e -> DropType.values().first { t -> t.name.equals(e, true) } }
+        } catch (e: Exception) {
+            player.sendMessage(PetBlocksLanguage.dropTypeNotFound.format(dropTypes))
+            return
+        }
+
+        pet.breakBlock(timeToBreak, dropTypes)
     }
 
     private suspend fun setPetTemplate(sender: CommandSender, player: Player, petName: String, templateId: String) {
