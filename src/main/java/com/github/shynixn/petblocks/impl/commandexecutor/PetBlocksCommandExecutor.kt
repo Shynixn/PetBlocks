@@ -398,14 +398,16 @@ class PetBlocksCommandExecutor @Inject constructor(
 
         val pets = petService.getPetsFromPlayer(player)
 
-        val petAmountPermission = Permission.DYN_AMOUNT.toString() + pets.size + 1
+        val petAmountPermission = "${Permission.DYN_AMOUNT.text}${pets.size + 1}"
 
         if (!player.hasPermission(petAmountPermission)) {
             sender.sendPluginMessage(String.format(PetBlocksLanguage.petAmountNotAllowed, (pets.size + 1).toString()))
             return
         }
 
-        if (!player.hasPermission(Permission.DYN_TEMPLATE.text + templateId)) {
+        val templatePermission = Permission.DYN_TEMPLATE.text + templateId
+
+        if (!player.hasPermission(templatePermission)) {
             sender.sendPluginMessage(String.format(PetBlocksLanguage.templateNotAllowed, templateId))
             return
         }
