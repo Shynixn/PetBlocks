@@ -8,7 +8,7 @@ plugins {
 }
 
 group = "com.github.shynixn"
-version = "9.0.2"
+version = "9.0.3"
 
 repositories {
     mavenCentral()
