@@ -24,10 +24,10 @@ PetBlocks is a Minecraft Bukkit plugin to use blocks as pets in minecraft.
 ### PetBlocks-Latest
 
 * Java 17 
-* Spigot 1.20.2
+* Spigot 1.20.4
 
 
 ### PetBlocks-Premium
 
 * Java 17
-* Spigot 1.17-1.20.2
+* Spigot 1.17-1.20.4

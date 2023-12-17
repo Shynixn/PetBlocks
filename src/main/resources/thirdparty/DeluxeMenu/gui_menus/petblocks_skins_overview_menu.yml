@@ -126,7 +126,7 @@ items:
     lore:
       - "&7Open the plugin HeadDatabase for skins."
     left_click_commands:
-      - '[player] hdb'
+      - '[player] petblocks openheaddatabase %petblocks_pet_name_selected%'
   'suggest-skins':
     material: "WRITABLE_BOOK"
     slot: 43

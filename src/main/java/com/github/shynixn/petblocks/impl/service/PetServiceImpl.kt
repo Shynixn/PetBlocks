@@ -5,6 +5,7 @@ import com.github.shynixn.mcutils.common.ConfigurationService
 import com.github.shynixn.mcutils.common.item.Item
 import com.github.shynixn.mcutils.common.repository.Repository
 import com.github.shynixn.mcutils.database.api.CachePlayerRepository
+import com.github.shynixn.petblocks.PetBlocksPlugin
 import com.github.shynixn.petblocks.contract.Pet
 import com.github.shynixn.petblocks.contract.PetEntityFactory
 import com.github.shynixn.petblocks.contract.PetService
@@ -26,7 +27,7 @@ import java.util.concurrent.CompletionStage
 
 class PetServiceImpl @Inject constructor(
     private val petMetaRepository: CachePlayerRepository<PlayerInformation>,
-    private val plugin: Plugin,
+    private val plugin: PetBlocksPlugin,
     private val petEntityFactory: PetEntityFactory,
     private val placeHolderService: PlaceHolderService,
     private val templateRepository: Repository<PetTemplate>,
@@ -62,19 +63,19 @@ class PetServiceImpl @Inject constructor(
         val playerData = petMetaRepository.getByPlayer(player)
 
         if (playerData != null) {
-            plugin.logger.info("Saving pets of player ${player.name}...")
+            plugin.logMessage("Saving pets of player ${player.name}...")
             petMetaRepository.save(player, playerData)
-            plugin.logger.info("Saved pets of player ${player.name}...")
+            plugin.logMessage("Saved pets of player ${player.name}...")
 
             val uuids = HashSet(playerData.retrievedUuids)
             uuids.add(player.uniqueId)
 
             for (uuid in uuids) {
-                plugin.logger.info("Removing cache of $uuid...")
+                plugin.logMessage("Removing cache of $uuid...")
                 if (petMetaRepository.getCache().containsKey(uuid)) {
                     petMetaRepository.getCache().remove(uuid)!!.await()
                 }
-                plugin.logger.info("Removed cache of $uuid.")
+                plugin.logMessage("Removed cache of $uuid.")
             }
         }
     }
@@ -184,9 +185,9 @@ class PetServiceImpl @Inject constructor(
 
         if (playerInformation == null) {
             playerInformation = PlayerInformation()
-            plugin.logger.info("Creating database entry for ${player.name} (${player.uniqueId})...")
+            plugin.logMessage("Creating database entry for ${player.name} (${player.uniqueId})...")
             petMetaRepository.save(player, playerInformation)
-            plugin.logger.info("Created database entry for ${player.name} (${player.uniqueId}).")
+            plugin.logMessage("Created database entry for ${player.name} (${player.uniqueId}).")
         }
 
         playerInformation.pets.add(petMeta)

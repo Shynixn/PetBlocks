@@ -14,6 +14,7 @@ import com.github.shynixn.petblocks.contract.Pet
 import com.github.shynixn.petblocks.contract.PetService
 import com.github.shynixn.petblocks.entity.PetTemplate
 import com.github.shynixn.petblocks.entity.PlayerInformation
+import com.github.shynixn.petblocks.enumeration.DropType
 import com.github.shynixn.petblocks.enumeration.Permission
 import com.github.shynixn.petblocks.enumeration.PetVisibility
 import com.github.shynixn.petblocks.exception.PetBlocksException
@@ -244,7 +245,27 @@ class PetBlocksCommandExecutor @Inject constructor(
             "/petblocks select <name> [player]"
         ) { sender, player, args ->
             selectPet(sender, player, args[1])
-        }
+        },
+        CommandDefinition(
+            "openheaddatabase",
+            2,
+            Permission.OPEN_HEADDATABSE,
+            "/petblocks openheaddatabase <name> [player]"
+        ) { sender, player, args ->
+            openHeadDatabase(sender, player, args[1])
+        },
+
+
+        /*   CommandDefinition(
+               "breakblock",
+               2,
+               Permission.BREAK_BLOCK,
+               "/petblocks breakblock <name> <timeToBreak> <dropType> [player]"
+           ) { sender, player, args ->
+               if (args[2].toIntOrNull() != null) {
+                   breakBlock(sender, player, args[1], args[3], args[2].toInt())
+               }
+           }*/
     )
 
     /**
@@ -532,6 +553,26 @@ class PetBlocksCommandExecutor @Inject constructor(
         sender.sendPluginMessage(String.format(PetBlocksLanguage.petSelectedMessage, petName))
     }
 
+    private suspend fun breakBlock(
+        sender: CommandSender,
+        player: Player,
+        petName: String,
+        dropTypes: String,
+        timeToBreak: Int
+    ) {
+        val pet = findPetFromPlayer(player, petName)
+            ?: throw PetBlocksException(String.format(PetBlocksLanguage.petNotFoundMessage, petName))
+
+        val dropTypes = try {
+            dropTypes.split(",").map { e -> DropType.values().first { t -> t.name.equals(e, true) } }
+        } catch (e: Exception) {
+            player.sendMessage(PetBlocksLanguage.dropTypeNotFound.format(dropTypes))
+            return
+        }
+
+        pet.breakBlock(timeToBreak, dropTypes)
+    }
+
     private suspend fun setPetTemplate(sender: CommandSender, player: Player, petName: String, templateId: String) {
         val pet = findPetFromPlayer(player, petName)
             ?: throw PetBlocksException(String.format(PetBlocksLanguage.petNotFoundMessage, petName))
@@ -723,6 +764,33 @@ class PetBlocksCommandExecutor @Inject constructor(
             ?: throw PetBlocksException(String.format(PetBlocksLanguage.petNotFoundMessage, petName))
         pet.call()
         sender.sendPluginMessage(String.format(PetBlocksLanguage.petCalledMessage, petName))
+    }
+
+    private suspend fun openHeadDatabase(sender: CommandSender, player: Player, petName: String) {
+        findPetFromPlayer(player, petName)
+            ?: throw PetBlocksException(String.format(PetBlocksLanguage.petNotFoundMessage, petName))
+
+        try {
+            dependencyHeadDatabaseService!!.registerPlayerForNextClick(player, petName)
+            val configValue = "headDatabaseCommand"
+            var command = if (configurationService.containsValue(configValue)) {
+                configurationService.findValue("headDatabaseCommand")
+            } else {
+                // Compatibility to 9.0.3
+                "/hdb"
+            }
+
+            command = if (command.startsWith("/")) {
+                command.substring(1)
+            } else {
+                command
+            }
+
+            Bukkit.getServer().dispatchCommand(player, command)
+        } catch (e: Exception) {
+            sender.sendPluginMessage(PetBlocksLanguage.headDatabasePluginNotLoaded)
+            return
+        }
     }
 
     private suspend fun findPetFromPlayer(player: Player, petName: String): Pet? {

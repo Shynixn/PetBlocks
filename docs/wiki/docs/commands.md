@@ -327,6 +327,20 @@ Makes the owner select one of his pets as primary pet. This is only helpful if a
 * Name: Identifier of a pet
 * Player: Optional player_name/player_UUID parameter targeting a player from the console or command block.
 
+### /petblocks openheaddatabase
+
+```
+/petblocks openheaddatabase <name> [player]
+```
+
+Opens the headDatabase inventory with a special hook, which applies the next item you select in the headdatabse gui to the pet.
+
+* Name: Identifier of a pet
+* Player: Optional player_name/player_UUID parameter targeting a player from the console or command block.
+
+
+
+
 
 
 

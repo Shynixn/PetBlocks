@@ -9,9 +9,11 @@ import com.github.shynixn.mcutils.packet.api.InteractionType
 import com.github.shynixn.mcutils.packet.api.event.PacketEvent
 import com.github.shynixn.mcutils.packet.api.packet.PacketInInteractEntity
 import com.github.shynixn.mcutils.packet.api.packet.PacketInSteerVehicle
+import com.github.shynixn.petblocks.PetBlocksPlugin
 import com.github.shynixn.petblocks.contract.PetActionExecutionService
 import com.github.shynixn.petblocks.contract.PetService
 import com.github.shynixn.petblocks.impl.PetEntityImpl
+import com.github.shynixn.petblocks.impl.service.PetActionExecutionServiceImpl
 import com.google.inject.Inject
 import org.bukkit.Bukkit
 import org.bukkit.event.EventHandler
@@ -23,7 +25,7 @@ import java.util.logging.Level
 
 class PetListener @Inject constructor(
     private val petService: PetService,
-    private val plugin: Plugin,
+    private val plugin: PetBlocksPlugin,
     private val petActionExecutionService: PetActionExecutionService,
     private val physicObjectService: PhysicObjectService,
     private val configurationService: ConfigurationService
@@ -40,7 +42,7 @@ class PetListener @Inject constructor(
             val pets = petService.getPetsFromPlayer(player)
 
             if (pets.isNotEmpty()) {
-                plugin.logger.log(Level.INFO, "Loaded [${pets.size}] pets for player ${player.name}.")
+                plugin.logMessage("Loaded [${pets.size}] pets for player ${player.name}.")
             }
 
             val petsToReceive = configurationService.findValue<List<Map<String, String>>>(petsToReceiveOnJoinKey)
@@ -53,7 +55,7 @@ class PetListener @Inject constructor(
 
                 if (matchingPet == null) {
                     Bukkit.getServer().dispatchCommand(
-                        Bukkit.getConsoleSender(),
+                        PetActionExecutionServiceImpl.PetBlocksCommandSender(Bukkit.getConsoleSender()),
                         "petblocks create ${name} ${template} ${player.name}"
                     )
                 }
@@ -71,7 +73,7 @@ class PetListener @Inject constructor(
             petService.clearCache(event.player)
 
             if (pets.isNotEmpty()) {
-                plugin.logger.log(Level.INFO, "Unloaded pets of player ${event.player.name}.")
+                plugin.logMessage( "Unloaded pets of player ${event.player.name}.")
             }
         }
     }

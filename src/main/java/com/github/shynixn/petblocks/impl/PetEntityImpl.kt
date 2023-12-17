@@ -11,6 +11,7 @@ import com.github.shynixn.mcutils.common.physic.PhysicObjectDispatcher
 import com.github.shynixn.mcutils.common.toLocation
 import com.github.shynixn.mcutils.common.toVector3d
 import com.github.shynixn.mcutils.packet.api.PacketService
+import com.github.shynixn.mcutils.packet.api.packet.PacketOutBlockBreakAnimation
 import com.github.shynixn.mcutils.pathfinder.api.PathfinderResult
 import com.github.shynixn.mcutils.pathfinder.api.PathfinderResultType
 import com.github.shynixn.mcutils.pathfinder.api.PathfinderService
@@ -18,16 +19,15 @@ import com.github.shynixn.mcutils.pathfinder.api.WorldSnapshot
 import com.github.shynixn.petblocks.contract.Pet
 import com.github.shynixn.petblocks.contract.PetActionExecutionService
 import com.github.shynixn.petblocks.entity.PetMeta
+import com.github.shynixn.petblocks.enumeration.DropType
 import com.github.shynixn.petblocks.enumeration.PetVisibility
 import com.github.shynixn.petblocks.impl.physic.ArmorstandEntityComponent
 import com.github.shynixn.petblocks.impl.physic.MathComponent
 import com.github.shynixn.petblocks.impl.physic.MoveToTargetComponent
 import com.github.shynixn.petblocks.impl.physic.PlayerComponent
 import kotlinx.coroutines.delay
-import org.bukkit.Bukkit
-import org.bukkit.FluidCollisionMode
-import org.bukkit.Location
-import org.bukkit.Material
+import org.bukkit.*
+import org.bukkit.block.Block
 import org.bukkit.entity.Player
 import org.bukkit.plugin.Plugin
 import org.bukkit.util.Vector
@@ -53,7 +53,8 @@ class PetEntityImpl(
     private var positionUpdateCounter = 0
     private var velocity = Vector3d(0.0, 0.0, 0.0)
     private var lastClickTimeStamp = 0L
-    private var cancellationToken = CancellationToken()
+    private var cancellationTokenLoop = CancellationToken()
+    private var breakBlockCancellationToken = CancellationToken()
 
     // Mover
     private var lastRandomTimeStamp = 0L
@@ -80,8 +81,8 @@ class PetEntityImpl(
                         break
                     }
 
-                    cancellationToken = CancellationToken()
-                    petActionExecutionService.executeAction(pet.player, pet, loop, cancellationToken)
+                    cancellationTokenLoop = CancellationToken()
+                    petActionExecutionService.executeAction(pet.player, pet, loop, cancellationTokenLoop)
                     delay(1.ticks)
                 } catch (e: Exception) {
                     plugin.logger.log(Level.SEVERE, "Cannot execute pet loop '${pet.loop}'.", e)
@@ -116,6 +117,7 @@ class PetEntityImpl(
     }
 
     fun setVelocity(vector3d: Vector3d) {
+        breakBlockCancellationToken.isCancelled = true
         this.physicsComponent.setVelocity(vector3d)
     }
 
@@ -123,6 +125,7 @@ class PetEntityImpl(
      * Teleports the pet in world.
      */
     fun teleportInWorld(vector3d: Vector3d) {
+        breakBlockCancellationToken.isCancelled = true
         this.physicsComponent.teleport(vector3d)
     }
 
@@ -130,13 +133,102 @@ class PetEntityImpl(
      * Cancels the execution of the currently executed loop.
      */
     fun cancelLoop() {
-        cancellationToken.isCancelled = true
+        breakBlockCancellationToken.isCancelled = true
+        cancellationTokenLoop.isCancelled = true
+    }
+
+    /**
+     * Breaks the block which is in front of the pet and no more than 1 block away.
+     * The Drop Types are an ordered list, where the first element is attempted at first.
+     * If the first element is not possible (e.g. OwnerInventory is Full) the second action is attempted.
+     * If none work, the broken block item vanishes.
+     */
+    fun breakBlock(timeToBreakTicks: Int, dropTypes: List<DropType>) {
+        if (dropTypes.size == 0) {
+            throw IllegalArgumentException("DropTypes has to include atleast 1 item.")
+        }
+
+        val actualDropTypes = dropTypes.toMutableList()
+        actualDropTypes.add(DropType.VANISH) // If no other matches.
+        breakBlockCancellationToken = CancellationToken()
+
+        var locateBlock: Block? = null
+        val sourceVector3d = getLocation().clone().add(1.0)
+
+        for (i in 0 until 5) {
+            val block = sourceVector3d.addRelativeFront(1.0).toLocation().block
+
+            if (!block.isEmpty && !block.isLiquid && !block.isPassable) {
+                locateBlock = block
+                break
+            }
+        }
+
+        if (locateBlock == null) {
+            return
+        }
+
+        plugin.launch {
+            for (i in 0 until 9) {
+                if (breakBlockCancellationToken.isCancelled) {
+                    return@launch
+                }
+
+                if (timeToBreakTicks < 9) {
+                    for (player in playerComponent.visiblePlayers) {
+                        packetService.sendPacketOutBlockBreakAnimation(player, PacketOutBlockBreakAnimation().also {
+                            it.entityId = entityComponent.entityId
+                            it.progress = 9
+                            it.location = locateBlock.location
+                        })
+                    }
+
+                    break
+                }
+
+                for (player in playerComponent.visiblePlayers) {
+                    packetService.sendPacketOutBlockBreakAnimation(player, PacketOutBlockBreakAnimation().also {
+                        it.entityId = entityComponent.entityId
+                        it.progress = i
+                        it.location = locateBlock.location
+                    })
+                }
+
+                val ticksToWait = timeToBreakTicks / 9 // 9 is the animation part
+                delay(ticksToWait.ticks)
+            }
+
+            for (dropType in dropTypes) {
+                if (dropType == DropType.VANISH) {
+                    locateBlock.type = Material.AIR
+                    break
+                }
+
+                if (dropType == DropType.DROP) {
+                    locateBlock.breakNaturally()
+                    break
+                }
+
+                if (dropType == DropType.SEND_TO_OWNER_INVENTORY) {
+                    val addItemResult = pet.player.inventory.addItem(*locateBlock.drops.toTypedArray())
+                    val couldNotAddItems = addItemResult.values.toList()
+
+                    if (couldNotAddItems.isEmpty()) {
+                        locateBlock.type = Material.AIR
+                        break
+                    }
+                }
+            }
+
+            pet.player.playEffect(locateBlock.location, Effect.STEP_SOUND, locateBlock.type)
+        }
     }
 
     /**
      * RightClicks the pet.
      */
     fun rightClick(player: Player) {
+        breakBlockCancellationToken.isCancelled = true
         val currentDateTime = Date().time
 
         if (currentDateTime - lastClickTimeStamp < clickCoolDownMs) {
@@ -157,6 +249,7 @@ class PetEntityImpl(
      * LeftClicks the pet.
      */
     fun leftClick(player: Player) {
+        breakBlockCancellationToken.isCancelled = true
         val currentDateTime = Date().time
 
         if (currentDateTime - lastClickTimeStamp < clickCoolDownMs) {
@@ -177,11 +270,9 @@ class PetEntityImpl(
      * Moves to the given location.
      */
     fun moveToLocation(location: Location, speed: Double) {
+        breakBlockCancellationToken.isCancelled = true
         val snapshot = pathfinderService.calculateFastPathfinderSnapshot(
-            location,
-            pathFinderCube.x.toInt(),
-            pathFinderCube.y.toInt(),
-            pathFinderCube.z.toInt()
+            location, pathFinderCube.x.toInt(), pathFinderCube.y.toInt(), pathFinderCube.z.toInt()
         )
 
         val dateTime = Date().time
@@ -197,33 +288,21 @@ class PetEntityImpl(
             val sourceLocation = physicsComponent.position.toLocation()
 
             for (i in 0 until 3) {
-                val targetLocation = location.toVector3d()
-                    .addRelativeFront(-1.0 * i + randomMoveOne)
-                    .addRelativeLeft(randomMoveTwo.toDouble())
-                    .addRelativeRight(randomMoveThree.toDouble())
-                    .toLocation()
+                val targetLocation = location.toVector3d().addRelativeFront(-1.0 * i + randomMoveOne)
+                    .addRelativeLeft(randomMoveTwo.toDouble()).addRelativeRight(randomMoveThree.toDouble()).toLocation()
 
                 if (!attemptSolutions(snapshot, sourceLocation, targetLocation, speed)) {
                     if (!attemptSolutions(snapshot, sourceLocation.clone().add(0.0, 1.0, 0.0), targetLocation, speed)) {
                         if (!attemptSolutions(
-                                snapshot,
-                                sourceLocation.clone().add(0.0, -1.0, 0.0),
-                                targetLocation,
-                                speed
+                                snapshot, sourceLocation.clone().add(0.0, -1.0, 0.0), targetLocation, speed
                             )
                         ) {
                             if (!attemptSolutions(
-                                    snapshot,
-                                    sourceLocation,
-                                    targetLocation.clone().add(0.0, 1.0, 0.0),
-                                    speed
+                                    snapshot, sourceLocation, targetLocation.clone().add(0.0, 1.0, 0.0), speed
                                 )
                             ) {
                                 if (!attemptSolutions(
-                                        snapshot,
-                                        sourceLocation,
-                                        targetLocation.clone().add(0.0, -1.0, 0.0),
-                                        speed
+                                        snapshot, sourceLocation, targetLocation.clone().add(0.0, -1.0, 0.0), speed
                                     )
                                 ) {
                                     continue
@@ -259,6 +338,7 @@ class PetEntityImpl(
      * Gets called when the player is riding the entity.
      */
     fun ride(player: Player, forward: Double, isJumping: Boolean) {
+        breakBlockCancellationToken.isCancelled = true
         positionUpdateCounter++
         if (positionUpdateCounter > 10) {
             // Required so the position of the player stays in sync while packet riding.
@@ -334,6 +414,7 @@ class PetEntityImpl(
      * Updates the riding state of the player.
      */
     fun updateRidingState() {
+        breakBlockCancellationToken.isCancelled = true
         for (player in playerComponent.visiblePlayers) {
             entityComponent.updateRidingState(player)
         }
@@ -398,7 +479,6 @@ class PetEntityImpl(
             }
         }
 
-        copy =
-            pathfinderResult.steps.map { e -> Pair(e, Pair(e.toLocation().block.type, e.toLocation().block.data)) }
+        copy = pathfinderResult.steps.map { e -> Pair(e, Pair(e.toLocation().block.type, e.toLocation().block.data)) }
     }
 }
