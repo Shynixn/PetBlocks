@@ -776,7 +776,7 @@ class PetBlocksCommandExecutor @Inject constructor(
             var command = if (configurationService.containsValue(configValue)) {
                 configurationService.findValue("headDatabaseCommand")
             } else {
-                // Compatibility to 9.0.2
+                // Compatibility to 9.0.3
                 "/hdb"
             }
 

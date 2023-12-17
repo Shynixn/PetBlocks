@@ -8,7 +8,7 @@ plugins {
 }
 
 group = "com.github.shynixn"
-version = "9.0.3"
+version = "9.1.0"
 
 repositories {
     mavenCentral()
@@ -40,7 +40,7 @@ dependencies {
     compileOnly("org.jetbrains.kotlinx:kotlinx-coroutines-jdk8:1.4.3")
 
     // Custom dependencies
-    implementation("com.github.shynixn.mcutils:common:1.0.43")
+    implementation("com.github.shynixn.mcutils:common:1.0.44")
     implementation("com.github.shynixn.mcutils:packet:1.0.67")
     implementation("com.github.shynixn.mcutils:database:1.0.14")
     implementation("com.github.shynixn.mcutils:pathfinder:1.0.19")
