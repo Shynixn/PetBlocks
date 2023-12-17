@@ -350,7 +350,7 @@ class PetActionExecutionServiceImpl @Inject constructor(
         }
     }
 
-    private class PetBlocksCommandSender(private val handle: CommandSender) : ConsoleCommandSender {
+    class PetBlocksCommandSender(private val handle: CommandSender) : ConsoleCommandSender {
         override fun isOp(): Boolean {
             return handle.isOp
         }

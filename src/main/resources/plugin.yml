@@ -21,3 +21,4 @@ libraries:
   - org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.6.21
   - com.zaxxer:HikariCP:5.0.1
   - org.openjdk.nashorn:nashorn-core:15.4
+  - aopalliance:aopalliance:1.0

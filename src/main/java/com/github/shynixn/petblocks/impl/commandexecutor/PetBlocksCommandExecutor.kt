@@ -247,15 +247,25 @@ class PetBlocksCommandExecutor @Inject constructor(
             selectPet(sender, player, args[1])
         },
         CommandDefinition(
-            "breakblock",
+            "openheaddatabase",
             2,
-            Permission.BREAK_BLOCK,
-            "/petblocks breakblock <name> <timeToBreak> <dropType> [player]"
+            Permission.OPEN_HEADDATABSE,
+            "/petblocks openheaddatabase <name> [player]"
         ) { sender, player, args ->
-            if (args[2].toIntOrNull() != null) {
-                breakBlock(sender, player, args[1], args[3], args[2].toInt())
-            }
-        }
+            openHeadDatabase(sender, player, args[1])
+        },
+
+
+        /*   CommandDefinition(
+               "breakblock",
+               2,
+               Permission.BREAK_BLOCK,
+               "/petblocks breakblock <name> <timeToBreak> <dropType> [player]"
+           ) { sender, player, args ->
+               if (args[2].toIntOrNull() != null) {
+                   breakBlock(sender, player, args[1], args[3], args[2].toInt())
+               }
+           }*/
     )
 
     /**
@@ -754,6 +764,33 @@ class PetBlocksCommandExecutor @Inject constructor(
             ?: throw PetBlocksException(String.format(PetBlocksLanguage.petNotFoundMessage, petName))
         pet.call()
         sender.sendPluginMessage(String.format(PetBlocksLanguage.petCalledMessage, petName))
+    }
+
+    private suspend fun openHeadDatabase(sender: CommandSender, player: Player, petName: String) {
+        findPetFromPlayer(player, petName)
+            ?: throw PetBlocksException(String.format(PetBlocksLanguage.petNotFoundMessage, petName))
+
+        try {
+            dependencyHeadDatabaseService!!.registerPlayerForNextClick(player, petName)
+            val configValue = "headDatabaseCommand"
+            var command = if (configurationService.containsValue(configValue)) {
+                configurationService.findValue("headDatabaseCommand")
+            } else {
+                // Compatibility to 9.0.2
+                "/hdb"
+            }
+
+            command = if (command.startsWith("/")) {
+                command.substring(1)
+            } else {
+                command
+            }
+
+            Bukkit.getServer().dispatchCommand(player, command)
+        } catch (e: Exception) {
+            sender.sendPluginMessage(PetBlocksLanguage.headDatabasePluginNotLoaded)
+            return
+        }
     }
 
     private suspend fun findPetFromPlayer(player: Player, petName: String): Pet? {

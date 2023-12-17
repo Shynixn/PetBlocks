@@ -28,7 +28,7 @@ enum class Permission(val text: String) {
     TEMPLATE("petblocks.pet.setTemplate"),
     MANIPULATE_OTHER("petblocks.pet.manipulateOther"),
     SELECT("petblocks.pet.select"),
-    HEADDATABASE_INVENTORY_TO_PET("petblocks.pet.headDatabaseInventoryHook"),
+    OPEN_HEADDATABSE("petblocks.pet.openHeadDatabase"),
     BREAK_BLOCK("petblocks.pet.breakBlock"),
     // Dynamic
     DYN_AMOUNT("petblocks.pet.amount."),

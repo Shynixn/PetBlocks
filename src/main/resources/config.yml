@@ -17,7 +17,6 @@ commands:
     description: All commands for the PetBlocks plugin.
     permission-message: You do not have permission.
 
-
 ############################
 # Script Engine
 ############################
@@ -28,9 +27,20 @@ scriptEngine:
     - "--persistent-code-cache=true"
 
 ############################
+# Logging
+############################
+isLoggingEnabled: true
+
+############################
 # Database
 ############################
 autoSaveIntervalMinutes: 5
+
+############################
+# ThirdParty
+############################
+# When executing the /petblocks openheaddatabase command, this command is executed.
+headDatabaseCommand: "/hdb"
 
 ############################
 # Global pet settings

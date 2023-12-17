@@ -55,6 +55,7 @@ class PetBlocksDependencyInjectionBinder(private val plugin: PetBlocksPlugin) : 
 
     override fun configure() {
         bind(Plugin::class.java).toInstance(plugin)
+        bind(PetBlocksPlugin::class.java).toInstance(plugin)
 
         val autoSaveMinutes = plugin.config.getInt("autoSaveIntervalMinutes")
 

@@ -38,6 +38,15 @@ class PetBlocksPlugin : JavaPlugin() {
     private val prefix: String = ChatColor.BLUE.toString() + "[PetBlocks] " + ChatColor.WHITE
     private var injector: Injector? = null
     private var immidiateDisable = false
+    private val isLoggingEnabled by lazy {
+        val configurationService = resolve(ConfigurationService::class.java)
+        val loggingKey = "isLoggingEnabled"
+        if (configurationService.containsValue(loggingKey)) {
+            configurationService.findValue(loggingKey)
+        } else {
+            true
+        }
+    }
 
     /**
      * Called when this plugin is enabled.
@@ -55,10 +64,11 @@ class PetBlocksPlugin : JavaPlugin() {
                 Version.VERSION_1_19_R2,
                 Version.VERSION_1_19_R3,
                 Version.VERSION_1_20_R1,
-                Version.VERSION_1_20_R2
+                Version.VERSION_1_20_R2,
+                Version.VERSION_1_20_R3
             )
         } else {
-            listOf(Version.VERSION_1_20_R2)
+            listOf(Version.VERSION_1_20_R3)
         }
 
         if (!Version.serverVersion.isCompatible(*versions.toTypedArray())
@@ -163,6 +173,15 @@ class PetBlocksPlugin : JavaPlugin() {
 
         val packetService = resolve(PacketService::class.java)
         packetService.close()
+    }
+
+    /**
+     * Logs a message which can be disabled.
+     */
+    fun logMessage(message: String) {
+        if (isLoggingEnabled) {
+            logger.log(Level.INFO, message)
+        }
     }
 
     fun <S> resolve(service: Class<S>): S {
