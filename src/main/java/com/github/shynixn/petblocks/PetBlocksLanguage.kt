@@ -82,6 +82,9 @@ object PetBlocksLanguage {
   /** [&9PetBlocks&f] &cCannot parse template file. See console log for details. **/
   var errorLoadingTemplatesMessage : String = "[&9PetBlocks&f] &cCannot parse template file. See console log for details."
 
+  /** [&9PetBlocks&f] Cancelled action. **/
+  var cancelMessage : String = "[&9PetBlocks&f] Cancelled action."
+
   /** [&9PetBlocks&f] PetBlocks has been reloaded. **/
   var reloadMessage : String = "[&9PetBlocks&f] PetBlocks has been reloaded."
 

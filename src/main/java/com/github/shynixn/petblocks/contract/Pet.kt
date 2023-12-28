@@ -122,6 +122,12 @@ interface Pet {
     fun breakBlock(timeToBreakTicks: Int, dropTypes: List<DropType>)
 
     /**
+     * Cancels any long-running actions
+     * e.g. breakBlock
+     */
+    fun cancelAction()
+
+    /**
      * Turns the pet to look at the given location.
      *  The world property is ignored.
      */
@@ -144,6 +150,11 @@ interface Pet {
      * Is owner wearing the pet on its head?
      */
     fun isHat(): Boolean
+
+    /**
+     * Is the pet currently breaking a block.
+     */
+    fun isBreakingBlock(): Boolean
 
     /**
      * Is the pet mounted as a hat or is someone riding or flying it?

@@ -95,6 +95,7 @@ class PetBlocksDependencyInjectionBinder(private val plugin: PetBlocksPlugin) : 
         bind(ItemService::class.java).toInstance(ItemServiceImpl())
         bind(PathfinderService::class.java).toInstance(PathfinderServiceImpl(CubeWorldSnapshotServiceImpl()))
 
+        bind(BreakBlockService::class.java).to(BreakBlockServiceImpl::class.java).`in`(Scopes.SINGLETON)
         bind(PetService::class.java).to(PetServiceImpl::class.java).`in`(Scopes.SINGLETON)
         bind(PetEntityFactory::class.java).to(PetEntityFactoryImpl::class.java).`in`(Scopes.SINGLETON)
         bind(PetActionExecutionService::class.java).to(PetActionExecutionServiceImpl::class.java).`in`(Scopes.SINGLETON)

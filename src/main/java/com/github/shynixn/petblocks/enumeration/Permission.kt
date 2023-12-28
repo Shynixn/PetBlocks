@@ -30,6 +30,7 @@ enum class Permission(val text: String) {
     SELECT("petblocks.pet.select"),
     OPEN_HEADDATABSE("petblocks.pet.openHeadDatabase"),
     BREAK_BLOCK("petblocks.pet.breakBlock"),
+    CANCEL("petblocks.pet.cancel"),
     // Dynamic
     DYN_AMOUNT("petblocks.pet.amount."),
     DYN_TEMPLATE("petblocks.pet.template."),

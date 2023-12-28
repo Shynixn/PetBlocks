@@ -402,6 +402,14 @@ class PetImpl(
     }
 
     /**
+     * Cancels any long-running actions
+     * e.g. breakBlock
+     */
+    override fun cancelAction() {
+        petEntity?.cancelLongRunningAction()
+    }
+
+    /**
      * Turns the pet to look at the given location.
      */
     override fun lookAt(location: Location) {
@@ -454,6 +462,17 @@ class PetImpl(
      */
     override fun isHat(): Boolean {
         return petEntity != null && petMeta.ridingState == PetRidingState.HAT
+    }
+
+    /**
+     * Is the pet currently breaking a block.
+     */
+    override fun isBreakingBlock(): Boolean {
+        if (petEntity == null) {
+            return false
+        }
+
+        return petEntity!!.isBreakingBlock
     }
 
     /**

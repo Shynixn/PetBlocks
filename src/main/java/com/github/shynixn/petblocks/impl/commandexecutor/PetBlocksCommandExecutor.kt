@@ -254,18 +254,24 @@ class PetBlocksCommandExecutor @Inject constructor(
         ) { sender, player, args ->
             openHeadDatabase(sender, player, args[1])
         },
-
-
-        /*   CommandDefinition(
-               "breakblock",
-               2,
-               Permission.BREAK_BLOCK,
-               "/petblocks breakblock <name> <timeToBreak> <dropType> [player]"
-           ) { sender, player, args ->
-               if (args[2].toIntOrNull() != null) {
-                   breakBlock(sender, player, args[1], args[3], args[2].toInt())
-               }
-           }*/
+        CommandDefinition(
+            "breakblock",
+            4,
+            Permission.BREAK_BLOCK,
+            "/petblocks breakblock <name> <timeToBreak> <dropType> [player]"
+        ) { sender, player, args ->
+            if (args[2].toIntOrNull() != null) {
+                breakBlock(player, args[1], args[3], args[2].toInt())
+            }
+        },
+        CommandDefinition(
+            "cancel",
+            2,
+            Permission.CANCEL,
+            "/petblocks cancel <name> [player]"
+        ) { sender, player, args ->
+            cancel(sender, player, args[1])
+        }
     )
 
     /**
@@ -554,7 +560,6 @@ class PetBlocksCommandExecutor @Inject constructor(
     }
 
     private suspend fun breakBlock(
-        sender: CommandSender,
         player: Player,
         petName: String,
         dropTypes: String,
@@ -563,14 +568,22 @@ class PetBlocksCommandExecutor @Inject constructor(
         val pet = findPetFromPlayer(player, petName)
             ?: throw PetBlocksException(String.format(PetBlocksLanguage.petNotFoundMessage, petName))
 
-        val dropTypes = try {
+        val actualDropTypes = try {
             dropTypes.split(",").map { e -> DropType.values().first { t -> t.name.equals(e, true) } }
         } catch (e: Exception) {
             player.sendMessage(PetBlocksLanguage.dropTypeNotFound.format(dropTypes))
             return
         }
 
-        pet.breakBlock(timeToBreak, dropTypes)
+        pet.breakBlock(timeToBreak, actualDropTypes)
+    }
+
+    private suspend fun cancel(sender: CommandSender, player: Player, petName: String) {
+        val pet = findPetFromPlayer(player, petName)
+            ?: throw PetBlocksException(String.format(PetBlocksLanguage.petNotFoundMessage, petName))
+
+        pet.cancelAction()
+        sender.sendPluginMessage(PetBlocksLanguage.cancelMessage)
     }
 
     private suspend fun setPetTemplate(sender: CommandSender, player: Player, petName: String, templateId: String) {

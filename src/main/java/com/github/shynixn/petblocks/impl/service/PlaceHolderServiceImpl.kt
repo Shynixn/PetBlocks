@@ -87,11 +87,12 @@ class PlaceHolderServiceImpl : PlaceHolderService {
             } else {
                 val selector = "{textures:[{Value:\""
                 val nbt = pet.headItem.nbt!!
-                val rawSelection = nbt.substring(nbt.indexOf(selector)+ selector.length)
-                val result =rawSelection.replace("}","").replace("]", "").replace("\"","")
+                val rawSelection = nbt.substring(nbt.indexOf(selector) + selector.length)
+                val result = rawSelection.replace("}", "").replace("]", "").replace("\"", "")
                 result
             }
         }
+        petPlaceHolderFunctions[PlaceHolder.PET_ISBREAKINGBLOCK] = { pet -> pet.isBreakingBlock().toString() }
     }
 
     /**
@@ -138,12 +139,13 @@ class PlaceHolderServiceImpl : PlaceHolderService {
         if (pet != null && output.contains("%petblocks_js")) {
             for (key in pet.javaScriptMemory.keys) {
                 val value = pet.javaScriptMemory[key]!!
-                if(key.contains("json")){
-                   val parsedJsonObject = mapper.readValue(value, Map::class.java)
-                    for(innerKey in parsedJsonObject.keys){
-                        output = output.replace("%petblocks_js_${key}_${innerKey}%", parsedJsonObject[innerKey].toString())
+                if (key.contains("json")) {
+                    val parsedJsonObject = mapper.readValue(value, Map::class.java)
+                    for (innerKey in parsedJsonObject.keys) {
+                        output =
+                            output.replace("%petblocks_js_${key}_${innerKey}%", parsedJsonObject[innerKey].toString())
                     }
-                }else{
+                } else {
                     output = output.replace("%petblocks_js_${key}%", value)
                 }
             }
