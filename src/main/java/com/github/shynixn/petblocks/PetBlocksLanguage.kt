@@ -7,6 +7,9 @@ object PetBlocksLanguage {
   /** [&9PetBlocks&f] The skin of pet %1$1s has been changed. **/
   var petSkinNbtChanged : String = "[&9PetBlocks&f] The skin of pet %1$1s has been changed."
 
+  /** [&9PetBlocks&f] The pet has been rotated. **/
+  var rotationRelMessage : String = "[&9PetBlocks&f] The pet has been rotated."
+
   /** [&9PetBlocks&f] Pet with name %1$1s has been spawned. **/
   var petSpawnedMessage : String = "[&9PetBlocks&f] Pet with name %1$1s has been spawned."
 
@@ -36,6 +39,9 @@ object PetBlocksLanguage {
 
   /** [&9PetBlocks&f] Selected pet %1$1s. **/
   var petSelectedMessage : String = "[&9PetBlocks&f] Selected pet %1$1s."
+
+  /** [&9PetBlocks&f] &cOnly the direction types %1$1s are supported. **/
+  var petRotationTypeNotFound : String = "[&9PetBlocks&f] &cOnly the direction types %1$1s are supported."
 
   /** [&9PetBlocks&f] Pet with name %1$1s has been removed. **/
   var petDespawnedMessage : String = "[&9PetBlocks&f] Pet with name %1$1s has been removed."
@@ -85,6 +91,9 @@ object PetBlocksLanguage {
   /** [&9PetBlocks&f] Cancelled action. **/
   var cancelMessage : String = "[&9PetBlocks&f] Cancelled action."
 
+  /** [&9PetBlocks&f] Pet is walking forward. **/
+  var petMoveForwardMessage : String = "[&9PetBlocks&f] Pet is walking forward."
+
   /** [&9PetBlocks&f] PetBlocks has been reloaded. **/
   var reloadMessage : String = "[&9PetBlocks&f] PetBlocks has been reloaded."
 
@@ -121,6 +130,9 @@ object PetBlocksLanguage {
   /** [&9PetBlocks&f] Pet is walking to location. **/
   var petWalkToLocationMessage : String = "[&9PetBlocks&f] Pet is walking to location."
 
-  /** [&9PetBlocks&f] &cDropType %1$1s not found. **/
-  var dropTypeNotFound : String = "[&9PetBlocks&f] &cDropType %1$1s not found."
+  /** [&9PetBlocks&f] &cOnly the drop types %1$1s are supported. **/
+  var dropTypeNotFound : String = "[&9PetBlocks&f] &cOnly the drop types %1$1s are supported."
+
+  /** [&9PetBlocks&f] The pet has been snapped to a coordinate axe. **/
+  var snapMessage : String = "[&9PetBlocks&f] The pet has been snapped to a coordinate axe."
 }

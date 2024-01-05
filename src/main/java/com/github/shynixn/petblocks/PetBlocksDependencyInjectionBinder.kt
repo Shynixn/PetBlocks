@@ -62,7 +62,7 @@ class PetBlocksDependencyInjectionBinder(private val plugin: PetBlocksPlugin) : 
         // Repositories
         val templateRepositoryImpl = YamlFileRepositoryImpl<PetTemplate>(plugin,
             "pets",
-            listOf(Pair("pets/pet_classic.yml", "pet_classic.yml")),
+            listOf(Pair("pets/pet_classic.yml", "pet_classic.yml"),Pair("pets/pet_mining.yml", "pet_mining.yml")),
             emptyList(),
             object : TypeReference<PetTemplate>() {})
         val cacheTemplateRepository = CachedRepositoryImpl(templateRepositoryImpl)

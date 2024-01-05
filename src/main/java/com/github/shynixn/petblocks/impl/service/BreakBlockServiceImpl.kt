@@ -3,8 +3,6 @@ package com.github.shynixn.petblocks.impl.service
 import com.github.shynixn.mccoroutine.bukkit.launch
 import com.github.shynixn.mccoroutine.bukkit.ticks
 import com.github.shynixn.mcutils.common.CancellationToken
-import com.github.shynixn.mcutils.common.Vector3d
-import com.github.shynixn.mcutils.common.toLocation
 import com.github.shynixn.mcutils.packet.api.PacketService
 import com.github.shynixn.mcutils.packet.api.packet.PacketOutBlockBreakAnimation
 import com.github.shynixn.petblocks.contract.BreakBlockService
@@ -28,7 +26,8 @@ class BreakBlockServiceImpl @Inject constructor(private val plugin: Plugin, priv
         dropTypes: List<DropType>,
         token: CancellationToken
     ) {
-        val locateBlock = findTargetBlock(petEntity.getLocation()) ?: return
+        val locateBlock = petEntity.findTargetBlock(2.0) ?: return
+
         petEntity.isBreakingBlock = true
 
         plugin.launch {
@@ -120,19 +119,4 @@ class BreakBlockServiceImpl @Inject constructor(private val plugin: Plugin, priv
         return false
     }
 
-    private fun findTargetBlock(sourceLocation: Vector3d): Block? {
-        var locateBlock: Block? = null
-        val sourceVector3d = sourceLocation.clone().add(1.0)
-
-        for (i in 0 until 5) {
-            val block = sourceVector3d.addRelativeFront(1.0).toLocation().block
-
-            if (!block.isEmpty && !block.isLiquid && !block.isPassable) {
-                locateBlock = block
-                break
-            }
-        }
-
-        return locateBlock
-    }
 }

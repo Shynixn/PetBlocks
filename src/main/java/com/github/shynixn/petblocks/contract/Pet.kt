@@ -3,8 +3,10 @@ package com.github.shynixn.petblocks.contract
 import com.github.shynixn.mcutils.common.item.Item
 import com.github.shynixn.petblocks.entity.PetTemplate
 import com.github.shynixn.petblocks.enumeration.DropType
+import com.github.shynixn.petblocks.enumeration.PetCoordinateAxeType
 import com.github.shynixn.petblocks.enumeration.PetVisibility
 import org.bukkit.Location
+import org.bukkit.block.Block
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 import org.bukkit.util.Vector
@@ -74,6 +76,11 @@ interface Pet {
     var template: PetTemplate
 
     /**
+     * Gets the direction the pet could snap to.
+     */
+    val direction: PetCoordinateAxeType
+
+    /**
      * Calculated variables which can be used in subsequent operations by placeholders.
      */
     val javaScriptMemory: MutableMap<String, String>
@@ -83,6 +90,11 @@ interface Pet {
      * right in front of the player.
      */
     fun call()
+
+    /**
+     *  Snaps the pet yaw and pitch to the x or z
+     */
+    fun snap()
 
     /**
      * DeSpawns the pet for the owner and other players.
@@ -142,9 +154,19 @@ interface Pet {
     fun moveTo(location: Location, speed: Double): Boolean
 
     /**
+     * Lets the pet move forward until it hits an obstacle.
+     */
+    fun moveForward(speed: Double): Boolean
+
+    /**
      * Is the owner riding on the pet.
      */
     fun isRiding(): Boolean
+
+    /**
+     * Gets the block the pet is looking at.
+     */
+    fun getBlockInFrontOf(): Block?
 
     /**
      * Is owner wearing the pet on its head?

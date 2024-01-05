@@ -11,7 +11,6 @@ import com.github.shynixn.mcutils.common.physic.PhysicObjectDispatcher
 import com.github.shynixn.mcutils.common.toLocation
 import com.github.shynixn.mcutils.common.toVector3d
 import com.github.shynixn.mcutils.packet.api.PacketService
-import com.github.shynixn.mcutils.packet.api.packet.PacketOutBlockBreakAnimation
 import com.github.shynixn.mcutils.pathfinder.api.PathfinderResult
 import com.github.shynixn.mcutils.pathfinder.api.PathfinderResultType
 import com.github.shynixn.mcutils.pathfinder.api.PathfinderService
@@ -121,7 +120,6 @@ class PetEntityImpl(
     }
 
     fun setVelocity(vector3d: Vector3d) {
-        println("Cancelled Vel")
         cancellationTokenLongRunning.isCancelled = true
         this.physicsComponent.setVelocity(vector3d)
     }
@@ -130,8 +128,6 @@ class PetEntityImpl(
      * Teleports the pet in world.
      */
     fun teleportInWorld(vector3d: Vector3d) {
-        println("Cancelled Tel")
-
         cancellationTokenLongRunning.isCancelled = true
         this.physicsComponent.teleport(vector3d)
     }
@@ -210,7 +206,6 @@ class PetEntityImpl(
      * Moves to the given location.
      */
     fun moveToLocation(location: Location, speed: Double) {
-        println("Move Cancel")
         cancellationTokenLongRunning.isCancelled = true
         val snapshot = pathfinderService.calculateFastPathfinderSnapshot(
             location, pathFinderCube.x.toInt(), pathFinderCube.y.toInt(), pathFinderCube.z.toInt()
@@ -254,6 +249,37 @@ class PetEntityImpl(
                 }
 
                 break
+            }
+        }
+    }
+
+    fun moveForward(speed: Double) {
+        cancellationTokenLongRunning.isCancelled = true
+        cancellationTokenLongRunning = CancellationToken()
+
+        val token =  cancellationTokenLongRunning
+
+        plugin.launch {
+            while (true) {
+                if (token.isCancelled) {
+                    return@launch
+                }
+
+                val snapshot = pathfinderService.calculateFastPathfinderSnapshot(
+                    pet.location, 5, 5, 5
+                )
+                val sourceLocation = pet.location
+                val targetLocation = sourceLocation.toVector3d().addRelativeFront(0.8).toLocation()
+
+                plugin.launch(physicObjectDispatcher) {
+                    val pathResult = pathfinderService.findPath(snapshot, sourceLocation, targetLocation)
+
+                    if (pathResult.resultType != PathfinderResultType.FOUND) {
+                        token.isCancelled = true
+                    } else {
+                        moveToTargetComponent.walkToTarget(pathResult.steps, speed).join()
+                    }
+                }.join()
             }
         }
     }
@@ -396,6 +422,24 @@ class PetEntityImpl(
         physicsComponent.close()
         playerComponent.close()
         isDead = true
+    }
+
+    /**
+     * Gets the block the pet is looking at with the given maxDistance.
+     */
+    fun findTargetBlock(maxDistance: Double): Block? {
+        val worldLocation = getLocation().toLocation()
+        val world = worldLocation.world ?: return null
+
+        val rayTraceResult = world.rayTraceBlocks(
+            worldLocation,
+            worldLocation.direction.normalize(),
+            maxDistance,
+            FluidCollisionMode.NEVER,
+            true
+        ) ?: return null
+
+        return rayTraceResult.hitBlock
     }
 
     /**

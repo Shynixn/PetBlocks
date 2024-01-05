@@ -33,7 +33,7 @@ class PetAction {
     /**
      * Optional permission check for this action.
      */
-    var permission : String? = null
+    var permission: String? = null
 
     // endregion
 
