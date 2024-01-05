@@ -4,6 +4,7 @@ import com.github.shynixn.mcutils.common.Vector3d
 import com.github.shynixn.mcutils.common.physic.PhysicComponent
 import com.github.shynixn.mcutils.common.toVector
 import com.github.shynixn.mcutils.common.toVector3d
+import kotlinx.coroutines.Job
 import java.util.*
 
 class MoveToTargetComponent(private val mathComponent: MathComponent) : PhysicComponent {
@@ -12,6 +13,9 @@ class MoveToTargetComponent(private val mathComponent: MathComponent) : PhysicCo
     private var vectorPerTick: Vector3d? = null
     private var lastDistance: Double = Double.MAX_VALUE
     private var speed = 0.0
+    private var lastJob = Job().also {
+        it.complete()
+    }
 
     init {
         mathComponent.onPostPositionChange.add { position, _ ->
@@ -22,13 +26,17 @@ class MoveToTargetComponent(private val mathComponent: MathComponent) : PhysicCo
     /**
      * Walks to the given target using the given path.
      */
-    fun walkToTarget(path: List<Vector3d>, speed : Double) {
+    fun walkToTarget(path: List<Vector3d>, speed: Double): Job {
+        lastJob.complete()
         currentPath = LinkedList(path)
         currentPath!!.poll()
         currentTargetPosition = null
         vectorPerTick = null
         this.speed = speed
         lastDistance = Double.MAX_VALUE
+
+        lastJob = Job()
+        return lastJob
     }
 
     /**
@@ -44,6 +52,7 @@ class MoveToTargetComponent(private val mathComponent: MathComponent) : PhysicCo
 
             if (currentTargetPosition == null) {
                 currentPath = null
+                lastJob.complete()
                 return
             }
 
@@ -78,13 +87,14 @@ class MoveToTargetComponent(private val mathComponent: MathComponent) : PhysicCo
                 currentPath = null
                 // Remove vector when finished.
                 mathComponent.setVelocity(Vector3d(0.0, -1.0, 0.0))
+                lastJob.complete()
             }
         } else {
             lastDistance = distanceNow
         }
     }
 
-    private fun correctLookingDirection(){
+    private fun correctLookingDirection() {
         val targetLocation = currentTargetPosition!!.toVector()
         val directionVector = targetLocation.subtract(mathComponent.position.toVector())
         mathComponent.position.setDirection(directionVector.toVector3d())

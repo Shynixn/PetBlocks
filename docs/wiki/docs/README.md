@@ -4,6 +4,7 @@ PetBlocks is a Minecraft Bukkit plugin to use blocks as pets in minecraft.
 
 !!! note "PetBlocks v8 Docs"
     Are you looking for the old wiki? You can download it [here.](https://shynixn.github.io/PetBlocks/8.0.0/wiki.zip)
+    A copy can also be found in the [web archive.](https://web.archive.org/web/20200929094049/https://shynixn.github.io/PetBlocks/build/html/index.html)
 
 ## Features
 

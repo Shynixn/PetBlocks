@@ -37,6 +37,9 @@ class PlaceHolderServiceImpl : PlaceHolderService {
             { player -> String.format(Locale.ENGLISH, "%.2f", player.location.yaw) }
         simplePlaceHolderFunctions[PlaceHolder.PLAYER_OWNER_LOCATION_PITCH] =
             { player -> String.format(Locale.ENGLISH, "%.2f", player.location.pitch) }
+        simplePlaceHolderFunctions[PlaceHolder.PLAYER_OWNER_ITEMMAINHAND_TYPE] = { player ->
+            "minecraft:" + player.inventory.itemInMainHand.type.name.lowercase()
+        }
         // Event Player
         simplePlaceHolderFunctions[PlaceHolder.EVENT_PLAYER_OWNER_NAME] = playerOwnerNameFun
         simplePlaceHolderFunctions[PlaceHolder.EVENT_PLAYER_OWNER_DISPLAYNAME] = playerDisplayNameFun
@@ -51,6 +54,9 @@ class PlaceHolderServiceImpl : PlaceHolderService {
             { player -> String.format(Locale.ENGLISH, "%.2f", player.location.yaw) }
         simplePlaceHolderFunctions[PlaceHolder.EVENT_PLAYER_OWNER_LOCATION_PITCH] =
             { player -> String.format(Locale.ENGLISH, "%.2f", player.location.pitch) }
+        simplePlaceHolderFunctions[PlaceHolder.EVENT_PLAYER_OWNER_ITEMMAINHAND_TYPE] = { player ->
+            "minecraft:" + player.inventory.itemInMainHand.type.name.lowercase()
+        }
         // Pet
         petPlaceHolderFunctions[PlaceHolder.PET_NAME] = { pet -> pet.name }
         petPlaceHolderFunctions[PlaceHolder.PET_DISPLAYNAME] = { pet -> pet.displayName }
@@ -87,9 +93,18 @@ class PlaceHolderServiceImpl : PlaceHolderService {
             } else {
                 val selector = "{textures:[{Value:\""
                 val nbt = pet.headItem.nbt!!
-                val rawSelection = nbt.substring(nbt.indexOf(selector)+ selector.length)
-                val result =rawSelection.replace("}","").replace("]", "").replace("\"","")
+                val rawSelection = nbt.substring(nbt.indexOf(selector) + selector.length)
+                val result = rawSelection.replace("}", "").replace("]", "").replace("\"", "")
                 result
+            }
+        }
+        petPlaceHolderFunctions[PlaceHolder.PET_ISBREAKINGBLOCK] = { pet -> pet.isBreakingBlock().toString() }
+        petPlaceHolderFunctions[PlaceHolder.PET_BLOCKINFRONT_TYPE] = { pet ->
+            val block = pet.getBlockInFrontOf()
+            if (block == null) {
+                "minecraft:air"
+            } else {
+                "minecraft:" + block.type.name.lowercase()
             }
         }
     }
@@ -138,12 +153,13 @@ class PlaceHolderServiceImpl : PlaceHolderService {
         if (pet != null && output.contains("%petblocks_js")) {
             for (key in pet.javaScriptMemory.keys) {
                 val value = pet.javaScriptMemory[key]!!
-                if(key.contains("json")){
-                   val parsedJsonObject = mapper.readValue(value, Map::class.java)
-                    for(innerKey in parsedJsonObject.keys){
-                        output = output.replace("%petblocks_js_${key}_${innerKey}%", parsedJsonObject[innerKey].toString())
+                if (key.contains("json")) {
+                    val parsedJsonObject = mapper.readValue(value, Map::class.java)
+                    for (innerKey in parsedJsonObject.keys) {
+                        output =
+                            output.replace("%petblocks_js_${key}_${innerKey}%", parsedJsonObject[innerKey].toString())
                     }
-                }else{
+                } else {
                     output = output.replace("%petblocks_js_${key}%", value)
                 }
             }

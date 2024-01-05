@@ -9,16 +9,14 @@ import com.github.shynixn.petblocks.contract.Pet
 import com.github.shynixn.petblocks.contract.PetEntityFactory
 import com.github.shynixn.petblocks.entity.PetMeta
 import com.github.shynixn.petblocks.entity.PetTemplate
-import com.github.shynixn.petblocks.enumeration.DropType
-import com.github.shynixn.petblocks.enumeration.Permission
-import com.github.shynixn.petblocks.enumeration.PetRidingState
-import com.github.shynixn.petblocks.enumeration.PetVisibility
+import com.github.shynixn.petblocks.enumeration.*
 import com.github.shynixn.petblocks.event.PetRemoveEvent
 import com.github.shynixn.petblocks.event.PetSpawnEvent
 import com.github.shynixn.petblocks.exception.PetBlocksPetDisposedException
 import kotlinx.coroutines.delay
 import org.bukkit.Bukkit
 import org.bukkit.Location
+import org.bukkit.block.Block
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 import org.bukkit.plugin.Plugin
@@ -237,6 +235,14 @@ class PetImpl(
         }
 
     /**
+     * Gets the direction the pet could snap to.
+     */
+    override val direction: PetCoordinateAxeType
+        get() {
+            return PetCoordinateAxeType.fromLocation(location)
+        }
+
+    /**
      * Calculated variables which can be used in subsequent operations by placeholders.
      */
     override var javaScriptMemory: MutableMap<String, String> = HashMap()
@@ -271,6 +277,20 @@ class PetImpl(
         } else {
             petEntity!!.teleportInWorld(inFrontOfOwnerPosition)
         }
+    }
+
+    /**
+     *  Snaps the pet yaw and pitch to the x or z
+     */
+    override fun snap() {
+        val direction = this.direction
+        val location = this.location
+        location.x = location.blockX.toDouble() + 0.5
+        location.y = location.blockY.toDouble() + 0.5
+        location.z = location.blockZ.toDouble() + 0.5
+        location.yaw = direction.yaw
+        location.pitch = 0.0F
+        this.location = location
     }
 
     /**
@@ -402,6 +422,14 @@ class PetImpl(
     }
 
     /**
+     * Cancels any long-running actions
+     * e.g. breakBlock
+     */
+    override fun cancelAction() {
+        petEntity?.cancelLongRunningAction()
+    }
+
+    /**
      * Turns the pet to look at the given location.
      */
     override fun lookAt(location: Location) {
@@ -443,6 +471,18 @@ class PetImpl(
     }
 
     /**
+     * Lets the pet move forward until it hits an obstacle.
+     */
+    override fun moveForward(speed: Double): Boolean {
+        if (isDisposed) {
+            throw PetBlocksPetDisposedException()
+        }
+
+        petEntity?.moveForward(speed)
+        return true
+    }
+
+    /**
      * Is the owner riding on the pet.
      */
     override fun isRiding(): Boolean {
@@ -450,10 +490,32 @@ class PetImpl(
     }
 
     /**
+     * Gets the block the pet is looking at.
+     */
+    override fun getBlockInFrontOf(): Block? {
+        if (petEntity == null) {
+            return null
+        }
+
+        return petEntity?.findTargetBlock(2.0)
+    }
+
+    /**
      * Is owner wearing the pet on its head?
      */
     override fun isHat(): Boolean {
         return petEntity != null && petMeta.ridingState == PetRidingState.HAT
+    }
+
+    /**
+     * Is the pet currently breaking a block.
+     */
+    override fun isBreakingBlock(): Boolean {
+        if (petEntity == null) {
+            return false
+        }
+
+        return petEntity!!.isBreakingBlock
     }
 
     /**

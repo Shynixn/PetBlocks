@@ -1,0 +1,308 @@
+# Unique template identifier
+name: mining
+# The version of this file.
+# You can ignore this value, if it is not mentioned in the patchNotes.
+version: 1.0
+# The initial settings of the pet on first spawn.
+pet:
+  # The initial name of the pet shown above the pet on first spawn. Supports ChatColors.
+  displayName: "%petblocks_owner_name%'s pet"
+  # The initial visibility the pet starts with on first spawn.
+  # Should the pet be shown to all players (e.g. "ALL") or shown to just the owner (e.g. "OWNER")?
+  visibility: "ALL"
+  # The initial loop state the pet starts with on first spawn.
+  loop: "idle"
+  # Should the pet immediately spawn after creation with the /petblocks create command?
+  spawned: true
+  # Should the player immediately ride on the pet on initial spawn?
+  # Possible values "NO", "GROUND", "HAT"
+  ridingState: "NO"
+  # All item properties.
+  item:
+    # TypeName the pet is represented. For version compatibility, multiple identifiers can be added by separating with a comma.
+    typeName: "minecraft:player_head,397"
+    # Optional durability tag.
+    durability: 3
+    # Optional NBT Tags in standard Minecraft NBT format.
+    nbt: '{SkullOwner:{Id:[I;-679733089,1513112343,-1218902292,1830955974],Name:"PetBlocks",Properties:{textures:[{Value:"eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvODA4YWM1ZTI4ZGJkZmEyMjUwYzYwMjg3Njg2ZGIxNGNjYmViNzc2YzNmMDg2N2M5NTU1YjdlNDk1NmVmYmE3NyJ9fX0="}]}}}'
+  physics:
+    # The amount of acceleration in minus y axe direction which is applied after each tick.
+    gravity: 0.05
+    # If a velocity is applied to the pet, this is the percentage of the speed the pet preserves after each tick.
+    # e.g. 1.0 = Pet continuous to fly with the same speed into infinity.
+    # e.g. 0.8 = Pet speed is reduced to 80% of its previous value after each tick.
+    relativeVelocityReduce: 0.8
+    # If a velocity is applied to the pet, this is the absolute value which is taken from the velocity speed vector after each tick.
+    # e.g. 0.005 means that the speed is reduced by 0.005 after each tick
+    absoluteVelocityReduce: 0.0005
+    # The distance the pet hovers above the ground. Depending on the entity type this should be set lower or higher.
+    groundOffset: -0.35
+
+#
+# Defines the action a pet should perform on certain events.
+#
+events:
+  # You cannot add new events here. The event names are fixed.
+  leftClick:
+    actions: # You can add/remove actions as you want here. The JavaScript example below, highlights that pets are fully programmable if you need that.
+      - name: "Calculate knockback vector when the owner punches the pet"
+        condition: # Supported Condition Types are "STRING_EQUALS" and "JAVASCRIPT". Prefer using "STRING_EQUALS" as each JavaScript execution takes a delay of atleast 1 tick.
+          type: STRING_EQUALS
+          left: "%petblocks_eventPlayer_name%"
+          right: "%petblocks_owner_name%"
+        type: "JAVASCRIPT"
+        variable: "jsonKnockback" # If the variable name contains the word 'json', you can store entire json objects and retrieve all keys from the first depth level as placeholder.
+        js: |
+          function calculateVector() {
+            var positionPlayer = {
+              x: %petblocks_owner_locationX%,
+              y: %petblocks_owner_locationY%,
+              z: %petblocks_owner_locationZ%
+            }
+            var positionPet = {
+              x: %petblocks_pet_locationX%,
+              y: %petblocks_pet_locationY%,
+              z: %petblocks_pet_locationZ%
+            }
+            var directionVector = {
+              x: positionPet.x - positionPlayer.x,
+              y: positionPet.y - positionPlayer.y,
+              z: positionPet.z - positionPlayer.z
+            };
+            var magnitude = Math.sqrt(
+               Math.pow(directionVector.x, 2) + Math.pow(directionVector.y, 2) + Math.pow(directionVector.z, 2)
+            );
+            var normalizedMultipliedVector = {
+              x: directionVector.x / magnitude * 0.5,
+              y: directionVector.y / magnitude * 0.5,
+              z: directionVector.z / magnitude * 0.5
+            };
+            return normalizedMultipliedVector
+          }
+          JSON.stringify(calculateVector())
+      - name: "Apply the knockback vector as velocity"
+        condition:
+          type: STRING_EQUALS
+          left: "%petblocks_eventPlayer_name%"
+          right: "%petblocks_owner_name%"
+        type: "COMMAND"
+        level: "SERVER"
+        run:
+          - "/petblocks velocity %petblocks_pet_name% %petblocks_js_jsonKnockback_x% 0.2 %petblocks_js_jsonKnockback_z% %petblocks_eventPlayer_name%"
+  rightClick:
+    actions:  # You can add/remove actions as you want here.
+      - name: "Cancel any long running actions and set to idle"
+        condition:
+          type: STRING_EQUALS
+          left: "%petblocks_eventPlayer_name%"
+          right: "%petblocks_owner_name%"
+        type: "COMMAND"
+        level: "SERVER"
+        run:
+          - "/petblocks cancel %petblocks_pet_name% %petblocks_owner_name%"
+          - "/petblocks lookatowner %petblocks_pet_name% %petblocks_owner_name%"
+          - "/petblocks loop %petblocks_pet_name% idle %petblocks_owner_name%"
+      - name: "Start to mine tunnel on rightclick with pickaxe" 
+        condition:
+          type: JAVASCRIPT
+          js: "'%petblocks_eventPlayer_itemMainHand_type%'.indexOf('pickaxe') != -1 && '%petblocks_eventPlayer_name%' == '%petblocks_owner_name%'" 
+        type: "COMMAND"
+        level: "SERVER"
+        run:
+          - "/tell %petblocks_owner_name% Pet %petblocks_pet_displayName% &rstarts to mine a tunnel."
+          - "/petblocks snap %petblocks_pet_name% %petblocks_owner_name%" # Snap is useful for straight tunnels.
+          - "/petblocks loop %petblocks_pet_name% mineTunnel2x2 %petblocks_owner_name%" 
+#
+# Defines the action a pet should perform in an interval on its own.
+#
+loops:
+  # You can add/remove new loops as you want here.
+  # Give it a name like "idle2" and define the list of actions below.
+  idle: # The idle loop is selected when you unmount a pet.
+    actions:
+      - name: "Delay Action"
+        type: "DELAY"
+        ticks: 20
+      - name: "Look at owner with a 90% change."
+        condition:
+          type: JAVASCRIPT
+          js: "Math.floor(Math.random() * 100) <= 90" # Calculate chance in JavaScript.
+        type: "COMMAND"
+        level: "SERVER"
+        run:
+          - "/petblocks lookatowner %petblocks_pet_name% %petblocks_owner_name%"
+      - name: "Switch to moveToOwner if pet is too far away"
+        condition:
+          type: NUMBER_GREATER_THAN
+          left: "%petblocks_pet_distanceToOwner%"
+          right: "7"
+        type: "COMMAND"
+        level: "SERVER"
+        run:
+          - "/petblocks loop %petblocks_pet_name% moveToOwner %petblocks_owner_name%"
+  moveToOwner:
+    actions:
+      - name: "Recalculate path and start moving to owner."
+        type: "COMMAND"
+        level: "SERVER"
+        run:
+          - "/petblocks moveToOwner %petblocks_pet_name% 0.2 %petblocks_owner_name%"
+      - name: "Switch to idle if the pet is beside the player"
+        condition:
+          type: NUMBER_LESS_THAN
+          left: "%petblocks_pet_distanceToOwner%"
+          right: "4"
+        type: "COMMAND"
+        level: "SERVER"
+        run:
+          - "/petblocks loop %petblocks_pet_name% idle %petblocks_owner_name%"
+      - name: "Teleport pet to player if the pet is too far away for the pathfinder."
+        condition:
+          type: NUMBER_GREATER_THAN
+          left: "%petblocks_pet_distanceToOwner%"
+          right: "20"
+        type: "COMMAND"
+        level: "SERVER"
+        run:
+          - "/petblocks teleport %petblocks_pet_name% %petblocks_owner_locationWorld% %petblocks_owner_locationX% %petblocks_owner_locationY% %petblocks_owner_locationZ% %petblocks_owner_locationYaw% %petblocks_owner_locationPitch% %petblocks_owner_name%"
+      - name: "Delay Action"
+        type: "DELAY"
+        ticks: 20    
+  mineTunnel2x2:
+    actions: 
+      - name: "Move pet forward."
+        condition: 
+          type: STRING_EQUALS
+          left: "%petblocks_pet_isBreakingBlock%"
+          right: "false"
+        type: "COMMAND"
+        level: "SERVER"
+        run:
+          - "/petblocks moveforward %petblocks_pet_name% 0.2 %petblocks_owner_name%"   
+      - name: "Delay Action"
+        type: "DELAY"
+        ticks: 20             
+      - name: "Break Block"
+        condition: 
+          type: STRING_EQUALS
+          left: "%petblocks_pet_isBreakingBlock%"
+          right: "false"
+        type: "COMMAND"
+        level: "SERVER"
+        run:
+          - "/petblocks breakblock %petblocks_pet_name% 120 DROP %petblocks_owner_name%"
+      - name: "Delay Action" # BreakBlock may take some time to update the placeholder, add artificial delay for that.
+        type: "DELAY"
+        ticks: 5     
+      - name: "Delay Action"
+        condition: 
+          type: STRING_EQUALS
+          left: "%petblocks_pet_isBreakingBlock%"
+          right: "true" # We do only wait, if the pet has found a block to break.
+        type: "DELAY" # Instead of 1 big delay, you may add multiple smaller delays and perform animations e.g. sending particle commands.
+        ticks: 125 # Wait 120 seconds for the break block and 5 buffer ticks just in case.            
+      - name: "Rotate pet up."
+        condition: 
+          type: STRING_EQUALS
+          left: "%petblocks_pet_isBreakingBlock%"
+          right: "false"
+        type: "COMMAND"
+        level: "SERVER"
+        run:
+          - "/petblocks rotaterel %petblocks_pet_name% up 45 %petblocks_owner_name%"  
+      - name: "Break Block"
+        condition: 
+          type: STRING_EQUALS
+          left: "%petblocks_pet_isBreakingBlock%"
+          right: "false"
+        type: "COMMAND"
+        level: "SERVER"
+        run:
+          - "/petblocks breakblock %petblocks_pet_name% 120 DROP %petblocks_owner_name%"
+      - name: "Delay Action"
+        type: "DELAY"
+        ticks: 5              
+      - name: "Delay Action"
+        condition: 
+          type: STRING_EQUALS
+          left: "%petblocks_pet_isBreakingBlock%"
+          right: "true"
+        type: "DELAY"
+        ticks: 125  
+      - name: "Rotate pet left."
+        condition: 
+          type: STRING_EQUALS
+          left: "%petblocks_pet_isBreakingBlock%"
+          right: "false"
+        type: "COMMAND"
+        level: "SERVER"
+        run:
+          - "/petblocks rotaterel %petblocks_pet_name% down 45 %petblocks_owner_name%"  
+          - "/petblocks rotaterel %petblocks_pet_name% left 45 %petblocks_owner_name%"  
+      - name: "Break Block"
+        condition: 
+          type: STRING_EQUALS
+          left: "%petblocks_pet_isBreakingBlock%"
+          right: "false"
+        type: "COMMAND"
+        level: "SERVER"
+        run:
+          - "/petblocks breakblock %petblocks_pet_name% 120 DROP %petblocks_owner_name%"
+      - name: "Delay Action"
+        type: "DELAY"
+        ticks: 5              
+      - name: "Delay Action"
+        condition: 
+          type: STRING_EQUALS
+          left: "%petblocks_pet_isBreakingBlock%"
+          right: "true"
+        type: "DELAY"
+        ticks: 125   
+      - name: "Rotate pet up."
+        condition: 
+          type: STRING_EQUALS
+          left: "%petblocks_pet_isBreakingBlock%"
+          right: "false"
+        type: "COMMAND"
+        level: "SERVER"
+        run:
+          - "/petblocks rotaterel %petblocks_pet_name% up 45 %petblocks_owner_name%"  
+      - name: "Break Block"
+        condition: 
+          type: STRING_EQUALS
+          left: "%petblocks_pet_isBreakingBlock%"
+          right: "false"
+        type: "COMMAND"
+        level: "SERVER"
+        run:
+          - "/petblocks breakblock %petblocks_pet_name% 120 DROP %petblocks_owner_name%"
+      - name: "Delay Action"
+        type: "DELAY"
+        ticks: 5              
+      - name: "Delay Action"
+        condition: 
+          type: STRING_EQUALS
+          left: "%petblocks_pet_isBreakingBlock%"
+          right: "true"
+        type: "DELAY"
+        ticks: 125    
+      - name: "Rotate pet center."
+        condition: 
+          type: STRING_EQUALS
+          left: "%petblocks_pet_isBreakingBlock%"
+          right: "false"
+        type: "COMMAND"
+        level: "SERVER"
+        run:
+          - "/petblocks rotaterel %petblocks_pet_name% down 45 %petblocks_owner_name%"        
+          - "/petblocks rotaterel %petblocks_pet_name% right 45 %petblocks_owner_name%" 
+  hat: # The hat loop is selected when you execute the hat command.
+    actions:
+      - name: "Delay Action"
+        type: "DELAY"
+        ticks: 60
+  ride: # The ride loop is selected when you execute the ride command.
+    actions:
+      - name: "Delay Action"
+        type: "DELAY"
+        ticks: 60

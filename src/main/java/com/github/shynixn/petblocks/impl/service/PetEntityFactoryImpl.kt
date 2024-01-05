@@ -9,10 +9,7 @@ import com.github.shynixn.mcutils.packet.api.EntityService
 import com.github.shynixn.mcutils.packet.api.PacketService
 import com.github.shynixn.mcutils.packet.api.RayTracingService
 import com.github.shynixn.mcutils.pathfinder.api.PathfinderService
-import com.github.shynixn.petblocks.contract.Pet
-import com.github.shynixn.petblocks.contract.PetActionExecutionService
-import com.github.shynixn.petblocks.contract.PetEntityFactory
-import com.github.shynixn.petblocks.contract.PlaceHolderService
+import com.github.shynixn.petblocks.contract.*
 import com.github.shynixn.petblocks.entity.PetMeta
 import com.github.shynixn.petblocks.impl.PetEntityImpl
 import com.github.shynixn.petblocks.impl.physic.ArmorstandEntityComponent
@@ -32,7 +29,8 @@ class PetEntityFactoryImpl @Inject constructor(
     private val packetService: PacketService,
     private val rayTracingService: RayTracingService,
     private val physicObjectDispatcher: PhysicObjectDispatcher,
-    private val configurationService: ConfigurationService
+    private val configurationService: ConfigurationService,
+    private val breakBlockService: BreakBlockService
 ) : PetEntityFactory {
     /**
      * Creates a new pet entity.
@@ -79,6 +77,7 @@ class PetEntityFactoryImpl @Inject constructor(
             physicObjectDispatcher,
             pathfinderService,
             petActionExecutionService,
+            breakBlockService,
             clickCoolDown.toLong(),
             Vector3d(null, pathfinderCubeX, pathfinderCubeY, pathfinderCubeZ),
             visualizePath

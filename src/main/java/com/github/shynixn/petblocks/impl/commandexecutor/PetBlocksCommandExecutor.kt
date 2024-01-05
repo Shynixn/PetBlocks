@@ -16,6 +16,7 @@ import com.github.shynixn.petblocks.entity.PetTemplate
 import com.github.shynixn.petblocks.entity.PlayerInformation
 import com.github.shynixn.petblocks.enumeration.DropType
 import com.github.shynixn.petblocks.enumeration.Permission
+import com.github.shynixn.petblocks.enumeration.PetRotationType
 import com.github.shynixn.petblocks.enumeration.PetVisibility
 import com.github.shynixn.petblocks.exception.PetBlocksException
 import com.google.inject.Inject
@@ -26,6 +27,7 @@ import org.bukkit.World
 import org.bukkit.command.Command
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
+import org.bukkit.event.block.BlockBreakEvent
 import org.bukkit.plugin.Plugin
 import java.util.*
 import java.util.logging.Level
@@ -52,15 +54,11 @@ class PetBlocksCommandExecutor @Inject constructor(
     }
 
     // We can add a download/upload for player uuid data.
-    private var allCommands = arrayListOf(
+    private var allCommands = arrayListOf(CommandDefinition(
+        "create", 3, Permission.CREATE, "/petblocks create <name> <template> [player]"
+    ) { sender, player, args -> createPet(sender, player, args[1], args[2]) },
         CommandDefinition(
-            "create", 3, Permission.CREATE, "/petblocks create <name> <template> [player]"
-        ) { sender, player, args -> createPet(sender, player, args[1], args[2]) },
-        CommandDefinition(
-            "delete",
-            2,
-            Permission.DELETE,
-            "/petblocks delete <name> [player]"
+            "delete", 2, Permission.DELETE, "/petblocks delete <name> [player]"
         ) { sender, player, args -> deletePet(sender, player, args[1]) },
         CommandDefinition("list", 1, Permission.LIST, "/petblocks list [player]") { sender, player, _ ->
             listPet(sender, player)
@@ -69,204 +67,148 @@ class PetBlocksCommandExecutor @Inject constructor(
             callPet(sender, player, args[1])
         },
         CommandDefinition(
-            "lookat",
-            5,
-            Permission.LOOKAT,
-            "/petblocks lookat <name> <x> <y> <z> [player]"
+            "lookat", 5, Permission.LOOKAT, "/petblocks lookat <name> <x> <y> <z> [player]"
         ) { sender, player, args ->
             val location = findLocation(null, args[2], args[3], args[4])
             lookAtLocation(sender, player, args[1], location)
         },
         CommandDefinition(
-            "lookatowner",
-            2,
-            Permission.LOOKATOWNER,
-            "/petblocks lookatowner <name> [player]"
+            "lookatowner", 2, Permission.LOOKATOWNER, "/petblocks lookatowner <name> [player]"
         ) { sender, player, args ->
             lookAtLocation(sender, player, args[1], player.location.add(0.0, 1.0, 0.0))
         },
         CommandDefinition(
-            "moveto",
-            6,
-            Permission.MOVETO,
-            "/petblocks moveto <name> <x> <y> <z> <speed> [player]"
+            "moveto", 6, Permission.MOVETO, "/petblocks moveto <name> <x> <y> <z> <speed> [player]"
         ) { sender, player, args ->
             val location = findLocation(null, args[2], args[3], args[4])
             walkToLocation(sender, player, args[1], location, args[5])
         },
         CommandDefinition(
-            "movetoowner",
-            3,
-            Permission.MOVETOOWNER,
-            "/petblocks movetoowner <name> <speed> [player]"
+            "movetoowner", 3, Permission.MOVETOOWNER, "/petblocks movetoowner <name> <speed> [player]"
         ) { sender, player, args ->
             walkToLocation(
-                sender,
-                player,
-                args[1],
-                player.location.toVector3d().addRelativeFront(3.0).toLocation(),
-                args[2]
+                sender, player, args[1], player.location.toVector3d().addRelativeFront(3.0).toLocation(), args[2]
             )
         },
         CommandDefinition(
-            "hat",
-            2,
-            Permission.HAT,
-            "/petblocks hat <name> [player]"
+            "hat", 2, Permission.HAT, "/petblocks hat <name> [player]"
         ) { sender, player, args ->
             hat(sender, player, args[1])
         },
         CommandDefinition(
-            "unmount",
-            2,
-            Permission.UNMOUNT,
-            "/petblocks unmount <name> [player]"
+            "unmount", 2, Permission.UNMOUNT, "/petblocks unmount <name> [player]"
         ) { sender, player, args ->
             unmount(sender, player, args[1])
         },
         CommandDefinition(
-            "teleport",
-            8,
-            Permission.TELEPORT,
-            "/petblocks teleport <name> <world> <x> <y> <z> <yaw> <pitch> [player]"
+            "teleport", 8, Permission.TELEPORT, "/petblocks teleport <name> <world> <x> <y> <z> <yaw> <pitch> [player]"
         ) { sender, player, args ->
             val location = findLocation(args[2], args[3], args[4], args[5], args[6], args[7])
             teleportPet(sender, player, args[1], location)
         },
         CommandDefinition(
-            "velocity",
-            5,
-            Permission.VELOCITY,
-            "/petblocks velocity <name> <x> <y> <z> [player]"
+            "velocity", 5, Permission.VELOCITY, "/petblocks velocity <name> <x> <y> <z> [player]"
         ) { sender, player, args ->
             val vector = findLocation(null, args[2], args[3], args[4]).toVector()
             setVelocityToPet(sender, player, args[1], vector)
         },
         CommandDefinition(
-            "skintype",
-            3,
-            Permission.SKIN,
-            "/petblocks skintype <name> <material> [player]"
+            "skintype", 3, Permission.SKIN, "/petblocks skintype <name> <material> [player]"
         ) { sender, player, args ->
             setSkinType(sender, player, args[1], args[2])
         },
         CommandDefinition(
-            "skinnbt",
-            3,
-            Permission.SKIN,
-            "/petblocks skinnbt <name> <nbt> [player]"
+            "skinnbt", 3, Permission.SKIN, "/petblocks skinnbt <name> <nbt> [player]"
         ) { sender, player, args ->
             setSkinNbt(sender, player, args[1], args[2])
         },
         CommandDefinition(
-            "skinbase64",
-            3,
-            Permission.SKIN,
-            "/petblocks skinbase64 <name> <skin> [player]"
+            "skinbase64", 3, Permission.SKIN, "/petblocks skinbase64 <name> <skin> [player]"
         ) { sender, player, args ->
             setSkinBase64(sender, player, args[1], args[2])
         },
         CommandDefinition(
-            "skinheaddatabase",
-            3,
-            Permission.SKIN_HEADDATABASE,
-            "/petblocks skinheaddatabase <name> <hdbId> [player]"
+            "skinheaddatabase", 3, Permission.SKIN_HEADDATABASE, "/petblocks skinheaddatabase <name> <hdbId> [player]"
         ) { sender, player, args ->
             setSkinHeadDatabase(sender, player, args[1], args[2])
         },
         CommandDefinition(
-            "rename",
-            3,
-            Permission.RENAME,
-            "/petblocks rename <name> <displayname> [player]"
+            "rename", 3, Permission.RENAME, "/petblocks rename <name> <displayname> [player]"
         ) { sender, player, args ->
             setDisplayName(sender, player, args[1], args[2])
         },
         CommandDefinition(
-            "ride",
-            2,
-            Permission.RIDE,
-            "/petblocks ride <name> [player]"
+            "ride", 2, Permission.RIDE, "/petblocks ride <name> [player]"
         ) { sender, player, args ->
             ridePet(sender, player, args[1])
         },
         CommandDefinition(
-            "visibility",
-            3,
-            Permission.VISIBILITY,
-            "/petblocks visibility <name> <type> [player]"
+            "visibility", 3, Permission.VISIBILITY, "/petblocks visibility <name> <type> [player]"
         ) { sender, player, args ->
             setVisibility(sender, player, args[1], args[2])
         },
         CommandDefinition(
-            "loop",
-            3,
-            Permission.LOOP,
-            "/petblocks loop <name> <loop> [player]"
+            "loop", 3, Permission.LOOP, "/petblocks loop <name> <loop> [player]"
         ) { sender, player, args ->
             setPetLoop(sender, player, args[1], args[2])
         },
         CommandDefinition(
-            "template",
-            3,
-            Permission.TEMPLATE,
-            "/petblocks template <name> <template> [player]"
+            "template", 3, Permission.TEMPLATE, "/petblocks template <name> <template> [player]"
         ) { sender, player, args ->
             setPetTemplate(sender, player, args[1], args[2])
         },
         CommandDefinition(
-            "spawn",
-            2,
-            Permission.SPAWN,
-            "/petblocks spawn <name> [player]"
+            "spawn", 2, Permission.SPAWN, "/petblocks spawn <name> [player]"
         ) { sender, player, args ->
             spawnPet(sender, player, args[1])
         },
         CommandDefinition(
-            "despawn",
-            2,
-            Permission.DESPAWN,
-            "/petblocks despawn <name> [player]"
+            "despawn", 2, Permission.DESPAWN, "/petblocks despawn <name> [player]"
         ) { sender, player, args ->
             deSpawnPet(sender, player, args[1])
         },
         CommandDefinition(
-            "toggle",
-            2,
-            Permission.TOGGLE,
-            "/petblocks toggle <name> [player]"
+            "toggle", 2, Permission.TOGGLE, "/petblocks toggle <name> [player]"
         ) { sender, player, args ->
             togglePet(sender, player, args[1])
         },
         CommandDefinition(
-            "select",
-            2,
-            Permission.SELECT,
-            "/petblocks select <name> [player]"
+            "select", 2, Permission.SELECT, "/petblocks select <name> [player]"
         ) { sender, player, args ->
             selectPet(sender, player, args[1])
         },
         CommandDefinition(
-            "openheaddatabase",
-            2,
-            Permission.OPEN_HEADDATABSE,
-            "/petblocks openheaddatabase <name> [player]"
+            "openheaddatabase", 2, Permission.OPEN_HEADDATABSE, "/petblocks openheaddatabase <name> [player]"
         ) { sender, player, args ->
             openHeadDatabase(sender, player, args[1])
         },
-
-
-        /*   CommandDefinition(
-               "breakblock",
-               2,
-               Permission.BREAK_BLOCK,
-               "/petblocks breakblock <name> <timeToBreak> <dropType> [player]"
-           ) { sender, player, args ->
-               if (args[2].toIntOrNull() != null) {
-                   breakBlock(sender, player, args[1], args[3], args[2].toInt())
-               }
-           }*/
-    )
+        CommandDefinition(
+            "breakblock", 4, Permission.BREAK_BLOCK, "/petblocks breakblock <name> <timeToBreak> <dropType> [player]"
+        ) { sender, player, args ->
+            if (args[2].toIntOrNull() != null) {
+                breakBlock(player, args[1], args[3], args[2].toInt())
+            }
+        },
+        CommandDefinition(
+            "cancel", 2, Permission.CANCEL, "/petblocks cancel <name> [player]"
+        ) { sender, player, args ->
+            cancel(sender, player, args[1])
+        },
+        CommandDefinition(
+            "snap", 2, Permission.SNAP, "/petblocks snap <name> [player]"
+        ) { sender, player, args ->
+            snap(sender, player, args[1])
+        },
+        CommandDefinition(
+            "moveforward", 3, Permission.MOVEREL, "/petblocks moveforward <name> <speed> [player]"
+        ) { sender, player, args ->
+            moveForward(sender, player, args[1], args[2])
+        },
+        CommandDefinition(
+            "rotaterel", 4, Permission.ROTATEREL, "/petblocks rotaterel <name> <direction> <angle> [player]"
+        ) { sender, player, args ->
+            rotateRel(sender, player, args[1], args[2], args[3])
+        })
 
     /**
      * Executes the given command, returning its success.
@@ -296,13 +238,11 @@ class PetBlocksCommandExecutor @Inject constructor(
                     definition.command, true
                 ) && sender.hasPermission(definition.permission.text)
             ) {
-                val player = findPlayer(sender, definition.minArgsCount, args)
-                    ?: throw PetBlocksException(
-                        String.format(
-                            PetBlocksLanguage.playerNotFoundMessage,
-                            args[args.size - 1]
-                        )
+                val player = findPlayer(sender, definition.minArgsCount, args) ?: throw PetBlocksException(
+                    String.format(
+                        PetBlocksLanguage.playerNotFoundMessage, args[args.size - 1]
                     )
+                )
                 val newArgs = args.map { e -> e.replace("###", " ") }.toTypedArray()
                 definition.playerFunction.invoke(sender, player, newArgs)
                 return true
@@ -336,8 +276,9 @@ class PetBlocksCommandExecutor @Inject constructor(
             return true
         }
 
-        if (args.size == 2 && args[0].equals("help", true)
-            && sender.hasPermission(Permission.HELP.text) && args[1].toIntOrNull() != null && args[1].toInt() > 1
+        if (args.size == 2 && args[0].equals(
+                "help", true
+            ) && sender.hasPermission(Permission.HELP.text) && args[1].toIntOrNull() != null && args[1].toInt() > 1
         ) {
             val helpIndex = args[1].toInt()
             sender.sendPluginMessage(ChatColor.GREEN.toString() + "---------PetBlocks---------")
@@ -400,6 +341,10 @@ class PetBlocksCommandExecutor @Inject constructor(
             }
         }
 
+        if (args.size >= 2 && sender.hasPermission(Permission.ROTATEREL.text) && args[0].equals("rotaterel", true)) {
+            return PetRotationType.values().map { e -> e.name.lowercase() }
+        }
+
         if (sender.hasPermission(Permission.VISIBILITY.text) && args[0].equals("visibility", true)) {
             return PetVisibility.values().map { e -> e.name.toFirstLetterUpperCase() }
         }
@@ -459,11 +404,47 @@ class PetBlocksCommandExecutor @Inject constructor(
         }
     }
 
+    private suspend fun rotateRel(
+        sender: CommandSender, player: Player, petName: String, directionName: String, angleRaw: String
+    ) {
+        val pet = findPetFromPlayer(player, petName)
+            ?: throw PetBlocksException(String.format(PetBlocksLanguage.petNotFoundMessage, petName))
+
+        val petRotationType = try {
+            PetRotationType.values().first { t -> t.name.equals(directionName, true) }
+        } catch (e: Exception) {
+            player.sendMessage(
+                PetBlocksLanguage.petRotationTypeNotFound.format(
+                    PetRotationType.values().joinToString(",")
+                )
+            )
+            return
+        }
+
+        if (angleRaw.toDoubleOrNull() == null) {
+            player.sendMessage(PetBlocksLanguage.cannotParseNumberMessage)
+            return
+        }
+
+        val location = pet.location
+        val angle = angleRaw.toFloat()
+
+        if (petRotationType == PetRotationType.RIGHT) {
+            location.yaw += angle
+        } else if (petRotationType == PetRotationType.LEFT) {
+            location.yaw -= angle
+        } else if (petRotationType == PetRotationType.UP) {
+            location.pitch -= angle
+        } else if (petRotationType == PetRotationType.DOWN) {
+            location.pitch += angle
+        }
+
+        pet.location = location
+        sender.sendPluginMessage(String.format(PetBlocksLanguage.rotationRelMessage))
+    }
+
     private suspend fun setSkinBase64(
-        sender: CommandSender,
-        player: Player,
-        petName: String,
-        base64EncodedSkinUrl: String
+        sender: CommandSender, player: Player, petName: String, base64EncodedSkinUrl: String
     ) {
         val id1 = random.nextInt()
         val id2 = random.nextInt()
@@ -492,10 +473,7 @@ class PetBlocksCommandExecutor @Inject constructor(
     }
 
     private suspend fun setVisibility(
-        sender: CommandSender,
-        player: Player,
-        petName: String,
-        visibilityTypeName: String
+        sender: CommandSender, player: Player, petName: String, visibilityTypeName: String
     ) {
         val pet = findPetFromPlayer(player, petName)
             ?: throw PetBlocksException(String.format(PetBlocksLanguage.petNotFoundMessage, petName))
@@ -516,6 +494,19 @@ class PetBlocksCommandExecutor @Inject constructor(
         sender.sendPluginMessage(String.format(PetBlocksLanguage.visibilityChangedMessage, visibilityTypeName))
     }
 
+    private suspend fun moveForward(sender: CommandSender, player: Player, petName: String, speed: String) {
+        val pet = findPetFromPlayer(player, petName)
+            ?: throw PetBlocksException(String.format(PetBlocksLanguage.petNotFoundMessage, petName))
+
+        if (speed.toDoubleOrNull() == null) {
+            sender.sendPluginMessage(String.format(PetBlocksLanguage.speedCannotBeParsed, speed))
+            return
+        }
+
+        pet.moveForward(speed.toDouble())
+        sender.sendPluginMessage(String.format(PetBlocksLanguage.petMoveForwardMessage))
+    }
+
     private suspend fun setPetLoop(sender: CommandSender, player: Player, petName: String, loop: String) {
         val pet = findPetFromPlayer(player, petName)
             ?: throw PetBlocksException(String.format(PetBlocksLanguage.petNotFoundMessage, petName))
@@ -529,6 +520,12 @@ class PetBlocksCommandExecutor @Inject constructor(
         sender.sendPluginMessage(String.format(PetBlocksLanguage.petLoopChangedMessage, petName, loop))
     }
 
+    private suspend fun snap(sender: CommandSender, player: Player, petName: String) {
+        val pet = findPetFromPlayer(player, petName)
+            ?: throw PetBlocksException(String.format(PetBlocksLanguage.petNotFoundMessage, petName))
+        pet.snap()
+        sender.sendPluginMessage(PetBlocksLanguage.snapMessage)
+    }
 
     private suspend fun ridePet(sender: CommandSender, player: Player, petName: String) {
         val pet = findPetFromPlayer(player, petName)
@@ -554,23 +551,37 @@ class PetBlocksCommandExecutor @Inject constructor(
     }
 
     private suspend fun breakBlock(
-        sender: CommandSender,
-        player: Player,
-        petName: String,
-        dropTypes: String,
-        timeToBreak: Int
+        player: Player, petName: String, dropTypes: String, timeToBreak: Int
     ) {
+
         val pet = findPetFromPlayer(player, petName)
             ?: throw PetBlocksException(String.format(PetBlocksLanguage.petNotFoundMessage, petName))
 
-        val dropTypes = try {
-            dropTypes.split(",").map { e -> DropType.values().first { t -> t.name.equals(e, true) } }
-        } catch (e: Exception) {
-            player.sendMessage(PetBlocksLanguage.dropTypeNotFound.format(dropTypes))
+        val block = pet.getBlockInFrontOf() ?: return
+
+        val playerInteractEvent = BlockBreakEvent(block, player)
+        Bukkit.getPluginManager().callEvent(playerInteractEvent)
+
+        if (playerInteractEvent.isCancelled) {
             return
         }
 
-        pet.breakBlock(timeToBreak, dropTypes)
+        val actualDropTypes = try {
+            dropTypes.split(",").map { e -> DropType.values().first { t -> t.name.equals(e, true) } }
+        } catch (e: Exception) {
+            player.sendMessage(PetBlocksLanguage.dropTypeNotFound.format(DropType.values().joinToString(",")))
+            return
+        }
+
+        pet.breakBlock(timeToBreak, actualDropTypes)
+    }
+
+    private suspend fun cancel(sender: CommandSender, player: Player, petName: String) {
+        val pet = findPetFromPlayer(player, petName)
+            ?: throw PetBlocksException(String.format(PetBlocksLanguage.petNotFoundMessage, petName))
+
+        pet.cancelAction()
+        sender.sendPluginMessage(PetBlocksLanguage.cancelMessage)
     }
 
     private suspend fun setPetTemplate(sender: CommandSender, player: Player, petName: String, templateId: String) {
@@ -641,9 +652,7 @@ class PetBlocksCommandExecutor @Inject constructor(
         pet.displayName = displayName.replace("_", " ")
         sender.sendPluginMessage(
             String.format(
-                PetBlocksLanguage.petNameChangeMessage,
-                petName,
-                pet.displayName.translateChatColors()
+                PetBlocksLanguage.petNameChangeMessage, petName, pet.displayName.translateChatColors()
             )
         )
     }
@@ -656,10 +665,7 @@ class PetBlocksCommandExecutor @Inject constructor(
     }
 
     private suspend fun setVelocityToPet(
-        sender: CommandSender,
-        player: Player,
-        petName: String,
-        vector: org.bukkit.util.Vector
+        sender: CommandSender, player: Player, petName: String, vector: org.bukkit.util.Vector
     ) {
         val pet = findPetFromPlayer(player, petName)
             ?: throw PetBlocksException(String.format(PetBlocksLanguage.petNotFoundMessage, petName))
@@ -741,11 +747,7 @@ class PetBlocksCommandExecutor @Inject constructor(
 
 
     private suspend fun walkToLocation(
-        sender: CommandSender,
-        player: Player,
-        petName: String,
-        location: Location,
-        speed: String
+        sender: CommandSender, player: Player, petName: String, location: Location, speed: String
     ) {
         val pet = findPetFromPlayer(player, petName)
             ?: throw PetBlocksException(String.format(PetBlocksLanguage.petNotFoundMessage, petName))
@@ -803,12 +805,7 @@ class PetBlocksCommandExecutor @Inject constructor(
     }
 
     private fun findLocation(
-        worldName: String?,
-        x: String,
-        y: String,
-        z: String,
-        yaw: String = "0",
-        pitch: String = "0"
+        worldName: String?, x: String, y: String, z: String, yaw: String = "0", pitch: String = "0"
     ): Location {
         var world: World? = null
 

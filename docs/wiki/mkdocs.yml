@@ -10,6 +10,7 @@ nav:
       - Templates: template.md
       - GUI: gui.md
       - PlaceHolders: placeholders.md
+      - Custom Models: custommodels.md
       - Developer Api: api.md
       - 'FAQ': faq.md
 theme:

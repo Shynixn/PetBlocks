@@ -339,8 +339,66 @@ Opens the headDatabase inventory with a special hook, which applies the next ite
 * Player: Optional player_name/player_UUID parameter targeting a player from the console or command block.
 
 
+### /petblocks breakblock
 
+```
+/petblocks breakblock <name> <timeToBreak> <dropType> [player]
+```
 
+Breaks the block the pet is looking at. There is a placeholder, which contains the name of the block type.
+This command only works on blocks, if the player executing the command has got the permission to break this specific block. 
+The command is cancel able using the cancel command.
+Breaking a block is automatically cancelled on certain actions. e.g. a pet looks at a player, a pet starts moving
 
+* Name: Identifier of a pet
+* TimeToBreak: Time in ticks (20 ticks = 1 second) to break a block
+* DropType: Describes what happens to the dropped item (VANISH, DROP, SEND_TO_OWNER_INVENTORY). Multiple drop types can be specified by comma separation. e.g. SEND_TO_OWNER_INVENTORY,DROP tries to send it to the owner inventory first, if full, it drops it
+* Player: Optional player_name/player_UUID parameter targeting a player from the console or command block.
 
+### /petblocks cancel
 
+```
+/petblocks cancel <name> [player]
+```
+
+Cancels any long running actions like breaking a block.
+
+* Name: Identifier of a pet
+* Player: Optional player_name/player_UUID parameter targeting a player from the console or command block.
+
+### /petblocks snap
+
+```
+/petblocks snap <name> [player]
+```
+
+Rotates the pet to the exact line of the nearest x or z axe.
+
+* Name: Identifier of a pet
+* Player: Optional player_name/player_UUID parameter targeting a player from the console or command block.
+
+### /petblocks moveforward
+
+```
+/petblocks moveforward <name> <speed> [player]
+```
+
+Lets the pet move forward in its current direction. Executing the snap command before executing this is helpful to
+move in a straight direction. If the pet reaches a cliff (1 block difference), moving forward stops.
+
+* Name: Identifier of a pet
+* Speed: Speed parameter, should be comma values e.g. 0.3
+* Player: Optional player_name/player_UUID parameter targeting a player from the console or command block.
+
+### /petblocks rotaterel
+
+```
+/petblocks rotaterel <name> <direction> <angle> [player]
+```
+
+Rotates the pet relative to its current rotation.
+
+* Name: Identifier of a pet
+* Direction: LEFT, RIGHT, UP, DOWN
+* Angle: Angle in degrees e.g. 45, 90
+* Player: Optional player_name/player_UUID parameter targeting a player from the console or command block.
