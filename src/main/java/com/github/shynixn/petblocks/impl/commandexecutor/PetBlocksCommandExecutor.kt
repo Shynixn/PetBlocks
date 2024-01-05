@@ -27,6 +27,7 @@ import org.bukkit.World
 import org.bukkit.command.Command
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
+import org.bukkit.event.block.BlockBreakEvent
 import org.bukkit.plugin.Plugin
 import java.util.*
 import java.util.logging.Level
@@ -404,11 +405,7 @@ class PetBlocksCommandExecutor @Inject constructor(
     }
 
     private suspend fun rotateRel(
-        sender: CommandSender,
-        player: Player,
-        petName: String,
-        directionName: String,
-        angleRaw: String
+        sender: CommandSender, player: Player, petName: String, directionName: String, angleRaw: String
     ) {
         val pet = findPetFromPlayer(player, petName)
             ?: throw PetBlocksException(String.format(PetBlocksLanguage.petNotFoundMessage, petName))
@@ -556,8 +553,18 @@ class PetBlocksCommandExecutor @Inject constructor(
     private suspend fun breakBlock(
         player: Player, petName: String, dropTypes: String, timeToBreak: Int
     ) {
+
         val pet = findPetFromPlayer(player, petName)
             ?: throw PetBlocksException(String.format(PetBlocksLanguage.petNotFoundMessage, petName))
+
+        val block = pet.getBlockInFrontOf() ?: return
+
+        val playerInteractEvent = BlockBreakEvent(block, player)
+        Bukkit.getPluginManager().callEvent(playerInteractEvent)
+
+        if (playerInteractEvent.isCancelled) {
+            return
+        }
 
         val actualDropTypes = try {
             dropTypes.split(",").map { e -> DropType.values().first { t -> t.name.equals(e, true) } }
