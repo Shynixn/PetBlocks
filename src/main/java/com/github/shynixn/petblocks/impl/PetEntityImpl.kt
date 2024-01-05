@@ -25,6 +25,7 @@ import com.github.shynixn.petblocks.impl.physic.ArmorstandEntityComponent
 import com.github.shynixn.petblocks.impl.physic.MathComponent
 import com.github.shynixn.petblocks.impl.physic.MoveToTargetComponent
 import com.github.shynixn.petblocks.impl.physic.PlayerComponent
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.delay
 import org.bukkit.*
 import org.bukkit.block.Block
@@ -87,6 +88,12 @@ class PetEntityImpl(
                     cancellationTokenLoop = CancellationToken()
                     petActionExecutionService.executeAction(pet.player, pet, loop, cancellationTokenLoop)
                     delay(1.ticks)
+                } catch (e: CancellationException) {
+                    // Ignore Coroutine Cancel
+                    break
+                } catch (e: IllegalStateException) {
+                    // Ignore Coroutine Cancel
+                    break
                 } catch (e: Exception) {
                     plugin.logger.log(Level.SEVERE, "Cannot execute pet loop '${pet.loop}'.", e)
                     break
@@ -257,7 +264,7 @@ class PetEntityImpl(
         cancellationTokenLongRunning.isCancelled = true
         cancellationTokenLongRunning = CancellationToken()
 
-        val token =  cancellationTokenLongRunning
+        val token = cancellationTokenLongRunning
 
         plugin.launch {
             while (true) {

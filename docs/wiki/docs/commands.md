@@ -377,7 +377,7 @@ Rotates the pet to the exact line of the nearest x or z axe.
 * Name: Identifier of a pet
 * Player: Optional player_name/player_UUID parameter targeting a player from the console or command block.
 
-### /petblocks moveforward>
+### /petblocks moveforward
 
 ```
 /petblocks moveforward <name> <speed> [player]
@@ -387,7 +387,7 @@ Lets the pet move forward in its current direction. Executing the snap command b
 move in a straight direction. If the pet reaches a cliff (1 block difference), moving forward stops.
 
 * Name: Identifier of a pet
-* Speed: Speed parameter, should be command values e.g. 0.3
+* Speed: Speed parameter, should be comma values e.g. 0.3
 * Player: Optional player_name/player_UUID parameter targeting a player from the console or command block.
 
 ### /petblocks rotaterel
