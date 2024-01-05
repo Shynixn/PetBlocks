@@ -18,7 +18,7 @@
       
       
       <link rel="icon" href="../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.5.3, mkdocs-material-9.5.2">
+      <meta name="generator" content="mkdocs-1.5.3, mkdocs-material-9.5.3">
     
     
       
@@ -484,6 +484,27 @@
   
   
     <li class="md-nav__item">
+      <a href="../custommodels/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Custom Models
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../api/" class="md-nav__link">
         
   
@@ -585,7 +606,8 @@
 <ul>
 <li>User: A permission all players can have.</li>
 <li>Admin: A permission only Admins should have.</li>
-<li>Admin/User: Depending on your server, you may give this permission to your players. If you are not sure, try to build your server around <strong>not giving this permission</strong> to your players.</li>
+<li>Admin/User: Depending on your server, you may give this permission to your players. If you are not sure, try to build
+  your server around <strong>not giving this permission</strong> to your players.</li>
 </ul>
 <table>
 <thead>
@@ -614,7 +636,7 @@
 <tr>
 <td>petblocks.pet.create</td>
 <td>Admin/User</td>
-<td>Allows to create a new pet.  This command should probably be executed by a GUI / Sign / Server Management Plugin. If you set receivePetsOnJoin in the config.yml, you do not need this permission.</td>
+<td>Allows to create a new pet. This command should probably be executed by a GUI / Sign / Server Management Plugin. If you set receivePetsOnJoin in the config.yml, you do not need this permission.</td>
 </tr>
 <tr>
 <td>petblocks.pet.call</td>
@@ -624,7 +646,12 @@
 <tr>
 <td>petblocks.pet.spawn</td>
 <td>User</td>
-<td><strong>Minimum required permission</strong> a player has to have in order to have a pet. If you remove this permission from a player, the pet automatically despawns.</td>
+<td>**Minimum required</td>
+</tr>
+<tr>
+<td>permission** a player has to have in order to have a pet. If you remove this permission from a player, the pet automatically despawns.</td>
+<td></td>
+<td></td>
 </tr>
 <tr>
 <td>petblocks.pet.ride</td>
@@ -749,7 +776,32 @@
 <tr>
 <td>petblocks.pet.amount.[number]</td>
 <td>Admin/User</td>
-<td>If you give your players access to <code>petblocks.pet.create</code>, the access to the slot where the pet is stored. e.g.  petblocks.pet.amount.1 (slot 1) and petblocks.pet.amount.2 (slot 2)</td>
+<td>If you give your players access to <code>petblocks.pet.create</code>, the access to the slot where the pet is stored. e.g. petblocks.pet.amount.1 (slot 1) and petblocks.pet.amount.2 (slot 2)</td>
+</tr>
+<tr>
+<td>petblocks.pet.breakBlock</td>
+<td>Admin/User</td>
+<td>Allows to use the /petblocks breakblock command</td>
+</tr>
+<tr>
+<td>petblocks.pet.cancel</td>
+<td>Admin/User</td>
+<td>Allows to use the /petblocks cancel command</td>
+</tr>
+<tr>
+<td>petblocks.pet.snap</td>
+<td>Admin/User</td>
+<td>Allows to use the /petblocks snap command</td>
+</tr>
+<tr>
+<td>petblocks.pet.moveRel</td>
+<td>Admin/User</td>
+<td>Allows to use the /petblocks moveforward command</td>
+</tr>
+<tr>
+<td>petblocks.pet.rotateRel</td>
+<td>Admin/User</td>
+<td>Allows to use the /petblocks rotaterel command</td>
 </tr>
 </tbody>
 </table>

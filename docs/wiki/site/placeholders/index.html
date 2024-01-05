@@ -14,11 +14,11 @@
         <link rel="prev" href="../gui/">
       
       
-        <link rel="next" href="../api/">
+        <link rel="next" href="../custommodels/">
       
       
       <link rel="icon" href="../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.5.3, mkdocs-material-9.5.2">
+      <meta name="generator" content="mkdocs-1.5.3, mkdocs-material-9.5.3">
     
     
       
@@ -445,6 +445,27 @@
   
   
     <li class="md-nav__item">
+      <a href="../custommodels/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Custom Models
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../api/" class="md-nav__link">
         
   
@@ -570,6 +591,10 @@ This results into placeholders such as e.g. <code>%petblocks_pet_displayName_1%<
 <td>%petblocks_owner_locationPitch%</td>
 <td>Yaw rotation of the owner of a pet.</td>
 </tr>
+<tr>
+<td>%petblocks_owner_itemMainHand_type%</td>
+<td>Name of the item type in the owner's main hand</td>
+</tr>
 </tbody>
 </table>
 <table>
@@ -590,7 +615,7 @@ This results into placeholders such as e.g. <code>%petblocks_pet_displayName_1%<
 </tr>
 <tr>
 <td>%petblocks_pet_distanceToOwner%</td>
-<td>Distance from the pet to the owner.  If the owner is in another world, this value becomes very high.</td>
+<td>Distance from the pet to the owner. If the owner is in another world, this value becomes very high.</td>
 </tr>
 <tr>
 <td>%petblocks_pet_exists%</td>
@@ -652,6 +677,14 @@ This results into placeholders such as e.g. <code>%petblocks_pet_displayName_1%<
 <td>%petblocks_pet_itemHeadBase64%</td>
 <td>The head item Base64 Skin Url of the pet.</td>
 </tr>
+<tr>
+<td>%petblocks_pet_isBreakingBlock%</td>
+<td>True if the pet is currently breaking a block, false if not.</td>
+</tr>
+<tr>
+<td>%petblocks_pet_blockInFrontType%</td>
+<td>Name of the block type the pet is looking at</td>
+</tr>
 </tbody>
 </table>
 <table>
@@ -664,35 +697,39 @@ This results into placeholders such as e.g. <code>%petblocks_pet_displayName_1%<
 <tbody>
 <tr>
 <td>%petblocks_eventPlayer_name%</td>
-<td>Player name of the owner of a pet.</td>
+<td>Player name of the event trigger player.</td>
 </tr>
 <tr>
 <td>%petblocks_eventPlayer_displayName%</td>
-<td>Player displayName of the owner of a pet.</td>
+<td>Player displayName of the event trigger player.</td>
 </tr>
 <tr>
 <td>%petblocks_eventPlayer_locationWorld%</td>
-<td>Name of the world the owner of a pet is inside.</td>
+<td>Name of the world event trigger player of a pet is inside.</td>
 </tr>
 <tr>
 <td>%petblocks_eventPlayer_locationX%</td>
-<td>X coordinate of the owner of a pet.</td>
+<td>X coordinate of the event trigger player.</td>
 </tr>
 <tr>
 <td>%petblocks_eventPlayer_locationY%</td>
-<td>Y coordinate of the owner of a pet.</td>
+<td>Y coordinate of the event trigger player.</td>
 </tr>
 <tr>
 <td>%petblocks_eventPlayer_locationZ%</td>
-<td>Z coordinate of the owner of a pet.</td>
+<td>Z coordinate of the event trigger player.</td>
 </tr>
 <tr>
 <td>%petblocks_eventPlayer_locationYaw%</td>
-<td>Yaw rotation of the owner of a pet.</td>
+<td>Yaw rotation of the event trigger player.</td>
 </tr>
 <tr>
 <td>%petblocks_eventPlayer_locationPitch%</td>
-<td>Yaw rotation of the owner of a pet.</td>
+<td>Yaw rotation of the event trigger player.</td>
+</tr>
+<tr>
+<td>%petblocks_eventPlayer_itemMainHand_type%</td>
+<td>Name of the item type in the players's main hand</td>
 </tr>
 </tbody>
 </table>
@@ -744,13 +781,13 @@ This results into placeholders such as e.g. <code>%petblocks_pet_displayName_1%<
         
         
           
-          <a href="../api/" class="md-footer__link md-footer__link--next" aria-label="Next: Developer Api">
+          <a href="../custommodels/" class="md-footer__link md-footer__link--next" aria-label="Next: Custom Models">
             <div class="md-footer__title">
               <span class="md-footer__direction">
                 Next
               </span>
               <div class="md-ellipsis">
-                Developer Api
+                Custom Models
               </div>
             </div>
             <div class="md-footer__button md-icon">

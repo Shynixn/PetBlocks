@@ -18,7 +18,7 @@
       
       
       <link rel="icon" href="../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.5.3, mkdocs-material-9.5.2">
+      <meta name="generator" content="mkdocs-1.5.3, mkdocs-material-9.5.3">
     
     
       
@@ -619,6 +619,51 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#petblocks-breakblock" class="md-nav__link">
+    <span class="md-ellipsis">
+      /petblocks breakblock
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#petblocks-cancel" class="md-nav__link">
+    <span class="md-ellipsis">
+      /petblocks cancel
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#petblocks-snap" class="md-nav__link">
+    <span class="md-ellipsis">
+      /petblocks snap
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#petblocks-moveforward" class="md-nav__link">
+    <span class="md-ellipsis">
+      /petblocks moveforward
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#petblocks-rotaterel" class="md-nav__link">
+    <span class="md-ellipsis">
+      /petblocks rotaterel
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -708,6 +753,27 @@
   
   <span class="md-ellipsis">
     PlaceHolders
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../custommodels/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Custom Models
   </span>
   
 
@@ -1036,6 +1102,51 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#petblocks-breakblock" class="md-nav__link">
+    <span class="md-ellipsis">
+      /petblocks breakblock
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#petblocks-cancel" class="md-nav__link">
+    <span class="md-ellipsis">
+      /petblocks cancel
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#petblocks-snap" class="md-nav__link">
+    <span class="md-ellipsis">
+      /petblocks snap
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#petblocks-moveforward" class="md-nav__link">
+    <span class="md-ellipsis">
+      /petblocks moveforward
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#petblocks-rotaterel" class="md-nav__link">
+    <span class="md-ellipsis">
+      /petblocks rotaterel
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -1307,6 +1418,55 @@ Allows values should be set in the <code>config.yml</code>.</p>
 <p>Opens the headDatabase inventory with a special hook, which applies the next item you select in the headdatabse gui to the pet.</p>
 <ul>
 <li>Name: Identifier of a pet</li>
+<li>Player: Optional player_name/player_UUID parameter targeting a player from the console or command block.</li>
+</ul>
+<h3 id="petblocks-breakblock">/petblocks breakblock</h3>
+<div class="highlight"><pre><span></span><code>/petblocks breakblock &lt;name&gt; &lt;timeToBreak&gt; &lt;dropType&gt; [player]
+</code></pre></div>
+<p>Breaks the block the pet is looking at. There is a placeholder, which contains the name of the block type.
+This command only works on blocks, if the player executing the command has got the permission to break this specific block. 
+The command is cancel able using the cancel command.
+Breaking a block is automatically cancelled on certain actions. e.g. a pet looks at a player, a pet starts moving</p>
+<ul>
+<li>Name: Identifier of a pet</li>
+<li>TimeToBreak: Time in ticks (20 ticks = 1 second) to break a block</li>
+<li>DropType: Describes what happens to the dropped item (VANISH, DROP, SEND_TO_OWNER_INVENTORY). Multiple drop types can be specified by comma separation. e.g. SEND_TO_OWNER_INVENTORY,DROP tries to send it to the owner inventory first, if full, it drops it</li>
+<li>Player: Optional player_name/player_UUID parameter targeting a player from the console or command block.</li>
+</ul>
+<h3 id="petblocks-cancel">/petblocks cancel</h3>
+<div class="highlight"><pre><span></span><code>/petblocks cancel &lt;name&gt; [player]
+</code></pre></div>
+<p>Cancels any long running actions like breaking a block.</p>
+<ul>
+<li>Name: Identifier of a pet</li>
+<li>Player: Optional player_name/player_UUID parameter targeting a player from the console or command block.</li>
+</ul>
+<h3 id="petblocks-snap">/petblocks snap</h3>
+<div class="highlight"><pre><span></span><code>/petblocks snap &lt;name&gt; [player]
+</code></pre></div>
+<p>Rotates the pet to the exact line of the nearest x or z axe.</p>
+<ul>
+<li>Name: Identifier of a pet</li>
+<li>Player: Optional player_name/player_UUID parameter targeting a player from the console or command block.</li>
+</ul>
+<h3 id="petblocks-moveforward">/petblocks moveforward</h3>
+<div class="highlight"><pre><span></span><code>/petblocks moveforward &lt;name&gt; &lt;speed&gt; [player]
+</code></pre></div>
+<p>Lets the pet move forward in its current direction. Executing the snap command before executing this is helpful to
+move in a straight direction. If the pet reaches a cliff (1 block difference), moving forward stops.</p>
+<ul>
+<li>Name: Identifier of a pet</li>
+<li>Speed: Speed parameter, should be comma values e.g. 0.3</li>
+<li>Player: Optional player_name/player_UUID parameter targeting a player from the console or command block.</li>
+</ul>
+<h3 id="petblocks-rotaterel">/petblocks rotaterel</h3>
+<div class="highlight"><pre><span></span><code>/petblocks rotaterel &lt;name&gt; &lt;direction&gt; &lt;angle&gt; [player]
+</code></pre></div>
+<p>Rotates the pet relative to its current rotation.</p>
+<ul>
+<li>Name: Identifier of a pet</li>
+<li>Direction: LEFT, RIGHT, UP, DOWN</li>
+<li>Angle: Angle in degrees e.g. 45, 90</li>
 <li>Player: Optional player_name/player_UUID parameter targeting a player from the console or command block.</li>
 </ul>
 
