@@ -402,3 +402,38 @@ Rotates the pet relative to its current rotation.
 * Direction: LEFT, RIGHT, UP, DOWN
 * Angle: Angle in degrees e.g. 45, 90
 * Player: Optional player_name/player_UUID parameter targeting a player from the console or command block.
+
+### /petblocks entitytype
+
+```
+/petblocks entitytype <name> <entityType> [player]
+```
+
+Changes the entity type of the pet. The default type is minecraft:armor_stand
+
+* Name: Identifier of a pet
+* EntityType: An entitytype in the minecraft format. e.g. minecraft:bee, minecraft:dolphin, minecraft:armor_stand 
+* Player: Optional player_name/player_UUID parameter targeting a player from the console or command block.
+
+### /petblocks entityvisible
+
+```
+/petblocks entityvisible <name> <true/false> [player]
+```
+
+Changes if the body of an entity is visible. For armorstands this is false, for most of the other entities this should be true.
+
+* Name: Identifier of a pet
+* Player: Optional player_name/player_UUID parameter targeting a player from the console or command block.
+
+### /petblocks groundoffset
+
+```
+/petblocks groundoffset <name> <offset> [player]
+```
+
+Changes the offset of the body of the entity to the ground. Useful when configuring different entity types.
+
+* Name: Identifier of a pet
+* Offset: A numeric comma value. e.g. 0.3, -0.3, 1.0
+* Player: Optional player_name/player_UUID parameter targeting a player from the console or command block.

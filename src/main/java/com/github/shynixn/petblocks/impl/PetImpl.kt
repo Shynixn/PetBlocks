@@ -82,7 +82,7 @@ class PetImpl(
             }
 
             petMeta.displayName = value.translateChatColors()
-            petEntity?.updateDisplayName()
+            petEntity?.updateMetaData()
         }
 
     /**
@@ -235,11 +235,61 @@ class PetImpl(
         }
 
     /**
+     * Gets or sets the entity type.
+     * e.g. minecraft:armor_stand, minecraft:pig
+     */
+    override var entityType: String
+        get() {
+            return petMeta.entityType
+        }
+        set(value) {
+            petMeta.entityType = value
+            if (petEntity != null) {
+                plugin.launch {
+                    remove()
+                    delay(250)
+                    call()
+                }
+            }
+        }
+
+    /**
+     * Entity Visibility state.
+     */
+    override var isEntityVisible: Boolean
+        get() {
+            return petMeta.isEntityVisible
+        }
+        set(value) {
+            petMeta.isEntityVisible = value
+            if (petEntity != null) {
+                petEntity?.updateMetaData()
+                plugin.launch {
+                    delay(500)
+                    // Just in case if entityType and visibility is changed very fast together.
+                    petEntity?.updateMetaData()
+                }
+            }
+        }
+
+    /**
      * Gets the direction the pet could snap to.
      */
     override val direction: PetCoordinateAxeType
         get() {
             return PetCoordinateAxeType.fromLocation(location)
+        }
+
+    /**
+     * Offset from the ground.
+     */
+    override var groundOffset: Double
+        get() {
+            return petMeta.physics.groundOffset
+        }
+        set(value) {
+            petMeta.physics.groundOffset = value
+            location = location // Triggers teleport.
         }
 
     /**

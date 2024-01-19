@@ -34,6 +34,9 @@ enum class Permission(val text: String) {
     SNAP("petblocks.pet.snap"),
     MOVEREL("petblocks.pet.moveRel"),
     ROTATEREL("petblocks.pet.rotateRel"),
+    ENTITYTYPE("petblocks.pet.entityType"),
+    ENTITYVISIBILITY("petblocks.pet.entityVisibility"),
+    GROUNDOFFSET("petblocks.pet.groundOffset"),
     // Dynamic
     DYN_AMOUNT("petblocks.pet.amount."),
     DYN_TEMPLATE("petblocks.pet.template."),

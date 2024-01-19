@@ -4,9 +4,9 @@ import com.github.shynixn.mcutils.common.Vector3d
 import com.github.shynixn.mcutils.common.physic.PhysicComponent
 import com.github.shynixn.mcutils.common.toLocation
 import com.github.shynixn.mcutils.common.toVector
-import com.github.shynixn.mcutils.packet.api.BlockDirection
 import com.github.shynixn.mcutils.packet.api.RayTraceResult
 import com.github.shynixn.mcutils.packet.api.RayTracingService
+import com.github.shynixn.mcutils.packet.api.meta.enumeration.BlockDirection
 import com.github.shynixn.petblocks.entity.PhysicSettings
 import kotlin.math.abs
 

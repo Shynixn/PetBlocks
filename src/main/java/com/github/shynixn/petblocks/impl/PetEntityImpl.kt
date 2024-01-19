@@ -4,12 +4,9 @@ import com.github.shynixn.mccoroutine.bukkit.CoroutineTimings
 import com.github.shynixn.mccoroutine.bukkit.launch
 import com.github.shynixn.mccoroutine.bukkit.minecraftDispatcher
 import com.github.shynixn.mccoroutine.bukkit.ticks
-import com.github.shynixn.mcutils.common.CancellationToken
-import com.github.shynixn.mcutils.common.Vector3d
+import com.github.shynixn.mcutils.common.*
 import com.github.shynixn.mcutils.common.physic.PhysicObject
 import com.github.shynixn.mcutils.common.physic.PhysicObjectDispatcher
-import com.github.shynixn.mcutils.common.toLocation
-import com.github.shynixn.mcutils.common.toVector3d
 import com.github.shynixn.mcutils.packet.api.PacketService
 import com.github.shynixn.mcutils.pathfinder.api.PathfinderResult
 import com.github.shynixn.mcutils.pathfinder.api.PathfinderResultType
@@ -21,6 +18,7 @@ import com.github.shynixn.petblocks.contract.PetActionExecutionService
 import com.github.shynixn.petblocks.entity.PetMeta
 import com.github.shynixn.petblocks.enumeration.DropType
 import com.github.shynixn.petblocks.enumeration.PetVisibility
+import com.github.shynixn.petblocks.exception.PetBlocksPetDisposedException
 import com.github.shynixn.petblocks.impl.physic.ArmorstandEntityComponent
 import com.github.shynixn.petblocks.impl.physic.MathComponent
 import com.github.shynixn.petblocks.impl.physic.MoveToTargetComponent
@@ -88,6 +86,9 @@ class PetEntityImpl(
                     cancellationTokenLoop = CancellationToken()
                     petActionExecutionService.executeAction(pet.player, pet, loop, cancellationTokenLoop)
                     delay(1.ticks)
+                } catch (e: PetBlocksPetDisposedException) {
+                    // Ignore Disposed exception.
+                    break
                 } catch (e: CancellationException) {
                     // Ignore Coroutine Cancel
                     break
@@ -369,7 +370,7 @@ class PetEntityImpl(
     /**
      * Updates the displayName in the world.
      */
-    fun updateDisplayName() {
+    fun updateMetaData() {
         for (player in playerComponent.visiblePlayers) {
             entityComponent.updateMetaData(player)
         }

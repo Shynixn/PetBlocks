@@ -76,9 +76,25 @@ interface Pet {
     var template: PetTemplate
 
     /**
+     * Gets or sets the entity type.
+     * e.g. minecraft:armor_stand, minecraft:pig
+     */
+    var entityType: String
+
+    /**
+     * Entity Visibility state.
+     */
+    var isEntityVisible: Boolean
+
+    /**
      * Gets the direction the pet could snap to.
      */
     val direction: PetCoordinateAxeType
+
+    /**
+     * Offset from the ground.
+     */
+    var groundOffset : Double
 
     /**
      * Calculated variables which can be used in subsequent operations by placeholders.
