@@ -18,7 +18,7 @@
       
       
       <link rel="icon" href="../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.5.3, mkdocs-material-9.5.3">
+      <meta name="generator" content="mkdocs-1.5.3, mkdocs-material-9.5.4">
     
     
       
@@ -664,6 +664,33 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#petblocks-entitytype" class="md-nav__link">
+    <span class="md-ellipsis">
+      /petblocks entitytype
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#petblocks-entityvisible" class="md-nav__link">
+    <span class="md-ellipsis">
+      /petblocks entityvisible
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#petblocks-groundoffset" class="md-nav__link">
+    <span class="md-ellipsis">
+      /petblocks groundoffset
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -1147,6 +1174,33 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#petblocks-entitytype" class="md-nav__link">
+    <span class="md-ellipsis">
+      /petblocks entitytype
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#petblocks-entityvisible" class="md-nav__link">
+    <span class="md-ellipsis">
+      /petblocks entityvisible
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#petblocks-groundoffset" class="md-nav__link">
+    <span class="md-ellipsis">
+      /petblocks groundoffset
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -1469,6 +1523,32 @@ move in a straight direction. If the pet reaches a cliff (1 block difference), m
 <li>Angle: Angle in degrees e.g. 45, 90</li>
 <li>Player: Optional player_name/player_UUID parameter targeting a player from the console or command block.</li>
 </ul>
+<h3 id="petblocks-entitytype">/petblocks entitytype</h3>
+<div class="highlight"><pre><span></span><code>/petblocks entitytype &lt;name&gt; &lt;entityType&gt; [player]
+</code></pre></div>
+<p>Changes the entity type of the pet. The default type is minecraft:armor_stand</p>
+<ul>
+<li>Name: Identifier of a pet</li>
+<li>EntityType: An entitytype in the minecraft format. e.g. minecraft:bee, minecraft:dolphin, minecraft:armor_stand </li>
+<li>Player: Optional player_name/player_UUID parameter targeting a player from the console or command block.</li>
+</ul>
+<h3 id="petblocks-entityvisible">/petblocks entityvisible</h3>
+<div class="highlight"><pre><span></span><code>/petblocks entityvisible &lt;name&gt; &lt;true/false&gt; [player]
+</code></pre></div>
+<p>Changes if the body of an entity is visible. For armorstands this is false, for most of the other entities this should be true.</p>
+<ul>
+<li>Name: Identifier of a pet</li>
+<li>Player: Optional player_name/player_UUID parameter targeting a player from the console or command block.</li>
+</ul>
+<h3 id="petblocks-groundoffset">/petblocks groundoffset</h3>
+<div class="highlight"><pre><span></span><code>/petblocks groundoffset &lt;name&gt; &lt;offset&gt; [player]
+</code></pre></div>
+<p>Changes the offset of the body of the entity to the ground. Useful when configuring different entity types.</p>
+<ul>
+<li>Name: Identifier of a pet</li>
+<li>Offset: A numeric comma value. e.g. 0.3, -0.3, 1.0</li>
+<li>Player: Optional player_name/player_UUID parameter targeting a player from the console or command block.</li>
+</ul>
 
 
 
@@ -1552,10 +1632,10 @@ move in a straight direction. If the pet reaches a cliff (1 block difference), m
     </div>
     
     
-    <script id="__config" type="application/json">{"base": "..", "features": ["navigation.instant", "navigation.tabs", "content.tabs.link", "content.code.copy", "navigation.footer"], "search": "../assets/javascripts/workers/search.f886a092.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    <script id="__config" type="application/json">{"base": "..", "features": ["navigation.instant", "navigation.tabs", "content.tabs.link", "content.code.copy", "navigation.footer"], "search": "../assets/javascripts/workers/search.c011b7c0.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
     
     
-      <script src="../assets/javascripts/bundle.d7c377c4.min.js"></script>
+      <script src="../assets/javascripts/bundle.7389ff0e.min.js"></script>
       
     
   </body>
