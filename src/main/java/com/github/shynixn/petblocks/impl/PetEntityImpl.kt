@@ -18,6 +18,7 @@ import com.github.shynixn.petblocks.contract.PetActionExecutionService
 import com.github.shynixn.petblocks.entity.PetMeta
 import com.github.shynixn.petblocks.enumeration.DropType
 import com.github.shynixn.petblocks.enumeration.PetVisibility
+import com.github.shynixn.petblocks.exception.PetBlocksPetDisposedException
 import com.github.shynixn.petblocks.impl.physic.ArmorstandEntityComponent
 import com.github.shynixn.petblocks.impl.physic.MathComponent
 import com.github.shynixn.petblocks.impl.physic.MoveToTargetComponent
@@ -85,6 +86,9 @@ class PetEntityImpl(
                     cancellationTokenLoop = CancellationToken()
                     petActionExecutionService.executeAction(pet.player, pet, loop, cancellationTokenLoop)
                     delay(1.ticks)
+                } catch (e: PetBlocksPetDisposedException) {
+                    // Ignore Disposed exception.
+                    break
                 } catch (e: CancellationException) {
                     // Ignore Coroutine Cancel
                     break
