@@ -2,7 +2,6 @@ package com.github.shynixn.petblocks.impl.service
 
 import com.github.shynixn.mccoroutine.bukkit.scope
 import com.github.shynixn.mcutils.common.ConfigurationService
-import com.github.shynixn.mcutils.common.item.Item
 import com.github.shynixn.mcutils.common.repository.Repository
 import com.github.shynixn.mcutils.database.api.CachePlayerRepository
 import com.github.shynixn.petblocks.PetBlocksPlugin
@@ -22,7 +21,6 @@ import kotlinx.coroutines.future.future
 import org.bukkit.Bukkit
 import org.bukkit.Location
 import org.bukkit.entity.Player
-import org.bukkit.plugin.Plugin
 import java.util.concurrent.CompletionStage
 
 class PetServiceImpl @Inject constructor(
@@ -101,7 +99,7 @@ class PetServiceImpl @Inject constructor(
                 val templateId = e.template
                 val template = templates.firstOrNull { inner -> inner.name.equals(templateId, true) }
                     ?: throw IllegalArgumentException("Player '${player.name}' has a pet, which references a template '${templateId}' which  does not exist!")
-                val pet = createPetInstance(player, e, template)
+                val pet = createPetInstance(player, e, template, false)
 
                 // Fix pet state.
                 if (e.isSpawned) {
@@ -164,10 +162,13 @@ class PetServiceImpl @Inject constructor(
         petMeta.ridingState = template.pet.ridingState
         petMeta.isSpawned = template.pet.spawned
         petMeta.loop = template.pet.loop
+        petMeta.entityType = template.pet.entityType
+        petMeta.isEntityVisible = template.pet.entityVisible
+        petMeta.physics.groundOffset = template.pet.physics.groundOffset
         petMeta.headItem = template.pet.item.copy()
 
         // Create pet instance.
-        val pet = createPetInstance(player, petMeta, template)
+        val pet = createPetInstance(player, petMeta, template, true)
 
         if (!cache.containsKey(player)) {
             cache[player] = arrayListOf()
@@ -241,11 +242,20 @@ class PetServiceImpl @Inject constructor(
     /**
      * Creates a new pet instance.
      */
-    private fun createPetInstance(player: Player, petMeta: PetMeta, petTemplate: PetTemplate): Pet {
+    private fun createPetInstance(
+        player: Player,
+        petMeta: PetMeta,
+        petTemplate: PetTemplate,
+        applyTemplatePhysics: Boolean
+    ): Pet {
         val maxPathfinderDistance = configurationService.findValue<Double>("pet.pathFinderDistance")
         val pet = PetImpl(player, petMeta, petEntityFactory, maxPathfinderDistance, plugin)
         pet.template = petTemplate
-        petMeta.physics = petTemplate.pet.physics
+
+        if (applyTemplatePhysics) {
+            petMeta.physics = petTemplate.pet.physics
+        }
+
         return pet
     }
 }

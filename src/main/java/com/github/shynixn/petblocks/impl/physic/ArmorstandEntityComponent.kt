@@ -3,6 +3,8 @@ package com.github.shynixn.petblocks.impl.physic
 import com.github.shynixn.mcutils.common.*
 import com.github.shynixn.mcutils.common.physic.PhysicComponent
 import com.github.shynixn.mcutils.packet.api.*
+import com.github.shynixn.mcutils.packet.api.meta.enumeration.ArmorSlotType
+import com.github.shynixn.mcutils.packet.api.meta.enumeration.EntityType
 import com.github.shynixn.mcutils.packet.api.packet.*
 import com.github.shynixn.petblocks.contract.Pet
 import com.github.shynixn.petblocks.contract.PlaceHolderService
@@ -31,7 +33,7 @@ class ArmorstandEntityComponent(
     private fun onPlayerSpawn(player: Player, location: Location) {
         packetService.sendPacketOutEntitySpawn(player, PacketOutEntitySpawn().also {
             it.entityId = this.entityId
-            it.entityType = EntityType.ARMOR_STAND
+            it.entityTypeRaw = petMeta.entityType
             it.target = location.toVector3d().addRelativeUp(petMeta.physics.groundOffset).toLocation()
         })
 
@@ -59,7 +61,7 @@ class ArmorstandEntityComponent(
         packetService.sendPacketOutEntityMetadata(player, PacketOutEntityMetadata().also {
             it.entityId = this.entityId
             it.isArmorstandSmall = true
-            it.isInvisible = true
+            it.isInvisible = !petMeta.isEntityVisible
             it.customNameVisible = true
             it.customname = placeHolderService.replacePlaceHolders(pet.player, petMeta.displayName, pet)
         })
@@ -112,6 +114,7 @@ class ArmorstandEntityComponent(
 
     private fun onPositionChange(position: Vector3d, motion: Vector3d) {
         val players = playerComponent.visiblePlayers
+        val parsedEntityType = EntityType.findType(this.petMeta.entityType)
 
         for (player in players) {
             packetService.sendPacketOutEntityVelocity(player, PacketOutEntityVelocity().also {
@@ -124,10 +127,19 @@ class ArmorstandEntityComponent(
                 it.target = position.clone().addRelativeUp(petMeta.physics.groundOffset).toLocation()
             })
 
-            packetService.sendPacketOutEntityMetadata(player, PacketOutEntityMetadata().also {
-                it.entityId = this.entityId
-                it.armorStandHeadRotation = convertPitchToEulerAngle(position.pitch)
-            })
+            if (parsedEntityType != null && parsedEntityType == EntityType.ARMOR_STAND) {
+                // It causes lag when sent to other entities.
+                packetService.sendPacketOutEntityMetadata(player, PacketOutEntityMetadata().also {
+                    it.entityId = this.entityId
+                    it.armorStandHeadRotation = convertPitchToEulerAngle(position.pitch)
+                })
+            } else {
+                // Needed for some living entities other than armorstands.
+                packetService.sendPacketOutEntityHeadRotation(player, PacketOutEntityHeadRotation().also {
+                    it.entityId = this.entityId
+                    it.yaw = position.yaw
+                })
+            }
         }
     }
 

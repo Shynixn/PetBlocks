@@ -5,8 +5,8 @@ package com.github.shynixn.petblocks.impl.listener
 import com.github.shynixn.mccoroutine.bukkit.launch
 import com.github.shynixn.mcutils.common.ConfigurationService
 import com.github.shynixn.mcutils.common.physic.PhysicObjectService
-import com.github.shynixn.mcutils.packet.api.InteractionType
 import com.github.shynixn.mcutils.packet.api.event.PacketEvent
+import com.github.shynixn.mcutils.packet.api.meta.enumeration.InteractionType
 import com.github.shynixn.mcutils.packet.api.packet.PacketInInteractEntity
 import com.github.shynixn.mcutils.packet.api.packet.PacketInSteerVehicle
 import com.github.shynixn.petblocks.PetBlocksPlugin
@@ -16,12 +16,11 @@ import com.github.shynixn.petblocks.impl.PetEntityImpl
 import com.github.shynixn.petblocks.impl.service.PetActionExecutionServiceImpl
 import com.google.inject.Inject
 import org.bukkit.Bukkit
+import org.bukkit.entity.EntityType
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.player.PlayerJoinEvent
 import org.bukkit.event.player.PlayerQuitEvent
-import org.bukkit.plugin.Plugin
-import java.util.logging.Level
 
 class PetListener @Inject constructor(
     private val petService: PetService,

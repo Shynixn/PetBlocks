@@ -26,6 +26,7 @@ import org.bukkit.Material
 import org.bukkit.World
 import org.bukkit.command.Command
 import org.bukkit.command.CommandSender
+import org.bukkit.entity.EntityType
 import org.bukkit.entity.Player
 import org.bukkit.event.block.BlockBreakEvent
 import org.bukkit.plugin.Plugin
@@ -208,7 +209,23 @@ class PetBlocksCommandExecutor @Inject constructor(
             "rotaterel", 4, Permission.ROTATEREL, "/petblocks rotaterel <name> <direction> <angle> [player]"
         ) { sender, player, args ->
             rotateRel(sender, player, args[1], args[2], args[3])
-        })
+        },
+        CommandDefinition(
+            "entitytype", 3, Permission.ENTITYTYPE, "/petblocks entitytype <name> <entityType> [player]"
+        ) { sender, player, args ->
+            setEntityType(sender, player, args[1], args[2])
+        },
+        CommandDefinition(
+            "entityvisible", 3, Permission.ENTITYVISIBILITY, "/petblocks entityvisible <name> <true/false> [player]"
+        ) { sender, player, args ->
+            setEntityVisible(sender, player, args[1], args[2])
+        },
+        CommandDefinition(
+            "groundoffset", 3, Permission.GROUNDOFFSET, "/petblocks groundoffset <name> <offset> [player]"
+        ) { sender, player, args ->
+            setGroundOffset(sender, player, args[1], args[2])
+        }
+    )
 
     /**
      * Executes the given command, returning its success.
@@ -343,6 +360,10 @@ class PetBlocksCommandExecutor @Inject constructor(
 
         if (args.size >= 2 && sender.hasPermission(Permission.ROTATEREL.text) && args[0].equals("rotaterel", true)) {
             return PetRotationType.values().map { e -> e.name.lowercase() }
+        }
+
+        if (args.size >= 2 && sender.hasPermission(Permission.ENTITYTYPE.text) && args[0].equals("entitytype", true)) {
+            return EntityType.values().map { e -> "minecraft:${e.name.lowercase()}" }
         }
 
         if (sender.hasPermission(Permission.VISIBILITY.text) && args[0].equals("visibility", true)) {
@@ -689,6 +710,7 @@ class PetBlocksCommandExecutor @Inject constructor(
     private suspend fun lookAtLocation(sender: CommandSender, player: Player, petName: String, location: Location) {
         val pet = findPetFromPlayer(player, petName)
             ?: throw PetBlocksException(String.format(PetBlocksLanguage.petNotFoundMessage, petName))
+        location.y = location.y - pet.groundOffset
         pet.lookAt(location)
         sender.sendPluginMessage(String.format(PetBlocksLanguage.petLookAtMessage))
     }
@@ -736,6 +758,38 @@ class PetBlocksCommandExecutor @Inject constructor(
         } else {
             spawnPet(sender, player, petName)
         }
+    }
+
+    private suspend fun setEntityType(sender: CommandSender, player: Player, petName: String, entityType: String) {
+        val pet = findPetFromPlayer(player, petName)
+            ?: throw PetBlocksException(String.format(PetBlocksLanguage.petNotFoundMessage, petName))
+        pet.entityType = entityType
+        sender.sendPluginMessage(String.format(PetBlocksLanguage.entityTypeChangeMessage, entityType))
+    }
+
+    private suspend fun setEntityVisible(sender: CommandSender, player: Player, petName: String, flag: String) {
+        val pet = findPetFromPlayer(player, petName)
+            ?: throw PetBlocksException(String.format(PetBlocksLanguage.petNotFoundMessage, petName))
+
+        try {
+            pet.isEntityVisible = flag.toBoolean()
+            sender.sendPluginMessage(String.format(PetBlocksLanguage.entityVisibilityChangedMessage, flag))
+        } catch (e: Exception) {
+            // Ignored
+        }
+    }
+
+    private suspend fun setGroundOffset(sender: CommandSender, player: Player, petName: String, offset: String) {
+        val pet = findPetFromPlayer(player, petName)
+            ?: throw PetBlocksException(String.format(PetBlocksLanguage.petNotFoundMessage, petName))
+
+        if (offset.toDoubleOrNull() == null) {
+            sender.sendPluginMessage(String.format(PetBlocksLanguage.groundOffsetCannotBeParsed, offset))
+            return
+        }
+
+        pet.groundOffset = offset.toDouble()
+        sender.sendPluginMessage(String.format(PetBlocksLanguage.groundOffsetChangedMessage, offset))
     }
 
     private suspend fun deSpawnPet(sender: CommandSender, player: Player, petName: String) {

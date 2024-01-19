@@ -4,12 +4,9 @@ import com.github.shynixn.mccoroutine.bukkit.CoroutineTimings
 import com.github.shynixn.mccoroutine.bukkit.launch
 import com.github.shynixn.mccoroutine.bukkit.minecraftDispatcher
 import com.github.shynixn.mccoroutine.bukkit.ticks
-import com.github.shynixn.mcutils.common.CancellationToken
-import com.github.shynixn.mcutils.common.Vector3d
+import com.github.shynixn.mcutils.common.*
 import com.github.shynixn.mcutils.common.physic.PhysicObject
 import com.github.shynixn.mcutils.common.physic.PhysicObjectDispatcher
-import com.github.shynixn.mcutils.common.toLocation
-import com.github.shynixn.mcutils.common.toVector3d
 import com.github.shynixn.mcutils.packet.api.PacketService
 import com.github.shynixn.mcutils.pathfinder.api.PathfinderResult
 import com.github.shynixn.mcutils.pathfinder.api.PathfinderResultType
@@ -369,7 +366,7 @@ class PetEntityImpl(
     /**
      * Updates the displayName in the world.
      */
-    fun updateDisplayName() {
+    fun updateMetaData() {
         for (player in playerComponent.visiblePlayers) {
             entityComponent.updateMetaData(player)
         }

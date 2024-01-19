@@ -3,6 +3,7 @@ package com.github.shynixn.petblocks.entity
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.github.shynixn.mcutils.common.Vector3d
 import com.github.shynixn.mcutils.common.item.Item
+import com.github.shynixn.mcutils.packet.api.meta.enumeration.EntityType
 import com.github.shynixn.petblocks.enumeration.PetRidingState
 import com.github.shynixn.petblocks.enumeration.PetVisibility
 
@@ -51,9 +52,19 @@ class PetMeta {
     var loop: String = ""
 
     /**
+     * Entity type.
+     */
+    var entityType: String = EntityType.ARMOR_STAND.id117
+
+    /**
+     * Entity Visibility state.
+     */
+    var isEntityVisible: Boolean = false
+
+    /**
      * Physic settings.
      */
-    var physics : PhysicSettings = PhysicSettings()
+    var physics: PhysicSettings = PhysicSettings()
 
     /**
      * Last persisted location of the pet.

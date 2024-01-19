@@ -5,6 +5,10 @@ name: mining
 version: 1.0
 # The initial settings of the pet on first spawn.
 pet:
+  # The entityType to render. e.g. minecraft:armor_stand, minecraft:wolf, minecraft:pig
+  entityType: "minecraft:armor_stand"
+  # Should the entity be rendered. For entities like wolf and pig it needs to be set to true. For armor_stands to false.
+  entityVisible: false
   # The initial name of the pet shown above the pet on first spawn. Supports ChatColors.
   displayName: "%petblocks_owner_name%'s pet"
   # The initial visibility the pet starts with on first spawn.
@@ -102,16 +106,16 @@ events:
           - "/petblocks cancel %petblocks_pet_name% %petblocks_owner_name%"
           - "/petblocks lookatowner %petblocks_pet_name% %petblocks_owner_name%"
           - "/petblocks loop %petblocks_pet_name% idle %petblocks_owner_name%"
-      - name: "Start to mine tunnel on rightclick with pickaxe" 
+      - name: "Start to mine tunnel on rightclick with pickaxe"
         condition:
           type: JAVASCRIPT
-          js: "'%petblocks_eventPlayer_itemMainHand_type%'.indexOf('pickaxe') != -1 && '%petblocks_eventPlayer_name%' == '%petblocks_owner_name%'" 
+          js: "'%petblocks_eventPlayer_itemMainHand_type%'.indexOf('pickaxe') != -1 && '%petblocks_eventPlayer_name%' == '%petblocks_owner_name%'"
         type: "COMMAND"
         level: "SERVER"
         run:
           - "/tell %petblocks_owner_name% Pet %petblocks_pet_displayName% &rstarts to mine a tunnel."
           - "/petblocks snap %petblocks_pet_name% %petblocks_owner_name%" # Snap is useful for straight tunnels.
-          - "/petblocks loop %petblocks_pet_name% mineTunnel2x2 %petblocks_owner_name%" 
+          - "/petblocks loop %petblocks_pet_name% mineTunnel2x2 %petblocks_owner_name%"
 #
 # Defines the action a pet should perform in an interval on its own.
 #
@@ -167,23 +171,23 @@ loops:
           - "/petblocks teleport %petblocks_pet_name% %petblocks_owner_locationWorld% %petblocks_owner_locationX% %petblocks_owner_locationY% %petblocks_owner_locationZ% %petblocks_owner_locationYaw% %petblocks_owner_locationPitch% %petblocks_owner_name%"
       - name: "Delay Action"
         type: "DELAY"
-        ticks: 20    
+        ticks: 20
   mineTunnel2x2:
-    actions: 
+    actions:
       - name: "Move pet forward."
-        condition: 
+        condition:
           type: STRING_EQUALS
           left: "%petblocks_pet_isBreakingBlock%"
           right: "false"
         type: "COMMAND"
         level: "SERVER"
         run:
-          - "/petblocks moveforward %petblocks_pet_name% 0.2 %petblocks_owner_name%"   
+          - "/petblocks moveforward %petblocks_pet_name% 0.2 %petblocks_owner_name%"
       - name: "Delay Action"
         type: "DELAY"
-        ticks: 20             
+        ticks: 20
       - name: "Break Block"
-        condition: 
+        condition:
           type: STRING_EQUALS
           left: "%petblocks_pet_isBreakingBlock%"
           right: "false"
@@ -193,25 +197,25 @@ loops:
           - "/petblocks breakblock %petblocks_pet_name% 120 DROP %petblocks_owner_name%"
       - name: "Delay Action" # BreakBlock may take some time to update the placeholder, add artificial delay for that.
         type: "DELAY"
-        ticks: 5     
+        ticks: 5
       - name: "Delay Action"
-        condition: 
+        condition:
           type: STRING_EQUALS
           left: "%petblocks_pet_isBreakingBlock%"
           right: "true" # We do only wait, if the pet has found a block to break.
         type: "DELAY" # Instead of 1 big delay, you may add multiple smaller delays and perform animations e.g. sending particle commands.
-        ticks: 125 # Wait 120 seconds for the break block and 5 buffer ticks just in case.            
+        ticks: 125 # Wait 120 seconds for the break block and 5 buffer ticks just in case.
       - name: "Rotate pet up."
-        condition: 
+        condition:
           type: STRING_EQUALS
           left: "%petblocks_pet_isBreakingBlock%"
           right: "false"
         type: "COMMAND"
         level: "SERVER"
         run:
-          - "/petblocks rotaterel %petblocks_pet_name% up 45 %petblocks_owner_name%"  
+          - "/petblocks rotaterel %petblocks_pet_name% up 45 %petblocks_owner_name%"
       - name: "Break Block"
-        condition: 
+        condition:
           type: STRING_EQUALS
           left: "%petblocks_pet_isBreakingBlock%"
           right: "false"
@@ -221,26 +225,26 @@ loops:
           - "/petblocks breakblock %petblocks_pet_name% 120 DROP %petblocks_owner_name%"
       - name: "Delay Action"
         type: "DELAY"
-        ticks: 5              
+        ticks: 5
       - name: "Delay Action"
-        condition: 
+        condition:
           type: STRING_EQUALS
           left: "%petblocks_pet_isBreakingBlock%"
           right: "true"
         type: "DELAY"
-        ticks: 125  
+        ticks: 125
       - name: "Rotate pet left."
-        condition: 
+        condition:
           type: STRING_EQUALS
           left: "%petblocks_pet_isBreakingBlock%"
           right: "false"
         type: "COMMAND"
         level: "SERVER"
         run:
-          - "/petblocks rotaterel %petblocks_pet_name% down 45 %petblocks_owner_name%"  
-          - "/petblocks rotaterel %petblocks_pet_name% left 45 %petblocks_owner_name%"  
+          - "/petblocks rotaterel %petblocks_pet_name% down 45 %petblocks_owner_name%"
+          - "/petblocks rotaterel %petblocks_pet_name% left 45 %petblocks_owner_name%"
       - name: "Break Block"
-        condition: 
+        condition:
           type: STRING_EQUALS
           left: "%petblocks_pet_isBreakingBlock%"
           right: "false"
@@ -250,25 +254,25 @@ loops:
           - "/petblocks breakblock %petblocks_pet_name% 120 DROP %petblocks_owner_name%"
       - name: "Delay Action"
         type: "DELAY"
-        ticks: 5              
+        ticks: 5
       - name: "Delay Action"
-        condition: 
+        condition:
           type: STRING_EQUALS
           left: "%petblocks_pet_isBreakingBlock%"
           right: "true"
         type: "DELAY"
-        ticks: 125   
+        ticks: 125
       - name: "Rotate pet up."
-        condition: 
+        condition:
           type: STRING_EQUALS
           left: "%petblocks_pet_isBreakingBlock%"
           right: "false"
         type: "COMMAND"
         level: "SERVER"
         run:
-          - "/petblocks rotaterel %petblocks_pet_name% up 45 %petblocks_owner_name%"  
+          - "/petblocks rotaterel %petblocks_pet_name% up 45 %petblocks_owner_name%"
       - name: "Break Block"
-        condition: 
+        condition:
           type: STRING_EQUALS
           left: "%petblocks_pet_isBreakingBlock%"
           right: "false"
@@ -278,24 +282,24 @@ loops:
           - "/petblocks breakblock %petblocks_pet_name% 120 DROP %petblocks_owner_name%"
       - name: "Delay Action"
         type: "DELAY"
-        ticks: 5              
+        ticks: 5
       - name: "Delay Action"
-        condition: 
+        condition:
           type: STRING_EQUALS
           left: "%petblocks_pet_isBreakingBlock%"
           right: "true"
         type: "DELAY"
-        ticks: 125    
+        ticks: 125
       - name: "Rotate pet center."
-        condition: 
+        condition:
           type: STRING_EQUALS
           left: "%petblocks_pet_isBreakingBlock%"
           right: "false"
         type: "COMMAND"
         level: "SERVER"
         run:
-          - "/petblocks rotaterel %petblocks_pet_name% down 45 %petblocks_owner_name%"        
-          - "/petblocks rotaterel %petblocks_pet_name% right 45 %petblocks_owner_name%" 
+          - "/petblocks rotaterel %petblocks_pet_name% down 45 %petblocks_owner_name%"
+          - "/petblocks rotaterel %petblocks_pet_name% right 45 %petblocks_owner_name%"
   hat: # The hat loop is selected when you execute the hat command.
     actions:
       - name: "Delay Action"
