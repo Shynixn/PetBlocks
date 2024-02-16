@@ -10,7 +10,7 @@ import javax.script.Compilable
 import javax.script.ScriptEngine
 
 
-class ScriptServiceImpl @Inject constructor(
+class ScriptNashornEngineServiceImpl @Inject constructor(
     private val plugin: Plugin,
     configurationService: ConfigurationService
 ) : ScriptService {

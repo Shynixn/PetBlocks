@@ -28,20 +28,21 @@ dependencies {
     compileOnly("me.clip:placeholderapi:2.9.2")
     compileOnly("com.arcaniax:HeadDatabase-API:1.3.1")
 
-    // Plugin.yml Shade dependencies
-    compileOnly("com.github.shynixn.mccoroutine:mccoroutine-bukkit-api:2.13.0")
-    compileOnly("com.github.shynixn.mccoroutine:mccoroutine-bukkit-core:2.13.0")
-    compileOnly("com.google.inject:guice:5.0.1")
-    compileOnly("com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.3.0")
-    compileOnly("com.fasterxml.jackson.core:jackson-databind:2.2.3")
-    compileOnly("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.2")
-    compileOnly("com.google.code.gson:gson:2.8.6")
-    compileOnly("org.openjdk.nashorn:nashorn-core:15.4")
-    compileOnly("org.jetbrains.kotlinx:kotlinx-coroutines-jdk8:1.4.3")
+    // Library dependencies with legacy compatibility, we can use more up-to-date version in the plugin.yml
+    implementation("com.github.shynixn.mccoroutine:mccoroutine-bukkit-api:2.13.0")
+    implementation("com.github.shynixn.mccoroutine:mccoroutine-bukkit-core:2.13.0")
+    implementation("com.google.inject:guice:5.0.1")
+    implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.3.0")
+    implementation("com.fasterxml.jackson.core:jackson-databind:2.2.3")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.2")
+    implementation("com.google.code.gson:gson:2.8.6")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-jdk8:1.4.3")
+    implementation("com.zaxxer:HikariCP:4.0.3")
+    implementation("org.openjdk.nashorn:nashorn-core:15.4")
 
     // Custom dependencies
-    implementation("com.github.shynixn.mcutils:common:1.0.47")
-    implementation("com.github.shynixn.mcutils:packet:1.0.73")
+    implementation("com.github.shynixn.mcutils:common:1.0.58")
+    implementation("com.github.shynixn.mcutils:packet:1.0.80")
     implementation("com.github.shynixn.mcutils:database:1.0.14")
     implementation("com.github.shynixn.mcutils:pathfinder:1.0.19")
 
@@ -148,6 +149,46 @@ tasks.register("pluginJarPremium", com.github.jengelman.gradle.plugins.shadow.ta
     exclude("javax/**")
     exclude("com/google/**")
     exclude("com/fasterxml/**")
+}
+
+/**
+ * Create legacy plugin jar file.
+ */
+tasks.register("relocateLegacyPluginJar", com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar::class.java) {
+    dependsOn("shadowJar")
+    from(zipTree(File("./build/libs/" + (tasks.getByName("shadowJar") as Jar).archiveName)))
+    archiveName = "${baseName}-${version}-legacy-relocate.${extension}"
+ //   relocate("com.github.shynixn.mcutils", "com.github.shynixn.petblocks.lib.com.github.shynixn.mcutils")
+    relocate("kotlin", "com.github.shynixn.petblocks.lib.kotlin")
+    relocate("org.intellij", "com.github.shynixn.petblocks.lib.org.intelli")
+    relocate("javax.annotation", "com.github.shynixn.petblocks.lib.javax.annotation")
+    relocate("javax.inject", "com.github.shynixn.petblocks.lib.javax.inject")
+    relocate("kotlinx.coroutines", "com.github.shynixn.petblocks.lib.kotlinx.coroutines")
+    relocate("com.google.inject", "com.github.shynixn.petblocks.lib.com.google.inject")
+    relocate("com.fasterxml", "com.github.shynixn.petblocks.lib.com.fasterxml")
+    relocate("com.github.shynixn.mccoroutine", "com.github.shynixn.petblocks.lib.com.github.shynixn.mccoroutine")
+    exclude("plugin.yml")
+    rename("plugin-legacy.yml", "plugin.yml")
+}
+
+/**
+ * Create legacy plugin jar file.
+ */
+tasks.register("pluginJarLegacy", com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar::class.java) {
+    dependsOn("relocateLegacyPluginJar")
+    from(zipTree(File("./build/libs/" + (tasks.getByName("relocateLegacyPluginJar") as Jar).archiveName)))
+    archiveName = "${baseName}-${version}-legacy.${extension}"
+    destinationDir = File("C:\\temp\\plugins")
+  //  exclude("com/github/shynixn/mcutils/**")
+    exclude("org/intellij/**")
+    exclude("kotlin/**")
+    exclude("kotlinx/coroutines/**")
+    exclude("javax/annotation/**")
+    exclude("javax/inject/**")
+    exclude("com/google/**")
+    exclude("com/github/shynixn/mccoroutine/**")
+    exclude("com/fasterxml/**")
+    exclude("plugin-legacy.yml")
 }
 
 tasks.register("languageFile") {

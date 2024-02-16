@@ -134,7 +134,7 @@ class ArmorstandEntityComponent(
                     it.armorStandHeadRotation = convertPitchToEulerAngle(position.pitch)
                 })
             } else {
-                // Needed for some living entities other than armorstands.
+                // Needed for some living entities other than armor stands.
                 packetService.sendPacketOutEntityHeadRotation(player, PacketOutEntityHeadRotation().also {
                     it.entityId = this.entityId
                     it.yaw = position.yaw

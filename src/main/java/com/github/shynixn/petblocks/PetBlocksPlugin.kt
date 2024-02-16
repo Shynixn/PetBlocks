@@ -57,6 +57,20 @@ class PetBlocksPlugin : JavaPlugin() {
 
         val versions = if (PetBlocksDependencyInjectionBinder.areLegacyVersionsIncluded) {
             listOf(
+                Version.VERSION_1_8_R3,
+                Version.VERSION_1_19_R1,
+                Version.VERSION_1_19_R2,
+                Version.VERSION_1_19_R3,
+                Version.VERSION_1_10_R1,
+                Version.VERSION_1_11_R1,
+                Version.VERSION_1_12_R1,
+                Version.VERSION_1_13_R1,
+                Version.VERSION_1_13_R2,
+                Version.VERSION_1_14_R1,
+                Version.VERSION_1_15_R1,
+                Version.VERSION_1_16_R1,
+                Version.VERSION_1_16_R2,
+                Version.VERSION_1_16_R3,
                 Version.VERSION_1_17_R1,
                 Version.VERSION_1_18_R1,
                 Version.VERSION_1_18_R2,
@@ -82,6 +96,8 @@ class PetBlocksPlugin : JavaPlugin() {
             Bukkit.getPluginManager().disablePlugin(this)
             return
         }
+
+        logger.log(Level.INFO, "Loaded NMS version ${Version.serverVersion.bukkitId}.")
 
         // Guice
         this.injector = Guice.createInjector(PetBlocksDependencyInjectionBinder(this))

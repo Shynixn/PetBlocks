@@ -6,7 +6,7 @@ version: 1.0
 # The initial settings of the pet on first spawn.
 pet:
   # The entityType to render. e.g. minecraft:armor_stand, minecraft:wolf, minecraft:pig
-  entityType: "minecraft:armor_stand"
+  entityType: "minecraft:armor_stand,30"
   # Should the entity be rendered. For entities like wolf and pig it needs to be set to true. For armor_stands to false.
   entityVisible: false
   # The initial name of the pet shown above the pet on first spawn. Supports ChatColors.
