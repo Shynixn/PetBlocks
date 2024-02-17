@@ -8,6 +8,7 @@ import com.github.shynixn.mcutils.common.*
 import com.github.shynixn.mcutils.common.physic.PhysicObject
 import com.github.shynixn.mcutils.common.physic.PhysicObjectDispatcher
 import com.github.shynixn.mcutils.packet.api.PacketService
+import com.github.shynixn.mcutils.packet.api.RayTracingService
 import com.github.shynixn.mcutils.pathfinder.api.PathfinderResult
 import com.github.shynixn.mcutils.pathfinder.api.PathfinderResultType
 import com.github.shynixn.mcutils.pathfinder.api.PathfinderService
@@ -47,6 +48,7 @@ class PetEntityImpl(
     private val pathfinderService: PathfinderService,
     private val petActionExecutionService: PetActionExecutionService,
     private val breakBlockService: BreakBlockService,
+    private val rayTracingService: RayTracingService,
     private val clickCoolDownMs: Long,
     private val pathFinderCube: Vector3d,
     private val visualizePath: Boolean
@@ -349,9 +351,8 @@ class PetEntityImpl(
     }
 
     private fun isOnGround(location: Location): Boolean {
-        val movingObjectPosition =
-            location.world!!.rayTraceBlocks(location, Vector(0, -1, 0), 1.0, FluidCollisionMode.NEVER, true)
-        return movingObjectPosition != null && movingObjectPosition.hitBlock != null
+        val rayTraceResult = rayTracingService.rayTraceMotion(location.toVector3d(), Vector3d(0.0, -1.0, 0.0))
+        return rayTraceResult.hitBlock
     }
 
     /**
@@ -437,17 +438,11 @@ class PetEntityImpl(
      */
     fun findTargetBlock(maxDistance: Double): Block? {
         val worldLocation = getLocation().toLocation()
-        val world = worldLocation.world ?: return null
-
-        val rayTraceResult = world.rayTraceBlocks(
-            worldLocation,
-            worldLocation.direction.normalize(),
-            maxDistance,
-            FluidCollisionMode.NEVER,
-            true
-        ) ?: return null
-
-        return rayTraceResult.hitBlock
+        val rayTraceResult = rayTracingService.rayTraceMotion(
+            worldLocation.toVector3d(),
+            worldLocation.direction.normalize().multiply(maxDistance).toVector3d()
+        )
+        return rayTraceResult.block
     }
 
     /**

@@ -41,7 +41,7 @@ dependencies {
     implementation("org.openjdk.nashorn:nashorn-core:15.4")
 
     // Custom dependencies
-    implementation("com.github.shynixn.mcutils:common:1.0.58")
+    implementation("com.github.shynixn.mcutils:common:1.0.59")
     implementation("com.github.shynixn.mcutils:packet:1.0.80")
     implementation("com.github.shynixn.mcutils:database:1.0.14")
     implementation("com.github.shynixn.mcutils:pathfinder:1.0.19")
@@ -164,7 +164,7 @@ tasks.register("relocateLegacyPluginJar", com.github.jengelman.gradle.plugins.sh
     relocate("javax.annotation", "com.github.shynixn.petblocks.lib.javax.annotation")
     relocate("javax.inject", "com.github.shynixn.petblocks.lib.javax.inject")
     relocate("kotlinx.coroutines", "com.github.shynixn.petblocks.lib.kotlinx.coroutines")
-    relocate("com.google.inject", "com.github.shynixn.petblocks.lib.com.google.inject")
+    relocate("com.google", "com.github.shynixn.petblocks.lib.com.google")
     relocate("com.fasterxml", "com.github.shynixn.petblocks.lib.com.fasterxml")
     relocate("com.github.shynixn.mccoroutine", "com.github.shynixn.petblocks.lib.com.github.shynixn.mccoroutine")
     exclude("plugin.yml")
