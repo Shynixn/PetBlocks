@@ -78,6 +78,7 @@ class PetEntityFactoryImpl @Inject constructor(
             pathfinderService,
             petActionExecutionService,
             breakBlockService,
+            rayTracingService,
             clickCoolDown.toLong(),
             Vector3d(null, pathfinderCubeX, pathfinderCubeY, pathfinderCubeZ),
             visualizePath

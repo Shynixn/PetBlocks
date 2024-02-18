@@ -50,7 +50,7 @@ class MathComponent(
     override fun tickMinecraft() {
         val sourceLocation = position.toLocation()
 
-        if (!sourceLocation.isWorldLoaded || !sourceLocation.chunk.isLoaded) {
+        if (!sourceLocation.chunk.isLoaded) {
             return
         }
 
@@ -60,7 +60,7 @@ class MathComponent(
         // Target location of the object.
         val targetLocation = position.toLocation().add(motion.toVector())
 
-        if (!targetLocation.isWorldLoaded || !targetLocation.chunk.isLoaded) {
+        if (!targetLocation.chunk.isLoaded) {
             return
         }
 

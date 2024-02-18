@@ -412,7 +412,7 @@ Rotates the pet relative to its current rotation.
 Changes the entity type of the pet. The default type is minecraft:armor_stand
 
 * Name: Identifier of a pet
-* EntityType: An entitytype in the minecraft format. e.g. minecraft:bee, minecraft:dolphin, minecraft:armor_stand 
+* EntityType: An entitytype in the minecraft format. e.g. minecraft:bee, minecraft:dolphin, minecraft:armor_stand. For minecraft versions below 1.11, you need to use the [entity number](https://github.com/CircuitLord/Minecraft-1.9-MCP/blob/bc89baf1fd0b5d422478619e7aba01c0b23bd405/temp/src/minecraft/net/minecraft/entity/EntityList.java#L232) instead. 
 * Player: Optional player_name/player_UUID parameter targeting a player from the console or command block.
 
 ### /petblocks entityvisible

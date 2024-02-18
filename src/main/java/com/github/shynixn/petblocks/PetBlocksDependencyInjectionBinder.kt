@@ -60,11 +60,11 @@ class PetBlocksDependencyInjectionBinder(private val plugin: PetBlocksPlugin) : 
         val autoSaveMinutes = plugin.config.getInt("autoSaveIntervalMinutes")
 
         // Repositories
-        val templateRepositoryImpl = YamlFileRepositoryImpl<PetTemplate>(plugin,
-            "pets",
-            listOf(Pair("pets/pet_classic.yml", "pet_classic.yml"),Pair("pets/pet_mining.yml", "pet_mining.yml"),Pair("pets/pet_flying_dolphin.yml", "pet_flying_dolphin.yml")),
-            emptyList(),
-            object : TypeReference<PetTemplate>() {})
+        val templateRepositoryImpl = YamlFileRepositoryImpl<PetTemplate>(plugin, "pets", listOf(
+            Pair("pets/pet_classic.yml", "pet_classic.yml"),
+            Pair("pets/pet_mining.yml", "pet_mining.yml"),
+            Pair("pets/pet_flying_dolphin.yml", "pet_flying_dolphin.yml")
+        ), emptyList(), object : TypeReference<PetTemplate>() {})
         val cacheTemplateRepository = CachedRepositoryImpl(templateRepositoryImpl)
         bind(object : TypeLiteral<Repository<PetTemplate>>() {}).toInstance(cacheTemplateRepository)
         bind(object : TypeLiteral<CacheRepository<PetTemplate>>() {}).toInstance(cacheTemplateRepository)
@@ -85,12 +85,13 @@ class PetBlocksDependencyInjectionBinder(private val plugin: PetBlocksPlugin) : 
         bind(CachePlayerRepository::class.java).toInstance(playerDataRepository)
 
         // Services
+        val configurationService = ConfigurationServiceImpl(plugin)
         val physicObjectDispatcher = PhysicObjectDispatcherImpl(plugin)
         bind(EntityService::class.java).toInstance(EntityServiceImpl())
         bind(RayTracingService::class.java).toInstance(RayTracingServiceImpl())
         bind(PacketService::class.java).toInstance(PacketServiceImpl(plugin))
         bind(PhysicObjectDispatcher::class.java).toInstance(physicObjectDispatcher)
-        bind(ConfigurationService::class.java).toInstance(ConfigurationServiceImpl(plugin))
+        bind(ConfigurationService::class.java).toInstance(configurationService)
         bind(PhysicObjectService::class.java).toInstance(PhysicObjectServiceImpl(plugin, physicObjectDispatcher))
         bind(ItemService::class.java).toInstance(ItemServiceImpl())
         bind(PathfinderService::class.java).toInstance(PathfinderServiceImpl(CubeWorldSnapshotServiceImpl()))
@@ -99,7 +100,6 @@ class PetBlocksDependencyInjectionBinder(private val plugin: PetBlocksPlugin) : 
         bind(PetService::class.java).to(PetServiceImpl::class.java).`in`(Scopes.SINGLETON)
         bind(PetEntityFactory::class.java).to(PetEntityFactoryImpl::class.java).`in`(Scopes.SINGLETON)
         bind(PetActionExecutionService::class.java).to(PetActionExecutionServiceImpl::class.java).`in`(Scopes.SINGLETON)
-        bind(ScriptService::class.java).to(ScriptServiceImpl::class.java).`in`(Scopes.SINGLETON)
         if (Bukkit.getPluginManager().getPlugin(PluginDependency.PLACEHOLDERAPI.pluginName) != null) {
             bind(PlaceHolderService::class.java).to(DependencyPlaceHolderApiServiceImpl::class.java)
                 .`in`(Scopes.SINGLETON)
@@ -111,6 +111,22 @@ class PetBlocksDependencyInjectionBinder(private val plugin: PetBlocksPlugin) : 
             bind(DependencyHeadDatabaseService::class.java).to(DependencyHeadDatabaseServiceImpl::class.java)
                 .`in`(Scopes.SINGLETON)
             plugin.logger.log(Level.INFO, "Loaded dependency ${PluginDependency.HEADDATABASE.pluginName}.")
+        }
+
+        try {
+            // Try Load Nashorn Implementation
+            val nashornScriptEngine = ScriptNashornEngineServiceImpl(plugin, configurationService)
+            bind(ScriptService::class.java).toInstance(nashornScriptEngine)
+            plugin.logger.log(Level.INFO, "Loaded embedded NashornScriptEngine.")
+        } catch (e: Error) {
+            try {
+                // Try Load JDK Implementation
+                val jdkScriptEngine = ScriptJdkEngineServiceImpl(plugin, configurationService)
+                bind(ScriptService::class.java).toInstance(jdkScriptEngine)
+                plugin.logger.log(Level.INFO, "Loaded JDK NashornScriptEngine.")
+            } catch (ex: Exception) {
+                throw RuntimeException("Cannot find NashornScriptEngine implementation.", ex)
+            }
         }
     }
 }

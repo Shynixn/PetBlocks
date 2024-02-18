@@ -3,7 +3,9 @@
 package com.github.shynixn.petblocks.impl.listener
 
 import com.github.shynixn.mccoroutine.bukkit.launch
+import com.github.shynixn.mccoroutine.bukkit.ticks
 import com.github.shynixn.mcutils.common.ConfigurationService
+import com.github.shynixn.mcutils.common.Version
 import com.github.shynixn.mcutils.common.physic.PhysicObjectService
 import com.github.shynixn.mcutils.packet.api.event.PacketEvent
 import com.github.shynixn.mcutils.packet.api.meta.enumeration.InteractionType
@@ -15,12 +17,14 @@ import com.github.shynixn.petblocks.contract.PetService
 import com.github.shynixn.petblocks.impl.PetEntityImpl
 import com.github.shynixn.petblocks.impl.service.PetActionExecutionServiceImpl
 import com.google.inject.Inject
+import kotlinx.coroutines.delay
 import org.bukkit.Bukkit
 import org.bukkit.entity.EntityType
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.player.PlayerJoinEvent
 import org.bukkit.event.player.PlayerQuitEvent
+import org.bukkit.event.player.PlayerToggleSneakEvent
 
 class PetListener @Inject constructor(
     private val petService: PetService,
@@ -72,7 +76,25 @@ class PetListener @Inject constructor(
             petService.clearCache(event.player)
 
             if (pets.isNotEmpty()) {
-                plugin.logMessage( "Unloaded pets of player ${event.player.name}.")
+                plugin.logMessage("Unloaded pets of player ${event.player.name}.")
+            }
+        }
+    }
+
+    @EventHandler
+    fun onPlayerDismountEvent(event: PlayerToggleSneakEvent) {
+        // Compatibility to remount the pet on sneak in lower minecraft version.
+        if (Version.serverVersion.isVersionSameOrGreaterThan(Version.VERSION_1_17_R1)) {
+            return
+        }
+        plugin.launch {
+            val pets = petService.getPetsFromPlayer(event.player)
+
+            for (pet in pets) {
+                if (pet.isRiding()) {
+                    delay(3.ticks)
+                    pet.ride()
+                }
             }
         }
     }
