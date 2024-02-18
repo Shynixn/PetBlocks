@@ -8,7 +8,7 @@ plugins {
 }
 
 group = "com.github.shynixn"
-version = "9.3.0"
+version = "9.4.0"
 
 repositories {
     mavenCentral()
@@ -41,8 +41,8 @@ dependencies {
     implementation("org.openjdk.nashorn:nashorn-core:15.4")
 
     // Custom dependencies
-    implementation("com.github.shynixn.mcutils:common:1.0.59")
-    implementation("com.github.shynixn.mcutils:packet:1.0.80")
+    implementation("com.github.shynixn.mcutils:common:1.0.61")
+    implementation("com.github.shynixn.mcutils:packet:1.0.82")
     implementation("com.github.shynixn.mcutils:database:1.0.14")
     implementation("com.github.shynixn.mcutils:pathfinder:1.0.19")
 
@@ -93,6 +93,7 @@ tasks.withType<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar> {
 tasks.register("pluginJars") {
     dependsOn("pluginJarLatest")
     dependsOn("pluginJarPremium")
+    dependsOn("pluginJarLegacy")
 }
 
 /**
@@ -130,6 +131,7 @@ tasks.register("pluginJarLatest", com.github.jengelman.gradle.plugins.shadow.tas
     exclude("javax/**")
     exclude("com/google/**")
     exclude("com/fasterxml/**")
+    exclude("com/zaxxer/**")
 }
 
 /**
@@ -147,6 +149,7 @@ tasks.register("pluginJarPremium", com.github.jengelman.gradle.plugins.shadow.ta
     exclude("org/**")
     exclude("kotlinx/**")
     exclude("javax/**")
+    exclude("com/zaxxer/**")
     exclude("com/google/**")
     exclude("com/fasterxml/**")
 }
@@ -158,14 +161,21 @@ tasks.register("relocateLegacyPluginJar", com.github.jengelman.gradle.plugins.sh
     dependsOn("shadowJar")
     from(zipTree(File("./build/libs/" + (tasks.getByName("shadowJar") as Jar).archiveName)))
     archiveName = "${baseName}-${version}-legacy-relocate.${extension}"
- //   relocate("com.github.shynixn.mcutils", "com.github.shynixn.petblocks.lib.com.github.shynixn.mcutils")
+    relocate("com.github.shynixn.mcutils", "com.github.shynixn.petblocks.lib.com.github.shynixn.mcutils")
     relocate("kotlin", "com.github.shynixn.petblocks.lib.kotlin")
     relocate("org.intellij", "com.github.shynixn.petblocks.lib.org.intelli")
+    relocate("org.aopalliance", "com.github.shynixn.petblocks.lib.org.aopalliance")
+    relocate("org.checkerframework", "com.github.shynixn.petblocks.lib.org.checkerframework")
+    relocate("org.jetbrains", "com.github.shynixn.petblocks.lib.org.jetbrains")
+    relocate("org.openjdk.nashorn", "com.github.shynixn.petblocks.lib.org.openjdk.nashorn")
+    relocate("org.slf4j", "com.github.shynixn.petblocks.lib.org.slf4j")
+    relocate("org.objectweb", "com.github.shynixn.petblocks.lib.org.objectweb")
     relocate("javax.annotation", "com.github.shynixn.petblocks.lib.javax.annotation")
     relocate("javax.inject", "com.github.shynixn.petblocks.lib.javax.inject")
     relocate("kotlinx.coroutines", "com.github.shynixn.petblocks.lib.kotlinx.coroutines")
     relocate("com.google", "com.github.shynixn.petblocks.lib.com.google")
     relocate("com.fasterxml", "com.github.shynixn.petblocks.lib.com.fasterxml")
+    relocate("com.zaxxer", "com.github.shynixn.petblocks.lib.com.zaxxer")
     relocate("com.github.shynixn.mccoroutine", "com.github.shynixn.petblocks.lib.com.github.shynixn.mccoroutine")
     exclude("plugin.yml")
     rename("plugin-legacy.yml", "plugin.yml")
@@ -178,16 +188,16 @@ tasks.register("pluginJarLegacy", com.github.jengelman.gradle.plugins.shadow.tas
     dependsOn("relocateLegacyPluginJar")
     from(zipTree(File("./build/libs/" + (tasks.getByName("relocateLegacyPluginJar") as Jar).archiveName)))
     archiveName = "${baseName}-${version}-legacy.${extension}"
-    destinationDir = File("C:\\temp\\plugins")
-  //  exclude("com/github/shynixn/mcutils/**")
-    exclude("org/intellij/**")
+    // destinationDir = File("C:\\temp\\plugins")
+    exclude("com/github/shynixn/mcutils/**")
+    exclude("org/**")
     exclude("kotlin/**")
-    exclude("kotlinx/coroutines/**")
-    exclude("javax/annotation/**")
-    exclude("javax/inject/**")
+    exclude("kotlinx/**")
+    exclude("javax/**")
     exclude("com/google/**")
     exclude("com/github/shynixn/mccoroutine/**")
     exclude("com/fasterxml/**")
+    exclude("com/zaxxer/**")
     exclude("plugin-legacy.yml")
 }
 
