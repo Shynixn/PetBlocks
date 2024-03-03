@@ -15,11 +15,9 @@ import com.github.shynixn.mcutils.common.repository.Repository
 import com.github.shynixn.mcutils.common.repository.YamlFileRepositoryImpl
 import com.github.shynixn.mcutils.database.api.CachePlayerRepository
 import com.github.shynixn.mcutils.database.api.PlayerDataRepository
-import com.github.shynixn.mcutils.database.api.SqlConnectionService
 import com.github.shynixn.mcutils.database.impl.AutoSavePlayerDataRepositoryImpl
 import com.github.shynixn.mcutils.database.impl.CachePlayerDataRepositoryImpl
-import com.github.shynixn.mcutils.database.impl.PlayerDataSqlRepositoryImpl
-import com.github.shynixn.mcutils.database.impl.SqliteConnectionServiceImpl
+import com.github.shynixn.mcutils.database.impl.ConfigSelectedRepositoryImpl
 import com.github.shynixn.mcutils.packet.api.EntityService
 import com.github.shynixn.mcutils.packet.api.PacketService
 import com.github.shynixn.mcutils.packet.api.RayTracingService
@@ -57,7 +55,7 @@ class PetBlocksDependencyInjectionBinder(private val plugin: PetBlocksPlugin) : 
         bind(Plugin::class.java).toInstance(plugin)
         bind(PetBlocksPlugin::class.java).toInstance(plugin)
 
-        val autoSaveMinutes = plugin.config.getInt("autoSaveIntervalMinutes")
+        val autoSaveMinutes = plugin.config.getInt("database.autoSaveIntervalMinutes")
 
         // Repositories
         val templateRepositoryImpl = YamlFileRepositoryImpl<PetTemplate>(plugin, "pets", listOf(
@@ -69,16 +67,16 @@ class PetBlocksDependencyInjectionBinder(private val plugin: PetBlocksPlugin) : 
         bind(object : TypeLiteral<Repository<PetTemplate>>() {}).toInstance(cacheTemplateRepository)
         bind(object : TypeLiteral<CacheRepository<PetTemplate>>() {}).toInstance(cacheTemplateRepository)
         bind(Repository::class.java).toInstance(cacheTemplateRepository)
-        val sqliteConnectionServiceImpl =
-            SqliteConnectionServiceImpl(plugin.dataFolder.toPath().resolve("PetBlocks.sqlite"), plugin.logger)
+        val configSelectedRepository = ConfigSelectedRepositoryImpl<PlayerInformation>(plugin,
+            "PetBlocks",
+            plugin.dataFolder.toPath().resolve("PetBlocks.sqlite"),
+            object : TypeReference<PlayerInformation>() {})
         val playerDataRepository = AutoSavePlayerDataRepositoryImpl(
-            "pets", 1000 * 60L * autoSaveMinutes, CachePlayerDataRepositoryImpl(
-                PlayerDataSqlRepositoryImpl<PlayerInformation>(
-                    "PetBlocks", object : TypeReference<PlayerInformation>() {}, sqliteConnectionServiceImpl
-                ), plugin
-            ), plugin
+            "pets",
+            1000 * 60L * autoSaveMinutes,
+            CachePlayerDataRepositoryImpl(configSelectedRepository, plugin),
+            plugin
         )
-        bind(SqlConnectionService::class.java).toInstance(sqliteConnectionServiceImpl)
         bind(object : TypeLiteral<PlayerDataRepository<PlayerInformation>>() {}).toInstance(playerDataRepository)
         bind(object : TypeLiteral<CachePlayerRepository<PlayerInformation>>() {}).toInstance(playerDataRepository)
         bind(PlayerDataRepository::class.java).toInstance(playerDataRepository)
