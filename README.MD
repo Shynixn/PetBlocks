@@ -1,4 +1,4 @@
-# PetBlocks  [![GitHub license](https://img.shields.io/badge/license-Apache%20License%202.0-blue.svg?style=flat-square)](https://raw.githubusercontent.com/Shynixn/PetBlocks/master/LICENCE)
+# PetBlocks
 
 | branch        | status        |  download |
 | ------------- | ------------- |   ---------| 
