@@ -37,6 +37,9 @@ isLoggingEnabled: true
 database:
   # The pet data of a player is automatically saved when the player quits. You can additionally configure a saving interval for all cached pet data.
   autoSaveIntervalMinutes: 5
+  # An artificial delay for read requests to the database in milliseconds. This can be used in server networks where multiple servers share the same pet database.
+  # If the pet data is not in sync when switching between servers, try increasing this delay in steps e.g. 50, 100, 250, 500, 1000.
+  readDelayMs: 0
   # The type of database to use. Possible values: sqlite, mysql
   type: "sqlite"
   # The JDBC properties are only used for type 'mysql'
