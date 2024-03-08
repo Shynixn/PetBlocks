@@ -61,19 +61,15 @@ class PetServiceImpl @Inject constructor(
         val playerData = petMetaRepository.getByPlayer(player)
 
         if (playerData != null) {
-            plugin.logMessage("Saving pets of player ${player.name}...")
-            petMetaRepository.save(player, playerData)
-            plugin.logMessage("Saved pets of player ${player.name}...")
+            playerData.playerName = player.name
+            petMetaRepository.save(playerData)
+            plugin.logMessage("Saved pets of player ${player.name}.")
 
             val uuids = HashSet(playerData.retrievedUuids)
             uuids.add(player.uniqueId)
 
             for (uuid in uuids) {
-                plugin.logMessage("Removing cache of $uuid...")
-                if (petMetaRepository.getCache().containsKey(uuid)) {
-                    petMetaRepository.getCache().remove(uuid)!!.await()
-                }
-                plugin.logMessage("Removed cache of $uuid.")
+                petMetaRepository.clearByPlayerUUID(uuid)
             }
         }
     }
@@ -185,9 +181,12 @@ class PetServiceImpl @Inject constructor(
         var playerInformation = petMetaRepository.getByPlayer(player)
 
         if (playerInformation == null) {
-            playerInformation = PlayerInformation()
+            playerInformation = PlayerInformation().also {
+                it.playerUUID = player.uniqueId.toString()
+                it.playerName = player.name
+            }
             plugin.logMessage("Creating database entry for ${player.name} (${player.uniqueId})...")
-            petMetaRepository.save(player, playerInformation)
+            petMetaRepository.save(playerInformation)
             plugin.logMessage("Created database entry for ${player.name} (${player.uniqueId}).")
         }
 

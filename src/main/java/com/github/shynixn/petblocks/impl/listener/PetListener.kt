@@ -72,12 +72,7 @@ class PetListener @Inject constructor(
     @EventHandler
     fun onPlayerQuitEvent(event: PlayerQuitEvent) {
         plugin.launch {
-            val pets = petService.getPetsFromPlayer(event.player)
             petService.clearCache(event.player)
-
-            if (pets.isNotEmpty()) {
-                plugin.logMessage("Unloaded pets of player ${event.player.name}.")
-            }
         }
     }
 

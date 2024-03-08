@@ -11,7 +11,6 @@ import com.github.shynixn.mcutils.common.reloadTranslation
 import com.github.shynixn.mcutils.common.repository.Repository
 import com.github.shynixn.mcutils.database.api.CachePlayerRepository
 import com.github.shynixn.mcutils.database.api.PlayerDataRepository
-import com.github.shynixn.mcutils.database.api.SqlConnectionService
 import com.github.shynixn.mcutils.packet.api.PacketInType
 import com.github.shynixn.mcutils.packet.api.PacketService
 import com.github.shynixn.petblocks.contract.DependencyHeadDatabaseService
@@ -139,10 +138,15 @@ class PetBlocksPlugin : JavaPlugin() {
             plugin.reloadTranslation(language, PetBlocksLanguage::class.java, "en_us")
             logger.log(Level.INFO, "Loaded language file $language.properties.")
             // Connect
-            val sqlConnectionService = resolve(SqlConnectionService::class.java)
-            sqlConnectionService.connect()
-            val playerDataRepository = resolve(PlayerDataRepository::class.java)
-            playerDataRepository.createIfNotExist()
+            try {
+                val playerDataRepository = resolve(PlayerDataRepository::class.java)
+                playerDataRepository.createIfNotExist()
+            } catch (e: Exception) {
+                e.printStackTrace()
+                immidiateDisable = true
+                Bukkit.getPluginManager().disablePlugin(plugin)
+                return@runBlocking
+            }
             val templateRepository = resolve(Repository::class.java)
             templateRepository.getAll()
 
@@ -174,12 +178,10 @@ class PetBlocksPlugin : JavaPlugin() {
 
         val playerDataRepository = resolve(CachePlayerRepository::class.java)
         runBlocking {
-            playerDataRepository.saveCache()
+            playerDataRepository.saveAll()
+            playerDataRepository.clearAll()
+            playerDataRepository.close()
         }
-        playerDataRepository.clearCache()
-
-        val sqlConnectionService = resolve(SqlConnectionService::class.java)
-        sqlConnectionService.close()
 
         val physicService = resolve(PhysicObjectService::class.java)
         physicService.close()

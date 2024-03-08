@@ -9,7 +9,6 @@ import com.github.shynixn.petblocks.contract.PlaceHolderService
 import com.github.shynixn.petblocks.entity.PlayerInformation
 import com.github.shynixn.petblocks.enumeration.PlaceHolder
 import com.google.inject.Inject
-import kotlinx.coroutines.runBlocking
 import me.clip.placeholderapi.PlaceholderAPI
 import me.clip.placeholderapi.expansion.PlaceholderExpansion
 import org.bukkit.entity.Player
@@ -54,11 +53,9 @@ class DependencyPlaceHolderApiServiceImpl @Inject constructor(
 
             if (finalPart.toIntOrNull() == null) {
                 if (finalPart == "selected") {
-                    if (petMetaRepository.getCache().containsKey(p.uniqueId)) {
-                        val playerInformation = runBlocking {
-                            petMetaRepository.getCache()[p.uniqueId]!!.await()!!
-                        }
+                    val playerInformation = petMetaRepository.getCachedByPlayer(p)
 
+                    if (playerInformation != null) {
                         val selectedPet = pets.firstOrNull { e -> e.name == playerInformation.selectedPet }
                         val newParams = parts.dropLast(1).joinToString("_")
 

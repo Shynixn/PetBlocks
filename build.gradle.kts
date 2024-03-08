@@ -8,7 +8,7 @@ plugins {
 }
 
 group = "com.github.shynixn"
-version = "9.4.0"
+version = "9.5.0"
 
 repositories {
     mavenCentral()
@@ -41,15 +41,17 @@ dependencies {
     implementation("org.openjdk.nashorn:nashorn-core:15.4")
 
     // Custom dependencies
-    implementation("com.github.shynixn.mcutils:common:1.0.61")
-    implementation("com.github.shynixn.mcutils:packet:1.0.82")
-    implementation("com.github.shynixn.mcutils:database:1.0.14")
+    implementation("com.github.shynixn.mcutils:common:1.0.65")
+    implementation("com.github.shynixn.mcutils:packet:1.0.86")
+    implementation("com.github.shynixn.mcutils:database:1.0.22")
     implementation("com.github.shynixn.mcutils:pathfinder:1.0.19")
 
     // Test
     testImplementation(kotlin("test"))
     testImplementation("org.spigotmc:spigot-api:1.18.2-R0.1-SNAPSHOT")
     testImplementation("org.mockito:mockito-core:2.23.0")
+    testImplementation("ch.vorburger.mariaDB4j:mariaDB4j:2.4.0")
+    testImplementation("com.mysql:mysql-connector-j:8.3.0")
 }
 
 tasks.test {
