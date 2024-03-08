@@ -1,9 +1,9 @@
-# PetBlocks  [![GitHub license](https://img.shields.io/badge/license-Apache%20License%202.0-blue.svg?style=flat-square)](https://raw.githubusercontent.com/Shynixn/PetBlocks/master/LICENCE)
+# PetBlocks
 
 | branch        | status        |  download |
 | ------------- | ------------- |   ---------| 
-| master        | [![Build Status](https://github.com/Shynixn/PetBlocks/workflows/PetBlocks/badge.svg?branch=master)](https://github.com/Shynixn/PetBlocks/actions)| [Download latest release](https://github.com/Shynixn/PetBlocks/releases)|
-| development   | [![Build Status](https://github.com/Shynixn/PetBlocks/workflows/PetBlocks/badge.svg?branch=development)](https://github.com/Shynixn/PetBlocks/actions)  |  [Download snapshots](https://oss.sonatype.org/content/repositories/snapshots/com/github/shynixn/petblocks) |
+| master        |[![PetBlocks](https://github.com/Shynixn/PetBlocks/actions/workflows/main.yml/badge.svg?branch=master)](https://github.com/Shynixn/PetBlocks/actions/workflows/main.yml)| [Download latest release](https://github.com/Shynixn/PetBlocks/releases)|
+| development   | [![PetBlocks](https://github.com/Shynixn/PetBlocks/actions/workflows/main.yml/badge.svg?branch=development)](https://github.com/Shynixn/PetBlocks/actions/workflows/main.yml)  |  [Download snapshots](https://oss.sonatype.org/content/repositories/snapshots/com/github/shynixn/petblocks) |
 
 > __Information__: PetBlocks has been recoded from scratch to support the latest Minecraft version.
 
