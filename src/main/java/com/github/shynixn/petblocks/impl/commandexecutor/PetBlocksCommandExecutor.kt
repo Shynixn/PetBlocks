@@ -6,7 +6,7 @@ import com.github.shynixn.mcutils.common.*
 import com.github.shynixn.mcutils.common.item.Item
 import com.github.shynixn.mcutils.common.repository.CacheRepository
 import com.github.shynixn.mcutils.database.api.CachePlayerRepository
-import com.github.shynixn.petblocks.PetBlocksDependencyInjectionBinder
+import com.github.shynixn.petblocks.PetBlocksDependencyInjectionModule
 import com.github.shynixn.petblocks.PetBlocksLanguage
 import com.github.shynixn.petblocks.PetBlocksPlugin
 import com.github.shynixn.petblocks.contract.DependencyHeadDatabaseService
@@ -399,7 +399,7 @@ class PetBlocksCommandExecutor @Inject constructor(
             return
         }
 
-        if (!PetBlocksDependencyInjectionBinder.areLegacyVersionsIncluded && pets.isNotEmpty()) {
+        if (!PetBlocksDependencyInjectionModule.areLegacyVersionsIncluded && pets.isNotEmpty()) {
             sender.sendPluginMessage(PetBlocksLanguage.premiumMultiplePets)
             return
         }

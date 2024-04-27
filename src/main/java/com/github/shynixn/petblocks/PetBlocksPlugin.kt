@@ -54,7 +54,7 @@ class PetBlocksPlugin : JavaPlugin() {
         Bukkit.getServer().consoleSender.sendMessage(prefix + ChatColor.GREEN + "Loading PetBlocks ...")
         this.saveDefaultConfig()
 
-        val versions = if (PetBlocksDependencyInjectionBinder.areLegacyVersionsIncluded) {
+        val versions = if (PetBlocksDependencyInjectionModule.areLegacyVersionsIncluded) {
             listOf(
                 Version.VERSION_1_8_R3,
                 Version.VERSION_1_9_R2,
@@ -97,7 +97,7 @@ class PetBlocksPlugin : JavaPlugin() {
         logger.log(Level.INFO, "Loaded NMS version ${Version.serverVersion.bukkitId}.")
 
         // Guice
-        this.injector = Guice.createInjector(PetBlocksDependencyInjectionBinder(this))
+        this.injector = Guice.createInjector(PetBlocksDependencyInjectionModule(this))
         this.reloadConfig()
 
         // Register Packets
