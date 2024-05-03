@@ -82,12 +82,19 @@ class DependencyHeadDatabaseServiceImpl @Inject constructor(
                     val headItem = pet.headItem
                     headItem.typeName = "minecraft:player_head,397"
                     headItem.nbt = nbtString
+                    headItem.component = getDataComponentString(item.base64EncodedSkinUrl!!)
                     pet.headItem = headItem
                 }
             } catch (e: Exception) {
                 // Ignored
             }
         }
+    }
+
+    private fun getDataComponentString(base64EncodedUrl: String): String {
+        val dataComponent =
+            "{\"minecraft:profile\":{\"properties\":[{\"name\":\"textures\",\"value\":\"$base64EncodedUrl\"}]}}"
+        return dataComponent
     }
 
     private fun getNbtString(base64EncodedUrl: String): String {

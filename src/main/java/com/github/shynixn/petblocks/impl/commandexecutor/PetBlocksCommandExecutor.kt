@@ -125,6 +125,11 @@ class PetBlocksCommandExecutor @Inject constructor(
             setSkinNbt(sender, player, args[1], args[2])
         },
         CommandDefinition(
+            "skincomponent", 3, Permission.SKIN, "/petblocks skincomponent <name> <datacomponent> [player]"
+        ) { sender, player, args ->
+            setSkinDataComponent(sender, player, args[1], args[2])
+        },
+        CommandDefinition(
             "skinbase64", 3, Permission.SKIN, "/petblocks skinbase64 <name> <skin> [player]"
         ) { sender, player, args ->
             setSkinBase64(sender, player, args[1], args[2])
@@ -468,6 +473,14 @@ class PetBlocksCommandExecutor @Inject constructor(
     private suspend fun setSkinBase64(
         sender: CommandSender, player: Player, petName: String, base64EncodedSkinUrl: String
     ) {
+        val pet = findPetFromPlayer(player, petName)
+            ?: throw PetBlocksException(String.format(PetBlocksLanguage.petNotFoundMessage, petName))
+        val headItem = pet.headItem
+        headItem.typeName = "minecraft:player_head,397"
+        pet.headItem = headItem
+
+        val dataComponent =
+            "{\"minecraft:profile\":{\"properties\":[{\"name\":\"textures\",\"value\":\"$base64EncodedSkinUrl\"}]}}"
         val id1 = random.nextInt()
         val id2 = random.nextInt()
         val id3 = random.nextInt()
@@ -475,12 +488,29 @@ class PetBlocksCommandExecutor @Inject constructor(
         val nbt =
             "{SkullOwner:{Id:[I;${id1},${id2},${id3},${id4}],Name:\"${id1}\",Properties:{textures:[{Value:\"${base64EncodedSkinUrl}\"}]}}}"
 
-        val pet = findPetFromPlayer(player, petName)
-            ?: throw PetBlocksException(String.format(PetBlocksLanguage.petNotFoundMessage, petName))
-        val headItem = pet.headItem
-        headItem.typeName = "minecraft:player_head,397"
-        pet.headItem = headItem
-        setSkinNbt(sender, player, petName, nbt)
+        try {
+            val testItem = Item(pet.headItem.typeName)
+            testItem.nbt = nbt
+            itemService.toItemStack(testItem)// Test if nbt and datacomponent is valid.
+        } catch (e: Exception) {
+            sender.sendPluginMessage(String.format(PetBlocksLanguage.cannotParseNbtMessage, nbt))
+            return
+        }
+
+        try {
+            val testItem = Item(pet.headItem.typeName)
+            testItem.component = dataComponent
+            itemService.toItemStack(testItem)// Test if nbt and datacomponent is valid.
+        } catch (e: Exception) {
+            sender.sendPluginMessage(String.format(PetBlocksLanguage.cannotParseDataComponentMessage, dataComponent))
+            return
+        }
+
+        val item = pet.headItem
+        item.nbt = nbt
+        item.component = dataComponent
+        pet.headItem = item
+        sender.sendPluginMessage(String.format(PetBlocksLanguage.petSkinNbtChanged, petName))
     }
 
     private suspend fun setSkinHeadDatabase(sender: CommandSender, player: Player, petName: String, hdbId: String) {
@@ -640,6 +670,29 @@ class PetBlocksCommandExecutor @Inject constructor(
             sender.sendPluginMessage(String.format(PetBlocksLanguage.petSkinNbtChanged, petName))
         } catch (e: Exception) {
             sender.sendPluginMessage(String.format(PetBlocksLanguage.cannotParseNbtMessage, nbt))
+        }
+    }
+
+    private suspend fun setSkinDataComponent(
+        sender: CommandSender,
+        player: Player,
+        petName: String,
+        dataComponent: String
+    ) {
+        val pet = findPetFromPlayer(player, petName)
+            ?: throw PetBlocksException(String.format(PetBlocksLanguage.petNotFoundMessage, petName))
+
+        try {
+            val testItem = Item(pet.headItem.typeName)
+            testItem.component = dataComponent
+            itemService.toItemStack(testItem)// Test if dataComponent is valid.
+
+            val item = pet.headItem
+            item.component = dataComponent
+            pet.headItem = item
+            sender.sendPluginMessage(String.format(PetBlocksLanguage.petSkinNbtChanged, petName))
+        } catch (e: Exception) {
+            sender.sendPluginMessage(String.format(PetBlocksLanguage.cannotParseDataComponentMessage, dataComponent))
         }
     }
 

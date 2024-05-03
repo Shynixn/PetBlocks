@@ -87,6 +87,13 @@ class PlaceHolderServiceImpl : PlaceHolderService {
                 pet.headItem.nbt!!
             }
         }
+        petPlaceHolderFunctions[PlaceHolder.PET_ITEM_COMPONENT] = { pet ->
+            if (pet.headItem.component == null) {
+                ""
+            } else {
+                pet.headItem.component!!
+            }
+        }
         petPlaceHolderFunctions[PlaceHolder.PET_HEAD_BASE64] = { pet ->
             if (pet.headItem.nbt == null) {
                 ""
