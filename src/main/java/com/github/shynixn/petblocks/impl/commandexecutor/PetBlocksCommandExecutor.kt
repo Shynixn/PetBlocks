@@ -4,11 +4,11 @@ import com.github.shynixn.mccoroutine.bukkit.SuspendingCommandExecutor
 import com.github.shynixn.mccoroutine.bukkit.SuspendingTabCompleter
 import com.github.shynixn.mcutils.common.*
 import com.github.shynixn.mcutils.common.item.Item
+import com.github.shynixn.mcutils.common.item.ItemService
 import com.github.shynixn.mcutils.common.repository.CacheRepository
 import com.github.shynixn.mcutils.database.api.CachePlayerRepository
 import com.github.shynixn.petblocks.PetBlocksDependencyInjectionModule
 import com.github.shynixn.petblocks.PetBlocksLanguage
-import com.github.shynixn.petblocks.PetBlocksPlugin
 import com.github.shynixn.petblocks.contract.DependencyHeadDatabaseService
 import com.github.shynixn.petblocks.contract.Pet
 import com.github.shynixn.petblocks.contract.PetService
@@ -39,6 +39,7 @@ class PetBlocksCommandExecutor @Inject constructor(
     private val plugin: Plugin,
     private val configurationService: ConfigurationService,
     private val petMetaRepository: CachePlayerRepository<PlayerInformation>,
+    private val itemService: ItemService
 ) : SuspendingCommandExecutor, SuspendingTabCompleter {
     private val random = Random()
     private val regexPath = "pet.name.regex"
@@ -48,7 +49,7 @@ class PetBlocksCommandExecutor @Inject constructor(
 
     private val dependencyHeadDatabaseService: DependencyHeadDatabaseService? by lazy {
         try {
-            (plugin as PetBlocksPlugin).resolve(DependencyHeadDatabaseService::class.java)
+            Bukkit.getServicesManager().load(DependencyHeadDatabaseService::class.java)
         } catch (e: Exception) {
             null
         }
@@ -415,7 +416,7 @@ class PetBlocksCommandExecutor @Inject constructor(
             ?: throw PetBlocksException(String.format(PetBlocksLanguage.petNotFoundMessage, petName))
 
         try {
-            Item(material).toItemStack() // Test if material is valid.
+            itemService.toItemStack(Item(material)) // Test if material is valid.
             val item = pet.headItem
             item.typeName = material
             pet.headItem = item
@@ -485,7 +486,7 @@ class PetBlocksCommandExecutor @Inject constructor(
     private suspend fun setSkinHeadDatabase(sender: CommandSender, player: Player, petName: String, hdbId: String) {
         try {
             val itemStack = dependencyHeadDatabaseService!!.getItemStackFromId(hdbId)!!
-            val item = itemStack.toItem()
+            val item = itemService.toItem(itemStack)
             setSkinBase64(sender, player, petName, item.base64EncodedSkinUrl!!)
         } catch (e: Exception) {
             sender.sendPluginMessage(PetBlocksLanguage.headDatabasePluginNotLoaded)
@@ -631,7 +632,7 @@ class PetBlocksCommandExecutor @Inject constructor(
         try {
             val testItem = Item(pet.headItem.typeName)
             testItem.nbt = nbt
-            testItem.toItemStack()// Test if nbt is valid.
+            itemService.toItemStack(testItem)// Test if nbt is valid.
 
             val item = pet.headItem
             item.nbt = nbt

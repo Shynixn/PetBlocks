@@ -11,15 +11,16 @@ import com.github.shynixn.mcutils.common.reloadTranslation
 import com.github.shynixn.mcutils.common.repository.Repository
 import com.github.shynixn.mcutils.database.api.CachePlayerRepository
 import com.github.shynixn.mcutils.database.api.PlayerDataRepository
+import com.github.shynixn.mcutils.guice.DependencyInjectionModule
 import com.github.shynixn.mcutils.packet.api.PacketInType
 import com.github.shynixn.mcutils.packet.api.PacketService
 import com.github.shynixn.petblocks.contract.DependencyHeadDatabaseService
 import com.github.shynixn.petblocks.contract.PetService
+import com.github.shynixn.petblocks.entity.PetTemplate
+import com.github.shynixn.petblocks.entity.PlayerInformation
 import com.github.shynixn.petblocks.enumeration.PluginDependency
 import com.github.shynixn.petblocks.impl.commandexecutor.PetBlocksCommandExecutor
 import com.github.shynixn.petblocks.impl.listener.PetListener
-import com.google.inject.Guice
-import com.google.inject.Injector
 import kotlinx.coroutines.runBlocking
 import org.bukkit.Bukkit
 import org.bukkit.event.player.PlayerJoinEvent
@@ -35,10 +36,10 @@ import java.util.logging.Level
  */
 class PetBlocksPlugin : JavaPlugin() {
     private val prefix: String = ChatColor.BLUE.toString() + "[PetBlocks] " + ChatColor.WHITE
-    private var injector: Injector? = null
+    private lateinit var module : DependencyInjectionModule
     private var immidiateDisable = false
     private val isLoggingEnabled by lazy {
-        val configurationService = resolve(ConfigurationService::class.java)
+        val configurationService = module.getService<ConfigurationService>()
         val loggingKey = "isLoggingEnabled"
         if (configurationService.containsValue(loggingKey)) {
             configurationService.findValue(loggingKey)
@@ -76,10 +77,11 @@ class PetBlocksPlugin : JavaPlugin() {
                 Version.VERSION_1_19_R3,
                 Version.VERSION_1_20_R1,
                 Version.VERSION_1_20_R2,
-                Version.VERSION_1_20_R3
+                Version.VERSION_1_20_R3,
+                Version.VERSION_1_20_R4
             )
         } else {
-            listOf(Version.VERSION_1_20_R3)
+            listOf(Version.VERSION_1_20_R4)
         }
 
         if (!Version.serverVersion.isCompatible(*versions.toTypedArray())) {
@@ -97,24 +99,24 @@ class PetBlocksPlugin : JavaPlugin() {
         logger.log(Level.INFO, "Loaded NMS version ${Version.serverVersion.bukkitId}.")
 
         // Guice
-        this.injector = Guice.createInjector(PetBlocksDependencyInjectionModule(this))
+        this.module = PetBlocksDependencyInjectionModule(this).build()
         this.reloadConfig()
 
         // Register Packets
-        val packetService = resolve(PacketService::class.java)
+        val packetService = module.getService<PacketService>()
         packetService.registerPacketListening(PacketInType.USEENTITY)
         packetService.registerPacketListening(PacketInType.STEERENTITY)
 
         // Register Listeners
-        val petListener = resolve(PetListener::class.java)
+        val petListener = module.getService<PetListener>()
         Bukkit.getPluginManager().registerEvents(petListener, this)
         if (Bukkit.getPluginManager().getPlugin(PluginDependency.HEADDATABASE.pluginName) != null) {
-            Bukkit.getPluginManager().registerEvents(resolve(DependencyHeadDatabaseService::class.java), this)
+            Bukkit.getPluginManager().registerEvents(module.getService<DependencyHeadDatabaseService>(), this)
         }
 
         // Register CommandExecutors
-        val configurationService = resolve(ConfigurationService::class.java)
-        val petBlocksCommandExecutor = resolve(PetBlocksCommandExecutor::class.java)
+        val configurationService = module.getService<ConfigurationService>()
+        val petBlocksCommandExecutor = module.getService<PetBlocksCommandExecutor>()
         val mcTennisCommand = this.getCommand("petblocks")!!
         mcTennisCommand.usage = configurationService.findValue("commands.petblocks.usage")
         mcTennisCommand.description = configurationService.findValue("commands.petblocks.description")
@@ -139,7 +141,7 @@ class PetBlocksPlugin : JavaPlugin() {
             logger.log(Level.INFO, "Loaded language file $language.properties.")
             // Connect
             try {
-                val playerDataRepository = resolve(PlayerDataRepository::class.java)
+                val playerDataRepository = module.getService<PlayerDataRepository<PlayerInformation>>()
                 playerDataRepository.createIfNotExist()
             } catch (e: Exception) {
                 e.printStackTrace()
@@ -147,12 +149,13 @@ class PetBlocksPlugin : JavaPlugin() {
                 Bukkit.getPluginManager().disablePlugin(plugin)
                 return@runBlocking
             }
-            val templateRepository = resolve(Repository::class.java)
+
+            val templateRepository = module.getService<Repository<PetTemplate>>()
             templateRepository.getAll()
 
             // Register Dependencies
             Bukkit.getServicesManager()
-                .register(PetService::class.java, resolve(PetService::class.java), plugin, ServicePriority.Normal)
+                .register(PetService::class.java, module.getService<PetService>(), plugin, ServicePriority.Normal)
 
             Bukkit.getServer().consoleSender.sendMessage(prefix + ChatColor.GREEN + "Enabled PetBlocks " + plugin.description.version + " by Shynixn")
         }
@@ -173,38 +176,21 @@ class PetBlocksPlugin : JavaPlugin() {
             return
         }
 
-        val petService = resolve(PetService::class.java)
+        val petService = module.getService<PetService>()
         petService.close()
 
-        val playerDataRepository = resolve(CachePlayerRepository::class.java)
+        val playerDataRepository = module.getService<CachePlayerRepository<PlayerInformation>>()
         runBlocking {
             playerDataRepository.saveAll()
             playerDataRepository.clearAll()
             playerDataRepository.close()
         }
 
-        val physicService = resolve(PhysicObjectService::class.java)
+        val physicService = module.getService<PhysicObjectService>()
         physicService.close()
 
-        val packetService = resolve(PacketService::class.java)
+        val packetService = module.getService<PacketService>()
         packetService.close()
-    }
-
-    /**
-     * Logs a message which can be disabled.
-     */
-    fun logMessage(message: String) {
-        if (isLoggingEnabled) {
-            logger.log(Level.INFO, message)
-        }
-    }
-
-    fun <S> resolve(service: Class<S>): S {
-        try {
-            return this.injector!!.getBinding(service).provider.get() as S
-        } catch (e: Exception) {
-            throw IllegalArgumentException("Service ${service.name} could not be resolved.", e)
-        }
     }
 
     private fun copyResourceToTarget(resourcePath: String) {

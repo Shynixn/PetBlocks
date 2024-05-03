@@ -1,7 +1,7 @@
 package com.github.shynixn.petblocks.impl.service
 
 import com.github.shynixn.mccoroutine.bukkit.launch
-import com.github.shynixn.mcutils.common.toItem
+import com.github.shynixn.mcutils.common.item.ItemService
 import com.github.shynixn.petblocks.contract.DependencyHeadDatabaseService
 import com.github.shynixn.petblocks.contract.PetService
 import com.google.inject.Inject
@@ -17,7 +17,8 @@ import java.util.*
 
 class DependencyHeadDatabaseServiceImpl @Inject constructor(
     private val petService: PetService,
-    private val plugin: Plugin
+    private val plugin: Plugin,
+    private val itemService: ItemService
 ) : DependencyHeadDatabaseService, Listener {
     private val headDatabaseApi = HeadDatabaseAPI()
     private val random = Random()
@@ -72,7 +73,7 @@ class DependencyHeadDatabaseServiceImpl @Inject constructor(
 
         plugin.launch {
             try {
-                val item = event.head.toItem()
+                val item = itemService.toItem(event.head)
                 val pets = petService.getPetsFromPlayer(player)
                 val nbtString = getNbtString(item.base64EncodedSkinUrl!!)
                 val pet = pets.firstOrNull { e -> e.name.equals(petName, true) }

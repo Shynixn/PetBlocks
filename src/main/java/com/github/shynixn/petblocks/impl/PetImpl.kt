@@ -5,6 +5,7 @@ import com.github.shynixn.mccoroutine.bukkit.launch
 import com.github.shynixn.mccoroutine.bukkit.minecraftDispatcher
 import com.github.shynixn.mcutils.common.*
 import com.github.shynixn.mcutils.common.item.Item
+import com.github.shynixn.mcutils.common.item.ItemService
 import com.github.shynixn.petblocks.contract.Pet
 import com.github.shynixn.petblocks.contract.PetEntityFactory
 import com.github.shynixn.petblocks.entity.PetMeta
@@ -33,7 +34,8 @@ class PetImpl(
     private val petMeta: PetMeta,
     private val petEntityFactory: PetEntityFactory,
     private val maxPathfinderDistance: Double,
-    private val plugin: Plugin
+    private val plugin: Plugin,
+    private val itemService: ItemService
 ) : Pet {
     private var petEntity: PetEntityImpl? = null
     private var disposed = false
@@ -183,10 +185,10 @@ class PetImpl(
      */
     override var headItemStack: ItemStack
         get() {
-            return petMeta.headItem.toItemStack()
+            return itemService.toItemStack(petMeta.headItem)
         }
         set(value) {
-            petMeta.headItem = value.toItem()
+            petMeta.headItem = itemService.toItem(value)
             petEntity?.updateHeadItemStack()
         }
 

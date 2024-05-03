@@ -4,7 +4,6 @@ import com.fasterxml.jackson.core.type.TypeReference
 import com.github.shynixn.mcutils.common.ConfigurationService
 import com.github.shynixn.mcutils.common.ConfigurationServiceImpl
 import com.github.shynixn.mcutils.common.item.ItemService
-import com.github.shynixn.mcutils.common.item.ItemServiceImpl
 import com.github.shynixn.mcutils.common.physic.PhysicObjectDispatcher
 import com.github.shynixn.mcutils.common.physic.PhysicObjectDispatcherImpl
 import com.github.shynixn.mcutils.common.physic.PhysicObjectService
@@ -23,6 +22,7 @@ import com.github.shynixn.mcutils.packet.api.EntityService
 import com.github.shynixn.mcutils.packet.api.PacketService
 import com.github.shynixn.mcutils.packet.api.RayTracingService
 import com.github.shynixn.mcutils.packet.impl.service.EntityServiceImpl
+import com.github.shynixn.mcutils.packet.impl.service.ItemServiceImpl
 import com.github.shynixn.mcutils.packet.impl.service.PacketServiceImpl
 import com.github.shynixn.mcutils.packet.impl.service.RayTracingServiceImpl
 import com.github.shynixn.mcutils.pathfinder.api.PathfinderService

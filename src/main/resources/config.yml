@@ -27,11 +27,6 @@ scriptEngine:
     - "--persistent-code-cache=true"
 
 ############################
-# Logging
-############################
-isLoggingEnabled: true
-
-############################
 # Database
 ############################
 database:
