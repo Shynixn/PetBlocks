@@ -142,6 +142,9 @@ object PetBlocksLanguage {
   /** [&9PetBlocks&f] The groundOffset of the pet has been changed. **/
   var groundOffsetChangedMessage : String = "[&9PetBlocks&f] The groundOffset of the pet has been changed."
 
+  /** [&9PetBlocks&f] &cCannot parse data component %1$1s. **/
+  var cannotParseDataComponentMessage : String = "[&9PetBlocks&f] &cCannot parse data component %1$1s."
+
   /** [&9PetBlocks&f] Pet is walking to location. **/
   var petWalkToLocationMessage : String = "[&9PetBlocks&f] Pet is walking to location."
 

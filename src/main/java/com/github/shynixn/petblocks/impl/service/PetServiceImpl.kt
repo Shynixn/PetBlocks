@@ -2,9 +2,9 @@ package com.github.shynixn.petblocks.impl.service
 
 import com.github.shynixn.mccoroutine.bukkit.scope
 import com.github.shynixn.mcutils.common.ConfigurationService
+import com.github.shynixn.mcutils.common.item.ItemService
 import com.github.shynixn.mcutils.common.repository.Repository
 import com.github.shynixn.mcutils.database.api.CachePlayerRepository
-import com.github.shynixn.petblocks.PetBlocksPlugin
 import com.github.shynixn.petblocks.contract.Pet
 import com.github.shynixn.petblocks.contract.PetEntityFactory
 import com.github.shynixn.petblocks.contract.PetService
@@ -21,15 +21,18 @@ import kotlinx.coroutines.future.future
 import org.bukkit.Bukkit
 import org.bukkit.Location
 import org.bukkit.entity.Player
+import org.bukkit.plugin.Plugin
 import java.util.concurrent.CompletionStage
+import java.util.logging.Level
 
 class PetServiceImpl @Inject constructor(
     private val petMetaRepository: CachePlayerRepository<PlayerInformation>,
-    private val plugin: PetBlocksPlugin,
+    private val plugin: Plugin,
     private val petEntityFactory: PetEntityFactory,
     private val placeHolderService: PlaceHolderService,
     private val templateRepository: Repository<PetTemplate>,
-    private val configurationService: ConfigurationService
+    private val configurationService: ConfigurationService,
+    private val itemService: ItemService
 ) : PetService {
     private val cache = HashMap<Player, MutableList<Pet>>()
 
@@ -63,7 +66,7 @@ class PetServiceImpl @Inject constructor(
         if (playerData != null) {
             playerData.playerName = player.name
             petMetaRepository.save(playerData)
-            plugin.logMessage("Saved pets of player ${player.name}.")
+            plugin.logger.log(Level.FINE, "Saved pets of player ${player.name}.")
 
             val uuids = HashSet(playerData.retrievedUuids)
             uuids.add(player.uniqueId)
@@ -95,6 +98,26 @@ class PetServiceImpl @Inject constructor(
                 val templateId = e.template
                 val template = templates.firstOrNull { inner -> inner.name.equals(templateId, true) }
                     ?: throw IllegalArgumentException("Player '${player.name}' has a pet, which references a template '${templateId}' which  does not exist!")
+
+                // TODO: Fix compatibility with < 1.20.5. Will be removed in >= year 2025.
+                if (e.headItem.skinBase64.isNullOrBlank()) {
+                    try {
+                        // Ensures that skinBase64 is filled.
+                        val originNbt = e.headItem.nbt
+                        if(!e.headItem.nbt.isNullOrBlank()){
+                            val selector = "{textures:[{Value:\""
+                            val nbt = e.headItem.nbt!!
+                            val rawSelection = nbt.substring(nbt.indexOf(selector) + selector.length)
+                            e.headItem.skinBase64 = rawSelection.replace("}", "").replace("]", "").replace("\"", "")
+                        }
+                        e.headItem = itemService.toItem(itemService.toItemStack(e.headItem))
+                        e.headItem.nbt = originNbt
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                        // Ignored
+                    }
+                }
+
                 val pet = createPetInstance(player, e, template, false)
 
                 // Fix pet state.
@@ -161,7 +184,8 @@ class PetServiceImpl @Inject constructor(
         petMeta.entityType = template.pet.entityType
         petMeta.isEntityVisible = template.pet.entityVisible
         petMeta.physics.groundOffset = template.pet.physics.groundOffset
-        petMeta.headItem = template.pet.item.copy()
+        petMeta.headItem =
+            itemService.toItem(itemService.toItemStack(template.pet.item)) // Ensures that skinBase64 is filled.
 
         // Create pet instance.
         val pet = createPetInstance(player, petMeta, template, true)
@@ -185,9 +209,9 @@ class PetServiceImpl @Inject constructor(
                 it.playerUUID = player.uniqueId.toString()
                 it.playerName = player.name
             }
-            plugin.logMessage("Creating database entry for ${player.name} (${player.uniqueId})...")
+            plugin.logger.log(Level.FINE, "Creating database entry for ${player.name} (${player.uniqueId})...")
             petMetaRepository.save(playerInformation)
-            plugin.logMessage("Created database entry for ${player.name} (${player.uniqueId}).")
+            plugin.logger.log(Level.FINE, "Created database entry for ${player.name} (${player.uniqueId}).")
         }
 
         playerInformation.pets.add(petMeta)
@@ -248,7 +272,7 @@ class PetServiceImpl @Inject constructor(
         applyTemplatePhysics: Boolean
     ): Pet {
         val maxPathfinderDistance = configurationService.findValue<Double>("pet.pathFinderDistance")
-        val pet = PetImpl(player, petMeta, petEntityFactory, maxPathfinderDistance, plugin)
+        val pet = PetImpl(player, petMeta, petEntityFactory, maxPathfinderDistance, plugin, itemService)
         pet.template = petTemplate
 
         if (applyTemplatePhysics) {

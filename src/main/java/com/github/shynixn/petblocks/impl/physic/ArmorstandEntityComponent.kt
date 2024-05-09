@@ -1,6 +1,7 @@
 package com.github.shynixn.petblocks.impl.physic
 
 import com.github.shynixn.mcutils.common.*
+import com.github.shynixn.mcutils.common.item.ItemService
 import com.github.shynixn.mcutils.common.physic.PhysicComponent
 import com.github.shynixn.mcutils.packet.api.*
 import com.github.shynixn.mcutils.packet.api.meta.enumeration.ArmorSlotType
@@ -21,6 +22,7 @@ class ArmorstandEntityComponent(
     private val playerComponent: PlayerComponent,
     private val petMeta: PetMeta,
     private val placeHolderService: PlaceHolderService,
+    private val itemService: ItemService,
     private val pet: Pet,
     val entityId: Int,
 ) : PhysicComponent {
@@ -50,7 +52,7 @@ class ArmorstandEntityComponent(
     }
 
     fun updateEquipment(player: Player) {
-        val itemStack = petMeta.headItem.toItemStack()
+        val itemStack = itemService.toItemStack(petMeta.headItem)
         packetService.sendPacketOutEntityEquipment(player, PacketOutEntityEquipment().also {
             it.entityId = this.entityId
             it.items = listOf(Pair(ArmorSlotType.HELMET, itemStack))
@@ -124,7 +126,7 @@ class ArmorstandEntityComponent(
 
             packetService.sendPacketOutEntityTeleport(player, PacketOutEntityTeleport().also {
                 it.entityId = this.entityId
-                it.target = position.clone().addRelativeUp(petMeta.physics.groundOffset).toLocation()
+                it.target = position.copy().addRelativeUp(petMeta.physics.groundOffset).toLocation()
             })
 
             if (parsedEntityType != null && parsedEntityType == EntityType.ARMOR_STAND) {

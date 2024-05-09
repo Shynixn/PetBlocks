@@ -4,11 +4,11 @@ import com.github.shynixn.mccoroutine.bukkit.SuspendingCommandExecutor
 import com.github.shynixn.mccoroutine.bukkit.SuspendingTabCompleter
 import com.github.shynixn.mcutils.common.*
 import com.github.shynixn.mcutils.common.item.Item
+import com.github.shynixn.mcutils.common.item.ItemService
 import com.github.shynixn.mcutils.common.repository.CacheRepository
 import com.github.shynixn.mcutils.database.api.CachePlayerRepository
-import com.github.shynixn.petblocks.PetBlocksDependencyInjectionBinder
+import com.github.shynixn.petblocks.PetBlocksDependencyInjectionModule
 import com.github.shynixn.petblocks.PetBlocksLanguage
-import com.github.shynixn.petblocks.PetBlocksPlugin
 import com.github.shynixn.petblocks.contract.DependencyHeadDatabaseService
 import com.github.shynixn.petblocks.contract.Pet
 import com.github.shynixn.petblocks.contract.PetService
@@ -39,8 +39,8 @@ class PetBlocksCommandExecutor @Inject constructor(
     private val plugin: Plugin,
     private val configurationService: ConfigurationService,
     private val petMetaRepository: CachePlayerRepository<PlayerInformation>,
+    private val itemService: ItemService
 ) : SuspendingCommandExecutor, SuspendingTabCompleter {
-    private val random = Random()
     private val regexPath = "pet.name.regex"
     private val blackListPath = "pet.name.blacklist"
     private val minLengthPath = "pet.name.minLength"
@@ -48,7 +48,7 @@ class PetBlocksCommandExecutor @Inject constructor(
 
     private val dependencyHeadDatabaseService: DependencyHeadDatabaseService? by lazy {
         try {
-            (plugin as PetBlocksPlugin).resolve(DependencyHeadDatabaseService::class.java)
+            Bukkit.getServicesManager().load(DependencyHeadDatabaseService::class.java)
         } catch (e: Exception) {
             null
         }
@@ -122,6 +122,11 @@ class PetBlocksCommandExecutor @Inject constructor(
             "skinnbt", 3, Permission.SKIN, "/petblocks skinnbt <name> <nbt> [player]"
         ) { sender, player, args ->
             setSkinNbt(sender, player, args[1], args[2])
+        },
+        CommandDefinition(
+            "skincomponent", 3, Permission.SKIN, "/petblocks skincomponent <name> <datacomponent> [player]"
+        ) { sender, player, args ->
+            setSkinDataComponent(sender, player, args[1], args[2])
         },
         CommandDefinition(
             "skinbase64", 3, Permission.SKIN, "/petblocks skinbase64 <name> <skin> [player]"
@@ -399,7 +404,7 @@ class PetBlocksCommandExecutor @Inject constructor(
             return
         }
 
-        if (!PetBlocksDependencyInjectionBinder.areLegacyVersionsIncluded && pets.isNotEmpty()) {
+        if (!PetBlocksDependencyInjectionModule.areLegacyVersionsIncluded && pets.isNotEmpty()) {
             sender.sendPluginMessage(PetBlocksLanguage.premiumMultiplePets)
             return
         }
@@ -415,7 +420,7 @@ class PetBlocksCommandExecutor @Inject constructor(
             ?: throw PetBlocksException(String.format(PetBlocksLanguage.petNotFoundMessage, petName))
 
         try {
-            Item(material).toItemStack() // Test if material is valid.
+            itemService.toItemStack(Item(material)) // Test if material is valid.
             val item = pet.headItem
             item.typeName = material
             pet.headItem = item
@@ -467,26 +472,20 @@ class PetBlocksCommandExecutor @Inject constructor(
     private suspend fun setSkinBase64(
         sender: CommandSender, player: Player, petName: String, base64EncodedSkinUrl: String
     ) {
-        val id1 = random.nextInt()
-        val id2 = random.nextInt()
-        val id3 = random.nextInt()
-        val id4 = random.nextInt()
-        val nbt =
-            "{SkullOwner:{Id:[I;${id1},${id2},${id3},${id4}],Name:\"${id1}\",Properties:{textures:[{Value:\"${base64EncodedSkinUrl}\"}]}}}"
-
         val pet = findPetFromPlayer(player, petName)
             ?: throw PetBlocksException(String.format(PetBlocksLanguage.petNotFoundMessage, petName))
         val headItem = pet.headItem
         headItem.typeName = "minecraft:player_head,397"
+        headItem.skinBase64 = base64EncodedSkinUrl
         pet.headItem = headItem
-        setSkinNbt(sender, player, petName, nbt)
+        sender.sendPluginMessage(String.format(PetBlocksLanguage.petSkinNbtChanged, petName))
     }
 
     private suspend fun setSkinHeadDatabase(sender: CommandSender, player: Player, petName: String, hdbId: String) {
         try {
             val itemStack = dependencyHeadDatabaseService!!.getItemStackFromId(hdbId)!!
-            val item = itemStack.toItem()
-            setSkinBase64(sender, player, petName, item.base64EncodedSkinUrl!!)
+            val item = itemService.toItem(itemStack)
+            setSkinBase64(sender, player, petName, item.skinBase64!!)
         } catch (e: Exception) {
             sender.sendPluginMessage(PetBlocksLanguage.headDatabasePluginNotLoaded)
             return
@@ -631,7 +630,7 @@ class PetBlocksCommandExecutor @Inject constructor(
         try {
             val testItem = Item(pet.headItem.typeName)
             testItem.nbt = nbt
-            testItem.toItemStack()// Test if nbt is valid.
+            itemService.toItemStack(testItem)// Test if nbt is valid.
 
             val item = pet.headItem
             item.nbt = nbt
@@ -639,6 +638,29 @@ class PetBlocksCommandExecutor @Inject constructor(
             sender.sendPluginMessage(String.format(PetBlocksLanguage.petSkinNbtChanged, petName))
         } catch (e: Exception) {
             sender.sendPluginMessage(String.format(PetBlocksLanguage.cannotParseNbtMessage, nbt))
+        }
+    }
+
+    private suspend fun setSkinDataComponent(
+        sender: CommandSender,
+        player: Player,
+        petName: String,
+        dataComponent: String
+    ) {
+        val pet = findPetFromPlayer(player, petName)
+            ?: throw PetBlocksException(String.format(PetBlocksLanguage.petNotFoundMessage, petName))
+
+        try {
+            val testItem = Item(pet.headItem.typeName)
+            testItem.component = dataComponent
+            itemService.toItemStack(testItem)// Test if dataComponent is valid.
+
+            val item = pet.headItem
+            item.component = dataComponent
+            pet.headItem = item
+            sender.sendPluginMessage(String.format(PetBlocksLanguage.petSkinNbtChanged, petName))
+        } catch (e: Exception) {
+            sender.sendPluginMessage(String.format(PetBlocksLanguage.cannotParseDataComponentMessage, dataComponent))
         }
     }
 
@@ -832,7 +854,7 @@ class PetBlocksCommandExecutor @Inject constructor(
             var command = if (configurationService.containsValue(configValue)) {
                 configurationService.findValue("headDatabaseCommand")
             } else {
-                // Compatibility to 9.0.3
+                // TODO: Remove it in 2025. Compatibility to 9.0.3
                 "/hdb"
             }
 

@@ -2,6 +2,7 @@ package com.github.shynixn.petblocks.impl.service
 
 import com.github.shynixn.mcutils.common.ConfigurationService
 import com.github.shynixn.mcutils.common.Vector3d
+import com.github.shynixn.mcutils.common.item.ItemService
 import com.github.shynixn.mcutils.common.physic.PhysicObjectDispatcher
 import com.github.shynixn.mcutils.common.physic.PhysicObjectService
 import com.github.shynixn.mcutils.common.toVector3d
@@ -30,7 +31,8 @@ class PetEntityFactoryImpl @Inject constructor(
     private val rayTracingService: RayTracingService,
     private val physicObjectDispatcher: PhysicObjectDispatcher,
     private val configurationService: ConfigurationService,
-    private val breakBlockService: BreakBlockService
+    private val breakBlockService: BreakBlockService,
+    private val itemService: ItemService
 ) : PetEntityFactory {
     /**
      * Creates a new pet entity.
@@ -54,6 +56,7 @@ class PetEntityFactoryImpl @Inject constructor(
                 playerComponent,
                 meta,
                 placeHolderService,
+                itemService,
                 pet,
                 armorStandEntityId
             )

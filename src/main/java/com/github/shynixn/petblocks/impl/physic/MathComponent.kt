@@ -33,7 +33,7 @@ class MathComponent(
      * Sets the velocity which is applied per tick to the object.
      */
     fun setVelocity(vector: Vector3d) {
-        this.motion = vector.clone()
+        this.motion = vector.copy()
         this.position.y += 0.25
     }
 
@@ -105,7 +105,7 @@ class MathComponent(
                     this.motion = this.motion.multiply(settings.relativeVelocityReduce)
 
                     // Reduces the motion absolute by a negative normalized value.
-                    val reductionVector = this.motion.clone().normalize().multiply(settings.absoluteVelocityReduce)
+                    val reductionVector = this.motion.copy().normalize().multiply(settings.absoluteVelocityReduce)
                     reduceVectorIfBiggerZero(this.motion, reductionVector)
                     fixMotionFloatingPoints()
                 }

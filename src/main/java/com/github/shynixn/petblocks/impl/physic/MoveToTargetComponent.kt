@@ -57,8 +57,8 @@ class MoveToTargetComponent(private val mathComponent: MathComponent) : PhysicCo
             }
 
             // Move the vector slightly up, so he does not fall through the ground.
-            val vector = currentTargetPosition!!.clone().subtract(mathComponent.position)
-            val normalizedVector = vector.clone().normalize()
+            val vector = currentTargetPosition!!.copy().subtract(mathComponent.position)
+            val normalizedVector = vector.copy().normalize()
             vectorPerTick = normalizedVector.multiply(speed)
             mathComponent.setVelocity(vectorPerTick!!)
             lastDistance = Double.MAX_VALUE

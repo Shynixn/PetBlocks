@@ -11,7 +11,6 @@ import com.github.shynixn.mcutils.packet.api.event.PacketEvent
 import com.github.shynixn.mcutils.packet.api.meta.enumeration.InteractionType
 import com.github.shynixn.mcutils.packet.api.packet.PacketInInteractEntity
 import com.github.shynixn.mcutils.packet.api.packet.PacketInSteerVehicle
-import com.github.shynixn.petblocks.PetBlocksPlugin
 import com.github.shynixn.petblocks.contract.PetActionExecutionService
 import com.github.shynixn.petblocks.contract.PetService
 import com.github.shynixn.petblocks.impl.PetEntityImpl
@@ -19,16 +18,17 @@ import com.github.shynixn.petblocks.impl.service.PetActionExecutionServiceImpl
 import com.google.inject.Inject
 import kotlinx.coroutines.delay
 import org.bukkit.Bukkit
-import org.bukkit.entity.EntityType
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.player.PlayerJoinEvent
 import org.bukkit.event.player.PlayerQuitEvent
 import org.bukkit.event.player.PlayerToggleSneakEvent
+import org.bukkit.plugin.Plugin
+import java.util.logging.Level
 
 class PetListener @Inject constructor(
     private val petService: PetService,
-    private val plugin: PetBlocksPlugin,
+    private val plugin: Plugin,
     private val petActionExecutionService: PetActionExecutionService,
     private val physicObjectService: PhysicObjectService,
     private val configurationService: ConfigurationService
@@ -45,7 +45,7 @@ class PetListener @Inject constructor(
             val pets = petService.getPetsFromPlayer(player)
 
             if (pets.isNotEmpty()) {
-                plugin.logMessage("Loaded [${pets.size}] pets for player ${player.name}.")
+                plugin.logger.log(Level.FINE,"Loaded [${pets.size}] pets for player ${player.name}.")
             }
 
             val petsToReceive = configurationService.findValue<List<Map<String, String>>>(petsToReceiveOnJoinKey)

@@ -415,8 +415,8 @@ class PetEntityImpl(
             return
         }
 
-        this.petMeta.lastStoredLocation = physicsComponent.position.clone()
-        this.velocity = physicsComponent.motion.clone()
+        this.petMeta.lastStoredLocation = physicsComponent.position.copy()
+        this.velocity = physicsComponent.motion.copy()
         physicsComponent.tickMinecraft()
         playerComponent.tickMinecraft()
         entityComponent.tickMinecraft()

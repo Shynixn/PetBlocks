@@ -204,10 +204,26 @@ Changes the material used as a head.
 /petblocks skinnbt <name> <nbt> [player]
 ```
 
-Changes the NBT tags of the head item.
+Changes the NBT tags of the head item. 
+> Works in Minecraft versions below 1.20.5. Use the ``/petblocks skincomponent`` command for Minecraft >= 1.20.5.
 
 * Name: Identifier of a pet
 * NBT: Standard Minecraft NBT format. e.g. {Unbreakable:1}
+* Player: Optional player_name/player_UUID parameter targeting a player from the console or command block.
+
+### /petblocks skincomponent
+
+```
+/petblocks skincomponent <name> <datacomponent> [player]
+```
+
+Changes the Data Component tags of the head item. Data Components replace NBT tags since the release of Minecraft 1.20.5.
+
+> See [https://minecraft.wiki/w/Data_component_format](https://minecraft.wiki/w/Data_component_format) for details.
+Use the ``/petblocks skinnbt`` command for Minecraft server below 1.20.5.
+
+* Name: Identifier of a pet
+* DataComponent: Data components in JSON format. e.g. {"minecraft:unbreakable":true}
 * Player: Optional player_name/player_UUID parameter targeting a player from the console or command block.
 
 ### /petblocks skinbase64
