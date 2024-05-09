@@ -30,8 +30,8 @@ dependencies {
     compileOnly("com.arcaniax:HeadDatabase-API:1.3.1")
 
     // Library dependencies with legacy compatibility, we can use more up-to-date version in the plugin.yml
-    implementation("com.github.shynixn.mccoroutine:mccoroutine-bukkit-api:2.13.0")
-    implementation("com.github.shynixn.mccoroutine:mccoroutine-bukkit-core:2.13.0")
+    implementation("com.github.shynixn.mccoroutine:mccoroutine-bukkit-api:2.16.0")
+    implementation("com.github.shynixn.mccoroutine:mccoroutine-bukkit-core:2.16.0")
     implementation("com.google.inject:guice:5.0.1")
     implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.3.0")
     implementation("com.fasterxml.jackson.core:jackson-databind:2.2.3")
@@ -42,8 +42,8 @@ dependencies {
     implementation("org.openjdk.nashorn:nashorn-core:15.4")
 
     // Custom dependencies
-    implementation("com.github.shynixn.mcutils:common:1.0.80")
-    implementation("com.github.shynixn.mcutils:packet:1.0.107")
+    implementation("com.github.shynixn.mcutils:common:1.0.83")
+    implementation("com.github.shynixn.mcutils:packet:1.0.111")
     implementation("com.github.shynixn.mcutils:database:1.0.23")
     implementation("com.github.shynixn.mcutils:pathfinder:1.0.19")
     implementation("com.github.shynixn.mcutils:guice:1.0.6")
