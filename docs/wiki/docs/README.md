@@ -19,16 +19,3 @@ PetBlocks is a Minecraft Bukkit plugin to use blocks as pets in minecraft.
 * Easy integration into existing GUI plugins (e.g. DeluxeMenu)
 * PlaceHolderApi Support
 * Multiple pets per player (Premium)
-
-## Installation
-
-### PetBlocks-Latest
-
-* Java 17 
-* Spigot 1.20.4
-
-
-### PetBlocks-Premium
-
-* Java 17
-* Spigot 1.17-1.20.4
