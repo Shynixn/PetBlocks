@@ -38,15 +38,6 @@ class PetBlocksPlugin : JavaPlugin() {
     private val prefix: String = ChatColor.BLUE.toString() + "[PetBlocks] " + ChatColor.WHITE
     private lateinit var module : DependencyInjectionModule
     private var immidiateDisable = false
-    private val isLoggingEnabled by lazy {
-        val configurationService = module.getService<ConfigurationService>()
-        val loggingKey = "isLoggingEnabled"
-        if (configurationService.containsValue(loggingKey)) {
-            configurationService.findValue(loggingKey)
-        } else {
-            true
-        }
-    }
 
     /**
      * Called when this plugin is enabled.
@@ -54,7 +45,6 @@ class PetBlocksPlugin : JavaPlugin() {
     override fun onEnable() {
         Bukkit.getServer().consoleSender.sendMessage(prefix + ChatColor.GREEN + "Loading PetBlocks ...")
         this.saveDefaultConfig()
-
         val versions = if (PetBlocksDependencyInjectionModule.areLegacyVersionsIncluded) {
             listOf(
                 Version.VERSION_1_8_R3,
@@ -78,7 +68,7 @@ class PetBlocksPlugin : JavaPlugin() {
                 Version.VERSION_1_20_R1,
                 Version.VERSION_1_20_R2,
                 Version.VERSION_1_20_R3,
-                Version.VERSION_1_20_R4
+                Version.VERSION_1_20_R4,
             )
         } else {
             listOf(Version.VERSION_1_20_R4)
@@ -88,7 +78,7 @@ class PetBlocksPlugin : JavaPlugin() {
             immidiateDisable = true
             logger.log(Level.SEVERE, "================================================")
             logger.log(Level.SEVERE, "PetBlocks does not support your server version")
-            logger.log(Level.SEVERE, "Install v" + versions[0].id + " - v" + versions[versions.size - 1].id)
+            logger.log(Level.SEVERE, "Install v" + versions[0].from + " - v" + versions[versions.size - 1].to)
             logger.log(Level.SEVERE, "Need support for a particular version? Go to https://www.patreon.com/Shynixn")
             logger.log(Level.SEVERE, "Plugin gets now disabled!")
             logger.log(Level.SEVERE, "================================================")
@@ -96,7 +86,7 @@ class PetBlocksPlugin : JavaPlugin() {
             return
         }
 
-        logger.log(Level.INFO, "Loaded NMS version ${Version.serverVersion.bukkitId}.")
+        logger.log(Level.INFO, "Loaded NMS version ${Version.serverVersion}.")
 
         // Guice
         this.module = PetBlocksDependencyInjectionModule(this).build()

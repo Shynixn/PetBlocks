@@ -1,6 +1,7 @@
 package com.github.shynixn.petblocks.impl.service
 
 import com.github.shynixn.mccoroutine.bukkit.launch
+import com.github.shynixn.mcutils.common.item.Item
 import com.github.shynixn.mcutils.common.item.ItemService
 import com.github.shynixn.petblocks.contract.DependencyHeadDatabaseService
 import com.github.shynixn.petblocks.contract.PetService
@@ -21,7 +22,6 @@ class DependencyHeadDatabaseServiceImpl @Inject constructor(
     private val itemService: ItemService
 ) : DependencyHeadDatabaseService, Listener {
     private val headDatabaseApi = HeadDatabaseAPI()
-    private val random = Random()
     private val applyPlayers = HashMap<Player, String>()
 
     /**
@@ -75,33 +75,17 @@ class DependencyHeadDatabaseServiceImpl @Inject constructor(
             try {
                 val item = itemService.toItem(event.head)
                 val pets = petService.getPetsFromPlayer(player)
-                val nbtString = getNbtString(item.base64EncodedSkinUrl!!)
                 val pet = pets.firstOrNull { e -> e.name.equals(petName, true) }
 
                 if (pet != null) {
-                    val headItem = pet.headItem
-                    headItem.typeName = "minecraft:player_head,397"
-                    headItem.nbt = nbtString
-                    headItem.component = getDataComponentString(item.base64EncodedSkinUrl!!)
-                    pet.headItem = headItem
+                    pet.headItem = Item().also {
+                        it.typeName = "minecraft:player_head,397"
+                        it.skinBase64 = item.skinBase64
+                    }
                 }
             } catch (e: Exception) {
                 // Ignored
             }
         }
-    }
-
-    private fun getDataComponentString(base64EncodedUrl: String): String {
-        val dataComponent =
-            "{\"minecraft:profile\":{\"properties\":[{\"name\":\"textures\",\"value\":\"$base64EncodedUrl\"}]}}"
-        return dataComponent
-    }
-
-    private fun getNbtString(base64EncodedUrl: String): String {
-        val id1 = random.nextInt()
-        val id2 = random.nextInt()
-        val id3 = random.nextInt()
-        val id4 = random.nextInt()
-        return "{SkullOwner:{Id:[I;${id1},${id2},${id3},${id4}],Name:\"${id1}\",Properties:{textures:[{Value:\"${base64EncodedUrl}\"}]}}}"
     }
 }

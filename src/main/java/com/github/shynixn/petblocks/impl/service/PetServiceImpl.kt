@@ -98,6 +98,26 @@ class PetServiceImpl @Inject constructor(
                 val templateId = e.template
                 val template = templates.firstOrNull { inner -> inner.name.equals(templateId, true) }
                     ?: throw IllegalArgumentException("Player '${player.name}' has a pet, which references a template '${templateId}' which  does not exist!")
+
+                // TODO: Fix compatibility with < 1.20.5. Will be removed in >= year 2025.
+                if (e.headItem.skinBase64.isNullOrBlank()) {
+                    try {
+                        // Ensures that skinBase64 is filled.
+                        val originNbt = e.headItem.nbt
+                        if(!e.headItem.nbt.isNullOrBlank()){
+                            val selector = "{textures:[{Value:\""
+                            val nbt = e.headItem.nbt!!
+                            val rawSelection = nbt.substring(nbt.indexOf(selector) + selector.length)
+                            e.headItem.skinBase64 = rawSelection.replace("}", "").replace("]", "").replace("\"", "")
+                        }
+                        e.headItem = itemService.toItem(itemService.toItemStack(e.headItem))
+                        e.headItem.nbt = originNbt
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                        // Ignored
+                    }
+                }
+
                 val pet = createPetInstance(player, e, template, false)
 
                 // Fix pet state.
@@ -164,7 +184,8 @@ class PetServiceImpl @Inject constructor(
         petMeta.entityType = template.pet.entityType
         petMeta.isEntityVisible = template.pet.entityVisible
         petMeta.physics.groundOffset = template.pet.physics.groundOffset
-        petMeta.headItem = template.pet.item.copy()
+        petMeta.headItem =
+            itemService.toItem(itemService.toItemStack(template.pet.item)) // Ensures that skinBase64 is filled.
 
         // Create pet instance.
         val pet = createPetInstance(player, petMeta, template, true)

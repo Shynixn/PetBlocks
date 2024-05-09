@@ -11,13 +11,13 @@ commands:
     permission: petblocks.command
     permission-message: You do not have permission.
 libraries:
-  - com.github.shynixn.mccoroutine:mccoroutine-bukkit-api:2.15.0
-  - com.github.shynixn.mccoroutine:mccoroutine-bukkit-core:2.15.0
+  - com.github.shynixn.mccoroutine:mccoroutine-bukkit-api:2.16.0
+  - com.github.shynixn.mccoroutine:mccoroutine-bukkit-core:2.16.0
   - com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.3.0
   - com.fasterxml.jackson.core:jackson-databind:2.3.0
   - com.google.inject:guice:7.0.0
   - com.google.code.gson:gson:2.10.1
-  - com.zaxxer:HikariCP:5.0.1
+  - com.zaxxer:HikariCP:5.1.0
   - org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.9.23
   - org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3
   - org.openjdk.nashorn:nashorn-core:15.4

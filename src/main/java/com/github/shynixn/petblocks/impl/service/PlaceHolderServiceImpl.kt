@@ -95,14 +95,10 @@ class PlaceHolderServiceImpl : PlaceHolderService {
             }
         }
         petPlaceHolderFunctions[PlaceHolder.PET_HEAD_BASE64] = { pet ->
-            if (pet.headItem.nbt == null) {
-                ""
+            if (!pet.headItem.skinBase64.isNullOrBlank()) {
+                pet.headItem.skinBase64!!
             } else {
-                val selector = "{textures:[{Value:\""
-                val nbt = pet.headItem.nbt!!
-                val rawSelection = nbt.substring(nbt.indexOf(selector) + selector.length)
-                val result = rawSelection.replace("}", "").replace("]", "").replace("\"", "")
-                result
+                ""
             }
         }
         petPlaceHolderFunctions[PlaceHolder.PET_ISBREAKINGBLOCK] = { pet -> pet.isBreakingBlock().toString() }

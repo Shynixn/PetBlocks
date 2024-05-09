@@ -41,7 +41,6 @@ class PetBlocksCommandExecutor @Inject constructor(
     private val petMetaRepository: CachePlayerRepository<PlayerInformation>,
     private val itemService: ItemService
 ) : SuspendingCommandExecutor, SuspendingTabCompleter {
-    private val random = Random()
     private val regexPath = "pet.name.regex"
     private val blackListPath = "pet.name.blacklist"
     private val minLengthPath = "pet.name.minLength"
@@ -477,39 +476,8 @@ class PetBlocksCommandExecutor @Inject constructor(
             ?: throw PetBlocksException(String.format(PetBlocksLanguage.petNotFoundMessage, petName))
         val headItem = pet.headItem
         headItem.typeName = "minecraft:player_head,397"
+        headItem.skinBase64 = base64EncodedSkinUrl
         pet.headItem = headItem
-
-        val dataComponent =
-            "{\"minecraft:profile\":{\"properties\":[{\"name\":\"textures\",\"value\":\"$base64EncodedSkinUrl\"}]}}"
-        val id1 = random.nextInt()
-        val id2 = random.nextInt()
-        val id3 = random.nextInt()
-        val id4 = random.nextInt()
-        val nbt =
-            "{SkullOwner:{Id:[I;${id1},${id2},${id3},${id4}],Name:\"${id1}\",Properties:{textures:[{Value:\"${base64EncodedSkinUrl}\"}]}}}"
-
-        try {
-            val testItem = Item(pet.headItem.typeName)
-            testItem.nbt = nbt
-            itemService.toItemStack(testItem)// Test if nbt and datacomponent is valid.
-        } catch (e: Exception) {
-            sender.sendPluginMessage(String.format(PetBlocksLanguage.cannotParseNbtMessage, nbt))
-            return
-        }
-
-        try {
-            val testItem = Item(pet.headItem.typeName)
-            testItem.component = dataComponent
-            itemService.toItemStack(testItem)// Test if nbt and datacomponent is valid.
-        } catch (e: Exception) {
-            sender.sendPluginMessage(String.format(PetBlocksLanguage.cannotParseDataComponentMessage, dataComponent))
-            return
-        }
-
-        val item = pet.headItem
-        item.nbt = nbt
-        item.component = dataComponent
-        pet.headItem = item
         sender.sendPluginMessage(String.format(PetBlocksLanguage.petSkinNbtChanged, petName))
     }
 
@@ -517,7 +485,7 @@ class PetBlocksCommandExecutor @Inject constructor(
         try {
             val itemStack = dependencyHeadDatabaseService!!.getItemStackFromId(hdbId)!!
             val item = itemService.toItem(itemStack)
-            setSkinBase64(sender, player, petName, item.base64EncodedSkinUrl!!)
+            setSkinBase64(sender, player, petName, item.skinBase64!!)
         } catch (e: Exception) {
             sender.sendPluginMessage(PetBlocksLanguage.headDatabasePluginNotLoaded)
             return
@@ -886,7 +854,7 @@ class PetBlocksCommandExecutor @Inject constructor(
             var command = if (configurationService.containsValue(configValue)) {
                 configurationService.findValue("headDatabaseCommand")
             } else {
-                // Compatibility to 9.0.3
+                // TODO: Remove it in 2025. Compatibility to 9.0.3
                 "/hdb"
             }
 
