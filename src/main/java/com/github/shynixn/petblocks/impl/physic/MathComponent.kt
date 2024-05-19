@@ -11,7 +11,7 @@ import com.github.shynixn.petblocks.entity.PhysicSettings
 import kotlin.math.abs
 
 class MathComponent(
-    var position: Vector3d, private val settings : PhysicSettings,
+    var position: Vector3d, private val settings: PhysicSettings,
     private val rayTracingService: RayTracingService
 ) : PhysicComponent {
     /**
@@ -64,6 +64,7 @@ class MathComponent(
             return
         }
 
+        // Check gravity.
         gravityRayTraceResult = rayTracingService.rayTraceMotion(position, Vector3d(0.0, -1.0, 0.0))
 
         if (gravityRayTraceResult!!.hitBlock && motion.y < 0.0) {
@@ -72,7 +73,7 @@ class MathComponent(
             this.position.y = gravityRayTraceResult!!.block!!.y + 1.0
         }
 
-        if(motion.x != 0.0 || motion.z != 0.0){
+        if (motion.x != 0.0 || motion.z != 0.0) {
             movementRayTraceResult = rayTracingService.rayTraceMotion(position, motion)
         }
     }
@@ -87,14 +88,22 @@ class MathComponent(
             return
         }
 
-        if(movementRayTraceResult != null){
-            if(movementRayTraceResult!!.hitBlock && movementRayTraceResult!!.blockDirection != BlockDirection.UP){
-                position.add(motion.x * -1, 0.0, motion.z * -1)
+        if (movementRayTraceResult != null) {
+            if (movementRayTraceResult!!.hitBlock && movementRayTraceResult!!.blockDirection != BlockDirection.UP) {
+                val stuckBackMotion =
+                    rayTracingService.rayTraceMotion(position, Vector3d(motion.x * -1, 0.0, motion.z * -1))
+                if (stuckBackMotion.hitBlock) {
+                    // If hit block while moving back. Move the entity up.
+                    position.add(motion.x * -1, 0.1, motion.z * -1)
+                } else {
+                    // Moving back was successful.
+                    position.add(motion.x * -1, 0.0, motion.z * -1)
+                }
                 motion.x = 0.0
                 motion.y = 0.0
                 movementRayTraceResult = null
-            }else{
-                if(motion.x != 0.0 || motion.z != 0.0){
+            } else {
+                if (motion.x != 0.0 || motion.z != 0.0) {
                     val targetPosition = movementRayTraceResult!!.targetPosition
                     // Keep yaw and pitch.
                     this.position.x = targetPosition.x
@@ -112,8 +121,8 @@ class MathComponent(
             }
         }
 
-        if(gravityRayTraceResult != null){
-            if(!gravityRayTraceResult!!.hitBlock || motion.y > 0.0){
+        if (gravityRayTraceResult != null) {
+            if (!gravityRayTraceResult!!.hitBlock || motion.y > 0.0) {
                 this.position.y += this.motion.y
             }
         }
