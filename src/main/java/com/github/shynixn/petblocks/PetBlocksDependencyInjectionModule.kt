@@ -67,7 +67,6 @@ class PetBlocksDependencyInjectionModule(private val plugin: PetBlocksPlugin) : 
             plugin.dataFolder.toPath().resolve("PetBlocks.sqlite"),
             object : TypeReference<PlayerInformation>() {})
         val playerDataRepository = AutoSavePlayerDataRepositoryImpl(
-            "pets",
             1000 * 60L * autoSaveMinutes,
             CachePlayerDataRepositoryImpl(configSelectedRepository, plugin),
             plugin
@@ -79,7 +78,9 @@ class PetBlocksDependencyInjectionModule(private val plugin: PetBlocksPlugin) : 
         val configurationService = ConfigurationServiceImpl(plugin)
         addService<EntityService>(EntityServiceImpl())
         addService<RayTracingService>(RayTracingServiceImpl())
-        addService<PacketService>(PacketServiceImpl(plugin))
+        addService<PacketService>(PacketServiceImpl(plugin) { r ->
+            plugin.server.scheduler.runTask(plugin, r)
+        })
         addService<PhysicObjectDispatcher>(PhysicObjectDispatcherImpl(plugin))
         addService<ConfigurationService>(ConfigurationServiceImpl(plugin))
         addService<PhysicObjectService> {
