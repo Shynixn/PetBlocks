@@ -1,13 +1,8 @@
 package com.github.shynixn.petblocks
 
 import com.github.shynixn.mccoroutine.bukkit.launch
-import com.github.shynixn.mccoroutine.bukkit.setSuspendingExecutor
-import com.github.shynixn.mccoroutine.bukkit.setSuspendingTabCompleter
-import com.github.shynixn.mcutils.common.ChatColor
-import com.github.shynixn.mcutils.common.ConfigurationService
-import com.github.shynixn.mcutils.common.Version
+import com.github.shynixn.mcutils.common.*
 import com.github.shynixn.mcutils.common.physic.PhysicObjectService
-import com.github.shynixn.mcutils.common.reloadTranslation
 import com.github.shynixn.mcutils.common.repository.Repository
 import com.github.shynixn.mcutils.database.api.CachePlayerRepository
 import com.github.shynixn.mcutils.database.api.PlayerDataRepository
@@ -26,9 +21,6 @@ import org.bukkit.Bukkit
 import org.bukkit.event.player.PlayerJoinEvent
 import org.bukkit.plugin.ServicePriority
 import org.bukkit.plugin.java.JavaPlugin
-import java.io.File
-import java.nio.file.Files
-import java.nio.file.StandardCopyOption
 import java.util.logging.Level
 
 /**
@@ -92,6 +84,12 @@ class PetBlocksPlugin : JavaPlugin() {
         this.module = PetBlocksDependencyInjectionModule(this).build()
         this.reloadConfig()
 
+        // Register Language
+        val configurationService = module.getService<ConfigurationService>()
+        val language = configurationService.findValue<String>("language")
+        reloadTranslation(language, PetBlocksLanguage::class.java, "en_us")
+        logger.log(Level.INFO, "Loaded language file $language.properties.")
+
         // Register Packets
         val packetService = module.getService<PacketService>()
         packetService.registerPacketListening(PacketInType.USEENTITY)
@@ -104,32 +102,20 @@ class PetBlocksPlugin : JavaPlugin() {
             Bukkit.getPluginManager().registerEvents(module.getService<DependencyHeadDatabaseService>(), this)
         }
 
-        // Register CommandExecutors
-        val configurationService = module.getService<ConfigurationService>()
-        val petBlocksCommandExecutor = module.getService<PetBlocksCommandExecutor>()
-        val mcTennisCommand = this.getCommand("petblocks")!!
-        mcTennisCommand.usage = configurationService.findValue("commands.petblocks.usage")
-        mcTennisCommand.description = configurationService.findValue("commands.petblocks.description")
-        mcTennisCommand.permissionMessage = configurationService.findValue("commands.petblocks.permission-message")
-        mcTennisCommand.setSuspendingExecutor(petBlocksCommandExecutor)
-        mcTennisCommand.setSuspendingTabCompleter(petBlocksCommandExecutor)
+        // Register CommandExecutor
+        module.getService<PetBlocksCommandExecutor>()
 
         // Copy Third Party
-        copyResourceToTarget("thirdparty/DeluxeMenu/config.yml")
-        copyResourceToTarget("thirdparty/DeluxeMenu/gui_menus/petblocks_menu.yml")
-        copyResourceToTarget("thirdparty/DeluxeMenu/gui_menus/petblocks_skins_overview_menu.yml")
-        copyResourceToTarget("thirdparty/DeluxeMenu/gui_menus/petblocks_skins_blockskins_menu.yml")
-        copyResourceToTarget("thirdparty/DeluxeMenu/gui_menus/petblocks_skins_petskins_menu.yml")
-        copyResourceToTarget("thirdparty/DeluxeMenu/gui_menus/petblocks_skins_vehicleskins_menu.yml")
-        copyResourceToTarget("thirdparty/DeluxeMenu/gui_menus/petblocks_skins_puppetskins_menu.yml")
+        extractResource("thirdparty/DeluxeMenu/config.yml")
+        extractResource("thirdparty/DeluxeMenu/gui_menus/petblocks_menu.yml")
+        extractResource("thirdparty/DeluxeMenu/gui_menus/petblocks_skins_overview_menu.yml")
+        extractResource("thirdparty/DeluxeMenu/gui_menus/petblocks_skins_blockskins_menu.yml")
+        extractResource("thirdparty/DeluxeMenu/gui_menus/petblocks_skins_petskins_menu.yml")
+        extractResource("thirdparty/DeluxeMenu/gui_menus/petblocks_skins_vehicleskins_menu.yml")
+        extractResource("thirdparty/DeluxeMenu/gui_menus/petblocks_skins_puppetskins_menu.yml")
 
-        // Register Language
         val plugin = this
-        runBlocking {
-            val language = configurationService.findValue<String>("language")
-            plugin.reloadTranslation(language, PetBlocksLanguage::class.java, "en_us")
-            logger.log(Level.INFO, "Loaded language file $language.properties.")
-            // Connect
+        plugin.launch {
             try {
                 val playerDataRepository = module.getService<PlayerDataRepository<PlayerInformation>>()
                 playerDataRepository.createIfNotExist()
@@ -137,7 +123,7 @@ class PetBlocksPlugin : JavaPlugin() {
                 e.printStackTrace()
                 immidiateDisable = true
                 Bukkit.getPluginManager().disablePlugin(plugin)
-                return@runBlocking
+                return@launch
             }
 
             val templateRepository = module.getService<Repository<PetTemplate>>()
@@ -147,14 +133,12 @@ class PetBlocksPlugin : JavaPlugin() {
             Bukkit.getServicesManager()
                 .register(PetService::class.java, module.getService<PetService>(), plugin, ServicePriority.Normal)
 
-            Bukkit.getServer().consoleSender.sendMessage(prefix + ChatColor.GREEN + "Enabled PetBlocks " + plugin.description.version + " by Shynixn")
-        }
-
-        plugin.launch {
             // Fix already online players.
             for (player in Bukkit.getOnlinePlayers()) {
                 petListener.onPlayerJoinEvent(PlayerJoinEvent(player, null))
             }
+
+            Bukkit.getServer().consoleSender.sendMessage(prefix + ChatColor.GREEN + "Enabled PetBlocks " + plugin.description.version + " by Shynixn")
         }
     }
 
@@ -181,13 +165,5 @@ class PetBlocksPlugin : JavaPlugin() {
 
         val packetService = module.getService<PacketService>()
         packetService.close()
-    }
-
-    private fun copyResourceToTarget(resourcePath: String) {
-        val fullTargetFile = File(dataFolder, resourcePath)
-        Files.createDirectories(fullTargetFile.parentFile.toPath())
-        getResource(resourcePath).use { resourceStream ->
-            Files.copy(resourceStream, fullTargetFile.toPath(), StandardCopyOption.REPLACE_EXISTING)
-        }
     }
 }

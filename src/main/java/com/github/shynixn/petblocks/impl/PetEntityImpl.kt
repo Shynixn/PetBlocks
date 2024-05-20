@@ -9,6 +9,7 @@ import com.github.shynixn.mcutils.common.physic.PhysicObject
 import com.github.shynixn.mcutils.common.physic.PhysicObjectDispatcher
 import com.github.shynixn.mcutils.packet.api.PacketService
 import com.github.shynixn.mcutils.packet.api.RayTracingService
+import com.github.shynixn.mcutils.packet.api.packet.PacketOutEntityMount
 import com.github.shynixn.mcutils.pathfinder.api.PathfinderResult
 import com.github.shynixn.mcutils.pathfinder.api.PathfinderResultType
 import com.github.shynixn.mcutils.pathfinder.api.PathfinderService
@@ -51,13 +52,14 @@ class PetEntityImpl(
     private val rayTracingService: RayTracingService,
     private val clickCoolDownMs: Long,
     private val pathFinderCube: Vector3d,
-    private val visualizePath: Boolean
+    private val visualizePath: Boolean,
+    private val ridePositionUpdateMs: Int
 ) : PhysicObject {
-    private var positionUpdateCounter = 0
     private var velocity = Vector3d(0.0, 0.0, 0.0)
     private var lastClickTimeStamp = 0L
     private var cancellationTokenLoop = CancellationToken()
     private var cancellationTokenLongRunning = CancellationToken()
+    private var lastRideUpdate = 0L
     var isBreakingBlock = false
 
     // Mover
@@ -316,11 +318,18 @@ class PetEntityImpl(
      */
     fun ride(player: Player, forward: Double, isJumping: Boolean) {
         cancellationTokenLongRunning.isCancelled = true
-        positionUpdateCounter++
-        if (positionUpdateCounter > 10) {
+
+        val current = Date().time
+        if (current - lastRideUpdate >= ridePositionUpdateMs) {
             // Required so the position of the player stays in sync while packet riding.
             packetService.setServerPlayerPosition(player, physicsComponent.position.toLocation())
-            positionUpdateCounter = 0
+            for (visiblePlayers in playerComponent.visiblePlayers) {
+                packetService.sendPacketOutEntityMount(visiblePlayers, PacketOutEntityMount().also {
+                    it.entityId = entityComponent.entityId
+                    it.passengers = listOf(player.entityId)
+                })
+            }
+            lastRideUpdate = current
         }
 
         val isOnGround = if (isJumping) {

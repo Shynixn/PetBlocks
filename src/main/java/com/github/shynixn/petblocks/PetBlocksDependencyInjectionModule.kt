@@ -3,6 +3,7 @@ package com.github.shynixn.petblocks
 import com.fasterxml.jackson.core.type.TypeReference
 import com.github.shynixn.mcutils.common.ConfigurationService
 import com.github.shynixn.mcutils.common.ConfigurationServiceImpl
+import com.github.shynixn.mcutils.common.chat.ChatMessageService
 import com.github.shynixn.mcutils.common.item.ItemService
 import com.github.shynixn.mcutils.common.physic.PhysicObjectDispatcher
 import com.github.shynixn.mcutils.common.physic.PhysicObjectDispatcherImpl
@@ -21,10 +22,7 @@ import com.github.shynixn.mcutils.guice.DependencyInjectionModule
 import com.github.shynixn.mcutils.packet.api.EntityService
 import com.github.shynixn.mcutils.packet.api.PacketService
 import com.github.shynixn.mcutils.packet.api.RayTracingService
-import com.github.shynixn.mcutils.packet.impl.service.EntityServiceImpl
-import com.github.shynixn.mcutils.packet.impl.service.ItemServiceImpl
-import com.github.shynixn.mcutils.packet.impl.service.PacketServiceImpl
-import com.github.shynixn.mcutils.packet.impl.service.RayTracingServiceImpl
+import com.github.shynixn.mcutils.packet.impl.service.*
 import com.github.shynixn.mcutils.pathfinder.api.PathfinderService
 import com.github.shynixn.mcutils.pathfinder.impl.PathfinderServiceImpl
 import com.github.shynixn.mcutils.pathfinder.impl.service.CubeWorldSnapshotServiceImpl
@@ -67,7 +65,6 @@ class PetBlocksDependencyInjectionModule(private val plugin: PetBlocksPlugin) : 
             plugin.dataFolder.toPath().resolve("PetBlocks.sqlite"),
             object : TypeReference<PlayerInformation>() {})
         val playerDataRepository = AutoSavePlayerDataRepositoryImpl(
-            "pets",
             1000 * 60L * autoSaveMinutes,
             CachePlayerDataRepositoryImpl(configSelectedRepository, plugin),
             plugin
@@ -79,9 +76,12 @@ class PetBlocksDependencyInjectionModule(private val plugin: PetBlocksPlugin) : 
         val configurationService = ConfigurationServiceImpl(plugin)
         addService<EntityService>(EntityServiceImpl())
         addService<RayTracingService>(RayTracingServiceImpl())
-        addService<PacketService>(PacketServiceImpl(plugin))
+        addService<PacketService>(PacketServiceImpl(plugin) { r ->
+            plugin.server.scheduler.runTask(plugin, r)
+        })
         addService<PhysicObjectDispatcher>(PhysicObjectDispatcherImpl(plugin))
         addService<ConfigurationService>(ConfigurationServiceImpl(plugin))
+        addService<ChatMessageService, ChatMessageServiceImpl>()
         addService<PhysicObjectService> {
             PhysicObjectServiceImpl(plugin, getService())
         }

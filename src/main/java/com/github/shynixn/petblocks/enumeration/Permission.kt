@@ -1,7 +1,7 @@
 package com.github.shynixn.petblocks.enumeration
 
 enum class Permission(val text: String) {
-    // petblocks.command is the command permission.
+    COMMAND("petblocks.command"),
     HELP("petblocks.help"),
     RELOAD("petblocks.reload"),
     CREATE("petblocks.pet.create"),
