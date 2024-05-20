@@ -13,9 +13,9 @@ language: "en_us"
 ############################
 commands:
   petblocks:
-    usage: "[&9PetBlocks&f] Use /petblocks help to see more info about the plugin."
-    description: All commands for the PetBlocks plugin.
-    permission-message: You do not have permission.
+    aliases:
+      - "pet"
+      - "pets"
 
 ############################
 # Script Engine

@@ -43,7 +43,7 @@ Creates a new pet for the player with the given pet template.
 /petblocks delete <name> [player]
 ```
 
-Deletes the pet for the player.
+Deletes the pet of the player.
 
 * Name: Identifier of a pet
 * Player: Optional player_name/player_UUID parameter targeting a player from the console or command block.
