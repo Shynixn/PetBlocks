@@ -126,6 +126,7 @@ class ArmorstandEntityComponent(
         if (position.y < -30) {
             // Protection for falling into the void.
             plugin.launch {
+                pet.unmount()
                 pet.remove()
             }
             return

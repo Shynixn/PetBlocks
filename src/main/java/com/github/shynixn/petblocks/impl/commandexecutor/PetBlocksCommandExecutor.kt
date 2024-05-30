@@ -793,13 +793,7 @@ class PetBlocksCommandExecutor @Inject constructor(
     }
 
     private fun unmount(sender: CommandSender, pet: Pet) {
-        pet.umount()
-        val loop = "idle"
-
-        if (pet.template.loops.containsKey(loop)) {
-            pet.loop = loop
-        }
-
+        pet.unmount()
         sender.sendPluginMessage(String.format(PetBlocksLanguage.petUnmountMessage, pet.name))
     }
 

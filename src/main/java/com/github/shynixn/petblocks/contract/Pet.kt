@@ -139,7 +139,7 @@ interface Pet {
     /**
      * Stops riding, flying or hat if the pet currently performs it.
      */
-    fun umount()
+    fun unmount()
 
     /**
      * Breaks the block which is in front of the pet and no more than 1 block away.

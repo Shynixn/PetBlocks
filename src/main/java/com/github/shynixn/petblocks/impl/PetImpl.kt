@@ -440,7 +440,7 @@ class PetImpl(
     /**
      * Stops riding or flying if the pet currently performs it.
      */
-    override fun umount() {
+    override fun unmount() {
         if (isDisposed) {
             throw PetBlocksPetDisposedException()
         }
@@ -450,6 +450,12 @@ class PetImpl(
         }
 
         petMeta.ridingState = PetRidingState.NO
+
+        // Fix idle loop.
+        val loop = "idle"
+        if (template.loops.containsKey(loop)) {
+            this.loop = loop
+        }
 
         if (petEntity != null) {
             petEntity!!.updateRidingState()
