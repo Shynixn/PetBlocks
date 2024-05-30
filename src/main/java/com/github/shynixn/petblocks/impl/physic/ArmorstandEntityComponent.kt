@@ -29,6 +29,8 @@ class ArmorstandEntityComponent(
     private val plugin: Plugin,
     val entityId: Int,
 ) : PhysicComponent {
+    private var lastVisibleVector3d = Vector3d()
+
     init {
         playerComponent.onSpawnMinecraft.add { player, location -> onPlayerSpawn(player, location) }
         playerComponent.onRemoveMinecraft.add { player, _ -> onPlayerRemove(player) }
@@ -129,29 +131,40 @@ class ArmorstandEntityComponent(
             return
         }
 
-        for (player in players) {
-            packetService.sendPacketOutEntityVelocity(player, PacketOutEntityVelocity().also {
-                it.entityId = this.entityId
-                it.target = motion.toVector()
-            })
+        val hasDistanceChanged = lastVisibleVector3d.distance(position) > 0.1
+        val hasYawChanged = position.yaw.toFloat() != lastVisibleVector3d.yaw.toFloat()
+        val hasPitchChanged = position.pitch.toFloat() != lastVisibleVector3d.pitch.toFloat()
+        lastVisibleVector3d = position.copy()
 
-            packetService.sendPacketOutEntityTeleport(player, PacketOutEntityTeleport().also {
-                it.entityId = this.entityId
-                it.target = position.copy().addRelativeUp(petMeta.physics.groundOffset).toLocation()
-            })
+        for (player in players) {
+            if (hasDistanceChanged || hasYawChanged) {
+                packetService.sendPacketOutEntityVelocity(player, PacketOutEntityVelocity().also {
+                    it.entityId = this.entityId
+                    it.target = motion.toVector()
+                })
+
+                packetService.sendPacketOutEntityTeleport(player, PacketOutEntityTeleport().also {
+                    it.entityId = this.entityId
+                    it.target = position.copy().addRelativeUp(petMeta.physics.groundOffset).toLocation()
+                })
+            }
 
             if (parsedEntityType != null && parsedEntityType == EntityType.ARMOR_STAND) {
-                // It causes lag when sent to other entities.
-                packetService.sendPacketOutEntityMetadata(player, PacketOutEntityMetadata().also {
-                    it.entityId = this.entityId
-                    it.armorStandHeadRotation = convertPitchToEulerAngle(position.pitch)
-                })
+                if (hasPitchChanged) {
+                    // It causes lag when sent to other entities.
+                    packetService.sendPacketOutEntityMetadata(player, PacketOutEntityMetadata().also {
+                        it.entityId = this.entityId
+                        it.armorStandHeadRotation = convertPitchToEulerAngle(position.pitch)
+                    })
+                }
             } else {
-                // Needed for some living entities other than armor stands.
-                packetService.sendPacketOutEntityHeadRotation(player, PacketOutEntityHeadRotation().also {
-                    it.entityId = this.entityId
-                    it.yaw = position.yaw
-                })
+                if (hasYawChanged && !pet.isRiding()) {
+                    // Needed for some living entities other than armor stands.
+                    packetService.sendPacketOutEntityHeadRotation(player, PacketOutEntityHeadRotation().also {
+                        it.entityId = this.entityId
+                        it.yaw = position.yaw
+                    })
+                }
             }
         }
     }
