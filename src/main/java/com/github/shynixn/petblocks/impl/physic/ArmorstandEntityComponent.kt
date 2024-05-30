@@ -1,5 +1,6 @@
 package com.github.shynixn.petblocks.impl.physic
 
+import com.github.shynixn.mccoroutine.bukkit.launch
 import com.github.shynixn.mcutils.common.*
 import com.github.shynixn.mcutils.common.item.ItemService
 import com.github.shynixn.mcutils.common.physic.PhysicComponent
@@ -14,6 +15,7 @@ import com.github.shynixn.petblocks.enumeration.PetRidingState
 import com.github.shynixn.petblocks.enumeration.PetVisibility
 import org.bukkit.Location
 import org.bukkit.entity.Player
+import org.bukkit.plugin.Plugin
 import org.bukkit.util.EulerAngle
 
 class ArmorstandEntityComponent(
@@ -24,6 +26,7 @@ class ArmorstandEntityComponent(
     private val placeHolderService: PlaceHolderService,
     private val itemService: ItemService,
     private val pet: Pet,
+    private val plugin: Plugin,
     val entityId: Int,
 ) : PhysicComponent {
     init {
@@ -117,6 +120,14 @@ class ArmorstandEntityComponent(
     private fun onPositionChange(position: Vector3d, motion: Vector3d) {
         val players = playerComponent.visiblePlayers
         val parsedEntityType = EntityType.findType(this.petMeta.entityType)
+
+        if (position.y < -30) {
+            // Protection for falling into the void.
+            plugin.launch {
+                pet.remove()
+            }
+            return
+        }
 
         for (player in players) {
             packetService.sendPacketOutEntityVelocity(player, PacketOutEntityVelocity().also {

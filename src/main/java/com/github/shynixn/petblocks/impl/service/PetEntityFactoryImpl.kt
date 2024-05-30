@@ -58,6 +58,7 @@ class PetEntityFactoryImpl @Inject constructor(
                 placeHolderService,
                 itemService,
                 pet,
+                plugin,
                 armorStandEntityId
             )
         val moveToTargetComponent = MoveToTargetComponent(mathPhysicComponent)
