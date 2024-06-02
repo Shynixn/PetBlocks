@@ -2,9 +2,7 @@ package com.github.shynixn.petblocks.impl.commandexecutor
 
 import com.github.shynixn.mcutils.common.ConfigurationService
 import com.github.shynixn.mcutils.common.chat.ChatMessageService
-import com.github.shynixn.mcutils.common.command.CommandBuilder
-import com.github.shynixn.mcutils.common.command.ValidationException
-import com.github.shynixn.mcutils.common.command.Validator
+import com.github.shynixn.mcutils.common.command.*
 import com.github.shynixn.mcutils.common.item.Item
 import com.github.shynixn.mcutils.common.item.ItemService
 import com.github.shynixn.mcutils.common.repository.CacheRepository
@@ -55,6 +53,12 @@ class PetBlocksCommandExecutor @Inject constructor(
         } catch (e: Exception) {
             null
         }
+    }
+    private val manipulateOtherPermission: () -> String = {
+        Permission.MANIPULATE_OTHER.text
+    }
+    private val manipulateOtherPermissionMessage: () -> String = {
+        PetBlocksLanguage.manipulateOtherMessage
     }
     private val onlinePlayerTabs: (suspend (CommandSender) -> List<String>) = {
         Bukkit.getOnlinePlayers().map { e -> e.name }
@@ -134,35 +138,27 @@ class PetBlocksCommandExecutor @Inject constructor(
 
     private val visibilityMustExist = object : Validator<PetVisibility> {
         override suspend fun transform(
-            sender: CommandSender,
-            prevArgs: List<Any>,
-            openArgs: List<String>
+            sender: CommandSender, prevArgs: List<Any>, openArgs: List<String>
         ): PetVisibility? {
             return PetVisibility.values().firstOrNull { e -> e.name.equals(openArgs[0], true) }
         }
 
         override suspend fun message(sender: CommandSender, prevArgs: List<Any>, openArgs: List<String>): String {
-            return String.format(
-                PetBlocksLanguage.visibilityTypeNotFoundMessage,
-                PetVisibility.values().joinToString(",") { e -> e.name.lowercase() }
-            )
+            return String.format(PetBlocksLanguage.visibilityTypeNotFoundMessage,
+                PetVisibility.values().joinToString(",") { e -> e.name.lowercase() })
         }
     }
 
     private val rotationTypeMustExist = object : Validator<PetRotationType> {
         override suspend fun transform(
-            sender: CommandSender,
-            prevArgs: List<Any>,
-            openArgs: List<String>
+            sender: CommandSender, prevArgs: List<Any>, openArgs: List<String>
         ): PetRotationType? {
             return PetRotationType.values().firstOrNull { e -> e.name.equals(openArgs[0], true) }
         }
 
         override suspend fun message(sender: CommandSender, prevArgs: List<Any>, openArgs: List<String>): String {
-            return String.format(
-                PetBlocksLanguage.petRotationTypeNotFound,
-                PetRotationType.values().joinToString(",") { e -> e.name.lowercase() }
-            )
+            return String.format(PetBlocksLanguage.petRotationTypeNotFound,
+                PetRotationType.values().joinToString(",") { e -> e.name.lowercase() })
         }
     }
 
@@ -211,10 +207,7 @@ class PetBlocksCommandExecutor @Inject constructor(
     }
     private val materialMustExist = object : Validator<String> {
         override suspend fun validate(
-            sender: CommandSender,
-            prevArgs: List<Any>,
-            argument: String,
-            openArgs: List<String>
+            sender: CommandSender, prevArgs: List<Any>, argument: String, openArgs: List<String>
         ): Boolean {
             try {
                 itemService.toItemStack(Item(argument)) // Test if material is valid.
@@ -284,10 +277,10 @@ class PetBlocksCommandExecutor @Inject constructor(
                 toolTip { PetBlocksLanguage.createCommandHint }
                 builder().argument("name").validator(petNameMustBeLimited).tabs { listOf("<name>") }
                     .argument("template").validator(templateMustExist).validator(templateMustHavePermission)
-                    .tabs(templateTabs)
-                    .executePlayer(senderHasToBePlayer) { player, name, petTemplate ->
+                    .tabs(templateTabs).executePlayer(senderHasToBePlayer) { player, name, petTemplate ->
                         createPet(player, player, name, petTemplate)
                     }.argument("player").validator(playerMustExist).tabs(onlinePlayerTabs)
+                    .permission(manipulateOtherPermission).permissionMessage(manipulateOtherPermissionMessage)
                     .execute { commandSender, name, petTemplate, player ->
                         createPet(commandSender, player, name, petTemplate)
                     }
@@ -295,10 +288,10 @@ class PetBlocksCommandExecutor @Inject constructor(
             subCommand("delete") {
                 permission(Permission.DELETE)
                 toolTip { PetBlocksLanguage.deleteCommandHint }
-                builder().argument("name").tabs(petNamesTabs)
-                    .executePlayer(senderHasToBePlayer) { player, name ->
-                        deletePet(player, petMustExist(player, name))
-                    }.argument("player").validator(playerMustExist).tabs(onlinePlayerTabs)
+                builder().argument("name").tabs(petNamesTabs).executePlayer(senderHasToBePlayer) { player, name ->
+                    deletePet(player, petMustExist(player, name))
+                }.argument("player").validator(playerMustExist).tabs(onlinePlayerTabs)
+                    .permission(manipulateOtherPermission).permissionMessage(manipulateOtherPermissionMessage)
                     .execute { commandSender, name, player ->
                         deletePet(commandSender, petMustExist(player, name))
                     }
@@ -309,6 +302,7 @@ class PetBlocksCommandExecutor @Inject constructor(
                 builder().executePlayer(senderHasToBePlayer) { player ->
                     listPet(player, player)
                 }.argument("player").validator(playerMustExist).tabs(onlinePlayerTabs)
+                    .permission(manipulateOtherPermission).permissionMessage(manipulateOtherPermissionMessage)
                     .execute { _, player ->
                         listPet(player, player)
                     }
@@ -316,10 +310,10 @@ class PetBlocksCommandExecutor @Inject constructor(
             subCommand("call") {
                 permission(Permission.CALL)
                 toolTip { PetBlocksLanguage.callCommandHint }
-                builder().argument("name").tabs(petNamesTabs)
-                    .executePlayer(senderHasToBePlayer) { player, name ->
-                        callPet(player, petMustExist(player, name))
-                    }.argument("player").validator(playerMustExist).tabs(onlinePlayerTabs)
+                builder().argument("name").tabs(petNamesTabs).executePlayer(senderHasToBePlayer) { player, name ->
+                    callPet(player, petMustExist(player, name))
+                }.argument("player").validator(playerMustExist).tabs(onlinePlayerTabs)
+                    .permission(manipulateOtherPermission).permissionMessage(manipulateOtherPermissionMessage)
                     .execute { commandSender, name, player ->
                         callPet(commandSender, petMustExist(player, name))
                     }
@@ -333,6 +327,7 @@ class PetBlocksCommandExecutor @Inject constructor(
                     .executePlayer(senderHasToBePlayer) { player, name, x, y, z ->
                         lookAtLocation(player, petMustExist(player, name), Location(player.world, x, y, z))
                     }.argument("player").validator(playerMustExist).tabs(onlinePlayerTabs)
+                    .permission(manipulateOtherPermission).permissionMessage(manipulateOtherPermissionMessage)
                     .execute { commandSender, name, x, y, z, player ->
                         lookAtLocation(commandSender, petMustExist(player, name), Location(player.world, x, y, z))
                     }
@@ -340,10 +335,10 @@ class PetBlocksCommandExecutor @Inject constructor(
             subCommand("lookatOwner") {
                 permission(Permission.LOOKATOWNER)
                 toolTip { PetBlocksLanguage.lookAtOwnerCommandHint }
-                builder().argument("name").tabs(petNamesTabs)
-                    .executePlayer(senderHasToBePlayer) { player, name ->
-                        lookAtLocation(player, petMustExist(player, name), player.location.add(0.0, 1.0, 0.0))
-                    }.argument("player").validator(playerMustExist).tabs(onlinePlayerTabs)
+                builder().argument("name").tabs(petNamesTabs).executePlayer(senderHasToBePlayer) { player, name ->
+                    lookAtLocation(player, petMustExist(player, name), player.location.add(0.0, 1.0, 0.0))
+                }.argument("player").validator(playerMustExist).tabs(onlinePlayerTabs)
+                    .permission(manipulateOtherPermission).permissionMessage(manipulateOtherPermissionMessage)
                     .execute { commandSender, name, player ->
                         lookAtLocation(commandSender, petMustExist(player, name), player.location.add(0.0, 1.0, 0.0))
                     }
@@ -354,10 +349,10 @@ class PetBlocksCommandExecutor @Inject constructor(
                 builder().argument("name").tabs(petNamesTabs).argument("x").validator(mustBeDouble)
                     .tabs { listOf("<x>") }.argument("y").validator(mustBeDouble).tabs { listOf("<y>") }.argument("z")
                     .validator(mustBeDouble).tabs { listOf("<z>") }.argument("speed").validator(mustBeDouble)
-                    .tabs { listOf("<speed>") }
-                    .executePlayer(senderHasToBePlayer) { player, name, x, y, z, speed ->
+                    .tabs { listOf("<speed>") }.executePlayer(senderHasToBePlayer) { player, name, x, y, z, speed ->
                         walkToLocation(player, petMustExist(player, name), Location(player.world, x, y, z), speed)
                     }.argument("player").validator(playerMustExist).tabs(onlinePlayerTabs)
+                    .permission(manipulateOtherPermission).permissionMessage(manipulateOtherPermissionMessage)
                     .execute { commandSender, name, x, y, z, speed, player ->
                         walkToLocation(
                             commandSender, petMustExist(player, name), Location(player.world, x, y, z), speed
@@ -368,8 +363,7 @@ class PetBlocksCommandExecutor @Inject constructor(
                 permission(Permission.MOVETOOWNER)
                 toolTip { PetBlocksLanguage.moveToOwnerCommandHint }
                 builder().argument("name").tabs(petNamesTabs).argument("speed").validator(mustBeDouble)
-                    .tabs { listOf("<speed>") }
-                    .executePlayer(senderHasToBePlayer) { player, name, speed ->
+                    .tabs { listOf("<speed>") }.executePlayer(senderHasToBePlayer) { player, name, speed ->
                         walkToLocation(
                             player,
                             petMustExist(player, name),
@@ -377,6 +371,7 @@ class PetBlocksCommandExecutor @Inject constructor(
                             speed
                         )
                     }.argument("player").validator(playerMustExist).tabs(onlinePlayerTabs)
+                    .permission(manipulateOtherPermission).permissionMessage(manipulateOtherPermissionMessage)
                     .execute { commandSender, name, speed, player ->
                         walkToLocation(
                             commandSender,
@@ -389,10 +384,10 @@ class PetBlocksCommandExecutor @Inject constructor(
             subCommand("hat") {
                 permission(Permission.HAT)
                 toolTip { PetBlocksLanguage.hatCommandHint }
-                builder().argument("name").tabs(petNamesTabs)
-                    .executePlayer(senderHasToBePlayer) { player, name ->
-                        hat(player, petMustExist(player, name))
-                    }.argument("player").validator(playerMustExist).tabs(onlinePlayerTabs)
+                builder().argument("name").tabs(petNamesTabs).executePlayer(senderHasToBePlayer) { player, name ->
+                    hat(player, petMustExist(player, name))
+                }.argument("player").validator(playerMustExist).tabs(onlinePlayerTabs)
+                    .permission(manipulateOtherPermission).permissionMessage(manipulateOtherPermissionMessage)
                     .execute { commandSender, name, player ->
                         hat(commandSender, petMustExist(player, name))
                     }
@@ -400,10 +395,10 @@ class PetBlocksCommandExecutor @Inject constructor(
             subCommand("ride") {
                 permission(Permission.RIDE)
                 toolTip { PetBlocksLanguage.rideCommandHint }
-                builder().argument("name").tabs(petNamesTabs)
-                    .executePlayer(senderHasToBePlayer) { player, name ->
-                        ridePet(player, petMustExist(player, name))
-                    }.argument("player").validator(playerMustExist).tabs(onlinePlayerTabs)
+                builder().argument("name").tabs(petNamesTabs).executePlayer(senderHasToBePlayer) { player, name ->
+                    ridePet(player, petMustExist(player, name))
+                }.argument("player").validator(playerMustExist).tabs(onlinePlayerTabs)
+                    .permission(manipulateOtherPermission).permissionMessage(manipulateOtherPermissionMessage)
                     .execute { commandSender, name, player ->
                         ridePet(commandSender, petMustExist(player, name))
                     }
@@ -411,10 +406,10 @@ class PetBlocksCommandExecutor @Inject constructor(
             subCommand("unmount") {
                 permission(Permission.UNMOUNT)
                 toolTip { PetBlocksLanguage.unmountCommandHint }
-                builder().argument("name").tabs(petNamesTabs)
-                    .executePlayer(senderHasToBePlayer) { player, name ->
-                        unmount(player, petMustExist(player, name))
-                    }.argument("player").validator(playerMustExist).tabs(onlinePlayerTabs)
+                builder().argument("name").tabs(petNamesTabs).executePlayer(senderHasToBePlayer) { player, name ->
+                    unmount(player, petMustExist(player, name))
+                }.argument("player").validator(playerMustExist).tabs(onlinePlayerTabs)
+                    .permission(manipulateOtherPermission).permissionMessage(manipulateOtherPermissionMessage)
                     .execute { commandSender, name, player ->
                         unmount(commandSender, petMustExist(player, name))
                     }
@@ -432,6 +427,7 @@ class PetBlocksCommandExecutor @Inject constructor(
                             player, petMustExist(player, name), Location(world, x, y, z, yaw.toFloat(), pitch.toFloat())
                         )
                     }.argument("player").validator(playerMustExist).tabs(onlinePlayerTabs)
+                    .permission(manipulateOtherPermission).permissionMessage(manipulateOtherPermissionMessage)
                     .execute { commandSender, name, world, x, y, z, yaw, pitch, player ->
                         teleportPet(
                             commandSender,
@@ -451,6 +447,7 @@ class PetBlocksCommandExecutor @Inject constructor(
                             player, petMustExist(player, name), Vector(x, y, z)
                         )
                     }.argument("player").validator(playerMustExist).tabs(onlinePlayerTabs)
+                    .permission(manipulateOtherPermission).permissionMessage(manipulateOtherPermissionMessage)
                     .execute { commandSender, name, x, y, z, player ->
                         setVelocityToPet(
                             commandSender, petMustExist(player, name), Vector(x, y, z)
@@ -460,11 +457,11 @@ class PetBlocksCommandExecutor @Inject constructor(
             subCommand("skintype") {
                 permission(Permission.SKIN)
                 toolTip { PetBlocksLanguage.skinTypeCommandHint }
-                builder().argument("name").tabs(petNamesTabs)
-                    .argument("material").validator(materialMustExist).tabs(materialTabs)
-                    .executePlayer(senderHasToBePlayer) { player, name, material ->
+                builder().argument("name").tabs(petNamesTabs).argument("material").validator(materialMustExist)
+                    .tabs(materialTabs).executePlayer(senderHasToBePlayer) { player, name, material ->
                         setSkinType(player, petMustExist(player, name), material)
                     }.argument("player").validator(playerMustExist).tabs(onlinePlayerTabs)
+                    .permission(manipulateOtherPermission).permissionMessage(manipulateOtherPermissionMessage)
                     .execute { commandSender, name, material, player ->
                         setSkinType(commandSender, petMustExist(player, name), material)
                     }
@@ -472,11 +469,11 @@ class PetBlocksCommandExecutor @Inject constructor(
             subCommand("skinnbt") {
                 permission(Permission.SKIN)
                 toolTip { PetBlocksLanguage.skinNbtCommandHint }
-                builder().argument("name").tabs(petNamesTabs)
-                    .argument("nbt").tabs { listOf("<nbt>") }
+                builder().argument("name").tabs(petNamesTabs).argument("nbt").tabs { listOf("<nbt>") }
                     .executePlayer(senderHasToBePlayer) { player, name, nbt ->
                         setSkinNbt(player, petMustExist(player, name), nbt)
                     }.argument("player").validator(playerMustExist).tabs(onlinePlayerTabs)
+                    .permission(manipulateOtherPermission).permissionMessage(manipulateOtherPermissionMessage)
                     .execute { commandSender, name, nbt, player ->
                         setSkinNbt(commandSender, petMustExist(player, name), nbt)
                     }
@@ -484,11 +481,11 @@ class PetBlocksCommandExecutor @Inject constructor(
             subCommand("skincomponent") {
                 permission(Permission.SKIN)
                 toolTip { PetBlocksLanguage.skinComponentCommandHint }
-                builder().argument("name").tabs(petNamesTabs)
-                    .argument("datacomponent").tabs { listOf("<datacomponent>") }
-                    .executePlayer(senderHasToBePlayer) { player, name, component ->
+                builder().argument("name").tabs(petNamesTabs).argument("datacomponent")
+                    .tabs { listOf("<datacomponent>") }.executePlayer(senderHasToBePlayer) { player, name, component ->
                         setSkinDataComponent(player, petMustExist(player, name), component)
                     }.argument("player").validator(playerMustExist).tabs(onlinePlayerTabs)
+                    .permission(manipulateOtherPermission).permissionMessage(manipulateOtherPermissionMessage)
                     .execute { commandSender, name, component, player ->
                         setSkinDataComponent(commandSender, petMustExist(player, name), component)
                     }
@@ -496,11 +493,11 @@ class PetBlocksCommandExecutor @Inject constructor(
             subCommand("skinbase64") {
                 permission(Permission.SKIN)
                 toolTip { PetBlocksLanguage.skinBase64CommandHint }
-                builder().argument("name").tabs(petNamesTabs)
-                    .argument("skin").tabs { listOf("<skin>") }
+                builder().argument("name").tabs(petNamesTabs).argument("skin").tabs { listOf("<skin>") }
                     .executePlayer(senderHasToBePlayer) { player, name, skin ->
                         setSkinBase64(player, petMustExist(player, name), skin)
                     }.argument("player").validator(playerMustExist).tabs(onlinePlayerTabs)
+                    .permission(manipulateOtherPermission).permissionMessage(manipulateOtherPermissionMessage)
                     .execute { commandSender, name, skin, player ->
                         setSkinBase64(commandSender, petMustExist(player, name), skin)
                     }
@@ -508,11 +505,11 @@ class PetBlocksCommandExecutor @Inject constructor(
             subCommand("skinheaddatabase") {
                 permission(Permission.SKIN_HEADDATABASE)
                 toolTip { PetBlocksLanguage.skinHeadDatabaseCommandHint }
-                builder().argument("name").tabs(petNamesTabs)
-                    .argument("hdbId").tabs { listOf("<hdbId>") }
+                builder().argument("name").tabs(petNamesTabs).argument("hdbId").tabs { listOf("<hdbId>") }
                     .executePlayer(senderHasToBePlayer) { player, name, hdbId ->
                         setSkinHeadDatabase(player, petMustExist(player, name), hdbId)
                     }.argument("player").validator(playerMustExist).tabs(onlinePlayerTabs)
+                    .permission(manipulateOtherPermission).permissionMessage(manipulateOtherPermissionMessage)
                     .execute { commandSender, name, hdbId, player ->
                         setSkinHeadDatabase(commandSender, petMustExist(player, name), hdbId)
                     }
@@ -520,11 +517,11 @@ class PetBlocksCommandExecutor @Inject constructor(
             subCommand("rename") {
                 permission(Permission.RENAME)
                 toolTip { PetBlocksLanguage.renameCommandHint }
-                builder().argument("name").tabs(petNamesTabs)
-                    .argument("displayName").validator(petNameMustBeLimited).tabs { listOf("<displayName>") }
-                    .executePlayer(senderHasToBePlayer) { player, name, displayName ->
+                builder().argument("name").tabs(petNamesTabs).argument("displayName").validator(petNameMustBeLimited)
+                    .tabs { listOf("<displayName>") }.executePlayer(senderHasToBePlayer) { player, name, displayName ->
                         setDisplayName(player, petMustExist(player, name), displayName)
                     }.argument("player").validator(playerMustExist).tabs(onlinePlayerTabs)
+                    .permission(manipulateOtherPermission).permissionMessage(manipulateOtherPermissionMessage)
                     .execute { commandSender, name, displayName, player ->
                         setDisplayName(commandSender, petMustExist(player, name), displayName)
                     }
@@ -532,11 +529,11 @@ class PetBlocksCommandExecutor @Inject constructor(
             subCommand("visibility") {
                 permission(Permission.VISIBILITY)
                 toolTip { PetBlocksLanguage.visibilityCommandHint }
-                builder().argument("name").tabs(petNamesTabs)
-                    .argument("type").validator(visibilityMustExist).tabs(visibilityTabs)
-                    .executePlayer(senderHasToBePlayer) { player, name, visibilityType ->
+                builder().argument("name").tabs(petNamesTabs).argument("type").validator(visibilityMustExist)
+                    .tabs(visibilityTabs).executePlayer(senderHasToBePlayer) { player, name, visibilityType ->
                         setVisibility(player, petMustExist(player, name), visibilityType)
                     }.argument("player").validator(playerMustExist).tabs(onlinePlayerTabs)
+                    .permission(manipulateOtherPermission).permissionMessage(manipulateOtherPermissionMessage)
                     .execute { commandSender, name, visibilityType, player ->
                         setVisibility(commandSender, petMustExist(player, name), visibilityType)
                     }
@@ -544,11 +541,11 @@ class PetBlocksCommandExecutor @Inject constructor(
             subCommand("loop") {
                 permission(Permission.LOOP)
                 toolTip { PetBlocksLanguage.loopCommandHint }
-                builder().argument("name").tabs(petNamesTabs)
-                    .argument("loop").tabs { listOf("<loop>") }
+                builder().argument("name").tabs(petNamesTabs).argument("loop").tabs { listOf("<loop>") }
                     .executePlayer(senderHasToBePlayer) { player, name, loop ->
                         setPetLoop(player, petMustExist(player, name), loop)
                     }.argument("player").validator(playerMustExist).tabs(onlinePlayerTabs)
+                    .permission(manipulateOtherPermission).permissionMessage(manipulateOtherPermissionMessage)
                     .execute { commandSender, name, loop, player ->
                         setPetLoop(commandSender, petMustExist(player, name), loop)
                     }
@@ -556,11 +553,11 @@ class PetBlocksCommandExecutor @Inject constructor(
             subCommand("template") {
                 permission(Permission.TEMPLATE)
                 toolTip { PetBlocksLanguage.templateCommandHint }
-                builder().argument("name").tabs(petNamesTabs)
-                    .argument("template").validator(templateMustExist).tabs(templateTabs)
-                    .executePlayer(senderHasToBePlayer) { player, name, template ->
+                builder().argument("name").tabs(petNamesTabs).argument("template").validator(templateMustExist)
+                    .tabs(templateTabs).executePlayer(senderHasToBePlayer) { player, name, template ->
                         setPetTemplate(player, petMustExist(player, name), template)
                     }.argument("player").validator(playerMustExist).tabs(onlinePlayerTabs)
+                    .permission(manipulateOtherPermission).permissionMessage(manipulateOtherPermissionMessage)
                     .execute { commandSender, name, template, player ->
                         setPetTemplate(commandSender, petMustExist(player, name), template)
                     }
@@ -568,21 +565,21 @@ class PetBlocksCommandExecutor @Inject constructor(
             subCommand("spawn") {
                 permission(Permission.SPAWN)
                 toolTip { PetBlocksLanguage.spawnCommandHint }
-                builder().argument("name").tabs(petNamesTabs)
-                    .executePlayer(senderHasToBePlayer) { player, name ->
-                        spawnPet(player, petMustExist(player, name))
-                    }.argument("player").validator(playerMustExist).tabs(onlinePlayerTabs)
+                builder().argument("name").tabs(petNamesTabs).executePlayer(senderHasToBePlayer) { player, name ->
+                    spawnPet(player, petMustExist(player, name))
+                }.argument("player").validator(playerMustExist).tabs(onlinePlayerTabs)
+                    .permission(manipulateOtherPermission).permissionMessage(manipulateOtherPermissionMessage)
                     .execute { commandSender, name, player ->
                         spawnPet(commandSender, petMustExist(player, name))
                     }
             }
             subCommand("despawn") {
-                permission(Permission.DELETE)
+                permission(Permission.DESPAWN)
                 toolTip { PetBlocksLanguage.deleteCommandHint }
-                builder().argument("name").tabs(petNamesTabs)
-                    .executePlayer(senderHasToBePlayer) { player, name ->
-                        deSpawnPet(player, petMustExist(player, name))
-                    }.argument("player").validator(playerMustExist).tabs(onlinePlayerTabs)
+                builder().argument("name").tabs(petNamesTabs).executePlayer(senderHasToBePlayer) { player, name ->
+                    deSpawnPet(player, petMustExist(player, name))
+                }.argument("player").validator(playerMustExist).tabs(onlinePlayerTabs)
+                    .permission(manipulateOtherPermission).permissionMessage(manipulateOtherPermissionMessage)
                     .execute { commandSender, name, player ->
                         deSpawnPet(commandSender, petMustExist(player, name))
                     }
@@ -590,10 +587,10 @@ class PetBlocksCommandExecutor @Inject constructor(
             subCommand("toggle") {
                 permission(Permission.TOGGLE)
                 toolTip { PetBlocksLanguage.toggleCommandHint }
-                builder().argument("name").tabs(petNamesTabs)
-                    .executePlayer(senderHasToBePlayer) { player, name ->
-                        togglePet(player, petMustExist(player, name))
-                    }.argument("player").validator(playerMustExist).tabs(onlinePlayerTabs)
+                builder().argument("name").tabs(petNamesTabs).executePlayer(senderHasToBePlayer) { player, name ->
+                    togglePet(player, petMustExist(player, name))
+                }.argument("player").validator(playerMustExist).tabs(onlinePlayerTabs)
+                    .permission(manipulateOtherPermission).permissionMessage(manipulateOtherPermissionMessage)
                     .execute { commandSender, name, player ->
                         togglePet(commandSender, petMustExist(player, name))
                     }
@@ -601,10 +598,10 @@ class PetBlocksCommandExecutor @Inject constructor(
             subCommand("select") {
                 permission(Permission.SELECT)
                 toolTip { PetBlocksLanguage.selectCommandHint }
-                builder().argument("name").tabs(petNamesTabs)
-                    .executePlayer(senderHasToBePlayer) { player, name ->
-                        selectPet(player, player, petMustExist(player, name))
-                    }.argument("player").validator(playerMustExist).tabs(onlinePlayerTabs)
+                builder().argument("name").tabs(petNamesTabs).executePlayer(senderHasToBePlayer) { player, name ->
+                    selectPet(player, player, petMustExist(player, name))
+                }.argument("player").validator(playerMustExist).tabs(onlinePlayerTabs)
+                    .permission(manipulateOtherPermission).permissionMessage(manipulateOtherPermissionMessage)
                     .execute { commandSender, name, player ->
                         selectPet(commandSender, player, petMustExist(player, name))
                     }
@@ -612,10 +609,10 @@ class PetBlocksCommandExecutor @Inject constructor(
             subCommand("openheaddatabase") {
                 permission(Permission.OPEN_HEADDATABSE)
                 toolTip { PetBlocksLanguage.openHeadDatabaseCommandHint }
-                builder().argument("name").tabs(petNamesTabs)
-                    .executePlayer(senderHasToBePlayer) { player, name ->
-                        openHeadDatabase(player, player, petMustExist(player, name))
-                    }.argument("player").validator(playerMustExist).tabs(onlinePlayerTabs)
+                builder().argument("name").tabs(petNamesTabs).executePlayer(senderHasToBePlayer) { player, name ->
+                    openHeadDatabase(player, player, petMustExist(player, name))
+                }.argument("player").validator(playerMustExist).tabs(onlinePlayerTabs)
+                    .permission(manipulateOtherPermission).permissionMessage(manipulateOtherPermissionMessage)
                     .execute { commandSender, name, player ->
                         openHeadDatabase(commandSender, player, petMustExist(player, name))
                     }
@@ -623,12 +620,12 @@ class PetBlocksCommandExecutor @Inject constructor(
             subCommand("breakblock") {
                 permission(Permission.BREAK_BLOCK)
                 toolTip { PetBlocksLanguage.breakBlockCommandHint }
-                builder().argument("name").tabs(petNamesTabs)
-                    .argument("timeToBreak").validator(mustBeInt).tabs { listOf("<ticks>") }
-                    .argument("dropType").tabs { DropType.values().map { e -> e.name } }
+                builder().argument("name").tabs(petNamesTabs).argument("timeToBreak").validator(mustBeInt)
+                    .tabs { listOf("<ticks>") }.argument("dropType").tabs { DropType.values().map { e -> e.name } }
                     .executePlayer(senderHasToBePlayer) { player, name, timeToBreak, dropType ->
                         breakBlock(player, petMustExist(player, name), dropType, timeToBreak)
                     }.argument("player").validator(playerMustExist).tabs(onlinePlayerTabs)
+                    .permission(manipulateOtherPermission).permissionMessage(manipulateOtherPermissionMessage)
                     .execute { commandSender, name, timeToBreak, dropType, player ->
                         breakBlock(commandSender, petMustExist(player, name), dropType, timeToBreak)
                     }
@@ -636,10 +633,10 @@ class PetBlocksCommandExecutor @Inject constructor(
             subCommand("cancel") {
                 permission(Permission.CANCEL)
                 toolTip { PetBlocksLanguage.cancelCommandHint }
-                builder().argument("name").tabs(petNamesTabs)
-                    .executePlayer(senderHasToBePlayer) { player, name ->
-                        cancel(player, petMustExist(player, name))
-                    }.argument("player").validator(playerMustExist).tabs(onlinePlayerTabs)
+                builder().argument("name").tabs(petNamesTabs).executePlayer(senderHasToBePlayer) { player, name ->
+                    cancel(player, petMustExist(player, name))
+                }.argument("player").validator(playerMustExist).tabs(onlinePlayerTabs)
+                    .permission(manipulateOtherPermission).permissionMessage(manipulateOtherPermissionMessage)
                     .execute { commandSender, name, player ->
                         cancel(commandSender, petMustExist(player, name))
                     }
@@ -647,11 +644,11 @@ class PetBlocksCommandExecutor @Inject constructor(
             subCommand("moveforward") {
                 permission(Permission.MOVEREL)
                 toolTip { PetBlocksLanguage.moveForwardCommandHint }
-                builder().argument("name").tabs(petNamesTabs)
-                    .argument("speed").validator(mustBeDouble)
+                builder().argument("name").tabs(petNamesTabs).argument("speed").validator(mustBeDouble)
                     .executePlayer(senderHasToBePlayer) { player, name, speed ->
                         moveForward(player, petMustExist(player, name), speed)
                     }.argument("player").validator(playerMustExist).tabs(onlinePlayerTabs)
+                    .permission(manipulateOtherPermission).permissionMessage(manipulateOtherPermissionMessage)
                     .execute { commandSender, name, speed, player ->
                         moveForward(commandSender, petMustExist(player, name), speed)
                     }
@@ -659,12 +656,12 @@ class PetBlocksCommandExecutor @Inject constructor(
             subCommand("rotaterel") {
                 permission(Permission.ROTATEREL)
                 toolTip { PetBlocksLanguage.rotateRelCommandHint }
-                builder().argument("name").tabs(petNamesTabs)
-                    .argument("type").validator(rotationTypeMustExist).tabs(rotationTypeTabs)
-                    .argument("angle").validator(mustBeDouble)
+                builder().argument("name").tabs(petNamesTabs).argument("type").validator(rotationTypeMustExist)
+                    .tabs(rotationTypeTabs).argument("angle").validator(mustBeDouble)
                     .executePlayer(senderHasToBePlayer) { player, name, rotationType, angle ->
                         rotateRel(player, petMustExist(player, name), rotationType, angle.toFloat())
                     }.argument("player").validator(playerMustExist).tabs(onlinePlayerTabs)
+                    .permission(manipulateOtherPermission).permissionMessage(manipulateOtherPermissionMessage)
                     .execute { commandSender, name, rotationType, angle, player ->
                         rotateRel(commandSender, petMustExist(player, name), rotationType, angle.toFloat())
                     }
@@ -672,11 +669,12 @@ class PetBlocksCommandExecutor @Inject constructor(
             subCommand("entitytype") {
                 permission(Permission.ENTITYTYPE)
                 toolTip { PetBlocksLanguage.entityTypeCommandHint }
-                builder().argument("name").tabs(petNamesTabs)
-                    .argument("type").tabs { EntityType.values().map { e -> "minecraft:${e.name.lowercase()}" } }
+                builder().argument("name").tabs(petNamesTabs).argument("type")
+                    .tabs { EntityType.values().map { e -> "minecraft:${e.name.lowercase()}" } }
                     .executePlayer(senderHasToBePlayer) { player, name, type ->
                         setEntityType(player, petMustExist(player, name), type)
                     }.argument("player").validator(playerMustExist).tabs(onlinePlayerTabs)
+                    .permission(manipulateOtherPermission).permissionMessage(manipulateOtherPermissionMessage)
                     .execute { commandSender, name, type, player ->
                         setEntityType(commandSender, petMustExist(player, name), type)
                     }
@@ -684,11 +682,11 @@ class PetBlocksCommandExecutor @Inject constructor(
             subCommand("entityvisible") {
                 permission(Permission.ENTITYVISIBILITY)
                 toolTip { PetBlocksLanguage.entityVisibleCommandHint }
-                builder().argument("name").tabs(petNamesTabs)
-                    .argument("flag").validator(mustBeBoolean).tabs(booleanTabs)
-                    .executePlayer(senderHasToBePlayer) { player, name, flag ->
+                builder().argument("name").tabs(petNamesTabs).argument("flag").validator(mustBeBoolean)
+                    .tabs(booleanTabs).executePlayer(senderHasToBePlayer) { player, name, flag ->
                         setEntityVisible(player, petMustExist(player, name), flag)
                     }.argument("player").validator(playerMustExist).tabs(onlinePlayerTabs)
+                    .permission(manipulateOtherPermission).permissionMessage(manipulateOtherPermissionMessage)
                     .execute { commandSender, name, flag, player ->
                         setEntityVisible(commandSender, petMustExist(player, name), flag)
                     }
@@ -696,11 +694,11 @@ class PetBlocksCommandExecutor @Inject constructor(
             subCommand("groundoffset") {
                 permission(Permission.GROUNDOFFSET)
                 toolTip { PetBlocksLanguage.groundOffSetCommandHint }
-                builder().argument("name").tabs(petNamesTabs)
-                    .argument("offset").validator(mustBeDouble).tabs { listOf("<offset>") }
-                    .executePlayer(senderHasToBePlayer) { player, name, offset ->
+                builder().argument("name").tabs(petNamesTabs).argument("offset").validator(mustBeDouble)
+                    .tabs { listOf("<offset>") }.executePlayer(senderHasToBePlayer) { player, name, offset ->
                         setGroundOffset(player, petMustExist(player, name), offset)
                     }.argument("player").validator(playerMustExist).tabs(onlinePlayerTabs)
+                    .permission(manipulateOtherPermission).permissionMessage(manipulateOtherPermissionMessage)
                     .execute { commandSender, name, offset, player ->
                         setGroundOffset(commandSender, petMustExist(player, name), offset)
                     }
@@ -708,10 +706,10 @@ class PetBlocksCommandExecutor @Inject constructor(
             subCommand("snap") {
                 permission(Permission.SNAP)
                 toolTip { PetBlocksLanguage.snapCommandHint }
-                builder().argument("name").tabs(petNamesTabs)
-                    .executePlayer(senderHasToBePlayer) { player, name ->
-                        snap(player, petMustExist(player, name))
-                    }.argument("player").validator(playerMustExist).tabs(onlinePlayerTabs)
+                builder().argument("name").tabs(petNamesTabs).executePlayer(senderHasToBePlayer) { player, name ->
+                    snap(player, petMustExist(player, name))
+                }.argument("player").validator(playerMustExist).tabs(onlinePlayerTabs)
+                    .permission(manipulateOtherPermission).permissionMessage(manipulateOtherPermissionMessage)
                     .execute { commandSender, name, player ->
                         snap(commandSender, petMustExist(player, name))
                     }
