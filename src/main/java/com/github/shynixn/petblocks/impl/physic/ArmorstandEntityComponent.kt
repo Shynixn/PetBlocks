@@ -1,5 +1,6 @@
 package com.github.shynixn.petblocks.impl.physic
 
+import com.github.shynixn.mccoroutine.bukkit.launch
 import com.github.shynixn.mcutils.common.*
 import com.github.shynixn.mcutils.common.item.ItemService
 import com.github.shynixn.mcutils.common.physic.PhysicComponent
@@ -14,6 +15,7 @@ import com.github.shynixn.petblocks.enumeration.PetRidingState
 import com.github.shynixn.petblocks.enumeration.PetVisibility
 import org.bukkit.Location
 import org.bukkit.entity.Player
+import org.bukkit.plugin.Plugin
 import org.bukkit.util.EulerAngle
 
 class ArmorstandEntityComponent(
@@ -24,8 +26,11 @@ class ArmorstandEntityComponent(
     private val placeHolderService: PlaceHolderService,
     private val itemService: ItemService,
     private val pet: Pet,
+    private val plugin: Plugin,
     val entityId: Int,
 ) : PhysicComponent {
+    private var lastVisibleVector3d = Vector3d()
+
     init {
         playerComponent.onSpawnMinecraft.add { player, location -> onPlayerSpawn(player, location) }
         playerComponent.onRemoveMinecraft.add { player, _ -> onPlayerRemove(player) }
@@ -118,29 +123,49 @@ class ArmorstandEntityComponent(
         val players = playerComponent.visiblePlayers
         val parsedEntityType = EntityType.findType(this.petMeta.entityType)
 
-        for (player in players) {
-            packetService.sendPacketOutEntityVelocity(player, PacketOutEntityVelocity().also {
-                it.entityId = this.entityId
-                it.target = motion.toVector()
-            })
+        if (position.y < -30) {
+            // Protection for falling into the void.
+            plugin.launch {
+                pet.unmount()
+                pet.remove()
+            }
+            return
+        }
 
-            packetService.sendPacketOutEntityTeleport(player, PacketOutEntityTeleport().also {
-                it.entityId = this.entityId
-                it.target = position.copy().addRelativeUp(petMeta.physics.groundOffset).toLocation()
-            })
+        val hasDistanceChanged = lastVisibleVector3d.distance(position) > 0.1
+        val hasYawChanged = position.yaw.toFloat() != lastVisibleVector3d.yaw.toFloat()
+        val hasPitchChanged = position.pitch.toFloat() != lastVisibleVector3d.pitch.toFloat()
+        lastVisibleVector3d = position.copy()
+
+        for (player in players) {
+            if (hasDistanceChanged || hasYawChanged) {
+                packetService.sendPacketOutEntityVelocity(player, PacketOutEntityVelocity().also {
+                    it.entityId = this.entityId
+                    it.target = motion.toVector()
+                })
+
+                packetService.sendPacketOutEntityTeleport(player, PacketOutEntityTeleport().also {
+                    it.entityId = this.entityId
+                    it.target = position.copy().addRelativeUp(petMeta.physics.groundOffset).toLocation()
+                })
+            }
 
             if (parsedEntityType != null && parsedEntityType == EntityType.ARMOR_STAND) {
-                // It causes lag when sent to other entities.
-                packetService.sendPacketOutEntityMetadata(player, PacketOutEntityMetadata().also {
-                    it.entityId = this.entityId
-                    it.armorStandHeadRotation = convertPitchToEulerAngle(position.pitch)
-                })
+                if (hasPitchChanged) {
+                    // It causes lag when sent to other entities.
+                    packetService.sendPacketOutEntityMetadata(player, PacketOutEntityMetadata().also {
+                        it.entityId = this.entityId
+                        it.armorStandHeadRotation = convertPitchToEulerAngle(position.pitch)
+                    })
+                }
             } else {
-                // Needed for some living entities other than armor stands.
-                packetService.sendPacketOutEntityHeadRotation(player, PacketOutEntityHeadRotation().also {
-                    it.entityId = this.entityId
-                    it.yaw = position.yaw
-                })
+                if (hasYawChanged && !pet.isRiding()) {
+                    // Needed for some living entities other than armor stands.
+                    packetService.sendPacketOutEntityHeadRotation(player, PacketOutEntityHeadRotation().also {
+                        it.entityId = this.entityId
+                        it.yaw = position.yaw
+                    })
+                }
             }
         }
     }

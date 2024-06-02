@@ -9,7 +9,7 @@ plugins {
 }
 
 group = "com.github.shynixn"
-version = "9.7.0"
+version = "9.7.1"
 
 repositories {
     mavenCentral()
@@ -42,8 +42,8 @@ dependencies {
     implementation("org.openjdk.nashorn:nashorn-core:15.4")
 
     // Custom dependencies
-    implementation("com.github.shynixn.mcutils:common:2024.8")
-    implementation("com.github.shynixn.mcutils:packet:2024.5")
+    implementation("com.github.shynixn.mcutils:common:2024.11")
+    implementation("com.github.shynixn.mcutils:packet:2024.11")
     implementation("com.github.shynixn.mcutils:database:2024.2")
     implementation("com.github.shynixn.mcutils:pathfinder:2024.3")
     implementation("com.github.shynixn.mcutils:guice:2024.2")
@@ -101,7 +101,7 @@ tasks.register("pluginJars") {
 }
 
 /**
- * Create legacy plugin jar file.
+ * Relocate Plugin Jar.
  */
 tasks.register("relocatePluginJar", com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar::class.java) {
     dependsOn("shadowJar")
@@ -162,7 +162,7 @@ tasks.register("pluginJarPremium", com.github.jengelman.gradle.plugins.shadow.ta
 }
 
 /**
- * Create legacy plugin jar file.
+ * Relocate legacy plugin jar file.
  */
 tasks.register("relocateLegacyPluginJar", com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar::class.java) {
     dependsOn("shadowJar")

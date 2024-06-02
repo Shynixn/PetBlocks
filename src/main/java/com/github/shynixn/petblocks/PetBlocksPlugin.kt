@@ -29,7 +29,7 @@ import java.util.logging.Level
 class PetBlocksPlugin : JavaPlugin() {
     private val prefix: String = ChatColor.BLUE.toString() + "[PetBlocks] " + ChatColor.WHITE
     private lateinit var module : DependencyInjectionModule
-    private var immidiateDisable = false
+    private var immediateDisable = false
 
     /**
      * Called when this plugin is enabled.
@@ -67,7 +67,7 @@ class PetBlocksPlugin : JavaPlugin() {
         }
 
         if (!Version.serverVersion.isCompatible(*versions.toTypedArray())) {
-            immidiateDisable = true
+            immediateDisable = true
             logger.log(Level.SEVERE, "================================================")
             logger.log(Level.SEVERE, "PetBlocks does not support your server version")
             logger.log(Level.SEVERE, "Install v" + versions[0].from + " - v" + versions[versions.size - 1].to)
@@ -121,7 +121,7 @@ class PetBlocksPlugin : JavaPlugin() {
                 playerDataRepository.createIfNotExist()
             } catch (e: Exception) {
                 e.printStackTrace()
-                immidiateDisable = true
+                immediateDisable = true
                 Bukkit.getPluginManager().disablePlugin(plugin)
                 return@launch
             }
@@ -146,7 +146,7 @@ class PetBlocksPlugin : JavaPlugin() {
      * Called when this plugin is disabled.
      */
     override fun onDisable() {
-        if (immidiateDisable) {
+        if (immediateDisable) {
             return
         }
 

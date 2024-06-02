@@ -181,8 +181,8 @@ object PetBlocksLanguage {
   /** [&9PetBlocks&f] &cYou do not have permission to execute this command. **/
   var noPermissionCommand : String = "[&9PetBlocks&f] &cYou do not have permission to execute this command."
 
-  /** T[&9PetBlocks&f] &cCannot parse boolean %1$1s. **/
-  var cannotParseBoolean : String = "T[&9PetBlocks&f] &cCannot parse boolean %1$1s."
+  /** [&9PetBlocks&f] &cCannot parse boolean %1$1s. **/
+  var cannotParseBoolean : String = "[&9PetBlocks&f] &cCannot parse boolean %1$1s."
 
   /** Creates a new pet for the player with the given pet template. **/
   var createCommandHint : String = "Creates a new pet for the player with the given pet template."
@@ -222,6 +222,9 @@ object PetBlocksLanguage {
 
   /** [&9PetBlocks&f] Cancelled action. **/
   var cancelMessage : String = "[&9PetBlocks&f] Cancelled action."
+
+  /** [&9PetBlocks&f] &cYou do not have permission to edit the pets of other players. **/
+  var manipulateOtherMessage : String = "[&9PetBlocks&f] &cYou do not have permission to edit the pets of other players."
 
   /** [&9PetBlocks&f] PetBlocks has been reloaded. **/
   var reloadMessage : String = "[&9PetBlocks&f] PetBlocks has been reloaded."

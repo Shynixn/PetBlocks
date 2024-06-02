@@ -87,6 +87,11 @@ class PetEntityImpl(
                         break
                     }
 
+                    if (pet.isHat()) {
+                        // Update pet location on player.
+                        pet.location = pet.player.location
+                    }
+
                     cancellationTokenLoop = CancellationToken()
                     petActionExecutionService.executeAction(pet.player, pet, loop, cancellationTokenLoop)
                     delay(1.ticks)

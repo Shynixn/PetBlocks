@@ -124,7 +124,7 @@ class PetServiceImpl @Inject constructor(
                 if (e.isSpawned) {
                     pet.spawn()
                 } else {
-                    pet.umount()
+                    pet.unmount()
                 }
 
                 pet
