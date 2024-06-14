@@ -5,8 +5,8 @@ import com.github.shynixn.mcutils.common.Vector3d
 import com.github.shynixn.mcutils.common.item.ItemService
 import com.github.shynixn.mcutils.common.physic.PhysicObjectDispatcher
 import com.github.shynixn.mcutils.common.physic.PhysicObjectService
+import com.github.shynixn.mcutils.common.placeholder.PlaceHolderService
 import com.github.shynixn.mcutils.common.toVector3d
-import com.github.shynixn.mcutils.packet.api.EntityService
 import com.github.shynixn.mcutils.packet.api.PacketService
 import com.github.shynixn.mcutils.packet.api.RayTracingService
 import com.github.shynixn.mcutils.pathfinder.api.PathfinderService
@@ -26,7 +26,6 @@ class PetEntityFactoryImpl @Inject constructor(
     private val petActionExecutionService: PetActionExecutionService,
     private val pathfinderService: PathfinderService,
     private val placeHolderService: PlaceHolderService,
-    private val entityService: EntityService,
     private val packetService: PacketService,
     private val rayTracingService: RayTracingService,
     private val physicObjectDispatcher: PhysicObjectDispatcher,
@@ -47,7 +46,7 @@ class PetEntityFactoryImpl @Inject constructor(
         val mathPhysicComponent = MathComponent(location.toVector3d(), meta.physics, rayTracingService)
 
         val playerComponent = PlayerComponent(mathPhysicComponent, pet = pet)
-        val armorStandEntityId = entityService.createNewEntityId()
+        val armorStandEntityId = packetService.getNextEntityId()
 
         val armorstandEntityComponent =
             ArmorstandEntityComponent(

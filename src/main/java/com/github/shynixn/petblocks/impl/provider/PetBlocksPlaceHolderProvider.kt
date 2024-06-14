@@ -1,18 +1,21 @@
-package com.github.shynixn.petblocks.impl.service
+package com.github.shynixn.petblocks.impl.provider
 
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.github.shynixn.mcutils.common.placeholder.PlaceHolderProvider
 import com.github.shynixn.mcutils.common.translateChatColors
 import com.github.shynixn.petblocks.contract.Pet
-import com.github.shynixn.petblocks.contract.PlaceHolderService
 import com.github.shynixn.petblocks.enumeration.PlaceHolder
 import org.bukkit.entity.Player
 import java.util.*
 
-class PlaceHolderServiceImpl : PlaceHolderService {
+class PetBlocksPlaceHolderProvider : PlaceHolderProvider {
     private val simplePlaceHolderFunctions = HashMap<PlaceHolder, ((Player) -> String)>()
     private val petPlaceHolderFunctions = HashMap<PlaceHolder, ((Pet) -> String)>()
     private val placeHolders = HashMap<String, PlaceHolder>()
     private val mapper: ObjectMapper = ObjectMapper()
+    companion object{
+        val petKey = "pet"
+    }
 
     init {
         for (placeHolder in PlaceHolder.values()) {
@@ -115,9 +118,10 @@ class PlaceHolderServiceImpl : PlaceHolderService {
     /**
      * Replaces incoming strings with the escaped version.
      */
-    override fun replacePlaceHolders(player: Player, input: String, pet: Pet?): String {
+    override fun resolvePlaceHolder(player: Player, input: String, parameters: Map<String, Any>): String {
         val locatedPlaceHolders = HashMap<PlaceHolder, String>()
         val characterCache = StringBuilder()
+        val pet = parameters[petKey] as Pet?
 
         for (character in input) {
             characterCache.append(character)
@@ -170,7 +174,6 @@ class PlaceHolderServiceImpl : PlaceHolderService {
 
         return output.translateChatColors()
     }
-
 
     private fun calculatePetDistanceToOwner(pet: Pet): Int {
         val playerLocation = pet.player.location

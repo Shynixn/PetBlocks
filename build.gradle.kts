@@ -16,6 +16,7 @@ repositories {
     maven("https://hub.spigotmc.org/nexus/content/repositories/snapshots/")
     maven("https://repo.extendedclip.com/content/repositories/placeholderapi")
     maven("https://repo.opencollab.dev/main/")
+    maven("https://shynixn.github.io/m2/repository/releases")
     maven(System.getenv("SHYNIXN_MCUTILS_REPOSITORY")) // All MCUTILS libraries are private and not OpenSource.
 }
 
@@ -32,6 +33,8 @@ dependencies {
     // Library dependencies with legacy compatibility, we can use more up-to-date version in the plugin.yml
     implementation("com.github.shynixn.mccoroutine:mccoroutine-bukkit-api:2.16.0")
     implementation("com.github.shynixn.mccoroutine:mccoroutine-bukkit-core:2.16.0")
+    implementation("com.github.shynixn.mccoroutine:mccoroutine-folia-api:2.16.0")
+    implementation("com.github.shynixn.mccoroutine:mccoroutine-folia-core:2.16.0")
     implementation("com.google.inject:guice:5.0.1")
     implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.3.0")
     implementation("com.fasterxml.jackson.core:jackson-databind:2.2.3")
@@ -42,8 +45,9 @@ dependencies {
     implementation("org.openjdk.nashorn:nashorn-core:15.4")
 
     // Custom dependencies
-    implementation("com.github.shynixn.mcutils:common:2024.11")
-    implementation("com.github.shynixn.mcutils:packet:2024.11")
+    implementation("com.github.shynixn.shygui:shygui:1.0.0")
+    implementation("com.github.shynixn.mcutils:common:2024.15")
+    implementation("com.github.shynixn.mcutils:packet:2024.22")
     implementation("com.github.shynixn.mcutils:database:2024.2")
     implementation("com.github.shynixn.mcutils:pathfinder:2024.3")
     implementation("com.github.shynixn.mcutils:guice:2024.2")
@@ -108,6 +112,7 @@ tasks.register("relocatePluginJar", com.github.jengelman.gradle.plugins.shadow.t
     from(zipTree(File("./build/libs/" + (tasks.getByName("shadowJar") as Jar).archiveFileName.get())))
     archiveFileName.set("${archiveBaseName.get()}-${archiveVersion.get()}-relocate.${archiveExtension.get()}")
     relocate("com.github.shynixn.mcutils", "com.github.shynixn.petblocks.lib.com.github.shynixn.mcutils")
+    relocate("com.github.shynixn.shygui", "com.github.shynixn.petblocks.lib.com.github.shynixn.shygui")
 }
 
 /**
@@ -131,6 +136,7 @@ tasks.register("pluginJarLatest", com.github.jengelman.gradle.plugins.shadow.tas
     exclude("com/github/shynixn/petblocks/lib/com/github/shynixn/mcutils/packet/nms/v1_20_R2/**")
     exclude("com/github/shynixn/petblocks/lib/com/github/shynixn/mcutils/packet/nms/v1_20_R3/**")
     exclude("com/github/shynixn/mcutils/**")
+    exclude("com/github/shynixn/shygui/**")
     exclude("com/github/shynixn/mccoroutine/**")
     exclude("kotlin/**")
     exclude("org/**")
@@ -151,6 +157,7 @@ tasks.register("pluginJarPremium", com.github.jengelman.gradle.plugins.shadow.ta
     // destinationDir = File("C:\\temp\\plugins")
 
     exclude("com/github/shynixn/mcutils/**")
+    exclude("com/github/shynixn/shygui/**")
     exclude("com/github/shynixn/mccoroutine/**")
     exclude("kotlin/**")
     exclude("org/**")
@@ -169,6 +176,7 @@ tasks.register("relocateLegacyPluginJar", com.github.jengelman.gradle.plugins.sh
     from(zipTree(File("./build/libs/" + (tasks.getByName("shadowJar") as Jar).archiveFileName.get())))
     archiveFileName.set("${archiveBaseName.get()}-${archiveVersion.get()}-legacy-relocate.${archiveExtension.get()}")
     relocate("com.github.shynixn.mcutils", "com.github.shynixn.petblocks.lib.com.github.shynixn.mcutils")
+    relocate("com.github.shynixn.shygui", "com.github.shynixn.petblocks.lib.com.github.shynixn.shygui")
     relocate("kotlin", "com.github.shynixn.petblocks.lib.kotlin")
     relocate("org.intellij", "com.github.shynixn.petblocks.lib.org.intelli")
     relocate("org.aopalliance", "com.github.shynixn.petblocks.lib.org.aopalliance")
@@ -195,8 +203,9 @@ tasks.register("pluginJarLegacy", com.github.jengelman.gradle.plugins.shadow.tas
     dependsOn("relocateLegacyPluginJar")
     from(zipTree(File("./build/libs/" + (tasks.getByName("relocateLegacyPluginJar") as Jar).archiveFileName.get())))
     archiveFileName.set("${archiveBaseName.get()}-${archiveVersion.get()}-legacy.${archiveExtension.get()}")
-    // destinationDir = File("C:\\temp\\plugins")
+    // destinationDirectory.set(File("C:\\temp\\plugins"))
     exclude("com/github/shynixn/mcutils/**")
+    exclude("com/github/shynixn/shygui/**")
     exclude("org/**")
     exclude("kotlin/**")
     exclude("kotlinx/**")

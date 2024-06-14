@@ -1,11 +1,11 @@
-package com.github.shynixn.petblocks.impl.service
+package com.github.shynixn.petblocks.impl.provider
 
+import com.github.shynixn.mcutils.common.placeholder.PlaceHolderProvider
+import com.github.shynixn.mcutils.common.placeholder.PlaceHolderService
 import com.github.shynixn.mcutils.database.api.CachePlayerRepository
 import com.github.shynixn.petblocks.PetBlocksLanguage
 import com.github.shynixn.petblocks.contract.DependencyPlaceholderApiService
-import com.github.shynixn.petblocks.contract.Pet
 import com.github.shynixn.petblocks.contract.PetService
-import com.github.shynixn.petblocks.contract.PlaceHolderService
 import com.github.shynixn.petblocks.entity.PlayerInformation
 import com.github.shynixn.petblocks.enumeration.PlaceHolder
 import com.google.inject.Inject
@@ -14,14 +14,14 @@ import me.clip.placeholderapi.expansion.PlaceholderExpansion
 import org.bukkit.entity.Player
 import org.bukkit.plugin.Plugin
 
-class DependencyPlaceHolderApiServiceImpl @Inject constructor(
+class PetBlocksPlaceHolderApiProvider @Inject constructor(
     private val plugin: Plugin,
     private val petService: PetService,
     private val petMetaRepository: CachePlayerRepository<PlayerInformation>,
+    private val placeHolderService: PlaceHolderService
 ) : PlaceholderExpansion(),
-    DependencyPlaceholderApiService, PlaceHolderService {
+    DependencyPlaceholderApiService, PlaceHolderProvider {
     private var registerd: Boolean = false
-    private val placeHolderService = PlaceHolderServiceImpl()
 
     init {
         this.registerListener()
@@ -44,7 +44,7 @@ class DependencyPlaceHolderApiServiceImpl @Inject constructor(
 
         try {
             if (!petService.getCache().containsKey(p)) {
-                return placeHolderService.replacePlaceHolders(p, "%petblocks_${params}%", null)
+                return placeHolderService.resolvePlaceHolder(p, "%petblocks_${params}%", emptyMap())
             }
 
             val pets = petService.getCache()[p]!!
@@ -60,18 +60,30 @@ class DependencyPlaceHolderApiServiceImpl @Inject constructor(
                         val newParams = parts.dropLast(1).joinToString("_")
 
                         if (selectedPet != null) {
-                            return placeHolderService.replacePlaceHolders(p, "%petblocks_${newParams}%", selectedPet)
+                            return placeHolderService.resolvePlaceHolder(
+                                p,
+                                "%petblocks_${newParams}%",
+                                mapOf(PetBlocksPlaceHolderProvider.petKey to selectedPet)
+                            )
                         } else if (pets.size > 0) {
-                            return placeHolderService.replacePlaceHolders(p, "%petblocks_${newParams}%", pets[0])
+                            return placeHolderService.resolvePlaceHolder(
+                                p,
+                                "%petblocks_${newParams}%",
+                                mapOf(PetBlocksPlaceHolderProvider.petKey to pets[0])
+                            )
                         }
                     }
                 }
 
                 if (pets.size > 0) {
-                    return placeHolderService.replacePlaceHolders(p, "%petblocks_${params}%", pets[0])
+                    return placeHolderService.resolvePlaceHolder(
+                        p,
+                        "%petblocks_${params}%",
+                        mapOf(PetBlocksPlaceHolderProvider.petKey to pets[0])
+                    )
                 }
 
-                return placeHolderService.replacePlaceHolders(p, "%petblocks_${params}%", null)
+                return placeHolderService.resolvePlaceHolder(p, "%petblocks_${params}%", emptyMap())
             }
 
             val index = finalPart.toInt() - 1
@@ -82,7 +94,11 @@ class DependencyPlaceHolderApiServiceImpl @Inject constructor(
                     return "true"
                 }
 
-                return placeHolderService.replacePlaceHolders(p, "%petblocks_${newParams}%", pets[index])
+                return placeHolderService.resolvePlaceHolder(
+                    p,
+                    "%petblocks_${newParams}%",
+                    mapOf(PetBlocksPlaceHolderProvider.petKey to pets[index])
+                )
             }
 
             if (PlaceHolder.PET_EXISTS.fullPlaceHolder == newParams) {
@@ -97,6 +113,10 @@ class DependencyPlaceHolderApiServiceImpl @Inject constructor(
         return null
     }
 
+    override fun resolvePlaceHolder(player: Player, input: String, parameters: Map<String, Any>): String {
+        return PlaceholderAPI.setPlaceholders(player, input)
+    }
+
     override fun getIdentifier(): String {
         return "petblocks"
     }
@@ -107,13 +127,5 @@ class DependencyPlaceHolderApiServiceImpl @Inject constructor(
 
     override fun getVersion(): String {
         return plugin.description.version
-    }
-
-    /**
-     * Replaces incoming strings with the escaped version.
-     */
-    override fun replacePlaceHolders(player: Player, input: String, pet: Pet?): String {
-        val replacedInput = placeHolderService.replacePlaceHolders(player, input, pet)
-        return PlaceholderAPI.setPlaceholders(player, replacedInput)
     }
 }

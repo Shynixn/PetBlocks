@@ -9,6 +9,8 @@ import com.github.shynixn.mcutils.common.physic.PhysicObjectDispatcher
 import com.github.shynixn.mcutils.common.physic.PhysicObjectDispatcherImpl
 import com.github.shynixn.mcutils.common.physic.PhysicObjectService
 import com.github.shynixn.mcutils.common.physic.PhysicObjectServiceImpl
+import com.github.shynixn.mcutils.common.placeholder.PlaceHolderService
+import com.github.shynixn.mcutils.common.placeholder.PlaceHolderServiceImpl
 import com.github.shynixn.mcutils.common.repository.CacheRepository
 import com.github.shynixn.mcutils.common.repository.CachedRepositoryImpl
 import com.github.shynixn.mcutils.common.repository.Repository
@@ -19,10 +21,12 @@ import com.github.shynixn.mcutils.database.impl.AutoSavePlayerDataRepositoryImpl
 import com.github.shynixn.mcutils.database.impl.CachePlayerDataRepositoryImpl
 import com.github.shynixn.mcutils.database.impl.ConfigSelectedRepositoryImpl
 import com.github.shynixn.mcutils.guice.DependencyInjectionModule
-import com.github.shynixn.mcutils.packet.api.EntityService
 import com.github.shynixn.mcutils.packet.api.PacketService
 import com.github.shynixn.mcutils.packet.api.RayTracingService
-import com.github.shynixn.mcutils.packet.impl.service.*
+import com.github.shynixn.mcutils.packet.impl.service.ChatMessageServiceImpl
+import com.github.shynixn.mcutils.packet.impl.service.ItemServiceImpl
+import com.github.shynixn.mcutils.packet.impl.service.PacketServiceImpl
+import com.github.shynixn.mcutils.packet.impl.service.RayTracingServiceImpl
 import com.github.shynixn.mcutils.pathfinder.api.PathfinderService
 import com.github.shynixn.mcutils.pathfinder.impl.PathfinderServiceImpl
 import com.github.shynixn.mcutils.pathfinder.impl.service.CubeWorldSnapshotServiceImpl
@@ -35,7 +39,9 @@ import org.bukkit.Bukkit
 import org.bukkit.plugin.Plugin
 import java.util.logging.Level
 
-class PetBlocksDependencyInjectionModule(private val plugin: PetBlocksPlugin) : DependencyInjectionModule() {
+class PetBlocksDependencyInjectionModule(
+    private val plugin: PetBlocksPlugin, private val shyGuiModule: DependencyInjectionModule
+) : DependencyInjectionModule() {
     companion object {
         val areLegacyVersionsIncluded: Boolean by lazy {
             try {
@@ -65,23 +71,21 @@ class PetBlocksDependencyInjectionModule(private val plugin: PetBlocksPlugin) : 
             plugin.dataFolder.toPath().resolve("PetBlocks.sqlite"),
             object : TypeReference<PlayerInformation>() {})
         val playerDataRepository = AutoSavePlayerDataRepositoryImpl(
-            1000 * 60L * autoSaveMinutes,
-            CachePlayerDataRepositoryImpl(configSelectedRepository, plugin),
-            plugin
+            1000 * 60L * autoSaveMinutes, CachePlayerDataRepositoryImpl(configSelectedRepository, plugin), plugin
         )
         addService<PlayerDataRepository<PlayerInformation>>(playerDataRepository)
         addService<CachePlayerRepository<PlayerInformation>>(playerDataRepository)
 
+        // Library Services
+        addService<PlaceHolderService>(shyGuiModule.getService<PlaceHolderService>())
+
         // Services
         val configurationService = ConfigurationServiceImpl(plugin)
-        addService<EntityService>(EntityServiceImpl())
         addService<RayTracingService>(RayTracingServiceImpl())
-        addService<PacketService>(PacketServiceImpl(plugin) { r ->
-            plugin.server.scheduler.runTask(plugin, r)
-        })
+        addService<PacketService>(PacketServiceImpl(plugin))
         addService<PhysicObjectDispatcher>(PhysicObjectDispatcherImpl(plugin))
         addService<ConfigurationService>(ConfigurationServiceImpl(plugin))
-        addService<ChatMessageService, ChatMessageServiceImpl>()
+        addService<ChatMessageService>(ChatMessageServiceImpl(plugin))
         addService<PhysicObjectService> {
             PhysicObjectServiceImpl(plugin, getService())
         }
@@ -91,13 +95,6 @@ class PetBlocksDependencyInjectionModule(private val plugin: PetBlocksPlugin) : 
         addService<PetService, PetServiceImpl>()
         addService<PetEntityFactory, PetEntityFactoryImpl>()
         addService<PetActionExecutionService, PetActionExecutionServiceImpl>()
-
-        if (Bukkit.getPluginManager().getPlugin(PluginDependency.PLACEHOLDERAPI.pluginName) != null) {
-            addService<PlaceHolderService, DependencyPlaceHolderApiServiceImpl>()
-            plugin.logger.log(Level.INFO, "Loaded dependency ${PluginDependency.PLACEHOLDERAPI.pluginName}.")
-        } else {
-            addService<PlaceHolderService, PlaceHolderServiceImpl>()
-        }
 
         if (Bukkit.getPluginManager().getPlugin(PluginDependency.HEADDATABASE.pluginName) != null) {
             addService<DependencyHeadDatabaseService, DependencyHeadDatabaseServiceImpl>()

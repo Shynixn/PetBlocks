@@ -1,0 +1,117 @@
+# Unique identifier of a menu.
+name: "petblocks_main_menu"
+# Type of inventory to show. Possible values: ONE_ROW, TWO_ROW, THREE_ROW, SIX_ROW
+windowType: "SIX_ROW"
+# Displayed title of the inventory.
+title: "PetBlocks"
+# How often should the GUI refresh its placeholder values and show up-to-date data. The value is in minecraft ticks. (20 ticks = 1 second)
+updateIntervalTicks: 100
+
+# Optional command for directly opening this menu. You can remove this if you do not need a dedicated command for this menu.
+command:
+  # Required unique command identifier.
+  command: "petblocksmenu"
+  # Required Permission required to execute this command.
+  permission: "petblocks.command"
+  # Required arbitrary help usage.
+  usage: "/petblock"
+  # Required arbitrary description of the command.
+  description: "Opens the main menu of PetBlocks."
+  # Optional aliases for the command.
+  aliases:
+    - "petblock"
+
+# All items which are rendered inside the inventory. You need to specify the item you want to display and the position.
+# For more complex GUIs, you may want to show different items on the same position depending on a certain condition:
+#  e.g. pet is spawned, show despawn button
+#  e.g. pet is not spawned, show spawn button
+# You can achieve that using the 'condition' property below.
+# If multiple conditions are true for a single position, the last item in the list wins and is being displayed.
+# You can use this to specify background items at the beginning of the list below and overwrite it with more important item by specifying them later in the list.
+items:
+  # This is our background item which is the default item.
+  - row: 1 # Starting row.
+    col: 1 # Starting column.
+    rowSpan: 6 # Span all rows
+    colSpan: 9 # Span all columns.
+    item:
+      typeName: "minecraft:black_stained_glass_pane,160" # We add the material name and for legacy compatibility the version id 160. This id not neccessary if you are on a version >= 1.16.5.
+      durability: 15 # Durability for legacy version compatibility.
+      displayName: " " # Blank string to show nothing.
+  - row: 1
+    col: 5
+    item:
+      typeName: "%petblocks_pet_itemType_selected%"
+      displayName: "%petblocks_pet_displayName_selected%"
+      skinBase64: "%petblocks_pet_itemHeadBase64%"
+  - row: 3
+    col: 5
+    item:
+      typeName: "minecraft:player_head,397"
+      durability: 3
+      displayName: "&aPet enabled"
+      skinBase64: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNTI5YjBiMmY3YzhhNWYwNjBmYjY3NDBjZmM0Y2I3OGVmYjYxZjlmMTZjOGU5NGYxYjc3MjU2N2ZkNDJjNjViYSJ9fX0="
+      lore:
+        - "&7Click to disable the pet."
+    commands:
+      - type: "PER_PLAYER"
+        command: "/petblocks despawn %petblocks_pet_name_selected%"
+      - type: "PER_PLAYER"
+        command: "/shygui close"
+  - row: 3
+    col: 5
+    item:
+      typeName: "minecraft:player_head,397"
+      durability: 3
+      displayName: "&cPet disabled"
+      skinBase64: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYWE0NGRhMGFmOTBhY2I2MDdlYWIyOGYyODc5ODUwNGE3MzE4OTM3YTE1N2ZiM2EwM2UxNDdhZTcwZTM1MzFjZSJ9fX0="
+      lore:
+        - "&7Click to enable the pet."
+    condition:
+      type: "STRING_EQUALS"
+      left: "%petblocks_pet_isSpawned_selected%"
+      right: "false"
+    commands:
+      - type: "PER_PLAYER"
+        command: "/petblocks spawn %petblocks_pet_name_selected%"
+      - type: "PER_PLAYER"
+        command: "/shygui close"
+  - row: 6
+    col: 5
+    item:
+      typeName: "minecraft:barrier,60"
+      displayName: "&cClose"
+      lore:
+        - "&7Closes the current window."
+    commands:
+      - type: "PER_PLAYER"
+        command: "/shygui close"
+  - row: 4
+    col: 4
+    item:
+      typeName: "minecraft:saddle"
+      displayName: "&eRide Pet"
+      lore:
+        - "&7Click to ride your pet."
+    commands:
+      - type: "PER_PLAYER"
+        command: "/shygui close"
+      - type: "PER_PLAYER"
+        command: "/petblocks ride %petblocks_pet_name_selected%"
+  - row: 4
+    col: 4
+    item:
+      typeName: "minecraft:saddle"
+      displayName: "&eDismount Pet"
+      lore:
+        - "&7Click to dismount your pet."
+    condition:
+      type: "STRING_EQUALS"
+      left: "%petblocks_pet_isMounted%"
+      right: "true"
+    commands:
+      - type: "PER_PLAYER"
+        command: "/shygui close"
+      - type: "PER_PLAYER"
+        command: "/petblocks unmount %petblocks_pet_name_selected%"
+
