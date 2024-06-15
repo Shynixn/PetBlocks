@@ -47,10 +47,7 @@ class PetBlocksPlaceHolderApiProvider @Inject constructor(
     }
 
     override fun resolvePlaceHolder(player: Player, input: String, parameters: Map<String, Any>): String {
-        val resolvedInput = placeHolderService.resolvePlaceHolder(
-            player, input, emptyMap()
-        )
-        return PlaceholderAPI.setPlaceholders(player, resolvedInput)
+        return PlaceholderAPI.setPlaceholders(player, input)
     }
 
     override fun getIdentifier(): String {
