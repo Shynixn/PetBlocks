@@ -33,8 +33,8 @@ dependencies {
     // Library dependencies with legacy compatibility, we can use more up-to-date version in the plugin.yml
     implementation("com.github.shynixn.mccoroutine:mccoroutine-bukkit-api:2.16.0")
     implementation("com.github.shynixn.mccoroutine:mccoroutine-bukkit-core:2.16.0")
-    implementation("com.github.shynixn.mccoroutine:mccoroutine-folia-api:2.16.0")
-    implementation("com.github.shynixn.mccoroutine:mccoroutine-folia-core:2.16.0")
+    runtimeOnly("com.github.shynixn.mccoroutine:mccoroutine-folia-api:2.16.0")
+    runtimeOnly("com.github.shynixn.mccoroutine:mccoroutine-folia-core:2.16.0")
     implementation("com.google.inject:guice:5.0.1")
     implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.3.0")
     implementation("com.fasterxml.jackson.core:jackson-databind:2.2.3")
