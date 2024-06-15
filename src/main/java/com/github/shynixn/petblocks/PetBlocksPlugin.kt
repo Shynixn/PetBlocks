@@ -123,12 +123,15 @@ class PetBlocksPlugin : JavaPlugin() {
         // Register PlaceHolders
         val placeholderService = shyGuiModule.getService<PlaceHolderService>()
         placeholderService.registerProvider(ShyGUIPlaceHolderProvider(shyGuiModule.getService<Plugin>()))
-        placeholderService.registerProvider(PetBlocksPlaceHolderProvider())
+        placeholderService.registerProvider(
+            PetBlocksPlaceHolderProvider(
+                mainModule.getService<CachePlayerRepository<PlayerInformation>>(),
+                mainModule.getService<PetService>()
+            )
+        )
         placeholderService.registerPlaceHolderApiProvider {
             PetBlocksPlaceHolderApiProvider(
-                shyGuiModule.getService<Plugin>(),
-                shyGuiModule.getService<PetService>(),
-                shyGuiModule.getService<CachePlayerRepository<PlayerInformation>>(),
+                mainModule.getService<Plugin>(),
                 shyGuiModule.getService<PlaceHolderService>(),
             )
         }
@@ -237,11 +240,11 @@ class PetBlocksPlugin : JavaPlugin() {
 
         // Register Dependencies
         Bukkit.getServicesManager().register(
-                GUIMenuService::class.java, shyGuiModule.getService<GUIMenuService>(), this, ServicePriority.Normal
-            )
+            GUIMenuService::class.java, shyGuiModule.getService<GUIMenuService>(), this, ServicePriority.Normal
+        )
 
         val plugin = this
-        plugin.launch {
+        runBlocking { // Needs to be runBlocking otherwise command is not registered.
             plugin.logger.log(Level.INFO, "Registering GUI commands...")
             commandExecutor.registerGuiCommands()
             plugin.logger.log(Level.INFO, "Registered GUI commands.")

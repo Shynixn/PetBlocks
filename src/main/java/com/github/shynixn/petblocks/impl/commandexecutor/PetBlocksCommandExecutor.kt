@@ -723,7 +723,6 @@ class PetBlocksCommandExecutor @Inject constructor(
                 permission(Permission.RELOAD)
                 toolTip { PetBlocksLanguage.reloadCommandHint }
                 builder().execute { sender ->
-                    petMetaRepository.clearAll()
                     templateRepository.clearCache()
                     plugin.saveDefaultConfig()
                     plugin.reloadConfig()

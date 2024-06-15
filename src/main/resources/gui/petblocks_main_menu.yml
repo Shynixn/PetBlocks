@@ -10,7 +10,7 @@ updateIntervalTicks: 100
 # Optional command for directly opening this menu. You can remove this if you do not need a dedicated command for this menu.
 command:
   # Required unique command identifier.
-  command: "petblocksmenu"
+  command: "petblock"
   # Required Permission required to execute this command.
   permission: "petblocks.command"
   # Required arbitrary help usage.
@@ -19,7 +19,7 @@ command:
   description: "Opens the main menu of PetBlocks."
   # Optional aliases for the command.
   aliases:
-    - "petblock"
+    - "petblockmenu"
 
 # All items which are rendered inside the inventory. You need to specify the item you want to display and the position.
 # For more complex GUIs, you may want to show different items on the same position depending on a certain condition:
@@ -43,8 +43,8 @@ items:
     item:
       typeName: "%petblocks_pet_itemType_selected%"
       displayName: "%petblocks_pet_displayName_selected%"
-      skinBase64: "%petblocks_pet_itemHeadBase64%"
-  - row: 3
+      skinBase64: "%petblocks_pet_itemHeadBase64_selected%"
+  - row: 2
     col: 5
     item:
       typeName: "minecraft:player_head,397"
@@ -57,8 +57,8 @@ items:
       - type: "PER_PLAYER"
         command: "/petblocks despawn %petblocks_pet_name_selected%"
       - type: "PER_PLAYER"
-        command: "/shygui close"
-  - row: 3
+        command: "/petblocksgui close"
+  - row: 2
     col: 5
     item:
       typeName: "minecraft:player_head,397"
@@ -75,7 +75,7 @@ items:
       - type: "PER_PLAYER"
         command: "/petblocks spawn %petblocks_pet_name_selected%"
       - type: "PER_PLAYER"
-        command: "/shygui close"
+        command: "/petblocksgui close"
   - row: 6
     col: 5
     item:
@@ -85,33 +85,101 @@ items:
         - "&7Closes the current window."
     commands:
       - type: "PER_PLAYER"
-        command: "/shygui close"
-  - row: 4
-    col: 4
+        command: "/petblocksgui close"
+  - row: 5
+    col: 8
     item:
-      typeName: "minecraft:saddle"
+      typeName: "minecraft:saddle,329"
       displayName: "&eRide Pet"
       lore:
         - "&7Click to ride your pet."
     commands:
       - type: "PER_PLAYER"
-        command: "/shygui close"
+        command: "/petblocksgui close"
       - type: "PER_PLAYER"
         command: "/petblocks ride %petblocks_pet_name_selected%"
-  - row: 4
-    col: 4
+  - row: 5
+    col: 8
     item:
-      typeName: "minecraft:saddle"
+      typeName: "minecraft:saddle,329"
       displayName: "&eDismount Pet"
       lore:
         - "&7Click to dismount your pet."
     condition:
       type: "STRING_EQUALS"
-      left: "%petblocks_pet_isMounted%"
+      left: "%petblocks_pet_isMounted_selected%"
       right: "true"
     commands:
       - type: "PER_PLAYER"
-        command: "/shygui close"
+        command: "/petblocksgui close"
       - type: "PER_PLAYER"
         command: "/petblocks unmount %petblocks_pet_name_selected%"
+  - row: 4
+    col: 5
+    item:
+      typeName: "minecraft:lead,420"
+      displayName: "&eCall Pet"
+      lore:
+        - "&7Click to call your pet."
+    commands:
+      - type: "PER_PLAYER"
+        command: "/petblocksgui close"
+      - type: "PER_PLAYER"
+        command: "/petblocks call %petblocks_pet_name_selected%"
+  - row: 2
+    col: 8
+    item:
+      typeName: "minecraft:player_head,397"
+      durability: 3
+      skinBase64: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYWRhNjVjMjViMTViMmQwZTU4MTYzMTM2OGZhNTU1Njc1OWNkZmM0MzcyMzEyN2NiYjEwYmFkNmFmMjRkZjcxMyJ9fX0="
+      displayName: "&eHat Pet"
+      lore:
+        - "&7Click to wear your pet like a hat"
+    commands:
+      - type: "PER_PLAYER"
+        command: "/petblocksgui close"
+      - type: "PER_PLAYER"
+        command: "/petblocks hat %petblocks_pet_name_selected%"
+  - row: 2
+    col: 8
+    item:
+      typeName: "minecraft:player_head,397"
+      durability: 3
+      skinBase64: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYWRhNjVjMjViMTViMmQwZTU4MTYzMTM2OGZhNTU1Njc1OWNkZmM0MzcyMzEyN2NiYjEwYmFkNmFmMjRkZjcxMyJ9fX0="
+      displayName: "&eHat Pet"
+      lore:
+        - "&7Click to dismount your pet."
+    condition:
+      type: "STRING_EQUALS"
+      left: "%petblocks_pet_isMounted_selected%"
+      right: "true"
+    commands:
+      - type: "PER_PLAYER"
+        command: "/petblocksgui close"
+      - type: "PER_PLAYER"
+        command: "/petblocks unmount %petblocks_pet_name_selected%"
+  - row: 5
+    col: 2
+    item:
+      typeName: "minecraft:name_tag,421"
+      displayName: "&eRename Pet"
+      lore:
+        - "&7Click to rename the pet."
+    commands:
+      - type: "PER_PLAYER"
+        command: "/petblocksgui close"
+      - type: "SERVER_PER_PLAYER"
+        command: '/tellraw Shynixn {"text":"","extra":[{"text":"[&9PetBlocks&f] &e<<Click me>> &fto rename your pet.","clickEvent":{"action":"suggest_command","value":"/petblocks rename %petblocks_pet_name_selected% "}}]}'
+  - row: 2
+    col: 2
+    item:
+      typeName: "minecraft:player_head,397"
+      durability: 3
+      skinBase64: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZDU0ODA0NmRkNmZhMDc3MzBjM2ZiYjRlY2JlNWMxYTM0MDYyOTc0NDgwNmY4ODE0NjUzZDZhYTc1YTkwMzJjNCJ9fX0="
+      displayName: "&6Pet Skins"
+      lore:
+        - "&7Click to open the pet skins menu."
+    commands:
+      - type: "PER_PLAYER"
+        command: "/petblocksgui next petblocks_skins_menu"
 

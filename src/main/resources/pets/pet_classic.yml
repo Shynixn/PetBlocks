@@ -108,7 +108,7 @@ events:
         level: "PLAYER"
         run:
           - "/petblocks select %petblocks_pet_name%"
-          - "/dm open petblocks_menu %petblocks_eventPlayer_name%"
+          - "/petblock"
 
 #
 # Defines the action a pet should perform in an interval on its own.

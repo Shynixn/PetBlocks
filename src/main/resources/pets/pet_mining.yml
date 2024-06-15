@@ -110,6 +110,7 @@ events:
           - "/petblocks cancel %petblocks_pet_name% %petblocks_owner_name%"
           - "/petblocks lookatowner %petblocks_pet_name% %petblocks_owner_name%"
           - "/petblocks loop %petblocks_pet_name% idle %petblocks_owner_name%"
+          - "/petblock"
       - name: "Start to mine tunnel on rightclick with pickaxe"
         condition:
           type: JAVASCRIPT
