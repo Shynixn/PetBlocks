@@ -13,8 +13,8 @@ object PetBlocksLanguage {
   /** [&9PetBlocks&f] &cLoop %1$1s not found. **/
   var petLoopNotFound : String = "[&9PetBlocks&f] &cLoop %1$1s not found."
 
-  /** [&9PetBlocks&f] Selected pet %1$1s. **/
-  var petSelectedMessage : String = "[&9PetBlocks&f] Selected pet %1$1s."
+  /**  **/
+  var petSelectedMessage : String = ""
 
   /** Changes the head material to player_head and sets the texture url from a skin loaded by the HeadDatabase plugin. **/
   var skinHeadDatabaseCommandHint : String = "Changes the head material to player_head and sets the texture url from a skin loaded by the HeadDatabase plugin."
