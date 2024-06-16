@@ -18,7 +18,7 @@
       
       
       <link rel="icon" href="../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.0, mkdocs-material-9.5.25">
+      <meta name="generator" content="mkdocs-1.6.0, mkdocs-material-9.5.26">
     
     
       
@@ -135,7 +135,7 @@
       
     </form>
     <div class="md-search__output">
-      <div class="md-search__scrollwrap" data-md-scrollfix>
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
         <div class="md-search-result" data-md-component="search-result">
           <div class="md-search-result__meta">
             Initializing search
@@ -711,13 +711,9 @@ The player requires the minimum <code>petblocks.pet.spawn</code> to see their pe
 <code>plugins/PetBlocks/pets/pet_classic.yml</code>. Set <code>pet/spawned</code> to <code>true</code> or <code>false</code>.</p>
 <h2 id="receiving-pets-using-a-shop">Receiving pets using a shop</h2>
 <p>There are many ways how you can handle it. These are just examples below:</p>
-<div class="admonition note">
-<p class="admonition-title">Building GUIS with DeluxeMenu</p>
-<p>PetBlocks distributes premade DeluxeMenu based inventories, which may help you design your own inventories. See the GUI page for more details.</p>
-</div>
 <h4 id="option-1-just-selling-skins-for-your-pet-easy">Option 1 - Just selling skins for your pet (easy)</h4>
 <ol>
-<li>Build a shop GUI using an external GUI plugin. (e.g. DeluxeMenu).</li>
+<li>Build a shop GUI</li>
 <li>Keep the receive pet on join settings, the player should receive a pet everytime. </li>
 <li>Invent a new permission for each pet you would like to sell like <code>petblocks.pettype.&lt;yourpettype&gt;</code> e.g. <code>petblocks.pettype.pikachu</code>.</li>
 <li>Once a player buys the item in your shop, give them your newly invented permission e.g. <code>petblocks.pettype.pikachu</code></li>
@@ -726,23 +722,17 @@ The player requires the minimum <code>petblocks.pet.spawn</code> to see their pe
 </ol>
 <div class="highlight"><pre><span></span><code>/petblocks skinbase64 pet eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOTdlYmNlZjQ2ODNjZGI3MTYzZTk2OWU0ZTIyNjlmMzY3M2E1ZDVlNmI3OGUwNmZhZWU0NWJjZjdjNDljMzk3In19fQ== %petblocks_owner_name%
 </code></pre></div>
-<p>DeluxeMenu e.g.:
-<div class="highlight"><pre><span></span><code>[console] petblocks skinbase64 %petblocks_pet_name_selected% eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOTdlYmNlZjQ2ODNjZGI3MTYzZTk2OWU0ZTIyNjlmMzY3M2E1ZDVlNmI3OGUwNmZhZWU0NWJjZjdjNDljMzk3In19fQ== %petblocks_owner_name%
-</code></pre></div></p>
 <h4 id="option-2-state-handling-of-pets-hard">Option 2 - State handling of pets (hard)</h4>
 <ol>
-<li>Build a shop GUI using an external GUI plugin. (e.g. DeluxeMenu).</li>
+<li>Build a shop GUI</li>
 <li>Disable receive pet on join like shown above</li>
 <li>Invent a new permission for each pet you would like to sell like <code>petblocks.pettype.&lt;yourpettype&gt;</code> e.g. <code>petblocks.pettype.pikachu</code>. </li>
 <li>Once a player buys the item in your shop, give them your new invented permission e.g. <code>petblocks.pettype.pikachu</code></li>
-<li>Build a pet management GUI using an external GUI plugin (e.g. DeluxeMenu).</li>
+<li>Build a pet management GUI</li>
 <li>Create a new item which is only visible if the player has obtained the e.g. <code>petblocks.pettype.pikachu</code> permission.</li>
 <li>When the player clicks on that item, execute the following command with server level permission:</li>
 </ol>
 <div class="highlight"><pre><span></span><code>/petblocks create &lt;petName&gt; &lt;templateName&gt; %petblocks_owner_name%
-</code></pre></div>
-<p>DeluxeMenu e.g.:</p>
-<div class="highlight"><pre><span></span><code>[console] petblocks create pet classic %petblocks_owner_name%
 </code></pre></div>
 <p>Executing the create command multiple times is fine, it does not do anything if the pet already exists.</p>
 <h4 id="option-3-free-creationdeletion-of-pets-for-players-easy">Option 3 - Free creation/deletion of pets for players (easy)</h4>
@@ -755,7 +745,7 @@ petblocks.pet.amount.1
 </code></pre></div>
 <ol>
 <li>Disable receive pet on join like shown above</li>
-<li>Build a shop GUI using an external GUI plugin. (e.g. DeluxeMenu).</li>
+<li>Build a shop GUI</li>
 <li>Once a player buys the item in your shop, give them the permission to the petblocks template e.g. <code>petblocks.pet.template.classic</code>.</li>
 <li>Let the player freely execute <code>/petblocks create &lt;petName&gt; classic</code> and  <code>/petblocks delete &lt;petName&gt;</code> . You can also setup this in a GUI.</li>
 </ol>
@@ -845,7 +835,7 @@ petblocks.pet.amount.1
     <script id="__config" type="application/json">{"base": "..", "features": ["navigation.instant", "navigation.tabs", "content.tabs.link", "content.code.copy", "navigation.footer"], "search": "../assets/javascripts/workers/search.b8dbb3d2.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
     
     
-      <script src="../assets/javascripts/bundle.081f42fc.min.js"></script>
+      <script src="../assets/javascripts/bundle.ad660dcc.min.js"></script>
       
     
   </body>
