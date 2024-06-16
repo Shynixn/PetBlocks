@@ -7,7 +7,7 @@ import com.github.shynixn.mccoroutine.bukkit.ticks
 import com.github.shynixn.mcutils.common.ConfigurationService
 import com.github.shynixn.mcutils.common.Version
 import com.github.shynixn.mcutils.common.physic.PhysicObjectService
-import com.github.shynixn.mcutils.packet.api.event.PacketEvent
+import com.github.shynixn.mcutils.packet.api.event.PacketAsyncEvent
 import com.github.shynixn.mcutils.packet.api.meta.enumeration.InteractionType
 import com.github.shynixn.mcutils.packet.api.packet.PacketInInteractEntity
 import com.github.shynixn.mcutils.packet.api.packet.PacketInSteerVehicle
@@ -95,22 +95,26 @@ class PetListener @Inject constructor(
     }
 
     @EventHandler
-    fun onPacketEvent(event: PacketEvent) {
+    fun onPacketEvent(event: PacketAsyncEvent) {
         val packet = event.packet
 
         if (packet is PacketInSteerVehicle) {
-            val physicObject = physicObjectService.findPhysicObjectById(packet.entityId) as PetEntityImpl?
-            physicObject?.ride(event.player, packet.forward, packet.isJumping)
+            plugin.launch {
+                val physicObject = physicObjectService.findPhysicObjectById(packet.entityId) as PetEntityImpl?
+                physicObject?.ride(event.player, packet.forward, packet.isJumping)
+            }
             return
         }
 
         if (packet is PacketInInteractEntity) {
-            val physicObject = physicObjectService.findPhysicObjectById(packet.entityId) as PetEntityImpl? ?: return
+            plugin.launch {
+                val physicObject = physicObjectService.findPhysicObjectById(packet.entityId) as PetEntityImpl? ?: return@launch
 
-            if (packet.actionType == InteractionType.LEFT_CLICK) {
-                physicObject.leftClick(event.player)
-            } else if (packet.actionType == InteractionType.OTHER) {
-                physicObject.rightClick(event.player)
+                if (packet.actionType == InteractionType.LEFT_CLICK) {
+                    physicObject.leftClick(event.player)
+                } else if (packet.actionType == InteractionType.OTHER) {
+                    physicObject.rightClick(event.player)
+                }
             }
         }
     }

@@ -16,6 +16,10 @@ commands:
     aliases:
       - "pet"
       - "pets"
+  petblocksgui:
+    aliases:
+      - "petmenu"
+      - "petgui"
 
 ############################
 # Script Engine

@@ -4,15 +4,16 @@ import com.github.shynixn.mccoroutine.bukkit.launch
 import com.github.shynixn.mcutils.common.*
 import com.github.shynixn.mcutils.common.item.ItemService
 import com.github.shynixn.mcutils.common.physic.PhysicComponent
+import com.github.shynixn.mcutils.common.placeholder.PlaceHolderService
 import com.github.shynixn.mcutils.packet.api.*
 import com.github.shynixn.mcutils.packet.api.meta.enumeration.ArmorSlotType
 import com.github.shynixn.mcutils.packet.api.meta.enumeration.EntityType
 import com.github.shynixn.mcutils.packet.api.packet.*
 import com.github.shynixn.petblocks.contract.Pet
-import com.github.shynixn.petblocks.contract.PlaceHolderService
 import com.github.shynixn.petblocks.entity.PetMeta
 import com.github.shynixn.petblocks.enumeration.PetRidingState
 import com.github.shynixn.petblocks.enumeration.PetVisibility
+import com.github.shynixn.petblocks.impl.provider.PetBlocksPlaceHolderProvider
 import org.bukkit.Location
 import org.bukkit.entity.Player
 import org.bukkit.plugin.Plugin
@@ -70,7 +71,7 @@ class ArmorstandEntityComponent(
             it.isArmorstandSmall = true
             it.isInvisible = !petMeta.isEntityVisible
             it.customNameVisible = true
-            it.customname = placeHolderService.replacePlaceHolders(pet.player, petMeta.displayName, pet)
+            it.customname = placeHolderService.resolvePlaceHolder(pet.player, petMeta.displayName, mapOf(PetBlocksPlaceHolderProvider.petKey to pet))
         })
     }
 

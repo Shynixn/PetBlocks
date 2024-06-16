@@ -3,12 +3,12 @@ package com.github.shynixn.petblocks.impl.service
 import com.github.shynixn.mccoroutine.bukkit.scope
 import com.github.shynixn.mcutils.common.ConfigurationService
 import com.github.shynixn.mcutils.common.item.ItemService
+import com.github.shynixn.mcutils.common.placeholder.PlaceHolderService
 import com.github.shynixn.mcutils.common.repository.Repository
 import com.github.shynixn.mcutils.database.api.CachePlayerRepository
 import com.github.shynixn.petblocks.contract.Pet
 import com.github.shynixn.petblocks.contract.PetEntityFactory
 import com.github.shynixn.petblocks.contract.PetService
-import com.github.shynixn.petblocks.contract.PlaceHolderService
 import com.github.shynixn.petblocks.entity.PetMeta
 import com.github.shynixn.petblocks.entity.PetSpawnResult
 import com.github.shynixn.petblocks.entity.PetTemplate
@@ -175,7 +175,7 @@ class PetServiceImpl @Inject constructor(
         val petMeta = PetMeta()
         petMeta.name = name
         petMeta.template = templateId
-        petMeta.displayName = placeHolderService.replacePlaceHolders(player, template.pet.displayName, null)
+        petMeta.displayName = placeHolderService.resolvePlaceHolder(player, template.pet.displayName, emptyMap())
         petMeta.isSpawned = template.pet.spawned
         petMeta.visibility = template.pet.visibility
         petMeta.ridingState = template.pet.ridingState

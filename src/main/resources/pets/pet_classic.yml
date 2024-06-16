@@ -99,7 +99,7 @@ events:
           - "/petblocks velocity %petblocks_pet_name% %petblocks_js_jsonKnockback_x% 0.2 %petblocks_js_jsonKnockback_z% %petblocks_eventPlayer_name%"
   rightClick:
     actions:  # You can add/remove actions as you want here.
-      - name: "Open the DeluxeMenu based pet inventory" #  You need to install the plugin DeluxeMenu for this to work and copy the premade PetBlocks inventory from the thirdparty folder.
+      - name: "Open the pet GUI"
         condition:
           type: STRING_EQUALS
           left: "%petblocks_eventPlayer_name%"
@@ -108,7 +108,7 @@ events:
         level: "PLAYER"
         run:
           - "/petblocks select %petblocks_pet_name%"
-          - "/dm open petblocks_menu %petblocks_eventPlayer_name%"
+          - "/petblock"
 
 #
 # Defines the action a pet should perform in an interval on its own.

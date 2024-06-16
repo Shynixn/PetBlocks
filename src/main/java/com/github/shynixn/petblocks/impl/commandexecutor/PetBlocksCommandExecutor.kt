@@ -1,14 +1,12 @@
 package com.github.shynixn.petblocks.impl.commandexecutor
 
-import com.github.shynixn.mcutils.common.ConfigurationService
+import com.github.shynixn.mccoroutine.bukkit.launch
+import com.github.shynixn.mcutils.common.*
 import com.github.shynixn.mcutils.common.chat.ChatMessageService
 import com.github.shynixn.mcutils.common.command.*
 import com.github.shynixn.mcutils.common.item.Item
 import com.github.shynixn.mcutils.common.item.ItemService
 import com.github.shynixn.mcutils.common.repository.CacheRepository
-import com.github.shynixn.mcutils.common.toLocation
-import com.github.shynixn.mcutils.common.toVector3d
-import com.github.shynixn.mcutils.common.translateChatColors
 import com.github.shynixn.mcutils.database.api.CachePlayerRepository
 import com.github.shynixn.petblocks.PetBlocksDependencyInjectionModule
 import com.github.shynixn.petblocks.PetBlocksLanguage
@@ -37,7 +35,7 @@ import java.util.*
 class PetBlocksCommandExecutor @Inject constructor(
     private val petService: PetService,
     private val templateRepository: CacheRepository<PetTemplate>,
-    plugin: Plugin,
+    private val plugin: Plugin,
     private val configurationService: ConfigurationService,
     chatMessageService: ChatMessageService,
     private val petMetaRepository: CachePlayerRepository<PlayerInformation>,
@@ -52,6 +50,13 @@ class PetBlocksCommandExecutor @Inject constructor(
             Bukkit.getServicesManager().load(DependencyHeadDatabaseService::class.java)
         } catch (e: Exception) {
             null
+        }
+    }
+    private val coroutineExecutor = object : CoroutineExecutor {
+        override fun execute(f: suspend () -> Unit) {
+            plugin.launch {
+                f.invoke()
+            }
         }
     }
     private val manipulateOtherPermission: () -> String = {
@@ -266,7 +271,7 @@ class PetBlocksCommandExecutor @Inject constructor(
     }
 
     init {
-        val commandBuilder = CommandBuilder(plugin, "petblocks", chatMessageService) {
+        val commandBuilder = CommandBuilder(plugin, coroutineExecutor, "petblocks", chatMessageService) {
             usage(PetBlocksLanguage.commandUsage)
             description(PetBlocksLanguage.commandDescription)
             aliases(plugin.config.getStringList("commands.petblocks.aliases"))
@@ -459,11 +464,15 @@ class PetBlocksCommandExecutor @Inject constructor(
                 toolTip { PetBlocksLanguage.skinTypeCommandHint }
                 builder().argument("name").tabs(petNamesTabs).argument("material").validator(materialMustExist)
                     .tabs(materialTabs).executePlayer(senderHasToBePlayer) { player, name, material ->
-                        setSkinType(player, petMustExist(player, name), material)
+                        setSkinType(player, petMustExist(player, name), material, 0)
+                    }
+                    .argument("durability").validator(mustBeInt)
+                    .tabs(materialTabs).executePlayer(senderHasToBePlayer) { player, name, material, durability ->
+                        setSkinType(player, petMustExist(player, name), material, durability)
                     }.argument("player").validator(playerMustExist).tabs(onlinePlayerTabs)
                     .permission(manipulateOtherPermission).permissionMessage(manipulateOtherPermissionMessage)
-                    .execute { commandSender, name, material, player ->
-                        setSkinType(commandSender, petMustExist(player, name), material)
+                    .execute { commandSender, name, material, durability, player ->
+                        setSkinType(commandSender, petMustExist(player, name), material, durability)
                     }
             }
             subCommand("skinnbt") {
@@ -714,6 +723,18 @@ class PetBlocksCommandExecutor @Inject constructor(
                         snap(commandSender, petMustExist(player, name))
                     }
             }
+            subCommand("reload") {
+                permission(Permission.RELOAD)
+                toolTip { PetBlocksLanguage.reloadCommandHint }
+                builder().execute { sender ->
+                    templateRepository.clearCache()
+                    plugin.saveDefaultConfig()
+                    plugin.reloadConfig()
+                    configurationService.reload()
+                    Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), "petblocksgui reload")
+                    sender.sendMessage(PetBlocksLanguage.reloadMessage)
+                }
+            }
         }
         commandBuilder.build()
     }
@@ -807,9 +828,10 @@ class PetBlocksCommandExecutor @Inject constructor(
         sender.sendPluginMessage(String.format(PetBlocksLanguage.petVelocityAppliedMessage, pet.name))
     }
 
-    private fun setSkinType(sender: CommandSender, pet: Pet, material: String) {
+    private fun setSkinType(sender: CommandSender, pet: Pet, material: String, durability: Int) {
         val item = pet.headItem
         item.typeName = material
+        item.durability = durability.toString()
         pet.headItem = item
         sender.sendPluginMessage(String.format(PetBlocksLanguage.petSkinTypeChangedMessage, pet.name))
     }
@@ -852,6 +874,7 @@ class PetBlocksCommandExecutor @Inject constructor(
         val headItem = pet.headItem
         headItem.typeName = "minecraft:player_head,397"
         headItem.skinBase64 = base64EncodedSkinUrl
+        headItem.durability = 3.toString()
         pet.headItem = headItem
         sender.sendPluginMessage(String.format(PetBlocksLanguage.petSkinNbtChanged, pet.name))
     }

@@ -14,11 +14,19 @@ petblocks moveto pet 250 5 300 0.2 Steve98
 
 !!! note "Removing the pet under certain conditions"
     You can always take a way the ``petblocks.pet.spawn`` permission to remove the pet from players, if they enter certain areas (e.g. joining minigames, entering regions, etc.)
-      
+
+## Command /petblock
+
+**Required Permission:**
+``
+petblocks.command
+``
+
+### /petblock
+
+Opens the main GUI of petblocks. You can configure this command in the ``gui/petblocks_main_menu.yml`` file.
 
 ## Command /petblocks
-
-PetBlocks does only have 1 command, which is restricted using permissions.
 
 **Required Permission:**
 ``
@@ -189,13 +197,14 @@ Launches the pet into the given direction.
 ### /petblocks skintype
 
 ```
-/petblocks skintype <name> <material> [player]"
+/petblocks skintype <name> <material> [durability] [player]"
 ```
 
 Changes the material used as a head. 
 
 * Name: Identifier of a pet
 * Material: Minecraft material name e.g. STONE
+* Durability of the type. Only used in old minecraft versions < 1.16.5. Set it to 0 in modern minecraft versions.
 * Player: Optional player_name/player_UUID parameter targeting a player from the console or command block.
 
 ### /petblocks skinnbt
@@ -453,3 +462,80 @@ Changes the offset of the body of the entity to the ground. Useful when configur
 * Name: Identifier of a pet
 * Offset: A numeric comma value. e.g. 0.3, -0.3, 1.0
 * Player: Optional player_name/player_UUID parameter targeting a player from the console or command block.
+
+## Command /petblocksgui
+
+**Required Permission:**
+``
+petblocks.command
+``
+
+### /petblocksgui open
+
+```
+/petblocksgui open <name> [arguments.../player]
+```
+
+Starts a new GUI session and opens the GUI with the given name for the executing player. If any other GUIs were open when executing this command, they get discarded from the navigation history.
+
+* Name: Identifier of a GUI menu
+* Argument/Player: Optional arguments to provide the GUI with additional arguments and optionally a player to open the GUI for.
+
+Samples:
+
+* Opens the inventory for the executing player.
+
+```
+/petblocksgui open simple_sample_menu
+```
+
+* Opens the inventory for the player named "Pikachu".
+* The slash separates arguments with the player name (in this case there are 0 arguments)
+
+```
+/petblocksgui open simple_sample_menu / Pikachu
+```
+
+* Opens the inventory with additional arguments which can be accessed via the placeholders. ``%petblocks_gui_param1%`` is now ``123456``.
+
+```
+/petblocksgui open simple_sample_menu 123456
+```
+
+* Opens the inventory with additional arguments which can be accessed via the placeholders for the player named "Pikachu". ``%petblocks_gui_param1%`` is now ``123456`` ``%petblocks_gui_param2%`` is now ``abcde``.
+* The slash separates arguments with the player name
+
+```
+/petblocksgui open simple_sample_menu 123456 abcde / Pikachu
+```
+
+### /petblocksgui next
+
+```
+/petblocksgui next <name> [arguments.../player]
+```
+
+Reuses the existing GUI session (or starts a new one if it is not available) and opens the GUI with the given name for the executing player. If any other GUIs were open when executing this command, they get put into the navigation history. Executing ``/petblocksgui back`` reopens the previous GUI.
+
+* Name: Identifier of a GUI menu
+* Argument/Player: Optional arguments to provide the GUI with additional arguments. See the open command for samples.
+
+### /petblocksgui back
+
+```
+/petblocksgui back [player]
+```
+
+Checks if the current GUI session contains a previously opened GUI. If that is the case, the previous GUI is opened and the current GUI is discarded. If not GUI is found, the current GUI is simply closed.
+
+* Player: Optional player argument to execute the action for another player.
+
+### /petblocksgui close
+
+```
+/petblocksgui close [player]
+```
+
+Closes the current GUI and clears the GUI session and navigation history.
+
+* Player: Optional player argument to execute the action for another player.

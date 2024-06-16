@@ -40,4 +40,5 @@ enum class Permission(val text: String) {
     // Dynamic
     DYN_AMOUNT("petblocks.pet.amount."),
     DYN_TEMPLATE("petblocks.pet.template."),
+    DYN_GUI("petblocks.gui."),
 }
