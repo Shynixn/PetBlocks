@@ -20,7 +20,7 @@ Example for static values are ``name``, ``version`` and all initial pet settings
 
 Events define what happens on certain events. Currently only leftClick and rightClick on the pet is supported. These
 actions get
-executed when a player left clicks on the pet. However, it may not be the owner, who clicks on a pet, therefore it needs
+executed when a player left-clicks on the pet. However, it may not be the owner, who clicks on a pet, therefore it needs
 to be checked if you only want to allow certain actions for the owner of the pet.
 
 Example:
@@ -29,7 +29,7 @@ Example:
 events:
   rightClick:
     actions:  # You can add/remove actions as you want here.
-      - name: "Open the DeluxeMenu based pet inventory" #  You need to install the plugin DeluxeMenu for this to work and copy the premade PetBlocks inventory from the thirdparty folder.
+      - name: "Open the pet GUI" 
         condition:
           type: STRING_EQUALS
           left: "%petblocks_eventPlayer_name%"
@@ -38,7 +38,7 @@ events:
         level: "PLAYER"
         run:
           - "/petblocks select %petblocks_pet_name%"
-          - "/dm open petblocks_menu %petblocks_eventPlayer_name%"
+          - "/petblock"
 ```
 
 If you want to execute nothing when the player rightClicks on the pet, remove all actions.

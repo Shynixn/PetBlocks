@@ -42,13 +42,9 @@ In order to configure, if the pet should automatically spawn in front of the pla
 
 There are many ways how you can handle it. These are just examples below:
 
-!!! note "Building GUIS with DeluxeMenu"
-    PetBlocks distributes premade DeluxeMenu based inventories, which may help you design your own inventories. See the GUI page for more details.
-      
-
 #### Option 1 - Just selling skins for your pet (easy)
 
-1. Build a shop GUI using an external GUI plugin. (e.g. DeluxeMenu).
+1. Build a shop GUI
 2. Keep the receive pet on join settings, the player should receive a pet everytime. 
 3. Invent a new permission for each pet you would like to sell like ``petblocks.pettype.<yourpettype>`` e.g. ``petblocks.pettype.pikachu``.
 4. Once a player buys the item in your shop, give them your newly invented permission e.g. ``petblocks.pettype.pikachu``
@@ -60,29 +56,18 @@ There are many ways how you can handle it. These are just examples below:
 /petblocks skinbase64 pet eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOTdlYmNlZjQ2ODNjZGI3MTYzZTk2OWU0ZTIyNjlmMzY3M2E1ZDVlNmI3OGUwNmZhZWU0NWJjZjdjNDljMzk3In19fQ== %petblocks_owner_name%
 ```
 
-DeluxeMenu e.g.:
-```
-[console] petblocks skinbase64 %petblocks_pet_name_selected% eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOTdlYmNlZjQ2ODNjZGI3MTYzZTk2OWU0ZTIyNjlmMzY3M2E1ZDVlNmI3OGUwNmZhZWU0NWJjZjdjNDljMzk3In19fQ== %petblocks_owner_name%
-```
-
 #### Option 2 - State handling of pets (hard)
 
-1. Build a shop GUI using an external GUI plugin. (e.g. DeluxeMenu).
+1. Build a shop GUI
 2. Disable receive pet on join like shown above
 3. Invent a new permission for each pet you would like to sell like ``petblocks.pettype.<yourpettype>`` e.g. ``petblocks.pettype.pikachu``. 
 4. Once a player buys the item in your shop, give them your new invented permission e.g. ``petblocks.pettype.pikachu``
-5. Build a pet management GUI using an external GUI plugin (e.g. DeluxeMenu).
+5. Build a pet management GUI
 6. Create a new item which is only visible if the player has obtained the e.g. ``petblocks.pettype.pikachu`` permission.
 7. When the player clicks on that item, execute the following command with server level permission:
 
 ```
 /petblocks create <petName> <templateName> %petblocks_owner_name%
-```
-
-DeluxeMenu e.g.:
-
-```
-[console] petblocks create pet classic %petblocks_owner_name%
 ```
 
 Executing the create command multiple times is fine, it does not do anything if the pet already exists.
@@ -98,7 +83,7 @@ petblocks.pet.amount.1
 ```
 
 2. Disable receive pet on join like shown above
-3. Build a shop GUI using an external GUI plugin. (e.g. DeluxeMenu).
+3. Build a shop GUI
 4. Once a player buys the item in your shop, give them the permission to the petblocks template e.g. ``petblocks.pet.template.classic``.
 5. Let the player freely execute ``/petblocks create <petName> classic`` and  ``/petblocks delete <petName>`` . You can also setup this in a GUI.
 
