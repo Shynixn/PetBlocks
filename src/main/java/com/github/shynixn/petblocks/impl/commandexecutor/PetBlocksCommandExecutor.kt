@@ -271,7 +271,7 @@ class PetBlocksCommandExecutor @Inject constructor(
     }
 
     init {
-        val commandBuilder = CommandBuilder(plugin, coroutineExecutor,"petblocks", chatMessageService) {
+        val commandBuilder = CommandBuilder(plugin, coroutineExecutor, "petblocks", chatMessageService) {
             usage(PetBlocksLanguage.commandUsage)
             description(PetBlocksLanguage.commandDescription)
             aliases(plugin.config.getStringList("commands.petblocks.aliases"))
@@ -464,11 +464,15 @@ class PetBlocksCommandExecutor @Inject constructor(
                 toolTip { PetBlocksLanguage.skinTypeCommandHint }
                 builder().argument("name").tabs(petNamesTabs).argument("material").validator(materialMustExist)
                     .tabs(materialTabs).executePlayer(senderHasToBePlayer) { player, name, material ->
-                        setSkinType(player, petMustExist(player, name), material)
+                        setSkinType(player, petMustExist(player, name), material, 0)
+                    }
+                    .argument("durability").validator(mustBeInt)
+                    .tabs(materialTabs).executePlayer(senderHasToBePlayer) { player, name, material, durability ->
+                        setSkinType(player, petMustExist(player, name), material, durability)
                     }.argument("player").validator(playerMustExist).tabs(onlinePlayerTabs)
                     .permission(manipulateOtherPermission).permissionMessage(manipulateOtherPermissionMessage)
-                    .execute { commandSender, name, material, player ->
-                        setSkinType(commandSender, petMustExist(player, name), material)
+                    .execute { commandSender, name, material, durability, player ->
+                        setSkinType(commandSender, petMustExist(player, name), material, durability)
                     }
             }
             subCommand("skinnbt") {
@@ -824,9 +828,10 @@ class PetBlocksCommandExecutor @Inject constructor(
         sender.sendPluginMessage(String.format(PetBlocksLanguage.petVelocityAppliedMessage, pet.name))
     }
 
-    private fun setSkinType(sender: CommandSender, pet: Pet, material: String) {
+    private fun setSkinType(sender: CommandSender, pet: Pet, material: String, durability: Int) {
         val item = pet.headItem
         item.typeName = material
+        item.durability = durability.toString()
         pet.headItem = item
         sender.sendPluginMessage(String.format(PetBlocksLanguage.petSkinTypeChangedMessage, pet.name))
     }
@@ -869,6 +874,7 @@ class PetBlocksCommandExecutor @Inject constructor(
         val headItem = pet.headItem
         headItem.typeName = "minecraft:player_head,397"
         headItem.skinBase64 = base64EncodedSkinUrl
+        headItem.durability = 3.toString()
         pet.headItem = headItem
         sender.sendPluginMessage(String.format(PetBlocksLanguage.petSkinNbtChanged, pet.name))
     }

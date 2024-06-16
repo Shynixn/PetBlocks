@@ -162,6 +162,7 @@ class PetBlocksPlaceHolderProvider(
             )
         }
         registerPetPlaceHolder(PlaceHolder.PET_ITEM_TYPE) { pet -> pet.headItemStack.type.name }
+        registerPetPlaceHolder(PlaceHolder.PET_ITEM_DURABILITY) { pet -> pet.headItemStack.durability.toString() }
         registerPetPlaceHolder(PlaceHolder.PET_ITEM_NBT) { pet ->
             if (pet.headItem.nbt == null) {
                 ""

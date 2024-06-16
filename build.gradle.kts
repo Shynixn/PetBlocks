@@ -46,8 +46,8 @@ dependencies {
 
     // Custom dependencies
     implementation("com.github.shynixn.shygui:shygui:1.0.0")
-    implementation("com.github.shynixn.mcutils:common:2024.15")
-    implementation("com.github.shynixn.mcutils:packet:2024.22")
+    implementation("com.github.shynixn.mcutils:common:2024.16")
+    implementation("com.github.shynixn.mcutils:packet:2024.25")
     implementation("com.github.shynixn.mcutils:database:2024.2")
     implementation("com.github.shynixn.mcutils:pathfinder:2024.3")
     implementation("com.github.shynixn.mcutils:guice:2024.2")
@@ -154,7 +154,7 @@ tasks.register("pluginJarPremium", com.github.jengelman.gradle.plugins.shadow.ta
     dependsOn("relocatePluginJar")
     from(zipTree(File("./build/libs/" + (tasks.getByName("relocatePluginJar") as Jar).archiveFileName.get())))
     archiveFileName.set("${archiveBaseName.get()}-${archiveVersion.get()}-premium.${archiveExtension.get()}")
-    // destinationDir = File("C:\\temp\\plugins")
+    // destinationDirectory.set(File("C:\\temp\\plugins"))
 
     exclude("com/github/shynixn/mcutils/**")
     exclude("com/github/shynixn/shygui/**")

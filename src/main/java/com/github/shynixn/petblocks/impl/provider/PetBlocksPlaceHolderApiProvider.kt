@@ -15,6 +15,7 @@ class PetBlocksPlaceHolderApiProvider @Inject constructor(
 ) : PlaceholderExpansion(),
     DependencyPlaceholderApiService, PlaceHolderProvider {
     private var registerd: Boolean = false
+    private val placeHolderApiKey = "placeholderapi"
 
     init {
         this.registerListener()
@@ -37,7 +38,7 @@ class PetBlocksPlaceHolderApiProvider @Inject constructor(
 
         try {
             return placeHolderService.resolvePlaceHolder(
-                p, "%petblocks_${params}%", emptyMap()
+                p, "%petblocks_${params}%", mapOf(placeHolderApiKey to true)
             )
         } catch (ignored: Exception) {
             ignored.printStackTrace()
@@ -47,6 +48,10 @@ class PetBlocksPlaceHolderApiProvider @Inject constructor(
     }
 
     override fun resolvePlaceHolder(player: Player, input: String, parameters: Map<String, Any>): String {
+        if (parameters.containsKey(placeHolderApiKey)) {
+            return input
+        }
+
         return PlaceholderAPI.setPlaceholders(player, input)
     }
 

@@ -189,13 +189,14 @@ Launches the pet into the given direction.
 ### /petblocks skintype
 
 ```
-/petblocks skintype <name> <material> [player]"
+/petblocks skintype <name> <material> [durability] [player]"
 ```
 
 Changes the material used as a head. 
 
 * Name: Identifier of a pet
 * Material: Minecraft material name e.g. STONE
+* Durability of the type. Only used in old minecraft versions < 1.16.5. Set it to 0 in modern minecraft versions.
 * Player: Optional player_name/player_UUID parameter targeting a player from the console or command block.
 
 ### /petblocks skinnbt

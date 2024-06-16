@@ -7,6 +7,12 @@ title: "PetBlocks"
 # How often should the GUI refresh its placeholder values and show up-to-date data. The value is in minecraft ticks. (20 ticks = 1 second)
 updateIntervalTicks: 100
 
+# Optional condition which has to be true in order to open the gui.
+condition:
+  type: "STRING_NOT_CONTAINS" # Checks if the placeholder can be resolved -> pet is spawned.
+  left: "%petblocks_pet_itemType_selected%"
+  right: "petblocks_pet_itemType_selected"
+
 # Optional command for directly opening this menu. You can remove this if you do not need a dedicated command for this menu.
 command:
   # Required unique command identifier.
@@ -42,6 +48,7 @@ items:
     col: 5
     item:
       typeName: "%petblocks_pet_itemType_selected%"
+      durability: "%petblocks_pet_itemDurability_selected%"
       displayName: "%petblocks_pet_displayName_selected%"
       skinBase64: "%petblocks_pet_itemHeadBase64_selected%"
   - row: 2
