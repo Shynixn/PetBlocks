@@ -45,7 +45,7 @@ class PetListener @Inject constructor(
             val pets = petService.getPetsFromPlayer(player)
 
             if (pets.isNotEmpty()) {
-                plugin.logger.log(Level.FINE,"Loaded [${pets.size}] pets for player ${player.name}.")
+                plugin.logger.log(Level.FINE, "Loaded [${pets.size}] pets for player ${player.name}.")
             }
 
             val petsToReceive = configurationService.findValue<List<Map<String, String>>>(petsToReceiveOnJoinKey)
@@ -108,11 +108,12 @@ class PetListener @Inject constructor(
 
         if (packet is PacketInInteractEntity) {
             plugin.launch {
-                val physicObject = physicObjectService.findPhysicObjectById(packet.entityId) as PetEntityImpl? ?: return@launch
+                val physicObject =
+                    physicObjectService.findPhysicObjectById(packet.entityId) as PetEntityImpl? ?: return@launch
 
-                if (packet.actionType == InteractionType.LEFT_CLICK) {
+                if (packet.actionType == InteractionType.ATTACK) {
                     physicObject.leftClick(event.player)
-                } else if (packet.actionType == InteractionType.OTHER) {
+                } else {
                     physicObject.rightClick(event.player)
                 }
             }
