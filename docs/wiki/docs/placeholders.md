@@ -55,3 +55,21 @@ The following placeholders are available in PetBlocks and can also be used via P
 | %petblocks_eventPlayer_locationYaw%   | Yaw rotation of the event trigger player.                          |   
 | %petblocks_eventPlayer_locationPitch% | Yaw rotation of the event trigger player.                          |   
 | %petblocks_eventPlayer_itemMainHand_type% | Name of the item type in the players's main hand           |   
+
+
+| GUI PlaceHolders                   | Description                                                |   
+|-------------------------------------------|------------------------------------------------------------|
+| %petblocks_player_name%        | Player name of the player clicking in the current inventory.          |   
+| %petblocks_player_displayName% | Player displayName of the player session in the current inventory.    |
+| %petblocks_gui_name%           | Name of the current inventory.                                        |   
+| %petblocks_gui_backName%       | Name of the previous inventory (if you have multiple sub pages)       |   
+| %petblocks_gui_param1%         | A GUI can have up to 9 parameters. This placeholders access number 1. |   
+| %petblocks_gui_param2%         | A GUI can have up to 9 parameters. This placeholders access number 2. |   
+| %petblocks_gui_param3%         | A GUI can have up to 9 parameters. This placeholders access number 3. |   
+| %petblocks_gui_param4%         | A GUI can have up to 9 parameters. This placeholders access number 4. |   
+| %petblocks_gui_param5%         | A GUI can have up to 9 parameters. This placeholders access number 5. |   
+| %petblocks_gui_param6%         | A GUI can have up to 9 parameters. This placeholders access number 6. |   
+| %petblocks_gui_param7%         | A GUI can have up to 9 parameters. This placeholders access number 7. |   
+| %petblocks_gui_param8%         | A GUI can have up to 9 parameters. This placeholders access number 8. |   
+| %petblocks_gui_param9%         | A GUI can have up to 9 parameters. This placeholders access number 9. |   
+

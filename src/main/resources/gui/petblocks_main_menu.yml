@@ -176,7 +176,7 @@ items:
       - type: "PER_PLAYER"
         command: "/petblocksgui close"
       - type: "SERVER_PER_PLAYER"
-        command: '/tellraw Shynixn {"text":"","extra":[{"text":"[&9PetBlocks&f] &e<<Click me>> &fto rename your pet.","clickEvent":{"action":"suggest_command","value":"/petblocks rename %petblocks_pet_name_selected% "}}]}'
+        command: '/tellraw %petblocks_player_name% {"text":"","extra":[{"text":"[&9PetBlocks&f] &e<<Click me>> &fto rename your pet.","clickEvent":{"action":"suggest_command","value":"/petblocks rename %petblocks_pet_name_selected% "}}]}'
   - row: 2
     col: 2
     item:
