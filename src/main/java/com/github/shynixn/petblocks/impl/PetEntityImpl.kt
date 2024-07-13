@@ -380,19 +380,6 @@ class PetEntityImpl(
     }
 
     /**
-     * If owner parameter is not null, only the owner receives packets.
-     */
-    fun updateVisibility(visibility: PetVisibility, owner: Player, location: Location) {
-        for (player in playerComponent.visiblePlayers) {
-            if (visibility == PetVisibility.OWNER && player != owner) {
-                playerComponent.onRemoveMinecraft.forEach { e -> e.invoke(player, location) }
-            } else if (visibility == PetVisibility.ALL && player != owner) {
-                playerComponent.onSpawnMinecraft.forEach { e -> e.invoke(player, location) }
-            }
-        }
-    }
-
-    /**
      * Updates the displayName in the world.
      */
     fun updateMetaData() {

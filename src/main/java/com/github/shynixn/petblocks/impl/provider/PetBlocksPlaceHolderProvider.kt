@@ -68,6 +68,7 @@ class PetBlocksPlaceHolderProvider(
             )
         }
         registerPlayerPlaceHolder(PlaceHolder.PLAYER_OWNER_ITEMMAINHAND_TYPE) { player -> "minecraft:" + player.inventory.itemInMainHand.type.name.lowercase() }
+        registerPlayerPlaceHolder(PlaceHolder.PLAYER_OWNER_ISFLYING) { player -> player.isFlying.toString() }
 
         // Event Player
         registerPlayerPlaceHolder(PlaceHolder.EVENT_PLAYER_OWNER_NAME) { player: Player -> player.name }
@@ -109,6 +110,7 @@ class PetBlocksPlaceHolderProvider(
             )
         }
         registerPlayerPlaceHolder(PlaceHolder.EVENT_PLAYER_OWNER_ITEMMAINHAND_TYPE) { player -> "minecraft:" + player.inventory.itemInMainHand.type.name.lowercase() }
+        registerPlayerPlaceHolder(PlaceHolder.EVENT_PLAYER_OWNER_ISFLYING) { player -> player.isFlying.toString() }
 
         // Pet
         registerPetPlaceHolder(PlaceHolder.PET_NAME) { pet -> pet.name }

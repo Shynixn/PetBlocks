@@ -20,7 +20,7 @@ class PlayerComponent(
      * Render distance blocks.
      */
     renderDistanceBlocks: Int = 70,
-    private val pet : Pet
+    private val pet: Pet
 ) : PhysicComponent {
     var lastTimeRenderUpdate = 0L
 
@@ -38,6 +38,14 @@ class PlayerComponent(
      */
     val onRemoveMinecraft: MutableList<(Player, Location) -> Unit> = arrayListOf()
 
+    /**
+     * Forces to perform rendering logic immediately.
+     */
+    fun forceMinecraftTick() {
+        lastTimeRenderUpdate = 0L
+        tickMinecraft()
+    }
+
     override fun tickMinecraft() {
         val currentTime = Date().time
 
@@ -47,11 +55,15 @@ class PlayerComponent(
             val players = HashSet<Player>()
             val location = physicsComponent.position.toLocation()
             for (player in location.world!!.players) {
+                if (pet.visibility == PetVisibility.NOBODY) {
+                    continue
+                }
+
                 if (player.location.distanceSquared(location) <= renderVisibilityDistance) {
                     if (!visiblePlayers.contains(player)) {
-                        if( pet.visibility == PetVisibility.ALL){
+                        if (pet.visibility == PetVisibility.ALL) {
                             onSpawnMinecraft.forEach { e -> e.invoke(player, location) }
-                        }else if(pet.visibility == PetVisibility.OWNER && player == pet.player){
+                        } else if (pet.visibility == PetVisibility.OWNER && player == pet.player) {
                             onSpawnMinecraft.forEach { e -> e.invoke(player, location) }
                         }
 

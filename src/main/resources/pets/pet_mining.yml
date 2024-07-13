@@ -165,6 +165,22 @@ loops:
         level: "SERVER"
         run:
           - "/petblocks moveToOwner %petblocks_pet_name% 0.2 %petblocks_owner_name%"
+      - name: "Hide the pet while player is flying"
+        condition:
+          type: JAVASCRIPT
+          js: "%petblocks_owner_isFlying% && '%petblocks_pet_visibility%' != 'NOBODY'"
+        type: "COMMAND"
+        level: "SERVER"
+        run:
+          - "/petblocks visibility %petblocks_pet_name% NOBODY %petblocks_owner_name%"
+      - name: "Show the pet while player is not flying"
+        condition:
+          type: JAVASCRIPT
+          js: "!%petblocks_owner_isFlying% && '%petblocks_pet_visibility%' == 'NOBODY'"
+        type: "COMMAND"
+        level: "SERVER"
+        run:
+          - "/petblocks visibility %petblocks_pet_name% ALL %petblocks_owner_name%"
       - name: "Switch to idle if the pet is beside the player"
         condition:
           type: NUMBER_LESS_THAN

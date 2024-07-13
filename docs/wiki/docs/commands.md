@@ -281,7 +281,7 @@ Allows values should be set in the ``config.yml``.
 Changes who can see the pet. 
 
 * Name: Identifier of a pet
-* Types: Possibles values: ``ALL``, ``OWNER``
+* Types: Possibles values: ``ALL``, ``OWNER``, ``NOBODY``
 * Player: Optional player_name/player_UUID parameter targeting a player from the console or command block.
 
 ### /petblocks loop
