@@ -18,7 +18,7 @@
       
       
       <link rel="icon" href="../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.0, mkdocs-material-9.5.27">
+      <meta name="generator" content="mkdocs-1.6.0, mkdocs-material-9.5.28">
     
     
       
@@ -865,10 +865,15 @@ Make sure to give it a new unique template identifier.</p>
 <p>Most of the static values are explained in the config file itself. Set them according to your needs.</p>
 <p>Example for static values are <code>name</code>, <code>version</code> and all initial pet settings under <code>pet:</code>.</p>
 <h2 id="events">Events</h2>
-<p>Events define what happens on certain events. Currently only leftClick and rightClick on the pet is supported. These
-actions get
-executed when a player left-clicks on the pet. However, it may not be the owner, who clicks on a pet, therefore it needs
-to be checked if you only want to allow certain actions for the owner of the pet.</p>
+<p>Events define what actions to execute on certain events. </p>
+<p>The following events are supported:</p>
+<ul>
+<li>leftClick</li>
+<li>rightClick</li>
+<li>ridingSneak</li>
+</ul>
+<p>For example the <code>leftClick</code> event gets executed when a player left-clicks on the pet. However, it may not be the owner, who clicks on a pet, therefore you need
+to check if the player is the owner first as a condition.</p>
 <p>Example:</p>
 <div class="highlight"><pre><span></span><code><span class="nt">events</span><span class="p">:</span>
 <span class="w">  </span><span class="nt">rightClick</span><span class="p">:</span>
@@ -1199,7 +1204,7 @@ design your pets. </p>
     <script id="__config" type="application/json">{"base": "..", "features": ["navigation.instant", "navigation.tabs", "content.tabs.link", "content.code.copy", "navigation.footer"], "search": "../assets/javascripts/workers/search.b8dbb3d2.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
     
     
-      <script src="../assets/javascripts/bundle.ad660dcc.min.js"></script>
+      <script src="../assets/javascripts/bundle.fe8b6f2b.min.js"></script>
       
     
   </body>
