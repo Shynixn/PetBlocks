@@ -31,7 +31,6 @@ import org.bukkit.*
 import org.bukkit.block.Block
 import org.bukkit.entity.Player
 import org.bukkit.plugin.Plugin
-import org.bukkit.util.Vector
 import java.util.*
 import java.util.logging.Level
 import kotlin.collections.ArrayList
@@ -60,6 +59,7 @@ class PetEntityImpl(
     private var cancellationTokenLoop = CancellationToken()
     private var cancellationTokenLongRunning = CancellationToken()
     private var lastRideUpdate = 0L
+    private var lastSneakUpdate = 0L
     var isBreakingBlock = false
 
     // Mover
@@ -321,7 +321,7 @@ class PetEntityImpl(
     /**
      * Gets called when the player is riding the entity.
      */
-    fun ride(player: Player, forward: Double, isJumping: Boolean) {
+    fun ride(player: Player, forward: Double, isJumping: Boolean, isSneaking: Boolean) {
         cancellationTokenLongRunning.isCancelled = true
 
         val current = Date().time
@@ -362,24 +362,21 @@ class PetEntityImpl(
             physicsComponent.position.pitch = 0.0
             physicsComponent.position.yaw = player.location.yaw.toDouble()
         }
+
+        if (isSneaking && current - lastSneakUpdate >= 200) {
+            lastSneakUpdate = current
+            val sneakEvent = pet.template.events["ridingSneak"]
+            if (sneakEvent != null) {
+                plugin.launch(plugin.minecraftDispatcher + object : CoroutineTimings() {}) {
+                    petActionExecutionService.executeAction(player, pet, sneakEvent, CancellationToken())
+                }
+            }
+        }
     }
 
     private fun isOnGround(location: Location): Boolean {
         val rayTraceResult = rayTracingService.rayTraceMotion(location.toVector3d(), Vector3d(0.0, -1.0, 0.0))
         return rayTraceResult.hitBlock
-    }
-
-    /**
-     * If owner parameter is not null, only the owner receives packets.
-     */
-    fun updateVisibility(visibility: PetVisibility, owner: Player, location: Location) {
-        for (player in playerComponent.visiblePlayers) {
-            if (visibility == PetVisibility.OWNER && player != owner) {
-                playerComponent.onRemoveMinecraft.forEach { e -> e.invoke(player, location) }
-            } else if (visibility == PetVisibility.ALL && player != owner) {
-                playerComponent.onSpawnMinecraft.forEach { e -> e.invoke(player, location) }
-            }
-        }
     }
 
     /**

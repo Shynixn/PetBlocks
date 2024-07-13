@@ -9,7 +9,7 @@ plugins {
 }
 
 group = "com.github.shynixn"
-version = "9.9.0"
+version = "9.10.0"
 
 repositories {
     mavenCentral()
@@ -31,10 +31,10 @@ dependencies {
     compileOnly("com.arcaniax:HeadDatabase-API:1.3.1")
 
     // Library dependencies with legacy compatibility, we can use more up-to-date version in the plugin.yml
-    implementation("com.github.shynixn.mccoroutine:mccoroutine-bukkit-api:2.16.0")
-    implementation("com.github.shynixn.mccoroutine:mccoroutine-bukkit-core:2.16.0")
-    runtimeOnly("com.github.shynixn.mccoroutine:mccoroutine-folia-api:2.16.0")
-    runtimeOnly("com.github.shynixn.mccoroutine:mccoroutine-folia-core:2.16.0")
+    implementation("com.github.shynixn.mccoroutine:mccoroutine-bukkit-api:2.18.0")
+    implementation("com.github.shynixn.mccoroutine:mccoroutine-bukkit-core:2.18.0")
+    runtimeOnly("com.github.shynixn.mccoroutine:mccoroutine-folia-api:2.18.0")
+    runtimeOnly("com.github.shynixn.mccoroutine:mccoroutine-folia-core:2.18.0")
     implementation("com.google.inject:guice:5.0.1")
     implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.3.0")
     implementation("com.fasterxml.jackson.core:jackson-databind:2.2.3")
@@ -47,7 +47,7 @@ dependencies {
     // Custom dependencies
     implementation("com.github.shynixn.shygui:shygui:1.0.0")
     implementation("com.github.shynixn.mcutils:common:2024.19")
-    implementation("com.github.shynixn.mcutils:packet:2024.30")
+    implementation("com.github.shynixn.mcutils:packet:2024.32")
     implementation("com.github.shynixn.mcutils:database:2024.2")
     implementation("com.github.shynixn.mcutils:pathfinder:2024.3")
     implementation("com.github.shynixn.mcutils:guice:2024.2")

@@ -176,7 +176,7 @@ class PetImpl(
             petMeta.visibility = value
 
             if (previousVisibility != value && petEntity != null) {
-                petEntity!!.updateVisibility(visibility, player, location)
+                petEntity!!.playerComponent.forceMinecraftTick()
             }
         }
 

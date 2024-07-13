@@ -1,2 +1,5 @@
 /petblocks-bukkit-api/build/
 /petblocks-bukkit-plugin/build/
+.idea
+.gradle
+build

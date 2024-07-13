@@ -130,8 +130,8 @@ object PetBlocksLanguage {
   /** Makes the owner wear the pet. **/
   var hatCommandHint : String = "Makes the owner wear the pet."
 
-  /** [&9PetBlocks&f] The visibility of pet %1$1s has been changed. **/
-  var visibilityChangedMessage : String = "[&9PetBlocks&f] The visibility of pet %1$1s has been changed."
+  /** [&9PetBlocks&f] The visibility of pet %1$1s has been changed to %2$1s. **/
+  var visibilityChangedMessage : String = "[&9PetBlocks&f] The visibility of pet %1$1s has been changed to %2$1s."
 
   /** [&9PetBlocks&f] &cYou do not have permission to edit the pets of other players. **/
   var manipulateOtherMessage : String = "[&9PetBlocks&f] &cYou do not have permission to edit the pets of other players."

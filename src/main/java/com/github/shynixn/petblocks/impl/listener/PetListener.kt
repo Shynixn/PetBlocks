@@ -101,7 +101,7 @@ class PetListener @Inject constructor(
         if (packet is PacketInSteerVehicle) {
             plugin.launch {
                 val physicObject = physicObjectService.findPhysicObjectById(packet.entityId) as PetEntityImpl?
-                physicObject?.ride(event.player, packet.forward, packet.isJumping)
+                physicObject?.ride(event.player, packet.forward, packet.isJumping, packet.isShift)
             }
             return
         }

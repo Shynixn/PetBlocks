@@ -11,6 +11,7 @@ enum class PlaceHolder(val fullPlaceHolder: String) {
     PLAYER_OWNER_LOCATION_YAW("%petblocks_owner_locationYaw%"),
     PLAYER_OWNER_LOCATION_PITCH("%petblocks_owner_locationPitch%"),
     PLAYER_OWNER_ITEMMAINHAND_TYPE("%petblocks_owner_itemMainHand_type%"),
+    PLAYER_OWNER_ISFLYING("%petblocks_owner_isFlying%"),
 
     // Event Player
     EVENT_PLAYER_OWNER_NAME("%petblocks_eventPlayer_name%"),
@@ -22,12 +23,12 @@ enum class PlaceHolder(val fullPlaceHolder: String) {
     EVENT_PLAYER_OWNER_LOCATION_YAW("%petblocks_eventPlayer_locationYaw%"),
     EVENT_PLAYER_OWNER_LOCATION_PITCH("%petblocks_eventPlayer_locationPitch%"),
     EVENT_PLAYER_OWNER_ITEMMAINHAND_TYPE("%petblocks_eventPlayer_itemMainHand_type%"),
+    EVENT_PLAYER_OWNER_ISFLYING("%petblocks_eventPlayer_isFlying%"),
 
     // Pet PlaceHolders
     PET_NAME("%petblocks_pet_name%"),
     PET_DISPLAYNAME("%petblocks_pet_displayName%"),
     PET_DISTANCETOOWNER("%petblocks_pet_distanceToOwner%"),
-    PET_EXISTS("%petblocks_pet_exists%"),
     PET_ISSPAWNED("%petblocks_pet_isSpawned%"),
     PET_TEMPLATE("%petblocks_pet_template%"),
     PET_VISIBILITY("%petblocks_pet_visibility%"),
