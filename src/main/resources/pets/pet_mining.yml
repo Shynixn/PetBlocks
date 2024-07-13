@@ -121,6 +121,15 @@ events:
           - "/tell %petblocks_owner_name% Pet %petblocks_pet_displayName% &rstarts to mine a tunnel."
           - "/petblocks snap %petblocks_pet_name% %petblocks_owner_name%" # Snap is useful for straight tunnels.
           - "/petblocks loop %petblocks_pet_name% mineTunnel2x2 %petblocks_owner_name%"
+  ridingSneak:
+    # Gets called when an owner presses SHIFT while riding their pet.
+    actions:
+      - name: "Dismount the pet"
+        type: "COMMAND"
+        level: "PLAYER"
+        run:
+          - "/petblocks unmount %petblocks_pet_name%"
+
 #
 # Defines the action a pet should perform in an interval on its own.
 #

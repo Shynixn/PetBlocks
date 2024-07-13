@@ -18,10 +18,16 @@ Example for static values are ``name``, ``version`` and all initial pet settings
 
 ## Events
 
-Events define what happens on certain events. Currently only leftClick and rightClick on the pet is supported. These
-actions get
-executed when a player left-clicks on the pet. However, it may not be the owner, who clicks on a pet, therefore it needs
-to be checked if you only want to allow certain actions for the owner of the pet.
+Events define what actions to execute on certain events. 
+
+The following events are supported:
+
+* leftClick
+* rightClick
+* ridingSneak
+
+For example the ``leftClick`` event gets executed when a player left-clicks on the pet. However, it may not be the owner, who clicks on a pet, therefore you need
+to check if the player is the owner first as a condition.
 
 Example:
 

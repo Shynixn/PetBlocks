@@ -109,6 +109,14 @@ events:
         run:
           - "/petblocks select %petblocks_pet_name%"
           - "/petblock"
+  ridingSneak:
+    # Gets called when an owner presses SHIFT while riding their pet.
+    actions:
+      - name: "Dismount the pet"
+        type: "COMMAND"
+        level: "PLAYER"
+        run:
+          - "/petblocks unmount %petblocks_pet_name%"
 
 #
 # Defines the action a pet should perform in an interval on its own.
