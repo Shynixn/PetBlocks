@@ -463,6 +463,21 @@ Changes the offset of the body of the entity to the ground. Useful when configur
 * Offset: A numeric comma value. e.g. 0.3, -0.3, 1.0
 * Player: Optional player_name/player_UUID parameter targeting a player from the console or command block.
 
+### /petblocks variable
+
+```
+/petblocks variable <name> <key> <value> [player]
+```
+
+Sets the value of the variable with the given key. This is useful store arbitrary data into the pet.
+e.g. health, selected particle, selected sound, etc.
+
+* Name: Identifier of a pet
+* Key: A key to store and retrieve a value
+* Value: Arbitrary data to store.
+* Player: Optional player_name/player_UUID parameter targeting a player from the console or command block.
+
+
 ## Command /petblocksgui
 
 **Required Permission:**

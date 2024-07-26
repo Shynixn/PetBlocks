@@ -64,6 +64,9 @@ object PetBlocksLanguage {
   /** Goes back one GUI page. **/
   var backCommandHint : String = "Goes back one GUI page."
 
+  /** [&9PetBlocks&f] The pet memory variable %1$1s has been set to %2$1s. **/
+  var variableChangedMessage : String = "[&9PetBlocks&f] The pet memory variable %1$1s has been set to %2$1s."
+
   /** Closes the GUI menu. **/
   var closeCommandHint : String = "Closes the GUI menu."
 
@@ -207,6 +210,9 @@ object PetBlocksLanguage {
 
   /** No pet. **/
   var placeHolderPetNotFound : String = "No pet."
+
+  /** Sets the value of the variable with the given key. This is useful store arbitrary data into the pet e.g. health. **/
+  var variableCommandHint : String = "Sets the value of the variable with the given key. This is useful store arbitrary data into the pet e.g. health."
 
   /** Opens the headDatabase inventory with a special hook, which applies the next item you select in the headdatabse gui to the pet. **/
   var openHeadDatabaseCommandHint : String = "Opens the headDatabase inventory with a special hook, which applies the next item you select in the headdatabse gui to the pet."

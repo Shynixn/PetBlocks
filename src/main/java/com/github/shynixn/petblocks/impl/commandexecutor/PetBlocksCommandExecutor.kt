@@ -723,6 +723,19 @@ class PetBlocksCommandExecutor @Inject constructor(
                         snap(commandSender, petMustExist(player, name))
                     }
             }
+            subCommand("variable") {
+                permission(Permission.VARIABLE)
+                toolTip { PetBlocksLanguage.variableCommandHint }
+                builder().argument("name").tabs(petNamesTabs)
+                    .argument("key").argument("value").executePlayer(senderHasToBePlayer) { player, name, key, value ->
+                        setMemoryVariable(player, petMustExist(player, name), key, value)
+                    }
+                    .argument("player").validator(playerMustExist).tabs(onlinePlayerTabs)
+                    .permission(manipulateOtherPermission).permissionMessage(manipulateOtherPermissionMessage)
+                    .execute { commandSender, name, key, value, player ->
+                        setMemoryVariable(commandSender, petMustExist(player, name), key, value)
+                    }
+            }
             subCommand("reload") {
                 permission(Permission.RELOAD)
                 toolTip { PetBlocksLanguage.reloadCommandHint }
@@ -1058,6 +1071,11 @@ class PetBlocksCommandExecutor @Inject constructor(
     private fun setGroundOffset(sender: CommandSender, pet: Pet, offset: Double) {
         pet.groundOffset = offset
         sender.sendPluginMessage(String.format(PetBlocksLanguage.groundOffsetChangedMessage, offset))
+    }
+
+    private fun setMemoryVariable(sender: CommandSender, pet: Pet, key: String, value: String) {
+        pet.javaScriptMemory[key] = value
+        sender.sendPluginMessage(String.format(PetBlocksLanguage.variableChangedMessage, key, value))
     }
 
     private fun CommandSender.sendPluginMessage(message: String) {

@@ -37,6 +37,7 @@ enum class Permission(val text: String) {
     ENTITYTYPE("petblocks.pet.entityType"),
     ENTITYVISIBILITY("petblocks.pet.entityVisibility"),
     GROUNDOFFSET("petblocks.pet.groundOffset"),
+    VARIABLE("petblocks.pet.variable"),
     // Dynamic
     DYN_AMOUNT("petblocks.pet.amount."),
     DYN_TEMPLATE("petblocks.pet.template."),
