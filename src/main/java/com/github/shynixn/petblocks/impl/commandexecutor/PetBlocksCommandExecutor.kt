@@ -464,17 +464,21 @@ class PetBlocksCommandExecutor @Inject constructor(
                 toolTip { PetBlocksLanguage.velocityRelCommandHint }
                 builder().argument("name").tabs(petNamesTabs).argument("mx").validator(mustBeDouble)
                     .tabs { listOf("<mx>") }.argument("my").validator(mustBeDouble).tabs { listOf("<my>") }
-                    .argument("mz")
-                    .validator(mustBeDouble).tabs { listOf("<mz>") }
+                    .argument("mz").validator(mustBeDouble).tabs { listOf("<mz>") }
                     .executePlayer(senderHasToBePlayer) { player, name, x, y, z ->
                         setRelativeVelocityToPet(
-                            player, petMustExist(player, name), Vector(x, y, z)
+                            player, petMustExist(player, name), Vector(x, y, z), "-"
+                        )
+                    }.argument("oy").tabs { listOf("<oy>", "-") }
+                    .executePlayer(senderHasToBePlayer) { player, name, x, y, z, oy ->
+                        setRelativeVelocityToPet(
+                            player, petMustExist(player, name), Vector(x, y, z), oy
                         )
                     }.argument("player").validator(playerMustExist).tabs(onlinePlayerTabs)
                     .permission(manipulateOtherPermission).permissionMessage(manipulateOtherPermissionMessage)
-                    .execute { commandSender, name, x, y, z, player ->
+                    .execute { commandSender, name, x, y, z, oy, player ->
                         setRelativeVelocityToPet(
-                            commandSender, petMustExist(player, name), Vector(x, y, z)
+                            commandSender, petMustExist(player, name), Vector(x, y, z), oy
                         )
                     }
             }
@@ -484,9 +488,8 @@ class PetBlocksCommandExecutor @Inject constructor(
                 builder().argument("name").tabs(petNamesTabs).argument("material").validator(materialMustExist)
                     .tabs(materialTabs).executePlayer(senderHasToBePlayer) { player, name, material ->
                         setSkinType(player, petMustExist(player, name), material, 0)
-                    }
-                    .argument("durability").validator(mustBeInt)
-                    .tabs(materialTabs).executePlayer(senderHasToBePlayer) { player, name, material, durability ->
+                    }.argument("durability").validator(mustBeInt).tabs(materialTabs)
+                    .executePlayer(senderHasToBePlayer) { player, name, material, durability ->
                         setSkinType(player, petMustExist(player, name), material, durability)
                     }.argument("player").validator(playerMustExist).tabs(onlinePlayerTabs)
                     .permission(manipulateOtherPermission).permissionMessage(manipulateOtherPermissionMessage)
@@ -745,12 +748,10 @@ class PetBlocksCommandExecutor @Inject constructor(
             subCommand("variable") {
                 permission(Permission.VARIABLE)
                 toolTip { PetBlocksLanguage.variableCommandHint }
-                builder().argument("name").tabs(petNamesTabs)
-                    .argument("key").tabs { listOf("<key>") }.argument("value").tabs { listOf("<value>") }
-                    .executePlayer(senderHasToBePlayer) { player, name, key, value ->
+                builder().argument("name").tabs(petNamesTabs).argument("key").tabs { listOf("<key>") }.argument("value")
+                    .tabs { listOf("<value>") }.executePlayer(senderHasToBePlayer) { player, name, key, value ->
                         setMemoryVariable(player, petMustExist(player, name), key, value)
-                    }
-                    .argument("player").validator(playerMustExist).tabs(onlinePlayerTabs)
+                    }.argument("player").validator(playerMustExist).tabs(onlinePlayerTabs)
                     .permission(manipulateOtherPermission).permissionMessage(manipulateOtherPermissionMessage)
                     .execute { commandSender, name, key, value, player ->
                         setMemoryVariable(commandSender, petMustExist(player, name), key, value)
@@ -862,10 +863,18 @@ class PetBlocksCommandExecutor @Inject constructor(
     }
 
     private fun setRelativeVelocityToPet(
-        sender: CommandSender, pet: Pet, vector: Vector
+        sender: CommandSender, pet: Pet, vector: Vector, overrideY: String
     ) {
-        val normalized = pet.velocity.normalize()
-        pet.velocity = normalized.multiply(vector)
+        val normalized = pet.location.direction.normalize()
+
+        if (overrideY.toDoubleOrNull() != null) {
+            normalized.y = overrideY.toDouble()
+        }
+
+        normalized.x = vector.x * normalized.x
+        normalized.y = vector.y * normalized.y
+        normalized.z = vector.z * normalized.z
+        pet.velocity = normalized
         sender.sendPluginMessage(String.format(PetBlocksLanguage.petVelocityAppliedMessage, pet.name))
     }
 
@@ -1102,7 +1111,7 @@ class PetBlocksCommandExecutor @Inject constructor(
     }
 
     private fun setMemoryVariable(sender: CommandSender, pet: Pet, key: String, value: String) {
-        pet.javaScriptMemory[key] = value
+        pet.memory[key] = value
         sender.sendPluginMessage(String.format(PetBlocksLanguage.variableChangedMessage, key, value))
     }
 

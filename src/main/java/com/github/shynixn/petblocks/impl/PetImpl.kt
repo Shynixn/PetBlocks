@@ -295,9 +295,12 @@ class PetImpl(
         }
 
     /**
-     * Calculated variables which can be used in subsequent operations by placeholders.
+     * Storage of arbitrary data in the pet.
      */
-    override var javaScriptMemory: MutableMap<String, String> = HashMap()
+    override val memory: MutableMap<String, String>
+        get() {
+            return petMeta.memory
+        }
 
     /**
      * Calls the pet to the player. Spawns the pet if it is not spawned, and places the pet

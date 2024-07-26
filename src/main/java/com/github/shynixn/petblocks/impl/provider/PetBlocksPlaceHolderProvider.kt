@@ -13,10 +13,8 @@ import java.util.*
 import kotlin.collections.HashMap
 
 class PetBlocksPlaceHolderProvider(
-    private val petMetaRepository: CachePlayerRepository<PlayerInformation>,
-    private val petService: PetService
-) :
-    PlaceHolderProvider {
+    private val petMetaRepository: CachePlayerRepository<PlayerInformation>, private val petService: PetService
+) : PlaceHolderProvider {
     private val playerPlaceHolderFunctions = HashMap<String, ((Player) -> String)>()
     private val petPlaceHolderFunctions = HashMap<String, ((Pet) -> String)>()
     private val selectedPetPlaceHolderFunctions = HashMap<String, ((Pet) -> String)>()
@@ -34,37 +32,27 @@ class PetBlocksPlaceHolderProvider(
         registerPlayerPlaceHolder(PlaceHolder.PLAYER_OWNER_LOCATION_WORLD) { player: Player -> player.location.world!!.name }
         registerPlayerPlaceHolder(PlaceHolder.PLAYER_OWNER_LOCATION_X) { player ->
             String.format(
-                Locale.ENGLISH,
-                "%.2f",
-                player.location.x
+                Locale.ENGLISH, "%.2f", player.location.x
             )
         }
         registerPlayerPlaceHolder(PlaceHolder.PLAYER_OWNER_LOCATION_Y) { player ->
             String.format(
-                Locale.ENGLISH,
-                "%.2f",
-                player.location.y
+                Locale.ENGLISH, "%.2f", player.location.y
             )
         }
         registerPlayerPlaceHolder(PlaceHolder.PLAYER_OWNER_LOCATION_Z) { player ->
             String.format(
-                Locale.ENGLISH,
-                "%.2f",
-                player.location.z
+                Locale.ENGLISH, "%.2f", player.location.z
             )
         }
         registerPlayerPlaceHolder(PlaceHolder.PLAYER_OWNER_LOCATION_YAW) { player ->
             String.format(
-                Locale.ENGLISH,
-                "%.2f",
-                player.location.yaw
+                Locale.ENGLISH, "%.2f", player.location.yaw
             )
         }
         registerPlayerPlaceHolder(PlaceHolder.PLAYER_OWNER_LOCATION_PITCH) { player ->
             String.format(
-                Locale.ENGLISH,
-                "%.2f",
-                player.location.pitch
+                Locale.ENGLISH, "%.2f", player.location.pitch
             )
         }
         registerPlayerPlaceHolder(PlaceHolder.PLAYER_OWNER_ITEMMAINHAND_TYPE) { player -> "minecraft:" + player.inventory.itemInMainHand.type.name.lowercase() }
@@ -76,37 +64,27 @@ class PetBlocksPlaceHolderProvider(
         registerPlayerPlaceHolder(PlaceHolder.EVENT_PLAYER_OWNER_LOCATION_WORLD) { player: Player -> player.location.world!!.name }
         registerPlayerPlaceHolder(PlaceHolder.EVENT_PLAYER_OWNER_LOCATION_X) { player ->
             String.format(
-                Locale.ENGLISH,
-                "%.2f",
-                player.location.x
+                Locale.ENGLISH, "%.2f", player.location.x
             )
         }
         registerPlayerPlaceHolder(PlaceHolder.EVENT_PLAYER_OWNER_LOCATION_Y) { player ->
             String.format(
-                Locale.ENGLISH,
-                "%.2f",
-                player.location.y
+                Locale.ENGLISH, "%.2f", player.location.y
             )
         }
         registerPlayerPlaceHolder(PlaceHolder.EVENT_PLAYER_OWNER_LOCATION_Z) { player ->
             String.format(
-                Locale.ENGLISH,
-                "%.2f",
-                player.location.z
+                Locale.ENGLISH, "%.2f", player.location.z
             )
         }
         registerPlayerPlaceHolder(PlaceHolder.EVENT_PLAYER_OWNER_LOCATION_YAW) { player ->
             String.format(
-                Locale.ENGLISH,
-                "%.2f",
-                player.location.yaw
+                Locale.ENGLISH, "%.2f", player.location.yaw
             )
         }
         registerPlayerPlaceHolder(PlaceHolder.EVENT_PLAYER_OWNER_LOCATION_PITCH) { player ->
             String.format(
-                Locale.ENGLISH,
-                "%.2f",
-                player.location.pitch
+                Locale.ENGLISH, "%.2f", player.location.pitch
             )
         }
         registerPlayerPlaceHolder(PlaceHolder.EVENT_PLAYER_OWNER_ITEMMAINHAND_TYPE) { player -> "minecraft:" + player.inventory.itemInMainHand.type.name.lowercase() }
@@ -123,44 +101,32 @@ class PetBlocksPlaceHolderProvider(
         registerPetPlaceHolder(PlaceHolder.PET_LOOP) { pet -> pet.loop }
         registerPetPlaceHolder(PlaceHolder.PET_LOCATION_WORLD) { pet ->
             String.format(
-                Locale.ENGLISH,
-                "%.2f",
-                pet.location.world!!.name
+                Locale.ENGLISH, "%.2f", pet.location.world!!.name
             )
         }
         registerPetPlaceHolder(PlaceHolder.PET_LOCATION_X) { pet ->
             String.format(
-                Locale.ENGLISH,
-                "%.2f",
-                pet.location.x
+                Locale.ENGLISH, "%.2f", pet.location.x
             )
         }
         registerPetPlaceHolder(PlaceHolder.PET_LOCATION_Y) { pet ->
             String.format(
-                Locale.ENGLISH,
-                "%.2f",
-                pet.location.y
+                Locale.ENGLISH, "%.2f", pet.location.y
             )
         }
         registerPetPlaceHolder(PlaceHolder.PET_LOCATION_Z) { pet ->
             String.format(
-                Locale.ENGLISH,
-                "%.2f",
-                pet.location.z
+                Locale.ENGLISH, "%.2f", pet.location.z
             )
         }
         registerPetPlaceHolder(PlaceHolder.PET_LOCATION_YAW) { pet ->
             String.format(
-                Locale.ENGLISH,
-                "%.2f",
-                pet.location.yaw
+                Locale.ENGLISH, "%.2f", pet.location.yaw
             )
         }
         registerPetPlaceHolder(PlaceHolder.PET_LOCATION_PITCH) { pet ->
             String.format(
-                Locale.ENGLISH,
-                "%.2f",
-                pet.location.pitch
+                Locale.ENGLISH, "%.2f", pet.location.pitch
             )
         }
         registerPetPlaceHolder(PlaceHolder.PET_ITEM_TYPE) { pet -> pet.headItemStack.type.name }
@@ -220,7 +186,10 @@ class PetBlocksPlaceHolderProvider(
                         }
                 } else if (petPlaceHolderFunctions.containsKey(placeHolderText) && pet != null) {
                     locatedPlaceHolders[placeHolderText] = petPlaceHolderFunctions[placeHolderText]!!.invoke(pet)
-                } else if (selectedPetPlaceHolderFunctions.containsKey(placeHolderText)) {
+                } else if (selectedPetPlaceHolderFunctions.containsKey(placeHolderText) || (placeHolderText.endsWith("_selected%") && placeHolderText.startsWith(
+                        "%petblocks_js"
+                    ))
+                ) {
                     val petsOfPlayer = petService.getCache()[player]
                     val playerInformation = petMetaRepository.getCachedByPlayer(player)
                     if (petsOfPlayer != null && playerInformation != null) {
@@ -231,7 +200,7 @@ class PetBlocksPlaceHolderProvider(
                             pet = petsOfPlayer.firstOrNull()
                         }
 
-                        if (pet != null) {
+                        if (pet != null && selectedPetPlaceHolderFunctions.containsKey(placeHolderText)) {
                             locatedPlaceHolders[placeHolderText] =
                                 selectedPetPlaceHolderFunctions[placeHolderText]!!.invoke(pet)
                         }
@@ -250,8 +219,8 @@ class PetBlocksPlaceHolderProvider(
         }
 
         if (pet != null && output.contains("%petblocks_js")) {
-            for (key in pet.javaScriptMemory.keys) {
-                val value = pet.javaScriptMemory[key]!!
+            for (key in pet.memory.keys) {
+                val value = pet.memory[key]!!
                 if (key.contains("json")) {
                     val parsedJsonObject = mapper.readValue(value, Map::class.java)
                     for (innerKey in parsedJsonObject.keys) {
@@ -259,7 +228,8 @@ class PetBlocksPlaceHolderProvider(
                             output.replace("%petblocks_js_${key}_${innerKey}%", parsedJsonObject[innerKey].toString())
                     }
                 } else {
-                    output = output.replace("%petblocks_js_${key}%", value)
+                    output =
+                        output.replace("%petblocks_js_${key}%", value).replace("%petblocks_js_${key}_selected%", value)
                 }
             }
         }

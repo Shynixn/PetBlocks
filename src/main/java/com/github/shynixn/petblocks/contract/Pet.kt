@@ -94,12 +94,12 @@ interface Pet {
     /**
      * Offset from the ground.
      */
-    var groundOffset : Double
+    var groundOffset: Double
 
     /**
-     * Calculated variables which can be used in subsequent operations by placeholders.
+     * Storage of arbitrary data in the pet.
      */
-    val javaScriptMemory: MutableMap<String, String>
+    val memory: MutableMap<String, String>
 
     /**
      * Calls the pet to the player. Spawns the pet if it is not spawned, and places the pet

@@ -196,7 +196,7 @@ Launches the pet into the given direction.
 ### /petblocks velocityrel
 
 ```
-/petblocks velocityrel <name> <mx> <my> <mz> [player]
+/petblocks velocityrel <name> <mx> <my> <mz> [oy] [player]
 ```
 
 Launches the pet into the current looking direction with the given multipliers. 
@@ -205,6 +205,7 @@ Launches the pet into the current looking direction with the given multipliers.
 * MX: Multiplier in X direction. Try to set it to 1 first.
 * MY: Multiplier in Y direction. Try to set it to 1 first.
 * MZ: Multiplier in Z direction. Try to set it to 1 first.
+* OY: Optional overwrite for the base y value. If you set this to 0.5 or higher, the pet always gets launched upwards.
 * Player: Optional player_name/player_UUID parameter targeting a player from the console or command block.
 
 
