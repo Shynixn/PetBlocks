@@ -48,6 +48,7 @@ class PetListener @Inject constructor(
                 plugin.logger.log(Level.FINE, "Loaded [${pets.size}] pets for player ${player.name}.")
             }
 
+            // Apply pets from config
             val petsToReceive = configurationService.findValue<List<Map<String, String>>>(petsToReceiveOnJoinKey)
 
             for (petToReceive in petsToReceive) {
@@ -61,6 +62,24 @@ class PetListener @Inject constructor(
                         PetActionExecutionServiceImpl.PetBlocksCommandSender(Bukkit.getConsoleSender()),
                         "petblocks create ${name} ${template} ${player.name}"
                     )
+                }
+            }
+
+            // Fix references of pet to world which does not exist anymore. e.g. Cross Servers
+            for (pet in pets) {
+                var resetToOwnerPosition = false
+
+                try {
+                    if (pet.location.world == null) {
+                        resetToOwnerPosition = true
+                    }
+                } catch (e: Exception) {
+                    // Exception handling is important here.
+                    resetToOwnerPosition = true
+                }
+
+                if (resetToOwnerPosition) {
+                    pet.location = player.location
                 }
             }
         }
