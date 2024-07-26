@@ -188,11 +188,25 @@ Teleports the pet to the given location.
 Launches the pet into the given direction.
 
 * Name: Identifier of a pet
-* World: Target world
 * X: X Vector
 * Y: Y Vector
 * Z: Z Vector
 * Player: Optional player_name/player_UUID parameter targeting a player from the console or command block.
+
+### /petblocks velocityrel
+
+```
+/petblocks velocityrel <name> <mx> <my> <mz> [player]
+```
+
+Launches the pet into the current looking direction with the given multipliers. 
+
+* Name: Identifier of a pet
+* MX: Multiplier in X direction. Try to set it to 1 first.
+* MY: Multiplier in Y direction. Try to set it to 1 first.
+* MZ: Multiplier in Z direction. Try to set it to 1 first.
+* Player: Optional player_name/player_UUID parameter targeting a player from the console or command block.
+
 
 ### /petblocks skintype
 

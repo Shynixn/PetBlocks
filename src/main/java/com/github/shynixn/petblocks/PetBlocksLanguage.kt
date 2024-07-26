@@ -118,6 +118,9 @@ object PetBlocksLanguage {
   /** [&9PetBlocks&f] &cCannot parse boolean %1$1s. **/
   var cannotParseBoolean : String = "[&9PetBlocks&f] &cCannot parse boolean %1$1s."
 
+  /** Launches the pet into the current looking direction with the given multipliers. **/
+  var velocityRelCommandHint : String = "Launches the pet into the current looking direction with the given multipliers."
+
   /** Rotates the pet relative to its current rotation. **/
   var rotateRelCommandHint : String = "Rotates the pet relative to its current rotation."
 

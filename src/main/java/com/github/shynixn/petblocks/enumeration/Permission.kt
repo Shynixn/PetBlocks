@@ -23,6 +23,7 @@ enum class Permission(val text: String) {
     MOVETOOWNER("petblocks.pet.movetoOwner"),
     TELEPORT("petblocks.pet.teleport"),
     VELOCITY("petblocks.pet.velocity"),
+    VELOCITYREL("petblocks.pet.velocityRel"),
     VISIBILITY("petblocks.pet.visibility"),
     LOOP("petblocks.pet.loop"),
     TEMPLATE("petblocks.pet.setTemplate"),
@@ -38,6 +39,7 @@ enum class Permission(val text: String) {
     ENTITYVISIBILITY("petblocks.pet.entityVisibility"),
     GROUNDOFFSET("petblocks.pet.groundOffset"),
     VARIABLE("petblocks.pet.variable"),
+
     // Dynamic
     DYN_AMOUNT("petblocks.pet.amount."),
     DYN_TEMPLATE("petblocks.pet.template."),
