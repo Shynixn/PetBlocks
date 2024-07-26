@@ -188,11 +188,26 @@ Teleports the pet to the given location.
 Launches the pet into the given direction.
 
 * Name: Identifier of a pet
-* World: Target world
 * X: X Vector
 * Y: Y Vector
 * Z: Z Vector
 * Player: Optional player_name/player_UUID parameter targeting a player from the console or command block.
+
+### /petblocks velocityrel
+
+```
+/petblocks velocityrel <name> <mx> <my> <mz> [oy] [player]
+```
+
+Launches the pet into the current looking direction with the given multipliers. 
+
+* Name: Identifier of a pet
+* MX: Multiplier in X direction. Try to set it to 1 first.
+* MY: Multiplier in Y direction. Try to set it to 1 first.
+* MZ: Multiplier in Z direction. Try to set it to 1 first.
+* OY: Optional overwrite for the base y value. If you set this to 0.5 or higher, the pet always gets launched upwards.
+* Player: Optional player_name/player_UUID parameter targeting a player from the console or command block.
+
 
 ### /petblocks skintype
 
@@ -462,6 +477,21 @@ Changes the offset of the body of the entity to the ground. Useful when configur
 * Name: Identifier of a pet
 * Offset: A numeric comma value. e.g. 0.3, -0.3, 1.0
 * Player: Optional player_name/player_UUID parameter targeting a player from the console or command block.
+
+### /petblocks variable
+
+```
+/petblocks variable <name> <key> <value> [player]
+```
+
+Sets the value of the variable with the given key. This is useful store arbitrary data into the pet.
+e.g. health, selected particle, selected sound, etc.
+
+* Name: Identifier of a pet
+* Key: A key to store and retrieve a value
+* Value: Arbitrary data to store.
+* Player: Optional player_name/player_UUID parameter targeting a player from the console or command block.
+
 
 ## Command /petblocksgui
 

@@ -104,7 +104,11 @@ class PetActionExecutionServiceImpl @Inject constructor(
 
         if (conditionType == PetActionConditionType.JAVASCRIPT) {
             val placeHolderParsedCondition =
-                placeHolderService.resolvePlaceHolder(eventPlayer, condition.js!!, mapOf(PetBlocksPlaceHolderProvider.petKey to pet))
+                placeHolderService.resolvePlaceHolder(
+                    eventPlayer,
+                    condition.js!!,
+                    mapOf(PetBlocksPlaceHolderProvider.petKey to pet)
+                )
             val conditionResult = withContext(plugin.asyncDispatcher) {
                 scriptService.evaluate(placeHolderParsedCondition)
             } as Boolean
@@ -118,8 +122,16 @@ class PetActionExecutionServiceImpl @Inject constructor(
 
             return conditionResult
         } else {
-            val leftEscaped = placeHolderService.resolvePlaceHolder(eventPlayer, condition.left!!, mapOf(PetBlocksPlaceHolderProvider.petKey to pet))
-            val rightEscaped = placeHolderService.resolvePlaceHolder(eventPlayer, condition.right!!, mapOf(PetBlocksPlaceHolderProvider.petKey to pet))
+            val leftEscaped = placeHolderService.resolvePlaceHolder(
+                eventPlayer,
+                condition.left!!,
+                mapOf(PetBlocksPlaceHolderProvider.petKey to pet)
+            )
+            val rightEscaped = placeHolderService.resolvePlaceHolder(
+                eventPlayer,
+                condition.right!!,
+                mapOf(PetBlocksPlaceHolderProvider.petKey to pet)
+            )
 
             if (conditionType == PetActionConditionType.STRING_EQUALS) {
                 val conditionResult = rightEscaped == leftEscaped
@@ -143,9 +155,8 @@ class PetActionExecutionServiceImpl @Inject constructor(
                 }
 
                 return conditionResult
-            }
-            else if (conditionType == PetActionConditionType.STRING_EQUALS_IGNORE_CASE) {
-                val conditionResult = rightEscaped.equals(leftEscaped,true)
+            } else if (conditionType == PetActionConditionType.STRING_EQUALS_IGNORE_CASE) {
+                val conditionResult = rightEscaped.equals(leftEscaped, true)
 
                 if (action.debug) {
                     plugin.logger.log(
@@ -156,7 +167,7 @@ class PetActionExecutionServiceImpl @Inject constructor(
 
                 return conditionResult
             } else if (conditionType == PetActionConditionType.STRING_NOT_EQUALS_IGNORE_CASE) {
-                val conditionResult = !rightEscaped.equals(leftEscaped,true)
+                val conditionResult = !rightEscaped.equals(leftEscaped, true)
 
                 if (action.debug) {
                     plugin.logger.log(
@@ -166,8 +177,7 @@ class PetActionExecutionServiceImpl @Inject constructor(
                 }
 
                 return conditionResult
-            }
-            else {
+            } else {
                 val leftNumber = leftEscaped.toDoubleOrNull()
 
                 if (leftNumber == null) {
@@ -259,7 +269,11 @@ class PetActionExecutionServiceImpl @Inject constructor(
                 command
             }
 
-            executionCommand = placeHolderService.resolvePlaceHolder(eventPlayer, executionCommand, mapOf(PetBlocksPlaceHolderProvider.petKey to pet))
+            executionCommand = placeHolderService.resolvePlaceHolder(
+                eventPlayer,
+                executionCommand,
+                mapOf(PetBlocksPlaceHolderProvider.petKey to pet)
+            )
 
             if (action.debug) {
                 plugin.logger.log(Level.INFO, "Start executing command '${executionCommand}'.")
@@ -278,12 +292,16 @@ class PetActionExecutionServiceImpl @Inject constructor(
     }
 
     private suspend fun executeJavaScriptAction(player: Player, pet: Pet, action: PetAction) {
-        if (action.initial != null && !pet.javaScriptMemory.containsKey(action.variable)) {
-            pet.javaScriptMemory[action.variable!!] = action.initial!!
+        if (action.initial != null && !pet.memory.containsKey(action.variable)) {
+            pet.memory[action.variable!!] = action.initial!!
         }
 
         val parsedJs =
-            placeHolderService.resolvePlaceHolder(player, action.js!!, mapOf(PetBlocksPlaceHolderProvider.petKey to pet))
+            placeHolderService.resolvePlaceHolder(
+                player,
+                action.js!!,
+                mapOf(PetBlocksPlaceHolderProvider.petKey to pet)
+            )
 
         if (action.debug) {
             plugin.logger.log(Level.INFO, "Start evaluating JavaScript '${parsedJs}'.")
@@ -297,7 +315,7 @@ class PetActionExecutionServiceImpl @Inject constructor(
             plugin.logger.log(Level.INFO, "End evaluating JavaScript '${result}'.")
         }
 
-        val memory = pet.javaScriptMemory
+        val memory = pet.memory
 
         if (result == null && memory.containsKey(action.variable)) {
             memory.remove(action.variable)

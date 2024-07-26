@@ -67,6 +67,11 @@ class PetMeta {
     var physics: PhysicSettings = PhysicSettings()
 
     /**
+     * Stored arbitrary data.
+     */
+    val memory: MutableMap<String, String> = HashMap()
+
+    /**
      * Last persisted location of the pet.
      */
     @JsonIgnoreProperties(value = arrayOf("blockX", "blockY", "blockZ", "empty", "direction"))
