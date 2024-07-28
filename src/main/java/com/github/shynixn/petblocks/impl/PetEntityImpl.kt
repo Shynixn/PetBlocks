@@ -428,7 +428,17 @@ class PetEntityImpl(
 
         this.petMeta.lastStoredLocation = physicsComponent.position.copy()
         this.velocity = physicsComponent.motion.copy()
-        physicsComponent.tickMinecraft()
+
+        try {
+            physicsComponent.tickMinecraft()
+        } catch (e: Exception) {
+            // Can happen if an invalid world reference exists. e.g. pet references unloaded world
+            this.petMeta.lastStoredLocation = pet.player.location.toVector3d()
+            this.physicsComponent.position = pet.player.location.toVector3d()
+            this.pet.call()
+            return
+        }
+
         playerComponent.tickMinecraft()
         entityComponent.tickMinecraft()
     }
