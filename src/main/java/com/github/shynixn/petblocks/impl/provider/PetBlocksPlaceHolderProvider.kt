@@ -179,10 +179,12 @@ class PetBlocksPlaceHolderProvider(
 
                 if (playerPlaceHolderFunctions.containsKey(placeHolderText)) {
                     locatedPlaceHolders[placeHolderText] =
-                        if (pet != null && placeHolderText.contains("PLAYER_OWNER_")) {
+                        if (placeHolderText.contains("_eventPlayer_")) {
+                            playerPlaceHolderFunctions[placeHolderText]!!.invoke(player)
+                        } else if (pet != null) {
                             playerPlaceHolderFunctions[placeHolderText]!!.invoke(pet.player)
                         } else {
-                            playerPlaceHolderFunctions[placeHolderText]!!.invoke(player)
+                            ""
                         }
                 } else if (petPlaceHolderFunctions.containsKey(placeHolderText) && pet != null) {
                     locatedPlaceHolders[placeHolderText] = petPlaceHolderFunctions[placeHolderText]!!.invoke(pet)
