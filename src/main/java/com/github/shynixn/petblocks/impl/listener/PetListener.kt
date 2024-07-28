@@ -64,24 +64,6 @@ class PetListener @Inject constructor(
                     )
                 }
             }
-
-            // Fix references of pet to world which does not exist anymore. e.g. Cross Servers
-            for (pet in pets) {
-                var resetToOwnerPosition = false
-
-                try {
-                    if (pet.location.world == null) {
-                        resetToOwnerPosition = true
-                    }
-                } catch (e: Exception) {
-                    // Exception handling is important here.
-                    resetToOwnerPosition = true
-                }
-
-                if (resetToOwnerPosition) {
-                    pet.location = player.location
-                }
-            }
         }
     }
 
