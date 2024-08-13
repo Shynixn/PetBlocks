@@ -519,11 +519,16 @@ class PetImpl(
             return false
         }
 
-        val sourceLocation = this.location
-        location.world = sourceLocation.world
-        val distanceBetweenLocations = location.distance(sourceLocation)
+        try {
+            val sourceLocation = this.location
+            location.world = sourceLocation.world
+            val distanceBetweenLocations = location.distance(sourceLocation)
 
-        if (distanceBetweenLocations > maxPathfinderDistance) {
+            if (distanceBetweenLocations > maxPathfinderDistance) {
+                return false
+            }
+        } catch (e: Exception) {
+            // World references in cross server setups.
             return false
         }
 
