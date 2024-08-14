@@ -364,6 +364,24 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#minimum-required-permissions" class="md-nav__link">
+    <span class="md-ellipsis">
+      Minimum Required Permissions
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#all-permissions" class="md-nav__link">
+    <span class="md-ellipsis">
+      All Permissions
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -583,6 +601,24 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#minimum-required-permissions" class="md-nav__link">
+    <span class="md-ellipsis">
+      Minimum Required Permissions
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#all-permissions" class="md-nav__link">
+    <span class="md-ellipsis">
+      All Permissions
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -603,13 +639,14 @@
 
 <h1 id="permission">Permission</h1>
 <p>The following permissions are available in PetBlocks.</p>
-<h4 id="levels">Levels</h4>
+<h3 id="levels">Levels</h3>
 <ul>
 <li>User: A permission all players can have.</li>
-<li>Admin: A permission only Admins should have.</li>
 <li>Admin/User: Depending on your server, you may give this permission to your players. If you are not sure, try to build
   your server around <strong>not giving this permission</strong> to your players.</li>
+<li>Admin: A permission only Admins should have.</li>
 </ul>
+<h3 id="minimum-required-permissions">Minimum Required Permissions</h3>
 <table>
 <thead>
 <tr>
@@ -623,6 +660,48 @@
 <td>petblocks.command</td>
 <td>User</td>
 <td>Allows to use the /petblocks command.</td>
+</tr>
+<tr>
+<td>petblocks.pet.spawn</td>
+<td>User</td>
+<td>Required permission to see the pet. If you remove this permission from a player, the pet automatically despawns.</td>
+</tr>
+<tr>
+<td>petblocks.pet.amount.1</td>
+<td>User</td>
+<td>The slot where the pet is stored. 1 is the default slot.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="all-permissions">All Permissions</h3>
+<table>
+<thead>
+<tr>
+<th>Permission</th>
+<th>Level</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>petblocks.command</td>
+<td>User</td>
+<td>Allows to use the /petblocks command.</td>
+</tr>
+<tr>
+<td>petblocks.pet.spawn</td>
+<td>User</td>
+<td>Required permission to see the pet. If you remove this permission from a player, the pet automatically despawns.</td>
+</tr>
+<tr>
+<td>petblocks.pet.amount.1</td>
+<td>User</td>
+<td>The slot where the pet is stored.  1 is the default slot.</td>
+</tr>
+<tr>
+<td>petblocks.pet.amount.[number]</td>
+<td>User</td>
+<td>The slot where the pet is stored. e.g. petblocks.pet.amount.1 (slot 1) and petblocks.pet.amount.2 (slot 2)</td>
 </tr>
 <tr>
 <td>petblocks.gui.petblocks_main_menu</td>
@@ -670,24 +749,9 @@
 <td>Allows to see the help messages.</td>
 </tr>
 <tr>
-<td>petblocks.reload</td>
-<td>Admin</td>
-<td>Permission to use the /petblocks reload command.</td>
-</tr>
-<tr>
-<td>petblocks.pet.create</td>
-<td>Admin/User</td>
-<td>Allows to create a new pet. This command should probably be executed by a GUI / Sign / Server Management Plugin. If you set receivePetsOnJoin in the config.yml, you do not need this permission.</td>
-</tr>
-<tr>
 <td>petblocks.pet.call</td>
 <td>User</td>
 <td>Allows to call the pet to the owner.</td>
-</tr>
-<tr>
-<td>petblocks.pet.spawn</td>
-<td>User</td>
-<td><strong>Minimum required permission</strong> a player has to have in order to have a pet. If you remove this permission from a player, the pet automatically despawns.</td>
 </tr>
 <tr>
 <td>petblocks.pet.ride</td>
@@ -710,11 +774,6 @@
 <td>Allows to list the pets of a player</td>
 </tr>
 <tr>
-<td>petblocks.pet.delete</td>
-<td>Admin/User</td>
-<td>Allows to delete a pet. It depends on the type of server if you want to give this permission to your players. This command should be executed by a GUI / Sign / Server Management Plugin.</td>
-</tr>
-<tr>
 <td>petblocks.pet.displayName</td>
 <td>User</td>
 <td>Allows to rename a pet.</td>
@@ -728,6 +787,16 @@
 <td>petblocks.pet.despawn</td>
 <td>User</td>
 <td>Allows to despawn at pet.</td>
+</tr>
+<tr>
+<td>petblocks.pet.create</td>
+<td>Admin/User</td>
+<td>Allows to create a new pet. This command should probably be executed by a GUI / Sign / Server Management Plugin. If you set receivePetsOnJoin in the config.yml, you do not need this permission.</td>
+</tr>
+<tr>
+<td>petblocks.pet.delete</td>
+<td>Admin/User</td>
+<td>Allows to delete a pet. It depends on the type of server if you want to give this permission to your players. This command should be executed by a GUI / Sign / Server Management Plugin.</td>
 </tr>
 <tr>
 <td>petblocks.pet.skin</td>
@@ -795,11 +864,6 @@
 <td>Allows to change the template of a pet.</td>
 </tr>
 <tr>
-<td>petblocks.pet.manipulateOther</td>
-<td>Admin</td>
-<td>Allows to manipulate the pets of other players. e.g. Changing skins, etc.</td>
-</tr>
-<tr>
 <td>petblocks.pet.select</td>
 <td>Admin/User</td>
 <td>Allows to mark a pet as selected. This is helpful for placeholders.</td>
@@ -813,11 +877,6 @@
 <td>petblocks.pet.template.[name]</td>
 <td>Admin/User</td>
 <td>If you give your players access to <code>petblocks.pet.create</code>, each individual template is still locked by this permission.</td>
-</tr>
-<tr>
-<td>petblocks.pet.amount.[number]</td>
-<td>Admin/User</td>
-<td>If you give your players access to <code>petblocks.pet.create</code>, the access to the slot where the pet is stored. e.g. petblocks.pet.amount.1 (slot 1) and petblocks.pet.amount.2 (slot 2)</td>
 </tr>
 <tr>
 <td>petblocks.pet.breakBlock</td>
@@ -863,6 +922,16 @@
 <td>petblocks.pet.variable</td>
 <td>Admin</td>
 <td>Allows to use the /petblocks variable command</td>
+</tr>
+<tr>
+<td>petblocks.pet.manipulateOther</td>
+<td>Admin</td>
+<td>Allows to manipulate the pets of other players. e.g. Changing skins, etc.</td>
+</tr>
+<tr>
+<td>petblocks.reload</td>
+<td>Admin</td>
+<td>Permission to use the /petblocks reload command.</td>
 </tr>
 </tbody>
 </table>
