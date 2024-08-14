@@ -7,6 +7,7 @@ with template ``classic`` for you and makes it spawn in front of you. If you can
 **Make sure your players have this permission to see their pet:**
 ```
 petblocks.pet.spawn
+petblocks.pet.amount.1   
 ```
 
 The next step is to decide, how you want your players to receive a pet. There are multiple options below.
