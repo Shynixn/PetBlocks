@@ -10,6 +10,7 @@ import com.github.shynixn.mcutils.common.repository.CacheRepository
 import com.github.shynixn.mcutils.database.api.CachePlayerRepository
 import com.github.shynixn.petblocks.PetBlocksDependencyInjectionModule
 import com.github.shynixn.petblocks.PetBlocksLanguage
+import com.github.shynixn.petblocks.PetBlocksPlugin.Companion.languageFiles
 import com.github.shynixn.petblocks.contract.DependencyHeadDatabaseService
 import com.github.shynixn.petblocks.contract.Pet
 import com.github.shynixn.petblocks.contract.PetService
@@ -764,7 +765,8 @@ class PetBlocksCommandExecutor @Inject constructor(
                     templateRepository.clearCache()
                     plugin.saveDefaultConfig()
                     plugin.reloadConfig()
-                    configurationService.reload()
+                    val language = plugin.config.getString("language")!!
+                    plugin.reloadTranslation(language, PetBlocksLanguage::class.java, *languageFiles)
                     Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), "petblocksgui reload")
                     sender.sendMessage(PetBlocksLanguage.reloadMessage)
                 }
