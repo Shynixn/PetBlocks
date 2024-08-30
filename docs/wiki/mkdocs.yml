@@ -5,12 +5,13 @@ nav:
   - 'PetBlocks Wiki':
       - Introduction: README.md
       - Permission: permission.md
+      - Giving pets to players: receivingpets.md
       - Commands: commands.md
-      - Giving Pets to Players: receivingpets.md
       - Templates: template.md
       - GUI: gui.md
       - PlaceHolders: placeholders.md
       - Custom Models: custommodels.md
+      - Selectable particle effects: particleexample.md
       - Developer Api: api.md
       - 'FAQ': faq.md
 theme:
