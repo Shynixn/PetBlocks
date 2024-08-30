@@ -767,6 +767,22 @@ class PetBlocksCommandExecutor @Inject constructor(
                     plugin.reloadConfig()
                     val language = plugin.config.getString("language")!!
                     plugin.reloadTranslation(language, PetBlocksLanguage::class.java, *languageFiles)
+                    val templates = templateRepository.getAll()
+
+                    // Updates the templates.
+                    for (player in petService.getCache().keys) {
+                        val pets = petService.getCache()[player]
+
+                        if (pets != null) {
+                            for (pet in pets) {
+                                val newTemplate = templates.firstOrNull { e -> e.name == pet.template.name }
+                                if (newTemplate != null) {
+                                    pet.template = newTemplate
+                                }
+                            }
+                        }
+                    }
+
                     Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), "petblocksgui reload")
                     sender.sendMessage(PetBlocksLanguage.reloadMessage)
                 }
