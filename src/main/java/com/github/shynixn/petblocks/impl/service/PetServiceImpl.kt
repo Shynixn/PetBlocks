@@ -175,7 +175,7 @@ class PetServiceImpl @Inject constructor(
         val petMeta = PetMeta()
         petMeta.name = name
         petMeta.template = templateId
-        petMeta.displayName = placeHolderService.resolvePlaceHolder(player, template.pet.displayName, emptyMap())
+        petMeta.displayName =  template.pet.displayName // PlaceHolders are resolved later.
         petMeta.isSpawned = template.pet.spawned
         petMeta.visibility = template.pet.visibility
         petMeta.ridingState = template.pet.ridingState
