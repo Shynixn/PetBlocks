@@ -10,6 +10,7 @@ import com.github.shynixn.mcutils.common.repository.CacheRepository
 import com.github.shynixn.mcutils.database.api.CachePlayerRepository
 import com.github.shynixn.petblocks.PetBlocksDependencyInjectionModule
 import com.github.shynixn.petblocks.PetBlocksLanguage
+import com.github.shynixn.petblocks.PetBlocksPlugin.Companion.languageFiles
 import com.github.shynixn.petblocks.contract.DependencyHeadDatabaseService
 import com.github.shynixn.petblocks.contract.Pet
 import com.github.shynixn.petblocks.contract.PetService
@@ -764,7 +765,24 @@ class PetBlocksCommandExecutor @Inject constructor(
                     templateRepository.clearCache()
                     plugin.saveDefaultConfig()
                     plugin.reloadConfig()
-                    configurationService.reload()
+                    val language = plugin.config.getString("language")!!
+                    plugin.reloadTranslation(language, PetBlocksLanguage::class.java, *languageFiles)
+                    val templates = templateRepository.getAll()
+
+                    // Updates the templates.
+                    for (player in petService.getCache().keys) {
+                        val pets = petService.getCache()[player]
+
+                        if (pets != null) {
+                            for (pet in pets) {
+                                val newTemplate = templates.firstOrNull { e -> e.name == pet.template.name }
+                                if (newTemplate != null) {
+                                    pet.template = newTemplate
+                                }
+                            }
+                        }
+                    }
+
                     Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), "petblocksgui reload")
                     sender.sendMessage(PetBlocksLanguage.reloadMessage)
                 }
@@ -965,7 +983,7 @@ class PetBlocksCommandExecutor @Inject constructor(
         sender: CommandSender, pet: Pet, visibility: PetVisibility
     ) {
         pet.visibility = visibility
-        sender.sendPluginMessage(String.format(PetBlocksLanguage.visibilityChangedMessage, pet.name, visibility))
+        sender.sendPluginMessage(String.format(PetBlocksLanguage.visibilityChangedMessage, visibility))
     }
 
     private fun setPetLoop(sender: CommandSender, pet: Pet, loop: String) {

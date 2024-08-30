@@ -3,20 +3,14 @@
 Once you have setup the permission, join your server. The PetBlocks default configuration creates a pet
 with template ``classic`` for you and makes it spawn in front of you. If you cannot see the pet, try executing ``/petblocks call pet`` or review your permissions again.
 
-
-**Make sure your players have this permission to see their pet:**
-```
-petblocks.pet.spawn
-petblocks.pet.amount.1   
-```
-
 The next step is to decide, how you want your players to receive a pet. There are multiple options below.
 
 ## Receiving a pet on first join
 
-This is enabled per default and can be changed in the ``config.yml`` under ``pet/receivePetsOnJoin``. This creates a new database entry for each joining player, regardless if he has the spawn permission or not.
-The player requires the minimum ``petblocks.pet.spawn`` to see their pet.
+!!! note "Important"
+    Make sure you have given your players the  minimum required permissions before you continue.
 
+This is enabled per default and can be changed in the ``config.yml`` under ``pet/receivePetsOnJoin``. This creates a new database entry for each joining player, regardless if he has the spawn permission or not.
 If you want to receive no pets on join and unlock pets later own (e.g. for shops or VIP perks), change this to: 
 
 ```
@@ -37,7 +31,6 @@ pet:
 
 In order to configure, if the pet should automatically spawn in front of the player on creation, open the template 
 ``plugins/PetBlocks/pets/pet_classic.yml``. Set ``pet/spawned`` to ``true`` or ``false``.
-
 
 ## Receiving pets using a shop
 

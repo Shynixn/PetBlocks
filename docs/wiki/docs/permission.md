@@ -7,7 +7,7 @@ The following permissions are available in PetBlocks.
 * User: A permission all players can have.
 * Admin/User: Depending on your server, you may give this permission to your players. If you are not sure, try to build
   your server around **not giving this permission** to your players.
-* Admin: A permission only Admins should have.
+* Admin: A permission only admins should have.
 
 ### Minimum Required Permissions
 

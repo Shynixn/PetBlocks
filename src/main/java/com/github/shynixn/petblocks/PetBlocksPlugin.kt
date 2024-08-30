@@ -39,6 +39,9 @@ import java.util.logging.Level
  * Author Shynixn
  */
 class PetBlocksPlugin : JavaPlugin() {
+    companion object {
+        var languageFiles = arrayOf("en_us", "es_es")
+    }
     private val prefix: String = ChatColor.BLUE.toString() + "[PetBlocks] " + ChatColor.WHITE
     private lateinit var mainModule: PetBlocksDependencyInjectionModule
     private lateinit var shyGuiModule: ShyGUIDependencyInjectionModule
@@ -96,7 +99,7 @@ class PetBlocksPlugin : JavaPlugin() {
 
         // Register Language
         val language = config.getString("language")!!
-        reloadTranslation(language, PetBlocksLanguage::class.java, "en_us")
+        reloadTranslation(language, PetBlocksLanguage::class.java, *languageFiles)
         logger.log(Level.INFO, "Loaded language file $language.properties.")
 
         // ShyGUI Module

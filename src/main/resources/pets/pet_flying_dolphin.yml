@@ -97,7 +97,30 @@ events:
         level: "SERVER"
         run:
           - "/petblocks velocity %petblocks_pet_name% %petblocks_js_jsonKnockback_x% 0.2 %petblocks_js_jsonKnockback_z% %petblocks_eventPlayer_name%"
+  leftClickSneak:
+    actions:  # You can add/remove actions as you want here.
+      - name: "Open the pet GUI"
+        condition:
+          type: STRING_EQUALS
+          left: "%petblocks_eventPlayer_name%"
+          right: "%petblocks_owner_name%"
+        type: "COMMAND"
+        level: "PLAYER"
+        run:
+          - "/petblocks select %petblocks_pet_name%"
+          - "/petblock"
   rightClick:
+    actions:  # You can add/remove actions as you want here.
+      - name: "Start riding pet"
+        condition:
+          type: STRING_EQUALS
+          left: "%petblocks_eventPlayer_name%"
+          right: "%petblocks_owner_name%"
+        type: "COMMAND"
+        level: "PLAYER"
+        run:
+          - "/petblocks ride %petblocks_pet_name%"
+  rightClickSneak:
     actions:  # You can add/remove actions as you want here.
       - name: "Open the pet GUI"
         condition:

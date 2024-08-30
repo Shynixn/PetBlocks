@@ -190,7 +190,12 @@ class PetEntityImpl(
 
         lastClickTimeStamp = currentDateTime
 
-        val rightClickEvent = pet.template.events["rightClick"]
+        val key = if (player.isSneaking) {
+            "rightClickSneak"
+        } else {
+            "rightClick"
+        }
+        val rightClickEvent = pet.template.events[key]
         if (rightClickEvent != null) {
             plugin.launch(plugin.minecraftDispatcher + object : CoroutineTimings() {}) {
                 petActionExecutionService.executeAction(player, pet, rightClickEvent, CancellationToken())
@@ -211,7 +216,12 @@ class PetEntityImpl(
 
         lastClickTimeStamp = currentDateTime
 
-        val leftClickEvent = pet.template.events["leftClick"]
+        val key = if (player.isSneaking) {
+            "leftClickSneak"
+        } else {
+            "leftClick"
+        }
+        val leftClickEvent = pet.template.events[key]
         if (leftClickEvent != null) {
             plugin.launch(plugin.minecraftDispatcher + object : CoroutineTimings() {}) {
                 petActionExecutionService.executeAction(player, pet, leftClickEvent, CancellationToken())

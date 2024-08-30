@@ -3,6 +3,8 @@ package com.github.shynixn.petblocks.enumeration
 enum class PetActionConditionType {
     NONE,
     STRING_EQUALS,
+    STRING_CONTAINS,
+    STRING_NOT_CONTAINS,
     STRING_NOT_EQUALS,
     STRING_EQUALS_IGNORE_CASE,
     STRING_NOT_EQUALS_IGNORE_CASE,

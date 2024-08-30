@@ -177,7 +177,32 @@ class PetActionExecutionServiceImpl @Inject constructor(
                 }
 
                 return conditionResult
-            } else {
+            }
+            else if (conditionType == PetActionConditionType.STRING_CONTAINS) {
+                val conditionResult = leftEscaped.contains(rightEscaped)
+
+                if (action.debug) {
+                    plugin.logger.log(
+                        Level.INFO,
+                        "End evaluating condition, $leftEscaped contains $rightEscaped -> ${conditionResult}."
+                    )
+                }
+
+                return conditionResult
+            }
+            else if (conditionType == PetActionConditionType.STRING_NOT_CONTAINS) {
+                val conditionResult = !leftEscaped.contains(rightEscaped)
+
+                if (action.debug) {
+                    plugin.logger.log(
+                        Level.INFO,
+                        "End evaluating condition, $leftEscaped not contains $rightEscaped -> ${conditionResult}."
+                    )
+                }
+
+                return conditionResult
+            }
+            else {
                 val leftNumber = leftEscaped.toDoubleOrNull()
 
                 if (leftNumber == null) {
