@@ -983,7 +983,7 @@ class PetBlocksCommandExecutor @Inject constructor(
         sender: CommandSender, pet: Pet, visibility: PetVisibility
     ) {
         pet.visibility = visibility
-        sender.sendPluginMessage(String.format(PetBlocksLanguage.visibilityChangedMessage, pet.name, visibility))
+        sender.sendPluginMessage(String.format(PetBlocksLanguage.visibilityChangedMessage, visibility))
     }
 
     private fun setPetLoop(sender: CommandSender, pet: Pet, loop: String) {

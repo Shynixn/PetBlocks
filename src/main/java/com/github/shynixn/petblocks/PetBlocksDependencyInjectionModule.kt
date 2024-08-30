@@ -1,6 +1,7 @@
 package com.github.shynixn.petblocks
 
 import com.fasterxml.jackson.core.type.TypeReference
+import com.github.shynixn.mccoroutine.bukkit.minecraftDispatcher
 import com.github.shynixn.mcutils.common.ConfigurationService
 import com.github.shynixn.mcutils.common.ConfigurationServiceImpl
 import com.github.shynixn.mcutils.common.chat.ChatMessageService
@@ -69,7 +70,8 @@ class PetBlocksDependencyInjectionModule(
         val configSelectedRepository = ConfigSelectedRepositoryImpl<PlayerInformation>(plugin,
             "PetBlocks",
             plugin.dataFolder.toPath().resolve("PetBlocks.sqlite"),
-            object : TypeReference<PlayerInformation>() {})
+            object : TypeReference<PlayerInformation>() {}, plugin.minecraftDispatcher
+        )
         val playerDataRepository = AutoSavePlayerDataRepositoryImpl(
             1000 * 60L * autoSaveMinutes, CachePlayerDataRepositoryImpl(configSelectedRepository, plugin), plugin
         )

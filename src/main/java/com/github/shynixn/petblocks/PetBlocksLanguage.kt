@@ -28,8 +28,8 @@ object PetBlocksLanguage {
   /** Toggles the pet spawn state. **/
   var toggleCommandHint : String = "Toggles the pet spawn state."
 
-  /** [&9PetBlocks&f] Started riding pet %1$1s. **/
-  var petRideMessage : String = "[&9PetBlocks&f] Started riding pet %1$1s."
+  /** [&9PetBlocks&f] Started riding pet. **/
+  var petRideMessage : String = "[&9PetBlocks&f] Started riding pet."
 
   /** Makes the pet walk to a given location. **/
   var moveToCommandHint : String = "Makes the pet walk to a given location."
@@ -82,8 +82,8 @@ object PetBlocksLanguage {
   /** Despawns the pet if it has not already despawned. **/
   var deSpawnCommandHint : String = "Despawns the pet if it has not already despawned."
 
-  /** [&9PetBlocks&f] The skin of pet %1$1s has been changed. **/
-  var petSkinNbtChanged : String = "[&9PetBlocks&f] The skin of pet %1$1s has been changed."
+  /** [&9PetBlocks&f] The skin of pet has been changed. **/
+  var petSkinNbtChanged : String = "[&9PetBlocks&f] The skin of pet has been changed."
 
   /** [&9PetBlocks&f] The pet has been rotated. **/
   var rotationRelMessage : String = "[&9PetBlocks&f] The pet has been rotated."
@@ -103,8 +103,8 @@ object PetBlocksLanguage {
   /** [&9PetBlocks&f] &cWorld %1$1s not found. **/
   var worldNotFoundMessage : String = "[&9PetBlocks&f] &cWorld %1$1s not found."
 
-  /** [&9PetBlocks&f] The name of pet %1$1s has been changed to %2$1s. **/
-  var petNameChangeMessage : String = "[&9PetBlocks&f] The name of pet %1$1s has been changed to %2$1s."
+  /** [&9PetBlocks&f] The name of the pet has been changed to %1$1s. **/
+  var petNameChangeMessage : String = "[&9PetBlocks&f] The name of the pet has been changed to %1$1s."
 
   /** [&9PetBlocks&f] &cOnly the direction types %1$1s are supported. **/
   var petRotationTypeNotFound : String = "[&9PetBlocks&f] &cOnly the direction types %1$1s are supported."
@@ -130,14 +130,14 @@ object PetBlocksLanguage {
   /** [&9PetBlocks&f] &cPet with name %1$1s not found. **/
   var petNotFoundMessage : String = "[&9PetBlocks&f] &cPet with name %1$1s not found."
 
-  /** [&9PetBlocks&f] Changed pet %1$1s to loop %2$1s. **/
-  var petLoopChangedMessage : String = "[&9PetBlocks&f] Changed pet %1$1s to loop %2$1s."
+  /** [&9PetBlocks&f] Changed pet to loop %2$1s. **/
+  var petLoopChangedMessage : String = "[&9PetBlocks&f] Changed pet to loop %2$1s."
 
   /** Makes the owner wear the pet. **/
   var hatCommandHint : String = "Makes the owner wear the pet."
 
-  /** [&9PetBlocks&f] The visibility of pet %1$1s has been changed to %2$1s. **/
-  var visibilityChangedMessage : String = "[&9PetBlocks&f] The visibility of pet %1$1s has been changed to %2$1s."
+  /** [&9PetBlocks&f] The visibility of pet has been changed to %1$1s. **/
+  var visibilityChangedMessage : String = "[&9PetBlocks&f] The visibility of pet has been changed to %1$1s."
 
   /** [&9PetBlocks&f] &cYou do not have permission to edit the pets of other players. **/
   var manipulateOtherMessage : String = "[&9PetBlocks&f] &cYou do not have permission to edit the pets of other players."
@@ -196,8 +196,8 @@ object PetBlocksLanguage {
   /** [&9PetBlocks&f] Pet has been moved. **/
   var petVelocityAppliedMessage : String = "[&9PetBlocks&f] Pet has been moved."
 
-  /** [&9PetBlocks&f] Started hat pet %1$1s. **/
-  var petHatMessage : String = "[&9PetBlocks&f] Started hat pet %1$1s."
+  /** [&9PetBlocks&f] Started hat pet. **/
+  var petHatMessage : String = "[&9PetBlocks&f] Started hat pet."
 
   /** Changes which loop from the template is being executed by the pet. An example loop is idle. **/
   var loopCommandHint : String = "Changes which loop from the template is being executed by the pet. An example loop is idle."
@@ -229,8 +229,8 @@ object PetBlocksLanguage {
   /** Makes the owner select one of his pets as primary pet. This is only helpful if a single player has got multiple pets in PetBlocks-Premium. **/
   var selectCommandHint : String = "Makes the owner select one of his pets as primary pet. This is only helpful if a single player has got multiple pets in PetBlocks-Premium."
 
-  /** [&9PetBlocks&f] Changed pet %1$1s to template %2$1s. **/
-  var petTemplateChangeMessage : String = "[&9PetBlocks&f] Changed pet %1$1s to template %2$1s."
+  /** [&9PetBlocks&f] Changed pet to template %2$1s. **/
+  var petTemplateChangeMessage : String = "[&9PetBlocks&f] Changed pet to template %2$1s."
 
   /** Opens the GUI menu with the given name. **/
   var openCommandHint : String = "Opens the GUI menu with the given name."
@@ -253,8 +253,8 @@ object PetBlocksLanguage {
   /** [&9PetBlocks&f] &cThe plugin HeadDatabase is not loaded. **/
   var headDatabasePluginNotLoaded : String = "[&9PetBlocks&f] &cThe plugin HeadDatabase is not loaded."
 
-  /** [&9PetBlocks&f] The skinType of pet %1$1s has been changed. **/
-  var petSkinTypeChangedMessage : String = "[&9PetBlocks&f] The skinType of pet %1$1s has been changed."
+  /** [&9PetBlocks&f] The skinType of pet has been changed. **/
+  var petSkinTypeChangedMessage : String = "[&9PetBlocks&f] The skinType of pet has been changed."
 
   /** [&9PetBlocks&f] Count: %1$1d Names: %2$1s **/
   var petListMessage : String = "[&9PetBlocks&f] Count: %1$1d Names: %2$1s"
@@ -292,8 +292,8 @@ object PetBlocksLanguage {
   /** [&9PetBlocks&f] PetBlocks has been reloaded. **/
   var reloadMessage : String = "[&9PetBlocks&f] PetBlocks has been reloaded."
 
-  /** [&9PetBlocks&f] Stopped mounting pet %1$1s. **/
-  var petUnmountMessage : String = "[&9PetBlocks&f] Stopped mounting pet %1$1s."
+  /** [&9PetBlocks&f] Stopped mounting pet. **/
+  var petUnmountMessage : String = "[&9PetBlocks&f] Stopped mounting pet."
 
   /** [&9PetBlocks&f] &cCannot parse nbt %1$1s. **/
   var cannotParseNbtMessage : String = "[&9PetBlocks&f] &cCannot parse nbt %1$1s."
