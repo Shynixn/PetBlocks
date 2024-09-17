@@ -82,8 +82,8 @@ object PetBlocksLanguage {
   /** Despawns the pet if it has not already despawned. **/
   var deSpawnCommandHint : String = "Despawns the pet if it has not already despawned."
 
-  /** [&9PetBlocks&f] The skin of pet has been changed. **/
-  var petSkinNbtChanged : String = "[&9PetBlocks&f] The skin of pet has been changed."
+  /** [&9PetBlocks&f] The skin of the pet has been changed. **/
+  var petSkinNbtChanged : String = "[&9PetBlocks&f] The skin of the pet has been changed."
 
   /** [&9PetBlocks&f] The pet has been rotated. **/
   var rotationRelMessage : String = "[&9PetBlocks&f] The pet has been rotated."
@@ -136,8 +136,8 @@ object PetBlocksLanguage {
   /** Makes the owner wear the pet. **/
   var hatCommandHint : String = "Makes the owner wear the pet."
 
-  /** [&9PetBlocks&f] The visibility of pet has been changed to %1$1s. **/
-  var visibilityChangedMessage : String = "[&9PetBlocks&f] The visibility of pet has been changed to %1$1s."
+  /** [&9PetBlocks&f] The visibility of the pet has been changed to %1$1s. **/
+  var visibilityChangedMessage : String = "[&9PetBlocks&f] The visibility of the pet has been changed to %1$1s."
 
   /** [&9PetBlocks&f] &cYou do not have permission to edit the pets of other players. **/
   var manipulateOtherMessage : String = "[&9PetBlocks&f] &cYou do not have permission to edit the pets of other players."
@@ -253,8 +253,8 @@ object PetBlocksLanguage {
   /** [&9PetBlocks&f] &cThe plugin HeadDatabase is not loaded. **/
   var headDatabasePluginNotLoaded : String = "[&9PetBlocks&f] &cThe plugin HeadDatabase is not loaded."
 
-  /** [&9PetBlocks&f] The skinType of pet has been changed. **/
-  var petSkinTypeChangedMessage : String = "[&9PetBlocks&f] The skinType of pet has been changed."
+  /** [&9PetBlocks&f] The skinType of the pet has been changed. **/
+  var petSkinTypeChangedMessage : String = "[&9PetBlocks&f] The skinType of the pet has been changed."
 
   /** [&9PetBlocks&f] Count: %1$1d Names: %2$1s **/
   var petListMessage : String = "[&9PetBlocks&f] Count: %1$1d Names: %2$1s"
