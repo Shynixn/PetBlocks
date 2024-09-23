@@ -19,7 +19,6 @@ import com.github.shynixn.petblocks.contract.Pet
 import com.github.shynixn.petblocks.contract.PetActionExecutionService
 import com.github.shynixn.petblocks.entity.PetMeta
 import com.github.shynixn.petblocks.enumeration.DropType
-import com.github.shynixn.petblocks.enumeration.PetVisibility
 import com.github.shynixn.petblocks.exception.PetBlocksPetDisposedException
 import com.github.shynixn.petblocks.impl.physic.ArmorstandEntityComponent
 import com.github.shynixn.petblocks.impl.physic.MathComponent
@@ -225,6 +224,32 @@ class PetEntityImpl(
         if (leftClickEvent != null) {
             plugin.launch(plugin.minecraftDispatcher + object : CoroutineTimings() {}) {
                 petActionExecutionService.executeAction(player, pet, leftClickEvent, CancellationToken())
+            }
+        }
+    }
+
+    /**
+     * Spawn is initiated.
+     */
+    fun onSpawn(player: Player){
+        cancellationTokenLongRunning.isCancelled = true
+        val spawnEvent = pet.template.events["spawn"]
+        if (spawnEvent != null) {
+            plugin.launch(plugin.minecraftDispatcher + object : CoroutineTimings() {}) {
+                petActionExecutionService.executeAction(player, pet, spawnEvent, CancellationToken())
+            }
+        }
+    }
+
+    /**
+     * Despawn is initiated.
+     */
+    fun onDespawn(player: Player){
+        cancellationTokenLongRunning.isCancelled = true
+        val despawnEvent = pet.template.events["despawn"]
+        if (despawnEvent != null) {
+            plugin.launch(plugin.minecraftDispatcher + object : CoroutineTimings() {}) {
+                petActionExecutionService.executeAction(player, pet, despawnEvent, CancellationToken())
             }
         }
     }
