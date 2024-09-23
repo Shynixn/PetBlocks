@@ -23,8 +23,12 @@ Events define what actions to execute on certain events.
 The following events are supported:
 
 * leftClick
+* leftClickSneak
 * rightClick
+* rightClickSneak
 * ridingSneak
+* spawn
+* despawn
 
 For example the ``leftClick`` event gets executed when a player left-clicks on the pet. However, it may not be the owner, who clicks on a pet, therefore you need
 to check if the player is the owner first as a condition.

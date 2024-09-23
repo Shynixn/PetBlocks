@@ -140,6 +140,16 @@ events:
         level: "PLAYER"
         run:
           - "/petblocks unmount %petblocks_pet_name%"
+  spawn:
+    actions:
+      - name: "Delay Action"
+        type: "DELAY"
+        ticks: 20
+  despawn:
+    actions:
+      - name: "Delay Action"
+        type: "DELAY"
+        ticks: 20
 
 #
 # Defines the action a pet should perform in an interval on its own.

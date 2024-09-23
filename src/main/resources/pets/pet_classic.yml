@@ -98,7 +98,7 @@ events:
         run:
           - "/petblocks velocity %petblocks_pet_name% %petblocks_js_jsonKnockback_x% 0.2 %petblocks_js_jsonKnockback_z% %petblocks_eventPlayer_name%"
   leftClickSneak:
-    actions:  # You can add/remove actions as you want here.
+    actions: # You can add/remove actions as you want here.
       - name: "Open the pet GUI"
         condition:
           type: STRING_EQUALS
@@ -110,7 +110,7 @@ events:
           - "/petblocks select %petblocks_pet_name%"
           - "/petblock"
   rightClick:
-    actions:  # You can add/remove actions as you want here.
+    actions: # You can add/remove actions as you want here.
       - name: "Start riding pet"
         condition:
           type: STRING_EQUALS
@@ -121,7 +121,7 @@ events:
         run:
           - "/petblocks ride %petblocks_pet_name%"
   rightClickSneak:
-    actions:  # You can add/remove actions as you want here.
+    actions: # You can add/remove actions as you want here.
       - name: "Open the pet GUI"
         condition:
           type: STRING_EQUALS
@@ -140,6 +140,16 @@ events:
         level: "PLAYER"
         run:
           - "/petblocks unmount %petblocks_pet_name%"
+  spawn:
+    actions:
+      - name: "Delay Action"
+        type: "DELAY"
+        ticks: 20
+  despawn:
+    actions:
+      - name: "Delay Action"
+        type: "DELAY"
+        ticks: 20
 
 #
 # Defines the action a pet should perform in an interval on its own.

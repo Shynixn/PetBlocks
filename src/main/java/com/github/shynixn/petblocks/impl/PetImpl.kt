@@ -46,9 +46,7 @@ class PetImpl(
             // Remove pet if the player does not have any spawn permission.
             while (!isDisposed) {
                 if (!player.hasPermission(Permission.SPAWN.text)) {
-                    petEntity?.remove()
-                    petEntity = null
-                    petMeta.isSpawned = false
+                    remove()
                 }
 
                 delay(5000)
@@ -317,8 +315,7 @@ class PetImpl(
             val petWorld = location.world
 
             if (playerWorld != petWorld) {
-                petEntity!!.remove()
-                petEntity = null
+                remove()
             }
         }
 
@@ -368,6 +365,7 @@ class PetImpl(
             return
         }
 
+        petEntity!!.onDespawn(player)
         petEntity!!.remove()
         petEntity = null
         petMeta.isSpawned = false
@@ -394,7 +392,7 @@ class PetImpl(
 
         petEntity = petEntityFactory.createPetEntity(this, petMeta)
         petMeta.isSpawned = true
-
+        petEntity?.onSpawn(player)
 
         plugin.launch {
             if (petMeta.ridingState == PetRidingState.HAT) {
