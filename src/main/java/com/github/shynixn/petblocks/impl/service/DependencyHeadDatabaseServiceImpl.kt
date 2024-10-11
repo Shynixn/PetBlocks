@@ -70,6 +70,7 @@ class DependencyHeadDatabaseServiceImpl @Inject constructor(
         val petName = applyPlayers[player]
         applyPlayers.remove(player)
         player.closeInventory()
+        event.isCancelled = true
 
         plugin.launch {
             try {

@@ -118,7 +118,10 @@ class PetBlocksPlugin : JavaPlugin() {
         val petListener = mainModule.getService<PetListener>()
         Bukkit.getPluginManager().registerEvents(petListener, this)
         if (Bukkit.getPluginManager().getPlugin(PluginDependency.HEADDATABASE.pluginName) != null) {
-            Bukkit.getPluginManager().registerEvents(mainModule.getService<DependencyHeadDatabaseService>(), this)
+            val headDatabaseService = mainModule.getService<DependencyHeadDatabaseService>()
+            Bukkit.getPluginManager().registerEvents(headDatabaseService, this)
+            Bukkit.getServicesManager()
+                .register(DependencyHeadDatabaseService::class.java, headDatabaseService, this, ServicePriority.Normal)
         }
 
         // Register CommandExecutor
