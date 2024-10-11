@@ -40,6 +40,7 @@ class PetImpl(
     private var petEntity: PetEntityImpl? = null
     private var disposed = false
     private var templateCache: PetTemplate? = null
+    private var isWorldTransferActive : Boolean = false
 
     init {
         plugin.launch(plugin.minecraftDispatcher + object : CoroutineTimings() {}) {
@@ -127,12 +128,14 @@ class PetImpl(
             petMeta.lastStoredLocation = value.toVector3d()
 
             if (petEntity != null) {
-                if (value.world?.name != previousWorld) {
+                if (value.world?.name != previousWorld && !isWorldTransferActive) {
+                    isWorldTransferActive = true
                     plugin.launch {
                         delay(750)
                         remove()
                         delay(250)
                         call()
+                        isWorldTransferActive = false
                     }
                 } else {
                     petEntity?.teleportInWorld(value.toVector3d())
