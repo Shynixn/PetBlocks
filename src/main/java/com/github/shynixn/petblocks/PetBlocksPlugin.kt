@@ -78,9 +78,10 @@ class PetBlocksPlugin : JavaPlugin() {
                 Version.VERSION_1_20_R3,
                 Version.VERSION_1_20_R4,
                 Version.VERSION_1_21_R1,
+                Version.VERSION_1_21_R2,
             )
         } else {
-            listOf(Version.VERSION_1_21_R1)
+            listOf(Version.VERSION_1_21_R2)
         }
 
         if (!Version.serverVersion.isCompatible(*versions.toTypedArray())) {

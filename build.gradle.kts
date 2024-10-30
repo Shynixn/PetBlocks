@@ -4,12 +4,12 @@ import java.util.*
 import java.io.*
 
 plugins {
-    id("org.jetbrains.kotlin.jvm") version ("1.6.10")
+    id("org.jetbrains.kotlin.jvm") version ("1.9.25")
     id("com.github.johnrengelman.shadow") version ("7.0.0")
 }
 
 group = "com.github.shynixn"
-version = "9.14.1"
+version = "9.15.0"
 
 repositories {
     mavenCentral()
@@ -31,10 +31,10 @@ dependencies {
     compileOnly("com.arcaniax:HeadDatabase-API:1.3.1")
 
     // Library dependencies with legacy compatibility, we can use more up-to-date version in the plugin.yml
-    implementation("com.github.shynixn.mccoroutine:mccoroutine-bukkit-api:2.18.0")
-    implementation("com.github.shynixn.mccoroutine:mccoroutine-bukkit-core:2.18.0")
-    runtimeOnly("com.github.shynixn.mccoroutine:mccoroutine-folia-api:2.18.0")
-    runtimeOnly("com.github.shynixn.mccoroutine:mccoroutine-folia-core:2.18.0")
+    implementation("com.github.shynixn.mccoroutine:mccoroutine-bukkit-api:2.20.0")
+    implementation("com.github.shynixn.mccoroutine:mccoroutine-bukkit-core:2.20.0")
+    runtimeOnly("com.github.shynixn.mccoroutine:mccoroutine-folia-api:2.20.0")
+    runtimeOnly("com.github.shynixn.mccoroutine:mccoroutine-folia-core:2.20.0")
     implementation("com.google.inject:guice:5.0.1")
     implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.3.0")
     implementation("com.fasterxml.jackson.core:jackson-databind:2.2.3")
@@ -46,9 +46,9 @@ dependencies {
 
     // Custom dependencies
     implementation("com.github.shynixn.shygui:shygui:1.0.1")
-    implementation("com.github.shynixn.mcutils:common:2024.23")
-    implementation("com.github.shynixn.mcutils:packet:2024.38")
-    implementation("com.github.shynixn.mcutils:database:2024.3")
+    implementation("com.github.shynixn.mcutils:common:2024.25")
+    implementation("com.github.shynixn.mcutils:packet:2024.43")
+    implementation("com.github.shynixn.mcutils:database:2024.8")
     implementation("com.github.shynixn.mcutils:pathfinder:2024.3")
     implementation("com.github.shynixn.mcutils:guice:2024.2")
 
@@ -112,6 +112,7 @@ tasks.register("relocatePluginJar", com.github.jengelman.gradle.plugins.shadow.t
     from(zipTree(File("./build/libs/" + (tasks.getByName("shadowJar") as Jar).archiveFileName.get())))
     archiveFileName.set("${archiveBaseName.get()}-${archiveVersion.get()}-relocate.${archiveExtension.get()}")
     relocate("com.github.shynixn.mcutils", "com.github.shynixn.petblocks.lib.com.github.shynixn.mcutils")
+    relocate("com.fasterxml", "com.github.shynixn.petblocks.lib.com.fasterxml")
     relocate("com.github.shynixn.shygui", "com.github.shynixn.petblocks.lib.com.github.shynixn.shygui")
 }
 
