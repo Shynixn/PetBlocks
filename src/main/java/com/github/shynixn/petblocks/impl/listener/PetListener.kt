@@ -9,6 +9,7 @@ import com.github.shynixn.mcutils.common.Version
 import com.github.shynixn.mcutils.common.physic.PhysicObjectService
 import com.github.shynixn.mcutils.packet.api.event.PacketAsyncEvent
 import com.github.shynixn.mcutils.packet.api.meta.enumeration.InteractionType
+import com.github.shynixn.mcutils.packet.api.meta.enumeration.PacketVersion
 import com.github.shynixn.mcutils.packet.api.packet.PacketInInteractEntity
 import com.github.shynixn.mcutils.packet.api.packet.PacketInSteerVehicle
 import com.github.shynixn.petblocks.contract.PetActionExecutionService
@@ -18,6 +19,7 @@ import com.github.shynixn.petblocks.impl.service.PetActionExecutionServiceImpl
 import com.google.inject.Inject
 import kotlinx.coroutines.delay
 import org.bukkit.Bukkit
+import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.player.PlayerJoinEvent
@@ -34,6 +36,7 @@ class PetListener @Inject constructor(
     private val configurationService: ConfigurationService
 ) : Listener {
     private val petsToReceiveOnJoinKey = "pet.receivePetsOnJoin"
+    private val steerVehicleCache = HashMap<Player, Int>()
 
     /**
      * Gets called when a player joins the server.
@@ -75,6 +78,7 @@ class PetListener @Inject constructor(
         plugin.launch {
             petService.clearCache(event.player)
         }
+        steerVehicleCache.remove(event.player)
     }
 
     @EventHandler
@@ -100,10 +104,61 @@ class PetListener @Inject constructor(
         val packet = event.packet
 
         if (packet is PacketInSteerVehicle) {
-            plugin.launch {
-                val physicObject = physicObjectService.findPhysicObjectById(packet.entityId) as PetEntityImpl?
-                physicObject?.ride(event.player, packet.forward, packet.isJumping, packet.isShift)
+            val player = event.player
+
+            if (packet.version == PacketVersion.V1) {
+                plugin.launch {
+                    val physicObject = physicObjectService.findPhysicObjectById(packet.entityId) as PetEntityImpl?
+                    physicObject?.ride(player, packet.forward, packet.isJumping, packet.isShift)
+                }
+                return
             }
+
+            if (packet.version == PacketVersion.V2) {
+                plugin.launch {
+                    val physicObject =
+                        physicObjectService.findPhysicObjectById(packet.entityId) as PetEntityImpl? ?: return@launch
+
+                    if (steerVehicleCache.containsKey(player)) {
+                        val vehicleDirection = steerVehicleCache[player]
+
+                        if (vehicleDirection == 1 && packet.isForwardMove) {
+                            // Skip
+                        } else if (vehicleDirection == 2 && packet.isForwardMove) {
+                            // Skip
+                        } else {
+                            steerVehicleCache.remove(player)
+                        }
+                    } else {
+                        if (packet.isForwardMove) {
+                            steerVehicleCache[player] = 1
+                            plugin.launch {
+                                while (player.isOnline && steerVehicleCache.contains(player) && physicObject.pet.isRiding()) {
+                                    physicObject.ride(player, 0.5, false, false)
+                                    delay(5.ticks)
+                                }
+                            }
+                        } else if (packet.isBackWardMove) {
+                            steerVehicleCache[player] = 2
+                            plugin.launch {
+                                while (player.isOnline && steerVehicleCache.contains(player) && physicObject.pet.isRiding()) {
+                                    physicObject.ride(player, -0.5, false, false)
+                                    delay(5.ticks)
+                                }
+                            }
+                        }
+                    }
+
+                    if (packet.isShift) {
+                        physicObject.ride(player, 0.0, false, true)
+                    }
+
+                    if (packet.isJumping) {
+                        physicObject.ride(player, 0.0, true, false)
+                    }
+                }
+            }
+
             return
         }
 

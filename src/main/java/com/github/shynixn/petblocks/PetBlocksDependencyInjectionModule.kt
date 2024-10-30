@@ -2,6 +2,7 @@ package com.github.shynixn.petblocks
 
 import com.fasterxml.jackson.core.type.TypeReference
 import com.github.shynixn.mccoroutine.bukkit.minecraftDispatcher
+import com.github.shynixn.mccoroutine.bukkit.scope
 import com.github.shynixn.mcutils.common.ConfigurationService
 import com.github.shynixn.mcutils.common.ConfigurationServiceImpl
 import com.github.shynixn.mcutils.common.chat.ChatMessageService
@@ -11,7 +12,6 @@ import com.github.shynixn.mcutils.common.physic.PhysicObjectDispatcherImpl
 import com.github.shynixn.mcutils.common.physic.PhysicObjectService
 import com.github.shynixn.mcutils.common.physic.PhysicObjectServiceImpl
 import com.github.shynixn.mcutils.common.placeholder.PlaceHolderService
-import com.github.shynixn.mcutils.common.placeholder.PlaceHolderServiceImpl
 import com.github.shynixn.mcutils.common.repository.CacheRepository
 import com.github.shynixn.mcutils.common.repository.CachedRepositoryImpl
 import com.github.shynixn.mcutils.common.repository.Repository
@@ -73,7 +73,7 @@ class PetBlocksDependencyInjectionModule(
             object : TypeReference<PlayerInformation>() {}, plugin.minecraftDispatcher
         )
         val playerDataRepository = AutoSavePlayerDataRepositoryImpl(
-            1000 * 60L * autoSaveMinutes, CachePlayerDataRepositoryImpl(configSelectedRepository, plugin), plugin
+            1000 * 60L * autoSaveMinutes, CachePlayerDataRepositoryImpl(configSelectedRepository, plugin.minecraftDispatcher), plugin.scope, plugin.minecraftDispatcher
         )
         addService<PlayerDataRepository<PlayerInformation>>(playerDataRepository)
         addService<CachePlayerRepository<PlayerInformation>>(playerDataRepository)
