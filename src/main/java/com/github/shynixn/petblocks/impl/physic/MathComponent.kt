@@ -65,7 +65,7 @@ class MathComponent(
         }
 
         // Check gravity.
-        gravityRayTraceResult = rayTracingService.rayTraceMotion(position, Vector3d(0.0, -1.0, 0.0))
+        gravityRayTraceResult = rayTracingService.rayTraceMotion(position, Vector3d(0.0, -1.0, 0.0), settings.collideWithWater, settings.collideWithPassableBlocks)
 
         if (gravityRayTraceResult!!.hitBlock && motion.y < 0.0) {
             // Set gravity to zero and correct y axe.
@@ -74,7 +74,7 @@ class MathComponent(
         }
 
         if (motion.x != 0.0 || motion.z != 0.0) {
-            movementRayTraceResult = rayTracingService.rayTraceMotion(position, motion)
+            movementRayTraceResult = rayTracingService.rayTraceMotion(position, motion, settings.collideWithWater, settings.collideWithPassableBlocks)
         }
     }
 
@@ -91,7 +91,7 @@ class MathComponent(
         if (movementRayTraceResult != null) {
             if (movementRayTraceResult!!.hitBlock && movementRayTraceResult!!.blockDirection != BlockDirection.UP) {
                 val stuckBackMotion =
-                    rayTracingService.rayTraceMotion(position, Vector3d(motion.x * -1, 0.0, motion.z * -1))
+                    rayTracingService.rayTraceMotion(position, Vector3d(motion.x * -1, 0.0, motion.z * -1),settings.collideWithWater, settings.collideWithPassableBlocks)
                 if (stuckBackMotion.hitBlock) {
                     // If hit block while moving back. Move the entity up.
                     position.add(motion.x * -1, 0.1, motion.z * -1)

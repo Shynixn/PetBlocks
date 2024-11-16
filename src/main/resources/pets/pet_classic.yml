@@ -45,6 +45,10 @@ pet:
     absoluteVelocityReduce: 0.0005
     # The distance the pet hovers above the ground. Depending on the entity type this should be set lower or higher.
     groundOffset: -0.35
+    # Should the pet fall through water and lava or walk over it?
+    collideWithWater: false
+    # Should the pet run through blocks like cobweb?
+    collideWithPassableBlocks: false
 
 #
 # Defines the action a pet should perform on certain events.

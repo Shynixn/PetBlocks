@@ -6,12 +6,13 @@ import com.github.shynixn.mcutils.common.chat.ChatMessageService
 import com.github.shynixn.mcutils.common.command.*
 import com.github.shynixn.mcutils.common.item.Item
 import com.github.shynixn.mcutils.common.item.ItemService
+import com.github.shynixn.mcutils.common.language.reloadTranslation
 import com.github.shynixn.mcutils.common.repository.CacheRepository
 import com.github.shynixn.mcutils.database.api.CachePlayerRepository
 import com.github.shynixn.petblocks.PetBlocksDependencyInjectionModule
-import com.github.shynixn.petblocks.PetBlocksLanguage
-import com.github.shynixn.petblocks.PetBlocksPlugin.Companion.languageFiles
+import com.github.shynixn.petblocks.PetBlocksLanguageImpl
 import com.github.shynixn.petblocks.contract.DependencyHeadDatabaseService
+import com.github.shynixn.petblocks.contract.Language
 import com.github.shynixn.petblocks.contract.Pet
 import com.github.shynixn.petblocks.contract.PetService
 import com.github.shynixn.petblocks.entity.PetTemplate
@@ -40,7 +41,8 @@ class PetBlocksCommandExecutor @Inject constructor(
     private val configurationService: ConfigurationService,
     chatMessageService: ChatMessageService,
     private val petMetaRepository: CachePlayerRepository<PlayerInformation>,
-    private val itemService: ItemService
+    private val itemService: ItemService,
+    private val language: Language
 ) {
     private val regexPath = "pet.name.regex"
     private val blackListPath = "pet.name.blacklist"
@@ -64,7 +66,7 @@ class PetBlocksCommandExecutor @Inject constructor(
         Permission.MANIPULATE_OTHER.text
     }
     private val manipulateOtherPermissionMessage: () -> String = {
-        PetBlocksLanguage.manipulateOtherMessage
+        language.manipulateOtherMessage.text
     }
     private val onlinePlayerTabs: (suspend (CommandSender) -> List<String>) = {
         Bukkit.getOnlinePlayers().map { e -> e.name }
@@ -96,7 +98,7 @@ class PetBlocksCommandExecutor @Inject constructor(
     }
 
     private val senderHasToBePlayer: () -> String = {
-        PetBlocksLanguage.commandSenderHasToBePlayer
+        language.commandSenderHasToBePlayer.text
     }
     private val worldMustExist = object : Validator<World> {
         override suspend fun transform(sender: CommandSender, prevArgs: List<Any>, openArgs: List<String>): World? {
@@ -108,7 +110,7 @@ class PetBlocksCommandExecutor @Inject constructor(
         }
 
         override suspend fun message(sender: CommandSender, prevArgs: List<Any>, openArgs: List<String>): String {
-            return PetBlocksLanguage.worldNotFoundMessage
+            return language.worldNotFoundMessage.text
         }
     }
 
@@ -118,7 +120,7 @@ class PetBlocksCommandExecutor @Inject constructor(
         }
 
         override suspend fun message(sender: CommandSender, prevArgs: List<Any>, openArgs: List<String>): String {
-            return PetBlocksLanguage.cannotParseNumberMessage.format(openArgs[0])
+            return language.cannotParseNumberMessage.text.format(openArgs[0])
         }
     }
 
@@ -128,7 +130,7 @@ class PetBlocksCommandExecutor @Inject constructor(
         }
 
         override suspend fun message(sender: CommandSender, prevArgs: List<Any>, openArgs: List<String>): String {
-            return PetBlocksLanguage.cannotParseNumberMessage.format(openArgs[0])
+            return language.cannotParseNumberMessage.text.format(openArgs[0])
         }
     }
 
@@ -138,7 +140,7 @@ class PetBlocksCommandExecutor @Inject constructor(
         }
 
         override suspend fun message(sender: CommandSender, prevArgs: List<Any>, openArgs: List<String>): String {
-            return PetBlocksLanguage.cannotParseBoolean.format(openArgs[0])
+            return language.cannotParseBoolean.text.format(openArgs[0])
         }
     }
 
@@ -150,7 +152,7 @@ class PetBlocksCommandExecutor @Inject constructor(
         }
 
         override suspend fun message(sender: CommandSender, prevArgs: List<Any>, openArgs: List<String>): String {
-            return String.format(PetBlocksLanguage.visibilityTypeNotFoundMessage,
+            return String.format(language.visibilityTypeNotFoundMessage.text,
                 PetVisibility.values().joinToString(",") { e -> e.name.lowercase() })
         }
     }
@@ -163,7 +165,7 @@ class PetBlocksCommandExecutor @Inject constructor(
         }
 
         override suspend fun message(sender: CommandSender, prevArgs: List<Any>, openArgs: List<String>): String {
-            return String.format(PetBlocksLanguage.petRotationTypeNotFound,
+            return String.format(language.petRotationTypeNotFound.text,
                 PetRotationType.values().joinToString(",") { e -> e.name.lowercase() })
         }
     }
@@ -176,7 +178,7 @@ class PetBlocksCommandExecutor @Inject constructor(
         }
 
         override suspend fun message(sender: CommandSender, prevArgs: List<Any>, openArgs: List<String>): String {
-            return PetBlocksLanguage.templateNotFoundMessage.format(openArgs[0])
+            return language.templateNotFoundMessage.text.format(openArgs[0])
         }
     }
     private val playerMustExist = object : Validator<Player> {
@@ -197,7 +199,7 @@ class PetBlocksCommandExecutor @Inject constructor(
         }
 
         override suspend fun message(sender: CommandSender, prevArgs: List<Any>, openArgs: List<String>): String {
-            return PetBlocksLanguage.playerNotFoundMessage.format(openArgs[0])
+            return language.playerNotFoundMessage.text.format(openArgs[0])
         }
     }
     private val templateMustHavePermission = object : Validator<PetTemplate> {
@@ -208,7 +210,7 @@ class PetBlocksCommandExecutor @Inject constructor(
         }
 
         override suspend fun message(sender: CommandSender, prevArgs: List<Any>, openArgs: List<String>): String {
-            return PetBlocksLanguage.templateNotAllowed
+            return language.templateNotAllowed.text
         }
     }
     private val materialMustExist = object : Validator<String> {
@@ -224,7 +226,7 @@ class PetBlocksCommandExecutor @Inject constructor(
         }
 
         override suspend fun message(sender: CommandSender, prevArgs: List<Any>, openArgs: List<String>): String {
-            return String.format(PetBlocksLanguage.petSkinTypeNotFound, openArgs[0])
+            return String.format(language.petSkinTypeNotFound.text, openArgs[0])
         }
     }
 
@@ -256,7 +258,7 @@ class PetBlocksCommandExecutor @Inject constructor(
         }
 
         override suspend fun message(sender: CommandSender, prevArgs: List<Any>, openArgs: List<String>): String {
-            return PetBlocksLanguage.petCharacterNotAllowed
+            return language.petCharacterNotAllowed.text
         }
     }
 
@@ -265,7 +267,7 @@ class PetBlocksCommandExecutor @Inject constructor(
         val pet = pets.firstOrNull { e -> e.name.equals(name, true) }
 
         if (pet == null) {
-            throw ValidationException(PetBlocksLanguage.petNotFoundMessage.format(name))
+            throw ValidationException(language.petNotFoundMessage.text.format(name))
         }
 
         return pet
@@ -273,14 +275,14 @@ class PetBlocksCommandExecutor @Inject constructor(
 
     init {
         val commandBuilder = CommandBuilder(plugin, coroutineExecutor, "petblocks", chatMessageService) {
-            usage(PetBlocksLanguage.commandUsage)
-            description(PetBlocksLanguage.commandDescription)
+            usage(language.commandUsage.text)
+            description(language.commandDescription.text)
             aliases(plugin.config.getStringList("commands.petblocks.aliases"))
             permission(Permission.COMMAND)
-            permissionMessage(PetBlocksLanguage.noPermissionCommand)
+            permissionMessage(language.noPermissionCommand.text)
             subCommand("create") {
                 permission(Permission.CREATE)
-                toolTip { PetBlocksLanguage.createCommandHint }
+                toolTip { language.createCommandHint.text }
                 builder().argument("name").validator(petNameMustBeLimited).tabs { listOf("<name>") }
                     .argument("template").validator(templateMustExist).validator(templateMustHavePermission)
                     .tabs(templateTabs).executePlayer(senderHasToBePlayer) { player, name, petTemplate ->
@@ -293,7 +295,7 @@ class PetBlocksCommandExecutor @Inject constructor(
             }
             subCommand("delete") {
                 permission(Permission.DELETE)
-                toolTip { PetBlocksLanguage.deleteCommandHint }
+                toolTip { language.deleteCommandHint.text }
                 builder().argument("name").tabs(petNamesTabs).executePlayer(senderHasToBePlayer) { player, name ->
                     deletePet(player, petMustExist(player, name))
                 }.argument("player").validator(playerMustExist).tabs(onlinePlayerTabs)
@@ -304,7 +306,7 @@ class PetBlocksCommandExecutor @Inject constructor(
             }
             subCommand("list") {
                 permission(Permission.LIST)
-                toolTip { PetBlocksLanguage.listCommandHint }
+                toolTip { language.listCommandHint.text }
                 builder().executePlayer(senderHasToBePlayer) { player ->
                     listPet(player, player)
                 }.argument("player").validator(playerMustExist).tabs(onlinePlayerTabs)
@@ -315,7 +317,7 @@ class PetBlocksCommandExecutor @Inject constructor(
             }
             subCommand("call") {
                 permission(Permission.CALL)
-                toolTip { PetBlocksLanguage.callCommandHint }
+                toolTip { language.callCommandHint.text }
                 builder().argument("name").tabs(petNamesTabs).executePlayer(senderHasToBePlayer) { player, name ->
                     callPet(player, petMustExist(player, name))
                 }.argument("player").validator(playerMustExist).tabs(onlinePlayerTabs)
@@ -326,7 +328,7 @@ class PetBlocksCommandExecutor @Inject constructor(
             }
             subCommand("lookat") {
                 permission(Permission.LOOKAT)
-                toolTip { PetBlocksLanguage.lookAtCommandHint }
+                toolTip { language.lookAtCommandHint.text }
                 builder().argument("name").tabs(petNamesTabs).argument("x").validator(mustBeDouble)
                     .tabs { listOf("<x>") }.argument("y").validator(mustBeDouble).tabs { listOf("<y>") }.argument("z")
                     .validator(mustBeDouble).tabs { listOf("<z>") }
@@ -340,7 +342,7 @@ class PetBlocksCommandExecutor @Inject constructor(
             }
             subCommand("lookatOwner") {
                 permission(Permission.LOOKATOWNER)
-                toolTip { PetBlocksLanguage.lookAtOwnerCommandHint }
+                toolTip { language.lookAtOwnerCommandHint.text }
                 builder().argument("name").tabs(petNamesTabs).executePlayer(senderHasToBePlayer) { player, name ->
                     lookAtLocation(player, petMustExist(player, name), player.location.add(0.0, 1.0, 0.0))
                 }.argument("player").validator(playerMustExist).tabs(onlinePlayerTabs)
@@ -351,7 +353,7 @@ class PetBlocksCommandExecutor @Inject constructor(
             }.helpCommand()
             subCommand("moveto") {
                 permission(Permission.MOVETO)
-                toolTip { PetBlocksLanguage.moveToCommandHint }
+                toolTip { language.moveToCommandHint.text }
                 builder().argument("name").tabs(petNamesTabs).argument("x").validator(mustBeDouble)
                     .tabs { listOf("<x>") }.argument("y").validator(mustBeDouble).tabs { listOf("<y>") }.argument("z")
                     .validator(mustBeDouble).tabs { listOf("<z>") }.argument("speed").validator(mustBeDouble)
@@ -367,7 +369,7 @@ class PetBlocksCommandExecutor @Inject constructor(
             }
             subCommand("movetoowner") {
                 permission(Permission.MOVETOOWNER)
-                toolTip { PetBlocksLanguage.moveToOwnerCommandHint }
+                toolTip { language.moveToOwnerCommandHint.text }
                 builder().argument("name").tabs(petNamesTabs).argument("speed").validator(mustBeDouble)
                     .tabs { listOf("<speed>") }.executePlayer(senderHasToBePlayer) { player, name, speed ->
                         walkToLocation(
@@ -389,7 +391,7 @@ class PetBlocksCommandExecutor @Inject constructor(
             }
             subCommand("hat") {
                 permission(Permission.HAT)
-                toolTip { PetBlocksLanguage.hatCommandHint }
+                toolTip { language.hatCommandHint.text }
                 builder().argument("name").tabs(petNamesTabs).executePlayer(senderHasToBePlayer) { player, name ->
                     hat(player, petMustExist(player, name))
                 }.argument("player").validator(playerMustExist).tabs(onlinePlayerTabs)
@@ -400,7 +402,7 @@ class PetBlocksCommandExecutor @Inject constructor(
             }
             subCommand("ride") {
                 permission(Permission.RIDE)
-                toolTip { PetBlocksLanguage.rideCommandHint }
+                toolTip { language.rideCommandHint.text }
                 builder().argument("name").tabs(petNamesTabs).executePlayer(senderHasToBePlayer) { player, name ->
                     ridePet(player, petMustExist(player, name))
                 }.argument("player").validator(playerMustExist).tabs(onlinePlayerTabs)
@@ -411,7 +413,7 @@ class PetBlocksCommandExecutor @Inject constructor(
             }
             subCommand("unmount") {
                 permission(Permission.UNMOUNT)
-                toolTip { PetBlocksLanguage.unmountCommandHint }
+                toolTip { language.unmountCommandHint.text }
                 builder().argument("name").tabs(petNamesTabs).executePlayer(senderHasToBePlayer) { player, name ->
                     unmount(player, petMustExist(player, name))
                 }.argument("player").validator(playerMustExist).tabs(onlinePlayerTabs)
@@ -422,7 +424,7 @@ class PetBlocksCommandExecutor @Inject constructor(
             }
             subCommand("teleport") {
                 permission(Permission.TELEPORT)
-                toolTip { PetBlocksLanguage.teleportCommandHint }
+                toolTip { language.teleportCommandHint.text }
                 builder().argument("name").tabs(petNamesTabs).argument("world").validator(worldMustExist)
                     .tabs(worldTabs).argument("x").validator(mustBeDouble).tabs { listOf("<x>") }.argument("y")
                     .validator(mustBeDouble).tabs { listOf("<y>") }.argument("z").validator(mustBeDouble)
@@ -444,7 +446,7 @@ class PetBlocksCommandExecutor @Inject constructor(
             }
             subCommand("velocity") {
                 permission(Permission.VELOCITY)
-                toolTip { PetBlocksLanguage.velocityCommandHint }
+                toolTip { language.velocityCommandHint.text }
                 builder().argument("name").tabs(petNamesTabs).argument("x").validator(mustBeDouble)
                     .tabs { listOf("<x>") }.argument("y").validator(mustBeDouble).tabs { listOf("<y>") }.argument("z")
                     .validator(mustBeDouble).tabs { listOf("<z>") }
@@ -462,7 +464,7 @@ class PetBlocksCommandExecutor @Inject constructor(
             }
             subCommand("velocityrel") {
                 permission(Permission.VELOCITYREL)
-                toolTip { PetBlocksLanguage.velocityRelCommandHint }
+                toolTip { language.velocityRelCommandHint.text }
                 builder().argument("name").tabs(petNamesTabs).argument("mx").validator(mustBeDouble)
                     .tabs { listOf("<mx>") }.argument("my").validator(mustBeDouble).tabs { listOf("<my>") }
                     .argument("mz").validator(mustBeDouble).tabs { listOf("<mz>") }
@@ -485,7 +487,7 @@ class PetBlocksCommandExecutor @Inject constructor(
             }
             subCommand("skintype") {
                 permission(Permission.SKIN)
-                toolTip { PetBlocksLanguage.skinTypeCommandHint }
+                toolTip { language.skinTypeCommandHint.text }
                 builder().argument("name").tabs(petNamesTabs).argument("material").validator(materialMustExist)
                     .tabs(materialTabs).executePlayer(senderHasToBePlayer) { player, name, material ->
                         setSkinType(player, petMustExist(player, name), material, 0)
@@ -500,7 +502,7 @@ class PetBlocksCommandExecutor @Inject constructor(
             }
             subCommand("skinnbt") {
                 permission(Permission.SKIN)
-                toolTip { PetBlocksLanguage.skinNbtCommandHint }
+                toolTip { language.skinNbtCommandHint.text }
                 builder().argument("name").tabs(petNamesTabs).argument("nbt").tabs { listOf("<nbt>") }
                     .executePlayer(senderHasToBePlayer) { player, name, nbt ->
                         setSkinNbt(player, petMustExist(player, name), nbt)
@@ -512,7 +514,7 @@ class PetBlocksCommandExecutor @Inject constructor(
             }
             subCommand("skincomponent") {
                 permission(Permission.SKIN)
-                toolTip { PetBlocksLanguage.skinComponentCommandHint }
+                toolTip { language.skinComponentCommandHint.text }
                 builder().argument("name").tabs(petNamesTabs).argument("datacomponent")
                     .tabs { listOf("<datacomponent>") }.executePlayer(senderHasToBePlayer) { player, name, component ->
                         setSkinDataComponent(player, petMustExist(player, name), component)
@@ -524,7 +526,7 @@ class PetBlocksCommandExecutor @Inject constructor(
             }
             subCommand("skinbase64") {
                 permission(Permission.SKIN)
-                toolTip { PetBlocksLanguage.skinBase64CommandHint }
+                toolTip { language.skinBase64CommandHint.text }
                 builder().argument("name").tabs(petNamesTabs).argument("skin").tabs { listOf("<skin>") }
                     .executePlayer(senderHasToBePlayer) { player, name, skin ->
                         setSkinBase64(player, petMustExist(player, name), skin)
@@ -536,7 +538,7 @@ class PetBlocksCommandExecutor @Inject constructor(
             }
             subCommand("skinheaddatabase") {
                 permission(Permission.SKIN_HEADDATABASE)
-                toolTip { PetBlocksLanguage.skinHeadDatabaseCommandHint }
+                toolTip { language.skinHeadDatabaseCommandHint.text }
                 builder().argument("name").tabs(petNamesTabs).argument("hdbId").tabs { listOf("<hdbId>") }
                     .executePlayer(senderHasToBePlayer) { player, name, hdbId ->
                         setSkinHeadDatabase(player, petMustExist(player, name), hdbId)
@@ -548,7 +550,7 @@ class PetBlocksCommandExecutor @Inject constructor(
             }
             subCommand("rename") {
                 permission(Permission.RENAME)
-                toolTip { PetBlocksLanguage.renameCommandHint }
+                toolTip { language.renameCommandHint.text }
                 builder().argument("name").tabs(petNamesTabs).argument("displayName").validator(petNameMustBeLimited)
                     .tabs { listOf("<displayName>") }.executePlayer(senderHasToBePlayer) { player, name, displayName ->
                         setDisplayName(player, petMustExist(player, name), displayName)
@@ -560,7 +562,7 @@ class PetBlocksCommandExecutor @Inject constructor(
             }
             subCommand("visibility") {
                 permission(Permission.VISIBILITY)
-                toolTip { PetBlocksLanguage.visibilityCommandHint }
+                toolTip { language.visibilityCommandHint.text }
                 builder().argument("name").tabs(petNamesTabs).argument("type").validator(visibilityMustExist)
                     .tabs(visibilityTabs).executePlayer(senderHasToBePlayer) { player, name, visibilityType ->
                         setVisibility(player, petMustExist(player, name), visibilityType)
@@ -572,7 +574,7 @@ class PetBlocksCommandExecutor @Inject constructor(
             }
             subCommand("loop") {
                 permission(Permission.LOOP)
-                toolTip { PetBlocksLanguage.loopCommandHint }
+                toolTip { language.loopCommandHint.text }
                 builder().argument("name").tabs(petNamesTabs).argument("loop").tabs { listOf("<loop>") }
                     .executePlayer(senderHasToBePlayer) { player, name, loop ->
                         setPetLoop(player, petMustExist(player, name), loop)
@@ -584,7 +586,7 @@ class PetBlocksCommandExecutor @Inject constructor(
             }
             subCommand("template") {
                 permission(Permission.TEMPLATE)
-                toolTip { PetBlocksLanguage.templateCommandHint }
+                toolTip { language.templateCommandHint.text }
                 builder().argument("name").tabs(petNamesTabs).argument("template").validator(templateMustExist)
                     .tabs(templateTabs).executePlayer(senderHasToBePlayer) { player, name, template ->
                         setPetTemplate(player, petMustExist(player, name), template)
@@ -596,7 +598,7 @@ class PetBlocksCommandExecutor @Inject constructor(
             }
             subCommand("spawn") {
                 permission(Permission.SPAWN)
-                toolTip { PetBlocksLanguage.spawnCommandHint }
+                toolTip { language.spawnCommandHint.text }
                 builder().argument("name").tabs(petNamesTabs).executePlayer(senderHasToBePlayer) { player, name ->
                     spawnPet(player, petMustExist(player, name))
                 }.argument("player").validator(playerMustExist).tabs(onlinePlayerTabs)
@@ -607,7 +609,7 @@ class PetBlocksCommandExecutor @Inject constructor(
             }
             subCommand("despawn") {
                 permission(Permission.DESPAWN)
-                toolTip { PetBlocksLanguage.deleteCommandHint }
+                toolTip { language.deleteCommandHint.text }
                 builder().argument("name").tabs(petNamesTabs).executePlayer(senderHasToBePlayer) { player, name ->
                     deSpawnPet(player, petMustExist(player, name))
                 }.argument("player").validator(playerMustExist).tabs(onlinePlayerTabs)
@@ -618,7 +620,7 @@ class PetBlocksCommandExecutor @Inject constructor(
             }
             subCommand("toggle") {
                 permission(Permission.TOGGLE)
-                toolTip { PetBlocksLanguage.toggleCommandHint }
+                toolTip { language.toggleCommandHint.text }
                 builder().argument("name").tabs(petNamesTabs).executePlayer(senderHasToBePlayer) { player, name ->
                     togglePet(player, petMustExist(player, name))
                 }.argument("player").validator(playerMustExist).tabs(onlinePlayerTabs)
@@ -629,7 +631,7 @@ class PetBlocksCommandExecutor @Inject constructor(
             }
             subCommand("select") {
                 permission(Permission.SELECT)
-                toolTip { PetBlocksLanguage.selectCommandHint }
+                toolTip { language.selectCommandHint.text }
                 builder().argument("name").tabs(petNamesTabs).executePlayer(senderHasToBePlayer) { player, name ->
                     selectPet(player, player, petMustExist(player, name))
                 }.argument("player").validator(playerMustExist).tabs(onlinePlayerTabs)
@@ -640,7 +642,7 @@ class PetBlocksCommandExecutor @Inject constructor(
             }
             subCommand("openheaddatabase") {
                 permission(Permission.OPEN_HEADDATABSE)
-                toolTip { PetBlocksLanguage.openHeadDatabaseCommandHint }
+                toolTip { language.openHeadDatabaseCommandHint.text }
                 builder().argument("name").tabs(petNamesTabs).executePlayer(senderHasToBePlayer) { player, name ->
                     openHeadDatabase(player, player, petMustExist(player, name))
                 }.argument("player").validator(playerMustExist).tabs(onlinePlayerTabs)
@@ -651,7 +653,7 @@ class PetBlocksCommandExecutor @Inject constructor(
             }
             subCommand("breakblock") {
                 permission(Permission.BREAK_BLOCK)
-                toolTip { PetBlocksLanguage.breakBlockCommandHint }
+                toolTip { language.breakBlockCommandHint.text }
                 builder().argument("name").tabs(petNamesTabs).argument("timeToBreak").validator(mustBeInt)
                     .tabs { listOf("<ticks>") }.argument("dropType").tabs { DropType.values().map { e -> e.name } }
                     .executePlayer(senderHasToBePlayer) { player, name, timeToBreak, dropType ->
@@ -664,7 +666,7 @@ class PetBlocksCommandExecutor @Inject constructor(
             }
             subCommand("cancel") {
                 permission(Permission.CANCEL)
-                toolTip { PetBlocksLanguage.cancelCommandHint }
+                toolTip { language.cancelCommandHint.text }
                 builder().argument("name").tabs(petNamesTabs).executePlayer(senderHasToBePlayer) { player, name ->
                     cancel(player, petMustExist(player, name))
                 }.argument("player").validator(playerMustExist).tabs(onlinePlayerTabs)
@@ -675,7 +677,7 @@ class PetBlocksCommandExecutor @Inject constructor(
             }
             subCommand("moveforward") {
                 permission(Permission.MOVEREL)
-                toolTip { PetBlocksLanguage.moveForwardCommandHint }
+                toolTip { language.moveForwardCommandHint.text }
                 builder().argument("name").tabs(petNamesTabs).argument("speed").validator(mustBeDouble)
                     .executePlayer(senderHasToBePlayer) { player, name, speed ->
                         moveForward(player, petMustExist(player, name), speed)
@@ -687,7 +689,7 @@ class PetBlocksCommandExecutor @Inject constructor(
             }
             subCommand("rotaterel") {
                 permission(Permission.ROTATEREL)
-                toolTip { PetBlocksLanguage.rotateRelCommandHint }
+                toolTip { language.rotateRelCommandHint.text }
                 builder().argument("name").tabs(petNamesTabs).argument("type").validator(rotationTypeMustExist)
                     .tabs(rotationTypeTabs).argument("angle").validator(mustBeDouble)
                     .executePlayer(senderHasToBePlayer) { player, name, rotationType, angle ->
@@ -700,7 +702,7 @@ class PetBlocksCommandExecutor @Inject constructor(
             }
             subCommand("entitytype") {
                 permission(Permission.ENTITYTYPE)
-                toolTip { PetBlocksLanguage.entityTypeCommandHint }
+                toolTip { language.entityTypeCommandHint.text }
                 builder().argument("name").tabs(petNamesTabs).argument("type")
                     .tabs { EntityType.values().map { e -> "minecraft:${e.name.lowercase()}" } }
                     .executePlayer(senderHasToBePlayer) { player, name, type ->
@@ -713,7 +715,7 @@ class PetBlocksCommandExecutor @Inject constructor(
             }
             subCommand("entityvisible") {
                 permission(Permission.ENTITYVISIBILITY)
-                toolTip { PetBlocksLanguage.entityVisibleCommandHint }
+                toolTip { language.entityVisibleCommandHint.text }
                 builder().argument("name").tabs(petNamesTabs).argument("flag").validator(mustBeBoolean)
                     .tabs(booleanTabs).executePlayer(senderHasToBePlayer) { player, name, flag ->
                         setEntityVisible(player, petMustExist(player, name), flag)
@@ -725,7 +727,7 @@ class PetBlocksCommandExecutor @Inject constructor(
             }
             subCommand("groundoffset") {
                 permission(Permission.GROUNDOFFSET)
-                toolTip { PetBlocksLanguage.groundOffSetCommandHint }
+                toolTip { language.groundOffSetCommandHint.text }
                 builder().argument("name").tabs(petNamesTabs).argument("offset").validator(mustBeDouble)
                     .tabs { listOf("<offset>") }.executePlayer(senderHasToBePlayer) { player, name, offset ->
                         setGroundOffset(player, petMustExist(player, name), offset)
@@ -737,7 +739,7 @@ class PetBlocksCommandExecutor @Inject constructor(
             }
             subCommand("snap") {
                 permission(Permission.SNAP)
-                toolTip { PetBlocksLanguage.snapCommandHint }
+                toolTip { language.snapCommandHint.text }
                 builder().argument("name").tabs(petNamesTabs).executePlayer(senderHasToBePlayer) { player, name ->
                     snap(player, petMustExist(player, name))
                 }.argument("player").validator(playerMustExist).tabs(onlinePlayerTabs)
@@ -748,7 +750,7 @@ class PetBlocksCommandExecutor @Inject constructor(
             }
             subCommand("variable") {
                 permission(Permission.VARIABLE)
-                toolTip { PetBlocksLanguage.variableCommandHint }
+                toolTip { language.variableCommandHint.text }
                 builder().argument("name").tabs(petNamesTabs).argument("key").tabs { listOf("<key>") }.argument("value")
                     .tabs { listOf("<value>") }.executePlayer(senderHasToBePlayer) { player, name, key, value ->
                         setMemoryVariable(player, petMustExist(player, name), key, value)
@@ -760,13 +762,12 @@ class PetBlocksCommandExecutor @Inject constructor(
             }
             subCommand("reload") {
                 permission(Permission.RELOAD)
-                toolTip { PetBlocksLanguage.reloadCommandHint }
+                toolTip { language.reloadCommandHint.text }
                 builder().execute { sender ->
                     templateRepository.clearCache()
                     plugin.saveDefaultConfig()
                     plugin.reloadConfig()
-                    val language = plugin.config.getString("language")!!
-                    plugin.reloadTranslation(language, PetBlocksLanguage::class.java, *languageFiles)
+                    plugin.reloadTranslation(language, PetBlocksLanguageImpl::class.java)
                     val templates = templateRepository.getAll()
 
                     // Updates the templates.
@@ -784,7 +785,7 @@ class PetBlocksCommandExecutor @Inject constructor(
                     }
 
                     Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), "petblocksgui reload")
-                    sender.sendMessage(PetBlocksLanguage.reloadMessage)
+                    language.sendMessage(language.reloadMessage, sender)
                 }
             }
         }
@@ -798,19 +799,19 @@ class PetBlocksCommandExecutor @Inject constructor(
         val pet = pets.firstOrNull { e -> e.name.equals(petName, true) }
 
         if (pet != null) {
-            sender.sendMessage(String.format(PetBlocksLanguage.petNameExistsMessage, petName))
+            language.sendMessage(language.petNameExistsMessage, sender, petName)
             return
         }
 
         val petAmountPermission = "${Permission.DYN_AMOUNT.text}${pets.size + 1}"
 
         if (!player.hasPermission(petAmountPermission)) {
-            sender.sendMessage(String.format(PetBlocksLanguage.petAmountNotAllowed, (pets.size + 1).toString()))
+            language.sendMessage(language.petAmountNotAllowed, sender, (pets.size + 1).toString())
             return
         }
 
         if (!PetBlocksDependencyInjectionModule.areLegacyVersionsIncluded && pets.isNotEmpty()) {
-            sender.sendMessage(PetBlocksLanguage.premiumMultiplePets)
+            language.sendMessage(language.premiumMultiplePets, sender)
             return
         }
 
@@ -820,36 +821,37 @@ class PetBlocksCommandExecutor @Inject constructor(
             petTemplate.name,
             petName,
         )
-        sender.sendMessage(String.format(PetBlocksLanguage.petCreatedMessage, petName))
+
+        language.sendMessage(language.petCreatedMessage, sender, petName)
     }
 
     private suspend fun deletePet(sender: CommandSender, pet: Pet) {
         petService.deletePet(pet)
-        sender.sendMessage(String.format(PetBlocksLanguage.petDeletedMessage, pet.name))
+        language.sendMessage(language.petDeletedMessage, sender, pet.name)
     }
 
     private suspend fun listPet(sender: CommandSender, player: Player) {
         val pets = petService.getPetsFromPlayer(player)
         val petString = pets.joinToString(", ") { e -> e.name }
-        sender.sendMessage(String.format(PetBlocksLanguage.petListMessage, pets.size, petString))
+        language.sendMessage(language.petListMessage, sender, pets.size, petString)
     }
 
     private fun callPet(sender: CommandSender, pet: Pet) {
         pet.call()
-        sender.sendMessage(String.format(PetBlocksLanguage.petCalledMessage, pet.name))
+        language.sendMessage(language.petCalledMessage, sender, pet.name)
     }
 
     private fun lookAtLocation(sender: CommandSender, pet: Pet, location: Location) {
         location.y -= pet.groundOffset
         pet.lookAt(location)
-        sender.sendMessage(String.format(PetBlocksLanguage.petLookAtMessage))
+        language.sendMessage(language.petLookAtMessage, sender, pet.name)
     }
 
     private fun walkToLocation(
         sender: CommandSender, pet: Pet, location: Location, speed: Double
     ) {
         pet.moveTo(location, speed)
-        sender.sendMessage(String.format(PetBlocksLanguage.petWalkToLocationMessage))
+        language.sendMessage(language.petWalkToLocationMessage, sender, pet.name)
     }
 
     private fun hat(sender: CommandSender, pet: Pet) {
@@ -860,24 +862,24 @@ class PetBlocksCommandExecutor @Inject constructor(
             pet.loop = loop
         }
 
-        sender.sendPluginMessage(String.format(PetBlocksLanguage.petHatMessage, pet.name))
+        language.sendMessage(language.petHatMessage, sender, pet.name)
     }
 
     private fun unmount(sender: CommandSender, pet: Pet) {
         pet.unmount()
-        sender.sendPluginMessage(String.format(PetBlocksLanguage.petUnmountMessage, pet.name))
+        language.sendMessage(language.petUnmountMessage, sender, pet.name)
     }
 
     private fun teleportPet(sender: CommandSender, pet: Pet, location: Location) {
         pet.location = location
-        sender.sendPluginMessage(String.format(PetBlocksLanguage.petTeleportedMessage, pet.name))
+        language.sendMessage(language.petTeleportedMessage, sender, pet.name)
     }
 
     private fun setVelocityToPet(
         sender: CommandSender, pet: Pet, vector: Vector
     ) {
         pet.velocity = vector
-        sender.sendPluginMessage(String.format(PetBlocksLanguage.petVelocityAppliedMessage, pet.name))
+        language.sendMessage(language.petVelocityAppliedMessage, sender, pet.name)
     }
 
     private fun setRelativeVelocityToPet(
@@ -893,7 +895,7 @@ class PetBlocksCommandExecutor @Inject constructor(
         normalized.y = vector.y * normalized.y
         normalized.z = vector.z * normalized.z
         pet.velocity = normalized
-        sender.sendPluginMessage(String.format(PetBlocksLanguage.petVelocityAppliedMessage, pet.name))
+        language.sendMessage(language.petVelocityAppliedMessage, sender, pet.name)
     }
 
     private fun setSkinType(sender: CommandSender, pet: Pet, material: String, durability: Int) {
@@ -901,7 +903,7 @@ class PetBlocksCommandExecutor @Inject constructor(
         item.typeName = material
         item.durability = durability.toString()
         pet.headItem = item
-        sender.sendPluginMessage(String.format(PetBlocksLanguage.petSkinTypeChangedMessage, pet.name))
+        language.sendMessage(language.petSkinTypeChangedMessage, sender, pet.name)
     }
 
     private fun setSkinNbt(sender: CommandSender, pet: Pet, nbt: String) {
@@ -913,9 +915,9 @@ class PetBlocksCommandExecutor @Inject constructor(
             val item = pet.headItem
             item.nbt = nbt
             pet.headItem = item
-            sender.sendPluginMessage(String.format(PetBlocksLanguage.petSkinNbtChanged, pet.name))
+            language.sendMessage(language.petSkinNbtChanged, sender, pet.name)
         } catch (e: Exception) {
-            sender.sendPluginMessage(String.format(PetBlocksLanguage.cannotParseNbtMessage, nbt))
+            language.sendMessage(language.cannotParseNbtMessage, sender, pet.name)
         }
     }
 
@@ -930,9 +932,9 @@ class PetBlocksCommandExecutor @Inject constructor(
             val item = pet.headItem
             item.component = dataComponent
             pet.headItem = item
-            sender.sendPluginMessage(String.format(PetBlocksLanguage.petSkinNbtChanged, pet.name))
+            language.sendMessage(language.petSkinNbtChanged, sender, pet.name)
         } catch (e: Exception) {
-            sender.sendPluginMessage(String.format(PetBlocksLanguage.cannotParseDataComponentMessage, dataComponent))
+            language.sendMessage(language.cannotParseDataComponentMessage, sender, pet.name)
         }
     }
 
@@ -944,7 +946,7 @@ class PetBlocksCommandExecutor @Inject constructor(
         headItem.skinBase64 = base64EncodedSkinUrl
         headItem.durability = 3.toString()
         pet.headItem = headItem
-        sender.sendPluginMessage(String.format(PetBlocksLanguage.petSkinNbtChanged, pet.name))
+        language.sendMessage(language.petSkinNbtChanged, sender, pet.name)
     }
 
     private fun setSkinHeadDatabase(sender: CommandSender, pet: Pet, hdbId: String) {
@@ -953,18 +955,14 @@ class PetBlocksCommandExecutor @Inject constructor(
             val item = itemService.toItem(itemStack)
             setSkinBase64(sender, pet, item.skinBase64!!)
         } catch (e: Exception) {
-            sender.sendPluginMessage(PetBlocksLanguage.headDatabasePluginNotLoaded)
+            language.sendMessage(language.headDatabasePluginNotLoaded, sender, pet.name)
             return
         }
     }
 
     private fun setDisplayName(sender: CommandSender, pet: Pet, displayName: String) {
         pet.displayName = displayName.replace("_", " ")
-        sender.sendPluginMessage(
-            String.format(
-                PetBlocksLanguage.petNameChangeMessage, pet.name, pet.displayName.translateChatColors()
-            )
-        )
+        language.sendMessage(language.petNameChangeMessage, sender, pet.displayName.translateChatColors())
     }
 
     private fun ridePet(sender: CommandSender, pet: Pet) {
@@ -976,39 +974,39 @@ class PetBlocksCommandExecutor @Inject constructor(
             pet.loop = loop
         }
 
-        sender.sendPluginMessage(String.format(PetBlocksLanguage.petRideMessage, pet.name))
+        language.sendMessage(language.petRideMessage, sender, pet.name)
     }
 
     private fun setVisibility(
         sender: CommandSender, pet: Pet, visibility: PetVisibility
     ) {
         pet.visibility = visibility
-        sender.sendPluginMessage(String.format(PetBlocksLanguage.visibilityChangedMessage, visibility))
+        language.sendMessage(language.visibilityChangedMessage, sender, pet.name)
     }
 
     private fun setPetLoop(sender: CommandSender, pet: Pet, loop: String) {
         if (!pet.template.loops.containsKey(loop)) {
-            sender.sendPluginMessage(String.format(PetBlocksLanguage.petLoopNotFound, loop))
+            language.sendMessage(language.petLoopNotFound, sender, loop)
             return
         }
 
         pet.loop = loop
-        sender.sendPluginMessage(String.format(PetBlocksLanguage.petLoopChangedMessage, pet.name, loop))
+        language.sendMessage(language.petLoopChangedMessage, sender, pet.name, loop)
     }
 
     private fun setPetTemplate(sender: CommandSender, pet: Pet, template: PetTemplate) {
         if (!sender.hasPermission(Permission.DYN_TEMPLATE.text + template.name)) {
-            sender.sendPluginMessage(String.format(PetBlocksLanguage.templateNotAllowed, template.name))
+            language.sendMessage(language.templateNotAllowed, sender, template.name)
             return
         }
 
         pet.template = template
-        sender.sendPluginMessage(String.format(PetBlocksLanguage.petTemplateChangeMessage, pet.name, template.name))
+        language.sendMessage(language.petTemplateChangeMessage, sender, pet.name, template.name)
     }
 
     private fun spawnPet(sender: CommandSender, pet: Pet) {
         pet.spawn()
-        sender.sendPluginMessage(String.format(PetBlocksLanguage.petSpawnedMessage, pet.name))
+        language.sendMessage(language.petSpawnedMessage, sender, pet.name)
     }
 
     private fun togglePet(sender: CommandSender, pet: Pet) {
@@ -1021,13 +1019,13 @@ class PetBlocksCommandExecutor @Inject constructor(
 
     private fun deSpawnPet(sender: CommandSender, pet: Pet) {
         pet.remove()
-        sender.sendPluginMessage(String.format(PetBlocksLanguage.petDespawnedMessage, pet.name))
+        language.sendMessage(language.petDespawnedMessage, sender, pet.name)
     }
 
     private suspend fun selectPet(sender: CommandSender, player: Player, pet: Pet) {
         val playerInformation = petMetaRepository.getByPlayer(player) ?: return
         playerInformation.selectedPet = pet.name
-        sender.sendPluginMessage(String.format(PetBlocksLanguage.petSelectedMessage, pet.name))
+        language.sendMessage(language.petSelectedMessage, sender, pet.name)
     }
 
 
@@ -1050,7 +1048,7 @@ class PetBlocksCommandExecutor @Inject constructor(
 
             Bukkit.getServer().dispatchCommand(player, command)
         } catch (e: Exception) {
-            sender.sendPluginMessage(PetBlocksLanguage.headDatabasePluginNotLoaded)
+            language.sendMessage(language.headDatabasePluginNotLoaded, sender)
             return
         }
     }
@@ -1068,7 +1066,7 @@ class PetBlocksCommandExecutor @Inject constructor(
         val actualDropTypes = try {
             dropTypes.split(",").map { e -> DropType.values().first { t -> t.name.equals(e, true) } }
         } catch (e: Exception) {
-            sender.sendMessage(PetBlocksLanguage.dropTypeNotFound.format(DropType.values().joinToString(",")))
+            language.sendMessage(language.dropTypeNotFound, sender, DropType.values().joinToString(","))
             return
         }
 
@@ -1077,18 +1075,18 @@ class PetBlocksCommandExecutor @Inject constructor(
 
     private fun cancel(sender: CommandSender, pet: Pet) {
         pet.cancelAction()
-        sender.sendPluginMessage(PetBlocksLanguage.cancelMessage)
+        language.sendMessage(language.cancelMessage, sender, pet.name)
     }
 
     private fun snap(sender: CommandSender, pet: Pet) {
         pet.snap()
-        sender.sendPluginMessage(PetBlocksLanguage.snapMessage)
+        language.sendMessage(language.snapMessage, sender, pet.name)
     }
 
 
     private fun moveForward(sender: CommandSender, pet: Pet, speed: Double) {
         pet.moveForward(speed)
-        sender.sendPluginMessage(String.format(PetBlocksLanguage.petMoveForwardMessage))
+        language.sendMessage(language.petMoveForwardMessage, sender, pet.name)
     }
 
     private fun rotateRel(sender: CommandSender, pet: Pet, petRotationType: PetRotationType, angle: Float) {
@@ -1105,7 +1103,7 @@ class PetBlocksCommandExecutor @Inject constructor(
         }
 
         pet.location = location
-        sender.sendPluginMessage(String.format(PetBlocksLanguage.rotationRelMessage))
+        language.sendMessage(language.rotationRelMessage, sender, pet.name)
     }
 
     private fun setEntityType(sender: CommandSender, pet: Pet, entityType: String) {
@@ -1115,30 +1113,22 @@ class PetBlocksCommandExecutor @Inject constructor(
         } else {
             pet.isEntityVisible = true
         }
-        sender.sendPluginMessage(String.format(PetBlocksLanguage.entityTypeChangeMessage, entityType))
+        language.sendMessage(language.entityTypeChangeMessage, sender, entityType)
     }
 
     private fun setEntityVisible(sender: CommandSender, pet: Pet, flag: Boolean) {
         pet.isEntityVisible = flag
-        sender.sendPluginMessage(String.format(PetBlocksLanguage.entityVisibilityChangedMessage, flag))
+        language.sendMessage(language.entityVisibilityChangedMessage, sender, flag)
     }
 
     private fun setGroundOffset(sender: CommandSender, pet: Pet, offset: Double) {
         pet.groundOffset = offset
-        sender.sendPluginMessage(String.format(PetBlocksLanguage.groundOffsetChangedMessage, offset))
+        language.sendMessage(language.groundOffsetChangedMessage, sender, offset)
     }
 
     private fun setMemoryVariable(sender: CommandSender, pet: Pet, key: String, value: String) {
         pet.memory[key] = value
-        sender.sendPluginMessage(String.format(PetBlocksLanguage.variableChangedMessage, key, value))
-    }
-
-    private fun CommandSender.sendPluginMessage(message: String) {
-        if (message.isBlank()) {
-            return
-        }
-
-        this.sendMessage(message)
+        language.sendMessage(language.variableChangedMessage, sender, key, value)
     }
 
     private fun CommandBuilder.permission(permission: Permission) {

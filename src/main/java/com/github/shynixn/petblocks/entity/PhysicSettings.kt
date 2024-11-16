@@ -21,4 +21,14 @@ class PhysicSettings {
      * Offset from the ground.
      */
     var groundOffset = 0.0
+
+    /**
+     * Collide With water.
+     */
+    var collideWithWater : Boolean = false
+
+    /**
+     * Collide With passable Blocks.
+     */
+    var collideWithPassableBlocks : Boolean = false
 }
