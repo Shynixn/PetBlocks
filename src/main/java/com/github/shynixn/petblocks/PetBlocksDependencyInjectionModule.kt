@@ -41,7 +41,7 @@ import org.bukkit.plugin.Plugin
 import java.util.logging.Level
 
 class PetBlocksDependencyInjectionModule(
-    private val plugin: PetBlocksPlugin, private val shyGuiModule: DependencyInjectionModule
+    private val plugin: PetBlocksPlugin, private val shyGuiModule: DependencyInjectionModule, private val language: Language
 ) : DependencyInjectionModule() {
     companion object {
         val areLegacyVersionsIncluded: Boolean by lazy {
@@ -57,6 +57,7 @@ class PetBlocksDependencyInjectionModule(
     override fun configure() {
         addService<Plugin>(plugin)
         val autoSaveMinutes = plugin.config.getInt("database.autoSaveIntervalMinutes")
+        addService<Language>(language)
 
         // Repositories
         val templateRepositoryImpl = YamlFileRepositoryImpl<PetTemplate>(plugin, "pets", listOf(
@@ -67,13 +68,17 @@ class PetBlocksDependencyInjectionModule(
         val cacheTemplateRepository = CachedRepositoryImpl(templateRepositoryImpl)
         addService<Repository<PetTemplate>>(cacheTemplateRepository)
         addService<CacheRepository<PetTemplate>>(cacheTemplateRepository)
-        val configSelectedRepository = ConfigSelectedRepositoryImpl<PlayerInformation>(plugin,
+        val configSelectedRepository = ConfigSelectedRepositoryImpl<PlayerInformation>(
+            plugin,
             "PetBlocks",
             plugin.dataFolder.toPath().resolve("PetBlocks.sqlite"),
             object : TypeReference<PlayerInformation>() {}, plugin.minecraftDispatcher
         )
         val playerDataRepository = AutoSavePlayerDataRepositoryImpl(
-            1000 * 60L * autoSaveMinutes, CachePlayerDataRepositoryImpl(configSelectedRepository, plugin.minecraftDispatcher), plugin.scope, plugin.minecraftDispatcher
+            1000 * 60L * autoSaveMinutes,
+            CachePlayerDataRepositoryImpl(configSelectedRepository, plugin.minecraftDispatcher),
+            plugin.scope,
+            plugin.minecraftDispatcher
         )
         addService<PlayerDataRepository<PlayerInformation>>(playerDataRepository)
         addService<CachePlayerRepository<PlayerInformation>>(playerDataRepository)

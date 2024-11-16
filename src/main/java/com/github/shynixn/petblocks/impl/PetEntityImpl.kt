@@ -410,7 +410,7 @@ class PetEntityImpl(
     }
 
     private fun isOnGround(location: Location): Boolean {
-        val rayTraceResult = rayTracingService.rayTraceMotion(location.toVector3d(), Vector3d(0.0, -1.0, 0.0))
+        val rayTraceResult = rayTracingService.rayTraceMotion(location.toVector3d(), Vector3d(0.0, -1.0, 0.0), petMeta.physics.collideWithWater, petMeta.physics.collideWithPassableBlocks)
         return rayTraceResult.hitBlock
     }
 
@@ -496,7 +496,7 @@ class PetEntityImpl(
         val worldLocation = getLocation().toLocation()
         val rayTraceResult = rayTracingService.rayTraceMotion(
             worldLocation.toVector3d(),
-            worldLocation.direction.normalize().multiply(maxDistance).toVector3d()
+            worldLocation.direction.normalize().multiply(maxDistance).toVector3d(),petMeta.physics.collideWithWater, petMeta.physics.collideWithPassableBlocks
         )
         return rayTraceResult.block
     }

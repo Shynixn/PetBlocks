@@ -1,0 +1,309 @@
+petNameChangeMessage:
+  type: "CHAT"
+  text: "[&9PetBlocks&f] El nombre de la mascota %1$1s ha sido cambiado a %2$1s."
+playerNotFoundMessage:
+  type: "CHAT"
+  text: "[&9PetBlocks&f] &cJugador %1$1s no encontrado."
+templateNotFoundMessage:
+  type: "CHAT"
+  text: "[&9PetBlocks&f] &cPlantilla %1$1s no encontrada."
+petNotFoundMessage:
+  type: "CHAT"
+  text: "[&9PetBlocks&f] &cMascota con el nombre %1$1s no encontrada."
+petNameExistsMessage:
+  type: "CHAT"
+  text: "[&9PetBlocks&f] &cMascota con el nombre %1$1s ya existe."
+petCreatedMessage:
+  type: "CHAT"
+  text: "[&9PetBlocks&f] Mascota con el nombre %1$1s ha sido creada."
+petDeletedMessage:
+  type: "CHAT"
+  text: "[&9PetBlocks&f] Mascota con el nombre %1$1s ha sido eliminada."
+petCalledMessage:
+  type: "CHAT"
+  text: "[&9PetBlocks&f] Mascota con el nombre %1$1s ha sido llamada."
+petSpawnedMessage:
+  type: "CHAT"
+  text: "[&9PetBlocks&f] Mascota con el nombre %1$1s ha sido invocada."
+petDespawnedMessage:
+  type: "CHAT"
+  text: "[&9PetBlocks&f] Mascota con el nombre %1$1s ha sido eliminada."
+visibilityTypeNotFoundMessage:
+  type: "CHAT"
+  text: "[&9PetBlocks&f] &cSolo se admiten los tipos de visibilidad %1$1s."
+visibilityChangedMessage:
+  type: "CHAT"
+  text: "[&9PetBlocks&f] La visibilidad de la mascota %1$1s ha sido cambiada a %2$1s."
+petSkinTypeChangedMessage:
+  type: "CHAT"
+  text: "[&9PetBlocks&f] El tipo de piel de la mascota %1$1s ha sido cambiado."
+petSkinNbtChanged:
+  type: "CHAT"
+  text: "[&9PetBlocks&f] La piel de la mascota %1$1s ha sido cambiada."
+petSkinTypeNotFound:
+  type: "CHAT"
+  text: "[&9PetBlocks&f] &cMaterial %1$1s no encontrado."
+petListMessage:
+  type: "CHAT"
+  text: "[&9PetBlocks&f] Cantidad: %1$1d Nombres: %2$1s"
+petRideMessage:
+  type: "CHAT"
+  text: "[&9PetBlocks&f] Comenzaste a montar la mascota %1$1s."
+petUnmountMessage:
+  type: "CHAT"
+  text: "[&9PetBlocks&f] Dejaste de montar la mascota %1$1s."
+petHatMessage:
+  type: "CHAT"
+  text: "[&9PetBlocks&f] Comenzaste a llevar la mascota %1$1s como sombrero."
+worldNotFoundMessage:
+  type: "CHAT"
+  text: "[&9PetBlocks&f] &cMundo %1$1s no encontrado."
+petLookAtMessage:
+  type: "CHAT"
+  text: "[&9PetBlocks&f] La mascota está mirando una ubicación."
+petWalkToLocationMessage:
+  type: "CHAT"
+  text: "[&9PetBlocks&f] La mascota está caminando hacia la ubicación."
+cannotParseNumberMessage:
+  type: "CHAT"
+  text: "[&9PetBlocks&f] &cNo se puede analizar el número %1$1s."
+cannotParseNbtMessage:
+  type: "CHAT"
+  text: "[&9PetBlocks&f] &cNo se puede analizar el NBT %1$1s."
+placeHolderPetNotFound:
+  type: "CHAT"
+  text: "No hay mascota."
+petTeleportedMessage:
+  type: "CHAT"
+  text: "[&9PetBlocks&f] La mascota ha sido teletransportada."
+petVelocityAppliedMessage:
+  type: "CHAT"
+  text: "[&9PetBlocks&f] La mascota ha sido movida."
+petCharacterNotAllowed:
+  type: "CHAT"
+  text: "[&9PetBlocks&f] &cEste nombre de mascota no está permitido."
+reloadMessage:
+  type: "CHAT"
+  text: "[&9PetBlocks&f] PetBlocks ha sido recargado."
+petLoopNotFound:
+  type: "CHAT"
+  text: "[&9PetBlocks&f] &cBucle %1$1s no encontrado."
+premiumMultiplePets:
+  type: "CHAT"
+  text: "[&9PetBlocks&f] &cSe requiere PetBlocks-Premium para invocar múltiples mascotas por jugador."
+petLoopChangedMessage:
+  type: "CHAT"
+  text: "[&9PetBlocks&f] Cambiado el bucle de la mascota %1$1s a %2$1s."
+petTemplateChangeMessage:
+  type: "CHAT"
+  text: "[&9PetBlocks&f] Cambiada la plantilla de la mascota %1$1s a %2$1s."
+petAmountNotAllowed:
+  type: "CHAT"
+  text: "[&9PetBlocks&f] &cNo tienes permiso para tener %1$1s mascota(s)."
+petSelectedMessage:
+  type: "HIDDEN"
+  text: ""
+templateNotAllowed:
+  type: "CHAT"
+  text: "[&9PetBlocks&f] &cNo tienes permiso para la plantilla %1$1s."
+speedCannotBeParsed:
+  type: "CHAT"
+  text: "[&9PetBlocks&f] &cEl valor de velocidad %1$1s no se puede analizar."
+headDatabasePluginNotLoaded:
+  type: "CHAT"
+  text: "[&9PetBlocks&f] &cEl plugin HeadDatabase no está cargado."
+errorLoadingTemplatesMessage:
+  type: "CHAT"
+  text: "[&9PetBlocks&f] &cNo se puede analizar el archivo de plantilla. Consulta el registro de la consola para más detalles."
+dropTypeNotFound:
+  type: "CHAT"
+  text: "[&9PetBlocks&f] &cSolo se admiten los tipos de caída %1$1s."
+cancelMessage:
+  type: "CHAT"
+  text: "[&9PetBlocks&f] Acción cancelada."
+snapMessage:
+  type: "CHAT"
+  text: "[&9PetBlocks&f] La mascota ha sido ajustada a un eje de coordenadas."
+petMoveForwardMessage:
+  type: "CHAT"
+  text: "[&9PetBlocks&f] La mascota está avanzando."
+petRotationTypeNotFound:
+  type: "CHAT"
+  text: "[&9PetBlocks&f] &cSolo se admiten los tipos de dirección %1$1s."
+rotationRelMessage:
+  type: "CHAT"
+  text: "[&9PetBlocks&f] La mascota ha sido rotada."
+entityTypeChangeMessage:
+  type: "CHAT"
+  text: "[&9PetBlocks&f] El tipo de entidad de la mascota ha sido cambiado a %1$1s."
+entityVisibilityChangedMessage:
+  type: "CHAT"
+  text: "[&9PetBlocks&f] La visibilidad de la entidad de la mascota ha sido cambiada a %1$1s."
+groundOffsetChangedMessage:
+  type: "CHAT"
+  text: "[&9PetBlocks&f] El desplazamiento al suelo de la mascota ha sido cambiado."
+groundOffsetCannotBeParsed:
+  type: "CHAT"
+  text: "[&9PetBlocks&f] &cEl valor de desplazamiento al suelo %1$1s no se puede analizar."
+cannotParseDataComponentMessage:
+  type: "CHAT"
+  text: "[&9PetBlocks&f] &cNo se puede analizar el componente de datos %1$1s."
+maxLength20Characters:
+  type: "CHAT"
+  text: "[&9PetBlocks&f] La longitud del texto debe ser menor a 20 caracteres."
+noPermissionCommand:
+  type: "CHAT"
+  text: "[&9PetBlocks&f] &cNo tienes permiso para ejecutar este comando."
+commandUsage:
+  type: "CHAT"
+  text: "[&9PetBlocks&f] Usa /petblocks help para ver más información sobre el plugin."
+commandDescription:
+  type: "CHAT"
+  text: "[&9PetBlocks&f] Todos los comandos para el plugin PetBlocks."
+commandSenderHasToBePlayer:
+  type: "CHAT"
+  text: "[&9PetBlocks&f] El remitente del comando tiene que ser un jugador si no se especifica el argumento opcional de jugador."
+cannotParseBoolean:
+  type: "CHAT"
+  text: "[&9PetBlocks&f] &cNo se puede analizar el booleano %1$1s."
+createCommandHint:
+  type: "CHAT"
+  text: "Crea una nueva mascota para el jugador con la plantilla dada."
+deleteCommandHint:
+  type: "CHAT"
+  text: "Elimina la mascota del jugador."
+listCommandHint:
+  type: "CHAT"
+  text: "Lista todas las mascotas de un jugador."
+callCommandHint:
+  type: "CHAT"
+  text: "Invoca y teletransporta la mascota frente al dueño."
+lookAtCommandHint:
+  type: "CHAT"
+  text: "Hace que la mascota mire la ubicación dada."
+lookAtOwnerCommandHint:
+  type: "CHAT"
+  text: "Hace que la mascota mire al dueño."
+moveToCommandHint:
+  type: "CHAT"
+  text: "Hace que la mascota camine hacia una ubicación dada."
+moveToOwnerCommandHint:
+  type: "CHAT"
+  text: "Hace que la mascota camine hacia el dueño."
+hatCommandHint:
+  type: "CHAT"
+  text: "Hace que el dueño use la mascota como sombrero."
+rideCommandHint:
+  type: "CHAT"
+  text: "Hace que el dueño monte la mascota."
+unmountCommandHint:
+  type: "CHAT"
+  text: "Hace que el dueño deje de montar (deje de usar como sombrero) la mascota."
+teleportCommandHint:
+  type: "CHAT"
+  text: "Teletransporta la mascota a la ubicación dada."
+velocityCommandHint:
+  type: "CHAT"
+  text: "Lanza la mascota en la dirección dada."
+skinTypeCommandHint:
+  type: "CHAT"
+  text: "Cambia el material usado como cabeza."
+skinNbtCommandHint:
+  type: "CHAT"
+  text: "Cambia las etiquetas NBT del ítem de cabeza. Funciona en versiones de Minecraft anteriores a la 1.20.5. Usa el comando /petblocks skincomponent para Minecraft >= 1.20.5."
+skinComponentCommandHint:
+  type: "CHAT"
+  text: "Cambia las etiquetas del Componente de Datos del ítem de cabeza. Los Componentes de Datos reemplazan las etiquetas NBT desde el lanzamiento de Minecraft 1.20.5."
+skinBase64CommandHint:
+  type: "CHAT"
+  text: "Cambia el material de la cabeza a player_head y establece la URL de la textura codificada en base64."
+skinHeadDatabaseCommandHint:
+  type: "CHAT"
+  text: "Cambia el material de la cabeza a player_head y establece la URL de la textura desde una piel cargada por el plugin HeadDatabase."
+renameCommandHint:
+  type: "CHAT"
+  text: "Cambia el nombre visible de la mascota. No acepta espacios. Los guiones bajos '_' son reemplazados automáticamente por espacios."
+visibilityCommandHint:
+  type: "CHAT"
+  text: "Cambia quién puede ver la mascota."
+loopCommandHint:
+  type: "CHAT"
+  text: "Cambia qué bucle de la plantilla está siendo ejecutado por la mascota. Un ejemplo de bucle es idle."
+templateCommandHint:
+  type: "CHAT"
+  text: "Cambia la plantilla de una mascota sin recrear la mascota."
+spawnCommandHint:
+  type: "CHAT"
+  text: "Invoca la mascota si no ha sido ya invocada."
+deSpawnCommandHint:
+  type: "CHAT"
+  text: "Elimina la mascota si no ha sido ya eliminada."
+toggleCommandHint:
+  type: "CHAT"
+  text: "Alterna el estado de invocación de la mascota."
+selectCommandHint:
+  type: "CHAT"
+  text: "Hace que el dueño seleccione una de sus mascotas como mascota principal. Esto solo es útil si un jugador tiene múltiples mascotas en PetBlocks-Premium."
+openHeadDatabaseCommandHint:
+  type: "CHAT"
+  text: "Abre el inventario de HeadDatabase con un gancho especial, que aplica el siguiente ítem que selecciones en la interfaz de HeadDatabase a la mascota."
+breakBlockCommandHint:
+  type: "CHAT"
+  text: "Rompe el bloque que la mascota está mirando. Hay un marcador de posición que contiene el nombre del tipo de bloque. Romper un bloque se cancela automáticamente en ciertas acciones, por ejemplo, una mascota mira a un jugador, una mascota comienza a moverse."
+cancelCommandHint:
+  type: "CHAT"
+  text: "Cancela cualquier acción de larga duración como romper un bloque."
+snapCommandHint:
+  type: "CHAT"
+  text: "Rota la mascota hasta la línea exacta del eje x o z más cercano."
+moveForwardCommandHint:
+  type: "CHAT"
+  text: "Deja que la mascota avance en su dirección actual. Ejecutar el comando snap antes de ejecutar este es útil para moverse en línea recta. Si la mascota llega a un precipicio (diferencia de 1 bloque), avanzar se detiene."
+rotateRelCommandHint:
+  type: "CHAT"
+  text: "Rota la mascota en relación a su rotación actual."
+entityTypeCommandHint:
+  type: "CHAT"
+  text: "Cambia el tipo de entidad de la mascota. El tipo predeterminado es minecraft:armor_stand."
+entityVisibleCommandHint:
+  type: "CHAT"
+  text: "Cambia si el cuerpo de una entidad es visible. Para soportes de armadura esto es falso, para la mayoría de las otras entidades esto debería ser verdadero."
+groundOffSetCommandHint:
+  type: "CHAT"
+  text: "Cambia el desplazamiento del cuerpo de la entidad al suelo. Útil al configurar diferentes tipos de entidades."
+manipulateOtherMessage:
+  type: "CHAT"
+  text: "[&9PetBlocks&f] &cNo tienes permiso para editar las mascotas de otros jugadores."
+reloadCommandHint:
+  type: "CHAT"
+  text: "Recarga todas las mascotas, menús y configuración."
+closeCommandHint:
+  type: "CHAT"
+  text: "Cierra el menú GUI."
+backCommandHint:
+  type: "CHAT"
+  text: "Retrocede una página del GUI."
+openCommandHint:
+  type: "CHAT"
+  text: "Abre el menú GUI con el nombre dado."
+nextCommandHint:
+  type: "CHAT"
+  text: "Abre la siguiente página del GUI."
+messageCommandHint:
+  type: "CHAT"
+  text: "Envía un mensaje de chat."
+guiMenuNotFoundMessage:
+  type: "CHAT"
+  text: "[&9PetBlocks&f] &cMenú %1$1s no encontrado."
+guiMenuNoPermissionMessage:
+  type: "CHAT"
+  text: "[&9PetBlocks&f] &cNo tienes permiso para el menú %1$1s."
+variableCommandHint:
+  type: "CHAT"
+  text: "Establece el valor de la variable con la clave dada. Esto es útil para almacenar datos arbitrarios en la mascota, por ejemplo, salud."
+variableChangedMessage:
+  type: "CHAT"
+  text: "[&9PetBlocks&f] La variable de memoria de la mascota %1$1s ha sido establecida en %2$1s."
+velocityRelCommandHint:
+  type: "CHAT"
+  text: "Lanza la mascota en la dirección actual con los multiplicadores dados."

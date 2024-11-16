@@ -3,15 +3,17 @@ package com.github.shynixn.petblocks
 import com.github.shynixn.mccoroutine.bukkit.launch
 import com.github.shynixn.mcutils.common.ChatColor
 import com.github.shynixn.mcutils.common.Version
+import com.github.shynixn.mcutils.common.language.reloadTranslation
 import com.github.shynixn.mcutils.common.physic.PhysicObjectService
 import com.github.shynixn.mcutils.common.placeholder.PlaceHolderService
-import com.github.shynixn.mcutils.common.reloadTranslation
 import com.github.shynixn.mcutils.common.repository.Repository
 import com.github.shynixn.mcutils.database.api.CachePlayerRepository
 import com.github.shynixn.mcutils.database.api.PlayerDataRepository
 import com.github.shynixn.mcutils.packet.api.PacketInType
 import com.github.shynixn.mcutils.packet.api.PacketService
+import com.github.shynixn.mcutils.packet.impl.service.ChatMessageServiceImpl
 import com.github.shynixn.petblocks.contract.DependencyHeadDatabaseService
+import com.github.shynixn.petblocks.contract.Language
 import com.github.shynixn.petblocks.contract.PetService
 import com.github.shynixn.petblocks.entity.PetTemplate
 import com.github.shynixn.petblocks.entity.PlayerInformation
@@ -98,16 +100,26 @@ class PetBlocksPlugin : JavaPlugin() {
 
         logger.log(Level.INFO, "Loaded NMS version ${Version.serverVersion}.")
 
-        // Register Language
-        val language = config.getString("language")!!
-        reloadTranslation(language, PetBlocksLanguage::class.java, *languageFiles)
-        logger.log(Level.INFO, "Loaded language file $language.properties.")
+        // Load Language
+        val language = PetBlocksLanguageImpl()
+        language.chatMessageService = ChatMessageServiceImpl(this)
+        language.placeHolderFun =
+            { text, player ->
+                val placeHolderService = mainModule.getService<PlaceHolderService>()
+                if (player != null) {
+                    placeHolderService.resolvePlaceHolder(player, text, hashMapOf())
+                } else {
+                    text
+                }
+            }
+        reloadTranslation(language, PetBlocksLanguageImpl::class.java)
+        logger.log(Level.INFO, "Loaded language file.")
 
         // ShyGUI Module
-        initializeShyGUIModule()
+        initializeShyGUIModule(language)
 
         // Guice
-        this.mainModule = PetBlocksDependencyInjectionModule(this, shyGuiModule).build()
+        this.mainModule = PetBlocksDependencyInjectionModule(this, shyGuiModule, language).build()
         this.reloadConfig()
 
         // Register Packets
@@ -202,7 +214,7 @@ class PetBlocksPlugin : JavaPlugin() {
         packetService.close()
     }
 
-    private fun initializeShyGUIModule() {
+    private fun initializeShyGUIModule(language : Language) {
         // Settings
         val settings = object : Settings() {
             override fun reload() {
@@ -221,23 +233,23 @@ class PetBlocksPlugin : JavaPlugin() {
                 this.otherPlayerPermission = Permission.MANIPULATE_OTHER.text
                 this.guiPermission = Permission.DYN_GUI.text
                 this.aliasesPath = "commands.petblocksgui.aliases"
-                this.commandUsage = PetBlocksLanguage.commandUsage
-                this.commandDescription = PetBlocksLanguage.commandDescription
+                this.commandUsage = language.commandUsage.text
+                this.commandDescription = language.commandDescription.text
 
-                this.playerNotFoundMessage = PetBlocksLanguage.playerNotFoundMessage
-                this.commandSenderHasToBePlayerMessage = PetBlocksLanguage.commandSenderHasToBePlayer
-                this.manipulateOtherMessage = PetBlocksLanguage.manipulateOtherMessage
-                this.reloadMessage = PetBlocksLanguage.reloadMessage
-                this.noPermissionMessage = PetBlocksLanguage.noPermissionCommand
-                this.guiNotFoundMessage = PetBlocksLanguage.guiMenuNotFoundMessage
-                this.guiMenuNoPermissionMessage = PetBlocksLanguage.guiMenuNoPermissionMessage
+                this.playerNotFoundMessage = language.playerNotFoundMessage.text
+                this.commandSenderHasToBePlayerMessage = language.commandSenderHasToBePlayer.text
+                this.manipulateOtherMessage = language.manipulateOtherMessage.text
+                this.reloadMessage = language.reloadMessage.text
+                this.noPermissionMessage = language.noPermissionCommand.text
+                this.guiNotFoundMessage = language.guiMenuNotFoundMessage.text
+                this.guiMenuNoPermissionMessage = language.guiMenuNoPermissionMessage.text
 
-                this.reloadCommandHint = PetBlocksLanguage.reloadCommandHint
-                this.openCommandHint = PetBlocksLanguage.openCommandHint
-                this.nextCommandHint = PetBlocksLanguage.nextCommandHint
-                this.closeCommandHint = PetBlocksLanguage.closeCommandHint
-                this.backCommandHint = PetBlocksLanguage.backCommandHint
-                this.messageCommandHint = PetBlocksLanguage.messageCommandHint
+                this.reloadCommandHint = language.reloadCommandHint.text
+                this.openCommandHint = language.openCommandHint.text
+                this.nextCommandHint = language.nextCommandHint.text
+                this.closeCommandHint = language.closeCommandHint.text
+                this.backCommandHint = language.backCommandHint.text
+                this.messageCommandHint = language.messageCommandHint.text
             }
         };
         settings.reload()
