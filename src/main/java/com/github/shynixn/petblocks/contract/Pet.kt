@@ -97,6 +97,11 @@ interface Pet {
     var groundOffset: Double
 
     /**
+     * Riding speed.
+     */
+    var ridingSpeed : Double
+
+    /**
      * Storage of arbitrary data in the pet.
      */
     val memory: MutableMap<String, String>

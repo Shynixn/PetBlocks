@@ -9,6 +9,7 @@ import com.github.shynixn.mcutils.common.physic.PhysicObject
 import com.github.shynixn.mcutils.common.physic.PhysicObjectDispatcher
 import com.github.shynixn.mcutils.packet.api.PacketService
 import com.github.shynixn.mcutils.packet.api.RayTracingService
+import com.github.shynixn.mcutils.packet.api.meta.enumeration.RidingMoveType
 import com.github.shynixn.mcutils.packet.api.packet.PacketOutEntityMount
 import com.github.shynixn.mcutils.pathfinder.api.PathfinderResult
 import com.github.shynixn.mcutils.pathfinder.api.PathfinderResultType
@@ -59,6 +60,8 @@ class PetEntityImpl(
     private var cancellationTokenLongRunning = CancellationToken()
     private var lastRideUpdate = 0L
     private var lastSneakUpdate = 0L
+    private var ridingMoveType: RidingMoveType = RidingMoveType.STOP
+
     var isBreakingBlock = false
 
     // Mover
@@ -231,7 +234,7 @@ class PetEntityImpl(
     /**
      * Spawn is initiated.
      */
-    fun onSpawn(player: Player){
+    fun onSpawn(player: Player) {
         cancellationTokenLongRunning.isCancelled = true
         val spawnEvent = pet.template.events["spawn"]
         if (spawnEvent != null) {
@@ -244,7 +247,7 @@ class PetEntityImpl(
     /**
      * Despawn is initiated.
      */
-    fun onDespawn(player: Player){
+    fun onDespawn(player: Player) {
         cancellationTokenLongRunning.isCancelled = true
         val despawnEvent = pet.template.events["despawn"]
         if (despawnEvent != null) {
@@ -356,47 +359,50 @@ class PetEntityImpl(
     /**
      * Gets called when the player is riding the entity.
      */
-    fun ride(player: Player, forward: Double, isJumping: Boolean, isSneaking: Boolean) {
+    fun ride(player: Player, moveType: RidingMoveType, isJumping: Boolean, isSneaking: Boolean) {
         cancellationTokenLongRunning.isCancelled = true
 
-        val current = Date().time
-        if (current - lastRideUpdate >= ridePositionUpdateMs) {
-            // Required so the position of the player stays in sync while packet riding.
-            packetService.setServerPlayerPosition(player, physicsComponent.position.toLocation())
-            for (visiblePlayers in playerComponent.visiblePlayers) {
-                packetService.sendPacketOutEntityMount(visiblePlayers, PacketOutEntityMount().also {
-                    it.entityId = entityComponent.entityId
-                    it.passengers = listOf(player.entityId)
-                })
-            }
-            lastRideUpdate = current
-        }
-
-        val isOnGround = if (isJumping) {
-            isOnGround(getLocation().toLocation())
-        } else {
-            false
-        }
-
-        plugin.launch(physicObjectDispatcher) {
-            if (forward != 0.0) {
-                val movementVector = if (forward > 0.0) {
-                    player.location.direction.normalize().multiply(0.5).toVector3d()
-                } else {
-                    player.location.direction.normalize().multiply(-0.5).toVector3d()
+        if (isJumping) {
+            if (isOnGround(getLocation().toLocation())) {
+                plugin.launch(physicObjectDispatcher) {
+                    physicsComponent.motion.y = 1.0
                 }
-
-                physicsComponent.motion.x = movementVector.x
-                physicsComponent.motion.z = movementVector.z
             }
+            synchronizeRidingState(player)
 
-            if (isJumping && isOnGround) {
-                physicsComponent.motion.y = 1.0
-            }
-
-            physicsComponent.position.pitch = 0.0
-            physicsComponent.position.yaw = player.location.yaw.toDouble()
+            return
         }
+
+        if (this.ridingMoveType == RidingMoveType.STOP) {
+            this.ridingMoveType = moveType
+            plugin.launch(physicObjectDispatcher) {
+                while (!isDead && ridingMoveType != RidingMoveType.STOP && player.isOnline && pet.isRiding()) {
+                    synchronizeRidingState(player)
+                    val movementVector = if (ridingMoveType == RidingMoveType.FORWARD) {
+                        player.location.direction.normalize().multiply(petMeta.physics.ridingSpeed).toVector3d()
+                    } else {
+                        player.location.direction.normalize().multiply(petMeta.physics.ridingSpeed * -1).toVector3d()
+                    }
+
+                    physicsComponent.motion.x = movementVector.x
+                    physicsComponent.motion.z = movementVector.z
+
+                    physicsComponent.position.pitch = 0.0
+                    physicsComponent.position.yaw = player.location.yaw.toDouble()
+                    delay(5.ticks)
+                }
+            }
+        }
+
+        this.ridingMoveType = moveType
+
+        if (this.ridingMoveType == RidingMoveType.STOP) {
+            // Fast Stop.
+            physicsComponent.motion.x = 0.0
+            physicsComponent.motion.z = 0.0
+        }
+
+        val current = System.currentTimeMillis()
 
         if (isSneaking && current - lastSneakUpdate >= 200) {
             lastSneakUpdate = current
@@ -409,8 +415,28 @@ class PetEntityImpl(
         }
     }
 
+    private fun synchronizeRidingState(player: Player) {
+        val current = Date().time
+        if (current - lastRideUpdate >= ridePositionUpdateMs) {
+            // Required so the position of the player stays in sync while packet riding.
+            packetService.setServerPlayerPosition(player, physicsComponent.position.toLocation())
+            for (visiblePlayers in playerComponent.visiblePlayers) {
+                packetService.sendPacketOutEntityMount(visiblePlayers, PacketOutEntityMount().also {
+                    it.entityId = entityComponent.entityId
+                    it.passengers = listOf(player.entityId)
+                })
+            }
+            lastRideUpdate = current
+        }
+    }
+
     private fun isOnGround(location: Location): Boolean {
-        val rayTraceResult = rayTracingService.rayTraceMotion(location.toVector3d(), Vector3d(0.0, -1.0, 0.0), petMeta.physics.collideWithWater, petMeta.physics.collideWithPassableBlocks)
+        val rayTraceResult = rayTracingService.rayTraceMotion(
+            location.toVector3d(),
+            Vector3d(0.0, -1.0, 0.0),
+            petMeta.physics.collideWithWater,
+            petMeta.physics.collideWithPassableBlocks
+        )
         return rayTraceResult.hitBlock
     }
 
@@ -496,7 +522,9 @@ class PetEntityImpl(
         val worldLocation = getLocation().toLocation()
         val rayTraceResult = rayTracingService.rayTraceMotion(
             worldLocation.toVector3d(),
-            worldLocation.direction.normalize().multiply(maxDistance).toVector3d(),petMeta.physics.collideWithWater, petMeta.physics.collideWithPassableBlocks
+            worldLocation.direction.normalize().multiply(maxDistance).toVector3d(),
+            petMeta.physics.collideWithWater,
+            petMeta.physics.collideWithPassableBlocks
         )
         return rayTraceResult.block
     }

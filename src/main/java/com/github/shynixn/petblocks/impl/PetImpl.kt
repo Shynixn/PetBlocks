@@ -3,6 +3,7 @@ package com.github.shynixn.petblocks.impl
 import com.github.shynixn.mccoroutine.bukkit.CoroutineTimings
 import com.github.shynixn.mccoroutine.bukkit.launch
 import com.github.shynixn.mccoroutine.bukkit.minecraftDispatcher
+import com.github.shynixn.mccoroutine.bukkit.ticks
 import com.github.shynixn.mcutils.common.*
 import com.github.shynixn.mcutils.common.item.Item
 import com.github.shynixn.mcutils.common.item.ItemService
@@ -40,7 +41,7 @@ class PetImpl(
     private var petEntity: PetEntityImpl? = null
     private var disposed = false
     private var templateCache: PetTemplate? = null
-    private var isWorldTransferActive : Boolean = false
+    private var isWorldTransferActive: Boolean = false
 
     init {
         plugin.launch(plugin.minecraftDispatcher + object : CoroutineTimings() {}) {
@@ -296,6 +297,17 @@ class PetImpl(
         }
 
     /**
+     * Riding speed.
+     */
+    override var ridingSpeed: Double
+        get() {
+            return petMeta.physics.ridingSpeed
+        }
+        set(value) {
+            petMeta.physics.ridingSpeed = value
+        }
+
+    /**
      * Storage of arbitrary data in the pet.
      */
     override val memory: MutableMap<String, String>
@@ -419,7 +431,13 @@ class PetImpl(
 
         call()
         petMeta.ridingState = PetRidingState.GROUND
-        petEntity?.updateRidingState()
+
+        plugin.launch {
+            val location = player.location.toVector3d()
+            petEntity?.updateRidingState()
+            delay(3.ticks)
+            petEntity?.teleportInWorld(location) // Correct riding position.
+        }
     }
 
     /**

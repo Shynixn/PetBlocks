@@ -108,6 +108,12 @@ class PetBlocksLanguageImpl : Language, LanguageProviderImpl() {
     override var variableCommandHint = LanguageItem()
     override var variableChangedMessage = LanguageItem()
     override var velocityRelCommandHint = LanguageItem()
+    override var ridingSpeedChangedMessage = LanguageItem().also {
+        it.text = "[&9PetBlocks&f] The riding-speed of the pet has been changed."
+    }
+    override var ridingSpeedCommandHint = LanguageItem().also {
+        it.text = "Changes the speed while riding a pet."
+    }
     override val names: List<String>
         get() = listOf("en_us", "es_es")
 
