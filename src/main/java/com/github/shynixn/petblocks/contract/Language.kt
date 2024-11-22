@@ -4,7 +4,7 @@ import com.github.shynixn.mcutils.common.language.LanguageItem
 import com.github.shynixn.mcutils.common.language.LanguageProvider
 
 interface Language : LanguageProvider {
-  var playerNotFoundMessage: LanguageItem
+  var petNameChangeMessage: LanguageItem
 
   var templateNotFoundMessage: LanguageItem
 
@@ -16,7 +16,7 @@ interface Language : LanguageProvider {
 
   var petDeletedMessage: LanguageItem
 
-  var petNameChangeMessage: LanguageItem
+  var playerNotFoundMessage: LanguageItem
 
   var petCalledMessage: LanguageItem
 
