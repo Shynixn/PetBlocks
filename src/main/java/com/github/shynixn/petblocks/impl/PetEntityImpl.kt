@@ -376,7 +376,7 @@ class PetEntityImpl(
         if (this.ridingMoveType == RidingMoveType.STOP) {
             this.ridingMoveType = moveType
             plugin.launch(physicObjectDispatcher) {
-                while (!isDead && ridingMoveType != RidingMoveType.STOP && player.isOnline) {
+                while (!isDead && ridingMoveType != RidingMoveType.STOP && player.isOnline && pet.isRiding()) {
                     synchronizeRidingState(player)
                     val movementVector = if (ridingMoveType == RidingMoveType.FORWARD) {
                         player.location.direction.normalize().multiply(petMeta.physics.ridingSpeed).toVector3d()
