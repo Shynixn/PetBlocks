@@ -319,3 +319,9 @@ variableChangedMessage:
 velocityRelCommandHint:
   type: "CHAT"
   text: "Launches the pet into the current looking direction with the given multipliers."
+ridingSpeedChangedMessage:
+  type: "CHAT"
+  text: "[&9PetBlocks&f] The riding-speed of the pet has been changed."
+ridingSpeedCommandHint:
+  type: "CHAT"
+  text: "Changes the speed while riding a pet."

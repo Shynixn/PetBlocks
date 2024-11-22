@@ -737,6 +737,18 @@ class PetBlocksCommandExecutor @Inject constructor(
                         setGroundOffset(commandSender, petMustExist(player, name), offset)
                     }
             }
+            subCommand("ridingspeed") {
+                permission(Permission.RIDINGSPEED)
+                toolTip { language.ridingSpeedCommandHint.text }
+                builder().argument("name").tabs(petNamesTabs).argument("speed").validator(mustBeDouble)
+                    .tabs { listOf("<speed>") }.executePlayer(senderHasToBePlayer) { player, name, speed ->
+                        setRidingSpeed(player, petMustExist(player, name), speed)
+                    }.argument("player").validator(playerMustExist).tabs(onlinePlayerTabs)
+                    .permission(manipulateOtherPermission).permissionMessage(manipulateOtherPermissionMessage)
+                    .execute { commandSender, name, speed, player ->
+                        setRidingSpeed(commandSender, petMustExist(player, name), speed)
+                    }
+            }
             subCommand("snap") {
                 permission(Permission.SNAP)
                 toolTip { language.snapCommandHint.text }
@@ -790,6 +802,11 @@ class PetBlocksCommandExecutor @Inject constructor(
             }
         }
         commandBuilder.build()
+    }
+
+    private fun setRidingSpeed(sender: CommandSender, pet: Pet, speed: Double) {
+        pet.ridingSpeed = speed
+        language.sendMessage(language.ridingSpeedChangedMessage, sender, speed)
     }
 
     private suspend fun createPet(

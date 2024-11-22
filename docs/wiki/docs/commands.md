@@ -478,6 +478,18 @@ Changes the offset of the body of the entity to the ground. Useful when configur
 * Offset: A numeric comma value. e.g. 0.3, -0.3, 1.0
 * Player: Optional player_name/player_UUID parameter targeting a player from the console or command block.
 
+### /petblocks ridingspeed
+
+```
+/petblocks ridingspeed <name> <speed> [player]
+```
+
+Changes the speed while riding a pet.
+
+* Name: Identifier of a pet
+* Offset: A numeric comma value. e.g. 0.3, 0.5, 1.5
+* Player: Optional player_name/player_UUID parameter targeting a player from the console or command block.
+
 ### /petblocks variable
 
 ```

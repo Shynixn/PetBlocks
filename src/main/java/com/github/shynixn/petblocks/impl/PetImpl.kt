@@ -40,7 +40,7 @@ class PetImpl(
     private var petEntity: PetEntityImpl? = null
     private var disposed = false
     private var templateCache: PetTemplate? = null
-    private var isWorldTransferActive : Boolean = false
+    private var isWorldTransferActive: Boolean = false
 
     init {
         plugin.launch(plugin.minecraftDispatcher + object : CoroutineTimings() {}) {
@@ -293,6 +293,17 @@ class PetImpl(
         set(value) {
             petMeta.physics.groundOffset = value
             location = location // Triggers teleport.
+        }
+
+    /**
+     * Riding speed.
+     */
+    override var ridingSpeed: Double
+        get() {
+            return petMeta.physics.ridingSpeed
+        }
+        set(value) {
+            petMeta.physics.ridingSpeed = value
         }
 
     /**

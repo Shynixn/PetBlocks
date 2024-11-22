@@ -209,4 +209,8 @@ interface Language : LanguageProvider {
   var variableChangedMessage: LanguageItem
 
   var velocityRelCommandHint: LanguageItem
+
+  var ridingSpeedChangedMessage: LanguageItem
+
+  var ridingSpeedCommandHint: LanguageItem
 }

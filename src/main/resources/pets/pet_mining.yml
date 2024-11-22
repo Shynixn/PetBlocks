@@ -49,6 +49,8 @@ pet:
     collideWithWater: false
     # Should the pet run through blocks like cobweb?
     collideWithPassableBlocks: false
+    # The speed while riding a pet.
+    ridingSpeed: 0.5
 
 #
 # Defines the action a pet should perform on certain events.

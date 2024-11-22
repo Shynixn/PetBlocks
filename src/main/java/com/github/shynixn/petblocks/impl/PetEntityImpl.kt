@@ -362,25 +362,13 @@ class PetEntityImpl(
     fun ride(player: Player, moveType: RidingMoveType, isJumping: Boolean, isSneaking: Boolean) {
         cancellationTokenLongRunning.isCancelled = true
 
-        val current = Date().time
-        if (current - lastRideUpdate >= ridePositionUpdateMs) {
-            // Required so the position of the player stays in sync while packet riding.
-            packetService.setServerPlayerPosition(player, physicsComponent.position.toLocation())
-            for (visiblePlayers in playerComponent.visiblePlayers) {
-                packetService.sendPacketOutEntityMount(visiblePlayers, PacketOutEntityMount().also {
-                    it.entityId = entityComponent.entityId
-                    it.passengers = listOf(player.entityId)
-                })
-            }
-            lastRideUpdate = current
-        }
-
         if (isJumping) {
             if (isOnGround(getLocation().toLocation())) {
                 plugin.launch(physicObjectDispatcher) {
                     physicsComponent.motion.y = 1.0
                 }
             }
+            synchronizeRidingState(player)
 
             return
         }
@@ -388,11 +376,12 @@ class PetEntityImpl(
         if (this.ridingMoveType == RidingMoveType.STOP) {
             this.ridingMoveType = moveType
             plugin.launch(physicObjectDispatcher) {
-                while (!isDead && ridingMoveType != RidingMoveType.STOP) {
+                while (!isDead && ridingMoveType != RidingMoveType.STOP && player.isOnline) {
+                    synchronizeRidingState(player)
                     val movementVector = if (ridingMoveType == RidingMoveType.FORWARD) {
-                        player.location.direction.normalize().multiply(0.5).toVector3d()
+                        player.location.direction.normalize().multiply(petMeta.physics.ridingSpeed).toVector3d()
                     } else {
-                        player.location.direction.normalize().multiply(-0.5).toVector3d()
+                        player.location.direction.normalize().multiply(petMeta.physics.ridingSpeed * -1).toVector3d()
                     }
 
                     physicsComponent.motion.x = movementVector.x
@@ -413,6 +402,8 @@ class PetEntityImpl(
             physicsComponent.motion.z = 0.0
         }
 
+        val current = System.currentTimeMillis()
+
         if (isSneaking && current - lastSneakUpdate >= 200) {
             lastSneakUpdate = current
             val sneakEvent = pet.template.events["ridingSneak"]
@@ -421,6 +412,21 @@ class PetEntityImpl(
                     petActionExecutionService.executeAction(player, pet, sneakEvent, CancellationToken())
                 }
             }
+        }
+    }
+
+    private fun synchronizeRidingState(player: Player) {
+        val current = Date().time
+        if (current - lastRideUpdate >= ridePositionUpdateMs) {
+            // Required so the position of the player stays in sync while packet riding.
+            packetService.setServerPlayerPosition(player, physicsComponent.position.toLocation())
+            for (visiblePlayers in playerComponent.visiblePlayers) {
+                packetService.sendPacketOutEntityMount(visiblePlayers, PacketOutEntityMount().also {
+                    it.entityId = entityComponent.entityId
+                    it.passengers = listOf(player.entityId)
+                })
+            }
+            lastRideUpdate = current
         }
     }
 

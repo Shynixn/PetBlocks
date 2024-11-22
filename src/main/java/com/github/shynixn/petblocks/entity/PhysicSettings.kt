@@ -25,10 +25,15 @@ class PhysicSettings {
     /**
      * Collide With water.
      */
-    var collideWithWater : Boolean = false
+    var collideWithWater: Boolean = false
 
     /**
      * Collide With passable Blocks.
      */
-    var collideWithPassableBlocks : Boolean = false
+    var collideWithPassableBlocks: Boolean = false
+
+    /**
+     *  Riding speed of the pet.
+     */
+    var ridingSpeed: Double = 0.5
 }
