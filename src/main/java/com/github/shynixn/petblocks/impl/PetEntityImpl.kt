@@ -418,8 +418,11 @@ class PetEntityImpl(
     private fun synchronizeRidingState(player: Player) {
         val current = Date().time
         if (current - lastRideUpdate >= ridePositionUpdateMs) {
-            // Required so the position of the player stays in sync while packet riding.
-            packetService.setServerPlayerPosition(player, physicsComponent.position.toLocation())
+            plugin.launch {
+                // Required so the position of the player stays in sync while packet riding.
+                // Has to be on the main thread.
+                packetService.setServerPlayerPosition(player, physicsComponent.position.toLocation())
+            }
             for (visiblePlayers in playerComponent.visiblePlayers) {
                 packetService.sendPacketOutEntityMount(visiblePlayers, PacketOutEntityMount().also {
                     it.entityId = entityComponent.entityId

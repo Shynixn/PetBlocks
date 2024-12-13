@@ -9,7 +9,7 @@ plugins {
 }
 
 group = "com.github.shynixn"
-version = "9.17.0"
+version = "9.18.0"
 
 repositories {
     mavenCentral()
@@ -46,8 +46,8 @@ dependencies {
 
     // Custom dependencies
     implementation("com.github.shynixn.shygui:shygui:1.0.1")
-    implementation("com.github.shynixn.mcutils:common:2024.37")
-    implementation("com.github.shynixn.mcutils:packet:2024.49")
+    implementation("com.github.shynixn.mcutils:common:2024.39")
+    implementation("com.github.shynixn.mcutils:packet:2024.51")
     implementation("com.github.shynixn.mcutils:database:2024.8")
     implementation("com.github.shynixn.mcutils:pathfinder:2024.3")
     implementation("com.github.shynixn.mcutils:guice:2024.2")
@@ -137,6 +137,8 @@ tasks.register("pluginJarLatest", com.github.jengelman.gradle.plugins.shadow.tas
     exclude("com/github/shynixn/petblocks/lib/com/github/shynixn/mcutils/packet/nms/v1_20_R2/**")
     exclude("com/github/shynixn/petblocks/lib/com/github/shynixn/mcutils/packet/nms/v1_20_R3/**")
     exclude("com/github/shynixn/petblocks/lib/com/github/shynixn/mcutils/packet/nms/v1_20_R4/**")
+    exclude("com/github/shynixn/petblocks/lib/com/github/shynixn/mcutils/packet/nms/v1_21_R1/**")
+    exclude("com/github/shynixn/petblocks/lib/com/github/shynixn/mcutils/packet/nms/v1_21_R2/**")
     exclude("com/github/shynixn/mcutils/**")
     exclude("com/github/shynixn/shygui/**")
     exclude("com/github/shynixn/mccoroutine/**")
