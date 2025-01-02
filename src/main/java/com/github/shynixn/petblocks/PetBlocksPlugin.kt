@@ -122,7 +122,7 @@ class PetBlocksPlugin : JavaPlugin() {
 
         // Register Language
         val language = PetBlocksLanguageImpl()
-        reloadTranslation(language, PetBlocksLanguageImpl::class.java)
+        reloadTranslation(language)
         logger.log(Level.INFO, "Loaded language file.")
 
         // ShyGUI Module

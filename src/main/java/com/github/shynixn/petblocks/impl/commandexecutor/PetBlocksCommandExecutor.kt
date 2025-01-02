@@ -780,7 +780,7 @@ class PetBlocksCommandExecutor @Inject constructor(
                     templateRepository.clearCache()
                     plugin.saveDefaultConfig()
                     plugin.reloadConfig()
-                    plugin.reloadTranslation(language, PetBlocksLanguageImpl::class.java)
+                    plugin.reloadTranslation(language)
                     val templates = templateRepository.getAll()
 
                     // Updates the templates.

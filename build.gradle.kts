@@ -58,8 +58,8 @@ dependencies {
     implementation("org.openjdk.nashorn:nashorn-core:15.4")
 
     // Custom dependencies
-    implementation("com.github.shynixn.shygui:shygui:1.1.3")
-    implementation("com.github.shynixn.mcutils:common:2024.51")
+    implementation("com.github.shynixn.shygui:shygui:1.1.4")
+    implementation("com.github.shynixn.mcutils:common:2024.52")
     implementation("com.github.shynixn.mcutils:packet:2024.55")
     implementation("com.github.shynixn.mcutils:database:2024.8")
     implementation("com.github.shynixn.mcutils:pathfinder:2024.3")
