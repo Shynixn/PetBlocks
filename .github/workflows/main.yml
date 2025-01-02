@@ -37,7 +37,7 @@ jobs:
         env:
           GEYSER_PASSWORD: ${{ secrets.GEYSER_PASSWORD }}
         run: |
-          7z x docs/assets/PetBlocks-GeyserMC.7z -p${{ env.GEYSER_PASSWORD }} 
+          7z x docs/wiki/docs/assets/PetBlocks-GeyserMC.7z -p${{ env.GEYSER_PASSWORD }} 
 
       - name: Create Github Release
         if: "contains(github.event.head_commit.message, '--release') && contains(github.ref, 'master')"
