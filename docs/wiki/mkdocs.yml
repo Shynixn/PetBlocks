@@ -9,6 +9,7 @@ nav:
       - Commands: commands.md
       - Templates: template.md
       - GUI: gui.md
+      - Bedrock: bedrock.md
       - PlaceHolders: placeholders.md
       - Custom Models: custommodels.md
       - Selectable particle effects: particleexample.md
