@@ -325,3 +325,9 @@ ridingSpeedChangedMessage:
 ridingSpeedCommandHint:
   type: "CHAT"
   text: "Changes the speed while riding a pet."
+cannotParseItemStackError:
+  type: "CHAT"
+  text: "[&9ShyGUI&f] &cCannot parse ItemStack at row %1$1s and col %2$1s! Check your GUI menu configuration by reviewing the full item parsing error in the console log."
+rowColOutOfRangeError:
+  type: "CHAT"
+  text: "[&9ShyGUI&f] &cThe specified row %1$1s and col %2$1s are out of range of the GUI! Check your GUI menu configuration."

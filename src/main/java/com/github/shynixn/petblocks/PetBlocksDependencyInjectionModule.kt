@@ -7,6 +7,8 @@ import com.github.shynixn.mcutils.common.ConfigurationService
 import com.github.shynixn.mcutils.common.ConfigurationServiceImpl
 import com.github.shynixn.mcutils.common.chat.ChatMessageService
 import com.github.shynixn.mcutils.common.item.ItemService
+import com.github.shynixn.mcutils.common.language.globalChatMessageService
+import com.github.shynixn.mcutils.common.language.globalPlaceHolderService
 import com.github.shynixn.mcutils.common.physic.PhysicObjectDispatcher
 import com.github.shynixn.mcutils.common.physic.PhysicObjectDispatcherImpl
 import com.github.shynixn.mcutils.common.physic.PhysicObjectService
@@ -22,6 +24,8 @@ import com.github.shynixn.mcutils.database.impl.AutoSavePlayerDataRepositoryImpl
 import com.github.shynixn.mcutils.database.impl.CachePlayerDataRepositoryImpl
 import com.github.shynixn.mcutils.database.impl.ConfigSelectedRepositoryImpl
 import com.github.shynixn.mcutils.guice.DependencyInjectionModule
+import com.github.shynixn.mcutils.javascript.JavaScriptService
+import com.github.shynixn.mcutils.javascript.JavaScriptServiceImpl
 import com.github.shynixn.mcutils.packet.api.PacketService
 import com.github.shynixn.mcutils.packet.api.RayTracingService
 import com.github.shynixn.mcutils.packet.impl.service.ChatMessageServiceImpl
@@ -41,7 +45,7 @@ import org.bukkit.plugin.Plugin
 import java.util.logging.Level
 
 class PetBlocksDependencyInjectionModule(
-    private val plugin: PetBlocksPlugin, private val shyGuiModule: DependencyInjectionModule, private val language: Language
+    private val plugin: PetBlocksPlugin, private val shyGuiModule: DependencyInjectionModule, private val language: PetBlocksLanguage
 ) : DependencyInjectionModule() {
     companion object {
         val areLegacyVersionsIncluded: Boolean by lazy {
@@ -55,9 +59,9 @@ class PetBlocksDependencyInjectionModule(
     }
 
     override fun configure() {
+        // Module
         addService<Plugin>(plugin)
-        val autoSaveMinutes = plugin.config.getInt("database.autoSaveIntervalMinutes")
-        addService<Language>(language)
+        addService<PetBlocksLanguage>(language)
 
         // Repositories
         val templateRepositoryImpl = YamlFileRepositoryImpl<PetTemplate>(plugin, "pets", listOf(
@@ -74,6 +78,7 @@ class PetBlocksDependencyInjectionModule(
             plugin.dataFolder.toPath().resolve("PetBlocks.sqlite"),
             object : TypeReference<PlayerInformation>() {}, plugin.minecraftDispatcher
         )
+        val autoSaveMinutes = plugin.config.getInt("database.autoSaveIntervalMinutes")
         val playerDataRepository = AutoSavePlayerDataRepositoryImpl(
             1000 * 60L * autoSaveMinutes,
             CachePlayerDataRepositoryImpl(configSelectedRepository, plugin.minecraftDispatcher),
@@ -83,45 +88,36 @@ class PetBlocksDependencyInjectionModule(
         addService<PlayerDataRepository<PlayerInformation>>(playerDataRepository)
         addService<CachePlayerRepository<PlayerInformation>>(playerDataRepository)
 
-        // Library Services
-        addService<PlaceHolderService>(shyGuiModule.getService<PlaceHolderService>())
-
         // Services
-        val configurationService = ConfigurationServiceImpl(plugin)
-        addService<RayTracingService>(RayTracingServiceImpl())
-        addService<PacketService>(PacketServiceImpl(plugin))
-        addService<PhysicObjectDispatcher>(PhysicObjectDispatcherImpl(plugin))
-        addService<ConfigurationService>(ConfigurationServiceImpl(plugin))
-        addService<ChatMessageService>(ChatMessageServiceImpl(plugin))
-        addService<PhysicObjectService> {
-            PhysicObjectServiceImpl(plugin, getService())
-        }
-        addService<ItemService>(ItemServiceImpl())
-        addService<PathfinderService>(PathfinderServiceImpl(CubeWorldSnapshotServiceImpl()))
         addService<BreakBlockService, BreakBlockServiceImpl>()
         addService<PetService, PetServiceImpl>()
         addService<PetEntityFactory, PetEntityFactoryImpl>()
         addService<PetActionExecutionService, PetActionExecutionServiceImpl>()
-
         if (Bukkit.getPluginManager().getPlugin(PluginDependency.HEADDATABASE.pluginName) != null) {
             addService<DependencyHeadDatabaseService, DependencyHeadDatabaseServiceImpl>()
             plugin.logger.log(Level.INFO, "Loaded dependency ${PluginDependency.HEADDATABASE.pluginName}.")
         }
 
-        try {
-            // Try Load Nashorn Implementation
-            val nashornScriptEngine = ScriptNashornEngineServiceImpl(plugin, configurationService)
-            addService<ScriptService>(nashornScriptEngine)
-            plugin.logger.log(Level.INFO, "Loaded embedded NashornScriptEngine.")
-        } catch (e: Error) {
-            try {
-                // Try Load JDK Implementation
-                val jdkScriptEngine = ScriptJdkEngineServiceImpl(plugin, configurationService)
-                addService<ScriptService>(jdkScriptEngine)
-                plugin.logger.log(Level.INFO, "Loaded JDK NashornScriptEngine.")
-            } catch (ex: Exception) {
-                throw RuntimeException("Cannot find NashornScriptEngine implementation.", ex)
-            }
+        // Library Services
+        val chatMessageService = ChatMessageServiceImpl(plugin)
+        addService<PlaceHolderService>(shyGuiModule.getService<PlaceHolderService>())
+        addService<RayTracingService>(RayTracingServiceImpl())
+        addService<PacketService>(PacketServiceImpl(plugin))
+        addService<PhysicObjectDispatcher>(PhysicObjectDispatcherImpl(plugin))
+        addService<ConfigurationService>(ConfigurationServiceImpl(plugin))
+        addService<ChatMessageService>(chatMessageService)
+        addService<PhysicObjectService> {
+            PhysicObjectServiceImpl(plugin, getService())
         }
+        addService<ItemService>(ItemServiceImpl())
+        addService<PathfinderService>(PathfinderServiceImpl(CubeWorldSnapshotServiceImpl()))
+        addService<JavaScriptService>(
+            JavaScriptServiceImpl(
+                plugin,
+                this.plugin.config.getStringList("scriptEngine.options")
+            )
+        )
+        plugin.globalChatMessageService = chatMessageService
+        plugin.globalPlaceHolderService = shyGuiModule.getService<PlaceHolderService>()
     }
 }
