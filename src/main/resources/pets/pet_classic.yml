@@ -65,7 +65,7 @@ events:
           left: "%petblocks_eventPlayer_name%"
           right: "%petblocks_owner_name%"
         type: "JAVASCRIPT"
-        variable: "jsonKnockback" # If the variable name contains the word 'json', you can store entire json objects and retrieve all keys from the first depth level as placeholder.
+        variable: "jsonKnockback" # You can store entire json objects and retrieve all keys from the first depth level as placeholder.
         js: |
           function calculateVector() {
             var positionPlayer = {
@@ -102,7 +102,7 @@ events:
         type: "COMMAND"
         level: "SERVER"
         run:
-          - "/petblocks velocity %petblocks_pet_name% %petblocks_js_jsonKnockback_x% 0.2 %petblocks_js_jsonKnockback_z% %petblocks_eventPlayer_name%"
+          - "/petblocks velocity %petblocks_pet_name% %petblocks_js_jsonKnockback.x_selected% 0.2 %petblocks_js_jsonKnockback.z_selected%  %petblocks_eventPlayer_name%"
   leftClickSneak:
     actions: # You can add/remove actions as you want here.
       - name: "Open the pet GUI"

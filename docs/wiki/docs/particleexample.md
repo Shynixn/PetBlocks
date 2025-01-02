@@ -8,7 +8,7 @@ to define selectable sounds, potion effects, etc.
 Add a basic vanilla particle command as action to one of the loops. In this case the ``idle`` loop.
 
 * Instead of absolute coordinates we use the pet coordinate placeholders.
-* The placeholder ``%petblocks_js_mypart%`` is a custom placeholder defined by you, which stores the **currently selected particle**. You can also name it ``%petblocks_js_mysound%`` to store sound names for example.
+* The placeholder ``%petblocks_js_mypart_selected%`` is a custom placeholder defined by you, which stores the **currently selected particle**. You can also name it ``%petblocks_js_mysound_selected%`` to store sound names for example.
 * The condition checks if the placeholder can actually be resolved e.g. a particle has been set.
 
 ```yaml
@@ -18,12 +18,12 @@ loops:
       - name: "Play particle effect"
         condition:
           type: STRING_NOT_CONTAINS
-          left: "%petblocks_js_mypart%"
-          right: "petblocks_js_mypart"
+          left: "%petblocks_js_mypart_selected%"
+          right: "petblocks_js_mypart_selected"
         type: "COMMAND"
         level: "SERVER"
         run:
-          - "/particle %petblocks_js_mypart% %petblocks_pet_locationX% %petblocks_pet_locationY% %petblocks_pet_locationZ%"       
+          - "/particle %petblocks_js_mypart_selected% %petblocks_pet_locationX% %petblocks_pet_locationY% %petblocks_pet_locationZ%"       
 ```
 
 ## 2. Adjust vanilla command settings

@@ -26,7 +26,6 @@ import com.github.shynixn.shygui.contract.GUIMenuService
 import com.github.shynixn.shygui.entity.ShyGUISettings
 import com.github.shynixn.shygui.impl.commandexecutor.ShyGUICommandExecutor
 import com.github.shynixn.shygui.impl.listener.GUIMenuListener
-import com.google.common.cache.Cache
 import kotlinx.coroutines.runBlocking
 import org.bukkit.Bukkit
 import org.bukkit.event.player.PlayerJoinEvent
@@ -134,7 +133,6 @@ class PetBlocksPlugin : JavaPlugin() {
 
         // Register PlaceHolder
         PlaceHolder.registerAll(
-            this,
             mainModule.getService<PlaceHolderService>(),
             mainModule.getService<CachePlayerRepository<PlayerInformation>>(),
             mainModule.getService<PetService>()

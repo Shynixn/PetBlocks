@@ -59,7 +59,7 @@ dependencies {
 
     // Custom dependencies
     implementation("com.github.shynixn.shygui:shygui:1.1.3")
-    implementation("com.github.shynixn.mcutils:common:2024.49")
+    implementation("com.github.shynixn.mcutils:common:2024.51")
     implementation("com.github.shynixn.mcutils:packet:2024.55")
     implementation("com.github.shynixn.mcutils:database:2024.8")
     implementation("com.github.shynixn.mcutils:pathfinder:2024.3")
@@ -141,7 +141,7 @@ tasks.register("pluginJarLatest", com.github.jengelman.gradle.plugins.shadow.tas
     dependsOn("relocatePluginJar")
     from(zipTree(File("./build/libs/" + (tasks.getByName("relocatePluginJar") as Jar).archiveFileName.get())))
     archiveFileName.set("${archiveBaseName.get()}-${archiveVersion.get()}-latest.${archiveExtension.get()}")
-    // destinationDirectory.set(File("C:\\temp\\plugins"))
+    destinationDirectory.set(File("C:\\temp\\plugins"))
 
     exclude("com/github/shynixn/petblocks/lib/com/github/shynixn/mcutils/packet/nms/v1_8_R3/**")
     exclude("com/github/shynixn/petblocks/lib/com/github/shynixn/mcutils/packet/nms/v1_9_R2/**")

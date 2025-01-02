@@ -104,7 +104,7 @@ enum class PlaceHolder(val text: String, val f: (Player?, Pet?, Map<String, Any>
 
     // Pet PlaceHolders
     PET_NAME("%petblocks_pet_name_[index]%", { _, pet, _ -> pet?.name }),
-    PET_DISPLAYNAME("%petblocks_pet_displayName_[index]%", { _, pet, _ -> pet?.name }),
+    PET_DISPLAYNAME("%petblocks_pet_displayName_[index]%", { _, pet, _ -> pet?.displayName }),
     PET_DISTANCETOOWNER("%petblocks_pet_distanceToOwner_[index]%", { _, pet, _ ->
         if (pet == null) {
             null
@@ -158,7 +158,16 @@ enum class PlaceHolder(val text: String, val f: (Player?, Pet?, Map<String, Any>
     PET_JAVASCRIPT_VALUE("%petblocks_js_[jsKey]_[index]%", { _, pet, context ->
         val jsKey = context["[jsKey]"] as String?
         if (jsKey != null && pet != null) {
-            pet.memory[jsKey]
+            val parts = jsKey.split(".")
+            val memoryContent = pet.memory[parts[0]]
+
+            if (parts.size > 1) {
+                val mapper = com.fasterxml.jackson.databind.ObjectMapper()
+                val parsedJsonObject = mapper.readValue(memoryContent, Map::class.java)
+                parsedJsonObject[parts[1]]?.toString()
+            } else {
+                memoryContent
+            }
         } else {
             null
         }
@@ -169,7 +178,6 @@ enum class PlaceHolder(val text: String, val f: (Player?, Pet?, Map<String, Any>
          * Registers all placeHolder. Overrides previously registered placeholders.
          */
         fun registerAll(
-            plugin: Plugin,
             placeHolderService: PlaceHolderService,
             petMetaRepository: CachePlayerRepository<PlayerInformation>,
             petService: PetService
@@ -182,8 +190,8 @@ enum class PlaceHolder(val text: String, val f: (Player?, Pet?, Map<String, Any>
                         val playerInformation = petMetaRepository.getCachedByPlayer(player)
                         if (petIndex == "selected") {
                             petCache.firstOrNull { e -> e.name == playerInformation?.selectedPet }
-                        } else if (petIndex?.toIntOrNull() != null && petIndex.toInt() >= 0 && petIndex.toInt() < petCache.size) {
-                            petCache.get(petIndex.toInt())
+                        } else if (petIndex?.toIntOrNull() != null && (petIndex.toInt() - 1) >= 0 && (petIndex.toInt() - 1) < petCache.size) {
+                            petCache[petIndex.toInt() - 1]
                         } else if (petCache.size > 0) {
                             petCache[0]
                         } else {
