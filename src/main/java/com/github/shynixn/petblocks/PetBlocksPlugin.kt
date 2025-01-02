@@ -11,30 +11,28 @@ import com.github.shynixn.mcutils.database.api.CachePlayerRepository
 import com.github.shynixn.mcutils.database.api.PlayerDataRepository
 import com.github.shynixn.mcutils.packet.api.PacketInType
 import com.github.shynixn.mcutils.packet.api.PacketService
-import com.github.shynixn.mcutils.packet.impl.service.ChatMessageServiceImpl
 import com.github.shynixn.petblocks.contract.DependencyHeadDatabaseService
-import com.github.shynixn.petblocks.contract.Language
+import com.github.shynixn.petblocks.contract.PetBlocksLanguage
 import com.github.shynixn.petblocks.contract.PetService
 import com.github.shynixn.petblocks.entity.PetTemplate
 import com.github.shynixn.petblocks.entity.PlayerInformation
 import com.github.shynixn.petblocks.enumeration.Permission
+import com.github.shynixn.petblocks.enumeration.PlaceHolder
 import com.github.shynixn.petblocks.enumeration.PluginDependency
 import com.github.shynixn.petblocks.impl.commandexecutor.PetBlocksCommandExecutor
 import com.github.shynixn.petblocks.impl.listener.PetListener
-import com.github.shynixn.petblocks.impl.provider.PetBlocksPlaceHolderApiProvider
-import com.github.shynixn.petblocks.impl.provider.PetBlocksPlaceHolderProvider
 import com.github.shynixn.shygui.ShyGUIDependencyInjectionModule
 import com.github.shynixn.shygui.contract.GUIMenuService
-import com.github.shynixn.shygui.entity.Settings
+import com.github.shynixn.shygui.entity.ShyGUISettings
 import com.github.shynixn.shygui.impl.commandexecutor.ShyGUICommandExecutor
 import com.github.shynixn.shygui.impl.listener.GUIMenuListener
-import com.github.shynixn.shygui.impl.provider.ShyGUIPlaceHolderProvider
+import com.google.common.cache.Cache
 import kotlinx.coroutines.runBlocking
 import org.bukkit.Bukkit
 import org.bukkit.event.player.PlayerJoinEvent
-import org.bukkit.plugin.Plugin
 import org.bukkit.plugin.ServicePriority
 import org.bukkit.plugin.java.JavaPlugin
+import java.util.*
 import java.util.logging.Level
 
 /**
@@ -42,8 +40,30 @@ import java.util.logging.Level
  */
 class PetBlocksPlugin : JavaPlugin() {
     companion object {
-        var languageFiles = arrayOf("en_us", "es_es")
+        val eventPlayer = "eventPlayer"
+        val index = "[index]"
+
+        fun formatDoubleIfNotNull(value: Double?): String? {
+            if (value == null) {
+                return null
+            }
+
+            return String.format(
+                Locale.ENGLISH, "%.2f", value
+            )
+        }
+
+        fun formatFloatIfNotNull(value: Float?): String? {
+            if (value == null) {
+                return null
+            }
+
+            return String.format(
+                Locale.ENGLISH, "%.2f", value
+            )
+        }
     }
+
     private val prefix: String = ChatColor.BLUE.toString() + "[PetBlocks] " + ChatColor.WHITE
     private lateinit var mainModule: PetBlocksDependencyInjectionModule
     private lateinit var shyGuiModule: ShyGUIDependencyInjectionModule
@@ -101,18 +121,8 @@ class PetBlocksPlugin : JavaPlugin() {
 
         logger.log(Level.INFO, "Loaded NMS version ${Version.serverVersion}.")
 
-        // Load Language
+        // Register Language
         val language = PetBlocksLanguageImpl()
-        language.chatMessageService = ChatMessageServiceImpl(this)
-        language.placeHolderFun =
-            { text, player ->
-                val placeHolderService = mainModule.getService<PlaceHolderService>()
-                if (player != null) {
-                    placeHolderService.resolvePlaceHolder(player, text, hashMapOf())
-                } else {
-                    text
-                }
-            }
         reloadTranslation(language, PetBlocksLanguageImpl::class.java)
         logger.log(Level.INFO, "Loaded language file.")
 
@@ -121,7 +131,14 @@ class PetBlocksPlugin : JavaPlugin() {
 
         // Guice
         this.mainModule = PetBlocksDependencyInjectionModule(this, shyGuiModule, language).build()
-        this.reloadConfig()
+
+        // Register PlaceHolder
+        PlaceHolder.registerAll(
+            this,
+            mainModule.getService<PlaceHolderService>(),
+            mainModule.getService<CachePlayerRepository<PlayerInformation>>(),
+            mainModule.getService<PetService>()
+        )
 
         // Register Packets
         val packetService = mainModule.getService<PacketService>()
@@ -140,22 +157,6 @@ class PetBlocksPlugin : JavaPlugin() {
 
         // Register CommandExecutor
         mainModule.getService<PetBlocksCommandExecutor>()
-
-        // Register PlaceHolders
-        val placeholderService = shyGuiModule.getService<PlaceHolderService>()
-        placeholderService.registerProvider(ShyGUIPlaceHolderProvider(shyGuiModule.getService<Plugin>()))
-        placeholderService.registerProvider(
-            PetBlocksPlaceHolderProvider(
-                mainModule.getService<CachePlayerRepository<PlayerInformation>>(),
-                mainModule.getService<PetService>()
-            )
-        )
-        placeholderService.registerPlaceHolderApiProvider {
-            PetBlocksPlaceHolderApiProvider(
-                mainModule.getService<Plugin>(),
-                shyGuiModule.getService<PlaceHolderService>(),
-            )
-        }
 
         // Register Dependencies
         Bukkit.getServicesManager()
@@ -215,46 +216,31 @@ class PetBlocksPlugin : JavaPlugin() {
         packetService.close()
     }
 
-    private fun initializeShyGUIModule(language : Language) {
-        // Settings
-        val settings = object : Settings() {
-            override fun reload() {
-                this.embedded = "GUI"
-                this.guis = listOf(
-                    "gui/petblocks_main_menu.yml" to "petblocks_main_menu.yml",
-                    "gui/petblocks_skins_menu.yml" to "petblocks_skins_menu.yml",
-                    "gui/petblocks_skins_blockskins_menu.yml" to "petblocks_skins_blockskins_menu.yml",
-                    "gui/petblocks_skins_petskins_menu.yml" to "petblocks_skins_petskins_menu.yml",
-                    "gui/petblocks_skins_plushieskins_menu.yml" to "petblocks_skins_plushieskins_menu.yml",
-                    "gui/petblocks_skins_vehicleskins_menu.yml" to "petblocks_skins_vehicleskins_menu.yml",
-                    "gui/simple_sample_menu.yml" to "simple_sample_menu.yml"
-                )
-                this.baseCommand = "petblocksgui"
-                this.commandPermission = Permission.COMMAND.text
-                this.otherPlayerPermission = Permission.MANIPULATE_OTHER.text
-                this.guiPermission = Permission.DYN_GUI.text
-                this.aliasesPath = "commands.petblocksgui.aliases"
-                this.commandUsage = language.commandUsage.text
-                this.commandDescription = language.commandDescription.text
+    private fun initializeShyGUIModule(language: PetBlocksLanguage) {
+        this.shyGuiModule = ShyGUIDependencyInjectionModule(this, ShyGUISettings().also {
+            it.embedded = "GUI"
+            it.guis = listOf(
+                "gui/petblocks_main_menu.yml" to "petblocks_main_menu.yml",
+                "gui/petblocks_skins_menu.yml" to "petblocks_skins_menu.yml",
+                "gui/petblocks_skins_blockskins_menu.yml" to "petblocks_skins_blockskins_menu.yml",
+                "gui/petblocks_skins_petskins_menu.yml" to "petblocks_skins_petskins_menu.yml",
+                "gui/petblocks_skins_plushieskins_menu.yml" to "petblocks_skins_plushieskins_menu.yml",
+                "gui/petblocks_skins_vehicleskins_menu.yml" to "petblocks_skins_vehicleskins_menu.yml",
+                "gui/simple_sample_menu.yml" to "simple_sample_menu.yml"
+            )
+            it.guiPermission = Permission.DYN_GUI.text
+            it.aliasesPath = "commands.petblocksgui.aliases"
+            it.baseCommand = "petblocksgui"
+            it.commandPermission = Permission.COMMAND.text
+            it.otherPlayerPermission = Permission.MANIPULATE_OTHER.text
+        }, language).build()
 
-                this.playerNotFoundMessage = language.playerNotFoundMessage.text
-                this.commandSenderHasToBePlayerMessage = language.commandSenderHasToBePlayer.text
-                this.manipulateOtherMessage = language.manipulateOtherMessage.text
-                this.reloadMessage = language.reloadMessage.text
-                this.noPermissionMessage = language.noPermissionCommand.text
-                this.guiNotFoundMessage = language.guiMenuNotFoundMessage.text
-                this.guiMenuNoPermissionMessage = language.guiMenuNoPermissionMessage.text
-
-                this.reloadCommandHint = language.reloadCommandHint.text
-                this.openCommandHint = language.openCommandHint.text
-                this.nextCommandHint = language.nextCommandHint.text
-                this.closeCommandHint = language.closeCommandHint.text
-                this.backCommandHint = language.backCommandHint.text
-                this.messageCommandHint = language.messageCommandHint.text
-            }
-        };
-        settings.reload()
-        this.shyGuiModule = ShyGUIDependencyInjectionModule(settings, this).build()
+        // Register PlaceHolders
+        com.github.shynixn.shygui.enumeration.PlaceHolder.registerAll(
+            this,
+            shyGuiModule.getService<PlaceHolderService>(),
+            shyGuiModule.getService<GUIMenuService>()
+        )
 
         // Register Packets
         val packetService = shyGuiModule.getService<PacketService>()
@@ -280,4 +266,5 @@ class PetBlocksPlugin : JavaPlugin() {
             plugin.logger.log(Level.INFO, "Registered GUI commands.")
         }
     }
+
 }

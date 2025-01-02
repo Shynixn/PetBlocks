@@ -5,18 +5,19 @@ import com.github.shynixn.mccoroutine.bukkit.launch
 import com.github.shynixn.mccoroutine.bukkit.ticks
 import com.github.shynixn.mcutils.common.CancellationToken
 import com.github.shynixn.mcutils.common.placeholder.PlaceHolderService
+import com.github.shynixn.mcutils.javascript.JavaScriptService
+import com.github.shynixn.petblocks.PetBlocksPlugin
 import com.github.shynixn.petblocks.contract.Pet
 import com.github.shynixn.petblocks.contract.PetActionExecutionService
-import com.github.shynixn.petblocks.contract.ScriptService
 import com.github.shynixn.petblocks.entity.PetAction
 import com.github.shynixn.petblocks.entity.PetActionCondition
 import com.github.shynixn.petblocks.entity.PetActionDefinition
 import com.github.shynixn.petblocks.enumeration.PetActionCommandLevelType
 import com.github.shynixn.petblocks.enumeration.PetActionConditionType
 import com.github.shynixn.petblocks.enumeration.PetActionType
-import com.github.shynixn.petblocks.impl.provider.PetBlocksPlaceHolderProvider
 import com.google.inject.Inject
-import kotlinx.coroutines.*
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.withContext
 import org.bukkit.Bukkit
 import org.bukkit.Server
 import org.bukkit.command.CommandSender
@@ -33,7 +34,7 @@ import java.util.logging.Level
 
 class PetActionExecutionServiceImpl @Inject constructor(
     private val plugin: Plugin,
-    private val scriptService: ScriptService,
+    private val scriptService: JavaScriptService,
     private val placeHolderService: PlaceHolderService
 ) : PetActionExecutionService {
     private val commandSender = PetBlocksCommandSender(Bukkit.getConsoleSender())
@@ -105,9 +106,9 @@ class PetActionExecutionServiceImpl @Inject constructor(
         if (conditionType == PetActionConditionType.JAVASCRIPT) {
             val placeHolderParsedCondition =
                 placeHolderService.resolvePlaceHolder(
-                    eventPlayer,
                     condition.js!!,
-                    mapOf(PetBlocksPlaceHolderProvider.petKey to pet)
+                    pet.player,
+                    mapOf(PetBlocksPlugin.eventPlayer to eventPlayer)
                 )
             val conditionResult = withContext(plugin.asyncDispatcher) {
                 scriptService.evaluate(placeHolderParsedCondition)
@@ -123,14 +124,14 @@ class PetActionExecutionServiceImpl @Inject constructor(
             return conditionResult
         } else {
             val leftEscaped = placeHolderService.resolvePlaceHolder(
-                eventPlayer,
                 condition.left!!,
-                mapOf(PetBlocksPlaceHolderProvider.petKey to pet)
+                pet.player,
+                mapOf(PetBlocksPlugin.eventPlayer to eventPlayer)
             )
             val rightEscaped = placeHolderService.resolvePlaceHolder(
-                eventPlayer,
                 condition.right!!,
-                mapOf(PetBlocksPlaceHolderProvider.petKey to pet)
+                pet.player,
+                mapOf(PetBlocksPlugin.eventPlayer to eventPlayer)
             )
 
             if (conditionType == PetActionConditionType.STRING_EQUALS) {
@@ -177,8 +178,7 @@ class PetActionExecutionServiceImpl @Inject constructor(
                 }
 
                 return conditionResult
-            }
-            else if (conditionType == PetActionConditionType.STRING_CONTAINS) {
+            } else if (conditionType == PetActionConditionType.STRING_CONTAINS) {
                 val conditionResult = leftEscaped.contains(rightEscaped)
 
                 if (action.debug) {
@@ -189,8 +189,7 @@ class PetActionExecutionServiceImpl @Inject constructor(
                 }
 
                 return conditionResult
-            }
-            else if (conditionType == PetActionConditionType.STRING_NOT_CONTAINS) {
+            } else if (conditionType == PetActionConditionType.STRING_NOT_CONTAINS) {
                 val conditionResult = !leftEscaped.contains(rightEscaped)
 
                 if (action.debug) {
@@ -201,8 +200,7 @@ class PetActionExecutionServiceImpl @Inject constructor(
                 }
 
                 return conditionResult
-            }
-            else {
+            } else {
                 val leftNumber = leftEscaped.toDoubleOrNull()
 
                 if (leftNumber == null) {
@@ -295,9 +293,9 @@ class PetActionExecutionServiceImpl @Inject constructor(
             }
 
             executionCommand = placeHolderService.resolvePlaceHolder(
-                eventPlayer,
                 executionCommand,
-                mapOf(PetBlocksPlaceHolderProvider.petKey to pet)
+                pet.player,
+                mapOf(PetBlocksPlugin.eventPlayer to eventPlayer)
             )
 
             if (action.debug) {
@@ -316,16 +314,16 @@ class PetActionExecutionServiceImpl @Inject constructor(
         }
     }
 
-    private suspend fun executeJavaScriptAction(player: Player, pet: Pet, action: PetAction) {
+    private suspend fun executeJavaScriptAction(eventPlayer: Player, pet: Pet, action: PetAction) {
         if (action.initial != null && !pet.memory.containsKey(action.variable)) {
             pet.memory[action.variable!!] = action.initial!!
         }
 
         val parsedJs =
             placeHolderService.resolvePlaceHolder(
-                player,
                 action.js!!,
-                mapOf(PetBlocksPlaceHolderProvider.petKey to pet)
+                pet.player,
+                mapOf(PetBlocksPlugin.eventPlayer to eventPlayer)
             )
 
         if (action.debug) {

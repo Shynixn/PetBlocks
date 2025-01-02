@@ -2,8 +2,9 @@ package com.github.shynixn.petblocks.contract
 
 import com.github.shynixn.mcutils.common.language.LanguageItem
 import com.github.shynixn.mcutils.common.language.LanguageProvider
+import com.github.shynixn.shygui.contract.ShyGUILanguage
 
-interface Language : LanguageProvider {
+interface PetBlocksLanguage : LanguageProvider, ShyGUILanguage {
   var petNameChangeMessage: LanguageItem
 
   var templateNotFoundMessage: LanguageItem
@@ -15,8 +16,6 @@ interface Language : LanguageProvider {
   var petCreatedMessage: LanguageItem
 
   var petDeletedMessage: LanguageItem
-
-  var playerNotFoundMessage: LanguageItem
 
   var petCalledMessage: LanguageItem
 
@@ -59,8 +58,6 @@ interface Language : LanguageProvider {
   var petVelocityAppliedMessage: LanguageItem
 
   var petCharacterNotAllowed: LanguageItem
-
-  var reloadMessage: LanguageItem
 
   var petLoopNotFound: LanguageItem
 
@@ -105,14 +102,6 @@ interface Language : LanguageProvider {
   var cannotParseDataComponentMessage: LanguageItem
 
   var maxLength20Characters: LanguageItem
-
-  var noPermissionCommand: LanguageItem
-
-  var commandUsage: LanguageItem
-
-  var commandDescription: LanguageItem
-
-  var commandSenderHasToBePlayer: LanguageItem
 
   var cannotParseBoolean: LanguageItem
 
@@ -185,24 +174,6 @@ interface Language : LanguageProvider {
   var entityVisibleCommandHint: LanguageItem
 
   var groundOffSetCommandHint: LanguageItem
-
-  var manipulateOtherMessage: LanguageItem
-
-  var reloadCommandHint: LanguageItem
-
-  var closeCommandHint: LanguageItem
-
-  var backCommandHint: LanguageItem
-
-  var openCommandHint: LanguageItem
-
-  var nextCommandHint: LanguageItem
-
-  var messageCommandHint: LanguageItem
-
-  var guiMenuNotFoundMessage: LanguageItem
-
-  var guiMenuNoPermissionMessage: LanguageItem
 
   var variableCommandHint: LanguageItem
 

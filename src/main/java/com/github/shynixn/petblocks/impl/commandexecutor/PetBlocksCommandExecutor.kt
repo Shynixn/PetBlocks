@@ -7,13 +7,14 @@ import com.github.shynixn.mcutils.common.command.*
 import com.github.shynixn.mcutils.common.item.Item
 import com.github.shynixn.mcutils.common.item.ItemService
 import com.github.shynixn.mcutils.common.language.reloadTranslation
+import com.github.shynixn.mcutils.common.language.sendPluginMessage
 import com.github.shynixn.mcutils.common.repository.CacheRepository
 import com.github.shynixn.mcutils.database.api.CachePlayerRepository
 import com.github.shynixn.petblocks.PetBlocksDependencyInjectionModule
 import com.github.shynixn.petblocks.PetBlocksLanguageImpl
 import com.github.shynixn.petblocks.contract.DependencyHeadDatabaseService
-import com.github.shynixn.petblocks.contract.Language
 import com.github.shynixn.petblocks.contract.Pet
+import com.github.shynixn.petblocks.contract.PetBlocksLanguage
 import com.github.shynixn.petblocks.contract.PetService
 import com.github.shynixn.petblocks.entity.PetTemplate
 import com.github.shynixn.petblocks.entity.PlayerInformation
@@ -42,7 +43,7 @@ class PetBlocksCommandExecutor @Inject constructor(
     chatMessageService: ChatMessageService,
     private val petMetaRepository: CachePlayerRepository<PlayerInformation>,
     private val itemService: ItemService,
-    private val language: Language
+    private val language: PetBlocksLanguage
 ) {
     private val regexPath = "pet.name.regex"
     private val blackListPath = "pet.name.blacklist"
@@ -797,7 +798,7 @@ class PetBlocksCommandExecutor @Inject constructor(
                     }
 
                     Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), "petblocksgui reload")
-                    language.sendMessage(language.reloadMessage, sender)
+                    sender.sendPluginMessage(language.reloadMessage)
                 }
             }
         }
@@ -806,7 +807,7 @@ class PetBlocksCommandExecutor @Inject constructor(
 
     private fun setRidingSpeed(sender: CommandSender, pet: Pet, speed: Double) {
         pet.ridingSpeed = speed
-        language.sendMessage(language.ridingSpeedChangedMessage, sender, speed)
+        sender.sendPluginMessage(language.ridingSpeedChangedMessage, speed)
     }
 
     private suspend fun createPet(
@@ -816,19 +817,19 @@ class PetBlocksCommandExecutor @Inject constructor(
         val pet = pets.firstOrNull { e -> e.name.equals(petName, true) }
 
         if (pet != null) {
-            language.sendMessage(language.petNameExistsMessage, sender, petName)
+            sender.sendPluginMessage(language.petNameExistsMessage, petName)
             return
         }
 
         val petAmountPermission = "${Permission.DYN_AMOUNT.text}${pets.size + 1}"
 
         if (!player.hasPermission(petAmountPermission)) {
-            language.sendMessage(language.petAmountNotAllowed, sender, (pets.size + 1).toString())
+            sender.sendPluginMessage(language.petAmountNotAllowed, (pets.size + 1).toString())
             return
         }
 
         if (!PetBlocksDependencyInjectionModule.areLegacyVersionsIncluded && pets.isNotEmpty()) {
-            language.sendMessage(language.premiumMultiplePets, sender)
+            sender.sendPluginMessage(language.premiumMultiplePets)
             return
         }
 
@@ -839,36 +840,36 @@ class PetBlocksCommandExecutor @Inject constructor(
             petName,
         )
 
-        language.sendMessage(language.petCreatedMessage, sender, petName)
+        sender.sendPluginMessage(language.petCreatedMessage, petName)
     }
 
     private suspend fun deletePet(sender: CommandSender, pet: Pet) {
         petService.deletePet(pet)
-        language.sendMessage(language.petDeletedMessage, sender, pet.name)
+        sender.sendPluginMessage(language.petDeletedMessage, pet.name)
     }
 
     private suspend fun listPet(sender: CommandSender, player: Player) {
         val pets = petService.getPetsFromPlayer(player)
         val petString = pets.joinToString(", ") { e -> e.name }
-        language.sendMessage(language.petListMessage, sender, pets.size, petString)
+        sender.sendPluginMessage(language.petListMessage, pets.size, petString)
     }
 
     private fun callPet(sender: CommandSender, pet: Pet) {
         pet.call()
-        language.sendMessage(language.petCalledMessage, sender, pet.name)
+        sender.sendPluginMessage(language.petCalledMessage, pet.name)
     }
 
     private fun lookAtLocation(sender: CommandSender, pet: Pet, location: Location) {
         location.y -= pet.groundOffset
         pet.lookAt(location)
-        language.sendMessage(language.petLookAtMessage, sender, pet.name)
+        sender.sendPluginMessage(language.petLookAtMessage, pet.name)
     }
 
     private fun walkToLocation(
         sender: CommandSender, pet: Pet, location: Location, speed: Double
     ) {
         pet.moveTo(location, speed)
-        language.sendMessage(language.petWalkToLocationMessage, sender, pet.name)
+        sender.sendPluginMessage(language.petWalkToLocationMessage, pet.name)
     }
 
     private fun hat(sender: CommandSender, pet: Pet) {
@@ -879,24 +880,24 @@ class PetBlocksCommandExecutor @Inject constructor(
             pet.loop = loop
         }
 
-        language.sendMessage(language.petHatMessage, sender, pet.name)
+        sender.sendPluginMessage(language.petHatMessage, pet.name)
     }
 
     private fun unmount(sender: CommandSender, pet: Pet) {
         pet.unmount()
-        language.sendMessage(language.petUnmountMessage, sender, pet.name)
+        sender.sendPluginMessage(language.petUnmountMessage, pet.name)
     }
 
     private fun teleportPet(sender: CommandSender, pet: Pet, location: Location) {
         pet.location = location
-        language.sendMessage(language.petTeleportedMessage, sender, pet.name)
+        sender.sendPluginMessage(language.petTeleportedMessage, pet.name)
     }
 
     private fun setVelocityToPet(
         sender: CommandSender, pet: Pet, vector: Vector
     ) {
         pet.velocity = vector
-        language.sendMessage(language.petVelocityAppliedMessage, sender, pet.name)
+        sender.sendPluginMessage(language.petVelocityAppliedMessage, pet.name)
     }
 
     private fun setRelativeVelocityToPet(
@@ -912,7 +913,7 @@ class PetBlocksCommandExecutor @Inject constructor(
         normalized.y = vector.y * normalized.y
         normalized.z = vector.z * normalized.z
         pet.velocity = normalized
-        language.sendMessage(language.petVelocityAppliedMessage, sender, pet.name)
+        sender.sendPluginMessage(language.petVelocityAppliedMessage, pet.name)
     }
 
     private fun setSkinType(sender: CommandSender, pet: Pet, material: String, durability: Int) {
@@ -920,7 +921,7 @@ class PetBlocksCommandExecutor @Inject constructor(
         item.typeName = material
         item.durability = durability.toString()
         pet.headItem = item
-        language.sendMessage(language.petSkinTypeChangedMessage, sender, pet.name)
+        sender.sendPluginMessage(language.petSkinTypeChangedMessage, pet.name)
     }
 
     private fun setSkinNbt(sender: CommandSender, pet: Pet, nbt: String) {
@@ -932,9 +933,9 @@ class PetBlocksCommandExecutor @Inject constructor(
             val item = pet.headItem
             item.nbt = nbt
             pet.headItem = item
-            language.sendMessage(language.petSkinNbtChanged, sender, pet.name)
+            sender.sendPluginMessage(language.petSkinNbtChanged, pet.name)
         } catch (e: Exception) {
-            language.sendMessage(language.cannotParseNbtMessage, sender, pet.name)
+            sender.sendPluginMessage(language.cannotParseNbtMessage, pet.name)
         }
     }
 
@@ -949,9 +950,9 @@ class PetBlocksCommandExecutor @Inject constructor(
             val item = pet.headItem
             item.component = dataComponent
             pet.headItem = item
-            language.sendMessage(language.petSkinNbtChanged, sender, pet.name)
+            sender.sendPluginMessage(language.petSkinNbtChanged, pet.name)
         } catch (e: Exception) {
-            language.sendMessage(language.cannotParseDataComponentMessage, sender, pet.name)
+            sender.sendPluginMessage(language.cannotParseDataComponentMessage, pet.name)
         }
     }
 
@@ -963,7 +964,7 @@ class PetBlocksCommandExecutor @Inject constructor(
         headItem.skinBase64 = base64EncodedSkinUrl
         headItem.durability = 3.toString()
         pet.headItem = headItem
-        language.sendMessage(language.petSkinNbtChanged, sender, pet.name)
+        sender.sendPluginMessage(language.petSkinNbtChanged, pet.name)
     }
 
     private fun setSkinHeadDatabase(sender: CommandSender, pet: Pet, hdbId: String) {
@@ -972,14 +973,14 @@ class PetBlocksCommandExecutor @Inject constructor(
             val item = itemService.toItem(itemStack)
             setSkinBase64(sender, pet, item.skinBase64!!)
         } catch (e: Exception) {
-            language.sendMessage(language.headDatabasePluginNotLoaded, sender, pet.name)
+            sender.sendPluginMessage(language.headDatabasePluginNotLoaded, pet.name)
             return
         }
     }
 
     private fun setDisplayName(sender: CommandSender, pet: Pet, displayName: String) {
         pet.displayName = displayName.replace("_", " ")
-        language.sendMessage(language.petNameChangeMessage, sender, pet.displayName.translateChatColors())
+        sender.sendPluginMessage(language.petNameChangeMessage, pet.displayName.translateChatColors())
     }
 
     private fun ridePet(sender: CommandSender, pet: Pet) {
@@ -991,39 +992,39 @@ class PetBlocksCommandExecutor @Inject constructor(
             pet.loop = loop
         }
 
-        language.sendMessage(language.petRideMessage, sender, pet.name)
+        sender.sendPluginMessage(language.petRideMessage, pet.name)
     }
 
     private fun setVisibility(
         sender: CommandSender, pet: Pet, visibility: PetVisibility
     ) {
         pet.visibility = visibility
-        language.sendMessage(language.visibilityChangedMessage, sender, pet.name)
+        sender.sendPluginMessage(language.visibilityChangedMessage, pet.name)
     }
 
     private fun setPetLoop(sender: CommandSender, pet: Pet, loop: String) {
         if (!pet.template.loops.containsKey(loop)) {
-            language.sendMessage(language.petLoopNotFound, sender, loop)
+            sender.sendPluginMessage(language.petLoopNotFound, loop)
             return
         }
 
         pet.loop = loop
-        language.sendMessage(language.petLoopChangedMessage, sender, pet.name, loop)
+        sender.sendPluginMessage(language.petLoopChangedMessage, pet.name, loop)
     }
 
     private fun setPetTemplate(sender: CommandSender, pet: Pet, template: PetTemplate) {
         if (!sender.hasPermission(Permission.DYN_TEMPLATE.text + template.name)) {
-            language.sendMessage(language.templateNotAllowed, sender, template.name)
+            sender.sendPluginMessage(language.templateNotAllowed, template.name)
             return
         }
 
         pet.template = template
-        language.sendMessage(language.petTemplateChangeMessage, sender, pet.name, template.name)
+        sender.sendPluginMessage(language.petTemplateChangeMessage, pet.name, template.name)
     }
 
     private fun spawnPet(sender: CommandSender, pet: Pet) {
         pet.spawn()
-        language.sendMessage(language.petSpawnedMessage, sender, pet.name)
+        sender.sendPluginMessage(language.petSpawnedMessage, pet.name)
     }
 
     private fun togglePet(sender: CommandSender, pet: Pet) {
@@ -1036,15 +1037,14 @@ class PetBlocksCommandExecutor @Inject constructor(
 
     private fun deSpawnPet(sender: CommandSender, pet: Pet) {
         pet.remove()
-        language.sendMessage(language.petDespawnedMessage, sender, pet.name)
+        sender.sendPluginMessage(language.petDespawnedMessage, pet.name)
     }
 
     private suspend fun selectPet(sender: CommandSender, player: Player, pet: Pet) {
         val playerInformation = petMetaRepository.getByPlayer(player) ?: return
         playerInformation.selectedPet = pet.name
-        language.sendMessage(language.petSelectedMessage, sender, pet.name)
+        sender.sendPluginMessage(language.petSelectedMessage, pet.name)
     }
-
 
     private fun openHeadDatabase(sender: CommandSender, player: Player, pet: Pet) {
         try {
@@ -1065,7 +1065,7 @@ class PetBlocksCommandExecutor @Inject constructor(
 
             Bukkit.getServer().dispatchCommand(player, command)
         } catch (e: Exception) {
-            language.sendMessage(language.headDatabasePluginNotLoaded, sender)
+            sender.sendPluginMessage(language.headDatabasePluginNotLoaded)
             return
         }
     }
@@ -1083,7 +1083,7 @@ class PetBlocksCommandExecutor @Inject constructor(
         val actualDropTypes = try {
             dropTypes.split(",").map { e -> DropType.values().first { t -> t.name.equals(e, true) } }
         } catch (e: Exception) {
-            language.sendMessage(language.dropTypeNotFound, sender, DropType.values().joinToString(","))
+            sender.sendPluginMessage(language.dropTypeNotFound, DropType.values().joinToString(","))
             return
         }
 
@@ -1092,18 +1092,18 @@ class PetBlocksCommandExecutor @Inject constructor(
 
     private fun cancel(sender: CommandSender, pet: Pet) {
         pet.cancelAction()
-        language.sendMessage(language.cancelMessage, sender, pet.name)
+        sender.sendPluginMessage(language.cancelMessage, pet.name)
     }
 
     private fun snap(sender: CommandSender, pet: Pet) {
         pet.snap()
-        language.sendMessage(language.snapMessage, sender, pet.name)
+        sender.sendPluginMessage(language.snapMessage, pet.name)
     }
 
 
     private fun moveForward(sender: CommandSender, pet: Pet, speed: Double) {
         pet.moveForward(speed)
-        language.sendMessage(language.petMoveForwardMessage, sender, pet.name)
+        sender.sendPluginMessage(language.petMoveForwardMessage, pet.name)
     }
 
     private fun rotateRel(sender: CommandSender, pet: Pet, petRotationType: PetRotationType, angle: Float) {
@@ -1120,7 +1120,7 @@ class PetBlocksCommandExecutor @Inject constructor(
         }
 
         pet.location = location
-        language.sendMessage(language.rotationRelMessage, sender, pet.name)
+        sender.sendPluginMessage(language.rotationRelMessage, pet.name)
     }
 
     private fun setEntityType(sender: CommandSender, pet: Pet, entityType: String) {
@@ -1130,22 +1130,22 @@ class PetBlocksCommandExecutor @Inject constructor(
         } else {
             pet.isEntityVisible = true
         }
-        language.sendMessage(language.entityTypeChangeMessage, sender, entityType)
+        sender.sendPluginMessage(language.entityTypeChangeMessage, entityType)
     }
 
     private fun setEntityVisible(sender: CommandSender, pet: Pet, flag: Boolean) {
         pet.isEntityVisible = flag
-        language.sendMessage(language.entityVisibilityChangedMessage, sender, flag)
+        sender.sendPluginMessage(language.entityVisibilityChangedMessage, flag)
     }
 
     private fun setGroundOffset(sender: CommandSender, pet: Pet, offset: Double) {
         pet.groundOffset = offset
-        language.sendMessage(language.groundOffsetChangedMessage, sender, offset)
+        sender.sendPluginMessage(language.groundOffsetChangedMessage, offset)
     }
 
     private fun setMemoryVariable(sender: CommandSender, pet: Pet, key: String, value: String) {
         pet.memory[key] = value
-        language.sendMessage(language.variableChangedMessage, sender, key, value)
+        sender.sendPluginMessage(language.variableChangedMessage, value)
     }
 
     private fun CommandBuilder.permission(permission: Permission) {

@@ -25,6 +25,19 @@ tasks.register("printVersion") {
 }
 
 dependencies {
+    // Dependencies of spigot mojang want to restrict usage to only Java 16. However, we do not care
+    // what they want because the general compatibility of this plugin is Java 8. The plugin
+    // guarantees that everything works during runtime. This error is a false positive.
+    components {
+        all {
+            allVariants {
+                attributes {
+                    attribute(TargetJvmVersion.TARGET_JVM_VERSION_ATTRIBUTE, 8)
+                }
+            }
+        }
+    }
+
     // Compile Only
     compileOnly("org.spigotmc:spigot-api:1.18.2-R0.1-SNAPSHOT")
     compileOnly("me.clip:placeholderapi:2.11.6")
@@ -33,8 +46,8 @@ dependencies {
     // Library dependencies with legacy compatibility, we can use more up-to-date version in the plugin.yml
     implementation("com.github.shynixn.mccoroutine:mccoroutine-bukkit-api:2.20.0")
     implementation("com.github.shynixn.mccoroutine:mccoroutine-bukkit-core:2.20.0")
-    runtimeOnly("com.github.shynixn.mccoroutine:mccoroutine-folia-api:2.20.0")
-    runtimeOnly("com.github.shynixn.mccoroutine:mccoroutine-folia-core:2.20.0")
+    runtimeOnly("com.github.shynixn.mccoroutine:mccoroutine-folia-api:2.16.0")
+    runtimeOnly("com.github.shynixn.mccoroutine:mccoroutine-folia-core:2.16.0")
     implementation("com.google.inject:guice:5.0.1")
     implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.3.0")
     implementation("com.fasterxml.jackson.core:jackson-databind:2.2.3")
@@ -45,12 +58,13 @@ dependencies {
     implementation("org.openjdk.nashorn:nashorn-core:15.4")
 
     // Custom dependencies
-    implementation("com.github.shynixn.shygui:shygui:1.0.1")
-    implementation("com.github.shynixn.mcutils:common:2024.39")
-    implementation("com.github.shynixn.mcutils:packet:2024.51")
+    implementation("com.github.shynixn.shygui:shygui:1.1.3")
+    implementation("com.github.shynixn.mcutils:common:2024.49")
+    implementation("com.github.shynixn.mcutils:packet:2024.55")
     implementation("com.github.shynixn.mcutils:database:2024.8")
     implementation("com.github.shynixn.mcutils:pathfinder:2024.3")
     implementation("com.github.shynixn.mcutils:guice:2024.2")
+    implementation("com.github.shynixn.mcutils:javascript:2024.1")
 
     // Test
     testImplementation(kotlin("test"))
@@ -84,6 +98,10 @@ tasks.withType<KotlinCompile> {
     kotlinOptions.jvmTarget = "1.8"
 }
 
+java {
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
+}
 
 /**
  * Include all but exclude debugging classes.
@@ -221,30 +239,94 @@ tasks.register("pluginJarLegacy", com.github.jengelman.gradle.plugins.shadow.tas
     exclude("plugin-legacy.yml")
 }
 
-tasks.register("languageFile") {
+tasks.register("languageFiler") {
     val kotlinSrcFolder = project.sourceSets.toList()[0].allJava.srcDirs.first { e -> e.endsWith("java") }
-    val contractFile = kotlinSrcFolder.resolve("com/github/shynixn/petblocks/contract/Language.kt")
+    val contractFile = kotlinSrcFolder.resolve("com/github/shynixn/petblocks/contract/PetBlocksLanguage.kt")
     val resourceFile = kotlinSrcFolder.parentFile.resolve("resources").resolve("lang").resolve("en_us.yml")
     val lines = resourceFile.readLines()
 
-    val contents = ArrayList<String>()
-    contents.add("package com.github.shynixn.petblocks.contract")
-    contents.add("")
-    contents.add("import com.github.shynixn.mcutils.common.language.LanguageItem")
-    contents.add("import com.github.shynixn.mcutils.common.language.LanguageProvider")
-    contents.add("")
-    contents.add("interface Language : LanguageProvider {")
+    val contractContents = ArrayList<String>()
+    val ignoredKeys = listOf(
+        "playerNotFoundMessage",
+        "reloadMessage",
+        "noPermissionCommand",
+        "commandUsage",
+        "commandDescription",
+        "commandSenderHasToBePlayer",
+        "manipulateOtherMessage",
+        "reloadCommandHint",
+        "closeCommandHint",
+        "backCommandHint",
+        "openCommandHint",
+        "nextCommandHint",
+        "messageCommandHint",
+        "guiMenuNotFoundMessage",
+        "guiMenuNoPermissionMessage",
+        "cannotParseItemStackError",
+        "rowColOutOfRangeError"
+    )
+    contractContents.add("package com.github.shynixn.petblocks.contract")
+    contractContents.add("")
+    contractContents.add("import com.github.shynixn.mcutils.common.language.LanguageItem")
+    contractContents.add("import com.github.shynixn.mcutils.common.language.LanguageProvider")
+    contractContents.add("import com.github.shynixn.shygui.contract.ShyGUILanguage")
+    contractContents.add("")
+    contractContents.add("interface PetBlocksLanguage : LanguageProvider, ShyGUILanguage {")
     for (key in lines) {
         if (key.toCharArray()[0].isLetter()) {
-            contents.add("  var ${key} LanguageItem")
-            contents.add("")
+            if (ignoredKeys.contains(key.substring(0, key.length-1))) {
+                continue
+            }
+
+            contractContents.add("  var ${key} LanguageItem")
+            contractContents.add("")
         }
     }
-    contents.removeLast()
-    contents.add("}")
+    contractContents.removeLast()
+    contractContents.add("}")
 
     contractFile.printWriter().use { out ->
-        for (line in contents) {
+        for (line in contractContents) {
+            out.println(line)
+        }
+    }
+
+    val implFile = kotlinSrcFolder.resolve("com/github/shynixn/petblocks/PetBlocksLanguageImpl.kt")
+    val implContents = ArrayList<String>()
+    implContents.add("package com.github.shynixn.petblocks")
+    implContents.add("")
+    implContents.add("import com.github.shynixn.mcutils.common.language.LanguageItem")
+    implContents.add("import com.github.shynixn.petblocks.contract.PetBlocksLanguage")
+    implContents.add("")
+    implContents.add("class PetBlocksLanguageImpl : PetBlocksLanguage {")
+    implContents.add(
+        " override val names: List<String>\n" +
+                "  get() = listOf(\"en_us\",\"es_es\")"
+    )
+
+    for (i in 0 until lines.size) {
+        val key = lines[i]
+
+        if (key.toCharArray()[0].isLetter()) {
+            var text = ""
+            var j = i
+            while (true) {
+                if (lines[j].contains("text:")) {
+                    text = lines[j]
+                    break
+                }
+                j++
+            }
+
+            implContents.add(" override var ${key.replace(":", "")} = LanguageItem(${text.replace("  text: ", "")})")
+            implContents.add("")
+        }
+    }
+    implContents.removeLast()
+    implContents.add("}")
+
+    implFile.printWriter().use { out ->
+        for (line in implContents) {
             out.println(line)
         }
     }
