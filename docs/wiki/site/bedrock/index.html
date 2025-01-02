@@ -11,10 +11,10 @@
       
       
       
-        <link rel="prev" href="../bedrock/">
+        <link rel="prev" href="../gui/">
       
       
-        <link rel="next" href="../custommodels/">
+        <link rel="next" href="../placeholders/">
       
       
       <link rel="icon" href="../assets/images/favicon.png">
@@ -22,7 +22,7 @@
     
     
       
-        <title>PlaceHolders - PetBlocks</title>
+        <title>Bedrock - PetBlocks</title>
       
     
     
@@ -64,7 +64,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#placeholders" class="md-skip">
+        <a href="#bedrock" class="md-skip">
           Skip to content
         </a>
       
@@ -98,7 +98,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              PlaceHolders
+              Bedrock
             
           </span>
         </div>
@@ -412,27 +412,6 @@
                 
   
   
-  
-  
-    <li class="md-nav__item">
-      <a href="../bedrock/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Bedrock
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
     
   
   
@@ -445,7 +424,95 @@
         
       
       
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    Bedrock
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
       <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  <span class="md-ellipsis">
+    Bedrock
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#initial-setup" class="md-nav__link">
+    <span class="md-ellipsis">
+      Initial Setup
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#fixing-skin-and-rotations-via-geysermc-patreononly" class="md-nav__link">
+    <span class="md-ellipsis">
+      Fixing skin and rotations via GeyserMC (PatreonOnly)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#fixing-riding" class="md-nav__link">
+    <span class="md-ellipsis">
+      Fixing Riding
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#guis" class="md-nav__link">
+    <span class="md-ellipsis">
+      GUIs
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../placeholders/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -454,7 +521,6 @@
   
 
       </a>
-      
     </li>
   
 
@@ -571,6 +637,50 @@
     
   
   
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#initial-setup" class="md-nav__link">
+    <span class="md-ellipsis">
+      Initial Setup
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#fixing-skin-and-rotations-via-geysermc-patreononly" class="md-nav__link">
+    <span class="md-ellipsis">
+      Fixing skin and rotations via GeyserMC (PatreonOnly)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#fixing-riding" class="md-nav__link">
+    <span class="md-ellipsis">
+      Fixing Riding
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#guis" class="md-nav__link">
+    <span class="md-ellipsis">
+      GUIs
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
 </nav>
                   </div>
                 </div>
@@ -587,265 +697,51 @@
   
 
 
-<h1 id="placeholders">PlaceHolders</h1>
-<p>The following placeholders are available in PetBlocks and can also be used via PlaceHolderApi.</p>
-<div class="admonition note">
-<p class="admonition-title">PlaceHolder Api</p>
-<p>As PetBlocks supports multiple pets per player, you need to select the pet in your placeholders. You can do this by appending the pet slot <code>_1</code> <code>_2</code> etc. or use the <code>/petblocks select &lt;name&gt;</code> command to set a pet as selected which can be retrieved using <code>_selected</code>.
-This results into placeholders such as e.g. <code>%petblocks_pet_displayName_1%</code> or <code>%petblocks_pet_displayName_selected%</code>. This is only relevant in external plugins. For actions in PetBlocks, you can directly use the placeholders below.</p>
+<h1 id="bedrock">Bedrock</h1>
+<p>PetBlocks supports crossplay with Bedrock clients (SmartPhone,Windows,Console, etc.) using <a href="https://geysermc.org/">GeyserMC</a>.</p>
+<h3 id="initial-setup">Initial Setup</h3>
+<ul>
+<li>Install <a href="https://geysermc.org/">GeyserMC</a> on your server  or on your proxy server.</li>
+<li>Install PetBlocks on your Spigot/Paper based server</li>
+<li>Join your server with a BedRock client</li>
+<li>Observe that the pet will be displayed as a simple player_head because bedrock does not support custom player heads.</li>
+<li>Observe, that the pet will not be able to rotate.</li>
+</ul>
+<h3 id="fixing-skin-and-rotations-via-geysermc-patreononly">Fixing skin and rotations via GeyserMC (PatreonOnly)</h3>
+<p>Thanks to my <strong>Patreon supporters</strong>, who have funded this feature <img alt="❤" class="twemoji" src="https://cdn.jsdelivr.net/gh/jdecked/twemoji@15.1.0/assets/svg/2764.svg" title=":heart:" /> . 
+They can download my <a href="https://www.patreon.com/Shynixn">prepared zip file</a> to easily setup PetBlocks for Bedrock. </p>
+<p>If you are using the free version of PetBlocks, you can still configure PetBlocks for Bedrock, but it is more work for you. If you want
+to save time, become a patreon member at <a href="https://www.patreon.com/Shynixn">https://www.patreon.com/Shynixn</a>.</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="1:2"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">Spigot/Paper</label><label for="__tabbed_1_2">Proxies (BungeeCord, Velocity, etc.)</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<ul>
+<li>Download the <code>PetBlocks-GeyserMC.zip</code> file from <a href="https://www.patreon.com/Shynixn">https://www.patreon.com/Shynixn</a>.</li>
+<li>Extract the <code>PetBlocks-GeyserMC.zip</code> contents into your <code>plugins\Geyser-Spigot</code>.</li>
+<li>Extract the <code>custom-skulls_petblocks.yml</code> into <code>plugins\Geyser-Spigot\custom-skulls_petblocks.yml</code></li>
+<li>Extract the <code>packs/PetBlocksPack.mcpack</code> into <code>plugins\Geyser-Spigot\packs\PetBlocksPack.mcpack</code></li>
+<li>Copy the <code>player-profiles</code> values from <code>plugins\Geyser-Spigot\custom-skulls_petblocks.yml</code> into the <code>plugins\Geyser-Spigot\custom-skulls.yml</code> file.</li>
+</ul>
 </div>
-<table>
-<thead>
-<tr>
-<th>Player PlaceHolders</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>%petblocks_owner_name%</td>
-<td>Player name of the owner of a pet.</td>
-</tr>
-<tr>
-<td>%petblocks_owner_displayName%</td>
-<td>Player displayName of the owner of a pet.</td>
-</tr>
-<tr>
-<td>%petblocks_owner_locationWorld%</td>
-<td>Name of the world the owner of a pet is inside.</td>
-</tr>
-<tr>
-<td>%petblocks_owner_locationX%</td>
-<td>X coordinate of the owner of a pet.</td>
-</tr>
-<tr>
-<td>%petblocks_owner_locationY%</td>
-<td>Y coordinate of the owner of a pet.</td>
-</tr>
-<tr>
-<td>%petblocks_owner_locationZ%</td>
-<td>Z coordinate of the owner of a pet.</td>
-</tr>
-<tr>
-<td>%petblocks_owner_locationYaw%</td>
-<td>Yaw rotation of the owner of a pet.</td>
-</tr>
-<tr>
-<td>%petblocks_owner_locationPitch%</td>
-<td>Yaw rotation of the owner of a pet.</td>
-</tr>
-<tr>
-<td>%petblocks_owner_itemMainHand_type%</td>
-<td>Name of the item type in the owner's main hand</td>
-</tr>
-<tr>
-<td>%petblocks_owner_isFlying%</td>
-<td>True if the owner is currently flying, false if not.</td>
-</tr>
-</tbody>
-</table>
-<table>
-<thead>
-<tr>
-<th>Pet PlaceHolders</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>%petblocks_pet_name%</td>
-<td>Id of a pet</td>
-</tr>
-<tr>
-<td>%petblocks_pet_displayName%</td>
-<td>Displayname of a pet</td>
-</tr>
-<tr>
-<td>%petblocks_pet_distanceToOwner%</td>
-<td>Distance from the pet to the owner. If the owner is in another world, this value becomes very high.</td>
-</tr>
-<tr>
-<td>%petblocks_pet_isSpawned%</td>
-<td>True if the pet is spawned, false if not.</td>
-</tr>
-<tr>
-<td>%petblocks_pet_template%</td>
-<td>Name of the template a pet uses.</td>
-</tr>
-<tr>
-<td>%petblocks_pet_visibility%</td>
-<td>Visibility Type a pet uses.</td>
-</tr>
-<tr>
-<td>%petblocks_pet_isMounted%</td>
-<td>True if the owner rides the pet or uses it as a hat.</td>
-</tr>
-<tr>
-<td>%petblocks_pet_loop%</td>
-<td>Name of the loop a pet currently executes.</td>
-</tr>
-<tr>
-<td>%petblocks_pet_locationWorld%</td>
-<td>Name of the world the pet is inside.</td>
-</tr>
-<tr>
-<td>%petblocks_pet_locationX%</td>
-<td>X coordinate of the pet.</td>
-</tr>
-<tr>
-<td>%petblocks_pet_locationY%</td>
-<td>Y coordinate of the pet.</td>
-</tr>
-<tr>
-<td>%petblocks_pet_locationZ%</td>
-<td>Z coordinate of the pet.</td>
-</tr>
-<tr>
-<td>%petblocks_pet_locationYaw%</td>
-<td>Yaw rotation of the pet.</td>
-</tr>
-<tr>
-<td>%petblocks_pet_locationPitch%</td>
-<td>Yaw rotation of the pet.</td>
-</tr>
-<tr>
-<td>%petblocks_pet_itemType%</td>
-<td>The head item type of the pet.</td>
-</tr>
-<tr>
-<td>%petblocks_pet_itemNbt%</td>
-<td>The head item NBT of the pet. &lt; 1.20.5</td>
-</tr>
-<tr>
-<td>%petblocks_pet_itemComponent%</td>
-<td>The head item data component of the pet. &gt;= 1.20.5</td>
-</tr>
-<tr>
-<td>%petblocks_pet_itemHeadBase64%</td>
-<td>The head item Base64 Skin Url of the pet.</td>
-</tr>
-<tr>
-<td>%petblocks_pet_isBreakingBlock%</td>
-<td>True if the pet is currently breaking a block, false if not.</td>
-</tr>
-<tr>
-<td>%petblocks_pet_blockInFrontType%</td>
-<td>Name of the block type the pet is looking at</td>
-</tr>
-</tbody>
-</table>
-<table>
-<thead>
-<tr>
-<th>Event Player PlaceHolders</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>%petblocks_eventPlayer_name%</td>
-<td>Player name of the event trigger player.</td>
-</tr>
-<tr>
-<td>%petblocks_eventPlayer_displayName%</td>
-<td>Player displayName of the event trigger player.</td>
-</tr>
-<tr>
-<td>%petblocks_eventPlayer_locationWorld%</td>
-<td>Name of the world event trigger player of a pet is inside.</td>
-</tr>
-<tr>
-<td>%petblocks_eventPlayer_locationX%</td>
-<td>X coordinate of the event trigger player.</td>
-</tr>
-<tr>
-<td>%petblocks_eventPlayer_locationY%</td>
-<td>Y coordinate of the event trigger player.</td>
-</tr>
-<tr>
-<td>%petblocks_eventPlayer_locationZ%</td>
-<td>Z coordinate of the event trigger player.</td>
-</tr>
-<tr>
-<td>%petblocks_eventPlayer_locationYaw%</td>
-<td>Yaw rotation of the event trigger player.</td>
-</tr>
-<tr>
-<td>%petblocks_eventPlayer_locationPitch%</td>
-<td>Yaw rotation of the event trigger player.</td>
-</tr>
-<tr>
-<td>%petblocks_eventPlayer_itemMainHand_type%</td>
-<td>Name of the item type in the players's main hand</td>
-</tr>
-<tr>
-<td>%petblocks_eventPlayer_isFlying%</td>
-<td>True if the player is currently flying, false if not.</td>
-</tr>
-</tbody>
-</table>
-<table>
-<thead>
-<tr>
-<th>GUI PlaceHolders</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>%petblocks_player_name%</td>
-<td>Player name of the player clicking in the current inventory.</td>
-</tr>
-<tr>
-<td>%petblocks_player_displayName%</td>
-<td>Player displayName of the player session in the current inventory.</td>
-</tr>
-<tr>
-<td>%petblocks_gui_name%</td>
-<td>Name of the current inventory.</td>
-</tr>
-<tr>
-<td>%petblocks_gui_backName%</td>
-<td>Name of the previous inventory (if you have multiple sub pages)</td>
-</tr>
-<tr>
-<td>%petblocks_gui_param1%</td>
-<td>A GUI can have up to 9 parameters. This placeholders access number 1.</td>
-</tr>
-<tr>
-<td>%petblocks_gui_param2%</td>
-<td>A GUI can have up to 9 parameters. This placeholders access number 2.</td>
-</tr>
-<tr>
-<td>%petblocks_gui_param3%</td>
-<td>A GUI can have up to 9 parameters. This placeholders access number 3.</td>
-</tr>
-<tr>
-<td>%petblocks_gui_param4%</td>
-<td>A GUI can have up to 9 parameters. This placeholders access number 4.</td>
-</tr>
-<tr>
-<td>%petblocks_gui_param5%</td>
-<td>A GUI can have up to 9 parameters. This placeholders access number 5.</td>
-</tr>
-<tr>
-<td>%petblocks_gui_param6%</td>
-<td>A GUI can have up to 9 parameters. This placeholders access number 6.</td>
-</tr>
-<tr>
-<td>%petblocks_gui_param7%</td>
-<td>A GUI can have up to 9 parameters. This placeholders access number 7.</td>
-</tr>
-<tr>
-<td>%petblocks_gui_param8%</td>
-<td>A GUI can have up to 9 parameters. This placeholders access number 8.</td>
-</tr>
-<tr>
-<td>%petblocks_gui_param9%</td>
-<td>A GUI can have up to 9 parameters. This placeholders access number 9.</td>
-</tr>
-</tbody>
-</table>
+<div class="tabbed-block">
+<ul>
+<li>Download the <code>PetBlocks-GeyserMC.zip</code> file from <a href="https://www.patreon.com/Shynixn">https://www.patreon.com/Shynixn</a>.</li>
+<li>Extract the <code>PetBlocks-GeyserMC.zip</code> contents into your <code>plugins\Geyser-&lt;Proxy&gt;</code>.</li>
+<li>Extract the <code>custom-skulls_petblocks.yml</code> into <code>plugins\Geyser-&lt;Proxy&gt;\custom-skulls_petblocks.yml</code></li>
+<li>Extract the <code>packs/PetBlocksPack.mcpack</code> into <code>plugins\Geyser-&lt;Proxy&gt;\packs\PetBlocksPack.mcpack</code></li>
+<li>Copy the <code>player-profiles</code> values from <code>plugins\Geyser-&lt;Proxy&gt;\custom-skulls_petblocks.yml</code> into the <code>plugins\Geyser-&lt;Proxy&gt;\custom-skulls.yml</code> file.</li>
+</ul>
+</div>
+</div>
+</div>
+<h3 id="fixing-riding">Fixing Riding</h3>
+<ul>
+<li>Riding does not work very well with Bedrock right now. Disable riding entirely or request a ticket on Discord to implement riding for Bedrock.</li>
+</ul>
+<h3 id="guis">GUIs</h3>
+<ul>
+<li>The GUI works for all clients without any changes. However, the GUI layout may be different for some clients (e.g. SmartPhone). Change the GUI layout to fit the needs of your playerbase.</li>
+</ul>
 
 
 
@@ -877,7 +773,7 @@ This results into placeholders such as e.g. <code>%petblocks_pet_displayName_1%<
       <nav class="md-footer__inner md-grid" aria-label="Footer" >
         
           
-          <a href="../bedrock/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Bedrock">
+          <a href="../gui/" class="md-footer__link md-footer__link--prev" aria-label="Previous: GUI">
             <div class="md-footer__button md-icon">
               
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
@@ -887,20 +783,20 @@ This results into placeholders such as e.g. <code>%petblocks_pet_displayName_1%<
                 Previous
               </span>
               <div class="md-ellipsis">
-                Bedrock
+                GUI
               </div>
             </div>
           </a>
         
         
           
-          <a href="../custommodels/" class="md-footer__link md-footer__link--next" aria-label="Next: Custom Models">
+          <a href="../placeholders/" class="md-footer__link md-footer__link--next" aria-label="Next: PlaceHolders">
             <div class="md-footer__title">
               <span class="md-footer__direction">
                 Next
               </span>
               <div class="md-ellipsis">
-                Custom Models
+                PlaceHolders
               </div>
             </div>
             <div class="md-footer__button md-icon">
