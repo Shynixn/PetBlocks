@@ -3,7 +3,9 @@ package com.github.shynixn.petblocks.impl.commandexecutor
 import com.github.shynixn.mccoroutine.bukkit.launch
 import com.github.shynixn.mcutils.common.*
 import com.github.shynixn.mcutils.common.chat.ChatMessageService
-import com.github.shynixn.mcutils.common.command.*
+import com.github.shynixn.mcutils.common.command.CommandBuilder
+import com.github.shynixn.mcutils.common.command.ValidationException
+import com.github.shynixn.mcutils.common.command.Validator
 import com.github.shynixn.mcutils.common.item.Item
 import com.github.shynixn.mcutils.common.item.ItemService
 import com.github.shynixn.mcutils.common.language.reloadTranslation
@@ -11,7 +13,6 @@ import com.github.shynixn.mcutils.common.language.sendPluginMessage
 import com.github.shynixn.mcutils.common.repository.CacheRepository
 import com.github.shynixn.mcutils.database.api.CachePlayerRepository
 import com.github.shynixn.petblocks.PetBlocksDependencyInjectionModule
-import com.github.shynixn.petblocks.PetBlocksLanguageImpl
 import com.github.shynixn.petblocks.contract.DependencyHeadDatabaseService
 import com.github.shynixn.petblocks.contract.Pet
 import com.github.shynixn.petblocks.contract.PetBlocksLanguage
@@ -909,15 +910,15 @@ class PetBlocksCommandExecutor @Inject constructor(
             normalized.y = overrideY.toDouble()
         }
 
-        normalized.x = vector.x * normalized.x
-        normalized.y = vector.y * normalized.y
-        normalized.z = vector.z * normalized.z
+        normalized.x *= vector.x
+        normalized.y *= vector.y
+        normalized.z *= vector.z
         pet.velocity = normalized
         sender.sendPluginMessage(language.petVelocityAppliedMessage, pet.name)
     }
 
     private fun setSkinType(sender: CommandSender, pet: Pet, material: String, durability: Int) {
-        val item = pet.headItem
+        val item = Item() // Has to be a fresh item.
         item.typeName = material
         item.durability = durability.toString()
         pet.headItem = item
@@ -1125,11 +1126,7 @@ class PetBlocksCommandExecutor @Inject constructor(
 
     private fun setEntityType(sender: CommandSender, pet: Pet, entityType: String) {
         pet.entityType = entityType
-        if (entityType.lowercase().contains("armor_stand")) {
-            pet.isEntityVisible = false
-        } else {
-            pet.isEntityVisible = true
-        }
+        pet.isEntityVisible = !entityType.lowercase().contains("armor_stand")
         sender.sendPluginMessage(language.entityTypeChangeMessage, entityType)
     }
 

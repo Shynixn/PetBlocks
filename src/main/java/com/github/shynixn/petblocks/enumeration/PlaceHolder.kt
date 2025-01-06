@@ -189,7 +189,14 @@ enum class PlaceHolder(val text: String, val f: (Player?, Pet?, Map<String, Any>
                         val petIndex = context[PetBlocksPlugin.index] as String?
                         val playerInformation = petMetaRepository.getCachedByPlayer(player)
                         if (petIndex == "selected") {
-                            petCache.firstOrNull { e -> e.name == playerInformation?.selectedPet }
+                            val selectedPet = petCache.firstOrNull { e -> e.name == playerInformation?.selectedPet }
+                            if (selectedPet != null) {
+                                selectedPet
+                            } else if (petCache.size > 0) {
+                                petCache[0]
+                            } else {
+                                null
+                            }
                         } else if (petIndex?.toIntOrNull() != null && (petIndex.toInt() - 1) >= 0 && (petIndex.toInt() - 1) < petCache.size) {
                             petCache[petIndex.toInt() - 1]
                         } else if (petCache.size > 0) {

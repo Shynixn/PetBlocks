@@ -9,7 +9,7 @@ plugins {
 }
 
 group = "com.github.shynixn"
-version = "9.19.0"
+version = "9.19.1"
 
 repositories {
     mavenCentral()
@@ -239,7 +239,7 @@ tasks.register("pluginJarLegacy", com.github.jengelman.gradle.plugins.shadow.tas
     exclude("plugin-legacy.yml")
 }
 
-tasks.register("languageFiler") {
+tasks.register("languageFile") {
     val kotlinSrcFolder = project.sourceSets.toList()[0].allJava.srcDirs.first { e -> e.endsWith("java") }
     val contractFile = kotlinSrcFolder.resolve("com/github/shynixn/petblocks/contract/PetBlocksLanguage.kt")
     val resourceFile = kotlinSrcFolder.parentFile.resolve("resources").resolve("lang").resolve("en_us.yml")
