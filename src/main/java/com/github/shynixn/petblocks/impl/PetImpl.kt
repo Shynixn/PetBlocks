@@ -4,9 +4,12 @@ import com.github.shynixn.mccoroutine.bukkit.CoroutineTimings
 import com.github.shynixn.mccoroutine.bukkit.launch
 import com.github.shynixn.mccoroutine.bukkit.minecraftDispatcher
 import com.github.shynixn.mccoroutine.bukkit.ticks
-import com.github.shynixn.mcutils.common.*
 import com.github.shynixn.mcutils.common.item.Item
 import com.github.shynixn.mcutils.common.item.ItemService
+import com.github.shynixn.mcutils.common.toLocation
+import com.github.shynixn.mcutils.common.toVector
+import com.github.shynixn.mcutils.common.toVector3d
+import com.github.shynixn.mcutils.common.translateChatColors
 import com.github.shynixn.petblocks.contract.Pet
 import com.github.shynixn.petblocks.contract.PetEntityFactory
 import com.github.shynixn.petblocks.entity.PetMeta
@@ -44,6 +47,7 @@ class PetImpl(
     private var isWorldTransferActive: Boolean = false
 
     init {
+        val alwaysFollowWorld = plugin.config.getBoolean("pet.alwaysFollowWorld")
         plugin.launch(plugin.minecraftDispatcher + object : CoroutineTimings() {}) {
             // Remove pet if the player does not have any spawn permission.
             while (!isDisposed) {
@@ -51,7 +55,13 @@ class PetImpl(
                     remove()
                 }
 
-                delay(5000)
+                if (alwaysFollowWorld) {
+                    if (player.world != location.world) {
+                        location = player.location.toVector3d().addRelativeFront(2.0).addRelativeUp(2.0).toLocation()
+                    }
+                }
+
+                delay(3000)
             }
         }
     }
