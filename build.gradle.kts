@@ -9,7 +9,7 @@ plugins {
 }
 
 group = "com.github.shynixn"
-version = "9.19.1"
+version = "9.19.2"
 
 repositories {
     mavenCentral()
@@ -18,6 +18,7 @@ repositories {
     maven("https://repo.opencollab.dev/main/")
     maven("https://shynixn.github.io/m2/repository/releases")
     maven(System.getenv("SHYNIXN_MCUTILS_REPOSITORY")) // All MCUTILS libraries are private and not OpenSource.
+    maven(System.getenv("SHYNIXN_MCUTILS_REPOSITORY_2025")) // All MCUTILS libraries are private and not OpenSource.
 }
 
 tasks.register("printVersion") {
@@ -59,9 +60,9 @@ dependencies {
 
     // Custom dependencies
     implementation("com.github.shynixn.shygui:shygui:1.1.4")
-    implementation("com.github.shynixn.mcutils:common:2024.52")
-    implementation("com.github.shynixn.mcutils:packet:2024.55")
-    implementation("com.github.shynixn.mcutils:database:2024.8")
+    implementation("com.github.shynixn.mcutils:common:2025.4")
+    implementation("com.github.shynixn.mcutils:packet:2025.3")
+    implementation("com.github.shynixn.mcutils:database:2025.2")
     implementation("com.github.shynixn.mcutils:pathfinder:2024.3")
     implementation("com.github.shynixn.mcutils:guice:2024.2")
     implementation("com.github.shynixn.mcutils:javascript:2024.1")

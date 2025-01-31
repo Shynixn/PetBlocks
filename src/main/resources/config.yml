@@ -79,6 +79,8 @@ pet:
   showPathfinder: false
   # Amount of milliseconds until the pet registers a new click on it.
   clickCoolDownMs: 70
+  # If true, the pet automatically transfers worlds everytime a player does it. Otherwise, the individual settings apply.
+  alwaysFollowWorld: true
   # A pathfinder run of a pet starts with a cube snapshot of the world, where a A* pathfinder implementation is applied after wards.
   # This setting defines how big of an area this cube should be. A larger cube requires more processing time and memory consumption.
   # Using a large cube is not recommend, as the pet should teleport or stay at its place when the owner is too far away.

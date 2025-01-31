@@ -33,7 +33,7 @@ visibilityTypeNotFoundMessage:
   text: "[&9PetBlocks&f] &cSolo se admiten los tipos de visibilidad %1$1s."
 visibilityChangedMessage:
   type: "CHAT"
-  text: "[&9PetBlocks&f] La visibilidad de la mascota %1$1s ha sido cambiada a %2$1s."
+  text: "[&9PetBlocks&f] La visibilidad de la mascota %1$1s."
 petSkinTypeChangedMessage:
   type: "CHAT"
   text: "[&9PetBlocks&f] El tipo de piel de la mascota %1$1s ha sido cambiado."

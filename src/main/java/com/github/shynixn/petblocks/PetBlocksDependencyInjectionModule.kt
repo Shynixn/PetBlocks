@@ -21,7 +21,7 @@ import com.github.shynixn.mcutils.common.repository.YamlFileRepositoryImpl
 import com.github.shynixn.mcutils.database.api.CachePlayerRepository
 import com.github.shynixn.mcutils.database.api.PlayerDataRepository
 import com.github.shynixn.mcutils.database.impl.AutoSavePlayerDataRepositoryImpl
-import com.github.shynixn.mcutils.database.impl.CachePlayerDataRepositoryImpl
+import com.github.shynixn.mcutils.database.impl.CachedPlayerDataRepositoryImpl
 import com.github.shynixn.mcutils.database.impl.ConfigSelectedRepositoryImpl
 import com.github.shynixn.mcutils.guice.DependencyInjectionModule
 import com.github.shynixn.mcutils.javascript.JavaScriptService
@@ -81,7 +81,7 @@ class PetBlocksDependencyInjectionModule(
         val autoSaveMinutes = plugin.config.getInt("database.autoSaveIntervalMinutes")
         val playerDataRepository = AutoSavePlayerDataRepositoryImpl(
             1000 * 60L * autoSaveMinutes,
-            CachePlayerDataRepositoryImpl(configSelectedRepository, plugin.minecraftDispatcher),
+            CachedPlayerDataRepositoryImpl(configSelectedRepository, plugin.minecraftDispatcher),
             plugin.scope,
             plugin.minecraftDispatcher
         )
