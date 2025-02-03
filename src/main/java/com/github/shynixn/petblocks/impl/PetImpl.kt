@@ -47,7 +47,6 @@ class PetImpl(
     private var isWorldTransferActive: Boolean = false
 
     init {
-        val alwaysFollowWorld = plugin.config.getBoolean("pet.alwaysFollowWorld")
         plugin.launch(plugin.minecraftDispatcher + object : CoroutineTimings() {}) {
             // Remove pet if the player does not have any spawn permission.
             while (!isDisposed) {
@@ -55,13 +54,7 @@ class PetImpl(
                     remove()
                 }
 
-                if (alwaysFollowWorld) {
-                    if (player.world != location.world) {
-                        location = player.location.toVector3d().addRelativeFront(2.0).addRelativeUp(2.0).toLocation()
-                    }
-                }
-
-                delay(3000)
+                delay(5000)
             }
         }
     }

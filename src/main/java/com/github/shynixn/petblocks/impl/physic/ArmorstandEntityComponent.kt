@@ -33,6 +33,7 @@ class ArmorstandEntityComponent(
     val entityId: Int,
 ) : PhysicComponent {
     private var lastVisibleVector3d = Vector3d()
+    private val voidFallingLimit = plugin.config.getDouble("pet.deSpawnAtYAxe")
 
     init {
         playerComponent.onSpawnMinecraft.add { player, location -> onPlayerSpawn(player, location) }
@@ -126,7 +127,7 @@ class ArmorstandEntityComponent(
         val players = playerComponent.visiblePlayers
         val parsedEntityType = EntityType.findType(this.petMeta.entityType)
 
-        if (position.y < -30) {
+        if (position.y < voidFallingLimit) {
             // Protection for falling into the void.
             plugin.launch {
                 pet.unmount()
