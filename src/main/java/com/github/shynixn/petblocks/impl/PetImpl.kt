@@ -55,13 +55,7 @@ class PetImpl(
                     remove()
                 }
 
-                if (alwaysFollowWorld) {
-                    if (player.world != location.world) {
-                        location = player.location.toVector3d().addRelativeFront(2.0).addRelativeUp(2.0).toLocation()
-                    }
-                }
-
-                delay(3000)
+                delay(5000)
             }
         }
     }
