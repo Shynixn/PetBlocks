@@ -91,6 +91,8 @@ pet:
   # Amount of milliseconds between updating the server position of the rider.
   # This value may be adjusted concerning your server ping and Anti Cheat Plugins.
   ridePositionUpdateMs: 250
+  # When a pet starts falling into the void, the pet will automatically deSpawn once reaching this value.
+  deSpawnAtYAxe: -150.0
   name:
     # Allows only certain letters as regex validation. (letters, numbers, underline, single quote, hashtag).
     # Be careful what you allow here, certain pet actions may break (scriptinjection) if you allow special characters.
