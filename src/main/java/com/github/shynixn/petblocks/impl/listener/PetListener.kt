@@ -18,7 +18,6 @@ import com.github.shynixn.petblocks.contract.PetActionExecutionService
 import com.github.shynixn.petblocks.contract.PetService
 import com.github.shynixn.petblocks.impl.PetEntityImpl
 import com.github.shynixn.petblocks.impl.service.PetActionExecutionServiceImpl
-import com.google.inject.Inject
 import kotlinx.coroutines.delay
 import org.bukkit.Bukkit
 import org.bukkit.event.EventHandler
@@ -29,7 +28,7 @@ import org.bukkit.event.player.PlayerToggleSneakEvent
 import org.bukkit.plugin.Plugin
 import java.util.logging.Level
 
-class PetListener @Inject constructor(
+class PetListener(
     private val petService: PetService,
     private val plugin: Plugin,
     private val petActionExecutionService: PetActionExecutionService,
@@ -76,7 +75,18 @@ class PetListener @Inject constructor(
     @EventHandler
     fun onPlayerQuitEvent(event: PlayerQuitEvent) {
         plugin.launch {
-            petService.clearCache(event.player)
+            val petCache = petService.getCache()[event.player]
+
+            if (petCache != null) {
+                for (pet in petCache) {
+                    if(pet.isSpawned){
+                        pet.invokeDeSpawnCommand()
+                    }
+                }
+
+                delay(20.ticks)
+                petService.clearCache(event.player)
+            }
         }
     }
 

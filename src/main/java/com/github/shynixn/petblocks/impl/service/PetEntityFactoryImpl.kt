@@ -17,10 +17,9 @@ import com.github.shynixn.petblocks.impl.physic.ArmorstandEntityComponent
 import com.github.shynixn.petblocks.impl.physic.MathComponent
 import com.github.shynixn.petblocks.impl.physic.MoveToTargetComponent
 import com.github.shynixn.petblocks.impl.physic.PlayerComponent
-import com.google.inject.Inject
 import org.bukkit.plugin.Plugin
 
-class PetEntityFactoryImpl @Inject constructor(
+class PetEntityFactoryImpl (
     private val physicObjectService: PhysicObjectService,
     private val plugin: Plugin,
     private val petActionExecutionService: PetActionExecutionService,

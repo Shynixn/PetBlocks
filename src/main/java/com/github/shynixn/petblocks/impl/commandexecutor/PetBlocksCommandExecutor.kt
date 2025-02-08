@@ -23,7 +23,6 @@ import com.github.shynixn.petblocks.enumeration.DropType
 import com.github.shynixn.petblocks.enumeration.Permission
 import com.github.shynixn.petblocks.enumeration.PetRotationType
 import com.github.shynixn.petblocks.enumeration.PetVisibility
-import com.google.inject.Inject
 import org.bukkit.Bukkit
 import org.bukkit.Location
 import org.bukkit.Material
@@ -36,7 +35,7 @@ import org.bukkit.plugin.Plugin
 import org.bukkit.util.Vector
 import java.util.*
 
-class PetBlocksCommandExecutor @Inject constructor(
+class PetBlocksCommandExecutor (
     private val petService: PetService,
     private val templateRepository: CacheRepository<PetTemplate>,
     private val plugin: Plugin,
@@ -1050,13 +1049,7 @@ class PetBlocksCommandExecutor @Inject constructor(
     private fun openHeadDatabase(sender: CommandSender, player: Player, pet: Pet) {
         try {
             dependencyHeadDatabaseService!!.registerPlayerForNextClick(player, pet.name)
-            val configValue = "headDatabaseCommand"
-            var command = if (configurationService.containsValue(configValue)) {
-                configurationService.findValue("headDatabaseCommand")
-            } else {
-                // TODO: Remove it in 2025. Compatibility to 9.0.3
-                "/hdb"
-            }
+            var command =  configurationService.findValue<String>("headDatabaseCommand")
 
             command = if (command.startsWith("/")) {
                 command.substring(1)

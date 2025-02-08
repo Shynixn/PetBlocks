@@ -3,8 +3,8 @@ package com.github.shynixn.petblocks
 import com.github.shynixn.mccoroutine.bukkit.launch
 import com.github.shynixn.mcutils.common.ChatColor
 import com.github.shynixn.mcutils.common.Version
+import com.github.shynixn.mcutils.common.di.DependencyInjectionModule
 import com.github.shynixn.mcutils.common.language.reloadTranslation
-import com.github.shynixn.mcutils.common.physic.PhysicObjectService
 import com.github.shynixn.mcutils.common.placeholder.PlaceHolderService
 import com.github.shynixn.mcutils.common.repository.Repository
 import com.github.shynixn.mcutils.database.api.CachePlayerRepository
@@ -64,8 +64,8 @@ class PetBlocksPlugin : JavaPlugin() {
     }
 
     private val prefix: String = ChatColor.BLUE.toString() + "[PetBlocks] " + ChatColor.WHITE
-    private lateinit var mainModule: PetBlocksDependencyInjectionModule
-    private lateinit var shyGuiModule: ShyGUIDependencyInjectionModule
+    private lateinit var mainModule: DependencyInjectionModule
+    private lateinit var shyGuiModule: DependencyInjectionModule
     private var immediateDisable = false
 
     /**
@@ -202,16 +202,8 @@ class PetBlocksPlugin : JavaPlugin() {
             playerDataRepository.close()
         }
 
-        val physicService = mainModule.getService<PhysicObjectService>()
-        physicService.close()
-        var packetService = mainModule.getService<PacketService>()
-        packetService.close()
-
-        // ShyGUI Module
-        val menuService = shyGuiModule.getService<GUIMenuService>()
-        menuService.close()
-        packetService = shyGuiModule.getService<PacketService>()
-        packetService.close()
+        mainModule.close()
+        shyGuiModule.close()
     }
 
     private fun initializeShyGUIModule(language: PetBlocksLanguage) {

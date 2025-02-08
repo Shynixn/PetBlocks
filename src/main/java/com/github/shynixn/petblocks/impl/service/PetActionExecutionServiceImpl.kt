@@ -15,7 +15,6 @@ import com.github.shynixn.petblocks.entity.PetActionDefinition
 import com.github.shynixn.petblocks.enumeration.PetActionCommandLevelType
 import com.github.shynixn.petblocks.enumeration.PetActionConditionType
 import com.github.shynixn.petblocks.enumeration.PetActionType
-import com.google.inject.Inject
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
 import org.bukkit.Bukkit
@@ -32,7 +31,7 @@ import org.bukkit.plugin.Plugin
 import java.util.*
 import java.util.logging.Level
 
-class PetActionExecutionServiceImpl @Inject constructor(
+class PetActionExecutionServiceImpl (
     private val plugin: Plugin,
     private val scriptService: JavaScriptService,
     private val placeHolderService: PlaceHolderService

@@ -1,6 +1,7 @@
 package com.github.shynixn.petblocks.impl.service
 
-import com.github.shynixn.mccoroutine.bukkit.scope
+import com.github.shynixn.mccoroutine.bukkit.launch
+import com.github.shynixn.mccoroutine.bukkit.ticks
 import com.github.shynixn.mcutils.common.ConfigurationService
 import com.github.shynixn.mcutils.common.item.ItemService
 import com.github.shynixn.mcutils.common.placeholder.PlaceHolderService
@@ -16,16 +17,16 @@ import com.github.shynixn.petblocks.entity.PlayerInformation
 import com.github.shynixn.petblocks.enumeration.PetSpawnResultType
 import com.github.shynixn.petblocks.event.PetSpawnEvent
 import com.github.shynixn.petblocks.impl.PetImpl
-import com.google.inject.Inject
-import kotlinx.coroutines.future.future
+import kotlinx.coroutines.delay
 import org.bukkit.Bukkit
 import org.bukkit.Location
 import org.bukkit.entity.Player
 import org.bukkit.plugin.Plugin
+import java.util.concurrent.CompletableFuture
 import java.util.concurrent.CompletionStage
 import java.util.logging.Level
 
-class PetServiceImpl @Inject constructor(
+class PetServiceImpl(
     private val petMetaRepository: CachePlayerRepository<PlayerInformation>,
     private val plugin: Plugin,
     private val petEntityFactory: PetEntityFactory,
@@ -41,9 +42,14 @@ class PetServiceImpl @Inject constructor(
      * The pets may or be not be spawned at the moment.
      */
     override fun getPetsFromPlayerAsync(player: Player): CompletionStage<List<Pet>> {
-        return plugin.scope.future {
-            getPetsFromPlayer(player)
+        val completeAbleFuture = CompletableFuture<List<Pet>>()
+
+        plugin.launch {
+            val pets = getPetsFromPlayer(player)
+            completeAbleFuture.complete(pets)
         }
+
+        return completeAbleFuture
     }
 
     /**
@@ -104,7 +110,7 @@ class PetServiceImpl @Inject constructor(
                     try {
                         // Ensures that skinBase64 is filled.
                         val originNbt = e.headItem.nbt
-                        if(!e.headItem.nbt.isNullOrBlank()){
+                        if (!e.headItem.nbt.isNullOrBlank()) {
                             val selector = "{textures:[{Value:\""
                             val nbt = e.headItem.nbt!!
                             val rawSelection = nbt.substring(nbt.indexOf(selector) + selector.length)
@@ -142,9 +148,14 @@ class PetServiceImpl @Inject constructor(
     override fun createPetAsync(
         player: Player, location: Location, templateId: String, name: String
     ): CompletionStage<PetSpawnResult> {
-        return plugin.scope.future {
-            createPet(player, location, templateId, name)
+        val completeAbleFuture = CompletableFuture<PetSpawnResult>()
+
+        plugin.launch {
+            val petSpawnResult = createPet(player, location, templateId, name)
+            completeAbleFuture.complete(petSpawnResult)
         }
+
+        return completeAbleFuture
     }
 
     /**
@@ -175,7 +186,10 @@ class PetServiceImpl @Inject constructor(
         val petMeta = PetMeta()
         petMeta.name = name
         petMeta.template = templateId
-        petMeta.displayName = placeHolderService.resolvePlaceHolder(template.pet.displayName, player) // PlaceHolders have to be resolved right now, to not make trouble with the gui.
+        petMeta.displayName = placeHolderService.resolvePlaceHolder(
+            template.pet.displayName,
+            player
+        ) // PlaceHolders have to be resolved right now, to not make trouble with the gui.
         petMeta.isSpawned = template.pet.spawned
         petMeta.visibility = template.pet.visibility
         petMeta.ridingState = template.pet.ridingState
@@ -230,6 +244,8 @@ class PetServiceImpl @Inject constructor(
      */
     override suspend fun deletePet(pet: Pet) {
         val player = pet.player
+        pet.remove() // Invoke deSpawn command.
+        delay(20.ticks)
         pet.dispose()
         val playerInformation = petMetaRepository.getByPlayer(player) ?: return
         val petMetaToDelete = playerInformation.pets.firstOrNull { e -> e.name == pet.name } ?: return
@@ -244,9 +260,14 @@ class PetServiceImpl @Inject constructor(
      *  Deletes the given pet.
      */
     override fun deletePetAsync(pet: Pet): CompletionStage<Void?> {
-        return plugin.scope.future {
+        val completeAbleFuture = CompletableFuture<Void?>()
+
+        plugin.launch {
             deletePet(pet)
-        }.thenApply { null }
+            completeAbleFuture.complete(null)
+        }
+
+        return completeAbleFuture
     }
 
     /**

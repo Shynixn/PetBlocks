@@ -99,7 +99,7 @@ interface Pet {
     /**
      * Riding speed.
      */
-    var ridingSpeed : Double
+    var ridingSpeed: Double
 
     /**
      * Storage of arbitrary data in the pet.
@@ -122,6 +122,11 @@ interface Pet {
      * The current location of the pet is stored.
      */
     fun remove()
+
+    /**
+     * Compatibility.
+     */
+    fun invokeDeSpawnCommand()
 
     /**
      * Shows the pet for the owner (and other players depending on the visibility) at the location
