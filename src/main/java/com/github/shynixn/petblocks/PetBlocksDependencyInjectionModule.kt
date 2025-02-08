@@ -6,6 +6,7 @@ import com.github.shynixn.mccoroutine.bukkit.scope
 import com.github.shynixn.mcutils.common.ConfigurationService
 import com.github.shynixn.mcutils.common.ConfigurationServiceImpl
 import com.github.shynixn.mcutils.common.chat.ChatMessageService
+import com.github.shynixn.mcutils.common.di.DependencyInjectionModule
 import com.github.shynixn.mcutils.common.item.ItemService
 import com.github.shynixn.mcutils.common.language.globalChatMessageService
 import com.github.shynixn.mcutils.common.language.globalPlaceHolderService
@@ -23,7 +24,6 @@ import com.github.shynixn.mcutils.database.api.PlayerDataRepository
 import com.github.shynixn.mcutils.database.impl.AutoSavePlayerDataRepositoryImpl
 import com.github.shynixn.mcutils.database.impl.CachedPlayerDataRepositoryImpl
 import com.github.shynixn.mcutils.database.impl.ConfigSelectedRepositoryImpl
-import com.github.shynixn.mcutils.guice.DependencyInjectionModule
 import com.github.shynixn.mcutils.javascript.JavaScriptService
 import com.github.shynixn.mcutils.javascript.JavaScriptServiceImpl
 import com.github.shynixn.mcutils.packet.api.PacketService
@@ -39,14 +39,18 @@ import com.github.shynixn.petblocks.contract.*
 import com.github.shynixn.petblocks.entity.PetTemplate
 import com.github.shynixn.petblocks.entity.PlayerInformation
 import com.github.shynixn.petblocks.enumeration.PluginDependency
+import com.github.shynixn.petblocks.impl.commandexecutor.PetBlocksCommandExecutor
+import com.github.shynixn.petblocks.impl.listener.PetListener
 import com.github.shynixn.petblocks.impl.service.*
 import org.bukkit.Bukkit
 import org.bukkit.plugin.Plugin
 import java.util.logging.Level
 
 class PetBlocksDependencyInjectionModule(
-    private val plugin: PetBlocksPlugin, private val shyGuiModule: DependencyInjectionModule, private val language: PetBlocksLanguage
-) : DependencyInjectionModule() {
+    private val plugin: PetBlocksPlugin,
+    private val shyGuiModule: DependencyInjectionModule,
+    private val language: PetBlocksLanguage
+) {
     companion object {
         val areLegacyVersionsIncluded: Boolean by lazy {
             try {
@@ -58,20 +62,23 @@ class PetBlocksDependencyInjectionModule(
         }
     }
 
-    override fun configure() {
-        // Module
-        addService<Plugin>(plugin)
-        addService<PetBlocksLanguage>(language)
+    fun build(): DependencyInjectionModule {
+        val module = DependencyInjectionModule()
+
+        // Params
+        module.addService<Plugin>(plugin)
+        module.addService<PetBlocksLanguage>(language)
 
         // Repositories
-        val templateRepositoryImpl = YamlFileRepositoryImpl<PetTemplate>(plugin, "pets", listOf(
-            Pair("pets/pet_classic.yml", "pet_classic.yml"),
-            Pair("pets/pet_mining.yml", "pet_mining.yml"),
-            Pair("pets/pet_flying_dolphin.yml", "pet_flying_dolphin.yml")
-        ), emptyList(), object : TypeReference<PetTemplate>() {})
+        val templateRepositoryImpl = YamlFileRepositoryImpl<PetTemplate>(
+            plugin, "pets", listOf(
+                Pair("pets/pet_classic.yml", "pet_classic.yml"),
+                Pair("pets/pet_mining.yml", "pet_mining.yml"),
+                Pair("pets/pet_flying_dolphin.yml", "pet_flying_dolphin.yml")
+            ), emptyList(), object : TypeReference<PetTemplate>() {})
         val cacheTemplateRepository = CachedRepositoryImpl(templateRepositoryImpl)
-        addService<Repository<PetTemplate>>(cacheTemplateRepository)
-        addService<CacheRepository<PetTemplate>>(cacheTemplateRepository)
+        module.addService<Repository<PetTemplate>>(cacheTemplateRepository)
+        module.addService<CacheRepository<PetTemplate>>(cacheTemplateRepository)
         val configSelectedRepository = ConfigSelectedRepositoryImpl<PlayerInformation>(
             plugin,
             "PetBlocks",
@@ -85,39 +92,93 @@ class PetBlocksDependencyInjectionModule(
             plugin.scope,
             plugin.minecraftDispatcher
         )
-        addService<PlayerDataRepository<PlayerInformation>>(playerDataRepository)
-        addService<CachePlayerRepository<PlayerInformation>>(playerDataRepository)
-
-        // Services
-        addService<BreakBlockService, BreakBlockServiceImpl>()
-        addService<PetService, PetServiceImpl>()
-        addService<PetEntityFactory, PetEntityFactoryImpl>()
-        addService<PetActionExecutionService, PetActionExecutionServiceImpl>()
-        if (Bukkit.getPluginManager().getPlugin(PluginDependency.HEADDATABASE.pluginName) != null) {
-            addService<DependencyHeadDatabaseService, DependencyHeadDatabaseServiceImpl>()
-            plugin.logger.log(Level.INFO, "Loaded dependency ${PluginDependency.HEADDATABASE.pluginName}.")
-        }
+        module.addService<PlayerDataRepository<PlayerInformation>>(playerDataRepository)
+        module.addService<CachePlayerRepository<PlayerInformation>>(playerDataRepository)
 
         // Library Services
         val chatMessageService = ChatMessageServiceImpl(plugin)
-        addService<PlaceHolderService>(shyGuiModule.getService<PlaceHolderService>())
-        addService<RayTracingService>(RayTracingServiceImpl())
-        addService<PacketService>(PacketServiceImpl(plugin))
-        addService<PhysicObjectDispatcher>(PhysicObjectDispatcherImpl(plugin))
-        addService<ConfigurationService>(ConfigurationServiceImpl(plugin))
-        addService<ChatMessageService>(chatMessageService)
-        addService<PhysicObjectService> {
-            PhysicObjectServiceImpl(plugin, getService())
+        module.addService<PlaceHolderService>(shyGuiModule.getService<PlaceHolderService>())
+        module.addService<RayTracingService>(RayTracingServiceImpl())
+        module.addService<PacketService>(PacketServiceImpl(plugin))
+        module.addService<PhysicObjectDispatcher>(PhysicObjectDispatcherImpl(plugin))
+        module.addService<ConfigurationService>(ConfigurationServiceImpl(plugin))
+        module.addService<ChatMessageService>(chatMessageService)
+        module.addService<PhysicObjectService> {
+            PhysicObjectServiceImpl(plugin, module.getService())
         }
-        addService<ItemService>(ItemServiceImpl())
-        addService<PathfinderService>(PathfinderServiceImpl(CubeWorldSnapshotServiceImpl()))
-        addService<JavaScriptService>(
+        module.addService<ItemService>(ItemServiceImpl())
+        module.addService<PathfinderService>(PathfinderServiceImpl(CubeWorldSnapshotServiceImpl()))
+        module.addService<JavaScriptService>(
             JavaScriptServiceImpl(
                 plugin,
                 this.plugin.config.getStringList("scriptEngine.options")
             )
         )
+
+        // Services
+        module.addService<PetListener> {
+            PetListener(
+                module.getService(),
+                module.getService(),
+                module.getService(),
+                module.getService(),
+                module.getService()
+            )
+        }
+        module.addService<PetBlocksCommandExecutor> {
+            PetBlocksCommandExecutor(
+                module.getService(),
+                module.getService(),
+                module.getService(),
+                module.getService(),
+                module.getService(),
+                module.getService(),
+                module.getService(),
+                module.getService()
+            )
+        }
+        module.addService<BreakBlockService>() {
+            BreakBlockServiceImpl(module.getService(), module.getService())
+        }
+        module.addService<PetService> {
+            PetServiceImpl(
+                module.getService(),
+                module.getService(),
+                module.getService(),
+                module.getService(),
+                module.getService(),
+                module.getService(),
+                module.getService()
+            )
+        }
+        module.addService<PetEntityFactory> {
+            PetEntityFactoryImpl(
+                module.getService(),
+                module.getService(),
+                module.getService(),
+                module.getService(),
+                module.getService(),
+                module.getService(),
+                module.getService(),
+                module.getService(),
+                module.getService(),
+                module.getService(),
+                module.getService()
+            )
+        }
+        module.addService<PetActionExecutionService> {
+            PetActionExecutionServiceImpl(module.getService(), module.getService(), module.getService())
+        }
+        if (Bukkit.getPluginManager().getPlugin(PluginDependency.HEADDATABASE.pluginName) != null) {
+            module.addService<DependencyHeadDatabaseService> {
+                DependencyHeadDatabaseServiceImpl(module.getService(), module.getService(), module.getService())
+            }
+            plugin.logger.log(Level.INFO, "Loaded dependency ${PluginDependency.HEADDATABASE.pluginName}.")
+        }
+
+
         plugin.globalChatMessageService = chatMessageService
         plugin.globalPlaceHolderService = shyGuiModule.getService<PlaceHolderService>()
+        return module
     }
 }

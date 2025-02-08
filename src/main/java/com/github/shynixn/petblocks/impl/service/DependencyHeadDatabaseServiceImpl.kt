@@ -5,7 +5,6 @@ import com.github.shynixn.mcutils.common.item.Item
 import com.github.shynixn.mcutils.common.item.ItemService
 import com.github.shynixn.petblocks.contract.DependencyHeadDatabaseService
 import com.github.shynixn.petblocks.contract.PetService
-import com.google.inject.Inject
 import me.arcaniax.hdb.api.HeadDatabaseAPI
 import me.arcaniax.hdb.api.PlayerClickHeadEvent
 import org.bukkit.entity.Player
@@ -16,7 +15,7 @@ import org.bukkit.inventory.ItemStack
 import org.bukkit.plugin.Plugin
 import java.util.*
 
-class DependencyHeadDatabaseServiceImpl @Inject constructor(
+class DependencyHeadDatabaseServiceImpl (
     private val petService: PetService,
     private val plugin: Plugin,
     private val itemService: ItemService

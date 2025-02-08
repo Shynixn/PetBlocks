@@ -8,14 +8,13 @@ import com.github.shynixn.mcutils.packet.api.packet.PacketOutBlockBreakAnimation
 import com.github.shynixn.petblocks.contract.BreakBlockService
 import com.github.shynixn.petblocks.enumeration.DropType
 import com.github.shynixn.petblocks.impl.PetEntityImpl
-import com.google.inject.Inject
 import kotlinx.coroutines.delay
 import org.bukkit.Effect
 import org.bukkit.Material
 import org.bukkit.block.Block
 import org.bukkit.plugin.Plugin
 
-class BreakBlockServiceImpl @Inject constructor(private val plugin: Plugin, private val packetService: PacketService) :
+class BreakBlockServiceImpl (private val plugin: Plugin, private val packetService: PacketService) :
     BreakBlockService {
     /**
      * Breaks the given block.

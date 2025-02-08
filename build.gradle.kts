@@ -12,17 +12,11 @@ group = "com.github.shynixn"
 version = "9.19.3"
 
 repositories {
+    mavenLocal()
     mavenCentral()
     maven("https://hub.spigotmc.org/nexus/content/repositories/snapshots/")
-    maven("https://repo.extendedclip.com/content/repositories/placeholderapi")
-    maven("https://repo.opencollab.dev/main/")
     maven("https://shynixn.github.io/m2/repository/releases")
-    maven(System.getenv("SHYNIXN_MCUTILS_REPOSITORY")) // All MCUTILS libraries are private and not OpenSource.
     maven(System.getenv("SHYNIXN_MCUTILS_REPOSITORY_2025")) // All MCUTILS libraries are private and not OpenSource.
-}
-
-tasks.register("printVersion") {
-    println(version)
 }
 
 dependencies {
@@ -41,7 +35,6 @@ dependencies {
 
     // Compile Only
     compileOnly("org.spigotmc:spigot-api:1.18.2-R0.1-SNAPSHOT")
-    compileOnly("me.clip:placeholderapi:2.11.6")
     compileOnly("com.arcaniax:HeadDatabase-API:1.3.1")
 
     // Library dependencies with legacy compatibility, we can use more up-to-date version in the plugin.yml
@@ -49,23 +42,19 @@ dependencies {
     implementation("com.github.shynixn.mccoroutine:mccoroutine-bukkit-core:2.20.0")
     runtimeOnly("com.github.shynixn.mccoroutine:mccoroutine-folia-api:2.16.0")
     runtimeOnly("com.github.shynixn.mccoroutine:mccoroutine-folia-core:2.16.0")
-    implementation("com.google.inject:guice:5.0.1")
     implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.3.0")
     implementation("com.fasterxml.jackson.core:jackson-databind:2.2.3")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.2")
-    implementation("com.google.code.gson:gson:2.8.6")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-jdk8:1.4.3")
     implementation("com.zaxxer:HikariCP:4.0.3")
     implementation("org.openjdk.nashorn:nashorn-core:15.4")
 
     // Custom dependencies
-    implementation("com.github.shynixn.shygui:shygui:1.1.4")
+    implementation("com.github.shynixn.shygui:shygui:1.2.0")
     implementation("com.github.shynixn.mcutils:common:2025.4")
     implementation("com.github.shynixn.mcutils:packet:2025.3")
     implementation("com.github.shynixn.mcutils:database:2025.2")
-    implementation("com.github.shynixn.mcutils:pathfinder:2024.3")
-    implementation("com.github.shynixn.mcutils:guice:2024.2")
-    implementation("com.github.shynixn.mcutils:javascript:2024.1")
+    implementation("com.github.shynixn.mcutils:pathfinder:2025.1")
+    implementation("com.github.shynixn.mcutils:javascript:2025.1")
 
     // Test
     testImplementation(kotlin("test"))
@@ -75,26 +64,6 @@ dependencies {
     testImplementation("com.mysql:mysql-connector-j:8.3.0")
 }
 
-tasks.test {
-    useJUnitPlatform()
-    testLogging.showStandardStreams = true
-    failFast = true
-
-    testLogging {
-        events(
-            org.gradle.api.tasks.testing.logging.TestLogEvent.FAILED,
-            org.gradle.api.tasks.testing.logging.TestLogEvent.PASSED,
-            org.gradle.api.tasks.testing.logging.TestLogEvent.SKIPPED,
-            org.gradle.api.tasks.testing.logging.TestLogEvent.STARTED
-        )
-        displayGranularity = 0
-        showExceptions = true
-        showCauses = true
-        showStackTraces = true
-        exceptionFormat = org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
-    }
-}
-
 tasks.withType<KotlinCompile> {
     kotlinOptions.jvmTarget = "1.8"
 }
@@ -102,6 +71,10 @@ tasks.withType<KotlinCompile> {
 java {
     sourceCompatibility = JavaVersion.VERSION_1_8
     targetCompatibility = JavaVersion.VERSION_1_8
+}
+
+tasks.test {
+    useJUnitPlatform()
 }
 
 /**
@@ -331,4 +304,8 @@ tasks.register("languageFile") {
             out.println(line)
         }
     }
+}
+
+tasks.register("printVersion") {
+    println(version)
 }

@@ -23,7 +23,6 @@ import com.github.shynixn.petblocks.enumeration.DropType
 import com.github.shynixn.petblocks.enumeration.Permission
 import com.github.shynixn.petblocks.enumeration.PetRotationType
 import com.github.shynixn.petblocks.enumeration.PetVisibility
-import com.google.inject.Inject
 import org.bukkit.Bukkit
 import org.bukkit.Location
 import org.bukkit.Material
@@ -36,7 +35,7 @@ import org.bukkit.plugin.Plugin
 import org.bukkit.util.Vector
 import java.util.*
 
-class PetBlocksCommandExecutor @Inject constructor(
+class PetBlocksCommandExecutor (
     private val petService: PetService,
     private val templateRepository: CacheRepository<PetTemplate>,
     private val plugin: Plugin,
