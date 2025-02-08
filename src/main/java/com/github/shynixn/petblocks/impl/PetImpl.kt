@@ -390,6 +390,13 @@ class PetImpl(
     }
 
     /**
+     * Compatibility.
+     */
+    override fun invokeDeSpawnCommand() {
+        petEntity?.onDespawn(player)
+    }
+
+    /**
      * Shows the pet for the owner (and other players depending on the visibility) at the location the pet remembers.
      */
     override fun spawn() {

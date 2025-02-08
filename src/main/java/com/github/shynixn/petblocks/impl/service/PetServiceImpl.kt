@@ -1,6 +1,7 @@
 package com.github.shynixn.petblocks.impl.service
 
 import com.github.shynixn.mccoroutine.bukkit.launch
+import com.github.shynixn.mccoroutine.bukkit.ticks
 import com.github.shynixn.mcutils.common.ConfigurationService
 import com.github.shynixn.mcutils.common.item.ItemService
 import com.github.shynixn.mcutils.common.placeholder.PlaceHolderService
@@ -16,6 +17,7 @@ import com.github.shynixn.petblocks.entity.PlayerInformation
 import com.github.shynixn.petblocks.enumeration.PetSpawnResultType
 import com.github.shynixn.petblocks.event.PetSpawnEvent
 import com.github.shynixn.petblocks.impl.PetImpl
+import kotlinx.coroutines.delay
 import org.bukkit.Bukkit
 import org.bukkit.Location
 import org.bukkit.entity.Player
@@ -242,6 +244,8 @@ class PetServiceImpl(
      */
     override suspend fun deletePet(pet: Pet) {
         val player = pet.player
+        pet.remove() // Invoke deSpawn command.
+        delay(20.ticks)
         pet.dispose()
         val playerInformation = petMetaRepository.getByPlayer(player) ?: return
         val petMetaToDelete = playerInformation.pets.firstOrNull { e -> e.name == pet.name } ?: return

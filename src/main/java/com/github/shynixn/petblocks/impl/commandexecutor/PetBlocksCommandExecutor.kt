@@ -1049,13 +1049,7 @@ class PetBlocksCommandExecutor (
     private fun openHeadDatabase(sender: CommandSender, player: Player, pet: Pet) {
         try {
             dependencyHeadDatabaseService!!.registerPlayerForNextClick(player, pet.name)
-            val configValue = "headDatabaseCommand"
-            var command = if (configurationService.containsValue(configValue)) {
-                configurationService.findValue("headDatabaseCommand")
-            } else {
-                // TODO: Remove it in 2025. Compatibility to 9.0.3
-                "/hdb"
-            }
+            var command =  configurationService.findValue<String>("headDatabaseCommand")
 
             command = if (command.startsWith("/")) {
                 command.substring(1)

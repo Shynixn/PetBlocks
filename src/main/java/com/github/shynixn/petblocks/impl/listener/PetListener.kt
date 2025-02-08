@@ -28,7 +28,7 @@ import org.bukkit.event.player.PlayerToggleSneakEvent
 import org.bukkit.plugin.Plugin
 import java.util.logging.Level
 
-class PetListener (
+class PetListener(
     private val petService: PetService,
     private val plugin: Plugin,
     private val petActionExecutionService: PetActionExecutionService,
@@ -75,7 +75,18 @@ class PetListener (
     @EventHandler
     fun onPlayerQuitEvent(event: PlayerQuitEvent) {
         plugin.launch {
-            petService.clearCache(event.player)
+            val petCache = petService.getCache()[event.player]
+
+            if (petCache != null) {
+                for (pet in petCache) {
+                    if(pet.isSpawned){
+                        pet.invokeDeSpawnCommand()
+                    }
+                }
+
+                delay(20.ticks)
+                petService.clearCache(event.player)
+            }
         }
     }
 
