@@ -1,7 +1,7 @@
 import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-import java.util.*
 import java.io.*
+import java.util.*
 
 plugins {
     id("org.jetbrains.kotlin.jvm") version ("1.9.25")
@@ -9,7 +9,7 @@ plugins {
 }
 
 group = "com.github.shynixn"
-version = "9.20.0"
+version = "9.21.0"
 
 repositories {
     mavenLocal()
@@ -20,28 +20,15 @@ repositories {
 }
 
 dependencies {
-    // Dependencies of spigot mojang want to restrict usage to only Java 16. However, we do not care
-    // what they want because the general compatibility of this plugin is Java 8. The plugin
-    // guarantees that everything works during runtime. This error is a false positive.
-    components {
-        all {
-            allVariants {
-                attributes {
-                    attribute(TargetJvmVersion.TARGET_JVM_VERSION_ATTRIBUTE, 8)
-                }
-            }
-        }
-    }
-
     // Compile Only
     compileOnly("org.spigotmc:spigot-api:1.18.2-R0.1-SNAPSHOT")
     compileOnly("com.arcaniax:HeadDatabase-API:1.3.1")
 
     // Library dependencies with legacy compatibility, we can use more up-to-date version in the plugin.yml
-    implementation("com.github.shynixn.mccoroutine:mccoroutine-bukkit-api:2.20.0")
-    implementation("com.github.shynixn.mccoroutine:mccoroutine-bukkit-core:2.20.0")
-    runtimeOnly("com.github.shynixn.mccoroutine:mccoroutine-folia-api:2.16.0")
-    runtimeOnly("com.github.shynixn.mccoroutine:mccoroutine-folia-core:2.16.0")
+    implementation("com.github.shynixn.mccoroutine:mccoroutine-bukkit-api:2.21.0")
+    implementation("com.github.shynixn.mccoroutine:mccoroutine-bukkit-core:2.21.0")
+    runtimeOnly("com.github.shynixn.mccoroutine:mccoroutine-folia-api:2.21.0")
+    runtimeOnly("com.github.shynixn.mccoroutine:mccoroutine-folia-core:2.21.0")
     implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.3.0")
     implementation("com.fasterxml.jackson.core:jackson-databind:2.2.3")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.2")
@@ -248,7 +235,7 @@ tasks.register("languageFile") {
     contractContents.add("interface PetBlocksLanguage : LanguageProvider, ShyGUILanguage {")
     for (key in lines) {
         if (key.toCharArray()[0].isLetter()) {
-            if (ignoredKeys.contains(key.substring(0, key.length-1))) {
+            if (ignoredKeys.contains(key.substring(0, key.length - 1))) {
                 continue
             }
 
