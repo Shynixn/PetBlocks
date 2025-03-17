@@ -3,7 +3,6 @@ package com.github.shynixn.petblocks.impl.service
 import com.github.shynixn.mcutils.common.ConfigurationService
 import com.github.shynixn.mcutils.common.Vector3d
 import com.github.shynixn.mcutils.common.item.ItemService
-import com.github.shynixn.mcutils.common.physic.PhysicObjectDispatcher
 import com.github.shynixn.mcutils.common.physic.PhysicObjectService
 import com.github.shynixn.mcutils.common.placeholder.PlaceHolderService
 import com.github.shynixn.mcutils.common.toVector3d
@@ -27,7 +26,6 @@ class PetEntityFactoryImpl (
     private val placeHolderService: PlaceHolderService,
     private val packetService: PacketService,
     private val rayTracingService: RayTracingService,
-    private val physicObjectDispatcher: PhysicObjectDispatcher,
     private val configurationService: ConfigurationService,
     private val breakBlockService: BreakBlockService,
     private val itemService: ItemService
@@ -77,7 +75,6 @@ class PetEntityFactoryImpl (
             pet,
             meta,
             packetService,
-            physicObjectDispatcher,
             pathfinderService,
             petActionExecutionService,
             breakBlockService,

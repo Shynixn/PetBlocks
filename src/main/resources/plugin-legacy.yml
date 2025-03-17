@@ -1,5 +1,5 @@
 name: PetBlocks
-version: 9.20.0
+version: 9.21.0
 author: Shynixn
 main: com.github.shynixn.petblocks.PetBlocksPlugin
 softdepend: [ PlaceholderAPI, HeadDatabase]

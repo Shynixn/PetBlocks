@@ -4,9 +4,11 @@ import com.github.shynixn.mccoroutine.bukkit.CoroutineTimings
 import com.github.shynixn.mccoroutine.bukkit.launch
 import com.github.shynixn.mccoroutine.bukkit.minecraftDispatcher
 import com.github.shynixn.mccoroutine.bukkit.ticks
-import com.github.shynixn.mcutils.common.*
+import com.github.shynixn.mcutils.common.CancellationToken
+import com.github.shynixn.mcutils.common.Vector3d
 import com.github.shynixn.mcutils.common.physic.PhysicObject
-import com.github.shynixn.mcutils.common.physic.PhysicObjectDispatcher
+import com.github.shynixn.mcutils.common.toLocation
+import com.github.shynixn.mcutils.common.toVector3d
 import com.github.shynixn.mcutils.packet.api.PacketService
 import com.github.shynixn.mcutils.packet.api.RayTracingService
 import com.github.shynixn.mcutils.packet.api.meta.enumeration.RidingMoveType
@@ -27,13 +29,14 @@ import com.github.shynixn.petblocks.impl.physic.MoveToTargetComponent
 import com.github.shynixn.petblocks.impl.physic.PlayerComponent
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.delay
-import org.bukkit.*
+import org.bukkit.Bukkit
+import org.bukkit.Location
+import org.bukkit.Material
 import org.bukkit.block.Block
 import org.bukkit.entity.Player
 import org.bukkit.plugin.Plugin
 import java.util.*
 import java.util.logging.Level
-import kotlin.collections.ArrayList
 
 class PetEntityImpl(
     private val physicsComponent: MathComponent,
@@ -44,7 +47,6 @@ class PetEntityImpl(
     val pet: Pet,
     private val petMeta: PetMeta,
     private val packetService: PacketService,
-    private val physicObjectDispatcher: PhysicObjectDispatcher,
     private val pathfinderService: PathfinderService,
     private val petActionExecutionService: PetActionExecutionService,
     private val breakBlockService: BreakBlockService,
@@ -275,66 +277,59 @@ class PetEntityImpl(
             randomMoveTwo = random.nextInt(3)
         }
 
-        plugin.launch(physicObjectDispatcher) {
-            val sourceLocation = physicsComponent.position.toLocation()
+        val sourceLocation = physicsComponent.position.toLocation()
 
-            for (i in 0 until 3) {
-                val targetLocation = location.toVector3d().addRelativeFront(-1.0 * i + randomMoveOne)
-                    .addRelativeLeft(randomMoveTwo.toDouble()).addRelativeRight(randomMoveThree.toDouble()).toLocation()
+        for (i in 0 until 3) {
+            val targetLocation = location.toVector3d().addRelativeFront(-1.0 * i + randomMoveOne)
+                .addRelativeLeft(randomMoveTwo.toDouble()).addRelativeRight(randomMoveThree.toDouble()).toLocation()
 
-                if (!attemptSolutions(snapshot, sourceLocation, targetLocation, speed)) {
-                    if (!attemptSolutions(snapshot, sourceLocation.clone().add(0.0, 1.0, 0.0), targetLocation, speed)) {
+            if (!attemptSolutions(snapshot, sourceLocation, targetLocation, speed)) {
+                if (!attemptSolutions(snapshot, sourceLocation.clone().add(0.0, 1.0, 0.0), targetLocation, speed)) {
+                    if (!attemptSolutions(
+                            snapshot, sourceLocation.clone().add(0.0, -1.0, 0.0), targetLocation, speed
+                        )
+                    ) {
                         if (!attemptSolutions(
-                                snapshot, sourceLocation.clone().add(0.0, -1.0, 0.0), targetLocation, speed
+                                snapshot, sourceLocation, targetLocation.clone().add(0.0, 1.0, 0.0), speed
                             )
                         ) {
                             if (!attemptSolutions(
-                                    snapshot, sourceLocation, targetLocation.clone().add(0.0, 1.0, 0.0), speed
+                                    snapshot, sourceLocation, targetLocation.clone().add(0.0, -1.0, 0.0), speed
                                 )
                             ) {
-                                if (!attemptSolutions(
-                                        snapshot, sourceLocation, targetLocation.clone().add(0.0, -1.0, 0.0), speed
-                                    )
-                                ) {
-                                    continue
-                                }
+                                continue
                             }
                         }
                     }
                 }
-
-                break
             }
+
+            break
         }
     }
 
     fun moveForward(speed: Double) {
         cancellationTokenLongRunning.isCancelled = true
         cancellationTokenLongRunning = CancellationToken()
-
         val token = cancellationTokenLongRunning
 
-        plugin.launch {
-            while (true) {
-                if (token.isCancelled) {
-                    return@launch
-                }
+        while (true) {
+            if (token.isCancelled) {
+                return
+            }
 
-                val snapshot = pathfinderService.calculateFastPathfinderSnapshot(
-                    pet.location, 5, 5, 5
-                )
-                val sourceLocation = pet.location
-                val targetLocation = sourceLocation.toVector3d().addRelativeFront(0.8).toLocation()
+            val snapshot = pathfinderService.calculateFastPathfinderSnapshot(
+                pet.location, 5, 5, 5
+            )
+            val sourceLocation = pet.location
+            val targetLocation = sourceLocation.toVector3d().addRelativeFront(0.8).toLocation()
 
-                plugin.launch(physicObjectDispatcher) {
-                    val pathResult = pathfinderService.findPath(snapshot, sourceLocation, targetLocation)
+            val pathResult = pathfinderService.findPath(snapshot, sourceLocation, targetLocation)
 
-                    if (pathResult.resultType != PathfinderResultType.FOUND) {
-                        token.isCancelled = true
-                    } else {
-                        moveToTargetComponent.walkToTarget(pathResult.steps, speed).join()
-                    }
-                }.join()
+            if (pathResult.resultType != PathfinderResultType.FOUND) {
+                token.isCancelled = true
+            } else {
+                moveToTargetComponent.walkToTarget(pathResult.steps, speed)
             }
         }
     }
@@ -364,9 +359,7 @@ class PetEntityImpl(
 
         if (isJumping) {
             if (isOnGround(getLocation().toLocation())) {
-                plugin.launch(physicObjectDispatcher) {
-                    physicsComponent.motion.y = 1.0
-                }
+                physicsComponent.motion.y = 1.0
             }
             synchronizeRidingState(player)
 
@@ -375,7 +368,7 @@ class PetEntityImpl(
 
         if (this.ridingMoveType == RidingMoveType.STOP) {
             this.ridingMoveType = moveType
-            plugin.launch(physicObjectDispatcher) {
+            plugin.launch {
                 while (!isDead && ridingMoveType != RidingMoveType.STOP && player.isOnline && pet.isRiding()) {
                     synchronizeRidingState(player)
                     val movementVector = if (ridingMoveType == RidingMoveType.FORWARD) {
@@ -418,11 +411,9 @@ class PetEntityImpl(
     private fun synchronizeRidingState(player: Player) {
         val current = Date().time
         if (current - lastRideUpdate >= ridePositionUpdateMs) {
-            plugin.launch {
-                // Required so the position of the player stays in sync while packet riding.
-                // Has to be on the main thread.
-                packetService.setServerPlayerPosition(player, physicsComponent.position.toLocation())
-            }
+            // Required so the position of the player stays in sync while packet riding.
+            // Has to be on the main thread.
+            packetService.setServerPlayerPosition(player, physicsComponent.position.toLocation())
             for (visiblePlayers in playerComponent.visiblePlayers) {
                 packetService.sendPacketOutEntityMount(visiblePlayers, PacketOutEntityMount().also {
                     it.entityId = entityComponent.entityId

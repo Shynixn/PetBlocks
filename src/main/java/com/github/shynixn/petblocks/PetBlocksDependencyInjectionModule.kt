@@ -163,7 +163,6 @@ class PetBlocksDependencyInjectionModule(
                 module.getService(),
                 module.getService(),
                 module.getService(),
-                module.getService()
             )
         }
         module.addService<PetActionExecutionService> {
