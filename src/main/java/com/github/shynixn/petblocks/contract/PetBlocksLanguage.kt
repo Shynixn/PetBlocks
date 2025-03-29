@@ -184,4 +184,10 @@ interface PetBlocksLanguage : LanguageProvider, ShyGUILanguage {
   var ridingSpeedChangedMessage: LanguageItem
 
   var ridingSpeedCommandHint: LanguageItem
+
+  var suggestRenamePrefix: LanguageItem
+
+  var suggestRenameClickable: LanguageItem
+
+  var suggestRenameSuffix: LanguageItem
 }

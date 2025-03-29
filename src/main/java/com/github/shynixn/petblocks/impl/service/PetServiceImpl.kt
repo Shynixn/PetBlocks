@@ -3,6 +3,7 @@ package com.github.shynixn.petblocks.impl.service
 import com.github.shynixn.mccoroutine.bukkit.launch
 import com.github.shynixn.mccoroutine.bukkit.ticks
 import com.github.shynixn.mcutils.common.ConfigurationService
+import com.github.shynixn.mcutils.common.item.Item
 import com.github.shynixn.mcutils.common.item.ItemService
 import com.github.shynixn.mcutils.common.placeholder.PlaceHolderService
 import com.github.shynixn.mcutils.common.repository.Repository
@@ -105,7 +106,6 @@ class PetServiceImpl(
                 val template = templates.firstOrNull { inner -> inner.name.equals(templateId, true) }
                     ?: throw IllegalArgumentException("Player '${player.name}' has a pet, which references a template '${templateId}' which  does not exist!")
 
-                // TODO: Fix compatibility with < 1.20.5. Will be removed in >= year 2025.
                 if (e.headItem.skinBase64.isNullOrBlank()) {
                     try {
                         // Ensures that skinBase64 is filled.
@@ -121,6 +121,18 @@ class PetServiceImpl(
                     } catch (e: Exception) {
                         e.printStackTrace()
                         // Ignored
+                    }
+                }
+
+                // Check if ItemStack can be parsed. If not, fall back to grass block.
+                try {
+                    itemService.toItemStack(e.headItem)
+                } catch (ex: Exception) {
+                    e.headItem = Item().also {
+                        it.typeName = "minecraft:player_head,397"
+                        it.nbt = "{SkullOwner:{Id:[I;-679733089,1513112343,-1218902292,1830955974],Name:\"PetBlocks\",Properties:{textures:[{Value:\"eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvODA4YWM1ZTI4ZGJkZmEyMjUwYzYwMjg3Njg2ZGIxNGNjYmViNzc2YzNmMDg2N2M5NTU1YjdlNDk1NmVmYmE3NyJ9fX0=\"}]}}}"
+                        it.component = "{\"minecraft:profile\":{\"properties\":[{\"name\":\"textures\",\"value\":\"eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvODA4YWM1ZTI4ZGJkZmEyMjUwYzYwMjg3Njg2ZGIxNGNjYmViNzc2YzNmMDg2N2M5NTU1YjdlNDk1NmVmYmE3NyJ9fX0=\"}]}}"
+                        it.skinBase64 = "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvODA4YWM1ZTI4ZGJkZmEyMjUwYzYwMjg3Njg2ZGIxNGNjYmViNzc2YzNmMDg2N2M5NTU1YjdlNDk1NmVmYmE3NyJ9fX0="
                     }
                 }
 

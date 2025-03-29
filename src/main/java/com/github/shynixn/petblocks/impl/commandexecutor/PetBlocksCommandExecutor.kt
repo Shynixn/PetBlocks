@@ -3,6 +3,9 @@ package com.github.shynixn.petblocks.impl.commandexecutor
 import com.github.shynixn.mccoroutine.bukkit.launch
 import com.github.shynixn.mcutils.common.*
 import com.github.shynixn.mcutils.common.chat.ChatMessageService
+import com.github.shynixn.mcutils.common.chat.ClickEvent
+import com.github.shynixn.mcutils.common.chat.ClickEventType
+import com.github.shynixn.mcutils.common.chat.TextComponent
 import com.github.shynixn.mcutils.common.command.CommandBuilder
 import com.github.shynixn.mcutils.common.command.ValidationException
 import com.github.shynixn.mcutils.common.command.Validator
@@ -35,12 +38,12 @@ import org.bukkit.plugin.Plugin
 import org.bukkit.util.Vector
 import java.util.*
 
-class PetBlocksCommandExecutor (
+class PetBlocksCommandExecutor(
     private val petService: PetService,
     private val templateRepository: CacheRepository<PetTemplate>,
     private val plugin: Plugin,
     private val configurationService: ConfigurationService,
-    chatMessageService: ChatMessageService,
+    private val chatMessageService: ChatMessageService,
     private val petMetaRepository: CachePlayerRepository<PlayerInformation>,
     private val itemService: ItemService,
     private val language: PetBlocksLanguage
@@ -153,7 +156,8 @@ class PetBlocksCommandExecutor (
         }
 
         override suspend fun message(sender: CommandSender, prevArgs: List<Any>, openArgs: List<String>): String {
-            return String.format(language.visibilityTypeNotFoundMessage.text,
+            return String.format(
+                language.visibilityTypeNotFoundMessage.text,
                 PetVisibility.values().joinToString(",") { e -> e.name.lowercase() })
         }
     }
@@ -166,7 +170,8 @@ class PetBlocksCommandExecutor (
         }
 
         override suspend fun message(sender: CommandSender, prevArgs: List<Any>, openArgs: List<String>): String {
-            return String.format(language.petRotationTypeNotFound.text,
+            return String.format(
+                language.petRotationTypeNotFound.text,
                 PetRotationType.values().joinToString(",") { e -> e.name.lowercase() })
         }
     }
@@ -773,6 +778,18 @@ class PetBlocksCommandExecutor (
                         setMemoryVariable(commandSender, petMustExist(player, name), key, value)
                     }
             }
+            subCommand("suggestrename") {
+                permission(Permission.VARIABLE)
+                builder().argument("name").tabs(petNamesTabs)
+                    .tabs { listOf("<value>") }
+                    .executePlayer(senderHasToBePlayer) { player, name ->
+                        sendRenameMessage(player, petMustExist(player, name))
+                    }.argument("player").validator(playerMustExist).tabs(onlinePlayerTabs)
+                    .permission(manipulateOtherPermission).permissionMessage(manipulateOtherPermissionMessage)
+                    .execute { _, name, player ->
+                        sendRenameMessage(player, petMustExist(player, name))
+                    }
+            }
             subCommand("reload") {
                 permission(Permission.RELOAD)
                 toolTip { language.reloadCommandHint.text }
@@ -803,6 +820,19 @@ class PetBlocksCommandExecutor (
             }
         }
         commandBuilder.build()
+    }
+
+    private fun sendRenameMessage(player: Player, pet: Pet) {
+        chatMessageService.sendChatMessage(player, TextComponent().also {
+            it.components = mutableListOf(TextComponent().also {
+                it.text = language.suggestRenamePrefix.text
+            }, TextComponent().also {
+                it.text = language.suggestRenameClickable.text
+                it.clickEvent = ClickEvent(ClickEventType.SUGGEST_COMMAND, "/petblocks rename ${pet.name} ")
+            }, TextComponent().also {
+                it.text = language.suggestRenameSuffix.text
+            })
+        })
     }
 
     private fun setRidingSpeed(sender: CommandSender, pet: Pet, speed: Double) {
@@ -1049,7 +1079,7 @@ class PetBlocksCommandExecutor (
     private fun openHeadDatabase(sender: CommandSender, player: Player, pet: Pet) {
         try {
             dependencyHeadDatabaseService!!.registerPlayerForNextClick(player, pet.name)
-            var command =  configurationService.findValue<String>("headDatabaseCommand")
+            var command = configurationService.findValue<String>("headDatabaseCommand")
 
             command = if (command.startsWith("/")) {
                 command.substring(1)

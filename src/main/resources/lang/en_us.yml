@@ -329,7 +329,16 @@ ridingSpeedCommandHint:
   text: "Changes the speed while riding a pet."
 cannotParseItemStackError:
   type: "CHAT"
-  text: "[&9ShyGUI&f] &cCannot parse ItemStack at row %1$1s and col %2$1s! Check your GUI menu configuration by reviewing the full item parsing error in the console log."
+  text: "[&9PetBlocks&f] &cCannot parse ItemStack at row %1$1s and col %2$1s! Check your GUI menu configuration by reviewing the full item parsing error in the console log."
 rowColOutOfRangeError:
   type: "CHAT"
-  text: "[&9ShyGUI&f] &cThe specified row %1$1s and col %2$1s are out of range of the GUI! Check your GUI menu configuration."
+  text: "[&9PetBlocks&f] &cThe specified row %1$1s and col %2$1s are out of range of the GUI! Check your GUI menu configuration."
+suggestRenamePrefix:
+  type: "CHAT"
+  text: "[&9PetBlocks&f] "
+suggestRenameClickable:
+  type: "CHAT"
+  text: "&e<<Click me>>"
+suggestRenameSuffix:
+  type: "CHAT"
+  text: "&r to rename your pet."
