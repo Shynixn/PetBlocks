@@ -216,7 +216,13 @@ class PetBlocksLanguageImpl : PetBlocksLanguage {
 
  override var ridingSpeedCommandHint = LanguageItem("Changes the speed while riding a pet.")
 
- override var cannotParseItemStackError = LanguageItem("[&9ShyGUI&f] &cCannot parse ItemStack at row %1$1s and col %2$1s! Check your GUI menu configuration by reviewing the full item parsing error in the console log.")
+ override var cannotParseItemStackError = LanguageItem("[&9PetBlocks&f] &cCannot parse ItemStack at row %1$1s and col %2$1s! Check your GUI menu configuration by reviewing the full item parsing error in the console log.")
 
- override var rowColOutOfRangeError = LanguageItem("[&9ShyGUI&f] &cThe specified row %1$1s and col %2$1s are out of range of the GUI! Check your GUI menu configuration.")
+ override var rowColOutOfRangeError = LanguageItem("[&9PetBlocks&f] &cThe specified row %1$1s and col %2$1s are out of range of the GUI! Check your GUI menu configuration.")
+
+ override var suggestRenamePrefix = LanguageItem("[&9PetBlocks&f] ")
+
+ override var suggestRenameClickable = LanguageItem("&e<<Click me>>")
+
+ override var suggestRenameSuffix = LanguageItem("&r to rename your pet.")
 }

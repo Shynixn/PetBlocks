@@ -1,15 +1,14 @@
-import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import java.io.*
 import java.util.*
 
 plugins {
     id("org.jetbrains.kotlin.jvm") version ("1.9.25")
-    id("com.github.johnrengelman.shadow") version ("7.0.0")
+    id("com.gradleup.shadow") version ("8.3.6")
 }
 
 group = "com.github.shynixn"
-version = "9.21.0"
+version = "9.22.0"
 
 repositories {
     mavenLocal()
@@ -27,19 +26,20 @@ dependencies {
     // Library dependencies with legacy compatibility, we can use more up-to-date version in the plugin.yml
     implementation("com.github.shynixn.mccoroutine:mccoroutine-bukkit-api:2.21.0")
     implementation("com.github.shynixn.mccoroutine:mccoroutine-bukkit-core:2.21.0")
-    runtimeOnly("com.github.shynixn.mccoroutine:mccoroutine-folia-api:2.21.0")
-    runtimeOnly("com.github.shynixn.mccoroutine:mccoroutine-folia-core:2.21.0")
-    implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.3.0")
-    implementation("com.fasterxml.jackson.core:jackson-databind:2.2.3")
+    implementation("com.github.shynixn.mccoroutine:mccoroutine-folia-api:2.21.0")
+    implementation("com.github.shynixn.mccoroutine:mccoroutine-folia-core:2.21.0")
+    implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.18.2")
+    implementation("com.fasterxml.jackson.core:jackson-databind:2.18.2")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.2")
     implementation("com.zaxxer:HikariCP:4.0.3")
     implementation("org.openjdk.nashorn:nashorn-core:15.4")
+    implementation("org.yaml:snakeyaml:1.33")
 
     // Custom dependencies
-    implementation("com.github.shynixn.shygui:shygui:1.2.0")
-    implementation("com.github.shynixn.mcutils:common:2025.4")
-    implementation("com.github.shynixn.mcutils:packet:2025.3")
-    implementation("com.github.shynixn.mcutils:database:2025.2")
+    implementation("com.github.shynixn.shygui:shygui:1.3.0")
+    implementation("com.github.shynixn.mcutils:common:2025.14")
+    implementation("com.github.shynixn.mcutils:packet:2025.16")
+    implementation("com.github.shynixn.mcutils:database:2025.5")
     implementation("com.github.shynixn.mcutils:pathfinder:2025.1")
     implementation("com.github.shynixn.mcutils:javascript:2025.1")
 
@@ -118,6 +118,8 @@ tasks.register("pluginJarLatest", com.github.jengelman.gradle.plugins.shadow.tas
     exclude("com/github/shynixn/petblocks/lib/com/github/shynixn/mcutils/packet/nms/v1_20_R4/**")
     exclude("com/github/shynixn/petblocks/lib/com/github/shynixn/mcutils/packet/nms/v1_21_R1/**")
     exclude("com/github/shynixn/petblocks/lib/com/github/shynixn/mcutils/packet/nms/v1_21_R2/**")
+    exclude("com/github/shynixn/petblocks/lib/com/github/shynixn/mcutils/packet/nms/v1_21_R2/**")
+    exclude("com/github/shynixn/petblocks/lib/com/github/shynixn/mcutils/packet/nms/v1_21_R3/**")
     exclude("com/github/shynixn/mcutils/**")
     exclude("com/github/shynixn/shygui/**")
     exclude("com/github/shynixn/mccoroutine/**")
@@ -174,6 +176,7 @@ tasks.register("relocateLegacyPluginJar", com.github.jengelman.gradle.plugins.sh
     relocate("com.google", "com.github.shynixn.petblocks.lib.com.google")
     relocate("com.fasterxml", "com.github.shynixn.petblocks.lib.com.fasterxml")
     relocate("com.zaxxer", "com.github.shynixn.petblocks.lib.com.zaxxer")
+    relocate("org.yaml", "com.github.shynixn.mctennis.lib.org.yaml")
     relocate("com.github.shynixn.mccoroutine", "com.github.shynixn.petblocks.lib.com.github.shynixn.mccoroutine")
     exclude("plugin.yml")
     rename("plugin-legacy.yml", "plugin.yml")
