@@ -178,6 +178,7 @@ tasks.register("relocateLegacyPluginJar", com.github.jengelman.gradle.plugins.sh
     relocate("com.github.shynixn.mcutils", "com.github.shynixn.petblocks.lib.com.github.shynixn.mcutils")
     relocate("com.github.shynixn.mccoroutine", "com.github.shynixn.petblocks.lib.com.github.shynixn.mccoroutine")
     relocate("com.github.shynixn.shygui", "com.github.shynixn.petblocks.lib.com.github.shynixn.shygui")
+    relocate("com.github.shynixn.fasterxml", "com.github.shynixn.petblocks.lib.com.github.shynixn.fasterxml")
 
     exclude("plugin.yml")
     rename("plugin-legacy.yml", "plugin.yml")

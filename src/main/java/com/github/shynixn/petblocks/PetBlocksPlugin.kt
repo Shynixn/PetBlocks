@@ -233,25 +233,25 @@ class PetBlocksPlugin : JavaPlugin() {
         // Register PlaceHolders
         com.github.shynixn.shygui.enumeration.PlaceHolder.registerAll(
             this,
-            shyGuiModule.getService<PlaceHolderService>(),
-            shyGuiModule.getService<GUIMenuService>()
+            module.getService<PlaceHolderService>(),
+            module.getService<GUIMenuService>()
         )
 
         // Register Packets
-        val packetService = shyGuiModule.getService<PacketService>()
+        val packetService = module.getService<PacketService>()
         packetService.registerPacketListening(PacketInType.CLICKINVENTORY)
         packetService.registerPacketListening(PacketInType.CLOSEINVENTORY)
 
         // Register Listeners
-        Bukkit.getPluginManager().registerEvents(shyGuiModule.getService<GUIMenuListener>(), this)
+        Bukkit.getPluginManager().registerEvents(module.getService<GUIMenuListener>(), this)
 
         // Register CommandExecutor
-        val commandExecutor = shyGuiModule.getService<ShyGUICommandExecutor>()
+        val commandExecutor = module.getService<ShyGUICommandExecutor>()
         commandExecutor.registerShyGuiCommand()
 
         // Register Dependencies
         Bukkit.getServicesManager().register(
-            GUIMenuService::class.java, shyGuiModule.getService<GUIMenuService>(), this, ServicePriority.Normal
+            GUIMenuService::class.java, module.getService<GUIMenuService>(), this, ServicePriority.Normal
         )
 
         val plugin = this
