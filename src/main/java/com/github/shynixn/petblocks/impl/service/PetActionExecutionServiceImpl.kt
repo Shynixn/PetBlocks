@@ -58,7 +58,7 @@ class PetActionExecutionServiceImpl (
             }
 
             if (action.debug) {
-                plugin.logger.log(Level.INFO, "> Start pet action ${action.name} ${action.actionType}.")
+                plugin.logger.log(Level.INFO, "> Start pet action ${action.name} ${action.type}.")
             }
 
             if (action.permission != null && !eventPlayer.hasPermission(action.permission!!)) {
@@ -80,11 +80,11 @@ class PetActionExecutionServiceImpl (
                 }
             }
 
-            if (action.actionType == PetActionType.COMMAND) {
+            if (action.type == PetActionType.COMMAND) {
                 executeCommandAction(eventPlayer, pet, action)
-            } else if (action.actionType == PetActionType.DELAY) {
+            } else if (action.type == PetActionType.DELAY) {
                 executeDelayAction(action, cancellationToken)
-            } else if (action.actionType == PetActionType.JAVASCRIPT) {
+            } else if (action.type == PetActionType.JAVASCRIPT) {
                 executeJavaScriptAction(eventPlayer, pet, action)
             }
         }

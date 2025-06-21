@@ -72,32 +72,38 @@ class PetBlocksCommandExecutor(
     private val manipulateOtherPermissionMessage: () -> String = {
         language.manipulateOtherMessage.text
     }
-    private val onlinePlayerTabs: (suspend (CommandSender) -> List<String>) = {
+    private val onlinePlayerTabs: ((CommandSender) -> List<String>) = {
         Bukkit.getOnlinePlayers().map { e -> e.name }
     }
-    private val worldTabs: (suspend (CommandSender) -> List<String>) = {
+    private val worldTabs: ((CommandSender) -> List<String>) = {
         Bukkit.getWorlds().map { e -> e.name }
     }
-    private val templateTabs: (suspend (CommandSender) -> List<String>) = {
-        templateRepository.getAll().map { e -> e.name }
+    private val templateTabs: ((CommandSender) -> List<String>) = {
+        val cache = templateRepository.getCache()
+        if (cache != null) {
+            cache.map { e -> e.name }
+        } else {
+            emptyList<String>()
+        }
     }
-    private val booleanTabs: (suspend (CommandSender) -> List<String>) = {
+    private val booleanTabs: ((CommandSender) -> List<String>) = {
         listOf(true, false).map { e -> e.toString() }
     }
-    private val petNamesTabs: (suspend (CommandSender) -> List<String>) = { sender ->
+    private val petNamesTabs: ((CommandSender) -> List<String>) = { sender ->
         if (sender is Player) {
-            petService.getPetsFromPlayer(sender).map { e -> e.name }
+            val cachedPets = petService.getCache()[sender]
+            cachedPets?.map { e -> e.name } ?: emptyList()
         } else {
             emptyList()
         }
     }
-    private val materialTabs: (suspend (CommandSender) -> List<String>) = { _ ->
+    private val materialTabs: ((CommandSender) -> List<String>) = { _ ->
         Material.values().map { e -> "minecraft:${e.name}" }
     }
-    private val visibilityTabs: (suspend (CommandSender) -> List<String>) = { _ ->
+    private val visibilityTabs: ((CommandSender) -> List<String>) = { _ ->
         PetVisibility.values().map { e -> e.name }
     }
-    private val rotationTypeTabs: (suspend (CommandSender) -> List<String>) = { _ ->
+    private val rotationTypeTabs: ((CommandSender) -> List<String>) = { _ ->
         PetRotationType.values().map { e -> e.name }
     }
 

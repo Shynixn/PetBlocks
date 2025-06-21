@@ -1,6 +1,6 @@
 package com.github.shynixn.petblocks
 
-import com.fasterxml.jackson.core.type.TypeReference
+import com.github.shynixn.fasterxml.jackson.core.type.TypeReference
 import com.github.shynixn.mccoroutine.bukkit.minecraftDispatcher
 import com.github.shynixn.mccoroutine.bukkit.scope
 import com.github.shynixn.mcutils.common.ConfigurationService
@@ -48,8 +48,8 @@ import java.util.logging.Level
 
 class PetBlocksDependencyInjectionModule(
     private val plugin: PetBlocksPlugin,
-    private val shyGuiModule: DependencyInjectionModule,
-    private val language: PetBlocksLanguage
+    private val language: PetBlocksLanguage,
+    private val placeHolderService: PlaceHolderService
 ) {
     companion object {
         val areLegacyVersionsIncluded: Boolean by lazy {
@@ -71,7 +71,7 @@ class PetBlocksDependencyInjectionModule(
 
         // Repositories
         val templateRepositoryImpl = YamlFileRepositoryImpl<PetTemplate>(
-            plugin, plugin.dataFolder.toPath().resolve("pets"), listOf(
+            plugin, "pets", plugin.dataFolder.toPath().resolve("pets"), listOf(
                 Pair("pets/pet_classic.yml", "pet_classic.yml"),
                 Pair("pets/pet_mining.yml", "pet_mining.yml"),
                 Pair("pets/pet_flying_dolphin.yml", "pet_flying_dolphin.yml")
@@ -97,7 +97,7 @@ class PetBlocksDependencyInjectionModule(
 
         // Library Services
         val chatMessageService = ChatMessageServiceImpl(plugin)
-        module.addService<PlaceHolderService>(shyGuiModule.getService<PlaceHolderService>())
+        module.addService<PlaceHolderService>(placeHolderService)
         module.addService<RayTracingService>(RayTracingServiceImpl())
         module.addService<PacketService>(PacketServiceImpl(plugin))
         module.addService<PhysicObjectDispatcher>(PhysicObjectDispatcherImpl(plugin))
@@ -177,7 +177,7 @@ class PetBlocksDependencyInjectionModule(
 
 
         plugin.globalChatMessageService = chatMessageService
-        plugin.globalPlaceHolderService = shyGuiModule.getService<PlaceHolderService>()
+        plugin.globalPlaceHolderService = placeHolderService
         return module
     }
 }

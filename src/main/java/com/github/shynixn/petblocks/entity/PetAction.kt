@@ -1,7 +1,5 @@
 package com.github.shynixn.petblocks.entity
 
-import com.fasterxml.jackson.annotation.JsonProperty
-import com.fasterxml.jackson.databind.annotation.JsonSerialize
 import com.github.shynixn.petblocks.enumeration.PetActionCommandLevelType
 import com.github.shynixn.petblocks.enumeration.PetActionType
 
@@ -17,8 +15,7 @@ class PetAction {
      * Action to use for execution.
      * Defaults to command.
      */
-    @JsonProperty("type")
-    var actionType: PetActionType = PetActionType.COMMAND
+    var type: PetActionType = PetActionType.COMMAND
 
     /**
      * Optional condition.

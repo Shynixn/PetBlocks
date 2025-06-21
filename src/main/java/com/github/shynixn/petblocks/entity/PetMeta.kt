@@ -1,6 +1,6 @@
 package com.github.shynixn.petblocks.entity
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties
+import com.github.shynixn.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.github.shynixn.mcutils.common.Vector3d
 import com.github.shynixn.mcutils.common.item.Item
 import com.github.shynixn.mcutils.packet.api.meta.enumeration.EntityType
