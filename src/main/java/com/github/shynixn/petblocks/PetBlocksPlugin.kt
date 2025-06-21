@@ -6,6 +6,7 @@ import com.github.shynixn.mcutils.common.Version
 import com.github.shynixn.mcutils.common.di.DependencyInjectionModule
 import com.github.shynixn.mcutils.common.language.reloadTranslation
 import com.github.shynixn.mcutils.common.placeholder.PlaceHolderService
+import com.github.shynixn.mcutils.common.placeholder.PlaceHolderServiceImpl
 import com.github.shynixn.mcutils.common.repository.Repository
 import com.github.shynixn.mcutils.database.api.CachePlayerRepository
 import com.github.shynixn.mcutils.database.api.PlayerDataRepository
@@ -64,7 +65,7 @@ class PetBlocksPlugin : JavaPlugin() {
     }
 
     private val prefix: String = ChatColor.BLUE.toString() + "[PetBlocks] " + ChatColor.WHITE
-    private lateinit var mainModule: DependencyInjectionModule
+    private lateinit var module: DependencyInjectionModule
     private lateinit var shyGuiModule: DependencyInjectionModule
     private var immediateDisable = false
 
@@ -102,9 +103,10 @@ class PetBlocksPlugin : JavaPlugin() {
                 Version.VERSION_1_21_R2,
                 Version.VERSION_1_21_R3,
                 Version.VERSION_1_21_R4,
+                Version.VERSION_1_21_R5,
             )
         } else {
-            listOf(Version.VERSION_1_21_R4)
+            listOf(Version.VERSION_1_21_R5)
         }
 
         if (!Version.serverVersion.isCompatible(*versions.toTypedArray())) {
@@ -126,45 +128,44 @@ class PetBlocksPlugin : JavaPlugin() {
         reloadTranslation(language)
         logger.log(Level.INFO, "Loaded language file.")
 
-        // ShyGUI Module
-        initializeShyGUIModule(language)
-
-        // Guice
-        this.mainModule = PetBlocksDependencyInjectionModule(this, shyGuiModule, language).build()
+        // Module
+        val placeHolderService = PlaceHolderServiceImpl(this)
+        this.shyGuiModule = loadShyGuiModule(language, placeHolderService)
+        this.module = PetBlocksDependencyInjectionModule(this, language, placeHolderService).build()
 
         // Register PlaceHolder
         PlaceHolder.registerAll(
-            mainModule.getService<PlaceHolderService>(),
-            mainModule.getService<CachePlayerRepository<PlayerInformation>>(),
-            mainModule.getService<PetService>()
+            module.getService<PlaceHolderService>(),
+            module.getService<CachePlayerRepository<PlayerInformation>>(),
+            module.getService<PetService>()
         )
 
         // Register Packets
-        val packetService = mainModule.getService<PacketService>()
+        val packetService = module.getService<PacketService>()
         packetService.registerPacketListening(PacketInType.USEENTITY)
         packetService.registerPacketListening(PacketInType.STEERENTITY)
 
         // Register Listeners
-        val petListener = mainModule.getService<PetListener>()
+        val petListener = module.getService<PetListener>()
         Bukkit.getPluginManager().registerEvents(petListener, this)
         if (Bukkit.getPluginManager().getPlugin(PluginDependency.HEADDATABASE.pluginName) != null) {
-            val headDatabaseService = mainModule.getService<DependencyHeadDatabaseService>()
+            val headDatabaseService = module.getService<DependencyHeadDatabaseService>()
             Bukkit.getPluginManager().registerEvents(headDatabaseService, this)
             Bukkit.getServicesManager()
                 .register(DependencyHeadDatabaseService::class.java, headDatabaseService, this, ServicePriority.Normal)
         }
 
         // Register CommandExecutor
-        mainModule.getService<PetBlocksCommandExecutor>()
+        module.getService<PetBlocksCommandExecutor>()
 
         // Register Dependencies
         Bukkit.getServicesManager()
-            .register(PetService::class.java, mainModule.getService<PetService>(), this, ServicePriority.Normal)
+            .register(PetService::class.java, module.getService<PetService>(), this, ServicePriority.Normal)
 
         val plugin = this
         plugin.launch {
             try {
-                val playerDataRepository = mainModule.getService<PlayerDataRepository<PlayerInformation>>()
+                val playerDataRepository = module.getService<PlayerDataRepository<PlayerInformation>>()
                 playerDataRepository.createIfNotExist()
             } catch (e: Exception) {
                 e.printStackTrace()
@@ -173,7 +174,7 @@ class PetBlocksPlugin : JavaPlugin() {
                 return@launch
             }
 
-            val templateRepository = mainModule.getService<Repository<PetTemplate>>()
+            val templateRepository = module.getService<Repository<PetTemplate>>()
             templateRepository.getAll()
 
             // Fix already online players.
@@ -193,22 +194,25 @@ class PetBlocksPlugin : JavaPlugin() {
             return
         }
 
-        val petService = mainModule.getService<PetService>()
+        val petService = module.getService<PetService>()
         petService.close()
 
-        val playerDataRepository = mainModule.getService<CachePlayerRepository<PlayerInformation>>()
+        val playerDataRepository = module.getService<CachePlayerRepository<PlayerInformation>>()
         runBlocking {
             playerDataRepository.saveAll()
             playerDataRepository.clearAll()
             playerDataRepository.close()
         }
 
-        mainModule.close()
+        module.close()
         shyGuiModule.close()
     }
 
-    private fun initializeShyGUIModule(language: PetBlocksLanguage) {
-        this.shyGuiModule = ShyGUIDependencyInjectionModule(this, ShyGUISettings().also {
+    private fun loadShyGuiModule(
+        language: PetBlocksLanguage,
+        placeHolderService: PlaceHolderService
+    ): DependencyInjectionModule {
+        val module = ShyGUIDependencyInjectionModule(this, ShyGUISettings().also {
             it.embedded = "GUI"
             it.guis = listOf(
                 "gui/petblocks_main_menu.yml" to "petblocks_main_menu.yml",
@@ -224,7 +228,7 @@ class PetBlocksPlugin : JavaPlugin() {
             it.baseCommand = "petblocksgui"
             it.commandPermission = Permission.COMMAND.text
             it.otherPlayerPermission = Permission.MANIPULATE_OTHER.text
-        }, language).build()
+        }, language, placeHolderService).build()
 
         // Register PlaceHolders
         com.github.shynixn.shygui.enumeration.PlaceHolder.registerAll(
@@ -256,6 +260,7 @@ class PetBlocksPlugin : JavaPlugin() {
             commandExecutor.registerGuiCommands()
             plugin.logger.log(Level.INFO, "Registered GUI commands.")
         }
+        return module
     }
 
 }

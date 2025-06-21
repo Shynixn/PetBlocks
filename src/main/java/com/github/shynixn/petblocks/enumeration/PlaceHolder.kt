@@ -1,5 +1,6 @@
 package com.github.shynixn.petblocks.enumeration
 
+import com.github.shynixn.fasterxml.jackson.databind.ObjectMapper
 import com.github.shynixn.mcutils.common.placeholder.PlaceHolderService
 import com.github.shynixn.mcutils.database.api.CachePlayerRepository
 import com.github.shynixn.petblocks.PetBlocksPlugin
@@ -162,7 +163,7 @@ enum class PlaceHolder(val text: String, val f: (Player?, Pet?, Map<String, Any>
             val memoryContent = pet.memory[parts[0]]
 
             if (parts.size > 1) {
-                val mapper = com.fasterxml.jackson.databind.ObjectMapper()
+                val mapper = ObjectMapper()
                 val parsedJsonObject = mapper.readValue(memoryContent, Map::class.java)
                 parsedJsonObject[parts[1]]?.toString()
             } else {

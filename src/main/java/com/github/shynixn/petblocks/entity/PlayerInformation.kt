@@ -1,6 +1,6 @@
 package com.github.shynixn.petblocks.entity
 
-import com.fasterxml.jackson.annotation.JsonIgnore
+import com.github.shynixn.fasterxml.jackson.annotation.JsonIgnore
 import com.github.shynixn.mcutils.database.api.PlayerData
 import java.util.UUID
 
