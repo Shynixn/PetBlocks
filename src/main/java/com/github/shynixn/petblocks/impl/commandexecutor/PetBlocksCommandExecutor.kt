@@ -1,6 +1,5 @@
 package com.github.shynixn.petblocks.impl.commandexecutor
 
-import com.github.shynixn.mccoroutine.bukkit.launch
 import com.github.shynixn.mcutils.common.*
 import com.github.shynixn.mcutils.common.chat.ChatMessageService
 import com.github.shynixn.mcutils.common.chat.ClickEvent
@@ -11,8 +10,9 @@ import com.github.shynixn.mcutils.common.command.ValidationException
 import com.github.shynixn.mcutils.common.command.Validator
 import com.github.shynixn.mcutils.common.item.Item
 import com.github.shynixn.mcutils.common.item.ItemService
+import com.github.shynixn.mcutils.common.language.LanguageItem
 import com.github.shynixn.mcutils.common.language.reloadTranslation
-import com.github.shynixn.mcutils.common.language.sendPluginMessage
+import com.github.shynixn.mcutils.common.placeholder.PlaceHolderService
 import com.github.shynixn.mcutils.common.repository.CacheRepository
 import com.github.shynixn.mcutils.database.api.CachePlayerRepository
 import com.github.shynixn.petblocks.PetBlocksDependencyInjectionModule
@@ -34,19 +34,19 @@ import org.bukkit.command.CommandSender
 import org.bukkit.entity.EntityType
 import org.bukkit.entity.Player
 import org.bukkit.event.block.BlockBreakEvent
-import org.bukkit.plugin.Plugin
 import org.bukkit.util.Vector
 import java.util.*
 
 class PetBlocksCommandExecutor(
     private val petService: PetService,
     private val templateRepository: CacheRepository<PetTemplate>,
-    private val plugin: Plugin,
+    private val plugin: CoroutinePlugin,
     private val configurationService: ConfigurationService,
     private val chatMessageService: ChatMessageService,
     private val petMetaRepository: CachePlayerRepository<PlayerInformation>,
     private val itemService: ItemService,
-    private val language: PetBlocksLanguage
+    private val language: PetBlocksLanguage,
+    private val placeHolderService: PlaceHolderService
 ) {
     private val regexPath = "pet.name.regex"
     private val blackListPath = "pet.name.blacklist"
@@ -57,13 +57,6 @@ class PetBlocksCommandExecutor(
             Bukkit.getServicesManager().load(DependencyHeadDatabaseService::class.java)
         } catch (e: Exception) {
             null
-        }
-    }
-    private val coroutineExecutor = object : CoroutineExecutor {
-        override fun execute(f: suspend () -> Unit) {
-            plugin.launch {
-                f.invoke()
-            }
         }
     }
     private val manipulateOtherPermission: () -> String = {
@@ -130,7 +123,9 @@ class PetBlocksCommandExecutor(
         }
 
         override suspend fun message(sender: CommandSender, prevArgs: List<Any>, openArgs: List<String>): String {
-            return language.cannotParseNumberMessage.text.format(openArgs[0])
+            return placeHolderService.resolvePlaceHolder(
+                language.cannotParseNumberMessage.text, null, mapOf("0" to openArgs[0])
+            )
         }
     }
 
@@ -140,7 +135,9 @@ class PetBlocksCommandExecutor(
         }
 
         override suspend fun message(sender: CommandSender, prevArgs: List<Any>, openArgs: List<String>): String {
-            return language.cannotParseNumberMessage.text.format(openArgs[0])
+            return placeHolderService.resolvePlaceHolder(
+                language.cannotParseNumberMessage.text, null, mapOf("0" to openArgs[0])
+            )
         }
     }
 
@@ -150,7 +147,9 @@ class PetBlocksCommandExecutor(
         }
 
         override suspend fun message(sender: CommandSender, prevArgs: List<Any>, openArgs: List<String>): String {
-            return language.cannotParseBoolean.text.format(openArgs[0])
+            return placeHolderService.resolvePlaceHolder(
+                language.cannotParseBoolean.text, null, mapOf("0" to openArgs[0])
+            )
         }
     }
 
@@ -162,9 +161,11 @@ class PetBlocksCommandExecutor(
         }
 
         override suspend fun message(sender: CommandSender, prevArgs: List<Any>, openArgs: List<String>): String {
-            return String.format(
+            return placeHolderService.resolvePlaceHolder(
                 language.visibilityTypeNotFoundMessage.text,
-                PetVisibility.values().joinToString(",") { e -> e.name.lowercase() })
+                null,
+                mapOf("0" to PetVisibility.values().joinToString(",") { e -> e.name.lowercase() })
+            )
         }
     }
 
@@ -176,9 +177,11 @@ class PetBlocksCommandExecutor(
         }
 
         override suspend fun message(sender: CommandSender, prevArgs: List<Any>, openArgs: List<String>): String {
-            return String.format(
+            return placeHolderService.resolvePlaceHolder(
                 language.petRotationTypeNotFound.text,
-                PetRotationType.values().joinToString(",") { e -> e.name.lowercase() })
+                null,
+                mapOf("0" to PetRotationType.values().joinToString(",") { e -> e.name.lowercase() })
+            )
         }
     }
 
@@ -190,7 +193,9 @@ class PetBlocksCommandExecutor(
         }
 
         override suspend fun message(sender: CommandSender, prevArgs: List<Any>, openArgs: List<String>): String {
-            return language.templateNotFoundMessage.text.format(openArgs[0])
+            return placeHolderService.resolvePlaceHolder(
+                language.templateNotFoundMessage.text, null, mapOf("0" to openArgs[0])
+            )
         }
     }
     private val playerMustExist = object : Validator<Player> {
@@ -211,7 +216,9 @@ class PetBlocksCommandExecutor(
         }
 
         override suspend fun message(sender: CommandSender, prevArgs: List<Any>, openArgs: List<String>): String {
-            return language.playerNotFoundMessage.text.format(openArgs[0])
+            return placeHolderService.resolvePlaceHolder(
+                language.playerNotFoundMessage.text, null, mapOf("0" to openArgs[0])
+            )
         }
     }
     private val templateMustHavePermission = object : Validator<PetTemplate> {
@@ -238,7 +245,9 @@ class PetBlocksCommandExecutor(
         }
 
         override suspend fun message(sender: CommandSender, prevArgs: List<Any>, openArgs: List<String>): String {
-            return String.format(language.petSkinTypeNotFound.text, openArgs[0])
+            return placeHolderService.resolvePlaceHolder(
+                language.petSkinTypeNotFound.text, null, mapOf("0" to openArgs[0])
+            )
         }
     }
 
@@ -279,14 +288,16 @@ class PetBlocksCommandExecutor(
         val pet = pets.firstOrNull { e -> e.name.equals(name, true) }
 
         if (pet == null) {
-            throw ValidationException(language.petNotFoundMessage.text.format(name))
+            val message =
+                placeHolderService.resolvePlaceHolder(language.petNotFoundMessage.text, null, mapOf("0" to name))
+            throw ValidationException(message)
         }
 
         return pet
     }
 
     init {
-        val commandBuilder = CommandBuilder(plugin, coroutineExecutor, "petblocks", chatMessageService) {
+        val commandBuilder = CommandBuilder(plugin, "petblocks", chatMessageService) {
             usage(language.commandUsage.text)
             description(language.commandDescription.text)
             aliases(plugin.config.getStringList("commands.petblocks.aliases"))
@@ -821,7 +832,7 @@ class PetBlocksCommandExecutor(
                     }
 
                     Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), "petblocksgui reload")
-                    sender.sendPluginMessage(language.reloadMessage)
+                    sender.sendLanguageMessage(language.reloadMessage)
                 }
             }
         }
@@ -843,7 +854,7 @@ class PetBlocksCommandExecutor(
 
     private fun setRidingSpeed(sender: CommandSender, pet: Pet, speed: Double) {
         pet.ridingSpeed = speed
-        sender.sendPluginMessage(language.ridingSpeedChangedMessage, speed)
+        sender.sendLanguageMessage(language.ridingSpeedChangedMessage, speed.toString())
     }
 
     private suspend fun createPet(
@@ -853,19 +864,19 @@ class PetBlocksCommandExecutor(
         val pet = pets.firstOrNull { e -> e.name.equals(petName, true) }
 
         if (pet != null) {
-            sender.sendPluginMessage(language.petNameExistsMessage, petName)
+            sender.sendLanguageMessage(language.petNameExistsMessage, petName)
             return
         }
 
         val petAmountPermission = "${Permission.DYN_AMOUNT.text}${pets.size + 1}"
 
         if (!player.hasPermission(petAmountPermission)) {
-            sender.sendPluginMessage(language.petAmountNotAllowed, (pets.size + 1).toString())
+            sender.sendLanguageMessage(language.petAmountNotAllowed, (pets.size + 1).toString())
             return
         }
 
         if (!PetBlocksDependencyInjectionModule.areLegacyVersionsIncluded && pets.isNotEmpty()) {
-            sender.sendPluginMessage(language.premiumMultiplePets)
+            sender.sendLanguageMessage(language.premiumMultiplePets)
             return
         }
 
@@ -876,36 +887,36 @@ class PetBlocksCommandExecutor(
             petName,
         )
 
-        sender.sendPluginMessage(language.petCreatedMessage, petName)
+        sender.sendLanguageMessage(language.petCreatedMessage, petName)
     }
 
     private suspend fun deletePet(sender: CommandSender, pet: Pet) {
         petService.deletePet(pet)
-        sender.sendPluginMessage(language.petDeletedMessage, pet.name)
+        sender.sendLanguageMessage(language.petDeletedMessage, pet.name)
     }
 
     private suspend fun listPet(sender: CommandSender, player: Player) {
         val pets = petService.getPetsFromPlayer(player)
         val petString = pets.joinToString(", ") { e -> e.name }
-        sender.sendPluginMessage(language.petListMessage, pets.size, petString)
+        sender.sendLanguageMessage(language.petListMessage, pets.size.toString(), petString)
     }
 
     private fun callPet(sender: CommandSender, pet: Pet) {
         pet.call()
-        sender.sendPluginMessage(language.petCalledMessage, pet.name)
+        sender.sendLanguageMessage(language.petCalledMessage, pet.name)
     }
 
     private fun lookAtLocation(sender: CommandSender, pet: Pet, location: Location) {
         location.y -= pet.groundOffset
         pet.lookAt(location)
-        sender.sendPluginMessage(language.petLookAtMessage, pet.name)
+        sender.sendLanguageMessage(language.petLookAtMessage, pet.name)
     }
 
     private fun walkToLocation(
         sender: CommandSender, pet: Pet, location: Location, speed: Double
     ) {
         pet.moveTo(location, speed)
-        sender.sendPluginMessage(language.petWalkToLocationMessage, pet.name)
+        sender.sendLanguageMessage(language.petWalkToLocationMessage, pet.name)
     }
 
     private fun hat(sender: CommandSender, pet: Pet) {
@@ -916,24 +927,24 @@ class PetBlocksCommandExecutor(
             pet.loop = loop
         }
 
-        sender.sendPluginMessage(language.petHatMessage, pet.name)
+        sender.sendLanguageMessage(language.petHatMessage, pet.name)
     }
 
     private fun unmount(sender: CommandSender, pet: Pet) {
         pet.unmount()
-        sender.sendPluginMessage(language.petUnmountMessage, pet.name)
+        sender.sendLanguageMessage(language.petUnmountMessage, pet.name)
     }
 
     private fun teleportPet(sender: CommandSender, pet: Pet, location: Location) {
         pet.location = location
-        sender.sendPluginMessage(language.petTeleportedMessage, pet.name)
+        sender.sendLanguageMessage(language.petTeleportedMessage, pet.name)
     }
 
     private fun setVelocityToPet(
         sender: CommandSender, pet: Pet, vector: Vector
     ) {
         pet.velocity = vector
-        sender.sendPluginMessage(language.petVelocityAppliedMessage, pet.name)
+        sender.sendLanguageMessage(language.petVelocityAppliedMessage, pet.name)
     }
 
     private fun setRelativeVelocityToPet(
@@ -949,7 +960,7 @@ class PetBlocksCommandExecutor(
         normalized.y *= vector.y
         normalized.z *= vector.z
         pet.velocity = normalized
-        sender.sendPluginMessage(language.petVelocityAppliedMessage, pet.name)
+        sender.sendLanguageMessage(language.petVelocityAppliedMessage, pet.name)
     }
 
     private fun setSkinType(sender: CommandSender, pet: Pet, material: String, durability: Int) {
@@ -957,7 +968,7 @@ class PetBlocksCommandExecutor(
         item.typeName = material
         item.durability = durability.toString()
         pet.headItem = item
-        sender.sendPluginMessage(language.petSkinTypeChangedMessage, pet.name)
+        sender.sendLanguageMessage(language.petSkinTypeChangedMessage, pet.name)
     }
 
     private fun setSkinNbt(sender: CommandSender, pet: Pet, nbt: String) {
@@ -969,9 +980,9 @@ class PetBlocksCommandExecutor(
             val item = pet.headItem
             item.nbt = nbt
             pet.headItem = item
-            sender.sendPluginMessage(language.petSkinNbtChanged, pet.name)
+            sender.sendLanguageMessage(language.petSkinNbtChanged, pet.name)
         } catch (e: Exception) {
-            sender.sendPluginMessage(language.cannotParseNbtMessage, pet.name)
+            sender.sendLanguageMessage(language.cannotParseNbtMessage, pet.name)
         }
     }
 
@@ -986,9 +997,9 @@ class PetBlocksCommandExecutor(
             val item = pet.headItem
             item.component = dataComponent
             pet.headItem = item
-            sender.sendPluginMessage(language.petSkinNbtChanged, pet.name)
+            sender.sendLanguageMessage(language.petSkinNbtChanged, pet.name)
         } catch (e: Exception) {
-            sender.sendPluginMessage(language.cannotParseDataComponentMessage, pet.name)
+            sender.sendLanguageMessage(language.cannotParseDataComponentMessage, pet.name)
         }
     }
 
@@ -1000,7 +1011,7 @@ class PetBlocksCommandExecutor(
         headItem.skinBase64 = base64EncodedSkinUrl
         headItem.durability = 3.toString()
         pet.headItem = headItem
-        sender.sendPluginMessage(language.petSkinNbtChanged, pet.name)
+        sender.sendLanguageMessage(language.petSkinNbtChanged, pet.name)
     }
 
     private fun setSkinHeadDatabase(sender: CommandSender, pet: Pet, hdbId: String) {
@@ -1009,14 +1020,14 @@ class PetBlocksCommandExecutor(
             val item = itemService.toItem(itemStack)
             setSkinBase64(sender, pet, item.skinBase64!!)
         } catch (e: Exception) {
-            sender.sendPluginMessage(language.headDatabasePluginNotLoaded, pet.name)
+            sender.sendLanguageMessage(language.headDatabasePluginNotLoaded, pet.name)
             return
         }
     }
 
     private fun setDisplayName(sender: CommandSender, pet: Pet, displayName: String) {
         pet.displayName = displayName.replace("_", " ")
-        sender.sendPluginMessage(language.petNameChangeMessage, pet.displayName.translateChatColors())
+        sender.sendLanguageMessage(language.petNameChangeMessage, pet.displayName.translateChatColors())
     }
 
     private fun ridePet(sender: CommandSender, pet: Pet) {
@@ -1028,39 +1039,39 @@ class PetBlocksCommandExecutor(
             pet.loop = loop
         }
 
-        sender.sendPluginMessage(language.petRideMessage, pet.name)
+        sender.sendLanguageMessage(language.petRideMessage, pet.name)
     }
 
     private fun setVisibility(
         sender: CommandSender, pet: Pet, visibility: PetVisibility
     ) {
         pet.visibility = visibility
-        sender.sendPluginMessage(language.visibilityChangedMessage, pet.name)
+        sender.sendLanguageMessage(language.visibilityChangedMessage, pet.name)
     }
 
     private fun setPetLoop(sender: CommandSender, pet: Pet, loop: String) {
         if (!pet.template.loops.containsKey(loop)) {
-            sender.sendPluginMessage(language.petLoopNotFound, loop)
+            sender.sendLanguageMessage(language.petLoopNotFound, loop)
             return
         }
 
         pet.loop = loop
-        sender.sendPluginMessage(language.petLoopChangedMessage, pet.name, loop)
+        sender.sendLanguageMessage(language.petLoopChangedMessage, pet.name, loop)
     }
 
     private fun setPetTemplate(sender: CommandSender, pet: Pet, template: PetTemplate) {
         if (!sender.hasPermission(Permission.DYN_TEMPLATE.text + template.name)) {
-            sender.sendPluginMessage(language.templateNotAllowed, template.name)
+            sender.sendLanguageMessage(language.templateNotAllowed, template.name)
             return
         }
 
         pet.template = template
-        sender.sendPluginMessage(language.petTemplateChangeMessage, pet.name, template.name)
+        sender.sendLanguageMessage(language.petTemplateChangeMessage, pet.name, template.name)
     }
 
     private fun spawnPet(sender: CommandSender, pet: Pet) {
         pet.spawn()
-        sender.sendPluginMessage(language.petSpawnedMessage, pet.name)
+        sender.sendLanguageMessage(language.petSpawnedMessage, pet.name)
     }
 
     private fun togglePet(sender: CommandSender, pet: Pet) {
@@ -1073,13 +1084,13 @@ class PetBlocksCommandExecutor(
 
     private fun deSpawnPet(sender: CommandSender, pet: Pet) {
         pet.remove()
-        sender.sendPluginMessage(language.petDespawnedMessage, pet.name)
+        sender.sendLanguageMessage(language.petDespawnedMessage, pet.name)
     }
 
     private suspend fun selectPet(sender: CommandSender, player: Player, pet: Pet) {
         val playerInformation = petMetaRepository.getByPlayer(player) ?: return
         playerInformation.selectedPet = pet.name
-        sender.sendPluginMessage(language.petSelectedMessage, pet.name)
+        sender.sendLanguageMessage(language.petSelectedMessage, pet.name)
     }
 
     private fun openHeadDatabase(sender: CommandSender, player: Player, pet: Pet) {
@@ -1095,7 +1106,7 @@ class PetBlocksCommandExecutor(
 
             Bukkit.getServer().dispatchCommand(player, command)
         } catch (e: Exception) {
-            sender.sendPluginMessage(language.headDatabasePluginNotLoaded)
+            sender.sendLanguageMessage(language.headDatabasePluginNotLoaded)
             return
         }
     }
@@ -1113,7 +1124,7 @@ class PetBlocksCommandExecutor(
         val actualDropTypes = try {
             dropTypes.split(",").map { e -> DropType.values().first { t -> t.name.equals(e, true) } }
         } catch (e: Exception) {
-            sender.sendPluginMessage(language.dropTypeNotFound, DropType.values().joinToString(","))
+            sender.sendLanguageMessage(language.dropTypeNotFound, DropType.values().joinToString(","))
             return
         }
 
@@ -1122,18 +1133,18 @@ class PetBlocksCommandExecutor(
 
     private fun cancel(sender: CommandSender, pet: Pet) {
         pet.cancelAction()
-        sender.sendPluginMessage(language.cancelMessage, pet.name)
+        sender.sendLanguageMessage(language.cancelMessage, pet.name)
     }
 
     private fun snap(sender: CommandSender, pet: Pet) {
         pet.snap()
-        sender.sendPluginMessage(language.snapMessage, pet.name)
+        sender.sendLanguageMessage(language.snapMessage, pet.name)
     }
 
 
     private fun moveForward(sender: CommandSender, pet: Pet, speed: Double) {
         pet.moveForward(speed)
-        sender.sendPluginMessage(language.petMoveForwardMessage, pet.name)
+        sender.sendLanguageMessage(language.petMoveForwardMessage, pet.name)
     }
 
     private fun rotateRel(sender: CommandSender, pet: Pet, petRotationType: PetRotationType, angle: Float) {
@@ -1150,31 +1161,36 @@ class PetBlocksCommandExecutor(
         }
 
         pet.location = location
-        sender.sendPluginMessage(language.rotationRelMessage, pet.name)
+        sender.sendLanguageMessage(language.rotationRelMessage, pet.name)
     }
 
     private fun setEntityType(sender: CommandSender, pet: Pet, entityType: String) {
         pet.entityType = entityType
         pet.isEntityVisible = !entityType.lowercase().contains("armor_stand")
-        sender.sendPluginMessage(language.entityTypeChangeMessage, entityType)
+        sender.sendLanguageMessage(language.entityTypeChangeMessage, entityType)
     }
 
     private fun setEntityVisible(sender: CommandSender, pet: Pet, flag: Boolean) {
         pet.isEntityVisible = flag
-        sender.sendPluginMessage(language.entityVisibilityChangedMessage, flag)
+        sender.sendLanguageMessage(language.entityVisibilityChangedMessage, flag.toString())
     }
 
     private fun setGroundOffset(sender: CommandSender, pet: Pet, offset: Double) {
         pet.groundOffset = offset
-        sender.sendPluginMessage(language.groundOffsetChangedMessage, offset)
+        sender.sendLanguageMessage(language.groundOffsetChangedMessage, offset.toString())
     }
 
     private fun setMemoryVariable(sender: CommandSender, pet: Pet, key: String, value: String) {
         pet.memory[key] = value
-        sender.sendPluginMessage(language.variableChangedMessage, value)
+        sender.sendLanguageMessage(language.variableChangedMessage, value)
     }
 
     private fun CommandBuilder.permission(permission: Permission) {
         this.permission(permission.text)
+    }
+
+    private fun CommandSender.sendLanguageMessage(languageItem: LanguageItem, vararg args: String) {
+        val sender = this
+        chatMessageService.sendLanguageMessage(sender, languageItem, *args)
     }
 }

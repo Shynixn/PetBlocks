@@ -8,7 +8,7 @@ plugins {
 }
 
 group = "com.github.shynixn"
-version = "9.24.0"
+version = "9.25.0"
 
 repositories {
     mavenLocal()
@@ -34,10 +34,10 @@ dependencies {
     implementation("org.openjdk.nashorn:nashorn-core:15.4")
 
     // Custom dependencies
-    implementation("com.github.shynixn.shygui:shygui:1.5.0")
-    implementation("com.github.shynixn.mcutils:common:2025.30")
-    implementation("com.github.shynixn.mcutils:packet:2025.29")
-    implementation("com.github.shynixn.mcutils:database:2025.7")
+    implementation("com.github.shynixn.shygui:shygui:1.6.0")
+    implementation("com.github.shynixn.mcutils:common:2025.34")
+    implementation("com.github.shynixn.mcutils:packet:2025.31")
+    implementation("com.github.shynixn.mcutils:database:2025.10")
     implementation("com.github.shynixn.mcutils:pathfinder:2025.1")
     implementation("com.github.shynixn.mcutils:javascript:2025.1")
 
@@ -267,7 +267,7 @@ tasks.register("languageFile") {
     implContents.add("class PetBlocksLanguageImpl : PetBlocksLanguage {")
     implContents.add(
         " override val names: List<String>\n" +
-                "  get() = listOf(\"en_us\",\"es_es\")"
+                "  get() = listOf(\"en_us\")"
     )
 
     for (i in 0 until lines.size) {

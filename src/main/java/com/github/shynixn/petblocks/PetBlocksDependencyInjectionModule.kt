@@ -1,15 +1,14 @@
 package com.github.shynixn.petblocks
 
 import com.github.shynixn.fasterxml.jackson.core.type.TypeReference
-import com.github.shynixn.mccoroutine.bukkit.minecraftDispatcher
-import com.github.shynixn.mccoroutine.bukkit.scope
 import com.github.shynixn.mcutils.common.ConfigurationService
 import com.github.shynixn.mcutils.common.ConfigurationServiceImpl
+import com.github.shynixn.mcutils.common.CoroutinePlugin
 import com.github.shynixn.mcutils.common.chat.ChatMessageService
+import com.github.shynixn.mcutils.common.command.CommandService
+import com.github.shynixn.mcutils.common.command.CommandServiceImpl
 import com.github.shynixn.mcutils.common.di.DependencyInjectionModule
 import com.github.shynixn.mcutils.common.item.ItemService
-import com.github.shynixn.mcutils.common.language.globalChatMessageService
-import com.github.shynixn.mcutils.common.language.globalPlaceHolderService
 import com.github.shynixn.mcutils.common.physic.PhysicObjectDispatcher
 import com.github.shynixn.mcutils.common.physic.PhysicObjectDispatcherImpl
 import com.github.shynixn.mcutils.common.physic.PhysicObjectService
@@ -67,7 +66,9 @@ class PetBlocksDependencyInjectionModule(
 
         // Params
         module.addService<Plugin>(plugin)
+        module.addService<CoroutinePlugin>(plugin)
         module.addService<PetBlocksLanguage>(language)
+        module.addService<PlaceHolderService>(placeHolderService)
 
         // Repositories
         val templateRepositoryImpl = YamlFileRepositoryImpl<PetTemplate>(
@@ -83,39 +84,51 @@ class PetBlocksDependencyInjectionModule(
             plugin,
             "PetBlocks",
             plugin.dataFolder.toPath().resolve("PetBlocks.sqlite"),
-            object : TypeReference<PlayerInformation>() {}, plugin.minecraftDispatcher
+            object : TypeReference<PlayerInformation>() {}
         )
         val autoSaveMinutes = plugin.config.getInt("database.autoSaveIntervalMinutes")
         val playerDataRepository = AutoSavePlayerDataRepositoryImpl(
             1000 * 60L * autoSaveMinutes,
-            CachedPlayerDataRepositoryImpl(configSelectedRepository, plugin.minecraftDispatcher),
-            plugin.scope,
-            plugin.minecraftDispatcher
+            CachedPlayerDataRepositoryImpl(configSelectedRepository),
+            plugin
         )
         module.addService<PlayerDataRepository<PlayerInformation>>(playerDataRepository)
         module.addService<CachePlayerRepository<PlayerInformation>>(playerDataRepository)
 
-        // Library Services
-        val chatMessageService = ChatMessageServiceImpl(plugin)
-        module.addService<PlaceHolderService>(placeHolderService)
-        module.addService<RayTracingService>(RayTracingServiceImpl())
-        module.addService<PacketService>(PacketServiceImpl(plugin))
-        module.addService<PhysicObjectDispatcher>(PhysicObjectDispatcherImpl(plugin))
-        module.addService<ConfigurationService>(ConfigurationServiceImpl(plugin))
-        module.addService<ChatMessageService>(chatMessageService)
-        module.addService<PhysicObjectService> {
-            PhysicObjectServiceImpl(plugin, module.getService())
+        // Services
+        module.addService<CommandService> {
+            CommandServiceImpl(module.getService())
         }
-        module.addService<ItemService>(ItemServiceImpl())
-        module.addService<PathfinderService>(PathfinderServiceImpl(CubeWorldSnapshotServiceImpl()))
+        module.addService<PacketService> {
+            PacketServiceImpl(module.getService())
+        }
+        module.addService<ConfigurationService> {
+            ConfigurationServiceImpl(module.getService())
+        }
+        module.addService<ItemService> {
+            ItemServiceImpl()
+        }
+        module.addService<PathfinderService> {
+            PathfinderServiceImpl(CubeWorldSnapshotServiceImpl())
+        }
+        module.addService<ChatMessageService> {
+            ChatMessageServiceImpl(module.getService(), module.getService())
+        }
+        module.addService<RayTracingService> {
+            RayTracingServiceImpl()
+        }
+        module.addService<PhysicObjectService> {
+            PhysicObjectServiceImpl(module.getService(), module.getService())
+        }
+        module.addService<PhysicObjectDispatcher> {
+            PhysicObjectDispatcherImpl(module.getService())
+        }
         module.addService<JavaScriptService>(
             JavaScriptServiceImpl(
-                plugin,
+                module.getService(),
                 this.plugin.config.getStringList("scriptEngine.options")
             )
         )
-
-        // Services
         module.addService<PetListener> {
             PetListener(
                 module.getService(),
@@ -134,10 +147,11 @@ class PetBlocksDependencyInjectionModule(
                 module.getService(),
                 module.getService(),
                 module.getService(),
+                module.getService(),
                 module.getService()
             )
         }
-        module.addService<BreakBlockService>() {
+        module.addService<BreakBlockService> {
             BreakBlockServiceImpl(module.getService(), module.getService())
         }
         module.addService<PetService> {
@@ -174,10 +188,6 @@ class PetBlocksDependencyInjectionModule(
             }
             plugin.logger.log(Level.INFO, "Loaded dependency ${PluginDependency.HEADDATABASE.pluginName}.")
         }
-
-
-        plugin.globalChatMessageService = chatMessageService
-        plugin.globalPlaceHolderService = placeHolderService
         return module
     }
 }

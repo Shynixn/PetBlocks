@@ -1,7 +1,9 @@
 package com.github.shynixn.petblocks
 
 import com.github.shynixn.mccoroutine.bukkit.launch
+import com.github.shynixn.mccoroutine.bukkit.minecraftDispatcher
 import com.github.shynixn.mcutils.common.ChatColor
+import com.github.shynixn.mcutils.common.CoroutinePlugin
 import com.github.shynixn.mcutils.common.Version
 import com.github.shynixn.mcutils.common.di.DependencyInjectionModule
 import com.github.shynixn.mcutils.common.language.reloadTranslation
@@ -27,18 +29,22 @@ import com.github.shynixn.shygui.contract.GUIMenuService
 import com.github.shynixn.shygui.entity.ShyGUISettings
 import com.github.shynixn.shygui.impl.commandexecutor.ShyGUICommandExecutor
 import com.github.shynixn.shygui.impl.listener.GUIMenuListener
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.runBlocking
 import org.bukkit.Bukkit
+import org.bukkit.Location
+import org.bukkit.entity.Entity
 import org.bukkit.event.player.PlayerJoinEvent
 import org.bukkit.plugin.ServicePriority
 import org.bukkit.plugin.java.JavaPlugin
 import java.util.*
 import java.util.logging.Level
+import kotlin.coroutines.CoroutineContext
 
 /**
  * Author Shynixn
  */
-class PetBlocksPlugin : JavaPlugin() {
+class PetBlocksPlugin : JavaPlugin(), CoroutinePlugin {
     companion object {
         val eventPlayer = "eventPlayer"
         val index = "[index]"
@@ -263,4 +269,21 @@ class PetBlocksPlugin : JavaPlugin() {
         return module
     }
 
+    override fun execute(f: suspend () -> Unit): Job {
+        return launch {
+            f.invoke()
+        }
+    }
+
+    override fun fetchEntityDispatcher(entity: Entity): CoroutineContext {
+        return minecraftDispatcher
+    }
+
+    override fun fetchGlobalRegionDispatcher(): CoroutineContext {
+        return minecraftDispatcher
+    }
+
+    override fun fetchLocationDispatcher(location: Location): CoroutineContext {
+        return minecraftDispatcher
+    }
 }
