@@ -5,10 +5,10 @@ import com.github.shynixn.petblocks.contract.PetBlocksLanguage
 
 class PetBlocksLanguageImpl : PetBlocksLanguage {
  override val names: List<String>
-  get() = listOf("en_us","es_es")
- override var petNameChangeMessage = LanguageItem("[&9PetBlocks&f] The name of the pet has been changed to %1$1s.")
+  get() = listOf("en_us")
+ override var petNameChangeMessage = LanguageItem("[&9PetBlocks&f] The name of the pet has been changed to %petblocks_param_1%.")
 
- override var templateNotFoundMessage = LanguageItem("[&9PetBlocks&f] &cTemplate %1$1s not found.")
+ override var templateNotFoundMessage = LanguageItem("[&9PetBlocks&f] &cTemplate %petblocks_param_1% not found.")
 
  override var petNotFoundMessage = LanguageItem("[&9PetBlocks&f] &cPet not found.")
 
@@ -18,7 +18,7 @@ class PetBlocksLanguageImpl : PetBlocksLanguage {
 
  override var petDeletedMessage = LanguageItem("[&9PetBlocks&f] Pet has been deleted.")
 
- override var playerNotFoundMessage = LanguageItem("[&9PetBlocks&f] &cPlayer %1$1s not found.")
+ override var playerNotFoundMessage = LanguageItem("[&9PetBlocks&f] &cPlayer %petblocks_param_1% not found.")
 
  override var petCalledMessage = LanguageItem("[&9PetBlocks&f] Pet has been called.")
 
@@ -26,17 +26,17 @@ class PetBlocksLanguageImpl : PetBlocksLanguage {
 
  override var petDespawnedMessage = LanguageItem("[&9PetBlocks&f] Pet has been removed.")
 
- override var visibilityTypeNotFoundMessage = LanguageItem("[&9PetBlocks&f] &cOnly the visibility types %1$1s are supported.")
+ override var visibilityTypeNotFoundMessage = LanguageItem("[&9PetBlocks&f] &cOnly the visibility types %petblocks_param_1% are supported.")
 
- override var visibilityChangedMessage = LanguageItem("[&9PetBlocks&f] The visibility of the pet has been changed to %1$1s.")
+ override var visibilityChangedMessage = LanguageItem("[&9PetBlocks&f] The visibility of the pet has been changed to %petblocks_param_1%.")
 
  override var petSkinTypeChangedMessage = LanguageItem("[&9PetBlocks&f] The skinType of the pet has been changed.")
 
  override var petSkinNbtChanged = LanguageItem("[&9PetBlocks&f] The skin of the pet has been changed.")
 
- override var petSkinTypeNotFound = LanguageItem("[&9PetBlocks&f] &cMaterial %1$1s not found.")
+ override var petSkinTypeNotFound = LanguageItem("[&9PetBlocks&f] &cMaterial %petblocks_param_1% not found.")
 
- override var petListMessage = LanguageItem("[&9PetBlocks&f] Count: %1$1d Names: %2$1s")
+ override var petListMessage = LanguageItem("[&9PetBlocks&f] Count: %petblocks_param_1% Names: %petblocks_param_2%")
 
  override var petRideMessage = LanguageItem("[&9PetBlocks&f] Started riding pet.")
 
@@ -44,15 +44,15 @@ class PetBlocksLanguageImpl : PetBlocksLanguage {
 
  override var petHatMessage = LanguageItem("[&9PetBlocks&f] Started hat pet.")
 
- override var worldNotFoundMessage = LanguageItem("[&9PetBlocks&f] &cWorld %1$1s not found.")
+ override var worldNotFoundMessage = LanguageItem("[&9PetBlocks&f] &cWorld %petblocks_param_1% not found.")
 
  override var petLookAtMessage = LanguageItem("[&9PetBlocks&f] Pet is looking at a location.")
 
  override var petWalkToLocationMessage = LanguageItem("[&9PetBlocks&f] Pet is walking to location.")
 
- override var cannotParseNumberMessage = LanguageItem("[&9PetBlocks&f] &cCannot parse number %1$1s.")
+ override var cannotParseNumberMessage = LanguageItem("[&9PetBlocks&f] &cCannot parse number %petblocks_param_1%.")
 
- override var cannotParseNbtMessage = LanguageItem("[&9PetBlocks&f] &cCannot parse nbt %1$1s.")
+ override var cannotParseNbtMessage = LanguageItem("[&9PetBlocks&f] &cCannot parse nbt %petblocks_param_1%.")
 
  override var placeHolderPetNotFound = LanguageItem("No pet.")
 
@@ -64,27 +64,27 @@ class PetBlocksLanguageImpl : PetBlocksLanguage {
 
  override var reloadMessage = LanguageItem("[&9PetBlocks&f] PetBlocks has been reloaded.")
 
- override var petLoopNotFound = LanguageItem("[&9PetBlocks&f] &cLoop %1$1s not found.")
+ override var petLoopNotFound = LanguageItem("[&9PetBlocks&f] &cLoop %petblocks_param_1% not found.")
 
  override var premiumMultiplePets = LanguageItem("[&9PetBlocks&f] &cPetBlocks-Premium is required to spawn multiple pets per player.")
 
- override var petLoopChangedMessage = LanguageItem("[&9PetBlocks&f] Changed pet to loop %2$1s.")
+ override var petLoopChangedMessage = LanguageItem("[&9PetBlocks&f] Changed pet to loop %petblocks_param_1%.")
 
- override var petTemplateChangeMessage = LanguageItem("[&9PetBlocks&f] Changed pet to template %2$1s.")
+ override var petTemplateChangeMessage = LanguageItem("[&9PetBlocks&f] Changed pet to template %petblocks_param_1%.")
 
- override var petAmountNotAllowed = LanguageItem("[&9PetBlocks&f] &cYou do not have permission to have %1$1s pet(s).")
+ override var petAmountNotAllowed = LanguageItem("[&9PetBlocks&f] &cYou do not have permission to have %petblocks_param_1% pet(s).")
 
  override var petSelectedMessage = LanguageItem("")
 
- override var templateNotAllowed = LanguageItem("[&9PetBlocks&f] &cYou do not have permission for template %1$1s.")
+ override var templateNotAllowed = LanguageItem("[&9PetBlocks&f] &cYou do not have permission for template %petblocks_param_1%.")
 
- override var speedCannotBeParsed = LanguageItem("[&9PetBlocks&f] &cThe speed value %1$1s cannot be parsed.")
+ override var speedCannotBeParsed = LanguageItem("[&9PetBlocks&f] &cThe speed value %petblocks_param_1% cannot be parsed.")
 
  override var headDatabasePluginNotLoaded = LanguageItem("[&9PetBlocks&f] &cThe plugin HeadDatabase is not loaded.")
 
  override var errorLoadingTemplatesMessage = LanguageItem("[&9PetBlocks&f] &cCannot parse template file. See console log for details.")
 
- override var dropTypeNotFound = LanguageItem("[&9PetBlocks&f] &cOnly the drop types %1$1s are supported.")
+ override var dropTypeNotFound = LanguageItem("[&9PetBlocks&f] &cOnly the drop types %petblocks_param_1% are supported.")
 
  override var cancelMessage = LanguageItem("[&9PetBlocks&f] Cancelled action.")
 
@@ -92,19 +92,19 @@ class PetBlocksLanguageImpl : PetBlocksLanguage {
 
  override var petMoveForwardMessage = LanguageItem("[&9PetBlocks&f] Pet is walking forward.")
 
- override var petRotationTypeNotFound = LanguageItem("[&9PetBlocks&f] &cOnly the direction types %1$1s are supported.")
+ override var petRotationTypeNotFound = LanguageItem("[&9PetBlocks&f] &cOnly the direction types %petblocks_param_1% are supported.")
 
  override var rotationRelMessage = LanguageItem("[&9PetBlocks&f] The pet has been rotated.")
 
- override var entityTypeChangeMessage = LanguageItem("[&9PetBlocks&f] The pet entity type has been changed to %1$1s.")
+ override var entityTypeChangeMessage = LanguageItem("[&9PetBlocks&f] The pet entity type has been changed to %petblocks_param_1%.")
 
- override var entityVisibilityChangedMessage = LanguageItem("[&9PetBlocks&f] The pet entity visibility has been changed to %1$1s.")
+ override var entityVisibilityChangedMessage = LanguageItem("[&9PetBlocks&f] The pet entity visibility has been changed to %petblocks_param_1%.")
 
  override var groundOffsetChangedMessage = LanguageItem("[&9PetBlocks&f] The groundOffset of the pet has been changed.")
 
- override var groundOffsetCannotBeParsed = LanguageItem("[&9PetBlocks&f] &cThe groundOffset value %1$1s cannot be parsed.")
+ override var groundOffsetCannotBeParsed = LanguageItem("[&9PetBlocks&f] &cThe groundOffset value %petblocks_param_1% cannot be parsed.")
 
- override var cannotParseDataComponentMessage = LanguageItem("[&9PetBlocks&f] &cCannot parse data component %1$1s.")
+ override var cannotParseDataComponentMessage = LanguageItem("[&9PetBlocks&f] &cCannot parse data component %petblocks_param_1%.")
 
  override var maxLength20Characters = LanguageItem("[&9PetBlocks&f] The text length has to be less than 20 characters.")
 
@@ -116,7 +116,7 @@ class PetBlocksLanguageImpl : PetBlocksLanguage {
 
  override var commandSenderHasToBePlayer = LanguageItem("[&9PetBlocks&f] The command sender has to be a player if you do not specify the optional player argument.")
 
- override var cannotParseBoolean = LanguageItem("[&9PetBlocks&f] &cCannot parse boolean %1$1s.")
+ override var cannotParseBoolean = LanguageItem("[&9PetBlocks&f] &cCannot parse boolean %petblocks_param_1%.")
 
  override var createCommandHint = LanguageItem("Creates a new pet for the player with the given pet template.")
 
@@ -202,13 +202,13 @@ class PetBlocksLanguageImpl : PetBlocksLanguage {
 
  override var messageCommandHint = LanguageItem("Sends a chat message.")
 
- override var guiMenuNotFoundMessage = LanguageItem("[&9PetBlocks&f] &cMenu %1$1s not found.")
+ override var guiMenuNotFoundMessage = LanguageItem("[&9PetBlocks&f] &cMenu %petblocks_param_1% not found.")
 
- override var guiMenuNoPermissionMessage = LanguageItem("[&9PetBlocks&f] &cYou do not have permission for menu %1$1s.")
+ override var guiMenuNoPermissionMessage = LanguageItem("[&9PetBlocks&f] &cYou do not have permission for menu %petblocks_param_1%.")
 
  override var variableCommandHint = LanguageItem("Sets the value of the variable with the given key. This is useful to store arbitrary data into the pet e.g., health.")
 
- override var variableChangedMessage = LanguageItem("[&9PetBlocks&f] The pet memory variable %1$1s has been set to %2$1s.")
+ override var variableChangedMessage = LanguageItem("[&9PetBlocks&f] The pet memory variable %petblocks_param_1% has been set to %petblocks_param_2%.")
 
  override var velocityRelCommandHint = LanguageItem("Launches the pet into the current looking direction with the given multipliers.")
 
@@ -216,9 +216,9 @@ class PetBlocksLanguageImpl : PetBlocksLanguage {
 
  override var ridingSpeedCommandHint = LanguageItem("Changes the speed while riding a pet.")
 
- override var cannotParseItemStackError = LanguageItem("[&9PetBlocks&f] &cCannot parse ItemStack at row %1$1s and col %2$1s! Check your GUI menu configuration by reviewing the full item parsing error in the console log.")
+ override var cannotParseItemStackError = LanguageItem("[&9PetBlocks&f] &cCannot parse ItemStack at row %petblocks_param_1% and col %petblocks_param_2%! Check your GUI menu configuration by reviewing the full item parsing error in the console log.")
 
- override var rowColOutOfRangeError = LanguageItem("[&9PetBlocks&f] &cThe specified row %1$1s and col %2$1s are out of range of the GUI! Check your GUI menu configuration.")
+ override var rowColOutOfRangeError = LanguageItem("[&9PetBlocks&f] &cThe specified row %petblocks_param_1% and col %petblocks_param_2% are out of range of the GUI! Check your GUI menu configuration.")
 
  override var suggestRenamePrefix = LanguageItem("[&9PetBlocks&f] ")
 

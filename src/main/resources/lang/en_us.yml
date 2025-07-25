@@ -4,7 +4,7 @@ petNameChangeMessage:
   # Please notice that some messages do only support chat.
   type: "CHAT"
   # The primary text to be sent.
-  text: "[&9PetBlocks&f] The name of the pet has been changed to %1$1s."
+  text: "[&9PetBlocks&f] The name of the pet has been changed to %petblocks_param_1%."
   # Only available for type "ACTIONBAR". The time until the action bar message disappears.
   durationInTicks: 60
   # Only available for type "TITLE". Adds a subTitle.
@@ -17,7 +17,7 @@ petNameChangeMessage:
   fadeOutTicks: 20
 templateNotFoundMessage:
   type: "CHAT"
-  text: "[&9PetBlocks&f] &cTemplate %1$1s not found."
+  text: "[&9PetBlocks&f] &cTemplate %petblocks_param_1% not found."
 petNotFoundMessage:
   type: "CHAT"
   text: "[&9PetBlocks&f] &cPet not found."
@@ -32,7 +32,7 @@ petDeletedMessage:
   text: "[&9PetBlocks&f] Pet has been deleted."
 playerNotFoundMessage:
   type: "CHAT"
-  text: "[&9PetBlocks&f] &cPlayer %1$1s not found."
+  text: "[&9PetBlocks&f] &cPlayer %petblocks_param_1% not found."
 petCalledMessage:
   type: "CHAT"
   text: "[&9PetBlocks&f] Pet has been called."
@@ -44,10 +44,10 @@ petDespawnedMessage:
   text: "[&9PetBlocks&f] Pet has been removed."
 visibilityTypeNotFoundMessage:
   type: "CHAT"
-  text: "[&9PetBlocks&f] &cOnly the visibility types %1$1s are supported."
+  text: "[&9PetBlocks&f] &cOnly the visibility types %petblocks_param_1% are supported."
 visibilityChangedMessage:
   type: "CHAT"
-  text: "[&9PetBlocks&f] The visibility of the pet has been changed to %1$1s."
+  text: "[&9PetBlocks&f] The visibility of the pet has been changed to %petblocks_param_1%."
 petSkinTypeChangedMessage:
   type: "CHAT"
   text: "[&9PetBlocks&f] The skinType of the pet has been changed."
@@ -56,10 +56,10 @@ petSkinNbtChanged:
   text: "[&9PetBlocks&f] The skin of the pet has been changed."
 petSkinTypeNotFound:
   type: "CHAT"
-  text: "[&9PetBlocks&f] &cMaterial %1$1s not found."
+  text: "[&9PetBlocks&f] &cMaterial %petblocks_param_1% not found."
 petListMessage:
   type: "CHAT"
-  text: "[&9PetBlocks&f] Count: %1$1d Names: %2$1s"
+  text: "[&9PetBlocks&f] Count: %petblocks_param_1% Names: %petblocks_param_2%"
 petRideMessage:
   type: "CHAT"
   text: "[&9PetBlocks&f] Started riding pet."
@@ -71,7 +71,7 @@ petHatMessage:
   text: "[&9PetBlocks&f] Started hat pet."
 worldNotFoundMessage:
   type: "CHAT"
-  text: "[&9PetBlocks&f] &cWorld %1$1s not found."
+  text: "[&9PetBlocks&f] &cWorld %petblocks_param_1% not found."
 petLookAtMessage:
   type: "CHAT"
   text: "[&9PetBlocks&f] Pet is looking at a location."
@@ -80,10 +80,10 @@ petWalkToLocationMessage:
   text: "[&9PetBlocks&f] Pet is walking to location."
 cannotParseNumberMessage:
   type: "CHAT"
-  text: "[&9PetBlocks&f] &cCannot parse number %1$1s."
+  text: "[&9PetBlocks&f] &cCannot parse number %petblocks_param_1%."
 cannotParseNbtMessage:
   type: "CHAT"
-  text: "[&9PetBlocks&f] &cCannot parse nbt %1$1s."
+  text: "[&9PetBlocks&f] &cCannot parse nbt %petblocks_param_1%."
 placeHolderPetNotFound:
   type: "CHAT"
   text: "No pet."
@@ -101,28 +101,28 @@ reloadMessage:
   text: "[&9PetBlocks&f] PetBlocks has been reloaded."
 petLoopNotFound:
   type: "CHAT"
-  text: "[&9PetBlocks&f] &cLoop %1$1s not found."
+  text: "[&9PetBlocks&f] &cLoop %petblocks_param_1% not found."
 premiumMultiplePets:
   type: "CHAT"
   text: "[&9PetBlocks&f] &cPetBlocks-Premium is required to spawn multiple pets per player."
 petLoopChangedMessage:
   type: "CHAT"
-  text: "[&9PetBlocks&f] Changed pet to loop %2$1s."
+  text: "[&9PetBlocks&f] Changed pet to loop %petblocks_param_1%."
 petTemplateChangeMessage:
   type: "CHAT"
-  text: "[&9PetBlocks&f] Changed pet to template %2$1s."
+  text: "[&9PetBlocks&f] Changed pet to template %petblocks_param_1%."
 petAmountNotAllowed:
   type: "CHAT"
-  text: "[&9PetBlocks&f] &cYou do not have permission to have %1$1s pet(s)."
+  text: "[&9PetBlocks&f] &cYou do not have permission to have %petblocks_param_1% pet(s)."
 petSelectedMessage:
   type: "HIDDEN"
   text: ""
 templateNotAllowed:
   type: "CHAT"
-  text: "[&9PetBlocks&f] &cYou do not have permission for template %1$1s."
+  text: "[&9PetBlocks&f] &cYou do not have permission for template %petblocks_param_1%."
 speedCannotBeParsed:
   type: "CHAT"
-  text: "[&9PetBlocks&f] &cThe speed value %1$1s cannot be parsed."
+  text: "[&9PetBlocks&f] &cThe speed value %petblocks_param_1% cannot be parsed."
 headDatabasePluginNotLoaded:
   type: "CHAT"
   text: "[&9PetBlocks&f] &cThe plugin HeadDatabase is not loaded."
@@ -131,7 +131,7 @@ errorLoadingTemplatesMessage:
   text: "[&9PetBlocks&f] &cCannot parse template file. See console log for details."
 dropTypeNotFound:
   type: "CHAT"
-  text: "[&9PetBlocks&f] &cOnly the drop types %1$1s are supported."
+  text: "[&9PetBlocks&f] &cOnly the drop types %petblocks_param_1% are supported."
 cancelMessage:
   type: "CHAT"
   text: "[&9PetBlocks&f] Cancelled action."
@@ -143,25 +143,25 @@ petMoveForwardMessage:
   text: "[&9PetBlocks&f] Pet is walking forward."
 petRotationTypeNotFound:
   type: "CHAT"
-  text: "[&9PetBlocks&f] &cOnly the direction types %1$1s are supported."
+  text: "[&9PetBlocks&f] &cOnly the direction types %petblocks_param_1% are supported."
 rotationRelMessage:
   type: "CHAT"
   text: "[&9PetBlocks&f] The pet has been rotated."
 entityTypeChangeMessage:
   type: "CHAT"
-  text: "[&9PetBlocks&f] The pet entity type has been changed to %1$1s."
+  text: "[&9PetBlocks&f] The pet entity type has been changed to %petblocks_param_1%."
 entityVisibilityChangedMessage:
   type: "CHAT"
-  text: "[&9PetBlocks&f] The pet entity visibility has been changed to %1$1s."
+  text: "[&9PetBlocks&f] The pet entity visibility has been changed to %petblocks_param_1%."
 groundOffsetChangedMessage:
   type: "CHAT"
   text: "[&9PetBlocks&f] The groundOffset of the pet has been changed."
 groundOffsetCannotBeParsed:
   type: "CHAT"
-  text: "[&9PetBlocks&f] &cThe groundOffset value %1$1s cannot be parsed."
+  text: "[&9PetBlocks&f] &cThe groundOffset value %petblocks_param_1% cannot be parsed."
 cannotParseDataComponentMessage:
   type: "CHAT"
-  text: "[&9PetBlocks&f] &cCannot parse data component %1$1s."
+  text: "[&9PetBlocks&f] &cCannot parse data component %petblocks_param_1%."
 maxLength20Characters:
   type: "CHAT"
   text: "[&9PetBlocks&f] The text length has to be less than 20 characters."
@@ -179,7 +179,7 @@ commandSenderHasToBePlayer:
   text: "[&9PetBlocks&f] The command sender has to be a player if you do not specify the optional player argument."
 cannotParseBoolean:
   type: "CHAT"
-  text: "[&9PetBlocks&f] &cCannot parse boolean %1$1s."
+  text: "[&9PetBlocks&f] &cCannot parse boolean %petblocks_param_1%."
 createCommandHint:
   type: "CHAT"
   text: "Creates a new pet for the player with the given pet template."
@@ -308,16 +308,16 @@ messageCommandHint:
   text: "Sends a chat message."
 guiMenuNotFoundMessage:
   type: "CHAT"
-  text: "[&9PetBlocks&f] &cMenu %1$1s not found."
+  text: "[&9PetBlocks&f] &cMenu %petblocks_param_1% not found."
 guiMenuNoPermissionMessage:
   type: "CHAT"
-  text: "[&9PetBlocks&f] &cYou do not have permission for menu %1$1s."
+  text: "[&9PetBlocks&f] &cYou do not have permission for menu %petblocks_param_1%."
 variableCommandHint:
   type: "CHAT"
   text: "Sets the value of the variable with the given key. This is useful to store arbitrary data into the pet e.g., health."
 variableChangedMessage:
   type: "CHAT"
-  text: "[&9PetBlocks&f] The pet memory variable %1$1s has been set to %2$1s."
+  text: "[&9PetBlocks&f] The pet memory variable %petblocks_param_1% has been set to %petblocks_param_2%."
 velocityRelCommandHint:
   type: "CHAT"
   text: "Launches the pet into the current looking direction with the given multipliers."
@@ -329,10 +329,10 @@ ridingSpeedCommandHint:
   text: "Changes the speed while riding a pet."
 cannotParseItemStackError:
   type: "CHAT"
-  text: "[&9PetBlocks&f] &cCannot parse ItemStack at row %1$1s and col %2$1s! Check your GUI menu configuration by reviewing the full item parsing error in the console log."
+  text: "[&9PetBlocks&f] &cCannot parse ItemStack at row %petblocks_param_1% and col %petblocks_param_2%! Check your GUI menu configuration by reviewing the full item parsing error in the console log."
 rowColOutOfRangeError:
   type: "CHAT"
-  text: "[&9PetBlocks&f] &cThe specified row %1$1s and col %2$1s are out of range of the GUI! Check your GUI menu configuration."
+  text: "[&9PetBlocks&f] &cThe specified row %petblocks_param_1% and col %petblocks_param_2% are out of range of the GUI! Check your GUI menu configuration."
 suggestRenamePrefix:
   type: "CHAT"
   text: "[&9PetBlocks&f] "
