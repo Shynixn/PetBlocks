@@ -41,7 +41,6 @@ class ArmorstandEntityComponent(
     }
 
     private fun onPlayerSpawn(player: Player, location: Location) {
-        checkForPluginMainThread()
         packetService.sendPacketOutEntitySpawn(player, PacketOutEntitySpawn().also {
             it.entityId = this.entityId
             it.entityTypeRaw = petMeta.entityType
@@ -54,7 +53,6 @@ class ArmorstandEntityComponent(
     }
 
     private fun onPlayerRemove(player: Player) {
-        checkForPluginMainThread()
         val outer = this
         packetService.sendPacketOutEntityDestroy(player, PacketOutEntityDestroy().also {
             it.entityIds = listOf(outer.entityId)
@@ -62,7 +60,6 @@ class ArmorstandEntityComponent(
     }
 
     fun updateEquipment(player: Player) {
-        checkForPluginMainThread()
         val itemStack = itemService.toItemStack(petMeta.headItem)
         packetService.sendPacketOutEntityEquipment(player, PacketOutEntityEquipment().also {
             it.entityId = this.entityId
@@ -71,7 +68,6 @@ class ArmorstandEntityComponent(
     }
 
     fun updateMetaData(player: Player) {
-        checkForPluginMainThread()
         packetService.sendPacketOutEntityMetadata(player, PacketOutEntityMetadata().also {
             it.entityId = this.entityId
             it.isArmorstandSmall = true
@@ -82,7 +78,6 @@ class ArmorstandEntityComponent(
     }
 
     fun updateRidingState(player: Player) {
-        checkForPluginMainThread()
 
         val owner = pet.player
 
@@ -129,7 +124,6 @@ class ArmorstandEntityComponent(
     }
 
     private fun onPositionChange(position: Vector3d, motion: Vector3d) {
-        checkForPluginMainThread()
 
         val players = playerComponent.visiblePlayers
         val parsedEntityType = EntityType.findType(this.petMeta.entityType)

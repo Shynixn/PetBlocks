@@ -2,6 +2,8 @@ package com.github.shynixn.petblocks.impl.service
 
 import checkForPluginMainThread
 import com.github.shynixn.mccoroutine.folia.asyncDispatcher
+import com.github.shynixn.mccoroutine.folia.entityDispatcher
+import com.github.shynixn.mccoroutine.folia.globalRegionDispatcher
 import com.github.shynixn.mccoroutine.folia.launch
 import com.github.shynixn.mccoroutine.folia.ticks
 import com.github.shynixn.mcutils.common.CancellationToken
@@ -305,9 +307,13 @@ class PetActionExecutionServiceImpl (
             }
 
             if (action.level == PetActionCommandLevelType.PLAYER) {
-                Bukkit.getServer().dispatchCommand(pet.player, executionCommand)
+                plugin.launch(plugin.entityDispatcher(pet.player)){
+                    Bukkit.getServer().dispatchCommand(pet.player, executionCommand)
+                }
             } else {
-                Bukkit.getServer().dispatchCommand(commandSender, executionCommand)
+                plugin.launch(plugin.globalRegionDispatcher){
+                    Bukkit.getServer().dispatchCommand(commandSender, executionCommand)
+                }
             }
 
             if (action.debug) {

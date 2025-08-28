@@ -78,6 +78,15 @@ class PetEntityImpl(
 
     init {
         plugin.launch {
+            while (!isDead){
+                withContext(plugin.regionDispatcher(pet.location)){
+                    tickMinecraft()
+                }
+
+                tickPhysic()
+            }
+        }
+        plugin.launch {
             while (!isDead) {
                 try {
                     val template = pet.template
@@ -98,11 +107,6 @@ class PetEntityImpl(
 
                     cancellationTokenLoop = CancellationToken()
                     petActionExecutionService.executeAction(pet.player, pet, loop, cancellationTokenLoop)
-                    tickMinecraft()
-
-                    withContext(plugin.regionDispatcher(pet.location)){
-                        tickPhysic()
-                    }
                 } catch (e: PetBlocksPetDisposedException) {
                     // Ignore Disposed exception.
                     break
@@ -110,7 +114,6 @@ class PetEntityImpl(
                     // Ignore Coroutine Cancel
                     break
                 } catch (e: IllegalStateException) {
-                    // Ignore Coroutine Cancel
                     break
                 } catch (e: Exception) {
                     plugin.logger.log(Level.SEVERE, "Cannot execute pet loop '${pet.loop}'.", e)
@@ -511,7 +514,6 @@ class PetEntityImpl(
      * Removes the physic object.
      */
     fun remove() {
-        checkForPluginMainThread()
         // Entity needs to be closed first.
         playerComponent.close()
         isDead = true

@@ -71,86 +71,86 @@ class PetListener(
                 }
             }
         }
+    }
 
-        /**
-         * Gets called when a player quits the server.
-         */
-        @EventHandler
-        fun onPlayerQuitEvent(event: PlayerQuitEvent) {
-            plugin.launch {
-                val petCache = petService.getCache()[event.player]
+    /**
+     * Gets called when a player quits the server.
+     */
+    @EventHandler
+    fun onPlayerQuitEvent(event: PlayerQuitEvent) {
+        plugin.launch {
+            val petCache = petService.getCache()[event.player]
 
-                if (petCache != null) {
-                    for (pet in petCache) {
-                        if (pet.isSpawned) {
-                            pet.invokeDeSpawnCommand()
-                        }
+            if (petCache != null) {
+                for (pet in petCache) {
+                    if (pet.isSpawned) {
+                        pet.invokeDeSpawnCommand()
                     }
+                }
 
-                    delay(20.ticks)
-                    petService.clearCache(event.player)
+                delay(20.ticks)
+                petService.clearCache(event.player)
+            }
+        }
+    }
+
+    @EventHandler
+    fun onPlayerDismountEvent(event: PlayerToggleSneakEvent) {
+        // Compatibility to remount the pet on sneak in lower minecraft version.
+        if (Version.serverVersion.isVersionSameOrGreaterThan(Version.VERSION_1_17_R1)) {
+            return
+        }
+        plugin.launch {
+            val pets = petService.getPetsFromPlayer(event.player)
+
+            for (pet in pets) {
+                if (pet.isRiding()) {
+                    delay(3.ticks)
+                    pet.ride()
                 }
             }
         }
+    }
 
-        @EventHandler
-        fun onPlayerDismountEvent(event: PlayerToggleSneakEvent) {
-            // Compatibility to remount the pet on sneak in lower minecraft version.
-            if (Version.serverVersion.isVersionSameOrGreaterThan(Version.VERSION_1_17_R1)) {
-                return
-            }
+    @EventHandler
+    fun onPacketEvent(event: PacketAsyncEvent) {
+        val packet = event.packet
+
+        if (packet is PacketInRideJump) {
             plugin.launch {
-                val pets = petService.getPetsFromPlayer(event.player)
-
-                for (pet in pets) {
-                    if (pet.isRiding()) {
-                        delay(3.ticks)
-                        pet.ride()
-                    }
-                }
+                val petEntity = petEntityFactory.findPetEntityById(packet.entityId)
+                petEntity?.ride(event.player, RidingMoveType.FORWARD, true, false)
             }
+            return
         }
 
-        @EventHandler
-        fun onPacketEvent(event: PacketAsyncEvent) {
-            val packet = event.packet
+        if (packet is PacketInRideDismount) {
+            plugin.launch {
+                val petEntity = petEntityFactory.findPetEntityById(packet.entityId)
+                petEntity?.ride(event.player, RidingMoveType.STOP, false, true)
+            }
+            return
+        }
 
-            if (packet is PacketInRideJump) {
+        if (packet is PacketInRideMove) {
+            if (packet.moveType == RidingMoveType.FORWARD || packet.moveType == RidingMoveType.BACKWARD || packet.moveType == RidingMoveType.STOP) {
                 plugin.launch {
                     val petEntity = petEntityFactory.findPetEntityById(packet.entityId)
-                    petEntity?.ride(event.player, RidingMoveType.FORWARD, true, false)
+                    petEntity?.ride(event.player, packet.moveType, false, false)
                 }
-                return
             }
+            return
+        }
 
-            if (packet is PacketInRideDismount) {
-                plugin.launch {
-                    val petEntity = petEntityFactory.findPetEntityById(packet.entityId)
-                    petEntity?.ride(event.player, RidingMoveType.STOP, false, true)
-                }
-                return
-            }
+        if (packet is PacketInInteractEntity) {
+            plugin.launch {
+                val petEntity = petEntityFactory.findPetEntityById(packet.entityId)
 
-            if (packet is PacketInRideMove) {
-                if (packet.moveType == RidingMoveType.FORWARD || packet.moveType == RidingMoveType.BACKWARD || packet.moveType == RidingMoveType.STOP) {
-                    plugin.launch {
-                        val petEntity = petEntityFactory.findPetEntityById(packet.entityId)
-                        petEntity?.ride(event.player, packet.moveType, false, false)
-                    }
-                }
-                return
-            }
-
-            if (packet is PacketInInteractEntity) {
-                plugin.launch {
-                    val petEntity = petEntityFactory.findPetEntityById(packet.entityId)
-
-                    if (petEntity != null) {
-                        if (packet.actionType == InteractionType.ATTACK) {
-                            petEntity.leftClick(event.player)
-                        } else {
-                            petEntity.rightClick(event.player)
-                        }
+                if (petEntity != null) {
+                    if (packet.actionType == InteractionType.ATTACK) {
+                        petEntity.leftClick(event.player)
+                    } else {
+                        petEntity.rightClick(event.player)
                     }
                 }
             }
