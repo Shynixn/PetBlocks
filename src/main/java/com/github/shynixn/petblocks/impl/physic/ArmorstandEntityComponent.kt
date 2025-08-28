@@ -1,9 +1,8 @@
 package com.github.shynixn.petblocks.impl.physic
 
-import com.github.shynixn.mccoroutine.bukkit.launch
+import checkForPluginMainThread
 import com.github.shynixn.mcutils.common.Vector3d
 import com.github.shynixn.mcutils.common.item.ItemService
-import com.github.shynixn.mcutils.common.physic.PhysicComponent
 import com.github.shynixn.mcutils.common.placeholder.PlaceHolderService
 import com.github.shynixn.mcutils.common.toLocation
 import com.github.shynixn.mcutils.common.toVector
@@ -31,7 +30,7 @@ class ArmorstandEntityComponent(
     private val pet: Pet,
     private val plugin: Plugin,
     val entityId: Int,
-) : PhysicComponent {
+) {
     private var lastVisibleVector3d = Vector3d()
     private val voidFallingLimit = plugin.config.getDouble("pet.deSpawnAtYAxe")
 
@@ -42,6 +41,7 @@ class ArmorstandEntityComponent(
     }
 
     private fun onPlayerSpawn(player: Player, location: Location) {
+        checkForPluginMainThread()
         packetService.sendPacketOutEntitySpawn(player, PacketOutEntitySpawn().also {
             it.entityId = this.entityId
             it.entityTypeRaw = petMeta.entityType
@@ -54,6 +54,7 @@ class ArmorstandEntityComponent(
     }
 
     private fun onPlayerRemove(player: Player) {
+        checkForPluginMainThread()
         val outer = this
         packetService.sendPacketOutEntityDestroy(player, PacketOutEntityDestroy().also {
             it.entityIds = listOf(outer.entityId)
@@ -61,6 +62,7 @@ class ArmorstandEntityComponent(
     }
 
     fun updateEquipment(player: Player) {
+        checkForPluginMainThread()
         val itemStack = itemService.toItemStack(petMeta.headItem)
         packetService.sendPacketOutEntityEquipment(player, PacketOutEntityEquipment().also {
             it.entityId = this.entityId
@@ -69,6 +71,7 @@ class ArmorstandEntityComponent(
     }
 
     fun updateMetaData(player: Player) {
+        checkForPluginMainThread()
         packetService.sendPacketOutEntityMetadata(player, PacketOutEntityMetadata().also {
             it.entityId = this.entityId
             it.isArmorstandSmall = true
@@ -79,6 +82,8 @@ class ArmorstandEntityComponent(
     }
 
     fun updateRidingState(player: Player) {
+        checkForPluginMainThread()
+
         val owner = pet.player
 
         if (petMeta.visibility == PetVisibility.OWNER && player != owner) {
@@ -124,15 +129,15 @@ class ArmorstandEntityComponent(
     }
 
     private fun onPositionChange(position: Vector3d, motion: Vector3d) {
+        checkForPluginMainThread()
+
         val players = playerComponent.visiblePlayers
         val parsedEntityType = EntityType.findType(this.petMeta.entityType)
 
         if (position.y < voidFallingLimit) {
             // Protection for falling into the void.
-            plugin.launch {
-                pet.unmount()
-                pet.remove()
-            }
+            pet.unmount()
+            pet.remove()
             return
         }
 

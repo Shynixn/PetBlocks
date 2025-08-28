@@ -4,7 +4,7 @@ import org.bukkit.event.Cancellable
 import org.bukkit.event.Event
 import org.bukkit.event.HandlerList
 
-open class PetBlocksEvent : Event(), Cancellable {
+open class PetBlocksEvent : Event(true), Cancellable {
     private var cancelledFlag = false
 
     /**

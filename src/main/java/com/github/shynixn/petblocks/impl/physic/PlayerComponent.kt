@@ -1,10 +1,8 @@
 package com.github.shynixn.petblocks.impl.physic
 
-import com.github.shynixn.mcutils.common.physic.PhysicComponent
 import com.github.shynixn.mcutils.common.toLocation
 import com.github.shynixn.petblocks.contract.Pet
 import com.github.shynixn.petblocks.enumeration.PetVisibility
-import com.github.shynixn.petblocks.impl.PetEntityImpl
 import org.bukkit.Location
 import org.bukkit.entity.Player
 import java.util.*
@@ -21,7 +19,7 @@ class PlayerComponent(
      */
     renderDistanceBlocks: Int = 70,
     private val pet: Pet
-) : PhysicComponent {
+) : AutoCloseable {
     var lastTimeRenderUpdate = 0L
 
     // Multiplied to save performance later.
@@ -46,7 +44,7 @@ class PlayerComponent(
         tickMinecraft()
     }
 
-    override fun tickMinecraft() {
+    fun tickMinecraft() {
         val currentTime = Date().time
 
         if (currentTime - lastTimeRenderUpdate >= renderVisibilityUpdateMs) {

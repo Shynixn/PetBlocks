@@ -5,8 +5,6 @@ main: com.github.shynixn.petblocks.PetBlocksPlugin
 softdepend: [ PlaceholderAPI, HeadDatabase]
 api-version: 1.13
 libraries:
-  - com.github.shynixn.mccoroutine:mccoroutine-bukkit-api:2.22.0
-  - com.github.shynixn.mccoroutine:mccoroutine-bukkit-core:2.22.0
   - com.github.shynixn.mccoroutine:mccoroutine-folia-api:2.22.0
   - com.github.shynixn.mccoroutine:mccoroutine-folia-core:2.22.0
   - com.github.shynixn:fasterxml:1.2.0

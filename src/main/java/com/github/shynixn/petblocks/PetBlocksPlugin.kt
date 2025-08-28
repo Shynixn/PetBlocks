@@ -1,10 +1,15 @@
 package com.github.shynixn.petblocks
 
-import com.github.shynixn.mccoroutine.bukkit.launch
-import com.github.shynixn.mccoroutine.bukkit.minecraftDispatcher
+import com.github.shynixn.mccoroutine.folia.entityDispatcher
+import com.github.shynixn.mccoroutine.folia.globalRegionDispatcher
+import com.github.shynixn.mccoroutine.folia.isFoliaLoaded
+import com.github.shynixn.mccoroutine.folia.launch
+import com.github.shynixn.mccoroutine.folia.mcCoroutineConfiguration
+import com.github.shynixn.mccoroutine.folia.regionDispatcher
 import com.github.shynixn.mcutils.common.ChatColor
 import com.github.shynixn.mcutils.common.CoroutinePlugin
 import com.github.shynixn.mcutils.common.Version
+import com.github.shynixn.mcutils.common.checkIfFoliaIsLoadable
 import com.github.shynixn.mcutils.common.di.DependencyInjectionModule
 import com.github.shynixn.mcutils.common.language.reloadTranslation
 import com.github.shynixn.mcutils.common.placeholder.PlaceHolderService
@@ -37,6 +42,7 @@ import org.bukkit.entity.Entity
 import org.bukkit.event.player.PlayerJoinEvent
 import org.bukkit.plugin.ServicePriority
 import org.bukkit.plugin.java.JavaPlugin
+import pluginMainThreadId
 import java.util.*
 import java.util.logging.Level
 import kotlin.coroutines.CoroutineContext
@@ -129,6 +135,24 @@ class PetBlocksPlugin : JavaPlugin(), CoroutinePlugin {
 
         logger.log(Level.INFO, "Loaded NMS version ${Version.serverVersion}.")
 
+        if (mcCoroutineConfiguration.isFoliaLoaded && !checkIfFoliaIsLoadable()) {
+            logger.log(Level.SEVERE, "================================================")
+            logger.log(Level.SEVERE, "BlockBall for Folia requires BlockBall-Premium-Folia.jar")
+            logger.log(Level.SEVERE, "Go to https://www.patreon.com/Shynixn to download it.")
+            logger.log(Level.SEVERE, "Plugin gets now disabled!")
+            logger.log(Level.SEVERE, "================================================")
+            Bukkit.getPluginManager().disablePlugin(this)
+            return
+        }
+
+        if (isFoliaLoaded()) {
+            logger.log(Level.INFO, "Loading Folia components.")
+        }
+
+        launch {
+            pluginMainThreadId = Thread.currentThread().id
+        }
+
         // Register Language
         val language = PetBlocksLanguageImpl()
         reloadTranslation(language)
@@ -219,7 +243,6 @@ class PetBlocksPlugin : JavaPlugin(), CoroutinePlugin {
         placeHolderService: PlaceHolderService
     ): DependencyInjectionModule {
         val module = ShyGUIDependencyInjectionModule(this, ShyGUISettings().also {
-            it.embedded = "GUI"
             it.guis = listOf(
                 "gui/petblocks_main_menu.yml" to "petblocks_main_menu.yml",
                 "gui/petblocks_skins_menu.yml" to "petblocks_skins_menu.yml",
@@ -269,6 +292,15 @@ class PetBlocksPlugin : JavaPlugin(), CoroutinePlugin {
         return module
     }
 
+    override fun execute(
+        coroutineContext: CoroutineContext,
+        f: suspend () -> Unit
+    ): Job {
+        return launch(coroutineContext) {
+            f.invoke()
+        }
+    }
+
     override fun execute(f: suspend () -> Unit): Job {
         return launch {
             f.invoke()
@@ -276,14 +308,14 @@ class PetBlocksPlugin : JavaPlugin(), CoroutinePlugin {
     }
 
     override fun fetchEntityDispatcher(entity: Entity): CoroutineContext {
-        return minecraftDispatcher
+        return entityDispatcher(entity)
     }
 
     override fun fetchGlobalRegionDispatcher(): CoroutineContext {
-        return minecraftDispatcher
+        return globalRegionDispatcher
     }
 
     override fun fetchLocationDispatcher(location: Location): CoroutineContext {
-        return minecraftDispatcher
+        return regionDispatcher(location)
     }
 }

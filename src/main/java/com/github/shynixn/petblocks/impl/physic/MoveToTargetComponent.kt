@@ -1,13 +1,13 @@
 package com.github.shynixn.petblocks.impl.physic
 
+import checkForPluginMainThread
 import com.github.shynixn.mcutils.common.Vector3d
-import com.github.shynixn.mcutils.common.physic.PhysicComponent
 import com.github.shynixn.mcutils.common.toVector
 import com.github.shynixn.mcutils.common.toVector3d
 import kotlinx.coroutines.Job
 import java.util.*
 
-class MoveToTargetComponent(private val mathComponent: MathComponent) : PhysicComponent {
+class MoveToTargetComponent(private val mathComponent: MathComponent)  {
     private var currentPath: Queue<Vector3d>? = null
     private var currentTargetPosition: Vector3d? = null
     private var vectorPerTick: Vector3d? = null
@@ -27,6 +27,8 @@ class MoveToTargetComponent(private val mathComponent: MathComponent) : PhysicCo
      * Walks to the given target using the given path.
      */
     fun walkToTarget(path: List<Vector3d>, speed: Double): Job {
+        checkForPluginMainThread()
+
         lastJob.complete()
         currentPath = LinkedList(path)
         currentPath!!.poll()
@@ -42,7 +44,9 @@ class MoveToTargetComponent(private val mathComponent: MathComponent) : PhysicCo
     /**
      * Tick on async thread.
      */
-    override fun tickPhysic() {
+    fun tickPhysic() {
+        checkForPluginMainThread()
+
         if (currentPath == null) {
             return
         }

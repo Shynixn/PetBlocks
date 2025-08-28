@@ -1,8 +1,9 @@
 package com.github.shynixn.petblocks.impl.service
 
-import com.github.shynixn.mccoroutine.bukkit.asyncDispatcher
-import com.github.shynixn.mccoroutine.bukkit.launch
-import com.github.shynixn.mccoroutine.bukkit.ticks
+import checkForPluginMainThread
+import com.github.shynixn.mccoroutine.folia.asyncDispatcher
+import com.github.shynixn.mccoroutine.folia.launch
+import com.github.shynixn.mccoroutine.folia.ticks
 import com.github.shynixn.mcutils.common.CancellationToken
 import com.github.shynixn.mcutils.common.placeholder.PlaceHolderService
 import com.github.shynixn.mcutils.javascript.JavaScriptService
@@ -48,6 +49,8 @@ class PetActionExecutionServiceImpl (
         petActionDefinition: PetActionDefinition,
         cancellationToken: CancellationToken
     ) {
+        checkForPluginMainThread()
+
         for (action in petActionDefinition.actions) {
             if (pet.isDisposed) {
                 return

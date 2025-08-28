@@ -1,12 +1,11 @@
 package com.github.shynixn.petblocks.impl
 
-import com.github.shynixn.mccoroutine.bukkit.CoroutineTimings
-import com.github.shynixn.mccoroutine.bukkit.launch
-import com.github.shynixn.mccoroutine.bukkit.minecraftDispatcher
-import com.github.shynixn.mccoroutine.bukkit.ticks
+import checkForPluginMainThread
+import com.github.shynixn.mccoroutine.folia.launch
+import com.github.shynixn.mccoroutine.folia.regionDispatcher
+import com.github.shynixn.mccoroutine.folia.ticks
 import com.github.shynixn.mcutils.common.CancellationToken
 import com.github.shynixn.mcutils.common.Vector3d
-import com.github.shynixn.mcutils.common.physic.PhysicObject
 import com.github.shynixn.mcutils.common.toLocation
 import com.github.shynixn.mcutils.common.toVector3d
 import com.github.shynixn.mcutils.packet.api.PacketService
@@ -29,6 +28,7 @@ import com.github.shynixn.petblocks.impl.physic.MoveToTargetComponent
 import com.github.shynixn.petblocks.impl.physic.PlayerComponent
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.withContext
 import org.bukkit.Bukkit
 import org.bukkit.Location
 import org.bukkit.Material
@@ -55,7 +55,7 @@ class PetEntityImpl(
     private val pathFinderCube: Vector3d,
     private val visualizePath: Boolean,
     private val ridePositionUpdateMs: Int
-) : PhysicObject {
+)  {
     private var velocity = Vector3d(0.0, 0.0, 0.0)
     private var lastClickTimeStamp = 0L
     private var cancellationTokenLoop = CancellationToken()
@@ -77,7 +77,7 @@ class PetEntityImpl(
     }
 
     init {
-        plugin.launch(plugin.minecraftDispatcher + object : CoroutineTimings() {}) {
+        plugin.launch {
             while (!isDead) {
                 try {
                     val template = pet.template
@@ -98,7 +98,11 @@ class PetEntityImpl(
 
                     cancellationTokenLoop = CancellationToken()
                     petActionExecutionService.executeAction(pet.player, pet, loop, cancellationTokenLoop)
-                    delay(1.ticks)
+                    tickMinecraft()
+
+                    withContext(plugin.regionDispatcher(pet.location)){
+                        tickPhysic()
+                    }
                 } catch (e: PetBlocksPetDisposedException) {
                     // Ignore Disposed exception.
                     break
@@ -117,16 +121,9 @@ class PetEntityImpl(
     }
 
     /**
-     * Gets all entity ids.
-     */
-    override val entityIds: List<Int> by lazy {
-        arrayListOf(entityComponent.entityId)
-    }
-
-    /**
      * Is the physicObject dead.
      */
-    override var isDead: Boolean = false
+    var isDead: Boolean = false
         private set
 
     /**
@@ -141,6 +138,7 @@ class PetEntityImpl(
     }
 
     fun setVelocity(vector3d: Vector3d) {
+        checkForPluginMainThread()
         cancellationTokenLongRunning.isCancelled = true
         this.physicsComponent.setVelocity(vector3d)
     }
@@ -149,6 +147,7 @@ class PetEntityImpl(
      * Teleports the pet in world.
      */
     fun teleportInWorld(vector3d: Vector3d) {
+        checkForPluginMainThread()
         cancellationTokenLongRunning.isCancelled = true
         this.physicsComponent.teleport(vector3d)
     }
@@ -174,6 +173,7 @@ class PetEntityImpl(
      * If none work, the broken block item vanishes.
      */
     fun breakBlock(timeToBreakTicks: Int, dropTypes: List<DropType>) {
+        checkForPluginMainThread()
         cancellationTokenLongRunning.isCancelled = true
         cancellationTokenLongRunning = CancellationToken()
         val actualDropTypes = ArrayList(dropTypes)
@@ -185,6 +185,7 @@ class PetEntityImpl(
      * RightClicks the pet.
      */
     fun rightClick(player: Player) {
+        checkForPluginMainThread()
         cancellationTokenLongRunning.isCancelled = true
         val currentDateTime = Date().time
 
@@ -201,7 +202,7 @@ class PetEntityImpl(
         }
         val rightClickEvent = pet.template.events[key]
         if (rightClickEvent != null) {
-            plugin.launch(plugin.minecraftDispatcher + object : CoroutineTimings() {}) {
+            plugin.launch {
                 petActionExecutionService.executeAction(player, pet, rightClickEvent, CancellationToken())
             }
         }
@@ -211,6 +212,7 @@ class PetEntityImpl(
      * LeftClicks the pet.
      */
     fun leftClick(player: Player) {
+        checkForPluginMainThread()
         cancellationTokenLongRunning.isCancelled = true
         val currentDateTime = Date().time
 
@@ -227,7 +229,7 @@ class PetEntityImpl(
         }
         val leftClickEvent = pet.template.events[key]
         if (leftClickEvent != null) {
-            plugin.launch(plugin.minecraftDispatcher + object : CoroutineTimings() {}) {
+            plugin.launch {
                 petActionExecutionService.executeAction(player, pet, leftClickEvent, CancellationToken())
             }
         }
@@ -237,10 +239,11 @@ class PetEntityImpl(
      * Spawn is initiated.
      */
     fun onSpawn(player: Player) {
+        checkForPluginMainThread()
         cancellationTokenLongRunning.isCancelled = true
         val spawnEvent = pet.template.events["spawn"]
         if (spawnEvent != null) {
-            plugin.launch(plugin.minecraftDispatcher + object : CoroutineTimings() {}) {
+            plugin.launch {
                 petActionExecutionService.executeAction(player, pet, spawnEvent, CancellationToken())
             }
         }
@@ -250,10 +253,11 @@ class PetEntityImpl(
      * Despawn is initiated.
      */
     fun onDespawn(player: Player) {
+        checkForPluginMainThread()
         cancellationTokenLongRunning.isCancelled = true
         val despawnEvent = pet.template.events["despawn"]
         if (despawnEvent != null) {
-            plugin.launch(plugin.minecraftDispatcher + object : CoroutineTimings() {}) {
+            plugin.launch {
                 petActionExecutionService.executeAction(player, pet, despawnEvent, CancellationToken())
             }
         }
@@ -263,6 +267,7 @@ class PetEntityImpl(
      * Moves to the given location.
      */
     fun moveToLocation(location: Location, speed: Double) {
+        checkForPluginMainThread()
         cancellationTokenLongRunning.isCancelled = true
         val snapshot = pathfinderService.calculateFastPathfinderSnapshot(
             location, pathFinderCube.x.toInt(), pathFinderCube.y.toInt(), pathFinderCube.z.toInt()
@@ -309,6 +314,7 @@ class PetEntityImpl(
     }
 
     fun moveForward(speed: Double) {
+        checkForPluginMainThread()
         cancellationTokenLongRunning.isCancelled = true
         cancellationTokenLongRunning = CancellationToken()
         val token = cancellationTokenLongRunning
@@ -337,6 +343,7 @@ class PetEntityImpl(
     private fun attemptSolutions(
         snapshot: WorldSnapshot, sourceLocation: Location, targetLocation: Location, speed: Double
     ): Boolean {
+        checkForPluginMainThread()
         val result = pathfinderService.findPath(snapshot, sourceLocation, targetLocation)
 
         if (result.resultType == PathfinderResultType.FOUND) {
@@ -355,6 +362,7 @@ class PetEntityImpl(
      * Gets called when the player is riding the entity.
      */
     fun ride(player: Player, moveType: RidingMoveType, isJumping: Boolean, isSneaking: Boolean) {
+        checkForPluginMainThread()
         cancellationTokenLongRunning.isCancelled = true
 
         if (isJumping) {
@@ -401,7 +409,7 @@ class PetEntityImpl(
             lastSneakUpdate = current
             val sneakEvent = pet.template.events["ridingSneak"]
             if (sneakEvent != null) {
-                plugin.launch(plugin.minecraftDispatcher + object : CoroutineTimings() {}) {
+                plugin.launch {
                     petActionExecutionService.executeAction(player, pet, sneakEvent, CancellationToken())
                 }
             }
@@ -438,6 +446,7 @@ class PetEntityImpl(
      * Updates the displayName in the world.
      */
     fun updateMetaData() {
+        checkForPluginMainThread()
         for (player in playerComponent.visiblePlayers) {
             entityComponent.updateMetaData(player)
         }
@@ -447,6 +456,7 @@ class PetEntityImpl(
      * Updates the head Itemstack.
      */
     fun updateHeadItemStack() {
+        checkForPluginMainThread()
         for (player in playerComponent.visiblePlayers) {
             entityComponent.updateEquipment(player)
         }
@@ -456,6 +466,7 @@ class PetEntityImpl(
      * Updates the riding state of the player.
      */
     fun updateRidingState() {
+        checkForPluginMainThread()
         cancellationTokenLongRunning.isCancelled = true
         for (player in playerComponent.visiblePlayers) {
             entityComponent.updateRidingState(player)
@@ -465,17 +476,16 @@ class PetEntityImpl(
     /**
      * Tick on async thread.
      */
-    override fun tickPhysic() {
+    fun tickPhysic() {
+        checkForPluginMainThread()
         physicsComponent.tickPhysic()
-        playerComponent.tickPhysic()
-        entityComponent.tickPhysic()
         moveToTargetComponent.tickPhysic()
     }
 
     /**
      * Ticks on minecraft thread.
      */
-    override fun tickMinecraft() {
+    fun tickMinecraft() {
         if (this.pet.isDisposed) {
             this.remove()
             return
@@ -495,16 +505,14 @@ class PetEntityImpl(
         }
 
         playerComponent.tickMinecraft()
-        entityComponent.tickMinecraft()
     }
 
     /**
      * Removes the physic object.
      */
-    override fun remove() {
+    fun remove() {
+        checkForPluginMainThread()
         // Entity needs to be closed first.
-        entityComponent.close()
-        physicsComponent.close()
         playerComponent.close()
         isDead = true
     }

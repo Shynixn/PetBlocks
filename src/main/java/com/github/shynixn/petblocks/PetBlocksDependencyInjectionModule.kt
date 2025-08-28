@@ -9,10 +9,6 @@ import com.github.shynixn.mcutils.common.command.CommandService
 import com.github.shynixn.mcutils.common.command.CommandServiceImpl
 import com.github.shynixn.mcutils.common.di.DependencyInjectionModule
 import com.github.shynixn.mcutils.common.item.ItemService
-import com.github.shynixn.mcutils.common.physic.PhysicObjectDispatcher
-import com.github.shynixn.mcutils.common.physic.PhysicObjectDispatcherImpl
-import com.github.shynixn.mcutils.common.physic.PhysicObjectService
-import com.github.shynixn.mcutils.common.physic.PhysicObjectServiceImpl
 import com.github.shynixn.mcutils.common.placeholder.PlaceHolderService
 import com.github.shynixn.mcutils.common.repository.CacheRepository
 import com.github.shynixn.mcutils.common.repository.CachedRepositoryImpl
@@ -117,12 +113,6 @@ class PetBlocksDependencyInjectionModule(
         module.addService<RayTracingService> {
             RayTracingServiceImpl()
         }
-        module.addService<PhysicObjectService> {
-            PhysicObjectServiceImpl(module.getService(), module.getService())
-        }
-        module.addService<PhysicObjectDispatcher> {
-            PhysicObjectDispatcherImpl(module.getService())
-        }
         module.addService<JavaScriptService>(
             JavaScriptServiceImpl(
                 module.getService(),
@@ -167,7 +157,6 @@ class PetBlocksDependencyInjectionModule(
         }
         module.addService<PetEntityFactory> {
             PetEntityFactoryImpl(
-                module.getService(),
                 module.getService(),
                 module.getService(),
                 module.getService(),

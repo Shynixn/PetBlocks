@@ -2,11 +2,11 @@
 
 package com.github.shynixn.petblocks.impl.listener
 
-import com.github.shynixn.mccoroutine.bukkit.launch
-import com.github.shynixn.mccoroutine.bukkit.ticks
+import com.github.shynixn.mccoroutine.folia.globalRegionDispatcher
+import com.github.shynixn.mccoroutine.folia.launch
+import com.github.shynixn.mccoroutine.folia.ticks
 import com.github.shynixn.mcutils.common.ConfigurationService
 import com.github.shynixn.mcutils.common.Version
-import com.github.shynixn.mcutils.common.physic.PhysicObjectService
 import com.github.shynixn.mcutils.packet.api.event.PacketAsyncEvent
 import com.github.shynixn.mcutils.packet.api.meta.enumeration.InteractionType
 import com.github.shynixn.mcutils.packet.api.meta.enumeration.RidingMoveType
@@ -15,10 +15,11 @@ import com.github.shynixn.mcutils.packet.api.packet.PacketInRideDismount
 import com.github.shynixn.mcutils.packet.api.packet.PacketInRideJump
 import com.github.shynixn.mcutils.packet.api.packet.PacketInRideMove
 import com.github.shynixn.petblocks.contract.PetActionExecutionService
+import com.github.shynixn.petblocks.contract.PetEntityFactory
 import com.github.shynixn.petblocks.contract.PetService
-import com.github.shynixn.petblocks.impl.PetEntityImpl
 import com.github.shynixn.petblocks.impl.service.PetActionExecutionServiceImpl
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.withContext
 import org.bukkit.Bukkit
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
@@ -32,8 +33,8 @@ class PetListener(
     private val petService: PetService,
     private val plugin: Plugin,
     private val petActionExecutionService: PetActionExecutionService,
-    private val physicObjectService: PhysicObjectService,
-    private val configurationService: ConfigurationService
+    private val configurationService: ConfigurationService,
+    private val petEntityFactory: PetEntityFactory
 ) : Listener {
     private val petsToReceiveOnJoinKey = "pet.receivePetsOnJoin"
 
@@ -60,93 +61,97 @@ class PetListener(
                 val matchingPet = pets.firstOrNull { e -> e.name.equals(name, true) }
 
                 if (matchingPet == null) {
-                    Bukkit.getServer().dispatchCommand(
-                        PetActionExecutionServiceImpl.PetBlocksCommandSender(Bukkit.getConsoleSender()),
-                        "petblocks create ${name} ${template} ${player.name}"
-                    )
-                }
-            }
-        }
-    }
+                    withContext(plugin.globalRegionDispatcher) {
+                        Bukkit.getServer().dispatchCommand(
+                            PetActionExecutionServiceImpl.PetBlocksCommandSender(Bukkit.getConsoleSender()),
+                            "petblocks create ${name} ${template} ${player.name}"
+                        )
 
-    /**
-     * Gets called when a player quits the server.
-     */
-    @EventHandler
-    fun onPlayerQuitEvent(event: PlayerQuitEvent) {
-        plugin.launch {
-            val petCache = petService.getCache()[event.player]
-
-            if (petCache != null) {
-                for (pet in petCache) {
-                    if(pet.isSpawned){
-                        pet.invokeDeSpawnCommand()
                     }
                 }
-
-                delay(20.ticks)
-                petService.clearCache(event.player)
             }
         }
-    }
 
-    @EventHandler
-    fun onPlayerDismountEvent(event: PlayerToggleSneakEvent) {
-        // Compatibility to remount the pet on sneak in lower minecraft version.
-        if (Version.serverVersion.isVersionSameOrGreaterThan(Version.VERSION_1_17_R1)) {
-            return
-        }
-        plugin.launch {
-            val pets = petService.getPetsFromPlayer(event.player)
+        /**
+         * Gets called when a player quits the server.
+         */
+        @EventHandler
+        fun onPlayerQuitEvent(event: PlayerQuitEvent) {
+            plugin.launch {
+                val petCache = petService.getCache()[event.player]
 
-            for (pet in pets) {
-                if (pet.isRiding()) {
-                    delay(3.ticks)
-                    pet.ride()
+                if (petCache != null) {
+                    for (pet in petCache) {
+                        if (pet.isSpawned) {
+                            pet.invokeDeSpawnCommand()
+                        }
+                    }
+
+                    delay(20.ticks)
+                    petService.clearCache(event.player)
                 }
             }
         }
-    }
 
-    @EventHandler
-    fun onPacketEvent(event: PacketAsyncEvent) {
-        val packet = event.packet
-
-        if (packet is PacketInRideJump) {
-            plugin.launch {
-                val physicObject = physicObjectService.findPhysicObjectById(packet.entityId) as PetEntityImpl?
-                physicObject?.ride(event.player, RidingMoveType.FORWARD, true, false)
+        @EventHandler
+        fun onPlayerDismountEvent(event: PlayerToggleSneakEvent) {
+            // Compatibility to remount the pet on sneak in lower minecraft version.
+            if (Version.serverVersion.isVersionSameOrGreaterThan(Version.VERSION_1_17_R1)) {
+                return
             }
-            return
+            plugin.launch {
+                val pets = petService.getPetsFromPlayer(event.player)
+
+                for (pet in pets) {
+                    if (pet.isRiding()) {
+                        delay(3.ticks)
+                        pet.ride()
+                    }
+                }
+            }
         }
 
-        if (packet is PacketInRideDismount) {
-            plugin.launch {
-                val physicObject = physicObjectService.findPhysicObjectById(packet.entityId) as PetEntityImpl?
-                physicObject?.ride(event.player, RidingMoveType.STOP, false, true)
-            }
-            return
-        }
+        @EventHandler
+        fun onPacketEvent(event: PacketAsyncEvent) {
+            val packet = event.packet
 
-        if (packet is PacketInRideMove) {
-            if (packet.moveType == RidingMoveType.FORWARD || packet.moveType == RidingMoveType.BACKWARD || packet.moveType == RidingMoveType.STOP) {
+            if (packet is PacketInRideJump) {
                 plugin.launch {
-                    val physicObject = physicObjectService.findPhysicObjectById(packet.entityId) as PetEntityImpl?
-                    physicObject?.ride(event.player, packet.moveType, false, false)
+                    val petEntity = petEntityFactory.findPetEntityById(packet.entityId)
+                    petEntity?.ride(event.player, RidingMoveType.FORWARD, true, false)
                 }
+                return
             }
-            return
-        }
 
-        if (packet is PacketInInteractEntity) {
-            plugin.launch {
-                val physicObject =
-                    physicObjectService.findPhysicObjectById(packet.entityId) as PetEntityImpl? ?: return@launch
+            if (packet is PacketInRideDismount) {
+                plugin.launch {
+                    val petEntity = petEntityFactory.findPetEntityById(packet.entityId)
+                    petEntity?.ride(event.player, RidingMoveType.STOP, false, true)
+                }
+                return
+            }
 
-                if (packet.actionType == InteractionType.ATTACK) {
-                    physicObject.leftClick(event.player)
-                } else {
-                    physicObject.rightClick(event.player)
+            if (packet is PacketInRideMove) {
+                if (packet.moveType == RidingMoveType.FORWARD || packet.moveType == RidingMoveType.BACKWARD || packet.moveType == RidingMoveType.STOP) {
+                    plugin.launch {
+                        val petEntity = petEntityFactory.findPetEntityById(packet.entityId)
+                        petEntity?.ride(event.player, packet.moveType, false, false)
+                    }
+                }
+                return
+            }
+
+            if (packet is PacketInInteractEntity) {
+                plugin.launch {
+                    val petEntity = petEntityFactory.findPetEntityById(packet.entityId)
+
+                    if (petEntity != null) {
+                        if (packet.actionType == InteractionType.ATTACK) {
+                            petEntity.leftClick(event.player)
+                        } else {
+                            petEntity.rightClick(event.player)
+                        }
+                    }
                 }
             }
         }

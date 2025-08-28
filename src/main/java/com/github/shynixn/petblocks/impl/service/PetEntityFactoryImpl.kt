@@ -1,9 +1,9 @@
 package com.github.shynixn.petblocks.impl.service
 
+import checkForPluginMainThread
 import com.github.shynixn.mcutils.common.ConfigurationService
 import com.github.shynixn.mcutils.common.Vector3d
 import com.github.shynixn.mcutils.common.item.ItemService
-import com.github.shynixn.mcutils.common.physic.PhysicObjectService
 import com.github.shynixn.mcutils.common.placeholder.PlaceHolderService
 import com.github.shynixn.mcutils.common.toVector3d
 import com.github.shynixn.mcutils.packet.api.PacketService
@@ -19,7 +19,6 @@ import com.github.shynixn.petblocks.impl.physic.PlayerComponent
 import org.bukkit.plugin.Plugin
 
 class PetEntityFactoryImpl (
-    private val physicObjectService: PhysicObjectService,
     private val plugin: Plugin,
     private val petActionExecutionService: PetActionExecutionService,
     private val pathfinderService: PathfinderService,
@@ -30,10 +29,28 @@ class PetEntityFactoryImpl (
     private val breakBlockService: BreakBlockService,
     private val itemService: ItemService
 ) : PetEntityFactory {
+    private val entities = HashMap<Int, PetEntityImpl>()
+
+    /**
+     * Tries to locate a pet entity by ids.
+     */
+    override fun findPetEntityById(id: Int): PetEntityImpl? {
+        return entities[id]
+    }
+
+    /**
+     * Removes pet entities.
+     */
+    override fun removePetEntityById(id: Int) {
+        entities.remove(id)
+    }
+
     /**
      * Creates a new pet entity.
      */
     override fun createPetEntity(pet: Pet, meta: PetMeta): PetEntityImpl {
+        checkForPluginMainThread()
+
         if (meta.lastStoredLocation.world == null) {
             // On First spawn
             meta.lastStoredLocation = pet.player.location.toVector3d().addRelativeFront(3.0)
@@ -85,7 +102,11 @@ class PetEntityFactoryImpl (
             rideUpdateMs
         )
 
-        physicObjectService.addPhysicObject(petEntity)
+        entities[armorStandEntityId] = petEntity
         return petEntity
+    }
+
+    override fun close() {
+        entities.clear()
     }
 }

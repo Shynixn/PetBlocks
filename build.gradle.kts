@@ -24,8 +24,6 @@ dependencies {
     compileOnly("com.arcaniax:HeadDatabase-API:1.3.1")
 
     // Library dependencies with legacy compatibility, we can use more up-to-date version in the plugin.yml
-    implementation("com.github.shynixn.mccoroutine:mccoroutine-bukkit-api:2.22.0")
-    implementation("com.github.shynixn.mccoroutine:mccoroutine-bukkit-core:2.22.0")
     implementation("com.github.shynixn.mccoroutine:mccoroutine-folia-api:2.22.0")
     implementation("com.github.shynixn.mccoroutine:mccoroutine-folia-core:2.22.0")
     implementation("com.github.shynixn:fasterxml:1.2.0")
@@ -34,8 +32,8 @@ dependencies {
     implementation("org.openjdk.nashorn:nashorn-core:15.4")
 
     // Custom dependencies
-    implementation("com.github.shynixn.shygui:shygui:1.6.0")
-    implementation("com.github.shynixn.mcutils:common:2025.34")
+    implementation("com.github.shynixn.shygui:shygui:1.7.0")
+    implementation("com.github.shynixn.mcutils:common:2025.40")
     implementation("com.github.shynixn.mcutils:packet:2025.31")
     implementation("com.github.shynixn.mcutils:database:2025.10")
     implementation("com.github.shynixn.mcutils:pathfinder:2025.1")
