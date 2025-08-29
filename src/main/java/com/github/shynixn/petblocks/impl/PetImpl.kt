@@ -9,6 +9,7 @@ import com.github.shynixn.mcutils.common.toLocation
 import com.github.shynixn.mcutils.common.toVector
 import com.github.shynixn.mcutils.common.toVector3d
 import com.github.shynixn.mcutils.common.translateChatColors
+import com.github.shynixn.mcutils.packet.api.packet.PacketOutEntityMount
 import com.github.shynixn.petblocks.contract.Pet
 import com.github.shynixn.petblocks.contract.PetEntityFactory
 import com.github.shynixn.petblocks.entity.PetMeta
@@ -503,6 +504,10 @@ class PetImpl(
         }
 
         if (petMeta.ridingState == PetRidingState.NO) {
+            plugin.launch {
+                delay(20.ticks)
+                petEntity?.ensureUnmounted()
+            }
             return
         }
 

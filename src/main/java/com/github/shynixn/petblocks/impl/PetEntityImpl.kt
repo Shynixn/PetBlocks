@@ -1,6 +1,7 @@
 package com.github.shynixn.petblocks.impl
 
 import checkForPluginMainThread
+import com.github.shynixn.mccoroutine.folia.entityDispatcher
 import com.github.shynixn.mccoroutine.folia.launch
 import com.github.shynixn.mccoroutine.folia.regionDispatcher
 import com.github.shynixn.mccoroutine.folia.ticks
@@ -55,7 +56,7 @@ class PetEntityImpl(
     private val pathFinderCube: Vector3d,
     private val visualizePath: Boolean,
     private val ridePositionUpdateMs: Int
-)  {
+) {
     private var velocity = Vector3d(0.0, 0.0, 0.0)
     private var lastClickTimeStamp = 0L
     private var cancellationTokenLoop = CancellationToken()
@@ -78,8 +79,8 @@ class PetEntityImpl(
 
     init {
         plugin.launch {
-            while (!isDead){
-                withContext(plugin.regionDispatcher(pet.location)){
+            while (!isDead) {
+                withContext(plugin.regionDispatcher(pet.location)) {
                     tickMinecraft()
                 }
 
@@ -272,47 +273,52 @@ class PetEntityImpl(
     fun moveToLocation(location: Location, speed: Double) {
         checkForPluginMainThread()
         cancellationTokenLongRunning.isCancelled = true
-        val snapshot = pathfinderService.calculateFastPathfinderSnapshot(
-            location, pathFinderCube.x.toInt(), pathFinderCube.y.toInt(), pathFinderCube.z.toInt()
-        )
 
-        val dateTime = Date().time
+        plugin.launch {
+            val snapshot = withContext(plugin.regionDispatcher(location)) {
+                pathfinderService.calculateFastPathfinderSnapshot(
+                    location, pathFinderCube.x.toInt(), pathFinderCube.y.toInt(), pathFinderCube.z.toInt()
+                )
+            }
 
-        if (dateTime - lastRandomTimeStamp > 3000) {
-            // For multiple pets.
-            lastRandomTimeStamp = dateTime
-            randomMoveOne = random.nextInt(3)
-            randomMoveTwo = random.nextInt(3)
-        }
+            val dateTime = Date().time
 
-        val sourceLocation = physicsComponent.position.toLocation()
+            if (dateTime - lastRandomTimeStamp > 3000) {
+                // For multiple pets.
+                lastRandomTimeStamp = dateTime
+                randomMoveOne = random.nextInt(3)
+                randomMoveTwo = random.nextInt(3)
+            }
 
-        for (i in 0 until 3) {
-            val targetLocation = location.toVector3d().addRelativeFront(-1.0 * i + randomMoveOne)
-                .addRelativeLeft(randomMoveTwo.toDouble()).addRelativeRight(randomMoveThree.toDouble()).toLocation()
+            val sourceLocation = physicsComponent.position.toLocation()
 
-            if (!attemptSolutions(snapshot, sourceLocation, targetLocation, speed)) {
-                if (!attemptSolutions(snapshot, sourceLocation.clone().add(0.0, 1.0, 0.0), targetLocation, speed)) {
-                    if (!attemptSolutions(
-                            snapshot, sourceLocation.clone().add(0.0, -1.0, 0.0), targetLocation, speed
-                        )
-                    ) {
+            for (i in 0 until 3) {
+                val targetLocation = location.toVector3d().addRelativeFront(-1.0 * i + randomMoveOne)
+                    .addRelativeLeft(randomMoveTwo.toDouble()).addRelativeRight(randomMoveThree.toDouble()).toLocation()
+
+                if (!attemptSolutions(snapshot, sourceLocation, targetLocation, speed)) {
+                    if (!attemptSolutions(snapshot, sourceLocation.clone().add(0.0, 1.0, 0.0), targetLocation, speed)) {
                         if (!attemptSolutions(
-                                snapshot, sourceLocation, targetLocation.clone().add(0.0, 1.0, 0.0), speed
+                                snapshot, sourceLocation.clone().add(0.0, -1.0, 0.0), targetLocation, speed
                             )
                         ) {
                             if (!attemptSolutions(
-                                    snapshot, sourceLocation, targetLocation.clone().add(0.0, -1.0, 0.0), speed
+                                    snapshot, sourceLocation, targetLocation.clone().add(0.0, 1.0, 0.0), speed
                                 )
                             ) {
-                                continue
+                                if (!attemptSolutions(
+                                        snapshot, sourceLocation, targetLocation.clone().add(0.0, -1.0, 0.0), speed
+                                    )
+                                ) {
+                                    continue
+                                }
                             }
                         }
                     }
                 }
-            }
 
-            break
+                break
+            }
         }
     }
 
@@ -369,10 +375,16 @@ class PetEntityImpl(
         cancellationTokenLongRunning.isCancelled = true
 
         if (isJumping) {
-            if (isOnGround(getLocation().toLocation())) {
-                physicsComponent.motion.y = 1.0
+            plugin.launch {
+                val location = getLocation().toLocation()
+                val isOnGround = withContext(plugin.regionDispatcher(location)) {
+                    isOnGround(getLocation().toLocation())
+                }
+                if (isOnGround) {
+                    physicsComponent.motion.y = 1.0
+                }
+                synchronizeRidingState(player)
             }
-            synchronizeRidingState(player)
 
             return
         }
@@ -419,12 +431,14 @@ class PetEntityImpl(
         }
     }
 
-    private fun synchronizeRidingState(player: Player) {
+    private suspend fun synchronizeRidingState(player: Player) {
         val current = Date().time
         if (current - lastRideUpdate >= ridePositionUpdateMs) {
             // Required so the position of the player stays in sync while packet riding.
             // Has to be on the main thread.
-            packetService.setServerPlayerPosition(player, physicsComponent.position.toLocation())
+            withContext(plugin.entityDispatcher(player)) {
+                packetService.setServerPlayerPosition(player, physicsComponent.position.toLocation())
+            }
             for (visiblePlayers in playerComponent.visiblePlayers) {
                 packetService.sendPacketOutEntityMount(visiblePlayers, PacketOutEntityMount().also {
                     it.entityId = entityComponent.entityId
@@ -474,6 +488,18 @@ class PetEntityImpl(
         for (player in playerComponent.visiblePlayers) {
             entityComponent.updateRidingState(player)
         }
+    }
+
+    /**
+     * Safety unmount.
+     */
+    fun ensureUnmounted(){
+        packetService.sendPacketOutEntityMount(pet.player, PacketOutEntityMount().also {
+            it.entityId = pet.player.entityId
+        })
+        packetService.sendPacketOutEntityMount(pet.player, PacketOutEntityMount().also {
+            it.entityId = entityComponent.entityId
+        })
     }
 
     /**
