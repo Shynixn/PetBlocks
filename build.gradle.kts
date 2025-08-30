@@ -158,7 +158,7 @@ tasks.register("pluginJarPremium", com.github.jengelman.gradle.plugins.shadow.ta
 tasks.register("relocateFoliaPluginJar", com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar::class.java) {
     dependsOn("shadowJar")
     from(zipTree(File("./build/libs/" + (tasks.getByName("shadowJar") as Jar).archiveFileName.get())))
-    archiveFileName.set("${archiveBaseName.get()}-${archiveVersion.get()}-relocate.${archiveExtension.get()}")
+    archiveFileName.set("${archiveBaseName.get()}-${archiveVersion.get()}-relocate-folia.${archiveExtension.get()}")
     relocate("com.github.shynixn.mcutils", "com.github.shynixn.petblocks.lib.com.github.shynixn.mcutils")
     relocate("com.github.shynixn.shygui", "com.github.shynixn.petblocks.lib.com.github.shynixn.shygui")
     exclude("plugin.yml")
