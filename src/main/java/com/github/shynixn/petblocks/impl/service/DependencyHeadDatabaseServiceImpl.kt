@@ -1,6 +1,6 @@
 package com.github.shynixn.petblocks.impl.service
 
-import com.github.shynixn.mccoroutine.bukkit.launch
+import com.github.shynixn.mccoroutine.folia.launch
 import com.github.shynixn.mcutils.common.item.Item
 import com.github.shynixn.mcutils.common.item.ItemService
 import com.github.shynixn.petblocks.contract.DependencyHeadDatabaseService

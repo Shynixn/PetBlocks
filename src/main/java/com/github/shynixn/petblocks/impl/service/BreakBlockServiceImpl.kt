@@ -1,7 +1,8 @@
 package com.github.shynixn.petblocks.impl.service
 
-import com.github.shynixn.mccoroutine.bukkit.launch
-import com.github.shynixn.mccoroutine.bukkit.ticks
+import checkForPluginMainThread
+import com.github.shynixn.mccoroutine.folia.launch
+import com.github.shynixn.mccoroutine.folia.ticks
 import com.github.shynixn.mcutils.common.CancellationToken
 import com.github.shynixn.mcutils.packet.api.PacketService
 import com.github.shynixn.mcutils.packet.api.packet.PacketOutBlockBreakAnimation
@@ -25,6 +26,7 @@ class BreakBlockServiceImpl (private val plugin: Plugin, private val packetServi
         dropTypes: List<DropType>,
         token: CancellationToken
     ) {
+        checkForPluginMainThread()
         val locateBlock = petEntity.findTargetBlock(2.0) ?: return
 
         petEntity.isBreakingBlock = true

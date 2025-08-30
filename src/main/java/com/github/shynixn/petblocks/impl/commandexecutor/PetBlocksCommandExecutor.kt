@@ -1191,6 +1191,9 @@ class PetBlocksCommandExecutor(
 
     private fun CommandSender.sendLanguageMessage(languageItem: LanguageItem, vararg args: String) {
         val sender = this
-        chatMessageService.sendLanguageMessage(sender, languageItem, *args)
+
+        if (sender is Player) {
+            chatMessageService.sendLanguageMessage(sender, languageItem, *args)
+        }
     }
 }

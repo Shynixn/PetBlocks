@@ -1,7 +1,7 @@
 package com.github.shynixn.petblocks.impl.physic
 
+import checkForPluginMainThread
 import com.github.shynixn.mcutils.common.Vector3d
-import com.github.shynixn.mcutils.common.physic.PhysicComponent
 import com.github.shynixn.mcutils.common.toLocation
 import com.github.shynixn.mcutils.common.toVector
 import com.github.shynixn.mcutils.packet.api.RayTraceResult
@@ -13,7 +13,7 @@ import kotlin.math.abs
 class MathComponent(
     var position: Vector3d, private val settings: PhysicSettings,
     private val rayTracingService: RayTracingService
-) : PhysicComponent {
+)  {
     /**
      * Function being called when the position and motion are about to change.
      */
@@ -33,6 +33,8 @@ class MathComponent(
      * Sets the velocity which is applied per tick to the object.
      */
     fun setVelocity(vector: Vector3d) {
+        checkForPluginMainThread()
+
         this.motion = vector.copy()
         this.position.y += 0.25
     }
@@ -41,13 +43,15 @@ class MathComponent(
      * Teleports the object to the given vector.
      */
     fun teleport(vector: Vector3d) {
+        checkForPluginMainThread()
+
         cachedTeleportTarget = vector
     }
 
     /**
      * Ticks the minecraft thread.
      */
-    override fun tickMinecraft() {
+    fun tickMinecraft() {
         val sourceLocation = position.toLocation()
 
         if (!sourceLocation.chunk.isLoaded) {
@@ -81,7 +85,9 @@ class MathComponent(
     /**
      * Ticks the async thread.
      */
-    override fun tickPhysic() {
+    fun tickPhysic() {
+        checkForPluginMainThread()
+
         // Handle teleport.
         if (cachedTeleportTarget != null) {
             handleTeleport()

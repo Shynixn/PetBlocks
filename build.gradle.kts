@@ -8,7 +8,7 @@ plugins {
 }
 
 group = "com.github.shynixn"
-version = "9.25.0"
+version = "9.26.0"
 
 repositories {
     mavenLocal()
@@ -24,8 +24,6 @@ dependencies {
     compileOnly("com.arcaniax:HeadDatabase-API:1.3.1")
 
     // Library dependencies with legacy compatibility, we can use more up-to-date version in the plugin.yml
-    implementation("com.github.shynixn.mccoroutine:mccoroutine-bukkit-api:2.22.0")
-    implementation("com.github.shynixn.mccoroutine:mccoroutine-bukkit-core:2.22.0")
     implementation("com.github.shynixn.mccoroutine:mccoroutine-folia-api:2.22.0")
     implementation("com.github.shynixn.mccoroutine:mccoroutine-folia-core:2.22.0")
     implementation("com.github.shynixn:fasterxml:1.2.0")
@@ -34,8 +32,8 @@ dependencies {
     implementation("org.openjdk.nashorn:nashorn-core:15.4")
 
     // Custom dependencies
-    implementation("com.github.shynixn.shygui:shygui:1.6.0")
-    implementation("com.github.shynixn.mcutils:common:2025.34")
+    implementation("com.github.shynixn.shygui:shygui:1.7.1")
+    implementation("com.github.shynixn.mcutils:common:2025.40")
     implementation("com.github.shynixn.mcutils:packet:2025.31")
     implementation("com.github.shynixn.mcutils:database:2025.10")
     implementation("com.github.shynixn.mcutils:pathfinder:2025.1")
@@ -99,7 +97,7 @@ tasks.register("pluginJarLatest", com.github.jengelman.gradle.plugins.shadow.tas
     dependsOn("relocatePluginJar")
     from(zipTree(File("./build/libs/" + (tasks.getByName("relocatePluginJar") as Jar).archiveFileName.get())))
     archiveFileName.set("${archiveBaseName.get()}-${archiveVersion.get()}-latest.${archiveExtension.get()}")
-    // destinationDirectory.set(File("C:\\temp\\plugins"))
+    // destinationDirectory.set(File("C:\\git\\mc\\plugins"))
 
     exclude("com/github/shynixn/petblocks/lib/com/github/shynixn/mcutils/packet/nms/v1_8_R3/**")
     exclude("com/github/shynixn/petblocks/lib/com/github/shynixn/mcutils/packet/nms/v1_9_R2/**")
@@ -139,6 +137,41 @@ tasks.register("pluginJarPremium", com.github.jengelman.gradle.plugins.shadow.ta
     from(zipTree(File("./build/libs/" + (tasks.getByName("relocatePluginJar") as Jar).archiveFileName.get())))
     archiveFileName.set("${archiveBaseName.get()}-${archiveVersion.get()}-premium.${archiveExtension.get()}")
     // destinationDirectory.set(File("C:\\temp\\plugins"))
+
+    exclude("com/github/shynixn/mcutils/**")
+    exclude("com/github/shynixn/mccoroutine/**")
+    exclude("com/github/shynixn/shygui/**")
+    exclude("com/github/shynixn/fasterxml/**")
+    exclude("org/**")
+    exclude("kotlin/**")
+    exclude("kotlinx/**")
+    exclude("javax/**")
+    exclude("com/zaxxer/**")
+    exclude("templates/**")
+    exclude("plugin-legacy.yml")
+}
+
+/**
+ * Relocate Plugin Folia Jar.
+ */
+tasks.register("relocateFoliaPluginJar", com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar::class.java) {
+    dependsOn("shadowJar")
+    from(zipTree(File("./build/libs/" + (tasks.getByName("shadowJar") as Jar).archiveFileName.get())))
+    archiveFileName.set("${archiveBaseName.get()}-${archiveVersion.get()}-relocate.${archiveExtension.get()}")
+    relocate("com.github.shynixn.mcutils", "com.github.shynixn.petblocks.lib.com.github.shynixn.mcutils")
+    relocate("com.github.shynixn.shygui", "com.github.shynixn.petblocks.lib.com.github.shynixn.shygui")
+    exclude("plugin.yml")
+    rename("plugin-folia.yml", "plugin.yml")
+}
+
+/**
+ * Create premium folia plugin jar file.
+ */
+tasks.register("pluginJarPremiumFolia", com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar::class.java) {
+    dependsOn("relocateFoliaPluginJar")
+    from(zipTree(File("./build/libs/" + (tasks.getByName("relocateFoliaPluginJar") as Jar).archiveFileName.get())))
+    archiveFileName.set("${archiveBaseName.get()}-${archiveVersion.get()}-premium-folia.${archiveExtension.get()}")
+    // destinationDirectory.set(File("C:\\git\\mc\\Folia\\plugins"))
 
     exclude("com/github/shynixn/mcutils/**")
     exclude("com/github/shynixn/mccoroutine/**")

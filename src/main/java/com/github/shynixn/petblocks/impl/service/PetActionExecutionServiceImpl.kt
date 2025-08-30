@@ -1,8 +1,11 @@
 package com.github.shynixn.petblocks.impl.service
 
-import com.github.shynixn.mccoroutine.bukkit.asyncDispatcher
-import com.github.shynixn.mccoroutine.bukkit.launch
-import com.github.shynixn.mccoroutine.bukkit.ticks
+import checkForPluginMainThread
+import com.github.shynixn.mccoroutine.folia.asyncDispatcher
+import com.github.shynixn.mccoroutine.folia.entityDispatcher
+import com.github.shynixn.mccoroutine.folia.globalRegionDispatcher
+import com.github.shynixn.mccoroutine.folia.launch
+import com.github.shynixn.mccoroutine.folia.ticks
 import com.github.shynixn.mcutils.common.CancellationToken
 import com.github.shynixn.mcutils.common.placeholder.PlaceHolderService
 import com.github.shynixn.mcutils.javascript.JavaScriptService
@@ -48,6 +51,8 @@ class PetActionExecutionServiceImpl (
         petActionDefinition: PetActionDefinition,
         cancellationToken: CancellationToken
     ) {
+        checkForPluginMainThread()
+
         for (action in petActionDefinition.actions) {
             if (pet.isDisposed) {
                 return
@@ -302,9 +307,13 @@ class PetActionExecutionServiceImpl (
             }
 
             if (action.level == PetActionCommandLevelType.PLAYER) {
-                Bukkit.getServer().dispatchCommand(pet.player, executionCommand)
+                plugin.launch(plugin.entityDispatcher(pet.player)){
+                    Bukkit.getServer().dispatchCommand(pet.player, executionCommand)
+                }
             } else {
-                Bukkit.getServer().dispatchCommand(commandSender, executionCommand)
+                plugin.launch(plugin.globalRegionDispatcher){
+                    Bukkit.getServer().dispatchCommand(commandSender, executionCommand)
+                }
             }
 
             if (action.debug) {

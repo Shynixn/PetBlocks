@@ -1,7 +1,8 @@
 package com.github.shynixn.petblocks.impl.service
 
-import com.github.shynixn.mccoroutine.bukkit.launch
-import com.github.shynixn.mccoroutine.bukkit.ticks
+import checkForPluginMainThread
+import com.github.shynixn.mccoroutine.folia.launch
+import com.github.shynixn.mccoroutine.folia.ticks
 import com.github.shynixn.mcutils.common.ConfigurationService
 import com.github.shynixn.mcutils.common.item.Item
 import com.github.shynixn.mcutils.common.item.ItemService
@@ -58,6 +59,8 @@ class PetServiceImpl(
      * The pets are not deleted but removed from memory.
      */
     override suspend fun clearCache(player: Player) {
+        checkForPluginMainThread()
+
         if (!cache.containsKey(player)) {
             return
         }
@@ -98,6 +101,7 @@ class PetServiceImpl(
      * The pets may or be not be spawned at the moment.
      */
     override suspend fun getPetsFromPlayer(player: Player): List<Pet> {
+        checkForPluginMainThread()
         if (!cache.containsKey(player)) {
             val playerInformation = petMetaRepository.getByPlayer(player) ?: return emptyList()
             val templates = templateRepository.getAll()
@@ -180,6 +184,7 @@ class PetServiceImpl(
         templateId: String,
         name: String
     ): PetSpawnResult {
+        checkForPluginMainThread()
         // Call to make sure the cache is filled.
         val pets = getPetsFromPlayer(player)
 
@@ -255,6 +260,7 @@ class PetServiceImpl(
      *  Deletes the given pet.
      */
     override suspend fun deletePet(pet: Pet) {
+        checkForPluginMainThread()
         val player = pet.player
         pet.remove() // Invoke deSpawn command.
         delay(20.ticks)
@@ -272,6 +278,7 @@ class PetServiceImpl(
      *  Deletes the given pet.
      */
     override fun deletePetAsync(pet: Pet): CompletionStage<Void?> {
+        checkForPluginMainThread()
         val completeAbleFuture = CompletableFuture<Void?>()
 
         plugin.launch {

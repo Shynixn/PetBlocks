@@ -2,11 +2,11 @@
 
 package com.github.shynixn.petblocks.impl.listener
 
-import com.github.shynixn.mccoroutine.bukkit.launch
-import com.github.shynixn.mccoroutine.bukkit.ticks
+import com.github.shynixn.mccoroutine.folia.globalRegionDispatcher
+import com.github.shynixn.mccoroutine.folia.launch
+import com.github.shynixn.mccoroutine.folia.ticks
 import com.github.shynixn.mcutils.common.ConfigurationService
 import com.github.shynixn.mcutils.common.Version
-import com.github.shynixn.mcutils.common.physic.PhysicObjectService
 import com.github.shynixn.mcutils.packet.api.event.PacketAsyncEvent
 import com.github.shynixn.mcutils.packet.api.meta.enumeration.InteractionType
 import com.github.shynixn.mcutils.packet.api.meta.enumeration.RidingMoveType
@@ -15,10 +15,11 @@ import com.github.shynixn.mcutils.packet.api.packet.PacketInRideDismount
 import com.github.shynixn.mcutils.packet.api.packet.PacketInRideJump
 import com.github.shynixn.mcutils.packet.api.packet.PacketInRideMove
 import com.github.shynixn.petblocks.contract.PetActionExecutionService
+import com.github.shynixn.petblocks.contract.PetEntityFactory
 import com.github.shynixn.petblocks.contract.PetService
-import com.github.shynixn.petblocks.impl.PetEntityImpl
 import com.github.shynixn.petblocks.impl.service.PetActionExecutionServiceImpl
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.withContext
 import org.bukkit.Bukkit
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
@@ -32,8 +33,8 @@ class PetListener(
     private val petService: PetService,
     private val plugin: Plugin,
     private val petActionExecutionService: PetActionExecutionService,
-    private val physicObjectService: PhysicObjectService,
-    private val configurationService: ConfigurationService
+    private val configurationService: ConfigurationService,
+    private val petEntityFactory: PetEntityFactory
 ) : Listener {
     private val petsToReceiveOnJoinKey = "pet.receivePetsOnJoin"
 
@@ -60,10 +61,13 @@ class PetListener(
                 val matchingPet = pets.firstOrNull { e -> e.name.equals(name, true) }
 
                 if (matchingPet == null) {
-                    Bukkit.getServer().dispatchCommand(
-                        PetActionExecutionServiceImpl.PetBlocksCommandSender(Bukkit.getConsoleSender()),
-                        "petblocks create ${name} ${template} ${player.name}"
-                    )
+                    withContext(plugin.globalRegionDispatcher) {
+                        Bukkit.getServer().dispatchCommand(
+                            PetActionExecutionServiceImpl.PetBlocksCommandSender(Bukkit.getConsoleSender()),
+                            "petblocks create ${name} ${template} ${player.name}"
+                        )
+
+                    }
                 }
             }
         }
@@ -79,7 +83,7 @@ class PetListener(
 
             if (petCache != null) {
                 for (pet in petCache) {
-                    if(pet.isSpawned){
+                    if (pet.isSpawned) {
                         pet.invokeDeSpawnCommand()
                     }
                 }
@@ -114,16 +118,16 @@ class PetListener(
 
         if (packet is PacketInRideJump) {
             plugin.launch {
-                val physicObject = physicObjectService.findPhysicObjectById(packet.entityId) as PetEntityImpl?
-                physicObject?.ride(event.player, RidingMoveType.FORWARD, true, false)
+                val petEntity = petEntityFactory.findPetEntityById(packet.entityId)
+                petEntity?.ride(event.player, RidingMoveType.FORWARD, true, false)
             }
             return
         }
 
         if (packet is PacketInRideDismount) {
             plugin.launch {
-                val physicObject = physicObjectService.findPhysicObjectById(packet.entityId) as PetEntityImpl?
-                physicObject?.ride(event.player, RidingMoveType.STOP, false, true)
+                val petEntity = petEntityFactory.findPetEntityById(packet.entityId)
+                petEntity?.ride(event.player, RidingMoveType.STOP, false, true)
             }
             return
         }
@@ -131,8 +135,8 @@ class PetListener(
         if (packet is PacketInRideMove) {
             if (packet.moveType == RidingMoveType.FORWARD || packet.moveType == RidingMoveType.BACKWARD || packet.moveType == RidingMoveType.STOP) {
                 plugin.launch {
-                    val physicObject = physicObjectService.findPhysicObjectById(packet.entityId) as PetEntityImpl?
-                    physicObject?.ride(event.player, packet.moveType, false, false)
+                    val petEntity = petEntityFactory.findPetEntityById(packet.entityId)
+                    petEntity?.ride(event.player, packet.moveType, false, false)
                 }
             }
             return
@@ -140,13 +144,14 @@ class PetListener(
 
         if (packet is PacketInInteractEntity) {
             plugin.launch {
-                val physicObject =
-                    physicObjectService.findPhysicObjectById(packet.entityId) as PetEntityImpl? ?: return@launch
+                val petEntity = petEntityFactory.findPetEntityById(packet.entityId)
 
-                if (packet.actionType == InteractionType.ATTACK) {
-                    physicObject.leftClick(event.player)
-                } else {
-                    physicObject.rightClick(event.player)
+                if (petEntity != null) {
+                    if (packet.actionType == InteractionType.ATTACK) {
+                        petEntity.leftClick(event.player)
+                    } else {
+                        petEntity.rightClick(event.player)
+                    }
                 }
             }
         }
