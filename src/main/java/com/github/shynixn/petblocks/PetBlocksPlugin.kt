@@ -250,7 +250,6 @@ class PetBlocksPlugin : JavaPlugin(), CoroutinePlugin {
                 "gui/petblocks_skins_petskins_menu.yml" to "petblocks_skins_petskins_menu.yml",
                 "gui/petblocks_skins_plushieskins_menu.yml" to "petblocks_skins_plushieskins_menu.yml",
                 "gui/petblocks_skins_vehicleskins_menu.yml" to "petblocks_skins_vehicleskins_menu.yml",
-                "gui/simple_sample_menu.yml" to "simple_sample_menu.yml"
             )
             it.guiPermission = Permission.DYN_GUI.text
             it.aliasesPath = "commands.petblocksgui.aliases"

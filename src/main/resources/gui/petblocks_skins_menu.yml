@@ -8,10 +8,9 @@ title: "PetBlocks"
 updateIntervalTicks: 100
 
 # Optional condition which has to be true in order to open the gui.
+# Scripting language documentation: https://shynixn.github.io/ShyGUI/wiki/site/script/
 condition:
-  type: "STRING_NOT_CONTAINS" # Checks if the placeholder can be resolved -> pet is spawned.
-  left: "%petblocks_pet_itemType_selected%"
-  right: "petblocks_pet_itemType_selected"
+  script: '!CONTAINS("%petblocks_pet_itemType_selected%", "petblocks_pet_itemType_selected")'
 
 # All items which are rendered inside the inventory. You need to specify the item you want to display and the position.
 # For more complex GUIs, you may want to show different items on the same position depending on a certain condition:

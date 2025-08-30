@@ -8,10 +8,9 @@ title: "PetBlocks"
 updateIntervalTicks: 100
 
 # Optional condition which has to be true in order to open the gui.
+# Scripting language documentation: https://shynixn.github.io/ShyGUI/wiki/site/script/
 condition:
-  type: "STRING_NOT_CONTAINS" # Checks if the placeholder can be resolved -> pet is spawned.
-  left: "%petblocks_pet_itemType_selected%"
-  right: "petblocks_pet_itemType_selected"
+  script: '!CONTAINS("%petblocks_pet_itemType_selected%", "petblocks_pet_itemType_selected")'
 
 # Optional command for directly opening this menu. You can remove this if you do not need a dedicated command for this menu.
 command:
@@ -75,9 +74,7 @@ items:
       lore:
         - "&7Click to enable the pet."
     condition:
-      type: "STRING_EQUALS"
-      left: "%petblocks_pet_isSpawned_selected%"
-      right: "false"
+      script: '"%petblocks_pet_isSpawned_selected%" == "false"'
     commands:
       - type: "PER_PLAYER"
         command: "/petblocks spawn %petblocks_pet_name_selected%"
@@ -113,9 +110,7 @@ items:
       lore:
         - "&7Click to dismount your pet."
     condition:
-      type: "STRING_EQUALS"
-      left: "%petblocks_pet_isMounted_selected%"
-      right: "true"
+      script: '"%petblocks_pet_isMounted_selected%" == "true"'
     commands:
       - type: "PER_PLAYER"
         command: "/petblocksgui close"
@@ -157,9 +152,7 @@ items:
       lore:
         - "&7Click to dismount your pet."
     condition:
-      type: "STRING_EQUALS"
-      left: "%petblocks_pet_isMounted_selected%"
-      right: "true"
+      script: '"%petblocks_pet_isMounted_selected%" == "true"'
     commands:
       - type: "PER_PLAYER"
         command: "/petblocksgui close"
