@@ -192,20 +192,6 @@ class PetBlocksLanguageImpl : PetBlocksLanguage {
 
  override var reloadCommandHint = LanguageItem("Reloads all pets, menus and configuration.")
 
- override var closeCommandHint = LanguageItem("Closes the GUI menu.")
-
- override var backCommandHint = LanguageItem("Goes back one GUI page.")
-
- override var openCommandHint = LanguageItem("Opens the GUI menu with the given name.")
-
- override var nextCommandHint = LanguageItem("Opens the next GUI page.")
-
- override var messageCommandHint = LanguageItem("Sends a chat message.")
-
- override var guiMenuNotFoundMessage = LanguageItem("[&9PetBlocks&f] &cMenu %petblocks_param_1% not found.")
-
- override var guiMenuNoPermissionMessage = LanguageItem("[&9PetBlocks&f] &cYou do not have permission for menu %petblocks_param_1%.")
-
  override var variableCommandHint = LanguageItem("Sets the value of the variable with the given key. This is useful to store arbitrary data into the pet e.g., health.")
 
  override var variableChangedMessage = LanguageItem("[&9PetBlocks&f] The pet memory variable %petblocks_param_1% has been set to %petblocks_param_2%.")
@@ -216,13 +202,49 @@ class PetBlocksLanguageImpl : PetBlocksLanguage {
 
  override var ridingSpeedCommandHint = LanguageItem("Changes the speed while riding a pet.")
 
- override var cannotParseItemStackError = LanguageItem("[&9PetBlocks&f] &cCannot parse ItemStack at row %petblocks_param_1% and col %petblocks_param_2%! Check your GUI menu configuration by reviewing the full item parsing error in the console log.")
-
- override var rowColOutOfRangeError = LanguageItem("[&9PetBlocks&f] &cThe specified row %petblocks_param_1% and col %petblocks_param_2% are out of range of the GUI! Check your GUI menu configuration.")
-
  override var suggestRenamePrefix = LanguageItem("[&9PetBlocks&f] ")
 
  override var suggestRenameClickable = LanguageItem("&e<<Click me>>")
 
  override var suggestRenameSuffix = LanguageItem("&r to rename your pet.")
+
+ override var shyGuiPlayerNotFoundMessage = LanguageItem("[&9PetBlocks&f] &cPlayer %petblocks_param_1% not found.")
+
+ override var shyGuiNoPermissionCommand = LanguageItem("[&9PetBlocks&f] &cYou do not have permission to execute this command.")
+
+ override var shyGuiCommandUsage = LanguageItem("[&9PetBlocks&f] Use /shygui help to see more info about the plugin.")
+
+ override var shyGuiCommandDescription = LanguageItem("[&9PetBlocks&f] All commands for the ShyGUI plugin.")
+
+ override var shyGuiCommandSenderHasToBePlayer = LanguageItem("[&9PetBlocks&f] The command sender has to be a player if you do not specify the optional player argument.")
+
+ override var shyGuiGuiMenuNotFoundMessage = LanguageItem("[&9PetBlocks&f] &cMenu %petblocks_param_1% not found.")
+
+ override var shyGuiGuiMenuNoPermissionMessage = LanguageItem("[&9PetBlocks&f] &cYou do not have permission for menu %petblocks_param_1%.")
+
+ override var shyGuiManipulateOtherMessage = LanguageItem("[&9PetBlocks&f] &cYou do not have permission to open the GUI menu for other players.")
+
+ override var shyGuiCloseCommandHint = LanguageItem("Closes the GUI menu.")
+
+ override var shyGuiBackCommandHint = LanguageItem("Goes back one GUI page.")
+
+ override var shyGuiOpenCommandHint = LanguageItem("Opens the GUI menu with the given name.")
+
+ override var shyGuiNextCommandHint = LanguageItem("Opens the next GUI page.")
+
+ override var shyGuiReloadCommandHint = LanguageItem("Reloads all GUI menus and configuration.")
+
+ override var shyGuiMessageCommandHint = LanguageItem("Sends a chat message.")
+
+ override var shyGuiReloadMessage = LanguageItem("[&9PetBlocks&f] Reloaded all GUI menus and configuration.")
+
+ override var shyGuiCannotParseItemStackError = LanguageItem("[&9PetBlocks&f] &cCannot parse ItemStack at row %petblocks_param_1% and col %petblocks_param_2%! Check your GUI menu configuration by reviewing the full item parsing error in the console log.")
+
+ override var shyGuiRowColOutOfRangeError = LanguageItem("[&9PetBlocks&f] &cThe specified row %petblocks_param_1% and col %petblocks_param_2% are out of range of the GUI! Check your GUI menu configuration.")
+
+ override var shyGuiRefreshCommandHint = LanguageItem("Refreshes the current GUI page.")
+
+ override var shyGuiServerCommandHint = LanguageItem("Sends the player to the given server.")
+
+ override var shyGuiServerMessage = LanguageItem("[&9PetBlocks&f] Connecting to server '%petblocks_param_1%' ...")
 }

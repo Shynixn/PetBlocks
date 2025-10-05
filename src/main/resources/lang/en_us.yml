@@ -291,27 +291,6 @@ manipulateOtherMessage:
 reloadCommandHint:
   type: "CHAT"
   text: "Reloads all pets, menus and configuration."
-closeCommandHint:
-  type: "CHAT"
-  text: "Closes the GUI menu."
-backCommandHint:
-  type: "CHAT"
-  text: "Goes back one GUI page."
-openCommandHint:
-  type: "CHAT"
-  text: "Opens the GUI menu with the given name."
-nextCommandHint:
-  type: "CHAT"
-  text: "Opens the next GUI page."
-messageCommandHint:
-  type: "CHAT"
-  text: "Sends a chat message."
-guiMenuNotFoundMessage:
-  type: "CHAT"
-  text: "[&9PetBlocks&f] &cMenu %petblocks_param_1% not found."
-guiMenuNoPermissionMessage:
-  type: "CHAT"
-  text: "[&9PetBlocks&f] &cYou do not have permission for menu %petblocks_param_1%."
 variableCommandHint:
   type: "CHAT"
   text: "Sets the value of the variable with the given key. This is useful to store arbitrary data into the pet e.g., health."
@@ -327,12 +306,6 @@ ridingSpeedChangedMessage:
 ridingSpeedCommandHint:
   type: "CHAT"
   text: "Changes the speed while riding a pet."
-cannotParseItemStackError:
-  type: "CHAT"
-  text: "[&9PetBlocks&f] &cCannot parse ItemStack at row %petblocks_param_1% and col %petblocks_param_2%! Check your GUI menu configuration by reviewing the full item parsing error in the console log."
-rowColOutOfRangeError:
-  type: "CHAT"
-  text: "[&9PetBlocks&f] &cThe specified row %petblocks_param_1% and col %petblocks_param_2% are out of range of the GUI! Check your GUI menu configuration."
 suggestRenamePrefix:
   type: "CHAT"
   text: "[&9PetBlocks&f] "
@@ -342,3 +315,64 @@ suggestRenameClickable:
 suggestRenameSuffix:
   type: "CHAT"
   text: "&r to rename your pet."
+# All language key identifiers.
+shyGuiPlayerNotFoundMessage:
+  type: "CHAT"
+  text: "[&9PetBlocks&f] &cPlayer %petblocks_param_1% not found."
+shyGuiNoPermissionCommand:
+  type: "CHAT"
+  text: "[&9PetBlocks&f] &cYou do not have permission to execute this command."
+shyGuiCommandUsage:
+  type: "CHAT"
+  text: "[&9PetBlocks&f] Use /shygui help to see more info about the plugin."
+shyGuiCommandDescription:
+  type: "CHAT"
+  text: "[&9PetBlocks&f] All commands for the ShyGUI plugin."
+shyGuiCommandSenderHasToBePlayer:
+  type: "CHAT"
+  text: "[&9PetBlocks&f] The command sender has to be a player if you do not specify the optional player argument."
+shyGuiGuiMenuNotFoundMessage:
+  type: "CHAT"
+  text: "[&9PetBlocks&f] &cMenu %petblocks_param_1% not found."
+shyGuiGuiMenuNoPermissionMessage:
+  type: "CHAT"
+  text: "[&9PetBlocks&f] &cYou do not have permission for menu %petblocks_param_1%."
+shyGuiManipulateOtherMessage:
+  type: "CHAT"
+  text: "[&9PetBlocks&f] &cYou do not have permission to open the GUI menu for other players."
+shyGuiCloseCommandHint:
+  type: "CHAT"
+  text: "Closes the GUI menu."
+shyGuiBackCommandHint:
+  type: "CHAT"
+  text: "Goes back one GUI page."
+shyGuiOpenCommandHint:
+  type: "CHAT"
+  text: "Opens the GUI menu with the given name."
+shyGuiNextCommandHint:
+  type: "CHAT"
+  text: "Opens the next GUI page."
+shyGuiReloadCommandHint:
+  type: "CHAT"
+  text: "Reloads all GUI menus and configuration."
+shyGuiMessageCommandHint:
+  type: "CHAT"
+  text: "Sends a chat message."
+shyGuiReloadMessage:
+  type: "CHAT"
+  text: "[&9PetBlocks&f] Reloaded all GUI menus and configuration."
+shyGuiCannotParseItemStackError:
+  type: "CHAT"
+  text: "[&9PetBlocks&f] &cCannot parse ItemStack at row %petblocks_param_1% and col %petblocks_param_2%! Check your GUI menu configuration by reviewing the full item parsing error in the console log."
+shyGuiRowColOutOfRangeError:
+  type: "CHAT"
+  text: "[&9PetBlocks&f] &cThe specified row %petblocks_param_1% and col %petblocks_param_2% are out of range of the GUI! Check your GUI menu configuration."
+shyGuiRefreshCommandHint:
+  type: "CHAT"
+  text: "Refreshes the current GUI page."
+shyGuiServerCommandHint:
+  type: "CHAT"
+  text: "Sends the player to the given server."
+shyGuiServerMessage:
+  type: "CHAT"
+  text: "[&9PetBlocks&f] Connecting to server '%petblocks_param_1%' ..."

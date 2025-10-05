@@ -17,6 +17,8 @@ interface PetBlocksLanguage : LanguageProvider, ShyGUILanguage {
 
   var petDeletedMessage: LanguageItem
 
+  var playerNotFoundMessage: LanguageItem
+
   var petCalledMessage: LanguageItem
 
   var petSpawnedMessage: LanguageItem
@@ -58,6 +60,8 @@ interface PetBlocksLanguage : LanguageProvider, ShyGUILanguage {
   var petVelocityAppliedMessage: LanguageItem
 
   var petCharacterNotAllowed: LanguageItem
+
+  var reloadMessage: LanguageItem
 
   var petLoopNotFound: LanguageItem
 
@@ -102,6 +106,14 @@ interface PetBlocksLanguage : LanguageProvider, ShyGUILanguage {
   var cannotParseDataComponentMessage: LanguageItem
 
   var maxLength20Characters: LanguageItem
+
+  var noPermissionCommand: LanguageItem
+
+  var commandUsage: LanguageItem
+
+  var commandDescription: LanguageItem
+
+  var commandSenderHasToBePlayer: LanguageItem
 
   var cannotParseBoolean: LanguageItem
 
@@ -174,6 +186,10 @@ interface PetBlocksLanguage : LanguageProvider, ShyGUILanguage {
   var entityVisibleCommandHint: LanguageItem
 
   var groundOffSetCommandHint: LanguageItem
+
+  var manipulateOtherMessage: LanguageItem
+
+  var reloadCommandHint: LanguageItem
 
   var variableCommandHint: LanguageItem
 

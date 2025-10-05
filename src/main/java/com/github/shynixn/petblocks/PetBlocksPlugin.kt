@@ -116,9 +116,10 @@ class PetBlocksPlugin : JavaPlugin(), CoroutinePlugin {
                 Version.VERSION_1_21_R3,
                 Version.VERSION_1_21_R4,
                 Version.VERSION_1_21_R5,
+                Version.VERSION_1_21_R6,
             )
         } else {
-            listOf(Version.VERSION_1_21_R5)
+            listOf(Version.VERSION_1_21_R6)
         }
 
         if (!Version.serverVersion.isCompatible(*versions.toTypedArray())) {

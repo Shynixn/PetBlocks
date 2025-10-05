@@ -8,13 +8,13 @@ plugins {
 }
 
 group = "com.github.shynixn"
-version = "9.26.0"
+version = "9.27.0"
 
 repositories {
     mavenLocal()
     mavenCentral()
     maven("https://hub.spigotmc.org/nexus/content/repositories/snapshots/")
-    maven("https://shynixn.github.io/m2/repository/releases")
+    maven("https://maven.shynixn.com/releases")
     maven(System.getenv("SHYNIXN_MCUTILS_REPOSITORY_2025")) // All MCUTILS libraries are private and not OpenSource.
 }
 
@@ -32,9 +32,9 @@ dependencies {
     implementation("org.openjdk.nashorn:nashorn-core:15.4")
 
     // Custom dependencies
-    implementation("com.github.shynixn.shygui:shygui:1.7.1")
-    implementation("com.github.shynixn.mcutils:common:2025.40")
-    implementation("com.github.shynixn.mcutils:packet:2025.31")
+    implementation("com.github.shynixn.shygui:shygui:1.9.0")
+    implementation("com.github.shynixn.mcutils:common:2025.45")
+    implementation("com.github.shynixn.mcutils:packet:2025.37")
     implementation("com.github.shynixn.mcutils:database:2025.10")
     implementation("com.github.shynixn.mcutils:pathfinder:2025.1")
     implementation("com.github.shynixn.mcutils:javascript:2025.1")
@@ -118,6 +118,7 @@ tasks.register("pluginJarLatest", com.github.jengelman.gradle.plugins.shadow.tas
     exclude("com/github/shynixn/petblocks/lib/com/github/shynixn/mcutils/packet/nms/v1_21_R2/**")
     exclude("com/github/shynixn/petblocks/lib/com/github/shynixn/mcutils/packet/nms/v1_21_R3/**")
     exclude("com/github/shynixn/petblocks/lib/com/github/shynixn/mcutils/packet/nms/v1_21_R4/**")
+    exclude("com/github/shynixn/petblocks/lib/com/github/shynixn/mcutils/packet/nms/v1_21_R5/**")
     exclude("com/github/shynixn/mcutils/**")
     exclude("com/github/shynixn/mccoroutine/**")
     exclude("com/github/shynixn/shygui/**")
@@ -249,23 +250,26 @@ tasks.register("languageFile") {
 
     val contractContents = ArrayList<String>()
     val ignoredKeys = listOf(
-        "playerNotFoundMessage",
-        "reloadMessage",
-        "noPermissionCommand",
-        "commandUsage",
-        "commandDescription",
-        "commandSenderHasToBePlayer",
-        "manipulateOtherMessage",
-        "reloadCommandHint",
-        "closeCommandHint",
-        "backCommandHint",
-        "openCommandHint",
-        "nextCommandHint",
-        "messageCommandHint",
-        "guiMenuNotFoundMessage",
-        "guiMenuNoPermissionMessage",
-        "cannotParseItemStackError",
-        "rowColOutOfRangeError"
+        "shyGuiPlayerNotFoundMessage",
+        "shyGuiReloadMessage",
+        "shyGuiNoPermissionCommand",
+        "shyGuiCommandUsage",
+        "shyGuiCommandDescription",
+        "shyGuiCommandSenderHasToBePlayer",
+        "shyGuiManipulateOtherMessage",
+        "shyGuiReloadCommandHint",
+        "shyGuiCloseCommandHint",
+        "shyGuiBackCommandHint",
+        "shyGuiOpenCommandHint",
+        "shyGuiNextCommandHint",
+        "shyGuiMessageCommandHint",
+        "shyGuiGuiMenuNotFoundMessage",
+        "shyGuiGuiMenuNoPermissionMessage",
+        "shyGuiCannotParseItemStackError",
+        "shyGuiRowColOutOfRangeError",
+        "shyGuiRefreshCommandHint",
+        "shyGuiServerCommandHint",
+        "shyGuiServerMessage"
     )
     contractContents.add("package com.github.shynixn.petblocks.contract")
     contractContents.add("")
