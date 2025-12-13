@@ -1,6 +1,5 @@
 package com.github.shynixn.petblocks.impl.physic
 
-import checkForPluginMainThread
 import com.github.shynixn.mcutils.common.Vector3d
 import com.github.shynixn.mcutils.common.toLocation
 import com.github.shynixn.mcutils.common.toVector
@@ -33,8 +32,6 @@ class MathComponent(
      * Sets the velocity which is applied per tick to the object.
      */
     fun setVelocity(vector: Vector3d) {
-        checkForPluginMainThread()
-
         this.motion = vector.copy()
         this.position.y += 0.25
     }
@@ -43,8 +40,6 @@ class MathComponent(
      * Teleports the object to the given vector.
      */
     fun teleport(vector: Vector3d) {
-        checkForPluginMainThread()
-
         cachedTeleportTarget = vector
     }
 
@@ -86,8 +81,6 @@ class MathComponent(
      * Ticks the async thread.
      */
     fun tickPhysic() {
-        checkForPluginMainThread()
-
         // Handle teleport.
         if (cachedTeleportTarget != null) {
             handleTeleport()

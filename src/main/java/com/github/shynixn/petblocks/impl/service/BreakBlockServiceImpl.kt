@@ -1,6 +1,5 @@
 package com.github.shynixn.petblocks.impl.service
 
-import checkForPluginMainThread
 import com.github.shynixn.mccoroutine.folia.launch
 import com.github.shynixn.mccoroutine.folia.ticks
 import com.github.shynixn.mcutils.common.CancellationToken
@@ -26,7 +25,6 @@ class BreakBlockServiceImpl (private val plugin: Plugin, private val packetServi
         dropTypes: List<DropType>,
         token: CancellationToken
     ) {
-        checkForPluginMainThread()
         val locateBlock = petEntity.findTargetBlock(2.0) ?: return
 
         petEntity.isBreakingBlock = true

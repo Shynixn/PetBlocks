@@ -42,7 +42,6 @@ import org.bukkit.entity.Entity
 import org.bukkit.event.player.PlayerJoinEvent
 import org.bukkit.plugin.ServicePriority
 import org.bukkit.plugin.java.JavaPlugin
-import pluginMainThreadId
 import java.util.*
 import java.util.logging.Level
 import kotlin.coroutines.CoroutineContext
@@ -117,9 +116,10 @@ class PetBlocksPlugin : JavaPlugin(), CoroutinePlugin {
                 Version.VERSION_1_21_R4,
                 Version.VERSION_1_21_R5,
                 Version.VERSION_1_21_R6,
+                Version.VERSION_1_21_R7,
             )
         } else {
-            listOf(Version.VERSION_1_21_R6)
+            listOf(Version.VERSION_1_21_R7)
         }
 
         if (!Version.serverVersion.isCompatible(*versions.toTypedArray())) {
@@ -148,10 +148,6 @@ class PetBlocksPlugin : JavaPlugin(), CoroutinePlugin {
 
         if (isFoliaLoaded()) {
             logger.log(Level.INFO, "Loading Folia components.")
-        }
-
-        launch {
-            pluginMainThreadId = Thread.currentThread().id
         }
 
         // Register Language

@@ -61,10 +61,10 @@ petListMessage:
   type: "CHAT"
   text: "[&9PetBlocks&f] Count: %petblocks_param_1% Names: %petblocks_param_2%"
 petRideMessage:
-  type: "CHAT"
+  type: "HIDDEN"
   text: "[&9PetBlocks&f] Started riding pet."
 petUnmountMessage:
-  type: "CHAT"
+  type: "HIDDEN"
   text: "[&9PetBlocks&f] Stopped mounting pet."
 petHatMessage:
   type: "CHAT"

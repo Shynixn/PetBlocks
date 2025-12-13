@@ -1,6 +1,5 @@
 package com.github.shynixn.petblocks.impl.physic
 
-import checkForPluginMainThread
 import com.github.shynixn.mcutils.common.Vector3d
 import com.github.shynixn.mcutils.common.item.ItemService
 import com.github.shynixn.mcutils.common.placeholder.PlaceHolderService
@@ -28,7 +27,7 @@ class ArmorstandEntityComponent(
     private val placeHolderService: PlaceHolderService,
     private val itemService: ItemService,
     private val pet: Pet,
-    private val plugin: Plugin,
+    plugin: Plugin,
     val entityId: Int,
 ) {
     private var lastVisibleVector3d = Vector3d()
@@ -78,7 +77,6 @@ class ArmorstandEntityComponent(
     }
 
     fun updateRidingState(player: Player) {
-
         val owner = pet.player
 
         if (petMeta.visibility == PetVisibility.OWNER && player != owner) {

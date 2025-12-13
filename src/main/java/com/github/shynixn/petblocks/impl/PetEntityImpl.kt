@@ -1,6 +1,5 @@
 package com.github.shynixn.petblocks.impl
 
-import checkForPluginMainThread
 import com.github.shynixn.mccoroutine.folia.entityDispatcher
 import com.github.shynixn.mccoroutine.folia.launch
 import com.github.shynixn.mccoroutine.folia.regionDispatcher
@@ -142,7 +141,6 @@ class PetEntityImpl(
     }
 
     fun setVelocity(vector3d: Vector3d) {
-        checkForPluginMainThread()
         cancellationTokenLongRunning.isCancelled = true
         this.physicsComponent.setVelocity(vector3d)
     }
@@ -151,7 +149,6 @@ class PetEntityImpl(
      * Teleports the pet in world.
      */
     fun teleportInWorld(vector3d: Vector3d) {
-        checkForPluginMainThread()
         cancellationTokenLongRunning.isCancelled = true
         this.physicsComponent.teleport(vector3d)
     }
@@ -177,7 +174,6 @@ class PetEntityImpl(
      * If none work, the broken block item vanishes.
      */
     fun breakBlock(timeToBreakTicks: Int, dropTypes: List<DropType>) {
-        checkForPluginMainThread()
         cancellationTokenLongRunning.isCancelled = true
         cancellationTokenLongRunning = CancellationToken()
         val actualDropTypes = ArrayList(dropTypes)
@@ -189,7 +185,6 @@ class PetEntityImpl(
      * RightClicks the pet.
      */
     fun rightClick(player: Player) {
-        checkForPluginMainThread()
         cancellationTokenLongRunning.isCancelled = true
         val currentDateTime = Date().time
 
@@ -216,7 +211,6 @@ class PetEntityImpl(
      * LeftClicks the pet.
      */
     fun leftClick(player: Player) {
-        checkForPluginMainThread()
         cancellationTokenLongRunning.isCancelled = true
         val currentDateTime = Date().time
 
@@ -243,7 +237,6 @@ class PetEntityImpl(
      * Spawn is initiated.
      */
     fun onSpawn(player: Player) {
-        checkForPluginMainThread()
         cancellationTokenLongRunning.isCancelled = true
         val spawnEvent = pet.template.events["spawn"]
         if (spawnEvent != null) {
@@ -257,7 +250,6 @@ class PetEntityImpl(
      * Despawn is initiated.
      */
     fun onDespawn(player: Player) {
-        checkForPluginMainThread()
         cancellationTokenLongRunning.isCancelled = true
         val despawnEvent = pet.template.events["despawn"]
         if (despawnEvent != null) {
@@ -271,7 +263,6 @@ class PetEntityImpl(
      * Moves to the given location.
      */
     fun moveToLocation(location: Location, speed: Double) {
-        checkForPluginMainThread()
         cancellationTokenLongRunning.isCancelled = true
 
         plugin.launch {
@@ -323,7 +314,6 @@ class PetEntityImpl(
     }
 
     fun moveForward(speed: Double) {
-        checkForPluginMainThread()
         cancellationTokenLongRunning.isCancelled = true
         cancellationTokenLongRunning = CancellationToken()
         val token = cancellationTokenLongRunning
@@ -352,7 +342,6 @@ class PetEntityImpl(
     private fun attemptSolutions(
         snapshot: WorldSnapshot, sourceLocation: Location, targetLocation: Location, speed: Double
     ): Boolean {
-        checkForPluginMainThread()
         val result = pathfinderService.findPath(snapshot, sourceLocation, targetLocation)
 
         if (result.resultType == PathfinderResultType.FOUND) {
@@ -371,7 +360,6 @@ class PetEntityImpl(
      * Gets called when the player is riding the entity.
      */
     fun ride(player: Player, moveType: RidingMoveType, isJumping: Boolean, isSneaking: Boolean) {
-        checkForPluginMainThread()
         cancellationTokenLongRunning.isCancelled = true
 
         if (isJumping) {
@@ -463,7 +451,6 @@ class PetEntityImpl(
      * Updates the displayName in the world.
      */
     fun updateMetaData() {
-        checkForPluginMainThread()
         for (player in playerComponent.visiblePlayers) {
             entityComponent.updateMetaData(player)
         }
@@ -473,7 +460,6 @@ class PetEntityImpl(
      * Updates the head Itemstack.
      */
     fun updateHeadItemStack() {
-        checkForPluginMainThread()
         for (player in playerComponent.visiblePlayers) {
             entityComponent.updateEquipment(player)
         }
@@ -483,7 +469,6 @@ class PetEntityImpl(
      * Updates the riding state of the player.
      */
     fun updateRidingState() {
-        checkForPluginMainThread()
         cancellationTokenLongRunning.isCancelled = true
         for (player in playerComponent.visiblePlayers) {
             entityComponent.updateRidingState(player)
@@ -491,22 +476,9 @@ class PetEntityImpl(
     }
 
     /**
-     * Safety unmount.
-     */
-    fun ensureUnmounted(){
-        packetService.sendPacketOutEntityMount(pet.player, PacketOutEntityMount().also {
-            it.entityId = pet.player.entityId
-        })
-        packetService.sendPacketOutEntityMount(pet.player, PacketOutEntityMount().also {
-            it.entityId = entityComponent.entityId
-        })
-    }
-
-    /**
      * Tick on async thread.
      */
     fun tickPhysic() {
-        checkForPluginMainThread()
         physicsComponent.tickPhysic()
         moveToTargetComponent.tickPhysic()
     }

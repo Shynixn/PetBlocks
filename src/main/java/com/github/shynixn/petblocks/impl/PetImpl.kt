@@ -1,6 +1,5 @@
 package com.github.shynixn.petblocks.impl
 
-import checkForPluginMainThread
 import com.github.shynixn.mccoroutine.folia.launch
 import com.github.shynixn.mccoroutine.folia.ticks
 import com.github.shynixn.mcutils.common.item.Item
@@ -9,7 +8,6 @@ import com.github.shynixn.mcutils.common.toLocation
 import com.github.shynixn.mcutils.common.toVector
 import com.github.shynixn.mcutils.common.toVector3d
 import com.github.shynixn.mcutils.common.translateChatColors
-import com.github.shynixn.mcutils.packet.api.packet.PacketOutEntityMount
 import com.github.shynixn.petblocks.contract.Pet
 import com.github.shynixn.petblocks.contract.PetEntityFactory
 import com.github.shynixn.petblocks.entity.PetMeta
@@ -70,7 +68,6 @@ class PetImpl(
             if (isDisposed) {
                 throw PetBlocksPetDisposedException()
             }
-            checkForPluginMainThread()
             petMeta.name = value
         }
 
@@ -85,7 +82,6 @@ class PetImpl(
             if (isDisposed) {
                 throw PetBlocksPetDisposedException()
             }
-            checkForPluginMainThread()
             petMeta.displayName = value.translateChatColors()
             petEntity?.updateMetaData()
         }
@@ -128,7 +124,6 @@ class PetImpl(
                 throw PetBlocksPetDisposedException()
             }
 
-            checkForPluginMainThread()
             val previousWorld = petMeta.lastStoredLocation.world
             petMeta.lastStoredLocation = value.toVector3d()
 
@@ -161,7 +156,6 @@ class PetImpl(
             return Vector(0.0, 0.0, 0.0)
         }
         set(value) {
-            checkForPluginMainThread()
             if (petEntity != null) {
                 petEntity!!.setVelocity(value.toVector3d())
             }
@@ -175,7 +169,6 @@ class PetImpl(
             return petMeta.visibility
         }
         set(value) {
-            checkForPluginMainThread()
             if (isDisposed) {
                 throw PetBlocksPetDisposedException()
             }
@@ -196,7 +189,6 @@ class PetImpl(
             return itemService.toItemStack(petMeta.headItem)
         }
         set(value) {
-            checkForPluginMainThread()
             petMeta.headItem = itemService.toItem(value)
             petEntity?.updateHeadItemStack()
         }
@@ -209,7 +201,6 @@ class PetImpl(
             return petMeta.headItem
         }
         set(value) {
-            checkForPluginMainThread()
             petMeta.headItem = value
             petEntity?.updateHeadItemStack()
         }
@@ -222,7 +213,6 @@ class PetImpl(
             return petMeta.loop
         }
         set(value) {
-            checkForPluginMainThread()
             petMeta.loop = value
             petEntity?.cancelLoop()
         }
@@ -243,7 +233,6 @@ class PetImpl(
             return templateCache!!
         }
         set(value) {
-            checkForPluginMainThread()
             templateCache = value
             petMeta.template = value.name
         }
@@ -257,7 +246,6 @@ class PetImpl(
             return petMeta.entityType
         }
         set(value) {
-            checkForPluginMainThread()
             petMeta.entityType = value
             if (petEntity != null) {
                 plugin.launch {
@@ -276,7 +264,6 @@ class PetImpl(
             return petMeta.isEntityVisible
         }
         set(value) {
-            checkForPluginMainThread()
             petMeta.isEntityVisible = value
             if (petEntity != null) {
                 petEntity?.updateMetaData()
@@ -304,7 +291,6 @@ class PetImpl(
             return petMeta.physics.groundOffset
         }
         set(value) {
-            checkForPluginMainThread()
             petMeta.physics.groundOffset = value
             location = location // Triggers teleport.
         }
@@ -317,7 +303,6 @@ class PetImpl(
             return petMeta.physics.ridingSpeed
         }
         set(value) {
-            checkForPluginMainThread()
             petMeta.physics.ridingSpeed = value
         }
 
@@ -337,7 +322,6 @@ class PetImpl(
         if (isDisposed) {
             throw PetBlocksPetDisposedException()
         }
-        checkForPluginMainThread()
 
         if (petEntity != null) {
             // Cross World Call.
@@ -365,8 +349,6 @@ class PetImpl(
      *  Snaps the pet yaw and pitch to the x or z
      */
     override fun snap() {
-        checkForPluginMainThread()
-
         val direction = this.direction
         val location = this.location
         location.x = location.blockX.toDouble() + 0.5
@@ -382,8 +364,6 @@ class PetImpl(
      * The current location of the pet is stored.
      */
     override fun remove() {
-        checkForPluginMainThread()
-
         if (isDisposed) {
             throw PetBlocksPetDisposedException()
         }
@@ -410,7 +390,6 @@ class PetImpl(
      * Compatibility.
      */
     override fun invokeDeSpawnCommand() {
-        checkForPluginMainThread()
         petEntity?.onDespawn(player)
     }
 
@@ -418,8 +397,6 @@ class PetImpl(
      * Shows the pet for the owner (and other players depending on the visibility) at the location the pet remembers.
      */
     override fun spawn() {
-        checkForPluginMainThread()
-
         if (isDisposed) {
             throw PetBlocksPetDisposedException()
         }
@@ -455,8 +432,6 @@ class PetImpl(
      * Spawns the pet if it is not spawned.
      */
     override fun ride() {
-        checkForPluginMainThread()
-
         if (isDisposed) {
             throw PetBlocksPetDisposedException()
         }
@@ -477,8 +452,6 @@ class PetImpl(
      * Spawns the pet if it is not spawned.
      */
     override fun hat() {
-        checkForPluginMainThread()
-
         if (isDisposed) {
             throw PetBlocksPetDisposedException()
         }
@@ -497,18 +470,8 @@ class PetImpl(
      * Stops riding or flying if the pet currently performs it.
      */
     override fun unmount() {
-        checkForPluginMainThread()
-
         if (isDisposed) {
             throw PetBlocksPetDisposedException()
-        }
-
-        if (petMeta.ridingState == PetRidingState.NO) {
-            plugin.launch {
-                delay(20.ticks)
-                petEntity?.ensureUnmounted()
-            }
-            return
         }
 
         petMeta.ridingState = PetRidingState.NO
@@ -520,8 +483,12 @@ class PetImpl(
         }
 
         if (petEntity != null) {
-            petEntity!!.updateRidingState()
-            call()
+            plugin.launch {
+                delay(5.ticks)
+                petEntity!!.updateRidingState()
+                delay(2.ticks)
+                call()
+            }
         }
     }
 
@@ -532,8 +499,6 @@ class PetImpl(
      * If none work, the broken block item vanishes.
      */
     override fun breakBlock(timeToBreakTicks: Int, dropTypes: List<DropType>) {
-        checkForPluginMainThread()
-
         if (isDisposed) {
             throw PetBlocksPetDisposedException()
         }
@@ -548,7 +513,6 @@ class PetImpl(
      * e.g. breakBlock
      */
     override fun cancelAction() {
-        checkForPluginMainThread()
         petEntity?.cancelLongRunningAction()
     }
 
@@ -556,7 +520,6 @@ class PetImpl(
      * Turns the pet to look at the given location.
      */
     override fun lookAt(location: Location) {
-        checkForPluginMainThread()
         if (isDisposed) {
             throw PetBlocksPetDisposedException()
         }
@@ -574,7 +537,6 @@ class PetImpl(
      * If the pet is too far away from the given location, the call will be ignored.
      */
     override fun moveTo(location: Location, speed: Double): Boolean {
-        checkForPluginMainThread()
         if (isDisposed) {
             throw PetBlocksPetDisposedException()
         }
@@ -604,7 +566,6 @@ class PetImpl(
      * Lets the pet move forward until it hits an obstacle.
      */
     override fun moveForward(speed: Double): Boolean {
-        checkForPluginMainThread()
         if (isDisposed) {
             throw PetBlocksPetDisposedException()
         }
@@ -617,7 +578,6 @@ class PetImpl(
      * Is the owner riding on the pet.
      */
     override fun isRiding(): Boolean {
-        checkForPluginMainThread()
         return petEntity != null && petMeta.ridingState == PetRidingState.GROUND
     }
 
@@ -625,7 +585,6 @@ class PetImpl(
      * Gets the block the pet is looking at.
      */
     override fun getBlockInFrontOf(): Block? {
-        checkForPluginMainThread()
         if (petEntity == null) {
             return null
         }
