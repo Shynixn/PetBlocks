@@ -1,6 +1,5 @@
 package com.github.shynixn.petblocks.impl.service
 
-import checkForPluginMainThread
 import com.github.shynixn.mcutils.common.ConfigurationService
 import com.github.shynixn.mcutils.common.Vector3d
 import com.github.shynixn.mcutils.common.item.ItemService
@@ -49,8 +48,6 @@ class PetEntityFactoryImpl (
      * Creates a new pet entity.
      */
     override fun createPetEntity(pet: Pet, meta: PetMeta): PetEntityImpl {
-        checkForPluginMainThread()
-
         if (meta.lastStoredLocation.world == null) {
             // On First spawn
             meta.lastStoredLocation = pet.player.location.toVector3d().addRelativeFront(3.0)

@@ -1,6 +1,5 @@
 package com.github.shynixn.petblocks.impl.service
 
-import checkForPluginMainThread
 import com.github.shynixn.mccoroutine.folia.asyncDispatcher
 import com.github.shynixn.mccoroutine.folia.entityDispatcher
 import com.github.shynixn.mccoroutine.folia.globalRegionDispatcher
@@ -51,8 +50,6 @@ class PetActionExecutionServiceImpl (
         petActionDefinition: PetActionDefinition,
         cancellationToken: CancellationToken
     ) {
-        checkForPluginMainThread()
-
         for (action in petActionDefinition.actions) {
             if (pet.isDisposed) {
                 return
