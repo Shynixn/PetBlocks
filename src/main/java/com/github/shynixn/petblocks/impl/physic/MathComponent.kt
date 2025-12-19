@@ -75,17 +75,6 @@ class MathComponent(
         if (motion.x != 0.0 || motion.z != 0.0) {
             movementRayTraceResult = rayTracingService.rayTraceMotion(position, motion, settings.collideWithWater, settings.collideWithPassableBlocks)
         }
-    }
-
-    /**
-     * Ticks the async thread.
-     */
-    fun tickPhysic() {
-        // Handle teleport.
-        if (cachedTeleportTarget != null) {
-            handleTeleport()
-            return
-        }
 
         if (movementRayTraceResult != null) {
             if (movementRayTraceResult!!.hitBlock && movementRayTraceResult!!.blockDirection != BlockDirection.UP) {
@@ -118,6 +107,17 @@ class MathComponent(
                     fixMotionFloatingPoints()
                 }
             }
+        }
+    }
+
+    /**
+     * Ticks the async thread.
+     */
+    fun tickPhysic() {
+        // Handle teleport.
+        if (cachedTeleportTarget != null) {
+            handleTeleport()
+            return
         }
 
         if (gravityRayTraceResult != null) {
