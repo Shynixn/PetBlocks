@@ -1,5 +1,7 @@
 package com.github.shynixn.petblocks.impl.commandexecutor
 
+import com.github.shynixn.mccoroutine.folia.entityDispatcher
+import com.github.shynixn.mccoroutine.folia.launch
 import com.github.shynixn.mcutils.common.*
 import com.github.shynixn.mcutils.common.chat.ChatMessageService
 import com.github.shynixn.mcutils.common.chat.ClickEvent
@@ -1104,7 +1106,9 @@ class PetBlocksCommandExecutor(
                 command
             }
 
-            Bukkit.getServer().dispatchCommand(player, command)
+            plugin.launch(plugin.entityDispatcher(player)) {
+                Bukkit.getServer().dispatchCommand(player, command)
+            }
         } catch (e: Exception) {
             sender.sendLanguageMessage(language.headDatabasePluginNotLoaded)
             return

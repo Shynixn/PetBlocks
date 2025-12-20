@@ -106,7 +106,11 @@ class PetEntityImpl(
                     }
 
                     cancellationTokenLoop = CancellationToken()
-                    petActionExecutionService.executeAction(pet.player, pet, loop, cancellationTokenLoop)
+                    if (pet.player.isOnline) {
+                        petActionExecutionService.executeAction(pet.player, pet, loop, cancellationTokenLoop)
+                    } else {
+                        remove()
+                    }
                 } catch (e: PetBlocksPetDisposedException) {
                     // Ignore Disposed exception.
                     break
