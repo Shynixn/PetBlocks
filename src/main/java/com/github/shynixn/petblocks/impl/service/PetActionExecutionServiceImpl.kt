@@ -59,6 +59,10 @@ class PetActionExecutionServiceImpl (
                 return
             }
 
+            if (!pet.player.isOnline) {
+                return
+            }
+
             if (action.debug) {
                 plugin.logger.log(Level.INFO, "> Start pet action ${action.name} ${action.type}.")
             }
