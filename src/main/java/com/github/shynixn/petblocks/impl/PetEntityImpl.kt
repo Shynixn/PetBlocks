@@ -429,7 +429,13 @@ class PetEntityImpl(
             // Required so the position of the player stays in sync while packet riding.
             // Has to be on the main thread.
             withContext(plugin.entityDispatcher(player)) {
-                packetService.setServerPlayerPosition(player, physicsComponent.position.toLocation())
+                val physicLocation = physicsComponent.position.toLocation()
+                val playerLocation = player.location
+                if (playerLocation.world == physicLocation.world) {
+                    packetService.setServerPlayerPosition(player, physicLocation)
+                } else {
+                    pet.unmount()
+                }
             }
             for (visiblePlayers in playerComponent.visiblePlayers) {
                 packetService.sendPacketOutEntityMount(visiblePlayers, PacketOutEntityMount().also {

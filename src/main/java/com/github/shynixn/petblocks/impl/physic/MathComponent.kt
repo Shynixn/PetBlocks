@@ -6,13 +6,15 @@ import com.github.shynixn.mcutils.common.toVector
 import com.github.shynixn.mcutils.packet.api.RayTraceResult
 import com.github.shynixn.mcutils.packet.api.RayTracingService
 import com.github.shynixn.mcutils.packet.api.meta.enumeration.BlockDirection
+import com.github.shynixn.petblocks.contract.Pet
 import com.github.shynixn.petblocks.entity.PhysicSettings
+import org.bukkit.Location
 import kotlin.math.abs
 
 class MathComponent(
     var position: Vector3d, private val settings: PhysicSettings,
     private val rayTracingService: RayTracingService
-)  {
+) {
     /**
      * Function being called when the position and motion are about to change.
      */
@@ -27,6 +29,7 @@ class MathComponent(
     private var cachedTeleportTarget: Vector3d? = null
     private var movementRayTraceResult: RayTraceResult? = null
     private var gravityRayTraceResult: RayTraceResult? = null
+    var pet: Pet? = null
 
     /**
      * Sets the velocity which is applied per tick to the object.
@@ -49,7 +52,7 @@ class MathComponent(
     fun tickMinecraft() {
         val sourceLocation = position.toLocation()
 
-        if (!sourceLocation.chunk.isLoaded) {
+        if (!isChunkLoadedAtLocation(sourceLocation)) {
             return
         }
 
@@ -59,12 +62,17 @@ class MathComponent(
         // Target location of the object.
         val targetLocation = position.toLocation().add(motion.toVector())
 
-        if (!targetLocation.chunk.isLoaded) {
+        if (!isChunkLoadedAtLocation(targetLocation)) {
             return
         }
 
         // Check gravity.
-        gravityRayTraceResult = rayTracingService.rayTraceMotion(position, Vector3d(0.0, -1.0, 0.0), settings.collideWithWater, settings.collideWithPassableBlocks)
+        gravityRayTraceResult = rayTracingService.rayTraceMotion(
+            position,
+            Vector3d(0.0, -1.0, 0.0),
+            settings.collideWithWater,
+            settings.collideWithPassableBlocks
+        )
 
         if (gravityRayTraceResult!!.hitBlock && motion.y < 0.0) {
             // Set gravity to zero and correct y axe.
@@ -73,13 +81,35 @@ class MathComponent(
         }
 
         if (motion.x != 0.0 || motion.z != 0.0) {
-            movementRayTraceResult = rayTracingService.rayTraceMotion(position, motion, settings.collideWithWater, settings.collideWithPassableBlocks)
+            movementRayTraceResult = rayTracingService.rayTraceMotion(
+                position,
+                motion,
+                settings.collideWithWater,
+                settings.collideWithPassableBlocks
+            )
+        } else {
+            // Check if stuck
+            movementRayTraceResult = rayTracingService.rayTraceMotion(
+                position,
+                Vector3d(0.00, 0.1, 0.0),
+                settings.collideWithWater,
+                settings.collideWithPassableBlocks
+            )
+            if (movementRayTraceResult!!.hitBlock &&  pet != null && !pet!!.isRiding()) {
+                pet?.call()
+                return
+            }
         }
 
         if (movementRayTraceResult != null) {
             if (movementRayTraceResult!!.hitBlock && movementRayTraceResult!!.blockDirection != BlockDirection.UP) {
                 val stuckBackMotion =
-                    rayTracingService.rayTraceMotion(position, Vector3d(motion.x * -1, 0.0, motion.z * -1),settings.collideWithWater, settings.collideWithPassableBlocks)
+                    rayTracingService.rayTraceMotion(
+                        position,
+                        Vector3d(motion.x * -1, 0.0, motion.z * -1),
+                        settings.collideWithWater,
+                        settings.collideWithPassableBlocks
+                    )
                 if (stuckBackMotion.hitBlock) {
                     // If hit block while moving back. Move the entity up.
                     position.add(motion.x * -1, 0.1, motion.z * -1)
@@ -169,6 +199,17 @@ class MathComponent(
             vector.z = vector.z - reducement.z
         } else {
             vector.z = 0.0
+        }
+    }
+
+    private fun isChunkLoadedAtLocation(location: Location): Boolean {
+        val chunkX = location.blockX shr 4
+        val chunkZ = location.blockZ shr 4
+        try {
+            return location.world!!.isChunkLoaded(chunkX, chunkZ)
+        } catch (e: Exception) {
+            // Folia Thread access.
+            return false
         }
     }
 
