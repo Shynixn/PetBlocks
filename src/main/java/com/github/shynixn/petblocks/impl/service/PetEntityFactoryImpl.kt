@@ -98,6 +98,7 @@ class PetEntityFactoryImpl (
             visualizePath,
             rideUpdateMs
         )
+        mathPhysicComponent.pet = pet
 
         entities[armorStandEntityId] = petEntity
         return petEntity
