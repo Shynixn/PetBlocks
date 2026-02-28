@@ -148,6 +148,7 @@ class ArmorstandEntityComponent(
                 packetService.sendPacketOutEntityTeleport(player, PacketOutEntityTeleport().also {
                     it.entityId = this.entityId
                     it.target = position.copy().addRelativeUp(petMeta.physics.groundOffset).toLocation()
+                    it.rotateHead = true // Required for GeyserMC
                 })
             }
 
