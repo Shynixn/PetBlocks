@@ -30,6 +30,7 @@ class ArmorstandEntityComponent(
     plugin: Plugin,
     val entityId: Int,
 ) {
+    private var isCustomNameVisible = true
     private var lastVisibleVector3d = Vector3d()
     private val voidFallingLimit = plugin.config.getDouble("pet.deSpawnAtYAxe")
 
@@ -40,6 +41,11 @@ class ArmorstandEntityComponent(
     }
 
     private fun onPlayerSpawn(player: Player, location: Location) {
+        updatePetState(player, location)
+        updateRidingState(player)
+    }
+
+    private fun updatePetState(player: Player, location: Location){
         packetService.sendPacketOutEntitySpawn(player, PacketOutEntitySpawn().also {
             it.entityId = this.entityId
             it.entityTypeRaw = petMeta.entityType
@@ -48,7 +54,6 @@ class ArmorstandEntityComponent(
 
         updateEquipment(player)
         updateMetaData(player)
-        updateRidingState(player)
     }
 
     private fun onPlayerRemove(player: Player) {
@@ -71,7 +76,7 @@ class ArmorstandEntityComponent(
             it.entityId = this.entityId
             it.isArmorstandSmall = true
             it.isInvisible = !petMeta.isEntityVisible
-            it.customNameVisible = true
+            it.customNameVisible = isCustomNameVisible
             it.customname = placeHolderService.resolvePlaceHolder(petMeta.displayName, pet.player)
         })
     }
@@ -86,6 +91,11 @@ class ArmorstandEntityComponent(
         val ridingState = petMeta.ridingState
 
         if (ridingState == PetRidingState.NO) {
+            // For GeyserMC
+            isCustomNameVisible = true
+            onPlayerRemove(player)
+            updatePetState(player, pet.location)
+
             // Remove ground and fly
             packetService.sendPacketOutEntityMount(player, PacketOutEntityMount().also {
                 it.entityId = entityId
@@ -97,6 +107,11 @@ class ArmorstandEntityComponent(
         }
 
         if (ridingState == PetRidingState.HAT) {
+            // For GeyserMC
+            isCustomNameVisible = false
+            onPlayerRemove(player)
+            updatePetState(player, pet.location)
+
             // Remove ground and fly
             packetService.sendPacketOutEntityMount(player, PacketOutEntityMount().also {
                 it.entityId = entityId
@@ -109,6 +124,11 @@ class ArmorstandEntityComponent(
         }
 
         if (ridingState == PetRidingState.GROUND) {
+            // For GeyserMC
+            isCustomNameVisible = false
+            onPlayerRemove(player)
+            updatePetState(player, pet.location)
+
             // Remove hat
             packetService.sendPacketOutEntityMount(player, PacketOutEntityMount().also {
                 it.entityId = owner.entityId
