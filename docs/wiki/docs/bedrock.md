@@ -34,10 +34,6 @@ to save time, become a patreon member at [https://www.patreon.com/Shynixn](https
     * Extract the ``packs/PetBlocksPack.mcpack`` into ``plugins\Geyser-<Proxy>\packs\PetBlocksPack.mcpack``
     * Copy the ``player-profiles`` values from ``plugins\Geyser-<Proxy>\custom-skulls_petblocks.yml`` into the ``plugins\Geyser-<Proxy>\custom-skulls.yml`` file.
 
-### Fixing Riding 
-
-* Riding does not work very well with Bedrock right now. Disable riding entirely or request a ticket on Discord to implement riding for Bedrock.
-
 ### GUIs
 
 * The GUI works for all clients without any changes. However, the GUI layout may be different for some clients (e.g. SmartPhone). Change the GUI layout to fit the needs of your playerbase.
