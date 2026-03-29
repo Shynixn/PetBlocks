@@ -10,6 +10,7 @@ import com.github.shynixn.mcutils.common.ChatColor
 import com.github.shynixn.mcutils.common.CoroutineHandler
 import com.github.shynixn.mcutils.common.Version
 import com.github.shynixn.mcutils.common.checkIfFoliaIsLoadable
+import com.github.shynixn.mcutils.common.commonServer
 import com.github.shynixn.mcutils.common.di.DependencyInjectionModule
 import com.github.shynixn.mcutils.common.language.reloadTranslation
 import com.github.shynixn.mcutils.common.placeholder.PlaceHolderService
@@ -84,6 +85,7 @@ class PetBlocksPlugin : JavaPlugin(), CoroutineHandler {
      * Called when this plugin is enabled.
      */
     override fun onEnable() {
+        commonServer = Bukkit.getServer()
         Bukkit.getServer().consoleSender.sendMessage(prefix + ChatColor.GREEN + "Loading PetBlocks ...")
         this.saveDefaultConfig()
         val versions = if (PetBlocksDependencyInjectionModule.areLegacyVersionsIncluded) {
@@ -172,6 +174,7 @@ class PetBlocksPlugin : JavaPlugin(), CoroutineHandler {
         val packetService = module.getService<PacketService>()
         packetService.registerPacketListening(PacketInType.USEENTITY)
         packetService.registerPacketListening(PacketInType.STEERENTITY)
+        packetService.registerPacketListening(PacketInType.ATTACKENTITY)
 
         // Register Listeners
         val petListener = module.getService<PetListener>()
