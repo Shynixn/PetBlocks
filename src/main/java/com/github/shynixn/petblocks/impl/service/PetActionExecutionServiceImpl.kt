@@ -7,8 +7,8 @@ import com.github.shynixn.mccoroutine.folia.launch
 import com.github.shynixn.mccoroutine.folia.ticks
 import com.github.shynixn.mcutils.common.CancellationToken
 import com.github.shynixn.mcutils.common.placeholder.PlaceHolderService
-import com.github.shynixn.mcutils.javascript.JavaScriptService
 import com.github.shynixn.petblocks.PetBlocksPlugin
+import com.github.shynixn.petblocks.contract.JavaScriptService
 import com.github.shynixn.petblocks.contract.Pet
 import com.github.shynixn.petblocks.contract.PetActionExecutionService
 import com.github.shynixn.petblocks.entity.PetAction

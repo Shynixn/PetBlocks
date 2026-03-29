@@ -8,6 +8,7 @@ import com.github.shynixn.mcutils.common.chat.ClickEvent
 import com.github.shynixn.mcutils.common.chat.ClickEventType
 import com.github.shynixn.mcutils.common.chat.TextComponent
 import com.github.shynixn.mcutils.common.command.CommandBuilder
+import com.github.shynixn.mcutils.common.command.CommandService
 import com.github.shynixn.mcutils.common.command.ValidationException
 import com.github.shynixn.mcutils.common.command.Validator
 import com.github.shynixn.mcutils.common.item.Item
@@ -36,13 +37,16 @@ import org.bukkit.command.CommandSender
 import org.bukkit.entity.EntityType
 import org.bukkit.entity.Player
 import org.bukkit.event.block.BlockBreakEvent
+import org.bukkit.plugin.Plugin
 import org.bukkit.util.Vector
 import java.util.*
 
 class PetBlocksCommandExecutor(
     private val petService: PetService,
     private val templateRepository: CacheRepository<PetTemplate>,
-    private val plugin: CoroutinePlugin,
+    private val plugin: Plugin,
+    private val coroutineHandler: CoroutineHandler,
+    private val commandService: CommandService,
     private val configurationService: ConfigurationService,
     private val chatMessageService: ChatMessageService,
     private val petMetaRepository: CachePlayerRepository<PlayerInformation>,
@@ -299,7 +303,7 @@ class PetBlocksCommandExecutor(
     }
 
     init {
-        val commandBuilder = CommandBuilder(plugin, "petblocks", chatMessageService) {
+        commandService.registerCommand(CommandBuilder(coroutineHandler,plugin, "petblocks", chatMessageService) {
             usage(language.commandUsage.text)
             description(language.commandDescription.text)
             aliases(plugin.config.getStringList("commands.petblocks.aliases"))
@@ -837,8 +841,7 @@ class PetBlocksCommandExecutor(
                     sender.sendLanguageMessage(language.reloadMessage)
                 }
             }
-        }
-        commandBuilder.build()
+        })
     }
 
     private fun sendRenameMessage(player: Player, pet: Pet) {

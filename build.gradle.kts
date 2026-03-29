@@ -1,6 +1,6 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-import java.io.*
 import java.util.*
+import java.io.*
 
 plugins {
     id("org.jetbrains.kotlin.jvm") version ("1.9.25")
@@ -8,14 +8,13 @@ plugins {
 }
 
 group = "com.github.shynixn"
-version = "9.29.6"
+version = "9.30.0"
 
 repositories {
-    mavenLocal()
     mavenCentral()
     maven("https://hub.spigotmc.org/nexus/content/repositories/snapshots/")
+    maven(System.getenv("SHYNIXN_MCUTILS_REPOSITORY_2026")) // All MCUTILS libraries are private and not OpenSource.
     maven("https://maven.shynixn.com/releases")
-    maven(System.getenv("SHYNIXN_MCUTILS_REPOSITORY_2025")) // All MCUTILS libraries are private and not OpenSource.
 }
 
 dependencies {
@@ -27,17 +26,16 @@ dependencies {
     implementation("com.github.shynixn.mccoroutine:mccoroutine-folia-api:2.22.0")
     implementation("com.github.shynixn.mccoroutine:mccoroutine-folia-core:2.22.0")
     implementation("com.github.shynixn:fasterxml:1.2.0")
-    implementation("com.zaxxer:HikariCP:4.0.3")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.2")
+    implementation("com.zaxxer:HikariCP:4.0.3")
     implementation("org.openjdk.nashorn:nashorn-core:15.4")
 
     // Custom dependencies
-    implementation("com.github.shynixn.shygui:shygui:1.11.4")
-    implementation("com.github.shynixn.mcutils:common:2025.51")
-    implementation("com.github.shynixn.mcutils:packet:2025.60")
-    implementation("com.github.shynixn.mcutils:database:2025.10")
-    implementation("com.github.shynixn.mcutils:pathfinder:2025.1")
-    implementation("com.github.shynixn.mcutils:javascript:2025.1")
+    implementation("com.github.shynixn.shygui:shygui:1.12.0")
+    implementation("com.github.shynixn.mcutils:common:2026.4")
+    implementation("com.github.shynixn.mcutils:packet:2026.11")
+    implementation("com.github.shynixn.mcutils:pathfinder:2026.3")
+    implementation("com.github.shynixn.mcutils:database:2026.3")
 
     // Test
     testImplementation(kotlin("test"))
@@ -47,22 +45,6 @@ dependencies {
     testImplementation("com.mysql:mysql-connector-j:8.3.0")
 }
 
-tasks.withType<KotlinCompile> {
-    kotlinOptions.jvmTarget = "1.8"
-}
-
-java {
-    sourceCompatibility = JavaVersion.VERSION_1_8
-    targetCompatibility = JavaVersion.VERSION_1_8
-}
-
-tasks.test {
-    useJUnitPlatform()
-}
-
-/**
- * Include all but exclude debugging classes.
- */
 tasks.withType<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar> {
     dependsOn("jar")
     archiveFileName.set("${archiveBaseName.get()}-${archiveVersion.get()}-shadowjar.${archiveExtension.get()}")
@@ -74,173 +56,118 @@ tasks.withType<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar> {
  * Create all plugin jar files.
  */
 tasks.register("pluginJars") {
-    dependsOn("pluginJarLatest")
-    dependsOn("pluginJarPremium")
-    dependsOn("pluginJarPremiumFolia")
-    dependsOn("pluginJarLegacy")
+    dependsOn("pluginJar-1.8.8-1.16.5-premium")
+    dependsOn("pluginJar-1.17.0-1.21.11-premium")
+    dependsOn("pluginJar-1.17.0-1.21.11-premium-folia")
+    dependsOn("pluginJar-26.1.0-latest-premium")
+    dependsOn("pluginJar-26.1.0-latest-premium-folia")
+    dependsOn("pluginJar-26.1.0-latest-free")
 }
 
-/**
- * Relocate Plugin Jar.
- */
-tasks.register("relocatePluginJar", com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar::class.java) {
-    dependsOn("shadowJar")
-    from(zipTree(File("./build/libs/" + (tasks.getByName("shadowJar") as Jar).archiveFileName.get())))
-    archiveFileName.set("${archiveBaseName.get()}-${archiveVersion.get()}-relocate.${archiveExtension.get()}")
-    relocate("com.github.shynixn.mcutils", "com.github.shynixn.petblocks.lib.com.github.shynixn.mcutils")
-    relocate("com.github.shynixn.shygui", "com.github.shynixn.petblocks.lib.com.github.shynixn.shygui")
-}
+registerPluginJar("1.8.8-1.16.5-premium", "plugin-1.8.8-1.16.5.yml", isLegacy = true)
+registerPluginJar("1.17.0-1.21.11-premium", "plugin-1.17.0-1.21.11.yml")
+registerPluginJar("1.17.0-1.21.11-premium-folia", "plugin-1.17.0-1.21.11-folia.yml", isFolia = true)
+registerPluginJar("26.1.0-latest-premium", "plugin-26.1.0-latest.yml")
+registerPluginJar("26.1.0-latest-premium-folia", "plugin-26.1.0-latest-folia.yml", isFolia = true)
+registerPluginJar("26.1.0-latest-free", "plugin-26.1.0-latest.yml", excludeOldNms = true)
 
-/**
- * Create latest plugin jar file.
- */
-tasks.register("pluginJarLatest", com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar::class.java) {
-    dependsOn("relocatePluginJar")
-    from(zipTree(File("./build/libs/" + (tasks.getByName("relocatePluginJar") as Jar).archiveFileName.get())))
-    archiveFileName.set("${archiveBaseName.get()}-${archiveVersion.get()}-latest.${archiveExtension.get()}")
-    // destinationDirectory.set(File(System.getenv("HOME"),"git/mc/plugins"))
+fun registerPluginJar(
+    taskName: String,
+    pluginYml: String,
+    isFolia: Boolean = false,
+    excludeOldNms: Boolean = false,
+    isLegacy: Boolean = false,
+    debug: Boolean = false
+) {
+    val relocateTaskName = "relocatePluginJar-$taskName"
+    val jarTaskName = "pluginJar-$taskName"
 
-    exclude("com/github/shynixn/petblocks/lib/com/github/shynixn/mcutils/common/FoliaMarker.class")
-    exclude("com/github/shynixn/petblocks/lib/com/github/shynixn/mcutils/packet/nms/v1_8_R3/**")
-    exclude("com/github/shynixn/petblocks/lib/com/github/shynixn/mcutils/packet/nms/v1_9_R2/**")
-    exclude("com/github/shynixn/petblocks/lib/com/github/shynixn/mcutils/packet/nms/v1_17_R1/**")
-    exclude("com/github/shynixn/petblocks/lib/com/github/shynixn/mcutils/packet/nms/v1_18_R1/**")
-    exclude("com/github/shynixn/petblocks/lib/com/github/shynixn/mcutils/packet/nms/v1_18_R2/**")
-    exclude("com/github/shynixn/petblocks/lib/com/github/shynixn/mcutils/packet/nms/v1_19_R1/**")
-    exclude("com/github/shynixn/petblocks/lib/com/github/shynixn/mcutils/packet/nms/v1_19_R2/**")
-    exclude("com/github/shynixn/petblocks/lib/com/github/shynixn/mcutils/packet/nms/v1_19_R3/**")
-    exclude("com/github/shynixn/petblocks/lib/com/github/shynixn/mcutils/packet/nms/v1_20_R1/**")
-    exclude("com/github/shynixn/petblocks/lib/com/github/shynixn/mcutils/packet/nms/v1_20_R2/**")
-    exclude("com/github/shynixn/petblocks/lib/com/github/shynixn/mcutils/packet/nms/v1_20_R3/**")
-    exclude("com/github/shynixn/petblocks/lib/com/github/shynixn/mcutils/packet/nms/v1_20_R4/**")
-    exclude("com/github/shynixn/petblocks/lib/com/github/shynixn/mcutils/packet/nms/v1_21_R1/**")
-    exclude("com/github/shynixn/petblocks/lib/com/github/shynixn/mcutils/packet/nms/v1_21_R2/**")
-    exclude("com/github/shynixn/petblocks/lib/com/github/shynixn/mcutils/packet/nms/v1_21_R2/**")
-    exclude("com/github/shynixn/petblocks/lib/com/github/shynixn/mcutils/packet/nms/v1_21_R3/**")
-    exclude("com/github/shynixn/petblocks/lib/com/github/shynixn/mcutils/packet/nms/v1_21_R4/**")
-    exclude("com/github/shynixn/petblocks/lib/com/github/shynixn/mcutils/packet/nms/v1_21_R5/**")
-    exclude("com/github/shynixn/petblocks/lib/com/github/shynixn/mcutils/packet/nms/v1_21_R6/**")
-    exclude("com/github/shynixn/mcutils/**")
-    exclude("com/github/shynixn/mccoroutine/**")
-    exclude("com/github/shynixn/shygui/**")
-    exclude("com/github/shynixn/fasterxml/**")
-    exclude("org/**")
-    exclude("kotlin/**")
-    exclude("kotlinx/**")
-    exclude("javax/**")
-    exclude("com/zaxxer/**")
-    exclude("templates/**")
-    exclude("plugin-legacy.yml")
-}
+    // ── Step 1: relocation ────────────────────────────────────────────────────
+    tasks.register(relocateTaskName, com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar::class.java) {
+        dependsOn("shadowJar")
+        from(zipTree(File("./build/libs/" + (tasks.getByName("shadowJar") as Jar).archiveFileName.get())))
+        archiveFileName.set("${archiveBaseName.get()}-${archiveVersion.get()}-${taskName}-relocate.${archiveExtension.get()}")
+        relocate("com.github.shynixn.mcutils", "com.github.shynixn.petblocks.lib.com.github.shynixn.mcutils")
+        relocate("com.github.shynixn.shygui", "com.github.shynixn.petblocks.lib.com.github.shynixn.shygui")
+        if (isLegacy) {
+            relocate(
+                "com.github.shynixn.mccoroutine",
+                "com.github.shynixn.petblocks.lib.com.github.shynixn.mccoroutine"
+            )
+            relocate(
+                "com.github.shynixn.fasterxml",
+                "com.github.shynixn.petblocks.lib.com.github.shynixn.fasterxml"
+            )
+            relocate("kotlin", "com.github.shynixn.petblocks.lib.kotlin")
+            relocate("kotlinx", "com.github.shynixn.petblocks.lib.kotlinx")
+            relocate("org.intellij", "com.github.shynixn.petblocks.lib.org.intellij")
+            relocate("org.jetbrains", "com.github.shynixn.petblocks.lib.org.jetbrains")
+            relocate("javax", "com.github.shynixn.petblocks.lib.javax")
+            relocate("com.zaxxer", "com.github.shynixn.petblocks.lib.com.zaxxer")
+            relocate("org.openjdk.nashorn", "com.github.shynixn.petblocks.lib.org.openjdk.nashorn")
+        }
+    }
 
-/**
- * Create premium plugin jar file.
- */
-tasks.register("pluginJarPremium", com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar::class.java) {
-    dependsOn("relocatePluginJar")
-    from(zipTree(File("./build/libs/" + (tasks.getByName("relocatePluginJar") as Jar).archiveFileName.get())))
-    archiveFileName.set("${archiveBaseName.get()}-${archiveVersion.get()}-premium.${archiveExtension.get()}")
-    // destinationDirectory.set(File("C:\\temp\\plugins"))
+    // ── Step 2: excludes + plugin.yml selection ───────────────────────────────
+    tasks.register(jarTaskName, com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar::class.java) {
+        dependsOn(relocateTaskName)
+        from(zipTree(File("./build/libs/" + (tasks.getByName(relocateTaskName) as Jar).archiveFileName.get())))
+        archiveFileName.set("${archiveBaseName.get()}-${archiveVersion.get()}-${taskName}.${archiveExtension.get()}")
+        if (debug) {
+            destinationDirectory.set(File(System.getenv("HOME"), "git/mc/plugins"))
+        }
+        // Keep only the correct plugin yml
+        rename(pluginYml, "plugin.yml")
+        val allPluginYmls = listOf(
+            "plugin-1.8.8-1.16.5.yml",
+            "plugin-1.17.0-1.21.11.yml",
+            "plugin-1.17.0-1.21.11-folia.yml",
+            "plugin-26.1.0-latest.yml",
+            "plugin-26.1.0-latest-folia.yml"
+        )
+        for (yml in allPluginYmls) {
+            if (yml != pluginYml) exclude(yml)
+        }
 
-    exclude("com/github/shynixn/petblocks/lib/com/github/shynixn/mcutils/common/FoliaMarker.class")
-    exclude("com/github/shynixn/mcutils/**")
-    exclude("com/github/shynixn/mccoroutine/**")
-    exclude("com/github/shynixn/shygui/**")
-    exclude("com/github/shynixn/fasterxml/**")
-    exclude("org/**")
-    exclude("kotlin/**")
-    exclude("kotlinx/**")
-    exclude("javax/**")
-    exclude("com/zaxxer/**")
-    exclude("templates/**")
-    exclude("plugin-legacy.yml")
-}
+        if (!isFolia) {
+            exclude("com/github/shynixn/petblocks/lib/com/github/shynixn/mcutils/common/FoliaMarker.class")
+        }
 
-/**
- * Relocate Plugin Folia Jar.
- */
-tasks.register("relocateFoliaPluginJar", com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar::class.java) {
-    dependsOn("shadowJar")
-    from(zipTree(File("./build/libs/" + (tasks.getByName("shadowJar") as Jar).archiveFileName.get())))
-    archiveFileName.set("${archiveBaseName.get()}-${archiveVersion.get()}-relocate-folia.${archiveExtension.get()}")
-    relocate("com.github.shynixn.mcutils", "com.github.shynixn.petblocks.lib.com.github.shynixn.mcutils")
-    relocate("com.github.shynixn.shygui", "com.github.shynixn.petblocks.lib.com.github.shynixn.shygui")
-    exclude("plugin.yml")
-    rename("plugin-folia.yml", "plugin.yml")
-}
+        exclude("com/github/shynixn/mcutils/**")
+        exclude("com/github/shynixn/mccoroutine/**")
+        exclude("com/github/shynixn/fasterxml/**")
+        exclude("kotlin/**")
+        exclude("org/**")
+        exclude("kotlinx/**")
+        exclude("javax/**")
+        exclude("com/zaxxer/**")
+        exclude("com/github/shynixn/shygui/**")
 
-/**
- * Create premium folia plugin jar file.
- */
-tasks.register("pluginJarPremiumFolia", com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar::class.java) {
-    dependsOn("relocateFoliaPluginJar")
-    from(zipTree(File("./build/libs/" + (tasks.getByName("relocateFoliaPluginJar") as Jar).archiveFileName.get())))
-    archiveFileName.set("${archiveBaseName.get()}-${archiveVersion.get()}-premium-folia.${archiveExtension.get()}")
-    // destinationDirectory.set(File("C:\\git\\mc\\Folia\\plugins"))
-
-    exclude("com/github/shynixn/mcutils/**")
-    exclude("com/github/shynixn/mccoroutine/**")
-    exclude("com/github/shynixn/shygui/**")
-    exclude("com/github/shynixn/fasterxml/**")
-    exclude("org/**")
-    exclude("kotlin/**")
-    exclude("kotlinx/**")
-    exclude("javax/**")
-    exclude("com/zaxxer/**")
-    exclude("templates/**")
-    exclude("plugin-legacy.yml")
-}
-
-/**
- * Relocate legacy plugin jar file.
- */
-tasks.register("relocateLegacyPluginJar", com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar::class.java) {
-    dependsOn("shadowJar")
-    from(zipTree(File("./build/libs/" + (tasks.getByName("shadowJar") as Jar).archiveFileName.get())))
-    archiveFileName.set("${archiveBaseName.get()}-${archiveVersion.get()}-legacy-relocate.${archiveExtension.get()}")
-    relocate("kotlin", "com.github.shynixn.petblocks.lib.kotlin")
-    relocate("org.intellij", "com.github.shynixn.petblocks.lib.org.intelli")
-    relocate("org.aopalliance", "com.github.shynixn.petblocks.lib.org.aopalliance")
-    relocate("org.checkerframework", "com.github.shynixn.petblocks.lib.org.checkerframework")
-    relocate("org.jetbrains", "com.github.shynixn.petblocks.lib.org.jetbrains")
-    relocate("org.openjdk.nashorn", "com.github.shynixn.petblocks.lib.org.openjdk.nashorn")
-    relocate("org.slf4j", "com.github.shynixn.petblocks.lib.org.slf4j")
-    relocate("org.objectweb", "com.github.shynixn.petblocks.lib.org.objectweb")
-    relocate("javax.annotation", "com.github.shynixn.petblocks.lib.javax.annotation")
-    relocate("javax.inject", "com.github.shynixn.petblocks.lib.javax.inject")
-    relocate("kotlinx.coroutines", "com.github.shynixn.petblocks.lib.kotlinx.coroutines")
-    relocate("com.google", "com.github.shynixn.petblocks.lib.com.google")
-    relocate("com.fasterxml", "com.github.shynixn.petblocks.lib.com.fasterxml")
-    relocate("com.zaxxer", "com.github.shynixn.petblocks.lib.com.zaxxer")
-    relocate("org.yaml", "com.github.shynixn.mctennis.lib.org.yaml")
-    relocate("com.github.shynixn.mcutils", "com.github.shynixn.petblocks.lib.com.github.shynixn.mcutils")
-    relocate("com.github.shynixn.mccoroutine", "com.github.shynixn.petblocks.lib.com.github.shynixn.mccoroutine")
-    relocate("com.github.shynixn.shygui", "com.github.shynixn.petblocks.lib.com.github.shynixn.shygui")
-    relocate("com.github.shynixn.fasterxml", "com.github.shynixn.petblocks.lib.com.github.shynixn.fasterxml")
-
-    exclude("plugin.yml")
-    rename("plugin-legacy.yml", "plugin.yml")
-}
-
-/**
- * Create legacy plugin jar file.
- */
-tasks.register("pluginJarLegacy", com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar::class.java) {
-    dependsOn("relocateLegacyPluginJar")
-    from(zipTree(File("./build/libs/" + (tasks.getByName("relocateLegacyPluginJar") as Jar).archiveFileName.get())))
-    archiveFileName.set("${archiveBaseName.get()}-${archiveVersion.get()}-legacy.${archiveExtension.get()}")
-    // destinationDirectory.set(File("C:\\temp\\plugins"))
-    exclude("com/github/shynixn/mcutils/**")
-    exclude("com/github/shynixn/mccoroutine/**")
-    exclude("com/github/shynixn/shygui/**")
-    exclude("com/github/shynixn/fasterxml/**")
-    exclude("org/**")
-    exclude("kotlin/**")
-    exclude("kotlinx/**")
-    exclude("javax/**")
-    exclude("com/zaxxer/**")
-    exclude("templates/**")
-    exclude("plugin-legacy.yml")
+        if (excludeOldNms) {
+            val oldNmsPaths = listOf(
+                "com/github/shynixn/petblocks/lib/com/github/shynixn/mcutils/packet/nms/v1_8_R3/**",
+                "com/github/shynixn/petblocks/lib/com/github/shynixn/mcutils/packet/nms/v1_9_R2/**",
+                "com/github/shynixn/petblocks/lib/com/github/shynixn/mcutils/packet/nms/v1_17_R1/**",
+                "com/github/shynixn/petblocks/lib/com/github/shynixn/mcutils/packet/nms/v1_18_R1/**",
+                "com/github/shynixn/petblocks/lib/com/github/shynixn/mcutils/packet/nms/v1_18_R2/**",
+                "com/github/shynixn/petblocks/lib/com/github/shynixn/mcutils/packet/nms/v1_19_R1/**",
+                "com/github/shynixn/petblocks/lib/com/github/shynixn/mcutils/packet/nms/v1_19_R2/**",
+                "com/github/shynixn/petblocks/lib/com/github/shynixn/mcutils/packet/nms/v1_19_R3/**",
+                "com/github/shynixn/petblocks/lib/com/github/shynixn/mcutils/packet/nms/v1_20_R1/**",
+                "com/github/shynixn/petblocks/lib/com/github/shynixn/mcutils/packet/nms/v1_20_R2/**",
+                "com/github/shynixn/petblocks/lib/com/github/shynixn/mcutils/packet/nms/v1_20_R3/**",
+                "com/github/shynixn/petblocks/lib/com/github/shynixn/mcutils/packet/nms/v1_20_R4/**",
+                "com/github/shynixn/petblocks/lib/com/github/shynixn/mcutils/packet/nms/v1_21_R1/**",
+                "com/github/shynixn/petblocks/lib/com/github/shynixn/mcutils/packet/nms/v1_21_R2/**",
+                "com/github/shynixn/petblocks/lib/com/github/shynixn/mcutils/packet/nms/v1_21_R3/**",
+                "com/github/shynixn/petblocks/lib/com/github/shynixn/mcutils/packet/nms/v1_21_R4/**",
+                "com/github/shynixn/petblocks/lib/com/github/shynixn/mcutils/packet/nms/v1_21_R5/**",
+                "com/github/shynixn/petblocks/lib/com/github/shynixn/mcutils/packet/nms/v1_21_R6/**",
+                "com/github/shynixn/petblocks/lib/com/github/shynixn/mcutils/packet/nms/v1_21_R7/**"
+            )
+            for (path in oldNmsPaths) exclude(path)
+        }
+    }
 }
 
 tasks.register("languageFile") {
@@ -251,26 +178,7 @@ tasks.register("languageFile") {
 
     val contractContents = ArrayList<String>()
     val ignoredKeys = listOf(
-        "shyGuiPlayerNotFoundMessage",
-        "shyGuiReloadMessage",
-        "shyGuiNoPermissionCommand",
-        "shyGuiCommandUsage",
-        "shyGuiCommandDescription",
-        "shyGuiCommandSenderHasToBePlayer",
-        "shyGuiManipulateOtherMessage",
-        "shyGuiReloadCommandHint",
-        "shyGuiCloseCommandHint",
-        "shyGuiBackCommandHint",
-        "shyGuiOpenCommandHint",
-        "shyGuiNextCommandHint",
-        "shyGuiMessageCommandHint",
-        "shyGuiGuiMenuNotFoundMessage",
-        "shyGuiGuiMenuNoPermissionMessage",
-        "shyGuiCannotParseItemStackError",
-        "shyGuiRowColOutOfRangeError",
-        "shyGuiRefreshCommandHint",
-        "shyGuiServerCommandHint",
-        "shyGuiServerMessage"
+        "shyGui"
     )
     contractContents.add("package com.github.shynixn.petblocks.contract")
     contractContents.add("")
@@ -281,7 +189,7 @@ tasks.register("languageFile") {
     contractContents.add("interface PetBlocksLanguage : LanguageProvider, ShyGUILanguage {")
     for (key in lines) {
         if (key.toCharArray()[0].isLetter()) {
-            if (ignoredKeys.contains(key.substring(0, key.length - 1))) {
+            if (ignoredKeys.firstOrNull { e -> key.startsWith(e) } != null) {
                 continue
             }
 
@@ -311,11 +219,12 @@ tasks.register("languageFile") {
                 "  get() = listOf(\"en_us\")"
     )
 
-    for (i in 0 until lines.size) {
+    for (i in lines.indices) {
         val key = lines[i]
 
         if (key.toCharArray()[0].isLetter()) {
-            var text = ""
+            var text: String
+
             var j = i
             while (true) {
                 if (lines[j].contains("text:")) {
@@ -337,6 +246,15 @@ tasks.register("languageFile") {
             out.println(line)
         }
     }
+}
+
+tasks.withType<KotlinCompile> {
+    kotlinOptions.jvmTarget = "1.8"
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
 }
 
 tasks.register("printVersion") {

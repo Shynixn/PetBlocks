@@ -7,7 +7,7 @@ import com.github.shynixn.mccoroutine.folia.launch
 import com.github.shynixn.mccoroutine.folia.mcCoroutineConfiguration
 import com.github.shynixn.mccoroutine.folia.regionDispatcher
 import com.github.shynixn.mcutils.common.ChatColor
-import com.github.shynixn.mcutils.common.CoroutinePlugin
+import com.github.shynixn.mcutils.common.CoroutineHandler
 import com.github.shynixn.mcutils.common.Version
 import com.github.shynixn.mcutils.common.checkIfFoliaIsLoadable
 import com.github.shynixn.mcutils.common.di.DependencyInjectionModule
@@ -49,7 +49,7 @@ import kotlin.coroutines.CoroutineContext
 /**
  * Author Shynixn
  */
-class PetBlocksPlugin : JavaPlugin(), CoroutinePlugin {
+class PetBlocksPlugin : JavaPlugin(), CoroutineHandler {
     companion object {
         val eventPlayer = "eventPlayer"
         val index = "[index]"
@@ -117,9 +117,10 @@ class PetBlocksPlugin : JavaPlugin(), CoroutinePlugin {
                 Version.VERSION_1_21_R5,
                 Version.VERSION_1_21_R6,
                 Version.VERSION_1_21_R7,
+                Version.VERSION_26_R1
             )
         } else {
-            listOf(Version.VERSION_1_21_R7)
+            listOf(Version.VERSION_26_R1)
         }
 
         if (!Version.serverVersion.isCompatible(*versions.toTypedArray())) {
@@ -156,7 +157,7 @@ class PetBlocksPlugin : JavaPlugin(), CoroutinePlugin {
         logger.log(Level.INFO, "Loaded language file.")
 
         // Module
-        val placeHolderService = PlaceHolderServiceImpl(this)
+        val placeHolderService = PlaceHolderServiceImpl(this, Bukkit.getPluginManager())
         this.shyGuiModule = loadShyGuiModule(language, placeHolderService)
         this.module = PetBlocksDependencyInjectionModule(this, language, placeHolderService).build()
 
