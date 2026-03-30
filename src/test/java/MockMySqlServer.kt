@@ -1,6 +1,5 @@
 import ch.vorburger.mariadb4j.DB
 import ch.vorburger.mariadb4j.DBConfigurationBuilder
-import org.junit.jupiter.api.Test
 import java.sql.DriverManager
 
 class MockMySqlServer {
