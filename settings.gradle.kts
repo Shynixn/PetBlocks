@@ -1,1 +1,1 @@
-rootProject.name = "petblocks-root"
+rootProject.name = "petblocks"
