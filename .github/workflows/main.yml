@@ -1,5 +1,8 @@
 name: PetBlocks
 
+permissions:
+  contents: write
+
 # Controls when the action will run.
 on:
   # Triggers the workflow on push or pull request events but only for the master branch
@@ -22,23 +25,15 @@ jobs:
       - uses: actions/checkout@v2
       - uses: actions/setup-java@v1
         with:
-          java-version: '17'
+          java-version: '8'
 
       - name: Build Java Application
         env:
-          SHYNIXN_MCUTILS_REPOSITORY: ${{ secrets.SHYNIXN_MCUTILS_REPOSITORY }}
-          SHYNIXN_MCUTILS_REPOSITORY_2025: ${{ secrets.SHYNIXN_MCUTILS_REPOSITORY_2025 }}
+          SHYNIXN_MCUTILS_REPOSITORY_2026: ${{ secrets.SHYNIXN_MCUTILS_REPOSITORY_2026 }}
         run: |
           chmod +x gradlew
           ./gradlew build pluginJars
           echo "RELEASE_VERSION=$(./gradlew -q printVersion)" >> $GITHUB_ENV
-
-      - name: Create Geyser Customizations
-        if: "contains(github.event.head_commit.message, '--release') && contains(github.ref, 'master')"
-        env:
-          GEYSER_PASSWORD: ${{ secrets.GEYSER_PASSWORD }}
-        run: |
-          7z x docs/wiki/docs/assets/PetBlocks-GeyserMC.7z -p${{ env.GEYSER_PASSWORD }} 
 
       - name: Create Github Release
         if: "contains(github.event.head_commit.message, '--release') && contains(github.ref, 'master')"
@@ -53,60 +48,71 @@ jobs:
           draft: true
           prerelease: false
 
-      - name: Upload Latest Bukkit Release to Github
+      - name: Upload PetBlocks-1.8.8-1.16.5-Premium.jar
         if: "contains(github.event.head_commit.message, '--release') && contains(github.ref, 'master')"
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: /home/runner/work/PetBlocks/PetBlocks/build/libs/petblocks-root-${{ env.RELEASE_VERSION }}-latest.jar
-          asset_name: PetBlocks.jar
+          asset_path: /home/runner/work/PetBlocks/PetBlocks/build/libs/petblocks-${{ env.RELEASE_VERSION }}-1.8.8-1.16.5-premium.jar
+          asset_name: PetBlocks-1.8.8-1.16.5-Premium.jar
           asset_content_type: application/jar
 
-      - name: Upload Premium Bukkit Release to Github
+      - name: Upload PetBlocks-1.17.0-1.21.11-Premium.jar
         if: "contains(github.event.head_commit.message, '--release') && contains(github.ref, 'master')"
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: /home/runner/work/PetBlocks/PetBlocks/build/libs/petblocks-root-${{ env.RELEASE_VERSION }}-premium.jar
-          asset_name: PetBlocks-Premium.jar
+          asset_path: /home/runner/work/PetBlocks/PetBlocks/build/libs/petblocks-${{ env.RELEASE_VERSION }}-1.17.0-1.21.11-premium.jar
+          asset_name: PetBlocks-1.17.0-1.21.11-Premium.jar
           asset_content_type: application/jar
 
-      - name: Upload Premium Folia Release to Github
+      - name: Upload PetBlocks-1.17.0-1.21.11-Premium-Folia.jar
         if: "contains(github.event.head_commit.message, '--release') && contains(github.ref, 'master')"
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: /home/runner/work/PetBlocks/PetBlocks/build/libs/petblocks-root-${{ env.RELEASE_VERSION }}-premium-folia.jar
-          asset_name: PetBlocks-Premium-Folia.jar
+          asset_path: /home/runner/work/PetBlocks/PetBlocks/build/libs/petblocks-${{ env.RELEASE_VERSION }}-1.17.0-1.21.11-premium-folia.jar
+          asset_name: PetBlocks-1.17.0-1.21.11-Premium-Folia.jar
           asset_content_type: application/jar
 
-      - name: Upload Legacy Bukkit Release to Github
+      - name: Upload PetBlocks-26.1.0-latest-Premium.jar
         if: "contains(github.event.head_commit.message, '--release') && contains(github.ref, 'master')"
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: /home/runner/work/PetBlocks/PetBlocks/build/libs/petblocks-root-${{ env.RELEASE_VERSION }}-legacy.jar
-          asset_name: PetBlocks-Legacy.jar
+          asset_path: /home/runner/work/PetBlocks/PetBlocks/build/libs/petblocks-${{ env.RELEASE_VERSION }}-26.1.0-latest-premium.jar
+          asset_name: PetBlocks-26.1.0-latest-Premium.jar
           asset_content_type: application/jar
 
-      - name: Geyser Customizations to Github
+      - name: Upload PetBlocks-26.1.0-latest-Premium-Folia.jar
         if: "contains(github.event.head_commit.message, '--release') && contains(github.ref, 'master')"
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: /home/runner/work/PetBlocks/PetBlocks/PetBlocks-GeyserMC.zip
-          asset_name: PetBlocks-GeyserMC.zip
-          asset_content_type: application/zip
+          asset_path: /home/runner/work/PetBlocks/PetBlocks/build/libs/petblocks-${{ env.RELEASE_VERSION }}-26.1.0-latest-premium-folia.jar
+          asset_name: PetBlocks-26.1.0-latest-Premium-Folia.jar
+          asset_content_type: application/jar
+
+      - name: Upload PetBlocks-26.1.0-latest-Free.jar
+        if: "contains(github.event.head_commit.message, '--release') && contains(github.ref, 'master')"
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: /home/runner/work/PetBlocks/PetBlocks/build/libs/petblocks-${{ env.RELEASE_VERSION }}-26.1.0-latest-free.jar
+          asset_name: PetBlocks-26.1.0-latest-Free.jar
+          asset_content_type: application/jar
 
   Documentation:
     runs-on: ubuntu-latest
@@ -134,5 +140,5 @@ jobs:
           cd ..
           cd ..
           git add docs
-          git commit --message "Automatic CI Documentation."  || true
-          git push --quiet https://Shynixn:${{ secrets.GITHUB_TOKEN }}@github.com/Shynixn/PetBlocks.git HEAD:master  || true
+          git commit --message "Automatic CI Documentation." || true 
+          git push --quiet https://Shynixn:${{ secrets.GITHUB_TOKEN }}@github.com/Shynixn/PetBlocks.git HEAD:master || true

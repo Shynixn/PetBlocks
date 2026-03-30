@@ -57,7 +57,7 @@ class PetEntityFactoryImpl (
         val mathPhysicComponent = MathComponent(location.toVector3d(), meta.physics, rayTracingService)
 
         val playerComponent = PlayerComponent(mathPhysicComponent, pet = pet)
-        val armorStandEntityId = packetService.getNextEntityId()
+        val armorStandEntityId = packetService.getNextEntityId(location.world!!)
 
         val armorstandEntityComponent =
             ArmorstandEntityComponent(

@@ -3,7 +3,7 @@ package com.github.shynixn.petblocks
 import com.github.shynixn.fasterxml.jackson.core.type.TypeReference
 import com.github.shynixn.mcutils.common.ConfigurationService
 import com.github.shynixn.mcutils.common.ConfigurationServiceImpl
-import com.github.shynixn.mcutils.common.CoroutinePlugin
+import com.github.shynixn.mcutils.common.CoroutineHandler
 import com.github.shynixn.mcutils.common.chat.ChatMessageService
 import com.github.shynixn.mcutils.common.command.CommandService
 import com.github.shynixn.mcutils.common.command.CommandServiceImpl
@@ -18,9 +18,8 @@ import com.github.shynixn.mcutils.database.api.CachePlayerRepository
 import com.github.shynixn.mcutils.database.api.PlayerDataRepository
 import com.github.shynixn.mcutils.database.impl.AutoSavePlayerDataRepositoryImpl
 import com.github.shynixn.mcutils.database.impl.CachedPlayerDataRepositoryImpl
-import com.github.shynixn.mcutils.database.impl.ConfigSelectedRepositoryImpl
-import com.github.shynixn.mcutils.javascript.JavaScriptService
-import com.github.shynixn.mcutils.javascript.JavaScriptServiceImpl
+import com.github.shynixn.mcutils.database.impl.CommonSqlConnectionServiceImpl
+import com.github.shynixn.mcutils.database.impl.PlayerDataSqlRepositoryImpl
 import com.github.shynixn.mcutils.packet.api.PacketService
 import com.github.shynixn.mcutils.packet.api.RayTracingService
 import com.github.shynixn.mcutils.packet.impl.service.ChatMessageServiceImpl
@@ -37,6 +36,7 @@ import com.github.shynixn.petblocks.enumeration.PluginDependency
 import com.github.shynixn.petblocks.impl.commandexecutor.PetBlocksCommandExecutor
 import com.github.shynixn.petblocks.impl.listener.PetListener
 import com.github.shynixn.petblocks.impl.service.*
+import com.github.shynixn.petblocks.impl.service.js.JavaScriptServiceImpl
 import org.bukkit.Bukkit
 import org.bukkit.plugin.Plugin
 import java.util.logging.Level
@@ -62,7 +62,7 @@ class PetBlocksDependencyInjectionModule(
 
         // Params
         module.addService<Plugin>(plugin)
-        module.addService<CoroutinePlugin>(plugin)
+        module.addService<CoroutineHandler>(plugin)
         module.addService<PetBlocksLanguage>(language)
         module.addService<PlaceHolderService>(placeHolderService)
 
@@ -76,16 +76,18 @@ class PetBlocksDependencyInjectionModule(
         val cacheTemplateRepository = CachedRepositoryImpl(templateRepositoryImpl)
         module.addService<Repository<PetTemplate>>(cacheTemplateRepository)
         module.addService<CacheRepository<PetTemplate>>(cacheTemplateRepository)
-        val configSelectedRepository = ConfigSelectedRepositoryImpl<PlayerInformation>(
-            plugin,
-            "PetBlocks",
-            plugin.dataFolder.toPath().resolve("PetBlocks.sqlite"),
-            object : TypeReference<PlayerInformation>() {}
-        )
-        val autoSaveMinutes = plugin.config.getInt("database.autoSaveIntervalMinutes")
+        val sqlConnectionService =
+            CommonSqlConnectionServiceImpl(plugin, plugin.dataFolder.toPath().resolve("PetBlocks.sqlite"))
         val playerDataRepository = AutoSavePlayerDataRepositoryImpl(
-            1000 * 60L * autoSaveMinutes,
-            CachedPlayerDataRepositoryImpl(configSelectedRepository),
+            1000 * 60L * plugin.config.getInt("database.autoSaveIntervalMinutes"),
+            CachedPlayerDataRepositoryImpl(
+                PlayerDataSqlRepositoryImpl(
+                    "PetBlocks",
+                    plugin.config.getLong("database.readDelayMs"),
+                    object : TypeReference<PlayerInformation>() {},
+                    sqlConnectionService
+                )
+            ),
             plugin
         )
         module.addService<PlayerDataRepository<PlayerInformation>>(playerDataRepository)
@@ -108,7 +110,7 @@ class PetBlocksDependencyInjectionModule(
             PathfinderServiceImpl(CubeWorldSnapshotServiceImpl())
         }
         module.addService<ChatMessageService> {
-            ChatMessageServiceImpl(module.getService(), module.getService())
+            ChatMessageServiceImpl(module.getService(), module.getService(), module.getService())
         }
         module.addService<RayTracingService> {
             RayTracingServiceImpl()
@@ -130,6 +132,8 @@ class PetBlocksDependencyInjectionModule(
         }
         module.addService<PetBlocksCommandExecutor> {
             PetBlocksCommandExecutor(
+                module.getService(),
+                module.getService(),
                 module.getService(),
                 module.getService(),
                 module.getService(),
