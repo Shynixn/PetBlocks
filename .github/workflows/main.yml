@@ -35,6 +35,13 @@ jobs:
           ./gradlew build pluginJars
           echo "RELEASE_VERSION=$(./gradlew -q printVersion)" >> $GITHUB_ENV
 
+      - name: Create Geyser Customizations
+        if: "contains(github.event.head_commit.message, '--release') && contains(github.ref, 'master')"
+        env:
+          GEYSER_PASSWORD: ${{ secrets.GEYSER_PASSWORD }}
+        run: |
+          7z x docs/wiki/docs/assets/PetBlocks-GeyserMC.7z -p${{ env.GEYSER_PASSWORD }} 
+
       - name: Create Github Release
         if: "contains(github.event.head_commit.message, '--release') && contains(github.ref, 'master')"
         id: create_release
@@ -111,8 +118,19 @@ jobs:
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: /home/runner/work/PetBlocks/PetBlocks/build/libs/petblocks-${{ env.RELEASE_VERSION }}-26.1.0-latest-free.jar
-          asset_name: PetBlocks-26.1.0-latest-Free.jar
+          asset_name: PetBlocks.jar
           asset_content_type: application/jar
+
+      - name: Geyser Customizations to Github
+        if: "contains(github.event.head_commit.message, '--release') && contains(github.ref, 'master')"
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: /home/runner/work/PetBlocks/PetBlocks/PetBlocks-GeyserMC.zip
+          asset_name: PetBlocks-GeyserMC.zip
+          asset_content_type: application/zip
 
   Documentation:
     runs-on: ubuntu-latest
