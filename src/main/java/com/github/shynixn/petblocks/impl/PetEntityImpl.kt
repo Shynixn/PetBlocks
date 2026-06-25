@@ -35,6 +35,7 @@ import org.bukkit.Material
 import org.bukkit.block.Block
 import org.bukkit.entity.Player
 import org.bukkit.plugin.Plugin
+import org.bukkit.util.Vector
 import java.util.*
 import java.util.logging.Level
 
@@ -449,12 +450,13 @@ class PetEntityImpl(
 
     private fun isOnGround(location: Location): Boolean {
         val rayTraceResult = rayTracingService.rayTraceMotion(
-            location.toVector3d(),
-            Vector3d(0.0, -1.0, 0.0),
+            location.clone(),
+            Vector(0.0, -1.0, 0.0),
+            1.0,
             petMeta.physics.collideWithWater,
             petMeta.physics.collideWithPassableBlocks
         )
-        return rayTraceResult.hitBlock
+        return rayTraceResult.hasHitBlock
     }
 
     /**
@@ -533,8 +535,9 @@ class PetEntityImpl(
     fun findTargetBlock(maxDistance: Double): Block? {
         val worldLocation = getLocation().toLocation()
         val rayTraceResult = rayTracingService.rayTraceMotion(
-            worldLocation.toVector3d(),
-            worldLocation.direction.normalize().multiply(maxDistance).toVector3d(),
+            worldLocation.clone(),
+            worldLocation.direction.normalize().multiply(maxDistance),
+            maxDistance,
             petMeta.physics.collideWithWater,
             petMeta.physics.collideWithPassableBlocks
         )
