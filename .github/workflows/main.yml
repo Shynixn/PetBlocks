@@ -118,7 +118,7 @@ jobs:
             --ttl-days 1 \
             --file ./PetBlocks-26.1.0-latest-Premium-Folia.jar \
             --file ./PetBlocks-1.17.0-1.21.11-Premium-Folia.jar \
-            --file /home/runner/work/PetBlocks/PetBlocks/docs/wiki/docs/assets/title.png \
+            --file /home/runner/work/PetBlocks/PetBlocks/docs/wiki/images/title.png \
             --photo-attachment-file-name "title.png" \
             --attachment-file-name "PetBlocks-26.1.0-latest-Premium-Folia.jar" \
             --attachment-file-name "PetBlocks-1.17.0-1.21.11-Premium-Folia.jar" \
@@ -139,7 +139,7 @@ jobs:
             --file ./PetBlocks-1.17.0-1.21.11-Premium.jar \
             --file ./PetBlocks-26.1.0-latest-Premium.jar \
             --file /home/runner/work/PetBlocks/PetBlocks/PetBlocks-GeyserMC.zip \
-            --file /home/runner/work/PetBlocks/PetBlocks/docs/wiki/docs/assets/title.png \
+            --file /home/runner/work/PetBlocks/PetBlocks/docs/wiki/images/title.png \
             --photo-attachment-file-name "title.png" \
             --attachment-file-name "PetBlocks-1.8.8-1.16.5-Premium.jar" \
             --attachment-file-name "PetBlocks-1.17.0-1.21.11-Premium.jar" \
