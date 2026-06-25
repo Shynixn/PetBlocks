@@ -5,10 +5,11 @@ import com.github.shynixn.mcutils.common.toLocation
 import com.github.shynixn.mcutils.common.toVector
 import com.github.shynixn.mcutils.packet.api.RayTraceResult
 import com.github.shynixn.mcutils.packet.api.RayTracingService
-import com.github.shynixn.mcutils.packet.api.meta.enumeration.BlockDirection
 import com.github.shynixn.petblocks.contract.Pet
 import com.github.shynixn.petblocks.entity.PhysicSettings
 import org.bukkit.Location
+import org.bukkit.block.BlockFace
+import org.bukkit.util.Vector
 import kotlin.math.abs
 
 class MathComponent(
@@ -68,13 +69,14 @@ class MathComponent(
 
         // Check gravity.
         gravityRayTraceResult = rayTracingService.rayTraceMotion(
-            position,
-            Vector3d(0.0, -1.0, 0.0),
+            position.toLocation(),
+            Vector(0.0, -1.0, 0.0),
+            1.0,
             settings.collideWithWater,
             settings.collideWithPassableBlocks
         )
 
-        if (gravityRayTraceResult!!.hitBlock && motion.y < 0.0) {
+        if (gravityRayTraceResult!!.hasHitBlock && motion.y < 0.0) {
             // Set gravity to zero and correct y axe.
             this.motion.y = 0.0
             this.position.y = gravityRayTraceResult!!.block!!.y + 1.0
@@ -82,35 +84,38 @@ class MathComponent(
 
         if (motion.x != 0.0 || motion.z != 0.0) {
             movementRayTraceResult = rayTracingService.rayTraceMotion(
-                position,
-                motion,
+                position.toLocation(),
+                motion.toVector(),
+                motion.length().coerceAtLeast(0.01),
                 settings.collideWithWater,
                 settings.collideWithPassableBlocks
             )
         } else {
             // Check if stuck
             movementRayTraceResult = rayTracingService.rayTraceMotion(
-                position,
-                Vector3d(0.00, 0.1, 0.0),
+                position.toLocation(),
+                Vector(0.00, 0.1, 0.0),
+                motion.length(),
                 settings.collideWithWater,
                 settings.collideWithPassableBlocks
             )
-            if (movementRayTraceResult!!.hitBlock &&  pet != null && !pet!!.isRiding()) {
+            if (movementRayTraceResult!!.hasHitBlock &&  pet != null && !pet!!.isRiding()) {
                 pet?.call()
                 return
             }
         }
 
         if (movementRayTraceResult != null) {
-            if (movementRayTraceResult!!.hitBlock && movementRayTraceResult!!.blockDirection != BlockDirection.UP) {
+            if (movementRayTraceResult!!.hasHitBlock && movementRayTraceResult!!.blockFace != BlockFace.UP) {
                 val stuckBackMotion =
                     rayTracingService.rayTraceMotion(
-                        position,
-                        Vector3d(motion.x * -1, 0.0, motion.z * -1),
+                        position.toLocation(),
+                        Vector(motion.x * -1, 0.0, motion.z * -1),
+                        Vector(motion.x * -1, 0.0, motion.z * -1).length(),
                         settings.collideWithWater,
                         settings.collideWithPassableBlocks
                     )
-                if (stuckBackMotion.hitBlock) {
+                if (stuckBackMotion.hasHitBlock) {
                     // If hit block while moving back. Move the entity up.
                     position.add(motion.x * -1, 0.1, motion.z * -1)
                 } else {
@@ -122,7 +127,7 @@ class MathComponent(
                 movementRayTraceResult = null
             } else {
                 if (motion.x != 0.0 || motion.z != 0.0) {
-                    val targetPosition = movementRayTraceResult!!.targetPosition
+                    val targetPosition = movementRayTraceResult!!.targetLocation
                     // Keep yaw and pitch.
                     this.position.x = targetPosition.x
                     this.position.y = targetPosition.y
@@ -151,7 +156,7 @@ class MathComponent(
         }
 
         if (gravityRayTraceResult != null) {
-            if (!gravityRayTraceResult!!.hitBlock || motion.y > 0.0) {
+            if (!gravityRayTraceResult!!.hasHitBlock || motion.y > 0.0) {
                 this.position.y += this.motion.y
             }
         }
