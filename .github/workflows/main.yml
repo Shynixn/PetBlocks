@@ -106,7 +106,7 @@ jobs:
           wget -O papoa https://github.com/Shynixn/PatreonPostApi/releases/latest/download/papoa-linux-x64
           chmod +x papoa
           ./papoa post create \
-            --title "PetBlocks for Folia v${{ env.RELEASE_VERSION }} (1.8.9-26.1.2)" \
+            --title "PetBlocks for Folia v${{ env.RELEASE_VERSION }} (1.8.9-26.3)" \
             --content "$RELEASE_PATREON_ELITE" \
             --content-format text/markdown \
             --tier-name "Elite" \
@@ -124,7 +124,7 @@ jobs:
             --attachment-file-name "PetBlocks-1.17.0-1.21.11-Premium-Folia.jar" \
             --password "$PAPOA_PASSWORD"
           ./papoa post create \
-            --title "PetBlocks v${{ env.RELEASE_VERSION }} (1.8.9-26.1.2)" \
+            --title "PetBlocks v${{ env.RELEASE_VERSION }} (1.8.9-26.3)" \
             --content "$RELEASE_PATREON_BASIC" \
             --content-format text/markdown \
             --tier-name "Basic" \

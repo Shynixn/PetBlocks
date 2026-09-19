@@ -8,7 +8,7 @@ plugins {
 }
 
 group = "com.github.shynixn"
-version = "9.31.0"
+version = "9.32.0"
 
 repositories {
     mavenCentral()
@@ -31,9 +31,9 @@ dependencies {
     implementation("org.openjdk.nashorn:nashorn-core:15.4")
 
     // Custom dependencies
-    implementation("com.github.shynixn.shygui:shygui:1.13.0")
-    implementation("com.github.shynixn.mcutils:common:2026.13")
-    implementation("com.github.shynixn.mcutils:packet:2026.24")
+    implementation("com.github.shynixn.shygui:shygui:1.14.0")
+    implementation("com.github.shynixn.mcutils:common:2026.18")
+    implementation("com.github.shynixn.mcutils:packet:2026.32")
     implementation("com.github.shynixn.mcutils:pathfinder:2026.3")
     implementation("com.github.shynixn.mcutils:database:2026.3")
 
@@ -164,7 +164,8 @@ fun registerPluginJar(
                 "com/github/shynixn/petblocks/lib/com/github/shynixn/mcutils/packet/nms/v1_21_R5/**",
                 "com/github/shynixn/petblocks/lib/com/github/shynixn/mcutils/packet/nms/v1_21_R6/**",
                 "com/github/shynixn/petblocks/lib/com/github/shynixn/mcutils/packet/nms/v1_21_R7/**",
-                "com/github/shynixn/petblocks/lib/com/github/shynixn/mcutils/packet/nms/v26_1_R1/**"
+                "com/github/shynixn/petblocks/lib/com/github/shynixn/mcutils/packet/nms/v26_1_R1/**",
+                "com/github/shynixn/petblocks/lib/com/github/shynixn/mcutils/packet/nms/v26_2_R1/**"
             )
             for (path in oldNmsPaths) exclude(path)
         }
