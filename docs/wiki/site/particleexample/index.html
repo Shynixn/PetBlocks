@@ -21,7 +21,7 @@
       
       
       <link rel="icon" href="../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
     
     
       
@@ -29,7 +29,7 @@
       
     
     
-      <link rel="stylesheet" href="../assets/stylesheets/main.484c7ddc.min.css">
+      <link rel="stylesheet" href="../assets/stylesheets/main.ec1eaa64.min.css">
       
       
 
@@ -838,15 +838,15 @@ to define selectable sounds, potion effects, etc.</p>
 <div class="highlight"><pre><span></span><code><span class="nt">loops</span><span class="p">:</span>
 <span class="w">  </span><span class="nt">idle</span><span class="p">:</span>
 <span class="w">    </span><span class="nt">actions</span><span class="p">:</span>
-<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Play</span><span class="nv"> </span><span class="s">particle</span><span class="nv"> </span><span class="s">effect&quot;</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s">"Play</span><span class="nv"> </span><span class="s">particle</span><span class="nv"> </span><span class="s">effect"</span>
 <span class="w">        </span><span class="nt">condition</span><span class="p">:</span>
 <span class="w">          </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">STRING_NOT_CONTAINS</span>
-<span class="w">          </span><span class="nt">left</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;%petblocks_js_mypart_selected%&quot;</span>
-<span class="w">          </span><span class="nt">right</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;petblocks_js_mypart_selected&quot;</span>
-<span class="w">        </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;COMMAND&quot;</span>
-<span class="w">        </span><span class="nt">level</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;SERVER&quot;</span>
+<span class="w">          </span><span class="nt">left</span><span class="p">:</span><span class="w"> </span><span class="s">"%petblocks_js_mypart_selected%"</span>
+<span class="w">          </span><span class="nt">right</span><span class="p">:</span><span class="w"> </span><span class="s">"petblocks_js_mypart_selected"</span>
+<span class="w">        </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="s">"COMMAND"</span>
+<span class="w">        </span><span class="nt">level</span><span class="p">:</span><span class="w"> </span><span class="s">"SERVER"</span>
 <span class="w">        </span><span class="nt">run</span><span class="p">:</span>
-<span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;/particle</span><span class="nv"> </span><span class="s">%petblocks_js_mypart_selected%</span><span class="nv"> </span><span class="s">%petblocks_pet_locationX%</span><span class="nv"> </span><span class="s">%petblocks_pet_locationY%</span><span class="nv"> </span><span class="s">%petblocks_pet_locationZ%&quot;</span><span class="w">       </span>
+<span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">"/particle</span><span class="nv"> </span><span class="s">%petblocks_js_mypart_selected%</span><span class="nv"> </span><span class="s">%petblocks_pet_locationX%</span><span class="nv"> </span><span class="s">%petblocks_pet_locationY%</span><span class="nv"> </span><span class="s">%petblocks_pet_locationZ%"</span><span class="w">       </span>
 </code></pre></div>
 <h2 id="2-adjust-vanilla-command-settings">2. Adjust vanilla command settings</h2>
 <p>A vanilla command may automatically log to the console and to the chat of every op player. You can disable the output for op players using vanilla game rules such as <code>gamerule sendCommandFeedback false</code>, <code>/gamerule logAdminCommands false</code>, <code>/gamerule commandBlockOutput false</code>. If you want to hide the output in your console, you need to install a LogFilter plugin.</p>
@@ -947,7 +947,7 @@ You can add more particles by creating new buttons with new commands e.g. <code>
       <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.instant", "navigation.tabs", "content.tabs.link", "content.code.copy", "navigation.footer"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
-      <script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
+      <script src="../assets/javascripts/bundle.d7400e89.min.js"></script>
       
     
   </body>

@@ -21,7 +21,7 @@
       
       
       <link rel="icon" href="../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
     
     
       
@@ -29,7 +29,7 @@
       
     
     
-      <link rel="stylesheet" href="../assets/stylesheets/main.484c7ddc.min.css">
+      <link rel="stylesheet" href="../assets/stylesheets/main.ec1eaa64.min.css">
       
       
 
@@ -1088,16 +1088,16 @@ to check if the player is the owner first as a condition.</p>
 <div class="highlight"><pre><span></span><code><span class="nt">events</span><span class="p">:</span>
 <span class="w">  </span><span class="nt">rightClick</span><span class="p">:</span>
 <span class="w">    </span><span class="nt">actions</span><span class="p">:</span><span class="w">  </span><span class="c1"># You can add/remove actions as you want here.</span>
-<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Open</span><span class="nv"> </span><span class="s">the</span><span class="nv"> </span><span class="s">pet</span><span class="nv"> </span><span class="s">GUI&quot;</span><span class="w"> </span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s">"Open</span><span class="nv"> </span><span class="s">the</span><span class="nv"> </span><span class="s">pet</span><span class="nv"> </span><span class="s">GUI"</span><span class="w"> </span>
 <span class="w">        </span><span class="nt">condition</span><span class="p">:</span>
 <span class="w">          </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">STRING_EQUALS</span>
-<span class="w">          </span><span class="nt">left</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;%petblocks_eventPlayer_name%&quot;</span>
-<span class="w">          </span><span class="nt">right</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;%petblocks_owner_name%&quot;</span>
-<span class="w">        </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;COMMAND&quot;</span>
-<span class="w">        </span><span class="nt">level</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;PLAYER&quot;</span>
+<span class="w">          </span><span class="nt">left</span><span class="p">:</span><span class="w"> </span><span class="s">"%petblocks_eventPlayer_name%"</span>
+<span class="w">          </span><span class="nt">right</span><span class="p">:</span><span class="w"> </span><span class="s">"%petblocks_owner_name%"</span>
+<span class="w">        </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="s">"COMMAND"</span>
+<span class="w">        </span><span class="nt">level</span><span class="p">:</span><span class="w"> </span><span class="s">"PLAYER"</span>
 <span class="w">        </span><span class="nt">run</span><span class="p">:</span>
-<span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;/petblocks</span><span class="nv"> </span><span class="s">select</span><span class="nv"> </span><span class="s">%petblocks_pet_name%&quot;</span>
-<span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;/petblock&quot;</span>
+<span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">"/petblocks</span><span class="nv"> </span><span class="s">select</span><span class="nv"> </span><span class="s">%petblocks_pet_name%"</span>
+<span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">"/petblock"</span>
 </code></pre></div>
 <p>If you want to execute nothing when the player rightClicks on the pet, remove all actions.</p>
 <div class="highlight"><pre><span></span><code><span class="nt">events</span><span class="p">:</span>
@@ -1113,7 +1113,7 @@ to check if the player is the owner first as a condition.</p>
 <div class="highlight"><pre><span></span><code><span class="nt">events</span><span class="p">:</span>
 <span class="w">  </span><span class="nt">rightClick</span><span class="p">:</span>
 <span class="w">    </span><span class="nt">actions</span><span class="p">:</span><span class="w">  </span><span class="c1"># You can add/remove actions as you want here.</span>
-<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;My</span><span class="nv"> </span><span class="s">new</span><span class="nv"> </span><span class="s">action&quot;</span><span class="w"> </span><span class="c1"># Required arbitrary name.</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s">"My</span><span class="nv"> </span><span class="s">new</span><span class="nv"> </span><span class="s">action"</span><span class="w"> </span><span class="c1"># Required arbitrary name.</span>
 </code></pre></div>
 <p>Select the action type. Support actions are <code>COMMAND</code>, <code>DELAY</code>, <code>JAVASCRIPT</code>.</p>
 <h4 id="command">COMMAND</h4>
@@ -1125,26 +1125,26 @@ to check if the player is the owner first as a condition.</p>
 <div class="highlight"><pre><span></span><code><span class="nt">events</span><span class="p">:</span>
 <span class="w">  </span><span class="nt">rightClick</span><span class="p">:</span>
 <span class="w">    </span><span class="nt">actions</span><span class="p">:</span><span class="w">  </span><span class="c1"># You can add/remove actions as you want here.</span>
-<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;My</span><span class="nv"> </span><span class="s">new</span><span class="nv"> </span><span class="s">action&quot;</span><span class="w"> </span><span class="c1"># Required arbitrary name.</span>
-<span class="w">        </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;COMMAND&quot;</span><span class="w"> </span><span class="c1"># Required action type.</span>
-<span class="w">        </span><span class="nt">level</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;SERVER&quot;</span><span class="w"> </span><span class="c1"># Required for type COMMAND. Possible values are PLAYER (player level permission), SERVER (console level permission)</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s">"My</span><span class="nv"> </span><span class="s">new</span><span class="nv"> </span><span class="s">action"</span><span class="w"> </span><span class="c1"># Required arbitrary name.</span>
+<span class="w">        </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="s">"COMMAND"</span><span class="w"> </span><span class="c1"># Required action type.</span>
+<span class="w">        </span><span class="nt">level</span><span class="p">:</span><span class="w"> </span><span class="s">"SERVER"</span><span class="w"> </span><span class="c1"># Required for type COMMAND. Possible values are PLAYER (player level permission), SERVER (console level permission)</span>
 </code></pre></div>
 <div class="highlight"><pre><span></span><code><span class="nt">events</span><span class="p">:</span>
 <span class="w">  </span><span class="nt">rightClick</span><span class="p">:</span>
 <span class="w">    </span><span class="nt">actions</span><span class="p">:</span><span class="w">  </span><span class="c1"># You can add/remove actions as you want here.</span>
-<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;My</span><span class="nv"> </span><span class="s">new</span><span class="nv"> </span><span class="s">action&quot;</span><span class="w"> </span><span class="c1"># Required arbitrary name.</span>
-<span class="w">        </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;COMMAND&quot;</span><span class="w"> </span><span class="c1"># Required action type.</span>
-<span class="w">        </span><span class="nt">level</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;SERVER&quot;</span><span class="w"> </span><span class="c1"># Required for type COMMAND. Possible values are PLAYER (player level permission), SERVER (console level permission)</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s">"My</span><span class="nv"> </span><span class="s">new</span><span class="nv"> </span><span class="s">action"</span><span class="w"> </span><span class="c1"># Required arbitrary name.</span>
+<span class="w">        </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="s">"COMMAND"</span><span class="w"> </span><span class="c1"># Required action type.</span>
+<span class="w">        </span><span class="nt">level</span><span class="p">:</span><span class="w"> </span><span class="s">"SERVER"</span><span class="w"> </span><span class="c1"># Required for type COMMAND. Possible values are PLAYER (player level permission), SERVER (console level permission)</span>
 <span class="w">        </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span>
-<span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;/say</span><span class="nv"> </span><span class="s">Hello</span><span class="nv"> </span><span class="s">%petblocks_owner_name%&quot;</span><span class="w"> </span><span class="c1"># Required for type COMMAND. One or more commands are allowed.</span>
+<span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">"/say</span><span class="nv"> </span><span class="s">Hello</span><span class="nv"> </span><span class="s">%petblocks_owner_name%"</span><span class="w"> </span><span class="c1"># Required for type COMMAND. One or more commands are allowed.</span>
 </code></pre></div>
 <h4 id="delay">DELAY</h4>
 <p>Delays the next action for a certain amount of ticks.</p>
 <div class="highlight"><pre><span></span><code><span class="nt">events</span><span class="p">:</span>
 <span class="w">  </span><span class="nt">rightClick</span><span class="p">:</span>
 <span class="w">    </span><span class="nt">actions</span><span class="p">:</span><span class="w">  </span><span class="c1"># You can add/remove actions as you want here.</span>
-<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Delay</span><span class="nv"> </span><span class="s">Action&quot;</span><span class="w"> </span><span class="c1"># Required arbitrary name.</span>
-<span class="w">        </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;DELAY&quot;</span><span class="w"> </span><span class="c1"># Required action type.</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s">"Delay</span><span class="nv"> </span><span class="s">Action"</span><span class="w"> </span><span class="c1"># Required arbitrary name.</span>
+<span class="w">        </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="s">"DELAY"</span><span class="w"> </span><span class="c1"># Required action type.</span>
 <span class="w">        </span><span class="nt">ticks</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">60</span><span class="w"> </span><span class="c1"># Required for type DELAY. 60 Ticks delay.</span>
 </code></pre></div>
 <h4 id="javascript">JAVASCRIPT</h4>
@@ -1152,13 +1152,13 @@ to check if the player is the owner first as a condition.</p>
 <div class="highlight"><pre><span></span><code><span class="nt">events</span><span class="p">:</span>
 <span class="w">  </span><span class="nt">rightClick</span><span class="p">:</span>
 <span class="w">    </span><span class="nt">actions</span><span class="p">:</span><span class="w">  </span><span class="c1"># You can add/remove actions as you want here.</span>
-<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;JavaScript</span><span class="nv"> </span><span class="s">action&quot;</span><span class="w"> </span><span class="c1"># Required arbitrary name.</span>
-<span class="w">        </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;JAVASCRIPT&quot;</span><span class="w"> </span><span class="c1"># Required action type.</span>
-<span class="w">        </span><span class="nt">initial</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Cool&quot;</span><span class="w"> </span><span class="c1"># Required for type JAVASCRIPT. The initial value of the result variable.</span>
-<span class="w">        </span><span class="nt">variable</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;myVariable&quot;</span><span class="w"> </span><span class="c1"># Required for type JAVASCRIPT. The name of the result variable, which can be read using PlaceHolders.</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s">"JavaScript</span><span class="nv"> </span><span class="s">action"</span><span class="w"> </span><span class="c1"># Required arbitrary name.</span>
+<span class="w">        </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="s">"JAVASCRIPT"</span><span class="w"> </span><span class="c1"># Required action type.</span>
+<span class="w">        </span><span class="nt">initial</span><span class="p">:</span><span class="w"> </span><span class="s">"Cool"</span><span class="w"> </span><span class="c1"># Required for type JAVASCRIPT. The initial value of the result variable.</span>
+<span class="w">        </span><span class="nt">variable</span><span class="p">:</span><span class="w"> </span><span class="s">"myVariable"</span><span class="w"> </span><span class="c1"># Required for type JAVASCRIPT. The name of the result variable, which can be read using PlaceHolders.</span>
 <span class="w">        </span><span class="nt">js</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span><span class="w">                  </span><span class="c1"># Required for type JAVASCRIPT. Actual multi line JavaScript code.</span>
 <span class="w">          </span><span class="no">function createText() {</span>
-<span class="w">             </span><span class="no">var text = &quot;%petblocks_js_myVariable%&quot; + &quot; Plugin&quot;</span>
+<span class="w">             </span><span class="no">var text = "%petblocks_js_myVariable%" + " Plugin"</span>
 <span class="w">             </span><span class="no">return text</span>
 <span class="w">          </span><span class="no">}</span>
 <span class="w">          </span><span class="no">createText();</span>
@@ -1169,8 +1169,8 @@ variables are evaluated. Every action can be logged to your server console by se
 <div class="highlight"><pre><span></span><code><span class="nt">events</span><span class="p">:</span>
 <span class="w">  </span><span class="nt">rightClick</span><span class="p">:</span>
 <span class="w">    </span><span class="nt">actions</span><span class="p">:</span><span class="w">  </span><span class="c1"># You can add/remove actions as you want here.</span>
-<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Delay</span><span class="nv"> </span><span class="s">Action&quot;</span><span class="w"> </span><span class="c1"># Required arbitrary name.</span>
-<span class="w">        </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;DELAY&quot;</span><span class="w"> </span><span class="c1"># Required action type.</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s">"Delay</span><span class="nv"> </span><span class="s">Action"</span><span class="w"> </span><span class="c1"># Required arbitrary name.</span>
+<span class="w">        </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="s">"DELAY"</span><span class="w"> </span><span class="c1"># Required action type.</span>
 <span class="w">        </span><span class="nt">ticks</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">60</span><span class="w"> </span><span class="c1"># Required for type DELAY. 60 Ticks delay.</span>
 <span class="w">        </span><span class="nt">debug</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span><span class="w"> </span><span class="c1"># Optional flag to log this action to the console.</span>
 </code></pre></div>
@@ -1180,12 +1180,12 @@ variables are evaluated. Every action can be logged to your server console by se
 <div class="highlight"><pre><span></span><code><span class="nt">events</span><span class="p">:</span>
 <span class="w">  </span><span class="nt">rightClick</span><span class="p">:</span>
 <span class="w">    </span><span class="nt">actions</span><span class="p">:</span><span class="w">  </span><span class="c1"># You can add/remove actions as you want here.</span>
-<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;My</span><span class="nv"> </span><span class="s">new</span><span class="nv"> </span><span class="s">action&quot;</span><span class="w"> </span><span class="c1"># Required arbitrary name.</span>
-<span class="w">        </span><span class="nt">permission</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;mycustom.permission&quot;</span>
-<span class="w">        </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;COMMAND&quot;</span><span class="w"> </span><span class="c1"># Required action type.</span>
-<span class="w">        </span><span class="nt">level</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;SERVER&quot;</span><span class="w"> </span><span class="c1"># Required for type COMMAND. Possible values are PLAYER (player level permission), SERVER (console level permission)</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s">"My</span><span class="nv"> </span><span class="s">new</span><span class="nv"> </span><span class="s">action"</span><span class="w"> </span><span class="c1"># Required arbitrary name.</span>
+<span class="w">        </span><span class="nt">permission</span><span class="p">:</span><span class="w"> </span><span class="s">"mycustom.permission"</span>
+<span class="w">        </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="s">"COMMAND"</span><span class="w"> </span><span class="c1"># Required action type.</span>
+<span class="w">        </span><span class="nt">level</span><span class="p">:</span><span class="w"> </span><span class="s">"SERVER"</span><span class="w"> </span><span class="c1"># Required for type COMMAND. Possible values are PLAYER (player level permission), SERVER (console level permission)</span>
 <span class="w">        </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span>
-<span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;/say</span><span class="nv"> </span><span class="s">Hello</span><span class="nv"> </span><span class="s">%petblocks_owner_name%&quot;</span><span class="w"> </span><span class="c1"># Required for type COMMAND. One or more commands are allowed.</span>
+<span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">"/say</span><span class="nv"> </span><span class="s">Hello</span><span class="nv"> </span><span class="s">%petblocks_owner_name%"</span><span class="w"> </span><span class="c1"># Required for type COMMAND. One or more commands are allowed.</span>
 </code></pre></div>
 <h4 id="conditions">Conditions</h4>
 <p>Actions can optionally have conditions, which support the following types:</p>
@@ -1206,27 +1206,27 @@ variables are evaluated. Every action can be logged to your server console by se
 <div class="highlight"><pre><span></span><code><span class="nt">events</span><span class="p">:</span>
 <span class="w">  </span><span class="nt">rightClick</span><span class="p">:</span>
 <span class="w">    </span><span class="nt">actions</span><span class="p">:</span><span class="w">  </span><span class="c1"># You can add/remove actions as you want here.</span>
-<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;My</span><span class="nv"> </span><span class="s">new</span><span class="nv"> </span><span class="s">action&quot;</span><span class="w"> </span><span class="c1"># Required arbitrary name.</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s">"My</span><span class="nv"> </span><span class="s">new</span><span class="nv"> </span><span class="s">action"</span><span class="w"> </span><span class="c1"># Required arbitrary name.</span>
 <span class="w">        </span><span class="nt">condition</span><span class="p">:</span><span class="w"> </span><span class="c1"># Optional condition tag.</span>
 <span class="w">          </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">STRING_EQUALS</span><span class="w"> </span><span class="c1"># Required condition type.</span>
-<span class="w">          </span><span class="nt">left</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;%petblocks_eventPlayer_name%&quot;</span><span class="w"> </span>
-<span class="w">          </span><span class="nt">right</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;%petblocks_owner_name%&quot;</span>
-<span class="w">        </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;COMMAND&quot;</span><span class="w"> </span><span class="c1"># Required action type.</span>
-<span class="w">        </span><span class="nt">level</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;SERVER&quot;</span><span class="w"> </span><span class="c1"># Required for type COMMAND. Possible values are PLAYER (player level permission), SERVER (console level permission)</span>
+<span class="w">          </span><span class="nt">left</span><span class="p">:</span><span class="w"> </span><span class="s">"%petblocks_eventPlayer_name%"</span><span class="w"> </span>
+<span class="w">          </span><span class="nt">right</span><span class="p">:</span><span class="w"> </span><span class="s">"%petblocks_owner_name%"</span>
+<span class="w">        </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="s">"COMMAND"</span><span class="w"> </span><span class="c1"># Required action type.</span>
+<span class="w">        </span><span class="nt">level</span><span class="p">:</span><span class="w"> </span><span class="s">"SERVER"</span><span class="w"> </span><span class="c1"># Required for type COMMAND. Possible values are PLAYER (player level permission), SERVER (console level permission)</span>
 <span class="w">        </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span>
-<span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;/say</span><span class="nv"> </span><span class="s">Hello</span><span class="nv"> </span><span class="s">%petblocks_owner_name%&quot;</span><span class="w"> </span><span class="c1"># Required for type COMMAND. One or more commands are allowed.</span>
+<span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">"/say</span><span class="nv"> </span><span class="s">Hello</span><span class="nv"> </span><span class="s">%petblocks_owner_name%"</span><span class="w"> </span><span class="c1"># Required for type COMMAND. One or more commands are allowed.</span>
 </code></pre></div>
 <div class="highlight"><pre><span></span><code><span class="nt">events</span><span class="p">:</span>
 <span class="w">  </span><span class="nt">rightClick</span><span class="p">:</span>
 <span class="w">    </span><span class="nt">actions</span><span class="p">:</span><span class="w">  </span><span class="c1"># You can add/remove actions as you want here.</span>
-<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;My</span><span class="nv"> </span><span class="s">new</span><span class="nv"> </span><span class="s">action&quot;</span><span class="w"> </span><span class="c1"># Required arbitrary name.</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s">"My</span><span class="nv"> </span><span class="s">new</span><span class="nv"> </span><span class="s">action"</span><span class="w"> </span><span class="c1"># Required arbitrary name.</span>
 <span class="w">        </span><span class="nt">condition</span><span class="p">:</span><span class="w"> </span><span class="c1"># Optional condition tag.</span>
 <span class="w">          </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">JAVASCRIPT</span><span class="w"> </span><span class="c1"># Required condition type.</span>
-<span class="w">          </span><span class="nt">js</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Math.floor(Math.random()</span><span class="nv"> </span><span class="s">*</span><span class="nv"> </span><span class="s">100)</span><span class="nv"> </span><span class="s">&lt;=</span><span class="nv"> </span><span class="s">50&quot;</span><span class="w"> </span><span class="c1"># 50% chance to execute this command.</span>
-<span class="w">        </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;COMMAND&quot;</span><span class="w"> </span><span class="c1"># Required action type.</span>
-<span class="w">        </span><span class="nt">level</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;SERVER&quot;</span><span class="w"> </span><span class="c1"># Required for type COMMAND. Possible values are PLAYER (player level permission), SERVER (console level permission)</span>
+<span class="w">          </span><span class="nt">js</span><span class="p">:</span><span class="w"> </span><span class="s">"Math.floor(Math.random()</span><span class="nv"> </span><span class="s">*</span><span class="nv"> </span><span class="s">100)</span><span class="nv"> </span><span class="s">&lt;=</span><span class="nv"> </span><span class="s">50"</span><span class="w"> </span><span class="c1"># 50% chance to execute this command.</span>
+<span class="w">        </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="s">"COMMAND"</span><span class="w"> </span><span class="c1"># Required action type.</span>
+<span class="w">        </span><span class="nt">level</span><span class="p">:</span><span class="w"> </span><span class="s">"SERVER"</span><span class="w"> </span><span class="c1"># Required for type COMMAND. Possible values are PLAYER (player level permission), SERVER (console level permission)</span>
 <span class="w">        </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span>
-<span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;/say</span><span class="nv"> </span><span class="s">Hello</span><span class="nv"> </span><span class="s">%petblocks_owner_name%&quot;</span><span class="w"> </span><span class="c1"># Required for type COMMAND. One or more commands are allowed.</span>
+<span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">"/say</span><span class="nv"> </span><span class="s">Hello</span><span class="nv"> </span><span class="s">%petblocks_owner_name%"</span><span class="w"> </span><span class="c1"># Required for type COMMAND. One or more commands are allowed.</span>
 </code></pre></div>
 <h2 id="loops">Loops</h2>
 <p>Loops define, what the pet should repeatedly do. You can customize and define your own loops using actions.</p>
@@ -1257,25 +1257,25 @@ design your pets. </p>
 <div class="highlight"><pre><span></span><code><span class="nt">loops</span><span class="p">:</span>
 <span class="w">  </span><span class="nt">idle</span><span class="p">:</span><span class="w"> </span>
 <span class="w">    </span><span class="nt">actions</span><span class="p">:</span>
-<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Delay</span><span class="nv"> </span><span class="s">Action&quot;</span>
-<span class="w">        </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;DELAY&quot;</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s">"Delay</span><span class="nv"> </span><span class="s">Action"</span>
+<span class="w">        </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="s">"DELAY"</span>
 <span class="w">        </span><span class="nt">ticks</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">20</span>
-<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Look</span><span class="nv"> </span><span class="s">at</span><span class="nv"> </span><span class="s">owner</span><span class="nv"> </span><span class="s">with</span><span class="nv"> </span><span class="s">a</span><span class="nv"> </span><span class="s">90%</span><span class="nv"> </span><span class="s">change.&quot;</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s">"Look</span><span class="nv"> </span><span class="s">at</span><span class="nv"> </span><span class="s">owner</span><span class="nv"> </span><span class="s">with</span><span class="nv"> </span><span class="s">a</span><span class="nv"> </span><span class="s">90%</span><span class="nv"> </span><span class="s">change."</span>
 <span class="w">        </span><span class="nt">condition</span><span class="p">:</span>
 <span class="w">          </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">JAVASCRIPT</span>
-<span class="w">          </span><span class="nt">js</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Math.floor(Math.random()</span><span class="nv"> </span><span class="s">*</span><span class="nv"> </span><span class="s">100)</span><span class="nv"> </span><span class="s">&lt;=</span><span class="nv"> </span><span class="s">90&quot;</span><span class="w"> </span><span class="c1"># Calculate chance in JavaScript.</span>
-<span class="w">        </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;COMMAND&quot;</span>
-<span class="w">        </span><span class="nt">level</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;SERVER&quot;</span>
+<span class="w">          </span><span class="nt">js</span><span class="p">:</span><span class="w"> </span><span class="s">"Math.floor(Math.random()</span><span class="nv"> </span><span class="s">*</span><span class="nv"> </span><span class="s">100)</span><span class="nv"> </span><span class="s">&lt;=</span><span class="nv"> </span><span class="s">90"</span><span class="w"> </span><span class="c1"># Calculate chance in JavaScript.</span>
+<span class="w">        </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="s">"COMMAND"</span>
+<span class="w">        </span><span class="nt">level</span><span class="p">:</span><span class="w"> </span><span class="s">"SERVER"</span>
 <span class="w">        </span><span class="nt">run</span><span class="p">:</span>
-<span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;/petblocks</span><span class="nv"> </span><span class="s">lookatowner</span><span class="nv"> </span><span class="s">%petblocks_pet_name%</span><span class="nv"> </span><span class="s">%petblocks_owner_name%&quot;</span>
-<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Switch</span><span class="nv"> </span><span class="s">to</span><span class="nv"> </span><span class="s">moveToOwner</span><span class="nv"> </span><span class="s">if</span><span class="nv"> </span><span class="s">pet</span><span class="nv"> </span><span class="s">is</span><span class="nv"> </span><span class="s">too</span><span class="nv"> </span><span class="s">far</span><span class="nv"> </span><span class="s">away&quot;</span>
+<span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">"/petblocks</span><span class="nv"> </span><span class="s">lookatowner</span><span class="nv"> </span><span class="s">%petblocks_pet_name%</span><span class="nv"> </span><span class="s">%petblocks_owner_name%"</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s">"Switch</span><span class="nv"> </span><span class="s">to</span><span class="nv"> </span><span class="s">moveToOwner</span><span class="nv"> </span><span class="s">if</span><span class="nv"> </span><span class="s">pet</span><span class="nv"> </span><span class="s">is</span><span class="nv"> </span><span class="s">too</span><span class="nv"> </span><span class="s">far</span><span class="nv"> </span><span class="s">away"</span>
 <span class="w">        </span><span class="nt">condition</span><span class="p">:</span>
 <span class="w">          </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">JAVASCRIPT</span>
-<span class="w">          </span><span class="nt">js</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;%petblocks_pet_distanceToOwner%</span><span class="nv"> </span><span class="s">&gt;</span><span class="nv"> </span><span class="s">7&quot;</span>
-<span class="w">        </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;COMMAND&quot;</span>
-<span class="w">        </span><span class="nt">level</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;SERVER&quot;</span>
+<span class="w">          </span><span class="nt">js</span><span class="p">:</span><span class="w"> </span><span class="s">"%petblocks_pet_distanceToOwner%</span><span class="nv"> </span><span class="s">&gt;</span><span class="nv"> </span><span class="s">7"</span>
+<span class="w">        </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="s">"COMMAND"</span>
+<span class="w">        </span><span class="nt">level</span><span class="p">:</span><span class="w"> </span><span class="s">"SERVER"</span>
 <span class="w">        </span><span class="nt">run</span><span class="p">:</span>
-<span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;/petblocks</span><span class="nv"> </span><span class="s">loop</span><span class="nv"> </span><span class="s">%petblocks_pet_name%</span><span class="nv"> </span><span class="s">moveToOwner</span><span class="nv"> </span><span class="s">%petblocks_owner_name%&quot;</span>
+<span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">"/petblocks</span><span class="nv"> </span><span class="s">loop</span><span class="nv"> </span><span class="s">%petblocks_pet_name%</span><span class="nv"> </span><span class="s">moveToOwner</span><span class="nv"> </span><span class="s">%petblocks_owner_name%"</span>
 </code></pre></div>
 <h3 id="movetoowner-loop">MoveToOwner Loop</h3>
 <p>As we noticed that the loop changes to the loop <code>moveToOwner</code>, we take a look at this loop too.</p>
@@ -1305,29 +1305,29 @@ design your pets. </p>
 <div class="highlight"><pre><span></span><code><span class="nt">loops</span><span class="p">:</span>
 <span class="w">  </span><span class="nt">moveToOwner</span><span class="p">:</span>
 <span class="w">    </span><span class="nt">actions</span><span class="p">:</span>
-<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Recalculate</span><span class="nv"> </span><span class="s">path</span><span class="nv"> </span><span class="s">and</span><span class="nv"> </span><span class="s">start</span><span class="nv"> </span><span class="s">moving</span><span class="nv"> </span><span class="s">to</span><span class="nv"> </span><span class="s">owner.&quot;</span>
-<span class="w">        </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;COMMAND&quot;</span>
-<span class="w">        </span><span class="nt">level</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;SERVER&quot;</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s">"Recalculate</span><span class="nv"> </span><span class="s">path</span><span class="nv"> </span><span class="s">and</span><span class="nv"> </span><span class="s">start</span><span class="nv"> </span><span class="s">moving</span><span class="nv"> </span><span class="s">to</span><span class="nv"> </span><span class="s">owner."</span>
+<span class="w">        </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="s">"COMMAND"</span>
+<span class="w">        </span><span class="nt">level</span><span class="p">:</span><span class="w"> </span><span class="s">"SERVER"</span>
 <span class="w">        </span><span class="nt">run</span><span class="p">:</span>
-<span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;/petblocks</span><span class="nv"> </span><span class="s">moveToOwner</span><span class="nv"> </span><span class="s">%petblocks_pet_name%</span><span class="nv"> </span><span class="s">0.2</span><span class="nv"> </span><span class="s">%petblocks_owner_name%&quot;</span>
-<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Switch</span><span class="nv"> </span><span class="s">to</span><span class="nv"> </span><span class="s">idle</span><span class="nv"> </span><span class="s">if</span><span class="nv"> </span><span class="s">the</span><span class="nv"> </span><span class="s">pet</span><span class="nv"> </span><span class="s">is</span><span class="nv"> </span><span class="s">beside</span><span class="nv"> </span><span class="s">the</span><span class="nv"> </span><span class="s">player&quot;</span>
+<span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">"/petblocks</span><span class="nv"> </span><span class="s">moveToOwner</span><span class="nv"> </span><span class="s">%petblocks_pet_name%</span><span class="nv"> </span><span class="s">0.2</span><span class="nv"> </span><span class="s">%petblocks_owner_name%"</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s">"Switch</span><span class="nv"> </span><span class="s">to</span><span class="nv"> </span><span class="s">idle</span><span class="nv"> </span><span class="s">if</span><span class="nv"> </span><span class="s">the</span><span class="nv"> </span><span class="s">pet</span><span class="nv"> </span><span class="s">is</span><span class="nv"> </span><span class="s">beside</span><span class="nv"> </span><span class="s">the</span><span class="nv"> </span><span class="s">player"</span>
 <span class="w">        </span><span class="nt">condition</span><span class="p">:</span>
 <span class="w">          </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">JAVASCRIPT</span>
-<span class="w">          </span><span class="nt">js</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;%petblocks_pet_distanceToOwner%</span><span class="nv"> </span><span class="s">&lt;</span><span class="nv"> </span><span class="s">4&quot;</span>
-<span class="w">        </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;COMMAND&quot;</span>
-<span class="w">        </span><span class="nt">level</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;SERVER&quot;</span>
+<span class="w">          </span><span class="nt">js</span><span class="p">:</span><span class="w"> </span><span class="s">"%petblocks_pet_distanceToOwner%</span><span class="nv"> </span><span class="s">&lt;</span><span class="nv"> </span><span class="s">4"</span>
+<span class="w">        </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="s">"COMMAND"</span>
+<span class="w">        </span><span class="nt">level</span><span class="p">:</span><span class="w"> </span><span class="s">"SERVER"</span>
 <span class="w">        </span><span class="nt">run</span><span class="p">:</span>
-<span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;/petblocks</span><span class="nv"> </span><span class="s">loop</span><span class="nv"> </span><span class="s">%petblocks_pet_name%</span><span class="nv"> </span><span class="s">idle</span><span class="nv"> </span><span class="s">%petblocks_owner_name%&quot;</span>
-<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Teleport</span><span class="nv"> </span><span class="s">pet</span><span class="nv"> </span><span class="s">to</span><span class="nv"> </span><span class="s">player</span><span class="nv"> </span><span class="s">if</span><span class="nv"> </span><span class="s">the</span><span class="nv"> </span><span class="s">pet</span><span class="nv"> </span><span class="s">is</span><span class="nv"> </span><span class="s">too</span><span class="nv"> </span><span class="s">far</span><span class="nv"> </span><span class="s">away</span><span class="nv"> </span><span class="s">for</span><span class="nv"> </span><span class="s">the</span><span class="nv"> </span><span class="s">pathfinder.&quot;</span>
+<span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">"/petblocks</span><span class="nv"> </span><span class="s">loop</span><span class="nv"> </span><span class="s">%petblocks_pet_name%</span><span class="nv"> </span><span class="s">idle</span><span class="nv"> </span><span class="s">%petblocks_owner_name%"</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s">"Teleport</span><span class="nv"> </span><span class="s">pet</span><span class="nv"> </span><span class="s">to</span><span class="nv"> </span><span class="s">player</span><span class="nv"> </span><span class="s">if</span><span class="nv"> </span><span class="s">the</span><span class="nv"> </span><span class="s">pet</span><span class="nv"> </span><span class="s">is</span><span class="nv"> </span><span class="s">too</span><span class="nv"> </span><span class="s">far</span><span class="nv"> </span><span class="s">away</span><span class="nv"> </span><span class="s">for</span><span class="nv"> </span><span class="s">the</span><span class="nv"> </span><span class="s">pathfinder."</span>
 <span class="w">        </span><span class="nt">condition</span><span class="p">:</span>
 <span class="w">          </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">JAVASCRIPT</span>
-<span class="w">          </span><span class="nt">js</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;%petblocks_pet_distanceToOwner%</span><span class="nv"> </span><span class="s">&gt;</span><span class="nv"> </span><span class="s">20&quot;</span>
-<span class="w">        </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;COMMAND&quot;</span>
-<span class="w">        </span><span class="nt">level</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;SERVER&quot;</span>
+<span class="w">          </span><span class="nt">js</span><span class="p">:</span><span class="w"> </span><span class="s">"%petblocks_pet_distanceToOwner%</span><span class="nv"> </span><span class="s">&gt;</span><span class="nv"> </span><span class="s">20"</span>
+<span class="w">        </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="s">"COMMAND"</span>
+<span class="w">        </span><span class="nt">level</span><span class="p">:</span><span class="w"> </span><span class="s">"SERVER"</span>
 <span class="w">        </span><span class="nt">run</span><span class="p">:</span>
-<span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;/petblocks</span><span class="nv"> </span><span class="s">teleport</span><span class="nv"> </span><span class="s">%petblocks_pet_name%</span><span class="nv"> </span><span class="s">%petblocks_owner_locationWorld%</span><span class="nv"> </span><span class="s">%petblocks_owner_locationX%</span><span class="nv"> </span><span class="s">%petblocks_owner_locationY%</span><span class="nv"> </span><span class="s">%petblocks_owner_locationZ%</span><span class="nv"> </span><span class="s">%petblocks_owner_locationYaw%</span><span class="nv"> </span><span class="s">%petblocks_owner_locationPitch%</span><span class="nv"> </span><span class="s">%petblocks_owner_name%&quot;</span>
-<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Delay</span><span class="nv"> </span><span class="s">Action&quot;</span>
-<span class="w">        </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;DELAY&quot;</span>
+<span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">"/petblocks</span><span class="nv"> </span><span class="s">teleport</span><span class="nv"> </span><span class="s">%petblocks_pet_name%</span><span class="nv"> </span><span class="s">%petblocks_owner_locationWorld%</span><span class="nv"> </span><span class="s">%petblocks_owner_locationX%</span><span class="nv"> </span><span class="s">%petblocks_owner_locationY%</span><span class="nv"> </span><span class="s">%petblocks_owner_locationZ%</span><span class="nv"> </span><span class="s">%petblocks_owner_locationYaw%</span><span class="nv"> </span><span class="s">%petblocks_owner_locationPitch%</span><span class="nv"> </span><span class="s">%petblocks_owner_name%"</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s">"Delay</span><span class="nv"> </span><span class="s">Action"</span>
+<span class="w">        </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="s">"DELAY"</span>
 <span class="w">        </span><span class="nt">ticks</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">20</span>
 </code></pre></div>
 
@@ -1419,7 +1419,7 @@ design your pets. </p>
       <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.instant", "navigation.tabs", "content.tabs.link", "content.code.copy", "navigation.footer"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
-      <script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
+      <script src="../assets/javascripts/bundle.d7400e89.min.js"></script>
       
     
   </body>
